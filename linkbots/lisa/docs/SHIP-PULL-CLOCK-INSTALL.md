@@ -21,7 +21,43 @@
 | `lisa-ship-b`   | `0 16 * * *`       | Ship 16:00       |
 | `lisa-pull-b`   | `0 18 * * *`       | Pull 18:00       |
 
-Match flags used by existing `lisa-morning-digest` / `lisa-heartbeat-45`: isolated session, `agentId: lisa-cron`, announce → Telegram `1123023078`. Message body should instruct: read and run `agents/ship-pull-clock.md` for that wave (spawn Cursor ACP with the shipper or puller prompt). Prefer messages that say `Ship 06:00` / `Ship 16:00` etc., not Ship A/B.
+Match flags used by existing `lisa-morning-digest` / `lisa-heartbeat-45`: isolated session, `agentId: lisa-cron`, announce → Telegram `1123023078`.
+
+**User-facing fields** (`description` + `payload.message`) must use clock times. Internal `--name` stays `lisa-ship-a` / `lisa-pull-a` / `lisa-ship-b` / `lisa-pull-b`. Edit live with:
+
+```bash
+PATH="/opt/homebrew/opt/node@24/bin:$PATH" \
+node /Users/linktrend/Projects/openclaw_prime/openclaw.mjs --profile lisa cron edit <id> \
+  --description "Lisa Option A Ship 06:00: …" \
+  --message "…"
+```
+
+#### Canonical message bodies (SOT — keep in sync with live)
+
+Replace the wave label only: `Ship 06:00` / `Pull 08:00` / `Ship 16:00` / `Pull 18:00`. Shipper vs Puller prompt selection matches the wave.
+
+```
+Run <WAVE> (Asia/Taipei). Follow agents/ship-pull-clock.md strictly.
+
+Runtime: isolated agentTurn as lisa-cron on Mac mini (sandbox off for host tools). Primary clock is Lisa Option A — spawn Cursor ACP; do not substitute a Lisa subagent or self-write code.
+
+1) read agents/ship-pull-clock.md
+2) sessions_spawn runtime=acp agentId=cursor model=grok-4.5[effort=high,fast=true] with the Shipper|Puller ACP prompt from that file (WAVE=<WAVE>)
+3) Wait for ACP completion (sessions_yield). On spawn failure: quote error; write <WAVE>: Issues; stop.
+4) Ensure /Users/linktrend/.openclaw-lisa/workspace/memory/pipeline-status.md has exactly one line: <WAVE>: Clear OR <WAVE>: Issues (no lists/links).
+5) Final Telegram reply = that same one line only.
+
+HARD RULE: NEVER call cron.add / cron.update / cron.remove from this isolated job. Mini must be awake for ACP.
+```
+
+Descriptions:
+
+| Job id        | Description prefix                                |
+| ------------- | ------------------------------------------------- |
+| `lisa-ship-a` | `Lisa Option A Ship 06:00: Cursor ACP Shipper; …` |
+| `lisa-pull-a` | `Lisa Option A Pull 08:00: Cursor ACP Puller; …`  |
+| `lisa-ship-b` | `Lisa Option A Ship 16:00: Cursor ACP Shipper; …` |
+| `lisa-pull-b` | `Lisa Option A Pull 18:00: Cursor ACP Puller; …`  |
 
 ### Tool allowlist (required — 2026-07-25 fix)
 
