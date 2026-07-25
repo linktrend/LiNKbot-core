@@ -1,6 +1,6 @@
 # Pipeline status (autonomous Git ops)
 
-Updated by Cursor Ship/Pull Automations and/or Lisa. **One line per checkpoint. No lists. No links.**
+Updated by Lisa Option A ship/pull cron (Cursor ACP) and/or Lisa. Cursor Automations are backup only. **One line per checkpoint. No lists. No links.**
 
 Format examples:
 
