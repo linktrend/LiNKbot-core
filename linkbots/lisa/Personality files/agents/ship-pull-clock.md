@@ -38,14 +38,14 @@ Each job: isolated `agentTurn`, preferred `agentId: lisa-cron` (same pattern as 
 Process **exactly one repo at a time**, in this order, skipping any path that is missing on disk:
 
 1. `/Users/linktrend/Projects/IDE Development`
-2. `/Users/linktrend/Projects/LiNKsites`
+2. `/Users/linktrend/Projects/openclaw_prime`
 3. `/Users/linktrend/Projects/LiNKplatform`
 4. `/Users/linktrend/Projects/LiNKskills`
-5. `/Users/linktrend/Projects/LiNKautowork`
-6. `/Users/linktrend/Projects/LiNKbrain`
+5. `/Users/linktrend/Projects/LiNKbrain`
+6. `/Users/linktrend/Projects/LiNKsites`
 7. `/Users/linktrend/Projects/LiNKdeveloper`
 8. `/Users/linktrend/Projects/LiNKlibraries`
-9. `/Users/linktrend/Projects/openclaw_prime`
+9. `/Users/linktrend/Projects/LiNKautowork`
 
 Do not parallelize. Unfinished Ship/Pull work on a later repo is fine — roll forward next wave.
 
@@ -80,14 +80,14 @@ WAVE (Asia/Taipei). You are the Implementer shipper under IDE Development autono
 
 Process ONE REPO AT A TIME in this exact order (skip missing paths):
 1) /Users/linktrend/Projects/IDE Development
-2) /Users/linktrend/Projects/LiNKsites
+2) /Users/linktrend/Projects/openclaw_prime
 3) /Users/linktrend/Projects/LiNKplatform
 4) /Users/linktrend/Projects/LiNKskills
-5) /Users/linktrend/Projects/LiNKautowork
-6) /Users/linktrend/Projects/LiNKbrain
+5) /Users/linktrend/Projects/LiNKbrain
+6) /Users/linktrend/Projects/LiNKsites
 7) /Users/linktrend/Projects/LiNKdeveloper
 8) /Users/linktrend/Projects/LiNKlibraries
-9) /Users/linktrend/Projects/openclaw_prime
+9) /Users/linktrend/Projects/LiNKautowork
 
 For each repo that has local changes or unpushed commits on a work branch (prefer issue/*; also cursor/*, rare dev/*):
 1) Commit with conventional commits if there are changes (never commit secrets).
@@ -115,14 +115,14 @@ Pull is NOT hard-gated on all PRs being merged. Unfinished work rolls forward.
 
 Process ONE REPO AT A TIME in this exact order (skip missing paths):
 1) /Users/linktrend/Projects/IDE Development
-2) /Users/linktrend/Projects/LiNKsites
+2) /Users/linktrend/Projects/openclaw_prime
 3) /Users/linktrend/Projects/LiNKplatform
 4) /Users/linktrend/Projects/LiNKskills
-5) /Users/linktrend/Projects/LiNKautowork
-6) /Users/linktrend/Projects/LiNKbrain
+5) /Users/linktrend/Projects/LiNKbrain
+6) /Users/linktrend/Projects/LiNKsites
 7) /Users/linktrend/Projects/LiNKdeveloper
 8) /Users/linktrend/Projects/LiNKlibraries
-9) /Users/linktrend/Projects/openclaw_prime
+9) /Users/linktrend/Projects/LiNKautowork
 
 For each repo with a checked-out work branch (issue/*, cursor/*, rare dev/*) — not development/staging/main as the place to dump work:
 1) git fetch origin
