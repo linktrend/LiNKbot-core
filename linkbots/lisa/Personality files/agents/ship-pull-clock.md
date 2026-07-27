@@ -4,7 +4,7 @@ title: Ship / Pull clock (Lisa Option A)
 description: Primary Ship/Pull clock — Lisa cron spawns Cursor ACP shipper/puller on Mini
 load: on_demand
 read_when:
-  - Running lisa-ship-a / lisa-pull-a / lisa-ship-b / lisa-pull-b cron
+  - Running lisa-ship-05 / lisa-pull-07 / lisa-ship-16 / lisa-pull-18 cron
   - Carlos asks how Ship/Pull is triggered
   - Installing or repairing Lisa Option A clock jobs
 tags: [pipeline, ship, pull, cron, acp, cursor, option-a]
@@ -12,8 +12,10 @@ tags: [pipeline, ship, pull, cron, acp, cursor, option-a]
 
 # Ship / Pull Clock — Lisa Option A
 
-**Doctrine SOT:** IDE Development `docs/AUTONOMOUS-GIT-OPERATIONS.md` (ADR 0003 amendment 2026-07-25).  
+**Doctrine SOT:** IDE Development `docs/AUTONOMOUS-GIT-OPERATIONS.md` (ADR 0003 amendment 2026-07-25; Ship 05 / Pull 07 as of 2026-07-25).  
 **Primary clock:** This procedure. Cursor Automations are **optional backup only** — do not treat them as the studio clock.
+
+**Wave names** use **local hour** labels (Asia/Taipei): Ship 05, Pull 07, Ship 16, Pull 18 — not A/B letters and not `Ship 05:00`.
 
 ## Hard prerequisites (ops)
 
@@ -24,18 +26,18 @@ tags: [pipeline, ship, pull, cron, acp, cursor, option-a]
 
 ## Calendar (Asia/Taipei)
 
-User-facing wave labels use **clock times** (not A/B letters). Internal job ids may stay `lisa-ship-a` / `lisa-ship-b` etc.
+| Job name       | Cron expr (tz Asia/Taipei) | Wave    |
+| -------------- | -------------------------- | ------- |
+| `lisa-ship-05` | `0 5 * * *`                | Ship 05 |
+| `lisa-pull-07` | `0 7 * * *`                | Pull 07 |
+| `lisa-ship-16` | `0 16 * * *`               | Ship 16 |
+| `lisa-pull-18` | `0 18 * * *`               | Pull 18 |
 
-| Job name (internal) | Cron expr (tz Asia/Taipei) | User-facing wave |
-| ------------------- | -------------------------- | ---------------- |
-| `lisa-ship-a`       | `0 6 * * *`                | Ship 06:00       |
-| `lisa-pull-a`       | `0 8 * * *`                | Pull 08:00       |
-| `lisa-ship-b`       | `0 16 * * *`               | Ship 16:00       |
-| `lisa-pull-b`       | `0 18 * * *`               | Pull 18:00       |
+Morning Ship moved earlier (05:00) and Pull to 07:00 so the **08:30 morning digest** can cover all four daily waves (prior evening Ship 16 + Pull 18, plus morning Ship 05 + Pull 07) before Review #1.
 
-Each job: isolated `agentTurn`, preferred `agentId: lisa-cron` (same pattern as `lisa-morning-digest` / `lisa-heartbeat-45`). Announce → Telegram `1123023078` with the **one-line** Clear/Issues result only (no lists/links).
+Each job: isolated `agentTurn`, preferred `agentId: lisa-cron` (same pattern as `lisa-morning-digest` / `lisa-heartbeat-45`). Announce → Telegram `1123023078` with the **one-line** Clear/Issues result only (no lists/links). **Also** email that same one line (see below).
 
-**Tool allowlist:** cron `payload.toolsAllow` **and** `agents.list[lisa-cron].tools.allow` must both include `sessions_spawn` and `sessions_yield`. OpenClaw intersects them — listing the tool only on the job is not enough (Ship 16:00 2026-07-25: job had `sessions_spawn`, agent allowlist did not → tool missing at runtime). See `linkbots/lisa/docs/SHIP-PULL-CLOCK-INSTALL.md`.
+**Tool allowlist:** cron `payload.toolsAllow` **and** `agents.list[lisa-cron].tools.allow` must include `sessions_spawn`, `sessions_yield`, `read`, `write`, `edit`, and `exec`. OpenClaw intersects them — listing a tool only on the job or only on the agent is not enough (Ship 16 2026-07-25: job had `sessions_spawn`, agent allowlist did not → tool missing at runtime). File tools support the procedure, serialized status update, and email-body files; `exec` runs `tools/bin/lisa-safe email-send`. See `linkbots/lisa/docs/SHIP-PULL-CLOCK-INSTALL.md`.
 
 ## Repo list (sequential — one at a time)
 
@@ -59,25 +61,46 @@ Write/update:
 
 `/Users/linktrend/.openclaw-lisa/workspace/memory/pipeline-status.md`
 
-One line only for the wave, e.g. `Ship 06:00: Clear` or `Pull 18:00: Issues`. Mirror shapes in `agents/pipeline-status.md`. Prefer also keeping the personality-mirror copy in sync when editing in-repo: `memory/pipeline-status.md`.
+Keep a `Cycle date: YYYY-MM-DD` metadata line plus one result line per known checkpoint in that Asia/Taipei morning-digest cycle: prior-evening Ship 16 + Pull 18, then current-morning Ship 05 + Pull 07. Derive the expected cycle from the cron run's nominal scheduled occurrence, not its completion time: the next calendar date for Ship 16/Pull 18 and the same date for Ship 05/Pull 07. Compare it with the stored cycle date before writing. If no date is stored or the expected date is newer, remove all four old Ship/Pull result lines, store the expected date, and write the current wave. If dates match, replace only the current wave line. If the expected date is older, the run is delayed or retried from a prior cycle: do not change the status file or erase the newer results. This monotonic rule also makes any current wave that resumes after a missed Ship 16 discard stale results. Preserve recognized Staging/Main lines until their owning checkpoint updates them.
+
+The live file must exist before these jobs are enabled. Serialize every update with the `edit` tool as a compare-and-swap: read the complete current file, compute the merged content, then replace that exact complete old content. If `edit` reports that the old text changed, another wave won the race; reread, recompute, and retry up to three times. Never use a stale full-file `write` for an existing file. After a successful edit, reread and verify the current wave line and cycle date are both present. On repeated contention or verification failure, report `WAVE: Issues` without erasing another wave. Mirror shapes and freshness rules in `agents/pipeline-status.md`.
 
 ## Cron run procedure (Lisa)
 
 When a ship/pull cron fires:
+
+### Silent work (mandatory)
+
+Emit **no** mid-run assistant text (“Starting WAVE…”, “processing repos…”, “Writing the status line…”). Tool calls only until the final reply. The announced Telegram body must be **exactly one line** (`WAVE: Clear` or `WAVE: Issues`) — nothing else (2026-07-26 Pull: narration leaked into announce). **Plain Telegram text only** — never wrap that one-liner in Markdown code fences.
 
 1. `read` this file (`agents/ship-pull-clock.md`).
 2. Spawn **one** Cursor ACP session with `sessions_spawn`:
    - `runtime: "acp"`
    - `agentId: "cursor"`
    - `model: "grok-4.5[effort=high,fast=true]"`
-   - `task`: the matching **Shipper** or **Puller** prompt below (fill WAVE label with the user-facing clock name).
+   - `task`: the matching **Shipper** or **Puller** prompt below (fill WAVE label).
 3. Wait for ACP completion (or fail). Do **not** substitute a Lisa subagent or self-write code.
-4. On spawn failure: quote the error; set status line to `WAVE: Issues`; Telegram that one line; stop.
-5. On success: ensure status file has the one-liner Cursor wrote (or write it yourself if Cursor could not); Telegram **only** that one line as the cron final reply.
+4. On spawn failure: leave the exact error in the cron run trace, update the status file with `WAVE: Issues` using the cycle-preserving rules above, send the email side effect, then return only the Telegram one-liner; stop. Never put the error in the final Telegram reply.
+5. On success: accept only Cursor's exact `WAVE: Clear` or `WAVE: Issues` reply, then have Lisa write that result to the status file using the monotonic cycle-date rules above. Cursor does not own or edit this shared status file.
+6. **Email (required side-effect, separate from heartbeat):** choose a fresh UUID for this isolated run and write the same one line to `scratch/pipeline-status-<wave-slug>-<run-uuid>.txt` (for example, `scratch/pipeline-status-ship-05-4f64c7b7-54fd-4f46-a950-21f5c2e65b27.txt`). Keep that exact path for the send; every retry/overlap must generate its own UUID and must never reuse another run's body file. Then run **exactly one** unpiped `exec` (no pipes, no `ls`, no multi-step plans):
+   ```bash
+   tools/bin/lisa-safe email-send --to calusa@linktrend.media --subject "<WAVE> status" --body-file scratch/pipeline-status-<wave-slug>-<run-uuid>.txt
+   ```
+   Subject examples: `Ship 05 status`, `Pull 07 status`. Body is exactly one line (`WAVE: Clear` or `WAVE: Issues`) — no lists, no links, no Battery content. Send for **both** Clear and Issues after the wave finishes across the repo list. If the exact command returns a normal non-denial send error, **keep Telegram delivery** and finish with the one-line status — do not invent Clear/Issues from the email failure alone. If it is hard-denied because an opaque shell form was used, retry the exact unpiped command above once. Continue only if that retry succeeds; otherwise stop the run and preserve the fatal failure.
+7. **Telegram:** only after the email attempt, return the final cron reply as **only** that one line (Clear or Issues). This final assistant reply is what cron announces.
+
+### HARD RULES — `lisa-safe` (Pull 07 2026-07-26 failure)
+
+`tools/bin/lisa-safe` is a **script file**, not a directory.
+
+1. **Never** `ls` / list / explore / “list files in” `tools/bin/lisa-safe` or `~/.openclaw-lisa/workspace/tools/bin/lisa-safe`.
+2. **Never** multi-step exec plans such as `list files in … → print text → print text`.
+3. **Do not** probe or verify the binary before use. Invoke `email-send` directly, exactly as above. Repeat it only for the one permitted hard-denial recovery attempt.
+4. Order: ACP spawn → status file → email attempt → final Telegram one-liner. Do not start the run by exploring `tools/bin`.
 
 ## ACP prompt — Shipper
 
-Replace `WAVE` with `Ship 06:00` or `Ship 16:00`.
+Replace `WAVE` with `Ship 05` or `Ship 16`.
 
 ```text
 WAVE (Asia/Taipei). You are the Implementer shipper under IDE Development autonomous Git ops (Lisa Option A clock).
@@ -99,18 +122,14 @@ For each repo that has local changes or unpushed commits on a work branch (prefe
 3) Open or update a PR targeting development.
 4) STOP. Do not merge. Do not self-review. Do not touch staging/main. Bugbot reviews; Integrator merges.
 
-Write exactly one line to /Users/linktrend/.openclaw-lisa/workspace/memory/pipeline-status.md:
-WAVE: Clear
-or
-WAVE: Issues
-(no lists, no links).
+Do not edit /Users/linktrend/.openclaw-lisa/workspace/memory/pipeline-status.md; Lisa owns the shared status writer and cycle-date checks.
 
-Reply with that same one line only.
+Reply with exactly one line only: `WAVE: Clear` or `WAVE: Issues`.
 ```
 
 ## ACP prompt — Puller
 
-Replace `WAVE` with `Pull 08:00` or `Pull 18:00`.
+Replace `WAVE` with `Pull 07` or `Pull 18`.
 
 ```text
 WAVE (Asia/Taipei). You are the Implementer puller under IDE Development autonomous Git ops (Lisa Option A clock).
@@ -134,13 +153,9 @@ For each repo with a checked-out work branch (issue/*, cursor/*, rare dev/*) —
 3) Do not invent merges into staging/main.
 4) Note blockers privately; do not paste lists into the status line.
 
-Write exactly one line to /Users/linktrend/.openclaw-lisa/workspace/memory/pipeline-status.md:
-WAVE: Clear
-or
-WAVE: Issues
-(no lists, no links).
+Do not edit /Users/linktrend/.openclaw-lisa/workspace/memory/pipeline-status.md; Lisa owns the shared status writer and cycle-date checks.
 
-Reply with that same one line only.
+Reply with exactly one line only: `WAVE: Clear` or `WAVE: Issues`.
 ```
 
 ## Install / repair cron jobs (main session or operator — not from isolated cron)
@@ -152,7 +167,7 @@ PATH="/opt/homebrew/opt/node@24/bin:$PATH" \
 node /Users/linktrend/Projects/openclaw_prime/openclaw.mjs --profile lisa cron list
 ```
 
-Create four jobs named `lisa-ship-a`, `lisa-pull-a`, `lisa-ship-b`, `lisa-pull-b` with the exprs above, isolated session, `agentId: lisa-cron`, announce → Telegram `1123023078`, message pointing at this procedure (e.g. “Run agents/ship-pull-clock.md for Ship 06:00”). Prefer matching flags used by `lisa-morning-digest`.
+Create four jobs named `lisa-ship-05`, `lisa-pull-07`, `lisa-ship-16`, `lisa-pull-18` with the exprs above, isolated session, `agentId: lisa-cron`, announce → Telegram `1123023078`, message pointing at this procedure (e.g. “Run agents/ship-pull-clock.md for Ship 05”). Prefer matching flags used by `lisa-morning-digest`.
 
 After install, verify with `cron list` that all four are enabled. Do not disable digest/heartbeat jobs.
 

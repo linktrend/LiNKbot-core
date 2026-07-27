@@ -14,7 +14,7 @@
 | Coordination home | /Users/linktrend/Projects/openclaw_prime |
 | Session ID        | codex-desktop-agent-20260723-1556        |
 | Started           | 2026-07-23 15:56 Asia/Taipei             |
-| Last updated      | 2026-07-24 18:45 Asia/Taipei             |
+| Last updated      | 2026-07-27 15:11 Asia/Taipei             |
 
 ## Work
 
@@ -24,7 +24,7 @@
 | Branch          | `docs/initial-agent-handoff-20260723`                                                                                                                                    |
 | Starting commit | `497dfd8ff45b6422f4944e53ed171bfda01cd79b`                                                                                                                               |
 | Status          | `completed`                                                                                                                                                              |
-| Handoff         | `docs/handoffs/2026-07-24-1845-codex-desktop-promotion-complete.md`                                                                                                      |
+| Handoff         | `docs/handoffs/2026-07-27-1511-codex-desktop-pr-merge-lisa-deploy.md`                                                                                                    |
 
 ## Ownership Scope
 
@@ -159,6 +159,15 @@
 - Verified `origin/development`, `origin/staging`, and `origin/main` have byte-for-byte identical trees and that the fork has no open pull requests.
 - Removed seven clean completed task worktrees, their local task branches, and fully merged obsolete local/remote branches. Preserved the shared coordination home, the active Cursor session, `stash@{0}`, the unrelated untracked LiNKbrain draft, and the unrelated/unmerged `codex-rollout` remote branch.
 - Rechecked Lisa without mutation after promotion: LaunchAgent PID `71599` remains running and loopback HTTP returns `200`. No deployment, restart, reload, configuration, database, credential, or service change was made.
+
+### 2026-07-27 12:56-15:11 Asia/Taipei — Development PR takeover
+
+- Carlos authorized takeover of open development PRs and later directed that no further PR checks or review loops be run.
+- Merged prerequisite PR #36 and Lisa hour-label PR #33 into `development`.
+- Completed PR #34 integration: preserved fatal handling for unrecovered execution denials, clarified exact-command recovery, archived superseded Lisa sessions, added dated/serialized pipeline state, protected promotion approval freshness, isolated concurrent email bodies, and made the weekday/weekend coding boundary unambiguous.
+- Merged PR #34 into `development` with Carlos-authorized admin bypass rather than waiting for its restarted CI matrix.
+- Began resolving PR #35 against the new `development`, preserving the later factual Lisa and coordination history instead of accepting stale conflict sides.
+- Lisa remained running during integration; the final deployment, rebuild, restart, and health verification are recorded in the handoff named above.
 
 ## Next Action
 

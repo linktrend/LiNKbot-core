@@ -137,6 +137,7 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H3: 2026-07-23 20:00-21:00 Asia/Taipei — PR #25 merged; default-branch bootstrap identified
   - H3: 2026-07-23 21:00-21:08 Asia/Taipei — Direct-main bootstrap PR #26
   - H3: 2026-07-24 14:05-18:45 Asia/Taipei — End-to-end promotion completed
+  - H3: 2026-07-27 12:56-15:11 Asia/Taipei — Development PR takeover
   - H2: Next Action
 
 ## agent-sessions/completed/codex-desktop-agent-feature-20260723-1718.md
@@ -177,6 +178,42 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Ownership Scope
   - H2: Coordination
   - H2: Decisions
+
+## agent-sessions/completed/cursor-local-mac-mini-desktop-workspace-lisa-20260725-2320.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-desktop-workspace-lisa-20260725-2320
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-mac-mini-lisa-digest-cron-format-20260727-1055.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-lisa-digest-cron-format-20260727-1055
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-mac-mini-lisa-telegram-silence-20260726-0915.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-lisa-telegram-silence-20260726-0915
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Notes
+  - H2: Recovery note — 2026-07-26 09:37 Asia/Taipei
 
 ## announcements/bluebubbles-imessage.md
 
@@ -4610,6 +4647,22 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Tests and Verification
   - H2: Remaining work (Principal / next agent)
   - H2: Confidence
+
+## handoffs/2026-07-27-1055-cursor-local-lisa-digest-cron-format.md
+
+- Route: /handoffs/2026-07-27-1055-cursor-local-lisa-digest-cron-format
+- Headings:
+  - H1: Handoff — Lisa digest cron failure + Telegram format flip
+  - H2: Summary
+  - H2: Files inspected
+  - H2: Files created/modified
+  - H2: Commands / validation
+  - H2: Decisions
+  - H2: Problems / risks
+  - H2: Remaining work
+  - H2: Exact next action
+  - H2: Confidence
+  - H2: Amendment — 2026-07-27 13:45 Asia/Taipei
 
 ## handoffs/TEMPLATE.md
 
