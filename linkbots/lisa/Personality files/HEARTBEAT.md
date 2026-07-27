@@ -56,7 +56,7 @@ Quiet hours (`user/schedule.md`, 23:00–07:00) suppress only non-urgent proacti
 
 When this cycle’s wall-clock is near or after a checkpoint (05:00 Ship 05, 07:00 Pull 07, 16:00 Ship 16, 18:00 Pull 18, Tue/Fri 08:00 staging, Mon 08:00 main package), `read` `memory/pipeline-status.md` if present and include **section D** below. Full procedure: `agents/pipeline-status.md`. Compare the stored `Cycle date` with the Asia/Taipei digest cycle being reported; include Ship/Pull lines only when it matches, and never include the metadata line. One result line per checkpoint only — no lists/links. If the file is missing or its Ship/Pull results are stale/undated, omit those lines rather than inventing Clear. Also verify the four ship/pull cron jobs are enabled when listing cron health.
 
-**Do not** ask Main Approve from heartbeat — that ask lives in the **08:30 morning digest** (Telegram + email notify). Carlos still answers Approve on Telegram; main session dispatches.
+**Monday Main Approve fallback:** the 08:30 digest owns the normal ask. After 08:30 Monday, if `Main ready date` is today, `Main ready (Mon): Clear`, no decision is recorded today, and no current-day `Main approve claim` exists from the last two hours, use the compare-and-swap `edit` protocol in `agents/pipeline-status.md` to claim the current timestamp, then append the same short Main Approve ask used by the digest after section D. This recovers late readiness or failed delivery while preventing concurrent duplicates. Carlos still answers Approve on Telegram; the main session records today's decision before dispatching or deferring.
 
 Ship/Pull **status emails** are **not** a heartbeat duty — Lisa sends those one-liner emails from the ship/pull cron after each wave (see `agents/ship-pull-clock.md`).
 
@@ -140,6 +140,10 @@ Unanswered Messages: Yes/No.
 
 <one or more lines from memory/pipeline-status.md, exact Ship/Pull/Staging/Main shapes only>
 (omit section D entirely if no status file / no known checkpoint)
+
+## E. Main Approve
+
+<Monday fallback only when the current dated Clear result has no decision today and no unexpired two-hour claim; otherwise omit this whole section>
 
 Section B is **Yes** if there was any **new** Cursor coding work, local coding-model use, and/or eval comparison **since the last cycle** (after checking real records in the cycle window). Otherwise **No**. Stale/closed ACP sessions and already-fixed config issues (wired default model, unadvertised medium) do **not** count.
 

@@ -111,7 +111,7 @@ Review memory/logs and ACP/session state for Cursor-delegated coding, local `Qwe
 
 ### Main Approve (Mondays only — section E when needed)
 
-On **Monday**, after reading pipeline status: include a short **Main Approve** ask in **both** email and Telegram (same wording) only when `Main ready date` equals today's Asia/Taipei date and `Main ready (Mon): Clear`. An undated or older result is stale and must not trigger approval. Carlos answers **Approve / yes on Telegram only** (email is notify-only). Do **not** merge from this digest cron. Full dispatch rules: `agents/pipeline-status.md` (main session after Telegram Approve).
+On **Monday**, after reading pipeline status: include a short **Main Approve** ask in **both** email and Telegram (same wording) only when `Main ready date` equals today's Asia/Taipei date, `Main ready (Mon): Clear`, no decision is recorded today, and no current-day `Main approve claim` exists from the last two hours. Before including the ask, atomically claim the current timestamp using the compare-and-swap protocol in `agents/pipeline-status.md`. An undated or older result is stale and must not trigger approval. Carlos answers **Approve / yes on Telegram only** (email is notify-only), and the main session records today's decision. Do **not** merge from this digest cron. A later Monday heartbeat can reclaim after two hours if readiness was late or delivery failed.
 
 If not Monday, or Main is not Clear / unknown: omit the Approve ask entirely.
 

@@ -11,6 +11,7 @@
 1. **Mac Mini awake** with Keep Awake / Remote Control so Cursor ACP can spawn at 05:00 / 07:00 / 16:00 / 18:00 Asia/Taipei.
 2. Lisa gateway healthy (`--profile lisa`); ACP/`acpx` working.
 3. Personality mirror deployed or live workspace has `agents/ship-pull-clock.md`.
+4. `memory/pipeline-status.md` exists before enabling the jobs. Initialize it from the personality template if missing; runtime jobs update this existing file with compare-and-swap `edit`, not stale full-file writes.
 
 ## Related schedule (digest / heartbeat)
 
@@ -49,7 +50,7 @@ Ship/Pull jobs already set `payload.toolsAllow` including `sessions_spawn`. That
    - `sessions_spawn` (Cursor ACP spawn)
    - `sessions_yield` (wait for ACP completion announce)
    - plus the usual host ops tools (`read` / `write` / `edit` / `exec` / `process` / `cron` / session list helpers) so `lisa-safe email-send` works after each wave
-2. **Each Ship/Pull job** `payload.toolsAllow` must include `sessions_spawn`, `sessions_yield`, `read`, `write`, and `exec`. File tools are required to read the procedure/current cycle and write the status and email-body files; `exec` is required for the `lisa-safe email-send` side effect. Digest/heartbeat jobs should **omit** the spawn/yield entries so they stay non-spawning.
+2. **Each Ship/Pull job** `payload.toolsAllow` must include `sessions_spawn`, `sessions_yield`, `read`, `write`, `edit`, and `exec`. File tools are required to read the procedure/current cycle, serialize the shared status update, and write the email-body file; `exec` is required for the `lisa-safe email-send` side effect. Digest/heartbeat jobs should **omit** the spawn/yield entries so they stay non-spawning.
 3. Do **not** change `main` agent tools for this fix.
 
 Repo SOT mirror: `linkbots/lisa/Personality files/openclaw.json`.
@@ -63,7 +64,7 @@ node /Users/linktrend/Projects/openclaw_prime/openclaw.mjs --profile lisa cron l
 
 Confirm all four jobs are present and enabled (`lisa-ship-05`, `lisa-pull-07`, `lisa-ship-16`, `lisa-pull-18`). Do not disable digest/heartbeat jobs while installing.
 
-Policy check (no Telegram): confirm live `lisa-cron.tools.allow` and every Ship/Pull job's `toolsAllow` contain `sessions_spawn`, `sessions_yield`, `read`, `write`, and `exec` (`cron list --json`). Prefer a one-word tool-inventory agent turn over force-running Ship/Pull (force-run announces Clear/Issues to Telegram).
+Policy check (no Telegram): confirm live `lisa-cron.tools.allow` and every Ship/Pull job's `toolsAllow` contain `sessions_spawn`, `sessions_yield`, `read`, `write`, `edit`, and `exec` (`cron list --json`). Prefer a one-word tool-inventory agent turn over force-running Ship/Pull (force-run announces Clear/Issues to Telegram).
 
 ## Backup
 

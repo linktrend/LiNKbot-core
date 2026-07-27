@@ -14,6 +14,8 @@ Staging date: YYYY-MM-DD
 Staging promote (Tue): Clear
 Main ready date: YYYY-MM-DD
 Main ready (Mon): Clear
+Main approve claim: YYYY-MM-DDTHH:MM+08:00
+Main approve decision date: YYYY-MM-DD
 ```
 
 Lisa procedure: `agents/pipeline-status.md`.

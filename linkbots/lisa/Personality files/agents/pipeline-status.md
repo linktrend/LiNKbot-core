@@ -32,6 +32,8 @@ Heartbeat and morning digest must compare the stored cycle date with the digest 
 
 Staging and Main readiness have their own freshness markers: `Staging date: YYYY-MM-DD` and `Main ready date: YYYY-MM-DD`. Their owning checkpoint must write its result with the date of that nominal Asia/Taipei run. Include a Staging/Main result only when its marker matches the checkpoint date being reported. In particular, Monday's digest may offer Main Approve only when `Main ready date` is today's date and the paired result is `Main ready (Mon): Clear`; an undated or prior-Monday line is stale and must be omitted.
 
+All runtime updates to this shared file use the compare-and-swap `edit` protocol from `agents/ship-pull-clock.md`: replace only the complete content that was actually read, and reread/recompute after a mismatch. `Main approve claim: YYYY-MM-DDTHH:MM+08:00` is a two-hour lease that prevents simultaneous reporters from duplicating the approval prompt without permanently suppressing recovery after a failed delivery. `Main approve decision date: YYYY-MM-DD` records Carlos's reply and ends reminders for that Monday.
+
 ## One-line contract (hard)
 
 Heartbeat / digest / Ship-Pull email pipeline lines must be **exactly** one of these shapes — no lists, no links, no extra words:
@@ -66,15 +68,15 @@ Full ship/pull spawn prompts and repo order: `agents/ship-pull-clock.md`. Mini m
 On Monday in the **08:30 morning digest**, when today's dated package result is Clear:
 
 1. Require `Main ready date: YYYY-MM-DD` to equal today's Asia/Taipei date and `Main ready (Mon): Clear`. Otherwise omit the approval ask.
-2. Include a short Approve ask in **both** digest email and Telegram (same wording). Email is notify-only.
-3. Carlos replies **Approve / yes on Telegram** (main session).
+2. If no decision is recorded today and no current-day claim exists from the last two hours, atomically set `Main approve claim` to the current Asia/Taipei timestamp before including a short Approve ask in **both** digest email and Telegram (same wording). Email is notify-only.
+3. Carlos replies **Approve / yes on Telegram** (main session). The main session atomically records today's `Main approve decision date` for either approval or deferral before acting.
 4. If Carlos says Approve / yes: for each in-scope GitHub repo, run (unpiped, host tools as allowed):
    ```bash
    gh workflow run linktrend-staging-to-main.yml --repo linktrend/<REPO> -f action=approve-merge
    ```
 5. If denied or deferred: leave PR open; status stays ready until next Monday or Carlos says otherwise.
 6. Never merge `staging`→`main` without Carlos Approve in this conversation or an explicit standing order.
-7. Do **not** ask Main Approve from heartbeat — digest owns the ask.
+7. The 08:30 digest owns the normal ask. If readiness arrived late or delivery failed, the first later Monday heartbeat with today's dated Clear result, no decision today, and no unexpired two-hour claim atomically renews the claim and includes the same ask. This allows recovery while preventing concurrent duplicates.
 
 ## Until CTO OpenClaw exists
 
