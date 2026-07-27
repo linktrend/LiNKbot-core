@@ -1,0 +1,38 @@
+{
+  "_comment": "TEMPLATE ONLY — preferred OAuth / authProfileId path for Skills MCP. No secret values. enabled=false. Requires Platform-issued auth profile.",
+  "mcp": {
+    "servers": {
+      "linkskills": {
+        "enabled": false,
+        "transport": "streamable-http",
+        "url": "https://skills.stage.example.invalid/mcp",
+        "connectionTimeoutMs": 5000,
+        "requestTimeoutMs": 20000,
+        "auth": "oauth",
+        "oauth": {
+          "authProfileId": "linkskills-stage-mcp",
+          "scope": "skills:read skills:write"
+        },
+        "toolFilter": {
+          "include": [
+            "skills_list",
+            "skills_search",
+            "skills_describe",
+            "skills_fragment_get",
+            "skills_release_get",
+            "skills_run_start",
+            "skills_run_update",
+            "skills_run_complete",
+            "skills_run_fail",
+            "skills_tool_resolve",
+            "skills_tool_invoke",
+            "skills_input_validate",
+            "skills_output_validate",
+            "skills_feedback_submit",
+            "skills_trace_candidate_submit"
+          ]
+        }
+      }
+    }
+  }
+}

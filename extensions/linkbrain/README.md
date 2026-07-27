@@ -12,6 +12,7 @@ This directory does **not** talk to live LiNKbrain, Platform, or Lisa profile/cr
 | `fake/`                                              | Deterministic Node ESM fake: stdio MCP or localhost HTTP                          |
 | `openclaw.plugin.json` / `package.json` / `index.ts` | Default-disabled plugin packaging (`enabledByDefault: false`, `onStartup: false`) |
 | `src/`                                               | Outbox runtime, capture batching, §10.1 lifecycle mapping, allowlist redaction    |
+| `mcp-tool-filter.ts`                                 | Phase 5 managed MCP §9.1 `toolFilter.include` allowlist (default-deny)            |
 
 ## Plugin behavior (Phase 3)
 

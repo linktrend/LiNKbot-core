@@ -27,3 +27,9 @@ export {
   type LinkskillsRuntime,
   type LinkskillsTransport,
 } from "./src/runtime.js";
+export {
+  LINKSKILLS_MCP_TOOL_ALLOWLIST,
+  buildLinkskillsMcpToolFilter,
+  isAllowedLinkskillsMcpTool,
+  assertAllowedLinkskillsMcpTool,
+} from "./mcp-tool-filter.js";

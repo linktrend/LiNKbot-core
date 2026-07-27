@@ -7,13 +7,14 @@ Skills fake, and a **default-disabled** plugin skeleton with durable telemetry o
 
 ## Layout
 
-| Path                                               | Role                                                                                        |
-| -------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| `openclaw.plugin.json` / `package.json` / `index.ts` | Default-disabled private plugin entry (`enabledByDefault: false`)                         |
-| `src/`                                             | Config, allowlisted envelopes, keyed-store namespaces, enqueue/drain runtime                |
-| `fixtures/`                                        | Sanitized contract fixtures (pending LiNKskills owner sign-off; see `fixtures/MANIFEST.md`) |
-| `fake/`                                            | Deterministic Node ESM fake (HTTP ephemeral + stdio MCP)                                    |
-| `../test/helpers/link-domain-fakes/skills-fake.ts` | Test helper for in-process and child-process isolation                                      |
+| Path                                                 | Role                                                                                        |
+| ---------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `openclaw.plugin.json` / `package.json` / `index.ts` | Default-disabled private plugin entry (`enabledByDefault: false`)                           |
+| `src/`                                               | Config, allowlisted envelopes, keyed-store namespaces, enqueue/drain runtime                |
+| `mcp-tool-filter.ts`                                 | Phase 5 managed MCP §9.2 `toolFilter.include` allowlist (default-deny)                      |
+| `fixtures/`                                          | Sanitized contract fixtures (pending LiNKskills owner sign-off; see `fixtures/MANIFEST.md`) |
+| `fake/`                                              | Deterministic Node ESM fake (HTTP ephemeral + stdio MCP)                                    |
+| `../test/helpers/link-domain-fakes/skills-fake.ts`   | Test helper for in-process and child-process isolation                                      |
 
 ## Privacy invariant
 

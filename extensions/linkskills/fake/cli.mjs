@@ -15,9 +15,12 @@ import { createStdioMcpLoop } from "./stdio-mcp.mjs";
 const mode = process.argv[2] ?? "http";
 
 if (mode === "http") {
-  const throttleAfter = Number(process.env.LINKSKILLS_FAKE_THROTTLE_AFTER ?? "");
+  // Empty/unset env must not become 0 via Number("") — that rate-limits the first request.
+  const rawThrottle = process.env.LINKSKILLS_FAKE_THROTTLE_AFTER;
+  const parsedThrottle =
+    rawThrottle != null && rawThrottle.trim() !== "" ? Number(rawThrottle) : Number.NaN;
   const service = new SkillsFakeService({
-    throttleAfter: Number.isFinite(throttleAfter) ? throttleAfter : undefined,
+    throttleAfter: Number.isFinite(parsedThrottle) ? parsedThrottle : undefined,
   });
   const handle = await startSkillsFakeHttp({ service });
   process.stdout.write(
