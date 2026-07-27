@@ -1,10 +1,11 @@
 # Pipeline status (autonomous Git ops)
 
-One-line shapes only. Updated by Ship/Pull ACP + Lisa clock. The live file may contain one line for each checkpoint in the current digest cycle; each job replaces only its own line, and Ship 16 starts a new cycle.
+Updated by Ship/Pull ACP + Lisa clock. The live file starts with a cycle-date metadata line and may contain one line for each checkpoint in that digest cycle. Cycle dates advance monotonically: a matching wave replaces only its own result, a newer wave cycle clears older Ship/Pull results, and a delayed older-cycle run does not modify the file.
 
 Examples (replace with live values; do not invent Clear):
 
 ```text
+Cycle date: YYYY-MM-DD
 Ship 05: Clear
 Pull 07: Clear
 Ship 16: Clear

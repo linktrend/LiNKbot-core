@@ -107,7 +107,7 @@ Review memory/logs and ACP/session state for Cursor-delegated coding, local `Qwe
 
 ### Pipeline status (section D)
 
-`read` `/Users/linktrend/.openclaw-lisa/workspace/memory/pipeline-status.md` (or workspace-relative `memory/pipeline-status.md`). Include exact Ship/Pull/Staging/Main shapes only — see `agents/pipeline-status.md`. Prefer reflecting Ship 05, Pull 07, Ship 16, Pull 18 for the current cycle when present. If the file is missing, omit section D rather than inventing Clear.
+`read` `/Users/linktrend/.openclaw-lisa/workspace/memory/pipeline-status.md` (or workspace-relative `memory/pipeline-status.md`). Compare its `Cycle date` with today's Asia/Taipei date. Include Ship/Pull lines only when the dates match; never include the metadata line itself. Omit stale or undated Ship/Pull lines. Include exact Ship/Pull/Staging/Main shapes only — see `agents/pipeline-status.md`. If the file is missing, omit section D rather than inventing Clear.
 
 ### Main Approve (Mondays only — section E when needed)
 

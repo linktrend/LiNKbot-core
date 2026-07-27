@@ -24,7 +24,7 @@
 Do not create a second set of jobs when legacy names (`lisa-ship-a`, `lisa-pull-a`, `lisa-ship-b`, `lisa-pull-b`) or the prior hour names (`lisa-ship-06`, `lisa-pull-08`) already exist. Live cron jobs have stable IDs independent of their names, so migrate each existing job in place:
 
 1. Run `cron list --json` and identify the four existing Ship/Pull job IDs by name, schedule, and payload.
-2. Use `cron edit <job-id>` to update its `--name`, `--cron`, `--tz Asia/Taipei`, description, and message to the matching row below. Preserve its agent, isolated session, delivery target, and tool allowlist unless this guide explicitly changes them.
+2. Use `cron edit <job-id>` to update its `--name`, `--cron`, `--tz Asia/Taipei`, description, message, and tool allowlist to the matching requirements below. Preserve its agent, isolated session, and delivery target.
 3. If both a legacy and replacement job exist for the same wave, keep them disabled until you choose the canonical job; then enable exactly one and remove the duplicate only after verifying its ID and configuration.
 4. Re-run `cron list --json`. The A/B, Ship 06, and Pull 08 names must be absent, and exactly one enabled job must exist for each wave schedule before the migration is complete.
 
@@ -49,7 +49,7 @@ Ship/Pull jobs already set `payload.toolsAllow` including `sessions_spawn`. That
    - `sessions_spawn` (Cursor ACP spawn)
    - `sessions_yield` (wait for ACP completion announce)
    - plus the usual host ops tools (`read` / `write` / `edit` / `exec` / `process` / `cron` / session list helpers) so `lisa-safe email-send` works after each wave
-2. **Each Ship/Pull job** `payload.toolsAllow` must also include `sessions_spawn` and `sessions_yield` (digest/heartbeat jobs should **omit** these so they stay non-spawning).
+2. **Each Ship/Pull job** `payload.toolsAllow` must include `sessions_spawn`, `sessions_yield`, and `exec`. The `exec` entry is required for the `lisa-safe email-send` side effect. Digest/heartbeat jobs should **omit** the spawn/yield entries so they stay non-spawning.
 3. Do **not** change `main` agent tools for this fix.
 
 Repo SOT mirror: `linkbots/lisa/Personality files/openclaw.json`.
@@ -63,7 +63,7 @@ node /Users/linktrend/Projects/openclaw_prime/openclaw.mjs --profile lisa cron l
 
 Confirm all four jobs are present and enabled (`lisa-ship-05`, `lisa-pull-07`, `lisa-ship-16`, `lisa-pull-18`). Do not disable digest/heartbeat jobs while installing.
 
-Policy check (no Telegram): confirm live `lisa-cron.tools.allow` contains `sessions_spawn`, and each Ship/Pull job’s `toolsAllow` does too (`cron list --json`). Prefer a one-word tool-inventory agent turn over force-running Ship/Pull (force-run announces Clear/Issues to Telegram).
+Policy check (no Telegram): confirm live `lisa-cron.tools.allow` contains `sessions_spawn`, `sessions_yield`, and `exec`, and each Ship/Pull job’s `toolsAllow` contains all three (`cron list --json`). Prefer a one-word tool-inventory agent turn over force-running Ship/Pull (force-run announces Clear/Issues to Telegram).
 
 ## Backup
 

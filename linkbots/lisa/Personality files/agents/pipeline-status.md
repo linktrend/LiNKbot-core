@@ -26,7 +26,9 @@ Prefer reading:
 
 If missing, treat checkpoints as unknown and do **not** invent Clear. You may write the file when the shipper/puller cannot.
 
-The file keeps the current digest cycle: Ship 16 and Pull 18 from the prior evening, then Ship 05 and Pull 07 from the current morning. Each job replaces only its own wave line. Ship 16 starts a new cycle by removing the prior cycle's four Ship/Pull lines before writing its result. Preserve recognized Staging/Main lines until their owning checkpoint updates them.
+The file starts with `Cycle date: YYYY-MM-DD`, naming the Asia/Taipei morning-digest date for its Ship/Pull results. It then keeps Ship 16 and Pull 18 from the prior evening followed by Ship 05 and Pull 07 from that morning. Derive each wave's expected cycle from its nominal scheduled occurrence, not completion time: the next calendar date for Ship 16/Pull 18 and the same date for Ship 05/Pull 07. A missing date or a newer expected date clears all four old Ship/Pull result lines before storing the expected date and current result. A matching date replaces only that wave's line. An older expected date is a delayed prior-cycle run and must not modify the newer status file. Preserve recognized Staging/Main lines until their owning checkpoint updates them.
+
+Heartbeat and morning digest must compare the stored cycle date with the digest cycle they are reporting. Include Ship/Pull lines only when it matches; omit stale or undated Ship/Pull lines. The metadata line is for freshness checks only and is never sent to Telegram or email.
 
 ## One-line contract (hard)
 

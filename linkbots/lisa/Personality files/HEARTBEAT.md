@@ -54,7 +54,7 @@ Quiet hours (`user/schedule.md`, 23:00–07:00) suppress only non-urgent proacti
 
 **Primary clock:** Lisa Option A — crons `lisa-ship-05` / `lisa-pull-07` / `lisa-ship-16` / `lisa-pull-18` spawn Cursor ACP (see `agents/ship-pull-clock.md`). Mini must be awake. Cursor Automations are backup only.
 
-When this cycle’s wall-clock is near or after a checkpoint (05:00 Ship 05, 07:00 Pull 07, 16:00 Ship 16, 18:00 Pull 18, Tue/Fri 08:00 staging, Mon 08:00 main package), `read` `memory/pipeline-status.md` if present and include **section D** below. Full procedure: `agents/pipeline-status.md`. One line per checkpoint only — no lists/links. If the file is missing, omit section D rather than inventing Clear. Also verify the four ship/pull cron jobs are enabled when listing cron health.
+When this cycle’s wall-clock is near or after a checkpoint (05:00 Ship 05, 07:00 Pull 07, 16:00 Ship 16, 18:00 Pull 18, Tue/Fri 08:00 staging, Mon 08:00 main package), `read` `memory/pipeline-status.md` if present and include **section D** below. Full procedure: `agents/pipeline-status.md`. Compare the stored `Cycle date` with the Asia/Taipei digest cycle being reported; include Ship/Pull lines only when it matches, and never include the metadata line. One result line per checkpoint only — no lists/links. If the file is missing or its Ship/Pull results are stale/undated, omit those lines rather than inventing Clear. Also verify the four ship/pull cron jobs are enabled when listing cron health.
 
 **Do not** ask Main Approve from heartbeat — that ask lives in the **08:30 morning digest** (Telegram + email notify). Carlos still answers Approve on Telegram; main session dispatches.
 
