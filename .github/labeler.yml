@@ -349,6 +349,10 @@
   - changed-files:
       - any-glob-to-any-file:
           - "extensions/linkbrain/**"
+"extensions: linkskills":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "extensions/linkskills/**"
 "extensions: lobster":
   - changed-files:
       - any-glob-to-any-file:

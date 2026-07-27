@@ -1,17 +1,32 @@
-# linkskills (Phase 1 — fixtures + fake only)
+# linkskills (Phase 4 — plugin skeleton + structured telemetry)
 
-Private OpenClaw consumer package for LiNKskills contract fixtures and a
-process/port-isolated Skills fake used by Lisa integration tests.
+Private OpenClaw consumer package for LiNKskills: contract fixtures, process/port-isolated
+Skills fake, and a **default-disabled** plugin skeleton with durable telemetry outbox.
 
-**Not yet:** plugin adapter, managed MCP registration, Lisa config, live Platform.
+**Not yet:** managed MCP registration, Lisa config, live Platform credentials.
 
 ## Layout
 
 | Path                                               | Role                                                                                        |
 | -------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `openclaw.plugin.json` / `package.json` / `index.ts` | Default-disabled private plugin entry (`enabledByDefault: false`)                         |
+| `src/`                                             | Config, allowlisted envelopes, keyed-store namespaces, enqueue/drain runtime                |
 | `fixtures/`                                        | Sanitized contract fixtures (pending LiNKskills owner sign-off; see `fixtures/MANIFEST.md`) |
 | `fake/`                                            | Deterministic Node ESM fake (HTTP ephemeral + stdio MCP)                                    |
 | `../test/helpers/link-domain-fakes/skills-fake.ts` | Test helper for in-process and child-process isolation                                      |
+
+## Privacy invariant
+
+- **Zero conversation hooks.** The plugin never registers message/prompt/agent conversation hooks and omits `hooks.allowConversationAccess`.
+- Structured telemetry only; conversation/content/Brain/raw-tool fields are hard-rejected at enqueue.
+
+## Independent flags (§12.2)
+
+`mcpDiscoveryRead`, `governedExecution`, `telemetryEnqueue`, `telemetryDrain` — all default `false`.
+
+## Keyed-store namespaces (§11)
+
+`outbox`, `deadletter`, `cursor`, `health` — `overflowPolicy: "reject-new"`.
 
 ## Fake capabilities
 
@@ -37,11 +52,13 @@ node extensions/linkskills/fake/cli.mjs http
 node extensions/linkskills/fake/cli.mjs stdio
 
 # focused tests
-node scripts/run-vitest.mjs extensions/linkskills/fake/skills-fake.contract.test.ts
+node scripts/run-vitest.mjs extensions/linkskills/manifest.test.ts \
+  extensions/linkskills/runtime.test.ts \
+  extensions/linkskills/plugin-boundary.test.ts \
+  extensions/linkskills/fake/skills-fake.contract.test.ts
 ```
 
-## Next (Phase 4)
+## Next (Phase 5)
 
-Default-disabled `linkskills` plugin skeleton: manifest, config schema, SecretRef,
-keyed-store namespaces, structured telemetry enqueue against this fake — still no
-conversation hooks and no Lisa activation.
+Managed MCP integration and authentication: independent `mcp.servers.linkskills`, SecretRefs,
+auth matrix — still no conversation hooks and no Lisa activation until gates.
