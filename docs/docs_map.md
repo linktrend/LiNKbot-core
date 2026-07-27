@@ -85,24 +85,6 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
 - Headings:
   - H1: Active Agent Sessions
 
-## agent-sessions/active/codex-desktop-agent-20260723-1556.md
-
-- Route: /agent-sessions/active/codex-desktop-agent-20260723-1556
-- Headings:
-  - H1: Agent Session Record
-  - H2: Identity
-  - H2: Work
-  - H2: Ownership Scope
-  - H2: Coordination
-  - H2: Progress
-  - H3: 2026-07-23 15:56-15:59 Asia/Taipei — Ownership and read-only Lisa verification
-  - H3: 2026-07-23 16:10 Asia/Taipei — Cleanup and direct-assignment correction
-  - H3: 2026-07-23 16:20-16:21 Asia/Taipei — Removed rejected GitHub Copilot WIP
-  - H3: 2026-07-23 17:18-17:28 Asia/Taipei — Completed assigned Feature and Lisa tasks
-  - H3: 2026-07-23 17:40 Asia/Taipei — Promotion and cleanup authorized
-  - H3: 2026-07-27 12:56-13:06 Asia/Taipei — PR takeover and CI repair
-  - H2: Next Action
-
 ## agent-sessions/active/cursor-local-mac-mini-desktop-workspace-orchestrator-20260723-1539.md
 
 - Route: /agent-sessions/active/cursor-local-mac-mini-desktop-workspace-orchestrator-20260723-1539
@@ -133,6 +115,29 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Ownership Scope
   - H2: Coordination
   - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/codex-desktop-agent-20260723-1556.md
+
+- Route: /agent-sessions/completed/codex-desktop-agent-20260723-1556
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H3: 2026-07-23 15:56-15:59 Asia/Taipei — Ownership and read-only Lisa verification
+  - H3: 2026-07-23 16:10 Asia/Taipei — Cleanup and direct-assignment correction
+  - H3: 2026-07-23 16:20-16:21 Asia/Taipei — Removed rejected GitHub Copilot WIP
+  - H3: 2026-07-23 17:18-17:28 Asia/Taipei — Completed assigned Feature and Lisa tasks
+  - H3: 2026-07-23 17:40 Asia/Taipei — Promotion and cleanup authorized
+  - H3: 2026-07-23 17:40-18:16 Asia/Taipei — Development PR and CI remediation
+  - H3: 2026-07-23 18:21-19:11 Asia/Taipei — Approved security fixes and workflow bootstrap
+  - H3: 2026-07-23 20:00-21:00 Asia/Taipei — PR #25 merged; default-branch bootstrap identified
+  - H3: 2026-07-23 21:00-21:08 Asia/Taipei — Direct-main bootstrap PR #26
+  - H3: 2026-07-24 14:05-18:45 Asia/Taipei — End-to-end promotion completed
+  - H3: 2026-07-27 12:56-15:11 Asia/Taipei — Development PR takeover
   - H2: Next Action
 
 ## agent-sessions/completed/codex-desktop-agent-feature-20260723-1718.md
@@ -3282,6 +3287,7 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
 - Route: /current-status
 - Headings:
   - H1: Current Repository Status
+  - H2: Current Status — 2026-07-27 15:17 Asia/Taipei
   - H2: Status Metadata
   - H2: Current Stable State
   - H2: Most Recently Completed Work
@@ -4560,6 +4566,73 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Confidence
   - H2: Amendments
 
+## handoffs/2026-07-23-1911-codex-desktop-workflow-bootstrap.md
+
+- Route: /handoffs/2026-07-23-1911-codex-desktop-workflow-bootstrap
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-07-23-2100-codex-desktop-default-branch-bootstrap.md
+
+- Route: /handoffs/2026-07-23-2100-codex-desktop-default-branch-bootstrap
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created or Modified
+  - H2: Commands Run
+  - H2: Decisions and Evidence
+  - H2: Validation Results
+  - H2: Blocker and Risk
+  - H2: Remaining Work and Exact Next Action
+  - H2: Questions
+  - H2: Confidence
+  - H2: Amendment — 2026-07-23 21:08 Asia/Taipei
+
+## handoffs/2026-07-24-1845-codex-desktop-promotion-complete.md
+
+- Route: /handoffs/2026-07-24-1845-codex-desktop-promotion-complete
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+  - H3: 2026-07-24 18:59 Asia/Taipei — codex-rollout disposition
+
 ## handoffs/2026-07-24-1955-autonomous-git-ops-inheritance.md
 
 - Route: /handoffs/2026-07-24-1955-autonomous-git-ops-inheritance
@@ -4591,6 +4664,30 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Exact next action
   - H2: Confidence
   - H2: Amendment — 2026-07-27 13:45 Asia/Taipei
+
+## handoffs/2026-07-27-1517-codex-desktop-pr-merge-lisa-deploy.md
+
+- Route: /handoffs/2026-07-27-1517-codex-desktop-pr-merge-lisa-deploy
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
 
 ## handoffs/TEMPLATE.md
 
