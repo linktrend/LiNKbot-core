@@ -26,6 +26,8 @@ Prefer reading:
 
 If missing, treat checkpoints as unknown and do **not** invent Clear. You may write the file when the shipper/puller cannot.
 
+The file keeps the current digest cycle: Ship 16 and Pull 18 from the prior evening, then Ship 05 and Pull 07 from the current morning. Each job replaces only its own wave line. Ship 16 starts a new cycle by removing the prior cycle's four Ship/Pull lines before writing its result. Preserve recognized Staging/Main lines until their owning checkpoint updates them.
+
 ## One-line contract (hard)
 
 Heartbeat / digest / Ship-Pull email pipeline lines must be **exactly** one of these shapes — no lists, no links, no extra words:

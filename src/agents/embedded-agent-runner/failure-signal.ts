@@ -30,13 +30,14 @@ function resolveFailureSignalCode(
 }
 
 /** True when the denial is an opaque-shell denylist hard-deny the model can self-correct. */
-export function isRecoverableOpaqueDenylistDenial(error: string | undefined): boolean {
+function isRecoverableOpaqueDenylistDenial(error: string | undefined): boolean {
   const normalized = normalizeOptionalString(error)?.toLowerCase() ?? "";
   return (
-    normalized.includes("could not be analyzed for denylist") ||
-    normalized.includes("denylist screening") ||
-    normalized.includes("denylist_unanalyzable") ||
-    normalized.includes("denylist-unanalyzable")
+    (normalized.startsWith(
+      "system_run_denied: command could not be analyzed for denylist screening.\n",
+    ) &&
+      normalized.includes("ask=off / security=full does not auto-allow opaque shell")) ||
+    normalized === "system_run_denied: denylist screening could not analyze command"
   );
 }
 

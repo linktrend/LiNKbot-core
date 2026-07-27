@@ -61,7 +61,7 @@ Write/update:
 
 `/Users/linktrend/.openclaw-lisa/workspace/memory/pipeline-status.md`
 
-One line only for the wave, e.g. `Ship 05: Clear` or `Pull 18: Issues`. Mirror shapes in `agents/pipeline-status.md`. Prefer also keeping the personality-mirror copy in sync when editing in-repo: `memory/pipeline-status.md`.
+Keep one line per known checkpoint in the current digest cycle: prior-evening Ship 16 + Pull 18, then current-morning Ship 05 + Pull 07. Each job replaces only its own wave line. Ship 16 starts a new cycle by removing the prior cycle's four Ship/Pull lines before writing `Ship 16`. Preserve recognized Staging/Main lines until their owning checkpoint updates them. Mirror shapes in `agents/pipeline-status.md`. Prefer also keeping the personality-mirror copy in sync when editing in-repo: `memory/pipeline-status.md`.
 
 ## Cron run procedure (Lisa)
 
@@ -78,8 +78,8 @@ Emit **no** mid-run assistant text (“Starting WAVE…”, “processing repos�
    - `model: "grok-4.5[effort=high,fast=true]"`
    - `task`: the matching **Shipper** or **Puller** prompt below (fill WAVE label).
 3. Wait for ACP completion (or fail). Do **not** substitute a Lisa subagent or self-write code.
-4. On spawn failure: quote the error; set status line to `WAVE: Issues`; send Telegram + email one-liners; stop.
-5. On success: ensure status file has the one-liner Cursor wrote (or write it yourself if Cursor could not).
+4. On spawn failure: leave the exact error in the cron run trace, update the status file with `WAVE: Issues` using the cycle-preserving rules above, then send only the Telegram + email one-liners; stop. Never put the error in the final Telegram reply.
+5. On success: ensure the status file contains the current wave's one-liner using the cycle-preserving rules above (or update it yourself if Cursor could not).
 6. **Telegram:** final cron reply is **only** that one line (Clear or Issues).
 7. **Email (required side-effect, separate from heartbeat):** write the same one line to `scratch/pipeline_status_email.txt`, then run **exactly one** unpiped `exec` (no pipes, no `ls`, no multi-step plans):
    ```bash
@@ -120,11 +120,12 @@ For each repo that has local changes or unpushed commits on a work branch (prefe
 3) Open or update a PR targeting development.
 4) STOP. Do not merge. Do not self-review. Do not touch staging/main. Bugbot reviews; Integrator merges.
 
-Write exactly one line to /Users/linktrend/.openclaw-lisa/workspace/memory/pipeline-status.md:
+Update /Users/linktrend/.openclaw-lisa/workspace/memory/pipeline-status.md with exactly one line for this wave:
 WAVE: Clear
 or
 WAVE: Issues
-(no lists, no links).
+
+Preserve the other known checkpoint lines in the current digest cycle. Replace any existing line for WAVE instead of duplicating it. For Ship 16 only, first remove all prior Ship 05 / Pull 07 / Ship 16 / Pull 18 lines to start a new cycle, while preserving recognized Staging/Main lines. Do not add lists, links, or prose.
 
 Reply with that same one line only.
 ```
@@ -155,11 +156,12 @@ For each repo with a checked-out work branch (issue/*, cursor/*, rare dev/*) —
 3) Do not invent merges into staging/main.
 4) Note blockers privately; do not paste lists into the status line.
 
-Write exactly one line to /Users/linktrend/.openclaw-lisa/workspace/memory/pipeline-status.md:
+Update /Users/linktrend/.openclaw-lisa/workspace/memory/pipeline-status.md with exactly one line for this wave:
 WAVE: Clear
 or
 WAVE: Issues
-(no lists, no links).
+
+Preserve the other known checkpoint lines in the current digest cycle. Replace any existing line for WAVE instead of duplicating it. Do not add lists, links, or prose.
 
 Reply with that same one line only.
 ```

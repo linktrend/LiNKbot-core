@@ -100,6 +100,19 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H3: 2026-07-23 16:20-16:21 Asia/Taipei — Removed rejected GitHub Copilot WIP
   - H3: 2026-07-23 17:18-17:28 Asia/Taipei — Completed assigned Feature and Lisa tasks
   - H3: 2026-07-23 17:40 Asia/Taipei — Promotion and cleanup authorized
+  - H3: 2026-07-27 12:56-13:06 Asia/Taipei — PR takeover and CI repair
+  - H2: Next Action
+
+## agent-sessions/active/cursor-local-mac-mini-desktop-workspace-lisa-20260725-2320.md
+
+- Route: /agent-sessions/active/cursor-local-mac-mini-desktop-workspace-lisa-20260725-2320
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
   - H2: Next Action
 
 ## agent-sessions/active/cursor-local-mac-mini-desktop-workspace-orchestrator-20260723-1539.md
@@ -115,6 +128,18 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H3: 2026-07-23 15:39 Asia/Taipei — Orchestrator onboarding
   - H3: 2026-07-23 16:05 Asia/Taipei — Re-read Codex primary Orchestrator state
   - H2: Next Action
+
+## agent-sessions/active/cursor-local-mac-mini-lisa-telegram-silence-20260726-0915.md
+
+- Route: /agent-sessions/active/cursor-local-mac-mini-lisa-telegram-silence-20260726-0915
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Notes
+  - H2: Recovery note — 2026-07-26 09:37 Asia/Taipei
 
 ## agent-sessions/completed/README.md
 
@@ -160,6 +185,29 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Progress
   - H3: 2026-07-23 17:22 Asia/Taipei — Architecture verification
   - H3: 2026-07-23 17:28 Asia/Taipei — Completed
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-agent-20260724-1951-autonomous-git-ops.md
+
+- Route: /agent-sessions/completed/cursor-local-agent-20260724-1951-autonomous-git-ops
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Decisions
+
+## agent-sessions/completed/cursor-local-mac-mini-lisa-digest-cron-format-20260727-1055.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-lisa-digest-cron-format-20260727-1055
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
   - H2: Next Action
 
 ## announcements/bluebubbles-imessage.md
@@ -4511,6 +4559,37 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Questions for the Orchestrator or Next Agent
   - H2: Confidence
   - H2: Amendments
+
+## handoffs/2026-07-24-1955-autonomous-git-ops-inheritance.md
+
+- Route: /handoffs/2026-07-24-1955-autonomous-git-ops-inheritance
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Created (IDE Development)
+  - H2: Files Modified (IDE Development)
+  - H2: Files Modified (consumers — workflow sync only)
+  - H2: Files Created/Modified (openclawprime / Lisa)
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Remaining work (Principal / next agent)
+  - H2: Confidence
+
+## handoffs/2026-07-27-1055-cursor-local-lisa-digest-cron-format.md
+
+- Route: /handoffs/2026-07-27-1055-cursor-local-lisa-digest-cron-format
+- Headings:
+  - H1: Handoff — Lisa digest cron failure + Telegram format flip
+  - H2: Summary
+  - H2: Files inspected
+  - H2: Files created/modified
+  - H2: Commands / validation
+  - H2: Decisions
+  - H2: Problems / risks
+  - H2: Remaining work
+  - H2: Exact next action
+  - H2: Confidence
 
 ## handoffs/TEMPLATE.md
 
