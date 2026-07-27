@@ -1,0 +1,56 @@
+{
+  "description": "Negative identity claim cases that must fail verification.",
+  "cases": [
+    {
+      "name": "missing_actor_id",
+      "claim": {
+        "actor_id": "",
+        "actor_kind": "openclaw_agent",
+        "org_id": "org:fixture-studio-01",
+        "scopes": [
+          "skills:read",
+          "skills:write"
+        ],
+        "audience": "linkskills",
+        "exp": 1893456000,
+        "credential_id": "cred:fixture-skills-01",
+        "runtime_binding_id": "binding:fixture-lisa-01"
+      }
+    },
+    {
+      "name": "missing_org_id",
+      "claim": {
+        "actor_id": "actor:fixture-lisa-01",
+        "actor_kind": "openclaw_agent",
+        "org_id": "",
+        "scopes": [
+          "skills:read",
+          "skills:write"
+        ],
+        "audience": "linkskills",
+        "exp": 1893456000,
+        "credential_id": "cred:fixture-skills-01",
+        "runtime_binding_id": "binding:fixture-lisa-01"
+      }
+    },
+    {
+      "name": "spoofed_actor_in_body",
+      "claim": {
+        "actor_id": "actor:fixture-lisa-01",
+        "actor_kind": "openclaw_agent",
+        "org_id": "org:fixture-studio-01",
+        "scopes": [
+          "skills:read",
+          "skills:write"
+        ],
+        "audience": "linkskills",
+        "exp": 1893456000,
+        "credential_id": "cred:fixture-skills-01",
+        "runtime_binding_id": "binding:fixture-lisa-01"
+      },
+      "request_body": {
+        "actor_id": "actor:attacker"
+      }
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "description": "Valid Lisa Skills actor claim (sanitized fixture).",
+  "claim": {
+    "actor_id": "actor:fixture-lisa-01",
+    "actor_kind": "openclaw_agent",
+    "org_id": "org:fixture-studio-01",
+    "scopes": [
+      "skills:read",
+      "skills:write"
+    ],
+    "audience": "linkskills",
+    "exp": 1893456000,
+    "credential_id": "cred:fixture-skills-01",
+    "runtime_binding_id": "binding:fixture-lisa-01"
+  }
+}

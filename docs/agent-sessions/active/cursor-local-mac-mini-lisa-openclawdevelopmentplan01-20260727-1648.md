@@ -14,7 +14,7 @@
 | Coordination home | openclaw_prime                                                     |
 | Session ID        | cursor-local-mac-mini-lisa-openclawdevelopmentplan01-20260727-1648 |
 | Started           | 2026-07-27 16:48 Asia/Taipei                                       |
-| Last updated      | 2026-07-27 16:48 Asia/Taipei                                       |
+| Last updated      | 2026-07-27 18:53 Asia/Taipei                                       |
 
 ## Work
 
@@ -40,14 +40,17 @@
 - Overlap risk: medium — preserve stash wip-auth-unrelated; do not touch development worktree
 - Pre-existing changes to preserve: stash@{0}; other worktrees; live Lisa profile
 - Relayed or directly verified: plan SHA-256 verified `17203ee586a3fb2b1281bcddd8b17ae350075ebce537689f3c4bfcbbd14914f7`
+- Subagent model policy: all new Task subagents use `cursor-grok-4.5-high` (Principal 2026-07-27)
 
 ## Progress
 
-- 2026-07-27 16:48 Asia/Taipei — agentcomply onto `issue/ocp-openclawdevelopmentplan01` from `origin/development`; restored approved plan + execution prompt from planning branch; hash OK.
+- 2026-07-27 16:48 Asia/Taipei — agentcomply onto `issue/ocp-openclawdevelopmentplan01`; plan + prompt restored; hash OK.
+- 2026-07-27 18:44 Asia/Taipei — Phase 0 freeze packet complete.
+- 2026-07-27 18:53 Asia/Taipei — Phase 1 Brain/Skills fixtures+fakes landed via Grok 4.5 High subagents; 19 focused tests passed; auth matrix + outbox findings recorded; domain fixture sign-off and Platform auth remain blocked (continue fake-only). Starting Phase 2 Brain skeleton.
 
 ## Next Action
 
-- Exact next action: Phase 0 freeze (ownership, snapshots, hashes) then Phase 1 contract/fake freeze
+- Exact next action: Phase 2 default-disabled linkbrain plugin skeleton + keyed-store outbox against Brain fake
 - Owner: this session
-- Questions for Carlos: none yet
+- Questions for Carlos: optional — route Brain/Skills fixture MANIFEST sign-off (recommended Option 2 continues without it)
 - Questions for the Orchestrator or next agent: none yet
