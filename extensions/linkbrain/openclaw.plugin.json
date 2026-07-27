@@ -1,0 +1,143 @@
+{
+  "id": "linkbrain",
+  "name": "LiNKbrain",
+  "description": "Private Brain adapter for Lisa: durable capture outbox and coordination against Brain Gateway contracts. Default-disabled; fake-only until activation gates.",
+  "enabledByDefault": false,
+  "activation": {
+    "onStartup": false
+  },
+  "configContracts": {
+    "secretInputs": {
+      "paths": [
+        {
+          "path": "ingestionCredential",
+          "expected": "string",
+          "ownerKind": "plugin"
+        }
+      ]
+    }
+  },
+  "uiHints": {
+    "mcpRead": {
+      "label": "Brain MCP Read",
+      "help": "When false, no Brain read tools are exposed; native OpenClaw continues."
+    },
+    "captureEnqueue": {
+      "label": "Capture Enqueue",
+      "help": "When false, no new capture records are accepted; existing outbox is retained."
+    },
+    "captureDrain": {
+      "label": "Capture Drain",
+      "help": "When false, stop Brain delivery; local durable queue is retained."
+    },
+    "coordinationWrites": {
+      "label": "Coordination Writes",
+      "help": "When false, block Brain coordination mutations only."
+    },
+    "ingestionCredential": {
+      "label": "Brain Ingestion Credential",
+      "help": "SecretRef or string for the Brain-only ingestion credential. Never paste live secrets into source.",
+      "sensitive": true
+    },
+    "redactionPolicyVersion": {
+      "label": "Redaction Policy Version",
+      "help": "Allowlist redaction policy version applied to internal envelopes before remote writes."
+    },
+    "batchMaxEvents": {
+      "label": "Batch Max Events",
+      "help": "Upper bound on events per capture batch."
+    },
+    "batchMaxBytes": {
+      "label": "Batch Max Bytes",
+      "help": "Upper bound on serialized capture batch size."
+    },
+    "outboxMaxEntries": {
+      "label": "Outbox Max Entries",
+      "help": "Per-namespace keyed-store capacity with reject-new overflow."
+    }
+  },
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "$defs": {
+      "secretRef": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "source": {
+            "type": "string",
+            "enum": ["env", "file", "exec"]
+          },
+          "provider": { "type": "string" },
+          "id": { "type": "string" }
+        },
+        "required": ["source", "provider", "id"]
+      },
+      "secretInput": {
+        "anyOf": [
+          { "type": "string", "minLength": 1 },
+          { "$ref": "#/$defs/secretRef" }
+        ]
+      }
+    },
+    "properties": {
+      "mcpRead": {
+        "type": "boolean",
+        "default": false
+      },
+      "captureEnqueue": {
+        "type": "boolean",
+        "default": false
+      },
+      "captureDrain": {
+        "type": "boolean",
+        "default": false
+      },
+      "coordinationWrites": {
+        "type": "boolean",
+        "default": false
+      },
+      "ingestionEndpoint": {
+        "type": "string",
+        "description": "Optional Brain ingestion endpoint distinct from managed MCP. Fake-only until gates."
+      },
+      "ingestionCredential": {
+        "$ref": "#/$defs/secretInput"
+      },
+      "redactionPolicyVersion": {
+        "type": "string",
+        "default": "brain.redaction.v0"
+      },
+      "batchMaxEvents": {
+        "type": "integer",
+        "minimum": 1,
+        "default": 32
+      },
+      "batchMaxBytes": {
+        "type": "integer",
+        "minimum": 1024,
+        "default": 49152
+      },
+      "flushIntervalMs": {
+        "type": "integer",
+        "minimum": 100,
+        "default": 5000
+      },
+      "outboxMaxEntries": {
+        "type": "integer",
+        "minimum": 1,
+        "default": 1000
+      },
+      "outboxAgeAlarmMs": {
+        "type": "integer",
+        "minimum": 1000,
+        "default": 3600000
+      },
+      "environment": {
+        "type": "string",
+        "enum": ["test", "stage", "production"],
+        "default": "test"
+      }
+    }
+  }
+}

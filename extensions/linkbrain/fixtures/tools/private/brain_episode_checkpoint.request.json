@@ -1,0 +1,9 @@
+{
+  "tool": "brain_episode_checkpoint",
+  "authToken": "fake-valid-token",
+  "arguments": {
+    "idempotencyKey": "ep:test:001",
+    "episodeId": "ep_test_001",
+    "summary": "Episode checkpoint summary."
+  }
+}

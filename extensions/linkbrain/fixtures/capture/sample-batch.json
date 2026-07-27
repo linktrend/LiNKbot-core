@@ -1,0 +1,28 @@
+{
+  "description": "Redacted capture batch accepted by Brain fake",
+  "batch": {
+    "batchId": "batch_test_sample",
+    "streamId": "stream_test_lisa",
+    "actorId": "actor_test_lisa",
+    "fromSequence": 10,
+    "toSequence": 12,
+    "contentHash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "events": [
+      {
+        "sequence": 10,
+        "role": "user",
+        "text": "[redacted user utterance]"
+      },
+      {
+        "sequence": 11,
+        "role": "assistant",
+        "text": "[redacted assistant reply]"
+      },
+      {
+        "sequence": 12,
+        "role": "tool_summary",
+        "text": "Called brain_search; returned 1 hit."
+      }
+    ]
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "description": "Sanitized auth outcome fixture: expired",
+  "credential": {
+    "type": "bearer",
+    "value": "fake-expired-token",
+    "audience": "linkbrain.gateway.test",
+    "scopes": [
+      "brain:read"
+    ],
+    "expiresAt": "2026-01-01T00:00:00.000Z",
+    "revokedAt": null
+  },
+  "expectedOutcome": "expired",
+  "error": {
+    "code": "authentication",
+    "retryable": false,
+    "safeMessage": "Credential expired."
+  }
+}

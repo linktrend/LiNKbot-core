@@ -1,0 +1,6 @@
+{
+  "code": "throttled",
+  "retryable": true,
+  "retryAfterMs": 1000,
+  "safeMessage": "Brain fake throttled; respect retryAfterMs."
+}

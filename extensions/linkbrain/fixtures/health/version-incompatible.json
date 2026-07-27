@@ -1,0 +1,13 @@
+{
+  "requested": "brain.contract.v999",
+  "selected": null,
+  "supported": [
+    "brain.contract.v0.draft"
+  ],
+  "compatible": false,
+  "error": {
+    "code": "version_mismatch",
+    "retryable": false,
+    "safeMessage": "Unsupported Brain contract version."
+  }
+}

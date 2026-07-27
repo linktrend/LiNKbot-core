@@ -1,0 +1,6 @@
+{
+  "code": "retryable",
+  "retryable": true,
+  "retryAfterMs": 250,
+  "safeMessage": "Transient Brain fake failure; retry with backoff."
+}

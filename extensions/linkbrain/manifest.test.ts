@@ -1,0 +1,90 @@
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { describe, expect, it } from "vitest";
+import { DEFAULT_LINKBRAIN_CONFIG, parseLinkbrainConfig } from "./src/config.js";
+
+const root = path.dirname(fileURLToPath(import.meta.url));
+
+describe("linkbrain manifest/config", () => {
+  it("declares default-disabled private plugin metadata", () => {
+    const manifest = JSON.parse(
+      fs.readFileSync(path.join(root, "openclaw.plugin.json"), "utf8"),
+    ) as {
+      id: string;
+      enabledByDefault: boolean;
+      activation: { onStartup: boolean };
+      configSchema: { properties: Record<string, unknown> };
+    };
+    expect(manifest.id).toBe("linkbrain");
+    expect(manifest.enabledByDefault).toBe(false);
+    expect(manifest.activation.onStartup).toBe(false);
+    expect(manifest.configSchema.properties).toMatchObject({
+      mcpRead: expect.any(Object),
+      captureEnqueue: expect.any(Object),
+      captureDrain: expect.any(Object),
+      coordinationWrites: expect.any(Object),
+      redactionPolicyVersion: expect.any(Object),
+      batchMaxEvents: expect.any(Object),
+      batchMaxBytes: expect.any(Object),
+      outboxMaxEntries: expect.any(Object),
+    });
+  });
+
+  it("package.json points at the local entry and stays private", () => {
+    const pkg = JSON.parse(fs.readFileSync(path.join(root, "package.json"), "utf8")) as {
+      name: string;
+      private: boolean;
+      openclaw: { extensions: string[] };
+    };
+    expect(pkg.name).toBe("@openclaw/linkbrain");
+    expect(pkg.private).toBe(true);
+    expect(pkg.openclaw.extensions).toEqual(["./index.ts"]);
+  });
+
+  it("parses independent Brain flags and SecretRef credential", () => {
+    const config = parseLinkbrainConfig({
+      mcpRead: true,
+      captureEnqueue: true,
+      captureDrain: false,
+      coordinationWrites: true,
+      ingestionCredential: {
+        source: "env",
+        provider: "default",
+        id: "LINKTREND_BRAIN_TEST_INGESTION_TOKEN",
+      },
+      redactionPolicyVersion: "brain.redaction.v0",
+      batchMaxEvents: 8,
+      environment: "stage",
+    });
+    expect(config.mcpRead).toBe(true);
+    expect(config.captureEnqueue).toBe(true);
+    expect(config.captureDrain).toBe(false);
+    expect(config.coordinationWrites).toBe(true);
+    expect(config.ingestionCredential).toEqual({
+      source: "env",
+      provider: "default",
+      id: "LINKTREND_BRAIN_TEST_INGESTION_TOKEN",
+    });
+    expect(config.batchMaxEvents).toBe(8);
+    expect(config.environment).toBe("stage");
+  });
+
+  it("defaults all write flags off", () => {
+    expect(parseLinkbrainConfig({})).toMatchObject({
+      mcpRead: false,
+      captureEnqueue: false,
+      captureDrain: false,
+      coordinationWrites: false,
+      redactionPolicyVersion: DEFAULT_LINKBRAIN_CONFIG.redactionPolicyVersion,
+    });
+  });
+
+  it("rejects malformed SecretRef credentials", () => {
+    expect(() =>
+      parseLinkbrainConfig({
+        ingestionCredential: { source: "env", provider: "default" },
+      }),
+    ).toThrow(/SecretRef/);
+  });
+});

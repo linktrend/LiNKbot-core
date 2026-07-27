@@ -1,0 +1,14 @@
+{
+  "description": "Sanitized negative identity claim (missing org scope / wrong actor kind)",
+  "claim": {
+    "platformActorId": "actor_test_unknown",
+    "actorKind": "service",
+    "actorBindingId": "binding_test_unknown",
+    "orgScopes": [],
+    "audience": "linkbrain.gateway.test",
+    "scopes": [],
+    "issuedAt": "2026-07-27T09:00:00.000Z",
+    "expiresAt": "2026-07-28T09:00:00.000Z"
+  },
+  "expectedOutcome": "authentication_failed"
+}

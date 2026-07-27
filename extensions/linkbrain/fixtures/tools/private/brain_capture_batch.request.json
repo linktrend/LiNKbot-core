@@ -1,0 +1,26 @@
+{
+  "tool": "brain_capture_batch",
+  "authToken": "fake-valid-token",
+  "arguments": {
+    "idempotencyKey": "cap:test:001",
+    "batch": {
+      "batchId": "batch_test_001",
+      "streamId": "stream_test_lisa",
+      "fromSequence": 1,
+      "toSequence": 2,
+      "contentHash": "sha256:deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+      "events": [
+        {
+          "sequence": 1,
+          "role": "user",
+          "text": "Hello Lisa test."
+        },
+        {
+          "sequence": 2,
+          "role": "assistant",
+          "text": "Acknowledged."
+        }
+      ]
+    }
+  }
+}

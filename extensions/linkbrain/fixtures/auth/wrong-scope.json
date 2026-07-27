@@ -1,0 +1,19 @@
+{
+  "description": "Sanitized auth outcome fixture: wrong-scope",
+  "credential": {
+    "type": "bearer",
+    "value": "fake-wrong-scope-token",
+    "audience": "linkbrain.gateway.test",
+    "scopes": [
+      "skills:run"
+    ],
+    "expiresAt": "2026-07-28T09:00:00.000Z",
+    "revokedAt": null
+  },
+  "expectedOutcome": "wrong_scope",
+  "error": {
+    "code": "authentication",
+    "retryable": false,
+    "safeMessage": "Credential wrong scope."
+  }
+}

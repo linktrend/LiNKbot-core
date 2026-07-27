@@ -1,0 +1,19 @@
+{
+  "description": "Sanitized auth outcome fixture: revoked",
+  "credential": {
+    "type": "bearer",
+    "value": "fake-revoked-token",
+    "audience": "linkbrain.gateway.test",
+    "scopes": [
+      "brain:read"
+    ],
+    "expiresAt": "2026-07-28T09:00:00.000Z",
+    "revokedAt": "2026-07-26T12:00:00.000Z"
+  },
+  "expectedOutcome": "revoked",
+  "error": {
+    "code": "authentication",
+    "retryable": false,
+    "safeMessage": "Credential revoked."
+  }
+}

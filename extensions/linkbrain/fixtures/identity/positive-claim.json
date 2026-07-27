@@ -1,0 +1,31 @@
+{
+  "description": "Sanitized positive Platform identity claim for Lisa test actor",
+  "claim": {
+    "platformActorId": "actor_test_lisa",
+    "actorKind": "agent",
+    "actorBindingId": "binding_test_lisa_openclaw",
+    "orgScopes": [
+      {
+        "orgId": "org_test_linktrend",
+        "roles": [
+          "agent"
+        ],
+        "permissions": [
+          "brain:read",
+          "brain:write",
+          "brain:capture",
+          "brain:coordinate"
+        ]
+      }
+    ],
+    "audience": "linkbrain.gateway.test",
+    "scopes": [
+      "brain:read",
+      "brain:write",
+      "brain:capture",
+      "brain:coordinate"
+    ],
+    "issuedAt": "2026-07-27T09:00:00.000Z",
+    "expiresAt": "2026-07-28T09:00:00.000Z"
+  }
+}

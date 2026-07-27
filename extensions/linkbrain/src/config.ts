@@ -1,0 +1,148 @@
+/** Linkbrain plugin config (§12.1 / §12.2). */
+
+export type LinkbrainSecretRef = {
+  source: "env" | "file" | "exec";
+  provider: string;
+  id: string;
+};
+
+export type LinkbrainSecretInput = string | LinkbrainSecretRef;
+
+export type LinkbrainEnvironment = "test" | "stage" | "production";
+
+export type LinkbrainConfig = {
+  mcpRead: boolean;
+  captureEnqueue: boolean;
+  captureDrain: boolean;
+  coordinationWrites: boolean;
+  ingestionEndpoint?: string;
+  ingestionCredential?: LinkbrainSecretInput;
+  redactionPolicyVersion: string;
+  batchMaxEvents: number;
+  batchMaxBytes: number;
+  flushIntervalMs: number;
+  outboxMaxEntries: number;
+  outboxAgeAlarmMs: number;
+  environment: LinkbrainEnvironment;
+};
+
+export const DEFAULT_LINKBRAIN_CONFIG: LinkbrainConfig = Object.freeze({
+  mcpRead: false,
+  captureEnqueue: false,
+  captureDrain: false,
+  coordinationWrites: false,
+  redactionPolicyVersion: "brain.redaction.v0",
+  batchMaxEvents: 32,
+  batchMaxBytes: 49_152,
+  flushIntervalMs: 5_000,
+  outboxMaxEntries: 1_000,
+  outboxAgeAlarmMs: 3_600_000,
+  environment: "test",
+});
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function readBoolean(value: unknown, fallback: boolean): boolean {
+  return typeof value === "boolean" ? value : fallback;
+}
+
+function readPositiveInt(value: unknown, fallback: number, minimum: number): number {
+  if (typeof value !== "number" || !Number.isInteger(value) || value < minimum) {
+    return fallback;
+  }
+  return value;
+}
+
+function parseSecretInput(value: unknown): LinkbrainSecretInput | undefined {
+  if (value === undefined) {
+    return undefined;
+  }
+  if (typeof value === "string" && value.length > 0) {
+    return value;
+  }
+  if (!isRecord(value)) {
+    throw new Error("linkbrain: ingestionCredential must be a string or SecretRef object");
+  }
+  const source = value.source;
+  const provider = value.provider;
+  const id = value.id;
+  if (
+    (source !== "env" && source !== "file" && source !== "exec") ||
+    typeof provider !== "string" ||
+    provider.length === 0 ||
+    typeof id !== "string" ||
+    id.length === 0
+  ) {
+    throw new Error(
+      'linkbrain: ingestionCredential SecretRef requires source ("env"|"file"|"exec"), provider, and id',
+    );
+  }
+  if (Object.keys(value).some((key) => key !== "source" && key !== "provider" && key !== "id")) {
+    throw new Error("linkbrain: ingestionCredential SecretRef has unexpected properties");
+  }
+  return { source, provider, id };
+}
+
+function parseEnvironment(value: unknown): LinkbrainEnvironment {
+  if (value === "test" || value === "stage" || value === "production") {
+    return value;
+  }
+  return DEFAULT_LINKBRAIN_CONFIG.environment;
+}
+
+/**
+ * Validates and normalizes plugin config. Independent Brain flags default off
+ * so an enabled plugin still does no remote work until operators opt in.
+ */
+export function parseLinkbrainConfig(value: unknown): LinkbrainConfig {
+  const raw = isRecord(value) ? value : {};
+  const ingestionEndpoint =
+    typeof raw.ingestionEndpoint === "string" && raw.ingestionEndpoint.length > 0
+      ? raw.ingestionEndpoint
+      : undefined;
+  const redactionPolicyVersion =
+    typeof raw.redactionPolicyVersion === "string" && raw.redactionPolicyVersion.length > 0
+      ? raw.redactionPolicyVersion
+      : DEFAULT_LINKBRAIN_CONFIG.redactionPolicyVersion;
+
+  return {
+    mcpRead: readBoolean(raw.mcpRead, DEFAULT_LINKBRAIN_CONFIG.mcpRead),
+    captureEnqueue: readBoolean(raw.captureEnqueue, DEFAULT_LINKBRAIN_CONFIG.captureEnqueue),
+    captureDrain: readBoolean(raw.captureDrain, DEFAULT_LINKBRAIN_CONFIG.captureDrain),
+    coordinationWrites: readBoolean(
+      raw.coordinationWrites,
+      DEFAULT_LINKBRAIN_CONFIG.coordinationWrites,
+    ),
+    ...(ingestionEndpoint ? { ingestionEndpoint } : {}),
+    ...(raw.ingestionCredential !== undefined
+      ? { ingestionCredential: parseSecretInput(raw.ingestionCredential) }
+      : {}),
+    redactionPolicyVersion,
+    batchMaxEvents: readPositiveInt(raw.batchMaxEvents, DEFAULT_LINKBRAIN_CONFIG.batchMaxEvents, 1),
+    batchMaxBytes: readPositiveInt(raw.batchMaxBytes, DEFAULT_LINKBRAIN_CONFIG.batchMaxBytes, 1024),
+    flushIntervalMs: readPositiveInt(
+      raw.flushIntervalMs,
+      DEFAULT_LINKBRAIN_CONFIG.flushIntervalMs,
+      100,
+    ),
+    outboxMaxEntries: readPositiveInt(
+      raw.outboxMaxEntries,
+      DEFAULT_LINKBRAIN_CONFIG.outboxMaxEntries,
+      1,
+    ),
+    outboxAgeAlarmMs: readPositiveInt(
+      raw.outboxAgeAlarmMs,
+      DEFAULT_LINKBRAIN_CONFIG.outboxAgeAlarmMs,
+      1000,
+    ),
+    environment: parseEnvironment(raw.environment),
+  };
+}
+
+export const linkbrainConfigSchema = {
+  parse(value: unknown): LinkbrainConfig {
+    return parseLinkbrainConfig(value);
+  },
+};

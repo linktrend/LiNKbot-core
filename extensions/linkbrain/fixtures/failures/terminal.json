@@ -1,0 +1,5 @@
+{
+  "code": "terminal",
+  "retryable": false,
+  "safeMessage": "Terminal Brain fake failure; do not retry."
+}
