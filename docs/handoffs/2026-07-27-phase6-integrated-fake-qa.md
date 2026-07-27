@@ -14,9 +14,9 @@
 | Starting branch  | `issue/ocp-openclawdevelopmentplan01`                              |
 | Ending branch    | `issue/ocp-openclawdevelopmentplan01`                              |
 | Starting commit  | `5dcd80bfe7c`                                                      |
-| Ending commit    | (set after commit)                                                 |
+| Ending commit    | `b8d33bf3c60` (Phase 6 paths landed in same push as Phase 5)       |
 | Starting status  | clean for Phase 6 scope                                            |
-| Ending status    | Phase 6 committed; Phase 5 WIP left unstaged                       |
+| Ending status    | complete; working tree clean on branch                             |
 
 ## Summary
 
