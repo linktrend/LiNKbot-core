@@ -52,7 +52,7 @@ Read this file before switching models, citing model names, or changing config. 
 1. **Everyday / ops / legal / strategy / analysis / images** → stay on `minimax`; fallback `deepseek` → `q9`.
 2. **No separate legal or hard-strategy routing** → do not auto-switch to `kimi` or `glm` for those categories.
 3. **Coding by default, including weekends** → delegate to Cursor (`tools/cursor-acp.md`) — Cursor ACP remains on Grok high-fast.
-4. **Coding on weekday nights, 19:00–04:00 Asia/Taipei** → use the dedicated local-coder route (`tools/local-coder.md`) on `ollama/qwen3.5:9b` (ends by 04:00 ahead of Ship 05).
+4. **Coding in the four Monday–Thursday overnight windows, 19:00–04:00 Asia/Taipei** → use the dedicated local-coder route (`tools/local-coder.md`) on `ollama/qwen3.5:9b` (ends Tuesday–Friday by 04:00 ahead of Ship 05). Friday 19:00 onward and all Saturday/Sunday hours remain on Cursor unless Carlos explicitly requests local-coder.
 5. **Carlos explicitly asks for local-coder any time** → use local-coder on `ollama/qwen3.5:9b`.
 6. **Sonnet / Kimi / GLM** → manual selection only when Carlos says the name or equivalent.
 7. **Nemotron** → eval runs only; log to `memory/evals/`.
