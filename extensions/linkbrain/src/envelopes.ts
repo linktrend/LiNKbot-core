@@ -27,6 +27,16 @@ export const LINKBRAIN_PROHIBITED_FIELDS = Object.freeze([
   "skillsRunId",
   "skills_run_id",
   "telemetry",
+  // Attachments / prompt bodies excluded even when nested under capture payloads.
+  "attachment",
+  "attachments",
+  "media",
+  "mediaUrl",
+  "mediaUrls",
+  "prompt",
+  "promptBody",
+  "systemPrompt",
+  "developerPrompt",
 ]);
 
 export type BrainCaptureEvent = {

@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
+import { LINKBRAIN_CONVERSATION_HOOKS, LINKBRAIN_REGISTERED_HOOKS } from "./src/lifecycle.js";
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 
@@ -19,6 +20,11 @@ describe("linkbrain plugin boundary", () => {
       "src/namespaces.ts",
       "src/runtime.ts",
       "src/stores.ts",
+      "src/capture.ts",
+      "src/lifecycle.ts",
+      "src/opaque.ts",
+      "src/sanitize.ts",
+      "src/tools.ts",
     ];
     for (const relative of files) {
       const source = fs.readFileSync(path.join(root, relative), "utf8");
@@ -28,13 +34,14 @@ describe("linkbrain plugin boundary", () => {
     }
   });
 
-  it("does not register conversation hooks in Phase 2 skeleton", () => {
+  it("registers §10.1 lifecycle hooks and documents conversation access", () => {
     const index = fs.readFileSync(path.join(root, "index.ts"), "utf8");
     expect(index).toContain("allowConversationAccess");
-    expect(index).not.toMatch(/api\.on\(\s*["']message_/);
+    for (const hook of LINKBRAIN_REGISTERED_HOOKS) {
+      expect(index, hook).toContain(`"${hook}"`);
+    }
+    expect(LINKBRAIN_CONVERSATION_HOOKS).toContain("agent_end");
     expect(index).not.toMatch(/api\.on\(\s*["']before_prompt/);
-    expect(index).not.toMatch(/api\.on\(\s*["']agent_end/);
-    expect(index).toMatch(/gateway_start/);
-    expect(index).toMatch(/gateway_stop/);
+    expect(index).not.toMatch(/api\.on\(\s*["']llm_input/);
   });
 });

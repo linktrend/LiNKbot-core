@@ -16,6 +16,7 @@ import {
 } from "./envelopes.js";
 import { LINKBRAIN_NAMESPACES } from "./namespaces.js";
 import type { LinkbrainStores } from "./stores.js";
+import { isAllowedBrainWriteTool } from "./tools.js";
 
 export type LinkbrainTransportResult = {
   ok: boolean;
@@ -500,6 +501,14 @@ export function createBrainFakeTransport(fake: {
           retryable: true,
           errorCode: "aborted",
           safeMessage: "aborted",
+        };
+      }
+      if (!isAllowedBrainWriteTool(params.toolName)) {
+        return {
+          ok: false,
+          terminal: true,
+          errorCode: "tool_not_allowlisted",
+          safeMessage: `tool "${params.toolName}" is not on the Brain write allowlist`,
         };
       }
       const outcome = fake.callTool(params.toolName, params.arguments, {

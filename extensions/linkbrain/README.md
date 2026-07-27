@@ -1,4 +1,4 @@
-# linkbrain (Phase 2 — default-disabled plugin skeleton)
+# linkbrain (Phase 3 — lifecycle capture, default-disabled)
 
 Private bundled OpenClaw Brain adapter. **Default-disabled.** Fake-only until activation gates (fixture owner sign-off, Platform auth, Principal retention).
 
@@ -11,21 +11,50 @@ This directory does **not** talk to live LiNKbrain, Platform, or Lisa profile/cr
 | `fixtures/`                                          | Sanitized JSON contracts (Phase 1; draft pending Brain owner sign-off)            |
 | `fake/`                                              | Deterministic Node ESM fake: stdio MCP or localhost HTTP                          |
 | `openclaw.plugin.json` / `package.json` / `index.ts` | Default-disabled plugin packaging (`enabledByDefault: false`, `onStartup: false`) |
-| `src/`                                               | Keyed-store outbox runtime, allowlist redaction, diagnostics                      |
+| `src/`                                               | Outbox runtime, capture batching, §10.1 lifecycle mapping, allowlist redaction    |
 
-## Plugin behavior (Phase 2)
+## Plugin behavior (Phase 3)
 
 - Opens only linkbrain namespaces: `outbox`, `deadletter`, `cursor`, `health`, `capture-buffer`
 - `overflowPolicy: "reject-new"`
 - Independent flags (§12.2): `mcpRead`, `captureEnqueue`, `captureDrain`, `coordinationWrites` (all default **false**)
-- Enqueue / lease / drain / retry / dead-letter / health / shutdown against the Brain **fake**
-- Diagnostics expose capacity and oldest age **without payloads**
+- Registers plan §10.1 hooks: `session_start`, `message_received`, `agent_end`, `before_compaction`, `after_compaction`, `before_reset`, `session_end`, `gateway_start`, `gateway_stop`, `subagent_spawned`, `subagent_ended`
+- Bounded local capture buffer; flush on batch limits and compaction/reset/end/gateway_stop
+- Per-operation `AbortController` bounds independent of host hook timeouts
+- Opaque actor/binding/session/task/run/subagent correlations only
+- Brain MCP write allowlist: `brain_capture_batch`, `brain_checkpoint_write`, `brain_task_update`
+- Brain failures degrade honestly — hooks never throw uncaught; native OpenClaw continues
 
-## Privacy
+## Conversation access (required for Brain hook features)
 
-- Typed internal envelopes with allowlist redaction (prohibited fields stripped)
-- Conversation-bearing hooks are **not** registered in Phase 2
-- When Phase 3 enables those hooks, operators must set `plugins.entries.linkbrain.hooks.allowConversationAccess=true`
+`agent_end` is conversation-bearing. Operators enabling Brain capture/coordination must set:
+
+```json
+{
+  "plugins": {
+    "entries": {
+      "linkbrain": {
+        "enabled": true,
+        "hooks": {
+          "allowConversationAccess": true
+        }
+      }
+    }
+  }
+}
+```
+
+Constant: `plugins.entries.linkbrain.hooks.allowConversationAccess=true`.
+
+## Privacy exclusions
+
+Never retained in envelopes or remote writes:
+
+- chain-of-thought / reasoning
+- system/developer prompt bodies
+- secrets, tokens, API keys
+- raw/unbounded tool output
+- attachments / media / binary
 
 ## Fake usage
 
@@ -44,4 +73,4 @@ node scripts/run-vitest.mjs extensions/linkbrain/**/*.test.ts
 
 ## Not live proof
 
-Do not enable against Lisa or a live Brain endpoint from this skeleton. Phase 3 adds lifecycle capture mapping; Phase 5 adds managed MCP + auth.
+Do not enable against Lisa or a live Brain endpoint from this plugin. Phase 5 adds managed MCP + auth. Phase 4 is Skills (separate plugin; no conversation hooks).

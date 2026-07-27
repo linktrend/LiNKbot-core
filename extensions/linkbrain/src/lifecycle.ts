@@ -1,0 +1,409 @@
+/**
+ * Plan §10.1 lifecycle → Brain capture/coordination mapping.
+ *
+ * Conversation-bearing hooks (notably `agent_end`) require operators to set:
+ *   plugins.entries.linkbrain.hooks.allowConversationAccess=true
+ *
+ * Handlers never throw uncaught; Brain failures degrade honestly and preserve
+ * native OpenClaw compaction/reset/delivery/memory behavior.
+ */
+import type { LinkbrainCapture } from "./capture.js";
+import { captureFingerprint } from "./capture.js";
+import type { LinkbrainConfig } from "./config.js";
+import { LINKBRAIN_CONVERSATION_HOOK_REQUIREMENT } from "./namespaces.js";
+import { opaqueId } from "./opaque.js";
+import { sanitizeCaptureText, stripUnsafeFields } from "./sanitize.js";
+import {
+  LINKBRAIN_CHECKPOINT_TOOL,
+  LINKBRAIN_TASK_UPDATE_TOOL,
+} from "./tools.js";
+import type { LinkbrainRuntime } from "./runtime.js";
+
+export const LINKBRAIN_REGISTERED_HOOKS = Object.freeze([
+  "session_start",
+  "message_received",
+  "agent_end",
+  "before_compaction",
+  "after_compaction",
+  "before_reset",
+  "session_end",
+  "gateway_start",
+  "gateway_stop",
+  "subagent_spawned",
+  "subagent_ended",
+] as const);
+
+export type LinkbrainRegisteredHook = (typeof LINKBRAIN_REGISTERED_HOOKS)[number];
+
+/** Conversation-bearing hooks from the §10.1 set that need allowConversationAccess. */
+export const LINKBRAIN_CONVERSATION_HOOKS = Object.freeze(["agent_end"] as const);
+
+export type LifecycleLogger = {
+  info: (message: string) => void;
+  warn: (message: string) => void;
+};
+
+export type SessionContextRecord = {
+  version: 1;
+  sessionId: string;
+  bindingId?: string;
+  actorId?: string;
+  openedAtMs: number;
+  updatedAtMs: number;
+};
+
+export type LinkbrainLifecycle = {
+  readonly registeredHooks: readonly LinkbrainRegisteredHook[];
+  readonly conversationHookRequirement: string;
+  handleSessionStart(event: {
+    sessionId: string;
+    sessionKey?: string;
+  }): Promise<void>;
+  handleMessageReceived(event: {
+    content?: string;
+    messageId?: string;
+    sessionKey?: string;
+    runId?: string;
+    senderId?: string;
+    metadata?: Record<string, unknown>;
+  }): Promise<void>;
+  handleAgentEnd(
+    event: {
+      runId?: string;
+      success: boolean;
+      error?: string;
+      durationMs?: number;
+      messages?: unknown[];
+    },
+    ctx: { sessionKey?: string; sessionId?: string; agentId?: string; runId?: string },
+  ): Promise<void>;
+  handleBeforeCompaction(ctx: {
+    sessionKey?: string;
+    sessionId?: string;
+    runId?: string;
+  }): Promise<void>;
+  handleAfterCompaction(event: {
+    messageCount: number;
+    compactedCount: number;
+    tokenCount?: number;
+    previousSessionId?: string;
+  }, ctx: { sessionKey?: string; sessionId?: string }): Promise<void>;
+  handleBeforeReset(ctx: {
+    sessionKey?: string;
+    sessionId?: string;
+  }): Promise<void>;
+  handleSessionEnd(event: {
+    sessionId: string;
+    sessionKey?: string;
+    reason?: string;
+  }): Promise<void>;
+  handleGatewayStart(): Promise<void>;
+  handleGatewayStop(): Promise<void>;
+  handleSubagentSpawned(event: {
+    runId: string;
+    childSessionKey: string;
+    agentId?: string;
+    requester?: { channel?: string };
+  }): Promise<void>;
+  handleSubagentEnded(event: {
+    targetSessionKey: string;
+    runId?: string;
+    outcome?: string;
+    reason?: string;
+  }): Promise<void>;
+};
+
+export type CreateLinkbrainLifecycleParams = {
+  config: LinkbrainConfig;
+  runtime: LinkbrainRuntime;
+  capture: LinkbrainCapture;
+  logger?: LifecycleLogger;
+  now?: () => number;
+  operationTimeoutMs?: number;
+  /** In-memory session bookkeeping (local only; opaque ids). */
+  sessionContexts?: Map<string, SessionContextRecord>;
+};
+
+function withTimeout<T>(
+  work: (signal: AbortSignal) => Promise<T>,
+  timeoutMs: number,
+  label: string,
+): Promise<T> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => {
+    controller.abort(new Error(`linkbrain: ${label} exceeded ${timeoutMs}ms`));
+  }, timeoutMs);
+  return work(controller.signal).finally(() => {
+    clearTimeout(timer);
+  });
+}
+
+async function safe(
+  label: string,
+  logger: LifecycleLogger | undefined,
+  work: () => Promise<void>,
+): Promise<void> {
+  try {
+    await work();
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    logger?.warn(`linkbrain: ${label} degraded: ${message}`);
+  }
+}
+
+function streamKeyFrom(parts: { sessionKey?: string; sessionId?: string; runId?: string }): string {
+  return parts.sessionKey || parts.sessionId || parts.runId || "anonymous";
+}
+
+/** Extract a short assistant outcome without forwarding prompt/CoT/message dumps. */
+function assistantOutcomeText(event: {
+  success: boolean;
+  error?: string;
+  durationMs?: number;
+  messages?: unknown[];
+}): string {
+  // Intentionally ignore event.messages — may contain reasoning/prompt bodies.
+  void event.messages;
+  const status = event.success ? "ok" : "error";
+  const duration =
+    typeof event.durationMs === "number" && Number.isFinite(event.durationMs)
+      ? ` durationMs=${Math.round(event.durationMs)}`
+      : "";
+  const err =
+    !event.success && typeof event.error === "string" && event.error.length > 0
+      ? ` error=${sanitizeCaptureText(event.error, 240)}`
+      : "";
+  return sanitizeCaptureText(`assistant_outcome status=${status}${duration}${err}`);
+}
+
+export function createLinkbrainLifecycle(
+  params: CreateLinkbrainLifecycleParams,
+): LinkbrainLifecycle {
+  const now = params.now ?? (() => Date.now());
+  const operationTimeoutMs = params.operationTimeoutMs ?? 2_000;
+  const sessions = params.sessionContexts ?? new Map<string, SessionContextRecord>();
+  const logger = params.logger;
+
+  const enqueueCoordination = async (input: {
+    toolName: typeof LINKBRAIN_CHECKPOINT_TOOL | typeof LINKBRAIN_TASK_UPDATE_TOOL;
+    idempotencyKey: string;
+    body: Record<string, unknown>;
+  }) => {
+    if (!params.config.coordinationWrites) {
+      return;
+    }
+    const cleaned = stripUnsafeFields(input.body);
+    await params.runtime.enqueueWrite({
+      kind: "coordination",
+      toolName: input.toolName,
+      idempotencyKey: input.idempotencyKey,
+      body: cleaned as Record<string, unknown>,
+    });
+  };
+
+  const drainBounded = async (label: string) => {
+    if (!params.config.captureDrain && !params.config.coordinationWrites) {
+      return;
+    }
+    await withTimeout(
+      async (signal) => {
+        await params.runtime.drainOnce({ signal });
+      },
+      operationTimeoutMs,
+      label,
+    );
+  };
+
+  return {
+    registeredHooks: LINKBRAIN_REGISTERED_HOOKS,
+    conversationHookRequirement: LINKBRAIN_CONVERSATION_HOOK_REQUIREMENT,
+
+    async handleSessionStart(event) {
+      await safe("session_start", logger, async () => {
+        const sessionId = opaqueId("session", event.sessionId || event.sessionKey);
+        const bindingId = event.sessionKey
+          ? opaqueId("binding", event.sessionKey)
+          : undefined;
+        sessions.set(sessionId, {
+          version: 1,
+          sessionId,
+          ...(bindingId ? { bindingId } : {}),
+          openedAtMs: now(),
+          updatedAtMs: now(),
+        });
+        logger?.info(`linkbrain: session_start attached ${sessionId}`);
+      });
+    },
+
+    async handleMessageReceived(event) {
+      await safe("message_received", logger, async () => {
+        // Drop attachment/prompt-bearing metadata; content text only after sanitize.
+        void stripUnsafeFields(event.metadata ?? {});
+        const text = typeof event.content === "string" ? event.content : "";
+        if (!text) {
+          return;
+        }
+        const streamKey = streamKeyFrom({
+          sessionKey: event.sessionKey,
+          runId: event.runId,
+        });
+        await params.capture.enqueue({
+          streamKey,
+          actorKey: event.senderId,
+          role: "user",
+          text,
+          fingerprint: captureFingerprint([
+            event.messageId,
+            event.sessionKey,
+            event.runId,
+            "user",
+          ]),
+        });
+      });
+    },
+
+    async handleAgentEnd(event, ctx) {
+      await safe("agent_end", logger, async () => {
+        const streamKey = streamKeyFrom({
+          sessionKey: ctx.sessionKey,
+          sessionId: ctx.sessionId,
+          runId: event.runId ?? ctx.runId,
+        });
+        await params.capture.enqueue({
+          streamKey,
+          actorKey: ctx.agentId,
+          role: "assistant",
+          text: assistantOutcomeText(event),
+          fingerprint: captureFingerprint([
+            event.runId ?? ctx.runId,
+            ctx.sessionKey,
+            "agent_end",
+            String(event.success),
+          ]),
+        });
+        // Do not unbounded-flush remotely here — only local enqueue.
+      });
+    },
+
+    async handleBeforeCompaction(ctx) {
+      await safe("before_compaction", logger, async () => {
+        const streamKey = streamKeyFrom(ctx);
+        await params.capture.flush(streamKey, "before_compaction");
+        const taskId = opaqueId("task", `${streamKey}:compaction`);
+        await enqueueCoordination({
+          toolName: LINKBRAIN_CHECKPOINT_TOOL,
+          idempotencyKey: `chk:compaction:${opaqueId("session", streamKey)}`,
+          body: {
+            taskId,
+            summary: "before_compaction boundary",
+            sessionId: opaqueId("session", streamKey),
+            runId: ctx.runId ? opaqueId("run", ctx.runId) : undefined,
+            decisions: ["flush_capture_buffer"],
+            nextActions: ["await_after_compaction"],
+          },
+        });
+      });
+    },
+
+    async handleAfterCompaction(event, ctx) {
+      await safe("after_compaction", logger, async () => {
+        const streamKey = streamKeyFrom(ctx);
+        await enqueueCoordination({
+          toolName: LINKBRAIN_CHECKPOINT_TOOL,
+          idempotencyKey: `chk:after_compaction:${opaqueId("session", streamKey)}:${event.compactedCount}`,
+          body: {
+            taskId: opaqueId("task", `${streamKey}:after_compaction`),
+            summary: "after_compaction metadata",
+            sessionId: opaqueId("session", streamKey),
+            messageCount: event.messageCount,
+            compactedCount: event.compactedCount,
+            ...(typeof event.tokenCount === "number" ? { tokenCount: event.tokenCount } : {}),
+            ...(event.previousSessionId
+              ? { previousSessionId: opaqueId("session", event.previousSessionId) }
+              : {}),
+          },
+        });
+      });
+    },
+
+    async handleBeforeReset(ctx) {
+      await safe("before_reset", logger, async () => {
+        const streamKey = streamKeyFrom(ctx);
+        await params.capture.flush(streamKey, "before_reset");
+        const sessionId = opaqueId("session", streamKey);
+        sessions.delete(sessionId);
+        await enqueueCoordination({
+          toolName: LINKBRAIN_CHECKPOINT_TOOL,
+          idempotencyKey: `chk:reset:${sessionId}`,
+          body: {
+            taskId: opaqueId("task", `${streamKey}:reset`),
+            summary: "before_reset boundary",
+            sessionId,
+            decisions: ["flush_and_close_subordinate_context"],
+          },
+        });
+      });
+    },
+
+    async handleSessionEnd(event) {
+      await safe("session_end", logger, async () => {
+        const streamKey = event.sessionKey || event.sessionId;
+        await params.capture.flush(streamKey, "session_end");
+        const sessionId = opaqueId("session", event.sessionId || event.sessionKey);
+        sessions.delete(sessionId);
+      });
+    },
+
+    async handleGatewayStart() {
+      await safe("gateway_start", logger, async () => {
+        logger?.info(
+          `linkbrain: gateway_start; conversation hooks require ${LINKBRAIN_CONVERSATION_HOOK_REQUIREMENT}`,
+        );
+        await drainBounded("gateway_start_drain");
+      });
+    },
+
+    async handleGatewayStop() {
+      await safe("gateway_stop", logger, async () => {
+        await params.capture.flushAll("gateway_stop");
+        await drainBounded("gateway_stop_drain");
+        // Unsent outbox remains durable in keyed stores.
+      });
+    },
+
+    async handleSubagentSpawned(event) {
+      await safe("subagent_spawned", logger, async () => {
+        await enqueueCoordination({
+          toolName: LINKBRAIN_TASK_UPDATE_TOOL,
+          idempotencyKey: `subagent:start:${opaqueId("run", event.runId)}`,
+          body: {
+            taskId: opaqueId("task", event.runId),
+            status: "active",
+            note: "subagent_spawned",
+            childSessionId: opaqueId("subagent", event.childSessionKey),
+            runId: opaqueId("run", event.runId),
+            ...(event.agentId ? { actorId: opaqueId("actor", event.agentId) } : {}),
+          },
+        });
+      });
+    },
+
+    async handleSubagentEnded(event) {
+      await safe("subagent_ended", logger, async () => {
+        const runMaterial = event.runId || event.targetSessionKey;
+        await enqueueCoordination({
+          toolName: LINKBRAIN_TASK_UPDATE_TOOL,
+          idempotencyKey: `subagent:end:${opaqueId("run", runMaterial)}:${event.outcome ?? "unknown"}`,
+          body: {
+            taskId: opaqueId("task", runMaterial),
+            status: event.outcome === "ok" ? "done" : "failed",
+            note: "subagent_ended",
+            childSessionId: opaqueId("subagent", event.targetSessionKey),
+            ...(event.runId ? { runId: opaqueId("run", event.runId) } : {}),
+            ...(event.reason ? { reason: sanitizeCaptureText(event.reason, 120) } : {}),
+          },
+        });
+      });
+    },
+  };
+}
