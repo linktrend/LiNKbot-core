@@ -79,7 +79,7 @@ Emit **no** mid-run assistant text (“Starting WAVE…”, “processing repos�
    - `task`: the matching **Shipper** or **Puller** prompt below (fill WAVE label).
 3. Wait for ACP completion (or fail). Do **not** substitute a Lisa subagent or self-write code.
 4. On spawn failure: leave the exact error in the cron run trace, update the status file with `WAVE: Issues` using the cycle-preserving rules above, send the email side effect, then return only the Telegram one-liner; stop. Never put the error in the final Telegram reply.
-5. On success: ensure the status file contains the current wave's one-liner using the cycle-preserving rules above (or update it yourself if Cursor could not).
+5. On success: accept only Cursor's exact `WAVE: Clear` or `WAVE: Issues` reply, then have Lisa write that result to the status file using the monotonic cycle-date rules above. Cursor does not own or edit this shared status file.
 6. **Email (required side-effect, separate from heartbeat):** write the same one line to `scratch/pipeline_status_email.txt`, then run **exactly one** unpiped `exec` (no pipes, no `ls`, no multi-step plans):
    ```bash
    tools/bin/lisa-safe email-send --to calusa@linktrend.media --subject "<WAVE> status" --body-file scratch/pipeline_status_email.txt
@@ -120,14 +120,9 @@ For each repo that has local changes or unpushed commits on a work branch (prefe
 3) Open or update a PR targeting development.
 4) STOP. Do not merge. Do not self-review. Do not touch staging/main. Bugbot reviews; Integrator merges.
 
-Update /Users/linktrend/.openclaw-lisa/workspace/memory/pipeline-status.md with exactly one line for this wave:
-WAVE: Clear
-or
-WAVE: Issues
+Do not edit /Users/linktrend/.openclaw-lisa/workspace/memory/pipeline-status.md; Lisa owns the shared status writer and cycle-date checks.
 
-Preserve the other known checkpoint lines in the current digest cycle. Replace any existing line for WAVE instead of duplicating it. For Ship 16 only, first remove all prior Ship 05 / Pull 07 / Ship 16 / Pull 18 lines to start a new cycle, while preserving recognized Staging/Main lines. Do not add lists, links, or prose.
-
-Reply with that same one line only.
+Reply with exactly one line only: `WAVE: Clear` or `WAVE: Issues`.
 ```
 
 ## ACP prompt — Puller
@@ -156,14 +151,9 @@ For each repo with a checked-out work branch (issue/*, cursor/*, rare dev/*) —
 3) Do not invent merges into staging/main.
 4) Note blockers privately; do not paste lists into the status line.
 
-Update /Users/linktrend/.openclaw-lisa/workspace/memory/pipeline-status.md with exactly one line for this wave:
-WAVE: Clear
-or
-WAVE: Issues
+Do not edit /Users/linktrend/.openclaw-lisa/workspace/memory/pipeline-status.md; Lisa owns the shared status writer and cycle-date checks.
 
-Preserve the other known checkpoint lines in the current digest cycle. Replace any existing line for WAVE instead of duplicating it. Do not add lists, links, or prose.
-
-Reply with that same one line only.
+Reply with exactly one line only: `WAVE: Clear` or `WAVE: Issues`.
 ```
 
 ## Install / repair cron jobs (main session or operator — not from isolated cron)

@@ -14,7 +14,7 @@
 | Coordination home | `/Users/linktrend/Projects/openclaw_prime`                 |
 | Session ID        | cursor-local-mac-mini-desktop-workspace-lisa-20260725-2320 |
 | Started           | 2026-07-25 23:20 Asia/Taipei                               |
-| Last updated      | 2026-07-25 23:20 Asia/Taipei                               |
+| Last updated      | 2026-07-27 14:18 Asia/Taipei                               |
 
 ## Work
 
@@ -23,8 +23,8 @@
 | Objective       | Move morning digest to 08:30; fold Main Approve into digest; heartbeat at 06:45 (drop 08:45); Ship 05 / Pull 07; overnight local coding 19:00–04:00; email one-liners after Ship/Pull; update docs + live Lisa cron |
 | Branch          | `issue/ocp-lisa-digest-830-ship05` (+ IDE `issue/ide-lisa-ship05-digest-830`)                                                                                                                                       |
 | Starting commit | openclaw `c06249531e2`; IDE TBD                                                                                                                                                                                     |
-| Status          | `active`                                                                                                                                                                                                            |
-| Handoff         |                                                                                                                                                                                                                     |
+| Status          | `complete`                                                                                                                                                                                                          |
+| Handoff         | `docs/handoffs/2026-07-27-1055-cursor-local-lisa-digest-cron-format.md`                                                                                                                                             |
 
 ## Ownership Scope
 
@@ -45,10 +45,11 @@
 
 - 23:20 — Clarifications locked; starting implementation.
 - 23:35 — Personality + IDE doctrine updated; live workspace synced; live cron patched and verified (next: HB 00:45, Ship 05:00, Pull 07:00, Digest 08:30).
+- 2026-07-27 14:18 — Carlos authorized the Codex Desktop Orchestrator to take over PR #34 and final Lisa verification. This stale ownership record is closed and archived; subsequent corrections and final proof belong to the Orchestrator handoff.
 
 ## Next Action
 
-- Exact next action: optional commit/PR when Carlos asks; first live proof at tomorrow morning waves
-- Owner: this Lisa session / Carlos
+- Exact next action: Codex Desktop Orchestrator completes PR #34, rebuilds safe merged source, and verifies Lisa.
+- Owner: Codex Desktop Orchestrator
 - Questions for Carlos: none
 - Questions for the Orchestrator or next agent: none

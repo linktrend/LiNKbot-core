@@ -103,18 +103,6 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H3: 2026-07-27 12:56-13:06 Asia/Taipei — PR takeover and CI repair
   - H2: Next Action
 
-## agent-sessions/active/cursor-local-mac-mini-desktop-workspace-lisa-20260725-2320.md
-
-- Route: /agent-sessions/active/cursor-local-mac-mini-desktop-workspace-lisa-20260725-2320
-- Headings:
-  - H1: Agent Session Record
-  - H2: Identity
-  - H2: Work
-  - H2: Ownership Scope
-  - H2: Coordination
-  - H2: Progress
-  - H2: Next Action
-
 ## agent-sessions/active/cursor-local-mac-mini-desktop-workspace-orchestrator-20260723-1539.md
 
 - Route: /agent-sessions/active/cursor-local-mac-mini-desktop-workspace-orchestrator-20260723-1539
@@ -185,6 +173,18 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Ownership Scope
   - H2: Coordination
   - H2: Decisions
+
+## agent-sessions/completed/cursor-local-mac-mini-desktop-workspace-lisa-20260725-2320.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-desktop-workspace-lisa-20260725-2320
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
 
 ## agent-sessions/completed/cursor-local-mac-mini-lisa-digest-cron-format-20260727-1055.md
 
