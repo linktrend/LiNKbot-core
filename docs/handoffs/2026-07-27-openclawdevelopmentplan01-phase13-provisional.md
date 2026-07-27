@@ -40,3 +40,13 @@ Principal: return to **OpenClaw Codex** for Phase 14 independent verification. L
 ## Confidence
 
 95% that the handoff lists every required §21.1 field and honestly separates fake vs live; residual risk is undocumented sub-task granularity inside Phase 6 full matrix.
+
+## Amendments
+
+### 2026-07-28 07:57 Asia/Taipei — Corrected provisional supersedes this packet for re-verification
+
+- **What was wrong / incomplete:** The 2026-07-27 provisional and this short pointer claimed tip proof at 13 files / 82 tests and predated deficiency corrections (contract pins, Brain §9.1 decision, transport modes, Phase 6 full matrix 20/144, fixture sign-off hashes, Crabbox honesty, session closeout).
+- **Corrected fact:** For OpenClaw Codex **Phase 14 re-verification**, use the **CORRECTED** handoff at `docs/execution/openclawdevelopmentplan01/PHASE-13-PROVISIONAL-GROK-HANDOFF.md` (rewritten 2026-07-28) and the integrator closeout `docs/handoffs/2026-07-28-openclawdevelopmentplan01-corrected-phase13.md`. This 2026-07-27 short pointer is retained as historical only and is **superseded** for re-verification.
+- **Why:** Deficiency corrections 1–8 landed on tip 2026-07-28; tip suite is 20 files / 144 tests; sessions closed.
+- **Who:** Cursor Grok 4.5 High OpenClaw integrator.
+- **Evidence:** `PHASE-6-STATUS.md`, `FIXTURE-OWNER-SIGNOFF.md`, `contracts/`, `BRAIN-TOOL-NAME-DECISION-PACKET.md`, transport commit `e88ba95d0a2`, closed sessions under `docs/agent-sessions/completed/`.
