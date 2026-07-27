@@ -53,9 +53,9 @@
 
 ```text
 node scripts/run-vitest.mjs test/helpers/link-domain-fakes extensions/linkbrain extensions/linkskills
-# Phase 6 gate evidence (committed plugin tests + new matrix/perf; no transport WIP):
-# Test Files  15 passed (15)
-# Tests       99 passed (99)
+# After transport adapters landed on the same branch tip:
+# Test Files  20 passed (20)
+# Tests       144 passed (144)
 ```
 
 Focused matrix + perf only:
@@ -69,14 +69,14 @@ node scripts/run-vitest.mjs \
 
 ### Count breakdown (2026-07-28)
 
-| Surface                                                                            | Files  | Tests  |
-| ---------------------------------------------------------------------------------- | ------ | ------ |
-| `test/helpers/link-domain-fakes/` (incl. integrated + matrix + perf + brain-fake)  | 4      | 25     |
-| `extensions/linkbrain/**/*.test.ts` (+ fake; excluding uncommitted transport WIP)  | 6      | ~40    |
-| `extensions/linkskills/**/*.test.ts` (+ fake; excluding uncommitted transport WIP) | 5      | ~34    |
-| **Phase 6 gate total**                                                             | **15** | **99** |
+| Surface                                                                     | Files  | Tests   |
+| --------------------------------------------------------------------------- | ------ | ------- |
+| `test/helpers/link-domain-fakes/` (integrated + matrix + perf + brain-fake) | 4      | 25      |
+| `extensions/linkbrain/**/*.test.ts` (+ fake + transport)                    | 8      | —       |
+| `extensions/linkskills/**/*.test.ts` (+ fake + transport)                   | 8      | —       |
+| **Tip total after transport land**                                          | **20** | **144** |
 
-Prior packet was 7 integrated / 82 focused; this completion adds the mandatory matrix + perf baseline (net +17 tests). A concurrent transport-adapter session may add uncommitted `transport.test.ts` files in the same checkout; those are out of Phase 6 scope and were not staged.
+Prior packet was 7 integrated / 82 focused. Phase 6 matrix commit (`66a32888129`) added +17 mandatory/perf tests. Concurrent transport adapters landed at `e88ba95d0a2`; re-verified full suite **20/144** green on tip (`22717f28bb3` status follow-up).
 
 ## Privacy / cross-domain
 
@@ -89,7 +89,7 @@ Prior packet was 7 integrated / 82 focused; this completion adds the mandatory m
 - No live Platform stage endpoints, real credential issuer, or audit proof (marked SKIPPED_PLATFORM_LIVE).
 - No Lisa profile mutation or live MCP wiring.
 - No Testbox/Crabbox heavy suite in this session (focused local vitest only).
-- Concurrent transport-adapter WIP in the same checkout was **not** owned or committed by this session.
+- Concurrent transport-adapter WIP in the same checkout was waited out; transport landed separately at `e88ba95d0a2`; Phase 6 matrix re-verified green on tip.
 
 ## Exit gate
 
