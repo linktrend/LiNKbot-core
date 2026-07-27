@@ -24,11 +24,13 @@ Prefer reading:
 
 `/Users/linktrend/.openclaw-lisa/workspace/memory/pipeline-status.md`
 
-If missing, treat checkpoints as unknown and do **not** invent Clear. You may write the file when the shipper/puller cannot.
+If missing, treat checkpoints as unknown and do **not** invent Clear. Lisa owns writes to this shared file; delegated shippers and pullers return only their one-line result.
 
 The file starts with `Cycle date: YYYY-MM-DD`, naming the Asia/Taipei morning-digest date for its Ship/Pull results. It then keeps Ship 16 and Pull 18 from the prior evening followed by Ship 05 and Pull 07 from that morning. Derive each wave's expected cycle from its nominal scheduled occurrence, not completion time: the next calendar date for Ship 16/Pull 18 and the same date for Ship 05/Pull 07. A missing date or a newer expected date clears all four old Ship/Pull result lines before storing the expected date and current result. A matching date replaces only that wave's line. An older expected date is a delayed prior-cycle run and must not modify the newer status file. Preserve recognized Staging/Main lines until their owning checkpoint updates them.
 
 Heartbeat and morning digest must compare the stored cycle date with the digest cycle they are reporting. Include Ship/Pull lines only when it matches; omit stale or undated Ship/Pull lines. The metadata line is for freshness checks only and is never sent to Telegram or email.
+
+Staging and Main readiness have their own freshness markers: `Staging date: YYYY-MM-DD` and `Main ready date: YYYY-MM-DD`. Their owning checkpoint must write its result with the date of that nominal Asia/Taipei run. Include a Staging/Main result only when its marker matches the checkpoint date being reported. In particular, Monday's digest may offer Main Approve only when `Main ready date` is today's date and the paired result is `Main ready (Mon): Clear`; an undated or prior-Monday line is stale and must be omitted.
 
 ## One-line contract (hard)
 
@@ -61,17 +63,18 @@ Full ship/pull spawn prompts and repo order: `agents/ship-pull-clock.md`. Mini m
 
 ## Main Approve (digest + Telegram reply)
 
-On Monday in the **08:30 morning digest**, when package is Clear:
+On Monday in the **08:30 morning digest**, when today's dated package result is Clear:
 
-1. Include a short Approve ask in **both** digest email and Telegram (same wording). Email is notify-only.
-2. Carlos replies **Approve / yes on Telegram** (main session).
-3. If Carlos says Approve / yes: for each in-scope GitHub repo, run (unpiped, host tools as allowed):
+1. Require `Main ready date: YYYY-MM-DD` to equal today's Asia/Taipei date and `Main ready (Mon): Clear`. Otherwise omit the approval ask.
+2. Include a short Approve ask in **both** digest email and Telegram (same wording). Email is notify-only.
+3. Carlos replies **Approve / yes on Telegram** (main session).
+4. If Carlos says Approve / yes: for each in-scope GitHub repo, run (unpiped, host tools as allowed):
    ```bash
    gh workflow run linktrend-staging-to-main.yml --repo linktrend/<REPO> -f action=approve-merge
    ```
-4. If denied or deferred: leave PR open; status stays ready until next Monday or Carlos says otherwise.
-5. Never merge `staging`→`main` without Carlos Approve in this conversation or an explicit standing order.
-6. Do **not** ask Main Approve from heartbeat — digest owns the ask.
+5. If denied or deferred: leave PR open; status stays ready until next Monday or Carlos says otherwise.
+6. Never merge `staging`→`main` without Carlos Approve in this conversation or an explicit standing order.
+7. Do **not** ask Main Approve from heartbeat — digest owns the ask.
 
 ## Until CTO OpenClaw exists
 

@@ -10,6 +10,10 @@ Ship 05: Clear
 Pull 07: Clear
 Ship 16: Clear
 Pull 18: Clear
+Staging date: YYYY-MM-DD
+Staging promote (Tue): Clear
+Main ready date: YYYY-MM-DD
+Main ready (Mon): Clear
 ```
 
 Lisa procedure: `agents/pipeline-status.md`.

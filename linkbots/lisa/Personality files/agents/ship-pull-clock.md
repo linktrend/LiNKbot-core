@@ -84,7 +84,7 @@ Emit **no** mid-run assistant text (“Starting WAVE…”, “processing repos�
    ```bash
    tools/bin/lisa-safe email-send --to calusa@linktrend.media --subject "<WAVE> status" --body-file scratch/pipeline_status_email.txt
    ```
-   Subject examples: `Ship 05 status`, `Pull 07 status`. Body is exactly one line (`WAVE: Clear` or `WAVE: Issues`) — no lists, no links, no Battery content. Send for **both** Clear and Issues after the wave finishes across the repo list. If email fails once, **keep Telegram delivery** and finish with the one-line status — do not abort the cron or invent Clear/Issues from an email failure alone.
+   Subject examples: `Ship 05 status`, `Pull 07 status`. Body is exactly one line (`WAVE: Clear` or `WAVE: Issues`) — no lists, no links, no Battery content. Send for **both** Clear and Issues after the wave finishes across the repo list. If the exact command returns a normal non-denial send error, **keep Telegram delivery** and finish with the one-line status — do not invent Clear/Issues from the email failure alone. If it is hard-denied because an opaque shell form was used, retry the exact unpiped command above once. Continue only if that retry succeeds; otherwise stop the run and preserve the fatal failure.
 7. **Telegram:** only after the email attempt, return the final cron reply as **only** that one line (Clear or Issues). This final assistant reply is what cron announces.
 
 ### HARD RULES — `lisa-safe` (Pull 07 2026-07-26 failure)
@@ -93,7 +93,7 @@ Emit **no** mid-run assistant text (“Starting WAVE…”, “processing repos�
 
 1. **Never** `ls` / list / explore / “list files in” `tools/bin/lisa-safe` or `~/.openclaw-lisa/workspace/tools/bin/lisa-safe`.
 2. **Never** multi-step exec plans such as `list files in … → print text → print text`.
-3. **Do not** probe or verify the binary before use. Invoke `email-send` directly once, exactly as above.
+3. **Do not** probe or verify the binary before use. Invoke `email-send` directly, exactly as above. Repeat it only for the one permitted hard-denial recovery attempt.
 4. Order: ACP spawn → status file → email attempt → final Telegram one-liner. Do not start the run by exploring `tools/bin`.
 
 ## ACP prompt — Shipper
