@@ -2,7 +2,7 @@
 
 OpenClaw-derived draft fixtures for Lisa ↔ LiNKbrain integration tests.
 
-- **Status:** draft pending LiNKbrain owner sign-off
+- **Status:** draft — consumption hashes recorded; LiNKbrain owner countersign `AWAITING_OWNER_COUNTERSIGN`
 - **Contract version:** `brain.contract.v0.draft`
 - **Source plan:** `docs/OPENCLAW-PRIME-LISA-LINKBRAIN-LINKSKILLS-DETAILED-IMPLEMENTATION-PLAN.md` §9.1 / §9.3
 - **Live data:** none — all actor IDs, tokens, and payloads are sanitized placeholders
@@ -83,4 +83,34 @@ OpenClaw-derived draft fixtures for Lisa ↔ LiNKbrain integration tests.
 | `tools/private/brain_private_search.request.json`         | `8e866cd9dc4b9c7b71a500477f60299e9b4e68e9492feec61c4aee089e1f67dc` |
 | `tools/private/brain_private_search.response.json`        | `da2f49a7b39a681f3a1559c2985348dfdfbe268aaa9f32f71af6610aea952bc0` |
 
-Regenerate hashes after any fixture edit. Do not treat these drafts as owner-approved until LiNKbrain signs off.
+## Consumption package hash
+
+| Field                                 | Value                                                                         |
+| ------------------------------------- | ----------------------------------------------------------------------------- |
+| Method                                | SHA-256 of sorted lines `{file_sha256}  {relative_path}` over all `*.json`    |
+| JSON file count                       | 71                                                                            |
+| **Fixture package aggregate SHA-256** | `91167a13fa33b8bb04141981bfec683f381e0593ed2bad4b2b910e9535d994ba`            |
+| OpenClaw plan SHA-256                 | `17203ee586a3fb2b1281bcddd8b17ae350075ebce537689f3c4bfcbbd14914f7`            |
+| Brain contracts HEAD pin              | `86161d3ab78679ffc3b96680cf04e03c2d5c8fd2`                                    |
+| `BRAIN_CONTRACT_VERSION`              | `1.0.0`                                                                       |
+| `schemas.ts` SHA-256                  | `61468e4cf93d087df23dad1c26fbc91b258378757024debcde0cb6e97d50e0bb`            |
+| Recorded                              | 2026-07-28 07:44 Asia/Taipei                                                  |
+| Sign-off process                      | `docs/execution/openclawdevelopmentplan01/FIXTURE-OWNER-SIGNOFF.md`           |
+| Tool-name decision                    | `docs/execution/openclawdevelopmentplan01/BRAIN-TOOL-NAME-DECISION-PACKET.md` |
+
+Tool names in this package are **frozen plan §9.1** (`brain_search`, `brain_browse`, …).
+Brain CURRENT mcp-server aliases (`brain_search_knowledge`, …) are **not** mirrored here.
+OpenClaw will not alias; Brain must implement §9.1.
+
+## Owner sign-off
+
+| Field                       | Value                                                              |
+| --------------------------- | ------------------------------------------------------------------ |
+| Status                      | `AWAITING_OWNER_COUNTERSIGN`                                       |
+| Aggregate SHA-256 to attest | `91167a13fa33b8bb04141981bfec683f381e0593ed2bad4b2b910e9535d994ba` |
+| Owner name / session ID     | _(blank — awaiting)_                                               |
+| Signature                   | _(blank — awaiting)_                                               |
+| Signed at (Asia/Taipei)     | _(blank — awaiting)_                                               |
+
+Regenerate the per-file inventory and aggregate hash after any fixture edit.
+Do not treat these drafts as owner-approved until LiNKbrain countersigns.

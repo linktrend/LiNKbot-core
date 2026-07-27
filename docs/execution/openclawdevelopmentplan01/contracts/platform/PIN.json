@@ -1,0 +1,28 @@
+{
+  "domain": "LiNKplatform",
+  "consumed_at": "2026-07-28T07:44:00+08:00",
+  "consumer": "openclaw_prime",
+  "branch": "issue/ocp-openclawdevelopmentplan01",
+  "source_repo": "LiNKplatform",
+  "source_head": "95120dc4549f0bc79627668acbc5b21afd699e29",
+  "source_branch_observed": "issue/LP-01-linkplatformdevelopmentplan01",
+  "PLATFORM_CONTRACTS_SEMVER": "0.2.0",
+  "package": {
+    "name": "@linktrend/platform-contracts",
+    "version": "0.2.0",
+    "private": true,
+    "type": "module"
+  },
+  "golden_canonical_hash": {
+    "path": "packages/contracts/fixtures/contract-meta/golden-canonical-hash.json",
+    "sha256_of_file": "834f569547032e26af9bbfa08f556fe013ae59f0cd2c49c476538f4dc927ebae",
+    "embedded_content_hash": "deb43dca494a198cad86e49fc6be91ccb79d19aa297e8d824d7416e5be35a134",
+    "note": "Owner-approved golden vector for canonicalizeJson + contentHash; OpenClaw pins embedded sha256 value, not node_modules"
+  },
+  "contract_meta_ts": {
+    "path": "packages/contracts/src/contract-meta.ts",
+    "sha256": "315849f13b8a8047bd17c9f0ae55c9b385f4208f148395a20f27e7f1b10d5caa"
+  },
+  "openclaw_plan_sha256": "17203ee586a3fb2b1281bcddd8b17ae350075ebce537689f3c4bfcbbd14914f7",
+  "sanitization": "No secrets, credentials, endpoints with tokens, or node_modules copied. Metadata + hashes only."
+}
