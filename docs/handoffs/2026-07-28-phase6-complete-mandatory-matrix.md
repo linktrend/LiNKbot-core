@@ -59,7 +59,7 @@ node scripts/run-vitest.mjs test/helpers/link-domain-fakes extensions/linkbrain 
 
 ## Tests and Verification
 
-- 99/99 passed across linkbrain, linkskills, link-domain-fakes.
+- 99/99 at Phase 6 commit; **20 files / 144 tests** after transport tip re-verify.
 - Perf budgets asserted in harness and documented.
 
 ## Problems Encountered
