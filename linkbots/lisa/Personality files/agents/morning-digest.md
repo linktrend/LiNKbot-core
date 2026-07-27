@@ -29,7 +29,7 @@ If CLI force-run is unavailable, tell Carlos to wait for the next scheduled 08:3
 ### HARD RULES (digest — no improvisation)
 
 1. **Default Google work:** `tools/bin/lisa-safe …` only (cheat sheet: `tools/lisa-safe.md`).
-2. **Never invent** gws subcommands; never pipes / `2>&1` / `|` / `$()` / `||` / `&&`. If a command is hard-denied for opaque shell (`denylist` / `2>&1`), retry **once** without redirects/pipes, then stop that check and continue — still emit the full Telegram digest format.
+2. **Never invent** gws subcommands; never pipes / `2>&1` / `|` / `$()` / `||` / `&&`. If a command is hard-denied for opaque shell (`denylist` / `2>&1`), retry the exact allowed unpiped command **once**. Continue only if that retry succeeds. If the retry is denied or fails, stop the run and preserve the fatal failure; do not emit a complete digest from missing checks.
 3. **Missing lisa-safe verb:** stop that check and report — do **not** improvise bare `gws`.
 4. **Carlos Tasks:** `tools/bin/lisa-carlos-tasks` only. **Never** `gws auth …` / `gws keep …`.
 
@@ -85,7 +85,7 @@ tools/bin/lisa-carlos-tasks tasks list --params '{"tasklist":"<LIST_ID>","showCo
 
 Itemize due / overdue / due-today (and other open) items from **Carlos's lists** under section A / `iii. Tasks`. **Tasks: Yes.** if any open task exists on any Carlos list; else **No.** Never invent helpers like `gws tasks +list` or `gws tasks --help | head`. Never count Docs Assign / Chat Space assign / Lisa-primary `gws tasks`.
 
-**Never loop** on `--help`/piped variants after one failure/denial — if the unpiped `lisa-carlos-tasks` calls fail even once, stop retrying tasks-related exec calls for this run. The Summary line (§ Output Format below) must still be a plain `Yes.`/`No.` — "Unknown"/"unavailable" is never valid there; fall back to best-effort Yes/No from the most recent successful check if the live call fails. The itemized `iii. Tasks` section may say "None." or note the check failed, but the Summary line itself never does.
+**Never loop** on `--help`/piped variants. If the exact unpiped `lisa-carlos-tasks` call returns a normal non-denial error, stop retrying tasks-related exec calls for this run. The Summary line (§ Output Format below) must still be a plain `Yes.`/`No.` — "Unknown"/"unavailable" is never valid there; for a normal non-denial error, fall back to best-effort Yes/No from the most recent successful check. The itemized `iii. Tasks` section may say "None." or note the check failed, but the Summary line itself never does. A hard denial follows the fatal retry rule above.
 
 ### Email
 
@@ -135,7 +135,7 @@ Produce this exact structure with **real data** each run. Section rules:
 - **C. Battery Monitoring:** always show all 7 numbered items in full (never condensed). Concise, no commentary. Identical to heartbeat section C. **Telegram only — never copy into email.**
 - **D. Pipeline:** one or more exact status lines (or omit if unknown).
 - **E. Main Approve:** Monday + Clear only; otherwise omit the whole section.
-- **Exec:** never append `2>&1`, pipes, or redirects to `lisa-safe` / `lisa-carlos-tasks`. If opaque shell is hard-denied once, retry **once** without `2>&1`/pipes, then stop that check — **still emit this full Telegram format** (do not end the run on the denial).
+- **Exec:** never append `2>&1`, pipes, or redirects to `lisa-safe` / `lisa-carlos-tasks`. If opaque shell is hard-denied, retry the exact allowed unpiped command **once**. Continue only after a successful retry; otherwise stop the run and preserve the fatal failure.
 
 Produce exactly this structure (documentation template — copy the shape, not any fence wrapper):
 
