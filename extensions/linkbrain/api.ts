@@ -11,6 +11,7 @@ export {
   parseLinkbrainConfig,
   type LinkbrainConfig,
   type LinkbrainSecretInput,
+  type LinkbrainTransportMode,
 } from "./src/config.js";
 export {
   LINKBRAIN_REDACTION_POLICY_VERSION,
@@ -19,10 +20,15 @@ export {
 } from "./src/envelopes.js";
 export {
   createLinkbrainRuntime,
+  createBrainFakeTransport,
   type LinkbrainDiagnostics,
   type LinkbrainRuntime,
   type LinkbrainTransport,
 } from "./src/runtime.js";
+export {
+  resolveLinkbrainTransport,
+  type ResolveLinkbrainTransportParams,
+} from "./src/transport.js";
 export { createLinkbrainCapture, type LinkbrainCapture } from "./src/capture.js";
 export {
   createLinkbrainLifecycle,

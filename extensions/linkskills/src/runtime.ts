@@ -7,7 +7,7 @@ import type { LinkskillsConfig } from "./config.js";
 import {
   buildSkillsTelemetryEnvelope,
   deadLetterMetaFromEnvelope,
-  feedbackParamsFromEnvelope,
+  skillsTransportArgsFromEnvelope,
   type CursorRecord,
   type DeadLetterRecord,
   type HealthRecord,
@@ -16,6 +16,7 @@ import {
 } from "./envelopes.js";
 import { LINKSKILLS_NAMESPACES } from "./namespaces.js";
 import type { LinkskillsStores } from "./stores.js";
+import { resolveSkillsDrainToolName } from "./tools.js";
 
 export type LinkskillsTransportResult = {
   ok: boolean;
@@ -96,7 +97,6 @@ const HEALTH_KEY = "current";
 const CURSOR_KEY = "drain";
 const DEFAULT_MAX_ATTEMPTS = 5;
 const BASE_BACKOFF_MS = 250;
-const DEFAULT_TELEMETRY_TOOL = "skills_feedback_submit";
 
 function isLimitExceeded(error: unknown): boolean {
   if (!error || typeof error !== "object") {
@@ -106,10 +106,11 @@ function isLimitExceeded(error: unknown): boolean {
   return code === "PLUGIN_STATE_LIMIT_EXCEEDED";
 }
 
-function buildOutboxKey(params: {
-  createdAtMs: number;
-  idempotencyKey: string;
-}): string {
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function buildOutboxKey(params: { createdAtMs: number; idempotencyKey: string }): string {
   const suffix = params.idempotencyKey.replace(/[^a-zA-Z0-9:_-]/g, "_").slice(0, 64);
   return `skills:structured_event:${String(params.createdAtMs).padStart(13, "0")}:${suffix}:${randomUUID().slice(0, 8)}`;
 }
@@ -242,7 +243,7 @@ export function createLinkskillsRuntime(params: CreateLinkskillsRuntimeParams): 
     const outcome = await params.transport.write({
       toolName: record.toolName,
       idempotencyKey: record.idempotencyKey,
-      arguments: feedbackParamsFromEnvelope(record.envelope),
+      arguments: skillsTransportArgsFromEnvelope(record.envelope, record.toolName),
       envelope: record.envelope,
       signal,
     });
@@ -357,7 +358,14 @@ export function createLinkskillsRuntime(params: CreateLinkskillsRuntimeParams): 
       }
 
       const createdAtMs = now();
-      const toolName = input.toolName ?? DEFAULT_TELEMETRY_TOOL;
+      const eventType =
+        isRecord(input.body) && typeof input.body.event_type === "string"
+          ? input.body.event_type
+          : undefined;
+      const toolName = resolveSkillsDrainToolName({
+        toolName: input.toolName,
+        eventType,
+      });
       const envelope = buildSkillsTelemetryEnvelope({
         toolName,
         idempotencyKey: input.idempotencyKey,

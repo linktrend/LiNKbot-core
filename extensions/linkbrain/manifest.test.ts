@@ -24,6 +24,8 @@ describe("linkbrain manifest/config", () => {
       captureEnqueue: expect.any(Object),
       captureDrain: expect.any(Object),
       coordinationWrites: expect.any(Object),
+      transportMode: expect.any(Object),
+      mcpServerName: expect.any(Object),
       redactionPolicyVersion: expect.any(Object),
       batchMaxEvents: expect.any(Object),
       batchMaxBytes: expect.any(Object),
@@ -70,12 +72,14 @@ describe("linkbrain manifest/config", () => {
     expect(config.environment).toBe("stage");
   });
 
-  it("defaults all write flags off", () => {
+  it("defaults all write flags off and transportMode disabled", () => {
     expect(parseLinkbrainConfig({})).toMatchObject({
       mcpRead: false,
       captureEnqueue: false,
       captureDrain: false,
       coordinationWrites: false,
+      transportMode: "disabled",
+      mcpServerName: "linkbrain",
       redactionPolicyVersion: DEFAULT_LINKBRAIN_CONFIG.redactionPolicyVersion,
     });
   });

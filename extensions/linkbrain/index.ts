@@ -11,22 +11,16 @@ import {
   LINKBRAIN_CONVERSATION_HOOKS,
   type LinkbrainLifecycle,
 } from "./src/lifecycle.js";
-import {
-  LINKBRAIN_CONVERSATION_HOOK_REQUIREMENT,
-  LINKBRAIN_PLUGIN_ID,
-} from "./src/namespaces.js";
-import {
-  createBrainFakeTransport,
-  createLinkbrainRuntime,
-  type LinkbrainRuntime,
-} from "./src/runtime.js";
+import { LINKBRAIN_CONVERSATION_HOOK_REQUIREMENT, LINKBRAIN_PLUGIN_ID } from "./src/namespaces.js";
+import { createLinkbrainRuntime, type LinkbrainRuntime } from "./src/runtime.js";
 import { openLinkbrainStoresFromApi } from "./src/stores.js";
+import { resolveLinkbrainTransport } from "./src/transport.js";
 
 export default definePluginEntry({
   id: LINKBRAIN_PLUGIN_ID,
   name: "LiNKbrain",
   description:
-    "Private Brain adapter with durable keyed-store outbox and lifecycle capture. Default-disabled; fake-only until gates.",
+    "Private Brain adapter with durable keyed-store outbox and lifecycle capture. Default-disabled; transportMode defaults to disabled.",
   configSchema: linkbrainConfigSchema,
   register(api: OpenClawPluginApi) {
     const config = parseLinkbrainConfig(api.pluginConfig);
@@ -43,18 +37,11 @@ export default definePluginEntry({
       id: "linkbrain-outbox",
       start: async () => {
         const stores = openLinkbrainStoresFromApi(api, config.outboxMaxEntries);
+        const transport = resolveLinkbrainTransport({ api, config });
         runtime = createLinkbrainRuntime({
           config,
           stores,
-          transport: createBrainFakeTransport({
-            callTool: () => ({
-              ok: false,
-              error: {
-                code: "not_configured",
-                safeMessage: "linkbrain remote transport not configured (Phase 3; use fake in tests)",
-              },
-            }),
-          }),
+          transport,
           withLease: (options, run) => api.runtime.state.withLease(options, run),
         });
         await runtime.open();
@@ -70,7 +57,7 @@ export default definePluginEntry({
           logger: api.logger,
         });
         api.logger.info(
-          `linkbrain: state open (namespaces=${stores.openedNamespaces.join(",")}; captureEnqueue=${config.captureEnqueue}; captureDrain=${config.captureDrain}; coordinationWrites=${config.coordinationWrites})`,
+          `linkbrain: state open (namespaces=${stores.openedNamespaces.join(",")}; transportMode=${config.transportMode}; captureEnqueue=${config.captureEnqueue}; captureDrain=${config.captureDrain}; coordinationWrites=${config.coordinationWrites})`,
         );
       },
       stop: async () => {
@@ -93,13 +80,21 @@ export default definePluginEntry({
     // host timeoutMs is an upper bound only and does not cancel underlying work alone.
     const hookOpts = { timeoutMs: 3_000 } as const;
 
-    api.on("session_start", async (event) => {
-      await getLifecycle()?.handleSessionStart(event);
-    }, hookOpts);
+    api.on(
+      "session_start",
+      async (event) => {
+        await getLifecycle()?.handleSessionStart(event);
+      },
+      hookOpts,
+    );
 
-    api.on("message_received", async (event) => {
-      await getLifecycle()?.handleMessageReceived(event);
-    }, hookOpts);
+    api.on(
+      "message_received",
+      async (event) => {
+        await getLifecycle()?.handleMessageReceived(event);
+      },
+      hookOpts,
+    );
 
     api.on(
       "agent_end",
@@ -133,24 +128,44 @@ export default definePluginEntry({
       hookOpts,
     );
 
-    api.on("session_end", async (event) => {
-      await getLifecycle()?.handleSessionEnd(event);
-    }, hookOpts);
+    api.on(
+      "session_end",
+      async (event) => {
+        await getLifecycle()?.handleSessionEnd(event);
+      },
+      hookOpts,
+    );
 
-    api.on("gateway_start", async () => {
-      await getLifecycle()?.handleGatewayStart();
-    }, hookOpts);
+    api.on(
+      "gateway_start",
+      async () => {
+        await getLifecycle()?.handleGatewayStart();
+      },
+      hookOpts,
+    );
 
-    api.on("gateway_stop", async () => {
-      await getLifecycle()?.handleGatewayStop();
-    }, hookOpts);
+    api.on(
+      "gateway_stop",
+      async () => {
+        await getLifecycle()?.handleGatewayStop();
+      },
+      hookOpts,
+    );
 
-    api.on("subagent_spawned", async (event) => {
-      await getLifecycle()?.handleSubagentSpawned(event);
-    }, hookOpts);
+    api.on(
+      "subagent_spawned",
+      async (event) => {
+        await getLifecycle()?.handleSubagentSpawned(event);
+      },
+      hookOpts,
+    );
 
-    api.on("subagent_ended", async (event) => {
-      await getLifecycle()?.handleSubagentEnded(event);
-    }, hookOpts);
+    api.on(
+      "subagent_ended",
+      async (event) => {
+        await getLifecycle()?.handleSubagentEnded(event);
+      },
+      hookOpts,
+    );
   },
 });

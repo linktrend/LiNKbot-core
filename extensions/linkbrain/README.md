@@ -1,8 +1,10 @@
-# linkbrain (Phase 3 — lifecycle capture, default-disabled)
+# linkbrain (lifecycle capture + configurable transports, default-disabled)
 
-Private bundled OpenClaw Brain adapter. **Default-disabled.** Fake-only until activation gates (fixture owner sign-off, Platform auth, Principal retention).
+Private bundled OpenClaw Brain adapter. **Default-disabled.** `transportMode` defaults to
+`disabled`. Fake is test-only. HTTP/MCP adapters are opt-in and do not require live servers
+at plugin start.
 
-This directory does **not** talk to live LiNKbrain, Platform, or Lisa profile/credentials.
+This directory does **not** mutate Lisa profile/credentials.
 
 ## Status
 
@@ -11,10 +13,31 @@ This directory does **not** talk to live LiNKbrain, Platform, or Lisa profile/cr
 | `fixtures/`                                          | Sanitized JSON contracts (Phase 1; draft pending Brain owner sign-off)            |
 | `fake/`                                              | Deterministic Node ESM fake: stdio MCP or localhost HTTP                          |
 | `openclaw.plugin.json` / `package.json` / `index.ts` | Default-disabled plugin packaging (`enabledByDefault: false`, `onStartup: false`) |
-| `src/`                                               | Outbox runtime, capture batching, §10.1 lifecycle mapping, allowlist redaction    |
-| `mcp-tool-filter.ts`                                 | Phase 5 managed MCP §9.1 `toolFilter.include` allowlist (default-deny)            |
+| `src/`                                               | Outbox runtime, capture batching, §10.1 lifecycle mapping, transport adapters     |
+| `mcp-tool-filter.ts`                                 | Managed MCP §9.1 `toolFilter.include` allowlist (default-deny)                    |
 
-## Plugin behavior (Phase 3)
+## Transport modes
+
+| Mode       | Behavior                                                                                                                                                                                           |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `disabled` | Default. Drain writes return `transport_disabled` (retryable).                                                                                                                                     |
+| `fake`     | Test-only (`environment=test` + injection, or `fakeForTests`). Rejected in stage/production.                                                                                                       |
+| `http`     | POST tool calls to `ingestionEndpoint` with SecretRef bearer.                                                                                                                                      |
+| `mcp`      | MCP client against `mcp.servers.<mcpServerName>` (default `linkbrain`). Prefer SecretRef Authorization headers; oauth `authProfileId` alone returns `auth_profile_required` until Gateway injects. |
+
+## Frozen Brain write tool names
+
+Lifecycle/outbox delivery uses **only** these frozen OpenClaw §9.1 names:
+
+- `brain_capture_batch`
+- `brain_checkpoint_write`
+- `brain_task_update`
+
+The Brain Gateway consumed by this plugin **must implement these exact names**. This adapter does
+**not** remap to Brain's current shipped aliases (for example `brain_search_knowledge`). Alias
+mapping is out of scope and must not be added here.
+
+## Plugin behavior
 
 - Opens only linkbrain namespaces: `outbox`, `deadletter`, `cursor`, `health`, `capture-buffer`
 - `overflowPolicy: "reject-new"`
@@ -23,7 +46,6 @@ This directory does **not** talk to live LiNKbrain, Platform, or Lisa profile/cr
 - Bounded local capture buffer; flush on batch limits and compaction/reset/end/gateway_stop
 - Per-operation `AbortController` bounds independent of host hook timeouts
 - Opaque actor/binding/session/task/run/subagent correlations only
-- Brain MCP write allowlist: `brain_capture_batch`, `brain_checkpoint_write`, `brain_task_update`
 - Brain failures degrade honestly — hooks never throw uncaught; native OpenClaw continues
 
 ## Conversation access (required for Brain hook features)
@@ -74,4 +96,4 @@ node scripts/run-vitest.mjs extensions/linkbrain/**/*.test.ts
 
 ## Not live proof
 
-Do not enable against Lisa or a live Brain endpoint from this plugin. Phase 5 adds managed MCP + auth. Phase 4 is Skills (separate plugin; no conversation hooks).
+Do not enable against Lisa or a live Brain endpoint from this plugin until activation gates pass.

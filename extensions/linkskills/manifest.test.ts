@@ -25,6 +25,8 @@ describe("linkskills manifest/config", () => {
       governedExecution: expect.any(Object),
       telemetryEnqueue: expect.any(Object),
       telemetryDrain: expect.any(Object),
+      transportMode: expect.any(Object),
+      mcpServerName: expect.any(Object),
       skillsCredential: expect.any(Object),
       redactionPolicyVersion: expect.any(Object),
       outboxMaxEntries: expect.any(Object),
@@ -74,12 +76,14 @@ describe("linkskills manifest/config", () => {
     expect(config.environment).toBe("stage");
   });
 
-  it("defaults all write flags off", () => {
+  it("defaults all write flags off and transportMode disabled", () => {
     expect(parseLinkskillsConfig({})).toMatchObject({
       mcpDiscoveryRead: false,
       governedExecution: false,
       telemetryEnqueue: false,
       telemetryDrain: false,
+      transportMode: "disabled",
+      mcpServerName: "linkskills",
       redactionPolicyVersion: DEFAULT_LINKSKILLS_CONFIG.redactionPolicyVersion,
     });
   });

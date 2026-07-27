@@ -32,6 +32,8 @@ describe("linkskills plugin boundary", () => {
       "src/namespaces.ts",
       "src/runtime.ts",
       "src/stores.ts",
+      "src/tools.ts",
+      "src/transport.ts",
     ];
     for (const relative of files) {
       const source = fs.readFileSync(path.join(root, relative), "utf8");

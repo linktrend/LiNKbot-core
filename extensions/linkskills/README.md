@@ -1,17 +1,17 @@
-# linkskills (Phase 4 — plugin skeleton + structured telemetry)
+# linkskills (structured telemetry + configurable transports)
 
 Private OpenClaw consumer package for LiNKskills: contract fixtures, process/port-isolated
-Skills fake, and a **default-disabled** plugin skeleton with durable telemetry outbox.
+Skills fake, and a **default-disabled** plugin with durable telemetry outbox.
 
-**Not yet:** managed MCP registration, Lisa config, live Platform credentials.
+`transportMode` defaults to `disabled`. Fake is test-only. No conversation hooks.
 
 ## Layout
 
 | Path                                                 | Role                                                                                        |
 | ---------------------------------------------------- | ------------------------------------------------------------------------------------------- |
 | `openclaw.plugin.json` / `package.json` / `index.ts` | Default-disabled private plugin entry (`enabledByDefault: false`)                           |
-| `src/`                                               | Config, allowlisted envelopes, keyed-store namespaces, enqueue/drain runtime                |
-| `mcp-tool-filter.ts`                                 | Phase 5 managed MCP §9.2 `toolFilter.include` allowlist (default-deny)                      |
+| `src/`                                               | Config, allowlisted envelopes, keyed-store namespaces, enqueue/drain, transport adapters    |
+| `mcp-tool-filter.ts`                                 | Managed MCP §9.2 `toolFilter.include` allowlist (default-deny)                              |
 | `fixtures/`                                          | Sanitized contract fixtures (pending LiNKskills owner sign-off; see `fixtures/MANIFEST.md`) |
 | `fake/`                                              | Deterministic Node ESM fake (HTTP ephemeral + stdio MCP)                                    |
 | `../test/helpers/link-domain-fakes/skills-fake.ts`   | Test helper for in-process and child-process isolation                                      |
@@ -20,6 +20,25 @@ Skills fake, and a **default-disabled** plugin skeleton with durable telemetry o
 
 - **Zero conversation hooks.** The plugin never registers message/prompt/agent conversation hooks and omits `hooks.allowConversationAccess`.
 - Structured telemetry only; conversation/content/Brain/raw-tool fields are hard-rejected at enqueue.
+
+## Transport modes
+
+| Mode       | Behavior                                                                                                                                                                      |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `disabled` | Default. Drain writes return `transport_disabled` (retryable).                                                                                                                |
+| `fake`     | Test-only (`environment=test` + injection, or `fakeForTests`). Rejected in stage/production.                                                                                  |
+| `http`     | POST tool calls to `skillsEndpoint` with SecretRef bearer.                                                                                                                    |
+| `mcp`      | MCP client against `mcp.servers.<mcpServerName>` (default `linkskills`). Prefer SecretRef Authorization headers; oauth `authProfileId` alone returns `auth_profile_required`. |
+
+## Frozen Skills drain ops
+
+Drain maps structured `event_type` values onto exact §9.2 names:
+
+- `skills_run_start` / `skills_run_update` / `skills_run_complete` / `skills_run_fail`
+- `skills_feedback_submit` (default)
+- `skills_trace_candidate_submit`
+
+Conversation fields are never accepted.
 
 ## Independent flags (§12.2)
 
@@ -53,13 +72,9 @@ node extensions/linkskills/fake/cli.mjs http
 node extensions/linkskills/fake/cli.mjs stdio
 
 # focused tests
-node scripts/run-vitest.mjs extensions/linkskills/manifest.test.ts \
-  extensions/linkskills/runtime.test.ts \
-  extensions/linkskills/plugin-boundary.test.ts \
-  extensions/linkskills/fake/skills-fake.contract.test.ts
+node scripts/run-vitest.mjs extensions/linkskills/**/*.test.ts
 ```
 
-## Next (Phase 5)
+## Not live proof
 
-Managed MCP integration and authentication: independent `mcp.servers.linkskills`, SecretRefs,
-auth matrix — still no conversation hooks and no Lisa activation until gates.
+Do not enable against Lisa until Platform auth and activation gates pass.

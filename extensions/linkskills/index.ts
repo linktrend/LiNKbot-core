@@ -9,12 +9,13 @@ import { linkskillsConfigSchema, parseLinkskillsConfig } from "./src/config.js";
 import { LINKSKILLS_CONVERSATION_HOOK_POLICY, LINKSKILLS_PLUGIN_ID } from "./src/namespaces.js";
 import { createLinkskillsRuntime, type LinkskillsRuntime } from "./src/runtime.js";
 import { openLinkskillsStoresFromApi } from "./src/stores.js";
+import { resolveLinkskillsTransport } from "./src/transport.js";
 
 export default definePluginEntry({
   id: LINKSKILLS_PLUGIN_ID,
   name: "LiNKskills",
   description:
-    "Private Skills adapter with durable keyed-store telemetry outbox. Default-disabled; no conversation hooks; fake-only until gates.",
+    "Private Skills adapter with durable keyed-store telemetry outbox. Default-disabled; no conversation hooks; transportMode defaults to disabled.",
   configSchema: linkskillsConfigSchema,
   register(api: OpenClawPluginApi) {
     const config = parseLinkskillsConfig(api.pluginConfig);
@@ -28,26 +29,16 @@ export default definePluginEntry({
       id: "linkskills-outbox",
       start: async () => {
         const stores = openLinkskillsStoresFromApi(api, config.outboxMaxEntries);
-        // Transport stays unset until Phase 5 MCP/auth; skeleton opens state only.
+        const transport = resolveLinkskillsTransport({ api, config });
         runtime = createLinkskillsRuntime({
           config,
           stores,
-          transport: {
-            async write() {
-              return {
-                ok: false,
-                errorCode: "not_configured",
-                safeMessage: "linkskills remote transport not configured (Phase 4 skeleton)",
-                terminal: false,
-                retryable: true,
-              };
-            },
-          },
+          transport,
           withLease: (options, run) => api.runtime.state.withLease(options, run),
         });
         await runtime.open();
         api.logger.info(
-          `linkskills: state open (namespaces=${stores.openedNamespaces.join(",")}; telemetryEnqueue=${config.telemetryEnqueue}; telemetryDrain=${config.telemetryDrain})`,
+          `linkskills: state open (namespaces=${stores.openedNamespaces.join(",")}; transportMode=${config.transportMode}; telemetryEnqueue=${config.telemetryEnqueue}; telemetryDrain=${config.telemetryDrain})`,
         );
       },
       stop: async () => {

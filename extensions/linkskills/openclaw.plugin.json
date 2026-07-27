@@ -46,6 +46,18 @@
     "outboxMaxEntries": {
       "label": "Outbox Max Entries",
       "help": "Per-namespace keyed-store capacity with reject-new overflow."
+    },
+    "transportMode": {
+      "label": "Transport Mode",
+      "help": "disabled (default), fake (test-only), mcp (managed mcp.servers entry), or http (skillsEndpoint + SecretRef bearer)."
+    },
+    "mcpServerName": {
+      "label": "MCP Server Name",
+      "help": "Key under mcp.servers for Skills managed MCP. Default linkskills."
+    },
+    "skillsEndpoint": {
+      "label": "Skills Endpoint",
+      "help": "HTTP JSON endpoint for Skills telemetry when transportMode is http."
     }
   },
   "configSchema": {
@@ -89,9 +101,18 @@
         "type": "boolean",
         "default": false
       },
+      "transportMode": {
+        "type": "string",
+        "enum": ["disabled", "fake", "mcp", "http"],
+        "default": "disabled"
+      },
+      "mcpServerName": {
+        "type": "string",
+        "default": "linkskills"
+      },
       "skillsEndpoint": {
         "type": "string",
-        "description": "Optional Skills ingestion endpoint distinct from managed MCP. Fake-only until gates."
+        "description": "Skills telemetry endpoint for transportMode=http (SecretRef bearer via skillsCredential)."
       },
       "skillsCredential": {
         "$ref": "#/$defs/secretInput"

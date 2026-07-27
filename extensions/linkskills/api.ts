@@ -12,11 +12,13 @@ export {
   parseLinkskillsConfig,
   type LinkskillsConfig,
   type LinkskillsSecretInput,
+  type LinkskillsTransportMode,
 } from "./src/config.js";
 export {
   LINKSKILLS_REDACTION_POLICY_VERSION,
   buildSkillsTelemetryEnvelope,
   findProhibitedSkillsField,
+  skillsTransportArgsFromEnvelope,
   type SkillsInternalEnvelope,
   type SkillsTelemetryBody,
 } from "./src/envelopes.js";
@@ -27,6 +29,16 @@ export {
   type LinkskillsRuntime,
   type LinkskillsTransport,
 } from "./src/runtime.js";
+export {
+  resolveLinkskillsTransport,
+  type ResolveLinkskillsTransportParams,
+} from "./src/transport.js";
+export {
+  LINKSKILLS_DEFAULT_TELEMETRY_TOOL,
+  LINKSKILLS_DRAIN_TOOLS,
+  mapSkillsEventTypeToToolName,
+  resolveSkillsDrainToolName,
+} from "./src/tools.js";
 export {
   LINKSKILLS_MCP_TOOL_ALLOWLIST,
   buildLinkskillsMcpToolFilter,

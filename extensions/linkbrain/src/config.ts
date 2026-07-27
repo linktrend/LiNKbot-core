@@ -10,11 +10,17 @@ export type LinkbrainSecretInput = string | LinkbrainSecretRef;
 
 export type LinkbrainEnvironment = "test" | "stage" | "production";
 
+export type LinkbrainTransportMode = "disabled" | "fake" | "mcp" | "http";
+
 export type LinkbrainConfig = {
   mcpRead: boolean;
   captureEnqueue: boolean;
   captureDrain: boolean;
   coordinationWrites: boolean;
+  /** Remote write adapter. Default disabled — no remote calls until operators opt in. */
+  transportMode: LinkbrainTransportMode;
+  /** Managed MCP server key under api.config.mcp.servers. */
+  mcpServerName: string;
   ingestionEndpoint?: string;
   ingestionCredential?: LinkbrainSecretInput;
   redactionPolicyVersion: string;
@@ -31,6 +37,8 @@ export const DEFAULT_LINKBRAIN_CONFIG: LinkbrainConfig = Object.freeze({
   captureEnqueue: false,
   captureDrain: false,
   coordinationWrites: false,
+  transportMode: "disabled",
+  mcpServerName: "linkbrain",
   redactionPolicyVersion: "brain.redaction.v0",
   batchMaxEvents: 32,
   batchMaxBytes: 49_152,
@@ -92,6 +100,13 @@ function parseEnvironment(value: unknown): LinkbrainEnvironment {
   return DEFAULT_LINKBRAIN_CONFIG.environment;
 }
 
+function parseTransportMode(value: unknown): LinkbrainTransportMode {
+  if (value === "disabled" || value === "fake" || value === "mcp" || value === "http") {
+    return value;
+  }
+  return DEFAULT_LINKBRAIN_CONFIG.transportMode;
+}
+
 /**
  * Validates and normalizes plugin config. Independent Brain flags default off
  * so an enabled plugin still does no remote work until operators opt in.
@@ -106,6 +121,10 @@ export function parseLinkbrainConfig(value: unknown): LinkbrainConfig {
     typeof raw.redactionPolicyVersion === "string" && raw.redactionPolicyVersion.length > 0
       ? raw.redactionPolicyVersion
       : DEFAULT_LINKBRAIN_CONFIG.redactionPolicyVersion;
+  const mcpServerName =
+    typeof raw.mcpServerName === "string" && raw.mcpServerName.length > 0
+      ? raw.mcpServerName
+      : DEFAULT_LINKBRAIN_CONFIG.mcpServerName;
 
   return {
     mcpRead: readBoolean(raw.mcpRead, DEFAULT_LINKBRAIN_CONFIG.mcpRead),
@@ -115,6 +134,8 @@ export function parseLinkbrainConfig(value: unknown): LinkbrainConfig {
       raw.coordinationWrites,
       DEFAULT_LINKBRAIN_CONFIG.coordinationWrites,
     ),
+    transportMode: parseTransportMode(raw.transportMode),
+    mcpServerName,
     ...(ingestionEndpoint ? { ingestionEndpoint } : {}),
     ...(raw.ingestionCredential !== undefined
       ? { ingestionCredential: parseSecretInput(raw.ingestionCredential) }

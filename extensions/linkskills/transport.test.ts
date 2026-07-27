@@ -1,0 +1,205 @@
+import { describe, expect, it, vi } from "vitest";
+import { parseLinkskillsConfig } from "./src/config.js";
+import { findProhibitedSkillsField } from "./src/envelopes.js";
+import { mapSkillsEventTypeToToolName, resolveSkillsDrainToolName } from "./src/tools.js";
+import { resolveLinkskillsTransport } from "./src/transport.js";
+
+function stubApi(config: Record<string, unknown> = {}) {
+  return {
+    config: config as never,
+    logger: {
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+      debug: vi.fn(),
+    },
+  };
+}
+
+const sampleEnvelope = {
+  version: 1 as const,
+  kind: "structured_event" as const,
+  toolName: "skills_run_start",
+  idempotencyKey: "idem:skills-1",
+  redactionPolicyVersion: "skills.telemetry.v0",
+  createdAtMs: Date.now(),
+  body: {
+    schema_version: "0.1",
+    event_id: "evt:1",
+    event_type: "skill.run_started",
+    occurred_at: "2026-07-28T00:00:00Z",
+    sequence: 1,
+    idempotency_key: "idem:skills-1",
+    actor_id: "actor:test",
+    run_id: "run:1",
+    skill_id: "skill.fixture.echo",
+    skill_release_hash: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    execution_profile_hash:
+      "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    outcome: "info",
+    sensitivity: "public_internal",
+  },
+};
+
+const writeArgs = {
+  toolName: "skills_run_start",
+  idempotencyKey: "idem:skills-1",
+  arguments: { run_id: "run:1" },
+  envelope: sampleEnvelope,
+};
+
+describe("linkskills transport modes", () => {
+  it("defaults transportMode to disabled and returns transport_disabled", async () => {
+    const config = parseLinkskillsConfig({});
+    expect(config.transportMode).toBe("disabled");
+    expect(config.mcpServerName).toBe("linkskills");
+    const transport = resolveLinkskillsTransport({
+      api: stubApi(),
+      config,
+    });
+    const result = await transport.write(writeArgs);
+    expect(result).toMatchObject({
+      ok: false,
+      retryable: true,
+      errorCode: "transport_disabled",
+    });
+    expect(result.errorCode).not.toBe("not_configured");
+  });
+
+  it("rejects fake outside test environment", async () => {
+    const config = parseLinkskillsConfig({
+      transportMode: "fake",
+      environment: "stage",
+    });
+    const transport = resolveLinkskillsTransport({
+      api: stubApi(),
+      config,
+    });
+    const result = await transport.write(writeArgs);
+    expect(result).toMatchObject({
+      ok: false,
+      terminal: true,
+      errorCode: "fake_rejected",
+    });
+  });
+
+  it("accepts fake via explicit test injection", async () => {
+    const config = parseLinkskillsConfig({
+      transportMode: "fake",
+      environment: "test",
+    });
+    const transport = resolveLinkskillsTransport({
+      api: stubApi(),
+      config,
+      fakeForTests: {
+        authorization: "Bearer fake",
+        fake: {
+          dispatch: () => ({ ok: true, data: { replayed: false } }),
+        },
+      },
+    });
+    const result = await transport.write(writeArgs);
+    expect(result.ok).toBe(true);
+  });
+
+  it("http mode posts with SecretRef bearer from env", async () => {
+    const fetchImpl = vi.fn(async (_url: string | URL | Request, init?: RequestInit) => {
+      const headers = new Headers(init?.headers);
+      expect(headers.get("authorization")).toBe("Bearer fake-skills-token");
+      const body = JSON.parse(String(init?.body)) as { toolName: string };
+      expect(body.toolName).toBe("skills_run_start");
+      return new Response(JSON.stringify({ ok: true }), { status: 200 });
+    });
+    const config = parseLinkskillsConfig({
+      transportMode: "http",
+      skillsEndpoint: "https://skills.example.test/telemetry",
+      skillsCredential: {
+        source: "env",
+        provider: "default",
+        id: "LINKTREND_SKILLS_FAKE_TOKEN",
+      },
+    });
+    const transport = resolveLinkskillsTransport({
+      api: stubApi(),
+      config,
+      fetchImpl: fetchImpl as unknown as typeof fetch,
+      env: { LINKTREND_SKILLS_FAKE_TOKEN: "fake-skills-token" },
+    });
+    const result = await transport.write(writeArgs);
+    expect(result.ok).toBe(true);
+    expect(fetchImpl).toHaveBeenCalledOnce();
+  });
+
+  it("mcp mode calls exact skills_* ops through injected session", async () => {
+    const calls: string[] = [];
+    const config = parseLinkskillsConfig({ transportMode: "mcp" });
+    const transport = resolveLinkskillsTransport({
+      api: stubApi({
+        mcp: {
+          servers: {
+            linkskills: {
+              enabled: true,
+              url: "https://mcp.example.test/skills",
+              headers: { Authorization: "Bearer mcp-fake" },
+            },
+          },
+        },
+      }),
+      config,
+      createMcpSession: async () => ({
+        async callTool(name) {
+          calls.push(name);
+          return { structuredContent: { ok: true } };
+        },
+        async close() {},
+      }),
+    });
+    const result = await transport.write(writeArgs);
+    expect(result.ok).toBe(true);
+    expect(calls).toEqual(["skills_run_start"]);
+  });
+
+  it("maps event types to frozen skills_* drain ops", () => {
+    expect(mapSkillsEventTypeToToolName("skill.run_started")).toBe("skills_run_start");
+    expect(mapSkillsEventTypeToToolName("skill.run_failed")).toBe("skills_run_fail");
+    expect(mapSkillsEventTypeToToolName("skill.trace_candidate")).toBe(
+      "skills_trace_candidate_submit",
+    );
+    expect(resolveSkillsDrainToolName({ eventType: "skill.run_completed" })).toBe(
+      "skills_run_complete",
+    );
+    expect(resolveSkillsDrainToolName({})).toBe("skills_feedback_submit");
+  });
+
+  it("still rejects prohibited conversation fields", () => {
+    expect(
+      findProhibitedSkillsField({
+        event_type: "skill.run_started",
+        conversation: { text: "nope" },
+      }),
+    ).toMatchObject({ key: "conversation" });
+  });
+
+  it("mcp oauth-only without SecretRef header returns auth_profile_required", async () => {
+    const config = parseLinkskillsConfig({ transportMode: "mcp" });
+    const transport = resolveLinkskillsTransport({
+      api: stubApi({
+        mcp: {
+          servers: {
+            linkskills: {
+              enabled: true,
+              url: "https://mcp.example.test/skills",
+              oauth: { authProfileId: "linkskills-stage-mcp" },
+            },
+          },
+        },
+      }),
+      config,
+    });
+    const result = await transport.write(writeArgs);
+    expect(result).toMatchObject({
+      ok: false,
+      errorCode: "auth_profile_required",
+    });
+  });
+});

@@ -54,6 +54,18 @@
     "outboxMaxEntries": {
       "label": "Outbox Max Entries",
       "help": "Per-namespace keyed-store capacity with reject-new overflow."
+    },
+    "transportMode": {
+      "label": "Transport Mode",
+      "help": "disabled (default), fake (test-only), mcp (managed mcp.servers entry), or http (ingestionEndpoint + SecretRef bearer)."
+    },
+    "mcpServerName": {
+      "label": "MCP Server Name",
+      "help": "Key under mcp.servers for Brain managed MCP. Default linkbrain."
+    },
+    "ingestionEndpoint": {
+      "label": "Ingestion Endpoint",
+      "help": "HTTP JSON endpoint for Brain writes when transportMode is http."
     }
   },
   "configSchema": {
@@ -97,9 +109,18 @@
         "type": "boolean",
         "default": false
       },
+      "transportMode": {
+        "type": "string",
+        "enum": ["disabled", "fake", "mcp", "http"],
+        "default": "disabled"
+      },
+      "mcpServerName": {
+        "type": "string",
+        "default": "linkbrain"
+      },
       "ingestionEndpoint": {
         "type": "string",
-        "description": "Optional Brain ingestion endpoint distinct from managed MCP. Fake-only until gates."
+        "description": "Brain ingestion endpoint for transportMode=http (SecretRef bearer via ingestionCredential)."
       },
       "ingestionCredential": {
         "$ref": "#/$defs/secretInput"

@@ -330,3 +330,39 @@ export function feedbackParamsFromEnvelope(
     event_id: envelope.body.event_id,
   };
 }
+
+/**
+ * Builds drain/MCP/HTTP arguments for the exact frozen skills_* op.
+ * Never includes conversation or prohibited fields (already rejected at envelope build).
+ */
+export function skillsTransportArgsFromEnvelope(
+  envelope: SkillsInternalEnvelope,
+  toolName: string,
+): Record<string, unknown> {
+  const body = envelope.body;
+  if (toolName === "skills_feedback_submit") {
+    return feedbackParamsFromEnvelope(envelope);
+  }
+  if (toolName === "skills_trace_candidate_submit") {
+    return {
+      run_id: body.run_id,
+      skill_id: body.skill_id,
+      skill_release_hash: body.skill_release_hash,
+      execution_profile_hash: body.execution_profile_hash,
+      event_id: body.event_id,
+      candidate: body.payload ?? {},
+    };
+  }
+  return {
+    run_id: body.run_id,
+    skill_id: body.skill_id,
+    release_hash: body.skill_release_hash,
+    execution_profile_hash: body.execution_profile_hash,
+    ...(typeof body.session_id === "string" ? { session_id: body.session_id } : {}),
+    status: body.outcome,
+    event_id: body.event_id,
+    event_type: body.event_type,
+    ...(body.metrics ? { metrics: body.metrics } : {}),
+    ...(body.payload ? { payload: body.payload } : {}),
+  };
+}
