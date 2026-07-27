@@ -14,7 +14,7 @@
 | Coordination home | /Users/linktrend/Projects/openclaw_prime |
 | Session ID        | codex-desktop-agent-20260723-1556        |
 | Started           | 2026-07-23 15:56 Asia/Taipei             |
-| Last updated      | 2026-07-23 17:40 Asia/Taipei             |
+| Last updated      | 2026-07-27 13:06 Asia/Taipei             |
 
 ## Work
 
@@ -111,9 +111,18 @@
 - Scope now includes a fresh audit of all worktrees, local/origin branches, open PRs, the preserved stash, and pending coordination records.
 - Cleanup remains evidence-gated: only clean, unused, merged/obsolete, unowned branches/worktrees may be removed. Another agent's active session record will not be closed by this Orchestrator.
 
+### 2026-07-27 12:56-13:06 Asia/Taipei — PR takeover and CI repair
+
+- Carlos explicitly authorized this Orchestrator to take over and complete all open OpenClaw Prime PRs targeting `development`, then align the local development checkout and verify Lisa is running.
+- Verified open PRs #33, #34, and #35. PR #34 contains #33 plus Lisa digest/clock and embedded-runner changes; #35 publishes coordination records.
+- Identified shared development-baseline failures: mutable GitHub Actions references, unnecessary `secrets: inherit`, two high-severity production dependency advisories, a stale docs map, and stale npm shrinkwrap.
+- Opened prerequisite PR #36 from `dev/minicodex/WP-0-development-ci-repair-20260727`. Local proof passed: 87 workflow-guard tests (1 skipped), actionlint, production audit, docs-map check, shrinkwrap check, diff check, and clean autoreview. CI is running after adding the generated shrinkwrap update.
+- Carlos's takeover authorization resolves the stale Cursor/Lisa ownership overlap for PR #34. Preserved the historical records and live Lisa deployment.
+- Resolved all seven open Bugbot findings on PR #34 locally: consistent weekday local-coder routing, one canonical pipeline summary, cycle-preserving four-wave status, failure-path status persistence, and one-line Telegram failures. A whole-branch safety review rejected the attempted source-level suppression of unrecovered execution denials, so the core source and test were restored to `development`; Lisa now retries the exact analyzable, unpiped command once and retains fatal behavior if recovery fails. Focused baseline failure-signal tests and broader PR proof remain pending after the final documentation corrections.
+
 ## Next Action
 
-- Exact next action: Audit origin/PR/branch/stash state, assemble a clean integration branch from current `origin/development`, run pre-push proof, open the development PR, and monitor CI before promotion.
+- Exact next action: Merge prerequisite PR #36 after green CI, refresh and merge #33, finish proof/review and merge #34, refresh and merge #35, then align local `development` and verify Lisa runtime health.
 - Owner: Codex Desktop Orchestrator
 - Questions for Carlos:
   - None required for the current healthy state.
