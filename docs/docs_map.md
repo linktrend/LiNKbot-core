@@ -162,6 +162,17 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H3: 2026-07-23 17:28 Asia/Taipei — Completed
   - H2: Next Action
 
+## agent-sessions/completed/cursor-local-agent-20260724-1951-autonomous-git-ops.md
+
+- Route: /agent-sessions/completed/cursor-local-agent-20260724-1951-autonomous-git-ops
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Decisions
+
 ## announcements/bluebubbles-imessage.md
 
 - Route: /announcements/bluebubbles-imessage
@@ -4511,6 +4522,22 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Questions for the Orchestrator or Next Agent
   - H2: Confidence
   - H2: Amendments
+
+## handoffs/2026-07-24-1955-autonomous-git-ops-inheritance.md
+
+- Route: /handoffs/2026-07-24-1955-autonomous-git-ops-inheritance
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Created (IDE Development)
+  - H2: Files Modified (IDE Development)
+  - H2: Files Modified (consumers — workflow sync only)
+  - H2: Files Created/Modified (openclawprime / Lisa)
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Remaining work (Principal / next agent)
+  - H2: Confidence
 
 ## handoffs/TEMPLATE.md
 
