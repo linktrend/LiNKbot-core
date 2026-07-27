@@ -129,18 +129,6 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H3: 2026-07-23 16:05 Asia/Taipei — Re-read Codex primary Orchestrator state
   - H2: Next Action
 
-## agent-sessions/active/cursor-local-mac-mini-lisa-telegram-silence-20260726-0915.md
-
-- Route: /agent-sessions/active/cursor-local-mac-mini-lisa-telegram-silence-20260726-0915
-- Headings:
-  - H1: Agent Session Record
-  - H2: Identity
-  - H2: Work
-  - H2: Ownership Scope
-  - H2: Coordination
-  - H2: Notes
-  - H2: Recovery note — 2026-07-26 09:37 Asia/Taipei
-
 ## agent-sessions/completed/README.md
 
 - Route: /agent-sessions/completed/README
@@ -209,6 +197,18 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Coordination
   - H2: Progress
   - H2: Next Action
+
+## agent-sessions/completed/cursor-local-mac-mini-lisa-telegram-silence-20260726-0915.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-lisa-telegram-silence-20260726-0915
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Notes
+  - H2: Recovery note — 2026-07-26 09:37 Asia/Taipei
 
 ## announcements/bluebubbles-imessage.md
 
@@ -4590,6 +4590,7 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Remaining work
   - H2: Exact next action
   - H2: Confidence
+  - H2: Amendment — 2026-07-27 13:45 Asia/Taipei
 
 ## handoffs/TEMPLATE.md
 
