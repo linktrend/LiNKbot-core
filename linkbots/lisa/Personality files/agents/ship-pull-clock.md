@@ -37,7 +37,7 @@ Morning Ship moved earlier (05:00) and Pull to 07:00 so the **08:30 morning dige
 
 Each job: isolated `agentTurn`, preferred `agentId: lisa-cron` (same pattern as `lisa-morning-digest` / `lisa-heartbeat-45`). Announce → Telegram `1123023078` with the **one-line** Clear/Issues result only (no lists/links). **Also** email that same one line (see below).
 
-**Tool allowlist:** cron `payload.toolsAllow` **and** `agents.list[lisa-cron].tools.allow` must both include `sessions_spawn` and `sessions_yield`. OpenClaw intersects them — listing the tool only on the job is not enough (Ship 16 2026-07-25: job had `sessions_spawn`, agent allowlist did not → tool missing at runtime). See `linkbots/lisa/docs/SHIP-PULL-CLOCK-INSTALL.md`. Ship/pull jobs that send email also need `exec` (or equivalent) so `tools/bin/lisa-safe email-send` can run — match digest allowlisting practice.
+**Tool allowlist:** cron `payload.toolsAllow` **and** `agents.list[lisa-cron].tools.allow` must include `sessions_spawn`, `sessions_yield`, `read`, `write`, and `exec`. OpenClaw intersects them — listing a tool only on the job or only on the agent is not enough (Ship 16 2026-07-25: job had `sessions_spawn`, agent allowlist did not → tool missing at runtime). File tools support the procedure/status/email-body files; `exec` runs `tools/bin/lisa-safe email-send`. See `linkbots/lisa/docs/SHIP-PULL-CLOCK-INSTALL.md`.
 
 ## Repo list (sequential — one at a time)
 
