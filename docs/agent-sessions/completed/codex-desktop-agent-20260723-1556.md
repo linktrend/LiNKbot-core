@@ -24,7 +24,7 @@
 | Branch          | `docs/initial-agent-handoff-20260723`                                                                                                                                    |
 | Starting commit | `497dfd8ff45b6422f4944e53ed171bfda01cd79b`                                                                                                                               |
 | Status          | `completed`                                                                                                                                                              |
-| Handoff         | `docs/handoffs/2026-07-27-1511-codex-desktop-pr-merge-lisa-deploy.md`                                                                                                    |
+| Handoff         | `docs/handoffs/2026-07-27-1517-codex-desktop-pr-merge-lisa-deploy.md`                                                                                                    |
 
 ## Ownership Scope
 

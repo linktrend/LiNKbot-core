@@ -3287,6 +3287,7 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
 - Route: /current-status
 - Headings:
   - H1: Current Repository Status
+  - H2: Current Status — 2026-07-27 15:17 Asia/Taipei
   - H2: Status Metadata
   - H2: Current Stable State
   - H2: Most Recently Completed Work
@@ -4663,6 +4664,30 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Exact next action
   - H2: Confidence
   - H2: Amendment — 2026-07-27 13:45 Asia/Taipei
+
+## handoffs/2026-07-27-1517-codex-desktop-pr-merge-lisa-deploy.md
+
+- Route: /handoffs/2026-07-27-1517-codex-desktop-pr-merge-lisa-deploy
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
 
 ## handoffs/TEMPLATE.md
 
