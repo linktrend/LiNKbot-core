@@ -49,6 +49,7 @@
 - Note: `7. Checks: No` means all clear (inverted Yes/No), not a failed check.
 - Implemented personality plain-Telegram + no-`2>&1` rules; cron payload HARD EXEC suffix; failure-signal ignores recoverable opaque denylist denials; patched live dist + restarted gateway.
 - 10:45 heartbeat delivered (messageId=697). Catch-up digest delivered ok (messageId=699), consecutiveErrors=0.
+- 2026-07-27 13:45 Orchestrator correction: whole-branch safety review rejected the source-level suppression of unrecovered execution denials. PR #34 now keeps the existing fatal behavior and uses the personality-level exact-command retry rule. The historical live patch remains recorded here and will be overwritten by a full build from merged safe source before Lisa's final restart and health check.
 
 ## Next Action
 

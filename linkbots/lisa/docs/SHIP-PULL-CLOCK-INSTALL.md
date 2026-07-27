@@ -21,12 +21,12 @@
 
 ## Existing-install migration (required)
 
-Do not create a second set of jobs when the legacy names (`lisa-ship-a`, `lisa-pull-a`, `lisa-ship-b`, `lisa-pull-b`) already exist. Live cron jobs have stable IDs independent of their names, so migrate each existing job in place:
+Do not create a second set of jobs when legacy names (`lisa-ship-a`, `lisa-pull-a`, `lisa-ship-b`, `lisa-pull-b`) or the prior hour names (`lisa-ship-06`, `lisa-pull-08`) already exist. Live cron jobs have stable IDs independent of their names, so migrate each existing job in place:
 
 1. Run `cron list --json` and identify the four existing Ship/Pull job IDs by name, schedule, and payload.
 2. Use `cron edit <job-id>` to update its `--name`, `--cron`, `--tz Asia/Taipei`, description, and message to the matching row below. Preserve its agent, isolated session, delivery target, and tool allowlist unless this guide explicitly changes them.
 3. If both a legacy and replacement job exist for the same wave, keep them disabled until you choose the canonical job; then enable exactly one and remove the duplicate only after verifying its ID and configuration.
-4. Re-run `cron list --json`. The old names must be absent, and exactly one enabled job must exist for each wave schedule before the migration is complete.
+4. Re-run `cron list --json`. The A/B, Ship 06, and Pull 08 names must be absent, and exactly one enabled job must exist for each wave schedule before the migration is complete.
 
 ## Jobs to create (new installs only)
 

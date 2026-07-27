@@ -118,7 +118,7 @@
 - Identified shared development-baseline failures: mutable GitHub Actions references, unnecessary `secrets: inherit`, two high-severity production dependency advisories, a stale docs map, and stale npm shrinkwrap.
 - Opened prerequisite PR #36 from `dev/minicodex/WP-0-development-ci-repair-20260727`. Local proof passed: 87 workflow-guard tests (1 skipped), actionlint, production audit, docs-map check, shrinkwrap check, diff check, and clean autoreview. CI is running after adding the generated shrinkwrap update.
 - Carlos's takeover authorization resolves the stale Cursor/Lisa ownership overlap for PR #34. Preserved the historical records and live Lisa deployment.
-- Resolved all seven open Bugbot findings on PR #34 locally: consistent weekday local-coder routing, one canonical pipeline summary, cycle-preserving four-wave status, failure-path status persistence, one-line Telegram failures, and precise fatal-vs-recoverable denylist classification. Focused failure-signal tests pass (10/10); broader PR proof remains pending.
+- Resolved all seven open Bugbot findings on PR #34 locally: consistent weekday local-coder routing, one canonical pipeline summary, cycle-preserving four-wave status, failure-path status persistence, and one-line Telegram failures. A whole-branch safety review rejected the attempted source-level suppression of unrecovered execution denials, so the core source and test were restored to `development`; Lisa now retries the exact analyzable, unpiped command once and retains fatal behavior if recovery fails. Focused baseline failure-signal tests and broader PR proof remain pending after the final documentation corrections.
 
 ## Next Action
 

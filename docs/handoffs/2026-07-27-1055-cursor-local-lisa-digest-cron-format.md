@@ -48,3 +48,7 @@ Ask Carlos to glance at the newest Morning Digest in Telegram; if it is plain te
 ## Confidence
 
 95%
+
+## Amendment — 2026-07-27 13:45 Asia/Taipei
+
+The live `dist/` patch and the source-level failure classification above accurately record what this session did, but they are not the final integration decision. During takeover review, the Codex Desktop Orchestrator found that suppressing an unrecovered execution denial could let a failed cron continue and report misleading success. The source change was therefore removed from PR #34. Lisa's durable recovery rule is now personality-level: retry the exact analyzable, unpiped command once; if it still fails, preserve the failure as fatal. After the safe source is merged, a full build and Lisa restart will replace the temporary live `dist/` patch before final health verification.

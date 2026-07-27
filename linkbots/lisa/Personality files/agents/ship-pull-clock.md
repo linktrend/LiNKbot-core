@@ -78,14 +78,14 @@ Emit **no** mid-run assistant text (“Starting WAVE…”, “processing repos�
    - `model: "grok-4.5[effort=high,fast=true]"`
    - `task`: the matching **Shipper** or **Puller** prompt below (fill WAVE label).
 3. Wait for ACP completion (or fail). Do **not** substitute a Lisa subagent or self-write code.
-4. On spawn failure: leave the exact error in the cron run trace, update the status file with `WAVE: Issues` using the cycle-preserving rules above, then send only the Telegram + email one-liners; stop. Never put the error in the final Telegram reply.
+4. On spawn failure: leave the exact error in the cron run trace, update the status file with `WAVE: Issues` using the cycle-preserving rules above, send the email side effect, then return only the Telegram one-liner; stop. Never put the error in the final Telegram reply.
 5. On success: ensure the status file contains the current wave's one-liner using the cycle-preserving rules above (or update it yourself if Cursor could not).
-6. **Telegram:** final cron reply is **only** that one line (Clear or Issues).
-7. **Email (required side-effect, separate from heartbeat):** write the same one line to `scratch/pipeline_status_email.txt`, then run **exactly one** unpiped `exec` (no pipes, no `ls`, no multi-step plans):
+6. **Email (required side-effect, separate from heartbeat):** write the same one line to `scratch/pipeline_status_email.txt`, then run **exactly one** unpiped `exec` (no pipes, no `ls`, no multi-step plans):
    ```bash
    tools/bin/lisa-safe email-send --to calusa@linktrend.media --subject "<WAVE> status" --body-file scratch/pipeline_status_email.txt
    ```
    Subject examples: `Ship 05 status`, `Pull 07 status`. Body is exactly one line (`WAVE: Clear` or `WAVE: Issues`) — no lists, no links, no Battery content. Send for **both** Clear and Issues after the wave finishes across the repo list. If email fails once, **keep Telegram delivery** and finish with the one-line status — do not abort the cron or invent Clear/Issues from an email failure alone.
+7. **Telegram:** only after the email attempt, return the final cron reply as **only** that one line (Clear or Issues). This final assistant reply is what cron announces.
 
 ### HARD RULES — `lisa-safe` (Pull 07 2026-07-26 failure)
 
@@ -94,7 +94,7 @@ Emit **no** mid-run assistant text (“Starting WAVE…”, “processing repos�
 1. **Never** `ls` / list / explore / “list files in” `tools/bin/lisa-safe` or `~/.openclaw-lisa/workspace/tools/bin/lisa-safe`.
 2. **Never** multi-step exec plans such as `list files in … → print text → print text`.
 3. **Do not** probe or verify the binary before use. Invoke `email-send` directly once, exactly as above.
-4. Order: ACP spawn → status file → Telegram one-liner → email last. Do not start the run by exploring `tools/bin`.
+4. Order: ACP spawn → status file → email attempt → final Telegram one-liner. Do not start the run by exploring `tools/bin`.
 
 ## ACP prompt — Shipper
 
