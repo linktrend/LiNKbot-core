@@ -112,4 +112,4 @@ Refresh `docs/current-status.md` from this handoff (Orchestrator-only). No activ
 - Fix: save accepted `CaptureBufferRecord` before `flushRecord`; flush/outbox failures retain retryable buffer; never claim `flushed: true` on failure; overflow remains reject-new without silent loss of prior accepts.
 - Tests: `extensions/linkbrain/capture.test.ts` (enqueue fail, overflow, shutdown, restart, retry, duplicate, successful drain, Brain isolate).
 - Focused suite: **21 files / 152 tests**.
-- Re-verify Codex against the tip that contains this fix + green `openclaw/ci-gate`. Not merge; not Phase 14 self-certify; no Lisa mutation.
+- Fix commit `44b33133c26359940715cde3ec158840c057f851`; tip `74f7e80222781cbd3535a86b247a19b8d873802c`; `openclaw/ci-gate` SUCCESS — <https://github.com/linktrend/openclaw_prime/actions/runs/30339904312>. Re-verify Codex against that tip. Not merge; not Phase 14 self-certify; no Lisa mutation.

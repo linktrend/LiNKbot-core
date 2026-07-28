@@ -216,7 +216,7 @@ Source: `FIXTURE-OWNER-SIGNOFF.md`. **Phase 1 fixture-owner gate CLOSED.** Phase
 7. Principal Brain production retention / hold approval
 8. Production credentials + authorized operator for Lisa-profile mutation
 9. Live Librarian / Brain Gateway for scratch finding submission
-10. Hosted exact-head CI: **cleared for tip `0a2e97fe643`** (`openclaw/ci-gate` SUCCESS on run `30333114926`). Fixture-owner gate CLOSED. Re-check gate if tip advances after that SHA.
+10. Hosted exact-head CI: **cleared for tip `74f7e8022278…`** (`openclaw/ci-gate` SUCCESS on run `30339904312`). Capture durability fix included. Fixture-owner gate CLOSED. Re-check gate if tip advances after that SHA.
 
 ### Cleared relative to earlier provisional (code evidence only — not Phase 1 exit)
 
