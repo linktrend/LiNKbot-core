@@ -1,7 +1,7 @@
 # Plan §13.3 classification / evidence index — provisional for Codex Phase 14
 
 **Recorded:** 2026-07-28 21:40 Asia/Taipei
-**Branch tip (at authoring):** wave 7 — see Phase 13 / `WAVE7-CORRECTION-PACKET.md` for exact pushed HEAD; local proof **29/196**
+**Branch tip (at authoring):** `b4ac94debf55a7f460a053845531066b24516b06` (code tip `39e85a5d6bc`); local proof **29/196**
 **PR:** [#38](https://github.com/linktrend/openclaw_prime/pull/38)
 **Authority:** Plan §13.3 — this is an **execution-agent evidence index** for OpenClaw Codex Phase 14 re-verification. It is **not** self-certification and does **not** pass Phase 14.
 
