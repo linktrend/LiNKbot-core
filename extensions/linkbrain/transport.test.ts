@@ -115,10 +115,11 @@ describe("linkbrain transport modes", () => {
       ingestionEndpoint: "https://brain.example.test/ingest",
       ingestionCredential: "plain-fake-token",
     });
+    const fetch503 = vi.fn(async () => new Response("busy", { status: 503 }));
     const transport503 = resolveLinkbrainTransport({
       api: stubApi(),
       config,
-      fetchImpl: (async () => new Response("busy", { status: 503 })) as typeof fetch,
+      fetchImpl: fetch503 as unknown as typeof fetch,
     });
     expect(await transport503.write(writeArgs)).toMatchObject({
       ok: false,
@@ -126,10 +127,11 @@ describe("linkbrain transport modes", () => {
       errorCode: "retryable",
     });
 
+    const fetch401 = vi.fn(async () => new Response("nope", { status: 401 }));
     const transport401 = resolveLinkbrainTransport({
       api: stubApi(),
       config,
-      fetchImpl: (async () => new Response("nope", { status: 401 })) as typeof fetch,
+      fetchImpl: fetch401 as unknown as typeof fetch,
     });
     expect(await transport401.write(writeArgs)).toMatchObject({
       ok: false,

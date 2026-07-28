@@ -9,6 +9,11 @@ import { SSEClientTransport } from "@modelcontextprotocol/sdk/client/sse.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import { resolveConfiguredSecretInputString } from "openclaw/plugin-sdk/secret-input-runtime";
+import {
+  fetchWithSsrFGuard,
+  mergeSsrFPolicies,
+  ssrfPolicyFromHttpBaseUrlAllowedHostname,
+} from "openclaw/plugin-sdk/ssrf-runtime";
 import type { OpenClawPluginApi } from "../runtime-api.js";
 import type { LinkskillsConfig, LinkskillsTransportMode } from "./config.js";
 import {
@@ -298,7 +303,8 @@ function createHttpTransport(params: {
   config: LinkskillsConfig;
   apiConfig: OpenClawPluginApi["config"];
   env: NodeJS.ProcessEnv;
-  fetchImpl: typeof fetch;
+  /** When set (tests), forwarded to the SSRF guard so mocks stay hermetic. */
+  fetchImpl?: typeof fetch;
 }): LinkskillsTransport {
   return {
     async write(writeParams) {
@@ -326,20 +332,34 @@ function createHttpTransport(params: {
       if (bearer.error) {
         return bearer.error;
       }
+      // Operator-configured skillsEndpoint may intentionally target private/LAN hosts.
+      // Hostname is still pinned to the configured endpoint host.
+      const policy = mergeSsrFPolicies(ssrfPolicyFromHttpBaseUrlAllowedHostname(params.endpoint), {
+        allowPrivateNetwork: true,
+      });
+      let release: (() => Promise<void>) | undefined;
       try {
-        const response = await params.fetchImpl(params.endpoint, {
-          method: "POST",
-          headers: {
-            "content-type": "application/json",
-            authorization: `Bearer ${bearer.value}`,
+        const guarded = await fetchWithSsrFGuard({
+          url: params.endpoint,
+          ...(params.fetchImpl ? { fetchImpl: params.fetchImpl } : {}),
+          init: {
+            method: "POST",
+            headers: {
+              "content-type": "application/json",
+              authorization: `Bearer ${bearer.value}`,
+            },
+            body: JSON.stringify({
+              toolName: writeParams.toolName,
+              idempotencyKey: writeParams.idempotencyKey,
+              arguments: writeParams.arguments,
+            }),
           },
-          body: JSON.stringify({
-            toolName: writeParams.toolName,
-            idempotencyKey: writeParams.idempotencyKey,
-            arguments: writeParams.arguments,
-          }),
           signal: writeParams.signal,
+          policy,
+          auditContext: "linkskills.http-transport",
         });
+        release = guarded.release;
+        const response = guarded.response;
         if (response.ok) {
           let result: Record<string, unknown> | undefined;
           try {
@@ -371,6 +391,10 @@ function createHttpTransport(params: {
           errorCode: "network_error",
           safeMessage: error instanceof Error ? error.message : "network error",
         };
+      } finally {
+        if (release) {
+          await release();
+        }
       }
     },
   };
@@ -471,7 +495,6 @@ export function resolveLinkskillsTransport(
 ): LinkskillsTransport {
   const mode: LinkskillsTransportMode = params.config.transportMode;
   const env = params.env ?? process.env;
-  const fetchImpl = params.fetchImpl ?? fetch;
 
   if (mode === "disabled") {
     return createDisabledTransport();
@@ -507,7 +530,7 @@ export function resolveLinkskillsTransport(
       config: params.config,
       apiConfig: params.api.config,
       env,
-      fetchImpl,
+      ...(params.fetchImpl ? { fetchImpl: params.fetchImpl } : {}),
     });
   }
 
