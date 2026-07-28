@@ -3,6 +3,13 @@
  * Flush on size limits and compaction/reset/end boundaries.
  */
 import { randomUUID } from "node:crypto";
+import {
+  createKeyedPromiseChain,
+  isOperationTimeout,
+  runExclusiveBounded,
+  throwIfAborted,
+  type StalledInfo,
+} from "./bounded.js";
 import type { LinkbrainConfig } from "./config.js";
 import type { BrainCaptureEvent } from "./envelopes.js";
 import { contentHash, opaqueId } from "./opaque.js";
@@ -62,45 +69,6 @@ function isLimitExceeded(error: unknown): boolean {
   return (error as { code?: unknown }).code === "PLUGIN_STATE_LIMIT_EXCEEDED";
 }
 
-function withTimeout<T>(
-  work: (signal: AbortSignal) => Promise<T>,
-  timeoutMs: number,
-  label: string,
-): Promise<T> {
-  const controller = new AbortController();
-  const timer = setTimeout(() => {
-    controller.abort(new Error(`linkbrain: ${label} exceeded ${timeoutMs}ms`));
-  }, timeoutMs);
-  return work(controller.signal).finally(() => {
-    clearTimeout(timer);
-  });
-}
-
-/**
- * Bounded per-key promise chain. Failures settle without poisoning the tail;
- * idle keys are deleted so the map cannot grow without bound.
- */
-function createKeyedPromiseChain() {
-  const tails = new Map<string, Promise<unknown>>();
-
-  return async function withKey<T>(key: string, work: () => Promise<T>): Promise<T> {
-    const prev = tails.get(key) ?? Promise.resolve();
-    const run = prev.catch(() => undefined).then(() => work());
-    const settled = run.then(
-      () => undefined,
-      () => undefined,
-    );
-    tails.set(key, settled);
-    try {
-      return await run;
-    } finally {
-      if (tails.get(key) === settled) {
-        tails.delete(key);
-      }
-    }
-  };
-}
-
 type CreateLinkbrainCaptureParams = {
   config: LinkbrainConfig;
   stores: LinkbrainStores;
@@ -108,6 +76,7 @@ type CreateLinkbrainCaptureParams = {
   now?: () => number;
   /** Per-operation bound independent of host hook timeouts. */
   operationTimeoutMs?: number;
+  onStalled?: (info: StalledInfo) => void;
 };
 
 export function createLinkbrainCapture(params: CreateLinkbrainCaptureParams): LinkbrainCapture {
@@ -115,9 +84,15 @@ export function createLinkbrainCapture(params: CreateLinkbrainCaptureParams): Li
   const operationTimeoutMs = params.operationTimeoutMs ?? 2_000;
   /** Serialize enqueue/flush/clear for one opaque stream id. */
   const withStreamLock = createKeyedPromiseChain();
+  const noteStalled = (info: StalledInfo) => {
+    params.onStalled?.(info);
+    params.runtime.noteStalled?.(info);
+  };
 
-  const load = async (streamId: string): Promise<CaptureBufferRecord> => {
+  const load = async (streamId: string, signal?: AbortSignal): Promise<CaptureBufferRecord> => {
+    throwIfAborted(signal, "capture-load");
     const existing = await params.stores.captureBuffer.lookup(bufferKey(streamId));
+    throwIfAborted(signal, "capture-load");
     if (
       existing &&
       typeof existing === "object" &&
@@ -135,20 +110,26 @@ export function createLinkbrainCapture(params: CreateLinkbrainCaptureParams): Li
     };
   };
 
-  const save = async (record: CaptureBufferRecord): Promise<void> => {
+  const save = async (record: CaptureBufferRecord, signal?: AbortSignal): Promise<void> => {
+    throwIfAborted(signal, "capture-save");
+    // Public keyed-store register has no cancel seam; check before and after.
     await params.stores.captureBuffer.register(bufferKey(record.streamId), {
       ...record,
       updatedAtMs: now(),
     });
+    throwIfAborted(signal, "capture-save");
   };
 
-  const clear = async (streamId: string): Promise<void> => {
+  const clear = async (streamId: string, signal?: AbortSignal): Promise<void> => {
+    throwIfAborted(signal, "capture-clear");
     await params.stores.captureBuffer.delete(bufferKey(streamId));
+    throwIfAborted(signal, "capture-clear");
   };
 
   const flushRecord = async (
     record: CaptureBufferRecord,
     reason: CaptureFlushReason,
+    signal: AbortSignal,
   ): Promise<boolean> => {
     if (record.events.length === 0) {
       return false;
@@ -158,47 +139,38 @@ export function createLinkbrainCapture(params: CreateLinkbrainCaptureParams): Li
       return false;
     }
 
-    return await withTimeout(
-      async (signal) => {
-        if (signal.aborted) {
-          return false;
-        }
-        const events = record.events.map((event) => ({
-          sequence: event.sequence,
-          role: event.role,
-          text: sanitizeCaptureText(event.text),
-        }));
-        const fromSequence = events[0]!.sequence;
-        const toSequence = events[events.length - 1]!.sequence;
-        const batchId = opaqueId(
-          "batch",
-          `${record.streamId}:${fromSequence}:${toSequence}:${reason}`,
-        );
-        const body = {
-          batchId,
-          streamId: record.streamId,
-          ...(record.actorId ? { actorId: record.actorId } : {}),
-          fromSequence,
-          toSequence,
-          contentHash: contentHash(events),
-          events,
-        };
-        const idempotencyKey = `cap:${record.streamId}:${fromSequence}:${toSequence}`;
-        await params.runtime.enqueueWrite({
-          kind: "capture_batch",
-          toolName: LINKBRAIN_CAPTURE_TOOL,
-          idempotencyKey,
-          body,
-        });
-        if (signal.aborted) {
-          // Enqueue already durable in outbox; still clear buffer to avoid double-batch.
-        }
-        await clear(record.streamId);
-        return true;
-      },
-      operationTimeoutMs,
-      `capture-flush:${reason}`,
+    throwIfAborted(signal, `capture-flush:${reason}`);
+    const events = record.events.map((event) => ({
+      sequence: event.sequence,
+      role: event.role,
+      text: sanitizeCaptureText(event.text),
+    }));
+    const fromSequence = events[0]!.sequence;
+    const toSequence = events[events.length - 1]!.sequence;
+    const batchId = opaqueId(
+      "batch",
+      `${record.streamId}:${fromSequence}:${toSequence}:${reason}`,
     );
+    const body = {
+      batchId,
+      streamId: record.streamId,
+      ...(record.actorId ? { actorId: record.actorId } : {}),
+      fromSequence,
+      toSequence,
+      contentHash: contentHash(events),
+      events,
+    };
+    const idempotencyKey = `cap:${record.streamId}:${fromSequence}:${toSequence}`;
+    await params.runtime.enqueueWrite({
+      kind: "capture_batch",
+      toolName: LINKBRAIN_CAPTURE_TOOL,
+      idempotencyKey,
+      body,
+      signal,
+    });
+    // Enqueue already durable in outbox; still clear buffer to avoid double-batch.
+    await clear(record.streamId, signal);
+    return true;
   };
 
   return {
@@ -210,10 +182,19 @@ export function createLinkbrainCapture(params: CreateLinkbrainCaptureParams): Li
       const actorId = input.actorKey ? opaqueId("actor", input.actorKey) : undefined;
       const fingerprint = input.fingerprint ? opaqueId("message", input.fingerprint) : undefined;
 
-      return await withStreamLock(streamId, async () =>
-        withTimeout(
-          async () => {
-            const record = await load(streamId);
+      let durableAccepted = false;
+
+      try {
+        return await runExclusiveBounded(
+          withStreamLock,
+          streamId,
+          {
+            timeoutMs: operationTimeoutMs,
+            label: "capture-enqueue",
+            onStalled: noteStalled,
+          },
+          async (signal) => {
+            const record = await load(streamId, signal);
             if (fingerprint && record.seenFingerprints.includes(fingerprint)) {
               return { accepted: false, flushed: false };
             }
@@ -238,7 +219,7 @@ export function createLinkbrainCapture(params: CreateLinkbrainCaptureParams): Li
 
             // Durable accept first. Flush/outbox failures must not lose this event.
             try {
-              await save(next);
+              await save(next, signal);
             } catch (error) {
               // reject-new on capture-buffer: leave prior streams/events untouched.
               if (isLimitExceeded(error)) {
@@ -246,6 +227,7 @@ export function createLinkbrainCapture(params: CreateLinkbrainCaptureParams): Li
               }
               throw error;
             }
+            durableAccepted = true;
 
             const overEvents = nextEvents.length >= params.config.batchMaxEvents;
             const overBytes = estimateBytes(nextEvents) >= params.config.batchMaxBytes;
@@ -254,34 +236,60 @@ export function createLinkbrainCapture(params: CreateLinkbrainCaptureParams): Li
             }
 
             try {
-              const flushed = await flushRecord(next, "batch_limit");
+              const flushed = await flushRecord(next, "batch_limit", signal);
               // flushed=true only after outbox enqueue + buffer clear inside flushRecord.
               return { accepted: true, flushed };
-            } catch {
+            } catch (error) {
+              if (isOperationTimeout(error)) {
+                throw error;
+              }
               // Outbox overflow / shutdown / disabled / transport enqueue error:
               // event remains in durable buffer for later flush/drain. Never claim flushed.
               return { accepted: true, flushed: false };
             }
           },
-          operationTimeoutMs,
-          "capture-enqueue",
-        ),
-      );
+        );
+      } catch (error) {
+        // Timed-out after durable save: event remains buffered/outboxed; never claim flushed.
+        if (isOperationTimeout(error) && durableAccepted) {
+          return { accepted: true, flushed: false };
+        }
+        throw error;
+      }
     },
 
     async flush(streamKey, reason) {
       const streamId = opaqueId("stream", streamKey);
-      return await withStreamLock(streamId, async () => {
-        // Re-load under the stream lock so we never clear a newer concurrent accept.
-        const record = await load(streamId);
-        try {
-          const flushed = await flushRecord(record, reason);
-          return { batches: flushed ? 1 : 0 };
-        } catch {
-          // Outbox/shutdown failure: buffer retained; never claim a flushed batch.
+      try {
+        return await runExclusiveBounded(
+          withStreamLock,
+          streamId,
+          {
+            timeoutMs: operationTimeoutMs,
+            label: `capture-flush:${reason}`,
+            onStalled: noteStalled,
+          },
+          async (signal) => {
+            // Re-load under the stream lock so we never clear a newer concurrent accept.
+            const record = await load(streamId, signal);
+            try {
+              const flushed = await flushRecord(record, reason, signal);
+              return { batches: flushed ? 1 : 0 };
+            } catch (error) {
+              if (isOperationTimeout(error)) {
+                throw error;
+              }
+              // Outbox/shutdown failure: buffer retained; never claim a flushed batch.
+              return { batches: 0 };
+            }
+          },
+        );
+      } catch (error) {
+        if (isOperationTimeout(error)) {
           return { batches: 0 };
         }
-      });
+        throw error;
+      }
     },
 
     async flushAll(reason) {
@@ -292,16 +300,35 @@ export function createLinkbrainCapture(params: CreateLinkbrainCaptureParams): Li
         if (!snapshot || snapshot.version !== 1 || typeof snapshot.streamId !== "string") {
           continue;
         }
-        const flushed = await withStreamLock(snapshot.streamId, async () => {
-          const record = await load(snapshot.streamId);
-          try {
-            return await flushRecord(record, reason);
-          } catch {
-            return false;
+        try {
+          const flushed = await runExclusiveBounded(
+            withStreamLock,
+            snapshot.streamId,
+            {
+              timeoutMs: operationTimeoutMs,
+              label: `capture-flushAll:${reason}`,
+              onStalled: noteStalled,
+            },
+            async (signal) => {
+              const record = await load(snapshot.streamId, signal);
+              try {
+                return await flushRecord(record, reason, signal);
+              } catch (error) {
+                if (isOperationTimeout(error)) {
+                  throw error;
+                }
+                return false;
+              }
+            },
+          );
+          if (flushed) {
+            batches += 1;
           }
-        });
-        if (flushed) {
-          batches += 1;
+        } catch (error) {
+          if (isOperationTimeout(error)) {
+            continue;
+          }
+          throw error;
         }
       }
       return { batches };

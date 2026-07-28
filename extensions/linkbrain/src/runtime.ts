@@ -3,6 +3,8 @@
  * health / shutdown against an injectable Brain transport (fake in Phase 2).
  */
 import { randomUUID } from "node:crypto";
+import type { StalledInfo } from "./bounded.js";
+import { throwIfAborted } from "./bounded.js";
 import type { LinkbrainConfig } from "./config.js";
 import {
   deadLetterMetaFromEnvelope,
@@ -45,6 +47,10 @@ export type LinkbrainDiagnostics = {
   oldestOutboxKey: string | null;
   lastDrainStatus: string | null;
   healthStatus: HealthRecord["status"] | null;
+  /** Count of deadline races that returned while work may still be retained. */
+  stalledCount: number;
+  /** Honest stalled/degraded marker; never claims cancel or flushed delivery. */
+  lastStalledStatus: string | null;
   /** Never includes payloads. */
   capacity: {
     outboxMaxEntries: number;
@@ -77,6 +83,7 @@ type EnqueueWriteParams = {
   toolName: string;
   idempotencyKey: string;
   body: unknown;
+  signal?: AbortSignal;
 };
 
 export type LinkbrainRuntime = {
@@ -90,6 +97,7 @@ export type LinkbrainRuntime = {
     deadLettered: number;
     skipped: number;
   }>;
+  noteStalled(info: StalledInfo): void;
   diagnostics(): Promise<LinkbrainDiagnostics>;
 };
 
@@ -163,6 +171,8 @@ export function createLinkbrainRuntime(params: CreateLinkbrainRuntimeParams): Li
   let shuttingDown = false;
   let lastDrainStatus: string | null = null;
   let drainTail: Promise<void> = Promise.resolve();
+  let stalledCount = 0;
+  let lastStalledStatus: string | null = null;
 
   const runExclusive = async <T>(work: () => Promise<T>): Promise<T> => {
     const run = drainTail.then(work, work);
@@ -378,6 +388,7 @@ export function createLinkbrainRuntime(params: CreateLinkbrainRuntimeParams): Li
       if (shuttingDown) {
         throw new Error("linkbrain: runtime is shutting down");
       }
+      throwIfAborted(input.signal, "enqueueWrite");
       if (input.kind === "capture_batch" && !params.config.captureEnqueue) {
         throw new Error("linkbrain: captureEnqueue is disabled");
       }
@@ -413,7 +424,10 @@ export function createLinkbrainRuntime(params: CreateLinkbrainRuntimeParams): Li
       };
 
       try {
+        throwIfAborted(input.signal, "enqueueWrite");
+        // Public keyed-store register has no cancel seam; abort is checked around it.
         const claimed = await params.stores.outbox.registerIfAbsent(key, record);
+        throwIfAborted(input.signal, "enqueueWrite");
         if (!claimed) {
           // Same sortable key collision is extremely unlikely; treat as duplicate claim.
           return { key };
@@ -430,6 +444,7 @@ export function createLinkbrainRuntime(params: CreateLinkbrainRuntimeParams): Li
     async drainOnce(options) {
       return await runExclusive(async () => {
         const signal = options?.signal;
+        throwIfAborted(signal, "drainOnce");
         const generation = randomUUID();
         await writeCursor({ drainGeneration: generation });
 
@@ -455,6 +470,11 @@ export function createLinkbrainRuntime(params: CreateLinkbrainRuntimeParams): Li
       });
     },
 
+    noteStalled(info) {
+      stalledCount += 1;
+      lastStalledStatus = `label=${info.label};reason=${info.reason};atMs=${now()}`;
+    },
+
     async diagnostics() {
       const outbox = await sortedOutbox(params.stores);
       const dead = await params.stores.deadletter.entries();
@@ -470,6 +490,8 @@ export function createLinkbrainRuntime(params: CreateLinkbrainRuntimeParams): Li
         oldestOutboxKey: oldest?.key ?? null,
         lastDrainStatus,
         healthStatus: health?.status ?? null,
+        stalledCount,
+        lastStalledStatus,
         capacity: {
           outboxMaxEntries: params.config.outboxMaxEntries,
           outboxRemaining: Math.max(0, params.config.outboxMaxEntries - outbox.length),

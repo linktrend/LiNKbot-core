@@ -7,6 +7,7 @@
  * Handlers never throw uncaught; Brain failures degrade honestly and preserve
  * native OpenClaw compaction/reset/delivery/memory behavior.
  */
+import { isOperationTimeout, runBounded } from "./bounded.js";
 import type { LinkbrainCapture } from "./capture.js";
 import { captureFingerprint } from "./capture.js";
 import type { LinkbrainConfig } from "./config.js";
@@ -118,20 +119,6 @@ type CreateLinkbrainLifecycleParams = {
   sessionContexts?: Map<string, SessionContextRecord>;
 };
 
-function withTimeout<T>(
-  work: (signal: AbortSignal) => Promise<T>,
-  timeoutMs: number,
-  label: string,
-): Promise<T> {
-  const controller = new AbortController();
-  const timer = setTimeout(() => {
-    controller.abort(new Error(`linkbrain: ${label} exceeded ${timeoutMs}ms`));
-  }, timeoutMs);
-  return work(controller.signal).finally(() => {
-    clearTimeout(timer);
-  });
-}
-
 async function safe(
   label: string,
   logger: LifecycleLogger | undefined,
@@ -141,7 +128,8 @@ async function safe(
     await work();
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    logger?.warn(`linkbrain: ${label} degraded: ${message}`);
+    const prefix = isOperationTimeout(error) ? "stalled" : "degraded";
+    logger?.warn(`linkbrain: ${label} ${prefix}: ${message}`);
   }
 }
 
@@ -199,12 +187,20 @@ export function createLinkbrainLifecycle(
     if (!params.config.captureDrain && !params.config.coordinationWrites) {
       return;
     }
-    await withTimeout(
+    await runBounded(
       async (signal) => {
         await params.runtime.drainOnce({ signal });
       },
-      operationTimeoutMs,
-      label,
+      {
+        timeoutMs: operationTimeoutMs,
+        label,
+        onStalled: (info) => {
+          params.runtime.noteStalled?.(info);
+          logger?.warn(
+            `linkbrain: ${info.label} stalled: ${info.reason} (drain may still hold exclusive ownership)`,
+          );
+        },
+      },
     );
   };
 
