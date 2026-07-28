@@ -5,7 +5,7 @@
 **Branch:** `issue/ocp-openclawdevelopmentplan01`
 **PR:** [#38](https://github.com/linktrend/openclaw_prime/pull/38) → `development` (draft; do not merge)
 **Starting tip:** `b9f948f9b3a856e997247355f697c3fc7767e844`
-**Pushed tip (this packet):** `b4ac94debf55a7f460a053845531066b24516b06` (code `39e85a5d6bc`)
+**Pushed tip (this packet):** `a441b439118ffae0de5e385fcc2b6fc79dee0947` (docs `b4ac94debf5`; code `39e85a5d6bc`)
 **Authority:** Principal wave-7 instruction only — not self-certification
 
 > OpenClaw Codex must re-verify against the pushed HEAD and evidence below. This packet does **not** assign accepted §13.3 classifications and does **not** claim Phase 14 complete.
@@ -44,7 +44,7 @@ git diff --check origin/development...HEAD
 # expect: clean
 ```
 
-Recorded: 2026-07-28 21:36 Asia/Taipei (vitest). Base-to-head `git diff --check origin/development...HEAD` **clean** at tip `b4ac94debf5…` (verified 2026-07-28 21:40 Asia/Taipei).
+Recorded: 2026-07-28 21:36 Asia/Taipei (vitest). Base-to-head `git diff --check origin/development...HEAD` **clean** at tip `a441b439118…` (verified 2026-07-28 21:40 Asia/Taipei).
 
 ## AuthClaims pin (wave 7)
 

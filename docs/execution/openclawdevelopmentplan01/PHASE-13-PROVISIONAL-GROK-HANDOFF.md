@@ -45,7 +45,7 @@
 | Wave-2b pin commit                       | `4103bd6c1c208337f5dc37e169c9ec9a727bf835`                                                            |
 | SSRF transport commit                    | `d79e3356db527492f0ab8a0b1af7888469815f19`                                                            |
 | Hosted CI green tip (ci-gate SUCCESS)    | **deferred / Principal-waived** (CI redesign) for wave 5 tip `4fa1e9f7ed0…` (prior green `8e236d2f056…` / `30347356129`) |
-| Current HEAD (branch tip)                | `b4ac94debf55a7f460a053845531066b24516b06` (wave 7 docs packet; code tip `39e85a5d6bc`; HEAD-record may sit atop) |
+| Current HEAD (branch tip)                | `a441b439118ffae0de5e385fcc2b6fc79dee0947` (wave 7; docs packet `b4ac94debf5`; code tip `39e85a5d6bc`) |
 | Primary session (closed)                 | `docs/agent-sessions/completed/cursor-local-mac-mini-lisa-openclawdevelopmentplan01-20260727-1648.md` |
 | Related Phase 2 session (closed)         | `docs/agent-sessions/completed/cursor-local-mac-mini-feature-linkbrain-phase2-20260727-1854.md`       |
 | Orchestrator key                         | `cursor-local-mac-mini-desktop-workspace-orchestrator`                                                |
