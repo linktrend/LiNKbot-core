@@ -107,6 +107,45 @@ describe("linkskills drain worker bounds", () => {
     await worker.stop();
     expect(Date.now() - started).toBeLessThan(200);
   });
+
+  it("retains ownership after tick deadline; repeated ticks do not storm raw drain", async () => {
+    let rawStarts = 0;
+    let release!: () => void;
+    const stalled = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    const tickCallbacks: Array<() => void> = [];
+    const worker = createSkillsDrainWorker({
+      intervalMs: 5,
+      tickTimeoutMs: 25,
+      stopTimeoutMs: 40,
+      shouldDrain: () => true,
+      drainOnce: async () => {
+        rawStarts += 1;
+        await stalled;
+      },
+      setIntervalFn: ((fn: () => void) => {
+        tickCallbacks.push(fn);
+        return 1 as unknown as ReturnType<typeof setInterval>;
+      }) as typeof setInterval,
+      clearIntervalFn: (() => undefined) as typeof clearInterval,
+    });
+    worker.start();
+    await new Promise((r) => setTimeout(r, 40));
+    expect(worker.activeTicks).toBe(1);
+    expect(rawStarts).toBe(1);
+    for (let i = 0; i < 12; i += 1) {
+      for (const cb of tickCallbacks) {
+        cb();
+      }
+    }
+    expect(rawStarts).toBe(1);
+    expect(worker.activeTicks).toBe(1);
+    release();
+    await new Promise((r) => setTimeout(r, 10));
+    expect(worker.activeTicks).toBe(0);
+    await worker.stop();
+  });
 });
 
 describe("linkskills enqueue signal + owned late work", () => {

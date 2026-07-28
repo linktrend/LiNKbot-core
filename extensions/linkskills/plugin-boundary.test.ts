@@ -39,6 +39,7 @@ describe("linkskills plugin boundary", () => {
       "src/drain-worker.ts",
       "src/feature-flags.ts",
       "src/opaque.ts",
+      "src/auth-claims-1.1.ts",
     ];
     for (const relative of files) {
       const source = fs.readFileSync(path.join(root, relative), "utf8");

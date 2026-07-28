@@ -1,13 +1,13 @@
 {
-  "description": "Sanitized auth outcome fixture: revoked AuthClaims (platform.auth-claims/1.0.0).",
-  "platformContract": "platform.auth-claims/1.0.0",
+  "description": "Sanitized auth outcome fixture: revoked AuthClaims (platform.auth-claims/1.1.0).",
+  "platformContract": "platform.auth-claims/1.1.0",
   "expect": "reject",
   "reasons": [
     "revoked"
   ],
   "expectedOutcome": "revoked",
   "claims": {
-    "claimContractVersion": "platform.auth-claims/1.0.0",
+    "claimContractVersion": "platform.auth-claims/1.1.0",
     "actorId": "actor-lisa",
     "actorKind": "persona",
     "runtimeBindingId": "bind-lisa-openclaw-1",

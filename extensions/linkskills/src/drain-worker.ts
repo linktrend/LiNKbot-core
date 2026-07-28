@@ -1,7 +1,10 @@
 /**
  * Independent, stoppable periodic Skills outbox drain worker with bounded ticks/stop.
+ *
+ * Ownership of an in-flight raw drain is retained until drainOnce settles, even
+ * when a tick wall-clock aborts early.
  */
-import { isOperationTimeout, runBounded, type StalledInfo } from "./bounded.js";
+import { isOperationTimeout, type StalledInfo } from "./bounded.js";
 
 export type SkillsDrainWorker = {
   readonly running: boolean;
@@ -20,13 +23,25 @@ type CreateSkillsDrainWorkerParams = {
   onStalled?: (info: StalledInfo) => void;
   setIntervalFn?: typeof setInterval;
   clearIntervalFn?: typeof clearInterval;
+  setTimeoutFn?: typeof setTimeout;
+  clearTimeoutFn?: typeof clearTimeout;
 };
+
+function isAbortLike(error: unknown): boolean {
+  if (!error || typeof error !== "object") {
+    return false;
+  }
+  const name = (error as { name?: string }).name;
+  return name === "AbortError" || name === "LinkskillsOperationTimeoutError";
+}
 
 export function createSkillsDrainWorker(
   params: CreateSkillsDrainWorkerParams,
 ): SkillsDrainWorker {
   const setIntervalFn = params.setIntervalFn ?? setInterval;
   const clearIntervalFn = params.clearIntervalFn ?? clearInterval;
+  const setTimeoutFn = params.setTimeoutFn ?? setTimeout;
+  const clearTimeoutFn = params.clearTimeoutFn ?? clearTimeout;
   const tickTimeoutMs = params.tickTimeoutMs ?? 2_000;
   const stopTimeoutMs = params.stopTimeoutMs ?? 2_000;
   let timer: ReturnType<typeof setInterval> | null = null;
@@ -49,38 +64,40 @@ export function createSkillsDrainWorker(
     const controller = new AbortController();
     activeControllers.add(controller);
 
-    const work = runBounded(
-      async (signal) => {
-        const merged = AbortSignal.any([signal, controller.signal]);
-        await params.drainOnce({ signal: merged });
-      },
-      {
-        timeoutMs: tickTimeoutMs,
+    let deadlineNotified = false;
+    const deadlineTimer = setTimeoutFn(() => {
+      if (!activeControllers.has(controller)) {
+        return;
+      }
+      deadlineNotified = true;
+      controller.abort(new Error("linkskills: drain-tick deadline"));
+      params.onStalled?.({
         label: "drain-tick",
-        onStalled: params.onStalled,
-      },
-    ).then(
-      () => undefined,
-      (error: unknown) => {
-        if (!isOperationTimeout(error)) {
-          params.onError?.(error);
-        } else {
-          params.onStalled?.({
-            label: "drain-tick",
-            reason: "deadline_exceeded_work_retained",
-          });
-        }
-      },
-    );
+        reason: "deadline_exceeded_work_retained",
+      });
+    }, tickTimeoutMs);
 
-    const settled = work.finally(() => {
+    const rawDrain = Promise.resolve()
+      .then(() => params.drainOnce({ signal: controller.signal }))
+      .then(
+        () => undefined,
+        (error: unknown) => {
+          if (!isAbortLike(error) && !deadlineNotified) {
+            params.onError?.(error);
+          }
+        },
+      );
+
+    const ownershipReleased = rawDrain.finally(() => {
+      clearTimeoutFn(deadlineTimer);
       activeControllers.delete(controller);
       tickInFlight = false;
       activeTicks = Math.max(0, activeTicks - 1);
     });
+
     tickTail = tickTail.then(
-      () => settled,
-      () => settled,
+      () => ownershipReleased,
+      () => ownershipReleased,
     );
   };
 
@@ -115,22 +132,27 @@ export function createSkillsDrainWorker(
       for (const controller of activeControllers) {
         controller.abort(new Error("linkskills: drain worker stop"));
       }
-      try {
-        await runBounded(
-          async () => {
-            await tickTail;
-          },
-          {
-            timeoutMs: stopTimeoutMs,
-            label: "drain-stop",
-            onStalled: params.onStalled,
-          },
-        );
-      } catch (error) {
-        if (!isOperationTimeout(error)) {
-          throw error;
-        }
+
+      let timerHandle: ReturnType<typeof setTimeout> | undefined;
+      const deadline = new Promise<"timeout">((resolve) => {
+        timerHandle = setTimeoutFn(() => resolve("timeout"), stopTimeoutMs);
+      });
+      const finished = tickTail.then(
+        () => "settled" as const,
+        () => "settled" as const,
+      );
+      const outcome = await Promise.race([finished, deadline]);
+      if (timerHandle !== undefined) {
+        clearTimeoutFn(timerHandle);
+      }
+      if (outcome === "timeout") {
+        params.onStalled?.({
+          label: "drain-stop",
+          reason: "deadline_exceeded_work_retained",
+        });
       }
     },
   };
 }
+
+void isOperationTimeout;

@@ -1,14 +1,14 @@
 {
-  "description": "Sanitized positive Platform AuthClaims for Lisa Brain consumer (platform.auth-claims/1.1.0).",
+  "description": "Service actor with orgId=null \u2014 accepted under platform.auth-claims/1.1.0.",
   "platformContract": "platform.auth-claims/1.1.0",
   "expect": "accept",
   "claims": {
     "claimContractVersion": "platform.auth-claims/1.1.0",
-    "actorId": "actor-lisa",
-    "actorKind": "persona",
-    "runtimeBindingId": "bind-lisa-openclaw-1",
-    "credentialId": "cred-1",
-    "orgId": "org-internal",
+    "actorId": "actor-platform-svc",
+    "actorKind": "service",
+    "runtimeBindingId": "bind-platform-svc-1",
+    "credentialId": "cred-svc-1",
+    "orgId": null,
     "internal": true,
     "serviceScopes": [
       "lbrain",
@@ -24,10 +24,10 @@
     "audience": [
       "lbrain-api"
     ],
-    "correlationId": "corr-brain-accept-1"
+    "correlationId": "corr-brain-service-null-org"
   },
   "context": {
-    "expectedOrgId": "org-internal",
+    "expectedOrgId": null,
     "expectedAudience": "lbrain-api",
     "requiredService": "lbrain",
     "requiredOperation": "execute",

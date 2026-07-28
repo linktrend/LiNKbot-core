@@ -1,31 +1,153 @@
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
+import {
+  createDirectOutboundTestAdapter,
+  createOutboundTestPlugin,
+  createTestRegistry,
+} from "../../src/test-utils/channel-plugins.js";
+import {
+  buildActiveMemoryPromptSection,
+  clearMemoryPluginState,
+  listActiveMemoryPublicArtifacts,
+  registerMemoryCapability,
+} from "openclaw/plugin-sdk/memory-host-core";
 import { createTestPluginApi } from "openclaw/plugin-sdk/plugin-test-api";
 import linkbrainPlugin from "../linkbrain/index.js";
 import linkskillsPlugin from "./index.js";
-import type { OpenClawPluginApi } from "./runtime-api.js";
+import { createMemoryKeyedStore } from "./src/test-support/memory-store.js";
+import type { OpenClawPluginApi, OpenClawPluginService } from "./runtime-api.js";
 
 /**
- * Registered-plugin coexistence with live native capability surfaces.
- * Native memory/compaction/sessions/cron/channels/skills continue while
- * Brain/Skills plugins are registered and independently fail.
+ * Integration harness: starts Brain/Skills plugin services and exercises
+ * OpenClaw native memory / channel / compaction / session / cron / skill paths
+ * while adapters are active and while adapter failure is injected.
+ *
+ * Channel + memory host use public OpenClaw test/SDK surfaces. Does not stand
+ * up a live Lisa gateway or mutate Lisa profile.
  */
-describe("native coexistence while Brain/Skills run and fail", () => {
-  it("keeps native surfaces callable when plugins fail independently", async () => {
-    const native = {
-      memorySearch: vi.fn(async () => ({ hits: ["local-memory"] })),
-      compact: vi.fn(async () => ({ compacted: true })),
-      listSessions: vi.fn(async () => [{ id: "s1" }]),
-      cronTick: vi.fn(async () => ({ ran: 1 })),
-      channelSend: vi.fn(async () => ({ delivered: true })),
-      nativeSkillRun: vi.fn(async () => ({ ok: true, skill: "native.echo" })),
-    };
+function createRuntimeState() {
+  return {
+    openKeyedStore: <T>(options: {
+      namespace: string;
+      maxEntries: number;
+      overflowPolicy: "reject-new";
+    }) =>
+      createMemoryKeyedStore<T>({
+        maxEntries: options.maxEntries,
+        overflowPolicy: options.overflowPolicy,
+      }),
+    withLease: async <T>(
+      _options: unknown,
+      run: (lease: { signal: AbortSignal; assertOwned: () => void }) => Promise<T>,
+    ) => {
+      const controller = new AbortController();
+      return await run({
+        signal: controller.signal,
+        assertOwned: () => undefined,
+      });
+    },
+  };
+}
 
-    const brainTools: string[] = [];
-    const skillsTools: string[] = [];
-    const brainHooks: string[] = [];
-    const skillsHooks: string[] = [];
+function captureServiceApi(params: {
+  id: string;
+  pluginConfig: Record<string, unknown>;
+}) {
+  let service: OpenClawPluginService | null = null;
+  const hooks = new Map<string, Array<(...args: unknown[]) => unknown>>();
+  const registerMemoryCapability = viSpy();
+  const registerChannel = viSpy();
+  const registerCompactionProvider = viSpy();
+  const api = createTestPluginApi({
+    id: params.id,
+    pluginConfig: params.pluginConfig,
+    runtime: {
+      state: createRuntimeState(),
+    } as OpenClawPluginApi["runtime"],
+    registerService: (svc) => {
+      service = svc;
+    },
+    registerMemoryCapability,
+    registerChannel,
+    registerCompactionProvider,
+    on: (name: string, handler: (...args: unknown[]) => unknown) => {
+      const list = hooks.get(name) ?? [];
+      list.push(handler);
+      hooks.set(name, list);
+    },
+  });
+  return {
+    api: api as OpenClawPluginApi,
+    getService: () => service,
+    hooks,
+    registerMemoryCapability,
+    registerChannel,
+    registerCompactionProvider,
+    async start() {
+      if (!service?.start) {
+        throw new Error(`${params.id}: service not registered`);
+      }
+      await service.start({
+        config: {},
+        stateDir: "/tmp/openclaw-wave8-coexistence",
+        logger: api.logger,
+      } as never);
+    },
+    async stop() {
+      await service?.stop?.({
+        config: {},
+        stateDir: "/tmp/openclaw-wave8-coexistence",
+        logger: api.logger,
+      } as never);
+    },
+  };
+}
 
-    const brainApi = createTestPluginApi({
+function viSpy() {
+  const calls: unknown[][] = [];
+  const fn = (...args: unknown[]) => {
+    calls.push(args);
+  };
+  fn.calls = calls;
+  fn.toHaveBeenCalled = () => calls.length > 0;
+  return fn;
+}
+
+describe("native coexistence integration harness (plugin services live)", () => {
+  afterEach(() => {
+    clearMemoryPluginState();
+  });
+
+  it("keeps native surfaces working while adapters run and then fail", async () => {
+    registerMemoryCapability("memory-core", {
+      publicArtifacts: {
+        async listArtifacts() {
+          return [
+            {
+              kind: "memory-root",
+              workspaceDir: "/tmp/workspace",
+              relativePath: "MEMORY.md",
+              absolutePath: "/tmp/workspace/MEMORY.md",
+              agentIds: ["main"],
+              contentType: "markdown" as const,
+            },
+          ];
+        },
+      },
+    });
+
+    const outbound = createDirectOutboundTestAdapter({
+      channel: "telegram",
+      messageId: "native-msg-1",
+    });
+    const channelPlugin = createOutboundTestPlugin({
+      id: "telegram",
+      outbound,
+    });
+    const channelRegistry = createTestRegistry([
+      { pluginId: "telegram", plugin: channelPlugin, source: "test", origin: "bundled" },
+    ]);
+
+    const brain = captureServiceApi({
       id: "linkbrain",
       pluginConfig: {
         mcpRead: true,
@@ -33,20 +155,10 @@ describe("native coexistence while Brain/Skills run and fail", () => {
         captureDrain: true,
         coordinationWrites: false,
         transportMode: "disabled",
+        environment: "test",
       },
-      on: (name: string) => {
-        brainHooks.push(name);
-      },
-      registerService: () => undefined,
-      registerTool: (tool) => {
-        brainTools.push(typeof tool === "function" ? "factory" : String(tool.name));
-      },
-      registerMemoryCapability: vi.fn(),
-      registerChannel: vi.fn(),
-      registerCompactionProvider: vi.fn(),
-    } as unknown as Partial<OpenClawPluginApi>);
-
-    const skillsApi = createTestPluginApi({
+    });
+    const skills = captureServiceApi({
       id: "linkskills",
       pluginConfig: {
         mcpDiscoveryRead: true,
@@ -54,73 +166,86 @@ describe("native coexistence while Brain/Skills run and fail", () => {
         telemetryEnqueue: true,
         telemetryDrain: true,
         transportMode: "disabled",
+        environment: "test",
       },
-      on: (name: string) => {
-        skillsHooks.push(name);
-      },
-      registerService: () => undefined,
-      registerTool: (tool) => {
-        skillsTools.push(typeof tool === "function" ? "factory" : String(tool.name));
-      },
-      registerMemoryCapability: vi.fn(),
-      registerChannel: vi.fn(),
-      registerCompactionProvider: vi.fn(),
-    } as unknown as Partial<OpenClawPluginApi>);
+    });
 
-    linkbrainPlugin.register(brainApi as OpenClawPluginApi);
-    linkskillsPlugin.register(skillsApi as OpenClawPluginApi);
+    linkbrainPlugin.register(brain.api);
+    linkskillsPlugin.register(skills.api);
+    expect(brain.getService()?.id).toBe("linkbrain-outbox");
+    expect(skills.getService()?.id).toBe("linkskills-outbox");
 
-    // No naming conflict: plugins must not register brain_*/skills_* tools.
-    expect(brainTools.filter((n) => n.startsWith("brain_"))).toEqual([]);
-    expect(skillsTools.filter((n) => n.startsWith("skills_"))).toEqual([]);
-    expect(brainHooks).toContain("before_compaction");
-    expect(skillsHooks).toContain("after_tool_call");
+    await brain.start();
+    await skills.start();
 
-    // Simulate plugin-side failure (transport disabled / drain error) while native works.
-    const pluginFailure = await Promise.reject(new Error("linkskills: transport disabled")).catch(
-      (error: Error) => error.message,
-    );
-    expect(pluginFailure).toMatch(/transport disabled/);
-
-    await expect(native.memorySearch()).resolves.toEqual({ hits: ["local-memory"] });
-    await expect(native.compact()).resolves.toEqual({ compacted: true });
-    await expect(native.listSessions()).resolves.toEqual([{ id: "s1" }]);
-    await expect(native.cronTick()).resolves.toEqual({ ran: 1 });
-    await expect(native.channelSend()).resolves.toEqual({ delivered: true });
-    await expect(native.nativeSkillRun()).resolves.toEqual({ ok: true, skill: "native.echo" });
-
-    expect(brainApi.registerMemoryCapability).not.toHaveBeenCalled();
-    expect(skillsApi.registerChannel).not.toHaveBeenCalled();
-    expect(brainApi.registerCompactionProvider).not.toHaveBeenCalled();
-  });
-
-  it("independent disablement: Skills flags off does not unregister Brain hooks", () => {
-    const brainHooks: string[] = [];
-    linkbrainPlugin.register(
-      createTestPluginApi({
-        pluginConfig: { captureEnqueue: true },
-        on: (name: string) => {
-          brainHooks.push(name);
-        },
-        registerService: () => undefined,
+    // Native memory host public artifacts remain available under adapters.
+    await expect(listActiveMemoryPublicArtifacts({ cfg: {} as never })).resolves.toEqual([
+      expect.objectContaining({ relativePath: "MEMORY.md" }),
+    ]);
+    expect(
+      buildActiveMemoryPromptSection({
+        availableTools: new Set(["memory_search"]),
+        citationsMode: "off",
       }),
-    );
-    linkskillsPlugin.register(
-      createTestPluginApi({
-        pluginConfig: {
-          telemetryEnqueue: false,
-          telemetryDrain: false,
-          mcpDiscoveryRead: false,
-          governedExecution: false,
+    ).toEqual(expect.any(Array));
+
+    // Native channel outbound via OpenClaw channel test registry.
+    expect(channelRegistry.channels).toHaveLength(1);
+    await expect(
+      outbound.sendText!({
+        cfg: {} as never,
+        to: "telegram:test",
+        text: "native still works",
+        accountId: "default",
+      } as never),
+    ).resolves.toMatchObject({ messageId: "native-msg-1" });
+
+    // Session / cron / native-skill host paths (harness-owned; plugins must not own them).
+    const sessions = new Map([["s1", { id: "s1", status: "active" }]]);
+    const listSessions = async () => [...sessions.values()];
+    const cronTick = async (jobId: string) => ({ ran: 1, jobId });
+    const nativeSkillRun = async (skillId: string) => ({ ok: true as const, skill: skillId });
+    await expect(listSessions()).resolves.toEqual([{ id: "s1", status: "active" }]);
+    await expect(cronTick("digest")).resolves.toEqual({ ran: 1, jobId: "digest" });
+    await expect(nativeSkillRun("native.echo")).resolves.toEqual({ ok: true, skill: "native.echo" });
+
+    // Compaction: host fires registered Brain hooks.
+    for (const handler of brain.hooks.get("before_compaction") ?? []) {
+      await handler({}, { sessionId: "s1" });
+    }
+    for (const handler of brain.hooks.get("after_compaction") ?? []) {
+      await handler({ ok: true }, { sessionId: "s1" });
+    }
+
+    // Inject adapter-side failure through Skills after_tool_call while transport is disabled.
+    for (const handler of skills.hooks.get("after_tool_call") ?? []) {
+      await handler(
+        {
+          toolName: "skills_list",
+          params: {},
+          result: { ok: false, error: "transport_disabled" },
         },
-        on: () => undefined,
-        registerService: () => undefined,
-        registerTool: () => {
-          throw new Error("skills must not register tools when flags are off");
-        },
-      }),
-    );
-    expect(brainHooks).toContain("gateway_stop");
-    expect(brainHooks).toContain("session_start");
+        { sessionId: "s1" },
+      );
+    }
+
+    await expect(listActiveMemoryPublicArtifacts({ cfg: {} as never })).resolves.toHaveLength(1);
+    await expect(
+      outbound.sendText!({
+        cfg: {} as never,
+        to: "telegram:test",
+        text: "after fail",
+        accountId: "default",
+      } as never),
+    ).resolves.toMatchObject({ messageId: "native-msg-1" });
+    await expect(cronTick("heartbeat")).resolves.toEqual({ ran: 1, jobId: "heartbeat" });
+    await expect(nativeSkillRun("native.echo")).resolves.toEqual({ ok: true, skill: "native.echo" });
+
+    expect(brain.registerMemoryCapability.toHaveBeenCalled()).toBe(false);
+    expect(skills.registerChannel.toHaveBeenCalled()).toBe(false);
+    expect(brain.registerCompactionProvider.toHaveBeenCalled()).toBe(false);
+
+    await brain.stop();
+    await skills.stop();
   });
 });

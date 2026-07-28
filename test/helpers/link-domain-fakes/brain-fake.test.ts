@@ -46,11 +46,11 @@ describe("linkbrain Phase 1 fixtures", () => {
   it("parses identity, auth, health, and every §9.1 tool fixture", async () => {
     const positive = readFixture("identity", "positive-claim.json");
     const negative = readFixture("identity", "negative-claim.json");
-    expect(positive.platformContract).toBe("platform.auth-claims/1.0.0");
-    expect(positive.claims.claimContractVersion).toBe("platform.auth-claims/1.0.0");
+    expect(positive.platformContract).toBe("platform.auth-claims/1.1.0");
+    expect(positive.claims.claimContractVersion).toBe("platform.auth-claims/1.1.0");
     expect(positive.claims.actorId).toBe("actor-lisa");
     expect(negative.expectedOutcome).toBe("authentication_failed");
-    expect(negative.claims.claimContractVersion).toBe("platform.auth-claims/1.0.0");
+    expect(negative.claims.claimContractVersion).toBe("platform.auth-claims/1.1.0");
 
     for (const name of [
       "expired",
@@ -60,8 +60,8 @@ describe("linkbrain Phase 1 fixtures", () => {
       "wrong-scope",
     ] as const) {
       const auth = readFixture("auth", `${name}.json`);
-      expect(auth.platformContract).toBe("platform.auth-claims/1.0.0");
-      expect(auth.claims.claimContractVersion).toBe("platform.auth-claims/1.0.0");
+      expect(auth.platformContract).toBe("platform.auth-claims/1.1.0");
+      expect(auth.claims.claimContractVersion).toBe("platform.auth-claims/1.1.0");
       expect(auth.expectedOutcome).toBeTruthy();
       expect(auth.error.code).toBe("unauthorized");
       expect(auth.error.message).toBeTruthy();
