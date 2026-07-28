@@ -1,13 +1,14 @@
 # Phase 1 — Contract and Fake Freeze Status
 
-**Recorded:** 2026-07-27 18:53 Asia/Taipei
+**Recorded:** 2026-07-27 18:53 Asia/Taipei  
+**Correction wave 2:** 2026-07-28 09:10 Asia/Taipei — pins/fixtures refreshed; **Phase 1 still NOT complete** (`AWAITING_OWNER_COUNTERSIGN`)
 
 ## Deliverables
 
 | Item                                               | Location                                                                        | Status                                        |
 | -------------------------------------------------- | ------------------------------------------------------------------------------- | --------------------------------------------- |
-| Brain fixtures (§9.1 + auth/capture/health/replay) | `extensions/linkbrain/fixtures/**`                                              | present (draft pending Brain owner sign-off)  |
-| Skills fixtures (§9.2 + prohibited/telemetry)      | `extensions/linkskills/fixtures/**`                                             | present (draft pending Skills owner sign-off) |
+| Brain fixtures (§9.1 + auth/capture/health/replay) | `extensions/linkbrain/fixtures/**`                                              | refreshed wave 2; draft pending Brain countersign (`d539debc…45fb`) |
+| Skills fixtures (§9.2 + prohibited/telemetry)      | `extensions/linkskills/fixtures/**`                                             | refreshed wave 2; draft pending Skills countersign (`8586d89a…ec96`) |
 | Brain fake (stdio/HTTP, isolated)                  | `extensions/linkbrain/fake/**`, `test/helpers/link-domain-fakes/brain-fake.*`   | present                                       |
 | Skills fake (stdio/HTTP, isolated)                 | `extensions/linkskills/fake/**`, `test/helpers/link-domain-fakes/skills-fake.*` | present                                       |
 | Auth matrix stub                                   | `PHASE-1-AUTH-COMPATIBILITY-MATRIX.md`                                          | present; Platform approval pending            |
@@ -29,7 +30,7 @@ node scripts/run-vitest.mjs \
 | ------------------------------------------ | --------------------------------------------------------------------- |
 | Deterministic isolated fakes               | **met** (fake tier)                                                   |
 | Negative/prohibited field tests            | **met** (fake tier)                                                   |
-| Domain owner fixture approval              | **blocked** — decision packet below                                   |
+| Domain owner fixture approval              | **blocked** — `AWAITING_OWNER_COUNTERSIGN` (see `COUNTERSIGN-REQUEST.md`); **NOT Phase 1 complete** |
 | Platform auth-path approval                | **blocked** — continue fake-only                                      |
 | Public surfaces sufficient or SDK proposal | **provisional met** — keyed-store path looks viable; prove in Phase 2 |
 

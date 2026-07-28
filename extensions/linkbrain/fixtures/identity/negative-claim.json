@@ -1,14 +1,32 @@
 {
-  "description": "Sanitized negative identity claim (missing org scope / wrong actor kind)",
-  "claim": {
-    "platformActorId": "actor_test_unknown",
+  "description": "Sanitized negative AuthClaims (wrong org / empty scopes) — platform.auth-claims/1.0.0.",
+  "platformContract": "platform.auth-claims/1.0.0",
+  "expect": "reject",
+  "reasons": ["wrong_org", "wrong_service"],
+  "expectedOutcome": "authentication_failed",
+  "claims": {
+    "claimContractVersion": "platform.auth-claims/1.0.0",
+    "actorId": "actor-unknown",
     "actorKind": "service",
-    "actorBindingId": "binding_test_unknown",
-    "orgScopes": [],
-    "audience": "linkbrain.gateway.test",
-    "scopes": [],
-    "issuedAt": "2026-07-27T09:00:00.000Z",
-    "expiresAt": "2026-07-28T09:00:00.000Z"
+    "runtimeBindingId": "bind-unknown-1",
+    "credentialId": "cred-unknown",
+    "orgId": "org-other",
+    "internal": false,
+    "serviceScopes": ["lskills"],
+    "permittedOperations": ["read"],
+    "issuedAt": "2026-07-27T00:00:00.000Z",
+    "expiresAt": "2026-07-27T12:00:00.000Z",
+    "issuer": "linkplatform-issuer",
+    "audience": ["lbrain-api"],
+    "correlationId": "corr-brain-negative"
   },
-  "expectedOutcome": "authentication_failed"
+  "context": {
+    "expectedOrgId": "org-internal",
+    "expectedAudience": "lbrain-api",
+    "requiredService": "lbrain",
+    "now": "2026-07-27T06:00:00.000Z",
+    "credentialStatus": "active",
+    "actorLifecycleState": "active",
+    "bindingState": "active"
+  }
 }

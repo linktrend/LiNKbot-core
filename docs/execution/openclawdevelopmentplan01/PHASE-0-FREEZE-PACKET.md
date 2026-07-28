@@ -24,10 +24,10 @@
 | LiNKplatform plan                | `LiNKplatform/docs/LINKPLATFORM-SHARED-FOUNDATION-DETAILED-IMPLEMENTATION-PLAN.md` | `fbcf36235c4caaa6abf7ee93afedeedf105a96f6614a3a3ff5ccb8d78e33c6b9` | frozen / match plan §2 |
 | LiNKbrain plan                   | `LiNKbrain/docs/LINKBRAIN-PHASE-1-DETAILED-IMPLEMENTATION-PLAN.md`                 | `051caa80191639c06b2dee6fa4800e736ada30772a55ad84e12e5fa6a4e63458` | frozen / match plan §2 |
 | LiNKskills plan                  | `LiNKskills/docs/LINKSKILLS-INTERNAL-LAUNCH-DETAILED-DEVELOPMENT-PLAN.md`          | `31a6cc70bb778ce1dff236819e4bf600b0495dbb06c95bac55bcb2b0b2f5fe88` | frozen / match plan §2 |
-| openclaw_prime HEAD              | `issue/ocp-openclawdevelopmentplan01`                                              | `4966913a6f81af58355f4439d146013052587339`                         | implementation base    |
-| LiNKbrain HEAD (consume-only)    | local checkout                                                                     | `86161d3ab78679ffc3b96680cf04e03c2d5c8fd2`                         | snapshot only          |
-| LiNKskills HEAD (consume-only)   | local checkout                                                                     | `fd1b6364b8450ec292773f00cc2dc6de19143a70`                         | snapshot only          |
-| LiNKplatform HEAD (consume-only) | local checkout                                                                     | `95120dc4549f0bc79627668acbc5b21afd699e29`                         | snapshot only          |
+| openclaw_prime HEAD              | `issue/ocp-openclawdevelopmentplan01`                                              | (branch tip; recheck at each wave)                                 | implementation base    |
+| LiNKbrain HEAD (consume-only)    | `issue/13-developmentplan01`                                                       | `f2c9d6ce76576b5e6edd6d342f52f2ef1180da6a`                         | correction wave 2 pin  |
+| LiNKskills HEAD (consume-only)   | `issue/21-linkskillsdevelopmentplan01`                                             | `4094d84e1fb70b3310f4e236e6886f1449d8a1d9`                         | correction wave 2 pin  |
+| LiNKplatform HEAD (consume-only) | `issue/LP-01-linkplatformdevelopmentplan01`                                        | `10458829761797a2a2a70eff0dfa3d05bf980396`                         | correction wave 2 pin  |
 
 Planning-time OpenClaw HEAD cited in plan §2 (`ec90aa8cd119`) is historical. Implementation uses current branch HEAD above and rechecks public SDK/MCP/hooks/state at implementation time.
 

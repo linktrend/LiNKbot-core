@@ -1,55 +1,80 @@
 {
-  "description": "Negative identity claim cases that must fail verification.",
+  "description": "Negative identity claim cases that must fail AuthClaims verification (platform.auth-claims/1.0.0).",
+  "platformContract": "platform.auth-claims/1.0.0",
   "cases": [
     {
       "name": "missing_actor_id",
-      "claim": {
-        "actor_id": "",
-        "actor_kind": "openclaw_agent",
-        "org_id": "org:fixture-studio-01",
-        "scopes": [
-          "skills:read",
-          "skills:write"
-        ],
-        "audience": "linkskills",
-        "exp": 1893456000,
-        "credential_id": "cred:fixture-skills-01",
-        "runtime_binding_id": "binding:fixture-lisa-01"
+      "expect": "reject",
+      "reasons": ["shape_invalid"],
+      "claims": {
+        "claimContractVersion": "platform.auth-claims/1.0.0",
+        "actorId": "",
+        "actorKind": "persona",
+        "runtimeBindingId": "bind-lisa-openclaw-1",
+        "credentialId": "cred-skills-1",
+        "orgId": "org-internal",
+        "internal": true,
+        "serviceScopes": ["lskills"],
+        "permittedOperations": ["read", "execute"],
+        "issuedAt": "2026-07-27T00:00:00.000Z",
+        "expiresAt": "2026-07-27T12:00:00.000Z",
+        "issuer": "linkplatform-issuer",
+        "audience": ["lskills-api"],
+        "correlationId": "corr-missing-actor"
       }
     },
     {
-      "name": "missing_org_id",
-      "claim": {
-        "actor_id": "actor:fixture-lisa-01",
-        "actor_kind": "openclaw_agent",
-        "org_id": "",
-        "scopes": [
-          "skills:read",
-          "skills:write"
-        ],
-        "audience": "linkskills",
-        "exp": 1893456000,
-        "credential_id": "cred:fixture-skills-01",
-        "runtime_binding_id": "binding:fixture-lisa-01"
+      "name": "missing_org_id_for_persona",
+      "expect": "reject",
+      "reasons": ["wrong_org", "shape_invalid"],
+      "claims": {
+        "claimContractVersion": "platform.auth-claims/1.0.0",
+        "actorId": "actor-lisa",
+        "actorKind": "persona",
+        "runtimeBindingId": "bind-lisa-openclaw-1",
+        "credentialId": "cred-skills-1",
+        "orgId": null,
+        "internal": true,
+        "serviceScopes": ["lskills"],
+        "permittedOperations": ["read", "execute"],
+        "issuedAt": "2026-07-27T00:00:00.000Z",
+        "expiresAt": "2026-07-27T12:00:00.000Z",
+        "issuer": "linkplatform-issuer",
+        "audience": ["lskills-api"],
+        "correlationId": "corr-missing-org"
+      },
+      "context": {
+        "expectedOrgId": "org-internal",
+        "expectedAudience": "lskills-api",
+        "requiredService": "lskills",
+        "now": "2026-07-27T06:00:00.000Z",
+        "credentialStatus": "active",
+        "actorLifecycleState": "active",
+        "bindingState": "active"
       }
     },
     {
       "name": "spoofed_actor_in_body",
-      "claim": {
-        "actor_id": "actor:fixture-lisa-01",
-        "actor_kind": "openclaw_agent",
-        "org_id": "org:fixture-studio-01",
-        "scopes": [
-          "skills:read",
-          "skills:write"
-        ],
-        "audience": "linkskills",
-        "exp": 1893456000,
-        "credential_id": "cred:fixture-skills-01",
-        "runtime_binding_id": "binding:fixture-lisa-01"
+      "expect": "reject",
+      "reasons": ["spoof_rejected"],
+      "claims": {
+        "claimContractVersion": "platform.auth-claims/1.0.0",
+        "actorId": "actor-lisa",
+        "actorKind": "persona",
+        "runtimeBindingId": "bind-lisa-openclaw-1",
+        "credentialId": "cred-skills-1",
+        "orgId": "org-internal",
+        "internal": true,
+        "serviceScopes": ["lskills", "linkplatform"],
+        "permittedOperations": ["read", "execute", "skills:read", "skills:write"],
+        "issuedAt": "2026-07-27T00:00:00.000Z",
+        "expiresAt": "2026-07-27T12:00:00.000Z",
+        "issuer": "linkplatform-issuer",
+        "audience": ["lskills-api"],
+        "correlationId": "corr-spoof"
       },
       "request_body": {
-        "actor_id": "actor:attacker"
+        "actorId": "actor-attacker"
       }
     }
   ]

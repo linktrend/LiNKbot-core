@@ -1,28 +1,42 @@
 {
   "domain": "LiNKplatform",
-  "consumed_at": "2026-07-28T07:44:00+08:00",
+  "consumed_at": "2026-07-28T09:10:00+08:00",
   "consumer": "openclaw_prime",
   "branch": "issue/ocp-openclawdevelopmentplan01",
   "source_repo": "LiNKplatform",
-  "source_head": "95120dc4549f0bc79627668acbc5b21afd699e29",
+  "source_head": "10458829761797a2a2a70eff0dfa3d05bf980396",
   "source_branch_observed": "issue/LP-01-linkplatformdevelopmentplan01",
-  "PLATFORM_CONTRACTS_SEMVER": "0.2.0",
+  "PLATFORM_CONTRACTS_SEMVER": "0.2.1",
   "package": {
     "name": "@linktrend/platform-contracts",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "private": true,
     "type": "module"
+  },
+  "platform_auth_claims": {
+    "contract_id": "platform.auth-claims",
+    "semantic_version": "1.0.0",
+    "contract_version_string": "platform.auth-claims/1.0.0",
+    "schema_version": "2026.07.28",
+    "status": "frozen_for_integration",
+    "frozen_doc": "docs/contracts/frozen/platform-auth-claims-v1.0.0.FROZEN.md",
+    "schema_path": "packages/contracts/schemas/platform-auth-claims.v1.0.0.json",
+    "schema_file_sha256": "b0397cdf34e76ab0986c6d223ecb6c3c66d619ea59557f78cd45c0c015ff50fb",
+    "content_hash": "6bf49618d846662976886f57d5d468f73a08ab1a6574968f68833d82429db251",
+    "claims_ts_sha256": "ae220b00f33d534cb9ba624160b3c6910f1df0aba172f428985641c5a98f0e90",
+    "note": "Authoritative auth contract for OpenClaw consumers. Do not treat golden-canonical-hash meta as AuthClaims."
   },
   "golden_canonical_hash": {
     "path": "packages/contracts/fixtures/contract-meta/golden-canonical-hash.json",
     "sha256_of_file": "834f569547032e26af9bbfa08f556fe013ae59f0cd2c49c476538f4dc927ebae",
-    "embedded_content_hash": "deb43dca494a198cad86e49fc6be91ccb79d19aa297e8d824d7416e5be35a134",
-    "note": "Owner-approved golden vector for canonicalizeJson + contentHash; OpenClaw pins embedded sha256 value, not node_modules"
+    "embedded_sha256": "deb43dca494a198cad86e49fc6be91ccb79d19aa297e8d824d7416e5be35a134",
+    "note": "canonicalizeJson stability vector only — not a substitute for platform.auth-claims/1.0.0"
   },
   "contract_meta_ts": {
     "path": "packages/contracts/src/contract-meta.ts",
-    "sha256": "315849f13b8a8047bd17c9f0ae55c9b385f4208f148395a20f27e7f1b10d5caa"
+    "sha256": "ceed17a5417f1bec359de825a4f0b9f25e5cf363e4e468608daf21206385ed7a"
   },
   "openclaw_plan_sha256": "17203ee586a3fb2b1281bcddd8b17ae350075ebce537689f3c4bfcbbd14914f7",
+  "correction_wave": "wave-2-2026-07-28",
   "sanitization": "No secrets, credentials, endpoints with tokens, or node_modules copied. Metadata + hashes only."
 }

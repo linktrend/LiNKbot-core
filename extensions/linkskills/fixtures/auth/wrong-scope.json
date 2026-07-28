@@ -1,17 +1,33 @@
 {
-  "description": "Brain scopes must not authorize Skills operations.",
-  "claim": {
-    "actor_id": "actor:fixture-lisa-01",
-    "actor_kind": "openclaw_agent",
-    "org_id": "org:fixture-studio-01",
-    "scopes": [
-      "brain:read",
-      "brain:write"
-    ],
-    "audience": "linkskills",
-    "exp": 1893456000,
-    "credential_id": "cred:fixture-skills-01",
-    "runtime_binding_id": "binding:fixture-lisa-01"
+  "description": "Wrong serviceScopes must not authorize Skills operations (platform.auth-claims/1.0.0).",
+  "platformContract": "platform.auth-claims/1.0.0",
+  "expect": "reject",
+  "reasons": ["wrong_service"],
+  "claims": {
+    "claimContractVersion": "platform.auth-claims/1.0.0",
+    "actorId": "actor-lisa",
+    "actorKind": "persona",
+    "runtimeBindingId": "bind-lisa-openclaw-1",
+    "credentialId": "cred-skills-1",
+    "orgId": "org-internal",
+    "internal": true,
+    "serviceScopes": ["lbrain"],
+    "permittedOperations": ["read", "execute"],
+    "issuedAt": "2026-07-27T00:00:00.000Z",
+    "expiresAt": "2026-07-27T12:00:00.000Z",
+    "issuer": "linkplatform-issuer",
+    "audience": ["lskills-api"],
+    "correlationId": "corr-skills-wrong-service"
+  },
+  "context": {
+    "expectedOrgId": "org-internal",
+    "expectedAudience": "lskills-api",
+    "requiredService": "lskills",
+    "requiredOperation": "execute",
+    "now": "2026-07-27T06:00:00.000Z",
+    "credentialStatus": "active",
+    "actorLifecycleState": "active",
+    "bindingState": "active"
   },
   "expected": {
     "code": "forbidden",
