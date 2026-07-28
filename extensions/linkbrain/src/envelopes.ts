@@ -45,7 +45,7 @@ export type BrainCaptureEvent = {
   text: string;
 };
 
-export type BrainCaptureBatchBody = {
+type BrainCaptureBatchBody = {
   batchId: string;
   streamId: string;
   actorId?: string;
@@ -55,7 +55,7 @@ export type BrainCaptureBatchBody = {
   events: BrainCaptureEvent[];
 };
 
-export type BrainCoordinationBody = {
+type BrainCoordinationBody = {
   taskId?: string;
   summary?: string;
   [key: string]: unknown;

@@ -1,12 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
-import {
-  fixtureSkillsClaim,
-  mintFakeToken,
-} from "../../test/helpers/link-domain-fakes/skills-fake.js";
+import { mintFakeToken } from "./fake/auth.mjs";
+import { fixtureSkillsClaim } from "./fake/harness.mjs";
 import { SkillsFakeService } from "./fake/service.mjs";
 import { parseLinkskillsConfig } from "./src/config.js";
 import { buildSkillsTelemetryEnvelope, findProhibitedSkillsField } from "./src/envelopes.js";
-import { createMemoryKeyedStore } from "./src/memory-store.js";
 import { LINKSKILLS_NAMESPACES, LINKSKILLS_NAMESPACE_LIST } from "./src/namespaces.js";
 import {
   createLinkskillsRuntime,
@@ -14,6 +11,7 @@ import {
   type LinkskillsLeaseRunner,
 } from "./src/runtime.js";
 import { openLinkskillsStores } from "./src/stores.js";
+import { createMemoryKeyedStore } from "./src/test-support/memory-store.js";
 
 function createTestStores(maxEntries = 100) {
   const opened: string[] = [];
@@ -90,7 +88,7 @@ function seedRun(fake: SkillsFakeService, auth: string, runId = "run:fixture-ski
 describe("linkskills outbox runtime", () => {
   it("opens only plan namespaces with reject-new", () => {
     const { opened, stores } = createTestStores();
-    expect(opened.sort()).toEqual([...LINKSKILLS_NAMESPACE_LIST].sort());
+    expect(opened.toSorted()).toEqual([...LINKSKILLS_NAMESPACE_LIST].toSorted());
     expect(stores.openedNamespaces).toEqual(LINKSKILLS_NAMESPACE_LIST);
     expect(Object.values(LINKSKILLS_NAMESPACES)).toEqual(
       expect.arrayContaining(["outbox", "deadletter", "cursor", "health"]),

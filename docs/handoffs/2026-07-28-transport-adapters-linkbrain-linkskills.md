@@ -2,20 +2,20 @@
 
 ## Session Metadata
 
-| Field            | Value                                                          |
-| ---------------- | -------------------------------------------------------------- |
-| Agent identity   | Cursor Cloud Agent / feature                                   |
-| Session ID       | cursor-cloud-mac-mini-feature-transport-adapters-20260728-0744 |
-| Orchestrator key | cursor-local-mac-mini-desktop-workspace-orchestrator           |
-| Objective        | Configurable Brain/Skills transports (disabled/fake/http/mcp)  |
-| Scope            | `extensions/linkbrain/**`, `extensions/linkskills/**`          |
-| Started          | 2026-07-28 07:44 Asia/Taipei                                   |
-| Ended            | 2026-07-28 07:54 Asia/Taipei                                   |
-| Starting branch  | `issue/ocp-openclawdevelopmentplan01`                          |
-| Ending branch    | `issue/ocp-openclawdevelopmentplan01`                          |
-| Starting commit  | `63cd8e6a053` / later `a82c14481e8`                            |
-| Ending commit    | `e88ba95d0a2a9a400f07c1009b3d454c3244edbf`                     |
-| Starting status  | clean on issue branch                                          |
+| Field            | Value                                                             |
+| ---------------- | ----------------------------------------------------------------- |
+| Agent identity   | Cursor Cloud Agent / feature                                      |
+| Session ID       | cursor-cloud-mac-mini-feature-transport-adapters-20260728-0744    |
+| Orchestrator key | cursor-local-mac-mini-desktop-workspace-orchestrator              |
+| Objective        | Configurable Brain/Skills transports (disabled/fake/http/mcp)     |
+| Scope            | `extensions/linkbrain/**`, `extensions/linkskills/**`             |
+| Started          | 2026-07-28 07:44 Asia/Taipei                                      |
+| Ended            | 2026-07-28 07:54 Asia/Taipei                                      |
+| Starting branch  | `issue/ocp-openclawdevelopmentplan01`                             |
+| Ending branch    | `issue/ocp-openclawdevelopmentplan01`                             |
+| Starting commit  | `63cd8e6a053` / later `a82c14481e8`                               |
+| Ending commit    | `e88ba95d0a2a9a400f07c1009b3d454c3244edbf`                        |
+| Starting status  | clean on issue branch                                             |
 | Ending status    | transport commit on origin; Phase 6 concurrent artifacts separate |
 
 ## Summary

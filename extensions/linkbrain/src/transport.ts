@@ -18,7 +18,7 @@ import {
 } from "./runtime.js";
 import { isAllowedBrainWriteTool } from "./tools.js";
 
-export type ManagedMcpServerEntry = {
+type ManagedMcpServerEntry = {
   enabled?: boolean;
   command?: string;
   args?: string[];
@@ -27,8 +27,8 @@ export type ManagedMcpServerEntry = {
   workingDirectory?: string;
   url?: string;
   transport?: "stdio" | "sse" | "streamable-http";
-  headers?: Record<string, string | number | boolean | unknown>;
-  auth?: "oauth" | string;
+  headers?: Record<string, unknown>;
+  auth?: string;
   oauth?: {
     authProfileId?: string;
     scope?: string;
@@ -40,7 +40,7 @@ export type ManagedMcpServerEntry = {
   [key: string]: unknown;
 };
 
-export type McpToolSession = {
+type McpToolSession = {
   callTool(
     name: string,
     args: Record<string, unknown>,
@@ -213,9 +213,12 @@ async function resolveMcpHeaders(params: {
     typeof params.server.oauth?.authProfileId === "string"
       ? params.server.oauth.authProfileId
       : undefined;
-  const hasAuthorization = Object.keys(headers).some(
-    (key) => key.toLowerCase() === "authorization" && headers[key].trim().length > 0,
-  );
+  const hasAuthorization = Object.keys(headers).some((key) => {
+    const value = headers[key];
+    return (
+      key.toLowerCase() === "authorization" && typeof value === "string" && value.trim().length > 0
+    );
+  });
   const authProfileOnly =
     Boolean(authProfileId || params.server.auth === "oauth") && !hasAuthorization;
   return { headers, authProfileOnly };
@@ -546,7 +549,7 @@ export function resolveLinkbrainTransport(
     });
   }
 
-  const _exhaustive: never = mode;
-  void _exhaustive;
+  const exhaustive: never = mode;
+  void exhaustive;
   return createDisabledTransport();
 }

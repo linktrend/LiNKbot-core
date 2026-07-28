@@ -63,7 +63,7 @@ export type LinkbrainLeaseRunner = <T>(
   run: (lease: { signal: AbortSignal; assertOwned: () => void }) => Promise<T>,
 ) => Promise<T>;
 
-export type CreateLinkbrainRuntimeParams = {
+type CreateLinkbrainRuntimeParams = {
   config: LinkbrainConfig;
   stores: LinkbrainStores;
   transport: LinkbrainTransport;
@@ -72,7 +72,7 @@ export type CreateLinkbrainRuntimeParams = {
   maxAttempts?: number;
 };
 
-export type EnqueueWriteParams = {
+type EnqueueWriteParams = {
   kind: BrainWriteKind;
   toolName: string;
   idempotencyKey: string;
@@ -148,7 +148,7 @@ async function sortedOutbox(
       // Prefer domain record time so age survives store/host clock differences.
       createdAt: entry.value.createdAtMs || entry.createdAt,
     }))
-    .sort((a, b) => {
+    .toSorted((a, b) => {
       if (a.createdAt !== b.createdAt) {
         return a.createdAt - b.createdAt;
       }
@@ -326,8 +326,8 @@ export function createLinkbrainRuntime(params: CreateLinkbrainRuntimeParams): Li
           skipped += 1;
           break;
         default: {
-          const _exhaustive: never = result;
-          void _exhaustive;
+          const exhaustive: never = result;
+          void exhaustive;
           break;
         }
       }

@@ -1,4 +1,13 @@
 import { randomUUID } from "node:crypto";
+
+/**
+ * @param {unknown} value
+ * @param {string} [fallback]
+ */
+function asString(value, fallback = "") {
+  return typeof value === "string" ? value : fallback;
+}
+
 import { AuthError, verifyAuthorization } from "./auth.mjs";
 import {
   API_VERSION,
@@ -68,8 +77,8 @@ export class SkillsFakeService {
    * @param {{ client_contract_version?: string; client_api_version?: string }} body
    */
   negotiateVersion(body = {}) {
-    const clientContract = String(body.client_contract_version ?? "");
-    const clientApi = String(body.client_api_version ?? "");
+    const clientContract = asString(body.client_contract_version);
+    const clientApi = asString(body.client_api_version);
     if (clientContract && clientContract !== CONTRACT_VERSION) {
       return {
         status: "incompatible",
@@ -181,7 +190,7 @@ export class SkillsFakeService {
       }
     }
 
-    const requestId = String(args.request_id ?? `req:${randomUUID()}`);
+    const requestId = asString(args.request_id, `req:${randomUUID()}`);
     const idempotencyKey =
       typeof args.idempotency_key === "string" ? args.idempotency_key : undefined;
 
@@ -191,7 +200,12 @@ export class SkillsFakeService {
       if (cached) {
         return {
           ...cached,
-          data: { .../** @type {Record<string, unknown>} */ (cached.data ?? {}), replayed: true },
+          data: {
+            ...(cached.data && typeof cached.data === "object" && !Array.isArray(cached.data)
+              ? /** @type {Record<string, unknown>} */ (cached.data)
+              : {}),
+            replayed: true,
+          },
           warnings: [
             { code: "idempotency_replay", message: "Replay of prior successful response" },
           ],
@@ -359,7 +373,7 @@ export class SkillsFakeService {
         if (run.status === "completed" || run.status === "failed") {
           throw new ServiceError("conflict", "Run already terminal", { httpStatus: 409 });
         }
-        run.status = String(params.status ?? "running");
+        run.status = asString(params.status, "running");
         return { run_id: run.run_id, status: run.status, sequence: 2 };
       }
       case "skills_run_complete": {
@@ -410,7 +424,7 @@ export class SkillsFakeService {
             ? /** @type {Record<string, unknown>} */ (params.structured_input)
             : {};
         return {
-          invocation_id: String(params.invocation_id ?? `inv:${randomUUID()}`),
+          invocation_id: asString(params.invocation_id, `inv:${randomUUID()}`),
           status: "completed",
           structured_output: {
             ok: true,
@@ -469,8 +483,8 @@ export class SkillsFakeService {
         };
       }
       default: {
-        const _exhaustive = operation;
-        throw new ServiceError("not_found", `Unknown tool: ${_exhaustive}`, { httpStatus: 404 });
+        const exhaustive = operation;
+        throw new ServiceError("not_found", `Unknown tool: ${exhaustive}`, { httpStatus: 404 });
       }
     }
   }
@@ -549,7 +563,7 @@ function requireRelease(params, skill) {
  * @param {import("./auth.mjs").SkillsActorClaims} actor
  */
 function requireRun(params, runs, actor) {
-  const runId = String(params.run_id ?? "");
+  const runId = asString(params.run_id);
   const run = runs.get(runId);
   if (!run) {
     throw new ServiceError("not_found", "Unknown run_id", { httpStatus: 404 });

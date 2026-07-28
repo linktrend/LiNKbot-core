@@ -26,6 +26,7 @@ export {
   createLinkskillsRuntime,
   createSkillsFakeTransport,
   type LinkskillsDiagnostics,
+  type LinkskillsLeaseRunner,
   type LinkskillsRuntime,
   type LinkskillsTransport,
 } from "./src/runtime.js";
@@ -39,6 +40,13 @@ export {
   mapSkillsEventTypeToToolName,
   resolveSkillsDrainToolName,
 } from "./src/tools.js";
+export {
+  openLinkskillsStores,
+  openLinkskillsStoresFromApi,
+  type LinkskillsKeyedStore,
+  type LinkskillsStores,
+  type OpenLinkskillsStoresOptions,
+} from "./src/stores.js";
 export {
   LINKSKILLS_MCP_TOOL_ALLOWLIST,
   buildLinkskillsMcpToolFilter,

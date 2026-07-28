@@ -1,6 +1,6 @@
 /** Linkskills plugin config (§12.1 / §12.2). */
 
-export type LinkskillsSecretRef = {
+type LinkskillsSecretRef = {
   source: "env" | "file" | "exec";
   provider: string;
   id: string;
@@ -8,7 +8,7 @@ export type LinkskillsSecretRef = {
 
 export type LinkskillsSecretInput = string | LinkskillsSecretRef;
 
-export type LinkskillsEnvironment = "test" | "stage" | "production";
+type LinkskillsEnvironment = "test" | "stage" | "production";
 
 export type LinkskillsTransportMode = "disabled" | "fake" | "mcp" | "http";
 

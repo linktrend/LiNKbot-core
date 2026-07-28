@@ -644,6 +644,17 @@ const config = {
     ]),
     [`${BUNDLED_PLUGIN_ROOT_DIR}/kilocode`]: bundledPluginWorkspace(),
     [`${BUNDLED_PLUGIN_ROOT_DIR}/kimi-coding`]: bundledPluginWorkspace(),
+    [`${BUNDLED_PLUGIN_ROOT_DIR}/linkbrain`]: bundledPluginWorkspace([
+      // Deterministic Brain fake CLI/runtime used by extension and core tests.
+      "fake/runtime.mjs!",
+      "fake/server.mjs!",
+    ]),
+    [`${BUNDLED_PLUGIN_ROOT_DIR}/linkskills`]: bundledPluginWorkspace([
+      // Deterministic Skills fake CLI/harness used by extension and core tests.
+      "fake/cli.mjs!",
+      "fake/harness.mjs!",
+      "fake/index.mjs!",
+    ]),
     [`${BUNDLED_PLUGIN_ROOT_DIR}/matrix`]: bundledPluginWorkspace([
       // Native import wrapper shipped alongside the Matrix runtime bundle.
       "src/plugin-entry.runtime.js!",

@@ -1,13 +1,13 @@
 import { describe, expect, it, vi } from "vitest";
-import { createBrainFake } from "../../test/helpers/link-domain-fakes/brain-fake.js";
+import { createBrainFake } from "./fake/runtime.mjs";
 import { createLinkbrainCapture } from "./src/capture.js";
 import { parseLinkbrainConfig } from "./src/config.js";
 import { createLinkbrainLifecycle, LINKBRAIN_REGISTERED_HOOKS } from "./src/lifecycle.js";
-import { createMemoryKeyedStore } from "./src/memory-store.js";
 import { opaqueId } from "./src/opaque.js";
 import { createBrainFakeTransport, createLinkbrainRuntime } from "./src/runtime.js";
 import { containsUnsafeField, sanitizeCaptureText } from "./src/sanitize.js";
 import { openLinkbrainStores } from "./src/stores.js";
+import { createMemoryKeyedStore } from "./src/test-support/memory-store.js";
 import { isAllowedBrainWriteTool, LINKBRAIN_ALLOWED_WRITE_TOOLS } from "./src/tools.js";
 
 function createTestStores(maxEntries = 200) {
@@ -28,7 +28,7 @@ async function createHarness(flags: {
   batchMaxEvents?: number;
   failTransport?: boolean;
 }) {
-  const fake = await createBrainFake();
+  const fake = createBrainFake();
   const stores = createTestStores();
   const config = parseLinkbrainConfig({
     captureEnqueue: flags.captureEnqueue ?? true,
@@ -368,7 +368,9 @@ describe("linkbrain Phase 3 lifecycle capture", () => {
   it("operation AbortController bounds do not leave uncaught rejections", async () => {
     const h = await createHarness({});
     const slowEnqueue = vi.spyOn(h.runtime, "enqueueWrite").mockImplementation(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 50));
+      await new Promise<void>((resolve) => {
+        setTimeout(resolve, 50);
+      });
       return { key: "slow" };
     });
     await expect(
@@ -382,7 +384,7 @@ describe("linkbrain Phase 3 lifecycle capture", () => {
   });
 
   it("rejects non-allowlisted tools at the transport boundary", async () => {
-    const fake = await createBrainFake();
+    const fake = createBrainFake();
     const transport = createBrainFakeTransport(fake);
     const result = await transport.write({
       toolName: "brain_browse",

@@ -8,7 +8,7 @@
 export const LINKSKILLS_REDACTION_POLICY_VERSION = "skills.telemetry.v0";
 
 /** Exact keys that must never appear on Skills telemetry (mirrors fake/prohibited.mjs). */
-export const LINKSKILLS_PROHIBITED_EXACT_KEYS = Object.freeze([
+const LINKSKILLS_PROHIBITED_EXACT_KEYS = Object.freeze([
   "conversation",
   "conversations",
   "message",
@@ -54,7 +54,7 @@ export const LINKSKILLS_PROHIBITED_EXACT_KEYS = Object.freeze([
   "access_token",
 ]);
 
-export const LINKSKILLS_PROHIBITED_KEY_PREFIXES = Object.freeze([
+const LINKSKILLS_PROHIBITED_KEY_PREFIXES = Object.freeze([
   "brain_",
   "conversation_",
   "prompt_",
@@ -62,9 +62,9 @@ export const LINKSKILLS_PROHIBITED_KEY_PREFIXES = Object.freeze([
   "message_",
 ]);
 
-export type SkillsTelemetryKind = "structured_event";
+type SkillsTelemetryKind = "structured_event";
 
-export type SkillsTelemetryMetrics = {
+type SkillsTelemetryMetrics = {
   duration_ms?: number;
   tool_calls?: number;
   [key: string]: unknown;
@@ -164,8 +164,8 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
-export function isProhibitedSkillsKey(key: string): boolean {
-  if (LINKSKILLS_PROHIBITED_EXACT_KEYS.includes(key)) {
+function isProhibitedSkillsKey(key: string): boolean {
+  if ((LINKSKILLS_PROHIBITED_EXACT_KEYS as readonly string[]).includes(key)) {
     return true;
   }
   return LINKSKILLS_PROHIBITED_KEY_PREFIXES.some((prefix) => key.startsWith(prefix));
@@ -317,9 +317,7 @@ export function deadLetterMetaFromEnvelope(
 }
 
 /** Maps a structured telemetry envelope to Skills fake feedback_submit params. */
-export function feedbackParamsFromEnvelope(
-  envelope: SkillsInternalEnvelope,
-): Record<string, unknown> {
+function feedbackParamsFromEnvelope(envelope: SkillsInternalEnvelope): Record<string, unknown> {
   return {
     run_id: envelope.body.run_id,
     kind: "outcome",

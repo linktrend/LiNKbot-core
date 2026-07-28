@@ -78,7 +78,13 @@ export async function startSkillsFakeHttp(opts = {}) {
     baseUrl,
     async stop() {
       await new Promise((resolve, reject) => {
-        server.close((err) => (err ? reject(err) : resolve(undefined)));
+        server.close((err) => {
+          if (err) {
+            reject(err instanceof Error ? err : new Error("Skills fake HTTP server close failed"));
+            return;
+          }
+          resolve(undefined);
+        });
       });
     },
   };

@@ -30,17 +30,17 @@ export const LINKBRAIN_REGISTERED_HOOKS = Object.freeze([
   "subagent_ended",
 ] as const);
 
-export type LinkbrainRegisteredHook = (typeof LINKBRAIN_REGISTERED_HOOKS)[number];
+type LinkbrainRegisteredHook = (typeof LINKBRAIN_REGISTERED_HOOKS)[number];
 
 /** Conversation-bearing hooks from the §10.1 set that need allowConversationAccess. */
 export const LINKBRAIN_CONVERSATION_HOOKS = Object.freeze(["agent_end"] as const);
 
-export type LifecycleLogger = {
+type LifecycleLogger = {
   info: (message: string) => void;
   warn: (message: string) => void;
 };
 
-export type SessionContextRecord = {
+type SessionContextRecord = {
   version: 1;
   sessionId: string;
   bindingId?: string;
@@ -107,7 +107,7 @@ export type LinkbrainLifecycle = {
   }): Promise<void>;
 };
 
-export type CreateLinkbrainLifecycleParams = {
+type CreateLinkbrainLifecycleParams = {
   config: LinkbrainConfig;
   runtime: LinkbrainRuntime;
   capture: LinkbrainCapture;

@@ -106,7 +106,16 @@ describe("linkskills transport modes", () => {
     const fetchImpl = vi.fn(async (_url: string | URL | Request, init?: RequestInit) => {
       const headers = new Headers(init?.headers);
       expect(headers.get("authorization")).toBe("Bearer fake-skills-token");
-      const body = JSON.parse(String(init?.body)) as { toolName: string };
+      const rawBody = init?.body;
+      const bodyText =
+        typeof rawBody === "string"
+          ? rawBody
+          : rawBody instanceof Uint8Array
+            ? Buffer.from(rawBody).toString("utf8")
+            : rawBody == null
+              ? ""
+              : JSON.stringify(rawBody);
+      const body = JSON.parse(bodyText) as { toolName: string };
       expect(body.toolName).toBe("skills_run_start");
       return new Response(JSON.stringify({ ok: true }), { status: 200 });
     });

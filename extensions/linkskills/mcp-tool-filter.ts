@@ -7,7 +7,7 @@
  */
 
 /** Discovery family (§9.2). */
-export const LINKSKILLS_MCP_DISCOVERY_TOOLS = Object.freeze([
+const LINKSKILLS_MCP_DISCOVERY_TOOLS = Object.freeze([
   "skills_list",
   "skills_search",
   "skills_describe",
@@ -16,7 +16,7 @@ export const LINKSKILLS_MCP_DISCOVERY_TOOLS = Object.freeze([
 ] as const);
 
 /** Runs family (§9.2). */
-export const LINKSKILLS_MCP_RUN_TOOLS = Object.freeze([
+const LINKSKILLS_MCP_RUN_TOOLS = Object.freeze([
   "skills_run_start",
   "skills_run_update",
   "skills_run_complete",
@@ -24,19 +24,19 @@ export const LINKSKILLS_MCP_RUN_TOOLS = Object.freeze([
 ] as const);
 
 /** Tool mediation family (§9.2). */
-export const LINKSKILLS_MCP_MEDIATION_TOOLS = Object.freeze([
+const LINKSKILLS_MCP_MEDIATION_TOOLS = Object.freeze([
   "skills_tool_resolve",
   "skills_tool_invoke",
 ] as const);
 
 /** Validation family (§9.2). */
-export const LINKSKILLS_MCP_VALIDATION_TOOLS = Object.freeze([
+const LINKSKILLS_MCP_VALIDATION_TOOLS = Object.freeze([
   "skills_input_validate",
   "skills_output_validate",
 ] as const);
 
 /** Evidence family (§9.2). */
-export const LINKSKILLS_MCP_EVIDENCE_TOOLS = Object.freeze([
+const LINKSKILLS_MCP_EVIDENCE_TOOLS = Object.freeze([
   "skills_feedback_submit",
   "skills_trace_candidate_submit",
 ] as const);
@@ -50,7 +50,7 @@ export const LINKSKILLS_MCP_TOOL_ALLOWLIST = Object.freeze([
   ...LINKSKILLS_MCP_EVIDENCE_TOOLS,
 ] as const);
 
-export type LinkskillsMcpAllowedTool = (typeof LINKSKILLS_MCP_TOOL_ALLOWLIST)[number];
+type LinkskillsMcpAllowedTool = (typeof LINKSKILLS_MCP_TOOL_ALLOWLIST)[number];
 
 const allowedSet = new Set<string>(LINKSKILLS_MCP_TOOL_ALLOWLIST);
 

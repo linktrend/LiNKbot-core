@@ -21,7 +21,7 @@
 | 2   | Brain MCP tool names CURRENT vs frozen §9.1 unresolved                | **DECIDED:** OpenClaw keeps frozen §9.1; **will not** alias; Brain must implement §9.1                                         | `BRAIN-TOOL-NAME-DECISION-PACKET.md`                                                                         |
 | 3   | Hardcoded `not_configured` transport stubs                            | Configurable modes: `disabled` (default) / `fake` / `http` / `mcp`; `not_configured` removed                                   | `extensions/link{brain,skills}/src/transport.ts`; commit `e88ba95d0a2`                                       |
 | 4   | Phase 6 incomplete (coexistence-only; tip proof understated at 13/82) | Full mandatory matrix + perf; tip suite **20 files / 144 tests**; `SKIPPED_PLATFORM_LIVE` items named                          | `PHASE-6-STATUS.md`; `phase6-mandatory-matrix.test.ts`; `phase6-perf-baseline.test.ts`                       |
-| 5   | Fixture owner sign-off / aggregate hashes missing                     | Sign-off process with exact aggregates; status **`AWAITING_OWNER_COUNTERSIGN`** (Principal must route to Brain/Skills owners)  | `FIXTURE-OWNER-SIGNOFF.md`; `COUNTERSIGN-REQUEST.md`                                                          |
+| 5   | Fixture owner sign-off / aggregate hashes missing                     | Sign-off process with exact aggregates; status **`AWAITING_OWNER_COUNTERSIGN`** (Principal must route to Brain/Skills owners)  | `FIXTURE-OWNER-SIGNOFF.md`; `COUNTERSIGN-REQUEST.md`                                                         |
 | 6   | Crabbox/Testbox heavy proof unclear or overclaimable                  | Local `crabbox` binary **missing** / sanity failed; **trusted local fallback** used; **draft PR #38** opened for exact-head CI | PR https://github.com/linktrend/openclaw_prime/pull/38 ; tip HEAD `048922582e5` (PR opened at `17508f539d7`) |
 | 7   | Ambiguity on live Lisa mutation and Phases 7–12                       | Confirmed: **no Lisa live mutation**; **Phases 7–12 not started** (blocked packets only)                                       | §3 / §7 / §9; `PHASE-{7..12}-STATUS-BLOCKED.md`                                                              |
 | 8   | Coverage index / provisional handoff stale for re-verification        | This **CORRECTED** handoff; coverage index **without** seven-value classifications; sessions closed                            | this file; `docs/handoffs/2026-07-28-openclawdevelopmentplan01-corrected-phase13.md`                         |
@@ -75,11 +75,11 @@ Evidence pointers are status packets and code paths. **No seven-value classifica
 
 ## 2. Contract pins (`contracts/`)
 
-| Domain       | Pin file                      | Source HEAD                                | Key pin                                                                                                         |
-| ------------ | ----------------------------- | ------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
+| Domain       | Pin file                      | Source HEAD                                | Key pin                                                                                                              |
+| ------------ | ----------------------------- | ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------- |
 | LiNKplatform | `contracts/platform/PIN.json` | `10458829761797a2a2a70eff0dfa3d05bf980396` | `platform.auth-claims/1.0.0` schema `b0397cdf…50fb` / contentHash `6bf49618…b251`; `PLATFORM_CONTRACTS_SEMVER=0.2.1` |
-| LiNKbrain    | `contracts/brain/PIN.json`    | `f2c9d6ce76576b5e6edd6d342f52f2ef1180da6a` | `BRAIN_CONTRACT_VERSION=1.0.0`; frozen 17 tools via `frozen-tools.ts` `1e265b20…be26` |
-| LiNKskills   | `contracts/skills/PIN.json`   | `4094d84e1fb70b3310f4e236e6886f1449d8a1d9` | `skills.api.v0.1`; schemas aggregate `828ac00d…81d2`; vendored auth-claims matches Platform |
+| LiNKbrain    | `contracts/brain/PIN.json`    | `f2c9d6ce76576b5e6edd6d342f52f2ef1180da6a` | `BRAIN_CONTRACT_VERSION=1.0.0`; frozen 17 tools via `frozen-tools.ts` `1e265b20…be26`                                |
+| LiNKskills   | `contracts/skills/PIN.json`   | `4094d84e1fb70b3310f4e236e6886f1449d8a1d9` | `skills.api.v0.1`; schemas aggregate `828ac00d…81d2`; vendored auth-claims matches Platform                          |
 
 Full consumption record: `PHASE-1-CONTRACT-CONSUMPTION.md`.
 
@@ -144,8 +144,8 @@ Prior Phase 13 closeout (2026-07-27): 13 files / 82 tests — retained as histor
 
 ## 6. Fixture sign-off
 
-| Package                          | Aggregate SHA-256                                                  | Status                           |
-| -------------------------------- | ------------------------------------------------------------------ | -------------------------------- |
+| Package                          | Aggregate SHA-256                                                  | Status                                              |
+| -------------------------------- | ------------------------------------------------------------------ | --------------------------------------------------- |
 | `extensions/linkbrain/fixtures`  | `d539debc7b9d7347c109e7d462fc27a48c28322f0d3d5b85d57f602e843d45fb` | **`AWAITING_OWNER_COUNTERSIGN`** (NOT Phase 1 pass) |
 | `extensions/linkskills/fixtures` | `8586d89a4a160987ace45ed4392b78c8a66391940e81eed6bdc098f49404ec96` | **`AWAITING_OWNER_COUNTERSIGN`** (NOT Phase 1 pass) |
 

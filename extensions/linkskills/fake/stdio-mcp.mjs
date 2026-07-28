@@ -1,6 +1,14 @@
 import { OPERATIONS } from "./constants.mjs";
 import { SkillsFakeService } from "./service.mjs";
 
+/**
+ * @param {unknown} value
+ * @param {string} [fallback]
+ */
+function asString(value, fallback = "") {
+  return typeof value === "string" ? value : fallback;
+}
+
 const PROTOCOL_VERSION = "2024-11-05";
 const SERVER_NAME = "linkskills-fake-mcp";
 const SERVER_VERSION = "0.1.0";
@@ -94,7 +102,7 @@ export function handleRpc(service, message) {
       return { jsonrpc: "2.0", id, result: { tools: service.listTools() } };
     }
     if (method === "tools/call") {
-      const name = String(params.name ?? "");
+      const name = asString(params.name);
       const args = /** @type {Record<string, unknown>} */ (params.arguments ?? {});
       if (!OPERATIONS.includes(name)) {
         return {

@@ -9,7 +9,6 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { parseLinkbrainConfig } from "../../../extensions/linkbrain/src/config.js";
-import { createMemoryKeyedStore as createBrainMemoryStore } from "../../../extensions/linkbrain/src/memory-store.js";
 import {
   LINKBRAIN_NAMESPACES,
   LINKBRAIN_NAMESPACE_LIST,
@@ -20,13 +19,13 @@ import {
   createLinkbrainRuntime,
 } from "../../../extensions/linkbrain/src/runtime.js";
 import { openLinkbrainStores } from "../../../extensions/linkbrain/src/stores.js";
+import { createMemoryKeyedStore as createBrainMemoryStore } from "../../../extensions/linkbrain/src/test-support/memory-store.js";
 import { SkillsFakeService } from "../../../extensions/linkskills/fake/service.mjs";
 import { parseLinkskillsConfig } from "../../../extensions/linkskills/src/config.js";
 import {
   buildSkillsTelemetryEnvelope,
   findProhibitedSkillsField,
 } from "../../../extensions/linkskills/src/envelopes.js";
-import { createMemoryKeyedStore as createSkillsMemoryStore } from "../../../extensions/linkskills/src/memory-store.js";
 import {
   LINKSKILLS_CONVERSATION_HOOK_POLICY,
   LINKSKILLS_NAMESPACES,
@@ -38,6 +37,7 @@ import {
   createSkillsFakeTransport,
 } from "../../../extensions/linkskills/src/runtime.js";
 import { openLinkskillsStores } from "../../../extensions/linkskills/src/stores.js";
+import { createMemoryKeyedStore as createSkillsMemoryStore } from "../../../extensions/linkskills/src/test-support/memory-store.js";
 import {
   createBrainFake,
   startBrainFakeHttpServer,
@@ -101,13 +101,17 @@ type TrackedOpen = {
  */
 function createIsolatedDomainStores(maxEntries = 100) {
   const opened: TrackedOpen[] = [];
-  const brainStoresByNs = new Map<string, ReturnType<typeof createBrainMemoryStore>>();
-  const skillsStoresByNs = new Map<string, ReturnType<typeof createSkillsMemoryStore>>();
+  const brainStoresByNs = new Map<string, { size(): number; entries: () => Promise<unknown[]> }>();
+  const skillsStoresByNs = new Map<string, { size(): number; entries: () => Promise<unknown[]> }>();
 
   const brain = openLinkbrainStores({
     maxEntries,
-    openKeyedStore: (options) => {
-      const store = createBrainMemoryStore({
+    openKeyedStore: <T>(options: {
+      namespace: string;
+      maxEntries: number;
+      overflowPolicy: "reject-new";
+    }) => {
+      const store = createBrainMemoryStore<T>({
         maxEntries: options.maxEntries,
         overflowPolicy: "reject-new",
       });
@@ -119,8 +123,12 @@ function createIsolatedDomainStores(maxEntries = 100) {
 
   const skills = openLinkskillsStores({
     maxEntries,
-    openKeyedStore: (options) => {
-      const store = createSkillsMemoryStore({
+    openKeyedStore: <T>(options: {
+      namespace: string;
+      maxEntries: number;
+      overflowPolicy: "reject-new";
+    }) => {
+      const store = createSkillsMemoryStore<T>({
         maxEntries: options.maxEntries,
         overflowPolicy: "reject-new",
       });

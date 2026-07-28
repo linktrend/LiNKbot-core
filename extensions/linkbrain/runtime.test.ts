@@ -1,8 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
-import { createBrainFake } from "../../test/helpers/link-domain-fakes/brain-fake.js";
+import { createBrainFake } from "./fake/runtime.mjs";
 import { parseLinkbrainConfig } from "./src/config.js";
 import { redactBrainEnvelope } from "./src/envelopes.js";
-import { createMemoryKeyedStore } from "./src/memory-store.js";
 import { LINKBRAIN_NAMESPACES, LINKBRAIN_NAMESPACE_LIST } from "./src/namespaces.js";
 import {
   createBrainFakeTransport,
@@ -10,6 +9,7 @@ import {
   type LinkbrainLeaseRunner,
 } from "./src/runtime.js";
 import { openLinkbrainStores } from "./src/stores.js";
+import { createMemoryKeyedStore } from "./src/test-support/memory-store.js";
 
 function createTestStores(maxEntries = 100) {
   const opened: string[] = [];
@@ -43,7 +43,7 @@ const sampleBatch = {
 describe("linkbrain outbox runtime", () => {
   it("opens only plan namespaces with reject-new", () => {
     const { opened, stores } = createTestStores();
-    expect(opened.sort()).toEqual([...LINKBRAIN_NAMESPACE_LIST].sort());
+    expect(opened.toSorted()).toEqual([...LINKBRAIN_NAMESPACE_LIST].toSorted());
     expect(stores.openedNamespaces).toEqual(LINKBRAIN_NAMESPACE_LIST);
     expect(Object.values(LINKBRAIN_NAMESPACES)).toEqual(
       expect.arrayContaining(["outbox", "deadletter", "cursor", "health", "capture-buffer"]),
@@ -72,7 +72,7 @@ describe("linkbrain outbox runtime", () => {
   });
 
   it("drains ordered outbox writes against Brain fake with idempotent replay", async () => {
-    const fake = await createBrainFake();
+    const fake = createBrainFake();
     const { stores } = createTestStores();
     const config = parseLinkbrainConfig({
       captureEnqueue: true,
@@ -157,7 +157,7 @@ describe("linkbrain outbox runtime", () => {
   });
 
   it("dead-letters terminal Brain failures", async () => {
-    const fake = await createBrainFake();
+    const fake = createBrainFake();
     fake.setForceFailure("terminal");
     const { stores } = createTestStores();
     const runtime = createLinkbrainRuntime({
@@ -186,7 +186,7 @@ describe("linkbrain outbox runtime", () => {
   });
 
   it("recovers pending outbox after restart and serializes lease drain", async () => {
-    const fake = await createBrainFake();
+    const fake = createBrainFake();
     const { stores } = createTestStores();
     const config = parseLinkbrainConfig({ captureEnqueue: true, captureDrain: true });
     const leaseCalls: string[] = [];

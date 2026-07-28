@@ -39,7 +39,7 @@ if (mode === "http") {
   process.on("SIGINT", shutdown);
   process.on("SIGTERM", shutdown);
 } else if (mode === "stdio") {
-  createStdioMcpLoop();
+  void createStdioMcpLoop();
 } else {
   process.stderr.write(`Unknown mode: ${mode}\n`);
   process.exit(2);

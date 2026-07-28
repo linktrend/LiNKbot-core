@@ -2,21 +2,21 @@
 
 ## Session Metadata
 
-| Field            | Value |
-| ---------------- | ----- |
-| Agent identity   | Cursor Cloud Agent (Grok 4.5 High), Feature |
-| Session ID       | cursor-cloud-feature-openclawdevelopmentplan01-correction-wave2-20260728-0910 |
-| Orchestrator key | cursor-local-mac-mini-desktop-workspace-orchestrator |
-| Objective        | Correction wave 2 contracts/fixtures repin + AuthClaims refresh + countersign honesty |
+| Field            | Value                                                                                                                    |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| Agent identity   | Cursor Cloud Agent (Grok 4.5 High), Feature                                                                              |
+| Session ID       | cursor-cloud-feature-openclawdevelopmentplan01-correction-wave2-20260728-0910                                            |
+| Orchestrator key | cursor-local-mac-mini-desktop-workspace-orchestrator                                                                     |
+| Objective        | Correction wave 2 contracts/fixtures repin + AuthClaims refresh + countersign honesty                                    |
 | Scope            | `docs/execution/openclawdevelopmentplan01/**`, `extensions/link{brain,skills}/fixtures/**`, brain-fake fixture assertion |
-| Started          | 2026-07-28 09:07 Asia/Taipei |
-| Ended            | 2026-07-28 09:14 Asia/Taipei |
-| Starting branch  | `issue/ocp-openclawdevelopmentplan01` |
-| Ending branch    | `issue/ocp-openclawdevelopmentplan01` |
-| Starting commit  | `e8f2a86af4112701bb950992dfc9224c7075a0e2` |
-| Ending commit    | (this commit) |
-| Starting status  | clean on branch tip |
-| Ending status    | correction wave 2 committed |
+| Started          | 2026-07-28 09:07 Asia/Taipei                                                                                             |
+| Ended            | 2026-07-28 09:14 Asia/Taipei                                                                                             |
+| Starting branch  | `issue/ocp-openclawdevelopmentplan01`                                                                                    |
+| Ending branch    | `issue/ocp-openclawdevelopmentplan01`                                                                                    |
+| Starting commit  | `e8f2a86af4112701bb950992dfc9224c7075a0e2`                                                                               |
+| Ending commit    | (this commit)                                                                                                            |
+| Starting status  | clean on branch tip                                                                                                      |
+| Ending status    | correction wave 2 committed                                                                                              |
 
 ## Summary
 

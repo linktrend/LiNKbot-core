@@ -2,17 +2,18 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { afterEach, describe, expect, it } from "vitest";
+import { mintFakeToken } from "./auth.mjs";
+import { OPERATIONS } from "./constants.mjs";
 import {
   fixtureSkillsClaim,
   startChildProcessSkillsFake,
   startInProcessSkillsFake,
-  type SkillsFakeHandle,
-} from "../../../test/helpers/link-domain-fakes/skills-fake.js";
-import { mintFakeToken } from "./auth.mjs";
-import { OPERATIONS } from "./constants.mjs";
+} from "./harness.mjs";
 import { findProhibitedField } from "./prohibited.mjs";
 import { SkillsFakeService } from "./service.mjs";
 import { handleRpc } from "./stdio-mcp.mjs";
+
+type SkillsFakeHandle = Awaited<ReturnType<typeof startInProcessSkillsFake>>;
 
 const fixturesRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../fixtures");
 
@@ -192,8 +193,7 @@ describe("linkskills fake contract", () => {
       },
     });
     expect(response?.result).toBeTruthy();
-    const structured = (response?.result as { structuredContent: Record<string, unknown> })
-      .structuredContent;
-    expect(structured.contract_version).toBe("0.1");
+    const result = response?.result as { structuredContent: Record<string, unknown> } | undefined;
+    expect(result?.structuredContent.contract_version).toBe("0.1");
   });
 });

@@ -22,6 +22,8 @@ const UNGUARDED_RUNTIME_API_PLUGIN_IDS = [
   "feishu",
   "google",
   "line",
+  "linkbrain",
+  "linkskills",
   "lmstudio",
   "lobster",
   "mattermost",

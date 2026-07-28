@@ -14,7 +14,7 @@ export const LINKSKILLS_DRAIN_TOOLS = Object.freeze([
   "skills_trace_candidate_submit",
 ] as const);
 
-export type LinkskillsDrainTool = (typeof LINKSKILLS_DRAIN_TOOLS)[number];
+type LinkskillsDrainTool = (typeof LINKSKILLS_DRAIN_TOOLS)[number];
 
 const drainSet = new Set<string>(LINKSKILLS_DRAIN_TOOLS);
 

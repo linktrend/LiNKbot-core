@@ -76,7 +76,16 @@ describe("linkbrain transport modes", () => {
       expect(init?.method).toBe("POST");
       const headers = new Headers(init?.headers);
       expect(headers.get("authorization")).toBe("Bearer fake-brain-token");
-      const body = JSON.parse(String(init?.body)) as { toolName: string };
+      const rawBody = init?.body;
+      const bodyText =
+        typeof rawBody === "string"
+          ? rawBody
+          : rawBody instanceof Uint8Array
+            ? Buffer.from(rawBody).toString("utf8")
+            : rawBody == null
+              ? ""
+              : JSON.stringify(rawBody);
+      const body = JSON.parse(bodyText) as { toolName: string };
       expect(body.toolName).toBe("brain_capture_batch");
       return new Response(JSON.stringify({ ok: true }), { status: 200 });
     });

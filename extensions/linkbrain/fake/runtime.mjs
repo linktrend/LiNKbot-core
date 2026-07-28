@@ -80,13 +80,13 @@ const AUTH_TOKEN_OUTCOMES = Object.freeze({
   "fake-wrong-scope-token": "wrong_scope",
 });
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const moduleDir = path.dirname(fileURLToPath(import.meta.url));
 
 export function resolveBrainFixturesDir(customDir) {
   if (customDir) {
     return path.resolve(customDir);
   }
-  return path.resolve(__dirname, "../fixtures");
+  return path.resolve(moduleDir, "../fixtures");
 }
 
 function readJson(filePath) {
@@ -239,7 +239,7 @@ export function createBrainFake(options = {}) {
 
   function callTool(toolName, args = {}, meta = {}) {
     const requestId = meta.requestId ?? `req_${toolName}_${idempotency.size + 1}`;
-    const token = meta.authToken ?? args._authBearer ?? args.authToken;
+    const token = meta.authToken ?? args["_authBearer"] ?? args.authToken;
 
     if (!BRAIN_TOOL_NAMES.includes(toolName)) {
       return errorResult(
@@ -273,7 +273,7 @@ export function createBrainFake(options = {}) {
     }
 
     const domainArgs = { ...args };
-    delete domainArgs._authBearer;
+    delete domainArgs["_authBearer"];
     delete domainArgs.authToken;
     delete domainArgs.claims;
 
@@ -331,7 +331,7 @@ export function createBrainFake(options = {}) {
 
     const fixture = loadToolResponse(toolName);
     const result = {
-      ...(fixture.result ?? {}),
+      ...(fixture.result && typeof fixture.result === "object" ? fixture.result : {}),
       replayed: false,
     };
     if (idempotencyKey) {
@@ -344,7 +344,7 @@ export function createBrainFake(options = {}) {
         requestId,
         idempotencyKey,
         result,
-        warnings: fixture.warnings ?? [],
+        warnings: Array.isArray(fixture.warnings) ? fixture.warnings : [],
         retryability: { retryable: false },
         replayed: false,
       }),
@@ -415,8 +415,8 @@ export function handleBrainMcpMessage(fake, message) {
     const name = message.params?.name;
     const args = message.params?.arguments ?? {};
     const meta = {
-      authToken: message.params?._meta?.authToken ?? args._authBearer ?? args.authToken,
-      requestId: message.params?._meta?.requestId,
+      authToken: message.params?.["_meta"]?.authToken ?? args["_authBearer"] ?? args.authToken,
+      requestId: message.params?.["_meta"]?.requestId,
     };
     const outcome = fake.callTool(name, args, meta);
     if (!outcome.ok) {

@@ -6,7 +6,7 @@
 import { LINKBRAIN_PROHIBITED_FIELDS } from "./envelopes.js";
 
 /** Max characters retained per capture event text. */
-export const LINKBRAIN_MAX_EVENT_TEXT_CHARS = 4_000;
+const LINKBRAIN_MAX_EVENT_TEXT_CHARS = 4_000;
 
 const SECRET_PATTERNS: readonly RegExp[] = [
   /\bBearer\s+[A-Za-z0-9._\-+=/]{8,}/gi,
@@ -40,7 +40,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 /** Replace secret-shaped substrings with a canary-safe placeholder. */
-export function redactSecretSubstrings(text: string): string {
+function redactSecretSubstrings(text: string): string {
   let next = text;
   for (const pattern of SECRET_PATTERNS) {
     next = next.replace(pattern, "[REDACTED]");

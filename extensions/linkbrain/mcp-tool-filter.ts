@@ -7,7 +7,7 @@
  */
 
 /** Knowledge family (§9.1). */
-export const LINKBRAIN_MCP_KNOWLEDGE_TOOLS = Object.freeze([
+const LINKBRAIN_MCP_KNOWLEDGE_TOOLS = Object.freeze([
   "brain_browse",
   "brain_search",
   "brain_load",
@@ -15,7 +15,7 @@ export const LINKBRAIN_MCP_KNOWLEDGE_TOOLS = Object.freeze([
 ] as const);
 
 /** Private capture and episodes family (§9.1). */
-export const LINKBRAIN_MCP_PRIVATE_TOOLS = Object.freeze([
+const LINKBRAIN_MCP_PRIVATE_TOOLS = Object.freeze([
   "brain_capture_batch",
   "brain_episode_checkpoint",
   "brain_private_search",
@@ -23,7 +23,7 @@ export const LINKBRAIN_MCP_PRIVATE_TOOLS = Object.freeze([
 ] as const);
 
 /** Coordination family (§9.1). */
-export const LINKBRAIN_MCP_COORDINATION_TOOLS = Object.freeze([
+const LINKBRAIN_MCP_COORDINATION_TOOLS = Object.freeze([
   "brain_task_start",
   "brain_task_update",
   "brain_inbox_read",
@@ -42,7 +42,7 @@ export const LINKBRAIN_MCP_TOOL_ALLOWLIST = Object.freeze([
   ...LINKBRAIN_MCP_COORDINATION_TOOLS,
 ] as const);
 
-export type LinkbrainMcpAllowedTool = (typeof LINKBRAIN_MCP_TOOL_ALLOWLIST)[number];
+type LinkbrainMcpAllowedTool = (typeof LINKBRAIN_MCP_TOOL_ALLOWLIST)[number];
 
 const allowedSet = new Set<string>(LINKBRAIN_MCP_TOOL_ALLOWLIST);
 

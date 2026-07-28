@@ -18,13 +18,13 @@
 
 ## Work
 
-| Field           | Value                                                                                         |
-| --------------- | --------------------------------------------------------------------------------------------- |
+| Field           | Value                                                                                        |
+| --------------- | -------------------------------------------------------------------------------------------- |
 | Objective       | Phase 3 Brain lifecycle capture + coordination mapping against Brain fake (§10.1 hook table) |
-| Branch          | `issue/ocp-openclawdevelopmentplan01`                                                         |
-| Starting commit | 2724038dae5                                                                                   |
-| Status          | `complete`                                                                                    |
-| Handoff         | docs/execution/openclawdevelopmentplan01/PHASE-3-STATUS.md                                    |
+| Branch          | `issue/ocp-openclawdevelopmentplan01`                                                        |
+| Starting commit | 2724038dae5                                                                                  |
+| Status          | `complete`                                                                                   |
+| Handoff         | docs/execution/openclawdevelopmentplan01/PHASE-3-STATUS.md                                   |
 
 ## Ownership Scope
 

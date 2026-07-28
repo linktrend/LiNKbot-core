@@ -14,17 +14,10 @@ export const LINKBRAIN_ALLOWED_WRITE_TOOLS = Object.freeze([
   LINKBRAIN_TASK_UPDATE_TOOL,
 ] as const);
 
-export type LinkbrainAllowedWriteTool = (typeof LINKBRAIN_ALLOWED_WRITE_TOOLS)[number];
+type LinkbrainAllowedWriteTool = (typeof LINKBRAIN_ALLOWED_WRITE_TOOLS)[number];
 
 const allowedSet = new Set<string>(LINKBRAIN_ALLOWED_WRITE_TOOLS);
 
 export function isAllowedBrainWriteTool(toolName: string): toolName is LinkbrainAllowedWriteTool {
   return allowedSet.has(toolName);
-}
-
-export function assertAllowedBrainWriteTool(toolName: string): LinkbrainAllowedWriteTool {
-  if (!isAllowedBrainWriteTool(toolName)) {
-    throw new Error(`linkbrain: tool "${toolName}" is not on the Brain write allowlist`);
-  }
-  return toolName;
 }

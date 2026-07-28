@@ -63,7 +63,7 @@ export type LinkskillsLeaseRunner = <T>(
   run: (lease: { signal: AbortSignal; assertOwned: () => void }) => Promise<T>,
 ) => Promise<T>;
 
-export type CreateLinkskillsRuntimeParams = {
+type CreateLinkskillsRuntimeParams = {
   config: LinkskillsConfig;
   stores: LinkskillsStores;
   transport: LinkskillsTransport;
@@ -72,7 +72,7 @@ export type CreateLinkskillsRuntimeParams = {
   maxAttempts?: number;
 };
 
-export type EnqueueTelemetryParams = {
+type EnqueueTelemetryParams = {
   toolName?: string;
   idempotencyKey: string;
   body: unknown;
@@ -132,7 +132,7 @@ async function sortedOutbox(
       value: entry.value,
       createdAt: entry.value.createdAtMs || entry.createdAt,
     }))
-    .sort((a, b) => {
+    .toSorted((a, b) => {
       if (a.createdAt !== b.createdAt) {
         return a.createdAt - b.createdAt;
       }
@@ -302,8 +302,8 @@ export function createLinkskillsRuntime(params: CreateLinkskillsRuntimeParams): 
           skipped += 1;
           break;
         default: {
-          const _exhaustive: never = result;
-          void _exhaustive;
+          const exhaustive: never = result;
+          void exhaustive;
           break;
         }
       }

@@ -22,6 +22,7 @@ export {
   createLinkbrainRuntime,
   createBrainFakeTransport,
   type LinkbrainDiagnostics,
+  type LinkbrainLeaseRunner,
   type LinkbrainRuntime,
   type LinkbrainTransport,
 } from "./src/runtime.js";
@@ -37,6 +38,13 @@ export {
   type LinkbrainLifecycle,
 } from "./src/lifecycle.js";
 export { LINKBRAIN_ALLOWED_WRITE_TOOLS, isAllowedBrainWriteTool } from "./src/tools.js";
+export {
+  openLinkbrainStores,
+  openLinkbrainStoresFromApi,
+  type LinkbrainKeyedStore,
+  type LinkbrainStores,
+  type OpenLinkbrainStoresOptions,
+} from "./src/stores.js";
 export {
   LINKBRAIN_MCP_TOOL_ALLOWLIST,
   buildLinkbrainMcpToolFilter,

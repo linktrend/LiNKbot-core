@@ -56,7 +56,15 @@ type BrainFakeRuntime = {
   handleBrainMcpMessage: (
     fake: BrainFakeInstance,
     message: unknown,
-  ) => Record<string, unknown> | null;
+  ) => {
+    jsonrpc: "2.0";
+    id?: unknown;
+    result?: {
+      tools?: Array<{ name: string; description?: string; inputSchema?: unknown }>;
+      [key: string]: unknown;
+    };
+    error?: Record<string, unknown>;
+  } | null;
   listBrainTools: () => Array<{ name: string; description: string; inputSchema: unknown }>;
 };
 
@@ -67,21 +75,6 @@ function loadRuntime(): Promise<BrainFakeRuntime> {
     runtimePromise = import(pathToFileURL(runtimePath).href) as Promise<BrainFakeRuntime>;
   }
   return runtimePromise;
-}
-
-/** Absolute path to the Brain fake HTTP/stdio server script. */
-export function resolveBrainFakeServerPath(): string {
-  return serverPath;
-}
-
-/** Absolute path to the Brain fake runtime module. */
-export function resolveBrainFakeRuntimePath(): string {
-  return runtimePath;
-}
-
-export async function getBrainContractVersion(): Promise<string> {
-  const runtime = await loadRuntime();
-  return runtime.BRAIN_CONTRACT_VERSION;
 }
 
 export async function getBrainToolNames(): Promise<readonly string[]> {
@@ -110,13 +103,6 @@ export async function handleBrainMcpMessage(
   const runtime = await loadRuntime();
   return runtime.handleBrainMcpMessage(fake, message);
 }
-
-export async function listBrainTools(): Promise<ReturnType<BrainFakeRuntime["listBrainTools"]>> {
-  const runtime = await loadRuntime();
-  return runtime.listBrainTools();
-}
-
-export type { BrainFakeInstance };
 
 export type BrainFakeHttpServer = {
   baseUrl: string;

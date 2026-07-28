@@ -1,6 +1,6 @@
 /** Linkbrain plugin config (§12.1 / §12.2). */
 
-export type LinkbrainSecretRef = {
+type LinkbrainSecretRef = {
   source: "env" | "file" | "exec";
   provider: string;
   id: string;
@@ -8,7 +8,7 @@ export type LinkbrainSecretRef = {
 
 export type LinkbrainSecretInput = string | LinkbrainSecretRef;
 
-export type LinkbrainEnvironment = "test" | "stage" | "production";
+type LinkbrainEnvironment = "test" | "stage" | "production";
 
 export type LinkbrainTransportMode = "disabled" | "fake" | "mcp" | "http";
 

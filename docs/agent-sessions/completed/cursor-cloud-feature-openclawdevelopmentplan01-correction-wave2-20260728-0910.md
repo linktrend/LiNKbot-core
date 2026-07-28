@@ -2,29 +2,29 @@
 
 ## Identity
 
-| Field             | Value |
-| ----------------- | ----- |
-| Agent type        | Cursor Cloud Agent |
-| Platform          | Cursor |
-| Machine           | cloud |
-| Surface           | cloud-agent |
-| Execution         | cloud |
-| Role              | feature |
-| Orchestrator key  | cursor-local-mac-mini-desktop-workspace-orchestrator |
-| Coordination home | `/Users/linktrend/Projects/openclaw_prime` |
+| Field             | Value                                                                         |
+| ----------------- | ----------------------------------------------------------------------------- |
+| Agent type        | Cursor Cloud Agent                                                            |
+| Platform          | Cursor                                                                        |
+| Machine           | cloud                                                                         |
+| Surface           | cloud-agent                                                                   |
+| Execution         | cloud                                                                         |
+| Role              | feature                                                                       |
+| Orchestrator key  | cursor-local-mac-mini-desktop-workspace-orchestrator                          |
+| Coordination home | `/Users/linktrend/Projects/openclaw_prime`                                    |
 | Session ID        | cursor-cloud-feature-openclawdevelopmentplan01-correction-wave2-20260728-0910 |
-| Started           | 2026-07-28 09:07 Asia/Taipei |
-| Last updated      | 2026-07-28 09:14 Asia/Taipei |
+| Started           | 2026-07-28 09:07 Asia/Taipei                                                  |
+| Last updated      | 2026-07-28 09:14 Asia/Taipei                                                  |
 
 ## Work
 
-| Field           | Value |
-| --------------- | ----- |
+| Field           | Value                                                                                                                                |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
 | Objective       | Correction wave 2 — repin Platform/Brain/Skills contracts; refresh Brain/Skills fixtures; AuthClaims alignment; countersign awaiting |
-| Branch          | `issue/ocp-openclawdevelopmentplan01` |
-| Starting commit | `e8f2a86af4112701bb950992dfc9224c7075a0e2` |
-| Status          | `complete` |
-| Handoff         | `docs/handoffs/2026-07-28-correction-wave2-contracts-fixtures.md` |
+| Branch          | `issue/ocp-openclawdevelopmentplan01`                                                                                                |
+| Starting commit | `e8f2a86af4112701bb950992dfc9224c7075a0e2`                                                                                           |
+| Status          | `complete`                                                                                                                           |
+| Handoff         | `docs/handoffs/2026-07-28-correction-wave2-contracts-fixtures.md`                                                                    |
 
 ## Ownership Scope
 

@@ -9,7 +9,6 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { afterEach, describe, expect, it } from "vitest";
 import { parseLinkbrainConfig } from "../../../extensions/linkbrain/src/config.js";
-import { createMemoryKeyedStore as createBrainMemoryStore } from "../../../extensions/linkbrain/src/memory-store.js";
 import {
   LINKBRAIN_NAMESPACES,
   LINKBRAIN_NAMESPACE_LIST,
@@ -20,15 +19,15 @@ import {
   createLinkbrainRuntime,
   type LinkbrainTransport,
 } from "../../../extensions/linkbrain/src/runtime.js";
-import { redactSecretSubstrings } from "../../../extensions/linkbrain/src/sanitize.js";
+import { sanitizeCaptureText } from "../../../extensions/linkbrain/src/sanitize.js";
 import { openLinkbrainStores } from "../../../extensions/linkbrain/src/stores.js";
+import { createMemoryKeyedStore as createBrainMemoryStore } from "../../../extensions/linkbrain/src/test-support/memory-store.js";
 import { SkillsFakeService } from "../../../extensions/linkskills/fake/service.mjs";
 import { parseLinkskillsConfig } from "../../../extensions/linkskills/src/config.js";
 import {
   buildSkillsTelemetryEnvelope,
   findProhibitedSkillsField,
 } from "../../../extensions/linkskills/src/envelopes.js";
-import { createMemoryKeyedStore as createSkillsMemoryStore } from "../../../extensions/linkskills/src/memory-store.js";
 import {
   LINKSKILLS_CONVERSATION_HOOK_POLICY,
   LINKSKILLS_NAMESPACES,
@@ -41,6 +40,7 @@ import {
   type LinkskillsTransport,
 } from "../../../extensions/linkskills/src/runtime.js";
 import { openLinkskillsStores } from "../../../extensions/linkskills/src/stores.js";
+import { createMemoryKeyedStore as createSkillsMemoryStore } from "../../../extensions/linkskills/src/test-support/memory-store.js";
 import { createBrainFake } from "./brain-fake.js";
 import { fixtureSkillsClaim, mintFakeToken } from "./skills-fake.js";
 
@@ -628,7 +628,7 @@ describe(`Phase 6 mandatory matrix (${PHASE6_EVIDENCE_TIER})`, () => {
 
     // Ingress canary: sanitize capture text + strip prohibited secret fields before enqueue.
     const rawIngress = `Please use Bearer ${PHASE6_SECRET_CANARY} quietly`;
-    const sanitizedText = redactSecretSubstrings(rawIngress);
+    const sanitizedText = sanitizeCaptureText(rawIngress);
     expect(sanitizedText).not.toContain(PHASE6_SECRET_CANARY);
     expect(sanitizedText).toContain("[REDACTED]");
 

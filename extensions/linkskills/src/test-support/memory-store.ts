@@ -2,7 +2,7 @@
  * In-memory keyed store for linkskills unit tests.
  * Honors maxEntries + overflowPolicy: "reject-new".
  */
-import type { LinkskillsKeyedStore } from "./stores.js";
+import type { LinkskillsKeyedStore } from "../stores.js";
 
 type Entry<T> = {
   key: string;
@@ -11,7 +11,7 @@ type Entry<T> = {
   expiresAt?: number;
 };
 
-export type MemoryStoreOptions = {
+type MemoryStoreOptions = {
   maxEntries: number;
   overflowPolicy?: "reject-new" | "evict-oldest";
   now?: () => number;
@@ -123,7 +123,11 @@ export function createMemoryKeyedStore<T>(
       return entries.delete(key);
     },
     async entries() {
-      return Array.from(entries.values()).map((entry) => ({ ...entry }));
+      return Array.from(entries.values(), (entry) => ({
+        key: entry.key,
+        value: entry.value,
+        createdAt: entry.createdAt,
+      }));
     },
     async clear() {
       entries.clear();

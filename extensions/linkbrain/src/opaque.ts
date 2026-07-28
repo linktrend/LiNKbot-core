@@ -4,7 +4,7 @@
  */
 import { createHash } from "node:crypto";
 
-export type OpaqueKind =
+type OpaqueKind =
   | "actor"
   | "binding"
   | "session"

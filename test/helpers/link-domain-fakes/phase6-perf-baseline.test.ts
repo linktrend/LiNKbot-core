@@ -7,20 +7,20 @@
  */
 import { describe, expect, it } from "vitest";
 import { parseLinkbrainConfig } from "../../../extensions/linkbrain/src/config.js";
-import { createMemoryKeyedStore as createBrainMemoryStore } from "../../../extensions/linkbrain/src/memory-store.js";
 import {
   createBrainFakeTransport,
   createLinkbrainRuntime,
 } from "../../../extensions/linkbrain/src/runtime.js";
 import { openLinkbrainStores } from "../../../extensions/linkbrain/src/stores.js";
+import { createMemoryKeyedStore as createBrainMemoryStore } from "../../../extensions/linkbrain/src/test-support/memory-store.js";
 import { SkillsFakeService } from "../../../extensions/linkskills/fake/service.mjs";
 import { parseLinkskillsConfig } from "../../../extensions/linkskills/src/config.js";
-import { createMemoryKeyedStore as createSkillsMemoryStore } from "../../../extensions/linkskills/src/memory-store.js";
 import {
   createLinkskillsRuntime,
   createSkillsFakeTransport,
 } from "../../../extensions/linkskills/src/runtime.js";
 import { openLinkskillsStores } from "../../../extensions/linkskills/src/stores.js";
+import { createMemoryKeyedStore as createSkillsMemoryStore } from "../../../extensions/linkskills/src/test-support/memory-store.js";
 import { createBrainFake } from "./brain-fake.js";
 import { fixtureSkillsClaim, mintFakeToken } from "./skills-fake.js";
 

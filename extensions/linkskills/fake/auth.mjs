@@ -1,6 +1,14 @@
 import { Buffer } from "node:buffer";
 import { AUDIENCE, REQUIRED_SCOPES, REVOKED_CREDENTIAL_IDS } from "./constants.mjs";
 
+/**
+ * @param {unknown} value
+ * @param {string} [fallback]
+ */
+function asString(value, fallback = "") {
+  return typeof value === "string" ? value : fallback;
+}
+
 export class AuthError extends Error {
   /**
    * @param {string} code
@@ -76,13 +84,13 @@ export function verifyAuthorization(authorization, opts = {}) {
   }
   rejectSpoof(claims, opts.requestPayload);
   return {
-    actor_id: String(claims.actor_id),
-    actor_kind: String(claims.actor_kind),
-    org_id: String(claims.org_id),
+    actor_id: asString(claims.actor_id),
+    actor_kind: asString(claims.actor_kind),
+    org_id: asString(claims.org_id),
     scopes,
-    audience: String(claims.audience),
+    audience: asString(claims.audience),
     exp: claims.exp,
-    credential_id: String(claims.credential_id ?? ""),
+    credential_id: asString(claims.credential_id),
   };
 }
 
@@ -115,7 +123,7 @@ function normalizeScopes(scopes) {
     return [scopes];
   }
   if (Array.isArray(scopes)) {
-    return scopes.map((s) => String(s));
+    return scopes.map((s) => asString(s));
   }
   throw new AuthError("auth_invalid", "scopes must be a list of strings");
 }
@@ -138,10 +146,15 @@ function rejectSpoof(claims, requestPayload) {
   for (const bag of bags) {
     const record = /** @type {Record<string, unknown>} */ (bag);
     for (const key of ["actor_id", "org_id", "actor_kind", "credential_id", "platform_actor_id"]) {
-      if (key in record && record[key] != null && String(record[key]) !== "") {
-        const expected =
+      if (key in record && record[key] != null) {
+        const actual = asString(record[key]);
+        if (actual === "") {
+          continue;
+        }
+        const expectedRaw =
           key === "platform_actor_id" ? claims.actor_id : /** @type {any} */ (claims)[key];
-        if (String(record[key]) !== String(expected ?? claims.actor_id)) {
+        const expected = asString(expectedRaw, claims.actor_id);
+        if (actual !== expected) {
           throw new AuthError("auth_spoof_rejected", `Spoofed identity rejected: ${key} mismatch`);
         }
       }

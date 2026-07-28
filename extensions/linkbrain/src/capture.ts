@@ -11,7 +11,7 @@ import { sanitizeCaptureText } from "./sanitize.js";
 import type { LinkbrainStores } from "./stores.js";
 import { LINKBRAIN_CAPTURE_TOOL } from "./tools.js";
 
-export type CaptureBufferRecord = {
+type CaptureBufferRecord = {
   version: 1;
   streamId: string;
   actorId?: string;
@@ -22,7 +22,7 @@ export type CaptureBufferRecord = {
   seenFingerprints: string[];
 };
 
-export type CaptureEnqueueInput = {
+type CaptureEnqueueInput = {
   streamKey: string;
   actorKey?: string;
   role: BrainCaptureEvent["role"];
@@ -31,7 +31,7 @@ export type CaptureEnqueueInput = {
   fingerprint?: string;
 };
 
-export type CaptureFlushReason =
+type CaptureFlushReason =
   | "batch_limit"
   | "before_compaction"
   | "before_reset"
@@ -68,7 +68,7 @@ function withTimeout<T>(
   });
 }
 
-export type CreateLinkbrainCaptureParams = {
+type CreateLinkbrainCaptureParams = {
   config: LinkbrainConfig;
   stores: LinkbrainStores;
   runtime: LinkbrainRuntime;
