@@ -14,7 +14,7 @@
 | Starting branch  | `issue/ocp-openclawdevelopmentplan01`                                                                |
 | Ending branch    | `issue/ocp-openclawdevelopmentplan01`                                                                |
 | Starting commit  | `429a7818e2f79be27329c1848531ffe9ba0f7367`                                                           |
-| Ending commit    | `e1ac7323be60d68b79b2f7afe6cf64c9e5a88f7b` (closeout); tip after this handoff fill-in follows push   |
+| Ending commit    | closeout `e1ac7323be60d68b79b2f7afe6cf64c9e5a88f7b`; this packet tip after docs_map repair push      |
 
 ## Summary
 

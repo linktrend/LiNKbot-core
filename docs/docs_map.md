@@ -5596,6 +5596,7 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Verification performed
   - H2: Files Modified
   - H2: Explicit non-claims
+  - H2: Hosted CI
   - H2: Exact Next Action
   - H2: Confidence
 
