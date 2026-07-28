@@ -54,6 +54,14 @@ function estimateBytes(events: BrainCaptureEvent[]): number {
   return Buffer.byteLength(JSON.stringify(events), "utf8");
 }
 
+/** True when a keyed-store insert was rejected by reject-new overflow. */
+function isLimitExceeded(error: unknown): boolean {
+  if (!error || typeof error !== "object") {
+    return false;
+  }
+  return (error as { code?: unknown }).code === "PLUGIN_STATE_LIMIT_EXCEEDED";
+}
+
 function withTimeout<T>(
   work: (signal: AbortSignal) => Promise<T>,
   timeoutMs: number,
@@ -200,14 +208,32 @@ export function createLinkbrainCapture(params: CreateLinkbrainCaptureParams): Li
             seenFingerprints: nextFingerprints,
           };
 
+          // Durable accept first. Flush/outbox failures must not lose this event.
+          try {
+            await save(next);
+          } catch (error) {
+            // reject-new on capture-buffer: leave prior streams/events untouched.
+            if (isLimitExceeded(error)) {
+              return { accepted: false, flushed: false };
+            }
+            throw error;
+          }
+
           const overEvents = nextEvents.length >= params.config.batchMaxEvents;
           const overBytes = estimateBytes(nextEvents) >= params.config.batchMaxBytes;
-          if (overEvents || overBytes) {
-            const flushed = await flushRecord(next, "batch_limit");
-            return { accepted: true, flushed };
+          if (!(overEvents || overBytes)) {
+            return { accepted: true, flushed: false };
           }
-          await save(next);
-          return { accepted: true, flushed: false };
+
+          try {
+            const flushed = await flushRecord(next, "batch_limit");
+            // flushed=true only after outbox enqueue + buffer clear inside flushRecord.
+            return { accepted: true, flushed };
+          } catch {
+            // Outbox overflow / shutdown / disabled / transport enqueue error:
+            // event remains in durable buffer for later flush/drain. Never claim flushed.
+            return { accepted: true, flushed: false };
+          }
         },
         operationTimeoutMs,
         "capture-enqueue",

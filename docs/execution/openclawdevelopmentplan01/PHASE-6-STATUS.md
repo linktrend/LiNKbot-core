@@ -1,6 +1,7 @@
 # Phase 6 — Integrated Local and Isolated QA Status (complete matrix)
 
 **Recorded:** 2026-07-28 07:50 Asia/Taipei  
+**Capture durability amendment:** 2026-07-28 15:35 Asia/Taipei  
 **Branch:** `issue/ocp-openclawdevelopmentplan01`  
 **Evidence tier:** `fake/integration-local` — **not** stage, **not** production, **no** live Platform/Lisa.  
 **Session:** `cursor-cloud-mac-mini-feature-phase6-matrix-20260728-0744`
@@ -54,8 +55,8 @@
 ```text
 node scripts/run-vitest.mjs test/helpers/link-domain-fakes extensions/linkbrain extensions/linkskills
 # After transport adapters landed on the same branch tip:
-# Test Files  20 passed (20)
-# Tests       144 passed (144)
+# Test Files  21 passed (21)
+# Tests       152 passed (152)
 ```
 
 Focused matrix + perf only:
@@ -74,7 +75,7 @@ node scripts/run-vitest.mjs \
 | `test/helpers/link-domain-fakes/` (integrated + matrix + perf + brain-fake) | 4      | 25      |
 | `extensions/linkbrain/**/*.test.ts` (+ fake + transport)                    | 8      | —       |
 | `extensions/linkskills/**/*.test.ts` (+ fake + transport)                   | 8      | —       |
-| **Tip total after transport land**                                          | **20** | **144** |
+| **Tip total after capture durability**                                      | **21** | **152** |
 
 Prior packet was 7 integrated / 82 focused. Phase 6 matrix commit (`66a32888129`) added +17 mandatory/perf tests. Concurrent transport adapters landed at `e88ba95d0a2`; re-verified full suite **20/144** green on tip (`22717f28bb3` status follow-up).
 
@@ -101,3 +102,11 @@ Prior packet was 7 integrated / 82 focused. Phase 6 matrix commit (`66a32888129`
 ## Next
 
 Phase 7 — Platform Stage Readiness Gate (Platform-owned evidence; OpenClaw validates contracts against stage).
+
+## Capture durability amendment (2026-07-28)
+
+- Defect: batch-limit path called `flushRecord(next)` before durable `save(next)`, so `enqueueWrite` failure could lose the new events.
+- Fix: durable-save accepted buffer first; flush failures retain retryable buffer and return `flushed: false` (no false ack).
+- Outbox overflow remains explicit reject-new; previously accepted buffer events are not silently dropped.
+- Regression: `extensions/linkbrain/capture.test.ts` (8). Focused suite **21 / 152**.
+- Not Phase 14; not merge; no Lisa mutation; no Phases 7–12.

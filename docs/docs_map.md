@@ -3856,6 +3856,7 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Explicit non-goals
   - H2: Exit gate
   - H2: Next
+  - H2: Capture durability amendment (2026-07-28)
 
 ## execution/openclawdevelopmentplan01/PHASE-7-DECISION-PACKET-PLATFORM-STAGE.md
 
@@ -5561,6 +5562,17 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Confidence
   - H2: Amendments
 
+## handoffs/2026-07-28-openclawdevelopmentplan01-capture-buffer-durability.md
+
+- Route: /handoffs/2026-07-28-openclawdevelopmentplan01-capture-buffer-durability
+- Headings:
+  - H1: Agent Session Handoff — Capture buffer durability fix
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Proof
+  - H2: Explicit non-claims
+  - H2: Exact Next Action
+
 ## handoffs/2026-07-28-openclawdevelopmentplan01-corrected-phase13.md
 
 - Route: /handoffs/2026-07-28-openclawdevelopmentplan01-corrected-phase13
@@ -5620,6 +5632,7 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Amendments
   - H3: 2026-07-28 — Brain fixture denial corrections (not a new implementation wave)
   - H3: 2026-07-28 — Fixture-owner gate closeout (documentation/evidence only)
+  - H3: 2026-07-28 — Capture buffer durability correction
 
 ## handoffs/2026-07-28-phase6-complete-mandatory-matrix.md
 

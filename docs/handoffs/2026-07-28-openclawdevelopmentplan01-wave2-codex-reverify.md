@@ -105,3 +105,11 @@ Refresh `docs/current-status.md` from this handoff (Orchestrator-only). No activ
 - OpenClaw recomputed both aggregates at tip `429a7818…` — match confirmed. Updated `FIXTURE-OWNER-SIGNOFF.md`, Phase 1/13 packets, MANIFESTs.
 - **Phase 1 fixture-owner gate CLOSED.** Phase 1 overall still blocked on Platform auth-path. Provisional pending independent OpenClaw Codex Phase 14. Do not merge PR #38; do not claim Phases 7–12; do not mutate Lisa.
 - Closeout evidence tip `e1ac7323be60…` green (`30330702257`); final packet tip `0a2e97fe64385faf0c16c2c07b1f5ca4b25787ee` green (`30333114926`). Re-verify Codex against that tip.
+
+### 2026-07-28 — Capture buffer durability correction
+
+- Bugbot thread on `extensions/linkbrain/src/capture.ts`: batch-limit flush ran before durable save.
+- Fix: save accepted `CaptureBufferRecord` before `flushRecord`; flush/outbox failures retain retryable buffer; never claim `flushed: true` on failure; overflow remains reject-new without silent loss of prior accepts.
+- Tests: `extensions/linkbrain/capture.test.ts` (enqueue fail, overflow, shutdown, restart, retry, duplicate, successful drain, Brain isolate).
+- Focused suite: **21 files / 152 tests**.
+- Re-verify Codex against the tip that contains this fix + green `openclaw/ci-gate`. Not merge; not Phase 14 self-certify; no Lisa mutation.
