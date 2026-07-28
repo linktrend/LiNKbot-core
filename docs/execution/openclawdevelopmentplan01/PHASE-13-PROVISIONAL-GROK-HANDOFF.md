@@ -143,7 +143,7 @@ All other mandatory fake-tier scenarios 1–15 + coexistence A–G: **PASS** (se
 | Local re-verify (concurrency)   | **2026-07-28 17:35 Asia/Taipei** — `node scripts/run-vitest.mjs test/helpers/link-domain-fakes extensions/linkbrain extensions/linkskills` → **21/160 pass** |
 | OpenGrep (harness + transports) | Local `scripts/run-opengrep.sh --error` → **0 findings** after harness + SSRF-guard fixes                                                                    |
 
-Local 21/160 is **not** a substitute for hosted CI. Hosted proof for Codex: capture-concurrency tip + green `openclaw/ci-gate` (prior greens superseded as tip claim).
+Local 21/160 is **not** a substitute for hosted CI. Hosted proof for Codex: tip `8e236d2f0568ee57f57d193ef68e6352d2a510fc` + CI run `30347356129` (prior greens superseded as tip claim).
 
 ### Historical (superseded as tip claim)
 
@@ -217,7 +217,7 @@ Source: `FIXTURE-OWNER-SIGNOFF.md`. **Phase 1 fixture-owner gate CLOSED.** Phase
 7. Principal Brain production retention / hold approval
 8. Production credentials + authorized operator for Lisa-profile mutation
 9. Live Librarian / Brain Gateway for scratch finding submission
-10. Hosted exact-head CI: **cleared for tip `74f7e8022278…`** (`openclaw/ci-gate` SUCCESS on run `30339904312`). Capture durability fix included. Fixture-owner gate CLOSED. Re-check gate if tip advances after that SHA.
+10. Hosted exact-head CI: **cleared for tip `8e236d2f0568…`** (`openclaw/ci-gate` SUCCESS on run `30347356129`). Capture concurrency wave 4 included. Fixture-owner gate CLOSED. Re-check gate if tip advances after that SHA.
 
 ### Cleared relative to earlier provisional (code evidence only — not Phase 1 exit)
 

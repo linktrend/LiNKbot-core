@@ -5584,6 +5584,7 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Summary
   - H2: Proof
   - H2: Explicit non-claims
+  - H2: Hosted CI
   - H2: Exact Next Action
 
 ## handoffs/2026-07-28-openclawdevelopmentplan01-corrected-phase13.md

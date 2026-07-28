@@ -120,4 +120,4 @@ Refresh `docs/current-status.md` from this handoff (Orchestrator-only). No activ
 - Fix: per-opaque-stream keyed promise chain; enqueue/flush/flushAll re-load under lock; durable-accept preserved; no false flushed ack; lock tails do not poison; idle keys cleaned.
 - Tests: `extensions/linkbrain/capture.test.ts` concurrency block. Focused suite **21/160**.
 - Fixture JSON unchanged — Brain/Skills owner countersigns remain valid.
-- Re-verify Codex against the tip that contains this fix + green `openclaw/ci-gate`. Not merge; not Phase 14 self-certify; no Lisa mutation.
+- Tip `8e236d2f0568ee57f57d193ef68e6352d2a510fc`; `openclaw/ci-gate` SUCCESS — <https://github.com/linktrend/openclaw_prime/actions/runs/30347356129>. Re-verify Codex against that tip. Not merge; not Phase 14 self-certify; no Lisa mutation.
