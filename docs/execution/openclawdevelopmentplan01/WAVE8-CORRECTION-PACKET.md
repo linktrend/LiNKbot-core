@@ -5,7 +5,7 @@
 **Branch:** `issue/ocp-openclawdevelopmentplan01`
 **PR:** [#38](https://github.com/linktrend/openclaw_prime/pull/38) → `development` (**draft**; do not merge)
 **Starting tip:** `b3e8853b1c15d13429f51ac5054bac448a4256d2`
-**Exact tip SHA:** see `git rev-parse HEAD` on this branch after the wave-8 cleanup pin commit (recorded in Phase 13 Current HEAD)
+**Exact tip SHA:**  (wave-8 cleanup; code tip )
 **Authority:** Principal wave-8 Phase-14 correction instruction — **not** self-certification
 
 ## Scope bounds (honored)
