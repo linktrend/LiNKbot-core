@@ -37,7 +37,7 @@ describe("linkskills plugin boundary", () => {
       "src/collect.ts",
       "src/bounded.ts",
       "src/drain-worker.ts",
-      "src/feature-tools.ts",
+      "src/feature-flags.ts",
       "src/opaque.ts",
     ];
     for (const relative of files) {

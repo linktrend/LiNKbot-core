@@ -1,6 +1,7 @@
 // Linkskills plugin entrypoint — default-disabled private Skills adapter.
 // Never registers conversation/prompt/message-bearing hooks.
 // Observes exact skills_* tools via after_tool_call only.
+// Feature flags gate managed MCP allowlists — no plugin tools named skills_*.
 import {
   definePluginEntry,
   type OpenClawPluginApi,
@@ -10,7 +11,7 @@ import { isOperationTimeout, runBounded } from "./src/bounded.js";
 import { createSkillsTelemetryCollector } from "./src/collect.js";
 import { linkskillsConfigSchema, parseLinkskillsConfig } from "./src/config.js";
 import { createSkillsDrainWorker, type SkillsDrainWorker } from "./src/drain-worker.js";
-import { registerLinkskillsFeatureTools } from "./src/feature-tools.js";
+import { buildLinkskillsFlaggedMcpToolFilter } from "./src/feature-flags.js";
 import { LINKSKILLS_CONVERSATION_HOOK_POLICY, LINKSKILLS_PLUGIN_ID } from "./src/namespaces.js";
 import { createLinkskillsRuntime, type LinkskillsRuntime } from "./src/runtime.js";
 import { openLinkskillsStoresFromApi } from "./src/stores.js";
@@ -27,10 +28,10 @@ export default definePluginEntry({
     let runtime: LinkskillsRuntime | null = null;
     let drainWorker: SkillsDrainWorker | null = null;
     const collector = createSkillsTelemetryCollector();
-    const registeredFeatureTools = registerLinkskillsFeatureTools(api, config);
+    const flaggedMcp = buildLinkskillsFlaggedMcpToolFilter(config);
 
     api.logger.info(
-      `linkskills: registered (default-disabled plugin). ${LINKSKILLS_CONVERSATION_HOOK_POLICY}; featureTools=${registeredFeatureTools.join(",") || "none"}`,
+      `linkskills: registered (default-disabled plugin). ${LINKSKILLS_CONVERSATION_HOOK_POLICY}; mcpInclude=${flaggedMcp.include.length}; no skills_* plugin tools registered`,
     );
 
     const service: OpenClawPluginService = {
@@ -47,6 +48,8 @@ export default definePluginEntry({
         await runtime.open();
         drainWorker = createSkillsDrainWorker({
           intervalMs: config.flushIntervalMs,
+          tickTimeoutMs: 2_000,
+          stopTimeoutMs: 2_000,
           shouldDrain: () => Boolean(runtime?.opened) && config.telemetryDrain,
           drainOnce: (options) => {
             if (!runtime) {
@@ -57,6 +60,12 @@ export default definePluginEntry({
           onError: (error) => {
             api.logger.warn(
               `linkskills: drain worker error: ${error instanceof Error ? error.message : "unknown"}`,
+            );
+          },
+          onStalled: (info) => {
+            runtime?.noteStalled(info);
+            api.logger.warn(
+              `linkskills: drain worker stalled: ${info.label} (${info.reason}); ownership retained`,
             );
           },
         });
@@ -83,7 +92,6 @@ export default definePluginEntry({
 
     const hookOpts = { timeoutMs: 3_000 } as const;
 
-    // Public OpenClaw seam: observe exact skills_* tools only; discard raw I/O.
     api.on(
       "after_tool_call",
       async (event, ctx) => {
@@ -109,20 +117,20 @@ export default definePluginEntry({
           await runBounded(
             async (signal) => {
               throwIfRuntimeMissing(runtime);
-              // signal checked around enqueue; store register is uncancellable.
-              void signal;
               await runtime!.enqueueTelemetry({
                 toolName: observed.toolName,
                 idempotencyKey: observed.idempotencyKey,
                 body: observed.body,
+                signal,
               });
             },
             {
               timeoutMs: 2_000,
               label: "skills-telemetry-enqueue",
               onStalled: (info) => {
+                runtime?.noteStalled(info);
                 api.logger.warn(
-                  `linkskills: ${info.label} stalled (${info.reason}); exclusive drain ownership retained`,
+                  `linkskills: ${info.label} stalled (${info.reason}); exclusive enqueue ownership retained`,
                 );
               },
             },
@@ -187,7 +195,9 @@ export default definePluginEntry({
   },
 });
 
-function throwIfRuntimeMissing(runtime: LinkskillsRuntime | null): asserts runtime is LinkskillsRuntime {
+function throwIfRuntimeMissing(
+  runtime: LinkskillsRuntime | null,
+): asserts runtime is LinkskillsRuntime {
   if (!runtime) {
     throw new Error("linkskills: runtime not open");
   }

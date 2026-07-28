@@ -2,35 +2,33 @@ import { describe, expect, it, vi } from "vitest";
 import { createTestPluginApi } from "openclaw/plugin-sdk/plugin-test-api";
 import linkbrainPlugin from "./index.js";
 import { parseLinkbrainConfig } from "./src/config.js";
-import { registerLinkbrainFeatureTools } from "./src/feature-tools.js";
+import { buildLinkbrainFlaggedMcpToolFilter } from "./src/feature-flags.js";
 import type { OpenClawPluginApi } from "./runtime-api.js";
 
 describe("linkbrain registered-plugin feature flags + coexistence surface", () => {
-  it("registers mcpRead tools only when flag is true", () => {
+  it("does not register brain_* plugin tools; MCP include respects mcpRead", () => {
     const tools: string[] = [];
     const api = createTestPluginApi({
+      pluginConfig: { mcpRead: true },
       registerTool: (tool) => {
-        const name = typeof tool === "function" ? "factory" : tool.name;
-        tools.push(name);
+        tools.push(typeof tool === "function" ? "factory" : String(tool.name));
       },
+      registerService: () => undefined,
+      on: () => undefined,
     });
-    expect(registerLinkbrainFeatureTools(api, parseLinkbrainConfig({ mcpRead: false }))).toEqual(
-      [],
+    linkbrainPlugin.register(api);
+    expect(tools.filter((n) => n.startsWith("brain_"))).toEqual([]);
+    expect(buildLinkbrainFlaggedMcpToolFilter(parseLinkbrainConfig({ mcpRead: false })).include).not.toContain(
+      "brain_browse",
     );
-    expect(tools).toEqual([]);
-    const registered = registerLinkbrainFeatureTools(
-      api,
-      parseLinkbrainConfig({ mcpRead: true, transportMode: "disabled" }),
+    expect(buildLinkbrainFlaggedMcpToolFilter(parseLinkbrainConfig({ mcpRead: true })).include).toContain(
+      "brain_browse",
     );
-    expect(registered).toContain("brain_browse");
-    expect(registered).toContain("brain_search");
-    expect(tools.length).toBe(registered.length);
   });
 
   it("plugin register wires hooks without mutating native memory/cron/channel surfaces", () => {
     const hooks: string[] = [];
     const services: string[] = [];
-    const tools: string[] = [];
     const api = createTestPluginApi({
       pluginConfig: {
         mcpRead: true,
@@ -43,9 +41,6 @@ describe("linkbrain registered-plugin feature flags + coexistence surface", () =
       },
       registerService: (service) => {
         services.push(service.id);
-      },
-      registerTool: (tool) => {
-        tools.push(typeof tool === "function" ? "factory" : tool.name);
       },
       registerMemoryCapability: vi.fn(),
       registerChannel: vi.fn(),
@@ -64,8 +59,6 @@ describe("linkbrain registered-plugin feature flags + coexistence surface", () =
       ]),
     );
     expect(services).toContain("linkbrain-outbox");
-    expect(tools).toContain("brain_browse");
-    // Native surfaces stay independently owned — plugin must not register them.
     expect(api.registerMemoryCapability).not.toHaveBeenCalled();
     expect(api.registerChannel).not.toHaveBeenCalled();
   });

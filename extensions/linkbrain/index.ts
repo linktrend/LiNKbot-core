@@ -7,7 +7,7 @@ import {
 import { createLinkbrainCapture } from "./src/capture.js";
 import { linkbrainConfigSchema, parseLinkbrainConfig } from "./src/config.js";
 import { createBrainDrainWorker, type BrainDrainWorker } from "./src/drain-worker.js";
-import { registerLinkbrainFeatureTools } from "./src/feature-tools.js";
+import { buildLinkbrainFlaggedMcpToolFilter } from "./src/feature-flags.js";
 import {
   createLinkbrainLifecycle,
   LINKBRAIN_CONVERSATION_HOOKS,
@@ -29,12 +29,12 @@ export default definePluginEntry({
     let runtime: LinkbrainRuntime | null = null;
     let lifecycle: LinkbrainLifecycle | null = null;
     let drainWorker: BrainDrainWorker | null = null;
-    const registeredFeatureTools = registerLinkbrainFeatureTools(api, config);
+    const flaggedMcp = buildLinkbrainFlaggedMcpToolFilter(config);
 
     // Conversation-bearing hooks (agent_end) require:
     // plugins.entries.linkbrain.hooks.allowConversationAccess=true
     api.logger.info(
-      `linkbrain: registered (default-disabled). Phase 3 hooks include conversation-bearing ${LINKBRAIN_CONVERSATION_HOOKS.join(",")}; require ${LINKBRAIN_CONVERSATION_HOOK_REQUIREMENT}; featureTools=${registeredFeatureTools.join(",") || "none"}`,
+      `linkbrain: registered (default-disabled). Phase 3 hooks include conversation-bearing ${LINKBRAIN_CONVERSATION_HOOKS.join(",")}; require ${LINKBRAIN_CONVERSATION_HOOK_REQUIREMENT}; mcpInclude=${flaggedMcp.include.length}; no brain_* plugin tools registered`,
     );
 
     const service: OpenClawPluginService = {
@@ -62,6 +62,8 @@ export default definePluginEntry({
         });
         drainWorker = createBrainDrainWorker({
           intervalMs: config.flushIntervalMs,
+          tickTimeoutMs: 2_000,
+          stopTimeoutMs: 2_000,
           shouldDrain: () =>
             Boolean(runtime?.opened) && (config.captureDrain || config.coordinationWrites),
           drainOnce: (options) => {
@@ -73,6 +75,12 @@ export default definePluginEntry({
           onError: (error) => {
             api.logger.warn(
               `linkbrain: drain worker error: ${error instanceof Error ? error.message : "unknown"}`,
+            );
+          },
+          onStalled: (info) => {
+            runtime?.noteStalled?.(info);
+            api.logger.warn(
+              `linkbrain: drain worker stalled: ${info.label} (${info.reason}); ownership retained`,
             );
           },
         });

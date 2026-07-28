@@ -3,33 +3,32 @@ import { createTestPluginApi } from "openclaw/plugin-sdk/plugin-test-api";
 import linkskillsPlugin from "./index.js";
 import { createSkillsTelemetryCollector } from "./src/collect.js";
 import { parseLinkskillsConfig } from "./src/config.js";
-import { registerLinkskillsFeatureTools } from "./src/feature-tools.js";
+import { buildLinkskillsFlaggedMcpToolFilter } from "./src/feature-flags.js";
 import type { OpenClawPluginApi } from "./runtime-api.js";
 
 describe("linkskills registered-plugin integration", () => {
-  it("registers discovery/execution tools only when flags are true", () => {
+  it("does not register skills_* plugin tools; MCP include respects flags", () => {
     const tools: string[] = [];
     const api = createTestPluginApi({
+      pluginConfig: { mcpDiscoveryRead: true, governedExecution: true },
       registerTool: (tool) => {
-        tools.push(typeof tool === "function" ? "factory" : tool.name);
+        tools.push(typeof tool === "function" ? "factory" : String(tool.name));
       },
+      registerService: () => undefined,
+      on: () => undefined,
     });
+    linkskillsPlugin.register(api);
+    expect(tools.filter((n) => n.startsWith("skills_"))).toEqual([]);
     expect(
-      registerLinkskillsFeatureTools(
-        api,
+      buildLinkskillsFlaggedMcpToolFilter(
         parseLinkskillsConfig({ mcpDiscoveryRead: false, governedExecution: false }),
-      ),
-    ).toEqual([]);
-    const discovery = registerLinkskillsFeatureTools(
-      api,
-      parseLinkskillsConfig({ mcpDiscoveryRead: true }),
-    );
-    expect(discovery).toContain("skills_list");
-    const execution = registerLinkskillsFeatureTools(
-      api,
-      parseLinkskillsConfig({ governedExecution: true }),
-    );
-    expect(execution).toContain("skills_tool_invoke");
+      ).include,
+    ).not.toContain("skills_list");
+    expect(
+      buildLinkskillsFlaggedMcpToolFilter(
+        parseLinkskillsConfig({ mcpDiscoveryRead: true, governedExecution: true }),
+      ).include,
+    ).toContain("skills_run_start");
   });
 
   it("registers after_tool_call and never conversation hooks; isolates from Brain", () => {

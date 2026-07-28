@@ -3,7 +3,14 @@
  * health / shutdown against an injectable Skills transport (fake in Phase 4).
  */
 import { randomUUID } from "node:crypto";
-import { isOperationTimeout, runBounded, throwIfAborted } from "./bounded.js";
+import {
+  createKeyedPromiseChain,
+  isOperationTimeout,
+  runBounded,
+  runExclusiveBounded,
+  throwIfAborted,
+  type StalledInfo,
+} from "./bounded.js";
 import type { LinkskillsConfig } from "./config.js";
 import {
   buildSkillsTelemetryEnvelope,
@@ -46,6 +53,8 @@ export type LinkskillsDiagnostics = {
   oldestOutboxKey: string | null;
   lastDrainStatus: string | null;
   healthStatus: HealthRecord["status"] | null;
+  stalledCount: number;
+  lastStalledStatus: string | null;
   /** Never includes payloads. */
   capacity: {
     outboxMaxEntries: number;
@@ -91,6 +100,7 @@ export type LinkskillsRuntime = {
     deadLettered: number;
     skipped: number;
   }>;
+  noteStalled(info: StalledInfo): void;
   diagnostics(): Promise<LinkskillsDiagnostics>;
 };
 
@@ -149,6 +159,10 @@ export function createLinkskillsRuntime(params: CreateLinkskillsRuntimeParams): 
   let shuttingDown = false;
   let lastDrainStatus: string | null = null;
   let drainTail: Promise<void> = Promise.resolve();
+  let stalledCount = 0;
+  let lastStalledStatus: string | null = null;
+  const withEnqueueLock = createKeyedPromiseChain();
+  const enqueueTimeoutMs = 2_000;
 
   const runExclusive = async <T>(work: () => Promise<T>): Promise<T> => {
     const run = drainTail.then(work, work);
@@ -396,56 +410,77 @@ export function createLinkskillsRuntime(params: CreateLinkskillsRuntimeParams): 
       if (shuttingDown) {
         throw new Error("linkskills: runtime is shutting down");
       }
-      throwIfAborted(input.signal, "enqueueTelemetry");
       if (!params.config.telemetryEnqueue) {
         throw new Error("linkskills: telemetryEnqueue is disabled");
       }
 
-      const createdAtMs = now();
-      const eventType =
-        isRecord(input.body) && typeof input.body.event_type === "string"
-          ? input.body.event_type
-          : undefined;
-      const toolName = resolveSkillsDrainToolName({
-        toolName: input.toolName,
-        eventType,
-      });
-      const envelope = buildSkillsTelemetryEnvelope({
-        toolName,
-        idempotencyKey: input.idempotencyKey,
-        redactionPolicyVersion: params.config.redactionPolicyVersion,
-        createdAtMs,
-        body: input.body,
-      });
-      const key = buildOutboxKey({
-        createdAtMs,
-        idempotencyKey: input.idempotencyKey,
-      });
-      const record: OutboxRecord = {
-        version: 1,
-        domain: "skills",
-        key,
-        createdAtMs,
-        toolName,
-        idempotencyKey: input.idempotencyKey,
-        kind: "structured_event",
-        envelope,
-        attemptCount: 0,
-        nextAttemptAtMs: createdAtMs,
-      };
+      return await runExclusiveBounded(
+        withEnqueueLock,
+        "telemetry-enqueue",
+        {
+          timeoutMs: enqueueTimeoutMs,
+          signal: input.signal,
+          label: "telemetry-enqueue",
+          onStalled: (info) => {
+            stalledCount += 1;
+            lastStalledStatus = `label=${info.label};reason=${info.reason};atMs=${now()}`;
+          },
+        },
+        async (signal) => {
+          throwIfAborted(signal, "enqueueTelemetry");
+          if (shuttingDown) {
+            throw new Error("linkskills: runtime is shutting down");
+          }
 
-      try {
-        const claimed = await params.stores.outbox.registerIfAbsent(key, record);
-        if (!claimed) {
+          const createdAtMs = now();
+          const eventType =
+            isRecord(input.body) && typeof input.body.event_type === "string"
+              ? input.body.event_type
+              : undefined;
+          const toolName = resolveSkillsDrainToolName({
+            toolName: input.toolName,
+            eventType,
+          });
+          const envelope = buildSkillsTelemetryEnvelope({
+            toolName,
+            idempotencyKey: input.idempotencyKey,
+            redactionPolicyVersion: params.config.redactionPolicyVersion,
+            createdAtMs,
+            body: input.body,
+          });
+          const key = buildOutboxKey({
+            createdAtMs,
+            idempotencyKey: input.idempotencyKey,
+          });
+          const record: OutboxRecord = {
+            version: 1,
+            domain: "skills",
+            key,
+            createdAtMs,
+            toolName,
+            idempotencyKey: input.idempotencyKey,
+            kind: "structured_event",
+            envelope,
+            attemptCount: 0,
+            nextAttemptAtMs: createdAtMs,
+          };
+
+          try {
+            throwIfAborted(signal, "enqueueTelemetry");
+            const claimed = await params.stores.outbox.registerIfAbsent(key, record);
+            throwIfAborted(signal, "enqueueTelemetry");
+            if (!claimed) {
+              return { key };
+            }
+          } catch (error) {
+            if (isLimitExceeded(error)) {
+              throw new Error("linkskills: outbox overflow (reject-new)", { cause: error });
+            }
+            throw error;
+          }
           return { key };
-        }
-      } catch (error) {
-        if (isLimitExceeded(error)) {
-          throw new Error("linkskills: outbox overflow (reject-new)", { cause: error });
-        }
-        throw error;
-      }
-      return { key };
+        },
+      );
     },
 
     async drainOnce(options) {
@@ -476,6 +511,11 @@ export function createLinkskillsRuntime(params: CreateLinkskillsRuntimeParams): 
       });
     },
 
+    noteStalled(info) {
+      stalledCount += 1;
+      lastStalledStatus = `label=${info.label};reason=${info.reason};atMs=${now()}`;
+    },
+
     async diagnostics() {
       const outbox = await sortedOutbox(params.stores);
       const dead = await params.stores.deadletter.entries();
@@ -489,6 +529,8 @@ export function createLinkskillsRuntime(params: CreateLinkskillsRuntimeParams): 
         oldestOutboxKey: oldest?.key ?? null,
         lastDrainStatus,
         healthStatus: health?.status ?? null,
+        stalledCount,
+        lastStalledStatus,
         capacity: {
           outboxMaxEntries: params.config.outboxMaxEntries,
           outboxRemaining: Math.max(0, params.config.outboxMaxEntries - outbox.length),
