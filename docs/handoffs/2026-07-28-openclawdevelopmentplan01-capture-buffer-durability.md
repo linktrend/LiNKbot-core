@@ -11,7 +11,7 @@
 | Scope            | `extensions/linkbrain` capture path + evidence; no Lisa mutation        |
 | Started          | 2026-07-28 ~15:25 Asia/Taipei                                           |
 | Branch           | `issue/ocp-openclawdevelopmentplan01`                                   |
-| PR               | https://github.com/linktrend/openclaw_prime/pull/38                     |
+| PR               | [#38](https://github.com/linktrend/openclaw_prime/pull/38)              |
 
 ## Summary
 
