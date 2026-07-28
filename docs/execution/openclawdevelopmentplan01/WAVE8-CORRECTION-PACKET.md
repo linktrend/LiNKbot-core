@@ -5,7 +5,7 @@
 **Branch:** `issue/ocp-openclawdevelopmentplan01`
 **PR:** [#38](https://github.com/linktrend/openclaw_prime/pull/38) → `development` (**draft**; do not merge)
 **Starting tip:** `b3e8853b1c15d13429f51ac5054bac448a4256d2`
-**Exact tip SHA:** `87d9ae2d89250c5c349fa783dd633ace064eab5f`
+**Exact tip SHA:** `bc1d3133d103b4921be6248b37d2aa9848d3fe0b`
 **Code tip (drain/AuthClaims/coexistence):** `5a9842f8aa2488ac5de57415981f2609f4727613`
 **Authority:** Principal wave-8 Phase-14 correction instruction — **not** self-certification
 
