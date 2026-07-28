@@ -7,8 +7,9 @@ import { buildLinkskillsFlaggedMcpToolFilter } from "./src/feature-flags.js";
 import type { OpenClawPluginApi } from "./runtime-api.js";
 
 describe("linkskills registered-plugin integration", () => {
-  it("does not register skills_* plugin tools; MCP include respects flags", () => {
+  it("does not register skills_* plugin tools; registers MCP toolFilter and respects flags", () => {
     const tools: string[] = [];
+    const toolFilters: Array<{ serverName: string }> = [];
     const api = createTestPluginApi({
       pluginConfig: { mcpDiscoveryRead: true, governedExecution: true },
       registerTool: (tool) => {
@@ -16,9 +17,13 @@ describe("linkskills registered-plugin integration", () => {
       },
       registerService: () => undefined,
       on: () => undefined,
+      registerMcpServerToolFilter: (resolver) => {
+        toolFilters.push({ serverName: resolver.serverName });
+      },
     });
     linkskillsPlugin.register(api);
     expect(tools.filter((n) => n.startsWith("skills_"))).toEqual([]);
+    expect(toolFilters).toEqual([{ serverName: "linkskills" }]);
     expect(
       buildLinkskillsFlaggedMcpToolFilter(
         parseLinkskillsConfig({ mcpDiscoveryRead: false, governedExecution: false }),

@@ -20,7 +20,7 @@ Legend: `IAP` · `INPL` · `PART` · `OMIT` · `DIFF` · `BLOCK` · `OUT`
 | Phase 2 Brain skeleton | `INPL` | `extensions/linkbrain/**`; `PHASE-2-STATUS.md` | live MCP | Default-disabled plugin + tests | Live |
 | Phase 3 Brain lifecycle | `INPL` | capture/lifecycle tests | timeout races | Bounded capture proofs | Live |
 | Phase 4 Skills skeleton | `INPL` | `extensions/linkskills/**` | privacy | No conversation hooks; telemetry allowlist | Live |
-| Phase 5 managed MCP/auth | `PART` / `BLOCK` (flags→toolFilter) | templates; `MCP-TOOLFILTER-SDK-PREREQUISITE-DEVIATION.md` | discovery vs flags | Public SDK resolver missing | SDK prerequisite |
+| Phase 5 managed MCP/auth | `INPL` (fake/templates + public toolFilter seam) / `BLOCK` (live auth) | templates; `MCP-TOOLFILTER-SDK-SEAM-IMPLEMENTED.md`; catalog-path tests | live Platform auth | Public SDK seam landed; live MCP auth still blocked | Platform auth-path |
 | Phase 6 integrated fake QA | `INPL` (fake-proven) | matrix/perf; coexistence harness; §D individual rows | platform-live gaps | Fake scenarios green; SKIPPED_PLATFORM_LIVE named | Platform live |
 | Phases 7–12 | `BLOCK` | `PHASE-*-STATUS-BLOCKED.md` | premature start | Not started | External |
 | Phase 13 Grok handoff | `INPL` | `PHASE-13-PROVISIONAL-GROK-HANDOFF.md` | tip lag | Provisional only | — |
@@ -54,8 +54,8 @@ Legend: `IAP` · `INPL` · `PART` · `OMIT` · `DIFF` · `BLOCK` · `OUT`
 | Allowlisted Skills schemas | `INPL` | envelopes + adversarial | nesting | Exact keys/limits |
 | Durable outboxes reject-new | `INPL` | runtime + matrix | overflow | reject-new |
 | Independent drain workers + flushIntervalMs | `INPL` | drain-worker + tests | storm | Ownership until raw settle (wave 8) |
-| Feature flags → managed MCP toolFilter | `BLOCK` / `DIFF` | deviation packet | false ops claim | Public SDK seam required |
-| Feature flags → invoke helpers only | `INPL` | feature-flags tests | incomplete ops | Enabled success / disabled fail |
+| Feature flags → managed MCP toolFilter | `INPL` (local catalog path) | `registerMcpServerToolFilter`; catalog-path tests; plugin register wiring | live Lisa enable | Flags change exposed tools via listTools materialization |
+| Feature flags → invoke helpers only | `INPL` | feature-flags tests | incomplete ops alone | Enabled success / disabled fail (additive to toolFilter) |
 | Bounded hooks / enqueue / shutdown | `INPL` | bounded + enqueue tests | race/dup | Signal + exclusive enqueue |
 | Native coexistence under adapter failure | `INPL` | `native-coexistence.test.ts` | synthetic gaps | Service start + native channel/memory host paths |
 | Fourteen runbooks non-live | `INPL` | independent rehearsal wave 7 | implementer-as-indep | Independent FAKE/TEMPLATE |
@@ -90,21 +90,23 @@ Legend: `IAP` · `INPL` · `PART` · `OMIT` · `DIFF` · `BLOCK` · `OUT`
 
 ---
 
-## E. Wave 8 finding map (tests)
+## E. Wave 8–9 finding map (tests / gates)
 
-| Finding | Tests |
-| ------- | ----- |
-| 1 MCP toolFilter | (none — deviation packet) |
-| 2 Drain ownership / storm | `feature-flags-drain.test.ts`; `feature-flags-enqueue.test.ts` drain suites |
-| 3 AuthClaims 1.1 | `auth-claims-1.1.test.ts` (both); fixture parse updates in brain-fake helper |
-| 4 Coexistence | `native-coexistence.test.ts` |
-| 5 Ledger / totals | this file; Phase 13 |
-
----
+| Finding | Classification | Tests / evidence | Risk | DoD |
+| ------- | -------------- | ---------------- | ---- | --- |
+| Public MCP toolFilter API | `INPL` | ownership + composition unit tests | ownership races | One owner per serverName; diagnostics on conflict |
+| Catalog listTools exposure under flags | `INPL` | `agent-bundle-mcp-runtime.mcp-tool-filter.test.ts` | fake-only claim | Toggle changes exposed tool names via real listTools |
+| Brain mcpRead wiring | `INPL` | linkbrain register + registered-plugin test | config snapshot lag | `registerMcpServerToolFilter({ serverName: "linkbrain" })` |
+| Skills mcpDiscoveryRead / governedExecution wiring | `INPL` | linkskills register + registered-plugin test | independent rollback | Separate serverName; null omit supported |
+| Drain ownership / storm | `INPL` | `feature-flags-drain.test.ts`; `feature-flags-enqueue.test.ts` | queue storm | Ownership until raw settle |
+| AuthClaims 1.1 | `INPL` (shape) / `PART` (owner gate) | auth-claims-1.1 tests; aggregates unchanged | stale countersign | Positive 1.1; reject 1.0; PENDING sign |
+| Coexistence | `INPL` | `native-coexistence.test.ts` | synthetic gap | Service start + native host paths |
+| Phase 13 tip totals | `INPL` | Phase 13 tip proof **31/203** | tip lag | Reproduction text corrected |
+| §13.3 ledger completeness | `INPL` (index) / `OUT` (accept) | this file | self-certify | Codex accepts classifications |
 
 ## F. Explicit non-claims
 
 - No seven-value classification is **accepted** here.
 - No merge / self-certify / hosted CI green claim.
-- Fixture-owner gate reopened for wave-8 aggregates.
-- Finding 1 not claimed fixed.
+- Fixture-owner gate remains pending for wave-8 aggregates (unchanged in wave 9).
+- MCP toolFilter seam is locally implemented; Codex must re-verify.

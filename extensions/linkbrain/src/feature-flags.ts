@@ -2,8 +2,9 @@
  * Feature flags for Brain — managed MCP allowlist gating + fake/MCP delegation.
  *
  * Does **not** register plugin tools named `brain_*` (avoids MCP naming conflicts).
- * Flags gate which §9.1 tools appear in the managed MCP include list and which
- * ops the plugin may invoke through the injectable transport/public surface.
+ * Flags gate which §9.1 tools appear via `api.registerMcpServerToolFilter` (config ∩
+ * plugin overlay at catalog materialization) and which ops the plugin may invoke
+ * through the injectable transport/public surface.
  */
 import type { LinkbrainConfig } from "./config.js";
 import {

@@ -202,8 +202,17 @@ export type OpenClawPluginApi = {
   registerHttpRoute: (params: OpenClawPluginHttpRouteParams) => void;
   /** Register a plugin-owned resolver for browser-style hosted media URLs. */
   registerHostedMediaResolver: (resolver: OpenClawPluginHostedMediaResolver) => void;
-  /** Bind a declared MCP server's transport to the trusted message requester. */ registerMcpServerConnectionResolver: (
+  /** Bind a declared MCP server's transport to the trusted message requester. */
+  registerMcpServerConnectionResolver: (
     resolver: import("./types.mcp-connection.js").OpenClawPluginMcpServerConnectionResolver,
+  ) => void;
+  /**
+   * Bind a declared MCP server's process-local tool selection overlay.
+   * Operator `toolFilter` remains the ceiling; overlay is intersected at catalog
+   * materialization and is never written to config.
+   */
+  registerMcpServerToolFilter: (
+    resolver: import("./types.mcp-tool-filter.js").OpenClawPluginMcpServerToolFilter,
   ) => void;
   /** Register a native messaging channel plugin (channel capability). */
   registerChannel: (registration: OpenClawPluginChannelRegistration | ChannelPlugin) => void;

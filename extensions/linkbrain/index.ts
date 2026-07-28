@@ -37,6 +37,14 @@ export default definePluginEntry({
       `linkbrain: registered (default-disabled). Phase 3 hooks include conversation-bearing ${LINKBRAIN_CONVERSATION_HOOKS.join(",")}; require ${LINKBRAIN_CONVERSATION_HOOK_REQUIREMENT}; mcpInclude=${flaggedMcp.include.length}; no brain_* plugin tools registered`,
     );
 
+    api.registerMcpServerToolFilter({
+      serverName: "linkbrain",
+      resolve: () => {
+        const live = parseLinkbrainConfig(api.pluginConfig);
+        return buildLinkbrainFlaggedMcpToolFilter(live);
+      },
+    });
+
     const service: OpenClawPluginService = {
       id: "linkbrain-outbox",
       start: async () => {

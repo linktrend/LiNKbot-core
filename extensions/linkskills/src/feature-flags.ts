@@ -2,6 +2,8 @@
  * Feature flags for Skills — managed MCP allowlist gating + fake/MCP delegation.
  *
  * Does **not** register plugin tools named `skills_*` (avoids MCP naming conflicts).
+ * Flags gate which §9.2 tools appear via `api.registerMcpServerToolFilter` (config ∩
+ * plugin overlay at catalog materialization) and which ops may invoke transport.
  */
 import type { LinkskillsConfig } from "./config.js";
 import {

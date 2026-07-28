@@ -117,11 +117,11 @@ Packet: `BRAIN-TOOL-NAME-DECISION-PACKET.md` (correction wave 2b).
 
 ```bash
 node scripts/run-vitest.mjs test/helpers/link-domain-fakes extensions/linkbrain extensions/linkskills
-# Test Files  20 passed (20)
-# Tests       144 passed (144)
+# Test Files  31 passed (31)
+# Tests       203 passed (203)
 ```
 
-Recorded in `PHASE-6-STATUS.md` (2026-07-28 07:50 Asia/Taipei). Tip status follow-ups: `22717f28bb3`, `6f6887c31ce`.
+Recorded tip suite **31/203** after wave 8+; wave 9 adds core MCP toolFilter seam tests outside this tip shard.
 
 ### Phase 6 full matrix — `SKIPPED_PLATFORM_LIVE` items (named)
 
@@ -138,12 +138,13 @@ All other mandatory fake-tier scenarios 1–15 + coexistence A–G: **PASS** (se
 | Testbox / Crabbox heavy suite   | **Not run**                                                                                                                                                  |
 | Proof used                      | **Trusted local fallback** — focused `node scripts/run-vitest.mjs …`                                                                                         |
 | Exact-head CI                   | **deferred / Principal-waived** (CI system being redesigned) for tip `4fa1e9f7ed0…` (failed pre-repair `57a8571cd1b` / `30349929708`; draft skip `30351278518`; ready re-fire `30351309306` not waited) |
-| Local re-verify (wave 2b)       | **2026-07-28 10:07 Asia/Taipei** — historical **20/144**; superseded by capture-durability re-verify below                                   |
+| Local re-verify (wave 2b)       | **2026-07-28 10:07 Asia/Taipei** — historical **20/144** (superseded); superseded by capture-durability re-verify below                                   |
 | Local re-verify (capture fix)   | **2026-07-28 15:31 Asia/Taipei** — historical **21/152**; superseded by concurrency wave below                                               |
 | Local re-verify (concurrency)   | **2026-07-28 17:35 Asia/Taipei** — historical **21/160**; superseded by bounded-timeout wave below                                           |
 | Local re-verify (bounded timeout) | **2026-07-28 18:12 Asia/Taipei** — historical **22/171**; superseded by wave 6 below |
 | Local re-verify (wave 6 Phase 14 corrections) | **2026-07-28 20:48 Asia/Taipei** — historical **26/185**; superseded by wave 7 below |
 | Local re-verify (wave 7 Phase 14 corrections) | **2026-07-28 21:36 Asia/Taipei** — historical **29/196**; superseded by wave 8 below |
+| Local re-verify (wave 9 MCP toolFilter seam) | **2026-07-29 Asia/Taipei** — focused seam tests PASS; tip suite **31/203** preserved; AuthClaims aggregates unchanged |
 | Local re-verify (wave 8 Phase 14 corrections) | **2026-07-29 Asia/Taipei** — `node scripts/run-vitest.mjs test/helpers/link-domain-fakes extensions/linkbrain extensions/linkskills` → **31/203 pass**; base-to-head `git diff --check` required clean |
 | OpenGrep (harness + transports) | Local `scripts/run-opengrep.sh --error` → **0 findings** after harness + SSRF-guard fixes                                                    |
 
@@ -275,7 +276,7 @@ shasum -a 256 docs/OPENCLAW-PRIME-LISA-LINKBRAIN-LINKSKILLS-DETAILED-IMPLEMENTAT
 pnpm install   # if needed
 
 node scripts/run-vitest.mjs test/helpers/link-domain-fakes extensions/linkbrain extensions/linkskills
-# expect: 20 files / 144 tests passed
+# expect: 31 files / 203 tests passed (wave 8+; re-verify after tip advance)
 ```
 
 Do **not** copy MCP templates into the live Lisa profile or enable plugins without Platform + Principal gates.
@@ -330,7 +331,7 @@ Do **not** read seven-value §13.3 classifications into this table. Codex Phase 
 | Operator runbooks (non-live)                 | `runbooks/**` + independent rehearsal                                        | FAKE/TEMPLATE independent rehearsal wave 7                              |
 | §13.3 classification / evidence index        | `PHASE-14-CLASSIFICATION-EVIDENCE-INDEX.md`                                  | Provisional; Codex accepts                                              |
 | Wave 8 correction packet                     | `WAVE8-CORRECTION-PACKET.md`                                                 | Codex Phase 14 re-verify input                                          |
-| MCP toolFilter SDK prerequisite              | `MCP-TOOLFILTER-SDK-PREREQUISITE-DEVIATION.md`                               | Finding 1 blocked                                                       |
+| MCP toolFilter SDK seam                      | `MCP-TOOLFILTER-SDK-SEAM-IMPLEMENTED.md`; catalog-path tests                | Principal-approved public API landed (local); Codex re-verify           |
 | Gate: two plugins / two MCP / separate state | code + templates + tests                                                     | Codex must inspect                                                      |
 | Gate: Brain-only conversation hooks          | linkbrain hooks + linkskills prohibition                                     | Codex must inspect                                                      |
 | Gate: no live Platform / Lisa mutation       | §7 + §3                                                                      | Absence claim                                                           |

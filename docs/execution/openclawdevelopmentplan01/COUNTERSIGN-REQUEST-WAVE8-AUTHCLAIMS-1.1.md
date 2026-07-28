@@ -4,6 +4,7 @@
 **Branch:** `issue/ocp-openclawdevelopmentplan01`
 **OpenClaw tip (at request authoring):** see Phase 13 / push tip after wave 8 lands
 **Status:** **PENDING** — owners must countersign the new aggregates against the exact OpenClaw tip
+**Wave 9 note:** AuthClaims 1.1.0 fixture bytes/aggregates unchanged; countersign against the wave-9 pushed HEAD (MCP toolFilter seam tip).
 **Supersedes:** prior CLOSED countersign at tip `429a7818…` (AuthClaims 1.0.0 fixtures)
 
 ## Why re-countersign is required

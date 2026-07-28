@@ -34,6 +34,14 @@ export default definePluginEntry({
       `linkskills: registered (default-disabled plugin). ${LINKSKILLS_CONVERSATION_HOOK_POLICY}; mcpInclude=${flaggedMcp.include.length}; no skills_* plugin tools registered`,
     );
 
+    api.registerMcpServerToolFilter({
+      serverName: "linkskills",
+      resolve: () => {
+        const live = parseLinkskillsConfig(api.pluginConfig);
+        return buildLinkskillsFlaggedMcpToolFilter(live);
+      },
+    });
+
     const service: OpenClawPluginService = {
       id: "linkskills-outbox",
       start: async () => {

@@ -6,8 +6,9 @@ import { buildLinkbrainFlaggedMcpToolFilter } from "./src/feature-flags.js";
 import type { OpenClawPluginApi } from "./runtime-api.js";
 
 describe("linkbrain registered-plugin feature flags + coexistence surface", () => {
-  it("does not register brain_* plugin tools; MCP include respects mcpRead", () => {
+  it("does not register brain_* plugin tools; registers MCP toolFilter and respects mcpRead", () => {
     const tools: string[] = [];
+    const toolFilters: Array<{ serverName: string }> = [];
     const api = createTestPluginApi({
       pluginConfig: { mcpRead: true },
       registerTool: (tool) => {
@@ -15,9 +16,13 @@ describe("linkbrain registered-plugin feature flags + coexistence surface", () =
       },
       registerService: () => undefined,
       on: () => undefined,
+      registerMcpServerToolFilter: (resolver) => {
+        toolFilters.push({ serverName: resolver.serverName });
+      },
     });
     linkbrainPlugin.register(api);
     expect(tools.filter((n) => n.startsWith("brain_"))).toEqual([]);
+    expect(toolFilters).toEqual([{ serverName: "linkbrain" }]);
     expect(buildLinkbrainFlaggedMcpToolFilter(parseLinkbrainConfig({ mcpRead: false })).include).not.toContain(
       "brain_browse",
     );
