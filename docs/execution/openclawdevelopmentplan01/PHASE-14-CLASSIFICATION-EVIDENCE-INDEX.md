@@ -1,7 +1,7 @@
 # Plan §13.3 classification / evidence index — provisional for Codex Phase 14
 
 **Recorded:** 2026-07-28 21:40 Asia/Taipei
-**Branch tip (at authoring):** `a441b439118ffae0de5e385fcc2b6fc79dee0947` (docs packet `b4ac94debf5`; code tip `39e85a5d6bc`); local proof **29/196**
+**Branch tip (at authoring):** `6edd16a71440accacfac5dd8c639321a130986d3` (docs packet `b4ac94debf5`; code tip `39e85a5d6bc`); local proof **29/196**
 **PR:** [#38](https://github.com/linktrend/openclaw_prime/pull/38)
 **Authority:** Plan §13.3 — this is an **execution-agent evidence index** for OpenClaw Codex Phase 14 re-verification. It is **not** self-certification and does **not** pass Phase 14.
 
