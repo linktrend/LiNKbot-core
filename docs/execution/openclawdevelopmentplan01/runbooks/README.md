@@ -38,6 +38,8 @@
 
 Companion rollback order docs (non-live): [brain-rollback-restart.md](./brain-rollback-restart.md), [skills-rollback-restart.md](./skills-rollback-restart.md).
 
+**Independent non-live rehearsal (wave 7):** [REHEARSAL-INDEPENDENT-2026-07-28-wave7.md](./REHEARSAL-INDEPENDENT-2026-07-28-wave7.md) — Cursor Task subagent as independent operator; **14/14 PASS** at FAKE/TEMPLATE; implementer-authored runbook text is **not** counted as independent rehearsal.
+
 ## Template sources
 
 All MCP shapes: `docs/execution/openclawdevelopmentplan01/mcp-templates/`
@@ -57,11 +59,12 @@ Plugin flag defaults (all **false** until deliberately enabled):
 - Brain: `mcpRead`, `captureEnqueue`, `captureDrain`, `coordinationWrites`
 - Skills: `mcpDiscoveryRead`, `governedExecution`, `telemetryEnqueue`, `telemetryDrain`
 
-Operational notes (wave 6):
+Operational notes (wave 7):
 
-- `flushIntervalMs` starts an independent stoppable drain worker when the matching drain flag is true.
-- `mcpRead` / `mcpDiscoveryRead` / `governedExecution` register family tools when true (remote work still requires `transportMode != disabled`).
+- `flushIntervalMs` starts an independent stoppable drain worker when the matching drain flag is true; ticks/stop are bounded.
+- `mcpRead` / `mcpDiscoveryRead` / `governedExecution` gate managed MCP include lists + fake/public-surface invoke helpers. Plugins do **not** `registerTool` names `brain_*` / `skills_*` (avoids MCP naming conflicts).
 - `outboxAgeAlarmMs` marks health degraded when oldest outbox age exceeds the alarm.
+- Independent FAKE/TEMPLATE rehearsal: `REHEARSAL-INDEPENDENT-2026-07-28-wave7.md` (implementer text is not independent evidence).
 
 ## Independence rules
 

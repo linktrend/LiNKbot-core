@@ -1,8 +1,8 @@
 # Phase 8 — Brain Stage Shadow and Write Canary (BLOCKED)
 
-**Recorded:** 2026-07-27 19:17 Asia/Taipei  
-**Branch:** `issue/ocp-openclawdevelopmentplan01`  
-**Status:** **not started** — blocked on Phase 7 Platform stage sign-off  
+**Recorded:** 2026-07-27 19:17 Asia/Taipei
+**Branch:** `issue/ocp-openclawdevelopmentplan01`
+**Status:** **not started** — blocked on Phase 7 Platform stage sign-off
 **Evidence tier rule:** `fake ≠ live`. Phase 6 `fake/integration-local` does **not** satisfy this phase.
 
 ## Objective (when unblocked)

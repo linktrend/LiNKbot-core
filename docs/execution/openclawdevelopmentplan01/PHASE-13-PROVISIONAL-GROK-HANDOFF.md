@@ -22,7 +22,7 @@
 | 1   | Missing hashed Platform/Brain/Skills contract consumption pins        | Pin files under `contracts/` + consumption record                                                                                                 | `contracts/{platform,brain,skills}/PIN.json`; `PHASE-1-CONTRACT-CONSUMPTION.md`; `contracts/README.md`         |
 | 2   | Brain MCP tool names CURRENT vs frozen §9.1 unresolved                | **DECIDED:** OpenClaw keeps frozen §9.1; **will not** alias; Brain must implement §9.1                                                            | `BRAIN-TOOL-NAME-DECISION-PACKET.md`                                                                           |
 | 3   | Hardcoded `not_configured` transport stubs                            | Configurable modes: `disabled` (default) / `fake` / `http` / `mcp`; `not_configured` removed                                                      | `extensions/link{brain,skills}/src/transport.ts`; commit `e88ba95d0a2`                                         |
-| 4   | Phase 6 incomplete (coexistence-only; tip proof understated at 13/82) | Full mandatory matrix + perf; tip suite **26 files / 185 tests** (wave 6); `SKIPPED_PLATFORM_LIVE` items named | `PHASE-6-STATUS.md`; `phase6-mandatory-matrix.test.ts`; `phase6-perf-baseline.test.ts`; `WAVE6-CONFORMANCE-LEDGER.md` |
+| 4   | Phase 6 incomplete (coexistence-only; tip proof understated at 13/82) | Full mandatory matrix + perf; tip suite **29 files / 196 tests** (wave 7; wave 6 was 26/185); `SKIPPED_PLATFORM_LIVE` items named | `PHASE-6-STATUS.md`; `phase6-mandatory-matrix.test.ts`; `phase6-perf-baseline.test.ts`; `WAVE7-CORRECTION-PACKET.md` |
 | 5   | Fixture owner sign-off / aggregate hashes missing                     | **CLOSED** — Brain + Skills `OWNER_COUNTERSIGNED` at tip `429a7818…` (aggregates `275c1fb7…9a1d` / `8586d89a…ec96`)                               | `FIXTURE-OWNER-SIGNOFF.md`; `COUNTERSIGN-REQUEST.md`                                                           |
 | 6   | Crabbox/Testbox heavy proof unclear or overclaimable                  | Local `crabbox` binary **missing** / sanity failed; **trusted local fallback** used; **draft PR #38** opened for exact-head CI                    | PR <https://github.com/linktrend/openclaw_prime/pull/38> ; tip HEAD `048922582e5` (PR opened at `17508f539d7`) |
 | 7   | Ambiguity on live Lisa mutation and Phases 7–12                       | Confirmed: **no Lisa live mutation**; **Phases 7–12 not started** (blocked packets only)                                                          | §3 / §7 / §9; `PHASE-{7..12}-STATUS-BLOCKED.md`                                                                |
@@ -45,7 +45,7 @@
 | Wave-2b pin commit                       | `4103bd6c1c208337f5dc37e169c9ec9a727bf835`                                                            |
 | SSRF transport commit                    | `d79e3356db527492f0ab8a0b1af7888469815f19`                                                            |
 | Hosted CI green tip (ci-gate SUCCESS)    | **deferred / Principal-waived** (CI redesign) for wave 5 tip `4fa1e9f7ed0…` (prior green `8e236d2f056…` / `30347356129`) |
-| Current HEAD (branch tip)                | `452033e98daae5baee607abfc38447a969ec35b9` (wave 6 docs closeout; code tip `957cb2797a5`) |
+| Current HEAD (branch tip)                | *(wave 7 tip — see §5 / WAVE7 packet after push; started from `b9f948f9b3a…`)* |
 | Primary session (closed)                 | `docs/agent-sessions/completed/cursor-local-mac-mini-lisa-openclawdevelopmentplan01-20260727-1648.md` |
 | Related Phase 2 session (closed)         | `docs/agent-sessions/completed/cursor-local-mac-mini-feature-linkbrain-phase2-20260727-1854.md`       |
 | Orchestrator key                         | `cursor-local-mac-mini-desktop-workspace-orchestrator`                                                |
@@ -65,7 +65,7 @@ Evidence pointers are status packets and code paths. **No seven-value classifica
 | **3** — Brain lifecycle capture / coordination mapping | **Complete** at fake-backed tier.                                                                                                                                                                                                                                                        | `PHASE-3-STATUS.md`                                                                                                                      |
 | **4** — Skills plugin skeleton / structured telemetry  | **Complete** at fake/local tier (no conversation hooks; default-disabled).                                                                                                                                                                                                               | `PHASE-4-STATUS.md`; `extensions/linkskills/**`                                                                                          |
 | **5** — Managed MCP integration and authentication     | **Template/filter work complete**. **Blocked** for live MCP wiring: Platform auth packet. Transport adapters land configurable modes (see deficiency #3).                                                                                                                                | `PHASE-5-STATUS.md`; `mcp-templates/**`; transport modules                                                                               |
-| **6** — Integrated local and isolated QA               | **Fake-tier matrix complete** — coexistence + mandatory failure/recovery/durability/privacy/isolation/perf against deterministic fakes **passed** (**26 / 185** after wave 6). Platform-live items **`SKIPPED_PLATFORM_LIVE`**. Crabbox/Testbox heavy suite **not** claimed (trusted local fallback). | `PHASE-6-STATUS.md`; `PHASE-6-PERF-BASELINE.md`; `WAVE6-CONFORMANCE-LEDGER.md` |
+| **6** — Integrated local and isolated QA               | **Fake-tier matrix complete** — coexistence + mandatory failure/recovery/durability/privacy/isolation/perf against deterministic fakes **passed** (**29 / 196** after wave 7). Platform-live items **`SKIPPED_PLATFORM_LIVE`**. Crabbox/Testbox heavy suite **not** claimed (trusted local fallback). | `PHASE-6-STATUS.md`; `PHASE-6-PERF-BASELINE.md`; `WAVE7-CORRECTION-PACKET.md` |
 | **7** — Platform stage readiness gate                  | **Blocked** — **not started**.                                                                                                                                                                                                                                                           | `PHASE-7-DECISION-PACKET-PLATFORM-STAGE.md`                                                                                              |
 | **8** — Brain stage shadow/write canary                | **Blocked** — **not started**.                                                                                                                                                                                                                                                           | `PHASE-8-STATUS-BLOCKED.md`                                                                                                              |
 | **9** — Skills stage canary                            | **Blocked** — **not started**.                                                                                                                                                                                                                                                           | `PHASE-9-STATUS-BLOCKED.md`                                                                                                              |
@@ -82,7 +82,7 @@ Evidence pointers are status packets and code paths. **No seven-value classifica
 
 | Domain       | Pin file                      | Source HEAD                                | Key pin                                                                                                              |
 | ------------ | ----------------------------- | ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------- |
-| LiNKplatform | `contracts/platform/PIN.json` | `e845ac17dffac52a501603ad2fafd1b53fef195d` | `platform.auth-claims/1.0.0` schema `b0397cdf…50fb` / contentHash `6bf49618…b251`; `PLATFORM_CONTRACTS_SEMVER=0.2.1` |
+| LiNKplatform | `contracts/platform/PIN.json` | `6861a376aae5fa4e12c1b68a808d7b04e7bbfb5b` | `platform.auth-claims/1.1.0` schema `c2e8bc68…dfa1` / contentHash `fb518834…a567`; `PLATFORM_CONTRACTS_SEMVER=0.2.2` (wave 7) |
 | LiNKbrain    | `contracts/brain/PIN.json`    | `a3cff6e0f04ac968c32beacb7bdb1b81a4d77d3f` | `BRAIN_CONTRACT_VERSION=1.0.0`; frozen 17 tools via `frozen-tools.ts` `1e265b20…be26`                                |
 | LiNKskills   | `contracts/skills/PIN.json`   | `f16103f23a716d0edeb08a1e82e38608ebd563ea` | `skills.api.v0.1`; schemas aggregate `828ac00d…81d2`; vendored auth-claims matches Platform                          |
 
@@ -142,20 +142,34 @@ All other mandatory fake-tier scenarios 1–15 + coexistence A–G: **PASS** (se
 | Local re-verify (capture fix)   | **2026-07-28 15:31 Asia/Taipei** — historical **21/152**; superseded by concurrency wave below                                               |
 | Local re-verify (concurrency)   | **2026-07-28 17:35 Asia/Taipei** — historical **21/160**; superseded by bounded-timeout wave below                                           |
 | Local re-verify (bounded timeout) | **2026-07-28 18:12 Asia/Taipei** — historical **22/171**; superseded by wave 6 below |
-| Local re-verify (wave 6 Phase 14 corrections) | **2026-07-28 20:48 Asia/Taipei** — `node scripts/run-vitest.mjs test/helpers/link-domain-fakes extensions/linkbrain extensions/linkskills` → **26/185 pass**; `git diff --check` clean |
+| Local re-verify (wave 6 Phase 14 corrections) | **2026-07-28 20:48 Asia/Taipei** — historical **26/185**; superseded by wave 7 below |
+| Local re-verify (wave 7 Phase 14 corrections) | **2026-07-28 21:36 Asia/Taipei** — `node scripts/run-vitest.mjs test/helpers/link-domain-fakes extensions/linkbrain extensions/linkskills` → **29/196 pass**; base-to-head `git diff --check origin/development...HEAD` required clean |
 | OpenGrep (harness + transports) | Local `scripts/run-opengrep.sh --error` → **0 findings** after harness + SSRF-guard fixes                                                    |
 
-Local 26/185 is **not** a substitute for hosted CI. Hosted proof for Codex: **deferred / Principal-waived** (CI redesign); this wave did **not** poll or rerun hosted CI. PR readiness and merge deferred.
+Local 29/196 is **not** a substitute for hosted CI. Hosted proof for Codex: **deferred / Principal-waived** (CI redesign); wave 7 did **not** poll hosted CI. PR readiness and merge deferred.
 
-### Wave 6 correction packet (for Codex Phase 14 re-verification)
+### Wave 7 correction packet (authoritative for Codex Phase 14 re-verification)
+
+| Field | Value |
+| ----- | ----- |
+| Starting tip | `b9f948f9b3a856e997247355f697c3fc7767e844` |
+| Packet | `WAVE7-CORRECTION-PACKET.md` |
+| Classification / evidence index | `PHASE-14-CLASSIFICATION-EVIDENCE-INDEX.md` (provisional; Codex accepts) |
+| Wave-6 ledger | historical only — `WAVE6-CONFORMANCE-LEDGER.md` superseded for §13.3 duty |
+| Handoff | `docs/handoffs/2026-07-28-openclawdevelopmentplan01-wave7-phase14-corrections.md` |
+| AuthClaims pin | `platform.auth-claims/1.1.0` / package `0.2.2` at Platform `6861a376…` |
+| Independent runbook rehearsal | `runbooks/REHEARSAL-INDEPENDENT-2026-07-28-wave7.md` (14/14 FAKE/TEMPLATE) |
+| Fixture countersigns | preserved (Brain/Skills fixture bytes unchanged; no reaffirmation required) |
+| Self-certify / merge | **No** |
+
+### Wave 6 correction packet (historical)
 
 | Field | Value |
 | ----- | ----- |
 | Starting tip | `9cfe4c31ea585f09c32ad5947f76abbedbbd00f0` |
-| Ledger | `WAVE6-CONFORMANCE-LEDGER.md` (items 1–10) |
+| Ledger | `WAVE6-CONFORMANCE-LEDGER.md` (items 1–10; historical) |
 | Handoff | `docs/handoffs/2026-07-28-openclawdevelopmentplan01-wave6-phase14-corrections.md` |
-| AuthClaims pin | still `platform.auth-claims/1.0.0` (Platform 1.1.0 unpublished WIP) |
-| Fixture countersigns | preserved (Brain/Skills fixture bytes unchanged) |
+| AuthClaims pin | was `1.0.0` (superseded by wave 7) |
 | Self-certify / merge | **No** |
 
 ### Historical (superseded as tip claim)
@@ -236,7 +250,7 @@ Source: `FIXTURE-OWNER-SIGNOFF.md`. **Phase 1 fixture-owner gate CLOSED.** Phase
 
 - Corrected Brain HEAD `a3cff6e…` implements frozen §9.1 **17** tools via `frozen-tools.ts` (OpenClaw still will not alias).
 - Wave-2b pins Platform/Brain/Skills to latest corrected sibling HEADs; stale pre-correction heads scrubbed.
-- `platform.auth-claims/1.0.0` pinned (schema `b0397cdf…50fb` / contentHash `6bf49618…b251`).
+- Wave 7: `platform.auth-claims/1.1.0` pinned (schema `c2e8bc68…dfa1` / contentHash `fb518834…a567`); package `0.2.2`. Historical `1.0.0` copy retained.
 
 ### Omissions / unproven claims (explicit)
 
@@ -309,13 +323,15 @@ Do **not** read seven-value §13.3 classifications into this table. Codex Phase 
 | Phase 4 Skills skeleton                      | `extensions/linkskills/**`, `PHASE-4-STATUS.md`                              | Default-disabled                                                        |
 | Phase 5 MCP templates / filters              | `mcp-templates/**`, `mcp-tool-filter.ts`                                     | `enabled: false`                                                        |
 | Phase 5 Platform auth gate                   | `PHASE-5-DECISION-PACKET-PLATFORM-AUTH.md`                                   | Blocked                                                                 |
-| Phase 6 full matrix + perf                   | `PHASE-6-STATUS.md`, matrix/perf tests                                       | **26/185**; wave 6 Phase 14 corrections |
+| Phase 6 full matrix + perf                   | `PHASE-6-STATUS.md`, matrix/perf tests                                       | **29/196**; wave 7 Phase 14 corrections |
 | Phase 6 SKIPPED_PLATFORM_LIVE                | `PHASE-6-STATUS.md` rows named                                               | Audit reject; real issuer revoke                                        |
 | Phase 6 Crabbox/Testbox                      | —                                                                            | Local missing; trusted local + PR CI; Deficiency #6                     |
-| Fixture owner sign-off                       | `FIXTURE-OWNER-SIGNOFF.md`                                                   | Deficiency #5                                                           |
+| Fixture owner sign-off                       | `FIXTURE-OWNER-SIGNOFF.md`                                                   | Deficiency #5; wave 7 fixtures unchanged                                |
 | Phase 7–12                                   | `PHASE-*-STATUS-BLOCKED.md` / decision packet                                | **Not started**; Deficiency #7                                          |
-| Phase 13 corrected handoff                   | this file                                                                    | Deficiency #8                                                           |
-| Operator runbooks (draft)                    | `runbooks/**`                                                                | Not live-rehearsed                                                      |
+| Phase 13 corrected handoff                   | this file                                                                    | Deficiency #8; tip after wave 7                                         |
+| Operator runbooks (non-live)                 | `runbooks/**` + independent rehearsal                                        | FAKE/TEMPLATE independent rehearsal wave 7                              |
+| §13.3 classification / evidence index        | `PHASE-14-CLASSIFICATION-EVIDENCE-INDEX.md`                                  | Provisional; Codex accepts                                              |
+| Wave 7 correction packet                     | `WAVE7-CORRECTION-PACKET.md`                                                 | Codex Phase 14 re-verify input                                          |
 | Gate: two plugins / two MCP / separate state | code + templates + tests                                                     | Codex must inspect                                                      |
 | Gate: Brain-only conversation hooks          | linkbrain hooks + linkskills prohibition                                     | Codex must inspect                                                      |
 | Gate: no live Platform / Lisa mutation       | §7 + §3                                                                      | Absence claim                                                           |
@@ -358,7 +374,8 @@ Also requested:
 | Item                        | Result                                                                                                                                       |
 | --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
 | Repin Platform/Brain/Skills | `e845ac17…` / `a3cff6e0…` / `f16103f2…` (`correction_wave: wave-2b-2026-07-28`)                                                              |
-| AuthClaims pin              | schema `b0397cdf…50fb` + contentHash `6bf49618…b251`                                                                                         |
+| AuthClaims pin (wave 2b historical) | schema `b0397cdf…50fb` + contentHash `6bf49618…b251` (`1.0.0`)                                                                         |
+| AuthClaims pin (wave 7 current) | schema `c2e8bc68…dfa1` + contentHash `fb518834…a567` (`1.1.0` / package `0.2.2`)                                                         |
 | Brain fixtures              | 17 frozen tools; aggregate `275c1fb7…9a1d` (72 JSON); **`OWNER_COUNTERSIGNED`** at tip `429a7818…`                                           |
 | Skills fixtures             | immutable-release + AuthClaims; aggregate `8586d89a…ec96`; **`OWNER_COUNTERSIGNED`** reaffirmed at tip `429a7818…`                           |
 | Owner countersign           | **Fixture-owner gate CLOSED** (Brain + Skills). Phase 1 overall still blocked on Platform auth-path. Not Codex / not merge.                  |

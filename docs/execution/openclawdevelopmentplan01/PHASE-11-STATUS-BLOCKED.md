@@ -1,8 +1,8 @@
 # Phase 11 — Brain Production Deployment and Canary (BLOCKED)
 
-**Recorded:** 2026-07-27 19:17 Asia/Taipei  
-**Branch:** `issue/ocp-openclawdevelopmentplan01`  
-**Status:** **not started** — blocked on Principal retention + Platform prod + stage exits  
+**Recorded:** 2026-07-27 19:17 Asia/Taipei
+**Branch:** `issue/ocp-openclawdevelopmentplan01`
+**Status:** **not started** — blocked on Principal retention + Platform prod + stage exits
 **Evidence tier rule:** `fake ≠ live`; stage ≠ production. Synthetic activity may supplement but **not** replace real Lisa activity.
 
 ## Objective (when unblocked)

@@ -1,9 +1,9 @@
 # Phase 6 — Performance Baseline (fake / integration-local)
 
-**Recorded:** 2026-07-28 07:50 Asia/Taipei  
-**Branch:** `issue/ocp-openclawdevelopmentplan01`  
-**Evidence tier:** `fake/integration-local` — **not** stage, **not** production SLOs.  
-**Harness:** `test/helpers/link-domain-fakes/phase6-perf-baseline.test.ts`  
+**Recorded:** 2026-07-28 07:50 Asia/Taipei
+**Branch:** `issue/ocp-openclawdevelopmentplan01`
+**Evidence tier:** `fake/integration-local` — **not** stage, **not** production SLOs.
+**Harness:** `test/helpers/link-domain-fakes/phase6-perf-baseline.test.ts`
 **Budgets constant:** `PHASE6_PERF_BUDGETS`
 
 ## Purpose

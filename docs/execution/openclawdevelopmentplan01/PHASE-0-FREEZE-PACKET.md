@@ -1,9 +1,9 @@
 # Phase 0 — Approval, Snapshot, and Ownership Freeze
 
-**Session:** `cursor-local-mac-mini-lisa-openclawdevelopmentplan01-20260727-1648`  
-**Branch:** `issue/ocp-openclawdevelopmentplan01`  
-**Recorded:** 2026-07-27 18:44 Asia/Taipei  
-**OpenClaw execution agent:** Cursor Local Agent (Grok 4.5 High)  
+**Session:** `cursor-local-mac-mini-lisa-openclawdevelopmentplan01-20260727-1648`
+**Branch:** `issue/ocp-openclawdevelopmentplan01`
+**Recorded:** 2026-07-27 18:44 Asia/Taipei
+**OpenClaw execution agent:** Cursor Local Agent (Grok 4.5 High)
 **Authority:** Principal authorization in `docs/CURSOR-GROK-EXECUTION-PROMPT.md` for OpenClaw-owned Phases 0–13
 
 ## 1. Approved plan reference

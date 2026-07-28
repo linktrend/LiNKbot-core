@@ -1,6 +1,6 @@
 # Phase 1 — Keyed-Store Outbox Prototype Findings
 
-**Recorded:** 2026-07-27 18:53 Asia/Taipei  
+**Recorded:** 2026-07-27 18:53 Asia/Taipei
 **Evidence tier:** design + public API inspection (no product Lisa behavior)
 
 ## Public surface inspected

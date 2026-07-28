@@ -1,7 +1,7 @@
 # Phase 5 — Decision Packet: Platform Auth for Managed MCP
 
-**Recorded:** 2026-07-27 19:12 Asia/Taipei  
-**Branch:** `issue/ocp-openclawdevelopmentplan01`  
+**Recorded:** 2026-07-27 19:12 Asia/Taipei
+**Branch:** `issue/ocp-openclawdevelopmentplan01`
 **Status:** **Platform approval required — not authorized for live Lisa wiring**
 
 ## Ask

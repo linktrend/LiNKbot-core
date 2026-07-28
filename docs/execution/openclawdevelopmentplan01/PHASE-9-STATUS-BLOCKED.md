@@ -1,8 +1,8 @@
 # Phase 9 — Skills Stage Canary (BLOCKED)
 
-**Recorded:** 2026-07-27 19:17 Asia/Taipei  
-**Branch:** `issue/ocp-openclawdevelopmentplan01`  
-**Status:** **not started** — blocked on Phase 7 + Skills Cursor/Codex readiness  
+**Recorded:** 2026-07-27 19:17 Asia/Taipei
+**Branch:** `issue/ocp-openclawdevelopmentplan01`
+**Status:** **not started** — blocked on Phase 7 + Skills Cursor/Codex readiness
 **Evidence tier rule:** `fake ≠ live`. Lisa must **not** substitute for Cursor/Codex proofs.
 
 ## Objective (when unblocked)

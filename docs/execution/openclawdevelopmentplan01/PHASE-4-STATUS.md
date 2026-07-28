@@ -1,6 +1,6 @@
 # Phase 4 — Skills Plugin Skeleton Status
 
-**Recorded:** 2026-07-27 19:15 Asia/Taipei  
+**Recorded:** 2026-07-27 19:15 Asia/Taipei
 **Branch:** `issue/ocp-openclawdevelopmentplan01`
 
 ## Delivered

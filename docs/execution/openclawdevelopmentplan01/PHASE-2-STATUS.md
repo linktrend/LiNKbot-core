@@ -1,6 +1,6 @@
 # Phase 2 — Brain Plugin Skeleton Status
 
-**Recorded:** 2026-07-27 19:00 Asia/Taipei  
+**Recorded:** 2026-07-27 19:00 Asia/Taipei
 **Branch:** `issue/ocp-openclawdevelopmentplan01`
 
 ## Delivered

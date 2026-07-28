@@ -1,7 +1,7 @@
 # Phase 3 — Brain Lifecycle Capture Status
 
-**Recorded:** 2026-07-27 19:08 Asia/Taipei  
-**Capture durability fix:** 2026-07-28 15:35 Asia/Taipei  
+**Recorded:** 2026-07-27 19:08 Asia/Taipei
+**Capture durability fix:** 2026-07-28 15:35 Asia/Taipei
 **Branch:** `issue/ocp-openclawdevelopmentplan01`
 
 ## Delivered

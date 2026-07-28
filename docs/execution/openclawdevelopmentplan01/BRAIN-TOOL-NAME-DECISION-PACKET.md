@@ -1,10 +1,10 @@
 # Decision packet — Brain MCP tool names (frozen §9.1)
 
-**Recorded (original):** 2026-07-28 07:44 Asia/Taipei  
-**Corrected:** 2026-07-28 09:52 Asia/Taipei (correction wave 2b)  
-**Branch:** `issue/ocp-openclawdevelopmentplan01`  
-**OpenClaw agent:** Cursor Cloud Agent (Grok 4.5 High), Feature  
-**Plan SHA-256:** `17203ee586a3fb2b1281bcddd8b17ae350075ebce537689f3c4bfcbbd14914f7`  
+**Recorded (original):** 2026-07-28 07:44 Asia/Taipei
+**Corrected:** 2026-07-28 09:52 Asia/Taipei (correction wave 2b)
+**Branch:** `issue/ocp-openclawdevelopmentplan01`
+**OpenClaw agent:** Cursor Cloud Agent (Grok 4.5 High), Feature
+**Plan SHA-256:** `17203ee586a3fb2b1281bcddd8b17ae350075ebce537689f3c4bfcbbd14914f7`
 **Brain HEAD (corrected):** `a3cff6e0f04ac968c32beacb7bdb1b81a4d77d3f` (`issue/13-developmentplan01`)
 
 ## Correction summary

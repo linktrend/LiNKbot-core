@@ -1,7 +1,7 @@
 # Phase 5 — Managed MCP Integration and Authentication Status
 
-**Recorded:** 2026-07-27 19:12 Asia/Taipei  
-**Branch:** `issue/ocp-openclawdevelopmentplan01`  
+**Recorded:** 2026-07-27 19:12 Asia/Taipei
+**Branch:** `issue/ocp-openclawdevelopmentplan01`
 **Evidence tier:** fake / template only — **not** live Lisa or Platform
 
 ## Delivered

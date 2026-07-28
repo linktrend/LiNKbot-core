@@ -1,8 +1,8 @@
 # Phase 12 — Skills Production Deployment and Canary (BLOCKED)
 
-**Recorded:** 2026-07-27 19:17 Asia/Taipei  
-**Branch:** `issue/ocp-openclawdevelopmentplan01`  
-**Status:** **not started** — blocked on Skills stage exit, Cursor/Codex readiness, integrated rehearsal, Platform prod  
+**Recorded:** 2026-07-27 19:17 Asia/Taipei
+**Branch:** `issue/ocp-openclawdevelopmentplan01`
+**Status:** **not started** — blocked on Skills stage exit, Cursor/Codex readiness, integrated rehearsal, Platform prod
 **Evidence tier rule:** `fake ≠ live`; stage ≠ production. Evidence must be **execution-backed**, not prompt-only.
 
 ## Objective (when unblocked)

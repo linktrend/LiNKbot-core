@@ -77,10 +77,11 @@ node scripts/run-vitest.mjs \
 | `test/helpers/link-domain-fakes/` (integrated + matrix + perf + brain-fake) | 4      | 25      |
 | `extensions/linkbrain/**/*.test.ts` (+ fake + transport)                    | 8      | —       |
 | `extensions/linkskills/**/*.test.ts` (+ fake + transport)                   | 8      | —       |
-| **Tip total after wave 6**                                          | **26** | **185** |
+| **Tip total after wave 7**                                          | **29** | **196** |
+| Tip total after wave 6 (historical)                                 | 26     | 185     |
 | Tip total after bounded timeout (historical)                        | 22     | 171     |
 
-Prior packet was 7 integrated / 82 focused. Phase 6 matrix commit (`66a32888129`) added +17 mandatory/perf tests. Concurrent transport adapters landed at `e88ba95d0a2`; historical re-verify **20/144** on tip (`22717f28bb3`) — **superseded**. Wave 5 tip **22/171** — **superseded**. Current tip claim: **26/185**.
+Prior packet was 7 integrated / 82 focused. Phase 6 matrix commit (`66a32888129`) added +17 mandatory/perf tests. Concurrent transport adapters landed at `e88ba95d0a2`; historical re-verify **20/144** on tip (`22717f28bb3`) — **superseded**. Wave 5 tip **22/171** — **superseded**. Wave 6 tip **26/185** — **superseded**. Current tip claim: **29/196**.
 
 ## Privacy / cross-domain
 

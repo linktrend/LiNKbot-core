@@ -1,8 +1,8 @@
 # Phase 10 — Integrated Stage Soak and Operational Rehearsal (BLOCKED)
 
-**Recorded:** 2026-07-27 19:17 Asia/Taipei  
-**Branch:** `issue/ocp-openclawdevelopmentplan01`  
-**Status:** **not started** — blocked on Phase 8 + Phase 9 stage exits  
+**Recorded:** 2026-07-27 19:17 Asia/Taipei
+**Branch:** `issue/ocp-openclawdevelopmentplan01`
+**Status:** **not started** — blocked on Phase 8 + Phase 9 stage exits
 **Evidence tier rule:** `fake ≠ live`. Phase 6 integrated **fake** QA is preparation only.
 
 ## Objective (when unblocked)

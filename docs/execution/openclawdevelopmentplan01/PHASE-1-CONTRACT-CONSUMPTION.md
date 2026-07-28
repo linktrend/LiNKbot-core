@@ -16,22 +16,25 @@
 
 ## 2. LiNKplatform pin
 
+**Wave 7 repin (2026-07-28):** authoritative AuthClaims is now `1.1.0` / package `0.2.2`. Historical `1.0.0` rows retained in `contracts/platform/auth-claims-1.0.0/` for audit.
+
 | Field                                  | Value                                                                                  |
 | -------------------------------------- | -------------------------------------------------------------------------------------- |
-| Source HEAD                            | `e845ac17dffac52a501603ad2fafd1b53fef195d`                                             |
+| Source HEAD                            | `6861a376aae5fa4e12c1b68a808d7b04e7bbfb5b`                                             |
 | Source branch                          | `issue/LP-01-linkplatformdevelopmentplan01`                                            |
-| `PLATFORM_CONTRACTS_SEMVER`            | `0.2.1`                                                                                |
-| Package                                | `@linktrend/platform-contracts@0.2.1`                                                  |
-| **Auth contract**                      | `platform.auth-claims/1.0.0`                                                           |
-| Schema file SHA-256                    | `b0397cdf34e76ab0986c6d223ecb6c3c66d619ea59557f78cd45c0c015ff50fb`                     |
-| Auth contentHash                       | `6bf49618d846662976886f57d5d468f73a08ab1a6574968f68833d82429db251`                     |
-| Claims TS SHA-256                      | `ae220b00f33d534cb9ba624160b3c6910f1df0aba172f428985641c5a98f0e90`                     |
-| Golden canonicalize vector (meta only) | file `834f5695…ebae` / embedded `deb43dca…a134` — **not** a substitute for auth-claims |
-| `contract-meta.ts` SHA-256             | `ceed17a5417f1bec359de825a4f0b9f25e5cf363e4e468608daf21206385ed7a`                     |
+| `PLATFORM_CONTRACTS_SEMVER`            | `0.2.2`                                                                                |
+| Package                                | `@linktrend/platform-contracts@0.2.2`                                                  |
+| **Auth contract**                      | `platform.auth-claims/1.1.0`                                                           |
+| Schema file SHA-256                    | `c2e8bc68b3feb9a3dacc497f5a5d497b466c400804fb4f9e41734c10772ddfa1`                     |
+| Auth contentHash                       | `fb518834be897c32574df5f7235704fdb0de708bd3da1b48fc448246e3eca567`                     |
+| Claims TS SHA-256                      | `cc382008d1e0a15112ad03d2ad83cbdf55ec24b67807a6af595999b84d943ca8`                     |
+| Golden canonicalize vector (meta only) | file `834f5695…ebae` — **not** a substitute for auth-claims                            |
+| `contract-meta.ts` SHA-256             | `164caff2e0e79320a38bc6fde3b6fcca30207a2cfada918a422a7397c5f04e9c`                     |
 | Pin artifact                           | `contracts/platform/PIN.json`                                                          |
-| Sanitized schema copy                  | `contracts/platform/auth-claims-1.0.0/`                                                |
+| Sanitized schema copy                  | `contracts/platform/auth-claims-1.1.0/`                                                |
+| Supersedes                             | `platform.auth-claims/1.0.0` (historical copy retained)                                |
 
-Sanitized: metadata + hashes + schema JSON only. No `node_modules` copy.
+Sanitized: metadata + hashes + schema JSON only. No `node_modules` copy. Brain/Skills fixture bytes unchanged → owner reaffirmation not required.
 
 ## 3. LiNKbrain pin
 
