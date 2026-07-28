@@ -1,6 +1,7 @@
 # Operator Runbooks — Brain / Skills Independent Controls
 
 **Recorded:** 2026-07-27 19:17 Asia/Taipei
+**Updated:** 2026-07-28 Asia/Taipei (wave 6 — all 14 plan §19 runbooks at non-live tier)
 **Branch:** `issue/ocp-openclawdevelopmentplan01`
 **Scope:** OpenClaw Prime Lisa adapters only
 **Policy:** No live Lisa/Platform mutation until Phase 7+ gates clear. Never echo secrets.
@@ -16,16 +17,26 @@
 
 `fake ≠ live`. Phase 6 integrated fake QA does not unlock these LIVE paths.
 
-## Index
+## Plan §19 index (14 required)
 
-| Runbook                                                                      | Domain | Controls                                             |
-| ---------------------------------------------------------------------------- | ------ | ---------------------------------------------------- |
-| [brain-enable-disable-drain.md](./brain-enable-disable-drain.md)             | Brain  | enable / disable / read / enqueue / drain            |
-| [skills-enable-disable-drain.md](./skills-enable-disable-drain.md)           | Skills | enable / disable / discovery / execution / telemetry |
-| [brain-rollback-restart.md](./brain-rollback-restart.md)                     | Brain  | rollback order + Gateway/plugin restart              |
-| [skills-rollback-restart.md](./skills-rollback-restart.md)                   | Skills | rollback order + Gateway/plugin restart              |
-| [mcp-probe-pause-recover.md](./mcp-probe-pause-recover.md)                   | Both   | MCP probe, repeated-failure pause, recovery          |
-| [gateway-restart-durable-outboxes.md](./gateway-restart-durable-outboxes.md) | Both   | restart with durable outboxes retained               |
+| #   | Required runbook                                                         | File                                                     | Non-live rehearsal |
+| --- | ------------------------------------------------------------------------ | -------------------------------------------------------- | ------------------ |
+| 1   | Brain enable/disable/read-only/write/drain                               | [brain-enable-disable-drain.md](./brain-enable-disable-drain.md) | 2026-07-28 wave 6 |
+| 2   | Skills enable/disable/discovery/execution/telemetry                      | [skills-enable-disable-drain.md](./skills-enable-disable-drain.md) | 2026-07-28 wave 6 |
+| 3   | Brain credential issue/rotate/revoke/recover                             | [brain-credential-rotate-revoke.md](./brain-credential-rotate-revoke.md) | 2026-07-28 wave 6 |
+| 4   | Skills credential issue/rotate/revoke/recover                            | [skills-credential-rotate-revoke.md](./skills-credential-rotate-revoke.md) | 2026-07-28 wave 6 |
+| 5   | MCP probe, repeated-failure pause, recovery                              | [mcp-probe-pause-recover.md](./mcp-probe-pause-recover.md) | 2026-07-28 wave 6 |
+| 6   | Plugin/Gateway restart with durable outboxes                             | [gateway-restart-durable-outboxes.md](./gateway-restart-durable-outboxes.md) | 2026-07-28 wave 6 |
+| 7   | Queue pressure, reject-new, capacity, dead-letter                        | covered in #1/#2 + gateway restart; Brain/Skills overflow reject-new | 2026-07-28 wave 6 |
+| 8   | Brain capture hold, retention deletion, Principal exceptions             | [brain-capture-hold-retention.md](./brain-capture-hold-retention.md) | 2026-07-28 wave 6 |
+| 9   | Skills bundle/profile mismatch and last-verified-bundle                  | [skills-bundle-profile-mismatch.md](./skills-bundle-profile-mismatch.md) | 2026-07-28 wave 6 |
+| 10  | Privacy or secret incident containment                                   | [privacy-secret-incident.md](./privacy-secret-incident.md) | 2026-07-28 wave 6 |
+| 11  | Cross-domain leakage incident containment                                | [cross-domain-leakage-incident.md](./cross-domain-leakage-incident.md) | 2026-07-28 wave 6 |
+| 12  | Platform rollback, migration recovery, backup, restore                    | [platform-rollback-backup-restore.md](./platform-rollback-backup-restore.md) | 2026-07-28 wave 6 |
+| 13  | Lisa native-behavior regression isolation                                | [lisa-native-regression-isolation.md](./lisa-native-regression-isolation.md) | 2026-07-28 wave 6 |
+| 14  | Stage/production canary start/pause/restart/accept/reject                | [stage-prod-canary-controls.md](./stage-prod-canary-controls.md) | 2026-07-28 wave 6 |
+
+Companion rollback order docs (non-live): [brain-rollback-restart.md](./brain-rollback-restart.md), [skills-rollback-restart.md](./skills-rollback-restart.md).
 
 ## Template sources
 
@@ -45,6 +56,12 @@ Plugin flag defaults (all **false** until deliberately enabled):
 
 - Brain: `mcpRead`, `captureEnqueue`, `captureDrain`, `coordinationWrites`
 - Skills: `mcpDiscoveryRead`, `governedExecution`, `telemetryEnqueue`, `telemetryDrain`
+
+Operational notes (wave 6):
+
+- `flushIntervalMs` starts an independent stoppable drain worker when the matching drain flag is true.
+- `mcpRead` / `mcpDiscoveryRead` / `governedExecution` register family tools when true (remote work still requires `transportMode != disabled`).
+- `outboxAgeAlarmMs` marks health degraded when oldest outbox age exceeds the alarm.
 
 ## Independence rules
 

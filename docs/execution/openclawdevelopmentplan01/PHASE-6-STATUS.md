@@ -1,11 +1,12 @@
 # Phase 6 — Integrated Local and Isolated QA Status (complete matrix)
 
-**Recorded:** 2026-07-28 07:50 Asia/Taipei  
-**Capture durability amendment:** 2026-07-28 15:35 Asia/Taipei  
-**Capture concurrency amendment:** 2026-07-28 17:35 Asia/Taipei  
-**Branch:** `issue/ocp-openclawdevelopmentplan01`  
-**Evidence tier:** `fake/integration-local` — **not** stage, **not** production, **no** live Platform/Lisa.  
-**Session:** `cursor-cloud-mac-mini-feature-phase6-matrix-20260728-0744`
+**Recorded:** 2026-07-28 07:50 Asia/Taipei
+**Capture durability amendment:** 2026-07-28 15:35 Asia/Taipei
+**Capture concurrency amendment:** 2026-07-28 17:35 Asia/Taipei
+**Wave 6 Phase 14 corrections amendment:** 2026-07-28 20:48 Asia/Taipei
+**Branch:** `issue/ocp-openclawdevelopmentplan01`
+**Evidence tier:** `fake/integration-local` — **not** stage, **not** production, **no** live Platform/Lisa.
+**Session:** `cursor-local-mac-mini-lisa-wave6-20260728` (completed)
 
 ## Delivered
 
@@ -76,15 +77,17 @@ node scripts/run-vitest.mjs \
 | `test/helpers/link-domain-fakes/` (integrated + matrix + perf + brain-fake) | 4      | 25      |
 | `extensions/linkbrain/**/*.test.ts` (+ fake + transport)                    | 8      | —       |
 | `extensions/linkskills/**/*.test.ts` (+ fake + transport)                   | 8      | —       |
-| **Tip total after capture concurrency**                                     | **21** | **160** |
+| **Tip total after wave 6**                                          | **26** | **185** |
+| Tip total after bounded timeout (historical)                        | 22     | 171     |
 
-Prior packet was 7 integrated / 82 focused. Phase 6 matrix commit (`66a32888129`) added +17 mandatory/perf tests. Concurrent transport adapters landed at `e88ba95d0a2`; re-verified full suite **20/144** green on tip (`22717f28bb3` status follow-up).
+Prior packet was 7 integrated / 82 focused. Phase 6 matrix commit (`66a32888129`) added +17 mandatory/perf tests. Concurrent transport adapters landed at `e88ba95d0a2`; historical re-verify **20/144** on tip (`22717f28bb3`) — **superseded**. Wave 5 tip **22/171** — **superseded**. Current tip claim: **26/185**.
 
 ## Privacy / cross-domain
 
-- Skills index registers only `gateway_start` / `gateway_stop` (no conversation hooks).
+- Skills observes exact `skills_*` via public `after_tool_call` only; non-Skills tools produce no Skills telemetry.
+- Skills never registers conversation hooks.
 - Brain conversation text never appears in Skills outbox/diagnostics/fake cache.
-- Secret canaries redacted or stripped before durable state claims cleanliness.
+- Secret canaries redacted or stripped; allowlisted schemas reject unknown nesting.
 
 ## Explicit non-goals
 
