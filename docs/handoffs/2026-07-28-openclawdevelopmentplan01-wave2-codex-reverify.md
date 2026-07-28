@@ -14,7 +14,7 @@
 | Starting branch     | `issue/ocp-openclawdevelopmentplan01`                                                        |
 | Ending branch       | `issue/ocp-openclawdevelopmentplan01`                                                        |
 | Hosted CI green tip | `69bd01a4ddd021160f7e4254b9ca50a0d9732fa4`                                                   |
-| PR                  | https://github.com/linktrend/openclaw_prime/pull/38 → `development`                          |
+| PR                  | <https://github.com/linktrend/openclaw_prime/pull/38> → `development`                        |
 
 ## Summary
 
@@ -32,7 +32,7 @@ Correction wave 2 (and 2b) completed for OpenClaw consumer pins, fixtures, CI re
 5. Countersign: **`AWAITING_OWNER_COUNTERSIGN`** — Slack/repo search found **no** owner signature of those aggregates. **Not** a Phase 1 pass.
 6. CI repairs: allowlists, SecretRef matrix, deps/types/lint/boundaries/build, OpenGrep harness, SSRF-guard HTTP transports, docs map
 7. Local matrix: **20 files / 144 tests** passed
-8. Hosted: **`openclaw/ci-gate` SUCCESS** at `69bd01a4ddd` — https://github.com/linktrend/openclaw_prime/actions/runs/30322576216
+8. Hosted: **`openclaw/ci-gate` SUCCESS** at `69bd01a4ddd` — <https://github.com/linktrend/openclaw_prime/actions/runs/30322576216>
 
 ## Authoritative evidence for Codex
 
@@ -42,8 +42,8 @@ Correction wave 2 (and 2b) completed for OpenClaw consumer pins, fixtures, CI re
 | Contract pins        | `docs/execution/openclawdevelopmentplan01/contracts/{platform,brain,skills}/PIN.json` |
 | Countersign request  | `docs/execution/openclawdevelopmentplan01/COUNTERSIGN-REQUEST.md`                     |
 | Fixture sign-off     | `docs/execution/openclawdevelopmentplan01/FIXTURE-OWNER-SIGNOFF.md`                   |
-| PR                   | https://github.com/linktrend/openclaw_prime/pull/38                                   |
-| CI (green tip)       | https://github.com/linktrend/openclaw_prime/actions/runs/30322576216                  |
+| PR                   | <https://github.com/linktrend/openclaw_prime/pull/38>                                 |
+| CI (green tip)       | <https://github.com/linktrend/openclaw_prime/actions/runs/30322576216>                |
 | Plan SHA-256         | `17203ee586a3fb2b1281bcddd8b17ae350075ebce537689f3c4bfcbbd14914f7`                    |
 
 ## Tests and Verification

@@ -5552,6 +5552,25 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Coordination Relay
   - H2: Amendments
 
+## handoffs/2026-07-28-openclawdevelopmentplan01-wave2-codex-reverify.md
+
+- Route: /handoffs/2026-07-28-openclawdevelopmentplan01-wave2-codex-reverify
+- Headings:
+  - H1: Agent Session Handoff — Correction wave 2 → Codex Phase 14 re-verification
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: What landed
+  - H2: Authoritative evidence for Codex
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator
+  - H2: Confidence
+  - H2: Amendments
+
 ## handoffs/2026-07-28-phase6-complete-mandatory-matrix.md
 
 - Route: /handoffs/2026-07-28-phase6-complete-mandatory-matrix
