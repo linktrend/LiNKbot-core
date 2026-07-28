@@ -98,8 +98,8 @@ that root, sorted).
 
 | Package                          | JSON count | Aggregate SHA-256                                                  |
 | -------------------------------- | ---------- | ------------------------------------------------------------------ |
-| `extensions/linkbrain/fixtures`  | 72         | `275c1fb747cf1042516794a1fdd164b88b7450a02cef2a58440bcb221f449a1d` |
-| `extensions/linkskills/fixtures` | 69         | `8586d89a4a160987ace45ed4392b78c8a66391940e81eed6bdc098f49404ec96` |
+| `extensions/linkbrain/fixtures`  | 75         | `4493f71432ef56f9fc272ff4c208b8901242c2bd83e138f53d6f0259b4f4811b` |
+| `extensions/linkskills/fixtures` | 71         | `203163711b5db17b8a07d3956e41596384cbd08f0c110bd9f21abfc5c7e5e19a` |
 
 Prior denied Brain aggregate (superseded): `d539debc7b9d7347c109e7d462fc27a48c28322f0d3d5b85d57f602e843d45fb`
 
