@@ -101,8 +101,8 @@ that root, sorted).
 Prior denied Brain aggregate (superseded): `d539debc7b9d7347c109e7d462fc27a48c28322f0d3d5b85d57f602e843d45fb`
 
 Owner countersignature process: `FIXTURE-OWNER-SIGNOFF.md`.
-Principal routing: `COUNTERSIGN-REQUEST.md`.
-Status: Brain **`AWAITING_OWNER_COUNTERSIGN`** (re-request after denial corrections). Skills tree previously **`OWNER_COUNTERSIGNED`** at tip `0b19e43…` for unchanged `8586d89a…ec96`; **`AWAITING_TIP_REAFFIRMATION`** against post-correction tip. **NOT a passed Phase 1 gate.** OpenClaw does **not** self-certify Brain.
+Principal routing: `COUNTERSIGN-REQUEST.md` (now **SATISFIED**).
+Status: Brain + Skills **`OWNER_COUNTERSIGNED`** at OpenClaw tip `429a7818e2f79be27329c1848531ffe9ba0f7367`. **Phase 1 fixture-owner gate CLOSED.** Phase 1 overall still blocked on Platform auth-path. Provisional pending Codex Phase 14. Not merge authority.
 
 ## 6. Consumption rules
 

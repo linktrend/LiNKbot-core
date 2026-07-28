@@ -68,12 +68,12 @@ OpenClaw mirrors these in:
 
 ## Status
 
-| Item                                       | State                                             |
-| ------------------------------------------ | ------------------------------------------------- |
-| OpenClaw decision                          | **DECIDED** — keep frozen §9.1; no alias          |
-| Brain §9.1 implementation (corrected HEAD) | **IMPLEMENTED** at `a3cff6e…` (code evidence)     |
-| Brain owner fixture countersign            | **AWAITING_OWNER_COUNTERSIGN**                    |
-| Phase 1 full exit                          | **NOT PASSED** — owner countersign still required |
+| Item                                       | State                                                                         |
+| ------------------------------------------ | ----------------------------------------------------------------------------- |
+| OpenClaw decision                          | **DECIDED** — keep frozen §9.1; no alias                                      |
+| Brain §9.1 implementation (corrected HEAD) | **IMPLEMENTED** at `a3cff6e…` (code evidence)                                 |
+| Brain owner fixture countersign            | **OWNER_COUNTERSIGNED** at tip `429a7818…` / aggregate `275c1fb7…9a1d`        |
+| Phase 1 full exit                          | **NOT PASSED** — Platform auth-path still required; fixture-owner gate CLOSED |
 
 ## Principal routing instruction
 

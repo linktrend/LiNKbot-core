@@ -3626,10 +3626,8 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
 - Route: /execution/openclawdevelopmentplan01/COUNTERSIGN-REQUEST
 - Headings:
   - H1: Countersign request — OpenClaw fixture packages (Phase 1)
-  - H2: Why this exists
-  - H2: Aggregates to attest
-  - H2: Corrected sibling HEADs pinned
-  - H2: What each owner should do
+  - H2: Outcome
+  - H2: Approving handoffs
   - H2: Related
 
 ## execution/openclawdevelopmentplan01/FIXTURE-OWNER-SIGNOFF.md
@@ -3640,11 +3638,10 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Purpose
   - H2: Aggregate hashes (sorted JSON inventory method)
   - H2: Related contract pins (correction wave 2b)
-  - H2: Brain denial → correction summary
-  - H2: Sign-off process (exact)
-  - H2: Sibling-repo approval search (2026-07-28; refreshed after Brain denial)
+  - H2: Brain denial → correction → countersign path
   - H2: Countersignature — LiNKbrain owner
   - H2: Countersignature — LiNKskills owner
+  - H2: Gate closeout note
 
 ## execution/openclawdevelopmentplan01/PHASE-0-FREEZE-PACKET.md
 
@@ -5589,6 +5586,19 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Coordination Relay
   - H2: Amendments
 
+## handoffs/2026-07-28-openclawdevelopmentplan01-fixture-owner-gate-closeout.md
+
+- Route: /handoffs/2026-07-28-openclawdevelopmentplan01-fixture-owner-gate-closeout
+- Headings:
+  - H1: Agent Session Handoff — Fixture-owner gate closeout
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Verification performed
+  - H2: Files Modified
+  - H2: Explicit non-claims
+  - H2: Exact Next Action
+  - H2: Confidence
+
 ## handoffs/2026-07-28-openclawdevelopmentplan01-wave2-codex-reverify.md
 
 - Route: /handoffs/2026-07-28-openclawdevelopmentplan01-wave2-codex-reverify
@@ -5608,6 +5618,7 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Confidence
   - H2: Amendments
   - H3: 2026-07-28 — Brain fixture denial corrections (not a new implementation wave)
+  - H3: 2026-07-28 — Fixture-owner gate closeout (documentation/evidence only)
 
 ## handoffs/2026-07-28-phase6-complete-mandatory-matrix.md
 

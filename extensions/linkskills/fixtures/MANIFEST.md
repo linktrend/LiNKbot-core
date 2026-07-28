@@ -1,6 +1,6 @@
 # LiNKskills contract fixtures (OpenClaw consumer drafts)
 
-**Status:** draft — consumption hashes recorded; LiNKskills owner countersign `AWAITING_OWNER_COUNTERSIGN`
+**Status:** `OWNER_COUNTERSIGNED` (reaffirmed) at OpenClaw tip `429a7818e2f79be27329c1848531ffe9ba0f7367`
 
 These fixtures are consumer-side contract samples for OpenClaw Lisa integration tests
 and the local Skills fake MCP. They are derived from:
@@ -130,15 +130,15 @@ and the local Skills fake MCP. They are derived from:
 
 ## Owner sign-off
 
-| Field                       | Value                                                              |
-| --------------------------- | ------------------------------------------------------------------ |
-| Status                      | `AWAITING_OWNER_COUNTERSIGN`                                       |
-| Aggregate SHA-256 to attest | `8586d89a4a160987ace45ed4392b78c8a66391940e81eed6bdc098f49404ec96` |
-| Owner name / session ID     | _(blank — awaiting)_                                               |
-| Signature                   | _(blank — awaiting)_                                               |
-| Signed at (Asia/Taipei)     | _(blank — awaiting)_                                               |
+| Field                      | Value                                                                                                   |
+| -------------------------- | ------------------------------------------------------------------------------------------------------- |
+| Status                     | `OWNER_COUNTERSIGNED` (reaffirmed at tip `429a7818…`)                                                   |
+| Aggregate SHA-256 attested | `8586d89a4a160987ace45ed4392b78c8a66391940e81eed6bdc098f49404ec96`                                      |
+| OpenClaw tip attested      | `429a7818e2f79be27329c1848531ffe9ba0f7367`                                                              |
+| Owner name / session ID    | Cursor Grok 4.5 High — LiNKskills domain owner / `20260728-linkskills-openclaw-fixtures-reaffirm`       |
+| Signature                  | `41ab5a3d31a79a662158d8fb434f76b707701b7a` (reaffirm); prior `fe9f28caec9eca571c522a5fc3c5059611397ac8` |
+| Signed at (Asia/Taipei)    | 2026-07-28 12:58 (reaffirm); prior 2026-07-28 11:20                                                     |
 
-**This is NOT a passed Phase 1 gate.** Draft fixtures remain non-authoritative for domain
-conformance until LiNKskills countersigns.
+**Phase 1 fixture-owner gate CLOSED** for this package at tip `429a7818…`. Phase 1 overall still blocked on Platform auth-path. Not Codex Phase 14; not merge authority.
 
 Regenerate the per-file inventory and aggregate hash after any fixture edit.

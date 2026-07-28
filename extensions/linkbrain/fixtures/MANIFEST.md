@@ -2,7 +2,7 @@
 
 OpenClaw-derived draft fixtures for Lisa ↔ LiNKbrain integration tests.
 
-- **Status:** draft — consumption hashes recorded; LiNKbrain owner countersign `COUNTERSIGN_DENIED` on prior aggregate; corrected package awaiting **re**-countersign (do not self-certify)
+- **Status:** `OWNER_COUNTERSIGNED` at OpenClaw tip `429a7818e2f79be27329c1848531ffe9ba0f7367` (Brain denial corrections applied; prior denial of `d539debc…45fb` superseded)
 - **Contract version:** `1.0.0` (`BRAIN_CONTRACT_VERSION`)
 - **Platform claims:** `platform.auth-claims/1.0.0` (camelCase AuthClaims in `identity/` + `auth/`)
 - **Error taxonomy:** Brain Gateway `BrainErrorCode` + `ErrorEnvelope` (`code`, `message`, `safeMessage`, `retryable`)
@@ -111,16 +111,15 @@ remains §9.1; OpenClaw will not alias.
 
 ## Owner sign-off
 
-| Field                       | Value                                                              |
-| --------------------------- | ------------------------------------------------------------------ |
-| Status                      | `AWAITING_OWNER_COUNTERSIGN` (re-request after denial corrections) |
-| Aggregate SHA-256 to attest | `275c1fb747cf1042516794a1fdd164b88b7450a02cef2a58440bcb221f449a1d` |
-| Owner name / session ID     | _(blank — awaiting)_                                               |
-| Signature                   | _(blank — awaiting)_                                               |
-| Signed at (Asia/Taipei)     | _(blank — awaiting)_                                               |
+| Field                      | Value                                                                                                   |
+| -------------------------- | ------------------------------------------------------------------------------------------------------- |
+| Status                     | `OWNER_COUNTERSIGNED`                                                                                   |
+| Aggregate SHA-256 attested | `275c1fb747cf1042516794a1fdd164b88b7450a02cef2a58440bcb221f449a1d`                                      |
+| OpenClaw tip attested      | `429a7818e2f79be27329c1848531ffe9ba0f7367`                                                              |
+| Owner name / session ID    | Cursor Grok 4.5 High — LiNKbrain domain owner / `issue/13-developmentplan01`                            |
+| Signature                  | `d43552742b6a3e9eb942275106b103d873a889fb` (`OPENCLAW-BRAIN-FIXTURE-OWNER-COUNTERSIGNED-2026-07-28.md`) |
+| Signed at (Asia/Taipei)    | 2026-07-28 12:49                                                                                        |
 
-**This is NOT a passed Phase 1 gate.** OpenClaw does **not** mark Brain `OWNER_COUNTERSIGNED`.
-Draft fixtures remain non-authoritative for domain conformance until LiNKbrain countersigns
-this corrected aggregate.
+**Phase 1 fixture-owner gate CLOSED** for this package at tip `429a7818…`. Phase 1 overall still blocked on Platform auth-path. Not Codex Phase 14; not merge authority.
 
 Regenerate the per-file inventory and aggregate hash after any fixture edit.

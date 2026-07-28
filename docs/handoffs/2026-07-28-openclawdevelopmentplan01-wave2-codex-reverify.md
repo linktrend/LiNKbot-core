@@ -96,5 +96,12 @@ Refresh `docs/current-status.md` from this handoff (Orchestrator-only). No activ
 - Consumed LiNKbrain `COUNTERSIGN_DENIED` (`OPENCLAW-BRAIN-FIXTURE-COUNTERSIGN-2026-07-28.md`, commit `b28b1e59…`) against prior tip `0b19e43…` / denied aggregate `d539debc…45fb`.
 - Consumed LiNKskills `OWNER_COUNTERSIGNED` (`2026-07-28-linkskills-openclaw-fixtures-OWNER-COUNTERSIGNED.md`, commit `fe9f28ca…`) for Skills aggregate `8586d89a…ec96` (bytes preserved).
 - OpenClaw applied Brain fixture/fake/ErrorEnvelope/`1.0.0`/request-field/rotated-auth corrections. **New Brain aggregate:** `275c1fb747cf1042516794a1fdd164b88b7450a02cef2a58440bcb221f449a1d` (72 JSON). Skills aggregate **unchanged:** `8586d89a4a160987ace45ed4392b78c8a66391940e81eed6bdc098f49404ec96`.
-- Brain remains **not** `OWNER_COUNTERSIGNED` (OpenClaw does not self-certify). Skills prior countersign stands for unchanged tree; **tip reaffirmation** required against the post-correction OpenClaw tip.
-- Authoritative follow-up packet: `docs/handoffs/2026-07-28-openclawdevelopmentplan01-brain-fixture-denial-fix.md`. Re-verify Codex against the tip that contains that correction + green `openclaw/ci-gate`, not only tip `0b19e43…` / `69bd01a4ddd`.
+- Authoritative follow-up packet: `docs/handoffs/2026-07-28-openclawdevelopmentplan01-brain-fixture-denial-fix.md`.
+
+### 2026-07-28 — Fixture-owner gate closeout (documentation/evidence only)
+
+- Consumed Brain `OWNER_COUNTERSIGNED`: `LiNKbrain/docs/handoffs/OPENCLAW-BRAIN-FIXTURE-OWNER-COUNTERSIGNED-2026-07-28.md` (commit `d43552742b6a3e9eb942275106b103d873a889fb`) for tip `429a7818e2f79be27329c1848531ffe9ba0f7367` / aggregate `275c1fb7…9a1d`.
+- Consumed Skills reaffirmation: `LiNKskills/docs/handoffs/2026-07-28-linkskills-openclaw-fixtures-OWNER-COUNTERSIGNED-reaffirm.md` (commit `41ab5a3d31a79a662158d8fb434f76b707701b7a`) for same tip / aggregate `8586d89a…ec96`.
+- OpenClaw recomputed both aggregates at tip `429a7818…` — match confirmed. Updated `FIXTURE-OWNER-SIGNOFF.md`, Phase 1/13 packets, MANIFESTs.
+- **Phase 1 fixture-owner gate CLOSED.** Phase 1 overall still blocked on Platform auth-path. Provisional pending independent OpenClaw Codex Phase 14. Do not merge PR #38; do not claim Phases 7–12; do not mutate Lisa.
+- Re-verify Codex against the tip that contains this closeout + green `openclaw/ci-gate`.
