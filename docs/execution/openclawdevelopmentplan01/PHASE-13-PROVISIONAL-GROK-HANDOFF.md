@@ -3,13 +3,15 @@
 **Document class:** Section 21.1 provisional Grok handoff (evidence index, not certification) — **CORRECTED for Codex Phase 14 re-verification**  
 **Recorded (original):** 2026-07-27 19:17 Asia/Taipei  
 **Corrected:** 2026-07-28 07:57 Asia/Taipei  
+**Correction wave 2 / 2b:** 2026-07-28 10:15 Asia/Taipei  
 **Author (correction):** Cursor Local / Cloud Grok 4.5 High integrator under OpenClaw plan package  
 **Plan:** `docs/OPENCLAW-PRIME-LISA-LINKBRAIN-LINKSKILLS-DETAILED-IMPLEMENTATION-PLAN.md`  
 **Plan SHA-256:** `17203ee586a3fb2b1281bcddd8b17ae350075ebce537689f3c4bfcbbd14914f7` (HASH_OK re-verified 2026-07-28)  
 **Authority:** `docs/CURSOR-GROK-EXECUTION-PROMPT.md` — OpenClaw-owned Phases 0–13 only  
+**PR:** [#38](https://github.com/linktrend/openclaw_prime/pull/38) → `development` (draft; do not merge from this handoff)  
 **Supersedes:** prior provisional text at the same path (2026-07-27) and short pointer claims of 13 files / 82 tests as the tip proof set
 
-> **Provisional.** This handoff does **not** assign the seven Section 13.3 conformance classifications. It does **not** perform Phase 14 or Phase 15. Independent OpenClaw Codex verification (Phase 14) must inspect actual code, tests, and evidence rather than accepting this summary. **Re-verify against this corrected packet**, not the superseded 2026-07-27 provisional alone.
+> **Provisional.** This handoff does **not** assign the seven Section 13.3 conformance classifications. It does **not** perform Phase 14 or Phase 15. Independent OpenClaw Codex verification (Phase 14) must inspect actual code, tests, and evidence rather than accepting this summary. **Re-verify against this corrected packet**, not the superseded 2026-07-27 provisional alone. **Do not treat `AWAITING_OWNER_COUNTERSIGN` as a passed Phase 1 gate.**
 
 ---
 
@@ -40,7 +42,9 @@
 | Base (`origin/development`)              | `02659b9ac819c126432ae5e4c0b379a7f8ff1bee`                                                            |
 | HEAD at corrected handoff authoring base | `6f6887c31cee9e2ca0f84389c915f7480b4cfa50`                                                            |
 | Corrected handoff commit                 | `811ec5755036bbfa324ce72404a17b4c4443c683`                                                            |
-| Current HEAD (branch tip)                | run `git rev-parse HEAD` on this branch after pull                                                    |
+| Wave-2b pin commit                       | `4103bd6c1c208337f5dc37e169c9ec9a727bf835`                                                            |
+| SSRF transport commit                    | `d79e3356db527492f0ab8a0b1af7888469815f19`                                                            |
+| Current HEAD (branch tip)                | run `git rev-parse HEAD` after pull — expected ≥ SSRF transport commit above                          |
 | Primary session (closed)                 | `docs/agent-sessions/completed/cursor-local-mac-mini-lisa-openclawdevelopmentplan01-20260727-1648.md` |
 | Related Phase 2 session (closed)         | `docs/agent-sessions/completed/cursor-local-mac-mini-feature-linkbrain-phase2-20260727-1854.md`       |
 | Orchestrator key                         | `cursor-local-mac-mini-desktop-workspace-orchestrator`                                                |
@@ -127,14 +131,16 @@ All other mandatory fake-tier scenarios 1–15 + coexistence A–G: **PASS** (se
 
 ### Crabbox / Testbox
 
-| Check                         | Result                                                               |
-| ----------------------------- | -------------------------------------------------------------------- |
-| Local `crabbox` binary        | **Missing** / failed sanity on this host (`crabbox not found`)       |
-| Testbox / Crabbox heavy suite | **Not run**                                                          |
-| Proof used                    | **Trusted local fallback** — focused `node scripts/run-vitest.mjs …` |
-| Exact-head CI                 | **PR to `development` requested** so hosted CI can prove the tip SHA |
+| Check                           | Result                                                                                                                                                       |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Local `crabbox` binary          | **Missing** / failed sanity on this host (`crabbox not found`)                                                                                               |
+| Testbox / Crabbox heavy suite   | **Not run**                                                                                                                                                  |
+| Proof used                      | **Trusted local fallback** — focused `node scripts/run-vitest.mjs …`                                                                                         |
+| Exact-head CI                   | **PR #38** open; tip must show green **`openclaw/ci-gate`** before treating hosted proof as complete                                                         |
+| Local re-verify (wave 2b)       | **2026-07-28 10:07 Asia/Taipei** — `node scripts/run-vitest.mjs test/helpers/link-domain-fakes extensions/linkbrain extensions/linkskills` → **20/144 pass** |
+| OpenGrep (harness + transports) | Local `scripts/run-opengrep.sh --error` → **0 findings** after harness + SSRF-guard fixes                                                                    |
 
-Do not treat local 20/144 as substitute for hosted CI on the PR head.
+Do not treat local 20/144 as substitute for hosted CI on the PR head. Record CI run URL + exact `headSha` in the Codex handoff only when `openclaw/ci-gate` is **SUCCESS** at that SHA.
 
 ### Historical (superseded as tip claim)
 
@@ -199,16 +205,21 @@ Source: `FIXTURE-OWNER-SIGNOFF.md` (exact hashes above). Signature fields blank 
 
 ### Blockers (external / ownership — still open)
 
-1. Brain owner fixture countersign (`AWAITING_OWNER_COUNTERSIGN`)
-2. Skills owner fixture countersign (`AWAITING_OWNER_COUNTERSIGN`)
-3. Brain §9.1 MCP implementation (OpenClaw will not alias)
-4. Platform auth mechanism + claim propagation approval
-5. Platform stage readiness evidence (Phase 7)
-6. Skills Cursor + Codex readiness + certified profiles
-7. Principal Brain production retention / hold approval
-8. Production credentials + authorized operator for Lisa-profile mutation
-9. Live Librarian / Brain Gateway for scratch finding submission
-10. Hosted exact-head CI via PR to `development` (Crabbox local unavailable)
+1. Brain owner fixture countersign (`AWAITING_OWNER_COUNTERSIGN`) — Slack/repo search found **no** live signature of aggregate `d539debc…45fb`
+2. Skills owner fixture countersign (`AWAITING_OWNER_COUNTERSIGN`) — **no** live signature of aggregate `8586d89a…ec96`
+3. Platform auth mechanism + claim propagation approval (for live MCP wiring)
+4. Platform stage readiness evidence (Phase 7)
+5. Skills Cursor + Codex readiness + certified profiles (immutable-release path corrected; re-verify still pending)
+6. Principal Brain production retention / hold approval
+7. Production credentials + authorized operator for Lisa-profile mutation
+8. Live Librarian / Brain Gateway for scratch finding submission
+9. Hosted exact-head CI: require **`openclaw/ci-gate` SUCCESS** at exact PR #38 tip (local Crabbox unavailable)
+
+### Cleared relative to earlier provisional (code evidence only — not Phase 1 exit)
+
+- Corrected Brain HEAD `a3cff6e…` implements frozen §9.1 **17** tools via `frozen-tools.ts` (OpenClaw still will not alias).
+- Wave-2b pins Platform/Brain/Skills to latest corrected sibling HEADs; stale pre-correction heads scrubbed.
+- `platform.auth-claims/1.0.0` pinned (schema `b0397cdf…50fb` / contentHash `6bf49618…b251`).
 
 ### Omissions / unproven claims (explicit)
 
@@ -320,9 +331,24 @@ That verifier must:
 
 Also requested:
 
-- Open a **PR from `issue/ocp-openclawdevelopmentplan01` to `development`** for exact-head CI (local Crabbox unavailable).
-- Route `FIXTURE-OWNER-SIGNOFF.md` + `BRAIN-TOOL-NAME-DECISION-PACKET.md` to Brain/Skills owners when ready.
+- Keep **PR #38** open until `openclaw/ci-gate` is green at the exact tip; do not merge from this packet.
+- Route `COUNTERSIGN-REQUEST.md` / `FIXTURE-OWNER-SIGNOFF.md` + `BRAIN-TOOL-NAME-DECISION-PACKET.md` to Brain/Skills owners for **exact** fixture aggregates above.
 
 ---
 
-_End of CORRECTED Phase 13 provisional Grok handoff (2026-07-28)._
+## 16. Correction wave 2 / 2b changelog (2026-07-28)
+
+| Item                        | Result                                                                                                                                       |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| Repin Platform/Brain/Skills | `e845ac17…` / `a3cff6e0…` / `f16103f2…` (`correction_wave: wave-2b-2026-07-28`)                                                              |
+| AuthClaims pin              | schema `b0397cdf…50fb` + contentHash `6bf49618…b251`                                                                                         |
+| Brain fixtures              | 17 frozen tools; aggregates unchanged `d539debc…45fb`                                                                                        |
+| Skills fixtures             | immutable-release + AuthClaims; aggregates unchanged `8586d89a…ec96`                                                                         |
+| Owner countersign           | **Still `AWAITING_OWNER_COUNTERSIGN`** — not obtained in-session                                                                             |
+| CI repairs                  | typed-hook/runtime-API allowlists; SecretRef matrix; deps/types/lint; OpenGrep harness; SSRF-guard HTTP transports; `docs/docs_map.md` regen |
+| Local matrix                | **144/144** re-verified 2026-07-28 10:07 Asia/Taipei                                                                                         |
+| Lisa / Phases 7–12          | Untouched / not started; plugins remain default-disabled                                                                                     |
+
+---
+
+_End of CORRECTED Phase 13 provisional Grok handoff (wave 2b, 2026-07-28)._
