@@ -220,6 +220,18 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H3: 2026-07-23 16:05 Asia/Taipei — Re-read Codex primary Orchestrator state
   - H2: Next Action
 
+## agent-sessions/active/cursor-local-mac-mini-lisa-brain-fixture-denial-fix-20260728.md
+
+- Route: /agent-sessions/active/cursor-local-mac-mini-lisa-brain-fixture-denial-fix-20260728
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
 ## agent-sessions/completed/README.md
 
 - Route: /agent-sessions/completed/README
@@ -3628,8 +3640,9 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Purpose
   - H2: Aggregate hashes (sorted JSON inventory method)
   - H2: Related contract pins (correction wave 2b)
+  - H2: Brain denial → correction summary
   - H2: Sign-off process (exact)
-  - H2: Sibling-repo approval search (2026-07-28; refreshed wave 2b)
+  - H2: Sibling-repo approval search (2026-07-28; refreshed after Brain denial)
   - H2: Countersignature — LiNKbrain owner
   - H2: Countersignature — LiNKskills owner
 
@@ -5527,6 +5540,30 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Confidence
   - H2: Amendments
 
+## handoffs/2026-07-28-openclawdevelopmentplan01-brain-fixture-denial-fix.md
+
+- Route: /handoffs/2026-07-28-openclawdevelopmentplan01-brain-fixture-denial-fix
+- Headings:
+  - H1: Agent Session Handoff — Brain fixture denial corrections → PR #38
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
 ## handoffs/2026-07-28-openclawdevelopmentplan01-corrected-phase13.md
 
 - Route: /handoffs/2026-07-28-openclawdevelopmentplan01-corrected-phase13
@@ -5570,6 +5607,7 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Questions for the Orchestrator
   - H2: Confidence
   - H2: Amendments
+  - H3: 2026-07-28 — Brain fixture denial corrections (not a new implementation wave)
 
 ## handoffs/2026-07-28-phase6-complete-mandatory-matrix.md
 
