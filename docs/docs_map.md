@@ -220,18 +220,6 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H3: 2026-07-23 16:05 Asia/Taipei — Re-read Codex primary Orchestrator state
   - H2: Next Action
 
-## agent-sessions/active/cursor-local-mac-mini-lisa-brain-fixture-denial-fix-20260728.md
-
-- Route: /agent-sessions/active/cursor-local-mac-mini-lisa-brain-fixture-denial-fix-20260728
-- Headings:
-  - H1: Agent Session Record
-  - H2: Identity
-  - H2: Work
-  - H2: Ownership Scope
-  - H2: Coordination
-  - H2: Progress
-  - H2: Next Action
-
 ## agent-sessions/completed/README.md
 
 - Route: /agent-sessions/completed/README
@@ -433,6 +421,18 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
 ## agent-sessions/completed/cursor-local-mac-mini-feature-phase6-integrated-qa-20260727-1911.md
 
 - Route: /agent-sessions/completed/cursor-local-mac-mini-feature-phase6-integrated-qa-20260727-1911
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-mac-mini-lisa-brain-fixture-denial-fix-20260728.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-lisa-brain-fixture-denial-fix-20260728
 - Headings:
   - H1: Agent Session Record
   - H2: Identity
