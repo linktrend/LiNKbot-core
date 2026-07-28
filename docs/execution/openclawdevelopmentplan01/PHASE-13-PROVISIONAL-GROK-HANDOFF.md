@@ -39,7 +39,8 @@
 | Sibling worktree (untouched)             | `openclaw_prime-development-final-20260727` on `development` @ `02659b9ac81`                          |
 | Base (`origin/development`)              | `02659b9ac819c126432ae5e4c0b379a7f8ff1bee`                                                            |
 | HEAD at corrected handoff authoring base | `6f6887c31cee9e2ca0f84389c915f7480b4cfa50`                                                            |
-| Corrected handoff commit                 | `d8b75a5b3a3045698a6a8712c5f33e80b60ef9a8`                                                            |
+| Corrected handoff commit                 | `811ec5755036bbfa324ce72404a17b4c4443c683`                                                            |
+| Current HEAD (branch tip)                | run `git rev-parse HEAD` on this branch after pull                                                    |
 | Primary session (closed)                 | `docs/agent-sessions/completed/cursor-local-mac-mini-lisa-openclawdevelopmentplan01-20260727-1648.md` |
 | Related Phase 2 session (closed)         | `docs/agent-sessions/completed/cursor-local-mac-mini-feature-linkbrain-phase2-20260727-1854.md`       |
 | Orchestrator key                         | `cursor-local-mac-mini-desktop-workspace-orchestrator`                                                |
