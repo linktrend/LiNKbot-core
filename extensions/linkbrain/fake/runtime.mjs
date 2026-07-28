@@ -8,7 +8,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-export const BRAIN_CONTRACT_VERSION = "brain.contract.v0.draft";
+export const BRAIN_CONTRACT_VERSION = "1.0.0";
 
 export const BRAIN_TOOL_NAMES = Object.freeze([
   "brain_browse",
@@ -76,8 +76,26 @@ const AUTH_TOKEN_OUTCOMES = Object.freeze({
   "fake-valid-token": "ok",
   "fake-expired-token": "expired",
   "fake-revoked-token": "revoked",
+  "fake-rotated-token": "revoked",
   "fake-wrong-audience-token": "wrong_audience",
-  "fake-wrong-scope-token": "wrong_scope",
+  "fake-wrong-scope-token": "wrong_service",
+});
+
+/** Brain Gateway BrainErrorCode failure fixture names. */
+const BRAIN_FAILURE_FIXTURES = Object.freeze({
+  unauthorized: "unauthorized",
+  forbidden: "unauthorized",
+  not_found: "unauthorized",
+  validation_error: "validation_error",
+  conflict: "validation_error",
+  payload_too_large: "validation_error",
+  rate_limited: "rate_limited",
+  internal_error: "internal_error",
+  // Legacy forceFailure aliases accepted by tests during taxonomy migration.
+  authentication: "unauthorized",
+  terminal: "validation_error",
+  retryable: "internal_error",
+  throttled: "rate_limited",
 });
 
 const moduleDir = path.dirname(fileURLToPath(import.meta.url));
@@ -140,18 +158,22 @@ export function validateBrainPayload(payload) {
   if (prohibited.length > 0) {
     return {
       ok: false,
-      code: "prohibited_field",
+      code: "validation_error",
       fields: prohibited,
+      message: "Payload contains prohibited Brain capture/write fields.",
       safeMessage: "Payload contains prohibited Brain capture/write fields.",
+      details: { reason: "prohibited_field", fields: prohibited },
     };
   }
   const crossDomain = SKILLS_SHAPED_FIELDS.filter((field) => keys.has(field));
   if (crossDomain.length > 0) {
     return {
       ok: false,
-      code: "cross_domain_field",
+      code: "validation_error",
       fields: crossDomain,
+      message: "Payload contains Skills-shaped fields rejected by Brain fake.",
       safeMessage: "Payload contains Skills-shaped fields rejected by Brain fake.",
+      details: { reason: "cross_domain_field", fields: crossDomain },
     };
   }
   return { ok: true };
@@ -183,7 +205,8 @@ export function createBrainFake(options = {}) {
   let forceFailure = options.forceFailure ?? null;
 
   function failureFixture(name) {
-    return readJson(path.join(fixturesDir, "failures", `${name}.json`));
+    const mapped = BRAIN_FAILURE_FIXTURES[name] ?? name;
+    return readJson(path.join(fixturesDir, "failures", `${mapped}.json`));
   }
 
   function authOutcome(token) {
@@ -203,18 +226,35 @@ export function createBrainFake(options = {}) {
     };
   }
 
+  function normalizeError(error) {
+    const code = typeof error?.code === "string" ? error.code : "internal_error";
+    const message =
+      typeof error?.message === "string"
+        ? error.message
+        : typeof error?.safeMessage === "string"
+          ? error.safeMessage
+          : "Brain Gateway error";
+    const safeMessage = typeof error?.safeMessage === "string" ? error.safeMessage : message;
+    return {
+      code,
+      message,
+      safeMessage,
+      retryable: Boolean(error?.retryable),
+      ...(error?.details && typeof error.details === "object" ? { details: error.details } : {}),
+      ...(typeof error?.retryAfterMs === "number" ? { retryAfterMs: error.retryAfterMs } : {}),
+      ...(Array.isArray(error?.fields) ? { fields: error.fields } : {}),
+      ...(typeof error?.detail === "string" ? { detail: error.detail } : {}),
+    };
+  }
+
   function errorResult(error, requestId) {
+    const normalized = normalizeError(error);
     return {
       ok: false,
       ...envelope({
         requestId,
-        error,
-        result: null,
         warnings: [],
-        retryability: {
-          retryable: Boolean(error.retryable),
-          retryAfterMs: error.retryAfterMs ?? null,
-        },
+        error: normalized,
       }),
     };
   }
@@ -245,8 +285,9 @@ export function createBrainFake(options = {}) {
       return errorResult(
         {
           code: "not_found",
-          retryable: false,
+          message: `Unknown Brain tool: ${toolName}`,
           safeMessage: `Unknown Brain tool: ${toolName}`,
+          retryable: false,
         },
         requestId,
       );
@@ -254,20 +295,27 @@ export function createBrainFake(options = {}) {
 
     const outcome = authOutcome(token);
     if (outcome !== "ok") {
-      const authError = failureFixture("authentication");
+      const authError = failureFixture("unauthorized");
       authError.detail = outcome === "missing" ? "missing" : outcome;
+      authError.details = { reason: outcome === "missing" ? "missing" : outcome };
       return errorResult(authError, requestId);
     }
 
-    if (forceFailure === "retryable") {
-      return errorResult(failureFixture("retryable"), requestId);
+    if (forceFailure === "internal_error" || forceFailure === "retryable") {
+      return errorResult(failureFixture("internal_error"), requestId);
     }
-    if (forceFailure === "terminal") {
-      return errorResult(failureFixture("terminal"), requestId);
+    if (forceFailure === "validation_error" || forceFailure === "terminal") {
+      return errorResult(failureFixture("validation_error"), requestId);
+    }
+    if (forceFailure === "rate_limited" || forceFailure === "throttled") {
+      return errorResult(failureFixture("rate_limited"), requestId);
+    }
+    if (forceFailure === "unauthorized" || forceFailure === "authentication") {
+      return errorResult(failureFixture("unauthorized"), requestId);
     }
     if (throttleRemaining !== null) {
       if (throttleRemaining <= 0) {
-        return errorResult(failureFixture("throttled"), requestId);
+        return errorResult(failureFixture("rate_limited"), requestId);
       }
       throttleRemaining -= 1;
     }
@@ -282,9 +330,11 @@ export function createBrainFake(options = {}) {
       return errorResult(
         {
           code: validation.code,
-          retryable: false,
+          message: validation.message ?? validation.safeMessage,
           safeMessage: validation.safeMessage,
+          retryable: false,
           fields: validation.fields,
+          details: validation.details,
         },
         requestId,
       );
@@ -296,9 +346,10 @@ export function createBrainFake(options = {}) {
       if (!idempotencyKey) {
         return errorResult(
           {
-            code: "terminal",
-            retryable: false,
+            code: "validation_error",
+            message: "Brain writes require an idempotencyKey.",
             safeMessage: "Brain writes require an idempotencyKey.",
+            retryable: false,
           },
           requestId,
         );
@@ -308,9 +359,10 @@ export function createBrainFake(options = {}) {
         if (prior.tool !== toolName) {
           return errorResult(
             {
-              code: "terminal",
-              retryable: false,
+              code: "conflict",
+              message: "Idempotency key reused for a different Brain tool.",
               safeMessage: "Idempotency key reused for a different Brain tool.",
+              retryable: false,
             },
             requestId,
           );

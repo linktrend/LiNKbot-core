@@ -4,7 +4,7 @@
   "arguments": {
     "idempotencyKey": "msg:test:001",
     "taskId": "task_test_001",
-    "toActorId": "actor_test_peer",
+    "toActorBindingId": "binding_test_peer",
     "body": "Structured coordination note."
   }
 }

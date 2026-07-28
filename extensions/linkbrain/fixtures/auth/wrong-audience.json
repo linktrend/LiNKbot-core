@@ -2,7 +2,9 @@
   "description": "Sanitized auth outcome fixture: wrong-audience AuthClaims (platform.auth-claims/1.0.0).",
   "platformContract": "platform.auth-claims/1.0.0",
   "expect": "reject",
-  "reasons": ["wrong_audience"],
+  "reasons": [
+    "wrong_audience"
+  ],
   "expectedOutcome": "wrong_audience",
   "claims": {
     "claimContractVersion": "platform.auth-claims/1.0.0",
@@ -12,12 +14,18 @@
     "credentialId": "cred-1",
     "orgId": "org-internal",
     "internal": true,
-    "serviceScopes": ["lbrain"],
-    "permittedOperations": ["read"],
+    "serviceScopes": [
+      "lbrain"
+    ],
+    "permittedOperations": [
+      "read"
+    ],
     "issuedAt": "2026-07-27T00:00:00.000Z",
     "expiresAt": "2026-07-27T12:00:00.000Z",
     "issuer": "linkplatform-issuer",
-    "audience": ["lskills-api"],
+    "audience": [
+      "lskills-api"
+    ],
     "correlationId": "corr-brain-wrong-audience"
   },
   "context": {
@@ -30,8 +38,9 @@
     "bindingState": "active"
   },
   "error": {
-    "code": "authentication",
+    "code": "unauthorized",
     "retryable": false,
-    "safeMessage": "Credential wrong audience."
+    "safeMessage": "Credential wrong audience.",
+    "message": "Credential wrong audience."
   }
 }

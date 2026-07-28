@@ -131,9 +131,10 @@ async function runHttp(fake) {
     } catch (error) {
       sendJson(res, 500, {
         error: {
-          code: "terminal",
-          retryable: false,
-          safeMessage: "Brain fake request failed.",
+          code: "internal_error",
+          message: "Brain fake request failed.",
+          safeMessage: "The Gateway could not complete this request.",
+          retryable: true,
           detail: error instanceof Error ? error.message : "unknown",
         },
       });

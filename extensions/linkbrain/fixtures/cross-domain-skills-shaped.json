@@ -8,5 +8,6 @@
       "event": "skills_run_start"
     }
   },
-  "expectedRejection": "cross_domain_field"
+  "expectedRejection": "validation_error",
+  "expectedRejectionDetail": "cross_domain_field"
 }

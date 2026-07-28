@@ -52,15 +52,58 @@ describe("linkbrain Phase 1 fixtures", () => {
     expect(negative.expectedOutcome).toBe("authentication_failed");
     expect(negative.claims.claimContractVersion).toBe("platform.auth-claims/1.0.0");
 
-    for (const name of ["expired", "revoked", "wrong-audience", "wrong-scope"] as const) {
+    for (const name of [
+      "expired",
+      "revoked",
+      "rotated",
+      "wrong-audience",
+      "wrong-scope",
+    ] as const) {
       const auth = readFixture("auth", `${name}.json`);
       expect(auth.platformContract).toBe("platform.auth-claims/1.0.0");
       expect(auth.claims.claimContractVersion).toBe("platform.auth-claims/1.0.0");
       expect(auth.expectedOutcome).toBeTruthy();
+      expect(auth.error.code).toBe("unauthorized");
+      expect(auth.error.message).toBeTruthy();
+      expect(auth.error.safeMessage).toBeTruthy();
+      expect(typeof auth.error.retryable).toBe("boolean");
     }
+
+    const wrongScope = readFixture("auth", "wrong-scope.json");
+    expect(wrongScope.expectedOutcome).toBe("wrong_service");
+    expect(wrongScope.reasons).toEqual(["wrong_service"]);
+
+    const rotated = readFixture("auth", "rotated.json");
+    expect(rotated.reasons).toEqual(["revoked"]);
+    expect(rotated.context.credentialStatus).toBe("rotated");
+    expect(rotated.expectedOutcome).toBe("revoked");
 
     const tools = await getBrainToolNames();
     expect([...tools]).toEqual([...PLAN_TOOLS]);
+
+    const episode = readFixture("tools", "private", "brain_episode_checkpoint.request.json");
+    expect(episode.arguments).toMatchObject({
+      sessionId: expect.any(String),
+      title: expect.any(String),
+      summary: expect.any(String),
+    });
+    expect(episode.arguments).not.toHaveProperty("episodeId");
+
+    const privateLoad = readFixture("tools", "private", "brain_private_load.request.json");
+    expect(privateLoad.arguments).toHaveProperty("id");
+    expect(privateLoad.arguments).not.toHaveProperty("itemId");
+
+    const handoff = readFixture("tools", "coordination", "brain_handoff_accept.request.json");
+    expect(handoff.arguments.decision).toMatch(/^(accepted|rejected)$/);
+    expect(handoff.arguments).not.toHaveProperty("accept");
+
+    const message = readFixture("tools", "coordination", "brain_message_send.request.json");
+    expect(message.arguments).toHaveProperty("toActorBindingId");
+    expect(message.arguments).not.toHaveProperty("toActorId");
+
+    const taskClose = readFixture("tools", "coordination", "brain_task_close.request.json");
+    expect(taskClose.arguments).toHaveProperty("summary");
+    expect(taskClose.arguments).not.toHaveProperty("completionSummary");
 
     for (const tool of PLAN_TOOLS) {
       const family =
@@ -79,13 +122,22 @@ describe("linkbrain Phase 1 fixtures", () => {
       const response = readFixture("tools", family, `${tool}.response.json`);
       const error = readFixture("tools", family, `${tool}.error.json`);
       expect(request.tool).toBe(tool);
-      expect(response.contractVersion).toBe("brain.contract.v0.draft");
+      expect(response.contractVersion).toBe("1.0.0");
+      expect(error.contractVersion).toBe("1.0.0");
       expect(error.error.code).toBeTruthy();
+      expect(error.error.message).toBeTruthy();
+      expect(error.error.safeMessage).toBeTruthy();
+      expect(typeof error.error.retryable).toBe("boolean");
     }
 
     expect(readFixture("health", "health-ok.json").status).toBe("ok");
+    expect(readFixture("health", "health-ok.json").contractVersion).toBe("1.0.0");
     expect(readFixture("health", "version-negotiate.json").compatible).toBe(true);
-    expect(readFixture("failures", "retryable.json").retryable).toBe(true);
+    expect(readFixture("health", "version-negotiate.json").selected).toBe("1.0.0");
+    expect(readFixture("failures", "internal_error.json").retryable).toBe(true);
+    expect(readFixture("failures", "unauthorized.json").code).toBe("unauthorized");
+    expect(readFixture("failures", "rate_limited.json").code).toBe("rate_limited");
+    expect(readFixture("failures", "validation_error.json").code).toBe("validation_error");
     expect(readFixture("replay", "duplicate-idempotency.json").expected.secondReplayed).toBe(true);
   });
 });
@@ -98,15 +150,15 @@ describe("linkbrain Phase 1 fake runtime", () => {
 
     expect(await validateBrainPayload({ batch: reasoning.batch })).toMatchObject({
       ok: false,
-      code: "prohibited_field",
+      code: "validation_error",
     });
     expect(await validateBrainPayload({ batch: secrets.batch })).toMatchObject({
       ok: false,
-      code: "prohibited_field",
+      code: "validation_error",
     });
     expect(await validateBrainPayload({ batch: unbounded.batch })).toMatchObject({
       ok: false,
-      code: "prohibited_field",
+      code: "validation_error",
     });
 
     const fake = await createBrainFake({ fixturesDir });
@@ -119,7 +171,9 @@ describe("linkbrain Phase 1 fake runtime", () => {
       { authToken: "fake-valid-token" },
     );
     expect(rejected.ok).toBe(false);
-    expect(rejected.error?.code).toBe("prohibited_field");
+    expect(rejected.error?.code).toBe("validation_error");
+    expect(rejected.error?.message).toBeTruthy();
+    expect(rejected.error?.safeMessage).toBeTruthy();
   });
 
   it("rejects Skills-shaped cross-domain fields on Brain fake", async () => {
@@ -127,7 +181,7 @@ describe("linkbrain Phase 1 fake runtime", () => {
     const validation = await validateBrainPayload(cross.payload);
     expect(validation).toMatchObject({
       ok: false,
-      code: "cross_domain_field",
+      code: "validation_error",
     });
 
     const fake = await createBrainFake({ fixturesDir });
@@ -141,7 +195,7 @@ describe("linkbrain Phase 1 fake runtime", () => {
       { authToken: "fake-valid-token" },
     );
     expect(rejected.ok).toBe(false);
-    expect(rejected.error?.code).toBe("cross_domain_field");
+    expect(rejected.error?.code).toBe("validation_error");
   });
 
   it("returns replay-safe ack for duplicate idempotency keys", async () => {
@@ -170,8 +224,9 @@ describe("linkbrain Phase 1 fake runtime", () => {
     const cases = [
       ["fake-expired-token", "expired"],
       ["fake-revoked-token", "revoked"],
+      ["fake-rotated-token", "revoked"],
       ["fake-wrong-audience-token", "wrong_audience"],
-      ["fake-wrong-scope-token", "wrong_scope"],
+      ["fake-wrong-scope-token", "wrong_service"],
     ] as const;
     for (const [token, detail] of cases) {
       const outcome = fake.callTool(
@@ -180,8 +235,11 @@ describe("linkbrain Phase 1 fake runtime", () => {
         { authToken: token },
       );
       expect(outcome.ok).toBe(false);
-      expect(outcome.error?.code).toBe("authentication");
+      expect(outcome.error?.code).toBe("unauthorized");
       expect(outcome.error?.detail).toBe(detail);
+      expect(outcome.error?.message).toBeTruthy();
+      expect(outcome.error?.safeMessage).toBeTruthy();
+      expect(outcome.contractVersion).toBe("1.0.0");
     }
     const ok = fake.callTool(
       "brain_browse",
@@ -189,12 +247,13 @@ describe("linkbrain Phase 1 fake runtime", () => {
       { authToken: "fake-valid-token" },
     );
     expect(ok.ok).toBe(true);
+    expect(ok.contractVersion).toBe("1.0.0");
   });
 
   it("serves health and version negotiation over MCP initialize", async () => {
     const fake = await createBrainFake({ fixturesDir });
     expect(fake.health().status).toBe("ok");
-    expect(fake.negotiateVersion("brain.contract.v0.draft").compatible).toBe(true);
+    expect(fake.negotiateVersion("1.0.0").compatible).toBe(true);
     expect(fake.negotiateVersion("brain.contract.v999").compatible).toBe(false);
 
     const listed = await handleBrainMcpMessage(fake, {
@@ -222,12 +281,12 @@ describe("linkbrain Phase 1 fake HTTP isolation", () => {
 
     const health = await fetch(`${server.baseUrl}/health`);
     expect(health.status).toBe(200);
-    expect(await health.json()).toMatchObject({ status: "ok" });
+    expect(await health.json()).toMatchObject({ status: "ok", contractVersion: "1.0.0" });
 
     const version = await fetch(`${server.baseUrl}/version`, {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ requested: "brain.contract.v0.draft" }),
+      body: JSON.stringify({ requested: "1.0.0" }),
     });
     expect(version.status).toBe(200);
     expect(await version.json()).toMatchObject({ compatible: true });
@@ -246,6 +305,7 @@ describe("linkbrain Phase 1 fake HTTP isolation", () => {
     expect(call.status).toBe(200);
     const body = await call.json();
     expect(body.ok).toBe(true);
+    expect(body.contractVersion).toBe("1.0.0");
     expect(body.result.items).toEqual([]);
   });
 });

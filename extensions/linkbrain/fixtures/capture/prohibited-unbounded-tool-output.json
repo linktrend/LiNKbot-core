@@ -16,9 +16,10 @@
       }
     ]
   },
-  "expectedRejection": "prohibited_field",
+  "expectedRejection": "validation_error",
   "prohibitedFields": [
     "rawToolOutput",
     "unboundedToolOutput"
-  ]
+  ],
+  "expectedRejectionDetail": "prohibited_field"
 }

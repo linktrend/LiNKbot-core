@@ -1,7 +1,7 @@
 # Phase 1 — Auth Compatibility Matrix (stub)
 
-**Recorded:** 2026-07-27 18:53 Asia/Taipei  
-**Branch:** `issue/ocp-openclawdevelopmentplan01`  
+**Recorded:** 2026-07-27 18:53 Asia/Taipei
+**Branch:** `issue/ocp-openclawdevelopmentplan01`
 **Evidence tier:** fake / local only — not Platform live proof
 
 ## Preferred consumption path (OpenClaw recommendation)
@@ -19,11 +19,13 @@ Until Platform issues credentials and signs the path:
 | Valid scoped token | identity positive + tool success | Proceed; no secret logging                                        |
 | Expired            | `auth/expired`                   | Degrade domain; retry after refresh path if Platform provides one |
 | Revoked            | `auth/revoked`                   | Terminal for that credential; mark domain unhealthy               |
+| Rotated            | `auth/rotated`                   | Reject as revoked (`reasons: ["revoked"]`, `credentialStatus: "rotated"`) |
 | Wrong audience     | `auth/wrong-audience`            | Terminal auth failure; do not fallback to other domain creds      |
-| Wrong scope        | `auth/wrong-scope`               | Deny operation; keep other domain unaffected                      |
-| Throttled          | `failures/throttled`             | Bounded backoff using server retry hints                          |
-| Retryable          | `failures/retryable`             | Outbox retain + backoff                                           |
-| Terminal           | `failures/terminal`              | Dead-letter with redacted metadata                                |
+| Wrong service      | `auth/wrong-scope` (`expectedOutcome: wrong_service`) | Deny operation; keep other domain unaffected         |
+| Unauthorized       | `failures/unauthorized`          | Auth rejection mapped from Brain `unauthorized`                   |
+| Rate limited       | `failures/rate_limited`          | Bounded backoff using server retry hints                          |
+| Internal / retryable | `failures/internal_error`      | Outbox retain + backoff (`retryable: true`)                       |
+| Validation / terminal | `failures/validation_error`   | Dead-letter with redacted metadata                                |
 
 ## Platform approval status
 

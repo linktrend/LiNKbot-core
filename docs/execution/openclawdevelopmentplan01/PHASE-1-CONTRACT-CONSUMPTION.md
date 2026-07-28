@@ -1,9 +1,9 @@
 # Phase 1 — Contract consumption record
 
-**Session:** `cursor-cloud-feature-openclawdevelopmentplan01-correction-wave2b-20260728-0952`  
-**Branch:** `issue/ocp-openclawdevelopmentplan01`  
-**Recorded:** 2026-07-28 09:52 Asia/Taipei (correction wave 2b)  
-**Agent:** Cursor Cloud Agent (Grok 4.5 High), Feature role  
+**Session:** `cursor-cloud-feature-openclawdevelopmentplan01-correction-wave2b-20260728-0952`
+**Branch:** `issue/ocp-openclawdevelopmentplan01`
+**Recorded:** 2026-07-28 09:52 Asia/Taipei (correction wave 2b)
+**Agent:** Cursor Cloud Agent (Grok 4.5 High), Feature role
 **Authority:** Principal mission — consume hashed Platform/Brain/Skills contracts; do not edit upstream
 
 ## 1. OpenClaw plan pin
@@ -95,13 +95,14 @@ that root, sorted).
 
 | Package                          | JSON count | Aggregate SHA-256                                                  |
 | -------------------------------- | ---------- | ------------------------------------------------------------------ |
-| `extensions/linkbrain/fixtures`  | 71         | `d539debc7b9d7347c109e7d462fc27a48c28322f0d3d5b85d57f602e843d45fb` |
+| `extensions/linkbrain/fixtures`  | 72         | `275c1fb747cf1042516794a1fdd164b88b7450a02cef2a58440bcb221f449a1d` |
 | `extensions/linkskills/fixtures` | 69         | `8586d89a4a160987ace45ed4392b78c8a66391940e81eed6bdc098f49404ec96` |
 
-Owner countersignature process: `FIXTURE-OWNER-SIGNOFF.md`.  
-Principal routing: `COUNTERSIGN-REQUEST.md`.  
-Status: **`AWAITING_OWNER_COUNTERSIGN`** — **NOT a passed Phase 1 gate**.
+Prior denied Brain aggregate (superseded): `d539debc7b9d7347c109e7d462fc27a48c28322f0d3d5b85d57f602e843d45fb`
 
+Owner countersignature process: `FIXTURE-OWNER-SIGNOFF.md`.
+Principal routing: `COUNTERSIGN-REQUEST.md`.
+Status: Brain **`AWAITING_OWNER_COUNTERSIGN`** (re-request after denial corrections). Skills tree previously **`OWNER_COUNTERSIGNED`** at tip `0b19e43…` for unchanged `8586d89a…ec96`; **`AWAITING_TIP_REAFFIRMATION`** against post-correction tip. **NOT a passed Phase 1 gate.** OpenClaw does **not** self-certify Brain.
 ## 6. Consumption rules
 
 1. Consume only pinned HEADs + hashes above (or newer owner-signed supersession).

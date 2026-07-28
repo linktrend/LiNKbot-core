@@ -15,8 +15,9 @@
       }
     ]
   },
-  "expectedRejection": "prohibited_field",
+  "expectedRejection": "validation_error",
   "prohibitedFields": [
     "reasoning"
-  ]
+  ],
+  "expectedRejectionDetail": "prohibited_field"
 }

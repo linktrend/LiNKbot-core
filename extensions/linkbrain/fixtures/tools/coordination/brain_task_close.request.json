@@ -2,8 +2,8 @@
   "tool": "brain_task_close",
   "authToken": "fake-valid-token",
   "arguments": {
-    "idempotencyKey": "close:test:001",
+    "idempotencyKey": "tcl:test:001",
     "taskId": "task_test_001",
-    "completionSummary": "Closed after fixture proof."
+    "summary": "Closed after fixture proof."
   }
 }

@@ -158,7 +158,7 @@ describe("linkbrain outbox runtime", () => {
 
   it("dead-letters terminal Brain failures", async () => {
     const fake = createBrainFake();
-    fake.setForceFailure("terminal");
+    fake.setForceFailure("validation_error");
     const { stores } = createTestStores();
     const runtime = createLinkbrainRuntime({
       config: parseLinkbrainConfig({ captureEnqueue: true, captureDrain: true }),
@@ -179,7 +179,7 @@ describe("linkbrain outbox runtime", () => {
     expect(diagnostics.deadLetterCount).toBe(1);
     const dead = await stores.deadletter.entries();
     expect(dead[0]?.value).toMatchObject({
-      terminalCode: "terminal",
+      terminalCode: "validation_error",
       redactedMeta: { batchId: "batch_test_runtime" },
     });
     expect(dead[0]?.value).not.toHaveProperty("envelope");

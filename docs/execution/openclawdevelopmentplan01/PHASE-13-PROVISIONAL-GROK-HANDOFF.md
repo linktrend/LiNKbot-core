@@ -1,14 +1,14 @@
 # Phase 13 — CORRECTED Provisional OpenClaw Grok Execution-to-Verification Handoff
 
-**Document class:** Section 21.1 provisional Grok handoff (evidence index, not certification) — **CORRECTED for Codex Phase 14 re-verification**  
-**Recorded (original):** 2026-07-27 19:17 Asia/Taipei  
-**Corrected:** 2026-07-28 07:57 Asia/Taipei  
-**Correction wave 2 / 2b:** 2026-07-28 10:15 Asia/Taipei  
-**Author (correction):** Cursor Local / Cloud Grok 4.5 High integrator under OpenClaw plan package  
-**Plan:** `docs/OPENCLAW-PRIME-LISA-LINKBRAIN-LINKSKILLS-DETAILED-IMPLEMENTATION-PLAN.md`  
-**Plan SHA-256:** `17203ee586a3fb2b1281bcddd8b17ae350075ebce537689f3c4bfcbbd14914f7` (HASH_OK re-verified 2026-07-28)  
-**Authority:** `docs/CURSOR-GROK-EXECUTION-PROMPT.md` — OpenClaw-owned Phases 0–13 only  
-**PR:** [#38](https://github.com/linktrend/openclaw_prime/pull/38) → `development` (draft; do not merge from this handoff)  
+**Document class:** Section 21.1 provisional Grok handoff (evidence index, not certification) — **CORRECTED for Codex Phase 14 re-verification**
+**Recorded (original):** 2026-07-27 19:17 Asia/Taipei
+**Corrected:** 2026-07-28 07:57 Asia/Taipei
+**Correction wave 2 / 2b:** 2026-07-28 10:15 Asia/Taipei
+**Author (correction):** Cursor Local / Cloud Grok 4.5 High integrator under OpenClaw plan package
+**Plan:** `docs/OPENCLAW-PRIME-LISA-LINKBRAIN-LINKSKILLS-DETAILED-IMPLEMENTATION-PLAN.md`
+**Plan SHA-256:** `17203ee586a3fb2b1281bcddd8b17ae350075ebce537689f3c4bfcbbd14914f7` (HASH_OK re-verified 2026-07-28)
+**Authority:** `docs/CURSOR-GROK-EXECUTION-PROMPT.md` — OpenClaw-owned Phases 0–13 only
+**PR:** [#38](https://github.com/linktrend/openclaw_prime/pull/38) → `development` (draft; do not merge from this handoff)
 **Supersedes:** prior provisional text at the same path (2026-07-27) and short pointer claims of 13 files / 82 tests as the tip proof set
 
 > **Provisional.** This handoff does **not** assign the seven Section 13.3 conformance classifications. It does **not** perform Phase 14 or Phase 15. Independent OpenClaw Codex verification (Phase 14) must inspect actual code, tests, and evidence rather than accepting this summary. **Re-verify against this corrected packet**, not the superseded 2026-07-27 provisional alone. **Do not treat `AWAITING_OWNER_COUNTERSIGN` as a passed Phase 1 gate.**
@@ -23,7 +23,7 @@
 | 2   | Brain MCP tool names CURRENT vs frozen §9.1 unresolved                | **DECIDED:** OpenClaw keeps frozen §9.1; **will not** alias; Brain must implement §9.1                                         | `BRAIN-TOOL-NAME-DECISION-PACKET.md`                                                                           |
 | 3   | Hardcoded `not_configured` transport stubs                            | Configurable modes: `disabled` (default) / `fake` / `http` / `mcp`; `not_configured` removed                                   | `extensions/link{brain,skills}/src/transport.ts`; commit `e88ba95d0a2`                                         |
 | 4   | Phase 6 incomplete (coexistence-only; tip proof understated at 13/82) | Full mandatory matrix + perf; tip suite **20 files / 144 tests**; `SKIPPED_PLATFORM_LIVE` items named                          | `PHASE-6-STATUS.md`; `phase6-mandatory-matrix.test.ts`; `phase6-perf-baseline.test.ts`                         |
-| 5   | Fixture owner sign-off / aggregate hashes missing                     | Sign-off process with exact aggregates; status **`AWAITING_OWNER_COUNTERSIGN`** (Principal must route to Brain/Skills owners)  | `FIXTURE-OWNER-SIGNOFF.md`; `COUNTERSIGN-REQUEST.md`                                                           |
+| 5   | Fixture owner sign-off / aggregate hashes missing                     | Sign-off process with exact aggregates; Brain **`AWAITING_OWNER_COUNTERSIGN`** after denial corrections; Skills tip reaffirmation pending | `FIXTURE-OWNER-SIGNOFF.md`; `COUNTERSIGN-REQUEST.md`                                                           |
 | 6   | Crabbox/Testbox heavy proof unclear or overclaimable                  | Local `crabbox` binary **missing** / sanity failed; **trusted local fallback** used; **draft PR #38** opened for exact-head CI | PR <https://github.com/linktrend/openclaw_prime/pull/38> ; tip HEAD `048922582e5` (PR opened at `17508f539d7`) |
 | 7   | Ambiguity on live Lisa mutation and Phases 7–12                       | Confirmed: **no Lisa live mutation**; **Phases 7–12 not started** (blocked packets only)                                       | §3 / §7 / §9; `PHASE-{7..12}-STATUS-BLOCKED.md`                                                                |
 | 8   | Coverage index / provisional handoff stale for re-verification        | This **CORRECTED** handoff; coverage index **without** seven-value classifications; sessions closed                            | this file; `docs/handoffs/2026-07-28-openclawdevelopmentplan01-corrected-phase13.md`                           |
@@ -60,7 +60,7 @@ Evidence pointers are status packets and code paths. **No seven-value classifica
 | Phase                                                  | Claim for OpenClaw Grok ownership                                                                                                                                                                                                                                                        | Evidence pointers                                                                                                                        |
 | ------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
 | **0** — Approval, snapshot, ownership freeze           | **Complete** (OpenClaw freeze packet). Live/external gates remain recorded as blocked, not cleared.                                                                                                                                                                                      | `PHASE-0-FREEZE-PACKET.md`                                                                                                               |
-| **1** — Contract and fake freeze                       | **OpenClaw-owned deliverables complete** at fake/draft tier + **contract pins** + **fixture sign-off process**. **Blocked** for full Phase 1 exit: Brain/Skills owner countersign (`AWAITING_OWNER_COUNTERSIGN`); Platform auth-path approval.                                           | `PHASE-1-STATUS.md`; `PHASE-1-CONTRACT-CONSUMPTION.md`; `contracts/**`; `FIXTURE-OWNER-SIGNOFF.md`; `BRAIN-TOOL-NAME-DECISION-PACKET.md` |
+| **1** — Contract and fake freeze                       | **OpenClaw-owned deliverables complete** at fake/draft tier + **contract pins** + **fixture sign-off process**. Brain fixtures corrected after `COUNTERSIGN_DENIED`. **Blocked** for full Phase 1 exit: Brain re-countersign; Skills tip reaffirmation; Platform auth-path approval. | `PHASE-1-STATUS.md`; `PHASE-1-CONTRACT-CONSUMPTION.md`; `contracts/**`; `FIXTURE-OWNER-SIGNOFF.md`; `BRAIN-TOOL-NAME-DECISION-PACKET.md` |
 | **2** — Brain plugin skeleton                          | **Complete** at fake/local tier (default-disabled; no Lisa mutation).                                                                                                                                                                                                                    | `PHASE-2-STATUS.md`; `extensions/linkbrain/**`                                                                                           |
 | **3** — Brain lifecycle capture / coordination mapping | **Complete** at fake-backed tier.                                                                                                                                                                                                                                                        | `PHASE-3-STATUS.md`                                                                                                                      |
 | **4** — Skills plugin skeleton / structured telemetry  | **Complete** at fake/local tier (no conversation hooks; default-disabled).                                                                                                                                                                                                               | `PHASE-4-STATUS.md`; `extensions/linkskills/**`                                                                                          |
@@ -92,7 +92,7 @@ Full consumption record: `PHASE-1-CONTRACT-CONSUMPTION.md`.
 
 ## 3. Brain tool name decision
 
-**OpenClaw keeps frozen plan §9.1 names (17).** Corrected Brain HEAD `a3cff6e…` implements the same surface via `frozen-tools.ts`. OpenClaw will **not** alias. Fixture owner countersign remains **AWAITING_OWNER_COUNTERSIGN** — **not** a passed Phase 1 gate.
+**OpenClaw keeps frozen plan §9.1 names (17).** Corrected Brain HEAD `a3cff6e…` implements the same surface via `frozen-tools.ts`. OpenClaw will **not** alias. Brain fixture owner countersign remains **AWAITING_OWNER_COUNTERSIGN** after denial corrections — **not** a passed Phase 1 gate. Skills prior countersign covers unchanged bytes; tip reaffirmation still required.
 
 Packet: `BRAIN-TOOL-NAME-DECISION-PACKET.md` (correction wave 2b).
 
@@ -153,10 +153,10 @@ Prior Phase 13 closeout (2026-07-27): 13 files / 82 tests — retained as histor
 
 | Package                          | Aggregate SHA-256                                                  | Status                                              |
 | -------------------------------- | ------------------------------------------------------------------ | --------------------------------------------------- |
-| `extensions/linkbrain/fixtures`  | `d539debc7b9d7347c109e7d462fc27a48c28322f0d3d5b85d57f602e843d45fb` | **`AWAITING_OWNER_COUNTERSIGN`** (NOT Phase 1 pass) |
-| `extensions/linkskills/fixtures` | `8586d89a4a160987ace45ed4392b78c8a66391940e81eed6bdc098f49404ec96` | **`AWAITING_OWNER_COUNTERSIGN`** (NOT Phase 1 pass) |
+| `extensions/linkbrain/fixtures`  | `275c1fb747cf1042516794a1fdd164b88b7450a02cef2a58440bcb221f449a1d` | **`AWAITING_OWNER_COUNTERSIGN`** (re-request; prior denial of `d539debc…45fb`; NOT Phase 1 pass; OpenClaw does not self-certify) |
+| `extensions/linkskills/fixtures` | `8586d89a4a160987ace45ed4392b78c8a66391940e81eed6bdc098f49404ec96` | Prior **`OWNER_COUNTERSIGNED`** for unchanged tree at tip `0b19e43…`; **`AWAITING_TIP_REAFFIRMATION`** against post-correction tip |
 
-Source: `FIXTURE-OWNER-SIGNOFF.md` (exact hashes above). Signature fields blank until owners countersign. Draft fixtures remain non-authoritative for domain conformance.
+Source: `FIXTURE-OWNER-SIGNOFF.md` (exact hashes above). Brain signature fields blank until owner re-countersigns corrected aggregate. Skills prior countersign covers bytes; tip reaffirmation still required. Draft Brain fixtures remain non-authoritative for domain conformance.
 
 ---
 
@@ -206,8 +206,8 @@ Source: `FIXTURE-OWNER-SIGNOFF.md` (exact hashes above). Signature fields blank 
 
 ### Blockers (external / ownership — still open)
 
-1. Brain owner fixture countersign (`AWAITING_OWNER_COUNTERSIGN`) — Slack/repo search found **no** live signature of aggregate `d539debc…45fb`
-2. Skills owner fixture countersign (`AWAITING_OWNER_COUNTERSIGN`) — **no** live signature of aggregate `8586d89a…ec96`
+1. Brain owner fixture re-countersign (`AWAITING_OWNER_COUNTERSIGN`) — prior `COUNTERSIGN_DENIED` of `d539debc…45fb`; corrected aggregate `275c1fb7…9a1d`
+2. Skills owner tip reaffirmation — prior `OWNER_COUNTERSIGNED` of unchanged `8586d89a…ec96` at tip `0b19e43…`; reaffirm against new OpenClaw tip
 3. Platform auth mechanism + claim propagation approval (for live MCP wiring)
 4. Platform stage readiness evidence (Phase 7)
 5. Skills Cursor + Codex readiness + certified profiles (immutable-release path corrected; re-verify still pending)
@@ -282,7 +282,7 @@ Do **not** read seven-value §13.3 classifications into this table. Codex Phase 
 | -------------------------------------------- | ---------------------------------------------------------------------------- | --------------------------------------------------- |
 | Phase 0 freeze / hashes / ownership          | `PHASE-0-FREEZE-PACKET.md`                                                   | Re-verify plan hash                                 |
 | Phase 1 contract pins                        | `contracts/**`, `PHASE-1-CONTRACT-CONSUMPTION.md`                            | Deficiency #1                                       |
-| Phase 1 fixtures Brain/Skills                | `extensions/link{brain,skills}/fixtures/**`                                  | Draft; `AWAITING_OWNER_COUNTERSIGN`                 |
+| Phase 1 fixtures Brain/Skills                | `extensions/link{brain,skills}/fixtures/**`                                  | Brain corrected draft awaiting re-countersign; Skills tip reaffirmation |
 | Phase 1 fakes                                | `extensions/link{brain,skills}/fake/**`, `test/helpers/link-domain-fakes/**` | Fake tier                                           |
 | Brain tool names §9.1                        | `BRAIN-TOOL-NAME-DECISION-PACKET.md`, allowlists, fixtures                   | Deficiency #2; no OpenClaw alias                    |
 | Transport modes                              | `extensions/link{brain,skills}/src/transport.ts`                             | Deficiency #3; no `not_configured`                  |
@@ -343,9 +343,9 @@ Also requested:
 | --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
 | Repin Platform/Brain/Skills | `e845ac17…` / `a3cff6e0…` / `f16103f2…` (`correction_wave: wave-2b-2026-07-28`)                                                              |
 | AuthClaims pin              | schema `b0397cdf…50fb` + contentHash `6bf49618…b251`                                                                                         |
-| Brain fixtures              | 17 frozen tools; aggregates unchanged `d539debc…45fb`                                                                                        |
-| Skills fixtures             | immutable-release + AuthClaims; aggregates unchanged `8586d89a…ec96`                                                                         |
-| Owner countersign           | **Still `AWAITING_OWNER_COUNTERSIGN`** — not obtained in-session                                                                             |
+| Brain fixtures              | 17 frozen tools; corrected aggregate `275c1fb7…9a1d` (72 JSON) after denial; prior denied `d539debc…45fb`                               |
+| Skills fixtures             | immutable-release + AuthClaims; aggregate unchanged `8586d89a…ec96` (byte-preserved)                                                   |
+| Owner countersign           | Brain **`AWAITING_OWNER_COUNTERSIGN`** (do not self-certify); Skills prior sign + tip reaffirmation pending                            |
 | CI repairs                  | typed-hook/runtime-API allowlists; SecretRef matrix; deps/types/lint; OpenGrep harness; SSRF-guard HTTP transports; `docs/docs_map.md` regen |
 | Local matrix                | **144/144** re-verified 2026-07-28 10:07 Asia/Taipei                                                                                         |
 | Hosted CI                   | **`openclaw/ci-gate` SUCCESS** at `69bd01a4ddd` — <https://github.com/linktrend/openclaw_prime/actions/runs/30322576216>                     |

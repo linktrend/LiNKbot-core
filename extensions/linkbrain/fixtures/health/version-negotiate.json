@@ -1,8 +1,8 @@
 {
-  "requested": "brain.contract.v0.draft",
-  "selected": "brain.contract.v0.draft",
+  "requested": "1.0.0",
+  "selected": "1.0.0",
   "supported": [
-    "brain.contract.v0.draft"
+    "1.0.0"
   ],
   "compatible": true
 }

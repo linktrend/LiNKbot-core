@@ -1,46 +1,48 @@
 {
-  "description": "Sanitized auth outcome fixture: expired AuthClaims (platform.auth-claims/1.0.0).",
+  "description": "Sanitized auth outcome fixture: rotated credential rejected as revoked (platform.auth-claims/1.0.0).",
   "platformContract": "platform.auth-claims/1.0.0",
   "expect": "reject",
   "reasons": [
-    "expired"
+    "revoked"
   ],
-  "expectedOutcome": "expired",
+  "expectedOutcome": "revoked",
   "claims": {
     "claimContractVersion": "platform.auth-claims/1.0.0",
     "actorId": "actor-lisa",
     "actorKind": "persona",
     "runtimeBindingId": "bind-lisa-openclaw-1",
-    "credentialId": "cred-brain-expired",
+    "credentialId": "cred-7",
     "orgId": "org-internal",
     "internal": true,
     "serviceScopes": [
       "lbrain"
     ],
     "permittedOperations": [
-      "read"
+      "read",
+      "execute"
     ],
-    "issuedAt": "2026-01-01T00:00:00.000Z",
-    "expiresAt": "2026-01-01T12:00:00.000Z",
+    "issuedAt": "2026-07-27T00:00:00.000Z",
+    "expiresAt": "2026-07-27T12:00:00.000Z",
     "issuer": "linkplatform-issuer",
     "audience": [
       "lbrain-api"
     ],
-    "correlationId": "corr-brain-expired"
+    "correlationId": "corr-rotated"
   },
   "context": {
     "expectedOrgId": "org-internal",
     "expectedAudience": "lbrain-api",
     "requiredService": "lbrain",
+    "requiredOperation": "execute",
     "now": "2026-07-27T06:00:00.000Z",
-    "credentialStatus": "expired",
+    "credentialStatus": "rotated",
     "actorLifecycleState": "active",
     "bindingState": "active"
   },
   "error": {
     "code": "unauthorized",
-    "retryable": false,
-    "safeMessage": "Credential expired.",
-    "message": "Credential expired."
+    "message": "Credential rejected: rotated credential is treated as revoked.",
+    "safeMessage": "Credential revoked.",
+    "retryable": false
   }
 }

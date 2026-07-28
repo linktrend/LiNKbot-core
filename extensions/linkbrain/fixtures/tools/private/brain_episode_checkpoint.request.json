@@ -3,7 +3,8 @@
   "authToken": "fake-valid-token",
   "arguments": {
     "idempotencyKey": "ep:test:001",
-    "episodeId": "ep_test_001",
+    "sessionId": "session_test_001",
+    "title": "Episode checkpoint",
     "summary": "Episode checkpoint summary."
   }
 }

@@ -4,6 +4,6 @@
   "arguments": {
     "idempotencyKey": "hoa:test:001",
     "handoffId": "ho_test_001",
-    "accept": true
+    "decision": "accepted"
   }
 }

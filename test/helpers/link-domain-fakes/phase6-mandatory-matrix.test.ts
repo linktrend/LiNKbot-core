@@ -172,11 +172,21 @@ function brainTransportWithAuth(
       }
       const code = typeof outcome.error?.code === "string" ? outcome.error.code : "brain_error";
       const terminal =
+        code === "validation_error" ||
+        code === "unauthorized" ||
+        code === "forbidden" ||
+        code === "not_found" ||
+        code === "conflict" ||
+        code === "payload_too_large" ||
         code === "terminal" ||
         code === "authentication" ||
         code === "prohibited_field" ||
         code === "cross_domain_field";
-      const retryable = code === "retryable" || code === "throttled";
+      const retryable =
+        code === "internal_error" ||
+        code === "rate_limited" ||
+        code === "retryable" ||
+        code === "throttled";
       return {
         ok: false,
         terminal,

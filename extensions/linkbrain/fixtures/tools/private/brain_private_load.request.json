@@ -2,6 +2,6 @@
   "tool": "brain_private_load",
   "authToken": "fake-valid-token",
   "arguments": {
-    "itemId": "pm_test_001"
+    "id": "pm_test_001"
   }
 }

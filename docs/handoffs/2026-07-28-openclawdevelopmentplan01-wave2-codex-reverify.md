@@ -91,4 +91,10 @@ Refresh `docs/current-status.md` from this handoff (Orchestrator-only). No activ
 
 ## Amendments
 
-_(none yet)_
+### 2026-07-28 — Brain fixture denial corrections (not a new implementation wave)
+
+- Consumed LiNKbrain `COUNTERSIGN_DENIED` (`OPENCLAW-BRAIN-FIXTURE-COUNTERSIGN-2026-07-28.md`, commit `b28b1e59…`) against prior tip `0b19e43…` / denied aggregate `d539debc…45fb`.
+- Consumed LiNKskills `OWNER_COUNTERSIGNED` (`2026-07-28-linkskills-openclaw-fixtures-OWNER-COUNTERSIGNED.md`, commit `fe9f28ca…`) for Skills aggregate `8586d89a…ec96` (bytes preserved).
+- OpenClaw applied Brain fixture/fake/ErrorEnvelope/`1.0.0`/request-field/rotated-auth corrections. **New Brain aggregate:** `275c1fb747cf1042516794a1fdd164b88b7450a02cef2a58440bcb221f449a1d` (72 JSON). Skills aggregate **unchanged:** `8586d89a4a160987ace45ed4392b78c8a66391940e81eed6bdc098f49404ec96`.
+- Brain remains **not** `OWNER_COUNTERSIGNED` (OpenClaw does not self-certify). Skills prior countersign stands for unchanged tree; **tip reaffirmation** required against the post-correction OpenClaw tip.
+- Authoritative follow-up packet: `docs/handoffs/2026-07-28-openclawdevelopmentplan01-brain-fixture-denial-fix.md`. Re-verify Codex against the tip that contains that correction + green `openclaw/ci-gate`, not only tip `0b19e43…` / `69bd01a4ddd`.

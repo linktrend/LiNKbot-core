@@ -51,6 +51,6 @@ describe("extensions/linkbrain/fake colocated", () => {
         skillId: "skill_test_should_reject",
         telemetry: { event: "skills_run_start" },
       }),
-    ).toMatchObject({ ok: false, code: "cross_domain_field" });
+    ).toMatchObject({ ok: false, code: "validation_error" });
   });
 });
