@@ -104,4 +104,4 @@ Refresh `docs/current-status.md` from this handoff (Orchestrator-only). No activ
 - Consumed Skills reaffirmation: `LiNKskills/docs/handoffs/2026-07-28-linkskills-openclaw-fixtures-OWNER-COUNTERSIGNED-reaffirm.md` (commit `41ab5a3d31a79a662158d8fb434f76b707701b7a`) for same tip / aggregate `8586d89a…ec96`.
 - OpenClaw recomputed both aggregates at tip `429a7818…` — match confirmed. Updated `FIXTURE-OWNER-SIGNOFF.md`, Phase 1/13 packets, MANIFESTs.
 - **Phase 1 fixture-owner gate CLOSED.** Phase 1 overall still blocked on Platform auth-path. Provisional pending independent OpenClaw Codex Phase 14. Do not merge PR #38; do not claim Phases 7–12; do not mutate Lisa.
-- Re-verify Codex against the tip that contains this closeout + green `openclaw/ci-gate`.
+- Closeout evidence tip `e1ac7323be60…` green (`30330702257`); final packet tip `0a2e97fe64385faf0c16c2c07b1f5ca4b25787ee` green (`30333114926`). Re-verify Codex against that tip.

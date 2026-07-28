@@ -2,19 +2,19 @@
 
 ## Session Metadata
 
-| Field            | Value                                                                                                |
-| ---------------- | ---------------------------------------------------------------------------------------------------- |
-| Agent identity   | Cursor Local Agent / Grok 4.5 High — OpenClaw Lisa plan execution owner                              |
-| Session ID       | `cursor-local-mac-mini-lisa-fixture-owner-gate-closeout-20260728`                                    |
-| Orchestrator key | `cursor-local-mac-mini-desktop-workspace-orchestrator`                                               |
-| Objective        | Record Brain + Skills OWNER_COUNTERSIGNED attestations; close Phase 1 fixture-owner gate only        |
-| Scope            | Documentation/evidence closeout only; no Lisa mutation; no Phases 7–12; no merge; not Codex Phase 14 |
-| Started          | 2026-07-28 ~13:00 Asia/Taipei                                                                        |
-| Ended            | 2026-07-28 14:25 Asia/Taipei                                                                         |
-| Starting branch  | `issue/ocp-openclawdevelopmentplan01`                                                                |
-| Ending branch    | `issue/ocp-openclawdevelopmentplan01`                                                                |
-| Starting commit  | `429a7818e2f79be27329c1848531ffe9ba0f7367`                                                           |
-| Ending commit    | closeout `e1ac7323be60d68b79b2f7afe6cf64c9e5a88f7b`; this packet tip after docs_map repair push      |
+| Field            | Value                                                                                                               |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Agent identity   | Cursor Local Agent / Grok 4.5 High — OpenClaw Lisa plan execution owner                                             |
+| Session ID       | `cursor-local-mac-mini-lisa-fixture-owner-gate-closeout-20260728`                                                   |
+| Orchestrator key | `cursor-local-mac-mini-desktop-workspace-orchestrator`                                                              |
+| Objective        | Record Brain + Skills OWNER_COUNTERSIGNED attestations; close Phase 1 fixture-owner gate only                       |
+| Scope            | Documentation/evidence closeout only; no Lisa mutation; no Phases 7–12; no merge; not Codex Phase 14                |
+| Started          | 2026-07-28 ~13:00 Asia/Taipei                                                                                       |
+| Ended            | 2026-07-28 14:25 Asia/Taipei                                                                                        |
+| Starting branch  | `issue/ocp-openclawdevelopmentplan01`                                                                               |
+| Ending branch    | `issue/ocp-openclawdevelopmentplan01`                                                                               |
+| Starting commit  | `429a7818e2f79be27329c1848531ffe9ba0f7367`                                                                          |
+| Ending commit    | closeout evidence `e1ac7323be60d68b79b2f7afe6cf64c9e5a88f7b`; packet tip `0a2e97fe64385faf0c16c2c07b1f5ca4b25787ee` |
 
 ## Summary
 
@@ -56,9 +56,10 @@ Verified both owner handoffs against tip `429a7818…` and recomputed aggregates
 
 ## Hosted CI
 
-- Authoritative fixture-owner closeout tip: `e1ac7323be60d68b79b2f7afe6cf64c9e5a88f7b`
-- `openclaw/ci-gate` **SUCCESS** on closeout — <https://github.com/linktrend/openclaw_prime/actions/runs/30330702257>
-- Follow-up tip `a61a764f1476…` failed `check-docs` (stale `docs_map`); repaired in the tip that contains this note.
+- Owner-attested tip (Brain + Skills): `429a7818e2f79be27329c1848531ffe9ba0f7367`
+- Authoritative fixture-owner closeout tip: `e1ac7323be60d68b79b2f7afe6cf64c9e5a88f7b` — <https://github.com/linktrend/openclaw_prime/actions/runs/30330702257>
+- Final packet tip (docs_map repairs after handoff fill-in): `0a2e97fe64385faf0c16c2c07b1f5ca4b25787ee` — <https://github.com/linktrend/openclaw_prime/actions/runs/30333114926>
+- Fixture JSON aggregates unchanged after `429a7818…` (MANIFEST.md / docs only).
 
 ## Exact Next Action
 

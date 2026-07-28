@@ -44,7 +44,7 @@
 | Corrected handoff commit                 | `811ec5755036bbfa324ce72404a17b4c4443c683`                                                            |
 | Wave-2b pin commit                       | `4103bd6c1c208337f5dc37e169c9ec9a727bf835`                                                            |
 | SSRF transport commit                    | `d79e3356db527492f0ab8a0b1af7888469815f19`                                                            |
-| Hosted CI green tip (ci-gate SUCCESS)    | `69bd01a4ddd021160f7e4254b9ca50a0d9732fa4`                                                            |
+| Hosted CI green tip (ci-gate SUCCESS)    | `0a2e97fe64385faf0c16c2c07b1f5ca4b25787ee` (fixture-owner closeout packet)                            |
 | Current HEAD (branch tip)                | run `git rev-parse HEAD` after pull                                                                   |
 | Primary session (closed)                 | `docs/agent-sessions/completed/cursor-local-mac-mini-lisa-openclawdevelopmentplan01-20260727-1648.md` |
 | Related Phase 2 session (closed)         | `docs/agent-sessions/completed/cursor-local-mac-mini-feature-linkbrain-phase2-20260727-1854.md`       |
@@ -137,11 +137,11 @@ All other mandatory fake-tier scenarios 1–15 + coexistence A–G: **PASS** (se
 | Local `crabbox` binary          | **Missing** / failed sanity on this host (`crabbox not found`)                                                                                                                                                                                                 |
 | Testbox / Crabbox heavy suite   | **Not run**                                                                                                                                                                                                                                                    |
 | Proof used                      | **Trusted local fallback** — focused `node scripts/run-vitest.mjs …`                                                                                                                                                                                           |
-| Exact-head CI                   | **`openclaw/ci-gate` SUCCESS** at `69bd01a4ddd021160f7e4254b9ca50a0d9732fa4` — CI run <https://github.com/linktrend/openclaw_prime/actions/runs/30322576216> ; gate job <https://github.com/linktrend/openclaw_prime/actions/runs/30322576216/job/90163303523> |
+| Exact-head CI                   | **`openclaw/ci-gate` SUCCESS** at `0a2e97fe64385faf0c16c2c07b1f5ca4b25787ee` — CI run <https://github.com/linktrend/openclaw_prime/actions/runs/30333114926> ; gate job <https://github.com/linktrend/openclaw_prime/actions/runs/30333114926/job/90194989596> |
 | Local re-verify (wave 2b)       | **2026-07-28 10:07 Asia/Taipei** — `node scripts/run-vitest.mjs test/helpers/link-domain-fakes extensions/linkbrain extensions/linkskills` → **20/144 pass**                                                                                                   |
 | OpenGrep (harness + transports) | Local `scripts/run-opengrep.sh --error` → **0 findings** after harness + SSRF-guard fixes                                                                                                                                                                      |
 
-Local 20/144 is **not** a substitute for hosted CI. Hosted proof for Codex: tip `69bd01a4ddd` + CI run `30322576216` (or a later tip that also shows green `openclaw/ci-gate`).
+Local 20/144 is **not** a substitute for hosted CI. Hosted proof for Codex: tip `0a2e97fe643` + CI run `30333114926` (fixture-owner gate closed; re-check if tip advances).
 
 ### Historical (superseded as tip claim)
 
@@ -215,7 +215,7 @@ Source: `FIXTURE-OWNER-SIGNOFF.md`. **Phase 1 fixture-owner gate CLOSED.** Phase
 7. Principal Brain production retention / hold approval
 8. Production credentials + authorized operator for Lisa-profile mutation
 9. Live Librarian / Brain Gateway for scratch finding submission
-10. Hosted exact-head CI: **cleared for tip `69bd01a4ddd`** (`openclaw/ci-gate` SUCCESS on run `30322576216`). Re-check gate if tip advances after that SHA.
+10. Hosted exact-head CI: **cleared for tip `0a2e97fe643`** (`openclaw/ci-gate` SUCCESS on run `30333114926`). Fixture-owner gate CLOSED. Re-check gate if tip advances after that SHA.
 
 ### Cleared relative to earlier provisional (code evidence only — not Phase 1 exit)
 
@@ -333,8 +333,8 @@ That verifier must:
 
 Also requested:
 
-- Keep **PR #38** open; do not merge from this packet. Hosted `openclaw/ci-gate` was green at `69bd01a4ddd` (run `30322576216`); re-check if tip advances.
-- Route `COUNTERSIGN-REQUEST.md` / `FIXTURE-OWNER-SIGNOFF.md` + `BRAIN-TOOL-NAME-DECISION-PACKET.md` to Brain/Skills owners for **exact** fixture aggregates above.
+- Keep **PR #38** open; do not merge from this packet. Hosted `openclaw/ci-gate` is green at `0a2e97fe643` (run `30333114926`); re-check if tip advances.
+- Fixture-owner countersign is **done** (`FIXTURE-OWNER-SIGNOFF.md`). Platform auth-path remains the open Phase 1 blocker.
 
 ---
 
@@ -349,7 +349,7 @@ Also requested:
 | Owner countersign           | **Fixture-owner gate CLOSED** (Brain + Skills). Phase 1 overall still blocked on Platform auth-path. Not Codex / not merge.                  |
 | CI repairs                  | typed-hook/runtime-API allowlists; SecretRef matrix; deps/types/lint; OpenGrep harness; SSRF-guard HTTP transports; `docs/docs_map.md` regen |
 | Local matrix                | **144/144** re-verified 2026-07-28 10:07 Asia/Taipei                                                                                         |
-| Hosted CI                   | **`openclaw/ci-gate` SUCCESS** at `69bd01a4ddd` — <https://github.com/linktrend/openclaw_prime/actions/runs/30322576216>                     |
+| Hosted CI                   | **`openclaw/ci-gate` SUCCESS** at `0a2e97fe643` — <https://github.com/linktrend/openclaw_prime/actions/runs/30333114926>                     |
 | Lisa / Phases 7–12          | Untouched / not started; plugins remain default-disabled                                                                                     |
 
 ---
