@@ -49,9 +49,9 @@ and the local Skills fake MCP. They are derived from:
 | Skills contracts HEAD pin             | `f16103f23a716d0edeb08a1e82e38608ebd563ea`                                 |
 | `CONTRACT_VERSION`                    | `skills.api.v0.1`                                                          |
 | Upstream schemas aggregate SHA-256    | `828ac00d3be0e9b2040aacec3ca788176d8bb160c11d13994055d047503981d2`         |
-| Platform auth-claims schema SHA-256   | `b0397cdf34e76ab0986c6d223ecb6c3c66d619ea59557f78cd45c0c015ff50fb`         |
-| Platform auth-claims contentHash      | `6bf49618d846662976886f57d5d468f73a08ab1a6574968f68833d82429db251`         |
-| Recorded                              | 2026-07-28 09:52 Asia/Taipei (correction wave 2b)                          |
+| Platform auth-claims schema SHA-256   | `c2e8bc68b3feb9a3dacc497f5a5d497b466c400804fb4f9e41734c10772ddfa1`         |
+| Platform auth-claims contentHash      | `fb518834be897c32574df5f7235704fdb0de708bd3da1b48fc448246e3eca567`         |
+| Recorded                              | 2026-07-29 Asia/Taipei (wave 8 AuthClaims 1.1.0)                          |
 | Sign-off process                      | `docs/execution/openclawdevelopmentplan01/FIXTURE-OWNER-SIGNOFF.md`        |
 
 ## SHA-256 inventory

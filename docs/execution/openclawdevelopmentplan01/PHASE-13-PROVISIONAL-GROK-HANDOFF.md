@@ -11,7 +11,7 @@
 **PR:** [#38](https://github.com/linktrend/openclaw_prime/pull/38) → `development` (draft; do not merge from this handoff)
 **Supersedes:** prior provisional text at the same path (2026-07-27) and short pointer claims of 13 files / 82 tests as the tip proof set
 
-> **Provisional.** This handoff does **not** assign the seven Section 13.3 conformance classifications. It does **not** perform Phase 14 or Phase 15. Independent OpenClaw Codex verification (Phase 14) must inspect actual code, tests, and evidence rather than accepting this summary. **Re-verify against this corrected packet**, not the superseded 2026-07-27 provisional alone. **Phase 1 fixture-owner gate is CLOSED** (`OWNER_COUNTERSIGNED` at tip `429a7818…`); **Phase 1 overall is still NOT complete** (Platform auth-path blocked).
+> **Provisional.** This handoff does **not** assign the seven Section 13.3 conformance classifications. It does **not** perform Phase 14 or Phase 15. Independent OpenClaw Codex verification (Phase 14) must inspect actual code, tests, and evidence rather than accepting this summary. **Re-verify against this corrected packet**, not the superseded 2026-07-27 provisional alone. **Phase 1 fixture-owner gate is RE-OPENED** for wave-8 AuthClaims 1.1.0 aggregates (`PENDING_OWNER_COUNTERSIGN`; prior CLOSED tip `429a7818…` superseded). **Phase 1 overall is still NOT complete** (Platform auth-path blocked + pending countersigns).
 
 ---
 
@@ -45,7 +45,7 @@
 | Wave-2b pin commit                       | `4103bd6c1c208337f5dc37e169c9ec9a727bf835`                                                            |
 | SSRF transport commit                    | `d79e3356db527492f0ab8a0b1af7888469815f19`                                                            |
 | Hosted CI green tip (ci-gate SUCCESS)    | **deferred / Principal-waived** (CI redesign) for wave 5 tip `4fa1e9f7ed0…` (prior green `8e236d2f056…` / `30347356129`) |
-| Current HEAD (branch tip)                | `1a7787b660e3aaaf9c6adf1680f680ec9dda27cf` (wave 8; code tip `5a9842f8aa2`) |
+| Current HEAD (branch tip)                | wave-8 cleanup tip — set to exact SHA in final pin commit / `git rev-parse HEAD` (code tip `5a9842f8aa2`; docs packet `1a7787b660e` / `fdbe7a9113b`) |
 | Primary session (closed)                 | `docs/agent-sessions/completed/cursor-local-mac-mini-lisa-openclawdevelopmentplan01-20260727-1648.md` |
 | Related Phase 2 session (closed)         | `docs/agent-sessions/completed/cursor-local-mac-mini-feature-linkbrain-phase2-20260727-1854.md`       |
 | Orchestrator key                         | `cursor-local-mac-mini-desktop-workspace-orchestrator`                                                |
@@ -92,7 +92,7 @@ Full consumption record: `PHASE-1-CONTRACT-CONSUMPTION.md`.
 
 ## 3. Brain tool name decision
 
-**OpenClaw keeps frozen plan §9.1 names (17).** Corrected Brain HEAD `a3cff6e…` implements the same surface via `frozen-tools.ts`. OpenClaw will **not** alias. Brain + Skills fixtures are **`OWNER_COUNTERSIGNED`** at tip `429a7818…` — **fixture-owner gate CLOSED**. Phase 1 overall still blocked on Platform auth-path. Not Codex Phase 14; not merge authority.
+**OpenClaw keeps frozen plan §9.1 names (17).** Corrected Brain HEAD `a3cff6e…` implements the same surface via `frozen-tools.ts`. OpenClaw will **not** alias. Wave-8 AuthClaims 1.1.0 refresh **re-opened** the fixture-owner gate (`PENDING_OWNER_COUNTERSIGN`; aggregates Brain `4493f714…` / Skills `20316371…`). Phase 1 overall still blocked on Platform auth-path + countersigns. Not Codex Phase 14; not merge authority.
 
 Packet: `BRAIN-TOOL-NAME-DECISION-PACKET.md` (correction wave 2b).
 
