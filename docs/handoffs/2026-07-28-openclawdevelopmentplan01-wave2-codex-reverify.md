@@ -121,3 +121,13 @@ Refresh `docs/current-status.md` from this handoff (Orchestrator-only). No activ
 - Tests: `extensions/linkbrain/capture.test.ts` concurrency block. Focused suite **21/160**.
 - Fixture JSON unchanged — Brain/Skills owner countersigns remain valid.
 - Tip `8e236d2f0568ee57f57d193ef68e6352d2a510fc`; `openclaw/ci-gate` SUCCESS — <https://github.com/linktrend/openclaw_prime/actions/runs/30347356129>. Re-verify Codex against that tip. Not merge; not Phase 14 self-certify; no Lisa mutation.
+
+### 2026-07-28 — Capture/lifecycle bounded timeout (wave 5)
+
+- Defect: duplicate `withTimeout` helpers aborted a signal then still awaited the original promise; capture ignored AbortSignal; lock wait sat outside the bound.
+- Fix: shared `extensions/linkbrain/src/bounded.ts`; caller race-deadline; lock retained until scheduled work settles; queued work skips after its own deadline; AbortSignal through capture + `enqueueWrite`/`drainOnce`; honest stalled diagnostics; timed-out accepts stay durable (never claim flushed). Public keyed-store has no cancel seam — retain-until-settle (no SDK prerequisite packet for this wave).
+- Tests: `extensions/linkbrain/bounded.test.ts`. Focused suite **22/171**.
+- Fixture JSON unchanged — Brain/Skills owner countersigns remain valid.
+- Functional code tip `4fa1e9f7ed0b30855dff04082995a7b3b336b7f4`.
+- Hosted CI: **deferred / Principal-waived** because the CI system is being redesigned (failed pre-repair `57a8571cd1b` / `30349929708`; draft skip `30351278518`; ready re-fire `30351309306` not waited).
+- PR readiness and merge deferred. No live Lisa or Platform action. Not Phase 14 self-certify. Do not merge PR #38 from this packet.

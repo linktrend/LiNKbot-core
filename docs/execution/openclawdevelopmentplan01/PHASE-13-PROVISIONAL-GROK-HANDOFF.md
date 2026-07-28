@@ -22,7 +22,7 @@
 | 1   | Missing hashed Platform/Brain/Skills contract consumption pins        | Pin files under `contracts/` + consumption record                                                                                                 | `contracts/{platform,brain,skills}/PIN.json`; `PHASE-1-CONTRACT-CONSUMPTION.md`; `contracts/README.md`         |
 | 2   | Brain MCP tool names CURRENT vs frozen §9.1 unresolved                | **DECIDED:** OpenClaw keeps frozen §9.1; **will not** alias; Brain must implement §9.1                                                            | `BRAIN-TOOL-NAME-DECISION-PACKET.md`                                                                           |
 | 3   | Hardcoded `not_configured` transport stubs                            | Configurable modes: `disabled` (default) / `fake` / `http` / `mcp`; `not_configured` removed                                                      | `extensions/link{brain,skills}/src/transport.ts`; commit `e88ba95d0a2`                                         |
-| 4   | Phase 6 incomplete (coexistence-only; tip proof understated at 13/82) | Full mandatory matrix + perf; tip suite **21 files / 160 tests** (includes capture durability + concurrency); `SKIPPED_PLATFORM_LIVE` items named | `PHASE-6-STATUS.md`; `phase6-mandatory-matrix.test.ts`; `phase6-perf-baseline.test.ts`                         |
+| 4   | Phase 6 incomplete (coexistence-only; tip proof understated at 13/82) | Full mandatory matrix + perf; tip suite **22 files / 171 tests** (includes capture durability + concurrency + bounded timeout); `SKIPPED_PLATFORM_LIVE` items named | `PHASE-6-STATUS.md`; `phase6-mandatory-matrix.test.ts`; `phase6-perf-baseline.test.ts`                         |
 | 5   | Fixture owner sign-off / aggregate hashes missing                     | **CLOSED** — Brain + Skills `OWNER_COUNTERSIGNED` at tip `429a7818…` (aggregates `275c1fb7…9a1d` / `8586d89a…ec96`)                               | `FIXTURE-OWNER-SIGNOFF.md`; `COUNTERSIGN-REQUEST.md`                                                           |
 | 6   | Crabbox/Testbox heavy proof unclear or overclaimable                  | Local `crabbox` binary **missing** / sanity failed; **trusted local fallback** used; **draft PR #38** opened for exact-head CI                    | PR <https://github.com/linktrend/openclaw_prime/pull/38> ; tip HEAD `048922582e5` (PR opened at `17508f539d7`) |
 | 7   | Ambiguity on live Lisa mutation and Phases 7–12                       | Confirmed: **no Lisa live mutation**; **Phases 7–12 not started** (blocked packets only)                                                          | §3 / §7 / §9; `PHASE-{7..12}-STATUS-BLOCKED.md`                                                                |
@@ -44,7 +44,7 @@
 | Corrected handoff commit                 | `811ec5755036bbfa324ce72404a17b4c4443c683`                                                            |
 | Wave-2b pin commit                       | `4103bd6c1c208337f5dc37e169c9ec9a727bf835`                                                            |
 | SSRF transport commit                    | `d79e3356db527492f0ab8a0b1af7888469815f19`                                                            |
-| Hosted CI green tip (ci-gate SUCCESS)    | capture-concurrency tip — confirm `openclaw/ci-gate` on PR #38 after this fix                         |
+| Hosted CI green tip (ci-gate SUCCESS)    | **deferred / Principal-waived** (CI redesign) for wave 5 tip `4fa1e9f7ed0…` (prior green `8e236d2f056…` / `30347356129`) |
 | Current HEAD (branch tip)                | run `git rev-parse HEAD` after pull                                                                   |
 | Primary session (closed)                 | `docs/agent-sessions/completed/cursor-local-mac-mini-lisa-openclawdevelopmentplan01-20260727-1648.md` |
 | Related Phase 2 session (closed)         | `docs/agent-sessions/completed/cursor-local-mac-mini-feature-linkbrain-phase2-20260727-1854.md`       |
@@ -65,7 +65,7 @@ Evidence pointers are status packets and code paths. **No seven-value classifica
 | **3** — Brain lifecycle capture / coordination mapping | **Complete** at fake-backed tier.                                                                                                                                                                                                                                                        | `PHASE-3-STATUS.md`                                                                                                                      |
 | **4** — Skills plugin skeleton / structured telemetry  | **Complete** at fake/local tier (no conversation hooks; default-disabled).                                                                                                                                                                                                               | `PHASE-4-STATUS.md`; `extensions/linkskills/**`                                                                                          |
 | **5** — Managed MCP integration and authentication     | **Template/filter work complete**. **Blocked** for live MCP wiring: Platform auth packet. Transport adapters land configurable modes (see deficiency #3).                                                                                                                                | `PHASE-5-STATUS.md`; `mcp-templates/**`; transport modules                                                                               |
-| **6** — Integrated local and isolated QA               | **Fake-tier matrix complete** — coexistence + mandatory failure/recovery/durability/privacy/isolation/perf against deterministic fakes **passed** (**21 / 160**). Platform-live items **`SKIPPED_PLATFORM_LIVE`**. Crabbox/Testbox heavy suite **not** claimed (trusted local fallback). | `PHASE-6-STATUS.md`; `PHASE-6-PERF-BASELINE.md`                                                                                          |
+| **6** — Integrated local and isolated QA               | **Fake-tier matrix complete** — coexistence + mandatory failure/recovery/durability/privacy/isolation/perf against deterministic fakes **passed** (**22 / 171**). Platform-live items **`SKIPPED_PLATFORM_LIVE`**. Crabbox/Testbox heavy suite **not** claimed (trusted local fallback). | `PHASE-6-STATUS.md`; `PHASE-6-PERF-BASELINE.md`                                                                                          |
 | **7** — Platform stage readiness gate                  | **Blocked** — **not started**.                                                                                                                                                                                                                                                           | `PHASE-7-DECISION-PACKET-PLATFORM-STAGE.md`                                                                                              |
 | **8** — Brain stage shadow/write canary                | **Blocked** — **not started**.                                                                                                                                                                                                                                                           | `PHASE-8-STATUS-BLOCKED.md`                                                                                                              |
 | **9** — Skills stage canary                            | **Blocked** — **not started**.                                                                                                                                                                                                                                                           | `PHASE-9-STATUS-BLOCKED.md`                                                                                                              |
@@ -137,13 +137,14 @@ All other mandatory fake-tier scenarios 1–15 + coexistence A–G: **PASS** (se
 | Local `crabbox` binary          | **Missing** / failed sanity on this host (`crabbox not found`)                                                                                               |
 | Testbox / Crabbox heavy suite   | **Not run**                                                                                                                                                  |
 | Proof used                      | **Trusted local fallback** — focused `node scripts/run-vitest.mjs …`                                                                                         |
-| Exact-head CI                   | **re-check** `openclaw/ci-gate` on capture-concurrency tip (prior greens retained as history only)                                                           |
-| Local re-verify (wave 2b)       | **2026-07-28 10:07 Asia/Taipei** — historical **20/144**; superseded by capture-durability re-verify below                                                   |
-| Local re-verify (capture fix)   | **2026-07-28 15:31 Asia/Taipei** — historical **21/152**; superseded by concurrency wave below                                                               |
-| Local re-verify (concurrency)   | **2026-07-28 17:35 Asia/Taipei** — `node scripts/run-vitest.mjs test/helpers/link-domain-fakes extensions/linkbrain extensions/linkskills` → **21/160 pass** |
-| OpenGrep (harness + transports) | Local `scripts/run-opengrep.sh --error` → **0 findings** after harness + SSRF-guard fixes                                                                    |
+| Exact-head CI                   | **deferred / Principal-waived** (CI system being redesigned) for tip `4fa1e9f7ed0…` (failed pre-repair `57a8571cd1b` / `30349929708`; draft skip `30351278518`; ready re-fire `30351309306` not waited) |
+| Local re-verify (wave 2b)       | **2026-07-28 10:07 Asia/Taipei** — historical **20/144**; superseded by capture-durability re-verify below                                   |
+| Local re-verify (capture fix)   | **2026-07-28 15:31 Asia/Taipei** — historical **21/152**; superseded by concurrency wave below                                               |
+| Local re-verify (concurrency)   | **2026-07-28 17:35 Asia/Taipei** — historical **21/160**; superseded by bounded-timeout wave below                                           |
+| Local re-verify (bounded timeout) | **2026-07-28 18:12 Asia/Taipei** — `node scripts/run-vitest.mjs test/helpers/link-domain-fakes extensions/linkbrain extensions/linkskills` → **22/171 pass** |
+| OpenGrep (harness + transports) | Local `scripts/run-opengrep.sh --error` → **0 findings** after harness + SSRF-guard fixes                                                    |
 
-Local 21/160 is **not** a substitute for hosted CI. Hosted proof for Codex: tip `8e236d2f0568ee57f57d193ef68e6352d2a510fc` + CI run `30347356129` (prior greens superseded as tip claim).
+Local 22/171 is **not** a substitute for hosted CI. Hosted proof for Codex: **deferred / Principal-waived** (CI redesign) at tip `4fa1e9f7ed0…` (prior green `8e236d2f056…` / `30347356129` superseded as tip claim). PR readiness and merge deferred.
 
 ### Historical (superseded as tip claim)
 
@@ -217,7 +218,7 @@ Source: `FIXTURE-OWNER-SIGNOFF.md`. **Phase 1 fixture-owner gate CLOSED.** Phase
 7. Principal Brain production retention / hold approval
 8. Production credentials + authorized operator for Lisa-profile mutation
 9. Live Librarian / Brain Gateway for scratch finding submission
-10. Hosted exact-head CI: **cleared for tip `8e236d2f0568…`** (`openclaw/ci-gate` SUCCESS on run `30347356129`). Capture concurrency wave 4 included. Fixture-owner gate CLOSED. Re-check gate if tip advances after that SHA.
+10. Hosted exact-head CI: **deferred / Principal-waived** (CI system being redesigned) for tip `4fa1e9f7ed0…` (failed pre-repair `57a8571cd1b` / `30349929708`; draft skip `30351278518`; ready re-fire `30351309306` not waited). Fixture-owner gate CLOSED. PR readiness/merge deferred.
 
 ### Cleared relative to earlier provisional (code evidence only — not Phase 1 exit)
 
@@ -296,7 +297,7 @@ Do **not** read seven-value §13.3 classifications into this table. Codex Phase 
 | Phase 4 Skills skeleton                      | `extensions/linkskills/**`, `PHASE-4-STATUS.md`                              | Default-disabled                                                        |
 | Phase 5 MCP templates / filters              | `mcp-templates/**`, `mcp-tool-filter.ts`                                     | `enabled: false`                                                        |
 | Phase 5 Platform auth gate                   | `PHASE-5-DECISION-PACKET-PLATFORM-AUTH.md`                                   | Blocked                                                                 |
-| Phase 6 full matrix + perf                   | `PHASE-6-STATUS.md`, matrix/perf tests                                       | **21/160**; Deficiency #4 + capture durability/concurrency              |
+| Phase 6 full matrix + perf                   | `PHASE-6-STATUS.md`, matrix/perf tests                                       | **22/171**; Deficiency #4 + capture durability/concurrency/bounded timeout |
 | Phase 6 SKIPPED_PLATFORM_LIVE                | `PHASE-6-STATUS.md` rows named                                               | Audit reject; real issuer revoke                                        |
 | Phase 6 Crabbox/Testbox                      | —                                                                            | Local missing; trusted local + PR CI; Deficiency #6                     |
 | Fixture owner sign-off                       | `FIXTURE-OWNER-SIGNOFF.md`                                                   | Deficiency #5                                                           |
@@ -352,8 +353,9 @@ Also requested:
 | CI repairs                  | typed-hook/runtime-API allowlists; SecretRef matrix; deps/types/lint; OpenGrep harness; SSRF-guard HTTP transports; `docs/docs_map.md` regen |
 | Capture durability          | Durable save-before-flush in `capture.ts`; regression `capture.test.ts`                                                                      |
 | Capture concurrency         | Per-stream keyed promise chain for enqueue/flush/flushAll; concurrency regressions in `capture.test.ts`                                      |
-| Local matrix                | **160/160** re-verified 2026-07-28 17:35 Asia/Taipei                                                                                         |
-| Hosted CI                   | capture-concurrency tip — confirm `openclaw/ci-gate` on this push (prior green `74f7e802227` / `30339904312` superseded as tip claim)        |
+| Capture/lifecycle timeouts  | Shared `bounded.ts` race-deadline + lock-retain; AbortSignal seams; stalled diagnostics; `bounded.test.ts`                                   |
+| Local matrix                | **171/171** re-verified 2026-07-28 18:12 Asia/Taipei                                                                                         |
+| Hosted CI                   | **deferred / Principal-waived** (CI redesign) at tip `4fa1e9f7ed0…` (prior green `8e236d2f056…` / `30347356129` superseded as tip claim)     |
 | Lisa / Phases 7–12          | Untouched / not started; plugins remain default-disabled                                                                                     |
 
 ---

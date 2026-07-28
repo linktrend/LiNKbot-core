@@ -119,3 +119,13 @@ Phase 7 — Platform Stage Readiness Gate (Platform-owned evidence; OpenClaw val
 - No private internals, SQLite sidecar, or schema bump. Fixture JSON bytes unchanged (owner countersigns remain valid).
 - Regression: `capture.test.ts` concurrency block (8). Focused suite **21 / 160**.
 - Not Phase 14; not merge; no Lisa mutation; no Phases 7–12.
+
+## Capture/lifecycle bounded timeout amendment (2026-07-28 wave 5)
+
+- Defect: `withTimeout` in capture + lifecycle aborted a signal then still awaited the original promise (not a real caller bound); capture ignored the signal; lock wait sat outside the bound; helpers were duplicated.
+- Fix: shared `extensions/linkbrain/src/bounded.ts` (`raceDeadline` / `runBounded` / `runExclusiveBounded`). Caller returns within the bound; stream lock is retained until scheduled work settles; queued work that acquires the lock after its deadline does not start; AbortSignal propagated through capture load/save/flush and `runtime.enqueueWrite` / `drainOnce`; uncancellable public keyed-store ops keep ownership until settle with honest `stalledCount` / `lastStalledStatus` diagnostics; timed-out accepted events stay durably buffered (never claim flushed).
+- No private internals / SDK prerequisite required for this wave (public store has no cancel seam; retain-until-settle is the honest path). Fixture JSON unchanged.
+- Regression: `bounded.test.ts` (11). Focused suite **22 / 171**.
+- Functional code tip: `4fa1e9f7ed0b30855dff04082995a7b3b336b7f4`.
+- Hosted CI: **deferred / Principal-waived** (CI system being redesigned). Do not claim green. PR readiness and merge deferred. No Lisa/Platform live action.
+- Not Phase 14; not merge; no Lisa mutation; no Phases 7–12.
