@@ -1,8 +1,8 @@
 # Runbook — Brain Enable / Disable / Drain
 
-**Owner:** OpenClaw Lisa operator  
-**Domain:** `linkbrain` only (do not touch Skills)  
-**Prerequisites:** Read `README.md` evidence tiers. LIVE paths require Phase 7+ clearance.  
+**Owner:** OpenClaw Lisa operator
+**Domain:** `linkbrain` only (do not touch Skills)
+**Prerequisites:** Read `README.md` evidence tiers. LIVE paths require Phase 7+ clearance.
 **Stop conditions:** secret in argv/logs; cross-domain flag edits; native OpenClaw regression after enable.
 
 ---
@@ -73,8 +73,8 @@ Do **not** copy into `~/.openclaw-lisa` until Phase 7 + Phase 5 auth approval.
 
 ## C) LIVE-STAGE / LIVE-PROD — enable sequence (gated)
 
-**Tier:** LIVE-STAGE (Phase 8+) or LIVE-PROD (Phase 11+)  
-**Authority required:** Phase 7 sign-off (stage) or Phase 11 prereqs (prod).  
+**Tier:** LIVE-STAGE (Phase 8+) or LIVE-PROD (Phase 11+)
+**Authority required:** Phase 7 sign-off (stage) or Phase 11 prereqs (prod).
 **Also required:** authorized Lisa-profile mutation gate for the target environment.
 
 ### C1. Baseline (all off)

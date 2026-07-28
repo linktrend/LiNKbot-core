@@ -12,12 +12,9 @@ import { captureFingerprint } from "./capture.js";
 import type { LinkbrainConfig } from "./config.js";
 import { LINKBRAIN_CONVERSATION_HOOK_REQUIREMENT } from "./namespaces.js";
 import { opaqueId } from "./opaque.js";
-import { sanitizeCaptureText, stripUnsafeFields } from "./sanitize.js";
-import {
-  LINKBRAIN_CHECKPOINT_TOOL,
-  LINKBRAIN_TASK_UPDATE_TOOL,
-} from "./tools.js";
 import type { LinkbrainRuntime } from "./runtime.js";
+import { sanitizeCaptureText, stripUnsafeFields } from "./sanitize.js";
+import { LINKBRAIN_CHECKPOINT_TOOL, LINKBRAIN_TASK_UPDATE_TOOL } from "./tools.js";
 
 export const LINKBRAIN_REGISTERED_HOOKS = Object.freeze([
   "session_start",
@@ -55,10 +52,7 @@ export type SessionContextRecord = {
 export type LinkbrainLifecycle = {
   readonly registeredHooks: readonly LinkbrainRegisteredHook[];
   readonly conversationHookRequirement: string;
-  handleSessionStart(event: {
-    sessionId: string;
-    sessionKey?: string;
-  }): Promise<void>;
+  handleSessionStart(event: { sessionId: string; sessionKey?: string }): Promise<void>;
   handleMessageReceived(event: {
     content?: string;
     messageId?: string;
@@ -82,16 +76,16 @@ export type LinkbrainLifecycle = {
     sessionId?: string;
     runId?: string;
   }): Promise<void>;
-  handleAfterCompaction(event: {
-    messageCount: number;
-    compactedCount: number;
-    tokenCount?: number;
-    previousSessionId?: string;
-  }, ctx: { sessionKey?: string; sessionId?: string }): Promise<void>;
-  handleBeforeReset(ctx: {
-    sessionKey?: string;
-    sessionId?: string;
-  }): Promise<void>;
+  handleAfterCompaction(
+    event: {
+      messageCount: number;
+      compactedCount: number;
+      tokenCount?: number;
+      previousSessionId?: string;
+    },
+    ctx: { sessionKey?: string; sessionId?: string },
+  ): Promise<void>;
+  handleBeforeReset(ctx: { sessionKey?: string; sessionId?: string }): Promise<void>;
   handleSessionEnd(event: {
     sessionId: string;
     sessionKey?: string;
@@ -221,9 +215,7 @@ export function createLinkbrainLifecycle(
     async handleSessionStart(event) {
       await safe("session_start", logger, async () => {
         const sessionId = opaqueId("session", event.sessionId || event.sessionKey);
-        const bindingId = event.sessionKey
-          ? opaqueId("binding", event.sessionKey)
-          : undefined;
+        const bindingId = event.sessionKey ? opaqueId("binding", event.sessionKey) : undefined;
         sessions.set(sessionId, {
           version: 1,
           sessionId,
@@ -252,12 +244,7 @@ export function createLinkbrainLifecycle(
           actorKey: event.senderId,
           role: "user",
           text,
-          fingerprint: captureFingerprint([
-            event.messageId,
-            event.sessionKey,
-            event.runId,
-            "user",
-          ]),
+          fingerprint: captureFingerprint([event.messageId, event.sessionKey, event.runId, "user"]),
         });
       });
     },

@@ -49,7 +49,10 @@ export function redactSecretSubstrings(text: string): string {
 }
 
 /** Truncate and secret-redact approved capture text. */
-export function sanitizeCaptureText(text: string, maxChars = LINKBRAIN_MAX_EVENT_TEXT_CHARS): string {
+export function sanitizeCaptureText(
+  text: string,
+  maxChars = LINKBRAIN_MAX_EVENT_TEXT_CHARS,
+): string {
   const redacted = redactSecretSubstrings(text);
   if (redacted.length <= maxChars) {
     return redacted;

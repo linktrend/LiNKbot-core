@@ -2,16 +2,10 @@ import { describe, expect, it, vi } from "vitest";
 import { createBrainFake } from "../../test/helpers/link-domain-fakes/brain-fake.js";
 import { createLinkbrainCapture } from "./src/capture.js";
 import { parseLinkbrainConfig } from "./src/config.js";
-import {
-  createLinkbrainLifecycle,
-  LINKBRAIN_REGISTERED_HOOKS,
-} from "./src/lifecycle.js";
+import { createLinkbrainLifecycle, LINKBRAIN_REGISTERED_HOOKS } from "./src/lifecycle.js";
 import { createMemoryKeyedStore } from "./src/memory-store.js";
 import { opaqueId } from "./src/opaque.js";
-import {
-  createBrainFakeTransport,
-  createLinkbrainRuntime,
-} from "./src/runtime.js";
+import { createBrainFakeTransport, createLinkbrainRuntime } from "./src/runtime.js";
 import { containsUnsafeField, sanitizeCaptureText } from "./src/sanitize.js";
 import { openLinkbrainStores } from "./src/stores.js";
 import { isAllowedBrainWriteTool, LINKBRAIN_ALLOWED_WRITE_TOOLS } from "./src/tools.js";
@@ -164,20 +158,23 @@ describe("linkbrain Phase 3 lifecycle capture", () => {
       },
       expectBuffer: true,
     },
-  ] as const)("hook path $name does not throw", async ({ name, run, expectOutbox, expectBuffer }) => {
-    const h = await createHarness({});
-    await expect(run(h)).resolves.toBeUndefined();
-    if (expectOutbox !== undefined) {
-      expect((await h.runtime.diagnostics()).outboxCount).toBe(expectOutbox);
-    }
-    if (expectBuffer) {
-      const buffer = await h.capture.getBuffer("agent:lisa:main");
-      expect(buffer?.events.length).toBeGreaterThan(0);
-      expect(JSON.stringify(buffer)).not.toContain("SHOULD_NOT_CAPTURE");
-      expect(JSON.stringify(buffer)).not.toContain("reasoning");
-    }
-    void name;
-  });
+  ] as const)(
+    "hook path $name does not throw",
+    async ({ name, run, expectOutbox, expectBuffer }) => {
+      const h = await createHarness({});
+      await expect(run(h)).resolves.toBeUndefined();
+      if (expectOutbox !== undefined) {
+        expect((await h.runtime.diagnostics()).outboxCount).toBe(expectOutbox);
+      }
+      if (expectBuffer) {
+        const buffer = await h.capture.getBuffer("agent:lisa:main");
+        expect(buffer?.events.length).toBeGreaterThan(0);
+        expect(JSON.stringify(buffer)).not.toContain("SHOULD_NOT_CAPTURE");
+        expect(JSON.stringify(buffer)).not.toContain("reasoning");
+      }
+      void name;
+    },
+  );
 
   it("flushes capture and writes idempotent checkpoints on compaction/reset/end", async () => {
     const h = await createHarness({});
@@ -236,7 +233,9 @@ describe("linkbrain Phase 3 lifecycle capture", () => {
     ]);
     expect((await h.capture.getBuffer("agent:lisa:reset"))?.events ?? []).toEqual([]);
     const drain = await h.runtime.drainOnce();
-    expect(drain.drained + drain.retried + drain.deadLettered + drain.skipped).toBeGreaterThanOrEqual(0);
+    expect(
+      drain.drained + drain.retried + drain.deadLettered + drain.skipped,
+    ).toBeGreaterThanOrEqual(0);
   });
 
   it("records opaque subagent parent/child linkage", async () => {

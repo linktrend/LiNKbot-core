@@ -1,12 +1,9 @@
-# Managed MCP configuration allowlists (plan §9)
+# Managed MCP configuration allowlists (plan §9).
+# Canonical JSON templates under this directory must keep toolFilter.include
+# identical to these lists. Domain modules:
+# - extensions/linkbrain/mcp-tool-filter.ts
+# - extensions/linkskills/mcp-tool-filter.ts
 
-Canonical JSON templates under this directory must keep `toolFilter.include`
-identical to these lists. Domain modules:
-
-- `extensions/linkbrain/mcp-tool-filter.ts`
-- `extensions/linkskills/mcp-tool-filter.ts`
-
-```yaml
 linkbrain:
   knowledge:
     - brain_browse
@@ -50,10 +47,3 @@ linkskills:
   evidence:
     - skills_feedback_submit
     - skills_trace_candidate_submit
-```
-
-Rules:
-
-- Include-only filters (no `exclude` required) so unknown tools are default-denied.
-- Never share one allowlist module across domains.
-- Never put Skills tool names under `linkbrain` or Brain tool names under `linkskills`.

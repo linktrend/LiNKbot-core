@@ -6,10 +6,10 @@ import { randomUUID } from "node:crypto";
 import type { LinkbrainConfig } from "./config.js";
 import type { BrainCaptureEvent } from "./envelopes.js";
 import { contentHash, opaqueId } from "./opaque.js";
+import type { LinkbrainRuntime } from "./runtime.js";
 import { sanitizeCaptureText } from "./sanitize.js";
 import type { LinkbrainStores } from "./stores.js";
 import { LINKBRAIN_CAPTURE_TOOL } from "./tools.js";
-import type { LinkbrainRuntime } from "./runtime.js";
 
 export type CaptureBufferRecord = {
   version: 1;
@@ -83,7 +83,11 @@ export function createLinkbrainCapture(params: CreateLinkbrainCaptureParams): Li
 
   const load = async (streamId: string): Promise<CaptureBufferRecord> => {
     const existing = await params.stores.captureBuffer.lookup(bufferKey(streamId));
-    if (existing && typeof existing === "object" && (existing as CaptureBufferRecord).version === 1) {
+    if (
+      existing &&
+      typeof existing === "object" &&
+      (existing as CaptureBufferRecord).version === 1
+    ) {
       return existing as CaptureBufferRecord;
     }
     return {
@@ -131,7 +135,10 @@ export function createLinkbrainCapture(params: CreateLinkbrainCaptureParams): Li
         }));
         const fromSequence = events[0]!.sequence;
         const toSequence = events[events.length - 1]!.sequence;
-        const batchId = opaqueId("batch", `${record.streamId}:${fromSequence}:${toSequence}:${reason}`);
+        const batchId = opaqueId(
+          "batch",
+          `${record.streamId}:${fromSequence}:${toSequence}:${reason}`,
+        );
         const body = {
           batchId,
           streamId: record.streamId,
@@ -166,9 +173,7 @@ export function createLinkbrainCapture(params: CreateLinkbrainCaptureParams): Li
       }
       const streamId = opaqueId("stream", input.streamKey);
       const actorId = input.actorKey ? opaqueId("actor", input.actorKey) : undefined;
-      const fingerprint = input.fingerprint
-        ? opaqueId("message", input.fingerprint)
-        : undefined;
+      const fingerprint = input.fingerprint ? opaqueId("message", input.fingerprint) : undefined;
 
       return await withTimeout(
         async () => {
@@ -239,6 +244,8 @@ export function createLinkbrainCapture(params: CreateLinkbrainCaptureParams): Li
 
 /** Build a unique-but-stable test fingerprint helper. */
 export function captureFingerprint(parts: Array<string | undefined>): string {
-  return parts.filter((part): part is string => typeof part === "string" && part.length > 0).join("|")
-    || randomUUID();
+  return (
+    parts.filter((part): part is string => typeof part === "string" && part.length > 0).join("|") ||
+    randomUUID()
+  );
 }

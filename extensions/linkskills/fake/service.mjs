@@ -191,7 +191,7 @@ export class SkillsFakeService {
       if (cached) {
         return {
           ...cached,
-          data: { .../** @type {Record<string, unknown>} */ ((cached.data) ?? {}), replayed: true },
+          data: { .../** @type {Record<string, unknown>} */ (cached.data ?? {}), replayed: true },
           warnings: [
             { code: "idempotency_replay", message: "Replay of prior successful response" },
           ],

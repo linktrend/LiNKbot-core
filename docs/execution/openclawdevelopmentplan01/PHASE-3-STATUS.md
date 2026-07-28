@@ -5,16 +5,16 @@
 
 ## Delivered
 
-| Item | Location |
-| ---- | -------- |
-| §10.1 hook registration | `extensions/linkbrain/index.ts` |
-| Capture batching + flush boundaries | `extensions/linkbrain/src/capture.ts` |
-| Lifecycle → Brain mapping | `extensions/linkbrain/src/lifecycle.ts` |
-| Opaque correlations | `extensions/linkbrain/src/opaque.ts` |
-| Secret/CoT/attachment sanitization | `extensions/linkbrain/src/sanitize.ts` |
-| MCP write allowlist | `extensions/linkbrain/src/tools.ts` (+ transport enforcement in `runtime.ts`) |
-| Conversation access documentation | README + index comment + `LINKBRAIN_CONVERSATION_HOOK_REQUIREMENT` |
-| Focused tests | `extensions/linkbrain/lifecycle.test.ts` (+ updated boundary test) |
+| Item                                | Location                                                                      |
+| ----------------------------------- | ----------------------------------------------------------------------------- |
+| §10.1 hook registration             | `extensions/linkbrain/index.ts`                                               |
+| Capture batching + flush boundaries | `extensions/linkbrain/src/capture.ts`                                         |
+| Lifecycle → Brain mapping           | `extensions/linkbrain/src/lifecycle.ts`                                       |
+| Opaque correlations                 | `extensions/linkbrain/src/opaque.ts`                                          |
+| Secret/CoT/attachment sanitization  | `extensions/linkbrain/src/sanitize.ts`                                        |
+| MCP write allowlist                 | `extensions/linkbrain/src/tools.ts` (+ transport enforcement in `runtime.ts`) |
+| Conversation access documentation   | README + index comment + `LINKBRAIN_CONVERSATION_HOOK_REQUIREMENT`            |
+| Focused tests                       | `extensions/linkbrain/lifecycle.test.ts` (+ updated boundary test)            |
 
 ## Registered hooks
 

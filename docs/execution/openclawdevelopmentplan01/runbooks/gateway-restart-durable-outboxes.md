@@ -1,7 +1,7 @@
 # Runbook — Gateway Restart with Durable Outboxes
 
-**Owner:** OpenClaw Lisa operator  
-**Scope:** Lisa Gateway / LaunchAgent restart while Brain and/or Skills outboxes must survive  
+**Owner:** OpenClaw Lisa operator
+**Scope:** Lisa Gateway / LaunchAgent restart while Brain and/or Skills outboxes must survive
 **Prerequisites:** Know which evidence tier you are in. FAKE restarts use local processes only. LIVE restarts require change-window awareness. Never echo secrets. Never run `security`/Keychain commands.
 
 ---
@@ -17,13 +17,13 @@
 
 ## Pre-restart checklist
 
-| Step | FAKE | LIVE-STAGE / LIVE-PROD |
-| ---- | ---- | ---------------------- |
-| Record current flag snapshot (Brain + Skills) | yes | yes |
-| Set affected drain false if remote unhealthy | optional | **required** if remote failing |
-| Confirm MCP templates / refs unchanged | n/a | yes (no secret values in files) |
-| Confirm native OpenClaw needs preserved | yes | yes |
-| Change window / incident ticket | n/a | yes |
+| Step                                          | FAKE     | LIVE-STAGE / LIVE-PROD          |
+| --------------------------------------------- | -------- | ------------------------------- |
+| Record current flag snapshot (Brain + Skills) | yes      | yes                             |
+| Set affected drain false if remote unhealthy  | optional | **required** if remote failing  |
+| Confirm MCP templates / refs unchanged        | n/a      | yes (no secret values in files) |
+| Confirm native OpenClaw needs preserved       | yes      | yes                             |
+| Change window / incident ticket               | n/a      | yes                             |
 
 Flag names to snapshot:
 
@@ -51,13 +51,13 @@ Stop any local fake HTTP/stdio processes you started. Restart your non-Lisa prob
 
 ## Post-restart expected evidence
 
-| Check | Pass |
-| ----- | ---- |
-| Native OpenClaw | healthy without Brain/Skills |
-| Outbox retention | pre-restart queue depth/age still present (sanitized counts) |
-| Brain independence | Skills flags unchanged by Brain recovery |
-| Skills independence | Brain flags unchanged by Skills recovery |
-| No secret leakage | restart logs contain no tokens/headers/bodies |
+| Check               | Pass                                                         |
+| ------------------- | ------------------------------------------------------------ |
+| Native OpenClaw     | healthy without Brain/Skills                                 |
+| Outbox retention    | pre-restart queue depth/age still present (sanitized counts) |
+| Brain independence  | Skills flags unchanged by Brain recovery                     |
+| Skills independence | Brain flags unchanged by Skills recovery                     |
+| No secret leakage   | restart logs contain no tokens/headers/bodies                |
 
 ---
 

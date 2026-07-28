@@ -1,7 +1,7 @@
 # Runbook — Brain Rollback and Restart
 
-**Owner:** OpenClaw Lisa operator (+ Platform for credential revoke / service rollback)  
-**Domain:** `linkbrain` first; Skills untouched unless shared-risk evidence  
+**Owner:** OpenClaw Lisa operator (+ Platform for credential revoke / service rollback)
+**Domain:** `linkbrain` first; Skills untouched unless shared-risk evidence
 **Prerequisites:** Identify evidence tier (FAKE vs LIVE). Never echo secrets.
 
 ---
@@ -40,12 +40,12 @@ See also `gateway-restart-durable-outboxes.md`.
 
 ## Expected sanitized evidence
 
-| Check | Pass criteria |
-| ----- | ------------- |
-| Writes stopped | no new coordination/capture remote attempts |
-| Outbox retained | local counts/age visible; no secret payloads logged |
-| Skills healthy | Skills MCP/plugin unchanged and still serving (if it was on) |
-| Native OpenClaw | channels/sessions continue after Brain disable |
+| Check             | Pass criteria                                                   |
+| ----------------- | --------------------------------------------------------------- |
+| Writes stopped    | no new coordination/capture remote attempts                     |
+| Outbox retained   | local counts/age visible; no secret payloads logged             |
+| Skills healthy    | Skills MCP/plugin unchanged and still serving (if it was on)    |
+| Native OpenClaw   | channels/sessions continue after Brain disable                  |
 | Credential revoke | Platform confirms Brain-only revoke; Skills still authenticates |
 
 ---

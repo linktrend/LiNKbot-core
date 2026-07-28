@@ -1,7 +1,7 @@
 # Runbook — MCP Probe, Pause, and Recover
 
-**Owner:** OpenClaw Lisa operator  
-**Domains:** independent `mcp.servers.linkbrain` and `mcp.servers.linkskills`  
+**Owner:** OpenClaw Lisa operator
+**Domains:** independent `mcp.servers.linkbrain` and `mcp.servers.linkskills`
 **Prerequisites:** Templates from `../mcp-templates/`. Never echo secrets. Label FAKE vs LIVE.
 
 ---

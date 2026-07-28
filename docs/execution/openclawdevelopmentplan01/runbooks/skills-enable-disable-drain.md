@@ -1,8 +1,8 @@
 # Runbook — Skills Enable / Disable / Drain
 
-**Owner:** OpenClaw Lisa operator  
-**Domain:** `linkskills` only (do not touch Brain)  
-**Prerequisites:** Phase 9 hard gate — Skills Cursor **and** Codex readiness recorded before LIVE Lisa Skills. Read `README.md` tiers.  
+**Owner:** OpenClaw Lisa operator
+**Domain:** `linkskills` only (do not touch Brain)
+**Prerequisites:** Phase 9 hard gate — Skills Cursor **and** Codex readiness recorded before LIVE Lisa Skills. Read `README.md` tiers.
 **Stop conditions:** conversation content in Skills telemetry; Brain flags edited; secret in argv/logs.
 
 ---
@@ -59,7 +59,7 @@ node scripts/run-vitest.mjs test/helpers/link-domain-fakes/integrated-brain-skil
 
 **Tier:** TEMPLATE
 
-1. Preferred: `mcp-templates/linkskills.oauth.authprofile.template.json`  
+1. Preferred: `mcp-templates/linkskills.oauth.authprofile.template.json`
    Fallback: `mcp-templates/linkskills.http.secretref.template.json`
 2. Keep `"enabled": false`.
 3. Confirm `toolFilter.include` matches `extensions/linkskills/mcp-tool-filter.ts`.
@@ -72,7 +72,7 @@ node scripts/run-vitest.mjs test/helpers/link-domain-fakes/integrated-brain-skil
 
 ## C) LIVE-STAGE / LIVE-PROD — enable sequence (gated)
 
-**Tier:** LIVE-STAGE (Phase 9+) or LIVE-PROD (Phase 12+)  
+**Tier:** LIVE-STAGE (Phase 9+) or LIVE-PROD (Phase 12+)
 **Authority:** Phase 7; Phase 9 Cursor/Codex proofs; Phase 12 adds production credential + change window.
 
 ### C1. Baseline (all off)

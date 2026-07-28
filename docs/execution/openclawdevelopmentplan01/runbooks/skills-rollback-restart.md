@@ -1,7 +1,7 @@
 # Runbook — Skills Rollback and Restart
 
-**Owner:** OpenClaw Lisa operator (+ Platform for credential revoke / service rollback)  
-**Domain:** `linkskills` first; Brain remains enabled if healthy  
+**Owner:** OpenClaw Lisa operator (+ Platform for credential revoke / service rollback)
+**Domain:** `linkskills` first; Brain remains enabled if healthy
 **Prerequisites:** Identify evidence tier (FAKE vs LIVE). Never echo secrets. Never add conversation hooks to Skills.
 
 ---
@@ -40,13 +40,13 @@ See `gateway-restart-durable-outboxes.md`.
 
 ## Expected sanitized evidence
 
-| Check | Pass criteria |
-| ----- | ------------- |
-| Execution stopped | no new governed runs |
-| Outbox retained | telemetry queue counts only; no conversation fields |
-| Brain healthy | Brain MCP/plugin unchanged |
-| Native OpenClaw | native skills and channels continue |
-| Credential revoke | Platform confirms Skills-only revoke |
+| Check             | Pass criteria                                       |
+| ----------------- | --------------------------------------------------- |
+| Execution stopped | no new governed runs                                |
+| Outbox retained   | telemetry queue counts only; no conversation fields |
+| Brain healthy     | Brain MCP/plugin unchanged                          |
+| Native OpenClaw   | native skills and channels continue                 |
+| Credential revoke | Platform confirms Skills-only revoke                |
 
 ---
 

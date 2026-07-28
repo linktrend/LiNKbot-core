@@ -5,13 +5,13 @@
 
 ## Delivered
 
-| Item                       | Location                                                                                              |
-| -------------------------- | ----------------------------------------------------------------------------------------------------- |
-| Default-disabled packaging | `extensions/linkskills/openclaw.plugin.json`, `package.json`, `index.ts`, `runtime-api.ts`, `api.ts` |
-| Keyed-store telemetry runtime | `extensions/linkskills/src/**`                                                                     |
-| Independent Skills flags   | `mcpDiscoveryRead`, `governedExecution`, `telemetryEnqueue`, `telemetryDrain`                         |
-| Labeler                    | `.github/labeler.yml` → `extensions: linkskills`                                                      |
-| Focused tests              | `manifest.test.ts`, `runtime.test.ts`, `plugin-boundary.test.ts` (+ existing fake tests)              |
+| Item                          | Location                                                                                             |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Default-disabled packaging    | `extensions/linkskills/openclaw.plugin.json`, `package.json`, `index.ts`, `runtime-api.ts`, `api.ts` |
+| Keyed-store telemetry runtime | `extensions/linkskills/src/**`                                                                       |
+| Independent Skills flags      | `mcpDiscoveryRead`, `governedExecution`, `telemetryEnqueue`, `telemetryDrain`                        |
+| Labeler                       | `.github/labeler.yml` → `extensions: linkskills`                                                     |
+| Focused tests                 | `manifest.test.ts`, `runtime.test.ts`, `plugin-boundary.test.ts` (+ existing fake tests)             |
 
 ## Proof
 
