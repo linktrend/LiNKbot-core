@@ -37,7 +37,9 @@ node scripts/run-vitest.mjs extensions/linkbrain/manifest.test.ts \
 
 Coverage includes: each hook path, duplicate fingerprints, compaction/reset races, secret canaries, native no-throw / queue retained, plugin flags disabled = no capture, allowlist rejection, idempotent coordination via fake.
 
-**Capture durability (2026-07-28):** `enqueue` durable-saves the accepted `CaptureBufferRecord` before `flushRecord` / `enqueueWrite`. Batch-limit flush failures (enqueue error, outbox overflow reject-new, shutdown) retain the retryable buffer and never claim `flushed: true`. Regression: `capture.test.ts` (enqueue failure, overflow, shutdown, restart, retry, duplicate, successful drain, Brain-isolate).
+**Capture durability (2026-07-28):** `enqueue` durable-saves the accepted `CaptureBufferRecord` before `flushRecord` / `enqueueWrite`. Batch-limit flush failures retain the retryable buffer and never claim `flushed: true`.
+
+**Capture concurrency (2026-07-28 wave 4):** same-stream enqueue/flush/flushAll serialized via a bounded keyed promise chain on the opaque stream id (re-load under lock). Failures do not poison the chain. Regression: concurrent enqueues, duplicate fingerprints, enqueue×batch-limit/manual/shutdown flush races, flush-fail+retry, restart, independent streams.
 
 ## Explicit non-goals (unchanged)
 

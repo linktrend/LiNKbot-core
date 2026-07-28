@@ -113,3 +113,11 @@ Refresh `docs/current-status.md` from this handoff (Orchestrator-only). No activ
 - Tests: `extensions/linkbrain/capture.test.ts` (enqueue fail, overflow, shutdown, restart, retry, duplicate, successful drain, Brain isolate).
 - Focused suite: **21 files / 152 tests**.
 - Fix commit `44b33133c26359940715cde3ec158840c057f851`; tip `74f7e80222781cbd3535a86b247a19b8d873802c`; `openclaw/ci-gate` SUCCESS — <https://github.com/linktrend/openclaw_prime/actions/runs/30339904312>. Re-verify Codex against that tip. Not merge; not Phase 14 self-certify; no Lisa mutation.
+
+### 2026-07-28 — Capture same-stream concurrency (wave 4)
+
+- Defect: concurrent same-stream load-modify-save could duplicate sequences / overwrite accepts; concurrent flush could clear newer data.
+- Fix: per-opaque-stream keyed promise chain; enqueue/flush/flushAll re-load under lock; durable-accept preserved; no false flushed ack; lock tails do not poison; idle keys cleaned.
+- Tests: `extensions/linkbrain/capture.test.ts` concurrency block. Focused suite **21/160**.
+- Fixture JSON unchanged — Brain/Skills owner countersigns remain valid.
+- Re-verify Codex against the tip that contains this fix + green `openclaw/ci-gate`. Not merge; not Phase 14 self-certify; no Lisa mutation.

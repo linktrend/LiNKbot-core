@@ -298,3 +298,257 @@ describe("linkbrain capture buffer durability", () => {
     expect((await h.capture.getBuffer("agent:lisa:isolate"))?.events).toHaveLength(1);
   });
 });
+
+describe("linkbrain capture same-stream concurrency", () => {
+  it("many concurrent same-stream enqueues keep unique monotonic sequences", async () => {
+    const h = await createCaptureHarness({ batchMaxEvents: 64 });
+    const n = 24;
+    const results = await Promise.all(
+      Array.from({ length: n }, (_, i) =>
+        h.capture.enqueue({
+          streamKey: "agent:lisa:concurrent",
+          role: "user",
+          text: `msg-${i}`,
+          fingerprint: `fp-c-${i}`,
+        }),
+      ),
+    );
+    expect(results.every((r) => r.accepted && !r.flushed)).toBe(true);
+    const buffer = await h.capture.getBuffer("agent:lisa:concurrent");
+    expect(buffer?.events).toHaveLength(n);
+    const sequences = buffer!.events.map((e) => e.sequence);
+    expect(sequences).toEqual(Array.from({ length: n }, (_, i) => i + 1));
+    expect(new Set(sequences).size).toBe(n);
+    expect(buffer?.nextSequence).toBe(n + 1);
+  });
+
+  it("concurrent duplicate fingerprints accept once", async () => {
+    const h = await createCaptureHarness({ batchMaxEvents: 32 });
+    const results = await Promise.all(
+      Array.from({ length: 12 }, () =>
+        h.capture.enqueue({
+          streamKey: "agent:lisa:dup-race",
+          role: "user",
+          text: "same",
+          fingerprint: "fp-dup-race",
+        }),
+      ),
+    );
+    expect(results.filter((r) => r.accepted)).toHaveLength(1);
+    expect(results.filter((r) => !r.accepted)).toHaveLength(11);
+    const buffer = await h.capture.getBuffer("agent:lisa:dup-race");
+    expect(buffer?.events).toHaveLength(1);
+    expect(buffer?.events[0]?.sequence).toBe(1);
+  });
+
+  it("enqueue racing batch-limit flush does not lose accepted events", async () => {
+    const h = await createCaptureHarness({ batchMaxEvents: 3 });
+    const n = 9;
+    const results = await Promise.all(
+      Array.from({ length: n }, (_, i) =>
+        h.capture.enqueue({
+          streamKey: "agent:lisa:batch-race",
+          role: "user",
+          text: `b-${i}`,
+          fingerprint: `fp-b-${i}`,
+        }),
+      ),
+    );
+    const accepted = results.filter((r) => r.accepted);
+    expect(accepted).toHaveLength(n);
+    const buffer = await h.capture.getBuffer("agent:lisa:batch-race");
+    const buffered = buffer?.events.length ?? 0;
+    const outbox = (await h.runtime.diagnostics()).outboxCount;
+    // Every accepted event is either still buffered or already moved to outbox batches.
+    expect(buffered + outbox * 3).toBeGreaterThanOrEqual(n);
+    // No duplicate sequences remain in the buffer.
+    if (buffered > 0) {
+      const seqs = buffer!.events.map((e) => e.sequence);
+      expect(new Set(seqs).size).toBe(seqs.length);
+    }
+    await h.capture.flush("agent:lisa:batch-race", "manual");
+    const drain = await h.runtime.drainOnce();
+    expect(drain.drained + drain.retried + drain.deadLettered + drain.skipped).toBeGreaterThan(0);
+    expect((await h.capture.getBuffer("agent:lisa:batch-race"))?.events ?? []).toHaveLength(0);
+  });
+
+  it("enqueue racing manual flush retains durable accepts", async () => {
+    const h = await createCaptureHarness({ batchMaxEvents: 32 });
+    const enqueues = Promise.all(
+      Array.from({ length: 10 }, (_, i) =>
+        h.capture.enqueue({
+          streamKey: "agent:lisa:flush-race",
+          role: "user",
+          text: `f-${i}`,
+          fingerprint: `fp-f-${i}`,
+        }),
+      ),
+    );
+    const flush = h.capture.flush("agent:lisa:flush-race", "manual");
+    const [results, flushResult] = await Promise.all([enqueues, flush]);
+    expect(results.every((r) => r.accepted)).toBe(true);
+    expect(flushResult.batches).toBeGreaterThanOrEqual(0);
+    const buffer = await h.capture.getBuffer("agent:lisa:flush-race");
+    const buffered = buffer?.events.length ?? 0;
+    const outbox = (await h.runtime.diagnostics()).outboxCount;
+    expect(buffered + outbox).toBeGreaterThanOrEqual(1);
+    // Finish any remainder.
+    await h.capture.flush("agent:lisa:flush-race", "manual");
+    expect((await h.capture.getBuffer("agent:lisa:flush-race"))?.events ?? []).toHaveLength(0);
+    expect((await h.runtime.diagnostics()).outboxCount).toBeGreaterThan(0);
+  });
+
+  it("enqueue racing shutdown flushAll keeps accepts durable", async () => {
+    const h = await createCaptureHarness({ batchMaxEvents: 32 });
+    const enqueues = Promise.all(
+      Array.from({ length: 8 }, (_, i) =>
+        h.capture.enqueue({
+          streamKey: "agent:lisa:stop-race",
+          role: "user",
+          text: `s-${i}`,
+          fingerprint: `fp-s-${i}`,
+        }),
+      ),
+    );
+    const stop = h.capture.flushAll("gateway_stop");
+    const [results] = await Promise.all([enqueues, stop]);
+    expect(results.every((r) => r.accepted)).toBe(true);
+    await h.capture.flush("agent:lisa:stop-race", "gateway_stop");
+    expect((await h.capture.getBuffer("agent:lisa:stop-race"))?.events ?? []).toHaveLength(0);
+    expect((await h.runtime.diagnostics()).outboxCount).toBeGreaterThan(0);
+  });
+
+  it("flush failure then concurrent enqueue + retry keeps sequences and drains later", async () => {
+    const h = await createCaptureHarness({ batchMaxEvents: 32 });
+    const spy = vi.spyOn(h.runtime, "enqueueWrite");
+    spy.mockRejectedValueOnce(new Error("linkbrain: forced enqueue failure"));
+
+    await h.capture.enqueue({
+      streamKey: "agent:lisa:fail-race",
+      role: "user",
+      text: "seed",
+      fingerprint: "fp-seed",
+    });
+    const failedFlush = await h.capture.flush("agent:lisa:fail-race", "manual");
+    expect(failedFlush.batches).toBe(0);
+
+    spy.mockRestore();
+    const concurrent = await Promise.all(
+      Array.from({ length: 5 }, (_, i) =>
+        h.capture.enqueue({
+          streamKey: "agent:lisa:fail-race",
+          role: "user",
+          text: `after-${i}`,
+          fingerprint: `fp-after-${i}`,
+        }),
+      ),
+    );
+    expect(concurrent.every((r) => r.accepted && !r.flushed)).toBe(true);
+    const buffer = await h.capture.getBuffer("agent:lisa:fail-race");
+    expect(buffer?.events).toHaveLength(6);
+    const sequences = buffer!.events.map((e) => e.sequence);
+    expect(sequences).toEqual([1, 2, 3, 4, 5, 6]);
+
+    const flushed = await h.capture.flush("agent:lisa:fail-race", "manual");
+    expect(flushed.batches).toBe(1);
+    const drain = await h.runtime.drainOnce();
+    expect(drain.drained).toBe(1);
+  });
+
+  it("restart recovers all concurrent accepted events", async () => {
+    const stores = createTestStores();
+    const config = parseLinkbrainConfig({
+      captureEnqueue: true,
+      captureDrain: true,
+      batchMaxEvents: 64,
+    });
+    const firstRuntime = createLinkbrainRuntime({
+      config,
+      stores,
+      transport: {
+        async write() {
+          return { ok: true, result: { accepted: true } };
+        },
+      },
+    });
+    await firstRuntime.open();
+    const firstCapture = createLinkbrainCapture({
+      config,
+      stores,
+      runtime: firstRuntime,
+      operationTimeoutMs: 2_000,
+    });
+    const n = 15;
+    await Promise.all(
+      Array.from({ length: n }, (_, i) =>
+        firstCapture.enqueue({
+          streamKey: "agent:lisa:restart-race",
+          role: "user",
+          text: `r-${i}`,
+          fingerprint: `fp-r-${i}`,
+        }),
+      ),
+    );
+    await firstRuntime.shutdown();
+
+    const secondRuntime = createLinkbrainRuntime({
+      config,
+      stores,
+      transport: {
+        async write() {
+          return { ok: true, result: { accepted: true } };
+        },
+      },
+    });
+    await secondRuntime.open();
+    const secondCapture = createLinkbrainCapture({
+      config,
+      stores,
+      runtime: secondRuntime,
+      operationTimeoutMs: 2_000,
+    });
+    const recovered = await secondCapture.getBuffer("agent:lisa:restart-race");
+    expect(recovered?.events).toHaveLength(n);
+    expect(recovered!.events.map((e) => e.sequence)).toEqual(
+      Array.from({ length: n }, (_, i) => i + 1),
+    );
+    expect((await secondCapture.flush("agent:lisa:restart-race", "manual")).batches).toBe(1);
+  });
+
+  it("different streams progress independently under concurrency", async () => {
+    const h = await createCaptureHarness({ batchMaxEvents: 32 });
+    const left = Promise.all(
+      Array.from({ length: 10 }, (_, i) =>
+        h.capture.enqueue({
+          streamKey: "agent:lisa:left",
+          role: "user",
+          text: `L-${i}`,
+          fingerprint: `fp-L-${i}`,
+        }),
+      ),
+    );
+    const right = Promise.all(
+      Array.from({ length: 10 }, (_, i) =>
+        h.capture.enqueue({
+          streamKey: "agent:lisa:right",
+          role: "user",
+          text: `R-${i}`,
+          fingerprint: `fp-R-${i}`,
+        }),
+      ),
+    );
+    const [leftResults, rightResults] = await Promise.all([left, right]);
+    expect(leftResults.every((r) => r.accepted)).toBe(true);
+    expect(rightResults.every((r) => r.accepted)).toBe(true);
+    const leftBuf = await h.capture.getBuffer("agent:lisa:left");
+    const rightBuf = await h.capture.getBuffer("agent:lisa:right");
+    expect(leftBuf?.events).toHaveLength(10);
+    expect(rightBuf?.events).toHaveLength(10);
+    expect(leftBuf!.events.map((e) => e.sequence)).toEqual(
+      Array.from({ length: 10 }, (_, i) => i + 1),
+    );
+    expect(rightBuf!.events.map((e) => e.sequence)).toEqual(
+      Array.from({ length: 10 }, (_, i) => i + 1),
+    );
+  });
+});

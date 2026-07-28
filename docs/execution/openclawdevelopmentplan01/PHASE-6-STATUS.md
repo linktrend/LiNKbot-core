@@ -2,6 +2,7 @@
 
 **Recorded:** 2026-07-28 07:50 Asia/Taipei  
 **Capture durability amendment:** 2026-07-28 15:35 Asia/Taipei  
+**Capture concurrency amendment:** 2026-07-28 17:35 Asia/Taipei  
 **Branch:** `issue/ocp-openclawdevelopmentplan01`  
 **Evidence tier:** `fake/integration-local` — **not** stage, **not** production, **no** live Platform/Lisa.  
 **Session:** `cursor-cloud-mac-mini-feature-phase6-matrix-20260728-0744`
@@ -56,7 +57,7 @@
 node scripts/run-vitest.mjs test/helpers/link-domain-fakes extensions/linkbrain extensions/linkskills
 # After transport adapters landed on the same branch tip:
 # Test Files  21 passed (21)
-# Tests       152 passed (152)
+# Tests       160 passed (160)
 ```
 
 Focused matrix + perf only:
@@ -75,7 +76,7 @@ node scripts/run-vitest.mjs \
 | `test/helpers/link-domain-fakes/` (integrated + matrix + perf + brain-fake) | 4      | 25      |
 | `extensions/linkbrain/**/*.test.ts` (+ fake + transport)                    | 8      | —       |
 | `extensions/linkskills/**/*.test.ts` (+ fake + transport)                   | 8      | —       |
-| **Tip total after capture durability**                                      | **21** | **152** |
+| **Tip total after capture concurrency**                                     | **21** | **160** |
 
 Prior packet was 7 integrated / 82 focused. Phase 6 matrix commit (`66a32888129`) added +17 mandatory/perf tests. Concurrent transport adapters landed at `e88ba95d0a2`; re-verified full suite **20/144** green on tip (`22717f28bb3` status follow-up).
 
@@ -109,4 +110,12 @@ Phase 7 — Platform Stage Readiness Gate (Platform-owned evidence; OpenClaw val
 - Fix: durable-save accepted buffer first; flush failures retain retryable buffer and return `flushed: false` (no false ack).
 - Outbox overflow remains explicit reject-new; previously accepted buffer events are not silently dropped.
 - Regression: `extensions/linkbrain/capture.test.ts` (8). Focused suite **21 / 152**.
+- Not Phase 14; not merge; no Lisa mutation; no Phases 7–12.
+
+## Capture concurrency amendment (2026-07-28 wave 4)
+
+- Defect: same-stream `load`→modify→`save`/`flush` was not serialized; concurrent enqueues could duplicate sequences / overwrite accepts; concurrent flush could clear newer data.
+- Fix: bounded per-opaque-stream keyed promise chain around enqueue, flush, flushAll (re-load under lock). Failures settle without poisoning the chain; idle keys are deleted.
+- No private internals, SQLite sidecar, or schema bump. Fixture JSON bytes unchanged (owner countersigns remain valid).
+- Regression: `capture.test.ts` concurrency block (8). Focused suite **21 / 160**.
 - Not Phase 14; not merge; no Lisa mutation; no Phases 7–12.

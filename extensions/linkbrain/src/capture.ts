@@ -76,6 +76,31 @@ function withTimeout<T>(
   });
 }
 
+/**
+ * Bounded per-key promise chain. Failures settle without poisoning the tail;
+ * idle keys are deleted so the map cannot grow without bound.
+ */
+function createKeyedPromiseChain() {
+  const tails = new Map<string, Promise<unknown>>();
+
+  return async function withKey<T>(key: string, work: () => Promise<T>): Promise<T> {
+    const prev = tails.get(key) ?? Promise.resolve();
+    const run = prev.catch(() => undefined).then(() => work());
+    const settled = run.then(
+      () => undefined,
+      () => undefined,
+    );
+    tails.set(key, settled);
+    try {
+      return await run;
+    } finally {
+      if (tails.get(key) === settled) {
+        tails.delete(key);
+      }
+    }
+  };
+}
+
 type CreateLinkbrainCaptureParams = {
   config: LinkbrainConfig;
   stores: LinkbrainStores;
@@ -88,6 +113,8 @@ type CreateLinkbrainCaptureParams = {
 export function createLinkbrainCapture(params: CreateLinkbrainCaptureParams): LinkbrainCapture {
   const now = params.now ?? (() => Date.now());
   const operationTimeoutMs = params.operationTimeoutMs ?? 2_000;
+  /** Serialize enqueue/flush/clear for one opaque stream id. */
+  const withStreamLock = createKeyedPromiseChain();
 
   const load = async (streamId: string): Promise<CaptureBufferRecord> => {
     const existing = await params.stores.captureBuffer.lookup(bufferKey(streamId));
@@ -183,79 +210,97 @@ export function createLinkbrainCapture(params: CreateLinkbrainCaptureParams): Li
       const actorId = input.actorKey ? opaqueId("actor", input.actorKey) : undefined;
       const fingerprint = input.fingerprint ? opaqueId("message", input.fingerprint) : undefined;
 
-      return await withTimeout(
-        async () => {
-          const record = await load(streamId);
-          if (fingerprint && record.seenFingerprints.includes(fingerprint)) {
-            return { accepted: false, flushed: false };
-          }
-          const event: BrainCaptureEvent = {
-            sequence: record.nextSequence,
-            role: input.role,
-            text: sanitizeCaptureText(input.text),
-          };
-          const nextEvents = [...record.events, event];
-          const nextFingerprints = fingerprint
-            ? [...record.seenFingerprints, fingerprint].slice(-256)
-            : record.seenFingerprints;
-          const next: CaptureBufferRecord = {
-            version: 1,
-            streamId,
-            ...(actorId ? { actorId } : record.actorId ? { actorId: record.actorId } : {}),
-            events: nextEvents,
-            nextSequence: record.nextSequence + 1,
-            updatedAtMs: now(),
-            seenFingerprints: nextFingerprints,
-          };
-
-          // Durable accept first. Flush/outbox failures must not lose this event.
-          try {
-            await save(next);
-          } catch (error) {
-            // reject-new on capture-buffer: leave prior streams/events untouched.
-            if (isLimitExceeded(error)) {
+      return await withStreamLock(streamId, async () =>
+        withTimeout(
+          async () => {
+            const record = await load(streamId);
+            if (fingerprint && record.seenFingerprints.includes(fingerprint)) {
               return { accepted: false, flushed: false };
             }
-            throw error;
-          }
+            const event: BrainCaptureEvent = {
+              sequence: record.nextSequence,
+              role: input.role,
+              text: sanitizeCaptureText(input.text),
+            };
+            const nextEvents = [...record.events, event];
+            const nextFingerprints = fingerprint
+              ? [...record.seenFingerprints, fingerprint].slice(-256)
+              : record.seenFingerprints;
+            const next: CaptureBufferRecord = {
+              version: 1,
+              streamId,
+              ...(actorId ? { actorId } : record.actorId ? { actorId: record.actorId } : {}),
+              events: nextEvents,
+              nextSequence: record.nextSequence + 1,
+              updatedAtMs: now(),
+              seenFingerprints: nextFingerprints,
+            };
 
-          const overEvents = nextEvents.length >= params.config.batchMaxEvents;
-          const overBytes = estimateBytes(nextEvents) >= params.config.batchMaxBytes;
-          if (!(overEvents || overBytes)) {
-            return { accepted: true, flushed: false };
-          }
+            // Durable accept first. Flush/outbox failures must not lose this event.
+            try {
+              await save(next);
+            } catch (error) {
+              // reject-new on capture-buffer: leave prior streams/events untouched.
+              if (isLimitExceeded(error)) {
+                return { accepted: false, flushed: false };
+              }
+              throw error;
+            }
 
-          try {
-            const flushed = await flushRecord(next, "batch_limit");
-            // flushed=true only after outbox enqueue + buffer clear inside flushRecord.
-            return { accepted: true, flushed };
-          } catch {
-            // Outbox overflow / shutdown / disabled / transport enqueue error:
-            // event remains in durable buffer for later flush/drain. Never claim flushed.
-            return { accepted: true, flushed: false };
-          }
-        },
-        operationTimeoutMs,
-        "capture-enqueue",
+            const overEvents = nextEvents.length >= params.config.batchMaxEvents;
+            const overBytes = estimateBytes(nextEvents) >= params.config.batchMaxBytes;
+            if (!(overEvents || overBytes)) {
+              return { accepted: true, flushed: false };
+            }
+
+            try {
+              const flushed = await flushRecord(next, "batch_limit");
+              // flushed=true only after outbox enqueue + buffer clear inside flushRecord.
+              return { accepted: true, flushed };
+            } catch {
+              // Outbox overflow / shutdown / disabled / transport enqueue error:
+              // event remains in durable buffer for later flush/drain. Never claim flushed.
+              return { accepted: true, flushed: false };
+            }
+          },
+          operationTimeoutMs,
+          "capture-enqueue",
+        ),
       );
     },
 
     async flush(streamKey, reason) {
       const streamId = opaqueId("stream", streamKey);
-      const record = await load(streamId);
-      const flushed = await flushRecord(record, reason);
-      return { batches: flushed ? 1 : 0 };
+      return await withStreamLock(streamId, async () => {
+        // Re-load under the stream lock so we never clear a newer concurrent accept.
+        const record = await load(streamId);
+        try {
+          const flushed = await flushRecord(record, reason);
+          return { batches: flushed ? 1 : 0 };
+        } catch {
+          // Outbox/shutdown failure: buffer retained; never claim a flushed batch.
+          return { batches: 0 };
+        }
+      });
     },
 
     async flushAll(reason) {
       const entries = await params.stores.captureBuffer.entries();
       let batches = 0;
       for (const entry of entries) {
-        const record = entry.value as CaptureBufferRecord;
-        if (!record || record.version !== 1) {
+        const snapshot = entry.value as CaptureBufferRecord;
+        if (!snapshot || snapshot.version !== 1 || typeof snapshot.streamId !== "string") {
           continue;
         }
-        if (await flushRecord(record, reason)) {
+        const flushed = await withStreamLock(snapshot.streamId, async () => {
+          const record = await load(snapshot.streamId);
+          try {
+            return await flushRecord(record, reason);
+          } catch {
+            return false;
+          }
+        });
+        if (flushed) {
           batches += 1;
         }
       }
