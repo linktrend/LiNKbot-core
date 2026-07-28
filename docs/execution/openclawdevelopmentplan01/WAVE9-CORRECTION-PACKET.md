@@ -5,7 +5,7 @@
 **Branch:** `issue/ocp-openclawdevelopmentplan01`
 **PR:** [#38](https://github.com/linktrend/openclaw_prime/pull/38) → `development` (**draft**; do not merge)
 **Starting tip:** `c16dfeaa32766bc5276eb169f7d3c2b0ab98491a`
-**Exact tip SHA:** see `git rev-parse HEAD` after wave-9 push (Phase 13 Current HEAD)
+**Exact tip SHA:** `a7cf9bf2c1b12cfa1fbf41a46358107b4608fbfd`
 **Authority:** Principal-approved smallest public MCP toolFilter SDK seam — **not** self-certification
 
 ## Scope bounds (honored)

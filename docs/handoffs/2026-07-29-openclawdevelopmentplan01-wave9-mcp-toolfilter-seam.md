@@ -14,7 +14,7 @@
 | Starting branch  | `issue/ocp-openclawdevelopmentplan01` |
 | Ending branch    | `issue/ocp-openclawdevelopmentplan01` |
 | Starting commit  | `c16dfeaa32766bc5276eb169f7d3c2b0ab98491a` |
-| Ending commit    | see `git rev-parse HEAD` after push |
+| Ending commit    | `a7cf9bf2c1b12cfa1fbf41a46358107b4608fbfd` |
 | Starting status  | clean at wave-8 tip |
 | Ending status    | wave 9 committed and pushed |
 
