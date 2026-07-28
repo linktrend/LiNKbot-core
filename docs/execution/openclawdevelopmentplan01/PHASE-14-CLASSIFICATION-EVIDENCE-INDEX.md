@@ -1,7 +1,7 @@
 # Plan §13.3 classification / evidence index — provisional for Codex Phase 14
 
 **Recorded:** 2026-07-29 Asia/Taipei (wave 8)
-**Branch tip:** `1ac650f2bdc76f9bc7bd199b2dd63aa70f711e75`
+**Branch tip:** `93dfb8a8acb94daf43e13c87600649bc64ffc828`
 **PR:** [#38](https://github.com/linktrend/openclaw_prime/pull/38) (draft)
 **Local tip proof:** **31 files / 203 tests** PASS; base-to-head `git diff --check` required clean
 **Authority:** Plan §13.3 evidence index for OpenClaw Codex. **Not** self-certification. Codex alone accepts classifications.
