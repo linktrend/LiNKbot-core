@@ -25,9 +25,9 @@
 | LiNKbrain plan                   | `LiNKbrain/docs/LINKBRAIN-PHASE-1-DETAILED-IMPLEMENTATION-PLAN.md`                 | `051caa80191639c06b2dee6fa4800e736ada30772a55ad84e12e5fa6a4e63458` | frozen / match plan §2 |
 | LiNKskills plan                  | `LiNKskills/docs/LINKSKILLS-INTERNAL-LAUNCH-DETAILED-DEVELOPMENT-PLAN.md`          | `31a6cc70bb778ce1dff236819e4bf600b0495dbb06c95bac55bcb2b0b2f5fe88` | frozen / match plan §2 |
 | openclaw_prime HEAD              | `issue/ocp-openclawdevelopmentplan01`                                              | (branch tip; recheck at each wave)                                 | implementation base    |
-| LiNKbrain HEAD (consume-only)    | `issue/13-developmentplan01`                                                       | `f2c9d6ce76576b5e6edd6d342f52f2ef1180da6a`                         | correction wave 2 pin  |
-| LiNKskills HEAD (consume-only)   | `issue/21-linkskillsdevelopmentplan01`                                             | `4094d84e1fb70b3310f4e236e6886f1449d8a1d9`                         | correction wave 2 pin  |
-| LiNKplatform HEAD (consume-only) | `issue/LP-01-linkplatformdevelopmentplan01`                                        | `10458829761797a2a2a70eff0dfa3d05bf980396`                         | correction wave 2 pin  |
+| LiNKbrain HEAD (consume-only)    | `issue/13-developmentplan01`                                                       | `a3cff6e0f04ac968c32beacb7bdb1b81a4d77d3f`                         | correction wave 2b pin |
+| LiNKskills HEAD (consume-only)   | `issue/21-linkskillsdevelopmentplan01`                                             | `f16103f23a716d0edeb08a1e82e38608ebd563ea`                         | correction wave 2b pin |
+| LiNKplatform HEAD (consume-only) | `issue/LP-01-linkplatformdevelopmentplan01`                                        | `e845ac17dffac52a501603ad2fafd1b53fef195d`                         | correction wave 2b pin |
 
 Planning-time OpenClaw HEAD cited in plan §2 (`ec90aa8cd119`) is historical. Implementation uses current branch HEAD above and rechecks public SDK/MCP/hooks/state at implementation time.
 

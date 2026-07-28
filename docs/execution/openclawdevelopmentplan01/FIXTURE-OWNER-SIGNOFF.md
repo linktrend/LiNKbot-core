@@ -1,7 +1,7 @@
 # Fixture owner sign-off process
 
 **Recorded (original):** 2026-07-28 07:44 Asia/Taipei  
-**Corrected:** 2026-07-28 09:10 Asia/Taipei (correction wave 2)  
+**Corrected:** 2026-07-28 09:52 Asia/Taipei (correction wave 2b)  
 **Branch:** `issue/ocp-openclawdevelopmentplan01`  
 **OpenClaw agent:** Cursor Cloud Agent (Grok 4.5 High), Feature  
 **Plan SHA-256:** `17203ee586a3fb2b1281bcddd8b17ae350075ebce537689f3c4bfcbbd14914f7`
@@ -34,17 +34,18 @@ Paths are relative to the fixture package root. Result is the package content ha
 
 Per-file inventories live in each package `MANIFEST.md`.
 
-## Related contract pins (correction wave 2)
+## Related contract pins (correction wave 2b)
 
 | Domain       | Source HEAD                                | Key version / hash                                                                                                   |
 | ------------ | ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------- |
-| LiNKplatform | `10458829761797a2a2a70eff0dfa3d05bf980396` | `platform.auth-claims/1.0.0`; schema `b0397cdf…50fb`; contentHash `6bf49618…b251`; `PLATFORM_CONTRACTS_SEMVER=0.2.1` |
-| LiNKbrain    | `f2c9d6ce76576b5e6edd6d342f52f2ef1180da6a` | `BRAIN_CONTRACT_VERSION=1.0.0`; frozen 17 tools via `frozen-tools.ts` `1e265b20…be26`                                |
-| LiNKskills   | `4094d84e1fb70b3310f4e236e6886f1449d8a1d9` | `skills.api.v0.1`; schemas aggregate `828ac00d…81d2`; vendored auth-claims schema matches Platform                   |
+| LiNKplatform | `e845ac17dffac52a501603ad2fafd1b53fef195d` | `platform.auth-claims/1.0.0`; schema `b0397cdf…50fb`; contentHash `6bf49618…b251`; `PLATFORM_CONTRACTS_SEMVER=0.2.1` |
+| LiNKbrain    | `a3cff6e0f04ac968c32beacb7bdb1b81a4d77d3f` | `BRAIN_CONTRACT_VERSION=1.0.0`; frozen 17 tools via `frozen-tools.ts` `1e265b20…be26`                                |
+| LiNKskills   | `f16103f23a716d0edeb08a1e82e38608ebd563ea` | `skills.api.v0.1`; schemas aggregate `828ac00d…81d2`; vendored auth-claims schema matches Platform                   |
 
 Pin files: `contracts/{platform,brain,skills}/PIN.json`.
 
-Stale pre-correction heads (`95120dc…`, `86161d3…`, `fd1b636…`) are removed from active pins.
+Stale heads scrubbed from active pins: pre-correction (`95120dc…`, `86161d3…`,
+`fd1b636…`) and prior wave-2 (`10458829…`, `f2c9d6ce…`, `4094d84e…`).
 
 ## Sign-off process (exact)
 
@@ -53,7 +54,7 @@ Stale pre-correction heads (`95120dc…`, `86161d3…`, `fd1b636…`) are remove
 2. Owner re-runs the aggregate hash command above and confirms match.
 3. Owner reviews tool names / claims against their domain contract:
    - Brain: frozen plan §9.1 names (17) — corrected Brain implements them at
-     `f2c9d6c…` (`BRAIN-TOOL-NAME-DECISION-PACKET.md`).
+     `a3cff6e…` (`BRAIN-TOOL-NAME-DECISION-PACKET.md`).
    - Skills: plan §9.2 `skills_*` names + `skills.api.v0.1` schemas + exact
      `platform.auth-claims/1.0.0` camelCase AuthClaims in identity/auth fixtures.
 4. Owner fills the countersignature block below (or publishes a sibling-repo
@@ -62,7 +63,7 @@ Stale pre-correction heads (`95120dc…`, `86161d3…`, `fd1b636…`) are remove
    `OWNER_COUNTERSIGNED` only after the signature fields are non-blank and the
    hash still matches.
 
-## Sibling-repo approval search (2026-07-28; refreshed wave 2)
+## Sibling-repo approval search (2026-07-28; refreshed wave 2b)
 
 Read-only scan of LiNKbrain and LiNKskills `docs/handoffs/` for existing approval
 of OpenClaw fixture packages:
@@ -88,7 +89,7 @@ See `COUNTERSIGN-REQUEST.md` for Principal routing.
 | Fixture package                                           | `extensions/linkbrain/fixtures`                                                                              |
 | Aggregate SHA-256 attested                                | `d539debc7b9d7347c109e7d462fc27a48c28322f0d3d5b85d57f602e843d45fb`                                           |
 | OpenClaw plan SHA-256                                     | `17203ee586a3fb2b1281bcddd8b17ae350075ebce537689f3c4bfcbbd14914f7`                                           |
-| Brain HEAD referenced                                     | `f2c9d6ce76576b5e6edd6d342f52f2ef1180da6a`                                                                   |
+| Brain HEAD referenced                                     | `a3cff6e0f04ac968c32beacb7bdb1b81a4d77d3f`                                                                   |
 | Tool-name stance                                          | Frozen §9.1 (17) required; corrected Brain implements via `frozen-tools.ts`; OpenClaw allowlist remains §9.1 |
 | Platform claims                                           | `platform.auth-claims/1.0.0` camelCase AuthClaims in identity/auth fixtures                                  |
 | Owner name / session ID                                   | _(blank — awaiting)_                                                                                         |
@@ -106,7 +107,7 @@ See `COUNTERSIGN-REQUEST.md` for Principal routing.
 | Fixture package                                           | `extensions/linkskills/fixtures`                                                               |
 | Aggregate SHA-256 attested                                | `8586d89a4a160987ace45ed4392b78c8a66391940e81eed6bdc098f49404ec96`                             |
 | OpenClaw plan SHA-256                                     | `17203ee586a3fb2b1281bcddd8b17ae350075ebce537689f3c4bfcbbd14914f7`                             |
-| Skills HEAD referenced                                    | `4094d84e1fb70b3310f4e236e6886f1449d8a1d9`                                                     |
+| Skills HEAD referenced                                    | `f16103f23a716d0edeb08a1e82e38608ebd563ea`                                                     |
 | Contract version                                          | `skills.api.v0.1`                                                                              |
 | Platform claims                                           | `platform.auth-claims/1.0.0` (schema `b0397cdf…50fb` / contentHash `6bf49618…b251`)            |
 | Certification note                                        | Immutable-release / executor-receipt path; prior suite-authored observed_output path withdrawn |

@@ -4,17 +4,18 @@ Sanitized metadata + SHA-256 pins for owner-approved Platform / Brain / Skills
 contracts consumed by OpenClaw Prime on branch
 `issue/ocp-openclawdevelopmentplan01`.
 
-**Correction wave 2 (2026-07-28 09:10 Asia/Taipei):** repinned to corrected
-sibling HEADs. Stale pre-correction heads removed from active pins.
+**Correction wave 2b (2026-07-28 09:52 Asia/Taipei):** repinned to latest
+corrected sibling HEADs after wave-2 advances. Stale wave-2 and pre-correction
+heads removed from active pins.
 
 **Rule:** OpenClaw copies hashes and package metadata only. Do not vendor
 `node_modules`, secrets, live endpoints, or full upstream trees.
 
 | Domain       | Pin file            | Source HEAD                                |
 | ------------ | ------------------- | ------------------------------------------ |
-| LiNKplatform | `platform/PIN.json` | `10458829761797a2a2a70eff0dfa3d05bf980396` |
-| LiNKbrain    | `brain/PIN.json`    | `f2c9d6ce76576b5e6edd6d342f52f2ef1180da6a` |
-| LiNKskills   | `skills/PIN.json`   | `4094d84e1fb70b3310f4e236e6886f1449d8a1d9` |
+| LiNKplatform | `platform/PIN.json` | `e845ac17dffac52a501603ad2fafd1b53fef195d` |
+| LiNKbrain    | `brain/PIN.json`    | `a3cff6e0f04ac968c32beacb7bdb1b81a4d77d3f` |
+| LiNKskills   | `skills/PIN.json`   | `f16103f23a716d0edeb08a1e82e38608ebd563ea` |
 
 ### Platform auth-claims (authoritative)
 

@@ -1,15 +1,15 @@
 # Countersign request — OpenClaw fixture packages (Phase 1)
 
-**Date:** 2026-07-28 09:10 Asia/Taipei  
+**Date:** 2026-07-28 09:52 Asia/Taipei  
 **Branch:** `issue/ocp-openclawdevelopmentplan01`  
 **For:** Principal → route to LiNKbrain owner and LiNKskills owner  
 **Full process:** `FIXTURE-OWNER-SIGNOFF.md`
 
 ## Why this exists
 
-OpenClaw refreshed consumer fixtures against corrected sibling HEADs (correction
-wave 2). Live Brain/Skills owner signatures were **not** obtained in-session.
-Fixture status remains **`AWAITING_OWNER_COUNTERSIGN`**.
+OpenClaw refreshed consumer pins against latest corrected sibling HEADs
+(correction wave 2b). Live Brain/Skills owner signatures were **not** obtained
+in-session. Fixture status remains **`AWAITING_OWNER_COUNTERSIGN`**.
 
 **This is NOT a passed Phase 1 gate.** Do not treat contract pins or draft
 fixtures as domain-owner approved until both countersignature blocks are filled.
@@ -25,9 +25,9 @@ fixtures as domain-owner approved until both countersignature blocks are filled.
 
 | Domain       | Branch                                      | HEAD                                       |
 | ------------ | ------------------------------------------- | ------------------------------------------ |
-| LiNKplatform | `issue/LP-01-linkplatformdevelopmentplan01` | `10458829761797a2a2a70eff0dfa3d05bf980396` |
-| LiNKbrain    | `issue/13-developmentplan01`                | `f2c9d6ce76576b5e6edd6d342f52f2ef1180da6a` |
-| LiNKskills   | `issue/21-linkskillsdevelopmentplan01`      | `4094d84e1fb70b3310f4e236e6886f1449d8a1d9` |
+| LiNKplatform | `issue/LP-01-linkplatformdevelopmentplan01` | `e845ac17dffac52a501603ad2fafd1b53fef195d` |
+| LiNKbrain    | `issue/13-developmentplan01`                | `a3cff6e0f04ac968c32beacb7bdb1b81a4d77d3f` |
+| LiNKskills   | `issue/21-linkskillsdevelopmentplan01`      | `f16103f23a716d0edeb08a1e82e38608ebd563ea` |
 
 ## What each owner should do
 

@@ -1,10 +1,10 @@
 {
   "domain": "LiNKskills",
-  "consumed_at": "2026-07-28T09:10:00+08:00",
+  "consumed_at": "2026-07-28T09:52:00+08:00",
   "consumer": "openclaw_prime",
   "branch": "issue/ocp-openclawdevelopmentplan01",
   "source_repo": "LiNKskills",
-  "source_head": "4094d84e1fb70b3310f4e236e6886f1449d8a1d9",
+  "source_head": "f16103f23a716d0edeb08a1e82e38608ebd563ea",
   "source_branch_observed": "issue/21-linkskillsdevelopmentplan01",
   "CONTRACT_VERSION": "skills.api.v0.1",
   "schema_version_const": "0.1",
@@ -38,6 +38,6 @@
   },
   "schemas_package_aggregate_sha256": "828ac00d3be0e9b2040aacec3ca788176d8bb160c11d13994055d047503981d2",
   "openclaw_plan_sha256": "17203ee586a3fb2b1281bcddd8b17ae350075ebce537689f3c4bfcbbd14914f7",
-  "correction_wave": "wave-2-2026-07-28",
+  "correction_wave": "wave-2b-2026-07-28",
   "sanitization": "No secrets or node_modules. Per-schema SHA-256 of JSON files only."
 }

@@ -77,9 +77,9 @@ Evidence pointers are status packets and code paths. **No seven-value classifica
 
 | Domain       | Pin file                      | Source HEAD                                | Key pin                                                                                                              |
 | ------------ | ----------------------------- | ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------- |
-| LiNKplatform | `contracts/platform/PIN.json` | `10458829761797a2a2a70eff0dfa3d05bf980396` | `platform.auth-claims/1.0.0` schema `b0397cdf…50fb` / contentHash `6bf49618…b251`; `PLATFORM_CONTRACTS_SEMVER=0.2.1` |
-| LiNKbrain    | `contracts/brain/PIN.json`    | `f2c9d6ce76576b5e6edd6d342f52f2ef1180da6a` | `BRAIN_CONTRACT_VERSION=1.0.0`; frozen 17 tools via `frozen-tools.ts` `1e265b20…be26`                                |
-| LiNKskills   | `contracts/skills/PIN.json`   | `4094d84e1fb70b3310f4e236e6886f1449d8a1d9` | `skills.api.v0.1`; schemas aggregate `828ac00d…81d2`; vendored auth-claims matches Platform                          |
+| LiNKplatform | `contracts/platform/PIN.json` | `e845ac17dffac52a501603ad2fafd1b53fef195d` | `platform.auth-claims/1.0.0` schema `b0397cdf…50fb` / contentHash `6bf49618…b251`; `PLATFORM_CONTRACTS_SEMVER=0.2.1` |
+| LiNKbrain    | `contracts/brain/PIN.json`    | `a3cff6e0f04ac968c32beacb7bdb1b81a4d77d3f` | `BRAIN_CONTRACT_VERSION=1.0.0`; frozen 17 tools via `frozen-tools.ts` `1e265b20…be26`                                |
+| LiNKskills   | `contracts/skills/PIN.json`   | `f16103f23a716d0edeb08a1e82e38608ebd563ea` | `skills.api.v0.1`; schemas aggregate `828ac00d…81d2`; vendored auth-claims matches Platform                          |
 
 Full consumption record: `PHASE-1-CONTRACT-CONSUMPTION.md`.
 
@@ -87,9 +87,9 @@ Full consumption record: `PHASE-1-CONTRACT-CONSUMPTION.md`.
 
 ## 3. Brain tool name decision
 
-**OpenClaw keeps frozen plan §9.1 names (17).** Corrected Brain HEAD `f2c9d6c…` implements the same surface via `frozen-tools.ts`. OpenClaw will **not** alias. Fixture owner countersign remains **AWAITING_OWNER_COUNTERSIGN** — **not** a passed Phase 1 gate.
+**OpenClaw keeps frozen plan §9.1 names (17).** Corrected Brain HEAD `a3cff6e…` implements the same surface via `frozen-tools.ts`. OpenClaw will **not** alias. Fixture owner countersign remains **AWAITING_OWNER_COUNTERSIGN** — **not** a passed Phase 1 gate.
 
-Packet: `BRAIN-TOOL-NAME-DECISION-PACKET.md` (correction wave 2).
+Packet: `BRAIN-TOOL-NAME-DECISION-PACKET.md` (correction wave 2b).
 
 ---
 

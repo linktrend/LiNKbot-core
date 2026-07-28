@@ -1,8 +1,8 @@
 # Phase 1 — Contract consumption record
 
-**Session:** `cursor-cloud-feature-openclawdevelopmentplan01-correction-wave2-20260728-0910`  
+**Session:** `cursor-cloud-feature-openclawdevelopmentplan01-correction-wave2b-20260728-0952`  
 **Branch:** `issue/ocp-openclawdevelopmentplan01`  
-**Recorded:** 2026-07-28 09:10 Asia/Taipei (correction wave 2)  
+**Recorded:** 2026-07-28 09:52 Asia/Taipei (correction wave 2b)  
 **Agent:** Cursor Cloud Agent (Grok 4.5 High), Feature role  
 **Authority:** Principal mission — consume hashed Platform/Brain/Skills contracts; do not edit upstream
 
@@ -12,13 +12,13 @@
 | ------- | ------------------------------------------------------------------------------- |
 | Plan    | `docs/OPENCLAW-PRIME-LISA-LINKBRAIN-LINKSKILLS-DETAILED-IMPLEMENTATION-PLAN.md` |
 | SHA-256 | `17203ee586a3fb2b1281bcddd8b17ae350075ebce537689f3c4bfcbbd14914f7`              |
-| Check   | HASH_OK (re-verified 2026-07-28 09:10 Asia/Taipei)                              |
+| Check   | HASH_OK (re-verified 2026-07-28 09:52 Asia/Taipei)                              |
 
 ## 2. LiNKplatform pin
 
 | Field                                  | Value                                                                                  |
 | -------------------------------------- | -------------------------------------------------------------------------------------- |
-| Source HEAD                            | `10458829761797a2a2a70eff0dfa3d05bf980396`                                             |
+| Source HEAD                            | `e845ac17dffac52a501603ad2fafd1b53fef195d`                                             |
 | Source branch                          | `issue/LP-01-linkplatformdevelopmentplan01`                                            |
 | `PLATFORM_CONTRACTS_SEMVER`            | `0.2.1`                                                                                |
 | Package                                | `@linktrend/platform-contracts@0.2.1`                                                  |
@@ -37,7 +37,7 @@ Sanitized: metadata + hashes + schema JSON only. No `node_modules` copy.
 
 | Field                                       | Value                                                              |
 | ------------------------------------------- | ------------------------------------------------------------------ |
-| Source HEAD                                 | `f2c9d6ce76576b5e6edd6d342f52f2ef1180da6a`                         |
+| Source HEAD                                 | `a3cff6e0f04ac968c32beacb7bdb1b81a4d77d3f`                         |
 | Source branch                               | `issue/13-developmentplan01`                                       |
 | `BRAIN_CONTRACT_VERSION`                    | `1.0.0` (from `packages/contracts/src/schemas.ts`)                 |
 | Package                                     | `@linktrend/lbrain-contracts@0.1.0`                                |
@@ -49,14 +49,14 @@ Sanitized: metadata + hashes + schema JSON only. No `node_modules` copy.
 ### Tool-name freeze (non-negotiable for OpenClaw)
 
 OpenClaw consumes **frozen plan §9.1** tool names (17). Corrected Brain HEAD
-`f2c9d6c…` implements the same surface via `FROZEN_MCP_TOOL_NAMES`. OpenClaw
+`a3cff6e…` implements the same surface via `FROZEN_MCP_TOOL_NAMES`. OpenClaw
 **will not** alias. See `BRAIN-TOOL-NAME-DECISION-PACKET.md`.
 
 ## 4. LiNKskills pin
 
 | Field                             | Value                                                                                                                        |
 | --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| Source HEAD                       | `4094d84e1fb70b3310f4e236e6886f1449d8a1d9`                                                                                   |
+| Source HEAD                       | `f16103f23a716d0edeb08a1e82e38608ebd563ea`                                                                                   |
 | Source branch                     | `issue/21-linkskillsdevelopmentplan01`                                                                                       |
 | `CONTRACT_VERSION` / API label    | `skills.api.v0.1`                                                                                                            |
 | Schema const                      | `schema_version: "0.1"`                                                                                                      |

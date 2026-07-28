@@ -7,7 +7,7 @@ and the local Skills fake MCP. They are derived from:
 
 - `docs/OPENCLAW-PRIME-LISA-LINKBRAIN-LINKSKILLS-DETAILED-IMPLEMENTATION-PLAN.md` §8–§9
 - LiNKskills plan tool names (`skills_*`) and envelope shapes (`packages/contracts/schemas/*`)
-- Corrected Skills HEAD `4094d84e1fb70b3310f4e236e6886f1449d8a1d9` (immutable-release certification path + Platform claims)
+- Corrected Skills HEAD `f16103f23a716d0edeb08a1e82e38608ebd563ea` (immutable-release certification path + Platform claims)
 - Exact Platform contract `platform.auth-claims/1.0.0` (camelCase AuthClaims in `identity/` + `auth/`)
 
 ## Rules
@@ -46,12 +46,12 @@ and the local Skills fake MCP. They are derived from:
 | JSON file count                       | 69                                                                         |
 | **Fixture package aggregate SHA-256** | `8586d89a4a160987ace45ed4392b78c8a66391940e81eed6bdc098f49404ec96`         |
 | OpenClaw plan SHA-256                 | `17203ee586a3fb2b1281bcddd8b17ae350075ebce537689f3c4bfcbbd14914f7`         |
-| Skills contracts HEAD pin             | `4094d84e1fb70b3310f4e236e6886f1449d8a1d9`                                 |
+| Skills contracts HEAD pin             | `f16103f23a716d0edeb08a1e82e38608ebd563ea`                                 |
 | `CONTRACT_VERSION`                    | `skills.api.v0.1`                                                          |
 | Upstream schemas aggregate SHA-256    | `828ac00d3be0e9b2040aacec3ca788176d8bb160c11d13994055d047503981d2`         |
 | Platform auth-claims schema SHA-256   | `b0397cdf34e76ab0986c6d223ecb6c3c66d619ea59557f78cd45c0c015ff50fb`         |
 | Platform auth-claims contentHash      | `6bf49618d846662976886f57d5d468f73a08ab1a6574968f68833d82429db251`         |
-| Recorded                              | 2026-07-28 09:10 Asia/Taipei (correction wave 2)                           |
+| Recorded                              | 2026-07-28 09:52 Asia/Taipei (correction wave 2b)                          |
 | Sign-off process                      | `docs/execution/openclawdevelopmentplan01/FIXTURE-OWNER-SIGNOFF.md`        |
 
 ## SHA-256 inventory

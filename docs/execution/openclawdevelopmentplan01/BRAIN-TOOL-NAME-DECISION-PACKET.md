@@ -1,21 +1,21 @@
 # Decision packet — Brain MCP tool names (frozen §9.1)
 
 **Recorded (original):** 2026-07-28 07:44 Asia/Taipei  
-**Corrected:** 2026-07-28 09:10 Asia/Taipei (correction wave 2)  
+**Corrected:** 2026-07-28 09:52 Asia/Taipei (correction wave 2b)  
 **Branch:** `issue/ocp-openclawdevelopmentplan01`  
 **OpenClaw agent:** Cursor Cloud Agent (Grok 4.5 High), Feature  
 **Plan SHA-256:** `17203ee586a3fb2b1281bcddd8b17ae350075ebce537689f3c4bfcbbd14914f7`  
-**Brain HEAD (corrected):** `f2c9d6ce76576b5e6edd6d342f52f2ef1180da6a` (`issue/13-developmentplan01`)
+**Brain HEAD (corrected):** `a3cff6e0f04ac968c32beacb7bdb1b81a4d77d3f` (`issue/13-developmentplan01`)
 
 ## Correction summary
 
-**Corrected Brain implements frozen plan §9.1 — all 17 tools** at HEAD `f2c9d6c…` via
+**Corrected Brain implements frozen plan §9.1 — all 17 tools** at HEAD `a3cff6e…` via
 `packages/mcp-server/src/frozen-tools.ts` (`FROZEN_MCP_TOOL_NAMES` /
 `FROZEN_MCP_TOOLS`). OpenClaw’s allowlist, fixtures, and fakes remain §9.1.
 
-The pre-correction claim that Brain exposed only nine mismatched CURRENT aliases
-(`brain_search_knowledge`, …) is **obsolete** and must not be repeated. Stale pin
-`86161d3…` is scrubbed from active consumption records.
+Do **not** claim Brain exposes a short mismatched CURRENT-alias tool set. Active
+consumption records pin the 17 frozen §9.1 names. Stale heads (`86161d3…`,
+`f2c9d6ce…`, and earlier) are scrubbed from active pins.
 
 ## Frozen OpenClaw plan §9.1 (authoritative for OpenClaw)
 
@@ -40,7 +40,7 @@ OpenClaw mirrors these in:
 
 | Field                      | Value                                                                                                                   |
 | -------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| Source HEAD                | `f2c9d6ce76576b5e6edd6d342f52f2ef1180da6a`                                                                              |
+| Source HEAD                | `a3cff6e0f04ac968c32beacb7bdb1b81a4d77d3f`                                                                              |
 | Authoritative surface      | `packages/mcp-server/src/frozen-tools.ts`                                                                               |
 | File SHA-256               | `1e265b20dca34f4be73908a38bf2102c514ce594574faf27a41a9567a663be26`                                                      |
 | Tool count                 | **17** (exact match to §9.1)                                                                                            |
@@ -53,7 +53,7 @@ OpenClaw mirrors these in:
 | Option                                    | Description                                          | Status after correction                                                                         |
 | ----------------------------------------- | ---------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
 | **A. Brain implements frozen §9.1 names** | LiNKbrain mcp-server exposes exact §9.1 tool strings | **DONE at corrected Brain HEAD** (code evidence); OpenClaw fixture owner countersign still open |
-| **B. OpenClaw aliases CURRENT → §9.1**    | Map mismatched CURRENT names                         | **Rejected** — freeze violation                                                                 |
+| **B. OpenClaw aliases CURRENT → §9.1**    | Map non-§9.1 names to frozen names                   | **Rejected** — freeze violation                                                                 |
 | **C. Renegotiate plan §9.1 to CURRENT**   | Change OpenClaw plan + fixtures                      | **Rejected** — not needed                                                                       |
 | **D. Dual expose**                        | Brain serves both name sets temporarily              | Brain may keep optional legacy aliases; OpenClaw still calls §9.1 only                          |
 
@@ -71,7 +71,7 @@ OpenClaw mirrors these in:
 | Item                                       | State                                             |
 | ------------------------------------------ | ------------------------------------------------- |
 | OpenClaw decision                          | **DECIDED** — keep frozen §9.1; no alias          |
-| Brain §9.1 implementation (corrected HEAD) | **IMPLEMENTED** at `f2c9d6c…` (code evidence)     |
+| Brain §9.1 implementation (corrected HEAD) | **IMPLEMENTED** at `a3cff6e…` (code evidence)     |
 | Brain owner fixture countersign            | **AWAITING_OWNER_COUNTERSIGN**                    |
 | Phase 1 full exit                          | **NOT PASSED** — owner countersign still required |
 

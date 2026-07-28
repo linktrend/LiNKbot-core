@@ -6,7 +6,7 @@ OpenClaw-derived draft fixtures for Lisa ↔ LiNKbrain integration tests.
 - **Contract version:** `brain.contract.v0.draft` (consumer package); Brain `BRAIN_CONTRACT_VERSION=1.0.0`
 - **Platform claims:** `platform.auth-claims/1.0.0` (camelCase AuthClaims in `identity/` + `auth/`)
 - **Source plan:** `docs/OPENCLAW-PRIME-LISA-LINKBRAIN-LINKSKILLS-DETAILED-IMPLEMENTATION-PLAN.md` §9.1 / §9.3
-- **Brain HEAD pin:** `f2c9d6ce76576b5e6edd6d342f52f2ef1180da6a` — implements full frozen 17 tools in `packages/mcp-server/src/frozen-tools.ts`
+- **Brain HEAD pin:** `a3cff6e0f04ac968c32beacb7bdb1b81a4d77d3f` — implements full frozen 17 tools in `packages/mcp-server/src/frozen-tools.ts`
 - **Live data:** none — all actor IDs, tokens, and payloads are sanitized placeholders
 
 ## SHA-256 inventory
@@ -93,16 +93,16 @@ OpenClaw-derived draft fixtures for Lisa ↔ LiNKbrain integration tests.
 | JSON file count                       | 71                                                                            |
 | **Fixture package aggregate SHA-256** | `d539debc7b9d7347c109e7d462fc27a48c28322f0d3d5b85d57f602e843d45fb`            |
 | OpenClaw plan SHA-256                 | `17203ee586a3fb2b1281bcddd8b17ae350075ebce537689f3c4bfcbbd14914f7`            |
-| Brain contracts HEAD pin              | `f2c9d6ce76576b5e6edd6d342f52f2ef1180da6a`                                    |
+| Brain contracts HEAD pin              | `a3cff6e0f04ac968c32beacb7bdb1b81a4d77d3f`                                    |
 | `BRAIN_CONTRACT_VERSION`              | `1.0.0`                                                                       |
 | `schemas.ts` SHA-256                  | `61468e4cf93d087df23dad1c26fbc91b258378757024debcde0cb6e97d50e0bb`            |
 | `frozen-tools.ts` SHA-256             | `1e265b20dca34f4be73908a38bf2102c514ce594574faf27a41a9567a663be26`            |
-| Recorded                              | 2026-07-28 09:10 Asia/Taipei (correction wave 2)                              |
+| Recorded                              | 2026-07-28 09:52 Asia/Taipei (correction wave 2b)                             |
 | Sign-off process                      | `docs/execution/openclawdevelopmentplan01/FIXTURE-OWNER-SIGNOFF.md`           |
 | Tool-name decision                    | `docs/execution/openclawdevelopmentplan01/BRAIN-TOOL-NAME-DECISION-PACKET.md` |
 
 Tool names in this package are **frozen plan §9.1** (17 names). Corrected Brain HEAD
-`f2c9d6c…` implements the same surface via `FROZEN_MCP_TOOL_NAMES`. OpenClaw allowlist
+`a3cff6e…` implements the same surface via `FROZEN_MCP_TOOL_NAMES`. OpenClaw allowlist
 remains §9.1; OpenClaw will not alias.
 
 ## Owner sign-off

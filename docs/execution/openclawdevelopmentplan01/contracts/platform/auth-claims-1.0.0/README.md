@@ -1,6 +1,6 @@
 # Sanitized pin — platform.auth-claims/1.0.0
 
-Copied from LiNKplatform HEAD `10458829761797a2a2a70eff0dfa3d05bf980396`
+Copied from LiNKplatform HEAD `e845ac17dffac52a501603ad2fafd1b53fef195d`
 (`issue/LP-01-linkplatformdevelopmentplan01`).
 
 | Field                 | Value                                                              |

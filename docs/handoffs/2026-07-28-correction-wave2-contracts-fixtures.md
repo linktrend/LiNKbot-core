@@ -104,3 +104,14 @@ None for this wave.
 ## Confidence
 
 98% on pin/hash/fixture refresh accuracy; 100% that Phase 1 is not complete without owner countersign.
+
+## Amendments
+
+### 2026-07-28 09:52 Asia/Taipei — wave 2b HEAD supersession
+
+- **What was wrong / superseded:** Active pin HEADs `10458829…` / `f2c9d6ce…` / `4094d84e…` were wave-2 tips; siblings advanced afterward.
+- **Corrected fact:** Wave 2b active pins are Platform `e845ac17…`, Brain `a3cff6e0…`, Skills `f16103f2…`. Contract file hashes and fixture aggregates unchanged. Auth-claims schema `b0397cdf…50fb` / contentHash `6bf49618…b251` unchanged.
+- **Why:** Sibling corrected branches advanced after the wave-2 pin commit.
+- **Who corrected:** Cursor Cloud Agent (Grok 4.5 High), Feature — wave 2b session.
+- **Evidence:** sibling `git rev-parse` at named HEADs; `shasum` of pinned paths; fixture aggregate method in `FIXTURE-OWNER-SIGNOFF.md`.
+- **Scrub note:** Do not claim Brain exposes a short mismatched CURRENT-alias tool set; corrected Brain implements §9.1 (17) via `frozen-tools.ts`.

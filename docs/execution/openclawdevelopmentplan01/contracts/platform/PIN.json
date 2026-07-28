@@ -1,10 +1,10 @@
 {
   "domain": "LiNKplatform",
-  "consumed_at": "2026-07-28T09:10:00+08:00",
+  "consumed_at": "2026-07-28T09:52:00+08:00",
   "consumer": "openclaw_prime",
   "branch": "issue/ocp-openclawdevelopmentplan01",
   "source_repo": "LiNKplatform",
-  "source_head": "10458829761797a2a2a70eff0dfa3d05bf980396",
+  "source_head": "e845ac17dffac52a501603ad2fafd1b53fef195d",
   "source_branch_observed": "issue/LP-01-linkplatformdevelopmentplan01",
   "PLATFORM_CONTRACTS_SEMVER": "0.2.1",
   "package": {
@@ -37,6 +37,6 @@
     "sha256": "ceed17a5417f1bec359de825a4f0b9f25e5cf363e4e468608daf21206385ed7a"
   },
   "openclaw_plan_sha256": "17203ee586a3fb2b1281bcddd8b17ae350075ebce537689f3c4bfcbbd14914f7",
-  "correction_wave": "wave-2-2026-07-28",
+  "correction_wave": "wave-2b-2026-07-28",
   "sanitization": "No secrets, credentials, endpoints with tokens, or node_modules copied. Metadata + hashes only."
 }
