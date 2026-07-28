@@ -5,8 +5,6 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   createKeyedPromiseChain,
   isOperationTimeout,
-  LinkbrainOperationTimeoutError,
-  raceDeadline,
   runBounded,
   runExclusiveBounded,
 } from "./src/bounded.js";
@@ -36,15 +34,13 @@ function createTestStores(maxEntries = 200) {
 describe("linkbrain bounded primitives", () => {
   it("raceDeadline returns within bound against a never-resolving promise", async () => {
     vi.useFakeTimers();
-    const pending = raceDeadline(neverResolving<string>(), {
+    const pending = runBounded(async () => neverResolving<string>(), {
       timeoutMs: 50,
       label: "unit-race",
     });
     const assertion = expect(pending).rejects.toSatisfy(
       (error: unknown) =>
-        isOperationTimeout(error) &&
-        error instanceof LinkbrainOperationTimeoutError &&
-        error.label === "unit-race",
+        isOperationTimeout(error) && error instanceof Error && error.message.includes("unit-race"),
     );
     await vi.advanceTimersByTimeAsync(50);
     await assertion;
@@ -87,7 +83,7 @@ describe("linkbrain bounded primitives", () => {
   it("runExclusiveBounded times out lock wait without starting queued work", async () => {
     vi.useFakeTimers();
     const withKey = createKeyedPromiseChain();
-    const gate = createDeferred<void>();
+    const gate = createDeferred();
     let secondStarted = false;
 
     const first = runExclusiveBounded(
@@ -133,7 +129,7 @@ describe("linkbrain bounded primitives", () => {
   it("runExclusiveBounded retains lock until abandoned work settles after timeout", async () => {
     vi.useFakeTimers();
     const withKey = createKeyedPromiseChain();
-    const gate = createDeferred<void>();
+    const gate = createDeferred();
     let releaseCount = 0;
     const stalled: string[] = [];
 
@@ -186,7 +182,7 @@ describe("linkbrain bounded primitives", () => {
   it("different keys progress independently under exclusive bounds", async () => {
     vi.useFakeTimers();
     const withKey = createKeyedPromiseChain();
-    const leftGate = createDeferred<void>();
+    const leftGate = createDeferred();
 
     const left = runExclusiveBounded(
       withKey,
@@ -214,7 +210,7 @@ describe("linkbrain capture/lifecycle timeout integration", () => {
   it("enqueue returns within bound when captureBuffer save never resolves; late save stays durable", async () => {
     vi.useFakeTimers();
     const stores = createTestStores();
-    const saveGate = createDeferred<void>();
+    const saveGate = createDeferred();
     const originalRegister = stores.captureBuffer.register.bind(stores.captureBuffer);
     stores.captureBuffer.register = async (key, value, opts) => {
       await saveGate.promise;
@@ -300,7 +296,7 @@ describe("linkbrain capture/lifecycle timeout integration", () => {
     });
     await runtime.open();
 
-    const lookupGate = createDeferred<void>();
+    const lookupGate = createDeferred();
     let lookupCalls = 0;
     const originalLookup = stores.captureBuffer.lookup.bind(stores.captureBuffer);
     stores.captureBuffer.lookup = async (key) => {
@@ -428,7 +424,7 @@ describe("linkbrain capture/lifecycle timeout integration", () => {
     });
     await runtime.open();
 
-    const saveGate = createDeferred<void>();
+    const saveGate = createDeferred();
     let saveCalls = 0;
     const originalRegister = stores.captureBuffer.register.bind(stores.captureBuffer);
     stores.captureBuffer.register = async (key, value, opts) => {
@@ -492,8 +488,8 @@ describe("linkbrain capture/lifecycle timeout integration", () => {
     });
     await runtime.open();
 
-    const stallGate = createDeferred<void>();
-    const enteredFirstSave = createDeferred<void>();
+    const stallGate = createDeferred();
+    const enteredFirstSave = createDeferred();
     let registerCalls = 0;
     const originalRegister = stores.captureBuffer.register.bind(stores.captureBuffer);
     stores.captureBuffer.register = async (key, value, opts) => {
@@ -529,7 +525,9 @@ describe("linkbrain capture/lifecycle timeout integration", () => {
 
     await expect(right).resolves.toEqual({ accepted: true, flushed: false });
 
-    const leftAssert = expect(left).rejects.toSatisfy((error: unknown) => isOperationTimeout(error));
+    const leftAssert = expect(left).rejects.toSatisfy((error: unknown) =>
+      isOperationTimeout(error),
+    );
     await vi.advanceTimersByTimeAsync(40);
     await leftAssert;
 

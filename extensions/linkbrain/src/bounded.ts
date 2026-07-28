@@ -10,7 +10,7 @@
  * - Queued work that acquires the lock after its own deadline does not start.
  */
 
-export class LinkbrainOperationTimeoutError extends Error {
+class LinkbrainOperationTimeoutError extends Error {
   readonly code = "LINKBRAIN_OPERATION_TIMEOUT" as const;
   readonly label: string;
   readonly timeoutMs: number;
@@ -23,13 +23,10 @@ export class LinkbrainOperationTimeoutError extends Error {
   }
 }
 
-export function isOperationTimeout(error: unknown): error is LinkbrainOperationTimeoutError {
+export function isOperationTimeout(error: unknown): boolean {
   return (
     error instanceof LinkbrainOperationTimeoutError ||
-    (error instanceof Error &&
-      error.name === "LinkbrainOperationTimeoutError" &&
-      typeof (error as { code?: unknown }).code === "string" &&
-      (error as { code: string }).code === "LINKBRAIN_OPERATION_TIMEOUT")
+    (error instanceof Error && error.name === "LinkbrainOperationTimeoutError")
   );
 }
 
@@ -44,7 +41,7 @@ export function throwIfAborted(signal: AbortSignal | undefined, label = "operati
   throw new Error(`linkbrain: ${label} aborted`);
 }
 
-export type BoundedRaceOptions = {
+type BoundedRaceOptions = {
   timeoutMs: number;
   label: string;
 };
@@ -58,7 +55,7 @@ export type StalledInfo = {
  * Race an already-started promise against a deadline.
  * Does not cancel `work` — callers must abort cooperatively and/or retain locks.
  */
-export async function raceDeadline<T>(work: Promise<T>, options: BoundedRaceOptions): Promise<T> {
+async function raceDeadline<T>(work: Promise<T>, options: BoundedRaceOptions): Promise<T> {
   let timer: ReturnType<typeof setTimeout> | undefined;
   const timeoutPromise = new Promise<never>((_, reject) => {
     timer = setTimeout(() => {
@@ -85,7 +82,7 @@ export async function runBounded<T>(
   work: (signal: AbortSignal) => Promise<T>,
   options: BoundedRaceOptions & {
     signal?: AbortSignal;
-    onTimeout?: (error: LinkbrainOperationTimeoutError) => void;
+    onTimeout?: (error: Error) => void;
     onStalled?: (info: StalledInfo) => void;
   },
 ): Promise<T> {
@@ -106,7 +103,7 @@ export async function runBounded<T>(
   // Observe settlement so a timed-out race cannot leave an unhandledRejection.
   const observed = started.then(
     (value) => ({ ok: true as const, value }),
-    (error) => ({ ok: false as const, error }),
+    (error: unknown) => ({ ok: false as const, error }),
   );
 
   try {
@@ -117,7 +114,7 @@ export async function runBounded<T>(
   } catch (error) {
     if (isOperationTimeout(error)) {
       controller.abort(error);
-      options.onTimeout?.(error);
+      options.onTimeout?.(error instanceof Error ? error : new Error(String(error)));
       options.onStalled?.({
         label: options.label,
         reason: "deadline_exceeded_work_retained",
@@ -158,7 +155,7 @@ export function createKeyedPromiseChain() {
   };
 }
 
-export type KeyedLock = <T>(key: string, work: () => Promise<T>) => Promise<T>;
+type KeyedLock = <T>(key: string, work: () => Promise<T>) => Promise<T>;
 
 /**
  * Schedule exclusive keyed work under a caller deadline.
@@ -171,7 +168,7 @@ export async function runExclusiveBounded<T>(
   withKey: KeyedLock,
   key: string,
   options: BoundedRaceOptions & {
-    onTimeout?: (error: LinkbrainOperationTimeoutError) => void;
+    onTimeout?: (error: Error) => void;
     onStalled?: (info: StalledInfo) => void;
   },
   work: (signal: AbortSignal) => Promise<T>,
@@ -192,7 +189,7 @@ export async function runExclusiveBounded<T>(
   // and so the keyed chain can settle independently of the caller race.
   const observed = scheduled.then(
     (value) => ({ ok: true as const, value }),
-    (error) => ({ ok: false as const, error }),
+    (error: unknown) => ({ ok: false as const, error }),
   );
 
   try {
@@ -203,12 +200,10 @@ export async function runExclusiveBounded<T>(
   } catch (error) {
     if (isOperationTimeout(error)) {
       controller.abort(error);
-      options.onTimeout?.(error);
+      options.onTimeout?.(error instanceof Error ? error : new Error(String(error)));
       options.onStalled?.({
         label: options.label,
-        reason: workStarted
-          ? "deadline_exceeded_work_retained"
-          : "deadline_exceeded_before_start",
+        reason: workStarted ? "deadline_exceeded_work_retained" : "deadline_exceeded_before_start",
       });
       void observed;
       throw error;

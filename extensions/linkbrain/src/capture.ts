@@ -147,10 +147,7 @@ export function createLinkbrainCapture(params: CreateLinkbrainCaptureParams): Li
     }));
     const fromSequence = events[0]!.sequence;
     const toSequence = events[events.length - 1]!.sequence;
-    const batchId = opaqueId(
-      "batch",
-      `${record.streamId}:${fromSequence}:${toSequence}:${reason}`,
-    );
+    const batchId = opaqueId("batch", `${record.streamId}:${fromSequence}:${toSequence}:${reason}`);
     const body = {
       batchId,
       streamId: record.streamId,

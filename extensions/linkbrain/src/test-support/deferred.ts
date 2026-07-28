@@ -19,5 +19,7 @@ export function createDeferred<T = void>(): Deferred<T> {
 
 /** A promise that never settles (for timeout / retain-lock tests). */
 export function neverResolving<T = never>(): Promise<T> {
-  return new Promise<T>(() => undefined);
+  return new Promise<T>(() => {
+    // Intentionally never settles.
+  });
 }
