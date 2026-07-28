@@ -56,8 +56,9 @@ Verified both owner handoffs against tip `429a7818…` and recomputed aggregates
 
 ## Hosted CI
 
-- Closeout tip: `e1ac7323be60d68b79b2f7afe6cf64c9e5a88f7b`
-- `openclaw/ci-gate` **SUCCESS** — <https://github.com/linktrend/openclaw_prime/actions/runs/30330702257>
+- Authoritative fixture-owner closeout tip: `e1ac7323be60d68b79b2f7afe6cf64c9e5a88f7b`
+- `openclaw/ci-gate` **SUCCESS** on closeout — <https://github.com/linktrend/openclaw_prime/actions/runs/30330702257>
+- Follow-up tip `a61a764f1476…` failed `check-docs` (stale `docs_map`); repaired in the tip that contains this note.
 
 ## Exact Next Action
 
