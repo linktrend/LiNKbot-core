@@ -44,7 +44,8 @@
 | Corrected handoff commit                 | `811ec5755036bbfa324ce72404a17b4c4443c683`                                                            |
 | Wave-2b pin commit                       | `4103bd6c1c208337f5dc37e169c9ec9a727bf835`                                                            |
 | SSRF transport commit                    | `d79e3356db527492f0ab8a0b1af7888469815f19`                                                            |
-| Current HEAD (branch tip)                | run `git rev-parse HEAD` after pull — expected ≥ SSRF transport commit above                          |
+| Hosted CI green tip (ci-gate SUCCESS)    | `69bd01a4ddd021160f7e4254b9ca50a0d9732fa4`                                                            |
+| Current HEAD (branch tip)                | run `git rev-parse HEAD` after pull                                                                   |
 | Primary session (closed)                 | `docs/agent-sessions/completed/cursor-local-mac-mini-lisa-openclawdevelopmentplan01-20260727-1648.md` |
 | Related Phase 2 session (closed)         | `docs/agent-sessions/completed/cursor-local-mac-mini-feature-linkbrain-phase2-20260727-1854.md`       |
 | Orchestrator key                         | `cursor-local-mac-mini-desktop-workspace-orchestrator`                                                |
@@ -131,16 +132,16 @@ All other mandatory fake-tier scenarios 1–15 + coexistence A–G: **PASS** (se
 
 ### Crabbox / Testbox
 
-| Check                           | Result                                                                                                                                                       |
-| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Local `crabbox` binary          | **Missing** / failed sanity on this host (`crabbox not found`)                                                                                               |
-| Testbox / Crabbox heavy suite   | **Not run**                                                                                                                                                  |
-| Proof used                      | **Trusted local fallback** — focused `node scripts/run-vitest.mjs …`                                                                                         |
-| Exact-head CI                   | **PR #38** open; tip must show green **`openclaw/ci-gate`** before treating hosted proof as complete                                                         |
-| Local re-verify (wave 2b)       | **2026-07-28 10:07 Asia/Taipei** — `node scripts/run-vitest.mjs test/helpers/link-domain-fakes extensions/linkbrain extensions/linkskills` → **20/144 pass** |
-| OpenGrep (harness + transports) | Local `scripts/run-opengrep.sh --error` → **0 findings** after harness + SSRF-guard fixes                                                                    |
+| Check                           | Result                                                                                                                                                                                                                                                         |
+| ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Local `crabbox` binary          | **Missing** / failed sanity on this host (`crabbox not found`)                                                                                                                                                                                                 |
+| Testbox / Crabbox heavy suite   | **Not run**                                                                                                                                                                                                                                                    |
+| Proof used                      | **Trusted local fallback** — focused `node scripts/run-vitest.mjs …`                                                                                                                                                                                           |
+| Exact-head CI                   | **`openclaw/ci-gate` SUCCESS** at `69bd01a4ddd021160f7e4254b9ca50a0d9732fa4` — CI run <https://github.com/linktrend/openclaw_prime/actions/runs/30322576216> ; gate job <https://github.com/linktrend/openclaw_prime/actions/runs/30322576216/job/90163303523> |
+| Local re-verify (wave 2b)       | **2026-07-28 10:07 Asia/Taipei** — `node scripts/run-vitest.mjs test/helpers/link-domain-fakes extensions/linkbrain extensions/linkskills` → **20/144 pass**                                                                                                   |
+| OpenGrep (harness + transports) | Local `scripts/run-opengrep.sh --error` → **0 findings** after harness + SSRF-guard fixes                                                                                                                                                                      |
 
-Do not treat local 20/144 as substitute for hosted CI on the PR head. Record CI run URL + exact `headSha` in the Codex handoff only when `openclaw/ci-gate` is **SUCCESS** at that SHA.
+Local 20/144 is **not** a substitute for hosted CI. Hosted proof for Codex: tip `69bd01a4ddd` + CI run `30322576216` (or a later tip that also shows green `openclaw/ci-gate`).
 
 ### Historical (superseded as tip claim)
 
@@ -213,7 +214,7 @@ Source: `FIXTURE-OWNER-SIGNOFF.md` (exact hashes above). Signature fields blank 
 6. Principal Brain production retention / hold approval
 7. Production credentials + authorized operator for Lisa-profile mutation
 8. Live Librarian / Brain Gateway for scratch finding submission
-9. Hosted exact-head CI: require **`openclaw/ci-gate` SUCCESS** at exact PR #38 tip (local Crabbox unavailable)
+9. Hosted exact-head CI: **cleared for tip `69bd01a4ddd`** (`openclaw/ci-gate` SUCCESS on run `30322576216`). Re-check gate if tip advances after that SHA.
 
 ### Cleared relative to earlier provisional (code evidence only — not Phase 1 exit)
 
@@ -331,7 +332,7 @@ That verifier must:
 
 Also requested:
 
-- Keep **PR #38** open until `openclaw/ci-gate` is green at the exact tip; do not merge from this packet.
+- Keep **PR #38** open; do not merge from this packet. Hosted `openclaw/ci-gate` was green at `69bd01a4ddd` (run `30322576216`); re-check if tip advances.
 - Route `COUNTERSIGN-REQUEST.md` / `FIXTURE-OWNER-SIGNOFF.md` + `BRAIN-TOOL-NAME-DECISION-PACKET.md` to Brain/Skills owners for **exact** fixture aggregates above.
 
 ---
@@ -347,6 +348,7 @@ Also requested:
 | Owner countersign           | **Still `AWAITING_OWNER_COUNTERSIGN`** — not obtained in-session                                                                             |
 | CI repairs                  | typed-hook/runtime-API allowlists; SecretRef matrix; deps/types/lint; OpenGrep harness; SSRF-guard HTTP transports; `docs/docs_map.md` regen |
 | Local matrix                | **144/144** re-verified 2026-07-28 10:07 Asia/Taipei                                                                                         |
+| Hosted CI                   | **`openclaw/ci-gate` SUCCESS** at `69bd01a4ddd` — <https://github.com/linktrend/openclaw_prime/actions/runs/30322576216>                     |
 | Lisa / Phases 7–12          | Untouched / not started; plugins remain default-disabled                                                                                     |
 
 ---
