@@ -17,7 +17,7 @@ heads removed from active pins.
 | LiNKbrain    | `brain/PIN.json`    | `a3cff6e0f04ac968c32beacb7bdb1b81a4d77d3f` |
 | LiNKskills   | `skills/PIN.json`   | `f16103f23a716d0edeb08a1e82e38608ebd563ea` |
 
-### Platform auth-claims (authoritative)
+## Platform auth-claims (authoritative)
 
 | Field               | Value                                                              |
 | ------------------- | ------------------------------------------------------------------ |

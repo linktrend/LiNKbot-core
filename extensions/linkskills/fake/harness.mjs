@@ -40,7 +40,6 @@ export async function startInProcessSkillsFake(opts = {}) {
   const http = await startSkillsFakeHttp({ service });
   return wrapHttpHandle({
     mode: "in-process",
-    baseUrl: http.baseUrl,
     port: http.port,
     service: http.service,
     stop: () => http.stop(),
@@ -49,10 +48,10 @@ export async function startInProcessSkillsFake(opts = {}) {
 
 /**
  * Spawn a process-isolated Skills fake HTTP child (cli.mjs http).
- * @param {{ throttleAfter?: number; env?: NodeJS.ProcessEnv }} [opts]
+ * @param {{ throttleAfter?: number }} [opts]
  */
 export async function startChildProcessSkillsFake(opts = {}) {
-  const env = { ...process.env, ...opts.env };
+  const env = { ...process.env };
   if (opts.throttleAfter != null) {
     env.LINKSKILLS_FAKE_THROTTLE_AFTER = String(opts.throttleAfter);
   }
@@ -63,8 +62,8 @@ export async function startChildProcessSkillsFake(opts = {}) {
   });
 
   const startup = await readStartupLine(child);
-  const baseUrl = String(startup.baseUrl);
   const port = Number(startup.port);
+  assertPositiveIntegerPort(port);
 
   let stopped = false;
   const stop = async () => {
@@ -90,7 +89,6 @@ export async function startChildProcessSkillsFake(opts = {}) {
 
   return wrapHttpHandle({
     mode: "child-process",
-    baseUrl,
     port,
     pid: child.pid,
     stop,
@@ -100,9 +98,28 @@ export async function startChildProcessSkillsFake(opts = {}) {
 export { mintFakeToken };
 
 /**
+ * Reconstruct a loopback base URL from a validated numeric port only.
+ * Callers must never pass a config/opts-shaped baseUrl into fetch.
+ * @param {number} port
+ * @returns {string}
+ */
+function loopbackBaseUrl(port) {
+  assertPositiveIntegerPort(port);
+  return `http://127.0.0.1:${port}`;
+}
+
+/**
+ * @param {number} port
+ */
+function assertPositiveIntegerPort(port) {
+  if (!Number.isInteger(port) || port <= 0) {
+    throw new Error(`Skills fake invalid port: ${String(port)}`);
+  }
+}
+
+/**
  * @param {{
  *   mode: "in-process" | "child-process";
- *   baseUrl: string;
  *   port: number;
  *   pid?: number;
  *   service?: SkillsFakeService;
@@ -110,8 +127,9 @@ export { mintFakeToken };
  * }} input
  */
 function wrapHttpHandle(input) {
+  const baseUrl = loopbackBaseUrl(input.port);
   const invoke = async (operation, body = {}, opts = {}) => {
-    const response = await fetch(`${input.baseUrl}/v1/${operation}`, {
+    const response = await fetch(`${baseUrl}/v1/${operation}`, {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -125,18 +143,18 @@ function wrapHttpHandle(input) {
 
   return {
     mode: input.mode,
-    baseUrl: input.baseUrl,
+    baseUrl,
     port: input.port,
     pid: input.pid,
     service: input.service,
     stop: input.stop,
     invoke,
     async health() {
-      const response = await fetch(`${input.baseUrl}/health`);
+      const response = await fetch(`${baseUrl}/health`);
       return await response.json();
     },
     async negotiateVersion(body) {
-      const response = await fetch(`${input.baseUrl}/v1/version/negotiate`, {
+      const response = await fetch(`${baseUrl}/v1/version/negotiate`, {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify(body),

@@ -19,10 +19,7 @@ export declare function startInProcessSkillsFake(opts?: { throttleAfter?: number
   negotiateVersion: (body: Record<string, unknown>) => Promise<Record<string, unknown>>;
 }>;
 
-export declare function startChildProcessSkillsFake(opts?: {
-  throttleAfter?: number;
-  env?: NodeJS.ProcessEnv;
-}): Promise<{
+export declare function startChildProcessSkillsFake(opts?: { throttleAfter?: number }): Promise<{
   mode: "in-process" | "child-process";
   baseUrl: string;
   port: number;

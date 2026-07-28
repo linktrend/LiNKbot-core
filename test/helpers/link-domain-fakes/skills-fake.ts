@@ -25,10 +25,7 @@ type SkillsFakeServiceInstance = {
 };
 
 type SkillsFakeHarness = {
-  startChildProcessSkillsFake: (opts?: {
-    throttleAfter?: number;
-    env?: NodeJS.ProcessEnv;
-  }) => Promise<SkillsFakeHandle>;
+  startChildProcessSkillsFake: (opts?: { throttleAfter?: number }) => Promise<SkillsFakeHandle>;
 };
 
 export type SkillsFakeHandle = {
@@ -88,7 +85,6 @@ export function fixtureSkillsClaim(
  */
 export async function startChildProcessSkillsFake(opts?: {
   throttleAfter?: number;
-  env?: NodeJS.ProcessEnv;
 }): Promise<SkillsFakeHandle> {
   const harness = await loadHarness();
   return harness.startChildProcessSkillsFake(opts);
