@@ -103,6 +103,7 @@ Prior denied Brain aggregate (superseded): `d539debc7b9d7347c109e7d462fc27a48c28
 Owner countersignature process: `FIXTURE-OWNER-SIGNOFF.md`.
 Principal routing: `COUNTERSIGN-REQUEST.md`.
 Status: Brain **`AWAITING_OWNER_COUNTERSIGN`** (re-request after denial corrections). Skills tree previously **`OWNER_COUNTERSIGNED`** at tip `0b19e43…` for unchanged `8586d89a…ec96`; **`AWAITING_TIP_REAFFIRMATION`** against post-correction tip. **NOT a passed Phase 1 gate.** OpenClaw does **not** self-certify Brain.
+
 ## 6. Consumption rules
 
 1. Consume only pinned HEADs + hashes above (or newer owner-signed supersession).

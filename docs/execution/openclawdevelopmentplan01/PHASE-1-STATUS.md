@@ -7,14 +7,14 @@
 
 ## Deliverables
 
-| Item                                               | Location                                                                        | Status                                                               |
-| -------------------------------------------------- | ------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| Item                                               | Location                                                                        | Status                                                                                                    |
+| -------------------------------------------------- | ------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
 | Brain fixtures (§9.1 + auth/capture/health/replay) | `extensions/linkbrain/fixtures/**`                                              | corrected draft awaiting Brain re-countersign (`275c1fb7…9a1d`; 72 JSON); prior denial of `d539debc…45fb` |
-| Skills fixtures (§9.2 + prohibited/telemetry)      | `extensions/linkskills/fixtures/**`                                             | tree countersigned at tip `0b19e43…` (`8586d89a…ec96`); awaiting tip reaffirmation |
-| Brain fake (stdio/HTTP, isolated)                  | `extensions/linkbrain/fake/**`, `test/helpers/link-domain-fakes/brain-fake.*`   | present; `BRAIN_CONTRACT_VERSION=1.0.0` + Gateway ErrorEnvelope      |
-| Skills fake (stdio/HTTP, isolated)                 | `extensions/linkskills/fake/**`, `test/helpers/link-domain-fakes/skills-fake.*` | present                                                              |
-| Auth matrix stub                                   | `PHASE-1-AUTH-COMPATIBILITY-MATRIX.md`                                          | present; includes rotated / wrong_service / BrainErrorCode           |
-| Outbox prototype findings                          | `PHASE-1-OUTBOX-PROTOTYPE-FINDINGS.md`                                          | present                                                              |
+| Skills fixtures (§9.2 + prohibited/telemetry)      | `extensions/linkskills/fixtures/**`                                             | tree countersigned at tip `0b19e43…` (`8586d89a…ec96`); awaiting tip reaffirmation                        |
+| Brain fake (stdio/HTTP, isolated)                  | `extensions/linkbrain/fake/**`, `test/helpers/link-domain-fakes/brain-fake.*`   | present; `BRAIN_CONTRACT_VERSION=1.0.0` + Gateway ErrorEnvelope                                           |
+| Skills fake (stdio/HTTP, isolated)                 | `extensions/linkskills/fake/**`, `test/helpers/link-domain-fakes/skills-fake.*` | present                                                                                                   |
+| Auth matrix stub                                   | `PHASE-1-AUTH-COMPATIBILITY-MATRIX.md`                                          | present; includes rotated / wrong_service / BrainErrorCode                                                |
+| Outbox prototype findings                          | `PHASE-1-OUTBOX-PROTOTYPE-FINDINGS.md`                                          | present                                                                                                   |
 
 ## Focused proof (re-run by integrator)
 
@@ -28,13 +28,13 @@ node scripts/run-vitest.mjs \
 
 ## Exit gate
 
-| Criterion                                  | Status                                                                                              |
-| ------------------------------------------ | --------------------------------------------------------------------------------------------------- |
-| Deterministic isolated fakes               | **met** (fake tier)                                                                                 |
-| Negative/prohibited field tests            | **met** (fake tier)                                                                                 |
+| Criterion                                  | Status                                                                                                                                                                           |
+| ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Deterministic isolated fakes               | **met** (fake tier)                                                                                                                                                              |
+| Negative/prohibited field tests            | **met** (fake tier)                                                                                                                                                              |
 | Domain owner fixture approval              | **blocked** — Brain `AWAITING_OWNER_COUNTERSIGN` after denial corrections; Skills tree signed but tip reaffirmation pending (`COUNTERSIGN-REQUEST.md`); **NOT Phase 1 complete** |
-| Platform auth-path approval                | **blocked** — continue fake-only                                                                    |
-| Public surfaces sufficient or SDK proposal | **provisional met** — keyed-store path looks viable; prove in Phase 2                               |
+| Platform auth-path approval                | **blocked** — continue fake-only                                                                                                                                                 |
+| Public surfaces sufficient or SDK proposal | **provisional met** — keyed-store path looks viable; prove in Phase 2                                                                                                            |
 
 ## Decision packet — fixture owner sign-off
 

@@ -85,11 +85,11 @@ Skills fixture JSON preserved byte-for-byte; aggregate remains `8586d89a…ec96`
 
 ## Sibling-repo approval search (2026-07-28; refreshed after Brain denial)
 
-| Source                                                                                                | Finding                                                                                                                          |
-| ----------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| `LiNKbrain/docs/handoffs/OPENCLAW-BRAIN-FIXTURE-COUNTERSIGN-2026-07-28.md`                            | **`COUNTERSIGN_DENIED`** for aggregate `d539debc…45fb` at tip `0b19e43…` — blocking semantics listed; aggregate recompute matched |
-| `LiNKskills/docs/handoffs/2026-07-28-linkskills-openclaw-fixtures-OWNER-COUNTERSIGNED.md`             | **`OWNER_COUNTERSIGNED`** for Skills aggregate `8586d89a…ec96` at tip `0b19e43…` (commit `fe9f28ca…`); tree unchanged since then |
-| `LiNKbrain/docs/handoffs/CORRECTION-HANDOFF-2026-07-28.md`                                            | Frozen 17-tool MCP surface; **not** a countersign of the corrected OpenClaw Brain aggregate                                      |
+| Source                                                                                    | Finding                                                                                                                           |
+| ----------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `LiNKbrain/docs/handoffs/OPENCLAW-BRAIN-FIXTURE-COUNTERSIGN-2026-07-28.md`                | **`COUNTERSIGN_DENIED`** for aggregate `d539debc…45fb` at tip `0b19e43…` — blocking semantics listed; aggregate recompute matched |
+| `LiNKskills/docs/handoffs/2026-07-28-linkskills-openclaw-fixtures-OWNER-COUNTERSIGNED.md` | **`OWNER_COUNTERSIGNED`** for Skills aggregate `8586d89a…ec96` at tip `0b19e43…` (commit `fe9f28ca…`); tree unchanged since then  |
+| `LiNKbrain/docs/handoffs/CORRECTION-HANDOFF-2026-07-28.md`                                | Frozen 17-tool MCP surface; **not** a countersign of the corrected OpenClaw Brain aggregate                                       |
 
 **Conclusion:** Brain requires a **new** countersign of aggregate `275c1fb7…9a1d`.
 Skills prior countersign covers the unchanged fixture bytes but needs tip
@@ -118,18 +118,18 @@ reaffirmation after the OpenClaw tip advances. See `COUNTERSIGN-REQUEST.md`.
 
 ## Countersignature — LiNKskills owner
 
-| Field                                                     | Value                                                                                          |
-| --------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| Status                                                    | `OWNER_COUNTERSIGNED` for fixture tree `8586d89a…ec96` at tip `0b19e43…`; **`AWAITING_TIP_REAFFIRMATION`** against post-Brain-correction OpenClaw tip |
-| Fixture package                                           | `extensions/linkskills/fixtures`                                                               |
-| Aggregate SHA-256 attested                                | `8586d89a4a160987ace45ed4392b78c8a66391940e81eed6bdc098f49404ec96`                             |
-| Prior approving handoff                                   | `LiNKskills/docs/handoffs/2026-07-28-linkskills-openclaw-fixtures-OWNER-COUNTERSIGNED.md` (`fe9f28ca…`) |
-| OpenClaw plan SHA-256                                     | `17203ee586a3fb2b1281bcddd8b17ae350075ebce537689f3c4bfcbbd14914f7`                             |
-| Skills HEAD referenced                                    | `f16103f23a716d0edeb08a1e82e38608ebd563ea`                                                     |
-| Contract version                                          | `skills.api.v0.1`                                                                              |
-| Platform claims                                           | `platform.auth-claims/1.0.0` (schema `b0397cdf…50fb` / contentHash `6bf49618…b251`)            |
-| Certification note                                        | Immutable-release / executor-receipt path; prior suite-authored observed_output path withdrawn |
-| Tip reaffirmation name / session ID                       | _(blank — awaiting lightweight reaffirmation)_                                                 |
-| Tip reaffirmation signature                               | _(blank — awaiting)_                                                                           |
-| Tip reaffirmation at (Asia/Taipei)                        | _(blank — awaiting)_                                                                           |
-| Notes / deltas                                            | Skills JSON bytes unchanged in Brain-denial correction wave                                    |
+| Field                               | Value                                                                                                                                                 |
+| ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Status                              | `OWNER_COUNTERSIGNED` for fixture tree `8586d89a…ec96` at tip `0b19e43…`; **`AWAITING_TIP_REAFFIRMATION`** against post-Brain-correction OpenClaw tip |
+| Fixture package                     | `extensions/linkskills/fixtures`                                                                                                                      |
+| Aggregate SHA-256 attested          | `8586d89a4a160987ace45ed4392b78c8a66391940e81eed6bdc098f49404ec96`                                                                                    |
+| Prior approving handoff             | `LiNKskills/docs/handoffs/2026-07-28-linkskills-openclaw-fixtures-OWNER-COUNTERSIGNED.md` (`fe9f28ca…`)                                               |
+| OpenClaw plan SHA-256               | `17203ee586a3fb2b1281bcddd8b17ae350075ebce537689f3c4bfcbbd14914f7`                                                                                    |
+| Skills HEAD referenced              | `f16103f23a716d0edeb08a1e82e38608ebd563ea`                                                                                                            |
+| Contract version                    | `skills.api.v0.1`                                                                                                                                     |
+| Platform claims                     | `platform.auth-claims/1.0.0` (schema `b0397cdf…50fb` / contentHash `6bf49618…b251`)                                                                   |
+| Certification note                  | Immutable-release / executor-receipt path; prior suite-authored observed_output path withdrawn                                                        |
+| Tip reaffirmation name / session ID | _(blank — awaiting lightweight reaffirmation)_                                                                                                        |
+| Tip reaffirmation signature         | _(blank — awaiting)_                                                                                                                                  |
+| Tip reaffirmation at (Asia/Taipei)  | _(blank — awaiting)_                                                                                                                                  |
+| Notes / deltas                      | Skills JSON bytes unchanged in Brain-denial correction wave                                                                                           |

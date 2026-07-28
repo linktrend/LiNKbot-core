@@ -2,29 +2,29 @@
 
 ## Identity
 
-| Field             | Value |
-| ----------------- | ----- |
-| Agent type        | Cursor Local Agent |
-| Platform          | Cursor |
-| Machine           | Mac mini |
-| Surface           | Desktop workspace |
-| Execution         | local |
-| Role              | feature (Lisa / OpenClaw Prime plan execution owner) |
-| Orchestrator key  | `cursor-local-mac-mini-desktop-workspace-orchestrator` |
-| Coordination home | `openclaw_prime` |
+| Field             | Value                                                          |
+| ----------------- | -------------------------------------------------------------- |
+| Agent type        | Cursor Local Agent                                             |
+| Platform          | Cursor                                                         |
+| Machine           | Mac mini                                                       |
+| Surface           | Desktop workspace                                              |
+| Execution         | local                                                          |
+| Role              | feature (Lisa / OpenClaw Prime plan execution owner)           |
+| Orchestrator key  | `cursor-local-mac-mini-desktop-workspace-orchestrator`         |
+| Coordination home | `openclaw_prime`                                               |
 | Session ID        | `cursor-local-mac-mini-lisa-brain-fixture-denial-fix-20260728` |
-| Started           | 2026-07-28 11:28 Asia/Taipei |
-| Last updated      | 2026-07-28 11:45 Asia/Taipei |
+| Started           | 2026-07-28 11:28 Asia/Taipei                                   |
+| Last updated      | 2026-07-28 11:45 Asia/Taipei                                   |
 
 ## Work
 
-| Field           | Value |
-| --------------- | ----- |
+| Field           | Value                                                                                               |
+| --------------- | --------------------------------------------------------------------------------------------------- |
 | Objective       | Bounded Brain fixture correction after LiNKbrain `COUNTERSIGN_DENIED`; preserve Skills; push PR #38 |
-| Branch          | `issue/ocp-openclawdevelopmentplan01` |
-| Starting commit | `0b19e43bad47e8883380531fe99efce8df5c6e25` |
-| Status          | `active` |
-| Handoff         | `docs/handoffs/2026-07-28-openclawdevelopmentplan01-brain-fixture-denial-fix.md` |
+| Branch          | `issue/ocp-openclawdevelopmentplan01`                                                               |
+| Starting commit | `0b19e43bad47e8883380531fe99efce8df5c6e25`                                                          |
+| Status          | `active`                                                                                            |
+| Handoff         | `docs/handoffs/2026-07-28-openclawdevelopmentplan01-brain-fixture-denial-fix.md`                    |
 
 ## Ownership Scope
 

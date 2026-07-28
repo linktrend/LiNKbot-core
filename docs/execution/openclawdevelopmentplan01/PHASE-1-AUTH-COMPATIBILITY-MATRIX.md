@@ -14,18 +14,18 @@ Until Platform issues credentials and signs the path:
 
 ## Matrix (fixture-backed fake outcomes)
 
-| Outcome            | Fixture family                   | Expected OpenClaw behavior                                        |
-| ------------------ | -------------------------------- | ----------------------------------------------------------------- |
-| Valid scoped token | identity positive + tool success | Proceed; no secret logging                                        |
-| Expired            | `auth/expired`                   | Degrade domain; retry after refresh path if Platform provides one |
-| Revoked            | `auth/revoked`                   | Terminal for that credential; mark domain unhealthy               |
-| Rotated            | `auth/rotated`                   | Reject as revoked (`reasons: ["revoked"]`, `credentialStatus: "rotated"`) |
-| Wrong audience     | `auth/wrong-audience`            | Terminal auth failure; do not fallback to other domain creds      |
-| Wrong service      | `auth/wrong-scope` (`expectedOutcome: wrong_service`) | Deny operation; keep other domain unaffected         |
-| Unauthorized       | `failures/unauthorized`          | Auth rejection mapped from Brain `unauthorized`                   |
-| Rate limited       | `failures/rate_limited`          | Bounded backoff using server retry hints                          |
-| Internal / retryable | `failures/internal_error`      | Outbox retain + backoff (`retryable: true`)                       |
-| Validation / terminal | `failures/validation_error`   | Dead-letter with redacted metadata                                |
+| Outcome               | Fixture family                                        | Expected OpenClaw behavior                                                |
+| --------------------- | ----------------------------------------------------- | ------------------------------------------------------------------------- |
+| Valid scoped token    | identity positive + tool success                      | Proceed; no secret logging                                                |
+| Expired               | `auth/expired`                                        | Degrade domain; retry after refresh path if Platform provides one         |
+| Revoked               | `auth/revoked`                                        | Terminal for that credential; mark domain unhealthy                       |
+| Rotated               | `auth/rotated`                                        | Reject as revoked (`reasons: ["revoked"]`, `credentialStatus: "rotated"`) |
+| Wrong audience        | `auth/wrong-audience`                                 | Terminal auth failure; do not fallback to other domain creds              |
+| Wrong service         | `auth/wrong-scope` (`expectedOutcome: wrong_service`) | Deny operation; keep other domain unaffected                              |
+| Unauthorized          | `failures/unauthorized`                               | Auth rejection mapped from Brain `unauthorized`                           |
+| Rate limited          | `failures/rate_limited`                               | Bounded backoff using server retry hints                                  |
+| Internal / retryable  | `failures/internal_error`                             | Outbox retain + backoff (`retryable: true`)                               |
+| Validation / terminal | `failures/validation_error`                           | Dead-letter with redacted metadata                                        |
 
 ## Platform approval status
 
