@@ -14,12 +14,38 @@ export const LINKSKILLS_DRAIN_TOOLS = Object.freeze([
   "skills_trace_candidate_submit",
 ] as const);
 
+/** Exact skills_* operations eligible for structured telemetry observation. */
+export const LINKSKILLS_OBSERVED_TOOLS = Object.freeze([
+  "skills_list",
+  "skills_search",
+  "skills_describe",
+  "skills_fragment_get",
+  "skills_release_get",
+  "skills_run_start",
+  "skills_run_update",
+  "skills_run_complete",
+  "skills_run_fail",
+  "skills_tool_resolve",
+  "skills_tool_invoke",
+  "skills_input_validate",
+  "skills_output_validate",
+  "skills_feedback_submit",
+  "skills_trace_candidate_submit",
+] as const);
+
 type LinkskillsDrainTool = (typeof LINKSKILLS_DRAIN_TOOLS)[number];
+type LinkskillsObservedTool = (typeof LINKSKILLS_OBSERVED_TOOLS)[number];
 
 const drainSet = new Set<string>(LINKSKILLS_DRAIN_TOOLS);
+const observedSet = new Set<string>(LINKSKILLS_OBSERVED_TOOLS);
 
 export function isSkillsDrainTool(toolName: string): toolName is LinkskillsDrainTool {
   return drainSet.has(toolName);
+}
+
+/** True only for exact §9.2 skills_* names — non-Skills tools stay silent. */
+export function isObservedSkillsTool(toolName: string): toolName is LinkskillsObservedTool {
+  return observedSet.has(toolName);
 }
 
 /**

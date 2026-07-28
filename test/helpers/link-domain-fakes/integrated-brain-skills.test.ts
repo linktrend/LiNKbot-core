@@ -282,7 +282,7 @@ describe(`Phase 6 integrated Brain+Skills (${PHASE6_EVIDENCE_TIER})`, () => {
           content: "must never enqueue",
         },
       }),
-    ).toThrow(/prohibited field rejected/);
+    ).toThrow(/unknown field rejected|prohibited field rejected/);
 
     const skillsFake = new SkillsFakeService();
     const auth = mintFakeToken(fixtureSkillsClaim());

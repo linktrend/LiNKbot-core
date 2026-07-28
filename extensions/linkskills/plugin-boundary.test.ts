@@ -34,6 +34,11 @@ describe("linkskills plugin boundary", () => {
       "src/stores.ts",
       "src/tools.ts",
       "src/transport.ts",
+      "src/collect.ts",
+      "src/bounded.ts",
+      "src/drain-worker.ts",
+      "src/feature-tools.ts",
+      "src/opaque.ts",
     ];
     for (const relative of files) {
       const source = fs.readFileSync(path.join(root, relative), "utf8");
@@ -44,11 +49,12 @@ describe("linkskills plugin boundary", () => {
     }
   });
 
-  it("registers zero conversation hooks", () => {
+  it("registers zero conversation hooks (after_tool_call skills_* observation allowed)", () => {
     const index = fs.readFileSync(path.join(root, "index.ts"), "utf8");
     for (const pattern of CONVERSATION_HOOK_PATTERNS) {
       expect(index, String(pattern)).not.toMatch(pattern);
     }
+    expect(index).toMatch(/after_tool_call/);
     expect(index).toMatch(/gateway_start/);
     expect(index).toMatch(/gateway_stop/);
     expect(index).toMatch(/LINKSKILLS_CONVERSATION_HOOK_POLICY/);

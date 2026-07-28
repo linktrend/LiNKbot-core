@@ -112,7 +112,7 @@ describe("linkskills outbox runtime", () => {
           prompt: "should never enqueue",
         },
       }),
-    ).toThrow(/prohibited field rejected: prompt/);
+    ).toThrow(/unknown field rejected: prompt/);
   });
 
   it("rejects nested prohibited payload fields", () => {
@@ -127,7 +127,7 @@ describe("linkskills outbox runtime", () => {
           payload: { message_body: "leak" },
         },
       }),
-    ).toThrow(/prohibited field rejected: message_body/);
+    ).toThrow(/unknown field rejected: payload.message_body/);
   });
 
   it("drains ordered telemetry against Skills fake with idempotent replay", async () => {

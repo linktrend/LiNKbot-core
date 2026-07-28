@@ -1,73 +1,94 @@
 /**
  * Allowlisted Skills structured telemetry envelopes.
  *
- * Conversation/content/Brain/raw-tool fields are hard-rejected (never stripped
- * and forwarded). Skills never registers conversation-bearing hooks.
+ * Exact per-event schemas only: unknown top-level keys, unknown nested metrics/
+ * payload keys, and oversized values are rejected. Conversation/content/Brain/
+ * raw-tool fields are never accepted. Skills never registers conversation hooks.
  */
 
 export const LINKSKILLS_REDACTION_POLICY_VERSION = "skills.telemetry.v0";
 
-/** Exact keys that must never appear on Skills telemetry (mirrors fake/prohibited.mjs). */
-const LINKSKILLS_PROHIBITED_EXACT_KEYS = Object.freeze([
-  "conversation",
-  "conversations",
-  "message",
-  "messages",
-  "message_body",
-  "message_bodies",
-  "prompt",
-  "prompts",
-  "prompt_fragment",
-  "prompt_fragments",
-  "reasoning",
-  "reasoning_trace",
-  "reasoning_traces",
-  "chain_of_thought",
-  "chainOfThought",
-  "transcript",
-  "transcripts",
-  "content",
-  "brain_findings",
-  "brain_finding",
-  "brain_search_results",
-  "brain_search",
-  "brain_load",
-  "brain_capture",
-  "private_episode",
-  "private_episodes",
-  "handoff",
-  "handoffs",
-  "tool_args",
-  "tool_arguments",
-  "raw_tool_parameters",
-  "raw_tool_args",
-  "tool_result",
-  "tool_results",
-  "raw_tool_result",
-  "raw_tool_results",
-  "secrets",
-  "secret",
-  "authorization",
-  "apiKey",
-  "api_key",
-  "accessToken",
-  "access_token",
-]);
+const MAX_STRING_LEN = 256;
+const MAX_PAYLOAD_NOTE_LEN = 120;
+const MAX_METRICS_VALUE = 86_400_000;
 
-const LINKSKILLS_PROHIBITED_KEY_PREFIXES = Object.freeze([
-  "brain_",
-  "conversation_",
-  "prompt_",
-  "reasoning_",
-  "message_",
-]);
+/** Exact top-level keys permitted on a structured telemetry body. */
+export const SKILLS_TELEMETRY_ALLOWED_KEYS = Object.freeze([
+  "schema_version",
+  "event_id",
+  "event_type",
+  "occurred_at",
+  "sequence",
+  "idempotency_key",
+  "correlation_id",
+  "actor_id",
+  "runtime_profile_id",
+  "session_id",
+  "run_id",
+  "skill_id",
+  "skill_release_hash",
+  "execution_profile_hash",
+  "outcome",
+  "sensitivity",
+  "metrics",
+  "payload",
+] as const);
+
+/** Exact metrics keys; values must be finite non-negative numbers within bound. */
+export const SKILLS_TELEMETRY_ALLOWED_METRICS_KEYS = Object.freeze([
+  "duration_ms",
+  "tool_calls",
+] as const);
+
+/** Exact payload keys; string values only, size-limited. */
+export const SKILLS_TELEMETRY_ALLOWED_PAYLOAD_KEYS = Object.freeze([
+  "status",
+  "note",
+  "tool_name",
+  "error_code",
+] as const);
+
+export const SKILLS_TELEMETRY_ALLOWED_EVENT_TYPES = Object.freeze([
+  "skill.run_started",
+  "skill.run_updated",
+  "skill.run_completed",
+  "skill.run_failed",
+  "skill.feedback",
+  "skill.trace_candidate",
+  "skill.tool_observed",
+  "skills_run_start",
+  "skills_run_update",
+  "skills_run_complete",
+  "skills_run_fail",
+  "skills_feedback_submit",
+  "skills_trace_candidate_submit",
+] as const);
+
+export const SKILLS_TELEMETRY_ALLOWED_OUTCOMES = Object.freeze([
+  "info",
+  "ok",
+  "error",
+  "failed",
+  "skipped",
+] as const);
+
+export const SKILLS_TELEMETRY_ALLOWED_SENSITIVITY = Object.freeze([
+  "public_internal",
+  "internal",
+] as const);
 
 type SkillsTelemetryKind = "structured_event";
 
-type SkillsTelemetryMetrics = {
+export type SkillsTelemetryMetrics = {
   duration_ms?: number;
   tool_calls?: number;
-  [key: string]: unknown;
+};
+
+export type SkillsTelemetryPayload = {
+  status?: string;
+  note?: string;
+  tool_name?: string;
+  error_code?: string;
 };
 
 export type SkillsTelemetryBody = {
@@ -88,7 +109,7 @@ export type SkillsTelemetryBody = {
   outcome: string;
   sensitivity: string;
   metrics?: SkillsTelemetryMetrics;
-  payload?: Record<string, unknown>;
+  payload?: SkillsTelemetryPayload;
 };
 
 export type SkillsInternalEnvelope = {
@@ -98,7 +119,6 @@ export type SkillsInternalEnvelope = {
   idempotencyKey: string;
   redactionPolicyVersion: string;
   createdAtMs: number;
-  /** Allowlisted structured telemetry only. */
   body: SkillsTelemetryBody;
 };
 
@@ -129,7 +149,6 @@ export type DeadLetterRecord = {
   attemptCount: number;
   terminalCode: string;
   safeMessage: string;
-  /** Redacted metadata only — no payload body. */
   redactedMeta: {
     eventId?: string;
     eventType?: string;
@@ -164,13 +183,111 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
-function isProhibitedSkillsKey(key: string): boolean {
-  if ((LINKSKILLS_PROHIBITED_EXACT_KEYS as readonly string[]).includes(key)) {
-    return true;
+const allowedKeySet = new Set<string>(SKILLS_TELEMETRY_ALLOWED_KEYS);
+const allowedMetricsKeySet = new Set<string>(SKILLS_TELEMETRY_ALLOWED_METRICS_KEYS);
+const allowedPayloadKeySet = new Set<string>(SKILLS_TELEMETRY_ALLOWED_PAYLOAD_KEYS);
+const allowedEventTypeSet = new Set<string>(SKILLS_TELEMETRY_ALLOWED_EVENT_TYPES);
+const allowedOutcomeSet = new Set<string>(SKILLS_TELEMETRY_ALLOWED_OUTCOMES);
+const allowedSensitivitySet = new Set<string>(SKILLS_TELEMETRY_ALLOWED_SENSITIVITY);
+
+function requireBoundedString(
+  record: Record<string, unknown>,
+  key: string,
+  maxLen = MAX_STRING_LEN,
+): string {
+  const value = record[key];
+  if (typeof value !== "string" || value.length === 0) {
+    throw new Error(`linkskills: telemetry requires non-empty string ${key}`);
   }
-  return LINKSKILLS_PROHIBITED_KEY_PREFIXES.some((prefix) => key.startsWith(prefix));
+  if (value.length > maxLen) {
+    throw new Error(`linkskills: telemetry ${key} exceeds ${maxLen} chars`);
+  }
+  return value;
 }
 
+function optionalBoundedString(
+  record: Record<string, unknown>,
+  key: string,
+  maxLen = MAX_STRING_LEN,
+): string | undefined {
+  if (!(key in record) || record[key] === undefined) {
+    return undefined;
+  }
+  const value = record[key];
+  if (typeof value !== "string" || value.length === 0) {
+    throw new Error(`linkskills: telemetry optional ${key} must be a non-empty string`);
+  }
+  if (value.length > maxLen) {
+    throw new Error(`linkskills: telemetry ${key} exceeds ${maxLen} chars`);
+  }
+  return value;
+}
+
+function assertExactKeys(
+  record: Record<string, unknown>,
+  allowed: ReadonlySet<string>,
+  path: string,
+): void {
+  for (const key of Object.keys(record)) {
+    if (!allowed.has(key)) {
+      throw new Error(`linkskills: unknown field rejected: ${path ? `${path}.` : ""}${key}`);
+    }
+  }
+}
+
+function parseMetrics(raw: unknown): SkillsTelemetryMetrics | undefined {
+  if (raw === undefined) {
+    return undefined;
+  }
+  if (!isRecord(raw)) {
+    throw new Error("linkskills: telemetry metrics must be an object");
+  }
+  assertExactKeys(raw, allowedMetricsKeySet, "metrics");
+  const metrics: SkillsTelemetryMetrics = {};
+  for (const key of SKILLS_TELEMETRY_ALLOWED_METRICS_KEYS) {
+    if (!(key in raw) || raw[key] === undefined) {
+      continue;
+    }
+    const value = raw[key];
+    if (typeof value !== "number" || !Number.isFinite(value) || value < 0 || value > MAX_METRICS_VALUE) {
+      throw new Error(`linkskills: telemetry metrics.${key} must be a bounded non-negative number`);
+    }
+    metrics[key] = value;
+  }
+  return Object.keys(metrics).length > 0 ? metrics : undefined;
+}
+
+function parsePayload(raw: unknown): SkillsTelemetryPayload | undefined {
+  if (raw === undefined) {
+    return undefined;
+  }
+  if (!isRecord(raw)) {
+    throw new Error("linkskills: telemetry payload must be an object");
+  }
+  assertExactKeys(raw, allowedPayloadKeySet, "payload");
+  const payload: SkillsTelemetryPayload = {};
+  for (const key of SKILLS_TELEMETRY_ALLOWED_PAYLOAD_KEYS) {
+    if (!(key in raw) || raw[key] === undefined) {
+      continue;
+    }
+    const value = raw[key];
+    if (typeof value !== "string" || value.length === 0) {
+      throw new Error(`linkskills: telemetry payload.${key} must be a non-empty string`);
+    }
+    const maxLen = key === "note" ? MAX_PAYLOAD_NOTE_LEN : MAX_STRING_LEN;
+    if (value.length > maxLen) {
+      throw new Error(`linkskills: telemetry payload.${key} exceeds ${maxLen} chars`);
+    }
+    payload[key] = value;
+  }
+  return Object.keys(payload).length > 0 ? payload : undefined;
+}
+
+/**
+ * Legacy helper retained for adversarial/negative tests: any nested key that is
+ * not on the allowlisted schema surfaces as a prohibited path. Prefer the
+ * allowlist errors from buildSkillsTelemetryEnvelope for production paths.
+ */
 export function findProhibitedSkillsField(
   value: unknown,
   path = "",
@@ -179,18 +296,24 @@ export function findProhibitedSkillsField(
     return null;
   }
   if (Array.isArray(value)) {
-    for (let i = 0; i < value.length; i += 1) {
-      const hit = findProhibitedSkillsField(value[i], path ? `${path}[${i}]` : `[${i}]`);
-      if (hit) {
-        return hit;
-      }
-    }
-    return null;
+    return { path: path || "[array]", key: "[array]" };
   }
   for (const [key, child] of Object.entries(value)) {
     const childPath = path ? `${path}.${key}` : key;
-    if (isProhibitedSkillsKey(key)) {
+    if (path === "" && !allowedKeySet.has(key)) {
       return { path: childPath, key };
+    }
+    if (path === "metrics" && !allowedMetricsKeySet.has(key)) {
+      return { path: childPath, key };
+    }
+    if (path === "payload" && !allowedPayloadKeySet.has(key)) {
+      return { path: childPath, key };
+    }
+    if (path !== "" && path !== "metrics" && path !== "payload") {
+      // Nested objects beyond metrics/payload are never allowed.
+      if (typeof child === "object" && child !== null) {
+        return { path: childPath, key };
+      }
     }
     const hit = findProhibitedSkillsField(child, childPath);
     if (hit) {
@@ -200,17 +323,8 @@ export function findProhibitedSkillsField(
   return null;
 }
 
-function requireString(record: Record<string, unknown>, key: string): string {
-  const value = record[key];
-  if (typeof value !== "string" || value.length === 0) {
-    throw new Error(`linkskills: telemetry requires non-empty string ${key}`);
-  }
-  return value;
-}
-
 /**
- * Builds a typed allowlisted telemetry envelope. Prohibited conversation/content
- * fields are rejected (not stripped).
+ * Builds a typed allowlisted telemetry envelope. Unknown nested data is rejected.
  */
 export function buildSkillsTelemetryEnvelope(params: {
   toolName: string;
@@ -219,75 +333,55 @@ export function buildSkillsTelemetryEnvelope(params: {
   createdAtMs: number;
   body: unknown;
 }): SkillsInternalEnvelope {
-  const prohibited = findProhibitedSkillsField(params.body);
-  if (prohibited) {
-    throw new Error(
-      `linkskills: prohibited field rejected: ${prohibited.key} at ${prohibited.path}`,
-    );
-  }
   if (!isRecord(params.body)) {
     throw new Error("linkskills: telemetry body must be an object");
   }
+  assertExactKeys(params.body, allowedKeySet, "");
 
   const sequence = params.body.sequence;
-  if (typeof sequence !== "number" || !Number.isFinite(sequence)) {
-    throw new Error("linkskills: telemetry requires numeric sequence");
+  if (typeof sequence !== "number" || !Number.isFinite(sequence) || sequence < 0) {
+    throw new Error("linkskills: telemetry requires non-negative numeric sequence");
   }
 
-  const metricsRaw = params.body.metrics;
-  let metrics: SkillsTelemetryMetrics | undefined;
-  if (metricsRaw !== undefined) {
-    if (!isRecord(metricsRaw)) {
-      throw new Error("linkskills: telemetry metrics must be an object");
-    }
-    const metricsHit = findProhibitedSkillsField(metricsRaw, "metrics");
-    if (metricsHit) {
-      throw new Error(
-        `linkskills: prohibited field rejected: ${metricsHit.key} at ${metricsHit.path}`,
-      );
-    }
-    metrics = metricsRaw as SkillsTelemetryMetrics;
+  const eventType = requireBoundedString(params.body, "event_type");
+  if (!allowedEventTypeSet.has(eventType)) {
+    throw new Error(`linkskills: telemetry event_type not allowlisted: ${eventType}`);
   }
 
-  const payloadRaw = params.body.payload;
-  let payload: Record<string, unknown> | undefined;
-  if (payloadRaw !== undefined) {
-    if (!isRecord(payloadRaw)) {
-      throw new Error("linkskills: telemetry payload must be an object");
-    }
-    const payloadHit = findProhibitedSkillsField(payloadRaw, "payload");
-    if (payloadHit) {
-      throw new Error(
-        `linkskills: prohibited field rejected: ${payloadHit.key} at ${payloadHit.path}`,
-      );
-    }
-    payload = payloadRaw;
+  const outcome = requireBoundedString(params.body, "outcome", 64);
+  if (!allowedOutcomeSet.has(outcome)) {
+    throw new Error(`linkskills: telemetry outcome not allowlisted: ${outcome}`);
   }
+
+  const sensitivity = requireBoundedString(params.body, "sensitivity", 64);
+  if (!allowedSensitivitySet.has(sensitivity)) {
+    throw new Error(`linkskills: telemetry sensitivity not allowlisted: ${sensitivity}`);
+  }
+
+  const metrics = parseMetrics(params.body.metrics);
+  const payload = parsePayload(params.body.payload);
+  const correlationId = optionalBoundedString(params.body, "correlation_id");
+  const runtimeProfileId = optionalBoundedString(params.body, "runtime_profile_id");
+  const sessionId = optionalBoundedString(params.body, "session_id");
 
   const body: SkillsTelemetryBody = {
-    schema_version: requireString(params.body, "schema_version"),
-    event_id: requireString(params.body, "event_id"),
-    event_type: requireString(params.body, "event_type"),
-    occurred_at: requireString(params.body, "occurred_at"),
+    schema_version: requireBoundedString(params.body, "schema_version", 32),
+    event_id: requireBoundedString(params.body, "event_id"),
+    event_type: eventType,
+    occurred_at: requireBoundedString(params.body, "occurred_at", 64),
     sequence,
     idempotency_key:
-      typeof params.body.idempotency_key === "string" && params.body.idempotency_key.length > 0
-        ? params.body.idempotency_key
-        : params.idempotencyKey,
-    ...(typeof params.body.correlation_id === "string"
-      ? { correlation_id: params.body.correlation_id }
-      : {}),
-    actor_id: requireString(params.body, "actor_id"),
-    ...(typeof params.body.runtime_profile_id === "string"
-      ? { runtime_profile_id: params.body.runtime_profile_id }
-      : {}),
-    ...(typeof params.body.session_id === "string" ? { session_id: params.body.session_id } : {}),
-    run_id: requireString(params.body, "run_id"),
-    skill_id: requireString(params.body, "skill_id"),
-    skill_release_hash: requireString(params.body, "skill_release_hash"),
-    execution_profile_hash: requireString(params.body, "execution_profile_hash"),
-    outcome: requireString(params.body, "outcome"),
-    sensitivity: requireString(params.body, "sensitivity"),
+      optionalBoundedString(params.body, "idempotency_key") ?? params.idempotencyKey,
+    ...(correlationId ? { correlation_id: correlationId } : {}),
+    actor_id: requireBoundedString(params.body, "actor_id"),
+    ...(runtimeProfileId ? { runtime_profile_id: runtimeProfileId } : {}),
+    ...(sessionId ? { session_id: sessionId } : {}),
+    run_id: requireBoundedString(params.body, "run_id"),
+    skill_id: requireBoundedString(params.body, "skill_id"),
+    skill_release_hash: requireBoundedString(params.body, "skill_release_hash"),
+    execution_profile_hash: requireBoundedString(params.body, "execution_profile_hash"),
+    outcome,
+    sensitivity,
     ...(metrics ? { metrics } : {}),
     ...(payload ? { payload } : {}),
   };
@@ -316,7 +410,6 @@ export function deadLetterMetaFromEnvelope(
   };
 }
 
-/** Maps a structured telemetry envelope to Skills fake feedback_submit params. */
 function feedbackParamsFromEnvelope(envelope: SkillsInternalEnvelope): Record<string, unknown> {
   return {
     run_id: envelope.body.run_id,
@@ -331,7 +424,7 @@ function feedbackParamsFromEnvelope(envelope: SkillsInternalEnvelope): Record<st
 
 /**
  * Builds drain/MCP/HTTP arguments for the exact frozen skills_* op.
- * Never includes conversation or prohibited fields (already rejected at envelope build).
+ * Never includes conversation or unknown nested fields.
  */
 export function skillsTransportArgsFromEnvelope(
   envelope: SkillsInternalEnvelope,

@@ -3,6 +3,7 @@
  * health / shutdown against an injectable Skills transport (fake in Phase 4).
  */
 import { randomUUID } from "node:crypto";
+import { isOperationTimeout, runBounded, throwIfAborted } from "./bounded.js";
 import type { LinkskillsConfig } from "./config.js";
 import {
   buildSkillsTelemetryEnvelope,
@@ -76,6 +77,7 @@ type EnqueueTelemetryParams = {
   toolName?: string;
   idempotencyKey: string;
   body: unknown;
+  signal?: AbortSignal;
 };
 
 export type LinkskillsRuntime = {
@@ -312,13 +314,31 @@ export function createLinkskillsRuntime(params: CreateLinkskillsRuntimeParams): 
     lastDrainStatus = `drained=${drained};retried=${retried};dead=${deadLettered};skipped=${skipped}`;
     const outboxCount = (await params.stores.outbox.entries()).length;
     const deadLetterCount = (await params.stores.deadletter.entries()).length;
+    const oldestAge =
+      outboxCount > 0
+        ? Math.max(
+            0,
+            now() -
+              Math.min(
+                ...((await sortedOutbox(params.stores)).map((entry) => entry.createdAt) as number[]),
+              ),
+          )
+        : null;
+    const ageAlarm =
+      oldestAge !== null && oldestAge > params.config.outboxAgeAlarmMs
+        ? ("degraded" as const)
+        : null;
     await writeHealth({
-      status: deadLettered > 0 ? "degraded" : drained > 0 ? "ok" : "idle",
+      status: ageAlarm ?? (deadLettered > 0 ? "degraded" : drained > 0 ? "ok" : "idle"),
       ...(drained > 0 ? { lastSuccessAtMs: now() } : {}),
-      ...(deadLettered > 0 || retried > 0 ? { lastFailureAtMs: now() } : {}),
+      ...(deadLettered > 0 || retried > 0 || ageAlarm
+        ? { lastFailureAtMs: now() }
+        : {}),
+      ...(ageAlarm ? { lastErrorCode: "outbox_age_alarm" } : {}),
       lastDrainStatus,
       outboxCount,
       deadLetterCount,
+      oldestOutboxAgeMs: oldestAge,
     });
     return { drained, retried, deadLettered, skipped };
   };
@@ -340,7 +360,30 @@ export function createLinkskillsRuntime(params: CreateLinkskillsRuntimeParams): 
 
     async shutdown() {
       shuttingDown = true;
-      await drainTail;
+      try {
+        await runBounded(
+          async () => {
+            await drainTail;
+          },
+          {
+            timeoutMs: 2_000,
+            label: "runtime-shutdown",
+            onStalled: () => {
+              lastDrainStatus = lastDrainStatus
+                ? `${lastDrainStatus};shutdown_stalled`
+                : "shutdown_stalled";
+            },
+          },
+        );
+      } catch (error) {
+        if (!isOperationTimeout(error)) {
+          throw error;
+        }
+        // Drain ownership may still be held by abandoned work; do not claim clean idle.
+        lastDrainStatus = lastDrainStatus
+          ? `${lastDrainStatus};shutdown_timeout`
+          : "shutdown_timeout";
+      }
       lastDrainStatus = lastDrainStatus ? `${lastDrainStatus};shutdown` : "shutdown";
       await writeHealth({
         status: "idle",
@@ -353,6 +396,7 @@ export function createLinkskillsRuntime(params: CreateLinkskillsRuntimeParams): 
       if (shuttingDown) {
         throw new Error("linkskills: runtime is shutting down");
       }
+      throwIfAborted(input.signal, "enqueueTelemetry");
       if (!params.config.telemetryEnqueue) {
         throw new Error("linkskills: telemetryEnqueue is disabled");
       }

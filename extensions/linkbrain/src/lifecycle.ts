@@ -175,12 +175,34 @@ export function createLinkbrainLifecycle(
       return;
     }
     const cleaned = stripUnsafeFields(input.body);
-    await params.runtime.enqueueWrite({
-      kind: "coordination",
-      toolName: input.toolName,
-      idempotencyKey: input.idempotencyKey,
-      body: cleaned as Record<string, unknown>,
-    });
+    try {
+      await runBounded(
+        async (signal) => {
+          await params.runtime.enqueueWrite({
+            kind: "coordination",
+            toolName: input.toolName,
+            idempotencyKey: input.idempotencyKey,
+            body: cleaned as Record<string, unknown>,
+            signal,
+          });
+        },
+        {
+          timeoutMs: operationTimeoutMs,
+          label: "coordination-enqueue",
+          onStalled: (info) => {
+            params.runtime.noteStalled?.(info);
+            logger?.warn(
+              `linkbrain: ${info.label} stalled: ${info.reason} (mutation ownership retained)`,
+            );
+          },
+        },
+      );
+    } catch (error) {
+      if (isOperationTimeout(error)) {
+        return;
+      }
+      throw error;
+    }
   };
 
   const drainBounded = async (label: string) => {
@@ -348,9 +370,32 @@ export function createLinkbrainLifecycle(
 
     async handleGatewayStop() {
       await safe("gateway_stop", logger, async () => {
-        await params.capture.flushAll("gateway_stop");
-        await drainBounded("gateway_stop_drain");
-        // Unsent outbox remains durable in keyed stores.
+        // Overall wall-clock for flush+drain; abandoned stream work retains locks.
+        try {
+          await runBounded(
+            async (signal) => {
+              await params.capture.flushAll("gateway_stop", { signal });
+              if (signal.aborted) {
+                return;
+              }
+              await drainBounded("gateway_stop_drain");
+            },
+            {
+              timeoutMs: Math.max(operationTimeoutMs, 5_000),
+              label: "gateway_stop",
+              onStalled: (info) => {
+                params.runtime.noteStalled?.(info);
+                logger?.warn(
+                  `linkbrain: ${info.label} stalled: ${info.reason}; durable outbox retained`,
+                );
+              },
+            },
+          );
+        } catch (error) {
+          if (!isOperationTimeout(error)) {
+            throw error;
+          }
+        }
       });
     },
 

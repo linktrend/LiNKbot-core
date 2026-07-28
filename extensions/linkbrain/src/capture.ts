@@ -49,7 +49,10 @@ type CaptureFlushReason =
 export type LinkbrainCapture = {
   enqueue(input: CaptureEnqueueInput): Promise<{ accepted: boolean; flushed: boolean }>;
   flush(streamKey: string, reason: CaptureFlushReason): Promise<{ batches: number }>;
-  flushAll(reason: CaptureFlushReason): Promise<{ batches: number }>;
+  flushAll(
+    reason: CaptureFlushReason,
+    options?: { signal?: AbortSignal },
+  ): Promise<{ batches: number }>;
   getBuffer(streamKey: string): Promise<CaptureBufferRecord | undefined>;
 };
 
@@ -289,10 +292,11 @@ export function createLinkbrainCapture(params: CreateLinkbrainCaptureParams): Li
       }
     },
 
-    async flushAll(reason) {
+    async flushAll(reason, options) {
       const entries = await params.stores.captureBuffer.entries();
       let batches = 0;
       for (const entry of entries) {
+        throwIfAborted(options?.signal, `capture-flushAll:${reason}`);
         const snapshot = entry.value as CaptureBufferRecord;
         if (!snapshot || snapshot.version !== 1 || typeof snapshot.streamId !== "string") {
           continue;
@@ -307,9 +311,14 @@ export function createLinkbrainCapture(params: CreateLinkbrainCaptureParams): Li
               onStalled: noteStalled,
             },
             async (signal) => {
-              const record = await load(snapshot.streamId, signal);
+              const merged =
+                options?.signal && !options.signal.aborted
+                  ? AbortSignal.any([signal, options.signal])
+                  : signal;
+              throwIfAborted(merged, `capture-flushAll:${reason}`);
+              const record = await load(snapshot.streamId, merged);
               try {
-                return await flushRecord(record, reason, signal);
+                return await flushRecord(record, reason, merged);
               } catch (error) {
                 if (isOperationTimeout(error)) {
                   throw error;
@@ -324,6 +333,9 @@ export function createLinkbrainCapture(params: CreateLinkbrainCaptureParams): Li
         } catch (error) {
           if (isOperationTimeout(error)) {
             continue;
+          }
+          if (options?.signal?.aborted) {
+            break;
           }
           throw error;
         }

@@ -26,6 +26,9 @@ describe("linkbrain plugin boundary", () => {
       "src/sanitize.ts",
       "src/tools.ts",
       "src/transport.ts",
+      "src/bounded.ts",
+      "src/drain-worker.ts",
+      "src/feature-tools.ts",
     ];
     for (const relative of files) {
       const source = fs.readFileSync(path.join(root, relative), "utf8");

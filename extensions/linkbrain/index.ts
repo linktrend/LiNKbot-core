@@ -6,6 +6,8 @@ import {
 } from "./runtime-api.js";
 import { createLinkbrainCapture } from "./src/capture.js";
 import { linkbrainConfigSchema, parseLinkbrainConfig } from "./src/config.js";
+import { createBrainDrainWorker, type BrainDrainWorker } from "./src/drain-worker.js";
+import { registerLinkbrainFeatureTools } from "./src/feature-tools.js";
 import {
   createLinkbrainLifecycle,
   LINKBRAIN_CONVERSATION_HOOKS,
@@ -26,11 +28,13 @@ export default definePluginEntry({
     const config = parseLinkbrainConfig(api.pluginConfig);
     let runtime: LinkbrainRuntime | null = null;
     let lifecycle: LinkbrainLifecycle | null = null;
+    let drainWorker: BrainDrainWorker | null = null;
+    const registeredFeatureTools = registerLinkbrainFeatureTools(api, config);
 
     // Conversation-bearing hooks (agent_end) require:
     // plugins.entries.linkbrain.hooks.allowConversationAccess=true
     api.logger.info(
-      `linkbrain: registered (default-disabled). Phase 3 hooks include conversation-bearing ${LINKBRAIN_CONVERSATION_HOOKS.join(",")}; require ${LINKBRAIN_CONVERSATION_HOOK_REQUIREMENT}`,
+      `linkbrain: registered (default-disabled). Phase 3 hooks include conversation-bearing ${LINKBRAIN_CONVERSATION_HOOKS.join(",")}; require ${LINKBRAIN_CONVERSATION_HOOK_REQUIREMENT}; featureTools=${registeredFeatureTools.join(",") || "none"}`,
     );
 
     const service: OpenClawPluginService = {
@@ -56,11 +60,34 @@ export default definePluginEntry({
           capture,
           logger: api.logger,
         });
+        drainWorker = createBrainDrainWorker({
+          intervalMs: config.flushIntervalMs,
+          shouldDrain: () =>
+            Boolean(runtime?.opened) && (config.captureDrain || config.coordinationWrites),
+          drainOnce: (options) => {
+            if (!runtime) {
+              return Promise.resolve({ drained: 0, retried: 0, deadLettered: 0, skipped: 0 });
+            }
+            return runtime.drainOnce(options);
+          },
+          onError: (error) => {
+            api.logger.warn(
+              `linkbrain: drain worker error: ${error instanceof Error ? error.message : "unknown"}`,
+            );
+          },
+        });
+        if (config.captureDrain || config.coordinationWrites) {
+          drainWorker.start();
+        }
         api.logger.info(
-          `linkbrain: state open (namespaces=${stores.openedNamespaces.join(",")}; transportMode=${config.transportMode}; captureEnqueue=${config.captureEnqueue}; captureDrain=${config.captureDrain}; coordinationWrites=${config.coordinationWrites})`,
+          `linkbrain: state open (namespaces=${stores.openedNamespaces.join(",")}; transportMode=${config.transportMode}; captureEnqueue=${config.captureEnqueue}; captureDrain=${config.captureDrain}; coordinationWrites=${config.coordinationWrites}; flushIntervalMs=${config.flushIntervalMs}; worker=${drainWorker.running})`,
         );
       },
       stop: async () => {
+        if (drainWorker) {
+          await drainWorker.stop();
+          drainWorker = null;
+        }
         if (lifecycle) {
           await lifecycle.handleGatewayStop();
           lifecycle = null;
@@ -139,6 +166,9 @@ export default definePluginEntry({
     api.on(
       "gateway_start",
       async () => {
+        if (drainWorker && (config.captureDrain || config.coordinationWrites) && !drainWorker.running) {
+          drainWorker.start();
+        }
         await getLifecycle()?.handleGatewayStart();
       },
       hookOpts,
@@ -147,6 +177,9 @@ export default definePluginEntry({
     api.on(
       "gateway_stop",
       async () => {
+        if (drainWorker) {
+          await drainWorker.stop();
+        }
         await getLifecycle()?.handleGatewayStop();
       },
       hookOpts,

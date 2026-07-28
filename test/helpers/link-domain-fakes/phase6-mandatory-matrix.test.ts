@@ -606,7 +606,7 @@ describe(`Phase 6 mandatory matrix (${PHASE6_EVIDENCE_TIER})`, () => {
           content: "must never leave OpenClaw toward Skills",
         },
       }),
-    ).toThrow(/prohibited field rejected/);
+    ).toThrow(/unknown field rejected|prohibited field rejected/);
 
     const skillsFake = new SkillsFakeService();
     const auth = mintFakeToken(fixtureSkillsClaim());

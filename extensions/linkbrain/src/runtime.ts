@@ -4,7 +4,7 @@
  */
 import { randomUUID } from "node:crypto";
 import type { StalledInfo } from "./bounded.js";
-import { throwIfAborted } from "./bounded.js";
+import { isOperationTimeout, runBounded, throwIfAborted } from "./bounded.js";
 import type { LinkbrainConfig } from "./config.js";
 import {
   deadLetterMetaFromEnvelope,
@@ -375,7 +375,29 @@ export function createLinkbrainRuntime(params: CreateLinkbrainRuntimeParams): Li
 
     async shutdown() {
       shuttingDown = true;
-      await drainTail;
+      try {
+        await runBounded(
+          async () => {
+            await drainTail;
+          },
+          {
+            timeoutMs: 2_000,
+            label: "runtime-shutdown",
+            onStalled: (info) => {
+              stalledCount += 1;
+              lastStalledStatus = `label=${info.label};reason=${info.reason};atMs=${now()}`;
+            },
+          },
+        );
+      } catch (error) {
+        if (!isOperationTimeout(error)) {
+          throw error;
+        }
+        // Do not await drainTail after timeout — abandoned work may retain ownership.
+        lastDrainStatus = lastDrainStatus
+          ? `${lastDrainStatus};shutdown_timeout`
+          : "shutdown_timeout";
+      }
       lastDrainStatus = lastDrainStatus ? `${lastDrainStatus};shutdown` : "shutdown";
       await writeHealth({
         status: "idle",
