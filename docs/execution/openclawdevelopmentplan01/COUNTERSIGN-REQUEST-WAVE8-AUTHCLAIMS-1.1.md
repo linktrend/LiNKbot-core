@@ -2,7 +2,7 @@
 
 **Date:** 2026-07-29 Asia/Taipei
 **Branch:** `issue/ocp-openclawdevelopmentplan01`
-**Immutable OpenClaw inspection tip:** `059e6e7054df703d9b00799b91d4ac850c3c4467`
+**Immutable OpenClaw inspection tip:** `a2a13cf9272d531fe47ee86270eec89b7e4a0528`
 **Status:** **PENDING** — owners must countersign the new aggregates against the immutable inspection tip above
 **Wave 20 note:** Docs/provenance only; fixture JSON bytes unchanged from wave-8 aggregates. The immutable inspection tip is the exact Wave-20 clean pushed HEAD (tip-record fills/replaces if needed). Do not use a floating “see tip after push” placeholder.
 **Supersedes:** prior CLOSED countersign at tip `429a7818…` (AuthClaims 1.0.0 fixtures) — historical only
