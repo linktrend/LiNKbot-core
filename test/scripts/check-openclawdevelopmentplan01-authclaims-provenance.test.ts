@@ -8,13 +8,17 @@ import {
   AUTH_CLAIMS_CONTRACT,
   AUTH_CLAIMS_SCHEMA_SHA256,
   BRAIN_FIXTURE_AGGREGATE_SHA256,
+  BRAIN_OWNER_HANDOFF_COMMIT,
+  COUNTERSIGN_INSPECTION_TIP,
+  FIXTURE_OWNER_GATE,
   FIXTURE_OWNER_STATUS,
   PLATFORM_CONTRACTS_PACKAGE,
   PLATFORM_HEAD_RECORD_SPECS,
   PLATFORM_SOURCE_HEAD,
   REL,
   SKILLS_FIXTURE_AGGREGATE_SHA256,
-  findStaleClosedWhilePendingClaims,
+  SKILLS_OWNER_HANDOFF_COMMIT,
+  findStalePendingWhileClosedClaims,
   validateAuthClaimsProvenance,
   validatePlatformSourceHeadAgreement,
 } from "../../scripts/check-openclawdevelopmentplan01-authclaims-provenance.mjs";
@@ -45,7 +49,9 @@ function copyTree(srcRoot: string, destRoot: string, relativePaths: string[]) {
   }
 }
 
-function withSandbox(mutate: (root: string) => void): ReturnType<typeof validateAuthClaimsProvenance> {
+function withSandbox(
+  mutate: (root: string) => void,
+): ReturnType<typeof validateAuthClaimsProvenance> {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "authclaims-provenance-"));
   try {
     copyTree(REPO_ROOT, root, SANDBOX_RELS);
@@ -148,22 +154,35 @@ describe("check-openclawdevelopmentplan01-authclaims-provenance", () => {
     expect(result.ok).toBe(false);
     expect(
       result.errors.some(
-        (e) =>
-          /brain_skills_fixture_bytes/i.test(e) ||
-          /brain_skills_fixture_refresh/i.test(e),
+        (e) => /brain_skills_fixture_bytes/i.test(e) || /brain_skills_fixture_refresh/i.test(e),
       ),
     ).toBe(true);
   });
 
-  it("fails when PHASE-1-CONTRACT-CONSUMPTION claims current gate CLOSED or AuthClaims 1.0 fixtures", () => {
+  it("fails when Platform PIN reverts gate to PENDING / RE-OPENED", () => {
+    const result = withSandbox((root) => {
+      const pinPath = path.join(root, REL.platformPin);
+      const pin = JSON.parse(fs.readFileSync(pinPath, "utf8"));
+      pin.brain_skills_fixture_refresh.fixture_owner_status = "PENDING_OWNER_COUNTERSIGN";
+      pin.brain_skills_fixture_refresh.fixture_owner_gate = "RE-OPENED";
+      pin.brain_skills_fixture_refresh.owner_reaffirmation = "required — pending";
+      fs.writeFileSync(pinPath, `${JSON.stringify(pin, null, 2)}\n`);
+    });
+    expect(result.ok).toBe(false);
+    expect(
+      result.errors.some(
+        (e) =>
+          /OWNER_COUNTERSIGNED/i.test(e) ||
+          /fixture_owner_gate must be CLOSED/i.test(e) ||
+          /satisfied/i.test(e),
+      ),
+    ).toBe(true);
+  });
+
+  it("fails when PHASE-1-CONTRACT-CONSUMPTION reverts to AuthClaims 1.0 fixtures", () => {
     const result = withSandbox((root) => {
       const docPath = path.join(root, REL.consumption);
       let text = fs.readFileSync(docPath, "utf8");
-      text = text.replaceAll(FIXTURE_OWNER_STATUS, "OWNER_COUNTERSIGNED");
-      text = text.replace(
-        /Do \*\*not\*\* call the current fixture-owner gate CLOSED\./,
-        "Status: Brain + Skills **`OWNER_COUNTERSIGNED`** at OpenClaw tip `429a7818e2f79be27329c1848531ffe9ba0f7367`. **Phase 1 fixture-owner gate CLOSED.**",
-      );
       text = text.replace(
         /Auth identity fixtures use camelCase `platform\.auth-claims\/1\.1\.0`/,
         "Auth identity fixtures use camelCase `platform.auth-claims/1.0.0`",
@@ -172,39 +191,38 @@ describe("check-openclawdevelopmentplan01-authclaims-provenance", () => {
     });
     expect(result.ok).toBe(false);
     expect(
-      result.errors.some(
-        (e) =>
-          /gate CLOSED/i.test(e) ||
-          /AuthClaims 1\.0\.0/i.test(e) ||
-          /PENDING_OWNER_COUNTERSIGN/i.test(e) ||
-          /stale CLOSED/i.test(e),
+      result.errors.some((e) => /AuthClaims 1\.0\.0/i.test(e) || /AuthClaims 1\.1\.0/i.test(e)),
+    ).toBe(true);
+  });
+
+  it("fails when FIXTURE-OWNER-SIGNOFF reverts to PENDING", () => {
+    const result = withSandbox((root) => {
+      const docPath = path.join(root, REL.signoff);
+      let text = fs.readFileSync(docPath, "utf8");
+      text = text.replaceAll("OWNER_COUNTERSIGNED", "PENDING_OWNER_COUNTERSIGN");
+      text = text.replace(/fixture-owner gate CLOSED/gi, "fixture-owner gate RE-OPENED");
+      text = text.replace(/\*\*CLOSED\*\*/g, "**RE-OPENED**");
+      fs.writeFileSync(docPath, text);
+    });
+    expect(result.ok).toBe(false);
+    expect(
+      result.errors.some((e) =>
+        /OWNER_COUNTERSIGNED|gate CLOSED|stale PENDING|PENDING_OWNER_COUNTERSIGN/i.test(e),
       ),
     ).toBe(true);
   });
 
-  it("fails when FIXTURE-OWNER-SIGNOFF loses pending status", () => {
-    const result = withSandbox((root) => {
-      const docPath = path.join(root, REL.signoff);
-      let text = fs.readFileSync(docPath, "utf8");
-      text = text.replaceAll("PENDING_OWNER_COUNTERSIGN", "OWNER_COUNTERSIGNED");
-      text = text.replace(/RE-OPENED/g, "CLOSED");
-      fs.writeFileSync(docPath, text);
-    });
-    expect(result.ok).toBe(false);
-    expect(result.errors.some((e) => /PENDING_OWNER_COUNTERSIGN|RE-OPENED|stale CLOSED/i.test(e))).toBe(
-      true,
-    );
-  });
-
-  it("fails when a current status doc claims CLOSED while signoff is pending", () => {
+  it("fails when a current status doc reclaims PENDING while signoff is CLOSED", () => {
     const result = withSandbox((root) => {
       const docPath = path.join(root, REL.phase13Handoff);
       let text = fs.readFileSync(docPath, "utf8");
-      text += "\n\nFixture-owner gate CLOSED for current AuthClaims 1.1 packages.\n";
+      text += "\n\nCurrent AuthClaims 1.1 fixture-owner status: `PENDING_OWNER_COUNTERSIGN`.\n";
       fs.writeFileSync(docPath, text);
     });
     expect(result.ok).toBe(false);
-    expect(result.errors.some((e) => /stale CLOSED|OWNER_COUNTERSIGNED/i.test(e))).toBe(true);
+    expect(result.errors.some((e) => /stale PENDING|PENDING_OWNER_COUNTERSIGN/i.test(e))).toBe(
+      true,
+    );
   });
 
   it("fails when countersign request loses immutable tip or uses see-tip placeholder", () => {
@@ -219,10 +237,19 @@ describe("check-openclawdevelopmentplan01-authclaims-provenance", () => {
     });
     expect(result.ok).toBe(false);
     expect(
-      result.errors.some(
-        (e) => /see pushed tip|immutable 40-char|COUNTERSIGN-REQUEST-WAVE8/i.test(e),
-      ),
+      result.errors.some((e) => /see pushed tip|immutable tip|COUNTERSIGN-REQUEST-WAVE8/i.test(e)),
     ).toBe(true);
+  });
+
+  it("fails when countersign request status reverts from SATISFIED to PENDING", () => {
+    const result = withSandbox((root) => {
+      const docPath = path.join(root, REL.countersignRequest);
+      let text = fs.readFileSync(docPath, "utf8");
+      text = text.replace(/\*\*Status:\*\* \*\*SATISFIED\*\*/, "**Status:** **PENDING**");
+      fs.writeFileSync(docPath, text);
+    });
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((e) => /SATISFIED|stale PENDING/i.test(e))).toBe(true);
   });
 
   it("fails when fixture MANIFEST aggregate disagrees", () => {
@@ -236,13 +263,13 @@ describe("check-openclawdevelopmentplan01-authclaims-provenance", () => {
     expect(result.errors.some((e) => /Skills MANIFEST.*aggregate/i.test(e))).toBe(true);
   });
 
-  it("detects unlabeled CLOSED lines and ignores historical lines", () => {
-    const stale = findStaleClosedWhilePendingClaims(
-      "Fixture-owner gate CLOSED for current packages.\n",
+  it("detects unlabeled PENDING lines and ignores historical lines", () => {
+    const stale = findStalePendingWhileClosedClaims(
+      "Current status: `PENDING_OWNER_COUNTERSIGN` for AuthClaims 1.1.\n",
     );
     expect(stale.length).toBeGreaterThan(0);
-    const historical = findStaleClosedWhilePendingClaims(
-      "Historical AuthClaims 1.0 OWNER_COUNTERSIGNED at tip `429a7818…` is superseded.\n",
+    const historical = findStalePendingWhileClosedClaims(
+      "Wave 8 AuthClaims 1.1.0 refresh: fixture-owner gate RE-OPENED (superseded by closeout below).\n",
     );
     expect(historical).toEqual([]);
   });
@@ -263,7 +290,11 @@ describe("check-openclawdevelopmentplan01-authclaims-provenance", () => {
     expect(SKILLS_FIXTURE_AGGREGATE_SHA256).toBe(
       "203163711b5db17b8a07d3956e41596384cbd08f0c110bd9f21abfc5c7e5e19a",
     );
-    expect(FIXTURE_OWNER_STATUS).toBe("PENDING_OWNER_COUNTERSIGN");
+    expect(FIXTURE_OWNER_STATUS).toBe("OWNER_COUNTERSIGNED");
+    expect(FIXTURE_OWNER_GATE).toBe("CLOSED");
+    expect(COUNTERSIGN_INSPECTION_TIP).toBe("005c9454f1bd3f7427936704131ffe5faa95ef0f");
+    expect(BRAIN_OWNER_HANDOFF_COMMIT).toBe("cfa8e931952fb12326ae53f43e73f77b9b0b09ea");
+    expect(SKILLS_OWNER_HANDOFF_COMMIT).toBe("2fb6f8d55f42c2350a6c528f32ff35023f544adc");
     expect(PLATFORM_HEAD_RECORD_SPECS).toHaveLength(6);
   });
 });

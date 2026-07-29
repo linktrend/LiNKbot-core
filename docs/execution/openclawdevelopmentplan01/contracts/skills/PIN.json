@@ -30,9 +30,11 @@
     "openclaw_skills_fixture_root": "extensions/linkskills/fixtures",
     "openclaw_skills_fixture_json_count": 71,
     "openclaw_skills_fixture_aggregate_sha256": "203163711b5db17b8a07d3956e41596384cbd08f0c110bd9f21abfc5c7e5e19a",
-    "fixture_owner_status": "PENDING_OWNER_COUNTERSIGN",
+    "fixture_owner_status": "OWNER_COUNTERSIGNED",
+    "inspected_openclaw_tip": "005c9454f1bd3f7427936704131ffe5faa95ef0f",
+    "skills_owner_handoff_commit": "2fb6f8d55f42c2350a6c528f32ff35023f544adc",
     "wave": "wave-8-authclaims-1.1.0",
-    "note": "Authoritative OpenClaw consumer AuthClaims pin. Aligns with Platform PIN platform.auth-claims/1.1.0, Skills fixture MANIFEST, and FIXTURE-OWNER-SIGNOFF.md. Fresh Skills owner countersign remains pending."
+    "note": "Authoritative OpenClaw consumer AuthClaims pin. Aligns with Platform PIN platform.auth-claims/1.1.0, Skills fixture MANIFEST aggregates, and FIXTURE-OWNER-SIGNOFF.md. AuthClaims 1.1 Skills OWNER_COUNTERSIGNED at tip 005c9454… (domain-owner fixture approval only — not Codex certification)."
   },
   "immutable_release_certification": {
     "handoff": "docs/handoffs/2026-07-28-grok-certification-path-correction.md",

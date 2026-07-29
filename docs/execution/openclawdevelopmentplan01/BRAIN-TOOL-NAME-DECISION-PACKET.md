@@ -68,12 +68,12 @@ OpenClaw mirrors these in:
 
 ## Status
 
-| Item                                       | State                                                                         |
-| ------------------------------------------ | ----------------------------------------------------------------------------- |
-| OpenClaw decision                          | **DECIDED** — keep frozen §9.1; no alias                                      |
-| Brain §9.1 implementation (corrected HEAD) | **IMPLEMENTED** at `a3cff6e…` (code evidence)                                 |
-| Brain owner fixture countersign            | Historical AuthClaims **1.0** **OWNER_COUNTERSIGNED** at tip `429a7818…` / aggregate `275c1fb7…9a1d` (superseded). Current AuthClaims **1.1** Brain aggregate remains **`PENDING_OWNER_COUNTERSIGN`** |
-| Phase 1 full exit                          | **NOT PASSED** — Platform auth-path still required; current AuthClaims **1.1** fixture-owner gate **RE-OPENED** / **`PENDING_OWNER_COUNTERSIGN`** |
+| Item                                       | State                                                                                                                                                                                                                                        |
+| ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| OpenClaw decision                          | **DECIDED** — keep frozen §9.1; no alias                                                                                                                                                                                                     |
+| Brain §9.1 implementation (corrected HEAD) | **IMPLEMENTED** at `a3cff6e…` (code evidence)                                                                                                                                                                                                |
+| Brain owner fixture countersign            | AuthClaims **1.1** **OWNER_COUNTERSIGNED** at tip `005c9454…` / aggregate `4493f714…4811b` (handoff `cfa8e931…`). Historical AuthClaims **1.0** tip `429a7818…` superseded. Domain-owner fixture approval only — **not** Codex certification |
+| Phase 1 full exit                          | **NOT PASSED** — Platform auth-path still required; AuthClaims **1.1** fixture-owner gate **CLOSED** / **`OWNER_COUNTERSIGNED`** (domain-owner only)                                                                                         |
 
 ## Principal routing instruction
 

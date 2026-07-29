@@ -6,6 +6,9 @@
  * Brain/Skills fixture MANIFEST.md, FIXTURE-OWNER-SIGNOFF.md, and related
  * current provenance/status docs.
  *
+ * AuthClaims 1.1 fixture-owner gate is CLOSED / OWNER_COUNTERSIGNED
+ * (domain-owner fixture approval only — not Codex certification).
+ *
  * Does not mutate runtime or fixture JSON bytes.
  */
 import crypto from "node:crypto";
@@ -26,13 +29,15 @@ export const BRAIN_FIXTURE_AGGREGATE_SHA256 =
   "4493f71432ef56f9fc272ff4c208b8901242c2bd83e138f53d6f0259b4f4811b";
 export const SKILLS_FIXTURE_AGGREGATE_SHA256 =
   "203163711b5db17b8a07d3956e41596384cbd08f0c110bd9f21abfc5c7e5e19a";
-export const FIXTURE_OWNER_STATUS = "PENDING_OWNER_COUNTERSIGN";
+export const FIXTURE_OWNER_STATUS = "OWNER_COUNTERSIGNED";
+export const FIXTURE_OWNER_GATE = "CLOSED";
+export const COUNTERSIGN_INSPECTION_TIP = "005c9454f1bd3f7427936704131ffe5faa95ef0f";
+export const BRAIN_OWNER_HANDOFF_COMMIT = "cfa8e931952fb12326ae53f43e73f77b9b0b09ea";
+export const SKILLS_OWNER_HANDOFF_COMMIT = "2fb6f8d55f42c2350a6c528f32ff35023f544adc";
 
 const HISTORICAL_AUTH_CLAIMS_1_0 = "platform.auth-claims/1.0.0";
-const HISTORICAL_SCHEMA_SHA256 =
-  "b0397cdf34e76ab0986c6d223ecb6c3c66d619ea59557f78cd45c0c015ff50fb";
-const HISTORICAL_CONTENT_HASH =
-  "6bf49618d846662976886f57d5d468f73a08ab1a6574968f68833d82429db251";
+const HISTORICAL_SCHEMA_SHA256 = "b0397cdf34e76ab0986c6d223ecb6c3c66d619ea59557f78cd45c0c015ff50fb";
+const HISTORICAL_CONTENT_HASH = "6bf49618d846662976886f57d5d468f73a08ab1a6574968f68833d82429db251";
 
 const DEFAULT_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -94,7 +99,7 @@ export const PLATFORM_HEAD_RECORD_SPECS = Object.freeze([
   },
 ]);
 
-/** Current handoff/status/request surfaces checked for stale CLOSED claims while pending. */
+/** Current handoff/status/request surfaces checked for stale PENDING claims while closed. */
 export const CURRENT_STATUS_DOC_RELS = Object.freeze([
   REL.phase13Handoff,
   REL.phase1Status,
@@ -182,7 +187,7 @@ export function readJsonPath(value, jsonPath) {
 }
 
 /**
- * Line is historical / instruction-only for OWNER_COUNTERSIGNED / CLOSED claims.
+ * Line is historical / instruction-only for PENDING / RE-OPENED / CLOSED scans.
  * @param {string} line
  * @returns {boolean}
  */
@@ -191,21 +196,25 @@ export function isHistoricalOrInstructionLine(line) {
     /historical|superseded|prior |authclaims?\s+\*\*1\.0|1\.0\.0|275c1fb7|8586d89a|429a7818/i.test(
       line,
     ) ||
-    /does \*\*not\*\*|must not|do \*\*not\*\*|not call|re-opened|RE-OPENED|PENDING_OWNER_COUNTERSIGN/i.test(
+    /does \*\*not\*\*|must not|do \*\*not\*\*|not call|re-opened \(superseded|RE-OPENED \(superseded/i.test(
+      line,
+    ) ||
+    /was RE-OPENED|gate was RE-OPENED|Wave 8 AuthClaims|wave 8 AuthClaims|Wave 20 correction|WAVE20/i.test(
       line,
     ) ||
     /Record `OWNER_COUNTERSIGNED` \(or denial\)/i.test(line) ||
     /wave 2\s*\/\s*2b changelog/i.test(line) ||
-    /Correction wave 2\s*\/\s*2b changelog/i.test(line)
+    /Correction wave 2\s*\/\s*2b changelog/i.test(line) ||
+    /after AuthClaims 1\.1\.0 fixture refresh \(wave 8\)/i.test(line)
   );
 }
 
 /**
- * Detect unlabeled current CLOSED / OWNER_COUNTERSIGNED claims while gate is pending.
+ * Detect unlabeled current PENDING / RE-OPENED claims while gate is CLOSED.
  * @param {string} text
  * @returns {string[]}
  */
-export function findStaleClosedWhilePendingClaims(text) {
+export function findStalePendingWhileClosedClaims(text) {
   /** @type {string[]} */
   const hits = [];
   const lines = text.split(/\r?\n/);
@@ -218,23 +227,26 @@ export function findStaleClosedWhilePendingClaims(text) {
       continue;
     }
     if (
-      /fixture-owner gate CLOSED|Fixture-owner countersign is \*\*done\*\*|gate:\s*\*\*CLOSED\*\*|Phase 1 fixture-owner gate CLOSED/i.test(
-        line,
-      )
-    ) {
-      hits.push(`L${i + 1}: unlabeled current CLOSED claim: ${line.trim().slice(0, 160)}`);
-      continue;
-    }
-    if (
-      /OWNER_COUNTERSIGNED/i.test(line) &&
-      !/PENDING_OWNER_COUNTERSIGN/i.test(line)
+      /PENDING_OWNER_COUNTERSIGN/i.test(line) ||
+      /\*\*Status:\*\* \*\*PENDING\*\*/i.test(line) ||
+      (/RE-OPENED/i.test(line) && !/CLOSED|OWNER_COUNTERSIGNED|SATISFIED/i.test(line))
     ) {
       hits.push(
-        `L${i + 1}: unlabeled current OWNER_COUNTERSIGNED claim: ${line.trim().slice(0, 160)}`,
+        `L${i + 1}: unlabeled current PENDING/RE-OPENED claim: ${line.trim().slice(0, 160)}`,
       );
     }
   }
   return hits;
+}
+
+/**
+ * @deprecated Use findStalePendingWhileClosedClaims after AuthClaims 1.1 closeout.
+ * Retained for test compatibility naming during transition.
+ * @param {string} text
+ * @returns {string[]}
+ */
+export function findStaleClosedWhilePendingClaims(text) {
+  return findStalePendingWhileClosedClaims(text);
 }
 
 /**
@@ -252,7 +264,10 @@ export function readPlatformHeadRecord(repoRoot, spec) {
     const json = JSON.parse(fs.readFileSync(abs, "utf8"));
     const value = readJsonPath(json, spec.jsonPath ?? []);
     if (typeof value !== "string") {
-      return { ok: false, error: `${spec.id}: missing json path ${(spec.jsonPath ?? []).join(".")}` };
+      return {
+        ok: false,
+        error: `${spec.id}: missing json path ${(spec.jsonPath ?? []).join(".")}`,
+      };
     }
     return { ok: true, value };
   }
@@ -306,9 +321,7 @@ export function validateAuthClaimsProvenance(options = {}) {
   /** @type {string[]} */
   const checks = [];
 
-  const requiredRels = [
-    ...Object.values(REL),
-  ];
+  const requiredRels = [...Object.values(REL)];
   for (const relativePath of requiredRels) {
     requireOk(
       errors,
@@ -359,9 +372,7 @@ export function validateAuthClaimsProvenance(options = {}) {
     const pkg = platformPin.package;
     requireOk(
       errors,
-      isRecord(pkg) &&
-        pkg.name === "@linktrend/platform-contracts" &&
-        pkg.version === "0.2.2",
+      isRecord(pkg) && pkg.name === "@linktrend/platform-contracts" && pkg.version === "0.2.2",
       `platform PIN package must be ${PLATFORM_CONTRACTS_PACKAGE}`,
     );
     const claims = platformPin.platform_auth_claims;
@@ -414,21 +425,36 @@ export function validateAuthClaimsProvenance(options = {}) {
       requireOk(
         errors,
         refresh.fixture_owner_status === FIXTURE_OWNER_STATUS,
-        "platform PIN fixture_owner_status must be PENDING_OWNER_COUNTERSIGN",
+        "platform PIN fixture_owner_status must be OWNER_COUNTERSIGNED",
       );
       requireOk(
         errors,
-        refresh.fixture_owner_gate === "RE-OPENED",
-        "platform PIN fixture_owner_gate must be RE-OPENED",
+        refresh.fixture_owner_gate === FIXTURE_OWNER_GATE,
+        "platform PIN fixture_owner_gate must be CLOSED",
+      );
+      requireOk(
+        errors,
+        refresh.inspected_openclaw_tip === COUNTERSIGN_INSPECTION_TIP,
+        "platform PIN inspected_openclaw_tip mismatch",
+      );
+      requireOk(
+        errors,
+        refresh.brain_owner_handoff_commit === BRAIN_OWNER_HANDOFF_COMMIT,
+        "platform PIN brain_owner_handoff_commit mismatch",
+      );
+      requireOk(
+        errors,
+        refresh.skills_owner_handoff_commit === SKILLS_OWNER_HANDOFF_COMMIT,
+        "platform PIN skills_owner_handoff_commit mismatch",
       );
       const ownerText = String(refresh.owner_reaffirmation ?? "");
       requireOk(
         errors,
-        /required|pending/i.test(ownerText) && !/not required|unnecessary/i.test(ownerText),
-        "platform PIN must record that fresh owner countersigns are required/pending",
+        /satisfied|OWNER_COUNTERSIGNED/i.test(ownerText) && !/required|pending/i.test(ownerText),
+        "platform PIN must record that owner countersigns are satisfied (not pending/required)",
       );
     }
-    checks.push("platform PIN AuthClaims 1.1.0 + wave-8 pending countersign record");
+    checks.push("platform PIN AuthClaims 1.1.0 + OWNER_COUNTERSIGNED closeout record");
   }
 
   // --- Skills PIN ---
@@ -502,17 +528,26 @@ export function validateAuthClaimsProvenance(options = {}) {
       );
       requireOk(
         errors,
-        override.openclaw_skills_fixture_aggregate_sha256 ===
-          SKILLS_FIXTURE_AGGREGATE_SHA256,
+        override.openclaw_skills_fixture_aggregate_sha256 === SKILLS_FIXTURE_AGGREGATE_SHA256,
         "skills consumer override fixture aggregate mismatch",
       );
       requireOk(
         errors,
         override.fixture_owner_status === FIXTURE_OWNER_STATUS,
-        "skills consumer override fixture_owner_status must be PENDING_OWNER_COUNTERSIGN",
+        "skills consumer override fixture_owner_status must be OWNER_COUNTERSIGNED",
+      );
+      requireOk(
+        errors,
+        override.inspected_openclaw_tip === COUNTERSIGN_INSPECTION_TIP,
+        "skills consumer override inspected_openclaw_tip mismatch",
+      );
+      requireOk(
+        errors,
+        override.skills_owner_handoff_commit === SKILLS_OWNER_HANDOFF_COMMIT,
+        "skills consumer override skills_owner_handoff_commit mismatch",
       );
     }
-    checks.push("skills PIN historical 1.0 + authoritative 1.1 consumer override");
+    checks.push("skills PIN historical 1.0 + authoritative 1.1 OWNER_COUNTERSIGNED override");
   }
 
   // --- PHASE-1-CONTRACT-CONSUMPTION.md ---
@@ -543,53 +578,35 @@ export function validateAuthClaimsProvenance(options = {}) {
   );
   requireOk(
     errors,
-    has(consumption, /PENDING_OWNER_COUNTERSIGN/),
-    "PHASE-1-CONTRACT-CONSUMPTION.md must state PENDING_OWNER_COUNTERSIGN",
+    has(consumption, /OWNER_COUNTERSIGNED/),
+    "PHASE-1-CONTRACT-CONSUMPTION.md must state OWNER_COUNTERSIGNED",
   );
   requireOk(
     errors,
-    has(consumption, /RE-OPENED/),
-    "PHASE-1-CONTRACT-CONSUMPTION.md must state fixture-owner gate RE-OPENED",
+    has(consumption, /fixture-owner gate is \*\*CLOSED\*\*|fixture-owner gate \*\*CLOSED\*\*/i),
+    "PHASE-1-CONTRACT-CONSUMPTION.md must state fixture-owner gate CLOSED",
   );
   requireOk(
     errors,
-    !has(
-      consumption,
-      /Brain\/Skills fixture bytes unchanged|owner reaffirmation not required/i,
-    ),
+    !has(consumption, /Brain\/Skills fixture bytes unchanged|owner reaffirmation not required/i),
     "PHASE-1-CONTRACT-CONSUMPTION.md must not claim fixture bytes unchanged / reaffirmation not required",
   );
   requireOk(
     errors,
-    !has(
-      consumption,
-      /Status:\s*Brain \+ Skills \*\*`OWNER_COUNTERSIGNED`\*\*.*Phase 1 fixture-owner gate CLOSED/s,
-    ),
-    "PHASE-1-CONTRACT-CONSUMPTION.md must not call current fixture-owner gate CLOSED",
-  );
-  requireOk(
-    errors,
-    !has(
-      consumption,
-      /Auth identity fixtures use camelCase `platform\.auth-claims\/1\.0\.0`/,
-    ),
+    !has(consumption, /Auth identity fixtures use camelCase `platform\.auth-claims\/1\.0\.0`/),
     "PHASE-1-CONTRACT-CONSUMPTION.md must not claim current identity fixtures use AuthClaims 1.0.0",
   );
   requireOk(
     errors,
-    has(
-      consumption,
-      /Auth identity fixtures use camelCase `platform\.auth-claims\/1\.1\.0`/,
-    ),
+    has(consumption, /Auth identity fixtures use camelCase `platform\.auth-claims\/1\.1\.0`/),
     "PHASE-1-CONTRACT-CONSUMPTION.md rule 6 must name AuthClaims 1.1.0",
   );
   requireOk(
     errors,
-    has(consumption, /historical/i) &&
-      has(consumption, /429a7818e2f79be27329c1848531ffe9ba0f7367/),
+    has(consumption, /historical/i) && has(consumption, /429a7818e2f79be27329c1848531ffe9ba0f7367/),
     "PHASE-1-CONTRACT-CONSUMPTION.md must distinguish historical 1.0 countersign tip",
   );
-  checks.push("PHASE-1-CONTRACT-CONSUMPTION.md AuthClaims 1.1 pending provenance");
+  checks.push("PHASE-1-CONTRACT-CONSUMPTION.md AuthClaims 1.1 CLOSED provenance");
 
   // --- FIXTURE-OWNER-SIGNOFF.md ---
   requireOk(
@@ -604,27 +621,52 @@ export function validateAuthClaimsProvenance(options = {}) {
   );
   requireOk(
     errors,
-    has(signoff, /PENDING_OWNER_COUNTERSIGN/),
-    "FIXTURE-OWNER-SIGNOFF.md must state PENDING_OWNER_COUNTERSIGN",
+    signoff.includes(COUNTERSIGN_INSPECTION_TIP),
+    "FIXTURE-OWNER-SIGNOFF.md missing countersign inspection tip",
   );
   requireOk(
     errors,
-    has(signoff, /RE-OPENED/),
-    "FIXTURE-OWNER-SIGNOFF.md must state gate RE-OPENED",
+    signoff.includes(BRAIN_OWNER_HANDOFF_COMMIT),
+    "FIXTURE-OWNER-SIGNOFF.md missing Brain owner handoff commit",
   );
   requireOk(
     errors,
-    has(signoff, /does \*\*not\*\* close the fixture-owner gate|Wave 8 does \*\*not\*\* close/i),
-    "FIXTURE-OWNER-SIGNOFF.md must not close the current fixture-owner gate",
+    signoff.includes(SKILLS_OWNER_HANDOFF_COMMIT),
+    "FIXTURE-OWNER-SIGNOFF.md missing Skills owner handoff commit",
   );
   requireOk(
     errors,
-    !has(signoff, /current fixture-owner gate CLOSED|gate is CLOSED for AuthClaims 1\.1/i),
-    "FIXTURE-OWNER-SIGNOFF.md must not claim current AuthClaims 1.1 gate CLOSED",
+    has(signoff, /OWNER_COUNTERSIGNED/),
+    "FIXTURE-OWNER-SIGNOFF.md must state OWNER_COUNTERSIGNED",
   );
-  checks.push("FIXTURE-OWNER-SIGNOFF.md pending 1.1 countersign status");
+  requireOk(
+    errors,
+    has(signoff, /fixture-owner gate CLOSED|fixture-owner gate:\*\* \*\*CLOSED/i),
+    "FIXTURE-OWNER-SIGNOFF.md must state gate CLOSED",
+  );
+  requireOk(
+    errors,
+    has(signoff, /itemId/) && has(signoff, /authority.*draft|authority:\s*"draft"/i),
+    "FIXTURE-OWNER-SIGNOFF.md must record Brain residual notes (itemId/id + authority=draft)",
+  );
+  requireOk(
+    errors,
+    has(signoff, /not\*\* Codex certification|not Codex certification/i),
+    "FIXTURE-OWNER-SIGNOFF.md must state domain-owner approval is not Codex certification",
+  );
+  requireOk(
+    errors,
+    has(signoff, /Platform authentication path|Platform auth-path/i),
+    "FIXTURE-OWNER-SIGNOFF.md must state Phase 1 remains blocked on Platform auth-path",
+  );
+  requireOk(
+    errors,
+    has(signoff, /Phases 7–12|Phases 7-12/i),
+    "FIXTURE-OWNER-SIGNOFF.md must state Phases 7–12 remain unstarted",
+  );
+  checks.push("FIXTURE-OWNER-SIGNOFF.md CLOSED 1.1 countersign + residual notes");
 
-  // --- Countersign request: immutable tip + aggregates + AuthClaims 1.1 ---
+  // --- Countersign request: immutable tip + aggregates + AuthClaims 1.1 + SATISFIED ---
   requireOk(
     errors,
     !has(countersignRequest, /see Phase 13 \/ push tip|after wave 8 lands/i),
@@ -634,9 +676,9 @@ export function validateAuthClaimsProvenance(options = {}) {
     errors,
     has(
       countersignRequest,
-      /\*\*Immutable OpenClaw inspection tip:\*\* `[0-9a-f]{40}`/,
+      /\*\*Immutable OpenClaw inspection tip:\*\* `005c9454f1bd3f7427936704131ffe5faa95ef0f`/,
     ),
-    "COUNTERSIGN-REQUEST-WAVE8 must pin an immutable 40-char OpenClaw inspection tip",
+    "COUNTERSIGN-REQUEST-WAVE8 must pin immutable tip 005c9454…",
   );
   requireOk(
     errors,
@@ -654,29 +696,32 @@ export function validateAuthClaimsProvenance(options = {}) {
   );
   requireOk(
     errors,
-    has(countersignRequest, /\*\*Status:\*\* \*\*PENDING\*\*/),
-    "COUNTERSIGN-REQUEST-WAVE8 status must remain PENDING",
+    has(countersignRequest, /\*\*Status:\*\* \*\*SATISFIED\*\*/),
+    "COUNTERSIGN-REQUEST-WAVE8 status must be SATISFIED",
   );
-  checks.push("COUNTERSIGN-REQUEST-WAVE8 immutable tip + AuthClaims 1.1 provenance");
-
-  // --- Stale CLOSED / OWNER_COUNTERSIGNED while pending ---
   requireOk(
     errors,
-    has(signoff, /PENDING_OWNER_COUNTERSIGN/),
-    "signoff pending status required before stale-CLOSED scan",
+    countersignRequest.includes(BRAIN_OWNER_HANDOFF_COMMIT) &&
+      countersignRequest.includes(SKILLS_OWNER_HANDOFF_COMMIT),
+    "COUNTERSIGN-REQUEST-WAVE8 must record Brain + Skills handoff commits",
   );
+  checks.push("COUNTERSIGN-REQUEST-WAVE8 SATISFIED + AuthClaims 1.1 provenance");
+
+  // --- Stale PENDING / RE-OPENED while CLOSED ---
   for (const rel of CURRENT_STATUS_DOC_RELS) {
     const text = readText(repoRoot, rel);
-    const stale = findStaleClosedWhilePendingClaims(text);
+    const stale = findStalePendingWhileClosedClaims(text);
     requireOk(
       errors,
       stale.length === 0,
-      `${rel} has stale CLOSED/OWNER_COUNTERSIGNED claims while FIXTURE-OWNER-SIGNOFF is pending: ${stale[0] ?? ""}`,
+      `${rel} has stale PENDING/RE-OPENED claims while FIXTURE-OWNER-SIGNOFF is CLOSED: ${stale[0] ?? ""}`,
     );
   }
-  checks.push("no current handoff/status/request CLOSED claims while signoff pending");
+  checks.push("no current handoff/status/request PENDING claims while signoff CLOSED");
 
   // --- Fixture manifests (docs; not JSON bytes) ---
+  // Top status may remain PENDING_OWNER_COUNTERSIGN as residual MANIFEST drift;
+  // aggregates + AuthClaims 1.1 must still match. Do not force MANIFEST byte edits.
   for (const [label, text, aggregate] of [
     ["Brain", brainManifest, BRAIN_FIXTURE_AGGREGATE_SHA256],
     ["Skills", skillsManifest, SKILLS_FIXTURE_AGGREGATE_SHA256],
@@ -693,9 +738,8 @@ export function validateAuthClaimsProvenance(options = {}) {
     );
     requireOk(
       errors,
-      has(text, /\*\*Status:\*\*\s*`PENDING_OWNER_COUNTERSIGN`/) ||
-        has(text, /Status:\s*`PENDING_OWNER_COUNTERSIGN`/),
-      `${label} MANIFEST top status must be PENDING_OWNER_COUNTERSIGN`,
+      has(text, /PENDING_OWNER_COUNTERSIGN/) || has(text, /OWNER_COUNTERSIGNED/),
+      `${label} MANIFEST top status must mention PENDING_OWNER_COUNTERSIGN or OWNER_COUNTERSIGNED`,
     );
   }
   requireOk(
@@ -712,8 +756,7 @@ export function validateAuthClaimsProvenance(options = {}) {
 
   requireOk(
     errors,
-    consumption.includes("@linktrend/platform-contracts@0.2.2") ||
-      consumption.includes("`0.2.2`"),
+    consumption.includes("@linktrend/platform-contracts@0.2.2") || consumption.includes("`0.2.2`"),
     "PHASE-1-CONTRACT-CONSUMPTION.md must reference platform-contracts 0.2.2",
   );
 

@@ -12,4 +12,4 @@ Local copies (sanitized; no secrets):
 
 Authoritative PIN metadata: `../PIN.json`.
 
-Wave 7 repinned AuthClaims only. Wave 8 later refreshed Brain/Skills consumer fixture bytes to AuthClaims **1.1.0** (aggregates `4493f714…` / `20316371…`). Fixture-owner gate is **RE-OPENED** (`PENDING_OWNER_COUNTERSIGN`); fresh Brain + Skills owner countersigns remain pending. Do not claim owner reaffirmation unnecessary.
+Wave 7 repinned AuthClaims only. Wave 8 later refreshed Brain/Skills consumer fixture bytes to AuthClaims **1.1.0** (aggregates `4493f714…` / `20316371…`). AuthClaims **1.1** fixture-owner gate is **CLOSED** / **`OWNER_COUNTERSIGNED`** at tip `005c9454…` (2026-07-30 domain-owner closeout). Domain-owner fixture approval only — **not** Codex certification. Phase 1 overall still blocked on Platform auth-path.
