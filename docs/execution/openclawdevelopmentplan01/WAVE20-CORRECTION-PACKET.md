@@ -3,7 +3,7 @@
 **Recorded:** 2026-07-29 Asia/Taipei
 **Started from:** `6dc055e0c9ff850dc07107162e380e6bddc46def`
 **Correction commit:** `059e6e7054df703d9b00799b91d4ac850c3c4467`
-**Exact clean tip:** `a1c7e19d7987dade4e40af1c9f214cc47d52b5e2`
+**Exact clean tip:** `83c118e981e340ba75f8f1068666dba93a6d4149`
 **Agent:** Cursor Grok 4.5 High
 **PR:** [#38](https://github.com/linktrend/openclaw_prime/pull/38) (draft — do not merge)
 
