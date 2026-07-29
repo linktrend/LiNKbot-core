@@ -22,6 +22,56 @@ import {
 
 const MINI_PLAN = `# Mini
 
+## 1. Purpose and Decision
+
+The approved target is:
+
+- one canonical Lisa actor;
+- one Brain plugin and one Skills plugin.
+
+## 4. Non-Goals and Hard Boundaries
+
+This plan does not authorize or include:
+
+- replacing OpenClaw local memory;
+- combining Brain and Skills into one plugin.
+
+## 7. Target Architecture
+
+### 7.1 Plugin placement and packaging
+
+Each plugin must:
+
+- depend only on public SDK barrels;
+- remain default-disabled.
+
+## 8. Privacy and Information-Flow Contract
+
+### 8.4 Cross-domain prohibition
+
+OpenClaw must not:
+
+- copy Brain payloads into Skills events;
+- do not combine Brain and Skills credentials.
+
+## 9. Tool and Contract Mapping
+
+### 9.3 Contract fixtures
+
+Before adapter logic, commit owner-approved sanitized fixtures for:
+
+- Brain request/response pairs;
+- Skills immutable release hashes.
+
+## 13. Execution Governance
+
+### 13.5 Approved-plan deviation control
+
+Execution convenience does not authorize architecture changes.
+
+1. Record the exact contract, owner, consumer, and impact.
+2. Ask the owning upstream team for a narrow amendment.
+
 ## 14. Cross-Plan Interface Gates
 
 1. **Platform identity and credential gate.** Platform owns credentials.
@@ -136,9 +186,11 @@ Return to the Principal if:
 - ownership boundaries change;
 - production retention policy is undecided.
 
-### 22.3 Already-resolved decisions
+### 22.3 Implementation decisions already resolved
 
-- fake-tier contracts are authoritative for Phases 0-6.
+- two private bundled plugins and two managed MCP entries;
+- Brain-only conversation-hook access;
+- fake evidence is not environment proof.
 
 ### 22.4 Assumptions to verify, not silently trust
 
@@ -157,6 +209,13 @@ Return to the Principal if:
 
 - Lisa maps to one canonical Platform actor and one recorded OpenClaw runtime binding.
 - \`linkbrain\` and \`linkskills\` are separate default-disabled plugins using only public SDK surfaces.
+
+## 24. Immediate Next Action After Approval
+
+After the Principal approves this plan, start Phase 0 only:
+
+1. assign the four repository-specific Cursor execution agents with Grok 4.5 High;
+2. freeze exact current hashes and versioned contract artifacts across all four repositories.
 `;
 
 function writeArtifacts(
@@ -200,7 +259,7 @@ describe("section 13.3 plan-authority ledger validator", () => {
     const loaded = loadFrozenPlanItems();
     expect(loaded.ok).toBe(true);
     expect(loaded.planSha256).toBe(FROZEN_PLAN_SHA256);
-    expect(loaded.items.length).toBeGreaterThan(100);
+    expect(loaded.items.length).toBeGreaterThan(697);
     expect(loaded.coverage.length).toBeGreaterThan(loaded.items.length);
     const result = validateSection133Ledger();
     expect(result.ok).toBe(true);
@@ -236,16 +295,58 @@ describe("section 13.3 plan-authority ledger validator", () => {
     expect(
       analyzed.items.some((item) => item.id.startsWith("verifier.role_separation.")),
     ).toBe(true);
-    // §22.3 resolved decisions are justified non-requirements, not ledger rows.
+    // §22.3 resolved decisions are ledger requirements (binding architecture decisions).
+    expect(analyzed.items.some((item) => item.id.startsWith("decision.resolved."))).toBe(true);
     expect(
-      analyzed.coverage.some(
-        (entry) =>
-          typeof entry.reason === "string" && entry.reason.includes("22.3"),
-      ),
+      analyzed.items.some((item) => /two private bundled plugins/.test(item.label)),
     ).toBe(true);
-    expect(analyzed.items.every((item) => !/fake-tier contracts are authoritative/.test(item.label))).toBe(
+    expect(analyzed.items.some((item) => item.id.startsWith("next_action."))).toBe(true);
+  });
+
+  it("inherits requirement context for approved-target, hard boundaries, imperatives, governance, and next actions", () => {
+    const analyzed = analyzePlanForSection133(MINI_PLAN);
+    expect(analyzed.errors).toEqual([]);
+    const labels = analyzed.items.map((item) => item.label);
+    expect(labels.some((label) => /one canonical Lisa actor/.test(label))).toBe(true);
+    expect(labels.some((label) => /replacing OpenClaw local memory/.test(label))).toBe(true);
+    expect(labels.some((label) => /combining Brain and Skills into one plugin/.test(label))).toBe(
       true,
     );
+    expect(labels.some((label) => /depend only on public SDK barrels/.test(label))).toBe(true);
+    expect(labels.some((label) => label === "remain default-disabled")).toBe(true);
+    expect(labels.some((label) => /copy Brain payloads into Skills events/.test(label))).toBe(true);
+    expect(labels.some((label) => /Brain request\/response pairs/.test(label))).toBe(true);
+    expect(
+      labels.some((label) => /Record the exact contract, owner, consumer, and impact/.test(label)),
+    ).toBe(true);
+    expect(labels.some((label) => /does not authorize architecture changes/.test(label))).toBe(true);
+    expect(analyzed.items.some((item) => item.id.startsWith("decision.resolved."))).toBe(true);
+    expect(analyzed.items.some((item) => item.id.startsWith("next_action."))).toBe(true);
+    const intros = analyzed.coverage.filter(
+      (entry) =>
+        entry.disposition === "non_requirement" && entry.reasonCode === "INTRO_OPENS_FOLLOWING_LIST",
+    );
+    expect(intros.length).toBeGreaterThan(0);
+    expect(
+      analyzed.coverage
+        .filter((entry) => entry.disposition === "non_requirement")
+        .every(
+          (entry) => typeof entry.reasonCode === "string" && typeof entry.sourceContext === "string",
+        ),
+    ).toBe(true);
+    expect(
+      analyzed.coverage.every(
+        (entry) =>
+          !(
+            entry.disposition === "non_requirement" &&
+            (entry.type === "list_item" || entry.type === "numbered_item") &&
+            (entry.inheritedContext === "HARD_BOUNDARY" ||
+              entry.structuralContext === "HARD_BOUNDARY" ||
+              entry.inheritedContext === "APPROVED_TARGET" ||
+              entry.structuralContext === "APPROVED_TARGET")
+          ),
+      ),
+    ).toBe(true);
   });
 
   it("tokenizes complete Markdown constructs and accounts for every one in coverage", () => {
@@ -452,8 +553,11 @@ describe("section 13.3 plan-authority ledger validator", () => {
   it("frozen plan extraction covers every plan section family and required omission class", () => {
     const loaded = loadFrozenPlanItems();
     expect(loaded.ok).toBe(true);
+    expect(loaded.items.length).toBeGreaterThan(697);
     const ids = loaded.items.map((item) => item.id);
+    const labels = loaded.items.map((item) => item.label);
     const expectSome = (re: RegExp) => expect(ids.some((id) => re.test(id))).toBe(true);
+    const expectLabel = (re: RegExp) => expect(labels.some((label) => re.test(label))).toBe(true);
     expectSome(/^phase\.0\./);
     expectSome(/^phase\.7\./);
     expectSome(/^phase\.8\.window_rule$/);
@@ -476,7 +580,20 @@ describe("section 13.3 plan-authority ledger validator", () => {
     expectSome(/^dod\./);
     expectSome(/^test\.invariant\./);
     expectSome(/^rollback\.matrix\./);
+    expectSome(/^decision\.resolved\./);
+    expectSome(/^next_action\./);
+    expectLabel(/one canonical Lisa actor/);
+    expectLabel(/replacing OpenClaw local memory/);
+    expectLabel(/depend only on public/);
+    expectLabel(/^remain default-disabled$/);
+    expectLabel(/Record the exact contract, owner, consumer, and impact/);
+    expectLabel(/copy Brain payloads into Skills events/);
     expect(loaded.coverage.every((entry) => entry.disposition !== "unhandled")).toBe(true);
+    expect(
+      loaded.coverage
+        .filter((entry) => entry.disposition === "non_requirement")
+        .every((entry) => typeof entry.reasonCode === "string"),
+    ).toBe(true);
     expect(loaded.items.filter((item) => item.id.startsWith("phase.11.sequence.")).length).toBe(8);
     expect(loaded.items.filter((item) => item.id.startsWith("phase.12.sequence.")).length).toBe(8);
     expect(loaded.items.filter((item) => item.id.startsWith("phase.9.hard_prerequisite.")).length).toBe(

@@ -167,6 +167,48 @@ function makeItem(label, kind, anchor, line) {
 }
 
 /**
+ * Machine-checkable non_requirement reason codes.
+ * Every non_requirement coverage row must use one of these.
+ */
+export const NON_REQUIREMENT_REASON_CODES = Object.freeze([
+  "STRUCTURAL_BLANK",
+  "STRUCTURAL_FENCE",
+  "STRUCTURAL_TABLE_SEPARATOR",
+  "STRUCTURAL_HEADING",
+  "STRUCTURAL_TABLE_HEADER",
+  "STRUCTURAL_EMPTY_TABLE_ROW",
+  "INTRO_OPENS_FOLLOWING_LIST",
+  "LABEL_OPENS_FOLLOWING_LIST",
+  "METADATA_BOLD_LABEL",
+  "NARRATIVE_CONTEXT",
+  "FRONTMATTER_OR_META",
+]);
+
+/**
+ * Inherited / structural contexts that forbid non_requirement for obligation-bearing constructs.
+ */
+export const HARD_REQUIREMENT_CONTEXT_CODES = Object.freeze([
+  "HARD_BOUNDARY",
+  "REQUIRED",
+  "MUST",
+  "PROHIBITION",
+  "GOVERNANCE",
+  "GATE",
+  "RISK",
+  "DECISION",
+  "ASSUMPTION",
+  "DOD",
+  "ROLLBACK",
+  "NEXT_ACTION",
+  "APPROVED_TARGET",
+  "RULES",
+  "PRIVACY_FLOW",
+  "PLUGIN_MCP",
+  "CONTRACT_FIXTURE",
+  "ACTOR_MAPPING",
+]);
+
+/**
  * @param {string} line
  */
 function parseBoldLabel(line) {
@@ -180,13 +222,125 @@ function parseBoldLabel(line) {
 /**
  * @param {string} line
  */
-function isRequirementBearingParagraph(line) {
+export function isRequirementBearingParagraph(line) {
   const lower = line.toLowerCase();
   return (
     /\b(must|shall|require|required|prove|proves|never|only when|do not|cannot|may not|is complete only when|returns work|records and verifies|does not silently|missing handoff field)\b/.test(
       lower,
     ) || /^\*\*[^*]+\.\*\*/.test(line)
   );
+}
+
+/**
+ * Imperative / binding instructions that omit classic modal verbs.
+ * @param {string} line
+ */
+export function isImperativeInstruction(line) {
+  const text = String(line).replace(/\s+/g, " ").trim();
+  if (!text) {
+    return false;
+  }
+  if (isRequirementBearingParagraph(text)) {
+    return true;
+  }
+  const lower = text.toLowerCase();
+  if (
+    /\b(depend only on|remain default-disabled|record the exact|do not combine|do not copy|do not silently|do not authorize)\b/.test(
+      lower,
+    )
+  ) {
+    return true;
+  }
+  return /^(depend only|remain |record the|do not |stop |ask |resume |keep |use |treat |create |assign |freeze |request |begin |prove |enable |disable |return |separate |never |must |may not|cannot |include |exclude |send |give |inspect |introduce |advance |import |publish |change |combine |replace |making |assign |start )\b/i.test(
+    text,
+  );
+}
+
+/**
+ * Detect paragraphs that open an inherited requirement list for following children.
+ * @param {string} line
+ * @returns {{ code: string, kind: string } | null}
+ */
+export function detectRequirementInheritanceOpener(line) {
+  const lower = String(line).toLowerCase().replace(/\s+/g, " ").trim();
+  if (!lower) {
+    return null;
+  }
+  if (/approved target/.test(lower)) {
+    return { code: "APPROVED_TARGET", kind: "task" };
+  }
+  if (/does not authorize|non-goals and hard boundaries|hard boundaries/.test(lower)) {
+    return { code: "HARD_BOUNDARY", kind: "gate" };
+  }
+  if (/immediate next action|next action after approval|^after the principal approves/.test(lower)) {
+    return { code: "NEXT_ACTION", kind: "task" };
+  }
+  if (/conflict rule|following rules\b|\brules:\s*$/.test(lower)) {
+    return { code: "RULES", kind: "task" };
+  }
+  if (/each plugin must|plugins? must\b/.test(lower)) {
+    return { code: "MUST", kind: "task" };
+  }
+  if (/\bmust not\b|\bmay not\b|\bdo not\b|\bnever\b|\bprohibit/.test(lower)) {
+    return { code: "PROHIBITION", kind: "gate" };
+  }
+  if (/\bmust\b/.test(lower)) {
+    return { code: "MUST", kind: "task" };
+  }
+  if (/\brequires\b|\brequired\b/.test(lower)) {
+    return { code: "REQUIRED", kind: "task" };
+  }
+  if (/allowed flow|must not receive|cross-domain prohibition/.test(lower)) {
+    return { code: "PRIVACY_FLOW", kind: "gate" };
+  }
+  if (/approved-plan deviation|deviation control|execution governance/.test(lower)) {
+    return { code: "GOVERNANCE", kind: "gate" };
+  }
+  return null;
+}
+
+/**
+ * Structural section modes that default children to requirements.
+ * @param {string} headingText markdown heading line including # marks
+ * @returns {{ code: string, listMode?: string, tableMode?: string } | null}
+ */
+export function detectStructuralRequirementSection(headingText) {
+  const text = String(headingText);
+  if (/^## 1\b/.test(text)) {
+    return { code: "APPROVED_TARGET" };
+  }
+  if (/^## 4\b/.test(text)) {
+    return { code: "HARD_BOUNDARY" };
+  }
+  if (/^## 6\b/.test(text) || /^### 6\./.test(text)) {
+    return { code: "ACTOR_MAPPING" };
+  }
+  if (/^## 7\b/.test(text) || /^### 7\./.test(text)) {
+    return { code: "PLUGIN_MCP" };
+  }
+  if (/^## 8\b/.test(text) || /^### 8\./.test(text)) {
+    return { code: "PRIVACY_FLOW" };
+  }
+  if (/^## 9\b/.test(text) || /^### 9\./.test(text)) {
+    return { code: "CONTRACT_FIXTURE" };
+  }
+  if (/^## 13\b/.test(text) || /^### 13\./.test(text)) {
+    return { code: "GOVERNANCE" };
+  }
+  if (/^### 22\.3\b/.test(text)) {
+    return { code: "DECISION", listMode: "resolved_decisions" };
+  }
+  if (/^## 24\b/.test(text)) {
+    return { code: "NEXT_ACTION", listMode: "next_actions" };
+  }
+  return null;
+}
+
+/**
+ * @param {string | null | undefined} contextCode
+ */
+export function isHardRequirementContext(contextCode) {
+  return Boolean(contextCode && HARD_REQUIREMENT_CONTEXT_CODES.includes(contextCode));
 }
 
 /**
@@ -291,20 +445,105 @@ export function analyzePlanForSection133(planText) {
     return item;
   };
 
-  const cover = (construct, disposition, reason, itemIds = []) => {
+  const mapLegacyReasonToCode = (disposition, reason) => {
+    if (disposition === "requirement" || disposition === "unhandled") {
+      return disposition === "unhandled" ? "UNHANDLED" : "REQUIREMENT";
+    }
+    const text = String(reason);
+    if (/blank|fence_/.test(text)) {
+      return text.includes("fence") ? "STRUCTURAL_FENCE" : "STRUCTURAL_BLANK";
+    }
+    if (/table separator/.test(text)) {
+      return "STRUCTURAL_TABLE_SEPARATOR";
+    }
+    if (/heading provides|heading is/.test(text)) {
+      return "STRUCTURAL_HEADING";
+    }
+    if (/table header|empty table/.test(text)) {
+      return text.includes("empty") ? "STRUCTURAL_EMPTY_TABLE_ROW" : "STRUCTURAL_TABLE_HEADER";
+    }
+    if (/opens /.test(text) || /intro;/i.test(text) || /follow as list/i.test(text)) {
+      return /bold label|Work label|scenario|Inputs|Sequence|Prerequisites|platform evidence/i.test(text)
+        ? "LABEL_OPENS_FOLLOWING_LIST"
+        : "INTRO_OPENS_FOLLOWING_LIST";
+    }
+    if (/metadata|without ledger obligation|bold label/i.test(text)) {
+      return "METADATA_BOLD_LABEL";
+    }
+    if (/frontmatter|^\-\-\-|summary:|title:/i.test(text)) {
+      return "FRONTMATTER_OR_META";
+    }
+    return "NARRATIVE_CONTEXT";
+  };
+
+  const cover = (construct, disposition, reasonOrCode, detailOrIds = "", maybeIds = [], meta = {}) => {
+    /** @type {string} */
+    let reasonCode;
+    /** @type {string} */
+    let detail;
+    /** @type {unknown[]} */
+    let itemIds;
+    /** @type {Record<string, unknown>} */
+    let extra = meta;
+    if (Array.isArray(detailOrIds)) {
+      // Legacy: cover(construct, disposition, reasonString, itemIds)
+      detail = String(reasonOrCode);
+      reasonCode = mapLegacyReasonToCode(disposition, detail);
+      itemIds = detailOrIds;
+    } else if (NON_REQUIREMENT_REASON_CODES.includes(reasonOrCode) || reasonOrCode === "REQUIREMENT" || reasonOrCode === "UNHANDLED") {
+      reasonCode = reasonOrCode;
+      detail = typeof detailOrIds === "string" ? detailOrIds : "";
+      itemIds = Array.isArray(maybeIds) ? maybeIds : [];
+      if (!Array.isArray(maybeIds) && maybeIds && typeof maybeIds === "object") {
+        extra = /** @type {Record<string, unknown>} */ (maybeIds);
+        itemIds = [];
+      }
+    } else {
+      detail = String(reasonOrCode);
+      reasonCode = mapLegacyReasonToCode(disposition, detail);
+      itemIds = Array.isArray(maybeIds) ? maybeIds : [];
+    }
+
+    if (disposition === "non_requirement" && !NON_REQUIREMENT_REASON_CODES.includes(reasonCode)) {
+      errors.push(`invalid non_requirement reasonCode ${reasonCode} at line ${construct.line}`);
+    }
+    const sourceContext = String(extra.sourceContext ?? sectionKey ?? section ?? "");
+    const inheritedContext =
+      extra.inheritedContext === undefined ? inherited?.code ?? null : extra.inheritedContext;
+    const hard =
+      isHardRequirementContext(/** @type {string | null} */ (inheritedContext)) ||
+      isHardRequirementContext(structuralContext);
+    if (
+      disposition === "non_requirement" &&
+      hard &&
+      (construct.type === "list_item" || construct.type === "numbered_item")
+    ) {
+      errors.push(
+        `forbidden non_requirement in hard context ${inheritedContext || structuralContext} at line ${construct.line} (${construct.type})`,
+      );
+    }
+    const reason = detail || reasonCode;
     const anchor = `coverage.L${construct.line}.${construct.type}`;
     coverage.push({
       line: construct.line,
       type: construct.type,
       disposition,
       reason,
+      reasonCode,
+      sourceContext,
+      inheritedContext,
+      structuralContext: structuralContext ?? null,
       anchor,
-      fingerprint: planItemFingerprint(anchor, `${construct.type}:${construct.text ?? construct.label ?? ""}`),
+      fingerprint: planItemFingerprint(
+        anchor,
+        `${construct.type}:${construct.text ?? construct.label ?? ""}`,
+      ),
       itemIds,
     });
   };
 
   let section = "";
+  let sectionKey = "";
   let subsection = "";
   let phase = /** @type {number | null} */ (null);
   /** @type {null | string} */
@@ -316,58 +555,88 @@ export function analyzePlanForSection133(planText) {
   let inDod = false;
   let dodSection = "";
   let dodIndex = 0;
+  /** @type {{ code: string, kind: string } | null} */
+  let inherited = null;
+  /** @type {string | null} */
+  let structuralContext = null;
 
   const setListMode = (mode) => {
     listMode = mode;
     listIndex = 0;
   };
 
+  const clearListScopedState = () => {
+    setListMode(null);
+    tableMode = null;
+    inherited = null;
+  };
+
   for (const construct of constructs) {
     const { type, line } = construct;
 
     if (type === "blank" || type === "fence_open" || type === "fence_close" || type === "fence_body") {
-      cover(construct, "non_requirement", `${type} is structural/non-ledger`);
+      cover(
+        construct,
+        "non_requirement",
+        type === "blank" ? "STRUCTURAL_BLANK" : "STRUCTURAL_FENCE",
+        `${type} is structural/non-ledger`,
+      );
       continue;
     }
 
     if (type === "table_separator") {
-      cover(construct, "non_requirement", "markdown table separator");
+      cover(construct, "non_requirement", "STRUCTURAL_TABLE_SEPARATOR", "markdown table separator");
       continue;
     }
 
     if (type === "heading") {
       const text = String(construct.text);
       section = text.replace(/^#+\s+/, "");
+      sectionKey = slug(section);
       if (text.startsWith("### ")) {
         subsection = section;
       }
+      clearListScopedState();
       const phaseMatch = text.match(/^### Phase (\d+) — (.+)$/);
       if (phaseMatch) {
         phase = Number(phaseMatch[1]);
-        setListMode(null);
-        tableMode = null;
+        structuralContext = null;
         const item = pushItem(
           "task",
           `Phase ${phase}: ${phaseMatch[2]}`,
           line,
           `phase.${phase}.title`,
         );
-        cover(construct, "requirement", "phase heading is an atomic phase task", item ? [item.id] : []);
+        cover(construct, "requirement", "REQUIREMENT", "phase heading is an atomic phase task", item ? [item.id] : []);
         continue;
       }
       if (/^## /.test(text) && !/^### /.test(text)) {
         phase = null;
-        setListMode(null);
-        tableMode = null;
       }
       if (/^## 23\. Definition of Done\b/.test(text)) {
         inDod = true;
         dodIndex = 0;
+        structuralContext = "DOD";
       } else if (inDod && /^## /.test(text)) {
         inDod = false;
       }
       if (inDod && /^### /.test(text)) {
         dodSection = text.replace(/^###\s+/, "");
+        structuralContext = "DOD";
+      }
+      const structural = detectStructuralRequirementSection(text);
+      if (structural) {
+        structuralContext = structural.code;
+        if (structural.listMode) {
+          setListMode(structural.listMode);
+        }
+        if (structural.tableMode) {
+          tableMode = structural.tableMode;
+          tableIndex = 0;
+        }
+      } else if (/^## /.test(text) && !/^### /.test(text) && !inDod) {
+        // New top-level section without structural mode clears prior context.
+        structuralContext = null;
       }
       // Section context switches for list modes outside phases.
       if (/^### 16\.1\b/.test(text)) {
@@ -375,13 +644,16 @@ export function analyzePlanForSection133(planText) {
         tableIndex = 0;
       } else if (/^### 16\.2\b/.test(text)) {
         setListMode("invariants");
+        structuralContext = "REQUIRED";
       } else if (/^## 14\b/.test(text)) {
         setListMode("cross_plan");
+        structuralContext = "GATE";
       } else if (/^## 19\b/.test(text)) {
         setListMode("runbooks");
       } else if (/^## 20\b/.test(text)) {
         tableMode = "rollback_matrix";
         tableIndex = 0;
+        structuralContext = "ROLLBACK";
       } else if (/^## 21\b/.test(text)) {
         setListMode("handoff_fields");
       } else if (/^### 21\.1\b/.test(text)) {
@@ -390,26 +662,30 @@ export function analyzePlanForSection133(planText) {
         setListMode("correction_packet");
       } else if (/^### 22\.1\b/.test(text)) {
         setListMode("launch_gates");
+        structuralContext = "GATE";
       } else if (/^### 22\.2\b/.test(text)) {
         setListMode("principal_gates");
+        structuralContext = "GATE";
       } else if (/^### 22\.3\b/.test(text)) {
         setListMode("resolved_decisions");
+        structuralContext = "DECISION";
       } else if (/^### 22\.4\b/.test(text)) {
         setListMode("assumptions");
+        structuralContext = "ASSUMPTION";
       } else if (/^### 22\.5\b/.test(text)) {
         tableMode = "risks";
         tableIndex = 0;
+        structuralContext = "RISK";
       } else if (/^### 17\.2\b/.test(text)) {
         tableMode = "alert_classes";
         tableIndex = 0;
       } else if (/^### 13\.4\b/.test(text)) {
         tableMode = "ownership_matrix";
         tableIndex = 0;
-      } else if (/^## 6\b/.test(text) || /^### 6\./.test(text)) {
-        // mapping tables handled generically below
+        structuralContext = "GOVERNANCE";
       }
 
-      cover(construct, "non_requirement", "heading provides structure/context only");
+      cover(construct, "non_requirement", "STRUCTURAL_HEADING", "heading provides structure/context only");
       continue;
     }
 
@@ -742,11 +1018,29 @@ export function analyzePlanForSection133(planText) {
       }
       if (listMode === "assumptions") {
         const item = pushItem("assumption", text, line, `assumption.verify.${listIndex}`);
-        cover(construct, "requirement", "§22.4 assumption to verify", item ? [item.id] : []);
+        cover(construct, "requirement", "REQUIREMENT", "§22.4 assumption to verify", item ? [item.id] : []);
         continue;
       }
       if (listMode === "resolved_decisions") {
-        cover(construct, "non_requirement", "§22.3 already-resolved decision (not an open obligation)");
+        const item = pushItem("gate", text, line, `decision.resolved.${listIndex}`);
+        cover(
+          construct,
+          "requirement",
+          "REQUIREMENT",
+          "§22.3 resolved implementation decision",
+          item ? [item.id] : [],
+        );
+        continue;
+      }
+      if (listMode === "next_actions") {
+        const item = pushItem("task", text, line, `next_action.${listIndex}`);
+        cover(
+          construct,
+          "requirement",
+          "REQUIREMENT",
+          "§24 immediate next action",
+          item ? [item.id] : [],
+        );
         continue;
       }
       if (inDod) {
@@ -757,21 +1051,40 @@ export function analyzePlanForSection133(planText) {
           line,
           `dod.${dodIndex}`,
         );
-        cover(construct, "requirement", "definition-of-done statement", item ? [item.id] : []);
+        cover(construct, "requirement", "REQUIREMENT", "definition-of-done statement", item ? [item.id] : []);
         continue;
       }
 
-      // Generic requirement-bearing list elsewhere (e.g. §1–13, §17–18).
-      if (isRequirementBearingParagraph(text) || listMode) {
+      // Inherited parent obligation / structural requirement-bearing section / imperative.
+      const inheritCode = inherited?.code ?? null;
+      const hardDefault =
+        isHardRequirementContext(inheritCode) || isHardRequirementContext(structuralContext);
+      if (hardDefault || isImperativeInstruction(text) || Boolean(listMode)) {
+        const kind = inherited?.kind ?? (structuralContext === "HARD_BOUNDARY" || structuralContext === "PROHIBITION" || structuralContext === "DECISION" ? "gate" : "task");
         const item = pushItem(
-          "task",
+          kind,
           text,
           line,
           `list.${slug(section)}.${line}.${listIndex}`,
         );
-        cover(construct, "requirement", "requirement-bearing list item", item ? [item.id] : []);
+        cover(
+          construct,
+          "requirement",
+          "REQUIREMENT",
+          hardDefault
+            ? `inherited/structural requirement (${inheritCode || structuralContext})`
+            : listMode
+              ? "list-mode requirement"
+              : "imperative/requirement-bearing list item",
+          item ? [item.id] : [],
+        );
       } else {
-        cover(construct, "non_requirement", "descriptive/context list item without obligation verb");
+        cover(
+          construct,
+          "non_requirement",
+          "NARRATIVE_CONTEXT",
+          "descriptive/context list item without obligation verb or inherited context",
+        );
       }
       continue;
     }
@@ -845,9 +1158,9 @@ export function analyzePlanForSection133(planText) {
           "evidence_requirement",
           `Ownership ${parts[0]}: Brain=${parts[1] ?? ""}; Skills=${parts[2] ?? ""}; Platform=${parts[3] ?? ""}; OpenClaw=${parts[4] ?? ""}`,
           line,
-          `ownership.matrix.${tableIndex}`,
+          `ownership.matrix.${slug(section)}.${tableIndex}`,
         );
-        cover(construct, "requirement", "§13.4 ownership matrix row", item ? [item.id] : []);
+        cover(construct, "requirement", "REQUIREMENT", "§13.4 ownership matrix row", item ? [item.id] : []);
         continue;
       }
       // Generic tables: treat data rows as evidence requirements.
@@ -863,6 +1176,10 @@ export function analyzePlanForSection133(planText) {
 
     if (type === "paragraph") {
       const text = String(construct.text);
+      if (/^---$/.test(text) || /^(summary|title|read_when):/i.test(text)) {
+        cover(construct, "non_requirement", "FRONTMATTER_OR_META", "frontmatter or doc meta");
+        continue;
+      }
       // §21.1 / §21.2 trailing role-separation paragraphs.
       if (
         /does not silently implement|missing handoff field is an independent-verification deficiency|verifier's evidence index|returns work to the original OpenClaw Grok owner/.test(
@@ -881,23 +1198,65 @@ export function analyzePlanForSection133(planText) {
             ids.push(item.id);
           }
         }
-        cover(construct, "requirement", "verifier correction-ownership / role-separation", ids);
+        cover(construct, "requirement", "REQUIREMENT", "verifier correction-ownership / role-separation", ids);
+        continue;
+      }
+      const opener = detectRequirementInheritanceOpener(text);
+      if (opener) {
+        inherited = opener;
+        // Intros that only open a following list stay non_requirement with a machine code.
+        if (
+          /:\s*$/.test(text) ||
+          /approved target is$/i.test(text.trim()) ||
+          /does not authorize or include$/i.test(text.trim()) ||
+          /conflict rule:?$/i.test(text.trim()) ||
+          /^tests must prove:?$/i.test(text.trim()) ||
+          /^required runbooks:?$/i.test(text.trim()) ||
+          /^return to the principal if:?$/i.test(text.trim()) ||
+          /^implementation is complete only when/i.test(text.trim())
+        ) {
+          cover(
+            construct,
+            "non_requirement",
+            "INTRO_OPENS_FOLLOWING_LIST",
+            `opens inherited ${opener.code} list`,
+          );
+          continue;
+        }
+        // Obligation-bearing intro sentences are themselves requirements and still set inheritance.
+        const ids = [];
+        for (const [index, part] of splitAtomicObligations(text).entries()) {
+          const item = pushItem(
+            opener.kind === "gate" ? "gate" : "evidence_requirement",
+            part,
+            line,
+            `prose.${slug(section)}.${line}.${index + 1}`,
+          );
+          if (item) {
+            ids.push(item.id);
+          }
+        }
+        cover(construct, "requirement", "REQUIREMENT", `inheritance opener ${opener.code}`, ids);
         continue;
       }
       if (inDod && /^Implementation is complete only when/.test(text)) {
-        cover(construct, "non_requirement", "DoD intro sentence; statements follow as list items");
+        inherited = { code: "DOD", kind: "dod" };
+        cover(construct, "non_requirement", "INTRO_OPENS_FOLLOWING_LIST", "DoD intro; statements follow as list items");
         continue;
       }
       if (/^Return to the Principal if:/.test(text)) {
-        cover(construct, "non_requirement", "§22.2 intro; gates follow as list items");
+        inherited = { code: "GATE", kind: "gate" };
+        cover(construct, "non_requirement", "INTRO_OPENS_FOLLOWING_LIST", "§22.2 intro; gates follow as list items");
         continue;
       }
       if (/^Tests must prove:/.test(text)) {
-        cover(construct, "non_requirement", "§16.2 intro; invariants follow as list items");
+        inherited = { code: "REQUIRED", kind: "test" };
+        cover(construct, "non_requirement", "INTRO_OPENS_FOLLOWING_LIST", "§16.2 intro; invariants follow as list items");
         continue;
       }
       if (/^Required runbooks:/.test(text)) {
-        cover(construct, "non_requirement", "§19 intro; runbooks follow as numbered items");
+        inherited = { code: "REQUIRED", kind: "deliverable" };
+        cover(construct, "non_requirement", "INTRO_OPENS_FOLLOWING_LIST", "§19 intro; runbooks follow as numbered items");
         continue;
       }
       if (phase != null && /^Synthetic activity may supplement/.test(text)) {
@@ -913,14 +1272,16 @@ export function analyzePlanForSection133(planText) {
             ids.push(item.id);
           }
         }
-        cover(construct, "requirement", "phase real-activity evidence rule", ids);
+        cover(construct, "requirement", "REQUIREMENT", "phase real-activity evidence rule", ids);
         continue;
       }
-      if (isRequirementBearingParagraph(text)) {
+      if (isImperativeInstruction(text) || isHardRequirementContext(structuralContext)) {
         const ids = [];
         for (const [index, part] of splitAtomicObligations(text).entries()) {
           const item = pushItem(
-            "evidence_requirement",
+            structuralContext === "HARD_BOUNDARY" || structuralContext === "PROHIBITION"
+              ? "gate"
+              : "evidence_requirement",
             part,
             line,
             `prose.${slug(section)}.${line}.${index + 1}`,
@@ -929,15 +1290,23 @@ export function analyzePlanForSection133(planText) {
             ids.push(item.id);
           }
         }
-        cover(construct, "requirement", "requirement-bearing paragraph", ids);
+        cover(
+          construct,
+          "requirement",
+          "REQUIREMENT",
+          isHardRequirementContext(structuralContext)
+            ? `structural section prose (${structuralContext})`
+            : "imperative/requirement-bearing paragraph",
+          ids,
+        );
         continue;
       }
-      cover(construct, "non_requirement", "narrative/context paragraph without obligation verb");
+      cover(construct, "non_requirement", "NARRATIVE_CONTEXT", "narrative/context paragraph without obligation verb");
       continue;
     }
 
     errors.push(`unhandled construct ${type} at line ${line}`);
-    cover(construct, "unhandled", "no extraction rule matched");
+    cover(construct, "unhandled", "UNHANDLED", "no extraction rule matched");
   }
 
   // Fail-closed: every non-blank structural construct must be covered.

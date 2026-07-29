@@ -10,9 +10,12 @@ import {
   FROZEN_PLAN_RELATIVE_PATH,
   FROZEN_PLAN_SHA256,
   PLAN_ITEM_KINDS,
+  NON_REQUIREMENT_REASON_CODES,
   analyzePlanForSection133,
   buildInventoryFromPlanItems,
   extractPlanSection133Items,
+  isHardRequirementContext,
+  isImperativeInstruction,
   loadFrozenPlanItems,
   sha256Hex,
   splitAtomicObligations,
@@ -176,6 +179,26 @@ export function provisionalClassificationForPlanItem(item) {
       owner: "OpenClaw Codex / named owner",
       deficiency: "Assumption not independently verified",
       next_action: "Codex verify assumption against live evidence or mark BLOCK",
+    };
+  }
+
+  if (id.startsWith("decision.resolved.")) {
+    return {
+      classification: "INPL",
+      evidence: "§22.3 resolved implementation decision recorded in frozen plan",
+      owner: "OpenClaw",
+      deficiency: "Decision conformance not independently certified",
+      next_action: "Codex verify decision remains honored in implementation",
+    };
+  }
+
+  if (id.startsWith("next_action.")) {
+    return {
+      classification: "OUT",
+      evidence: "§24 immediate next action after Principal approval",
+      owner: "Principal / multi-repo owners",
+      deficiency: "Awaiting Principal approval / cross-repo kickoff",
+      next_action: "Remain OUT until Principal approval starts Phase 0",
     };
   }
 
@@ -376,6 +399,51 @@ export function validateSection133Ledger(opts = {}) {
         for (const got of inventoryCoverage) {
           if (got.disposition === "unhandled") {
             errors.push(`unhandled source construct in inventory coverage: ${got.anchor}`);
+          }
+          if (got.disposition === "non_requirement") {
+            if (!got.reasonCode || typeof got.reasonCode !== "string") {
+              errors.push(`non_requirement missing reasonCode at ${got.anchor}`);
+            } else if (!NON_REQUIREMENT_REASON_CODES.includes(got.reasonCode)) {
+              errors.push(
+                `non_requirement invalid reasonCode ${got.reasonCode} at ${got.anchor}`,
+              );
+            }
+            if (got.sourceContext === undefined || got.sourceContext === null) {
+              errors.push(`non_requirement missing sourceContext at ${got.anchor}`);
+            }
+            if (
+              (got.type === "list_item" || got.type === "numbered_item") &&
+              (got.inheritedContext || got.structuralContext)
+            ) {
+              const hardCodes = new Set([
+                "HARD_BOUNDARY",
+                "REQUIRED",
+                "MUST",
+                "PROHIBITION",
+                "GOVERNANCE",
+                "GATE",
+                "RISK",
+                "DECISION",
+                "ASSUMPTION",
+                "DOD",
+                "ROLLBACK",
+                "NEXT_ACTION",
+                "APPROVED_TARGET",
+                "RULES",
+                "PRIVACY_FLOW",
+                "PLUGIN_MCP",
+                "CONTRACT_FIXTURE",
+                "ACTOR_MAPPING",
+              ]);
+              if (
+                hardCodes.has(got.inheritedContext) ||
+                hardCodes.has(got.structuralContext)
+              ) {
+                errors.push(
+                  `forbidden non_requirement list item in hard context at ${got.anchor}`,
+                );
+              }
+            }
           }
         }
       }
@@ -584,8 +652,11 @@ export async function main(argv, io) {
 export {
   FROZEN_PLAN_RELATIVE_PATH,
   FROZEN_PLAN_SHA256,
+  NON_REQUIREMENT_REASON_CODES,
   analyzePlanForSection133,
   extractPlanSection133Items,
+  isHardRequirementContext,
+  isImperativeInstruction,
   loadFrozenPlanItems,
   sha256Hex,
   splitAtomicObligations,

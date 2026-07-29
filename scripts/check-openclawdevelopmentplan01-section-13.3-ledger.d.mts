@@ -5,6 +5,7 @@
  */
 export const FROZEN_PLAN_RELATIVE_PATH: string;
 export const FROZEN_PLAN_SHA256: string;
+export const NON_REQUIREMENT_REASON_CODES: readonly string[];
 export function parseCsv(text: string): string[][];
 export function csvEscape(value: string): string;
 export function provisionalClassificationForPlanItem(item: {
@@ -50,6 +51,8 @@ export function analyzePlanForSection133(planText: string): {
 };
 export function tokenizePlanMarkdown(planText: string): unknown[];
 export function splitAtomicObligations(value: string): string[];
+export function isImperativeInstruction(line: string): boolean;
+export function isHardRequirementContext(contextCode: string | null | undefined): boolean;
 export function loadFrozenPlanItems(opts?: Record<string, unknown>): {
   ok: boolean;
   errors: string[];

@@ -1,16 +1,27 @@
 #!/usr/bin/env node
 /**
  * Deterministic §13.3 item extraction from the frozen OpenClaw implementation plan.
- * Fail-closed complete Markdown coverage.
+ * Fail-closed complete Markdown coverage with inherited requirement context.
  */
 export const FROZEN_PLAN_RELATIVE_PATH: string;
 export const FROZEN_PLAN_SHA256: string;
 export const PLAN_ITEM_KINDS: readonly string[];
+export const NON_REQUIREMENT_REASON_CODES: readonly string[];
+export const HARD_REQUIREMENT_CONTEXT_CODES: readonly string[];
 export function normalizePlanText(value: string): string;
 export function planItemFingerprint(anchor: string, label: string): string;
 export function sha256Hex(content: string | Buffer): string;
 export function splitPlanList(value: string, separators?: ReadonlySet<string>): string[];
 export function splitAtomicObligations(value: string): string[];
+export function isRequirementBearingParagraph(line: string): boolean;
+export function isImperativeInstruction(line: string): boolean;
+export function detectRequirementInheritanceOpener(
+  line: string,
+): { code: string; kind: string } | null;
+export function detectStructuralRequirementSection(
+  headingText: string,
+): { code: string; listMode?: string; tableMode?: string } | null;
+export function isHardRequirementContext(contextCode: string | null | undefined): boolean;
 export function tokenizePlanMarkdown(planText: string): Array<Record<string, unknown>>;
 export function analyzePlanForSection133(planText: string): {
   items: Array<{
