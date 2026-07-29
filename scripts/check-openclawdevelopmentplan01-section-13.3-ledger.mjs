@@ -10,10 +10,13 @@ import {
   FROZEN_PLAN_RELATIVE_PATH,
   FROZEN_PLAN_SHA256,
   PLAN_ITEM_KINDS,
+  analyzePlanForSection133,
   buildInventoryFromPlanItems,
   extractPlanSection133Items,
   loadFrozenPlanItems,
   sha256Hex,
+  splitAtomicObligations,
+  tokenizePlanMarkdown,
 } from "./lib/openclawdevelopmentplan01-section-13.3-plan-extract.mjs";
 import { runAsScript } from "./lib/ts-guard-utils.mjs";
 
@@ -163,6 +166,26 @@ export function provisionalClassificationForPlanItem(item) {
       owner: "OpenClaw",
       deficiency: "Control effectiveness not independently certified",
       next_action: "Codex assess control evidence",
+    };
+  }
+
+  if (item.kind === "assumption" || id.startsWith("assumption.verify.")) {
+    return {
+      classification: "OUT",
+      evidence: "§22.4 assumption requiring independent verification (not Grok self-certifiable)",
+      owner: "OpenClaw Codex / named owner",
+      deficiency: "Assumption not independently verified",
+      next_action: "Codex verify assumption against live evidence or mark BLOCK",
+    };
+  }
+
+  if (id.startsWith("verifier.role_separation.") || id.startsWith("gate.principal.")) {
+    return {
+      classification: "OUT",
+      evidence: "Verifier/Principal ownership; outside Grok execution self-certification",
+      owner: "OpenClaw Codex / Principal",
+      deficiency: "Independent role-separation / Principal gate",
+      next_action: "Codex verify role-separation and Principal gate status",
     };
   }
 
@@ -318,6 +341,47 @@ export function validateSection133Ledger(opts = {}) {
           errors.push(`invented inventory mirror row not in plan: ${inv.id}`);
         }
       }
+      // Fail-closed source coverage: inventory must retain the analyzer coverage map.
+      const expectedCoverage = Array.isArray(loaded.coverage) ? loaded.coverage : [];
+      const inventoryCoverage = Array.isArray(inventory.coverage) ? inventory.coverage : [];
+      if (inventory.version !== 3) {
+        errors.push(`inventory.version must be 3 (got ${inventory.version})`);
+      }
+      if (!Array.isArray(inventory.coverage)) {
+        errors.push("inventory.coverage missing; fail-closed source coverage required");
+      } else if (inventoryCoverage.length !== expectedCoverage.length) {
+        errors.push(
+          `inventory.coverage count mismatch: inventory=${inventoryCoverage.length} expected=${expectedCoverage.length}`,
+        );
+      } else {
+        const coverageByAnchor = new Map(
+          inventoryCoverage.map((entry) => [entry.anchor, entry]),
+        );
+        for (const expected of expectedCoverage) {
+          const got = coverageByAnchor.get(expected.anchor);
+          if (!got) {
+            errors.push(`inventory omitted coverage anchor: ${expected.anchor}`);
+            continue;
+          }
+          if (got.disposition !== expected.disposition) {
+            errors.push(`inventory coverage disposition drift for ${expected.anchor}`);
+          }
+          if (got.fingerprint !== expected.fingerprint) {
+            errors.push(`inventory coverage fingerprint drift for ${expected.anchor}`);
+          }
+          if (got.disposition === "unhandled") {
+            errors.push(`inventory retains unhandled source construct: ${expected.anchor}`);
+          }
+        }
+        for (const got of inventoryCoverage) {
+          if (got.disposition === "unhandled") {
+            errors.push(`unhandled source construct in inventory coverage: ${got.anchor}`);
+          }
+        }
+      }
+      if (!Array.isArray(inventory.kinds) || !inventory.kinds.includes("assumption")) {
+        errors.push('inventory.kinds must include "assumption"');
+      }
     }
   }
 
@@ -446,6 +510,7 @@ export function validateSection133Ledger(opts = {}) {
     errors,
     rowCount: seen.size,
     requiredCount: required.length,
+    coverageCount: Array.isArray(loaded.coverage) ? loaded.coverage.length : 0,
     planSha256: loaded.planSha256,
   };
 }
@@ -460,7 +525,11 @@ export function writeSection133ArtifactsFromPlan(opts = {}) {
   if (!loaded.ok) {
     throw new Error(loaded.errors.join("\n"));
   }
-  const inventory = buildInventoryFromPlanItems(loaded.items, loaded.planSha256);
+  const inventory = buildInventoryFromPlanItems(
+    loaded.items,
+    loaded.planSha256,
+    loaded.coverage,
+  );
   const inventoryPath = path.join(root, DEFAULT_INVENTORY);
   const ledgerPath = path.join(root, DEFAULT_LEDGER);
   fs.mkdirSync(path.dirname(inventoryPath), { recursive: true });
@@ -470,6 +539,7 @@ export function writeSection133ArtifactsFromPlan(opts = {}) {
     inventoryPath,
     ledgerPath,
     itemCount: loaded.items.length,
+    coverageCount: loaded.coverage.length,
     planSha256: loaded.planSha256,
   };
 }
@@ -487,7 +557,7 @@ export async function main(argv, io) {
   if (args.includes("--write")) {
     const written = writeSection133ArtifactsFromPlan();
     out.write(
-      `Wrote plan-derived §13.3 artifacts (${written.itemCount} items; plan ${written.planSha256}).\n`,
+      `Wrote plan-derived §13.3 artifacts (${written.itemCount} items, ${written.coverageCount} coverage rows; plan ${written.planSha256}).\n`,
     );
     return 0;
   }
@@ -514,9 +584,12 @@ export async function main(argv, io) {
 export {
   FROZEN_PLAN_RELATIVE_PATH,
   FROZEN_PLAN_SHA256,
+  analyzePlanForSection133,
   extractPlanSection133Items,
   loadFrozenPlanItems,
   sha256Hex,
+  splitAtomicObligations,
+  tokenizePlanMarkdown,
 };
 
 runAsScript(import.meta.url, async () => {
