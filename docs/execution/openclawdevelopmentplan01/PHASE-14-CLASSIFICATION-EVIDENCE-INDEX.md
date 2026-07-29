@@ -39,6 +39,6 @@ Legend: `IAP` · `INPL` · `PART` · `OMIT` · `DIFF` · `BLOCK` · `OUT`
 | `list.3_reconciliation_finding.71.3` | `task` | `INPL` | Platform environment readiness is a gate for live stage proof… |
 | `list.3_reconciliation_finding.72.4` | `task` | `INPL` | Platform's domain milestone is not complete until… |
 | `list.3_reconciliation_finding.74.6` | `task` | `INPL` | Skills may not begin the Lisa canary until… |
-| `list.3_reconciliation_finding.80.4` | `task` | `INPL` | Brain production retention durations require Principal approval |
+| `list.3_reconciliation_finding.80.9` | `task` | `INPL` | Brain production retention durations require Principal approval |
 | `list.10_2_skills_lifecycle_collection.404.1` | `task` | `INPL` | filter by the exact Skills tool namespace… |
 | `list.18_security_and_secret_handling.1084.1` | `gate` | `INPL` | Platform owns issuance… |
