@@ -16,6 +16,7 @@ import {
   extractPlanSection133Items,
   isHardRequirementContext,
   isImperativeInstruction,
+  lineHasBindingObligation,
   loadFrozenPlanItems,
   sha256Hex,
   splitAtomicObligations,
@@ -411,6 +412,11 @@ export function validateSection133Ledger(opts = {}) {
             if (got.sourceContext === undefined || got.sourceContext === null) {
               errors.push(`non_requirement missing sourceContext at ${got.anchor}`);
             }
+            if (got.reasonCode === "DESCRIPTIVE_ALLOWLIST") {
+              errors.push(
+                `legacy DESCRIPTIVE_ALLOWLIST forbidden at ${got.anchor}; use exact DESCRIPTIVE_EXCLUSION`,
+              );
+            }
             if (
               (got.type === "list_item" ||
                 got.type === "numbered_item" ||
@@ -418,26 +424,30 @@ export function validateSection133Ledger(opts = {}) {
               got.reasonCode === "NARRATIVE_CONTEXT"
             ) {
               errors.push(
-                `forbidden NARRATIVE_CONTEXT on ${got.type} at ${got.anchor}; require DESCRIPTIVE_ALLOWLIST or extract as requirement`,
+                `forbidden NARRATIVE_CONTEXT on ${got.type} at ${got.anchor}; require DESCRIPTIVE_EXCLUSION or extract as requirement`,
               );
             }
-            if (got.reasonCode === "DESCRIPTIVE_ALLOWLIST") {
-              if (!got.allowlistRule || typeof got.allowlistRule !== "string") {
-                errors.push(`DESCRIPTIVE_ALLOWLIST missing allowlistRule at ${got.anchor}`);
+            if (got.reasonCode === "DESCRIPTIVE_EXCLUSION") {
+              if (!got.exclusionId || typeof got.exclusionId !== "string") {
+                errors.push(`DESCRIPTIVE_EXCLUSION missing exclusionId at ${got.anchor}`);
+              }
+              if (!got.exclusionReason || typeof got.exclusionReason !== "string") {
+                errors.push(`DESCRIPTIVE_EXCLUSION missing exclusionReason at ${got.anchor}`);
               }
               if (
                 !got.sourceAnchor ||
                 typeof got.sourceAnchor !== "string" ||
-                !String(got.sourceAnchor).startsWith("allowlist.")
+                !String(got.sourceAnchor).startsWith("exclusion.")
               ) {
-                errors.push(`DESCRIPTIVE_ALLOWLIST missing sourceAnchor at ${got.anchor}`);
+                errors.push(`DESCRIPTIVE_EXCLUSION missing sourceAnchor at ${got.anchor}`);
               }
-              if (
-                got.sectionPolicy !== "descriptive" &&
-                got.sectionPolicy !== "mixed_source_hierarchy"
-              ) {
+              if (!got.fingerprint || typeof got.fingerprint !== "string") {
+                errors.push(`DESCRIPTIVE_EXCLUSION missing fingerprint at ${got.anchor}`);
+              }
+              const sourceText = String(got.text ?? "");
+              if (lineHasBindingObligation(sourceText)) {
                 errors.push(
-                  `DESCRIPTIVE_ALLOWLIST outside descriptive section at ${got.anchor} (sectionPolicy=${got.sectionPolicy})`,
+                  `DESCRIPTIVE_EXCLUSION carries binding obligation language at ${got.anchor}`,
                 );
               }
             }
@@ -445,47 +455,21 @@ export function validateSection133Ledger(opts = {}) {
               (got.type === "list_item" ||
                 got.type === "numbered_item" ||
                 got.type === "table_row") &&
-              got.reasonCode !== "DESCRIPTIVE_ALLOWLIST" &&
+              got.reasonCode !== "DESCRIPTIVE_EXCLUSION" &&
               got.reasonCode !== "STRUCTURAL_TABLE_HEADER" &&
-              got.reasonCode !== "STRUCTURAL_EMPTY_TABLE_ROW" &&
-              (got.inheritedContext ||
-                got.structuralContext ||
-                got.sectionPolicy === "implementation")
+              got.reasonCode !== "STRUCTURAL_EMPTY_TABLE_ROW"
             ) {
-              const hardCodes = new Set([
-                "HARD_BOUNDARY",
-                "REQUIRED",
-                "MUST",
-                "PROHIBITION",
-                "GOVERNANCE",
-                "GATE",
-                "RISK",
-                "DECISION",
-                "ASSUMPTION",
-                "DOD",
-                "ROLLBACK",
-                "NEXT_ACTION",
-                "APPROVED_TARGET",
-                "RULES",
-                "PRIVACY_FLOW",
-                "PLUGIN_MCP",
-                "CONTRACT_FIXTURE",
-                "ACTOR_MAPPING",
-                "LIFECYCLE",
-                "CONFIG",
-                "OBSERVABILITY",
-                "SECURITY",
-                "OUTBOX",
-              ]);
-              if (
-                got.sectionPolicy === "implementation" ||
-                hardCodes.has(got.inheritedContext) ||
-                hardCodes.has(got.structuralContext)
-              ) {
-                errors.push(
-                  `forbidden non_requirement ${got.reasonCode} on ${got.type} outside descriptive allowlist at ${got.anchor}`,
-                );
-              }
+              errors.push(
+                `forbidden non_requirement ${got.reasonCode} on ${got.type} outside exact descriptive exclusion at ${got.anchor}`,
+              );
+            }
+            if (
+              got.reasonCode === "INTRO_OPENS_FOLLOWING_LIST" &&
+              lineHasBindingObligation(String(got.text ?? ""))
+            ) {
+              errors.push(
+                `INTRO_OPENS_FOLLOWING_LIST carries binding language at ${got.anchor}`,
+              );
             }
           }
         }
@@ -623,7 +607,26 @@ export function validateSection133Ledger(opts = {}) {
     requiredCount: required.length,
     coverageCount: Array.isArray(loaded.coverage) ? loaded.coverage.length : 0,
     planSha256: loaded.planSha256,
+    descriptiveExclusions: listDescriptiveExclusions(loaded.coverage),
   };
+}
+
+/**
+ * Independent-review listing of exact-line descriptive exclusions.
+ * @param {unknown[]} coverage
+ */
+export function listDescriptiveExclusions(coverage) {
+  return (Array.isArray(coverage) ? coverage : [])
+    .filter((entry) => entry && entry.reasonCode === "DESCRIPTIVE_EXCLUSION")
+    .map((entry) => ({
+      id: entry.exclusionId,
+      reason: entry.exclusionReason,
+      line: entry.line,
+      type: entry.type,
+      anchor: entry.sourceAnchor || entry.anchor,
+      fingerprint: entry.fingerprint,
+      text: entry.text,
+    }));
 }
 
 /**
@@ -680,6 +683,15 @@ export async function main(argv, io) {
     out.write(
       `Section 13.3 ledger OK (${result.rowCount}/${result.requiredCount} plan-derived rows; plan ${result.planSha256}).\n`,
     );
+    const exclusions = Array.isArray(result.descriptiveExclusions)
+      ? result.descriptiveExclusions
+      : [];
+    out.write(`Descriptive exclusions for independent review: ${exclusions.length}\n`);
+    for (const exclusion of exclusions) {
+      out.write(
+        `- ${exclusion.id} L${exclusion.line} ${exclusion.type} fp=${String(exclusion.fingerprint).slice(0, 12)}… :: ${exclusion.reason}\n`,
+      );
+    }
   } else {
     err.write(`Section 13.3 ledger FAILED (${result.errors.length} errors):\n`);
     for (const error of result.errors.slice(0, 80)) {
@@ -700,6 +712,7 @@ export {
   extractPlanSection133Items,
   isHardRequirementContext,
   isImperativeInstruction,
+  lineHasBindingObligation,
   loadFrozenPlanItems,
   sha256Hex,
   splitAtomicObligations,

@@ -1,25 +1,58 @@
 #!/usr/bin/env node
 /**
  * Deterministic §13.3 item extraction from the frozen OpenClaw implementation plan.
- * Fail-closed complete Markdown coverage with inherited requirement context.
+ * Fail-closed complete Markdown coverage with exact-line descriptive exclusions only.
  */
 export const FROZEN_PLAN_RELATIVE_PATH: string;
 export const FROZEN_PLAN_SHA256: string;
 export const PLAN_ITEM_KINDS: readonly string[];
 export const NON_REQUIREMENT_REASON_CODES: readonly string[];
 export const HARD_REQUIREMENT_CONTEXT_CODES: readonly string[];
-export const DESCRIPTIVE_ALLOWLIST_RULES: Readonly<
-  Record<string, { id: string; description: string }>
->;
+export const STRUCTURAL_NON_REQUIREMENT_CODES: readonly string[];
+export const DESCRIPTIVE_EXCLUSIONS: ReadonlyArray<{
+  id: string;
+  line: number;
+  type: string;
+  text: string;
+  reason: string;
+  fingerprint: string;
+}>;
+export const DESCRIPTIVE_ALLOWLIST_RULES: Readonly<Record<string, never>>;
 export const STRONG_DESCRIPTIVE_OVERRIDE_CODES: readonly string[];
 export function classifySectionPolicy(headingText: string): {
-  policy: "implementation" | "descriptive" | "mixed_source_hierarchy";
-  rule: string | null;
-  id: string | null;
+  policy: "implementation";
+  rule: null;
+  id: null;
 };
 export function isDescriptiveAllowlistRule(rule: string | null | undefined): boolean;
+export function coverageFingerprintFor(line: number, type: string, text: string): string;
+export function buildDescriptiveExclusion(spec: {
+  id: string;
+  line: number;
+  type: string;
+  text: string;
+  reason: string;
+}): {
+  id: string;
+  line: number;
+  type: string;
+  text: string;
+  reason: string;
+  fingerprint: string;
+};
+export function matchDescriptiveExclusion(
+  line: number,
+  type: string,
+  text: string,
+  exclusions: ReadonlyMap<string, unknown> | Iterable<unknown>,
+): unknown;
 export function isStrongDescriptiveOverride(contextCode: string | null | undefined): boolean;
 export function lineHasStrongObligation(text: string): boolean;
+export function lineHasBindingObligation(text: string): boolean;
+export function nonRequirementFailsBindingAudit(
+  entry: { reasonCode?: string; text?: string; type?: string },
+  sourceText?: string,
+): boolean;
 export function normalizePlanText(value: string): string;
 export function planItemFingerprint(anchor: string, label: string): string;
 export function sha256Hex(content: string | Buffer): string;
@@ -35,7 +68,10 @@ export function detectStructuralRequirementSection(
 ): { code: string; listMode?: string; tableMode?: string } | null;
 export function isHardRequirementContext(contextCode: string | null | undefined): boolean;
 export function tokenizePlanMarkdown(planText: string): Array<Record<string, unknown>>;
-export function analyzePlanForSection133(planText: string): {
+export function analyzePlanForSection133(
+  planText: string,
+  options?: { descriptiveExclusions?: ReadonlyArray<unknown> },
+): {
   items: Array<{
     id: string;
     kind: string;

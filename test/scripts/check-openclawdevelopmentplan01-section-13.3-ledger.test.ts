@@ -16,7 +16,12 @@ import {
   writeSection133ArtifactsFromPlan,
 } from "../../scripts/check-openclawdevelopmentplan01-section-13.3-ledger.mjs";
 import {
+  DESCRIPTIVE_ALLOWLIST_RULES,
+  buildDescriptiveExclusion,
   buildInventoryFromPlanItems,
+  classifySectionPolicy,
+  lineHasBindingObligation,
+  matchDescriptiveExclusion,
   planItemFingerprint,
 } from "../../scripts/lib/openclawdevelopmentplan01-section-13.3-plan-extract.mjs";
 
@@ -599,7 +604,7 @@ describe("section 13.3 plan-authority ledger validator", () => {
     expect(loaded.items.filter((item) => item.id.startsWith("phase.9.hard_prerequisite.")).length).toBe(
       2,
     );
-    expect(loaded.items.length).toBeGreaterThan(946);
+    expect(loaded.items.length).toBeGreaterThan(968);
     const bySection = (prefix: string) =>
       loaded.items.filter((item) => item.id.includes(prefix) || item.id.startsWith(prefix));
     expect(bySection("10_2_skills_lifecycle_collection").length).toBeGreaterThanOrEqual(6);
@@ -609,33 +614,16 @@ describe("section 13.3 plan-authority ledger validator", () => {
     expect(bySection("17_3_honest_degraded_states").length).toBeGreaterThanOrEqual(4);
     expect(bySection("18_security_and_secret_handling").length).toBeGreaterThanOrEqual(12);
     expectLabel(/exact Skills tool namespace/);
-    expectLabel(/discard raw parameters and results/);
-    expectLabel(/allowlisted structured event/);
-    expectLabel(/unexpected content-bearing field/);
-    expectLabel(/enqueue locally and return/);
-    expectLabel(/enabled state/);
-    expectLabel(/credential `SecretRef` for that endpoint/);
-    expectLabel(/no operator pastes a secret into a command line/);
-    expectLabel(/same-domain rollback step/);
-    expectLabel(/enabled\/disabled\/degraded state/);
-    expectLabel(/Brain unavailable:/);
-    expectLabel(/Platform owns issuance/);
-    expectLabel(/OpenClaw owns secure consumption/);
-    expectLabel(/Credentials are runtime-binding-owned/);
-    expectLabel(/No production `service_role` or database credential/);
-    expectLabel(/Platform-approved `SecretRef`/);
-    expectLabel(/Validate issuer, audience, actor/);
-    expectLabel(/secret scanning/);
-    const allowlisted = loaded.coverage.filter((entry) => entry.reasonCode === "DESCRIPTIVE_ALLOWLIST");
-    expect(allowlisted.length).toBeGreaterThan(0);
+    expectLabel(/is a gate for live stage proof/);
+    expectLabel(/not complete until the OpenClaw consumer canary/);
+    expectLabel(/Brain may reach production before Skills/);
+    expectLabel(/Skills may not begin the Lisa canary until/);
+    expectLabel(/retention durations require Principal approval/);
+    expectLabel(/canary event counts require measurements/);
+    expectLabel(/not reusable by OpenClaw/);
     expect(
-      allowlisted.every(
-        (entry) =>
-          typeof entry.allowlistRule === "string" &&
-          typeof entry.sourceAnchor === "string" &&
-          String(entry.sourceAnchor).startsWith("allowlist."),
-      ),
-    ).toBe(true);
+      loaded.coverage.filter((entry) => entry.reasonCode === "DESCRIPTIVE_ALLOWLIST").length,
+    ).toBe(0);
     expect(
       loaded.coverage.every(
         (entry) =>
@@ -647,55 +635,145 @@ describe("section 13.3 plan-authority ledger validator", () => {
           ),
       ),
     ).toBe(true);
+    expect(classifySectionPolicy("## 3. Reconciliation Finding").policy).toBe("implementation");
+    expect(classifySectionPolicy("## 5. Current Baseline").policy).toBe("implementation");
+    expect(classifySectionPolicy("### 5.1 OpenClaw").policy).toBe("implementation");
   });
 
-  it("moves a descriptive-looking list into an implementation section and extracts requirements", () => {
-    const descriptive = analyzePlanForSection133(`# Mini
+  it("lowercase obligations override descriptive exclusion classification", () => {
+    const text = "this plugin must remain default-disabled";
+    const exclusion = buildDescriptiveExclusion({
+      id: "test-lowercase-must",
+      line: 7,
+      type: "list_item",
+      text,
+      reason: "synthetic contextual line",
+    });
+    // Fingerprint matches, but binding language overrides.
+    const analyzed = analyzePlanForSection133(
+      `# Mini
 
 ## 5. Current Baseline
 
-### 5.1 OpenClaw
+Observations:
 
-Current inventory:
-
-- filter by the exact Skills tool namespace before doing work;
-- discard raw parameters and results;
-`);
-    expect(
-      descriptive.coverage.filter(
-        (entry) =>
-          entry.type === "list_item" && entry.reasonCode === "DESCRIPTIVE_ALLOWLIST",
-      ).length,
-    ).toBe(2);
-    expect(descriptive.items.filter((item) => /exact Skills tool namespace/.test(item.label)).length).toBe(
-      0,
+- ${text}
+`,
+      { descriptiveExclusions: [exclusion] },
     );
-
-    const implementation = analyzePlanForSection133(`# Mini
-
-## 10. Lifecycle
-
-### 10.2 Skills lifecycle collection
-
-If a generic tool hook is needed:
-
-- filter by the exact Skills tool namespace before doing work;
-- discard raw parameters and results;
-`);
+    expect(lineHasBindingObligation(text)).toBe(true);
+    expect(matchDescriptiveExclusion(7, "list_item", text, [exclusion])).toBeNull();
     expect(
-      implementation.coverage.filter(
-        (entry) => entry.type === "list_item" && entry.disposition === "requirement",
-      ).length,
-    ).toBe(2);
-    expect(
-      implementation.items.some((item) => /exact Skills tool namespace/.test(item.label)),
-    ).toBe(true);
-    expect(implementation.items.some((item) => /discard raw parameters/.test(item.label))).toBe(
+      analyzed.coverage.some(
+        (entry) => entry.type === "list_item" && entry.reasonCode === "DESCRIPTIVE_EXCLUSION",
+      ),
+    ).toBe(false);
+    expect(analyzed.items.some((item) => /must remain default-disabled/i.test(item.label))).toBe(
       true,
     );
   });
 
-  it("rejects NARRATIVE_CONTEXT list coverage outside the descriptive allowlist", () => {
+  it("binding bullets inside contextual sections become requirements", () => {
+    const analyzed = analyzePlanForSection133(`# Mini
+
+## 3. Reconciliation Finding
+
+Findings:
+
+- Platform environment readiness is a gate for live stage proof;
+- Skills may not begin the Lisa canary until the Cursor and Codex Skills readiness gates pass;
+- sanitized observation without binding words;
+`);
+    expect(analyzed.items.some((item) => /is a gate for live stage proof/.test(item.label))).toBe(
+      true,
+    );
+    expect(analyzed.items.some((item) => /Skills may not begin the Lisa canary/.test(item.label))).toBe(
+      true,
+    );
+    expect(
+      analyzed.items.some((item) => /sanitized observation without binding words/.test(item.label)),
+    ).toBe(true);
+    expect(
+      analyzed.coverage.filter(
+        (entry) => entry.type === "list_item" && entry.disposition === "requirement",
+      ).length,
+    ).toBe(3);
+  });
+
+  it("modifying an exact allowlisted line invalidates its exclusion", () => {
+    const original = "sanitized current-state observation only;";
+    const exclusion = buildDescriptiveExclusion({
+      id: "test-exact-line",
+      line: 7,
+      type: "list_item",
+      text: original,
+      reason: "reviewed contextual observation",
+    });
+    const matching = analyzePlanForSection133(
+      `# Mini
+
+## 5. Current Baseline
+
+Observations:
+
+- ${original}
+`,
+      { descriptiveExclusions: [exclusion] },
+    );
+    expect(
+      matching.coverage.some(
+        (entry) =>
+          entry.type === "list_item" &&
+          entry.reasonCode === "DESCRIPTIVE_EXCLUSION" &&
+          entry.exclusionId === "test-exact-line",
+      ),
+    ).toBe(true);
+
+    const modified = analyzePlanForSection133(
+      `# Mini
+
+## 5. Current Baseline
+
+Observations:
+
+- sanitized current-state observation only changed;
+`,
+      { descriptiveExclusions: [exclusion] },
+    );
+    expect(
+      modified.coverage.some(
+        (entry) => entry.type === "list_item" && entry.reasonCode === "DESCRIPTIVE_EXCLUSION",
+      ),
+    ).toBe(false);
+    expect(modified.items.some((item) => /changed/.test(item.label))).toBe(true);
+  });
+
+  it("does not blanket-allowlist entire sections", () => {
+    expect(Object.keys(DESCRIPTIVE_ALLOWLIST_RULES).length).toBe(0);
+    expect(classifySectionPolicy("## 3. Reconciliation Finding")).toEqual({
+      policy: "implementation",
+      rule: null,
+      id: null,
+    });
+    expect(classifySectionPolicy("### 5.2 Lisa")).toEqual({
+      policy: "implementation",
+      rule: null,
+      id: null,
+    });
+    const analyzed = analyzePlanForSection133(`# Mini
+
+## 3. Reconciliation Finding
+
+- purely observational bullet with no binding words;
+`);
+    expect(
+      analyzed.coverage.some(
+        (entry) => entry.type === "list_item" && entry.disposition === "requirement",
+      ),
+    ).toBe(true);
+  });
+
+  it("rejects NARRATIVE_CONTEXT list coverage outside exact descriptive exclusions", () => {
     const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "section133-narrative-"));
     try {
       const plan = `# Mini
@@ -716,16 +794,17 @@ Current inventory:
             entry &&
             typeof entry === "object" &&
             (entry as { type?: string }).type === "list_item" &&
-            (entry as { reasonCode?: string }).reasonCode === "DESCRIPTIVE_ALLOWLIST",
+            (entry as { disposition?: string }).disposition === "requirement",
         ) as Record<string, unknown> | undefined;
         expect(target).toBeTruthy();
+        target!.disposition = "non_requirement";
         target!.reasonCode = "NARRATIVE_CONTEXT";
-        target!.allowlistRule = null;
+        target!.exclusionId = null;
         target!.sourceAnchor = "coverage.L999.list_item";
       });
       const result = validateSection133Ledger({ root: tmp, expectedSha256: planSha });
       expect(result.ok).toBe(false);
-      expect(result.errors.join("\n")).toMatch(/forbidden NARRATIVE_CONTEXT/);
+      expect(result.errors.join("\n")).toMatch(/forbidden NARRATIVE_CONTEXT|disposition drift/);
     } finally {
       fs.rmSync(tmp, { recursive: true, force: true });
     }

@@ -180,50 +180,30 @@ export const NON_REQUIREMENT_REASON_CODES = Object.freeze([
   "INTRO_OPENS_FOLLOWING_LIST",
   "LABEL_OPENS_FOLLOWING_LIST",
   "METADATA_BOLD_LABEL",
-  "DESCRIPTIVE_ALLOWLIST",
+  "DESCRIPTIVE_EXCLUSION",
   "FRONTMATTER_OR_META",
-  // Legacy code retained only so validator can reject it on list/table items.
+  // Legacy codes retained only so validator can reject them on contentful constructs.
+  "DESCRIPTIVE_ALLOWLIST",
   "NARRATIVE_CONTEXT",
 ]);
 
 /**
- * Explicit reviewed allowlist of genuinely descriptive / current-state sections.
- * List/table items may be non_requirement only when matched here.
+ * Explicit reviewed exact-line descriptive exclusions.
+ * No section-level blanket allowlisting. Match is fingerprint-exact;
+ * any binding obligation language always overrides an exclusion.
+ * @typedef {{
+ *   id: string,
+ *   line: number,
+ *   type: string,
+ *   text: string,
+ *   reason: string,
+ *   fingerprint: string,
+ * }} DescriptiveExclusion
  */
-export const DESCRIPTIVE_ALLOWLIST_RULES = Object.freeze({
-  FRONTMATTER_OR_META: {
-    id: "frontmatter-or-meta",
-    description: "YAML/doc frontmatter and document metadata lines",
-  },
-  SOURCE_HIERARCHY_METADATA: {
-    id: "section-2-source-hierarchy-metadata",
-    description: "Section 2 frozen-input priority/source hierarchy metadata table",
-  },
-  RECONCILIATION_FINDING: {
-    id: "section-3-reconciliation-finding",
-    description: "Section 3 reconciliation findings and remaining uncertainties",
-  },
-  BASELINE_CAPABILITY_INVENTORY: {
-    id: "section-5.1-openclaw-baseline",
-    description: "Section 5.1 sanitized current OpenClaw capability inventory",
-  },
-  BASELINE_LISA_OBSERVATION: {
-    id: "section-5.2-lisa-baseline",
-    description: "Section 5.2 sanitized Lisa baseline observations",
-  },
-  BASELINE_PLATFORM_STATUS: {
-    id: "section-5.3-platform-baseline",
-    description: "Section 5.3 inactive Platform environment status narrative",
-  },
-  BASELINE_SECTION: {
-    id: "section-5-baseline",
-    description: "Section 5 current baseline descriptive framing",
-  },
-  DOCUMENT_TITLE: {
-    id: "document-title",
-    description: "Top-level document title / explanatory heading context",
-  },
-});
+export const DESCRIPTIVE_EXCLUSIONS = Object.freeze(/** @type {DescriptiveExclusion[]} */ ([]));
+
+/** @deprecated section-level rules removed; retained empty for migration detection. */
+export const DESCRIPTIVE_ALLOWLIST_RULES = Object.freeze({});
 
 /**
  * Inherited / structural contexts that forbid non_requirement for obligation-bearing constructs.
@@ -255,54 +235,28 @@ export const HARD_REQUIREMENT_CONTEXT_CODES = Object.freeze([
 ]);
 
 /**
- * Classify a heading into fail-closed section policy.
- * Default is implementation-bearing (requirements). Descriptive only via allowlist.
- * @param {string} headingText
- * @returns {{ policy: "implementation" | "descriptive" | "mixed_source_hierarchy", rule: string | null, id: string | null }}
+ * Structural / machine non_requirement codes that are not descriptive exclusions.
  */
-export function classifySectionPolicy(headingText) {
-  const text = String(headingText);
-  if (/^# /.test(text) && !/^## /.test(text)) {
-    return { policy: "descriptive", rule: "DOCUMENT_TITLE", id: "document-title" };
-  }
-  if (/^## 2\b/.test(text)) {
-    return {
-      policy: "mixed_source_hierarchy",
-      rule: "SOURCE_HIERARCHY_METADATA",
-      id: "section-2-source-hierarchy-metadata",
-    };
-  }
-  if (/^## 3\b/.test(text)) {
-    return {
-      policy: "descriptive",
-      rule: "RECONCILIATION_FINDING",
-      id: "section-3-reconciliation-finding",
-    };
-  }
-  if (/^### 5\.1\b/.test(text)) {
-    return {
-      policy: "descriptive",
-      rule: "BASELINE_CAPABILITY_INVENTORY",
-      id: "section-5.1-openclaw-baseline",
-    };
-  }
-  if (/^### 5\.2\b/.test(text)) {
-    return {
-      policy: "descriptive",
-      rule: "BASELINE_LISA_OBSERVATION",
-      id: "section-5.2-lisa-baseline",
-    };
-  }
-  if (/^### 5\.3\b/.test(text)) {
-    return {
-      policy: "descriptive",
-      rule: "BASELINE_PLATFORM_STATUS",
-      id: "section-5.3-platform-baseline",
-    };
-  }
-  if (/^## 5\b/.test(text)) {
-    return { policy: "descriptive", rule: "BASELINE_SECTION", id: "section-5-baseline" };
-  }
+export const STRUCTURAL_NON_REQUIREMENT_CODES = Object.freeze([
+  "STRUCTURAL_BLANK",
+  "STRUCTURAL_FENCE",
+  "STRUCTURAL_TABLE_SEPARATOR",
+  "STRUCTURAL_HEADING",
+  "STRUCTURAL_TABLE_HEADER",
+  "STRUCTURAL_EMPTY_TABLE_ROW",
+  "INTRO_OPENS_FOLLOWING_LIST",
+  "LABEL_OPENS_FOLLOWING_LIST",
+  "METADATA_BOLD_LABEL",
+  "FRONTMATTER_OR_META",
+]);
+
+/**
+ * Section policy is always implementation-bearing.
+ * Descriptive exceptions are exact-line exclusions only — never whole sections.
+ * @param {string} _headingText
+ * @returns {{ policy: "implementation", rule: null, id: null }}
+ */
+export function classifySectionPolicy(_headingText) {
   return { policy: "implementation", rule: null, id: null };
 }
 
@@ -310,7 +264,63 @@ export function classifySectionPolicy(headingText) {
  * @param {string | null | undefined} rule
  */
 export function isDescriptiveAllowlistRule(rule) {
-  return Boolean(rule && Object.prototype.hasOwnProperty.call(DESCRIPTIVE_ALLOWLIST_RULES, rule));
+  return false;
+}
+
+/**
+ * Coverage fingerprint used for exact-line descriptive exclusions.
+ * @param {number} line
+ * @param {string} type
+ * @param {string} text
+ */
+export function coverageFingerprintFor(line, type, text) {
+  return planItemFingerprint(`coverage.L${line}.${type}`, `${type}:${text}`);
+}
+
+/**
+ * Build a reviewed exclusion entry for the frozen plan (or tests).
+ * @param {{ id: string, line: number, type: string, text: string, reason: string }} spec
+ * @returns {DescriptiveExclusion}
+ */
+export function buildDescriptiveExclusion(spec) {
+  return {
+    id: spec.id,
+    line: spec.line,
+    type: spec.type,
+    text: spec.text,
+    reason: spec.reason,
+    fingerprint: coverageFingerprintFor(spec.line, spec.type, spec.text),
+  };
+}
+
+/**
+ * @param {number} line
+ * @param {string} type
+ * @param {string} text
+ * @param {ReadonlyMap<string, DescriptiveExclusion> | Iterable<DescriptiveExclusion>} exclusions
+ * @returns {DescriptiveExclusion | null}
+ */
+export function matchDescriptiveExclusion(line, type, text, exclusions) {
+  const map =
+    exclusions instanceof Map
+      ? exclusions
+      : new Map([...exclusions].map((entry) => [entry.fingerprint, entry]));
+  const fingerprint = coverageFingerprintFor(line, type, text);
+  const hit = map.get(fingerprint);
+  if (!hit) {
+    return null;
+  }
+  if (hit.line !== line || hit.type !== type) {
+    return null;
+  }
+  if (normalizePlanText(hit.text) !== normalizePlanText(text)) {
+    return null;
+  }
+  // Binding obligation always overrides an exclusion.
+  if (lineHasBindingObligation(text)) {
+    return null;
+  }
+  return hit;
 }
 /**
  * @param {string} line
@@ -327,12 +337,68 @@ function parseBoldLabel(line) {
  * @param {string} line
  */
 export function isRequirementBearingParagraph(line) {
-  const lower = line.toLowerCase();
-  return (
-    /\b(must|shall|require|required|prove|proves|never|only when|do not|cannot|may not|is complete only when|returns work|records and verifies|does not silently|missing handoff field)\b/.test(
+  return lineHasBindingObligation(line) || /^\*\*[^*]+\.\*\*/.test(line);
+}
+
+/**
+ * Case-insensitive binding obligation / gate / sequencing / security language.
+ * Always overrides any descriptive exclusion.
+ * @param {string} text
+ */
+export function lineHasBindingObligation(text) {
+  const lower = String(text).toLowerCase().replace(/\s+/g, " ").trim();
+  if (!lower) {
+    return false;
+  }
+  if (
+    /\bmust not\b/.test(lower) ||
+    /\bmust\b/.test(lower) ||
+    /\bshall not\b/.test(lower) ||
+    /\bshall\b/.test(lower) ||
+    /\bmay not\b/.test(lower) ||
+    /\brequires\b/.test(lower) ||
+    /\brequired\b/.test(lower) ||
+    /\brequire\b/.test(lower) ||
+    /\bnot complete until\b/.test(lower) ||
+    /\bis a gate\b/.test(lower) ||
+    /\bremains a gate\b/.test(lower) ||
+    /\bnot reusable\b/.test(lower) ||
+    /\bblocked until\b/.test(lower) ||
+    /\bonly after\b/.test(lower) ||
+    /\bonly before\b/.test(lower) ||
+    /\bapproval required\b/.test(lower) ||
+    /\bprincipal approval\b/.test(lower) ||
+    /\bprohibited\b/.test(lower) ||
+    /\bforbidden\b/.test(lower) ||
+    /\bdo not\b/.test(lower) ||
+    /\bnever\b/.test(lower) ||
+    /\bcannot\b/.test(lower)
+  ) {
+    return true;
+  }
+  // Sequencing / retention / canary / credential / rollback / evidence constraints.
+  if (
+    /\b(sequenc\w*|retention|canary|credential\w*|rollback|evidence)\b/.test(lower) &&
+    /\b(must|may not|require|gate|until|before|after|not |prohibit|block|approv|constraint|measure|complete|live stage|production)\b/.test(
       lower,
-    ) || /^\*\*[^*]+\.\*\*/.test(line)
-  );
+    )
+  ) {
+    return true;
+  }
+  if (
+    /\b(before skills|after skills|before brain|brain may reach|skills may not begin|live stage proof|consumer canary)\b/.test(
+      lower,
+    )
+  ) {
+    return true;
+  }
+  if (/\buntil\b/.test(lower) && /\b(gate|readiness|approval|cursor|codex|canary)\b/.test(lower)) {
+    return true;
+  }
+  if (/\bis complete only when\b|\breturns work\b|\bdoes not silently\b|\bmissing handoff field\b/.test(lower)) {
+    return true;
+  }
+  return false;
 }
 
 /**
@@ -344,7 +410,7 @@ export function isImperativeInstruction(line) {
   if (!text) {
     return false;
   }
-  if (isRequirementBearingParagraph(text)) {
+  if (lineHasBindingObligation(text) || isRequirementBearingParagraph(text)) {
     return true;
   }
   const lower = text.toLowerCase();
@@ -473,19 +539,11 @@ export function isHardRequirementContext(contextCode) {
 }
 
 /**
- * Soft inherited openers (e.g. "required primitives") must not override the
- * descriptive allowlist. Only these codes force requirements inside descriptive sections.
+ * Soft inherited openers are obsolete under exact-line exclusions.
+ * Any hard context code may force requirements; binding language always wins.
  */
 export const STRONG_DESCRIPTIVE_OVERRIDE_CODES = Object.freeze([
-  "MUST",
-  "PROHIBITION",
-  "HARD_BOUNDARY",
-  "RULES",
-  "NEXT_ACTION",
-  "GATE",
-  "DOD",
-  "ROLLBACK",
-  "SECURITY",
+  ...HARD_REQUIREMENT_CONTEXT_CODES,
 ]);
 
 /**
@@ -496,15 +554,29 @@ export function isStrongDescriptiveOverride(contextCode) {
 }
 
 /**
- * Strong obligation language on the current line itself (not soft "required").
+ * @deprecated use lineHasBindingObligation
  * @param {string} text
  */
 export function lineHasStrongObligation(text) {
-  const value = String(text);
-  return (
-    /\bMUST NOT\b|\bSHALL NOT\b|\bMUST\b|\bSHALL\b|\bMAY NOT\b/.test(value) ||
-    /\bprohibited\b|\bforbidden\b/i.test(value)
-  );
+  return lineHasBindingObligation(text);
+}
+
+/**
+ * True when a non_requirement coverage row's text still carries binding language.
+ * Structural machine codes are exempt; descriptive exclusions are not.
+ * @param {{ reasonCode?: string, text?: string, type?: string }} entry
+ * @param {string} [sourceText]
+ */
+export function nonRequirementFailsBindingAudit(entry, sourceText = "") {
+  const code = String(entry.reasonCode ?? "");
+  if (STRUCTURAL_NON_REQUIREMENT_CODES.includes(code)) {
+    return false;
+  }
+  const text = String(sourceText || entry.text || "");
+  if (!text.trim()) {
+    return false;
+  }
+  return lineHasBindingObligation(text);
 }
 
 /**
@@ -590,8 +662,9 @@ export function tokenizePlanMarkdown(planText) {
 /**
  * Full plan analysis: requirements + fail-closed coverage.
  * @param {string} planText
+ * @param {{ descriptiveExclusions?: ReadonlyArray<DescriptiveExclusion> }} [options]
  */
-export function analyzePlanForSection133(planText) {
+export function analyzePlanForSection133(planText, options = {}) {
   const constructs = tokenizePlanMarkdown(planText);
   /** @type {ReturnType<typeof makeItem>[]} */
   const items = [];
@@ -599,6 +672,10 @@ export function analyzePlanForSection133(planText) {
   const coverage = [];
   /** @type {string[]} */
   const errors = [];
+  const exclusionList = options.descriptiveExclusions ?? DESCRIPTIVE_EXCLUSIONS;
+  const exclusionByFingerprint = new Map(
+    [...exclusionList].map((entry) => [entry.fingerprint, entry]),
+  );
 
   const pushItem = (kind, label, line, anchor) => {
     if (!label || !String(label).trim()) {
@@ -674,22 +751,24 @@ export function analyzePlanForSection133(planText) {
     const sourceContext = String(extra.sourceContext ?? sectionKey ?? section ?? "");
     const inheritedContext =
       extra.inheritedContext === undefined ? inherited?.code ?? null : extra.inheritedContext;
-    const allowlistRule =
-      extra.allowlistRule === undefined ? descriptiveRule : extra.allowlistRule;
+    const exclusionId = extra.exclusionId ?? null;
+    const exclusionReason = extra.exclusionReason ?? null;
     const sourceAnchor =
-      extra.sourceAnchor ??
-      (allowlistRule
-        ? `allowlist.${allowlistRule}.L${construct.line}`
-        : `coverage.L${construct.line}.${construct.type}`);
+      extra.sourceAnchor ?? `coverage.L${construct.line}.${construct.type}`;
+    const constructText = String(construct.text ?? construct.label ?? "");
+    const fingerprint = planItemFingerprint(
+      `coverage.L${construct.line}.${construct.type}`,
+      `${construct.type}:${constructText}`,
+    );
     const hard =
       isHardRequirementContext(/** @type {string | null} */ (inheritedContext)) ||
       isHardRequirementContext(structuralContext) ||
-      sectionPolicy === "implementation";
-    const allowlistedDescriptive =
-      reasonCode === "DESCRIPTIVE_ALLOWLIST" &&
-      isDescriptiveAllowlistRule(/** @type {string} */ (allowlistRule)) &&
-      (sectionPolicy === "descriptive" || sectionPolicy === "mixed_source_hierarchy") &&
-      !lineHasStrongObligation(String(construct.text ?? ""));
+      true; // fail-closed: every section is implementation-bearing
+    if (reasonCode === "DESCRIPTIVE_ALLOWLIST") {
+      errors.push(
+        `legacy DESCRIPTIVE_ALLOWLIST forbidden at line ${construct.line}; use exact DESCRIPTIVE_EXCLUSION`,
+      );
+    }
     if (
       disposition === "non_requirement" &&
       (construct.type === "list_item" ||
@@ -698,7 +777,7 @@ export function analyzePlanForSection133(planText) {
       reasonCode === "NARRATIVE_CONTEXT"
     ) {
       errors.push(
-        `forbidden NARRATIVE_CONTEXT on ${construct.type} at line ${construct.line}; use DESCRIPTIVE_ALLOWLIST or extract as requirement`,
+        `forbidden NARRATIVE_CONTEXT on ${construct.type} at line ${construct.line}; use DESCRIPTIVE_EXCLUSION or extract as requirement`,
       );
     } else if (
       disposition === "non_requirement" &&
@@ -708,44 +787,67 @@ export function analyzePlanForSection133(planText) {
       hard &&
       reasonCode !== "STRUCTURAL_TABLE_HEADER" &&
       reasonCode !== "STRUCTURAL_EMPTY_TABLE_ROW" &&
-      !allowlistedDescriptive
+      reasonCode !== "DESCRIPTIVE_EXCLUSION"
     ) {
       errors.push(
-        `forbidden non_requirement ${reasonCode} for ${construct.type} at line ${construct.line} (sectionPolicy=${sectionPolicy}; allowlist=${allowlistRule || "none"})`,
+        `forbidden non_requirement ${reasonCode} for ${construct.type} at line ${construct.line}`,
       );
     }
-    if (disposition === "non_requirement" && reasonCode === "DESCRIPTIVE_ALLOWLIST") {
-      if (!allowlistRule || !isDescriptiveAllowlistRule(/** @type {string} */ (allowlistRule))) {
-        errors.push(`DESCRIPTIVE_ALLOWLIST missing valid allowlistRule at line ${construct.line}`);
-      }
-      if (!(sectionPolicy === "descriptive" || sectionPolicy === "mixed_source_hierarchy")) {
+    if (disposition === "non_requirement" && reasonCode === "DESCRIPTIVE_EXCLUSION") {
+      const matched = exclusionByFingerprint.get(fingerprint);
+      if (!matched || matched.id !== exclusionId) {
         errors.push(
-          `DESCRIPTIVE_ALLOWLIST outside descriptive allowlist section at line ${construct.line} (sectionPolicy=${sectionPolicy})`,
+          `DESCRIPTIVE_EXCLUSION fingerprint/id mismatch at line ${construct.line} (id=${exclusionId})`,
         );
       }
-      if (!String(sourceAnchor).startsWith("allowlist.")) {
-        errors.push(`DESCRIPTIVE_ALLOWLIST missing sourceAnchor at line ${construct.line}`);
+      if (!exclusionReason || !String(sourceAnchor).startsWith("exclusion.")) {
+        errors.push(`DESCRIPTIVE_EXCLUSION missing reason/anchor at line ${construct.line}`);
       }
+      if (lineHasBindingObligation(constructText)) {
+        errors.push(
+          `DESCRIPTIVE_EXCLUSION overridden by binding obligation at line ${construct.line}`,
+        );
+      }
+    }
+    if (
+      disposition === "non_requirement" &&
+      !STRUCTURAL_NON_REQUIREMENT_CODES.includes(reasonCode) &&
+      reasonCode !== "DESCRIPTIVE_EXCLUSION" &&
+      lineHasBindingObligation(constructText)
+    ) {
+      errors.push(
+        `non_requirement ${reasonCode} still carries binding language at line ${construct.line}`,
+      );
+    }
+    // INTRO openers that still carry binding language must be requirements.
+    if (
+      disposition === "non_requirement" &&
+      reasonCode === "INTRO_OPENS_FOLLOWING_LIST" &&
+      lineHasBindingObligation(constructText)
+    ) {
+      errors.push(
+        `INTRO_OPENS_FOLLOWING_LIST carries binding language at line ${construct.line}; extract as requirement`,
+      );
     }
     const reason = detail || reasonCode;
     const anchor = `coverage.L${construct.line}.${construct.type}`;
     coverage.push({
       line: construct.line,
       type: construct.type,
+      text: constructText,
       disposition,
       reason,
       reasonCode,
       sourceContext,
       inheritedContext,
       structuralContext: structuralContext ?? null,
-      sectionPolicy,
-      allowlistRule: allowlistRule ?? null,
+      sectionPolicy: "implementation",
+      exclusionId,
+      exclusionReason,
+      allowlistRule: null,
       sourceAnchor,
       anchor,
-      fingerprint: planItemFingerprint(
-        anchor,
-        `${construct.type}:${construct.text ?? construct.label ?? ""}`,
-      ),
+      fingerprint,
       itemIds,
     });
   };
@@ -767,7 +869,7 @@ export function analyzePlanForSection133(planText) {
   let inherited = null;
   /** @type {string | null} */
   let structuralContext = null;
-  /** @type {"implementation" | "descriptive" | "mixed_source_hierarchy"} */
+  /** @type {"implementation"} */
   let sectionPolicy = "implementation";
   /** @type {string | null} */
   let descriptiveRule = null;
@@ -1272,24 +1374,22 @@ export function analyzePlanForSection133(planText) {
         continue;
       }
 
-      // Fail-closed section policy: default list/numbered items to requirements unless
-      // an explicit descriptive allowlist rule applies. Soft inherited REQUIRED does not
-      // override the allowlist; only strong obligation language / override codes do.
+      // Fail-closed: default list/numbered items to requirements unless an exact-line
+      // descriptive exclusion matches and the line has no binding obligation language.
       const inheritCode = inherited?.code ?? null;
       const underHardObligation =
         isHardRequirementContext(inheritCode) || isHardRequirementContext(structuralContext);
-      const strongOverride =
-        isStrongDescriptiveOverride(inheritCode) ||
-        isStrongDescriptiveOverride(structuralContext) ||
-        lineHasStrongObligation(text);
-      const allowDescriptive =
-        (sectionPolicy === "descriptive" || sectionPolicy === "mixed_source_hierarchy") &&
-        isDescriptiveAllowlistRule(descriptiveRule) &&
-        !strongOverride;
-      if (allowDescriptive) {
-        cover(construct, "non_requirement", "DESCRIPTIVE_ALLOWLIST", DESCRIPTIVE_ALLOWLIST_RULES[descriptiveRule].description, [], {
-          allowlistRule: descriptiveRule,
-          sourceAnchor: `allowlist.${descriptiveRule}.L${line}`,
+      const exclusion = matchDescriptiveExclusion(
+        line,
+        type,
+        text,
+        exclusionByFingerprint,
+      );
+      if (exclusion) {
+        cover(construct, "non_requirement", "DESCRIPTIVE_EXCLUSION", exclusion.reason, [], {
+          exclusionId: exclusion.id,
+          exclusionReason: exclusion.reason,
+          sourceAnchor: `exclusion.${exclusion.id}.L${line}`,
         });
         continue;
       }
@@ -1310,7 +1410,7 @@ export function analyzePlanForSection133(planText) {
         "REQUIREMENT",
         underHardObligation
           ? `inherited/structural requirement (${inheritCode || structuralContext})`
-          : `implementation-section default requirement (${sectionPolicy})`,
+          : "implementation-section default requirement",
         item ? [item.id] : [],
       );
       continue;
@@ -1341,21 +1441,24 @@ export function analyzePlanForSection133(planText) {
         cover(construct, "non_requirement", "STRUCTURAL_TABLE_HEADER", "table header/context row");
         continue;
       }
-      // Section 2 source-hierarchy metadata table is descriptive allowlist only.
-      if (
-        sectionPolicy === "mixed_source_hierarchy" &&
-        isDescriptiveAllowlistRule(descriptiveRule) &&
-        !tableMode
-      ) {
+      // Exact-line descriptive exclusion only (no section blanket).
+      const tableExclusion = matchDescriptiveExclusion(
+        line,
+        "table_row",
+        String(construct.text),
+        exclusionByFingerprint,
+      );
+      if (tableExclusion) {
         cover(
           construct,
           "non_requirement",
-          "DESCRIPTIVE_ALLOWLIST",
-          DESCRIPTIVE_ALLOWLIST_RULES[descriptiveRule].description,
+          "DESCRIPTIVE_EXCLUSION",
+          tableExclusion.reason,
           [],
           {
-            allowlistRule: descriptiveRule,
-            sourceAnchor: `allowlist.${descriptiveRule}.L${line}`,
+            exclusionId: tableExclusion.id,
+            exclusionReason: tableExclusion.reason,
+            sourceAnchor: `exclusion.${tableExclusion.id}.L${line}`,
           },
         );
         continue;
@@ -1451,15 +1554,8 @@ export function analyzePlanForSection133(planText) {
       }
       const opener = detectRequirementInheritanceOpener(text);
       if (opener) {
-        // Soft REQUIRED openers inside descriptive allowlist sections must not force
-        // following inventory/finding bullets into requirements.
-        const softDescriptiveOpener =
-          (sectionPolicy === "descriptive" || sectionPolicy === "mixed_source_hierarchy") &&
-          opener.code === "REQUIRED" &&
-          !lineHasStrongObligation(text);
-        inherited = softDescriptiveOpener ? null : opener;
-        // Intros that only open a following list stay non_requirement with a machine code.
-        if (
+        inherited = opener;
+        const opensList =
           /:\s*$/.test(text) ||
           /approved target is$/i.test(text.trim()) ||
           /does not authorize or include$/i.test(text.trim()) ||
@@ -1467,22 +1563,14 @@ export function analyzePlanForSection133(planText) {
           /^tests must prove:?$/i.test(text.trim()) ||
           /^required runbooks:?$/i.test(text.trim()) ||
           /^return to the principal if:?$/i.test(text.trim()) ||
-          /^implementation is complete only when/i.test(text.trim())
-        ) {
+          /^implementation is complete only when/i.test(text.trim());
+        // Binding-language intros are requirements (and still set inheritance).
+        if (opensList && !lineHasBindingObligation(text)) {
           cover(
             construct,
             "non_requirement",
-            softDescriptiveOpener ? "DESCRIPTIVE_ALLOWLIST" : "INTRO_OPENS_FOLLOWING_LIST",
-            softDescriptiveOpener
-              ? DESCRIPTIVE_ALLOWLIST_RULES[descriptiveRule].description
-              : `opens inherited ${opener.code} list`,
-            [],
-            softDescriptiveOpener
-              ? {
-                  allowlistRule: descriptiveRule,
-                  sourceAnchor: `allowlist.${descriptiveRule}.L${line}`,
-                }
-              : {},
+            "INTRO_OPENS_FOLLOWING_LIST",
+            `opens inherited ${opener.code} list`,
           );
           continue;
         }
@@ -1504,7 +1592,14 @@ export function analyzePlanForSection133(planText) {
       }
       if (inDod && /^Implementation is complete only when/.test(text)) {
         inherited = { code: "DOD", kind: "dod" };
-        cover(construct, "non_requirement", "INTRO_OPENS_FOLLOWING_LIST", "DoD intro; statements follow as list items");
+        const ids = [];
+        for (const [index, part] of splitAtomicObligations(text).entries()) {
+          const item = pushItem("evidence_requirement", part, line, `prose.${slug(section)}.${line}.${index + 1}`);
+          if (item) {
+            ids.push(item.id);
+          }
+        }
+        cover(construct, "requirement", "REQUIREMENT", "DoD intro opens following statements", ids);
         continue;
       }
       if (/^Return to the Principal if:/.test(text)) {
@@ -1514,12 +1609,26 @@ export function analyzePlanForSection133(planText) {
       }
       if (/^Tests must prove:/.test(text)) {
         inherited = { code: "REQUIRED", kind: "test" };
-        cover(construct, "non_requirement", "INTRO_OPENS_FOLLOWING_LIST", "§16.2 intro; invariants follow as list items");
+        const ids = [];
+        for (const [index, part] of splitAtomicObligations(text).entries()) {
+          const item = pushItem("evidence_requirement", part, line, `prose.${slug(section)}.${line}.${index + 1}`);
+          if (item) {
+            ids.push(item.id);
+          }
+        }
+        cover(construct, "requirement", "REQUIREMENT", "§16.2 intro opens invariant list", ids);
         continue;
       }
       if (/^Required runbooks:/.test(text)) {
         inherited = { code: "REQUIRED", kind: "deliverable" };
-        cover(construct, "non_requirement", "INTRO_OPENS_FOLLOWING_LIST", "§19 intro; runbooks follow as numbered items");
+        const ids = [];
+        for (const [index, part] of splitAtomicObligations(text).entries()) {
+          const item = pushItem("evidence_requirement", part, line, `prose.${slug(section)}.${line}.${index + 1}`);
+          if (item) {
+            ids.push(item.id);
+          }
+        }
+        cover(construct, "requirement", "REQUIREMENT", "§19 intro opens runbook list", ids);
         continue;
       }
       if (phase != null && /^Synthetic activity may supplement/.test(text)) {
@@ -1538,56 +1647,36 @@ export function analyzePlanForSection133(planText) {
         cover(construct, "requirement", "REQUIREMENT", "phase real-activity evidence rule", ids);
         continue;
       }
-      if (isImperativeInstruction(text) || isHardRequirementContext(structuralContext) || sectionPolicy === "implementation") {
-        const ids = [];
-        for (const [index, part] of splitAtomicObligations(text).entries()) {
-          const item = pushItem(
-            structuralContext === "HARD_BOUNDARY" || structuralContext === "PROHIBITION" || structuralContext === "SECURITY"
-              ? "gate"
-              : "evidence_requirement",
-            part,
-            line,
-            `prose.${slug(section)}.${line}.${index + 1}`,
-          );
-          if (item) {
-            ids.push(item.id);
-          }
-        }
-        cover(
-          construct,
-          "requirement",
-          "REQUIREMENT",
-          sectionPolicy === "implementation"
-            ? `implementation-section child paragraph (${structuralContext || sectionPolicy})`
-            : isHardRequirementContext(structuralContext)
-              ? `structural section prose (${structuralContext})`
-              : "imperative/requirement-bearing paragraph",
-          ids,
-        );
-        continue;
-      }
-      if (
-        (sectionPolicy === "descriptive" || sectionPolicy === "mixed_source_hierarchy") &&
-        isDescriptiveAllowlistRule(descriptiveRule)
-      ) {
+      const paragraphExclusion = matchDescriptiveExclusion(
+        line,
+        "paragraph",
+        text,
+        exclusionByFingerprint,
+      );
+      if (paragraphExclusion) {
         cover(
           construct,
           "non_requirement",
-          "DESCRIPTIVE_ALLOWLIST",
-          DESCRIPTIVE_ALLOWLIST_RULES[descriptiveRule].description,
+          "DESCRIPTIVE_EXCLUSION",
+          paragraphExclusion.reason,
           [],
           {
-            allowlistRule: descriptiveRule,
-            sourceAnchor: `allowlist.${descriptiveRule}.L${line}`,
+            exclusionId: paragraphExclusion.id,
+            exclusionReason: paragraphExclusion.reason,
+            sourceAnchor: `exclusion.${paragraphExclusion.id}.L${line}`,
           },
         );
         continue;
       }
-      // Fail closed: remaining prose in unknown contexts becomes a requirement.
+      // Fail closed: every remaining child paragraph in the plan is a requirement.
       const ids = [];
       for (const [index, part] of splitAtomicObligations(text).entries()) {
         const item = pushItem(
-          "evidence_requirement",
+          structuralContext === "HARD_BOUNDARY" ||
+            structuralContext === "PROHIBITION" ||
+            structuralContext === "SECURITY"
+            ? "gate"
+            : "evidence_requirement",
           part,
           line,
           `prose.${slug(section)}.${line}.${index + 1}`,
@@ -1596,7 +1685,15 @@ export function analyzePlanForSection133(planText) {
           ids.push(item.id);
         }
       }
-      cover(construct, "requirement", "REQUIREMENT", "fail-closed prose default", ids);
+      cover(
+        construct,
+        "requirement",
+        "REQUIREMENT",
+        structuralContext
+          ? `structural section prose (${structuralContext})`
+          : "implementation-section child paragraph",
+        ids,
+      );
       continue;
     }
 
@@ -1703,6 +1800,20 @@ export function loadFrozenPlanItems(opts = {}) {
  * @param {unknown[]} [coverage]
  */
 export function buildInventoryFromPlanItems(items, planSha256, coverage = []) {
+  const descriptiveExclusions = (Array.isArray(coverage) ? coverage : [])
+    .filter((entry) => entry && /** @type {{ reasonCode?: string }} */ (entry).reasonCode === "DESCRIPTIVE_EXCLUSION")
+    .map((entry) => {
+      const row = /** @type {Record<string, unknown>} */ (entry);
+      return {
+        id: row.exclusionId,
+        reason: row.exclusionReason,
+        line: row.line,
+        type: row.type,
+        anchor: row.sourceAnchor || row.anchor,
+        fingerprint: row.fingerprint,
+        text: row.text,
+      };
+    });
   return {
     version: 3,
     authority: "frozen_plan",
@@ -1710,6 +1821,7 @@ export function buildInventoryFromPlanItems(items, planSha256, coverage = []) {
     plan_sha256: planSha256,
     classifications: ["IAP", "INPL", "PART", "OMIT", "DIFF", "BLOCK", "OUT"],
     kinds: [...PLAN_ITEM_KINDS],
+    descriptive_exclusions: descriptiveExclusions,
     items: items.map((item) => ({
       id: item.id,
       kind: item.kind,
