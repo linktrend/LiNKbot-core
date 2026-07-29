@@ -181,6 +181,7 @@ export const NON_REQUIREMENT_REASON_CODES = Object.freeze([
   "STRUCTURAL_HEADING",
   "STRUCTURAL_TABLE_HEADER",
   "STRUCTURAL_EMPTY_TABLE_ROW",
+  "STRUCTURAL_ENUM_DEFINITION",
   "INTRO_OPENS_FOLLOWING_LIST",
   "LABEL_OPENS_FOLLOWING_LIST",
   "METADATA_BOLD_LABEL",
@@ -204,56 +205,7 @@ export const NON_REQUIREMENT_REASON_CODES = Object.freeze([
  *   fingerprint: string,
  * }} DescriptiveExclusion
  */
-export const DESCRIPTIVE_EXCLUSIONS /* frozen-plan reviewed */ = Object.freeze([
-  Object.freeze({
-    "id": "source-hierarchy-L48",
-    "line": 48,
-    "type": "table_row",
-    "text": "| 1        | Principal decisions recorded in the OpenClaw planning session and handoffs                 | 2026-07-27                                                                 | Intent, privacy, ownership, rollout, and approval authority                                                  |",
-    "reason": "Section 2 frozen-input source hierarchy metadata row",
-    "fingerprint": "1096fab8174b0bf717c1bb2286a7cbc413fac15846f34348b005338174fb60c4"
-  }),
-  Object.freeze({
-    "id": "source-hierarchy-L49",
-    "line": 49,
-    "type": "table_row",
-    "text": "| 2        | LiNKplatform shared-foundation detailed implementation plan                                | SHA-256 `fbcf36235c4caaa6abf7ee93afedeedf105a96f6614a3a3ff5ccb8d78e33c6b9` | Actor identity, claims, credentials, environments, infrastructure, migrations, audit, generic Librarian host |",
-    "reason": "Section 2 frozen-input source hierarchy metadata row",
-    "fingerprint": "dcf86baa9e1113e2cf6d0c9bc809b86bae8684aaed296fe8beafe81ae9c3578a"
-  }),
-  Object.freeze({
-    "id": "source-hierarchy-L50",
-    "line": 50,
-    "type": "table_row",
-    "text": "| 3        | LiNKbrain Phase 1 detailed implementation plan                                             | SHA-256 `051caa80191639c06b2dee6fa4800e736ada30772a55ad84e12e5fa6a4e63458` | Brain Gateway, tools, capture, coordination, curation, failure, retention, and rollout contracts             |",
-    "reason": "Section 2 frozen-input source hierarchy metadata row",
-    "fingerprint": "441bbd9375f7f68c2c2ded2a8cb1cde7180f01ca886a18dde003f7270efbcfa8"
-  }),
-  Object.freeze({
-    "id": "source-hierarchy-L51",
-    "line": 51,
-    "type": "table_row",
-    "text": "| 4        | LiNKskills internal-launch detailed development plan                                       | SHA-256 `31a6cc70bb778ce1dff236819e4bf600b0495dbb06c95bac55bcb2b0b2f5fe88` | Skills Gateway, immutable bundles, profiles, validation, telemetry, evidence, and rollout contracts          |",
-    "reason": "Section 2 frozen-input source hierarchy metadata row",
-    "fingerprint": "b01ddd245042eb74a7fa43629640dbe979daaf49d1c2c9243a1aecd5a5cbf65f"
-  }),
-  Object.freeze({
-    "id": "source-hierarchy-L52",
-    "line": 52,
-    "type": "table_row",
-    "text": "| 5        | Current OpenClaw source, tests, public plugin SDK, managed MCP, and operator documentation | OpenClaw `2026.7.2`, planning HEAD `ec90aa8cd119`                          | Available implementation seams and current Lisa integration behavior                                         |",
-    "reason": "Section 2 frozen-input source hierarchy metadata row",
-    "fingerprint": "c800d955fcdfb8dd3e40fcc77eaa9bf8439f18ff39a531afc86e292615b3ea5d"
-  }),
-  Object.freeze({
-    "id": "source-hierarchy-L53",
-    "line": 53,
-    "type": "table_row",
-    "text": "| 6        | This plan                                                                                  | 2026-07-27                                                                 | OpenClaw-specific sequencing, file ownership, tests, rollout, operations, and acceptance                     |",
-    "reason": "Section 2 frozen-input source hierarchy metadata row",
-    "fingerprint": "5c362139cd3adad26ef642cf41e620f4443662aadf1c41853bd8392aacebcfcf"
-  }),
-  Object.freeze({
+export const DESCRIPTIVE_EXCLUSIONS /* frozen-plan reviewed */ = Object.freeze([  Object.freeze({
     "id": "baseline-5.1-L109",
     "line": 109,
     "type": "list_item",
@@ -414,6 +366,7 @@ export const HARD_REQUIREMENT_CONTEXT_CODES = Object.freeze([
   "OBSERVABILITY",
   "SECURITY",
   "OUTBOX",
+  "SOURCE_HIERARCHY",
 ]);
 
 /**
@@ -426,6 +379,7 @@ export const STRUCTURAL_NON_REQUIREMENT_CODES = Object.freeze([
   "STRUCTURAL_HEADING",
   "STRUCTURAL_TABLE_HEADER",
   "STRUCTURAL_EMPTY_TABLE_ROW",
+  "STRUCTURAL_ENUM_DEFINITION",
   "INTRO_OPENS_FOLLOWING_LIST",
   "LABEL_OPENS_FOLLOWING_LIST",
   "METADATA_BOLD_LABEL",
@@ -482,6 +436,174 @@ export function buildDescriptiveExclusion(spec) {
  * @param {ReadonlyMap<string, DescriptiveExclusion> | Iterable<DescriptiveExclusion>} exclusions
  * @returns {DescriptiveExclusion | null}
  */
+/**
+ * Binding Section 2 source-hierarchy / upstream-authority table rows.
+ * These carry frozen hashes and ownership authority and must never be
+ * descriptive exclusions.
+ * @param {string} text
+ */
+export function isBindingSourceAuthorityRow(text) {
+  const raw = String(text);
+  if (!raw.trim()) {
+    return false;
+  }
+  if (/sha-256\s*`[a-f0-9]{64}`/i.test(raw)) {
+    return true;
+  }
+  if (/planning head\s*`[a-f0-9]+`/i.test(raw)) {
+    return true;
+  }
+  // Priority-numbered §2 hierarchy data rows (not the header).
+  if (
+    /^\|\s*[1-6]\s*\|/.test(raw.trim()) &&
+    /\b(authority|approval|credential|migration|gateway|contract|ownership|plugin sdk|this plan)\b/i.test(
+      raw,
+    )
+  ) {
+    return true;
+  }
+  return false;
+}
+
+/**
+ * Section 13.3 seven classification labels are structural enum definitions,
+ * not implementation tasks.
+ * @param {string} text
+ */
+export function isSection133ClassificationEnumLabel(text) {
+  const normalized = normalizePlanText(String(text).replace(/[;`']/g, "")).replace(
+    /[.;]+$/g,
+    "",
+  );
+  return (
+    normalized === "implemented and proven" ||
+    normalized === "implemented but not proven live" ||
+    normalized === "partially implemented" ||
+    normalized === "omitted" ||
+    normalized === "implemented differently from plan" ||
+    normalized === "blocked by another repository or interface" ||
+    normalized === "outside the execution agents ownership"
+  );
+}
+
+/**
+ * Exact-line structural enum definitions for §13.3 classification values.
+ * Matched by fingerprint; not implementation tasks.
+ */
+export const STRUCTURAL_ENUM_DEFINITIONS = Object.freeze([
+  Object.freeze(
+    buildDescriptiveExclusion({
+      id: "classification-enum-L568",
+      line: 568,
+      type: "numbered_item",
+      text: "`implemented and proven`;",
+      reason:
+        "Section 13.3 conformance classification enum definition (not an implementation task)",
+    }),
+  ),
+  Object.freeze(
+    buildDescriptiveExclusion({
+      id: "classification-enum-L569",
+      line: 569,
+      type: "numbered_item",
+      text: "`implemented but not proven live`;",
+      reason:
+        "Section 13.3 conformance classification enum definition (not an implementation task)",
+    }),
+  ),
+  Object.freeze(
+    buildDescriptiveExclusion({
+      id: "classification-enum-L570",
+      line: 570,
+      type: "numbered_item",
+      text: "`partially implemented`;",
+      reason:
+        "Section 13.3 conformance classification enum definition (not an implementation task)",
+    }),
+  ),
+  Object.freeze(
+    buildDescriptiveExclusion({
+      id: "classification-enum-L571",
+      line: 571,
+      type: "numbered_item",
+      text: "`omitted`;",
+      reason:
+        "Section 13.3 conformance classification enum definition (not an implementation task)",
+    }),
+  ),
+  Object.freeze(
+    buildDescriptiveExclusion({
+      id: "classification-enum-L572",
+      line: 572,
+      type: "numbered_item",
+      text: "`implemented differently from plan`;",
+      reason:
+        "Section 13.3 conformance classification enum definition (not an implementation task)",
+    }),
+  ),
+  Object.freeze(
+    buildDescriptiveExclusion({
+      id: "classification-enum-L573",
+      line: 573,
+      type: "numbered_item",
+      text: "`blocked by another repository or interface`;",
+      reason:
+        "Section 13.3 conformance classification enum definition (not an implementation task)",
+    }),
+  ),
+  Object.freeze(
+    buildDescriptiveExclusion({
+      id: "classification-enum-L574",
+      line: 574,
+      type: "numbered_item",
+      text: "`outside the execution agent's ownership`.",
+      reason:
+        "Section 13.3 conformance classification enum definition (not an implementation task)",
+    }),
+  ),
+]);
+
+/**
+ * @param {number} line
+ * @param {string} type
+ * @param {string} text
+ * @param {ReadonlyMap<string, DescriptiveExclusion> | Iterable<DescriptiveExclusion>} enums
+ * @returns {DescriptiveExclusion | null}
+ */
+export function matchStructuralEnumDefinition(line, type, text, enums) {
+  const map =
+    enums instanceof Map
+      ? enums
+      : new Map([...enums].map((entry) => [entry.fingerprint, entry]));
+  const fingerprint = coverageFingerprintFor(line, type, text);
+  const hit = map.get(fingerprint);
+  if (!hit) {
+    // Content fallback for synthetic plans in tests.
+    if (
+      (type === "numbered_item" || type === "list_item") &&
+      isSection133ClassificationEnumLabel(text)
+    ) {
+      return {
+        id: `classification-enum-content-${line}`,
+        line,
+        type,
+        text: String(text),
+        reason:
+          "Section 13.3 conformance classification enum definition (not an implementation task)",
+        fingerprint,
+      };
+    }
+    return null;
+  }
+  if (hit.line !== line || hit.type !== type) {
+    return null;
+  }
+  if (normalizePlanText(hit.text) !== normalizePlanText(text)) {
+    return null;
+  }
+  return hit;
+}
+
 export function matchDescriptiveExclusion(line, type, text, exclusions) {
   const map =
     exclusions instanceof Map
@@ -498,8 +620,8 @@ export function matchDescriptiveExclusion(line, type, text, exclusions) {
   if (normalizePlanText(hit.text) !== normalizePlanText(text)) {
     return null;
   }
-  // Binding obligation always overrides an exclusion.
-  if (lineHasBindingObligation(text)) {
+  // Binding obligation / source-authority rows always override an exclusion.
+  if (lineHasBindingObligation(text) || isBindingSourceAuthorityRow(text)) {
     return null;
   }
   return hit;
@@ -670,6 +792,9 @@ export function detectStructuralRequirementSection(headingText) {
   const text = String(headingText);
   if (/^## 1\b/.test(text)) {
     return { code: "APPROVED_TARGET" };
+  }
+  if (/^## 2\b/.test(text)) {
+    return { code: "SOURCE_HIERARCHY", tableMode: "source_hierarchy" };
   }
   if (/^## 4\b/.test(text)) {
     return { code: "HARD_BOUNDARY" };
@@ -878,6 +1003,8 @@ export function analyzePlanForSection133(planText, options = {}) {
   const exclusionByFingerprint = new Map(
     [...exclusionList].map((entry) => [entry.fingerprint, entry]),
   );
+  const enumList = options.structuralEnumDefinitions ?? STRUCTURAL_ENUM_DEFINITIONS;
+  const enumByFingerprint = new Map([...enumList].map((entry) => [entry.fingerprint, entry]));
 
   const pushItem = (kind, label, line, anchor) => {
     if (!label || !String(label).trim()) {
@@ -995,6 +1122,7 @@ export function analyzePlanForSection133(planText, options = {}) {
       hard &&
       reasonCode !== "STRUCTURAL_TABLE_HEADER" &&
       reasonCode !== "STRUCTURAL_EMPTY_TABLE_ROW" &&
+      reasonCode !== "STRUCTURAL_ENUM_DEFINITION" &&
       reasonCode !== "DESCRIPTIVE_EXCLUSION"
     ) {
       errors.push(
@@ -1011,9 +1139,19 @@ export function analyzePlanForSection133(planText, options = {}) {
       if (!exclusionReason || !String(sourceAnchor).startsWith("exclusion.")) {
         errors.push(`DESCRIPTIVE_EXCLUSION missing reason/anchor at line ${construct.line}`);
       }
-      if (lineHasBindingObligation(constructText)) {
+      if (lineHasBindingObligation(constructText) || isBindingSourceAuthorityRow(constructText)) {
         errors.push(
-          `DESCRIPTIVE_EXCLUSION overridden by binding obligation at line ${construct.line}`,
+          `DESCRIPTIVE_EXCLUSION cannot exclude binding source-authority/obligation row at line ${construct.line}`,
+        );
+      }
+    }
+    if (disposition === "non_requirement" && reasonCode === "STRUCTURAL_ENUM_DEFINITION") {
+      if (!exclusionId || !exclusionReason) {
+        errors.push(`STRUCTURAL_ENUM_DEFINITION missing id/reason at line ${construct.line}`);
+      }
+      if (!isSection133ClassificationEnumLabel(constructText)) {
+        errors.push(
+          `STRUCTURAL_ENUM_DEFINITION text is not a §13.3 classification enum label at line ${construct.line}`,
         );
       }
     }
@@ -1585,6 +1723,20 @@ export function analyzePlanForSection133(planText, options = {}) {
       const inheritCode = inherited?.code ?? null;
       const underHardObligation =
         isHardRequirementContext(inheritCode) || isHardRequirementContext(structuralContext);
+      const enumDefinition = matchStructuralEnumDefinition(
+        line,
+        type,
+        text,
+        enumByFingerprint,
+      );
+      if (enumDefinition) {
+        cover(construct, "non_requirement", "STRUCTURAL_ENUM_DEFINITION", enumDefinition.reason, [], {
+          exclusionId: enumDefinition.id,
+          exclusionReason: enumDefinition.reason,
+          sourceAnchor: `enum.${enumDefinition.id}.L${line}`,
+        });
+        continue;
+      }
       const exclusion = matchDescriptiveExclusion(
         line,
         type,
@@ -1670,6 +1822,23 @@ export function analyzePlanForSection133(planText, options = {}) {
         continue;
       }
       tableIndex += 1;
+      if (tableMode === "source_hierarchy") {
+        const priority = parts[0] || String(tableIndex);
+        const item = pushItem(
+          "evidence_requirement",
+          parts.join(" | "),
+          line,
+          `source_hierarchy.${priority}`,
+        );
+        cover(
+          construct,
+          "requirement",
+          "REQUIREMENT",
+          "Section 2 frozen source-hierarchy authority row",
+          item ? [item.id] : [],
+        );
+        continue;
+      }
       if (tableMode === "test_layers") {
         const item = pushItem(
           "test",

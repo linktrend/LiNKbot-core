@@ -52,6 +52,38 @@ const DEFAULT_LEDGER = "docs/execution/openclawdevelopmentplan01/section-13.3/le
 const GENERIC_EVIDENCE_RE =
   /plan-derived item|local fake-tier \/ docs evidence on branch|codex verify classification|not live-proven\)\s*$/i;
 
+/** Evidence that only points at extractor/validator/ledger tooling is forbidden for implemented claims. */
+const TOOLING_SELF_EVIDENCE_RE =
+  /section-13\.3-ledger\.mjs|section-13\.3-plan-extract\.mjs|section-13\.3\/(ledger\.csv|inventory\.json)/i;
+
+/** Phase-0 underlying evidence paths (not the coverage tooling itself). */
+const PHASE0_EVIDENCE_BY_ID = Object.freeze({
+  "phase.0.title":
+    "docs/execution/openclawdevelopmentplan01/PHASE-0-FREEZE-PACKET.md",
+  "phase.0.objective":
+    "docs/execution/openclawdevelopmentplan01/PHASE-0-FREEZE-PACKET.md",
+  "phase.0.work.1":
+    "docs/CURSOR-GROK-EXECUTION-PROMPT.md; docs/execution/openclawdevelopmentplan01/PHASE-0-FREEZE-PACKET.md §1 approved plan reference",
+  "phase.0.work.2":
+    "docs/execution/openclawdevelopmentplan01/PHASE-0-FREEZE-PACKET.md §2 frozen hashes (OpenClaw + Platform/Brain/Skills plan SHA-256)",
+  "phase.0.work.3":
+    "docs/execution/openclawdevelopmentplan01/contracts/brain/PIN.json; docs/execution/openclawdevelopmentplan01/contracts/skills/PIN.json; docs/execution/openclawdevelopmentplan01/contracts/platform/PIN.json; docs/execution/openclawdevelopmentplan01/PHASE-0-FREEZE-PACKET.md §3",
+  "phase.0.work.4":
+    "docs/execution/openclawdevelopmentplan01/PHASE-0-FREEZE-PACKET.md §5 boundary freeze",
+  "phase.0.work.5":
+    "docs/execution/openclawdevelopmentplan01/PHASE-0-FREEZE-PACKET.md; docs/agent-sessions/completed/cursor-local-mac-mini-lisa-openclawdevelopmentplan01-20260727-1648.md",
+  "phase.0.work.6":
+    "docs/execution/openclawdevelopmentplan01/PHASE-0-FREEZE-PACKET.md §6 active work / overlap inventory",
+  "phase.0.work.7":
+    "docs/execution/openclawdevelopmentplan01/PHASE-0-FREEZE-PACKET.md §4 ownership matrix / CODEOWNERS surfaces",
+  "phase.0.work.8":
+    "docs/execution/openclawdevelopmentplan01/PHASE-0-FREEZE-PACKET.md §5–§6 environment, credential, migration, retention, and external Cursor gates",
+  "phase.0.deliverable.1":
+    "docs/execution/openclawdevelopmentplan01/PHASE-0-FREEZE-PACKET.md; docs/CURSOR-GROK-EXECUTION-PROMPT.md; docs/execution/openclawdevelopmentplan01/contracts/",
+  "phase.0.exit_gate":
+    "docs/CURSOR-GROK-EXECUTION-PROMPT.md (Principal authorization); docs/execution/openclawdevelopmentplan01/PHASE-0-FREEZE-PACKET.md §1–§3",
+});
+
 /**
  * Parse a minimal RFC4180-ish CSV with quoted fields.
  * @param {string} text
@@ -132,6 +164,16 @@ export function grokEvidenceMappingForPlanItem(item) {
   const id = item.id;
   const label = item.label;
 
+  // Unexecuted rollback / closeout paths are never claimed implemented.
+  if (item.kind === "rollback" || /\.rollback$/.test(id)) {
+    return {
+      owner: "OpenClaw (rollback path recorded, not executed)",
+      evidence_location: `docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#${id}`,
+      completion_claim: "not_claimed",
+      note: "Unexecuted rollback/recovery action; not claimed implemented",
+    };
+  }
+
   if (
     id.startsWith("phase.14.") ||
     id.startsWith("phase.15.") ||
@@ -199,12 +241,13 @@ export function grokEvidenceMappingForPlanItem(item) {
     };
   }
 
-  if (id.startsWith("phase.0.") || id === "phase.0.title") {
+  if (Object.prototype.hasOwnProperty.call(PHASE0_EVIDENCE_BY_ID, id)) {
+    const base = PHASE0_EVIDENCE_BY_ID[id];
     return {
-      owner: "OpenClaw Grok (Phase-13 tooling)",
-      evidence_location: `scripts/check-openclawdevelopmentplan01-section-13.3-ledger.mjs#${id}; scripts/lib/openclawdevelopmentplan01-section-13.3-plan-extract.mjs [plan-item:${id}]`,
+      owner: "OpenClaw Grok (Phase 0 freeze packet)",
+      evidence_location: `${base} [plan-item:${id}]`,
       completion_claim: "implemented",
-      note: "Phase 0 planning/freeze tooling recorded on branch",
+      note: "Phase 0 freeze/approval evidence on branch (not extractor/validator tooling)",
     };
   }
 
@@ -470,9 +513,16 @@ export function validateSection133Ledger(opts = {}) {
                 errors.push(`DESCRIPTIVE_EXCLUSION missing fingerprint at ${got.anchor}`);
               }
               const sourceText = String(got.text ?? "");
-              if (lineHasBindingObligation(sourceText)) {
+              if (
+                lineHasBindingObligation(sourceText) ||
+                /sha-256\s*`[a-f0-9]{64}`/i.test(sourceText) ||
+                (/^\|\s*[1-6]\s*\|/.test(sourceText.trim()) &&
+                  /\b(authority|approval|credential|gateway|contract|ownership)\b/i.test(
+                    sourceText,
+                  ))
+              ) {
                 errors.push(
-                  `DESCRIPTIVE_EXCLUSION carries binding obligation language at ${got.anchor}`,
+                  `DESCRIPTIVE_EXCLUSION cannot exclude binding source-authority/obligation row at ${got.anchor}`,
                 );
               }
             }
@@ -482,11 +532,24 @@ export function validateSection133Ledger(opts = {}) {
                 got.type === "table_row") &&
               got.reasonCode !== "DESCRIPTIVE_EXCLUSION" &&
               got.reasonCode !== "STRUCTURAL_TABLE_HEADER" &&
-              got.reasonCode !== "STRUCTURAL_EMPTY_TABLE_ROW"
+              got.reasonCode !== "STRUCTURAL_EMPTY_TABLE_ROW" &&
+              got.reasonCode !== "STRUCTURAL_ENUM_DEFINITION"
             ) {
               errors.push(
                 `forbidden non_requirement ${got.reasonCode} on ${got.type} outside exact descriptive exclusion at ${got.anchor}`,
               );
+            }
+            if (got.reasonCode === "STRUCTURAL_ENUM_DEFINITION") {
+              const enumText = String(got.text ?? "");
+              if (
+                !/implemented and proven|implemented but not proven live|partially implemented|omitted|implemented differently from plan|blocked by another repository|outside the execution agent/i.test(
+                  enumText,
+                )
+              ) {
+                errors.push(
+                  `STRUCTURAL_ENUM_DEFINITION is not a §13.3 classification enum at ${got.anchor}`,
+                );
+              }
             }
             if (
               got.reasonCode === "INTRO_OPENS_FOLLOWING_LIST" &&
@@ -635,6 +698,14 @@ export function validateSection133Ledger(opts = {}) {
       }
       if (GENERIC_EVIDENCE_RE.test(evidenceLocation)) {
         errors.push(`${id}: generic blanket evidence_location forbidden for implemented claim`);
+      }
+      if (TOOLING_SELF_EVIDENCE_RE.test(evidenceLocation)) {
+        errors.push(
+          `${id}: implemented evidence must identify underlying Phase artifacts, not extractor/validator/ledger tooling`,
+        );
+      }
+      if (planItem.kind === "rollback" || /\.rollback$/.test(id)) {
+        errors.push(`${id}: unexecuted rollback must not be claimed implemented`);
       }
       evidenceMapped += 1;
       const base = evidenceLocation.replace(/\s*\[plan-item:[^\]]+\]\s*$/i, "").trim();

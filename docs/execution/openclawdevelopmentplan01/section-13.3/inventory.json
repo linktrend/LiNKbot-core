@@ -20,60 +20,6 @@
   ],
   "descriptive_exclusions": [
     {
-      "id": "source-hierarchy-L48",
-      "reason": "Section 2 frozen-input source hierarchy metadata row",
-      "line": 48,
-      "type": "table_row",
-      "anchor": "exclusion.source-hierarchy-L48.L48",
-      "fingerprint": "1096fab8174b0bf717c1bb2286a7cbc413fac15846f34348b005338174fb60c4",
-      "text": "| 1        | Principal decisions recorded in the OpenClaw planning session and handoffs                 | 2026-07-27                                                                 | Intent, privacy, ownership, rollout, and approval authority                                                  |"
-    },
-    {
-      "id": "source-hierarchy-L49",
-      "reason": "Section 2 frozen-input source hierarchy metadata row",
-      "line": 49,
-      "type": "table_row",
-      "anchor": "exclusion.source-hierarchy-L49.L49",
-      "fingerprint": "dcf86baa9e1113e2cf6d0c9bc809b86bae8684aaed296fe8beafe81ae9c3578a",
-      "text": "| 2        | LiNKplatform shared-foundation detailed implementation plan                                | SHA-256 `fbcf36235c4caaa6abf7ee93afedeedf105a96f6614a3a3ff5ccb8d78e33c6b9` | Actor identity, claims, credentials, environments, infrastructure, migrations, audit, generic Librarian host |"
-    },
-    {
-      "id": "source-hierarchy-L50",
-      "reason": "Section 2 frozen-input source hierarchy metadata row",
-      "line": 50,
-      "type": "table_row",
-      "anchor": "exclusion.source-hierarchy-L50.L50",
-      "fingerprint": "441bbd9375f7f68c2c2ded2a8cb1cde7180f01ca886a18dde003f7270efbcfa8",
-      "text": "| 3        | LiNKbrain Phase 1 detailed implementation plan                                             | SHA-256 `051caa80191639c06b2dee6fa4800e736ada30772a55ad84e12e5fa6a4e63458` | Brain Gateway, tools, capture, coordination, curation, failure, retention, and rollout contracts             |"
-    },
-    {
-      "id": "source-hierarchy-L51",
-      "reason": "Section 2 frozen-input source hierarchy metadata row",
-      "line": 51,
-      "type": "table_row",
-      "anchor": "exclusion.source-hierarchy-L51.L51",
-      "fingerprint": "b01ddd245042eb74a7fa43629640dbe979daaf49d1c2c9243a1aecd5a5cbf65f",
-      "text": "| 4        | LiNKskills internal-launch detailed development plan                                       | SHA-256 `31a6cc70bb778ce1dff236819e4bf600b0495dbb06c95bac55bcb2b0b2f5fe88` | Skills Gateway, immutable bundles, profiles, validation, telemetry, evidence, and rollout contracts          |"
-    },
-    {
-      "id": "source-hierarchy-L52",
-      "reason": "Section 2 frozen-input source hierarchy metadata row",
-      "line": 52,
-      "type": "table_row",
-      "anchor": "exclusion.source-hierarchy-L52.L52",
-      "fingerprint": "c800d955fcdfb8dd3e40fcc77eaa9bf8439f18ff39a531afc86e292615b3ea5d",
-      "text": "| 5        | Current OpenClaw source, tests, public plugin SDK, managed MCP, and operator documentation | OpenClaw `2026.7.2`, planning HEAD `ec90aa8cd119`                          | Available implementation seams and current Lisa integration behavior                                         |"
-    },
-    {
-      "id": "source-hierarchy-L53",
-      "reason": "Section 2 frozen-input source hierarchy metadata row",
-      "line": 53,
-      "type": "table_row",
-      "anchor": "exclusion.source-hierarchy-L53.L53",
-      "fingerprint": "5c362139cd3adad26ef642cf41e620f4443662aadf1c41853bd8392aacebcfcf",
-      "text": "| 6        | This plan                                                                                  | 2026-07-27                                                                 | OpenClaw-specific sequencing, file ownership, tests, rollout, operations, and acceptance                     |"
-    },
-    {
       "id": "baseline-5.1-L109",
       "reason": "Section 5.1 sanitized OpenClaw capability inventory observation",
       "line": 109,
@@ -384,6 +330,78 @@
       "fingerprint": "dee36c2da33985a384a31d27432c2ee8ec4e3f10b85b4567f645e472e2a40a98",
       "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
       "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#prose.2_frozen_inputs_and_source_hierarchy.44.1",
+      "completion_claim": "not_claimed",
+      "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
+    },
+    {
+      "id": "source_hierarchy.1",
+      "kind": "evidence_requirement",
+      "label": "1 | Principal decisions recorded in the OpenClaw planning session and handoffs | 2026-07-27 | Intent, privacy, ownership, rollout, and approval authority",
+      "anchor": "source_hierarchy.1",
+      "line": 48,
+      "fingerprint": "6f92dddbef3401a7c8c35f888034d1b32ff40cec1d785735afdcb6faaef02f4b",
+      "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#source_hierarchy.1",
+      "completion_claim": "not_claimed",
+      "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
+    },
+    {
+      "id": "source_hierarchy.2",
+      "kind": "evidence_requirement",
+      "label": "2 | LiNKplatform shared-foundation detailed implementation plan | SHA-256 `fbcf36235c4caaa6abf7ee93afedeedf105a96f6614a3a3ff5ccb8d78e33c6b9` | Actor identity, claims, credentials, environments, infrastructure, migrations, audit, generic Librarian host",
+      "anchor": "source_hierarchy.2",
+      "line": 49,
+      "fingerprint": "cd5e124786e8cc67a991fbdeefd95172f048ccd354d80b16e47e4f5a6735fec0",
+      "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#source_hierarchy.2",
+      "completion_claim": "not_claimed",
+      "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
+    },
+    {
+      "id": "source_hierarchy.3",
+      "kind": "evidence_requirement",
+      "label": "3 | LiNKbrain Phase 1 detailed implementation plan | SHA-256 `051caa80191639c06b2dee6fa4800e736ada30772a55ad84e12e5fa6a4e63458` | Brain Gateway, tools, capture, coordination, curation, failure, retention, and rollout contracts",
+      "anchor": "source_hierarchy.3",
+      "line": 50,
+      "fingerprint": "3dda0ff8440d035679cd6cf173b68133277b04afe9bf8536f62279f8163c4dd1",
+      "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#source_hierarchy.3",
+      "completion_claim": "not_claimed",
+      "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
+    },
+    {
+      "id": "source_hierarchy.4",
+      "kind": "evidence_requirement",
+      "label": "4 | LiNKskills internal-launch detailed development plan | SHA-256 `31a6cc70bb778ce1dff236819e4bf600b0495dbb06c95bac55bcb2b0b2f5fe88` | Skills Gateway, immutable bundles, profiles, validation, telemetry, evidence, and rollout contracts",
+      "anchor": "source_hierarchy.4",
+      "line": 51,
+      "fingerprint": "7f1c3eb33b5c40b46459700f147e94e3bd16cd65a3a59b11161f45c668b572b0",
+      "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#source_hierarchy.4",
+      "completion_claim": "not_claimed",
+      "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
+    },
+    {
+      "id": "source_hierarchy.5",
+      "kind": "evidence_requirement",
+      "label": "5 | Current OpenClaw source, tests, public plugin SDK, managed MCP, and operator documentation | OpenClaw `2026.7.2`, planning HEAD `ec90aa8cd119` | Available implementation seams and current Lisa integration behavior",
+      "anchor": "source_hierarchy.5",
+      "line": 52,
+      "fingerprint": "8db0b7e43d1dee1583fa93faa6a3c1f5d30849ef2b1b8c81234b8ad121b9b56a",
+      "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#source_hierarchy.5",
+      "completion_claim": "not_claimed",
+      "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
+    },
+    {
+      "id": "source_hierarchy.6",
+      "kind": "evidence_requirement",
+      "label": "6 | This plan | 2026-07-27 | OpenClaw-specific sequencing, file ownership, tests, rollout, operations, and acceptance",
+      "anchor": "source_hierarchy.6",
+      "line": 53,
+      "fingerprint": "095f0c1a765e3d57da02f3b338bcca811e0fe0bf822bc1c3430499c7530cf954",
+      "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#source_hierarchy.6",
       "completion_claim": "not_claimed",
       "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
     },
@@ -868,122 +886,122 @@
       "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
     },
     {
-      "id": "table.6_1_required_mapping.147.1",
+      "id": "table.6_1_required_mapping.147.7",
       "kind": "evidence_requirement",
       "label": "OpenClaw concept | Platform concept | Rule",
-      "anchor": "table.6_1_required_mapping.147.1",
+      "anchor": "table.6_1_required_mapping.147.7",
       "line": 147,
-      "fingerprint": "247cd3f64bda0b9f91f01bcee726909ebc180f902dd2ea858ce602bf3ba8318a",
+      "fingerprint": "4e54057541e4dbde61d6be60dcc6787b1bdece60f69a3f6da184833dc8673f05",
       "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
-      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.6_1_required_mapping.147.1",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.6_1_required_mapping.147.7",
       "completion_claim": "not_claimed",
       "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
     },
     {
-      "id": "table.6_1_required_mapping.149.2",
+      "id": "table.6_1_required_mapping.149.8",
       "kind": "evidence_requirement",
       "label": "Lisa human-facing agent | Canonical actor | Exactly one stable Lisa actor ID",
-      "anchor": "table.6_1_required_mapping.149.2",
+      "anchor": "table.6_1_required_mapping.149.8",
       "line": 149,
-      "fingerprint": "9448c5e5138e0d29cbf424939db39a5b73e9512fe75f01fa379f88f18f03d4bd",
+      "fingerprint": "cc795547a42194e1c800bcb01426ece0b959609b3020022ad8a82703b136c192",
       "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
-      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.6_1_required_mapping.149.2",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.6_1_required_mapping.149.8",
       "completion_claim": "not_claimed",
       "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
     },
     {
-      "id": "table.6_1_required_mapping.150.3",
+      "id": "table.6_1_required_mapping.150.9",
       "kind": "evidence_requirement",
       "label": "Lisa OpenClaw profile and installation | Runtime binding | Includes opaque host identity, environment, OpenClaw version, plugin versions, and binding status",
-      "anchor": "table.6_1_required_mapping.150.3",
+      "anchor": "table.6_1_required_mapping.150.9",
       "line": 150,
-      "fingerprint": "fe157e7cb1e1acb7dfa097b4e44e68d18d9f417e68e125b623bd853fb7db12a9",
+      "fingerprint": "cb025dd3afa64068e0de9e81d95069b04f9ed826965664d0180ded2e9f94bf45",
       "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
-      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.6_1_required_mapping.150.3",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.6_1_required_mapping.150.9",
       "completion_claim": "not_claimed",
       "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
     },
     {
-      "id": "table.6_1_required_mapping.151.4",
+      "id": "table.6_1_required_mapping.151.10",
       "kind": "evidence_requirement",
       "label": "Brain MCP client and Brain plugin | Brain consumers on the Lisa binding | Use Brain-only credential family and scopes",
-      "anchor": "table.6_1_required_mapping.151.4",
+      "anchor": "table.6_1_required_mapping.151.10",
       "line": 151,
-      "fingerprint": "458fc904782358d9a90ec3c17568849dd8f348792a439cb40834a9cb90b39f6f",
+      "fingerprint": "64a152e3149fee81e389fd9f6a853a6627fe209b7d1a70f7f5e6336976a7530f",
       "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
-      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.6_1_required_mapping.151.4",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.6_1_required_mapping.151.10",
       "completion_claim": "not_claimed",
       "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
     },
     {
-      "id": "table.6_1_required_mapping.152.5",
+      "id": "table.6_1_required_mapping.152.11",
       "kind": "evidence_requirement",
       "label": "Skills MCP client and Skills plugin | Skills consumers on the Lisa binding | Use Skills-only credential family and scopes",
-      "anchor": "table.6_1_required_mapping.152.5",
+      "anchor": "table.6_1_required_mapping.152.11",
       "line": 152,
-      "fingerprint": "494677c2913b66b37d7200f1c0084d3e9c99a7b705b6b83d067248e26cb4226d",
+      "fingerprint": "339172004180eb34b60d3431258e96569299a464ca227b596d842171f9b41520",
       "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
-      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.6_1_required_mapping.152.5",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.6_1_required_mapping.152.11",
       "completion_claim": "not_claimed",
       "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
     },
     {
-      "id": "table.6_1_required_mapping.153.6",
+      "id": "table.6_1_required_mapping.153.12",
       "kind": "evidence_requirement",
       "label": "`main` and `lisa-cron` | Subordinate local execution roles | Same Lisa actor; distinct agent/trigger metadata",
-      "anchor": "table.6_1_required_mapping.153.6",
+      "anchor": "table.6_1_required_mapping.153.12",
       "line": 153,
-      "fingerprint": "b936d27cc10559962abd055683ae2177b021e40ca2ad0629f15ad50899dc650d",
+      "fingerprint": "29240404f0fc3dbb8dd1b173b00f6b05a0291746ff33fecf3d42bf4af5111671",
       "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
-      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.6_1_required_mapping.153.6",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.6_1_required_mapping.153.12",
       "completion_claim": "not_claimed",
       "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
     },
     {
-      "id": "table.6_1_required_mapping.154.7",
+      "id": "table.6_1_required_mapping.154.13",
       "kind": "evidence_requirement",
       "label": "Chat/channel session | Subordinate session | Opaque session identity; no actor promotion",
-      "anchor": "table.6_1_required_mapping.154.7",
+      "anchor": "table.6_1_required_mapping.154.13",
       "line": 154,
-      "fingerprint": "214756de1498f1eccb980e4a9c0bb423aceb8eafaeed34f8b6b7bf6c0aae4e48",
+      "fingerprint": "14361ed5446cfb0eb480d781227e68c26934417867dfac9b987c33d4bb3f980d",
       "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
-      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.6_1_required_mapping.154.7",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.6_1_required_mapping.154.13",
       "completion_claim": "not_claimed",
       "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
     },
     {
-      "id": "table.6_1_required_mapping.155.8",
+      "id": "table.6_1_required_mapping.155.14",
       "kind": "evidence_requirement",
       "label": "Cron execution, agent run, tool run | Subordinate run | Carries correlation and parent relationships",
-      "anchor": "table.6_1_required_mapping.155.8",
+      "anchor": "table.6_1_required_mapping.155.14",
       "line": 155,
-      "fingerprint": "99c671bffd6268180eeef55f54fcc5704b8b7b238154cd071b60a6407ac3917c",
+      "fingerprint": "dd33a1094597fa4051a15f2f6b66f3dadbab13c1224c1d27f56a29527aa35f44",
       "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
-      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.6_1_required_mapping.155.8",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.6_1_required_mapping.155.14",
       "completion_claim": "not_claimed",
       "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
     },
     {
-      "id": "table.6_1_required_mapping.156.9",
+      "id": "table.6_1_required_mapping.156.15",
       "kind": "evidence_requirement",
       "label": "Transient subagent | Subordinate execution | Same actor by default; parent session/run recorded",
-      "anchor": "table.6_1_required_mapping.156.9",
+      "anchor": "table.6_1_required_mapping.156.15",
       "line": 156,
-      "fingerprint": "199081ca48c2624f0075badb949f137a95154d84290f4d3ba3ed0d71cb74c69b",
+      "fingerprint": "5ab5c0270845a6582ba82e1e97eb0f0a86c6fd1c04bb7c271db1831bf44a21f8",
       "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
-      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.6_1_required_mapping.156.9",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.6_1_required_mapping.156.15",
       "completion_claim": "not_claimed",
       "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
     },
     {
-      "id": "table.6_1_required_mapping.157.10",
+      "id": "table.6_1_required_mapping.157.16",
       "kind": "evidence_requirement",
       "label": "Durable independent consumer | Separate actor/binding only if Platform designates it | Must never inherit Lisa credentials by convenience",
-      "anchor": "table.6_1_required_mapping.157.10",
+      "anchor": "table.6_1_required_mapping.157.16",
       "line": 157,
-      "fingerprint": "d702e8077f25273e45f3d203960e86d6dbfb60ef430b2af30a23143753454cec",
+      "fingerprint": "cc2406c34bd953376be796d5e94463ecdd147b77f580de4b0300723a8bc191ab",
       "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
-      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.6_1_required_mapping.157.10",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.6_1_required_mapping.157.16",
       "completion_claim": "not_claimed",
       "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
     },
@@ -2320,134 +2338,134 @@
       "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
     },
     {
-      "id": "table.10_1_brain_lifecycle_hooks.383.11",
+      "id": "table.10_1_brain_lifecycle_hooks.383.17",
       "kind": "evidence_requirement",
       "label": "OpenClaw lifecycle | Brain action | Critical-path rule",
-      "anchor": "table.10_1_brain_lifecycle_hooks.383.11",
+      "anchor": "table.10_1_brain_lifecycle_hooks.383.17",
       "line": 383,
-      "fingerprint": "9a03c801944a6ac06f0718edfef16c4557782f2aab8798d5ac1f9a7fd877314b",
+      "fingerprint": "c2df09e5a9556f304d722a7946eabdd87c6e281af16014f7c6526851a9b6c8fb",
       "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
-      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.10_1_brain_lifecycle_hooks.383.11",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.10_1_brain_lifecycle_hooks.383.17",
       "completion_claim": "not_claimed",
       "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
     },
     {
-      "id": "table.10_1_brain_lifecycle_hooks.385.12",
+      "id": "table.10_1_brain_lifecycle_hooks.385.18",
       "kind": "evidence_requirement",
       "label": "`session_start` | Start or attach opaque session context | Local bookkeeping only",
-      "anchor": "table.10_1_brain_lifecycle_hooks.385.12",
+      "anchor": "table.10_1_brain_lifecycle_hooks.385.18",
       "line": 385,
-      "fingerprint": "b7f03b269081d4bdfd0e6761def9d9b1da478067baea3fdf4bc7be0f93854b0c",
+      "fingerprint": "fac013fa2b23e2651ebca85a78bd96c22bc94936ace19aa2696fdf96231c5949",
       "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
-      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.10_1_brain_lifecycle_hooks.385.12",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.10_1_brain_lifecycle_hooks.385.18",
       "completion_claim": "not_claimed",
       "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
     },
     {
-      "id": "table.10_1_brain_lifecycle_hooks.386.13",
+      "id": "table.10_1_brain_lifecycle_hooks.386.19",
       "kind": "evidence_requirement",
       "label": "`message_received` | Enqueue approved redacted capture input | Durable local enqueue before return",
-      "anchor": "table.10_1_brain_lifecycle_hooks.386.13",
+      "anchor": "table.10_1_brain_lifecycle_hooks.386.19",
       "line": 386,
-      "fingerprint": "f2d7120ba03074cb94a4808a5156ecd19cf0a6cf821f1e46d5fbab34b1d3fe36",
+      "fingerprint": "eff92bff08b551c5cc5c3c85d1d5d7ece6cbad4a1136440e8f4da16b3b5f05a1",
       "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
-      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.10_1_brain_lifecycle_hooks.386.13",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.10_1_brain_lifecycle_hooks.386.19",
       "completion_claim": "not_claimed",
       "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
     },
     {
-      "id": "table.10_1_brain_lifecycle_hooks.387.14",
+      "id": "table.10_1_brain_lifecycle_hooks.387.20",
       "kind": "evidence_requirement",
       "label": "`agent_end` | Enqueue assistant outcome and run status | Do not perform an unbounded remote flush",
-      "anchor": "table.10_1_brain_lifecycle_hooks.387.14",
+      "anchor": "table.10_1_brain_lifecycle_hooks.387.20",
       "line": 387,
-      "fingerprint": "535a15175acdd423f0ce6731316977840a2d981c66520a7c32c2d573ff678944",
+      "fingerprint": "5a0c7f8b9dbed67d22989a02460ce6fd7aa002e1608e28663366495084b14526",
       "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
-      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.10_1_brain_lifecycle_hooks.387.14",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.10_1_brain_lifecycle_hooks.387.20",
       "completion_claim": "not_claimed",
       "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
     },
     {
-      "id": "table.10_1_brain_lifecycle_hooks.388.15",
+      "id": "table.10_1_brain_lifecycle_hooks.388.21",
       "kind": "evidence_requirement",
       "label": "`before_compaction` | Flush the current capture buffer and write a boundary checkpoint | Bounded; preserve native compaction if Brain is degraded",
-      "anchor": "table.10_1_brain_lifecycle_hooks.388.15",
+      "anchor": "table.10_1_brain_lifecycle_hooks.388.21",
       "line": 388,
-      "fingerprint": "35f8c3613aa74f3778e3c8fc98aa30d3d9fd612018c63f273fce7700fcf23434",
+      "fingerprint": "373116a79604a4ce951f635e52fcbc4b9d5f9e84e8a5e2948c4737be718f694e",
       "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
-      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.10_1_brain_lifecycle_hooks.388.15",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.10_1_brain_lifecycle_hooks.388.21",
       "completion_claim": "not_claimed",
       "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
     },
     {
-      "id": "table.10_1_brain_lifecycle_hooks.389.16",
+      "id": "table.10_1_brain_lifecycle_hooks.389.22",
       "kind": "evidence_requirement",
       "label": "`after_compaction` | Record compaction result metadata | Structured and bounded",
-      "anchor": "table.10_1_brain_lifecycle_hooks.389.16",
+      "anchor": "table.10_1_brain_lifecycle_hooks.389.22",
       "line": 389,
-      "fingerprint": "fc26ceaccec626d8a6b4ecbb1523ace1a942b83b8a4a111a0aa563f3f6b21a06",
+      "fingerprint": "19a211cb55cab51d690f27dc8edc2bdf9299c65437f696465b05e62b98924cfc",
       "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
-      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.10_1_brain_lifecycle_hooks.389.16",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.10_1_brain_lifecycle_hooks.389.22",
       "completion_claim": "not_claimed",
       "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
     },
     {
-      "id": "table.10_1_brain_lifecycle_hooks.390.17",
+      "id": "table.10_1_brain_lifecycle_hooks.390.23",
       "kind": "evidence_requirement",
       "label": "`before_reset` | Flush pending capture and close/reset subordinate context | Bounded; never block reset indefinitely",
-      "anchor": "table.10_1_brain_lifecycle_hooks.390.17",
+      "anchor": "table.10_1_brain_lifecycle_hooks.390.23",
       "line": 390,
-      "fingerprint": "fba2715f56910560ddd43740cb9e083c6f15eef9dd9bb87e73c77ca4d0a9bb92",
+      "fingerprint": "c055ac7498841de8bad4f1e123be6daf67a5ca6086b76edf1ffc5215d39ab963",
       "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
-      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.10_1_brain_lifecycle_hooks.390.17",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.10_1_brain_lifecycle_hooks.390.23",
       "completion_claim": "not_claimed",
       "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
     },
     {
-      "id": "table.10_1_brain_lifecycle_hooks.391.18",
+      "id": "table.10_1_brain_lifecycle_hooks.391.24",
       "kind": "evidence_requirement",
       "label": "`session_end` | Flush/close session capture state | Bounded; remainder stays durable",
-      "anchor": "table.10_1_brain_lifecycle_hooks.391.18",
+      "anchor": "table.10_1_brain_lifecycle_hooks.391.24",
       "line": 391,
-      "fingerprint": "09f8b31bb4247ba096841a6552962eedba6ed80774dd1c8ba49c194293489677",
+      "fingerprint": "7a40f1254388b6d7f3964acdd39b9156d0ed083037cba0ad975d84681ce66d7a",
       "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
-      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.10_1_brain_lifecycle_hooks.391.18",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.10_1_brain_lifecycle_hooks.391.24",
       "completion_claim": "not_claimed",
       "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
     },
     {
-      "id": "table.10_1_brain_lifecycle_hooks.392.19",
+      "id": "table.10_1_brain_lifecycle_hooks.392.25",
       "kind": "evidence_requirement",
       "label": "`gateway_start` | Validate config, open state, start drain worker | No secret logging",
-      "anchor": "table.10_1_brain_lifecycle_hooks.392.19",
+      "anchor": "table.10_1_brain_lifecycle_hooks.392.25",
       "line": 392,
-      "fingerprint": "fbd5ea3ea1ccdf38d9219b63fdd30778a61785123658f8a8c325af314ceec74b",
+      "fingerprint": "1bfdc2d70e72a7a7057e21adbb45d95fd5300f4d3f604e9082fa7ceb1c2abf7f",
       "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
-      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.10_1_brain_lifecycle_hooks.392.19",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.10_1_brain_lifecycle_hooks.392.25",
       "completion_claim": "not_claimed",
       "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
     },
     {
-      "id": "table.10_1_brain_lifecycle_hooks.393.20",
+      "id": "table.10_1_brain_lifecycle_hooks.393.26",
       "kind": "evidence_requirement",
       "label": "`gateway_stop` | Stop intake, bounded drain, persist cursor/health | Unsent records remain durable",
-      "anchor": "table.10_1_brain_lifecycle_hooks.393.20",
+      "anchor": "table.10_1_brain_lifecycle_hooks.393.26",
       "line": 393,
-      "fingerprint": "f847e7d0a5e8ea8e35320c8800d0d71fc885b9638ab9f4dc0073d6af2ca945bd",
+      "fingerprint": "1404ffa8ea5cad4fccc19918aef7b48cef60ca2facc25f0504d0d5a2f957a5e4",
       "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
-      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.10_1_brain_lifecycle_hooks.393.20",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.10_1_brain_lifecycle_hooks.393.26",
       "completion_claim": "not_claimed",
       "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
     },
     {
-      "id": "table.10_1_brain_lifecycle_hooks.394.21",
+      "id": "table.10_1_brain_lifecycle_hooks.394.27",
       "kind": "evidence_requirement",
       "label": "subagent start/end | Record parent/child execution linkage | Same canonical actor by default",
-      "anchor": "table.10_1_brain_lifecycle_hooks.394.21",
+      "anchor": "table.10_1_brain_lifecycle_hooks.394.27",
       "line": 394,
-      "fingerprint": "197673fbe38310766f7e211a69bfc98c5a725c272a039071b396767c0c8d45fa",
+      "fingerprint": "9ab0e4102382b6c8002ad6d321c28885c595bf34c91cc1b6f26de7dfa6e5cdcf",
       "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
-      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.10_1_brain_lifecycle_hooks.394.21",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.10_1_brain_lifecycle_hooks.394.27",
       "completion_claim": "not_claimed",
       "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
     },
@@ -2680,110 +2698,110 @@
       "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
     },
     {
-      "id": "table.11_durable_state_and_outbox_design.432.22",
+      "id": "table.11_durable_state_and_outbox_design.432.28",
       "kind": "evidence_requirement",
       "label": "`linkbrain` | `outbox` | Ordered pending Brain deliveries",
-      "anchor": "table.11_durable_state_and_outbox_design.432.22",
+      "anchor": "table.11_durable_state_and_outbox_design.432.28",
       "line": 432,
-      "fingerprint": "44149c00bb8b810c84f4b476f3343d4da43fd60b58e12845ca2e99aef69d0a10",
+      "fingerprint": "5c85277598e8742f89d87074b67476bbac81da7681a0e0e755e6d725500149aa",
       "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
-      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.11_durable_state_and_outbox_design.432.22",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.11_durable_state_and_outbox_design.432.28",
       "completion_claim": "not_claimed",
       "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
     },
     {
-      "id": "table.11_durable_state_and_outbox_design.433.23",
+      "id": "table.11_durable_state_and_outbox_design.433.29",
       "kind": "evidence_requirement",
       "label": "`linkbrain` | `deadletter` | Terminal Brain failures with redacted metadata",
-      "anchor": "table.11_durable_state_and_outbox_design.433.23",
+      "anchor": "table.11_durable_state_and_outbox_design.433.29",
       "line": 433,
-      "fingerprint": "b202aaf468531db6e38733612b86495176626508eebb9415b0a4ddeab4f8231e",
+      "fingerprint": "c816bc703d3e209e399c6eefbf9ef8198e952486122c2ec84d5a382d4361c883",
       "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
-      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.11_durable_state_and_outbox_design.433.23",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.11_durable_state_and_outbox_design.433.29",
       "completion_claim": "not_claimed",
       "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
     },
     {
-      "id": "table.11_durable_state_and_outbox_design.434.24",
+      "id": "table.11_durable_state_and_outbox_design.434.30",
       "kind": "evidence_requirement",
       "label": "`linkbrain` | `cursor` | Drain and lifecycle checkpoints",
-      "anchor": "table.11_durable_state_and_outbox_design.434.24",
+      "anchor": "table.11_durable_state_and_outbox_design.434.30",
       "line": 434,
-      "fingerprint": "6ce58f0f7d0dd71850da36fe186b93b58472aecf4b92c6693716b3213bea87f3",
+      "fingerprint": "3aaad8dab979f9ad6019caea2394fa6e645f3ef0e59cafe83b565191927cc6e1",
       "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
-      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.11_durable_state_and_outbox_design.434.24",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.11_durable_state_and_outbox_design.434.30",
       "completion_claim": "not_claimed",
       "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
     },
     {
-      "id": "table.11_durable_state_and_outbox_design.435.25",
+      "id": "table.11_durable_state_and_outbox_design.435.31",
       "kind": "evidence_requirement",
       "label": "`linkbrain` | `health` | Last success/failure/degraded state",
-      "anchor": "table.11_durable_state_and_outbox_design.435.25",
+      "anchor": "table.11_durable_state_and_outbox_design.435.31",
       "line": 435,
-      "fingerprint": "713660e596bf2b70071eff7cbe3a87b31065a93ada5d64244102ddeda03dedcd",
+      "fingerprint": "4158eca828d2057156357e1e8fa3b11df391bd3cb9e34cdc588c6838f6eb3047",
       "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
-      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.11_durable_state_and_outbox_design.435.25",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.11_durable_state_and_outbox_design.435.31",
       "completion_claim": "not_claimed",
       "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
     },
     {
-      "id": "table.11_durable_state_and_outbox_design.436.26",
+      "id": "table.11_durable_state_and_outbox_design.436.32",
       "kind": "evidence_requirement",
       "label": "`linkbrain` | `capture-buffer` | Bounded approved raw capture pending batch assembly",
-      "anchor": "table.11_durable_state_and_outbox_design.436.26",
+      "anchor": "table.11_durable_state_and_outbox_design.436.32",
       "line": 436,
-      "fingerprint": "ec4d41d3c563a6a83e8b7e556b3c1d94fcd9d136fd8dd43b09d7d49526221594",
+      "fingerprint": "1347d81ca7564cf4b936bd2bd53c91d9b597b573d5563287de0ba8f95a9636f5",
       "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
-      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.11_durable_state_and_outbox_design.436.26",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.11_durable_state_and_outbox_design.436.32",
       "completion_claim": "not_claimed",
       "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
     },
     {
-      "id": "table.11_durable_state_and_outbox_design.437.27",
+      "id": "table.11_durable_state_and_outbox_design.437.33",
       "kind": "evidence_requirement",
       "label": "`linkskills` | `outbox` | Ordered pending Skills events",
-      "anchor": "table.11_durable_state_and_outbox_design.437.27",
+      "anchor": "table.11_durable_state_and_outbox_design.437.33",
       "line": 437,
-      "fingerprint": "7c7aaf27643e91e2968dd3cb99c0dc9601f00fa3d161a989f10a4949a7500bc6",
+      "fingerprint": "bf74c22b379b601ff5d88d057750f18176a76e29a2cfaf2e301a78b8b4156bec",
       "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
-      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.11_durable_state_and_outbox_design.437.27",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.11_durable_state_and_outbox_design.437.33",
       "completion_claim": "not_claimed",
       "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
     },
     {
-      "id": "table.11_durable_state_and_outbox_design.438.28",
+      "id": "table.11_durable_state_and_outbox_design.438.34",
       "kind": "evidence_requirement",
       "label": "`linkskills` | `deadletter` | Terminal Skills failures with redacted metadata",
-      "anchor": "table.11_durable_state_and_outbox_design.438.28",
+      "anchor": "table.11_durable_state_and_outbox_design.438.34",
       "line": 438,
-      "fingerprint": "d7e3998470c725f16e51e89c46b0884718014d80a5ff208311f901ee4ee881cc",
+      "fingerprint": "59df9fac19a4ad5f14283cc9c22f8fbcfa01293bf55ece48ec6a9730afd372c8",
       "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
-      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.11_durable_state_and_outbox_design.438.28",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.11_durable_state_and_outbox_design.438.34",
       "completion_claim": "not_claimed",
       "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
     },
     {
-      "id": "table.11_durable_state_and_outbox_design.439.29",
+      "id": "table.11_durable_state_and_outbox_design.439.35",
       "kind": "evidence_requirement",
       "label": "`linkskills` | `cursor` | Drain and evidence checkpoints",
-      "anchor": "table.11_durable_state_and_outbox_design.439.29",
+      "anchor": "table.11_durable_state_and_outbox_design.439.35",
       "line": 439,
-      "fingerprint": "51a4fcf3b6d46fdc118d19253a868a95470a3f0607c3459e733d93217b1f551d",
+      "fingerprint": "22427d3b8e794b9c7f1d47a2b79cf9f39b2bda80f6cf58270cc5d13e10fcaff8",
       "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
-      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.11_durable_state_and_outbox_design.439.29",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.11_durable_state_and_outbox_design.439.35",
       "completion_claim": "not_claimed",
       "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
     },
     {
-      "id": "table.11_durable_state_and_outbox_design.440.30",
+      "id": "table.11_durable_state_and_outbox_design.440.36",
       "kind": "evidence_requirement",
       "label": "`linkskills` | `health` | Last success/failure/degraded state",
-      "anchor": "table.11_durable_state_and_outbox_design.440.30",
+      "anchor": "table.11_durable_state_and_outbox_design.440.36",
       "line": 440,
-      "fingerprint": "f929c684e6e7c80f52c8564f758d495116343acd34374b9f25d45ec9a7461f39",
+      "fingerprint": "9431b17c3e792c36d15ee57816a3671259ff1b156adc583fcbd96667e43ed546",
       "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
-      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.11_durable_state_and_outbox_design.440.30",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.11_durable_state_and_outbox_design.440.36",
       "completion_claim": "not_claimed",
       "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
     },
@@ -3124,110 +3142,110 @@
       "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
     },
     {
-      "id": "table.12_2_independent_flags.485.31",
+      "id": "table.12_2_independent_flags.485.37",
       "kind": "evidence_requirement",
       "label": "Domain | Flag | Effect when disabled",
-      "anchor": "table.12_2_independent_flags.485.31",
+      "anchor": "table.12_2_independent_flags.485.37",
       "line": 485,
-      "fingerprint": "2196ccf7d5cab5c30b999ac0f931611015666bb03af202da15da44602f8d997f",
+      "fingerprint": "b67c8798233da9afeb81a2a344e1e28fbba5dbd6f0991b8abdbac0c99b2a955b",
       "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
-      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.12_2_independent_flags.485.31",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.12_2_independent_flags.485.37",
       "completion_claim": "not_claimed",
       "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
     },
     {
-      "id": "table.12_2_independent_flags.487.32",
+      "id": "table.12_2_independent_flags.487.38",
       "kind": "evidence_requirement",
       "label": "Brain | MCP read | No Brain read tools; native OpenClaw continues",
-      "anchor": "table.12_2_independent_flags.487.32",
+      "anchor": "table.12_2_independent_flags.487.38",
       "line": 487,
-      "fingerprint": "f04b7eec7eabf39e6d25ecc6a1fdcd81eb018b9011de4611350d16acf0c2843f",
+      "fingerprint": "4441c42622cf3f729ac705913ba69361ecce570665250a442c3ac71bfcd5f2b7",
       "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
-      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.12_2_independent_flags.487.32",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.12_2_independent_flags.487.38",
       "completion_claim": "not_claimed",
       "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
     },
     {
-      "id": "table.12_2_independent_flags.488.33",
+      "id": "table.12_2_independent_flags.488.39",
       "kind": "evidence_requirement",
       "label": "Brain | capture enqueue | No new capture records; existing outbox retained",
-      "anchor": "table.12_2_independent_flags.488.33",
+      "anchor": "table.12_2_independent_flags.488.39",
       "line": 488,
-      "fingerprint": "c5b1ef9e70efb1f9d2152da5a22782f089250db14be4952378e81ae5f7ef8140",
+      "fingerprint": "bec0000b12c8aca90775d6d4e0a2aaa036a2862e09488e20f1af131f011f6806",
       "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
-      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.12_2_independent_flags.488.33",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.12_2_independent_flags.488.39",
       "completion_claim": "not_claimed",
       "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
     },
     {
-      "id": "table.12_2_independent_flags.489.34",
+      "id": "table.12_2_independent_flags.489.40",
       "kind": "evidence_requirement",
       "label": "Brain | capture drain | Stop Brain delivery; local durable queue retained",
-      "anchor": "table.12_2_independent_flags.489.34",
+      "anchor": "table.12_2_independent_flags.489.40",
       "line": 489,
-      "fingerprint": "9956ea37cb586c88836824b6ddba7397b994b8fecf14f8c28bb934999d51f939",
+      "fingerprint": "5b7c6facad2e46e1d875ac935be4bc0af88351da8575bdfbab2fee3cd33a03af",
       "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
-      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.12_2_independent_flags.489.34",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.12_2_independent_flags.489.40",
       "completion_claim": "not_claimed",
       "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
     },
     {
-      "id": "table.12_2_independent_flags.490.35",
+      "id": "table.12_2_independent_flags.490.41",
       "kind": "evidence_requirement",
       "label": "Brain | coordination writes | Block Brain coordination mutations only",
-      "anchor": "table.12_2_independent_flags.490.35",
+      "anchor": "table.12_2_independent_flags.490.41",
       "line": 490,
-      "fingerprint": "53f68991651a24e998484eb52032aae26d274099aac986ac6f488b7f4e093da1",
+      "fingerprint": "08397e8382875fb6b389e2b726be4659943864a0b13ce44ea15e5b32e1ab528f",
       "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
-      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.12_2_independent_flags.490.35",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.12_2_independent_flags.490.41",
       "completion_claim": "not_claimed",
       "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
     },
     {
-      "id": "table.12_2_independent_flags.491.36",
+      "id": "table.12_2_independent_flags.491.42",
       "kind": "evidence_requirement",
       "label": "Skills | MCP discovery/read | No Skills discovery/retrieval; native skills continue",
-      "anchor": "table.12_2_independent_flags.491.36",
+      "anchor": "table.12_2_independent_flags.491.42",
       "line": 491,
-      "fingerprint": "23ffd39d4d54936d1965a0a1a98714e371e4ffae06aac9fcbc8830e58521e682",
+      "fingerprint": "9108c67a3771c68e74299a514b1a7cb8778a2947448143f904f671c6ec324765",
       "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
-      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.12_2_independent_flags.491.36",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.12_2_independent_flags.491.42",
       "completion_claim": "not_claimed",
       "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
     },
     {
-      "id": "table.12_2_independent_flags.492.37",
+      "id": "table.12_2_independent_flags.492.43",
       "kind": "evidence_requirement",
       "label": "Skills | governed execution | Block LiNKskills execution only",
-      "anchor": "table.12_2_independent_flags.492.37",
+      "anchor": "table.12_2_independent_flags.492.43",
       "line": 492,
-      "fingerprint": "e2ec9c92865330e310ecc38bd3b5e6a1cada31a594928840e4ad9cc51913e625",
+      "fingerprint": "e98ae6913287982064611435ff7c16b95a0813c7c22a73567ff11f96fbb4fe7a",
       "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
-      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.12_2_independent_flags.492.37",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.12_2_independent_flags.492.43",
       "completion_claim": "not_claimed",
       "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
     },
     {
-      "id": "table.12_2_independent_flags.493.38",
+      "id": "table.12_2_independent_flags.493.44",
       "kind": "evidence_requirement",
       "label": "Skills | telemetry enqueue | No new Skills telemetry; execution policy follows approved degraded mode",
-      "anchor": "table.12_2_independent_flags.493.38",
+      "anchor": "table.12_2_independent_flags.493.44",
       "line": 493,
-      "fingerprint": "63e1fdc80b0ab669e74b731628dc06e036c6241122913fcc109e97608b6eb13e",
+      "fingerprint": "31d977b41f9b372e58d31c0a8499bb6328b314ea50d7aed378a302ab5ee7146b",
       "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
-      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.12_2_independent_flags.493.38",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.12_2_independent_flags.493.44",
       "completion_claim": "not_claimed",
       "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
     },
     {
-      "id": "table.12_2_independent_flags.494.39",
+      "id": "table.12_2_independent_flags.494.45",
       "kind": "evidence_requirement",
       "label": "Skills | telemetry drain | Stop Skills delivery; local durable queue retained",
-      "anchor": "table.12_2_independent_flags.494.39",
+      "anchor": "table.12_2_independent_flags.494.45",
       "line": 494,
-      "fingerprint": "544d18901f42d67c2202f77300fb31a55aca84acf1d6112a600b778dbc2e625b",
+      "fingerprint": "49c4747fb37857dd56fa06a6a73b45e6266e270f72c0e1234e56337a617c4ae2",
       "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
-      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.12_2_independent_flags.494.39",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#table.12_2_independent_flags.494.45",
       "completion_claim": "not_claimed",
       "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
     },
@@ -3760,90 +3778,6 @@
       "note": "Outside Grok execution ownership; Codex assigns Phase-14 classifications"
     },
     {
-      "id": "list.13_3_plan_conformance_classifications.568.1",
-      "kind": "task",
-      "label": "`implemented and proven`",
-      "anchor": "list.13_3_plan_conformance_classifications.568.1",
-      "line": 568,
-      "fingerprint": "d280590a249278ca592ebc697404d082d73d5d388393f1fc49b1454d0fd97e2b",
-      "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
-      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#list.13_3_plan_conformance_classifications.568.1",
-      "completion_claim": "not_claimed",
-      "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
-    },
-    {
-      "id": "list.13_3_plan_conformance_classifications.569.2",
-      "kind": "task",
-      "label": "`implemented but not proven live`",
-      "anchor": "list.13_3_plan_conformance_classifications.569.2",
-      "line": 569,
-      "fingerprint": "8bab20e50749d8060c21563ef2a84b01def6d4e0701862bdad006b94acbd53a3",
-      "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
-      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#list.13_3_plan_conformance_classifications.569.2",
-      "completion_claim": "not_claimed",
-      "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
-    },
-    {
-      "id": "list.13_3_plan_conformance_classifications.570.3",
-      "kind": "task",
-      "label": "`partially implemented`",
-      "anchor": "list.13_3_plan_conformance_classifications.570.3",
-      "line": 570,
-      "fingerprint": "d9c45d0a1b37c58484ea05d7c7b9f76d10cfc38693ee742ba5037734b0a49465",
-      "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
-      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#list.13_3_plan_conformance_classifications.570.3",
-      "completion_claim": "not_claimed",
-      "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
-    },
-    {
-      "id": "list.13_3_plan_conformance_classifications.571.4",
-      "kind": "task",
-      "label": "`omitted`",
-      "anchor": "list.13_3_plan_conformance_classifications.571.4",
-      "line": 571,
-      "fingerprint": "a1f229e2e6e2f4d5199ef719eaf271163297e2348acd2f1f00c3df7099d72b48",
-      "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
-      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#list.13_3_plan_conformance_classifications.571.4",
-      "completion_claim": "not_claimed",
-      "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
-    },
-    {
-      "id": "list.13_3_plan_conformance_classifications.572.5",
-      "kind": "task",
-      "label": "`implemented differently from plan`",
-      "anchor": "list.13_3_plan_conformance_classifications.572.5",
-      "line": 572,
-      "fingerprint": "5b7d9758dbe0e821c86b1b5fc757a9b0c6f4ea18f15c4259d6fd3dd3e79fed1f",
-      "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
-      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#list.13_3_plan_conformance_classifications.572.5",
-      "completion_claim": "not_claimed",
-      "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
-    },
-    {
-      "id": "list.13_3_plan_conformance_classifications.573.6",
-      "kind": "task",
-      "label": "`blocked by another repository or interface`",
-      "anchor": "list.13_3_plan_conformance_classifications.573.6",
-      "line": 573,
-      "fingerprint": "c405661dbe17247c01c38bcd203fa2b60e7c813e69fd9e629ea6b9d266094551",
-      "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
-      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#list.13_3_plan_conformance_classifications.573.6",
-      "completion_claim": "not_claimed",
-      "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
-    },
-    {
-      "id": "list.13_3_plan_conformance_classifications.574.7",
-      "kind": "task",
-      "label": "`outside the execution agent's ownership`",
-      "anchor": "list.13_3_plan_conformance_classifications.574.7",
-      "line": 574,
-      "fingerprint": "5e2521bc7fa357aae2fd307a80e5aa966437d101072cce026d272fccb25a95c0",
-      "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
-      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#list.13_3_plan_conformance_classifications.574.7",
-      "completion_claim": "not_claimed",
-      "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
-    },
-    {
       "id": "prose.13_3_plan_conformance_classifications.576.1",
       "kind": "evidence_requirement",
       "label": "No planned item may be left unclassified, grouped under an ambiguous status, or inferred complete from an execution summary. For each item, the verifier records the classification, evidence location, implementation owner, verifier conclusion, deficiency if any, and next action. Only `implemented and proven` satisfies a proof-bearing item. `Outside the execution agent's ownership` still requires the owning repository and its independent verification report before a cross-plan gate can pass",
@@ -4222,10 +4156,10 @@
       "anchor": "phase.0.title",
       "line": 626,
       "fingerprint": "9b653ca91529775502b9d4e0ce6e9257fcff4422f0df8461e3566dea6c3ec9c1",
-      "owner": "OpenClaw Grok (Phase-13 tooling)",
-      "evidence_location": "scripts/check-openclawdevelopmentplan01-section-13.3-ledger.mjs#phase.0.title; scripts/lib/openclawdevelopmentplan01-section-13.3-plan-extract.mjs [plan-item:phase.0.title]",
+      "owner": "OpenClaw Grok (Phase 0 freeze packet)",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-0-FREEZE-PACKET.md [plan-item:phase.0.title]",
       "completion_claim": "implemented",
-      "note": "Phase 0 planning/freeze tooling recorded on branch"
+      "note": "Phase 0 freeze/approval evidence on branch (not extractor/validator tooling)"
     },
     {
       "id": "phase.0.objective",
@@ -4234,10 +4168,10 @@
       "anchor": "phase.0.objective",
       "line": 628,
       "fingerprint": "0f817982502f3a20f6add3e594a3c2979c8a8198aac1531dc786234763cb00ed",
-      "owner": "OpenClaw Grok (Phase-13 tooling)",
-      "evidence_location": "scripts/check-openclawdevelopmentplan01-section-13.3-ledger.mjs#phase.0.objective; scripts/lib/openclawdevelopmentplan01-section-13.3-plan-extract.mjs [plan-item:phase.0.objective]",
+      "owner": "OpenClaw Grok (Phase 0 freeze packet)",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-0-FREEZE-PACKET.md [plan-item:phase.0.objective]",
       "completion_claim": "implemented",
-      "note": "Phase 0 planning/freeze tooling recorded on branch"
+      "note": "Phase 0 freeze/approval evidence on branch (not extractor/validator tooling)"
     },
     {
       "id": "phase.0.work.1",
@@ -4246,10 +4180,10 @@
       "anchor": "phase.0.work.1",
       "line": 636,
       "fingerprint": "b864fdbd852fd609dfaa677a0cdef5871e7dea56229c004bd5f003aecb1c04f9",
-      "owner": "OpenClaw Grok (Phase-13 tooling)",
-      "evidence_location": "scripts/check-openclawdevelopmentplan01-section-13.3-ledger.mjs#phase.0.work.1; scripts/lib/openclawdevelopmentplan01-section-13.3-plan-extract.mjs [plan-item:phase.0.work.1]",
+      "owner": "OpenClaw Grok (Phase 0 freeze packet)",
+      "evidence_location": "docs/CURSOR-GROK-EXECUTION-PROMPT.md; docs/execution/openclawdevelopmentplan01/PHASE-0-FREEZE-PACKET.md §1 approved plan reference [plan-item:phase.0.work.1]",
       "completion_claim": "implemented",
-      "note": "Phase 0 planning/freeze tooling recorded on branch"
+      "note": "Phase 0 freeze/approval evidence on branch (not extractor/validator tooling)"
     },
     {
       "id": "phase.0.work.2",
@@ -4258,10 +4192,10 @@
       "anchor": "phase.0.work.2",
       "line": 637,
       "fingerprint": "fe1fb6d122389c3b3554ab448333db5abee6e4f1c0ebd78d39fddaa3244670a7",
-      "owner": "OpenClaw Grok (Phase-13 tooling)",
-      "evidence_location": "scripts/check-openclawdevelopmentplan01-section-13.3-ledger.mjs#phase.0.work.2; scripts/lib/openclawdevelopmentplan01-section-13.3-plan-extract.mjs [plan-item:phase.0.work.2]",
+      "owner": "OpenClaw Grok (Phase 0 freeze packet)",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-0-FREEZE-PACKET.md §2 frozen hashes (OpenClaw + Platform/Brain/Skills plan SHA-256) [plan-item:phase.0.work.2]",
       "completion_claim": "implemented",
-      "note": "Phase 0 planning/freeze tooling recorded on branch"
+      "note": "Phase 0 freeze/approval evidence on branch (not extractor/validator tooling)"
     },
     {
       "id": "phase.0.work.3",
@@ -4270,10 +4204,10 @@
       "anchor": "phase.0.work.3",
       "line": 638,
       "fingerprint": "465100252ef3dcd5f1d1cb937ec43b3ef66c6cfc4a03321b3a102c42efade5df",
-      "owner": "OpenClaw Grok (Phase-13 tooling)",
-      "evidence_location": "scripts/check-openclawdevelopmentplan01-section-13.3-ledger.mjs#phase.0.work.3; scripts/lib/openclawdevelopmentplan01-section-13.3-plan-extract.mjs [plan-item:phase.0.work.3]",
+      "owner": "OpenClaw Grok (Phase 0 freeze packet)",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/contracts/brain/PIN.json; docs/execution/openclawdevelopmentplan01/contracts/skills/PIN.json; docs/execution/openclawdevelopmentplan01/contracts/platform/PIN.json; docs/execution/openclawdevelopmentplan01/PHASE-0-FREEZE-PACKET.md §3 [plan-item:phase.0.work.3]",
       "completion_claim": "implemented",
-      "note": "Phase 0 planning/freeze tooling recorded on branch"
+      "note": "Phase 0 freeze/approval evidence on branch (not extractor/validator tooling)"
     },
     {
       "id": "phase.0.work.4",
@@ -4282,10 +4216,10 @@
       "anchor": "phase.0.work.4",
       "line": 639,
       "fingerprint": "edd39fab1abc40a3f0192a2d288c34970db7c10016a07b3eec7064bed2c767c1",
-      "owner": "OpenClaw Grok (Phase-13 tooling)",
-      "evidence_location": "scripts/check-openclawdevelopmentplan01-section-13.3-ledger.mjs#phase.0.work.4; scripts/lib/openclawdevelopmentplan01-section-13.3-plan-extract.mjs [plan-item:phase.0.work.4]",
+      "owner": "OpenClaw Grok (Phase 0 freeze packet)",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-0-FREEZE-PACKET.md §5 boundary freeze [plan-item:phase.0.work.4]",
       "completion_claim": "implemented",
-      "note": "Phase 0 planning/freeze tooling recorded on branch"
+      "note": "Phase 0 freeze/approval evidence on branch (not extractor/validator tooling)"
     },
     {
       "id": "phase.0.work.5",
@@ -4294,10 +4228,10 @@
       "anchor": "phase.0.work.5",
       "line": 640,
       "fingerprint": "a234ba425a89879f340546a1269cde5f84b3176ec0019db35601bb6a3052a740",
-      "owner": "OpenClaw Grok (Phase-13 tooling)",
-      "evidence_location": "scripts/check-openclawdevelopmentplan01-section-13.3-ledger.mjs#phase.0.work.5; scripts/lib/openclawdevelopmentplan01-section-13.3-plan-extract.mjs [plan-item:phase.0.work.5]",
+      "owner": "OpenClaw Grok (Phase 0 freeze packet)",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-0-FREEZE-PACKET.md; docs/agent-sessions/completed/cursor-local-mac-mini-lisa-openclawdevelopmentplan01-20260727-1648.md [plan-item:phase.0.work.5]",
       "completion_claim": "implemented",
-      "note": "Phase 0 planning/freeze tooling recorded on branch"
+      "note": "Phase 0 freeze/approval evidence on branch (not extractor/validator tooling)"
     },
     {
       "id": "phase.0.work.6",
@@ -4306,10 +4240,10 @@
       "anchor": "phase.0.work.6",
       "line": 641,
       "fingerprint": "272575a29aad6828d0ea385ad411c0557c1392c9e0984ea8362cf91197ab222e",
-      "owner": "OpenClaw Grok (Phase-13 tooling)",
-      "evidence_location": "scripts/check-openclawdevelopmentplan01-section-13.3-ledger.mjs#phase.0.work.6; scripts/lib/openclawdevelopmentplan01-section-13.3-plan-extract.mjs [plan-item:phase.0.work.6]",
+      "owner": "OpenClaw Grok (Phase 0 freeze packet)",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-0-FREEZE-PACKET.md §6 active work / overlap inventory [plan-item:phase.0.work.6]",
       "completion_claim": "implemented",
-      "note": "Phase 0 planning/freeze tooling recorded on branch"
+      "note": "Phase 0 freeze/approval evidence on branch (not extractor/validator tooling)"
     },
     {
       "id": "phase.0.work.7",
@@ -4318,10 +4252,10 @@
       "anchor": "phase.0.work.7",
       "line": 642,
       "fingerprint": "28c7062f26f3c0c9a7432af867ad15a08dce2bf29ac52797e7f10cc52e8b5466",
-      "owner": "OpenClaw Grok (Phase-13 tooling)",
-      "evidence_location": "scripts/check-openclawdevelopmentplan01-section-13.3-ledger.mjs#phase.0.work.7; scripts/lib/openclawdevelopmentplan01-section-13.3-plan-extract.mjs [plan-item:phase.0.work.7]",
+      "owner": "OpenClaw Grok (Phase 0 freeze packet)",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-0-FREEZE-PACKET.md §4 ownership matrix / CODEOWNERS surfaces [plan-item:phase.0.work.7]",
       "completion_claim": "implemented",
-      "note": "Phase 0 planning/freeze tooling recorded on branch"
+      "note": "Phase 0 freeze/approval evidence on branch (not extractor/validator tooling)"
     },
     {
       "id": "phase.0.work.8",
@@ -4330,10 +4264,10 @@
       "anchor": "phase.0.work.8",
       "line": 643,
       "fingerprint": "9a4de1e18261538b4858623c588daee2c340ddbf77d66cafe4d03a85363ecb65",
-      "owner": "OpenClaw Grok (Phase-13 tooling)",
-      "evidence_location": "scripts/check-openclawdevelopmentplan01-section-13.3-ledger.mjs#phase.0.work.8; scripts/lib/openclawdevelopmentplan01-section-13.3-plan-extract.mjs [plan-item:phase.0.work.8]",
+      "owner": "OpenClaw Grok (Phase 0 freeze packet)",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-0-FREEZE-PACKET.md §5–§6 environment, credential, migration, retention, and external Cursor gates [plan-item:phase.0.work.8]",
       "completion_claim": "implemented",
-      "note": "Phase 0 planning/freeze tooling recorded on branch"
+      "note": "Phase 0 freeze/approval evidence on branch (not extractor/validator tooling)"
     },
     {
       "id": "phase.0.deliverable.1",
@@ -4342,10 +4276,10 @@
       "anchor": "phase.0.deliverable.1",
       "line": 645,
       "fingerprint": "79f18fbdec751c2f1cb8a93640515a34788d3817bd523e7d89f15b3ca77ec733",
-      "owner": "OpenClaw Grok (Phase-13 tooling)",
-      "evidence_location": "scripts/check-openclawdevelopmentplan01-section-13.3-ledger.mjs#phase.0.deliverable.1; scripts/lib/openclawdevelopmentplan01-section-13.3-plan-extract.mjs [plan-item:phase.0.deliverable.1]",
+      "owner": "OpenClaw Grok (Phase 0 freeze packet)",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-0-FREEZE-PACKET.md; docs/CURSOR-GROK-EXECUTION-PROMPT.md; docs/execution/openclawdevelopmentplan01/contracts/ [plan-item:phase.0.deliverable.1]",
       "completion_claim": "implemented",
-      "note": "Phase 0 planning/freeze tooling recorded on branch"
+      "note": "Phase 0 freeze/approval evidence on branch (not extractor/validator tooling)"
     },
     {
       "id": "phase.0.exit_gate",
@@ -4354,10 +4288,10 @@
       "anchor": "phase.0.exit_gate",
       "line": 647,
       "fingerprint": "2f911266fdb6c3d3ea7ba4fb7f1b6af1e3f763cd8bc5cb09389e160c65a4d147",
-      "owner": "OpenClaw Grok (Phase-13 tooling)",
-      "evidence_location": "scripts/check-openclawdevelopmentplan01-section-13.3-ledger.mjs#phase.0.exit_gate; scripts/lib/openclawdevelopmentplan01-section-13.3-plan-extract.mjs [plan-item:phase.0.exit_gate]",
+      "owner": "OpenClaw Grok (Phase 0 freeze packet)",
+      "evidence_location": "docs/CURSOR-GROK-EXECUTION-PROMPT.md (Principal authorization); docs/execution/openclawdevelopmentplan01/PHASE-0-FREEZE-PACKET.md §1–§3 [plan-item:phase.0.exit_gate]",
       "completion_claim": "implemented",
-      "note": "Phase 0 planning/freeze tooling recorded on branch"
+      "note": "Phase 0 freeze/approval evidence on branch (not extractor/validator tooling)"
     },
     {
       "id": "phase.0.rollback",
@@ -4366,10 +4300,10 @@
       "anchor": "phase.0.rollback",
       "line": 649,
       "fingerprint": "5526a36ab34a7d5e79a6a09a38f53ffbdeb36bebf512a191b35cb0d2d590f346",
-      "owner": "OpenClaw Grok (Phase-13 tooling)",
-      "evidence_location": "scripts/check-openclawdevelopmentplan01-section-13.3-ledger.mjs#phase.0.rollback; scripts/lib/openclawdevelopmentplan01-section-13.3-plan-extract.mjs [plan-item:phase.0.rollback]",
-      "completion_claim": "implemented",
-      "note": "Phase 0 planning/freeze tooling recorded on branch"
+      "owner": "OpenClaw (rollback path recorded, not executed)",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#phase.0.rollback",
+      "completion_claim": "not_claimed",
+      "note": "Unexecuted rollback/recovery action; not claimed implemented"
     },
     {
       "id": "phase.1.title",
@@ -4558,10 +4492,10 @@
       "anchor": "phase.1.rollback",
       "line": 678,
       "fingerprint": "cbac20e30d4878712252d67df7e8c2f0864d441dab5ca4c30665007c0630c380",
-      "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
+      "owner": "OpenClaw (rollback path recorded, not executed)",
       "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#phase.1.rollback",
       "completion_claim": "not_claimed",
-      "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
+      "note": "Unexecuted rollback/recovery action; not claimed implemented"
     },
     {
       "id": "phase.2.title",
@@ -4738,10 +4672,10 @@
       "anchor": "phase.2.rollback",
       "line": 703,
       "fingerprint": "1e2ae5cb44dd847aebec4f2e81bc7824fb5094efb5c033898f3f31374595d759",
-      "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
+      "owner": "OpenClaw (rollback path recorded, not executed)",
       "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#phase.2.rollback",
       "completion_claim": "not_claimed",
-      "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
+      "note": "Unexecuted rollback/recovery action; not claimed implemented"
     },
     {
       "id": "phase.3.title",
@@ -4906,10 +4840,10 @@
       "anchor": "phase.3.rollback",
       "line": 725,
       "fingerprint": "7a5357056bdb67d4c8189b5a9e9fae32c3e7c488c41c1dbbaf27af38a5c56b1d",
-      "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
+      "owner": "OpenClaw (rollback path recorded, not executed)",
       "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#phase.3.rollback",
       "completion_claim": "not_claimed",
-      "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
+      "note": "Unexecuted rollback/recovery action; not claimed implemented"
     },
     {
       "id": "phase.4.title",
@@ -5086,10 +5020,10 @@
       "anchor": "phase.4.rollback",
       "line": 750,
       "fingerprint": "4c2c6f3250e63f4e69df175af1e952ea65e06ac744938155fbe20811bb6c6d98",
-      "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
+      "owner": "OpenClaw (rollback path recorded, not executed)",
       "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#phase.4.rollback",
       "completion_claim": "not_claimed",
-      "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
+      "note": "Unexecuted rollback/recovery action; not claimed implemented"
     },
     {
       "id": "phase.5.title",
@@ -5254,10 +5188,10 @@
       "anchor": "phase.5.rollback",
       "line": 772,
       "fingerprint": "e24f77bee9eb6ca42dd8eb604020511ffab2cc1bca5af206b4934a79c22a7ad6",
-      "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
+      "owner": "OpenClaw (rollback path recorded, not executed)",
       "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#phase.5.rollback",
       "completion_claim": "not_claimed",
-      "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
+      "note": "Unexecuted rollback/recovery action; not claimed implemented"
     },
     {
       "id": "phase.6.title",
@@ -5530,10 +5464,10 @@
       "anchor": "phase.6.rollback",
       "line": 805,
       "fingerprint": "fee7c37ec649e436b810a7bd2f4a1122e2a95a8b1b7ac49595c453b5f33c58a3",
-      "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
+      "owner": "OpenClaw (rollback path recorded, not executed)",
       "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#phase.6.rollback",
       "completion_claim": "not_claimed",
-      "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
+      "note": "Unexecuted rollback/recovery action; not claimed implemented"
     },
     {
       "id": "phase.7.title",
@@ -5710,10 +5644,10 @@
       "anchor": "phase.7.rollback",
       "line": 828,
       "fingerprint": "fc235fe0accaa388ebcc7538cf158d69928ded5ecedfbac9b74a3ab004b977d0",
-      "owner": "Platform / LiNKbrain / LiNKskills / Principal (named live gate)",
-      "evidence_location": "BLOCK: docs/execution/openclawdevelopmentplan01/PHASE-13-PROVISIONAL-GROK-HANDOFF.md (live/stage/production uncleared; Phases 7–12 not started)",
-      "completion_claim": "blocked",
-      "note": "Live/stage/production or external-owner gate uncleared"
+      "owner": "OpenClaw (rollback path recorded, not executed)",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#phase.7.rollback",
+      "completion_claim": "not_claimed",
+      "note": "Unexecuted rollback/recovery action; not claimed implemented"
     },
     {
       "id": "phase.8.title",
@@ -5878,10 +5812,10 @@
       "anchor": "phase.8.rollback",
       "line": 851,
       "fingerprint": "31b1ea95e0c1c1a06bcbb0689cec7db06ddb8c743fd94b47fb1e5c99dbc7f8fa",
-      "owner": "Platform / LiNKbrain / LiNKskills / Principal (named live gate)",
-      "evidence_location": "BLOCK: docs/execution/openclawdevelopmentplan01/PHASE-8-STATUS-BLOCKED.md (live/stage/production uncleared; Phases 7–12 not started)",
-      "completion_claim": "blocked",
-      "note": "Live/stage/production or external-owner gate uncleared"
+      "owner": "OpenClaw (rollback path recorded, not executed)",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#phase.8.rollback",
+      "completion_claim": "not_claimed",
+      "note": "Unexecuted rollback/recovery action; not claimed implemented"
     },
     {
       "id": "phase.9.title",
@@ -6046,10 +5980,10 @@
       "anchor": "phase.9.rollback",
       "line": 875,
       "fingerprint": "efeb11353836db66f4b4fe4c3db4332e2f67ebac87893e4237b41164b2d61b94",
-      "owner": "Platform / LiNKbrain / LiNKskills / Principal (named live gate)",
-      "evidence_location": "BLOCK: docs/execution/openclawdevelopmentplan01/PHASE-9-STATUS-BLOCKED.md (live/stage/production uncleared; Phases 7–12 not started)",
-      "completion_claim": "blocked",
-      "note": "Live/stage/production or external-owner gate uncleared"
+      "owner": "OpenClaw (rollback path recorded, not executed)",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#phase.9.rollback",
+      "completion_claim": "not_claimed",
+      "note": "Unexecuted rollback/recovery action; not claimed implemented"
     },
     {
       "id": "phase.10.title",
@@ -6190,10 +6124,10 @@
       "anchor": "phase.10.rollback",
       "line": 894,
       "fingerprint": "0574977e825b5fd7a8e5cac2cccc7b24a4c4b6dc7c358881fc40b37c1f304f36",
-      "owner": "Platform / LiNKbrain / LiNKskills / Principal (named live gate)",
-      "evidence_location": "BLOCK: docs/execution/openclawdevelopmentplan01/PHASE-10-STATUS-BLOCKED.md (live/stage/production uncleared; Phases 7–12 not started)",
-      "completion_claim": "blocked",
-      "note": "Live/stage/production or external-owner gate uncleared"
+      "owner": "OpenClaw (rollback path recorded, not executed)",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#phase.10.rollback",
+      "completion_claim": "not_claimed",
+      "note": "Unexecuted rollback/recovery action; not claimed implemented"
     },
     {
       "id": "phase.11.title",
@@ -6310,10 +6244,10 @@
       "anchor": "phase.11.rollback",
       "line": 912,
       "fingerprint": "f5d3d4414507c2b97f9685f1a3b9972ea97479e18453e4148b70a1dd0fdc0e00",
-      "owner": "Platform / LiNKbrain / LiNKskills / Principal (named live gate)",
-      "evidence_location": "BLOCK: docs/execution/openclawdevelopmentplan01/PHASE-11-STATUS-BLOCKED.md (live/stage/production uncleared; Phases 7–12 not started)",
-      "completion_claim": "blocked",
-      "note": "Live/stage/production or external-owner gate uncleared"
+      "owner": "OpenClaw (rollback path recorded, not executed)",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#phase.11.rollback",
+      "completion_claim": "not_claimed",
+      "note": "Unexecuted rollback/recovery action; not claimed implemented"
     },
     {
       "id": "phase.12.title",
@@ -6370,10 +6304,10 @@
       "anchor": "phase.12.rollback",
       "line": 922,
       "fingerprint": "bd7545c993a2aecf7f541c34ac154ba64ba9631aa1bf90da9595f1cff2ace80d",
-      "owner": "Platform / LiNKbrain / LiNKskills / Principal (named live gate)",
-      "evidence_location": "BLOCK: docs/execution/openclawdevelopmentplan01/PHASE-12-STATUS-BLOCKED.md (live/stage/production uncleared; Phases 7–12 not started)",
-      "completion_claim": "blocked",
-      "note": "Live/stage/production or external-owner gate uncleared"
+      "owner": "OpenClaw (rollback path recorded, not executed)",
+      "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#phase.12.rollback",
+      "completion_claim": "not_claimed",
+      "note": "Unexecuted rollback/recovery action; not claimed implemented"
     },
     {
       "id": "phase.13.title",
@@ -7690,10 +7624,10 @@
       "anchor": "rollback.matrix.1",
       "line": 1122,
       "fingerprint": "e13b5be2fd996b9d0127d4145d0be06d95bd88d584618483d6d9f75da1c01702",
-      "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
+      "owner": "OpenClaw (rollback path recorded, not executed)",
       "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#rollback.matrix.1",
       "completion_claim": "not_claimed",
-      "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
+      "note": "Unexecuted rollback/recovery action; not claimed implemented"
     },
     {
       "id": "rollback.matrix.2",
@@ -7702,10 +7636,10 @@
       "anchor": "rollback.matrix.2",
       "line": 1123,
       "fingerprint": "8bf8cecd5edef27b7e1896b03b22a085437c600be40ac2436b5b8536c1f8a07f",
-      "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
+      "owner": "OpenClaw (rollback path recorded, not executed)",
       "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#rollback.matrix.2",
       "completion_claim": "not_claimed",
-      "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
+      "note": "Unexecuted rollback/recovery action; not claimed implemented"
     },
     {
       "id": "rollback.matrix.3",
@@ -7714,10 +7648,10 @@
       "anchor": "rollback.matrix.3",
       "line": 1124,
       "fingerprint": "11ea49542b06d91948acd9e4d317f721aaec134015d27853b81b1cf1b7b8ac81",
-      "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
+      "owner": "OpenClaw (rollback path recorded, not executed)",
       "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#rollback.matrix.3",
       "completion_claim": "not_claimed",
-      "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
+      "note": "Unexecuted rollback/recovery action; not claimed implemented"
     },
     {
       "id": "rollback.matrix.4",
@@ -7726,10 +7660,10 @@
       "anchor": "rollback.matrix.4",
       "line": 1125,
       "fingerprint": "dc1157b28d85ed0c017e63e7b30b80c5533c4360c4d22d5d98fa850129601ad0",
-      "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
+      "owner": "OpenClaw (rollback path recorded, not executed)",
       "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#rollback.matrix.4",
       "completion_claim": "not_claimed",
-      "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
+      "note": "Unexecuted rollback/recovery action; not claimed implemented"
     },
     {
       "id": "rollback.matrix.5",
@@ -7738,10 +7672,10 @@
       "anchor": "rollback.matrix.5",
       "line": 1126,
       "fingerprint": "64b378fea8fa274b6bfb5f453f5a27db75224cb10d859d185d1b5c7c02293e26",
-      "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
+      "owner": "OpenClaw (rollback path recorded, not executed)",
       "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#rollback.matrix.5",
       "completion_claim": "not_claimed",
-      "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
+      "note": "Unexecuted rollback/recovery action; not claimed implemented"
     },
     {
       "id": "rollback.matrix.6",
@@ -7750,10 +7684,10 @@
       "anchor": "rollback.matrix.6",
       "line": 1127,
       "fingerprint": "a96c229ccd5319346cbf89c550189ced0668fd6e4f0cabed453227c8899d223d",
-      "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
+      "owner": "OpenClaw (rollback path recorded, not executed)",
       "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#rollback.matrix.6",
       "completion_claim": "not_claimed",
-      "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
+      "note": "Unexecuted rollback/recovery action; not claimed implemented"
     },
     {
       "id": "rollback.matrix.7",
@@ -7762,10 +7696,10 @@
       "anchor": "rollback.matrix.7",
       "line": 1128,
       "fingerprint": "37a8fb9b29d077bda78e4190b306bea23127835b41690d614ef1922666cb0d70",
-      "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
+      "owner": "OpenClaw (rollback path recorded, not executed)",
       "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#rollback.matrix.7",
       "completion_claim": "not_claimed",
-      "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
+      "note": "Unexecuted rollback/recovery action; not claimed implemented"
     },
     {
       "id": "rollback.matrix.8",
@@ -7774,10 +7708,10 @@
       "anchor": "rollback.matrix.8",
       "line": 1129,
       "fingerprint": "8f0b0294c25fcb39542e4b25f207525d3f06a6218cf6058dd4e394ca70d5e493",
-      "owner": "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
+      "owner": "OpenClaw (rollback path recorded, not executed)",
       "evidence_location": "docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#rollback.matrix.8",
       "completion_claim": "not_claimed",
-      "note": "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review"
+      "note": "Unexecuted rollback/recovery action; not claimed implemented"
     },
     {
       "id": "prose.20_rollback_matrix.1131.1",
@@ -10215,7 +10149,7 @@
       "reasonCode": "STRUCTURAL_HEADING",
       "sourceContext": "2_frozen_inputs_and_source_hierarchy",
       "inheritedContext": null,
-      "structuralContext": null,
+      "structuralContext": "SOURCE_HIERARCHY",
       "sectionPolicy": "implementation",
       "exclusionId": null,
       "exclusionReason": null,
@@ -10234,7 +10168,7 @@
       "reasonCode": "STRUCTURAL_BLANK",
       "sourceContext": "2_frozen_inputs_and_source_hierarchy",
       "inheritedContext": null,
-      "structuralContext": null,
+      "structuralContext": "SOURCE_HIERARCHY",
       "sectionPolicy": "implementation",
       "exclusionId": null,
       "exclusionReason": null,
@@ -10253,7 +10187,7 @@
       "reasonCode": "REQUIREMENT",
       "sourceContext": "2_frozen_inputs_and_source_hierarchy",
       "inheritedContext": "MUST",
-      "structuralContext": null,
+      "structuralContext": "SOURCE_HIERARCHY",
       "sectionPolicy": "implementation",
       "exclusionId": null,
       "exclusionReason": null,
@@ -10274,7 +10208,7 @@
       "reasonCode": "STRUCTURAL_BLANK",
       "sourceContext": "2_frozen_inputs_and_source_hierarchy",
       "inheritedContext": "MUST",
-      "structuralContext": null,
+      "structuralContext": "SOURCE_HIERARCHY",
       "sectionPolicy": "implementation",
       "exclusionId": null,
       "exclusionReason": null,
@@ -10293,7 +10227,7 @@
       "reasonCode": "STRUCTURAL_TABLE_HEADER",
       "sourceContext": "2_frozen_inputs_and_source_hierarchy",
       "inheritedContext": "MUST",
-      "structuralContext": null,
+      "structuralContext": "SOURCE_HIERARCHY",
       "sectionPolicy": "implementation",
       "exclusionId": null,
       "exclusionReason": null,
@@ -10312,7 +10246,7 @@
       "reasonCode": "STRUCTURAL_TABLE_SEPARATOR",
       "sourceContext": "2_frozen_inputs_and_source_hierarchy",
       "inheritedContext": "MUST",
-      "structuralContext": null,
+      "structuralContext": "SOURCE_HIERARCHY",
       "sectionPolicy": "implementation",
       "exclusionId": null,
       "exclusionReason": null,
@@ -10326,115 +10260,127 @@
       "line": 48,
       "type": "table_row",
       "text": "| 1        | Principal decisions recorded in the OpenClaw planning session and handoffs                 | 2026-07-27                                                                 | Intent, privacy, ownership, rollout, and approval authority                                                  |",
-      "disposition": "non_requirement",
-      "reason": "Section 2 frozen-input source hierarchy metadata row",
-      "reasonCode": "DESCRIPTIVE_EXCLUSION",
+      "disposition": "requirement",
+      "reason": "Section 2 frozen source-hierarchy authority row",
+      "reasonCode": "REQUIREMENT",
       "sourceContext": "2_frozen_inputs_and_source_hierarchy",
       "inheritedContext": "MUST",
-      "structuralContext": null,
+      "structuralContext": "SOURCE_HIERARCHY",
       "sectionPolicy": "implementation",
-      "exclusionId": "source-hierarchy-L48",
-      "exclusionReason": "Section 2 frozen-input source hierarchy metadata row",
+      "exclusionId": null,
+      "exclusionReason": null,
       "allowlistRule": null,
-      "sourceAnchor": "exclusion.source-hierarchy-L48.L48",
+      "sourceAnchor": "coverage.L48.table_row",
       "anchor": "coverage.L48.table_row",
       "fingerprint": "1096fab8174b0bf717c1bb2286a7cbc413fac15846f34348b005338174fb60c4",
-      "itemIds": []
+      "itemIds": [
+        "source_hierarchy.1"
+      ]
     },
     {
       "line": 49,
       "type": "table_row",
       "text": "| 2        | LiNKplatform shared-foundation detailed implementation plan                                | SHA-256 `fbcf36235c4caaa6abf7ee93afedeedf105a96f6614a3a3ff5ccb8d78e33c6b9` | Actor identity, claims, credentials, environments, infrastructure, migrations, audit, generic Librarian host |",
-      "disposition": "non_requirement",
-      "reason": "Section 2 frozen-input source hierarchy metadata row",
-      "reasonCode": "DESCRIPTIVE_EXCLUSION",
+      "disposition": "requirement",
+      "reason": "Section 2 frozen source-hierarchy authority row",
+      "reasonCode": "REQUIREMENT",
       "sourceContext": "2_frozen_inputs_and_source_hierarchy",
       "inheritedContext": "MUST",
-      "structuralContext": null,
+      "structuralContext": "SOURCE_HIERARCHY",
       "sectionPolicy": "implementation",
-      "exclusionId": "source-hierarchy-L49",
-      "exclusionReason": "Section 2 frozen-input source hierarchy metadata row",
+      "exclusionId": null,
+      "exclusionReason": null,
       "allowlistRule": null,
-      "sourceAnchor": "exclusion.source-hierarchy-L49.L49",
+      "sourceAnchor": "coverage.L49.table_row",
       "anchor": "coverage.L49.table_row",
       "fingerprint": "dcf86baa9e1113e2cf6d0c9bc809b86bae8684aaed296fe8beafe81ae9c3578a",
-      "itemIds": []
+      "itemIds": [
+        "source_hierarchy.2"
+      ]
     },
     {
       "line": 50,
       "type": "table_row",
       "text": "| 3        | LiNKbrain Phase 1 detailed implementation plan                                             | SHA-256 `051caa80191639c06b2dee6fa4800e736ada30772a55ad84e12e5fa6a4e63458` | Brain Gateway, tools, capture, coordination, curation, failure, retention, and rollout contracts             |",
-      "disposition": "non_requirement",
-      "reason": "Section 2 frozen-input source hierarchy metadata row",
-      "reasonCode": "DESCRIPTIVE_EXCLUSION",
+      "disposition": "requirement",
+      "reason": "Section 2 frozen source-hierarchy authority row",
+      "reasonCode": "REQUIREMENT",
       "sourceContext": "2_frozen_inputs_and_source_hierarchy",
       "inheritedContext": "MUST",
-      "structuralContext": null,
+      "structuralContext": "SOURCE_HIERARCHY",
       "sectionPolicy": "implementation",
-      "exclusionId": "source-hierarchy-L50",
-      "exclusionReason": "Section 2 frozen-input source hierarchy metadata row",
+      "exclusionId": null,
+      "exclusionReason": null,
       "allowlistRule": null,
-      "sourceAnchor": "exclusion.source-hierarchy-L50.L50",
+      "sourceAnchor": "coverage.L50.table_row",
       "anchor": "coverage.L50.table_row",
       "fingerprint": "441bbd9375f7f68c2c2ded2a8cb1cde7180f01ca886a18dde003f7270efbcfa8",
-      "itemIds": []
+      "itemIds": [
+        "source_hierarchy.3"
+      ]
     },
     {
       "line": 51,
       "type": "table_row",
       "text": "| 4        | LiNKskills internal-launch detailed development plan                                       | SHA-256 `31a6cc70bb778ce1dff236819e4bf600b0495dbb06c95bac55bcb2b0b2f5fe88` | Skills Gateway, immutable bundles, profiles, validation, telemetry, evidence, and rollout contracts          |",
-      "disposition": "non_requirement",
-      "reason": "Section 2 frozen-input source hierarchy metadata row",
-      "reasonCode": "DESCRIPTIVE_EXCLUSION",
+      "disposition": "requirement",
+      "reason": "Section 2 frozen source-hierarchy authority row",
+      "reasonCode": "REQUIREMENT",
       "sourceContext": "2_frozen_inputs_and_source_hierarchy",
       "inheritedContext": "MUST",
-      "structuralContext": null,
+      "structuralContext": "SOURCE_HIERARCHY",
       "sectionPolicy": "implementation",
-      "exclusionId": "source-hierarchy-L51",
-      "exclusionReason": "Section 2 frozen-input source hierarchy metadata row",
+      "exclusionId": null,
+      "exclusionReason": null,
       "allowlistRule": null,
-      "sourceAnchor": "exclusion.source-hierarchy-L51.L51",
+      "sourceAnchor": "coverage.L51.table_row",
       "anchor": "coverage.L51.table_row",
       "fingerprint": "b01ddd245042eb74a7fa43629640dbe979daaf49d1c2c9243a1aecd5a5cbf65f",
-      "itemIds": []
+      "itemIds": [
+        "source_hierarchy.4"
+      ]
     },
     {
       "line": 52,
       "type": "table_row",
       "text": "| 5        | Current OpenClaw source, tests, public plugin SDK, managed MCP, and operator documentation | OpenClaw `2026.7.2`, planning HEAD `ec90aa8cd119`                          | Available implementation seams and current Lisa integration behavior                                         |",
-      "disposition": "non_requirement",
-      "reason": "Section 2 frozen-input source hierarchy metadata row",
-      "reasonCode": "DESCRIPTIVE_EXCLUSION",
+      "disposition": "requirement",
+      "reason": "Section 2 frozen source-hierarchy authority row",
+      "reasonCode": "REQUIREMENT",
       "sourceContext": "2_frozen_inputs_and_source_hierarchy",
       "inheritedContext": "MUST",
-      "structuralContext": null,
+      "structuralContext": "SOURCE_HIERARCHY",
       "sectionPolicy": "implementation",
-      "exclusionId": "source-hierarchy-L52",
-      "exclusionReason": "Section 2 frozen-input source hierarchy metadata row",
+      "exclusionId": null,
+      "exclusionReason": null,
       "allowlistRule": null,
-      "sourceAnchor": "exclusion.source-hierarchy-L52.L52",
+      "sourceAnchor": "coverage.L52.table_row",
       "anchor": "coverage.L52.table_row",
       "fingerprint": "c800d955fcdfb8dd3e40fcc77eaa9bf8439f18ff39a531afc86e292615b3ea5d",
-      "itemIds": []
+      "itemIds": [
+        "source_hierarchy.5"
+      ]
     },
     {
       "line": 53,
       "type": "table_row",
       "text": "| 6        | This plan                                                                                  | 2026-07-27                                                                 | OpenClaw-specific sequencing, file ownership, tests, rollout, operations, and acceptance                     |",
-      "disposition": "non_requirement",
-      "reason": "Section 2 frozen-input source hierarchy metadata row",
-      "reasonCode": "DESCRIPTIVE_EXCLUSION",
+      "disposition": "requirement",
+      "reason": "Section 2 frozen source-hierarchy authority row",
+      "reasonCode": "REQUIREMENT",
       "sourceContext": "2_frozen_inputs_and_source_hierarchy",
       "inheritedContext": "MUST",
-      "structuralContext": null,
+      "structuralContext": "SOURCE_HIERARCHY",
       "sectionPolicy": "implementation",
-      "exclusionId": "source-hierarchy-L53",
-      "exclusionReason": "Section 2 frozen-input source hierarchy metadata row",
+      "exclusionId": null,
+      "exclusionReason": null,
       "allowlistRule": null,
-      "sourceAnchor": "exclusion.source-hierarchy-L53.L53",
+      "sourceAnchor": "coverage.L53.table_row",
       "anchor": "coverage.L53.table_row",
       "fingerprint": "5c362139cd3adad26ef642cf41e620f4443662aadf1c41853bd8392aacebcfcf",
-      "itemIds": []
+      "itemIds": [
+        "source_hierarchy.6"
+      ]
     },
     {
       "line": 54,
@@ -10445,7 +10391,7 @@
       "reasonCode": "STRUCTURAL_BLANK",
       "sourceContext": "2_frozen_inputs_and_source_hierarchy",
       "inheritedContext": "MUST",
-      "structuralContext": null,
+      "structuralContext": "SOURCE_HIERARCHY",
       "sectionPolicy": "implementation",
       "exclusionId": null,
       "exclusionReason": null,
@@ -10464,7 +10410,7 @@
       "reasonCode": "INTRO_OPENS_FOLLOWING_LIST",
       "sourceContext": "2_frozen_inputs_and_source_hierarchy",
       "inheritedContext": "RULES",
-      "structuralContext": null,
+      "structuralContext": "SOURCE_HIERARCHY",
       "sectionPolicy": "implementation",
       "exclusionId": null,
       "exclusionReason": null,
@@ -10483,7 +10429,7 @@
       "reasonCode": "STRUCTURAL_BLANK",
       "sourceContext": "2_frozen_inputs_and_source_hierarchy",
       "inheritedContext": "RULES",
-      "structuralContext": null,
+      "structuralContext": "SOURCE_HIERARCHY",
       "sectionPolicy": "implementation",
       "exclusionId": null,
       "exclusionReason": null,
@@ -10502,7 +10448,7 @@
       "reasonCode": "REQUIREMENT",
       "sourceContext": "2_frozen_inputs_and_source_hierarchy",
       "inheritedContext": "RULES",
-      "structuralContext": null,
+      "structuralContext": "SOURCE_HIERARCHY",
       "sectionPolicy": "implementation",
       "exclusionId": null,
       "exclusionReason": null,
@@ -10523,7 +10469,7 @@
       "reasonCode": "REQUIREMENT",
       "sourceContext": "2_frozen_inputs_and_source_hierarchy",
       "inheritedContext": "RULES",
-      "structuralContext": null,
+      "structuralContext": "SOURCE_HIERARCHY",
       "sectionPolicy": "implementation",
       "exclusionId": null,
       "exclusionReason": null,
@@ -10544,7 +10490,7 @@
       "reasonCode": "REQUIREMENT",
       "sourceContext": "2_frozen_inputs_and_source_hierarchy",
       "inheritedContext": "RULES",
-      "structuralContext": null,
+      "structuralContext": "SOURCE_HIERARCHY",
       "sectionPolicy": "implementation",
       "exclusionId": null,
       "exclusionReason": null,
@@ -10565,7 +10511,7 @@
       "reasonCode": "REQUIREMENT",
       "sourceContext": "2_frozen_inputs_and_source_hierarchy",
       "inheritedContext": "RULES",
-      "structuralContext": null,
+      "structuralContext": "SOURCE_HIERARCHY",
       "sectionPolicy": "implementation",
       "exclusionId": null,
       "exclusionReason": null,
@@ -10586,7 +10532,7 @@
       "reasonCode": "REQUIREMENT",
       "sourceContext": "2_frozen_inputs_and_source_hierarchy",
       "inheritedContext": "RULES",
-      "structuralContext": null,
+      "structuralContext": "SOURCE_HIERARCHY",
       "sectionPolicy": "implementation",
       "exclusionId": null,
       "exclusionReason": null,
@@ -10607,7 +10553,7 @@
       "reasonCode": "STRUCTURAL_BLANK",
       "sourceContext": "2_frozen_inputs_and_source_hierarchy",
       "inheritedContext": "RULES",
-      "structuralContext": null,
+      "structuralContext": "SOURCE_HIERARCHY",
       "sectionPolicy": "implementation",
       "exclusionId": null,
       "exclusionReason": null,
@@ -12301,7 +12247,7 @@
       "anchor": "coverage.L147.table_row",
       "fingerprint": "0bfaab0ba7ffd17e878e38c6b4bef209f5d2b0322af42181c6e08701402ac228",
       "itemIds": [
-        "table.6_1_required_mapping.147.1"
+        "table.6_1_required_mapping.147.7"
       ]
     },
     {
@@ -12341,7 +12287,7 @@
       "anchor": "coverage.L149.table_row",
       "fingerprint": "2589d867c6dcab240f8ddd96aa4479f75bcf507b5620d5d95e09bd778d6305b2",
       "itemIds": [
-        "table.6_1_required_mapping.149.2"
+        "table.6_1_required_mapping.149.8"
       ]
     },
     {
@@ -12362,7 +12308,7 @@
       "anchor": "coverage.L150.table_row",
       "fingerprint": "da0d7755b36e1a418f9b91432d32d7badba6e96bb489df971b4f01519dd3fa6f",
       "itemIds": [
-        "table.6_1_required_mapping.150.3"
+        "table.6_1_required_mapping.150.9"
       ]
     },
     {
@@ -12383,7 +12329,7 @@
       "anchor": "coverage.L151.table_row",
       "fingerprint": "5fc3e84aa739adc6537ca12de53de3555350dfd63cd2b723ceb5ea3d95cc4877",
       "itemIds": [
-        "table.6_1_required_mapping.151.4"
+        "table.6_1_required_mapping.151.10"
       ]
     },
     {
@@ -12404,7 +12350,7 @@
       "anchor": "coverage.L152.table_row",
       "fingerprint": "507ade537a1d4cb584d91e9f64e20873e78d57db547fe5baa950ad5121437906",
       "itemIds": [
-        "table.6_1_required_mapping.152.5"
+        "table.6_1_required_mapping.152.11"
       ]
     },
     {
@@ -12425,7 +12371,7 @@
       "anchor": "coverage.L153.table_row",
       "fingerprint": "85a19aae5e30a5e1d560aa321f605a96272fb5d9423f5c73691466851fa820cf",
       "itemIds": [
-        "table.6_1_required_mapping.153.6"
+        "table.6_1_required_mapping.153.12"
       ]
     },
     {
@@ -12446,7 +12392,7 @@
       "anchor": "coverage.L154.table_row",
       "fingerprint": "3cd4413f6475ffa3446fa05ce4ef6131e9239dc962e7b5770d71bd9645230581",
       "itemIds": [
-        "table.6_1_required_mapping.154.7"
+        "table.6_1_required_mapping.154.13"
       ]
     },
     {
@@ -12467,7 +12413,7 @@
       "anchor": "coverage.L155.table_row",
       "fingerprint": "fc4edb421f7f9b3d0676909d6fe59f09381e26bd7b33742c3a66682cc0190057",
       "itemIds": [
-        "table.6_1_required_mapping.155.8"
+        "table.6_1_required_mapping.155.14"
       ]
     },
     {
@@ -12488,7 +12434,7 @@
       "anchor": "coverage.L156.table_row",
       "fingerprint": "f536318119e3b642c86b2c20f4d9db6e4d3b662a77c02cb00ea3b7e900145c59",
       "itemIds": [
-        "table.6_1_required_mapping.156.9"
+        "table.6_1_required_mapping.156.15"
       ]
     },
     {
@@ -12509,7 +12455,7 @@
       "anchor": "coverage.L157.table_row",
       "fingerprint": "da5b836d50a6bfdd6cc58cccd0c1d9e8b76bbb066f10a5d2927d98c0a477b9eb",
       "itemIds": [
-        "table.6_1_required_mapping.157.10"
+        "table.6_1_required_mapping.157.16"
       ]
     },
     {
@@ -17027,7 +16973,7 @@
       "anchor": "coverage.L383.table_row",
       "fingerprint": "7b2b53dbcb370aca2460893bcb0c37fe5ad67338c5fb9b0fc921f8d74818f19a",
       "itemIds": [
-        "table.10_1_brain_lifecycle_hooks.383.11"
+        "table.10_1_brain_lifecycle_hooks.383.17"
       ]
     },
     {
@@ -17067,7 +17013,7 @@
       "anchor": "coverage.L385.table_row",
       "fingerprint": "aafbb5a4b212ac0b60d2991d018c6ad4c226ab8c1c13762abd07dd6f0b893d80",
       "itemIds": [
-        "table.10_1_brain_lifecycle_hooks.385.12"
+        "table.10_1_brain_lifecycle_hooks.385.18"
       ]
     },
     {
@@ -17088,7 +17034,7 @@
       "anchor": "coverage.L386.table_row",
       "fingerprint": "f0860ae6343ebeedb467be108ee6ed3e5624f01f6f634413e208f1b7159562a9",
       "itemIds": [
-        "table.10_1_brain_lifecycle_hooks.386.13"
+        "table.10_1_brain_lifecycle_hooks.386.19"
       ]
     },
     {
@@ -17109,7 +17055,7 @@
       "anchor": "coverage.L387.table_row",
       "fingerprint": "1ca0eeac486871e1c65cf57481ebce597ac79f6863038f255dd79cac8ef4c85d",
       "itemIds": [
-        "table.10_1_brain_lifecycle_hooks.387.14"
+        "table.10_1_brain_lifecycle_hooks.387.20"
       ]
     },
     {
@@ -17130,7 +17076,7 @@
       "anchor": "coverage.L388.table_row",
       "fingerprint": "95121e50efa1aee58a14fbaf324a3b9e20ce5ccfc003da3fe5721948b156f2f3",
       "itemIds": [
-        "table.10_1_brain_lifecycle_hooks.388.15"
+        "table.10_1_brain_lifecycle_hooks.388.21"
       ]
     },
     {
@@ -17151,7 +17097,7 @@
       "anchor": "coverage.L389.table_row",
       "fingerprint": "39f7c64f2c8bafbe81ac0d8425c80cb901b001b4dc3c3ac1c35810aedb927c93",
       "itemIds": [
-        "table.10_1_brain_lifecycle_hooks.389.16"
+        "table.10_1_brain_lifecycle_hooks.389.22"
       ]
     },
     {
@@ -17172,7 +17118,7 @@
       "anchor": "coverage.L390.table_row",
       "fingerprint": "9697999e868927f69450b988fe80aba642b41eaa185cf9bda5d23530f8c979da",
       "itemIds": [
-        "table.10_1_brain_lifecycle_hooks.390.17"
+        "table.10_1_brain_lifecycle_hooks.390.23"
       ]
     },
     {
@@ -17193,7 +17139,7 @@
       "anchor": "coverage.L391.table_row",
       "fingerprint": "0232bb79b013a599c71bcfe8dc953765c45604c6d763f7c2c225724bfe496414",
       "itemIds": [
-        "table.10_1_brain_lifecycle_hooks.391.18"
+        "table.10_1_brain_lifecycle_hooks.391.24"
       ]
     },
     {
@@ -17214,7 +17160,7 @@
       "anchor": "coverage.L392.table_row",
       "fingerprint": "9db3145a3d44b866bd6c1326aed4cddc6f3304d1fe9dfd75253fe76419db3c17",
       "itemIds": [
-        "table.10_1_brain_lifecycle_hooks.392.19"
+        "table.10_1_brain_lifecycle_hooks.392.25"
       ]
     },
     {
@@ -17235,7 +17181,7 @@
       "anchor": "coverage.L393.table_row",
       "fingerprint": "d407257edd1067e615df241b82bf5a74835ade6d418db48e2b6f65964df1eb24",
       "itemIds": [
-        "table.10_1_brain_lifecycle_hooks.393.20"
+        "table.10_1_brain_lifecycle_hooks.393.26"
       ]
     },
     {
@@ -17256,7 +17202,7 @@
       "anchor": "coverage.L394.table_row",
       "fingerprint": "ea0a349f58d15364b0db7415aba1d1dc4437b8a28fd503e4d2e1ce729f5b1c34",
       "itemIds": [
-        "table.10_1_brain_lifecycle_hooks.394.21"
+        "table.10_1_brain_lifecycle_hooks.394.27"
       ]
     },
     {
@@ -18018,7 +17964,7 @@
       "anchor": "coverage.L432.table_row",
       "fingerprint": "75c97b49fce04d23227123ed24aade2923f870c73024d021b208b02a36127b02",
       "itemIds": [
-        "table.11_durable_state_and_outbox_design.432.22"
+        "table.11_durable_state_and_outbox_design.432.28"
       ]
     },
     {
@@ -18039,7 +17985,7 @@
       "anchor": "coverage.L433.table_row",
       "fingerprint": "76b9f8b9027faddb9c91a5f9bc25ba3ccbdb37cd0ab021d2ab77e082c16af0c6",
       "itemIds": [
-        "table.11_durable_state_and_outbox_design.433.23"
+        "table.11_durable_state_and_outbox_design.433.29"
       ]
     },
     {
@@ -18060,7 +18006,7 @@
       "anchor": "coverage.L434.table_row",
       "fingerprint": "b1d28b3694773a42208d5e36fb70a364dac0e5f2ef2d0d7f701295568300ce90",
       "itemIds": [
-        "table.11_durable_state_and_outbox_design.434.24"
+        "table.11_durable_state_and_outbox_design.434.30"
       ]
     },
     {
@@ -18081,7 +18027,7 @@
       "anchor": "coverage.L435.table_row",
       "fingerprint": "9f60c28a19b2e804622c37742d30c68b568433b2788a0c454feaae9dafe7f488",
       "itemIds": [
-        "table.11_durable_state_and_outbox_design.435.25"
+        "table.11_durable_state_and_outbox_design.435.31"
       ]
     },
     {
@@ -18102,7 +18048,7 @@
       "anchor": "coverage.L436.table_row",
       "fingerprint": "7540546b5e7ba6ef9e3b1599b969ec77642c1cf9a82dcdee0b765035f08b8f51",
       "itemIds": [
-        "table.11_durable_state_and_outbox_design.436.26"
+        "table.11_durable_state_and_outbox_design.436.32"
       ]
     },
     {
@@ -18123,7 +18069,7 @@
       "anchor": "coverage.L437.table_row",
       "fingerprint": "77ab402e9fa36e323e1426a749d3484678f228b7e13ea6a1012b8a5cf7bd0777",
       "itemIds": [
-        "table.11_durable_state_and_outbox_design.437.27"
+        "table.11_durable_state_and_outbox_design.437.33"
       ]
     },
     {
@@ -18144,7 +18090,7 @@
       "anchor": "coverage.L438.table_row",
       "fingerprint": "fa8d32ca4bb2b4f1b2b95b40d21f359f9a4caa962273227eaa4c6648fbff5b36",
       "itemIds": [
-        "table.11_durable_state_and_outbox_design.438.28"
+        "table.11_durable_state_and_outbox_design.438.34"
       ]
     },
     {
@@ -18165,7 +18111,7 @@
       "anchor": "coverage.L439.table_row",
       "fingerprint": "43d763abe629be7ea7a71b00f255e01b4f60726e0aa4dce9ad019bfb6ab09b83",
       "itemIds": [
-        "table.11_durable_state_and_outbox_design.439.29"
+        "table.11_durable_state_and_outbox_design.439.35"
       ]
     },
     {
@@ -18186,7 +18132,7 @@
       "anchor": "coverage.L440.table_row",
       "fingerprint": "431cce0f1b1dc04539ef239c5205334961e1592dd85e9806f9af6aed9334fc05",
       "itemIds": [
-        "table.11_durable_state_and_outbox_design.440.30"
+        "table.11_durable_state_and_outbox_design.440.36"
       ]
     },
     {
@@ -19099,7 +19045,7 @@
       "anchor": "coverage.L485.table_row",
       "fingerprint": "bd22ce2e96e71674ba5600afcdd363480cf9687da783dafc218cb23fd298a217",
       "itemIds": [
-        "table.12_2_independent_flags.485.31"
+        "table.12_2_independent_flags.485.37"
       ]
     },
     {
@@ -19139,7 +19085,7 @@
       "anchor": "coverage.L487.table_row",
       "fingerprint": "7d0bb065ca394e1fde4814edf55325ec932fb2fd48f3dd8af52ffe67cdd190bf",
       "itemIds": [
-        "table.12_2_independent_flags.487.32"
+        "table.12_2_independent_flags.487.38"
       ]
     },
     {
@@ -19160,7 +19106,7 @@
       "anchor": "coverage.L488.table_row",
       "fingerprint": "e949bfa5bbfecfc0cc95e274ae24e8df323c5eaac80f90c08556e9fd79e487c2",
       "itemIds": [
-        "table.12_2_independent_flags.488.33"
+        "table.12_2_independent_flags.488.39"
       ]
     },
     {
@@ -19181,7 +19127,7 @@
       "anchor": "coverage.L489.table_row",
       "fingerprint": "2e1abb3150dface49cdb8bfa749929146c764a4de76c6da5a0a46cd52fb70bc2",
       "itemIds": [
-        "table.12_2_independent_flags.489.34"
+        "table.12_2_independent_flags.489.40"
       ]
     },
     {
@@ -19202,7 +19148,7 @@
       "anchor": "coverage.L490.table_row",
       "fingerprint": "94affed60b73e2f3767c68906d2bc25fd3ead9578b894a3633ee35e7d7efa2cb",
       "itemIds": [
-        "table.12_2_independent_flags.490.35"
+        "table.12_2_independent_flags.490.41"
       ]
     },
     {
@@ -19223,7 +19169,7 @@
       "anchor": "coverage.L491.table_row",
       "fingerprint": "33bf6d4e67904407d61e05991a24e1c2fa2dce78042ee7b3a6d02ea1e60247c5",
       "itemIds": [
-        "table.12_2_independent_flags.491.36"
+        "table.12_2_independent_flags.491.42"
       ]
     },
     {
@@ -19244,7 +19190,7 @@
       "anchor": "coverage.L492.table_row",
       "fingerprint": "9ac663edfc6bd070d199d0ff81d8a0f3eac7b33c44e08bc47898a29cc0fa399b",
       "itemIds": [
-        "table.12_2_independent_flags.492.37"
+        "table.12_2_independent_flags.492.43"
       ]
     },
     {
@@ -19265,7 +19211,7 @@
       "anchor": "coverage.L493.table_row",
       "fingerprint": "6755f4e785c50ff69a75a108b759fe7c2466cb951dda481b87ed6d7df5734e19",
       "itemIds": [
-        "table.12_2_independent_flags.493.38"
+        "table.12_2_independent_flags.493.44"
       ]
     },
     {
@@ -19286,7 +19232,7 @@
       "anchor": "coverage.L494.table_row",
       "fingerprint": "f344c76b6f3c99ea48005945ca2119895f98c4b39f388c20782695cd56643758",
       "itemIds": [
-        "table.12_2_independent_flags.494.39"
+        "table.12_2_independent_flags.494.45"
       ]
     },
     {
@@ -20768,148 +20714,134 @@
       "line": 568,
       "type": "numbered_item",
       "text": "`implemented and proven`;",
-      "disposition": "requirement",
-      "reason": "inherited/structural requirement (MUST)",
-      "reasonCode": "REQUIREMENT",
+      "disposition": "non_requirement",
+      "reason": "Section 13.3 conformance classification enum definition (not an implementation task)",
+      "reasonCode": "STRUCTURAL_ENUM_DEFINITION",
       "sourceContext": "13_3_plan_conformance_classifications",
       "inheritedContext": "MUST",
       "structuralContext": "GOVERNANCE",
       "sectionPolicy": "implementation",
-      "exclusionId": null,
-      "exclusionReason": null,
+      "exclusionId": "classification-enum-L568",
+      "exclusionReason": "Section 13.3 conformance classification enum definition (not an implementation task)",
       "allowlistRule": null,
-      "sourceAnchor": "coverage.L568.numbered_item",
+      "sourceAnchor": "enum.classification-enum-L568.L568",
       "anchor": "coverage.L568.numbered_item",
       "fingerprint": "50b01baac379573b7be31c0cca4c93042bc4548a91c730830c6bab80c553140b",
-      "itemIds": [
-        "list.13_3_plan_conformance_classifications.568.1"
-      ]
+      "itemIds": []
     },
     {
       "line": 569,
       "type": "numbered_item",
       "text": "`implemented but not proven live`;",
-      "disposition": "requirement",
-      "reason": "inherited/structural requirement (MUST)",
-      "reasonCode": "REQUIREMENT",
+      "disposition": "non_requirement",
+      "reason": "Section 13.3 conformance classification enum definition (not an implementation task)",
+      "reasonCode": "STRUCTURAL_ENUM_DEFINITION",
       "sourceContext": "13_3_plan_conformance_classifications",
       "inheritedContext": "MUST",
       "structuralContext": "GOVERNANCE",
       "sectionPolicy": "implementation",
-      "exclusionId": null,
-      "exclusionReason": null,
+      "exclusionId": "classification-enum-L569",
+      "exclusionReason": "Section 13.3 conformance classification enum definition (not an implementation task)",
       "allowlistRule": null,
-      "sourceAnchor": "coverage.L569.numbered_item",
+      "sourceAnchor": "enum.classification-enum-L569.L569",
       "anchor": "coverage.L569.numbered_item",
       "fingerprint": "02599eb4b8a35815d6a0fe582cfdfe0636022b46574c110805b81eac345fdadc",
-      "itemIds": [
-        "list.13_3_plan_conformance_classifications.569.2"
-      ]
+      "itemIds": []
     },
     {
       "line": 570,
       "type": "numbered_item",
       "text": "`partially implemented`;",
-      "disposition": "requirement",
-      "reason": "inherited/structural requirement (MUST)",
-      "reasonCode": "REQUIREMENT",
+      "disposition": "non_requirement",
+      "reason": "Section 13.3 conformance classification enum definition (not an implementation task)",
+      "reasonCode": "STRUCTURAL_ENUM_DEFINITION",
       "sourceContext": "13_3_plan_conformance_classifications",
       "inheritedContext": "MUST",
       "structuralContext": "GOVERNANCE",
       "sectionPolicy": "implementation",
-      "exclusionId": null,
-      "exclusionReason": null,
+      "exclusionId": "classification-enum-L570",
+      "exclusionReason": "Section 13.3 conformance classification enum definition (not an implementation task)",
       "allowlistRule": null,
-      "sourceAnchor": "coverage.L570.numbered_item",
+      "sourceAnchor": "enum.classification-enum-L570.L570",
       "anchor": "coverage.L570.numbered_item",
       "fingerprint": "b20d79b2ae95a3ad6393f48f2cd501e262de69c168cf1fc87480b2e9567467c6",
-      "itemIds": [
-        "list.13_3_plan_conformance_classifications.570.3"
-      ]
+      "itemIds": []
     },
     {
       "line": 571,
       "type": "numbered_item",
       "text": "`omitted`;",
-      "disposition": "requirement",
-      "reason": "inherited/structural requirement (MUST)",
-      "reasonCode": "REQUIREMENT",
+      "disposition": "non_requirement",
+      "reason": "Section 13.3 conformance classification enum definition (not an implementation task)",
+      "reasonCode": "STRUCTURAL_ENUM_DEFINITION",
       "sourceContext": "13_3_plan_conformance_classifications",
       "inheritedContext": "MUST",
       "structuralContext": "GOVERNANCE",
       "sectionPolicy": "implementation",
-      "exclusionId": null,
-      "exclusionReason": null,
+      "exclusionId": "classification-enum-L571",
+      "exclusionReason": "Section 13.3 conformance classification enum definition (not an implementation task)",
       "allowlistRule": null,
-      "sourceAnchor": "coverage.L571.numbered_item",
+      "sourceAnchor": "enum.classification-enum-L571.L571",
       "anchor": "coverage.L571.numbered_item",
       "fingerprint": "4417a9c1f844878f53e7e0c6cb85df2d6fef0afd7be007fbddb49eb102476c8d",
-      "itemIds": [
-        "list.13_3_plan_conformance_classifications.571.4"
-      ]
+      "itemIds": []
     },
     {
       "line": 572,
       "type": "numbered_item",
       "text": "`implemented differently from plan`;",
-      "disposition": "requirement",
-      "reason": "inherited/structural requirement (MUST)",
-      "reasonCode": "REQUIREMENT",
+      "disposition": "non_requirement",
+      "reason": "Section 13.3 conformance classification enum definition (not an implementation task)",
+      "reasonCode": "STRUCTURAL_ENUM_DEFINITION",
       "sourceContext": "13_3_plan_conformance_classifications",
       "inheritedContext": "MUST",
       "structuralContext": "GOVERNANCE",
       "sectionPolicy": "implementation",
-      "exclusionId": null,
-      "exclusionReason": null,
+      "exclusionId": "classification-enum-L572",
+      "exclusionReason": "Section 13.3 conformance classification enum definition (not an implementation task)",
       "allowlistRule": null,
-      "sourceAnchor": "coverage.L572.numbered_item",
+      "sourceAnchor": "enum.classification-enum-L572.L572",
       "anchor": "coverage.L572.numbered_item",
       "fingerprint": "9d0d73081dde88fbff3e1238d288be8f2303d3f7926a3c2727ea3d0ac42c6545",
-      "itemIds": [
-        "list.13_3_plan_conformance_classifications.572.5"
-      ]
+      "itemIds": []
     },
     {
       "line": 573,
       "type": "numbered_item",
       "text": "`blocked by another repository or interface`;",
-      "disposition": "requirement",
-      "reason": "inherited/structural requirement (MUST)",
-      "reasonCode": "REQUIREMENT",
+      "disposition": "non_requirement",
+      "reason": "Section 13.3 conformance classification enum definition (not an implementation task)",
+      "reasonCode": "STRUCTURAL_ENUM_DEFINITION",
       "sourceContext": "13_3_plan_conformance_classifications",
       "inheritedContext": "MUST",
       "structuralContext": "GOVERNANCE",
       "sectionPolicy": "implementation",
-      "exclusionId": null,
-      "exclusionReason": null,
+      "exclusionId": "classification-enum-L573",
+      "exclusionReason": "Section 13.3 conformance classification enum definition (not an implementation task)",
       "allowlistRule": null,
-      "sourceAnchor": "coverage.L573.numbered_item",
+      "sourceAnchor": "enum.classification-enum-L573.L573",
       "anchor": "coverage.L573.numbered_item",
       "fingerprint": "5514a6c2501eaddddee6ff4df1258eed06f4b7941513fde5362fd09ee5b7cada",
-      "itemIds": [
-        "list.13_3_plan_conformance_classifications.573.6"
-      ]
+      "itemIds": []
     },
     {
       "line": 574,
       "type": "numbered_item",
       "text": "`outside the execution agent's ownership`.",
-      "disposition": "requirement",
-      "reason": "inherited/structural requirement (MUST)",
-      "reasonCode": "REQUIREMENT",
+      "disposition": "non_requirement",
+      "reason": "Section 13.3 conformance classification enum definition (not an implementation task)",
+      "reasonCode": "STRUCTURAL_ENUM_DEFINITION",
       "sourceContext": "13_3_plan_conformance_classifications",
       "inheritedContext": "MUST",
       "structuralContext": "GOVERNANCE",
       "sectionPolicy": "implementation",
-      "exclusionId": null,
-      "exclusionReason": null,
+      "exclusionId": "classification-enum-L574",
+      "exclusionReason": "Section 13.3 conformance classification enum definition (not an implementation task)",
       "allowlistRule": null,
-      "sourceAnchor": "coverage.L574.numbered_item",
+      "sourceAnchor": "enum.classification-enum-L574.L574",
       "anchor": "coverage.L574.numbered_item",
       "fingerprint": "b01a1f1444bf938a31f711cb115e8a3fa0e9694cb6a956643fea999f41ac9be3",
-      "itemIds": [
-        "list.13_3_plan_conformance_classifications.574.7"
-      ]
+      "itemIds": []
     },
     {
       "line": 575,

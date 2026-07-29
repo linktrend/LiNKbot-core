@@ -3,15 +3,16 @@
 **Recorded:** 2026-07-27 18:53 Asia/Taipei
 **Correction wave 2:** 2026-07-28 09:10 Asia/Taipei — pins/fixtures refreshed
 **Correction wave 2b:** 2026-07-28 09:52 Asia/Taipei — sibling HEADs advanced to latest corrected tips
-**Brain denial corrections:** 2026-07-28 11:45 Asia/Taipei — Brain fixtures corrected after `COUNTERSIGN_DENIED`; aggregate `275c1fb7…9a1d`; Skills bytes unchanged `8586d89a…ec96`
-**Fixture-owner gate closed:** 2026-07-28 13:05 Asia/Taipei — Brain `OWNER_COUNTERSIGNED` + Skills tip reaffirmation at tip `429a7818e2f79be27329c1848531ffe9ba0f7367`. **Phase 1 fixture-owner gate CLOSED.** **Phase 1 overall still NOT complete** (Platform auth-path blocked). Provisional pending Codex Phase 14.
+**Brain denial corrections:** 2026-07-28 11:45 Asia/Taipei — Brain fixtures corrected after `COUNTERSIGN_DENIED`; historical aggregate `275c1fb7…9a1d`
+**Wave 8 AuthClaims 1.1.0 refresh:** 2026-07-29 Asia/Taipei — fixture-owner gate **RE-OPENED** (see `FIXTURE-OWNER-SIGNOFF.md`)
+**Wave 18 reconciliation:** 2026-07-29 Asia/Taipei — this status aligned with `FIXTURE-OWNER-SIGNOFF.md`: AuthClaims **1.0** countersigns are historical/superseded; AuthClaims **1.1** Brain/Skills aggregates remain **PENDING_OWNER_COUNTERSIGN**
 
 ## Deliverables
 
 | Item                                               | Location                                                                        | Status                                                                                                        |
 | -------------------------------------------------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| Brain fixtures (§9.1 + auth/capture/health/replay) | `extensions/linkbrain/fixtures/**`                                              | **`OWNER_COUNTERSIGNED`** at tip `429a7818…` (`275c1fb7…9a1d`; 72 JSON); denial of `d539debc…45fb` superseded |
-| Skills fixtures (§9.2 + prohibited/telemetry)      | `extensions/linkskills/fixtures/**`                                             | **`OWNER_COUNTERSIGNED`** reaffirmed at tip `429a7818…` (`8586d89a…ec96`)                                     |
+| Brain fixtures (§9.1 + auth/capture/health/replay) | `extensions/linkbrain/fixtures/**`                                              | AuthClaims **1.1.0** aggregate `4493f714…4811b` (75 JSON) — **`PENDING_OWNER_COUNTERSIGN`** |
+| Skills fixtures (§9.2 + prohibited/telemetry)      | `extensions/linkskills/fixtures/**`                                             | AuthClaims **1.1.0** aggregate `20316371…e19a` (71 JSON) — **`PENDING_OWNER_COUNTERSIGN`** |
 | Brain fake (stdio/HTTP, isolated)                  | `extensions/linkbrain/fake/**`, `test/helpers/link-domain-fakes/brain-fake.*`   | present; `BRAIN_CONTRACT_VERSION=1.0.0` + Gateway ErrorEnvelope                                               |
 | Skills fake (stdio/HTTP, isolated)                 | `extensions/linkskills/fake/**`, `test/helpers/link-domain-fakes/skills-fake.*` | present                                                                                                       |
 | Auth matrix stub                                   | `PHASE-1-AUTH-COMPATIBILITY-MATRIX.md`                                          | present; includes rotated / wrong_service / BrainErrorCode                                                    |
@@ -33,19 +34,25 @@ node scripts/run-vitest.mjs \
 | ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Deterministic isolated fakes               | **met** (fake tier)                                                                                                                                                                |
 | Negative/prohibited field tests            | **met** (fake tier)                                                                                                                                                                |
-| Domain owner fixture approval              | **met** — Brain + Skills `OWNER_COUNTERSIGNED` at tip `429a7818…` (`FIXTURE-OWNER-SIGNOFF.md`); **fixture-owner gate CLOSED**; Phase 1 overall still blocked on Platform auth-path |
+| Domain owner fixture approval              | **not met** — AuthClaims **1.1** Brain + Skills aggregates **`PENDING_OWNER_COUNTERSIGN`** (`FIXTURE-OWNER-SIGNOFF.md`). Historical AuthClaims **1.0** CLOSED tip `429a7818…` is superseded for the positive path |
 | Platform auth-path approval                | **blocked** — continue fake-only                                                                                                                                                   |
 | Public surfaces sufficient or SDK proposal | **provisional met** — keyed-store path looks viable; prove in Phase 2                                                                                                              |
 
 ## Decision packet — fixture owner sign-off
 
-**Fixture-owner gate:** CLOSED at tip `429a7818e2f79be27329c1848531ffe9ba0f7367` after:
+**Fixture-owner gate:** **RE-OPENED** for AuthClaims 1.1.0 (wave 8). Authoritative record: `FIXTURE-OWNER-SIGNOFF.md` + `COUNTERSIGN-REQUEST-WAVE8-AUTHCLAIMS-1.1.md`.
 
-1. Brain `OWNER_COUNTERSIGNED` — `LiNKbrain/docs/handoffs/OPENCLAW-BRAIN-FIXTURE-OWNER-COUNTERSIGNED-2026-07-28.md` (`d43552742b6a3e9eb942275106b103d873a889fb`) for aggregate `275c1fb7…9a1d`
-2. Skills reaffirmation — `LiNKskills/docs/handoffs/2026-07-28-linkskills-openclaw-fixtures-OWNER-COUNTERSIGNED-reaffirm.md` (`41ab5a3d31a79a662158d8fb434f76b707701b7a`) for aggregate `8586d89a…ec96`
+| Aggregate | Tree | Count | SHA-256 | Status |
+| --- | --- | ---: | --- | --- |
+| AuthClaims 1.1 Brain | `extensions/linkbrain/fixtures` | 75 | `4493f71432ef56f9fc272ff4c208b8901242c2bd83e138f53d6f0259b4f4811b` | `PENDING_OWNER_COUNTERSIGN` |
+| AuthClaims 1.1 Skills | `extensions/linkskills/fixtures` | 71 | `203163711b5db17b8a07d3956e41596384cbd08f0c110bd9f21abfc5c7e5e19a` | `PENDING_OWNER_COUNTERSIGN` |
 
-**Remaining Phase 1 blocker:** Platform auth-path approval. Do not claim full Phase 1 exit, Codex Phase 14, merge, or Lisa live enablement from fixture countersign alone.
+### Historical (superseded for positive AuthClaims path)
+
+Prior CLOSED countersigns at tip `429a7818e2f79be27329c1848531ffe9ba0f7367` for AuthClaims **1.0.0** aggregates (`275c1fb7…9a1d` / `8586d89a…ec96`) remain on record as historical only. They do **not** close the current fixture-owner gate.
+
+**Remaining Phase 1 blockers:** (1) fresh Brain + Skills owner countersigns of AuthClaims 1.1 aggregates; (2) Platform auth-path approval. Do not claim full Phase 1 exit, Codex Phase 14, merge, or Lisa live enablement from historical 1.0 countersigns. **Do not request countersigns until OpenClaw Codex confirms the post–wave-18 final head.**
 
 ## Exact next action
 
-Hold live Lisa/Platform activation until Platform auth-path approval. Provisional packet remains for OpenClaw Codex Phase 14. Do not merge PR #38 from this closeout.
+Hold live Lisa/Platform activation. Keep AuthClaims 1.1 fixture-owner gate open/pending. Provisional packet remains for OpenClaw Codex Phase 14. Do not merge PR #38 from this status.

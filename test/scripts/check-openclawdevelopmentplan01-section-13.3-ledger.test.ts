@@ -22,6 +22,8 @@ import {
   buildDescriptiveExclusion,
   buildInventoryFromPlanItems,
   classifySectionPolicy,
+  isBindingSourceAuthorityRow,
+  isSection133ClassificationEnumLabel,
   lineHasBindingObligation,
   matchDescriptiveExclusion,
   planItemFingerprint,
@@ -595,7 +597,16 @@ describe("section 13.3 plan-authority ledger validator", () => {
     const labels = loaded.items.map((item) => item.label);
     const expectSome = (re: RegExp) => expect(ids.some((id) => re.test(id))).toBe(true);
     const expectLabel = (re: RegExp) => expect(labels.some((label) => re.test(label))).toBe(true);
-    expectSome(/^phase\.0\./);
+    expectSome(/^source_hierarchy\./);
+    expect(
+      loaded.items.filter((item) => item.id.startsWith("source_hierarchy.")).length,
+    ).toBe(6);
+    expect(
+      loaded.coverage.filter((entry) => entry.reasonCode === "STRUCTURAL_ENUM_DEFINITION").length,
+    ).toBe(7);
+    expect(
+      loaded.items.some((item) => isSection133ClassificationEnumLabel(item.label)),
+    ).toBe(false);
     expectSome(/^phase\.7\./);
     expectSome(/^phase\.8\.window_rule$/);
     expectSome(/^phase\.9\.hard_prerequisite\./);
@@ -872,6 +883,88 @@ Current inventory:
       const result = validateSection133Ledger({ root: tmp, expectedSha256: planSha });
       expect(result.ok).toBe(false);
       expect(result.errors.join("\n")).toMatch(/forbidden NARRATIVE_CONTEXT|disposition drift/);
+    } finally {
+      fs.rmSync(tmp, { recursive: true, force: true });
+    }
+  });
+
+  it("fail-closed: binding §2 source-hierarchy rows cannot be descriptive exclusions", () => {
+    const hierarchyRow =
+      "| 2        | LiNKplatform shared-foundation detailed implementation plan                                | SHA-256 `fbcf36235c4caaa6abf7ee93afedeedf105a96f6614a3a3ff5ccb8d78e33c6b9` | Actor identity, claims, credentials, environments, infrastructure, migrations, audit, generic Librarian host |";
+    expect(isBindingSourceAuthorityRow(hierarchyRow)).toBe(true);
+    const exclusion = buildDescriptiveExclusion({
+      id: "bad-hierarchy-exclusion",
+      line: 7,
+      type: "table_row",
+      text: hierarchyRow,
+      reason: "must not exclude binding hierarchy",
+    });
+    expect(matchDescriptiveExclusion(7, "table_row", hierarchyRow, [exclusion])).toBeNull();
+    const analyzed = analyzePlanForSection133(
+      `# Mini
+
+## 2. Frozen Inputs and Source Hierarchy
+
+| Priority | Source | Reviewed snapshot | Authority |
+| -------- | ------ | ----------------- | --------- |
+${hierarchyRow}
+`,
+      { descriptiveExclusions: [exclusion] },
+    );
+    expect(analyzed.errors).toEqual([]);
+    expect(analyzed.items.some((item) => item.id.startsWith("source_hierarchy."))).toBe(true);
+    expect(
+      analyzed.coverage.some(
+        (entry) =>
+          entry.type === "table_row" &&
+          entry.disposition === "requirement" &&
+          /fbcf36235c4caaa6/.test(String(entry.text)),
+      ),
+    ).toBe(true);
+  });
+
+  it("fail-closed: §13.3 classification enum definitions are not implementation tasks", () => {
+    expect(isSection133ClassificationEnumLabel("`omitted`;")).toBe(true);
+    expect(isSection133ClassificationEnumLabel("`implemented and proven`;")).toBe(true);
+    const analyzed = analyzePlanForSection133(`# Mini
+
+### 13.3 Plan-conformance classifications
+
+The OpenClaw Codex verifier must classify every task as exactly one of these seven values:
+
+1. \`implemented and proven\`;
+2. \`implemented but not proven live\`;
+3. \`partially implemented\`;
+4. \`omitted\`;
+5. \`implemented differently from plan\`;
+6. \`blocked by another repository or interface\`;
+7. \`outside the execution agent's ownership\`.
+`);
+    expect(analyzed.errors).toEqual([]);
+    expect(
+      analyzed.coverage.filter((entry) => entry.reasonCode === "STRUCTURAL_ENUM_DEFINITION").length,
+    ).toBe(7);
+    expect(
+      analyzed.items.some((item) => isSection133ClassificationEnumLabel(item.label)),
+    ).toBe(false);
+  });
+
+  it("fail-closed: implemented evidence may not point at extractor/validator/ledger tooling", () => {
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "section133-tooling-ev-"));
+    try {
+      const { planSha } = writeArtifacts(tmp, MINI_PLAN, (_inventory, rows) => {
+        const target = rows.find((row) => row[0] === "phase.7.title");
+        expect(target).toBeTruthy();
+        target![4] =
+          "scripts/lib/openclawdevelopmentplan01-section-13.3-plan-extract.mjs [plan-item:phase.7.title]";
+        target![5] = "implemented";
+        target![6] = "bad tooling evidence";
+      });
+      const result = validateSection133Ledger({ root: tmp, expectedSha256: planSha });
+      expect(result.ok).toBe(false);
+      expect(result.errors.join("\n")).toMatch(
+        /extractor\/validator\/ledger tooling|underlying Phase artifacts/,
+      );
     } finally {
       fs.rmSync(tmp, { recursive: true, force: true });
     }

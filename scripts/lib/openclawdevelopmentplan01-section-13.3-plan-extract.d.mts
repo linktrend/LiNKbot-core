@@ -59,6 +59,22 @@ export function sha256Hex(content: string | Buffer): string;
 export function splitPlanList(value: string, separators?: ReadonlySet<string>): string[];
 export function splitAtomicObligations(value: string): string[];
 export function isFragmentedPlanLabel(label: string): boolean;
+export function isBindingSourceAuthorityRow(text: string): boolean;
+export function isSection133ClassificationEnumLabel(text: string): boolean;
+export const STRUCTURAL_ENUM_DEFINITIONS: ReadonlyArray<{
+  id: string;
+  line: number;
+  type: string;
+  text: string;
+  reason: string;
+  fingerprint: string;
+}>;
+export function matchStructuralEnumDefinition(
+  line: number,
+  type: string,
+  text: string,
+  enums: ReadonlyMap<string, unknown> | Iterable<unknown>,
+): unknown;
 export function isRequirementBearingParagraph(line: string): boolean;
 export function isImperativeInstruction(line: string): boolean;
 export function detectRequirementInheritanceOpener(

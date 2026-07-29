@@ -1,7 +1,7 @@
 # Phase 13 — Coverage / Evidence Index (Grok-owned)
 
 **Document class:** Phase-13 coverage and evidence inventory for Codex Phase-14 classification
-**Recorded:** 2026-07-29 Asia/Taipei (wave 17)
+**Recorded:** 2026-07-29 Asia/Taipei (wave 18)
 **Agent:** Cursor Grok 4.5 High
 **PR:** [#38](https://github.com/linktrend/openclaw_prime/pull/38) (draft — do not merge)
 **Authority:** Frozen plan bytes only
@@ -16,70 +16,62 @@
 | Plan SHA-256 | `17203ee586a3fb2b1281bcddd8b17ae350075ebce537689f3c4bfcbbd14914f7` |
 | Inventory | `docs/execution/openclawdevelopmentplan01/section-13.3/inventory.json` (`version: 4`) |
 | Ledger | `docs/execution/openclawdevelopmentplan01/section-13.3/ledger.csv` |
-| Extractor | `scripts/lib/openclawdevelopmentplan01-section-13.3-plan-extract.mjs` |
-| Validator | `scripts/check-openclawdevelopmentplan01-section-13.3-ledger.mjs` |
+| Wave packet | `WAVE18-CORRECTION-PACKET.md` |
 
 ## Counts
 
 | Metric | Value |
 | --- | ---: |
-| Requirement items | **765** |
+| Requirement items | **764** |
 | Coverage rows | **1336** |
-| Descriptive exclusions | **22** |
-| Evidence-mapped (`completion_claim=implemented`) | **13** |
-
-### Requirement kinds
-
-`task` 326 · `evidence_requirement` 181 · `gate` 106 · `dod` 39 · `test` 35 · `rollback` 21 · `deliverable` 16 · `exit_gate` 16 · `cross_plan_gate` 11 · `assumption` 8 · `risk` 6
+| Descriptive exclusions | **16** |
+| Structural enum definitions (§13.3) | **7** |
+| Evidence-mapped (`implemented`) | **12** |
 
 ### Grok completion claims (not Codex classifications)
 
 | Claim | Count | Meaning |
 | --- | ---: | --- |
-| `not_claimed` | 560 | Coverage row present; no Grok implementation claim — Codex classifies from independent evidence |
-| `blocked` | 126 | Live/stage/production or named external gate uncleared (`BLOCK:` evidence) |
-| `outside_ownership` | 66 | Verifier/Principal/upstream ownership (`OUT:` evidence) |
-| `implemented` | 13 | Specific tooling evidence with `[plan-item:<id>]` marker (Phase 0 freeze tooling) |
+| `not_claimed` | 566 | Coverage present; no Grok implementation claim |
+| `blocked` | 120 | Live/stage/production or named external gate (`BLOCK:`) |
+| `outside_ownership` | 66 | Verifier/Principal/upstream ownership (`OUT:`) |
+| `implemented` | 12 | Phase-0 freeze/prompt/pin/session evidence with `[plan-item:<id>]` |
 
-## Inventory row shape (every requirement)
+### Restored Section 2 source-hierarchy requirements
 
-Each ledger/inventory requirement row carries:
+`source_hierarchy.1` · `source_hierarchy.2` · `source_hierarchy.3` · `source_hierarchy.4` · `source_hierarchy.5` · `source_hierarchy.6`
 
-1. stable plan `anchor` + `fingerprint`
-2. exact source `item` text
-3. item `kind`
-4. implementation `owner`
-5. claimed `evidence_location`
-6. Grok `completion_claim` + `note` (blocker / outside-ownership / not_claimed / implemented)
-7. **no** Codex classification field
+### Phase-0 evidence artifacts (implemented claims)
+
+- `docs/execution/openclawdevelopmentplan01/PHASE-0-FREEZE-PACKET.md`
+- `docs/CURSOR-GROK-EXECUTION-PROMPT.md`
+- `docs/execution/openclawdevelopmentplan01/contracts/brain/PIN.json`
+- `docs/execution/openclawdevelopmentplan01/contracts/skills/PIN.json`
+- `docs/execution/openclawdevelopmentplan01/contracts/platform/PIN.json`
+- `docs/agent-sessions/completed/cursor-local-mac-mini-lisa-openclawdevelopmentplan01-20260727-1648.md`
+
+Unexecuted `phase.0.rollback` remains `not_claimed`.
 
 ## Descriptive exclusions (reviewed)
 
-Exact fingerprints only. Binding obligation language always overrides an exclusion.
+| Reason | Count |
+| --- | ---: |
+| Section 5.1 sanitized OpenClaw capability inventory observation | 8 |
+| Section 5.2 sanitized Lisa baseline observation | 8 |
 
-| Reason | Count | Lines |
-| --- | ---: | --- |
-| Section 2 frozen-input source hierarchy metadata row | 6 | L48–L53 |
-| Section 5.1 sanitized OpenClaw capability inventory observation | 8 | L109–L116 |
-| Section 5.2 sanitized Lisa baseline observation | 8 | L124–L131 |
-
-Full machine list: inventory `descriptive_exclusions[]` and validator CLI output.
-
-## Extraction / evidence quality locks
-
-- No comma / semicolon / sentence punctuation splitting
-- No standalone noun fragments (`credentials`, `cron`, `migration`, …)
-- One source construct = one item unless nested/enumerated sub-items exist in source
-- Implemented claims require specific path evidence + `[plan-item:<id>]`; generic reused implemented evidence rejected
-- Blocked / outside-ownership claims must name owning gate / repository interface via `BLOCK:` / `OUT:`
+§2 source-hierarchy rows are **requirements**, not exclusions.
 
 ## Fixture aggregates (unchanged)
 
-| Tree | JSON count | Aggregate SHA-256 |
+| Tree | JSON | Aggregate SHA-256 |
 | --- | ---: | --- |
 | `extensions/linkbrain/fixtures` | 75 | `4493f71432ef56f9fc272ff4c208b8901242c2bd83e138f53d6f0259b4f4811b` |
 | `extensions/linkskills/fixtures` | 71 | `203163711b5db17b8a07d3956e41596384cbd08f0c110bd9f21abfc5c7e5e19a` |
 
+## Phase-1 fixture gate (reconciled)
+
+AuthClaims **1.0** countersigns are historical/superseded. AuthClaims **1.1** Brain/Skills aggregates remain `PENDING_OWNER_COUNTERSIGN` (`FIXTURE-OWNER-SIGNOFF.md`, `PHASE-1-STATUS.md`). Do not request countersigns until Codex confirms the final head.
+
 ## Codex next step
 
-Assign the seven Phase-14 classifications independently against this index and the machine ledger at the wave-17 tip. Do not treat Grok `completion_claim` values as §13.3 classifications.
+Assign the seven Phase-14 classifications independently against this index and the machine ledger.
