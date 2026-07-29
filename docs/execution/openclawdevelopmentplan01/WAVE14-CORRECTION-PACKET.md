@@ -2,7 +2,7 @@
 
 **Recorded:** 2026-07-29 Asia/Taipei
 **Started from:** `903741cc5a2b3d9b79d142c9c0b7b8c6f13fa88f`
-**Correction commit:** *(filled after commit)*
+**Correction commit:** 
 **Exact clean tip:** branch tip after tip-record (`git rev-parse HEAD` on this branch after push; tip-record is docs-only)
 **Agent:** Cursor Grok 4.5 High
 **PR:** [#38](https://github.com/linktrend/openclaw_prime/pull/38) (draft — do not merge)
