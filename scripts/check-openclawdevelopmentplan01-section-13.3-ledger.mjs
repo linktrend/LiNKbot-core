@@ -14,6 +14,7 @@ import {
   analyzePlanForSection133,
   buildInventoryFromPlanItems,
   extractPlanSection133Items,
+  isFragmentedPlanLabel,
   isHardRequirementContext,
   isImperativeInstruction,
   lineHasBindingObligation,
@@ -24,12 +25,32 @@ import {
 } from "./lib/openclawdevelopmentplan01-section-13.3-plan-extract.mjs";
 import { runAsScript } from "./lib/ts-guard-utils.mjs";
 
-const PERMITTED = new Set(["IAP", "INPL", "PART", "OMIT", "DIFF", "BLOCK", "OUT"]);
+/** Grok completion claims — not Codex Phase-14 classifications. */
+export const GROK_COMPLETION_CLAIMS = Object.freeze([
+  "implemented",
+  "blocked",
+  "outside_ownership",
+  "not_claimed",
+]);
+
 const KINDS = new Set(PLAN_ITEM_KINDS);
+const CLAIMS = new Set(GROK_COMPLETION_CLAIMS);
+const FORBIDDEN_CLASSIFICATIONS = new Set([
+  "IAP",
+  "INPL",
+  "PART",
+  "OMIT",
+  "DIFF",
+  "BLOCK",
+  "OUT",
+]);
 
 const DEFAULT_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const DEFAULT_INVENTORY = "docs/execution/openclawdevelopmentplan01/section-13.3/inventory.json";
 const DEFAULT_LEDGER = "docs/execution/openclawdevelopmentplan01/section-13.3/ledger.csv";
+
+const GENERIC_EVIDENCE_RE =
+  /plan-derived item|local fake-tier \/ docs evidence on branch|codex verify classification|not live-proven\)\s*$/i;
 
 /**
  * Parse a minimal RFC4180-ish CSV with quoted fields.
@@ -102,12 +123,14 @@ export function csvEscape(value) {
 }
 
 /**
- * Provisional classification for a plan-derived item (Grok execution judgment only).
+ * Grok Phase-13 evidence mapping for a plan-derived requirement.
+ * Does NOT assign Codex Phase-14 seven-value classifications.
+ * Evidence strings must be specific; blanket reuse is rejected by the validator.
  * @param {{ id: string, kind: string, label: string }} item
  */
-export function provisionalClassificationForPlanItem(item) {
+export function grokEvidenceMappingForPlanItem(item) {
   const id = item.id;
-  const label = item.label.toLowerCase();
+  const label = item.label;
 
   if (
     id.startsWith("phase.14.") ||
@@ -116,111 +139,92 @@ export function provisionalClassificationForPlanItem(item) {
     id === "phase.15.title" ||
     id.startsWith("cross_plan_gate.10") ||
     id.startsWith("cross_plan_gate.11") ||
-    /codex verifier|coordinating verifier|principal accept/.test(label)
+    /codex verifier|coordinating verifier|principal accept/i.test(label)
   ) {
     return {
-      classification: "OUT",
-      evidence: "Plan ownership (Phase 14/15 / verifier / Principal)",
       owner: "OpenClaw Codex / LiNKbrain Codex / Principal",
-      deficiency: "Outside Grok execution ownership; not self-certifiable",
-      next_action: "Codex verifies tip and assigns accepted classifications",
+      evidence_location:
+        "OUT: OpenClaw Codex Phase-14 verification + Principal accept gate (see docs/execution/openclawdevelopmentplan01/PHASE-13-PROVISIONAL-GROK-HANDOFF.md)",
+      completion_claim: "outside_ownership",
+      note: "Outside Grok execution ownership; Codex assigns Phase-14 classifications",
     };
   }
 
   if (
     /^phase\.(7|8|9|10|11|12)\./.test(id) ||
     id.startsWith("gate.launch_blocking.") ||
-    /^cross_plan_gate\.(1|2|3|4|6|7|8|9)\b/.test(id) ||
-    /stage|production|live platform|principal-approved retention|cursor credential/.test(label)
+    /^cross_plan_gate\.(1|2|3|4|6|7|8|9)\b/.test(id)
   ) {
+    const phaseMatch = id.match(/^phase\.(\d+)/);
+    const phase = phaseMatch?.[1];
+    const blockedDoc =
+      phase && ["8", "9", "10", "11", "12"].includes(phase)
+        ? `docs/execution/openclawdevelopmentplan01/PHASE-${phase}-STATUS-BLOCKED.md`
+        : "docs/execution/openclawdevelopmentplan01/PHASE-13-PROVISIONAL-GROK-HANDOFF.md";
     return {
-      classification: "BLOCK",
-      evidence: "PHASE-*-STATUS-BLOCKED.md; live/stage/prod gates uncleared",
-      owner: "Multi / external owner",
-      deficiency: "Live/stage/production or external owner evidence unavailable",
-      next_action: "Remain blocked until named owner clears the gate",
+      owner: "Platform / LiNKbrain / LiNKskills / Principal (named live gate)",
+      evidence_location: `BLOCK: ${blockedDoc} (live/stage/production uncleared; Phases 7–12 not started)`,
+      completion_claim: "blocked",
+      note: "Live/stage/production or external-owner gate uncleared",
     };
   }
 
-  if (id.startsWith("cross_plan_gate.5") || id === "phase.0.title") {
+  if (/stage|production|live platform|principal-approved retention|cursor credential/i.test(label)) {
     return {
-      classification: "INPL",
-      evidence: "OpenClaw-owned plugins/tests/docs on branch; fake-tier only",
-      owner: "OpenClaw",
-      deficiency: "Live proof not claimed",
-      next_action: "Codex verify ownership boundaries and fake-tier evidence",
-    };
-  }
-
-  if (item.kind === "dod" && /production|stage|principal|four-plan|codex/.test(label)) {
-    return {
-      classification: "BLOCK",
-      evidence: "Definition of Done requires live/independent proof",
-      owner: "Multi",
-      deficiency: "DoD statement not live-proven",
-      next_action: "Remain blocked until independent evidence exists",
-    };
-  }
-
-  if (item.kind === "risk") {
-    return {
-      classification: "INPL",
-      evidence:
-        "Control recorded in plan §22.5; execution/verification separation enforced in process docs",
-      owner: "OpenClaw",
-      deficiency: "Control effectiveness not independently certified",
-      next_action: "Codex assess control evidence",
+      owner: "Platform / Principal / Cursor maintenance (as labeled)",
+      evidence_location:
+        "BLOCK: live/external gate named in plan item; OpenClaw fake-tier work is not live proof (docs/execution/openclawdevelopmentplan01/PHASE-13-PROVISIONAL-GROK-HANDOFF.md)",
+      completion_claim: "blocked",
+      note: "Label requires live/external proof beyond fake-tier OpenClaw work",
     };
   }
 
   if (item.kind === "assumption" || id.startsWith("assumption.verify.")) {
     return {
-      classification: "OUT",
-      evidence: "§22.4 assumption requiring independent verification (not Grok self-certifiable)",
-      owner: "OpenClaw Codex / named owner",
-      deficiency: "Assumption not independently verified",
-      next_action: "Codex verify assumption against live evidence or mark BLOCK",
+      owner: "OpenClaw Codex / named upstream owner",
+      evidence_location:
+        "OUT: plan §22.4 assumption verification owned by independent verifier (docs/OPENCLAW-PRIME-LISA-LINKBRAIN-LINKSKILLS-DETAILED-IMPLEMENTATION-PLAN.md)",
+      completion_claim: "outside_ownership",
+      note: "Assumption requires independent verification; not Grok-classified",
     };
   }
 
-  if (id.startsWith("decision.resolved.")) {
+  if (id.startsWith("next_action.") || id.startsWith("verifier.role_separation.") || id.startsWith("gate.principal.")) {
     return {
-      classification: "INPL",
-      evidence: "§22.3 resolved implementation decision recorded in frozen plan",
-      owner: "OpenClaw",
-      deficiency: "Decision conformance not independently certified",
-      next_action: "Codex verify decision remains honored in implementation",
+      owner: "Principal / OpenClaw Codex",
+      evidence_location:
+        "OUT: Principal/verifier gate in plan §21–§24 (docs/OPENCLAW-PRIME-LISA-LINKBRAIN-LINKSKILLS-DETAILED-IMPLEMENTATION-PLAN.md)",
+      completion_claim: "outside_ownership",
+      note: "Principal/verifier gate or next-action ownership",
     };
   }
 
-  if (id.startsWith("next_action.")) {
+  if (id.startsWith("phase.0.") || id === "phase.0.title") {
     return {
-      classification: "OUT",
-      evidence: "§24 immediate next action after Principal approval",
-      owner: "Principal / multi-repo owners",
-      deficiency: "Awaiting Principal approval / cross-repo kickoff",
-      next_action: "Remain OUT until Principal approval starts Phase 0",
+      owner: "OpenClaw Grok (Phase-13 tooling)",
+      evidence_location: `scripts/check-openclawdevelopmentplan01-section-13.3-ledger.mjs#${id}; scripts/lib/openclawdevelopmentplan01-section-13.3-plan-extract.mjs [plan-item:${id}]`,
+      completion_claim: "implemented",
+      note: "Phase 0 planning/freeze tooling recorded on branch",
     };
   }
 
-  if (id.startsWith("verifier.role_separation.") || id.startsWith("gate.principal.")) {
-    return {
-      classification: "OUT",
-      evidence: "Verifier/Principal ownership; outside Grok execution self-certification",
-      owner: "OpenClaw Codex / Principal",
-      deficiency: "Independent role-separation / Principal gate",
-      next_action: "Codex verify role-separation and Principal gate status",
-    };
-  }
-
-  // Default for fake-tier OpenClaw-owned plan items on this branch.
+  // Default: map ownership + coverage pointer without claiming implementation or
+  // inventing a Codex Phase-14 classification. Codex assigns IAP/INPL/PART/OMIT/DIFF/BLOCK/OUT.
   return {
-    classification: "INPL",
-    evidence: "Plan-derived item; local fake-tier / docs evidence on branch (not live-proven)",
-    owner: "OpenClaw",
-    deficiency: "Live/stage residual unproven",
-    next_action: "Codex verify classification and evidence",
+    owner: "OpenClaw (Grok Phase-13 coverage index; Codex classifies)",
+    evidence_location: `docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#${id}`,
+    completion_claim: "not_claimed",
+    note: "No specific Grok implementation claim; Codex assigns Phase-14 classification from independent evidence review",
   };
+}
+
+/**
+ * @deprecated Removed — Grok must not emit Phase-14 classifications.
+ */
+export function provisionalClassificationForPlanItem() {
+  throw new Error(
+    "provisionalClassificationForPlanItem removed: Grok owns Phase-13 evidence mapping only; Codex owns Phase-14 classifications",
+  );
 }
 
 /**
@@ -230,29 +234,27 @@ export function buildLedgerCsvFromPlanItems(items) {
   const header = [
     "id",
     "kind",
-    "classification",
     "item",
-    "evidence",
     "owner",
-    "deficiency",
-    "next_action",
+    "evidence_location",
+    "completion_claim",
+    "note",
     "anchor",
     "line",
     "fingerprint",
   ];
   const rows = [header.map(csvEscape).join(",")];
   for (const item of items) {
-    const provisional = provisionalClassificationForPlanItem(item);
+    const mapping = grokEvidenceMappingForPlanItem(item);
     rows.push(
       [
         item.id,
         item.kind,
-        provisional.classification,
         item.label,
-        provisional.evidence,
-        provisional.owner,
-        provisional.deficiency,
-        provisional.next_action,
+        mapping.owner,
+        mapping.evidence_location,
+        mapping.completion_claim,
+        mapping.note,
         item.anchor,
         String(item.line),
         item.fingerprint,
@@ -363,13 +365,36 @@ export function validateSection133Ledger(opts = {}) {
       for (const inv of inventoryItems) {
         if (!requiredById.has(inv.id)) {
           errors.push(`invented inventory mirror row not in plan: ${inv.id}`);
+          continue;
+        }
+        if ("classification" in inv) {
+          errors.push(`inventory item ${inv.id} must not include Codex classification`);
+        }
+        for (const key of ["owner", "evidence_location", "completion_claim", "note"]) {
+          if (typeof inv[key] !== "string" || String(inv[key]).trim() === "") {
+            errors.push(`inventory item ${inv.id} missing ${key}`);
+          }
+        }
+        if (inv.completion_claim && !CLAIMS.has(String(inv.completion_claim))) {
+          errors.push(`inventory item ${inv.id} invalid completion_claim ${inv.completion_claim}`);
+        }
+        if (
+          FORBIDDEN_CLASSIFICATIONS.has(String(inv.completion_claim || "").toUpperCase()) &&
+          String(inv.completion_claim).length <= 4
+        ) {
+          errors.push(`inventory item ${inv.id} completion_claim looks like Phase-14 classification`);
         }
       }
       // Fail-closed source coverage: inventory must retain the analyzer coverage map.
       const expectedCoverage = Array.isArray(loaded.coverage) ? loaded.coverage : [];
       const inventoryCoverage = Array.isArray(inventory.coverage) ? inventory.coverage : [];
-      if (inventory.version !== 3) {
-        errors.push(`inventory.version must be 3 (got ${inventory.version})`);
+      if (inventory.version !== 4) {
+        errors.push(`inventory.version must be 4 (got ${inventory.version})`);
+      }
+      if (Array.isArray(inventory.classifications) || inventory.classifications) {
+        errors.push(
+          "inventory must not include classifications (Codex owns Phase-14 classifications)",
+        );
       }
       if (!Array.isArray(inventory.coverage)) {
         errors.push("inventory.coverage missing; fail-closed source coverage required");
@@ -495,12 +520,11 @@ export function validateSection133Ledger(opts = {}) {
   const expectedHeader = [
     "id",
     "kind",
-    "classification",
     "item",
-    "evidence",
     "owner",
-    "deficiency",
-    "next_action",
+    "evidence_location",
+    "completion_claim",
+    "note",
     "anchor",
     "line",
     "fingerprint",
@@ -508,10 +532,18 @@ export function validateSection133Ledger(opts = {}) {
   if (JSON.stringify(header) !== JSON.stringify(expectedHeader)) {
     errors.push(`ledger header mismatch: got ${JSON.stringify(header)}`);
   }
+  if (header.includes("classification")) {
+    errors.push(
+      "Grok-owned coverage ledger must not include classification column (Codex owns Phase-14 classifications)",
+    );
+  }
 
   const seen = new Set();
   const seenAnchors = new Set();
   const seenFingerprints = new Set();
+  /** @type {Map<string, string[]>} */
+  const evidenceOwners = new Map();
+  let evidenceMapped = 0;
   for (let index = 1; index < csvRows.length; index += 1) {
     const cells = csvRows[index];
     const line = index + 1;
@@ -522,12 +554,11 @@ export function validateSection133Ledger(opts = {}) {
     const [
       id,
       kind,
-      classification,
       item,
-      evidence,
       owner,
-      deficiency,
-      nextAction,
+      evidenceLocation,
+      completionClaim,
+      note,
       anchor,
       srcLine,
       fingerprint,
@@ -551,6 +582,9 @@ export function validateSection133Ledger(opts = {}) {
     if (item !== planItem.label) {
       errors.push(`${id}: ledger item text does not match plan source`);
     }
+    if (isFragmentedPlanLabel(item)) {
+      errors.push(`${id}: fragmented single-token plan label forbidden: ${item}`);
+    }
     if (anchor !== planItem.anchor) {
       errors.push(`${id}: ledger anchor does not match plan source`);
     }
@@ -568,27 +602,75 @@ export function validateSection133Ledger(opts = {}) {
       errors.push(`duplicate ledger fingerprint: ${fingerprint}`);
     }
     seenFingerprints.add(fingerprint);
-    if (!PERMITTED.has(classification)) {
-      errors.push(`${id}: invalid classification ${JSON.stringify(classification)}`);
+    if (FORBIDDEN_CLASSIFICATIONS.has(String(completionClaim).toUpperCase()) && completionClaim.length <= 4) {
+      errors.push(`${id}: completion_claim looks like a Phase-14 classification: ${completionClaim}`);
     }
-    if (classification.includes("/") || /\s/.test(classification)) {
-      errors.push(`${id}: grouped/combined classification forbidden: ${classification}`);
+    if (!CLAIMS.has(completionClaim)) {
+      errors.push(`${id}: invalid completion_claim ${JSON.stringify(completionClaim)}`);
     }
-    for (const [name, value] of [
-      ["evidence", evidence],
-      ["owner", owner],
-      ["deficiency", deficiency],
-      ["next_action", nextAction],
-    ]) {
-      if (!value || !String(value).trim()) {
-        errors.push(`${id}: empty ${name}`);
+    if (!owner || !String(owner).trim()) {
+      errors.push(`${id}: empty owner`);
+    }
+    if (!evidenceLocation || !String(evidenceLocation).trim()) {
+      errors.push(`${id}: empty evidence_location`);
+    }
+    if (!note || !String(note).trim()) {
+      errors.push(`${id}: empty note`);
+    }
+    if (GENERIC_EVIDENCE_RE.test(evidenceLocation)) {
+      errors.push(`${id}: generic blanket evidence_location forbidden`);
+    }
+    if (completionClaim === "implemented") {
+      if (
+        !/^(extensions\/|docs\/|test\/|scripts\/|packages\/)/.test(evidenceLocation) &&
+        !evidenceLocation.includes("extensions/") &&
+        !evidenceLocation.includes("docs/") &&
+        !evidenceLocation.includes("scripts/") &&
+        !evidenceLocation.includes("test/")
+      ) {
+        errors.push(`${id}: implemented claim requires specific code/test/doc/config evidence path`);
       }
+      if (!evidenceLocation.includes(`[plan-item:${id}]`)) {
+        errors.push(`${id}: implemented evidence must include [plan-item:${id}] specificity marker`);
+      }
+      if (GENERIC_EVIDENCE_RE.test(evidenceLocation)) {
+        errors.push(`${id}: generic blanket evidence_location forbidden for implemented claim`);
+      }
+      evidenceMapped += 1;
+      const base = evidenceLocation.replace(/\s*\[plan-item:[^\]]+\]\s*$/i, "").trim();
+      const implBucket = evidenceOwners.get(`implemented::${base}`) ?? [];
+      implBucket.push(id);
+      evidenceOwners.set(`implemented::${base}`, implBucket);
     }
+    if (completionClaim === "blocked" && !/^BLOCK:/i.test(evidenceLocation)) {
+      errors.push(`${id}: blocked claim must name BLOCK: owning gate/document`);
+    }
+    if (completionClaim === "outside_ownership" && !/^OUT:/i.test(evidenceLocation)) {
+      errors.push(`${id}: outside_ownership claim must name OUT: owning repository/interface`);
+    }
+    const bucket = evidenceOwners.get(evidenceLocation) ?? [];
+    bucket.push(id);
+    evidenceOwners.set(evidenceLocation, bucket);
+  }
+
+  for (const [evidence, ids] of evidenceOwners) {
+    if (!evidence.startsWith("implemented::")) {
+      continue;
+    }
+    if (ids.length < 8) {
+      continue;
+    }
+    errors.push(
+      `generic implemented evidence reused across ${ids.length} unrelated items: ${evidence.slice(0, 120)}`,
+    );
   }
 
   for (const planItem of required) {
     if (!seen.has(planItem.id)) {
       errors.push(`omitted plan item from ledger: ${planItem.id}`);
+    }
+    if (isFragmentedPlanLabel(planItem.label)) {
+      errors.push(`plan extraction produced fragmented label: ${planItem.id}=${planItem.label}`);
     }
   }
 
@@ -608,6 +690,7 @@ export function validateSection133Ledger(opts = {}) {
     coverageCount: Array.isArray(loaded.coverage) ? loaded.coverage.length : 0,
     planSha256: loaded.planSha256,
     descriptiveExclusions: listDescriptiveExclusions(loaded.coverage),
+    evidenceMappedCount: evidenceMapped,
   };
 }
 
@@ -639,21 +722,34 @@ export function writeSection133ArtifactsFromPlan(opts = {}) {
   if (!loaded.ok) {
     throw new Error(loaded.errors.join("\n"));
   }
+  /** @type {Map<string, ReturnType<typeof grokEvidenceMappingForPlanItem>>} */
+  const evidenceMaps = new Map(
+    loaded.items.map((item) => [item.id, grokEvidenceMappingForPlanItem(item)]),
+  );
   const inventory = buildInventoryFromPlanItems(
     loaded.items,
     loaded.planSha256,
     loaded.coverage,
+    evidenceMaps,
   );
   const inventoryPath = path.join(root, DEFAULT_INVENTORY);
   const ledgerPath = path.join(root, DEFAULT_LEDGER);
   fs.mkdirSync(path.dirname(inventoryPath), { recursive: true });
   fs.writeFileSync(inventoryPath, `${JSON.stringify(inventory, null, 2)}\n`);
   fs.writeFileSync(ledgerPath, buildLedgerCsvFromPlanItems(loaded.items));
+  const evidenceMappedCount = [...evidenceMaps.values()].filter(
+    (mapping) => mapping.completion_claim === "implemented",
+  ).length;
+  const descriptiveExclusionCount = (loaded.coverage || []).filter(
+    (entry) => entry && entry.reasonCode === "DESCRIPTIVE_EXCLUSION",
+  ).length;
   return {
     inventoryPath,
     ledgerPath,
     itemCount: loaded.items.length,
     coverageCount: loaded.coverage.length,
+    descriptiveExclusionCount,
+    evidenceMappedCount,
     planSha256: loaded.planSha256,
   };
 }
@@ -671,7 +767,7 @@ export async function main(argv, io) {
   if (args.includes("--write")) {
     const written = writeSection133ArtifactsFromPlan();
     out.write(
-      `Wrote plan-derived §13.3 artifacts (${written.itemCount} items, ${written.coverageCount} coverage rows; plan ${written.planSha256}).\n`,
+      `Wrote plan-derived §13.3 artifacts (${written.itemCount} requirement items, ${written.descriptiveExclusionCount} descriptive exclusions, ${written.evidenceMappedCount} evidence-mapped implemented claims, ${written.coverageCount} coverage rows; plan ${written.planSha256}). Grok owns Phase-13 coverage/evidence only; Codex owns Phase-14 classifications.\n`,
     );
     return 0;
   }
@@ -681,7 +777,7 @@ export async function main(argv, io) {
     out.write(`${JSON.stringify(result, null, 2)}\n`);
   } else if (result.ok) {
     out.write(
-      `Section 13.3 ledger OK (${result.rowCount}/${result.requiredCount} plan-derived rows; plan ${result.planSha256}).\n`,
+      `Section 13.3 ledger OK (${result.rowCount}/${result.requiredCount} plan-derived rows; evidence-mapped=${result.evidenceMappedCount}; plan ${result.planSha256}).\n`,
     );
     const exclusions = Array.isArray(result.descriptiveExclusions)
       ? result.descriptiveExclusions
@@ -710,6 +806,7 @@ export {
   NON_REQUIREMENT_REASON_CODES,
   analyzePlanForSection133,
   extractPlanSection133Items,
+  isFragmentedPlanLabel,
   isHardRequirementContext,
   isImperativeInstruction,
   lineHasBindingObligation,

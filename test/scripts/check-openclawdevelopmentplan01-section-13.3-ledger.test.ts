@@ -7,6 +7,8 @@ import {
   analyzePlanForSection133,
   buildLedgerCsvFromPlanItems,
   extractPlanSection133Items,
+  grokEvidenceMappingForPlanItem,
+  isFragmentedPlanLabel,
   loadFrozenPlanItems,
   parseCsv,
   sha256Hex,
@@ -236,7 +238,15 @@ function writeArtifacts(
   fs.writeFileSync(path.join(tmp, planRel), planText);
   const analyzed = analyzePlanForSection133(planText);
   const planSha = sha256Hex(planText);
-  const inventory = buildInventoryFromPlanItems(analyzed.items, planSha, analyzed.coverage);
+  const evidenceMaps = new Map(
+    analyzed.items.map((item) => [item.id, grokEvidenceMappingForPlanItem(item)]),
+  );
+  const inventory = buildInventoryFromPlanItems(
+    analyzed.items,
+    planSha,
+    analyzed.coverage,
+    evidenceMaps,
+  );
   let rows = parseCsv(buildLedgerCsvFromPlanItems(analyzed.items));
   if (mutate) {
     mutate(inventory, rows);
@@ -279,14 +289,15 @@ describe("section 13.3 plan-authority ledger validator", () => {
     expect(analyzed.errors).toEqual([]);
     const byId = new Map(analyzed.items.map((item) => [item.id, item]));
     expect(byId.has("phase.9.hard_prerequisite.1")).toBe(true);
-    expect(byId.has("phase.9.hard_prerequisite.2")).toBe(true);
-    expect(byId.get("phase.9.hard_prerequisite.2")?.label).toMatch(/Lisa may not/);
+    expect(byId.has("phase.9.hard_prerequisite.2")).toBe(false);
+    expect(byId.get("phase.9.hard_prerequisite.1")?.label).toMatch(/Lisa may not/);
     expect(byId.has("phase.8.window_rule")).toBe(true);
     expect(byId.has("phase.9.window_rule")).toBe(true);
     expect(byId.has("phase.11.sequence.1")).toBe(true);
-    expect(byId.has("phase.11.sequence.8")).toBe(true);
-    expect(byId.get("phase.11.sequence.8")?.label).toMatch(/whichever is longer/);
+    expect(byId.has("phase.11.sequence.8")).toBe(false);
+    expect(byId.get("phase.11.sequence.1")?.label).toMatch(/whichever is longer/);
     expect(byId.has("phase.12.sequence.1")).toBe(true);
+    expect(byId.has("phase.12.sequence.8")).toBe(false);
     expect(analyzed.items.some((item) => item.id.startsWith("phase.11.prerequisite."))).toBe(true);
     expect(analyzed.items.some((item) => item.id.startsWith("phase.12.prerequisite."))).toBe(true);
     expect(analyzed.items.some((item) => item.id.startsWith("evidence.grok_handoff."))).toBe(true);
@@ -377,23 +388,24 @@ describe("section 13.3 plan-authority ledger validator", () => {
     expect(analyzed.coverage.every((entry) => typeof entry.fingerprint === "string")).toBe(true);
   });
 
-  it("splits multi-obligation sequences atomically without comma-splitting semicolon lists", () => {
+  it("keeps multi-clause sequences as one item and never comma-splits noun fragments", () => {
     const parts = splitAtomicObligations(
       "deploy A; enable B; complete at least three active operating days plus adequate real activity, whichever is longer.",
     );
     expect(parts).toEqual([
-      "deploy A",
-      "enable B",
-      "complete at least three active operating days plus adequate real activity, whichever is longer",
+      "deploy A; enable B; complete at least three active operating days plus adequate real activity, whichever is longer",
     ]);
     expect(
       splitAtomicObligations(
         "Skills Cursor and Codex readiness gates are complete and recorded. Lisa may not be used to substitute for those proofs.",
       ),
     ).toEqual([
-      "Skills Cursor and Codex readiness gates are complete and recorded",
-      "Lisa may not be used to substitute for those proofs",
+      "Skills Cursor and Codex readiness gates are complete and recorded. Lisa may not be used to substitute for those proofs",
     ]);
+    expect(isFragmentedPlanLabel("credentials")).toBe(true);
+    expect(isFragmentedPlanLabel("cron")).toBe(true);
+    expect(isFragmentedPlanLabel("migration")).toBe(true);
+    expect(isFragmentedPlanLabel("remain default-disabled")).toBe(false);
   });
 
   it("extracts distinct kinds with stable anchors and fingerprints", () => {
@@ -457,19 +469,18 @@ describe("section 13.3 plan-authority ledger validator", () => {
         const invented = [
           "invented.ledger.task",
           "task",
-          "INPL",
           "invented",
-          "e",
-          "o",
-          "d",
-          "n",
+          "owner",
+          "docs/fake.md",
+          "IAP",
+          "note",
           "invented.ledger.task",
           "1",
           planItemFingerprint("invented.ledger.task", "invented"),
         ];
         const grouped = data.find((row) => row[0] === "phase.7.title");
         if (grouped) {
-          grouped[2] = "INPL/BLOCK";
+          grouped[5] = "INPL/BLOCK";
         }
         rows.length = 0;
         rows.push(header, ...data, duplicate, invented);
@@ -482,9 +493,30 @@ describe("section 13.3 plan-authority ledger validator", () => {
       const joined = result.errors.join("\n");
       expect(joined).toMatch(/omitted plan item|inventory omitted plan item/);
       expect(joined).toMatch(/invented/);
-      expect(joined).toMatch(/grouped\/combined classification|grouped classification/);
+      expect(joined).toMatch(/invalid completion_claim|Phase-14 classification|INPL\/BLOCK/);
       expect(joined).toMatch(/duplicate ledger id/);
       expect(joined).toMatch(/label drift|does not match plan source/);
+    } finally {
+      fs.rmSync(tmp, { recursive: true, force: true });
+    }
+  });
+
+  it("rejects Codex classifications in Grok-owned coverage artifacts", () => {
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "section133-class-"));
+    try {
+      const { planSha } = writeArtifacts(tmp, MINI_PLAN, (inventory, rows) => {
+        (inventory as { classifications?: unknown }).classifications = [{ id: "x", classification: "INPL" }];
+        const header = [...rows[0]];
+        header[5] = "classification";
+        rows[0] = header;
+        if (rows[1]) {
+          rows[1][5] = "INPL";
+        }
+      });
+      const result = validateSection133Ledger({ root: tmp, expectedSha256: planSha });
+      expect(result.ok).toBe(false);
+      const joined = result.errors.join("\n");
+      expect(joined).toMatch(/must not include classifications|classification column|Phase-14 classification/);
     } finally {
       fs.rmSync(tmp, { recursive: true, force: true });
     }
@@ -599,12 +631,13 @@ describe("section 13.3 plan-authority ledger validator", () => {
         .filter((entry) => entry.disposition === "non_requirement")
         .every((entry) => typeof entry.reasonCode === "string"),
     ).toBe(true);
-    expect(loaded.items.filter((item) => item.id.startsWith("phase.11.sequence.")).length).toBe(8);
-    expect(loaded.items.filter((item) => item.id.startsWith("phase.12.sequence.")).length).toBe(8);
+    expect(loaded.items.filter((item) => item.id.startsWith("phase.11.sequence.")).length).toBe(1);
+    expect(loaded.items.filter((item) => item.id.startsWith("phase.12.sequence.")).length).toBe(1);
     expect(loaded.items.filter((item) => item.id.startsWith("phase.9.hard_prerequisite.")).length).toBe(
-      2,
+      1,
     );
-    expect(loaded.items.length).toBeGreaterThan(968);
+    expect(loaded.items.length).toBeGreaterThan(697);
+    expect(loaded.items.every((item) => !isFragmentedPlanLabel(item.label))).toBe(true);
     const bySection = (prefix: string) =>
       loaded.items.filter((item) => item.id.includes(prefix) || item.id.startsWith(prefix));
     expect(bySection("10_2_skills_lifecycle_collection").length).toBeGreaterThanOrEqual(6);
@@ -673,8 +706,17 @@ Observations:
     );
   });
 
-  it("binding bullets inside contextual sections become requirements", () => {
-    const analyzed = analyzePlanForSection133(`# Mini
+  it("binding bullets become requirements; registered observational bullets stay descriptive exclusions", () => {
+    const observational = "sanitized observation without binding words;";
+    const exclusion = buildDescriptiveExclusion({
+      id: "test-observational-bullet",
+      line: 9,
+      type: "list_item",
+      text: observational,
+      reason: "reviewed contextual observation for focused test",
+    });
+    const analyzed = analyzePlanForSection133(
+      `# Mini
 
 ## 3. Reconciliation Finding
 
@@ -682,8 +724,10 @@ Findings:
 
 - Platform environment readiness is a gate for live stage proof;
 - Skills may not begin the Lisa canary until the Cursor and Codex Skills readiness gates pass;
-- sanitized observation without binding words;
-`);
+- ${observational}
+`,
+      { descriptiveExclusions: [exclusion] },
+    );
     expect(analyzed.items.some((item) => /is a gate for live stage proof/.test(item.label))).toBe(
       true,
     );
@@ -692,12 +736,20 @@ Findings:
     );
     expect(
       analyzed.items.some((item) => /sanitized observation without binding words/.test(item.label)),
+    ).toBe(false);
+    expect(
+      analyzed.coverage.some(
+        (entry) =>
+          entry.type === "list_item" &&
+          entry.reasonCode === "DESCRIPTIVE_EXCLUSION" &&
+          entry.exclusionId === "test-observational-bullet",
+      ),
     ).toBe(true);
     expect(
       analyzed.coverage.filter(
         (entry) => entry.type === "list_item" && entry.disposition === "requirement",
       ).length,
-    ).toBe(3);
+    ).toBe(2);
   });
 
   it("modifying an exact allowlisted line invalidates its exclusion", () => {
@@ -748,7 +800,7 @@ Observations:
     expect(modified.items.some((item) => /changed/.test(item.label))).toBe(true);
   });
 
-  it("does not blanket-allowlist entire sections", () => {
+  it("does not blanket-allowlist entire sections; unregistered observational bullets remain requirements", () => {
     expect(Object.keys(DESCRIPTIVE_ALLOWLIST_RULES).length).toBe(0);
     expect(classifySectionPolicy("## 3. Reconciliation Finding")).toEqual({
       policy: "implementation",
@@ -771,6 +823,21 @@ Observations:
         (entry) => entry.type === "list_item" && entry.disposition === "requirement",
       ),
     ).toBe(true);
+  });
+
+  it("Grok evidence mapping never emits Codex seven-classifications", () => {
+    const items = extractPlanSection133Items(MINI_PLAN);
+    for (const item of items) {
+      const mapping = grokEvidenceMappingForPlanItem(item);
+      expect(["implemented", "blocked", "outside_ownership", "not_claimed"]).toContain(
+        mapping.completion_claim,
+      );
+      expect(["IAP", "INPL", "PART", "OMIT", "DIFF", "BLOCK", "OUT"]).not.toContain(
+        mapping.completion_claim,
+      );
+      expect(mapping.owner.trim().length).toBeGreaterThan(0);
+      expect(mapping.evidence_location.trim().length).toBeGreaterThan(0);
+    }
   });
 
   it("rejects NARRATIVE_CONTEXT list coverage outside exact descriptive exclusions", () => {

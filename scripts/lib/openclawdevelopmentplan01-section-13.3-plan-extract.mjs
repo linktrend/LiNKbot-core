@@ -89,8 +89,11 @@ export function sha256Hex(content) {
 
 /**
  * Split a list without breaking parentheses.
+ * Retained for diagnostics only — plan extraction must NOT use comma/semicolon
+ * punctuation splitting (see splitAtomicObligations).
  * @param {string} value
  * @param {ReadonlySet<string>} separators
+ * @deprecated Do not use for plan extraction; punctuation heuristics are forbidden.
  */
 export function splitPlanList(value, separators = new Set([",", ";"])) {
   const out = [];
@@ -120,8 +123,9 @@ export function splitPlanList(value, separators = new Set([",", ";"])) {
 }
 
 /**
- * Split inline sequence/task prose on `;` (preferred), clear comma lists, or
- * multi-sentence obligation clauses. Semicolon sequences keep internal commas.
+ * Split only on explicit enumerated sub-items already present as separate source
+ * constructs. Never split on commas, semicolons, or sentence punctuation.
+ * One Markdown bullet / numbered step / paragraph / table row = one item.
  * @param {string} value
  */
 export function splitAtomicObligations(value) {
@@ -129,23 +133,23 @@ export function splitAtomicObligations(value) {
   if (!text) {
     return [];
   }
-  // Prefer semicolon splits for sequences ("deploy X; enable Y; monitor Z").
-  if (text.includes(";")) {
-    return splitPlanList(text, new Set([";"]));
+  return [text.replace(/[.;]$/, "").trim()].filter(Boolean);
+}
+
+/**
+ * True when a label looks like a comma-split noun fragment (forbidden).
+ * @param {string} label
+ */
+export function isFragmentedPlanLabel(label) {
+  const text = String(label).replace(/\s+/g, " ").trim();
+  if (!text) {
+    return true;
   }
-  // Comma lists that are clearly enumerated obligations.
-  if ((text.match(/,/g) || []).length >= 2 && !/\band\b/.test(text.split(",")[0] ?? "")) {
-    return splitPlanList(text, new Set([","]));
+  // Single token / tiny noun fragments such as "credentials", "cron", "migration".
+  if (/^[A-Za-z][A-Za-z0-9_-]*$/.test(text) && text.length < 24) {
+    return true;
   }
-  // Multi-sentence obligation prose ("Gates are complete. Lisa may not substitute.").
-  const sentences = text
-    .split(/(?<=[a-z0-9)"'])\.\s+(?=[A-Z])/)
-    .map((part) => part.replace(/[.;]$/, "").trim())
-    .filter(Boolean);
-  if (sentences.length > 1) {
-    return sentences;
-  }
-  return [text.replace(/[.;]$/, "")];
+  return false;
 }
 
 /**
@@ -200,7 +204,185 @@ export const NON_REQUIREMENT_REASON_CODES = Object.freeze([
  *   fingerprint: string,
  * }} DescriptiveExclusion
  */
-export const DESCRIPTIVE_EXCLUSIONS = Object.freeze(/** @type {DescriptiveExclusion[]} */ ([]));
+export const DESCRIPTIVE_EXCLUSIONS /* frozen-plan reviewed */ = Object.freeze([
+  Object.freeze({
+    "id": "source-hierarchy-L48",
+    "line": 48,
+    "type": "table_row",
+    "text": "| 1        | Principal decisions recorded in the OpenClaw planning session and handoffs                 | 2026-07-27                                                                 | Intent, privacy, ownership, rollout, and approval authority                                                  |",
+    "reason": "Section 2 frozen-input source hierarchy metadata row",
+    "fingerprint": "1096fab8174b0bf717c1bb2286a7cbc413fac15846f34348b005338174fb60c4"
+  }),
+  Object.freeze({
+    "id": "source-hierarchy-L49",
+    "line": 49,
+    "type": "table_row",
+    "text": "| 2        | LiNKplatform shared-foundation detailed implementation plan                                | SHA-256 `fbcf36235c4caaa6abf7ee93afedeedf105a96f6614a3a3ff5ccb8d78e33c6b9` | Actor identity, claims, credentials, environments, infrastructure, migrations, audit, generic Librarian host |",
+    "reason": "Section 2 frozen-input source hierarchy metadata row",
+    "fingerprint": "dcf86baa9e1113e2cf6d0c9bc809b86bae8684aaed296fe8beafe81ae9c3578a"
+  }),
+  Object.freeze({
+    "id": "source-hierarchy-L50",
+    "line": 50,
+    "type": "table_row",
+    "text": "| 3        | LiNKbrain Phase 1 detailed implementation plan                                             | SHA-256 `051caa80191639c06b2dee6fa4800e736ada30772a55ad84e12e5fa6a4e63458` | Brain Gateway, tools, capture, coordination, curation, failure, retention, and rollout contracts             |",
+    "reason": "Section 2 frozen-input source hierarchy metadata row",
+    "fingerprint": "441bbd9375f7f68c2c2ded2a8cb1cde7180f01ca886a18dde003f7270efbcfa8"
+  }),
+  Object.freeze({
+    "id": "source-hierarchy-L51",
+    "line": 51,
+    "type": "table_row",
+    "text": "| 4        | LiNKskills internal-launch detailed development plan                                       | SHA-256 `31a6cc70bb778ce1dff236819e4bf600b0495dbb06c95bac55bcb2b0b2f5fe88` | Skills Gateway, immutable bundles, profiles, validation, telemetry, evidence, and rollout contracts          |",
+    "reason": "Section 2 frozen-input source hierarchy metadata row",
+    "fingerprint": "b01ddd245042eb74a7fa43629640dbe979daaf49d1c2c9243a1aecd5a5cbf65f"
+  }),
+  Object.freeze({
+    "id": "source-hierarchy-L52",
+    "line": 52,
+    "type": "table_row",
+    "text": "| 5        | Current OpenClaw source, tests, public plugin SDK, managed MCP, and operator documentation | OpenClaw `2026.7.2`, planning HEAD `ec90aa8cd119`                          | Available implementation seams and current Lisa integration behavior                                         |",
+    "reason": "Section 2 frozen-input source hierarchy metadata row",
+    "fingerprint": "c800d955fcdfb8dd3e40fcc77eaa9bf8439f18ff39a531afc86e292615b3ea5d"
+  }),
+  Object.freeze({
+    "id": "source-hierarchy-L53",
+    "line": 53,
+    "type": "table_row",
+    "text": "| 6        | This plan                                                                                  | 2026-07-27                                                                 | OpenClaw-specific sequencing, file ownership, tests, rollout, operations, and acceptance                     |",
+    "reason": "Section 2 frozen-input source hierarchy metadata row",
+    "fingerprint": "5c362139cd3adad26ef642cf41e620f4443662aadf1c41853bd8392aacebcfcf"
+  }),
+  Object.freeze({
+    "id": "baseline-5.1-L109",
+    "line": 109,
+    "type": "list_item",
+    "text": "managed MCP servers with independent enablement, transport, authentication, timeout, health, tool filter, and hot-apply behavior;",
+    "reason": "Section 5.1 sanitized OpenClaw capability inventory observation",
+    "fingerprint": "34825cb4a1da346da07a5920ee0e5d7a6fec15a9e43173c1dba730347ece4416"
+  }),
+  Object.freeze({
+    "id": "baseline-5.1-L110",
+    "line": 110,
+    "type": "list_item",
+    "text": "plugin manifests, per-plugin config, startup diagnostics, and explicit trust controls;",
+    "reason": "Section 5.1 sanitized OpenClaw capability inventory observation",
+    "fingerprint": "e8f144eb03c0c47de56f34dc677ebdd0a88ba415dd9d80f5303a23382b7180db"
+  }),
+  Object.freeze({
+    "id": "baseline-5.1-L111",
+    "line": 111,
+    "type": "list_item",
+    "text": "`hooks.allowConversationAccess` for conversation-bearing hooks;",
+    "reason": "Section 5.1 sanitized OpenClaw capability inventory observation",
+    "fingerprint": "f932006e080fe73ff525b648faa64f5c13d54db155e45ff5ecd8e1f45eec915d"
+  }),
+  Object.freeze({
+    "id": "baseline-5.1-L112",
+    "line": 112,
+    "type": "list_item",
+    "text": "public plugin runtime helpers, including SQLite-backed keyed plugin state;",
+    "reason": "Section 5.1 sanitized OpenClaw capability inventory observation",
+    "fingerprint": "bf6cd790322515c0525b5db9935cab00a084ddaddaca60fe87ac0ff4f802f7c9"
+  }),
+  Object.freeze({
+    "id": "baseline-5.1-L113",
+    "line": 113,
+    "type": "list_item",
+    "text": "owner-only OAuth token storage in the shared state database;",
+    "reason": "Section 5.1 sanitized OpenClaw capability inventory observation",
+    "fingerprint": "2818a84067121670ae0e86588b549b38c81020e8c3bfc6900cacf2202ac7b9a8"
+  }),
+  Object.freeze({
+    "id": "baseline-5.1-L114",
+    "line": 114,
+    "type": "list_item",
+    "text": "`SecretRef`-compatible plugin configuration contracts;",
+    "reason": "Section 5.1 sanitized OpenClaw capability inventory observation",
+    "fingerprint": "5714f98efa8879106309523b88f8ae9495cd35216694e7de39e601bc0300e88f"
+  }),
+  Object.freeze({
+    "id": "baseline-5.1-L115",
+    "line": 115,
+    "type": "list_item",
+    "text": "namespaced plugin tools, services, commands, hooks, and diagnostics;",
+    "reason": "Section 5.1 sanitized OpenClaw capability inventory observation",
+    "fingerprint": "4d673e71d69a80614610ec78aac393a6937c67b4a922295d671d1814e113cf9b"
+  }),
+  Object.freeze({
+    "id": "baseline-5.1-L116",
+    "line": 116,
+    "type": "list_item",
+    "text": "typed session, agent, message, compaction, reset, subagent, tool, cron, and gateway lifecycle events.",
+    "reason": "Section 5.1 sanitized OpenClaw capability inventory observation",
+    "fingerprint": "039f3ab2f4497f559cd0d62763793e304c25535402e3a46d062fed4fcf8cfef7"
+  }),
+  Object.freeze({
+    "id": "baseline-5.2-L124",
+    "line": 124,
+    "type": "list_item",
+    "text": "the `lisa` profile validates and its Gateway is reachable;",
+    "reason": "Section 5.2 sanitized Lisa baseline observation",
+    "fingerprint": "53de36f0496e3234f6ce5b03eff452d7a4974f8885c43ada09e49911349c1086"
+  }),
+  Object.freeze({
+    "id": "baseline-5.2-L125",
+    "line": 125,
+    "type": "list_item",
+    "text": "configured local agent identities include `main`, `lisa-cron`, `cursor`, and `local-coder`;",
+    "reason": "Section 5.2 sanitized Lisa baseline observation",
+    "fingerprint": "bad461c67c465f10099c8dacdfdc8d7532d09225d544bbc8bef5b293030d9e58"
+  }),
+  Object.freeze({
+    "id": "baseline-5.2-L126",
+    "line": 126,
+    "type": "list_item",
+    "text": "native memory uses the current local OpenClaw path and remains in place;",
+    "reason": "Section 5.2 sanitized Lisa baseline observation",
+    "fingerprint": "90eab9c163c9fdad156a20a75331f77143eb75a87d67c1954ffb7f9312b27632"
+  }),
+  Object.freeze({
+    "id": "baseline-5.2-L127",
+    "line": 127,
+    "type": "list_item",
+    "text": "native heartbeat is disabled and remains unchanged;",
+    "reason": "Section 5.2 sanitized Lisa baseline observation",
+    "fingerprint": "112ffac0a0a1f47b5e71c2fcba2b1206ca3f5bb91d885f18760e3fc60df335ec"
+  }),
+  Object.freeze({
+    "id": "baseline-5.2-L128",
+    "line": 128,
+    "type": "list_item",
+    "text": "Telegram, Google Chat, cron, sessions, and native skill inventory are present and remain in place;",
+    "reason": "Section 5.2 sanitized Lisa baseline observation",
+    "fingerprint": "740a0f7cd0a47e8364667d14451426e8ea3247dcc6f4a345545aabd9f91fcf3f"
+  }),
+  Object.freeze({
+    "id": "baseline-5.2-L129",
+    "line": 129,
+    "type": "list_item",
+    "text": "there are no managed MCP servers configured for Lisa;",
+    "reason": "Section 5.2 sanitized Lisa baseline observation",
+    "fingerprint": "113045fbd9652c618e64c3205500db442741aa9bdd6f71f18824329ffef516c3"
+  }),
+  Object.freeze({
+    "id": "baseline-5.2-L130",
+    "line": 130,
+    "type": "list_item",
+    "text": "there is no `skills.load.extraDirs` LiNKskills integration;",
+    "reason": "Section 5.2 sanitized Lisa baseline observation",
+    "fingerprint": "9ce344035c0f5024260f143b2686ab4cf0d81a4e51a90fb9f0dacf95461e99aa"
+  }),
+  Object.freeze({
+    "id": "baseline-5.2-L131",
+    "line": 131,
+    "type": "list_item",
+    "text": "there is no verified live LiNKbrain or LiNKskills consumer wiring.",
+    "reason": "Section 5.2 sanitized Lisa baseline observation",
+    "fingerprint": "659b34c29455ab9c3b49aace27f64c5dde776fa1362446353b392d48b45212c8"
+  }),
+]);
+
 
 /** @deprecated section-level rules removed; retained empty for migration detection. */
 export const DESCRIPTIVE_ALLOWLIST_RULES = Object.freeze({});
@@ -581,6 +763,7 @@ export function nonRequirementFailsBindingAudit(entry, sourceText = "") {
 
 /**
  * Tokenize plan markdown into structural constructs (one per non-skipped line).
+ * YAML frontmatter between leading --- fences is marked type "frontmatter".
  * @param {string} planText
  */
 export function tokenizePlanMarkdown(planText) {
@@ -588,9 +771,28 @@ export function tokenizePlanMarkdown(planText) {
   /** @type {Array<Record<string, unknown>>} */
   const constructs = [];
   let inFence = false;
+  let inFrontmatter = false;
+  let seenFrontmatterOpen = false;
   for (let i = 0; i < lines.length; i += 1) {
     const line = lines[i];
     const lineNo = i + 1;
+    if (!inFence && line.trim() === "---") {
+      if (!seenFrontmatterOpen && i === 0) {
+        inFrontmatter = true;
+        seenFrontmatterOpen = true;
+        constructs.push({ type: "frontmatter", line: lineNo, text: line });
+        continue;
+      }
+      if (inFrontmatter) {
+        inFrontmatter = false;
+        constructs.push({ type: "frontmatter", line: lineNo, text: line });
+        continue;
+      }
+    }
+    if (inFrontmatter) {
+      constructs.push({ type: "frontmatter", line: lineNo, text: line });
+      continue;
+    }
     if (line.startsWith("```")) {
       inFence = !inFence;
       constructs.push({
@@ -679,6 +881,12 @@ export function analyzePlanForSection133(planText, options = {}) {
 
   const pushItem = (kind, label, line, anchor) => {
     if (!label || !String(label).trim()) {
+      return null;
+    }
+    if (isFragmentedPlanLabel(label)) {
+      errors.push(
+        `fragmented plan item rejected at line ${line} (${anchor}): ${String(label).slice(0, 80)}`,
+      );
       return null;
     }
     const item = makeItem(label, kind, anchor, line);
@@ -888,6 +1096,16 @@ export function analyzePlanForSection133(planText, options = {}) {
   for (const construct of constructs) {
     const { type, line } = construct;
 
+    if (type === "frontmatter") {
+      cover(
+        construct,
+        "non_requirement",
+        "FRONTMATTER_OR_META",
+        "YAML frontmatter / document metadata",
+      );
+      continue;
+    }
+
     if (type === "blank" || type === "fence_open" || type === "fence_close" || type === "fence_body") {
       cover(
         construct,
@@ -1090,26 +1308,27 @@ export function analyzePlanForSection133(planText, options = {}) {
       }
       if (label === "Tests" && phase != null) {
         const ids = [];
-        for (const [index, part] of splitPlanList(rest).entries()) {
+        // One bold-label rest line = one item; never comma-split.
+        for (const [index, part] of splitAtomicObligations(rest).entries()) {
           const item = pushItem("test", part, line, `phase.${phase}.test.${index + 1}`);
           if (item) {
             ids.push(item.id);
           }
         }
         setListMode(null);
-        cover(construct, "requirement", "Tests list split atomically", ids);
+        cover(construct, "requirement", "Tests label rest is one atomic item", ids);
         continue;
       }
       if (label === "Deliverables" && phase != null) {
         const ids = [];
-        for (const [index, part] of splitPlanList(rest).entries()) {
+        for (const [index, part] of splitAtomicObligations(rest).entries()) {
           const item = pushItem("deliverable", part, line, `phase.${phase}.deliverable.${index + 1}`);
           if (item) {
             ids.push(item.id);
           }
         }
         setListMode(null);
-        cover(construct, "requirement", "Deliverables list split atomically", ids);
+        cover(construct, "requirement", "Deliverables label rest is one atomic item", ids);
         continue;
       }
       if (label === "Exit gate" && phase != null) {
@@ -1125,9 +1344,9 @@ export function analyzePlanForSection133(planText, options = {}) {
         continue;
       }
       if (label === "Evidence minimums" && phase != null) {
-        const listPart = rest.split(/\.\s+(?=[A-Z])/)[0] ?? rest;
+        // One Evidence-minimums rest line = one item; no comma or sentence splitting.
         const ids = [];
-        for (const [index, part] of splitPlanList(listPart).entries()) {
+        for (const [index, part] of splitAtomicObligations(rest).entries()) {
           const item = pushItem(
             "evidence_requirement",
             part,
@@ -1138,21 +1357,8 @@ export function analyzePlanForSection133(planText, options = {}) {
             ids.push(item.id);
           }
         }
-        // Trailing rationale sentence after the list, if present.
-        const rationale = rest.slice(listPart.length).replace(/^\.\s*/, "").trim();
-        if (rationale) {
-          const item = pushItem(
-            "evidence_requirement",
-            rationale,
-            line,
-            `phase.${phase}.evidence_minimum_rationale`,
-          );
-          if (item) {
-            ids.push(item.id);
-          }
-        }
         setListMode(null);
-        cover(construct, "requirement", "Evidence minimums split atomically", ids);
+        cover(construct, "requirement", "Evidence minimums rest is one atomic item", ids);
         continue;
       }
       if (label === "Hard prerequisite" && phase != null) {
@@ -1799,7 +2005,7 @@ export function loadFrozenPlanItems(opts = {}) {
  * @param {string} planSha256
  * @param {unknown[]} [coverage]
  */
-export function buildInventoryFromPlanItems(items, planSha256, coverage = []) {
+export function buildInventoryFromPlanItems(items, planSha256, coverage = [], evidenceMaps = null) {
   const descriptiveExclusions = (Array.isArray(coverage) ? coverage : [])
     .filter((entry) => entry && /** @type {{ reasonCode?: string }} */ (entry).reasonCode === "DESCRIPTIVE_EXCLUSION")
     .map((entry) => {
@@ -1814,22 +2020,31 @@ export function buildInventoryFromPlanItems(items, planSha256, coverage = []) {
         text: row.text,
       };
     });
+  const mapsById = evidenceMaps instanceof Map ? evidenceMaps : null;
   return {
-    version: 3,
+    version: 4,
     authority: "frozen_plan",
     plan_path: FROZEN_PLAN_RELATIVE_PATH,
     plan_sha256: planSha256,
-    classifications: ["IAP", "INPL", "PART", "OMIT", "DIFF", "BLOCK", "OUT"],
+    owner_role: "OpenClaw_Grok_Phase13_coverage_evidence",
+    classification_owner: "OpenClaw_Codex_Phase14",
     kinds: [...PLAN_ITEM_KINDS],
     descriptive_exclusions: descriptiveExclusions,
-    items: items.map((item) => ({
-      id: item.id,
-      kind: item.kind,
-      label: item.label,
-      anchor: item.anchor,
-      line: item.line,
-      fingerprint: item.fingerprint,
-    })),
+    items: items.map((item) => {
+      const mapping = mapsById?.get(item.id) ?? null;
+      return {
+        id: item.id,
+        kind: item.kind,
+        label: item.label,
+        anchor: item.anchor,
+        line: item.line,
+        fingerprint: item.fingerprint,
+        owner: mapping?.owner ?? null,
+        evidence_location: mapping?.evidence_location ?? null,
+        completion_claim: mapping?.completion_claim ?? null,
+        note: mapping?.note ?? null,
+      };
+    }),
     coverage,
   };
 }

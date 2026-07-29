@@ -1,44 +1,39 @@
-# Plan §13.3 classification / evidence index — provisional for Codex Phase 14
-**Recorded:** 2026-07-29 Asia/Taipei (wave 16)
-**Branch tip:** tip after tip-record (`git rev-parse HEAD` after push)
+# Plan §13.3 classification evidence index — Codex-owned (Phase 14)
+
+**Recorded:** 2026-07-29 Asia/Taipei (wave 17 role correction)
 **PR:** [#38](https://github.com/linktrend/openclaw_prime/pull/38) (draft)
-**Authority:** Frozen plan bytes (`docs/OPENCLAW-PRIME-LISA-LINKBRAIN-LINKSKILLS-DETAILED-IMPLEMENTATION-PLAN.md`, SHA-256 `17203ee586a3fb2b1281bcddd8b17ae350075ebce537689f3c4bfcbbd14914f7`). **Not** self-certification. Codex alone accepts classifications.
+**Authority:** Frozen plan bytes (`docs/OPENCLAW-PRIME-LISA-LINKBRAIN-LINKSKILLS-DETAILED-IMPLEMENTATION-PLAN.md`, SHA-256 `17203ee586a3fb2b1281bcddd8b17ae350075ebce537689f3c4bfcbbd14914f7`)
 
-**Ledger rule (wave 16):** every plan-derived atomic item has exactly **one** permitted classification. Combined statuses are forbidden. Inventory is generated from the plan with fail-closed source coverage (`version: 3` + `coverage[]`). Every section is implementation-bearing. Descriptive `non_requirement` rows are permitted only via exact-line `DESCRIPTIVE_EXCLUSION` entries (fingerprint + reason + source anchor). Binding obligation language always overrides an exclusion. Section-level allowlists are forbidden. Hand-maintained mirror rows, `NARRATIVE_CONTEXT` list/table items, and unhandled constructs are rejected.
+> **Ownership split (wave 17):**
+> - **Grok** owns the Phase-13 coverage/evidence inventory only — see `PHASE-13-COVERAGE-EVIDENCE-INDEX.md` and `section-13.3/{inventory.json,ledger.csv}`.
+> - **OpenClaw Codex** owns the seven evidence-driven classifications (`IAP` · `INPL` · `PART` · `OMIT` · `DIFF` · `BLOCK` · `OUT`) and the Phase-14 verification report.
+> Grok tooling **must not** generate or store those seven values. Prior provisional classification columns are retired.
 
-Legend: `IAP` · `INPL` · `PART` · `OMIT` · `DIFF` · `BLOCK` · `OUT`
+## Machine inputs for Codex (no classifications)
 
-## Machine-validated artifacts
+| Artifact | Path | Notes |
+| --- | --- | --- |
+| Coverage/evidence index | `PHASE-13-COVERAGE-EVIDENCE-INDEX.md` | Grok-owned; no seven-classifications |
+| Inventory | `section-13.3/inventory.json` | `version: 4`; `classification_owner=OpenClaw_Codex_Phase14` |
+| Ledger | `section-13.3/ledger.csv` | columns: id, kind, item, owner, evidence_location, completion_claim, note, anchor, line, fingerprint |
+| Wave 17 packet | `WAVE17-CORRECTION-PACKET.md` | extraction + evidence-quality correction |
 
-| Artifact | Path |
-| --- | --- |
-| Frozen plan (authority) | `docs/OPENCLAW-PRIME-LISA-LINKBRAIN-LINKSKILLS-DETAILED-IMPLEMENTATION-PLAN.md` |
-| Plan-derived inventory | `section-13.3/inventory.json` (`authority: frozen_plan`, `version: 3`) |
-| Complete ledger rows | `section-13.3/ledger.csv` |
-| Extractor | `scripts/lib/openclawdevelopmentplan01-section-13.3-plan-extract.mjs` |
-| Validator | `scripts/check-openclawdevelopmentplan01-section-13.3-ledger.mjs` |
-| Validator tests | `test/scripts/check-openclawdevelopmentplan01-section-13.3-ledger.test.ts` |
-
-**Plan SHA-256:** `17203ee586a3fb2b1281bcddd8b17ae350075ebce537689f3c4bfcbbd14914f7`
-**Extracted item count:** **1033**
+**Requirement-item count:** **765**
+**Descriptive exclusions:** **22**
+**Evidence-mapped implemented claims (Grok):** **13**
 **Coverage rows:** **1336**
-**Exact-line descriptive exclusions:** **0**
-**Kinds:** `task` 356 · `evidence_requirement` 314 · `gate` 158 · `test` 80 · `dod` 39 · `deliverable` 24 · `rollback` 21 · `exit_gate` 16 · `cross_plan_gate` 11 · `assumption` 8 · `risk` 6
+
+## Classification status
+
+| Status | Value |
+| --- | --- |
+| Grok-generated classifications | **none** (removed) |
+| Codex-assigned classifications | **pending independent Phase-14 verification** |
+
+Legend (Codex only): `IAP` · `INPL` · `PART` · `OMIT` · `DIFF` · `BLOCK` · `OUT`
 
 ## Explicit non-claims
 
-- No seven-value classification is **accepted** here (rows are provisional Grok judgments for Codex).
-- No merge / self-certify / hosted CI green claim.
-- Fixture-owner countersign is **not** requested until Codex confirms final head + aggregates.
-- Validator proves plan-authority structural completeness + fail-closed coverage only; Codex owns semantic acceptance.
-
-## Sampling (full set is ledger.csv)
-
-| id | kind | classification | item |
-| --- | --- | --- | --- |
-| `list.3_reconciliation_finding.71.3` | `task` | `INPL` | Platform environment readiness is a gate for live stage proof… |
-| `list.3_reconciliation_finding.72.4` | `task` | `INPL` | Platform's domain milestone is not complete until… |
-| `list.3_reconciliation_finding.74.6` | `task` | `INPL` | Skills may not begin the Lisa canary until… |
-| `list.3_reconciliation_finding.80.9` | `task` | `INPL` | Brain production retention durations require Principal approval |
-| `list.10_2_skills_lifecycle_collection.404.1` | `task` | `INPL` | filter by the exact Skills tool namespace… |
-| `list.18_security_and_secret_handling.1084.1` | `gate` | `INPL` | Platform owns issuance… |
+- This file does not certify Phase 14 complete.
+- Grok `completion_claim` values (`implemented` / `blocked` / `outside_ownership` / `not_claimed`) are **not** §13.3 classifications.
+- No merge; no owner countersign request until Codex confirms the final head after classification.

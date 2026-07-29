@@ -58,6 +58,7 @@ export function planItemFingerprint(anchor: string, label: string): string;
 export function sha256Hex(content: string | Buffer): string;
 export function splitPlanList(value: string, separators?: ReadonlySet<string>): string[];
 export function splitAtomicObligations(value: string): string[];
+export function isFragmentedPlanLabel(label: string): boolean;
 export function isRequirementBearingParagraph(line: string): boolean;
 export function isImperativeInstruction(line: string): boolean;
 export function detectRequirementInheritanceOpener(
@@ -117,4 +118,10 @@ export function buildInventoryFromPlanItems(
   items: unknown[],
   planSha256: string,
   coverage?: unknown[],
+  evidenceMaps?: Map<string, {
+    owner: string;
+    evidence_location: string;
+    completion_claim: string;
+    note: string;
+  }> | null,
 ): Record<string, unknown>;

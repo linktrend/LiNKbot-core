@@ -4,14 +4,15 @@
 **Recorded (original):** 2026-07-27 19:17 Asia/Taipei
 **Corrected:** 2026-07-28 07:57 Asia/Taipei
 **Correction wave 2 / 2b:** 2026-07-28 10:15 Asia/Taipei
+**Wave 17 role correction:** 2026-07-29 Asia/Taipei — Grok owns Phase-13 coverage/evidence only; Codex owns seven §13.3 classifications (see `WAVE17-CORRECTION-PACKET.md`, `PHASE-13-COVERAGE-EVIDENCE-INDEX.md`)
 **Author (correction):** Cursor Local / Cloud Grok 4.5 High integrator under OpenClaw plan package
 **Plan:** `docs/OPENCLAW-PRIME-LISA-LINKBRAIN-LINKSKILLS-DETAILED-IMPLEMENTATION-PLAN.md`
-**Plan SHA-256:** `17203ee586a3fb2b1281bcddd8b17ae350075ebce537689f3c4bfcbbd14914f7` (HASH_OK re-verified 2026-07-28)
+**Plan SHA-256:** `17203ee586a3fb2b1281bcddd8b17ae350075ebce537689f3c4bfcbbd14914f7` (HASH_OK re-verified 2026-07-28; re-checked wave 17)
 **Authority:** `docs/CURSOR-GROK-EXECUTION-PROMPT.md` — OpenClaw-owned Phases 0–13 only
 **PR:** [#38](https://github.com/linktrend/openclaw_prime/pull/38) → `development` (draft; do not merge from this handoff)
 **Supersedes:** prior provisional text at the same path (2026-07-27) and short pointer claims of 13 files / 82 tests as the tip proof set
 
-> **Provisional.** This handoff does **not** assign the seven Section 13.3 conformance classifications. It does **not** perform Phase 14 or Phase 15. Independent OpenClaw Codex verification (Phase 14) must inspect actual code, tests, and evidence rather than accepting this summary. **Re-verify against this corrected packet**, not the superseded 2026-07-27 provisional alone. **Phase 1 fixture-owner gate is RE-OPENED** for wave-8 AuthClaims 1.1.0 aggregates (`PENDING_OWNER_COUNTERSIGN`; prior CLOSED tip `429a7818…` superseded). **Phase 1 overall is still NOT complete** (Platform auth-path blocked + pending countersigns).
+> **Provisional.** This handoff does **not** assign the seven Section 13.3 conformance classifications. It does **not** perform Phase 14 or Phase 15. Independent OpenClaw Codex verification (Phase 14) must inspect actual code, tests, and evidence rather than accepting this summary. **Re-verify against wave-17 coverage/evidence artifacts** (`PHASE-13-COVERAGE-EVIDENCE-INDEX.md`, `section-13.3/*`, `WAVE17-CORRECTION-PACKET.md`), not superseded provisional classification columns. **Phase 1 fixture-owner gate is RE-OPENED** for wave-8 AuthClaims 1.1.0 aggregates (`PENDING_OWNER_COUNTERSIGN`; prior CLOSED tip `429a7818…` superseded). **Phase 1 overall is still NOT complete** (Platform auth-path blocked + pending countersigns). **Do not request owner countersigns until Codex confirms the resulting final head.**
 
 ---
 
