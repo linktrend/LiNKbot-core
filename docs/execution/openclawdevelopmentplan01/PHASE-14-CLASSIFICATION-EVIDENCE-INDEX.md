@@ -1,6 +1,6 @@
 # Plan §13.3 classification / evidence index — provisional for Codex Phase 14
 **Recorded:** 2026-07-29 Asia/Taipei (wave 13)
-**Branch tip:** 
+**Branch tip:** tip after tip-record (`git rev-parse HEAD` after push)
 **PR:** [#38](https://github.com/linktrend/openclaw_prime/pull/38) (draft)
 **Authority:** Frozen plan bytes (`docs/OPENCLAW-PRIME-LISA-LINKBRAIN-LINKSKILLS-DETAILED-IMPLEMENTATION-PLAN.md`, SHA-256 `17203ee586a3fb2b1281bcddd8b17ae350075ebce537689f3c4bfcbbd14914f7`). **Not** self-certification. Codex alone accepts classifications.
 
