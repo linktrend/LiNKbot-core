@@ -1,3 +1,4 @@
+import { LINKSKILLS_MCP_TOOL_ALLOWLIST, isAllowedLinkskillsMcpTool } from "../mcp-tool-filter.js";
 /**
  * Feature flags for Skills — managed MCP allowlist gating + fake/MCP delegation.
  *
@@ -9,10 +10,6 @@
  * `{ include: [] }` — empty include means unrestricted in OpenClaw materialize.
  */
 import type { LinkskillsConfig } from "./config.js";
-import {
-  LINKSKILLS_MCP_TOOL_ALLOWLIST,
-  isAllowedLinkskillsMcpTool,
-} from "../mcp-tool-filter.js";
 
 export const LINKSKILLS_MCP_DISCOVERY_TOOLS = Object.freeze([
   "skills_list",
@@ -70,7 +67,7 @@ export function buildLinkskillsFlaggedMcpToolFilter(
     LinkskillsConfig,
     "mcpDiscoveryRead" | "governedExecution" | "telemetryEnqueue" | "telemetryDrain"
   >,
-): { include: readonly string[] } | null {
+): { include: string[] } | null {
   void config.telemetryDrain;
   const include = LINKSKILLS_MCP_TOOL_ALLOWLIST.filter((name) => {
     if (isLinkskillsDiscoveryTool(name)) {
@@ -87,7 +84,8 @@ export function buildLinkskillsFlaggedMcpToolFilter(
   if (include.length === 0) {
     return null;
   }
-  return { include };
+  // Mutable copy — McpServerToolFilterResolved.include is string[], not readonly.
+  return { include: [...include] };
 }
 
 export type SkillsFeatureInvokeResult = {

@@ -1,9 +1,9 @@
-import { describe, expect, it, vi } from "vitest";
 import { createTestPluginApi } from "openclaw/plugin-sdk/plugin-test-api";
+import { describe, expect, it, vi } from "vitest";
 import linkbrainPlugin from "./index.js";
+import type { OpenClawPluginApi, OpenClawPluginService } from "./runtime-api.js";
 import { parseLinkbrainConfig } from "./src/config.js";
 import { buildLinkbrainFlaggedMcpToolFilter } from "./src/feature-flags.js";
-import type { OpenClawPluginApi } from "./runtime-api.js";
 
 describe("linkbrain registered-plugin feature flags + coexistence surface", () => {
   it("does not register brain_* plugin tools; registers MCP toolFilter and respects mcpRead", () => {
@@ -58,7 +58,7 @@ describe("linkbrain registered-plugin feature flags + coexistence surface", () =
       on: (name: string) => {
         hooks.push(name);
       },
-      registerService: (service) => {
+      registerService: (service: OpenClawPluginService) => {
         services.push(service.id);
       },
       registerMemoryCapability: vi.fn(),

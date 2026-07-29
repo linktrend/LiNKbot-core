@@ -11,6 +11,7 @@ export {
 export {
   addTestHook,
   createEmptyPluginRegistry,
+  createDirectOutboundTestAdapter,
   createOutboundTestPlugin,
   createTestRegistry,
   initializeGlobalHookRunner,

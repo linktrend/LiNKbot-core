@@ -1,9 +1,8 @@
-import { afterEach, describe, expect, it } from "vitest";
 import {
   createDirectOutboundTestAdapter,
   createOutboundTestPlugin,
   createTestRegistry,
-} from "../../src/test-utils/channel-plugins.js";
+} from "openclaw/plugin-sdk/channel-test-helpers";
 import {
   buildActiveMemoryPromptSection,
   clearMemoryPluginState,
@@ -11,10 +10,11 @@ import {
   registerMemoryCapability,
 } from "openclaw/plugin-sdk/memory-host-core";
 import { createTestPluginApi } from "openclaw/plugin-sdk/plugin-test-api";
+import { afterEach, describe, expect, it } from "vitest";
 import linkbrainPlugin from "../linkbrain/index.js";
 import linkskillsPlugin from "./index.js";
-import { createMemoryKeyedStore } from "./src/test-support/memory-store.js";
 import type { OpenClawPluginApi, OpenClawPluginService } from "./runtime-api.js";
+import { createMemoryKeyedStore } from "./src/test-support/memory-store.js";
 
 /**
  * Integration harness: starts Brain/Skills plugin services and exercises
@@ -48,10 +48,7 @@ function createRuntimeState() {
   };
 }
 
-function captureServiceApi(params: {
-  id: string;
-  pluginConfig: Record<string, unknown>;
-}) {
+function captureServiceApi(params: { id: string; pluginConfig: Record<string, unknown> }) {
   let service: OpenClawPluginService | null = null;
   const hooks = new Map<string, Array<(...args: unknown[]) => unknown>>();
   const registerMemoryCapability = viSpy();
@@ -62,18 +59,18 @@ function captureServiceApi(params: {
     pluginConfig: params.pluginConfig,
     runtime: {
       state: createRuntimeState(),
-    } as OpenClawPluginApi["runtime"],
-    registerService: (svc) => {
+    } as unknown as OpenClawPluginApi["runtime"],
+    registerService: (svc: OpenClawPluginService) => {
       service = svc;
     },
     registerMemoryCapability,
     registerChannel,
     registerCompactionProvider,
-    on: (name: string, handler: (...args: unknown[]) => unknown) => {
+    on: ((name: string, handler: (...args: unknown[]) => unknown) => {
       const list = hooks.get(name) ?? [];
       list.push(handler);
       hooks.set(name, list);
-    },
+    }) as OpenClawPluginApi["on"],
   });
   return {
     api: api as OpenClawPluginApi,
@@ -207,7 +204,10 @@ describe("native coexistence integration harness (plugin services live)", () => 
     const nativeSkillRun = async (skillId: string) => ({ ok: true as const, skill: skillId });
     await expect(listSessions()).resolves.toEqual([{ id: "s1", status: "active" }]);
     await expect(cronTick("digest")).resolves.toEqual({ ran: 1, jobId: "digest" });
-    await expect(nativeSkillRun("native.echo")).resolves.toEqual({ ok: true, skill: "native.echo" });
+    await expect(nativeSkillRun("native.echo")).resolves.toEqual({
+      ok: true,
+      skill: "native.echo",
+    });
 
     // Compaction: host fires registered Brain hooks.
     for (const handler of brain.hooks.get("before_compaction") ?? []) {
@@ -239,7 +239,10 @@ describe("native coexistence integration harness (plugin services live)", () => 
       } as never),
     ).resolves.toMatchObject({ messageId: "native-msg-1" });
     await expect(cronTick("heartbeat")).resolves.toEqual({ ran: 1, jobId: "heartbeat" });
-    await expect(nativeSkillRun("native.echo")).resolves.toEqual({ ok: true, skill: "native.echo" });
+    await expect(nativeSkillRun("native.echo")).resolves.toEqual({
+      ok: true,
+      skill: "native.echo",
+    });
 
     expect(brain.registerMemoryCapability.toHaveBeenCalled()).toBe(false);
     expect(skills.registerChannel.toHaveBeenCalled()).toBe(false);

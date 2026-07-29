@@ -1,21 +1,16 @@
 /**
  * Proves plugin MCP tool-filter overlays change tools exposed through the real
- * managed-MCP listTools → catalog materialization path (not calculated arrays alone).
- * Includes same-runtime hot invalidation for Brain/Skills flag filters, deny-all,
- * operator ceiling, and utility/resources/prompts metadata.
+ * managed-MCP listTools → catalog materialization path using core-owned fixtures
+ * only (no extension deep imports).
  */
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { buildLinkbrainFlaggedMcpToolFilter } from "../../extensions/linkbrain/src/feature-flags.js";
-import { LINKBRAIN_MCP_TOOL_ALLOWLIST } from "../../extensions/linkbrain/mcp-tool-filter.js";
-import { buildLinkskillsFlaggedMcpToolFilter } from "../../extensions/linkskills/src/feature-flags.js";
-import { LINKSKILLS_MCP_TOOL_ALLOWLIST } from "../../extensions/linkskills/mcp-tool-filter.js";
-import { createSessionMcpRuntime } from "./agent-bundle-mcp-runtime.js";
-import { materializeBundleMcpToolsForRun } from "./agent-bundle-mcp-materialize.js";
-import { writeExecutable } from "./bundle-mcp-shared.test-harness.js";
 import { bumpMcpToolFilterRegistrationGeneration } from "../plugins/mcp-tool-filter-registration.js";
+import { materializeBundleMcpToolsForRun } from "./agent-bundle-mcp-materialize.js";
+import { createSessionMcpRuntime } from "./agent-bundle-mcp-runtime.js";
+import { writeExecutable } from "./bundle-mcp-shared.test-harness.js";
 import { testing as toolFilterTesting } from "./mcp-tool-filter-resolver.js";
 
 vi.mock("./embedded-agent-mcp.js", () => ({
@@ -202,56 +197,46 @@ describe("managed MCP toolFilter plugin overlay (catalog path)", () => {
     }
   });
 
-  it("same runtime rematerializes Brain/Skills filters, deny-all, utilities, and ceiling", async () => {
-    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "mcp-toolfilter-hot-"));
-    const brainPath = path.join(tempDir, "linkbrain.mjs");
-    const skillsPath = path.join(tempDir, "linkskills.mjs");
-    const brainLog = path.join(tempDir, "brain.log");
-    const skillsLog = path.join(tempDir, "skills.log");
+  it("same runtime rematerializes deny-all, ceiling, utilities, and removal with core fixtures", async () => {
+    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "mcp-toolfilter-hot-core-"));
+    const serverPath = path.join(tempDir, "domain.mjs");
+    const logPath = path.join(tempDir, "server.log");
     await writeListToolsMcpServer({
-      filePath: brainPath,
-      logPath: brainLog,
-      tools: LINKBRAIN_MCP_TOOL_ALLOWLIST,
-      withResourcesAndPrompts: true,
-    });
-    await writeListToolsMcpServer({
-      filePath: skillsPath,
-      logPath: skillsLog,
-      tools: LINKSKILLS_MCP_TOOL_ALLOWLIST,
+      filePath: serverPath,
+      logPath,
+      tools: OPERATOR_CEILING,
       withResourcesAndPrompts: true,
     });
 
-    let brainFlags = {
-      mcpRead: false,
-      captureEnqueue: false,
-      captureDrain: false,
-      coordinationWrites: false,
+    let flags = {
+      read: false,
+      write: false,
+      exec: false,
+      evidence: false,
     };
-    let skillsFlags = {
-      mcpDiscoveryRead: false,
-      governedExecution: false,
-      telemetryEnqueue: false,
-      telemetryDrain: false,
+    let resolveOverlay: (() => { include: string[] } | null) | null = () => {
+      const include = OPERATOR_CEILING.filter((name) => {
+        if (name.startsWith("domain_read_")) {
+          return flags.read;
+        }
+        if (name === "domain_write") {
+          return flags.write;
+        }
+        if (name === "domain_exec") {
+          return flags.exec;
+        }
+        return flags.evidence;
+      });
+      return include.length > 0 ? { include: [...include] } : null;
     };
-    let brainResolve: (() => ReturnType<typeof buildLinkbrainFlaggedMcpToolFilter>) | null = () =>
-      buildLinkbrainFlaggedMcpToolFilter(brainFlags);
-    let skillsResolve: (() => ReturnType<typeof buildLinkskillsFlaggedMcpToolFilter>) | null =
-      () => buildLinkskillsFlaggedMcpToolFilter(skillsFlags);
 
     const syncResolvers = () => {
       const map = new Map();
-      if (brainResolve) {
-        map.set("linkbrain", {
-          pluginId: "linkbrain",
-          serverName: "linkbrain",
-          resolve: brainResolve,
-        });
-      }
-      if (skillsResolve) {
-        map.set("linkskills", {
-          pluginId: "linkskills",
-          serverName: "linkskills",
-          resolve: skillsResolve,
+      if (resolveOverlay) {
+        map.set("domain", {
+          pluginId: "domain-plugin",
+          serverName: "domain",
+          resolve: resolveOverlay,
         });
       }
       toolFilterTesting.setResolversByServerName(map);
@@ -261,21 +246,16 @@ describe("managed MCP toolFilter plugin overlay (catalog path)", () => {
     syncResolvers();
 
     const runtime = createSessionMcpRuntime({
-      sessionId: "session-brain-skills-hot",
+      sessionId: "session-domain-hot-core",
       workspaceDir: "/workspace",
       cfg: {
         mcp: {
           servers: {
-            linkbrain: {
+            domain: {
               command: process.execPath,
-              args: [brainPath],
-              toolFilter: { include: [...LINKBRAIN_MCP_TOOL_ALLOWLIST, "resources_*", "prompts_*"] },
-            },
-            linkskills: {
-              command: process.execPath,
-              args: [skillsPath],
+              args: [serverPath],
               toolFilter: {
-                include: [...LINKSKILLS_MCP_TOOL_ALLOWLIST, "resources_*", "prompts_*"],
+                include: [...OPERATOR_CEILING, "resources_*", "prompts_*"],
               },
             },
           },
@@ -286,104 +266,45 @@ describe("managed MCP toolFilter plugin overlay (catalog path)", () => {
     try {
       const allOff = await runtime.getCatalog();
       expect(allOff.tools).toEqual([]);
-      expect(allOff.servers.linkbrain?.toolFilter?.denyAll).toBe(true);
-      expect(allOff.servers.linkskills?.toolFilter?.denyAll).toBe(true);
-      expect(allOff.servers.linkbrain?.toolFilter?.include).toBeUndefined();
+      expect(allOff.servers.domain?.toolFilter?.denyAll).toBe(true);
 
-      const allOffMaterialized = await materializeBundleMcpToolsForRun({ runtime });
-      expect(allOffMaterialized.tools.filter((t) => t.name.includes("resources_"))).toEqual([]);
-      expect(allOffMaterialized.tools.filter((t) => t.name.includes("prompts_"))).toEqual([]);
-      await allOffMaterialized.dispose();
+      const deniedUtilities = await materializeBundleMcpToolsForRun({ runtime });
+      expect(deniedUtilities.tools.filter((t) => t.name.includes("resources_"))).toEqual([]);
+      await deniedUtilities.dispose();
 
-      // Same-owner replacement: enable Brain read + Skills discovery
-      brainFlags = {
-        mcpRead: true,
-        captureEnqueue: false,
-        captureDrain: false,
-        coordinationWrites: false,
-      };
-      skillsFlags = {
-        mcpDiscoveryRead: true,
-        governedExecution: false,
-        telemetryEnqueue: false,
-        telemetryDrain: false,
-      };
+      flags = { read: true, write: false, exec: false, evidence: true };
       syncResolvers();
       const partial = await runtime.getCatalog();
-      const partialNames = partial.tools.map((t) => t.toolName).toSorted();
-      expect(partialNames).toContain("brain_browse");
-      expect(partialNames).toContain("skills_list");
-      expect(partialNames).not.toContain("brain_capture_batch");
-      expect(partialNames).not.toContain("skills_run_start");
-      expect(partial.servers.linkbrain?.toolFilter?.denyAll).toBeUndefined();
-      expect(partial.servers.linkbrain?.toolFilter?.plugin?.include).toContain("brain_browse");
+      expect(partial.tools.map((t) => t.toolName).toSorted()).toEqual([
+        "domain_evidence",
+        "domain_read_a",
+        "domain_read_b",
+      ]);
 
-      // Plugin cannot widen operator ceiling (operator omits a plugin-desired name)
-      brainResolve = () => ({ include: ["brain_browse", "brain_not_in_ceiling"] });
+      resolveOverlay = () => ({ include: ["domain_read_a", "domain_not_in_ceiling"] });
       syncResolvers();
       const ceiling = await runtime.getCatalog();
-      const brainCeilingNames = ceiling.tools
-        .filter((t) => t.serverName === "linkbrain")
-        .map((t) => t.toolName);
-      expect(brainCeilingNames).toEqual(["brain_browse"]);
-      expect(brainCeilingNames).not.toContain("brain_not_in_ceiling");
-      expect(ceiling.tools.some((t) => t.toolName === "skills_list")).toBe(true);
+      expect(ceiling.tools.map((t) => t.toolName)).toEqual(["domain_read_a"]);
 
-      // Rollback via null omit
-      brainResolve = () => null;
+      resolveOverlay = () => null;
       syncResolvers();
-      const rolled = await runtime.getCatalog();
-      expect(rolled.tools.filter((t) => t.serverName === "linkbrain")).toEqual([]);
-      expect(rolled.servers.linkbrain?.toolFilter?.denyAll).toBe(true);
+      expect((await runtime.getCatalog()).servers.domain?.toolFilter?.denyAll).toBe(true);
 
-      // Removal: drop Brain resolver → config-only ceiling restores all Brain tools
-      brainResolve = null;
-      skillsResolve = () => buildLinkskillsFlaggedMcpToolFilter(skillsFlags);
+      resolveOverlay = null;
       syncResolvers();
-      const removed = await runtime.getCatalog();
-      expect(removed.tools.filter((t) => t.serverName === "linkbrain").length).toBe(
-        LINKBRAIN_MCP_TOOL_ALLOWLIST.length,
-      );
-      expect(removed.tools.some((t) => t.toolName === "skills_list")).toBe(true);
-
-      // Config-reload style: re-register Brain flags with all ops on
-      brainFlags = {
-        mcpRead: true,
-        captureEnqueue: true,
-        captureDrain: true,
-        coordinationWrites: true,
-      };
-      skillsFlags = {
-        mcpDiscoveryRead: true,
-        governedExecution: true,
-        telemetryEnqueue: true,
-        telemetryDrain: true,
-      };
-      brainResolve = () => buildLinkbrainFlaggedMcpToolFilter(brainFlags);
-      skillsResolve = () => buildLinkskillsFlaggedMcpToolFilter(skillsFlags);
-      syncResolvers();
-      const allOn = await runtime.getCatalog();
-      expect(allOn.tools.filter((t) => t.serverName === "linkbrain").length).toBe(
-        LINKBRAIN_MCP_TOOL_ALLOWLIST.length,
-      );
-      expect(allOn.tools.filter((t) => t.serverName === "linkskills").length).toBe(
-        LINKSKILLS_MCP_TOOL_ALLOWLIST.length,
+      expect((await runtime.getCatalog()).tools.map((t) => t.toolName).toSorted()).toEqual(
+        [...OPERATOR_CEILING].toSorted(),
       );
 
-      // Utility tools: plugin include without resources_* denies utilities under intersect
+      resolveOverlay = () => ({ include: ["domain_evidence"] });
+      syncResolvers();
       const utilityMaterialized = await materializeBundleMcpToolsForRun({ runtime });
-      expect(
-        utilityMaterialized.tools.filter((t) => t.name.includes("__resources_")).length,
-      ).toBe(0);
-      expect(utilityMaterialized.tools.filter((t) => t.name.includes("__prompts_")).length).toBe(0);
+      expect(utilityMaterialized.tools.filter((t) => t.name.includes("__resources_"))).toEqual([]);
       await utilityMaterialized.dispose();
 
-      // Disjoint filters → nothing
-      brainResolve = () => ({ include: ["skills_list"] });
-      skillsResolve = () => ({ include: ["brain_browse"] });
+      resolveOverlay = () => ({ include: ["other_domain_only"] });
       syncResolvers();
-      const disjoint = await runtime.getCatalog();
-      expect(disjoint.tools).toEqual([]);
+      expect((await runtime.getCatalog()).tools).toEqual([]);
     } finally {
       await runtime.dispose();
       await fs.rm(tempDir, { recursive: true, force: true });

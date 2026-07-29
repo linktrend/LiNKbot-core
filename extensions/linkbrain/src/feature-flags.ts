@@ -1,3 +1,4 @@
+import { LINKBRAIN_MCP_TOOL_ALLOWLIST, isAllowedLinkbrainMcpTool } from "../mcp-tool-filter.js";
 /**
  * Feature flags for Brain — managed MCP allowlist gating + fake/MCP delegation.
  *
@@ -10,10 +11,6 @@
  * `{ include: [] }` — empty include means unrestricted in OpenClaw materialize.
  */
 import type { LinkbrainConfig } from "./config.js";
-import {
-  LINKBRAIN_MCP_TOOL_ALLOWLIST,
-  isAllowedLinkbrainMcpTool,
-} from "../mcp-tool-filter.js";
 
 export const LINKBRAIN_MCP_READ_TOOLS = Object.freeze([
   "brain_browse",
@@ -80,7 +77,7 @@ export function buildLinkbrainFlaggedMcpToolFilter(
     LinkbrainConfig,
     "mcpRead" | "captureEnqueue" | "captureDrain" | "coordinationWrites"
   >,
-): { include: readonly string[] } | null {
+): { include: string[] } | null {
   void config.captureDrain;
   const include = LINKBRAIN_MCP_TOOL_ALLOWLIST.filter((name) => {
     if (isLinkbrainReadTool(name)) {
@@ -97,7 +94,8 @@ export function buildLinkbrainFlaggedMcpToolFilter(
   if (include.length === 0) {
     return null;
   }
-  return { include };
+  // Mutable copy — McpServerToolFilterResolved.include is string[], not readonly.
+  return { include: [...include] };
 }
 
 export type BrainFeatureInvokeResult = {

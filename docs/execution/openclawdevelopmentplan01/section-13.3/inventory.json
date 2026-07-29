@@ -1,0 +1,1942 @@
+{
+  "version": 1,
+  "classifications": [
+    "IAP",
+    "INPL",
+    "PART",
+    "OMIT",
+    "DIFF",
+    "BLOCK",
+    "OUT"
+  ],
+  "kinds": [
+    "task",
+    "test",
+    "gate",
+    "risk",
+    "evidence_requirement",
+    "dod"
+  ],
+  "items": [
+    {
+      "id": "finding.authclaims_1_1_shape.dod",
+      "kind": "dod",
+      "label": "DoD for AuthClaims 1.1 shape tests"
+    },
+    {
+      "id": "finding.authclaims_1_1_shape.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Evidence requirement for AuthClaims 1.1 shape tests"
+    },
+    {
+      "id": "finding.authclaims_1_1_shape.risk",
+      "kind": "risk",
+      "label": "Risk for AuthClaims 1.1 shape tests"
+    },
+    {
+      "id": "finding.authclaims_1_1_shape.task",
+      "kind": "task",
+      "label": "AuthClaims 1.1 shape tests"
+    },
+    {
+      "id": "finding.authclaims_1_1_shape.test",
+      "kind": "test",
+      "label": "Test for AuthClaims 1.1 shape tests"
+    },
+    {
+      "id": "finding.brain_four_flag_wiring.dod",
+      "kind": "dod",
+      "label": "DoD for Brain four-flag MCP wiring"
+    },
+    {
+      "id": "finding.brain_four_flag_wiring.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Evidence requirement for Brain four-flag MCP wiring"
+    },
+    {
+      "id": "finding.brain_four_flag_wiring.risk",
+      "kind": "risk",
+      "label": "Risk for Brain four-flag MCP wiring"
+    },
+    {
+      "id": "finding.brain_four_flag_wiring.task",
+      "kind": "task",
+      "label": "Brain four-flag MCP wiring"
+    },
+    {
+      "id": "finding.brain_four_flag_wiring.test",
+      "kind": "test",
+      "label": "Test for Brain four-flag MCP wiring"
+    },
+    {
+      "id": "finding.catalog_listtools_flags.dod",
+      "kind": "dod",
+      "label": "DoD for Catalog listTools exposure under flags"
+    },
+    {
+      "id": "finding.catalog_listtools_flags.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Evidence requirement for Catalog listTools exposure under flags"
+    },
+    {
+      "id": "finding.catalog_listtools_flags.risk",
+      "kind": "risk",
+      "label": "Risk for Catalog listTools exposure under flags"
+    },
+    {
+      "id": "finding.catalog_listtools_flags.task",
+      "kind": "task",
+      "label": "Catalog listTools exposure under flags"
+    },
+    {
+      "id": "finding.catalog_listtools_flags.test",
+      "kind": "test",
+      "label": "Test for Catalog listTools exposure under flags"
+    },
+    {
+      "id": "finding.drain_ownership_storm.dod",
+      "kind": "dod",
+      "label": "DoD for Drain ownership storm"
+    },
+    {
+      "id": "finding.drain_ownership_storm.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Evidence requirement for Drain ownership storm"
+    },
+    {
+      "id": "finding.drain_ownership_storm.risk",
+      "kind": "risk",
+      "label": "Risk for Drain ownership storm"
+    },
+    {
+      "id": "finding.drain_ownership_storm.task",
+      "kind": "task",
+      "label": "Drain ownership storm"
+    },
+    {
+      "id": "finding.drain_ownership_storm.test",
+      "kind": "test",
+      "label": "Test for Drain ownership storm"
+    },
+    {
+      "id": "finding.public_mcp_toolfilter_api.dod",
+      "kind": "dod",
+      "label": "DoD for Public MCP toolFilter API"
+    },
+    {
+      "id": "finding.public_mcp_toolfilter_api.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Evidence requirement for Public MCP toolFilter API"
+    },
+    {
+      "id": "finding.public_mcp_toolfilter_api.risk",
+      "kind": "risk",
+      "label": "Risk for Public MCP toolFilter API"
+    },
+    {
+      "id": "finding.public_mcp_toolfilter_api.task",
+      "kind": "task",
+      "label": "Public MCP toolFilter API"
+    },
+    {
+      "id": "finding.public_mcp_toolfilter_api.test",
+      "kind": "test",
+      "label": "Test for Public MCP toolFilter API"
+    },
+    {
+      "id": "finding.section_13_3_acceptance.dod",
+      "kind": "dod",
+      "label": "DoD for Section 13.3 ledger acceptance by Codex"
+    },
+    {
+      "id": "finding.section_13_3_acceptance.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Evidence requirement for Section 13.3 ledger acceptance by Codex"
+    },
+    {
+      "id": "finding.section_13_3_acceptance.risk",
+      "kind": "risk",
+      "label": "Risk for Section 13.3 ledger acceptance by Codex"
+    },
+    {
+      "id": "finding.section_13_3_acceptance.task",
+      "kind": "task",
+      "label": "Section 13.3 ledger acceptance by Codex"
+    },
+    {
+      "id": "finding.section_13_3_acceptance.test",
+      "kind": "test",
+      "label": "Test for Section 13.3 ledger acceptance by Codex"
+    },
+    {
+      "id": "finding.skills_four_flag_wiring.dod",
+      "kind": "dod",
+      "label": "DoD for Skills four-flag MCP wiring"
+    },
+    {
+      "id": "finding.skills_four_flag_wiring.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Evidence requirement for Skills four-flag MCP wiring"
+    },
+    {
+      "id": "finding.skills_four_flag_wiring.risk",
+      "kind": "risk",
+      "label": "Risk for Skills four-flag MCP wiring"
+    },
+    {
+      "id": "finding.skills_four_flag_wiring.task",
+      "kind": "task",
+      "label": "Skills four-flag MCP wiring"
+    },
+    {
+      "id": "finding.skills_four_flag_wiring.test",
+      "kind": "test",
+      "label": "Test for Skills four-flag MCP wiring"
+    },
+    {
+      "id": "finding.tip_suite_31_203.dod",
+      "kind": "dod",
+      "label": "DoD for Phase 13 tip suite 31/203"
+    },
+    {
+      "id": "finding.tip_suite_31_203.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Evidence requirement for Phase 13 tip suite 31/203"
+    },
+    {
+      "id": "finding.tip_suite_31_203.risk",
+      "kind": "risk",
+      "label": "Risk for Phase 13 tip suite 31/203"
+    },
+    {
+      "id": "finding.tip_suite_31_203.task",
+      "kind": "task",
+      "label": "Phase 13 tip suite 31/203"
+    },
+    {
+      "id": "finding.tip_suite_31_203.test",
+      "kind": "test",
+      "label": "Test for Phase 13 tip suite 31/203"
+    },
+    {
+      "id": "gate.1",
+      "kind": "gate",
+      "label": "Gate 1: Platform identity credentials"
+    },
+    {
+      "id": "gate.1.dod",
+      "kind": "dod",
+      "label": "Gate 1 definition of done"
+    },
+    {
+      "id": "gate.1.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Gate 1 evidence requirement"
+    },
+    {
+      "id": "gate.1.risk",
+      "kind": "risk",
+      "label": "Gate 1 residual risk"
+    },
+    {
+      "id": "gate.10",
+      "kind": "gate",
+      "label": "Gate 10: Independent repo verification"
+    },
+    {
+      "id": "gate.10.dod",
+      "kind": "dod",
+      "label": "Gate 10 definition of done"
+    },
+    {
+      "id": "gate.10.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Gate 10 evidence requirement"
+    },
+    {
+      "id": "gate.10.risk",
+      "kind": "risk",
+      "label": "Gate 10 residual risk"
+    },
+    {
+      "id": "gate.11",
+      "kind": "gate",
+      "label": "Gate 11: Four-plan reconciliation"
+    },
+    {
+      "id": "gate.11.dod",
+      "kind": "dod",
+      "label": "Gate 11 definition of done"
+    },
+    {
+      "id": "gate.11.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Gate 11 evidence requirement"
+    },
+    {
+      "id": "gate.11.risk",
+      "kind": "risk",
+      "label": "Gate 11 residual risk"
+    },
+    {
+      "id": "gate.2",
+      "kind": "gate",
+      "label": "Gate 2: Brain contract fake consume"
+    },
+    {
+      "id": "gate.2.dod",
+      "kind": "dod",
+      "label": "Gate 2 definition of done"
+    },
+    {
+      "id": "gate.2.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Gate 2 evidence requirement"
+    },
+    {
+      "id": "gate.2.risk",
+      "kind": "risk",
+      "label": "Gate 2 residual risk"
+    },
+    {
+      "id": "gate.3",
+      "kind": "gate",
+      "label": "Gate 3: Skills contract fake consume"
+    },
+    {
+      "id": "gate.3.dod",
+      "kind": "dod",
+      "label": "Gate 3 definition of done"
+    },
+    {
+      "id": "gate.3.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Gate 3 evidence requirement"
+    },
+    {
+      "id": "gate.3.risk",
+      "kind": "risk",
+      "label": "Gate 3 residual risk"
+    },
+    {
+      "id": "gate.4",
+      "kind": "gate",
+      "label": "Gate 4: Platform migration env"
+    },
+    {
+      "id": "gate.4.dod",
+      "kind": "dod",
+      "label": "Gate 4 definition of done"
+    },
+    {
+      "id": "gate.4.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Gate 4 evidence requirement"
+    },
+    {
+      "id": "gate.4.risk",
+      "kind": "risk",
+      "label": "Gate 4 residual risk"
+    },
+    {
+      "id": "gate.5",
+      "kind": "gate",
+      "label": "Gate 5: OpenClaw implementation ownership"
+    },
+    {
+      "id": "gate.5.dod",
+      "kind": "dod",
+      "label": "Gate 5 definition of done"
+    },
+    {
+      "id": "gate.5.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Gate 5 evidence requirement"
+    },
+    {
+      "id": "gate.5.risk",
+      "kind": "risk",
+      "label": "Gate 5 residual risk"
+    },
+    {
+      "id": "gate.6",
+      "kind": "gate",
+      "label": "Gate 6: Lisa live enablement"
+    },
+    {
+      "id": "gate.6.dod",
+      "kind": "dod",
+      "label": "Gate 6 definition of done"
+    },
+    {
+      "id": "gate.6.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Gate 6 evidence requirement"
+    },
+    {
+      "id": "gate.6.risk",
+      "kind": "risk",
+      "label": "Gate 6 residual risk"
+    },
+    {
+      "id": "gate.7",
+      "kind": "gate",
+      "label": "Gate 7: Stage promotion"
+    },
+    {
+      "id": "gate.7.dod",
+      "kind": "dod",
+      "label": "Gate 7 definition of done"
+    },
+    {
+      "id": "gate.7.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Gate 7 evidence requirement"
+    },
+    {
+      "id": "gate.7.risk",
+      "kind": "risk",
+      "label": "Gate 7 residual risk"
+    },
+    {
+      "id": "gate.8",
+      "kind": "gate",
+      "label": "Gate 8: Prod promotion"
+    },
+    {
+      "id": "gate.8.dod",
+      "kind": "dod",
+      "label": "Gate 8 definition of done"
+    },
+    {
+      "id": "gate.8.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Gate 8 evidence requirement"
+    },
+    {
+      "id": "gate.8.risk",
+      "kind": "risk",
+      "label": "Gate 8 residual risk"
+    },
+    {
+      "id": "gate.9",
+      "kind": "gate",
+      "label": "Gate 9: Remaining stage prod controls"
+    },
+    {
+      "id": "gate.9.dod",
+      "kind": "dod",
+      "label": "Gate 9 definition of done"
+    },
+    {
+      "id": "gate.9.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Gate 9 evidence requirement"
+    },
+    {
+      "id": "gate.9.risk",
+      "kind": "risk",
+      "label": "Gate 9 residual risk"
+    },
+    {
+      "id": "phase.0.dod",
+      "kind": "dod",
+      "label": "Phase 0 definition of done"
+    },
+    {
+      "id": "phase.0.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Phase 0 evidence requirement"
+    },
+    {
+      "id": "phase.0.risk",
+      "kind": "risk",
+      "label": "Phase 0 residual risk"
+    },
+    {
+      "id": "phase.0.task",
+      "kind": "task",
+      "label": "Phase 0 task: Approval snapshot ownership freeze"
+    },
+    {
+      "id": "phase.1.dod",
+      "kind": "dod",
+      "label": "Phase 1 definition of done"
+    },
+    {
+      "id": "phase.1.dod.authclaims_fixtures",
+      "kind": "dod",
+      "label": "DoD: AuthClaims 1.1.0 fixtures consumed"
+    },
+    {
+      "id": "phase.1.dod.contracts_pins",
+      "kind": "dod",
+      "label": "DoD: Contract pins present"
+    },
+    {
+      "id": "phase.1.dod.fixture_owner_gate",
+      "kind": "dod",
+      "label": "DoD: Fixture-owner countersign gate"
+    },
+    {
+      "id": "phase.1.dod.platform_auth_path",
+      "kind": "dod",
+      "label": "DoD: Platform live auth path"
+    },
+    {
+      "id": "phase.1.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Phase 1 evidence requirement"
+    },
+    {
+      "id": "phase.1.risk",
+      "kind": "risk",
+      "label": "Phase 1 residual risk"
+    },
+    {
+      "id": "phase.1.task",
+      "kind": "task",
+      "label": "Phase 1 task: Contract and fake freeze"
+    },
+    {
+      "id": "phase.1.task.authclaims_fixtures",
+      "kind": "task",
+      "label": "AuthClaims 1.1.0 fixtures consumed"
+    },
+    {
+      "id": "phase.1.task.contracts_pins",
+      "kind": "task",
+      "label": "Contract pins present"
+    },
+    {
+      "id": "phase.1.task.fixture_owner_gate",
+      "kind": "task",
+      "label": "Fixture-owner countersign gate"
+    },
+    {
+      "id": "phase.1.task.platform_auth_path",
+      "kind": "task",
+      "label": "Platform live auth path"
+    },
+    {
+      "id": "phase.10.dod",
+      "kind": "dod",
+      "label": "Phase 10 definition of done"
+    },
+    {
+      "id": "phase.10.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Phase 10 evidence requirement"
+    },
+    {
+      "id": "phase.10.risk",
+      "kind": "risk",
+      "label": "Phase 10 residual risk"
+    },
+    {
+      "id": "phase.10.task",
+      "kind": "task",
+      "label": "Phase 10 task: Integrated stage soak operational rehearsal"
+    },
+    {
+      "id": "phase.11.dod",
+      "kind": "dod",
+      "label": "Phase 11 definition of done"
+    },
+    {
+      "id": "phase.11.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Phase 11 evidence requirement"
+    },
+    {
+      "id": "phase.11.risk",
+      "kind": "risk",
+      "label": "Phase 11 residual risk"
+    },
+    {
+      "id": "phase.11.task",
+      "kind": "task",
+      "label": "Phase 11 task: Brain production deployment canary"
+    },
+    {
+      "id": "phase.12.dod",
+      "kind": "dod",
+      "label": "Phase 12 definition of done"
+    },
+    {
+      "id": "phase.12.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Phase 12 evidence requirement"
+    },
+    {
+      "id": "phase.12.risk",
+      "kind": "risk",
+      "label": "Phase 12 residual risk"
+    },
+    {
+      "id": "phase.12.task",
+      "kind": "task",
+      "label": "Phase 12 task: Skills production deployment canary"
+    },
+    {
+      "id": "phase.13.dod",
+      "kind": "dod",
+      "label": "Phase 13 definition of done"
+    },
+    {
+      "id": "phase.13.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Phase 13 evidence requirement"
+    },
+    {
+      "id": "phase.13.risk",
+      "kind": "risk",
+      "label": "Phase 13 residual risk"
+    },
+    {
+      "id": "phase.13.task",
+      "kind": "task",
+      "label": "Phase 13 task: Execution closeout Grok handoff"
+    },
+    {
+      "id": "phase.14.dod",
+      "kind": "dod",
+      "label": "Phase 14 definition of done"
+    },
+    {
+      "id": "phase.14.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Phase 14 evidence requirement"
+    },
+    {
+      "id": "phase.14.risk",
+      "kind": "risk",
+      "label": "Phase 14 residual risk"
+    },
+    {
+      "id": "phase.14.task",
+      "kind": "task",
+      "label": "Phase 14 task: Independent OpenClaw Codex verification"
+    },
+    {
+      "id": "phase.15.dod",
+      "kind": "dod",
+      "label": "Phase 15 definition of done"
+    },
+    {
+      "id": "phase.15.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Phase 15 evidence requirement"
+    },
+    {
+      "id": "phase.15.risk",
+      "kind": "risk",
+      "label": "Phase 15 residual risk"
+    },
+    {
+      "id": "phase.15.task",
+      "kind": "task",
+      "label": "Phase 15 task: Four-plan reconciliation Principal closeout"
+    },
+    {
+      "id": "phase.2.dod",
+      "kind": "dod",
+      "label": "Phase 2 definition of done"
+    },
+    {
+      "id": "phase.2.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Phase 2 evidence requirement"
+    },
+    {
+      "id": "phase.2.risk",
+      "kind": "risk",
+      "label": "Phase 2 residual risk"
+    },
+    {
+      "id": "phase.2.task",
+      "kind": "task",
+      "label": "Phase 2 task: Brain plugin skeleton"
+    },
+    {
+      "id": "phase.3.dod",
+      "kind": "dod",
+      "label": "Phase 3 definition of done"
+    },
+    {
+      "id": "phase.3.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Phase 3 evidence requirement"
+    },
+    {
+      "id": "phase.3.risk",
+      "kind": "risk",
+      "label": "Phase 3 residual risk"
+    },
+    {
+      "id": "phase.3.task",
+      "kind": "task",
+      "label": "Phase 3 task: Brain lifecycle capture coordination"
+    },
+    {
+      "id": "phase.4.dod",
+      "kind": "dod",
+      "label": "Phase 4 definition of done"
+    },
+    {
+      "id": "phase.4.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Phase 4 evidence requirement"
+    },
+    {
+      "id": "phase.4.risk",
+      "kind": "risk",
+      "label": "Phase 4 residual risk"
+    },
+    {
+      "id": "phase.4.task",
+      "kind": "task",
+      "label": "Phase 4 task: Skills plugin skeleton telemetry"
+    },
+    {
+      "id": "phase.5.dod",
+      "kind": "dod",
+      "label": "Phase 5 definition of done"
+    },
+    {
+      "id": "phase.5.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Phase 5 evidence requirement"
+    },
+    {
+      "id": "phase.5.risk",
+      "kind": "risk",
+      "label": "Phase 5 residual risk"
+    },
+    {
+      "id": "phase.5.task",
+      "kind": "task",
+      "label": "Phase 5 task: Managed MCP integration authentication"
+    },
+    {
+      "id": "phase.5.task.live_platform_auth",
+      "kind": "task",
+      "label": "Live Platform MCP auth"
+    },
+    {
+      "id": "phase.5.task.public_toolfilter_seam",
+      "kind": "task",
+      "label": "Public registerMcpServerToolFilter seam"
+    },
+    {
+      "id": "phase.5.task.templates_filters",
+      "kind": "task",
+      "label": "MCP templates and toolFilter allowlists"
+    },
+    {
+      "id": "phase.6.coexistence.A.dod",
+      "kind": "dod",
+      "label": "Phase 6 coexistence A DoD"
+    },
+    {
+      "id": "phase.6.coexistence.A.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Phase 6 coexistence A evidence requirement"
+    },
+    {
+      "id": "phase.6.coexistence.A.risk",
+      "kind": "risk",
+      "label": "Phase 6 coexistence A risk"
+    },
+    {
+      "id": "phase.6.coexistence.A.task",
+      "kind": "task",
+      "label": "Phase 6 coexistence proof A"
+    },
+    {
+      "id": "phase.6.coexistence.A.test",
+      "kind": "test",
+      "label": "Phase 6 coexistence A test"
+    },
+    {
+      "id": "phase.6.coexistence.B.dod",
+      "kind": "dod",
+      "label": "Phase 6 coexistence B DoD"
+    },
+    {
+      "id": "phase.6.coexistence.B.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Phase 6 coexistence B evidence requirement"
+    },
+    {
+      "id": "phase.6.coexistence.B.risk",
+      "kind": "risk",
+      "label": "Phase 6 coexistence B risk"
+    },
+    {
+      "id": "phase.6.coexistence.B.task",
+      "kind": "task",
+      "label": "Phase 6 coexistence proof B"
+    },
+    {
+      "id": "phase.6.coexistence.B.test",
+      "kind": "test",
+      "label": "Phase 6 coexistence B test"
+    },
+    {
+      "id": "phase.6.coexistence.C.dod",
+      "kind": "dod",
+      "label": "Phase 6 coexistence C DoD"
+    },
+    {
+      "id": "phase.6.coexistence.C.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Phase 6 coexistence C evidence requirement"
+    },
+    {
+      "id": "phase.6.coexistence.C.risk",
+      "kind": "risk",
+      "label": "Phase 6 coexistence C risk"
+    },
+    {
+      "id": "phase.6.coexistence.C.task",
+      "kind": "task",
+      "label": "Phase 6 coexistence proof C"
+    },
+    {
+      "id": "phase.6.coexistence.C.test",
+      "kind": "test",
+      "label": "Phase 6 coexistence C test"
+    },
+    {
+      "id": "phase.6.coexistence.D.dod",
+      "kind": "dod",
+      "label": "Phase 6 coexistence D DoD"
+    },
+    {
+      "id": "phase.6.coexistence.D.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Phase 6 coexistence D evidence requirement"
+    },
+    {
+      "id": "phase.6.coexistence.D.risk",
+      "kind": "risk",
+      "label": "Phase 6 coexistence D risk"
+    },
+    {
+      "id": "phase.6.coexistence.D.task",
+      "kind": "task",
+      "label": "Phase 6 coexistence proof D"
+    },
+    {
+      "id": "phase.6.coexistence.D.test",
+      "kind": "test",
+      "label": "Phase 6 coexistence D test"
+    },
+    {
+      "id": "phase.6.coexistence.E.dod",
+      "kind": "dod",
+      "label": "Phase 6 coexistence E DoD"
+    },
+    {
+      "id": "phase.6.coexistence.E.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Phase 6 coexistence E evidence requirement"
+    },
+    {
+      "id": "phase.6.coexistence.E.risk",
+      "kind": "risk",
+      "label": "Phase 6 coexistence E risk"
+    },
+    {
+      "id": "phase.6.coexistence.E.task",
+      "kind": "task",
+      "label": "Phase 6 coexistence proof E"
+    },
+    {
+      "id": "phase.6.coexistence.E.test",
+      "kind": "test",
+      "label": "Phase 6 coexistence E test"
+    },
+    {
+      "id": "phase.6.coexistence.F.dod",
+      "kind": "dod",
+      "label": "Phase 6 coexistence F DoD"
+    },
+    {
+      "id": "phase.6.coexistence.F.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Phase 6 coexistence F evidence requirement"
+    },
+    {
+      "id": "phase.6.coexistence.F.risk",
+      "kind": "risk",
+      "label": "Phase 6 coexistence F risk"
+    },
+    {
+      "id": "phase.6.coexistence.F.task",
+      "kind": "task",
+      "label": "Phase 6 coexistence proof F"
+    },
+    {
+      "id": "phase.6.coexistence.F.test",
+      "kind": "test",
+      "label": "Phase 6 coexistence F test"
+    },
+    {
+      "id": "phase.6.coexistence.G.dod",
+      "kind": "dod",
+      "label": "Phase 6 coexistence G DoD"
+    },
+    {
+      "id": "phase.6.coexistence.G.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Phase 6 coexistence G evidence requirement"
+    },
+    {
+      "id": "phase.6.coexistence.G.risk",
+      "kind": "risk",
+      "label": "Phase 6 coexistence G risk"
+    },
+    {
+      "id": "phase.6.coexistence.G.task",
+      "kind": "task",
+      "label": "Phase 6 coexistence proof G"
+    },
+    {
+      "id": "phase.6.coexistence.G.test",
+      "kind": "test",
+      "label": "Phase 6 coexistence G test"
+    },
+    {
+      "id": "phase.6.dod",
+      "kind": "dod",
+      "label": "Phase 6 definition of done"
+    },
+    {
+      "id": "phase.6.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Phase 6 evidence requirement"
+    },
+    {
+      "id": "phase.6.risk",
+      "kind": "risk",
+      "label": "Phase 6 residual risk"
+    },
+    {
+      "id": "phase.6.scenario.1.dod",
+      "kind": "dod",
+      "label": "Phase 6 scenario 1 DoD"
+    },
+    {
+      "id": "phase.6.scenario.1.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Phase 6 scenario 1 evidence requirement"
+    },
+    {
+      "id": "phase.6.scenario.1.risk",
+      "kind": "risk",
+      "label": "Phase 6 scenario 1 residual risk"
+    },
+    {
+      "id": "phase.6.scenario.1.task",
+      "kind": "task",
+      "label": "Phase 6 mandatory scenario 1"
+    },
+    {
+      "id": "phase.6.scenario.1.test",
+      "kind": "test",
+      "label": "Phase 6 scenario 1 test evidence"
+    },
+    {
+      "id": "phase.6.scenario.10.dod",
+      "kind": "dod",
+      "label": "Phase 6 scenario 10 DoD"
+    },
+    {
+      "id": "phase.6.scenario.10.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Phase 6 scenario 10 evidence requirement"
+    },
+    {
+      "id": "phase.6.scenario.10.risk",
+      "kind": "risk",
+      "label": "Phase 6 scenario 10 residual risk"
+    },
+    {
+      "id": "phase.6.scenario.10.task",
+      "kind": "task",
+      "label": "Phase 6 mandatory scenario 10"
+    },
+    {
+      "id": "phase.6.scenario.10.test",
+      "kind": "test",
+      "label": "Phase 6 scenario 10 test evidence"
+    },
+    {
+      "id": "phase.6.scenario.11.dod",
+      "kind": "dod",
+      "label": "Phase 6 scenario 11 DoD"
+    },
+    {
+      "id": "phase.6.scenario.11.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Phase 6 scenario 11 evidence requirement"
+    },
+    {
+      "id": "phase.6.scenario.11.risk",
+      "kind": "risk",
+      "label": "Phase 6 scenario 11 residual risk"
+    },
+    {
+      "id": "phase.6.scenario.11.task",
+      "kind": "task",
+      "label": "Phase 6 mandatory scenario 11"
+    },
+    {
+      "id": "phase.6.scenario.11.test",
+      "kind": "test",
+      "label": "Phase 6 scenario 11 test evidence"
+    },
+    {
+      "id": "phase.6.scenario.12.dod",
+      "kind": "dod",
+      "label": "Phase 6 scenario 12 DoD"
+    },
+    {
+      "id": "phase.6.scenario.12.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Phase 6 scenario 12 evidence requirement"
+    },
+    {
+      "id": "phase.6.scenario.12.risk",
+      "kind": "risk",
+      "label": "Phase 6 scenario 12 residual risk"
+    },
+    {
+      "id": "phase.6.scenario.12.task",
+      "kind": "task",
+      "label": "Phase 6 mandatory scenario 12"
+    },
+    {
+      "id": "phase.6.scenario.12.test",
+      "kind": "test",
+      "label": "Phase 6 scenario 12 test evidence"
+    },
+    {
+      "id": "phase.6.scenario.13.dod",
+      "kind": "dod",
+      "label": "Phase 6 scenario 13 DoD"
+    },
+    {
+      "id": "phase.6.scenario.13.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Phase 6 scenario 13 evidence requirement"
+    },
+    {
+      "id": "phase.6.scenario.13.risk",
+      "kind": "risk",
+      "label": "Phase 6 scenario 13 residual risk"
+    },
+    {
+      "id": "phase.6.scenario.13.task",
+      "kind": "task",
+      "label": "Phase 6 mandatory scenario 13"
+    },
+    {
+      "id": "phase.6.scenario.13.test",
+      "kind": "test",
+      "label": "Phase 6 scenario 13 test evidence"
+    },
+    {
+      "id": "phase.6.scenario.14.dod",
+      "kind": "dod",
+      "label": "Phase 6 scenario 14 DoD"
+    },
+    {
+      "id": "phase.6.scenario.14.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Phase 6 scenario 14 evidence requirement"
+    },
+    {
+      "id": "phase.6.scenario.14.risk",
+      "kind": "risk",
+      "label": "Phase 6 scenario 14 residual risk"
+    },
+    {
+      "id": "phase.6.scenario.14.task",
+      "kind": "task",
+      "label": "Phase 6 mandatory scenario 14"
+    },
+    {
+      "id": "phase.6.scenario.14.test",
+      "kind": "test",
+      "label": "Phase 6 scenario 14 test evidence"
+    },
+    {
+      "id": "phase.6.scenario.15.dod",
+      "kind": "dod",
+      "label": "Phase 6 scenario 15 DoD"
+    },
+    {
+      "id": "phase.6.scenario.15.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Phase 6 scenario 15 evidence requirement"
+    },
+    {
+      "id": "phase.6.scenario.15.risk",
+      "kind": "risk",
+      "label": "Phase 6 scenario 15 residual risk"
+    },
+    {
+      "id": "phase.6.scenario.15.task",
+      "kind": "task",
+      "label": "Phase 6 mandatory scenario 15"
+    },
+    {
+      "id": "phase.6.scenario.15.test",
+      "kind": "test",
+      "label": "Phase 6 scenario 15 test evidence"
+    },
+    {
+      "id": "phase.6.scenario.2.dod",
+      "kind": "dod",
+      "label": "Phase 6 scenario 2 DoD"
+    },
+    {
+      "id": "phase.6.scenario.2.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Phase 6 scenario 2 evidence requirement"
+    },
+    {
+      "id": "phase.6.scenario.2.risk",
+      "kind": "risk",
+      "label": "Phase 6 scenario 2 residual risk"
+    },
+    {
+      "id": "phase.6.scenario.2.task",
+      "kind": "task",
+      "label": "Phase 6 mandatory scenario 2"
+    },
+    {
+      "id": "phase.6.scenario.2.test",
+      "kind": "test",
+      "label": "Phase 6 scenario 2 test evidence"
+    },
+    {
+      "id": "phase.6.scenario.3.dod",
+      "kind": "dod",
+      "label": "Phase 6 scenario 3 DoD"
+    },
+    {
+      "id": "phase.6.scenario.3.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Phase 6 scenario 3 evidence requirement"
+    },
+    {
+      "id": "phase.6.scenario.3.risk",
+      "kind": "risk",
+      "label": "Phase 6 scenario 3 residual risk"
+    },
+    {
+      "id": "phase.6.scenario.3.task",
+      "kind": "task",
+      "label": "Phase 6 mandatory scenario 3"
+    },
+    {
+      "id": "phase.6.scenario.3.test",
+      "kind": "test",
+      "label": "Phase 6 scenario 3 test evidence"
+    },
+    {
+      "id": "phase.6.scenario.4.dod",
+      "kind": "dod",
+      "label": "Phase 6 scenario 4 DoD"
+    },
+    {
+      "id": "phase.6.scenario.4.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Phase 6 scenario 4 evidence requirement"
+    },
+    {
+      "id": "phase.6.scenario.4.risk",
+      "kind": "risk",
+      "label": "Phase 6 scenario 4 residual risk"
+    },
+    {
+      "id": "phase.6.scenario.4.task",
+      "kind": "task",
+      "label": "Phase 6 mandatory scenario 4"
+    },
+    {
+      "id": "phase.6.scenario.4.test",
+      "kind": "test",
+      "label": "Phase 6 scenario 4 test evidence"
+    },
+    {
+      "id": "phase.6.scenario.5.dod",
+      "kind": "dod",
+      "label": "Phase 6 scenario 5 DoD"
+    },
+    {
+      "id": "phase.6.scenario.5.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Phase 6 scenario 5 evidence requirement"
+    },
+    {
+      "id": "phase.6.scenario.5.risk",
+      "kind": "risk",
+      "label": "Phase 6 scenario 5 residual risk"
+    },
+    {
+      "id": "phase.6.scenario.5.task",
+      "kind": "task",
+      "label": "Phase 6 mandatory scenario 5"
+    },
+    {
+      "id": "phase.6.scenario.5.test",
+      "kind": "test",
+      "label": "Phase 6 scenario 5 test evidence"
+    },
+    {
+      "id": "phase.6.scenario.6.dod",
+      "kind": "dod",
+      "label": "Phase 6 scenario 6 DoD"
+    },
+    {
+      "id": "phase.6.scenario.6.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Phase 6 scenario 6 evidence requirement"
+    },
+    {
+      "id": "phase.6.scenario.6.risk",
+      "kind": "risk",
+      "label": "Phase 6 scenario 6 residual risk"
+    },
+    {
+      "id": "phase.6.scenario.6.task",
+      "kind": "task",
+      "label": "Phase 6 mandatory scenario 6"
+    },
+    {
+      "id": "phase.6.scenario.6.test",
+      "kind": "test",
+      "label": "Phase 6 scenario 6 test evidence"
+    },
+    {
+      "id": "phase.6.scenario.7.dod",
+      "kind": "dod",
+      "label": "Phase 6 scenario 7 DoD"
+    },
+    {
+      "id": "phase.6.scenario.7.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Phase 6 scenario 7 evidence requirement"
+    },
+    {
+      "id": "phase.6.scenario.7.risk",
+      "kind": "risk",
+      "label": "Phase 6 scenario 7 residual risk"
+    },
+    {
+      "id": "phase.6.scenario.7.task",
+      "kind": "task",
+      "label": "Phase 6 mandatory scenario 7"
+    },
+    {
+      "id": "phase.6.scenario.7.test",
+      "kind": "test",
+      "label": "Phase 6 scenario 7 test evidence"
+    },
+    {
+      "id": "phase.6.scenario.8.dod",
+      "kind": "dod",
+      "label": "Phase 6 scenario 8 DoD"
+    },
+    {
+      "id": "phase.6.scenario.8.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Phase 6 scenario 8 evidence requirement"
+    },
+    {
+      "id": "phase.6.scenario.8.risk",
+      "kind": "risk",
+      "label": "Phase 6 scenario 8 residual risk"
+    },
+    {
+      "id": "phase.6.scenario.8.task",
+      "kind": "task",
+      "label": "Phase 6 mandatory scenario 8"
+    },
+    {
+      "id": "phase.6.scenario.8.test",
+      "kind": "test",
+      "label": "Phase 6 scenario 8 test evidence"
+    },
+    {
+      "id": "phase.6.scenario.9.dod",
+      "kind": "dod",
+      "label": "Phase 6 scenario 9 DoD"
+    },
+    {
+      "id": "phase.6.scenario.9.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Phase 6 scenario 9 evidence requirement"
+    },
+    {
+      "id": "phase.6.scenario.9.risk",
+      "kind": "risk",
+      "label": "Phase 6 scenario 9 residual risk"
+    },
+    {
+      "id": "phase.6.scenario.9.task",
+      "kind": "task",
+      "label": "Phase 6 mandatory scenario 9"
+    },
+    {
+      "id": "phase.6.scenario.9.test",
+      "kind": "test",
+      "label": "Phase 6 scenario 9 test evidence"
+    },
+    {
+      "id": "phase.6.scenario.platform_audit_correlation.dod",
+      "kind": "dod",
+      "label": "DoD for Platform audit correlation rejection"
+    },
+    {
+      "id": "phase.6.scenario.platform_audit_correlation.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Evidence requirement for Platform audit correlation rejection"
+    },
+    {
+      "id": "phase.6.scenario.platform_audit_correlation.risk",
+      "kind": "risk",
+      "label": "Risk for Platform audit correlation rejection"
+    },
+    {
+      "id": "phase.6.scenario.platform_audit_correlation.task",
+      "kind": "task",
+      "label": "Platform audit correlation rejection"
+    },
+    {
+      "id": "phase.6.scenario.platform_audit_correlation.test",
+      "kind": "test",
+      "label": "Test/evidence for Platform audit correlation rejection"
+    },
+    {
+      "id": "phase.6.scenario.platform_credential_issuer_revoke.dod",
+      "kind": "dod",
+      "label": "DoD for Real Platform credential issuer revoke"
+    },
+    {
+      "id": "phase.6.scenario.platform_credential_issuer_revoke.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Evidence requirement for Real Platform credential issuer revoke"
+    },
+    {
+      "id": "phase.6.scenario.platform_credential_issuer_revoke.risk",
+      "kind": "risk",
+      "label": "Risk for Real Platform credential issuer revoke"
+    },
+    {
+      "id": "phase.6.scenario.platform_credential_issuer_revoke.task",
+      "kind": "task",
+      "label": "Real Platform credential issuer revoke"
+    },
+    {
+      "id": "phase.6.scenario.platform_credential_issuer_revoke.test",
+      "kind": "test",
+      "label": "Test/evidence for Real Platform credential issuer revoke"
+    },
+    {
+      "id": "phase.6.task",
+      "kind": "task",
+      "label": "Phase 6 task: Integrated local isolated QA"
+    },
+    {
+      "id": "phase.7.dod",
+      "kind": "dod",
+      "label": "Phase 7 definition of done"
+    },
+    {
+      "id": "phase.7.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Phase 7 evidence requirement"
+    },
+    {
+      "id": "phase.7.risk",
+      "kind": "risk",
+      "label": "Phase 7 residual risk"
+    },
+    {
+      "id": "phase.7.task",
+      "kind": "task",
+      "label": "Phase 7 task: Platform stage readiness gate"
+    },
+    {
+      "id": "phase.8.dod",
+      "kind": "dod",
+      "label": "Phase 8 definition of done"
+    },
+    {
+      "id": "phase.8.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Phase 8 evidence requirement"
+    },
+    {
+      "id": "phase.8.risk",
+      "kind": "risk",
+      "label": "Phase 8 residual risk"
+    },
+    {
+      "id": "phase.8.task",
+      "kind": "task",
+      "label": "Phase 8 task: Brain stage shadow write canary"
+    },
+    {
+      "id": "phase.9.dod",
+      "kind": "dod",
+      "label": "Phase 9 definition of done"
+    },
+    {
+      "id": "phase.9.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Phase 9 evidence requirement"
+    },
+    {
+      "id": "phase.9.risk",
+      "kind": "risk",
+      "label": "Phase 9 residual risk"
+    },
+    {
+      "id": "phase.9.task",
+      "kind": "task",
+      "label": "Phase 9 task: Skills stage canary"
+    },
+    {
+      "id": "req.authclaims_consumer_shape.dod",
+      "kind": "dod",
+      "label": "DoD for AuthClaims consumer shape 1.1.0"
+    },
+    {
+      "id": "req.authclaims_consumer_shape.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Evidence requirement for AuthClaims consumer shape 1.1.0"
+    },
+    {
+      "id": "req.authclaims_consumer_shape.risk",
+      "kind": "risk",
+      "label": "Risk for AuthClaims consumer shape 1.1.0"
+    },
+    {
+      "id": "req.authclaims_consumer_shape.task",
+      "kind": "task",
+      "label": "AuthClaims consumer shape 1.1.0"
+    },
+    {
+      "id": "req.authclaims_consumer_shape.test",
+      "kind": "test",
+      "label": "Test for AuthClaims consumer shape 1.1.0"
+    },
+    {
+      "id": "req.authclaims_owner_gate.dod",
+      "kind": "dod",
+      "label": "DoD for AuthClaims fixture-owner gate"
+    },
+    {
+      "id": "req.authclaims_owner_gate.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Evidence requirement for AuthClaims fixture-owner gate"
+    },
+    {
+      "id": "req.authclaims_owner_gate.risk",
+      "kind": "risk",
+      "label": "Risk for AuthClaims fixture-owner gate"
+    },
+    {
+      "id": "req.authclaims_owner_gate.task",
+      "kind": "task",
+      "label": "AuthClaims fixture-owner gate"
+    },
+    {
+      "id": "req.authclaims_owner_gate.test",
+      "kind": "test",
+      "label": "Test for AuthClaims fixture-owner gate"
+    },
+    {
+      "id": "req.bounded_hooks_enqueue_shutdown.dod",
+      "kind": "dod",
+      "label": "DoD for Bounded hooks enqueue shutdown"
+    },
+    {
+      "id": "req.bounded_hooks_enqueue_shutdown.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Evidence requirement for Bounded hooks enqueue shutdown"
+    },
+    {
+      "id": "req.bounded_hooks_enqueue_shutdown.risk",
+      "kind": "risk",
+      "label": "Risk for Bounded hooks enqueue shutdown"
+    },
+    {
+      "id": "req.bounded_hooks_enqueue_shutdown.task",
+      "kind": "task",
+      "label": "Bounded hooks enqueue shutdown"
+    },
+    {
+      "id": "req.bounded_hooks_enqueue_shutdown.test",
+      "kind": "test",
+      "label": "Test for Bounded hooks enqueue shutdown"
+    },
+    {
+      "id": "req.brain_conversation_hooks_only.dod",
+      "kind": "dod",
+      "label": "DoD for Brain conversation hooks only"
+    },
+    {
+      "id": "req.brain_conversation_hooks_only.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Evidence requirement for Brain conversation hooks only"
+    },
+    {
+      "id": "req.brain_conversation_hooks_only.risk",
+      "kind": "risk",
+      "label": "Risk for Brain conversation hooks only"
+    },
+    {
+      "id": "req.brain_conversation_hooks_only.task",
+      "kind": "task",
+      "label": "Brain conversation hooks only"
+    },
+    {
+      "id": "req.brain_conversation_hooks_only.test",
+      "kind": "test",
+      "label": "Test for Brain conversation hooks only"
+    },
+    {
+      "id": "req.durable_outboxes_reject_new.dod",
+      "kind": "dod",
+      "label": "DoD for Durable outboxes reject-new"
+    },
+    {
+      "id": "req.durable_outboxes_reject_new.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Evidence requirement for Durable outboxes reject-new"
+    },
+    {
+      "id": "req.durable_outboxes_reject_new.risk",
+      "kind": "risk",
+      "label": "Risk for Durable outboxes reject-new"
+    },
+    {
+      "id": "req.durable_outboxes_reject_new.task",
+      "kind": "task",
+      "label": "Durable outboxes reject-new"
+    },
+    {
+      "id": "req.durable_outboxes_reject_new.test",
+      "kind": "test",
+      "label": "Test for Durable outboxes reject-new"
+    },
+    {
+      "id": "req.feature_flags_invoke_helpers.dod",
+      "kind": "dod",
+      "label": "DoD for Feature flags to invoke helpers no bypass"
+    },
+    {
+      "id": "req.feature_flags_invoke_helpers.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Evidence requirement for Feature flags to invoke helpers no bypass"
+    },
+    {
+      "id": "req.feature_flags_invoke_helpers.risk",
+      "kind": "risk",
+      "label": "Risk for Feature flags to invoke helpers no bypass"
+    },
+    {
+      "id": "req.feature_flags_invoke_helpers.task",
+      "kind": "task",
+      "label": "Feature flags to invoke helpers no bypass"
+    },
+    {
+      "id": "req.feature_flags_invoke_helpers.test",
+      "kind": "test",
+      "label": "Test for Feature flags to invoke helpers no bypass"
+    },
+    {
+      "id": "req.feature_flags_mcp_toolfilter.dod",
+      "kind": "dod",
+      "label": "DoD for Feature flags to managed MCP toolFilter"
+    },
+    {
+      "id": "req.feature_flags_mcp_toolfilter.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Evidence requirement for Feature flags to managed MCP toolFilter"
+    },
+    {
+      "id": "req.feature_flags_mcp_toolfilter.risk",
+      "kind": "risk",
+      "label": "Risk for Feature flags to managed MCP toolFilter"
+    },
+    {
+      "id": "req.feature_flags_mcp_toolfilter.task",
+      "kind": "task",
+      "label": "Feature flags to managed MCP toolFilter"
+    },
+    {
+      "id": "req.feature_flags_mcp_toolfilter.test",
+      "kind": "test",
+      "label": "Test for Feature flags to managed MCP toolFilter"
+    },
+    {
+      "id": "req.fourteen_runbooks_non_live.dod",
+      "kind": "dod",
+      "label": "DoD for Fourteen runbooks non-live"
+    },
+    {
+      "id": "req.fourteen_runbooks_non_live.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Evidence requirement for Fourteen runbooks non-live"
+    },
+    {
+      "id": "req.fourteen_runbooks_non_live.risk",
+      "kind": "risk",
+      "label": "Risk for Fourteen runbooks non-live"
+    },
+    {
+      "id": "req.fourteen_runbooks_non_live.task",
+      "kind": "task",
+      "label": "Fourteen runbooks non-live"
+    },
+    {
+      "id": "req.fourteen_runbooks_non_live.test",
+      "kind": "test",
+      "label": "Test for Fourteen runbooks non-live"
+    },
+    {
+      "id": "req.independent_drain_workers.dod",
+      "kind": "dod",
+      "label": "DoD for Independent drain workers flushIntervalMs"
+    },
+    {
+      "id": "req.independent_drain_workers.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Evidence requirement for Independent drain workers flushIntervalMs"
+    },
+    {
+      "id": "req.independent_drain_workers.risk",
+      "kind": "risk",
+      "label": "Risk for Independent drain workers flushIntervalMs"
+    },
+    {
+      "id": "req.independent_drain_workers.task",
+      "kind": "task",
+      "label": "Independent drain workers flushIntervalMs"
+    },
+    {
+      "id": "req.independent_drain_workers.test",
+      "kind": "test",
+      "label": "Test for Independent drain workers flushIntervalMs"
+    },
+    {
+      "id": "req.lisa_live_enablement_nongoal.dod",
+      "kind": "dod",
+      "label": "DoD for Lisa live enablement explicit non-goal"
+    },
+    {
+      "id": "req.lisa_live_enablement_nongoal.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Evidence requirement for Lisa live enablement explicit non-goal"
+    },
+    {
+      "id": "req.lisa_live_enablement_nongoal.risk",
+      "kind": "risk",
+      "label": "Risk for Lisa live enablement explicit non-goal"
+    },
+    {
+      "id": "req.lisa_live_enablement_nongoal.task",
+      "kind": "task",
+      "label": "Lisa live enablement explicit non-goal"
+    },
+    {
+      "id": "req.lisa_live_enablement_nongoal.test",
+      "kind": "test",
+      "label": "Test for Lisa live enablement explicit non-goal"
+    },
+    {
+      "id": "req.live_platform_contact_nongoal.dod",
+      "kind": "dod",
+      "label": "DoD for Live Platform contact explicit non-goal"
+    },
+    {
+      "id": "req.live_platform_contact_nongoal.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Evidence requirement for Live Platform contact explicit non-goal"
+    },
+    {
+      "id": "req.live_platform_contact_nongoal.risk",
+      "kind": "risk",
+      "label": "Risk for Live Platform contact explicit non-goal"
+    },
+    {
+      "id": "req.live_platform_contact_nongoal.task",
+      "kind": "task",
+      "label": "Live Platform contact explicit non-goal"
+    },
+    {
+      "id": "req.live_platform_contact_nongoal.test",
+      "kind": "test",
+      "label": "Test for Live Platform contact explicit non-goal"
+    },
+    {
+      "id": "req.mcp_deny_all_metadata.dod",
+      "kind": "dod",
+      "label": "DoD for MCP deny-all metadata not include empty"
+    },
+    {
+      "id": "req.mcp_deny_all_metadata.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Evidence requirement for MCP deny-all metadata not include empty"
+    },
+    {
+      "id": "req.mcp_deny_all_metadata.risk",
+      "kind": "risk",
+      "label": "Risk for MCP deny-all metadata not include empty"
+    },
+    {
+      "id": "req.mcp_deny_all_metadata.task",
+      "kind": "task",
+      "label": "MCP deny-all metadata not include empty"
+    },
+    {
+      "id": "req.mcp_deny_all_metadata.test",
+      "kind": "test",
+      "label": "Test for MCP deny-all metadata not include empty"
+    },
+    {
+      "id": "req.native_coexistence.dod",
+      "kind": "dod",
+      "label": "DoD for Native coexistence under adapter failure"
+    },
+    {
+      "id": "req.native_coexistence.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Evidence requirement for Native coexistence under adapter failure"
+    },
+    {
+      "id": "req.native_coexistence.risk",
+      "kind": "risk",
+      "label": "Risk for Native coexistence under adapter failure"
+    },
+    {
+      "id": "req.native_coexistence.task",
+      "kind": "task",
+      "label": "Native coexistence under adapter failure"
+    },
+    {
+      "id": "req.native_coexistence.test",
+      "kind": "test",
+      "label": "Test for Native coexistence under adapter failure"
+    },
+    {
+      "id": "req.operator_ceiling_intersect.dod",
+      "kind": "dod",
+      "label": "DoD for Operator ceiling intersect plugin tools utilities"
+    },
+    {
+      "id": "req.operator_ceiling_intersect.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Evidence requirement for Operator ceiling intersect plugin tools utilities"
+    },
+    {
+      "id": "req.operator_ceiling_intersect.risk",
+      "kind": "risk",
+      "label": "Risk for Operator ceiling intersect plugin tools utilities"
+    },
+    {
+      "id": "req.operator_ceiling_intersect.task",
+      "kind": "task",
+      "label": "Operator ceiling intersect plugin tools utilities"
+    },
+    {
+      "id": "req.operator_ceiling_intersect.test",
+      "kind": "test",
+      "label": "Test for Operator ceiling intersect plugin tools utilities"
+    },
+    {
+      "id": "req.plugin_test_api_unregister.dod",
+      "kind": "dod",
+      "label": "DoD for Plugin test API unregisterMcpServerToolFilter"
+    },
+    {
+      "id": "req.plugin_test_api_unregister.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Evidence requirement for Plugin test API unregisterMcpServerToolFilter"
+    },
+    {
+      "id": "req.plugin_test_api_unregister.risk",
+      "kind": "risk",
+      "label": "Risk for Plugin test API unregisterMcpServerToolFilter"
+    },
+    {
+      "id": "req.plugin_test_api_unregister.task",
+      "kind": "task",
+      "label": "Plugin test API unregisterMcpServerToolFilter"
+    },
+    {
+      "id": "req.plugin_test_api_unregister.test",
+      "kind": "test",
+      "label": "Test for Plugin test API unregisterMcpServerToolFilter"
+    },
+    {
+      "id": "req.repo_boundary_extension_imports.dod",
+      "kind": "dod",
+      "label": "DoD for Repository boundary extension import rules"
+    },
+    {
+      "id": "req.repo_boundary_extension_imports.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Evidence requirement for Repository boundary extension import rules"
+    },
+    {
+      "id": "req.repo_boundary_extension_imports.risk",
+      "kind": "risk",
+      "label": "Risk for Repository boundary extension import rules"
+    },
+    {
+      "id": "req.repo_boundary_extension_imports.task",
+      "kind": "task",
+      "label": "Repository boundary extension import rules"
+    },
+    {
+      "id": "req.repo_boundary_extension_imports.test",
+      "kind": "test",
+      "label": "Test for Repository boundary extension import rules"
+    },
+    {
+      "id": "req.same_runtime_hot_invalidation.dod",
+      "kind": "dod",
+      "label": "DoD for Same-runtime hot invalidation"
+    },
+    {
+      "id": "req.same_runtime_hot_invalidation.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Evidence requirement for Same-runtime hot invalidation"
+    },
+    {
+      "id": "req.same_runtime_hot_invalidation.risk",
+      "kind": "risk",
+      "label": "Risk for Same-runtime hot invalidation"
+    },
+    {
+      "id": "req.same_runtime_hot_invalidation.task",
+      "kind": "task",
+      "label": "Same-runtime hot invalidation"
+    },
+    {
+      "id": "req.same_runtime_hot_invalidation.test",
+      "kind": "test",
+      "label": "Test for Same-runtime hot invalidation"
+    },
+    {
+      "id": "req.section_13_3_ledger_complete.dod",
+      "kind": "dod",
+      "label": "DoD for Section 13.3 ledger completeness"
+    },
+    {
+      "id": "req.section_13_3_ledger_complete.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Evidence requirement for Section 13.3 ledger completeness"
+    },
+    {
+      "id": "req.section_13_3_ledger_complete.risk",
+      "kind": "risk",
+      "label": "Risk for Section 13.3 ledger completeness"
+    },
+    {
+      "id": "req.section_13_3_ledger_complete.task",
+      "kind": "task",
+      "label": "Section 13.3 ledger completeness"
+    },
+    {
+      "id": "req.section_13_3_ledger_complete.test",
+      "kind": "test",
+      "label": "Test for Section 13.3 ledger completeness"
+    },
+    {
+      "id": "req.skills_after_tool_call.dod",
+      "kind": "dod",
+      "label": "DoD for Skills skills_* via after_tool_call"
+    },
+    {
+      "id": "req.skills_after_tool_call.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Evidence requirement for Skills skills_* via after_tool_call"
+    },
+    {
+      "id": "req.skills_after_tool_call.risk",
+      "kind": "risk",
+      "label": "Risk for Skills skills_* via after_tool_call"
+    },
+    {
+      "id": "req.skills_after_tool_call.task",
+      "kind": "task",
+      "label": "Skills skills_* via after_tool_call"
+    },
+    {
+      "id": "req.skills_after_tool_call.test",
+      "kind": "test",
+      "label": "Test for Skills skills_* via after_tool_call"
+    },
+    {
+      "id": "req.skills_allowlisted_schemas.dod",
+      "kind": "dod",
+      "label": "DoD for Allowlisted Skills schemas"
+    },
+    {
+      "id": "req.skills_allowlisted_schemas.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Evidence requirement for Allowlisted Skills schemas"
+    },
+    {
+      "id": "req.skills_allowlisted_schemas.risk",
+      "kind": "risk",
+      "label": "Risk for Allowlisted Skills schemas"
+    },
+    {
+      "id": "req.skills_allowlisted_schemas.task",
+      "kind": "task",
+      "label": "Allowlisted Skills schemas"
+    },
+    {
+      "id": "req.skills_allowlisted_schemas.test",
+      "kind": "test",
+      "label": "Test for Allowlisted Skills schemas"
+    },
+    {
+      "id": "req.two_plugins_two_mcp.dod",
+      "kind": "dod",
+      "label": "DoD for Two plugins two MCP independent domains"
+    },
+    {
+      "id": "req.two_plugins_two_mcp.evidence_requirement",
+      "kind": "evidence_requirement",
+      "label": "Evidence requirement for Two plugins two MCP independent domains"
+    },
+    {
+      "id": "req.two_plugins_two_mcp.risk",
+      "kind": "risk",
+      "label": "Risk for Two plugins two MCP independent domains"
+    },
+    {
+      "id": "req.two_plugins_two_mcp.task",
+      "kind": "task",
+      "label": "Two plugins two MCP independent domains"
+    },
+    {
+      "id": "req.two_plugins_two_mcp.test",
+      "kind": "test",
+      "label": "Test for Two plugins two MCP independent domains"
+    }
+  ]
+}
