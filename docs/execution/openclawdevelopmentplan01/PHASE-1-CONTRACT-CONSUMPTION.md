@@ -3,6 +3,7 @@
 **Session:** `cursor-cloud-feature-openclawdevelopmentplan01-correction-wave2b-20260728-0952`
 **Branch:** `issue/ocp-openclawdevelopmentplan01`
 **Recorded:** 2026-07-28 09:52 Asia/Taipei (correction wave 2b)
+**Wave 19 AuthClaims provenance correction:** 2026-07-29 Asia/Taipei
 **Agent:** Cursor Cloud Agent (Grok 4.5 High), Feature role
 **Authority:** Principal mission — consume hashed Platform/Brain/Skills contracts; do not edit upstream
 
@@ -34,7 +35,9 @@
 | Sanitized schema copy                  | `contracts/platform/auth-claims-1.1.0/`                                                |
 | Supersedes                             | `platform.auth-claims/1.0.0` (historical copy retained)                                |
 
-Sanitized: metadata + hashes + schema JSON only. No `node_modules` copy. Brain/Skills fixture bytes unchanged → owner reaffirmation not required.
+Sanitized: metadata + hashes + schema JSON only. No `node_modules` copy.
+
+**Wave 8 AuthClaims 1.1.0 fixture refresh:** Brain/Skills consumer fixture bytes **changed**. Aggregates Brain `4493f714…4811b` (75 JSON) / Skills `20316371…e19a` (71 JSON). Fixture-owner gate **RE-OPENED**. Fresh Brain + Skills owner countersigns remain **`PENDING_OWNER_COUNTERSIGN`**. Do not claim fixture bytes unchanged or owner reaffirmation unnecessary.
 
 ## 3. LiNKbrain pin
 
@@ -63,13 +66,16 @@ OpenClaw consumes **frozen plan §9.1** tool names (17). Corrected Brain HEAD
 | Source branch                     | `issue/21-linkskillsdevelopmentplan01`                                                                                       |
 | `CONTRACT_VERSION` / API label    | `skills.api.v0.1`                                                                                                            |
 | Schema const                      | `schema_version: "0.1"`                                                                                                      |
-| Schemas dir                       | `packages/contracts/schemas/*.json` (13 files, includes vendored auth-claims)                                                |
+| Schemas dir                       | `packages/contracts/schemas/*.json` (13 files, includes historical vendored auth-claims 1.0)                                 |
 | Schemas package aggregate SHA-256 | `828ac00d3be0e9b2040aacec3ca788176d8bb160c11d13994055d047503981d2`                                                           |
-| Platform auth-claims (vendored)   | schema `b0397cdf…50fb` / contentHash `6bf49618…b251`                                                                         |
+| Platform auth-claims (**authoritative consumer**) | `platform.auth-claims/1.1.0` / `@linktrend/platform-contracts@0.2.2` — schema `c2e8bc68…dfa1` / contentHash `fb518834…a567` |
+| Platform auth-claims (**historical upstream vendored only**) | schema `b0397cdf…50fb` / contentHash `6bf49618…b251` (`platform.auth-claims/1.0.0`) — not current fixtures |
 | Certification                     | Immutable-release / executor-receipt path per Skills correction handoff; prior suite-authored observed_output path withdrawn |
 | Pin artifact                      | `contracts/skills/PIN.json`                                                                                                  |
 
-### Per-schema SHA-256
+### Per-schema SHA-256 (Skills upstream package inventory)
+
+Includes the historical vendored AuthClaims **1.0.0** schema file from Skills packages. OpenClaw consumer identity/auth fixtures use AuthClaims **1.1.0** via the approved consumer override in `contracts/skills/PIN.json`.
 
 | File                               | SHA-256                                                            |
 | ---------------------------------- | ------------------------------------------------------------------ |
@@ -79,7 +85,7 @@ OpenClaw consumes **frozen plan §9.1** tool names (17). Corrected Brain HEAD
 | `execution-profile-v0.1.json`      | `5e81f462a2a5868d7d7e75a39e72b65af084333e6a801996ddf56cd8e836da61` |
 | `feedback-v0.1.json`               | `516b194279a55789f8d9ea21f3eecf903d6b1d1039da90e354d5914f4da27daa` |
 | `mcp-api-envelope-v0.1.json`       | `ad278955dcf9f63282a6027b862924f4e1063b468f8961ae7a73703cd4700f05` |
-| `platform-auth-claims.v1.0.0.json` | `b0397cdf34e76ab0986c6d223ecb6c3c66d619ea59557f78cd45c0c015ff50fb` |
+| `platform-auth-claims.v1.0.0.json` | `b0397cdf34e76ab0986c6d223ecb6c3c66d619ea59557f78cd45c0c015ff50fb` (**historical** upstream vendored) |
 | `release-record-v0.1.json`         | `b2c076708388896fe519b350888bd0ca5351bfde881d193023bd877456a35478` |
 | `run-event-v0.1.json`              | `a5cdf8e9079ed807ed9251965532ac9f463467319af70766addae47718ae98b1` |
 | `runtime-profile-v0.1.json`        | `834671a1d04a0dd043b5dc3ee07639ea3c17b7d1e4f6f56153f8461a763dc96d` |
@@ -96,27 +102,33 @@ Method: SHA-256 of newline-joined sorted lines `{json_file_sha256}  {relative_pa
 plus trailing newline, over all `*.json` under the fixture root (paths relative to
 that root, sorted).
 
-| Package                          | JSON count | Aggregate SHA-256                                                  |
-| -------------------------------- | ---------- | ------------------------------------------------------------------ |
-| `extensions/linkbrain/fixtures`  | 75         | `4493f71432ef56f9fc272ff4c208b8901242c2bd83e138f53d6f0259b4f4811b` |
-| `extensions/linkskills/fixtures` | 71         | `203163711b5db17b8a07d3956e41596384cbd08f0c110bd9f21abfc5c7e5e19a` |
+| Package                          | JSON count | Aggregate SHA-256                                                  | AuthClaims | Owner status |
+| -------------------------------- | ---------- | ------------------------------------------------------------------ | ---------- | ------------ |
+| `extensions/linkbrain/fixtures`  | 75         | `4493f71432ef56f9fc272ff4c208b8901242c2bd83e138f53d6f0259b4f4811b` | **1.1.0**  | **`PENDING_OWNER_COUNTERSIGN`** |
+| `extensions/linkskills/fixtures` | 71         | `203163711b5db17b8a07d3956e41596384cbd08f0c110bd9f21abfc5c7e5e19a` | **1.1.0**  | **`PENDING_OWNER_COUNTERSIGN`** |
 
 Prior denied Brain aggregate (superseded): `d539debc7b9d7347c109e7d462fc27a48c28322f0d3d5b85d57f602e843d45fb`
 
 Owner countersignature process: `FIXTURE-OWNER-SIGNOFF.md`.
-Principal routing: `COUNTERSIGN-REQUEST.md` (now **SATISFIED**).
-Status: Brain + Skills **`OWNER_COUNTERSIGNED`** at OpenClaw tip `429a7818e2f79be27329c1848531ffe9ba0f7367`. **Phase 1 fixture-owner gate CLOSED.** Phase 1 overall still blocked on Platform auth-path. Provisional pending Codex Phase 14. Not merge authority.
+Wave-8 request packet: `COUNTERSIGN-REQUEST-WAVE8-AUTHCLAIMS-1.1.md` (**PENDING** — do not treat as satisfied).
+
+**Current status:** Brain + Skills AuthClaims **1.1.0** fixtures remain **`PENDING_OWNER_COUNTERSIGN`**. Fixture-owner gate is **RE-OPENED**. Do **not** call the current fixture-owner gate CLOSED.
+
+**Historical only:** AuthClaims **1.0.0** Brain + Skills `OWNER_COUNTERSIGNED` at OpenClaw tip `429a7818e2f79be27329c1848531ffe9ba0f7367` (aggregates `275c1fb7…9a1d` / `8586d89a…ec96`). Those countersigns are superseded for the positive AuthClaims path and do **not** close the current gate.
+
+Phase 1 overall still blocked on Platform auth-path + fresh 1.1 countersigns. Provisional pending Codex Phase 14. Not merge authority. Do not request countersigns until Codex confirms the resulting final head.
 
 ## 6. Consumption rules
 
 1. Consume only pinned HEADs + hashes above (or newer owner-signed supersession).
 2. Do not edit LiNKplatform / LiNKbrain / LiNKskills from this OpenClaw session.
 3. Do not change OpenClaw tool names away from frozen §9.1.
-4. Fixture drafts remain non-authoritative for domain conformance until owners countersign.
+4. Fixture drafts remain non-authoritative for domain conformance until owners countersign the **current** AuthClaims **1.1.0** aggregates.
 5. Fake/fixture proof never claims stage or production readiness.
-6. Auth identity fixtures use camelCase `platform.auth-claims/1.0.0` — not golden-meta-as-auth.
+6. Auth identity fixtures use camelCase `platform.auth-claims/1.1.0` — not golden-meta-as-auth; AuthClaims `1.0.0` appears only as explicit rejection/backward-compat evidence.
 
 ## 7. Exact next actions
 
-1. Principal routes `COUNTERSIGN-REQUEST.md` / `FIXTURE-OWNER-SIGNOFF.md` to Brain and Skills owners.
-2. OpenClaw continues fake-tier work against frozen §9.1 / §9.2 names and draft fixtures without claiming owner conformance or Phase 1 complete.
+1. OpenClaw Codex re-verifies this tip (Phase 14) before any countersign request.
+2. After Codex confirms the final head, Principal may route `COUNTERSIGN-REQUEST-WAVE8-AUTHCLAIMS-1.1.md` / `FIXTURE-OWNER-SIGNOFF.md` to Brain and Skills owners for **fresh** 1.1 aggregate countersigns.
+3. OpenClaw continues fake-tier work against frozen §9.1 / §9.2 names and draft fixtures without claiming owner conformance or Phase 1 complete.

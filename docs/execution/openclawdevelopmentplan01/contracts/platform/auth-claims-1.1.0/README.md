@@ -12,4 +12,4 @@ Local copies (sanitized; no secrets):
 
 Authoritative PIN metadata: `../PIN.json`.
 
-Brain/Skills domain fixture bytes were **not** changed by this repin; owner reaffirmation not required.
+Wave 7 repinned AuthClaims only. Wave 8 later refreshed Brain/Skills consumer fixture bytes to AuthClaims **1.1.0** (aggregates `4493f714…` / `20316371…`). Fixture-owner gate is **RE-OPENED** (`PENDING_OWNER_COUNTERSIGN`); fresh Brain + Skills owner countersigns remain pending. Do not claim owner reaffirmation unnecessary.
