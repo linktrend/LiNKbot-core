@@ -327,6 +327,37 @@ export function createNetworkRegistrars(state: PluginRegistryState) {
     bumpMcpToolFilterRegistrationGeneration();
   };
 
+  const unregisterMcpServerToolFilter = (record: PluginRecord, serverNameRaw: string) => {
+    const serverName = normalizeOptionalString(serverNameRaw);
+    if (!serverName) {
+      pushDiagnostic({
+        level: "error",
+        pluginId: record.id,
+        source: record.source,
+        message: "MCP server tool filter unregister missing serverName",
+      });
+      return;
+    }
+    const existingIndex = registry.mcpServerToolFilters.findIndex(
+      (entry) => entry.resolver.serverName === serverName,
+    );
+    if (existingIndex < 0) {
+      return;
+    }
+    const existing = registry.mcpServerToolFilters[existingIndex];
+    if (existing && existing.pluginId !== record.id) {
+      pushDiagnostic({
+        level: "error",
+        pluginId: record.id,
+        source: record.source,
+        message: `MCP server tool filter for "${serverName}" unregister rejected: owned by plugin "${existing.pluginId}"`,
+      });
+      return;
+    }
+    registry.mcpServerToolFilters.splice(existingIndex, 1);
+    bumpMcpToolFilterRegistrationGeneration();
+  };
+
   const registerChannel = (
     record: PluginRecord,
     registration: OpenClawPluginChannelRegistration | ChannelPlugin,
@@ -436,6 +467,7 @@ export function createNetworkRegistrars(state: PluginRegistryState) {
     registerHostedMediaResolver,
     registerMcpServerConnectionResolver,
     registerMcpServerToolFilter,
+    unregisterMcpServerToolFilter,
     registerChannel,
   };
 }

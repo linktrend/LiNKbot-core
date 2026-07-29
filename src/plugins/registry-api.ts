@@ -58,6 +58,7 @@ export function createPluginApiFactory(
     registerHostedMediaResolver,
     registerMcpServerConnectionResolver,
     registerMcpServerToolFilter,
+    unregisterMcpServerToolFilter,
     registerProvider,
     registerWorkerProvider,
     registerModelCatalogProvider,
@@ -186,6 +187,8 @@ export function createPluginApiFactory(
                 registerMcpServerConnectionResolver(record, resolver),
               registerMcpServerToolFilter: (resolver) =>
                 registerMcpServerToolFilter(record, resolver),
+              unregisterMcpServerToolFilter: (serverName) =>
+                unregisterMcpServerToolFilter(record, serverName),
               registerProvider: (provider) => registerProvider(record, provider),
               registerWorkerProvider: (provider) => registerWorkerProvider(record, provider),
               registerModelCatalogProvider: (provider) =>

@@ -709,14 +709,44 @@ export function createSessionMcpRuntime(params: {
                         },
                       }
                     : {}),
-                  ...(effectiveFilter?.include || effectiveFilter?.exclude
+                  ...(effectiveFilter &&
+                  (effectiveFilter.denyAll ||
+                    effectiveFilter.include ||
+                    effectiveFilter.exclude ||
+                    effectiveFilter.operator ||
+                    effectiveFilter.plugin)
                     ? {
                         toolFilter: {
+                          ...(effectiveFilter.denyAll ? { denyAll: true } : {}),
                           ...(effectiveFilter.include
                             ? { include: [...effectiveFilter.include] }
                             : {}),
                           ...(effectiveFilter.exclude
                             ? { exclude: [...effectiveFilter.exclude] }
+                            : {}),
+                          ...(effectiveFilter.operator
+                            ? {
+                                operator: {
+                                  ...(effectiveFilter.operator.include
+                                    ? { include: [...effectiveFilter.operator.include] }
+                                    : {}),
+                                  ...(effectiveFilter.operator.exclude
+                                    ? { exclude: [...effectiveFilter.operator.exclude] }
+                                    : {}),
+                                },
+                              }
+                            : {}),
+                          ...(effectiveFilter.plugin
+                            ? {
+                                plugin: {
+                                  ...(effectiveFilter.plugin.include
+                                    ? { include: [...effectiveFilter.plugin.include] }
+                                    : {}),
+                                  ...(effectiveFilter.plugin.exclude
+                                    ? { exclude: [...effectiveFilter.plugin.exclude] }
+                                    : {}),
+                                },
+                              }
                             : {}),
                         },
                       }

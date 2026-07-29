@@ -23,12 +23,26 @@ describe("linkbrain registered-plugin feature flags + coexistence surface", () =
     linkbrainPlugin.register(api);
     expect(tools.filter((n) => n.startsWith("brain_"))).toEqual([]);
     expect(toolFilters).toEqual([{ serverName: "linkbrain" }]);
-    expect(buildLinkbrainFlaggedMcpToolFilter(parseLinkbrainConfig({ mcpRead: false })).include).not.toContain(
-      "brain_browse",
-    );
-    expect(buildLinkbrainFlaggedMcpToolFilter(parseLinkbrainConfig({ mcpRead: true })).include).toContain(
-      "brain_browse",
-    );
+    expect(
+      buildLinkbrainFlaggedMcpToolFilter(
+        parseLinkbrainConfig({
+          mcpRead: false,
+          captureEnqueue: false,
+          captureDrain: false,
+          coordinationWrites: false,
+        }),
+      ),
+    ).toBeNull();
+    expect(
+      buildLinkbrainFlaggedMcpToolFilter(
+        parseLinkbrainConfig({
+          mcpRead: true,
+          captureEnqueue: false,
+          captureDrain: false,
+          coordinationWrites: false,
+        }),
+      )?.include,
+    ).toContain("brain_browse");
   });
 
   it("plugin register wires hooks without mutating native memory/cron/channel surfaces", () => {

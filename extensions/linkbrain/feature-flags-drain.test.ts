@@ -10,14 +10,49 @@ import { createBrainFakeTransport } from "./src/runtime.js";
 import { LINKBRAIN_MCP_TOOL_ALLOWLIST } from "./mcp-tool-filter.js";
 
 describe("linkbrain feature flags (MCP-gated, no plugin tool stubs)", () => {
-  it("excludes read tools from MCP include when mcpRead=false", () => {
-    const off = buildLinkbrainFlaggedMcpToolFilter(parseLinkbrainConfig({ mcpRead: false }));
-    expect(off.include).not.toContain("brain_browse");
-    expect(off.include).toContain("brain_capture_batch");
+  it("gates each Brain flag family independently and deny-alls when all false", () => {
+    expect(
+      buildLinkbrainFlaggedMcpToolFilter(
+        parseLinkbrainConfig({
+          mcpRead: false,
+          captureEnqueue: false,
+          captureDrain: false,
+          coordinationWrites: false,
+        }),
+      ),
+    ).toBeNull();
 
-    const on = buildLinkbrainFlaggedMcpToolFilter(parseLinkbrainConfig({ mcpRead: true }));
-    expect(on.include).toContain("brain_browse");
-    expect(on.include.length).toBe(LINKBRAIN_MCP_TOOL_ALLOWLIST.length);
+    const readOnly = buildLinkbrainFlaggedMcpToolFilter(
+      parseLinkbrainConfig({
+        mcpRead: true,
+        captureEnqueue: false,
+        captureDrain: false,
+        coordinationWrites: false,
+      }),
+    );
+    expect(readOnly?.include).toContain("brain_browse");
+    expect(readOnly?.include).not.toContain("brain_capture_batch");
+    expect(readOnly?.include).not.toContain("brain_task_start");
+
+    const captureOnly = buildLinkbrainFlaggedMcpToolFilter(
+      parseLinkbrainConfig({
+        mcpRead: false,
+        captureEnqueue: true,
+        captureDrain: false,
+        coordinationWrites: false,
+      }),
+    );
+    expect(captureOnly?.include).toEqual(["brain_capture_batch", "brain_episode_checkpoint"]);
+
+    const allOn = buildLinkbrainFlaggedMcpToolFilter(
+      parseLinkbrainConfig({
+        mcpRead: true,
+        captureEnqueue: true,
+        captureDrain: true,
+        coordinationWrites: true,
+      }),
+    );
+    expect(allOn?.include.length).toBe(LINKBRAIN_MCP_TOOL_ALLOWLIST.length);
   });
 
   it("fake-backed read succeeds when mcpRead enabled; fails when disabled", async () => {

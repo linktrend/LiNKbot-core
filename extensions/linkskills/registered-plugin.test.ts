@@ -26,13 +26,23 @@ describe("linkskills registered-plugin integration", () => {
     expect(toolFilters).toEqual([{ serverName: "linkskills" }]);
     expect(
       buildLinkskillsFlaggedMcpToolFilter(
-        parseLinkskillsConfig({ mcpDiscoveryRead: false, governedExecution: false }),
-      ).include,
-    ).not.toContain("skills_list");
+        parseLinkskillsConfig({
+          mcpDiscoveryRead: false,
+          governedExecution: false,
+          telemetryEnqueue: false,
+          telemetryDrain: false,
+        }),
+      ),
+    ).toBeNull();
     expect(
       buildLinkskillsFlaggedMcpToolFilter(
-        parseLinkskillsConfig({ mcpDiscoveryRead: true, governedExecution: true }),
-      ).include,
+        parseLinkskillsConfig({
+          mcpDiscoveryRead: true,
+          governedExecution: true,
+          telemetryEnqueue: true,
+          telemetryDrain: false,
+        }),
+      )?.include,
     ).toContain("skills_run_start");
   });
 

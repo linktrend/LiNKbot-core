@@ -47,18 +47,52 @@ function createTestStores(maxEntries = 100) {
 }
 
 describe("linkskills feature flags (MCP-gated, no plugin tool stubs)", () => {
-  it("gates discovery/execution families independently", () => {
-    const none = buildLinkskillsFlaggedMcpToolFilter(
-      parseLinkskillsConfig({ mcpDiscoveryRead: false, governedExecution: false }),
+  it("gates discovery/execution/telemetry families independently and deny-alls when all false", () => {
+    expect(
+      buildLinkskillsFlaggedMcpToolFilter(
+        parseLinkskillsConfig({
+          mcpDiscoveryRead: false,
+          governedExecution: false,
+          telemetryEnqueue: false,
+          telemetryDrain: false,
+        }),
+      ),
+    ).toBeNull();
+
+    const discoveryOnly = buildLinkskillsFlaggedMcpToolFilter(
+      parseLinkskillsConfig({
+        mcpDiscoveryRead: true,
+        governedExecution: false,
+        telemetryEnqueue: false,
+        telemetryDrain: false,
+      }),
     );
-    expect(none.include).not.toContain("skills_list");
-    expect(none.include).not.toContain("skills_run_start");
-    expect(none.include).toContain("skills_feedback_submit");
+    expect(discoveryOnly?.include).toContain("skills_list");
+    expect(discoveryOnly?.include).not.toContain("skills_run_start");
+    expect(discoveryOnly?.include).not.toContain("skills_feedback_submit");
+
+    const telemetryOnly = buildLinkskillsFlaggedMcpToolFilter(
+      parseLinkskillsConfig({
+        mcpDiscoveryRead: false,
+        governedExecution: false,
+        telemetryEnqueue: true,
+        telemetryDrain: false,
+      }),
+    );
+    expect(telemetryOnly?.include).toEqual([
+      "skills_feedback_submit",
+      "skills_trace_candidate_submit",
+    ]);
 
     const both = buildLinkskillsFlaggedMcpToolFilter(
-      parseLinkskillsConfig({ mcpDiscoveryRead: true, governedExecution: true }),
+      parseLinkskillsConfig({
+        mcpDiscoveryRead: true,
+        governedExecution: true,
+        telemetryEnqueue: true,
+        telemetryDrain: true,
+      }),
     );
-    expect(both.include).toEqual([...LINKSKILLS_MCP_TOOL_ALLOWLIST]);
+    expect(both?.include).toEqual([...LINKSKILLS_MCP_TOOL_ALLOWLIST]);
   });
 
   it("fake-backed discovery succeeds only when mcpDiscoveryRead enabled", async () => {

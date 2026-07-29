@@ -31,7 +31,7 @@ export default definePluginEntry({
     const flaggedMcp = buildLinkskillsFlaggedMcpToolFilter(config);
 
     api.logger.info(
-      `linkskills: registered (default-disabled plugin). ${LINKSKILLS_CONVERSATION_HOOK_POLICY}; mcpInclude=${flaggedMcp.include.length}; no skills_* plugin tools registered`,
+      `linkskills: registered (default-disabled plugin). ${LINKSKILLS_CONVERSATION_HOOK_POLICY}; mcpInclude=${flaggedMcp?.include.length ?? 0}; no skills_* plugin tools registered`,
     );
 
     api.registerMcpServerToolFilter({

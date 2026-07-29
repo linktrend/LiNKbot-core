@@ -4,6 +4,9 @@
  * Does **not** register plugin tools named `skills_*` (avoids MCP naming conflicts).
  * Flags gate which §9.2 tools appear via `api.registerMcpServerToolFilter` (config ∩
  * plugin overlay at catalog materialization) and which ops may invoke transport.
+ *
+ * Empty include after flags is returned as `null` (deny-all / omit). Never return
+ * `{ include: [] }` — empty include means unrestricted in OpenClaw materialize.
  */
 import type { LinkskillsConfig } from "./config.js";
 import {
@@ -30,8 +33,21 @@ export const LINKSKILLS_MCP_EXECUTION_TOOLS = Object.freeze([
   "skills_output_validate",
 ] as const);
 
+/** Telemetry enqueue / evidence family — gated by `telemetryEnqueue`. */
+export const LINKSKILLS_MCP_TELEMETRY_ENQUEUE_TOOLS = Object.freeze([
+  "skills_feedback_submit",
+  "skills_trace_candidate_submit",
+] as const);
+
+/**
+ * Telemetry drain has no dedicated §9.2 MCP tool surface; the flag gates the
+ * drain worker / runtime path only.
+ */
+export const LINKSKILLS_MCP_TELEMETRY_DRAIN_TOOLS = Object.freeze([] as const);
+
 const discoverySet = new Set<string>(LINKSKILLS_MCP_DISCOVERY_TOOLS);
 const executionSet = new Set<string>(LINKSKILLS_MCP_EXECUTION_TOOLS);
+const telemetryEnqueueSet = new Set<string>(LINKSKILLS_MCP_TELEMETRY_ENQUEUE_TOOLS);
 
 export function isLinkskillsDiscoveryTool(toolName: string): boolean {
   return discoverySet.has(toolName);
@@ -41,14 +57,21 @@ export function isLinkskillsExecutionTool(toolName: string): boolean {
   return executionSet.has(toolName);
 }
 
+export function isLinkskillsTelemetryEnqueueTool(toolName: string): boolean {
+  return telemetryEnqueueSet.has(toolName);
+}
+
 /**
  * Builds the managed MCP include list after applying Skills feature flags.
- * Evidence/drain tools remain available when telemetryDrain paths need them;
- * discovery/execution families require their flags.
+ * Returns `null` when no tools remain (deny-all / omit) — never `{ include: [] }`.
  */
 export function buildLinkskillsFlaggedMcpToolFilter(
-  config: Pick<LinkskillsConfig, "mcpDiscoveryRead" | "governedExecution">,
-): { include: readonly string[] } {
+  config: Pick<
+    LinkskillsConfig,
+    "mcpDiscoveryRead" | "governedExecution" | "telemetryEnqueue" | "telemetryDrain"
+  >,
+): { include: readonly string[] } | null {
+  void config.telemetryDrain;
   const include = LINKSKILLS_MCP_TOOL_ALLOWLIST.filter((name) => {
     if (isLinkskillsDiscoveryTool(name)) {
       return config.mcpDiscoveryRead;
@@ -56,8 +79,14 @@ export function buildLinkskillsFlaggedMcpToolFilter(
     if (isLinkskillsExecutionTool(name)) {
       return config.governedExecution;
     }
-    return true;
+    if (isLinkskillsTelemetryEnqueueTool(name)) {
+      return config.telemetryEnqueue;
+    }
+    return false;
   });
+  if (include.length === 0) {
+    return null;
+  }
   return { include };
 }
 
@@ -83,40 +112,25 @@ export type SkillsFeatureTransport = {
 };
 
 /**
- * Invokes a Skills discovery/execution op through transport when the matching
- * flag is on and transportMode is not disabled.
+ * Invokes a Skills domain op through transport when the matching flag is on and
+ * transportMode is not disabled. Direct managed-MCP exposure must not bypass
+ * these runtime checks.
  */
 export async function invokeLinkskillsFeatureOp(params: {
-  config: Pick<LinkskillsConfig, "mcpDiscoveryRead" | "governedExecution" | "transportMode">;
+  config: Pick<
+    LinkskillsConfig,
+    | "mcpDiscoveryRead"
+    | "governedExecution"
+    | "telemetryEnqueue"
+    | "telemetryDrain"
+    | "transportMode"
+  >;
   transport: SkillsFeatureTransport;
   toolName: string;
   arguments?: Record<string, unknown>;
   idempotencyKey: string;
   signal?: AbortSignal;
 }): Promise<SkillsFeatureInvokeResult> {
-  const isDiscovery = isLinkskillsDiscoveryTool(params.toolName);
-  const isExecution = isLinkskillsExecutionTool(params.toolName);
-  if (!isDiscovery && !isExecution) {
-    return {
-      ok: false,
-      errorCode: "tool_not_allowlisted",
-      safeMessage: `tool "${params.toolName}" is not a Skills discovery/execution op`,
-    };
-  }
-  if (isDiscovery && !params.config.mcpDiscoveryRead) {
-    return {
-      ok: false,
-      errorCode: "feature_flag_disabled",
-      safeMessage: "mcpDiscoveryRead is disabled",
-    };
-  }
-  if (isExecution && !params.config.governedExecution) {
-    return {
-      ok: false,
-      errorCode: "feature_flag_disabled",
-      safeMessage: "governedExecution is disabled",
-    };
-  }
   if (params.config.transportMode === "disabled") {
     return {
       ok: false,
@@ -129,6 +143,27 @@ export async function invokeLinkskillsFeatureOp(params: {
       ok: false,
       errorCode: "tool_not_allowlisted",
       safeMessage: `tool "${params.toolName}" is not on the §9.2 allowlist`,
+    };
+  }
+  if (isLinkskillsDiscoveryTool(params.toolName) && !params.config.mcpDiscoveryRead) {
+    return {
+      ok: false,
+      errorCode: "feature_flag_disabled",
+      safeMessage: "mcpDiscoveryRead is disabled",
+    };
+  }
+  if (isLinkskillsExecutionTool(params.toolName) && !params.config.governedExecution) {
+    return {
+      ok: false,
+      errorCode: "feature_flag_disabled",
+      safeMessage: "governedExecution is disabled",
+    };
+  }
+  if (isLinkskillsTelemetryEnqueueTool(params.toolName) && !params.config.telemetryEnqueue) {
+    return {
+      ok: false,
+      errorCode: "feature_flag_disabled",
+      safeMessage: "telemetryEnqueue is disabled",
     };
   }
   const outcome = await params.transport.write({

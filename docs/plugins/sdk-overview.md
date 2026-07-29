@@ -208,6 +208,7 @@ advertised node command.
 | `api.registerHostedMediaResolver(resolver)`     | Resolver for browser-style hosted media URLs                           |
 | `api.registerMcpServerConnectionResolver(...)`  | Per-requester MCP transport (`url`/`headers`) for a static server name |
 | `api.registerMcpServerToolFilter(...)`          | Process-local MCP tool selection overlay (config ∩ plugin; no config write) |
+| `api.unregisterMcpServerToolFilter(serverName)` | Same-owner removal of a process-local MCP tool-filter overlay               |
 | `api.registerTextTransforms(transforms)`        | Plugin-owned prompt/message compatibility text rewrites                |
 | `api.registerConfigMigration(migrate)`          | Lightweight config migration run before plugin runtime loads           |
 | `api.registerMigrationProvider(provider)`       | Importer for `openclaw migrate`                                        |
@@ -273,8 +274,13 @@ Tool-filter contract notes:
 
 - `registerMcpServerToolFilter` is process-local and never writes `openclaw.json`.
 - Operator `mcp.servers.<id>.toolFilter` is the ceiling; plugin overlays are
-  intersected at catalog materialization (`listTools` → exposed agent tools).
-- `resolve() => null` omits all tools for that server (default-deny / rollback).
+  intersected at catalog materialization (`listTools` → exposed agent tools),
+  including synthesized resource/prompt utility tools.
+- `resolve() => null` or explicit empty `include: []` is deny-all (`toolFilter.denyAll`),
+  never unrestricted `include: []` metadata.
+- Same-owner plugins may replace their resolver or call
+  `api.unregisterMcpServerToolFilter(serverName)` to remove the overlay (bumps
+  registration generation so live catalogs rematerialize).
 - One plugin owns one server name: a duplicate registration from another plugin
   is rejected with an error diagnostic (first registration wins).
 - Owning-plugin re-registration updates the overlay and invalidates cached

@@ -45,7 +45,7 @@
 | Wave-2b pin commit                       | `4103bd6c1c208337f5dc37e169c9ec9a727bf835`                                                            |
 | SSRF transport commit                    | `d79e3356db527492f0ab8a0b1af7888469815f19`                                                            |
 | Hosted CI green tip (ci-gate SUCCESS)    | **deferred / Principal-waived** (CI redesign) for wave 5 tip `4fa1e9f7ed0…` (prior green `8e236d2f056…` / `30347356129`) |
-| Current HEAD (branch tip)                | `2fac6e3aaa10a84d8db5ae0aab7f7bf1f9959aa3` (wave 9 MCP toolFilter seam; tip suite 31/203) |
+| Current HEAD (branch tip)                | wave-10 correction (exact tip filled at closeout; started from `5d1d47ea027bf58525f68aefa49c136f49744452`; tip suite 31/203) |
 | Primary session (closed)                 | `docs/agent-sessions/completed/cursor-local-mac-mini-lisa-openclawdevelopmentplan01-20260727-1648.md` |
 | Related Phase 2 session (closed)         | `docs/agent-sessions/completed/cursor-local-mac-mini-feature-linkbrain-phase2-20260727-1854.md`       |
 | Orchestrator key                         | `cursor-local-mac-mini-desktop-workspace-orchestrator`                                                |
@@ -144,6 +144,7 @@ All other mandatory fake-tier scenarios 1–15 + coexistence A–G: **PASS** (se
 | Local re-verify (bounded timeout) | **2026-07-28 18:12 Asia/Taipei** — historical **22/171**; superseded by wave 6 below |
 | Local re-verify (wave 6 Phase 14 corrections) | **2026-07-28 20:48 Asia/Taipei** — historical **26/185**; superseded by wave 7 below |
 | Local re-verify (wave 7 Phase 14 corrections) | **2026-07-28 21:36 Asia/Taipei** — historical **29/196**; superseded by wave 8 below |
+| Local re-verify (wave 10 Phase 14 corrections) | **2026-07-29 Asia/Taipei** — deny-all/flags/hot-invalidation/§13.3 atomic ledger; focused seam PASS; tip suite **31/203**; `git diff --check` clean; **no owner countersign request** |
 | Local re-verify (wave 9 MCP toolFilter seam) | **2026-07-29 Asia/Taipei** — focused seam tests PASS; tip suite **31/203** preserved; AuthClaims aggregates unchanged |
 | Local re-verify (wave 8 Phase 14 corrections) | **2026-07-29 Asia/Taipei** — `node scripts/run-vitest.mjs test/helpers/link-domain-fakes extensions/linkbrain extensions/linkskills` → **31/203 pass**; base-to-head `git diff --check` required clean |
 | OpenGrep (harness + transports) | Local `scripts/run-opengrep.sh --error` → **0 findings** after harness + SSRF-guard fixes                                                    |

@@ -20,6 +20,15 @@ export type McpToolSelection = {
   exclude?: string[];
 };
 
+/** Catalog / materialization projection of a composed tool filter. */
+export type McpCatalogToolFilter = {
+  denyAll?: boolean;
+  include?: string[];
+  exclude?: string[];
+  operator?: McpToolSelection;
+  plugin?: McpToolSelection;
+};
+
 type McpServerToolFilterEntry = OpenClawPluginMcpServerToolFilter & {
   pluginId: string;
 };
@@ -72,9 +81,17 @@ function normalizeResolvedOverlay(
   if (typeof value !== "object" || Array.isArray(value)) {
     return null;
   }
+  const hasIncludeKey = Array.isArray(value.include);
+  const include = normalizeStringList(value.include);
+  const exclude = normalizeStringList(value.exclude);
+  // Explicit empty include is deny-all (same as null). Empty include must never
+  // mean "unrestricted" — that is the no-include-key / omit-include semantics.
+  if (hasIncludeKey && !include) {
+    return null;
+  }
   return {
-    include: normalizeStringList(value.include),
-    exclude: normalizeStringList(value.exclude),
+    include,
+    exclude,
   };
 }
 
@@ -172,36 +189,52 @@ export function shouldExposeComposedMcpTool(
   }
 }
 
-/** Catalog metadata projection of the effective filter. */
+function cloneSelection(selection: McpToolSelection): McpToolSelection | undefined {
+  if (!selection.include && !selection.exclude) {
+    return undefined;
+  }
+  return {
+    ...(selection.include ? { include: [...selection.include] } : {}),
+    ...(selection.exclude ? { exclude: [...selection.exclude] } : {}),
+  };
+}
+
+/**
+ * Catalog metadata projection of the effective filter.
+ * Deny-all uses `denyAll: true` — never `include: []` (unrestricted).
+ * Intersect preserves both sides so utility tools apply operator ∩ plugin.
+ */
 export function describeComposedMcpToolFilter(
   composition: ResolvedMcpToolFilterComposition,
-): McpToolSelection | undefined {
+): McpCatalogToolFilter | undefined {
   switch (composition.kind) {
     case "omit":
-      return { include: [] };
-    case "config-only": {
-      const selection = composition.selection;
-      if (!selection.include && !selection.exclude) {
-        return undefined;
-      }
-      return {
-        ...(selection.include ? { include: [...selection.include] } : {}),
-        ...(selection.exclude ? { exclude: [...selection.exclude] } : {}),
-      };
-    }
+      return { denyAll: true };
+    case "config-only":
+      return cloneSelection(composition.selection);
     case "intersect": {
-      // Prefer the plugin include as the active overlay under the operator ceiling.
-      const include = composition.plugin.include ?? composition.config.include;
-      const exclude = [
-        ...(composition.config.exclude ?? []),
-        ...(composition.plugin.exclude ?? []),
-      ];
-      if (!include && exclude.length === 0) {
+      const operator = cloneSelection(composition.config);
+      const plugin = cloneSelection(composition.plugin);
+      if (!operator && !plugin) {
         return undefined;
       }
       return {
-        ...(include ? { include: [...include] } : {}),
-        ...(exclude.length > 0 ? { exclude: [...exclude] } : {}),
+        ...(operator ? { operator } : {}),
+        ...(plugin ? { plugin } : {}),
+        // Convenience flatten for diagnostics: plugin include under operator ceiling
+        // is not authoritative alone — materialize must use operator ∩ plugin.
+        ...(plugin?.include
+          ? { include: [...plugin.include] }
+          : operator?.include
+            ? { include: [...operator.include] }
+            : {}),
+        ...(() => {
+          const exclude = [
+            ...(composition.config.exclude ?? []),
+            ...(composition.plugin.exclude ?? []),
+          ];
+          return exclude.length > 0 ? { exclude } : {};
+        })(),
       };
     }
     default: {
@@ -209,6 +242,26 @@ export function describeComposedMcpToolFilter(
       return _exhaustive;
     }
   }
+}
+
+/** Whether a utility operation (resources or prompts) passes catalog toolFilter metadata. */
+export function serverAllowsMcpUtilityTool(
+  toolFilter: McpCatalogToolFilter | undefined,
+  operation: string,
+): boolean {
+  if (!toolFilter) {
+    return true;
+  }
+  if (toolFilter.denyAll) {
+    return false;
+  }
+  if (toolFilter.operator || toolFilter.plugin) {
+    return (
+      shouldExposeMcpTool(toolFilter.operator ?? {}, operation) &&
+      shouldExposeMcpTool(toolFilter.plugin ?? {}, operation)
+    );
+  }
+  return shouldExposeMcpTool(toolFilter, operation);
 }
 
 export const testing = {

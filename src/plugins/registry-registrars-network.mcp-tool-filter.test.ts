@@ -79,4 +79,27 @@ describe("registerMcpServerToolFilter ownership", () => {
       pluginRegistry.registry.diagnostics.filter((diagnostic) => diagnostic.level === "error"),
     ).toEqual([]);
   });
+
+  it("lets the owning plugin unregister and rejects foreign unregister", () => {
+    const { pluginRegistry, apiFor } = createRegistryHarness();
+    const owner = apiFor("plugin-a");
+    const other = apiFor("plugin-b");
+    owner.registerMcpServerToolFilter({
+      serverName: "linkbrain",
+      resolve: () => ({ include: ["brain_browse"] }),
+    });
+    const before = getMcpToolFilterRegistrationGeneration();
+    other.unregisterMcpServerToolFilter("linkbrain");
+    expect(pluginRegistry.registry.mcpServerToolFilters).toHaveLength(1);
+    expect(pluginRegistry.registry.diagnostics).toContainEqual(
+      expect.objectContaining({
+        level: "error",
+        pluginId: "plugin-b",
+        message: expect.stringContaining("unregister rejected"),
+      }),
+    );
+    owner.unregisterMcpServerToolFilter("linkbrain");
+    expect(pluginRegistry.registry.mcpServerToolFilters).toHaveLength(0);
+    expect(getMcpToolFilterRegistrationGeneration()).toBeGreaterThan(before);
+  });
 });

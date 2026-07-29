@@ -526,6 +526,107 @@ describe("createBundleMcpToolRuntime", () => {
     expect(runtime.tools.map((tool) => tool.name)).toEqual(["knowledge__resources_list"]);
   });
 
+  it("denies all utility tools when catalog toolFilter is denyAll", async () => {
+    const base = makeToolRuntime({ tools: [], serverName: "knowledge" });
+    const runtime = await materializeBundleMcpToolsForRun({
+      runtime: {
+        ...base,
+        getCatalog: async () => ({
+          version: 1,
+          generatedAt: 0,
+          servers: {
+            knowledge: {
+              serverName: "knowledge",
+              safeServerName: "knowledge",
+              launchSummary: "knowledge",
+              toolCount: 0,
+              resources: { listChanged: false },
+              prompts: { listChanged: false },
+              toolFilter: { denyAll: true },
+            },
+          },
+          tools: [],
+        }),
+        listResources: async () => [],
+        readResource: async () => ({ contents: [] }),
+        listPrompts: async () => [],
+        getPrompt: async () => ({ messages: [] }),
+      },
+    });
+
+    expect(runtime.tools.map((tool) => tool.name)).toEqual([]);
+  });
+
+  it("does not treat empty include as deny-all for utility tools (unrestricted)", async () => {
+    const base = makeToolRuntime({ tools: [], serverName: "knowledge" });
+    const runtime = await materializeBundleMcpToolsForRun({
+      runtime: {
+        ...base,
+        getCatalog: async () => ({
+          version: 1,
+          generatedAt: 0,
+          servers: {
+            knowledge: {
+              serverName: "knowledge",
+              safeServerName: "knowledge",
+              launchSummary: "knowledge",
+              toolCount: 0,
+              resources: { listChanged: false },
+              prompts: { listChanged: false },
+              toolFilter: { include: [] },
+            },
+          },
+          tools: [],
+        }),
+        listResources: async () => [],
+        readResource: async () => ({ contents: [] }),
+        listPrompts: async () => [],
+        getPrompt: async () => ({ messages: [] }),
+      },
+    });
+
+    expect(runtime.tools.map((tool) => tool.name).toSorted()).toEqual([
+      "knowledge__prompts_get",
+      "knowledge__prompts_list",
+      "knowledge__resources_list",
+      "knowledge__resources_read",
+    ]);
+  });
+
+  it("intersects operator and plugin halves for utility tools", async () => {
+    const base = makeToolRuntime({ tools: [], serverName: "knowledge" });
+    const runtime = await materializeBundleMcpToolsForRun({
+      runtime: {
+        ...base,
+        getCatalog: async () => ({
+          version: 1,
+          generatedAt: 0,
+          servers: {
+            knowledge: {
+              serverName: "knowledge",
+              safeServerName: "knowledge",
+              launchSummary: "knowledge",
+              toolCount: 0,
+              resources: { listChanged: false },
+              prompts: { listChanged: false },
+              toolFilter: {
+                operator: { include: ["resources_*", "prompts_*"] },
+                plugin: { include: ["resources_list", "brain_search"] },
+              },
+            },
+          },
+          tools: [],
+        }),
+        listResources: async () => [],
+        readResource: async () => ({ contents: [] }),
+        listPrompts: async () => [],
+        getPrompt: async () => ({ messages: [] }),
+      },
+    });
+
+    expect(runtime.tools.map((tool) => tool.name)).toEqual(["knowledge__resources_list"]);
+  });
+
   it("projects resource and prompt utility tools for inventory-only catalogs", async () => {
     const tools = buildBundleMcpToolsFromCatalog({
       catalog: {

@@ -214,6 +214,12 @@ export type OpenClawPluginApi = {
   registerMcpServerToolFilter: (
     resolver: import("./types.mcp-tool-filter.js").OpenClawPluginMcpServerToolFilter,
   ) => void;
+  /**
+   * Remove this plugin's process-local tool-filter overlay for a declared MCP
+   * server. Other plugins cannot remove an owned registration. Bumps the
+   * registration generation so live catalogs rematerialize.
+   */
+  unregisterMcpServerToolFilter: (serverName: string) => void;
   /** Register a native messaging channel plugin (channel capability). */
   registerChannel: (registration: OpenClawPluginChannelRegistration | ChannelPlugin) => void;
   /**
