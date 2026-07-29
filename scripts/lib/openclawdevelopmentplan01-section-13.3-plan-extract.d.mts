@@ -8,6 +8,18 @@ export const FROZEN_PLAN_SHA256: string;
 export const PLAN_ITEM_KINDS: readonly string[];
 export const NON_REQUIREMENT_REASON_CODES: readonly string[];
 export const HARD_REQUIREMENT_CONTEXT_CODES: readonly string[];
+export const DESCRIPTIVE_ALLOWLIST_RULES: Readonly<
+  Record<string, { id: string; description: string }>
+>;
+export const STRONG_DESCRIPTIVE_OVERRIDE_CODES: readonly string[];
+export function classifySectionPolicy(headingText: string): {
+  policy: "implementation" | "descriptive" | "mixed_source_hierarchy";
+  rule: string | null;
+  id: string | null;
+};
+export function isDescriptiveAllowlistRule(rule: string | null | undefined): boolean;
+export function isStrongDescriptiveOverride(contextCode: string | null | undefined): boolean;
+export function lineHasStrongObligation(text: string): boolean;
 export function normalizePlanText(value: string): string;
 export function planItemFingerprint(anchor: string, label: string): string;
 export function sha256Hex(content: string | Buffer): string;

@@ -412,8 +412,45 @@ export function validateSection133Ledger(opts = {}) {
               errors.push(`non_requirement missing sourceContext at ${got.anchor}`);
             }
             if (
-              (got.type === "list_item" || got.type === "numbered_item") &&
-              (got.inheritedContext || got.structuralContext)
+              (got.type === "list_item" ||
+                got.type === "numbered_item" ||
+                got.type === "table_row") &&
+              got.reasonCode === "NARRATIVE_CONTEXT"
+            ) {
+              errors.push(
+                `forbidden NARRATIVE_CONTEXT on ${got.type} at ${got.anchor}; require DESCRIPTIVE_ALLOWLIST or extract as requirement`,
+              );
+            }
+            if (got.reasonCode === "DESCRIPTIVE_ALLOWLIST") {
+              if (!got.allowlistRule || typeof got.allowlistRule !== "string") {
+                errors.push(`DESCRIPTIVE_ALLOWLIST missing allowlistRule at ${got.anchor}`);
+              }
+              if (
+                !got.sourceAnchor ||
+                typeof got.sourceAnchor !== "string" ||
+                !String(got.sourceAnchor).startsWith("allowlist.")
+              ) {
+                errors.push(`DESCRIPTIVE_ALLOWLIST missing sourceAnchor at ${got.anchor}`);
+              }
+              if (
+                got.sectionPolicy !== "descriptive" &&
+                got.sectionPolicy !== "mixed_source_hierarchy"
+              ) {
+                errors.push(
+                  `DESCRIPTIVE_ALLOWLIST outside descriptive section at ${got.anchor} (sectionPolicy=${got.sectionPolicy})`,
+                );
+              }
+            }
+            if (
+              (got.type === "list_item" ||
+                got.type === "numbered_item" ||
+                got.type === "table_row") &&
+              got.reasonCode !== "DESCRIPTIVE_ALLOWLIST" &&
+              got.reasonCode !== "STRUCTURAL_TABLE_HEADER" &&
+              got.reasonCode !== "STRUCTURAL_EMPTY_TABLE_ROW" &&
+              (got.inheritedContext ||
+                got.structuralContext ||
+                got.sectionPolicy === "implementation")
             ) {
               const hardCodes = new Set([
                 "HARD_BOUNDARY",
@@ -434,13 +471,19 @@ export function validateSection133Ledger(opts = {}) {
                 "PLUGIN_MCP",
                 "CONTRACT_FIXTURE",
                 "ACTOR_MAPPING",
+                "LIFECYCLE",
+                "CONFIG",
+                "OBSERVABILITY",
+                "SECURITY",
+                "OUTBOX",
               ]);
               if (
+                got.sectionPolicy === "implementation" ||
                 hardCodes.has(got.inheritedContext) ||
                 hardCodes.has(got.structuralContext)
               ) {
                 errors.push(
-                  `forbidden non_requirement list item in hard context at ${got.anchor}`,
+                  `forbidden non_requirement ${got.reasonCode} on ${got.type} outside descriptive allowlist at ${got.anchor}`,
                 );
               }
             }

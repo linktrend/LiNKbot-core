@@ -1,10 +1,10 @@
 # Plan §13.3 classification / evidence index — provisional for Codex Phase 14
-**Recorded:** 2026-07-29 Asia/Taipei (wave 14)
+**Recorded:** 2026-07-29 Asia/Taipei (wave 15)
 **Branch tip:** tip after tip-record (`git rev-parse HEAD` after push)
 **PR:** [#38](https://github.com/linktrend/openclaw_prime/pull/38) (draft)
 **Authority:** Frozen plan bytes (`docs/OPENCLAW-PRIME-LISA-LINKBRAIN-LINKSKILLS-DETAILED-IMPLEMENTATION-PLAN.md`, SHA-256 `17203ee586a3fb2b1281bcddd8b17ae350075ebce537689f3c4bfcbbd14914f7`). **Not** self-certification. Codex alone accepts classifications.
 
-**Ledger rule (wave 14):** every plan-derived atomic item has exactly **one** permitted classification. Combined statuses are forbidden. Inventory is generated from the plan with fail-closed source coverage (`version: 3` + `coverage[]` with machine-checkable `reasonCode` / `sourceContext`). Inherited obligation context and structural requirement-bearing sections default list children to requirements. Hand-maintained mirror rows and unhandled constructs are rejected.
+**Ledger rule (wave 15):** every plan-derived atomic item has exactly **one** permitted classification. Combined statuses are forbidden. Inventory is generated from the plan with fail-closed source coverage (`version: 3` + `coverage[]` with machine-checkable `reasonCode` / `sourceContext` / `sectionPolicy`). Implementation-bearing sections default list/numbered/table/child paragraphs to requirements. `non_requirement` on those constructs is allowed only via an explicit descriptive allowlist (`DESCRIPTIVE_ALLOWLIST` + `allowlistRule` + `sourceAnchor`). Soft inherited `REQUIRED` does not override that allowlist. Hand-maintained mirror rows, `NARRATIVE_CONTEXT` list/table items, and unhandled constructs are rejected.
 
 Legend: `IAP` · `INPL` · `PART` · `OMIT` · `DIFF` · `BLOCK` · `OUT`
 
@@ -20,9 +20,9 @@ Legend: `IAP` · `INPL` · `PART` · `OMIT` · `DIFF` · `BLOCK` · `OUT`
 | Validator tests | `test/scripts/check-openclawdevelopmentplan01-section-13.3-ledger.test.ts` |
 
 **Plan SHA-256:** `17203ee586a3fb2b1281bcddd8b17ae350075ebce537689f3c4bfcbbd14914f7`
-**Extracted item count:** **946**
+**Extracted item count:** **968**
 **Coverage rows:** **1336**
-**Kinds:** `task` 333 · `evidence_requirement` 266 · `gate` 142 · `test` 80 · `dod` 39 · `deliverable` 24 · `rollback` 21 · `exit_gate` 16 · `cross_plan_gate` 11 · `assumption` 8 · `risk` 6
+**Kinds:** `task` 329 · `evidence_requirement` 280 · `gate` 154 · `test` 80 · `dod` 39 · `deliverable` 24 · `rollback` 21 · `exit_gate` 16 · `cross_plan_gate` 11 · `assumption` 8 · `risk` 6
 
 ## Explicit non-claims
 
@@ -35,10 +35,9 @@ Legend: `IAP` · `INPL` · `PART` · `OMIT` · `DIFF` · `BLOCK` · `OUT`
 
 | id | kind | classification | item |
 | --- | --- | --- | --- |
-| `list.1_purpose_and_decision.28.1` | `task` | `INPL` | one canonical Lisa actor |
-| `list.4_non_goals_and_hard_boundaries.88.1` | `gate` | `INPL` | replacing OpenClaw local memory… |
-| `list.7_1_plugin_placement_and_packaging.232.3` | `task` | `INPL` | depend only on public SDK barrels… |
-| `decision.resolved.1` | `gate` | `INPL` | two private bundled plugins… |
-| `next_action.1` | `task` | `OUT` | assign the four repository-specific… |
-| `phase.9.hard_prerequisite.1` | `gate` | `BLOCK` | Skills Cursor and Codex readiness… |
-| `phase.14.title` | `task` | `OUT` | Phase 14: Independent OpenClaw Codex… |
+| `list.10_2_skills_lifecycle_collection.404.1` | `task` | `INPL` | filter by the exact Skills tool namespace… |
+| `list.12_1_plugin_configuration_shape.472.3` | `task` | `INPL` | credential `SecretRef` for that endpoint |
+| `list.12_3_change_application.504.5` | `task` | `INPL` | every change has a same-domain rollback step… |
+| `list.17_1_per_domain_health.1052.1` | `evidence_requirement` | `INPL` | enabled/disabled/degraded state |
+| `list.17_3_honest_degraded_states.1077.1` | `evidence_requirement` | `INPL` | Brain unavailable:… |
+| `list.18_security_and_secret_handling.1084.1` | `gate` | `INPL` | Platform owns issuance… |

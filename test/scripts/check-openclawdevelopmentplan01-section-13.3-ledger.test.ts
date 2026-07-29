@@ -599,6 +599,136 @@ describe("section 13.3 plan-authority ledger validator", () => {
     expect(loaded.items.filter((item) => item.id.startsWith("phase.9.hard_prerequisite.")).length).toBe(
       2,
     );
+    expect(loaded.items.length).toBeGreaterThan(946);
+    const bySection = (prefix: string) =>
+      loaded.items.filter((item) => item.id.includes(prefix) || item.id.startsWith(prefix));
+    expect(bySection("10_2_skills_lifecycle_collection").length).toBeGreaterThanOrEqual(6);
+    expect(bySection("12_1_plugin_configuration_shape").length).toBeGreaterThanOrEqual(8);
+    expect(bySection("12_3_change_application").length).toBeGreaterThanOrEqual(5);
+    expect(bySection("17_1_per_domain_health").length).toBeGreaterThanOrEqual(11);
+    expect(bySection("17_3_honest_degraded_states").length).toBeGreaterThanOrEqual(4);
+    expect(bySection("18_security_and_secret_handling").length).toBeGreaterThanOrEqual(12);
+    expectLabel(/exact Skills tool namespace/);
+    expectLabel(/discard raw parameters and results/);
+    expectLabel(/allowlisted structured event/);
+    expectLabel(/unexpected content-bearing field/);
+    expectLabel(/enqueue locally and return/);
+    expectLabel(/enabled state/);
+    expectLabel(/credential `SecretRef` for that endpoint/);
+    expectLabel(/no operator pastes a secret into a command line/);
+    expectLabel(/same-domain rollback step/);
+    expectLabel(/enabled\/disabled\/degraded state/);
+    expectLabel(/Brain unavailable:/);
+    expectLabel(/Platform owns issuance/);
+    expectLabel(/OpenClaw owns secure consumption/);
+    expectLabel(/Credentials are runtime-binding-owned/);
+    expectLabel(/No production `service_role` or database credential/);
+    expectLabel(/Platform-approved `SecretRef`/);
+    expectLabel(/Validate issuer, audience, actor/);
+    expectLabel(/secret scanning/);
+    const allowlisted = loaded.coverage.filter((entry) => entry.reasonCode === "DESCRIPTIVE_ALLOWLIST");
+    expect(allowlisted.length).toBeGreaterThan(0);
+    expect(
+      allowlisted.every(
+        (entry) =>
+          typeof entry.allowlistRule === "string" &&
+          typeof entry.sourceAnchor === "string" &&
+          String(entry.sourceAnchor).startsWith("allowlist."),
+      ),
+    ).toBe(true);
+    expect(
+      loaded.coverage.every(
+        (entry) =>
+          !(
+            entry.reasonCode === "NARRATIVE_CONTEXT" &&
+            (entry.type === "list_item" ||
+              entry.type === "numbered_item" ||
+              entry.type === "table_row")
+          ),
+      ),
+    ).toBe(true);
+  });
+
+  it("moves a descriptive-looking list into an implementation section and extracts requirements", () => {
+    const descriptive = analyzePlanForSection133(`# Mini
+
+## 5. Current Baseline
+
+### 5.1 OpenClaw
+
+Current inventory:
+
+- filter by the exact Skills tool namespace before doing work;
+- discard raw parameters and results;
+`);
+    expect(
+      descriptive.coverage.filter(
+        (entry) =>
+          entry.type === "list_item" && entry.reasonCode === "DESCRIPTIVE_ALLOWLIST",
+      ).length,
+    ).toBe(2);
+    expect(descriptive.items.filter((item) => /exact Skills tool namespace/.test(item.label)).length).toBe(
+      0,
+    );
+
+    const implementation = analyzePlanForSection133(`# Mini
+
+## 10. Lifecycle
+
+### 10.2 Skills lifecycle collection
+
+If a generic tool hook is needed:
+
+- filter by the exact Skills tool namespace before doing work;
+- discard raw parameters and results;
+`);
+    expect(
+      implementation.coverage.filter(
+        (entry) => entry.type === "list_item" && entry.disposition === "requirement",
+      ).length,
+    ).toBe(2);
+    expect(
+      implementation.items.some((item) => /exact Skills tool namespace/.test(item.label)),
+    ).toBe(true);
+    expect(implementation.items.some((item) => /discard raw parameters/.test(item.label))).toBe(
+      true,
+    );
+  });
+
+  it("rejects NARRATIVE_CONTEXT list coverage outside the descriptive allowlist", () => {
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "section133-narrative-"));
+    try {
+      const plan = `# Mini
+
+## 5. Current Baseline
+
+### 5.1 OpenClaw
+
+Current inventory:
+
+- sanitized capability observation one;
+- sanitized capability observation two;
+`;
+      const { planSha } = writeArtifacts(tmp, plan, (inventory) => {
+        const coverage = Array.isArray(inventory.coverage) ? inventory.coverage : [];
+        const target = coverage.find(
+          (entry) =>
+            entry &&
+            typeof entry === "object" &&
+            (entry as { type?: string }).type === "list_item" &&
+            (entry as { reasonCode?: string }).reasonCode === "DESCRIPTIVE_ALLOWLIST",
+        ) as Record<string, unknown> | undefined;
+        expect(target).toBeTruthy();
+        target!.reasonCode = "NARRATIVE_CONTEXT";
+        target!.allowlistRule = null;
+        target!.sourceAnchor = "coverage.L999.list_item";
+      });
+      const result = validateSection133Ledger({ root: tmp, expectedSha256: planSha });
+      expect(result.ok).toBe(false);
+      expect(result.errors.join("\n")).toMatch(/forbidden NARRATIVE_CONTEXT/);
+    } finally {
+      fs.rmSync(tmp, { recursive: true, force: true });
+    }
   });
 
   it("write helper regenerates artifacts that validate", () => {
