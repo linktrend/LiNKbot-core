@@ -72,8 +72,8 @@ OpenClaw mirrors these in:
 | ------------------------------------------ | ----------------------------------------------------------------------------- |
 | OpenClaw decision                          | **DECIDED** — keep frozen §9.1; no alias                                      |
 | Brain §9.1 implementation (corrected HEAD) | **IMPLEMENTED** at `a3cff6e…` (code evidence)                                 |
-| Brain owner fixture countersign            | **OWNER_COUNTERSIGNED** at tip `429a7818…` / aggregate `275c1fb7…9a1d`        |
-| Phase 1 full exit                          | **NOT PASSED** — Platform auth-path still required; fixture-owner gate CLOSED |
+| Brain owner fixture countersign            | Historical AuthClaims **1.0** **OWNER_COUNTERSIGNED** at tip `429a7818…` / aggregate `275c1fb7…9a1d` (superseded). Current AuthClaims **1.1** Brain aggregate remains **`PENDING_OWNER_COUNTERSIGN`** |
+| Phase 1 full exit                          | **NOT PASSED** — Platform auth-path still required; current AuthClaims **1.1** fixture-owner gate **RE-OPENED** / **`PENDING_OWNER_COUNTERSIGN`** |
 
 ## Principal routing instruction
 

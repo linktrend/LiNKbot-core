@@ -30,7 +30,7 @@ find <fixtures-root> -type f -name '*.json' | sed 's|^\./||' | sort \
 
 | Domain | Key |
 | ------ | --- |
-| LiNKplatform | `platform.auth-claims/1.1.0` / package `0.2.2` @ `6861a376…` |
+| LiNKplatform | `platform.auth-claims/1.1.0` / package `0.2.2` @ Platform source HEAD `6861a376aae5fa4e12c1b68a808d7b04e7bbfb5b` |
 | LiNKbrain | `BRAIN_CONTRACT_VERSION=1.0.0` (Brain contract; AuthClaims fixtures are 1.1.0) |
 | LiNKskills | `skills.api.v0.1` |
 

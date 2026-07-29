@@ -10,22 +10,31 @@ import {
   BRAIN_FIXTURE_AGGREGATE_SHA256,
   FIXTURE_OWNER_STATUS,
   PLATFORM_CONTRACTS_PACKAGE,
+  PLATFORM_HEAD_RECORD_SPECS,
+  PLATFORM_SOURCE_HEAD,
+  REL,
   SKILLS_FIXTURE_AGGREGATE_SHA256,
+  findStaleClosedWhilePendingClaims,
   validateAuthClaimsProvenance,
+  validatePlatformSourceHeadAgreement,
 } from "../../scripts/check-openclawdevelopmentplan01-authclaims-provenance.mjs";
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 
-const REL = {
-  platformPin: "docs/execution/openclawdevelopmentplan01/contracts/platform/PIN.json",
-  skillsPin: "docs/execution/openclawdevelopmentplan01/contracts/skills/PIN.json",
-  consumption: "docs/execution/openclawdevelopmentplan01/PHASE-1-CONTRACT-CONSUMPTION.md",
-  signoff: "docs/execution/openclawdevelopmentplan01/FIXTURE-OWNER-SIGNOFF.md",
-  brainManifest: "extensions/linkbrain/fixtures/MANIFEST.md",
-  skillsManifest: "extensions/linkskills/fixtures/MANIFEST.md",
-  schemaCopy:
-    "docs/execution/openclawdevelopmentplan01/contracts/platform/auth-claims-1.1.0/platform-auth-claims.v1.1.0.json",
-};
+const SANDBOX_RELS = [
+  REL.platformPin,
+  REL.skillsPin,
+  REL.consumption,
+  REL.signoff,
+  REL.contractsReadme,
+  REL.authClaimsReadme,
+  REL.phase13Handoff,
+  REL.phase1Status,
+  REL.countersignRequest,
+  REL.brainManifest,
+  REL.skillsManifest,
+  REL.schemaCopy,
+];
 
 function copyTree(srcRoot: string, destRoot: string, relativePaths: string[]) {
   for (const relativePath of relativePaths) {
@@ -39,7 +48,7 @@ function copyTree(srcRoot: string, destRoot: string, relativePaths: string[]) {
 function withSandbox(mutate: (root: string) => void): ReturnType<typeof validateAuthClaimsProvenance> {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "authclaims-provenance-"));
   try {
-    copyTree(REPO_ROOT, root, Object.values(REL));
+    copyTree(REPO_ROOT, root, SANDBOX_RELS);
     mutate(root);
     return validateAuthClaimsProvenance({ repoRoot: root });
   } finally {
@@ -47,13 +56,58 @@ function withSandbox(mutate: (root: string) => void): ReturnType<typeof validate
   }
 }
 
+const MUTATED_PLATFORM_HEAD = "0123456789abcdef0123456789abcdef01234567";
+
 describe("check-openclawdevelopmentplan01-authclaims-provenance", () => {
   it("passes against the live repository provenance set", () => {
     const result = validateAuthClaimsProvenance({ repoRoot: REPO_ROOT });
     expect(result.errors).toEqual([]);
     expect(result.ok).toBe(true);
-    expect(result.checks.length).toBeGreaterThanOrEqual(5);
+    expect(result.checks.length).toBeGreaterThanOrEqual(7);
   });
+
+  it("agrees on exact Platform source HEAD across authoritative records", () => {
+    const result = validatePlatformSourceHeadAgreement({ repoRoot: REPO_ROOT });
+    expect(result.errors).toEqual([]);
+    expect(result.ok).toBe(true);
+    for (const spec of PLATFORM_HEAD_RECORD_SPECS) {
+      expect(result.observed[spec.id]).toBe(PLATFORM_SOURCE_HEAD);
+    }
+  });
+
+  for (const spec of PLATFORM_HEAD_RECORD_SPECS) {
+    it(`fails when Platform HEAD record ${spec.id} is mutated alone`, () => {
+      const result = withSandbox((root) => {
+        const abs = path.join(root, spec.rel);
+        if (spec.kind === "json_path") {
+          const pin = JSON.parse(fs.readFileSync(abs, "utf8"));
+          let cursor: Record<string, unknown> = pin;
+          const keys = spec.jsonPath ?? [];
+          for (let i = 0; i < keys.length - 1; i += 1) {
+            const key = keys[i]!;
+            const next = cursor[key];
+            if (typeof next !== "object" || next === null) {
+              throw new Error(`missing path ${keys.join(".")}`);
+            }
+            cursor = next as Record<string, unknown>;
+          }
+          cursor[keys[keys.length - 1]!] = MUTATED_PLATFORM_HEAD;
+          fs.writeFileSync(abs, `${JSON.stringify(pin, null, 2)}\n`);
+          return;
+        }
+        let text = fs.readFileSync(abs, "utf8");
+        expect(text.includes(PLATFORM_SOURCE_HEAD)).toBe(true);
+        text = text.replaceAll(PLATFORM_SOURCE_HEAD, MUTATED_PLATFORM_HEAD);
+        fs.writeFileSync(abs, text);
+      });
+      expect(result.ok).toBe(false);
+      expect(
+        result.errors.some(
+          (e) => e.includes(spec.id) || e.includes("Platform HEAD") || e.includes(spec.rel),
+        ),
+      ).toBe(true);
+    });
+  }
 
   it("fails when Skills PIN authoritative override is missing or still claims 1.0 current", () => {
     const result = withSandbox((root) => {
@@ -122,7 +176,8 @@ describe("check-openclawdevelopmentplan01-authclaims-provenance", () => {
         (e) =>
           /gate CLOSED/i.test(e) ||
           /AuthClaims 1\.0\.0/i.test(e) ||
-          /PENDING_OWNER_COUNTERSIGN/i.test(e),
+          /PENDING_OWNER_COUNTERSIGN/i.test(e) ||
+          /stale CLOSED/i.test(e),
       ),
     ).toBe(true);
   });
@@ -136,9 +191,38 @@ describe("check-openclawdevelopmentplan01-authclaims-provenance", () => {
       fs.writeFileSync(docPath, text);
     });
     expect(result.ok).toBe(false);
-    expect(result.errors.some((e) => /PENDING_OWNER_COUNTERSIGN|RE-OPENED/i.test(e))).toBe(
+    expect(result.errors.some((e) => /PENDING_OWNER_COUNTERSIGN|RE-OPENED|stale CLOSED/i.test(e))).toBe(
       true,
     );
+  });
+
+  it("fails when a current status doc claims CLOSED while signoff is pending", () => {
+    const result = withSandbox((root) => {
+      const docPath = path.join(root, REL.phase13Handoff);
+      let text = fs.readFileSync(docPath, "utf8");
+      text += "\n\nFixture-owner gate CLOSED for current AuthClaims 1.1 packages.\n";
+      fs.writeFileSync(docPath, text);
+    });
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((e) => /stale CLOSED|OWNER_COUNTERSIGNED/i.test(e))).toBe(true);
+  });
+
+  it("fails when countersign request loses immutable tip or uses see-tip placeholder", () => {
+    const result = withSandbox((root) => {
+      const docPath = path.join(root, REL.countersignRequest);
+      let text = fs.readFileSync(docPath, "utf8");
+      text = text.replace(
+        /\*\*Immutable OpenClaw inspection tip:\*\* `[0-9a-f]{40}`/,
+        "**OpenClaw tip (at request authoring):** see Phase 13 / push tip after wave 8 lands",
+      );
+      fs.writeFileSync(docPath, text);
+    });
+    expect(result.ok).toBe(false);
+    expect(
+      result.errors.some(
+        (e) => /see pushed tip|immutable 40-char|COUNTERSIGN-REQUEST-WAVE8/i.test(e),
+      ),
+    ).toBe(true);
   });
 
   it("fails when fixture MANIFEST aggregate disagrees", () => {
@@ -152,9 +236,21 @@ describe("check-openclawdevelopmentplan01-authclaims-provenance", () => {
     expect(result.errors.some((e) => /Skills MANIFEST.*aggregate/i.test(e))).toBe(true);
   });
 
+  it("detects unlabeled CLOSED lines and ignores historical lines", () => {
+    const stale = findStaleClosedWhilePendingClaims(
+      "Fixture-owner gate CLOSED for current packages.\n",
+    );
+    expect(stale.length).toBeGreaterThan(0);
+    const historical = findStaleClosedWhilePendingClaims(
+      "Historical AuthClaims 1.0 OWNER_COUNTERSIGNED at tip `429a7818…` is superseded.\n",
+    );
+    expect(historical).toEqual([]);
+  });
+
   it("exports the authoritative AuthClaims constants", () => {
     expect(AUTH_CLAIMS_CONTRACT).toBe("platform.auth-claims/1.1.0");
     expect(PLATFORM_CONTRACTS_PACKAGE).toBe("@linktrend/platform-contracts@0.2.2");
+    expect(PLATFORM_SOURCE_HEAD).toBe("6861a376aae5fa4e12c1b68a808d7b04e7bbfb5b");
     expect(AUTH_CLAIMS_SCHEMA_SHA256).toBe(
       "c2e8bc68b3feb9a3dacc497f5a5d497b466c400804fb4f9e41734c10772ddfa1",
     );
@@ -168,5 +264,6 @@ describe("check-openclawdevelopmentplan01-authclaims-provenance", () => {
       "203163711b5db17b8a07d3956e41596384cbd08f0c110bd9f21abfc5c7e5e19a",
     );
     expect(FIXTURE_OWNER_STATUS).toBe("PENDING_OWNER_COUNTERSIGN");
+    expect(PLATFORM_HEAD_RECORD_SPECS).toHaveLength(6);
   });
 });

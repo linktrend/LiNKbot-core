@@ -6,14 +6,15 @@
 **Correction wave 2 / 2b:** 2026-07-28 10:15 Asia/Taipei
 **Wave 17 role correction:** 2026-07-29 Asia/Taipei — Grok owns Phase-13 coverage/evidence only; Codex owns seven §13.3 classifications (see `WAVE17-CORRECTION-PACKET.md`, `PHASE-13-COVERAGE-EVIDENCE-INDEX.md`)
 **Wave 18 correction:** 2026-07-29 Asia/Taipei — restored §2 `source_hierarchy.1`–`6` as requirements; §13.3 enum definitions structural-only; Phase-0 evidence remapped to freeze/prompt/pins/session; PHASE-1 status reconciled with AuthClaims 1.1 pending countersign (`WAVE18-CORRECTION-PACKET.md`)
+**Wave 20 correction:** 2026-07-29 Asia/Taipei — AuthClaims provenance Platform HEAD agreement + PHASE-13 handoff current gate RE-OPENED/PENDING; countersign request immutable tip (`WAVE20-CORRECTION-PACKET.md`)
 **Author (correction):** Cursor Local / Cloud Grok 4.5 High integrator under OpenClaw plan package
 **Plan:** `docs/OPENCLAW-PRIME-LISA-LINKBRAIN-LINKSKILLS-DETAILED-IMPLEMENTATION-PLAN.md`
-**Plan SHA-256:** `17203ee586a3fb2b1281bcddd8b17ae350075ebce537689f3c4bfcbbd14914f7` (HASH_OK re-verified 2026-07-28; re-checked waves 17–18)
+**Plan SHA-256:** `17203ee586a3fb2b1281bcddd8b17ae350075ebce537689f3c4bfcbbd14914f7` (HASH_OK re-verified 2026-07-28; re-checked waves 17–20)
 **Authority:** `docs/CURSOR-GROK-EXECUTION-PROMPT.md` — OpenClaw-owned Phases 0–13 only
 **PR:** [#38](https://github.com/linktrend/openclaw_prime/pull/38) → `development` (draft; do not merge from this handoff)
 **Supersedes:** prior provisional text at the same path (2026-07-27) and short pointer claims of 13 files / 82 tests as the tip proof set
 
-> **Provisional.** This handoff does **not** assign the seven Section 13.3 conformance classifications. It does **not** perform Phase 14 or Phase 15. Independent OpenClaw Codex verification (Phase 14) must inspect actual code, tests, and evidence rather than accepting this summary. **Re-verify against wave-18 coverage/evidence artifacts** (`PHASE-13-COVERAGE-EVIDENCE-INDEX.md`, `section-13.3/*`, `WAVE18-CORRECTION-PACKET.md`). **Phase 1 fixture-owner gate remains RE-OPENED** for AuthClaims 1.1.0 aggregates (`PENDING_OWNER_COUNTERSIGN`; AuthClaims 1.0 CLOSED tip `429a7818…` superseded). **Phase 1 overall is still NOT complete** (Platform auth-path blocked + pending 1.1 countersigns). **Do not request owner countersigns until Codex confirms the resulting final head.**
+> **Provisional.** This handoff does **not** assign the seven Section 13.3 conformance classifications. It does **not** perform Phase 14 or Phase 15. Independent OpenClaw Codex verification (Phase 14) must inspect actual code, tests, and evidence rather than accepting this summary. **Re-verify against wave-18–20 coverage/evidence/provenance artifacts** (`PHASE-13-COVERAGE-EVIDENCE-INDEX.md`, `section-13.3/*`, `WAVE18-CORRECTION-PACKET.md`, `WAVE19-CORRECTION-PACKET.md`, `WAVE20-CORRECTION-PACKET.md`). **Phase 1 fixture-owner gate remains RE-OPENED** for AuthClaims 1.1.0 aggregates (`PENDING_OWNER_COUNTERSIGN`; AuthClaims 1.0 CLOSED tip `429a7818…` is historical/superseded only). **Phase 1 overall is still NOT complete** (Platform auth-path blocked + pending 1.1 countersigns). **Do not request owner countersigns until Codex confirms the resulting final head.**
 
 ---
 
@@ -243,8 +244,8 @@ Source: `FIXTURE-OWNER-SIGNOFF.md`; request `COUNTERSIGN-REQUEST-WAVE8-AUTHCLAIM
 
 ### Blockers (external / ownership — still open)
 
-1. Brain owner fixture countersign — **CLOSED** (`OWNER_COUNTERSIGNED` at tip `429a7818…` / aggregate `275c1fb7…9a1d`)
-2. Skills owner tip reaffirmation — **CLOSED** (`OWNER_COUNTERSIGNED` reaffirmed at tip `429a7818…` / aggregate `8586d89a…ec96`)
+1. Brain owner fixture countersign (AuthClaims **1.1**) — **`PENDING_OWNER_COUNTERSIGN`** (aggregate `4493f714…4811b`). Historical AuthClaims **1.0** `OWNER_COUNTERSIGNED` at tip `429a7818…` / aggregate `275c1fb7…9a1d` is superseded and does **not** close the current gate.
+2. Skills owner fixture countersign (AuthClaims **1.1**) — **`PENDING_OWNER_COUNTERSIGN`** (aggregate `20316371…e19a`). Historical AuthClaims **1.0** `OWNER_COUNTERSIGNED` reaffirmation at tip `429a7818…` / aggregate `8586d89a…ec96` is superseded and does **not** close the current gate.
 3. Platform auth-path approval — **still open** (blocks full Phase 1 exit / live enablement)
 4. Platform auth mechanism + claim propagation approval (for live MCP wiring)
 5. Platform stage readiness evidence (Phase 7)
@@ -252,7 +253,7 @@ Source: `FIXTURE-OWNER-SIGNOFF.md`; request `COUNTERSIGN-REQUEST-WAVE8-AUTHCLAIM
 7. Principal Brain production retention / hold approval
 8. Production credentials + authorized operator for Lisa-profile mutation
 9. Live Librarian / Brain Gateway for scratch finding submission
-10. Hosted exact-head CI: **deferred / Principal-waived** (CI system being redesigned) for tip `4fa1e9f7ed0…` (failed pre-repair `57a8571cd1b` / `30349929708`; draft skip `30351278518`; ready re-fire `30351309306` not waited). Fixture-owner gate CLOSED. PR readiness/merge deferred.
+10. Hosted exact-head CI: **deferred / Principal-waived** (CI system being redesigned) for tip `4fa1e9f7ed0…` (failed pre-repair `57a8571cd1b` / `30349929708`; draft skip `30351278518`; ready re-fire `30351309306` not waited). Current AuthClaims **1.1** fixture-owner gate remains **RE-OPENED** / **`PENDING_OWNER_COUNTERSIGN`**. PR readiness/merge deferred.
 
 ### Cleared relative to earlier provisional (code evidence only — not Phase 1 exit)
 
@@ -320,7 +321,7 @@ Do **not** read seven-value §13.3 classifications into this table. Codex Phase 
 | -------------------------------------------- | ---------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
 | Phase 0 freeze / hashes / ownership          | `PHASE-0-FREEZE-PACKET.md`                                                   | Re-verify plan hash                                                     |
 | Phase 1 contract pins                        | `contracts/**`, `PHASE-1-CONTRACT-CONSUMPTION.md`                            | Deficiency #1                                                           |
-| Phase 1 fixtures Brain/Skills                | `extensions/link{brain,skills}/fixtures/**`                                  | **`OWNER_COUNTERSIGNED`** at tip `429a7818…`; fixture-owner gate CLOSED |
+| Phase 1 fixtures Brain/Skills                | `extensions/link{brain,skills}/fixtures/**`                                  | AuthClaims **1.1** aggregates **`PENDING_OWNER_COUNTERSIGN`** (gate **RE-OPENED**). Historical AuthClaims **1.0** `OWNER_COUNTERSIGNED` tip `429a7818…` superseded |
 | Phase 1 fakes                                | `extensions/link{brain,skills}/fake/**`, `test/helpers/link-domain-fakes/**` | Fake tier                                                               |
 | Brain tool names §9.1                        | `BRAIN-TOOL-NAME-DECISION-PACKET.md`, allowlists, fixtures                   | Deficiency #2; no OpenClaw alias                                        |
 | Transport modes                              | `extensions/link{brain,skills}/src/transport.ts`                             | Deficiency #3; no `not_configured`                                      |
@@ -374,20 +375,20 @@ That verifier must:
 Also requested:
 
 - Keep **PR #38** open; do not merge from this packet. Hosted `openclaw/ci-gate` is green at `0a2e97fe643` (run `30333114926`); re-check if tip advances.
-- Fixture-owner countersign is **done** (`FIXTURE-OWNER-SIGNOFF.md`). Platform auth-path remains the open Phase 1 blocker.
+- Fixture-owner countersign for AuthClaims **1.1** remains **`PENDING_OWNER_COUNTERSIGN`** (`FIXTURE-OWNER-SIGNOFF.md`; gate **RE-OPENED**). Do not treat historical AuthClaims **1.0** tip `429a7818…` as current closeout. Platform auth-path remains an open Phase 1 blocker. Do not request countersigns until Codex confirms the final head.
 
 ---
 
-## 16. Correction wave 2 / 2b changelog (2026-07-28)
+## 16. Correction wave 2 / 2b changelog (2026-07-28) — historical snapshot
 
 | Item                        | Result                                                                                                                                       |
 | --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
 | Repin Platform/Brain/Skills | `e845ac17…` / `a3cff6e0…` / `f16103f2…` (`correction_wave: wave-2b-2026-07-28`)                                                              |
 | AuthClaims pin (wave 2b historical) | schema `b0397cdf…50fb` + contentHash `6bf49618…b251` (`1.0.0`)                                                                         |
 | AuthClaims pin (wave 7 current) | schema `c2e8bc68…dfa1` + contentHash `fb518834…a567` (`1.1.0` / package `0.2.2`)                                                         |
-| Brain fixtures              | 17 frozen tools; aggregate `275c1fb7…9a1d` (72 JSON); **`OWNER_COUNTERSIGNED`** at tip `429a7818…`                                           |
-| Skills fixtures             | immutable-release + AuthClaims; aggregate `8586d89a…ec96`; **`OWNER_COUNTERSIGNED`** reaffirmed at tip `429a7818…`                           |
-| Owner countersign           | **Fixture-owner gate CLOSED** (Brain + Skills). Phase 1 overall still blocked on Platform auth-path. Not Codex / not merge.                  |
+| Brain fixtures (historical 1.0) | 17 frozen tools; aggregate `275c1fb7…9a1d` (72 JSON); historical **`OWNER_COUNTERSIGNED`** at tip `429a7818…` (superseded for 1.1 path) |
+| Skills fixtures (historical 1.0) | immutable-release + AuthClaims; aggregate `8586d89a…ec96`; historical **`OWNER_COUNTERSIGNED`** at tip `429a7818…` (superseded for 1.1 path) |
+| Owner countersign (historical 1.0) | Historical fixture-owner gate CLOSED at tip `429a7818…` only. **Current AuthClaims 1.1 gate is RE-OPENED / PENDING_OWNER_COUNTERSIGN.** |
 | CI repairs                  | typed-hook/runtime-API allowlists; SecretRef matrix; deps/types/lint; OpenGrep harness; SSRF-guard HTTP transports; `docs/docs_map.md` regen |
 | Capture durability          | Durable save-before-flush in `capture.ts`; regression `capture.test.ts`                                                                      |
 | Capture concurrency         | Per-stream keyed promise chain for enqueue/flush/flushAll; concurrency regressions in `capture.test.ts`                                      |

@@ -3,7 +3,8 @@
  * Fail-closed AuthClaims 1.1.0 documentation/provenance consistency check.
  *
  * Cross-checks Platform PIN, Skills PIN, PHASE-1-CONTRACT-CONSUMPTION.md,
- * Brain/Skills fixture MANIFEST.md, and FIXTURE-OWNER-SIGNOFF.md.
+ * Brain/Skills fixture MANIFEST.md, FIXTURE-OWNER-SIGNOFF.md, and related
+ * current provenance/status docs.
  *
  * Does not mutate runtime or fixture JSON bytes.
  */
@@ -16,6 +17,7 @@ import { runAsScript } from "./lib/ts-guard-utils.mjs";
 export const AUTH_CLAIMS_CONTRACT = "platform.auth-claims/1.1.0";
 export const AUTH_CLAIMS_SEMVER = "1.1.0";
 export const PLATFORM_CONTRACTS_PACKAGE = "@linktrend/platform-contracts@0.2.2";
+export const PLATFORM_SOURCE_HEAD = "6861a376aae5fa4e12c1b68a808d7b04e7bbfb5b";
 export const AUTH_CLAIMS_SCHEMA_SHA256 =
   "c2e8bc68b3feb9a3dacc497f5a5d497b466c400804fb4f9e41734c10772ddfa1";
 export const AUTH_CLAIMS_CONTENT_HASH =
@@ -34,16 +36,72 @@ const HISTORICAL_CONTENT_HASH =
 
 const DEFAULT_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
-const REL = Object.freeze({
+export const REL = Object.freeze({
   platformPin: "docs/execution/openclawdevelopmentplan01/contracts/platform/PIN.json",
   skillsPin: "docs/execution/openclawdevelopmentplan01/contracts/skills/PIN.json",
   consumption: "docs/execution/openclawdevelopmentplan01/PHASE-1-CONTRACT-CONSUMPTION.md",
   signoff: "docs/execution/openclawdevelopmentplan01/FIXTURE-OWNER-SIGNOFF.md",
+  contractsReadme: "docs/execution/openclawdevelopmentplan01/contracts/README.md",
+  authClaimsReadme:
+    "docs/execution/openclawdevelopmentplan01/contracts/platform/auth-claims-1.1.0/README.md",
+  phase13Handoff: "docs/execution/openclawdevelopmentplan01/PHASE-13-PROVISIONAL-GROK-HANDOFF.md",
+  phase1Status: "docs/execution/openclawdevelopmentplan01/PHASE-1-STATUS.md",
+  countersignRequest:
+    "docs/execution/openclawdevelopmentplan01/COUNTERSIGN-REQUEST-WAVE8-AUTHCLAIMS-1.1.md",
   brainManifest: "extensions/linkbrain/fixtures/MANIFEST.md",
   skillsManifest: "extensions/linkskills/fixtures/MANIFEST.md",
   schemaCopy:
     "docs/execution/openclawdevelopmentplan01/contracts/platform/auth-claims-1.1.0/platform-auth-claims.v1.1.0.json",
 });
+
+/**
+ * Authoritative Platform source HEAD records that must agree exactly.
+ * @typedef {{ id: string, rel: string, kind: "json_path" | "markdown_full_sha", jsonPath?: string[] }} PlatformHeadRecordSpec
+ */
+/** @type {readonly PlatformHeadRecordSpec[]} */
+export const PLATFORM_HEAD_RECORD_SPECS = Object.freeze([
+  {
+    id: "platform_pin_source_head",
+    rel: REL.platformPin,
+    kind: "json_path",
+    jsonPath: ["source_head"],
+  },
+  {
+    id: "skills_override_platform_source_head",
+    rel: REL.skillsPin,
+    kind: "json_path",
+    jsonPath: ["platform_auth_claims_consumer_override", "platform_source_head"],
+  },
+  {
+    id: "consumption_platform_source_head",
+    rel: REL.consumption,
+    kind: "markdown_full_sha",
+  },
+  {
+    id: "signoff_platform_source_head",
+    rel: REL.signoff,
+    kind: "markdown_full_sha",
+  },
+  {
+    id: "contracts_readme_platform_source_head",
+    rel: REL.contractsReadme,
+    kind: "markdown_full_sha",
+  },
+  {
+    id: "auth_claims_readme_platform_source_head",
+    rel: REL.authClaimsReadme,
+    kind: "markdown_full_sha",
+  },
+]);
+
+/** Current handoff/status/request surfaces checked for stale CLOSED claims while pending. */
+export const CURRENT_STATUS_DOC_RELS = Object.freeze([
+  REL.phase13Handoff,
+  REL.phase1Status,
+  REL.countersignRequest,
+  REL.consumption,
+  REL.signoff,
+]);
 
 /**
  * @param {string} value
@@ -108,6 +166,134 @@ function isRecord(value) {
 }
 
 /**
+ * @param {unknown} value
+ * @param {string[]} jsonPath
+ * @returns {unknown}
+ */
+export function readJsonPath(value, jsonPath) {
+  let cur = value;
+  for (const key of jsonPath) {
+    if (!isRecord(cur)) {
+      return undefined;
+    }
+    cur = cur[key];
+  }
+  return cur;
+}
+
+/**
+ * Line is historical / instruction-only for OWNER_COUNTERSIGNED / CLOSED claims.
+ * @param {string} line
+ * @returns {boolean}
+ */
+export function isHistoricalOrInstructionLine(line) {
+  return (
+    /historical|superseded|prior |authclaims?\s+\*\*1\.0|1\.0\.0|275c1fb7|8586d89a|429a7818/i.test(
+      line,
+    ) ||
+    /does \*\*not\*\*|must not|do \*\*not\*\*|not call|re-opened|RE-OPENED|PENDING_OWNER_COUNTERSIGN/i.test(
+      line,
+    ) ||
+    /Record `OWNER_COUNTERSIGNED` \(or denial\)/i.test(line) ||
+    /wave 2\s*\/\s*2b changelog/i.test(line) ||
+    /Correction wave 2\s*\/\s*2b changelog/i.test(line)
+  );
+}
+
+/**
+ * Detect unlabeled current CLOSED / OWNER_COUNTERSIGNED claims while gate is pending.
+ * @param {string} text
+ * @returns {string[]}
+ */
+export function findStaleClosedWhilePendingClaims(text) {
+  /** @type {string[]} */
+  const hits = [];
+  const lines = text.split(/\r?\n/);
+  for (let i = 0; i < lines.length; i += 1) {
+    const line = lines[i] ?? "";
+    if (!line.trim()) {
+      continue;
+    }
+    if (isHistoricalOrInstructionLine(line)) {
+      continue;
+    }
+    if (
+      /fixture-owner gate CLOSED|Fixture-owner countersign is \*\*done\*\*|gate:\s*\*\*CLOSED\*\*|Phase 1 fixture-owner gate CLOSED/i.test(
+        line,
+      )
+    ) {
+      hits.push(`L${i + 1}: unlabeled current CLOSED claim: ${line.trim().slice(0, 160)}`);
+      continue;
+    }
+    if (
+      /OWNER_COUNTERSIGNED/i.test(line) &&
+      !/PENDING_OWNER_COUNTERSIGN/i.test(line)
+    ) {
+      hits.push(
+        `L${i + 1}: unlabeled current OWNER_COUNTERSIGNED claim: ${line.trim().slice(0, 160)}`,
+      );
+    }
+  }
+  return hits;
+}
+
+/**
+ * Read recorded Platform HEAD from one authoritative record.
+ * @param {string} repoRoot
+ * @param {PlatformHeadRecordSpec} spec
+ * @returns {{ ok: boolean, value?: string, error?: string }}
+ */
+export function readPlatformHeadRecord(repoRoot, spec) {
+  const abs = path.join(repoRoot, spec.rel);
+  if (!fs.existsSync(abs)) {
+    return { ok: false, error: `missing ${spec.rel}` };
+  }
+  if (spec.kind === "json_path") {
+    const json = JSON.parse(fs.readFileSync(abs, "utf8"));
+    const value = readJsonPath(json, spec.jsonPath ?? []);
+    if (typeof value !== "string") {
+      return { ok: false, error: `${spec.id}: missing json path ${(spec.jsonPath ?? []).join(".")}` };
+    }
+    return { ok: true, value };
+  }
+  const text = fs.readFileSync(abs, "utf8");
+  if (!text.includes(PLATFORM_SOURCE_HEAD)) {
+    return {
+      ok: false,
+      error: `${spec.id}: ${spec.rel} missing exact Platform HEAD ${PLATFORM_SOURCE_HEAD}`,
+    };
+  }
+  return { ok: true, value: PLATFORM_SOURCE_HEAD };
+}
+
+/**
+ * Validate exact Platform source HEAD agreement across authoritative records.
+ * @param {{ repoRoot?: string }} [options]
+ * @returns {{ ok: boolean, errors: string[], observed: Record<string, string> }}
+ */
+export function validatePlatformSourceHeadAgreement(options = {}) {
+  const repoRoot = options.repoRoot ?? DEFAULT_ROOT;
+  /** @type {string[]} */
+  const errors = [];
+  /** @type {Record<string, string>} */
+  const observed = {};
+  for (const spec of PLATFORM_HEAD_RECORD_SPECS) {
+    const result = readPlatformHeadRecord(repoRoot, spec);
+    if (!result.ok || typeof result.value !== "string") {
+      errors.push(result.error ?? `${spec.id}: unreadable`);
+      continue;
+    }
+    observed[spec.id] = result.value;
+    if (result.value !== PLATFORM_SOURCE_HEAD) {
+      errors.push(
+        `${spec.id}: Platform HEAD mismatch — expected ${PLATFORM_SOURCE_HEAD}, got ${result.value}`,
+      );
+    }
+  }
+  return { ok: errors.length === 0, errors, observed };
+}
+
+/**
  * Validate AuthClaims documentation/provenance consistency.
  *
  * @param {{ repoRoot?: string }} [options]
@@ -120,7 +306,10 @@ export function validateAuthClaimsProvenance(options = {}) {
   /** @type {string[]} */
   const checks = [];
 
-  for (const relativePath of Object.values(REL)) {
+  const requiredRels = [
+    ...Object.values(REL),
+  ];
+  for (const relativePath of requiredRels) {
     requireOk(
       errors,
       fs.existsSync(path.join(repoRoot, relativePath)),
@@ -137,6 +326,7 @@ export function validateAuthClaimsProvenance(options = {}) {
   const signoff = readText(repoRoot, REL.signoff);
   const brainManifest = readText(repoRoot, REL.brainManifest);
   const skillsManifest = readText(repoRoot, REL.skillsManifest);
+  const countersignRequest = readText(repoRoot, REL.countersignRequest);
   const schemaSha = sha256File(path.join(repoRoot, REL.schemaCopy));
 
   requireOk(
@@ -145,6 +335,18 @@ export function validateAuthClaimsProvenance(options = {}) {
     `sanitized AuthClaims 1.1.0 schema SHA mismatch: got ${schemaSha}`,
   );
   checks.push("sanitized schema SHA matches authoritative pin");
+
+  // --- Exact Platform source HEAD agreement ---
+  const headAgreement = validatePlatformSourceHeadAgreement({ repoRoot });
+  for (const error of headAgreement.errors) {
+    errors.push(error);
+  }
+  requireOk(
+    errors,
+    headAgreement.ok,
+    "Platform source HEAD must agree exactly across authoritative records",
+  );
+  checks.push(`Platform source HEAD ${PLATFORM_SOURCE_HEAD} agreed across authoritative records`);
 
   // --- Platform PIN ---
   requireOk(errors, isRecord(platformPin), "platform PIN must be an object");
@@ -415,13 +617,64 @@ export function validateAuthClaimsProvenance(options = {}) {
     has(signoff, /does \*\*not\*\* close the fixture-owner gate|Wave 8 does \*\*not\*\* close/i),
     "FIXTURE-OWNER-SIGNOFF.md must not close the current fixture-owner gate",
   );
-  // Stale: claiming current gate CLOSED without pending status.
   requireOk(
     errors,
     !has(signoff, /current fixture-owner gate CLOSED|gate is CLOSED for AuthClaims 1\.1/i),
     "FIXTURE-OWNER-SIGNOFF.md must not claim current AuthClaims 1.1 gate CLOSED",
   );
   checks.push("FIXTURE-OWNER-SIGNOFF.md pending 1.1 countersign status");
+
+  // --- Countersign request: immutable tip + aggregates + AuthClaims 1.1 ---
+  requireOk(
+    errors,
+    !has(countersignRequest, /see Phase 13 \/ push tip|after wave 8 lands/i),
+    "COUNTERSIGN-REQUEST-WAVE8 must not use 'see pushed tip' placeholder",
+  );
+  requireOk(
+    errors,
+    has(
+      countersignRequest,
+      /\*\*Immutable OpenClaw inspection tip:\*\* `[0-9a-f]{40}`/,
+    ),
+    "COUNTERSIGN-REQUEST-WAVE8 must pin an immutable 40-char OpenClaw inspection tip",
+  );
+  requireOk(
+    errors,
+    countersignRequest.includes(BRAIN_FIXTURE_AGGREGATE_SHA256) &&
+      countersignRequest.includes(SKILLS_FIXTURE_AGGREGATE_SHA256),
+    "COUNTERSIGN-REQUEST-WAVE8 must state both exact fixture aggregates",
+  );
+  requireOk(
+    errors,
+    countersignRequest.includes(AUTH_CLAIMS_CONTRACT) &&
+      countersignRequest.includes(AUTH_CLAIMS_SCHEMA_SHA256) &&
+      countersignRequest.includes(AUTH_CLAIMS_CONTENT_HASH) &&
+      countersignRequest.includes(PLATFORM_SOURCE_HEAD),
+    "COUNTERSIGN-REQUEST-WAVE8 must state AuthClaims 1.1 provenance + Platform HEAD",
+  );
+  requireOk(
+    errors,
+    has(countersignRequest, /\*\*Status:\*\* \*\*PENDING\*\*/),
+    "COUNTERSIGN-REQUEST-WAVE8 status must remain PENDING",
+  );
+  checks.push("COUNTERSIGN-REQUEST-WAVE8 immutable tip + AuthClaims 1.1 provenance");
+
+  // --- Stale CLOSED / OWNER_COUNTERSIGNED while pending ---
+  requireOk(
+    errors,
+    has(signoff, /PENDING_OWNER_COUNTERSIGN/),
+    "signoff pending status required before stale-CLOSED scan",
+  );
+  for (const rel of CURRENT_STATUS_DOC_RELS) {
+    const text = readText(repoRoot, rel);
+    const stale = findStaleClosedWhilePendingClaims(text);
+    requireOk(
+      errors,
+      stale.length === 0,
+      `${rel} has stale CLOSED/OWNER_COUNTERSIGNED claims while FIXTURE-OWNER-SIGNOFF is pending: ${stale[0] ?? ""}`,
+    );
+  }
+  checks.push("no current handoff/status/request CLOSED claims while signoff pending");
 
   // --- Fixture manifests (docs; not JSON bytes) ---
   for (const [label, text, aggregate] of [
@@ -457,7 +710,6 @@ export function validateAuthClaimsProvenance(options = {}) {
   );
   checks.push("Brain/Skills fixture MANIFEST AuthClaims 1.1 + aggregates");
 
-  // Cross-artifact agreement on package string
   requireOk(
     errors,
     consumption.includes("@linktrend/platform-contracts@0.2.2") ||
