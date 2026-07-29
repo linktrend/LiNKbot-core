@@ -14,7 +14,7 @@
 | Starting branch  | `issue/ocp-openclawdevelopmentplan01` |
 | Ending branch    | `issue/ocp-openclawdevelopmentplan01` |
 | Starting commit  | `e369d87ade155154ff437c4660e96c92506e9183` |
-| Ending commit    | tip after tip-record (`git rev-parse HEAD` after push) |
+| Ending commit    |  |
 | Starting status  | clean at exact HEAD |
 | Ending status    | clean after push |
 
