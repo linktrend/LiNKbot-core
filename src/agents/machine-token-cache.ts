@@ -1,7 +1,8 @@
 /**
  * Process-memory cache for resolved machine-token access credentials.
  *
- * Keyed by bindingId. Early renewal when remaining TTL < 20% of total lifetime.
+ * Keyed by immutable binding fingerprint (not operator bindingId labels).
+ * Early renewal when remaining TTL < 20% of total lifetime.
  * Never persists to disk or SQLite.
  */
 import type { ResolvedMachineToken } from "./machine-token-types.js";
@@ -16,16 +17,16 @@ export type CachedMachineToken = ResolvedMachineToken & {
 
 const cache = new Map<string, CachedMachineToken>();
 
-export function getCachedMachineToken(bindingId: string): CachedMachineToken | undefined {
-  return cache.get(bindingId);
+export function getCachedMachineToken(bindingFingerprint: string): CachedMachineToken | undefined {
+  return cache.get(bindingFingerprint);
 }
 
 export function setCachedMachineToken(entry: CachedMachineToken): void {
-  cache.set(entry.bindingId, entry);
+  cache.set(entry.bindingFingerprint, entry);
 }
 
-export function deleteCachedMachineToken(bindingId: string): void {
-  cache.delete(bindingId);
+export function deleteCachedMachineToken(bindingFingerprint: string): void {
+  cache.delete(bindingFingerprint);
 }
 
 /** Drop every process-memory machine-token entry (tests / process teardown). */

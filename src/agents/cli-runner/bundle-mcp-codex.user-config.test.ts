@@ -4,12 +4,16 @@ import type { OpenClawConfig } from "../../config/types.openclaw.js";
 import {
   buildCodexUserMcpServersThreadConfigPatch,
   buildCodexUserMcpServersThreadConfigPatchForRuntime,
+  injectCodexMcpConfigArgs,
+  isMachineTokenMcpProjectionUnsupported,
+  machineTokenMcpProjectionUnsupportedError,
 } from "./bundle-mcp-codex.js";
 
 const authMocks = vi.hoisted(() => ({
   loadAuthProfileStoreForSecretsRuntime: vi.fn(),
   resolveApiKeyForProfile: vi.fn(),
   resolveMcpOAuthAccessToken: vi.fn(),
+  resolveMachineTokenAccess: vi.fn(),
 }));
 
 vi.mock("../auth-profiles/store.js", () => ({
@@ -24,11 +28,30 @@ vi.mock("../mcp-oauth.js", () => ({
   resolveMcpOAuthAccessToken: authMocks.resolveMcpOAuthAccessToken,
 }));
 
+vi.mock("../machine-token.js", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("../machine-token.js")>();
+  return {
+    ...actual,
+    resolveMachineTokenAccess: authMocks.resolveMachineTokenAccess,
+  };
+});
+
+function assertNoMachineTokenProjectionLeak(value: unknown): void {
+  const serialized = JSON.stringify(value);
+  expect(serialized).not.toMatch(/machineToken|machine_token/i);
+  expect(serialized).not.toContain("mt-must-never-project");
+  expect(serialized).not.toContain("BEGIN PRIVATE KEY");
+}
+
 describe("buildCodexUserMcpServersThreadConfigPatch", () => {
   beforeEach(() => {
     authMocks.loadAuthProfileStoreForSecretsRuntime.mockReset();
     authMocks.resolveApiKeyForProfile.mockReset();
     authMocks.resolveMcpOAuthAccessToken.mockReset();
+    authMocks.resolveMachineTokenAccess.mockReset();
+    authMocks.resolveMachineTokenAccess.mockRejectedValue(
+      new Error("machine-token resolve must not run during Codex projection"),
+    );
   });
 
   it("returns undefined when cfg has no mcp.servers (regression: #80814)", () => {
@@ -554,5 +577,143 @@ describe("buildCodexUserMcpServersThreadConfigPatch", () => {
       },
     });
     expect(JSON.stringify(patch)).not.toContain("refresh-token-must-not-project");
+  });
+
+  it("fail-closes machine_token servers from static Codex projection", () => {
+    const unavailable: Array<{ name: string; message: string }> = [];
+    const patch = buildCodexUserMcpServersThreadConfigPatch(
+      {
+        mcp: {
+          servers: {
+            brain: {
+              url: "https://brain.example.test/mcp",
+              auth: "machine_token",
+              machineToken: {
+                bindingId: "linkbrain-stage",
+                issuerUrl: "https://issuer.example.test",
+                clientId: "brain-client",
+                clientAssertionKeyRef: {
+                  source: "env",
+                  provider: "default",
+                  id: "BRAIN_ASSERTION",
+                },
+              },
+            },
+            notes: {
+              url: "https://notes.example.test/mcp",
+              headers: {
+                Authorization: "Bearer ${NOTES_TOKEN}",
+              },
+            },
+          },
+        },
+      } as unknown as OpenClawConfig,
+      {
+        onServerUnavailable: (name, error) => {
+          unavailable.push({
+            name,
+            message: error instanceof Error ? error.message : String(error),
+          });
+        },
+      },
+    );
+
+    expect(isMachineTokenMcpProjectionUnsupported({ auth: "machine_token" })).toBe(true);
+    expect(machineTokenMcpProjectionUnsupportedError("brain").message).toMatch(
+      /cannot be projected/,
+    );
+    expect(unavailable).toHaveLength(1);
+    expect(unavailable[0]?.name).toBe("brain");
+    expect(unavailable[0]?.message).toMatch(/machine-token auth/);
+    expect(patch?.mcp_servers).toHaveProperty("notes");
+    expect(patch?.mcp_servers).not.toHaveProperty("brain");
+    assertNoMachineTokenProjectionLeak(patch);
+    expect(authMocks.resolveMachineTokenAccess).not.toHaveBeenCalled();
+  });
+
+  it("fail-closes machine_token servers from runtime Codex projection without minting", async () => {
+    const unavailable: Array<{ name: string; message: string }> = [];
+    authMocks.resolveMachineTokenAccess.mockResolvedValue({
+      bindingId: "linkbrain-stage",
+      accessToken: "mt-must-never-project",
+      expiresAt: Date.now() + 60_000,
+      tokenType: "Bearer",
+    });
+
+    const patch = await buildCodexUserMcpServersThreadConfigPatchForRuntime(
+      {
+        mcp: {
+          servers: {
+            brain: {
+              url: "https://brain.example.test/mcp",
+              auth: "machine_token",
+              machineToken: {
+                bindingId: "linkbrain-stage",
+                issuerUrl: "https://issuer.example.test",
+                clientId: "brain-client",
+                clientAssertionKeyRef: "literal-must-not-project",
+              },
+            },
+          },
+        },
+      } as unknown as OpenClawConfig,
+      {
+        onServerUnavailable: (name, error) => {
+          unavailable.push({
+            name,
+            message: error instanceof Error ? error.message : String(error),
+          });
+        },
+      },
+    );
+
+    expect(patch).toBeUndefined();
+    expect(unavailable).toEqual([
+      expect.objectContaining({
+        name: "brain",
+        message: expect.stringMatching(/cannot be projected/),
+      }),
+    ]);
+    assertNoMachineTokenProjectionLeak({ unavailable, patch });
+    expect(authMocks.resolveMachineTokenAccess).not.toHaveBeenCalled();
+  });
+
+  it("omits machine_token servers from Codex CLI TOML injection", () => {
+    const unavailable: string[] = [];
+    const args = injectCodexMcpConfigArgs(
+      ["exec"],
+      {
+        mcpServers: {
+          brain: {
+            url: "https://brain.example.test/mcp",
+            auth: "machine_token",
+            machineToken: {
+              bindingId: "linkbrain-stage",
+              issuerUrl: "https://issuer.example.test",
+              clientId: "brain-client",
+              clientAssertionKeyRef: {
+                source: "env",
+                provider: "default",
+                id: "BRAIN_ASSERTION",
+              },
+            },
+          },
+          notes: {
+            url: "https://notes.example.test/mcp",
+          },
+        },
+      } as never,
+      {
+        onServerUnavailable: (name) => {
+          unavailable.push(name);
+        },
+      },
+    );
+
+    expect(unavailable).toEqual(["brain"]);
+    const joined = args.join(" ");
+    expect(joined).toContain("notes");
+    expect(joined).not.toMatch(/machineToken|machine_token|linkbrain-stage/i);
+    expect(authMocks.resolveMachineTokenAccess).not.toHaveBeenCalled();
   });
 });

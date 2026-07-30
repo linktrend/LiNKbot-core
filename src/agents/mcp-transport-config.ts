@@ -175,20 +175,15 @@ function resolveMachineTokenConfig(
   };
 }
 
-function resolveHttpAuthMode(
-  rawServer: unknown,
-  machineToken: ResolvedHttpMcpTransportConfig["machineToken"] | undefined,
-): "oauth" | "machine_token" | undefined {
-  // Machine-token binding present wins over interactive oauth when both exist.
-  if (machineToken) {
-    return "machine_token";
+function resolveHttpAuthMode(rawServer: unknown): "oauth" | "machine_token" | undefined {
+  // Auth is explicit only. A machineToken block never overrides auth="oauth",
+  // and never auto-activates when auth is absent.
+  if (!rawServer || typeof rawServer !== "object") {
+    return undefined;
   }
-  if (
-    rawServer &&
-    typeof rawServer === "object" &&
-    (rawServer as { auth?: unknown }).auth === "oauth"
-  ) {
-    return "oauth";
+  const auth = (rawServer as { auth?: unknown }).auth;
+  if (auth === "oauth" || auth === "machine_token") {
+    return auth;
   }
   return undefined;
 }
@@ -214,8 +209,15 @@ function resolveHttpTransportConfig(
   if (!launch.ok) {
     return null;
   }
-  const machineToken = resolveMachineTokenConfig(rawServer);
-  const auth = resolveHttpAuthMode(rawServer, machineToken);
+  const auth = resolveHttpAuthMode(rawServer);
+  // machineToken is transport-active only when auth is explicitly machine_token.
+  // Incomplete bindings fail closed here — never fall through to oauth/static auth.
+  const machineToken = auth === "machine_token" ? resolveMachineTokenConfig(rawServer) : undefined;
+  if (auth === "machine_token" && !machineToken) {
+    throw new Error(
+      `MCP server "${serverName}" auth is "machine_token" but machineToken binding is missing or incomplete (requires bindingId, issuerUrl, clientId, clientAssertionKeyRef).`,
+    );
+  }
   return {
     kind: "http",
     transportType: launch.config.transportType,

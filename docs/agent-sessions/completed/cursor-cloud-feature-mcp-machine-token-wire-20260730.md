@@ -23,7 +23,7 @@
 | Objective       | Wire managed-MCP config + transport for machine-token bindings; stubs only if core modules missing |
 | Branch          | `issue/ocp-openclawdevelopmentplan01`                                                              |
 | Starting commit | (pre-edit HEAD on branch)                                                                          |
-| Status          | `handing-off`                                                                                      |
+| Status          | `completed`                                                                                        |
 | Handoff         | (pending parent closeout; do not commit)                                                           |
 
 ## Ownership Scope

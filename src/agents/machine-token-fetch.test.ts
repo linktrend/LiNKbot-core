@@ -69,7 +69,9 @@ describe("withMachineTokenBearer", () => {
     await wrapped("https://other.test/api");
 
     expect(resourceFetch).toHaveBeenCalledTimes(2);
-    expect(bearer(callHeaders(resourceFetch, 0))).toMatch(/^paci-fake-at-/u);
+    expect(bearer(callHeaders(resourceFetch, 0))).toMatch(
+      /^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/u,
+    );
     expect(bearer(callHeaders(resourceFetch, 1))).toBeNull();
     expect(fake.tokenRequestCount()).toBe(1);
   });
@@ -107,6 +109,42 @@ describe("withMachineTokenBearer", () => {
     });
 
     await expect(wrapped(RESOURCE)).resolves.toMatchObject({ status: 200 });
+    expect(resourceFetch).toHaveBeenCalledTimes(2);
+    expect(seenTokens).toHaveLength(2);
+    expect(seenTokens[0]).not.toBe(seenTokens[1]);
+    expect(fake.tokenRequestCount()).toBe(2);
+  });
+
+  it("reissues once on 403 and does not retry endlessly", async () => {
+    const { binding, publicKeyPem } = await createBinding();
+    const fake = await createPaciFakeServer({
+      issuerUrl: ISSUER,
+      clientId: CLIENT_ID,
+      clientPublicKeyPem: publicKeyPem,
+    });
+    const seenTokens: string[] = [];
+    const resourceFetch = vi.fn<MachineTokenFetchFn>(async (input, init) => {
+      const token = bearer(input instanceof Request ? input.headers : (init?.headers ?? {}));
+      if (token) {
+        seenTokens.push(token);
+      }
+      return new Response("forbidden", { status: 403 });
+    });
+    const dispatch: MachineTokenFetchFn = async (input, init) => {
+      const url = new URL(input instanceof Request ? input.url : String(input));
+      if (url.origin === new URL(ISSUER).origin) {
+        return await fake.fetchFn(input, init);
+      }
+      return await resourceFetch(input, init);
+    };
+    const wrapped = withMachineTokenBearer({
+      fetchFn: dispatch,
+      authFetchFn: fake.fetchFn,
+      binding,
+      resourceUrl: RESOURCE,
+    });
+
+    await expect(wrapped(RESOURCE)).resolves.toMatchObject({ status: 403 });
     expect(resourceFetch).toHaveBeenCalledTimes(2);
     expect(seenTokens).toHaveLength(2);
     expect(seenTokens[0]).not.toBe(seenTokens[1]);

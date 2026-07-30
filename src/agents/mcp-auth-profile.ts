@@ -4,13 +4,9 @@
 import crypto from "node:crypto";
 import type { FetchLike } from "@modelcontextprotocol/sdk/shared/transport.js";
 import type { OpenClawConfig } from "../config/types.openclaw.js";
-import { isSecretRef } from "../config/types.secrets.js";
-import { resolveConfiguredSecretInputString } from "../gateway/resolve-configured-secret-input-string.js";
 import type { BundleMcpConfig, BundleMcpServerConfig } from "../plugins/bundle-mcp.js";
 import { resolveApiKeyForProfile } from "./auth-profiles/oauth.js";
 import { loadAuthProfileStoreForSecretsRuntime } from "./auth-profiles/store.js";
-import { fingerprintMachineTokenKeyRef } from "./machine-token-fingerprint.js";
-import { resolveMachineTokenAccess, type MachineTokenBinding } from "./machine-token.js";
 import {
   buildMcpHttpFetch,
   withoutMcpAuthorizationHeader,
@@ -69,54 +65,6 @@ export function machineTokenMcpBearerProjectionUnsupportedError(serverName: stri
   return new Error(
     `MCP server "${serverName}" uses machine-token auth; machine-token projection is unsupported. External runtimes must acquire tokens via the machine-token provider seam — never env or literal Authorization headers.`,
   );
-}
-
-async function resolveMcpMachineTokenBearerToken(params: {
-  serverName: string;
-  server: BundleMcpServerConfig;
-  cfg?: OpenClawConfig;
-}): Promise<string | undefined> {
-  const resolved = resolveMcpTransportConfig(params.serverName, params.server);
-  if (!resolved || resolved.kind !== "http" || !resolved.machineToken) {
-    return undefined;
-  }
-  if (!params.cfg) {
-    throw new Error(
-      `MCP server "${params.serverName}" uses machine-token auth, but no OpenClaw config was provided to resolve clientAssertionKeyRef.`,
-    );
-  }
-  const keyResolved = await resolveConfiguredSecretInputString({
-    config: params.cfg,
-    env: process.env,
-    value: resolved.machineToken.clientAssertionKeyRef,
-    path: `mcp.servers.${params.serverName}.machineToken.clientAssertionKeyRef`,
-  });
-  if (!keyResolved.value) {
-    throw new Error(
-      keyResolved.unresolvedRefReason ??
-        `MCP server "${params.serverName}" could not resolve machineToken.clientAssertionKeyRef.`,
-    );
-  }
-  const keyRef = resolved.machineToken.clientAssertionKeyRef;
-  const binding: MachineTokenBinding = {
-    bindingId: resolved.machineToken.bindingId,
-    issuerUrl: resolved.machineToken.issuerUrl,
-    clientId: resolved.machineToken.clientId,
-    ...(resolved.machineToken.audience ? { audience: resolved.machineToken.audience } : {}),
-    ...(resolved.machineToken.scope ? { scope: resolved.machineToken.scope } : {}),
-    clientAssertionKeyPem: keyResolved.value,
-    ...(isSecretRef(keyRef)
-      ? {
-          keyRefFingerprint: fingerprintMachineTokenKeyRef({
-            source: keyRef.source,
-            provider: keyRef.provider,
-            id: keyRef.id,
-          }),
-        }
-      : {}),
-  };
-  const access = await resolveMachineTokenAccess({ binding });
-  return access.accessToken;
 }
 
 async function resolveMcpAuthProfileBearerToken(

@@ -1,5 +1,5 @@
 // Defines MCP server and tool approval configuration types.
-import type { SecretInput } from "./types.secrets.js";
+import type { SecretRef } from "./types.secrets.js";
 
 export type McpCodexToolApprovalMode = "auto" | "prompt" | "approve";
 
@@ -11,10 +11,10 @@ export type McpServerMachineTokenConfig = {
   audience?: string;
   scope?: string;
   /**
-   * SecretRef or literal PEM for private_key_jwt.
-   * Literals are forbidden in shipped templates; schema allows SecretInput.
+   * SecretRef for private_key_jwt signing key custody.
+   * Literal PEM/string secrets are rejected by config schema.
    */
-  clientAssertionKeyRef: SecretInput;
+  clientAssertionKeyRef: SecretRef;
 };
 
 export type McpServerCodexConfig = {
@@ -64,9 +64,9 @@ export type McpServerConfig = {
   supportsParallelToolCalls?: boolean;
   /**
    * HTTP auth mode.
-   * Prefer a single driver: interactive `"oauth"` or machine-token `"machine_token"`.
-   * When both oauth and machineToken blocks are present and auth is `"machine_token"`,
-   * the machineToken binding wins at runtime.
+   * Selection is explicit: `"oauth"` or `"machine_token"`.
+   * A machineToken block never overrides auth="oauth" and never auto-activates
+   * when auth is absent. auth="machine_token" requires a complete machineToken binding.
    */
   auth?: "oauth" | "machine_token";
   /** Optional OAuth client metadata overrides for HTTP MCP servers. */
@@ -79,7 +79,7 @@ export type McpServerConfig = {
   };
   /**
    * Machine-token binding for non-interactive client_credentials / private_key_jwt.
-   * Do not combine with interactive oauth as the active auth driver.
+   * Active only when auth is explicitly "machine_token"; ignored otherwise.
    */
   machineToken?: McpServerMachineTokenConfig;
   /** HTTP TLS verification, disabled only for explicitly trusted private endpoints. */

@@ -2,9 +2,14 @@
  * RFC 8414 OAuth authorization-server discovery for machine-token issuers.
  *
  * Issuer MUST NOT end with `/` and MUST have no path. Discovery URL =
- * issuer + "/.well-known/oauth-authorization-server". Token endpoint must
- * share the issuer origin. Errors never include secrets or tokens.
+ * issuer + "/.well-known/oauth-authorization-server". Token/JWKS/introspection
+ * endpoints must share the issuer origin. Errors never include secrets or tokens.
  */
+import {
+  assertMachineTokenNetworkUrl,
+  describeMachineTokenHttpFailure,
+  machineTokenNetworkFetchJson,
+} from "./machine-token-network.js";
 import type {
   MachineTokenAuthorizationServerMetadata,
   MachineTokenFetchFn,
@@ -16,6 +21,8 @@ export type DiscoverMachineTokenAuthorizationServerParams = {
   issuerUrl: string;
   fetchFn?: MachineTokenFetchFn;
   signal?: AbortSignal;
+  /** Explicit local-test mode (HTTP loopback only). */
+  localTest?: boolean;
 };
 
 function discoveryError(message: string, cause?: unknown): Error {
@@ -31,7 +38,7 @@ function throwIfAborted(signal: AbortSignal | undefined): void {
  *
  * @throws when the issuer has a trailing slash, path, or non-http(s) scheme
  */
-export function assertMachineTokenIssuerUrl(issuerUrl: string): URL {
+export function assertMachineTokenIssuerUrl(issuerUrl: string, localTest?: boolean): URL {
   if (issuerUrl.endsWith("/")) {
     throw discoveryError("Machine-token issuer URL must not end with a trailing slash");
   }
@@ -53,12 +60,17 @@ export function assertMachineTokenIssuerUrl(issuerUrl: string): URL {
   if (url.search || url.hash) {
     throw discoveryError("Machine-token issuer URL must not include query or fragment");
   }
+  assertMachineTokenNetworkUrl({
+    url: issuerUrl,
+    localTest,
+    label: "issuer URL",
+  });
   return url;
 }
 
 /** Build the RFC 8414 discovery document URL for a validated issuer. */
-export function buildMachineTokenDiscoveryUrl(issuerUrl: string): string {
-  assertMachineTokenIssuerUrl(issuerUrl);
+export function buildMachineTokenDiscoveryUrl(issuerUrl: string, localTest?: boolean): string {
+  assertMachineTokenIssuerUrl(issuerUrl, localTest);
   return `${issuerUrl}${DISCOVERY_SUFFIX}`;
 }
 
@@ -70,17 +82,42 @@ function includesNormalized(values: readonly string[] | undefined, expected: str
   return values.some((value) => value.toLowerCase() === needle);
 }
 
+function assertSameOriginEndpoint(params: {
+  issuer: URL;
+  endpoint: string;
+  label: string;
+  localTest?: boolean;
+}): void {
+  assertMachineTokenNetworkUrl({
+    url: params.endpoint,
+    localTest: params.localTest,
+    label: params.label,
+  });
+  let endpointUrl: URL;
+  try {
+    endpointUrl = new URL(params.endpoint);
+  } catch (cause) {
+    throw discoveryError(`Machine-token ${params.label} is not a valid absolute URL`, cause);
+  }
+  if (endpointUrl.origin !== params.issuer.origin) {
+    throw discoveryError(`Machine-token ${params.label} must share the issuer origin`);
+  }
+}
+
 /**
- * Validate authorization-server metadata for the Phase-1 machine-token path.
+ * Validate authorization-server metadata for the frozen machine-token path.
  *
- * Requires client_credentials + private_key_jwt and a same-origin token_endpoint.
- * Rejects interactive-only servers that omit client_credentials.
+ * Requires exact issuer match, client_credentials, private_key_jwt, ES256 when
+ * signing algs are advertised, empty response_types_supported when present, no
+ * authorization_endpoint, no shared-secret auth methods, and same-origin
+ * token/JWKS/introspection endpoints.
  */
 export function validateMachineTokenAuthorizationServerMetadata(params: {
   metadata: unknown;
   issuerUrl: string;
+  localTest?: boolean;
 }): MachineTokenAuthorizationServerMetadata {
-  const issuer = assertMachineTokenIssuerUrl(params.issuerUrl);
+  const issuer = assertMachineTokenIssuerUrl(params.issuerUrl, params.localTest);
   if (!params.metadata || typeof params.metadata !== "object" || Array.isArray(params.metadata)) {
     throw discoveryError("Machine-token discovery metadata must be a JSON object");
   }
@@ -88,33 +125,38 @@ export function validateMachineTokenAuthorizationServerMetadata(params: {
   if (typeof raw.issuer !== "string" || raw.issuer.length === 0) {
     throw discoveryError("Machine-token discovery metadata is missing issuer");
   }
-  if (raw.issuer !== params.issuerUrl && raw.issuer !== issuer.href.replace(/\/$/u, "")) {
+  const normalizedConfigured = params.issuerUrl;
+  const normalizedReported = raw.issuer.replace(/\/$/u, "");
+  if (normalizedReported !== normalizedConfigured) {
     throw discoveryError(
       "Machine-token discovery metadata issuer does not match configured issuer",
+    );
+  }
+  if ("authorization_endpoint" in raw && raw.authorization_endpoint != null) {
+    throw discoveryError(
+      "Machine-token discovery metadata must not include authorization_endpoint (machine clients are non-interactive)",
     );
   }
   if (typeof raw.token_endpoint !== "string" || raw.token_endpoint.length === 0) {
     throw discoveryError("Machine-token discovery metadata is missing token_endpoint");
   }
-
-  let tokenEndpoint: URL;
-  try {
-    tokenEndpoint = new URL(raw.token_endpoint);
-  } catch (cause) {
-    throw discoveryError("Machine-token token_endpoint is not a valid absolute URL", cause);
-  }
-  if (tokenEndpoint.protocol !== "https:" && tokenEndpoint.protocol !== "http:") {
-    throw discoveryError("Machine-token token_endpoint must use http or https");
-  }
-  if (tokenEndpoint.origin !== issuer.origin) {
-    throw discoveryError("Machine-token token_endpoint must share the issuer origin");
-  }
+  assertSameOriginEndpoint({
+    issuer,
+    endpoint: raw.token_endpoint,
+    label: "token_endpoint",
+    localTest: params.localTest,
+  });
 
   const grantTypes = Array.isArray(raw.grant_types_supported)
     ? raw.grant_types_supported.filter((value): value is string => typeof value === "string")
     : undefined;
   const authMethods = Array.isArray(raw.token_endpoint_auth_methods_supported)
     ? raw.token_endpoint_auth_methods_supported.filter(
+        (value): value is string => typeof value === "string",
+      )
+    : undefined;
+  const signingAlgs = Array.isArray(raw.token_endpoint_auth_signing_alg_values_supported)
+    ? raw.token_endpoint_auth_signing_alg_values_supported.filter(
         (value): value is string => typeof value === "string",
       )
     : undefined;
@@ -129,6 +171,50 @@ export function validateMachineTokenAuthorizationServerMetadata(params: {
       "Machine-token authorization server does not support private_key_jwt token endpoint auth",
     );
   }
+  if (authMethods?.some((method) => method.toLowerCase().startsWith("client_secret_"))) {
+    throw discoveryError(
+      "Machine-token authorization server advertises shared-secret token endpoint auth methods (client_secret_*) which are rejected",
+    );
+  }
+  if (signingAlgs && !includesNormalized(signingAlgs, "ES256")) {
+    throw discoveryError(
+      "Machine-token authorization server token_endpoint_auth_signing_alg_values_supported must include ES256 when present",
+    );
+  }
+
+  let responseTypes: string[] | undefined;
+  if ("response_types_supported" in raw) {
+    if (!Array.isArray(raw.response_types_supported)) {
+      throw discoveryError(
+        "Machine-token discovery metadata response_types_supported must be an array when present",
+      );
+    }
+    responseTypes = raw.response_types_supported.filter(
+      (value): value is string => typeof value === "string",
+    );
+    if (responseTypes.length > 0) {
+      throw discoveryError(
+        "Machine-token discovery metadata response_types_supported must be empty for machine clients",
+      );
+    }
+  }
+
+  if (typeof raw.jwks_uri === "string") {
+    assertSameOriginEndpoint({
+      issuer,
+      endpoint: raw.jwks_uri,
+      label: "jwks_uri",
+      localTest: params.localTest,
+    });
+  }
+  if (typeof raw.introspection_endpoint === "string") {
+    assertSameOriginEndpoint({
+      issuer,
+      endpoint: raw.introspection_endpoint,
+      label: "introspection_endpoint",
+      localTest: params.localTest,
+    });
+  }
 
   const metadata: MachineTokenAuthorizationServerMetadata = {
     issuer: params.issuerUrl,
@@ -140,10 +226,11 @@ export function validateMachineTokenAuthorizationServerMetadata(params: {
   if (authMethods) {
     metadata.token_endpoint_auth_methods_supported = authMethods;
   }
-  if (Array.isArray(raw.response_types_supported)) {
-    metadata.response_types_supported = raw.response_types_supported.filter(
-      (value): value is string => typeof value === "string",
-    );
+  if (signingAlgs) {
+    metadata.token_endpoint_auth_signing_alg_values_supported = signingAlgs;
+  }
+  if (responseTypes) {
+    metadata.response_types_supported = responseTypes;
   }
   if (typeof raw.jwks_uri === "string") {
     metadata.jwks_uri = raw.jwks_uri;
@@ -161,32 +248,34 @@ export async function discoverMachineTokenAuthorizationServer(
   params: DiscoverMachineTokenAuthorizationServerParams,
 ): Promise<MachineTokenAuthorizationServerMetadata> {
   throwIfAborted(params.signal);
-  const discoveryUrl = buildMachineTokenDiscoveryUrl(params.issuerUrl);
-  const fetchFn = params.fetchFn ?? globalThis.fetch;
-  let response: Response;
+  const discoveryUrl = buildMachineTokenDiscoveryUrl(params.issuerUrl, params.localTest);
+  let fetched: { status: number; ok: boolean; json: unknown };
   try {
-    response = await fetchFn(discoveryUrl, {
-      method: "GET",
-      headers: { accept: "application/json" },
+    fetched = await machineTokenNetworkFetchJson({
+      url: discoveryUrl,
+      init: {
+        method: "GET",
+        headers: { accept: "application/json" },
+      },
+      fetchFn: params.fetchFn,
       signal: params.signal,
+      localTest: params.localTest,
+      label: "discovery",
     });
   } catch (cause) {
     throwIfAborted(params.signal);
+    if (cause instanceof Error && cause.message.startsWith("Machine-token ")) {
+      throw cause;
+    }
     throw discoveryError("Machine-token discovery request failed", cause);
   }
   throwIfAborted(params.signal);
-  if (!response.ok) {
-    throw discoveryError(`Machine-token discovery failed with HTTP ${String(response.status)}`);
+  if (!fetched.ok) {
+    throw discoveryError(describeMachineTokenHttpFailure(fetched.status, "discovery"));
   }
-  let body: unknown;
-  try {
-    body = await response.json();
-  } catch (cause) {
-    throw discoveryError("Machine-token discovery response is not valid JSON", cause);
-  }
-  throwIfAborted(params.signal);
   return validateMachineTokenAuthorizationServerMetadata({
-    metadata: body,
+    metadata: fetched.json,
     issuerUrl: params.issuerUrl,
+    localTest: params.localTest,
   });
 }

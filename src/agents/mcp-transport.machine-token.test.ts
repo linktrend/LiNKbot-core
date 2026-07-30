@@ -1,7 +1,9 @@
 /**
  * Managed-MCP machine-token transport selection vs interactive oauth.
+ * Auth selection is explicit and fail-closed.
  */
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { McpConfigSchema } from "../config/zod-schema.root-support.js";
 import { resolveMcpTransportConfig } from "./mcp-transport-config.js";
 import { resolveMcpTransport } from "./mcp-transport.js";
 
@@ -171,7 +173,7 @@ describe("mcp transport machine-token wiring", () => {
     expect(latestStreamableOptions().requestInit).toBeUndefined();
   });
 
-  it("prefers machineToken binding over auth=oauth when both are present", async () => {
+  it("uses oauth when auth=oauth even if machineToken block is also present", async () => {
     resolveMcpTransport(
       "skills",
       {
@@ -184,9 +186,189 @@ describe("mcp transport machine-token wiring", () => {
       { cfg: {} },
     );
 
+    expect(oauthBearerMock).toHaveBeenCalled();
+    expect(machineTokenBearerMock).not.toHaveBeenCalled();
+
+    const options = latestStreamableOptions();
+    await options.fetch?.("https://mcp.example.com/mcp");
+    expect(machineTokenBearerMock).not.toHaveBeenCalled();
+  });
+
+  it("uses machine_token when both blocks present and auth=machine_token", async () => {
+    resolveMcpTransport(
+      "skills",
+      {
+        url: "https://mcp.example.com/mcp",
+        transport: "streamable-http",
+        auth: "machine_token",
+        oauth: { scope: "openid" },
+        machineToken: MACHINE_TOKEN,
+      },
+      { cfg: {} },
+    );
+
     await latestStreamableOptions().fetch?.("https://mcp.example.com/mcp");
 
     expect(machineTokenBearerMock).toHaveBeenCalled();
     expect(oauthBearerMock).not.toHaveBeenCalled();
+  });
+
+  it("does not silently use machineToken when the block exists without auth", () => {
+    const resolved = resolveMcpTransportConfig("skills", {
+      url: "https://mcp.example.com/mcp",
+      transport: "streamable-http",
+      machineToken: MACHINE_TOKEN,
+      headers: { Authorization: "Bearer static" },
+    });
+
+    expect(resolved?.kind).toBe("http");
+    if (resolved?.kind === "http") {
+      expect(resolved.auth).toBeUndefined();
+      expect(resolved.machineToken).toBeUndefined();
+    }
+
+    resolveMcpTransport(
+      "skills",
+      {
+        url: "https://mcp.example.com/mcp",
+        transport: "streamable-http",
+        machineToken: MACHINE_TOKEN,
+        headers: { Authorization: "Bearer static" },
+      },
+      { cfg: {} },
+    );
+
+    expect(machineTokenBearerMock).not.toHaveBeenCalled();
+    expect(oauthBearerMock).not.toHaveBeenCalled();
+    expect(latestStreamableOptions().requestInit).toEqual({
+      headers: { Authorization: "Bearer static" },
+    });
+  });
+
+  it("fails closed when auth=machine_token with incomplete machineToken binding", () => {
+    expect(() =>
+      resolveMcpTransportConfig("skills", {
+        url: "https://mcp.example.com/mcp",
+        transport: "streamable-http",
+        auth: "machine_token",
+        machineToken: {
+          bindingId: "binding-skills",
+          // missing issuerUrl / clientId / clientAssertionKeyRef
+        },
+      }),
+    ).toThrow(/auth is "machine_token".*missing or incomplete/);
+
+    expect(() =>
+      resolveMcpTransport(
+        "skills",
+        {
+          url: "https://mcp.example.com/mcp",
+          transport: "streamable-http",
+          auth: "machine_token",
+        },
+        { cfg: {} },
+      ),
+    ).toThrow(/auth is "machine_token".*missing or incomplete/);
+  });
+});
+
+describe("mcp machineToken schema auth refine", () => {
+  const completeSecretRef = {
+    source: "env" as const,
+    provider: "default",
+    id: "LINKTREND_SKILLS_ASSERTION_KEY",
+  };
+
+  it("accepts auth=machine_token with a complete SecretRef binding", () => {
+    const parsed = McpConfigSchema.parse({
+      servers: {
+        skills: {
+          url: "https://mcp.example.com/mcp",
+          transport: "streamable-http",
+          auth: "machine_token",
+          machineToken: {
+            bindingId: "binding-skills",
+            issuerUrl: "https://paci.example",
+            clientId: "skills-client",
+            clientAssertionKeyRef: completeSecretRef,
+          },
+        },
+      },
+    });
+    expect(parsed?.servers?.skills?.auth).toBe("machine_token");
+  });
+
+  it("rejects auth=machine_token without machineToken", () => {
+    const result = McpConfigSchema.safeParse({
+      servers: {
+        skills: {
+          url: "https://mcp.example.com/mcp",
+          transport: "streamable-http",
+          auth: "machine_token",
+        },
+      },
+    });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.issues.some((issue) => issue.path.includes("machineToken"))).toBe(true);
+    }
+  });
+
+  it("rejects literal PEM strings for clientAssertionKeyRef", () => {
+    const result = McpConfigSchema.safeParse({
+      servers: {
+        skills: {
+          url: "https://mcp.example.com/mcp",
+          transport: "streamable-http",
+          auth: "machine_token",
+          machineToken: {
+            bindingId: "binding-skills",
+            issuerUrl: "https://paci.example",
+            clientId: "skills-client",
+            clientAssertionKeyRef: "-----BEGIN PRIVATE KEY-----\nstub\n-----END PRIVATE KEY-----",
+          },
+        },
+      },
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("allows machineToken block without auth (ignored at runtime, not auto-activated)", () => {
+    const parsed = McpConfigSchema.parse({
+      servers: {
+        skills: {
+          url: "https://mcp.example.com/mcp",
+          transport: "streamable-http",
+          machineToken: {
+            bindingId: "binding-skills",
+            issuerUrl: "https://paci.example",
+            clientId: "skills-client",
+            clientAssertionKeyRef: completeSecretRef,
+          },
+        },
+      },
+    });
+    expect(parsed?.servers?.skills?.auth).toBeUndefined();
+    expect(parsed?.servers?.skills?.machineToken?.bindingId).toBe("binding-skills");
+  });
+
+  it("allows auth=oauth with a co-located machineToken block", () => {
+    const parsed = McpConfigSchema.parse({
+      servers: {
+        skills: {
+          url: "https://mcp.example.com/mcp",
+          transport: "streamable-http",
+          auth: "oauth",
+          oauth: { scope: "openid" },
+          machineToken: {
+            bindingId: "binding-skills",
+            issuerUrl: "https://paci.example",
+            clientId: "skills-client",
+            clientAssertionKeyRef: completeSecretRef,
+          },
+        },
+      },
+    });
+    expect(parsed?.servers?.skills?.auth).toBe("oauth");
   });
 });

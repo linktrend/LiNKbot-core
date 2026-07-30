@@ -227,9 +227,9 @@ export const AGENT_FIELD_HELP: Record<string, string> = {
   "mcp.servers.*.toolFilter.exclude":
     "Exact MCP tool names or simple '*' globs to hide from this server.",
   "mcp.servers.*.auth":
-    'HTTP MCP auth mode: "oauth" for interactive authorization-code/refresh flows, or "machine_token" for non-interactive client_credentials with private_key_jwt. Prefer one driver; when both oauth and machineToken blocks are present and auth is "machine_token", the machineToken binding wins.',
+    'HTTP MCP auth mode: "oauth" for interactive authorization-code/refresh flows, or "machine_token" for non-interactive client_credentials with private_key_jwt. Selection is explicit: a machineToken block never overrides auth="oauth", and machine-token auth activates only when auth is "machine_token".',
   "mcp.servers.*.oauth":
-    "Interactive OAuth settings for remote MCP HTTP servers. Do not combine with machineToken as the active auth driver.",
+    'Interactive OAuth settings for remote MCP HTTP servers. Active only when auth is "oauth"; a co-located machineToken block does not change the driver.',
   "mcp.servers.*.oauth.authProfileId":
     "Refresh-capable auth profile id used to inject the current bearer token into this remote MCP server. When set, OpenClaw resolves and refreshes the profile at runtime and does not project refresh material downstream.",
   "mcp.servers.*.oauth.scope":
@@ -239,7 +239,7 @@ export const AGENT_FIELD_HELP: Record<string, string> = {
   "mcp.servers.*.oauth.clientMetadataUrl":
     "Optional OAuth client metadata URL override for interactive MCP authorization discovery.",
   "mcp.servers.*.machineToken":
-    'Machine-token binding for non-interactive MCP HTTP auth (client_credentials / private_key_jwt). Prefer auth="machine_token". Do not use together with interactive oauth as the active driver; when both are present and auth is machine_token, machineToken wins.',
+    'Machine-token binding for non-interactive MCP HTTP auth (client_credentials / private_key_jwt). Required and must be complete when auth="machine_token". Ignored unless auth is explicitly "machine_token"; never overrides auth="oauth".',
   "mcp.servers.*.machineToken.bindingId":
     "Stable machine-token binding id used for independent cache, invalidation, and diagnostics for this MCP server.",
   "mcp.servers.*.machineToken.issuerUrl":
@@ -251,7 +251,7 @@ export const AGENT_FIELD_HELP: Record<string, string> = {
   "mcp.servers.*.machineToken.scope":
     "Optional space-delimited scope string requested for this machine-token binding.",
   "mcp.servers.*.machineToken.clientAssertionKeyRef":
-    "SecretRef (preferred) or literal PEM for the private_key_jwt signing key. Shipped templates must use SecretRef; literals are allowed only for local/test SecretInput.",
+    "SecretRef (env/file/exec) for the private_key_jwt signing key. Literal PEM/string secrets are rejected; resolve the key only through SecretRef at the trusted provider boundary.",
   "mcp.servers.*.codex.agents":
     "Optional non-empty OpenClaw agent ids that should receive this MCP server in Codex app-server thread config. Empty, blank, or invalid lists fail closed; when omitted, the server is projected for all Codex app-server agents.",
   "mcp.servers.*.codex.defaultToolsApprovalMode":

@@ -145,7 +145,7 @@ export function readPluginSdkSurfaceBudgets(env = process.env) {
       // +4: session discussion state, info, provider, and registration contracts.
       // +2: structured media placeholder formatter and its text-fact contract.
       // +11: machine-token-runtime (scoped facade + host helpers + types/health + discovery/bearer/auth header).
-      4734,
+      4735,
       env,
     ),
     publicFunctionExports: readPluginSdkSurfaceBudgetEnv(

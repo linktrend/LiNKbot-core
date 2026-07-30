@@ -1,12 +1,12 @@
 # Platform-facing handoff — PACI ↔ OpenClaw consumption compatibility
 
-**Recorded (original inspection):** 2026-07-30 Asia/Taipei  
-**Recheck / provenance closeout:** 2026-07-30 Asia/Taipei  
-**Class:** Documentation / source inspection only — **not** implementation, merge, Lisa enablement, live proof, or Codex certification  
-**OpenClaw HEAD (inspected / this closeout base):** `86cb29a645043416494294317128313183757b3f`  
-**Platform HEAD (original inspection):** `c4acc429c92c7a26669a1f4abdb989380d8e6df4`  
-**Platform HEAD (corrected PACI recheck):** `20c550fbb649f31891b0c9bd4ba2f9e146eb69dd`  
-**LiNKplatform edits by this OpenClaw session:** **none** (read-only)  
+**Recorded (original inspection):** 2026-07-30 Asia/Taipei
+**Recheck / provenance closeout:** 2026-07-30 Asia/Taipei
+**Class:** Documentation / source inspection only — **not** implementation, merge, Lisa enablement, live proof, or Codex certification
+**OpenClaw HEAD (inspected / this closeout base):** `86cb29a645043416494294317128313183757b3f`
+**Platform HEAD (original inspection):** `c4acc429c92c7a26669a1f4abdb989380d8e6df4`
+**Platform HEAD (corrected PACI recheck):** `20c550fbb649f31891b0c9bd4ba2f9e146eb69dd`
+**LiNKplatform edits by this OpenClaw session:** **none** (read-only)
 **OpenClaw runtime / fixture JSON edits:** **none**
 
 ---

@@ -2,7 +2,8 @@
  * Bearer injection for machine-token bindings on remote MCP HTTP fetches.
  *
  * Same-origin resource requests get a resolved Bearer; token/discovery traffic
- * uses authFetchFn (no Authorization leakage). One bounded reissue on 401.
+ * uses authFetchFn (no Authorization leakage). One bounded reissue on matching
+ * 401 and 403 — never retry endlessly.
  */
 import type { FetchLike } from "@modelcontextprotocol/sdk/shared/transport.js";
 import type { MachineTokenFetchFn } from "./machine-token-types.js";
@@ -29,6 +30,10 @@ function mergeRequestHeaders(
     }
   }
   return headers;
+}
+
+function isBoundedReissueStatus(status: number): boolean {
+  return status === 401 || status === 403;
 }
 
 /** Wrap fetch with same-origin machine-token bearer injection. */
@@ -62,12 +67,12 @@ export function withMachineTokenBearer(params: {
       ...(init as RequestInit),
       headers: withBearerHeader(baseHeaders, first.accessToken),
     });
-    if (firstResponse.status !== 401) {
+    if (!isBoundedReissueStatus(firstResponse.status)) {
       return firstResponse;
     }
 
-    // One bounded reissue after resource 401 — never loop.
-    invalidateMachineTokenCache(params.binding.bindingId);
+    // One bounded reissue after resource 401/403 — never loop.
+    invalidateMachineTokenCache(params.binding);
     const second = await resolveMachineTokenAccess({
       binding: params.binding,
       fetchFn: authFetchFn,

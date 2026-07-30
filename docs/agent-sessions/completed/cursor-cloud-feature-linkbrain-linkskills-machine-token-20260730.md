@@ -23,7 +23,7 @@
 | Objective       | Wire extensions/linkbrain + linkskills to public machine-token Plugin SDK seam |
 | Branch          | `issue/ocp-openclawdevelopmentplan01`                                          |
 | Starting commit | (pre-edit HEAD on branch)                                                      |
-| Status          | `handing-off`                                                                  |
+| Status          | `completed`                                                                    |
 | Handoff         | (do not commit; return files changed + test results to parent)                 |
 
 ## Ownership Scope

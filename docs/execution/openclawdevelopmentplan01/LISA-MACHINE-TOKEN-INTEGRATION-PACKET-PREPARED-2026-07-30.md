@@ -1,8 +1,8 @@
 # Lisa stage/production integration packet — PREPARED ONLY (do not apply)
 
-**Recorded:** 2026-07-30 Asia/Taipei  
-**OpenClaw branch:** `issue/ocp-openclawdevelopmentplan01`  
-**Status:** Prepared for later combined gate — **not** applied; **not** live mutation authority  
+**Recorded:** 2026-07-30 Asia/Taipei
+**OpenClaw branch:** `issue/ocp-openclawdevelopmentplan01`
+**Status:** Prepared for later combined gate — **not** applied; **not** live mutation authority
 **Lisa ops boundary:** `issue/ocp-lisa-ops01` / `.worktrees/lisa-ops01` remains a separate workstream — do not merge/rebase/edit from this packet
 
 ## Templates (default-disabled)
@@ -12,7 +12,7 @@
 | Brain  | `mcp-templates/linkbrain.machine-token.template.json`  |
 | Skills | `mcp-templates/linkskills.machine-token.template.json` |
 
-Both keep `enabled: false` / `transportMode: disabled`. Distinct `bindingId` and SecretRef **names** only.
+Both keep `enabled: false` / `transportMode: disabled`. Distinct `bindingId` and SecretRef **names** only. Do not enable live templates from this packet.
 
 ## SecretRef / binding names (names only — no values)
 
@@ -22,6 +22,8 @@ Both keep `enabled: false` / `transportMode: disabled`. Distinct `bindingId` and
 | Skills | `linkskills-stage` | `LINKTREND_LINKSKILLS_STAGE_PACI_CLIENT_ASSERTION_KEY` |
 
 Production: replace `stage` with `prod` ids from Platform — never reuse Brain ids for Skills.
+
+Private-key custody is **SecretRef-only** (or file/injected key references). Do not place literal PEM/private-key strings in config, templates, docs, fixtures, diagnostics, or argv. Resolve refs only at the trusted machine-token provider / Plugin SDK acquire boundary.
 
 ## Redacted operator commands (placeholders)
 
@@ -33,9 +35,9 @@ Production: replace `stage` with `prod` ids from Platform — never reuse Brain 
 # After Principal + Platform stage unlock ONLY:
 # 1. Backup Lisa config/state (Lisa ops owner)
 # 2. Merge machine-token fragments with enabled=false first
-# 3. Inject SecretRefs (names resolved via GSM) — never argv
+# 3. Inject SecretRefs (names resolved via GSM) — never argv, never literal PEM
 # 4. Enable one domain MCP server, probe health, then the other
-# 5. Rollback: set enabled=false; invalidateMachineTokenCache via process restart; revoke Platform credentialId
+# 5. Rollback: set enabled=false; restart process (or facade.unregister / host cache clear); revoke Platform credentialId
 ```
 
 ## Combined checklist (with Lisa ops/model branch)

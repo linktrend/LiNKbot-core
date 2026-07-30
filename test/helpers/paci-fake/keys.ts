@@ -1,10 +1,11 @@
 /**
- * TEST ONLY — deterministic ES256 key material for fake PACI issuers.
+ * TEST ONLY — deterministic ES256 key material for fake PACI issuers/clients.
  *
  * Never use these keys outside tests. Never copy into production config,
  * fixtures shipped as live credentials, or operator docs with live paths.
  */
-import { generateKeyPair, exportPKCS8, exportSPKI, exportJWK, type JWK, type KeyLike } from "jose";
+import { exportJWK, exportPKCS8, exportSPKI, generateKeyPair, type JWK, type KeyLike } from "jose";
+import { PACI_ALG } from "./constants.js";
 
 export type PaciFakeEs256KeyPair = {
   /** PKCS#8 PEM private key (TEST ONLY). */
@@ -36,7 +37,9 @@ export async function createPaciFakeEs256KeyPair(
 
   const create = async (): Promise<PaciFakeEs256KeyPair> => {
     // extractable: required so tests can export PEM/JWK (TEST ONLY).
-    const { privateKey, publicKey } = await generateKeyPair("ES256", { extractable: true });
+    const { privateKey, publicKey } = await generateKeyPair(PACI_ALG, {
+      extractable: true,
+    });
     const privateKeyPem = await exportPKCS8(privateKey);
     const publicKeyPem = await exportSPKI(publicKey);
     const publicJwk = await exportJWK(publicKey);
@@ -44,7 +47,14 @@ export async function createPaciFakeEs256KeyPair(
     return {
       privateKeyPem,
       publicKeyPem,
-      publicJwk: { ...publicJwk, kid, alg: "ES256", use: "sig" },
+      publicJwk: {
+        ...publicJwk,
+        kid,
+        alg: PACI_ALG,
+        use: "sig",
+        kty: "EC",
+        crv: "P-256",
+      },
       privateKey,
       publicKey,
       kid,
