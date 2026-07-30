@@ -16,6 +16,11 @@ Plugins receive a **host-injected, binding-scoped** facade. They must not
 construct facades, choose arbitrary plugin IDs or grants, clear global process
 cache, or invalidate another plugin's domain.
 
+The host owns an **immutable normalized binding registry**. Plugins supply only
+a granted `bindingId` (plus optional cancellation / refresh controls). Issuer,
+client, audience, scopes, endpoints, and key SecretRef material are never
+accepted from the plugin on acquire.
+
 ## Public plugin contract
 
 ```typescript
@@ -31,18 +36,9 @@ declare const facade: MachineTokenPluginFacade;
 
 assertMachineTokenIssuerUrl("https://issuer.example.test");
 
+// Credential scope comes from the host registry for this granted id.
 const token = await facade.acquire({
-  binding: {
-    bindingId: "linkbrain-stage",
-    issuerUrl: "https://issuer.example.test",
-    clientId: "brain-client",
-    keyRefFingerprint: fingerprintMachineTokenKeyRef({
-      source: "env",
-      provider: "gsm",
-      id: "brain-assertion-key",
-    }),
-    clientAssertionKeyPem: resolvedPem, // SecretRef resolved only at this boundary
-  },
+  bindingId: "linkbrain-stage",
 });
 
 const headers = authorizationHeaderFromMachineToken(token);
@@ -55,24 +51,29 @@ facade.unregister(); // reload / plugin unload
 
 | Method       | Behavior                                                                       |
 | ------------ | ------------------------------------------------------------------------------ |
-| `acquire`    | Mint or reuse a Bearer access token for a **granted** binding only             |
+| `acquire`    | Mint or reuse a Bearer access token for a **granted** binding id only          |
 | `invalidate` | Drop one granted binding's cached token                                        |
 | `health`     | Redacted diagnostics (`granted`, `registered`, `cached`, optional `expiresAt`) |
 | `unregister` | Invalidate all granted bindings and fail-close later use                       |
 
-`acquire` accepts only `{ binding, signal?, forceRefresh? }`. Plugins cannot
-pass `fetchFn`, `now`, or other auth-network/test injection through the facade.
-Hardened discovery/token networking and test clocks stay host-internal
-(`resolveMachineTokenAccess` / `machine-token-host` helpers), unavailable on
-this public contract.
+`acquire` accepts only `{ bindingId, signal?, forceRefresh? }`. Plugins cannot
+pass a binding object, PEM, SecretRef, `fetchFn`, `now`, or other
+auth-network/test injection through the facade. Hardened discovery/token
+networking and test clocks stay host-internal (`resolveMachineTokenAccess` /
+`machine-token-host` helpers), unavailable on this public contract.
 
 A plugin may operate only bindings listed in the host-granted
 `grantedBindingIds`. Calls for another domain (for example Skills from Brain)
-throw.
+throw. If a caller still smuggles a binding object at runtime, every normalized
+field and fingerprint must match the host registry or acquire fails closed —
+and PEM is never taken from the smuggled object.
 
-Private-key material must arrive as already-resolved PEM from a SecretRef /
-file / injected key at the trusted boundary. Do not put literal PEM in config
-docs, templates, or diagnostics.
+Private-key material is resolved by the host from the registered SecretRef at
+acquire time. Do not put literal PEM in config docs, templates, diagnostics, or
+plugin acquire calls.
+
+`fingerprintMachineTokenKeyRef` remains available for local diagnostics and
+config validation; it is not required for facade acquire.
 
 ### Public exports
 
@@ -80,16 +81,18 @@ docs, templates, or diagnostics.
   `MachineTokenBindingHealth`, `MachineTokenKeyRefIdentity`
 - `assertMachineTokenIssuerUrl` — validate issuer URL shape for binding config
 - `authorizationHeaderFromMachineToken`
-- `fingerprintMachineTokenKeyRef` — for local binding assembly when the host
-  does not already stamp `keyRefFingerprint`
+- `fingerprintMachineTokenKeyRef` — hash SecretRef identity without exposing secrets
 
 ## Host-internal controls
 
-Facade construction, grant selection, raw resolution (including test-only
-`fetchFn` / `now`), per-binding invalidation without grant checks, and global
-cache clear live in `src/agents/machine-token-host.ts`. They are **not** part
-of the public Plugin SDK. External and bundled plugins must not import that
-module.
+Facade construction, grant / registry selection, SecretRef → PEM resolution,
+raw resolution (including test-only `fetchFn` / `now`), per-binding invalidation
+without grant checks, and global cache clear live in
+`src/agents/machine-token-host.ts`. They are **not** part of the public Plugin
+SDK. External and bundled plugins must not import that module.
+
+On registration and reload the host atomically replaces the per-plugin registry
+and invalidates only the affected binding fingerprints.
 
 ## External projection
 

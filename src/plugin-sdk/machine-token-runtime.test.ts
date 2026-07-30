@@ -88,7 +88,7 @@ describe("plugin-sdk machine-token-runtime", () => {
     expect(entrypoints.some((entry) => entry.includes("machine-token-host"))).toBe(false);
   });
 
-  it("public MachineTokenPluginFacade.acquire omits auth-network/test injection", () => {
+  it("public MachineTokenPluginFacade.acquire accepts only bindingId plus controls", () => {
     const typesSource = readFileSync(
       join(scriptDir, "../agents/machine-token-types.ts"),
       "utf8",
@@ -98,25 +98,27 @@ describe("plugin-sdk machine-token-runtime", () => {
     );
     expect(acquireContract?.[1]).toBeTruthy();
     const acquireBody = acquireContract?.[1] ?? "";
-    expect(acquireBody).toMatch(/\bbinding:\s*MachineTokenBinding\b/u);
+    expect(acquireBody).toMatch(/\bbindingId:\s*string\b/u);
     expect(acquireBody).toMatch(/\bsignal\?:\s*AbortSignal\b/u);
     expect(acquireBody).toMatch(/\bforceRefresh\?:\s*boolean\b/u);
+    expect(acquireBody).not.toMatch(/\bbinding:\s*MachineTokenBinding\b/u);
     expect(acquireBody).not.toMatch(/\bfetchFn\b/u);
     expect(acquireBody).not.toMatch(/\bnow\b/u);
+    expect(acquireBody).not.toMatch(/clientAssertionKeyPem/u);
 
     const facadeAcquire = typesSource.match(
       /acquire:\s*\(params:\s*MachineTokenPluginFacadeAcquireParams\)\s*=>/u,
     );
     expect(facadeAcquire).toBeTruthy();
 
-    // Type-level: Parameters of acquire must not include fetchFn/now keys.
+    // Type-level: Parameters of acquire must not include fetchFn/now/binding keys.
     type AcquireParams = Parameters<publicRuntime.MachineTokenPluginFacade["acquire"]>[0];
-    type ForbiddenKeys = Extract<keyof AcquireParams, "fetchFn" | "now">;
+    type ForbiddenKeys = Extract<keyof AcquireParams, "fetchFn" | "now" | "binding">;
     const forbiddenKeysProof: ForbiddenKeys extends never ? true : false = true;
     expect(forbiddenKeysProof).toBe(true);
 
     type AllowedKeys = keyof AcquireParams;
-    const allowed: AllowedKeys[] = ["binding", "signal", "forceRefresh"];
-    expect(allowed).toEqual(["binding", "signal", "forceRefresh"]);
+    const allowed: AllowedKeys[] = ["bindingId", "signal", "forceRefresh"];
+    expect(allowed).toEqual(["bindingId", "signal", "forceRefresh"]);
   });
 });

@@ -4,6 +4,7 @@
 import { describe, expect, it, vi } from "vitest";
 import {
   buildPluginMcpHttpFetch,
+  MCP_HTTP_MAX_RESPONSE_BYTES,
   withoutMcpAuthorizationHeader,
   withSameOriginMcpHttpHeaders,
 } from "./mcp-http-fetch.js";
@@ -35,6 +36,7 @@ describe("plugin-sdk mcp-http-fetch", () => {
     expect(buildPluginMcpHttpFetch).toBeTypeOf("function");
     expect(withoutMcpAuthorizationHeader).toBeTypeOf("function");
     expect(withSameOriginMcpHttpHeaders).toBeTypeOf("function");
+    expect(MCP_HTTP_MAX_RESPONSE_BYTES).toBe(16 * 1024 * 1024);
   });
 
   it("strips Authorization for same-origin helper callers", () => {
@@ -133,5 +135,38 @@ describe("plugin-sdk mcp-http-fetch", () => {
       timeoutMs: 50,
     });
     await expect(fetchFn("https://mcp.example.com/mcp")).rejects.toThrow();
+  });
+
+  it("bounds oversized plugin MCP response bodies without leaking tokens", async () => {
+    lookupMock.mockResolvedValue([{ address: "93.184.216.34", family: 4 }]);
+    const secret = "Bearer plugin-mcp-body-secret-token";
+    const maxBytes = 32;
+    testGlobal[TEST_UNDICI_RUNTIME_DEPS_KEY] = {
+      Agent: TestAgent,
+      EnvHttpProxyAgent: TestEnvHttpProxyAgent,
+      ProxyAgent: TestProxyAgent,
+      fetch: vi.fn(
+        async () =>
+          new Response(`${"y".repeat(maxBytes + 8)}${secret}`, {
+            status: 200,
+            headers: { "content-type": "application/json" },
+          }),
+      ),
+    };
+    const fetchFn = buildPluginMcpHttpFetch({
+      resourceUrl: "https://mcp.example.com/mcp",
+      maxResponseBytes: maxBytes,
+    });
+    const response = await fetchFn("https://mcp.example.com/mcp");
+    let overflow: unknown;
+    try {
+      await response.text();
+    } catch (error) {
+      overflow = error;
+    }
+    expect(overflow).toBeInstanceOf(Error);
+    expect((overflow as Error).message).toMatch(/exceeds \d+ bytes/);
+    expect((overflow as Error).message).not.toContain(secret);
+    expect((overflow as Error).message).not.toContain("Bearer");
   });
 });

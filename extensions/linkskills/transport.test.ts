@@ -224,12 +224,11 @@ describe("linkskills transport modes", () => {
       expect(headers.get("authorization")).toBe("Bearer mt-skills-access");
       return new Response(JSON.stringify({ ok: true }), { status: 200 });
     });
-    const resolveMachineTokenAccess = vi.fn(async ({ binding }) => {
-      expect(binding.bindingId).toBe("linkskills-stage");
-      expect(binding.keyRefFingerprint).toMatch(/^[a-f0-9]{64}$/);
+    const resolveMachineTokenAccess = vi.fn(async ({ bindingId }) => {
+      expect(bindingId).toBe("linkskills-stage");
       return {
-        bindingId: binding.bindingId,
-        bindingFingerprint: `fp-${binding.bindingId}`,
+        bindingId,
+        bindingFingerprint: `fp-${bindingId}`,
         accessToken: "mt-skills-access",
         expiresAt: Date.now() + 60_000,
         tokenType: "Bearer" as const,
@@ -275,14 +274,14 @@ describe("linkskills transport modes", () => {
         .mockResolvedValueOnce(new Response(JSON.stringify({ ok: true }), { status: 200 }));
       const invalidateMachineTokenCache = vi.fn();
       let resolveCount = 0;
-      const resolveMachineTokenAccess = vi.fn(async ({ binding, forceRefresh }) => {
+      const resolveMachineTokenAccess = vi.fn(async ({ bindingId, forceRefresh }) => {
         resolveCount += 1;
         if (resolveCount === 2) {
           expect(forceRefresh).toBe(true);
         }
         return {
-          bindingId: binding.bindingId,
-          bindingFingerprint: `fp-${binding.bindingId}`,
+          bindingId,
+          bindingFingerprint: `fp-${bindingId}`,
           accessToken: resolveCount === 1 ? "stale-token" : "fresh-token",
           expiresAt: Date.now() + 60_000,
           tokenType: "Bearer" as const,
@@ -315,8 +314,8 @@ describe("linkskills transport modes", () => {
 
   it("mcp machine_token injects bearer and does not return auth_profile_required", async () => {
     const seenHeaders: Array<Record<string, unknown> | undefined> = [];
-    const resolveMachineTokenAccess = vi.fn(async ({ binding }) => ({
-      bindingId: binding.bindingId,
+    const resolveMachineTokenAccess = vi.fn(async ({ bindingId }) => ({
+      bindingId,
       accessToken: "mt-mcp-skills",
       expiresAt: Date.now() + 60_000,
       tokenType: "Bearer" as const,
@@ -368,14 +367,11 @@ describe("linkskills transport modes", () => {
     expect(result.ok).toBe(true);
     expect(result.errorCode).not.toBe("auth_profile_required");
     expect(seenHeaders[0]).toMatchObject({ Authorization: "Bearer mt-mcp-skills" });
-    expect(resolveMachineTokenAccess.mock.calls[0]![0].binding.clientAssertionKeyPem).toBe(
-      "PEM-SKILLS",
-    );
   });
 
   it("mcp oauth is not overridden by a present machineToken block", async () => {
-    const resolveMachineTokenAccess = vi.fn(async ({ binding }) => ({
-      bindingId: binding.bindingId,
+    const resolveMachineTokenAccess = vi.fn(async ({ bindingId }) => ({
+      bindingId,
       accessToken: "mt-must-not-apply",
       expiresAt: Date.now() + 60_000,
       tokenType: "Bearer" as const,
@@ -463,8 +459,8 @@ describe("linkskills transport modes", () => {
     serverMachineToken: unknown;
     expectSafeMessage?: RegExp;
   }) {
-    const resolveMachineTokenAccess = vi.fn(async ({ binding }) => ({
-      bindingId: binding.bindingId,
+    const resolveMachineTokenAccess = vi.fn(async ({ bindingId }) => ({
+      bindingId,
       accessToken: "mt-plugin-must-not-apply",
       expiresAt: Date.now() + 60_000,
       tokenType: "Bearer" as const,
@@ -582,8 +578,8 @@ describe("linkskills transport modes", () => {
   });
 
   it("mcp conflicting server vs plugin machineToken bindings fail-closes", async () => {
-    const resolveMachineTokenAccess = vi.fn(async ({ binding }) => ({
-      bindingId: binding.bindingId,
+    const resolveMachineTokenAccess = vi.fn(async ({ bindingId }) => ({
+      bindingId,
       accessToken: "mt-must-not-apply",
       expiresAt: Date.now() + 60_000,
       tokenType: "Bearer" as const,
@@ -667,9 +663,9 @@ describe("linkskills transport modes", () => {
 
   it("uses api.machineTokenFacade without local resolveMachineTokenAccess", async () => {
     const fetchImpl = vi.fn(async () => new Response(JSON.stringify({ ok: true }), { status: 200 }));
-    const acquire = vi.fn(async ({ binding }) => ({
-      bindingId: binding.bindingId,
-      bindingFingerprint: `fp-${binding.bindingId}`,
+    const acquire = vi.fn(async ({ bindingId }) => ({
+      bindingId,
+      bindingFingerprint: `fp-${bindingId}`,
       accessToken: "host-injected-skills-token",
       expiresAt: Date.now() + 60_000,
       tokenType: "Bearer" as const,

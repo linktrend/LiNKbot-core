@@ -1,10 +1,11 @@
 import path from "node:path";
 import {
-  collectGrantedMachineTokenBindingIds,
+  collectGrantedMachineTokenBindingRecords,
   createMachineTokenPluginFacade,
   unregisterMachineTokenFacadesForPlugin,
 } from "../agents/machine-token-host.js";
 import type { OpenClawConfig } from "../config/types.openclaw.js";
+import { resolveConfiguredSecretInputString } from "../gateway/resolve-configured-secret-input-string.js";
 import { formatErrorMessage } from "../infra/errors.js";
 import { resolveUserPath } from "../utils.js";
 import { emitPluginAgentEvent } from "./agent-event-emission.js";
@@ -167,8 +168,9 @@ export function createPluginApiFactory(
       !isPluginRegistryRetired(registry) &&
       (isActivatingLoadedRecord() ||
         (isPluginRegistryActivated(registry) && isLoadedRecordInRegistry()));
-    const mcpServers = (params.config as OpenClawConfig).mcp?.servers;
-    const grantedBindingIds = collectGrantedMachineTokenBindingIds({
+    const openClawConfig = params.config as OpenClawConfig;
+    const mcpServers = openClawConfig.mcp?.servers;
+    const grantedRecords = collectGrantedMachineTokenBindingRecords({
       pluginId: record.id,
       pluginConfig: params.pluginConfig,
       ...(mcpServers && typeof mcpServers === "object"
@@ -176,10 +178,25 @@ export function createPluginApiFactory(
         : {}),
     });
     const machineTokenFacade =
-      grantedBindingIds.length > 0
+      grantedRecords.length > 0
         ? createMachineTokenPluginFacade({
             pluginId: record.id,
-            grantedBindingIds,
+            grantedRecords,
+            resolveKeyPem: async ({ bindingId, keyRef }) => {
+              const resolved = await resolveConfiguredSecretInputString({
+                config: openClawConfig,
+                env: process.env,
+                value: keyRef,
+                path: `plugins.entries.${record.id}.machineToken[${bindingId}].clientAssertionKeyRef`,
+              });
+              if (!resolved.value) {
+                throw new Error(
+                  resolved.unresolvedRefReason ??
+                    `Machine-token binding "${bindingId}" clientAssertionKeyRef unresolved`,
+                );
+              }
+              return resolved.value;
+            },
           })
         : undefined;
     return buildPluginApi({

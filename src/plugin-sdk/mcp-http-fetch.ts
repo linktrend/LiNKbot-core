@@ -6,6 +6,7 @@
  */
 export {
   buildMcpHttpFetch as buildPluginMcpHttpFetch,
+  MCP_HTTP_MAX_RESPONSE_BYTES,
   withoutMcpAuthorizationHeader,
   withSameOriginMcpHttpHeaders,
 } from "../agents/mcp-http-fetch.js";

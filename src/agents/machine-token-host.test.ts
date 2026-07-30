@@ -1,22 +1,61 @@
-// Host-owned machine-token facade: construction, grants, isolation, global clear.
+// Host-owned machine-token facade: immutable registry, grants, isolation, smuggle reject.
 import { describe, expect, it, vi } from "vitest";
 import {
+  buildHostMachineTokenBindingFingerprint,
   clearMachineTokenCacheForHost,
   collectGrantedMachineTokenBindingIds,
+  collectGrantedMachineTokenBindingRecords,
   createMachineTokenPluginFacade,
   invalidateMachineTokenCacheForHost,
   resolveMachineTokenAccessForHost,
   unregisterMachineTokenFacadesForPlugin,
-  type MachineTokenBinding,
+  type HostMachineTokenBindingRecord,
+  type MachineTokenKeyRefIdentity,
 } from "./machine-token-host.js";
+import { fingerprintMachineTokenKeyRef } from "./machine-token-fingerprint.js";
 
-function sampleBinding(bindingId: string): MachineTokenBinding {
-  return {
-    bindingId,
-    issuerUrl: "https://issuer.example.test",
-    clientId: `${bindingId}-client`,
-    clientAssertionKeyPem: `PEM-${bindingId}`,
+const KEY_REF: MachineTokenKeyRefIdentity = {
+  source: "env",
+  provider: "default",
+  id: "LINKTREND_BRAIN_ASSERTION_PEM",
+};
+
+function record(
+  bindingId: string,
+  overrides: Partial<HostMachineTokenBindingRecord> = {},
+): HostMachineTokenBindingRecord {
+  const keyRef = overrides.keyRef ?? {
+    ...KEY_REF,
+    id: `${bindingId.toUpperCase().replace(/-/gu, "_")}_PEM`,
   };
+  const keyRefFingerprint = overrides.keyRefFingerprint ?? fingerprintMachineTokenKeyRef(keyRef);
+  const pluginId = overrides.pluginId ?? "linkbrain";
+  const base = {
+    bindingId,
+    issuerUrl: overrides.issuerUrl ?? "https://issuer.example.test",
+    clientId: overrides.clientId ?? `${bindingId}-client`,
+    ...(overrides.audience !== undefined ? { audience: overrides.audience } : {}),
+    ...(overrides.scope !== undefined ? { scope: overrides.scope } : {}),
+    ...(overrides.operations !== undefined ? { operations: overrides.operations } : {}),
+    ...(overrides.scopes !== undefined ? { scopes: overrides.scopes } : {}),
+    ...(overrides.environment !== undefined ? { environment: overrides.environment } : {}),
+    ...(overrides.service !== undefined ? { service: overrides.service } : {}),
+    ...(overrides.discoveryUrl !== undefined ? { discoveryUrl: overrides.discoveryUrl } : {}),
+    ...(overrides.tokenEndpoint !== undefined ? { tokenEndpoint: overrides.tokenEndpoint } : {}),
+    keyRef,
+    keyRefFingerprint,
+    pluginId,
+    domain: overrides.domain ?? pluginId,
+  };
+  return {
+    ...base,
+    bindingFingerprint:
+      overrides.bindingFingerprint ?? buildHostMachineTokenBindingFingerprint(base),
+  };
+}
+
+function resolveKeyPemStub() {
+  return async ({ bindingId }: { bindingId: string }) => `PEM-${bindingId}`;
 }
 
 describe("agents machine-token-host", () => {
@@ -37,15 +76,19 @@ describe("agents machine-token-host", () => {
     }));
     const facade = createMachineTokenPluginFacade({
       pluginId: "linkbrain",
-      grantedBindingIds: ["linkbrain-stage"],
+      grantedRecords: [record("linkbrain-stage")],
+      resolveKeyPem: resolveKeyPemStub(),
       resolveAccess,
     });
 
-    const acquired = await facade.acquire({ binding: sampleBinding("linkbrain-stage") });
+    const acquired = await facade.acquire({ bindingId: "linkbrain-stage" });
     expect(acquired.accessToken).toBe("token-linkbrain-stage");
     expect(resolveAccess).toHaveBeenCalledOnce();
+    expect(resolveAccess.mock.calls[0]?.[0].binding.clientAssertionKeyPem).toBe(
+      "PEM-linkbrain-stage",
+    );
 
-    await expect(facade.acquire({ binding: sampleBinding("linkskills-stage") })).rejects.toThrow(
+    await expect(facade.acquire({ bindingId: "linkskills-stage" })).rejects.toThrow(
       /not granted machine-token binding "linkskills-stage"/,
     );
     expect(() => facade.invalidate("linkskills-stage")).toThrow(
@@ -70,7 +113,8 @@ describe("agents machine-token-host", () => {
     });
     const brain = createMachineTokenPluginFacade({
       pluginId: "linkbrain",
-      grantedBindingIds: ["linkbrain-stage"],
+      grantedRecords: [record("linkbrain-stage", { pluginId: "linkbrain" })],
+      resolveKeyPem: resolveKeyPemStub(),
       resolveAccess,
       invalidateCache: (fingerprint) => {
         invalidated.push(fingerprint);
@@ -92,7 +136,8 @@ describe("agents machine-token-host", () => {
     });
     const skills = createMachineTokenPluginFacade({
       pluginId: "linkskills",
-      grantedBindingIds: ["linkskills-stage"],
+      grantedRecords: [record("linkskills-stage", { pluginId: "linkskills" })],
+      resolveKeyPem: resolveKeyPemStub(),
       resolveAccess,
       invalidateCache: (fingerprint) => {
         invalidated.push(fingerprint);
@@ -113,8 +158,8 @@ describe("agents machine-token-host", () => {
       },
     });
 
-    await brain.acquire({ binding: sampleBinding("linkbrain-stage") });
-    await skills.acquire({ binding: sampleBinding("linkskills-stage") });
+    await brain.acquire({ bindingId: "linkbrain-stage" });
+    await skills.acquire({ bindingId: "linkskills-stage" });
 
     brain.invalidate("linkbrain-stage");
     expect(invalidated).toEqual(["fp-linkbrain-stage"]);
@@ -146,30 +191,37 @@ describe("agents machine-token-host", () => {
     }));
     const facade = createMachineTokenPluginFacade({
       pluginId: "linkbrain",
-      grantedBindingIds: ["linkbrain-stage"],
+      grantedRecords: [record("linkbrain-stage")],
+      resolveKeyPem: resolveKeyPemStub(),
       resolveAccess,
       invalidateCache: (fingerprint) => {
         invalidated.push(fingerprint);
       },
     });
 
-    await facade.acquire({ binding: sampleBinding("linkbrain-stage") });
+    await facade.acquire({ bindingId: "linkbrain-stage" });
     facade.unregister();
     expect(invalidated).toEqual(["fp-linkbrain-stage"]);
     expect(facade.health("linkbrain-stage").registered).toBe(false);
-    await expect(facade.acquire({ binding: sampleBinding("linkbrain-stage") })).rejects.toThrow(
-      /unregistered/,
-    );
+    await expect(facade.acquire({ bindingId: "linkbrain-stage" })).rejects.toThrow(/unregistered/);
     expect(() => facade.invalidate("linkbrain-stage")).toThrow(/unregistered/);
   });
 
   it("rejects empty pluginId or empty grants at construction", () => {
     expect(() =>
-      createMachineTokenPluginFacade({ pluginId: " ", grantedBindingIds: ["a"] }),
+      createMachineTokenPluginFacade({
+        pluginId: " ",
+        grantedRecords: [record("a")],
+        resolveKeyPem: resolveKeyPemStub(),
+      }),
     ).toThrow(/non-empty pluginId/);
     expect(() =>
-      createMachineTokenPluginFacade({ pluginId: "linkbrain", grantedBindingIds: [" ", ""] }),
-    ).toThrow(/at least one grantedBindingId/);
+      createMachineTokenPluginFacade({
+        pluginId: "linkbrain",
+        grantedRecords: [],
+        resolveKeyPem: resolveKeyPemStub(),
+      }),
+    ).toThrow(/at least one granted binding record/);
   });
 
   it("ignores smuggled fetchFn/now on public facade acquire", async () => {
@@ -180,16 +232,18 @@ describe("agents machine-token-host", () => {
       expiresAt: Date.now() + 60_000,
       tokenType: "Bearer" as const,
     }));
+    const granted = record("linkbrain-stage");
     const facade = createMachineTokenPluginFacade({
       pluginId: "linkbrain",
-      grantedBindingIds: ["linkbrain-stage"],
+      grantedRecords: [granted],
+      resolveKeyPem: resolveKeyPemStub(),
       resolveAccess,
     });
     const fetchFn = vi.fn(async () => new Response("bypass"));
     const now = vi.fn(() => 1_700_000_000_000);
 
     await facade.acquire({
-      binding: sampleBinding("linkbrain-stage"),
+      bindingId: "linkbrain-stage",
       // Runtime smuggle: public types omit these keys; host must still drop them.
       fetchFn,
       now,
@@ -200,14 +254,21 @@ describe("agents machine-token-host", () => {
 
     expect(resolveAccess).toHaveBeenCalledOnce();
     const forwarded = resolveAccess.mock.calls[0]?.[0] as Record<string, unknown>;
-    expect(forwarded).toEqual({ binding: sampleBinding("linkbrain-stage") });
+    expect(forwarded).toMatchObject({
+      binding: expect.objectContaining({
+        bindingId: "linkbrain-stage",
+        issuerUrl: granted.issuerUrl,
+        clientId: granted.clientId,
+        clientAssertionKeyPem: "PEM-linkbrain-stage",
+      }),
+    });
     expect(forwarded).not.toHaveProperty("fetchFn");
     expect(forwarded).not.toHaveProperty("now");
     expect(fetchFn).not.toHaveBeenCalled();
     expect(now).not.toHaveBeenCalled();
   });
 
-  it("forwards only binding, signal, and forceRefresh from acquire", async () => {
+  it("forwards only bindingId-derived binding, signal, and forceRefresh from acquire", async () => {
     const resolveAccess = vi.fn(async ({ binding }) => ({
       bindingId: binding.bindingId,
       bindingFingerprint: `fp-${binding.bindingId}`,
@@ -217,19 +278,20 @@ describe("agents machine-token-host", () => {
     }));
     const facade = createMachineTokenPluginFacade({
       pluginId: "linkbrain",
-      grantedBindingIds: ["linkbrain-stage"],
+      grantedRecords: [record("linkbrain-stage")],
+      resolveKeyPem: resolveKeyPemStub(),
       resolveAccess,
     });
     const signal = new AbortController().signal;
 
     await facade.acquire({
-      binding: sampleBinding("linkbrain-stage"),
+      bindingId: "linkbrain-stage",
       signal,
       forceRefresh: true,
     });
 
     expect(resolveAccess).toHaveBeenCalledWith({
-      binding: sampleBinding("linkbrain-stage"),
+      binding: expect.objectContaining({ bindingId: "linkbrain-stage" }),
       signal,
       forceRefresh: true,
     });
@@ -246,7 +308,8 @@ describe("agents machine-token-host", () => {
     }));
     const brainA = createMachineTokenPluginFacade({
       pluginId: "linkbrain",
-      grantedBindingIds: ["linkbrain-stage"],
+      grantedRecords: [record("linkbrain-stage")],
+      resolveKeyPem: resolveKeyPemStub(),
       resolveAccess,
       invalidateCache: (fingerprint) => {
         invalidated.push(fingerprint);
@@ -254,7 +317,8 @@ describe("agents machine-token-host", () => {
     });
     const brainB = createMachineTokenPluginFacade({
       pluginId: "linkbrain",
-      grantedBindingIds: ["linkbrain-other"],
+      grantedRecords: [record("linkbrain-other")],
+      resolveKeyPem: resolveKeyPemStub(),
       resolveAccess,
       invalidateCache: (fingerprint) => {
         invalidated.push(fingerprint);
@@ -262,16 +326,17 @@ describe("agents machine-token-host", () => {
     });
     const skills = createMachineTokenPluginFacade({
       pluginId: "linkskills",
-      grantedBindingIds: ["linkskills-stage"],
+      grantedRecords: [record("linkskills-stage", { pluginId: "linkskills" })],
+      resolveKeyPem: resolveKeyPemStub(),
       resolveAccess,
       invalidateCache: (fingerprint) => {
         invalidated.push(`skills:${fingerprint}`);
       },
     });
 
-    await brainA.acquire({ binding: sampleBinding("linkbrain-stage") });
-    await brainB.acquire({ binding: sampleBinding("linkbrain-other") });
-    await skills.acquire({ binding: sampleBinding("linkskills-stage") });
+    await brainA.acquire({ bindingId: "linkbrain-stage" });
+    await brainB.acquire({ bindingId: "linkbrain-other" });
+    await skills.acquire({ bindingId: "linkskills-stage" });
 
     unregisterMachineTokenFacadesForPlugin("linkbrain");
     expect(invalidated).toEqual(["fp-linkbrain-stage", "fp-linkbrain-other"]);
@@ -281,52 +346,347 @@ describe("agents machine-token-host", () => {
       registered: true,
       granted: true,
     });
-    await expect(skills.acquire({ binding: sampleBinding("linkskills-stage") })).resolves.toMatchObject({
+    await expect(skills.acquire({ bindingId: "linkskills-stage" })).resolves.toMatchObject({
       accessToken: "token",
     });
-    await expect(brainA.acquire({ binding: sampleBinding("linkbrain-stage") })).rejects.toThrow(
-      /unregistered/,
-    );
+    await expect(brainA.acquire({ bindingId: "linkbrain-stage" })).rejects.toThrow(/unregistered/);
   });
 
-  it("collectGrantedMachineTokenBindingIds reads plugin and managed MCP bindings", () => {
+  it("collectGrantedMachineTokenBindingRecords reads plugin and managed MCP bindings", () => {
+    const keyRef = {
+      source: "env" as const,
+      provider: "default",
+      id: "BRAIN_KEY",
+    };
+    const records = collectGrantedMachineTokenBindingRecords({
+      pluginId: "linkbrain",
+      pluginConfig: {
+        machineToken: {
+          bindingId: "linkbrain-stage",
+          issuerUrl: "https://issuer.example.test",
+          clientId: "brain-client",
+          clientAssertionKeyRef: keyRef,
+        },
+        mcpServerName: "linkbrain",
+        environment: "stage",
+      },
+      mcpServers: {
+        linkbrain: {
+          auth: "machine_token",
+          machineToken: {
+            bindingId: "linkbrain-mcp",
+            issuerUrl: "https://issuer.example.test",
+            clientId: "brain-mcp-client",
+            clientAssertionKeyRef: { ...keyRef, id: "BRAIN_MCP_KEY" },
+          },
+        },
+        foreign: {
+          auth: "machine_token",
+          machineToken: {
+            bindingId: "foreign-must-not-grant",
+            issuerUrl: "https://issuer.example.test",
+            clientId: "foreign",
+            clientAssertionKeyRef: { ...keyRef, id: "FOREIGN" },
+          },
+        },
+      },
+    });
+    expect(records.map((r) => r.bindingId).toSorted()).toEqual([
+      "linkbrain-mcp",
+      "linkbrain-stage",
+    ]);
+    expect(records.every((r) => r.pluginId === "linkbrain")).toBe(true);
+    expect(records.find((r) => r.bindingId === "linkbrain-stage")?.environment).toBe("stage");
+    expect(collectGrantedMachineTokenBindingIds({
+      pluginId: "linkbrain",
+      pluginConfig: {
+        machineToken: {
+          bindingId: "linkbrain-stage",
+          issuerUrl: "https://issuer.example.test",
+          clientId: "brain-client",
+          clientAssertionKeyRef: keyRef,
+        },
+      },
+    })).toEqual(["linkbrain-stage"]);
+  });
+
+  it("omits incomplete machineToken blocks that lack issuer/client/keyRef", () => {
     expect(
-      collectGrantedMachineTokenBindingIds({
+      collectGrantedMachineTokenBindingRecords({
         pluginId: "linkbrain",
         pluginConfig: {
           machineToken: { bindingId: "linkbrain-stage" },
-          mcpServerName: "linkbrain",
-        },
-        mcpServers: {
-          linkbrain: {
-            auth: "machine_token",
-            machineToken: { bindingId: "linkbrain-mcp" },
-          },
-          foreign: {
-            auth: "machine_token",
-            machineToken: { bindingId: "foreign-must-not-grant" },
-          },
         },
       }),
-    ).toEqual(expect.arrayContaining(["linkbrain-stage", "linkbrain-mcp"]));
-    expect(
-      collectGrantedMachineTokenBindingIds({
+    ).toEqual([]);
+  });
+
+  describe("adversarial immutable registry scope", () => {
+    const base = record("linkbrain-stage", {
+      audience: "https://audience.example.test",
+      scope: "brain.read",
+      discoveryUrl: "https://issuer.example.test/.well-known/oauth-authorization-server",
+      tokenEndpoint: "https://issuer.example.test/token",
+      environment: "stage",
+      service: "linkbrain",
+    });
+
+    function matchingSmuggle(
+      granted: HostMachineTokenBindingRecord,
+      overrides: Record<string, unknown> = {},
+    ): Record<string, unknown> {
+      return {
+        bindingId: granted.bindingId,
+        issuerUrl: granted.issuerUrl,
+        clientId: granted.clientId,
+        audience: granted.audience,
+        scope: granted.scope,
+        discoveryUrl: granted.discoveryUrl,
+        tokenEndpoint: granted.tokenEndpoint,
+        environment: granted.environment,
+        service: granted.service,
+        keyRef: granted.keyRef,
+        keyRefFingerprint: granted.keyRefFingerprint,
+        pluginId: granted.pluginId,
+        domain: granted.domain,
+        bindingFingerprint: granted.bindingFingerprint,
+        ...overrides,
+      };
+    }
+
+    async function facadeWith(overrides: Partial<HostMachineTokenBindingRecord> = {}) {
+      const resolveAccess = vi.fn(async ({ binding }) => ({
+        bindingId: binding.bindingId,
+        bindingFingerprint: `fp-${binding.bindingId}`,
+        accessToken: "token",
+        expiresAt: Date.now() + 60_000,
+        tokenType: "Bearer" as const,
+      }));
+      const { bindingFingerprint: _ignored, ...baseWithoutFp } = base;
+      const granted = record("linkbrain-stage", { ...baseWithoutFp, ...overrides });
+      const facade = createMachineTokenPluginFacade({
         pluginId: "linkbrain",
-        pluginConfig: {
-          machineToken: { bindingId: "linkbrain-stage" },
-          mcpServerName: "linkbrain",
+        grantedRecords: [granted],
+        resolveKeyPem: resolveKeyPemStub(),
+        resolveAccess,
+      });
+      return { facade, resolveAccess, granted };
+    }
+
+    it("rejects smuggled binding with different issuer", async () => {
+      const { facade, resolveAccess, granted } = await facadeWith();
+      await expect(
+        facade.acquire({
+          bindingId: "linkbrain-stage",
+          binding: matchingSmuggle(granted, {
+            issuerUrl: "https://evil-issuer.example.test",
+            clientAssertionKeyPem: "EVIL-PEM",
+          }),
+        } as Parameters<typeof facade.acquire>[0] & { binding: Record<string, unknown> }),
+      ).rejects.toThrow(/does not match the host registry.*(issuerUrl|clientAssertionKeyPem)/);
+      expect(resolveAccess).not.toHaveBeenCalled();
+    });
+
+    it("rejects smuggled binding with different clientId", async () => {
+      const { facade, resolveAccess, granted } = await facadeWith();
+      await expect(
+        facade.acquire({
+          bindingId: "linkbrain-stage",
+          binding: matchingSmuggle(granted, { clientId: "evil-client" }),
+        } as Parameters<typeof facade.acquire>[0] & { binding: Record<string, unknown> }),
+      ).rejects.toThrow(/clientId/);
+      expect(resolveAccess).not.toHaveBeenCalled();
+    });
+
+    it("rejects smuggled binding with different audience", async () => {
+      const { facade, resolveAccess, granted } = await facadeWith();
+      await expect(
+        facade.acquire({
+          bindingId: "linkbrain-stage",
+          binding: matchingSmuggle(granted, {
+            audience: "https://evil-audience.example.test",
+          }),
+        } as Parameters<typeof facade.acquire>[0] & { binding: Record<string, unknown> }),
+      ).rejects.toThrow(/audience/);
+      expect(resolveAccess).not.toHaveBeenCalled();
+    });
+
+    it("rejects smuggled binding with different scope", async () => {
+      const { facade, resolveAccess, granted } = await facadeWith();
+      await expect(
+        facade.acquire({
+          bindingId: "linkbrain-stage",
+          binding: matchingSmuggle(granted, { scope: "evil.scope" }),
+        } as Parameters<typeof facade.acquire>[0] & { binding: Record<string, unknown> }),
+      ).rejects.toThrow(/scope/);
+      expect(resolveAccess).not.toHaveBeenCalled();
+    });
+
+    it("rejects smuggled binding with different token endpoint", async () => {
+      const { facade, resolveAccess, granted } = await facadeWith();
+      await expect(
+        facade.acquire({
+          bindingId: "linkbrain-stage",
+          binding: matchingSmuggle(granted, {
+            tokenEndpoint: "https://evil.example.test/token",
+          }),
+        } as Parameters<typeof facade.acquire>[0] & { binding: Record<string, unknown> }),
+      ).rejects.toThrow(/tokenEndpoint/);
+      expect(resolveAccess).not.toHaveBeenCalled();
+    });
+
+    it("rejects smuggled binding with different key ref / fingerprint", async () => {
+      const { facade, resolveAccess, granted } = await facadeWith();
+      await expect(
+        facade.acquire({
+          bindingId: "linkbrain-stage",
+          binding: matchingSmuggle(granted, {
+            keyRef: { source: "env", provider: "default", id: "EVIL_KEY" },
+            keyRefFingerprint: fingerprintMachineTokenKeyRef({
+              source: "env",
+              provider: "default",
+              id: "EVIL_KEY",
+            }),
+          }),
+        } as Parameters<typeof facade.acquire>[0] & { binding: Record<string, unknown> }),
+      ).rejects.toThrow(/keyRef|keyRefFingerprint/);
+      expect(resolveAccess).not.toHaveBeenCalled();
+    });
+
+    it("rejects smuggled binding with different pluginId / domain", async () => {
+      const { facade, resolveAccess, granted } = await facadeWith();
+      await expect(
+        facade.acquire({
+          bindingId: "linkbrain-stage",
+          binding: matchingSmuggle(granted, {
+            pluginId: "linkskills",
+            domain: "linkskills",
+          }),
+        } as Parameters<typeof facade.acquire>[0] & { binding: Record<string, unknown> }),
+      ).rejects.toThrow(/pluginId|domain/);
+      expect(resolveAccess).not.toHaveBeenCalled();
+    });
+
+    it("rejects any smuggled PEM even when other fields match", async () => {
+      const { facade, resolveAccess, granted } = await facadeWith();
+      await expect(
+        facade.acquire({
+          bindingId: "linkbrain-stage",
+          binding: matchingSmuggle(granted, {
+            clientAssertionKeyPem: "PLUGIN-SUPPLIED-PEM",
+          }),
+        } as Parameters<typeof facade.acquire>[0] & { binding: Record<string, unknown> }),
+      ).rejects.toThrow(/clientAssertionKeyPem/);
+      expect(resolveAccess).not.toHaveBeenCalled();
+    });
+
+    it("uses host registry material and never plugin-supplied PEM on clean acquire", async () => {
+      const resolveKeyPem = vi.fn(async () => "HOST-RESOLVED-PEM");
+      const resolveAccess = vi.fn(async ({ binding }) => ({
+        bindingId: binding.bindingId,
+        bindingFingerprint: `fp-${binding.bindingId}`,
+        accessToken: "token",
+        expiresAt: Date.now() + 60_000,
+        tokenType: "Bearer" as const,
+      }));
+      const facade = createMachineTokenPluginFacade({
+        pluginId: "linkbrain",
+        grantedRecords: [base],
+        resolveKeyPem,
+        resolveAccess,
+      });
+      await facade.acquire({ bindingId: "linkbrain-stage" });
+      expect(resolveKeyPem).toHaveBeenCalledWith(
+        expect.objectContaining({
+          bindingId: "linkbrain-stage",
+          keyRef: base.keyRef,
+        }),
+      );
+      expect(resolveAccess.mock.calls[0]?.[0].binding.clientAssertionKeyPem).toBe(
+        "HOST-RESOLVED-PEM",
+      );
+      expect(resolveAccess.mock.calls[0]?.[0].binding.issuerUrl).toBe(base.issuerUrl);
+    });
+
+    it("keeps cross-plugin isolation when the same bindingId label is reused", async () => {
+      const resolveAccess = vi.fn(async ({ binding }) => ({
+        bindingId: binding.bindingId,
+        bindingFingerprint: `fp-${binding.clientId}`,
+        accessToken: `token-${binding.clientId}`,
+        expiresAt: Date.now() + 60_000,
+        tokenType: "Bearer" as const,
+      }));
+      const brain = createMachineTokenPluginFacade({
+        pluginId: "linkbrain",
+        grantedRecords: [
+          record("shared-label", {
+            pluginId: "linkbrain",
+            clientId: "brain-client",
+            issuerUrl: "https://brain-issuer.example.test",
+          }),
+        ],
+        resolveKeyPem: resolveKeyPemStub(),
+        resolveAccess,
+      });
+      const skills = createMachineTokenPluginFacade({
+        pluginId: "linkskills",
+        grantedRecords: [
+          record("shared-label", {
+            pluginId: "linkskills",
+            clientId: "skills-client",
+            issuerUrl: "https://skills-issuer.example.test",
+          }),
+        ],
+        resolveKeyPem: resolveKeyPemStub(),
+        resolveAccess,
+      });
+
+      const brainToken = await brain.acquire({ bindingId: "shared-label" });
+      const skillsToken = await skills.acquire({ bindingId: "shared-label" });
+      expect(brainToken.accessToken).toBe("token-brain-client");
+      expect(skillsToken.accessToken).toBe("token-skills-client");
+      expect(resolveAccess.mock.calls[0]?.[0].binding.issuerUrl).toBe(
+        "https://brain-issuer.example.test",
+      );
+      expect(resolveAccess.mock.calls[1]?.[0].binding.issuerUrl).toBe(
+        "https://skills-issuer.example.test",
+      );
+    });
+
+    it("atomically replaces registry on reload and invalidates prior fingerprints", async () => {
+      const invalidated: string[] = [];
+      const resolveAccess = vi.fn(async ({ binding }) => ({
+        bindingId: binding.bindingId,
+        bindingFingerprint: binding.keyRefFingerprint ?? `fp-${binding.clientId}`,
+        accessToken: `token-${binding.clientId}`,
+        expiresAt: Date.now() + 60_000,
+        tokenType: "Bearer" as const,
+      }));
+      const first = createMachineTokenPluginFacade({
+        pluginId: "linkbrain",
+        grantedRecords: [record("linkbrain-stage", { clientId: "client-v1" })],
+        resolveKeyPem: resolveKeyPemStub(),
+        resolveAccess,
+        invalidateCache: (fingerprint) => {
+          invalidated.push(fingerprint);
         },
-        mcpServers: {
-          linkbrain: {
-            auth: "machine_token",
-            machineToken: { bindingId: "linkbrain-mcp" },
-          },
-          foreign: {
-            auth: "machine_token",
-            machineToken: { bindingId: "foreign-must-not-grant" },
-          },
+      });
+      await first.acquire({ bindingId: "linkbrain-stage" });
+      first.unregister();
+
+      const second = createMachineTokenPluginFacade({
+        pluginId: "linkbrain",
+        grantedRecords: [record("linkbrain-stage", { clientId: "client-v2" })],
+        resolveKeyPem: resolveKeyPemStub(),
+        resolveAccess,
+        invalidateCache: (fingerprint) => {
+          invalidated.push(fingerprint);
         },
-      }),
-    ).not.toContain("foreign-must-not-grant");
+      });
+      const acquired = await second.acquire({ bindingId: "linkbrain-stage" });
+      expect(acquired.accessToken).toBe("token-client-v2");
+      expect(invalidated.length).toBeGreaterThanOrEqual(1);
+      await expect(first.acquire({ bindingId: "linkbrain-stage" })).rejects.toThrow(/unregistered/);
+    });
   });
 });

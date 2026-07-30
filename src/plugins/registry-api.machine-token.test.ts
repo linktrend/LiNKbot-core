@@ -3,7 +3,7 @@
  */
 import { describe, expect, it, vi } from "vitest";
 import {
-  collectGrantedMachineTokenBindingIds,
+  collectGrantedMachineTokenBindingRecords,
   createMachineTokenPluginFacade,
   unregisterMachineTokenFacadesForPlugin,
 } from "../agents/machine-token-host.js";
@@ -38,34 +38,41 @@ describe("plugin API machineTokenFacade injection", () => {
       expiresAt: Date.now() + 60_000,
       tokenType: "Bearer" as const,
     }));
-    const grantedBindingIds = collectGrantedMachineTokenBindingIds({
-      pluginId: "linkbrain",
-      pluginConfig: {
-        machineToken: { bindingId: "linkbrain-stage" },
+    const pluginConfig = {
+      machineToken: {
+        bindingId: "linkbrain-stage",
+        issuerUrl: "https://issuer.example.test",
+        clientId: "brain-client",
+        clientAssertionKeyRef: {
+          source: "env",
+          provider: "default",
+          id: "BRAIN_KEY",
+        },
       },
+    };
+    const grantedRecords = collectGrantedMachineTokenBindingRecords({
+      pluginId: "linkbrain",
+      pluginConfig,
     });
     const facade = createMachineTokenPluginFacade({
       pluginId: "linkbrain",
-      grantedBindingIds,
+      grantedRecords,
+      resolveKeyPem: async () => "PEM",
       resolveAccess,
     });
     const api = minimalApi({
       id: "linkbrain",
-      pluginConfig: { machineToken: { bindingId: "linkbrain-stage" } },
+      pluginConfig,
       machineTokenFacade: facade,
     });
 
     expect(api.machineTokenFacade).toBe(facade);
     const acquired = await api.machineTokenFacade!.acquire({
-      binding: {
-        bindingId: "linkbrain-stage",
-        issuerUrl: "https://issuer.example.test",
-        clientId: "brain-client",
-        clientAssertionKeyPem: "PEM",
-      },
+      bindingId: "linkbrain-stage",
     });
     expect(acquired.accessToken).toBe("host-token");
     expect(resolveAccess).toHaveBeenCalledOnce();
+    expect(resolveAccess.mock.calls[0]?.[0].binding.clientAssertionKeyPem).toBe("PEM");
 
     unregisterMachineTokenFacadesForPlugin("linkbrain");
     expect(api.machineTokenFacade!.health("linkbrain-stage").registered).toBe(false);

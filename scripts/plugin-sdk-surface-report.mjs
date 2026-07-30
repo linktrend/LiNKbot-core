@@ -147,7 +147,8 @@ export function readPluginSdkSurfaceBudgets(env = process.env) {
       // +2: structured media placeholder formatter and its text-fact contract.
       // +5: machine-token-runtime consumer types/helpers after host-authority split (was +11).
       // +3: mcp-http-fetch buildPluginMcpHttpFetch + withoutMcpAuthorizationHeader + withSameOriginMcpHttpHeaders.
-      4732,
+      // +1: mcp-http-fetch MCP_HTTP_MAX_RESPONSE_BYTES (Wave 4 bounded MCP bodies).
+      4733,
       env,
     ),
     publicFunctionExports: readPluginSdkSurfaceBudgetEnv(

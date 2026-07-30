@@ -20,10 +20,10 @@ production dependency on the private workspace package.
 | Refresh                     | none (Phase-1)                                                     |
 
 **Repin state:** Platform HEADs `39c46680f058d86484fcb24c25c3463deb9488ae`
-(Wave 2) and `83501b11b78b0c5f46a5c5ef23f48de9f1317468` (Wave 3) failed
-independent verification — do **not** treat either as the frozen pin.
-Behavioral alignment may read current Platform checkout sources, but permanent
-OpenClaw repin awaits a **certified Platform descendant**.
+(Wave 2), `83501b11b78b0c5f46a5c5ef23f48de9f1317468` (Wave 3), and
+`ca027417…` (Wave 4) failed independent verification — do **not** treat any
+as the frozen pin. Behavioral alignment may read current Platform checkout
+sources, but permanent OpenClaw repin awaits a **certified Platform descendant**.
 
 ### Fixture SHA-256 pins (`packages/contracts/fixtures/auth-token-envelope/`)
 

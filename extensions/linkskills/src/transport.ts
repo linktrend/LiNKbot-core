@@ -10,7 +10,6 @@ import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js"
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import {
   fingerprintMachineTokenKeyRef,
-  type MachineTokenBinding,
   type MachineTokenPluginFacade,
   type ResolvedMachineToken,
 } from "openclaw/plugin-sdk/machine-token-runtime";
@@ -74,7 +73,7 @@ type McpToolSession = {
 };
 
 type ResolveMachineTokenAccessFn = (params: {
-  binding: MachineTokenBinding;
+  bindingId: string;
   signal?: AbortSignal;
   forceRefresh?: boolean;
 }) => Promise<ResolvedMachineToken>;
@@ -192,50 +191,15 @@ function createRejectedFakeTransport(safeMessage: string): LinkskillsTransport {
 }
 
 async function resolveMachineTokenBearer(params: {
-  machineToken: LinkskillsMachineTokenConfig;
-  apiConfig: OpenClawPluginApi["config"];
-  env: NodeJS.ProcessEnv;
+  bindingId: string;
   signal?: AbortSignal;
   forceRefresh?: boolean;
   machineTokenFacade: MachineTokenPluginFacade;
-  pathPrefix: string;
 }): Promise<{ value?: string; bindingId?: string; error?: LinkskillsTransportResult }> {
-  const keyResolved = await resolveConfiguredSecretInputString({
-    config: params.apiConfig,
-    env: params.env,
-    value: params.machineToken.clientAssertionKeyRef,
-    path: `${params.pathPrefix}.clientAssertionKeyRef`,
-  });
-  if (keyResolved.unresolvedRefReason || !keyResolved.value) {
-    return {
-      error: {
-        ok: false,
-        retryable: true,
-        terminal: false,
-        errorCode: "credential_unresolved",
-        safeMessage:
-          keyResolved.unresolvedRefReason ??
-          "linkskills machineToken.clientAssertionKeyRef unresolved",
-      },
-    };
-  }
   try {
-    const keyRef = params.machineToken.clientAssertionKeyRef;
-    const binding: MachineTokenBinding = {
-      bindingId: params.machineToken.bindingId,
-      issuerUrl: params.machineToken.issuerUrl,
-      clientId: params.machineToken.clientId,
-      ...(params.machineToken.audience ? { audience: params.machineToken.audience } : {}),
-      ...(params.machineToken.scope ? { scope: params.machineToken.scope } : {}),
-      clientAssertionKeyPem: keyResolved.value,
-      keyRefFingerprint: fingerprintMachineTokenKeyRef({
-        source: keyRef.source,
-        provider: keyRef.provider,
-        id: keyRef.id,
-      }),
-    };
+    // Host owns credential scope — plugins pass only the granted bindingId.
     const resolved = await params.machineTokenFacade.acquire({
-      binding,
+      bindingId: params.bindingId,
       ...(params.signal ? { signal: params.signal } : {}),
       ...(params.forceRefresh ? { forceRefresh: true } : {}),
     });
@@ -276,13 +240,10 @@ async function resolveBearerToken(params: {
       };
     }
     return await resolveMachineTokenBearer({
-      machineToken: params.config.machineToken,
-      apiConfig: params.apiConfig,
-      env: params.env,
+      bindingId: params.config.machineToken.bindingId,
       signal: params.signal,
       forceRefresh: params.forceRefresh,
       machineTokenFacade: params.machineTokenFacade,
-      pathPrefix: "plugins.entries.linkskills.config.machineToken",
     });
   }
   if (params.config.skillsCredential === undefined) {
@@ -493,13 +454,10 @@ async function resolveMcpHeaders(params: {
       };
     }
     const bearer = await resolveMachineTokenBearer({
-      machineToken: selection.machineToken,
-      apiConfig: params.apiConfig,
-      env: params.env,
+      bindingId: selection.machineToken.bindingId,
       signal: params.signal,
       forceRefresh: params.forceRefresh,
       machineTokenFacade: params.machineTokenFacade,
-      pathPrefix: `mcp.servers.machineToken`,
     });
     if (bearer.error) {
       return { headers, authProfileOnly: false, error: bearer.error };
@@ -954,10 +912,11 @@ function createMcpTransport(params: {
 /**
  * Thin local adapter for test injection only.
  *
- * Residual (Lane C/D): production must receive a host-injected
- * `MachineTokenPluginFacade` via plugin runtime API. `createMachineTokenPluginFacade`
- * was removed from the public Plugin SDK; plugins must not import
- * src/agents/machine-token-host (extensions boundary forbids src/agents imports).
+ * Residual: production must receive a host-injected `MachineTokenPluginFacade`
+ * via plugin runtime API. `createMachineTokenPluginFacade` stays host-internal;
+ * plugins must not import src/agents/machine-token-host.
+ *
+ * Acquire shape matches the public facade: `{ bindingId, signal?, forceRefresh? }`.
  */
 function createLocalMachineTokenFacadeAdapter(params: {
   pluginId: string;
@@ -975,21 +934,23 @@ function createLocalMachineTokenFacadeAdapter(params: {
       if (!active) {
         throw new Error(`Machine-token facade for plugin "${params.pluginId}" is unregistered`);
       }
-      if (!grantedBindingIds.has(acquireParams.binding.bindingId)) {
+      const bindingId =
+        typeof acquireParams.bindingId === "string" ? acquireParams.bindingId.trim() : "";
+      if (!bindingId || !grantedBindingIds.has(bindingId)) {
         throw new Error(
-          `Plugin "${params.pluginId}" is not granted machine-token binding "${acquireParams.binding.bindingId}"`,
+          `Plugin "${params.pluginId}" is not granted machine-token binding "${bindingId || "(empty)"}"`,
         );
       }
       const resolved = await params.resolveAccess({
-        binding: acquireParams.binding,
+        bindingId,
         ...(acquireParams.signal ? { signal: acquireParams.signal } : {}),
         ...(acquireParams.forceRefresh !== undefined
           ? { forceRefresh: acquireParams.forceRefresh }
           : {}),
       });
       fingerprintsByBindingId.set(
-        acquireParams.binding.bindingId,
-        resolved.bindingFingerprint ?? `fp-${acquireParams.binding.bindingId}`,
+        bindingId,
+        resolved.bindingFingerprint ?? `fp-${bindingId}`,
       );
       return resolved;
     },

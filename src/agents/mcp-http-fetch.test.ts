@@ -9,6 +9,7 @@ import type { FetchLike } from "@modelcontextprotocol/sdk/shared/transport.js";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   buildMcpHttpFetch,
+  MCP_HTTP_MAX_RESPONSE_BYTES,
   withoutMcpAuthorizationHeader,
   withSameOriginMcpHttpHeaders,
 } from "./mcp-http-fetch.js";
@@ -444,5 +445,130 @@ describe("MCP HTTP fetch helpers", () => {
     });
 
     await fetch("https://mcp.example.com/token", { signal: controller.signal });
+  });
+
+  it("exports the default MCP HTTP response byte cap", () => {
+    expect(MCP_HTTP_MAX_RESPONSE_BYTES).toBe(16 * 1024 * 1024);
+  });
+
+  it("rejects oversized ordinary JSON bodies at the cumulative byte cap", async () => {
+    const secret = "Bearer mcp-oversized-body-token-should-not-leak";
+    // Tiny override keeps the adversarial body small while proving the cap path.
+    const maxBytes = 64;
+    const oversized = `${"x".repeat(maxBytes + 1)}${secret}`;
+    testGlobal[TEST_UNDICI_RUNTIME_DEPS_KEY] = {
+      Agent: TestAgent,
+      EnvHttpProxyAgent: TestEnvHttpProxyAgent,
+      ProxyAgent: TestProxyAgent,
+      fetch: async () =>
+        new Response(oversized, {
+          status: 200,
+          headers: { "content-type": "application/json" },
+        }),
+    };
+    const fetch = buildMcpHttpFetch({
+      resourceUrl: "https://mcp.example.com/mcp",
+      maxResponseBytes: maxBytes,
+    });
+
+    const response = await fetch("https://mcp.example.com/mcp");
+    const error = await captureRejection(response.text());
+    expect(error).toBeInstanceOf(Error);
+    expect((error as Error).message).toMatch(/exceeds \d+ bytes/);
+    expect((error as Error).message).not.toContain(secret);
+    expect((error as Error).message).not.toContain("Bearer");
+  });
+
+  it("aborts never-ending SSE-style streams at the byte cap and runs cleanup", async () => {
+    const maxBytes = 4 * 1024;
+    const secretFrame = `data: {"token":"sse-secret-token-do-not-leak"}\n\n`;
+    let cancelled = false;
+    const source = new ReadableStream<Uint8Array>({
+      pull(controller) {
+        controller.enqueue(new TextEncoder().encode(secretFrame));
+      },
+      cancel() {
+        cancelled = true;
+      },
+    });
+    testGlobal[TEST_UNDICI_RUNTIME_DEPS_KEY] = {
+      Agent: TestAgent,
+      EnvHttpProxyAgent: TestEnvHttpProxyAgent,
+      ProxyAgent: TestProxyAgent,
+      fetch: async () =>
+        new Response(source, {
+          status: 200,
+          headers: { "content-type": "text/event-stream" },
+        }),
+    };
+    const fetch = buildMcpHttpFetch({
+      resourceUrl: "https://mcp.example.com/mcp",
+      maxResponseBytes: maxBytes,
+    });
+
+    const response = await fetch("https://mcp.example.com/mcp");
+    const reader = response.body?.getReader();
+    expect(reader).toBeDefined();
+    let received = 0;
+    let overflow: unknown;
+    for (;;) {
+      try {
+        const result = await reader!.read();
+        if (result.done || !result.value) {
+          break;
+        }
+        received += result.value.byteLength;
+      } catch (error) {
+        overflow = error;
+        break;
+      }
+    }
+
+    expect(received).toBeLessThanOrEqual(maxBytes);
+    expect(overflow).toBeInstanceOf(Error);
+    expect((overflow as Error).message).toMatch(/exceeds \d+ bytes/);
+    expect((overflow as Error).message).not.toContain("sse-secret-token-do-not-leak");
+    expect((overflow as Error).message).not.toContain("Bearer");
+    reader!.releaseLock();
+    expect(cancelled).toBe(true);
+  });
+
+  it("early-rejects declared Content-Length over the MCP response cap", async () => {
+    const maxBytes = 128;
+    const secret = "Authorization: Bearer content-length-secret-token";
+    let bodyCancelled = false;
+    const source = new ReadableStream<Uint8Array>({
+      start(controller) {
+        controller.enqueue(new TextEncoder().encode(secret));
+      },
+      cancel() {
+        bodyCancelled = true;
+      },
+    });
+    testGlobal[TEST_UNDICI_RUNTIME_DEPS_KEY] = {
+      Agent: TestAgent,
+      EnvHttpProxyAgent: TestEnvHttpProxyAgent,
+      ProxyAgent: TestProxyAgent,
+      fetch: async () =>
+        new Response(source, {
+          status: 200,
+          headers: {
+            "content-type": "application/json",
+            "content-length": String(maxBytes + 1),
+          },
+        }),
+    };
+    const fetch = buildMcpHttpFetch({
+      resourceUrl: "https://mcp.example.com/mcp",
+      maxResponseBytes: maxBytes,
+    });
+
+    const error = await captureRejection(fetch("https://mcp.example.com/mcp"));
+    expect(error).toBeInstanceOf(Error);
+    expect((error as Error).message).toBe(`MCP HTTP response exceeds ${maxBytes} bytes`);
+    expect((error as Error).message).not.toContain(secret);
+    expect((error as Error).message).not.toContain("Bearer");
+    expect((error as Error).message).not.toContain("content-length-secret-token");
+    expect(bodyCancelled).toBe(true);
   });
 });
