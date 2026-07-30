@@ -28,21 +28,44 @@ const fetchWithUndiciGuard = async (
 const MCP_HTTP_MAX_REDIRECTS = 20;
 
 /**
- * Cumulative MCP HTTP/SSE/Streamable HTTP response body cap.
+ * Host ceiling for cumulative MCP HTTP/SSE/Streamable HTTP response bodies.
  * Matches the repo's common 16 MiB HTTP response bound; independent of
  * MACHINE_TOKEN_MAX_RESPONSE_BYTES (auth path stays separate).
+ *
+ * This is an enforced maximum, not merely a default: caller
+ * `maxResponseBytes` may only reduce the effective bound.
  */
 export const MCP_HTTP_MAX_RESPONSE_BYTES = 16 * 1024 * 1024;
 
-function resolveMcpHttpMaxResponseBytes(maxResponseBytes?: number): number {
-  if (
-    typeof maxResponseBytes === "number" &&
-    Number.isFinite(maxResponseBytes) &&
-    maxResponseBytes > 0
-  ) {
-    return Math.floor(maxResponseBytes);
+/**
+ * Resolve the effective MCP HTTP response byte bound.
+ *
+ * Contract:
+ * - `undefined` → {@link MCP_HTTP_MAX_RESPONSE_BYTES}
+ * - positive safe integer ≤ host max → that value (caller may only reduce)
+ * - positive safe integer > host max → clamped to {@link MCP_HTTP_MAX_RESPONSE_BYTES}
+ * - zero, negative, fractional, non-finite (`NaN`/`Infinity`), non-integer,
+ *   or unsafe integer → rejected with a clear error (fail closed)
+ *
+ * No env override, plugin bypass, or Brain/Skills special case.
+ */
+export function resolveMcpHttpMaxResponseBytes(maxResponseBytes?: number): number {
+  if (maxResponseBytes === undefined) {
+    return MCP_HTTP_MAX_RESPONSE_BYTES;
   }
-  return MCP_HTTP_MAX_RESPONSE_BYTES;
+  if (
+    typeof maxResponseBytes !== "number" ||
+    !Number.isFinite(maxResponseBytes) ||
+    !Number.isInteger(maxResponseBytes) ||
+    !Number.isSafeInteger(maxResponseBytes) ||
+    maxResponseBytes <= 0
+  ) {
+    throw new Error(
+      "MCP HTTP maxResponseBytes must be a positive safe integer " +
+        `(at most ${MCP_HTTP_MAX_RESPONSE_BYTES} bytes)`,
+    );
+  }
+  return Math.min(maxResponseBytes, MCP_HTTP_MAX_RESPONSE_BYTES);
 }
 
 /** True when a declared Content-Length is present and exceeds the byte cap. */
@@ -149,7 +172,11 @@ export function buildMcpHttpFetch(params: {
   clientKey?: string;
   resourceUrl?: string;
   timeoutMs?: number;
-  /** Override cumulative response body cap (default {@link MCP_HTTP_MAX_RESPONSE_BYTES}). */
+  /**
+   * Optional cumulative response body cap. May only reduce the host ceiling
+   * ({@link MCP_HTTP_MAX_RESPONSE_BYTES}); larger values clamp to that max.
+   * Invalid values (zero/negative/fractional/non-finite/unsafe) throw at build time.
+   */
   maxResponseBytes?: number;
 }): FetchLike {
   const needsCustomDispatcher =

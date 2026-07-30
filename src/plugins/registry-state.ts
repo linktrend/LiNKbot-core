@@ -1,3 +1,4 @@
+import type { MachineTokenFacadeGenerationHandle } from "../agents/machine-token-host.js";
 import type { registerInternalHook } from "../hooks/internal-hooks.js";
 import type { PluginDiagnostic } from "./manifest-types.js";
 import { createModelCatalogRegistrationHandlers } from "./model-catalog-registration.js";
@@ -14,6 +15,8 @@ export type PluginTypedHookPolicy = {
 
 export type PluginSideEffectGuard = {
   active: boolean;
+  /** Candidate/live machine-token generation owned by this registration attempt. */
+  machineTokenGeneration?: MachineTokenFacadeGenerationHandle;
 };
 
 type PluginRegistrationCapabilities = {

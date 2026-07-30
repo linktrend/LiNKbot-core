@@ -1,8 +1,9 @@
 import path from "node:path";
 import {
   collectGrantedMachineTokenBindingRecords,
-  createMachineTokenPluginFacade,
-  unregisterMachineTokenFacadesForPlugin,
+  createMachineTokenFacadeGeneration,
+  destroyMachineTokenFacadeGeneration,
+  publishMachineTokenFacadeGeneration,
 } from "../agents/machine-token-host.js";
 import type { OpenClawConfig } from "../config/types.openclaw.js";
 import { resolveConfiguredSecretInputString } from "../gateway/resolve-configured-secret-input-string.js";
@@ -119,23 +120,71 @@ export function createPluginApiFactory(
   const { resolvePluginRuntime, setPluginRuntimeRecord } = runtimeResolver;
 
   const createPluginSideEffectGuard = (pluginId: string): PluginSideEffectGuard => {
-    const guard = { active: true };
+    const guard: PluginSideEffectGuard = { active: true };
     const guards = pluginSideEffectGuards.get(pluginId) ?? new Set<PluginSideEffectGuard>();
     guards.add(guard);
     pluginSideEffectGuards.set(pluginId, guards);
     return guard;
   };
 
+  /**
+   * Registration failure / stop: destroy only generations owned by this plugin's
+   * guards. Does not blanket-kill an unrelated live generation that a failed
+   * candidate never replaced.
+   */
   const deactivatePluginSideEffectGuards = (pluginId: string): void => {
-    unregisterMachineTokenFacadesForPlugin(pluginId);
     const guards = pluginSideEffectGuards.get(pluginId);
     if (!guards) {
       return;
     }
     for (const guard of guards) {
       guard.active = false;
+      const generation = guard.machineTokenGeneration;
+      if (generation) {
+        destroyMachineTokenFacadeGeneration(generation);
+        guard.machineTokenGeneration = undefined;
+      }
     }
     pluginSideEffectGuards.delete(pluginId);
+  };
+
+  /**
+   * Registration success: atomically publish candidate generations owned by this
+   * plugin's active guards (retires only the prior live generation).
+   */
+  const commitPluginSideEffectGuards = (pluginId: string): void => {
+    const guards = pluginSideEffectGuards.get(pluginId);
+    if (!guards) {
+      return;
+    }
+    for (const guard of guards) {
+      if (!guard.active) {
+        continue;
+      }
+      const generation = guard.machineTokenGeneration;
+      if (generation) {
+        publishMachineTokenFacadeGeneration(generation);
+      }
+    }
+  };
+
+  /**
+   * Non-activating snapshot loads: abandon candidates without publishing so the
+   * process-global live generation is unchanged.
+   */
+  const abandonPluginMachineTokenGenerations = (pluginId: string): void => {
+    const guards = pluginSideEffectGuards.get(pluginId);
+    if (!guards) {
+      return;
+    }
+    for (const guard of guards) {
+      const generation = guard.machineTokenGeneration;
+      if (!generation) {
+        continue;
+      }
+      destroyMachineTokenFacadeGeneration(generation);
+      guard.machineTokenGeneration = undefined;
+    }
   };
 
   const createApi = (
@@ -177,28 +226,30 @@ export function createPluginApiFactory(
         ? { mcpServers: mcpServers as Record<string, unknown> }
         : {}),
     });
-    const machineTokenFacade =
-      grantedRecords.length > 0
-        ? createMachineTokenPluginFacade({
-            pluginId: record.id,
-            grantedRecords,
-            resolveKeyPem: async ({ bindingId, keyRef }) => {
-              const resolved = await resolveConfiguredSecretInputString({
-                config: openClawConfig,
-                env: process.env,
-                value: keyRef,
-                path: `plugins.entries.${record.id}.machineToken[${bindingId}].clientAssertionKeyRef`,
-              });
-              if (!resolved.value) {
-                throw new Error(
-                  resolved.unresolvedRefReason ??
-                    `Machine-token binding "${bindingId}" clientAssertionKeyRef unresolved`,
-                );
-              }
-              return resolved.value;
-            },
-          })
-        : undefined;
+    let machineTokenFacade: OpenClawPluginApi["machineTokenFacade"];
+    if (grantedRecords.length > 0) {
+      const generation = createMachineTokenFacadeGeneration({
+        pluginId: record.id,
+        grantedRecords,
+        resolveKeyPem: async ({ bindingId, keyRef }) => {
+          const resolved = await resolveConfiguredSecretInputString({
+            config: openClawConfig,
+            env: process.env,
+            value: keyRef,
+            path: `plugins.entries.${record.id}.machineToken[${bindingId}].clientAssertionKeyRef`,
+          });
+          if (!resolved.value) {
+            throw new Error(
+              resolved.unresolvedRefReason ??
+                `Machine-token binding "${bindingId}" clientAssertionKeyRef unresolved`,
+            );
+          }
+          return resolved.value;
+        },
+      });
+      sideEffectGuard.machineTokenGeneration = generation.handle;
+      machineTokenFacade = generation.facade;
+    }
     return buildPluginApi({
       id: record.id,
       name: record.name,
@@ -430,5 +481,10 @@ export function createPluginApiFactory(
     });
   };
 
-  return { createApi, deactivatePluginSideEffectGuards };
+  return {
+    createApi,
+    deactivatePluginSideEffectGuards,
+    commitPluginSideEffectGuards,
+    abandonPluginMachineTokenGenerations,
+  };
 }

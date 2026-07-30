@@ -90,7 +90,49 @@ export type MachineTokenPluginFacadeParams = {
   getCached?: typeof getCachedMachineToken;
 };
 
-const activeFacadesByPluginId = new Map<string, Set<MachineTokenPluginFacade>>();
+/**
+ * Opaque ownership handle for one facade generation (candidate or live).
+ *
+ * Cleanup and publish must target this handle — never every facade for a pluginId.
+ */
+export type MachineTokenFacadeGenerationHandle = {
+  readonly pluginId: string;
+  readonly generationId: string;
+};
+
+/** Result of building a candidate generation without publishing it live. */
+export type MachineTokenFacadeGeneration = {
+  readonly handle: MachineTokenFacadeGenerationHandle;
+  readonly facade: MachineTokenPluginFacade;
+};
+
+type MachineTokenFacadeGenerationState = "candidate" | "live" | "retired";
+
+type MachineTokenFacadeGenerationRecord = {
+  handle: MachineTokenFacadeGenerationHandle;
+  facade: MachineTokenPluginFacade;
+  state: MachineTokenFacadeGenerationState;
+  /** Retire this generation's facade (idempotent). */
+  retire: () => void;
+};
+
+/** Live generation only — pluginId → current published generation. */
+const liveGenerationByPluginId = new Map<string, MachineTokenFacadeGenerationRecord>();
+
+/** All non-GC'd generations by opaque id (candidates + live). */
+const generationsById = new Map<string, MachineTokenFacadeGenerationRecord>();
+
+let nextGenerationSeq = 0;
+
+function allocateGenerationId(pluginId: string): string {
+  nextGenerationSeq += 1;
+  return `${pluginId}#${nextGenerationSeq}`;
+}
+
+function isLiveGeneration(handle: MachineTokenFacadeGenerationHandle): boolean {
+  const live = liveGenerationByPluginId.get(handle.pluginId);
+  return live?.handle.generationId === handle.generationId && live.state === "live";
+}
 
 function assertGrantedBinding(
   facade: Pick<MachineTokenPluginFacade, "pluginId" | "grantedBindingIds">,
@@ -345,27 +387,28 @@ function freezeBindingRegistry(
 }
 
 /**
- * Create a binding-scoped machine-token facade for one plugin.
+ * Build a candidate facade generation without changing the live generation.
  *
- * Host/runtime only. Plugins receive the resulting facade; they must not call
- * this constructor or choose arbitrary plugin IDs / grants.
+ * Acquire/invalidate succeed only after {@link publishMachineTokenFacadeGeneration}.
+ * Failure/cancel paths must call {@link destroyMachineTokenFacadeGeneration} so
+ * only this candidate is retired.
  */
-export function createMachineTokenPluginFacade(
+export function createMachineTokenFacadeGeneration(
   params: MachineTokenPluginFacadeParams,
-): MachineTokenPluginFacade {
+): MachineTokenFacadeGeneration {
   const pluginId = params.pluginId.trim();
   if (!pluginId) {
-    throw new Error("createMachineTokenPluginFacade requires a non-empty pluginId");
+    throw new Error("createMachineTokenFacadeGeneration requires a non-empty pluginId");
   }
   if (!params.resolveKeyPem) {
     throw new Error(
-      `createMachineTokenPluginFacade for plugin "${pluginId}" requires resolveKeyPem`,
+      `createMachineTokenFacadeGeneration for plugin "${pluginId}" requires resolveKeyPem`,
     );
   }
   const registry = freezeBindingRegistry(params.grantedRecords, pluginId);
   if (registry.size === 0) {
     throw new Error(
-      `createMachineTokenPluginFacade for plugin "${pluginId}" requires at least one granted binding record`,
+      `createMachineTokenFacadeGeneration for plugin "${pluginId}" requires at least one granted binding record`,
     );
   }
   const grantedBindingIds = new Set(registry.keys());
@@ -374,19 +417,42 @@ export function createMachineTokenPluginFacade(
   const invalidateCache = params.invalidateCache ?? invalidateMachineTokenCacheCore;
   const getCached = params.getCached ?? getCachedMachineToken;
   const resolveKeyPem = params.resolveKeyPem;
-  let active = true;
+  const handle: MachineTokenFacadeGenerationHandle = Object.freeze({
+    pluginId,
+    generationId: allocateGenerationId(pluginId),
+  });
   /** Last acquired binding fingerprint per operator bindingId (cache is fingerprint-keyed). */
   const fingerprintsByBindingId = new Map<string, string>();
+  let retired = false;
+
+  const assertUsable = (): void => {
+    if (retired || !isLiveGeneration(handle)) {
+      throw new Error(
+        `Machine-token facade for plugin "${pluginId}" is unregistered; reload must create a new facade`,
+      );
+    }
+  };
+
+  const retireFacade = (): void => {
+    if (retired) {
+      return;
+    }
+    for (const bindingId of grantedBindingIds) {
+      const fingerprint =
+        fingerprintsByBindingId.get(bindingId) ?? registry.get(bindingId)?.bindingFingerprint;
+      if (fingerprint) {
+        invalidateCache(fingerprint);
+      }
+    }
+    fingerprintsByBindingId.clear();
+    retired = true;
+  };
 
   const facade: MachineTokenPluginFacade = {
     pluginId,
     grantedBindingIds,
     async acquire(acquireParams) {
-      if (!active) {
-        throw new Error(
-          `Machine-token facade for plugin "${pluginId}" is unregistered; reload must create a new facade`,
-        );
-      }
+      assertUsable();
       const bindingId =
         typeof acquireParams.bindingId === "string" ? acquireParams.bindingId.trim() : "";
       if (!bindingId) {
@@ -427,6 +493,8 @@ export function createMachineTokenPluginFacade(
       const binding = assembleBindingFromRecord(record, pem);
       // Public facade deliberately omits fetchFn/now. Even if a caller smuggles
       // those keys at runtime, only binding/signal/forceRefresh reach resolveAccess.
+      // Re-check live ownership after await so a concurrent publish/retire wins.
+      assertUsable();
       const resolved = await resolveAccess({
         binding,
         ...(acquireParams.signal ? { signal: acquireParams.signal } : {}),
@@ -434,6 +502,7 @@ export function createMachineTokenPluginFacade(
           ? { forceRefresh: acquireParams.forceRefresh }
           : {}),
       });
+      assertUsable();
       const fingerprint =
         resolved.bindingFingerprint ??
         record.bindingFingerprint ??
@@ -442,13 +511,10 @@ export function createMachineTokenPluginFacade(
       return resolved;
     },
     invalidate(bindingId) {
-      if (!active) {
-        throw new Error(
-          `Machine-token facade for plugin "${pluginId}" is unregistered; reload must create a new facade`,
-        );
-      }
+      assertUsable();
       assertGrantedBinding(facade, bindingId);
-      const fingerprint = fingerprintsByBindingId.get(bindingId) ?? registry.get(bindingId)?.bindingFingerprint;
+      const fingerprint =
+        fingerprintsByBindingId.get(bindingId) ?? registry.get(bindingId)?.bindingFingerprint;
       if (fingerprint) {
         invalidateCache(fingerprint);
         fingerprintsByBindingId.delete(bindingId);
@@ -456,52 +522,113 @@ export function createMachineTokenPluginFacade(
     },
     health(bindingId): MachineTokenBindingHealth {
       const granted = grantedBindingIds.has(bindingId);
+      const live = !retired && isLiveGeneration(handle);
       const fingerprint =
         fingerprintsByBindingId.get(bindingId) ?? registry.get(bindingId)?.bindingFingerprint;
-      const cachedEntry = granted && active && fingerprint ? getCached(fingerprint) : undefined;
+      const cachedEntry = granted && live && fingerprint ? getCached(fingerprint) : undefined;
       return {
         pluginId,
         bindingId,
         granted,
-        registered: active,
+        registered: live,
         cached: Boolean(cachedEntry),
         ...(cachedEntry ? { expiresAt: cachedEntry.expiresAt } : {}),
       };
     },
     unregister() {
-      if (!active) {
-        return;
-      }
-      for (const bindingId of grantedBindingIds) {
-        const fingerprint =
-          fingerprintsByBindingId.get(bindingId) ?? registry.get(bindingId)?.bindingFingerprint;
-        if (fingerprint) {
-          invalidateCache(fingerprint);
-        }
-      }
-      fingerprintsByBindingId.clear();
-      active = false;
-      const owned = activeFacadesByPluginId.get(pluginId);
-      owned?.delete(facade);
-      if (owned && owned.size === 0) {
-        activeFacadesByPluginId.delete(pluginId);
-      }
+      destroyMachineTokenFacadeGeneration(handle);
     },
   };
 
-  let owned = activeFacadesByPluginId.get(pluginId);
-  if (!owned) {
-    owned = new Set();
-    activeFacadesByPluginId.set(pluginId, owned);
-  }
-  owned.add(facade);
-  return facade;
+  const record: MachineTokenFacadeGenerationRecord = {
+    handle,
+    facade,
+    state: "candidate",
+    retire: retireFacade,
+  };
+  generationsById.set(handle.generationId, record);
+  return { handle, facade };
 }
 
 /**
- * Unregister every active facade for one plugin.
+ * Atomically publish a candidate as the live generation for its plugin.
  *
- * Each facade invalidates its own granted fingerprints. This does **not** call
+ * Retires only the prior live generation (if any). Idempotent when the handle
+ * is already live. No-op when the generation was already destroyed/retired.
+ */
+export function publishMachineTokenFacadeGeneration(
+  handle: MachineTokenFacadeGenerationHandle,
+): void {
+  const generation = generationsById.get(handle.generationId);
+  if (!generation || generation.state === "retired") {
+    return;
+  }
+  if (generation.handle.pluginId !== handle.pluginId) {
+    throw new Error(
+      `Machine-token generation handle pluginId mismatch for "${handle.generationId}"`,
+    );
+  }
+  if (generation.state === "live" && isLiveGeneration(handle)) {
+    return;
+  }
+
+  const prior = liveGenerationByPluginId.get(handle.pluginId);
+  // Swap the live pointer before retiring prior so both generations never mint.
+  liveGenerationByPluginId.set(handle.pluginId, generation);
+  generation.state = "live";
+
+  if (prior && prior.handle.generationId !== handle.generationId) {
+    prior.state = "retired";
+    generationsById.delete(prior.handle.generationId);
+    prior.retire();
+  }
+}
+
+/**
+ * Destroy exactly one generation (candidate or live).
+ *
+ * Idempotent. A stale cleanup for an old generation must not remove a newer
+ * live replacement — only the matching live pointer is cleared.
+ */
+export function destroyMachineTokenFacadeGeneration(
+  handle: MachineTokenFacadeGenerationHandle,
+): void {
+  const generation = generationsById.get(handle.generationId);
+  if (!generation || generation.state === "retired") {
+    return;
+  }
+  if (generation.state === "live") {
+    const live = liveGenerationByPluginId.get(handle.pluginId);
+    if (live?.handle.generationId === handle.generationId) {
+      liveGenerationByPluginId.delete(handle.pluginId);
+    }
+  }
+  generation.state = "retired";
+  generationsById.delete(handle.generationId);
+  generation.retire();
+}
+
+/**
+ * Create a binding-scoped machine-token facade for one plugin and publish it live.
+ *
+ * Host/runtime only. Prefer {@link createMachineTokenFacadeGeneration} +
+ * publish/destroy for registration/reload two-phase replacement. Plugins
+ * receive the resulting facade; they must not call this constructor.
+ */
+export function createMachineTokenPluginFacade(
+  params: MachineTokenPluginFacadeParams,
+): MachineTokenPluginFacade {
+  const created = createMachineTokenFacadeGeneration(params);
+  publishMachineTokenFacadeGeneration(created.handle);
+  return created.facade;
+}
+
+/**
+ * Unregister the live facade generation for one plugin (stop/deactivate/unload).
+ *
+ * Generation-scoped: does not destroy an unrelated candidate that failed to
+ * become live under a different handle path — callers that own candidates must
+ * {@link destroyMachineTokenFacadeGeneration}. Does **not** call
  * `clearMachineTokenCacheForHost` — other plugins' cache entries stay intact.
  */
 export function unregisterMachineTokenFacadesForPlugin(pluginId: string): void {
@@ -509,14 +636,23 @@ export function unregisterMachineTokenFacadesForPlugin(pluginId: string): void {
   if (!trimmed) {
     return;
   }
-  const owned = activeFacadesByPluginId.get(trimmed);
-  if (!owned || owned.size === 0) {
-    return;
+  const live = liveGenerationByPluginId.get(trimmed);
+  if (live) {
+    destroyMachineTokenFacadeGeneration(live.handle);
   }
-  // Copy — facade.unregister mutates the live set.
-  for (const facade of [...owned]) {
-    facade.unregister();
+}
+
+/**
+ * Host/test helper: return the live generation handle for a plugin, if any.
+ */
+export function getLiveMachineTokenFacadeGenerationHandle(
+  pluginId: string,
+): MachineTokenFacadeGenerationHandle | undefined {
+  const trimmed = pluginId.trim();
+  if (!trimmed) {
+    return undefined;
   }
+  return liveGenerationByPluginId.get(trimmed)?.handle;
 }
 
 /**

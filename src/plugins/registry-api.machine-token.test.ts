@@ -1,7 +1,7 @@
 /**
  * Host injects MachineTokenPluginFacade onto OpenClawPluginApi when grants exist.
  */
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   collectGrantedMachineTokenBindingRecords,
   createMachineTokenPluginFacade,
@@ -30,6 +30,10 @@ function minimalApi(params: {
 }
 
 describe("plugin API machineTokenFacade injection", () => {
+  afterEach(() => {
+    unregisterMachineTokenFacadesForPlugin("linkbrain");
+  });
+
   it("exposes host-constructed facade on the plugin API shape", async () => {
     const resolveAccess = vi.fn(async ({ binding }) => ({
       bindingId: binding.bindingId,

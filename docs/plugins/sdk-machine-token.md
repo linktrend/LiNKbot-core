@@ -91,8 +91,12 @@ without grant checks, and global cache clear live in
 `src/agents/machine-token-host.ts`. They are **not** part of the public Plugin
 SDK. External and bundled plugins must not import that module.
 
-On registration and reload the host atomically replaces the per-plugin registry
-and invalidates only the affected binding fingerprints.
+On registration and reload the host builds a **candidate** facade generation,
+registers the plugin against it, then **atomically publishes** that generation
+on success (retiring only the prior live generation). Registration failure or
+cancellation destroys only the candidate; the prior live generation stays
+usable. Stop/deactivate cleanup is generation-scoped and idempotent — a late
+cleanup from an old generation cannot remove a newer replacement.
 
 ## External projection
 
@@ -101,5 +105,22 @@ headers, child-process env, snapshots, diagnostics, or external bundles.
 `bundle-mcp-codex` omit/fail-closes `auth: "machine_token"` servers rather than
 requesting a literal token. External runtimes that cannot call the provider
 seam directly are unsupported for machine-token MCP.
+
+## MCP HTTP fetch ceiling
+
+When plugins build SSE / Streamable HTTP MCP client transports, import
+`openclaw/plugin-sdk/mcp-http-fetch` (`buildPluginMcpHttpFetch`). Cumulative
+response bodies (ordinary JSON, SSE, and Streamable HTTP) are hard-capped at
+`MCP_HTTP_MAX_RESPONSE_BYTES` (16 MiB):
+
+- Omitted `maxResponseBytes` uses the host ceiling.
+- A smaller positive safe integer reduces the effective bound.
+- Values above the host ceiling clamp to `MCP_HTTP_MAX_RESPONSE_BYTES`.
+- Zero, negative, fractional, non-finite, or unsafe integers fail closed at
+  build time.
+
+There is no plugin bypass, environment override, or Brain/Skills special case.
+Overflow errors redact body and token material. Content-Length early reject and
+stream cleanup stay on the same effective bound.
 
 See also: [Plugin SDK subpaths](/plugins/sdk-subpaths), [Runtime helpers](/plugins/sdk-runtime).

@@ -28,11 +28,12 @@ export function createPluginRegistry(registryParams: PluginRegistryParams) {
   const state = createPluginRegistryState(registryParams);
   const registrars = createPluginRegistrars(state);
   const runtimeResolver = createPluginRuntimeResolver(state);
-  const { createApi, deactivatePluginSideEffectGuards } = createPluginApiFactory(
-    state,
-    registrars,
-    runtimeResolver,
-  );
+  const {
+    createApi,
+    deactivatePluginSideEffectGuards,
+    commitPluginSideEffectGuards,
+    abandonPluginMachineTokenGenerations,
+  } = createPluginApiFactory(state, registrars, runtimeResolver);
 
   const rollbackPluginGlobalSideEffects = (pluginId: string) => {
     deactivatePluginSideEffectGuards(pluginId);
@@ -46,10 +47,20 @@ export function createPluginRegistry(registryParams: PluginRegistryParams) {
     registrars.rollbackHooks(pluginId);
   };
 
+  const commitPluginGlobalSideEffects = (pluginId: string, params?: { activate?: boolean }) => {
+    const activate = params?.activate !== false && registryParams.activateGlobalSideEffects !== false;
+    if (activate) {
+      commitPluginSideEffectGuards(pluginId);
+      return;
+    }
+    abandonPluginMachineTokenGenerations(pluginId);
+  };
+
   return {
     registry: state.registry,
     createApi,
     rollbackPluginGlobalSideEffects,
+    commitPluginGlobalSideEffects,
     pushDiagnostic: state.pushDiagnostic,
     registerTool: registrars.registerTool,
     registerChannel: registrars.registerChannel,

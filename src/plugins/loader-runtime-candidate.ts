@@ -532,6 +532,9 @@ export function loadRuntimePluginCandidate(params: {
     registry.plugins.push(record);
     state.seenIds.set(pluginId, candidate.origin);
     transaction.commit({ activate: context.shouldActivate });
+    params.registryBuilder.commitPluginGlobalSideEffects?.(record.id, {
+      activate: context.shouldActivate,
+    });
     if (clearMismatchedQuarantineAfterLoad) {
       // Plugin ids can intentionally shadow an installed source via load.paths.
       // Clear stale install state only after the selected override registers.
