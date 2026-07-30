@@ -12,9 +12,11 @@ tags: [pipeline, ship, pull, cron, acp, cursor, option-a]
 
 # Ship / Pull Clock — Lisa Option A
 
-**IDE Development is the GitOps source of truth.** Lisa’s procedures are consumer/runtime instructions that must faithfully implement the pinned IDE contract (`docs/AUTONOMOUS-GIT-OPERATIONS.md` in the IDE Development repo).
+**IDE Development is the GitOps source of truth.** Lisa’s procedures are consumer/runtime instructions that must faithfully implement the pinned IDE contract on IDE `origin/development` (`docs/AUTONOMOUS-GIT-OPERATIONS.md`, ADR `0003` amendments). Cite that tip — not stale rule copies.
 
-**Open IDE dependency:** [IDE Development issue #23](https://github.com/linktrend/IDE-Development/issues/23) is the in-flight contract for checkpoint-only Ship (Packager opens PRs), Review Packager Tue/Fri **08:00**, and Staging promote Tue/Fri **10:00** Asia/Taipei. Until #23 merges and IDE docs are consistent, this procedure implements that **issue #23 target contract** as the pinned consumer dependency — it must **not** invent local doctrine that replaces IDE Development.
+**Pinned merged contract (already on IDE `development` via GITOPS-01 / PR #19):** checkpoint-only Ship (commit+push → STOP; Packager opens PRs; no Bugbot on Ship); Review Packager Tue/Fri **08:00**; Staging promote Tue/Fri **10:00** Asia/Taipei; Pull skips frozen/reviewed tips.
+
+**Open IDE dependency:** [IDE Development issue #23](https://github.com/linktrend/IDE-Development/issues/23) / draft PR #24 harden the remaining lifecycle + repair-control plane (completion gate, Lisa ACP Repair Dispatcher wiring, leftover contradictions). Until #23 merges, Lisa consumes the **already-merged** AUTONOMOUS contract above and treats #23 as the open repair/lifecycle follow-on — it must **not** invent local doctrine that replaces IDE Development.
 
 **Primary clock:** This procedure. Cursor Automations are **optional backup only**.
 

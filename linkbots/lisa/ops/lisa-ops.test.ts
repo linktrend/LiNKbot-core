@@ -78,7 +78,10 @@ describe("IDE authority", () => {
     assert.doesNotMatch(text, /this file wins/i);
     assert.doesNotMatch(text, /lisa override/i);
     assert.match(text, /IDE Development/i);
+    assert.match(text, /origin\/development|AUTONOMOUS-GIT-OPERATIONS|PR #19|GITOPS-01/i);
     assert.match(text, /issue #23|#23/i);
+    // Checkpoint-only is already merged on IDE development — #23 is follow-on, not the inventing source.
+    assert.match(text, /already (on IDE|merged)|pinned merged contract/i);
   });
 });
 
@@ -672,7 +675,7 @@ describe("Offline recovery planning helper", () => {
 });
 
 describe("Heartbeat/digest GitOps alignment", () => {
-  it("documents Review Packager 08:00 and Staging 10:00 with IDE #23 dependency", () => {
+  it("documents Review Packager 08:00 and Staging 10:00 from merged IDE contract", () => {
     const pipeline = readPersonality("agents/pipeline-status.md");
     const heartbeat = readPersonality("HEARTBEAT.md");
     const digest = readPersonality("agents/morning-digest.md");
@@ -682,5 +685,7 @@ describe("Heartbeat/digest GitOps alignment", () => {
       assert.match(text, /Staging/);
       assert.match(text, /10:00/);
     }
+    assert.match(pipeline, /PR #19|GITOPS-01|origin\/development/i);
+    assert.match(digest, /PR #19|GITOPS-01|origin\/development/i);
   });
 });

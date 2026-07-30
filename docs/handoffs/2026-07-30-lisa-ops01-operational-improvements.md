@@ -109,3 +109,7 @@ Refresh `docs/current-status.md` if Orchestrator (this Lisa session did not edit
 **This correction pass** addresses independent Codex findings without a second SHA-chasing commit: IDE Development remains GitOps SOT (issue #23 consumer dependency); repair dispatcher exact binding + pending hold; Ship/Pull allowlist + Clear/Issues semantics; operational canonical templates + `render-template.ts`; Main Approve binding helpers with store blocked; offline renamed to planning helper; model eval corrected for MiniMax VL-01 vs M3; deploy gate requires core ACP wait first; coordination relay in `LISA-OPS-CORE-PREREQUISITE.md`.
 
 Tip SHA after this correction lands: use `git rev-parse HEAD` on `issue/ocp-lisa-ops01` — do not amend this handoff solely to paste that SHA.
+
+### 2026-07-30 — IDE #23 attribution fix (factual)
+
+Independent IDE investigation: checkpoint-only Ship, Packager 08:00, and Staging 10:00 are **already on IDE `origin/development`** (GITOPS-01 / PR #19). Issue #23 / draft PR #24 remain open for lifecycle/repair-control hardening only. Lisa tip wording was corrected so #23 is not misstated as the inventing source of checkpoint-only. MiniMax investigation confirmed existing eval: do not recommend M3 as `imageModel`; use VL-01 / unset.

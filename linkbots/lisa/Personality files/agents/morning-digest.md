@@ -109,7 +109,7 @@ Review memory/logs and ACP/session state for Cursor-delegated coding, local `Qwe
 
 `read` `/Users/linktrend/.openclaw-lisa/workspace/memory/pipeline-status.md` (or workspace-relative `memory/pipeline-status.md`). Compare its `Cycle date` with today's Asia/Taipei date. Include Ship/Pull lines only when the dates match; never include the metadata line itself. Apply the matching `Staging date` and `Main ready date` checks from `agents/pipeline-status.md` before including those results. Omit stale or undated checkpoint lines. Include exact Ship/Pull/Staging/Main result shapes only. If the file is missing, omit section D rather than inventing Clear.
 
-GitOps alignment (Asia/Taipei): ordinary Ship is **checkpoint-only** (not Review Ready) per **IDE Development issue #23** (open dependency — Lisa implements that pinned target contract as consumer; does not override IDE Development). **Review Packager** Tue/Fri **08:00**. **Staging** Tue/Fri **10:00**. Weekly Main Approve uses numbered plain-English repo list — never ask Carlos for commit SHAs.
+GitOps alignment (Asia/Taipei): ordinary Ship is **checkpoint-only** (not Review Ready) per the **merged** IDE Development contract on `origin/development` (GITOPS-01 / PR #19). Open follow-on [issue #23](https://github.com/linktrend/IDE-Development/issues/23) hardens lifecycle/repair-control — Lisa does not invent doctrine that replaces IDE Development. **Review Packager** Tue/Fri **08:00**. **Staging** Tue/Fri **10:00**. Weekly Main Approve uses numbered plain-English repo list — never ask Carlos for commit SHAs.
 
 ### Template load / fill (deterministic)
 
