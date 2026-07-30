@@ -14,6 +14,12 @@ function stubApi(config: Record<string, unknown> = {}) {
   };
 }
 
+const assertionKeyRef = {
+  source: "env" as const,
+  provider: "default",
+  id: "LINKTREND_BRAIN_ASSERTION_PEM",
+};
+
 const writeArgs = {
   toolName: "brain_capture_batch",
   idempotencyKey: "idem:test-1",
@@ -140,6 +146,23 @@ describe("linkbrain transport modes", () => {
     });
   });
 
+  it("rejects non-HTTPS ingestionEndpoint outside local-test loopback", () => {
+    expect(() =>
+      parseLinkbrainConfig({
+        transportMode: "http",
+        environment: "production",
+        ingestionEndpoint: "http://brain.example.test/ingest",
+      }),
+    ).toThrow(/HTTPS/);
+    expect(() =>
+      parseLinkbrainConfig({
+        transportMode: "http",
+        environment: "production",
+        ingestionEndpoint: "http://10.0.0.5/ingest",
+      }),
+    ).toThrow(/HTTPS/);
+  });
+
   it("mcp mode calls frozen tool names through injected session", async () => {
     const calls: Array<{ name: string; args: Record<string, unknown> }> = [];
     const config = parseLinkbrainConfig({
@@ -231,11 +254,7 @@ describe("linkbrain transport modes", () => {
         bindingId: "linkbrain-stage",
         issuerUrl: "https://issuer.example.test",
         clientId: "brain-client",
-        clientAssertionKeyRef: {
-          source: "env",
-          provider: "default",
-          id: "LINKTREND_BRAIN_ASSERTION_PEM",
-        },
+        clientAssertionKeyRef: assertionKeyRef,
       },
     });
     const transport = resolveLinkbrainTransport({
@@ -251,50 +270,53 @@ describe("linkbrain transport modes", () => {
     expect(fetchImpl).toHaveBeenCalledOnce();
   });
 
-  it("http machineToken 401 invalidates cache and retries once", async () => {
-    const fetchImpl = vi
-      .fn()
-      .mockResolvedValueOnce(new Response("nope", { status: 401 }))
-      .mockResolvedValueOnce(new Response(JSON.stringify({ ok: true }), { status: 200 }));
-    const invalidateMachineTokenCache = vi.fn();
-    let resolveCount = 0;
-    const resolveMachineTokenAccess = vi.fn(async ({ binding, forceRefresh }) => {
-      resolveCount += 1;
-      if (resolveCount === 2) {
-        expect(forceRefresh).toBe(true);
-      }
-      return {
-        bindingId: binding.bindingId,
-        bindingFingerprint: `fp-${binding.bindingId}`,
-        accessToken: resolveCount === 1 ? "stale-token" : "fresh-token",
-        expiresAt: Date.now() + 60_000,
-        tokenType: "Bearer" as const,
-      };
-    });
-    const config = parseLinkbrainConfig({
-      transportMode: "http",
-      ingestionEndpoint: "https://brain.example.test/ingest",
-      machineToken: {
-        bindingId: "linkbrain-stage",
-        issuerUrl: "https://issuer.example.test",
-        clientId: "brain-client",
-        clientAssertionKeyRef: "literal-pem",
-      },
-    });
-    const transport = resolveLinkbrainTransport({
-      api: stubApi(),
-      config,
-      fetchImpl: fetchImpl as unknown as typeof fetch,
-      resolveMachineTokenAccess,
-      invalidateMachineTokenCache,
-    });
-    const result = await transport.write(writeArgs);
-    expect(result.ok).toBe(true);
-    expect(invalidateMachineTokenCache).toHaveBeenCalledWith("fp-linkbrain-stage");
-    expect(fetchImpl).toHaveBeenCalledTimes(2);
-    expect(new Headers(fetchImpl.mock.calls[1]![1]?.headers).get("authorization")).toBe(
-      "Bearer fresh-token",
-    );
+  it("http machineToken 401/403 invalidates cache and retries once", async () => {
+    for (const status of [401, 403] as const) {
+      const fetchImpl = vi
+        .fn()
+        .mockResolvedValueOnce(new Response("nope", { status }))
+        .mockResolvedValueOnce(new Response(JSON.stringify({ ok: true }), { status: 200 }));
+      const invalidateMachineTokenCache = vi.fn();
+      let resolveCount = 0;
+      const resolveMachineTokenAccess = vi.fn(async ({ binding, forceRefresh }) => {
+        resolveCount += 1;
+        if (resolveCount === 2) {
+          expect(forceRefresh).toBe(true);
+        }
+        return {
+          bindingId: binding.bindingId,
+          bindingFingerprint: `fp-${binding.bindingId}`,
+          accessToken: resolveCount === 1 ? "stale-token" : "fresh-token",
+          expiresAt: Date.now() + 60_000,
+          tokenType: "Bearer" as const,
+        };
+      });
+      const config = parseLinkbrainConfig({
+        transportMode: "http",
+        ingestionEndpoint: "https://brain.example.test/ingest",
+        machineToken: {
+          bindingId: "linkbrain-stage",
+          issuerUrl: "https://issuer.example.test",
+          clientId: "brain-client",
+          clientAssertionKeyRef: assertionKeyRef,
+        },
+      });
+      const transport = resolveLinkbrainTransport({
+        api: stubApi(),
+        config,
+        fetchImpl: fetchImpl as unknown as typeof fetch,
+        env: { LINKTREND_BRAIN_ASSERTION_PEM: "PEM-BRAIN" },
+        resolveMachineTokenAccess,
+        invalidateMachineTokenCache,
+      });
+      const result = await transport.write(writeArgs);
+      expect(result.ok).toBe(true);
+      expect(invalidateMachineTokenCache).toHaveBeenCalledWith("fp-linkbrain-stage");
+      expect(fetchImpl).toHaveBeenCalledTimes(2);
+      expect(new Headers(fetchImpl.mock.calls[1]![1]?.headers).get("authorization")).toBe(
+        "Bearer fresh-token",
+      );
+    }
   });
 
   it("mcp machine_token injects bearer and does not return auth_profile_required", async () => {
@@ -311,7 +333,7 @@ describe("linkbrain transport modes", () => {
         bindingId: "linkbrain-stage",
         issuerUrl: "https://issuer.example.test",
         clientId: "brain-client",
-        clientAssertionKeyRef: "literal-pem",
+        clientAssertionKeyRef: assertionKeyRef,
       },
     });
     const transport = resolveLinkbrainTransport({
@@ -327,6 +349,7 @@ describe("linkbrain transport modes", () => {
         },
       }),
       config,
+      env: { LINKTREND_BRAIN_ASSERTION_PEM: "PEM-BRAIN" },
       resolveMachineTokenAccess,
       createMcpSession: async (server) => {
         seenHeaders.push(server.headers);
@@ -344,6 +367,65 @@ describe("linkbrain transport modes", () => {
     expect(seenHeaders[0]).toMatchObject({ Authorization: "Bearer mt-mcp-brain" });
   });
 
+  it("mcp machine_token 401/403 reissues once then succeeds", async () => {
+    let sessionOpens = 0;
+    const resolveMachineTokenAccess = vi.fn(async ({ binding, forceRefresh }) => ({
+      bindingId: binding.bindingId,
+      bindingFingerprint: `fp-${binding.bindingId}`,
+      accessToken: forceRefresh ? "fresh-mcp" : "stale-mcp",
+      expiresAt: Date.now() + 60_000,
+      tokenType: "Bearer" as const,
+    }));
+    const invalidateMachineTokenCache = vi.fn();
+    const config = parseLinkbrainConfig({
+      transportMode: "mcp",
+      machineToken: {
+        bindingId: "linkbrain-stage",
+        issuerUrl: "https://issuer.example.test",
+        clientId: "brain-client",
+        clientAssertionKeyRef: assertionKeyRef,
+      },
+    });
+    const transport = resolveLinkbrainTransport({
+      api: stubApi({
+        mcp: {
+          servers: {
+            linkbrain: {
+              enabled: true,
+              url: "https://mcp.example.test/brain",
+              auth: "machine_token",
+            },
+          },
+        },
+      }),
+      config,
+      env: { LINKTREND_BRAIN_ASSERTION_PEM: "PEM-BRAIN" },
+      resolveMachineTokenAccess,
+      invalidateMachineTokenCache,
+      createMcpSession: async (server) => {
+        sessionOpens += 1;
+        const auth = (server.headers as Record<string, string> | undefined)?.Authorization;
+        return {
+          async callTool() {
+            if (sessionOpens === 1) {
+              const err = new Error("HTTP 401 unauthorized");
+              (err as { status?: number }).status = 401;
+              throw err;
+            }
+            expect(auth).toBe("Bearer fresh-mcp");
+            return { structuredContent: { accepted: true } };
+          },
+          async close() {},
+        };
+      },
+    });
+    const result = await transport.write(writeArgs);
+    expect(result.ok).toBe(true);
+    expect(sessionOpens).toBe(2);
+    expect(invalidateMachineTokenCache).toHaveBeenCalledOnce();
+    expect(resolveMachineTokenAccess).toHaveBeenCalledTimes(2);
+  });
+
   it("mcp oauth is not overridden by a present machineToken block", async () => {
     const resolveMachineTokenAccess = vi.fn(async ({ binding }) => ({
       bindingId: binding.bindingId,
@@ -357,7 +439,7 @@ describe("linkbrain transport modes", () => {
         bindingId: "linkbrain-stage",
         issuerUrl: "https://issuer.example.test",
         clientId: "brain-client",
-        clientAssertionKeyRef: "literal-pem",
+        clientAssertionKeyRef: assertionKeyRef,
       },
     });
     const transport = resolveLinkbrainTransport({
@@ -373,13 +455,14 @@ describe("linkbrain transport modes", () => {
                 bindingId: "linkbrain-stage",
                 issuerUrl: "https://issuer.example.test",
                 clientId: "brain-client",
-                clientAssertionKeyRef: "literal-pem",
+                clientAssertionKeyRef: assertionKeyRef,
               },
             },
           },
         },
       }),
       config,
+      env: { LINKTREND_BRAIN_ASSERTION_PEM: "PEM-BRAIN" },
       resolveMachineTokenAccess,
       createMcpSession: async () => {
         throw new Error("should not open MCP session when oauth auth-profile is required");
@@ -437,13 +520,26 @@ describe("linkbrain transport modes", () => {
     });
   });
 
+  it("rejects literal PEM clientAssertionKeyRef in schema parse", () => {
+    expect(() =>
+      parseLinkbrainConfig({
+        machineToken: {
+          bindingId: "linkbrain-stage",
+          issuerUrl: "https://issuer.example.test",
+          clientId: "brain-client",
+          clientAssertionKeyRef: "-----BEGIN PRIVATE KEY-----\nabc\n-----END PRIVATE KEY-----",
+        },
+      }),
+    ).toThrow(/SecretRef object/);
+  });
+
   it("brain and skills machineToken fixtures use distinct bindingIds", () => {
     const brain = parseLinkbrainConfig({
       machineToken: {
         bindingId: "linkbrain-stage",
         issuerUrl: "https://issuer.example.test",
         clientId: "brain-client",
-        clientAssertionKeyRef: "pem-brain",
+        clientAssertionKeyRef: assertionKeyRef,
       },
     });
     // Skills fixture id must never equal Brain (independent cache domains).

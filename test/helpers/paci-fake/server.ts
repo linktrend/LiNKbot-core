@@ -9,6 +9,10 @@
  * and authenticated introspection via an injected fetch dispatcher.
  *
  * Never contact live Platform. Never print private keys or access tokens.
+ *
+ * Platform repin: frozen authority remains HEAD `0455846487d0…` / schema
+ * `7173b9f9…`. HEAD `39c46680f058…` failed independent verification — awaiting
+ * certified Platform descendant for permanent OpenClaw repin.
  */
 import { randomUUID } from "node:crypto";
 import {
@@ -38,8 +42,44 @@ import {
   DEFAULT_ENDPOINT_PATHS,
   type PaciFakeAuthorizationServerMetadata,
 } from "./metadata.js";
+import {
+  formatScopeString,
+  PaciFakeScopeError,
+  resolveGrantedServiceScopes,
+} from "./scope.js";
 
 export { PACI_FAKE_ACCESS_TOKEN_EXPIRES_IN_SECONDS } from "./constants.js";
+
+/** Domain enum mirrored from Platform `paci_domain`. */
+export type PaciFakeDomain = "lbrain" | "lskills" | "linkplatform";
+
+/**
+ * Introspection authorization policy for a resource-server client.
+ * Caller eligibility is evaluated independently from the token subject / minting client.
+ */
+export type PaciFakeIntrospectionPolicy = {
+  /**
+   * When false, the client may not introspect (exact `{active:false}`).
+   * Must be explicitly true — never a reconstruction default to true.
+   */
+  allowIntrospection: boolean;
+  /** Token-minting client domains this caller may introspect. */
+  allowedTokenDomains: readonly PaciFakeDomain[];
+  /** Token audiences this caller may introspect (set intersection). */
+  allowedTokenAudiences: readonly string[];
+  /** Explicit token-minting client_ids allowed (optional fine grain). */
+  allowedTokenClientIds: readonly string[];
+};
+
+/** Empty deny-all introspection policy (fail closed). */
+export function denyAllIntrospectionPolicy(): PaciFakeIntrospectionPolicy {
+  return {
+    allowIntrospection: false,
+    allowedTokenDomains: [],
+    allowedTokenAudiences: [],
+    allowedTokenClientIds: [],
+  };
+}
 
 /** Test knobs that force non-contract minting for negative proofs. */
 export type PaciFakeMintOverrides = {
@@ -83,10 +123,29 @@ export type PaciFakeHttpFault = {
   errorDescription?: string;
 };
 
+export type PaciFakeRegisterClientInput = {
+  clientId: string;
+  clientPublicKeyPem: string;
+  domain: PaciFakeDomain;
+  /** Authoritative credential serviceScopes (default [domain mapped scope]). */
+  serviceScopes?: string[];
+  audience?: string[];
+  permittedOperations?: string[];
+  actorId?: string;
+  runtimeBindingId?: string;
+  credentialId?: string;
+  /**
+   * Convenience mirror — when true without an explicit policy, grants own-domain
+   * introspection. Prefer `introspectionPolicy` for resource clients.
+   */
+  allowIntrospection?: boolean;
+  introspectionPolicy?: Partial<PaciFakeIntrospectionPolicy>;
+};
+
 export type PaciFakeServerOptions = {
   /** Issuer origin without trailing slash or path (e.g. https://paci.test). */
   issuerUrl: string;
-  /** Expected OAuth client_id. */
+  /** Expected OAuth client_id (primary / minting client). */
   clientId: string;
   /** Client public key used to verify private_key_jwt assertions. */
   clientPublicKeyPem: string;
@@ -123,8 +182,15 @@ export type PaciFakeServerOptions = {
   runtimeBindingId?: string;
   /** Credential id. */
   credentialId?: string;
-  /** Whether this client may introspect (default true). */
+  /** Domain of the primary client (default inferred from serviceScopes). */
+  domain?: PaciFakeDomain;
+  /**
+   * Whether this client may introspect (default true).
+   * Prefer `introspectionPolicy` for resource-server ACL tests.
+   */
   allowIntrospection?: boolean;
+  /** Authoritative introspection policy for the primary client. */
+  introspectionPolicy?: Partial<PaciFakeIntrospectionPolicy>;
   /** Initial mint overrides for negative proofs. */
   mintOverrides?: PaciFakeMintOverrides;
   /** Initial HTTP fault knobs. */
@@ -147,15 +213,21 @@ export type PaciFakeServer = {
   revokeAccessToken: (accessToken: string) => void;
   /** Invalidate every issued access token for this fake. */
   revokeAllAccessTokens: () => void;
-  /** Mark the client suspended so new mints fail. */
-  suspendClient: () => void;
+  /** Mark the primary client suspended so new mints fail. */
+  suspendClient: (clientId?: string) => void;
   /** Clear assertion jti replay set (test isolation). */
   clearAssertionReplay: () => void;
   /** Whether an access token is currently considered active. */
   isAccessTokenActive: (accessToken: string) => boolean;
   /**
+   * Register an additional OAuth client (token-minting or resource-server).
+   * Enables token/resource-client separation and cross-domain ACL counterprobes.
+   */
+  registerClient: (input: PaciFakeRegisterClientInput) => Promise<void>;
+  /**
    * Rotate AS signing keys. New mints use `next`; JWKS publishes both until
-   * `dropPrevious` is true (previous kid removed).
+   * `dropPrevious` is true (previous kid removed). Tokens signed with a dropped
+   * kid introspect inactive (fail closed).
    */
   rotateSigningKeys: (options?: {
     next?: PaciFakeEs256KeyPair;
@@ -174,6 +246,7 @@ export type PaciFakeServer = {
   signClientAssertion: (input: {
     audience: string;
     clientPrivateKeyPem: string;
+    clientId?: string;
     ttlSeconds?: number;
     jti?: string;
     kid?: string;
@@ -181,16 +254,33 @@ export type PaciFakeServer = {
   }) => Promise<string>;
 };
 
+type RegisteredClient = {
+  clientId: string;
+  publicKey: KeyLike | CryptoKey;
+  domain: PaciFakeDomain;
+  serviceScopes: string[];
+  audience: string[];
+  permittedOperations: string[];
+  actorId: string;
+  credentialId: string;
+  runtimeBindingId: string;
+  status: "active" | "disabled";
+  introspectionPolicy: PaciFakeIntrospectionPolicy;
+};
+
 type IssuedToken = {
   accessToken: string;
   clientId: string;
+  clientDomain: PaciFakeDomain;
   jti: string;
+  kid: string;
   actorId: string;
   credentialId: string;
   runtimeBindingId: string;
   issuer: string;
   audience: string[];
   scope: string;
+  serviceScopes: string[];
   iat: number;
   expiresAt: number;
   revoked: boolean;
@@ -201,6 +291,10 @@ type SigningSlot = {
   privateKey: KeyLike | CryptoKey;
   publicJwk: JWK;
 };
+
+/** RFC 4122 UUID (versions 1–8, variant 10xx) — same bar as access-token jti. */
+const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/iu;
 
 function jsonResponse(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
@@ -241,6 +335,97 @@ function rejectForbiddenAssertionHeader(header: Record<string, unknown>): string
   return undefined;
 }
 
+function inferDomain(serviceScopes: readonly string[]): PaciFakeDomain {
+  if (serviceScopes.includes("lbrain")) {
+    return "lbrain";
+  }
+  if (serviceScopes.includes("lskills")) {
+    return "lskills";
+  }
+  return "linkplatform";
+}
+
+function defaultScopesForDomain(domain: PaciFakeDomain): string[] {
+  switch (domain) {
+    case "lbrain":
+      return ["lbrain"];
+    case "lskills":
+      return ["lskills"];
+    case "linkplatform":
+      return ["linkplatform"];
+    default: {
+      const _exhaustive: never = domain;
+      return _exhaustive;
+    }
+  }
+}
+
+function buildIntrospectionPolicy(
+  input: {
+    allowIntrospection?: boolean;
+    introspectionPolicy?: Partial<PaciFakeIntrospectionPolicy>;
+    domain: PaciFakeDomain;
+    clientId: string;
+    audience: readonly string[];
+  },
+): PaciFakeIntrospectionPolicy {
+  const explicit = input.introspectionPolicy;
+  if (explicit) {
+    return {
+      allowIntrospection: explicit.allowIntrospection === true,
+      allowedTokenDomains: [...(explicit.allowedTokenDomains ?? [])],
+      allowedTokenAudiences: [...(explicit.allowedTokenAudiences ?? [])],
+      allowedTokenClientIds: [...(explicit.allowedTokenClientIds ?? [])],
+    };
+  }
+  // Convenience path for primary clients: allowIntrospection defaults true and
+  // grants own-domain / own-audience / own-clientId so existing single-client
+  // tests keep working. Explicit policy always fail-closes empty lists.
+  const allow = input.allowIntrospection !== false;
+  if (!allow) {
+    return denyAllIntrospectionPolicy();
+  }
+  return {
+    allowIntrospection: true,
+    allowedTokenDomains: [input.domain],
+    allowedTokenAudiences: [...input.audience],
+    allowedTokenClientIds: [input.clientId],
+  };
+}
+
+/**
+ * Resource-server caller eligibility — independent of token subject.
+ * Fail closed on any domain / audience / minting-client mismatch.
+ */
+function callerMayIntrospectToken(
+  caller: RegisteredClient,
+  token: IssuedToken,
+): boolean {
+  const policy = caller.introspectionPolicy;
+  if (!policy.allowIntrospection) {
+    return false;
+  }
+  if (!policy.allowedTokenDomains.includes(token.clientDomain)) {
+    return false;
+  }
+  if (policy.allowedTokenAudiences.length > 0) {
+    const tokenAud = new Set(token.audience);
+    if (!policy.allowedTokenAudiences.some((aud) => tokenAud.has(aud))) {
+      return false;
+    }
+  } else {
+    return false;
+  }
+  if (policy.allowedTokenClientIds.length > 0) {
+    if (!policy.allowedTokenClientIds.includes(token.clientId)) {
+      return false;
+    }
+  } else {
+    return false;
+  }
+  return true;
+}
+
 async function sleep(ms: number): Promise<void> {
   await new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -255,16 +440,33 @@ export async function createPaciFakeServer(
   const tokenPath = options.tokenPath ?? DEFAULT_ENDPOINT_PATHS.tokenPath;
   const expiresInSeconds = options.expiresInSeconds ?? PACI_FAKE_ACCESS_TOKEN_EXPIRES_IN_SECONDS;
   const initialServerKeys = options.serverKeys ?? (await createPaciFakeEs256KeyPair());
-  const clientPublicKey = await importSPKI(options.clientPublicKeyPem, PACI_ALG);
   const now = options.now ?? Date.now;
 
-  const actorId = options.actorId ?? `actor-${options.clientId}`;
-  const credentialId = options.credentialId ?? `cred-${options.clientId}`;
-  const runtimeBindingId = options.runtimeBindingId ?? `bind-${options.clientId}`;
-  const audience = [...(options.audience ?? ["linkplatform-api"])];
-  const serviceScopes = [...(options.serviceScopes ?? ["linkplatform"])];
-  const permittedOperations = [...(options.permittedOperations ?? ["read", "execute"])];
-  const allowIntrospection = options.allowIntrospection !== false;
+  const primaryServiceScopes = [...(options.serviceScopes ?? ["linkplatform"])];
+  const primaryAudience = [...(options.audience ?? ["linkplatform-api"])];
+  const primaryDomain = options.domain ?? inferDomain(primaryServiceScopes);
+  const primaryPolicy = buildIntrospectionPolicy({
+    allowIntrospection: options.allowIntrospection,
+    introspectionPolicy: options.introspectionPolicy,
+    domain: primaryDomain,
+    clientId: options.clientId,
+    audience: primaryAudience,
+  });
+
+  const clients = new Map<string, RegisteredClient>();
+  clients.set(options.clientId, {
+    clientId: options.clientId,
+    publicKey: await importSPKI(options.clientPublicKeyPem, PACI_ALG),
+    domain: primaryDomain,
+    serviceScopes: primaryServiceScopes,
+    audience: primaryAudience,
+    permittedOperations: [...(options.permittedOperations ?? ["read", "execute"])],
+    actorId: options.actorId ?? `actor-${options.clientId}`,
+    credentialId: options.credentialId ?? `cred-${options.clientId}`,
+    runtimeBindingId: options.runtimeBindingId ?? `bind-${options.clientId}`,
+    status: "active",
+    introspectionPolicy: primaryPolicy,
+  });
 
   const metadata = buildPaciFakeAuthorizationServerMetadata({
     issuer: issuerUrl,
@@ -281,7 +483,6 @@ export async function createPaciFakeServer(
   const seenAssertionJtis = new Map<string, number>();
   const issuedTokens = new Map<string, IssuedToken>();
   let tokenRequestCount = 0;
-  let clientSuspended = false;
   let mintOverrides: PaciFakeMintOverrides | undefined = options.mintOverrides;
   let httpFault: PaciFakeHttpFault | undefined = options.httpFault;
 
@@ -303,7 +504,7 @@ export async function createPaciFakeServer(
   async function verifyClientAssertion(
     assertion: string,
     expectedAud: string,
-  ): Promise<{ clientId: string; jti: string } | Response> {
+  ): Promise<{ client: RegisteredClient; jti: string } | Response> {
     let header: Record<string, unknown>;
     try {
       header = decodeProtectedHeader(assertion) as Record<string, unknown>;
@@ -329,13 +530,18 @@ export async function createPaciFakeServer(
     }
 
     const clientId = typeof unverified.sub === "string" ? unverified.sub : undefined;
-    if (!clientId || unverified.iss !== clientId || clientId !== options.clientId) {
+    if (!clientId || unverified.iss !== clientId) {
       return oauthError("invalid_client", 401, "iss/sub mismatch");
+    }
+
+    const client = clients.get(clientId);
+    if (!client || client.status !== "active") {
+      return oauthError("invalid_client", 401, "unknown or inactive client");
     }
 
     const nowUnix = Math.floor(now() / 1000);
     try {
-      const result = await jwtVerify(assertion, clientPublicKey, {
+      const result = await jwtVerify(assertion, client.publicKey, {
         algorithms: [PACI_ALG],
         audience: expectedAud,
         clockTolerance: 0,
@@ -356,31 +562,50 @@ export async function createPaciFakeServer(
         return oauthError("invalid_client", 401, "assertion expired");
       }
       const jti = payload.jti;
-      if (typeof jti !== "string" || jti.length === 0) {
-        return oauthError("invalid_client", 401, "missing jti");
+      if (typeof jti !== "string" || !UUID_RE.test(jti)) {
+        return oauthError("invalid_client", 401, "client assertion jti must be an RFC 4122 UUID");
       }
       pruneAssertionJtis(nowUnix);
       if (seenAssertionJtis.has(jti)) {
         return oauthError("invalid_client", 401, "assertion jti replay");
       }
       seenAssertionJtis.set(jti, payload.exp);
-      return { clientId, jti };
+      return { client, jti };
     } catch {
       return oauthError("invalid_client", 401, "invalid client_assertion");
     }
   }
 
-  async function mintAccessToken(clientId: string): Promise<{
-    access_token: string;
-    token_type: "Bearer";
-    expires_in: number;
-  }> {
+  async function mintAccessToken(
+    client: RegisteredClient,
+    requestedScope?: string,
+  ): Promise<
+    | {
+        access_token: string;
+        token_type: "Bearer";
+        expires_in: number;
+      }
+    | Response
+  > {
+    let grantedScopes: readonly string[];
+    try {
+      grantedScopes = resolveGrantedServiceScopes({
+        credentialServiceScopes: client.serviceScopes,
+        requestedScope,
+      });
+    } catch (err) {
+      if (err instanceof PaciFakeScopeError) {
+        return oauthError(err.code, err.httpStatus, err.message);
+      }
+      throw err;
+    }
+
     const issued = normalizeToWholeSecondUtc(now());
     const expires = normalizeToWholeSecondUtc((issued.unixSeconds + expiresInSeconds) * 1000);
     const jti = randomUUID();
     const correlationId = `mint-${randomUUID()}`;
     const overrides = mintOverrides ?? {};
-    const tokenAudience = overrides.audience ?? audience;
+    const tokenAudience = overrides.audience ?? client.audience;
     const claimsIssuer = overrides.claimsIssuer ?? overrides.issuer ?? issuerUrl;
     const jwtIssuer = overrides.issuer ?? issuerUrl;
     const actorKind = overrides.actorKind ?? "service";
@@ -391,17 +616,18 @@ export async function createPaciFakeServer(
           : "org-test"
         : overrides.orgId;
     const nbf = issued.unixSeconds + (overrides.nbfOffsetSeconds ?? 0);
+    const scopeString = formatScopeString(grantedScopes);
 
     const claims: Record<string, unknown> = {
       claimContractVersion: overrides.claimContractVersion ?? PLATFORM_AUTH_CLAIMS_CONTRACT_VERSION,
-      actorId,
+      actorId: client.actorId,
       actorKind,
-      runtimeBindingId,
-      credentialId,
+      runtimeBindingId: client.runtimeBindingId,
+      credentialId: client.credentialId,
       orgId,
       internal: true,
-      serviceScopes: [...serviceScopes],
-      permittedOperations: [...permittedOperations],
+      serviceScopes: [...grantedScopes],
+      permittedOperations: [...client.permittedOperations],
       issuedAt: issued.iso,
       expiresAt: expires.iso,
       issuer: claimsIssuer,
@@ -426,7 +652,7 @@ export async function createPaciFakeServer(
         kid: activeSigning.kid,
       })
       .setIssuer(jwtIssuer)
-      .setSubject(actorId)
+      .setSubject(client.actorId)
       .setAudience([...tokenAudience])
       .setIssuedAt(issued.unixSeconds)
       .setNotBefore(nbf)
@@ -436,14 +662,17 @@ export async function createPaciFakeServer(
 
     issuedTokens.set(accessToken, {
       accessToken,
-      clientId,
+      clientId: client.clientId,
+      clientDomain: client.domain,
       jti,
-      actorId,
-      credentialId,
-      runtimeBindingId,
+      kid: activeSigning.kid,
+      actorId: client.actorId,
+      credentialId: client.credentialId,
+      runtimeBindingId: client.runtimeBindingId,
       issuer: jwtIssuer,
       audience: [...tokenAudience],
-      scope: serviceScopes.join(" "),
+      scope: scopeString,
+      serviceScopes: [...grantedScopes],
       iat: issued.unixSeconds,
       expiresAt: expires.unixSeconds * 1000,
       revoked: false,
@@ -458,9 +687,6 @@ export async function createPaciFakeServer(
 
   async function handleToken(request: Request): Promise<Response> {
     tokenRequestCount += 1;
-    if (clientSuspended) {
-      return oauthError("invalid_client", 401, "client suspended");
-    }
     const contentType = request.headers.get("content-type") ?? "";
     if (!contentType.includes("application/x-www-form-urlencoded")) {
       return oauthError("invalid_request", 400, "expected form body");
@@ -482,7 +708,10 @@ export async function createPaciFakeServer(
       return verified;
     }
 
-    const minted = await mintAccessToken(verified.clientId);
+    const minted = await mintAccessToken(verified.client, form.get("scope") ?? undefined);
+    if (minted instanceof Response) {
+      return minted;
+    }
     const body: Record<string, unknown> = {
       access_token: minted.access_token,
       token_type: minted.token_type,
@@ -505,10 +734,12 @@ export async function createPaciFakeServer(
 
     const verified = await verifyClientAssertion(form.get("client_assertion")!, introspectionUrl);
     if (verified instanceof Response) {
+      // Invalid / unknown / inactive client → 401 (never silent inactive).
       return verified;
     }
 
-    if (!allowIntrospection) {
+    const caller = verified.client;
+    if (!caller.introspectionPolicy.allowIntrospection) {
       return jsonResponse({ active: false });
     }
 
@@ -519,6 +750,24 @@ export async function createPaciFakeServer(
       return jsonResponse({ active: false });
     }
 
+    // Signing-key rotation with dropPrevious → kid absent → fail closed inactive.
+    if (!publishedSigning.has(issued.kid)) {
+      return jsonResponse({ active: false });
+    }
+
+    const mintingClient = clients.get(issued.clientId);
+    if (!mintingClient || mintingClient.status !== "active") {
+      return jsonResponse({ active: false });
+    }
+
+    // Cross-domain / audience / minting-client ACL — fail closed, no disclosure.
+    if (!callerMayIntrospectToken(caller, issued)) {
+      return jsonResponse({ active: false });
+    }
+
+    const expectedScope = formatScopeString(issued.serviceScopes);
+    const scope = issued.scope === expectedScope ? issued.scope : expectedScope;
+
     return jsonResponse({
       active: true,
       iss: issued.issuer,
@@ -527,8 +776,9 @@ export async function createPaciFakeServer(
       exp: Math.floor(issued.expiresAt / 1000),
       iat: issued.iat,
       jti: issued.jti,
+      // Minting client_id — never the resource-server introspection caller.
       client_id: issued.clientId,
-      scope: issued.scope,
+      scope,
       credential_id: issued.credentialId,
       runtime_binding_id: issued.runtimeBindingId,
       token_type: "Bearer",
@@ -607,15 +857,52 @@ export async function createPaciFakeServer(
         issued.revoked = true;
       }
     },
-    suspendClient: () => {
-      clientSuspended = true;
+    suspendClient: (clientId) => {
+      const target = clients.get(clientId ?? options.clientId);
+      if (target) {
+        target.status = "disabled";
+      }
     },
     clearAssertionReplay: () => {
       seenAssertionJtis.clear();
     },
     isAccessTokenActive: (accessToken) => {
       const issued = issuedTokens.get(accessToken);
-      return Boolean(issued && !issued.revoked && issued.expiresAt > now());
+      return Boolean(
+        issued &&
+          !issued.revoked &&
+          issued.expiresAt > now() &&
+          publishedSigning.has(issued.kid),
+      );
+    },
+    async registerClient(input) {
+      if (clients.has(input.clientId)) {
+        throw new Error(`Client already registered: ${input.clientId}`);
+      }
+      const serviceScopes = [
+        ...(input.serviceScopes ?? defaultScopesForDomain(input.domain)),
+      ];
+      const audience = [...(input.audience ?? [`${input.domain}-api`])];
+      const policy = buildIntrospectionPolicy({
+        allowIntrospection: input.allowIntrospection,
+        introspectionPolicy: input.introspectionPolicy,
+        domain: input.domain,
+        clientId: input.clientId,
+        audience,
+      });
+      clients.set(input.clientId, {
+        clientId: input.clientId,
+        publicKey: await importSPKI(input.clientPublicKeyPem, PACI_ALG),
+        domain: input.domain,
+        serviceScopes,
+        audience,
+        permittedOperations: [...(input.permittedOperations ?? ["read", "execute"])],
+        actorId: input.actorId ?? `actor-${input.clientId}`,
+        credentialId: input.credentialId ?? `cred-${input.clientId}`,
+        runtimeBindingId: input.runtimeBindingId ?? `bind-${input.clientId}`,
+        status: "active",
+        introspectionPolicy: policy,
+      });
     },
     async rotateSigningKeys(rotateOptions = {}) {
       const next =
@@ -661,10 +948,11 @@ export async function createPaciFakeServer(
       if (input.kid) {
         header.kid = input.kid;
       }
+      const assertionClientId = input.clientId ?? options.clientId;
       return new SignJWT({})
         .setProtectedHeader(header)
-        .setIssuer(options.clientId)
-        .setSubject(options.clientId)
+        .setIssuer(assertionClientId)
+        .setSubject(assertionClientId)
         .setAudience(input.audience)
         .setIssuedAt(nowUnix)
         .setExpirationTime(nowUnix + ttl)

@@ -1,5 +1,5 @@
 ---
-summary: "Binding-scoped machine-token Plugin SDK facade for client_credentials + private_key_jwt"
+summary: "Host-injected machine-token Plugin SDK facade for client_credentials + private_key_jwt"
 title: "Machine-token runtime"
 sidebarTitle: "Machine-token runtime"
 read_when:
@@ -12,32 +12,40 @@ read_when:
 
 Import from `openclaw/plugin-sdk/machine-token-runtime`.
 
-Plugins receive a **host-injected, binding-scoped** facade. They must not clear
-global process cache or invalidate another plugin's domain.
+Plugins receive a **host-injected, binding-scoped** facade. They must not
+construct facades, choose arbitrary plugin IDs or grants, clear global process
+cache, or invalidate another plugin's domain.
 
-## Public plugin facade
+## Public plugin contract
 
 ```typescript
 import {
-  createMachineTokenPluginFacade,
+  assertMachineTokenIssuerUrl,
   authorizationHeaderFromMachineToken,
-  type MachineTokenBinding,
+  fingerprintMachineTokenKeyRef,
+  type MachineTokenPluginFacade,
 } from "openclaw/plugin-sdk/machine-token-runtime";
 
-const facade = createMachineTokenPluginFacade({
-  pluginId: "linkbrain",
-  grantedBindingIds: ["linkbrain-stage"],
-});
+// Host injects an already identity/binding/domain-scoped facade.
+declare const facade: MachineTokenPluginFacade;
+
+assertMachineTokenIssuerUrl("https://issuer.example.test");
 
 const token = await facade.acquire({
   binding: {
     bindingId: "linkbrain-stage",
     issuerUrl: "https://issuer.example.test",
     clientId: "brain-client",
+    keyRefFingerprint: fingerprintMachineTokenKeyRef({
+      source: "env",
+      provider: "gsm",
+      id: "brain-assertion-key",
+    }),
     clientAssertionKeyPem: resolvedPem, // SecretRef resolved only at this boundary
   },
 });
 
+const headers = authorizationHeaderFromMachineToken(token);
 facade.invalidate("linkbrain-stage");
 const health = facade.health("linkbrain-stage"); // never includes access tokens
 facade.unregister(); // reload / plugin unload
@@ -52,24 +60,29 @@ facade.unregister(); // reload / plugin unload
 | `health`     | Redacted diagnostics (`granted`, `registered`, `cached`, optional `expiresAt`) |
 | `unregister` | Invalidate all granted bindings and fail-close later use                       |
 
-A plugin may operate only bindings listed in `grantedBindingIds`. Calls for
-another domain (for example Skills from Brain) throw.
+A plugin may operate only bindings listed in the host-granted
+`grantedBindingIds`. Calls for another domain (for example Skills from Brain)
+throw.
 
 Private-key material must arrive as already-resolved PEM from a SecretRef /
 file / injected key at the trusted boundary. Do not put literal PEM in config
 docs, templates, or diagnostics.
 
-## Host / test helpers
+### Public exports
 
-These remain available for host runtime and tests. Plugins must not use them as
-the primary API:
-
-- `resolveMachineTokenAccessForHost`
-- `invalidateMachineTokenCacheForHost`
-- `clearMachineTokenCacheForHost` — clears **all** process cache; never from plugins
-- `withMachineTokenBearer`
-- `assertMachineTokenIssuerUrl` / `buildMachineTokenDiscoveryUrl`
+- Types: `MachineTokenBinding`, `ResolvedMachineToken`, `MachineTokenPluginFacade`,
+  `MachineTokenBindingHealth`, `MachineTokenKeyRefIdentity`
+- `assertMachineTokenIssuerUrl` — validate issuer URL shape for binding config
 - `authorizationHeaderFromMachineToken`
+- `fingerprintMachineTokenKeyRef` — for local binding assembly when the host
+  does not already stamp `keyRefFingerprint`
+
+## Host-internal controls
+
+Facade construction, grant selection, raw resolution, per-binding invalidation
+without grant checks, and global cache clear live in
+`src/agents/machine-token-host.ts`. They are **not** part of the public Plugin
+SDK. External and bundled plugins must not import that module.
 
 ## External projection
 

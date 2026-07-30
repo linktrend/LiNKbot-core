@@ -46,7 +46,7 @@
     },
     "machineToken": {
       "label": "Machine Token Binding",
-      "help": "Optional client_credentials + private_key_jwt binding. When set, HTTP uses machine-token instead of ingestionCredential. bindingId must not equal Skills bindingId."
+      "help": "Optional client_credentials + private_key_jwt binding. When set, HTTP uses machine-token instead of ingestionCredential. clientAssertionKeyRef must be a SecretRef object (no literal PEM/JWK/env/CLI strings). bindingId must not equal Skills bindingId. issuerUrl and endpoints require HTTPS outside explicit local-test loopback."
     },
     "redactionPolicyVersion": {
       "label": "Redaction Policy Version",
@@ -110,7 +110,7 @@
           "clientId": { "type": "string", "minLength": 1 },
           "audience": { "type": "string" },
           "scope": { "type": "string" },
-          "clientAssertionKeyRef": { "$ref": "#/$defs/secretInput" }
+          "clientAssertionKeyRef": { "$ref": "#/$defs/secretRef" }
         }
       }
     },

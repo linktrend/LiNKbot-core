@@ -7,6 +7,9 @@
  * - @linktrend/platform-contracts@0.3.0
  * - schema SHA-256 7173b9f9bca59ce8a0e3e3dc2b78b680dd07fdd2451215e3ecd97ff3dd463eed
  *
+ * HEAD 39c46680f058d86484fcb24c25c3463deb9488ae failed independent verification —
+ * awaiting certified Platform descendant for permanent OpenClaw repin.
+ *
  * Keep in lockstep with LiNKplatform/packages/paci/src/constants.ts.
  */
 

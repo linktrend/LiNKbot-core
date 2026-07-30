@@ -64,7 +64,7 @@ const MACHINE_TOKEN = {
   bindingId: "binding-skills",
   issuerUrl: "https://paci.example",
   clientId: "skills-client",
-  scope: "skills.read",
+  scope: "lskills",
   clientAssertionKeyRef: {
     source: "env" as const,
     provider: "default",
@@ -108,7 +108,7 @@ describe("mcp transport machine-token wiring", () => {
           bindingId: "binding-skills",
           issuerUrl: "https://paci.example",
           clientId: "skills-client",
-          scope: "skills.read",
+          scope: "lskills",
         }),
       }),
     );
@@ -150,6 +150,8 @@ describe("mcp transport machine-token wiring", () => {
         }),
       }),
     );
+    // Mint/discovery must not receive the general MCP resource fetch as authFetchFn.
+    expect(machineTokenBearerMock.mock.calls[0]?.[0]).not.toHaveProperty("authFetchFn");
     expect(oauthBearerMock).not.toHaveBeenCalled();
   });
 

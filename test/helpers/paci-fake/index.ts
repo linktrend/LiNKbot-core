@@ -29,8 +29,19 @@ export {
 
 export {
   createPaciFakeServer,
+  denyAllIntrospectionPolicy,
+  type PaciFakeDomain,
   type PaciFakeHttpFault,
+  type PaciFakeIntrospectionPolicy,
   type PaciFakeMintOverrides,
+  type PaciFakeRegisterClientInput,
   type PaciFakeServer,
   type PaciFakeServerOptions,
 } from "./server.js";
+
+export {
+  formatScopeString,
+  parseRequestedScopes,
+  PaciFakeScopeError,
+  resolveGrantedServiceScopes,
+} from "./scope.js";

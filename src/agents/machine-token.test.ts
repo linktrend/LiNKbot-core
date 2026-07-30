@@ -17,7 +17,6 @@ import {
   clearMachineTokenCache,
   invalidateMachineTokenCache,
   resolveMachineTokenAccess,
-  validateMachineTokenAuthorizationServerMetadata,
 } from "./machine-token.js";
 
 const ISSUER = "https://paci.test";
@@ -33,7 +32,7 @@ async function createBinding(
       bindingId: "binding-brain",
       issuerUrl: ISSUER,
       clientId: CLIENT_ID,
-      scope: "brain.read",
+      // Omit scope → paci-fake grants the full credential serviceScopes set.
       clientAssertionKeyPem: keys.privateKeyPem,
       ...overrides,
     },
@@ -383,10 +382,10 @@ describe("machine-token binding fingerprint isolation", () => {
       clientId: CLIENT_ID,
       clientAssertionKeyPem: keys.privateKeyPem,
       keyRefFingerprint: keyRefA,
-      scope: "brain.read",
+      scope: "lbrain",
     };
     const rotatedKey: MachineTokenBinding = { ...base, keyRefFingerprint: keyRefB };
-    const rotatedScope: MachineTokenBinding = { ...base, scope: "brain.write" };
+    const rotatedScope: MachineTokenBinding = { ...base, scope: "linkplatform" };
     expect(buildMachineTokenBindingFingerprint(base)).not.toBe(
       buildMachineTokenBindingFingerprint(rotatedKey),
     );
@@ -398,6 +397,8 @@ describe("machine-token binding fingerprint isolation", () => {
       issuerUrl: ISSUER,
       clientId: CLIENT_ID,
       clientPublicKeyPem: keys.publicKeyPem,
+      serviceScopes: ["lbrain", "linkplatform"],
+      domain: "lbrain",
     });
     const first = await resolveMachineTokenAccess({ binding: base, fetchFn: fake.fetchFn });
     invalidateMachineTokenCache(base);
@@ -410,65 +411,21 @@ describe("machine-token binding fingerprint isolation", () => {
     const cachedOld = await resolveMachineTokenAccess({ binding: base, fetchFn: fake.fetchFn });
     expect(cachedOld.accessToken).not.toBe(afterKey.accessToken);
     expect(fake.tokenRequestCount()).toBe(3);
+
+    // Scope rotation also changes fingerprint independently of keyRef.
+    invalidateMachineTokenCache(rotatedKey);
+    const afterScope = await resolveMachineTokenAccess({
+      binding: rotatedScope,
+      fetchFn: fake.fetchFn,
+    });
+    expect(afterScope.accessToken).not.toBe(afterKey.accessToken);
+    expect(afterScope.bindingFingerprint).not.toBe(afterKey.bindingFingerprint);
   });
 });
 
-describe("machine-token frozen metadata + network policy", () => {
-  it("rejects authorization_endpoint, non-empty response_types, and missing ES256 when advertised", () => {
-    expect(() =>
-      validateMachineTokenAuthorizationServerMetadata({
-        issuerUrl: ISSUER,
-        metadata: {
-          issuer: ISSUER,
-          token_endpoint: `${ISSUER}/oauth/token`,
-          authorization_endpoint: `${ISSUER}/authorize`,
-          grant_types_supported: ["client_credentials"],
-          token_endpoint_auth_methods_supported: ["private_key_jwt"],
-          response_types_supported: [],
-        },
-      }),
-    ).toThrow(/authorization_endpoint/u);
-
-    expect(() =>
-      validateMachineTokenAuthorizationServerMetadata({
-        issuerUrl: ISSUER,
-        metadata: {
-          issuer: ISSUER,
-          token_endpoint: `${ISSUER}/oauth/token`,
-          grant_types_supported: ["client_credentials"],
-          token_endpoint_auth_methods_supported: ["private_key_jwt"],
-          response_types_supported: ["code"],
-        },
-      }),
-    ).toThrow(/response_types_supported must be empty/u);
-
-    expect(() =>
-      validateMachineTokenAuthorizationServerMetadata({
-        issuerUrl: ISSUER,
-        metadata: {
-          issuer: ISSUER,
-          token_endpoint: `${ISSUER}/oauth/token`,
-          grant_types_supported: ["client_credentials"],
-          token_endpoint_auth_methods_supported: ["private_key_jwt"],
-          token_endpoint_auth_signing_alg_values_supported: ["RS256"],
-          response_types_supported: [],
-        },
-      }),
-    ).toThrow(/ES256/u);
-
-    expect(() =>
-      validateMachineTokenAuthorizationServerMetadata({
-        issuerUrl: ISSUER,
-        metadata: {
-          issuer: ISSUER,
-          token_endpoint: "https://other.test/oauth/token",
-          grant_types_supported: ["client_credentials"],
-          token_endpoint_auth_methods_supported: ["private_key_jwt"],
-          response_types_supported: [],
-        },
-      }),
-    ).toThrow(/share the issuer origin/u);
-  });
+describe("machine-token network policy", () => {
+  // Soft/incomplete metadata rejection cases live in machine-token-discovery.test.ts
+  // (exact Phase-1 RFC 8414 fixtures). Keep only network policy here.
 
   it("requires HTTPS except explicit local-test loopback HTTP", () => {
     expect(isMachineTokenLocalTestLoopbackHost("127.0.0.1")).toBe(true);

@@ -1,11 +1,14 @@
 /** Linkbrain plugin config (§12.1 / §12.2). */
 
-type LinkbrainSecretRef = {
+import { assertMachineTokenIssuerUrl } from "openclaw/plugin-sdk/machine-token-runtime";
+
+export type LinkbrainSecretRef = {
   source: "env" | "file" | "exec";
   provider: string;
   id: string;
 };
 
+/** Credential fields may still accept a resolved string or SecretRef. */
 export type LinkbrainSecretInput = string | LinkbrainSecretRef;
 
 type LinkbrainEnvironment = "test" | "stage" | "production";
@@ -19,7 +22,8 @@ export type LinkbrainMachineTokenConfig = {
   clientId: string;
   audience?: string;
   scope?: string;
-  clientAssertionKeyRef: LinkbrainSecretInput;
+  /** SecretRef only — never literal PEM/JWK/env/CLI strings in config. */
+  clientAssertionKeyRef: LinkbrainSecretRef;
 };
 
 export type LinkbrainConfig = {
@@ -79,6 +83,53 @@ function readPositiveInt(value: unknown, fallback: number, minimum: number): num
   return value;
 }
 
+/** Explicit local-test loopback only — never private LAN/VPC ranges. */
+export function isLinkbrainLocalTestLoopbackHost(hostname: string): boolean {
+  const host = hostname
+    .trim()
+    .toLowerCase()
+    .replace(/^\[|\]$/gu, "");
+  return host === "localhost" || host === "127.0.0.1" || host === "::1";
+}
+
+/**
+ * Require HTTPS for remote endpoints. HTTP is allowed only for explicit
+ * local-test loopback (localhost / 127.0.0.1 / ::1). Private networks are not
+ * broadly allowed for production PACI/MCP/HTTP endpoints.
+ */
+export function assertLinkbrainRemoteHttpsUrl(
+  urlString: string,
+  fieldName: string,
+  localTest?: boolean,
+): URL {
+  let url: URL;
+  try {
+    url = new URL(urlString);
+  } catch (cause) {
+    throw new Error(`linkbrain: ${fieldName} must be a valid absolute URL`, { cause });
+  }
+  if (url.protocol !== "https:" && url.protocol !== "http:") {
+    throw new Error(`linkbrain: ${fieldName} must use http or https`);
+  }
+  if (url.username || url.password) {
+    throw new Error(`linkbrain: ${fieldName} must not include userinfo`);
+  }
+  const loopback = isLinkbrainLocalTestLoopbackHost(url.hostname);
+  if (url.protocol === "http:") {
+    if (localTest !== true || !loopback) {
+      throw new Error(
+        `linkbrain: ${fieldName} must use HTTPS (HTTP allowed only for explicit local-test loopback)`,
+      );
+    }
+  }
+  if (localTest !== true && loopback) {
+    throw new Error(
+      `linkbrain: ${fieldName} must not target loopback outside explicit local-test mode`,
+    );
+  }
+  return url;
+}
+
 function parseSecretInput(value: unknown, fieldName: string): LinkbrainSecretInput | undefined {
   if (value === undefined) {
     return undefined;
@@ -89,6 +140,29 @@ function parseSecretInput(value: unknown, fieldName: string): LinkbrainSecretInp
   if (!isRecord(value)) {
     throw new Error(`linkbrain: ${fieldName} must be a string or SecretRef object`);
   }
+  return parseSecretRefObject(value, fieldName);
+}
+
+/**
+ * Accept only supported SecretRef objects. Reject literal strings (including
+ * PEM/JWK-looking values), env projections into config, and CLI literals.
+ */
+function parseSecretRefOnly(value: unknown, fieldName: string): LinkbrainSecretRef {
+  if (typeof value === "string") {
+    throw new Error(
+      `linkbrain: ${fieldName} must be a SecretRef object (literal strings, PEM/JWK, env projections, and CLI literals are rejected)`,
+    );
+  }
+  if (!isRecord(value)) {
+    throw new Error(`linkbrain: ${fieldName} must be a SecretRef object`);
+  }
+  return parseSecretRefObject(value, fieldName);
+}
+
+function parseSecretRefObject(
+  value: Record<string, unknown>,
+  fieldName: string,
+): LinkbrainSecretRef {
   const source = value.source;
   const provider = value.provider;
   const id = value.id;
@@ -122,6 +196,7 @@ function parseNonEmptyString(value: unknown, fieldName: string): string {
  */
 export function parseLinkbrainMachineToken(
   value: unknown,
+  options?: { localTest?: boolean },
 ): LinkbrainMachineTokenConfig | undefined {
   if (value === undefined || value === null) {
     return undefined;
@@ -129,17 +204,25 @@ export function parseLinkbrainMachineToken(
   if (!isRecord(value)) {
     throw new Error("linkbrain: machineToken must be an object");
   }
-  const clientAssertionKeyRef = parseSecretInput(
+  const clientAssertionKeyRef = parseSecretRefOnly(
     value.clientAssertionKeyRef,
     "machineToken.clientAssertionKeyRef",
   );
-  if (clientAssertionKeyRef === undefined) {
-    throw new Error("linkbrain: machineToken.clientAssertionKeyRef is required");
+  const bindingId = parseNonEmptyString(value.bindingId, "machineToken.bindingId");
+  const clientId = parseNonEmptyString(value.clientId, "machineToken.clientId");
+  const issuerUrl = parseNonEmptyString(value.issuerUrl, "machineToken.issuerUrl");
+  try {
+    assertMachineTokenIssuerUrl(issuerUrl, options?.localTest);
+  } catch (error) {
+    throw new Error(
+      `linkbrain: machineToken.issuerUrl invalid: ${error instanceof Error ? error.message : "rejected"}`,
+      { cause: error },
+    );
   }
   const binding: LinkbrainMachineTokenConfig = {
-    bindingId: parseNonEmptyString(value.bindingId, "machineToken.bindingId"),
-    issuerUrl: parseNonEmptyString(value.issuerUrl, "machineToken.issuerUrl"),
-    clientId: parseNonEmptyString(value.clientId, "machineToken.clientId"),
+    bindingId,
+    issuerUrl,
+    clientId,
     clientAssertionKeyRef,
   };
   if (typeof value.audience === "string" && value.audience.length > 0) {
@@ -171,10 +254,15 @@ function parseTransportMode(value: unknown): LinkbrainTransportMode {
  */
 export function parseLinkbrainConfig(value: unknown): LinkbrainConfig {
   const raw = isRecord(value) ? value : {};
+  const environment = parseEnvironment(raw.environment);
+  const localTest = environment === "test";
   const ingestionEndpoint =
     typeof raw.ingestionEndpoint === "string" && raw.ingestionEndpoint.length > 0
       ? raw.ingestionEndpoint
       : undefined;
+  if (ingestionEndpoint) {
+    assertLinkbrainRemoteHttpsUrl(ingestionEndpoint, "ingestionEndpoint", localTest);
+  }
   const redactionPolicyVersion =
     typeof raw.redactionPolicyVersion === "string" && raw.redactionPolicyVersion.length > 0
       ? raw.redactionPolicyVersion
@@ -183,7 +271,7 @@ export function parseLinkbrainConfig(value: unknown): LinkbrainConfig {
     typeof raw.mcpServerName === "string" && raw.mcpServerName.length > 0
       ? raw.mcpServerName
       : DEFAULT_LINKBRAIN_CONFIG.mcpServerName;
-  const machineToken = parseLinkbrainMachineToken(raw.machineToken);
+  const machineToken = parseLinkbrainMachineToken(raw.machineToken, { localTest });
 
   return {
     mcpRead: readBoolean(raw.mcpRead, DEFAULT_LINKBRAIN_CONFIG.mcpRead),
@@ -218,7 +306,7 @@ export function parseLinkbrainConfig(value: unknown): LinkbrainConfig {
       DEFAULT_LINKBRAIN_CONFIG.outboxAgeAlarmMs,
       1000,
     ),
-    environment: parseEnvironment(raw.environment),
+    environment,
   };
 }
 

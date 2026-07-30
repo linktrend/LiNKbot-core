@@ -240,8 +240,10 @@ export function invalidateMachineTokenCache(
  * Reuses process cache when remaining TTL >= 20%. Concurrent callers for the
  * same binding fingerprint share one in-flight mint (Promise coalescing).
  *
- * When `fetchFn` is omitted, discovery/token calls use fetchWithSsrFGuard.
- * Injected `fetchFn` is a documented TEST SEAM that bypasses the SSRF guard.
+ * When `fetchFn` is omitted, discovery/token calls use the hardened
+ * machine-token network (fetchWithSsrFGuard, zero redirects, bounded bodies).
+ * Injected `fetchFn` is a documented TEST SEAM that bypasses the SSRF guard —
+ * never pass a general MCP resource fetchFn here.
  */
 export async function resolveMachineTokenAccess(params: {
   binding: MachineTokenBinding;

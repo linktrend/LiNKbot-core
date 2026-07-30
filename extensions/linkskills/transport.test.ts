@@ -41,6 +41,12 @@ const sampleEnvelope = {
   },
 };
 
+const assertionKeyRef = {
+  source: "env" as const,
+  provider: "default",
+  id: "LINKTREND_SKILLS_ASSERTION_PEM",
+};
+
 const writeArgs = {
   toolName: "skills_run_start",
   idempotencyKey: "idem:skills-1",
@@ -236,11 +242,7 @@ describe("linkskills transport modes", () => {
         bindingId: "linkskills-stage",
         issuerUrl: "https://issuer.example.test",
         clientId: "skills-client",
-        clientAssertionKeyRef: {
-          source: "env",
-          provider: "default",
-          id: "LINKTREND_SKILLS_ASSERTION_PEM",
-        },
+        clientAssertionKeyRef: assertionKeyRef,
       },
     });
     const transport = resolveLinkskillsTransport({
@@ -253,6 +255,62 @@ describe("linkskills transport modes", () => {
     const result = await transport.write(writeArgs);
     expect(result.ok).toBe(true);
     expect(resolveMachineTokenAccess).toHaveBeenCalledOnce();
+  });
+
+  it("rejects non-HTTPS skillsEndpoint outside local-test loopback", () => {
+    expect(() =>
+      parseLinkskillsConfig({
+        transportMode: "http",
+        environment: "production",
+        skillsEndpoint: "http://skills.example.test/telemetry",
+      }),
+    ).toThrow(/HTTPS/);
+  });
+
+  it("http machineToken 401/403 invalidates cache and retries once", async () => {
+    for (const status of [401, 403] as const) {
+      const fetchImpl = vi
+        .fn()
+        .mockResolvedValueOnce(new Response("nope", { status }))
+        .mockResolvedValueOnce(new Response(JSON.stringify({ ok: true }), { status: 200 }));
+      const invalidateMachineTokenCache = vi.fn();
+      let resolveCount = 0;
+      const resolveMachineTokenAccess = vi.fn(async ({ binding, forceRefresh }) => {
+        resolveCount += 1;
+        if (resolveCount === 2) {
+          expect(forceRefresh).toBe(true);
+        }
+        return {
+          bindingId: binding.bindingId,
+          bindingFingerprint: `fp-${binding.bindingId}`,
+          accessToken: resolveCount === 1 ? "stale-token" : "fresh-token",
+          expiresAt: Date.now() + 60_000,
+          tokenType: "Bearer" as const,
+        };
+      });
+      const config = parseLinkskillsConfig({
+        transportMode: "http",
+        skillsEndpoint: "https://skills.example.test/telemetry",
+        machineToken: {
+          bindingId: "linkskills-stage",
+          issuerUrl: "https://issuer.example.test",
+          clientId: "skills-client",
+          clientAssertionKeyRef: assertionKeyRef,
+        },
+      });
+      const transport = resolveLinkskillsTransport({
+        api: stubApi(),
+        config,
+        fetchImpl: fetchImpl as unknown as typeof fetch,
+        env: { LINKTREND_SKILLS_ASSERTION_PEM: "PEM-SKILLS" },
+        resolveMachineTokenAccess,
+        invalidateMachineTokenCache,
+      });
+      const result = await transport.write(writeArgs);
+      expect(result.ok).toBe(true);
+      expect(invalidateMachineTokenCache).toHaveBeenCalledWith("fp-linkskills-stage");
+      expect(fetchImpl).toHaveBeenCalledTimes(2);
+    }
   });
 
   it("mcp machine_token injects bearer and does not return auth_profile_required", async () => {
@@ -269,7 +327,7 @@ describe("linkskills transport modes", () => {
         bindingId: "linkskills-stage",
         issuerUrl: "https://issuer.example.test",
         clientId: "skills-client",
-        clientAssertionKeyRef: "literal-pem",
+        clientAssertionKeyRef: assertionKeyRef,
       },
     });
     const transport = resolveLinkskillsTransport({
@@ -284,13 +342,21 @@ describe("linkskills transport modes", () => {
                 bindingId: "linkskills-stage",
                 issuerUrl: "https://issuer.example.test",
                 clientId: "skills-client",
-                clientAssertionKeyRef: "server-pem",
+                clientAssertionKeyRef: {
+                  source: "env",
+                  provider: "default",
+                  id: "LINKTREND_SKILLS_SERVER_PEM",
+                },
               },
             },
           },
         },
       }),
       config,
+      env: {
+        LINKTREND_SKILLS_ASSERTION_PEM: "PEM-SKILLS",
+        LINKTREND_SKILLS_SERVER_PEM: "server-pem",
+      },
       resolveMachineTokenAccess,
       createMcpSession: async (server) => {
         seenHeaders.push(server.headers);
@@ -324,7 +390,7 @@ describe("linkskills transport modes", () => {
         bindingId: "linkskills-stage",
         issuerUrl: "https://issuer.example.test",
         clientId: "skills-client",
-        clientAssertionKeyRef: "literal-pem",
+        clientAssertionKeyRef: assertionKeyRef,
       },
     });
     const transport = resolveLinkskillsTransport({
@@ -340,13 +406,14 @@ describe("linkskills transport modes", () => {
                 bindingId: "linkskills-stage",
                 issuerUrl: "https://issuer.example.test",
                 clientId: "skills-client",
-                clientAssertionKeyRef: "literal-pem",
+                clientAssertionKeyRef: assertionKeyRef,
               },
             },
           },
         },
       }),
       config,
+      env: { LINKTREND_SKILLS_ASSERTION_PEM: "PEM-SKILLS" },
       resolveMachineTokenAccess,
       createMcpSession: async () => {
         throw new Error("should not open MCP session when oauth auth-profile is required");
@@ -396,13 +463,26 @@ describe("linkskills transport modes", () => {
     });
   });
 
+  it("rejects literal PEM clientAssertionKeyRef in schema parse", () => {
+    expect(() =>
+      parseLinkskillsConfig({
+        machineToken: {
+          bindingId: "linkskills-stage",
+          issuerUrl: "https://issuer.example.test",
+          clientId: "skills-client",
+          clientAssertionKeyRef: "literal-pem",
+        },
+      }),
+    ).toThrow(/SecretRef object/);
+  });
+
   it("skills and brain machineToken fixtures use distinct bindingIds", () => {
     const skills = parseLinkskillsConfig({
       machineToken: {
         bindingId: "linkskills-stage",
         issuerUrl: "https://issuer.example.test",
         clientId: "skills-client",
-        clientAssertionKeyRef: "pem-skills",
+        clientAssertionKeyRef: assertionKeyRef,
       },
     });
     const brainBindingId = "linkbrain-stage";

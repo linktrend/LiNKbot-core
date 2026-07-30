@@ -1,11 +1,14 @@
 /** Linkskills plugin config (§12.1 / §12.2). */
 
-type LinkskillsSecretRef = {
+import { assertMachineTokenIssuerUrl } from "openclaw/plugin-sdk/machine-token-runtime";
+
+export type LinkskillsSecretRef = {
   source: "env" | "file" | "exec";
   provider: string;
   id: string;
 };
 
+/** Credential fields may still accept a resolved string or SecretRef. */
 export type LinkskillsSecretInput = string | LinkskillsSecretRef;
 
 type LinkskillsEnvironment = "test" | "stage" | "production";
@@ -19,7 +22,8 @@ export type LinkskillsMachineTokenConfig = {
   clientId: string;
   audience?: string;
   scope?: string;
-  clientAssertionKeyRef: LinkskillsSecretInput;
+  /** SecretRef only — never literal PEM/JWK/env/CLI strings in config. */
+  clientAssertionKeyRef: LinkskillsSecretRef;
 };
 
 export type LinkskillsConfig = {
@@ -77,6 +81,53 @@ function readPositiveInt(value: unknown, fallback: number, minimum: number): num
   return value;
 }
 
+/** Explicit local-test loopback only — never private LAN/VPC ranges. */
+export function isLinkskillsLocalTestLoopbackHost(hostname: string): boolean {
+  const host = hostname
+    .trim()
+    .toLowerCase()
+    .replace(/^\[|\]$/gu, "");
+  return host === "localhost" || host === "127.0.0.1" || host === "::1";
+}
+
+/**
+ * Require HTTPS for remote endpoints. HTTP is allowed only for explicit
+ * local-test loopback (localhost / 127.0.0.1 / ::1). Private networks are not
+ * broadly allowed for production PACI/MCP/HTTP endpoints.
+ */
+export function assertLinkskillsRemoteHttpsUrl(
+  urlString: string,
+  fieldName: string,
+  localTest?: boolean,
+): URL {
+  let url: URL;
+  try {
+    url = new URL(urlString);
+  } catch (cause) {
+    throw new Error(`linkskills: ${fieldName} must be a valid absolute URL`, { cause });
+  }
+  if (url.protocol !== "https:" && url.protocol !== "http:") {
+    throw new Error(`linkskills: ${fieldName} must use http or https`);
+  }
+  if (url.username || url.password) {
+    throw new Error(`linkskills: ${fieldName} must not include userinfo`);
+  }
+  const loopback = isLinkskillsLocalTestLoopbackHost(url.hostname);
+  if (url.protocol === "http:") {
+    if (localTest !== true || !loopback) {
+      throw new Error(
+        `linkskills: ${fieldName} must use HTTPS (HTTP allowed only for explicit local-test loopback)`,
+      );
+    }
+  }
+  if (localTest !== true && loopback) {
+    throw new Error(
+      `linkskills: ${fieldName} must not target loopback outside explicit local-test mode`,
+    );
+  }
+  return url;
+}
+
 function parseSecretInput(value: unknown, fieldName: string): LinkskillsSecretInput | undefined {
   if (value === undefined) {
     return undefined;
@@ -87,6 +138,29 @@ function parseSecretInput(value: unknown, fieldName: string): LinkskillsSecretIn
   if (!isRecord(value)) {
     throw new Error(`linkskills: ${fieldName} must be a string or SecretRef object`);
   }
+  return parseSecretRefObject(value, fieldName);
+}
+
+/**
+ * Accept only supported SecretRef objects. Reject literal strings (including
+ * PEM/JWK-looking values), env projections into config, and CLI literals.
+ */
+function parseSecretRefOnly(value: unknown, fieldName: string): LinkskillsSecretRef {
+  if (typeof value === "string") {
+    throw new Error(
+      `linkskills: ${fieldName} must be a SecretRef object (literal strings, PEM/JWK, env projections, and CLI literals are rejected)`,
+    );
+  }
+  if (!isRecord(value)) {
+    throw new Error(`linkskills: ${fieldName} must be a SecretRef object`);
+  }
+  return parseSecretRefObject(value, fieldName);
+}
+
+function parseSecretRefObject(
+  value: Record<string, unknown>,
+  fieldName: string,
+): LinkskillsSecretRef {
   const source = value.source;
   const provider = value.provider;
   const id = value.id;
@@ -120,6 +194,7 @@ function parseNonEmptyString(value: unknown, fieldName: string): string {
  */
 export function parseLinkskillsMachineToken(
   value: unknown,
+  options?: { localTest?: boolean },
 ): LinkskillsMachineTokenConfig | undefined {
   if (value === undefined || value === null) {
     return undefined;
@@ -127,17 +202,25 @@ export function parseLinkskillsMachineToken(
   if (!isRecord(value)) {
     throw new Error("linkskills: machineToken must be an object");
   }
-  const clientAssertionKeyRef = parseSecretInput(
+  const clientAssertionKeyRef = parseSecretRefOnly(
     value.clientAssertionKeyRef,
     "machineToken.clientAssertionKeyRef",
   );
-  if (clientAssertionKeyRef === undefined) {
-    throw new Error("linkskills: machineToken.clientAssertionKeyRef is required");
+  const bindingId = parseNonEmptyString(value.bindingId, "machineToken.bindingId");
+  const clientId = parseNonEmptyString(value.clientId, "machineToken.clientId");
+  const issuerUrl = parseNonEmptyString(value.issuerUrl, "machineToken.issuerUrl");
+  try {
+    assertMachineTokenIssuerUrl(issuerUrl, options?.localTest);
+  } catch (error) {
+    throw new Error(
+      `linkskills: machineToken.issuerUrl invalid: ${error instanceof Error ? error.message : "rejected"}`,
+      { cause: error },
+    );
   }
   const binding: LinkskillsMachineTokenConfig = {
-    bindingId: parseNonEmptyString(value.bindingId, "machineToken.bindingId"),
-    issuerUrl: parseNonEmptyString(value.issuerUrl, "machineToken.issuerUrl"),
-    clientId: parseNonEmptyString(value.clientId, "machineToken.clientId"),
+    bindingId,
+    issuerUrl,
+    clientId,
     clientAssertionKeyRef,
   };
   if (typeof value.audience === "string" && value.audience.length > 0) {
@@ -169,10 +252,15 @@ function parseTransportMode(value: unknown): LinkskillsTransportMode {
  */
 export function parseLinkskillsConfig(value: unknown): LinkskillsConfig {
   const raw = isRecord(value) ? value : {};
+  const environment = parseEnvironment(raw.environment);
+  const localTest = environment === "test";
   const skillsEndpoint =
     typeof raw.skillsEndpoint === "string" && raw.skillsEndpoint.length > 0
       ? raw.skillsEndpoint
       : undefined;
+  if (skillsEndpoint) {
+    assertLinkskillsRemoteHttpsUrl(skillsEndpoint, "skillsEndpoint", localTest);
+  }
   const redactionPolicyVersion =
     typeof raw.redactionPolicyVersion === "string" && raw.redactionPolicyVersion.length > 0
       ? raw.redactionPolicyVersion
@@ -181,7 +269,7 @@ export function parseLinkskillsConfig(value: unknown): LinkskillsConfig {
     typeof raw.mcpServerName === "string" && raw.mcpServerName.length > 0
       ? raw.mcpServerName
       : DEFAULT_LINKSKILLS_CONFIG.mcpServerName;
-  const machineToken = parseLinkskillsMachineToken(raw.machineToken);
+  const machineToken = parseLinkskillsMachineToken(raw.machineToken, { localTest });
 
   return {
     mcpDiscoveryRead: readBoolean(raw.mcpDiscoveryRead, DEFAULT_LINKSKILLS_CONFIG.mcpDiscoveryRead),
@@ -219,7 +307,7 @@ export function parseLinkskillsConfig(value: unknown): LinkskillsConfig {
       DEFAULT_LINKSKILLS_CONFIG.outboxAgeAlarmMs,
       1000,
     ),
-    environment: parseEnvironment(raw.environment),
+    environment,
   };
 }
 

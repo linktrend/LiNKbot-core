@@ -1,39 +1,46 @@
-// Machine-token runtime facade: scoped ownership, isolation, diagnostics, host helpers.
-import { describe, expect, it, vi } from "vitest";
+// Public machine-token SDK: consumer types/helpers only; privileged controls stay host-internal.
+import { readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+import { describe, expect, it } from "vitest";
+import * as publicRuntime from "./machine-token-runtime.js";
 import {
-  assertMachineTokenIssuerUrl,
   authorizationHeaderFromMachineToken,
-  buildMachineTokenDiscoveryUrl,
-  clearMachineTokenCacheForHost,
-  createMachineTokenPluginFacade,
   fingerprintMachineTokenKeyRef,
-  invalidateMachineTokenCacheForHost,
-  resolveMachineTokenAccessForHost,
-  withMachineTokenBearer,
-  type MachineTokenBinding,
   type ResolvedMachineToken,
 } from "./machine-token-runtime.js";
 
-function sampleBinding(bindingId: string): MachineTokenBinding {
-  return {
-    bindingId,
-    issuerUrl: "https://issuer.example.test",
-    clientId: `${bindingId}-client`,
-    clientAssertionKeyPem: `PEM-${bindingId}`,
-  };
-}
+const PRIVILEGED_EXPORT_NAMES = [
+  "createMachineTokenPluginFacade",
+  "resolveMachineTokenAccessForHost",
+  "invalidateMachineTokenCacheForHost",
+  "clearMachineTokenCacheForHost",
+] as const;
+
+const scriptDir = dirname(fileURLToPath(import.meta.url));
 
 describe("plugin-sdk machine-token-runtime", () => {
-  it("exports the scoped facade and host-only helpers", () => {
-    expect(createMachineTokenPluginFacade).toBeTypeOf("function");
-    expect(resolveMachineTokenAccessForHost).toBeTypeOf("function");
-    expect(invalidateMachineTokenCacheForHost).toBeTypeOf("function");
-    expect(clearMachineTokenCacheForHost).toBeTypeOf("function");
-    expect(withMachineTokenBearer).toBeTypeOf("function");
-    expect(assertMachineTokenIssuerUrl).toBeTypeOf("function");
-    expect(buildMachineTokenDiscoveryUrl).toBeTypeOf("function");
+  it("exports only consumer types and minimal helpers", () => {
     expect(authorizationHeaderFromMachineToken).toBeTypeOf("function");
     expect(fingerprintMachineTokenKeyRef).toBeTypeOf("function");
+    expect(publicRuntime.assertMachineTokenIssuerUrl).toBeTypeOf("function");
+  });
+
+  it("does not export privileged host construction or global cache controls", () => {
+    for (const name of PRIVILEGED_EXPORT_NAMES) {
+      expect(publicRuntime).not.toHaveProperty(name);
+      expect((publicRuntime as Record<string, unknown>)[name]).toBeUndefined();
+    }
+  });
+
+  it("keeps privileged control identifiers out of the public SDK source", () => {
+    const source = readFileSync(join(scriptDir, "machine-token-runtime.ts"), "utf8");
+    for (const name of PRIVILEGED_EXPORT_NAMES) {
+      expect(source).not.toContain(name);
+    }
+    expect(source).not.toMatch(/\bfrom\s+["'][^"']*machine-token-host/u);
+    expect(source).not.toMatch(/\bexport\s+(?:async\s+)?function\s+createMachineToken/u);
+    expect(source).not.toMatch(/\bexport\s+(?:const|function)\s+clearMachineToken/u);
   });
 
   it("builds a Bearer Authorization header without mutating the token", () => {
@@ -51,148 +58,33 @@ describe("plugin-sdk machine-token-runtime", () => {
     expect(token.accessToken).toBe("mt-access-token");
   });
 
-  it("acquires only granted bindings and rejects foreign domains", async () => {
-    const resolveAccess = vi.fn(async ({ binding }) => ({
-      bindingId: binding.bindingId,
-      bindingFingerprint: `fp-${binding.bindingId}`,
-      accessToken: `token-${binding.bindingId}`,
-      expiresAt: Date.now() + 60_000,
-      tokenType: "Bearer" as const,
-    }));
-    const facade = createMachineTokenPluginFacade({
-      pluginId: "linkbrain",
-      grantedBindingIds: ["linkbrain-stage"],
-      resolveAccess,
+  it("fingerprints SecretRef identity without requiring host facade construction", () => {
+    const left = fingerprintMachineTokenKeyRef({
+      source: "env",
+      provider: "gsm",
+      id: "brain-key",
     });
-
-    const acquired = await facade.acquire({ binding: sampleBinding("linkbrain-stage") });
-    expect(acquired.accessToken).toBe("token-linkbrain-stage");
-    expect(resolveAccess).toHaveBeenCalledOnce();
-
-    await expect(facade.acquire({ binding: sampleBinding("linkskills-stage") })).rejects.toThrow(
-      /not granted machine-token binding "linkskills-stage"/,
-    );
-    expect(() => facade.invalidate("linkskills-stage")).toThrow(
-      /not granted machine-token binding "linkskills-stage"/,
-    );
+    const right = fingerprintMachineTokenKeyRef({
+      source: "env",
+      provider: "gsm",
+      id: "brain-key",
+    });
+    const other = fingerprintMachineTokenKeyRef({
+      source: "env",
+      provider: "gsm",
+      id: "skills-key",
+    });
+    expect(left).toBe(right);
+    expect(left).not.toBe(other);
+    expect(left).toMatch(/^[a-f0-9]{64}$/u);
   });
 
-  it("isolates invalidate and health across independent plugin facades", async () => {
-    const invalidated: string[] = [];
-    const cache = new Map<string, { expiresAt: number }>();
-    const resolveAccess = vi.fn(async ({ binding }) => {
-      const fingerprint = `fp-${binding.bindingId}`;
-      const resolved = {
-        bindingId: binding.bindingId,
-        bindingFingerprint: fingerprint,
-        accessToken: `token-${binding.bindingId}`,
-        expiresAt: Date.now() + 60_000,
-        tokenType: "Bearer" as const,
-      };
-      cache.set(fingerprint, { expiresAt: resolved.expiresAt });
-      return resolved;
-    });
-    const brain = createMachineTokenPluginFacade({
-      pluginId: "linkbrain",
-      grantedBindingIds: ["linkbrain-stage"],
-      resolveAccess,
-      invalidateCache: (fingerprint) => {
-        invalidated.push(fingerprint);
-        cache.delete(fingerprint);
-      },
-      getCached: (fingerprint) => {
-        const entry = cache.get(fingerprint);
-        return entry
-          ? {
-              bindingId: "linkbrain-stage",
-              bindingFingerprint: fingerprint,
-              accessToken: "redacted-should-not-surface",
-              expiresAt: entry.expiresAt,
-              tokenType: "Bearer",
-              issuedAt: Date.now(),
-            }
-          : undefined;
-      },
-    });
-    const skills = createMachineTokenPluginFacade({
-      pluginId: "linkskills",
-      grantedBindingIds: ["linkskills-stage"],
-      resolveAccess,
-      invalidateCache: (fingerprint) => {
-        invalidated.push(fingerprint);
-        cache.delete(fingerprint);
-      },
-      getCached: (fingerprint) => {
-        const entry = cache.get(fingerprint);
-        return entry
-          ? {
-              bindingId: "linkskills-stage",
-              bindingFingerprint: fingerprint,
-              accessToken: "redacted-should-not-surface",
-              expiresAt: entry.expiresAt,
-              tokenType: "Bearer",
-              issuedAt: Date.now(),
-            }
-          : undefined;
-      },
-    });
-
-    await brain.acquire({ binding: sampleBinding("linkbrain-stage") });
-    await skills.acquire({ binding: sampleBinding("linkskills-stage") });
-
-    brain.invalidate("linkbrain-stage");
-    expect(invalidated).toEqual(["fp-linkbrain-stage"]);
-    expect(brain.health("linkbrain-stage")).toMatchObject({
-      pluginId: "linkbrain",
-      granted: true,
-      registered: true,
-      cached: false,
-    });
-    expect(skills.health("linkskills-stage")).toMatchObject({
-      pluginId: "linkskills",
-      granted: true,
-      cached: true,
-    });
-    expect(JSON.stringify(brain.health("linkbrain-stage"))).not.toContain(
-      "redacted-should-not-surface",
-    );
-    expect(brain.health("linkskills-stage").granted).toBe(false);
-  });
-
-  it("unregister invalidates granted bindings and fail-closes later use", async () => {
-    const invalidated: string[] = [];
-    const resolveAccess = vi.fn(async ({ binding }) => ({
-      bindingId: binding.bindingId,
-      bindingFingerprint: `fp-${binding.bindingId}`,
-      accessToken: "token",
-      expiresAt: Date.now() + 60_000,
-      tokenType: "Bearer" as const,
-    }));
-    const facade = createMachineTokenPluginFacade({
-      pluginId: "linkbrain",
-      grantedBindingIds: ["linkbrain-stage"],
-      resolveAccess,
-      invalidateCache: (fingerprint) => {
-        invalidated.push(fingerprint);
-      },
-    });
-
-    await facade.acquire({ binding: sampleBinding("linkbrain-stage") });
-    facade.unregister();
-    expect(invalidated).toEqual(["fp-linkbrain-stage"]);
-    expect(facade.health("linkbrain-stage").registered).toBe(false);
-    await expect(facade.acquire({ binding: sampleBinding("linkbrain-stage") })).rejects.toThrow(
-      /unregistered/,
-    );
-    expect(() => facade.invalidate("linkbrain-stage")).toThrow(/unregistered/);
-  });
-
-  it("rejects empty pluginId or empty grants at construction", () => {
-    expect(() =>
-      createMachineTokenPluginFacade({ pluginId: " ", grantedBindingIds: ["a"] }),
-    ).toThrow(/non-empty pluginId/);
-    expect(() =>
-      createMachineTokenPluginFacade({ pluginId: "linkbrain", grantedBindingIds: [" ", ""] }),
-    ).toThrow(/at least one grantedBindingId/);
+  it("keeps host construction off the public plugin-sdk entrypoint list", () => {
+    const entrypoints = JSON.parse(
+      readFileSync(join(scriptDir, "../../scripts/lib/plugin-sdk-entrypoints.json"), "utf8"),
+    ) as string[];
+    expect(entrypoints).toContain("machine-token-runtime");
+    expect(entrypoints).not.toContain("machine-token-host");
+    expect(entrypoints.some((entry) => entry.includes("machine-token-host"))).toBe(false);
   });
 });

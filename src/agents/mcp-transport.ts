@@ -171,9 +171,10 @@ function withResolvedMachineTokenBearer(params: {
           : {}),
       };
       bearerFetch = withMachineTokenBearer({
+        // Resource path may use the MCP HTTP fetch. Mint/discovery omits
+        // authFetchFn so resolveMachineTokenAccess uses the hardened auth
+        // network — never the injected general MCP resource fetchFn.
         fetchFn: params.fetchFn,
-        // Discovery/token mint must not inherit resource Authorization headers.
-        authFetchFn: params.fetchFn,
         serverName: params.serverName,
         resourceUrl: params.resourceUrl,
         headers: params.headers,

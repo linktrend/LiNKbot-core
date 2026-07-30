@@ -121,4 +121,32 @@ describe("linkskills manifest/config", () => {
     });
     expect(parseLinkskillsConfig({}).machineToken).toBeUndefined();
   });
+
+  it("rejects literal string clientAssertionKeyRef (SecretRef-only)", () => {
+    expect(() =>
+      parseLinkskillsConfig({
+        machineToken: {
+          bindingId: "linkskills-stage",
+          issuerUrl: "https://issuer.example.test",
+          clientId: "skills-client",
+          clientAssertionKeyRef: "literal-pem",
+        },
+      }),
+    ).toThrow(/SecretRef object/);
+  });
+
+  it("schema marks clientAssertionKeyRef as secretRef only", () => {
+    const manifest = JSON.parse(
+      fs.readFileSync(path.join(root, "openclaw.plugin.json"), "utf8"),
+    ) as {
+      configSchema: {
+        $defs: {
+          machineToken: { properties: { clientAssertionKeyRef: { $ref: string } } };
+        };
+      };
+    };
+    expect(manifest.configSchema.$defs.machineToken.properties.clientAssertionKeyRef.$ref).toBe(
+      "#/$defs/secretRef",
+    );
+  });
 });

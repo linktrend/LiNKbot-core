@@ -1,9 +1,11 @@
 /**
  * Hardened network boundary for machine-token discovery and token mint calls.
  *
- * Production paths use fetchWithSsrFGuard (SSRF/DNS/TLS-safe). Injected fetchFn
- * is an explicit TEST SEAM that bypasses the guard so hermetic PACI fakes and
+ * Production paths use fetchWithSsrFGuard (SSRF/DNS/TLS-safe), zero redirects,
+ * fixed deadlines, and bounded request/response sizes. Injected fetchFn is an
+ * explicit TEST SEAM that bypasses the SSRF guard so hermetic PACI fakes and
  * unit stubs can run without DNS pinning — document and keep test-only.
+ * General MCP resource fetchFn must never be passed as this seam.
  */
 import { readResponseWithLimit } from "../infra/http-body.js";
 import { fetchWithSsrFGuard } from "../infra/net/fetch-guard.js";
@@ -13,8 +15,14 @@ import type { MachineTokenFetchFn } from "./machine-token-types.js";
 /** Bound connect/response deadline for discovery and token requests. */
 export const MACHINE_TOKEN_NETWORK_TIMEOUT_MS = 15_000;
 
-/** Max JSON body size for discovery/token responses. */
+/** Max JSON body size for discovery/token responses (including non-2xx drains). */
 export const MACHINE_TOKEN_MAX_RESPONSE_BYTES = 64 * 1024;
+
+/** Max outbound request body size for token mint (client_assertion form body). */
+export const MACHINE_TOKEN_MAX_REQUEST_BODY_BYTES = 16 * 1024;
+
+/** Max outbound request header byte budget (name+value lengths). */
+export const MACHINE_TOKEN_MAX_REQUEST_HEADER_BYTES = 8 * 1024;
 
 function networkError(message: string, cause?: unknown): Error {
   return new Error(message, cause !== undefined ? { cause } : undefined);
@@ -79,6 +87,60 @@ function resolveSsrFPolicy(localTest: boolean | undefined): SsrFPolicy | undefin
   return undefined;
 }
 
+function measureRequestBodyBytes(body: BodyInit): number | undefined {
+  if (typeof body === "string") {
+    return Buffer.byteLength(body);
+  }
+  if (body instanceof URLSearchParams) {
+    return Buffer.byteLength(body.toString());
+  }
+  if (typeof ArrayBuffer !== "undefined" && body instanceof ArrayBuffer) {
+    return body.byteLength;
+  }
+  if (ArrayBuffer.isView(body)) {
+    return body.byteLength;
+  }
+  if (typeof Blob !== "undefined" && body instanceof Blob) {
+    return body.size;
+  }
+  return undefined;
+}
+
+/**
+ * Bound outbound auth request headers/body before any network call.
+ * Streaming bodies are rejected — mint uses fixed form-urlencoded payloads only.
+ */
+export function assertMachineTokenRequestBounds(params: {
+  init?: RequestInit;
+  label: string;
+}): void {
+  const init = params.init;
+  if (!init) {
+    return;
+  }
+  if (init.headers) {
+    let headerBytes = 0;
+    new Headers(init.headers).forEach((value, key) => {
+      headerBytes += key.length + value.length;
+    });
+    if (headerBytes > MACHINE_TOKEN_MAX_REQUEST_HEADER_BYTES) {
+      throw networkError(`Machine-token ${params.label} request headers exceed size limit`);
+    }
+  }
+  if (init.body == null) {
+    return;
+  }
+  const size = measureRequestBodyBytes(init.body);
+  if (size === undefined) {
+    throw networkError(
+      `Machine-token ${params.label} request must use a bounded non-streaming body`,
+    );
+  }
+  if (size > MACHINE_TOKEN_MAX_REQUEST_BODY_BYTES) {
+    throw networkError(`Machine-token ${params.label} request body exceeds size limit`);
+  }
+}
+
 function assertJsonContentType(response: Response, label: string): void {
   const contentType = response.headers.get("content-type") ?? "";
   const mediaType = contentType.split(";")[0]?.trim().toLowerCase() ?? "";
@@ -116,13 +178,42 @@ async function readJsonBody(params: {
   }
 }
 
+/**
+ * Drain a non-2xx body under the same size/time cap as success JSON.
+ * Never parse or log body bytes (may contain secrets). Does not use unbounded
+ * arrayBuffer() before the cap. Shared by mint (`machineTokenNetworkFetchJson`)
+ * and discovery so both auth paths enforce the same drain contract.
+ */
+export async function discardMachineTokenErrorResponseBody(params: {
+  response: Response;
+  label: string;
+  signal?: AbortSignal;
+}): Promise<void> {
+  if (!params.response.body) {
+    return;
+  }
+  try {
+    await readResponseWithLimit(params.response, MACHINE_TOKEN_MAX_RESPONSE_BYTES, {
+      timeoutMs: MACHINE_TOKEN_NETWORK_TIMEOUT_MS,
+      onOverflow: () =>
+        networkError(`Machine-token ${params.label} error response exceeds size limit`),
+      onTimeout: () =>
+        networkError(`Machine-token ${params.label} error response body timed out`),
+    });
+  } catch {
+    // Overflow/timeout/cancel still enforced the byte cap; never surface body.
+    params.signal?.throwIfAborted();
+  }
+}
+
 export type MachineTokenNetworkFetchParams = {
   url: string;
   init?: RequestInit;
   /**
    * TEST SEAM: when provided, bypasses fetchWithSsrFGuard so hermetic PACI
    * fakes / stubs can mint without DNS pinning. Production callers omit this
-   * and use the SSRF-guarded default path.
+   * and use the SSRF-guarded default path. Never pass a general MCP resource
+   * fetch here — that would bypass the hardened auth network boundary.
    */
   fetchFn?: MachineTokenFetchFn;
   signal?: AbortSignal;
@@ -152,12 +243,14 @@ export async function machineTokenNetworkFetch(
     localTest: params.localTest,
     label,
   });
+  assertMachineTokenRequestBounds({ init: params.init, label });
 
   // TEST SEAM: injected fetchFn bypasses SSRF guard for hermetic unit/fake servers.
   if (params.fetchFn) {
     try {
       const response = await params.fetchFn(params.url, {
         ...params.init,
+        redirect: "error",
         ...(params.signal ? { signal: params.signal } : {}),
       });
       return {
@@ -181,6 +274,7 @@ export async function machineTokenNetworkFetch(
       signal: params.signal,
       timeoutMs,
       requireHttps,
+      // Auth path: never follow redirects; no cross-origin body replay possible.
       maxRedirects: 0,
       policy: resolveSsrFPolicy(params.localTest),
       auditContext: "machine-token",
@@ -208,12 +302,11 @@ export async function machineTokenNetworkFetchJson(
   const { response, release } = await machineTokenNetworkFetch(params);
   try {
     if (!response.ok) {
-      // Drain/cancel body without parsing secrets into Error.message.
-      try {
-        await response.arrayBuffer();
-      } catch {
-        // Ignore late body settlement errors after HTTP failure.
-      }
+      await discardMachineTokenErrorResponseBody({
+        response,
+        label,
+        signal: params.signal,
+      });
       return { status: response.status, ok: false, json: undefined };
     }
     const json = await readJsonBody({

@@ -19,6 +19,11 @@ production dependency on the private workspace package.
 | Alg                         | `ES256`                                                            |
 | Refresh                     | none (Phase-1)                                                     |
 
+**Repin state:** Platform HEAD `39c46680f058d86484fcb24c25c3463deb9488ae` failed
+independent verification — do **not** treat it as the frozen pin. Behavioral
+alignment may read current Platform checkout sources, but permanent OpenClaw
+repin awaits a **certified Platform descendant**.
+
 ### Fixture SHA-256 pins (`packages/contracts/fixtures/auth-token-envelope/`)
 
 | File                                  | SHA-256                                                            |
@@ -39,11 +44,21 @@ production dependency on the private workspace package.
 - Access tokens are signed compact JWS with `typ: paci+jwt` (not opaque UUIDs).
 - Nested AuthClaims under `https://linktrend.dev/claims/auth` with
   `claimContractVersion: platform.auth-claims/1.1.0`.
-- Client assertion `jti` replay → `401 invalid_client`.
-- Introspection requires `private_key_jwt` (missing/invalid → `401`;
-  inactive/unknown → `200 {active:false}`).
+- Client assertion `jti` must be an RFC 4122 UUID; non-UUID → `401 invalid_client`.
+- Client assertion `jti` single-use / replay → `401 invalid_client`.
+- Requested `scope` must be a subset of credential `serviceScopes`; any
+  ungranted value (e.g. `admin` when client only has `lbrain`) →
+  `400 invalid_scope`. Omitted scope grants the full credential set.
+- Introspection requires `private_key_jwt` (missing/invalid client → `401`;
+  inactive/unknown/ineligible → `200 {active:false}` with no disclosure).
+- Resource-server caller eligibility is independent of the token subject:
+  domain / audience / minting-client ACL; cross-domain introspection fails
+  closed. Active response `client_id` is the **minting** client, never the
+  introspection caller.
+- Signing-key rotation with `dropPrevious` makes prior-kid tokens introspect
+  inactive. Token revoke → inactive.
 - Test knobs: `setMintOverrides`, `setHttpFault` (429/5xx/timeout delay),
-  `rotateSigningKeys`, assertion replay clear, token revoke.
+  `rotateSigningKeys`, `registerClient`, assertion replay clear, token revoke.
 
 ## Public API (compatible)
 

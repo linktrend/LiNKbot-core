@@ -98,7 +98,7 @@ describe("linkbrain manifest/config", () => {
         bindingId: "linkbrain-stage",
         issuerUrl: "https://issuer.example.test",
         clientId: "brain-client",
-        scope: "brain.write",
+        scope: "lbrain",
         clientAssertionKeyRef: {
           source: "env",
           provider: "default",
@@ -110,7 +110,7 @@ describe("linkbrain manifest/config", () => {
       bindingId: "linkbrain-stage",
       issuerUrl: "https://issuer.example.test",
       clientId: "brain-client",
-      scope: "brain.write",
+      scope: "lbrain",
       clientAssertionKeyRef: {
         source: "env",
         provider: "default",
@@ -118,5 +118,33 @@ describe("linkbrain manifest/config", () => {
       },
     });
     expect(parseLinkbrainConfig({}).machineToken).toBeUndefined();
+  });
+
+  it("rejects literal string clientAssertionKeyRef (SecretRef-only)", () => {
+    expect(() =>
+      parseLinkbrainConfig({
+        machineToken: {
+          bindingId: "linkbrain-stage",
+          issuerUrl: "https://issuer.example.test",
+          clientId: "brain-client",
+          clientAssertionKeyRef: "literal-pem",
+        },
+      }),
+    ).toThrow(/SecretRef object/);
+  });
+
+  it("schema marks clientAssertionKeyRef as secretRef only", () => {
+    const manifest = JSON.parse(
+      fs.readFileSync(path.join(root, "openclaw.plugin.json"), "utf8"),
+    ) as {
+      configSchema: {
+        $defs: {
+          machineToken: { properties: { clientAssertionKeyRef: { $ref: string } } };
+        };
+      };
+    };
+    expect(manifest.configSchema.$defs.machineToken.properties.clientAssertionKeyRef.$ref).toBe(
+      "#/$defs/secretRef",
+    );
   });
 });

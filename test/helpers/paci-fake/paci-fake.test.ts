@@ -17,6 +17,7 @@ import { createPaciFakeServer } from "./server.js";
 
 const ISSUER = "https://paci.test";
 const CLIENT_ID = "openclaw-test-client";
+const REPLAY_JTI = "550e8400-e29b-41d4-a716-4466554400ac";
 
 async function mintForm(assertion: string, scope?: string): Promise<URLSearchParams> {
   const form = new URLSearchParams({
@@ -28,6 +29,17 @@ async function mintForm(assertion: string, scope?: string): Promise<URLSearchPar
     form.set("scope", scope);
   }
   return form;
+}
+
+async function introspectForm(
+  token: string,
+  assertion: string,
+): Promise<URLSearchParams> {
+  return new URLSearchParams({
+    token,
+    client_assertion_type: CLIENT_ASSERTION_TYPE,
+    client_assertion: assertion,
+  });
 }
 
 describe("paci-fake Platform parity", () => {
@@ -111,7 +123,7 @@ describe("paci-fake Platform parity", () => {
     expect(typeof claims.correlationId).toBe("string");
   });
 
-  it("rejects assertion jti replay", async () => {
+  it("rejects assertion jti replay (single-use)", async () => {
     const clientKeys = await createPaciFakeEs256KeyPair({ reuse: false });
     const fake = await createPaciFakeServer({
       issuerUrl: ISSUER,
@@ -122,7 +134,7 @@ describe("paci-fake Platform parity", () => {
     const assertion = await fake.signClientAssertion({
       audience: fake.tokenEndpoint,
       clientPrivateKeyPem: clientKeys.privateKeyPem,
-      jti: "fixed-jti-1",
+      jti: REPLAY_JTI,
     });
     const first = await fake.fetchFn(fake.tokenEndpoint, {
       method: "POST",
@@ -141,7 +153,58 @@ describe("paci-fake Platform parity", () => {
     expect(err.error_description).toMatch(/replay/u);
   });
 
-  it("requires authenticated introspection; inactive → 200 {active:false}", async () => {
+  it("counterprobe: rejects non-UUID assertion jti=not-a-uuid", async () => {
+    const clientKeys = await createPaciFakeEs256KeyPair({ reuse: false });
+    const fake = await createPaciFakeServer({
+      issuerUrl: ISSUER,
+      clientId: CLIENT_ID,
+      clientPublicKeyPem: clientKeys.publicKeyPem,
+      now: () => 1_700_000_000_000,
+    });
+    const assertion = await fake.signClientAssertion({
+      audience: fake.tokenEndpoint,
+      clientPrivateKeyPem: clientKeys.privateKeyPem,
+      jti: "not-a-uuid",
+    });
+    const res = await fake.fetchFn(fake.tokenEndpoint, {
+      method: "POST",
+      headers: { "content-type": "application/x-www-form-urlencoded" },
+      body: await mintForm(assertion),
+    });
+    expect(res.status).toBe(401);
+    const err = (await res.json()) as { error: string; error_description?: string };
+    expect(err.error).toBe("invalid_client");
+    expect(err.error_description).toMatch(/UUID|jti/iu);
+  });
+
+  it("counterprobe: rejects requested scope admin when client only has lbrain", async () => {
+    const clientKeys = await createPaciFakeEs256KeyPair({ reuse: false });
+    const fake = await createPaciFakeServer({
+      issuerUrl: ISSUER,
+      clientId: "lbrain-only-client",
+      clientPublicKeyPem: clientKeys.publicKeyPem,
+      domain: "lbrain",
+      serviceScopes: ["lbrain"],
+      audience: ["lbrain-api"],
+      now: () => 1_700_000_000_000,
+    });
+    const assertion = await fake.signClientAssertion({
+      audience: fake.tokenEndpoint,
+      clientPrivateKeyPem: clientKeys.privateKeyPem,
+      clientId: "lbrain-only-client",
+    });
+    const res = await fake.fetchFn(fake.tokenEndpoint, {
+      method: "POST",
+      headers: { "content-type": "application/x-www-form-urlencoded" },
+      body: await mintForm(assertion, "admin"),
+    });
+    expect(res.status).toBe(400);
+    const err = (await res.json()) as { error: string; error_description?: string };
+    expect(err.error).toBe("invalid_scope");
+    expect(err.error_description).toMatch(/admin/u);
+  });
+
+  it("requires authenticated introspection; invalid client → 401; inactive → 200 {active:false}", async () => {
     const clientKeys = await createPaciFakeEs256KeyPair({ reuse: false });
     const fake = await createPaciFakeServer({
       issuerUrl: ISSUER,
@@ -157,6 +220,20 @@ describe("paci-fake Platform parity", () => {
     });
     expect(unauth.status).toBe(401);
 
+    const spoofedKeys = await createPaciFakeEs256KeyPair({ reuse: false });
+    const badClientAssertion = await fake.signClientAssertion({
+      audience: fake.introspectionUrl,
+      clientPrivateKeyPem: spoofedKeys.privateKeyPem,
+      clientId: "unknown-client",
+    });
+    const invalidClient = await fake.fetchFn(fake.introspectionUrl, {
+      method: "POST",
+      headers: { "content-type": "application/x-www-form-urlencoded" },
+      body: await introspectForm("unknown", badClientAssertion),
+    });
+    expect(invalidClient.status).toBe(401);
+    expect(((await invalidClient.json()) as { error: string }).error).toBe("invalid_client");
+
     const assertion = await fake.signClientAssertion({
       audience: fake.introspectionUrl,
       clientPrivateKeyPem: clientKeys.privateKeyPem,
@@ -164,11 +241,7 @@ describe("paci-fake Platform parity", () => {
     const inactive = await fake.fetchFn(fake.introspectionUrl, {
       method: "POST",
       headers: { "content-type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({
-        token: "unknown",
-        client_assertion_type: CLIENT_ASSERTION_TYPE,
-        client_assertion: assertion,
-      }),
+      body: await introspectForm("unknown", assertion),
     });
     expect(inactive.status).toBe(200);
     expect(await inactive.json()).toEqual({ active: false });
@@ -201,11 +274,7 @@ describe("paci-fake Platform parity", () => {
     const active = await fake.fetchFn(fake.introspectionUrl, {
       method: "POST",
       headers: { "content-type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({
-        token: minted.access_token,
-        client_assertion_type: CLIENT_ASSERTION_TYPE,
-        client_assertion: introspectAssertion,
-      }),
+      body: await introspectForm(minted.access_token, introspectAssertion),
     });
     expect(active.status).toBe(200);
     const activeBody = (await active.json()) as { active: boolean; token_type?: string };
@@ -220,13 +289,229 @@ describe("paci-fake Platform parity", () => {
     const inactive = await fake.fetchFn(fake.introspectionUrl, {
       method: "POST",
       headers: { "content-type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({
-        token: minted.access_token,
-        client_assertion_type: CLIENT_ASSERTION_TYPE,
-        client_assertion: after,
-      }),
+      body: await introspectForm(minted.access_token, after),
     });
     expect(await inactive.json()).toEqual({ active: false });
+  });
+
+  it("counterprobe: cross-domain introspection fails closed with no disclosure", async () => {
+    const brainMintKeys = await createPaciFakeEs256KeyPair({ reuse: false });
+    const skillsResourceKeys = await createPaciFakeEs256KeyPair({ reuse: false });
+    const brainResourceKeys = await createPaciFakeEs256KeyPair({ reuse: false });
+    const fake = await createPaciFakeServer({
+      issuerUrl: ISSUER,
+      clientId: "brain-mint-client",
+      clientPublicKeyPem: brainMintKeys.publicKeyPem,
+      domain: "lbrain",
+      serviceScopes: ["lbrain"],
+      audience: ["lbrain-api"],
+      allowIntrospection: false,
+      now: () => 1_700_000_000_000,
+    });
+
+    await fake.registerClient({
+      clientId: "skills-resource-client",
+      clientPublicKeyPem: skillsResourceKeys.publicKeyPem,
+      domain: "lskills",
+      serviceScopes: ["lskills"],
+      audience: ["lskills-api"],
+      introspectionPolicy: {
+        allowIntrospection: true,
+        allowedTokenDomains: ["lskills"],
+        allowedTokenAudiences: ["lskills-api"],
+        allowedTokenClientIds: ["skills-mint-client"],
+      },
+    });
+
+    await fake.registerClient({
+      clientId: "brain-resource-client",
+      clientPublicKeyPem: brainResourceKeys.publicKeyPem,
+      domain: "lbrain",
+      serviceScopes: ["lbrain"],
+      audience: ["lbrain-api"],
+      introspectionPolicy: {
+        allowIntrospection: true,
+        allowedTokenDomains: ["lbrain"],
+        allowedTokenAudiences: ["lbrain-api"],
+        allowedTokenClientIds: ["brain-mint-client"],
+      },
+    });
+
+    const mintAssertion = await fake.signClientAssertion({
+      audience: fake.tokenEndpoint,
+      clientPrivateKeyPem: brainMintKeys.privateKeyPem,
+      clientId: "brain-mint-client",
+    });
+    const minted = (await (
+      await fake.fetchFn(fake.tokenEndpoint, {
+        method: "POST",
+        headers: { "content-type": "application/x-www-form-urlencoded" },
+        body: await mintForm(mintAssertion),
+      })
+    ).json()) as { access_token: string };
+
+    const skillsAssertion = await fake.signClientAssertion({
+      audience: fake.introspectionUrl,
+      clientPrivateKeyPem: skillsResourceKeys.privateKeyPem,
+      clientId: "skills-resource-client",
+    });
+    const cross = await fake.fetchFn(fake.introspectionUrl, {
+      method: "POST",
+      headers: { "content-type": "application/x-www-form-urlencoded" },
+      body: await introspectForm(minted.access_token, skillsAssertion),
+    });
+    expect(cross.status).toBe(200);
+    expect(await cross.json()).toEqual({ active: false });
+
+    const brainAssertion = await fake.signClientAssertion({
+      audience: fake.introspectionUrl,
+      clientPrivateKeyPem: brainResourceKeys.privateKeyPem,
+      clientId: "brain-resource-client",
+    });
+    const eligible = await fake.fetchFn(fake.introspectionUrl, {
+      method: "POST",
+      headers: { "content-type": "application/x-www-form-urlencoded" },
+      body: await introspectForm(minted.access_token, brainAssertion),
+    });
+    expect(eligible.status).toBe(200);
+    const eligibleBody = (await eligible.json()) as {
+      active: boolean;
+      client_id?: string;
+      scope?: string;
+      sub?: string;
+    };
+    expect(eligibleBody.active).toBe(true);
+    expect(eligibleBody.client_id).toBe("brain-mint-client");
+    expect(eligibleBody.scope).toBe("lbrain");
+  });
+
+  it("counterprobe: token/resource-client separation (active client_id is minting client)", async () => {
+    const mintKeys = await createPaciFakeEs256KeyPair({ reuse: false });
+    const resourceKeys = await createPaciFakeEs256KeyPair({ reuse: false });
+    const mintClientId = "token-mint-client";
+    const resourceClientId = "resource-introspect-client";
+    const fake = await createPaciFakeServer({
+      issuerUrl: ISSUER,
+      clientId: mintClientId,
+      clientPublicKeyPem: mintKeys.publicKeyPem,
+      domain: "lbrain",
+      serviceScopes: ["lbrain"],
+      audience: ["lbrain-api"],
+      allowIntrospection: false,
+      now: () => 1_700_000_000_000,
+    });
+    await fake.registerClient({
+      clientId: resourceClientId,
+      clientPublicKeyPem: resourceKeys.publicKeyPem,
+      domain: "lbrain",
+      serviceScopes: ["lbrain"],
+      audience: ["lbrain-api"],
+      introspectionPolicy: {
+        allowIntrospection: true,
+        allowedTokenDomains: ["lbrain"],
+        allowedTokenAudiences: ["lbrain-api"],
+        allowedTokenClientIds: [mintClientId],
+      },
+    });
+
+    const mintAssertion = await fake.signClientAssertion({
+      audience: fake.tokenEndpoint,
+      clientPrivateKeyPem: mintKeys.privateKeyPem,
+      clientId: mintClientId,
+    });
+    const minted = (await (
+      await fake.fetchFn(fake.tokenEndpoint, {
+        method: "POST",
+        headers: { "content-type": "application/x-www-form-urlencoded" },
+        body: await mintForm(mintAssertion),
+      })
+    ).json()) as { access_token: string };
+
+    const resourceAssertion = await fake.signClientAssertion({
+      audience: fake.introspectionUrl,
+      clientPrivateKeyPem: resourceKeys.privateKeyPem,
+      clientId: resourceClientId,
+    });
+    const intro = await fake.fetchFn(fake.introspectionUrl, {
+      method: "POST",
+      headers: { "content-type": "application/x-www-form-urlencoded" },
+      body: await introspectForm(minted.access_token, resourceAssertion),
+    });
+    const body = (await intro.json()) as {
+      active: boolean;
+      client_id: string;
+    };
+    expect(body.active).toBe(true);
+    expect(body.client_id).toBe(mintClientId);
+    expect(body.client_id).not.toBe(resourceClientId);
+  });
+
+  it("counterprobe: rotation dropPrevious + revocation make introspect inactive", async () => {
+    const clientKeys = await createPaciFakeEs256KeyPair({ reuse: false });
+    const serverKeys = await createPaciFakeEs256KeyPair({
+      kid: "as-original",
+      reuse: false,
+    });
+    const fake = await createPaciFakeServer({
+      issuerUrl: ISSUER,
+      clientId: CLIENT_ID,
+      clientPublicKeyPem: clientKeys.publicKeyPem,
+      serverKeys,
+      now: () => 1_700_000_000_000,
+    });
+
+    const mint1 = await fake.signClientAssertion({
+      audience: fake.tokenEndpoint,
+      clientPrivateKeyPem: clientKeys.privateKeyPem,
+    });
+    const tokenA = (await (
+      await fake.fetchFn(fake.tokenEndpoint, {
+        method: "POST",
+        headers: { "content-type": "application/x-www-form-urlencoded" },
+        body: await mintForm(mint1),
+      })
+    ).json()) as { access_token: string };
+
+    const rotated = await fake.rotateSigningKeys({ dropPrevious: true });
+    expect(fake.getJwks().keys).toHaveLength(1);
+    expect(fake.getJwks().keys[0]?.kid).toBe(rotated.kid);
+
+    const afterRotate = await fake.signClientAssertion({
+      audience: fake.introspectionUrl,
+      clientPrivateKeyPem: clientKeys.privateKeyPem,
+    });
+    const rotatedInactive = await fake.fetchFn(fake.introspectionUrl, {
+      method: "POST",
+      headers: { "content-type": "application/x-www-form-urlencoded" },
+      body: await introspectForm(tokenA.access_token, afterRotate),
+    });
+    expect(await rotatedInactive.json()).toEqual({ active: false });
+    expect(fake.isAccessTokenActive(tokenA.access_token)).toBe(false);
+
+    const mint2 = await fake.signClientAssertion({
+      audience: fake.tokenEndpoint,
+      clientPrivateKeyPem: clientKeys.privateKeyPem,
+    });
+    const tokenB = (await (
+      await fake.fetchFn(fake.tokenEndpoint, {
+        method: "POST",
+        headers: { "content-type": "application/x-www-form-urlencoded" },
+        body: await mintForm(mint2),
+      })
+    ).json()) as { access_token: string };
+    expect(decodeProtectedHeader(tokenB.access_token).kid).toBe(rotated.kid);
+
+    fake.revokeAccessToken(tokenB.access_token);
+    const afterRevoke = await fake.signClientAssertion({
+      audience: fake.introspectionUrl,
+      clientPrivateKeyPem: clientKeys.privateKeyPem,
+    });
+    const revokedInactive = await fake.fetchFn(fake.introspectionUrl, {
+      method: "POST",
+      headers: { "content-type": "application/x-www-form-urlencoded" },
+      body: await introspectForm(tokenB.access_token, afterRevoke),
+    });
+    expect(await revokedInactive.json()).toEqual({ active: false });
   });
 
   it("supports mint overrides for wrong issuer/alg/claims and JWKS rotation", async () => {
@@ -384,5 +669,53 @@ describe("paci-fake Platform parity", () => {
     // Public JWKS must verify against exported SPKI.
     const pem = await exportSPKI(serverKeys.publicKey);
     await expect(importSPKI(pem, PACI_ALG)).resolves.toBeTruthy();
+  });
+
+  it("grants subset scope and omits full credential set when scope omitted", async () => {
+    const clientKeys = await createPaciFakeEs256KeyPair({ reuse: false });
+    const fake = await createPaciFakeServer({
+      issuerUrl: ISSUER,
+      clientId: CLIENT_ID,
+      clientPublicKeyPem: clientKeys.publicKeyPem,
+      serviceScopes: ["lbrain", "linkplatform"],
+      audience: ["lbrain-api"],
+      domain: "lbrain",
+      now: () => 1_700_000_000_000,
+    });
+
+    const subsetAssertion = await fake.signClientAssertion({
+      audience: fake.tokenEndpoint,
+      clientPrivateKeyPem: clientKeys.privateKeyPem,
+    });
+    const subsetRes = await fake.fetchFn(fake.tokenEndpoint, {
+      method: "POST",
+      headers: { "content-type": "application/x-www-form-urlencoded" },
+      body: await mintForm(subsetAssertion, "lbrain"),
+    });
+    expect(subsetRes.status).toBe(200);
+    const subsetToken = (await subsetRes.json()) as { access_token: string };
+    const subsetPayload = JSON.parse(
+      Buffer.from(subsetToken.access_token.split(".")[1] ?? "", "base64url").toString("utf8"),
+    ) as Record<string, unknown>;
+    const subsetClaims = subsetPayload[AUTH_CLAIMS_CLAIM_KEY] as {
+      serviceScopes: string[];
+    };
+    expect(subsetClaims.serviceScopes).toEqual(["lbrain"]);
+
+    const fullAssertion = await fake.signClientAssertion({
+      audience: fake.tokenEndpoint,
+      clientPrivateKeyPem: clientKeys.privateKeyPem,
+    });
+    const fullRes = await fake.fetchFn(fake.tokenEndpoint, {
+      method: "POST",
+      headers: { "content-type": "application/x-www-form-urlencoded" },
+      body: await mintForm(fullAssertion),
+    });
+    const fullToken = (await fullRes.json()) as { access_token: string };
+    const fullPayload = JSON.parse(
+      Buffer.from(fullToken.access_token.split(".")[1] ?? "", "base64url").toString("utf8"),
+    ) as Record<string, unknown>;
+    const fullClaims = fullPayload[AUTH_CLAIMS_CLAIM_KEY] as { serviceScopes: string[] };
+    expect(fullClaims.serviceScopes).toEqual(["lbrain", "linkplatform"]);
   });
 });

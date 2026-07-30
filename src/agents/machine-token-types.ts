@@ -59,22 +59,72 @@ export type ResolvedMachineToken = {
   tokenType: "Bearer";
 };
 
-/** RFC 8414 authorization-server metadata fields this client requires. */
+/**
+ * RFC 8414 authorization-server metadata fields required for Phase-1 PACI.
+ *
+ * Matches Platform `buildAuthorizationServerMetadata`: exact grant/auth/signing
+ * arrays, empty `response_types_supported`, and no `authorization_endpoint`.
+ */
 export type MachineTokenAuthorizationServerMetadata = {
   issuer: string;
   token_endpoint: string;
-  grant_types_supported?: string[];
-  token_endpoint_auth_methods_supported?: string[];
-  token_endpoint_auth_signing_alg_values_supported?: string[];
-  response_types_supported?: string[];
-  jwks_uri?: string;
-  introspection_endpoint?: string;
+  jwks_uri: string;
+  introspection_endpoint: string;
+  grant_types_supported: string[];
+  token_endpoint_auth_methods_supported: string[];
+  token_endpoint_auth_signing_alg_values_supported: string[];
+  introspection_endpoint_auth_methods_supported: string[];
+  response_types_supported: string[];
+  scopes_supported?: string[];
+  service_documentation?: string;
 };
 
 export type MachineTokenFetchFn = (
   input: RequestInfo | URL,
   init?: RequestInit,
 ) => Promise<Response>;
+
+/** Redacted health snapshot for one granted binding — never includes access tokens. */
+export type MachineTokenBindingHealth = {
+  pluginId: string;
+  bindingId: string;
+  granted: boolean;
+  registered: boolean;
+  cached: boolean;
+  /** Present only when a cache entry exists; absolute ms epoch. */
+  expiresAt?: number;
+};
+
+/**
+ * Binding-scoped acquisition / invalidation / health surface for one plugin.
+ *
+ * Host constructs this facade and injects it into plugins. Plugins must not
+ * construct facades, choose arbitrary plugin IDs/grants, or clear global cache.
+ */
+export type MachineTokenPluginFacade = {
+  readonly pluginId: string;
+  readonly grantedBindingIds: ReadonlySet<string>;
+  /**
+   * Acquire a Bearer access token for a granted binding.
+   * The binding's `bindingId` must be in `grantedBindingIds`.
+   */
+  acquire: (params: {
+    binding: MachineTokenBinding;
+    signal?: AbortSignal;
+    forceRefresh?: boolean;
+    fetchFn?: MachineTokenFetchFn;
+    now?: () => number;
+  }) => Promise<ResolvedMachineToken>;
+  /** Invalidate one granted binding's cached access token. */
+  invalidate: (bindingId: string) => void;
+  /** Redacted health for one binding id (granted or not). */
+  health: (bindingId: string) => MachineTokenBindingHealth;
+  /**
+   * Unregister this facade: invalidate all granted bindings and mark the
+   * facade inactive so later acquire/invalidate fail closed.
+   */
+  unregister: () => void;
+};
 
 /** Frozen PACI access-token lifetime (seconds). All other positive values rejected. */
 export const MACHINE_TOKEN_FROZEN_EXPIRES_IN_SECONDS = 900;

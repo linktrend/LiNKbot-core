@@ -9,16 +9,12 @@ import { SSEClientTransport } from "@modelcontextprotocol/sdk/client/sse.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import {
-  createMachineTokenPluginFacade,
   fingerprintMachineTokenKeyRef,
   type MachineTokenBinding,
   type MachineTokenPluginFacade,
   type ResolvedMachineToken,
 } from "openclaw/plugin-sdk/machine-token-runtime";
-import {
-  isSecretRef,
-  resolveConfiguredSecretInputString,
-} from "openclaw/plugin-sdk/secret-input-runtime";
+import { resolveConfiguredSecretInputString } from "openclaw/plugin-sdk/secret-input-runtime";
 import {
   fetchWithSsrFGuard,
   mergeSsrFPolicies,
@@ -26,6 +22,8 @@ import {
 } from "openclaw/plugin-sdk/ssrf-runtime";
 import type { OpenClawPluginApi } from "../runtime-api.js";
 import {
+  assertLinkbrainRemoteHttpsUrl,
+  isLinkbrainLocalTestLoopbackHost,
   parseLinkbrainMachineToken,
   type LinkbrainConfig,
   type LinkbrainMachineTokenConfig,
@@ -140,6 +138,22 @@ function mapHttpStatus(
   };
 }
 
+/** Exactly one bounded machine-token reissue on resource 401 or 403. */
+function isBoundedAuthReissueStatus(status: number): boolean {
+  return status === 401 || status === 403;
+}
+
+function isAuthReissueCandidateError(error: unknown): boolean {
+  if (error && typeof error === "object" && "status" in error) {
+    const status = (error as { status?: unknown }).status;
+    if (typeof status === "number" && isBoundedAuthReissueStatus(status)) {
+      return true;
+    }
+  }
+  const message = error instanceof Error ? error.message : String(error);
+  return /\b401\b|\b403\b|unauthorized|forbidden/iu.test(message);
+}
+
 function createStaticResultTransport(result: LinkbrainTransportResult): LinkbrainTransport {
   return {
     async write() {
@@ -205,15 +219,11 @@ async function resolveMachineTokenBearer(params: {
       ...(params.machineToken.audience ? { audience: params.machineToken.audience } : {}),
       ...(params.machineToken.scope ? { scope: params.machineToken.scope } : {}),
       clientAssertionKeyPem: keyResolved.value,
-      ...(isSecretRef(keyRef)
-        ? {
-            keyRefFingerprint: fingerprintMachineTokenKeyRef({
-              source: keyRef.source,
-              provider: keyRef.provider,
-              id: keyRef.id,
-            }),
-          }
-        : {}),
+      keyRefFingerprint: fingerprintMachineTokenKeyRef({
+        source: keyRef.source,
+        provider: keyRef.provider,
+        id: keyRef.id,
+      }),
     };
     const resolved = await params.machineTokenFacade.acquire({
       binding,
@@ -314,6 +324,7 @@ function expandEnvTemplate(value: string, env: NodeJS.ProcessEnv): string {
 function selectMcpMachineToken(
   server: ManagedMcpServerEntry,
   pluginMachineToken: LinkbrainMachineTokenConfig | undefined,
+  localTest?: boolean,
 ):
   | { status: "selected"; machineToken: LinkbrainMachineTokenConfig }
   | { status: "incomplete" }
@@ -324,9 +335,13 @@ function selectMcpMachineToken(
   }
   // Explicit machine_token mode only — incomplete bindings fail closed.
   if (server.auth === "machine_token") {
-    const serverToken = parseLinkbrainMachineToken(server.machineToken);
-    if (serverToken) {
-      return { status: "selected", machineToken: serverToken };
+    try {
+      const serverToken = parseLinkbrainMachineToken(server.machineToken, { localTest });
+      if (serverToken) {
+        return { status: "selected", machineToken: serverToken };
+      }
+    } catch {
+      // Invalid SecretRef/issuer → fall through; plugin binding may still apply.
     }
     if (pluginMachineToken) {
       return { status: "selected", machineToken: pluginMachineToken };
@@ -342,10 +357,13 @@ async function resolveMcpHeaders(params: {
   env: NodeJS.ProcessEnv;
   pluginMachineToken?: LinkbrainMachineTokenConfig;
   signal?: AbortSignal;
+  forceRefresh?: boolean;
+  localTest?: boolean;
   machineTokenFacade?: MachineTokenPluginFacade;
 }): Promise<{
   headers: Record<string, string>;
   authProfileOnly: boolean;
+  bindingId?: string;
   error?: LinkbrainTransportResult;
 }> {
   const headers: Record<string, string> = {};
@@ -369,7 +387,11 @@ async function resolveMcpHeaders(params: {
     }
   }
 
-  const selection = selectMcpMachineToken(params.server, params.pluginMachineToken);
+  const selection = selectMcpMachineToken(
+    params.server,
+    params.pluginMachineToken,
+    params.localTest,
+  );
   if (selection.status === "incomplete") {
     return {
       headers,
@@ -403,6 +425,7 @@ async function resolveMcpHeaders(params: {
       apiConfig: params.apiConfig,
       env: params.env,
       signal: params.signal,
+      forceRefresh: params.forceRefresh,
       machineTokenFacade: params.machineTokenFacade,
       pathPrefix: `mcp.servers.machineToken`,
     });
@@ -412,6 +435,11 @@ async function resolveMcpHeaders(params: {
     if (bearer.value) {
       headers.Authorization = `Bearer ${bearer.value}`;
     }
+    return {
+      headers,
+      authProfileOnly: false,
+      ...(bearer.bindingId ? { bindingId: bearer.bindingId } : {}),
+    };
   }
 
   const authProfileId =
@@ -536,11 +564,17 @@ function createHttpTransport(params: {
       if (bearer.error) {
         return bearer.error;
       }
-      // Operator-configured ingestionEndpoint may intentionally target private/LAN hosts.
-      // Hostname is still pinned to the configured endpoint host.
-      const policy = mergeSsrFPolicies(ssrfPolicyFromHttpBaseUrlAllowedHostname(params.endpoint), {
-        allowPrivateNetwork: true,
-      });
+      // Hostname pinned to configured endpoint. Private networks are not broadly
+      // allowed — only explicit local-test loopback may opt into private allowance.
+      const endpointUrl = new URL(params.endpoint);
+      const localTestLoopback =
+        params.config.environment === "test" &&
+        isLinkbrainLocalTestLoopbackHost(endpointUrl.hostname);
+      const policy = localTestLoopback
+        ? mergeSsrFPolicies(ssrfPolicyFromHttpBaseUrlAllowedHostname(params.endpoint), {
+            allowPrivateNetwork: true,
+          })
+        : ssrfPolicyFromHttpBaseUrlAllowedHostname(params.endpoint);
 
       const postOnce = async (accessToken: string) => {
         const guarded = await fetchWithSsrFGuard({
@@ -569,8 +603,12 @@ function createHttpTransport(params: {
       try {
         let guarded = await postOnce(bearer.value!);
         release = guarded.release;
-        // One bounded machine-token reissue on remote 401.
-        if (guarded.response.status === 401 && bearer.bindingId && params.machineTokenFacade) {
+        // Exactly one bounded machine-token reissue on remote 401/403 — no static bearer persistence.
+        if (
+          isBoundedAuthReissueStatus(guarded.response.status) &&
+          bearer.bindingId &&
+          params.machineTokenFacade
+        ) {
           params.machineTokenFacade.invalidate(bearer.bindingId);
           await release();
           release = undefined;
@@ -636,6 +674,7 @@ function createMcpTransport(params: {
   createMcpSession: (server: ManagedMcpServerEntry) => Promise<McpToolSession>;
   pluginMachineToken?: LinkbrainMachineTokenConfig;
   machineTokenFacade?: MachineTokenPluginFacade;
+  localTest?: boolean;
 }): LinkbrainTransport {
   return {
     async write(writeParams) {
@@ -656,69 +695,197 @@ function createMcpTransport(params: {
         };
       }
 
-      const { headers, authProfileOnly, error } = await resolveMcpHeaders({
-        server: params.server,
-        apiConfig: params.apiConfig,
-        env: params.env,
-        pluginMachineToken: params.pluginMachineToken,
-        signal: writeParams.signal,
-        machineTokenFacade: params.machineTokenFacade,
-      });
-      if (error) {
-        return error;
-      }
-      if (authProfileOnly) {
-        return {
-          ok: false,
-          retryable: true,
-          terminal: false,
-          errorCode: "auth_profile_required",
-          safeMessage:
-            "linkbrain MCP server uses oauth.authProfileId; Gateway must inject bearer auth before plugin-owned drain (prefer SecretRef Authorization header)",
-        };
-      }
-
-      let session: McpToolSession | undefined;
-      try {
-        const serverWithHeaders: ManagedMcpServerEntry = {
-          ...params.server,
-          headers,
-        };
-        session = await params.createMcpSession(serverWithHeaders);
-        const outcome = await session.callTool(writeParams.toolName, {
-          ...writeParams.arguments,
-          idempotencyKey: writeParams.idempotencyKey,
-        });
-        if (outcome.isError) {
+      if (typeof params.server.url === "string" && params.server.url.length > 0) {
+        try {
+          assertLinkbrainRemoteHttpsUrl(params.server.url, "mcp.servers.url", params.localTest);
+        } catch (error) {
           return {
             ok: false,
+            retryable: false,
             terminal: true,
-            errorCode: "mcp_tool_error",
-            safeMessage: "MCP tool returned isError",
+            errorCode: "endpoint_insecure",
+            safeMessage: error instanceof Error ? error.message : "mcp server URL rejected",
           };
         }
-        const result = isRecord(outcome.structuredContent)
-          ? outcome.structuredContent
-          : isRecord(outcome.content)
-            ? outcome.content
-            : undefined;
-        return { ok: true, result };
-      } catch (error) {
+      }
+
+      const runOnce = async (forceRefresh: boolean) => {
+        const { headers, authProfileOnly, bindingId, error } = await resolveMcpHeaders({
+          server: params.server,
+          apiConfig: params.apiConfig,
+          env: params.env,
+          pluginMachineToken: params.pluginMachineToken,
+          signal: writeParams.signal,
+          forceRefresh,
+          localTest: params.localTest,
+          machineTokenFacade: params.machineTokenFacade,
+        });
+        if (error) {
+          return { kind: "result" as const, result: error };
+        }
+        if (authProfileOnly) {
+          return {
+            kind: "result" as const,
+            result: {
+              ok: false,
+              retryable: true,
+              terminal: false,
+              errorCode: "auth_profile_required",
+              safeMessage:
+                "linkbrain MCP server uses oauth.authProfileId; Gateway must inject bearer auth before plugin-owned drain (prefer SecretRef Authorization header)",
+            } satisfies LinkbrainTransportResult,
+          };
+        }
+
+        let session: McpToolSession | undefined;
+        try {
+          const serverWithHeaders: ManagedMcpServerEntry = {
+            ...params.server,
+            headers,
+          };
+          session = await params.createMcpSession(serverWithHeaders);
+          const outcome = await session.callTool(writeParams.toolName, {
+            ...writeParams.arguments,
+            idempotencyKey: writeParams.idempotencyKey,
+          });
+          if (outcome.isError) {
+            return {
+              kind: "result" as const,
+              result: {
+                ok: false,
+                terminal: true,
+                errorCode: "mcp_tool_error",
+                safeMessage: "MCP tool returned isError",
+              } satisfies LinkbrainTransportResult,
+            };
+          }
+          const result = isRecord(outcome.structuredContent)
+            ? outcome.structuredContent
+            : isRecord(outcome.content)
+              ? outcome.content
+              : undefined;
+          return {
+            kind: "result" as const,
+            result: { ok: true, result } satisfies LinkbrainTransportResult,
+          };
+        } catch (error) {
+          return {
+            kind: "throw" as const,
+            error,
+            bindingId,
+          };
+        } finally {
+          if (session) {
+            try {
+              await session.close();
+            } catch {
+              // ignore close errors
+            }
+          }
+        }
+      };
+
+      const first = await runOnce(false);
+      if (first.kind === "result") {
+        return first.result;
+      }
+      if (
+        first.bindingId &&
+        params.machineTokenFacade &&
+        isAuthReissueCandidateError(first.error)
+      ) {
+        params.machineTokenFacade.invalidate(first.bindingId);
+        const second = await runOnce(true);
+        if (second.kind === "result") {
+          return second.result;
+        }
         return {
           ok: false,
           retryable: true,
           errorCode: "mcp_connect_error",
-          safeMessage: error instanceof Error ? error.message : "MCP connect/call failed",
+          safeMessage:
+            second.error instanceof Error ? second.error.message : "MCP connect/call failed",
         };
-      } finally {
-        if (session) {
-          try {
-            await session.close();
-          } catch {
-            // ignore close errors
-          }
-        }
       }
+      return {
+        ok: false,
+        retryable: true,
+        errorCode: "mcp_connect_error",
+        safeMessage: first.error instanceof Error ? first.error.message : "MCP connect/call failed",
+      };
+    },
+  };
+}
+
+/**
+ * Thin local adapter for test injection only.
+ *
+ * Residual (Lane C/D): production must receive a host-injected
+ * `MachineTokenPluginFacade` via plugin runtime API. `createMachineTokenPluginFacade`
+ * was removed from the public Plugin SDK; plugins must not import
+ * src/agents/machine-token-host (extensions boundary forbids src/agents imports).
+ */
+function createLocalMachineTokenFacadeAdapter(params: {
+  pluginId: string;
+  grantedBindingIds: readonly string[];
+  resolveAccess: ResolveMachineTokenAccessFn;
+  invalidateCache?: InvalidateMachineTokenCacheFn;
+}): MachineTokenPluginFacade {
+  const grantedBindingIds = new Set(params.grantedBindingIds);
+  const fingerprintsByBindingId = new Map<string, string>();
+  let active = true;
+  return {
+    pluginId: params.pluginId,
+    grantedBindingIds,
+    async acquire(acquireParams) {
+      if (!active) {
+        throw new Error(`Machine-token facade for plugin "${params.pluginId}" is unregistered`);
+      }
+      if (!grantedBindingIds.has(acquireParams.binding.bindingId)) {
+        throw new Error(
+          `Plugin "${params.pluginId}" is not granted machine-token binding "${acquireParams.binding.bindingId}"`,
+        );
+      }
+      const resolved = await params.resolveAccess({
+        binding: acquireParams.binding,
+        ...(acquireParams.signal ? { signal: acquireParams.signal } : {}),
+        ...(acquireParams.forceRefresh !== undefined
+          ? { forceRefresh: acquireParams.forceRefresh }
+          : {}),
+      });
+      fingerprintsByBindingId.set(
+        acquireParams.binding.bindingId,
+        resolved.bindingFingerprint ?? `fp-${acquireParams.binding.bindingId}`,
+      );
+      return resolved;
+    },
+    invalidate(bindingId) {
+      if (!active) {
+        throw new Error(`Machine-token facade for plugin "${params.pluginId}" is unregistered`);
+      }
+      if (!grantedBindingIds.has(bindingId)) {
+        throw new Error(
+          `Plugin "${params.pluginId}" is not granted machine-token binding "${bindingId}"`,
+        );
+      }
+      const fingerprint = fingerprintsByBindingId.get(bindingId);
+      if (fingerprint && params.invalidateCache) {
+        params.invalidateCache(fingerprint);
+        fingerprintsByBindingId.delete(bindingId);
+      }
+    },
+    health(bindingId) {
+      return {
+        pluginId: params.pluginId,
+        bindingId,
+        granted: grantedBindingIds.has(bindingId),
+        registered: active,
+        cached: fingerprintsByBindingId.has(bindingId),
+      };
+    },
+    unregister() {
+      active = false;
+      fingerprintsByBindingId.clear();
     },
   };
 }
@@ -739,21 +906,27 @@ export function resolveLinkbrainTransport(
   if (mode === "mcp") {
     const peekServer = readManagedServer(params.api.config, params.config.mcpServerName);
     if (peekServer?.auth === "machine_token") {
-      const serverToken = parseLinkbrainMachineToken(peekServer.machineToken);
-      if (serverToken) {
-        grantedBindingIds.add(serverToken.bindingId);
+      try {
+        const serverToken = parseLinkbrainMachineToken(peekServer.machineToken, {
+          localTest: params.config.environment === "test",
+        });
+        if (serverToken) {
+          grantedBindingIds.add(serverToken.bindingId);
+        }
+      } catch {
+        // Invalid server binding ignored here; write path fail-closes.
       }
     }
   }
+  // Prefer host-injected facade. Local adapter is test-only when resolveAccess is injected.
+  // Residual: no host runtime seam yet to inject MachineTokenPluginFacade into plugins.
   const machineTokenFacade =
     params.machineTokenFacade ??
-    (grantedBindingIds.size > 0
-      ? createMachineTokenPluginFacade({
+    (grantedBindingIds.size > 0 && params.resolveMachineTokenAccess
+      ? createLocalMachineTokenFacadeAdapter({
           pluginId: "linkbrain",
           grantedBindingIds: [...grantedBindingIds],
-          ...(params.resolveMachineTokenAccess
-            ? { resolveAccess: params.resolveMachineTokenAccess }
-            : {}),
+          resolveAccess: params.resolveMachineTokenAccess,
           ...(params.invalidateMachineTokenCache
             ? { invalidateCache: params.invalidateMachineTokenCache }
             : {}),
@@ -839,6 +1012,7 @@ export function resolveLinkbrainTransport(
       createMcpSession,
       pluginMachineToken: params.config.machineToken,
       machineTokenFacade,
+      localTest: params.config.environment === "test",
     });
   }
 

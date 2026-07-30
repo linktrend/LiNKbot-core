@@ -1,9 +1,13 @@
 /**
  * Bearer injection for machine-token bindings on remote MCP HTTP fetches.
  *
- * Same-origin resource requests get a resolved Bearer; token/discovery traffic
- * uses authFetchFn (no Authorization leakage). One bounded reissue on matching
- * 401 and 403 — never retry endlessly.
+ * Resource requests may use an injected MCP resource fetchFn. Discovery/token
+ * mint NEVER falls back to that resource fetch — omit authFetchFn to use the
+ * hardened machine-token network, or pass an explicit auth-only fetch (test
+ * seam) that still must not be the general MCP resource transport.
+ *
+ * Same-origin resource requests get a resolved Bearer. One bounded reissue on
+ * matching 401 and 403 — never retry endlessly.
  */
 import type { FetchLike } from "@modelcontextprotocol/sdk/shared/transport.js";
 import type { MachineTokenFetchFn } from "./machine-token-types.js";
@@ -38,8 +42,13 @@ function isBoundedReissueStatus(status: number): boolean {
 
 /** Wrap fetch with same-origin machine-token bearer injection. */
 export function withMachineTokenBearer(params: {
+  /** MCP / resource transport fetch (may be injected). Never used for mint. */
   fetchFn: FetchLike | MachineTokenFetchFn;
-  /** Fetch used for discovery/token mint (no resource Authorization). */
+  /**
+   * Optional auth-only fetch for discovery/token mint (TEST SEAM).
+   * When omitted, resolveMachineTokenAccess uses the hardened auth network
+   * (fetchWithSsrFGuard). Must never be the general MCP resource fetchFn.
+   */
   authFetchFn?: FetchLike | MachineTokenFetchFn;
   serverName?: string;
   resourceUrl: string;
@@ -47,7 +56,9 @@ export function withMachineTokenBearer(params: {
   binding: MachineTokenBinding;
 }): FetchLike {
   const resourceOrigin = new URL(params.resourceUrl).origin;
-  const authFetchFn = params.authFetchFn ?? params.fetchFn;
+  // Do NOT fall back to params.fetchFn — that would let an injected MCP
+  // resource fetch bypass the hardened auth network boundary.
+  const authFetchFn = params.authFetchFn;
 
   return async (url, init) => {
     if (new URL(url).origin !== resourceOrigin) {
@@ -58,7 +69,7 @@ export function withMachineTokenBearer(params: {
     const baseHeaders = mergeRequestHeaders(params.headers, init as RequestInit | undefined);
     const first = await resolveMachineTokenAccess({
       binding: params.binding,
-      fetchFn: authFetchFn,
+      ...(authFetchFn ? { fetchFn: authFetchFn } : {}),
       ...(signal ? { signal } : {}),
     });
     void params.serverName;
@@ -75,7 +86,7 @@ export function withMachineTokenBearer(params: {
     invalidateMachineTokenCache(params.binding);
     const second = await resolveMachineTokenAccess({
       binding: params.binding,
-      fetchFn: authFetchFn,
+      ...(authFetchFn ? { fetchFn: authFetchFn } : {}),
       forceRefresh: true,
       ...(signal ? { signal } : {}),
     });

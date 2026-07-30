@@ -51,15 +51,8 @@ describe("withMachineTokenBearer", () => {
       clientPublicKeyPem: publicKeyPem,
     });
     const resourceFetch = vi.fn<MachineTokenFetchFn>(async () => new Response("ok"));
-    const dispatch: MachineTokenFetchFn = async (input, init) => {
-      const url = new URL(input instanceof Request ? input.url : String(input));
-      if (url.origin === new URL(ISSUER).origin) {
-        return await fake.fetchFn(input, init);
-      }
-      return await resourceFetch(input, init);
-    };
     const wrapped = withMachineTokenBearer({
-      fetchFn: dispatch,
+      fetchFn: resourceFetch,
       authFetchFn: fake.fetchFn,
       binding,
       resourceUrl: RESOURCE,
@@ -74,6 +67,26 @@ describe("withMachineTokenBearer", () => {
     );
     expect(bearer(callHeaders(resourceFetch, 1))).toBeNull();
     expect(fake.tokenRequestCount()).toBe(1);
+  });
+
+  it("does not use the injected resource fetchFn for discovery or mint", async () => {
+    const { binding } = await createBinding();
+    const resourceFetch = vi.fn<MachineTokenFetchFn>(async (input) => {
+      const url = String(input instanceof Request ? input.url : input);
+      if (url.includes("paci.test") || url.includes("well-known") || url.includes("oauth")) {
+        throw new Error("resource fetch must not handle auth traffic");
+      }
+      return new Response("ok");
+    });
+    const wrapped = withMachineTokenBearer({
+      fetchFn: resourceFetch,
+      // authFetchFn omitted → hardened auth network (not resource fetch)
+      binding,
+      resourceUrl: RESOURCE,
+    });
+
+    await expect(wrapped(RESOURCE)).rejects.toThrow(/Machine-token /u);
+    expect(resourceFetch).not.toHaveBeenCalled();
   });
 
   it("reissues once on 401 and retries with the replacement token", async () => {
@@ -94,15 +107,8 @@ describe("withMachineTokenBearer", () => {
       }
       return new Response("ok", { status: 200 });
     });
-    const dispatch: MachineTokenFetchFn = async (input, init) => {
-      const url = new URL(input instanceof Request ? input.url : String(input));
-      if (url.origin === new URL(ISSUER).origin) {
-        return await fake.fetchFn(input, init);
-      }
-      return await resourceFetch(input, init);
-    };
     const wrapped = withMachineTokenBearer({
-      fetchFn: dispatch,
+      fetchFn: resourceFetch,
       authFetchFn: fake.fetchFn,
       binding,
       resourceUrl: RESOURCE,
@@ -130,15 +136,8 @@ describe("withMachineTokenBearer", () => {
       }
       return new Response("forbidden", { status: 403 });
     });
-    const dispatch: MachineTokenFetchFn = async (input, init) => {
-      const url = new URL(input instanceof Request ? input.url : String(input));
-      if (url.origin === new URL(ISSUER).origin) {
-        return await fake.fetchFn(input, init);
-      }
-      return await resourceFetch(input, init);
-    };
     const wrapped = withMachineTokenBearer({
-      fetchFn: dispatch,
+      fetchFn: resourceFetch,
       authFetchFn: fake.fetchFn,
       binding,
       resourceUrl: RESOURCE,
