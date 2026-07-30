@@ -4,9 +4,11 @@
 import crypto from "node:crypto";
 import type { FetchLike } from "@modelcontextprotocol/sdk/shared/transport.js";
 import type { OpenClawConfig } from "../config/types.openclaw.js";
+import { resolveConfiguredSecretInputString } from "../gateway/resolve-configured-secret-input-string.js";
 import type { BundleMcpConfig, BundleMcpServerConfig } from "../plugins/bundle-mcp.js";
 import { resolveApiKeyForProfile } from "./auth-profiles/oauth.js";
 import { loadAuthProfileStoreForSecretsRuntime } from "./auth-profiles/store.js";
+import { resolveMachineTokenAccess, type MachineTokenBinding } from "./machine-token.js";
 import {
   buildMcpHttpFetch,
   withoutMcpAuthorizationHeader,
@@ -47,10 +49,54 @@ export function resolveMcpAuthProfileId(rawServer: unknown): string | undefined 
 
 /** Returns whether a server needs an OpenClaw-managed bearer projected externally. */
 export function requiresMcpBearerProjection(rawServer: unknown): boolean {
-  if (!isRecord(rawServer) || rawServer.auth !== "oauth") {
+  if (!isRecord(rawServer)) {
+    return false;
+  }
+  if (rawServer.auth === "machine_token" || isRecord(rawServer.machineToken)) {
+    return typeof rawServer.url === "string";
+  }
+  if (rawServer.auth !== "oauth") {
     return false;
   }
   return Boolean(resolveMcpAuthProfileId(rawServer) || typeof rawServer.url === "string");
+}
+
+async function resolveMcpMachineTokenBearerToken(params: {
+  serverName: string;
+  server: BundleMcpServerConfig;
+  cfg?: OpenClawConfig;
+}): Promise<string | undefined> {
+  const resolved = resolveMcpTransportConfig(params.serverName, params.server);
+  if (!resolved || resolved.kind !== "http" || !resolved.machineToken) {
+    return undefined;
+  }
+  if (!params.cfg) {
+    throw new Error(
+      `MCP server "${params.serverName}" uses machine-token auth, but no OpenClaw config was provided to resolve clientAssertionKeyRef.`,
+    );
+  }
+  const keyResolved = await resolveConfiguredSecretInputString({
+    config: params.cfg,
+    env: process.env,
+    value: resolved.machineToken.clientAssertionKeyRef,
+    path: `mcp.servers.${params.serverName}.machineToken.clientAssertionKeyRef`,
+  });
+  if (!keyResolved.value) {
+    throw new Error(
+      keyResolved.unresolvedRefReason ??
+        `MCP server "${params.serverName}" could not resolve machineToken.clientAssertionKeyRef.`,
+    );
+  }
+  const binding: MachineTokenBinding = {
+    bindingId: resolved.machineToken.bindingId,
+    issuerUrl: resolved.machineToken.issuerUrl,
+    clientId: resolved.machineToken.clientId,
+    ...(resolved.machineToken.audience ? { audience: resolved.machineToken.audience } : {}),
+    ...(resolved.machineToken.scope ? { scope: resolved.machineToken.scope } : {}),
+    clientAssertionKeyPem: keyResolved.value,
+  };
+  const access = await resolveMachineTokenAccess({ binding });
+  return access.accessToken;
 }
 
 async function resolveMcpAuthProfileBearerToken(
@@ -104,6 +150,16 @@ async function resolveMcpBearerToken(params: {
   cfg?: OpenClawConfig;
   agentDir?: string;
 }): Promise<string | undefined> {
+  if (
+    isRecord(params.server) &&
+    (params.server.auth === "machine_token" || isRecord(params.server.machineToken))
+  ) {
+    return await resolveMcpMachineTokenBearerToken({
+      serverName: params.serverName,
+      server: params.server,
+      cfg: params.cfg,
+    });
+  }
   const authProfileId = resolveMcpAuthProfileId(params.server);
   if (authProfileId) {
     return await resolveMcpAuthProfileBearerToken({
@@ -183,6 +239,7 @@ function stripOpenClawOnlyOAuthConfig(server: BundleMcpServerConfig): BundleMcpS
   const next = { ...server };
   delete next.auth;
   delete next.oauth;
+  delete next.machineToken;
   return next;
 }
 

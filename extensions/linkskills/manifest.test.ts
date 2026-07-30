@@ -95,4 +95,30 @@ describe("linkskills manifest/config", () => {
       }),
     ).toThrow(/SecretRef/);
   });
+
+  it("parses optional machineToken with SecretRef assertion key", () => {
+    const config = parseLinkskillsConfig({
+      machineToken: {
+        bindingId: "linkskills-stage",
+        issuerUrl: "https://issuer.example.test",
+        clientId: "skills-client",
+        clientAssertionKeyRef: {
+          source: "env",
+          provider: "default",
+          id: "LINKTREND_SKILLS_ASSERTION_PEM",
+        },
+      },
+    });
+    expect(config.machineToken).toEqual({
+      bindingId: "linkskills-stage",
+      issuerUrl: "https://issuer.example.test",
+      clientId: "skills-client",
+      clientAssertionKeyRef: {
+        source: "env",
+        provider: "default",
+        id: "LINKTREND_SKILLS_ASSERTION_PEM",
+      },
+    });
+    expect(parseLinkskillsConfig({}).machineToken).toBeUndefined();
+  });
 });

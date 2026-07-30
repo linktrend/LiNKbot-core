@@ -1,5 +1,21 @@
 // Defines MCP server and tool approval configuration types.
+import type { SecretInput } from "./types.secrets.js";
+
 export type McpCodexToolApprovalMode = "auto" | "prompt" | "approve";
+
+/** Machine-token (client_credentials / private_key_jwt) binding for remote MCP HTTP. */
+export type McpServerMachineTokenConfig = {
+  bindingId: string;
+  issuerUrl: string;
+  clientId: string;
+  audience?: string;
+  scope?: string;
+  /**
+   * SecretRef or literal PEM for private_key_jwt.
+   * Literals are forbidden in shipped templates; schema allows SecretInput.
+   */
+  clientAssertionKeyRef: SecretInput;
+};
 
 export type McpServerCodexConfig = {
   /** OpenClaw agent ids that should receive this server in Codex app-server threads. */
@@ -46,8 +62,13 @@ export type McpServerConfig = {
   requestTimeoutMs?: number;
   /** Whether this server can safely handle concurrent tool calls. */
   supportsParallelToolCalls?: boolean;
-  /** HTTP OAuth mode. Tokens are stored in OpenClaw state, not in config. */
-  auth?: "oauth";
+  /**
+   * HTTP auth mode.
+   * Prefer a single driver: interactive `"oauth"` or machine-token `"machine_token"`.
+   * When both oauth and machineToken blocks are present and auth is `"machine_token"`,
+   * the machineToken binding wins at runtime.
+   */
+  auth?: "oauth" | "machine_token";
   /** Optional OAuth client metadata overrides for HTTP MCP servers. */
   oauth?: {
     /** Refresh-capable auth profile used to inject the current bearer token. */
@@ -56,6 +77,11 @@ export type McpServerConfig = {
     redirectUrl?: string;
     clientMetadataUrl?: string;
   };
+  /**
+   * Machine-token binding for non-interactive client_credentials / private_key_jwt.
+   * Do not combine with interactive oauth as the active auth driver.
+   */
+  machineToken?: McpServerMachineTokenConfig;
   /** HTTP TLS verification, disabled only for explicitly trusted private endpoints. */
   sslVerify?: boolean;
   /** Alias for sslVerify. */

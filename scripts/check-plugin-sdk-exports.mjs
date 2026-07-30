@@ -32,6 +32,7 @@ const requiredSubpathExports = {
     "normalizeSecretInputString",
     "resolveSecretInputString",
   ],
+  "machine-token-runtime": ["invalidateMachineTokenCache", "resolveMachineTokenAccess"],
 };
 
 let missing = 0;

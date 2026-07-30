@@ -13,6 +13,11 @@
           "path": "skillsCredential",
           "expected": "string",
           "ownerKind": "plugin"
+        },
+        {
+          "path": "machineToken.clientAssertionKeyRef",
+          "expected": "string",
+          "ownerKind": "plugin"
         }
       ]
     }
@@ -38,6 +43,10 @@
       "label": "Skills Credential",
       "help": "SecretRef or string for the Skills-only credential. Never paste live secrets into source.",
       "sensitive": true
+    },
+    "machineToken": {
+      "label": "Machine Token Binding",
+      "help": "Optional client_credentials + private_key_jwt binding. When set, HTTP uses machine-token instead of skillsCredential. bindingId must not equal Brain bindingId."
     },
     "redactionPolicyVersion": {
       "label": "Redaction Policy Version",
@@ -82,6 +91,19 @@
           { "type": "string", "minLength": 1 },
           { "$ref": "#/$defs/secretRef" }
         ]
+      },
+      "machineToken": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["bindingId", "issuerUrl", "clientId", "clientAssertionKeyRef"],
+        "properties": {
+          "bindingId": { "type": "string", "minLength": 1 },
+          "issuerUrl": { "type": "string", "minLength": 1 },
+          "clientId": { "type": "string", "minLength": 1 },
+          "audience": { "type": "string" },
+          "scope": { "type": "string" },
+          "clientAssertionKeyRef": { "$ref": "#/$defs/secretInput" }
+        }
       }
     },
     "properties": {
@@ -116,6 +138,9 @@
       },
       "skillsCredential": {
         "$ref": "#/$defs/secretInput"
+      },
+      "machineToken": {
+        "$ref": "#/$defs/machineToken"
       },
       "redactionPolicyVersion": {
         "type": "string",

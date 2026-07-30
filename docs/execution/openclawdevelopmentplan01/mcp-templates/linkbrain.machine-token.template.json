@@ -1,0 +1,69 @@
+{
+  "_comment": "TEMPLATE ONLY — machine-token / client_credentials path for Brain MCP. No secret values. enabled=false. clientAssertionKeyRef is a SecretRef name only. Requires Platform PACI issuer + Principal live unlock.",
+  "mcp": {
+    "servers": {
+      "linkbrain": {
+        "enabled": false,
+        "transport": "streamable-http",
+        "url": "https://brain.stage.example.invalid/mcp",
+        "connectionTimeoutMs": 5000,
+        "requestTimeoutMs": 20000,
+        "auth": "machine_token",
+        "machineToken": {
+          "bindingId": "linkbrain-stage",
+          "issuerUrl": "https://auth.stage.linkplatform.linktrend.dev",
+          "clientId": "openclaw-lisa-brain-stage",
+          "scope": "lbrain",
+          "clientAssertionKeyRef": {
+            "source": "env",
+            "provider": "default",
+            "id": "LINKTREND_LINKBRAIN_STAGE_PACI_CLIENT_ASSERTION_KEY"
+          }
+        },
+        "toolFilter": {
+          "include": [
+            "brain_browse",
+            "brain_search",
+            "brain_load",
+            "brain_append_finding",
+            "brain_capture_batch",
+            "brain_episode_checkpoint",
+            "brain_private_search",
+            "brain_private_load",
+            "brain_task_start",
+            "brain_task_update",
+            "brain_inbox_read",
+            "brain_conflict_respond",
+            "brain_message_send",
+            "brain_checkpoint_write",
+            "brain_handoff_create",
+            "brain_handoff_accept",
+            "brain_task_close"
+          ]
+        }
+      }
+    }
+  },
+  "plugins": {
+    "entries": {
+      "linkbrain": {
+        "enabled": false,
+        "config": {
+          "transportMode": "disabled",
+          "mcpServerName": "linkbrain",
+          "machineToken": {
+            "bindingId": "linkbrain-stage",
+            "issuerUrl": "https://auth.stage.linkplatform.linktrend.dev",
+            "clientId": "openclaw-lisa-brain-stage",
+            "scope": "lbrain",
+            "clientAssertionKeyRef": {
+              "source": "env",
+              "provider": "default",
+              "id": "LINKTREND_LINKBRAIN_STAGE_PACI_CLIENT_ASSERTION_KEY"
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -326,13 +326,25 @@ const McpServerSchema = z
     requestTimeoutMs: z.number().finite().positive().optional(),
     supportsParallelToolCalls: z.boolean().optional(),
     supports_parallel_tool_calls: z.boolean().optional(),
-    auth: z.literal("oauth").optional(),
+    // Prefer one auth driver. When both oauth and machineToken are present and
+    // auth is "machine_token", machineToken wins at runtime transport selection.
+    auth: z.union([z.literal("oauth"), z.literal("machine_token")]).optional(),
     oauth: z
       .strictObject({
         authProfileId: z.string().trim().min(1).optional(),
         scope: z.string().trim().min(1).optional(),
         redirectUrl: HttpUrlSchema.optional(),
         clientMetadataUrl: McpOAuthClientMetadataUrlSchema.optional(),
+      })
+      .optional(),
+    machineToken: z
+      .strictObject({
+        bindingId: z.string().trim().min(1),
+        issuerUrl: HttpUrlSchema,
+        clientId: z.string().trim().min(1),
+        audience: z.string().trim().min(1).optional(),
+        scope: z.string().trim().min(1).optional(),
+        clientAssertionKeyRef: SecretInputSchema.register(sensitive),
       })
       .optional(),
     sslVerify: z.boolean().optional(),

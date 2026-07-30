@@ -211,4 +211,115 @@ describe("linkskills transport modes", () => {
       errorCode: "auth_profile_required",
     });
   });
+
+  it("http mode posts with machineToken bearer via injected resolver", async () => {
+    const fetchImpl = vi.fn(async (_url: string | URL | Request, init?: RequestInit) => {
+      const headers = new Headers(init?.headers);
+      expect(headers.get("authorization")).toBe("Bearer mt-skills-access");
+      return new Response(JSON.stringify({ ok: true }), { status: 200 });
+    });
+    const resolveMachineTokenAccess = vi.fn(async ({ binding }) => {
+      expect(binding.bindingId).toBe("linkskills-stage");
+      return {
+        bindingId: binding.bindingId,
+        accessToken: "mt-skills-access",
+        expiresAt: Date.now() + 60_000,
+        tokenType: "Bearer" as const,
+      };
+    });
+    const config = parseLinkskillsConfig({
+      transportMode: "http",
+      skillsEndpoint: "https://skills.example.test/telemetry",
+      machineToken: {
+        bindingId: "linkskills-stage",
+        issuerUrl: "https://issuer.example.test",
+        clientId: "skills-client",
+        clientAssertionKeyRef: {
+          source: "env",
+          provider: "default",
+          id: "LINKTREND_SKILLS_ASSERTION_PEM",
+        },
+      },
+    });
+    const transport = resolveLinkskillsTransport({
+      api: stubApi(),
+      config,
+      fetchImpl: fetchImpl as unknown as typeof fetch,
+      env: { LINKTREND_SKILLS_ASSERTION_PEM: "PEM-SKILLS" },
+      resolveMachineTokenAccess,
+    });
+    const result = await transport.write(writeArgs);
+    expect(result.ok).toBe(true);
+    expect(resolveMachineTokenAccess).toHaveBeenCalledOnce();
+  });
+
+  it("mcp machine_token injects bearer and does not return auth_profile_required", async () => {
+    const seenHeaders: Array<Record<string, unknown> | undefined> = [];
+    const resolveMachineTokenAccess = vi.fn(async ({ binding }) => ({
+      bindingId: binding.bindingId,
+      accessToken: "mt-mcp-skills",
+      expiresAt: Date.now() + 60_000,
+      tokenType: "Bearer" as const,
+    }));
+    const config = parseLinkskillsConfig({
+      transportMode: "mcp",
+      machineToken: {
+        bindingId: "linkskills-stage",
+        issuerUrl: "https://issuer.example.test",
+        clientId: "skills-client",
+        clientAssertionKeyRef: "literal-pem",
+      },
+    });
+    const transport = resolveLinkskillsTransport({
+      api: stubApi({
+        mcp: {
+          servers: {
+            linkskills: {
+              enabled: true,
+              url: "https://mcp.example.test/skills",
+              auth: "machine_token",
+              machineToken: {
+                bindingId: "linkskills-stage",
+                issuerUrl: "https://issuer.example.test",
+                clientId: "skills-client",
+                clientAssertionKeyRef: "server-pem",
+              },
+            },
+          },
+        },
+      }),
+      config,
+      resolveMachineTokenAccess,
+      createMcpSession: async (server) => {
+        seenHeaders.push(server.headers);
+        return {
+          async callTool() {
+            return { structuredContent: { ok: true } };
+          },
+          async close() {},
+        };
+      },
+    });
+    const result = await transport.write(writeArgs);
+    expect(result.ok).toBe(true);
+    expect(result.errorCode).not.toBe("auth_profile_required");
+    expect(seenHeaders[0]).toMatchObject({ Authorization: "Bearer mt-mcp-skills" });
+    expect(resolveMachineTokenAccess.mock.calls[0]![0].binding.clientAssertionKeyPem).toBe(
+      "server-pem",
+    );
+  });
+
+  it("skills and brain machineToken fixtures use distinct bindingIds", () => {
+    const skills = parseLinkskillsConfig({
+      machineToken: {
+        bindingId: "linkskills-stage",
+        issuerUrl: "https://issuer.example.test",
+        clientId: "skills-client",
+        clientAssertionKeyRef: "pem-skills",
+      },
+    });
+    const brainBindingId = "linkbrain-stage";
+    expect(skills.machineToken?.bindingId).toBe("linkskills-stage");
+    expect(skills.machineToken?.bindingId).not.toBe(brainBindingId);
+  });
 });

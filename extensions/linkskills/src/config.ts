@@ -12,6 +12,16 @@ type LinkskillsEnvironment = "test" | "stage" | "production";
 
 export type LinkskillsTransportMode = "disabled" | "fake" | "mcp" | "http";
 
+/** Optional machine-token binding for non-interactive HTTP/MCP auth. */
+export type LinkskillsMachineTokenConfig = {
+  bindingId: string;
+  issuerUrl: string;
+  clientId: string;
+  audience?: string;
+  scope?: string;
+  clientAssertionKeyRef: LinkskillsSecretInput;
+};
+
 export type LinkskillsConfig = {
   mcpDiscoveryRead: boolean;
   governedExecution: boolean;
@@ -23,6 +33,12 @@ export type LinkskillsConfig = {
   mcpServerName: string;
   skillsEndpoint?: string;
   skillsCredential?: LinkskillsSecretInput;
+  /**
+   * Optional machine-token binding. When set, HTTP transport uses
+   * client_credentials + private_key_jwt instead of skillsCredential.
+   * Absent = existing SecretRef / MCP behavior unchanged.
+   */
+  machineToken?: LinkskillsMachineTokenConfig;
   redactionPolicyVersion: string;
   batchMaxEvents: number;
   flushIntervalMs: number;
@@ -61,7 +77,7 @@ function readPositiveInt(value: unknown, fallback: number, minimum: number): num
   return value;
 }
 
-function parseSecretInput(value: unknown): LinkskillsSecretInput | undefined {
+function parseSecretInput(value: unknown, fieldName: string): LinkskillsSecretInput | undefined {
   if (value === undefined) {
     return undefined;
   }
@@ -69,7 +85,7 @@ function parseSecretInput(value: unknown): LinkskillsSecretInput | undefined {
     return value;
   }
   if (!isRecord(value)) {
-    throw new Error("linkskills: skillsCredential must be a string or SecretRef object");
+    throw new Error(`linkskills: ${fieldName} must be a string or SecretRef object`);
   }
   const source = value.source;
   const provider = value.provider;
@@ -82,13 +98,55 @@ function parseSecretInput(value: unknown): LinkskillsSecretInput | undefined {
     id.length === 0
   ) {
     throw new Error(
-      'linkskills: skillsCredential SecretRef requires source ("env"|"file"|"exec"), provider, and id',
+      `linkskills: ${fieldName} SecretRef requires source ("env"|"file"|"exec"), provider, and id`,
     );
   }
   if (Object.keys(value).some((key) => key !== "source" && key !== "provider" && key !== "id")) {
-    throw new Error("linkskills: skillsCredential SecretRef has unexpected properties");
+    throw new Error(`linkskills: ${fieldName} SecretRef has unexpected properties`);
   }
   return { source, provider, id };
+}
+
+function parseNonEmptyString(value: unknown, fieldName: string): string {
+  if (typeof value !== "string" || value.length === 0) {
+    throw new Error(`linkskills: ${fieldName} must be a non-empty string`);
+  }
+  return value;
+}
+
+/**
+ * Parses an optional machine-token binding. Returns undefined when absent.
+ * Used for plugin config and loosely-typed mcp.servers[*].machineToken blocks.
+ */
+export function parseLinkskillsMachineToken(
+  value: unknown,
+): LinkskillsMachineTokenConfig | undefined {
+  if (value === undefined || value === null) {
+    return undefined;
+  }
+  if (!isRecord(value)) {
+    throw new Error("linkskills: machineToken must be an object");
+  }
+  const clientAssertionKeyRef = parseSecretInput(
+    value.clientAssertionKeyRef,
+    "machineToken.clientAssertionKeyRef",
+  );
+  if (clientAssertionKeyRef === undefined) {
+    throw new Error("linkskills: machineToken.clientAssertionKeyRef is required");
+  }
+  const binding: LinkskillsMachineTokenConfig = {
+    bindingId: parseNonEmptyString(value.bindingId, "machineToken.bindingId"),
+    issuerUrl: parseNonEmptyString(value.issuerUrl, "machineToken.issuerUrl"),
+    clientId: parseNonEmptyString(value.clientId, "machineToken.clientId"),
+    clientAssertionKeyRef,
+  };
+  if (typeof value.audience === "string" && value.audience.length > 0) {
+    binding.audience = value.audience;
+  }
+  if (typeof value.scope === "string" && value.scope.length > 0) {
+    binding.scope = value.scope;
+  }
+  return binding;
 }
 
 function parseEnvironment(value: unknown): LinkskillsEnvironment {
@@ -123,6 +181,7 @@ export function parseLinkskillsConfig(value: unknown): LinkskillsConfig {
     typeof raw.mcpServerName === "string" && raw.mcpServerName.length > 0
       ? raw.mcpServerName
       : DEFAULT_LINKSKILLS_CONFIG.mcpServerName;
+  const machineToken = parseLinkskillsMachineToken(raw.machineToken);
 
   return {
     mcpDiscoveryRead: readBoolean(raw.mcpDiscoveryRead, DEFAULT_LINKSKILLS_CONFIG.mcpDiscoveryRead),
@@ -136,8 +195,9 @@ export function parseLinkskillsConfig(value: unknown): LinkskillsConfig {
     mcpServerName,
     ...(skillsEndpoint ? { skillsEndpoint } : {}),
     ...(raw.skillsCredential !== undefined
-      ? { skillsCredential: parseSecretInput(raw.skillsCredential) }
+      ? { skillsCredential: parseSecretInput(raw.skillsCredential, "skillsCredential") }
       : {}),
+    ...(machineToken ? { machineToken } : {}),
     redactionPolicyVersion,
     batchMaxEvents: readPositiveInt(
       raw.batchMaxEvents,

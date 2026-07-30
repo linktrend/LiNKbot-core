@@ -91,4 +91,32 @@ describe("linkbrain manifest/config", () => {
       }),
     ).toThrow(/SecretRef/);
   });
+
+  it("parses optional machineToken with SecretRef assertion key", () => {
+    const config = parseLinkbrainConfig({
+      machineToken: {
+        bindingId: "linkbrain-stage",
+        issuerUrl: "https://issuer.example.test",
+        clientId: "brain-client",
+        scope: "brain.write",
+        clientAssertionKeyRef: {
+          source: "env",
+          provider: "default",
+          id: "LINKTREND_BRAIN_ASSERTION_PEM",
+        },
+      },
+    });
+    expect(config.machineToken).toEqual({
+      bindingId: "linkbrain-stage",
+      issuerUrl: "https://issuer.example.test",
+      clientId: "brain-client",
+      scope: "brain.write",
+      clientAssertionKeyRef: {
+        source: "env",
+        provider: "default",
+        id: "LINKTREND_BRAIN_ASSERTION_PEM",
+      },
+    });
+    expect(parseLinkbrainConfig({}).machineToken).toBeUndefined();
+  });
 });

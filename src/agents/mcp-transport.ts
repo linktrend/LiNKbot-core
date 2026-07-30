@@ -12,7 +12,10 @@ import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/
 import type { FetchLike, Transport } from "@modelcontextprotocol/sdk/shared/transport.js";
 import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
 import type { OpenClawConfig } from "../config/types.openclaw.js";
+import { resolveConfiguredSecretInputString } from "../gateway/resolve-configured-secret-input-string.js";
 import { logDebug } from "../logger.js";
+import { withMachineTokenBearer } from "./machine-token-fetch.js";
+import type { MachineTokenBinding } from "./machine-token.js";
 import { resolveMcpAuthProfileId, withMcpAuthProfileBearer } from "./mcp-auth-profile.js";
 import {
   buildMcpHttpFetch,
@@ -87,6 +90,90 @@ function buildSseEventSourceFetch(
   };
 }
 
+function usesManagedHttpAuth(params: {
+  auth?: "oauth" | "machine_token";
+  authProfileId?: string;
+  machineToken?: unknown;
+}): boolean {
+  return Boolean(
+    params.auth === "oauth" ||
+    params.auth === "machine_token" ||
+    params.authProfileId ||
+    params.machineToken,
+  );
+}
+
+/**
+ * Lazily resolve the machine-token assertion key, then wrap fetch with bearer injection.
+ * resolveMcpTransport stays sync; secret resolution happens on the first same-origin call.
+ */
+function withResolvedMachineTokenBearer(params: {
+  fetchFn: FetchLike;
+  serverName: string;
+  resourceUrl: string;
+  headers?: Record<string, string>;
+  machineToken: {
+    bindingId: string;
+    issuerUrl: string;
+    clientId: string;
+    audience?: string;
+    scope?: string;
+    clientAssertionKeyRef: unknown;
+  };
+  cfg?: OpenClawConfig;
+}): FetchLike {
+  let bearerFetch: FetchLike | undefined;
+  let resolveKeyPromise: Promise<string> | undefined;
+
+  const resolveAssertionKeyPem = async (): Promise<string> => {
+    if (!params.cfg) {
+      throw new Error(
+        `MCP server "${params.serverName}" uses machine-token auth, but no OpenClaw config was provided to resolve clientAssertionKeyRef.`,
+      );
+    }
+    resolveKeyPromise ??= (async () => {
+      const resolved = await resolveConfiguredSecretInputString({
+        config: params.cfg!,
+        env: process.env,
+        value: params.machineToken.clientAssertionKeyRef,
+        path: `mcp.servers.${params.serverName}.machineToken.clientAssertionKeyRef`,
+      });
+      if (!resolved.value) {
+        throw new Error(
+          resolved.unresolvedRefReason ??
+            `MCP server "${params.serverName}" could not resolve machineToken.clientAssertionKeyRef.`,
+        );
+      }
+      return resolved.value;
+    })();
+    return await resolveKeyPromise;
+  };
+
+  return async (url, init) => {
+    if (!bearerFetch) {
+      const clientAssertionKeyPem = await resolveAssertionKeyPem();
+      const binding: MachineTokenBinding = {
+        bindingId: params.machineToken.bindingId,
+        issuerUrl: params.machineToken.issuerUrl,
+        clientId: params.machineToken.clientId,
+        ...(params.machineToken.audience ? { audience: params.machineToken.audience } : {}),
+        ...(params.machineToken.scope ? { scope: params.machineToken.scope } : {}),
+        clientAssertionKeyPem,
+      };
+      bearerFetch = withMachineTokenBearer({
+        fetchFn: params.fetchFn,
+        // Discovery/token mint must not inherit resource Authorization headers.
+        authFetchFn: params.fetchFn,
+        serverName: params.serverName,
+        resourceUrl: params.resourceUrl,
+        headers: params.headers,
+        binding,
+      });
+    }
+    return bearerFetch(url, init);
+  };
+}
+
 /** Resolves a configured MCP server into a live SDK transport instance. */
 export function resolveMcpTransport(
   serverName: string,
@@ -116,6 +203,7 @@ export function resolveMcpTransport(
     };
   }
   const authProfileId = resolveMcpAuthProfileId(rawServer);
+  const useMachineToken = resolved.auth === "machine_token" || Boolean(resolved.machineToken);
   // The SDK reuses one fetch for OAuth and long-lived SSE/streamable bodies.
   // Per-RPC deadlines belong to client calls, not this transport fetch.
   const baseFetch = buildMcpHttpFetch({
@@ -124,40 +212,55 @@ export function resolveMcpTransport(
     clientKey: resolved.clientKey,
     resourceUrl: resolved.url,
   });
-  const headers =
-    resolved.auth === "oauth" || authProfileId
-      ? withoutMcpAuthorizationHeader(resolved.headers)
-      : resolved.headers;
+  const managedAuth = usesManagedHttpAuth({
+    auth: resolved.auth,
+    authProfileId,
+    machineToken: resolved.machineToken,
+  });
+  const headers = managedAuth ? withoutMcpAuthorizationHeader(resolved.headers) : resolved.headers;
   const resourceFetch = withSameOriginMcpHttpHeaders({
     fetchFn: baseFetch,
     headers,
     resourceUrl: resolved.url,
   });
-  const httpFetch = authProfileId
-    ? withMcpAuthProfileBearer({
-        fetchFn: baseFetch,
-        serverName,
-        resourceUrl: resolved.url,
-        headers,
-        authProfileId,
-        cfg: options?.cfg,
-        agentDir: options?.agentDir,
-      })
-    : resolved.auth === "oauth"
-      ? withMcpOAuthBearer({
-          fetchFn: resourceFetch,
-          // Protected-resource discovery lives at the resource origin and may
-          // require the same routing headers. Cross-origin auth calls stay scrubbed.
-          authFetchFn: resourceFetch,
+  // Priority: machine-token binding → auth-profile bearer → interactive oauth.
+  const httpFetch = useMachineToken
+    ? resolved.machineToken
+      ? withResolvedMachineTokenBearer({
+          fetchFn: baseFetch,
           serverName,
           resourceUrl: resolved.url,
-          config: resolved.oauth,
+          headers,
+          machineToken: resolved.machineToken,
+          cfg: options?.cfg,
         })
-      : baseFetch;
+      : baseFetch
+    : authProfileId
+      ? withMcpAuthProfileBearer({
+          fetchFn: baseFetch,
+          serverName,
+          resourceUrl: resolved.url,
+          headers,
+          authProfileId,
+          cfg: options?.cfg,
+          agentDir: options?.agentDir,
+        })
+      : resolved.auth === "oauth"
+        ? withMcpOAuthBearer({
+            fetchFn: resourceFetch,
+            // Protected-resource discovery lives at the resource origin and may
+            // require the same routing headers. Cross-origin auth calls stay scrubbed.
+            authFetchFn: resourceFetch,
+            serverName,
+            resourceUrl: resolved.url,
+            config: resolved.oauth,
+          })
+        : baseFetch;
+  const omitStaticAuthHeaders = resolved.auth === "oauth" || resolved.auth === "machine_token";
   if (resolved.transportType === "streamable-http") {
     return {
       transport: new StreamableHTTPClientTransport(new URL(resolved.url), {
-        requestInit: resolved.auth === "oauth" || !headers ? undefined : { headers },
+        requestInit: omitStaticAuthHeaders || !headers ? undefined : { headers },
         fetch: httpFetch,
       }),
       description: resolved.description,
@@ -171,10 +274,10 @@ export function resolveMcpTransport(
   const hasHeaders = Object.keys(sseHeaders).length > 0;
   return {
     transport: new SSEClientTransport(new URL(resolved.url), {
-      requestInit: resolved.auth === "oauth" || !hasHeaders ? undefined : { headers: sseHeaders },
+      requestInit: omitStaticAuthHeaders || !hasHeaders ? undefined : { headers: sseHeaders },
       fetch: httpFetch,
       eventSourceInit: {
-        fetch: buildSseEventSourceFetch(resolved.auth === "oauth" ? {} : sseHeaders, httpFetch),
+        fetch: buildSseEventSourceFetch(omitStaticAuthHeaders ? {} : sseHeaders, httpFetch),
       },
     }),
     description: resolved.description,

@@ -11,10 +11,12 @@ credential references (see `../PHASE-5-DECISION-PACKET-PLATFORM-AUTH.md`).
 | -------------------------------------------- | ------------------------------------------------------------------- |
 | `linkbrain.stdio.fake.json`                  | Local stdio → `extensions/linkbrain/fake/server.mjs --stdio`        |
 | `linkbrain.http.secretref.template.json`     | HTTP + `${LINKTREND_LINKBRAIN_STAGE_MCP_TOKEN}` header placeholder  |
-| `linkbrain.oauth.authprofile.template.json`  | Preferred OAuth `authProfileId` path                                |
+| `linkbrain.oauth.authprofile.template.json`  | Interactive OAuth `authProfileId` path (non-PACI)                   |
+| `linkbrain.machine-token.template.json`      | PACI machine-token / `client_credentials` path (`enabled: false`)   |
 | `linkskills.stdio.fake.json`                 | Local stdio → `extensions/linkskills/fake/cli.mjs stdio`            |
 | `linkskills.http.secretref.template.json`    | HTTP + `${LINKTREND_LINKSKILLS_STAGE_MCP_TOKEN}` header placeholder |
-| `linkskills.oauth.authprofile.template.json` | Preferred OAuth `authProfileId` path                                |
+| `linkskills.oauth.authprofile.template.json` | Interactive OAuth `authProfileId` path (non-PACI)                   |
+| `linkskills.machine-token.template.json`     | PACI machine-token / `client_credentials` path (`enabled: false`)   |
 | `tool-allowlists.yaml`                       | Plan §9.1 / §9.2 include lists (documentation mirror)               |
 
 Replace `__OPENCLAW_PRIME_ROOT__` with the absolute repo root when using stdio fakes for developer tests.

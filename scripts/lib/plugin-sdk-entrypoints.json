@@ -288,6 +288,7 @@
   "retry-runtime",
   "run-command",
   "param-readers",
+  "machine-token-runtime",
   "secret-input",
   "secret-input-runtime",
   "channel-status",

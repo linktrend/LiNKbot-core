@@ -238,4 +238,30 @@ describe("resolveMcpTransportConfig", () => {
       supportsParallelToolCalls: false,
     });
   });
+
+  it("resolves machine_token auth and machineToken binding", () => {
+    const resolved = resolveMcpTransportConfig("skills", {
+      url: "https://mcp.example.com/mcp",
+      transport: "streamable-http",
+      auth: "machine_token",
+      machineToken: {
+        bindingId: "binding-skills",
+        issuerUrl: "https://paci.example",
+        clientId: "skills-client",
+        clientAssertionKeyRef: "-----BEGIN PRIVATE KEY-----\nstub\n-----END PRIVATE KEY-----",
+      },
+    });
+
+    expect(resolved).toEqual(
+      expect.objectContaining({
+        kind: "http",
+        auth: "machine_token",
+        machineToken: expect.objectContaining({
+          bindingId: "binding-skills",
+          issuerUrl: "https://paci.example",
+          clientId: "skills-client",
+        }),
+      }),
+    );
+  });
 });

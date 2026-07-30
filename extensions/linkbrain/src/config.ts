@@ -12,6 +12,16 @@ type LinkbrainEnvironment = "test" | "stage" | "production";
 
 export type LinkbrainTransportMode = "disabled" | "fake" | "mcp" | "http";
 
+/** Optional machine-token binding for non-interactive HTTP/MCP auth. */
+export type LinkbrainMachineTokenConfig = {
+  bindingId: string;
+  issuerUrl: string;
+  clientId: string;
+  audience?: string;
+  scope?: string;
+  clientAssertionKeyRef: LinkbrainSecretInput;
+};
+
 export type LinkbrainConfig = {
   mcpRead: boolean;
   captureEnqueue: boolean;
@@ -23,6 +33,12 @@ export type LinkbrainConfig = {
   mcpServerName: string;
   ingestionEndpoint?: string;
   ingestionCredential?: LinkbrainSecretInput;
+  /**
+   * Optional machine-token binding. When set, HTTP transport uses
+   * client_credentials + private_key_jwt instead of ingestionCredential.
+   * Absent = existing SecretRef / MCP behavior unchanged.
+   */
+  machineToken?: LinkbrainMachineTokenConfig;
   redactionPolicyVersion: string;
   batchMaxEvents: number;
   batchMaxBytes: number;
@@ -63,7 +79,7 @@ function readPositiveInt(value: unknown, fallback: number, minimum: number): num
   return value;
 }
 
-function parseSecretInput(value: unknown): LinkbrainSecretInput | undefined {
+function parseSecretInput(value: unknown, fieldName: string): LinkbrainSecretInput | undefined {
   if (value === undefined) {
     return undefined;
   }
@@ -71,7 +87,7 @@ function parseSecretInput(value: unknown): LinkbrainSecretInput | undefined {
     return value;
   }
   if (!isRecord(value)) {
-    throw new Error("linkbrain: ingestionCredential must be a string or SecretRef object");
+    throw new Error(`linkbrain: ${fieldName} must be a string or SecretRef object`);
   }
   const source = value.source;
   const provider = value.provider;
@@ -84,13 +100,55 @@ function parseSecretInput(value: unknown): LinkbrainSecretInput | undefined {
     id.length === 0
   ) {
     throw new Error(
-      'linkbrain: ingestionCredential SecretRef requires source ("env"|"file"|"exec"), provider, and id',
+      `linkbrain: ${fieldName} SecretRef requires source ("env"|"file"|"exec"), provider, and id`,
     );
   }
   if (Object.keys(value).some((key) => key !== "source" && key !== "provider" && key !== "id")) {
-    throw new Error("linkbrain: ingestionCredential SecretRef has unexpected properties");
+    throw new Error(`linkbrain: ${fieldName} SecretRef has unexpected properties`);
   }
   return { source, provider, id };
+}
+
+function parseNonEmptyString(value: unknown, fieldName: string): string {
+  if (typeof value !== "string" || value.length === 0) {
+    throw new Error(`linkbrain: ${fieldName} must be a non-empty string`);
+  }
+  return value;
+}
+
+/**
+ * Parses an optional machine-token binding. Returns undefined when absent.
+ * Used for plugin config and loosely-typed mcp.servers[*].machineToken blocks.
+ */
+export function parseLinkbrainMachineToken(
+  value: unknown,
+): LinkbrainMachineTokenConfig | undefined {
+  if (value === undefined || value === null) {
+    return undefined;
+  }
+  if (!isRecord(value)) {
+    throw new Error("linkbrain: machineToken must be an object");
+  }
+  const clientAssertionKeyRef = parseSecretInput(
+    value.clientAssertionKeyRef,
+    "machineToken.clientAssertionKeyRef",
+  );
+  if (clientAssertionKeyRef === undefined) {
+    throw new Error("linkbrain: machineToken.clientAssertionKeyRef is required");
+  }
+  const binding: LinkbrainMachineTokenConfig = {
+    bindingId: parseNonEmptyString(value.bindingId, "machineToken.bindingId"),
+    issuerUrl: parseNonEmptyString(value.issuerUrl, "machineToken.issuerUrl"),
+    clientId: parseNonEmptyString(value.clientId, "machineToken.clientId"),
+    clientAssertionKeyRef,
+  };
+  if (typeof value.audience === "string" && value.audience.length > 0) {
+    binding.audience = value.audience;
+  }
+  if (typeof value.scope === "string" && value.scope.length > 0) {
+    binding.scope = value.scope;
+  }
+  return binding;
 }
 
 function parseEnvironment(value: unknown): LinkbrainEnvironment {
@@ -125,6 +183,7 @@ export function parseLinkbrainConfig(value: unknown): LinkbrainConfig {
     typeof raw.mcpServerName === "string" && raw.mcpServerName.length > 0
       ? raw.mcpServerName
       : DEFAULT_LINKBRAIN_CONFIG.mcpServerName;
+  const machineToken = parseLinkbrainMachineToken(raw.machineToken);
 
   return {
     mcpRead: readBoolean(raw.mcpRead, DEFAULT_LINKBRAIN_CONFIG.mcpRead),
@@ -138,8 +197,9 @@ export function parseLinkbrainConfig(value: unknown): LinkbrainConfig {
     mcpServerName,
     ...(ingestionEndpoint ? { ingestionEndpoint } : {}),
     ...(raw.ingestionCredential !== undefined
-      ? { ingestionCredential: parseSecretInput(raw.ingestionCredential) }
+      ? { ingestionCredential: parseSecretInput(raw.ingestionCredential, "ingestionCredential") }
       : {}),
+    ...(machineToken ? { machineToken } : {}),
     redactionPolicyVersion,
     batchMaxEvents: readPositiveInt(raw.batchMaxEvents, DEFAULT_LINKBRAIN_CONFIG.batchMaxEvents, 1),
     batchMaxBytes: readPositiveInt(raw.batchMaxBytes, DEFAULT_LINKBRAIN_CONFIG.batchMaxBytes, 1024),

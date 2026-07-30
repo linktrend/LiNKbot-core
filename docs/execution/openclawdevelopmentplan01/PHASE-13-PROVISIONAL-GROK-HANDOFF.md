@@ -8,6 +8,7 @@
 **Wave 18 correction:** 2026-07-29 Asia/Taipei — restored §2 `source_hierarchy.1`–`6` as requirements; §13.3 enum definitions structural-only; Phase-0 evidence remapped to freeze/prompt/pins/session; PHASE-1 status reconciled with AuthClaims 1.1 pending countersign (`WAVE18-CORRECTION-PACKET.md`)
 **Wave 20 correction:** 2026-07-29 Asia/Taipei — AuthClaims provenance Platform HEAD agreement + PHASE-13 handoff current gate RE-OPENED/PENDING; countersign request immutable tip (`WAVE20-CORRECTION-PACKET.md`)
 **AuthClaims 1.1 countersign closeout:** 2026-07-30 Asia/Taipei — fixture-owner gate **CLOSED** / **`OWNER_COUNTERSIGNED`** at tip `005c9454…` (`FIXTURE-OWNER-SIGNOFF.md`; Brain `cfa8e931…` / Skills `2fb6f8d5…`)
+**PACI machine-token seam (OpenClaw-owned local/fake):** 2026-07-30 Asia/Taipei — generic `client_credentials` + `private_key_jwt` seam implemented under Principal production execution prompt; draft Platform pin `PACI-DRAFT-CONTRACT-PIN-2026-07-30.md`; Lisa live packet prepared only (`LISA-MACHINE-TOKEN-INTEGRATION-PACKET-PREPARED-2026-07-30.md`). **Not** Codex certification; **not** live Lisa/Platform enablement.
 **Author (correction):** Cursor Local / Cloud Grok 4.5 High integrator under OpenClaw plan package
 **Plan:** `docs/OPENCLAW-PRIME-LISA-LINKBRAIN-LINKSKILLS-DETAILED-IMPLEMENTATION-PLAN.md`
 **Plan SHA-256:** `17203ee586a3fb2b1281bcddd8b17ae350075ebce537689f3c4bfcbbd14914f7` (HASH_OK re-verified 2026-07-28; re-checked waves 17–20 + countersign closeout)

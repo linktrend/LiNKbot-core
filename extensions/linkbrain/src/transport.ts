@@ -8,6 +8,12 @@ import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { SSEClientTransport } from "@modelcontextprotocol/sdk/client/sse.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
+import {
+  invalidateMachineTokenCache as invalidateMachineTokenCacheSdk,
+  resolveMachineTokenAccess as resolveMachineTokenAccessSdk,
+  type MachineTokenBinding,
+  type ResolvedMachineToken,
+} from "openclaw/plugin-sdk/machine-token-runtime";
 import { resolveConfiguredSecretInputString } from "openclaw/plugin-sdk/secret-input-runtime";
 import {
   fetchWithSsrFGuard,
@@ -15,7 +21,12 @@ import {
   ssrfPolicyFromHttpBaseUrlAllowedHostname,
 } from "openclaw/plugin-sdk/ssrf-runtime";
 import type { OpenClawPluginApi } from "../runtime-api.js";
-import type { LinkbrainConfig, LinkbrainTransportMode } from "./config.js";
+import {
+  parseLinkbrainMachineToken,
+  type LinkbrainConfig,
+  type LinkbrainMachineTokenConfig,
+  type LinkbrainTransportMode,
+} from "./config.js";
 import {
   createBrainFakeTransport,
   type LinkbrainTransport,
@@ -40,6 +51,7 @@ type ManagedMcpServerEntry = {
     redirectUrl?: string;
     clientMetadataUrl?: string;
   };
+  machineToken?: unknown;
   connectionTimeoutMs?: number;
   requestTimeoutMs?: number;
   [key: string]: unknown;
@@ -53,6 +65,14 @@ type McpToolSession = {
   close(): Promise<void>;
 };
 
+type ResolveMachineTokenAccessFn = (params: {
+  binding: MachineTokenBinding;
+  signal?: AbortSignal;
+  forceRefresh?: boolean;
+}) => Promise<ResolvedMachineToken>;
+
+type InvalidateMachineTokenCacheFn = (bindingId: string) => void;
+
 export type ResolveLinkbrainTransportParams = {
   api: Pick<OpenClawPluginApi, "config" | "logger">;
   config: LinkbrainConfig;
@@ -61,6 +81,10 @@ export type ResolveLinkbrainTransportParams = {
   fetchImpl?: typeof fetch;
   env?: NodeJS.ProcessEnv;
   createMcpSession?: (server: ManagedMcpServerEntry) => Promise<McpToolSession>;
+  /** Test injection for machine-token mint (defaults to Plugin SDK). */
+  resolveMachineTokenAccess?: ResolveMachineTokenAccessFn;
+  /** Test injection for cache invalidation after HTTP 401. */
+  invalidateMachineTokenCache?: InvalidateMachineTokenCacheFn;
 };
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -138,11 +162,81 @@ function createRejectedFakeTransport(safeMessage: string): LinkbrainTransport {
   });
 }
 
+async function resolveMachineTokenBearer(params: {
+  machineToken: LinkbrainMachineTokenConfig;
+  apiConfig: OpenClawPluginApi["config"];
+  env: NodeJS.ProcessEnv;
+  signal?: AbortSignal;
+  forceRefresh?: boolean;
+  resolveMachineTokenAccess: ResolveMachineTokenAccessFn;
+  pathPrefix: string;
+}): Promise<{ value?: string; bindingId?: string; error?: LinkbrainTransportResult }> {
+  const keyResolved = await resolveConfiguredSecretInputString({
+    config: params.apiConfig,
+    env: params.env,
+    value: params.machineToken.clientAssertionKeyRef,
+    path: `${params.pathPrefix}.clientAssertionKeyRef`,
+  });
+  if (keyResolved.unresolvedRefReason || !keyResolved.value) {
+    return {
+      error: {
+        ok: false,
+        retryable: true,
+        terminal: false,
+        errorCode: "credential_unresolved",
+        safeMessage:
+          keyResolved.unresolvedRefReason ??
+          "linkbrain machineToken.clientAssertionKeyRef unresolved",
+      },
+    };
+  }
+  try {
+    const binding: MachineTokenBinding = {
+      bindingId: params.machineToken.bindingId,
+      issuerUrl: params.machineToken.issuerUrl,
+      clientId: params.machineToken.clientId,
+      ...(params.machineToken.audience ? { audience: params.machineToken.audience } : {}),
+      ...(params.machineToken.scope ? { scope: params.machineToken.scope } : {}),
+      clientAssertionKeyPem: keyResolved.value,
+    };
+    const resolved = await params.resolveMachineTokenAccess({
+      binding,
+      ...(params.signal ? { signal: params.signal } : {}),
+      ...(params.forceRefresh ? { forceRefresh: true } : {}),
+    });
+    return { value: resolved.accessToken, bindingId: resolved.bindingId };
+  } catch (error) {
+    return {
+      error: {
+        ok: false,
+        retryable: true,
+        terminal: false,
+        errorCode: "machine_token_error",
+        safeMessage: error instanceof Error ? error.message : "machine token resolution failed",
+      },
+    };
+  }
+}
+
 async function resolveBearerToken(params: {
   config: LinkbrainConfig;
   apiConfig: OpenClawPluginApi["config"];
   env: NodeJS.ProcessEnv;
-}): Promise<{ value?: string; error?: LinkbrainTransportResult }> {
+  signal?: AbortSignal;
+  forceRefresh?: boolean;
+  resolveMachineTokenAccess: ResolveMachineTokenAccessFn;
+}): Promise<{ value?: string; bindingId?: string; error?: LinkbrainTransportResult }> {
+  if (params.config.machineToken) {
+    return await resolveMachineTokenBearer({
+      machineToken: params.config.machineToken,
+      apiConfig: params.apiConfig,
+      env: params.env,
+      signal: params.signal,
+      forceRefresh: params.forceRefresh,
+      resolveMachineTokenAccess: params.resolveMachineTokenAccess,
+      pathPrefix: "plugins.entries.linkbrain.config.machineToken",
+    });
+  }
   if (params.config.ingestionCredential === undefined) {
     return {
       error: {
@@ -188,11 +282,33 @@ function expandEnvTemplate(value: string, env: NodeJS.ProcessEnv): string {
   return value.replace(/\$\{([A-Z0-9_]+)\}/g, (_match, name: string) => env[name] ?? "");
 }
 
+function selectMcpMachineToken(
+  server: ManagedMcpServerEntry,
+  pluginMachineToken: LinkbrainMachineTokenConfig | undefined,
+): LinkbrainMachineTokenConfig | undefined {
+  const serverToken = parseLinkbrainMachineToken(server.machineToken);
+  if (serverToken) {
+    return serverToken;
+  }
+  const wantsMachineToken = server.auth === "machine_token" || Boolean(server.machineToken);
+  if (wantsMachineToken && pluginMachineToken) {
+    return pluginMachineToken;
+  }
+  return undefined;
+}
+
 async function resolveMcpHeaders(params: {
   server: ManagedMcpServerEntry;
   apiConfig: OpenClawPluginApi["config"];
   env: NodeJS.ProcessEnv;
-}): Promise<{ headers: Record<string, string>; authProfileOnly: boolean }> {
+  pluginMachineToken?: LinkbrainMachineTokenConfig;
+  signal?: AbortSignal;
+  resolveMachineTokenAccess: ResolveMachineTokenAccessFn;
+}): Promise<{
+  headers: Record<string, string>;
+  authProfileOnly: boolean;
+  error?: LinkbrainTransportResult;
+}> {
   const headers: Record<string, string> = {};
   const raw = params.server.headers ?? {};
   for (const [key, value] of Object.entries(raw)) {
@@ -214,6 +330,24 @@ async function resolveMcpHeaders(params: {
     }
   }
 
+  const machineToken = selectMcpMachineToken(params.server, params.pluginMachineToken);
+  if (machineToken) {
+    const bearer = await resolveMachineTokenBearer({
+      machineToken,
+      apiConfig: params.apiConfig,
+      env: params.env,
+      signal: params.signal,
+      resolveMachineTokenAccess: params.resolveMachineTokenAccess,
+      pathPrefix: `mcp.servers.machineToken`,
+    });
+    if (bearer.error) {
+      return { headers, authProfileOnly: false, error: bearer.error };
+    }
+    if (bearer.value) {
+      headers.Authorization = `Bearer ${bearer.value}`;
+    }
+  }
+
   const authProfileId =
     typeof params.server.oauth?.authProfileId === "string"
       ? params.server.oauth.authProfileId
@@ -224,8 +358,12 @@ async function resolveMcpHeaders(params: {
       key.toLowerCase() === "authorization" && typeof value === "string" && value.trim().length > 0
     );
   });
-  const authProfileOnly =
-    Boolean(authProfileId || params.server.auth === "oauth") && !hasAuthorization;
+  // Interactive oauth-only without a resolved Authorization header needs Gateway auth-profile injection.
+  // machine_token mode must never surface auth_profile_required when resolution succeeds.
+  const wantsInteractiveOauth =
+    params.server.auth === "oauth" ||
+    (Boolean(authProfileId) && params.server.auth !== "machine_token" && !machineToken);
+  const authProfileOnly = wantsInteractiveOauth && !hasAuthorization;
   return { headers, authProfileOnly };
 }
 
@@ -302,6 +440,8 @@ function createHttpTransport(params: {
   env: NodeJS.ProcessEnv;
   /** When set (tests), forwarded to the SSRF guard so mocks stay hermetic. */
   fetchImpl?: typeof fetch;
+  resolveMachineTokenAccess: ResolveMachineTokenAccessFn;
+  invalidateMachineTokenCache: InvalidateMachineTokenCacheFn;
 }): LinkbrainTransport {
   return {
     async write(writeParams) {
@@ -325,6 +465,8 @@ function createHttpTransport(params: {
         config: params.config,
         apiConfig: params.apiConfig,
         env: params.env,
+        signal: writeParams.signal,
+        resolveMachineTokenAccess: params.resolveMachineTokenAccess,
       });
       if (bearer.error) {
         return bearer.error;
@@ -334,8 +476,8 @@ function createHttpTransport(params: {
       const policy = mergeSsrFPolicies(ssrfPolicyFromHttpBaseUrlAllowedHostname(params.endpoint), {
         allowPrivateNetwork: true,
       });
-      let release: (() => Promise<void>) | undefined;
-      try {
+
+      const postOnce = async (accessToken: string) => {
         const guarded = await fetchWithSsrFGuard({
           url: params.endpoint,
           ...(params.fetchImpl ? { fetchImpl: params.fetchImpl } : {}),
@@ -343,7 +485,7 @@ function createHttpTransport(params: {
             method: "POST",
             headers: {
               "content-type": "application/json",
-              authorization: `Bearer ${bearer.value}`,
+              authorization: `Bearer ${accessToken}`,
             },
             body: JSON.stringify({
               toolName: writeParams.toolName,
@@ -355,7 +497,32 @@ function createHttpTransport(params: {
           policy,
           auditContext: "linkbrain.http-transport",
         });
+        return guarded;
+      };
+
+      let release: (() => Promise<void>) | undefined;
+      try {
+        let guarded = await postOnce(bearer.value!);
         release = guarded.release;
+        // One bounded machine-token reissue on remote 401.
+        if (guarded.response.status === 401 && bearer.bindingId && params.config.machineToken) {
+          params.invalidateMachineTokenCache(bearer.bindingId);
+          await release();
+          release = undefined;
+          const refreshed = await resolveBearerToken({
+            config: params.config,
+            apiConfig: params.apiConfig,
+            env: params.env,
+            signal: writeParams.signal,
+            forceRefresh: true,
+            resolveMachineTokenAccess: params.resolveMachineTokenAccess,
+          });
+          if (refreshed.error) {
+            return refreshed.error;
+          }
+          guarded = await postOnce(refreshed.value!);
+          release = guarded.release;
+        }
         const response = guarded.response;
         if (response.ok) {
           let result: Record<string, unknown> | undefined;
@@ -402,6 +569,8 @@ function createMcpTransport(params: {
   apiConfig: OpenClawPluginApi["config"];
   env: NodeJS.ProcessEnv;
   createMcpSession: (server: ManagedMcpServerEntry) => Promise<McpToolSession>;
+  pluginMachineToken?: LinkbrainMachineTokenConfig;
+  resolveMachineTokenAccess: ResolveMachineTokenAccessFn;
 }): LinkbrainTransport {
   return {
     async write(writeParams) {
@@ -422,11 +591,17 @@ function createMcpTransport(params: {
         };
       }
 
-      const { headers, authProfileOnly } = await resolveMcpHeaders({
+      const { headers, authProfileOnly, error } = await resolveMcpHeaders({
         server: params.server,
         apiConfig: params.apiConfig,
         env: params.env,
+        pluginMachineToken: params.pluginMachineToken,
+        signal: writeParams.signal,
+        resolveMachineTokenAccess: params.resolveMachineTokenAccess,
       });
+      if (error) {
+        return error;
+      }
       if (authProfileOnly) {
         return {
           ok: false,
@@ -492,6 +667,10 @@ export function resolveLinkbrainTransport(
 ): LinkbrainTransport {
   const mode: LinkbrainTransportMode = params.config.transportMode;
   const env = params.env ?? process.env;
+  const resolveMachineTokenAccess =
+    params.resolveMachineTokenAccess ?? resolveMachineTokenAccessSdk;
+  const invalidateMachineTokenCache =
+    params.invalidateMachineTokenCache ?? invalidateMachineTokenCacheSdk;
 
   if (mode === "disabled") {
     return createDisabledTransport();
@@ -528,6 +707,8 @@ export function resolveLinkbrainTransport(
       apiConfig: params.api.config,
       env,
       ...(params.fetchImpl ? { fetchImpl: params.fetchImpl } : {}),
+      resolveMachineTokenAccess,
+      invalidateMachineTokenCache,
     });
   }
 
@@ -569,6 +750,8 @@ export function resolveLinkbrainTransport(
       apiConfig: params.api.config,
       env,
       createMcpSession,
+      pluginMachineToken: params.config.machineToken,
+      resolveMachineTokenAccess,
     });
   }
 
