@@ -13,8 +13,8 @@
 | Field | Value |
 | --- | --- |
 | Start HEAD (exact) | `2a1cab16be606444145b27074cd998dd63ed46e5` |
-| Clean pushed tip | _(filled at push)_ |
-| Primary implementation commit | _(filled at push)_ |
+| Clean pushed tip | `b3a7eb03c32daf63981be33b1a13ba85ac72f6bf` |
+| Primary implementation commit | `b3a7eb03c32daf63981be33b1a13ba85ac72f6bf` |
 
 ## Lisa operations worktree (preserved)
 
