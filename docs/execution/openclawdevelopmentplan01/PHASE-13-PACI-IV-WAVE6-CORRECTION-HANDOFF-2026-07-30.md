@@ -13,8 +13,8 @@
 | Field | Value |
 | --- | --- |
 | Start HEAD (exact) | `fb0e9a6b3d3eed47d13a951290233dd05c44db87` |
-| Clean pushed tip | _(filled after push)_ |
-| Primary implementation commit | _(filled after commit)_ |
+| Clean pushed tip | `04eaca304ff27fab8c993fa8e235366df14b602e` |
+| Primary implementation commit | `72ff0eb7fcf700d42707effbb7973a5d3bba8481` |
 
 ## Lisa operations worktree (preserved)
 
@@ -69,7 +69,7 @@
 | MCP HTTP fetch ceiling (agents + plugin-sdk) + machine-token SDK boundary | PASS |
 | linkbrain + linkskills + paci-fake | PASS |
 | Source trust / proof routing | Trusted local focused proofs (`node scripts/run-vitest.mjs`); Crabbox/Testbox not required for this packet size |
-| `git diff --check origin/development...HEAD` | _(filled after final check)_ |
+| `git diff --check origin/development...HEAD` | Clean |
 | Hosted CI / Bugbot | **Not polled** (Principal-deferred) |
 
 ## Explicit non-claims
