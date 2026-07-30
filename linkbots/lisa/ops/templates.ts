@@ -1,6 +1,11 @@
 /**
- * Deterministic Lisa message templates with freshness/omission rules.
+ * Lisa message templates — load canonical Markdown bodies and fill placeholders.
+ * Runtime path: `node --experimental-strip-types linkbots/lisa/ops/render-template.ts <kind> <json-file|->`
  */
+
+import { readFileSync } from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 export type TemplateKind =
   | "telegram-heartbeat"
@@ -30,7 +35,6 @@ export type TemplateContext = {
   /** Fresh pipeline one-liners only; stale omitted by caller. */
   pipelineLines: string[];
   mainApproveAsk?: string | null;
-  /** Digest-only itemized sections (Telegram). */
   digestDetail?: {
     calendarEvents: string[];
     tasks: string[];
@@ -41,6 +45,15 @@ export type TemplateContext = {
 };
 
 const PLACEHOLDER_RE = /\{\{[a-zA-Z0-9_.]+\}\}/;
+const here = path.dirname(fileURLToPath(import.meta.url));
+export const TEMPLATES_DIR = path.resolve(here, "../Personality files/templates");
+
+const KIND_FILE: Record<TemplateKind, string> = {
+  "telegram-heartbeat": "telegram-heartbeat.md",
+  "telegram-daily-digest": "telegram-daily-digest.md",
+  "email-daily-digest": "email-daily-digest.md",
+  "pipeline-one-liner": "pipeline-one-liner.md",
+};
 
 export function assertNoUnresolvedPlaceholders(rendered: string): void {
   if (PLACEHOLDER_RE.test(rendered)) {
@@ -48,8 +61,35 @@ export function assertNoUnresolvedPlaceholders(rendered: string): void {
   }
 }
 
+/** Extract the fenced ```text body from a canonical template file. */
+export function loadCanonicalTemplateBody(kind: TemplateKind): string {
+  const raw = readFileSync(path.join(TEMPLATES_DIR, KIND_FILE[kind]), "utf8");
+  const match = raw.match(/```text\n([\s\S]*?)\n```/);
+  if (!match?.[1]) {
+    throw new Error(`canonical template missing \`\`\`text body: ${kind}`);
+  }
+  return match[1];
+}
+
+export function fillPlaceholders(body: string, vars: Record<string, string>): string {
+  let out = body;
+  for (const [key, value] of Object.entries(vars)) {
+    out = out.split(`{{${key}}}`).join(value);
+  }
+  // Drop lines that are only empty optional section remnants after fill.
+  out = out
+    .replace(/\n{3,}/g, "\n\n")
+    .replace(/[ \t]+\n/g, "\n")
+    .trimEnd();
+  // Remove trailing blank lines created by empty optional placeholders.
+  if (out.endsWith("\n\n")) out = out.replace(/\n+$/, "\n");
+  assertNoUnresolvedPlaceholders(out);
+  return out.endsWith("\n") ? out : `${out}\n`;
+}
+
 export function renderPipelineOneLiner(wave: string, result: "Clear" | "Issues"): string {
-  const line = `${wave}: ${result}`;
+  const body = loadCanonicalTemplateBody("pipeline-one-liner");
+  const line = fillPlaceholders(body, { wave, result }).trimEnd();
   if (
     !/^(Ship 05|Pull 07|Ship 16|Pull 18|Staging promote \(Tue\)|Staging promote \(Fri\)|Main ready \(Mon\)): (Clear|Issues)$/.test(
       line,
@@ -67,61 +107,58 @@ export function omitStalePipelineLines(lines: string[], allow: Set<string>): str
   });
 }
 
-function batteryBlock(b: NonNullable<TemplateContext["battery"]>): string {
-  const alerts =
-    b.checks === "Yes" && b.alerts.length > 0
-      ? `\n${b.alerts.map((a) => `- Alert — ${a}`).join("\n")}`
-      : "";
-  return `## C. Battery Monitoring
-
-1. Expected current charge left: ~${b.expectedCharge}
-2. Expected time to 30%: ${b.timeTo30}
-3. Expected time to 98%: ${b.timeTo98}
-4. Updated Charge Rate: ${b.chargeRate}
-5. Routine Changes: ${b.routineChanges}
-6. Please report current percentage and plugged status if you can.
-7. Checks: ${b.checks}${alerts}`;
+function listOrNone(items: string[]): string {
+  if (items.length === 0) return "None.";
+  return items.map((item, i) => `${i + 1}. ${item}`).join("\n");
 }
 
-function workSummary(ctx: TemplateContext): string {
-  return `i. Summary:
-Calendar events: ${ctx.workSummary.calendar}.
-Tasks: ${ctx.workSummary.tasks}.
-Email: ${ctx.workSummary.email}.
-Unanswered Messages: ${ctx.workSummary.unanswered}.`;
+function batteryAlerts(alerts: string[], checks: "Yes" | "No"): string {
+  if (checks !== "Yes" || alerts.length === 0) return "";
+  return alerts.map((a) => `- Alert — ${a}`).join("\n");
 }
 
-function pipelineSection(lines: string[]): string | null {
-  if (lines.length === 0) return null;
-  return `## D. Pipeline
+function pipelineSection(lines: string[]): string {
+  if (lines.length === 0) return "";
+  return `## D. Pipeline\n\n${lines.join("\n")}`;
+}
 
-${lines.join("\n")}`;
+function mainApproveSection(ask: string | null | undefined): string {
+  if (!ask?.trim()) return "";
+  return `## E. Main Approve\n\n${ask.trim()}`;
+}
+
+function codingBlock(codingEvals: "Yes" | "No", codingDetail?: string): string {
+  if (codingEvals === "No") return "## B. Coding Work & Evals: No";
+  return `## B. Coding Work & Evals: Yes\n\n${codingDetail ?? "None."}`;
 }
 
 /** Telegram heartbeat — condensed Work/Coding; full Battery; no email body. */
 export function renderTelegramHeartbeat(ctx: TemplateContext): string {
   if (!ctx.battery) throw new Error("heartbeat requires battery block");
-  const parts = [
-    `Heartbeat — ${ctx.weekdayDate}${ctx.time ? `, ${ctx.time}` : ""}`,
-    "",
-    "## A. Work",
-    "",
-    workSummary(ctx),
-    "",
-    `## B. Coding Work & Evals: ${ctx.codingEvals}`,
-    "",
-    batteryBlock(ctx.battery),
-  ];
-  const pipe = pipelineSection(ctx.pipelineLines);
-  if (pipe) {
-    parts.push("", pipe);
-  }
-  if (ctx.mainApproveAsk) {
-    parts.push("", "## E. Main Approve", "", ctx.mainApproveAsk);
-  }
-  const out = parts.join("\n");
-  assertNoUnresolvedPlaceholders(out);
-  return out;
+  if (!ctx.time) throw new Error("heartbeat requires time");
+  const body = loadCanonicalTemplateBody("telegram-heartbeat");
+  return (
+    fillPlaceholders(body, {
+      weekday_date: ctx.weekdayDate,
+      time: ctx.time,
+      calendar: ctx.workSummary.calendar,
+      tasks: ctx.workSummary.tasks,
+      email: ctx.workSummary.email,
+      unanswered: ctx.workSummary.unanswered,
+      coding_evals: ctx.codingEvals,
+      expected_charge: ctx.battery.expectedCharge,
+      time_to_30: ctx.battery.timeTo30,
+      time_to_98: ctx.battery.timeTo98,
+      charge_rate: ctx.battery.chargeRate,
+      routine_changes: ctx.battery.routineChanges,
+      checks: ctx.battery.checks,
+      battery_alerts: batteryAlerts(ctx.battery.alerts, ctx.battery.checks),
+      pipeline_section: pipelineSection(ctx.pipelineLines),
+      main_approve_section: mainApproveSection(ctx.mainApproveAsk),
+    })
+      .replace(/\n{3,}/g, "\n\n")
+      .trimEnd() + "\n"
+  );
 }
 
 /** Telegram morning digest — itemized Work + Battery + Pipeline. */
@@ -129,86 +166,59 @@ export function renderTelegramDailyDigest(ctx: TemplateContext): string {
   if (!ctx.battery) throw new Error("telegram digest requires battery block");
   if (!ctx.digestDetail) throw new Error("telegram digest requires digestDetail");
   const d = ctx.digestDetail;
-  const list = (items: string[]) =>
-    items.length === 0 ? "None." : items.map((item, i) => `${i + 1}. ${item}`).join("\n");
-  const parts = [
-    `Morning Digest — ${ctx.weekdayDate}`,
-    "",
-    "## A. Work",
-    "",
-    workSummary(ctx),
-    "",
-    "ii. Calendar Events:",
-    "",
-    list(d.calendarEvents),
-    "",
-    "iii. Tasks:",
-    "",
-    list(d.tasks),
-    "",
-    "iv. Email Messages:",
-    "",
-    list(d.emails),
-    "",
-    "v. Unanswered Messages:",
-    "",
-    list(d.unanswered),
-    "",
-    ctx.codingEvals === "No"
-      ? "## B. Coding Work & Evals: No"
-      : `## B. Coding Work & Evals: Yes\n\n${d.codingDetail ?? "None."}`,
-    "",
-    batteryBlock(ctx.battery),
-  ];
-  const pipe = pipelineSection(ctx.pipelineLines);
-  if (pipe) parts.push("", pipe);
-  if (ctx.mainApproveAsk) parts.push("", "## E. Main Approve", "", ctx.mainApproveAsk);
-  const out = parts.join("\n");
-  assertNoUnresolvedPlaceholders(out);
-  return out;
+  const body = loadCanonicalTemplateBody("telegram-daily-digest");
+  return (
+    fillPlaceholders(body, {
+      weekday_date: ctx.weekdayDate,
+      calendar: ctx.workSummary.calendar,
+      tasks: ctx.workSummary.tasks,
+      email: ctx.workSummary.email,
+      unanswered: ctx.workSummary.unanswered,
+      calendar_events_list: listOrNone(d.calendarEvents),
+      tasks_list: listOrNone(d.tasks),
+      emails_list: listOrNone(d.emails),
+      unanswered_list: listOrNone(d.unanswered),
+      coding_block: codingBlock(ctx.codingEvals, d.codingDetail),
+      expected_charge: ctx.battery.expectedCharge,
+      time_to_30: ctx.battery.timeTo30,
+      time_to_98: ctx.battery.timeTo98,
+      charge_rate: ctx.battery.chargeRate,
+      routine_changes: ctx.battery.routineChanges,
+      checks: ctx.battery.checks,
+      battery_alerts: batteryAlerts(ctx.battery.alerts, ctx.battery.checks),
+      pipeline_section: pipelineSection(ctx.pipelineLines),
+      main_approve_section: mainApproveSection(ctx.mainApproveAsk),
+    })
+      .replace(/\n{3,}/g, "\n\n")
+      .trimEnd() + "\n"
+  );
 }
 
 /** Email digest — Work + Coding + Pipeline + Approve; never Battery. */
 export function renderEmailDailyDigest(ctx: TemplateContext): string {
   if (!ctx.digestDetail) throw new Error("email digest requires digestDetail");
   const d = ctx.digestDetail;
-  const list = (items: string[]) =>
-    items.length === 0 ? "None." : items.map((item, i) => `${i + 1}. ${item}`).join("\n");
-  const parts = [
-    `Morning Digest — ${ctx.weekdayDate}`,
-    "",
-    "## A. Work",
-    "",
-    workSummary(ctx),
-    "",
-    "ii. Calendar Events:",
-    "",
-    list(d.calendarEvents),
-    "",
-    "iii. Tasks:",
-    "",
-    list(d.tasks),
-    "",
-    "iv. Email Messages:",
-    "",
-    list(d.emails),
-    "",
-    "v. Unanswered Messages:",
-    "",
-    list(d.unanswered),
-    "",
-    ctx.codingEvals === "No"
-      ? "## B. Coding Work & Evals: No"
-      : `## B. Coding Work & Evals: Yes\n\n${d.codingDetail ?? "None."}`,
-  ];
-  const pipe = pipelineSection(ctx.pipelineLines);
-  if (pipe) parts.push("", pipe);
-  if (ctx.mainApproveAsk) parts.push("", "## E. Main Approve", "", ctx.mainApproveAsk);
-  const out = parts.join("\n");
+  const body = loadCanonicalTemplateBody("email-daily-digest");
+  const out =
+    fillPlaceholders(body, {
+      weekday_date: ctx.weekdayDate,
+      calendar: ctx.workSummary.calendar,
+      tasks: ctx.workSummary.tasks,
+      email: ctx.workSummary.email,
+      unanswered: ctx.workSummary.unanswered,
+      calendar_events_list: listOrNone(d.calendarEvents),
+      tasks_list: listOrNone(d.tasks),
+      emails_list: listOrNone(d.emails),
+      unanswered_list: listOrNone(d.unanswered),
+      coding_block: codingBlock(ctx.codingEvals, d.codingDetail),
+      pipeline_section: pipelineSection(ctx.pipelineLines),
+      main_approve_section: mainApproveSection(ctx.mainApproveAsk),
+    })
+      .replace(/\n{3,}/g, "\n\n")
+      .trimEnd() + "\n";
   if (/Battery Monitoring|plugged status|Expected current charge/i.test(out)) {
     throw new Error("email digest must omit Battery Monitoring");
   }
-  assertNoUnresolvedPlaceholders(out);
   return out;
 }
 
@@ -223,4 +233,28 @@ export function templatesDifferTelegramVsEmail(
     emailHasBattery,
     differ: telegramHasBattery && !emailHasBattery,
   };
+}
+
+/**
+ * Deterministic fill method for Lisa procedures:
+ * 1. Choose kind.
+ * 2. Build JSON context (same shape as TemplateContext).
+ * 3. Run: `node --experimental-strip-types linkbots/lisa/ops/render-template.ts <kind> <json-path>`
+ *    or pipe JSON on stdin with `-`.
+ */
+export function renderKind(kind: TemplateKind, ctx: TemplateContext): string {
+  switch (kind) {
+    case "telegram-heartbeat":
+      return renderTelegramHeartbeat(ctx);
+    case "telegram-daily-digest":
+      return renderTelegramDailyDigest(ctx);
+    case "email-daily-digest":
+      return renderEmailDailyDigest(ctx);
+    case "pipeline-one-liner":
+      throw new Error("use renderPipelineOneLiner(wave, result) for pipeline-one-liner");
+    default: {
+      const _exhaustive: never = kind;
+      throw new Error(`unknown kind: ${_exhaustive}`);
+    }
+  }
 }

@@ -1,71 +1,62 @@
 # Lisa model routing evaluation (read-only) — 2026-07-30
 
-**Status:** recommendation only — do **not** edit live or repo `openclaw.json` model config until Carlos + Codex approve.
+**Status:** evaluation only — do **not** edit live or repo `openclaw.json` model config. **Carlos decides** final routing; this document does not.
 
-**Sources:** OpenClaw `docs/concepts/model-providers.md`, `docs/tools/pdf.md` (imageModel/pdfModel), OpenRouter model pages, MiniMax platform docs, personality `openclaw.json` defaults on `origin/development`.
+**Sources checked:** OpenClaw `extensions/minimax/provider-models.ts`, `src/media-understanding/runner.ts` (+ vision-skip tests), `docs/concepts/model-providers.md`, OpenRouter/Z.AI/Moonshot/NVIDIA public model pages where reachable without printing credentials.
 
-## Current (live / personality defaults)
+---
 
-| Role                     | Identifier                            |
-| ------------------------ | ------------------------------------- |
-| Primary                  | `openrouter/minimax/minimax-m3`       |
-| Fallback 1               | `openrouter/deepseek/deepseek-v4-pro` |
-| Fallback 2 / local-coder | `ollama/qwen3.5:9b`                   |
-| imageModel               | none dedicated                        |
-| Cursor ACP               | `grok-4.5[effort=high,fast=true]`     |
-| Free Nemotron            | registered for eval (remove)          |
+## Verified facts (OpenClaw source)
 
-## Proposed target vs verified IDs
+| Fact                                                                                                                      | Evidence                                                                                                                           |
+| ------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| MiniMax chat default id is `MiniMax-M3`                                                                                   | `extensions/minimax/provider-models.ts` `MINIMAX_DEFAULT_MODEL_ID`                                                                 |
+| Catalog registers `MiniMax-M3` with `input: ["text", "image"]`                                                            | Same file `MINIMAX_TEXT_MODEL_CATALOG`                                                                                             |
+| `MiniMax-M2.7` / highspeed are `input: ["text"]` only                                                                     | Same catalog                                                                                                                       |
+| Media-understanding plugin default image model is **`MiniMax-VL-01`**                                                     | `src/media-understanding/runner.ts` returns `"MiniMax-VL-01"`; docs: “image understanding stays on the plugin-owned MiniMax-VL-01” |
+| Native vision skip path treats **M3 / M3.x** as native vision on MiniMax VLM providers; M2.x still needs VL-01 media path | `isMinimaxNativeVisionModel` comment + tests in `runner.vision-skip.test.ts`                                                       |
+| Current Lisa defaults (personality / live) use OpenRouter MiniMax M3 as primary chat; no dedicated `imageModel`           | Prior eval + personality defaults on `development`                                                                                 |
+| Free Nemotron ids exist for eval — must not stay in production chain                                                      | Prior registry / eval notes                                                                                                        |
 
-| Role                 | Carlos proposal       | Verified OpenClaw / OpenRouter id                                                                     | Available?     | Notes                                                                                                                                                                                                                                                                     |
-| -------------------- | --------------------- | ----------------------------------------------------------------------------------------------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Primary              | GLM-5.2               | Prefer `zai/glm-5.2` (native Z.AI) or `openrouter/z-ai/glm-5.2`                                       | Yes            | OpenClaw docs example `zai/glm-5.2`. Text, tools, structured output, ~1M context. Paid.                                                                                                                                                                                   |
-| Image/PDF            | MiniMax-M3            | `openrouter/minimax/minimax-m3` or `minimax/MiniMax-M3`                                               | Yes (vision)   | Native image/video. PDF usually via OpenRouter parse or `pdfModel` fallback. OpenClaw MiniMax plugin historically uses `MiniMax-VL-01` for media provider — M3 is OK as `agents.defaults.imageModel` chat-vision route; confirm VL-01 only if media-plugin path required. |
-| First fallback       | Kimi K3               | `openrouter/moonshotai/kimi-k3` or `moonshot/kimi-k3`                                                 | Yes            | Multimodal; strong agent/coding. Paid. Prefer OpenRouter if one-key routing.                                                                                                                                                                                              |
-| Utility              | Gemini 3.5 Flash-Lite | `openrouter/google/gemini-3.5-flash-lite`                                                             | Yes            | Fast/cheap utility/subagent. Paid (low). Privacy: Google/OpenRouter retention.                                                                                                                                                                                            |
-| Eval Nemotron (paid) | keep paid             | `openrouter/nvidia/nemotron-3-super-120b-a12b` (or native `nvidia/nvidia/nemotron-3-super-120b-a12b`) | Yes            | **Replace free.** Ultra (`…-ultra-550b-a55b`) optional heavier eval.                                                                                                                                                                                                      |
-| Free Nemotron        | remove                | `…:free` variants                                                                                     | Yes but remove | Do not keep free Ultra/Super/Nano for Lisa.                                                                                                                                                                                                                               |
-| Cursor               | keep Grok 4.5         | `grok-4.5[effort=high,fast=true]`                                                                     | Yes            | Unchanged.                                                                                                                                                                                                                                                                |
-| Local coder          | keep Qwen             | `ollama/qwen3.5:9b`                                                                                   | Yes (local)    | Keep as **local-coder route**; optionally also last emergency fallback.                                                                                                                                                                                                   |
+## Unresolved facts (need live catalog / credentialed proof)
 
-## Compatibility / behavior
+| Item                                                                                                                                            | Why unresolved                                                              |
+| ----------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| Exact OpenRouter route `openrouter/minimax/minimax-m3` accepts image **as `agents.defaults.imageModel`** through OpenClaw capability resolution | Catalog metadata ≠ live route proof; no credentialed live call in this task |
+| Z.AI vs OpenRouter latency/cost for `glm-5.2` on Mini                                                                                           | Needs live key + pricing snapshot at cutover time                           |
+| Moonshot `kimi-k3` vs OpenRouter `moonshotai/kimi-k3` tool-call parity                                                                          | Needs live tool-call smoke                                                  |
+| Paid Nemotron Super vs Ultra budget                                                                                                             | Product choice                                                              |
+| Whether dedicated `imageModel` should be VL-01 media path vs M3 chat-vision                                                                     | Depends on Carlos’s preferred attachment path                               |
 
-- **OpenClaw:** Z.AI, OpenRouter, Moonshot, MiniMax, Google-via-OpenRouter, NVIDIA, Ollama all have bundled/provider paths.
-- **Tool calling / structured output:** GLM-5.2, Kimi K3, MiniMax-M3, Gemini Flash-Lite, Nemotron Super — all advertise tools on OpenRouter; validate live once before cutover.
-- **Failure/fallback:** Primary GLM → Kimi K3 → (optional) MiniMax text or Gemini utility → local Qwen last resort. Do not put free Nemotron in the chain.
-- **Privacy:** OpenRouter/Z.AI/Moonshot/Google/NVIDIA = cloud retention per provider ToS. Local Qwen = on-box. Prefer local for sensitive scratch when Carlos requires it.
-- **Unused aliases to remove:** DeepSeek primary fallback, Kimi K2 aliases, Qwen 3.6+ cloud aliases if unused, Sonnet 5 manual-only clutter if unused, all `:free` Nemotron ids.
+## Recommendations (not a final decision)
 
-## Recommendation (plain English)
+1. **Primary chat:** Prefer `zai/glm-5.2` if `ZAI_API_KEY` is already in GSM; else `openrouter/z-ai/glm-5.2`.
+2. **`agents.defaults.imageModel`:** Prefer **`minimax/MiniMax-VL-01`** (plugin-owned media-understanding default) **or leave unset** and rely on M3 session native vision when the active chat model is MiniMax-M3.
+   **Do not** set `openrouter/minimax/minimax-m3` as `imageModel` unless a live provider/catalog request **and** OpenClaw capability resolution prove that exact route accepts image input for the imageModel path.
+3. **First chat fallback:** `openrouter/moonshotai/kimi-k3` (paid).
+4. **Utility:** `openrouter/google/gemini-3.5-flash-lite` as dedicated utility/subagent or optional fallback slot (Carlos chooses).
+5. **Eval only (paid):** `openrouter/nvidia/nemotron-3-super-120b-a12b` — **remove all free Nemotron** from any proposed final chain.
+6. Keep Cursor ACP `grok-4.5[effort=high,fast=true]` unchanged.
+7. Keep `ollama/qwen3.5:9b` as local-coder / last emergency fallback.
 
-1. Switch Lisa default to **GLM-5.2** via Z.AI if GSM already has `ZAI_API_KEY`, else OpenRouter `openrouter/z-ai/glm-5.2`.
-2. Set **imageModel** (and pdfModel fallback) to **MiniMax-M3** on the same OpenRouter/MiniMax path already used today.
-3. First chat fallback: **Kimi K3**.
-4. Utility / high-volume short jobs: **Gemini 3.5 Flash-Lite**.
-5. Eval: paid **Nemotron 3 Super** (`openrouter/nvidia/nemotron-3-super-120b-a12b`); remove all free Nemotron.
-6. Keep Cursor Grok 4.5 High fast unchanged.
-7. Keep local Qwen as **local-coder** and as **last emergency fallback** (both) until a better on-box model is approved.
-8. Remove DeepSeek from the default fallback chain unless Carlos wants it retained as an explicit named alias.
+## Proposed evaluation table (not applied)
 
-## Proposed final routing table (not applied)
+| Slot                                 | Candidate                                      | Notes                           |
+| ------------------------------------ | ---------------------------------------------- | ------------------------------- |
+| `agents.defaults.model.primary`      | `zai/glm-5.2` or `openrouter/z-ai/glm-5.2`     | Carlos picks transport          |
+| `agents.defaults.model.fallbacks[0]` | `openrouter/moonshotai/kimi-k3`                | Paid                            |
+| Utility / optional fallback          | `openrouter/google/gemini-3.5-flash-lite`      | Paid low                        |
+| Last fallback                        | `ollama/qwen3.5:9b`                            | Local                           |
+| `agents.defaults.imageModel.primary` | `minimax/MiniMax-VL-01` **or unset**           | Not OpenRouter M3 unless proven |
+| Eval alias (paid only)               | `openrouter/nvidia/nemotron-3-super-120b-a12b` | No `:free`                      |
+| Cursor                               | `grok-4.5[effort=high,fast=true]`              | Unchanged                       |
 
-| Slot                                    | Model ref                                                                                    |
-| --------------------------------------- | -------------------------------------------------------------------------------------------- |
-| `agents.defaults.model.primary`         | `zai/glm-5.2` **or** `openrouter/z-ai/glm-5.2`                                               |
-| `agents.defaults.model.fallbacks[0]`    | `openrouter/moonshotai/kimi-k3`                                                              |
-| `agents.defaults.model.fallbacks[1]`    | `openrouter/google/gemini-3.5-flash-lite` (utility) **or** skip if utility is separate agent |
-| `agents.defaults.model.fallbacks[last]` | `ollama/qwen3.5:9b`                                                                          |
-| `agents.defaults.imageModel.primary`    | `openrouter/minimax/minimax-m3`                                                              |
-| Eval alias                              | `openrouter/nvidia/nemotron-3-super-120b-a12b`                                               |
-| Cursor                                  | `grok-4.5[effort=high,fast=true]`                                                            |
-| local-coder                             | `ollama/qwen3.5:9b`                                                                          |
+## Decisions for Carlos (stop — no config edits)
 
-## Decisions for Carlos / Codex
-
-1. Z.AI direct (`zai/glm-5.2`) vs OpenRouter (`openrouter/z-ai/glm-5.2`)?
-2. Utility Gemini as fallback slot vs dedicated agent id only?
+1. Z.AI direct vs OpenRouter for GLM-5.2?
+2. Utility Gemini as fallback slot vs dedicated agent only?
 3. Nemotron Super vs Ultra for paid eval budget?
-4. Confirm remove DeepSeek from default chain?
-5. Confirm MiniMax-M3 as imageModel (not MiniMax-VL-01 media plugin)?
+4. Remove DeepSeek from default chain?
+5. imageModel = MiniMax-VL-01, unset, or proven live M3 route?
 
 **Stop for approval — no config edits in this task.**

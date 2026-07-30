@@ -1,5 +1,5 @@
 /**
- * Lisa GitOps Repair Dispatcher contract (repository-side).
+ * Lisa GitOps Repair Dispatcher — exact binding, pending hold, proof gates.
  */
 
 export type FailureClass =
@@ -13,6 +13,7 @@ export type FailureClass =
   | "billing_usage_limit"
   | "unavailable_authority";
 
+/** Exact repair target — all four fields are required for matching. */
 export type RepairBinding = {
   repository: string;
   branch: string;
@@ -23,16 +24,30 @@ export type RepairBinding = {
 export type RepairAttemptRecord = {
   binding: RepairBinding;
   attempt: number;
-  dispatchedAt: string;
-  outcome: "pending" | "succeeded" | "failed" | "stale_head" | "escalated";
+  /** Only set when ACP was actually dispatched. */
+  dispatchedAt: string | null;
+  outcome: "pending" | "succeeded" | "failed" | "stale_head" | "escalated" | "held";
   proofHeadSha: string | null;
+};
+
+export type RepairProof = {
+  repository: string;
+  branch: string;
+  prNumber: number | null;
+  headSha: string;
+  attempt: number;
+  gatesPassed: boolean;
 };
 
 export type RepairDecision =
   | { decision: "dispatch"; attempt: number; binding: RepairBinding }
+  | { decision: "hold"; reason: "pending_attempt"; attempt: number; binding: RepairBinding }
   | { decision: "escalate"; reason: FailureClass | "max_attempts"; notifyCarlos: true }
-  | { decision: "resolve"; binding: RepairBinding }
-  | { decision: "reject_stale_success"; reason: string };
+  | { decision: "resolve"; binding: RepairBinding; attempt: number }
+  | {
+      decision: "reject_proof";
+      reason: "stale_head" | "unmatched_binding" | "unrecorded_attempt" | "gates_failed";
+    };
 
 export const MAX_REPAIR_ATTEMPTS = 3;
 
@@ -47,11 +62,21 @@ const IMMEDIATE_ESCALATE: ReadonlySet<FailureClass> = new Set([
   "unavailable_authority",
 ]);
 
+export function bindingKey(b: RepairBinding): string {
+  return `${b.repository}|${b.branch}|${b.prNumber ?? "-"}|${b.headSha}`;
+}
+
+export function sameBinding(a: RepairBinding, b: RepairBinding): boolean {
+  return bindingKey(a) === bindingKey(b);
+}
+
 export function classifyFailure(input: { labels?: string[]; summary?: string }): FailureClass {
   const hay = `${(input.labels ?? []).join(" ")} ${input.summary ?? ""}`.toLowerCase();
   if (/credential|secret|auth|token|keychain/.test(hay)) return "credentials";
   if (/security|cve|xss|rce|injection/.test(hay)) return "security";
-  if (/force.?push|hard reset|delete branch|drop database/.test(hay)) return "destructive_action";
+  if (/force.?push|hard reset|delete branch|drop database/.test(hay)) {
+    return "destructive_action";
+  }
   if (/conflict|merge conflict/.test(hay)) return "ambiguous_conflict";
   if (/product decision|design choice|which approach/.test(hay)) return "product_decision";
   if (/approval|awaiting approve|needs principal/.test(hay)) return "approval";
@@ -60,49 +85,55 @@ export function classifyFailure(input: { labels?: string[]; summary?: string }):
   return "ordinary_repairable";
 }
 
+/** Attempts that were genuinely dispatched for this exact binding. */
+export function dispatchedAttemptsForBinding(
+  prior: RepairAttemptRecord[],
+  binding: RepairBinding,
+): RepairAttemptRecord[] {
+  return prior.filter(
+    (a) => sameBinding(a.binding, binding) && a.dispatchedAt !== null && a.outcome !== "held",
+  );
+}
+
 export function nextRepairDecision(params: {
   failureClass: FailureClass;
   binding: RepairBinding;
   priorAttempts: RepairAttemptRecord[];
   currentHeadSha: string;
-  latestAttemptProof?: { headSha: string; gatesPassed: boolean } | null;
+  latestProof?: RepairProof | null;
 }): RepairDecision {
   if (IMMEDIATE_ESCALATE.has(params.failureClass)) {
     return { decision: "escalate", reason: params.failureClass, notifyCarlos: true };
   }
 
-  const attemptsForHead = params.priorAttempts.filter(
-    (a) =>
-      a.binding.repository === params.binding.repository &&
-      a.binding.branch === params.binding.branch &&
-      a.binding.headSha === params.binding.headSha,
-  );
-
-  if (params.latestAttemptProof) {
-    if (params.latestAttemptProof.headSha !== params.currentHeadSha) {
-      return {
-        decision: "reject_stale_success",
-        reason: "repair proof head does not match current failure head",
-      };
-    }
-    if (params.latestAttemptProof.gatesPassed) {
-      return {
-        decision: "resolve",
-        binding: { ...params.binding, headSha: params.currentHeadSha },
-      };
-    }
+  // Current failure must match binding head.
+  if (params.binding.headSha !== params.currentHeadSha) {
+    return { decision: "reject_proof", reason: "stale_head" };
   }
 
-  const nextAttempt = attemptsForHead.length + 1;
+  if (params.latestProof) {
+    return evaluateProof({
+      proof: params.latestProof,
+      binding: params.binding,
+      currentHeadSha: params.currentHeadSha,
+      priorAttempts: params.priorAttempts,
+    });
+  }
+
+  const forBinding = params.priorAttempts.filter((a) => sameBinding(a.binding, params.binding));
+  const pending = forBinding.find((a) => a.outcome === "pending" && a.dispatchedAt !== null);
+  if (pending) {
+    return {
+      decision: "hold",
+      reason: "pending_attempt",
+      attempt: pending.attempt,
+      binding: params.binding,
+    };
+  }
+
+  const dispatched = dispatchedAttemptsForBinding(params.priorAttempts, params.binding);
+  const nextAttempt = dispatched.length + 1;
   if (nextAttempt > MAX_REPAIR_ATTEMPTS) {
-    return { decision: "escalate", reason: "max_attempts", notifyCarlos: true };
-  }
-
-  // Idempotent: identical pending attempt for same binding does not create a fourth.
-  const pendingSame = attemptsForHead.find(
-    (a) => a.outcome === "pending" && a.attempt === nextAttempt - 0,
-  );
-  if (pendingSame && pendingSame.attempt >= MAX_REPAIR_ATTEMPTS) {
     return { decision: "escalate", reason: "max_attempts", notifyCarlos: true };
   }
 
@@ -113,18 +144,64 @@ export function nextRepairDecision(params: {
   };
 }
 
-/** Idempotent attempt key — same binding + attempt number collapses. */
-export function repairAttemptKey(binding: RepairBinding, attempt: number): string {
-  return `${binding.repository}|${binding.branch}|${binding.prNumber ?? "-"}|${binding.headSha}|${attempt}`;
+export function evaluateProof(params: {
+  proof: RepairProof;
+  binding: RepairBinding;
+  currentHeadSha: string;
+  priorAttempts: RepairAttemptRecord[];
+}): RepairDecision {
+  const proofBinding: RepairBinding = {
+    repository: params.proof.repository,
+    branch: params.proof.branch,
+    prNumber: params.proof.prNumber,
+    headSha: params.proof.headSha,
+  };
+  if (!sameBinding(proofBinding, params.binding)) {
+    return { decision: "reject_proof", reason: "unmatched_binding" };
+  }
+  if (params.proof.headSha !== params.currentHeadSha) {
+    return { decision: "reject_proof", reason: "stale_head" };
+  }
+  const recorded = params.priorAttempts.find(
+    (a) =>
+      sameBinding(a.binding, params.binding) &&
+      a.attempt === params.proof.attempt &&
+      a.dispatchedAt !== null,
+  );
+  if (!recorded) {
+    return { decision: "reject_proof", reason: "unrecorded_attempt" };
+  }
+  if (!params.proof.gatesPassed) {
+    return { decision: "reject_proof", reason: "gates_failed" };
+  }
+  return {
+    decision: "resolve",
+    binding: params.binding,
+    attempt: params.proof.attempt,
+  };
 }
 
-export function recordAttemptIdempotent(
+/** Record a genuine dispatch (idempotent on binding+attempt). */
+export function recordDispatch(
   existing: RepairAttemptRecord[],
-  next: RepairAttemptRecord,
+  binding: RepairBinding,
+  attempt: number,
+  dispatchedAt: string,
 ): RepairAttemptRecord[] {
-  const key = repairAttemptKey(next.binding, next.attempt);
-  if (existing.some((e) => repairAttemptKey(e.binding, e.attempt) === key)) {
+  const key = `${bindingKey(binding)}|${attempt}`;
+  if (
+    existing.some((e) => `${bindingKey(e.binding)}|${e.attempt}` === key && e.dispatchedAt !== null)
+  ) {
     return existing;
   }
-  return [...existing, next];
+  return [
+    ...existing,
+    {
+      binding,
+      attempt,
+      dispatchedAt,
+      outcome: "pending",
+      proofHeadSha: null,
+    },
+  ];
 }

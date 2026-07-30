@@ -12,6 +12,8 @@ tags: [pipeline, ship, pull, promote, telegram, email]
 
 # Pipeline Status (Lisa)
 
+**IDE Development is the GitOps source of truth.** Lisa implements the pinned IDE contract as a consumer. Open dependency: [IDE Development issue #23](https://github.com/linktrend/IDE-Development/issues/23) (checkpoint-only Ship, Packager opens PRs, Review Packager 08:00, Staging 10:00). Do not invent local doctrine that replaces IDE Development.
+
 **Primary clock:** Lisa Option A — `agents/ship-pull-clock.md` (cron → Cursor ACP). Cursor Automations are backup only.  
 **Channels:** Telegram one-liners on heartbeat/digest; **Ship/Pull completion** also emails the same one line after validated ACP outcome. Main Approve ask is inside the **08:30 morning digest** (email + Telegram); Carlos answers on Telegram only.
 
@@ -80,12 +82,13 @@ Mini must be awake for ACP waves.
 On Monday in the **08:30 morning digest**, when today's dated package result is Clear:
 
 1. Require `Main ready date` = today and `Main ready (Mon): Clear`. Otherwise omit.
-2. Claim with compare-and-swap before including the Approve ask in **both** email and Telegram.
-3. Present repositories to Carlos in **plain English**, numbered, with short descriptions. Internal automation may retain exact SHAs. **Never ask Carlos to manually identify commit SHAs.**
-4. Carlos replies **Approve / yes on Telegram** only.
-5. If Approve: for each in-scope repo run the approved staging→main workflow (unpiped). Never invent SHA questions.
-6. Never merge `staging`→`main` without Carlos Approve.
-7. Never choose conflict sides arbitrarily. Never approve/merge main without this path.
+2. Claim with compare-and-swap before including the Approve ask in **both** email and Telegram (**blocked** until an authoritative package store exists — see `main-approve-binding.ts` / IDE #23).
+3. Present repositories to Carlos in **plain English**, numbered, with short descriptions only — **no SHAs**.
+4. Internally bind each number immutably to: repository, promotion PR number, staging SHA, prior main SHA, promotion-head SHA, gate result. Approval dispatches exactly those identifiers. Drift → invalidate → new package.
+5. Carlos replies **Approve / yes on Telegram** only.
+6. If Approve and store/bindings valid: for each in-scope repo run the approved staging→main workflow (unpiped). Never invent SHA questions for Carlos.
+7. Never merge `staging`→`main` without Carlos Approve.
+8. Never choose conflict sides arbitrarily. Never approve/merge main without this path.
 
 Example Approve wording (no SHAs for Carlos):
 

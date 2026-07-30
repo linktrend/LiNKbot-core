@@ -2,7 +2,19 @@
 
 **Do not apply this plan in the repository-only task.** No changes to `~/.openclaw-lisa`, LaunchAgents, or live cron.
 
-## Jobs to update (in place — keep IDs)
+## Hard deploy gate (ordered — all required)
+
+This Lisa branch **must not** be deployed before:
+
+1. **Core ACP wait/re-entry** is implemented by its designated OpenClaw workstream (`LISA-OPS-CORE-PREREQUISITE.md`).
+2. **PR #38** lands into `development`.
+3. This branch updates onto that exact `development` head.
+4. Combined tests pass.
+5. One controlled live rollout is approved by Carlos.
+
+There is **no** option to deploy personality/cron updates and knowingly “accept Issues until core lands.”
+
+## Jobs to update (in place — keep IDs) — only after the gate above
 
 | Job            | Action | Message / allowlist changes                                                                                                                                                                                                      |
 | -------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -28,16 +40,18 @@
 | Cron message text that says “open or update a PR” or “request Bugbot”                   | On update of the four Ship/Pull jobs                      |
 | Cron guidance that requires `sessions_yield` after ACP                                  | On update; replace with Wait contract + core prerequisite |
 
-## Deploy order (later, with Carlos approval)
+## Deploy order (later, with Carlos approval — after hard gate)
 
-1. Merge/deploy personality files to Lisa workspace (mirror).
-2. Apply core wait prerequisite (separate workstream) **or** accept Issues until it lands.
-3. `cron edit` each of the four Ship/Pull jobs’ messages + tool allowlists.
-4. Verify with `cron list --json` (no Telegram force-run unless Carlos wants it).
-5. Confirm first Clear/Issues includes status CAS + email + final payload.
+1. Confirm core wait/re-entry is live and proven.
+2. Confirm PR #38 is on `development`; rebase/update this branch; combined tests green.
+3. Merge/deploy personality files to Lisa workspace (mirror).
+4. `cron edit` each of the four Ship/Pull jobs’ messages + tool allowlists.
+5. Verify with `cron list --json` (no Telegram force-run unless Carlos wants it).
+6. Confirm first Clear/Issues includes status CAS + email + final payload.
 
 ## Personality deploy paths (mirror)
 
 - `agents/ship-pull-clock.md`, `pipeline-status.md`, `morning-digest.md`, `repair-dispatcher.md`, `offline-recovery.md`
 - `HEARTBEAT.md`, `AGENTS.md`, `tools/cursor-acp.md`
 - `templates/*`, `memory/pipeline-status.md` (template only — do not clobber live undated status without migrate)
+- `ops/render-template.ts` + `ops/templates.ts` (Lisa-executable renderer)

@@ -1,28 +1,34 @@
 /**
- * Bounded offline recovery for missed Ship/Pull windows and unresolved GitHub failures.
+ * Offline recovery — pure planning helper (no durable one-pass enforcement).
+ * Does not own runtime state. Durable one-return/one-pass requires an approved
+ * existing state owner (IDE/OpenClaw) — see docs.
  */
 
 export type WaveWindow = {
   wave: "Ship 05" | "Pull 07" | "Ship 16" | "Pull 18";
-  scheduledAt: string; // ISO Asia/Taipei wall time of nominal fire
+  scheduledAt: string;
   cycleDate: string;
 };
 
-export type OfflineReconcileInput = {
+export type OfflineReconcilePlanInput = {
+  /** Informational only — not used for durable one-pass enforcement. */
   nowIso: string;
   missedWindows: WaveWindow[];
   unresolvedFailureIds: string[];
+  /** Informational only — not persisted by this helper. */
   lastReconcileAt: string | null;
 };
 
 export type OfflineReconcilePlan = {
-  /** At most one reconcile pass per online return. */
-  runOnce: true;
+  kind: "planning_helper";
+  durableOnePassEnforced: false;
   windowsToConsider: WaveWindow[];
   obsoleteSkipped: WaveWindow[];
+  invalidSkipped: WaveWindow[];
   failureIdsToReconcile: string[];
   allowContinuousPolling: false;
   allowBlindReplay: false;
+  notes: string[];
 };
 
 const WAVE_RANK: Record<WaveWindow["wave"], number> = {
@@ -32,13 +38,28 @@ const WAVE_RANK: Record<WaveWindow["wave"], number> = {
   "Pull 07": 4,
 };
 
+const ISO_RE = /^\d{4}-\d{2}-\d{2}/;
+
+function isValidWindow(w: WaveWindow, nowIso: string): boolean {
+  if (!ISO_RE.test(w.cycleDate) || !ISO_RE.test(w.scheduledAt)) return false;
+  // Future scheduled windows relative to now are invalid for missed-wave replay.
+  if (w.scheduledAt > nowIso) return false;
+  return true;
+}
+
 /**
- * When Lisa returns online, reconcile missed windows once.
- * Keep only the latest incomplete cycle's unfinished waves; drop obsolete older cycles.
+ * Pure planner: latest incomplete cycle only; drop obsolete + invalid/future.
+ * Callers must not treat this as a durable one-return latch.
  */
-export function planOfflineReconcile(input: OfflineReconcileInput): OfflineReconcilePlan {
+export function planOfflineReconcile(input: OfflineReconcilePlanInput): OfflineReconcilePlan {
+  const notes: string[] = [
+    "This is a planning helper only. nowIso/lastReconcileAt are not persisted.",
+    "Durable one-return/one-pass requires an approved IDE/OpenClaw state owner.",
+  ];
+  const invalidSkipped = input.missedWindows.filter((w) => !isValidWindow(w, input.nowIso));
+  const valid = input.missedWindows.filter((w) => isValidWindow(w, input.nowIso));
   const byCycle = new Map<string, WaveWindow[]>();
-  for (const w of input.missedWindows) {
+  for (const w of valid) {
     const list = byCycle.get(w.cycleDate) ?? [];
     list.push(w);
     byCycle.set(w.cycleDate, list);
@@ -48,26 +69,25 @@ export function planOfflineReconcile(input: OfflineReconcileInput): OfflineRecon
   const windowsToConsider = latestCycle
     ? (byCycle.get(latestCycle) ?? []).slice().sort((a, b) => WAVE_RANK[a.wave] - WAVE_RANK[b.wave])
     : [];
-  const obsoleteSkipped = input.missedWindows.filter((w) => w.cycleDate !== latestCycle);
-
-  // Failures: unique ids, bounded one-shot list (no loops).
-  const failureIdsToReconcile = [...new Set(input.unresolvedFailureIds)].sort();
-
+  const obsoleteSkipped = valid.filter((w) => w.cycleDate !== latestCycle);
   return {
-    runOnce: true,
+    kind: "planning_helper",
+    durableOnePassEnforced: false,
     windowsToConsider,
     obsoleteSkipped,
-    failureIdsToReconcile,
+    invalidSkipped,
+    failureIdsToReconcile: [...new Set(input.unresolvedFailureIds)].sort(),
     allowContinuousPolling: false,
     allowBlindReplay: false,
+    notes,
   };
 }
 
-export function isOfflineReconcileBounded(plan: OfflineReconcilePlan): boolean {
+export function isOfflinePlanHonest(plan: OfflineReconcilePlan): boolean {
   return (
-    plan.runOnce === true &&
+    plan.kind === "planning_helper" &&
+    plan.durableOnePassEnforced === false &&
     plan.allowContinuousPolling === false &&
-    plan.allowBlindReplay === false &&
-    plan.obsoleteSkipped.every((w) => !plan.windowsToConsider.includes(w))
+    plan.allowBlindReplay === false
   );
 }

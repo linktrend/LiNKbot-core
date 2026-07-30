@@ -12,11 +12,15 @@ tags: [pipeline, ship, pull, cron, acp, cursor, option-a]
 
 # Ship / Pull Clock — Lisa Option A
 
-**Doctrine SOT (Lisa override for this clock):** checkpoint-only Ship; Pull skips frozen/reviewed tips; Review Packager Tue/Fri 08:00; Staging Tue/Fri 10:00 Asia/Taipei. IDE Development `docs/AUTONOMOUS-GIT-OPERATIONS.md` remains studio background — where this procedure differs, **this file wins for Lisa**.
+**IDE Development is the GitOps source of truth.** Lisa’s procedures are consumer/runtime instructions that must faithfully implement the pinned IDE contract (`docs/AUTONOMOUS-GIT-OPERATIONS.md` in the IDE Development repo).
+
+**Open IDE dependency:** [IDE Development issue #23](https://github.com/linktrend/IDE-Development/issues/23) is the in-flight contract for checkpoint-only Ship (Packager opens PRs), Review Packager Tue/Fri **08:00**, and Staging promote Tue/Fri **10:00** Asia/Taipei. Until #23 merges and IDE docs are consistent, this procedure implements that **issue #23 target contract** as the pinned consumer dependency — it must **not** invent local doctrine that replaces IDE Development.
 
 **Primary clock:** This procedure. Cursor Automations are **optional backup only**.
 
 **Wave names** use **local hour** labels (Asia/Taipei): Ship 05, Pull 07, Ship 16, Pull 18 — not A/B letters.
+
+**Work-branch allowlist (IDE-approved):** `issue/*`, `cursor/*`, and rare `dev/*` only. Unsupported branch kinds are **skipped explicitly**. Integration branches (`development` / `staging` / `main`) are never Ship/Pull work branches.
 
 ## Hard prerequisites (ops)
 
@@ -81,9 +85,9 @@ Existing public tools are **insufficient** to keep the isolated cron parent aliv
 - `agents_wait` only supports swarm `collect=true` children; **ACP is rejected** for `collect=true`.
 - Core `waitForDescendantSubagentSummary` can substitute child text for Telegram announce after the parent turn ends, but **cannot** run Lisa status CAS / email / real post-processing.
 
-**Do not edit OpenClaw core in this task.** Required core prerequisite is recorded in `linkbots/lisa/docs/LISA-OPS-CORE-PREREQUISITE.md`. Until that lands, treat Ship/Pull post-processing as **blocked** when ACP outcome cannot be validated in-parent; report `WAVE: Issues` rather than inventing Clear.
+**Do not edit OpenClaw core in this task.** Required core prerequisite is recorded in `linkbots/lisa/docs/LISA-OPS-CORE-PREREQUISITE.md`. **This branch must not be deployed** until that core wait/re-entry lands (see deployment order there). Until then, treat Ship/Pull post-processing as **blocked** when ACP outcome cannot be validated in-parent; report `WAVE: Issues` rather than inventing Clear.
 
-Templates: `templates/pipeline-one-liner.md`.
+Templates: `templates/pipeline-one-liner.md` (render via `node --experimental-strip-types linkbots/lisa/ops/render-template.ts pipeline-one-liner --wave "<WAVE>" --result Clear|Issues`).
 
 ## Cron run procedure (Lisa)
 
@@ -124,7 +128,9 @@ Process ONE REPO AT A TIME in this exact order (skip missing paths):
 8) /Users/linktrend/Projects/LiNKlibraries
 9) /Users/linktrend/Projects/LiNKautowork
 
-For each repo with local changes or unpushed commits on a work branch (prefer issue/*; also cursor/*, rare dev/*):
+Act ONLY on the IDE-approved work-branch allowlist: issue/*, cursor/*, rare dev/*. Unsupported kinds and integration branches (development/staging/main): skip explicitly and record an explicit skip result.
+
+For each allowlisted work branch with local changes or unpushed commits:
 1) Commit with conventional commits if there are changes (never commit secrets). Preserve unfinished work honestly — do not invent completeness.
 2) Push the branch (never force-push).
 3) STOP. This is a checkpoint only.
@@ -134,6 +140,10 @@ For each repo with local changes or unpushed commits on a work branch (prefer is
 7) Do not mark Review Ready. Final completion and Review Ready remain separate from ordinary Ship.
 
 Skip dirty actively owned worktrees; record an explicit skip reason privately (not in the status line).
+
+Wave result semantics (deterministic):
+- Clear ONLY if at least one allowlisted branch was successfully checkpointed (commit and/or push completed) and none were blocked/failed.
+- Issues if any branch was blocked/failed, OR if every branch was skipped/empty (no actionable work completed). Never report Clear merely because everything was skipped.
 
 Do not edit /Users/linktrend/.openclaw-lisa/workspace/memory/pipeline-status.md; Lisa owns the shared status writer.
 
@@ -160,7 +170,9 @@ Process ONE REPO AT A TIME in this exact order (skip missing paths):
 8) /Users/linktrend/Projects/LiNKlibraries
 9) /Users/linktrend/Projects/LiNKautowork
 
-For each repo with a checked-out work branch (issue/*, cursor/*, rare dev/*) — not development/staging/main:
+Act ONLY on the IDE-approved work-branch allowlist: issue/*, cursor/*, rare dev/*. Unsupported kinds and integration branches: skip explicitly.
+
+For each allowlisted checked-out work branch:
 1) git fetch origin
 2) Skip frozen/reviewed exact tip SHAs (do not merge into a tip that is frozen for review). Produce an explicit result for every skipped or updated branch.
 3) Never overwrite dirty worktrees. Never overwrite actively owned worktrees. Skip them with an explicit result.
@@ -168,6 +180,10 @@ For each repo with a checked-out work branch (issue/*, cursor/*, rare dev/*) —
 5) Never force-push.
 6) Do not invent merges into staging/main.
 7) Note blockers privately; do not paste lists into the status line.
+
+Wave result semantics (deterministic):
+- Clear ONLY if at least one allowlisted branch was successfully updated and none were blocked/failed.
+- Issues if any branch was blocked/failed, OR if every branch was skipped/empty (no actionable work completed). Never report Clear merely because everything was skipped.
 
 Do not edit /Users/linktrend/.openclaw-lisa/workspace/memory/pipeline-status.md; Lisa owns the shared status writer.
 

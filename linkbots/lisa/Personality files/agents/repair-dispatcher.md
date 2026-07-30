@@ -1,7 +1,7 @@
 ---
 type: AgentProcedure
 title: Lisa GitOps Repair Dispatcher
-description: Diagnose GitHub failures; dispatch Cursor ACP repairs with max 3 attempts; escalate unsafe cases to Carlos
+description: Diagnose GitHub failures; dispatch Cursor ACP repairs with exact binding; hold pending; max 3 genuine dispatches
 load: on_demand
 read_when:
   - GitHub CI/Bugbot failure needs Lisa supervision
@@ -13,15 +13,30 @@ tags: [gitops, repair, acp, supervisor]
 
 Repository-side contract. Implementation helpers: `linkbots/lisa/ops/repair-dispatcher.ts`.
 
+**IDE Development** owns the repair control-plane contract (issue #23 and related GitOps docs). Lisa consumes that contract; this file does not override IDE Development.
+
+## Binding (exact — all four fields)
+
+Every repair attempt is keyed by:
+
+1. `repository`
+2. `branch`
+3. `prNumber` (nullable)
+4. exact `headSha`
+
+Different PRs that share a branch or head SHA are **separate** bindings.
+
 ## Flow
 
 1. **Receive or reconcile** GitHub failure records (CI, Bugbot, gate failures).
 2. **Diagnose first** — classify before any ACP spawn.
-3. **Dispatch Cursor ACP** only for `ordinary_repairable` failures.
-4. Bind every repair to exact **repository**, **branch**, **PR** (if any), and **head SHA**.
-5. Maximum **three** dispatch attempts per binding (idempotent attempt keys).
-6. **Resolve** only after current-head proof and successful gates.
-7. **Notify Carlos** only after bounded repair fails, or **immediately** for unsafe classes below.
+3. If an attempt for this **exact binding** is already `pending` (genuinely dispatched): **hold** — return no-new-dispatch. Never open attempt 2 merely because attempt 1 is pending.
+4. **Dispatch Cursor ACP** only for `ordinary_repairable` failures and only when no pending attempt exists for the binding.
+5. Count **only genuinely dispatched** attempts (`dispatchedAt != null`). Held evaluations do not consume an attempt.
+6. Maximum **three** genuine dispatches per binding, then escalate to Carlos.
+7. **Resolve** only when proof matches repository + branch + PR + exact head SHA + recorded attempt number + successful required gates.
+8. Reject stale head, unmatched binding, unrecorded attempt, or failed gates — do not treat as success.
+9. **Notify Carlos** only after bounded repair fails, or **immediately** for unsafe classes below.
 
 ## Immediate escalate (no ACP dispatch)
 

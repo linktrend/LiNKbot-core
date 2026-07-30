@@ -100,4 +100,12 @@ Refresh `docs/current-status.md` if Orchestrator (this Lisa session did not edit
 
 ## Amendments
 
-None yet.
+### 2026-07-30 — Codex correction pass (factual)
+
+**Substantive implementation commit** (Lisa ops personality + helpers + tests + docs, not handoff SHA sync): `3652f6540bd`.
+
+**Later handoff-only / tip-sync commits** (created to embed ending SHAs into this handoff — avoid repeating that pattern): `ef9693b55ce`, tip before this correction pass `7bc90fd0561`.
+
+**This correction pass** addresses independent Codex findings without a second SHA-chasing commit: IDE Development remains GitOps SOT (issue #23 consumer dependency); repair dispatcher exact binding + pending hold; Ship/Pull allowlist + Clear/Issues semantics; operational canonical templates + `render-template.ts`; Main Approve binding helpers with store blocked; offline renamed to planning helper; model eval corrected for MiniMax VL-01 vs M3; deploy gate requires core ACP wait first; coordination relay in `LISA-OPS-CORE-PREREQUISITE.md`.
+
+Tip SHA after this correction lands: use `git rev-parse HEAD` on `issue/ocp-lisa-ops01` — do not amend this handoff solely to paste that SHA.

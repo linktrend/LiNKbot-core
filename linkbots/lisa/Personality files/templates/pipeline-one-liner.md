@@ -1,18 +1,20 @@
-# Ship/Pull pipeline one-line report template
+# Canonical template: Pipeline one-liner
 
-Exact shapes only:
+## Placeholders
 
-- `{{wave}}: Clear`
-- `{{wave}}: Issues`
+| Placeholder  | Required | Notes                                                                                                               |
+| ------------ | -------- | ------------------------------------------------------------------------------------------------------------------- |
+| `{{wave}}`   | yes      | `Ship 05`, `Pull 07`, `Ship 16`, `Pull 18`, `Staging promote (Tue)`, `Staging promote (Fri)`, or `Main ready (Mon)` |
+| `{{result}}` | yes      | `Clear` or `Issues`                                                                                                 |
 
-Where `{{wave}}` is one of: `Ship 05`, `Pull 07`, `Ship 16`, `Pull 18`, `Staging promote (Tue)`, `Staging promote (Fri)`, `Main ready (Mon)`.
+## Body
 
-## Freshness
+```text
+{{wave}}: {{result}}
+```
 
-Emit only after validated ACP child outcome (Ship/Pull) or owning checkpoint (Staging/Main).
+## Rules
 
-## Omission
-
-No lists, links, SHA dumps, or narration. Email subject `{{wave}} status`; body is the same one line.
-
-Rendered by `renderPipelineOneLiner`.
+- Exactly one line. No lists, links, or metadata.
+- Reject unresolved placeholders.
+- Telegram announce + email subject/body share this same line after validated ACP outcome.

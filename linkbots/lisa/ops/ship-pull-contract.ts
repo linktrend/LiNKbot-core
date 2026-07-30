@@ -1,8 +1,15 @@
 /**
- * Ship / Pull branch-policy helpers (checkpoint-only Ship; frozen-tip Pull).
+ * Ship / Pull branch policy — IDE-approved work-branch allowlist + wave semantics.
  */
 
-export type BranchKind = "issue" | "cursor" | "dev" | "integration" | "other";
+export type BranchKind = "issue" | "cursor" | "dev" | "integration" | "unsupported";
+
+/** IDE studio branching default allowlist for Ship/Pull work. */
+export const APPROVED_WORK_BRANCH_KINDS: ReadonlySet<BranchKind> = new Set([
+  "issue",
+  "cursor",
+  "dev",
+]);
 
 export type BranchSnapshot = {
   repo: string;
@@ -22,7 +29,7 @@ export type ShipBranchAction =
       allowPr: false;
       allowBugbot: false;
     }
-  | { action: "skip"; reason: string };
+  | { action: "skip"; reason: string; explicitResult: string };
 
 export type PullBranchAction =
   | { action: "update"; method: "merge_origin_development"; allowForcePush: false }
@@ -31,9 +38,15 @@ export type PullBranchAction =
 export type BranchWaveResult = {
   repo: string;
   branch: string;
-  status: "updated" | "checkpointed" | "skipped" | "blocked";
+  status: "updated" | "checkpointed" | "skipped" | "blocked" | "no_work";
   detail: string;
 };
+
+/** Wave outcome — never Clear merely because everything was skipped. */
+export type WaveOutcome =
+  | { result: "Clear"; reason: "work_succeeded" }
+  | { result: "Issues"; reason: "blocked_or_failed" }
+  | { result: "Issues"; reason: "all_skipped_or_empty"; note: "no actionable work completed" };
 
 const INTEGRATION = new Set(["development", "staging", "main"]);
 
@@ -42,20 +55,42 @@ export function classifyBranch(branch: string): BranchKind {
   if (branch.startsWith("issue/")) return "issue";
   if (branch.startsWith("cursor/")) return "cursor";
   if (branch.startsWith("dev/")) return "dev";
-  return "other";
+  return "unsupported";
 }
 
-/** Ordinary Ship: commit + push only. Never open/update PRs or request Bugbot. */
+export function isApprovedWorkBranch(branch: string): boolean {
+  return APPROVED_WORK_BRANCH_KINDS.has(classifyBranch(branch));
+}
+
 export function planShipBranch(snap: BranchSnapshot): ShipBranchAction {
   const kind = classifyBranch(snap.branch);
   if (kind === "integration") {
-    return { action: "skip", reason: "integration branch is not a Ship work branch" };
+    return {
+      action: "skip",
+      reason: "integration branch is not a Ship work branch",
+      explicitResult: `${snap.repo} ${snap.branch}: skipped (integration)`,
+    };
+  }
+  if (kind === "unsupported" || !APPROVED_WORK_BRANCH_KINDS.has(kind)) {
+    return {
+      action: "skip",
+      reason: "unsupported branch kind (not on IDE allowlist)",
+      explicitResult: `${snap.repo} ${snap.branch}: skipped (unsupported kind)`,
+    };
   }
   if (snap.dirty && snap.activelyOwned) {
-    return { action: "skip", reason: "dirty actively owned worktree preserved" };
+    return {
+      action: "skip",
+      reason: "dirty actively owned worktree preserved",
+      explicitResult: `${snap.repo} ${snap.branch}: skipped (dirty owned)`,
+    };
   }
   if (!snap.hasLocalChanges && !snap.hasUnpushedCommits) {
-    return { action: "skip", reason: "nothing to checkpoint" };
+    return {
+      action: "skip",
+      reason: "nothing to checkpoint",
+      explicitResult: `${snap.repo} ${snap.branch}: skipped (no work)`,
+    };
   }
   return {
     action: "checkpoint",
@@ -65,7 +100,6 @@ export function planShipBranch(snap: BranchSnapshot): ShipBranchAction {
   };
 }
 
-/** Pull updates unfinished work; skips frozen/reviewed exact SHAs and protected dirty trees. */
 export function planPullBranch(snap: BranchSnapshot): PullBranchAction {
   const kind = classifyBranch(snap.branch);
   if (kind === "integration") {
@@ -73,6 +107,13 @@ export function planPullBranch(snap: BranchSnapshot): PullBranchAction {
       action: "skip",
       reason: "integration branch is not a Pull work branch",
       explicitResult: `${snap.repo} ${snap.branch}: skipped (integration)`,
+    };
+  }
+  if (kind === "unsupported" || !APPROVED_WORK_BRANCH_KINDS.has(kind)) {
+    return {
+      action: "skip",
+      reason: "unsupported branch kind (not on IDE allowlist)",
+      explicitResult: `${snap.repo} ${snap.branch}: skipped (unsupported kind)`,
     };
   }
   if (snap.dirty) {
@@ -99,29 +140,50 @@ export function planPullBranch(snap: BranchSnapshot): PullBranchAction {
   return { action: "update", method: "merge_origin_development", allowForcePush: false };
 }
 
-export function shipPromptForbidsPrAndBugbot(prompt: string): boolean {
-  const lower = prompt.toLowerCase();
-  const forbidsPr =
-    /do not (create|open|update).*pr/.test(lower) ||
-    /no pr/.test(lower) ||
-    /checkpoint.?only/.test(lower) ||
-    /commit and push only/.test(lower);
-  const forbidsBugbot = /do not request bugbot/.test(lower) || /no bugbot/.test(lower);
-  const doesNotInstructPr =
-    !/open or update a pr/.test(lower) && !/open a pr targeting development/.test(lower);
-  return forbidsPr && forbidsBugbot && doesNotInstructPr;
+/**
+ * Deterministic wave result:
+ * - Clear only if at least one branch was checkpointed/updated and none blocked.
+ * - Issues if any blocked, or if zero successful actions (all skipped / empty).
+ */
+export function resolveWaveOutcome(results: BranchWaveResult[]): WaveOutcome {
+  if (results.some((r) => r.status === "blocked")) {
+    return { result: "Issues", reason: "blocked_or_failed" };
+  }
+  const succeeded = results.filter((r) => r.status === "checkpointed" || r.status === "updated");
+  if (succeeded.length > 0) {
+    return { result: "Clear", reason: "work_succeeded" };
+  }
+  return {
+    result: "Issues",
+    reason: "all_skipped_or_empty",
+    note: "no actionable work completed",
+  };
 }
 
-export function pullPromptSkipsFrozenTips(prompt: string): boolean {
+export function validateShipPromptContract(prompt: string): string[] {
+  const errors: string[] = [];
   const lower = prompt.toLowerCase();
-  return (
-    (lower.includes("frozen") || lower.includes("reviewed")) &&
-    lower.includes("skip") &&
-    (lower.includes("never force-push") || lower.includes("do not force-push"))
-  );
+  if (/open or update a pr|open a pr targeting/.test(lower)) {
+    errors.push("must not instruct opening/updating PRs");
+  }
+  if (!/commit/.test(lower) || !/push/.test(lower)) {
+    errors.push("must commit and push checkpoints");
+  }
+  if (!/do not request bugbot|no bugbot/.test(lower)) {
+    errors.push("must forbid Bugbot requests");
+  }
+  if (!/do not (create|open|update).*pr|no pr|checkpoint/.test(lower)) {
+    errors.push("must state checkpoint-only / no PR");
+  }
+  if (!/review ready/.test(lower)) {
+    errors.push("must keep Review Ready separate from ordinary Ship");
+  }
+  if (!/issue\/|issue\/\*/.test(lower)) {
+    errors.push("must mention IDE work-branch allowlist (issue/*)");
+  }
+  return errors;
 }
 
-/** Stricter pull prompt checks used by tests. */
 export function validatePullPromptContract(prompt: string): string[] {
   const errors: string[] = [];
   const lower = prompt.toLowerCase();
@@ -143,45 +205,12 @@ export function validatePullPromptContract(prompt: string): string[] {
   return errors;
 }
 
-export function validateShipPromptContract(prompt: string): string[] {
-  const errors: string[] = [];
-  const lower = prompt.toLowerCase();
-  if (/open or update a pr|open a pr targeting/.test(lower)) {
-    errors.push("must not instruct opening/updating PRs");
-  }
-  if (!/commit/.test(lower) || !/push/.test(lower)) {
-    errors.push("must commit and push checkpoints");
-  }
-  if (!/do not request bugbot|no bugbot/.test(lower)) {
-    errors.push("must forbid Bugbot requests");
-  }
-  if (!/do not (create|open|update).*pr|no pr|checkpoint/.test(lower)) {
-    errors.push("must state checkpoint-only / no PR");
-  }
-  if (!/review ready/.test(lower)) {
-    errors.push("must keep Review Ready separate from ordinary Ship");
-  }
-  return errors;
-}
-
-export function aggregateWaveLine(results: BranchWaveResult[]): "Clear" | "Issues" {
-  if (results.some((r) => r.status === "blocked")) return "Issues";
-  if (results.length === 0) return "Clear";
-  return "Clear";
-}
-
-/**
- * Ship/Pull post-processing gate: final assistant payload + status CAS + email
- * may run only after a validated child ACP outcome.
- */
-export type PostProcessGate = {
+export function canFinishShipPullSuccessfully(gate: {
   childOutcomeValidated: boolean;
   statusCasDone: boolean;
   emailAttempted: boolean;
   finalAssistantPayload: string | null;
-};
-
-export function canFinishShipPullSuccessfully(gate: PostProcessGate): boolean {
+}): boolean {
   if (!gate.childOutcomeValidated) return false;
   if (!gate.statusCasDone) return false;
   if (!gate.emailAttempted) return false;
@@ -189,7 +218,6 @@ export function canFinishShipPullSuccessfully(gate: PostProcessGate): boolean {
   return /^((Ship|Pull) \d{2}): (Clear|Issues)$/.test(payload);
 }
 
-/** Isolated cron must not call sessions_yield (terminates/kills the parent turn). */
 export function shipPullForbidsSessionsYield(procedureText: string): boolean {
   const normalized = procedureText.toLowerCase().replace(/`/g, "");
   return (
@@ -197,5 +225,22 @@ export function shipPullForbidsSessionsYield(procedureText: string): boolean {
     /do not call sessions_yield/.test(normalized) ||
     /do not use sessions_yield/.test(normalized) ||
     /sessions_yield.*(forbidden|banned|prohibited|do not use|never)/.test(normalized)
+  );
+}
+
+export function shipPullRespectsIdeAuthority(procedureText: string): boolean {
+  const lower = procedureText.toLowerCase();
+  if (/this file wins/.test(lower)) return false;
+  // Flag positive override claims; allow "must not invent … that replaces IDE".
+  if (/\blisa\b.{0,40}\boverrides?\b.{0,40}\bide development\b/.test(lower)) {
+    return false;
+  }
+  if (/\bwhere this procedure differs\b/.test(lower) && /\bwins\b/.test(lower)) {
+    return false;
+  }
+  return (
+    /ide development/.test(lower) &&
+    (/source of truth|sot|gitops contract|issue #23|issue 23/.test(lower) ||
+      /faithfully implement|consumer/.test(lower))
   );
 }

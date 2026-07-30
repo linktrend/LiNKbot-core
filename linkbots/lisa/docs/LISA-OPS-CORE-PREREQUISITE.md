@@ -47,6 +47,37 @@ Ship/Pull success gate: child outcome validated ∧ status CAS ∧ email attempt
 - Announce to dead parent does not count as Lisa completion.
 - Timeout → `WAVE: Issues` with no invented Clear.
 
+## Integration order (hard — no early deploy)
+
+This Lisa branch (`issue/ocp-lisa-ops01`) **cannot be deployed** before:
+
+1. This core prerequisite is implemented by its designated OpenClaw workstream.
+2. PR #38 lands into `development`.
+3. This branch updates onto that exact `development` head.
+4. Combined tests pass.
+5. One controlled live rollout is approved.
+
+Do **not** deploy and knowingly accept Issues until core lands.
+
 ## Out of scope for this branch
 
 Do not edit the files above in `issue/ocp-lisa-ops01`. Personality procedures already ban `sessions_yield` and document the gate.
+
+## Coordination relay (LiNKbrain / OpenClaw workstream)
+
+Copy for the owning workstream (do not edit their files from this branch):
+
+```text
+RELAY: Lisa Ship/Pull needs OpenClaw core ACP wait/re-entry.
+
+Problem: Isolated cron + sessions_spawn(ACP) cannot finish Lisa post-processing
+(status CAS, email, final WAVE line) because sessions_yield kills the parent and
+agents_wait rejects ACP collect.
+
+Need: Push-based wait or post-process re-entry for ACP mode=run without yield/polling.
+Primary surfaces: src/cron/isolated-agent/*, sessions-spawn/acp-spawn, subagent-registry.
+Consumer: Lisa Option A Ship/Pull (linkbots/lisa) — blocked on deploy until this lands
+plus PR #38 merge and combined green tests.
+
+Owner: OpenClaw core / LiNKbrain-coordinated workstream — not issue/ocp-lisa-ops01.
+```

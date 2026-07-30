@@ -3,11 +3,20 @@
  * Run: node --experimental-strip-types --test linkbots/lisa/ops/*.test.ts
  */
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { spawnSync } from "node:child_process";
+import { readFileSync, writeFileSync, mkdtempSync } from "node:fs";
+import { tmpdir } from "node:os";
 import path from "node:path";
 import { describe, it } from "node:test";
 import { fileURLToPath } from "node:url";
-import { isOfflineReconcileBounded, planOfflineReconcile } from "./offline-recovery.ts";
+import {
+  assertImmutableBindings,
+  buildCarlosAskView,
+  MAIN_APPROVE_RUNTIME_STORE,
+  validateApprovalDispatch,
+  type MainApprovePackage,
+} from "./main-approve-binding.ts";
+import { isOfflinePlanHonest, planOfflineReconcile } from "./offline-recovery.ts";
 import {
   applyWaveCas,
   expectedCycleDateForWave,
@@ -15,36 +24,65 @@ import {
 } from "./pipeline-status-cas.ts";
 import {
   classifyFailure,
+  evaluateProof,
   MAX_REPAIR_ATTEMPTS,
   nextRepairDecision,
-  recordAttemptIdempotent,
-  repairAttemptKey,
+  recordDispatch,
+  type RepairAttemptRecord,
+  type RepairBinding,
 } from "./repair-dispatcher.ts";
 import {
   canFinishShipPullSuccessfully,
+  classifyBranch,
+  isApprovedWorkBranch,
   planPullBranch,
   planShipBranch,
+  resolveWaveOutcome,
   shipPullForbidsSessionsYield,
+  shipPullRespectsIdeAuthority,
   validatePullPromptContract,
   validateShipPromptContract,
+  type BranchWaveResult,
 } from "./ship-pull-contract.ts";
 import {
+  assertNoUnresolvedPlaceholders,
+  loadCanonicalTemplateBody,
   omitStalePipelineLines,
   renderEmailDailyDigest,
   renderPipelineOneLiner,
   renderTelegramDailyDigest,
   renderTelegramHeartbeat,
   templatesDifferTelegramVsEmail,
+  TEMPLATES_DIR,
 } from "./templates.ts";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const personalityRoot = path.resolve(here, "../Personality files");
+const repoRoot = path.resolve(here, "../../..");
 
 function readPersonality(rel: string): string {
   return readFileSync(path.join(personalityRoot, rel), "utf8");
 }
 
-describe("Ship checkpoint-only", () => {
+const baseBinding: RepairBinding = {
+  repository: "linktrend/openclaw_prime",
+  branch: "issue/1-x",
+  prNumber: 10,
+  headSha: "aaa111aaa111aaa111aaa111aaa111aaa111aaa1",
+};
+
+describe("IDE authority", () => {
+  it("Ship/Pull procedure does not claim Lisa overrides IDE Development", () => {
+    const text = readPersonality("agents/ship-pull-clock.md");
+    assert.equal(shipPullRespectsIdeAuthority(text), true);
+    assert.doesNotMatch(text, /this file wins/i);
+    assert.doesNotMatch(text, /lisa override/i);
+    assert.match(text, /IDE Development/i);
+    assert.match(text, /issue #23|#23/i);
+  });
+});
+
+describe("Ship checkpoint-only + allowlist", () => {
   it("never opens PRs or requests Bugbot in procedure prompt", () => {
     const text = readPersonality("agents/ship-pull-clock.md");
     const shipBlock = text.slice(text.indexOf("## ACP prompt — Shipper"));
@@ -52,7 +90,7 @@ describe("Ship checkpoint-only", () => {
     assert.deepEqual(errors, []);
   });
 
-  it("plans commit+push without PR/Bugbot", () => {
+  it("plans commit+push without PR/Bugbot for issue/*", () => {
     const plan = planShipBranch({
       repo: "openclaw_prime",
       branch: "issue/1-x",
@@ -68,6 +106,66 @@ describe("Ship checkpoint-only", () => {
       assert.equal(plan.allowPr, false);
       assert.equal(plan.allowBugbot, false);
     }
+  });
+
+  it("skips unsupported and integration branches explicitly", () => {
+    assert.equal(isApprovedWorkBranch("feature/x"), false);
+    assert.equal(classifyBranch("development"), "integration");
+    const unsupported = planShipBranch({
+      repo: "r",
+      branch: "feature/x",
+      tipSha: "a",
+      dirty: false,
+      activelyOwned: false,
+      frozenReviewedSha: null,
+      hasLocalChanges: true,
+      hasUnpushedCommits: true,
+    });
+    assert.equal(unsupported.action, "skip");
+    if (unsupported.action === "skip") {
+      assert.match(unsupported.explicitResult, /unsupported/);
+    }
+  });
+});
+
+describe("Wave Clear/Issues semantics", () => {
+  it("Clear only when work succeeded; Issues when all skipped or empty", () => {
+    const mixedSuccess: BranchWaveResult[] = [
+      { repo: "a", branch: "issue/1", status: "skipped", detail: "unsupported" },
+      { repo: "b", branch: "issue/2", status: "checkpointed", detail: "ok" },
+    ];
+    assert.deepEqual(resolveWaveOutcome(mixedSuccess), {
+      result: "Clear",
+      reason: "work_succeeded",
+    });
+
+    const allSkipped: BranchWaveResult[] = [
+      { repo: "a", branch: "feature/x", status: "skipped", detail: "unsupported" },
+      { repo: "b", branch: "development", status: "skipped", detail: "integration" },
+    ];
+    const skippedOutcome = resolveWaveOutcome(allSkipped);
+    assert.equal(skippedOutcome.result, "Issues");
+    if (skippedOutcome.result === "Issues") {
+      assert.equal(skippedOutcome.reason, "all_skipped_or_empty");
+    }
+
+    assert.equal(resolveWaveOutcome([]).result, "Issues");
+
+    const blocked: BranchWaveResult[] = [
+      { repo: "a", branch: "issue/1", status: "blocked", detail: "push failed" },
+    ];
+    assert.deepEqual(resolveWaveOutcome(blocked), {
+      result: "Issues",
+      reason: "blocked_or_failed",
+    });
+
+    const successful: BranchWaveResult[] = [
+      { repo: "a", branch: "issue/1", status: "updated", detail: "merged development" },
+    ];
+    assert.deepEqual(resolveWaveOutcome(successful), {
+      result: "Clear",
+      reason: "work_succeeded",
+    });
   });
 });
 
@@ -189,7 +287,7 @@ describe("Pipeline status CAS", () => {
   });
 });
 
-describe("Templates", () => {
+describe("Templates operational", () => {
   const baseCtx = {
     weekdayDate: "Thursday, 30 Jul 2026",
     time: "10:45",
@@ -209,7 +307,7 @@ describe("Templates", () => {
       checks: "No" as const,
       alerts: [] as string[],
     },
-    pipelineLines: ["Ship 05: Clear"],
+    pipelineLines: ["Ship 05: Clear"] as string[],
     digestDetail: {
       calendarEvents: ["09:00 — standup — Shared"],
       tasks: [] as string[],
@@ -218,70 +316,220 @@ describe("Templates", () => {
     },
   };
 
-  it("renders deterministically and omits stale pipeline keys", () => {
-    assert.equal(renderPipelineOneLiner("Ship 05", "Clear"), "Ship 05: Clear");
+  it("canonical template files expose every section and placeholder", () => {
+    for (const kind of [
+      "telegram-heartbeat",
+      "telegram-daily-digest",
+      "email-daily-digest",
+      "pipeline-one-liner",
+    ] as const) {
+      const body = loadCanonicalTemplateBody(kind);
+      assert.match(body, /\{\{[a-zA-Z0-9_.]+\}\}/);
+      assert.ok(body.length > 10);
+    }
+    assert.match(
+      readFileSync(path.join(TEMPLATES_DIR, "telegram-heartbeat.md"), "utf8"),
+      /## Omission rules/,
+    );
+  });
+
+  it("renders Telegram heartbeat from canonical template", () => {
+    const a = renderTelegramHeartbeat(baseCtx);
+    const b = renderTelegramHeartbeat(baseCtx);
+    assert.equal(a, b);
+    assert.match(a, /^Heartbeat — Thursday, 30 Jul 2026, 10:45/);
+    assert.match(a, /## C\. Battery Monitoring/);
+    assert.match(a, /## D\. Pipeline/);
+    assert.match(a, /Ship 05: Clear/);
+  });
+
+  it("omits pipeline when empty and rejects unresolved placeholders", () => {
+    const noPipe = renderTelegramHeartbeat({ ...baseCtx, pipelineLines: [] });
+    assert.doesNotMatch(noPipe, /## D\. Pipeline/);
+    assert.throws(() => assertNoUnresolvedPlaceholders("hello {{missing}}"), /unresolved/);
     assert.deepEqual(
       omitStalePipelineLines(["Ship 05: Clear", "Ship 16: Issues"], new Set(["Ship 05"])),
       ["Ship 05: Clear"],
     );
-    const a = renderTelegramHeartbeat(baseCtx);
-    const b = renderTelegramHeartbeat(baseCtx);
-    assert.equal(a, b);
   });
 
-  it("keeps Telegram and email formats different where required", () => {
+  it("Telegram digest includes Battery; email excludes Battery", () => {
     const tg = renderTelegramDailyDigest(baseCtx);
     const em = renderEmailDailyDigest(baseCtx);
     const diff = templatesDifferTelegramVsEmail(tg, em);
     assert.equal(diff.telegramHasBattery, true);
     assert.equal(diff.emailHasBattery, false);
     assert.equal(diff.differ, true);
+    assert.doesNotMatch(em, /Battery Monitoring|plugged status/i);
+  });
+
+  it("runtime CLI path uses canonical templates", () => {
+    const dir = mkdtempSync(path.join(tmpdir(), "lisa-tpl-"));
+    const jsonPath = path.join(dir, "ctx.json");
+    writeFileSync(jsonPath, JSON.stringify(baseCtx));
+    const cli = path.join(here, "render-template.ts");
+    const hb = spawnSync(
+      process.execPath,
+      ["--experimental-strip-types", cli, "telegram-heartbeat", jsonPath],
+      { encoding: "utf8", cwd: repoRoot },
+    );
+    assert.equal(hb.status, 0, hb.stderr);
+    assert.equal(hb.stdout, renderTelegramHeartbeat(baseCtx));
+
+    const dig = spawnSync(
+      process.execPath,
+      ["--experimental-strip-types", cli, "telegram-daily-digest", jsonPath],
+      { encoding: "utf8", cwd: repoRoot },
+    );
+    assert.equal(dig.status, 0, dig.stderr);
+    assert.match(dig.stdout, /Morning Digest/);
+
+    const email = spawnSync(
+      process.execPath,
+      ["--experimental-strip-types", cli, "email-daily-digest", jsonPath],
+      { encoding: "utf8", cwd: repoRoot },
+    );
+    assert.equal(email.status, 0, email.stderr);
+    assert.doesNotMatch(email.stdout, /Battery Monitoring/);
+
+    const pipe = spawnSync(
+      process.execPath,
+      [
+        "--experimental-strip-types",
+        cli,
+        "pipeline-one-liner",
+        "--wave",
+        "Ship 05",
+        "--result",
+        "Clear",
+      ],
+      { encoding: "utf8", cwd: repoRoot },
+    );
+    assert.equal(pipe.status, 0, pipe.stderr);
+    assert.equal(pipe.stdout.trim(), renderPipelineOneLiner("Ship 05", "Clear"));
+  });
+
+  it("procedures document deterministic template load/fill", () => {
+    const digest = readPersonality("agents/morning-digest.md");
+    const heartbeat = readPersonality("HEARTBEAT.md");
+    for (const text of [digest, heartbeat]) {
+      assert.match(text, /render-template\.ts/);
+      assert.match(text, /canonical template|templates\//i);
+    }
   });
 });
 
-describe("Repair dispatcher", () => {
-  const binding = {
-    repository: "linktrend/openclaw_prime",
-    branch: "issue/1-x",
-    prNumber: 10,
-    headSha: "aaa111",
-  };
+describe("Repair dispatcher binding + pending hold", () => {
+  it("holds when exact binding attempt is already pending (no attempt 2)", () => {
+    const prior = recordDispatch([], baseBinding, 1, "2026-07-30T10:00:00Z");
+    const again = nextRepairDecision({
+      failureClass: "ordinary_repairable",
+      binding: baseBinding,
+      priorAttempts: prior,
+      currentHeadSha: baseBinding.headSha,
+    });
+    assert.equal(again.decision, "hold");
+    if (again.decision === "hold") {
+      assert.equal(again.attempt, 1);
+      assert.equal(again.reason, "pending_attempt");
+    }
+  });
 
-  it("is idempotent and stops at three", () => {
-    let attempts = recordAttemptIdempotent([], {
-      binding,
-      attempt: 1,
-      dispatchedAt: "t1",
-      outcome: "failed",
-      proofHeadSha: null,
+  it("isolates different PRs sharing branch/head", () => {
+    const other: RepairBinding = { ...baseBinding, prNumber: 99 };
+    let prior = recordDispatch([], baseBinding, 1, "t1");
+    prior = prior.map((a) => (a.attempt === 1 ? { ...a, outcome: "failed" as const } : a));
+    prior = recordDispatch(prior, baseBinding, 2, "t2");
+    prior = prior.map((a) =>
+      a.attempt === 2 && same(a, baseBinding) ? { ...a, outcome: "failed" as const } : a,
+    );
+
+    const forOther = nextRepairDecision({
+      failureClass: "ordinary_repairable",
+      binding: other,
+      priorAttempts: prior,
+      currentHeadSha: other.headSha,
     });
-    attempts = recordAttemptIdempotent(attempts, {
-      binding,
-      attempt: 1,
-      dispatchedAt: "t1b",
-      outcome: "failed",
-      proofHeadSha: null,
+    assert.equal(forOther.decision, "dispatch");
+    if (forOther.decision === "dispatch") {
+      assert.equal(forOther.attempt, 1);
+    }
+  });
+
+  function same(a: RepairAttemptRecord, b: RepairBinding): boolean {
+    return (
+      a.binding.repository === b.repository &&
+      a.binding.branch === b.branch &&
+      a.binding.prNumber === b.prNumber &&
+      a.binding.headSha === b.headSha
+    );
+  }
+
+  it("rejects stale, unmatched, and unrecorded proof", () => {
+    const prior = recordDispatch([], baseBinding, 1, "t1");
+    assert.equal(
+      evaluateProof({
+        proof: {
+          ...baseBinding,
+          headSha: "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          attempt: 1,
+          gatesPassed: true,
+        },
+        binding: baseBinding,
+        currentHeadSha: baseBinding.headSha,
+        priorAttempts: prior,
+      }).decision,
+      "reject_proof",
+    );
+    assert.equal(
+      evaluateProof({
+        proof: {
+          repository: "other/repo",
+          branch: baseBinding.branch,
+          prNumber: baseBinding.prNumber,
+          headSha: baseBinding.headSha,
+          attempt: 1,
+          gatesPassed: true,
+        },
+        binding: baseBinding,
+        currentHeadSha: baseBinding.headSha,
+        priorAttempts: prior,
+      }).decision,
+      "reject_proof",
+    );
+    assert.equal(
+      evaluateProof({
+        proof: { ...baseBinding, attempt: 2, gatesPassed: true },
+        binding: baseBinding,
+        currentHeadSha: baseBinding.headSha,
+        priorAttempts: prior,
+      }).decision,
+      "reject_proof",
+    );
+  });
+
+  it("resolves only with exact binding + recorded attempt + gates", () => {
+    const prior = recordDispatch([], baseBinding, 1, "t1");
+    const ok = evaluateProof({
+      proof: { ...baseBinding, attempt: 1, gatesPassed: true },
+      binding: baseBinding,
+      currentHeadSha: baseBinding.headSha,
+      priorAttempts: prior,
     });
-    assert.equal(attempts.length, 1);
-    attempts = recordAttemptIdempotent(attempts, {
-      binding,
-      attempt: 2,
-      dispatchedAt: "t2",
-      outcome: "failed",
-      proofHeadSha: null,
-    });
-    attempts = recordAttemptIdempotent(attempts, {
-      binding,
-      attempt: 3,
-      dispatchedAt: "t3",
-      outcome: "failed",
-      proofHeadSha: null,
-    });
+    assert.equal(ok.decision, "resolve");
+  });
+
+  it("escalates exactly after three genuine dispatches", () => {
+    let prior: RepairAttemptRecord[] = [];
+    for (let n = 1; n <= 3; n++) {
+      prior = recordDispatch(prior, baseBinding, n, `t${n}`);
+      prior = prior.map((a) => (a.attempt === n ? { ...a, outcome: "failed" as const } : a));
+    }
     const next = nextRepairDecision({
       failureClass: "ordinary_repairable",
-      binding,
-      priorAttempts: attempts,
-      currentHeadSha: "aaa111",
+      binding: baseBinding,
+      priorAttempts: prior,
+      currentHeadSha: baseBinding.headSha,
     });
     assert.equal(next.decision, "escalate");
     if (next.decision === "escalate") {
@@ -289,56 +537,142 @@ describe("Repair dispatcher", () => {
       assert.equal(next.notifyCarlos, true);
     }
     assert.equal(MAX_REPAIR_ATTEMPTS, 3);
-    assert.equal(repairAttemptKey(binding, 1), "linktrend/openclaw_prime|issue/1-x|10|aaa111|1");
   });
 
-  it("rejects stale-head repair success", () => {
-    const decision = nextRepairDecision({
-      failureClass: "ordinary_repairable",
-      binding,
-      priorAttempts: [],
-      currentHeadSha: "bbb222",
-      latestAttemptProof: { headSha: "aaa111", gatesPassed: true },
-    });
-    assert.equal(decision.decision, "reject_stale_success");
-  });
-
-  it("escalates unsafe decisions without dispatch", () => {
+  it("escalates unsafe classes without dispatch", () => {
     for (const summary of ["credential missing", "security XSS", "merge conflict ambiguous"]) {
       const cls = classifyFailure({ summary });
       const decision = nextRepairDecision({
         failureClass: cls,
-        binding,
+        binding: baseBinding,
         priorAttempts: [],
-        currentHeadSha: "aaa111",
+        currentHeadSha: baseBinding.headSha,
       });
       assert.equal(decision.decision, "escalate");
     }
   });
 });
 
-describe("Offline recovery", () => {
-  it("is bounded and does not blindly replay obsolete waves", () => {
+describe("Main Approve binding", () => {
+  const pkg: MainApprovePackage = {
+    packageId: "main-2026-08-03",
+    mondayDate: "2026-08-03",
+    claimExpiresAt: "2026-08-03T12:00:00+08:00",
+    items: [
+      {
+        index: 1,
+        plainDescription: "LiNKsites weekly promotion",
+        repository: "linktrend/LiNKsites",
+        promotionPrNumber: 12,
+        stagingSha: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        priorMainSha: "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        promotionHeadSha: "cccccccccccccccccccccccccccccccccccccccc",
+        gateResult: "Clear",
+      },
+      {
+        index: 2,
+        plainDescription: "LiNKplatform weekly promotion",
+        repository: "linktrend/LiNKplatform",
+        promotionPrNumber: 34,
+        stagingSha: "dddddddddddddddddddddddddddddddddddddddd",
+        priorMainSha: "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        promotionHeadSha: "ffffffffffffffffffffffffffffffffffffffff",
+        gateResult: "Clear",
+      },
+    ],
+  };
+
+  it("Carlos view is plain English without SHAs", () => {
+    assertImmutableBindings(pkg);
+    const view = buildCarlosAskView(pkg);
+    assert.match(view.telegramBody, /1\) linktrend\/LiNKsites/);
+    assert.doesNotMatch(view.telegramBody, /[0-9a-f]{7,}/i);
+    assert.equal(MAIN_APPROVE_RUNTIME_STORE.available, false);
+  });
+
+  it("exact binding dispatches; drift/reorder/expiry/partial fail", () => {
+    const live = structuredClone(pkg.items);
+    assert.equal(
+      validateApprovalDispatch({
+        sealed: pkg,
+        approvedIndexes: [1, 2],
+        nowIso: "2026-08-03T10:00:00+08:00",
+        liveItems: live,
+      }).ok,
+      true,
+    );
+
+    const drifted = structuredClone(live);
+    drifted[0]!.stagingSha = "1111111111111111111111111111111111111111";
+    assert.equal(
+      validateApprovalDispatch({
+        sealed: pkg,
+        approvedIndexes: [1, 2],
+        nowIso: "2026-08-03T10:00:00+08:00",
+        liveItems: drifted,
+      }).ok,
+      false,
+    );
+
+    // Same bindings, wrong order (index at position 0 is 2, not 1).
+    const reordered = [live[1]!, live[0]!];
+    assert.equal(
+      validateApprovalDispatch({
+        sealed: pkg,
+        approvedIndexes: [1, 2],
+        nowIso: "2026-08-03T10:00:00+08:00",
+        liveItems: reordered,
+      }).reason,
+      "reordered",
+    );
+
+    assert.equal(
+      validateApprovalDispatch({
+        sealed: pkg,
+        approvedIndexes: [1, 2],
+        nowIso: "2026-08-03T13:00:00+08:00",
+        liveItems: live,
+      }).reason,
+      "expired_claim",
+    );
+
+    assert.equal(
+      validateApprovalDispatch({
+        sealed: pkg,
+        approvedIndexes: [1],
+        nowIso: "2026-08-03T10:00:00+08:00",
+        liveItems: live,
+      }).reason,
+      "partial_approval",
+    );
+  });
+});
+
+describe("Offline recovery planning helper", () => {
+  it("is honest planning-only and skips obsolete/future/invalid", () => {
     const plan = planOfflineReconcile({
       nowIso: "2026-07-30T11:00:00+08:00",
       missedWindows: [
         { wave: "Ship 16", scheduledAt: "2026-07-28T16:00:00+08:00", cycleDate: "2026-07-29" },
         { wave: "Pull 18", scheduledAt: "2026-07-28T18:00:00+08:00", cycleDate: "2026-07-29" },
         { wave: "Ship 05", scheduledAt: "2026-07-30T05:00:00+08:00", cycleDate: "2026-07-30" },
+        { wave: "Pull 07", scheduledAt: "2026-07-30T12:00:00+08:00", cycleDate: "2026-07-30" },
+        { wave: "Ship 16", scheduledAt: "not-a-date", cycleDate: "bad" },
       ],
       unresolvedFailureIds: ["f2", "f1", "f1"],
       lastReconcileAt: null,
     });
+    assert.equal(plan.kind, "planning_helper");
+    assert.equal(plan.durableOnePassEnforced, false);
     assert.equal(plan.windowsToConsider.length, 1);
     assert.equal(plan.windowsToConsider[0]?.wave, "Ship 05");
-    assert.equal(plan.obsoleteSkipped.length, 2);
-    assert.deepEqual(plan.failureIdsToReconcile, ["f1", "f2"]);
-    assert.equal(isOfflineReconcileBounded(plan), true);
+    assert.ok(plan.invalidSkipped.length >= 2);
+    assert.equal(isOfflinePlanHonest(plan), true);
   });
 });
 
-describe("Heartbeat/digest GitOps alignment (no regression of required markers)", () => {
-  it("documents Review Packager 08:00 and Staging 10:00", () => {
+describe("Heartbeat/digest GitOps alignment", () => {
+  it("documents Review Packager 08:00 and Staging 10:00 with IDE #23 dependency", () => {
     const pipeline = readPersonality("agents/pipeline-status.md");
     const heartbeat = readPersonality("HEARTBEAT.md");
     const digest = readPersonality("agents/morning-digest.md");
