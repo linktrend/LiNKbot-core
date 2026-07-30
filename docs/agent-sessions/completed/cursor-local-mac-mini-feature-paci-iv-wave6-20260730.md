@@ -24,7 +24,7 @@
 | Objective       | PACI IV correction Wave 6; loader-owned atomic facade publication; stop for Codex |
 | Branch          | `issue/ocp-openclawdevelopmentplan01` |
 | Starting commit | `fb0e9a6b3d3eed47d13a951290233dd05c44db87` |
-| Ending commit   | `e073b471a44cda11c59d49aeece9c8d180de560a` |
+| Ending commit   | `6329eb156d5d2c407d42f5178002f694ef99f6e7` |
 | Status          | `completed` |
 | Handoff         | `docs/handoffs/2026-07-30-paci-iv-correction-wave6.md` |
 | Phase-13        | `docs/execution/openclawdevelopmentplan01/PHASE-13-PACI-IV-WAVE6-CORRECTION-HANDOFF-2026-07-30.md` |

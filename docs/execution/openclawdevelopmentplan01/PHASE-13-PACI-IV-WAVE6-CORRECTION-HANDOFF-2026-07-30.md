@@ -13,7 +13,7 @@
 | Field | Value |
 | --- | --- |
 | Start HEAD (exact) | `fb0e9a6b3d3eed47d13a951290233dd05c44db87` |
-| Clean pushed tip | `e073b471a44cda11c59d49aeece9c8d180de560a` |
+| Clean pushed tip | `6329eb156d5d2c407d42f5178002f694ef99f6e7` |
 | Primary implementation commit | `72ff0eb7fcf700d42707effbb7973a5d3bba8481` |
 
 ## Lisa operations worktree (preserved)
@@ -83,3 +83,7 @@
 ## Exact next action
 
 Independent OpenClaw Codex Phase-14 re-verification of this Wave 6 tip.
+
+## Authoritative tip
+
+Exact clean origin-synced HEAD for Codex Phase-14 is whatever `git rev-parse origin/issue/ocp-openclawdevelopmentplan01` returns after this push (must match local HEAD). Primary implementation remains `72ff0eb7fcf700d42707effbb7973a5d3bba8481`.
