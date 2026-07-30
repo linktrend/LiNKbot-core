@@ -14,7 +14,7 @@
 | Starting branch  | issue/ocp-lisa-ops01 (from origin/development)                                                   |
 | Ending branch    | issue/ocp-lisa-ops01                                                                             |
 | Starting commit  | 02659b9ac819c126432ae5e4c0b379a7f8ff1bee                                                         |
-| Ending commit    | 3652f6540bd226ca2747e9e9895b35b4f8e62437                                                         |
+| Ending commit    | ef9693b55ce50d1bb093668b6f4dbf22ab66f50f                                                         |
 | Starting status  | active                                                                                           |
 | Ending status    | handing-off — stop for Codex verification                                                        |
 
