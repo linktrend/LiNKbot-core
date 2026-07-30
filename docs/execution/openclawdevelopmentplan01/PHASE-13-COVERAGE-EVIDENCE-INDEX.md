@@ -75,3 +75,10 @@ AuthClaims **1.0** countersigns are historical/superseded. AuthClaims **1.1** Br
 ## Codex next step
 
 Assign the seven Phase-14 classifications independently against this index and the machine ledger.
+
+## Amendment — 2026-07-30 PACI independent-verification correction
+
+- OpenClaw tip after correction packet: `f6800178d163cab8845f18aa10fb1fb1c4c7f2ef` (prior verified start `3e449b74d8a…`).
+- Platform frozen pin for local/fake baseline: HEAD `0455846487d0b8c583859060ba8b4be70e7f0b48`; schema SHA-256 `7173b9f9bca59ce8a0e3e3dc2b78b680dd07fdd2451215e3ecd97ff3dd463eed`.
+- Evidence surfaces added/updated: fingerprint isolation, SSRF-guarded mint, fail-closed auth selection, SecretRef-only key custody, scoped Plugin SDK facade, Platform-parity fake PACI, external projection ban, linkbrain/linkskills consumers.
+- **No Codex classifications assigned here.**
