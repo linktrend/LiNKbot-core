@@ -114,10 +114,10 @@ GitOps alignment (Asia/Taipei): ordinary Ship is **checkpoint-only** (not Review
 ### Template load / fill (deterministic)
 
 1. Read canonical templates `templates/telegram-daily-digest.md` and `templates/email-daily-digest.md` (every section, heading, omission rule, and `{{placeholder}}` is visible in those files).
-2. Build JSON context matching `linkbots/lisa/ops/templates.ts` `TemplateContext` (Telegram includes Battery; email omits Battery).
-3. Render with Lisa-executable:
-   - Telegram: `node --experimental-strip-types linkbots/lisa/ops/render-template.ts telegram-daily-digest <json-path>`
-   - Email: `node --experimental-strip-types linkbots/lisa/ops/render-template.ts email-daily-digest <json-path>`
+2. Build JSON context matching deployed `ops/templates.ts` `TemplateContext` (Telegram includes Battery; email omits Battery).
+3. Render with Lisa-executable (cwd = workspace root `/Users/linktrend/.openclaw-lisa/workspace`):
+   - Telegram: `node --experimental-strip-types ops/render-template.ts telegram-daily-digest <json-path>`
+   - Email: `node --experimental-strip-types ops/render-template.ts email-daily-digest <json-path>`
 4. Reject any output that still contains `{{...}}`. Same inputs → identical body.
 5. Write email body to `scratch/digest_email.txt` from the email render; Telegram final reply = telegram render only.
 
@@ -127,7 +127,7 @@ On **Monday**, after reading pipeline status: include a short **Main Approve** a
 
 **Binding (IDE-aligned):** Carlos sees only numbered plain-English repository descriptions. Internally, every numbered item must bind immutably to: `repository`, `promotionPrNumber`, `stagingSha`, `priorMainSha`, `promotionHeadSha`, and `gateResult`. Approval must dispatch **exactly** those protected identifiers. Any drift invalidates approval and requires a new package/ask.
 
-**Runtime store status:** Packaging is **blocked** until IDE Development issue #23 / OpenClaw provides an authoritative package store (GitHub issue/PR metadata or OpenClaw task binding). Do **not** create JSON/Markdown OpenClaw sidecar state for this. Binding helpers for validation live in `linkbots/lisa/ops/main-approve-binding.ts` (tests + future consumer wiring only).
+**Runtime store status:** Packaging is **blocked** until IDE Development issue #23 / OpenClaw provides an authoritative package store (GitHub issue/PR metadata or OpenClaw task binding). Do **not** create JSON/Markdown OpenClaw sidecar state for this. Runtime helpers (`issueCarlosAsk` / `authorizeApprovalDispatch` in deployed `ops/main-approve-binding.ts`) return `blocked_no_store` and must never emit a Carlos ask or `ok: true` while the store is unavailable.
 
 Before including the ask (once a store exists), atomically claim the current timestamp using the compare-and-swap protocol in `agents/pipeline-status.md`. An undated or older result is stale and must not trigger approval. Carlos answers **Approve / yes on Telegram only** (email is notify-only), and the main session records today's decision. Do **not** merge from this digest cron. A later Monday heartbeat can reclaim after two hours if readiness was late or delivery failed.
 

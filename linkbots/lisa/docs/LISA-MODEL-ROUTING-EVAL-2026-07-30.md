@@ -2,21 +2,21 @@
 
 **Status:** evaluation only — do **not** edit live or repo `openclaw.json` model config. **Carlos decides** final routing; this document does not.
 
-**Sources checked:** OpenClaw `extensions/minimax/provider-models.ts`, `src/media-understanding/runner.ts` (+ vision-skip tests), `docs/concepts/model-providers.md`, OpenRouter/Z.AI/Moonshot/NVIDIA public model pages where reachable without printing credentials.
+**Sources checked:** OpenClaw `extensions/minimax/provider-models.ts` (M3 image metadata), `src/media-understanding/runner.ts` (M3 native-vision selection), `extensions/minimax/media-understanding-provider.ts` (plugin VL-01 default), `docs/concepts/model-providers.md`, OpenRouter/Z.AI/Moonshot/NVIDIA public model pages where reachable without printing credentials.
 
 ---
 
 ## Verified facts (OpenClaw source)
 
-| Fact                                                                                                                      | Evidence                                                                                                                           |
-| ------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| MiniMax chat default id is `MiniMax-M3`                                                                                   | `extensions/minimax/provider-models.ts` `MINIMAX_DEFAULT_MODEL_ID`                                                                 |
-| Catalog registers `MiniMax-M3` with `input: ["text", "image"]`                                                            | Same file `MINIMAX_TEXT_MODEL_CATALOG`                                                                                             |
-| `MiniMax-M2.7` / highspeed are `input: ["text"]` only                                                                     | Same catalog                                                                                                                       |
-| Media-understanding plugin default image model is **`MiniMax-VL-01`**                                                     | `src/media-understanding/runner.ts` returns `"MiniMax-VL-01"`; docs: “image understanding stays on the plugin-owned MiniMax-VL-01” |
-| Native vision skip path treats **M3 / M3.x** as native vision on MiniMax VLM providers; M2.x still needs VL-01 media path | `isMinimaxNativeVisionModel` comment + tests in `runner.vision-skip.test.ts`                                                       |
-| Current Lisa defaults (personality / live) use OpenRouter MiniMax M3 as primary chat; no dedicated `imageModel`           | Prior eval + personality defaults on `development`                                                                                 |
-| Free Nemotron ids exist for eval — must not stay in production chain                                                      | Prior registry / eval notes                                                                                                        |
+| Fact                                                                                                            | Evidence                                                                                    |
+| --------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| MiniMax chat default id is `MiniMax-M3`                                                                         | `extensions/minimax/provider-models.ts` `MINIMAX_DEFAULT_MODEL_ID`                          |
+| Catalog registers `MiniMax-M3` with `input: ["text", "image"]` (native image metadata)                          | `extensions/minimax/provider-models.ts` `MINIMAX_TEXT_MODEL_CATALOG`                        |
+| `MiniMax-M2.7` / highspeed are `input: ["text"]` only                                                           | Same catalog                                                                                |
+| M3 native-vision selection (skip imageModel when active chat is M3/M3.x)                                        | `src/media-understanding/runner.ts` (`isMinimaxNativeVisionModel` + vision-skip tests)      |
+| Plugin default image-understanding route is **`MiniMax-VL-01`**                                                 | `extensions/minimax/media-understanding-provider.ts` `defaultModels.image: "MiniMax-VL-01"` |
+| Current Lisa defaults (personality / live) use OpenRouter MiniMax M3 as primary chat; no dedicated `imageModel` | Prior eval + personality defaults on `development`                                          |
+| Free Nemotron ids exist for eval — must not stay in production chain                                            | Prior registry / eval notes                                                                 |
 
 ## Unresolved facts (need live catalog / credentialed proof)
 

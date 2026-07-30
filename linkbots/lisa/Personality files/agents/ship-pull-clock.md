@@ -89,7 +89,7 @@ Existing public tools are **insufficient** to keep the isolated cron parent aliv
 
 **Do not edit OpenClaw core in this task.** Required core prerequisite is recorded in `linkbots/lisa/docs/LISA-OPS-CORE-PREREQUISITE.md`. **This branch must not be deployed** until that core wait/re-entry lands (see deployment order there). Until then, treat Ship/Pull post-processing as **blocked** when ACP outcome cannot be validated in-parent; report `WAVE: Issues` rather than inventing Clear.
 
-Templates: `templates/pipeline-one-liner.md` (render via `node --experimental-strip-types linkbots/lisa/ops/render-template.ts pipeline-one-liner --wave "<WAVE>" --result Clear|Issues`).
+Templates: `templates/pipeline-one-liner.md` (render via `node --experimental-strip-types ops/render-template.ts pipeline-one-liner --wave "<WAVE>" --result Clear|Issues` from the Lisa workspace root).
 
 ## Cron run procedure (Lisa)
 

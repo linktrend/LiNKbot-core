@@ -57,9 +57,9 @@ Quiet hours (`user/schedule.md`, 23:00–07:00) suppress only non-urgent proacti
 When this cycle’s wall-clock is near or after a checkpoint (05:00 Ship 05, 07:00 Pull 07, 16:00 Ship 16, 18:00 Pull 18, Tue/Fri **08:00 Review Packager**, Tue/Fri **10:00 Staging**, Mon 08:00 main package), `read` `memory/pipeline-status.md` if present and include **section D** below. Full procedure: `agents/pipeline-status.md`. Compare the stored `Cycle date` with the Asia/Taipei digest cycle being reported; include Ship/Pull lines only when it matches, and never include the metadata line. One result line per checkpoint only — no lists/links. Distinguish checkpointed / review-ready / under-review / merged / conflict / repair pending / blocked in private diagnosis; Telegram stays one-liners. If the file is missing or its Ship/Pull results are stale/undated, omit those lines rather than inventing Clear. Also verify the four ship/pull cron jobs are enabled when listing cron health. ### Template load / fill (deterministic)
 
 1. Read canonical template `templates/telegram-heartbeat.md` (every section, heading, omission rule, and `{{placeholder}}` is in that file).
-2. Build a JSON context matching `linkbots/lisa/ops/templates.ts` `TemplateContext`.
-3. Render with Lisa-executable:
-   `node --experimental-strip-types linkbots/lisa/ops/render-template.ts telegram-heartbeat <json-path>`
+2. Build a JSON context matching deployed `ops/templates.ts` `TemplateContext`.
+3. Render with Lisa-executable (cwd = workspace root `/Users/linktrend/.openclaw-lisa/workspace`):
+   `node --experimental-strip-types ops/render-template.ts telegram-heartbeat <json-path>`
 4. Reject any output that still contains `{{...}}`. Same inputs → identical body.
 5. Omit Pipeline / Main Approve by leaving those placeholders empty (renderer omits empty optional blocks).
 

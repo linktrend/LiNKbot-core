@@ -1,9 +1,13 @@
 /**
  * Lisa message templates — load canonical Markdown bodies and fill placeholders.
- * Runtime path: `node --experimental-strip-types linkbots/lisa/ops/render-template.ts <kind> <json-file|->`
+ *
+ * Deployed (Lisa runtime cwd = ~/.openclaw-lisa/workspace):
+ *   node --experimental-strip-types ops/render-template.ts <kind> <json-file|->
+ * Repository source (tests / development):
+ *   node --experimental-strip-types linkbots/lisa/ops/render-template.ts ...
  */
 
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -46,7 +50,17 @@ export type TemplateContext = {
 
 const PLACEHOLDER_RE = /\{\{[a-zA-Z0-9_.]+\}\}/;
 const here = path.dirname(fileURLToPath(import.meta.url));
-export const TEMPLATES_DIR = path.resolve(here, "../Personality files/templates");
+
+/** Deployed: ops/../templates ; repo: ops/../Personality files/templates */
+export function resolveTemplatesDir(opsDir: string = here): string {
+  const deployed = path.resolve(opsDir, "../templates");
+  const repo = path.resolve(opsDir, "../Personality files/templates");
+  if (existsSync(deployed)) return deployed;
+  if (existsSync(repo)) return repo;
+  throw new Error(`templates dir not found (tried ${deployed} and ${repo})`);
+}
+
+export const TEMPLATES_DIR = resolveTemplatesDir();
 
 const KIND_FILE: Record<TemplateKind, string> = {
   "telegram-heartbeat": "telegram-heartbeat.md",
@@ -62,8 +76,11 @@ export function assertNoUnresolvedPlaceholders(rendered: string): void {
 }
 
 /** Extract the fenced ```text body from a canonical template file. */
-export function loadCanonicalTemplateBody(kind: TemplateKind): string {
-  const raw = readFileSync(path.join(TEMPLATES_DIR, KIND_FILE[kind]), "utf8");
+export function loadCanonicalTemplateBody(
+  kind: TemplateKind,
+  templatesDir: string = resolveTemplatesDir(),
+): string {
+  const raw = readFileSync(path.join(templatesDir, KIND_FILE[kind]), "utf8");
   const match = raw.match(/```text\n([\s\S]*?)\n```/);
   if (!match?.[1]) {
     throw new Error(`canonical template missing \`\`\`text body: ${kind}`);
@@ -236,10 +253,11 @@ export function templatesDifferTelegramVsEmail(
 }
 
 /**
- * Deterministic fill method for Lisa procedures:
+ * Deterministic fill method for Lisa procedures (deployed workspace):
  * 1. Choose kind.
  * 2. Build JSON context (same shape as TemplateContext).
- * 3. Run: `node --experimental-strip-types linkbots/lisa/ops/render-template.ts <kind> <json-path>`
+ * 3. From workspace root:
+ *    `node --experimental-strip-types ops/render-template.ts <kind> <json-path>`
  *    or pipe JSON on stdin with `-`.
  */
 export function renderKind(kind: TemplateKind, ctx: TemplateContext): string {

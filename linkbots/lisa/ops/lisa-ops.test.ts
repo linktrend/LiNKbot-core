@@ -4,19 +4,26 @@
  */
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { readFileSync, writeFileSync, mkdtempSync } from "node:fs";
+import { cpSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { describe, it } from "node:test";
 import { fileURLToPath } from "node:url";
 import {
   assertImmutableBindings,
-  buildCarlosAskView,
+  authorizeApprovalDispatch,
+  buildCarlosAskViewPure,
+  issueCarlosAsk,
   MAIN_APPROVE_RUNTIME_STORE,
-  validateApprovalDispatch,
+  validateApprovalBindings,
   type MainApprovePackage,
 } from "./main-approve-binding.ts";
-import { isOfflinePlanHonest, planOfflineReconcile } from "./offline-recovery.ts";
+import {
+  isOfflinePlanHonest,
+  isValidCalendarDate,
+  parseInstantMs,
+  planOfflineReconcile,
+} from "./offline-recovery.ts";
 import {
   applyWaveCas,
   expectedCycleDateForWave,
@@ -412,13 +419,59 @@ describe("Templates operational", () => {
     assert.equal(pipe.stdout.trim(), renderPipelineOneLiner("Ship 05", "Clear"));
   });
 
-  it("procedures document deterministic template load/fill", () => {
+  it("procedures document deployed ops/render-template path", () => {
     const digest = readPersonality("agents/morning-digest.md");
     const heartbeat = readPersonality("HEARTBEAT.md");
-    for (const text of [digest, heartbeat]) {
-      assert.match(text, /render-template\.ts/);
-      assert.match(text, /canonical template|templates\//i);
+    const ship = readPersonality("agents/ship-pull-clock.md");
+    for (const text of [digest, heartbeat, ship]) {
+      assert.match(text, /ops\/render-template\.ts/);
+      assert.doesNotMatch(
+        text,
+        /node --experimental-strip-types linkbots\/lisa\/ops\/render-template/,
+      );
     }
+  });
+
+  it("deployed workspace layout renders all four kinds without repo path", () => {
+    const ws = mkdtempSync(path.join(tmpdir(), "lisa-deploy-ws-"));
+    mkdirSync(path.join(ws, "ops"), { recursive: true });
+    cpSync(path.join(personalityRoot, "templates"), path.join(ws, "templates"), {
+      recursive: true,
+    });
+    cpSync(path.join(here, "render-template.ts"), path.join(ws, "ops", "render-template.ts"));
+    cpSync(path.join(here, "templates.ts"), path.join(ws, "ops", "templates.ts"));
+    // Prove we did not need the repository layout.
+    assert.equal(
+      spawnSync("test", ["!", "-e", path.join(ws, "Personality files")], { encoding: "utf8" })
+        .status,
+      0,
+    );
+    const jsonPath = path.join(ws, "ctx.json");
+    writeFileSync(jsonPath, JSON.stringify(baseCtx));
+    const run = (args: string[]) =>
+      spawnSync(process.execPath, ["--experimental-strip-types", ...args], {
+        encoding: "utf8",
+        cwd: ws,
+      });
+    const hb = run(["ops/render-template.ts", "telegram-heartbeat", jsonPath]);
+    assert.equal(hb.status, 0, hb.stderr);
+    assert.match(hb.stdout, /Heartbeat —/);
+    const dig = run(["ops/render-template.ts", "telegram-daily-digest", jsonPath]);
+    assert.equal(dig.status, 0, dig.stderr);
+    assert.match(dig.stdout, /Morning Digest/);
+    const email = run(["ops/render-template.ts", "email-daily-digest", jsonPath]);
+    assert.equal(email.status, 0, email.stderr);
+    assert.doesNotMatch(email.stdout, /Battery Monitoring/);
+    const pipe = run([
+      "ops/render-template.ts",
+      "pipeline-one-liner",
+      "--wave",
+      "Ship 05",
+      "--result",
+      "Clear",
+    ]);
+    assert.equal(pipe.status, 0, pipe.stderr);
+    assert.equal(pipe.stdout.trim(), "Ship 05: Clear");
   });
 });
 
@@ -585,18 +638,41 @@ describe("Main Approve binding", () => {
     ],
   };
 
-  it("Carlos view is plain English without SHAs", () => {
+  const paramsOk = {
+    sealed: pkg,
+    approvedIndexes: [1, 2],
+    nowIso: "2026-08-03T10:00:00+08:00",
+    liveItems: structuredClone(pkg.items),
+  };
+
+  it("pure Carlos view is plain English without SHAs", () => {
     assertImmutableBindings(pkg);
-    const view = buildCarlosAskView(pkg);
+    const view = buildCarlosAskViewPure(pkg);
     assert.match(view.telegramBody, /1\) linktrend\/LiNKsites/);
     assert.doesNotMatch(view.telegramBody, /[0-9a-f]{7,}/i);
     assert.equal(MAIN_APPROVE_RUNTIME_STORE.available, false);
   });
 
-  it("exact binding dispatches; drift/reorder/expiry/partial fail", () => {
+  it("runtime issues no Carlos ask without store and names prerequisite", () => {
+    const blocked = issueCarlosAsk(pkg);
+    assert.equal(blocked.ok, false);
+    if (blocked.ok) return;
+    assert.equal(blocked.reason, "blocked_no_store");
+    assert.match(blocked.prerequisite, /authoritative Main Approve package store/i);
+  });
+
+  it("runtime approval dispatch fails closed without store", () => {
+    const blocked = authorizeApprovalDispatch(paramsOk);
+    assert.equal(blocked.ok, false);
+    if (blocked.ok) return;
+    assert.equal(blocked.reason, "blocked_no_store");
+    assert.match(blocked.prerequisite ?? "", /authoritative Main Approve package store/i);
+  });
+
+  it("pure binding validation: exact ok; drift/reorder/expiry/partial fail", () => {
     const live = structuredClone(pkg.items);
     assert.equal(
-      validateApprovalDispatch({
+      validateApprovalBindings({
         sealed: pkg,
         approvedIndexes: [1, 2],
         nowIso: "2026-08-03T10:00:00+08:00",
@@ -608,7 +684,7 @@ describe("Main Approve binding", () => {
     const drifted = structuredClone(live);
     drifted[0]!.stagingSha = "1111111111111111111111111111111111111111";
     assert.equal(
-      validateApprovalDispatch({
+      validateApprovalBindings({
         sealed: pkg,
         approvedIndexes: [1, 2],
         nowIso: "2026-08-03T10:00:00+08:00",
@@ -617,10 +693,9 @@ describe("Main Approve binding", () => {
       false,
     );
 
-    // Same bindings, wrong order (index at position 0 is 2, not 1).
     const reordered = [live[1]!, live[0]!];
     assert.equal(
-      validateApprovalDispatch({
+      validateApprovalBindings({
         sealed: pkg,
         approvedIndexes: [1, 2],
         nowIso: "2026-08-03T10:00:00+08:00",
@@ -630,7 +705,7 @@ describe("Main Approve binding", () => {
     );
 
     assert.equal(
-      validateApprovalDispatch({
+      validateApprovalBindings({
         sealed: pkg,
         approvedIndexes: [1, 2],
         nowIso: "2026-08-03T13:00:00+08:00",
@@ -640,7 +715,7 @@ describe("Main Approve binding", () => {
     );
 
     assert.equal(
-      validateApprovalDispatch({
+      validateApprovalBindings({
         sealed: pkg,
         approvedIndexes: [1],
         nowIso: "2026-08-03T10:00:00+08:00",
@@ -648,6 +723,19 @@ describe("Main Approve binding", () => {
       }).reason,
       "partial_approval",
     );
+  });
+
+  it("exact binding succeeds only with explicit authoritative-store test adapter", () => {
+    const store = { available: true as const };
+    const ask = issueCarlosAsk(pkg, store);
+    assert.equal(ask.ok, true);
+    const auth = authorizeApprovalDispatch(paramsOk, store);
+    assert.equal(auth.ok, true);
+    if (auth.ok) {
+      assert.equal(auth.items.length, 2);
+      assert.equal(auth.items[0]?.promotionPrNumber, 12);
+      assert.equal(auth.items[1]?.stagingSha, "dddddddddddddddddddddddddddddddddddddddd");
+    }
   });
 });
 
@@ -671,6 +759,59 @@ describe("Offline recovery planning helper", () => {
     assert.equal(plan.windowsToConsider[0]?.wave, "Ship 05");
     assert.ok(plan.invalidSkipped.length >= 2);
     assert.equal(isOfflinePlanHonest(plan), true);
+  });
+
+  it("rejects impossible calendar dates and malformed timestamps", () => {
+    assert.equal(isValidCalendarDate("2026-02-29"), false);
+    assert.equal(isValidCalendarDate("2024-02-29"), true);
+    assert.equal(isValidCalendarDate("2026-04-31"), false);
+    assert.equal(isValidCalendarDate("2026-13-01"), false);
+    assert.equal(parseInstantMs("2026-07-30T11:00:00"), null);
+    assert.equal(parseInstantMs("2026-07-30T11:00:00+25:00"), null);
+    assert.equal(parseInstantMs("2026-07-30T25:00:00+08:00"), null);
+
+    const plan = planOfflineReconcile({
+      nowIso: "2026-07-30T11:00:00+08:00",
+      missedWindows: [
+        { wave: "Ship 05", scheduledAt: "2026-02-29T05:00:00+08:00", cycleDate: "2026-02-29" },
+        { wave: "Ship 05", scheduledAt: "2026-04-31T05:00:00+08:00", cycleDate: "2026-04-31" },
+        { wave: "Ship 05", scheduledAt: "2026-07-30T05:00:00", cycleDate: "2026-07-30" },
+      ],
+      unresolvedFailureIds: [],
+      lastReconcileAt: null,
+    });
+    assert.equal(plan.windowsToConsider.length, 0);
+    assert.equal(plan.invalidSkipped.length, 3);
+  });
+
+  it("compares instants not lexicographic strings; accepts equivalent offsets", () => {
+    // Same UTC instant: 03:00Z == 11:00+08:00. Lexicographically "2026-07-30T03:00:00Z" < now string
+    // but must be treated as past relative to 11:00+08.
+    const a = parseInstantMs("2026-07-30T03:00:00Z");
+    const b = parseInstantMs("2026-07-30T11:00:00+08:00");
+    assert.equal(a, b);
+
+    // Future when expressed with different offset: 12:00 UTC vs now 11:00+08 (=03:00Z)
+    const futurePlan = planOfflineReconcile({
+      nowIso: "2026-07-30T11:00:00+08:00",
+      missedWindows: [
+        {
+          wave: "Pull 07",
+          scheduledAt: "2026-07-30T12:00:00Z",
+          cycleDate: "2026-07-30",
+        },
+        {
+          wave: "Ship 05",
+          scheduledAt: "2026-07-30T05:00:00+08:00",
+          cycleDate: "2026-07-30",
+        },
+      ],
+      unresolvedFailureIds: [],
+      lastReconcileAt: null,
+    });
+    assert.equal(futurePlan.windowsToConsider.length, 1);
+    assert.equal(futurePlan.windowsToConsider[0]?.wave, "Ship 05");
+    assert.equal(futurePlan.invalidSkipped.length, 1);
   });
 });
 

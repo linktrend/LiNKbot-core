@@ -113,3 +113,12 @@ Tip SHA after this correction lands: use `git rev-parse HEAD` on `issue/ocp-lisa
 ### 2026-07-30 — IDE #23 attribution fix (factual)
 
 Independent IDE investigation: checkpoint-only Ship, Packager 08:00, and Staging 10:00 are **already on IDE `origin/development`** (GITOPS-01 / PR #19). Issue #23 / draft PR #24 remain open for lifecycle/repair-control hardening only. Lisa tip wording was corrected so #23 is not misstated as the inventing source of checkpoint-only. MiniMax investigation confirmed existing eval: do not recommend M3 as `imageModel`; use VL-01 / unset.
+
+### 2026-07-30 — Final bounded correction (factual)
+
+- Deployed renderer path: procedures use `ops/render-template.ts` under workspace; PERSONALITY_WORKFLOW + migration plan copy `templates/` and `ops/{render-template,templates}.ts` (no tests).
+- Main Approve runtime fail-closed (`issueCarlosAsk` / `authorizeApprovalDispatch` → `blocked_no_store`).
+- Offline planner: real calendar dates + instant comparison (not lexicographic ISO).
+- MiniMax evidence citations corrected (provider-models / runner / media-understanding-provider).
+
+Tip SHA: `git rev-parse HEAD` on `issue/ocp-lisa-ops01` — do not add a handoff-only SHA-sync commit.

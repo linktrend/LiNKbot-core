@@ -53,5 +53,15 @@ There is **no** option to deploy personality/cron updates and knowingly “accep
 
 - `agents/ship-pull-clock.md`, `pipeline-status.md`, `morning-digest.md`, `repair-dispatcher.md`, `offline-recovery.md`
 - `HEARTBEAT.md`, `AGENTS.md`, `tools/cursor-acp.md`
-- `templates/*`, `memory/pipeline-status.md` (template only — do not clobber live undated status without migrate)
-- `ops/render-template.ts` + `ops/templates.ts` (Lisa-executable renderer)
+- `Personality files/templates/*` → workspace `templates/` (canonical message bodies)
+- `memory/pipeline-status.md` (template only — do not clobber live undated status without migrate)
+- `linkbots/lisa/ops/render-template.ts` + `templates.ts` → workspace `ops/` (Lisa-executable renderer)
+- **Do not deploy** `*.test.ts` or other test files
+
+Live render (cwd = `/Users/linktrend/.openclaw-lisa/workspace`):
+
+```bash
+node --experimental-strip-types ops/render-template.ts <kind> <json-path>
+```
+
+See `Personality files/PERSONALITY_WORKFLOW.md` Safe Deploy Workflow for full copy commands.

@@ -1,7 +1,7 @@
 /**
  * Main Approve package binding — Carlos sees plain English; internals bind SHAs.
- * Runtime durable store for the package is NOT implemented here (no JSON sidecar).
- * Until IDE/OpenClaw provides an authoritative package store, packaging is blocked.
+ * Runtime path fails closed until an authoritative IDE/OpenClaw package store exists.
+ * Pure binding helpers remain available for tests and future store adapters.
  */
 
 export type MainApproveItem = {
@@ -40,7 +40,12 @@ export type ApprovalDispatch =
         | "partial_approval"
         | "gate_not_clear"
         | "blocked_no_store";
+      prerequisite?: string;
     };
+
+export type MainApproveAskResult =
+  | { ok: true; view: MainApproveAskView }
+  | { ok: false; reason: "blocked_no_store"; prerequisite: string };
 
 /** Packaging is blocked until an authoritative GitHub/OpenClaw package store exists. */
 export const MAIN_APPROVE_RUNTIME_STORE: {
@@ -52,7 +57,17 @@ export const MAIN_APPROVE_RUNTIME_STORE: {
     "IDE Development issue #23 / OpenClaw must provide an authoritative Main Approve package store (GitHub issue/PR metadata or OpenClaw task binding). Do not use JSON/Markdown sidecars as OpenClaw state.",
 };
 
-export function buildCarlosAskView(pkg: MainApprovePackage): MainApproveAskView {
+/** Test / future adapter — production runtime uses MAIN_APPROVE_RUNTIME_STORE only. */
+export type AuthoritativePackageStore = {
+  available: true;
+  prerequisite?: undefined;
+};
+
+/**
+ * Pure Carlos ask view builder — no store gate.
+ * Runtime callers must use `issueCarlosAsk` instead.
+ */
+export function buildCarlosAskViewPure(pkg: MainApprovePackage): MainApproveAskView {
   const lines = pkg.items.map(
     (item) => `${item.index}) ${item.repository} — ${item.plainDescription}`,
   );
@@ -65,6 +80,29 @@ export function buildCarlosAskView(pkg: MainApprovePackage): MainApproveAskView 
     throw new Error("Carlos-facing ask must not include SHAs");
   }
   return { lines, telegramBody };
+}
+
+/** @deprecated Use buildCarlosAskViewPure for tests; issueCarlosAsk for runtime. */
+export function buildCarlosAskView(pkg: MainApprovePackage): MainApproveAskView {
+  return buildCarlosAskViewPure(pkg);
+}
+
+/**
+ * Runtime-facing: never create a Carlos ask without an authoritative store.
+ */
+export function issueCarlosAsk(
+  pkg: MainApprovePackage,
+  store: { available: boolean; prerequisite?: string } = MAIN_APPROVE_RUNTIME_STORE,
+): MainApproveAskResult {
+  if (!store.available) {
+    return {
+      ok: false,
+      reason: "blocked_no_store",
+      prerequisite: store.prerequisite ?? MAIN_APPROVE_RUNTIME_STORE.prerequisite,
+    };
+  }
+  assertImmutableBindings(pkg);
+  return { ok: true, view: buildCarlosAskViewPure(pkg) };
 }
 
 export function assertImmutableBindings(pkg: MainApprovePackage): void {
@@ -82,20 +120,15 @@ export function assertImmutableBindings(pkg: MainApprovePackage): void {
 }
 
 /**
- * Validate approval against the sealed package.
- * Any drift / reorder / expiry / partial set invalidates and requires a new package.
+ * Pure binding validation — no store gate.
+ * Runtime callers must use `authorizeApprovalDispatch`.
  */
-export function validateApprovalDispatch(params: {
+export function validateApprovalBindings(params: {
   sealed: MainApprovePackage;
-  /** Indexes Carlos approved (must be full set for ok). */
   approvedIndexes: number[];
   nowIso: string;
-  /** Live re-read of bindings (same order/fields expected). */
   liveItems: MainApproveItem[];
 }): ApprovalDispatch {
-  if (!MAIN_APPROVE_RUNTIME_STORE.available) {
-    // Pure validation still runs for tests; deployment remains blocked.
-  }
   if (params.nowIso > params.sealed.claimExpiresAt) {
     return { ok: false, reason: "expired_claim" };
   }
@@ -126,4 +159,40 @@ export function validateApprovalDispatch(params: {
     return { ok: false, reason: "gate_not_clear" };
   }
   return { ok: true, items: params.sealed.items };
+}
+
+/**
+ * Runtime-facing authorization: fails closed without an authoritative store.
+ * Supply an explicit test adapter `{ available: true }` only in tests.
+ */
+export function authorizeApprovalDispatch(
+  params: {
+    sealed: MainApprovePackage;
+    approvedIndexes: number[];
+    nowIso: string;
+    liveItems: MainApproveItem[];
+  },
+  store: { available: boolean; prerequisite?: string } = MAIN_APPROVE_RUNTIME_STORE,
+): ApprovalDispatch {
+  if (!store.available) {
+    return {
+      ok: false,
+      reason: "blocked_no_store",
+      prerequisite: store.prerequisite ?? MAIN_APPROVE_RUNTIME_STORE.prerequisite,
+    };
+  }
+  return validateApprovalBindings(params);
+}
+
+/**
+ * @deprecated Runtime must use authorizeApprovalDispatch (fail-closed).
+ * Kept as alias that still fails closed on the production store.
+ */
+export function validateApprovalDispatch(params: {
+  sealed: MainApprovePackage;
+  approvedIndexes: number[];
+  nowIso: string;
+  liveItems: MainApproveItem[];
+}): ApprovalDispatch {
+  return authorizeApprovalDispatch(params, MAIN_APPROVE_RUNTIME_STORE);
 }

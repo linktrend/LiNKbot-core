@@ -2,9 +2,11 @@
 /**
  * Lisa-executable template renderer.
  *
- * Usage:
- *   node --experimental-strip-types linkbots/lisa/ops/render-template.ts <kind> <json-file|->
- *   node --experimental-strip-types linkbots/lisa/ops/render-template.ts pipeline-one-liner --wave "Ship 05" --result Clear
+ * Deployed (cwd = ~/.openclaw-lisa/workspace):
+ *   node --experimental-strip-types ops/render-template.ts <kind> <json-file|->
+ *   node --experimental-strip-types ops/render-template.ts pipeline-one-liner --wave "Ship 05" --result Clear
+ *
+ * Repository (tests): linkbots/lisa/ops/render-template.ts
  *
  * Kinds: telegram-heartbeat | telegram-daily-digest | email-daily-digest | pipeline-one-liner
  */
@@ -20,8 +22,8 @@ import {
 
 function usage(): never {
   console.error(
-    "Usage: render-template.ts <telegram-heartbeat|telegram-daily-digest|email-daily-digest> <json-file|->\n" +
-      "   or: render-template.ts pipeline-one-liner --wave <WAVE> --result <Clear|Issues>",
+    "Usage: ops/render-template.ts <telegram-heartbeat|telegram-daily-digest|email-daily-digest> <json-file|->\n" +
+      "   or: ops/render-template.ts pipeline-one-liner --wave <WAVE> --result <Clear|Issues>",
   );
   process.exit(2);
 }
