@@ -24,7 +24,7 @@
 | Objective       | PACI IV correction wave 2; stop for Codex Phase-14; await certified Platform repin |
 | Branch          | `issue/ocp-openclawdevelopmentplan01` |
 | Starting commit | `4126b7f590b4104a479d17795082e140c4f26ce1` |
-| Ending commit   | _(filled at push)_ |
+| Ending commit   | `ce2df824bf09e6b362d3597fd097ae39c03e12bd` |
 | Status          | `completed` |
 | Handoff         | `docs/handoffs/2026-07-30-paci-iv-correction-wave2.md` |
 | Phase-13        | `docs/execution/openclawdevelopmentplan01/PHASE-13-PACI-IV-WAVE2-CORRECTION-HANDOFF-2026-07-30.md` |
