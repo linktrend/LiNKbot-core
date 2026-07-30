@@ -2,9 +2,11 @@
 import { describe, expect, it, vi } from "vitest";
 import {
   clearMachineTokenCacheForHost,
+  collectGrantedMachineTokenBindingIds,
   createMachineTokenPluginFacade,
   invalidateMachineTokenCacheForHost,
   resolveMachineTokenAccessForHost,
+  unregisterMachineTokenFacadesForPlugin,
   type MachineTokenBinding,
 } from "./machine-token-host.js";
 
@@ -168,5 +170,163 @@ describe("agents machine-token-host", () => {
     expect(() =>
       createMachineTokenPluginFacade({ pluginId: "linkbrain", grantedBindingIds: [" ", ""] }),
     ).toThrow(/at least one grantedBindingId/);
+  });
+
+  it("ignores smuggled fetchFn/now on public facade acquire", async () => {
+    const resolveAccess = vi.fn(async ({ binding }) => ({
+      bindingId: binding.bindingId,
+      bindingFingerprint: `fp-${binding.bindingId}`,
+      accessToken: "token",
+      expiresAt: Date.now() + 60_000,
+      tokenType: "Bearer" as const,
+    }));
+    const facade = createMachineTokenPluginFacade({
+      pluginId: "linkbrain",
+      grantedBindingIds: ["linkbrain-stage"],
+      resolveAccess,
+    });
+    const fetchFn = vi.fn(async () => new Response("bypass"));
+    const now = vi.fn(() => 1_700_000_000_000);
+
+    await facade.acquire({
+      binding: sampleBinding("linkbrain-stage"),
+      // Runtime smuggle: public types omit these keys; host must still drop them.
+      fetchFn,
+      now,
+    } as Parameters<typeof facade.acquire>[0] & {
+      fetchFn: typeof fetchFn;
+      now: typeof now;
+    });
+
+    expect(resolveAccess).toHaveBeenCalledOnce();
+    const forwarded = resolveAccess.mock.calls[0]?.[0] as Record<string, unknown>;
+    expect(forwarded).toEqual({ binding: sampleBinding("linkbrain-stage") });
+    expect(forwarded).not.toHaveProperty("fetchFn");
+    expect(forwarded).not.toHaveProperty("now");
+    expect(fetchFn).not.toHaveBeenCalled();
+    expect(now).not.toHaveBeenCalled();
+  });
+
+  it("forwards only binding, signal, and forceRefresh from acquire", async () => {
+    const resolveAccess = vi.fn(async ({ binding }) => ({
+      bindingId: binding.bindingId,
+      bindingFingerprint: `fp-${binding.bindingId}`,
+      accessToken: "token",
+      expiresAt: Date.now() + 60_000,
+      tokenType: "Bearer" as const,
+    }));
+    const facade = createMachineTokenPluginFacade({
+      pluginId: "linkbrain",
+      grantedBindingIds: ["linkbrain-stage"],
+      resolveAccess,
+    });
+    const signal = new AbortController().signal;
+
+    await facade.acquire({
+      binding: sampleBinding("linkbrain-stage"),
+      signal,
+      forceRefresh: true,
+    });
+
+    expect(resolveAccess).toHaveBeenCalledWith({
+      binding: sampleBinding("linkbrain-stage"),
+      signal,
+      forceRefresh: true,
+    });
+  });
+
+  it("unregisterMachineTokenFacadesForPlugin tears down all facades without global clear", async () => {
+    const invalidated: string[] = [];
+    const resolveAccess = vi.fn(async ({ binding }) => ({
+      bindingId: binding.bindingId,
+      bindingFingerprint: `fp-${binding.bindingId}`,
+      accessToken: "token",
+      expiresAt: Date.now() + 60_000,
+      tokenType: "Bearer" as const,
+    }));
+    const brainA = createMachineTokenPluginFacade({
+      pluginId: "linkbrain",
+      grantedBindingIds: ["linkbrain-stage"],
+      resolveAccess,
+      invalidateCache: (fingerprint) => {
+        invalidated.push(fingerprint);
+      },
+    });
+    const brainB = createMachineTokenPluginFacade({
+      pluginId: "linkbrain",
+      grantedBindingIds: ["linkbrain-other"],
+      resolveAccess,
+      invalidateCache: (fingerprint) => {
+        invalidated.push(fingerprint);
+      },
+    });
+    const skills = createMachineTokenPluginFacade({
+      pluginId: "linkskills",
+      grantedBindingIds: ["linkskills-stage"],
+      resolveAccess,
+      invalidateCache: (fingerprint) => {
+        invalidated.push(`skills:${fingerprint}`);
+      },
+    });
+
+    await brainA.acquire({ binding: sampleBinding("linkbrain-stage") });
+    await brainB.acquire({ binding: sampleBinding("linkbrain-other") });
+    await skills.acquire({ binding: sampleBinding("linkskills-stage") });
+
+    unregisterMachineTokenFacadesForPlugin("linkbrain");
+    expect(invalidated).toEqual(["fp-linkbrain-stage", "fp-linkbrain-other"]);
+    expect(brainA.health("linkbrain-stage").registered).toBe(false);
+    expect(brainB.health("linkbrain-other").registered).toBe(false);
+    expect(skills.health("linkskills-stage")).toMatchObject({
+      registered: true,
+      granted: true,
+    });
+    await expect(skills.acquire({ binding: sampleBinding("linkskills-stage") })).resolves.toMatchObject({
+      accessToken: "token",
+    });
+    await expect(brainA.acquire({ binding: sampleBinding("linkbrain-stage") })).rejects.toThrow(
+      /unregistered/,
+    );
+  });
+
+  it("collectGrantedMachineTokenBindingIds reads plugin and managed MCP bindings", () => {
+    expect(
+      collectGrantedMachineTokenBindingIds({
+        pluginId: "linkbrain",
+        pluginConfig: {
+          machineToken: { bindingId: "linkbrain-stage" },
+          mcpServerName: "linkbrain",
+        },
+        mcpServers: {
+          linkbrain: {
+            auth: "machine_token",
+            machineToken: { bindingId: "linkbrain-mcp" },
+          },
+          foreign: {
+            auth: "machine_token",
+            machineToken: { bindingId: "foreign-must-not-grant" },
+          },
+        },
+      }),
+    ).toEqual(expect.arrayContaining(["linkbrain-stage", "linkbrain-mcp"]));
+    expect(
+      collectGrantedMachineTokenBindingIds({
+        pluginId: "linkbrain",
+        pluginConfig: {
+          machineToken: { bindingId: "linkbrain-stage" },
+          mcpServerName: "linkbrain",
+        },
+        mcpServers: {
+          linkbrain: {
+            auth: "machine_token",
+            machineToken: { bindingId: "linkbrain-mcp" },
+          },
+          foreign: {
+            auth: "machine_token",
+            machineToken: { bindingId: "foreign-must-not-grant" },
+          },
+        },
+      }),
+    ).not.toContain("foreign-must-not-grant");
   });
 });

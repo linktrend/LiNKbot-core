@@ -60,6 +60,12 @@ facade.unregister(); // reload / plugin unload
 | `health`     | Redacted diagnostics (`granted`, `registered`, `cached`, optional `expiresAt`) |
 | `unregister` | Invalidate all granted bindings and fail-close later use                       |
 
+`acquire` accepts only `{ binding, signal?, forceRefresh? }`. Plugins cannot
+pass `fetchFn`, `now`, or other auth-network/test injection through the facade.
+Hardened discovery/token networking and test clocks stay host-internal
+(`resolveMachineTokenAccess` / `machine-token-host` helpers), unavailable on
+this public contract.
+
 A plugin may operate only bindings listed in the host-granted
 `grantedBindingIds`. Calls for another domain (for example Skills from Brain)
 throw.
@@ -79,10 +85,11 @@ docs, templates, or diagnostics.
 
 ## Host-internal controls
 
-Facade construction, grant selection, raw resolution, per-binding invalidation
-without grant checks, and global cache clear live in
-`src/agents/machine-token-host.ts`. They are **not** part of the public Plugin
-SDK. External and bundled plugins must not import that module.
+Facade construction, grant selection, raw resolution (including test-only
+`fetchFn` / `now`), per-binding invalidation without grant checks, and global
+cache clear live in `src/agents/machine-token-host.ts`. They are **not** part
+of the public Plugin SDK. External and bundled plugins must not import that
+module.
 
 ## External projection
 

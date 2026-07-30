@@ -14,6 +14,11 @@ import {
   type MachineTokenPluginFacade,
   type ResolvedMachineToken,
 } from "openclaw/plugin-sdk/machine-token-runtime";
+import {
+  buildPluginMcpHttpFetch,
+  withoutMcpAuthorizationHeader,
+  withSameOriginMcpHttpHeaders,
+} from "openclaw/plugin-sdk/mcp-http-fetch";
 import { resolveConfiguredSecretInputString } from "openclaw/plugin-sdk/secret-input-runtime";
 import {
   fetchWithSsrFGuard,
@@ -77,7 +82,8 @@ type ResolveMachineTokenAccessFn = (params: {
 type InvalidateMachineTokenCacheFn = (bindingId: string) => void;
 
 export type ResolveLinkskillsTransportParams = {
-  api: Pick<OpenClawPluginApi, "config" | "logger">;
+  api: Pick<OpenClawPluginApi, "config" | "logger"> &
+    Partial<Pick<OpenClawPluginApi, "machineTokenFacade">>;
   config: LinkskillsConfig;
   fakeForTests?: {
     fake: SkillsFakeDispatch;
@@ -324,6 +330,26 @@ function expandEnvTemplate(value: string, env: NodeJS.ProcessEnv): string {
   return value.replace(/\$\{([A-Z0-9_]+)\}/g, (_match, name: string) => env[name] ?? "");
 }
 
+function machineTokenBindingsConflict(
+  serverToken: LinkskillsMachineTokenConfig,
+  pluginToken: LinkskillsMachineTokenConfig,
+): boolean {
+  if (serverToken.bindingId !== pluginToken.bindingId) {
+    return true;
+  }
+  const serverFp = fingerprintMachineTokenKeyRef({
+    source: serverToken.clientAssertionKeyRef.source,
+    provider: serverToken.clientAssertionKeyRef.provider,
+    id: serverToken.clientAssertionKeyRef.id,
+  });
+  const pluginFp = fingerprintMachineTokenKeyRef({
+    source: pluginToken.clientAssertionKeyRef.source,
+    provider: pluginToken.clientAssertionKeyRef.provider,
+    id: pluginToken.clientAssertionKeyRef.id,
+  });
+  return serverFp !== pluginFp;
+}
+
 function selectMcpMachineToken(
   server: ManagedMcpServerEntry,
   pluginMachineToken: LinkskillsMachineTokenConfig | undefined,
@@ -331,21 +357,50 @@ function selectMcpMachineToken(
 ):
   | { status: "selected"; machineToken: LinkskillsMachineTokenConfig }
   | { status: "incomplete" }
+  | { status: "invalid"; safeMessage: string }
   | { status: "none" } {
   // Never override interactive oauth merely because a machineToken block exists.
   if (server.auth === "oauth") {
     return { status: "none" };
   }
-  // Explicit machine_token mode only — incomplete bindings fail closed.
+  // Explicit machine_token mode only — incomplete/absent vs present-invalid differ.
   if (server.auth === "machine_token") {
-    try {
-      const serverToken = parseLinkskillsMachineToken(server.machineToken, { localTest });
-      if (serverToken) {
-        return { status: "selected", machineToken: serverToken };
+    const rawServerToken = server.machineToken;
+    const serverTokenPresent = rawServerToken !== undefined && rawServerToken !== null;
+    if (serverTokenPresent) {
+      // Present block: parse must succeed. Never fall through to plugin binding.
+      let serverToken: LinkskillsMachineTokenConfig;
+      try {
+        const parsed = parseLinkskillsMachineToken(rawServerToken, { localTest });
+        if (!parsed) {
+          return {
+            status: "invalid",
+            safeMessage: "mcp server machineToken binding is present but incomplete",
+          };
+        }
+        serverToken = parsed;
+      } catch (error) {
+        return {
+          status: "invalid",
+          safeMessage:
+            error instanceof Error
+              ? error.message
+              : "mcp server machineToken binding is invalid",
+        };
       }
-    } catch {
-      // Invalid SecretRef/issuer → fall through; plugin binding may still apply.
+      if (
+        pluginMachineToken &&
+        machineTokenBindingsConflict(serverToken, pluginMachineToken)
+      ) {
+        return {
+          status: "invalid",
+          safeMessage:
+            "mcp server machineToken conflicts with plugin-level machineToken binding",
+        };
+      }
+      return { status: "selected", machineToken: serverToken };
     }
+    // Absent per-server block: plugin-level binding may apply.
     if (pluginMachineToken) {
       return { status: "selected", machineToken: pluginMachineToken };
     }
@@ -406,6 +461,20 @@ async function resolveMcpHeaders(params: {
         errorCode: "machine_token_error",
         safeMessage:
           "mcp server auth is machine_token but no complete machineToken binding is configured",
+      },
+    };
+  }
+  if (selection.status === "invalid") {
+    // Present-but-invalid or conflicting bindings — never fall through.
+    return {
+      headers,
+      authProfileOnly: false,
+      error: {
+        ok: false,
+        retryable: true,
+        terminal: false,
+        errorCode: "machine_token_error",
+        safeMessage: selection.safeMessage,
       },
     };
   }
@@ -502,13 +571,75 @@ async function openDefaultMcpSession(
   } else if (typeof server.url === "string" && server.url.length > 0) {
     const url = new URL(server.url);
     const transportKind = server.transport ?? "streamable-http";
+    const managedMachineToken = server.auth === "machine_token";
+    // Managed machine_token must never place Authorization in requestInit
+    // (SDK redirect / EventSource replay). Inject per-request via guarded fetch.
+    const requestHeaders = managedMachineToken
+      ? (withoutMcpAuthorizationHeader(headers) ?? {})
+      : headers;
+    const bearerFromHeaders = Object.entries(headers).find(
+      ([key]) => key.toLowerCase() === "authorization",
+    )?.[1];
+    const accessToken =
+      managedMachineToken && bearerFromHeaders
+        ? bearerFromHeaders.replace(/^Bearer\s+/iu, "").trim()
+        : undefined;
+    const baseFetch = buildPluginMcpHttpFetch({ resourceUrl: server.url });
+    const resourceFetch = withSameOriginMcpHttpHeaders({
+      fetchFn: baseFetch,
+      headers: requestHeaders,
+      resourceUrl: server.url,
+    });
+    let httpFetch = resourceFetch;
+    if (managedMachineToken && accessToken) {
+      const resourceOrigin = url.origin;
+      let currentToken = accessToken;
+      httpFetch = async (requestUrl, init) => {
+        const target =
+          typeof requestUrl === "string"
+            ? requestUrl
+            : requestUrl instanceof URL
+              ? requestUrl.toString()
+              : String(requestUrl);
+        const sameOrigin = new URL(target).origin === resourceOrigin;
+        if (!sameOrigin) {
+          return resourceFetch(requestUrl, init);
+        }
+        const merged = new Headers(init?.headers);
+        // Drop any smuggled Authorization; only the live token is sent.
+        merged.delete("authorization");
+        merged.set("authorization", `Bearer ${currentToken}`);
+        return resourceFetch(requestUrl, { ...(init as RequestInit), headers: merged });
+      };
+    }
+    const hasRequestHeaders = Object.keys(requestHeaders).length > 0;
+    const sseEventSourceFetch = (requestUrl: string | URL, init?: RequestInit) => {
+      const mergedHeaders: Record<string, string> = {};
+      for (const [key, value] of new Headers(init?.headers)) {
+        mergedHeaders[key.toLowerCase()] = value;
+      }
+      if (!managedMachineToken) {
+        for (const [key, value] of Object.entries(requestHeaders)) {
+          mergedHeaders[key.toLowerCase()] = value;
+        }
+      }
+      return httpFetch(requestUrl, {
+        ...(init as RequestInit),
+        headers: mergedHeaders,
+      });
+    };
     if (transportKind === "sse") {
       transport = new SSEClientTransport(url, {
-        requestInit: Object.keys(headers).length > 0 ? { headers } : undefined,
+        requestInit: hasRequestHeaders ? { headers: requestHeaders } : undefined,
+        fetch: httpFetch,
+        eventSourceInit: {
+          fetch: sseEventSourceFetch,
+        },
       });
     } else {
       transport = new StreamableHTTPClientTransport(url, {
-        requestInit: Object.keys(headers).length > 0 ? { headers } : undefined,
+        requestInit: hasRequestHeaders ? { headers: requestHeaders } : undefined,
+        fetch: httpFetch,
       });
     }
   } else {
@@ -908,23 +1039,24 @@ export function resolveLinkskillsTransport(
   }
   if (mode === "mcp") {
     const peekServer = readManagedServer(params.api.config, params.config.mcpServerName);
-    if (peekServer?.auth === "machine_token") {
-      try {
-        const serverToken = parseLinkskillsMachineToken(peekServer.machineToken, {
-          localTest: params.config.environment === "test",
-        });
-        if (serverToken) {
-          grantedBindingIds.add(serverToken.bindingId);
-        }
-      } catch {
-        // Invalid server binding ignored here; write path fail-closes.
+    if (peekServer) {
+      // Lane D: only grant when selection is valid; invalid/conflict fail on write.
+      const peekSelection = selectMcpMachineToken(
+        peekServer,
+        params.config.machineToken,
+        params.config.environment === "test",
+      );
+      if (peekSelection.status === "selected") {
+        grantedBindingIds.add(peekSelection.machineToken.bindingId);
       }
     }
   }
-  // Prefer host-injected facade. Local adapter is test-only when resolveAccess is injected.
-  // Residual: no host runtime seam yet to inject MachineTokenPluginFacade into plugins.
+  // Prefer host-injected facade (api.machineTokenFacade or explicit param).
+  // Local adapter is test-only when resolveMachineTokenAccess is injected.
+  // Production without an injected facade fail-closes when machineToken is configured.
   const machineTokenFacade =
     params.machineTokenFacade ??
+    params.api.machineTokenFacade ??
     (grantedBindingIds.size > 0 && params.resolveMachineTokenAccess
       ? createLocalMachineTokenFacadeAdapter({
           pluginId: "linkskills",

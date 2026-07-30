@@ -137,7 +137,8 @@ export function readPluginSdkSurfaceBudgets(env = process.env) {
       "OPENCLAW_PLUGIN_SDK_MAX_PUBLIC_ENTRYPOINTS",
       // +1: session-discussion binds one external discussion provider to sessions.
       // +1: machine-token-runtime PACI/client_credentials seam.
-      141,
+      // +1: mcp-http-fetch guarded MCP transport fetch for plugins.
+      142,
       env,
     ),
     publicExports: readPluginSdkSurfaceBudgetEnv(
@@ -145,7 +146,8 @@ export function readPluginSdkSurfaceBudgets(env = process.env) {
       // +4: session discussion state, info, provider, and registration contracts.
       // +2: structured media placeholder formatter and its text-fact contract.
       // +5: machine-token-runtime consumer types/helpers after host-authority split (was +11).
-      4729,
+      // +3: mcp-http-fetch buildPluginMcpHttpFetch + withoutMcpAuthorizationHeader + withSameOriginMcpHttpHeaders.
+      4732,
       env,
     ),
     publicFunctionExports: readPluginSdkSurfaceBudgetEnv(
@@ -153,7 +155,8 @@ export function readPluginSdkSurfaceBudgets(env = process.env) {
       // +1: session discussion provider registration.
       // +1: structured media placeholder formatter for text-only channel carriers.
       // +3: machine-token assertMachineTokenIssuerUrl + authorizationHeaderFromMachineToken + fingerprintMachineTokenKeyRef.
-      2882,
+      // +3: mcp-http-fetch guarded fetch helpers for plugin MCP transports.
+      2885,
       env,
     ),
     publicDeprecatedExports: readPluginSdkSurfaceBudgetEnv(

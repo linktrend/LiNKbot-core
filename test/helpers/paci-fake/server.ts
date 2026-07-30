@@ -11,8 +11,9 @@
  * Never contact live Platform. Never print private keys or access tokens.
  *
  * Platform repin: frozen authority remains HEAD `0455846487d0…` / schema
- * `7173b9f9…`. HEAD `39c46680f058…` failed independent verification — awaiting
- * certified Platform descendant for permanent OpenClaw repin.
+ * `7173b9f9…`. Failed IV HEADs (do not permanently repin): Wave 2
+ * `39c46680f058…`, Wave 3 `83501b11b78b…` — awaiting certified Platform
+ * descendant for permanent OpenClaw repin.
  */
 import { randomUUID } from "node:crypto";
 import {

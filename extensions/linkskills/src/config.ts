@@ -223,10 +223,17 @@ export function parseLinkskillsMachineToken(
     clientId,
     clientAssertionKeyRef,
   };
-  if (typeof value.audience === "string" && value.audience.length > 0) {
+  // Present audience/scope must be non-empty strings — never silently drop.
+  if ("audience" in value) {
+    if (typeof value.audience !== "string" || value.audience.length === 0) {
+      throw new Error("linkskills: machineToken.audience must be a non-empty string when set");
+    }
     binding.audience = value.audience;
   }
-  if (typeof value.scope === "string" && value.scope.length > 0) {
+  if ("scope" in value) {
+    if (typeof value.scope !== "string" || value.scope.length === 0) {
+      throw new Error("linkskills: machineToken.scope must be a non-empty string when set");
+    }
     binding.scope = value.scope;
   }
   return binding;

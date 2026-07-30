@@ -1,12 +1,14 @@
 # Phase-13 provisional handoff — PACI IV correction Wave 2
 
-**Document class:** Grok-owned Phase-13 coverage / correction handoff for OpenClaw Codex Phase-14 re-verification  
-**Recorded:** 2026-07-30 Asia/Taipei  
-**Agent:** Cursor Local Agent / Grok 4.5 High (primary integrator; **not** Codex verifier)  
-**Branch:** `issue/ocp-openclawdevelopmentplan01`  
-**PR:** [#38](https://github.com/linktrend/openclaw_prime/pull/38) (draft — do not merge / do not change readiness)  
-**Correction prompt:** `docs/CURSOR-GROK-PACI-IV-CORRECTION-WAVE2-2026-07-30.md`  
-**Status:** Wave 2 OpenClaw-owned corrections landed. **Not** Codex-certified. **No** self-certification. **No** Codex classifications assigned here.
+| Field | Value |
+| --- | --- |
+| Document class | Grok-owned Phase-13 coverage / correction handoff for OpenClaw Codex Phase-14 re-verification |
+| Recorded | 2026-07-30 Asia/Taipei |
+| Agent | Cursor Local Agent / Grok 4.5 High (primary integrator; **not** Codex verifier) |
+| Branch | `issue/ocp-openclawdevelopmentplan01` |
+| PR | [#38](https://github.com/linktrend/openclaw_prime/pull/38) (draft — do not merge / do not change readiness) |
+| Correction prompt | `docs/CURSOR-GROK-PACI-IV-CORRECTION-WAVE2-2026-07-30.md` |
+| Status | Wave 2 OpenClaw-owned corrections landed. **Not** Codex-certified. **No** self-certification. **No** Codex classifications assigned here. |
 
 ## Exact heads
 

@@ -87,4 +87,36 @@ describe("plugin-sdk machine-token-runtime", () => {
     expect(entrypoints).not.toContain("machine-token-host");
     expect(entrypoints.some((entry) => entry.includes("machine-token-host"))).toBe(false);
   });
+
+  it("public MachineTokenPluginFacade.acquire omits auth-network/test injection", () => {
+    const typesSource = readFileSync(
+      join(scriptDir, "../agents/machine-token-types.ts"),
+      "utf8",
+    );
+    const acquireContract = typesSource.match(
+      /export type MachineTokenPluginFacadeAcquireParams = \{([\s\S]*?)\};/u,
+    );
+    expect(acquireContract?.[1]).toBeTruthy();
+    const acquireBody = acquireContract?.[1] ?? "";
+    expect(acquireBody).toMatch(/\bbinding:\s*MachineTokenBinding\b/u);
+    expect(acquireBody).toMatch(/\bsignal\?:\s*AbortSignal\b/u);
+    expect(acquireBody).toMatch(/\bforceRefresh\?:\s*boolean\b/u);
+    expect(acquireBody).not.toMatch(/\bfetchFn\b/u);
+    expect(acquireBody).not.toMatch(/\bnow\b/u);
+
+    const facadeAcquire = typesSource.match(
+      /acquire:\s*\(params:\s*MachineTokenPluginFacadeAcquireParams\)\s*=>/u,
+    );
+    expect(facadeAcquire).toBeTruthy();
+
+    // Type-level: Parameters of acquire must not include fetchFn/now keys.
+    type AcquireParams = Parameters<publicRuntime.MachineTokenPluginFacade["acquire"]>[0];
+    type ForbiddenKeys = Extract<keyof AcquireParams, "fetchFn" | "now">;
+    const forbiddenKeysProof: ForbiddenKeys extends never ? true : false = true;
+    expect(forbiddenKeysProof).toBe(true);
+
+    type AllowedKeys = keyof AcquireParams;
+    const allowed: AllowedKeys[] = ["binding", "signal", "forceRefresh"];
+    expect(allowed).toEqual(["binding", "signal", "forceRefresh"]);
+  });
 });

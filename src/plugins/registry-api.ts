@@ -1,4 +1,9 @@
 import path from "node:path";
+import {
+  collectGrantedMachineTokenBindingIds,
+  createMachineTokenPluginFacade,
+  unregisterMachineTokenFacadesForPlugin,
+} from "../agents/machine-token-host.js";
 import type { OpenClawConfig } from "../config/types.openclaw.js";
 import { formatErrorMessage } from "../infra/errors.js";
 import { resolveUserPath } from "../utils.js";
@@ -121,6 +126,7 @@ export function createPluginApiFactory(
   };
 
   const deactivatePluginSideEffectGuards = (pluginId: string): void => {
+    unregisterMachineTokenFacadesForPlugin(pluginId);
     const guards = pluginSideEffectGuards.get(pluginId);
     if (!guards) {
       return;
@@ -161,6 +167,21 @@ export function createPluginApiFactory(
       !isPluginRegistryRetired(registry) &&
       (isActivatingLoadedRecord() ||
         (isPluginRegistryActivated(registry) && isLoadedRecordInRegistry()));
+    const mcpServers = (params.config as OpenClawConfig).mcp?.servers;
+    const grantedBindingIds = collectGrantedMachineTokenBindingIds({
+      pluginId: record.id,
+      pluginConfig: params.pluginConfig,
+      ...(mcpServers && typeof mcpServers === "object"
+        ? { mcpServers: mcpServers as Record<string, unknown> }
+        : {}),
+    });
+    const machineTokenFacade =
+      grantedBindingIds.length > 0
+        ? createMachineTokenPluginFacade({
+            pluginId: record.id,
+            grantedBindingIds,
+          })
+        : undefined;
     return buildPluginApi({
       id: record.id,
       name: record.name,
@@ -171,6 +192,7 @@ export function createPluginApiFactory(
       registrationMode,
       config: params.config,
       pluginConfig: params.pluginConfig,
+      ...(machineTokenFacade ? { machineTokenFacade } : {}),
       runtime: resolvePluginRuntime(record.id),
       logger: normalizeLogger(registryParams.logger),
       resolvePath: (input: string) => resolvePluginPath(input, record.rootDir),

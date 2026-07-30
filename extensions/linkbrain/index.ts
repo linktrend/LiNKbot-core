@@ -49,7 +49,11 @@ export default definePluginEntry({
       id: "linkbrain-outbox",
       start: async () => {
         const stores = openLinkbrainStoresFromApi(api, config.outboxMaxEntries);
-        const transport = resolveLinkbrainTransport({ api, config });
+        const transport = resolveLinkbrainTransport({
+          api,
+          config,
+          machineTokenFacade: api.machineTokenFacade,
+        });
         runtime = createLinkbrainRuntime({
           config,
           stores,
@@ -112,6 +116,7 @@ export default definePluginEntry({
           await runtime.shutdown();
           runtime = null;
         }
+        api.machineTokenFacade?.unregister();
       },
     };
 
@@ -197,6 +202,7 @@ export default definePluginEntry({
           await drainWorker.stop();
         }
         await getLifecycle()?.handleGatewayStop();
+        api.machineTokenFacade?.unregister();
       },
       hookOpts,
     );

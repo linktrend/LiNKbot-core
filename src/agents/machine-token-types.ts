@@ -96,6 +96,18 @@ export type MachineTokenBindingHealth = {
 };
 
 /**
+ * Public acquire params for a host-injected plugin facade.
+ *
+ * Auth-network and clock injection (`fetchFn`, `now`) are intentionally omitted.
+ * Those seams stay on host-internal `resolveMachineTokenAccess` / tests only.
+ */
+export type MachineTokenPluginFacadeAcquireParams = {
+  binding: MachineTokenBinding;
+  signal?: AbortSignal;
+  forceRefresh?: boolean;
+};
+
+/**
  * Binding-scoped acquisition / invalidation / health surface for one plugin.
  *
  * Host constructs this facade and injects it into plugins. Plugins must not
@@ -107,14 +119,9 @@ export type MachineTokenPluginFacade = {
   /**
    * Acquire a Bearer access token for a granted binding.
    * The binding's `bindingId` must be in `grantedBindingIds`.
+   * Does not accept auth-network/test injection (`fetchFn`, `now`).
    */
-  acquire: (params: {
-    binding: MachineTokenBinding;
-    signal?: AbortSignal;
-    forceRefresh?: boolean;
-    fetchFn?: MachineTokenFetchFn;
-    now?: () => number;
-  }) => Promise<ResolvedMachineToken>;
+  acquire: (params: MachineTokenPluginFacadeAcquireParams) => Promise<ResolvedMachineToken>;
   /** Invalidate one granted binding's cached access token. */
   invalidate: (bindingId: string) => void;
   /** Redacted health for one binding id (granted or not). */

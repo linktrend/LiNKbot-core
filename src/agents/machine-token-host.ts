@@ -83,14 +83,14 @@ export function createMachineTokenPluginFacade(
         );
       }
       assertGrantedBinding(facade, acquireParams.binding.bindingId);
+      // Public facade deliberately omits fetchFn/now. Even if a caller smuggles
+      // those keys at runtime, only binding/signal/forceRefresh reach resolveAccess.
       const resolved = await resolveAccess({
         binding: acquireParams.binding,
         ...(acquireParams.signal ? { signal: acquireParams.signal } : {}),
         ...(acquireParams.forceRefresh !== undefined
           ? { forceRefresh: acquireParams.forceRefresh }
           : {}),
-        ...(acquireParams.fetchFn ? { fetchFn: acquireParams.fetchFn } : {}),
-        ...(acquireParams.now ? { now: acquireParams.now } : {}),
       });
       fingerprintsByBindingId.set(
         acquireParams.binding.bindingId,
@@ -151,6 +151,84 @@ export function createMachineTokenPluginFacade(
   }
   owned.add(facade);
   return facade;
+}
+
+/**
+ * Unregister every active facade for one plugin.
+ *
+ * Each facade invalidates its own granted fingerprints. This does **not** call
+ * `clearMachineTokenCacheForHost` — other plugins' cache entries stay intact.
+ */
+export function unregisterMachineTokenFacadesForPlugin(pluginId: string): void {
+  const trimmed = pluginId.trim();
+  if (!trimmed) {
+    return;
+  }
+  const owned = activeFacadesByPluginId.get(trimmed);
+  if (!owned || owned.size === 0) {
+    return;
+  }
+  // Copy — facade.unregister mutates the live set.
+  for (const facade of [...owned]) {
+    facade.unregister();
+  }
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+/**
+ * Collect binding ids the host may grant to a plugin from pluginConfig plus
+ * that plugin's managed MCP server `machine_token` bindings.
+ */
+export function collectGrantedMachineTokenBindingIds(params: {
+  pluginId: string;
+  pluginConfig?: Record<string, unknown>;
+  mcpServers?: Record<string, unknown>;
+}): string[] {
+  const ids = new Set<string>();
+  const pluginConfig = params.pluginConfig;
+  const pluginMachineToken = pluginConfig?.machineToken;
+  if (isRecord(pluginMachineToken)) {
+    const bindingId =
+      typeof pluginMachineToken.bindingId === "string" ? pluginMachineToken.bindingId.trim() : "";
+    if (bindingId) {
+      ids.add(bindingId);
+    }
+  }
+
+  const configuredServerName =
+    typeof pluginConfig?.mcpServerName === "string" ? pluginConfig.mcpServerName.trim() : "";
+  const serverNames = new Set<string>();
+  if (configuredServerName) {
+    serverNames.add(configuredServerName);
+  }
+  const pluginId = params.pluginId.trim();
+  if (pluginId) {
+    serverNames.add(pluginId);
+  }
+
+  const mcpServers = params.mcpServers;
+  if (mcpServers) {
+    for (const serverName of serverNames) {
+      const entry = mcpServers[serverName];
+      if (!isRecord(entry) || entry.auth !== "machine_token") {
+        continue;
+      }
+      const serverToken = entry.machineToken;
+      if (!isRecord(serverToken)) {
+        continue;
+      }
+      const bindingId =
+        typeof serverToken.bindingId === "string" ? serverToken.bindingId.trim() : "";
+      if (bindingId) {
+        ids.add(bindingId);
+      }
+    }
+  }
+
+  return [...ids];
 }
 
 /**

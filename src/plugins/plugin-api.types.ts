@@ -1,4 +1,5 @@
 import type { AgentHarness } from "../agents/harness/types.js";
+import type { MachineTokenPluginFacade } from "../agents/machine-token-types.js";
 import type { AnyAgentTool } from "../agents/tools/common.js";
 import type { OpenClawConfig } from "../config/types.openclaw.js";
 import type { ContextEngineFactory } from "../context-engine/registry.js";
@@ -171,6 +172,14 @@ export type OpenClawPluginApi = {
   registrationMode: PluginRegistrationMode;
   config: OpenClawConfig;
   pluginConfig?: Record<string, unknown>;
+  /**
+   * Host-constructed, identity/binding-scoped machine-token facade.
+   *
+   * Present only when the plugin has granted binding ids (pluginConfig and/or
+   * that plugin's managed MCP `machine_token` servers). Plugins must not
+   * construct privileged facades themselves.
+   */
+  machineTokenFacade?: MachineTokenPluginFacade;
   /**
    * In-process runtime helpers for trusted native plugins.
    *

@@ -46,7 +46,11 @@ export default definePluginEntry({
       id: "linkskills-outbox",
       start: async () => {
         const stores = openLinkskillsStoresFromApi(api, config.outboxMaxEntries);
-        const transport = resolveLinkskillsTransport({ api, config });
+        const transport = resolveLinkskillsTransport({
+          api,
+          config,
+          machineTokenFacade: api.machineTokenFacade,
+        });
         runtime = createLinkskillsRuntime({
           config,
           stores,
@@ -93,6 +97,7 @@ export default definePluginEntry({
           await runtime.shutdown();
           runtime = null;
         }
+        api.machineTokenFacade?.unregister();
       },
     };
 
@@ -197,6 +202,7 @@ export default definePluginEntry({
             // Bound exceeded — durable outbox retained.
           }
         }
+        api.machineTokenFacade?.unregister();
       },
       hookOpts,
     );

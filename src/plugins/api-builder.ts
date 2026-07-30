@@ -14,6 +14,7 @@ type BuildPluginApiParams = {
   registrationMode: OpenClawPluginApi["registrationMode"];
   config: OpenClawConfig;
   pluginConfig?: Record<string, unknown>;
+  machineTokenFacade?: OpenClawPluginApi["machineTokenFacade"];
   runtime: PluginRuntime;
   logger: PluginLogger;
   resolvePath: (input: string) => string;
@@ -202,6 +203,7 @@ export function buildPluginApi(params: BuildPluginApiParams): OpenClawPluginApi 
     registrationMode: params.registrationMode,
     config: params.config,
     pluginConfig: params.pluginConfig,
+    ...(params.machineTokenFacade ? { machineTokenFacade: params.machineTokenFacade } : {}),
     runtime: params.runtime,
     logger: params.logger,
     registerTool: handlers.registerTool ?? noopRegisterTool,

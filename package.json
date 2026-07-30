@@ -866,6 +866,10 @@
       "types": "./dist/plugin-sdk/machine-token-runtime.d.ts",
       "default": "./dist/plugin-sdk/machine-token-runtime.js"
     },
+    "./plugin-sdk/mcp-http-fetch": {
+      "types": "./dist/plugin-sdk/mcp-http-fetch.d.ts",
+      "default": "./dist/plugin-sdk/mcp-http-fetch.js"
+    },
     "./plugin-sdk/secret-input": {
       "types": "./dist/plugin-sdk/secret-input.d.ts",
       "default": "./dist/plugin-sdk/secret-input.js"

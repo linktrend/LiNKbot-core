@@ -338,15 +338,12 @@ describe("linkskills transport modes", () => {
               enabled: true,
               url: "https://mcp.example.test/skills",
               auth: "machine_token",
+              // Agreeing server+plugin bindings (same bindingId + key material).
               machineToken: {
                 bindingId: "linkskills-stage",
                 issuerUrl: "https://issuer.example.test",
                 clientId: "skills-client",
-                clientAssertionKeyRef: {
-                  source: "env",
-                  provider: "default",
-                  id: "LINKTREND_SKILLS_SERVER_PEM",
-                },
+                clientAssertionKeyRef: assertionKeyRef,
               },
             },
           },
@@ -355,7 +352,6 @@ describe("linkskills transport modes", () => {
       config,
       env: {
         LINKTREND_SKILLS_ASSERTION_PEM: "PEM-SKILLS",
-        LINKTREND_SKILLS_SERVER_PEM: "server-pem",
       },
       resolveMachineTokenAccess,
       createMcpSession: async (server) => {
@@ -373,7 +369,7 @@ describe("linkskills transport modes", () => {
     expect(result.errorCode).not.toBe("auth_profile_required");
     expect(seenHeaders[0]).toMatchObject({ Authorization: "Bearer mt-mcp-skills" });
     expect(resolveMachineTokenAccess.mock.calls[0]![0].binding.clientAssertionKeyPem).toBe(
-      "server-pem",
+      "PEM-SKILLS",
     );
   });
 
@@ -463,6 +459,185 @@ describe("linkskills transport modes", () => {
     });
   });
 
+  async function writeWithInvalidServerMachineToken(params: {
+    serverMachineToken: unknown;
+    expectSafeMessage?: RegExp;
+  }) {
+    const resolveMachineTokenAccess = vi.fn(async ({ binding }) => ({
+      bindingId: binding.bindingId,
+      accessToken: "mt-plugin-must-not-apply",
+      expiresAt: Date.now() + 60_000,
+      tokenType: "Bearer" as const,
+    }));
+    const config = parseLinkskillsConfig({
+      transportMode: "mcp",
+      machineToken: {
+        bindingId: "linkskills-stage",
+        issuerUrl: "https://issuer.example.test",
+        clientId: "skills-client",
+        clientAssertionKeyRef: assertionKeyRef,
+      },
+    });
+    const transport = resolveLinkskillsTransport({
+      api: stubApi({
+        mcp: {
+          servers: {
+            linkskills: {
+              enabled: true,
+              url: "https://mcp.example.test/skills",
+              auth: "machine_token",
+              machineToken: params.serverMachineToken,
+            },
+          },
+        },
+      }),
+      config,
+      env: { LINKTREND_SKILLS_ASSERTION_PEM: "PEM-SKILLS" },
+      resolveMachineTokenAccess,
+      createMcpSession: async () => {
+        throw new Error("should not open MCP session for present-invalid machineToken");
+      },
+    });
+    const result = await transport.write(writeArgs);
+    expect(result).toMatchObject({
+      ok: false,
+      errorCode: "machine_token_error",
+    });
+    if (params.expectSafeMessage) {
+      expect(result.safeMessage).toMatch(params.expectSafeMessage);
+    }
+    expect(resolveMachineTokenAccess).not.toHaveBeenCalled();
+    return result;
+  }
+
+  it("mcp present-invalid malformed SecretRef fail-closes and does not use plugin binding", async () => {
+    await writeWithInvalidServerMachineToken({
+      serverMachineToken: {
+        bindingId: "linkskills-stage",
+        issuerUrl: "https://issuer.example.test",
+        clientId: "skills-client",
+        clientAssertionKeyRef: {
+          source: "env",
+          provider: "default",
+        },
+      },
+      expectSafeMessage: /SecretRef/,
+    });
+  });
+
+  it("mcp present-invalid bad issuer fail-closes and does not use plugin binding", async () => {
+    await writeWithInvalidServerMachineToken({
+      serverMachineToken: {
+        bindingId: "linkskills-stage",
+        issuerUrl: "https://issuer.example.test/tenant",
+        clientId: "skills-client",
+        clientAssertionKeyRef: assertionKeyRef,
+      },
+      expectSafeMessage: /issuerUrl|path/i,
+    });
+  });
+
+  it("mcp present-invalid bad clientId fail-closes and does not use plugin binding", async () => {
+    await writeWithInvalidServerMachineToken({
+      serverMachineToken: {
+        bindingId: "linkskills-stage",
+        issuerUrl: "https://issuer.example.test",
+        clientId: "",
+        clientAssertionKeyRef: assertionKeyRef,
+      },
+      expectSafeMessage: /clientId/,
+    });
+  });
+
+  it("mcp present-invalid audience/scope fail-closes and does not use plugin binding", async () => {
+    await writeWithInvalidServerMachineToken({
+      serverMachineToken: {
+        bindingId: "linkskills-stage",
+        issuerUrl: "https://issuer.example.test",
+        clientId: "skills-client",
+        clientAssertionKeyRef: assertionKeyRef,
+        audience: "",
+      },
+      expectSafeMessage: /audience/,
+    });
+    await writeWithInvalidServerMachineToken({
+      serverMachineToken: {
+        bindingId: "linkskills-stage",
+        issuerUrl: "https://issuer.example.test",
+        clientId: "skills-client",
+        clientAssertionKeyRef: assertionKeyRef,
+        scope: 42,
+      },
+      expectSafeMessage: /scope/,
+    });
+  });
+
+  it("mcp present-invalid partial binding fail-closes and does not use plugin binding", async () => {
+    await writeWithInvalidServerMachineToken({
+      serverMachineToken: {
+        bindingId: "linkskills-stage",
+      },
+      expectSafeMessage: /clientAssertionKeyRef|must be/,
+    });
+  });
+
+  it("mcp conflicting server vs plugin machineToken bindings fail-closes", async () => {
+    const resolveMachineTokenAccess = vi.fn(async ({ binding }) => ({
+      bindingId: binding.bindingId,
+      accessToken: "mt-must-not-apply",
+      expiresAt: Date.now() + 60_000,
+      tokenType: "Bearer" as const,
+    }));
+    const config = parseLinkskillsConfig({
+      transportMode: "mcp",
+      machineToken: {
+        bindingId: "linkskills-stage",
+        issuerUrl: "https://issuer.example.test",
+        clientId: "skills-client",
+        clientAssertionKeyRef: assertionKeyRef,
+      },
+    });
+    const transport = resolveLinkskillsTransport({
+      api: stubApi({
+        mcp: {
+          servers: {
+            linkskills: {
+              enabled: true,
+              url: "https://mcp.example.test/skills",
+              auth: "machine_token",
+              machineToken: {
+                bindingId: "linkskills-stage",
+                issuerUrl: "https://issuer.example.test",
+                clientId: "skills-client",
+                clientAssertionKeyRef: {
+                  source: "env",
+                  provider: "default",
+                  id: "LINKTREND_SKILLS_SERVER_PEM",
+                },
+              },
+            },
+          },
+        },
+      }),
+      config,
+      env: {
+        LINKTREND_SKILLS_ASSERTION_PEM: "PEM-SKILLS",
+        LINKTREND_SKILLS_SERVER_PEM: "server-pem",
+      },
+      resolveMachineTokenAccess,
+      createMcpSession: async () => {
+        throw new Error("should not open MCP session for conflicting machineToken bindings");
+      },
+    });
+    const result = await transport.write(writeArgs);
+    expect(result).toMatchObject({
+      ok: false,
+      errorCode: "machine_token_error",
+      safeMessage: expect.stringMatching(/conflict/i),
+    });
+    expect(resolveMachineTokenAccess).not.toHaveBeenCalled();
+  });
+
   it("rejects literal PEM clientAssertionKeyRef in schema parse", () => {
     expect(() =>
       parseLinkskillsConfig({
@@ -488,5 +663,76 @@ describe("linkskills transport modes", () => {
     const brainBindingId = "linkbrain-stage";
     expect(skills.machineToken?.bindingId).toBe("linkskills-stage");
     expect(skills.machineToken?.bindingId).not.toBe(brainBindingId);
+  });
+
+  it("uses api.machineTokenFacade without local resolveMachineTokenAccess", async () => {
+    const fetchImpl = vi.fn(async () => new Response(JSON.stringify({ ok: true }), { status: 200 }));
+    const acquire = vi.fn(async ({ binding }) => ({
+      bindingId: binding.bindingId,
+      bindingFingerprint: `fp-${binding.bindingId}`,
+      accessToken: "host-injected-skills-token",
+      expiresAt: Date.now() + 60_000,
+      tokenType: "Bearer" as const,
+    }));
+    const facade = {
+      pluginId: "linkskills",
+      grantedBindingIds: new Set(["linkskills-stage"]),
+      acquire,
+      invalidate: vi.fn(),
+      health: () => ({
+        pluginId: "linkskills",
+        bindingId: "linkskills-stage",
+        granted: true,
+        registered: true,
+        cached: false,
+      }),
+      unregister: vi.fn(),
+    };
+    const config = parseLinkskillsConfig({
+      transportMode: "http",
+      skillsEndpoint: "https://skills.example.test/telemetry",
+      machineToken: {
+        bindingId: "linkskills-stage",
+        issuerUrl: "https://issuer.example.test",
+        clientId: "skills-client",
+        clientAssertionKeyRef: assertionKeyRef,
+      },
+    });
+    const transport = resolveLinkskillsTransport({
+      api: { ...stubApi(), machineTokenFacade: facade },
+      config,
+      fetchImpl: fetchImpl as unknown as typeof fetch,
+      env: { LINKTREND_SKILLS_ASSERTION_PEM: "PEM-SKILLS" },
+    });
+    const result = await transport.write(writeArgs);
+    expect(result.ok).toBe(true);
+    expect(acquire).toHaveBeenCalledOnce();
+    expect(new Headers(fetchImpl.mock.calls[0]![1]?.headers).get("authorization")).toBe(
+      "Bearer host-injected-skills-token",
+    );
+  });
+
+  it("fail-closes when machineToken is configured without an injected facade", async () => {
+    const config = parseLinkskillsConfig({
+      transportMode: "http",
+      skillsEndpoint: "https://skills.example.test/telemetry",
+      machineToken: {
+        bindingId: "linkskills-stage",
+        issuerUrl: "https://issuer.example.test",
+        clientId: "skills-client",
+        clientAssertionKeyRef: assertionKeyRef,
+      },
+    });
+    const transport = resolveLinkskillsTransport({
+      api: stubApi(),
+      config,
+      env: { LINKTREND_SKILLS_ASSERTION_PEM: "PEM-SKILLS" },
+    });
+    const result = await transport.write(writeArgs);
+    expect(result).toMatchObject({
+      ok: false,
+      errorCode: "machine_token_error",
+      safeMessage: expect.stringMatching(/facade is not configured/i),
+    });
   });
 });

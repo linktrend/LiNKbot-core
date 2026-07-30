@@ -520,6 +520,187 @@ describe("linkbrain transport modes", () => {
     });
   });
 
+  async function writeWithInvalidServerMachineToken(params: {
+    serverMachineToken: unknown;
+    expectSafeMessage?: RegExp;
+  }) {
+    const resolveMachineTokenAccess = vi.fn(async ({ binding }) => ({
+      bindingId: binding.bindingId,
+      accessToken: "mt-plugin-must-not-apply",
+      expiresAt: Date.now() + 60_000,
+      tokenType: "Bearer" as const,
+    }));
+    const config = parseLinkbrainConfig({
+      transportMode: "mcp",
+      machineToken: {
+        bindingId: "linkbrain-stage",
+        issuerUrl: "https://issuer.example.test",
+        clientId: "brain-client",
+        clientAssertionKeyRef: assertionKeyRef,
+      },
+    });
+    const transport = resolveLinkbrainTransport({
+      api: stubApi({
+        mcp: {
+          servers: {
+            linkbrain: {
+              enabled: true,
+              url: "https://mcp.example.test/brain",
+              auth: "machine_token",
+              machineToken: params.serverMachineToken,
+            },
+          },
+        },
+      }),
+      config,
+      env: { LINKTREND_BRAIN_ASSERTION_PEM: "PEM-BRAIN" },
+      resolveMachineTokenAccess,
+      createMcpSession: async () => {
+        throw new Error("should not open MCP session for present-invalid machineToken");
+      },
+    });
+    const result = await transport.write(writeArgs);
+    expect(result).toMatchObject({
+      ok: false,
+      errorCode: "machine_token_error",
+    });
+    if (params.expectSafeMessage) {
+      expect(result.safeMessage).toMatch(params.expectSafeMessage);
+    }
+    expect(resolveMachineTokenAccess).not.toHaveBeenCalled();
+    return result;
+  }
+
+  it("mcp present-invalid malformed SecretRef fail-closes and does not use plugin binding", async () => {
+    await writeWithInvalidServerMachineToken({
+      serverMachineToken: {
+        bindingId: "linkbrain-stage",
+        issuerUrl: "https://issuer.example.test",
+        clientId: "brain-client",
+        clientAssertionKeyRef: {
+          source: "env",
+          provider: "default",
+          // missing id → malformed SecretRef
+        },
+      },
+      expectSafeMessage: /SecretRef/,
+    });
+  });
+
+  it("mcp present-invalid bad issuer fail-closes and does not use plugin binding", async () => {
+    await writeWithInvalidServerMachineToken({
+      serverMachineToken: {
+        bindingId: "linkbrain-stage",
+        issuerUrl: "https://issuer.example.test/tenant",
+        clientId: "brain-client",
+        clientAssertionKeyRef: assertionKeyRef,
+      },
+      expectSafeMessage: /issuerUrl|path/i,
+    });
+  });
+
+  it("mcp present-invalid bad clientId fail-closes and does not use plugin binding", async () => {
+    await writeWithInvalidServerMachineToken({
+      serverMachineToken: {
+        bindingId: "linkbrain-stage",
+        issuerUrl: "https://issuer.example.test",
+        clientId: "",
+        clientAssertionKeyRef: assertionKeyRef,
+      },
+      expectSafeMessage: /clientId/,
+    });
+  });
+
+  it("mcp present-invalid audience/scope fail-closes and does not use plugin binding", async () => {
+    await writeWithInvalidServerMachineToken({
+      serverMachineToken: {
+        bindingId: "linkbrain-stage",
+        issuerUrl: "https://issuer.example.test",
+        clientId: "brain-client",
+        clientAssertionKeyRef: assertionKeyRef,
+        audience: "",
+      },
+      expectSafeMessage: /audience/,
+    });
+    await writeWithInvalidServerMachineToken({
+      serverMachineToken: {
+        bindingId: "linkbrain-stage",
+        issuerUrl: "https://issuer.example.test",
+        clientId: "brain-client",
+        clientAssertionKeyRef: assertionKeyRef,
+        scope: 42,
+      },
+      expectSafeMessage: /scope/,
+    });
+  });
+
+  it("mcp present-invalid partial binding fail-closes and does not use plugin binding", async () => {
+    await writeWithInvalidServerMachineToken({
+      serverMachineToken: {
+        bindingId: "linkbrain-stage",
+        // missing issuerUrl, clientId, clientAssertionKeyRef
+      },
+      expectSafeMessage: /clientAssertionKeyRef|must be/,
+    });
+  });
+
+  it("mcp conflicting server vs plugin machineToken bindings fail-closes", async () => {
+    const resolveMachineTokenAccess = vi.fn(async ({ binding }) => ({
+      bindingId: binding.bindingId,
+      accessToken: "mt-must-not-apply",
+      expiresAt: Date.now() + 60_000,
+      tokenType: "Bearer" as const,
+    }));
+    const config = parseLinkbrainConfig({
+      transportMode: "mcp",
+      machineToken: {
+        bindingId: "linkbrain-stage",
+        issuerUrl: "https://issuer.example.test",
+        clientId: "brain-client",
+        clientAssertionKeyRef: assertionKeyRef,
+      },
+    });
+    const transport = resolveLinkbrainTransport({
+      api: stubApi({
+        mcp: {
+          servers: {
+            linkbrain: {
+              enabled: true,
+              url: "https://mcp.example.test/brain",
+              auth: "machine_token",
+              machineToken: {
+                bindingId: "linkbrain-other",
+                issuerUrl: "https://issuer.example.test",
+                clientId: "brain-client",
+                clientAssertionKeyRef: {
+                  source: "env",
+                  provider: "default",
+                  id: "LINKTREND_BRAIN_OTHER_PEM",
+                },
+              },
+            },
+          },
+        },
+      }),
+      config,
+      env: {
+        LINKTREND_BRAIN_ASSERTION_PEM: "PEM-BRAIN",
+        LINKTREND_BRAIN_OTHER_PEM: "PEM-OTHER",
+      },
+      resolveMachineTokenAccess,
+      createMcpSession: async () => {
+        throw new Error("should not open MCP session for conflicting machineToken bindings");
+      },
+    });
+    const result = await transport.write(writeArgs);
+    expect(result).toMatchObject({
+      ok: false,
+      errorCode: "machine_token_error",
+      safeMessage: expect.stringMatching(/conflict/i),
+    });
+    expect(resolveMachineTokenAccess).not.toHaveBeenCalled();
+  });
+
   it("rejects literal PEM clientAssertionKeyRef in schema parse", () => {
     expect(() =>
       parseLinkbrainConfig({
@@ -546,5 +727,86 @@ describe("linkbrain transport modes", () => {
     const skillsBindingId = "linkskills-stage";
     expect(brain.machineToken?.bindingId).toBe("linkbrain-stage");
     expect(brain.machineToken?.bindingId).not.toBe(skillsBindingId);
+  });
+
+  it("uses api.machineTokenFacade without local resolveMachineTokenAccess", async () => {
+    const fetchImpl = vi.fn(async () => new Response(JSON.stringify({ ok: true }), { status: 200 }));
+    const acquire = vi.fn(async ({ binding }) => ({
+      bindingId: binding.bindingId,
+      bindingFingerprint: `fp-${binding.bindingId}`,
+      accessToken: "host-injected-token",
+      expiresAt: Date.now() + 60_000,
+      tokenType: "Bearer" as const,
+    }));
+    const facade = {
+      pluginId: "linkbrain",
+      grantedBindingIds: new Set(["linkbrain-stage"]),
+      acquire,
+      invalidate: vi.fn(),
+      health: () => ({
+        pluginId: "linkbrain",
+        bindingId: "linkbrain-stage",
+        granted: true,
+        registered: true,
+        cached: false,
+      }),
+      unregister: vi.fn(),
+    };
+    const config = parseLinkbrainConfig({
+      transportMode: "http",
+      ingestionEndpoint: "https://brain.example.test/ingest",
+      machineToken: {
+        bindingId: "linkbrain-stage",
+        issuerUrl: "https://issuer.example.test",
+        clientId: "brain-client",
+        clientAssertionKeyRef: assertionKeyRef,
+      },
+    });
+    const transport = resolveLinkbrainTransport({
+      api: { ...stubApi(), machineTokenFacade: facade },
+      config,
+      fetchImpl: fetchImpl as unknown as typeof fetch,
+      env: { LINKTREND_BRAIN_ASSERTION_PEM: "PEM-BRAIN" },
+    });
+    const result = await transport.write(writeArgs);
+    expect(result.ok).toBe(true);
+    expect(acquire).toHaveBeenCalledOnce();
+    expect(new Headers(fetchImpl.mock.calls[0]![1]?.headers).get("authorization")).toBe(
+      "Bearer host-injected-token",
+    );
+  });
+
+  it("fail-closes when machineToken is configured without an injected facade", async () => {
+    const config = parseLinkbrainConfig({
+      transportMode: "http",
+      ingestionEndpoint: "https://brain.example.test/ingest",
+      machineToken: {
+        bindingId: "linkbrain-stage",
+        issuerUrl: "https://issuer.example.test",
+        clientId: "brain-client",
+        clientAssertionKeyRef: assertionKeyRef,
+      },
+    });
+    const transport = resolveLinkbrainTransport({
+      api: stubApi(),
+      config,
+      env: { LINKTREND_BRAIN_ASSERTION_PEM: "PEM-BRAIN" },
+    });
+    const result = await transport.write(writeArgs);
+    expect(result).toMatchObject({
+      ok: false,
+      errorCode: "machine_token_error",
+      safeMessage: expect.stringMatching(/facade is not configured/i),
+    });
+  });
+
+  it("mcp managed machine_token strip Authorization from requestInit shape via withoutMcpAuthorizationHeader", async () => {
+    const { withoutMcpAuthorizationHeader } = await import("openclaw/plugin-sdk/mcp-http-fetch");
+    expect(
+      withoutMcpAuthorizationHeader({
+        Authorization: "Bearer must-not-persist",
+        "x-openclaw": "1",
+      }),
+    ).toEqual({ "x-openclaw": "1" });
   });
 });
