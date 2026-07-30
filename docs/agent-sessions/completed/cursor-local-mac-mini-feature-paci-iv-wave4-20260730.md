@@ -24,7 +24,7 @@
 | Objective       | PACI IV correction Wave 4; Phase-13 handoff; stop for Codex Phase-14 |
 | Branch          | `issue/ocp-openclawdevelopmentplan01` |
 | Starting commit | `a1cf51358ba4ec255053dd04e1fd78105ee16992` |
-| Ending commit   | PLACEHOLDER_TIP |
+| Ending commit   | `ce8264c16d548a5969e6dee2017c65c6d2c8e7d8` |
 | Status          | `completed` |
 | Handoff         | `docs/handoffs/2026-07-30-paci-iv-correction-wave4.md` |
 | Phase-13        | `docs/execution/openclawdevelopmentplan01/PHASE-13-PACI-IV-WAVE4-CORRECTION-HANDOFF-2026-07-30.md` |
