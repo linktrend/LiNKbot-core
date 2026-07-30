@@ -9,12 +9,16 @@ import { SSEClientTransport } from "@modelcontextprotocol/sdk/client/sse.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import {
-  invalidateMachineTokenCache as invalidateMachineTokenCacheSdk,
-  resolveMachineTokenAccess as resolveMachineTokenAccessSdk,
+  createMachineTokenPluginFacade,
+  fingerprintMachineTokenKeyRef,
   type MachineTokenBinding,
+  type MachineTokenPluginFacade,
   type ResolvedMachineToken,
 } from "openclaw/plugin-sdk/machine-token-runtime";
-import { resolveConfiguredSecretInputString } from "openclaw/plugin-sdk/secret-input-runtime";
+import {
+  isSecretRef,
+  resolveConfiguredSecretInputString,
+} from "openclaw/plugin-sdk/secret-input-runtime";
 import {
   fetchWithSsrFGuard,
   mergeSsrFPolicies,
@@ -84,7 +88,9 @@ export type ResolveLinkskillsTransportParams = {
   fetchImpl?: typeof fetch;
   env?: NodeJS.ProcessEnv;
   createMcpSession?: (server: ManagedMcpServerEntry) => Promise<McpToolSession>;
-  /** Test injection for machine-token mint (defaults to Plugin SDK). */
+  /** Host-injected binding-scoped facade (preferred). */
+  machineTokenFacade?: MachineTokenPluginFacade;
+  /** Test injection for machine-token mint (wrapped into a scoped facade). */
   resolveMachineTokenAccess?: ResolveMachineTokenAccessFn;
   /** Test injection for cache invalidation after HTTP 401. */
   invalidateMachineTokenCache?: InvalidateMachineTokenCacheFn;
@@ -171,7 +177,7 @@ async function resolveMachineTokenBearer(params: {
   env: NodeJS.ProcessEnv;
   signal?: AbortSignal;
   forceRefresh?: boolean;
-  resolveMachineTokenAccess: ResolveMachineTokenAccessFn;
+  machineTokenFacade: MachineTokenPluginFacade;
   pathPrefix: string;
 }): Promise<{ value?: string; bindingId?: string; error?: LinkskillsTransportResult }> {
   const keyResolved = await resolveConfiguredSecretInputString({
@@ -194,6 +200,7 @@ async function resolveMachineTokenBearer(params: {
     };
   }
   try {
+    const keyRef = params.machineToken.clientAssertionKeyRef;
     const binding: MachineTokenBinding = {
       bindingId: params.machineToken.bindingId,
       issuerUrl: params.machineToken.issuerUrl,
@@ -201,8 +208,17 @@ async function resolveMachineTokenBearer(params: {
       ...(params.machineToken.audience ? { audience: params.machineToken.audience } : {}),
       ...(params.machineToken.scope ? { scope: params.machineToken.scope } : {}),
       clientAssertionKeyPem: keyResolved.value,
+      ...(isSecretRef(keyRef)
+        ? {
+            keyRefFingerprint: fingerprintMachineTokenKeyRef({
+              source: keyRef.source,
+              provider: keyRef.provider,
+              id: keyRef.id,
+            }),
+          }
+        : {}),
     };
-    const resolved = await params.resolveMachineTokenAccess({
+    const resolved = await params.machineTokenFacade.acquire({
       binding,
       ...(params.signal ? { signal: params.signal } : {}),
       ...(params.forceRefresh ? { forceRefresh: true } : {}),
@@ -227,16 +243,29 @@ async function resolveBearerToken(params: {
   env: NodeJS.ProcessEnv;
   signal?: AbortSignal;
   forceRefresh?: boolean;
-  resolveMachineTokenAccess: ResolveMachineTokenAccessFn;
+  machineTokenFacade?: MachineTokenPluginFacade;
 }): Promise<{ value?: string; bindingId?: string; error?: LinkskillsTransportResult }> {
+  // Explicit machineToken config selects machine-token mode and fail-closes —
+  // never fall through to SecretRef bearer when the binding is incomplete.
   if (params.config.machineToken) {
+    if (!params.machineTokenFacade) {
+      return {
+        error: {
+          ok: false,
+          retryable: true,
+          terminal: false,
+          errorCode: "machine_token_error",
+          safeMessage: "linkskills machine-token facade is not configured",
+        },
+      };
+    }
     return await resolveMachineTokenBearer({
       machineToken: params.config.machineToken,
       apiConfig: params.apiConfig,
       env: params.env,
       signal: params.signal,
       forceRefresh: params.forceRefresh,
-      resolveMachineTokenAccess: params.resolveMachineTokenAccess,
+      machineTokenFacade: params.machineTokenFacade,
       pathPrefix: "plugins.entries.linkskills.config.machineToken",
     });
   }
@@ -288,16 +317,26 @@ function expandEnvTemplate(value: string, env: NodeJS.ProcessEnv): string {
 function selectMcpMachineToken(
   server: ManagedMcpServerEntry,
   pluginMachineToken: LinkskillsMachineTokenConfig | undefined,
-): LinkskillsMachineTokenConfig | undefined {
-  const serverToken = parseLinkskillsMachineToken(server.machineToken);
-  if (serverToken) {
-    return serverToken;
+):
+  | { status: "selected"; machineToken: LinkskillsMachineTokenConfig }
+  | { status: "incomplete" }
+  | { status: "none" } {
+  // Never override interactive oauth merely because a machineToken block exists.
+  if (server.auth === "oauth") {
+    return { status: "none" };
   }
-  const wantsMachineToken = server.auth === "machine_token" || Boolean(server.machineToken);
-  if (wantsMachineToken && pluginMachineToken) {
-    return pluginMachineToken;
+  // Explicit machine_token mode only — incomplete bindings fail closed.
+  if (server.auth === "machine_token") {
+    const serverToken = parseLinkskillsMachineToken(server.machineToken);
+    if (serverToken) {
+      return { status: "selected", machineToken: serverToken };
+    }
+    if (pluginMachineToken) {
+      return { status: "selected", machineToken: pluginMachineToken };
+    }
+    return { status: "incomplete" };
   }
-  return undefined;
+  return { status: "none" };
 }
 
 async function resolveMcpHeaders(params: {
@@ -306,7 +345,7 @@ async function resolveMcpHeaders(params: {
   env: NodeJS.ProcessEnv;
   pluginMachineToken?: LinkskillsMachineTokenConfig;
   signal?: AbortSignal;
-  resolveMachineTokenAccess: ResolveMachineTokenAccessFn;
+  machineTokenFacade?: MachineTokenPluginFacade;
 }): Promise<{
   headers: Record<string, string>;
   authProfileOnly: boolean;
@@ -333,14 +372,41 @@ async function resolveMcpHeaders(params: {
     }
   }
 
-  const machineToken = selectMcpMachineToken(params.server, params.pluginMachineToken);
-  if (machineToken) {
+  const selection = selectMcpMachineToken(params.server, params.pluginMachineToken);
+  if (selection.status === "incomplete") {
+    return {
+      headers,
+      authProfileOnly: false,
+      error: {
+        ok: false,
+        retryable: true,
+        terminal: false,
+        errorCode: "machine_token_error",
+        safeMessage:
+          "mcp server auth is machine_token but no complete machineToken binding is configured",
+      },
+    };
+  }
+  if (selection.status === "selected") {
+    if (!params.machineTokenFacade) {
+      return {
+        headers,
+        authProfileOnly: false,
+        error: {
+          ok: false,
+          retryable: true,
+          terminal: false,
+          errorCode: "machine_token_error",
+          safeMessage: "linkskills machine-token facade is not configured",
+        },
+      };
+    }
     const bearer = await resolveMachineTokenBearer({
-      machineToken,
+      machineToken: selection.machineToken,
       apiConfig: params.apiConfig,
       env: params.env,
       signal: params.signal,
-      resolveMachineTokenAccess: params.resolveMachineTokenAccess,
+      machineTokenFacade: params.machineTokenFacade,
       pathPrefix: `mcp.servers.machineToken`,
     });
     if (bearer.error) {
@@ -361,9 +427,11 @@ async function resolveMcpHeaders(params: {
       key.toLowerCase() === "authorization" && typeof value === "string" && value.trim().length > 0
     );
   });
+  // Interactive oauth-only without a resolved Authorization header needs Gateway auth-profile injection.
+  // machine_token mode must never surface auth_profile_required when resolution succeeds.
   const wantsInteractiveOauth =
     params.server.auth === "oauth" ||
-    (Boolean(authProfileId) && params.server.auth !== "machine_token" && !machineToken);
+    (Boolean(authProfileId) && params.server.auth !== "machine_token");
   const authProfileOnly = wantsInteractiveOauth && !hasAuthorization;
   return { headers, authProfileOnly };
 }
@@ -441,8 +509,7 @@ function createHttpTransport(params: {
   env: NodeJS.ProcessEnv;
   /** When set (tests), forwarded to the SSRF guard so mocks stay hermetic. */
   fetchImpl?: typeof fetch;
-  resolveMachineTokenAccess: ResolveMachineTokenAccessFn;
-  invalidateMachineTokenCache: InvalidateMachineTokenCacheFn;
+  machineTokenFacade?: MachineTokenPluginFacade;
 }): LinkskillsTransport {
   return {
     async write(writeParams) {
@@ -467,7 +534,7 @@ function createHttpTransport(params: {
         apiConfig: params.apiConfig,
         env: params.env,
         signal: writeParams.signal,
-        resolveMachineTokenAccess: params.resolveMachineTokenAccess,
+        machineTokenFacade: params.machineTokenFacade,
       });
       if (bearer.error) {
         return bearer.error;
@@ -505,8 +572,9 @@ function createHttpTransport(params: {
       try {
         let guarded = await postOnce(bearer.value!);
         release = guarded.release;
-        if (guarded.response.status === 401 && bearer.bindingId && params.config.machineToken) {
-          params.invalidateMachineTokenCache(bearer.bindingId);
+        // One bounded machine-token reissue on remote 401.
+        if (guarded.response.status === 401 && bearer.bindingId && params.machineTokenFacade) {
+          params.machineTokenFacade.invalidate(bearer.bindingId);
           await release();
           release = undefined;
           const refreshed = await resolveBearerToken({
@@ -515,7 +583,7 @@ function createHttpTransport(params: {
             env: params.env,
             signal: writeParams.signal,
             forceRefresh: true,
-            resolveMachineTokenAccess: params.resolveMachineTokenAccess,
+            machineTokenFacade: params.machineTokenFacade,
           });
           if (refreshed.error) {
             return refreshed.error;
@@ -570,7 +638,7 @@ function createMcpTransport(params: {
   env: NodeJS.ProcessEnv;
   createMcpSession: (server: ManagedMcpServerEntry) => Promise<McpToolSession>;
   pluginMachineToken?: LinkskillsMachineTokenConfig;
-  resolveMachineTokenAccess: ResolveMachineTokenAccessFn;
+  machineTokenFacade?: MachineTokenPluginFacade;
 }): LinkskillsTransport {
   return {
     async write(writeParams) {
@@ -597,7 +665,7 @@ function createMcpTransport(params: {
         env: params.env,
         pluginMachineToken: params.pluginMachineToken,
         signal: writeParams.signal,
-        resolveMachineTokenAccess: params.resolveMachineTokenAccess,
+        machineTokenFacade: params.machineTokenFacade,
       });
       if (error) {
         return error;
@@ -622,7 +690,7 @@ function createMcpTransport(params: {
         session = await params.createMcpSession(serverWithHeaders);
         const outcome = await session.callTool(writeParams.toolName, {
           ...writeParams.arguments,
-          idempotency_key: writeParams.idempotencyKey,
+          idempotencyKey: writeParams.idempotencyKey,
         });
         if (outcome.isError) {
           return {
@@ -659,7 +727,7 @@ function createMcpTransport(params: {
 }
 
 /**
- * Resolves the Skills write transport from plugin config.
+ * Resolves the Skills drain transport from plugin config.
  * Defaults to disabled. Fake is test-only. Does not require live MCP/HTTP servers at resolve time.
  */
 export function resolveLinkskillsTransport(
@@ -667,10 +735,33 @@ export function resolveLinkskillsTransport(
 ): LinkskillsTransport {
   const mode: LinkskillsTransportMode = params.config.transportMode;
   const env = params.env ?? process.env;
-  const resolveMachineTokenAccess =
-    params.resolveMachineTokenAccess ?? resolveMachineTokenAccessSdk;
-  const invalidateMachineTokenCache =
-    params.invalidateMachineTokenCache ?? invalidateMachineTokenCacheSdk;
+  const grantedBindingIds = new Set<string>();
+  if (params.config.machineToken) {
+    grantedBindingIds.add(params.config.machineToken.bindingId);
+  }
+  if (mode === "mcp") {
+    const peekServer = readManagedServer(params.api.config, params.config.mcpServerName);
+    if (peekServer?.auth === "machine_token") {
+      const serverToken = parseLinkskillsMachineToken(peekServer.machineToken);
+      if (serverToken) {
+        grantedBindingIds.add(serverToken.bindingId);
+      }
+    }
+  }
+  const machineTokenFacade =
+    params.machineTokenFacade ??
+    (grantedBindingIds.size > 0
+      ? createMachineTokenPluginFacade({
+          pluginId: "linkskills",
+          grantedBindingIds: [...grantedBindingIds],
+          ...(params.resolveMachineTokenAccess
+            ? { resolveAccess: params.resolveMachineTokenAccess }
+            : {}),
+          ...(params.invalidateMachineTokenCache
+            ? { invalidateCache: params.invalidateMachineTokenCache }
+            : {}),
+        })
+      : undefined);
 
   if (mode === "disabled") {
     return createDisabledTransport();
@@ -707,8 +798,7 @@ export function resolveLinkskillsTransport(
       apiConfig: params.api.config,
       env,
       ...(params.fetchImpl ? { fetchImpl: params.fetchImpl } : {}),
-      resolveMachineTokenAccess,
-      invalidateMachineTokenCache,
+      machineTokenFacade,
     });
   }
 
@@ -751,7 +841,7 @@ export function resolveLinkskillsTransport(
       env,
       createMcpSession,
       pluginMachineToken: params.config.machineToken,
-      resolveMachineTokenAccess,
+      machineTokenFacade,
     });
   }
 

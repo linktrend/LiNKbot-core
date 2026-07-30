@@ -4,10 +4,12 @@
 import crypto from "node:crypto";
 import type { FetchLike } from "@modelcontextprotocol/sdk/shared/transport.js";
 import type { OpenClawConfig } from "../config/types.openclaw.js";
+import { isSecretRef } from "../config/types.secrets.js";
 import { resolveConfiguredSecretInputString } from "../gateway/resolve-configured-secret-input-string.js";
 import type { BundleMcpConfig, BundleMcpServerConfig } from "../plugins/bundle-mcp.js";
 import { resolveApiKeyForProfile } from "./auth-profiles/oauth.js";
 import { loadAuthProfileStoreForSecretsRuntime } from "./auth-profiles/store.js";
+import { fingerprintMachineTokenKeyRef } from "./machine-token-fingerprint.js";
 import { resolveMachineTokenAccess, type MachineTokenBinding } from "./machine-token.js";
 import {
   buildMcpHttpFetch,
@@ -52,13 +54,21 @@ export function requiresMcpBearerProjection(rawServer: unknown): boolean {
   if (!isRecord(rawServer)) {
     return false;
   }
-  if (rawServer.auth === "machine_token" || isRecord(rawServer.machineToken)) {
-    return typeof rawServer.url === "string";
+  // Machine tokens must never be externally projected (env/literal headers).
+  if (rawServer.auth === "machine_token") {
+    return false;
   }
   if (rawServer.auth !== "oauth") {
     return false;
   }
   return Boolean(resolveMcpAuthProfileId(rawServer) || typeof rawServer.url === "string");
+}
+
+/** Fail-closed error when external projection would mint a machine token. */
+export function machineTokenMcpBearerProjectionUnsupportedError(serverName: string): Error {
+  return new Error(
+    `MCP server "${serverName}" uses machine-token auth; machine-token projection is unsupported. External runtimes must acquire tokens via the machine-token provider seam — never env or literal Authorization headers.`,
+  );
 }
 
 async function resolveMcpMachineTokenBearerToken(params: {
@@ -87,6 +97,7 @@ async function resolveMcpMachineTokenBearerToken(params: {
         `MCP server "${params.serverName}" could not resolve machineToken.clientAssertionKeyRef.`,
     );
   }
+  const keyRef = resolved.machineToken.clientAssertionKeyRef;
   const binding: MachineTokenBinding = {
     bindingId: resolved.machineToken.bindingId,
     issuerUrl: resolved.machineToken.issuerUrl,
@@ -94,6 +105,15 @@ async function resolveMcpMachineTokenBearerToken(params: {
     ...(resolved.machineToken.audience ? { audience: resolved.machineToken.audience } : {}),
     ...(resolved.machineToken.scope ? { scope: resolved.machineToken.scope } : {}),
     clientAssertionKeyPem: keyResolved.value,
+    ...(isSecretRef(keyRef)
+      ? {
+          keyRefFingerprint: fingerprintMachineTokenKeyRef({
+            source: keyRef.source,
+            provider: keyRef.provider,
+            id: keyRef.id,
+          }),
+        }
+      : {}),
   };
   const access = await resolveMachineTokenAccess({ binding });
   return access.accessToken;
@@ -150,15 +170,9 @@ async function resolveMcpBearerToken(params: {
   cfg?: OpenClawConfig;
   agentDir?: string;
 }): Promise<string | undefined> {
-  if (
-    isRecord(params.server) &&
-    (params.server.auth === "machine_token" || isRecord(params.server.machineToken))
-  ) {
-    return await resolveMcpMachineTokenBearerToken({
-      serverName: params.serverName,
-      server: params.server,
-      cfg: params.cfg,
-    });
+  // Machine tokens must never be minted into projected bearer bundles.
+  if (isRecord(params.server) && params.server.auth === "machine_token") {
+    throw machineTokenMcpBearerProjectionUnsupportedError(params.serverName);
   }
   const authProfileId = resolveMcpAuthProfileId(params.server);
   if (authProfileId) {
@@ -258,6 +272,18 @@ export async function resolveMcpBearerBundleConfig(
   const tokenProjection = params.tokenProjection ?? "env";
 
   for (const [serverName, server] of Object.entries(params.config.mcpServers)) {
+    // Machine tokens must never be minted into env/literal Authorization headers.
+    if (isRecord(server) && server.auth === "machine_token") {
+      const error = machineTokenMcpBearerProjectionUnsupportedError(serverName);
+      if (params.omitUnavailableOAuthServers) {
+        nextServers ??= { ...params.config.mcpServers };
+        delete nextServers[serverName];
+        params.onServerUnavailable?.(serverName, error);
+        continue;
+      }
+      throw error;
+    }
+
     let token: string | undefined;
     try {
       token = await resolveMcpBearerToken({

@@ -220,8 +220,10 @@ describe("linkskills transport modes", () => {
     });
     const resolveMachineTokenAccess = vi.fn(async ({ binding }) => {
       expect(binding.bindingId).toBe("linkskills-stage");
+      expect(binding.keyRefFingerprint).toMatch(/^[a-f0-9]{64}$/);
       return {
         bindingId: binding.bindingId,
+        bindingFingerprint: `fp-${binding.bindingId}`,
         accessToken: "mt-skills-access",
         expiresAt: Date.now() + 60_000,
         tokenType: "Bearer" as const,
@@ -307,6 +309,91 @@ describe("linkskills transport modes", () => {
     expect(resolveMachineTokenAccess.mock.calls[0]![0].binding.clientAssertionKeyPem).toBe(
       "server-pem",
     );
+  });
+
+  it("mcp oauth is not overridden by a present machineToken block", async () => {
+    const resolveMachineTokenAccess = vi.fn(async ({ binding }) => ({
+      bindingId: binding.bindingId,
+      accessToken: "mt-must-not-apply",
+      expiresAt: Date.now() + 60_000,
+      tokenType: "Bearer" as const,
+    }));
+    const config = parseLinkskillsConfig({
+      transportMode: "mcp",
+      machineToken: {
+        bindingId: "linkskills-stage",
+        issuerUrl: "https://issuer.example.test",
+        clientId: "skills-client",
+        clientAssertionKeyRef: "literal-pem",
+      },
+    });
+    const transport = resolveLinkskillsTransport({
+      api: stubApi({
+        mcp: {
+          servers: {
+            linkskills: {
+              enabled: true,
+              url: "https://mcp.example.test/skills",
+              auth: "oauth",
+              oauth: { authProfileId: "skills-oauth" },
+              machineToken: {
+                bindingId: "linkskills-stage",
+                issuerUrl: "https://issuer.example.test",
+                clientId: "skills-client",
+                clientAssertionKeyRef: "literal-pem",
+              },
+            },
+          },
+        },
+      }),
+      config,
+      resolveMachineTokenAccess,
+      createMcpSession: async () => {
+        throw new Error("should not open MCP session when oauth auth-profile is required");
+      },
+    });
+    const result = await transport.write(writeArgs);
+    expect(result).toMatchObject({
+      ok: false,
+      errorCode: "auth_profile_required",
+    });
+    expect(resolveMachineTokenAccess).not.toHaveBeenCalled();
+  });
+
+  it("mcp machine_token without complete binding fail-closes (no SecretRef fallthrough)", async () => {
+    const config = parseLinkskillsConfig({
+      transportMode: "mcp",
+    });
+    const transport = resolveLinkskillsTransport({
+      api: stubApi({
+        mcp: {
+          servers: {
+            linkskills: {
+              enabled: true,
+              url: "https://mcp.example.test/skills",
+              auth: "machine_token",
+              headers: {
+                Authorization: {
+                  source: "env",
+                  provider: "default",
+                  id: "MUST_NOT_USE_SECRETREF_FALLTHROUGH",
+                },
+              },
+            },
+          },
+        },
+      }),
+      config,
+      env: { MUST_NOT_USE_SECRETREF_FALLTHROUGH: "secretref-bearer" },
+      createMcpSession: async () => {
+        throw new Error("should not open MCP session for incomplete machine_token");
+      },
+    });
+    const result = await transport.write(writeArgs);
+    expect(result).toMatchObject({
+      ok: false,
+      errorCode: "machine_token_error",
+    });
   });
 
   it("skills and brain machineToken fixtures use distinct bindingIds", () => {

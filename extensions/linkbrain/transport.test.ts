@@ -215,8 +215,10 @@ describe("linkbrain transport modes", () => {
     const resolveMachineTokenAccess = vi.fn(async ({ binding }) => {
       expect(binding.bindingId).toBe("linkbrain-stage");
       expect(binding.clientAssertionKeyPem).toBe("PEM-BRAIN");
+      expect(binding.keyRefFingerprint).toMatch(/^[a-f0-9]{64}$/);
       return {
         bindingId: binding.bindingId,
+        bindingFingerprint: `fp-${binding.bindingId}`,
         accessToken: "mt-brain-access",
         expiresAt: Date.now() + 60_000,
         tokenType: "Bearer" as const,
@@ -263,6 +265,7 @@ describe("linkbrain transport modes", () => {
       }
       return {
         bindingId: binding.bindingId,
+        bindingFingerprint: `fp-${binding.bindingId}`,
         accessToken: resolveCount === 1 ? "stale-token" : "fresh-token",
         expiresAt: Date.now() + 60_000,
         tokenType: "Bearer" as const,
@@ -287,7 +290,7 @@ describe("linkbrain transport modes", () => {
     });
     const result = await transport.write(writeArgs);
     expect(result.ok).toBe(true);
-    expect(invalidateMachineTokenCache).toHaveBeenCalledWith("linkbrain-stage");
+    expect(invalidateMachineTokenCache).toHaveBeenCalledWith("fp-linkbrain-stage");
     expect(fetchImpl).toHaveBeenCalledTimes(2);
     expect(new Headers(fetchImpl.mock.calls[1]![1]?.headers).get("authorization")).toBe(
       "Bearer fresh-token",
@@ -339,6 +342,99 @@ describe("linkbrain transport modes", () => {
     expect(result.ok).toBe(true);
     expect(result.errorCode).not.toBe("auth_profile_required");
     expect(seenHeaders[0]).toMatchObject({ Authorization: "Bearer mt-mcp-brain" });
+  });
+
+  it("mcp oauth is not overridden by a present machineToken block", async () => {
+    const resolveMachineTokenAccess = vi.fn(async ({ binding }) => ({
+      bindingId: binding.bindingId,
+      accessToken: "mt-must-not-apply",
+      expiresAt: Date.now() + 60_000,
+      tokenType: "Bearer" as const,
+    }));
+    const config = parseLinkbrainConfig({
+      transportMode: "mcp",
+      machineToken: {
+        bindingId: "linkbrain-stage",
+        issuerUrl: "https://issuer.example.test",
+        clientId: "brain-client",
+        clientAssertionKeyRef: "literal-pem",
+      },
+    });
+    const transport = resolveLinkbrainTransport({
+      api: stubApi({
+        mcp: {
+          servers: {
+            linkbrain: {
+              enabled: true,
+              url: "https://mcp.example.test/brain",
+              auth: "oauth",
+              oauth: { authProfileId: "brain-oauth" },
+              machineToken: {
+                bindingId: "linkbrain-stage",
+                issuerUrl: "https://issuer.example.test",
+                clientId: "brain-client",
+                clientAssertionKeyRef: "literal-pem",
+              },
+            },
+          },
+        },
+      }),
+      config,
+      resolveMachineTokenAccess,
+      createMcpSession: async () => {
+        throw new Error("should not open MCP session when oauth auth-profile is required");
+      },
+    });
+    const result = await transport.write(writeArgs);
+    expect(result).toMatchObject({
+      ok: false,
+      errorCode: "auth_profile_required",
+    });
+    expect(resolveMachineTokenAccess).not.toHaveBeenCalled();
+  });
+
+  it("mcp machine_token without complete binding fail-closes (no SecretRef fallthrough)", async () => {
+    const config = parseLinkbrainConfig({
+      transportMode: "mcp",
+    });
+    const transport = resolveLinkbrainTransport({
+      api: stubApi({
+        mcp: {
+          servers: {
+            linkbrain: {
+              enabled: true,
+              url: "https://mcp.example.test/brain",
+              auth: "machine_token",
+              headers: {
+                Authorization: {
+                  source: "env",
+                  provider: "default",
+                  id: "MUST_NOT_USE_SECRETREF_FALLTHROUGH",
+                },
+              },
+            },
+          },
+        },
+      }),
+      config,
+      env: { MUST_NOT_USE_SECRETREF_FALLTHROUGH: "secretref-bearer" },
+      createMcpSession: async (server) => {
+        expect(server.headers).not.toMatchObject({
+          Authorization: "secretref-bearer",
+        });
+        return {
+          async callTool() {
+            return { structuredContent: { accepted: true } };
+          },
+          async close() {},
+        };
+      },
+    });
+    const result = await transport.write(writeArgs);
+    expect(result).toMatchObject({
+      ok: false,
+      errorCode: "machine_token_error",
+    });
   });
 
   it("brain and skills machineToken fixtures use distinct bindingIds", () => {

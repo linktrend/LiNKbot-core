@@ -144,16 +144,17 @@ export function readPluginSdkSurfaceBudgets(env = process.env) {
       "OPENCLAW_PLUGIN_SDK_MAX_PUBLIC_EXPORTS",
       // +4: session discussion state, info, provider, and registration contracts.
       // +2: structured media placeholder formatter and its text-fact contract.
-      // +8: machine-token-runtime types/helpers (binding, resolved token, resolve/invalidate/clear, discovery asserts, bearer wrapper, auth header).
-      4730,
+      // +11: machine-token-runtime (scoped facade + host helpers + types/health + discovery/bearer/auth header).
+      4734,
       env,
     ),
     publicFunctionExports: readPluginSdkSurfaceBudgetEnv(
       "OPENCLAW_PLUGIN_SDK_MAX_PUBLIC_FUNCTION_EXPORTS",
       // +1: session discussion provider registration.
       // +1: structured media placeholder formatter for text-only channel carriers.
-      // +7: machine-token resolve/invalidate/clear/bearer/discovery asserts + auth header helper.
-      2886,
+      // +8: machine-token createMachineTokenPluginFacade + host resolve/invalidate/clear + bearer/discovery asserts + auth header.
+      // +1: fingerprintMachineTokenKeyRef for plugin binding cache keys.
+      2888,
       env,
     ),
     publicDeprecatedExports: readPluginSdkSurfaceBudgetEnv(

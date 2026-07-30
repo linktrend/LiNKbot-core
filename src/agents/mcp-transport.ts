@@ -12,9 +12,11 @@ import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/
 import type { FetchLike, Transport } from "@modelcontextprotocol/sdk/shared/transport.js";
 import { normalizeOptionalString } from "@openclaw/normalization-core/string-coerce";
 import type { OpenClawConfig } from "../config/types.openclaw.js";
+import { isSecretRef } from "../config/types.secrets.js";
 import { resolveConfiguredSecretInputString } from "../gateway/resolve-configured-secret-input-string.js";
 import { logDebug } from "../logger.js";
 import { withMachineTokenBearer } from "./machine-token-fetch.js";
+import { fingerprintMachineTokenKeyRef } from "./machine-token-fingerprint.js";
 import type { MachineTokenBinding } from "./machine-token.js";
 import { resolveMcpAuthProfileId, withMcpAuthProfileBearer } from "./mcp-auth-profile.js";
 import {
@@ -93,13 +95,11 @@ function buildSseEventSourceFetch(
 function usesManagedHttpAuth(params: {
   auth?: "oauth" | "machine_token";
   authProfileId?: string;
-  machineToken?: unknown;
 }): boolean {
+  // Managed auth is driven only by explicit auth mode (or auth-profile oauth).
+  // A stray machineToken block does not activate managed auth.
   return Boolean(
-    params.auth === "oauth" ||
-    params.auth === "machine_token" ||
-    params.authProfileId ||
-    params.machineToken,
+    params.auth === "oauth" || params.auth === "machine_token" || params.authProfileId,
   );
 }
 
@@ -152,6 +152,7 @@ function withResolvedMachineTokenBearer(params: {
   return async (url, init) => {
     if (!bearerFetch) {
       const clientAssertionKeyPem = await resolveAssertionKeyPem();
+      const keyRef = params.machineToken.clientAssertionKeyRef;
       const binding: MachineTokenBinding = {
         bindingId: params.machineToken.bindingId,
         issuerUrl: params.machineToken.issuerUrl,
@@ -159,6 +160,15 @@ function withResolvedMachineTokenBearer(params: {
         ...(params.machineToken.audience ? { audience: params.machineToken.audience } : {}),
         ...(params.machineToken.scope ? { scope: params.machineToken.scope } : {}),
         clientAssertionKeyPem,
+        ...(isSecretRef(keyRef)
+          ? {
+              keyRefFingerprint: fingerprintMachineTokenKeyRef({
+                source: keyRef.source,
+                provider: keyRef.provider,
+                id: keyRef.id,
+              }),
+            }
+          : {}),
       };
       bearerFetch = withMachineTokenBearer({
         fetchFn: params.fetchFn,
@@ -203,7 +213,8 @@ export function resolveMcpTransport(
     };
   }
   const authProfileId = resolveMcpAuthProfileId(rawServer);
-  const useMachineToken = resolved.auth === "machine_token" || Boolean(resolved.machineToken);
+  // Auth selection is explicit: machine_token only when auth === "machine_token".
+  // A machineToken block never overrides auth="oauth" and never auto-activates.
   // The SDK reuses one fetch for OAuth and long-lived SSE/streamable bodies.
   // Per-RPC deadlines belong to client calls, not this transport fetch.
   const baseFetch = buildMcpHttpFetch({
@@ -215,7 +226,6 @@ export function resolveMcpTransport(
   const managedAuth = usesManagedHttpAuth({
     auth: resolved.auth,
     authProfileId,
-    machineToken: resolved.machineToken,
   });
   const headers = managedAuth ? withoutMcpAuthorizationHeader(resolved.headers) : resolved.headers;
   const resourceFetch = withSameOriginMcpHttpHeaders({
@@ -223,39 +233,44 @@ export function resolveMcpTransport(
     headers,
     resourceUrl: resolved.url,
   });
-  // Priority: machine-token binding → auth-profile bearer → interactive oauth.
-  const httpFetch = useMachineToken
-    ? resolved.machineToken
-      ? withResolvedMachineTokenBearer({
-          fetchFn: baseFetch,
-          serverName,
-          resourceUrl: resolved.url,
-          headers,
-          machineToken: resolved.machineToken,
-          cfg: options?.cfg,
-        })
-      : baseFetch
-    : authProfileId
-      ? withMcpAuthProfileBearer({
-          fetchFn: baseFetch,
-          serverName,
-          resourceUrl: resolved.url,
-          headers,
-          authProfileId,
-          cfg: options?.cfg,
-          agentDir: options?.agentDir,
-        })
-      : resolved.auth === "oauth"
-        ? withMcpOAuthBearer({
-            fetchFn: resourceFetch,
-            // Protected-resource discovery lives at the resource origin and may
-            // require the same routing headers. Cross-origin auth calls stay scrubbed.
-            authFetchFn: resourceFetch,
-            serverName,
-            resourceUrl: resolved.url,
-            config: resolved.oauth,
-          })
-        : baseFetch;
+  let httpFetch: FetchLike;
+  if (resolved.auth === "machine_token") {
+    if (!resolved.machineToken) {
+      throw new Error(
+        `MCP server "${serverName}" auth is "machine_token" but machineToken binding is missing or incomplete.`,
+      );
+    }
+    httpFetch = withResolvedMachineTokenBearer({
+      fetchFn: baseFetch,
+      serverName,
+      resourceUrl: resolved.url,
+      headers,
+      machineToken: resolved.machineToken,
+      cfg: options?.cfg,
+    });
+  } else if (authProfileId) {
+    httpFetch = withMcpAuthProfileBearer({
+      fetchFn: baseFetch,
+      serverName,
+      resourceUrl: resolved.url,
+      headers,
+      authProfileId,
+      cfg: options?.cfg,
+      agentDir: options?.agentDir,
+    });
+  } else if (resolved.auth === "oauth") {
+    httpFetch = withMcpOAuthBearer({
+      fetchFn: resourceFetch,
+      // Protected-resource discovery lives at the resource origin and may
+      // require the same routing headers. Cross-origin auth calls stay scrubbed.
+      authFetchFn: resourceFetch,
+      serverName,
+      resourceUrl: resolved.url,
+      config: resolved.oauth,
+    });
+  } else {
+    httpFetch = baseFetch;
+  }
   const omitStaticAuthHeaders = resolved.auth === "oauth" || resolved.auth === "machine_token";
   if (resolved.transportType === "streamable-http") {
     return {
