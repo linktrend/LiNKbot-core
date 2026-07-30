@@ -11,7 +11,8 @@
  * - Wave 2: 39c46680f058d86484fcb24c25c3463deb9488ae
  * - Wave 3: 83501b11b78b0c5f46a5c5ef23f48de9f1317468
  * - Wave 4: ca027417 (failed independent verification — retain frozen pin above)
- * - Wave 5: fbdede7c25a933b4e500c796032995aaabc20660
+ * - Wave 5 Platform: fbdede7c25a933b4e500c796032995aaabc20660
+ * - Wave 5 OpenClaw tip / Wave 6 Platform note: 96a96f04ede8df3cec5b67e9bb1e021335e12f5b
  * Awaiting certified Platform descendant for permanent OpenClaw repin.
  *
  * Keep in lockstep with LiNKplatform/packages/paci/src/constants.ts.

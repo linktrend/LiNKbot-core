@@ -149,8 +149,11 @@ export function createPluginApiFactory(
   };
 
   /**
-   * Registration success: atomically publish candidate generations owned by this
-   * plugin's active guards (retires only the prior live generation).
+   * Publish candidate generations owned by this plugin's active guards
+   * (retires only the prior live generation for that plugin).
+   *
+   * Production loader must call this only at the registry-activation boundary
+   * via {@link publishAllPluginMachineTokenGenerations}, not per-candidate.
    */
   const commitPluginSideEffectGuards = (pluginId: string): void => {
     const guards = pluginSideEffectGuards.get(pluginId);
@@ -165,6 +168,16 @@ export function createPluginApiFactory(
       if (generation) {
         publishMachineTokenFacadeGeneration(generation);
       }
+    }
+  };
+
+  /**
+   * Publish every staged machine-token generation owned by this registry
+   * builder. Intended for the complete load-transaction activation boundary.
+   */
+  const publishAllPluginMachineTokenGenerations = (): void => {
+    for (const pluginId of [...pluginSideEffectGuards.keys()].toSorted()) {
+      commitPluginSideEffectGuards(pluginId);
     }
   };
 
@@ -184,6 +197,16 @@ export function createPluginApiFactory(
       }
       destroyMachineTokenFacadeGeneration(generation);
       guard.machineTokenGeneration = undefined;
+    }
+  };
+
+  /**
+   * Abandon every staged (unpublished) machine-token generation owned by this
+   * registry builder without touching unrelated live generations.
+   */
+  const abandonAllPluginMachineTokenGenerations = (): void => {
+    for (const pluginId of [...pluginSideEffectGuards.keys()]) {
+      abandonPluginMachineTokenGenerations(pluginId);
     }
   };
 
@@ -226,8 +249,14 @@ export function createPluginApiFactory(
         ? { mcpServers: mcpServers as Record<string, unknown> }
         : {}),
     });
+    // Control-plane / setup / discovery paths must not stage production facades.
+    // Only full runtime registration under an activating load may create candidates.
+    const mayStageMachineTokenFacade =
+      registrationMode === "full" &&
+      registryParams.activateGlobalSideEffects !== false &&
+      grantedRecords.length > 0;
     let machineTokenFacade: OpenClawPluginApi["machineTokenFacade"];
-    if (grantedRecords.length > 0) {
+    if (mayStageMachineTokenFacade) {
       const generation = createMachineTokenFacadeGeneration({
         pluginId: record.id,
         grantedRecords,
@@ -485,6 +514,8 @@ export function createPluginApiFactory(
     createApi,
     deactivatePluginSideEffectGuards,
     commitPluginSideEffectGuards,
+    publishAllPluginMachineTokenGenerations,
     abandonPluginMachineTokenGenerations,
+    abandonAllPluginMachineTokenGenerations,
   };
 }

@@ -656,6 +656,28 @@ export function getLiveMachineTokenFacadeGenerationHandle(
 }
 
 /**
+ * Host/test helper: exact candidate vs live generation counts for leak proofs.
+ *
+ * Retired generations are removed from the tracking maps and are not counted.
+ */
+export function countMachineTokenFacadeGenerations(): {
+  candidate: number;
+  live: number;
+  total: number;
+} {
+  let candidate = 0;
+  let live = 0;
+  for (const generation of generationsById.values()) {
+    if (generation.state === "candidate") {
+      candidate += 1;
+    } else if (generation.state === "live") {
+      live += 1;
+    }
+  }
+  return { candidate, live, total: generationsById.size };
+}
+
+/**
  * Collect full host-owned binding records the host may grant to a plugin from
  * pluginConfig.machineToken plus that plugin's managed MCP server machineToken
  * bindings. Incomplete blocks (missing issuer/client/keyRef) are omitted.

@@ -13,8 +13,8 @@
  * Platform repin: frozen authority remains HEAD `0455846487d0…` / schema
  * `7173b9f9…`. Failed IV HEADs (do not permanently repin): Wave 2
  * `39c46680f058…`, Wave 3 `83501b11b78b…`, Wave 4 `ca027417…`, Wave 5
- * `fbdede7c25a9…` — awaiting certified Platform descendant for permanent
- * OpenClaw repin.
+ * `fbdede7c25a9…`, Wave 6 noted `96a96f04ede8…` — awaiting certified Platform
+ * descendant for permanent OpenClaw repin.
  */
 import { randomUUID } from "node:crypto";
 import {

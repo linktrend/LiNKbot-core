@@ -208,7 +208,10 @@ export function loadOpenClawPlugins(options: PluginLoadOptions = {}): PluginRegi
     if (context.shouldActivate) {
       // Activation installs the new registry before initializing its hook runner. Commit the
       // rollback first so an activation throw cannot restore old globals under the new registry.
+      // Publish staged machine-token generations at the same boundary so a later-plugin
+      // failure cannot retire live predecessors while the old registry is still active.
       activatingLoadTransaction?.commit({ activate: true });
+      registryBuilder.publishPluginMachineTokenGenerations?.();
       activatePluginRegistry(
         registry,
         context.cacheKey,
@@ -218,7 +221,11 @@ export function loadOpenClawPlugins(options: PluginLoadOptions = {}): PluginRegi
     }
     return registry;
   } catch (error) {
+    // Rollback restores prior process-global plugin state and destroys staged
+    // machine-token candidates owned by this failed activating load. Prior live
+    // generations remain usable because they were never published-over.
     activatingLoadTransaction?.rollback();
+    registryBuilder?.abandonPluginMachineTokenGenerations?.();
     throw error;
   } finally {
     pluginLoaderCacheState.finishLoad(context.cacheKey);

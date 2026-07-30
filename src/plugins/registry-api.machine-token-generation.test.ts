@@ -1,6 +1,9 @@
 /**
  * Production-path machine-token facade generation replacement via registry
- * createApi + commit/rollback (not manual unregister-then-create).
+ * createApi + commit/rollback (low-level surrogate). Wave 6 also requires
+ * real loadOpenClawPlugins transaction coverage in
+ * loader.machine-token-generation.test.ts — do not treat this file alone as
+ * loader-lifecycle proof.
  */
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {

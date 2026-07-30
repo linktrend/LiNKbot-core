@@ -32,7 +32,9 @@ export function createPluginRegistry(registryParams: PluginRegistryParams) {
     createApi,
     deactivatePluginSideEffectGuards,
     commitPluginSideEffectGuards,
+    publishAllPluginMachineTokenGenerations,
     abandonPluginMachineTokenGenerations,
+    abandonAllPluginMachineTokenGenerations,
   } = createPluginApiFactory(state, registrars, runtimeResolver);
 
   const rollbackPluginGlobalSideEffects = (pluginId: string) => {
@@ -47,6 +49,13 @@ export function createPluginRegistry(registryParams: PluginRegistryParams) {
     registrars.rollbackHooks(pluginId);
   };
 
+  /**
+   * Per-plugin side-effect commit. For machine-token facades, `activate: true`
+   * publishes immediately — tests and manual callers may use this. The
+   * production loader must **not** call activate during the candidate loop;
+   * it stages candidates and publishes via
+   * {@link publishPluginMachineTokenGenerations} at registry activation.
+   */
   const commitPluginGlobalSideEffects = (pluginId: string, params?: { activate?: boolean }) => {
     const activate = params?.activate !== false && registryParams.activateGlobalSideEffects !== false;
     if (activate) {
@@ -56,11 +65,21 @@ export function createPluginRegistry(registryParams: PluginRegistryParams) {
     abandonPluginMachineTokenGenerations(pluginId);
   };
 
+  const publishPluginMachineTokenGenerations = () => {
+    publishAllPluginMachineTokenGenerations();
+  };
+
+  const abandonPluginMachineTokenGenerationsForLoad = () => {
+    abandonAllPluginMachineTokenGenerations();
+  };
+
   return {
     registry: state.registry,
     createApi,
     rollbackPluginGlobalSideEffects,
     commitPluginGlobalSideEffects,
+    publishPluginMachineTokenGenerations,
+    abandonPluginMachineTokenGenerations: abandonPluginMachineTokenGenerationsForLoad,
     pushDiagnostic: state.pushDiagnostic,
     registerTool: registrars.registerTool,
     registerChannel: registrars.registerChannel,
