@@ -13,8 +13,8 @@
 | Field | Value |
 | --- | --- |
 | Start HEAD (exact) | `aced47c38d3052ec84fbbe610b0c11a2310b1c10` |
-| Primary implementation commit | _(same as clean tip for this single Wave 7 packet — filled in chat)_ |
-| Clean pushed tip | _(authoritative: `git rev-parse origin/issue/ocp-openclawdevelopmentplan01`)_ |
+| Primary implementation commit | `d3ad3dfc23be4d29c6f32114bda7ccbe397da551` |
+| Clean pushed tip | `d3ad3dfc23be4d29c6f32114bda7ccbe397da551` |
 
 ## Lisa operations worktree (preserved)
 
