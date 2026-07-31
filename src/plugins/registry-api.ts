@@ -5,6 +5,7 @@ import {
   destroyMachineTokenFacadeGeneration,
   publishMachineTokenFacadeGeneration,
   commitMachineTokenOwnershipSnapshot,
+  type HostMachineTokenBindingRecord,
   type MachineTokenFacadeGenerationHandle,
 } from "../agents/machine-token-host.js";
 import type { OpenClawConfig } from "../config/types.openclaw.js";
@@ -205,6 +206,35 @@ export function createPluginApiFactory(
   };
 
   /**
+   * Capture immutable ownership descriptors for cache publication / reconstruct.
+   * Descriptors only — never live generation handles.
+   */
+  const collectMachineTokenOwnershipBlueprintPlugins = (): Array<{
+    pluginId: string;
+    grantedRecords: readonly HostMachineTokenBindingRecord[];
+  }> => {
+    const byPlugin = new Map<string, HostMachineTokenBindingRecord[]>();
+    for (const pluginId of [...pluginSideEffectGuards.keys()].toSorted()) {
+      const guards = pluginSideEffectGuards.get(pluginId);
+      if (!guards) {
+        continue;
+      }
+      for (const guard of guards) {
+        if (!guard.active || !guard.machineTokenGrantedRecords?.length) {
+          continue;
+        }
+        const existing = byPlugin.get(pluginId) ?? [];
+        existing.push(...guard.machineTokenGrantedRecords);
+        byPlugin.set(pluginId, existing);
+      }
+    }
+    return [...byPlugin.entries()].map(([pluginId, grantedRecords]) => ({
+      pluginId,
+      grantedRecords,
+    }));
+  };
+
+  /**
    * Publish staged generations and retire obsolete live generations according
    * to reconcileScope. Call only after activatePluginRegistry succeeds.
    */
@@ -313,6 +343,18 @@ export function createPluginApiFactory(
         },
       });
       sideEffectGuard.machineTokenGeneration = generation.handle;
+      sideEffectGuard.machineTokenGrantedRecords = Object.freeze(
+        grantedRecords.map((record) =>
+          Object.freeze({
+            ...record,
+            keyRef: Object.freeze({ ...record.keyRef }),
+            ...(record.operations
+              ? { operations: Object.freeze([...record.operations]) }
+              : {}),
+            ...(record.scopes ? { scopes: Object.freeze([...record.scopes]) } : {}),
+          }),
+        ),
+      );
       machineTokenFacade = generation.facade;
     }
     return buildPluginApi({
@@ -552,6 +594,7 @@ export function createPluginApiFactory(
     commitPluginSideEffectGuards,
     publishAllPluginMachineTokenGenerations,
     collectStagedMachineTokenGenerationHandles,
+    collectMachineTokenOwnershipBlueprintPlugins,
     commitMachineTokenOwnershipForRegistry,
     abandonPluginMachineTokenGenerations,
     abandonAllPluginMachineTokenGenerations,

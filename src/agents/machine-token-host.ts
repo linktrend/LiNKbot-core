@@ -643,6 +643,19 @@ export function unregisterMachineTokenFacadesForPlugin(pluginId: string): void {
 }
 
 /**
+ * Host/test helper: return the live generation facade for a plugin, if any.
+ */
+export function getLiveMachineTokenPluginFacade(
+  pluginId: string,
+): MachineTokenPluginFacade | undefined {
+  const trimmed = pluginId.trim();
+  if (!trimmed) {
+    return undefined;
+  }
+  return liveGenerationByPluginId.get(trimmed)?.facade;
+}
+
+/**
  * Host/test helper: return the live generation handle for a plugin, if any.
  */
 export function getLiveMachineTokenFacadeGenerationHandle(

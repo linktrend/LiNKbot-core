@@ -8,6 +8,7 @@ import { afterEach, describe, expect, it } from "vitest";
 import {
   countMachineTokenFacadeGenerations,
   getLiveMachineTokenFacadeGenerationHandle,
+  getLiveMachineTokenPluginFacade,
   listLiveMachineTokenFacadePluginIds,
   unregisterMachineTokenFacadesForPlugin,
 } from "../agents/machine-token-host.js";
@@ -807,9 +808,21 @@ describe("loadOpenClawPlugins machine-token generation transaction", () => {
     );
     await expect(facadeB!.acquire({ bindingId: "wave8-b-stage" })).rejects.toThrow(/unregistered/);
 
-    // Cache-hit reconstruct publishes a new host-owned live generation for A.
-    // Register does not re-run, so the plugin-captured facade stays retired;
-    // live ownership is proven via the handle + snapshot identity + clean counts.
+    const liveFacadeA = getLiveMachineTokenPluginFacade("linkbrain");
+    expect(liveFacadeA).toBeDefined();
+    expect(liveFacadeA?.health("linkbrain-stage").registered).toBe(true);
+    expect(liveFacadeA?.grantedBindingIds.has("linkbrain-stage")).toBe(true);
+    let acquireError: unknown;
+    try {
+      await liveFacadeA!.acquire({ bindingId: "linkbrain-stage" });
+    } catch (error) {
+      acquireError = error;
+    }
+    // Test PEM is not a real assertion key; mint may fail, but grant/live must not.
+    expect(String(acquireError ?? "")).not.toMatch(
+      /unregistered|not granted machine-token binding/,
+    );
+
     expect(listLiveMachineTokenFacadePluginIds()).toEqual(["linkbrain"]);
     expect(countMachineTokenFacadeGenerations()).toEqual({
       candidate: 0,

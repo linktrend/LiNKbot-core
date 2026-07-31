@@ -16,5 +16,8 @@ export {
   PluginActivatingLoadConflictError,
   resetActivatingPluginLoadLockForTest,
   setPluginLoadActivationFailureInjectorForTest,
+  getActiveCombinedPluginRuntimeSnapshotIdentity,
+  resetActiveCombinedPluginRuntimeSnapshotIdentityForTest,
+  setCombinedPluginRuntimeActivationFailureInjectorForTest,
 } from "./loader-runtime-load.js";
 export type { PluginLoadOptions } from "./loader-types.js";

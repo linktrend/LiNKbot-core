@@ -33,6 +33,8 @@ export function createPluginRegistry(registryParams: PluginRegistryParams) {
     deactivatePluginSideEffectGuards,
     commitPluginSideEffectGuards,
     publishAllPluginMachineTokenGenerations,
+    collectStagedMachineTokenGenerationHandles,
+    collectMachineTokenOwnershipBlueprintPlugins,
     commitMachineTokenOwnershipForRegistry,
     abandonPluginMachineTokenGenerations,
     abandonAllPluginMachineTokenGenerations,
@@ -80,6 +82,12 @@ export function createPluginRegistry(registryParams: PluginRegistryParams) {
     abandonAllPluginMachineTokenGenerations();
   };
 
+  const collectPluginMachineTokenOwnershipBlueprintPlugins = () =>
+    collectMachineTokenOwnershipBlueprintPlugins();
+
+  const collectPluginStagedMachineTokenGenerationHandles = () =>
+    collectStagedMachineTokenGenerationHandles();
+
   return {
     registry: state.registry,
     createApi,
@@ -87,6 +95,8 @@ export function createPluginRegistry(registryParams: PluginRegistryParams) {
     commitPluginGlobalSideEffects,
     publishPluginMachineTokenGenerations,
     commitPluginMachineTokenOwnershipSnapshot,
+    collectPluginMachineTokenOwnershipBlueprintPlugins,
+    collectPluginStagedMachineTokenGenerationHandles,
     abandonPluginMachineTokenGenerations: abandonPluginMachineTokenGenerationsForLoad,
     pushDiagnostic: state.pushDiagnostic,
     registerTool: registrars.registerTool,
