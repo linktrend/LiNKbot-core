@@ -19,5 +19,7 @@ export {
   getActiveCombinedPluginRuntimeSnapshotIdentity,
   resetActiveCombinedPluginRuntimeSnapshotIdentityForTest,
   setCombinedPluginRuntimeActivationFailureInjectorForTest,
+  canReuseActiveCombinedPluginRuntimeSnapshot,
+  setGlobalHookRunnerInitFailureInjectorForTest,
 } from "./loader-runtime-load.js";
 export type { PluginLoadOptions } from "./loader-types.js";

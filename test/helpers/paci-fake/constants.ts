@@ -15,6 +15,7 @@
  * - Wave 5 OpenClaw tip / Wave 6 Platform note: 96a96f04ede8df3cec5b67e9bb1e021335e12f5b
  * - Wave 6 Platform: a155cbe941710d452c93077a9b8ce11ace665231
  * - Wave 7 Platform: 94ff0956a5d313a1c538c8e1f81cf641dc381bac
+ * - Wave 8 Platform: d807ad3ca2537853d35ec6c738254b54dcc15d66
  * Awaiting certified Platform descendant for permanent OpenClaw repin.
  *
  * Keep in lockstep with LiNKplatform/packages/paci/src/constants.ts.

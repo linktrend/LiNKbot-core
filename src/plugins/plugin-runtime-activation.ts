@@ -10,15 +10,23 @@ import {
   commitMachineTokenOwnershipSnapshot,
   createMachineTokenFacadeGeneration,
   destroyMachineTokenFacadeGeneration,
+  getLiveMachineTokenFacadeGenerationHandle,
+  getLiveMachineTokenPluginFacade,
   type HostMachineTokenBindingRecord,
   type MachineTokenFacadeGenerationHandle,
 } from "../agents/machine-token-host.js";
 import type { OpenClawConfig } from "../config/types.openclaw.js";
 import { resolveConfiguredSecretInputString } from "../gateway/resolve-configured-secret-input-string.js";
-import { initializeGlobalHookRunner } from "./hook-runner-global.js";
+import {
+  getGlobalPluginRegistry,
+  initializeGlobalHookRunner,
+} from "./hook-runner-global.js";
 import type { PluginRuntimeSubagentMode } from "./loader-types.js";
 import type { PluginProcessGlobalState } from "./plugin-registration-transaction.js";
-import { restorePluginProcessGlobalState } from "./plugin-registration-transaction.js";
+import {
+  restorePluginProcessGlobalState,
+  snapshotPluginProcessGlobalState,
+} from "./plugin-registration-transaction.js";
 import type { PluginRegistry } from "./registry-types.js";
 import {
   getActivePluginRegistry,
@@ -177,10 +185,43 @@ function buildResolveKeyPem(params: {
   };
 }
 
+/**
+ * Wave 9: same-active is valid only when live MT ownership still matches the
+ * blueprint. Registry/key/fingerprint alone are insufficient after external
+ * unregister or stale teardown.
+ */
+export function isLiveMachineTokenOwnershipHealthy(
+  ownership: MachineTokenOwnershipBlueprint,
+): boolean {
+  for (const plugin of ownership.plugins) {
+    const liveHandle = getLiveMachineTokenFacadeGenerationHandle(plugin.pluginId);
+    if (!liveHandle) {
+      return false;
+    }
+    const liveFacade = getLiveMachineTokenPluginFacade(plugin.pluginId);
+    if (!liveFacade) {
+      return false;
+    }
+    const expectedIds = new Set(plugin.grantedRecords.map((record) => record.bindingId));
+    if (expectedIds.size !== liveFacade.grantedBindingIds.size) {
+      return false;
+    }
+    for (const bindingId of expectedIds) {
+      if (!liveFacade.grantedBindingIds.has(bindingId)) {
+        return false;
+      }
+      if (!liveFacade.health(bindingId).registered) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
 function isSameActiveCombinedSnapshot(params: {
   registry: PluginRegistry;
   cacheKey: string;
-  ownershipFingerprint: string;
+  ownership: MachineTokenOwnershipBlueprint;
 }): boolean {
   if (getActivePluginRegistry() !== params.registry) {
     return false;
@@ -189,11 +230,31 @@ function isSameActiveCombinedSnapshot(params: {
     return false;
   }
   const active = activeCombinedSnapshotIdentity;
-  return (
-    active !== null &&
-    active.cacheKey === params.cacheKey &&
-    active.ownershipFingerprint === params.ownershipFingerprint
-  );
+  if (
+    active === null ||
+    active.cacheKey !== params.cacheKey ||
+    active.ownershipFingerprint !== params.ownership.ownershipFingerprint
+  ) {
+    return false;
+  }
+  return isLiveMachineTokenOwnershipHealthy(params.ownership);
+}
+
+/**
+ * Wave 9: activating cache hits may reuse a cached registry only when it is
+ * already the healthy active combined snapshot. Otherwise rematerialize so
+ * plugin closures capture a fresh facade generation.
+ */
+export function canReuseActiveCombinedPluginRuntimeSnapshot(params: {
+  registry: PluginRegistry;
+  cacheKey: string;
+  machineTokenOwnership: MachineTokenOwnershipBlueprint;
+}): boolean {
+  return isSameActiveCombinedSnapshot({
+    registry: params.registry,
+    cacheKey: params.cacheKey,
+    ownership: params.machineTokenOwnership,
+  });
 }
 
 export type ActivateCombinedPluginRuntimeSnapshotParams = {
@@ -223,9 +284,9 @@ export type ActivateCombinedPluginRuntimeSnapshotResult = {
  * Canonical activating commit for registry + machine-token ownership.
  *
  * Fallible work (candidate construction, process-global restore, injectors)
- * happens before the live pointer swap. On mid-commit failure after registry
- * activation, restores the prior registry and destroys newly prepared
- * candidates without retiring prior live facades that were never published-over.
+ * happens before the live pointer swap when possible. Once the live registry
+ * pointer is written, rollback authority is marked immediately so a throw
+ * inside hook-runner initialization still restores the prior combined snapshot.
  */
 export function activateCombinedPluginRuntimeSnapshot(
   params: ActivateCombinedPluginRuntimeSnapshotParams,
@@ -235,7 +296,7 @@ export function activateCombinedPluginRuntimeSnapshot(
     isSameActiveCombinedSnapshot({
       registry: params.registry,
       cacheKey: params.cacheKey,
-      ownershipFingerprint: ownership.ownershipFingerprint,
+      ownership,
     })
   ) {
     return { registry: params.registry, activated: false };
@@ -250,6 +311,7 @@ export function activateCombinedPluginRuntimeSnapshot(
     preparedHandles.length = 0;
   };
 
+  const priorProcessGlobalState = snapshotPluginProcessGlobalState();
   try {
     if (params.stagedPublishHandles) {
       preparedHandles.push(...params.stagedPublishHandles);
@@ -279,7 +341,9 @@ export function activateCombinedPluginRuntimeSnapshot(
     const priorWorkspaceDir = getActivePluginRegistryWorkspaceDir();
     const priorRuntimeSubagentMode = getActivePluginRuntimeSubagentMode();
     const priorIdentity = activeCombinedSnapshotIdentity;
-    let registryActivated = false;
+    const priorHookRegistry = getGlobalPluginRegistry();
+    // Mark before any live pointer write so hook-init throws still roll back.
+    let liveCommitStarted = false;
     try {
       setActivePluginRegistry(
         params.registry,
@@ -287,8 +351,8 @@ export function activateCombinedPluginRuntimeSnapshot(
         params.runtimeSubagentMode,
         params.workspaceDir,
       );
+      liveCommitStarted = true;
       initializeGlobalHookRunner(params.registry);
-      registryActivated = true;
 
       activationFailureInjectorForTest?.("after-registry-before-mt");
 
@@ -304,17 +368,22 @@ export function activateCombinedPluginRuntimeSnapshot(
       preparedHandles.length = 0;
       return { registry: params.registry, activated: true };
     } catch (error) {
-      if (registryActivated && priorRegistry) {
-        setActivePluginRegistry(
-          priorRegistry,
-          priorKey,
-          priorRuntimeSubagentMode,
-          priorWorkspaceDir,
-        );
-        initializeGlobalHookRunner(priorRegistry);
-        activeCombinedSnapshotIdentity = priorIdentity;
-      } else if (registryActivated && !priorRegistry) {
-        activeCombinedSnapshotIdentity = priorIdentity;
+      if (liveCommitStarted) {
+        restorePluginProcessGlobalState(priorProcessGlobalState);
+        if (priorRegistry) {
+          setActivePluginRegistry(
+            priorRegistry,
+            priorKey,
+            priorRuntimeSubagentMode,
+            priorWorkspaceDir,
+          );
+          initializeGlobalHookRunner(priorHookRegistry ?? priorRegistry);
+          activeCombinedSnapshotIdentity = priorIdentity;
+        } else {
+          // Cold-start failure: no prior snapshot to restore; clear identity so
+          // the half-installed replacement is not treated as healthy same-active.
+          activeCombinedSnapshotIdentity = null;
+        }
       }
       destroyPrepared();
       throw error;

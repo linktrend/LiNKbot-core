@@ -33,6 +33,7 @@ import {
 } from "./plugin-registration-transaction.js";
 import {
   activateCombinedPluginRuntimeSnapshot,
+  canReuseActiveCombinedPluginRuntimeSnapshot,
   captureMachineTokenOwnershipBlueprint,
   emptyMachineTokenOwnershipBlueprint,
   setCombinedPluginRuntimeActivationFailureInjectorForTest,
@@ -108,19 +109,22 @@ export function loadOpenClawPlugins(options: PluginLoadOptions = {}): PluginRegi
         options,
       });
       if (cached) {
-        if (context.shouldActivate) {
-          activateCombinedPluginRuntimeSnapshot({
+        if (!context.shouldActivate) {
+          // Non-activating snapshot loads may reuse the cached registry object.
+          return cached.state.registry;
+        }
+        // Wave 9: never reactivate a cached plugin instance whose closures may
+        // hold a retired facade. Same-active healthy reuse is the only fast path;
+        // otherwise fall through and rematerialize with fresh register/API/facade.
+        if (
+          canReuseActiveCombinedPluginRuntimeSnapshot({
             registry: cached.state.registry,
             cacheKey: cached.cacheKey,
-            runtimeSubagentMode: cached.runtimeSubagentMode,
-            workspaceDir: options.workspaceDir,
             machineTokenOwnership: cached.state.machineTokenOwnership,
-            processGlobalState: cached.state.processGlobalState,
-            config: context.cfg,
-            env: context.env,
-          });
+          })
+        ) {
+          return cached.state.registry;
         }
-        return cached.state.registry;
       }
     }
 
@@ -308,4 +312,6 @@ export {
   getActiveCombinedPluginRuntimeSnapshotIdentity,
   resetActiveCombinedPluginRuntimeSnapshotIdentityForTest,
   setCombinedPluginRuntimeActivationFailureInjectorForTest,
+  canReuseActiveCombinedPluginRuntimeSnapshot,
 } from "./plugin-runtime-activation.js";
+export { setGlobalHookRunnerInitFailureInjectorForTest } from "./hook-runner-global.js";

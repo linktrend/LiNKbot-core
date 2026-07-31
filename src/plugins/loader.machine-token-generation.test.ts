@@ -1,8 +1,9 @@
 /**
- * Wave 6/7/8 — real loadOpenClawPlugins transaction proofs for machine-token
- * facade staging, combined ownership commit, cache-hit reconstruct, removal/
- * disable reconciliation, activating-load serialization, and activation-failure
- * rollback (including mid-commit after-registry-before-mt).
+ * Wave 6/7/8/9 — real loadOpenClawPlugins transaction proofs for machine-token
+ * facade staging, combined ownership commit, activating cache rematerialize,
+ * same-active live ownership, removal/disable reconciliation, activating-load
+ * serialization, activation-failure rollback (including mid-commit and real
+ * hook-runner init early/mid/late), and setup/channel lifecycle baselines.
  */
 import { afterEach, describe, expect, it } from "vitest";
 import {
@@ -14,12 +15,14 @@ import {
 } from "../agents/machine-token-host.js";
 import type { MachineTokenPluginFacade } from "../agents/machine-token-types.js";
 import type { OpenClawConfig } from "../config/types.openclaw.js";
+import { resetGlobalHookRunner } from "./hook-runner-global.js";
 import {
   getActiveCombinedPluginRuntimeSnapshotIdentity,
   PluginActivatingLoadConflictError,
   resetActivatingPluginLoadLockForTest,
   resetActiveCombinedPluginRuntimeSnapshotIdentityForTest,
   setCombinedPluginRuntimeActivationFailureInjectorForTest,
+  setGlobalHookRunnerInitFailureInjectorForTest,
   setPluginLoadActivationFailureInjectorForTest,
 } from "./loader.js";
 import {
@@ -30,6 +33,7 @@ import {
   resetPluginLoaderTestStateForTest,
   writePlugin,
 } from "./loader.test-fixtures.js";
+import { createSetupEntryChannelPluginFixture } from "./loader.test-harness.js";
 import { createPluginRegistry } from "./registry.js";
 import { getActivePluginRegistry } from "./runtime.js";
 import type { PluginRuntime } from "./runtime/types.js";
@@ -233,6 +237,7 @@ describe("loadOpenClawPlugins machine-token generation transaction", () => {
   afterEach(() => {
     setPluginLoadActivationFailureInjectorForTest(null);
     setCombinedPluginRuntimeActivationFailureInjectorForTest(null);
+    setGlobalHookRunnerInitFailureInjectorForTest(null);
     resetActiveCombinedPluginRuntimeSnapshotIdentityForTest();
     resetActivatingPluginLoadLockForTest();
     unregisterMachineTokenFacadesForPlugin("linkbrain");
@@ -601,15 +606,16 @@ describe("loadOpenClawPlugins machine-token generation transaction", () => {
         },
       },
     };
-    // First load publishes; cache hit reuses without taking a second overlapping
-    // construction path. Nested reentry for an in-flight key is covered by the
-    // activating-load conflict test above.
+    // Healthy same-active: second identical load returns the same registry,
+    // same generation id, and unchanged generation counts (no rematerialize).
     const first = loadOpenClawPlugins({ cache: true, config, env });
     const before = countMachineTokenFacadeGenerations();
     const liveHandle = getLiveMachineTokenFacadeGenerationHandle("linkbrain");
     const snapshotIdentity = getActiveCombinedPluginRuntimeSnapshotIdentity();
+    const facadeBefore = facadeStore().linkbrain;
     expect(snapshotIdentity).not.toBeNull();
     expect(getActivePluginRegistry()).toBe(first);
+    expect(facadeBefore?.health("linkbrain-stage").registered).toBe(true);
 
     const second = loadOpenClawPlugins({ cache: true, config, env });
     expect(second).toBe(first);
@@ -617,6 +623,7 @@ describe("loadOpenClawPlugins machine-token generation transaction", () => {
     expect(getLiveMachineTokenFacadeGenerationHandle("linkbrain")?.generationId).toBe(
       liveHandle?.generationId,
     );
+    expect(facadeStore().linkbrain).toBe(facadeBefore);
     expect(getActiveCombinedPluginRuntimeSnapshotIdentity()).toEqual(snapshotIdentity);
     expect(countMachineTokenFacadeGenerations()).toEqual(before);
   });
@@ -736,7 +743,7 @@ describe("loadOpenClawPlugins machine-token generation transaction", () => {
     expect(facadeStore().linkskills?.health("linkskills-stage").registered).toBe(true);
   });
 
-  it("reconstructs A facade generations on A→B→cached-A with zero mixed state", async () => {
+  it("rematerializes A facade generations on A→B→cached-A with fresh register", async () => {
     const stateDir = makeTempDir();
     const env = sharedLoaderEnv(stateDir);
     const pluginA = writeCapturingPlugin({ id: "linkbrain" });
@@ -792,9 +799,18 @@ describe("loadOpenClawPlugins machine-token generation transaction", () => {
     expect(facadeA?.health("linkbrain-stage").registered).toBe(false);
     expect(getActivePluginRegistry()).toBe(registryB);
 
+    // Wave 9: activating cache hit rematerializes unless same-active healthy.
+    // A→B→cached A creates a new registry and re-runs register with a fresh facade.
+    clearFacadeStore();
     const registryACached = loadOpenClawPlugins({ cache: true, config: configA, env });
-    expect(registryACached).toBe(registryA);
-    expect(getActivePluginRegistry()).toBe(registryA);
+    expect(registryACached).not.toBe(registryA);
+    expect(getActivePluginRegistry()).toBe(registryACached);
+
+    const newFacade = facadeStore().linkbrain;
+    expect(newFacade).toBeDefined();
+    expect(newFacade).not.toBe(facadeA);
+    expect(newFacade?.health("linkbrain-stage").registered).toBe(true);
+    expect(facadeA?.health("linkbrain-stage").registered).toBe(false);
 
     const liveAAfter = getLiveMachineTokenFacadeGenerationHandle("linkbrain");
     expect(liveAAfter).toBeDefined();
@@ -802,19 +818,14 @@ describe("loadOpenClawPlugins machine-token generation transaction", () => {
     expect(liveAAfter?.generationId).not.toBe(genB);
     expect(getLiveMachineTokenFacadeGenerationHandle("wave8-b")).toBeUndefined();
     expect(facadeB?.health("wave8-b-stage").registered).toBe(false);
-    expect(facadeA?.health("linkbrain-stage").registered).toBe(false);
     await expect(facadeA!.acquire({ bindingId: "linkbrain-stage" })).rejects.toThrow(
       /unregistered/,
     );
     await expect(facadeB!.acquire({ bindingId: "wave8-b-stage" })).rejects.toThrow(/unregistered/);
 
-    const liveFacadeA = getLiveMachineTokenPluginFacade("linkbrain");
-    expect(liveFacadeA).toBeDefined();
-    expect(liveFacadeA?.health("linkbrain-stage").registered).toBe(true);
-    expect(liveFacadeA?.grantedBindingIds.has("linkbrain-stage")).toBe(true);
     let acquireError: unknown;
     try {
-      await liveFacadeA!.acquire({ bindingId: "linkbrain-stage" });
+      await newFacade!.acquire({ bindingId: "linkbrain-stage" });
     } catch (error) {
       acquireError = error;
     }
@@ -822,6 +833,9 @@ describe("loadOpenClawPlugins machine-token generation transaction", () => {
     expect(String(acquireError ?? "")).not.toMatch(
       /unregistered|not granted machine-token binding/,
     );
+
+    // Secondary: host live accessor agrees with the captured facade.
+    expect(getLiveMachineTokenPluginFacade("linkbrain")).toBe(newFacade);
 
     expect(listLiveMachineTokenFacadePluginIds()).toEqual(["linkbrain"]);
     expect(countMachineTokenFacadeGenerations()).toEqual({
@@ -831,6 +845,81 @@ describe("loadOpenClawPlugins machine-token generation transaction", () => {
     });
     expect(getActiveCombinedPluginRuntimeSnapshotIdentity()).toEqual(snapshotA);
     expect(getActiveCombinedPluginRuntimeSnapshotIdentity()?.cacheKey).toBe(snapshotA?.cacheKey);
+
+    newFacade!.unregister();
+    expect(getLiveMachineTokenFacadeGenerationHandle("linkbrain")).toBeUndefined();
+    expect(countMachineTokenFacadeGenerations()).toEqual({
+      candidate: 0,
+      live: 0,
+      total: 0,
+    });
+  });
+
+  it("rematerializes same-active after live facade loss", async () => {
+    const stateDir = makeTempDir();
+    const env = sharedLoaderEnv(stateDir);
+    const plugin = writeCapturingPlugin({ id: "linkbrain" });
+    const config = {
+      plugins: {
+        enabled: true,
+        load: { paths: [plugin.dir] },
+        entries: {
+          linkbrain: {
+            enabled: true,
+            config: machineTokenEntryConfig({
+              bindingId: "linkbrain-stage",
+              clientId: "brain-a",
+              keyId: BRAIN_KEY,
+            }),
+          },
+        },
+      },
+    };
+
+    const registryA = loadOpenClawPlugins({ cache: true, config, env });
+    const facadeA = facadeStore().linkbrain;
+    const genA = getLiveMachineTokenFacadeGenerationHandle("linkbrain")?.generationId;
+    expect(facadeA?.health("linkbrain-stage").registered).toBe(true);
+    expect(getActivePluginRegistry()).toBe(registryA);
+
+    facadeStore().linkbrain!.unregister();
+    expect(getLiveMachineTokenFacadeGenerationHandle("linkbrain")).toBeUndefined();
+    expect(facadeA?.health("linkbrain-stage").registered).toBe(false);
+
+    clearFacadeStore();
+    const registryRebuilt = loadOpenClawPlugins({ cache: true, config, env });
+    expect(registryRebuilt).not.toBe(registryA);
+    expect(getActivePluginRegistry()).toBe(registryRebuilt);
+
+    const newFacade = facadeStore().linkbrain;
+    expect(newFacade).toBeDefined();
+    expect(newFacade).not.toBe(facadeA);
+    expect(newFacade?.health("linkbrain-stage").registered).toBe(true);
+    expect(getLiveMachineTokenFacadeGenerationHandle("linkbrain")?.generationId).not.toBe(genA);
+
+    let acquireError: unknown;
+    try {
+      await newFacade!.acquire({ bindingId: "linkbrain-stage" });
+    } catch (error) {
+      acquireError = error;
+    }
+    expect(String(acquireError ?? "")).not.toMatch(
+      /unregistered|not granted machine-token binding/,
+    );
+
+    expect(countMachineTokenFacadeGenerations()).toEqual({
+      candidate: 0,
+      live: 1,
+      total: 1,
+    });
+
+    newFacade!.unregister();
+    expect(getLiveMachineTokenFacadeGenerationHandle("linkbrain")).toBeUndefined();
+    expect(countMachineTokenFacadeGenerations()).toEqual({
+      candidate: 0,
+      live: 0,
+      total: 0,
+    });
   });
 
   it("rolls back after-registry-before-mt activation failure without retiring prior facades", () => {
@@ -1048,5 +1137,318 @@ describe("loadOpenClawPlugins machine-token generation transaction", () => {
     );
     expect(liveFacade?.health("linkbrain-stage").registered).toBe(true);
     expect(countMachineTokenFacadeGenerations()).toEqual(baseline);
+  });
+
+  it.each([
+    { point: "early" as const },
+    { point: "late" as const },
+  ])(
+    "rolls back on real hook-runner init $point failure without retiring prior facades",
+    ({ point }) => {
+      const livePlugin = writeCapturingPlugin({ id: "linkbrain" });
+      const priorRegistry = loadWithMachineTokenPlugins({
+        plugins: [
+          {
+            id: "linkbrain",
+            path: livePlugin.dir,
+            bindingId: "linkbrain-stage",
+            clientId: "brain-live",
+            keyId: BRAIN_KEY,
+          },
+        ],
+      });
+      const liveHandle = getLiveMachineTokenFacadeGenerationHandle("linkbrain");
+      const liveFacade = facadeStore().linkbrain;
+      const priorSnapshot = getActiveCombinedPluginRuntimeSnapshotIdentity();
+      const baseline = countMachineTokenFacadeGenerations();
+
+      // One-shot so rollback re-init of the prior runner is not re-injected.
+      setGlobalHookRunnerInitFailureInjectorForTest((injectPoint) => {
+        if (injectPoint === point) {
+          setGlobalHookRunnerInitFailureInjectorForTest(null);
+          throw new Error(`injected hook-init ${point} failure`);
+        }
+      });
+      const replacement = writeCapturingPlugin({ id: "linkbrain" });
+      expect(() =>
+        loadWithMachineTokenPlugins({
+          plugins: [
+            {
+              id: "linkbrain",
+              path: replacement.dir,
+              bindingId: "linkbrain-stage",
+              clientId: "brain-v2",
+              keyId: BRAIN_KEY,
+            },
+          ],
+        }),
+      ).toThrow(new RegExp(`injected hook-init ${point} failure`));
+
+      expect(getActivePluginRegistry()).toBe(priorRegistry);
+      expect(getLiveMachineTokenFacadeGenerationHandle("linkbrain")?.generationId).toBe(
+        liveHandle?.generationId,
+      );
+      expect(liveFacade?.health("linkbrain-stage").registered).toBe(true);
+      expect(getActiveCombinedPluginRuntimeSnapshotIdentity()).toEqual(priorSnapshot);
+      expect(countMachineTokenFacadeGenerations()).toEqual(baseline);
+    },
+  );
+
+  it("rolls back on real hook-runner init mid failure when runner is not yet created", () => {
+    resetGlobalHookRunner();
+    const livePlugin = writeCapturingPlugin({ id: "linkbrain" });
+    const priorRegistry = loadWithMachineTokenPlugins({
+      plugins: [
+        {
+          id: "linkbrain",
+          path: livePlugin.dir,
+          bindingId: "linkbrain-stage",
+          clientId: "brain-live",
+          keyId: BRAIN_KEY,
+        },
+      ],
+    });
+    const liveHandle = getLiveMachineTokenFacadeGenerationHandle("linkbrain");
+    const liveFacade = facadeStore().linkbrain;
+    const priorSnapshot = getActiveCombinedPluginRuntimeSnapshotIdentity();
+    const baseline = countMachineTokenFacadeGenerations();
+
+    // Drop the runner so the next initializeGlobalHookRunner hits the mid point.
+    resetGlobalHookRunner();
+    setGlobalHookRunnerInitFailureInjectorForTest((injectPoint) => {
+      if (injectPoint === "mid") {
+        setGlobalHookRunnerInitFailureInjectorForTest(null);
+        throw new Error("injected hook-init mid failure");
+      }
+    });
+    const replacement = writeCapturingPlugin({ id: "linkbrain" });
+    expect(() =>
+      loadWithMachineTokenPlugins({
+        plugins: [
+          {
+            id: "linkbrain",
+            path: replacement.dir,
+            bindingId: "linkbrain-stage",
+            clientId: "brain-v2",
+            keyId: BRAIN_KEY,
+          },
+        ],
+      }),
+    ).toThrow(/injected hook-init mid failure/);
+
+    expect(getActivePluginRegistry()).toBe(priorRegistry);
+    expect(getLiveMachineTokenFacadeGenerationHandle("linkbrain")?.generationId).toBe(
+      liveHandle?.generationId,
+    );
+    expect(liveFacade?.health("linkbrain-stage").registered).toBe(true);
+    expect(getActiveCombinedPluginRuntimeSnapshotIdentity()).toEqual(priorSnapshot);
+    expect(countMachineTokenFacadeGenerations()).toEqual(baseline);
+  });
+});
+
+describe("loadOpenClawPlugins setup/channel lifecycle machine-token baselines", () => {
+  afterEach(() => {
+    setPluginLoadActivationFailureInjectorForTest(null);
+    setCombinedPluginRuntimeActivationFailureInjectorForTest(null);
+    setGlobalHookRunnerInitFailureInjectorForTest(null);
+    resetActiveCombinedPluginRuntimeSnapshotIdentityForTest();
+    resetActivatingPluginLoadLockForTest();
+    unregisterMachineTokenFacadesForPlugin("linkbrain");
+    unregisterMachineTokenFacadesForPlugin("wave8-b");
+    clearFacadeStore();
+    clearPluginLoaderCache();
+    resetPluginLoaderTestStateForTest();
+    cleanupPluginLoaderFixturesForTest();
+    delete process.env[BRAIN_KEY];
+    delete process.env[SKILLS_KEY];
+    delete process.env[MCP_KEY];
+    delete (globalThis as Record<string, unknown>)[NESTED_LOAD_HOOK_KEY];
+    delete (globalThis as Record<string, unknown>)[NESTED_LOAD_ERROR_KEY];
+  });
+
+  it("keeps machine-token generation counts at baseline for setup-only success", () => {
+    const built = createSetupEntryChannelPluginFixture({
+      id: "wave9-setup-only-mt",
+      label: "Wave9 Setup Only MT",
+      packageName: "@openclaw/wave9-setup-only-mt",
+      fullBlurb: "full entry must not run in setup-only mode",
+      setupBlurb: "setup-only baseline",
+      configured: false,
+      useBundledSetupEntryContract: true,
+    });
+    const baseline = countMachineTokenFacadeGenerations();
+
+    const registry = loadOpenClawPlugins({
+      cache: false,
+      config: {
+        plugins: {
+          load: { paths: [built.pluginDir] },
+          allow: ["wave9-setup-only-mt"],
+          entries: {
+            "wave9-setup-only-mt": { enabled: false },
+          },
+        },
+      },
+      includeSetupOnlyChannelPlugins: true,
+      onlyPluginIds: ["wave9-setup-only-mt"],
+    });
+
+    // Disabled + setup-only scoped load must not stage production MT facades.
+    expect(registry.plugins.find((plugin) => plugin.id === "wave9-setup-only-mt")).toBeDefined();
+    expect(countMachineTokenFacadeGenerations()).toEqual(baseline);
+    expect(getLiveMachineTokenFacadeGenerationHandle("wave9-setup-only-mt")).toBeUndefined();
+  });
+
+  it("keeps machine-token generation counts at baseline when setup load throws sync", () => {
+    const built = createSetupEntryChannelPluginFixture({
+      id: "wave9-setup-throw-mt",
+      label: "Wave9 Setup Throw MT",
+      packageName: "@openclaw/wave9-setup-throw-mt",
+      fullBlurb: "full entry unused",
+      setupBlurb: "setup throw baseline",
+      configured: true,
+      startupDeferConfiguredChannelFullLoadUntilAfterListen: true,
+      useBundledSetupEntryContract: true,
+      bundledSetupRuntimeRoutePath: "/wave9-setup-throw",
+      bundledSetupRuntimeRegisterError: "wave9 intentional setup-runtime registrar throw",
+    });
+    const baseline = countMachineTokenFacadeGenerations();
+
+    const registry = loadOpenClawPlugins({
+      cache: false,
+      preferSetupRuntimeForChannelPlugins: true,
+      config: {
+        channels: {
+          "wave9-setup-throw-mt": {
+            enabled: true,
+            token: "configured",
+          },
+        },
+        plugins: {
+          load: { paths: [built.pluginDir] },
+          allow: ["wave9-setup-throw-mt"],
+        },
+      },
+    });
+
+    expect(registry.plugins.find((entry) => entry.id === "wave9-setup-throw-mt")?.status).toBe(
+      "error",
+    );
+    expect(registry.plugins.find((entry) => entry.id === "wave9-setup-throw-mt")?.error).toContain(
+      "wave9 intentional setup-runtime registrar throw",
+    );
+    expect(countMachineTokenFacadeGenerations()).toEqual(baseline);
+    expect(getLiveMachineTokenFacadeGenerationHandle("wave9-setup-throw-mt")).toBeUndefined();
+  });
+
+  it("rejects nested activating setup load during full machine-token register", () => {
+    const built = createSetupEntryChannelPluginFixture({
+      id: "wave9-setup-nested-mt",
+      label: "Wave9 Setup Nested MT",
+      packageName: "@openclaw/wave9-setup-nested-mt",
+      fullBlurb: "full unused during nested setup",
+      setupBlurb: "nested setup overlap",
+      configured: false,
+      useBundledSetupEntryContract: true,
+    });
+    const setupConfig = {
+      plugins: {
+        load: { paths: [built.pluginDir] },
+        allow: ["wave9-setup-nested-mt"],
+        entries: {
+          "wave9-setup-nested-mt": { enabled: false },
+        },
+      },
+    };
+    (globalThis as Record<string, unknown>)[NESTED_LOAD_HOOK_KEY] = () => {
+      loadOpenClawPlugins({
+        cache: false,
+        activate: true,
+        config: setupConfig,
+        includeSetupOnlyChannelPlugins: true,
+        forceSetupOnlyChannelPlugins: true,
+        onlyPluginIds: ["wave9-setup-nested-mt"],
+      });
+    };
+    const nested = writeCapturingPlugin({
+      id: "linkbrain",
+      nestedLoadDuringRegister: true,
+    });
+
+    loadWithMachineTokenPlugins({
+      plugins: [
+        {
+          id: "linkbrain",
+          path: nested.dir,
+          bindingId: "linkbrain-stage",
+          clientId: "brain-live",
+          keyId: BRAIN_KEY,
+        },
+      ],
+    });
+
+    const nestedError = (globalThis as Record<string, unknown>)[NESTED_LOAD_ERROR_KEY];
+    expect(nestedError).toBeInstanceOf(PluginActivatingLoadConflictError);
+    expect(getLiveMachineTokenFacadeGenerationHandle("linkbrain")).toBeDefined();
+    expect(getLiveMachineTokenFacadeGenerationHandle("wave9-setup-nested-mt")).toBeUndefined();
+  });
+
+  it("documents that activate:false setup loads may nest without activating-load conflict", () => {
+    // Non-activating snapshot loads do not take the activating lock, so a
+    // nested setup-only probe during full MT register is allowed. Production
+    // callers that need isolation must use activate:true (covered above).
+    const built = createSetupEntryChannelPluginFixture({
+      id: "wave9-setup-inactive-mt",
+      label: "Wave9 Setup Inactive MT",
+      packageName: "@openclaw/wave9-setup-inactive-mt",
+      fullBlurb: "full unused",
+      setupBlurb: "inactive nested setup",
+      configured: false,
+      useBundledSetupEntryContract: true,
+    });
+    const baselineBeforeNested = { current: null as ReturnType<
+      typeof countMachineTokenFacadeGenerations
+    > | null };
+    (globalThis as Record<string, unknown>)[NESTED_LOAD_HOOK_KEY] = () => {
+      baselineBeforeNested.current = countMachineTokenFacadeGenerations();
+      loadOpenClawPlugins({
+        cache: false,
+        activate: false,
+        config: {
+          plugins: {
+            load: { paths: [built.pluginDir] },
+            allow: ["wave9-setup-inactive-mt"],
+            entries: {
+              "wave9-setup-inactive-mt": { enabled: false },
+            },
+          },
+        },
+        includeSetupOnlyChannelPlugins: true,
+        forceSetupOnlyChannelPlugins: true,
+        onlyPluginIds: ["wave9-setup-inactive-mt"],
+      });
+      (globalThis as Record<string, unknown>)[NESTED_LOAD_ERROR_KEY] = null;
+    };
+    const nested = writeCapturingPlugin({
+      id: "linkbrain",
+      nestedLoadDuringRegister: true,
+    });
+
+    loadWithMachineTokenPlugins({
+      plugins: [
+        {
+          id: "linkbrain",
+          path: nested.dir,
+          bindingId: "linkbrain-stage",
+          clientId: "brain-live",
+          keyId: BRAIN_KEY,
+        },
+      ],
+    });
+
+    expect((globalThis as Record<string, unknown>)[NESTED_LOAD_ERROR_KEY]).toBeNull();
+    expect(baselineBeforeNested.current).not.toBeNull();
+    expect(getLiveMachineTokenFacadeGenerationHandle("linkbrain")).toBeDefined();
+    expect(getLiveMachineTokenFacadeGenerationHandle("wave9-setup-inactive-mt")).toBeUndefined();
   });
 });

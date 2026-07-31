@@ -4,11 +4,16 @@ import type { PluginProcessGlobalState } from "./plugin-registration-transaction
 import type { PluginRegistry } from "./registry-types.js";
 
 export type CachedPluginState = {
+  /**
+   * Materialized registry from a prior load. Wave 9: activating loads must not
+   * reactivate this object unless it is already the healthy active combined
+   * snapshot — plugin closures may capture retired facades.
+   */
   registry: PluginRegistry;
   processGlobalState: PluginProcessGlobalState;
   /**
    * Immutable MT ownership descriptors required to reconstruct matching live
-   * generations on cache-hit activation. Never stores live handles.
+   * generations on rematerialize. Never stores live handles.
    */
   machineTokenOwnership: MachineTokenOwnershipBlueprint;
 };
