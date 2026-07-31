@@ -80,3 +80,16 @@ Did not edit shared Wave 10 checkout or `issue/ocp-lisa-ops01`.
 - [ ] Confirm agents_wait still Swarm/collector-only
 - [ ] Confirm live Lisa paths untouched
 - [ ] After Wave 10 merges: rebase this branch, re-run focused + any combined Lisa ops tests
+
+## Amendment — 2026-07-31 15:25 CST
+
+**What was wrong / incomplete:** Handoff did not record the parallel explore recommendation that preferred extending `agents_wait` and avoiding a new `sessions_wait` tool.
+
+**Corrected decision:** Keep shipped `sessions_wait`. Explore ([Explore ACP wait](068a4f36-419a-4874-b555-2e482ef81df8)) correctly mapped registry/`endedAt`/settle-wake facts and confirmed no plugin-sdk/auth/MCP/PR #38 stop. Its preferred API (widen `agents_wait` + expose outside swarm) was rejected for this branch because:
+
+1. `agents_wait` remains Swarm/collector-only — ACP stays `not_found` there (regression covered).
+2. Cron parents must not be forced to enable `tools.swarm` just to wait on ACP.
+3. Catalog/profile blast radius for `sessions_wait` is already paid and tested on `3e2abe20a42`.
+4. Functional contract matches Option A (park on `onSubagentRegistryPersisted`, no yield/poll, terminal `endedAt` outcomes, exactly-once observation receipt).
+
+**Who corrected:** Cursor Local Feature agent after explore completion. Evidence: explore report + existing branch SHA `3e2abe20a421b7efd74ed1bd0d3c95f710bb733c`. No code rewrite required.
