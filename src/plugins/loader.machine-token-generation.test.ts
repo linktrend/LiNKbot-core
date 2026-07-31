@@ -1,7 +1,8 @@
 /**
- * Wave 6/7 — real loadOpenClawPlugins transaction proofs for machine-token
- * facade staging, combined ownership commit, removal/disable reconciliation,
- * activating-load serialization, and activation-failure rollback.
+ * Wave 6/7/8 — real loadOpenClawPlugins transaction proofs for machine-token
+ * facade staging, combined ownership commit, cache-hit reconstruct, removal/
+ * disable reconciliation, activating-load serialization, and activation-failure
+ * rollback (including mid-commit after-registry-before-mt).
  */
 import { afterEach, describe, expect, it } from "vitest";
 import {
@@ -13,6 +14,14 @@ import {
 import type { MachineTokenPluginFacade } from "../agents/machine-token-types.js";
 import type { OpenClawConfig } from "../config/types.openclaw.js";
 import {
+  getActiveCombinedPluginRuntimeSnapshotIdentity,
+  PluginActivatingLoadConflictError,
+  resetActivatingPluginLoadLockForTest,
+  resetActiveCombinedPluginRuntimeSnapshotIdentityForTest,
+  setCombinedPluginRuntimeActivationFailureInjectorForTest,
+  setPluginLoadActivationFailureInjectorForTest,
+} from "./loader.js";
+import {
   cleanupPluginLoaderFixturesForTest,
   clearPluginLoaderCache,
   loadOpenClawPlugins,
@@ -20,17 +29,14 @@ import {
   resetPluginLoaderTestStateForTest,
   writePlugin,
 } from "./loader.test-fixtures.js";
-import {
-  PluginActivatingLoadConflictError,
-  resetActivatingPluginLoadLockForTest,
-  setPluginLoadActivationFailureInjectorForTest,
-} from "./loader.js";
 import { createPluginRegistry } from "./registry.js";
+import { getActivePluginRegistry } from "./runtime.js";
 import type { PluginRuntime } from "./runtime/types.js";
 import { createPluginRecord } from "./status.test-fixtures.js";
 
 const BRAIN_KEY = "LINKTREND_TEST_WAVE7_BRAIN_ASSERTION_PEM";
 const SKILLS_KEY = "LINKTREND_TEST_WAVE7_SKILLS_ASSERTION_PEM";
+const MCP_KEY = "LINKTREND_TEST_WAVE8_MCP_ASSERTION_PEM";
 const FACADE_STORE_KEY = "__openclawWave7MachineTokenFacades";
 const NESTED_LOAD_HOOK_KEY = "__wave7NestedActivatingLoad";
 const NESTED_LOAD_ERROR_KEY = "__wave7NestedLoadError";
@@ -133,6 +139,40 @@ function writePlainPlugin(id: string) {
   });
 }
 
+function mcpMachineTokenServer(params: {
+  bindingId: string;
+  clientId: string;
+  keyId: string;
+}): Record<string, unknown> {
+  return {
+    url: "https://mcp.example.test/mcp",
+    auth: "machine_token",
+    machineToken: {
+      bindingId: params.bindingId,
+      issuerUrl: "https://issuer.example.test",
+      clientId: params.clientId,
+      clientAssertionKeyRef: {
+        source: "env",
+        provider: "default",
+        id: params.keyId,
+      },
+    },
+  };
+}
+
+function sharedLoaderEnv(stateDir?: string): NodeJS.ProcessEnv {
+  process.env[BRAIN_KEY] = "test-pem-brain";
+  process.env[SKILLS_KEY] = "test-pem-skills";
+  process.env[MCP_KEY] = "test-pem-mcp";
+  return {
+    OPENCLAW_STATE_DIR: stateDir ?? makeTempDir(),
+    OPENCLAW_DISABLE_BUNDLED_PLUGINS: "1",
+    [BRAIN_KEY]: "test-pem-brain",
+    [SKILLS_KEY]: "test-pem-skills",
+    [MCP_KEY]: "test-pem-mcp",
+  };
+}
+
 function loadWithMachineTokenPlugins(params: {
   plugins: Array<{
     id: string;
@@ -145,11 +185,14 @@ function loadWithMachineTokenPlugins(params: {
   }>;
   throwOnLoadError?: boolean;
   activate?: boolean;
+  cache?: boolean;
   onlyPluginIds?: string[];
   paths?: string[];
+  /** Shared state dir so cache keys stay stable across loads. */
+  stateDir?: string;
+  env?: NodeJS.ProcessEnv;
+  mcpServers?: Record<string, Record<string, unknown>>;
 }) {
-  process.env[BRAIN_KEY] = "test-pem-brain";
-  process.env[SKILLS_KEY] = "test-pem-skills";
   const entries: Record<string, { enabled: boolean; config?: Record<string, unknown> }> = {};
   for (const plugin of params.plugins) {
     const includeToken = plugin.includeMachineToken !== false && plugin.bindingId && plugin.keyId;
@@ -167,11 +210,12 @@ function loadWithMachineTokenPlugins(params: {
     };
   }
   return loadOpenClawPlugins({
-    cache: false,
+    cache: params.cache === true,
     activate: params.activate !== false,
     throwOnLoadError: params.throwOnLoadError,
     ...(params.onlyPluginIds ? { onlyPluginIds: params.onlyPluginIds } : {}),
     config: {
+      ...(params.mcpServers ? { mcp: { servers: params.mcpServers } } : {}),
       plugins: {
         enabled: true,
         load: {
@@ -180,30 +224,29 @@ function loadWithMachineTokenPlugins(params: {
         entries,
       },
     },
-    env: {
-      OPENCLAW_STATE_DIR: makeTempDir(),
-      OPENCLAW_DISABLE_BUNDLED_PLUGINS: "1",
-      [BRAIN_KEY]: "test-pem-brain",
-      [SKILLS_KEY]: "test-pem-skills",
-    },
+    env: params.env ?? sharedLoaderEnv(params.stateDir),
   });
 }
 
 describe("loadOpenClawPlugins machine-token generation transaction", () => {
   afterEach(() => {
     setPluginLoadActivationFailureInjectorForTest(null);
+    setCombinedPluginRuntimeActivationFailureInjectorForTest(null);
+    resetActiveCombinedPluginRuntimeSnapshotIdentityForTest();
     resetActivatingPluginLoadLockForTest();
     unregisterMachineTokenFacadesForPlugin("linkbrain");
     unregisterMachineTokenFacadesForPlugin("linkskills");
     unregisterMachineTokenFacadesForPlugin("wave6-ok");
     unregisterMachineTokenFacadesForPlugin("wave6-fail");
     unregisterMachineTokenFacadesForPlugin("wave7-other");
+    unregisterMachineTokenFacadesForPlugin("wave8-b");
     clearFacadeStore();
     clearPluginLoaderCache();
     resetPluginLoaderTestStateForTest();
     cleanupPluginLoaderFixturesForTest();
     delete process.env[BRAIN_KEY];
     delete process.env[SKILLS_KEY];
+    delete process.env[MCP_KEY];
     delete (globalThis as Record<string, unknown>)[NESTED_LOAD_HOOK_KEY];
     delete (globalThis as Record<string, unknown>)[NESTED_LOAD_ERROR_KEY];
   });
@@ -540,11 +583,7 @@ describe("loadOpenClawPlugins machine-token generation transaction", () => {
 
   it("rejects same-cache-key reentrant activating loads", () => {
     const plugin = writeCapturingPlugin({ id: "linkbrain" });
-    const env = {
-      OPENCLAW_STATE_DIR: makeTempDir(),
-      OPENCLAW_DISABLE_BUNDLED_PLUGINS: "1",
-      [BRAIN_KEY]: "test-pem-brain",
-    };
+    const env = sharedLoaderEnv();
     const config = {
       plugins: {
         enabled: true,
@@ -566,8 +605,18 @@ describe("loadOpenClawPlugins machine-token generation transaction", () => {
     // activating-load conflict test above.
     const first = loadOpenClawPlugins({ cache: true, config, env });
     const before = countMachineTokenFacadeGenerations();
+    const liveHandle = getLiveMachineTokenFacadeGenerationHandle("linkbrain");
+    const snapshotIdentity = getActiveCombinedPluginRuntimeSnapshotIdentity();
+    expect(snapshotIdentity).not.toBeNull();
+    expect(getActivePluginRegistry()).toBe(first);
+
     const second = loadOpenClawPlugins({ cache: true, config, env });
     expect(second).toBe(first);
+    expect(getActivePluginRegistry()).toBe(first);
+    expect(getLiveMachineTokenFacadeGenerationHandle("linkbrain")?.generationId).toBe(
+      liveHandle?.generationId,
+    );
+    expect(getActiveCombinedPluginRuntimeSnapshotIdentity()).toEqual(snapshotIdentity);
     expect(countMachineTokenFacadeGenerations()).toEqual(before);
   });
 
@@ -684,5 +733,307 @@ describe("loadOpenClawPlugins machine-token generation transaction", () => {
       skillsHandle?.generationId,
     );
     expect(facadeStore().linkskills?.health("linkskills-stage").registered).toBe(true);
+  });
+
+  it("reconstructs A facade generations on A→B→cached-A with zero mixed state", async () => {
+    const stateDir = makeTempDir();
+    const env = sharedLoaderEnv(stateDir);
+    const pluginA = writeCapturingPlugin({ id: "linkbrain" });
+    const pluginB = writeCapturingPlugin({ id: "wave8-b" });
+    const configA = {
+      plugins: {
+        enabled: true,
+        load: { paths: [pluginA.dir] },
+        entries: {
+          linkbrain: {
+            enabled: true,
+            config: machineTokenEntryConfig({
+              bindingId: "linkbrain-stage",
+              clientId: "brain-a",
+              keyId: BRAIN_KEY,
+            }),
+          },
+        },
+      },
+    };
+    const configB = {
+      plugins: {
+        enabled: true,
+        load: { paths: [pluginB.dir] },
+        entries: {
+          "wave8-b": {
+            enabled: true,
+            config: machineTokenEntryConfig({
+              bindingId: "wave8-b-stage",
+              clientId: "b-client",
+              keyId: SKILLS_KEY,
+            }),
+          },
+        },
+      },
+    };
+
+    const registryA = loadOpenClawPlugins({ cache: true, config: configA, env });
+    const genA = getLiveMachineTokenFacadeGenerationHandle("linkbrain")?.generationId;
+    const facadeA = facadeStore().linkbrain;
+    const snapshotA = getActiveCombinedPluginRuntimeSnapshotIdentity();
+    expect(genA).toBeDefined();
+    expect(snapshotA).not.toBeNull();
+    expect(getActivePluginRegistry()).toBe(registryA);
+    expect(facadeA?.health("linkbrain-stage").registered).toBe(true);
+
+    const registryB = loadOpenClawPlugins({ cache: true, config: configB, env });
+    expect(registryB).not.toBe(registryA);
+    const genB = getLiveMachineTokenFacadeGenerationHandle("wave8-b")?.generationId;
+    const facadeB = facadeStore()["wave8-b"];
+    expect(genB).toBeDefined();
+    expect(getLiveMachineTokenFacadeGenerationHandle("linkbrain")).toBeUndefined();
+    expect(facadeA?.health("linkbrain-stage").registered).toBe(false);
+    expect(getActivePluginRegistry()).toBe(registryB);
+
+    const registryACached = loadOpenClawPlugins({ cache: true, config: configA, env });
+    expect(registryACached).toBe(registryA);
+    expect(getActivePluginRegistry()).toBe(registryA);
+
+    const liveAAfter = getLiveMachineTokenFacadeGenerationHandle("linkbrain");
+    expect(liveAAfter).toBeDefined();
+    expect(liveAAfter?.generationId).not.toBe(genA);
+    expect(liveAAfter?.generationId).not.toBe(genB);
+    expect(getLiveMachineTokenFacadeGenerationHandle("wave8-b")).toBeUndefined();
+    expect(facadeB?.health("wave8-b-stage").registered).toBe(false);
+    expect(facadeA?.health("linkbrain-stage").registered).toBe(false);
+    await expect(facadeA!.acquire({ bindingId: "linkbrain-stage" })).rejects.toThrow(
+      /unregistered/,
+    );
+    await expect(facadeB!.acquire({ bindingId: "wave8-b-stage" })).rejects.toThrow(/unregistered/);
+
+    // Cache-hit reconstruct publishes a new host-owned live generation for A.
+    // Register does not re-run, so the plugin-captured facade stays retired;
+    // live ownership is proven via the handle + snapshot identity + clean counts.
+    expect(listLiveMachineTokenFacadePluginIds()).toEqual(["linkbrain"]);
+    expect(countMachineTokenFacadeGenerations()).toEqual({
+      candidate: 0,
+      live: 1,
+      total: 1,
+    });
+    expect(getActiveCombinedPluginRuntimeSnapshotIdentity()).toEqual(snapshotA);
+    expect(getActiveCombinedPluginRuntimeSnapshotIdentity()?.cacheKey).toBe(snapshotA?.cacheKey);
+  });
+
+  it("rolls back after-registry-before-mt activation failure without retiring prior facades", () => {
+    const livePlugin = writeCapturingPlugin({ id: "linkbrain" });
+    const priorRegistry = loadWithMachineTokenPlugins({
+      plugins: [
+        {
+          id: "linkbrain",
+          path: livePlugin.dir,
+          bindingId: "linkbrain-stage",
+          clientId: "brain-live",
+          keyId: BRAIN_KEY,
+        },
+      ],
+    });
+    const liveHandle = getLiveMachineTokenFacadeGenerationHandle("linkbrain");
+    const liveFacade = facadeStore().linkbrain;
+    const priorSnapshot = getActiveCombinedPluginRuntimeSnapshotIdentity();
+    const baseline = countMachineTokenFacadeGenerations();
+
+    setPluginLoadActivationFailureInjectorForTest((phase) => {
+      if (phase === "after-registry-before-mt") {
+        throw new Error("injected after-registry-before-mt failure");
+      }
+    });
+    const replacement = writeCapturingPlugin({ id: "linkbrain" });
+    expect(() =>
+      loadWithMachineTokenPlugins({
+        plugins: [
+          {
+            id: "linkbrain",
+            path: replacement.dir,
+            bindingId: "linkbrain-stage",
+            clientId: "brain-v2",
+            keyId: BRAIN_KEY,
+          },
+        ],
+      }),
+    ).toThrow(/injected after-registry-before-mt failure/);
+
+    expect(getActivePluginRegistry()).toBe(priorRegistry);
+    expect(getLiveMachineTokenFacadeGenerationHandle("linkbrain")?.generationId).toBe(
+      liveHandle?.generationId,
+    );
+    expect(liveFacade?.health("linkbrain-stage").registered).toBe(true);
+    expect(getActiveCombinedPluginRuntimeSnapshotIdentity()).toEqual(priorSnapshot);
+    expect(countMachineTokenFacadeGenerations()).toEqual(baseline);
+  });
+
+  it("retires only the removed binding when one of multiple bindings is dropped", async () => {
+    const brain = writeCapturingPlugin({ id: "linkbrain" });
+    const skills = writeCapturingPlugin({ id: "linkskills" });
+    const pluginBinding = "linkbrain-plugin-stage";
+    const mcpBinding = "linkbrain-mcp-stage";
+    const mcpServers = {
+      linkbrain: mcpMachineTokenServer({
+        bindingId: mcpBinding,
+        clientId: "brain-mcp",
+        keyId: MCP_KEY,
+      }),
+    };
+
+    loadWithMachineTokenPlugins({
+      plugins: [
+        {
+          id: "linkbrain",
+          path: brain.dir,
+          bindingId: pluginBinding,
+          clientId: "brain-plugin",
+          keyId: BRAIN_KEY,
+        },
+        {
+          id: "linkskills",
+          path: skills.dir,
+          bindingId: "linkskills-stage",
+          clientId: "skills-live",
+          keyId: SKILLS_KEY,
+        },
+      ],
+      mcpServers,
+    });
+    const bothFacade = facadeStore().linkbrain;
+    const skillsHandle = getLiveMachineTokenFacadeGenerationHandle("linkskills");
+    expect(bothFacade?.grantedBindingIds.has(pluginBinding)).toBe(true);
+    expect(bothFacade?.grantedBindingIds.has(mcpBinding)).toBe(true);
+    expect(bothFacade?.health(pluginBinding).registered).toBe(true);
+    expect(bothFacade?.health(mcpBinding).registered).toBe(true);
+
+    // Drop the MCP binding; retain pluginConfig.machineToken. Scope to
+    // linkbrain so unrelated linkskills stays on its prior live generation.
+    loadWithMachineTokenPlugins({
+      onlyPluginIds: ["linkbrain"],
+      plugins: [
+        {
+          id: "linkbrain",
+          path: brain.dir,
+          bindingId: pluginBinding,
+          clientId: "brain-plugin",
+          keyId: BRAIN_KEY,
+        },
+      ],
+    });
+
+    expect(bothFacade?.health(pluginBinding).registered).toBe(false);
+    await expect(bothFacade!.acquire({ bindingId: pluginBinding })).rejects.toThrow(/unregistered/);
+    await expect(bothFacade!.acquire({ bindingId: mcpBinding })).rejects.toThrow(/unregistered/);
+
+    const retainedFacade = facadeStore().linkbrain;
+    expect(retainedFacade).toBeDefined();
+    expect(retainedFacade?.grantedBindingIds.has(pluginBinding)).toBe(true);
+    expect(retainedFacade?.grantedBindingIds.has(mcpBinding)).toBe(false);
+    expect(retainedFacade?.health(pluginBinding).registered).toBe(true);
+    await expect(retainedFacade!.acquire({ bindingId: mcpBinding })).rejects.toThrow(
+      /not granted machine-token binding/,
+    );
+    expect(getLiveMachineTokenFacadeGenerationHandle("linkskills")?.generationId).toBe(
+      skillsHandle?.generationId,
+    );
+    expect(facadeStore().linkskills?.health("linkskills-stage").registered).toBe(true);
+  });
+
+  it("rejects nested cache-hit activating loads while a fresh load holds the lock", () => {
+    const stateDir = makeTempDir();
+    const env = sharedLoaderEnv(stateDir);
+    const cachedA = writeCapturingPlugin({ id: "linkbrain" });
+    const configA = {
+      plugins: {
+        enabled: true,
+        load: { paths: [cachedA.dir] },
+        entries: {
+          linkbrain: {
+            enabled: true,
+            config: machineTokenEntryConfig({
+              bindingId: "linkbrain-stage",
+              clientId: "brain-cached",
+              keyId: BRAIN_KEY,
+            }),
+          },
+        },
+      },
+    };
+    // Populate cache for A, then leave B as the active registry so a nested
+    // cache-hit of A must take the activating lock and conflict.
+    loadOpenClawPlugins({ cache: true, config: configA, env });
+    const other = writeCapturingPlugin({
+      id: "wave8-b",
+      nestedLoadDuringRegister: true,
+    });
+    (globalThis as Record<string, unknown>)[NESTED_LOAD_HOOK_KEY] = () => {
+      loadOpenClawPlugins({ cache: true, config: configA, env });
+    };
+
+    loadWithMachineTokenPlugins({
+      stateDir,
+      env,
+      plugins: [
+        {
+          id: "wave8-b",
+          path: other.dir,
+          bindingId: "wave8-b-stage",
+          clientId: "b-nested",
+          keyId: SKILLS_KEY,
+        },
+      ],
+    });
+
+    const nestedError = (globalThis as Record<string, unknown>)[NESTED_LOAD_ERROR_KEY];
+    expect(nestedError).toBeInstanceOf(PluginActivatingLoadConflictError);
+    expect(getLiveMachineTokenFacadeGenerationHandle("wave8-b")).toBeDefined();
+    expect(getLiveMachineTokenFacadeGenerationHandle("linkbrain")).toBeUndefined();
+  });
+
+  it("documents cancel-after-commit as N/A for the sync loader (precommit failure leaves prior untouched)", () => {
+    // loadOpenClawPlugins has no AbortSignal option; commit is synchronous.
+    // Cancel-after-successful-commit cannot roll back a completed combined
+    // activation. Precommit failure coverage below proves prior stays live.
+    const livePlugin = writeCapturingPlugin({ id: "linkbrain" });
+    loadWithMachineTokenPlugins({
+      plugins: [
+        {
+          id: "linkbrain",
+          path: livePlugin.dir,
+          bindingId: "linkbrain-stage",
+          clientId: "brain-live",
+          keyId: BRAIN_KEY,
+        },
+      ],
+    });
+    const liveHandle = getLiveMachineTokenFacadeGenerationHandle("linkbrain");
+    const liveFacade = facadeStore().linkbrain;
+    const baseline = countMachineTokenFacadeGenerations();
+
+    setCombinedPluginRuntimeActivationFailureInjectorForTest((phase) => {
+      if (phase === "precommit") {
+        throw new Error("injected precommit cancel-equivalent failure");
+      }
+    });
+    const replacement = writeCapturingPlugin({ id: "linkbrain" });
+    expect(() =>
+      loadWithMachineTokenPlugins({
+        plugins: [
+          {
+            id: "linkbrain",
+            path: replacement.dir,
+            bindingId: "linkbrain-stage",
+            clientId: "brain-v2",
+            keyId: BRAIN_KEY,
+          },
+        ],
+      }),
+    ).toThrow(/injected precommit cancel-equivalent failure/);
+
+    expect(getLiveMachineTokenFacadeGenerationHandle("linkbrain")?.generationId).toBe(
+      liveHandle?.generationId,
+    );
+    expect(liveFacade?.health("linkbrain-stage").registered).toBe(true);
+    expect(countMachineTokenFacadeGenerations()).toEqual(baseline);
   });
 });
