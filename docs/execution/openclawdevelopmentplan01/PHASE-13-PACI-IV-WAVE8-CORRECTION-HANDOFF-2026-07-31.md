@@ -14,8 +14,8 @@
 | --- | --- |
 | Start HEAD (exact) | `2426067e81308992ee8b1506ed40b3d594b9ddb1` |
 | Tests-first commit (premature tip before implementation) | `66f4bf2be6daf8574dc696c0fa6bd5bbe821c9a0` |
-| Primary implementation commit | `a80d19fc871` |
-| Clean pushed tip | `5b0d3765a514fdcb3747cf21474bf50d476400b9` (docs tip may supersede — see final push) |
+| Primary implementation commit | `a80d19fc871455bb134843b4aa2ae32c1bd4a642` |
+| Clean pushed tip | exact `git rev-parse origin/issue/ocp-openclawdevelopmentplan01` after this push (must match local HEAD) |
 
 ## Lisa operations worktree (preserved)
 
@@ -90,3 +90,7 @@
 ## Exact next action
 
 Stop for independent OpenClaw Codex Phase-14 re-verification of the pushed Wave 8 HEAD.
+
+## Codex re-verify tip
+
+Exact clean origin-synced HEAD for Codex Phase-14 is whatever `git rev-parse origin/issue/ocp-openclawdevelopmentplan01` returns after this push (must match local HEAD). Primary implementation remains `a80d19fc871455bb134843b4aa2ae32c1bd4a642`.
