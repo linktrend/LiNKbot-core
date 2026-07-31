@@ -19,6 +19,12 @@ describe("openclaw-tools Swarm gating", () => {
     expect(toolNames({ ...base, config: { tools: { swarm: true } } })).toContain("agents_wait");
   });
 
+  it("always registers sessions_wait for owned ACP/subagent waits", () => {
+    const base = { agentSessionKey: "agent:main:cron:job:run:1" };
+    expect(toolNames(base)).toContain("sessions_wait");
+    expect(toolNames({ ...base, config: { tools: { swarm: true } } })).toContain("sessions_wait");
+  });
+
   it("uses the effective requester agent override for the agents_wait gate", () => {
     const base = {
       agentSessionKey: "agent:main:main",

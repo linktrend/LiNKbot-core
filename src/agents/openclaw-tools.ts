@@ -81,6 +81,7 @@ import { createSessionsSearchTool } from "./tools/sessions-search-tool.js";
 import { createSessionsSendTool } from "./tools/sessions-send-tool.js";
 import { createSessionsSpawnTool } from "./tools/sessions-spawn-tool.js";
 import { createSessionsTool } from "./tools/sessions-tool.js";
+import { createSessionsWaitTool } from "./tools/sessions-wait-tool.js";
 import { createSessionsYieldTool } from "./tools/sessions-yield-tool.js";
 import { createConfiguredSkillWorkshopTool } from "./tools/skill-workshop-tool-factory.js";
 import { createSubagentsTool } from "./tools/subagents-tool.js";
@@ -691,6 +692,10 @@ export function createOpenClawTools(
         ]
       : []),
     ...swarmToolGroups.agentsWait,
+    createSessionsWaitTool({
+      agentSessionKey: options?.agentSessionKey,
+      runSessionKey: options?.runSessionKey,
+    }),
     createSessionsYieldTool({
       sessionId: options?.sessionId,
       onBeforeYield:
