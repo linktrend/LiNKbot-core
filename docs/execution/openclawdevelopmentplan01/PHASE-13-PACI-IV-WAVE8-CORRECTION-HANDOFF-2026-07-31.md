@@ -15,7 +15,7 @@
 | Start HEAD (exact) | `2426067e81308992ee8b1506ed40b3d594b9ddb1` |
 | Tests-first commit (premature tip before implementation) | `66f4bf2be6daf8574dc696c0fa6bd5bbe821c9a0` |
 | Primary implementation commit | `a80d19fc871` |
-| Clean pushed tip | `a80d19fc871` (docs tip may supersede — see final push) |
+| Clean pushed tip | `bbc37b7a7f6f90a44c4fe0687e4e236b9e8f9750` (docs tip may supersede — see final push) |
 
 ## Lisa operations worktree (preserved)
 
