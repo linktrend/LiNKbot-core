@@ -11,4 +11,10 @@ export {
   resolveRuntimePluginRegistry,
 } from "./loader-runtime-registry.js";
 export { clearActivatedPluginRuntimeState, loadOpenClawPlugins } from "./loader-runtime-load.js";
+export {
+  isActivatingPluginLoadInFlight,
+  PluginActivatingLoadConflictError,
+  resetActivatingPluginLoadLockForTest,
+  setPluginLoadActivationFailureInjectorForTest,
+} from "./loader-runtime-load.js";
 export type { PluginLoadOptions } from "./loader-types.js";

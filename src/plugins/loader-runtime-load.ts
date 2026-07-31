@@ -1,4 +1,9 @@
+import { commitMachineTokenOwnershipSnapshot } from "../agents/machine-token-host.js";
 import type { GatewayRequestHandler } from "../gateway/server-methods/types.js";
+import {
+  beginActivatingPluginLoad,
+  finishActivatingPluginLoad,
+} from "./loader-activating-lock.js";
 import {
   getReusableCachedPluginRegistry,
   pluginLoaderCacheState,
@@ -33,20 +38,42 @@ import { createPluginIdScopeSet, normalizePluginIdScope } from "./plugin-scope.j
 import { createEmptyPluginRegistry } from "./registry-empty.js";
 import { createPluginRegistry, type PluginRegistry } from "./registry.js";
 
+/** Test-only: throw immediately before the live registry/MT ownership commit. */
+let activationFailureInjectorForTest: (() => void) | null = null;
+
+/**
+ * Test helper: inject a throw immediately before activatePluginRegistry +
+ * machine-token ownership commit. Does not mutate live ownership when it throws.
+ */
+export function setPluginLoadActivationFailureInjectorForTest(
+  injector: (() => void) | null,
+): void {
+  activationFailureInjectorForTest = injector;
+}
+
 export function loadOpenClawPlugins(options: PluginLoadOptions = {}): PluginRegistry {
   const requestedOnlyPluginIds = normalizePluginIdScope(options.onlyPluginIds);
   const requestedOnlyPluginIdSet = createPluginIdScopeSet(requestedOnlyPluginIds);
   if (requestedOnlyPluginIdSet && requestedOnlyPluginIdSet.size === 0) {
     const emptyRegistry = createEmptyPluginRegistry();
     if (options.activate !== false) {
-      clearActivatedPluginRuntimeState();
-      const runtimeSubagentMode = resolveRuntimeSubagentMode(options.runtimeOptions);
-      activatePluginRegistry(
-        emptyRegistry,
-        `empty-plugin-scope::${runtimeSubagentMode}::${options.workspaceDir ?? ""}`,
-        runtimeSubagentMode,
-        options.workspaceDir,
-      );
+      const emptyOwnerKey = `empty-plugin-scope::${options.workspaceDir ?? ""}`;
+      beginActivatingPluginLoad(emptyOwnerKey);
+      try {
+        activationFailureInjectorForTest?.();
+        clearActivatedPluginRuntimeState();
+        const runtimeSubagentMode = resolveRuntimeSubagentMode(options.runtimeOptions);
+        activatePluginRegistry(
+          emptyRegistry,
+          `empty-plugin-scope::${runtimeSubagentMode}::${options.workspaceDir ?? ""}`,
+          runtimeSubagentMode,
+          options.workspaceDir,
+        );
+        // Empty activating scope is a full ownership wipe for machine-token facades.
+        commitMachineTokenOwnershipSnapshot({ publish: [], reconcileScope: "full" });
+      } finally {
+        finishActivatingPluginLoad(emptyOwnerKey);
+      }
     }
     return emptyRegistry;
   }
@@ -77,7 +104,18 @@ export function loadOpenClawPlugins(options: PluginLoadOptions = {}): PluginRegi
     }
   }
 
-  pluginLoaderCacheState.beginLoad(context.cacheKey);
+  const activatingOwnerKey = context.shouldActivate ? context.cacheKey : null;
+  if (activatingOwnerKey) {
+    beginActivatingPluginLoad(activatingOwnerKey);
+  }
+  try {
+    pluginLoaderCacheState.beginLoad(context.cacheKey);
+  } catch (error) {
+    if (activatingOwnerKey) {
+      finishActivatingPluginLoad(activatingOwnerKey);
+    }
+    throw error;
+  }
   let registryBuilder: ReturnType<typeof createPluginRegistry> | undefined;
   const activatingLoadTransaction = context.shouldActivate
     ? createPluginRegistrationTransaction({
@@ -206,18 +244,21 @@ export function loadOpenClawPlugins(options: PluginLoadOptions = {}): PluginRegi
       );
     }
     if (context.shouldActivate) {
-      // Activation installs the new registry before initializing its hook runner. Commit the
-      // rollback first so an activation throw cannot restore old globals under the new registry.
-      // Publish staged machine-token generations at the same boundary so a later-plugin
-      // failure cannot retire live predecessors while the old registry is still active.
+      // Wave 7: fallible precommit injection runs before any live ownership swap.
+      // Registry activation precedes machine-token publication so an activation
+      // throw cannot retire predecessors. MT ownership then publishes staged
+      // generations and retires removed/disabled/binding-removed live facades.
+      activationFailureInjectorForTest?.();
       activatingLoadTransaction?.commit({ activate: true });
-      registryBuilder.publishPluginMachineTokenGenerations?.();
       activatePluginRegistry(
         registry,
         context.cacheKey,
         context.runtimeSubagentMode,
         options.workspaceDir,
       );
+      registryBuilder.commitPluginMachineTokenOwnershipSnapshot?.({
+        reconcileScope: onlyPluginIdSet ?? "full",
+      });
     }
     return registry;
   } catch (error) {
@@ -229,7 +270,15 @@ export function loadOpenClawPlugins(options: PluginLoadOptions = {}): PluginRegi
     throw error;
   } finally {
     pluginLoaderCacheState.finishLoad(context.cacheKey);
+    if (activatingOwnerKey) {
+      finishActivatingPluginLoad(activatingOwnerKey);
+    }
   }
 }
 
 export { clearActivatedPluginRuntimeState } from "./loader-shared.js";
+export {
+  isActivatingPluginLoadInFlight,
+  resetActivatingPluginLoadLockForTest,
+  PluginActivatingLoadConflictError,
+} from "./loader-activating-lock.js";

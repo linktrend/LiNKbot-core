@@ -33,6 +33,7 @@ export function createPluginRegistry(registryParams: PluginRegistryParams) {
     deactivatePluginSideEffectGuards,
     commitPluginSideEffectGuards,
     publishAllPluginMachineTokenGenerations,
+    commitMachineTokenOwnershipForRegistry,
     abandonPluginMachineTokenGenerations,
     abandonAllPluginMachineTokenGenerations,
   } = createPluginApiFactory(state, registrars, runtimeResolver);
@@ -53,8 +54,8 @@ export function createPluginRegistry(registryParams: PluginRegistryParams) {
    * Per-plugin side-effect commit. For machine-token facades, `activate: true`
    * publishes immediately — tests and manual callers may use this. The
    * production loader must **not** call activate during the candidate loop;
-   * it stages candidates and publishes via
-   * {@link publishPluginMachineTokenGenerations} at registry activation.
+   * it commits ownership via {@link commitPluginMachineTokenOwnershipSnapshot}
+   * only after activatePluginRegistry succeeds.
    */
   const commitPluginGlobalSideEffects = (pluginId: string, params?: { activate?: boolean }) => {
     const activate = params?.activate !== false && registryParams.activateGlobalSideEffects !== false;
@@ -69,6 +70,12 @@ export function createPluginRegistry(registryParams: PluginRegistryParams) {
     publishAllPluginMachineTokenGenerations();
   };
 
+  const commitPluginMachineTokenOwnershipSnapshot = (params: {
+    reconcileScope: "full" | ReadonlySet<string>;
+  }) => {
+    commitMachineTokenOwnershipForRegistry(params);
+  };
+
   const abandonPluginMachineTokenGenerationsForLoad = () => {
     abandonAllPluginMachineTokenGenerations();
   };
@@ -79,6 +86,7 @@ export function createPluginRegistry(registryParams: PluginRegistryParams) {
     rollbackPluginGlobalSideEffects,
     commitPluginGlobalSideEffects,
     publishPluginMachineTokenGenerations,
+    commitPluginMachineTokenOwnershipSnapshot,
     abandonPluginMachineTokenGenerations: abandonPluginMachineTokenGenerationsForLoad,
     pushDiagnostic: state.pushDiagnostic,
     registerTool: registrars.registerTool,

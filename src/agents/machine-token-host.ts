@@ -678,6 +678,44 @@ export function countMachineTokenFacadeGenerations(): {
 }
 
 /**
+ * Host/test helper: plugin ids that currently own a live facade generation.
+ */
+export function listLiveMachineTokenFacadePluginIds(): string[] {
+  return [...liveGenerationByPluginId.keys()].toSorted();
+}
+
+/**
+ * Commit the machine-token half of a combined runtime ownership snapshot.
+ *
+ * Publishes staged candidate handles, then retires any live generation that is
+ * outside the keep-set and inside the reconcile scope. Synchronous and
+ * intended to run only after the replacement plugin registry is activated so a
+ * failed activation cannot retire predecessors.
+ */
+export function commitMachineTokenOwnershipSnapshot(params: {
+  publish: readonly MachineTokenFacadeGenerationHandle[];
+  /**
+   * `"full"` retires every live generation not published in this commit.
+   * A set retires only plugin ids inside that scope (scoped onlyPluginIds loads).
+   */
+  reconcileScope: "full" | ReadonlySet<string>;
+}): void {
+  const keep = new Set<string>();
+  for (const handle of params.publish) {
+    keep.add(handle.pluginId);
+    publishMachineTokenFacadeGeneration(handle);
+  }
+  for (const pluginId of listLiveMachineTokenFacadePluginIds()) {
+    if (keep.has(pluginId)) {
+      continue;
+    }
+    if (params.reconcileScope === "full" || params.reconcileScope.has(pluginId)) {
+      unregisterMachineTokenFacadesForPlugin(pluginId);
+    }
+  }
+}
+
+/**
  * Collect full host-owned binding records the host may grant to a plugin from
  * pluginConfig.machineToken plus that plugin's managed MCP server machineToken
  * bindings. Incomplete blocks (missing issuer/client/keyRef) are omitted.

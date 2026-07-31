@@ -4,6 +4,8 @@ import {
   createMachineTokenFacadeGeneration,
   destroyMachineTokenFacadeGeneration,
   publishMachineTokenFacadeGeneration,
+  commitMachineTokenOwnershipSnapshot,
+  type MachineTokenFacadeGenerationHandle,
 } from "../agents/machine-token-host.js";
 import type { OpenClawConfig } from "../config/types.openclaw.js";
 import { resolveConfiguredSecretInputString } from "../gateway/resolve-configured-secret-input-string.js";
@@ -179,6 +181,40 @@ export function createPluginApiFactory(
     for (const pluginId of [...pluginSideEffectGuards.keys()].toSorted()) {
       commitPluginSideEffectGuards(pluginId);
     }
+  };
+
+  /**
+   * Collect exact staged (unpublished) generation handles owned by this
+   * registry builder for the combined ownership snapshot commit.
+   */
+  const collectStagedMachineTokenGenerationHandles = (): MachineTokenFacadeGenerationHandle[] => {
+    const handles: MachineTokenFacadeGenerationHandle[] = [];
+    for (const pluginId of [...pluginSideEffectGuards.keys()].toSorted()) {
+      const guards = pluginSideEffectGuards.get(pluginId);
+      if (!guards) {
+        continue;
+      }
+      for (const guard of guards) {
+        if (!guard.active || !guard.machineTokenGeneration) {
+          continue;
+        }
+        handles.push(guard.machineTokenGeneration);
+      }
+    }
+    return handles;
+  };
+
+  /**
+   * Publish staged generations and retire obsolete live generations according
+   * to reconcileScope. Call only after activatePluginRegistry succeeds.
+   */
+  const commitMachineTokenOwnershipForRegistry = (params: {
+    reconcileScope: "full" | ReadonlySet<string>;
+  }): void => {
+    commitMachineTokenOwnershipSnapshot({
+      publish: collectStagedMachineTokenGenerationHandles(),
+      reconcileScope: params.reconcileScope,
+    });
   };
 
   /**
@@ -515,6 +551,8 @@ export function createPluginApiFactory(
     deactivatePluginSideEffectGuards,
     commitPluginSideEffectGuards,
     publishAllPluginMachineTokenGenerations,
+    collectStagedMachineTokenGenerationHandles,
+    commitMachineTokenOwnershipForRegistry,
     abandonPluginMachineTokenGenerations,
     abandonAllPluginMachineTokenGenerations,
   };
