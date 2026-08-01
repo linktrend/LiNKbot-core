@@ -76,36 +76,62 @@ Personality files/
 
 `/Users/linktrend/.openclaw-lisa/openclaw.json`
 
-**Do not deploy:** `PERSONALITY_WORKFLOW.md`, `openclaw.json` (goes to state dir, not workspace).
+**Do not deploy:** `PERSONALITY_WORKFLOW.md`, `openclaw.json` (goes to state dir, not workspace), `*.test.ts`, or any other test files.
 
 ## Safe Deploy Workflow
 
-1. Edit and review files in `Personality files/`.
-2. Copy personality files to workspace (include `user/`, `agents/`, `soul/`, `tools/`, `memory/` subfolders):
+1. Edit and review files in `Personality files/` (and ops helpers under the openclaw_prime `linkbots/lisa/ops/` source when changed).
+2. Copy personality files to workspace (include `user/`, `agents/`, `soul/`, `tools/`, `memory/`, **`templates/`** subfolders):
 
 ```bash
-cp "/Users/linktrend/Documents/LiNKwork/Openclaw Lisa Prime/Personality files/"*.md \
-   "/Users/linktrend/.openclaw-lisa/workspace/"
-cp -R "/Users/linktrend/Documents/LiNKwork/Openclaw Lisa Prime/Personality files/user" \
-      "/Users/linktrend/Documents/LiNKwork/Openclaw Lisa Prime/Personality files/agents" \
-      "/Users/linktrend/Documents/LiNKwork/Openclaw Lisa Prime/Personality files/soul" \
-      "/Users/linktrend/Documents/LiNKwork/Openclaw Lisa Prime/Personality files/tools" \
-      "/Users/linktrend/Documents/LiNKwork/Openclaw Lisa Prime/Personality files/memory" \
-      "/Users/linktrend/.openclaw-lisa/workspace/"
+SRC_PERSONALITY="/Users/linktrend/Documents/LiNKwork/Openclaw Lisa Prime/Personality files"
+# Prefer openclaw_prime repo sources when deploying from issue/ocp-lisa-ops01:
+# SRC_PERSONALITY="/Users/linktrend/Projects/openclaw_prime/linkbots/lisa/Personality files"
+# SRC_OPS="/Users/linktrend/Projects/openclaw_prime/linkbots/lisa/ops"
+WS="/Users/linktrend/.openclaw-lisa/workspace"
+
+cp "$SRC_PERSONALITY/"*.md "$WS/"
+cp -R "$SRC_PERSONALITY/user" \
+      "$SRC_PERSONALITY/agents" \
+      "$SRC_PERSONALITY/soul" \
+      "$SRC_PERSONALITY/tools" \
+      "$SRC_PERSONALITY/memory" \
+      "$SRC_PERSONALITY/templates" \
+      "$WS/"
 ```
+
+3. Copy Lisa ops renderer into workspace `ops/` (do **not** copy `*.test.ts`):
+
+```bash
+SRC_OPS="${SRC_OPS:-/Users/linktrend/Projects/openclaw_prime/linkbots/lisa/ops}"
+mkdir -p "$WS/ops"
+cp "$SRC_OPS/render-template.ts" "$SRC_OPS/templates.ts" "$WS/ops/"
+# Optional helpers Lisa may exec later (still no test files):
+# cp "$SRC_OPS/main-approve-binding.ts" "$SRC_OPS/offline-recovery.ts" \
+#    "$SRC_OPS/repair-dispatcher.ts" "$SRC_OPS/ship-pull-contract.ts" \
+#    "$SRC_OPS/pipeline-status-cas.ts" "$WS/ops/"
+```
+
+After deploy, Lisa’s live render command (cwd = workspace) is:
+
+```bash
+node --experimental-strip-types ops/render-template.ts telegram-heartbeat <json-path>
+```
+
+Repository path `linkbots/lisa/ops/render-template.ts` is for source/tests only — never use it in live procedures.
 
 Note: `PERSONALITY_WORKFLOW.md` is a `.md` file at the root of the source folder but must **not** be deployed — it's an operator doc, not a Lisa file. If using a blanket `*.md` copy, delete it from the workspace copy afterward, or copy files explicitly instead of with a glob.
 
-3. Copy config when changed:
+4. Copy config when changed:
 
 ```bash
 cp "/Users/linktrend/Documents/LiNKwork/Openclaw Lisa Prime/Personality files/openclaw.json" \
    "/Users/linktrend/.openclaw-lisa/openclaw.json"
 ```
 
-4. Restart Lisa (`~/.openclaw-lisa/start-lisa.sh`).
+5. Restart Lisa (`~/.openclaw-lisa/start-lisa.sh`).
 
-5. Run `/context list` — verify injected sizes; no unexpected TRUNCATED on core files.
+6. Run `/context list` — verify injected sizes; no unexpected TRUNCATED on core files.
 
 ## After Deploy — Smoke Test
 

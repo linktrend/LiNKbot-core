@@ -11,4 +11,15 @@ export {
   resolveRuntimePluginRegistry,
 } from "./loader-runtime-registry.js";
 export { clearActivatedPluginRuntimeState, loadOpenClawPlugins } from "./loader-runtime-load.js";
+export {
+  isActivatingPluginLoadInFlight,
+  PluginActivatingLoadConflictError,
+  resetActivatingPluginLoadLockForTest,
+  setPluginLoadActivationFailureInjectorForTest,
+  getActiveCombinedPluginRuntimeSnapshotIdentity,
+  resetActiveCombinedPluginRuntimeSnapshotIdentityForTest,
+  setCombinedPluginRuntimeActivationFailureInjectorForTest,
+  canReuseActiveCombinedPluginRuntimeSnapshot,
+  setGlobalHookRunnerInitFailureInjectorForTest,
+} from "./loader-runtime-load.js";
 export type { PluginLoadOptions } from "./loader-types.js";

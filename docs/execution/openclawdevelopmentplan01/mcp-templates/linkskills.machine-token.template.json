@@ -1,0 +1,57 @@
+{
+  "_comment": "TEMPLATE ONLY — machine-token / client_credentials path for Skills MCP. No secret values. enabled=false. Never reuse Brain bindingId or SecretRef ids. Requires Platform PACI issuer + Principal live unlock.",
+  "mcp": {
+    "servers": {
+      "linkskills": {
+        "enabled": false,
+        "transport": "streamable-http",
+        "url": "https://skills.stage.example.invalid/mcp",
+        "connectionTimeoutMs": 5000,
+        "requestTimeoutMs": 20000,
+        "auth": "machine_token",
+        "machineToken": {
+          "bindingId": "linkskills-stage",
+          "issuerUrl": "https://auth.stage.linkplatform.linktrend.dev",
+          "clientId": "openclaw-lisa-skills-stage",
+          "scope": "lskills",
+          "clientAssertionKeyRef": {
+            "source": "env",
+            "provider": "default",
+            "id": "LINKTREND_LINKSKILLS_STAGE_PACI_CLIENT_ASSERTION_KEY"
+          }
+        },
+        "toolFilter": {
+          "include": [
+            "skills_search",
+            "skills_get",
+            "skills_list",
+            "skills_invoke",
+            "skills_telemetry_batch"
+          ]
+        }
+      }
+    }
+  },
+  "plugins": {
+    "entries": {
+      "linkskills": {
+        "enabled": false,
+        "config": {
+          "transportMode": "disabled",
+          "mcpServerName": "linkskills",
+          "machineToken": {
+            "bindingId": "linkskills-stage",
+            "issuerUrl": "https://auth.stage.linkplatform.linktrend.dev",
+            "clientId": "openclaw-lisa-skills-stage",
+            "scope": "lskills",
+            "clientAssertionKeyRef": {
+              "source": "env",
+              "provider": "default",
+              "id": "LINKTREND_LINKSKILLS_STAGE_PACI_CLIENT_ASSERTION_KEY"
+            }
+          }
+        }
+      }
+    }
+  }
+}

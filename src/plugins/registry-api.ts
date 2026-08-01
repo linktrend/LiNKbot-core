@@ -1,5 +1,15 @@
 import path from "node:path";
+import {
+  collectGrantedMachineTokenBindingRecords,
+  createMachineTokenFacadeGeneration,
+  destroyMachineTokenFacadeGeneration,
+  publishMachineTokenFacadeGeneration,
+  commitMachineTokenOwnershipSnapshot,
+  type HostMachineTokenBindingRecord,
+  type MachineTokenFacadeGenerationHandle,
+} from "../agents/machine-token-host.js";
 import type { OpenClawConfig } from "../config/types.openclaw.js";
+import { resolveConfiguredSecretInputString } from "../gateway/resolve-configured-secret-input-string.js";
 import { formatErrorMessage } from "../infra/errors.js";
 import { resolveUserPath } from "../utils.js";
 import { emitPluginAgentEvent } from "./agent-event-emission.js";
@@ -57,6 +67,8 @@ export function createPluginApiFactory(
     registerHttpRoute,
     registerHostedMediaResolver,
     registerMcpServerConnectionResolver,
+    registerMcpServerToolFilter,
+    unregisterMcpServerToolFilter,
     registerProvider,
     registerWorkerProvider,
     registerModelCatalogProvider,
@@ -111,13 +123,18 @@ export function createPluginApiFactory(
   const { resolvePluginRuntime, setPluginRuntimeRecord } = runtimeResolver;
 
   const createPluginSideEffectGuard = (pluginId: string): PluginSideEffectGuard => {
-    const guard = { active: true };
+    const guard: PluginSideEffectGuard = { active: true };
     const guards = pluginSideEffectGuards.get(pluginId) ?? new Set<PluginSideEffectGuard>();
     guards.add(guard);
     pluginSideEffectGuards.set(pluginId, guards);
     return guard;
   };
 
+  /**
+   * Registration failure / stop: destroy only generations owned by this plugin's
+   * guards. Does not blanket-kill an unrelated live generation that a failed
+   * candidate never replaced.
+   */
   const deactivatePluginSideEffectGuards = (pluginId: string): void => {
     const guards = pluginSideEffectGuards.get(pluginId);
     if (!guards) {
@@ -125,8 +142,138 @@ export function createPluginApiFactory(
     }
     for (const guard of guards) {
       guard.active = false;
+      const generation = guard.machineTokenGeneration;
+      if (generation) {
+        destroyMachineTokenFacadeGeneration(generation);
+        guard.machineTokenGeneration = undefined;
+      }
     }
     pluginSideEffectGuards.delete(pluginId);
+  };
+
+  /**
+   * Publish candidate generations owned by this plugin's active guards
+   * (retires only the prior live generation for that plugin).
+   *
+   * Production loader must call this only at the registry-activation boundary
+   * via {@link publishAllPluginMachineTokenGenerations}, not per-candidate.
+   */
+  const commitPluginSideEffectGuards = (pluginId: string): void => {
+    const guards = pluginSideEffectGuards.get(pluginId);
+    if (!guards) {
+      return;
+    }
+    for (const guard of guards) {
+      if (!guard.active) {
+        continue;
+      }
+      const generation = guard.machineTokenGeneration;
+      if (generation) {
+        publishMachineTokenFacadeGeneration(generation);
+      }
+    }
+  };
+
+  /**
+   * Publish every staged machine-token generation owned by this registry
+   * builder. Intended for the complete load-transaction activation boundary.
+   */
+  const publishAllPluginMachineTokenGenerations = (): void => {
+    for (const pluginId of [...pluginSideEffectGuards.keys()].toSorted()) {
+      commitPluginSideEffectGuards(pluginId);
+    }
+  };
+
+  /**
+   * Collect exact staged (unpublished) generation handles owned by this
+   * registry builder for the combined ownership snapshot commit.
+   */
+  const collectStagedMachineTokenGenerationHandles = (): MachineTokenFacadeGenerationHandle[] => {
+    const handles: MachineTokenFacadeGenerationHandle[] = [];
+    for (const pluginId of [...pluginSideEffectGuards.keys()].toSorted()) {
+      const guards = pluginSideEffectGuards.get(pluginId);
+      if (!guards) {
+        continue;
+      }
+      for (const guard of guards) {
+        if (!guard.active || !guard.machineTokenGeneration) {
+          continue;
+        }
+        handles.push(guard.machineTokenGeneration);
+      }
+    }
+    return handles;
+  };
+
+  /**
+   * Capture immutable ownership descriptors for cache publication / reconstruct.
+   * Descriptors only — never live generation handles.
+   */
+  const collectMachineTokenOwnershipBlueprintPlugins = (): Array<{
+    pluginId: string;
+    grantedRecords: readonly HostMachineTokenBindingRecord[];
+  }> => {
+    const byPlugin = new Map<string, HostMachineTokenBindingRecord[]>();
+    for (const pluginId of [...pluginSideEffectGuards.keys()].toSorted()) {
+      const guards = pluginSideEffectGuards.get(pluginId);
+      if (!guards) {
+        continue;
+      }
+      for (const guard of guards) {
+        if (!guard.active || !guard.machineTokenGrantedRecords?.length) {
+          continue;
+        }
+        const existing = byPlugin.get(pluginId) ?? [];
+        existing.push(...guard.machineTokenGrantedRecords);
+        byPlugin.set(pluginId, existing);
+      }
+    }
+    return [...byPlugin.entries()].map(([pluginId, grantedRecords]) => ({
+      pluginId,
+      grantedRecords,
+    }));
+  };
+
+  /**
+   * Publish staged generations and retire obsolete live generations according
+   * to reconcileScope. Call only after activatePluginRegistry succeeds.
+   */
+  const commitMachineTokenOwnershipForRegistry = (params: {
+    reconcileScope: "full" | ReadonlySet<string>;
+  }): void => {
+    commitMachineTokenOwnershipSnapshot({
+      publish: collectStagedMachineTokenGenerationHandles(),
+      reconcileScope: params.reconcileScope,
+    });
+  };
+
+  /**
+   * Non-activating snapshot loads: abandon candidates without publishing so the
+   * process-global live generation is unchanged.
+   */
+  const abandonPluginMachineTokenGenerations = (pluginId: string): void => {
+    const guards = pluginSideEffectGuards.get(pluginId);
+    if (!guards) {
+      return;
+    }
+    for (const guard of guards) {
+      const generation = guard.machineTokenGeneration;
+      if (!generation) {
+        continue;
+      }
+      destroyMachineTokenFacadeGeneration(generation);
+      guard.machineTokenGeneration = undefined;
+    }
+  };
+
+  /**
+   * Abandon every staged (unpublished) machine-token generation owned by this
+   * registry builder without touching unrelated live generations.
+   */
+  const abandonAllPluginMachineTokenGenerations = (): void => {
+    for (const pluginId of [...pluginSideEffectGuards.keys()]) {
+      abandonPluginMachineTokenGenerations(pluginId);
+    }
   };
 
   const createApi = (
@@ -159,6 +306,57 @@ export function createPluginApiFactory(
       !isPluginRegistryRetired(registry) &&
       (isActivatingLoadedRecord() ||
         (isPluginRegistryActivated(registry) && isLoadedRecordInRegistry()));
+    const openClawConfig = params.config as OpenClawConfig;
+    const mcpServers = openClawConfig.mcp?.servers;
+    const grantedRecords = collectGrantedMachineTokenBindingRecords({
+      pluginId: record.id,
+      pluginConfig: params.pluginConfig,
+      ...(mcpServers && typeof mcpServers === "object"
+        ? { mcpServers: mcpServers as Record<string, unknown> }
+        : {}),
+    });
+    // Control-plane / setup / discovery paths must not stage production facades.
+    // Only full runtime registration under an activating load may create candidates.
+    const mayStageMachineTokenFacade =
+      registrationMode === "full" &&
+      registryParams.activateGlobalSideEffects !== false &&
+      grantedRecords.length > 0;
+    let machineTokenFacade: OpenClawPluginApi["machineTokenFacade"];
+    if (mayStageMachineTokenFacade) {
+      const generation = createMachineTokenFacadeGeneration({
+        pluginId: record.id,
+        grantedRecords,
+        resolveKeyPem: async ({ bindingId, keyRef }) => {
+          const resolved = await resolveConfiguredSecretInputString({
+            config: openClawConfig,
+            env: process.env,
+            value: keyRef,
+            path: `plugins.entries.${record.id}.machineToken[${bindingId}].clientAssertionKeyRef`,
+          });
+          if (!resolved.value) {
+            throw new Error(
+              resolved.unresolvedRefReason ??
+                `Machine-token binding "${bindingId}" clientAssertionKeyRef unresolved`,
+            );
+          }
+          return resolved.value;
+        },
+      });
+      sideEffectGuard.machineTokenGeneration = generation.handle;
+      sideEffectGuard.machineTokenGrantedRecords = Object.freeze(
+        grantedRecords.map((record) =>
+          Object.freeze({
+            ...record,
+            keyRef: Object.freeze({ ...record.keyRef }),
+            ...(record.operations
+              ? { operations: Object.freeze([...record.operations]) }
+              : {}),
+            ...(record.scopes ? { scopes: Object.freeze([...record.scopes]) } : {}),
+          }),
+        ),
+      );
+      machineTokenFacade = generation.facade;
+    }
     return buildPluginApi({
       id: record.id,
       name: record.name,
@@ -169,6 +367,7 @@ export function createPluginApiFactory(
       registrationMode,
       config: params.config,
       pluginConfig: params.pluginConfig,
+      ...(machineTokenFacade ? { machineTokenFacade } : {}),
       runtime: resolvePluginRuntime(record.id),
       logger: normalizeLogger(registryParams.logger),
       resolvePath: (input: string) => resolvePluginPath(input, record.rootDir),
@@ -183,6 +382,10 @@ export function createPluginApiFactory(
                 registerHostedMediaResolver(record, resolver),
               registerMcpServerConnectionResolver: (resolver) =>
                 registerMcpServerConnectionResolver(record, resolver),
+              registerMcpServerToolFilter: (resolver) =>
+                registerMcpServerToolFilter(record, resolver),
+              unregisterMcpServerToolFilter: (serverName) =>
+                unregisterMcpServerToolFilter(record, serverName),
               registerProvider: (provider) => registerProvider(record, provider),
               registerWorkerProvider: (provider) => registerWorkerProvider(record, provider),
               registerModelCatalogProvider: (provider) =>
@@ -385,5 +588,15 @@ export function createPluginApiFactory(
     });
   };
 
-  return { createApi, deactivatePluginSideEffectGuards };
+  return {
+    createApi,
+    deactivatePluginSideEffectGuards,
+    commitPluginSideEffectGuards,
+    publishAllPluginMachineTokenGenerations,
+    collectStagedMachineTokenGenerationHandles,
+    collectMachineTokenOwnershipBlueprintPlugins,
+    commitMachineTokenOwnershipForRegistry,
+    abandonPluginMachineTokenGenerations,
+    abandonAllPluginMachineTokenGenerations,
+  };
 }

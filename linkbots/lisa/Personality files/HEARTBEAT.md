@@ -1,5 +1,7 @@
 # HEARTBEAT.md — Active Checklist
 
+**Candidate-only / non-live default (fail-closed):** Workshop copies of this checklist do not authorize live heartbeat actions, cron edits, or credential use against `~/.openclaw-lisa`. Live targeting is opt-in and requires separately approved credentials language in docs/contracts.
+
 ## Schedule (authoritative — Asia/Taipei)
 
 | Local time                                                                      | Job                        | Telegram                | Notes                                                                                              |
@@ -54,7 +56,14 @@ Quiet hours (`user/schedule.md`, 23:00–07:00) suppress only non-urgent proacti
 
 **Primary clock:** Lisa Option A — crons `lisa-ship-05` / `lisa-pull-07` / `lisa-ship-16` / `lisa-pull-18` spawn Cursor ACP (see `agents/ship-pull-clock.md`). Mini must be awake. Cursor Automations are backup only.
 
-When this cycle’s wall-clock is near or after a checkpoint (05:00 Ship 05, 07:00 Pull 07, 16:00 Ship 16, 18:00 Pull 18, Tue/Fri 08:00 staging, Mon 08:00 main package), `read` `memory/pipeline-status.md` if present and include **section D** below. Full procedure: `agents/pipeline-status.md`. Compare the stored `Cycle date` with the Asia/Taipei digest cycle being reported; include Ship/Pull lines only when it matches, and never include the metadata line. One result line per checkpoint only — no lists/links. If the file is missing or its Ship/Pull results are stale/undated, omit those lines rather than inventing Clear. Also verify the four ship/pull cron jobs are enabled when listing cron health.
+When this cycle’s wall-clock is near or after a checkpoint (05:00 Ship 05, 07:00 Pull 07, 16:00 Ship 16, 18:00 Pull 18, Tue/Fri **08:00 Review Packager**, Tue/Fri **10:00 Staging**, Mon 08:00 main package), `read` `memory/pipeline-status.md` if present and include **section D** below. Full procedure: `agents/pipeline-status.md`. Compare the stored `Cycle date` with the Asia/Taipei digest cycle being reported; include Ship/Pull lines only when it matches, and never include the metadata line. One result line per checkpoint only — no lists/links. Distinguish checkpointed / review-ready / under-review / merged / conflict / repair pending / blocked in private diagnosis; Telegram stays one-liners. If the file is missing or its Ship/Pull results are stale/undated, omit those lines rather than inventing Clear. Also verify the four ship/pull cron jobs are enabled when listing cron health. ### Template load / fill (deterministic)
+
+1. Read canonical template `templates/telegram-heartbeat.md` (every section, heading, omission rule, and `{{placeholder}}` is in that file).
+2. Build a JSON context matching deployed `ops/templates.ts` `TemplateContext`.
+3. Render with Lisa-executable (cwd = workspace root `/Users/linktrend/.openclaw-lisa/workspace`):
+   `node --experimental-strip-types ops/render-template.ts telegram-heartbeat <json-path>`
+4. Reject any output that still contains `{{...}}`. Same inputs → identical body.
+5. Omit Pipeline / Main Approve by leaving those placeholders empty (renderer omits empty optional blocks).
 
 **Monday Main Approve fallback:** the 08:30 digest owns the normal ask. After 08:30 Monday, if `Main ready date` is today, `Main ready (Mon): Clear`, no decision is recorded today, and no current-day `Main approve claim` exists from the last two hours, use the compare-and-swap `edit` protocol in `agents/pipeline-status.md` to claim the current timestamp, then append the same short Main Approve ask used by the digest after section D. This recovers late readiness or failed delivery while preventing concurrent duplicates. Carlos still answers Approve on Telegram; the main session records today's decision before dispatching or deferring.
 

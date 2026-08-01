@@ -1,0 +1,1025 @@
+/**
+ * Lisa ops focused tests — Node built-in test runner (no vitest config / knip changes).
+ * Run: node --experimental-strip-types --test linkbots/lisa/ops/*.test.ts
+ */
+import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
+import { cpSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import path from "node:path";
+import { describe, it } from "node:test";
+import { fileURLToPath } from "node:url";
+import {
+  assertImmutableBindings,
+  authorizeApprovalDispatch,
+  buildCarlosAskViewPure,
+  issueCarlosAsk,
+  MAIN_APPROVE_RUNTIME_STORE,
+  validateApprovalBindings,
+  type MainApprovePackage,
+} from "./main-approve-binding.ts";
+import {
+  buildNonLiveAgentsDefaultsFragment,
+  LISA_APPROVED_MODEL_ROUTING,
+  validateApprovedRouting,
+} from "./model-routing-contract.ts";
+import {
+  isOfflinePlanHonest,
+  isValidCalendarDate,
+  parseInstantMs,
+  planOfflineReconcile,
+} from "./offline-recovery.ts";
+import {
+  applyWaveCas,
+  expectedCycleDateForWave,
+  selectFreshCheckpointLines,
+} from "./pipeline-status-cas.ts";
+import {
+  authorizeRepairLiveDispatch,
+  classifyFailure,
+  evaluateProof,
+  MAX_REPAIR_ATTEMPTS,
+  nextRepairDecision,
+  recordDispatch,
+  type RepairAttemptRecord,
+  type RepairBinding,
+} from "./repair-dispatcher.ts";
+import {
+  canFinishShipPullSuccessfully,
+  classifyBranch,
+  isApprovedWorkBranch,
+  authorizeLiveLisaAction,
+  authorizeShipPullLiveAction,
+  LISA_OPS_LIVE_ACTION_DEFAULTS,
+  planPullBranch,
+  planShipBranch,
+  resolveWaveOutcome,
+  SHIP_PULL_REQUIRED_TOOLS,
+  shipPullAllowlistIncludesSessionsWait,
+  shipPullForbidsSessionsYield,
+  shipPullRequiresSessionsWait,
+  shipPullRespectsIdeAuthority,
+  validatePullPromptContract,
+  validateShipPromptContract,
+  type BranchWaveResult,
+} from "./ship-pull-contract.ts";
+import {
+  assertNoUnresolvedPlaceholders,
+  loadCanonicalTemplateBody,
+  omitStalePipelineLines,
+  renderEmailDailyDigest,
+  renderPipelineOneLiner,
+  renderTelegramDailyDigest,
+  renderTelegramHeartbeat,
+  templatesDifferTelegramVsEmail,
+  TEMPLATES_DIR,
+} from "./templates.ts";
+
+const here = path.dirname(fileURLToPath(import.meta.url));
+const personalityRoot = path.resolve(here, "../Personality files");
+const repoRoot = path.resolve(here, "../../..");
+
+function readPersonality(rel: string): string {
+  return readFileSync(path.join(personalityRoot, rel), "utf8");
+}
+
+const baseBinding: RepairBinding = {
+  repository: "linktrend/openclaw_prime",
+  branch: "issue/1-x",
+  prNumber: 10,
+  headSha: "aaa111aaa111aaa111aaa111aaa111aaa111aaa1",
+};
+
+describe("IDE authority", () => {
+  it("Ship/Pull procedure does not claim Lisa overrides IDE Development", () => {
+    const text = readPersonality("agents/ship-pull-clock.md");
+    assert.equal(shipPullRespectsIdeAuthority(text), true);
+    assert.doesNotMatch(text, /this file wins/i);
+    assert.doesNotMatch(text, /lisa override/i);
+    assert.match(text, /IDE Development/i);
+    assert.match(text, /origin\/development|AUTONOMOUS-GIT-OPERATIONS|PR #19|GITOPS-01/i);
+    assert.match(text, /issue #23|#23/i);
+    // Checkpoint-only is already merged on IDE development — #23 is follow-on, not the inventing source.
+    assert.match(text, /already (on IDE|merged)|pinned merged contract/i);
+  });
+});
+
+describe("Ship checkpoint-only + allowlist", () => {
+  it("never opens PRs or requests Bugbot in procedure prompt", () => {
+    const text = readPersonality("agents/ship-pull-clock.md");
+    const shipBlock = text.slice(text.indexOf("## ACP prompt — Shipper"));
+    const errors = validateShipPromptContract(shipBlock);
+    assert.deepEqual(errors, []);
+  });
+
+  it("plans commit+push without PR/Bugbot for issue/*", () => {
+    const plan = planShipBranch({
+      repo: "openclaw_prime",
+      branch: "issue/1-x",
+      tipSha: "abc",
+      dirty: false,
+      activelyOwned: false,
+      frozenReviewedSha: null,
+      hasLocalChanges: true,
+      hasUnpushedCommits: false,
+    });
+    assert.equal(plan.action, "checkpoint");
+    if (plan.action === "checkpoint") {
+      assert.equal(plan.allowPr, false);
+      assert.equal(plan.allowBugbot, false);
+    }
+  });
+
+  it("skips unsupported and integration branches explicitly", () => {
+    assert.equal(isApprovedWorkBranch("feature/x"), false);
+    assert.equal(classifyBranch("development"), "integration");
+    const unsupported = planShipBranch({
+      repo: "r",
+      branch: "feature/x",
+      tipSha: "a",
+      dirty: false,
+      activelyOwned: false,
+      frozenReviewedSha: null,
+      hasLocalChanges: true,
+      hasUnpushedCommits: true,
+    });
+    assert.equal(unsupported.action, "skip");
+    if (unsupported.action === "skip") {
+      assert.match(unsupported.explicitResult, /unsupported/);
+    }
+  });
+});
+
+describe("Wave Clear/Issues semantics", () => {
+  it("Clear only when work succeeded; Issues when all skipped or empty", () => {
+    const mixedSuccess: BranchWaveResult[] = [
+      { repo: "a", branch: "issue/1", status: "skipped", detail: "unsupported" },
+      { repo: "b", branch: "issue/2", status: "checkpointed", detail: "ok" },
+    ];
+    assert.deepEqual(resolveWaveOutcome(mixedSuccess), {
+      result: "Clear",
+      reason: "work_succeeded",
+    });
+
+    const allSkipped: BranchWaveResult[] = [
+      { repo: "a", branch: "feature/x", status: "skipped", detail: "unsupported" },
+      { repo: "b", branch: "development", status: "skipped", detail: "integration" },
+    ];
+    const skippedOutcome = resolveWaveOutcome(allSkipped);
+    assert.equal(skippedOutcome.result, "Issues");
+    if (skippedOutcome.result === "Issues") {
+      assert.equal(skippedOutcome.reason, "all_skipped_or_empty");
+    }
+
+    assert.equal(resolveWaveOutcome([]).result, "Issues");
+
+    const blocked: BranchWaveResult[] = [
+      { repo: "a", branch: "issue/1", status: "blocked", detail: "push failed" },
+    ];
+    assert.deepEqual(resolveWaveOutcome(blocked), {
+      result: "Issues",
+      reason: "blocked_or_failed",
+    });
+
+    const successful: BranchWaveResult[] = [
+      { repo: "a", branch: "issue/1", status: "updated", detail: "merged development" },
+    ];
+    assert.deepEqual(resolveWaveOutcome(successful), {
+      result: "Clear",
+      reason: "work_succeeded",
+    });
+  });
+});
+
+describe("Pull frozen/dirty/owned protection", () => {
+  it("skips frozen/reviewed tips in procedure", () => {
+    const text = readPersonality("agents/ship-pull-clock.md");
+    const pullBlock = text.slice(text.indexOf("## ACP prompt — Puller"));
+    assert.deepEqual(validatePullPromptContract(pullBlock), []);
+  });
+
+  it("skips frozen tip SHA", () => {
+    const plan = planPullBranch({
+      repo: "r",
+      branch: "issue/1-x",
+      tipSha: "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+      dirty: false,
+      activelyOwned: false,
+      frozenReviewedSha: "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+      hasLocalChanges: false,
+      hasUnpushedCommits: false,
+    });
+    assert.equal(plan.action, "skip");
+    if (plan.action === "skip") {
+      assert.match(plan.explicitResult, /frozen tip/);
+    }
+  });
+
+  it("preserves dirty and actively owned branches", () => {
+    const dirty = planPullBranch({
+      repo: "r",
+      branch: "issue/1-x",
+      tipSha: "a",
+      dirty: true,
+      activelyOwned: false,
+      frozenReviewedSha: null,
+      hasLocalChanges: true,
+      hasUnpushedCommits: false,
+    });
+    const owned = planPullBranch({
+      repo: "r",
+      branch: "issue/1-x",
+      tipSha: "a",
+      dirty: false,
+      activelyOwned: true,
+      frozenReviewedSha: null,
+      hasLocalChanges: false,
+      hasUnpushedCommits: false,
+    });
+    assert.equal(dirty.action, "skip");
+    assert.equal(owned.action, "skip");
+  });
+});
+
+describe("Ship/Pull post-processing gate", () => {
+  it("cannot finish successfully without validated child + CAS + email + payload", () => {
+    assert.equal(
+      canFinishShipPullSuccessfully({
+        childOutcomeValidated: false,
+        statusCasDone: true,
+        emailAttempted: true,
+        finalAssistantPayload: "Ship 05: Clear",
+      }),
+      false,
+    );
+    assert.equal(
+      canFinishShipPullSuccessfully({
+        childOutcomeValidated: true,
+        statusCasDone: true,
+        emailAttempted: true,
+        finalAssistantPayload: "Ship 05: Clear",
+      }),
+      true,
+    );
+  });
+
+  it("forbids sessions_yield in ship-pull procedure", () => {
+    const text = readPersonality("agents/ship-pull-clock.md");
+    assert.equal(shipPullForbidsSessionsYield(text), true);
+  });
+
+  it("requires sessions_wait park contract in ship-pull procedure", () => {
+    const text = readPersonality("agents/ship-pull-clock.md");
+    assert.equal(shipPullRequiresSessionsWait(text), true);
+    assert.match(text, /sessions_wait/);
+    assert.match(text, /registry persist/i);
+    assert.doesNotMatch(text, /call sessions_yield after/i);
+  });
+
+  it("Ship/Pull allowlist includes sessions_wait and excludes yield", () => {
+    assert.equal(shipPullAllowlistIncludesSessionsWait(SHIP_PULL_REQUIRED_TOOLS), true);
+    assert.ok(SHIP_PULL_REQUIRED_TOOLS.includes("sessions_spawn"));
+    assert.ok(SHIP_PULL_REQUIRED_TOOLS.includes("sessions_wait"));
+    assert.ok(!SHIP_PULL_REQUIRED_TOOLS.includes("sessions_yield"));
+  });
+
+  it("procedure allowlist text matches SHIP_PULL_REQUIRED_TOOLS", () => {
+    const text = readPersonality("agents/ship-pull-clock.md");
+    for (const tool of SHIP_PULL_REQUIRED_TOOLS) {
+      assert.match(text, new RegExp(tool));
+    }
+    assert.match(
+      text,
+      /toolsAllow` \*\*and\*\* `agents\.list\[lisa-cron\]\.tools\.allow` must include `sessions_spawn`, `sessions_wait`/,
+    );
+    assert.equal(shipPullForbidsSessionsYield(text), true);
+    assert.equal(shipPullAllowlistIncludesSessionsWait(SHIP_PULL_REQUIRED_TOOLS), true);
+  });
+});
+
+describe("Lisa ops live-action fail-closed defaults", () => {
+  it("defaults block live Lisa targeting without credentials language approval", () => {
+    assert.equal(LISA_OPS_LIVE_ACTION_DEFAULTS.liveLisaTargetingAllowed, false);
+    assert.equal(LISA_OPS_LIVE_ACTION_DEFAULTS.credentialsLanguageSeparatelyApproved, false);
+    assert.equal(LISA_OPS_LIVE_ACTION_DEFAULTS.cronMutationAllowed, false);
+    assert.equal(LISA_OPS_LIVE_ACTION_DEFAULTS.shipPullLiveActionAllowed, false);
+    assert.equal(LISA_OPS_LIVE_ACTION_DEFAULTS.repairDispatcherLiveActionAllowed, false);
+    assert.equal(LISA_OPS_LIVE_ACTION_DEFAULTS.digestLiveActionAllowed, false);
+    assert.equal(LISA_OPS_LIVE_ACTION_DEFAULTS.heartbeatLiveActionAllowed, false);
+    const blocked = authorizeLiveLisaAction();
+    assert.equal(blocked.ok, false);
+    if (!blocked.ok) assert.equal(blocked.reason, "live_targeting_disabled");
+    const needCreds = authorizeLiveLisaAction({
+      liveLisaTargetingAllowed: true,
+      credentialsLanguageSeparatelyApproved: false,
+    });
+    assert.equal(needCreds.ok, false);
+    if (!needCreds.ok) assert.equal(needCreds.reason, "credentials_language_not_approved");
+    const shipBlocked = authorizeShipPullLiveAction();
+    assert.equal(shipBlocked.ok, false);
+  });
+
+  it("opt-in live config authorizes only when both gates are true", () => {
+    const ok = authorizeLiveLisaAction({
+      liveLisaTargetingAllowed: true,
+      credentialsLanguageSeparatelyApproved: true,
+    });
+    assert.equal(ok.ok, true);
+  });
+
+  it("procedures document non-live / opt-in defaults", () => {
+    const ship = readPersonality("agents/ship-pull-clock.md");
+    const digest = readPersonality("agents/morning-digest.md");
+    const repair = readPersonality("agents/repair-dispatcher.md");
+    const heartbeat = readPersonality("HEARTBEAT.md");
+    for (const text of [ship, digest, repair, heartbeat]) {
+      assert.match(text, /non-live|opt-in|candidate-only|fail-closed/i);
+      assert.match(text, /credentials/i);
+    }
+  });
+});
+
+describe("Approved model routing (non-live)", () => {
+  it("validates OCP-W10 approved identifiers without secrets", () => {
+    const errors = validateApprovedRouting(LISA_APPROVED_MODEL_ROUTING);
+    assert.deepEqual(errors, []);
+    const fragment = buildNonLiveAgentsDefaultsFragment();
+    assert.equal(fragment.model.primary, "openai/gpt-5.6-luna");
+    assert.equal(fragment.thinkingDefault, "medium");
+    assert.deepEqual(fragment.model.fallbacks, [
+      "zai/glm-5.2",
+      "moonshot/kimi-k3",
+      "openrouter/google/gemini-3.5-flash-lite",
+    ]);
+    assert.equal(fragment.imageModel.primary, "minimax/MiniMax-M3");
+    assert.equal(fragment.evaluationOnly.enabledInDefaults, false);
+    assert.ok(!fragment.evaluationOnly.ref.includes(":free"));
+    assert.equal(LISA_APPROVED_MODEL_ROUTING.liveMutationAllowed, false);
+    assert.equal(LISA_APPROVED_MODEL_ROUTING.paidSpendEnablementAllowed, false);
+    const imagePdf = LISA_APPROVED_MODEL_ROUTING.entries.find((e) => e.slot === "imagePdf");
+    assert.ok(imagePdf);
+    assert.match(
+      imagePdf.notes ?? "",
+      /documentModels\.pdf|pdfDocumentModelsCutover|approved_unverified/i,
+    );
+    assert.ok(!/Image\/PDF via MiniMax native vision catalog/i.test(imagePdf.notes ?? ""));
+    assert.equal(fragment.documentModels.pdf.primary, "minimax/MiniMax-M3");
+    assert.equal(fragment.pdfDocumentModelsCutover.capabilityStatus, "approved_unverified");
+    assert.equal(fragment.pdfDocumentModelsCutover.state, "enabled_candidate");
+  });
+
+  it("keeps contract JSON aligned with TypeScript contract", () => {
+    const raw = JSON.parse(
+      readFileSync(path.join(here, "model-routing.contract.json"), "utf8"),
+    ) as {
+      agents: {
+        defaults: {
+          model: { primary: string; fallbacks: string[] };
+          imageModel: { primary: string };
+          documentModels?: { pdf?: { primary: string } };
+          thinkingDefault: string;
+        };
+      };
+      evaluationOnly: { enabledInDefaults: boolean; ref: string };
+      liveMutationAllowed: boolean;
+      pdfDocumentModelsCutover?: { capabilityStatus?: string; state?: string };
+    };
+    const fragment = buildNonLiveAgentsDefaultsFragment();
+    assert.equal(raw.liveMutationAllowed, false);
+    assert.equal(raw.agents.defaults.model.primary, fragment.model.primary);
+    assert.deepEqual(raw.agents.defaults.model.fallbacks, fragment.model.fallbacks);
+    assert.equal(raw.agents.defaults.imageModel.primary, fragment.imageModel.primary);
+    assert.equal(
+      raw.agents.defaults.documentModels?.pdf?.primary,
+      fragment.documentModels.pdf.primary,
+    );
+    assert.equal(raw.agents.defaults.thinkingDefault, fragment.thinkingDefault);
+    assert.equal(raw.evaluationOnly.enabledInDefaults, false);
+    assert.equal(raw.pdfDocumentModelsCutover?.capabilityStatus, "approved_unverified");
+    assert.equal(raw.pdfDocumentModelsCutover?.state, "enabled_candidate");
+  });
+});
+
+describe("Pipeline status CAS", () => {
+  it("is monotonic and cycle-dated", () => {
+    const first = applyWaveCas({
+      currentText: "",
+      wave: "Ship 16",
+      result: "Clear",
+      expectedCycleDate: expectedCycleDateForWave("Ship 16", "2026-07-29"),
+    });
+    assert.equal(first.action, "updated");
+    if (first.action !== "updated") return;
+    assert.match(first.nextText, /Cycle date: 2026-07-30/);
+    const second = applyWaveCas({
+      currentText: first.nextText,
+      wave: "Pull 18",
+      result: "Issues",
+      expectedCycleDate: "2026-07-30",
+    });
+    assert.equal(second.action, "updated");
+    if (second.action !== "updated") return;
+    assert.match(second.nextText, /Ship 16: Clear/);
+    assert.match(second.nextText, /Pull 18: Issues/);
+    const stale = applyWaveCas({
+      currentText: second.nextText,
+      wave: "Ship 05",
+      result: "Clear",
+      expectedCycleDate: "2026-07-29",
+    });
+    assert.equal(stale.action, "skipped_stale_cycle");
+  });
+
+  it("omits stale Ship/Pull lines for heartbeat/digest", () => {
+    const text = `Cycle date: 2026-07-30\nShip 05: Clear\nPull 07: Clear\n`;
+    assert.deepEqual(selectFreshCheckpointLines({ text, reportCycleDate: "2026-07-30" }), [
+      "Ship 05: Clear",
+      "Pull 07: Clear",
+    ]);
+    assert.deepEqual(selectFreshCheckpointLines({ text, reportCycleDate: "2026-07-31" }), []);
+  });
+});
+
+describe("Templates operational", () => {
+  const baseCtx = {
+    weekdayDate: "Thursday, 30 Jul 2026",
+    time: "10:45",
+    workSummary: {
+      calendar: "Yes" as const,
+      tasks: "No" as const,
+      email: "No" as const,
+      unanswered: "No" as const,
+    },
+    codingEvals: "No" as const,
+    battery: {
+      expectedCharge: "72%",
+      timeTo30: "N/A",
+      timeTo98: "14:00",
+      chargeRate: "+30 pp/h charging",
+      routineChanges: "None",
+      checks: "No" as const,
+      alerts: [] as string[],
+    },
+    pipelineLines: ["Ship 05: Clear"] as string[],
+    digestDetail: {
+      calendarEvents: ["09:00 — standup — Shared"],
+      tasks: [] as string[],
+      emails: [] as string[],
+      unanswered: [] as string[],
+    },
+  };
+
+  it("canonical template files expose every section and placeholder", () => {
+    for (const kind of [
+      "telegram-heartbeat",
+      "telegram-daily-digest",
+      "email-daily-digest",
+      "pipeline-one-liner",
+    ] as const) {
+      const body = loadCanonicalTemplateBody(kind);
+      assert.match(body, /\{\{[a-zA-Z0-9_.]+\}\}/);
+      assert.ok(body.length > 10);
+    }
+    assert.match(
+      readFileSync(path.join(TEMPLATES_DIR, "telegram-heartbeat.md"), "utf8"),
+      /## Omission rules/,
+    );
+  });
+
+  it("renders Telegram heartbeat from canonical template", () => {
+    const a = renderTelegramHeartbeat(baseCtx);
+    const b = renderTelegramHeartbeat(baseCtx);
+    assert.equal(a, b);
+    assert.match(a, /^Heartbeat — Thursday, 30 Jul 2026, 10:45/);
+    assert.match(a, /## C\. Battery Monitoring/);
+    assert.match(a, /## D\. Pipeline/);
+    assert.match(a, /Ship 05: Clear/);
+  });
+
+  it("omits pipeline when empty and rejects unresolved placeholders", () => {
+    const noPipe = renderTelegramHeartbeat({ ...baseCtx, pipelineLines: [] });
+    assert.doesNotMatch(noPipe, /## D\. Pipeline/);
+    assert.throws(() => assertNoUnresolvedPlaceholders("hello {{missing}}"), /unresolved/);
+    assert.deepEqual(
+      omitStalePipelineLines(["Ship 05: Clear", "Ship 16: Issues"], new Set(["Ship 05"])),
+      ["Ship 05: Clear"],
+    );
+  });
+
+  it("Telegram digest includes Battery; email excludes Battery", () => {
+    const tg = renderTelegramDailyDigest(baseCtx);
+    const em = renderEmailDailyDigest(baseCtx);
+    const diff = templatesDifferTelegramVsEmail(tg, em);
+    assert.equal(diff.telegramHasBattery, true);
+    assert.equal(diff.emailHasBattery, false);
+    assert.equal(diff.differ, true);
+    assert.doesNotMatch(em, /Battery Monitoring|plugged status/i);
+  });
+
+  it("runtime CLI path uses canonical templates", () => {
+    const dir = mkdtempSync(path.join(tmpdir(), "lisa-tpl-"));
+    const jsonPath = path.join(dir, "ctx.json");
+    writeFileSync(jsonPath, JSON.stringify(baseCtx));
+    const cli = path.join(here, "render-template.ts");
+    const hb = spawnSync(
+      process.execPath,
+      ["--experimental-strip-types", cli, "telegram-heartbeat", jsonPath],
+      { encoding: "utf8", cwd: repoRoot },
+    );
+    assert.equal(hb.status, 0, hb.stderr);
+    assert.equal(hb.stdout, renderTelegramHeartbeat(baseCtx));
+
+    const dig = spawnSync(
+      process.execPath,
+      ["--experimental-strip-types", cli, "telegram-daily-digest", jsonPath],
+      { encoding: "utf8", cwd: repoRoot },
+    );
+    assert.equal(dig.status, 0, dig.stderr);
+    assert.match(dig.stdout, /Morning Digest/);
+
+    const email = spawnSync(
+      process.execPath,
+      ["--experimental-strip-types", cli, "email-daily-digest", jsonPath],
+      { encoding: "utf8", cwd: repoRoot },
+    );
+    assert.equal(email.status, 0, email.stderr);
+    assert.doesNotMatch(email.stdout, /Battery Monitoring/);
+
+    const pipe = spawnSync(
+      process.execPath,
+      [
+        "--experimental-strip-types",
+        cli,
+        "pipeline-one-liner",
+        "--wave",
+        "Ship 05",
+        "--result",
+        "Clear",
+      ],
+      { encoding: "utf8", cwd: repoRoot },
+    );
+    assert.equal(pipe.status, 0, pipe.stderr);
+    assert.equal(pipe.stdout.trim(), renderPipelineOneLiner("Ship 05", "Clear"));
+  });
+
+  it("procedures document deployed ops/render-template path", () => {
+    const digest = readPersonality("agents/morning-digest.md");
+    const heartbeat = readPersonality("HEARTBEAT.md");
+    const ship = readPersonality("agents/ship-pull-clock.md");
+    for (const text of [digest, heartbeat, ship]) {
+      assert.match(text, /ops\/render-template\.ts/);
+      assert.doesNotMatch(
+        text,
+        /node --experimental-strip-types linkbots\/lisa\/ops\/render-template/,
+      );
+    }
+  });
+
+  it("deployed workspace layout renders all four kinds without repo path", () => {
+    const ws = mkdtempSync(path.join(tmpdir(), "lisa-deploy-ws-"));
+    mkdirSync(path.join(ws, "ops"), { recursive: true });
+    cpSync(path.join(personalityRoot, "templates"), path.join(ws, "templates"), {
+      recursive: true,
+    });
+    cpSync(path.join(here, "render-template.ts"), path.join(ws, "ops", "render-template.ts"));
+    cpSync(path.join(here, "templates.ts"), path.join(ws, "ops", "templates.ts"));
+    // Prove we did not need the repository layout.
+    assert.equal(
+      spawnSync("test", ["!", "-e", path.join(ws, "Personality files")], { encoding: "utf8" })
+        .status,
+      0,
+    );
+    const jsonPath = path.join(ws, "ctx.json");
+    writeFileSync(jsonPath, JSON.stringify(baseCtx));
+    const run = (args: string[]) =>
+      spawnSync(process.execPath, ["--experimental-strip-types", ...args], {
+        encoding: "utf8",
+        cwd: ws,
+      });
+    const hb = run(["ops/render-template.ts", "telegram-heartbeat", jsonPath]);
+    assert.equal(hb.status, 0, hb.stderr);
+    assert.match(hb.stdout, /Heartbeat —/);
+    const dig = run(["ops/render-template.ts", "telegram-daily-digest", jsonPath]);
+    assert.equal(dig.status, 0, dig.stderr);
+    assert.match(dig.stdout, /Morning Digest/);
+    const email = run(["ops/render-template.ts", "email-daily-digest", jsonPath]);
+    assert.equal(email.status, 0, email.stderr);
+    assert.doesNotMatch(email.stdout, /Battery Monitoring/);
+    const pipe = run([
+      "ops/render-template.ts",
+      "pipeline-one-liner",
+      "--wave",
+      "Ship 05",
+      "--result",
+      "Clear",
+    ]);
+    assert.equal(pipe.status, 0, pipe.stderr);
+    assert.equal(pipe.stdout.trim(), "Ship 05: Clear");
+  });
+});
+
+describe("Repair dispatcher binding + pending hold", () => {
+  it("holds when exact binding attempt is already pending (no attempt 2)", () => {
+    const prior = recordDispatch([], baseBinding, 1, "2026-07-30T10:00:00Z");
+    const again = nextRepairDecision({
+      failureClass: "ordinary_repairable",
+      binding: baseBinding,
+      priorAttempts: prior,
+      currentHeadSha: baseBinding.headSha,
+    });
+    assert.equal(again.decision, "hold");
+    if (again.decision === "hold") {
+      assert.equal(again.attempt, 1);
+      assert.equal(again.reason, "pending_attempt");
+    }
+  });
+
+  it("isolates different PRs sharing branch/head", () => {
+    const other: RepairBinding = { ...baseBinding, prNumber: 99 };
+    let prior = recordDispatch([], baseBinding, 1, "t1");
+    prior = prior.map((a) => (a.attempt === 1 ? { ...a, outcome: "failed" as const } : a));
+    prior = recordDispatch(prior, baseBinding, 2, "t2");
+    prior = prior.map((a) =>
+      a.attempt === 2 && same(a, baseBinding) ? { ...a, outcome: "failed" as const } : a,
+    );
+
+    const forOther = nextRepairDecision({
+      failureClass: "ordinary_repairable",
+      binding: other,
+      priorAttempts: prior,
+      currentHeadSha: other.headSha,
+    });
+    assert.equal(forOther.decision, "dispatch");
+    if (forOther.decision === "dispatch") {
+      assert.equal(forOther.attempt, 1);
+    }
+  });
+
+  function same(a: RepairAttemptRecord, b: RepairBinding): boolean {
+    return (
+      a.binding.repository === b.repository &&
+      a.binding.branch === b.branch &&
+      a.binding.prNumber === b.prNumber &&
+      a.binding.headSha === b.headSha
+    );
+  }
+
+  it("rejects stale, unmatched, and unrecorded proof", () => {
+    const prior = recordDispatch([], baseBinding, 1, "t1");
+    assert.equal(
+      evaluateProof({
+        proof: {
+          ...baseBinding,
+          headSha: "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          attempt: 1,
+          gatesPassed: true,
+        },
+        binding: baseBinding,
+        currentHeadSha: baseBinding.headSha,
+        priorAttempts: prior,
+      }).decision,
+      "reject_proof",
+    );
+    assert.equal(
+      evaluateProof({
+        proof: {
+          repository: "other/repo",
+          branch: baseBinding.branch,
+          prNumber: baseBinding.prNumber,
+          headSha: baseBinding.headSha,
+          attempt: 1,
+          gatesPassed: true,
+        },
+        binding: baseBinding,
+        currentHeadSha: baseBinding.headSha,
+        priorAttempts: prior,
+      }).decision,
+      "reject_proof",
+    );
+    assert.equal(
+      evaluateProof({
+        proof: { ...baseBinding, attempt: 2, gatesPassed: true },
+        binding: baseBinding,
+        currentHeadSha: baseBinding.headSha,
+        priorAttempts: prior,
+      }).decision,
+      "reject_proof",
+    );
+  });
+
+  it("resolves only with exact binding + recorded attempt + gates", () => {
+    const prior = recordDispatch([], baseBinding, 1, "t1");
+    const ok = evaluateProof({
+      proof: { ...baseBinding, attempt: 1, gatesPassed: true },
+      binding: baseBinding,
+      currentHeadSha: baseBinding.headSha,
+      priorAttempts: prior,
+    });
+    assert.equal(ok.decision, "resolve");
+  });
+
+  it("escalates exactly after three genuine dispatches", () => {
+    let prior: RepairAttemptRecord[] = [];
+    for (let n = 1; n <= 3; n++) {
+      prior = recordDispatch(prior, baseBinding, n, `t${n}`);
+      prior = prior.map((a) => (a.attempt === n ? { ...a, outcome: "failed" as const } : a));
+    }
+    const next = nextRepairDecision({
+      failureClass: "ordinary_repairable",
+      binding: baseBinding,
+      priorAttempts: prior,
+      currentHeadSha: baseBinding.headSha,
+    });
+    assert.equal(next.decision, "escalate");
+    if (next.decision === "escalate") {
+      assert.equal(next.reason, "max_attempts");
+      assert.equal(next.notifyCarlos, true);
+    }
+    assert.equal(MAX_REPAIR_ATTEMPTS, 3);
+  });
+
+  it("escalates unsafe classes without dispatch", () => {
+    for (const summary of ["credential missing", "security XSS", "merge conflict ambiguous"]) {
+      const cls = classifyFailure({ summary });
+      const decision = nextRepairDecision({
+        failureClass: cls,
+        binding: baseBinding,
+        priorAttempts: [],
+        currentHeadSha: baseBinding.headSha,
+      });
+      assert.equal(decision.decision, "escalate");
+    }
+  });
+
+  it("live ACP dispatch fails closed under candidate defaults", () => {
+    const blocked = authorizeRepairLiveDispatch({
+      failureClass: "ordinary_repairable",
+      binding: baseBinding,
+      priorAttempts: [],
+      currentHeadSha: baseBinding.headSha,
+    });
+    assert.equal(blocked.ok, false);
+    if (!blocked.ok) {
+      assert.equal(blocked.reason, "live_targeting_disabled");
+      assert.equal(blocked.decision.decision, "blocked_non_live");
+    }
+    const stillNeedCreds = authorizeRepairLiveDispatch(
+      {
+        failureClass: "ordinary_repairable",
+        binding: baseBinding,
+        priorAttempts: [],
+        currentHeadSha: baseBinding.headSha,
+      },
+      { liveLisaTargetingAllowed: true, credentialsLanguageSeparatelyApproved: false },
+    );
+    assert.equal(stillNeedCreds.ok, false);
+    if (!stillNeedCreds.ok) {
+      assert.equal(stillNeedCreds.reason, "credentials_language_not_approved");
+    }
+    const allowed = authorizeRepairLiveDispatch(
+      {
+        failureClass: "ordinary_repairable",
+        binding: baseBinding,
+        priorAttempts: [],
+        currentHeadSha: baseBinding.headSha,
+      },
+      { liveLisaTargetingAllowed: true, credentialsLanguageSeparatelyApproved: true },
+    );
+    assert.equal(allowed.ok, true);
+    if (allowed.ok) assert.equal(allowed.decision.attempt, 1);
+  });
+});
+
+describe("Main Approve binding", () => {
+  const pkg: MainApprovePackage = {
+    packageId: "main-2026-08-03",
+    mondayDate: "2026-08-03",
+    claimExpiresAt: "2026-08-03T12:00:00+08:00",
+    items: [
+      {
+        index: 1,
+        plainDescription: "LiNKsites weekly promotion",
+        repository: "linktrend/LiNKsites",
+        promotionPrNumber: 12,
+        stagingSha: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        priorMainSha: "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        promotionHeadSha: "cccccccccccccccccccccccccccccccccccccccc",
+        gateResult: "Clear",
+      },
+      {
+        index: 2,
+        plainDescription: "LiNKplatform weekly promotion",
+        repository: "linktrend/LiNKplatform",
+        promotionPrNumber: 34,
+        stagingSha: "dddddddddddddddddddddddddddddddddddddddd",
+        priorMainSha: "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        promotionHeadSha: "ffffffffffffffffffffffffffffffffffffffff",
+        gateResult: "Clear",
+      },
+    ],
+  };
+
+  const paramsOk = {
+    sealed: pkg,
+    approvedIndexes: [1, 2],
+    nowIso: "2026-08-03T10:00:00+08:00",
+    liveItems: structuredClone(pkg.items),
+  };
+
+  it("pure Carlos view is plain English without SHAs", () => {
+    assertImmutableBindings(pkg);
+    const view = buildCarlosAskViewPure(pkg);
+    assert.match(view.telegramBody, /1\) linktrend\/LiNKsites/);
+    assert.doesNotMatch(view.telegramBody, /[0-9a-f]{7,}/i);
+    assert.equal(MAIN_APPROVE_RUNTIME_STORE.available, false);
+  });
+
+  it("runtime issues no Carlos ask without store and names prerequisite", () => {
+    const blocked = issueCarlosAsk(pkg);
+    assert.equal(blocked.ok, false);
+    if (blocked.ok) return;
+    assert.ok(
+      blocked.reason === "blocked_no_store" ||
+        blocked.reason === "live_targeting_disabled" ||
+        blocked.reason === "credentials_language_not_approved",
+    );
+    // Defaults fail closed on live targeting before store check.
+    assert.equal(blocked.reason, "live_targeting_disabled");
+  });
+
+  it("runtime approval dispatch fails closed without store", () => {
+    const blocked = authorizeApprovalDispatch(paramsOk);
+    assert.equal(blocked.ok, false);
+    if (blocked.ok) return;
+    assert.equal(blocked.reason, "live_targeting_disabled");
+  });
+
+  it("pure binding validation: exact ok; drift/reorder/expiry/partial fail", () => {
+    const live = structuredClone(pkg.items);
+    assert.equal(
+      validateApprovalBindings({
+        sealed: pkg,
+        approvedIndexes: [1, 2],
+        nowIso: "2026-08-03T10:00:00+08:00",
+        liveItems: live,
+      }).ok,
+      true,
+    );
+
+    const drifted = structuredClone(live);
+    drifted[0]!.stagingSha = "1111111111111111111111111111111111111111";
+    assert.equal(
+      validateApprovalBindings({
+        sealed: pkg,
+        approvedIndexes: [1, 2],
+        nowIso: "2026-08-03T10:00:00+08:00",
+        liveItems: drifted,
+      }).ok,
+      false,
+    );
+
+    const reordered = [live[1]!, live[0]!];
+    assert.equal(
+      validateApprovalBindings({
+        sealed: pkg,
+        approvedIndexes: [1, 2],
+        nowIso: "2026-08-03T10:00:00+08:00",
+        liveItems: reordered,
+      }).reason,
+      "reordered",
+    );
+
+    assert.equal(
+      validateApprovalBindings({
+        sealed: pkg,
+        approvedIndexes: [1, 2],
+        nowIso: "2026-08-03T13:00:00+08:00",
+        liveItems: live,
+      }).reason,
+      "expired_claim",
+    );
+
+    assert.equal(
+      validateApprovalBindings({
+        sealed: pkg,
+        approvedIndexes: [1],
+        nowIso: "2026-08-03T10:00:00+08:00",
+        liveItems: live,
+      }).reason,
+      "partial_approval",
+    );
+  });
+
+  it("exact binding succeeds only with explicit authoritative-store + live opt-in adapters", () => {
+    const store = { available: true as const };
+    const live = {
+      liveLisaTargetingAllowed: true,
+      credentialsLanguageSeparatelyApproved: true,
+    };
+    const askBlockedLive = issueCarlosAsk(pkg, store);
+    assert.equal(askBlockedLive.ok, false);
+    const ask = issueCarlosAsk(pkg, store, live);
+    assert.equal(ask.ok, true);
+    const authBlockedLive = authorizeApprovalDispatch(paramsOk, store);
+    assert.equal(authBlockedLive.ok, false);
+    const auth = authorizeApprovalDispatch(paramsOk, store, live);
+    assert.equal(auth.ok, true);
+    if (auth.ok) {
+      assert.equal(auth.items.length, 2);
+      assert.equal(auth.items[0]?.promotionPrNumber, 12);
+      assert.equal(auth.items[1]?.stagingSha, "dddddddddddddddddddddddddddddddddddddddd");
+    }
+  });
+});
+
+describe("Offline recovery planning helper", () => {
+  it("is honest planning-only and skips obsolete/future/invalid", () => {
+    const plan = planOfflineReconcile({
+      nowIso: "2026-07-30T11:00:00+08:00",
+      missedWindows: [
+        { wave: "Ship 16", scheduledAt: "2026-07-28T16:00:00+08:00", cycleDate: "2026-07-29" },
+        { wave: "Pull 18", scheduledAt: "2026-07-28T18:00:00+08:00", cycleDate: "2026-07-29" },
+        { wave: "Ship 05", scheduledAt: "2026-07-30T05:00:00+08:00", cycleDate: "2026-07-30" },
+        { wave: "Pull 07", scheduledAt: "2026-07-30T12:00:00+08:00", cycleDate: "2026-07-30" },
+        { wave: "Ship 16", scheduledAt: "not-a-date", cycleDate: "bad" },
+      ],
+      unresolvedFailureIds: ["f2", "f1", "f1"],
+      lastReconcileAt: null,
+    });
+    assert.equal(plan.kind, "planning_helper");
+    assert.equal(plan.durableOnePassEnforced, false);
+    assert.equal(plan.windowsToConsider.length, 1);
+    assert.equal(plan.windowsToConsider[0]?.wave, "Ship 05");
+    assert.ok(plan.invalidSkipped.length >= 2);
+    assert.equal(isOfflinePlanHonest(plan), true);
+  });
+
+  it("rejects impossible calendar dates and malformed timestamps", () => {
+    assert.equal(isValidCalendarDate("2026-02-29"), false);
+    assert.equal(isValidCalendarDate("2024-02-29"), true);
+    assert.equal(isValidCalendarDate("2026-04-31"), false);
+    assert.equal(isValidCalendarDate("2026-13-01"), false);
+    assert.equal(parseInstantMs("2026-07-30T11:00:00"), null);
+    assert.equal(parseInstantMs("2026-07-30T11:00:00+25:00"), null);
+    assert.equal(parseInstantMs("2026-07-30T25:00:00+08:00"), null);
+
+    const plan = planOfflineReconcile({
+      nowIso: "2026-07-30T11:00:00+08:00",
+      missedWindows: [
+        { wave: "Ship 05", scheduledAt: "2026-02-29T05:00:00+08:00", cycleDate: "2026-02-29" },
+        { wave: "Ship 05", scheduledAt: "2026-04-31T05:00:00+08:00", cycleDate: "2026-04-31" },
+        { wave: "Ship 05", scheduledAt: "2026-07-30T05:00:00", cycleDate: "2026-07-30" },
+      ],
+      unresolvedFailureIds: [],
+      lastReconcileAt: null,
+    });
+    assert.equal(plan.windowsToConsider.length, 0);
+    assert.equal(plan.invalidSkipped.length, 3);
+  });
+
+  it("compares instants not lexicographic strings; accepts equivalent offsets", () => {
+    // Same UTC instant: 03:00Z == 11:00+08:00. Lexicographically "2026-07-30T03:00:00Z" < now string
+    // but must be treated as past relative to 11:00+08.
+    const a = parseInstantMs("2026-07-30T03:00:00Z");
+    const b = parseInstantMs("2026-07-30T11:00:00+08:00");
+    assert.equal(a, b);
+
+    // Future when expressed with different offset: 12:00 UTC vs now 11:00+08 (=03:00Z)
+    const futurePlan = planOfflineReconcile({
+      nowIso: "2026-07-30T11:00:00+08:00",
+      missedWindows: [
+        {
+          wave: "Pull 07",
+          scheduledAt: "2026-07-30T12:00:00Z",
+          cycleDate: "2026-07-30",
+        },
+        {
+          wave: "Ship 05",
+          scheduledAt: "2026-07-30T05:00:00+08:00",
+          cycleDate: "2026-07-30",
+        },
+      ],
+      unresolvedFailureIds: [],
+      lastReconcileAt: null,
+    });
+    assert.equal(futurePlan.windowsToConsider.length, 1);
+    assert.equal(futurePlan.windowsToConsider[0]?.wave, "Ship 05");
+    assert.equal(futurePlan.invalidSkipped.length, 1);
+  });
+});
+
+describe("Heartbeat/digest GitOps alignment", () => {
+  it("documents Review Packager 08:00 and Staging 10:00 from merged IDE contract", () => {
+    const pipeline = readPersonality("agents/pipeline-status.md");
+    const heartbeat = readPersonality("HEARTBEAT.md");
+    const digest = readPersonality("agents/morning-digest.md");
+    for (const text of [pipeline, heartbeat, digest]) {
+      assert.match(text, /Review Packager/i);
+      assert.match(text, /08:00/);
+      assert.match(text, /Staging/);
+      assert.match(text, /10:00/);
+    }
+    assert.match(pipeline, /PR #19|GITOPS-01|origin\/development/i);
+    assert.match(digest, /PR #19|GITOPS-01|origin\/development/i);
+  });
+});

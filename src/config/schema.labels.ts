@@ -755,6 +755,13 @@ export const FIELD_LABELS: Record<string, string> = {
   "mcp.servers.*.oauth.scope": "MCP OAuth Scope",
   "mcp.servers.*.oauth.redirectUrl": "MCP OAuth Redirect URL",
   "mcp.servers.*.oauth.clientMetadataUrl": "MCP OAuth Client Metadata URL",
+  "mcp.servers.*.machineToken": "MCP Machine Token",
+  "mcp.servers.*.machineToken.bindingId": "MCP Machine Token Binding ID",
+  "mcp.servers.*.machineToken.issuerUrl": "MCP Machine Token Issuer URL",
+  "mcp.servers.*.machineToken.clientId": "MCP Machine Token Client ID",
+  "mcp.servers.*.machineToken.audience": "MCP Machine Token Audience",
+  "mcp.servers.*.machineToken.scope": "MCP Machine Token Scope",
+  "mcp.servers.*.machineToken.clientAssertionKeyRef": "MCP Machine Token Assertion Key", // pragma: allowlist secret
   "mcp.servers.*.requestTimeoutMs": "MCP Request Timeout (ms)",
   "mcp.servers.*.connectionTimeoutMs": "MCP Connect Timeout (ms)",
   "mcp.servers.*.supportsParallelToolCalls": "MCP Parallel Tool Calls",

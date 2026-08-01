@@ -32,6 +32,39 @@ type CodexUserMcpServersProjectionOptions = {
   onServerUnavailable?: (serverName: string, error: unknown) => void;
 };
 
+/**
+ * True when an MCP server uses machine-token auth that must never be projected
+ * into Codex/CLI config, child-process env, literal headers, or external bundles.
+ */
+export function isMachineTokenMcpProjectionUnsupported(rawServer: unknown): boolean {
+  if (!isRecord(rawServer)) {
+    return false;
+  }
+  return rawServer.auth === "machine_token" || isRecord(rawServer.machineToken);
+}
+
+/** Fail-closed error when Codex/CLI projection would need a literal machine token. */
+export function machineTokenMcpProjectionUnsupportedError(serverName: string): Error {
+  return new Error(
+    `MCP server "${serverName}" uses machine-token auth, which cannot be projected into Codex/CLI config, child-process env, or external bundles. External runtimes must call the OpenClaw machine-token provider seam directly; projection is unsupported.`,
+  );
+}
+
+function omitMachineTokenProjectionServers(
+  servers: BundleMcpConfig["mcpServers"],
+  onServerUnavailable?: (serverName: string, error: unknown) => void,
+): BundleMcpConfig["mcpServers"] {
+  const next: BundleMcpConfig["mcpServers"] = {};
+  for (const [serverName, server] of Object.entries(servers)) {
+    if (isMachineTokenMcpProjectionUnsupported(server)) {
+      onServerUnavailable?.(serverName, machineTokenMcpProjectionUnsupportedError(serverName));
+      continue;
+    }
+    next[serverName] = server;
+  }
+  return next;
+}
+
 function normalizeAgentIds(value: unknown): string[] {
   if (!Array.isArray(value)) {
     return [];
@@ -66,8 +99,15 @@ function isCodexMcpServerAllowedForAgent(
 export function injectCodexMcpConfigArgs(
   args: string[] | undefined,
   config: BundleMcpConfig,
+  options?: {
+    onServerUnavailable?: (serverName: string, error: unknown) => void;
+  },
 ): string[] {
-  const overrides = serializeTomlInlineValue(buildCodexMcpServersConfig(config));
+  // Machine-token servers never enter CLI TOML projection (fail closed).
+  const projectable: BundleMcpConfig = {
+    mcpServers: omitMachineTokenProjectionServers(config.mcpServers, options?.onServerUnavailable),
+  };
+  const overrides = serializeTomlInlineValue(buildCodexMcpServersConfig(projectable));
   return [...(args ?? []), "-c", `mcp_servers=${overrides}`];
 }
 
@@ -102,6 +142,11 @@ export function buildCodexUserMcpServersThreadConfigPatch(
     if (!isCodexMcpServerAllowedForAgent(server as BundleMcpServerConfig, options)) {
       continue;
     }
+    // Machine tokens must never appear in static Codex thread-config projection.
+    if (isMachineTokenMcpProjectionUnsupported(server)) {
+      options?.onServerUnavailable?.(name, machineTokenMcpProjectionUnsupportedError(name));
+      continue;
+    }
     mcp_servers[name] = normalizeCodexMcpServerConfig(name, server) as CodexThreadConfigObject;
   }
   if (Object.keys(mcp_servers).length === 0) {
@@ -129,6 +174,11 @@ export async function buildCodexUserMcpServersThreadConfigPatchForRuntime(
         isCodexMcpServerAllowedForAgent(server as BundleMcpServerConfig, options),
     ),
   ) as BundleMcpConfig["mcpServers"];
+  if (Object.keys(allowedServers).length === 0) {
+    return undefined;
+  }
+  // Never request or receive literal machine tokens for Codex projection.
+  allowedServers = omitMachineTokenProjectionServers(allowedServers, options?.onServerUnavailable);
   if (Object.keys(allowedServers).length === 0) {
     return undefined;
   }
@@ -161,7 +211,23 @@ export async function buildCodexUserMcpServersThreadConfigPatchForRuntime(
   });
   const mcp_servers: CodexThreadConfigObject = {};
   for (const [name, server] of Object.entries(resolvedConfig.config.mcpServers)) {
-    mcp_servers[name] = normalizeCodexMcpServerConfig(name, server) as CodexThreadConfigObject;
+    // Defense in depth: machine-token markers must never survive projection.
+    if (isMachineTokenMcpProjectionUnsupported(server)) {
+      options?.onServerUnavailable?.(name, machineTokenMcpProjectionUnsupportedError(name));
+      continue;
+    }
+    const projected = normalizeCodexMcpServerConfig(name, server) as CodexThreadConfigObject;
+    const serialized = JSON.stringify(projected);
+    if (/"machineToken"|machine_token/i.test(serialized)) {
+      options?.onServerUnavailable?.(
+        name,
+        new Error(
+          `MCP server "${name}" projection contained machine-token material and was omitted.`,
+        ),
+      );
+      continue;
+    }
+    mcp_servers[name] = projected;
   }
   return Object.keys(mcp_servers).length === 0 ? undefined : { mcp_servers };
 }

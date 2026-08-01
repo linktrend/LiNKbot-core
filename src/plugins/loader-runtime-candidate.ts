@@ -532,6 +532,15 @@ export function loadRuntimePluginCandidate(params: {
     registry.plugins.push(record);
     state.seenIds.set(pluginId, candidate.origin);
     transaction.commit({ activate: context.shouldActivate });
+    // Wave 6: activating loads stage machine-token candidates only. Do not
+    // publish/retire live predecessors here — publication is owned by the
+    // complete load transaction at activatePluginRegistry. Snapshot/validate
+    // loads abandon staged candidates immediately.
+    if (!context.shouldActivate) {
+      params.registryBuilder.commitPluginGlobalSideEffects?.(record.id, {
+        activate: false,
+      });
+    }
     if (clearMismatchedQuarantineAfterLoad) {
       // Plugin ids can intentionally shadow an installed source via load.paths.
       // Clear stale install state only after the selected override registers.

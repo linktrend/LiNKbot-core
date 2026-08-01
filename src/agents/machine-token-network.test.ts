@@ -1,0 +1,186 @@
+import { describe, expect, it, vi } from "vitest";
+import {
+  assertMachineTokenNetworkUrl,
+  assertMachineTokenRequestBounds,
+  describeMachineTokenHttpFailure,
+  MACHINE_TOKEN_MAX_REQUEST_BODY_BYTES,
+  MACHINE_TOKEN_MAX_REQUEST_HEADER_BYTES,
+  MACHINE_TOKEN_MAX_RESPONSE_BYTES,
+  MACHINE_TOKEN_NETWORK_TIMEOUT_MS,
+  machineTokenNetworkFetch,
+  machineTokenNetworkFetchJson,
+} from "./machine-token-network.js";
+
+const { fetchWithSsrFGuardMock } = vi.hoisted(() => ({
+  fetchWithSsrFGuardMock: vi.fn(),
+}));
+
+vi.mock("../infra/net/fetch-guard.js", () => ({
+  fetchWithSsrFGuard: (...args: unknown[]) => fetchWithSsrFGuardMock(...args),
+}));
+
+/** Forever-streaming body: bounded readers must cancel after the byte cap. */
+function createUnboundedBodyStream(): ReadableStream<Uint8Array> {
+  const chunk = new Uint8Array(1024).fill(0x78); // 'x'
+  return new ReadableStream({
+    pull(controller) {
+      controller.enqueue(chunk);
+    },
+  });
+}
+
+describe("machine-token-network", () => {
+  it("documents injected fetchFn as a test seam that bypasses SSRF guard", async () => {
+    const fetchFn = vi.fn(
+      async () =>
+        new Response(JSON.stringify({ ok: true }), {
+          status: 200,
+          headers: { "content-type": "application/json" },
+        }),
+    );
+    const result = await machineTokenNetworkFetchJson({
+      url: "https://paci.test/.well-known/oauth-authorization-server",
+      fetchFn,
+      label: "discovery",
+    });
+    expect(result.ok).toBe(true);
+    expect(result.json).toEqual({ ok: true });
+    expect(fetchFn).toHaveBeenCalledTimes(1);
+    expect(fetchWithSsrFGuardMock).not.toHaveBeenCalled();
+  });
+
+  it("rejects HTTP non-loopback and production loopback targets", () => {
+    expect(() =>
+      assertMachineTokenNetworkUrl({
+        url: "http://example.com/oauth/token",
+        label: "token",
+      }),
+    ).toThrow(/HTTPS/u);
+    expect(() =>
+      assertMachineTokenNetworkUrl({
+        url: "https://127.0.0.1/oauth/token",
+        label: "token",
+      }),
+    ).toThrow(/loopback/u);
+  });
+
+  it("maps 429 and 5xx without embedding response bodies", () => {
+    expect(describeMachineTokenHttpFailure(429, "token request")).toMatch(/429/u);
+    expect(describeMachineTokenHttpFailure(503, "discovery")).toMatch(/503/u);
+    expect(describeMachineTokenHttpFailure(401, "token request")).toMatch(/401/u);
+  });
+
+  it("rejects unsupported JSON content types through the fetchFn seam", async () => {
+    await expect(
+      machineTokenNetworkFetchJson({
+        url: "https://paci.test/oauth/token",
+        fetchFn: async () =>
+          new Response("not-json", {
+            status: 200,
+            headers: { "content-type": "text/plain" },
+          }),
+        label: "token",
+      }),
+    ).rejects.toThrow(/content-type must be application\/json/u);
+  });
+
+  it("always exposes a release function for late-settlement safety", async () => {
+    const { response, release } = await machineTokenNetworkFetch({
+      url: "https://paci.test/oauth/token",
+      fetchFn: async () => new Response("{}", { headers: { "content-type": "application/json" } }),
+      label: "token",
+    });
+    expect(response.ok).toBe(true);
+    await expect(release()).resolves.toBeUndefined();
+    await expect(release()).resolves.toBeUndefined();
+  });
+
+  it("passes zero redirects and fixed deadline on the production SSRF auth path", async () => {
+    fetchWithSsrFGuardMock.mockResolvedValueOnce({
+      response: new Response(JSON.stringify({ token_endpoint: "https://paci.example/oauth/token" }), {
+        status: 200,
+        headers: { "content-type": "application/json" },
+      }),
+      finalUrl: "https://paci.example/.well-known/oauth-authorization-server",
+      release: async () => undefined,
+    });
+
+    const result = await machineTokenNetworkFetchJson({
+      url: "https://paci.example/.well-known/oauth-authorization-server",
+      label: "discovery",
+    });
+
+    expect(result.ok).toBe(true);
+    expect(fetchWithSsrFGuardMock).toHaveBeenCalledTimes(1);
+    expect(fetchWithSsrFGuardMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        maxRedirects: 0,
+        timeoutMs: MACHINE_TOKEN_NETWORK_TIMEOUT_MS,
+        requireHttps: true,
+        auditContext: "machine-token",
+      }),
+    );
+  });
+
+  it("bounds non-2xx response body reads without unbounded arrayBuffer", async () => {
+    let arrayBufferCalls = 0;
+    const response = new Response(createUnboundedBodyStream(), {
+      status: 500,
+      headers: { "content-type": "application/json" },
+    });
+    const originalArrayBuffer = response.arrayBuffer.bind(response);
+    response.arrayBuffer = async () => {
+      arrayBufferCalls += 1;
+      return originalArrayBuffer();
+    };
+
+    const result = await machineTokenNetworkFetchJson({
+      url: "https://paci.test/oauth/token",
+      fetchFn: async () => response,
+      label: "token",
+    });
+
+    expect(result).toEqual({ status: 500, ok: false, json: undefined });
+    expect(arrayBufferCalls).toBe(0);
+    expect(MACHINE_TOKEN_MAX_RESPONSE_BYTES).toBe(64 * 1024);
+  });
+
+  it("rejects oversized outbound request headers and bodies", () => {
+    expect(() =>
+      assertMachineTokenRequestBounds({
+        label: "token",
+        init: {
+          headers: {
+            "x-pad": "y".repeat(MACHINE_TOKEN_MAX_REQUEST_HEADER_BYTES + 1),
+          },
+        },
+      }),
+    ).toThrow(/headers exceed size limit/u);
+
+    expect(() =>
+      assertMachineTokenRequestBounds({
+        label: "token",
+        init: {
+          method: "POST",
+          body: "z".repeat(MACHINE_TOKEN_MAX_REQUEST_BODY_BYTES + 1),
+        },
+      }),
+    ).toThrow(/body exceeds size limit/u);
+  });
+
+  it("forces redirect:error on the injected auth test-seam fetch", async () => {
+    const fetchFn = vi.fn(
+      async () =>
+        new Response("{}", {
+          status: 200,
+          headers: { "content-type": "application/json" },
+        }),
+    );
+    await machineTokenNetworkFetch({
+      url: "https://paci.test/oauth/token",
+      fetchFn,
+      label: "token",
+    });
+    expect(fetchFn.mock.calls[0]?.[1]).toEqual(expect.objectContaining({ redirect: "error" }));
+  });
+});

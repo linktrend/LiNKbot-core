@@ -488,6 +488,7 @@ export type PluginRegistry = {
   httpRoutes: PluginHttpRouteRegistration[];
   hostedMediaResolvers: PluginHostedMediaResolverRegistration[];
   mcpServerConnectionResolvers: PluginMcpServerConnectionResolverRegistration[];
+  mcpServerToolFilters: import("./types.mcp-tool-filter.js").PluginMcpServerToolFilterRegistration[];
   cliRegistrars: PluginCliRegistration[];
   reloads: PluginReloadRegistration[];
   nodeHostCommands: PluginNodeHostCommandRegistration[];

@@ -1,7 +1,7 @@
 ---
 type: AgentProcedure
 title: Ship / Pull clock (Lisa Option A)
-description: Primary Ship/Pull clock — Lisa cron spawns Cursor ACP shipper/puller on Mini
+description: Primary Ship/Pull clock — Lisa cron spawns Cursor ACP shipper/puller on Mini; checkpoint-only Ship; frozen-tip Pull
 load: on_demand
 read_when:
   - Running lisa-ship-05 / lisa-pull-07 / lisa-ship-16 / lisa-pull-18 cron
@@ -12,16 +12,25 @@ tags: [pipeline, ship, pull, cron, acp, cursor, option-a]
 
 # Ship / Pull Clock — Lisa Option A
 
-**Doctrine SOT:** IDE Development `docs/AUTONOMOUS-GIT-OPERATIONS.md` (ADR 0003 amendment 2026-07-25; Ship 05 / Pull 07 as of 2026-07-25).  
-**Primary clock:** This procedure. Cursor Automations are **optional backup only** — do not treat them as the studio clock.
+**Candidate-only / non-live default:** This procedure is opt-in workshop documentation. It must **not** target live Lisa (`~/.openclaw-lisa`) until Carlos explicitly enables live targeting **and** separately approved credentials language appears in docs/contracts. Fail-closed: no cron mutation, profile sync, ACP spawn against live Lisa, or credential use from this repository packet alone. See `linkbots/lisa/ops/ship-pull-contract.ts` (`LISA_OPS_LIVE_ACTION_DEFAULTS` / `authorizeShipPullLiveAction`).
 
-**Wave names** use **local hour** labels (Asia/Taipei): Ship 05, Pull 07, Ship 16, Pull 18 — not A/B letters and not `Ship 05:00`.
+**IDE Development is the GitOps source of truth.** Lisa’s procedures are consumer/runtime instructions that must faithfully implement the pinned IDE contract on IDE `origin/development` (`docs/AUTONOMOUS-GIT-OPERATIONS.md`, ADR `0003` amendments). Cite that tip — not stale rule copies.
+
+**Pinned merged contract (already on IDE `development` via GITOPS-01 / PR #19):** checkpoint-only Ship (commit+push → STOP; Packager opens PRs; no Bugbot on Ship); Review Packager Tue/Fri **08:00**; Staging promote Tue/Fri **10:00** Asia/Taipei; Pull skips frozen/reviewed tips.
+
+**Open IDE dependency:** [IDE Development issue #23](https://github.com/linktrend/IDE-Development/issues/23) / draft PR #24 harden the remaining lifecycle + repair-control plane (completion gate, Lisa ACP Repair Dispatcher wiring, leftover contradictions). Until #23 merges, Lisa consumes the **already-merged** AUTONOMOUS contract above and treats #23 as the open repair/lifecycle follow-on — it must **not** invent local doctrine that replaces IDE Development.
+
+**Primary clock:** This procedure. Cursor Automations are **optional backup only**.
+
+**Wave names** use **local hour** labels (Asia/Taipei): Ship 05, Pull 07, Ship 16, Pull 18 — not A/B letters.
+
+**Work-branch allowlist (IDE-approved):** `issue/*`, `cursor/*`, and rare `dev/*` only. Unsupported branch kinds are **skipped explicitly**. Integration branches (`development` / `staging` / `main`) are never Ship/Pull work branches.
 
 ## Hard prerequisites (ops)
 
-- **Mac Mini must be awake** (Keep Awake / Remote Control) so Cursor ACP can spawn.
+- **Mac Mini must be awake** so Cursor ACP can spawn.
 - Lisa gateway running with profile `lisa`; ACP/`acpx` healthy.
-- Do **not** put secrets, tokens, or Keychain material in this repo or in cron message text.
+- Do **not** put secrets in this repo or cron message text.
 - Isolated cron jobs **must not** call `cron.add` / `cron.update` / `cron.remove` for other jobs.
 
 ## Calendar (Asia/Taipei)
@@ -33,15 +42,13 @@ tags: [pipeline, ship, pull, cron, acp, cursor, option-a]
 | `lisa-ship-16` | `0 16 * * *`               | Ship 16 |
 | `lisa-pull-18` | `0 18 * * *`               | Pull 18 |
 
-Morning Ship moved earlier (05:00) and Pull to 07:00 so the **08:30 morning digest** can cover all four daily waves (prior evening Ship 16 + Pull 18, plus morning Ship 05 + Pull 07) before Review #1.
+Related GitOps (not these four jobs): **Review Packager** Tue/Fri **08:00**; **Staging promote** Tue/Fri **10:00**; weekly **Main Approve** via Monday morning digest.
 
-Each job: isolated `agentTurn`, preferred `agentId: lisa-cron` (same pattern as `lisa-morning-digest` / `lisa-heartbeat-45`). Announce → Telegram `1123023078` with the **one-line** Clear/Issues result only (no lists/links). **Also** email that same one line (see below).
+Each job: isolated `agentTurn`, preferred `agentId: lisa-cron`. Announce → Telegram `1123023078` with the **one-line** Clear/Issues result only. **Also** email that same one line after validated ACP outcome.
 
-**Tool allowlist:** cron `payload.toolsAllow` **and** `agents.list[lisa-cron].tools.allow` must include `sessions_spawn`, `sessions_yield`, `read`, `write`, `edit`, and `exec`. OpenClaw intersects them — listing a tool only on the job or only on the agent is not enough (Ship 16 2026-07-25: job had `sessions_spawn`, agent allowlist did not → tool missing at runtime). File tools support the procedure, serialized status update, and email-body files; `exec` runs `tools/bin/lisa-safe email-send`. See `linkbots/lisa/docs/SHIP-PULL-CLOCK-INSTALL.md`.
+**Tool allowlist:** cron `payload.toolsAllow` **and** `agents.list[lisa-cron].tools.allow` must include `sessions_spawn`, `sessions_wait`, `read`, `write`, `edit`, and `exec`. Do **not** include or call `sessions_yield` for Ship/Pull (see Wait contract). See `linkbots/lisa/docs/SHIP-PULL-CLOCK-INSTALL.md` and `linkbots/lisa/docs/LISA-OPS-CRON-MIGRATION-PLAN.md`.
 
 ## Repo list (sequential — one at a time)
-
-Process **exactly one repo at a time**, in this order, skipping any path that is missing on disk:
 
 1. `/Users/linktrend/Projects/IDE Development`
 2. `/Users/linktrend/Projects/openclaw_prime`
@@ -53,57 +60,67 @@ Process **exactly one repo at a time**, in this order, skipping any path that is
 8. `/Users/linktrend/Projects/LiNKlibraries`
 9. `/Users/linktrend/Projects/LiNKautowork`
 
-Do not parallelize. Unfinished Ship/Pull work on a later repo is fine — roll forward next wave.
-
 ## Status file
-
-Write/update:
 
 `/Users/linktrend/.openclaw-lisa/workspace/memory/pipeline-status.md`
 
-Keep a `Cycle date: YYYY-MM-DD` metadata line plus one result line per known checkpoint in that Asia/Taipei morning-digest cycle: prior-evening Ship 16 + Pull 18, then current-morning Ship 05 + Pull 07. Derive the expected cycle from the cron run's nominal scheduled occurrence, not its completion time: the next calendar date for Ship 16/Pull 18 and the same date for Ship 05/Pull 07. Compare it with the stored cycle date before writing. If no date is stored or the expected date is newer, remove all four old Ship/Pull result lines, store the expected date, and write the current wave. If dates match, replace only the current wave line. If the expected date is older, the run is delayed or retried from a prior cycle: do not change the status file or erase the newer results. This monotonic rule also makes any current wave that resumes after a missed Ship 16 discard stale results. Preserve recognized Staging/Main lines until their owning checkpoint updates them.
+Keep `Cycle date: YYYY-MM-DD` plus one result line per known checkpoint in that digest cycle. Derive expected cycle from the cron run's **nominal** scheduled occurrence: next calendar date for Ship 16/Pull 18; same date for Ship 05/Pull 07. Monotonic CAS via `edit` only (see `agents/pipeline-status.md`). Live file must not be edited from this repository-only task during development.
 
-The live file must exist before these jobs are enabled. Serialize every update with the `edit` tool as a compare-and-swap: read the complete current file, compute the merged content, then replace that exact complete old content. If `edit` reports that the old text changed, another wave won the race; reread, recompute, and retry up to three times. Never use a stale full-file `write` for an existing file. After a successful edit, reread and verify the current wave line and cycle date are both present. On repeated contention or verification failure, report `WAVE: Issues` without erasing another wave. Mirror shapes and freshness rules in `agents/pipeline-status.md`.
+GitOps state vocabulary (digest/heartbeat language): **checkpointed**, **review-ready**, **under-review**, **merged**, **conflict**, **repair pending**, **blocked**. Ordinary Ship produces **checkpointed** only — never Review Ready.
+
+## Wait contract (CRITICAL — post-processing)
+
+Proven failure mode: `sessions_spawn` then `sessions_yield` finalizes/kills the isolated cron parent; ACP child cannot wake it; Lisa never does status CAS, email, Telegram one-liner, or final payload.
+
+**Integrated core path (OCP-W10-LISA-RELEASE):** park with `sessions_wait` after ACP spawn. Wakes from subagent registry persist events plus a single deadline timer — no periodic poll, no `sessions_yield`.
+
+### HARD RULES
+
+1. **Never call `sessions_yield`** on Ship/Pull isolated cron turns.
+2. **Never** poll with `sessions_list`, `sessions_history`, `exec sleep`, or busy-wait loops.
+3. Spawn Cursor ACP (`runtime: "acp"`, `agentId: "cursor"`, `model: "grok-4.5[effort=high,fast=true]"`).
+4. Record `childSessionKey` / `runId` from the spawn tool result.
+5. Call `sessions_wait` with the owned ACP `runId` (bounded `timeoutSeconds`) and park until a terminal registry outcome.
+6. Status CAS, email, Telegram one-liner, and the final assistant payload may run **only after** a validated child outcome (`WAVE: Clear` or `WAVE: Issues`).
+7. `canFinishShipPullSuccessfully` semantics: child validated + status CAS done + email attempted + exact one-line final payload.
+
+### Public API notes
+
+- `sessions_wait` — push-based park for owned non-collector ACP/subagent runs (registry persist wake + deadline). **Use this for Ship/Pull.**
+- `sessions_yield` — terminates/kills isolated cron parents (**forbidden** on Ship/Pull).
+- `agents_wait` — swarm `collect=true` children only; **ACP is rejected** for `collect=true` (do not substitute).
+
+Live rollout of this workshop procedure still requires a separately approved profile sync. Until live allowlists include `sessions_wait`, treat Ship/Pull post-processing as **blocked** and report `WAVE: Issues` rather than inventing Clear. See `linkbots/lisa/docs/LISA-OPS-CORE-PREREQUISITE.md`.
+
+Templates: `templates/pipeline-one-liner.md` (render via `node --experimental-strip-types ops/render-template.ts pipeline-one-liner --wave "<WAVE>" --result Clear|Issues` from the Lisa workspace root).
 
 ## Cron run procedure (Lisa)
 
-When a ship/pull cron fires:
-
 ### Silent work (mandatory)
 
-Emit **no** mid-run assistant text (“Starting WAVE…”, “processing repos…”, “Writing the status line…”). Tool calls only until the final reply. The announced Telegram body must be **exactly one line** (`WAVE: Clear` or `WAVE: Issues`) — nothing else (2026-07-26 Pull: narration leaked into announce). **Plain Telegram text only** — never wrap that one-liner in Markdown code fences.
+Emit **no** mid-run assistant text until the final reply. Tool calls only. Final Telegram body = **exactly one line** (`WAVE: Clear` or `WAVE: Issues`) — plain text, never Markdown fences.
 
-1. `read` this file (`agents/ship-pull-clock.md`).
-2. Spawn **one** Cursor ACP session with `sessions_spawn`:
-   - `runtime: "acp"`
-   - `agentId: "cursor"`
-   - `model: "grok-4.5[effort=high,fast=true]"`
-   - `task`: the matching **Shipper** or **Puller** prompt below (fill WAVE label).
-3. Wait for ACP completion (or fail). Do **not** substitute a Lisa subagent or self-write code.
-4. On spawn failure: leave the exact error in the cron run trace, update the status file with `WAVE: Issues` using the cycle-preserving rules above, send the email side effect, then return only the Telegram one-liner; stop. Never put the error in the final Telegram reply.
-5. On success: accept only Cursor's exact `WAVE: Clear` or `WAVE: Issues` reply, then have Lisa write that result to the status file using the monotonic cycle-date rules above. Cursor does not own or edit this shared status file.
-6. **Email (required side-effect, separate from heartbeat):** choose a fresh UUID for this isolated run and write the same one line to `scratch/pipeline-status-<wave-slug>-<run-uuid>.txt` (for example, `scratch/pipeline-status-ship-05-4f64c7b7-54fd-4f46-a950-21f5c2e65b27.txt`). Keep that exact path for the send; every retry/overlap must generate its own UUID and must never reuse another run's body file. Then run **exactly one** unpiped `exec` (no pipes, no `ls`, no multi-step plans):
+1. `read` this file.
+2. Spawn **one** Cursor ACP session with the Shipper or Puller prompt below.
+3. **Do not** call `sessions_yield`. Call `sessions_wait` on the owned ACP `runId` (park; no poll).
+4. On spawn or wait failure/timeout: status CAS `WAVE: Issues`, email attempt, final one-liner Issues; stop.
+5. On validated success: accept only Cursor's exact `WAVE: Clear` or `WAVE: Issues`, then Lisa writes status via monotonic CAS, then email, then final Telegram one-liner.
+6. **Email:** fresh UUID body file under `scratch/pipeline-status-<wave-slug>-<run-uuid>.txt`, then exactly one unpiped:
    ```bash
    tools/bin/lisa-safe email-send --to calusa@linktrend.media --subject "<WAVE> status" --body-file scratch/pipeline-status-<wave-slug>-<run-uuid>.txt
    ```
-   Subject examples: `Ship 05 status`, `Pull 07 status`. Body is exactly one line (`WAVE: Clear` or `WAVE: Issues`) — no lists, no links, no Battery content. Send for **both** Clear and Issues after the wave finishes across the repo list. If the exact command returns a normal non-denial send error, **keep Telegram delivery** and finish with the one-line status — do not invent Clear/Issues from the email failure alone. If it is hard-denied because an opaque shell form was used, retry the exact unpiped command above once. Continue only if that retry succeeds; otherwise stop the run and preserve the fatal failure.
-7. **Telegram:** only after the email attempt, return the final cron reply as **only** that one line (Clear or Issues). This final assistant reply is what cron announces.
+7. Order: ACP spawn → `sessions_wait` → **validated child outcome** → status CAS → email attempt → final Telegram one-liner.
 
-### HARD RULES — `lisa-safe` (Pull 07 2026-07-26 failure)
+### HARD RULES — `lisa-safe`
 
-`tools/bin/lisa-safe` is a **script file**, not a directory.
-
-1. **Never** `ls` / list / explore / “list files in” `tools/bin/lisa-safe` or `~/.openclaw-lisa/workspace/tools/bin/lisa-safe`.
-2. **Never** multi-step exec plans such as `list files in … → print text → print text`.
-3. **Do not** probe or verify the binary before use. Invoke `email-send` directly, exactly as above. Repeat it only for the one permitted hard-denial recovery attempt.
-4. Order: ACP spawn → status file → email attempt → final Telegram one-liner. Do not start the run by exploring `tools/bin`.
+Never `ls` / explore `tools/bin/lisa-safe`. Never multi-step opaque shell. Invoke `email-send` directly.
 
 ## ACP prompt — Shipper
 
 Replace `WAVE` with `Ship 05` or `Ship 16`.
 
 ```text
-WAVE (Asia/Taipei). You are the Implementer shipper under IDE Development autonomous Git ops (Lisa Option A clock).
+WAVE (Asia/Taipei). You are the Implementer shipper under Lisa Option A (checkpoint-only Ship).
 
 Process ONE REPO AT A TIME in this exact order (skip missing paths):
 1) /Users/linktrend/Projects/IDE Development
@@ -116,13 +133,24 @@ Process ONE REPO AT A TIME in this exact order (skip missing paths):
 8) /Users/linktrend/Projects/LiNKlibraries
 9) /Users/linktrend/Projects/LiNKautowork
 
-For each repo that has local changes or unpushed commits on a work branch (prefer issue/*; also cursor/*, rare dev/*):
-1) Commit with conventional commits if there are changes (never commit secrets).
-2) Push the branch.
-3) Open or update a PR targeting development.
-4) STOP. Do not merge. Do not self-review. Do not touch staging/main. Bugbot reviews; Integrator merges.
+Act ONLY on the IDE-approved work-branch allowlist: issue/*, cursor/*, rare dev/*. Unsupported kinds and integration branches (development/staging/main): skip explicitly and record an explicit skip result.
 
-Do not edit /Users/linktrend/.openclaw-lisa/workspace/memory/pipeline-status.md; Lisa owns the shared status writer and cycle-date checks.
+For each allowlisted work branch with local changes or unpushed commits:
+1) Commit with conventional commits if there are changes (never commit secrets). Preserve unfinished work honestly — do not invent completeness.
+2) Push the branch (never force-push).
+3) STOP. This is a checkpoint only.
+4) Do not create or update a PR.
+5) Do not request Bugbot.
+6) Do not merge. Do not self-review. Do not touch staging/main.
+7) Do not mark Review Ready. Final completion and Review Ready remain separate from ordinary Ship.
+
+Skip dirty actively owned worktrees; record an explicit skip reason privately (not in the status line).
+
+Wave result semantics (deterministic):
+- Clear ONLY if at least one allowlisted branch was successfully checkpointed (commit and/or push completed) and none were blocked/failed.
+- Issues if any branch was blocked/failed, OR if every branch was skipped/empty (no actionable work completed). Never report Clear merely because everything was skipped.
+
+Do not edit /Users/linktrend/.openclaw-lisa/workspace/memory/pipeline-status.md; Lisa owns the shared status writer.
 
 Reply with exactly one line only: `WAVE: Clear` or `WAVE: Issues`.
 ```
@@ -132,7 +160,7 @@ Reply with exactly one line only: `WAVE: Clear` or `WAVE: Issues`.
 Replace `WAVE` with `Pull 07` or `Pull 18`.
 
 ```text
-WAVE (Asia/Taipei). You are the Implementer puller under IDE Development autonomous Git ops (Lisa Option A clock).
+WAVE (Asia/Taipei). You are the Implementer puller under Lisa Option A.
 
 Pull is NOT hard-gated on all PRs being merged. Unfinished work rolls forward.
 
@@ -147,33 +175,35 @@ Process ONE REPO AT A TIME in this exact order (skip missing paths):
 8) /Users/linktrend/Projects/LiNKlibraries
 9) /Users/linktrend/Projects/LiNKautowork
 
-For each repo with a checked-out work branch (issue/*, cursor/*, rare dev/*) — not development/staging/main as the place to dump work:
-1) git fetch origin
-2) Merge origin/development into the current work branch (unless the repo already mandates rebase).
-3) Do not invent merges into staging/main.
-4) Note blockers privately; do not paste lists into the status line.
+Act ONLY on the IDE-approved work-branch allowlist: issue/*, cursor/*, rare dev/*. Unsupported kinds and integration branches: skip explicitly.
 
-Do not edit /Users/linktrend/.openclaw-lisa/workspace/memory/pipeline-status.md; Lisa owns the shared status writer and cycle-date checks.
+For each allowlisted checked-out work branch:
+1) git fetch origin
+2) Skip frozen/reviewed exact tip SHAs (do not merge into a tip that is frozen for review). Produce an explicit result for every skipped or updated branch.
+3) Never overwrite dirty worktrees. Never overwrite actively owned worktrees. Skip them with an explicit result.
+4) Otherwise merge origin/development into the current work branch (unless the repo already mandates rebase).
+5) Never force-push.
+6) Do not invent merges into staging/main.
+7) Note blockers privately; do not paste lists into the status line.
+
+Wave result semantics (deterministic):
+- Clear ONLY if at least one allowlisted branch was successfully updated and none were blocked/failed.
+- Issues if any branch was blocked/failed, OR if every branch was skipped/empty (no actionable work completed). Never report Clear merely because everything was skipped.
+
+Do not edit /Users/linktrend/.openclaw-lisa/workspace/memory/pipeline-status.md; Lisa owns the shared status writer.
 
 Reply with exactly one line only: `WAVE: Clear` or `WAVE: Issues`.
 ```
 
 ## Install / repair cron jobs (main session or operator — not from isolated cron)
 
-Use gateway CLI (unpiped). Example pattern (adjust flags to match live `cron --help` / existing digest jobs):
-
-```bash
-PATH="/opt/homebrew/opt/node@24/bin:$PATH" \
-node /Users/linktrend/Projects/openclaw_prime/openclaw.mjs --profile lisa cron list
-```
-
-Create four jobs named `lisa-ship-05`, `lisa-pull-07`, `lisa-ship-16`, `lisa-pull-18` with the exprs above, isolated session, `agentId: lisa-cron`, announce → Telegram `1123023078`, message pointing at this procedure (e.g. “Run agents/ship-pull-clock.md for Ship 05”). Prefer matching flags used by `lisa-morning-digest`.
-
-After install, verify with `cron list` that all four are enabled. Do not disable digest/heartbeat jobs.
+Live cron must **not** be modified in repository-only work. Migration plan: `linkbots/lisa/docs/LISA-OPS-CRON-MIGRATION-PLAN.md`.
 
 ## Related
 
-- One-line contract + Main Approve: `agents/pipeline-status.md`
-- Status file template: `memory/pipeline-status.md`
-- Cursor ACP spawn rules: `tools/cursor-acp.md`
-- IDE Development backup Automations doc: `docs/CURSOR-AUTOMATIONS-SETUP.md` (backup only)
+- Status + GitOps calendar: `agents/pipeline-status.md`
+- Repair dispatcher: `agents/repair-dispatcher.md`
+- Offline recovery: `agents/offline-recovery.md`
+- Templates: `templates/`
+- Cursor ACP: `tools/cursor-acp.md`
+- Core wait prerequisite: `linkbots/lisa/docs/LISA-OPS-CORE-PREREQUISITE.md`

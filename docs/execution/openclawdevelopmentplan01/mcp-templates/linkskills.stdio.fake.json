@@ -1,0 +1,35 @@
+{
+  "_comment": "FAKE ONLY — stdio Skills MCP pointing at repo fake. Do not copy into ~/.openclaw-lisa without Platform approval. enabled=false by default.",
+  "mcp": {
+    "servers": {
+      "linkskills": {
+        "enabled": false,
+        "transport": "stdio",
+        "command": "node",
+        "args": ["extensions/linkskills/fake/cli.mjs", "stdio"],
+        "cwd": "__OPENCLAW_PRIME_ROOT__",
+        "connectionTimeoutMs": 5000,
+        "requestTimeoutMs": 20000,
+        "toolFilter": {
+          "include": [
+            "skills_list",
+            "skills_search",
+            "skills_describe",
+            "skills_fragment_get",
+            "skills_release_get",
+            "skills_run_start",
+            "skills_run_update",
+            "skills_run_complete",
+            "skills_run_fail",
+            "skills_tool_resolve",
+            "skills_tool_invoke",
+            "skills_input_validate",
+            "skills_output_validate",
+            "skills_feedback_submit",
+            "skills_trace_candidate_submit"
+          ]
+        }
+      }
+    }
+  }
+}

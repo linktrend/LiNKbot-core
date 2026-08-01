@@ -89,6 +89,43 @@ export function loadSetupRuntimeChannelCandidate(params: {
     hookPolicy: params.entry?.hooks,
     registrationMode: registrationPlan.mode,
   });
+  try {
+    return finishSetupRuntimeChannelCandidate({
+      ...params,
+      api,
+      setupRegistration,
+    });
+  } finally {
+    // Setup/channel control-plane paths must never leave staged production
+    // machine-token candidates (Wave 6 leak gate).
+    registryBuilder.commitPluginGlobalSideEffects?.(record.id, { activate: false });
+  }
+}
+
+function finishSetupRuntimeChannelCandidate(params: {
+  mod: OpenClawPluginModule | null;
+  manifestRecord: PluginManifestRecord;
+  record: PluginRecord;
+  registrationPlan: PluginRegistrationPlan;
+  runtimeCandidateEntry: { source: string; rootDir: string };
+  safeSource: string;
+  rejectHardlinks: boolean;
+  loadPluginModule: PluginModuleLoader;
+  registryBuilder: PluginRegistryBuilder;
+  cfg: OpenClawConfig;
+  entry: NormalizedPluginsConfig["entries"][string] | undefined;
+  env: NodeJS.ProcessEnv;
+  preferSetupRuntimeForChannelPlugins: boolean;
+  seenIds: Map<string, PluginRecord["origin"]>;
+  candidateOrigin: PluginRecord["origin"];
+  logger: PluginLogger;
+  pushPluginLoadError: (message: string) => void;
+  api: ReturnType<PluginRegistryBuilder["createApi"]>;
+  setupRegistration: ReturnType<typeof resolveSetupChannelRegistration>;
+}): boolean {
+  const { manifestRecord, record, registrationPlan, runtimeCandidateEntry, registryBuilder, api } =
+    params;
+  const setupRegistration = params.setupRegistration;
   let mergedSetupRegistration = setupRegistration;
   let runtimeSetterApplied = false;
   if (

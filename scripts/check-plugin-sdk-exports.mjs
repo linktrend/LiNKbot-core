@@ -32,6 +32,19 @@ const requiredSubpathExports = {
     "normalizeSecretInputString",
     "resolveSecretInputString",
   ],
+  "machine-token-runtime": [
+    "assertMachineTokenIssuerUrl",
+    "authorizationHeaderFromMachineToken",
+    "fingerprintMachineTokenKeyRef",
+  ],
+};
+const forbiddenSubpathExports = {
+  "machine-token-runtime": [
+    "createMachineTokenPluginFacade",
+    "resolveMachineTokenAccessForHost",
+    "invalidateMachineTokenCacheForHost",
+    "clearMachineTokenCacheForHost",
+  ],
 };
 
 let missing = 0;
@@ -66,6 +79,13 @@ for (const [entry, names] of Object.entries(requiredSubpathExports)) {
   for (const name of names) {
     if (typeof runtime[name] !== "function") {
       console.error(`MISSING SUBPATH EXPORT: dist/plugin-sdk/${entry}.js#${name}`);
+      missing += 1;
+    }
+  }
+  const forbidden = forbiddenSubpathExports[entry] ?? [];
+  for (const name of forbidden) {
+    if (name in runtime && runtime[name] != null) {
+      console.error(`FORBIDDEN SUBPATH EXPORT: dist/plugin-sdk/${entry}.js#${name}`);
       missing += 1;
     }
   }

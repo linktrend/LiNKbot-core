@@ -1,0 +1,74 @@
+{
+  "domain": "LiNKbrain",
+  "consumed_at": "2026-07-28T09:52:00+08:00",
+  "consumer": "openclaw_prime",
+  "branch": "issue/ocp-openclawdevelopmentplan01",
+  "source_repo": "LiNKbrain",
+  "source_head": "a3cff6e0f04ac968c32beacb7bdb1b81a4d77d3f",
+  "source_branch_observed": "issue/13-developmentplan01",
+  "BRAIN_CONTRACT_VERSION": "1.0.0",
+  "package": {
+    "name": "@linktrend/lbrain-contracts",
+    "version": "0.1.0",
+    "private": true,
+    "type": "module"
+  },
+  "schemas_ts": {
+    "path": "packages/contracts/src/schemas.ts",
+    "sha256": "61468e4cf93d087df23dad1c26fbc91b258378757024debcde0cb6e97d50e0bb"
+  },
+  "frozen_mcp_tools": {
+    "path": "packages/mcp-server/src/frozen-tools.ts",
+    "sha256": "1e265b20dca34f4be73908a38bf2102c514ce594574faf27a41a9567a663be26",
+    "count": 17,
+    "names": [
+      "brain_browse",
+      "brain_search",
+      "brain_load",
+      "brain_append_finding",
+      "brain_capture_batch",
+      "brain_episode_checkpoint",
+      "brain_private_search",
+      "brain_private_load",
+      "brain_task_start",
+      "brain_task_update",
+      "brain_inbox_read",
+      "brain_conflict_respond",
+      "brain_message_send",
+      "brain_checkpoint_write",
+      "brain_handoff_create",
+      "brain_handoff_accept",
+      "brain_task_close"
+    ],
+    "note": "Corrected Brain HEAD implements full frozen §9.1 / FROZEN_MCP_TOOL_NAMES (17). Legacy aliases optional via compat flag; OpenClaw allowlist remains §9.1 only."
+  },
+  "openclaw_frozen_plan_section_9_1_tool_names": {
+    "knowledge": [
+      "brain_browse",
+      "brain_search",
+      "brain_load",
+      "brain_append_finding"
+    ],
+    "private": [
+      "brain_capture_batch",
+      "brain_episode_checkpoint",
+      "brain_private_search",
+      "brain_private_load"
+    ],
+    "coordination": [
+      "brain_task_start",
+      "brain_task_update",
+      "brain_inbox_read",
+      "brain_conflict_respond",
+      "brain_message_send",
+      "brain_checkpoint_write",
+      "brain_handoff_create",
+      "brain_handoff_accept",
+      "brain_task_close"
+    ]
+  },
+  "tool_name_policy": "OpenClaw keep frozen §9.1 names. Corrected Brain at a3cff6e… implements the same 17 names via frozen-tools.ts. OpenClaw will NOT alias. See BRAIN-TOOL-NAME-DECISION-PACKET.md.",
+  "openclaw_plan_sha256": "17203ee586a3fb2b1281bcddd8b17ae350075ebce537689f3c4bfcbbd14914f7",
+  "correction_wave": "wave-2b-2026-07-28",
+  "sanitization": "No secrets or node_modules. Metadata + hashes + tool-name inventory only."
+}

@@ -28,11 +28,17 @@ export function createPluginRegistry(registryParams: PluginRegistryParams) {
   const state = createPluginRegistryState(registryParams);
   const registrars = createPluginRegistrars(state);
   const runtimeResolver = createPluginRuntimeResolver(state);
-  const { createApi, deactivatePluginSideEffectGuards } = createPluginApiFactory(
-    state,
-    registrars,
-    runtimeResolver,
-  );
+  const {
+    createApi,
+    deactivatePluginSideEffectGuards,
+    commitPluginSideEffectGuards,
+    publishAllPluginMachineTokenGenerations,
+    collectStagedMachineTokenGenerationHandles,
+    collectMachineTokenOwnershipBlueprintPlugins,
+    commitMachineTokenOwnershipForRegistry,
+    abandonPluginMachineTokenGenerations,
+    abandonAllPluginMachineTokenGenerations,
+  } = createPluginApiFactory(state, registrars, runtimeResolver);
 
   const rollbackPluginGlobalSideEffects = (pluginId: string) => {
     deactivatePluginSideEffectGuards(pluginId);
@@ -46,10 +52,52 @@ export function createPluginRegistry(registryParams: PluginRegistryParams) {
     registrars.rollbackHooks(pluginId);
   };
 
+  /**
+   * Per-plugin side-effect commit. For machine-token facades, `activate: true`
+   * publishes immediately — tests and manual callers may use this. The
+   * production loader must **not** call activate during the candidate loop;
+   * it commits ownership via {@link commitPluginMachineTokenOwnershipSnapshot}
+   * only after activatePluginRegistry succeeds.
+   */
+  const commitPluginGlobalSideEffects = (pluginId: string, params?: { activate?: boolean }) => {
+    const activate = params?.activate !== false && registryParams.activateGlobalSideEffects !== false;
+    if (activate) {
+      commitPluginSideEffectGuards(pluginId);
+      return;
+    }
+    abandonPluginMachineTokenGenerations(pluginId);
+  };
+
+  const publishPluginMachineTokenGenerations = () => {
+    publishAllPluginMachineTokenGenerations();
+  };
+
+  const commitPluginMachineTokenOwnershipSnapshot = (params: {
+    reconcileScope: "full" | ReadonlySet<string>;
+  }) => {
+    commitMachineTokenOwnershipForRegistry(params);
+  };
+
+  const abandonPluginMachineTokenGenerationsForLoad = () => {
+    abandonAllPluginMachineTokenGenerations();
+  };
+
+  const collectPluginMachineTokenOwnershipBlueprintPlugins = () =>
+    collectMachineTokenOwnershipBlueprintPlugins();
+
+  const collectPluginStagedMachineTokenGenerationHandles = () =>
+    collectStagedMachineTokenGenerationHandles();
+
   return {
     registry: state.registry,
     createApi,
     rollbackPluginGlobalSideEffects,
+    commitPluginGlobalSideEffects,
+    publishPluginMachineTokenGenerations,
+    commitPluginMachineTokenOwnershipSnapshot,
+    collectPluginMachineTokenOwnershipBlueprintPlugins,
+    collectPluginStagedMachineTokenGenerationHandles,
+    abandonPluginMachineTokenGenerations: abandonPluginMachineTokenGenerationsForLoad,
     pushDiagnostic: state.pushDiagnostic,
     registerTool: registrars.registerTool,
     registerChannel: registrars.registerChannel,

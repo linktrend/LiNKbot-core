@@ -11,6 +11,8 @@ tags: [cron, digest, calendar, tasks, telegram, email, battery-monitoring, pipel
 
 # 08:30 Morning Digest (`lisa-morning-digest`)
 
+**Candidate-only / non-live default (fail-closed):** Repository copies of this procedure do **not** authorize live digest runs against `~/.openclaw-lisa`, credential use, or cron mutation. Live targeting requires explicit opt-in **plus** separately approved credentials language in docs/contracts. Until then, treat this as workshop SOT only.
+
 Native cron: `30 8 * * *` Asia/Taipei, isolated session, `agentId: lisa-cron`, announce → Telegram `1123023078`. `lisa-cron` has `sandbox.mode: off`, so this is a fresh transcript on the Mac mini host, not Docker clean room; host `tools/bin/lisa-safe` / `tools/bin/lisa-carlos-tasks` can use `/opt/homebrew/bin` and `~/.config/gws*`. `main` remains the protected default chat agent (`sandbox.mode: non-main`), and `main.tools.exec.host: gateway` must stay unset. Main must not spawn `lisa-cron` for digest catch-ups.
 Email is **not** a second cron announce channel — send it yourself with `tools/bin/lisa-safe email-send` (never improvised bare `gws`, never pipes).
 
@@ -109,9 +111,27 @@ Review memory/logs and ACP/session state for Cursor-delegated coding, local `Qwe
 
 `read` `/Users/linktrend/.openclaw-lisa/workspace/memory/pipeline-status.md` (or workspace-relative `memory/pipeline-status.md`). Compare its `Cycle date` with today's Asia/Taipei date. Include Ship/Pull lines only when the dates match; never include the metadata line itself. Apply the matching `Staging date` and `Main ready date` checks from `agents/pipeline-status.md` before including those results. Omit stale or undated checkpoint lines. Include exact Ship/Pull/Staging/Main result shapes only. If the file is missing, omit section D rather than inventing Clear.
 
+GitOps alignment (Asia/Taipei): ordinary Ship is **checkpoint-only** (not Review Ready) per the **merged** IDE Development contract on `origin/development` (GITOPS-01 / PR #19). Open follow-on [issue #23](https://github.com/linktrend/IDE-Development/issues/23) hardens lifecycle/repair-control — Lisa does not invent doctrine that replaces IDE Development. **Review Packager** Tue/Fri **08:00**. **Staging** Tue/Fri **10:00**. Weekly Main Approve uses numbered plain-English repo list — never ask Carlos for commit SHAs.
+
+### Template load / fill (deterministic)
+
+1. Read canonical templates `templates/telegram-daily-digest.md` and `templates/email-daily-digest.md` (every section, heading, omission rule, and `{{placeholder}}` is visible in those files).
+2. Build JSON context matching deployed `ops/templates.ts` `TemplateContext` (Telegram includes Battery; email omits Battery).
+3. Render with Lisa-executable (cwd = workspace root `/Users/linktrend/.openclaw-lisa/workspace`):
+   - Telegram: `node --experimental-strip-types ops/render-template.ts telegram-daily-digest <json-path>`
+   - Email: `node --experimental-strip-types ops/render-template.ts email-daily-digest <json-path>`
+4. Reject any output that still contains `{{...}}`. Same inputs → identical body.
+5. Write email body to `scratch/digest_email.txt` from the email render; Telegram final reply = telegram render only.
+
 ### Main Approve (Mondays only — section E when needed)
 
-On **Monday**, after reading pipeline status: include a short **Main Approve** ask in **both** email and Telegram (same wording) only when `Main ready date` equals today's Asia/Taipei date, `Main ready (Mon): Clear`, no decision is recorded today, and no current-day `Main approve claim` exists from the last two hours. Before including the ask, atomically claim the current timestamp using the compare-and-swap protocol in `agents/pipeline-status.md`. An undated or older result is stale and must not trigger approval. Carlos answers **Approve / yes on Telegram only** (email is notify-only), and the main session records today's decision. Do **not** merge from this digest cron. A later Monday heartbeat can reclaim after two hours if readiness was late or delivery failed.
+On **Monday**, after reading pipeline status: include a short **Main Approve** ask in **both** email and Telegram (same wording) only when `Main ready date` equals today's Asia/Taipei date, `Main ready (Mon): Clear`, no decision is recorded today, and no current-day `Main approve claim` exists from the last two hours.
+
+**Binding (IDE-aligned):** Carlos sees only numbered plain-English repository descriptions. Internally, every numbered item must bind immutably to: `repository`, `promotionPrNumber`, `stagingSha`, `priorMainSha`, `promotionHeadSha`, and `gateResult`. Approval must dispatch **exactly** those protected identifiers. Any drift invalidates approval and requires a new package/ask.
+
+**Runtime store status:** Packaging is **blocked** until IDE Development issue #23 / OpenClaw provides an authoritative package store (GitHub issue/PR metadata or OpenClaw task binding). Do **not** create JSON/Markdown OpenClaw sidecar state for this. Runtime helpers (`issueCarlosAsk` / `authorizeApprovalDispatch` in deployed `ops/main-approve-binding.ts`) return `blocked_no_store` and must never emit a Carlos ask or `ok: true` while the store is unavailable.
+
+Before including the ask (once a store exists), atomically claim the current timestamp using the compare-and-swap protocol in `agents/pipeline-status.md`. An undated or older result is stale and must not trigger approval. Carlos answers **Approve / yes on Telegram only** (email is notify-only), and the main session records today's decision. Do **not** merge from this digest cron. A later Monday heartbeat can reclaim after two hours if readiness was late or delivery failed.
 
 If not Monday, or Main is not Clear / unknown: omit the Approve ask entirely.
 
@@ -215,8 +235,12 @@ iii. Eval Comparisons:
 ## E. Main Approve
 
 (Monday only, and only when Main ready (Mon): Clear:)
-Ready to Approve staging→main for inherited repos? Reply Approve / yes on Telegram (email is notify-only).
-(omit section E entirely otherwise)
+Ready to Approve staging→main for these repositories?
+
+1. <repo> — <short plain-English description>
+2. …
+   Reply Approve / yes on Telegram (email is notify-only). Never ask Carlos to identify commit SHAs.
+   (omit section E entirely otherwise)
 
 ### Battery Monitoring Checks (item 7)
 

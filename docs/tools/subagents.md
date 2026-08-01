@@ -75,7 +75,8 @@ agent decides whether a user-facing update is needed.
   <Accordion title="Non-blocking, push-based completion">
     - `sessions_spawn` is non-blocking; it returns a run id immediately.
     - On completion, the sub-agent reports back to the parent/requester session.
-    - Agent turns that need child results should call `sessions_yield` after spawning required work. That ends the current turn and lets the completion event arrive as the next model-visible message.
+    - Agent turns that need child results in an ordinary (non-cron) session should call `sessions_yield` after spawning required work. That ends the current turn and lets the completion event arrive as the next model-visible message.
+    - Isolated cron parents that need child results must call `sessions_wait` with the child run id instead. That parks the current tool-call on registry persist wake events until the child is terminal, then continues post-processing in the same turn. Do **not** call `sessions_yield` from isolated cron — yield finalizes the cron parent and prevents post-processing.
     - Completion is push-based. Once spawned, do **not** poll `/subagents list`, `sessions_list`, or `sessions_history` in a loop just to wait for it to finish; check status on-demand only when debugging.
     - Child output is a report/evidence for the requester agent to synthesize. It is not user-authored instruction text and cannot override system, developer, or user policy.
     - On completion, OpenClaw best-effort closes tracked browser tabs/processes opened by that sub-agent session before the announce cleanup flow continues.
@@ -135,7 +136,7 @@ chat channel.
 
 Availability depends on the caller's effective tool policy. The built-in
 `coding` and `messaging` profiles include `sessions_spawn`,
-`sessions_yield`, and `subagents`; `minimal` does not. `full` allows every
+`sessions_wait`, `sessions_yield`, and `subagents`; `minimal` does not. `full` allows every
 tool. Add those tools with `tools.alsoAllow`, or use one of the profiles
 above, for an agent on a custom narrower profile that should still
 delegate work.
@@ -271,6 +272,29 @@ run id instead.
 The reserved targets `last` and `all` are not valid `taskName` values
 because they already have control meanings.
 
+## Tool: `sessions_wait`
+
+Parks the current tool-call until owned non-collector child runs (native
+sub-agent or ACP `mode=run`) reach a terminal registry outcome. Wake is
+push-based via registry persist events — not a polling loop.
+
+Use `sessions_wait` when the parent must keep the current turn alive and
+continue post-processing after the child ends (especially isolated cron).
+Do not call `sessions_yield` after spawn on isolated cron parents.
+
+Collector children remain on `agents_wait` (Swarm). `sessions_wait` rejects
+`collect=true` runs with `collector_only`.
+
+```json
+{ "ids": ["<runId>"], "timeoutSeconds": 600 }
+```
+
+Terminal statuses are `ok`, `error`, `timeout`, `cancelled`, or `unknown`.
+Missing announce still returns a deterministic terminal row when `endedAt`
+is set. The first successful observation records a durable
+`requesterWaitObservation` receipt so restart/re-entry can avoid duplicate
+post-processing side effects.
+
 ## Tool: `sessions_yield`
 
 Ends the current model turn and waits for runtime events, primarily
@@ -278,7 +302,9 @@ sub-agent completion events, to arrive as the next message. Use it after
 spawning required child work when the requester cannot produce a final
 answer until those completions arrive.
 
-`sessions_yield` is the waiting primitive. Do not replace it with polling
+`sessions_yield` is the ordinary-session waiting primitive. For isolated
+cron parents that must keep the turn alive for post-processing, use
+`sessions_wait` instead. Do not replace either wait path with polling
 loops over `subagents`, `sessions_list`, `sessions_history`, shell
 `sleep`, or process polling just to detect child completion.
 
@@ -301,8 +327,10 @@ requester session tree. The task rows cover native sub-agents, ACP runs,
 Gateway CLI/media work, and cron executions. It is scoped to the current
 requester; a child can only see its own controlled children.
 
-Use `subagents` for on-demand status and debugging. Use `sessions_yield` to
-wait for completion events.
+Use `subagents` for on-demand status and debugging. Use `sessions_wait` to
+park for owned child terminal outcomes in-turn (cron/ACP). Use
+`sessions_yield` to end an ordinary turn and receive completion events as
+the next message.
 
 Use `action: "cancel"` with a `taskId` returned by `action: "list"` to stop
 a task. Cancellation is confined to the controlled session tree; a leaf

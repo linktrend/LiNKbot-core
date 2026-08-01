@@ -1,0 +1,176 @@
+{
+  "id": "linkskills",
+  "name": "LiNKskills",
+  "description": "Private Skills adapter for Lisa: structured telemetry outbox against Skills Gateway contracts. Default-disabled; never registers conversation hooks; fake-only until activation gates.",
+  "enabledByDefault": false,
+  "activation": {
+    "onStartup": false
+  },
+  "configContracts": {
+    "secretInputs": {
+      "paths": [
+        {
+          "path": "skillsCredential",
+          "expected": "string",
+          "ownerKind": "plugin"
+        },
+        {
+          "path": "machineToken.clientAssertionKeyRef",
+          "expected": "string",
+          "ownerKind": "plugin"
+        }
+      ]
+    }
+  },
+  "uiHints": {
+    "mcpDiscoveryRead": {
+      "label": "Skills MCP Discovery/Read",
+      "help": "When false, no Skills discovery/retrieval tools are exposed; native OpenClaw skills continue."
+    },
+    "governedExecution": {
+      "label": "Governed Execution",
+      "help": "When false, block LiNKskills execution only; native skills continue."
+    },
+    "telemetryEnqueue": {
+      "label": "Telemetry Enqueue",
+      "help": "When false, no new Skills telemetry records are accepted; existing outbox is retained."
+    },
+    "telemetryDrain": {
+      "label": "Telemetry Drain",
+      "help": "When false, stop Skills delivery; local durable queue is retained."
+    },
+    "skillsCredential": {
+      "label": "Skills Credential",
+      "help": "SecretRef or string for the Skills-only credential. Never paste live secrets into source.",
+      "sensitive": true
+    },
+    "machineToken": {
+      "label": "Machine Token Binding",
+      "help": "Optional client_credentials + private_key_jwt binding. When set, HTTP uses machine-token instead of skillsCredential. clientAssertionKeyRef must be a SecretRef object (no literal PEM/JWK/env/CLI strings). bindingId must not equal Brain bindingId. issuerUrl and endpoints require HTTPS outside explicit local-test loopback."
+    },
+    "redactionPolicyVersion": {
+      "label": "Redaction Policy Version",
+      "help": "Allowlist policy version applied to structured telemetry envelopes before remote writes."
+    },
+    "outboxMaxEntries": {
+      "label": "Outbox Max Entries",
+      "help": "Per-namespace keyed-store capacity with reject-new overflow."
+    },
+    "transportMode": {
+      "label": "Transport Mode",
+      "help": "disabled (default), fake (test-only), mcp (managed mcp.servers entry), or http (skillsEndpoint + SecretRef bearer)."
+    },
+    "mcpServerName": {
+      "label": "MCP Server Name",
+      "help": "Key under mcp.servers for Skills managed MCP. Default linkskills."
+    },
+    "skillsEndpoint": {
+      "label": "Skills Endpoint",
+      "help": "HTTP JSON endpoint for Skills telemetry when transportMode is http."
+    }
+  },
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "$defs": {
+      "secretRef": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "source": {
+            "type": "string",
+            "enum": ["env", "file", "exec"]
+          },
+          "provider": { "type": "string" },
+          "id": { "type": "string" }
+        },
+        "required": ["source", "provider", "id"]
+      },
+      "secretInput": {
+        "anyOf": [
+          { "type": "string", "minLength": 1 },
+          { "$ref": "#/$defs/secretRef" }
+        ]
+      },
+      "machineToken": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["bindingId", "issuerUrl", "clientId", "clientAssertionKeyRef"],
+        "properties": {
+          "bindingId": { "type": "string", "minLength": 1 },
+          "issuerUrl": { "type": "string", "minLength": 1 },
+          "clientId": { "type": "string", "minLength": 1 },
+          "audience": { "type": "string" },
+          "scope": { "type": "string" },
+          "clientAssertionKeyRef": { "$ref": "#/$defs/secretRef" }
+        }
+      }
+    },
+    "properties": {
+      "mcpDiscoveryRead": {
+        "type": "boolean",
+        "default": false
+      },
+      "governedExecution": {
+        "type": "boolean",
+        "default": false
+      },
+      "telemetryEnqueue": {
+        "type": "boolean",
+        "default": false
+      },
+      "telemetryDrain": {
+        "type": "boolean",
+        "default": false
+      },
+      "transportMode": {
+        "type": "string",
+        "enum": ["disabled", "fake", "mcp", "http"],
+        "default": "disabled"
+      },
+      "mcpServerName": {
+        "type": "string",
+        "default": "linkskills"
+      },
+      "skillsEndpoint": {
+        "type": "string",
+        "description": "Skills telemetry endpoint for transportMode=http (SecretRef bearer via skillsCredential)."
+      },
+      "skillsCredential": {
+        "$ref": "#/$defs/secretInput"
+      },
+      "machineToken": {
+        "$ref": "#/$defs/machineToken"
+      },
+      "redactionPolicyVersion": {
+        "type": "string",
+        "default": "skills.telemetry.v0"
+      },
+      "batchMaxEvents": {
+        "type": "integer",
+        "minimum": 1,
+        "default": 32
+      },
+      "flushIntervalMs": {
+        "type": "integer",
+        "minimum": 100,
+        "default": 5000
+      },
+      "outboxMaxEntries": {
+        "type": "integer",
+        "minimum": 1,
+        "default": 1000
+      },
+      "outboxAgeAlarmMs": {
+        "type": "integer",
+        "minimum": 1000,
+        "default": 3600000
+      },
+      "environment": {
+        "type": "string",
+        "enum": ["test", "stage", "production"],
+        "default": "test"
+      }
+    }
+  }
+}

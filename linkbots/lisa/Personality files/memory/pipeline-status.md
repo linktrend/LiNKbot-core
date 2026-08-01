@@ -2,6 +2,8 @@
 
 Updated by Ship/Pull ACP + Lisa clock. The live file starts with a cycle-date metadata line and may contain one line for each checkpoint in that digest cycle. Cycle dates advance monotonically: a matching wave replaces only its own result, a newer wave cycle clears older Ship/Pull results, and a delayed older-cycle run does not modify the file.
 
+Ordinary Ship = **checkpointed** only. Review-ready / under-review / merged / conflict / repair pending / blocked are separate states (see `agents/pipeline-status.md`).
+
 Examples (replace with live values; do not invent Clear):
 
 ```text

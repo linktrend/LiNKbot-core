@@ -1,0 +1,23 @@
+{
+  "description": "Must be rejected: chain-of-thought / reasoning fields",
+  "batch": {
+    "batchId": "batch_test_bad_reasoning",
+    "streamId": "stream_test_lisa",
+    "fromSequence": 1,
+    "toSequence": 1,
+    "contentHash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "events": [
+      {
+        "sequence": 1,
+        "role": "assistant",
+        "text": "ok",
+        "reasoning": "SECRET_CHAIN_OF_THOUGHT"
+      }
+    ]
+  },
+  "expectedRejection": "validation_error",
+  "prohibitedFields": [
+    "reasoning"
+  ],
+  "expectedRejectionDetail": "prohibited_field"
+}

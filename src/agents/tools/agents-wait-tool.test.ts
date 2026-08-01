@@ -309,4 +309,32 @@ describe("agents_wait", () => {
       }),
     ).rejects.toThrow("at most 1000 ids");
   });
+
+  it("keeps ordinary non-collector ACP runs invisible to agents_wait", async () => {
+    records.set("acp-run", {
+      runId: "acp-run",
+      childSessionKey: "agent:worker:acp:acp-run",
+      controllerSessionKey: "agent:main:main",
+      requesterSessionKey: "agent:main:main",
+      requesterDisplayKey: "agent:main:main",
+      task: "acp",
+      cleanup: "keep",
+      createdAt: Date.now(),
+      endedAt: Date.now(),
+      outcome: { status: "ok" },
+      completion: { required: true, resultText: "WAVE: Clear" },
+    });
+    const tool = createAgentsWaitTool({
+      agentSessionKey: "agent:main:main",
+      agentId: "main",
+      config: { tools: { swarm: true } },
+    });
+
+    const result = await tool.execute("call", { ids: ["acp-run"], timeoutSeconds: 0 });
+    expect(result.details).toEqual({
+      completed: [],
+      pending: [],
+      errors: [{ runId: "acp-run", error: "not_found" }],
+    });
+  });
 });

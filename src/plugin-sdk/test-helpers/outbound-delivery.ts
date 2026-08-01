@@ -10,4 +10,8 @@ export {
   releasePinnedPluginChannelRegistry,
   setActivePluginRegistry,
 } from "../../plugins/runtime.js";
-export { createOutboundTestPlugin, createTestRegistry } from "../../test-utils/channel-plugins.js";
+export {
+  createOutboundTestPlugin,
+  createTestRegistry,
+  createDirectOutboundTestAdapter,
+} from "../../test-utils/channel-plugins.js";

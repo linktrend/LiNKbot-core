@@ -162,6 +162,7 @@
             "sessions_list",
             "sessions_history",
             "sessions_spawn",
+            "sessions_wait",
             "sessions_yield",
             "sessions_search",
             "conversations_list"

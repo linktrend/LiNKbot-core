@@ -1,15 +1,16 @@
-// Verifies cron-isolated sessions suppress run-mode subagent acceptance notes.
+// Verifies cron-isolated sessions get sessions_wait guidance instead of yield/polling.
 import { describe, expect, it } from "vitest";
 import { resolveSubagentSpawnAcceptedNote } from "./subagent-spawn-accepted-note.js";
 
-describe("sessions_spawn: cron isolated session note suppression", () => {
-  it("suppresses ACCEPTED_NOTE for cron isolated sessions (mode=run)", () => {
-    expect(
-      resolveSubagentSpawnAcceptedNote({
-        spawnMode: "run",
-        agentSessionKey: "agent:main:cron:dd871818:run:cf959c9f",
-      }),
-    ).toBeUndefined();
+describe("sessions_spawn: cron isolated session wait guidance", () => {
+  it("recommends sessions_wait for cron isolated sessions (mode=run)", () => {
+    const note = resolveSubagentSpawnAcceptedNote({
+      spawnMode: "run",
+      agentSessionKey: "agent:main:cron:dd871818:run:cf959c9f",
+    });
+    expect(note).toContain("sessions_wait");
+    expect(note).toContain("Do NOT call sessions_yield");
+    expect(note).not.toContain("Auto-announce is push-based");
   });
 
   it("preserves ACCEPTED_NOTE for regular sessions (mode=run)", () => {
