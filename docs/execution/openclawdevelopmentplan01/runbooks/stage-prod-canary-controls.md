@@ -21,6 +21,8 @@ Staged canary remains **non-live by default**. Candidate routing fragments under
 
 See `docs/evidence/ocp-w30-approved-pdf-routing/release-graph.md`.
 
+**Future live canary / rollback plan (docs only):** `docs/evidence/ocp-w70-lisa-canary-rollback-plan/README.md` — observation windows, receipt fields, PDF-only rollback, cron/heartbeat/digest and Ship/Pull / Repair Dispatcher checks. That plan does **not** start a live canary.
+
 ---
 
 ## FAKE / TEMPLATE rehearsal (safe anytime)
@@ -52,8 +54,8 @@ Not executable from this FAKE/TEMPLATE rehearsal. When Principal authorizes a pr
 
 | Field         | Value                                                                                                   |
 | ------------- | ------------------------------------------------------------------------------------------------------- |
-| Rehearsed     | 2026-08-01 Asia/Taipei (OCP-W30 Lane B docs — approved_unverified PDF candidate)                        |
-| Operator      | Cursor Local Grok 4.5 High (docs rehearsal)                                                             |
-| Live mutation | **none**                                                                                                |
-| PDF cutover   | MiniMax-M3 candidate / `approved_unverified` (first proof = controlled production rollout; not claimed) |
-| Result        | Runbook executable at non-live tier; staged canary non-live by default; rollback = PDF-only disable     |
+| Rehearsed     | 2026-08-01 Asia/Taipei (OCP-W30 Lane B docs — approved_unverified PDF candidate; OCP-W70 canary/rollback plan link) |
+| Operator      | Cursor Local Grok 4.5 High (docs rehearsal)                                                                         |
+| Live mutation | **none**                                                                                                            |
+| PDF cutover   | MiniMax-M3 candidate / `approved_unverified` (first proof = controlled production rollout; not claimed)             |
+| Result        | Runbook executable at non-live tier; staged canary non-live by default; rollback = PDF-only disable                 |

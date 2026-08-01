@@ -58,3 +58,5 @@ Candidate git rollback: revert the OCP-W30 candidate commit; live Lisa stays unt
 ## Rollout gate
 
 Live profile sync requires a separate human-approved rollout after this RC lands toward `development`. Controlled **first-PDF proof** occurs only during that separately authorized production rollout. Success claims require a first-production-proof receipt. Final acceptance is a further human gate after that receipt. CI/Bugbot remain deferred until explicitly run.
+
+**Future canary/rollback operational plan (docs only):** `docs/evidence/ocp-w70-lisa-canary-rollback-plan/README.md`.
