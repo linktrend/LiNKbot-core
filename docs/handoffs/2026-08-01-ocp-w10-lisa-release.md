@@ -72,3 +72,11 @@ Push tip; open/update PR to `development`; do not deploy.
 ## Confidence
 
 95% for repository RC completeness; 0% claim of production readiness.
+
+## Amendment — 2026-08-01 (replacement lane bc-3aa1773f)
+
+**What was incomplete / wrong for closeout:** Prior lane tip `40bcb599a1` was pushed but the replacement agent initially diverged locally; workshop `lisa-cron.tools.allow` still lacked `sessions_wait`; accidental `docs/agent-sessions/active/.md` remained.
+
+**Corrected:** Replacement lane adopted remote tip (same packet branch), deleted the accidental `.md`, added `sessions_wait` to workshop `openclaw.json` `lisa-cron` allowlist SOT mirror, recorded replacement session, re-ran bounded suites, pushed, and opened/updated PR to `development`.
+
+**Who:** Cursor Cloud Agent `cursor-cloud-lisa-ocp-w10-lisa-release-20260801-0138` (replacement for stalled bc-9cfbac34). Live Lisa still untouched.
