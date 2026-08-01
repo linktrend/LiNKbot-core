@@ -12,6 +12,8 @@ tags: [pipeline, ship, pull, cron, acp, cursor, option-a]
 
 # Ship / Pull Clock — Lisa Option A
 
+**Candidate-only / non-live default:** This procedure is opt-in workshop documentation. It must **not** target live Lisa (`~/.openclaw-lisa`) until Carlos explicitly enables live targeting **and** separately approved credentials language appears in docs/contracts. Fail-closed: no cron mutation, profile sync, ACP spawn against live Lisa, or credential use from this repository packet alone. See `linkbots/lisa/ops/ship-pull-contract.ts` (`LISA_OPS_LIVE_ACTION_DEFAULTS` / `authorizeShipPullLiveAction`).
+
 **IDE Development is the GitOps source of truth.** Lisa’s procedures are consumer/runtime instructions that must faithfully implement the pinned IDE contract on IDE `origin/development` (`docs/AUTONOMOUS-GIT-OPERATIONS.md`, ADR `0003` amendments). Cite that tip — not stale rule copies.
 
 **Pinned merged contract (already on IDE `development` via GITOPS-01 / PR #19):** checkpoint-only Ship (commit+push → STOP; Packager opens PRs; no Bugbot on Ship); Review Packager Tue/Fri **08:00**; Staging promote Tue/Fri **10:00** Asia/Taipei; Pull skips frozen/reviewed tips.

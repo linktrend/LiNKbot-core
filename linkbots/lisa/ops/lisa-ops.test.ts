@@ -35,18 +35,12 @@ import {
   selectFreshCheckpointLines,
 } from "./pipeline-status-cas.ts";
 import {
-  classifyFailure,
-  evaluateProof,
-  MAX_REPAIR_ATTEMPTS,
-  nextRepairDecision,
-  recordDispatch,
-  type RepairAttemptRecord,
-  type RepairBinding,
-} from "./repair-dispatcher.ts";
-import {
   canFinishShipPullSuccessfully,
   classifyBranch,
   isApprovedWorkBranch,
+  authorizeLiveLisaAction,
+  authorizeShipPullLiveAction,
+  LISA_OPS_LIVE_ACTION_DEFAULTS,
   planPullBranch,
   planShipBranch,
   resolveWaveOutcome,
@@ -59,6 +53,16 @@ import {
   validateShipPromptContract,
   type BranchWaveResult,
 } from "./ship-pull-contract.ts";
+import {
+  authorizeRepairLiveDispatch,
+  classifyFailure,
+  evaluateProof,
+  MAX_REPAIR_ATTEMPTS,
+  nextRepairDecision,
+  recordDispatch,
+  type RepairAttemptRecord,
+  type RepairBinding,
+} from "./repair-dispatcher.ts";
 import {
   assertNoUnresolvedPlaceholders,
   loadCanonicalTemplateBody,
@@ -278,6 +282,61 @@ describe("Ship/Pull post-processing gate", () => {
     assert.ok(SHIP_PULL_REQUIRED_TOOLS.includes("sessions_wait"));
     assert.ok(!SHIP_PULL_REQUIRED_TOOLS.includes("sessions_yield"));
   });
+
+  it("procedure allowlist text matches SHIP_PULL_REQUIRED_TOOLS", () => {
+    const text = readPersonality("agents/ship-pull-clock.md");
+    for (const tool of SHIP_PULL_REQUIRED_TOOLS) {
+      assert.match(text, new RegExp(tool));
+    }
+    assert.match(
+      text,
+      /toolsAllow` \*\*and\*\* `agents\.list\[lisa-cron\]\.tools\.allow` must include `sessions_spawn`, `sessions_wait`/,
+    );
+    assert.equal(shipPullForbidsSessionsYield(text), true);
+    assert.equal(shipPullAllowlistIncludesSessionsWait(SHIP_PULL_REQUIRED_TOOLS), true);
+  });
+});
+
+describe("Lisa ops live-action fail-closed defaults", () => {
+  it("defaults block live Lisa targeting without credentials language approval", () => {
+    assert.equal(LISA_OPS_LIVE_ACTION_DEFAULTS.liveLisaTargetingAllowed, false);
+    assert.equal(LISA_OPS_LIVE_ACTION_DEFAULTS.credentialsLanguageSeparatelyApproved, false);
+    assert.equal(LISA_OPS_LIVE_ACTION_DEFAULTS.cronMutationAllowed, false);
+    assert.equal(LISA_OPS_LIVE_ACTION_DEFAULTS.shipPullLiveActionAllowed, false);
+    assert.equal(LISA_OPS_LIVE_ACTION_DEFAULTS.repairDispatcherLiveActionAllowed, false);
+    assert.equal(LISA_OPS_LIVE_ACTION_DEFAULTS.digestLiveActionAllowed, false);
+    assert.equal(LISA_OPS_LIVE_ACTION_DEFAULTS.heartbeatLiveActionAllowed, false);
+    const blocked = authorizeLiveLisaAction();
+    assert.equal(blocked.ok, false);
+    if (!blocked.ok) assert.equal(blocked.reason, "live_targeting_disabled");
+    const needCreds = authorizeLiveLisaAction({
+      liveLisaTargetingAllowed: true,
+      credentialsLanguageSeparatelyApproved: false,
+    });
+    assert.equal(needCreds.ok, false);
+    if (!needCreds.ok) assert.equal(needCreds.reason, "credentials_language_not_approved");
+    const shipBlocked = authorizeShipPullLiveAction();
+    assert.equal(shipBlocked.ok, false);
+  });
+
+  it("opt-in live config authorizes only when both gates are true", () => {
+    const ok = authorizeLiveLisaAction({
+      liveLisaTargetingAllowed: true,
+      credentialsLanguageSeparatelyApproved: true,
+    });
+    assert.equal(ok.ok, true);
+  });
+
+  it("procedures document non-live / opt-in defaults", () => {
+    const ship = readPersonality("agents/ship-pull-clock.md");
+    const digest = readPersonality("agents/morning-digest.md");
+    const repair = readPersonality("agents/repair-dispatcher.md");
+    const heartbeat = readPersonality("HEARTBEAT.md");
+    for (const text of [ship, digest, repair, heartbeat]) {
+      assert.match(text, /non-live|opt-in|candidate-only|fail-closed/i);
+      assert.match(text, /credentials/i);
+    }
+  });
 });
 
 describe("Approved model routing (non-live)", () => {
@@ -299,7 +358,10 @@ describe("Approved model routing (non-live)", () => {
     assert.equal(LISA_APPROVED_MODEL_ROUTING.paidSpendEnablementAllowed, false);
     const imagePdf = LISA_APPROVED_MODEL_ROUTING.entries.find((e) => e.slot === "imagePdf");
     assert.ok(imagePdf);
-    assert.match(imagePdf.notes ?? "", /PDF documentModels not set/i);
+    assert.match(
+      imagePdf.notes ?? "",
+      /PDF documentModels (not set|disabled)|pdfDocumentModelsCutover/i,
+    );
     assert.ok(!/Image\/PDF via MiniMax native vision catalog/i.test(imagePdf.notes ?? ""));
   });
 
@@ -677,6 +739,44 @@ describe("Repair dispatcher binding + pending hold", () => {
       assert.equal(decision.decision, "escalate");
     }
   });
+
+  it("live ACP dispatch fails closed under candidate defaults", () => {
+    const blocked = authorizeRepairLiveDispatch({
+      failureClass: "ordinary_repairable",
+      binding: baseBinding,
+      priorAttempts: [],
+      currentHeadSha: baseBinding.headSha,
+    });
+    assert.equal(blocked.ok, false);
+    if (!blocked.ok) {
+      assert.equal(blocked.reason, "live_targeting_disabled");
+      assert.equal(blocked.decision.decision, "blocked_non_live");
+    }
+    const stillNeedCreds = authorizeRepairLiveDispatch(
+      {
+        failureClass: "ordinary_repairable",
+        binding: baseBinding,
+        priorAttempts: [],
+        currentHeadSha: baseBinding.headSha,
+      },
+      { liveLisaTargetingAllowed: true, credentialsLanguageSeparatelyApproved: false },
+    );
+    assert.equal(stillNeedCreds.ok, false);
+    if (!stillNeedCreds.ok) {
+      assert.equal(stillNeedCreds.reason, "credentials_language_not_approved");
+    }
+    const allowed = authorizeRepairLiveDispatch(
+      {
+        failureClass: "ordinary_repairable",
+        binding: baseBinding,
+        priorAttempts: [],
+        currentHeadSha: baseBinding.headSha,
+      },
+      { liveLisaTargetingAllowed: true, credentialsLanguageSeparatelyApproved: true },
+    );
+    assert.equal(allowed.ok, true);
+    if (allowed.ok) assert.equal(allowed.decision.attempt, 1);
+  });
 });
 
 describe("Main Approve binding", () => {
@@ -727,16 +827,20 @@ describe("Main Approve binding", () => {
     const blocked = issueCarlosAsk(pkg);
     assert.equal(blocked.ok, false);
     if (blocked.ok) return;
-    assert.equal(blocked.reason, "blocked_no_store");
-    assert.match(blocked.prerequisite, /authoritative Main Approve package store/i);
+    assert.ok(
+      blocked.reason === "blocked_no_store" ||
+        blocked.reason === "live_targeting_disabled" ||
+        blocked.reason === "credentials_language_not_approved",
+    );
+    // Defaults fail closed on live targeting before store check.
+    assert.equal(blocked.reason, "live_targeting_disabled");
   });
 
   it("runtime approval dispatch fails closed without store", () => {
     const blocked = authorizeApprovalDispatch(paramsOk);
     assert.equal(blocked.ok, false);
     if (blocked.ok) return;
-    assert.equal(blocked.reason, "blocked_no_store");
-    assert.match(blocked.prerequisite ?? "", /authoritative Main Approve package store/i);
+    assert.equal(blocked.reason, "live_targeting_disabled");
   });
 
   it("pure binding validation: exact ok; drift/reorder/expiry/partial fail", () => {
@@ -795,11 +899,19 @@ describe("Main Approve binding", () => {
     );
   });
 
-  it("exact binding succeeds only with explicit authoritative-store test adapter", () => {
+  it("exact binding succeeds only with explicit authoritative-store + live opt-in adapters", () => {
     const store = { available: true as const };
-    const ask = issueCarlosAsk(pkg, store);
+    const live = {
+      liveLisaTargetingAllowed: true,
+      credentialsLanguageSeparatelyApproved: true,
+    };
+    const askBlockedLive = issueCarlosAsk(pkg, store);
+    assert.equal(askBlockedLive.ok, false);
+    const ask = issueCarlosAsk(pkg, store, live);
     assert.equal(ask.ok, true);
-    const auth = authorizeApprovalDispatch(paramsOk, store);
+    const authBlockedLive = authorizeApprovalDispatch(paramsOk, store);
+    assert.equal(authBlockedLive.ok, false);
+    const auth = authorizeApprovalDispatch(paramsOk, store, live);
     assert.equal(auth.ok, true);
     if (auth.ok) {
       assert.equal(auth.items.length, 2);

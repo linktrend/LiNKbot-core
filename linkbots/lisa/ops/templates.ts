@@ -1,9 +1,10 @@
 /**
  * Lisa message templates — load canonical Markdown bodies and fill placeholders.
  *
- * Deployed (Lisa runtime cwd = ~/.openclaw-lisa/workspace):
+ * Deployed (Lisa runtime cwd = ~/.openclaw-lisa/workspace) — only after explicit
+ * live opt-in + separately approved credentials language:
  *   node --experimental-strip-types ops/render-template.ts <kind> <json-file|->
- * Repository source (tests / development):
+ * Repository source (tests / development; non-live default):
  *   node --experimental-strip-types linkbots/lisa/ops/render-template.ts ...
  */
 

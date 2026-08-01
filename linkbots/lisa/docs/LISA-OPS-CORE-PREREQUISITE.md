@@ -4,11 +4,11 @@
 
 Isolated Ship/Pull cron parents that call `sessions_yield` after `sessions_spawn` are finalized/killed. ACP children often complete with `WAVE: Clear|Issues`, but announce-back fails because the parent is dead. Status CAS, email, Telegram one-liner synthesis by Lisa, and a real final assistant payload therefore never run.
 
-## Status on OCP-W10-LISA-RELEASE
+## Status on OCP-W10-LISA-RELEASE / OCP-W20 Lane B
 
-**Option A landed in-repo:** `src/agents/tools/sessions-wait-tool.ts` parks on `onSubagentRegistryPersisted` plus a single deadline timer — no periodic poll, no `sessions_yield`. Integrated onto release-candidate branch `dev/cloudcursor/OCP-W10-LISA-RELEASE` with PR #38 + Lisa ops allowlisting.
+**Option A landed in-repo:** `src/agents/tools/sessions-wait-tool.ts` parks on `onSubagentRegistryPersisted` plus a single deadline timer — no periodic poll, no `sessions_yield`. Integrated onto release-candidate surfaces with PR #38 + Lisa ops allowlisting (`SHIP_PULL_REQUIRED_TOOLS`).
 
-**Still not production-ready:** live `~/.openclaw-lisa` must not be mutated until a separately approved rollout. Workshop procedures/docs now require `sessions_wait` on Ship/Pull allowlists.
+**Still not production-ready (fail-closed):** live `~/.openclaw-lisa` must not be mutated until Carlos explicitly opts in to live targeting **and** separately approved credentials language is recorded in docs/contracts. Workshop procedures/docs require `sessions_wait` on Ship/Pull allowlists and keep candidate defaults non-live (`LISA_OPS_LIVE_ACTION_DEFAULTS`).
 
 ## Public APIs
 
@@ -38,19 +38,22 @@ Ship/Pull success gate: child outcome validated ∧ status CAS ∧ email attempt
 1. Independent ACP `sessions_wait` verification (done on RC).
 2. Integrate onto verified PR #38 head + Lisa ops allowlisting (this RC).
 3. Combined bounded tests green (docs/evidence only for rollout).
-4. Separately approved live profile sync — **not** this packet.
-5. One controlled live rollout after human gate.
+4. Separately approved credentials language in docs/contracts — **required before live**.
+5. Explicit live Lisa targeting opt-in + one controlled live profile sync — **not** candidate packets.
+6. One controlled live rollout after human gate.
 
-Do **not** claim production readiness from repository integration alone.
+Do **not** claim production readiness from repository integration alone. Do **not** enter credentials, tokens, or Keychain material from this workstream.
 
 ## Tests required
 
 - Isolated cron + ACP child: parent never uses yield; post-process runs after child completes via `sessions_wait`.
 - Yield path remains forbidden / fails closed for Ship/Pull jobs.
+- Allowlist includes `sessions_wait` and excludes `sessions_yield`.
+- Live-action defaults fail closed (`authorizeLiveLisaAction` / `authorizeShipPullLiveAction`).
 - `hasAcceptedSessionSpawn` alone cannot mark delivery success without post-process proof.
 - Announce to dead parent does not count as Lisa completion.
 - Timeout → `WAVE: Issues` with no invented Clear.
 
-## Out of scope for this RC packet
+## Out of scope for this RC / Lane B packet
 
-- Live `~/.openclaw-lisa` mutation, credential entry, paid spend enablement, production deploy/acceptance.
+- Live `~/.openclaw-lisa` mutation, credential entry, paid spend enablement, production deploy/acceptance, merge/promote.

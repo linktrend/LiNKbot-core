@@ -1,6 +1,6 @@
 /**
  * Monotonic pipeline-status compare-and-swap helpers for Lisa Ship/Pull waves.
- * Pure functions — no live filesystem access.
+ * Pure functions — no live filesystem access; never writes `~/.openclaw-lisa`.
  */
 
 export type WaveLabel = "Ship 05" | "Pull 07" | "Ship 16" | "Pull 18";

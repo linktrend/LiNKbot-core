@@ -1,6 +1,56 @@
 /**
  * Ship / Pull branch policy — IDE-approved work-branch allowlist + wave semantics.
+ * Actual live Lisa actions are opt-in and fail closed by default (see live-action gate).
  */
+
+/**
+ * Candidate-only defaults for every Lisa ops surface (Ship/Pull, Repair, digest,
+ * heartbeat, cron install). No action may target live Lisa (`~/.openclaw-lisa`)
+ * without explicit live targeting **and** separately approved credentials language
+ * in docs/contracts. Repository helpers stay non-live.
+ */
+export const LISA_OPS_LIVE_ACTION_DEFAULTS = {
+  liveLisaTargetingAllowed: false,
+  credentialsLanguageSeparatelyApproved: false,
+  cronMutationAllowed: false,
+  profileSyncAllowed: false,
+  shipPullLiveActionAllowed: false,
+  repairDispatcherLiveActionAllowed: false,
+  digestLiveActionAllowed: false,
+  heartbeatLiveActionAllowed: false,
+} as const;
+
+export type LisaOpsLiveActionConfig = {
+  liveLisaTargetingAllowed: boolean;
+  credentialsLanguageSeparatelyApproved: boolean;
+};
+
+export type LisaOpsLiveActionDecision =
+  | { ok: true }
+  | {
+      ok: false;
+      reason: "live_targeting_disabled" | "credentials_language_not_approved";
+    };
+
+/** Fail-closed: both flags must be explicitly true before any live Lisa action. */
+export function authorizeLiveLisaAction(
+  config: LisaOpsLiveActionConfig = LISA_OPS_LIVE_ACTION_DEFAULTS,
+): LisaOpsLiveActionDecision {
+  if (config.liveLisaTargetingAllowed !== true) {
+    return { ok: false, reason: "live_targeting_disabled" };
+  }
+  if (config.credentialsLanguageSeparatelyApproved !== true) {
+    return { ok: false, reason: "credentials_language_not_approved" };
+  }
+  return { ok: true };
+}
+
+/** Ship/Pull live cron/ACP side effects — blocked under candidate defaults. */
+export function authorizeShipPullLiveAction(
+  config: LisaOpsLiveActionConfig = LISA_OPS_LIVE_ACTION_DEFAULTS,
+): LisaOpsLiveActionDecision {
+  return authorizeLiveLisaAction(config);
+}
 
 export type BranchKind = "issue" | "cursor" | "dev" | "integration" | "unsupported";
 

@@ -1,8 +1,15 @@
 /**
  * Main Approve package binding — Carlos sees plain English; internals bind SHAs.
- * Runtime path fails closed until an authoritative IDE/OpenClaw package store exists.
- * Pure binding helpers remain available for tests and future store adapters.
+ * Runtime path fails closed until an authoritative IDE/OpenClaw package store exists
+ * **and** live Lisa targeting is explicitly opted in with separately approved
+ * credentials language. Pure binding helpers remain available for tests.
  */
+
+import {
+  authorizeLiveLisaAction,
+  LISA_OPS_LIVE_ACTION_DEFAULTS,
+  type LisaOpsLiveActionConfig,
+} from "./ship-pull-contract.ts";
 
 export type MainApproveItem = {
   index: number;
@@ -39,13 +46,22 @@ export type ApprovalDispatch =
         | "expired_claim"
         | "partial_approval"
         | "gate_not_clear"
-        | "blocked_no_store";
+        | "blocked_no_store"
+        | "live_targeting_disabled"
+        | "credentials_language_not_approved";
       prerequisite?: string;
     };
 
 export type MainApproveAskResult =
   | { ok: true; view: MainApproveAskView }
-  | { ok: false; reason: "blocked_no_store"; prerequisite: string };
+  | {
+      ok: false;
+      reason:
+        | "blocked_no_store"
+        | "live_targeting_disabled"
+        | "credentials_language_not_approved";
+      prerequisite: string;
+    };
 
 /** Packaging is blocked until an authoritative GitHub/OpenClaw package store exists. */
 export const MAIN_APPROVE_RUNTIME_STORE: {
@@ -88,12 +104,23 @@ export function buildCarlosAskView(pkg: MainApprovePackage): MainApproveAskView 
 }
 
 /**
- * Runtime-facing: never create a Carlos ask without an authoritative store.
+ * Runtime-facing: never create a Carlos ask without an authoritative store
+ * and explicit live opt-in (defaults fail closed / non-live).
  */
 export function issueCarlosAsk(
   pkg: MainApprovePackage,
   store: { available: boolean; prerequisite?: string } = MAIN_APPROVE_RUNTIME_STORE,
+  live: LisaOpsLiveActionConfig = LISA_OPS_LIVE_ACTION_DEFAULTS,
 ): MainApproveAskResult {
+  const liveGate = authorizeLiveLisaAction(live);
+  if (!liveGate.ok) {
+    return {
+      ok: false,
+      reason: liveGate.reason,
+      prerequisite:
+        "Live Main Approve requires explicit liveLisaTargetingAllowed=true and separately approved credentials language in docs/contracts. Candidate defaults remain non-live.",
+    };
+  }
   if (!store.available) {
     return {
       ok: false,
@@ -162,8 +189,9 @@ export function validateApprovalBindings(params: {
 }
 
 /**
- * Runtime-facing authorization: fails closed without an authoritative store.
- * Supply an explicit test adapter `{ available: true }` only in tests.
+ * Runtime-facing authorization: fails closed without an authoritative store
+ * and without explicit live opt-in + credentials language approval.
+ * Supply explicit test adapters only in tests.
  */
 export function authorizeApprovalDispatch(
   params: {
@@ -173,7 +201,17 @@ export function authorizeApprovalDispatch(
     liveItems: MainApproveItem[];
   },
   store: { available: boolean; prerequisite?: string } = MAIN_APPROVE_RUNTIME_STORE,
+  live: LisaOpsLiveActionConfig = LISA_OPS_LIVE_ACTION_DEFAULTS,
 ): ApprovalDispatch {
+  const liveGate = authorizeLiveLisaAction(live);
+  if (!liveGate.ok) {
+    return {
+      ok: false,
+      reason: liveGate.reason,
+      prerequisite:
+        "Live Main Approve requires explicit liveLisaTargetingAllowed=true and separately approved credentials language in docs/contracts. Candidate defaults remain non-live.",
+    };
+  }
   if (!store.available) {
     return {
       ok: false,

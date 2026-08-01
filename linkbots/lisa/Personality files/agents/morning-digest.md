@@ -11,6 +11,8 @@ tags: [cron, digest, calendar, tasks, telegram, email, battery-monitoring, pipel
 
 # 08:30 Morning Digest (`lisa-morning-digest`)
 
+**Candidate-only / non-live default (fail-closed):** Repository copies of this procedure do **not** authorize live digest runs against `~/.openclaw-lisa`, credential use, or cron mutation. Live targeting requires explicit opt-in **plus** separately approved credentials language in docs/contracts. Until then, treat this as workshop SOT only.
+
 Native cron: `30 8 * * *` Asia/Taipei, isolated session, `agentId: lisa-cron`, announce → Telegram `1123023078`. `lisa-cron` has `sandbox.mode: off`, so this is a fresh transcript on the Mac mini host, not Docker clean room; host `tools/bin/lisa-safe` / `tools/bin/lisa-carlos-tasks` can use `/opt/homebrew/bin` and `~/.config/gws*`. `main` remains the protected default chat agent (`sandbox.mode: non-main`), and `main.tools.exec.host: gateway` must stay unset. Main must not spawn `lisa-cron` for digest catch-ups.
 Email is **not** a second cron announce channel — send it yourself with `tools/bin/lisa-safe email-send` (never improvised bare `gws`, never pipes).
 

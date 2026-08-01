@@ -1,5 +1,7 @@
 # HEARTBEAT.md — Active Checklist
 
+**Candidate-only / non-live default (fail-closed):** Workshop copies of this checklist do not authorize live heartbeat actions, cron edits, or credential use against `~/.openclaw-lisa`. Live targeting is opt-in and requires separately approved credentials language in docs/contracts.
+
 ## Schedule (authoritative — Asia/Taipei)
 
 | Local time                                                                      | Job                        | Telegram                | Notes                                                                                              |

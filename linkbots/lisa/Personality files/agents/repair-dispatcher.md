@@ -11,6 +11,8 @@ tags: [gitops, repair, acp, supervisor]
 
 # Repair Dispatcher (Lisa GitOps supervisor)
 
+**Candidate-only / non-live default (fail-closed):** Live ACP repair dispatch against Lisa is opt-in. Defaults in `ops/repair-dispatcher.ts` (`authorizeRepairLiveDispatch`) require explicit `liveLisaTargetingAllowed` **and** separately approved credentials language; otherwise dispatch is blocked. Do not mutate `~/.openclaw-lisa` from repository-only work.
+
 Repository-side contract. Implementation helpers: `linkbots/lisa/ops/repair-dispatcher.ts`.
 
 **IDE Development** owns the repair control-plane contract (issue #23 and related GitOps docs). Lisa consumes that contract; this file does not override IDE Development.

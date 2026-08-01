@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /**
- * Lisa-executable template renderer.
+ * Lisa-executable template renderer (pure; no live profile mutation).
  *
- * Deployed (cwd = ~/.openclaw-lisa/workspace):
+ * Deployed (cwd = ~/.openclaw-lisa/workspace) only after live opt-in gate:
  *   node --experimental-strip-types ops/render-template.ts <kind> <json-file|->
  *   node --experimental-strip-types ops/render-template.ts pipeline-one-liner --wave "Ship 05" --result Clear
  *

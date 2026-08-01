@@ -1,7 +1,8 @@
 /**
  * Offline recovery — pure planning helper (no durable one-pass enforcement).
- * Does not own runtime state. Durable one-return/one-pass requires an approved
- * existing state owner (IDE/OpenClaw) — see docs.
+ * Does not own runtime state and never targets live Lisa by default.
+ * Durable one-return/one-pass requires an approved existing state owner
+ * (IDE/OpenClaw) plus separately approved live rollout — see docs.
  */
 
 export type WaveWindow = {

@@ -4,6 +4,8 @@
 **Procedure:** `linkbots/lisa/Personality files/agents/ship-pull-clock.md`  
 **Do not commit secrets.** Live cron state lives on the Lisa gateway (Mini), not as secrets in git.
 
+**Candidate-only / non-live default (fail-closed):** This install note must **not** be applied from repository-only / candidate packets. Live install requires explicit live Lisa targeting opt-in **and** separately approved credentials language in docs/contracts. Do not write to `~/.openclaw-lisa` until that gate passes.
+
 **Wave names** use local hour labels: Ship 05, Pull 07, Ship 16, Pull 18 (not A/B letters; not `Ship 05:00`).
 
 ## Human / ops prerequisites
@@ -12,6 +14,7 @@
 2. Lisa gateway healthy (`--profile lisa`); ACP/`acpx` working.
 3. Personality mirror deployed or live workspace has `agents/ship-pull-clock.md`.
 4. `memory/pipeline-status.md` exists before enabling the jobs. Initialize it from the personality template if missing; runtime jobs update this existing file with compare-and-swap `edit`, not stale full-file writes.
+5. Separately approved credentials language + explicit live targeting opt-in (see `LISA-OPS-CORE-PREREQUISITE.md`).
 
 ## Related schedule (digest / heartbeat)
 
@@ -42,9 +45,9 @@ Match flags used by existing `lisa-morning-digest` / `lisa-heartbeat-45`: isolat
 
 **Email exec HARD (2026-07-26):** cron messages must say `tools/bin/lisa-safe` is a **script file** — never list/explore it; invoke `email-send` unpiped. Retry that exact command only once after a hard denial. Pull 07 failed when the agent ran `list files in …/lisa-safe` via `exec`.
 
-### Tool allowlist (required — 2026-07-25 fix)
+### Tool allowlist (required — 2026-07-25 fix; sessions_wait required)
 
-Ship/Pull jobs already set `payload.toolsAllow` including `sessions_spawn`. That is **not enough** alone: OpenClaw intersects cron `toolsAllow` with `agents.list[lisa-cron].tools.allow`. If `sessions_spawn` is missing from the agent allowlist, the live cron run will not expose the tool (Ship 16 2026-07-25 failed this way even though the job JSON listed it).
+Ship/Pull jobs already set `payload.toolsAllow` including `sessions_spawn`. That is **not enough** alone: OpenClaw intersects cron `toolsAllow` with `agents.list[lisa-cron].tools.allow`. If `sessions_spawn` / `sessions_wait` is missing from the agent allowlist, the live cron run will not expose the tool.
 
 1. **Agent config** (`~/.openclaw-lisa/openclaw.json` → `agents.list` id `lisa-cron` → `tools.allow`) must include at least:
    - `sessions_spawn` (Cursor ACP spawn)
@@ -54,7 +57,7 @@ Ship/Pull jobs already set `payload.toolsAllow` including `sessions_spawn`. That
 2. **Each Ship/Pull job** `payload.toolsAllow` must include `sessions_spawn`, `sessions_wait`, `read`, `write`, `edit`, and `exec`. File tools are required to read the procedure/current cycle, serialize the shared status update, and write the email-body file; `exec` is required for the `lisa-safe email-send` side effect. Digest/heartbeat jobs should **omit** spawn/wait entries so they stay non-spawning.
 3. Do **not** change `main` agent tools for this fix.
 
-Repo SOT mirror: `linkbots/lisa/Personality files/openclaw.json`.
+Repo SOT mirror: `linkbots/lisa/Personality files/openclaw.json` (workshop only — not auto-applied to live).
 
 ## Verify
 

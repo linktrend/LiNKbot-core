@@ -1,6 +1,13 @@
 /**
  * Lisa GitOps Repair Dispatcher — exact binding, pending hold, proof gates.
+ * Live ACP dispatch is opt-in and fail-closed (see authorizeRepairLiveDispatch).
  */
+
+import {
+  authorizeLiveLisaAction,
+  LISA_OPS_LIVE_ACTION_DEFAULTS,
+  type LisaOpsLiveActionConfig,
+} from "./ship-pull-contract.ts";
 
 export type FailureClass =
   | "ordinary_repairable"
@@ -47,6 +54,21 @@ export type RepairDecision =
   | {
       decision: "reject_proof";
       reason: "stale_head" | "unmatched_binding" | "unrecorded_attempt" | "gates_failed";
+    }
+  | {
+      decision: "blocked_non_live";
+      reason: "live_targeting_disabled" | "credentials_language_not_approved";
+    };
+
+export type RepairLiveDispatch =
+  | { ok: true; decision: Extract<RepairDecision, { decision: "dispatch" }> }
+  | {
+      ok: false;
+      reason:
+        | "live_targeting_disabled"
+        | "credentials_language_not_approved"
+        | "not_dispatch";
+      decision: RepairDecision;
     };
 
 export const MAX_REPAIR_ATTEMPTS = 3;
@@ -179,6 +201,30 @@ export function evaluateProof(params: {
     binding: params.binding,
     attempt: params.proof.attempt,
   };
+}
+
+/**
+ * Runtime live ACP dispatch gate — defaults block targeting live Lisa.
+ * Pure planners (`nextRepairDecision`) remain available for tests; callers that
+ * would spawn ACP against live Lisa must use this authorizer.
+ */
+export function authorizeRepairLiveDispatch(
+  params: Parameters<typeof nextRepairDecision>[0],
+  live: LisaOpsLiveActionConfig = LISA_OPS_LIVE_ACTION_DEFAULTS,
+): RepairLiveDispatch {
+  const liveGate = authorizeLiveLisaAction(live);
+  if (!liveGate.ok) {
+    return {
+      ok: false,
+      reason: liveGate.reason,
+      decision: { decision: "blocked_non_live", reason: liveGate.reason },
+    };
+  }
+  const decision = nextRepairDecision(params);
+  if (decision.decision !== "dispatch") {
+    return { ok: false, reason: "not_dispatch", decision };
+  }
+  return { ok: true, decision };
 }
 
 /** Record a genuine dispatch (idempotent on binding+attempt). */
