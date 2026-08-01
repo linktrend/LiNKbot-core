@@ -380,4 +380,77 @@ describe("sessions_wait", () => {
     await expect(completion).rejects.toThrow(/sessions_wait aborted/i);
     expect(registryEvents.listeners.size).toBe(0);
   });
+
+  it("never invents bearer/token auth fields in the wait result envelope", async () => {
+    const parent = "agent:lisa:cron:ship:run:no-leak";
+    const bearerish = "Bearer eyJhbGciOiJFUzI1NiJ9.paci-fixture-leak-probe.signature";
+    const entry = acpRun("leak-probe", parent, {
+      endedAt: 42,
+      outcome: { status: "error", error: `upstream said ${bearerish}`, endedAt: 42 },
+      completion: {
+        required: true,
+        resultText: `child echoed ${bearerish}`,
+        capturedAt: 42,
+      },
+      task: `do not mint ${bearerish}`,
+    });
+    records.set(entry.runId, entry);
+    const tool = createSessionsWaitTool({ agentSessionKey: parent });
+
+    const result = await tool.execute("call", {
+      ids: ["leak-probe"],
+      timeoutSeconds: 0,
+    });
+    const details = result.details as Record<string, unknown>;
+    const serialized = JSON.stringify(result);
+
+    // Product text may mention a token string from the child; the wait envelope itself
+    // must not grow Authorization / access_token / client_assertion auth surfaces.
+    expect(details).not.toHaveProperty("access_token");
+    expect(details).not.toHaveProperty("refresh_token");
+    expect(details).not.toHaveProperty("client_assertion");
+    expect(details).not.toHaveProperty("Authorization");
+    expect(details).not.toHaveProperty("authorization");
+    expect(Object.keys(details).sort()).toEqual(["completed", "pending"]);
+    expect(serialized).not.toMatch(/"access_token"\s*:/);
+    expect(serialized).not.toMatch(/"client_assertion"\s*:/);
+    expect(serialized).not.toMatch(/"Authorization"\s*:/);
+    expect(result.details).toMatchObject({
+      completed: [
+        {
+          runId: "leak-probe",
+          status: "error",
+          result: `child echoed ${bearerish}`,
+          error: `upstream said ${bearerish}`,
+        },
+      ],
+      pending: [],
+    });
+  });
+
+  it("wakes only via onSubagentRegistryPersisted plus one deadline timer (no poll/yield)", async () => {
+    vi.useFakeTimers();
+    const setIntervalSpy = vi.spyOn(globalThis, "setInterval");
+    try {
+      const parent = "agent:lisa:cron:ship:run:wake-shape";
+      records.set("pending", acpRun("pending", parent));
+      const completion = waitForSessionDescendants({
+        ids: ["pending"],
+        currentSessionKeys: new Set([parent]),
+        timeoutMs: 2_000,
+      });
+      expect(registryEvents.listeners.size).toBe(1);
+      expect(setIntervalSpy).not.toHaveBeenCalled();
+      await vi.advanceTimersByTimeAsync(2_000);
+      await expect(completion).resolves.toMatchObject({
+        pending: ["pending"],
+        timedOut: true,
+      });
+      expect(setIntervalSpy).not.toHaveBeenCalled();
+      expect(registryEvents.listeners.size).toBe(0);
+    } finally {
+      setIntervalSpy.mockRestore();
+      vi.useRealTimers();
+    }
+  });
 });

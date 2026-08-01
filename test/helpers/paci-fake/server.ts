@@ -10,13 +10,12 @@
  *
  * Never contact live Platform. Never print private keys or access tokens.
  *
- * Platform repin: frozen authority remains HEAD `0455846487d0…` / schema
- * `7173b9f9…`. Failed IV HEADs (do not permanently repin): Wave 2
- * `39c46680f058…`, Wave 3 `83501b11b78b…`, Wave 4 `ca027417…`, Wave 5
- * `fbdede7c25a9…`, Wave 6 noted `96a96f04ede8…`, Wave 6 Platform
- * `a155cbe94171…`, Wave 7 Platform `94ff0956a5d3…`, Wave 8 Platform
- * `d807ad3ca253…` — awaiting certified Platform descendant for permanent
- * OpenClaw repin.
+ * Platform repin: freeze HEAD `0455846487d0…` / schema `7173b9f9…`; certified
+ * candidate `421a35e97bc3…` is byte-identical (OCP-W20). Failed IV HEADs (do
+ * not permanently repin): Wave 2 `39c46680f058…`, Wave 3 `83501b11b78b…`,
+ * Wave 4 `ca027417…`, Wave 5 `fbdede7c25a9…`, Wave 6 noted `96a96f04ede8…`,
+ * Wave 6 Platform `a155cbe94171…`, Wave 7 Platform `94ff0956a5d3…`, Wave 8
+ * Platform `d807ad3ca253…`. Candidate ≠ live PACI issuer.
  */
 import { randomUUID } from "node:crypto";
 import {

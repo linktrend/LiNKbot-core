@@ -8,7 +8,8 @@ production dependency on the private workspace package.
 
 | Pin                         | Value                                                              |
 | --------------------------- | ------------------------------------------------------------------ |
-| LiNKplatform HEAD           | `0455846487d0b8c583859060ba8b4be70e7f0b48`                         |
+| Original freeze HEAD        | `0455846487d0b8c583859060ba8b4be70e7f0b48`                         |
+| Certified Platform candidate (OCP-W20) | `421a35e97bc302be0f5e1f196d0a5e8d132f6fd8` (byte-identical envelope) |
 | ADR                         | 0013 Accepted                                                      |
 | Contract                    | `platform.auth-token-envelope/0.1.0`                               |
 | Package                     | `@linktrend/platform-contracts@0.3.0`                              |
@@ -19,17 +20,12 @@ production dependency on the private workspace package.
 | Alg                         | `ES256`                                                            |
 | Refresh                     | none (Phase-1)                                                     |
 
-**Repin state:** Platform HEADs `39c46680f058d86484fcb24c25c3463deb9488ae`
-(Wave 2), `83501b11b78b0c5f46a5c5ef23f48de9f1317468` (Wave 3),
-`ca027417…` (Wave 4), Wave 5 Platform failed head
-`fbdede7c25a933b4e500c796032995aaabc20660`, Wave 6 noted failed Platform
-head `96a96f04ede8df3cec5b67e9bb1e021335e12f5b`, Wave 6 Platform failed
-head `a155cbe941710d452c93077a9b8ce11ace665231`, Wave 7 Platform failed
-head `94ff0956a5d313a1c538c8e1f81cf641dc381bac`, and Wave 8 Platform failed
-head `d807ad3ca2537853d35ec6c738254b54dcc15d66` failed independent verification —
-do **not** treat any as the frozen pin. Behavioral alignment may read current
-Platform checkout sources, but permanent OpenClaw repin awaits a **certified
-Platform descendant**.
+**Repin state:** Certified Platform candidate `421a35e97bc302be0f5e1f196d0a5e8d132f6fd8`
+is a provenance-only descendant of the freeze — schema + fixture SHA-256s match.
+Failed IV HEADs `39c46680…` (Wave 2), `83501b11…` (Wave 3), `ca027417…` (Wave 4),
+`fbdede7c…` (Wave 5), `96a96f04…` / `a155cbe9…` (Wave 6), `94ff0956…` (Wave 7),
+and `d807ad3c…` (Wave 8) must not replace the freeze bytes. Candidate ≠ live PACI
+issuer.
 ### Fixture SHA-256 pins (`packages/contracts/fixtures/auth-token-envelope/`)
 
 | File                                  | SHA-256                                                            |
