@@ -14,7 +14,7 @@
 | Starting branch  | ocp-w70-lisa-canary-rollback-plan                                   |
 | Ending branch    | ocp-w70-lisa-canary-rollback-plan                                   |
 | Starting commit  | 1140c0a4df9165a31b94b8ce2f15e238fc8dc210                            |
-| Ending commit    | 04241e0d04e                                                         |
+| Ending commit    | 5e7757b1e59c20275f9932fa81cc751104412e91             |
 | Starting status  | clean at required base                                              |
 | Ending status    | docs ready for draft PR to development                              |
 
