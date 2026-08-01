@@ -19,6 +19,11 @@ import {
   type MainApprovePackage,
 } from "./main-approve-binding.ts";
 import {
+  buildNonLiveAgentsDefaultsFragment,
+  LISA_APPROVED_MODEL_ROUTING,
+  validateApprovedRouting,
+} from "./model-routing-contract.ts";
+import {
   isOfflinePlanHonest,
   isValidCalendarDate,
   parseInstantMs,
@@ -45,7 +50,10 @@ import {
   planPullBranch,
   planShipBranch,
   resolveWaveOutcome,
+  SHIP_PULL_REQUIRED_TOOLS,
+  shipPullAllowlistIncludesSessionsWait,
   shipPullForbidsSessionsYield,
+  shipPullRequiresSessionsWait,
   shipPullRespectsIdeAuthority,
   validatePullPromptContract,
   validateShipPromptContract,
@@ -254,6 +262,64 @@ describe("Ship/Pull post-processing gate", () => {
   it("forbids sessions_yield in ship-pull procedure", () => {
     const text = readPersonality("agents/ship-pull-clock.md");
     assert.equal(shipPullForbidsSessionsYield(text), true);
+  });
+
+  it("requires sessions_wait park contract in ship-pull procedure", () => {
+    const text = readPersonality("agents/ship-pull-clock.md");
+    assert.equal(shipPullRequiresSessionsWait(text), true);
+    assert.match(text, /sessions_wait/);
+    assert.match(text, /registry persist/i);
+    assert.doesNotMatch(text, /call sessions_yield after/i);
+  });
+
+  it("Ship/Pull allowlist includes sessions_wait and excludes yield", () => {
+    assert.equal(shipPullAllowlistIncludesSessionsWait(SHIP_PULL_REQUIRED_TOOLS), true);
+    assert.ok(SHIP_PULL_REQUIRED_TOOLS.includes("sessions_spawn"));
+    assert.ok(SHIP_PULL_REQUIRED_TOOLS.includes("sessions_wait"));
+    assert.ok(!SHIP_PULL_REQUIRED_TOOLS.includes("sessions_yield"));
+  });
+});
+
+describe("Approved model routing (non-live)", () => {
+  it("validates OCP-W10 approved identifiers without secrets", () => {
+    const errors = validateApprovedRouting(LISA_APPROVED_MODEL_ROUTING);
+    assert.deepEqual(errors, []);
+    const fragment = buildNonLiveAgentsDefaultsFragment();
+    assert.equal(fragment.model.primary, "openai/gpt-5.6-luna");
+    assert.equal(fragment.thinkingDefault, "medium");
+    assert.deepEqual(fragment.model.fallbacks, [
+      "zai/glm-5.2",
+      "moonshot/kimi-k3",
+      "openrouter/google/gemini-3.5-flash-lite",
+    ]);
+    assert.equal(fragment.imageModel.primary, "minimax/MiniMax-M3");
+    assert.equal(fragment.evaluationOnly.enabledInDefaults, false);
+    assert.ok(!fragment.evaluationOnly.ref.includes(":free"));
+    assert.equal(LISA_APPROVED_MODEL_ROUTING.liveMutationAllowed, false);
+    assert.equal(LISA_APPROVED_MODEL_ROUTING.paidSpendEnablementAllowed, false);
+  });
+
+  it("keeps contract JSON aligned with TypeScript contract", () => {
+    const raw = JSON.parse(
+      readFileSync(path.join(here, "model-routing.contract.json"), "utf8"),
+    ) as {
+      agents: {
+        defaults: {
+          model: { primary: string; fallbacks: string[] };
+          imageModel: { primary: string };
+          thinkingDefault: string;
+        };
+      };
+      evaluationOnly: { enabledInDefaults: boolean; ref: string };
+      liveMutationAllowed: boolean;
+    };
+    const fragment = buildNonLiveAgentsDefaultsFragment();
+    assert.equal(raw.liveMutationAllowed, false);
+    assert.equal(raw.agents.defaults.model.primary, fragment.model.primary);
+    assert.deepEqual(raw.agents.defaults.model.fallbacks, fragment.model.fallbacks);
+    assert.equal(raw.agents.defaults.imageModel.primary, fragment.imageModel.primary);
+    assert.equal(raw.agents.defaults.thinkingDefault, fragment.thinkingDefault);
+    assert.equal(raw.evaluationOnly.enabledInDefaults, false);
   });
 });
 

@@ -44,7 +44,7 @@ Related GitOps (not these four jobs): **Review Packager** Tue/Fri **08:00**; **S
 
 Each job: isolated `agentTurn`, preferred `agentId: lisa-cron`. Announce → Telegram `1123023078` with the **one-line** Clear/Issues result only. **Also** email that same one line after validated ACP outcome.
 
-**Tool allowlist:** cron `payload.toolsAllow` **and** `agents.list[lisa-cron].tools.allow` must include `sessions_spawn`, `read`, `write`, `edit`, and `exec`. Do **not** rely on `sessions_yield` for Ship/Pull (see Wait contract). See `linkbots/lisa/docs/SHIP-PULL-CLOCK-INSTALL.md` and `linkbots/lisa/docs/LISA-OPS-CRON-MIGRATION-PLAN.md`.
+**Tool allowlist:** cron `payload.toolsAllow` **and** `agents.list[lisa-cron].tools.allow` must include `sessions_spawn`, `sessions_wait`, `read`, `write`, `edit`, and `exec`. Do **not** include or call `sessions_yield` for Ship/Pull (see Wait contract). See `linkbots/lisa/docs/SHIP-PULL-CLOCK-INSTALL.md` and `linkbots/lisa/docs/LISA-OPS-CRON-MIGRATION-PLAN.md`.
 
 ## Repo list (sequential — one at a time)
 
@@ -70,24 +70,25 @@ GitOps state vocabulary (digest/heartbeat language): **checkpointed**, **review-
 
 Proven failure mode: `sessions_spawn` then `sessions_yield` finalizes/kills the isolated cron parent; ACP child cannot wake it; Lisa never does status CAS, email, Telegram one-liner, or final payload.
 
+**Integrated core path (OCP-W10-LISA-RELEASE):** park with `sessions_wait` after ACP spawn. Wakes from subagent registry persist events plus a single deadline timer — no periodic poll, no `sessions_yield`.
+
 ### HARD RULES
 
 1. **Never call `sessions_yield`** on Ship/Pull isolated cron turns.
 2. **Never** poll with `sessions_list`, `sessions_history`, `exec sleep`, or busy-wait loops.
 3. Spawn Cursor ACP (`runtime: "acp"`, `agentId: "cursor"`, `model: "grok-4.5[effort=high,fast=true]"`).
 4. Record `childSessionKey` / `runId` from the spawn tool result.
-5. Status CAS, email, Telegram one-liner, and the final assistant payload may run **only after** a validated child outcome (`WAVE: Clear` or `WAVE: Issues`).
-6. `canFinishShipPullSuccessfully` semantics: child validated + status CAS done + email attempted + exact one-line final payload.
+5. Call `sessions_wait` with the owned ACP `runId` (bounded `timeoutSeconds`) and park until a terminal registry outcome.
+6. Status CAS, email, Telegram one-liner, and the final assistant payload may run **only after** a validated child outcome (`WAVE: Clear` or `WAVE: Issues`).
+7. `canFinishShipPullSuccessfully` semantics: child validated + status CAS done + email attempted + exact one-line final payload.
 
-### Public API sufficiency (repository-side stop)
+### Public API notes
 
-Existing public tools are **insufficient** to keep the isolated cron parent alive until ACP completion without yield or polling:
+- `sessions_wait` — push-based park for owned non-collector ACP/subagent runs (registry persist wake + deadline). **Use this for Ship/Pull.**
+- `sessions_yield` — terminates/kills isolated cron parents (**forbidden** on Ship/Pull).
+- `agents_wait` — swarm `collect=true` children only; **ACP is rejected** for `collect=true` (do not substitute).
 
-- `sessions_yield` terminates/kills isolated cron parents (do not use).
-- `agents_wait` only supports swarm `collect=true` children; **ACP is rejected** for `collect=true`.
-- Core `waitForDescendantSubagentSummary` can substitute child text for Telegram announce after the parent turn ends, but **cannot** run Lisa status CAS / email / real post-processing.
-
-**Do not edit OpenClaw core in this task.** Required core prerequisite is recorded in `linkbots/lisa/docs/LISA-OPS-CORE-PREREQUISITE.md`. **This branch must not be deployed** until that core wait/re-entry lands (see deployment order there). Until then, treat Ship/Pull post-processing as **blocked** when ACP outcome cannot be validated in-parent; report `WAVE: Issues` rather than inventing Clear.
+Live rollout of this workshop procedure still requires a separately approved profile sync. Until live allowlists include `sessions_wait`, treat Ship/Pull post-processing as **blocked** and report `WAVE: Issues` rather than inventing Clear. See `linkbots/lisa/docs/LISA-OPS-CORE-PREREQUISITE.md`.
 
 Templates: `templates/pipeline-one-liner.md` (render via `node --experimental-strip-types ops/render-template.ts pipeline-one-liner --wave "<WAVE>" --result Clear|Issues` from the Lisa workspace root).
 
@@ -99,14 +100,14 @@ Emit **no** mid-run assistant text until the final reply. Tool calls only. Final
 
 1. `read` this file.
 2. Spawn **one** Cursor ACP session with the Shipper or Puller prompt below.
-3. **Do not** call `sessions_yield`.
-4. On spawn failure: status CAS `WAVE: Issues`, email attempt, final one-liner Issues; stop.
+3. **Do not** call `sessions_yield`. Call `sessions_wait` on the owned ACP `runId` (park; no poll).
+4. On spawn or wait failure/timeout: status CAS `WAVE: Issues`, email attempt, final one-liner Issues; stop.
 5. On validated success: accept only Cursor's exact `WAVE: Clear` or `WAVE: Issues`, then Lisa writes status via monotonic CAS, then email, then final Telegram one-liner.
 6. **Email:** fresh UUID body file under `scratch/pipeline-status-<wave-slug>-<run-uuid>.txt`, then exactly one unpiped:
    ```bash
    tools/bin/lisa-safe email-send --to calusa@linktrend.media --subject "<WAVE> status" --body-file scratch/pipeline-status-<wave-slug>-<run-uuid>.txt
    ```
-7. Order: ACP spawn → **validated child outcome** → status CAS → email attempt → final Telegram one-liner.
+7. Order: ACP spawn → `sessions_wait` → **validated child outcome** → status CAS → email attempt → final Telegram one-liner.
 
 ### HARD RULES — `lisa-safe`
 

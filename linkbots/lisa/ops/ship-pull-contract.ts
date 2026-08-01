@@ -218,6 +218,16 @@ export function canFinishShipPullSuccessfully(gate: {
   return /^((Ship|Pull) \d{2}): (Clear|Issues)$/.test(payload);
 }
 
+/** Ship/Pull isolated cron tool allowlist after ACP sessions_wait landed. */
+export const SHIP_PULL_REQUIRED_TOOLS: readonly string[] = [
+  "sessions_spawn",
+  "sessions_wait",
+  "read",
+  "write",
+  "edit",
+  "exec",
+] as const;
+
 export function shipPullForbidsSessionsYield(procedureText: string): boolean {
   const normalized = procedureText.toLowerCase().replace(/`/g, "");
   return (
@@ -226,6 +236,20 @@ export function shipPullForbidsSessionsYield(procedureText: string): boolean {
     /do not use sessions_yield/.test(normalized) ||
     /sessions_yield.*(forbidden|banned|prohibited|do not use|never)/.test(normalized)
   );
+}
+
+/** Procedure must park on sessions_wait (registry persist + deadline), not poll/yield. */
+export function shipPullRequiresSessionsWait(procedureText: string): boolean {
+  const normalized = procedureText.toLowerCase().replace(/`/g, "");
+  return (
+    /sessions_wait/.test(normalized) &&
+    (/registry persist|onsubagentregistrypersisted|no periodic poll|do not poll/.test(normalized) ||
+      /park/.test(normalized))
+  );
+}
+
+export function shipPullAllowlistIncludesSessionsWait(allowlist: readonly string[]): boolean {
+  return allowlist.includes("sessions_wait") && !allowlist.includes("sessions_yield");
 }
 
 export function shipPullRespectsIdeAuthority(procedureText: string): boolean {
