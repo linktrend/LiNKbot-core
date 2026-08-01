@@ -1,9 +1,9 @@
 # OCP-W20 Cross-Repo Integration — Candidate Release Graph
 
-**Packet:** `OCP-W20-CROSS-REPO-INTEGRATION`  
-**Candidate branch:** `ocp-w20-cross-repo-integration-cli`  
-**Base:** `origin/dev/cursor/ocp-w10-independent-correction` @ `3169119fb697fa28cc6d2c244231729a8206e68d`  
-**Live Lisa:** untouched (candidate-only; no profile/credential/cloud/migration/deploy)  
+**Packet:** `OCP-W20-CROSS-REPO-INTEGRATION`
+**Candidate branch:** `ocp-w20-cross-repo-integration-cli`
+**Base:** `origin/dev/cursor/ocp-w10-independent-correction` @ `3169119fb697fa28cc6d2c244231729a8206e68d`
+**Live Lisa:** untouched (candidate-only; no profile/credential/cloud/migration/deploy)
 **CI / Bugbot:** deferred (honest — not claimed)
 
 ## Immutable certified candidate heads (read-only)
