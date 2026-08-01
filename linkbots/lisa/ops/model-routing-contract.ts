@@ -4,6 +4,9 @@
  * Workshop/config fragment only — never mutate ~/.openclaw-lisa or enable paid
  * Nemotron spend from this module. Identifiers verified against OpenClaw
  * provider catalogs plus vendor/OpenRouter docs (2026-08-01).
+ *
+ * MiniMax-M3 PDF: unproven. Catalog proves text+image only; media-understanding
+ * PDF textExtraction defaults to MiniMax-M2.7. Cutover stays needs_human_gate.
  */
 
 export type ReasoningEffort = "low" | "medium" | "high" | "max";
@@ -15,6 +18,24 @@ export type ModelRouteSlot =
   | "nextFallback"
   | "utility"
   | "evaluationOnly";
+
+export type PdfCutoverState = "needs_human_gate" | "enabled";
+
+/**
+ * Machine-readable PDF documentModels cutover.
+ * Disabled + needs_human_gate until MiniMax-M3 PDF is proven by local provider
+ * config AND authoritative model capability evidence.
+ */
+export type PdfDocumentModelsCutover = {
+  state: PdfCutoverState;
+  /** When false, agents.defaults must not set documentModels.pdf from this fragment. */
+  documentModelsEnabled: false | true;
+  /** Observed MiniMax media-understanding PDF owner (not claimed for M3). */
+  observedMediaPdfTextExtraction: string;
+  /** Do not silently route documents to another paid model. */
+  alternatePaidDocumentRoutingAllowed: false;
+  evidence: readonly string[];
+};
 
 export type ModelRouteEntry = {
   slot: ModelRouteSlot;
@@ -31,13 +52,29 @@ export type ModelRouteEntry = {
 };
 
 /**
- * Approved OCP-W10-LISA-RELEASE routing — config/code only.
+ * Approved OCP-W10 / OCP-W20 routing — config/code only.
  * Paid Nemotron stays evaluation-only and disabled in defaults.
+ * Staged canary remains non-live by default (liveMutationAllowed false).
  */
 export const LISA_APPROVED_MODEL_ROUTING = {
-  version: "2026-08-01-ocp-w10-lisa-release",
+  version: "2026-08-01-ocp-w20-cross-repo-integration",
   liveMutationAllowed: false,
   paidSpendEnablementAllowed: false,
+  /**
+   * PDF cutover is explicitly gated. MiniMax-M3 is imageModel-only until a
+   * human approves after provider+capability proof. No silent document reroute.
+   */
+  pdfDocumentModelsCutover: {
+    state: "needs_human_gate",
+    documentModelsEnabled: false,
+    observedMediaPdfTextExtraction: "MiniMax-M2.7",
+    alternatePaidDocumentRoutingAllowed: false,
+    evidence: [
+      "extensions/minimax/provider-models.ts MiniMax-M3 input: text+image (no pdf)",
+      "extensions/minimax/media-understanding-provider.ts documentModels.pdf textExtraction MiniMax-M2.7 image:false",
+      "extensions/minimax/openclaw.plugin.json mediaUnderstandingProviderMetadata.documentModels.pdf MiniMax-M2.7",
+    ],
+  },
   entries: [
     {
       slot: "primary",
@@ -69,16 +106,15 @@ export const LISA_APPROVED_MODEL_ROUTING = {
       enabledInDefaults: true,
       // Packet slot name remains imagePdf; this fragment only sets agents.defaults.imageModel.
       // MiniMax catalog proves text+image for M3. Media-understanding PDF textExtraction defaults
-      // to MiniMax-M2.7 (image:false) — live PDF owner stays a human cutover gate.
+      // to MiniMax-M2.7 (image:false) — live PDF owner stays needs_human_gate.
       notes:
-        "Image via agents.defaults.imageModel (catalog input text+image). PDF documentModels not set by this fragment; MiniMax media PDF defaults to M2.7 — human gate before live PDF enablement.",
+        "Image via agents.defaults.imageModel (catalog input text+image). PDF documentModels disabled (pdfDocumentModelsCutover.state=needs_human_gate); MiniMax media PDF defaults to M2.7 — do not claim M3 PDF or substitute another paid document model.",
       verifiedSources: [
         "extensions/minimax/provider-models.ts MINIMAX_DEFAULT_MODEL_ID",
         "extensions/minimax/provider-models.ts MINIMAX_TEXT_MODEL_CATALOG MiniMax-M3",
         "extensions/minimax/media-understanding-provider.ts documentModels.pdf MiniMax-M2.7",
       ],
     },
-
     {
       slot: "nextFallback",
       ref: "moonshot/kimi-k3",
@@ -120,6 +156,11 @@ export const LISA_APPROVED_MODEL_ROUTING = {
   version: string;
   liveMutationAllowed: false;
   paidSpendEnablementAllowed: false;
+  pdfDocumentModelsCutover: PdfDocumentModelsCutover & {
+    state: "needs_human_gate";
+    documentModelsEnabled: false;
+    alternatePaidDocumentRoutingAllowed: false;
+  };
   entries: readonly ModelRouteEntry[];
 };
 
@@ -171,7 +212,7 @@ export function primaryReasoningEffort(
   return primary.reasoningEffort;
 }
 
-/** Non-live openclaw.json agents.defaults fragment — secrets omitted. */
+/** Non-live openclaw.json agents.defaults fragment — secrets omitted. No documentModels. */
 export function buildNonLiveAgentsDefaultsFragment(
   routing: LisaApprovedModelRouting = LISA_APPROVED_MODEL_ROUTING,
 ): {
@@ -179,7 +220,17 @@ export function buildNonLiveAgentsDefaultsFragment(
   imageModel: { primary: string };
   thinkingDefault: ReasoningEffort;
   evaluationOnly: { ref: string; enabledInDefaults: false };
+  pdfDocumentModelsCutover: {
+    state: "needs_human_gate";
+    documentModelsEnabled: false;
+  };
 } {
+  if (routing.pdfDocumentModelsCutover.documentModelsEnabled !== false) {
+    throw new Error("non-live fragment forbids enabled PDF documentModels cutover");
+  }
+  if (routing.pdfDocumentModelsCutover.state !== "needs_human_gate") {
+    throw new Error("non-live fragment requires pdfDocumentModelsCutover.state=needs_human_gate");
+  }
   return {
     model: {
       primary: primaryModelRef(routing),
@@ -193,6 +244,10 @@ export function buildNonLiveAgentsDefaultsFragment(
       ref: routing.entries.find((e) => e.slot === "evaluationOnly")!.ref,
       enabledInDefaults: false,
     },
+    pdfDocumentModelsCutover: {
+      state: "needs_human_gate",
+      documentModelsEnabled: false,
+    },
   };
 }
 
@@ -205,6 +260,22 @@ export function validateApprovedRouting(
   }
   if (routing.paidSpendEnablementAllowed !== false) {
     errors.push("paidSpendEnablementAllowed must be false");
+  }
+  const cutover = routing.pdfDocumentModelsCutover;
+  if (cutover.state !== "needs_human_gate") {
+    errors.push("pdfDocumentModelsCutover.state must be needs_human_gate until M3 PDF is proven");
+  }
+  if (cutover.documentModelsEnabled !== false) {
+    errors.push("pdfDocumentModelsCutover.documentModelsEnabled must be false");
+  }
+  if (cutover.alternatePaidDocumentRoutingAllowed !== false) {
+    errors.push("alternatePaidDocumentRoutingAllowed must be false");
+  }
+  if (cutover.observedMediaPdfTextExtraction !== "MiniMax-M2.7") {
+    errors.push("observedMediaPdfTextExtraction must remain MiniMax-M2.7 per provider config");
+  }
+  if (cutover.evidence.length === 0) {
+    errors.push("pdfDocumentModelsCutover.evidence must be non-empty");
   }
   const slots = routing.entries.map((e) => e.slot);
   const required: ModelRouteSlot[] = [
@@ -234,6 +305,9 @@ export function validateApprovedRouting(
   const image = routing.entries.find((e) => e.slot === "imagePdf");
   if (image?.ref !== "minimax/MiniMax-M3") {
     errors.push("imagePdf must be minimax/MiniMax-M3");
+  }
+  if (image?.notes && /MiniMax-M3 PDF|M3 PDF support|native.*PDF/i.test(image.notes) && !/not|disabled|gate|unproven|do not claim/i.test(image.notes)) {
+    errors.push("imagePdf notes must not claim MiniMax-M3 PDF support");
   }
   const next = routing.entries.find((e) => e.slot === "nextFallback");
   if (next?.ref !== "moonshot/kimi-k3") {

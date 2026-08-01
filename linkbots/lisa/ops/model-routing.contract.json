@@ -1,8 +1,20 @@
 {
-  "_comment": "Non-live Lisa agents.defaults fragment for OCP-W10-LISA-RELEASE. Do not copy into ~/.openclaw-lisa without a separately approved rollout. No secrets. Paid Nemotron is evaluation-only and excluded from fallbacks.",
+  "_comment": "Non-live Lisa agents.defaults fragment for OCP-W20-CROSS-REPO-INTEGRATION (inherits OCP-W10 approved slots). Do not copy into ~/.openclaw-lisa without a separately approved rollout. No secrets. Paid Nemotron is evaluation-only and excluded from fallbacks. Staged canary remains non-live by default.",
   "liveMutationAllowed": false,
   "paidSpendEnablementAllowed": false,
-  "contractVersion": "2026-08-01-ocp-w10-lisa-release",
+  "contractVersion": "2026-08-01-ocp-w20-cross-repo-integration",
+  "pdfDocumentModelsCutover": {
+    "state": "needs_human_gate",
+    "documentModelsEnabled": false,
+    "observedMediaPdfTextExtraction": "MiniMax-M2.7",
+    "alternatePaidDocumentRoutingAllowed": false,
+    "_comment": "MiniMax-M3 catalog proves text+image only. Media-understanding PDF defaults to MiniMax-M2.7 — do not claim M3 PDF or silently route documents to another paid model.",
+    "evidence": [
+      "extensions/minimax/provider-models.ts MiniMax-M3 input: text+image (no pdf)",
+      "extensions/minimax/media-understanding-provider.ts documentModels.pdf textExtraction MiniMax-M2.7 image:false",
+      "extensions/minimax/openclaw.plugin.json mediaUnderstandingProviderMetadata.documentModels.pdf MiniMax-M2.7"
+    ]
+  },
   "agents": {
     "defaults": {
       "model": {
@@ -15,9 +27,8 @@
       },
       "imageModel": {
         "primary": "minimax/MiniMax-M3",
-        "_comment": "Image via imageModel only. PDF documentModels not asserted here; MiniMax media PDF defaults to MiniMax-M2.7 — human gate before live PDF enablement."
+        "_comment": "Image via imageModel only. documentModels.pdf NOT set (pdfDocumentModelsCutover.state=needs_human_gate)."
       },
-
       "thinkingDefault": "medium"
     }
   },
