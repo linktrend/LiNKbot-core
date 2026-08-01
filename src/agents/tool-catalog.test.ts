@@ -22,12 +22,14 @@ function requirePolicyAllow(profile: Parameters<typeof resolveCoreToolProfilePol
 }
 
 describe("tool-catalog", () => {
-  it("lists agents_wait only for a Swarm-enabled catalog", () => {
+  it("lists agents_wait only for a Swarm-enabled catalog and always lists sessions_wait", () => {
     const ids = (config?: Parameters<typeof listCoreToolSections>[0]) =>
       listCoreToolSections(config).flatMap((section) => section.tools.map((tool) => tool.id));
 
+    expect(ids()).toContain("sessions_wait");
     expect(ids()).not.toContain("agents_wait");
     expect(ids({ swarmEnabled: true })).toContain("agents_wait");
+    expect(ids({ swarmEnabled: true })).toContain("sessions_wait");
   });
 
   it("includes code_execution, web_search, x_search, web_fetch, and update_plan in the coding profile policy", () => {
@@ -54,6 +56,7 @@ describe("tool-catalog", () => {
       "conversations_turn",
       "sessions_send",
       "sessions_spawn",
+      "sessions_wait",
       "agents_wait",
       "sessions_yield",
       "subagents",
@@ -90,6 +93,7 @@ describe("tool-catalog", () => {
       "conversations_turn",
       "sessions_send",
       "sessions_spawn",
+      "sessions_wait",
       "sessions_yield",
       "subagents",
       "session_status",

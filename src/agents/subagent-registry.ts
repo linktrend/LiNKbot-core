@@ -2454,6 +2454,37 @@ export function getSubagentRunByRunId(runId: string): SubagentRunRecord | undefi
   return snapshot.get(key) ?? [...snapshot.values()].find((entry) => entry.swarmRunId === key);
 }
 
+/**
+ * Record the first requester `sessions_wait` observation of a terminal run.
+ * Later observations replay the same receipt without rewriting firstObservedAt.
+ */
+export function observeSubagentRequesterWait(params: {
+  runId: string;
+  observerSessionKey: string;
+  status: string;
+}): { firstObservation: boolean; observedAt: number } {
+  restoreSubagentRunsOnce();
+  const key = params.runId.trim();
+  const entry =
+    subagentRuns.get(key) ??
+    [...subagentRuns.values()].find((candidate) => candidate.swarmRunId === key);
+  const now = Date.now();
+  if (!entry || typeof entry.endedAt !== "number") {
+    return { firstObservation: false, observedAt: now };
+  }
+  const existing = entry.requesterWaitObservation;
+  if (existing && typeof existing.firstObservedAt === "number") {
+    return { firstObservation: false, observedAt: existing.firstObservedAt };
+  }
+  entry.requesterWaitObservation = {
+    firstObservedAt: now,
+    observerSessionKey: params.observerSessionKey.trim(),
+    status: params.status,
+  };
+  persistSubagentRuns();
+  return { firstObservation: true, observedAt: now };
+}
+
 export function getSubagentRunsByRunIds(runIds: readonly string[]): {
   entries: Map<string, SubagentRunRecord>;
 } {
