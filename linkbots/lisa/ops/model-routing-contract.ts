@@ -5,8 +5,10 @@
  * Nemotron spend from this module. Identifiers verified against OpenClaw
  * provider catalogs plus vendor/OpenRouter docs (2026-08-01).
  *
- * MiniMax-M3 PDF: unproven. Catalog proves text+image only; media-understanding
- * PDF textExtraction defaults to MiniMax-M2.7. Cutover stays needs_human_gate.
+ * MiniMax-M3 PDF: Principal-approved candidate at capabilityStatus
+ * `approved_unverified`. First live proof is deferred to a separately
+ * controlled production rollout; require a first-production-proof receipt
+ * before any success claim. Do not claim proven PDF support.
  */
 
 export type ReasoningEffort = "low" | "medium" | "high" | "max";
@@ -19,21 +21,57 @@ export type ModelRouteSlot =
   | "utility"
   | "evaluationOnly";
 
-export type PdfCutoverState = "needs_human_gate" | "enabled";
+/** Machine-readable PDF capability class — not `proven`. */
+export type PdfCapabilityStatus = "approved_unverified";
+
+/**
+ * Candidate cutover is enabled in the workshop fragment; runtime failure
+ * rolls back to disabled_by_rollback (PDF document routing only).
+ */
+export type PdfCutoverState = "enabled_candidate" | "disabled_by_rollback";
+
+export type PdfDocumentRoutingFailureEvent = {
+  type: "pdf_document_routing_validation_failure";
+  reasonCode: string;
+  candidateRef: string;
+  capabilityStatus: PdfCapabilityStatus;
+  action: "disable_pdf_document_routing_only";
+  preserveService: {
+    primary: true;
+    imageModel: true;
+    defaultFallback: true;
+  };
+  alternatePaidDocumentRoutingAllowed: false;
+};
+
+export type PdfDocumentModelsRollback = {
+  onProviderOrModelValidationFailure: "disable_pdf_document_routing_only";
+  preserveTextImageDefaultFallbackService: true;
+  alternatePaidDocumentRoutingAllowed: false;
+  /** Non-secret failure event type emitted on validation failure. */
+  failureEventType: "pdf_document_routing_validation_failure";
+};
 
 /**
  * Machine-readable PDF documentModels cutover.
- * Disabled + needs_human_gate until MiniMax-M3 PDF is proven by local provider
- * config AND authoritative model capability evidence.
+ * Principal-approved MiniMax-M3 candidate at approved_unverified — still
+ * non-live; first production proof receipt required before success claims.
  */
 export type PdfDocumentModelsCutover = {
   state: PdfCutoverState;
-  /** When false, agents.defaults must not set documentModels.pdf from this fragment. */
-  documentModelsEnabled: false | true;
-  /** Observed MiniMax media-understanding PDF owner (not claimed for M3). */
+  /** When true, non-live fragment may set documentModels.pdf as candidate. */
+  documentModelsEnabled: boolean;
+  capabilityStatus: PdfCapabilityStatus;
+  /** Approved PDF/document routing candidate ref. */
+  candidateRef: string;
+  /** Controlled production rollout owns first live proof — not this packet. */
+  firstProof: "controlled_production_rollout";
+  requiresFirstProductionProofReceipt: true;
+  /** Observed MiniMax media-understanding PDF owner in provider plugin config. */
   observedMediaPdfTextExtraction: string;
   /** Do not silently route documents to another paid model. */
   alternatePaidDocumentRoutingAllowed: false;
+  rollback: PdfDocumentModelsRollback;
   evidence: readonly string[];
 };
 
@@ -51,27 +89,43 @@ export type ModelRouteEntry = {
   verifiedSources: readonly string[];
 };
 
+const PDF_CANDIDATE_REF = "minimax/MiniMax-M3";
+
 /**
- * Approved OCP-W10 / OCP-W20 routing — config/code only.
+ * Approved OCP-W10 / OCP-W20 / OCP-W30 routing — config/code only.
  * Paid Nemotron stays evaluation-only and disabled in defaults.
  * Staged canary remains non-live by default (liveMutationAllowed false).
+ * PDF documentModels: MiniMax-M3 approved_unverified candidate (non-live).
  */
 export const LISA_APPROVED_MODEL_ROUTING = {
-  version: "2026-08-01-ocp-w20-cross-repo-integration",
+  version: "2026-08-01-ocp-w30-approved-pdf-routing",
   liveMutationAllowed: false,
   paidSpendEnablementAllowed: false,
   /**
-   * PDF cutover is explicitly gated. MiniMax-M3 is imageModel-only until a
-   * human approves after provider+capability proof. No silent document reroute.
+   * PDF cutover enabled as Principal-approved candidate only.
+   * Capability remains approved_unverified until first-production-proof receipt.
+   * Validation failure → disable PDF document routing only (see rollback).
    */
   pdfDocumentModelsCutover: {
-    state: "needs_human_gate",
-    documentModelsEnabled: false,
+    state: "enabled_candidate",
+    documentModelsEnabled: true,
+    capabilityStatus: "approved_unverified",
+    candidateRef: PDF_CANDIDATE_REF,
+    firstProof: "controlled_production_rollout",
+    requiresFirstProductionProofReceipt: true,
     observedMediaPdfTextExtraction: "MiniMax-M2.7",
     alternatePaidDocumentRoutingAllowed: false,
+    rollback: {
+      onProviderOrModelValidationFailure: "disable_pdf_document_routing_only",
+      preserveTextImageDefaultFallbackService: true,
+      alternatePaidDocumentRoutingAllowed: false,
+      failureEventType: "pdf_document_routing_validation_failure",
+    },
     evidence: [
-      "extensions/minimax/provider-models.ts MiniMax-M3 input: text+image (no pdf)",
-      "extensions/minimax/media-understanding-provider.ts documentModels.pdf textExtraction MiniMax-M2.7 image:false",
+      "Principal-approved OCP-W30 MiniMax-M3 PDF/document candidate (capabilityStatus=approved_unverified)",
+      "First live proof deferred to separately controlled production rollout; first-production-proof receipt required before success claim",
+      "extensions/minimax/provider-models.ts MiniMax-M3 catalog input: text+image (PDF unproven at freeze)",
+      "extensions/minimax/media-understanding-provider.ts documentModels.pdf textExtraction MiniMax-M2.7 image:false (observed plugin default)",
       "extensions/minimax/openclaw.plugin.json mediaUnderstandingProviderMetadata.documentModels.pdf MiniMax-M2.7",
     ],
   },
@@ -104,11 +158,10 @@ export const LISA_APPROVED_MODEL_ROUTING = {
       ref: "minimax/MiniMax-M3",
       label: "MiniMax-M3",
       enabledInDefaults: true,
-      // Packet slot name remains imagePdf; this fragment only sets agents.defaults.imageModel.
-      // MiniMax catalog proves text+image for M3. Media-understanding PDF textExtraction defaults
-      // to MiniMax-M2.7 (image:false) — live PDF owner stays needs_human_gate.
+      // Packet slot name remains imagePdf. Image uses agents.defaults.imageModel;
+      // PDF uses agents.defaults.documentModels.pdf as approved_unverified candidate.
       notes:
-        "Image via agents.defaults.imageModel (catalog input text+image). PDF documentModels disabled (pdfDocumentModelsCutover.state=needs_human_gate); MiniMax media PDF defaults to M2.7 — do not claim M3 PDF or substitute another paid document model.",
+        "Image via agents.defaults.imageModel (catalog input text+image). PDF via agents.defaults.documentModels.pdf candidate (pdfDocumentModelsCutover.state=enabled_candidate, capabilityStatus=approved_unverified) — Principal-approved but unverified; require first-production-proof receipt before any success claim; never silently substitute another paid document model.",
       verifiedSources: [
         "extensions/minimax/provider-models.ts MINIMAX_DEFAULT_MODEL_ID",
         "extensions/minimax/provider-models.ts MINIMAX_TEXT_MODEL_CATALOG MiniMax-M3",
@@ -157,9 +210,17 @@ export const LISA_APPROVED_MODEL_ROUTING = {
   liveMutationAllowed: false;
   paidSpendEnablementAllowed: false;
   pdfDocumentModelsCutover: PdfDocumentModelsCutover & {
-    state: "needs_human_gate";
-    documentModelsEnabled: false;
+    state: "enabled_candidate";
+    documentModelsEnabled: true;
+    capabilityStatus: "approved_unverified";
+    candidateRef: typeof PDF_CANDIDATE_REF;
+    firstProof: "controlled_production_rollout";
+    requiresFirstProductionProofReceipt: true;
     alternatePaidDocumentRoutingAllowed: false;
+    rollback: PdfDocumentModelsRollback & {
+      alternatePaidDocumentRoutingAllowed: false;
+      preserveTextImageDefaultFallbackService: true;
+    };
   };
   entries: readonly ModelRouteEntry[];
 };
@@ -202,6 +263,13 @@ export function imageModelRef(
   return image.ref;
 }
 
+/** Approved PDF/document candidate ref (documentModels.pdf). */
+export function pdfDocumentModelRef(
+  routing: LisaApprovedModelRouting = LISA_APPROVED_MODEL_ROUTING,
+): string {
+  return routing.pdfDocumentModelsCutover.candidateRef;
+}
+
 export function primaryReasoningEffort(
   routing: LisaApprovedModelRouting = LISA_APPROVED_MODEL_ROUTING,
 ): ReasoningEffort {
@@ -212,24 +280,97 @@ export function primaryReasoningEffort(
   return primary.reasoningEffort;
 }
 
-/** Non-live openclaw.json agents.defaults fragment — secrets omitted. No documentModels. */
+/**
+ * Non-secret failure event for provider/model validation failure.
+ * Never includes credentials, tokens, or message bodies.
+ */
+export function buildPdfDocumentRoutingFailureEvent(
+  reasonCode: string,
+  routing: LisaApprovedModelRouting = LISA_APPROVED_MODEL_ROUTING,
+): PdfDocumentRoutingFailureEvent {
+  return {
+    type: "pdf_document_routing_validation_failure",
+    reasonCode,
+    candidateRef: routing.pdfDocumentModelsCutover.candidateRef,
+    capabilityStatus: "approved_unverified",
+    action: "disable_pdf_document_routing_only",
+    preserveService: {
+      primary: true,
+      imageModel: true,
+      defaultFallback: true,
+    },
+    alternatePaidDocumentRoutingAllowed: false,
+  };
+}
+
+/**
+ * Deterministic rollback: disable only PDF document routing; preserve
+ * text/image/default-fallback service. Never substitutes a paid provider.
+ */
+export function rollbackPdfDocumentRoutingOnly(
+  routing: LisaApprovedModelRouting = LISA_APPROVED_MODEL_ROUTING,
+  reasonCode = "provider_or_model_validation_failure",
+): {
+  failureEvent: PdfDocumentRoutingFailureEvent;
+  pdfDocumentModelsCutover: {
+    state: "disabled_by_rollback";
+    documentModelsEnabled: false;
+    capabilityStatus: "approved_unverified";
+    candidateRef: string;
+    alternatePaidDocumentRoutingAllowed: false;
+  };
+  preserved: {
+    model: { primary: string; fallbacks: string[] };
+    imageModel: { primary: string };
+  };
+} {
+  return {
+    failureEvent: buildPdfDocumentRoutingFailureEvent(reasonCode, routing),
+    pdfDocumentModelsCutover: {
+      state: "disabled_by_rollback",
+      documentModelsEnabled: false,
+      capabilityStatus: "approved_unverified",
+      candidateRef: routing.pdfDocumentModelsCutover.candidateRef,
+      alternatePaidDocumentRoutingAllowed: false,
+    },
+    preserved: {
+      model: {
+        primary: primaryModelRef(routing),
+        fallbacks: defaultChatFallbackRefs(routing),
+      },
+      imageModel: {
+        primary: imageModelRef(routing),
+      },
+    },
+  };
+}
+
+/** Non-live openclaw.json agents.defaults fragment — secrets omitted. */
 export function buildNonLiveAgentsDefaultsFragment(
   routing: LisaApprovedModelRouting = LISA_APPROVED_MODEL_ROUTING,
 ): {
   model: { primary: string; fallbacks: string[] };
   imageModel: { primary: string };
+  documentModels: { pdf: { primary: string } };
   thinkingDefault: ReasoningEffort;
   evaluationOnly: { ref: string; enabledInDefaults: false };
   pdfDocumentModelsCutover: {
-    state: "needs_human_gate";
-    documentModelsEnabled: false;
+    state: "enabled_candidate";
+    documentModelsEnabled: true;
+    capabilityStatus: "approved_unverified";
+    candidateRef: string;
+    requiresFirstProductionProofReceipt: true;
+    alternatePaidDocumentRoutingAllowed: false;
   };
 } {
-  if (routing.pdfDocumentModelsCutover.documentModelsEnabled !== false) {
-    throw new Error("non-live fragment forbids enabled PDF documentModels cutover");
+  if (routing.pdfDocumentModelsCutover.documentModelsEnabled !== true) {
+    throw new Error("non-live fragment requires enabled PDF documentModels candidate cutover");
   }
-  if (routing.pdfDocumentModelsCutover.state !== "needs_human_gate") {
-    throw new Error("non-live fragment requires pdfDocumentModelsCutover.state=needs_human_gate");
+  if (routing.pdfDocumentModelsCutover.state !== "enabled_candidate") {
+    throw new Error("non-live fragment requires pdfDocumentModelsCutover.state=enabled_candidate");
+  }
+  if (routing.pdfDocumentModelsCutover.capabilityStatus !== "approved_unverified") {
+    throw new Error("non-live fragment requires capabilityStatus=approved_unverified");
   }
   return {
     model: {
@@ -239,14 +380,23 @@ export function buildNonLiveAgentsDefaultsFragment(
     imageModel: {
       primary: imageModelRef(routing),
     },
+    documentModels: {
+      pdf: {
+        primary: pdfDocumentModelRef(routing),
+      },
+    },
     thinkingDefault: primaryReasoningEffort(routing),
     evaluationOnly: {
       ref: routing.entries.find((e) => e.slot === "evaluationOnly")!.ref,
       enabledInDefaults: false,
     },
     pdfDocumentModelsCutover: {
-      state: "needs_human_gate",
-      documentModelsEnabled: false,
+      state: "enabled_candidate",
+      documentModelsEnabled: true,
+      capabilityStatus: "approved_unverified",
+      candidateRef: routing.pdfDocumentModelsCutover.candidateRef,
+      requiresFirstProductionProofReceipt: true,
+      alternatePaidDocumentRoutingAllowed: false,
     },
   };
 }
@@ -261,18 +411,48 @@ export function validateApprovedRouting(
   if (routing.paidSpendEnablementAllowed !== false) {
     errors.push("paidSpendEnablementAllowed must be false");
   }
-  const cutover = routing.pdfDocumentModelsCutover;
-  if (cutover.state !== "needs_human_gate") {
-    errors.push("pdfDocumentModelsCutover.state must be needs_human_gate until M3 PDF is proven");
+  if (routing.version !== "2026-08-01-ocp-w30-approved-pdf-routing") {
+    errors.push("version must be 2026-08-01-ocp-w30-approved-pdf-routing");
   }
-  if (cutover.documentModelsEnabled !== false) {
-    errors.push("pdfDocumentModelsCutover.documentModelsEnabled must be false");
+  const cutover = routing.pdfDocumentModelsCutover;
+  if (cutover.state !== "enabled_candidate") {
+    errors.push("pdfDocumentModelsCutover.state must be enabled_candidate for approved candidate");
+  }
+  if (cutover.documentModelsEnabled !== true) {
+    errors.push("pdfDocumentModelsCutover.documentModelsEnabled must be true for candidate");
+  }
+  if (cutover.capabilityStatus !== "approved_unverified") {
+    errors.push("pdfDocumentModelsCutover.capabilityStatus must be approved_unverified");
+  }
+  if (cutover.capabilityStatus === ("proven" as string)) {
+    errors.push("pdfDocumentModelsCutover.capabilityStatus must not be proven");
+  }
+  if (cutover.candidateRef !== PDF_CANDIDATE_REF) {
+    errors.push("pdfDocumentModelsCutover.candidateRef must be minimax/MiniMax-M3");
+  }
+  if (cutover.firstProof !== "controlled_production_rollout") {
+    errors.push("firstProof must be controlled_production_rollout");
+  }
+  if (cutover.requiresFirstProductionProofReceipt !== true) {
+    errors.push("requiresFirstProductionProofReceipt must be true");
   }
   if (cutover.alternatePaidDocumentRoutingAllowed !== false) {
     errors.push("alternatePaidDocumentRoutingAllowed must be false");
   }
   if (cutover.observedMediaPdfTextExtraction !== "MiniMax-M2.7") {
     errors.push("observedMediaPdfTextExtraction must remain MiniMax-M2.7 per provider config");
+  }
+  if (cutover.rollback.onProviderOrModelValidationFailure !== "disable_pdf_document_routing_only") {
+    errors.push("rollback must disable PDF document routing only");
+  }
+  if (cutover.rollback.preserveTextImageDefaultFallbackService !== true) {
+    errors.push("rollback must preserve text/image/default-fallback service");
+  }
+  if (cutover.rollback.alternatePaidDocumentRoutingAllowed !== false) {
+    errors.push("rollback.alternatePaidDocumentRoutingAllowed must be false");
+  }
+  if (cutover.rollback.failureEventType !== "pdf_document_routing_validation_failure") {
+    errors.push("rollback.failureEventType must be pdf_document_routing_validation_failure");
   }
   if (cutover.evidence.length === 0) {
     errors.push("pdfDocumentModelsCutover.evidence must be non-empty");
@@ -306,8 +486,16 @@ export function validateApprovedRouting(
   if (image?.ref !== "minimax/MiniMax-M3") {
     errors.push("imagePdf must be minimax/MiniMax-M3");
   }
-  if (image?.notes && /MiniMax-M3 PDF|M3 PDF support|native.*PDF/i.test(image.notes) && !/not|disabled|gate|unproven|do not claim/i.test(image.notes)) {
-    errors.push("imagePdf notes must not claim MiniMax-M3 PDF support");
+  if (image?.notes) {
+    if (!/approved_unverified/i.test(image.notes)) {
+      errors.push("imagePdf notes must state capabilityStatus approved_unverified");
+    }
+    if (!/documentModels\.pdf/i.test(image.notes)) {
+      errors.push("imagePdf notes must distinguish PDF documentModels.pdf route");
+    }
+    if (/proven|production proof (complete|done)|PDF support proven/i.test(image.notes)) {
+      errors.push("imagePdf notes must not claim MiniMax-M3 PDF as proven");
+    }
   }
   const next = routing.entries.find((e) => e.slot === "nextFallback");
   if (next?.ref !== "moonshot/kimi-k3") {

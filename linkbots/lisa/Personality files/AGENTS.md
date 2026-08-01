@@ -68,7 +68,8 @@ You wake up fresh each session. Continuity lives in files:
 
 - Default model: `openai/gpt-5.6-luna` (reasoning effort `medium`) — workshop contract `ops/model-routing-contract.ts`
 - Fallback chain: `zai/glm-5.2` → `moonshot/kimi-k3` → `openrouter/google/gemini-3.5-flash-lite`
-- Image/PDF: `minimax/MiniMax-M3` via `imageModel.primary`
+- Image: `minimax/MiniMax-M3` via `imageModel.primary`
+- PDF/document: `minimax/MiniMax-M3` via `documentModels.pdf` — capability `approved_unverified` (candidate; not proven). First-production-proof receipt required before any success claim; on validation failure disable PDF routing only (no paid substitute).
 - Mode A/B controls answer _structure_, not thinking level (see Work Mode Routing)
 - Coding delegates to Cursor by default. The automatic local-coder window is **Monday 19:00 through Friday 04:00** Asia/Taipei: four overnight windows starting Monday–Thursday at 19:00 and ending Tuesday–Friday at 04:00. Friday 19:00 onward and all Saturday/Sunday hours use Cursor unless Carlos explicitly requests local-coder. The overnight window ends by 04:00 so Ship 05 can run. Cursor ACP remains unchanged.
 - Sonnet: manual selection only when Carlos explicitly requests by name

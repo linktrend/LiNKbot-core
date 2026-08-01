@@ -1,17 +1,30 @@
 {
-  "_comment": "Non-live Lisa agents.defaults fragment for OCP-W20-CROSS-REPO-INTEGRATION (inherits OCP-W10 approved slots). Do not copy into ~/.openclaw-lisa without a separately approved rollout. No secrets. Paid Nemotron is evaluation-only and excluded from fallbacks. Staged canary remains non-live by default.",
+  "_comment": "Non-live Lisa agents.defaults fragment for OCP-W30-APPROVED-PDF-ROUTING (inherits OCP-W10/W20 slots). Do not copy into ~/.openclaw-lisa without a separately approved rollout. No secrets. Paid Nemotron is evaluation-only and excluded from fallbacks. MiniMax-M3 PDF is Principal-approved candidate at capabilityStatus=approved_unverified — not proven; first-production-proof receipt required before any success claim.",
   "liveMutationAllowed": false,
   "paidSpendEnablementAllowed": false,
-  "contractVersion": "2026-08-01-ocp-w20-cross-repo-integration",
+  "contractVersion": "2026-08-01-ocp-w30-approved-pdf-routing",
   "pdfDocumentModelsCutover": {
-    "state": "needs_human_gate",
-    "documentModelsEnabled": false,
+    "state": "enabled_candidate",
+    "documentModelsEnabled": true,
+    "capabilityStatus": "approved_unverified",
+    "candidateRef": "minimax/MiniMax-M3",
+    "firstProof": "controlled_production_rollout",
+    "requiresFirstProductionProofReceipt": true,
     "observedMediaPdfTextExtraction": "MiniMax-M2.7",
     "alternatePaidDocumentRoutingAllowed": false,
-    "_comment": "MiniMax-M3 catalog proves text+image only. Media-understanding PDF defaults to MiniMax-M2.7 — do not claim M3 PDF or silently route documents to another paid model.",
+    "rollback": {
+      "onProviderOrModelValidationFailure": "disable_pdf_document_routing_only",
+      "preserveTextImageDefaultFallbackService": true,
+      "alternatePaidDocumentRoutingAllowed": false,
+      "failureEventType": "pdf_document_routing_validation_failure",
+      "_comment": "On provider/model validation failure: disable only PDF document routing; preserve text/image/default-fallback; emit non-secret failure event; never substitute another paid document model."
+    },
+    "_comment": "Principal-approved MiniMax-M3 PDF/document candidate (approved_unverified). Observed plugin media PDF default remains MiniMax-M2.7. Do not claim proven PDF support or silently route documents to another paid model.",
     "evidence": [
-      "extensions/minimax/provider-models.ts MiniMax-M3 input: text+image (no pdf)",
-      "extensions/minimax/media-understanding-provider.ts documentModels.pdf textExtraction MiniMax-M2.7 image:false",
+      "Principal-approved OCP-W30 MiniMax-M3 PDF/document candidate (capabilityStatus=approved_unverified)",
+      "First live proof deferred to separately controlled production rollout; first-production-proof receipt required before success claim",
+      "extensions/minimax/provider-models.ts MiniMax-M3 catalog input: text+image (PDF unproven at freeze)",
+      "extensions/minimax/media-understanding-provider.ts documentModels.pdf textExtraction MiniMax-M2.7 image:false (observed plugin default)",
       "extensions/minimax/openclaw.plugin.json mediaUnderstandingProviderMetadata.documentModels.pdf MiniMax-M2.7"
     ]
   },
@@ -27,7 +40,13 @@
       },
       "imageModel": {
         "primary": "minimax/MiniMax-M3",
-        "_comment": "Image via imageModel only. documentModels.pdf NOT set (pdfDocumentModelsCutover.state=needs_human_gate)."
+        "_comment": "Image via imageModel. PDF uses documentModels.pdf as approved_unverified candidate (not imageModel)."
+      },
+      "documentModels": {
+        "pdf": {
+          "primary": "minimax/MiniMax-M3",
+          "_comment": "Approved PDF/document candidate only (capabilityStatus=approved_unverified). Non-live; first-production-proof receipt required before success claim."
+        }
       },
       "thinkingDefault": "medium"
     }

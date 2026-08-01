@@ -17,23 +17,24 @@ Skills define _how_ tools work. This file is for _your_ specifics — the stuff 
 - **Web UI:** main session `agent:main:main` — direct chat with Carlos
 - **iPhone:** OpenClaw mobile app (device-pair plugin)
 
-## Model Stack (OCP-W10-LISA-RELEASE approved — workshop contract)
+## Model Stack (OCP-W30-APPROVED-PDF-ROUTING — workshop contract)
 
 Read this file before switching models, citing model names, or changing config. Do not guess IDs or aliases.
 **Authoritative non-live fragment:** `linkbots/lisa/ops/model-routing.contract.json` + `ops/model-routing-contract.ts`.
 **Do not** copy into live `~/.openclaw-lisa` without a separately approved rollout. Paid Nemotron stay evaluation-only (disabled).
+**PDF capability:** `approved_unverified` (Principal-approved candidate — not proven). First live proof is a separately controlled production rollout; require a first-production-proof receipt before any success claim.
 
 ### Cloud (menu)
 
-| Alias       | Model ID                                  | Role                                                                  |
-| ----------- | ----------------------------------------- | --------------------------------------------------------------------- |
-| `luna`      | `openai/gpt-5.6-luna`                     | **Default primary** — reasoning effort medium                         |
-| `glm`       | `zai/glm-5.2`                             | **Default fallback**                                                  |
-| `minimax`   | `minimax/MiniMax-M3`                      | **Image/PDF** (`imageModel.primary`) + vision path                    |
-| `kimi`      | `moonshot/kimi-k3`                        | **Next fallback**                                                     |
-| `flashlite` | `openrouter/google/gemini-3.5-flash-lite` | **Utility** / optional fallback slot                                  |
-| `nemotron`  | `nvidia/nemotron-3-super-120b-a12b`       | Eval only — **not** in defaults; no `:free`; no paid spend enablement |
-| `sonnet`    | `openrouter/anthropic/claude-sonnet-5`    | Premium — **only when Carlos explicitly asks**                        |
+| Alias       | Model ID                                  | Role                                                                                                        |
+| ----------- | ----------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `luna`      | `openai/gpt-5.6-luna`                     | **Default primary** — reasoning effort medium                                                               |
+| `glm`       | `zai/glm-5.2`                             | **Default fallback**                                                                                        |
+| `minimax`   | `minimax/MiniMax-M3`                      | **Image** (`imageModel.primary`) + **PDF/document candidate** (`documentModels.pdf`, `approved_unverified`) |
+| `kimi`      | `moonshot/kimi-k3`                        | **Next fallback**                                                                                           |
+| `flashlite` | `openrouter/google/gemini-3.5-flash-lite` | **Utility** / optional fallback slot                                                                        |
+| `nemotron`  | `nvidia/nemotron-3-super-120b-a12b`       | Eval only — **not** in defaults; no `:free`; no paid spend enablement                                       |
+| `sonnet`    | `openrouter/anthropic/claude-sonnet-5`    | Premium — **only when Carlos explicitly asks**                                                              |
 
 ### Local (menu)
 
@@ -45,19 +46,22 @@ Read this file before switching models, citing model names, or changing config. 
 
 - **Primary:** `openai/gpt-5.6-luna` (thinking / reasoning effort `medium`)
 - **Fallback chain:** `zai/glm-5.2` → `moonshot/kimi-k3` → `openrouter/google/gemini-3.5-flash-lite`
-- **Image/PDF:** `minimax/MiniMax-M3` via `agents.defaults.imageModel.primary`
+- **Image:** `minimax/MiniMax-M3` via `agents.defaults.imageModel.primary`
+- **PDF / document:** `minimax/MiniMax-M3` via `agents.defaults.documentModels.pdf` — capability `approved_unverified` (candidate only; not proven). Do not claim production PDF proof without a first-production-proof receipt.
+- **PDF rollback:** on provider/model validation failure, disable **only** PDF document routing; keep text/image/default-fallback; never silently substitute another paid document model.
 - **Evaluation-only:** paid Nemotron Super — disabled in defaults
 - **Speed:** Standard (`fastMode: off`). Slow OK for non-urgent overnight work
 
 ### Routing rules
 
 1. **Everyday / ops / legal / strategy / analysis** → primary Luna; follow fallback chain above.
-2. **Images / PDFs** → `minimax/MiniMax-M3` imageModel path (not OpenRouter M3 unless separately proven).
-3. **Coding by default, including weekends** → delegate to Cursor (`tools/cursor-acp.md`) — Cursor ACP remains on Grok high-fast.
-4. **Coding in the four Monday–Thursday overnight windows, 19:00–04:00 Asia/Taipei** → use the dedicated local-coder route (`tools/local-coder.md`) on `ollama/qwen3.5:9b` (ends Tuesday–Friday by 04:00 ahead of Ship 05). Friday 19:00 onward and all Saturday/Sunday hours remain on Cursor unless Carlos explicitly requests local-coder.
-5. **Carlos explicitly asks for local-coder any time** → use local-coder on `ollama/qwen3.5:9b`.
-6. **Sonnet** → manual selection only when Carlos says the name or equivalent.
-7. **Nemotron** → eval runs only; log to `memory/evals/`; never enable paid spend from automation.
+2. **Images** → `minimax/MiniMax-M3` `imageModel` path (not OpenRouter M3 unless separately proven).
+3. **PDFs / documents** → `minimax/MiniMax-M3` `documentModels.pdf` candidate (`approved_unverified`). Workshop/non-live until separately approved live rollout + first-production-proof receipt. On validation failure, disable PDF document routing only — do not pay-substitute.
+4. **Coding by default, including weekends** → delegate to Cursor (`tools/cursor-acp.md`) — Cursor ACP remains on Grok high-fast.
+5. **Coding in the four Monday–Thursday overnight windows, 19:00–04:00 Asia/Taipei** → use the dedicated local-coder route (`tools/local-coder.md`) on `ollama/qwen3.5:9b` (ends Tuesday–Friday by 04:00 ahead of Ship 05). Friday 19:00 onward and all Saturday/Sunday hours remain on Cursor unless Carlos explicitly requests local-coder.
+6. **Carlos explicitly asks for local-coder any time** → use local-coder on `ollama/qwen3.5:9b`.
+7. **Sonnet** → manual selection only when Carlos says the name or equivalent.
+8. **Nemotron** → eval runs only; log to `memory/evals/`; never enable paid spend from automation.
 
 ### Prompt caching (verified 2026-07-15)
 

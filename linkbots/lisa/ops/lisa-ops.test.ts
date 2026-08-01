@@ -35,6 +35,16 @@ import {
   selectFreshCheckpointLines,
 } from "./pipeline-status-cas.ts";
 import {
+  authorizeRepairLiveDispatch,
+  classifyFailure,
+  evaluateProof,
+  MAX_REPAIR_ATTEMPTS,
+  nextRepairDecision,
+  recordDispatch,
+  type RepairAttemptRecord,
+  type RepairBinding,
+} from "./repair-dispatcher.ts";
+import {
   canFinishShipPullSuccessfully,
   classifyBranch,
   isApprovedWorkBranch,
@@ -53,16 +63,6 @@ import {
   validateShipPromptContract,
   type BranchWaveResult,
 } from "./ship-pull-contract.ts";
-import {
-  authorizeRepairLiveDispatch,
-  classifyFailure,
-  evaluateProof,
-  MAX_REPAIR_ATTEMPTS,
-  nextRepairDecision,
-  recordDispatch,
-  type RepairAttemptRecord,
-  type RepairBinding,
-} from "./repair-dispatcher.ts";
 import {
   assertNoUnresolvedPlaceholders,
   loadCanonicalTemplateBody,
@@ -360,9 +360,12 @@ describe("Approved model routing (non-live)", () => {
     assert.ok(imagePdf);
     assert.match(
       imagePdf.notes ?? "",
-      /PDF documentModels (not set|disabled)|pdfDocumentModelsCutover/i,
+      /documentModels\.pdf|pdfDocumentModelsCutover|approved_unverified/i,
     );
     assert.ok(!/Image\/PDF via MiniMax native vision catalog/i.test(imagePdf.notes ?? ""));
+    assert.equal(fragment.documentModels.pdf.primary, "minimax/MiniMax-M3");
+    assert.equal(fragment.pdfDocumentModelsCutover.capabilityStatus, "approved_unverified");
+    assert.equal(fragment.pdfDocumentModelsCutover.state, "enabled_candidate");
   });
 
   it("keeps contract JSON aligned with TypeScript contract", () => {
@@ -373,19 +376,27 @@ describe("Approved model routing (non-live)", () => {
         defaults: {
           model: { primary: string; fallbacks: string[] };
           imageModel: { primary: string };
+          documentModels?: { pdf?: { primary: string } };
           thinkingDefault: string;
         };
       };
       evaluationOnly: { enabledInDefaults: boolean; ref: string };
       liveMutationAllowed: boolean;
+      pdfDocumentModelsCutover?: { capabilityStatus?: string; state?: string };
     };
     const fragment = buildNonLiveAgentsDefaultsFragment();
     assert.equal(raw.liveMutationAllowed, false);
     assert.equal(raw.agents.defaults.model.primary, fragment.model.primary);
     assert.deepEqual(raw.agents.defaults.model.fallbacks, fragment.model.fallbacks);
     assert.equal(raw.agents.defaults.imageModel.primary, fragment.imageModel.primary);
+    assert.equal(
+      raw.agents.defaults.documentModels?.pdf?.primary,
+      fragment.documentModels.pdf.primary,
+    );
     assert.equal(raw.agents.defaults.thinkingDefault, fragment.thinkingDefault);
     assert.equal(raw.evaluationOnly.enabledInDefaults, false);
+    assert.equal(raw.pdfDocumentModelsCutover?.capabilityStatus, "approved_unverified");
+    assert.equal(raw.pdfDocumentModelsCutover?.state, "enabled_candidate");
   });
 });
 
