@@ -14,8 +14,10 @@
         ]
       },
       "imageModel": {
-        "primary": "minimax/MiniMax-M3"
+        "primary": "minimax/MiniMax-M3",
+        "_comment": "Image via imageModel only. PDF documentModels not asserted here; MiniMax media PDF defaults to MiniMax-M2.7 — human gate before live PDF enablement."
       },
+
       "thinkingDefault": "medium"
     }
   },

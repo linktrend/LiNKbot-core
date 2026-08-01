@@ -67,12 +67,18 @@ export const LISA_APPROVED_MODEL_ROUTING = {
       ref: "minimax/MiniMax-M3",
       label: "MiniMax-M3",
       enabledInDefaults: true,
-      notes: "Image/PDF via MiniMax native vision catalog (input text+image).",
+      // Packet slot name remains imagePdf; this fragment only sets agents.defaults.imageModel.
+      // MiniMax catalog proves text+image for M3. Media-understanding PDF textExtraction defaults
+      // to MiniMax-M2.7 (image:false) — live PDF owner stays a human cutover gate.
+      notes:
+        "Image via agents.defaults.imageModel (catalog input text+image). PDF documentModels not set by this fragment; MiniMax media PDF defaults to M2.7 — human gate before live PDF enablement.",
       verifiedSources: [
         "extensions/minimax/provider-models.ts MINIMAX_DEFAULT_MODEL_ID",
         "extensions/minimax/provider-models.ts MINIMAX_TEXT_MODEL_CATALOG MiniMax-M3",
+        "extensions/minimax/media-understanding-provider.ts documentModels.pdf MiniMax-M2.7",
       ],
     },
+
     {
       slot: "nextFallback",
       ref: "moonshot/kimi-k3",

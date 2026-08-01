@@ -297,6 +297,10 @@ describe("Approved model routing (non-live)", () => {
     assert.ok(!fragment.evaluationOnly.ref.includes(":free"));
     assert.equal(LISA_APPROVED_MODEL_ROUTING.liveMutationAllowed, false);
     assert.equal(LISA_APPROVED_MODEL_ROUTING.paidSpendEnablementAllowed, false);
+    const imagePdf = LISA_APPROVED_MODEL_ROUTING.entries.find((e) => e.slot === "imagePdf");
+    assert.ok(imagePdf);
+    assert.match(imagePdf.notes ?? "", /PDF documentModels not set/i);
+    assert.ok(!/Image\/PDF via MiniMax native vision catalog/i.test(imagePdf.notes ?? ""));
   });
 
   it("keeps contract JSON aligned with TypeScript contract", () => {

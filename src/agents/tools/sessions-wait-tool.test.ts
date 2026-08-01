@@ -284,4 +284,100 @@ describe("sessions_wait", () => {
     expect(tool.description).toContain("sessions_yield");
     expect(tool.description).toContain("agents_wait");
   });
+
+  it("fires the parked deadline timer when no terminal registry row arrives", async () => {
+    vi.useFakeTimers();
+    try {
+      const parent = "agent:lisa:cron:pull:run:deadline";
+      records.set("pending", acpRun("pending", parent));
+      const completion = waitForSessionDescendants({
+        ids: ["pending"],
+        currentSessionKeys: new Set([parent]),
+        timeoutMs: 1_000,
+      });
+      expect(registryEvents.listeners.size).toBe(1);
+      await vi.advanceTimersByTimeAsync(1_000);
+      await expect(completion).resolves.toMatchObject({
+        completed: [],
+        pending: ["pending"],
+        timedOut: true,
+      });
+      expect(registryEvents.listeners.size).toBe(0);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("prefers a late terminal registry row that races the deadline boundary", async () => {
+    vi.useFakeTimers();
+    try {
+      const parent = "agent:lisa:cron:ship:run:race";
+      const entry = acpRun("race", parent);
+      records.set(entry.runId, entry);
+      const completion = waitForSessionDescendants({
+        ids: [entry.runId],
+        currentSessionKeys: new Set([parent]),
+        timeoutMs: 500,
+      });
+      expect(registryEvents.listeners.size).toBe(1);
+
+      entry.endedAt = Date.now();
+      entry.outcome = { status: "ok", endedAt: entry.endedAt };
+      entry.completion = { required: true, resultText: "WAVE: Clear", capturedAt: entry.endedAt };
+      for (const listener of registryEvents.listeners) {
+        listener();
+      }
+      await vi.advanceTimersByTimeAsync(500);
+
+      await expect(completion).resolves.toMatchObject({
+        completed: [{ runId: "race", status: "ok", result: "WAVE: Clear", firstObservation: true }],
+        pending: [],
+      });
+      expect(registryEvents.listeners.size).toBe(0);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("ignores duplicate registry persist wakes after the wait has settled", async () => {
+    const parent = "agent:lisa:cron:ship:run:dup-wake";
+    const entry = acpRun("dup", parent);
+    records.set(entry.runId, entry);
+    const completion = waitForSessionDescendants({
+      ids: [entry.runId],
+      currentSessionKeys: new Set([parent]),
+      timeoutMs: 5_000,
+    });
+
+    entry.endedAt = Date.now();
+    entry.outcome = { status: "ok", endedAt: entry.endedAt };
+    entry.completion = { required: true, resultText: "WAVE: Clear", capturedAt: entry.endedAt };
+    const listeners = [...registryEvents.listeners];
+    for (const listener of listeners) {
+      listener();
+      listener();
+    }
+
+    await expect(completion).resolves.toMatchObject({
+      completed: [{ runId: "dup", status: "ok", firstObservation: true }],
+      pending: [],
+    });
+    expect(registryEvents.listeners.size).toBe(0);
+  });
+
+  it("rejects an AbortSignal while parked without a terminal row", async () => {
+    const parent = "agent:lisa:cron:ship:run:abort";
+    records.set("pending", acpRun("pending", parent));
+    const controller = new AbortController();
+    const completion = waitForSessionDescendants({
+      ids: ["pending"],
+      currentSessionKeys: new Set([parent]),
+      timeoutMs: 5_000,
+      signal: controller.signal,
+    });
+    expect(registryEvents.listeners.size).toBe(1);
+    controller.abort();
+    await expect(completion).rejects.toThrow(/sessions_wait aborted/i);
+    expect(registryEvents.listeners.size).toBe(0);
+  });
 });

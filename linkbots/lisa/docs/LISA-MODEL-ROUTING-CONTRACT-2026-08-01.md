@@ -13,7 +13,7 @@
 
 1. Primary: `openai/gpt-5.6-luna`, reasoning effort **medium**
 2. Default fallback: `zai/glm-5.2`
-3. Image/PDF: `minimax/MiniMax-M3`
+3. Image (`agents.defaults.imageModel`): `minimax/MiniMax-M3` (catalog text+image). PDF `documentModels` are **not** set by this fragment; MiniMax media-understanding PDF defaults to `MiniMax-M2.7` — human gate before live PDF enablement.
 4. Next fallback: `moonshot/kimi-k3`
 5. Utility: `openrouter/google/gemini-3.5-flash-lite`
 6. Evaluation-only: `nvidia/nemotron-3-super-120b-a12b` — **not** in defaults; no `:free`; no paid spend enablement
