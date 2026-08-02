@@ -14,7 +14,7 @@
 | Starting branch  | release-hygiene-cleanup @ origin/development `2025401aafc`                       |
 | Ending branch    | docs/release-hygiene/cursor-local-mac-mini-release-hygiene-20260802-1313         |
 | Starting commit  | 2025401aafc7e877bb11e83c852bb718cdba0a54                                         |
-| Ending commit    | 5453be356db43707292085327e873edb3d595cab                                         |
+| Ending commit    | 48955a1bb443bfa038c4033ca33bc98aacdffcb8                                         |
 | Starting status  | clean, tracking origin/development                                               |
 | Ending status    | draft PR to development                                                          |
 
