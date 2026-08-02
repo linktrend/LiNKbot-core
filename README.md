@@ -28,13 +28,19 @@ Supported channels include: WhatsApp, Telegram, Slack, Discord, Google Chat, Sig
 Incoming agents must start with this reading order:
 
 1. [`AGENTS.md`](AGENTS.md)
-2. [`docs/agent-briefing.md`](docs/agent-briefing.md)
+2. [`docs/agent-briefing.md`](docs/agent-briefing.md) — especially the **Pre-production truth — 2026-08-02** section
 3. [`docs/agent-coordination.md`](docs/agent-coordination.md)
-4. [`docs/current-status.md`](docs/current-status.md)
+4. [`docs/current-status.md`](docs/current-status.md) — Orchestrator summary; **may lag** session records and evidence packets
 5. Potentially overlapping records in [`docs/agent-sessions/active/`](docs/agent-sessions/active/)
 6. Relevant files in [`docs/handoffs/`](docs/handoffs/)
+7. Current pre-production release/canary evidence (when present):
+   - [`docs/evidence/ocp-w10-lisa-release/`](docs/evidence/ocp-w10-lisa-release/)
+   - [`docs/evidence/ocp-w20-cross-repo-integration/`](docs/evidence/ocp-w20-cross-repo-integration/)
+   - [`docs/evidence/ocp-w30-approved-pdf-routing/`](docs/evidence/ocp-w30-approved-pdf-routing/)
+   - [`linkbots/lisa/docs/LISA-MODEL-ROUTING-CONTRACT-2026-08-01.md`](linkbots/lisa/docs/LISA-MODEL-ROUTING-CONTRACT-2026-08-01.md)
+   - [`docs/execution/openclawdevelopmentplan01/runbooks/stage-prod-canary-controls.md`](docs/execution/openclawdevelopmentplan01/runbooks/stage-prod-canary-controls.md)
 
-This repo may have Orchestrator, Lisa, and Feature agents working through Cursor, Codex, and ChatGPT on different machines and execution surfaces. Every agent creates its own session record; only Orchestrators maintain the shared dashboard. Use one branch per task, create a dated handoff for material work, and follow the repository-local Stage 1 and future LiNKbrain Stage 2 boundaries in the coordination guide. Verify Git and runtime claims from fresh evidence, never overwrite another session's work, and never include secrets, tokens, private memory, emails/messages, or unrelated private data in coordination records.
+This repo may have Orchestrator, Lisa, and Feature agents working through Cursor, Codex, and ChatGPT on different machines and execution surfaces. Every agent creates its own session record; only Orchestrators maintain the shared dashboard. Use one branch per task, create a dated handoff for material work, and follow the repository-local Stage 1 and future LiNKbrain Stage 2 boundaries in the coordination guide. **Stage 2 LiNKbrain consumer wiring is not live.** Verify Git and runtime claims from fresh evidence, never overwrite another session's work, and never include secrets, tokens, private memory, emails/messages, or unrelated private data in coordination records. Do not treat `linkbots/` workshop files as live `~/.openclaw-*` state. Staged canary remains non-live by default (`liveMutationAllowed: false`).
 
 New install? Start here: [Getting started](https://docs.openclaw.ai/start/getting-started)
 
