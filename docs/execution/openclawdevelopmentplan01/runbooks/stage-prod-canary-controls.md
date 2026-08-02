@@ -12,7 +12,7 @@
 
 ## Default posture (OCP-W30 candidate)
 
-Staged canary remains **non-live by default**. Candidate routing fragments under `linkbots/lisa/ops/model-routing.contract.*` are workshop artifacts only:
+Authoritative candidate language on `origin/development` as of PR #43 / `2025401aafc` (2026-08-01). Staged canary remains **non-live by default**. Candidate routing fragments under `linkbots/lisa/ops/model-routing.contract.*` are workshop artifacts only:
 
 1. Do **not** copy into `~/.openclaw-lisa` from this runbook alone.
 2. Do **not** start LIVE canary from FAKE/TEMPLATE rehearsal steps.

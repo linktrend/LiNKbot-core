@@ -1,8 +1,23 @@
 # Current Repository Status
 
+## Current Status — 2026-08-02 13:30 Asia/Taipei (pre-production hygiene refresh)
+
+Carlos authorized a pre-launch repository hygiene pass. This top section is a Feature/hygiene-leader refresh of **pre-production truth** so agents do not treat July 23–27 dashboard text as current. Unique session records remain ownership authority; Orchestrators may refine this dashboard further.
+
+- Integration tip: `origin/development` at `2025401aafc` (PR #43 OCP-W30 MiniMax-M3 PDF routing candidate `approved_unverified` merged).
+- Release packets present (docs/evidence only; **no production deploy claimed**): OCP-W10 Lisa RC, OCP-W20 cross-repo integration, OCP-W30 approved PDF routing.
+- Canary posture: staged canary **non-live by default**. Workshop contract `linkbots/lisa/ops/model-routing.contract.json` has `liveMutationAllowed: false`, `paidSpendEnablementAllowed: false`. First-PDF proof requires a separately authorized production rollout + receipt.
+- Live Lisa (`~/.openclaw-lisa`, port **18790**) and lisa-stage (**18791**) were **not** mutated by the hygiene session. Do not touch credentials, cloud, production, IDE Development, or `/Users/linktrend/Projects/LiNKplatform-staging` from hygiene work.
+- Stage 1 coordination remains repository-local. Stage 2 LiNKbrain OpenClaw Prime consumer wiring is **not live**.
+- Hygiene branch: `docs/release-hygiene/cursor-local-mac-mini-release-hygiene-20260802-1313` (session `cursor-local-mac-mini-release-hygiene-20260802-1313`). Archives superseded workshop Phase-1 / Stage-2 kickoff docs and bak/preview artifacts under `docs/archive/linkbots-lisa/`. Does **not** move Principal `CURSOR-GROK-*` prompts or the frozen implementation plan (provenance pins).
+- Active session notes (owners must close their own records): release-hygiene (this pass); OCP-W10 Lisa release and ACP wait records still marked `handing-off` under `active/` pending owner/Orchestrator closeout. Shared-checkout untracked canary session `cursor-local-mac-mini-lisa-stage-canary-20260802-0939` must remain untouched outside its owner checkout.
+- Preserved: `stash@{0}: On main: wip-auth-unrelated`; other worktrees; freeze/execution packets; canary/rollback evidence.
+
+Older status sections below are **historical snapshots only**.
+
 ## Current Status — 2026-07-27 15:17 Asia/Taipei
 
-This section supersedes the older dashboard snapshots retained below.
+This section supersedes the older dashboard snapshots retained below (historical relative to 2026-08-02).
 
 - Carlos directed the Codex Desktop Orchestrator to merge the open PRs into `development` without waiting for or running further checks, resolve actual integration conflicts, deploy the safe merged Lisa files, rebuild/restart Lisa, and verify health.
 - PRs #36, #33, and #34 are merged into `origin/development`. PR #34 merged at `067d1f2ea5ea902f43a919335d95e78cc8d64ff1` using Carlos-authorized admin bypass rather than waiting for its restarted CI matrix.
