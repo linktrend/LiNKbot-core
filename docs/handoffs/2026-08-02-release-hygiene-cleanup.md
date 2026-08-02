@@ -2,21 +2,21 @@
 
 ## Session Metadata
 
-| Field            | Value                                                                            |
-| ---------------- | -------------------------------------------------------------------------------- |
-| Agent identity   | Cursor Local Agent (release-hygiene leader, Cursor Grok 4.5 High)                |
-| Session ID       | cursor-local-mac-mini-release-hygiene-20260802-1313                              |
-| Orchestrator key | cursor-local-mac-mini-desktop-workspace-orchestrator                             |
+| Field            | Value                                                                                        |
+| ---------------- | -------------------------------------------------------------------------------------------- |
+| Agent identity   | Cursor Local Agent (release-hygiene leader, Cursor Grok 4.5 High)                            |
+| Session ID       | cursor-local-mac-mini-release-hygiene-20260802-1313                                          |
+| Orchestrator key | cursor-local-mac-mini-desktop-workspace-orchestrator                                         |
 | Objective        | Pre-launch release hygiene: archive superseded docs, update ops truth, proven dead/temp only |
-| Scope            | Isolated worktree docs/hygiene only; no live Lisa/stage/credentials/cloud/prod   |
-| Started          | 2026-08-02 13:13 Asia/Taipei                                                     |
-| Ended            | 2026-08-02 13:45 Asia/Taipei                                                     |
-| Starting branch  | release-hygiene-cleanup @ origin/development `2025401aafc`                       |
-| Ending branch    | docs/release-hygiene/cursor-local-mac-mini-release-hygiene-20260802-1313         |
-| Starting commit  | 2025401aafc7e877bb11e83c852bb718cdba0a54                                         |
-| Ending commit    | 3a33685f5ef77659eeb9e956580698ee4314ff8c                                         |
-| Starting status  | clean, tracking origin/development                                               |
-| Ending status    | draft PR to development                                                          |
+| Scope            | Isolated worktree docs/hygiene only; no live Lisa/stage/credentials/cloud/prod               |
+| Started          | 2026-08-02 13:13 Asia/Taipei                                                                 |
+| Ended            | 2026-08-02 13:45 Asia/Taipei                                                                 |
+| Starting branch  | release-hygiene-cleanup @ origin/development `2025401aafc`                                   |
+| Ending branch    | docs/release-hygiene/cursor-local-mac-mini-release-hygiene-20260802-1313                     |
+| Starting commit  | 2025401aafc7e877bb11e83c852bb718cdba0a54                                                     |
+| Ending commit    | 5453be356db43707292085327e873edb3d595cab (content tip; see Amendments)                       |
+| Starting status  | clean, tracking origin/development                                                           |
+| Ending status    | draft PR #45 to development (tip via `git rev-parse` / `headRefOid`)                         |
 
 ## Summary
 
@@ -63,13 +63,13 @@ None (archives used `git mv`).
 
 ## Decisions
 
-| Decision | Reason | Evidence | Approval |
-| -------- | ------ | -------- | -------- |
-| Archive Phase-1 + Stage-2 kickoff + bak/preview only | Clearly superseded; no freeze/ledger pins | Lane reports + rg | Carlos pre-launch cleanup + implementation judgment |
-| Keep all `docs/CURSOR-GROK-*` and frozen implementation plan | Provenance/hash/ledger pins | PHASE-0 freeze, §13.3 ledger, PACI pins | Implementation judgment (prefer not delete) |
-| No code safeDeletes | Dead-code lane confidence <0.95 for deletes | Zero callers ≠ dead workshop | Prefer not delete |
-| Refresh current-status top section | Agents were reading July truth as current; Carlos assigned hygiene leader | Stale dashboard vs evidence | Carlos assignment |
-| Never touch shared checkout | Preserve untracked canary session | User constraint + ls shared active/ | Carlos explicit |
+| Decision                                                     | Reason                                                                    | Evidence                                | Approval                                            |
+| ------------------------------------------------------------ | ------------------------------------------------------------------------- | --------------------------------------- | --------------------------------------------------- |
+| Archive Phase-1 + Stage-2 kickoff + bak/preview only         | Clearly superseded; no freeze/ledger pins                                 | Lane reports + rg                       | Carlos pre-launch cleanup + implementation judgment |
+| Keep all `docs/CURSOR-GROK-*` and frozen implementation plan | Provenance/hash/ledger pins                                               | PHASE-0 freeze, §13.3 ledger, PACI pins | Implementation judgment (prefer not delete)         |
+| No code safeDeletes                                          | Dead-code lane confidence <0.95 for deletes                               | Zero callers ≠ dead workshop            | Prefer not delete                                   |
+| Refresh current-status top section                           | Agents were reading July truth as current; Carlos assigned hygiene leader | Stale dashboard vs evidence             | Carlos assignment                                   |
+| Never touch shared checkout                                  | Preserve untracked canary session                                         | User constraint + ls shared active/     | Carlos explicit                                     |
 
 ## Tests and Verification
 
@@ -126,3 +126,10 @@ Refresh dashboard from this handoff; close or move handing-off W10/ACP active re
 - Who: cursor-local-mac-mini-release-hygiene-20260802-1313
 - Evidence: git log on branch docs/release-hygiene/cursor-local-mac-mini-release-hygiene-20260802-1313
 
+### 2026-08-02 14:11 — correction agent (diff --check + SHA reconcile)
+
+- What was wrong: Handoff had a blank line at EOF (`git diff --check` fail). Ending-commit field still pointed at tip-chase SHA `3a33685f5ef77659eeb9e956580698ee4314ff8c` instead of the content tip.
+- Corrected fact: Ending commit = content tip `5453be356db43707292085327e873edb3d595cab`. File ends with a single trailing newline. Later meta/correction commits must not rewrite Ending commit; use `git rev-parse HEAD` or draft PR #45 `headRefOid` for branch tip.
+- Why: Fix whitespace gate without restarting infinite ending-SHA chase.
+- Who: cursor-local-mac-mini-release-hygiene-correction-20260802-1411
+- Evidence: `git diff --check origin/development...HEAD`; PR https://github.com/linktrend/openclaw_prime/pull/45
