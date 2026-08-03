@@ -14,7 +14,7 @@
 | Starting branch  | `ocp-brain-drain-proof` (base `dev/minicodex/WP-0-macmini-release`)                                                              |
 | Ending branch    | `ocp-brain-drain-proof`                                                                                                          |
 | Starting commit  | `07c86fdc734ae98c2d8c65c0687e9c57624854a7`                                                                                       |
-| Ending commit    | 8e451bebb0fd5bb1312e0586386fd8c8259ed744                                                                                         |
+| Ending commit    | 75b7b4c93ad0a8e8593edb4a830d714c3f45566e                                                                                         |
 | Starting status  | clean at exact base SHA                                                                                                          |
 | Ending status    | committed + pushed (if push succeeds)                                                                                            |
 
