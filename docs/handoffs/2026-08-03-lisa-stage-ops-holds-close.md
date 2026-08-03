@@ -14,7 +14,7 @@
 | Starting branch  | ocp-stage-ops-canary-final                                       |
 | Ending branch    | ocp-stage-ops-canary-final                                       |
 | Starting commit  | d178bd998ae2cb7246c0813c61ae80a8e1a24eda                         |
-| Ending commit    | (see git rev-parse HEAD after commit)                            |
+| Ending commit    | d08aba95fd5cf296f12a93a51c66fa7f1ded5d27                         |
 | Starting status  | active                                                           |
 | Ending status    | complete                                                         |
 
