@@ -358,6 +358,47 @@ describe("agents machine-token-host", () => {
       destroyCandidateMachineTokenFacadeGeneration(live.handle);
     });
 
+    it("keeps ownership fingerprints stable across Unicode bindingId reorder", () => {
+      // localeCompare("en") equates NFC é and NFD e+acute (returns 0). Distinct
+      // code-unit IDs with otherwise-identical authorization tuples must still
+      // sort under a total order so reversed input cannot change the hash.
+      const nfcBindingId = "\u00e9";
+      const nfdBindingId = "e\u0301";
+      expect(nfcBindingId.localeCompare(nfdBindingId, "en")).toBe(0);
+      expect(nfcBindingId === nfdBindingId).toBe(false);
+
+      const sharedKeyRef: MachineTokenKeyRefIdentity = {
+        source: "env",
+        provider: "default",
+        id: "SHARED_UNICODE_PEM",
+      };
+      const shared = {
+        pluginId: "linkbrain",
+        domain: "shared-domain",
+        clientId: "client-shared",
+        issuerUrl: "https://issuer.example.test",
+        bindingFingerprint: "FP-SHARED",
+        keyRef: sharedKeyRef,
+        keyRefFingerprint: fingerprintMachineTokenKeyRef(sharedKeyRef),
+      } as const;
+      const nfc = record(nfcBindingId, shared);
+      const nfd = record(nfdBindingId, shared);
+
+      expect(fingerprintMachineTokenGrantedRecords([nfc, nfd])).toBe(
+        fingerprintMachineTokenGrantedRecords([nfd, nfc]),
+      );
+      expect(fingerprintMachineTokenGrantedRecords([nfc])).not.toBe(
+        fingerprintMachineTokenGrantedRecords([nfd]),
+      );
+
+      const live = publishOwnership([nfc, nfd]);
+      expect(liveMachineTokenOwnershipMatchesGrantedRecords("linkbrain", [nfd, nfc])).toBe(true);
+      expect(liveMachineTokenOwnershipMatchesGrantedRecords("linkbrain", [nfc])).toBe(false);
+      expect(liveMachineTokenOwnershipMatchesGrantedRecords("linkbrain", [nfd])).toBe(false);
+      unregisterMachineTokenFacadesForPlugin("linkbrain");
+      destroyCandidateMachineTokenFacadeGeneration(live.handle);
+    });
+
     it("forces replacement on binding add/remove and authorization field changes", () => {
       const base = record("linkbrain-stage", {
         clientId: "client-v1",

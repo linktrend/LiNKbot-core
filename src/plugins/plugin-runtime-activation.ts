@@ -11,6 +11,7 @@ import {
   commitMachineTokenOwnershipSnapshot,
   createMachineTokenFacadeGeneration,
   destroyCandidateMachineTokenFacadeGeneration,
+  compareMachineTokenCanonicalJson,
   fingerprintMachineTokenGrantedRecords,
   getLiveMachineTokenFacadeGenerationHandle,
   getLiveMachineTokenPluginFacade,
@@ -87,7 +88,7 @@ function fingerprintOwnershipPlugins(
       plugin.pluginId,
       fingerprintMachineTokenGrantedRecords(plugin.grantedRecords),
     ])
-    .toSorted((left, right) => JSON.stringify(left).localeCompare(JSON.stringify(right), "en"));
+    .toSorted(compareMachineTokenCanonicalJson);
   return createHash("sha256")
     .update(MACHINE_TOKEN_OWNERSHIP_PLUGINS_DOMAIN, "utf8")
     .update("\0", "utf8")

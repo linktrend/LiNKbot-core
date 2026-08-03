@@ -170,8 +170,17 @@ function canonicalizeMachineTokenOwnershipTuple(
   ];
 }
 
-function compareCanonicalJson(left: unknown, right: unknown): number {
-  return JSON.stringify(left).localeCompare(JSON.stringify(right), "en");
+/**
+ * Total order over JSON encodings for ownership tuples.
+ * UTF-8 bytewise (not localeCompare): en collation equates distinct Unicode
+ * forms (e.g. NFC é vs NFD e+acute), so reversed equal-keys would change the
+ * hashed fingerprint.
+ */
+export function compareMachineTokenCanonicalJson(left: unknown, right: unknown): number {
+  return Buffer.compare(
+    Buffer.from(JSON.stringify(left), "utf8"),
+    Buffer.from(JSON.stringify(right), "utf8"),
+  );
 }
 
 /** Per-plugin ownership fingerprint from granted binding descriptors. */
@@ -183,7 +192,7 @@ export function fingerprintMachineTokenGrantedRecords(
   // unsafe — `a`/`FPA` + `b`/`FPB` equals one record `a=FPA,b`/`FPB`.
   const tuples = grantedRecords
     .map((record) => canonicalizeMachineTokenOwnershipTuple(record))
-    .toSorted(compareCanonicalJson);
+    .toSorted(compareMachineTokenCanonicalJson);
   return createHash("sha256")
     .update(MACHINE_TOKEN_OWNERSHIP_DOMAIN, "utf8")
     .update("\0", "utf8")
