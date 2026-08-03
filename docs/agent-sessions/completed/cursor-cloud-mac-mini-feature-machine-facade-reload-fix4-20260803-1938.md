@@ -45,8 +45,8 @@
 
 - 2026-08-03 19:38 Asia/Taipei: verified tip `699868836c2`, content `d7f834f4ec7`. Confirmed delimiter collision in `fingerprintMachineTokenGrantedRecords`.
 - 2026-08-03 19:41 Asia/Taipei: replaced ownership fingerprint with hashed canonical JSON tuples; sibling plugin blueprint fingerprint hardened; regressions added.
-- 2026-08-03 19:42 Asia/Taipei: focused 79 + broader 478 green. Fix commit `f55614cb7c9967f797bc2b550f904e912c3bbb02`.
-- 2026-08-03 19:43 Asia/Taipei: PASS-HOLD handoff; session complete. Do not self-approve.
+- 2026-08-03 19:42 Asia/Taipei: focused 79 + broader 478 green. Fix commit `f55614cb7c9967f797bc2b550f904e912c3bbb02` (tree `53e763ebf567a808d7616501436ee9a08d22cf77`).
+- 2026-08-03 19:43 Asia/Taipei: PASS-HOLD handoff pushed. Branch tip `22776327ade39fad63c9fbbea3d3e0ef59597b8b`. Do not self-approve.
 
 ## Next Action
 
