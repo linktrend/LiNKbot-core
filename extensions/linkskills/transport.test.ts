@@ -708,6 +708,73 @@ describe("linkskills transport modes", () => {
     ).toThrow(/SecretRef object/);
   });
 
+  it("parses allowPrivateNetwork opt-in for trusted-private HTTPS issuers", () => {
+    const config = parseLinkskillsConfig({
+      environment: "stage",
+      machineToken: {
+        bindingId: "linkskills-stage",
+        issuerUrl: "https://linktrend-mini.tailf7e13a.ts.net:9443",
+        clientId: "skills-client",
+        allowPrivateNetwork: true,
+        clientAssertionKeyRef: assertionKeyRef,
+      },
+    });
+    expect(config.machineToken?.allowPrivateNetwork).toBe(true);
+  });
+
+  it("mcp conflicting allowPrivateNetwork flags fail-closes", async () => {
+    const resolveMachineTokenAccess = vi.fn(async ({ bindingId }) => ({
+      bindingId,
+      accessToken: "mt-must-not-apply",
+      expiresAt: Date.now() + 60_000,
+      tokenType: "Bearer" as const,
+    }));
+    const config = parseLinkskillsConfig({
+      transportMode: "mcp",
+      machineToken: {
+        bindingId: "linkskills-stage",
+        issuerUrl: "https://linktrend-mini.tailf7e13a.ts.net:9443",
+        clientId: "skills-client",
+        allowPrivateNetwork: true,
+        clientAssertionKeyRef: assertionKeyRef,
+      },
+    });
+    const transport = resolveLinkskillsTransport({
+      api: stubApi({
+        mcp: {
+          servers: {
+            linkskills: {
+              enabled: true,
+              url: "https://mcp.example.test/skills",
+              auth: "machine_token",
+              machineToken: {
+                bindingId: "linkskills-stage",
+                issuerUrl: "https://linktrend-mini.tailf7e13a.ts.net:9443",
+                clientId: "skills-client",
+                clientAssertionKeyRef: assertionKeyRef,
+              },
+            },
+          },
+        },
+      }),
+      config,
+      env: {
+        LINKTREND_SKILLS_ASSERTION_PEM: "PEM-SKILLS",
+      },
+      resolveMachineTokenAccess,
+      createMcpSession: async () => {
+        throw new Error("should not open MCP session for allowPrivateNetwork conflict");
+      },
+    });
+    const result = await transport.write(writeArgs);
+    expect(result).toMatchObject({
+      ok: false,
+      errorCode: "machine_token_error",
+      safeMessage: expect.stringMatching(/conflict/i),
+    });
+    expect(resolveMachineTokenAccess).not.toHaveBeenCalled();
+  });
+
   it("skills and brain machineToken fixtures use distinct bindingIds", () => {
     const skills = parseLinkskillsConfig({
       machineToken: {

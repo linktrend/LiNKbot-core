@@ -703,6 +703,60 @@ describe("linkbrain transport modes", () => {
     expect(resolveMachineTokenAccess).not.toHaveBeenCalled();
   });
 
+  it("mcp conflicting allowPrivateNetwork flags fail-closes", async () => {
+    const resolveMachineTokenAccess = vi.fn(async ({ bindingId }) => ({
+      bindingId,
+      bindingFingerprint: `fp-${bindingId}`,
+      accessToken: "mt-must-not-apply",
+      expiresAt: Date.now() + 60_000,
+      tokenType: "Bearer" as const,
+    }));
+    const config = parseLinkbrainConfig({
+      transportMode: "mcp",
+      machineToken: {
+        bindingId: "linkbrain-stage",
+        issuerUrl: "https://linktrend-mini.tailf7e13a.ts.net:9443",
+        clientId: "brain-client",
+        allowPrivateNetwork: true,
+        clientAssertionKeyRef: assertionKeyRef,
+      },
+    });
+    const transport = resolveLinkbrainTransport({
+      api: stubApi({
+        mcp: {
+          servers: {
+            linkbrain: {
+              enabled: true,
+              url: "https://mcp.example.test/brain",
+              auth: "machine_token",
+              machineToken: {
+                bindingId: "linkbrain-stage",
+                issuerUrl: "https://linktrend-mini.tailf7e13a.ts.net:9443",
+                clientId: "brain-client",
+                clientAssertionKeyRef: assertionKeyRef,
+              },
+            },
+          },
+        },
+      }),
+      config,
+      env: {
+        LINKTREND_BRAIN_ASSERTION_PEM: "PEM-BRAIN",
+      },
+      resolveMachineTokenAccess,
+      createMcpSession: async () => {
+        throw new Error("should not open MCP session for allowPrivateNetwork conflict");
+      },
+    });
+    const result = await transport.write(writeArgs);
+    expect(result).toMatchObject({
+      ok: false,
+      errorCode: "machine_token_error",
+      safeMessage: expect.stringMatching(/conflict/i),
+    });
+    expect(resolveMachineTokenAccess).not.toHaveBeenCalled();
+  });
+
   it("rejects literal PEM clientAssertionKeyRef in schema parse", () => {
     expect(() =>
       parseLinkbrainConfig({
@@ -732,7 +786,9 @@ describe("linkbrain transport modes", () => {
   });
 
   it("uses api.machineTokenFacade without local resolveMachineTokenAccess", async () => {
-    const fetchImpl = vi.fn(async () => new Response(JSON.stringify({ ok: true }), { status: 200 }));
+    const fetchImpl = vi.fn(
+      async () => new Response(JSON.stringify({ ok: true }), { status: 200 }),
+    );
     const acquire = vi.fn(async ({ bindingId }) => ({
       bindingId,
       bindingFingerprint: `fp-${bindingId}`,

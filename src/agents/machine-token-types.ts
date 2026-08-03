@@ -44,6 +44,14 @@ export type MachineTokenBinding = {
    * SSRF private/loopback blocks for that issuer. Production must leave unset.
    */
   localTest?: boolean;
+  /**
+   * Explicit least-privilege opt-in for HTTPS private/CGNAT/Tailscale issuers.
+   * Default false. Production stage/overlay PACI must set this — never use
+   * localTest for non-test environments. Does not broadly disable SSRF:
+   * fetch policy pins the exact configured HTTPS origin/hostname under zero
+   * redirects while metadata/link-local remain blocked.
+   */
+  allowPrivateNetwork?: boolean;
   /** Already-resolved SecretRef material — PKCS#8 PEM for ES256. */
   clientAssertionKeyPem: string;
 };

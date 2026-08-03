@@ -295,6 +295,21 @@ function machineTokenBindingsConflict(
   if (serverToken.bindingId !== pluginToken.bindingId) {
     return true;
   }
+  if (serverToken.issuerUrl !== pluginToken.issuerUrl) {
+    return true;
+  }
+  if (serverToken.clientId !== pluginToken.clientId) {
+    return true;
+  }
+  if ((serverToken.audience ?? "") !== (pluginToken.audience ?? "")) {
+    return true;
+  }
+  if ((serverToken.scope ?? "") !== (pluginToken.scope ?? "")) {
+    return true;
+  }
+  if ((serverToken.allowPrivateNetwork === true) !== (pluginToken.allowPrivateNetwork === true)) {
+    return true;
+  }
   const serverFp = fingerprintMachineTokenKeyRef({
     source: serverToken.clientAssertionKeyRef.source,
     provider: serverToken.clientAssertionKeyRef.provider,
@@ -341,19 +356,13 @@ function selectMcpMachineToken(
         return {
           status: "invalid",
           safeMessage:
-            error instanceof Error
-              ? error.message
-              : "mcp server machineToken binding is invalid",
+            error instanceof Error ? error.message : "mcp server machineToken binding is invalid",
         };
       }
-      if (
-        pluginMachineToken &&
-        machineTokenBindingsConflict(serverToken, pluginMachineToken)
-      ) {
+      if (pluginMachineToken && machineTokenBindingsConflict(serverToken, pluginMachineToken)) {
         return {
           status: "invalid",
-          safeMessage:
-            "mcp server machineToken conflicts with plugin-level machineToken binding",
+          safeMessage: "mcp server machineToken conflicts with plugin-level machineToken binding",
         };
       }
       return { status: "selected", machineToken: serverToken };
@@ -945,10 +954,7 @@ function createLocalMachineTokenFacadeAdapter(params: {
           ? { forceRefresh: acquireParams.forceRefresh }
           : {}),
       });
-      fingerprintsByBindingId.set(
-        bindingId,
-        resolved.bindingFingerprint ?? `fp-${bindingId}`,
-      );
+      fingerprintsByBindingId.set(bindingId, resolved.bindingFingerprint ?? `fp-${bindingId}`);
       return resolved;
     },
     invalidate(bindingId) {

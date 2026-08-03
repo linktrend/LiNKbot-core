@@ -88,5 +88,6 @@ export function buildMachineTokenBindingFingerprint(binding: MachineTokenBinding
     normalizeScopeList(binding),
     binding.environment ?? "",
     binding.localTest === true ? "local-test" : "prod",
+    binding.allowPrivateNetwork === true ? "allow-private" : "deny-private",
   ]);
 }

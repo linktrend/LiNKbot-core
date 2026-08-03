@@ -345,6 +345,7 @@ const McpServerSchema = z
         clientId: z.string().trim().min(1),
         audience: z.string().trim().min(1).optional(),
         scope: z.string().trim().min(1).optional(),
+        allowPrivateNetwork: z.boolean().optional(),
         // SecretRef only — literal PEM/string secrets are rejected at schema time.
         clientAssertionKeyRef: SecretRefSchema.register(sensitive),
       })

@@ -1,7 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
+import { resolvePinnedHostnameWithPolicy } from "../infra/net/ssrf.js";
 import {
   assertMachineTokenNetworkUrl,
   assertMachineTokenRequestBounds,
+  buildMachineTokenSsrFPolicy,
   describeMachineTokenHttpFailure,
   MACHINE_TOKEN_MAX_REQUEST_BODY_BYTES,
   MACHINE_TOKEN_MAX_REQUEST_HEADER_BYTES,
@@ -97,10 +99,13 @@ describe("machine-token-network", () => {
 
   it("passes zero redirects and fixed deadline on the production SSRF auth path", async () => {
     fetchWithSsrFGuardMock.mockResolvedValueOnce({
-      response: new Response(JSON.stringify({ token_endpoint: "https://paci.example/oauth/token" }), {
-        status: 200,
-        headers: { "content-type": "application/json" },
-      }),
+      response: new Response(
+        JSON.stringify({ token_endpoint: "https://paci.example/oauth/token" }),
+        {
+          status: 200,
+          headers: { "content-type": "application/json" },
+        },
+      ),
       finalUrl: "https://paci.example/.well-known/oauth-authorization-server",
       release: async () => undefined,
     });
@@ -182,5 +187,128 @@ describe("machine-token-network", () => {
       label: "token",
     });
     expect(fetchFn.mock.calls[0]?.[1]).toEqual(expect.objectContaining({ redirect: "error" }));
+  });
+
+  describe("allowPrivateNetwork trusted-private issuer opt-in", () => {
+    const tailnetIssuer = "https://linktrend-mini.tailf7e13a.ts.net:9443";
+    const tailnetDiscovery = `${tailnetIssuer}/.well-known/oauth-authorization-server`;
+    const tailnetPrivateIp = "100.64.1.10"; // CGNAT / Tailscale-class
+
+    it("defaults to denying private resolution (stage PACI without opt-in)", async () => {
+      expect(buildMachineTokenSsrFPolicy({ url: tailnetDiscovery })).toBeUndefined();
+      await expect(
+        resolvePinnedHostnameWithPolicy("linktrend-mini.tailf7e13a.ts.net", {
+          lookupFn: async () => [{ address: tailnetPrivateIp, family: 4 }],
+          policy: buildMachineTokenSsrFPolicy({ url: tailnetDiscovery }),
+        }),
+      ).rejects.toThrow(/resolves to private\/internal\/special-use/iu);
+    });
+
+    it("with allowPrivateNetwork pins exact HTTPS origin/hostname and allows private/CGNAT", async () => {
+      const policy = buildMachineTokenSsrFPolicy({
+        url: tailnetDiscovery,
+        allowPrivateNetwork: true,
+      });
+      expect(policy).toEqual({
+        allowedOrigins: ["https://linktrend-mini.tailf7e13a.ts.net:9443"],
+        allowedHostnames: ["linktrend-mini.tailf7e13a.ts.net"],
+      });
+      // Do not set SsrFPolicy.allowPrivateNetwork — that would skip metadata/link-local checks.
+      expect(policy).not.toHaveProperty("allowPrivateNetwork");
+
+      const pinned = await resolvePinnedHostnameWithPolicy("linktrend-mini.tailf7e13a.ts.net", {
+        lookupFn: async () => [{ address: tailnetPrivateIp, family: 4 }],
+        policy,
+      });
+      expect(pinned.addresses).toEqual([tailnetPrivateIp]);
+    });
+
+    it("still blocks metadata and link-local under allowPrivateNetwork pinning", async () => {
+      const policy = buildMachineTokenSsrFPolicy({
+        url: tailnetDiscovery,
+        allowPrivateNetwork: true,
+      });
+      await expect(
+        resolvePinnedHostnameWithPolicy("linktrend-mini.tailf7e13a.ts.net", {
+          lookupFn: async () => [{ address: "169.254.169.254", family: 4 }],
+          policy,
+        }),
+      ).rejects.toThrow(/resolves to private\/internal\/special-use/iu);
+      await expect(
+        resolvePinnedHostnameWithPolicy("linktrend-mini.tailf7e13a.ts.net", {
+          lookupFn: async () => [{ address: "169.254.1.1", family: 4 }],
+          policy,
+        }),
+      ).rejects.toThrow(/resolves to private\/internal\/special-use/iu);
+    });
+
+    it("does not grant private fetch for a different origin even with opt-in", async () => {
+      const policy = buildMachineTokenSsrFPolicy({
+        url: tailnetDiscovery,
+        allowPrivateNetwork: true,
+      });
+      // Cross-origin hostname is not in allowedHostnames and has no private allowance.
+      await expect(
+        resolvePinnedHostnameWithPolicy("other-issuer.example.com", {
+          lookupFn: async () => [{ address: "10.0.0.9", family: 4 }],
+          policy,
+        }),
+      ).rejects.toThrow(/private\/internal\/special-use/iu);
+    });
+
+    it("HTTP non-loopback still fails even when allowPrivateNetwork is true", () => {
+      expect(() =>
+        assertMachineTokenNetworkUrl({
+          url: "http://linktrend-mini.tailf7e13a.ts.net:9443/oauth/token",
+          allowPrivateNetwork: true,
+          label: "token",
+        }),
+      ).toThrow(/HTTPS/u);
+    });
+
+    it("passes allowPrivateNetwork pinning into the production SSRF auth path", async () => {
+      fetchWithSsrFGuardMock.mockResolvedValueOnce({
+        response: new Response(JSON.stringify({ ok: true }), {
+          status: 200,
+          headers: { "content-type": "application/json" },
+        }),
+        finalUrl: tailnetDiscovery,
+        release: async () => undefined,
+      });
+
+      await machineTokenNetworkFetchJson({
+        url: tailnetDiscovery,
+        allowPrivateNetwork: true,
+        label: "discovery",
+      });
+
+      expect(fetchWithSsrFGuardMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          maxRedirects: 0,
+          requireHttps: true,
+          auditContext: "machine-token",
+          policy: {
+            allowedOrigins: ["https://linktrend-mini.tailf7e13a.ts.net:9443"],
+            allowedHostnames: ["linktrend-mini.tailf7e13a.ts.net"],
+          },
+        }),
+      );
+    });
+
+    it("keeps localTest broad private allowance separate from production opt-in", () => {
+      expect(
+        buildMachineTokenSsrFPolicy({
+          url: "http://127.0.0.1:9443/.well-known/oauth-authorization-server",
+          localTest: true,
+        }),
+      ).toEqual({ allowPrivateNetwork: true });
+      expect(
+        buildMachineTokenSsrFPolicy({
+          url: tailnetDiscovery,
+          localTest: true,
+          allowPrivateNetwork: true,
+        }),
+      ).toEqual({ allowPrivateNetwork: true });
+    });
   });
 });

@@ -41,7 +41,7 @@
     },
     "machineToken": {
       "label": "Machine Token Binding",
-      "help": "Optional client_credentials + private_key_jwt binding. When set, HTTP uses machine-token instead of skillsCredential. clientAssertionKeyRef must be a SecretRef object (no literal PEM/JWK/env/CLI strings). bindingId must not equal Brain bindingId. issuerUrl and endpoints require HTTPS outside explicit local-test loopback."
+      "help": "Optional client_credentials + private_key_jwt binding. When set, HTTP uses machine-token instead of skillsCredential. clientAssertionKeyRef must be a SecretRef object (no literal PEM/JWK/env/CLI strings). bindingId must not equal Brain bindingId. issuerUrl and endpoints require HTTPS outside explicit local-test loopback. For Tailscale/CGNAT/private-overlay HTTPS issuers set allowPrivateNetwork=true (default false); never use environment=test for stage/production."
     },
     "redactionPolicyVersion": {
       "label": "Redaction Policy Version",
@@ -97,6 +97,11 @@
           "clientId": { "type": "string", "minLength": 1 },
           "audience": { "type": "string" },
           "scope": { "type": "string" },
+          "allowPrivateNetwork": {
+            "type": "boolean",
+            "default": false,
+            "description": "Explicit least-privilege opt-in for HTTPS private/CGNAT/Tailscale issuers. Default false. Pins the configured issuer origin/hostname under SSRF; does not enable localTest and does not broadly disable SSRF. Metadata/link-local remain blocked."
+          },
           "clientAssertionKeyRef": { "$ref": "#/$defs/secretRef" }
         }
       }

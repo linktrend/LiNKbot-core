@@ -298,6 +298,21 @@ function machineTokenBindingsConflict(
   if (serverToken.bindingId !== pluginToken.bindingId) {
     return true;
   }
+  if (serverToken.issuerUrl !== pluginToken.issuerUrl) {
+    return true;
+  }
+  if (serverToken.clientId !== pluginToken.clientId) {
+    return true;
+  }
+  if ((serverToken.audience ?? "") !== (pluginToken.audience ?? "")) {
+    return true;
+  }
+  if ((serverToken.scope ?? "") !== (pluginToken.scope ?? "")) {
+    return true;
+  }
+  if ((serverToken.allowPrivateNetwork === true) !== (pluginToken.allowPrivateNetwork === true)) {
+    return true;
+  }
   const serverFp = fingerprintMachineTokenKeyRef({
     source: serverToken.clientAssertionKeyRef.source,
     provider: serverToken.clientAssertionKeyRef.provider,

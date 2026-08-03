@@ -53,6 +53,10 @@ export type HostMachineTokenBindingRecord = {
   service?: string;
   discoveryUrl?: string;
   tokenEndpoint?: string;
+  /**
+   * Explicit HTTPS trusted-private issuer opt-in. Fingerprinted; default unset/false.
+   */
+  allowPrivateNetwork?: boolean;
   /** SecretRef identity used to resolve PEM at acquire time. */
   keyRef: MachineTokenKeyRefIdentity;
   keyRefFingerprint: string;
@@ -194,6 +198,7 @@ export function buildHostMachineTokenBindingFingerprint(
     ...(record.service ? { service: record.service } : {}),
     ...(record.discoveryUrl ? { discoveryUrl: record.discoveryUrl } : {}),
     ...(record.tokenEndpoint ? { tokenEndpoint: record.tokenEndpoint } : {}),
+    ...(record.allowPrivateNetwork === true ? { allowPrivateNetwork: true } : {}),
     keyRefFingerprint: record.keyRefFingerprint,
     // Unused when keyRefFingerprint is set; required by MachineTokenBinding.
     clientAssertionKeyPem: "",
@@ -219,11 +224,11 @@ function normalizeMachineTokenConfigRecord(params: {
   const scope = readOptionalNonEmptyString(params.raw.scope);
   const operations = readOptionalStringList(params.raw.operations);
   const scopes = readOptionalStringList(params.raw.scopes);
-  const environment =
-    readOptionalNonEmptyString(params.raw.environment) ?? params.environment;
+  const environment = readOptionalNonEmptyString(params.raw.environment) ?? params.environment;
   const service = readOptionalNonEmptyString(params.raw.service) ?? params.service;
   const discoveryUrl = readOptionalNonEmptyString(params.raw.discoveryUrl);
   const tokenEndpoint = readOptionalNonEmptyString(params.raw.tokenEndpoint);
+  const allowPrivateNetwork = params.raw.allowPrivateNetwork === true ? true : undefined;
   const base = {
     bindingId,
     issuerUrl,
@@ -236,6 +241,7 @@ function normalizeMachineTokenConfigRecord(params: {
     ...(service ? { service } : {}),
     ...(discoveryUrl ? { discoveryUrl } : {}),
     ...(tokenEndpoint ? { tokenEndpoint } : {}),
+    ...(allowPrivateNetwork ? { allowPrivateNetwork } : {}),
     keyRef,
     keyRefFingerprint,
     pluginId: params.pluginId,
@@ -263,6 +269,7 @@ function assembleBindingFromRecord(
     ...(record.service ? { service: record.service } : {}),
     ...(record.discoveryUrl ? { discoveryUrl: record.discoveryUrl } : {}),
     ...(record.tokenEndpoint ? { tokenEndpoint: record.tokenEndpoint } : {}),
+    ...(record.allowPrivateNetwork === true ? { allowPrivateNetwork: true } : {}),
     keyRefFingerprint: record.keyRefFingerprint,
     clientAssertionKeyPem,
   };
@@ -309,6 +316,11 @@ function assertSmuggledBindingMatchesRegistry(
   expectString("service", record.service, smuggled.service);
   expectString("discoveryUrl", record.discoveryUrl, smuggled.discoveryUrl);
   expectString("tokenEndpoint", record.tokenEndpoint, smuggled.tokenEndpoint);
+  const wantAllowPrivate = record.allowPrivateNetwork === true;
+  const gotAllowPrivate = smuggled.allowPrivateNetwork === true;
+  if (wantAllowPrivate !== gotAllowPrivate) {
+    mismatches.push("allowPrivateNetwork");
+  }
   const wantOperations = [...(record.operations ?? [])]
     .map((entry) => entry.trim())
     .filter((entry) => entry.length > 0)
@@ -486,9 +498,7 @@ export function createMachineTokenFacadeGeneration(
         ...(acquireParams.signal ? { signal: acquireParams.signal } : {}),
       });
       if (typeof pem !== "string" || pem.trim().length === 0) {
-        throw new Error(
-          `Machine-token binding "${bindingId}" key SecretRef resolved to empty PEM`,
-        );
+        throw new Error(`Machine-token binding "${bindingId}" key SecretRef resolved to empty PEM`);
       }
       const binding = assembleBindingFromRecord(record, pem);
       // Public facade deliberately omits fetchFn/now. Even if a caller smuggles

@@ -151,6 +151,7 @@ async function mintMachineTokenAccess(params: {
     fetchFn: params.fetchFn,
     signal: params.signal,
     localTest: params.binding.localTest,
+    allowPrivateNetwork: params.binding.allowPrivateNetwork,
   });
   throwIfAborted(params.signal);
 
@@ -186,6 +187,7 @@ async function mintMachineTokenAccess(params: {
       fetchFn: params.fetchFn,
       signal: params.signal,
       localTest: params.binding.localTest,
+      allowPrivateNetwork: params.binding.allowPrivateNetwork,
       label: "token",
     });
   } catch (cause) {

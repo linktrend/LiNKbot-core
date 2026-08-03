@@ -1,5 +1,6 @@
 // Host-owned machine-token facade: immutable registry, grants, isolation, smuggle reject.
 import { describe, expect, it, vi } from "vitest";
+import { fingerprintMachineTokenKeyRef } from "./machine-token-fingerprint.js";
 import {
   buildHostMachineTokenBindingFingerprint,
   clearMachineTokenCacheForHost,
@@ -16,7 +17,6 @@ import {
   type HostMachineTokenBindingRecord,
   type MachineTokenKeyRefIdentity,
 } from "./machine-token-host.js";
-import { fingerprintMachineTokenKeyRef } from "./machine-token-fingerprint.js";
 
 const KEY_REF: MachineTokenKeyRefIdentity = {
   source: "env",
@@ -528,17 +528,19 @@ describe("agents machine-token-host", () => {
     ]);
     expect(records.every((r) => r.pluginId === "linkbrain")).toBe(true);
     expect(records.find((r) => r.bindingId === "linkbrain-stage")?.environment).toBe("stage");
-    expect(collectGrantedMachineTokenBindingIds({
-      pluginId: "linkbrain",
-      pluginConfig: {
-        machineToken: {
-          bindingId: "linkbrain-stage",
-          issuerUrl: "https://issuer.example.test",
-          clientId: "brain-client",
-          clientAssertionKeyRef: keyRef,
+    expect(
+      collectGrantedMachineTokenBindingIds({
+        pluginId: "linkbrain",
+        pluginConfig: {
+          machineToken: {
+            bindingId: "linkbrain-stage",
+            issuerUrl: "https://issuer.example.test",
+            clientId: "brain-client",
+            clientAssertionKeyRef: keyRef,
+          },
         },
-      },
-    })).toEqual(["linkbrain-stage"]);
+      }),
+    ).toEqual(["linkbrain-stage"]);
   });
 
   it("omits incomplete machineToken blocks that lack issuer/client/keyRef", () => {
@@ -550,6 +552,73 @@ describe("agents machine-token-host", () => {
         },
       }),
     ).toEqual([]);
+  });
+
+  it("threads allowPrivateNetwork into host records and fingerprints", () => {
+    const keyRef = {
+      source: "env" as const,
+      provider: "default",
+      id: "BRAIN_KEY",
+    };
+    const denied = collectGrantedMachineTokenBindingRecords({
+      pluginId: "linkbrain",
+      pluginConfig: {
+        machineToken: {
+          bindingId: "linkbrain-stage",
+          issuerUrl: "https://linktrend-mini.tailf7e13a.ts.net:9443",
+          clientId: "brain-client",
+          clientAssertionKeyRef: keyRef,
+        },
+      },
+    });
+    const allowed = collectGrantedMachineTokenBindingRecords({
+      pluginId: "linkbrain",
+      pluginConfig: {
+        machineToken: {
+          bindingId: "linkbrain-stage",
+          issuerUrl: "https://linktrend-mini.tailf7e13a.ts.net:9443",
+          clientId: "brain-client",
+          allowPrivateNetwork: true,
+          clientAssertionKeyRef: keyRef,
+        },
+      },
+    });
+    expect(denied[0]?.allowPrivateNetwork).toBeUndefined();
+    expect(allowed[0]?.allowPrivateNetwork).toBe(true);
+    expect(allowed[0]?.bindingFingerprint).not.toBe(denied[0]?.bindingFingerprint);
+  });
+
+  it("drops conflicting plugin vs MCP bindings when allowPrivateNetwork mismatches", () => {
+    const keyRef = {
+      source: "env" as const,
+      provider: "default",
+      id: "BRAIN_KEY",
+    };
+    const records = collectGrantedMachineTokenBindingRecords({
+      pluginId: "linkbrain",
+      pluginConfig: {
+        mcpServerName: "linkbrain",
+        machineToken: {
+          bindingId: "linkbrain-stage",
+          issuerUrl: "https://linktrend-mini.tailf7e13a.ts.net:9443",
+          clientId: "brain-client",
+          allowPrivateNetwork: true,
+          clientAssertionKeyRef: keyRef,
+        },
+      },
+      mcpServers: {
+        linkbrain: {
+          auth: "machine_token",
+          machineToken: {
+            bindingId: "linkbrain-stage",
+            issuerUrl: "https://linktrend-mini.tailf7e13a.ts.net:9443",
+            clientId: "brain-client",
+            clientAssertionKeyRef: keyRef,
+          },
+        },
+      },
+    });
+    expect(records).toEqual([]);
   });
 
   describe("adversarial immutable registry scope", () => {

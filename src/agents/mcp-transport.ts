@@ -118,6 +118,7 @@ function withResolvedMachineTokenBearer(params: {
     clientId: string;
     audience?: string;
     scope?: string;
+    allowPrivateNetwork?: boolean;
     clientAssertionKeyRef: unknown;
   };
   cfg?: OpenClawConfig;
@@ -159,6 +160,7 @@ function withResolvedMachineTokenBearer(params: {
         clientId: params.machineToken.clientId,
         ...(params.machineToken.audience ? { audience: params.machineToken.audience } : {}),
         ...(params.machineToken.scope ? { scope: params.machineToken.scope } : {}),
+        ...(params.machineToken.allowPrivateNetwork === true ? { allowPrivateNetwork: true } : {}),
         clientAssertionKeyPem,
         ...(isSecretRef(keyRef)
           ? {

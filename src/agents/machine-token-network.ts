@@ -48,6 +48,11 @@ export function isMachineTokenLocalTestLoopbackHost(hostname: string): boolean {
 export function assertMachineTokenNetworkUrl(params: {
   url: string;
   localTest?: boolean;
+  /**
+   * Production trusted-private issuer opt-in. Allowed only with HTTPS outside
+   * local-test; does not relax HTTP or loopback rules by itself.
+   */
+  allowPrivateNetwork?: boolean;
   label: string;
 }): URL {
   let parsed: URL;
@@ -75,16 +80,44 @@ export function assertMachineTokenNetworkUrl(params: {
       `Machine-token ${params.label} must not target loopback outside explicit local-test mode`,
     );
   }
+  // Trusted-private opt-in is HTTPS-only outside local-test (HTTP already gated above).
+  if (
+    params.allowPrivateNetwork === true &&
+    params.localTest !== true &&
+    parsed.protocol !== "https:"
+  ) {
+    throw networkError(
+      `Machine-token ${params.label} allowPrivateNetwork requires HTTPS outside local-test mode`,
+    );
+  }
   return parsed;
 }
 
-function resolveSsrFPolicy(localTest: boolean | undefined): SsrFPolicy | undefined {
-  if (localTest === true) {
-    // Local-test loopback issuers need private/loopback allowance; production
-    // leaves policy undefined so SSRF rejects private/link-local/reserved.
+/**
+ * Build the SSRF policy for a machine-token discovery/token URL.
+ *
+ * - Default: undefined (reject private/link-local/reserved).
+ * - localTest: broad private/loopback allowance for hermetic loopback issuers.
+ * - allowPrivateNetwork (production): pin exact HTTPS origin+hostname so only
+ *   that issuer may resolve private/CGNAT/Tailscale. Prefer pinning without
+ *   SsrFPolicy.allowPrivateNetwork so metadata/link-local DNS rebinding stays blocked.
+ */
+export function buildMachineTokenSsrFPolicy(params: {
+  url: string;
+  localTest?: boolean;
+  allowPrivateNetwork?: boolean;
+}): SsrFPolicy | undefined {
+  if (params.localTest === true) {
     return { allowPrivateNetwork: true };
   }
-  return undefined;
+  if (params.allowPrivateNetwork !== true) {
+    return undefined;
+  }
+  const parsed = new URL(params.url);
+  return {
+    allowedOrigins: [parsed.origin],
+    allowedHostnames: [normalizeHostname(parsed.hostname)],
+  };
 }
 
 function measureRequestBodyBytes(body: BodyInit): number | undefined {
@@ -197,8 +230,7 @@ export async function discardMachineTokenErrorResponseBody(params: {
       timeoutMs: MACHINE_TOKEN_NETWORK_TIMEOUT_MS,
       onOverflow: () =>
         networkError(`Machine-token ${params.label} error response exceeds size limit`),
-      onTimeout: () =>
-        networkError(`Machine-token ${params.label} error response body timed out`),
+      onTimeout: () => networkError(`Machine-token ${params.label} error response body timed out`),
     });
   } catch {
     // Overflow/timeout/cancel still enforced the byte cap; never surface body.
@@ -218,6 +250,8 @@ export type MachineTokenNetworkFetchParams = {
   fetchFn?: MachineTokenFetchFn;
   signal?: AbortSignal;
   localTest?: boolean;
+  /** Production HTTPS trusted-private issuer opt-in (pinned origin/hostname). */
+  allowPrivateNetwork?: boolean;
   timeoutMs?: number;
   label?: string;
 };
@@ -241,6 +275,7 @@ export async function machineTokenNetworkFetch(
   assertMachineTokenNetworkUrl({
     url: params.url,
     localTest: params.localTest,
+    allowPrivateNetwork: params.allowPrivateNetwork,
     label,
   });
   assertMachineTokenRequestBounds({ init: params.init, label });
@@ -276,7 +311,11 @@ export async function machineTokenNetworkFetch(
       requireHttps,
       // Auth path: never follow redirects; no cross-origin body replay possible.
       maxRedirects: 0,
-      policy: resolveSsrFPolicy(params.localTest),
+      policy: buildMachineTokenSsrFPolicy({
+        url: params.url,
+        localTest: params.localTest,
+        allowPrivateNetwork: params.allowPrivateNetwork,
+      }),
       auditContext: "machine-token",
     });
     return {

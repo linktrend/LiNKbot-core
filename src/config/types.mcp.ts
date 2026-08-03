@@ -11,6 +11,11 @@ export type McpServerMachineTokenConfig = {
   audience?: string;
   scope?: string;
   /**
+   * Explicit HTTPS trusted-private issuer opt-in (Tailscale/CGNAT/private overlay).
+   * Default unset/false. Does not broadly disable SSRF; pins the configured issuer.
+   */
+  allowPrivateNetwork?: boolean;
+  /**
    * SecretRef for private_key_jwt signing key custody.
    * Literal PEM/string secrets are rejected by config schema.
    */

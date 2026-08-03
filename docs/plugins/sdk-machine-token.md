@@ -75,6 +75,21 @@ plugin acquire calls.
 `fingerprintMachineTokenKeyRef` remains available for local diagnostics and
 config validation; it is not required for facade acquire.
 
+### Trusted-private HTTPS issuers
+
+Machine-token discovery/token fetch defaults to public SSRF policy (private,
+link-local, and special-use addresses blocked). Explicit local-test mode
+(`localTest` / plugin `environment=test`) remains for loopback hermetic tests
+only — do **not** mark stage/production as test.
+
+For stage/production private-overlay issuers (for example Tailscale HTTPS PACI),
+set `machineToken.allowPrivateNetwork: true` on the binding. Default is false.
+When true, the hardened auth path pins the exact configured HTTPS
+issuer/discovery/token origin and hostname under zero redirects and existing
+size/time/TLS limits. Metadata and link-local targets stay blocked. Cross-origin
+private fetch is never granted. Discovery still requires same-origin metadata
+`issuer` and `token_endpoint`. HTTP non-loopback remains rejected.
+
 ### Public exports
 
 - Types: `MachineTokenBinding`, `ResolvedMachineToken`, `MachineTokenPluginFacade`,

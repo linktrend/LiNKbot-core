@@ -133,6 +133,58 @@ describe("linkbrain manifest/config", () => {
     ).toThrow(/SecretRef object/);
   });
 
+  it("parses allowPrivateNetwork opt-in for trusted-private HTTPS issuers", () => {
+    const config = parseLinkbrainConfig({
+      environment: "stage",
+      machineToken: {
+        bindingId: "linkbrain-stage",
+        issuerUrl: "https://linktrend-mini.tailf7e13a.ts.net:9443",
+        clientId: "brain-client",
+        allowPrivateNetwork: true,
+        clientAssertionKeyRef: {
+          source: "env",
+          provider: "default",
+          id: "LINKTREND_BRAIN_ASSERTION_PEM",
+        },
+      },
+    });
+    expect(config.machineToken?.allowPrivateNetwork).toBe(true);
+    expect(
+      parseLinkbrainConfig({
+        environment: "stage",
+        machineToken: {
+          bindingId: "linkbrain-stage",
+          issuerUrl: "https://linktrend-mini.tailf7e13a.ts.net:9443",
+          clientId: "brain-client",
+          clientAssertionKeyRef: {
+            source: "env",
+            provider: "default",
+            id: "LINKTREND_BRAIN_ASSERTION_PEM",
+          },
+        },
+      }).machineToken?.allowPrivateNetwork,
+    ).toBeUndefined();
+  });
+
+  it("rejects allowPrivateNetwork with non-boolean values", () => {
+    expect(() =>
+      parseLinkbrainConfig({
+        environment: "stage",
+        machineToken: {
+          bindingId: "linkbrain-stage",
+          issuerUrl: "https://linktrend-mini.tailf7e13a.ts.net:9443",
+          clientId: "brain-client",
+          allowPrivateNetwork: "yes",
+          clientAssertionKeyRef: {
+            source: "env",
+            provider: "default",
+            id: "LINKTREND_BRAIN_ASSERTION_PEM",
+          },
+        },
+      }),
+    ).toThrow(/allowPrivateNetwork/);
+  });
+
   it("schema marks clientAssertionKeyRef as secretRef only", () => {
     const manifest = JSON.parse(
       fs.readFileSync(path.join(root, "openclaw.plugin.json"), "utf8"),

@@ -67,6 +67,15 @@ describe("machine-token-fingerprint", () => {
     expect(a).toBe(b);
   });
 
+  it("changes fingerprint when allowPrivateNetwork opt-in flips", () => {
+    const denied = buildMachineTokenBindingFingerprint(baseBinding());
+    const allowed = buildMachineTokenBindingFingerprint(baseBinding({ allowPrivateNetwork: true }));
+    expect(allowed).not.toBe(denied);
+    expect(buildMachineTokenBindingFingerprint(baseBinding({ allowPrivateNetwork: false }))).toBe(
+      denied,
+    );
+  });
+
   it("prefers keyRefFingerprint over PEM material hash", () => {
     const keyRef = fingerprintMachineTokenKeyRef({
       source: "file",
