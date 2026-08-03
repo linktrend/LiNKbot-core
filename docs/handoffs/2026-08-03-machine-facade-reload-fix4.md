@@ -2,21 +2,21 @@
 
 ## Session Metadata
 
-| Field            | Value                                                                                           |
-| ---------------- | ----------------------------------------------------------------------------------------------- |
-| Agent identity   | Cursor Cloud Agent / Cursor / mac-mini / cloud-agent / cloud / feature                          |
-| Session ID       | cursor-cloud-mac-mini-feature-machine-facade-reload-fix4-20260803-1938                          |
-| Orchestrator key | cursor-mac-mini-cloud-agent-orchestrator                                                        |
-| Objective        | Fourth correction: collision-safe machine-token ownership fingerprint                           |
-| Scope            | Repo code only; no stage/live/cloud/Supabase/GCP/IDE Development/VPS                            |
-| Started          | 2026-08-03 19:38 Asia/Taipei                                                                    |
-| Ended            | 2026-08-03 19:43 Asia/Taipei                                                                    |
-| Starting branch  | `dev/cloudcursor/OCP-MACHINE-FACADE-RELOAD-FIX`                                                 |
-| Ending branch    | `dev/cloudcursor/OCP-MACHINE-FACADE-RELOAD-FIX`                                                 |
-| Starting commit  | `699868836c27bba8c173d1882b949a7329f0222e` (content `d7f834f4ec771007e659dad13dd45596db43fc39`) |
-| Ending commit    | `f55614cb7c9967f797bc2b550f904e912c3bbb02` (fix tip; docs tip follows)                          |
-| Starting status  | clean at Carlos-stated tip                                                                      |
-| Ending status    | fourth ownership fingerprint collision fix + regressions                                        |
+| Field            | Value                                                                                                 |
+| ---------------- | ----------------------------------------------------------------------------------------------------- |
+| Agent identity   | Cursor Cloud Agent / Cursor / mac-mini / cloud-agent / cloud / feature                                |
+| Session ID       | cursor-cloud-mac-mini-feature-machine-facade-reload-fix4-20260803-1938                                |
+| Orchestrator key | cursor-mac-mini-cloud-agent-orchestrator                                                              |
+| Objective        | Fourth correction: collision-safe machine-token ownership fingerprint                                 |
+| Scope            | Repo code only; no stage/live/cloud/Supabase/GCP/IDE Development/VPS                                  |
+| Started          | 2026-08-03 19:38 Asia/Taipei                                                                          |
+| Ended            | 2026-08-03 19:43 Asia/Taipei                                                                          |
+| Starting branch  | `dev/cloudcursor/OCP-MACHINE-FACADE-RELOAD-FIX`                                                       |
+| Ending branch    | `dev/cloudcursor/OCP-MACHINE-FACADE-RELOAD-FIX`                                                       |
+| Starting commit  | `699868836c27bba8c173d1882b949a7329f0222e` (content `d7f834f4ec771007e659dad13dd45596db43fc39`)       |
+| Ending commit    | `d68ce8814ea9c32ea515eff7d723d6c3607d3ea7` (docs tip; fix `f55614cb7c9967f797bc2b550f904e912c3bbb02`) |
+| Starting status  | clean at Carlos-stated tip                                                                            |
+| Ending status    | fourth ownership fingerprint collision fix + regressions                                              |
 
 ## Summary
 
