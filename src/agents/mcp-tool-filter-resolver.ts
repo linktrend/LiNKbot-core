@@ -8,7 +8,7 @@ import {
   getMcpToolFilterRegistrationGeneration,
   resetMcpToolFilterRegistrationGeneration,
 } from "../plugins/mcp-tool-filter-registration.js";
-import { collectLivePluginRegistries } from "../plugins/runtime.js";
+import { collectLivePluginRegistries, getActivePluginRegistry } from "../plugins/runtime.js";
 import type {
   McpServerToolFilterResolved,
   OpenClawPluginMcpServerToolFilter,
@@ -95,34 +95,91 @@ function normalizeResolvedOverlay(
   };
 }
 
+type LiveMcpToolFilterClaim = McpServerToolFilterEntry & {
+  registry: NonNullable<ReturnType<typeof getActivePluginRegistry>>;
+};
+
 function listMcpServerToolFiltersByServerName(): Map<string, McpServerToolFilterEntry> {
   const testOverrides = getTestState().resolversByServerName;
   if (testOverrides) {
     return new Map([...testOverrides.entries()].toSorted(([a], [b]) => a.localeCompare(b)));
   }
-  // Active plus pinned gateway surfaces. Agent ensure paths can replace the
-  // active registry while channel/http/session pins keep the gateway snapshot
-  // that registered overlays; reading active-only fail-opens to the full
-  // operator ceiling and drops plugin write gating.
-  const byName = new Map<string, McpServerToolFilterEntry>();
+  // Live surfaces may diverge after agent ensure/reload. Bind safely:
+  // 1) active registry claim wins when present (fresh reload over stale pins)
+  // 2) else exactly one unique pin claim fills the gap
+  // 3) else distinct competing claims fail closed (omit), never silent first-wins
+  const claimsByServer = new Map<string, LiveMcpToolFilterClaim[]>();
   for (const registry of collectLivePluginRegistries()) {
     for (const entry of registry.mcpServerToolFilters ?? []) {
       const serverName = normalizeOptionalString(entry.resolver.serverName);
       if (!serverName || typeof entry.resolver.resolve !== "function") {
         continue;
       }
-      // First live registry wins per serverName (active precedes pins).
-      if (byName.has(serverName)) {
-        continue;
-      }
-      byName.set(serverName, {
+      const claims = claimsByServer.get(serverName) ?? [];
+      claims.push({
         pluginId: entry.pluginId,
         serverName,
         resolve: entry.resolver.resolve,
+        registry,
+      });
+      claimsByServer.set(serverName, claims);
+    }
+  }
+
+  const activeRegistry = getActivePluginRegistry();
+  const byName = new Map<string, McpServerToolFilterEntry>();
+  for (const [serverName, claims] of [...claimsByServer.entries()].toSorted(([a], [b]) =>
+    a.localeCompare(b),
+  )) {
+    const activeClaims = activeRegistry
+      ? claims.filter((claim) => claim.registry === activeRegistry)
+      : [];
+    if (activeClaims.length > 0) {
+      const chosen = activeClaims[0]!;
+      byName.set(serverName, {
+        pluginId: chosen.pluginId,
+        serverName,
+        resolve: chosen.resolve,
+      });
+      continue;
+    }
+
+    const unique: LiveMcpToolFilterClaim[] = [];
+    for (const claim of claims) {
+      // Same pluginId + same resolve closure is one claim; identical pin mirrors
+      // of one registry must not look like a conflict.
+      if (
+        unique.some(
+          (existing) => existing.pluginId === claim.pluginId && existing.resolve === claim.resolve,
+        )
+      ) {
+        continue;
+      }
+      unique.push(claim);
+    }
+    if (unique.length === 1) {
+      const chosen = unique[0]!;
+      byName.set(serverName, {
+        pluginId: chosen.pluginId,
+        serverName,
+        resolve: chosen.resolve,
+      });
+      continue;
+    }
+    if (unique.length > 1) {
+      const pluginIds = [...new Set(unique.map((claim) => claim.pluginId))].toSorted();
+      logWarn(
+        `mcp tool filter: ambiguous live claims for server "${serverName}" (plugins: ${pluginIds.join(", ")}); failing closed`,
+      );
+      byName.set(serverName, {
+        pluginId: pluginIds.join(","),
+        serverName,
+        // Deny-all via omit — never fall through to operator-ceiling-only.
+        resolve: () => null,
       });
     }
   }
-  return new Map([...byName.entries()].toSorted(([a], [b]) => a.localeCompare(b)));
+  return byName;
 }
 
 export function shouldExposeMcpTool(selection: McpToolSelection, toolName: string): boolean {

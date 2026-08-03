@@ -5,8 +5,11 @@ import {
   clearPluginHostRuntimeState,
   dispatchPluginAgentEventSubscriptions,
 } from "./host-hook-runtime.js";
+import {
+  bumpMcpToolFilterRegistrationGeneration,
+  resetMcpToolFilterRegistrationGeneration,
+} from "./mcp-tool-filter-registration.js";
 import { clearPluginMetadataLifecycleCaches } from "./plugin-metadata-lifecycle.js";
-import { bumpMcpToolFilterRegistrationGeneration } from "./mcp-tool-filter-registration.js";
 import { createEmptyPluginRegistry } from "./registry-empty.js";
 import { markPluginRegistryActive, markPluginRegistryRetired } from "./registry-lifecycle.js";
 import type { PluginRegistry } from "./registry-types.js";
@@ -177,6 +180,9 @@ function installSurfaceRegistry(
   surface.registry = registry;
   surface.pinned = pinned;
   surface.version += 1;
+  // Pin/release changes the live MCP tool-filter claim set even when active is
+  // unchanged. Catalogs observe the generation to rematerialize.
+  bumpMcpToolFilterRegistrationGeneration();
 }
 
 function syncTrackedSurface(
@@ -465,4 +471,5 @@ export function resetPluginRuntimeStateForTest(): void {
   // since this helper is widely used across plugin/agent tests.
   clearPluginHostRuntimeState();
   clearPluginMetadataLifecycleCaches();
+  resetMcpToolFilterRegistrationGeneration();
 }
