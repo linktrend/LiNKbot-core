@@ -214,10 +214,10 @@ Dreaming is not a replacement for explicit operator memory writes. If Carlos say
 
 Visible heartbeats are cron-driven, not native free-running OpenClaw heartbeats.
 
-Live schedule:
+Live schedule (authoritative: `HEARTBEAT.md`, `agents/morning-digest.md`, `docs/SHIP-PULL-CLOCK-INSTALL.md`):
 
-- `lisa-heartbeat-45` runs at 00:45, 02:45, 04:45, 10:45, 12:45, 14:45, 16:45, 18:45, 20:45, and 22:45 Asia/Taipei.
-- `lisa-morning-digest` runs at 06:45.
+- `lisa-heartbeat-45` runs at 00:45, 02:45, 04:45, **06:45**, 10:45, 12:45, 14:45, 16:45, 18:45, 20:45, and 22:45 Asia/Taipei (**no** 08:45).
+- `lisa-morning-digest` runs at **08:30** Asia/Taipei (not 06:45).
 - `battery-selfie-1745` and `battery-selfie-2145` run at 17:45 and 21:45.
 - `battery-monitor-alert-35` is event-driven.
 

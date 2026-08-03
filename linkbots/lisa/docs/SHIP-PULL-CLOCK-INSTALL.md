@@ -53,7 +53,7 @@ Ship/Pull jobs already set `payload.toolsAllow` including `sessions_spawn`. That
    - `sessions_spawn` (Cursor ACP spawn)
    - `sessions_wait` (ACP park-wait; registry persist + deadline — no polling)
    - plus the usual host ops tools (`read` / `write` / `edit` / `exec` / `process` / `cron` / session list helpers) so `lisa-safe email-send` works after each wave
-   - **Do not use `sessions_yield` for Ship/Pull** — it kills isolated cron parents (see `LISA-OPS-CORE-PREREQUISITE.md`). Remove yield from Ship/Pull job allowlists when migrating; main-session yield for other workflows is separate.
+   - **Do not use `sessions_yield` for Ship/Pull** — it kills isolated cron parents (see `LISA-OPS-CORE-PREREQUISITE.md`). Remove yield from Ship/Pull job allowlists when migrating; main-session yield for other workflows is separate. Workshop `lisa-cron` SOT also **excludes** `sessions_yield` so a loose job `toolsAllow` cannot re-expose the kill path.
 2. **Each Ship/Pull job** `payload.toolsAllow` must include `sessions_spawn`, `sessions_wait`, `read`, `write`, `edit`, and `exec`. File tools are required to read the procedure/current cycle, serialize the shared status update, and write the email-body file; `exec` is required for the `lisa-safe email-send` side effect. Digest/heartbeat jobs should **omit** spawn/wait entries so they stay non-spawning.
 3. Do **not** change `main` agent tools for this fix.
 
@@ -68,7 +68,7 @@ node /Users/linktrend/Projects/openclaw_prime/openclaw.mjs --profile lisa cron l
 
 Confirm all four jobs are present and enabled (`lisa-ship-05`, `lisa-pull-07`, `lisa-ship-16`, `lisa-pull-18`). Do not disable digest/heartbeat jobs while installing.
 
-Policy check (no Telegram): confirm live `lisa-cron.tools.allow` and every Ship/Pull job's `toolsAllow` contain `sessions_spawn`, `sessions_wait`, `read`, `write`, `edit`, and `exec` (`cron list --json`). Prefer a one-word tool-inventory agent turn over force-running Ship/Pull (force-run announces Clear/Issues to Telegram). After migration, confirm `sessions_yield` is **not** required by Ship/Pull job messages.
+Policy check (no Telegram): confirm live `lisa-cron.tools.allow` and every Ship/Pull job's `toolsAllow` contain `sessions_spawn`, `sessions_wait`, `read`, `write`, `edit`, and `exec` (`cron list --json`). Prefer a one-word tool-inventory agent turn over force-running Ship/Pull (force-run announces Clear/Issues to Telegram). After migration, confirm `sessions_yield` is **absent** from `lisa-cron.tools.allow` and from Ship/Pull job `toolsAllow` / messages (main-session yield remains separate).
 
 ## Backup
 

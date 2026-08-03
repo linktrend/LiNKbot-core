@@ -283,6 +283,21 @@ describe("Ship/Pull post-processing gate", () => {
     assert.ok(!SHIP_PULL_REQUIRED_TOOLS.includes("sessions_yield"));
   });
 
+  it("workshop lisa-cron SOT includes sessions_wait and excludes sessions_yield", () => {
+    // Isolated cron parents die on sessions_yield; workshop SOT must fail closed at the
+    // agent allowlist layer so a loose job toolsAllow cannot re-expose the kill path.
+    const cfgPath = path.join(personalityRoot, "openclaw.json");
+    const cfg = JSON.parse(readFileSync(cfgPath, "utf8")) as {
+      agents?: { list?: Array<{ id?: string; tools?: { allow?: string[] } }> };
+    };
+    const lisaCron = cfg.agents?.list?.find((a) => a.id === "lisa-cron");
+    assert.ok(lisaCron, "lisa-cron agent missing from workshop openclaw.json");
+    const allow = lisaCron?.tools?.allow ?? [];
+    assert.ok(allow.includes("sessions_spawn"));
+    assert.ok(allow.includes("sessions_wait"));
+    assert.ok(!allow.includes("sessions_yield"));
+  });
+
   it("procedure allowlist text matches SHIP_PULL_REQUIRED_TOOLS", () => {
     const text = readPersonality("agents/ship-pull-clock.md");
     for (const tool of SHIP_PULL_REQUIRED_TOOLS) {
