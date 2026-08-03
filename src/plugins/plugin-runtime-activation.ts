@@ -17,10 +17,7 @@ import {
 } from "../agents/machine-token-host.js";
 import type { OpenClawConfig } from "../config/types.openclaw.js";
 import { resolveConfiguredSecretInputString } from "../gateway/resolve-configured-secret-input-string.js";
-import {
-  getGlobalPluginRegistry,
-  initializeGlobalHookRunner,
-} from "./hook-runner-global.js";
+import { getGlobalPluginRegistry, initializeGlobalHookRunner } from "./hook-runner-global.js";
 import type { PluginRuntimeSubagentMode } from "./loader-types.js";
 import type { PluginProcessGlobalState } from "./plugin-registration-transaction.js";
 import {
@@ -65,9 +62,7 @@ let activationFailureInjectorForTest: ((phase: ActivationFailurePhase) => void) 
 
 let activeCombinedSnapshotIdentity: CombinedPluginRuntimeSnapshotIdentity | null = null;
 
-function freezeBindingRecord(
-  record: HostMachineTokenBindingRecord,
-): HostMachineTokenBindingRecord {
+function freezeBindingRecord(record: HostMachineTokenBindingRecord): HostMachineTokenBindingRecord {
   return Object.freeze({
     ...record,
     keyRef: Object.freeze({ ...record.keyRef }),
@@ -400,4 +395,13 @@ export function emptyMachineTokenOwnershipBlueprint(): MachineTokenOwnershipBlue
     plugins: [],
     reconcileScope: "full",
   });
+}
+
+/**
+ * Gateway close: retire every live machine-token generation and clear the
+ * combined snapshot identity. Owner-only; plugins never call this.
+ */
+export function retireActivePluginRuntimeMachineTokenOwnership(): void {
+  commitMachineTokenOwnershipSnapshot({ publish: [], reconcileScope: "full" });
+  activeCombinedSnapshotIdentity = null;
 }

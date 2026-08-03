@@ -138,8 +138,11 @@ export type MachineTokenPluginFacade = {
   /** Redacted health for one binding id (granted or not). */
   health: (bindingId: string) => MachineTokenBindingHealth;
   /**
-   * Unregister this facade: invalidate all granted bindings and mark the
-   * facade inactive so later acquire/invalidate fail closed.
+   * Release this plugin's use of the facade (service stop / unload).
+   * Invalidates granted binding caches and fail-closes later use when the host
+   * does not hold a service lease. Generation retirement stays with the host
+   * runtime owner, so a duplicate or stale stop cannot retire a live facade a
+   * reused registry still needs.
    */
   unregister: () => void;
 };

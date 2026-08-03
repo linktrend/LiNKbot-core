@@ -142,7 +142,9 @@ export default definePluginEntry({
           await runtime.shutdown();
           runtime = null;
         }
-        // Final ownership release — generation-scoped; no-op if already retired.
+        // Plugin-side release under a host service lease is a no-op so cache-hit
+        // reload stop/restart keeps the shared live generation. Without a lease
+        // (standalone/test) this remains authoritative teardown.
         api.machineTokenFacade?.unregister();
       },
     };

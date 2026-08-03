@@ -2,6 +2,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { fingerprintMachineTokenKeyRef } from "./machine-token-fingerprint.js";
 import {
+  acquireMachineTokenFacadeLeaseForPlugin,
   buildHostMachineTokenBindingFingerprint,
   clearMachineTokenCacheForHost,
   collectGrantedMachineTokenBindingIds,
@@ -209,6 +210,84 @@ describe("agents machine-token-host", () => {
     expect(facade.health("linkbrain-stage").registered).toBe(false);
     await expect(facade.acquire({ bindingId: "linkbrain-stage" })).rejects.toThrow(/unregistered/);
     expect(() => facade.invalidate("linkbrain-stage")).toThrow(/unregistered/);
+  });
+
+  it("host lease blocks plugin unregister from retiring a still-needed live generation", async () => {
+    const facade = createMachineTokenPluginFacade({
+      pluginId: "linkbrain",
+      grantedRecords: [record("linkbrain-stage")],
+      resolveKeyPem: resolveKeyPemStub(),
+      resolveAccess: async ({ binding }) => ({
+        bindingId: binding.bindingId,
+        bindingFingerprint: `fp-${binding.bindingId}`,
+        accessToken: "token",
+        expiresAt: Date.now() + 60_000,
+        tokenType: "Bearer" as const,
+      }),
+    });
+    const generationId = getLiveMachineTokenFacadeGenerationHandle("linkbrain")?.generationId;
+    expect(generationId).toBeTruthy();
+
+    const releaseLease = acquireMachineTokenFacadeLeaseForPlugin("linkbrain");
+    facade.unregister();
+    facade.unregister();
+    expect(getLiveMachineTokenFacadeGenerationHandle("linkbrain")?.generationId).toBe(generationId);
+    expect(facade.health("linkbrain-stage").registered).toBe(true);
+    await expect(facade.acquire({ bindingId: "linkbrain-stage" })).resolves.toMatchObject({
+      accessToken: "token",
+    });
+
+    releaseLease();
+    releaseLease();
+    expect(getLiveMachineTokenFacadeGenerationHandle("linkbrain")?.generationId).toBe(generationId);
+    expect(facade.health("linkbrain-stage").registered).toBe(true);
+    await expect(facade.acquire({ bindingId: "linkbrain-stage" })).resolves.toMatchObject({
+      accessToken: "token",
+    });
+
+    facade.unregister();
+    expect(getLiveMachineTokenFacadeGenerationHandle("linkbrain")).toBeUndefined();
+    expect(facade.health("linkbrain-stage").registered).toBe(false);
+  });
+
+  it("lease release after a newer publish leaves the replacement live", async () => {
+    const first = createMachineTokenFacadeGeneration({
+      pluginId: "linkbrain",
+      grantedRecords: [record("linkbrain-stage")],
+      resolveKeyPem: resolveKeyPemStub(),
+      resolveAccess: async ({ binding }) => ({
+        bindingId: binding.bindingId,
+        bindingFingerprint: `fp-${binding.bindingId}`,
+        accessToken: "v1",
+        expiresAt: Date.now() + 60_000,
+        tokenType: "Bearer" as const,
+      }),
+    });
+    publishMachineTokenFacadeGeneration(first.handle);
+    const releaseFirst = acquireMachineTokenFacadeLeaseForPlugin("linkbrain");
+
+    const second = createMachineTokenFacadeGeneration({
+      pluginId: "linkbrain",
+      grantedRecords: [record("linkbrain-stage")],
+      resolveKeyPem: resolveKeyPemStub(),
+      resolveAccess: async ({ binding }) => ({
+        bindingId: binding.bindingId,
+        bindingFingerprint: `fp-${binding.bindingId}`,
+        accessToken: "v2",
+        expiresAt: Date.now() + 60_000,
+        tokenType: "Bearer" as const,
+      }),
+    });
+    publishMachineTokenFacadeGeneration(second.handle);
+    expect(first.facade.health("linkbrain-stage").registered).toBe(false);
+
+    releaseFirst();
+    first.facade.unregister();
+    expect(getLiveMachineTokenFacadeGenerationHandle("linkbrain")?.generationId).toBe(
+      second.handle.generationId,
+    );
+    expect(second.facade.health("linkbrain-stage").registered).toBe(true);
+    destroyMachineTokenFacadeGeneration(second.handle);
   });
 
   it("rejects empty pluginId or empty grants at construction", () => {

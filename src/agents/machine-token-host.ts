@@ -116,6 +116,12 @@ type MachineTokenFacadeGenerationRecord = {
   handle: MachineTokenFacadeGenerationHandle;
   facade: MachineTokenPluginFacade;
   state: MachineTokenFacadeGenerationState;
+  /**
+   * Host-armed consumers (started plugin services) still holding this generation.
+   * While > 0, plugin-side unregister must not retire — cache-hit reloads stop and
+   * restart the same live generation.
+   */
+  leases: number;
   /** Retire this generation's facade (idempotent). */
   retire: () => void;
 };
@@ -546,7 +552,10 @@ export function createMachineTokenFacadeGeneration(
       };
     },
     unregister() {
-      destroyMachineTokenFacadeGeneration(handle);
+      // Plugin-side release. Host leases protect a still-needed live generation
+      // across cache-hit service stop/restart; without a lease this remains the
+      // authoritative teardown for standalone/test embeddings.
+      releaseMachineTokenFacadeGeneration(handle);
     },
   };
 
@@ -554,10 +563,59 @@ export function createMachineTokenFacadeGeneration(
     handle,
     facade,
     state: "candidate",
+    leases: 0,
     retire: retireFacade,
   };
   generationsById.set(handle.generationId, record);
   return { handle, facade };
+}
+
+/**
+ * Plugin-side release for one generation (service.stop / unload).
+ *
+ * No-op while the host holds a lease so a duplicate or stale stop cannot retire
+ * a live facade a reused registry still needs. With no lease, retires exactly
+ * this generation (standalone embeddings and tests).
+ */
+export function releaseMachineTokenFacadeGeneration(
+  handle: MachineTokenFacadeGenerationHandle,
+): void {
+  const generation = generationsById.get(handle.generationId);
+  if (!generation || generation.state === "retired") {
+    return;
+  }
+  if (generation.leases > 0) {
+    return;
+  }
+  destroyMachineTokenFacadeGeneration(handle);
+}
+
+/**
+ * Host-owned lease on a plugin's live generation, taken when a plugin service
+ * starts. Returns a single-use release; the lease closes over this record so a
+ * later replacement generation is never touched. Does not retire on release —
+ * owner force-retire is publish / destroy / unregisterMachineTokenFacadesForPlugin.
+ */
+export function acquireMachineTokenFacadeLeaseForPlugin(pluginId: string): () => void {
+  const trimmed = pluginId.trim();
+  if (!trimmed) {
+    return () => undefined;
+  }
+  const live = liveGenerationByPluginId.get(trimmed);
+  if (!live || live.state !== "live") {
+    return () => undefined;
+  }
+  live.leases += 1;
+  let done = false;
+  return () => {
+    if (done) {
+      return;
+    }
+    done = true;
+    if (live.leases > 0) {
+      live.leases -= 1;
+    }
+  };
 }
 
 /**
@@ -613,6 +671,8 @@ export function destroyMachineTokenFacadeGeneration(
       liveGenerationByPluginId.delete(handle.pluginId);
     }
   }
+  // Owner force-retire ignores outstanding leases (reload commit / shutdown).
+  generation.leases = 0;
   generation.state = "retired";
   generationsById.delete(handle.generationId);
   generation.retire();
