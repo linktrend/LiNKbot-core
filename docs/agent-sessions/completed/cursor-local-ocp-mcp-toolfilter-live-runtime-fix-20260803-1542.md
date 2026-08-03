@@ -47,7 +47,7 @@
 - 2026-08-03 15:55: Root cause: catalog composition read active registry only; ensure/force-full could replace active while pins kept overlays; missing resolver fail-opened to full operator ceiling.
 - 2026-08-03 16:01: Initial fix + integration regression green.
 - 2026-08-03 16:10: Continuation hardened unsafe first-wins into active-then-unique-pin / ambiguous-omit; pin/release generation bumps; ensureRuntimePluginsLoaded + ambiguity + warm-catalog regressions. Tip `3f158ee4f3e`.
-- 2026-08-03 16:19: Carlos rejected process-global multi-registry / pin gap-fill. Restored active-registry-only resolver; flipped linkbrain/linkskills `activation.onStartup` to true (kept `enabledByDefault: false`); kept forceFull loader compatibility; replaced gap-fill/ambiguity tests with startup-planning + active-identity integration proof.
+- 2026-08-03 16:19: Carlos rejected process-global multi-registry / pin gap-fill. Restored active-registry-only resolver; flipped linkbrain/linkskills `activation.onStartup` to true (kept `enabledByDefault: false`); kept forceFull loader compatibility; replaced gap-fill/ambiguity tests with startup-planning + active-identity integration proof. Tip `3410a0c9bb1`.
 
 ## Next Action
 

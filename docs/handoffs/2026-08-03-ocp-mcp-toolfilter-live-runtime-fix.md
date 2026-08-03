@@ -161,4 +161,11 @@ Evidence: Carlos instruction on this branch; restored resolver matches pre-`2015
 
 Who corrected: Cursor Local Agent (Grok 4.5 High) continuing the same feature lane.
 
-Ending tip after this correction is recorded after commit/push.
+Ending tip after this correction: `3410a0c9bb1ed8673690e66a646a7a931acaacf5`.
+
+Targeted proof:
+`node scripts/run-vitest.mjs` on mcp-tool-filter-resolver, plugin-registry integration, loader.runtime-registry, runtime, linkbrain/linkskills manifests → **pass**.
+Startup planning filter + broader MCP registration / runtime-plugins / standalone loader → **pass**.
+Full `bundled-plugin-metadata` channel snapshot assertions not relied on (unrelated channel configuredState drift under worktree node_modules symlink).
+
+Residual risks: live Lisa not exercised; catalogs still fail-open to operator ceiling if overlays are absent from the active registry (onStartup + forceFull reuse are the intended guards).
