@@ -14,7 +14,7 @@
 | Starting branch  | `dev/cloudcursor/OCP-MACHINE-FACADE-RELOAD-FIX`                                                        |
 | Ending branch    | `dev/cloudcursor/OCP-MACHINE-FACADE-RELOAD-FIX`                                                        |
 | Starting commit  | `4e31a626e407e1c4b8469eedeb83d0cb7fa4e85f`                                                             |
-| Ending commit    | d7f834f4ec771007e659dad13dd45596db43fc39                                                               |
+| Ending commit    | 269572682ac5e925bfaed1072e3d91fe46afbe80                                                               |
 | Starting status  | clean at start SHA                                                                                     |
 | Ending status    | third facade ownership fix + integration regression                                                    |
 
