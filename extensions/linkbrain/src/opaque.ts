@@ -13,7 +13,8 @@ type OpaqueKind =
   | "subagent"
   | "stream"
   | "message"
-  | "batch";
+  | "batch"
+  | "event";
 
 function digest(raw: string): string {
   return createHash("sha256").update(raw, "utf8").digest("hex").slice(0, 16);

@@ -29,14 +29,28 @@ function createTestStores(maxEntries = 100) {
 
 const sampleBatch = {
   batchId: "batch_test_runtime",
-  streamId: "stream_test_lisa",
-  actorId: "actor_test_lisa",
-  fromSequence: 1,
-  toSequence: 2,
-  contentHash: "sha256:deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+  sessionId: "session_test_lisa",
+  idempotencyKey: "cap:session_test_lisa:1:2",
+  capturedAt: "2026-07-27T10:00:02.000Z",
   events: [
-    { sequence: 1, role: "user" as const, text: "Hello Lisa test." },
-    { sequence: 2, role: "assistant" as const, text: "Acknowledged." },
+    {
+      eventId: "event_test_runtime_1",
+      sequence: 1,
+      occurredAt: "2026-07-27T10:00:01.000Z",
+      role: "principal" as const,
+      eventType: "message" as const,
+      content: "Hello Lisa test.",
+      classification: "private" as const,
+    },
+    {
+      eventId: "event_test_runtime_2",
+      sequence: 2,
+      occurredAt: "2026-07-27T10:00:02.000Z",
+      role: "assistant" as const,
+      eventType: "message" as const,
+      content: "Acknowledged.",
+      classification: "private" as const,
+    },
   ],
 };
 
@@ -102,7 +116,31 @@ describe("linkbrain outbox runtime", () => {
       kind: "capture_batch",
       toolName: "brain_capture_batch",
       idempotencyKey: "cap:order:002",
-      body: { ...sampleBatch, batchId: "batch_test_runtime_2", fromSequence: 3, toSequence: 4 },
+      body: {
+        ...sampleBatch,
+        batchId: "batch_test_runtime_2",
+        idempotencyKey: "cap:session_test_lisa:3:4",
+        events: [
+          {
+            eventId: "event_test_runtime_3",
+            sequence: 3,
+            occurredAt: "2026-07-27T10:00:03.000Z",
+            role: "principal" as const,
+            eventType: "message" as const,
+            content: "Follow-up.",
+            classification: "private" as const,
+          },
+          {
+            eventId: "event_test_runtime_4",
+            sequence: 4,
+            occurredAt: "2026-07-27T10:00:04.000Z",
+            role: "assistant" as const,
+            eventType: "message" as const,
+            content: "Noted.",
+            classification: "private" as const,
+          },
+        ],
+      },
     });
     expect(first.key < second.key).toBe(true);
 
