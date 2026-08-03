@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it } from "vitest";
 import { createEmptyPluginRegistry } from "../plugins/registry-empty.js";
 import {
   pinActivePluginChannelRegistry,
+  pinActivePluginHttpRouteRegistry,
   resetPluginRuntimeStateForTest,
   setActivePluginRegistry,
 } from "../plugins/runtime.js";
@@ -222,5 +223,66 @@ describe("mcp tool filter composition", () => {
     expect(composition.kind).toBe("intersect");
     expect(shouldExposeComposedMcpTool(composition, "brain_search")).toBe(true);
     expect(shouldExposeComposedMcpTool(composition, "brain_capture_batch")).toBe(false);
+  });
+
+  it("prefers the active claim over a stale distinct pin claim", async () => {
+    const pinned = createEmptyPluginRegistry();
+    pinned.mcpServerToolFilters.push({
+      pluginId: "linkbrain",
+      resolver: {
+        serverName: "linkbrain",
+        resolve: () => ({ include: ["brain_browse"] }),
+      },
+      source: "test",
+    });
+    const active = createEmptyPluginRegistry();
+    active.mcpServerToolFilters.push({
+      pluginId: "linkbrain",
+      resolver: {
+        serverName: "linkbrain",
+        resolve: () => ({ include: ["brain_search"] }),
+      },
+      source: "test",
+    });
+    setActivePluginRegistry(active, "active-fresh");
+    pinActivePluginHttpRouteRegistry(pinned);
+
+    const composition = await resolveMcpToolFilterComposition({
+      serverName: "linkbrain",
+      configSelection: { include: ["brain_search", "brain_browse"] },
+    });
+    expect(composition.kind).toBe("intersect");
+    expect(shouldExposeComposedMcpTool(composition, "brain_search")).toBe(true);
+    expect(shouldExposeComposedMcpTool(composition, "brain_browse")).toBe(false);
+  });
+
+  it("fails closed when pinned surfaces hold distinct claims and active has none", async () => {
+    const httpPin = createEmptyPluginRegistry();
+    httpPin.mcpServerToolFilters.push({
+      pluginId: "plugin-a",
+      resolver: {
+        serverName: "linkbrain",
+        resolve: () => ({ include: ["brain_search"] }),
+      },
+      source: "test",
+    });
+    const channelPin = createEmptyPluginRegistry();
+    channelPin.mcpServerToolFilters.push({
+      pluginId: "plugin-b",
+      resolver: {
+        serverName: "linkbrain",
+        resolve: () => ({ include: ["brain_load"] }),
+      },
+      source: "test",
+    });
+    setActivePluginRegistry(createEmptyPluginRegistry(), "empty-active");
+    pinActivePluginHttpRouteRegistry(httpPin);
+    pinActivePluginChannelRegistry(channelPin);
+
+    const composition = await resolveMcpToolFilterComposition({
+      serverName: "linkbrain",
+      configSelection: { include: ["brain_search", "brain_load"] },
+    });
+    expect(composition).toEqual({ kind: "omit" });
   });
 });
