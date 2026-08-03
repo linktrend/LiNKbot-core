@@ -4,7 +4,15 @@
  * Run: node --experimental-strip-types --test linkbots/lisa/ops/stage-pdf-canary.execute.test.ts
  */
 import assert from "node:assert/strict";
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import {
+  mkdtempSync,
+  mkdirSync,
+  readFileSync,
+  realpathSync,
+  rmSync,
+  symlinkSync,
+  writeFileSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { describe, it } from "node:test";
@@ -13,16 +21,21 @@ import {
   STAGE_PDF_CANARY_ENDPOINT,
   STAGE_PDF_CANARY_MODEL,
   STAGE_PDF_CANARY_WIRE_MODEL,
+  STAGE_PDF_CANONICAL_HEALTH_URL,
   buildStagePdfOpenRouterRequest,
   buildSyntheticStagePdfBytes,
+  createOpenRouterFetchTransport,
   executeStagePdfCanary,
   planStagePdfCanary,
   resolveLiveExecuteOperationalRollback,
   type StagePdfCanaryTransport,
+  type StagePdfLiveRollbackPolicy,
   type StagePdfOpenRouterRequest,
 } from "./stage-pdf-canary.ts";
 import {
+  STAGE_PDF_ROLLBACK_SERVICE,
   applyStagePdfOperationalRollback,
+  assertExactStagePdfHealthUrl,
   writeStagePdfRollbackFixtureConfig,
   type StagePdfServiceRunner,
 } from "./stage-pdf-operational-rollback.ts";
@@ -59,6 +72,19 @@ function fakeRunner(events: string[]): StagePdfServiceRunner {
       events.push(`health:${service}`);
       return { ok: true };
     },
+  };
+}
+
+function tempStagePolicy(dir: string): StagePdfLiveRollbackPolicy {
+  writeStagePdfRollbackFixtureConfig({
+    targetPath: path.join(dir, "openclaw.json"),
+    slice: routingSliceFixture(),
+  });
+  return {
+    stageRoot: dir,
+    configRelativePath: "openclaw.json",
+    healthUrl: STAGE_PDF_CANONICAL_HEALTH_URL,
+    serviceLabel: STAGE_PDF_ROLLBACK_SERVICE,
   };
 }
 
@@ -145,18 +171,120 @@ describe("Stage PDF canary execute (mock transport)", () => {
     }
   });
 
-  it("live CLI resolve fails closed without configPath/healthUrl", () => {
-    const missing = resolveLiveExecuteOperationalRollback({
-      STAGE_PDF_CANARY_EXECUTE: "1",
-    });
-    assert.equal(missing.ok, false);
-    if (!missing.ok) assert.match(missing.error, /CONFIG_PATH/);
+  it("live CLI resolve pins policy; rejects env-selected alternate paths and Lisa 18790", () => {
+    const dir = mkdtempSync(path.join(tmpdir(), "stage-pdf-policy-"));
+    try {
+      const policy = tempStagePolicy(dir);
+      const ok = resolveLiveExecuteOperationalRollback({}, policy);
+      assert.equal(ok.ok, true);
+      if (ok.ok) {
+        assert.equal(ok.wiring.configPath.endsWith(`${path.sep}openclaw.json`), true);
+        const realDir = realpathSync(dir);
+        assert.ok(
+          ok.wiring.configPath === path.join(realDir, "openclaw.json") ||
+            ok.wiring.configPath.startsWith(`${realDir}${path.sep}`),
+        );
+      }
 
-    const noHealth = resolveLiveExecuteOperationalRollback({
-      STAGE_PDF_CANARY_CONFIG_PATH: "/tmp/does-not-need-exist-yet.json",
-    });
-    assert.equal(noHealth.ok, false);
-    if (!noHealth.ok) assert.match(noHealth.error, /HEALTH_URL/);
+      // Env cannot select temp/alternate policy — production policy only by default.
+      const withEnv = resolveLiveExecuteOperationalRollback({
+        STAGE_PDF_CANARY_CONFIG_PATH: path.join(dir, "openclaw.json"),
+        STAGE_PDF_CANARY_HEALTH_URL: "http://127.0.0.1:18790/health",
+      });
+      const withoutEnv = resolveLiveExecuteOperationalRollback({});
+      assert.equal(withEnv.ok, withoutEnv.ok);
+      if (withEnv.ok && withoutEnv.ok) {
+        assert.equal(withEnv.wiring.configPath, withoutEnv.wiring.configPath);
+      } else if (!withEnv.ok && !withoutEnv.ok) {
+        assert.equal(withEnv.error, withoutEnv.error);
+      } else {
+        assert.fail("env must not change production policy resolve outcome shape");
+      }
+
+      assert.throws(
+        () => assertExactStagePdfHealthUrl("http://127.0.0.1:18790/health"),
+        /18791|exactly|18790/,
+      );
+      assert.throws(
+        () => assertExactStagePdfHealthUrl("http://127.0.0.1:18791/healthz"),
+        /exactly/,
+      );
+      const badLabel = resolveLiveExecuteOperationalRollback(
+        {},
+        {
+          ...policy,
+          serviceLabel: "ai.openclaw.lisa" as typeof STAGE_PDF_ROLLBACK_SERVICE,
+        },
+      );
+      assert.equal(badLabel.ok, false);
+      if (!badLabel.ok) assert.match(badLabel.error, /runner label|lisa-stage|refusing/);
+
+      const altRoot = resolveLiveExecuteOperationalRollback(
+        {},
+        {
+          stageRoot: "/tmp",
+          configRelativePath: "nope.json",
+          healthUrl: STAGE_PDF_CANONICAL_HEALTH_URL,
+          serviceLabel: STAGE_PDF_ROLLBACK_SERVICE,
+        },
+      );
+      assert.equal(altRoot.ok, false);
+
+      // Symlink escape: config symlink pointing outside stage root.
+      const escapeDir = mkdtempSync(path.join(tmpdir(), "stage-pdf-escape-"));
+      const outside = path.join(escapeDir, "outside.json");
+      writeFileSync(outside, "{}\n");
+      const stageDir = path.join(escapeDir, "stage");
+      mkdirSync(stageDir);
+      const linkPath = path.join(stageDir, "openclaw.json");
+      symlinkSync(outside, linkPath);
+      const escaped = resolveLiveExecuteOperationalRollback(
+        {},
+        {
+          stageRoot: stageDir,
+          configRelativePath: "openclaw.json",
+          healthUrl: STAGE_PDF_CANONICAL_HEALTH_URL,
+          serviceLabel: STAGE_PDF_ROLLBACK_SERVICE,
+        },
+      );
+      assert.equal(escaped.ok, false);
+      if (!escaped.ok) assert.match(escaped.error, /symlink escape|outside stage root/);
+      rmSync(escapeDir, { recursive: true, force: true });
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("adversarial: exported createOpenRouterFetchTransport(fakeFetch) stays mock-only", async () => {
+    const dir = mkdtempSync(path.join(tmpdir(), "stage-pdf-fake-fetch-"));
+    const wiring = wireTempRollback(dir);
+    const prev = process.env.OPENROUTER_API_KEY;
+    process.env.OPENROUTER_API_KEY = "redacted-test-value-not-printed";
+    try {
+      const fakeFetch: typeof fetch = async () =>
+        new Response(
+          JSON.stringify({
+            choices: [{ message: { content: "STAGE_PDF_CANARY_OK — fake local 200" } }],
+          }),
+          { status: 200, headers: { "Content-Type": "application/json" } },
+        );
+      const transport = createOpenRouterFetchTransport(fakeFetch);
+      const receipt = await executeStagePdfCanary({
+        outputDir: dir,
+        executeGateEnv: GATE_ENV,
+        transport,
+        operationalRollback: { configPath: wiring.configPath, runner: wiring.runner },
+      });
+      assert.equal(receipt.status, "mock_verified");
+      assert.equal(receipt.proof_kind, "mock_transport");
+      assert.equal(receipt.firstProductionProofEarned, false);
+      assert.notEqual(receipt.status, "executed");
+      assert.notEqual(receipt.proof_kind, "openrouter_http_production");
+    } finally {
+      if (prev === undefined) delete process.env.OPENROUTER_API_KEY;
+      else process.env.OPENROUTER_API_KEY = prev;
+      rmSync(dir, { recursive: true, force: true });
+    }
   });
 
   it("mock success → mock_verified only (never executed / never first production proof)", async () => {

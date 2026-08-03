@@ -8,12 +8,11 @@
  * prints secrets.
  *
  * Mock / injected transport success is `mock_verified` only — never `executed`
- * and never earns firstProductionProofEarned. Injected transports cannot
- * self-declare production proof. Only the sealed OpenRouter HTTP adapter
- * (createOpenRouterFetchTransport) using the stage credential path may set
- * proof_kind=openrouter_http_production. Execute requires real
- * operationalRollback wiring (configPath + stage-only runner); fail closed
- * otherwise — never silent temp fixture / no-op runner defaults.
+ * and never earns firstProductionProofEarned. Exported factories and injected
+ * fetch/transport surfaces are permanently mock-only. Only the private CLI
+ * composition root may mint the production brand after real global fetch +
+ * stage credential path. Execute requires real operationalRollback wiring
+ * (pinned stage policy / injected test policy); fail closed otherwise.
  */
 
 import { createHash } from "node:crypto";
@@ -32,8 +31,17 @@ import {
 import {
   applyStagePdfOperationalRollback,
   createStagePdfLisaStageRunner,
+  PRODUCTION_STAGE_PDF_LIVE_ROLLBACK_POLICY,
+  resolvePinnedStagePdfConfigPath,
+  type StagePdfLiveRollbackPolicy,
   type StagePdfOperationalRollbackResult,
   type StagePdfServiceRunner,
+} from "./stage-pdf-operational-rollback.ts";
+
+export type { StagePdfLiveRollbackPolicy };
+export {
+  PRODUCTION_STAGE_PDF_LIVE_ROLLBACK_POLICY,
+  STAGE_PDF_CANONICAL_HEALTH_URL,
 } from "./stage-pdf-operational-rollback.ts";
 
 export const STAGE_PDF_CANARY_MODEL = "openrouter/minimax/minimax-m3" as const;
@@ -290,79 +298,104 @@ export function verifyStagePdfTransportResponse(result: StagePdfTransportResult)
   return { ok: errors.length === 0, errors };
 }
 
-/** Real OpenRouter fetch transport — Principal-gated spend path. Never logs the API key. */
+async function sendOpenRouterChatRequest(
+  fetchImpl: typeof fetch,
+  request: StagePdfOpenRouterRequest,
+  params: { apiKeyPresent: boolean },
+): Promise<StagePdfTransportResult> {
+  if (!params.apiKeyPresent) {
+    return {
+      ok: false,
+      errorClass: "missing_credential",
+      errorMessage: "OPENROUTER_API_KEY absent from process env",
+    };
+  }
+  const apiKey = process.env.OPENROUTER_API_KEY;
+  if (!apiKey) {
+    return {
+      ok: false,
+      errorClass: "missing_credential",
+      errorMessage: "OPENROUTER_API_KEY absent from process env",
+    };
+  }
+  try {
+    const res = await fetchImpl(request.endpoint, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://openclaw.ai",
+        "X-Title": "OpenClaw lisa-stage PDF canary",
+      },
+      body: JSON.stringify(request.body),
+    });
+    const rawText = await res.text();
+    let assistantText: string | undefined;
+    try {
+      const parsed = JSON.parse(rawText) as {
+        choices?: Array<{ message?: { content?: string } }>;
+        error?: { message?: string };
+      };
+      assistantText = parsed.choices?.[0]?.message?.content;
+      if (!res.ok) {
+        return {
+          ok: false,
+          statusCode: res.status,
+          assistantText,
+          errorClass: "http_error",
+          errorMessage: parsed.error?.message ?? `http_${res.status}`,
+        };
+      }
+    } catch {
+      return {
+        ok: false,
+        statusCode: res.status,
+        errorClass: "invalid_json",
+        errorMessage: "response_not_json",
+      };
+    }
+    return {
+      ok: res.ok,
+      statusCode: res.status,
+      assistantText,
+    };
+  } catch (err) {
+    return {
+      ok: false,
+      errorClass: "transport_exception",
+      errorMessage: err instanceof Error ? err.name : "unknown_error",
+    };
+  }
+}
+
+/**
+ * Exported OpenRouter fetch factory — permanently mock-only.
+ * Accepts injectable fetch for tests; never mints the production brand.
+ * Fake local HTTP 200 cannot earn firstProductionProofEarned.
+ */
 export function createOpenRouterFetchTransport(
   fetchImpl: typeof fetch = fetch,
 ): StagePdfCanaryTransport {
-  const transport: SealedOpenRouterHttpProductionTransport = {
-    [OPENROUTER_HTTP_PRODUCTION_BRAND]: true,
+  return {
     async send(request, params) {
-      if (!params.apiKeyPresent) {
-        return {
-          ok: false,
-          errorClass: "missing_credential",
-          errorMessage: "OPENROUTER_API_KEY absent from process env",
-        };
-      }
-      const apiKey = process.env.OPENROUTER_API_KEY;
-      if (!apiKey) {
-        return {
-          ok: false,
-          errorClass: "missing_credential",
-          errorMessage: "OPENROUTER_API_KEY absent from process env",
-        };
-      }
-      try {
-        const res = await fetchImpl(request.endpoint, {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${apiKey}`,
-            "Content-Type": "application/json",
-            "HTTP-Referer": "https://openclaw.ai",
-            "X-Title": "OpenClaw lisa-stage PDF canary",
-          },
-          body: JSON.stringify(request.body),
-        });
-        const rawText = await res.text();
-        let assistantText: string | undefined;
-        try {
-          const parsed = JSON.parse(rawText) as {
-            choices?: Array<{ message?: { content?: string } }>;
-            error?: { message?: string };
-          };
-          assistantText = parsed.choices?.[0]?.message?.content;
-          if (!res.ok) {
-            return {
-              ok: false,
-              statusCode: res.status,
-              assistantText,
-              errorClass: "http_error",
-              errorMessage: parsed.error?.message ?? `http_${res.status}`,
-            };
-          }
-        } catch {
-          return {
-            ok: false,
-            statusCode: res.status,
-            errorClass: "invalid_json",
-            errorMessage: "response_not_json",
-          };
-        }
-        return {
-          ok: res.ok,
-          statusCode: res.status,
-          assistantText,
-        };
-      } catch (err) {
-        return {
-          ok: false,
-          errorClass: "transport_exception",
-          errorMessage: err instanceof Error ? err.name : "unknown_error",
-        };
-      }
+      return sendOpenRouterChatRequest(fetchImpl, request, params);
     },
   };
-  return transport;
+}
+
+/**
+ * Private production mint — CLI composition root only.
+ * Uses non-injectable global fetch + process env credential path.
+ * Never exported; never callable from test/import surfaces.
+ */
+function mintSealedOpenRouterHttpProductionTransport(): SealedOpenRouterHttpProductionTransport {
+  return {
+    [OPENROUTER_HTTP_PRODUCTION_BRAND]: true,
+    async send(request, params) {
+      // Intentionally non-injectable: always the real global fetch.
+      return sendOpenRouterChatRequest(fetch, request, params);
+    },
+  };
 }
 
 function stagePdfConfigSliceForRollback(): StagePdfConfigSlice {
@@ -405,31 +438,28 @@ export type StagePdfOperationalRollbackWiring = {
 };
 
 /**
- * Resolve Principal-gated live execute rollback wiring from env.
- * Fail closed when configPath or healthUrl is missing — never invent temp/no-op.
+ * Resolve Principal-gated live execute rollback wiring from a pinned policy.
+ *
+ * Production CLI must call with the default production policy only (no env path
+ * override, no injectable test policy selection). Tests may pass a temporary
+ * stage-root policy object that production CLI cannot select.
  */
 export function resolveLiveExecuteOperationalRollback(
-  env: NodeJS.ProcessEnv = process.env,
+  _env: NodeJS.ProcessEnv = process.env,
+  policy: StagePdfLiveRollbackPolicy = PRODUCTION_STAGE_PDF_LIVE_ROLLBACK_POLICY,
 ): { ok: true; wiring: StagePdfOperationalRollbackWiring } | { ok: false; error: string } {
-  const configPath = (env.STAGE_PDF_CANARY_CONFIG_PATH ?? "").trim();
-  const healthUrl = (env.STAGE_PDF_CANARY_HEALTH_URL ?? "").trim();
-  if (!configPath) {
-    return {
-      ok: false,
-      error: "STAGE_PDF_CANARY_CONFIG_PATH required for live execute operational rollback",
-    };
-  }
-  if (!healthUrl) {
-    return {
-      ok: false,
-      error: "STAGE_PDF_CANARY_HEALTH_URL required for live execute operational rollback",
-    };
-  }
-  if (!existsSync(configPath)) {
-    return { ok: false, error: `STAGE_PDF_CANARY_CONFIG_PATH missing on disk: ${configPath}` };
-  }
   try {
-    const runner = createStagePdfLisaStageRunner({ healthUrl });
+    if (policy.serviceLabel !== "ai.openclaw.lisa-stage") {
+      return {
+        ok: false,
+        error: `refusing arbitrary runner label: ${policy.serviceLabel}`,
+      };
+    }
+    const configPath = resolvePinnedStagePdfConfigPath(policy);
+    const runner = createStagePdfLisaStageRunner({
+      healthUrl: policy.healthUrl,
+      expectedHealthUrl: policy.healthUrl,
+    });
     return { ok: true, wiring: { configPath, runner } };
   } catch (err) {
     return {
@@ -607,12 +637,10 @@ export async function executeStagePdfCanary(params: {
   executeGateEnv?: NodeJS.ProcessEnv;
   nowIso?: string;
   transport?: StagePdfCanaryTransport;
-  /** When true and gates pass with no transport, use createOpenRouterFetchTransport(). */
-  allowLiveFetchTransport?: boolean;
   /**
-   * Required for execute. Live CLI supplies configPath + lisa-stage-only runner
-   * with health URL. Tests may inject temp fixture + fake runner. No silent
-   * temp/no-op defaults.
+   * Required for execute. Live CLI supplies pinned stage wiring; tests inject
+   * temp fixture + fake runner. No silent temp/no-op defaults. Callers cannot
+   * mint the production brand — only the private CLI composition root can.
    */
   operationalRollback?: StagePdfOperationalRollbackWiring;
 }): Promise<StagePdfCanaryReceipt> {
@@ -629,9 +657,7 @@ export async function executeStagePdfCanary(params: {
     routingErrors.length === 0 &&
     LISA_OPENROUTER_ONLY_STAGE_ROUTING.paidSpendEnablementAllowed === false;
 
-  const transport =
-    params.transport ??
-    (params.allowLiveFetchTransport ? createOpenRouterFetchTransport() : undefined);
+  const transport = params.transport;
   const sealedProduction = transport ? isSealedOpenRouterHttpProduction(transport) : false;
   const proofKind: StagePdfProofKind = transport
     ? sealedProduction
@@ -783,7 +809,7 @@ function printHelp(): void {
 
 Defaults: package/dry-run only. execute requires STAGE_PDF_CANARY_EXECUTE=1 and existing OPENROUTER_API_KEY in process env (never printed).
 Live fetch also requires STAGE_PDF_CANARY_ALLOW_LIVE_FETCH=1 (Principal spend gate).
-Live execute requires STAGE_PDF_CANARY_CONFIG_PATH + STAGE_PDF_CANARY_HEALTH_URL (operational rollback; lisa-stage only).
+Live execute pins LiNKplatform-staging/lisa openclaw.json + http://127.0.0.1:18791/health (lisa-stage only).
 delivery=none; synthetic local PDF; OpenRouter-only; no live Lisa.
 `);
 }
@@ -814,7 +840,11 @@ async function mainAsync(argv: string[]): Promise<number> {
       console.error("Refusing execute: set STAGE_PDF_CANARY_EXECUTE=1 only under Principal gate.");
       return 1;
     }
-    const rollback = resolveLiveExecuteOperationalRollback(process.env);
+    // Production CLI composition root: production policy only (no test policy).
+    const rollback = resolveLiveExecuteOperationalRollback(
+      process.env,
+      PRODUCTION_STAGE_PDF_LIVE_ROLLBACK_POLICY,
+    );
     if (!rollback.ok) {
       const pdf = writeSyntheticStagePdf(path.join(outDir, "synthetic-stage-pdf-canary.pdf"));
       const receipt = writeReceipt(outDir, {
@@ -833,10 +863,15 @@ async function mainAsync(argv: string[]): Promise<number> {
       console.error(`Refusing execute: ${rollback.error}`);
       return 1;
     }
+    // Private production brand mint — only here, only with real global fetch.
+    const liveTransport =
+      process.env.STAGE_PDF_CANARY_ALLOW_LIVE_FETCH === "1"
+        ? mintSealedOpenRouterHttpProductionTransport()
+        : undefined;
     const receipt = await executeStagePdfCanary({
       outputDir: outDir,
       executeGateEnv: process.env,
-      allowLiveFetchTransport: process.env.STAGE_PDF_CANARY_ALLOW_LIVE_FETCH === "1",
+      transport: liveTransport,
       operationalRollback: rollback.wiring,
     });
     console.log(JSON.stringify(receipt, null, 2));

@@ -11,6 +11,7 @@ import {
   expireMainApproveClaims,
   expireStaleRepairAttempts,
   isHealthyLisaStageOpsStore,
+  loadAndClaimMainApprovePackage,
   listRepairAttempts,
   openHealthyLisaStageOpsStore,
   probeLisaStageOpsStoreHealth,
@@ -19,6 +20,7 @@ import {
   requireHealthyLisaStageOpsStore,
   resolveOpenClawStateSqlitePath,
   upsertRepairBinding,
+  hashMainApprovePackageContents,
 } from "./lisa-stage-ops-store.js";
 import { tableExists } from "./openclaw-state-db-schema-helpers.js";
 import { OPENCLAW_STATE_SCHEMA_VERSION, openOpenClawStateDatabase } from "./openclaw-state-db.js";
@@ -361,6 +363,29 @@ describe("lisa stage ops store", () => {
       now,
     );
     expect(missing).toEqual({ ok: false, reason: "expired_package" });
+
+    const loaded = loadAndClaimMainApprovePackage(
+      opts,
+      {
+        packageId: "pkg-live",
+        expectedPackageHash: hashMainApprovePackageContents({
+          packageId: "pkg-live",
+          mondayDate: "2026-08-03",
+          claimExpiresAtMs: now + 20_000,
+          itemsJson: '["a","b"]',
+        }),
+        claimId: "c1",
+      },
+      now + 4,
+    );
+    expect(loaded).toMatchObject({
+      ok: true,
+      idempotentReentry: true,
+      claim: { claimId: "c1" },
+    });
+
+    const absent = loadAndClaimMainApprovePackage(opts, { packageId: "pkg-missing" }, now);
+    expect(absent).toEqual({ ok: false, reason: "package_absent" });
   });
 
   it("probeLisaStageOpsStoreHealth is read-only by default and ok after ensure", () => {

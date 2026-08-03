@@ -4,15 +4,18 @@
  * Atomically backs up a target OpenClaw config, applies tools.deny pdf + removes
  * agents.defaults.pdfModel, validates, restarts ONLY ai.openclaw.lisa-stage via
  * an injected runner, verifies health, and restores the backup if the rollback
- * application itself fails. Default/dry/mock callers must pass temp fixtures —
- * never live Lisa (18790) or stage paths unless Principal-authorized.
+ * application itself fails. Production CLI pins the canonical stage root +
+ * exact health URL; tests inject a temporary stage-root policy that production
+ * CLI cannot select.
  */
 
 import {
   copyFileSync,
   existsSync,
+  lstatSync,
   mkdirSync,
   readFileSync,
+  realpathSync,
   renameSync,
   writeFileSync,
 } from "node:fs";
@@ -25,9 +28,35 @@ import {
   type StagePdfRestoreReceipt,
   type StagePdfRollbackPlan,
 } from "./model-routing.openrouter-stage.ts";
+import { STAGE_OPS_STAGE_ROOT } from "./stage-ops-command.ts";
 
 export const STAGE_PDF_ROLLBACK_SERVICE = "ai.openclaw.lisa-stage" as const;
 export const FORBIDDEN_PDF_ROLLBACK_SERVICES = ["ai.openclaw.lisa"] as const;
+
+/** Exact production health endpoint — no host/port drift, no Lisa 18790. */
+export const STAGE_PDF_CANONICAL_HEALTH_URL = "http://127.0.0.1:18791/health" as const;
+
+export type StagePdfLiveRollbackPolicy = {
+  /** Absolute stage root (production or test-injected temp). */
+  stageRoot: string;
+  /** Config file relative to stageRoot (typically openclaw.json). */
+  configRelativePath: string;
+  /** Exact health URL string equality required. */
+  healthUrl: typeof STAGE_PDF_CANONICAL_HEALTH_URL | string;
+  serviceLabel: typeof STAGE_PDF_ROLLBACK_SERVICE;
+};
+
+/**
+ * Production policy — used exclusively by the CLI composition root.
+ * Tests must inject a temporary policy object; production CLI never reads a
+ * test policy from env.
+ */
+export const PRODUCTION_STAGE_PDF_LIVE_ROLLBACK_POLICY: StagePdfLiveRollbackPolicy = {
+  stageRoot: STAGE_OPS_STAGE_ROOT,
+  configRelativePath: "openclaw.json",
+  healthUrl: STAGE_PDF_CANONICAL_HEALTH_URL,
+  serviceLabel: STAGE_PDF_ROLLBACK_SERVICE,
+};
 
 export type StagePdfServiceRunner = {
   restart: (service: typeof STAGE_PDF_ROLLBACK_SERVICE) => Promise<{ ok: boolean; error?: string }>;
@@ -67,6 +96,79 @@ function assertAllowedService(
       throw new Error(`refusing live Lisa service mutation: ${forbidden}`);
     }
   }
+}
+
+/**
+ * Validate exact health URL. Rejects Lisa 18790, non-loopback hosts, path drift,
+ * and any string that is not exactly the policy URL.
+ */
+export function assertExactStagePdfHealthUrl(
+  healthUrl: string,
+  expected: string = STAGE_PDF_CANONICAL_HEALTH_URL,
+): void {
+  const trimmed = healthUrl.trim();
+  if (trimmed !== expected) {
+    throw new Error(`healthUrl must equal exactly ${expected} (got ${trimmed || "<empty>"})`);
+  }
+  let parsed: URL;
+  try {
+    parsed = new URL(trimmed);
+  } catch {
+    throw new Error(`invalid healthUrl: ${trimmed}`);
+  }
+  if (parsed.protocol !== "http:") {
+    throw new Error(`healthUrl must be http (got ${parsed.protocol})`);
+  }
+  if (parsed.hostname !== "127.0.0.1") {
+    throw new Error(`healthUrl host must be 127.0.0.1 (got ${parsed.hostname})`);
+  }
+  if (parsed.port !== "18791") {
+    throw new Error(`healthUrl port must be 18791 (got ${parsed.port || "default"})`);
+  }
+  if (parsed.pathname !== "/health") {
+    throw new Error(`healthUrl path must be /health (got ${parsed.pathname})`);
+  }
+  if (trimmed.includes(":18790")) {
+    throw new Error("refusing live Lisa health port 18790");
+  }
+}
+
+/**
+ * Resolve and pin config path under the policy stage root.
+ * Rejects alternate roots, symlink escape, and missing files.
+ */
+export function resolvePinnedStagePdfConfigPath(policy: StagePdfLiveRollbackPolicy): string {
+  if (policy.serviceLabel !== STAGE_PDF_ROLLBACK_SERVICE) {
+    throw new Error(`refusing arbitrary runner label: only ${STAGE_PDF_ROLLBACK_SERVICE} allowed`);
+  }
+  const stageRootAbs = path.resolve(policy.stageRoot);
+  const candidate = path.resolve(stageRootAbs, policy.configRelativePath);
+  if (!existsSync(stageRootAbs)) {
+    throw new Error(`stage root missing: ${stageRootAbs}`);
+  }
+  if (!existsSync(candidate)) {
+    throw new Error(`stage config missing: ${candidate}`);
+  }
+  // Reject symlink escape: realpath(config) must stay under realpath(stageRoot).
+  const realRoot = realpathSync(stageRootAbs);
+  if (lstatSync(candidate).isSymbolicLink()) {
+    const realConfig = realpathSync(candidate);
+    if (realConfig !== realRoot && !realConfig.startsWith(`${realRoot}${path.sep}`)) {
+      throw new Error(
+        `refusing symlink escape: config realpath ${realConfig} leaves stage root ${realRoot}`,
+      );
+    }
+    return realConfig;
+  }
+  const realConfig = realpathSync(candidate);
+  if (realConfig !== realRoot && !realConfig.startsWith(`${realRoot}${path.sep}`)) {
+    throw new Error(`refusing config outside stage root: ${realConfig} not under ${realRoot}`);
+  }
+  // Also reject if the logical candidate escapes via .. segments before realpath.
+  if (candidate !== realRoot && !candidate.startsWith(`${stageRootAbs}${path.sep}`)) {
+    throw new Error(`refusing alternate config path outside stage root: ${candidate}`);
+  }
+  return realConfig;
 }
 
 function readJsonObject(configPath: string): Record<string, unknown> {
@@ -135,29 +237,21 @@ async function recoverRestoredConfig(params: {
 
 /**
  * Stage-only runner: restarts ONLY ai.openclaw.lisa-stage and health-checks
- * an explicit URL. Does not target live Lisa. Inject restartImpl in tests;
+ * an exact pinned URL. Does not target live Lisa. Inject restartImpl in tests;
  * CLI packages the real launchctl kickstart for Principal-gated execute only.
  */
 export function createStagePdfLisaStageRunner(params: {
   healthUrl: string;
+  /** Required expected URL — defaults to canonical production health. */
+  expectedHealthUrl?: string;
   restartImpl?: (
     service: typeof STAGE_PDF_ROLLBACK_SERVICE,
   ) => Promise<{ ok: boolean; error?: string }>;
   healthFetch?: typeof fetch;
 }): StagePdfServiceRunner {
+  const expected = params.expectedHealthUrl ?? STAGE_PDF_CANONICAL_HEALTH_URL;
+  assertExactStagePdfHealthUrl(params.healthUrl, expected);
   const healthUrl = params.healthUrl.trim();
-  if (!healthUrl) {
-    throw new Error("healthUrl required for stage PDF rollback runner");
-  }
-  let parsed: URL;
-  try {
-    parsed = new URL(healthUrl);
-  } catch {
-    throw new Error(`invalid healthUrl: ${healthUrl}`);
-  }
-  if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
-    throw new Error(`healthUrl must be http(s): ${healthUrl}`);
-  }
 
   return {
     async restart(service) {

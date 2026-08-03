@@ -8,7 +8,7 @@
  * DML via getNodeSqliteKysely + executeSqliteQuerySync.
  */
 
-import { randomUUID } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import { existsSync } from "node:fs";
 import path from "node:path";
 import type { DatabaseSync } from "node:sqlite";
@@ -526,6 +526,65 @@ export function expireStaleRepairAttempts(
   );
 }
 
+/** Immutable content hash for a persisted Main Approve package (never trust caller bytes alone). */
+export function hashMainApprovePackageContents(input: {
+  packageId: string;
+  mondayDate: string;
+  claimExpiresAtMs: number;
+  itemsJson: string;
+}): string {
+  // Stable canonical form — field order fixed; itemsJson must already be the sealed bytes.
+  const canonical = JSON.stringify({
+    packageId: input.packageId,
+    mondayDate: input.mondayDate,
+    claimExpiresAtMs: input.claimExpiresAtMs,
+    itemsJson: input.itemsJson,
+  });
+  return createHash("sha256").update(canonical).digest("hex");
+}
+
+function toMainApprovePackageRow(row: {
+  package_id: string;
+  monday_date: string;
+  claim_expires_at_ms: number;
+  items_json: string;
+  created_at_ms: number;
+  updated_at_ms: number;
+}): MainApprovePackageRow {
+  return {
+    packageId: row.package_id,
+    mondayDate: row.monday_date,
+    claimExpiresAtMs: row.claim_expires_at_ms,
+    itemsJson: row.items_json,
+    createdAtMs: row.created_at_ms,
+    updatedAtMs: row.updated_at_ms,
+  };
+}
+
+/** Read-only load of a sealed Main Approve package by immutable id. */
+export function getMainApprovePackage(
+  options: LisaStageOpsStoreOptions,
+  packageId: string,
+): MainApprovePackageRow | null {
+  requireHealthyLisaStageOpsStore(options);
+  const { db } = openOpenClawStateDatabase(resolveStateOptions(options));
+  const row = executeSqliteQueryTakeFirstSync(
+    db,
+    stageOpsDb(db)
+      .selectFrom("lisa_stage_main_approve_packages")
+      .select([
+        "package_id",
+        "monday_date",
+        "claim_expires_at_ms",
+        "items_json",
+        "created_at_ms",
+        "updated_at_ms",
+      ])
+      .where("package_id", "=", packageId),
+  );
+  return row ? toMainApprovePackageRow(row) : null;
+}
+
 export function putMainApprovePackage(
   options: LisaStageOpsStoreOptions,
   input: {
@@ -582,39 +641,106 @@ export function putMainApprovePackage(
   );
 }
 
-export function claimMainApprovePackage(
+export type MainApproveClaimFailureReason =
+  | "package_absent"
+  | "package_hash_mismatch"
+  | "expired_package"
+  | "claim_conflict";
+
+/**
+ * Atomically load the canonical persisted package by id, optionally verify its
+ * content hash, and claim it. Idempotent when the same claimId (or no claimId)
+ * re-enters an already-active claim; conflicting claimIds fail closed.
+ */
+export function loadAndClaimMainApprovePackage(
   options: LisaStageOpsStoreOptions,
   input: {
     packageId: string;
-    expiresAtMs: number;
+    expectedPackageHash?: string;
+    /** Claim lease end; defaults to the package claim_expires_at_ms. */
+    expiresAtMs?: number;
     claimId?: string;
   },
   nowMs = Date.now(),
-): MainApproveClaimRow | { ok: false; reason: "expired_package" | "claim_conflict" } {
+):
+  | {
+      ok: true;
+      package: MainApprovePackageRow;
+      packageHash: string;
+      claim: MainApproveClaimRow;
+      idempotentReentry: boolean;
+    }
+  | { ok: false; reason: MainApproveClaimFailureReason } {
   prepareStoreForWrite(options);
   return runOpenClawStateWriteTransaction(
     ({ db }) => {
-      const pkg = executeSqliteQueryTakeFirstSync(
+      const pkgRow = executeSqliteQueryTakeFirstSync(
         db,
         stageOpsDb(db)
           .selectFrom("lisa_stage_main_approve_packages")
-          .select(["package_id", "claim_expires_at_ms"])
+          .select([
+            "package_id",
+            "monday_date",
+            "claim_expires_at_ms",
+            "items_json",
+            "created_at_ms",
+            "updated_at_ms",
+          ])
           .where("package_id", "=", input.packageId),
       );
-      if (!pkg || pkg.claim_expires_at_ms < nowMs) {
+      if (!pkgRow) {
+        return { ok: false as const, reason: "package_absent" as const };
+      }
+      const pkg = toMainApprovePackageRow(pkgRow);
+      const packageHash = hashMainApprovePackageContents({
+        packageId: pkg.packageId,
+        mondayDate: pkg.mondayDate,
+        claimExpiresAtMs: pkg.claimExpiresAtMs,
+        itemsJson: pkg.itemsJson,
+      });
+      if (input.expectedPackageHash && input.expectedPackageHash !== packageHash) {
+        return { ok: false as const, reason: "package_hash_mismatch" as const };
+      }
+      if (pkg.claimExpiresAtMs < nowMs) {
         return { ok: false as const, reason: "expired_package" as const };
       }
       const existing = executeSqliteQueryTakeFirstSync(
         db,
         stageOpsDb(db)
           .selectFrom("lisa_stage_main_approve_claims")
-          .select(["claim_id", "status", "expires_at_ms", "created_at_ms"])
+          .select([
+            "claim_id",
+            "package_id",
+            "claimed_at_ms",
+            "expires_at_ms",
+            "status",
+            "created_at_ms",
+            "updated_at_ms",
+          ])
           .where("package_id", "=", input.packageId),
       );
       if (existing && existing.status === "active" && existing.expires_at_ms >= nowMs) {
-        return { ok: false as const, reason: "claim_conflict" as const };
+        if (input.claimId && input.claimId !== existing.claim_id) {
+          return { ok: false as const, reason: "claim_conflict" as const };
+        }
+        return {
+          ok: true as const,
+          package: pkg,
+          packageHash,
+          claim: {
+            claimId: existing.claim_id,
+            packageId: existing.package_id,
+            claimedAtMs: existing.claimed_at_ms,
+            expiresAtMs: existing.expires_at_ms,
+            status: "active" as const,
+            createdAtMs: existing.created_at_ms,
+            updatedAtMs: existing.updated_at_ms,
+          },
+          idempotentReentry: true,
+        };
       }
       const claimId = input.claimId ?? randomUUID();
+      const expiresAtMs = input.expiresAtMs ?? pkg.claimExpiresAtMs;
       const createdAtMs = existing?.created_at_ms ?? nowMs;
       executeSqliteQuerySync(
         db,
@@ -624,7 +750,7 @@ export function claimMainApprovePackage(
             claim_id: claimId,
             package_id: input.packageId,
             claimed_at_ms: nowMs,
-            expires_at_ms: input.expiresAtMs,
+            expires_at_ms: expiresAtMs,
             status: "active",
             created_at_ms: createdAtMs,
             updated_at_ms: nowMs,
@@ -633,25 +759,59 @@ export function claimMainApprovePackage(
             conflict.column("package_id").doUpdateSet({
               claim_id: claimId,
               claimed_at_ms: nowMs,
-              expires_at_ms: input.expiresAtMs,
+              expires_at_ms: expiresAtMs,
               status: "active",
               updated_at_ms: nowMs,
             }),
           ),
       );
       return {
-        claimId,
-        packageId: input.packageId,
-        claimedAtMs: nowMs,
-        expiresAtMs: input.expiresAtMs,
-        status: "active" as const,
-        createdAtMs,
-        updatedAtMs: nowMs,
+        ok: true as const,
+        package: pkg,
+        packageHash,
+        claim: {
+          claimId,
+          packageId: input.packageId,
+          claimedAtMs: nowMs,
+          expiresAtMs,
+          status: "active" as const,
+          createdAtMs,
+          updatedAtMs: nowMs,
+        },
+        idempotentReentry: false,
       };
     },
     resolveStateOptions(options),
-    { operationLabel: "lisa-stage-ops.main-approve.claim" },
+    { operationLabel: "lisa-stage-ops.main-approve.load-and-claim" },
   );
+}
+
+export function claimMainApprovePackage(
+  options: LisaStageOpsStoreOptions,
+  input: {
+    packageId: string;
+    expiresAtMs: number;
+    claimId?: string;
+  },
+  nowMs = Date.now(),
+): MainApproveClaimRow | { ok: false; reason: "expired_package" | "claim_conflict" } {
+  const result = loadAndClaimMainApprovePackage(
+    options,
+    {
+      packageId: input.packageId,
+      expiresAtMs: input.expiresAtMs,
+      claimId: input.claimId,
+    },
+    nowMs,
+  );
+  if (!result.ok) {
+    if (result.reason === "claim_conflict") {
+      return { ok: false, reason: "claim_conflict" };
+    }
+    // package_absent / hash_mismatch / expired → preserve prior claim API surface
+    return { ok: false, reason: "expired_package" };
+  }
+  return result.claim;
 }
 
 export function expireMainApproveClaims(

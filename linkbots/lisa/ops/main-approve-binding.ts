@@ -3,15 +3,24 @@
  * Runtime path fails closed until OpenClaw shared-state SQLite health passes
  * **and** live Lisa targeting is explicitly opted in with separately approved
  * credentials language. Pure binding helpers remain available for tests.
+ *
+ * Authorization never trusts caller package contents or availability flags.
+ * issueCarlosAsk / authorizeApprovalDispatch atomically load+claim the
+ * canonical persisted package by immutable id (optional content hash) and
+ * build decisions only from sealed store rows.
  */
 
 import {
   claimMainApprovePackage,
+  hashMainApprovePackageContents,
   isHealthyLisaStageOpsStore,
+  lisaStageOpsStoreOptionsFromCapability,
+  loadAndClaimMainApprovePackage,
   putMainApprovePackage,
   requireHealthyLisaStageOpsStore,
   type HealthyLisaStageOpsStore,
   type LisaStageOpsStoreOptions,
+  type MainApproveClaimFailureReason,
   type MainApproveClaimRow,
   type MainApprovePackageRow,
 } from "./lisa-stage-ops-store.ts";
@@ -48,7 +57,7 @@ export type MainApproveAskView = {
 };
 
 export type ApprovalDispatch =
-  | { ok: true; items: MainApproveItem[] }
+  | { ok: true; items: MainApproveItem[]; packageHash: string; claimId: string }
   | {
       ok: false;
       reason:
@@ -59,21 +68,40 @@ export type ApprovalDispatch =
         | "gate_not_clear"
         | "blocked_no_store"
         | "live_targeting_disabled"
-        | "credentials_language_not_approved";
+        | "credentials_language_not_approved"
+        | MainApproveClaimFailureReason;
       prerequisite?: string;
     };
 
 export type MainApproveAskResult =
-  | { ok: true; view: MainApproveAskView }
+  | {
+      ok: true;
+      view: MainApproveAskView;
+      packageHash: string;
+      claimId: string;
+      package: MainApprovePackage;
+    }
   | {
       ok: false;
-      reason: "blocked_no_store" | "live_targeting_disabled" | "credentials_language_not_approved";
-      prerequisite: string;
+      reason:
+        | "blocked_no_store"
+        | "live_targeting_disabled"
+        | "credentials_language_not_approved"
+        | MainApproveClaimFailureReason
+        | "invalid_persisted_package";
+      prerequisite?: string;
     };
 
 export type MainApproveStoreAvailability = {
   available: boolean;
   prerequisite: string;
+};
+
+export type MainApprovePersistedRef = {
+  packageId: string;
+  /** Optional expected content hash of the sealed store row. */
+  expectedPackageHash?: string;
+  claimId?: string;
 };
 
 export const MAIN_APPROVE_STORE_PREREQUISITE =
@@ -125,6 +153,42 @@ export type AuthoritativePackageStore = {
   prerequisite?: undefined;
 };
 
+export function hashMainApprovePackage(pkg: MainApprovePackage): string {
+  const claimExpiresAtMs = parseInstantToEpochMs(pkg.claimExpiresAt);
+  if (claimExpiresAtMs === null) {
+    throw new Error(`invalid claimExpiresAt: ${pkg.claimExpiresAt}`);
+  }
+  return hashMainApprovePackageContents({
+    packageId: pkg.packageId,
+    mondayDate: pkg.mondayDate,
+    claimExpiresAtMs,
+    itemsJson: JSON.stringify(pkg.items),
+  });
+}
+
+function parsePersistedPackage(row: MainApprovePackageRow): MainApprovePackage | null {
+  let items: MainApproveItem[];
+  try {
+    const parsed = JSON.parse(row.itemsJson) as unknown;
+    if (!Array.isArray(parsed)) return null;
+    items = parsed as MainApproveItem[];
+  } catch {
+    return null;
+  }
+  const pkg: MainApprovePackage = {
+    packageId: row.packageId,
+    mondayDate: row.mondayDate,
+    claimExpiresAt: new Date(row.claimExpiresAtMs).toISOString(),
+    items,
+  };
+  try {
+    assertImmutableBindings(pkg);
+  } catch {
+    return null;
+  }
+  return pkg;
+}
+
 /**
  * Seal a Main Approve package into OpenClaw SQLite (idempotent put).
  */
@@ -132,23 +196,33 @@ export function sealMainApprovePackage(
   pkg: MainApprovePackage,
   options: LisaStageOpsStoreOptions,
   nowMs = Date.now(),
-): MainApprovePackageRow {
+): MainApprovePackageRow & { packageHash: string } {
   requireHealthyLisaStageOpsStore(options);
   assertImmutableBindings(pkg);
   const claimExpiresAtMs = parseInstantToEpochMs(pkg.claimExpiresAt);
   if (claimExpiresAtMs === null) {
     throw new Error(`invalid claimExpiresAt: ${pkg.claimExpiresAt}`);
   }
-  return putMainApprovePackage(
+  const itemsJson = JSON.stringify(pkg.items);
+  const row = putMainApprovePackage(
     options,
     {
       packageId: pkg.packageId,
       mondayDate: pkg.mondayDate,
       claimExpiresAtMs,
-      itemsJson: JSON.stringify(pkg.items),
+      itemsJson,
     },
     nowMs,
   );
+  return {
+    ...row,
+    packageHash: hashMainApprovePackageContents({
+      packageId: row.packageId,
+      mondayDate: row.mondayDate,
+      claimExpiresAtMs: row.claimExpiresAtMs,
+      itemsJson: row.itemsJson,
+    }),
+  };
 }
 
 /**
@@ -192,14 +266,15 @@ export function buildCarlosAskView(pkg: MainApprovePackage): MainApproveAskView 
 }
 
 /**
- * Runtime-facing: never create a Carlos ask without a sealed healthy store
- * capability (composition root) and explicit live opt-in (defaults fail closed).
- * Caller-supplied `{ available: true }` is rejected — brand required.
+ * Runtime-facing: atomically load+claim the canonical persisted package by id
+ * (optional content hash). Never trusts caller package contents or forgeable
+ * `{ available: true }`. Requires sealed store capability + live opt-in.
  */
 export function issueCarlosAsk(
-  pkg: MainApprovePackage,
+  ref: MainApprovePersistedRef,
   store?: HealthyLisaStageOpsStore | null,
   live: LisaOpsLiveActionConfig = LISA_OPS_LIVE_ACTION_DEFAULTS,
+  nowMs = Date.now(),
 ): MainApproveAskResult {
   const liveGate = authorizeLiveLisaAction(live);
   if (!liveGate.ok) {
@@ -217,12 +292,31 @@ export function issueCarlosAsk(
       prerequisite: MAIN_APPROVE_STORE_PREREQUISITE,
     };
   }
-  requireHealthyLisaStageOpsStore({
-    databasePath: store.databasePath,
-    path: store.databasePath,
-  });
-  assertImmutableBindings(pkg);
-  return { ok: true, view: buildCarlosAskViewPure(pkg) };
+  const options = lisaStageOpsStoreOptionsFromCapability(store);
+  requireHealthyLisaStageOpsStore(options);
+  const claimed = loadAndClaimMainApprovePackage(
+    options,
+    {
+      packageId: ref.packageId,
+      expectedPackageHash: ref.expectedPackageHash,
+      claimId: ref.claimId,
+    },
+    nowMs,
+  );
+  if (!claimed.ok) {
+    return { ok: false, reason: claimed.reason };
+  }
+  const pkg = parsePersistedPackage(claimed.package);
+  if (!pkg) {
+    return { ok: false, reason: "invalid_persisted_package" };
+  }
+  return {
+    ok: true,
+    view: buildCarlosAskViewPure(pkg),
+    packageHash: claimed.packageHash,
+    claimId: claimed.claim.claimId,
+    package: pkg,
+  };
 }
 
 export function assertImmutableBindings(pkg: MainApprovePackage): void {
@@ -310,20 +404,32 @@ export function validateApprovalBindings(params: {
   if (params.sealed.items.some((i) => i.gateResult !== "Clear")) {
     return { ok: false, reason: "gate_not_clear" };
   }
-  return { ok: true, items: params.sealed.items };
+  return {
+    ok: true,
+    items: params.sealed.items,
+    packageHash: hashMainApprovePackage(params.sealed),
+    claimId: "pure-validation-no-claim",
+  };
 }
 
 /**
- * Runtime-facing authorization: fails closed without a sealed healthy store
- * capability from the composition root, and without explicit live opt-in.
- * Caller-supplied `{ available: true }` is rejected — brand required.
+ * Runtime-facing authorization: atomically load+claim the canonical persisted
+ * package by id/hash, compare approved indexes against sealed store fields, and
+ * never trust caller package contents or forgeable availability flags.
  */
 export function authorizeApprovalDispatch(
   params: {
-    sealed: MainApprovePackage;
+    packageId: string;
+    expectedPackageHash?: string;
+    claimId?: string;
     approvedIndexes: number[];
     nowIso: string;
-    liveItems: MainApproveItem[];
+    /**
+     * Optional caller-supplied items for drift detection only. When omitted,
+     * approved indexes are checked solely against the persisted package.
+     * Caller contents never become the authorization source of truth.
+     */
+    liveItems?: MainApproveItem[];
   },
   store?: HealthyLisaStageOpsStore | null,
   live: LisaOpsLiveActionConfig = LISA_OPS_LIVE_ACTION_DEFAULTS,
@@ -344,11 +450,44 @@ export function authorizeApprovalDispatch(
       prerequisite: MAIN_APPROVE_STORE_PREREQUISITE,
     };
   }
-  requireHealthyLisaStageOpsStore({
-    databasePath: store.databasePath,
-    path: store.databasePath,
+  const options = lisaStageOpsStoreOptionsFromCapability(store);
+  requireHealthyLisaStageOpsStore(options);
+  const nowMs = parseInstantToEpochMs(params.nowIso);
+  if (nowMs === null) {
+    return { ok: false, reason: "expired_claim" };
+  }
+  const claimed = loadAndClaimMainApprovePackage(
+    options,
+    {
+      packageId: params.packageId,
+      expectedPackageHash: params.expectedPackageHash,
+      claimId: params.claimId,
+    },
+    nowMs,
+  );
+  if (!claimed.ok) {
+    return { ok: false, reason: claimed.reason };
+  }
+  const sealed = parsePersistedPackage(claimed.package);
+  if (!sealed) {
+    return { ok: false, reason: "package_hash_mismatch" };
+  }
+  const liveItems = params.liveItems ?? sealed.items;
+  const binding = validateApprovalBindings({
+    sealed,
+    approvedIndexes: params.approvedIndexes,
+    nowIso: params.nowIso,
+    liveItems,
   });
-  return validateApprovalBindings(params);
+  if (!binding.ok) {
+    return binding;
+  }
+  return {
+    ok: true,
+    items: binding.items,
+    packageHash: claimed.packageHash,
+    claimId: claimed.claim.claimId,
+  };
 }
 
 /**
@@ -356,10 +495,11 @@ export function authorizeApprovalDispatch(
  * Kept as alias that still fails closed (no sealed store capability).
  */
 export function validateApprovalDispatch(params: {
-  sealed: MainApprovePackage;
+  packageId: string;
+  expectedPackageHash?: string;
   approvedIndexes: number[];
   nowIso: string;
-  liveItems: MainApproveItem[];
+  liveItems?: MainApproveItem[];
 }): ApprovalDispatch {
   return authorizeApprovalDispatch(params, null);
 }

@@ -254,6 +254,7 @@ describe("Canonical store consumers (Repair / Main Approve / coordinator ensure)
         {
           packageId: "pkg-1",
           expiresAtMs: Date.parse("2026-08-03T12:00:00.000Z"),
+          claimId: "claim-a",
         },
         options,
         Date.parse("2026-08-03T11:00:00.000Z"),
@@ -263,11 +264,27 @@ describe("Canonical store consumers (Repair / Main Approve / coordinator ensure)
         {
           packageId: "pkg-1",
           expiresAtMs: Date.parse("2026-08-03T12:00:00.000Z"),
+          claimId: "claim-b",
         },
         { databasePath },
         Date.parse("2026-08-03T11:30:00.000Z"),
       );
       assert.deepEqual(conflict, { ok: false, reason: "claim_conflict" });
+
+      // Idempotent re-entry with the same claim id succeeds.
+      const reentry = claimStageMainApprovePackage(
+        {
+          packageId: "pkg-1",
+          expiresAtMs: Date.parse("2026-08-03T12:00:00.000Z"),
+          claimId: "claim-a",
+        },
+        { databasePath },
+        Date.parse("2026-08-03T11:45:00.000Z"),
+      );
+      assert.ok(!("ok" in reentry && reentry.ok === false));
+      if (!("ok" in reentry && reentry.ok === false)) {
+        assert.equal(reentry.claimId, "claim-a");
+      }
 
       const expiredClaims = expireMainApproveClaims(
         options,
@@ -399,22 +416,128 @@ describe("Canonical store consumers (Repair / Main Approve / coordinator ensure)
           },
         ],
       };
-      const ask = issueCarlosAsk(pkg, reminted.store, live);
+
+      // Never-persisted fabricated package must fail even with healthy store.
+      const fabricated = issueCarlosAsk(
+        { packageId: "pkg-never-persisted" },
+        reminted.store,
+        live,
+        Date.parse("2026-08-03T11:00:00.000Z"),
+      );
+      assert.equal(fabricated.ok, false);
+      if (!fabricated.ok) assert.equal(fabricated.reason, "package_absent");
+
+      const sealed = sealMainApprovePackage(
+        pkg,
+        { databasePath, path: databasePath },
+        Date.parse("2026-08-03T10:00:00.000Z"),
+      );
+
+      closeLisaStageOpsStore();
+      const afterRestart = openStageDurableStoreCapability({ databasePath });
+      assert.equal(afterRestart.ok, true);
+      if (!afterRestart.ok) return;
+
+      const ask = issueCarlosAsk(
+        { packageId: pkg.packageId, expectedPackageHash: sealed.packageHash },
+        afterRestart.store,
+        live,
+        Date.parse("2026-08-03T11:00:00.000Z"),
+      );
       assert.equal(ask.ok, true);
+      if (!ask.ok) return;
+      assert.equal(ask.packageHash, sealed.packageHash);
+      assert.equal(ask.package.items[0]?.promotionPrNumber, 11);
+
+      // Idempotent re-entry with same claim id.
+      const askAgain = issueCarlosAsk(
+        {
+          packageId: pkg.packageId,
+          expectedPackageHash: sealed.packageHash,
+          claimId: ask.claimId,
+        },
+        afterRestart.store,
+        live,
+        Date.parse("2026-08-03T11:01:00.000Z"),
+      );
+      assert.equal(askAgain.ok, true);
+      if (askAgain.ok) assert.equal(askAgain.claimId, ask.claimId);
+
+      // Concurrent different claim id → conflict.
+      const conflict = issueCarlosAsk(
+        {
+          packageId: pkg.packageId,
+          expectedPackageHash: sealed.packageHash,
+          claimId: "other-claim",
+        },
+        afterRestart.store,
+        live,
+        Date.parse("2026-08-03T11:02:00.000Z"),
+      );
+      assert.equal(conflict.ok, false);
+      if (!conflict.ok) assert.equal(conflict.reason, "claim_conflict");
+
       const dispatch = authorizeApprovalDispatch(
         {
-          sealed: pkg,
+          packageId: pkg.packageId,
+          expectedPackageHash: sealed.packageHash,
+          claimId: ask.claimId,
           approvedIndexes: [1],
           nowIso: "2026-08-03T11:00:00.000Z",
-          liveItems: structuredClone(pkg.items),
         },
-        reminted.store,
+        afterRestart.store,
         live,
       );
       assert.equal(dispatch.ok, true);
-      if (dispatch.ok) assert.equal(dispatch.items[0]?.promotionPrNumber, 11);
+      if (dispatch.ok) {
+        assert.equal(dispatch.items[0]?.promotionPrNumber, 11);
+        assert.equal(dispatch.packageHash, sealed.packageHash);
+        assert.equal(dispatch.claimId, ask.claimId);
+      }
 
-      const forgedAsk = issueCarlosAsk(pkg, { available: true } as never, live);
+      // Hash mismatch / caller-fabricated contents never authorize.
+      const badHash = authorizeApprovalDispatch(
+        {
+          packageId: pkg.packageId,
+          expectedPackageHash: "0".repeat(64),
+          approvedIndexes: [1],
+          nowIso: "2026-08-03T11:00:00.000Z",
+        },
+        afterRestart.store,
+        live,
+      );
+      assert.equal(badHash.ok, false);
+      if (!badHash.ok) assert.equal(badHash.reason, "package_hash_mismatch");
+
+      expireMainApproveClaims(
+        { databasePath, path: databasePath },
+        Date.parse("2026-08-03T13:00:00.000Z"),
+      );
+      // Package itself expires via claimExpiresAtMs — seal a short-lived package.
+      const expiredPkg: MainApprovePackage = {
+        ...pkg,
+        packageId: "pkg-auth-expired",
+        claimExpiresAt: "2026-08-03T10:30:00.000Z",
+      };
+      sealMainApprovePackage(
+        expiredPkg,
+        { databasePath, path: databasePath },
+        Date.parse("2026-08-03T10:00:00.000Z"),
+      );
+      const expiredAsk = issueCarlosAsk(
+        { packageId: expiredPkg.packageId },
+        afterRestart.store,
+        live,
+        Date.parse("2026-08-03T11:00:00.000Z"),
+      );
+      assert.equal(expiredAsk.ok, false);
+      if (!expiredAsk.ok) assert.equal(expiredAsk.reason, "expired_package");
+
+      const forgedAsk = issueCarlosAsk(
+        { packageId: pkg.packageId },
+        { available: true } as never,
+        live,
+      );
       assert.equal(forgedAsk.ok, false);
     } finally {
       closeLisaStageOpsStore();
