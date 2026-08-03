@@ -6,8 +6,8 @@
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
+import Ajv2020 from "ajv/dist/2020.js";
 import { describe, expect, it } from "vitest";
 import { LINKBRAIN_MCP_TOOL_ALLOWLIST } from "./mcp-tool-filter.js";
 import { LINKBRAIN_MCP_CAPTURE_DRAIN_TOOLS } from "./src/feature-flags.js";
@@ -157,9 +157,9 @@ describe("brain-capture-drain-canary receipt + architecture lock", () => {
     tiersLiveProd.claimed = "LIVE-PROD";
     dishonestLiveProd.verdict = "PASS";
     expect(validate(dishonestLiveProd)).toBe(false);
-    expect(validate.errors?.some((error) => error.keyword === "if" || error.keyword === "contains")).toBe(
-      true,
-    );
+    expect(
+      validate.errors?.some((error) => error.keyword === "if" || error.keyword === "contains"),
+    ).toBe(true);
 
     const dishonestLiveStage = structuredClone(example) as Record<string, unknown>;
     const tiersLiveStage = dishonestLiveStage.evidenceTier as Record<string, unknown>;

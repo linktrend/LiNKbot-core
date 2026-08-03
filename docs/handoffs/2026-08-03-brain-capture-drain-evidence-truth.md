@@ -2,21 +2,21 @@
 
 ## Session Metadata
 
-| Field            | Value                                                                                                                              |
-| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| Agent identity   | Cursor Local Agent / Cursor Grok 4.5 High / Feature                                                                                |
-| Session ID       | cursor-local-mac-mini-feature-brain-drain-evidence-truth-20260803-1704                                                             |
-| Orchestrator key | cursor-local-mac-mini-desktop-workspace-orchestrator                                                                               |
-| Objective        | Correct Codex HOLD evidence-truth defects on tip `5588d333b1f` (schema tier invariant, Ajv negative tests, artifact commitSha)   |
-| Scope            | brain-capture-drain canary schema + FAKE example + receipt test only                                                               |
-| Started          | 2026-08-03 17:04 Asia/Taipei                                                                                                       |
-| Ended            | 2026-08-03 17:07 Asia/Taipei                                                                                                       |
-| Starting branch  | `ocp-brain-drain-proof`                                                                                                            |
-| Ending branch    | `ocp-brain-drain-proof`                                                                                                            |
-| Starting commit  | `5588d333b1f0b76b108e21ca32189da4c1ca58fa`                                                                                         |
-| Ending commit    | 5d5cbd756a3a762b51eb6c26720a20c526f3f53b                                                                                         |
-| Starting status  | clean at Codex HOLD tip                                                                                                            |
-| Ending status    | committed + pushed                                                                                                                 |
+| Field            | Value                                                                                                                          |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| Agent identity   | Cursor Local Agent / Cursor Grok 4.5 High / Feature                                                                            |
+| Session ID       | cursor-local-mac-mini-feature-brain-drain-evidence-truth-20260803-1704                                                         |
+| Orchestrator key | cursor-local-mac-mini-desktop-workspace-orchestrator                                                                           |
+| Objective        | Correct Codex HOLD evidence-truth defects on tip `5588d333b1f` (schema tier invariant, Ajv negative tests, artifact commitSha) |
+| Scope            | brain-capture-drain canary schema + FAKE example + receipt test only                                                           |
+| Started          | 2026-08-03 17:04 Asia/Taipei                                                                                                   |
+| Ended            | 2026-08-03 17:07 Asia/Taipei                                                                                                   |
+| Starting branch  | `ocp-brain-drain-proof`                                                                                                        |
+| Ending branch    | `ocp-brain-drain-proof`                                                                                                        |
+| Starting commit  | `5588d333b1f0b76b108e21ca32189da4c1ca58fa`                                                                                     |
+| Ending commit    | 5d5cbd756a3a762b51eb6c26720a20c526f3f53b                                                                                       |
+| Starting status  | clean at Codex HOLD tip                                                                                                        |
+| Ending status    | committed + pushed                                                                                                             |
 
 ## Summary
 
