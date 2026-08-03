@@ -1,6 +1,10 @@
 /**
  * Bounded local capture buffer: durable pending events → outbox batches.
  * Flush on size limits and compaction/reset/end boundaries.
+ *
+ * Local buffer keeps sequence/role/text; flush adapts to Brain wire shape via
+ * capture-batch-adapter (sessionId + ConversationEvent fields). Actor ids are
+ * never forwarded on the remote batch body.
  */
 import { randomUUID } from "node:crypto";
 import {
@@ -10,9 +14,13 @@ import {
   throwIfAborted,
   type StalledInfo,
 } from "./bounded.js";
+import {
+  buildBrainWireCaptureBatch,
+  type CaptureBufferEvent,
+  type CaptureInputRole,
+} from "./capture-batch-adapter.js";
 import type { LinkbrainConfig } from "./config.js";
-import type { BrainCaptureEvent } from "./envelopes.js";
-import { contentHash, opaqueId } from "./opaque.js";
+import { opaqueId } from "./opaque.js";
 import type { LinkbrainRuntime } from "./runtime.js";
 import { sanitizeCaptureText } from "./sanitize.js";
 import type { LinkbrainStores } from "./stores.js";
@@ -21,8 +29,9 @@ import { LINKBRAIN_CAPTURE_TOOL } from "./tools.js";
 type CaptureBufferRecord = {
   version: 1;
   streamId: string;
-  actorId?: string;
-  events: BrainCaptureEvent[];
+  /** Opaque session id for Brain wire batches (distinct kind from stream). */
+  sessionId: string;
+  events: CaptureBufferEvent[];
   nextSequence: number;
   updatedAtMs: number;
   /** Dedupe fingerprints already accepted into this buffer. */
@@ -32,7 +41,7 @@ type CaptureBufferRecord = {
 type CaptureEnqueueInput = {
   streamKey: string;
   actorKey?: string;
-  role: BrainCaptureEvent["role"];
+  role: CaptureInputRole;
   text: string;
   /** Optional stable fingerprint to drop duplicate callbacks. */
   fingerprint?: string;
@@ -60,7 +69,7 @@ function bufferKey(streamId: string): string {
   return `stream:${streamId}`;
 }
 
-function estimateBytes(events: BrainCaptureEvent[]): number {
+function estimateBytes(events: CaptureBufferEvent[]): number {
   return Buffer.byteLength(JSON.stringify(events), "utf8");
 }
 
@@ -101,11 +110,31 @@ export function createLinkbrainCapture(params: CreateLinkbrainCaptureParams): Li
       typeof existing === "object" &&
       (existing as CaptureBufferRecord).version === 1
     ) {
-      return existing as CaptureBufferRecord;
+      const record = existing as CaptureBufferRecord;
+      return {
+        ...record,
+        // Pre-contract buffers may omit sessionId; derive a stable opaque fallback.
+        sessionId:
+          typeof record.sessionId === "string" && record.sessionId.length > 0
+            ? record.sessionId
+            : opaqueId("session", record.streamId),
+        events: Array.isArray(record.events)
+          ? record.events.map((event) => ({
+              sequence: event.sequence,
+              role: event.role,
+              text: event.text,
+              acceptedAtMs:
+                typeof event.acceptedAtMs === "number" && Number.isFinite(event.acceptedAtMs)
+                  ? event.acceptedAtMs
+                  : record.updatedAtMs,
+            }))
+          : [],
+      };
     }
     return {
       version: 1,
       streamId,
+      sessionId: opaqueId("session", streamId),
       events: [],
       nextSequence: 1,
       updatedAtMs: now(),
@@ -143,24 +172,12 @@ export function createLinkbrainCapture(params: CreateLinkbrainCaptureParams): Li
     }
 
     throwIfAborted(signal, `capture-flush:${reason}`);
-    const events = record.events.map((event) => ({
-      sequence: event.sequence,
-      role: event.role,
-      text: sanitizeCaptureText(event.text),
-    }));
-    const fromSequence = events[0]!.sequence;
-    const toSequence = events[events.length - 1]!.sequence;
-    const batchId = opaqueId("batch", `${record.streamId}:${fromSequence}:${toSequence}:${reason}`);
-    const body = {
-      batchId,
-      streamId: record.streamId,
-      ...(record.actorId ? { actorId: record.actorId } : {}),
-      fromSequence,
-      toSequence,
-      contentHash: contentHash(events),
-      events,
-    };
-    const idempotencyKey = `cap:${record.streamId}:${fromSequence}:${toSequence}`;
+    // Adapt durable buffer → Brain PrivateCaptureBatch wire shape (no actor overrides).
+    const body = buildBrainWireCaptureBatch({
+      sessionId: record.sessionId,
+      events: record.events,
+    });
+    const idempotencyKey = body.idempotencyKey;
     await params.runtime.enqueueWrite({
       kind: "capture_batch",
       toolName: LINKBRAIN_CAPTURE_TOOL,
@@ -179,7 +196,9 @@ export function createLinkbrainCapture(params: CreateLinkbrainCaptureParams): Li
         return { accepted: false, flushed: false };
       }
       const streamId = opaqueId("stream", input.streamKey);
-      const actorId = input.actorKey ? opaqueId("actor", input.actorKey) : undefined;
+      // Opaque session for Brain wire. actorKey is accepted for API compat but never
+      // forwarded — Brain binds actor from auth, not capture content.
+      const sessionId = opaqueId("session", input.streamKey);
       const fingerprint = input.fingerprint ? opaqueId("message", input.fingerprint) : undefined;
 
       let durableAccepted = false;
@@ -198,10 +217,12 @@ export function createLinkbrainCapture(params: CreateLinkbrainCaptureParams): Li
             if (fingerprint && record.seenFingerprints.includes(fingerprint)) {
               return { accepted: false, flushed: false };
             }
-            const event: BrainCaptureEvent = {
+            const acceptedAtMs = now();
+            const event: CaptureBufferEvent = {
               sequence: record.nextSequence,
               role: input.role,
               text: sanitizeCaptureText(input.text),
+              acceptedAtMs,
             };
             const nextEvents = [...record.events, event];
             const nextFingerprints = fingerprint
@@ -210,10 +231,10 @@ export function createLinkbrainCapture(params: CreateLinkbrainCaptureParams): Li
             const next: CaptureBufferRecord = {
               version: 1,
               streamId,
-              ...(actorId ? { actorId } : record.actorId ? { actorId: record.actorId } : {}),
+              sessionId,
               events: nextEvents,
               nextSequence: record.nextSequence + 1,
-              updatedAtMs: now(),
+              updatedAtMs: acceptedAtMs,
               seenFingerprints: nextFingerprints,
             };
 

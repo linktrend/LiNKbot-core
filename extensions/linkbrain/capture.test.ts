@@ -111,11 +111,20 @@ describe("linkbrain capture buffer durability", () => {
       idempotencyKey: "cap:prefill:1",
       body: {
         batchId: "batch_prefill",
-        streamId: "stream_prefill",
-        fromSequence: 1,
-        toSequence: 1,
-        contentHash: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        events: [{ sequence: 1, role: "user", text: "prefill" }],
+        sessionId: "session_prefill",
+        idempotencyKey: "cap:prefill:1",
+        capturedAt: "2026-07-27T10:00:00.000Z",
+        events: [
+          {
+            eventId: "event_prefill_1",
+            sequence: 1,
+            occurredAt: "2026-07-27T10:00:00.000Z",
+            role: "principal",
+            eventType: "message",
+            content: "prefill",
+            classification: "private",
+          },
+        ],
       },
     });
     expect((await h.runtime.diagnostics()).outboxCount).toBe(1);

@@ -32,6 +32,13 @@ export {
 } from "./src/transport.js";
 export { createLinkbrainCapture, type LinkbrainCapture } from "./src/capture.js";
 export {
+  assertBrainWireCaptureBatch,
+  buildBrainWireCaptureBatch,
+  mapCaptureRoleToBrain,
+  type BrainWireCaptureBatch,
+  type CaptureBufferEvent,
+} from "./src/capture-batch-adapter.js";
+export {
   createLinkbrainLifecycle,
   isLinkbrainConversationAccessAllowed,
   LINKBRAIN_CONVERSATION_HOOKS,
