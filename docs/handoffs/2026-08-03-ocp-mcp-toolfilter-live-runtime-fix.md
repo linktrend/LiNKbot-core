@@ -14,9 +14,9 @@
 | Starting branch  | `dev/cloudcursor/OCP-MCP-TOOLFILTER-LIVE-RUNTIME-FIX` |
 | Ending branch    | `dev/cloudcursor/OCP-MCP-TOOLFILTER-LIVE-RUNTIME-FIX` |
 | Starting commit  | `1fd5106bca7103a620ffa8206dee978b82b177f2` |
-| Ending commit    | (pending commit at handoff draft) |
+| Ending commit    | `20150f3c1d68d22c45276d88a3831131e6a1cfb1` (docs closeout may append) |
 | Starting status  | clean at exact base |
-| Ending status    | fix + tests + handoff |
+| Ending status    | fix + tests + handoff committed; push pending |
 
 ## Summary
 
@@ -109,7 +109,7 @@ Local `node_modules` was a worktree symlink to the same-SHA wp0 checkout for pro
 
 ## Exact Next Action
 
-Commit + push `dev/cloudcursor/OCP-MCP-TOOLFILTER-LIVE-RUNTIME-FIX`; close session record to completed after push.
+Push `dev/cloudcursor/OCP-MCP-TOOLFILTER-LIVE-RUNTIME-FIX`; Orchestrator refreshes `docs/current-status.md`.
 
 ## Questions for Carlos
 

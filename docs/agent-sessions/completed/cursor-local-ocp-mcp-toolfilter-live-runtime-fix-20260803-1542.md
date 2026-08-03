@@ -23,7 +23,7 @@
 | Objective       | Fix MCP toolFilter overlay not enforced in live gateway/agent catalogs for linkbrain/linkskills |
 | Branch          | `dev/cloudcursor/OCP-MCP-TOOLFILTER-LIVE-RUNTIME-FIX` |
 | Starting commit | `1fd5106bca7103a620ffa8206dee978b82b177f2` |
-| Status          | `handing-off` |
+| Status          | `complete` |
 | Handoff         | `docs/handoffs/2026-08-03-ocp-mcp-toolfilter-live-runtime-fix.md` |
 
 ## Ownership Scope
