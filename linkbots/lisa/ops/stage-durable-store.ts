@@ -10,6 +10,7 @@ import {
   probeLisaStageOpsStoreHealth,
   putMainApprovePackage,
   recordRepairAttempt,
+  requireHealthyLisaStageOpsStore,
   resolveOpenClawStateSqlitePath,
   upsertRepairBinding,
   type LisaStageOpsStoreHealth,
@@ -39,8 +40,7 @@ function resolveStoreOptions(params?: {
   const databasePath =
     params?.databasePath ??
     resolveOpenClawStateSqlitePath(params?.stateDir ?? STAGE_OPS_STAGE_ROOT);
-  // Workshop façade requires databasePath; ignore OpenClaw `path` alias here.
-  return { databasePath };
+  return { databasePath, path: databasePath };
 }
 
 /**
@@ -104,7 +104,9 @@ export function persistStageRepairBinding(
   params?: { stateDir?: string; databasePath?: string },
   nowMs = Date.now(),
 ): RepairBindingRow {
-  return upsertRepairBinding(resolveStoreOptions(params), binding, nowMs);
+  const options = resolveStoreOptions(params);
+  requireHealthyLisaStageOpsStore(options);
+  return upsertRepairBinding(options, binding, nowMs);
 }
 
 export function persistStageRepairAttempt(
@@ -120,7 +122,9 @@ export function persistStageRepairAttempt(
   params?: { stateDir?: string; databasePath?: string },
   nowMs = Date.now(),
 ): RepairAttemptRow {
-  return recordRepairAttempt(resolveStoreOptions(params), input, nowMs);
+  const options = resolveStoreOptions(params);
+  requireHealthyLisaStageOpsStore(options);
+  return recordRepairAttempt(options, input, nowMs);
 }
 
 export function persistStageMainApprovePackage(
@@ -133,7 +137,9 @@ export function persistStageMainApprovePackage(
   params?: { stateDir?: string; databasePath?: string },
   nowMs = Date.now(),
 ): MainApprovePackageRow {
-  return putMainApprovePackage(resolveStoreOptions(params), input, nowMs);
+  const options = resolveStoreOptions(params);
+  requireHealthyLisaStageOpsStore(options);
+  return putMainApprovePackage(options, input, nowMs);
 }
 
 export function claimStageMainApprovePackage(
@@ -145,5 +151,7 @@ export function claimStageMainApprovePackage(
   params?: { stateDir?: string; databasePath?: string },
   nowMs = Date.now(),
 ): MainApproveClaimRow | { ok: false; reason: "expired_package" | "claim_conflict" } {
-  return claimMainApprovePackage(resolveStoreOptions(params), input, nowMs);
+  const options = resolveStoreOptions(params);
+  requireHealthyLisaStageOpsStore(options);
+  return claimMainApprovePackage(options, input, nowMs);
 }

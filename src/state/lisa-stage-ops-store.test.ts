@@ -14,6 +14,7 @@ import {
   probeLisaStageOpsStoreHealth,
   putMainApprovePackage,
   recordRepairAttempt,
+  requireHealthyLisaStageOpsStore,
   resolveOpenClawStateSqlitePath,
   upsertRepairBinding,
 } from "./lisa-stage-ops-store.js";
@@ -40,6 +41,22 @@ afterEach(() => {
 });
 
 describe("lisa stage ops store", () => {
+  it("fails closed on write without ensure when lisa_stage_* tables are absent", () => {
+    const databasePath = tempDbPath("lisa-stage-ops-noensure-");
+    const options = { databasePath, path: databasePath };
+    // Create base OpenClaw DB without lisa_stage_* tables.
+    openOpenClawStateDatabase(options);
+    expect(() =>
+      upsertRepairBinding(options, {
+        repository: "openclaw/openclaw",
+        branch: "fix",
+        prNumber: 1,
+        headSha: "abc",
+      }),
+    ).toThrow(/blocked_no_store/);
+    expect(() => requireHealthyLisaStageOpsStore(options)).toThrow(/blocked_no_store/);
+  });
+
   it("lazily ensures all lisa_stage_* tables without further bumping schema_version", () => {
     const databasePath = tempDbPath();
     const options = { databasePath, path: databasePath };

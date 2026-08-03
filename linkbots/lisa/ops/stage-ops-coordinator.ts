@@ -10,7 +10,7 @@ import { writeFileSync } from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { LISA_OPENROUTER_ONLY_STAGE_ROUTING } from "./model-routing.openrouter-stage.ts";
-import { probeStageDurableStores } from "./stage-durable-store.ts";
+import { ensureStageDurableStores, probeStageDurableStores } from "./stage-durable-store.ts";
 import {
   FORBIDDEN_STAGE_ENGINE_PATH,
   STAGE_OPS_ENGINE_PATH,
@@ -92,6 +92,11 @@ export type StageOpsPlanInput = {
   emitCommands?: boolean;
   /** Optional durable-store DB path for repair install gate (tests). */
   durableStoreDatabasePath?: string;
+  /**
+   * When true, lazily ensure lisa_stage_* on the resolved durable DB before probe.
+   * Tests pass an explicit temp durableStoreDatabasePath. Never imply live Lisa.
+   */
+  ensureDurableStore?: boolean;
 };
 
 function selectJobs(includeRepair: boolean): StageSeedJob[] {
@@ -102,11 +107,14 @@ function selectJobs(includeRepair: boolean): StageSeedJob[] {
 
 export function planStageOps(input: StageOpsPlanInput): StageOpsCoordinatorPlan {
   const includeRepairRequested = input.includeRepair === true;
-  const durableProbe = probeStageDurableStores(
-    input.durableStoreDatabasePath
-      ? { databasePath: input.durableStoreDatabasePath }
-      : { stateDir: input.stageRoot ?? STAGE_OPS_STAGE_ROOT },
-  );
+  const storeParams = input.durableStoreDatabasePath
+    ? { databasePath: input.durableStoreDatabasePath }
+    : { stateDir: input.stageRoot ?? STAGE_OPS_STAGE_ROOT };
+  if (input.ensureDurableStore === true) {
+    // Apply-path ensure only when explicitly requested (temp DB in tests / Principal stage gate).
+    ensureStageDurableStores(storeParams);
+  }
+  const durableProbe = probeStageDurableStores(storeParams);
   const repairDecision = decideRepairSupervision({
     repairAttemptStoreAvailable: durableProbe.repairAttemptStoreAvailable,
     mainApproveStoreAvailable: durableProbe.mainApproveStoreAvailable,
@@ -411,6 +419,7 @@ function printHelp(): void {
 
 Options:
   --include-repair     Include Repair/GitOps supervision job when store health passes
+  --ensure-store       Lazily ensure lisa_stage_* on durableStoreDatabasePath/stage state (Principal gate)
   --emit-commands      Print exact coordinator shell commands (still mutateStage=false)
   --json               Print machine-readable plan JSON
   --write-seed <path>  Write materialized jobs.stage-seed.json (repo path only)
@@ -435,6 +444,7 @@ function main(argv: string[]): number {
   }
   const includeRepair = args.includes("--include-repair");
   const emitCommands = args.includes("--emit-commands");
+  const ensureDurableStore = args.includes("--ensure-store");
   const asJson = args.includes("--json");
   const writeSeedIdx = args.indexOf("--write-seed");
   const writeSeedPath = writeSeedIdx >= 0 ? args[writeSeedIdx + 1] : undefined;
@@ -453,6 +463,7 @@ function main(argv: string[]): number {
     action,
     includeRepair,
     emitCommands,
+    ensureDurableStore,
     existingJobIds,
   });
 

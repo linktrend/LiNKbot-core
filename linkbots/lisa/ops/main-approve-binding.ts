@@ -8,6 +8,7 @@
 import {
   claimMainApprovePackage,
   putMainApprovePackage,
+  requireHealthyLisaStageOpsStore,
   type LisaStageOpsStoreOptions,
   type MainApproveClaimRow,
   type MainApprovePackageRow,
@@ -123,6 +124,7 @@ export function sealMainApprovePackage(
   options: LisaStageOpsStoreOptions,
   nowMs = Date.now(),
 ): MainApprovePackageRow {
+  requireHealthyLisaStageOpsStore(options);
   assertImmutableBindings(pkg);
   const claimExpiresAtMs = parseInstantToEpochMs(pkg.claimExpiresAt);
   if (claimExpiresAtMs === null) {
@@ -152,6 +154,7 @@ export function claimSealedMainApprovePackage(
   options: LisaStageOpsStoreOptions,
   nowMs = Date.now(),
 ): MainApproveClaimRow | { ok: false; reason: "expired_package" | "claim_conflict" } {
+  requireHealthyLisaStageOpsStore(options);
   return claimMainApprovePackage(options, input, nowMs);
 }
 

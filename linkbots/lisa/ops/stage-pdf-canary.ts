@@ -5,7 +5,13 @@
  * routing hard stops, writes a machine-readable receipt, and documents rollback.
  * Execute mode builds a real OpenRouter PDF chat request and invokes an
  * injectable transport (mock in tests; fetch under Principal gate). Never
- * prints secrets. Failure applies tools_deny_pdf + remove pdfModel in memory.
+ * prints secrets.
+ *
+ * Mock transport success is `mock_verified` only — never `executed` and never
+ * earns firstProductionProofEarned. Only an actual OpenRouter HTTP response
+ * from the stage credential path may set proof_kind=openrouter_http_production.
+ * Execute failure runs operational file rollback (temp fixture by default;
+ * injected configPath+runner under Principal gate) — never live Lisa 18790.
  */
 
 import { createHash } from "node:crypto";
@@ -21,6 +27,12 @@ import {
   type StagePdfRestoreReceipt,
   type StagePdfRollbackPlan,
 } from "./model-routing.openrouter-stage.ts";
+import {
+  applyStagePdfOperationalRollback,
+  writeStagePdfRollbackFixtureConfig,
+  type StagePdfOperationalRollbackResult,
+  type StagePdfServiceRunner,
+} from "./stage-pdf-operational-rollback.ts";
 
 export const STAGE_PDF_CANARY_MODEL = "openrouter/minimax/minimax-m3" as const;
 export const STAGE_PDF_CANARY_WIRE_MODEL = "minimax/minimax-m3" as const;
@@ -69,7 +81,11 @@ export type StagePdfTransportResult = {
   errorMessage?: string;
 };
 
+export type StagePdfProofKind = "none" | "mock_transport" | "openrouter_http_production";
+
 export type StagePdfCanaryTransport = {
+  /** Injected mocks must be mock_transport; live fetch uses openrouter_http_production. */
+  proofKind: StagePdfProofKind;
   send: (
     request: StagePdfOpenRouterRequest,
     params: { apiKeyPresent: boolean },
@@ -86,11 +102,13 @@ export type StagePdfCanaryReceipt = {
     | "blocked_routing"
     | "blocked_no_transport"
     | "rollback_planned"
+    | "mock_verified"
     | "executed"
     | "execute_failed_rolled_back";
   timestamp: string;
   modelRef: typeof STAGE_PDF_CANARY_MODEL;
   capabilityStatus: "approved_unverified";
+  proof_kind: StagePdfProofKind;
   credentialPosture: {
     mode: "openrouter_only";
     credentialName: typeof STAGE_PDF_CANARY_CREDENTIAL;
@@ -134,11 +152,14 @@ export type StagePdfCanaryReceipt = {
   rollbackApplied?: {
     strategy: StagePdfRollbackPlan["strategy"];
     applied: true;
+    scope: "operational_file" | "in_memory_fixture";
     restoreReceipt: StagePdfRestoreReceipt;
     pdfToolDenied: boolean;
     pdfModelRemoved: boolean;
+    operational?: StagePdfOperationalRollbackResult;
   };
   firstProductionProofEarned: boolean;
+  paidSpendEnablementAllowed: false;
 };
 
 /** Minimal valid PDF bytes (non-secret synthetic document). */
@@ -250,6 +271,7 @@ export function createOpenRouterFetchTransport(
   fetchImpl: typeof fetch = fetch,
 ): StagePdfCanaryTransport {
   return {
+    proofKind: "openrouter_http_production",
     async send(request, params) {
       if (!params.apiKeyPresent) {
         return {
@@ -335,7 +357,7 @@ function stagePdfConfigSliceForRollback(): StagePdfConfigSlice {
   };
 }
 
-function applyFailureRollback(
+function applyInMemoryFailureRollback(
   nowIso: string,
 ): NonNullable<StagePdfCanaryReceipt["rollbackApplied"]> {
   const { next, receipt, plan } = applyStagePdfRollbackInMemory(
@@ -345,9 +367,65 @@ function applyFailureRollback(
   return {
     strategy: plan.strategy,
     applied: true,
+    scope: "in_memory_fixture",
     restoreReceipt: receipt,
     pdfToolDenied: (next.tools?.deny ?? []).includes("pdf"),
     pdfModelRemoved: next.agents?.defaults?.pdfModel === undefined,
+  };
+}
+
+async function applyExecuteFailureRollback(params: {
+  outputDir: string;
+  nowIso: string;
+  operational?: {
+    configPath: string;
+    runner: StagePdfServiceRunner;
+  };
+}): Promise<NonNullable<StagePdfCanaryReceipt["rollbackApplied"]>> {
+  const fixturePath =
+    params.operational?.configPath ??
+    path.join(params.outputDir, "fixture-openclaw.pdf-rollback.json");
+  if (!params.operational?.configPath) {
+    writeStagePdfRollbackFixtureConfig({
+      targetPath: fixturePath,
+      slice: stagePdfConfigSliceForRollback(),
+    });
+  }
+
+  const runner =
+    params.operational?.runner ??
+    ({
+      async restart() {
+        return { ok: true };
+      },
+      async health() {
+        return { ok: true };
+      },
+    } satisfies StagePdfServiceRunner);
+
+  const operational = await applyStagePdfOperationalRollback({
+    configPath: fixturePath,
+    runner,
+    nowIso: params.nowIso,
+  });
+
+  if (!operational.ok || !operational.restoreReceipt) {
+    // Operational apply failed after restore attempt — still record in-memory truth.
+    const fallback = applyInMemoryFailureRollback(params.nowIso);
+    return {
+      ...fallback,
+      operational,
+    };
+  }
+
+  return {
+    strategy: operational.strategy,
+    applied: true,
+    scope: "operational_file",
+    restoreReceipt: operational.restoreReceipt,
+    pdfToolDenied: operational.pdfToolDenied,
+    pdfModelRemoved: operational.pdfModelRemoved,
+    operational,
   };
 }
 
@@ -356,6 +434,7 @@ function baseReceiptFields(params: {
   pdf: { path: string; sha256: string; bytes: number };
   routingErrors: string[];
   nowIso: string;
+  proofKind?: StagePdfProofKind;
 }): Pick<
   StagePdfCanaryReceipt,
   | "receiptType"
@@ -363,12 +442,14 @@ function baseReceiptFields(params: {
   | "timestamp"
   | "modelRef"
   | "capabilityStatus"
+  | "proof_kind"
   | "credentialPosture"
   | "delivery"
   | "syntheticPdf"
   | "hardStops"
   | "routingErrors"
   | "rollback"
+  | "paidSpendEnablementAllowed"
 > {
   return {
     receiptType: "lisa_stage_minimax_pdf_canary_v1",
@@ -376,6 +457,7 @@ function baseReceiptFields(params: {
     timestamp: params.nowIso,
     modelRef: STAGE_PDF_CANARY_MODEL,
     capabilityStatus: "approved_unverified",
+    proof_kind: params.proofKind ?? "none",
     credentialPosture: {
       mode: "openrouter_only",
       credentialName: STAGE_PDF_CANARY_CREDENTIAL,
@@ -396,11 +478,12 @@ function baseReceiptFields(params: {
       liveLisaTouched: false,
       alternatePaidDocumentRoutingAllowed: false,
     },
+    paidSpendEnablementAllowed: false,
     routingErrors: params.routingErrors,
     rollback: {
       ...buildStagePdfModelDisableFragment(),
       probeHint:
-        "Repo plan: tools.deny pdf + remove agents.defaults.pdfModel (never empty primary). Principal gate applies via stage probe after restore receipt.",
+        "Repo plan: tools.deny pdf + remove agents.defaults.pdfModel (never empty primary). Execute failure applies operational file rollback to an injected/temp config + ai.openclaw.lisa-stage runner only.",
     },
   };
 }
@@ -471,6 +554,11 @@ export async function executeStagePdfCanary(params: {
   transport?: StagePdfCanaryTransport;
   /** When true and gates pass with no transport, use createOpenRouterFetchTransport(). */
   allowLiveFetchTransport?: boolean;
+  /** Optional Principal-gated config + runner. Defaults to temp fixture + no-op runner. */
+  operationalRollback?: {
+    configPath: string;
+    runner: StagePdfServiceRunner;
+  };
 }): Promise<StagePdfCanaryReceipt> {
   const routingErrors = validateOpenRouterOnlyStageRouting();
   const pdfPath = path.join(params.outputDir, "synthetic-stage-pdf-canary.pdf");
@@ -485,11 +573,17 @@ export async function executeStagePdfCanary(params: {
     routingErrors.length === 0 &&
     LISA_OPENROUTER_ONLY_STAGE_ROUTING.paidSpendEnablementAllowed === false;
 
+  const transport =
+    params.transport ??
+    (params.allowLiveFetchTransport ? createOpenRouterFetchTransport() : undefined);
+  const proofKind: StagePdfProofKind = transport?.proofKind ?? "none";
+
   const base = baseReceiptFields({
     mode: "execute",
     pdf: pdfMeta,
     routingErrors,
     nowIso,
+    proofKind,
   });
 
   if (routingErrors.length > 0) {
@@ -509,10 +603,6 @@ export async function executeStagePdfCanary(params: {
       firstProductionProofEarned: false,
     });
   }
-
-  const transport =
-    params.transport ??
-    (params.allowLiveFetchTransport ? createOpenRouterFetchTransport() : undefined);
 
   if (!transport) {
     return writeReceipt(params.outputDir, {
@@ -543,14 +633,19 @@ export async function executeStagePdfCanary(params: {
   const verified = verifyStagePdfTransportResponse(transportResult);
 
   if (!verified.ok) {
-    const rollbackApplied = applyFailureRollback(nowIso);
+    const rollbackApplied = await applyExecuteFailureRollback({
+      outputDir: params.outputDir,
+      nowIso,
+      operational: params.operationalRollback,
+    });
     return writeReceipt(params.outputDir, {
       ...base,
+      proof_kind: transport.proofKind,
       status: "execute_failed_rolled_back",
       spend: {
         attempted: true,
         transportCalled: true,
-        note: "Transport called; verification failed; tools_deny_pdf rollback applied in memory.",
+        note: "Transport called; verification failed; operational tools_deny_pdf rollback applied to fixture/injected config.",
       },
       request: requestSummary,
       transport: {
@@ -565,13 +660,36 @@ export async function executeStagePdfCanary(params: {
     });
   }
 
+  const isProductionHttp = transport.proofKind === "openrouter_http_production";
+  if (!isProductionHttp) {
+    return writeReceipt(params.outputDir, {
+      ...base,
+      proof_kind: "mock_transport",
+      status: "mock_verified",
+      spend: {
+        attempted: true,
+        transportCalled: true,
+        note: "Mock transport succeeded only. Not first production proof; paidSpendEnablementAllowed remains false.",
+      },
+      request: requestSummary,
+      transport: {
+        called: true,
+        ok: true,
+        statusCode: transportResult.statusCode,
+        assistantTextPresent: true,
+      },
+      firstProductionProofEarned: false,
+    });
+  }
+
   return writeReceipt(params.outputDir, {
     ...base,
+    proof_kind: "openrouter_http_production",
     status: "executed",
     spend: {
       attempted: true,
       transportCalled: true,
-      note: "Transport succeeded; response verified. firstProductionProofEarned requires Principal acceptance of this receipt.",
+      note: "OpenRouter HTTP production transport succeeded with bounded PDF request. firstProductionProofEarned requires Principal acceptance of this receipt.",
     },
     request: requestSummary,
     transport: {
@@ -580,7 +698,6 @@ export async function executeStagePdfCanary(params: {
       statusCode: transportResult.statusCode,
       assistantTextPresent: true,
     },
-    // Transport success is necessary but Principal still accepts proof separately.
     firstProductionProofEarned: true,
   });
 }
@@ -635,6 +752,7 @@ async function mainAsync(argv: string[]): Promise<number> {
     ) {
       return 1;
     }
+    // mock_verified is a successful mock path (exit 0) but not production proof.
     return 0;
   }
 

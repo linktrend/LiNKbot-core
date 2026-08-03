@@ -236,6 +236,39 @@ export function ensureLisaStageOpsSchema(options: LisaStageOpsStoreOptions = {})
   ensuredDatabases.add(database.db);
 }
 
+function prepareStoreForWrite(options: LisaStageOpsStoreOptions): void {
+  if (options.ensure === true) {
+    ensureLisaStageOpsSchema(options);
+    return;
+  }
+  const health = probeLisaStageOpsStoreHealth({ ...options, ensure: false });
+  if (!health.ok) {
+    throw new Error(
+      `blocked_no_store: lisa stage ops store unhealthy (${
+        health.error ?? health.missingTables.join(",")
+      })`,
+    );
+  }
+}
+
+/**
+ * Fail closed when additive lisa_stage_* tables are missing.
+ * Prefer coordinator/apply ensure before calling durable writers.
+ */
+export function requireHealthyLisaStageOpsStore(
+  options: LisaStageOpsStoreOptions = {},
+): LisaStageOpsStoreHealth {
+  const health = probeLisaStageOpsStoreHealth({ ...options, ensure: false });
+  if (!health.ok) {
+    throw new Error(
+      `blocked_no_store: lisa stage ops store unhealthy (${
+        health.error ?? health.missingTables.join(",")
+      })`,
+    );
+  }
+  return health;
+}
+
 export function probeLisaStageOpsStoreHealth(
   options: LisaStageOpsStoreOptions = {},
 ): LisaStageOpsStoreHealth {
@@ -287,7 +320,7 @@ export function upsertRepairBinding(
   },
   nowMs = Date.now(),
 ): RepairBindingRow {
-  ensureLisaStageOpsSchema(options);
+  prepareStoreForWrite(options);
   const bindingKey = `${binding.repository}|${binding.branch}|${binding.prNumber ?? "-"}|${binding.headSha}`;
   const stateOptions = resolveStateOptions(options);
   return runOpenClawStateWriteTransaction(
@@ -351,7 +384,7 @@ export function recordRepairAttempt(
   },
   nowMs = Date.now(),
 ): RepairAttemptRow {
-  ensureLisaStageOpsSchema(options);
+  prepareStoreForWrite(options);
   const attemptId = input.attemptId ?? randomUUID();
   const stateOptions = resolveStateOptions(options);
   return runOpenClawStateWriteTransaction(
@@ -413,7 +446,7 @@ export function listRepairAttempts(
   options: LisaStageOpsStoreOptions,
   bindingKey: string,
 ): RepairAttemptRow[] {
-  ensureLisaStageOpsSchema(options);
+  prepareStoreForWrite(options);
   const { db } = openOpenClawStateDatabase(resolveStateOptions(options));
   const rows = executeSqliteQuerySync(
     db,
@@ -430,7 +463,7 @@ export function expireStaleRepairAttempts(
   options: LisaStageOpsStoreOptions,
   nowMs = Date.now(),
 ): number {
-  ensureLisaStageOpsSchema(options);
+  prepareStoreForWrite(options);
   return runOpenClawStateWriteTransaction(
     ({ db }) => {
       const result = executeSqliteQuerySync(
@@ -459,7 +492,7 @@ export function putMainApprovePackage(
   },
   nowMs = Date.now(),
 ): MainApprovePackageRow {
-  ensureLisaStageOpsSchema(options);
+  prepareStoreForWrite(options);
   return runOpenClawStateWriteTransaction(
     ({ db }) => {
       const existing = executeSqliteQueryTakeFirstSync(
@@ -514,7 +547,7 @@ export function claimMainApprovePackage(
   },
   nowMs = Date.now(),
 ): MainApproveClaimRow | { ok: false; reason: "expired_package" | "claim_conflict" } {
-  ensureLisaStageOpsSchema(options);
+  prepareStoreForWrite(options);
   return runOpenClawStateWriteTransaction(
     ({ db }) => {
       const pkg = executeSqliteQueryTakeFirstSync(
@@ -581,7 +614,7 @@ export function expireMainApproveClaims(
   options: LisaStageOpsStoreOptions,
   nowMs = Date.now(),
 ): number {
-  ensureLisaStageOpsSchema(options);
+  prepareStoreForWrite(options);
   return runOpenClawStateWriteTransaction(
     ({ db }) => {
       const result = executeSqliteQuerySync(

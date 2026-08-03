@@ -6,6 +6,7 @@
 
 import {
   recordRepairAttempt,
+  requireHealthyLisaStageOpsStore,
   upsertRepairBinding,
   type LisaStageOpsStoreOptions,
   type RepairAttemptRow,
@@ -266,6 +267,7 @@ export function persistRepairBinding(
   options: LisaStageOpsStoreOptions,
   nowMs = Date.now(),
 ): RepairBindingRow {
+  requireHealthyLisaStageOpsStore(options);
   return upsertRepairBinding(options, binding, nowMs);
 }
 
@@ -286,6 +288,7 @@ export function persistRepairAttempt(
   options: LisaStageOpsStoreOptions,
   nowMs = Date.now(),
 ): RepairAttemptRow {
+  requireHealthyLisaStageOpsStore(options);
   const dispatchedAtMs = input.dispatchedAt === null ? null : Date.parse(input.dispatchedAt);
   return recordRepairAttempt(
     options,

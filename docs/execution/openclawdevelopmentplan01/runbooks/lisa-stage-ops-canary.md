@@ -11,21 +11,22 @@
 
 ## Verified stage posture (read-only audit 2026-08-03 + launch-blocker close)
 
-| Surface          | Truth                                                                                                                                                                                          |
-| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Stage root       | `LiNKplatform-staging/lisa` (profile `lisa-stage`, port **18791**)                                                                                                                             |
-| Stage engine     | `LiNKplatform-staging/openclaw_prime/openclaw.mjs`. **Inspect/inventory:** no PACI wrapper. **Apply/runtime:** via `service-env/ai.openclaw.lisa-stage-env-wrapper.sh` (writes PACI JWKs/PEMs) |
-| Routing          | OpenRouter-only overlay — see `linkbots/lisa/ops/model-routing.openrouter-stage.contract.json`                                                                                                 |
-| Primary          | `openrouter/openai/gpt-5.6-luna`, `thinkingDefault: medium`                                                                                                                                    |
-| Fallbacks        | GLM-5.2 → Kimi K3 → Gemini 3.5 Flash-Lite (all `openrouter/...`)                                                                                                                               |
-| Image/PDF        | `openrouter/minimax/minimax-m3` via `imageModel` + `pdfModel`; PDF `approved_unverified`                                                                                                       |
-| PDF rollback     | `tools.deny` includes `pdf` + remove `agents.defaults.pdfModel` (never write empty `primary`) + restore receipt                                                                                |
-| Eval             | Nemotron OpenRouter ref — **not** in defaults / modelPolicy.allow                                                                                                                              |
-| Cron SOT         | Repo `linkbots/lisa/ops/jobs.stage-seed.json` v2 — **6** real bounded procedures, `delivery=none`, `enabled=false`                                                                             |
-| Typed installer  | `stage-ops-cron-installer.ts` emits gateway-valid create/edit payloads (UUID preserve, disabled, delivery=none)                                                                                |
-| Durable stores   | Additive OpenClaw SQLite `lisa_stage_*` tables (lazy ensure; no schema_version bump). Repair install fail-closed                                                                               |
-| Repair package   | Packaged separately; install only when store health passes; default `blocked_no_store`                                                                                                         |
-| Native heartbeat | `every: 0m` (disabled); wall-clock owned by `lisa-heartbeat-45` when enabled                                                                                                                   |
+| Surface          | Truth                                                                                                                                                                                                                                                                                              |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Stage root       | `LiNKplatform-staging/lisa` (profile `lisa-stage`, port **18791**)                                                                                                                                                                                                                                 |
+| Stage engine     | `LiNKplatform-staging/openclaw_prime/openclaw.mjs`. **Inspect/inventory:** no PACI wrapper. **Apply/runtime:** via `service-env/ai.openclaw.lisa-stage-env-wrapper.sh` (writes PACI JWKs/PEMs)                                                                                                     |
+| Routing          | OpenRouter-only overlay — see `linkbots/lisa/ops/model-routing.openrouter-stage.contract.json`                                                                                                                                                                                                     |
+| Primary          | `openrouter/openai/gpt-5.6-luna`, `thinkingDefault: medium`                                                                                                                                                                                                                                        |
+| Fallbacks        | GLM-5.2 → Kimi K3 → Gemini 3.5 Flash-Lite (all `openrouter/...`)                                                                                                                                                                                                                                   |
+| Image/PDF        | `openrouter/minimax/minimax-m3` via `imageModel` + `pdfModel`; PDF `approved_unverified`                                                                                                                                                                                                           |
+| PDF rollback     | Operational execute failure: backup config → `tools.deny` pdf + remove `pdfModel` → validate → restart **only** `ai.openclaw.lisa-stage` via injected runner → health; restore backup if apply fails. Mock/dry use temp fixtures only                                                              |
+| PDF proof        | Mock transport success = `status=mock_verified`, `proof_kind=mock_transport`, `firstProductionProofEarned=false`. Production proof requires real OpenRouter HTTP (`proof_kind=openrouter_http_production`) — **pending** (not earned this session)                                                 |
+| Eval             | Nemotron OpenRouter ref — **not** in defaults / modelPolicy.allow                                                                                                                                                                                                                                  |
+| Cron SOT         | Repo `linkbots/lisa/ops/jobs.stage-seed.json` v2 — **6** real bounded procedures, `delivery=none`, `enabled=false`                                                                                                                                                                                 |
+| Typed installer  | `stage-ops-cron-installer.ts` emits gateway-valid create/edit payloads (UUID preserve, disabled, delivery=none)                                                                                                                                                                                    |
+| Durable stores   | Canonical Kysely owner `src/state/lisa-stage-ops-store.ts`; workshop `linkbots/lisa/ops/lisa-stage-ops-store.ts` is a thin re-export. Repair/Main Approve/durable/coordinator consume it. Persist fails closed without healthy store; coordinator `--ensure-store` wires lazy ensure on apply path |
+| Repair package   | Packaged separately; install only when store health passes; default `blocked_no_store`                                                                                                                                                                                                             |
+| Native heartbeat | `every: 0m` (disabled); wall-clock owned by `lisa-heartbeat-45` when enabled                                                                                                                                                                                                                       |
 
 Job IDs observed 2026-08-03 (re-verify with `cron list` before mutate):
 
@@ -73,10 +74,12 @@ STAGE_OPS_NODE=(node --import ./linkbots/lisa/ops/register-strip-types-js-resolv
 "${STAGE_OPS_NODE[@]}" linkbots/lisa/ops/stage-ops-coordinator.ts install --json
 ```
 
-Repo contract tests (no stage mutation):
+Repo contract tests (no stage mutation). Store-consuming suites need `tsx` because the
+canonical Kysely store lives under `src/` (parameter properties); workshop
+`lisa-stage-ops-store.ts` is only a thin re-export:
 
 ```bash
-STAGE_OPS_NODE=(node --import ./linkbots/lisa/ops/register-strip-types-js-resolve.mjs --experimental-strip-types)
+STAGE_OPS_NODE=(node --import tsx --import ./linkbots/lisa/ops/register-strip-types-js-resolve.mjs)
 "${STAGE_OPS_NODE[@]}" --test \
   linkbots/lisa/ops/lisa-ops.test.ts \
   linkbots/lisa/ops/model-routing-contract.test.ts \
@@ -91,6 +94,8 @@ STAGE_OPS_NODE=(node --import ./linkbots/lisa/ops/register-strip-types-js-resolv
 node scripts/run-vitest.mjs src/state/lisa-stage-ops-store.test.ts
 pnpm lint:kysely
 ```
+
+Consumer proof note: durable-store + Repair/Main Approve suites exercise the **canonical** Kysely store via the thin workshop re-export (not a second DatabaseSync implementation).
 
 ---
 
@@ -112,6 +117,9 @@ STAGE_OPS_NODE=(node --import ./linkbots/lisa/ops/register-strip-types-js-resolv
 
 # Optional: include Repair/GitOps supervision ONLY when durable SQLite store health passes
 "${STAGE_OPS_NODE[@]}" linkbots/lisa/ops/stage-ops-coordinator.ts install --include-repair --emit-commands
+
+# Principal-gated: lazily ensure lisa_stage_* on the target state DB, then re-probe (temp DB in tests)
+# "${STAGE_OPS_NODE[@]}" linkbots/lisa/ops/stage-ops-coordinator.ts install --ensure-store --include-repair --emit-commands
 ```
 
 Manual disable fallback (known IDs — re-verify first):
@@ -181,20 +189,23 @@ node --experimental-strip-types linkbots/lisa/ops/stage-pdf-canary.ts dry-run --
 node --experimental-strip-types linkbots/lisa/ops/stage-pdf-canary.ts rollback-plan --out /tmp/lisa-stage-pdf-canary
 
 # Execute (SPEND) — dual gate only: STAGE_PDF_CANARY_EXECUTE=1 + existing OPENROUTER_API_KEY in process env
-# Never mint MiniMax direct keys. Never print secrets.
-# STAGE_PDF_CANARY_EXECUTE=1 node --experimental-strip-types linkbots/lisa/ops/stage-pdf-canary.ts execute --out /tmp/lisa-stage-pdf-canary
+# Live HTTP also needs STAGE_PDF_CANARY_ALLOW_LIVE_FETCH=1. Injected/mock transport success is mock_verified only.
+# Never mint MiniMax direct keys. Never print secrets. Never touch live Lisa 18790.
+# STAGE_PDF_CANARY_EXECUTE=1 STAGE_PDF_CANARY_ALLOW_LIVE_FETCH=1 \
+#   node --experimental-strip-types linkbots/lisa/ops/stage-pdf-canary.ts execute --out /tmp/lisa-stage-pdf-canary
 ```
 
-Success still requires a **first-production-proof receipt** accepted by Principal. Package/dry-run alone does **not** earn proof.
+**Proof truth:** mock transport → `status=mock_verified`, `proof_kind=mock_transport`, `firstProductionProofEarned=false`, `paidSpendEnablementAllowed=false`. Only an actual OpenRouter HTTP response from the stage credential path with a real bounded PDF request may set `proof_kind=openrouter_http_production` / `firstProductionProofEarned`. Package/dry-run/mock alone do **not** earn production proof (**pending** until Principal-gated live execute).
 
 ### Rollback truth
 
 ```text
 strategy: tools_deny_pdf
-add tools.deny: pdf
-remove agents.defaults.pdfModel (never primary:"")
+execute failure: atomic backup → add tools.deny:pdf → remove agents.defaults.pdfModel
+  → validate → restart ONLY ai.openclaw.lisa-stage (injected runner) → health
+  → restore backup if rollback application fails
+default/dry/mock: temp fixtures only (never stage/live Lisa)
 preserve model.primary + fallbacks + imageModel
-store restore receipt for auto-restore
 alternatePaidDocumentRoutingAllowed = false
 liveLisaTouched = false
 ```
@@ -219,17 +230,17 @@ IDE Development remains the external GitOps SoT and is untouched. Repair supervi
 
 ## F) Ship/Pull / Repair / GitOps honesty
 
-| Surface                                              | Stage claim                                       |
-| ---------------------------------------------------- | ------------------------------------------------- |
-| Ship/Pull contracts + workshop wait/no-yield         | PASS in-repo                                      |
-| Six bounded procedure payloads (repo SOT)            | PASS (package; stage apply still Principal gate)  |
-| Typed gateway create/edit payloads                   | PASS packaged                                     |
-| Stage command rendering (inspect vs apply wrapper)   | PASS packaged (inventory never uses PACI wrapper) |
-| Stage SQLite still holding STAGE_CANARY stubs        | HOLD until coordinator `update` applied           |
-| Full Ship/Pull post-process (ACP wait → CAS → email) | HOLD until spend/ACP gate                         |
-| Repair Dispatcher SQLite store + fail-closed install | PASS packaged; HOLD for stage ensure/enable       |
-| Main Approve epoch expiry + SQLite packages/claims   | PASS packaged; HOLD for live store ensure         |
-| MiniMax PDF deny-rollback + restore receipt          | PASS packaged; HOLD for execute/proof             |
+| Surface                                              | Stage claim                                                                |
+| ---------------------------------------------------- | -------------------------------------------------------------------------- |
+| Ship/Pull contracts + workshop wait/no-yield         | PASS in-repo                                                               |
+| Six bounded procedure payloads (repo SOT)            | PASS (package; stage apply still Principal gate)                           |
+| Typed gateway create/edit payloads                   | PASS packaged                                                              |
+| Stage command rendering (inspect vs apply wrapper)   | PASS packaged (inventory never uses PACI wrapper)                          |
+| Stage SQLite still holding STAGE_CANARY stubs        | HOLD until coordinator `update` applied                                    |
+| Full Ship/Pull post-process (ACP wait → CAS → email) | HOLD until spend/ACP gate                                                  |
+| Repair Dispatcher SQLite store + fail-closed install | PASS packaged via canonical Kysely consumers; HOLD for stage ensure/enable |
+| Main Approve epoch expiry + SQLite packages/claims   | PASS packaged via canonical consumers; HOLD for live store ensure          |
+| MiniMax PDF mock_verified + operational rollback     | PASS packaged (mock not live); HOLD production proof / live OpenRouter     |
 
 ---
 
@@ -243,6 +254,7 @@ IDE Development remains the external GitOps SoT and is untouched. Repair supervi
 - Command renderer: `linkbots/lisa/ops/stage-ops-command.ts` (`renderStageOpenClawInspectCommand` vs `renderStageOpenClawCommand`)
 - Read-only inventory CLI: `linkbots/lisa/ops/stage-ops-inventory.ts`
 - Typed cron installer: `linkbots/lisa/ops/stage-ops-cron-installer.ts`
-- Durable store: `src/state/lisa-stage-ops-schema.ts`, `src/state/lisa-stage-ops-store.ts`
+- Durable store: `src/state/lisa-stage-ops-schema.ts`, `src/state/lisa-stage-ops-store.ts` (canonical); `linkbots/lisa/ops/lisa-stage-ops-store.ts` thin re-export
 - PDF canary: `linkbots/lisa/ops/stage-pdf-canary.ts`
+- PDF operational rollback: `linkbots/lisa/ops/stage-pdf-operational-rollback.ts`
 - FAKE/TEMPLATE production gates: `docs/execution/openclawdevelopmentplan01/runbooks/stage-prod-canary-controls.md`
