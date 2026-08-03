@@ -17,6 +17,24 @@ import { createLinkskillsRuntime, type LinkskillsRuntime } from "./src/runtime.j
 import { openLinkskillsStoresFromApi } from "./src/stores.js";
 import { resolveLinkskillsTransport } from "./src/transport.js";
 
+/**
+ * Whether stop/drain may safely attempt remote writes that need the injected
+ * machine-token facade. No facade means no generation ownership — drain is OK.
+ * A present but retired generation must not drain (retryable machine_token_error
+ * deadletters durable outbox); leave rows for the new live generation's drain.
+ */
+function canFlushWithMachineTokenFacade(facade: OpenClawPluginApi["machineTokenFacade"]): boolean {
+  if (!facade) {
+    return true;
+  }
+  for (const bindingId of facade.grantedBindingIds) {
+    if (facade.health(bindingId).registered) {
+      return true;
+    }
+  }
+  return false;
+}
+
 export default definePluginEntry({
   id: LINKSKILLS_PLUGIN_ID,
   name: "LiNKskills",
@@ -93,10 +111,30 @@ export default definePluginEntry({
           await drainWorker.stop();
           drainWorker = null;
         }
+        // Drain only while this generation is still live. After a successful
+        // reload commit the prior generation is already retired; draining then
+        // would mint against an unregistered facade and deadletter outbox rows.
+        if (
+          runtime &&
+          config.telemetryDrain &&
+          canFlushWithMachineTokenFacade(api.machineTokenFacade)
+        ) {
+          try {
+            await runBounded(
+              async (signal) => {
+                await runtime!.drainOnce({ signal });
+              },
+              { timeoutMs: 2_000, label: "service_stop_drain" },
+            );
+          } catch {
+            // Bound exceeded — durable outbox retained for the next live facade.
+          }
+        }
         if (runtime) {
           await runtime.shutdown();
           runtime = null;
         }
+        // Final ownership release — generation-scoped; no-op if already retired.
         api.machineTokenFacade?.unregister();
       },
     };
@@ -190,7 +228,15 @@ export default definePluginEntry({
         if (drainWorker) {
           await drainWorker.stop();
         }
-        if (runtime && config.telemetryDrain) {
+        // Best-effort drain while the facade is still live. Do not unregister
+        // here — gateway close runs gateway_stop before pluginServices.stop;
+        // early unregister makes the later service.stop drain hit
+        // machine_token_error and deadletter remaining outbox rows.
+        if (
+          runtime &&
+          config.telemetryDrain &&
+          canFlushWithMachineTokenFacade(api.machineTokenFacade)
+        ) {
           try {
             await runBounded(
               async (signal) => {
@@ -202,7 +248,6 @@ export default definePluginEntry({
             // Bound exceeded — durable outbox retained.
           }
         }
-        api.machineTokenFacade?.unregister();
       },
       hookOpts,
     );

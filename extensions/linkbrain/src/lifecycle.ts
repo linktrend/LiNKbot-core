@@ -113,7 +113,12 @@ export type LinkbrainLifecycle = {
     reason?: string;
   }): Promise<void>;
   handleGatewayStart(): Promise<void>;
-  handleGatewayStop(): Promise<void>;
+  /**
+   * Promote local capture buffer to outbox, then optionally remote-drain.
+   * Pass `drain: false` when the closed-over machine-token generation is already
+   * retired (reload commit) so local flush still runs without minting.
+   */
+  handleGatewayStop(options?: { drain?: boolean }): Promise<void>;
   handleSubagentSpawned(event: {
     runId: string;
     childSessionKey: string;
@@ -388,14 +393,15 @@ export function createLinkbrainLifecycle(
       });
     },
 
-    async handleGatewayStop() {
+    async handleGatewayStop(options) {
+      const shouldDrain = options?.drain !== false;
       await safe("gateway_stop", logger, async () => {
         // Overall wall-clock for flush+drain; abandoned stream work retains locks.
         try {
           await runBounded(
             async (signal) => {
               await params.capture.flushAll("gateway_stop", { signal });
-              if (signal.aborted) {
+              if (signal.aborted || !shouldDrain) {
                 return;
               }
               await drainBounded("gateway_stop_drain");

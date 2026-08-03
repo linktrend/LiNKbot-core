@@ -19,6 +19,24 @@ import { createLinkbrainRuntime, type LinkbrainRuntime } from "./src/runtime.js"
 import { openLinkbrainStoresFromApi } from "./src/stores.js";
 import { resolveLinkbrainTransport } from "./src/transport.js";
 
+/**
+ * Whether stop/flush may safely attempt remote writes that need the injected
+ * machine-token facade. No facade means no generation ownership — flush is OK.
+ * A present but retired generation must not flush (retryable machine_token_error
+ * deadletters durable outbox); leave rows for the new live generation's drain.
+ */
+function canFlushWithMachineTokenFacade(facade: OpenClawPluginApi["machineTokenFacade"]): boolean {
+  if (!facade) {
+    return true;
+  }
+  for (const bindingId of facade.grantedBindingIds) {
+    if (facade.health(bindingId).registered) {
+      return true;
+    }
+  }
+  return false;
+}
+
 export default definePluginEntry({
   id: LINKBRAIN_PLUGIN_ID,
   name: "LiNKbrain",
@@ -110,14 +128,21 @@ export default definePluginEntry({
           await drainWorker.stop();
           drainWorker = null;
         }
+        // Always promote local capture buffer. Remote drain only while this
+        // generation is still live (or no MT facade). After a successful reload
+        // commit the prior generation is already retired; draining then would
+        // mint against an unregistered facade and deadletter outbox rows.
         if (lifecycle) {
-          await lifecycle.handleGatewayStop();
-          lifecycle = null;
+          await lifecycle.handleGatewayStop({
+            drain: canFlushWithMachineTokenFacade(api.machineTokenFacade),
+          });
         }
+        lifecycle = null;
         if (runtime) {
           await runtime.shutdown();
           runtime = null;
         }
+        // Final ownership release — generation-scoped; no-op if already retired.
         api.machineTokenFacade?.unregister();
       },
     };
@@ -154,8 +179,13 @@ export default definePluginEntry({
         if (drainWorker) {
           await drainWorker.stop();
         }
-        await getLifecycle()?.handleGatewayStop();
-        api.machineTokenFacade?.unregister();
+        // Best-effort local flush (+ remote drain while live). Do not unregister
+        // here — gateway close runs gateway_stop before pluginServices.stop;
+        // early unregister makes the later service.stop flush hit
+        // machine_token_error and deadletter remaining outbox rows.
+        await getLifecycle()?.handleGatewayStop({
+          drain: canFlushWithMachineTokenFacade(api.machineTokenFacade),
+        });
       },
       hookOpts,
     );
