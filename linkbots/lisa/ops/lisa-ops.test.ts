@@ -13,8 +13,11 @@ import {
   assertImmutableBindings,
   authorizeApprovalDispatch,
   buildCarlosAskViewPure,
+  isMainApproveClaimExpired,
   issueCarlosAsk,
   MAIN_APPROVE_RUNTIME_STORE,
+  MAIN_APPROVE_UNHEALTHY_STORE,
+  parseInstantToEpochMs,
   validateApprovalBindings,
   type MainApprovePackage,
 } from "./main-approve-binding.ts";
@@ -770,7 +773,6 @@ describe("Repair dispatcher binding + pending hold", () => {
     const blocked = authorizeRepairLiveDispatch({
       failureClass: "ordinary_repairable",
       binding: baseBinding,
-      priorAttempts: [],
       currentHeadSha: baseBinding.headSha,
     });
     assert.equal(blocked.ok, false);
@@ -782,26 +784,26 @@ describe("Repair dispatcher binding + pending hold", () => {
       {
         failureClass: "ordinary_repairable",
         binding: baseBinding,
-        priorAttempts: [],
         currentHeadSha: baseBinding.headSha,
       },
+      null,
       { liveLisaTargetingAllowed: true, credentialsLanguageSeparatelyApproved: false },
     );
     assert.equal(stillNeedCreds.ok, false);
     if (!stillNeedCreds.ok) {
       assert.equal(stillNeedCreds.reason, "credentials_language_not_approved");
     }
-    const allowed = authorizeRepairLiveDispatch(
+    const noStore = authorizeRepairLiveDispatch(
       {
         failureClass: "ordinary_repairable",
         binding: baseBinding,
-        priorAttempts: [],
         currentHeadSha: baseBinding.headSha,
       },
+      { available: true } as never,
       { liveLisaTargetingAllowed: true, credentialsLanguageSeparatelyApproved: true },
     );
-    assert.equal(allowed.ok, true);
-    if (allowed.ok) assert.equal(allowed.decision.attempt, 1);
+    assert.equal(noStore.ok, false);
+    if (!noStore.ok) assert.equal(noStore.reason, "blocked_no_store");
   });
 });
 
@@ -835,10 +837,18 @@ describe("Main Approve binding", () => {
   };
 
   const paramsOk = {
-    sealed: pkg,
+    packageId: pkg.packageId,
+    expectedPackageHash: "a".repeat(64),
+    claimId: "test-claim-owner",
     approvedIndexes: [1, 2],
     nowIso: "2026-08-03T10:00:00+08:00",
     liveItems: structuredClone(pkg.items),
+  };
+
+  const askRef = {
+    packageId: pkg.packageId,
+    expectedPackageHash: "a".repeat(64),
+    claimId: "test-claim-owner",
   };
 
   it("pure Carlos view is plain English without SHAs", () => {
@@ -846,11 +856,11 @@ describe("Main Approve binding", () => {
     const view = buildCarlosAskViewPure(pkg);
     assert.match(view.telegramBody, /1\) linktrend\/LiNKsites/);
     assert.doesNotMatch(view.telegramBody, /[0-9a-f]{7,}/i);
-    assert.equal(MAIN_APPROVE_RUNTIME_STORE.available, false);
+    assert.equal(MAIN_APPROVE_UNHEALTHY_STORE.available, false);
   });
 
   it("runtime issues no Carlos ask without store and names prerequisite", () => {
-    const blocked = issueCarlosAsk(pkg);
+    const blocked = issueCarlosAsk(askRef);
     assert.equal(blocked.ok, false);
     if (blocked.ok) return;
     assert.ok(
@@ -860,6 +870,27 @@ describe("Main Approve binding", () => {
     );
     // Defaults fail closed on live targeting before store check.
     assert.equal(blocked.reason, "live_targeting_disabled");
+  });
+
+  it("live opt-in still blocks Main Approve when store is unhealthy/missing", () => {
+    const liveOptIn = {
+      liveLisaTargetingAllowed: true,
+      credentialsLanguageSeparatelyApproved: true,
+    };
+    const ask = issueCarlosAsk(askRef, null, liveOptIn);
+    assert.equal(ask.ok, false);
+    if (ask.ok) return;
+    assert.equal(ask.reason, "blocked_no_store");
+    assert.match(ask.prerequisite ?? "", /lisa_stage_|package store|SQLite/i);
+
+    const dispatch = authorizeApprovalDispatch(paramsOk, null, liveOptIn);
+    assert.equal(dispatch.ok, false);
+    if (dispatch.ok) return;
+    assert.equal(dispatch.reason, "blocked_no_store");
+
+    // Packaging default remains fail-closed; use openStageDurableStoreCapability for live probes.
+    assert.equal(MAIN_APPROVE_RUNTIME_STORE.available, false);
+    assert.equal(MAIN_APPROVE_UNHEALTHY_STORE.available, false);
   });
 
   it("runtime approval dispatch fails closed without store", () => {
@@ -925,25 +956,99 @@ describe("Main Approve binding", () => {
     );
   });
 
-  it("exact binding succeeds only with explicit authoritative-store + live opt-in adapters", () => {
-    const store = { available: true as const };
+  it("epoch expiry: timezone-offset claim beats lexical string compare", () => {
+    // claimExpiresAt +08:00 noon == 04:00Z. Lexical "05:00Z" < "12:00+08" would wrongly pass.
+    const expires = "2026-08-03T12:00:00+08:00";
+    assert.equal(parseInstantToEpochMs(expires), Date.parse("2026-08-03T04:00:00.000Z"));
+    assert.equal(
+      isMainApproveClaimExpired({
+        nowIso: "2026-08-03T05:00:00.000Z",
+        claimExpiresAt: expires,
+      }),
+      true,
+    );
+    assert.equal(
+      validateApprovalBindings({
+        sealed: pkg,
+        approvedIndexes: [1, 2],
+        nowIso: "2026-08-03T05:00:00.000Z",
+        liveItems: structuredClone(pkg.items),
+      }).reason,
+      "expired_claim",
+    );
+
+    assert.equal(
+      isMainApproveClaimExpired({
+        nowIso: "2026-08-03T03:00:00.000Z",
+        claimExpiresAt: expires,
+      }),
+      false,
+    );
+    assert.equal(
+      validateApprovalBindings({
+        sealed: pkg,
+        approvedIndexes: [1, 2],
+        nowIso: "2026-08-03T03:00:00.000Z",
+        liveItems: structuredClone(pkg.items),
+      }).ok,
+      true,
+    );
+  });
+
+  it("epoch expiry: invalid nowIso or claimExpiresAt fail closed as expired_claim", () => {
+    assert.equal(parseInstantToEpochMs(""), null);
+    assert.equal(parseInstantToEpochMs("not-an-instant"), null);
+    assert.equal(
+      isMainApproveClaimExpired({
+        nowIso: "not-an-instant",
+        claimExpiresAt: "2026-08-03T12:00:00+08:00",
+      }),
+      true,
+    );
+    assert.equal(
+      isMainApproveClaimExpired({
+        nowIso: "2026-08-03T03:00:00.000Z",
+        claimExpiresAt: "",
+      }),
+      true,
+    );
+    assert.equal(
+      validateApprovalBindings({
+        sealed: { ...pkg, claimExpiresAt: "bogus" },
+        approvedIndexes: [1, 2],
+        nowIso: "2026-08-03T03:00:00.000Z",
+        liveItems: structuredClone(pkg.items),
+      }).reason,
+      "expired_claim",
+    );
+    assert.equal(
+      validateApprovalBindings({
+        sealed: pkg,
+        approvedIndexes: [1, 2],
+        nowIso: "",
+        liveItems: structuredClone(pkg.items),
+      }).reason,
+      "expired_claim",
+    );
+  });
+
+  it("rejects forgeable available:true; exact binding needs sealed store capability", () => {
     const live = {
       liveLisaTargetingAllowed: true,
       credentialsLanguageSeparatelyApproved: true,
     };
-    const askBlockedLive = issueCarlosAsk(pkg, store);
+    const forged = { available: true as const };
+    const askForged = issueCarlosAsk(askRef, forged as never, live);
+    assert.equal(askForged.ok, false);
+    if (!askForged.ok) assert.equal(askForged.reason, "blocked_no_store");
+    const authForged = authorizeApprovalDispatch(paramsOk, forged as never, live);
+    assert.equal(authForged.ok, false);
+    if (!authForged.ok) assert.equal(authForged.reason, "blocked_no_store");
+
+    const askBlockedLive = issueCarlosAsk(askRef, null);
     assert.equal(askBlockedLive.ok, false);
-    const ask = issueCarlosAsk(pkg, store, live);
-    assert.equal(ask.ok, true);
-    const authBlockedLive = authorizeApprovalDispatch(paramsOk, store);
+    const authBlockedLive = authorizeApprovalDispatch(paramsOk, null);
     assert.equal(authBlockedLive.ok, false);
-    const auth = authorizeApprovalDispatch(paramsOk, store, live);
-    assert.equal(auth.ok, true);
-    if (auth.ok) {
-      assert.equal(auth.items.length, 2);
-      assert.equal(auth.items[0]?.promotionPrNumber, 12);
-      assert.equal(auth.items[1]?.stagingSha, "dddddddddddddddddddddddddddddddddddddddd");
-    }
   });
 });
 
@@ -1036,5 +1141,46 @@ describe("Heartbeat/digest GitOps alignment", () => {
     }
     assert.match(pipeline, /PR #19|GITOPS-01|origin\/development/i);
     assert.match(digest, /PR #19|GITOPS-01|origin\/development/i);
+  });
+});
+
+describe("Stage cron seed SOT (six jobs, disabled)", () => {
+  it("keeps exactly six disabled jobs with correct heartbeat wall-clock expr", () => {
+    const seed = JSON.parse(readFileSync(path.join(here, "jobs.stage-seed.json"), "utf8")) as {
+      version: number;
+      jobs: Array<{
+        id: string;
+        enabled: boolean;
+        schedule: { expr: string; tz: string };
+        delivery: { mode: string };
+        payload: { toolsAllow: string[]; message: string; messageFile: string };
+        payloadHash: string;
+      }>;
+      payloadHashes: Record<string, string>;
+      notInstalledByDefault: Array<{ id: string }>;
+      repairSupervision: { job: { id: string } };
+    };
+    assert.equal(seed.version, 2);
+    assert.equal(seed.jobs.length, 6);
+    assert.ok(seed.jobs.every((j) => j.enabled === false));
+    assert.ok(seed.jobs.every((j) => j.schedule.tz === "Asia/Taipei"));
+    assert.ok(seed.jobs.every((j) => j.delivery.mode === "none"));
+    assert.ok(seed.jobs.every((j) => j.payload.message.includes("STAGE BOUNDED PROCEDURE")));
+    assert.ok(seed.jobs.every((j) => !/^STAGE CANARY ONLY\b/m.test(j.payload.message)));
+    const byId = new Map(seed.jobs.map((j) => [j.id, j]));
+    assert.equal(byId.get("lisa-morning-digest")?.schedule.expr, "30 8 * * *");
+    assert.equal(
+      byId.get("lisa-heartbeat-45")?.schedule.expr,
+      "45 0,2,4,6,10,12,14,16,18,20,22 * * *",
+    );
+    assert.ok(!byId.has("lisa-repair-dispatcher"));
+    assert.equal(seed.notInstalledByDefault[0]?.id, "lisa-repair-dispatcher");
+    assert.equal(seed.repairSupervision.job.id, "lisa-repair-dispatcher");
+    for (const id of ["lisa-ship-05", "lisa-pull-07", "lisa-ship-16", "lisa-pull-18"]) {
+      const tools = byId.get(id)?.payload.toolsAllow ?? [];
+      assert.ok(tools.includes("sessions_wait"));
+      assert.ok(!tools.includes("sessions_yield"));
+      assert.equal(seed.payloadHashes[id], byId.get(id)?.payloadHash);
+    }
   });
 });

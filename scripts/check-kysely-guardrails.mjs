@@ -95,6 +95,7 @@ const rawSqliteAllowPathGroups = {
   "Kysely-backed stores that own a DatabaseSync boundary": [
     "src/acp/event-ledger.ts",
     "src/state/user-profiles.ts",
+    "src/state/lisa-stage-ops-store.ts",
     "src/cron/store.ts",
     "src/infra/outbound/current-conversation-bindings.ts",
     "src/media/store.ts",

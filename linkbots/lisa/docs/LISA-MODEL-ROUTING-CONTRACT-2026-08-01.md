@@ -9,8 +9,25 @@
 - TypeScript: `linkbots/lisa/ops/model-routing-contract.ts`
 - JSON fragment: `linkbots/lisa/ops/model-routing.contract.json`
 - Contract tests: `linkbots/lisa/ops/model-routing-contract.test.ts`
+- **Mac Mini stage OpenRouter-only overlay:** `linkbots/lisa/ops/model-routing.openrouter-stage.ts` + `model-routing.openrouter-stage.contract.json` + `model-routing.openrouter-stage.test.ts`
+- Stage ops canary runbook: `docs/execution/openclawdevelopmentplan01/runbooks/lisa-stage-ops-canary.md`
 - Prior eval notes (superseded for defaults): `LISA-MODEL-ROUTING-EVAL-2026-07-30.md`
 - Release graph: `docs/evidence/ocp-w30-approved-pdf-routing/release-graph.md`
+
+## Mac Mini stage OpenRouter-only posture
+
+Semantic slots above remain the workshop authority. For **lisa-stage** (port 18791), runtime uses the OpenRouter-only overlay:
+
+| Slot                      | Stage OpenRouter ref                                              |
+| ------------------------- | ----------------------------------------------------------------- |
+| Primary + thinking medium | `openrouter/openai/gpt-5.6-luna`                                  |
+| First fallback            | `openrouter/z-ai/glm-5.2`                                         |
+| Image + PDF candidate     | `openrouter/minimax/minimax-m3` (`imageModel` + stage `pdfModel`) |
+| Next fallback             | `openrouter/moonshotai/kimi-k3`                                   |
+| Utility                   | `openrouter/google/gemini-3.5-flash-lite`                         |
+| Evaluation-only           | `openrouter/nvidia/nemotron-3-super-120b-a12b` (not in defaults)  |
+
+**Credential rule:** OpenRouter is the only provider credential (`OPENROUTER_API_KEY` name). Do **not** request or configure direct OpenAI / Z.AI / MiniMax / Moonshot / NVIDIA / Google provider keys for stage. PDF remains `approved_unverified` until a first-production-proof receipt.
 
 ## Approved slots
 

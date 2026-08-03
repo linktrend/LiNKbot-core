@@ -1,0 +1,70 @@
+{
+  "manifestType": "lisa_stage_workspace_package_v1",
+  "packageId": "lisa-stage-bounded-procedures-and-renderer-deps",
+  "description": "Four bounded procedure sources plus six renderer/template deps for lisa-stage workspace packaging. Hashes bind current repo bytes. Installer defaults never mutate LiNKplatform-staging.",
+  "sourceRoot": "linkbots/lisa",
+  "liveMutationAllowed": false,
+  "defaultMutateStageWorkspace": false,
+  "files": [
+    {
+      "source": "Personality files/HEARTBEAT.md",
+      "destination": "HEARTBEAT.md",
+      "sha256": "dc0cc224771d86629ca5aea76352d8ccfa793286b49d841a7d6bcab66033b7d1",
+      "bytes": 21872
+    },
+    {
+      "source": "Personality files/agents/morning-digest.md",
+      "destination": "agents/morning-digest.md",
+      "sha256": "9be6057b62fbfc500f1acceaf355ab7eb6b738664b793aa4782dab45b6382bb7",
+      "bytes": 21086
+    },
+    {
+      "source": "Personality files/agents/ship-pull-clock.md",
+      "destination": "agents/ship-pull-clock.md",
+      "sha256": "46f9aabc6fb5c6de875933c349a2c24a66627cce1bd46eeaf43d6fb64cd00d6d",
+      "bytes": 12865
+    },
+    {
+      "source": "Personality files/agents/repair-dispatcher.md",
+      "destination": "agents/repair-dispatcher.md",
+      "sha256": "212fe6ddf620a1ab7d9dc56a3516eb2427c3897b90f90b8331d45399acf2b6bc",
+      "bytes": 3290
+    },
+    {
+      "source": "Personality files/templates/telegram-heartbeat.md",
+      "destination": "templates/telegram-heartbeat.md",
+      "sha256": "4505a511626e2cfcd18f06c8e4583c0786ea685ced2676e2322196ea04f3de66",
+      "bytes": 2952
+    },
+    {
+      "source": "Personality files/templates/telegram-daily-digest.md",
+      "destination": "templates/telegram-daily-digest.md",
+      "sha256": "299e69474e642bb67201791a72376751356122e13a691de96c1b298e13f51d9a",
+      "bytes": 3218
+    },
+    {
+      "source": "Personality files/templates/email-daily-digest.md",
+      "destination": "templates/email-daily-digest.md",
+      "sha256": "69c0601a7fc8b49f2897d44f400a7092e7481f6811bc5427a6ce3318ba3f4239",
+      "bytes": 1816
+    },
+    {
+      "source": "Personality files/templates/pipeline-one-liner.md",
+      "destination": "templates/pipeline-one-liner.md",
+      "sha256": "0ede999ca81ecbe206afcbd152b8c56f4521228324ebd30041c72f2020ce49c8",
+      "bytes": 872
+    },
+    {
+      "source": "ops/render-template.ts",
+      "destination": "ops/render-template.ts",
+      "sha256": "514d3708d04b329ae9b19d9f2168a5c7ff48319d2ee8f5678fe2497364063362",
+      "bytes": 2142
+    },
+    {
+      "source": "ops/templates.ts",
+      "destination": "ops/templates.ts",
+      "sha256": "f9fd5be86c0b024079bcf040434397077f572eca0a756136a744a0759bb329bb",
+      "bytes": 10164
+    }
+  ]
+}
