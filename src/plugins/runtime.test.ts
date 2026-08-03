@@ -1,5 +1,6 @@
 /** Covers plugin runtime registration API behavior and registry mutation guards. */
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { getMcpToolFilterRegistrationGeneration } from "./mcp-tool-filter-registration.js";
 import { isPluginRegistryRetired } from "./registry-lifecycle.js";
 import { createEmptyPluginRegistry } from "./registry.js";
 import type { PluginHttpRouteRegistration } from "./registry.js";
@@ -117,6 +118,17 @@ describe("plugin runtime route registry", () => {
     resetPluginRuntimeStateForTest();
 
     expect(getActivePluginRegistry()).toBeNull();
+  });
+
+  it("bumps MCP tool-filter generation on pin and release", () => {
+    const registry = createEmptyPluginRegistry();
+    setActivePluginRegistry(registry, "startup");
+    const beforePin = getMcpToolFilterRegistrationGeneration();
+    pinActivePluginChannelRegistry(registry);
+    expect(getMcpToolFilterRegistrationGeneration()).toBeGreaterThan(beforePin);
+    const beforeRelease = getMcpToolFilterRegistrationGeneration();
+    releasePinnedPluginChannelRegistry();
+    expect(getMcpToolFilterRegistrationGeneration()).toBeGreaterThan(beforeRelease);
   });
 
   it.each([

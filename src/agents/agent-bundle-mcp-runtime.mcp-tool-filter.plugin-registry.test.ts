@@ -40,6 +40,12 @@ vi.mock("./embedded-agent-mcp.js", () => ({
   }),
 }));
 
+vi.mock("../plugins/current-plugin-metadata-snapshot.js", () => ({
+  getCurrentPluginMetadataSnapshot: () => ({
+    startup: { pluginIds: ["linkbrain", "linkskills"] },
+  }),
+}));
+
 /** Full §9.1 Brain operator ceiling (17). */
 const BRAIN_OPERATOR_CEILING = [
   "brain_browse",
