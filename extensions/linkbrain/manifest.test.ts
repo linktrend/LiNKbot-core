@@ -142,9 +142,14 @@ describe("linkbrain manifest/config", () => {
           machineToken: { properties: { clientAssertionKeyRef: { $ref: string } } };
         };
       };
+      configContracts: { secretInputs: { paths: Array<{ path: string }> } };
     };
     expect(manifest.configSchema.$defs.machineToken.properties.clientAssertionKeyRef.$ref).toBe(
       "#/$defs/secretRef",
     );
+    // Must not be a string-materialized secretInput — host resolves at acquire only.
+    expect(manifest.configContracts.secretInputs.paths.map((entry) => entry.path)).toEqual([
+      "ingestionCredential",
+    ]);
   });
 });

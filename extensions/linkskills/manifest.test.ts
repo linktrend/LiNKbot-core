@@ -31,9 +31,9 @@ describe("linkskills manifest/config", () => {
       redactionPolicyVersion: expect.any(Object),
       outboxMaxEntries: expect.any(Object),
     });
-    expect(manifest.configContracts.secretInputs.paths.map((entry) => entry.path)).toContain(
+    expect(manifest.configContracts.secretInputs.paths.map((entry) => entry.path)).toEqual([
       "skillsCredential",
-    );
+    ]);
     expect(JSON.stringify(manifest)).not.toContain("allowConversationAccess");
   });
 
@@ -144,9 +144,13 @@ describe("linkskills manifest/config", () => {
           machineToken: { properties: { clientAssertionKeyRef: { $ref: string } } };
         };
       };
+      configContracts: { secretInputs: { paths: Array<{ path: string }> } };
     };
     expect(manifest.configSchema.$defs.machineToken.properties.clientAssertionKeyRef.$ref).toBe(
       "#/$defs/secretRef",
     );
+    expect(manifest.configContracts.secretInputs.paths.map((entry) => entry.path)).toEqual([
+      "skillsCredential",
+    ]);
   });
 });

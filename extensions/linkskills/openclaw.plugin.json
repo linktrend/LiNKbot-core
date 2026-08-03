@@ -13,11 +13,6 @@
           "path": "skillsCredential",
           "expected": "string",
           "ownerKind": "plugin"
-        },
-        {
-          "path": "machineToken.clientAssertionKeyRef",
-          "expected": "string",
-          "ownerKind": "plugin"
         }
       ]
     }
