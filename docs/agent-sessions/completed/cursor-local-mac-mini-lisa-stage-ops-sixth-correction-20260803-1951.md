@@ -2,29 +2,29 @@
 
 ## Identity
 
-| Field             | Value                                                               |
-| ----------------- | ------------------------------------------------------------------- |
-| Agent type        | Cursor Local Agent                                                  |
-| Platform          | Cursor                                                              |
-| Machine           | mac-mini                                                            |
-| Surface           | agents-window                                                       |
-| Execution         | local                                                               |
-| Role              | feature                                                             |
-| Orchestrator key  | cursor-local-mac-mini                                               |
+| Field             | Value                                                                             |
+| ----------------- | --------------------------------------------------------------------------------- |
+| Agent type        | Cursor Local Agent                                                                |
+| Platform          | Cursor                                                                            |
+| Machine           | mac-mini                                                                          |
+| Surface           | agents-window                                                                     |
+| Execution         | local                                                                             |
+| Role              | feature                                                                           |
+| Orchestrator key  | cursor-local-mac-mini                                                             |
 | Coordination home | /Users/linktrend/.cursor/worktrees/wp0-macmini-release/ocp-stage-ops-canary-final |
-| Session ID        | cursor-local-mac-mini-lisa-stage-ops-sixth-correction-20260803-1951 |
-| Started           | 2026-08-03 19:51 Asia/Taipei                                        |
-| Last updated      | 2026-08-03 20:02 Asia/Taipei                                        |
+| Session ID        | cursor-local-mac-mini-lisa-stage-ops-sixth-correction-20260803-1951               |
+| Started           | 2026-08-03 19:51 Asia/Taipei                                                      |
+| Last updated      | 2026-08-03 20:02 Asia/Taipei                                                      |
 
 ## Work
 
-| Field           | Value                                                        |
-| --------------- | ------------------------------------------------------------ |
+| Field           | Value                                                                                                                                  |
+| --------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
 | Objective       | Close three independent-Codex-audit blockers: PDF SecretRef, hard-pin reject any config symlink, Main Approve claimId+hash concurrency |
-| Branch          | ocp-stage-ops-canary-final                                   |
-| Starting commit | 8b896ff826adca56ccd393a6a3fd3fe043501c90                     |
-| Status          | `complete`                                                   |
-| Handoff         | docs/handoffs/2026-08-03-lisa-stage-ops-sixth-correction.md  |
+| Branch          | ocp-stage-ops-canary-final                                                                                                             |
+| Starting commit | 8b896ff826adca56ccd393a6a3fd3fe043501c90                                                                                               |
+| Status          | `complete`                                                                                                                             |
+| Handoff         | docs/handoffs/2026-08-03-lisa-stage-ops-sixth-correction.md                                                                            |
 
 ## Ownership Scope
 

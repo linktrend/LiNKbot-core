@@ -2,22 +2,22 @@
 
 ## Session Metadata
 
-| Field                | Value                                                               |
-| -------------------- | ------------------------------------------------------------------- |
-| Agent identity       | Cursor Local Agent (Grok 4.5)                                       |
-| Session ID           | cursor-local-mac-mini-lisa-stage-ops-sixth-correction-20260803-1951 |
-| Orchestrator key     | cursor-local-mac-mini                                               |
+| Field                | Value                                                                       |
+| -------------------- | --------------------------------------------------------------------------- |
+| Agent identity       | Cursor Local Agent (Grok 4.5)                                               |
+| Session ID           | cursor-local-mac-mini-lisa-stage-ops-sixth-correction-20260803-1951         |
+| Orchestrator key     | cursor-local-mac-mini                                                       |
 | Objective            | Sixth correction: three independent-Codex-audit blockers on tip 8b896ff826a |
-| Scope                | linkbots/lisa ops + src/state lisa-stage store + stage-ops runbook  |
-| Started              | 2026-08-03 19:51 Asia/Taipei                                        |
-| Ended                | 2026-08-03 20:02 Asia/Taipei                                        |
-| Starting branch      | ocp-stage-ops-canary-final                                          |
-| Ending branch        | ocp-stage-ops-canary-final                                          |
-| Starting commit      | 8b896ff826adca56ccd393a6a3fd3fe043501c90                            |
-| Reviewed content SHA | 2ca4f70634cc60af6d714b14a1f52584a2de53a7                     |
-| Ending commit        | (coordinator populates tip after push; do not self-sync)            |
-| Starting status      | active                                                              |
-| Ending status        | complete                                                            |
+| Scope                | linkbots/lisa ops + src/state lisa-stage store + stage-ops runbook          |
+| Started              | 2026-08-03 19:51 Asia/Taipei                                                |
+| Ended                | 2026-08-03 20:02 Asia/Taipei                                                |
+| Starting branch      | ocp-stage-ops-canary-final                                                  |
+| Ending branch        | ocp-stage-ops-canary-final                                                  |
+| Starting commit      | 8b896ff826adca56ccd393a6a3fd3fe043501c90                                    |
+| Reviewed content SHA | 2ca4f70634cc60af6d714b14a1f52584a2de53a7                                    |
+| Ending commit        | (coordinator populates tip after push; do not self-sync)                    |
+| Starting status      | active                                                                      |
+| Ending status        | complete                                                                    |
 
 ## Summary
 
