@@ -14,9 +14,9 @@
 | Starting branch  | `dev/cloudcursor/OCP-MCP-TOOLFILTER-LIVE-RUNTIME-FIX` |
 | Ending branch    | `dev/cloudcursor/OCP-MCP-TOOLFILTER-LIVE-RUNTIME-FIX` |
 | Starting commit  | `1fd5106bca7103a620ffa8206dee978b82b177f2` |
-| Ending commit    | `20150f3c1d68d22c45276d88a3831131e6a1cfb1` (docs closeout may append) |
+| Ending commit    | `9abadf73676` tip after session closeout docs |
 | Starting status  | clean at exact base |
-| Ending status    | fix + tests + handoff committed; push pending |
+| Ending status    | fix + tests + handoff; ready to push |
 
 ## Summary
 
