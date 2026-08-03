@@ -269,6 +269,50 @@ export function requireHealthyLisaStageOpsStore(
   return health;
 }
 
+/**
+ * Module-private brand for a healthy canonical store capability.
+ * Not Symbol.for — callers cannot mint production auth by forging `{ available: true }`.
+ */
+const HEALTHY_LISA_STAGE_OPS_STORE = Symbol("openclaw.lisa_stage_ops.healthy");
+
+/**
+ * Sealed capability proving additive lisa_stage_* tables are healthy.
+ * Only {@link openHealthyLisaStageOpsStore} may mint this; authorization paths
+ * must require it structurally (runtime brand check + TypeScript opacity).
+ */
+export type HealthyLisaStageOpsStore = {
+  readonly [HEALTHY_LISA_STAGE_OPS_STORE]: true;
+  readonly databasePath: string;
+};
+
+/** Mint a sealed healthy-store capability after a fail-closed health probe. */
+export function openHealthyLisaStageOpsStore(
+  options: LisaStageOpsStoreOptions = {},
+): HealthyLisaStageOpsStore {
+  const health = requireHealthyLisaStageOpsStore(options);
+  return {
+    [HEALTHY_LISA_STAGE_OPS_STORE]: true,
+    databasePath: health.databasePath,
+  };
+}
+
+export function isHealthyLisaStageOpsStore(value: unknown): value is HealthyLisaStageOpsStore {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    (value as HealthyLisaStageOpsStore)[HEALTHY_LISA_STAGE_OPS_STORE] === true &&
+    typeof (value as HealthyLisaStageOpsStore).databasePath === "string" &&
+    (value as HealthyLisaStageOpsStore).databasePath.length > 0
+  );
+}
+
+/** Options derived from a sealed capability (never trust caller-supplied availability flags). */
+export function lisaStageOpsStoreOptionsFromCapability(
+  store: HealthyLisaStageOpsStore,
+): LisaStageOpsStoreOptions {
+  return { databasePath: store.databasePath, path: store.databasePath };
+}
+
 export function probeLisaStageOpsStoreHealth(
   options: LisaStageOpsStoreOptions = {},
 ): LisaStageOpsStoreHealth {

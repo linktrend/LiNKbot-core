@@ -1,6 +1,6 @@
 /**
  * Stage PDF canary execute — mock transport proves request/verify; never production proof.
- * Operational rollback uses temp config + fake runner.
+ * Operational rollback requires explicit wiring (temp config + fake runner in tests).
  * Run: node --experimental-strip-types --test linkbots/lisa/ops/stage-pdf-canary.execute.test.ts
  */
 import assert from "node:assert/strict";
@@ -17,6 +17,7 @@ import {
   buildSyntheticStagePdfBytes,
   executeStagePdfCanary,
   planStagePdfCanary,
+  resolveLiveExecuteOperationalRollback,
   type StagePdfCanaryTransport,
   type StagePdfOpenRouterRequest,
 } from "./stage-pdf-canary.ts";
@@ -46,6 +47,28 @@ function routingSliceFixture() {
     },
     tools: { deny: [] as string[] },
   };
+}
+
+function fakeRunner(events: string[]): StagePdfServiceRunner {
+  return {
+    async restart(service) {
+      events.push(`restart:${service}`);
+      return { ok: true };
+    },
+    async health(service) {
+      events.push(`health:${service}`);
+      return { ok: true };
+    },
+  };
+}
+
+function wireTempRollback(dir: string, events: string[] = []) {
+  const configPath = path.join(dir, "openclaw.json");
+  writeStagePdfRollbackFixtureConfig({
+    targetPath: configPath,
+    slice: routingSliceFixture(),
+  });
+  return { configPath, runner: fakeRunner(events), events };
 }
 
 describe("Stage PDF canary execute (mock transport)", () => {
@@ -97,11 +120,50 @@ describe("Stage PDF canary execute (mock transport)", () => {
     assert.ok(req.modelRef.startsWith("openrouter/"));
   });
 
+  it("execute fails closed without operationalRollback wiring", async () => {
+    const dir = mkdtempSync(path.join(tmpdir(), "stage-pdf-no-wire-"));
+    const transport: StagePdfCanaryTransport = {
+      async send() {
+        return {
+          ok: true,
+          statusCode: 200,
+          assistantText: "STAGE_PDF_CANARY_OK",
+        };
+      },
+    };
+    try {
+      const receipt = await executeStagePdfCanary({
+        outputDir: dir,
+        executeGateEnv: GATE_ENV,
+        transport,
+      });
+      assert.equal(receipt.status, "blocked_no_rollback_wiring");
+      assert.equal(receipt.firstProductionProofEarned, false);
+      assert.equal(receipt.spend, false);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("live CLI resolve fails closed without configPath/healthUrl", () => {
+    const missing = resolveLiveExecuteOperationalRollback({
+      STAGE_PDF_CANARY_EXECUTE: "1",
+    });
+    assert.equal(missing.ok, false);
+    if (!missing.ok) assert.match(missing.error, /CONFIG_PATH/);
+
+    const noHealth = resolveLiveExecuteOperationalRollback({
+      STAGE_PDF_CANARY_CONFIG_PATH: "/tmp/does-not-need-exist-yet.json",
+    });
+    assert.equal(noHealth.ok, false);
+    if (!noHealth.ok) assert.match(noHealth.error, /HEALTH_URL/);
+  });
+
   it("mock success → mock_verified only (never executed / never first production proof)", async () => {
     const dir = mkdtempSync(path.join(tmpdir(), "stage-pdf-ok-"));
+    const wiring = wireTempRollback(dir);
     let captured: StagePdfOpenRouterRequest | undefined;
     const transport: StagePdfCanaryTransport = {
-      proofKind: "mock_transport",
       async send(request) {
         captured = request;
         return {
@@ -117,6 +179,7 @@ describe("Stage PDF canary execute (mock transport)", () => {
         executeGateEnv: GATE_ENV,
         transport,
         nowIso: "2026-08-03T12:00:00.000Z",
+        operationalRollback: { configPath: wiring.configPath, runner: wiring.runner },
       });
       assert.equal(receipt.status, "mock_verified");
       assert.equal(receipt.proof_kind, "mock_transport");
@@ -143,26 +206,98 @@ describe("Stage PDF canary execute (mock transport)", () => {
     }
   });
 
+  it("adversarial: self-declared openrouter_http_production + 200 cannot earn production proof", async () => {
+    const dir = mkdtempSync(path.join(tmpdir(), "stage-pdf-spoof-"));
+    const wiring = wireTempRollback(dir);
+    // Force the classic spoof shape even though proofKind is no longer on the type.
+    const transport = {
+      proofKind: "openrouter_http_production",
+      async send() {
+        return {
+          ok: true,
+          statusCode: 200,
+          assistantText: "STAGE_PDF_CANARY_OK — spoofed",
+        };
+      },
+    } as StagePdfCanaryTransport & { proofKind: "openrouter_http_production" };
+    try {
+      const receipt = await executeStagePdfCanary({
+        outputDir: dir,
+        executeGateEnv: GATE_ENV,
+        transport,
+        operationalRollback: { configPath: wiring.configPath, runner: wiring.runner },
+      });
+      assert.equal(receipt.status, "mock_verified");
+      assert.equal(receipt.proof_kind, "mock_transport");
+      assert.equal(receipt.firstProductionProofEarned, false);
+      assert.notEqual(receipt.status, "executed");
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("adversarial: Object.assign spoof + Symbol.for brand still mock_verified only", async () => {
+    const dir = mkdtempSync(path.join(tmpdir(), "stage-pdf-spoof2-"));
+    const wiring = wireTempRollback(dir);
+    const transport = Object.assign(
+      {
+        async send() {
+          return {
+            ok: true,
+            statusCode: 200,
+            assistantText: "STAGE_PDF_CANARY_OK",
+          };
+        },
+      },
+      {
+        proofKind: "openrouter_http_production",
+        [Symbol.for("lisa.stage.pdf.openrouter_http_production")]: true,
+      },
+    ) as StagePdfCanaryTransport;
+    try {
+      const receipt = await executeStagePdfCanary({
+        outputDir: dir,
+        executeGateEnv: GATE_ENV,
+        transport,
+        operationalRollback: { configPath: wiring.configPath, runner: wiring.runner },
+      });
+      assert.equal(receipt.status, "mock_verified");
+      assert.equal(receipt.proof_kind, "mock_transport");
+      assert.equal(receipt.firstProductionProofEarned, false);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("adversarial spoof on failure never stamps production proof_kind", async () => {
+    const dir = mkdtempSync(path.join(tmpdir(), "stage-pdf-spoof-fail-"));
+    const wiring = wireTempRollback(dir);
+    const transport = {
+      proofKind: "openrouter_http_production",
+      async send() {
+        return { ok: false, statusCode: 500, errorClass: "http_error", errorMessage: "boom" };
+      },
+    } as StagePdfCanaryTransport & { proofKind: "openrouter_http_production" };
+    try {
+      const receipt = await executeStagePdfCanary({
+        outputDir: dir,
+        executeGateEnv: GATE_ENV,
+        transport,
+        operationalRollback: { configPath: wiring.configPath, runner: wiring.runner },
+      });
+      assert.equal(receipt.status, "execute_failed_rolled_back");
+      assert.equal(receipt.proof_kind, "mock_transport");
+      assert.equal(receipt.firstProductionProofEarned, false);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
   it("mock failure → operational tools_deny_pdf rollback on temp fixture + fake runner", async () => {
     const dir = mkdtempSync(path.join(tmpdir(), "stage-pdf-fail-"));
-    const configPath = path.join(dir, "openclaw.json");
-    writeStagePdfRollbackFixtureConfig({
-      targetPath: configPath,
-      slice: routingSliceFixture(),
-    });
     const events: string[] = [];
-    const runner: StagePdfServiceRunner = {
-      async restart(service) {
-        events.push(`restart:${service}`);
-        return { ok: true };
-      },
-      async health(service) {
-        events.push(`health:${service}`);
-        return { ok: true };
-      },
-    };
+    const wiring = wireTempRollback(dir, events);
     const transport: StagePdfCanaryTransport = {
-      proofKind: "mock_transport",
       async send() {
         return {
           ok: false,
@@ -178,7 +313,7 @@ describe("Stage PDF canary execute (mock transport)", () => {
         executeGateEnv: GATE_ENV,
         transport,
         nowIso: "2026-08-03T12:01:00.000Z",
-        operationalRollback: { configPath, runner },
+        operationalRollback: { configPath: wiring.configPath, runner: wiring.runner },
       });
       assert.equal(receipt.status, "execute_failed_rolled_back");
       assert.equal(receipt.firstProductionProofEarned, false);
@@ -194,7 +329,7 @@ describe("Stage PDF canary execute (mock transport)", () => {
       assert.equal(receipt.rollbackApplied.operational?.restarted, true);
       assert.equal(receipt.rollbackApplied.operational?.healthOk, true);
       assert.deepEqual(events, ["restart:ai.openclaw.lisa-stage", "health:ai.openclaw.lisa-stage"]);
-      const after = JSON.parse(readFileSync(configPath, "utf8")) as {
+      const after = JSON.parse(readFileSync(wiring.configPath, "utf8")) as {
         tools?: { deny?: string[] };
         agents?: { defaults?: { pdfModel?: unknown } };
       };
@@ -208,10 +343,10 @@ describe("Stage PDF canary execute (mock transport)", () => {
     }
   });
 
-  it("empty assistant text fails verification and rolls back", async () => {
+  it("empty assistant text fails verification and rolls back with wiring", async () => {
     const dir = mkdtempSync(path.join(tmpdir(), "stage-pdf-empty-"));
+    const wiring = wireTempRollback(dir);
     const transport: StagePdfCanaryTransport = {
-      proofKind: "mock_transport",
       async send() {
         return { ok: true, statusCode: 200, assistantText: "   " };
       },
@@ -221,6 +356,7 @@ describe("Stage PDF canary execute (mock transport)", () => {
         outputDir: dir,
         executeGateEnv: GATE_ENV,
         transport,
+        operationalRollback: { configPath: wiring.configPath, runner: wiring.runner },
       });
       assert.equal(receipt.status, "execute_failed_rolled_back");
       assert.equal(receipt.rollbackApplied?.strategy, "tools_deny_pdf");
@@ -241,16 +377,7 @@ describe("Stage PDF operational rollback (temp fixture + fake runner)", () => {
     });
     const before = readFileSync(configPath, "utf8");
     const events: string[] = [];
-    const runner: StagePdfServiceRunner = {
-      async restart(service) {
-        events.push(`restart:${service}`);
-        return { ok: true };
-      },
-      async health(service) {
-        events.push(`health:${service}`);
-        return { ok: true };
-      },
-    };
+    const runner = fakeRunner(events);
     try {
       const result = await applyStagePdfOperationalRollback({
         configPath,
@@ -278,7 +405,7 @@ describe("Stage PDF operational rollback (temp fixture + fake runner)", () => {
     }
   });
 
-  it("restores backup when restart fails after write", async () => {
+  it("restores backup then recovery-restarts when restart fails after write", async () => {
     const dir = mkdtempSync(path.join(tmpdir(), "stage-pdf-op-restore-"));
     const configPath = path.join(dir, "openclaw.json");
     writeStagePdfRollbackFixtureConfig({
@@ -286,11 +413,17 @@ describe("Stage PDF operational rollback (temp fixture + fake runner)", () => {
       slice: routingSliceFixture(),
     });
     const before = readFileSync(configPath, "utf8");
+    const events: string[] = [];
+    let restartCalls = 0;
     const runner: StagePdfServiceRunner = {
-      async restart() {
-        return { ok: false, error: "fake_restart_failed" };
+      async restart(service) {
+        events.push(`restart:${service}`);
+        restartCalls += 1;
+        if (restartCalls === 1) return { ok: false, error: "fake_restart_failed" };
+        return { ok: true };
       },
-      async health() {
+      async health(service) {
+        events.push(`health:${service}`);
         return { ok: true };
       },
     };
@@ -302,8 +435,46 @@ describe("Stage PDF operational rollback (temp fixture + fake runner)", () => {
       });
       assert.equal(result.ok, false);
       assert.equal(result.restoredFromBackup, true);
+      assert.equal(result.recoveryRestarted, true);
+      assert.equal(result.recoveryHealthOk, true);
       assert.equal(readFileSync(configPath, "utf8"), before);
       assert.match(result.error ?? "", /fake_restart_failed/);
+      assert.deepEqual(events, [
+        "restart:ai.openclaw.lisa-stage",
+        "restart:ai.openclaw.lisa-stage",
+        "health:ai.openclaw.lisa-stage",
+      ]);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("fails loudly when recovery restart/health also fails after restore", async () => {
+    const dir = mkdtempSync(path.join(tmpdir(), "stage-pdf-op-recovery-fail-"));
+    const configPath = path.join(dir, "openclaw.json");
+    writeStagePdfRollbackFixtureConfig({
+      targetPath: configPath,
+      slice: routingSliceFixture(),
+    });
+    const runner: StagePdfServiceRunner = {
+      async restart() {
+        return { ok: false, error: "always_restart_fail" };
+      },
+      async health() {
+        return { ok: false, error: "always_health_fail" };
+      },
+    };
+    try {
+      const result = await applyStagePdfOperationalRollback({
+        configPath,
+        runner,
+        nowIso: "2026-08-03T12:12:00.000Z",
+      });
+      assert.equal(result.ok, false);
+      assert.equal(result.restoredFromBackup, true);
+      assert.equal(result.recoveryRestarted, false);
+      assert.equal(result.recoveryHealthOk, false);
+      assert.match(result.error ?? "", /recovery restart failed/);
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }

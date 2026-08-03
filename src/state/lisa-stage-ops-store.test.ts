@@ -10,7 +10,9 @@ import {
   ensureLisaStageOpsSchema,
   expireMainApproveClaims,
   expireStaleRepairAttempts,
+  isHealthyLisaStageOpsStore,
   listRepairAttempts,
+  openHealthyLisaStageOpsStore,
   probeLisaStageOpsStoreHealth,
   putMainApprovePackage,
   recordRepairAttempt,
@@ -55,6 +57,17 @@ describe("lisa stage ops store", () => {
       }),
     ).toThrow(/blocked_no_store/);
     expect(() => requireHealthyLisaStageOpsStore(options)).toThrow(/blocked_no_store/);
+  });
+
+  it("mints sealed HealthyLisaStageOpsStore only after health; rejects forgeable available:true", () => {
+    const databasePath = tempDbPath("lisa-stage-ops-brand-");
+    const options = { databasePath, path: databasePath };
+    expect(() => openHealthyLisaStageOpsStore(options)).toThrow(/blocked_no_store/);
+    expect(isHealthyLisaStageOpsStore({ available: true })).toBe(false);
+    ensureLisaStageOpsSchema({ ...options, ensure: true });
+    const store = openHealthyLisaStageOpsStore(options);
+    expect(isHealthyLisaStageOpsStore(store)).toBe(true);
+    expect(store.databasePath).toBe(databasePath);
   });
 
   it("lazily ensures all lisa_stage_* tables without further bumping schema_version", () => {

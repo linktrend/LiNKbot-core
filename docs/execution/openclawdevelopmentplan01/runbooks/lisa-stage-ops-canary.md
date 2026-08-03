@@ -19,8 +19,8 @@
 | Primary          | `openrouter/openai/gpt-5.6-luna`, `thinkingDefault: medium`                                                                                                                                                                                                                                        |
 | Fallbacks        | GLM-5.2 → Kimi K3 → Gemini 3.5 Flash-Lite (all `openrouter/...`)                                                                                                                                                                                                                                   |
 | Image/PDF        | `openrouter/minimax/minimax-m3` via `imageModel` + `pdfModel`; PDF `approved_unverified`                                                                                                                                                                                                           |
-| PDF rollback     | Operational execute failure: backup config → `tools.deny` pdf + remove `pdfModel` → validate → restart **only** `ai.openclaw.lisa-stage` via injected runner → health; restore backup if apply fails. Mock/dry use temp fixtures only                                                              |
-| PDF proof        | Mock transport success = `status=mock_verified`, `proof_kind=mock_transport`, `firstProductionProofEarned=false`. Production proof requires real OpenRouter HTTP (`proof_kind=openrouter_http_production`) — **pending** (not earned this session)                                                 |
+| PDF rollback     | Execute requires wired `configPath` + lisa-stage-only runner + health URL (fail closed; no temp/no-op defaults). On restart/health failure: restore backup → recovery restart + health; fail loudly if recovery fails. Tests inject temp fixtures only                                             |
+| PDF proof        | Injected transport cannot self-declare production proof. Mock/spoof → `mock_verified` / `mock_transport` / `firstProductionProofEarned=false`. Only sealed `createOpenRouterFetchTransport` brand may set `openrouter_http_production` — **pending** live earn                                     |
 | Eval             | Nemotron OpenRouter ref — **not** in defaults / modelPolicy.allow                                                                                                                                                                                                                                  |
 | Cron SOT         | Repo `linkbots/lisa/ops/jobs.stage-seed.json` v2 — **6** real bounded procedures, `delivery=none`, `enabled=false`                                                                                                                                                                                 |
 | Typed installer  | `stage-ops-cron-installer.ts` emits gateway-valid create/edit payloads (UUID preserve, disabled, delivery=none)                                                                                                                                                                                    |
@@ -188,23 +188,29 @@ node --experimental-strip-types linkbots/lisa/ops/stage-pdf-canary.ts dry-run --
 # Rollback plan fragment (does not mutate stage by itself)
 node --experimental-strip-types linkbots/lisa/ops/stage-pdf-canary.ts rollback-plan --out /tmp/lisa-stage-pdf-canary
 
-# Execute (SPEND) — dual gate only: STAGE_PDF_CANARY_EXECUTE=1 + existing OPENROUTER_API_KEY in process env
-# Live HTTP also needs STAGE_PDF_CANARY_ALLOW_LIVE_FETCH=1. Injected/mock transport success is mock_verified only.
+# Execute (SPEND) — gates: STAGE_PDF_CANARY_EXECUTE=1 + OPENROUTER_API_KEY in process env
+# Live HTTP also needs STAGE_PDF_CANARY_ALLOW_LIVE_FETCH=1.
+# Live execute requires STAGE_PDF_CANARY_CONFIG_PATH + STAGE_PDF_CANARY_HEALTH_URL (operational rollback).
+# Injected/mock transport success is mock_verified only; spoofed proofKind cannot earn production proof.
 # Never mint MiniMax direct keys. Never print secrets. Never touch live Lisa 18790.
 # STAGE_PDF_CANARY_EXECUTE=1 STAGE_PDF_CANARY_ALLOW_LIVE_FETCH=1 \
+#   STAGE_PDF_CANARY_CONFIG_PATH=... STAGE_PDF_CANARY_HEALTH_URL=http://127.0.0.1:18791/... \
 #   node --experimental-strip-types linkbots/lisa/ops/stage-pdf-canary.ts execute --out /tmp/lisa-stage-pdf-canary
 ```
 
-**Proof truth:** mock transport → `status=mock_verified`, `proof_kind=mock_transport`, `firstProductionProofEarned=false`, `paidSpendEnablementAllowed=false`. Only an actual OpenRouter HTTP response from the stage credential path with a real bounded PDF request may set `proof_kind=openrouter_http_production` / `firstProductionProofEarned`. Package/dry-run/mock alone do **not** earn production proof (**pending** until Principal-gated live execute).
+**Proof truth:** mock/injected transport → `status=mock_verified`, `proof_kind=mock_transport`, `firstProductionProofEarned=false`, `paidSpendEnablementAllowed=false`. Self-declared `openrouter_http_production` on injectors is ignored. Only the sealed OpenRouter HTTP adapter (`createOpenRouterFetchTransport`) using the stage credential path may set `proof_kind=openrouter_http_production` / `firstProductionProofEarned`. Package/dry-run/mock alone do **not** earn production proof (**pending** until Principal-gated live execute).
 
 ### Rollback truth
 
 ```text
 strategy: tools_deny_pdf
+execute requires operationalRollback wiring (configPath + lisa-stage-only runner + health URL)
+  — fail closed as blocked_no_rollback_wiring if missing (no temp/no-op defaults)
 execute failure: atomic backup → add tools.deny:pdf → remove agents.defaults.pdfModel
-  → validate → restart ONLY ai.openclaw.lisa-stage (injected runner) → health
-  → restore backup if rollback application fails
-default/dry/mock: temp fixtures only (never stage/live Lisa)
+  → validate → restart ONLY ai.openclaw.lisa-stage → health
+  → on restart/health failure: restore backup → recovery restart + health restored config
+  → fail loudly if recovery restart/health fails
+tests: temp fixtures + fake runner only (never stage/live Lisa)
 preserve model.primary + fallbacks + imageModel
 alternatePaidDocumentRoutingAllowed = false
 liveLisaTouched = false

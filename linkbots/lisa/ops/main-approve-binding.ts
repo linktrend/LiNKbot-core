@@ -7,8 +7,10 @@
 
 import {
   claimMainApprovePackage,
+  isHealthyLisaStageOpsStore,
   putMainApprovePackage,
   requireHealthyLisaStageOpsStore,
+  type HealthyLisaStageOpsStore,
   type LisaStageOpsStoreOptions,
   type MainApproveClaimRow,
   type MainApprovePackageRow,
@@ -98,19 +100,26 @@ export function resolveMainApproveRuntimeStore(params?: {
  * Packaging / default runtime adapter: fail-closed until an explicit probe
  * (resolveMainApproveRuntimeStore) or sealed SQLite path proves health.
  * Do not live-probe stage from module load / property access.
+ *
+ * @deprecated Availability booleans are not authorization capabilities.
+ * Runtime auth must use {@link HealthyLisaStageOpsStore} from the composition root.
  */
 export const MAIN_APPROVE_RUNTIME_STORE: MainApproveStoreAvailability = {
   available: false,
   prerequisite: MAIN_APPROVE_STORE_PREREQUISITE,
 };
 
-/** Explicit unhealthy adapter for fail-closed tests. */
+/** Explicit unhealthy adapter for fail-closed tests (not a sealed capability). */
 export const MAIN_APPROVE_UNHEALTHY_STORE: MainApproveStoreAvailability = {
   available: false,
   prerequisite: MAIN_APPROVE_STORE_PREREQUISITE,
 };
 
-/** Test / future adapter — production runtime probes SQLite via resolveMainApproveRuntimeStore. */
+/**
+ * @deprecated Do not use as an authorization adapter. Forgeable `{ available: true }`
+ * is rejected by issueCarlosAsk / authorizeApprovalDispatch — mint via
+ * openStageDurableStoreCapability / openHealthyLisaStageOpsStore instead.
+ */
 export type AuthoritativePackageStore = {
   available: true;
   prerequisite?: undefined;
@@ -183,12 +192,13 @@ export function buildCarlosAskView(pkg: MainApprovePackage): MainApproveAskView 
 }
 
 /**
- * Runtime-facing: never create a Carlos ask without an authoritative store
- * and explicit live opt-in (defaults fail closed / non-live).
+ * Runtime-facing: never create a Carlos ask without a sealed healthy store
+ * capability (composition root) and explicit live opt-in (defaults fail closed).
+ * Caller-supplied `{ available: true }` is rejected — brand required.
  */
 export function issueCarlosAsk(
   pkg: MainApprovePackage,
-  store: MainApproveStoreAvailability = MAIN_APPROVE_RUNTIME_STORE,
+  store?: HealthyLisaStageOpsStore | null,
   live: LisaOpsLiveActionConfig = LISA_OPS_LIVE_ACTION_DEFAULTS,
 ): MainApproveAskResult {
   const liveGate = authorizeLiveLisaAction(live);
@@ -200,13 +210,17 @@ export function issueCarlosAsk(
         "Live Main Approve requires explicit liveLisaTargetingAllowed=true and separately approved credentials language in docs/contracts. Candidate defaults remain non-live.",
     };
   }
-  if (!store.available) {
+  if (!isHealthyLisaStageOpsStore(store)) {
     return {
       ok: false,
       reason: "blocked_no_store",
-      prerequisite: store.prerequisite ?? MAIN_APPROVE_STORE_PREREQUISITE,
+      prerequisite: MAIN_APPROVE_STORE_PREREQUISITE,
     };
   }
+  requireHealthyLisaStageOpsStore({
+    databasePath: store.databasePath,
+    path: store.databasePath,
+  });
   assertImmutableBindings(pkg);
   return { ok: true, view: buildCarlosAskViewPure(pkg) };
 }
@@ -300,9 +314,9 @@ export function validateApprovalBindings(params: {
 }
 
 /**
- * Runtime-facing authorization: fails closed without an authoritative store
- * and without explicit live opt-in + credentials language approval.
- * Supply explicit test adapters only in tests.
+ * Runtime-facing authorization: fails closed without a sealed healthy store
+ * capability from the composition root, and without explicit live opt-in.
+ * Caller-supplied `{ available: true }` is rejected — brand required.
  */
 export function authorizeApprovalDispatch(
   params: {
@@ -311,7 +325,7 @@ export function authorizeApprovalDispatch(
     nowIso: string;
     liveItems: MainApproveItem[];
   },
-  store: MainApproveStoreAvailability = MAIN_APPROVE_RUNTIME_STORE,
+  store?: HealthyLisaStageOpsStore | null,
   live: LisaOpsLiveActionConfig = LISA_OPS_LIVE_ACTION_DEFAULTS,
 ): ApprovalDispatch {
   const liveGate = authorizeLiveLisaAction(live);
@@ -323,19 +337,23 @@ export function authorizeApprovalDispatch(
         "Live Main Approve requires explicit liveLisaTargetingAllowed=true and separately approved credentials language in docs/contracts. Candidate defaults remain non-live.",
     };
   }
-  if (!store.available) {
+  if (!isHealthyLisaStageOpsStore(store)) {
     return {
       ok: false,
       reason: "blocked_no_store",
-      prerequisite: store.prerequisite ?? MAIN_APPROVE_STORE_PREREQUISITE,
+      prerequisite: MAIN_APPROVE_STORE_PREREQUISITE,
     };
   }
+  requireHealthyLisaStageOpsStore({
+    databasePath: store.databasePath,
+    path: store.databasePath,
+  });
   return validateApprovalBindings(params);
 }
 
 /**
  * @deprecated Runtime must use authorizeApprovalDispatch (fail-closed).
- * Kept as alias that still fails closed on the packaging default store.
+ * Kept as alias that still fails closed (no sealed store capability).
  */
 export function validateApprovalDispatch(params: {
   sealed: MainApprovePackage;
@@ -343,5 +361,5 @@ export function validateApprovalDispatch(params: {
   nowIso: string;
   liveItems: MainApproveItem[];
 }): ApprovalDispatch {
-  return authorizeApprovalDispatch(params, MAIN_APPROVE_RUNTIME_STORE);
+  return authorizeApprovalDispatch(params, null);
 }

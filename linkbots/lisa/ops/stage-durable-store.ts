@@ -7,12 +7,15 @@
 import {
   claimMainApprovePackage,
   ensureLisaStageOpsSchema,
+  isHealthyLisaStageOpsStore,
+  openHealthyLisaStageOpsStore,
   probeLisaStageOpsStoreHealth,
   putMainApprovePackage,
   recordRepairAttempt,
   requireHealthyLisaStageOpsStore,
   resolveOpenClawStateSqlitePath,
   upsertRepairBinding,
+  type HealthyLisaStageOpsStore,
   type LisaStageOpsStoreHealth,
   type LisaStageOpsStoreOptions,
   type MainApproveClaimRow,
@@ -21,6 +24,9 @@ import {
   type RepairBindingRow,
 } from "./lisa-stage-ops-store.ts";
 import { STAGE_OPS_STAGE_ROOT } from "./stage-ops-command.ts";
+
+export type { HealthyLisaStageOpsStore };
+export { isHealthyLisaStageOpsStore, openHealthyLisaStageOpsStore };
 
 export type StageDurableStoresProbeResult = {
   repairAttemptStoreAvailable: boolean;
@@ -84,6 +90,31 @@ export function resolveMainApproveStoreAvailability(params?: {
     };
   }
   return { available: true, prerequisite: STORE_PREREQUISITE };
+}
+
+/**
+ * Production composition root for authorization capabilities.
+ * Mints a sealed HealthyLisaStageOpsStore after probe (optional ensure).
+ * Never accepts or returns a forgeable `{ available: true }` flag for auth.
+ */
+export function openStageDurableStoreCapability(params?: {
+  stateDir?: string;
+  databasePath?: string;
+  /** When true, lazy-ensure additive tables before minting. Default false. */
+  ensure?: boolean;
+}): { ok: true; store: HealthyLisaStageOpsStore } | { ok: false; prerequisite: string } {
+  const options = resolveStoreOptions(params);
+  if (params?.ensure === true) {
+    ensureLisaStageOpsSchema(options);
+  }
+  const health = probeLisaStageOpsStoreHealth({ ...options, ensure: false });
+  if (!health.ok) {
+    return {
+      ok: false,
+      prerequisite: health.error ? `${STORE_PREREQUISITE} (${health.error})` : STORE_PREREQUISITE,
+    };
+  }
+  return { ok: true, store: openHealthyLisaStageOpsStore(options) };
 }
 
 /** Ensure additive lisa_stage_* tables on the resolved OpenClaw state DB. */

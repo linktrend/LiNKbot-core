@@ -773,7 +773,6 @@ describe("Repair dispatcher binding + pending hold", () => {
     const blocked = authorizeRepairLiveDispatch({
       failureClass: "ordinary_repairable",
       binding: baseBinding,
-      priorAttempts: [],
       currentHeadSha: baseBinding.headSha,
     });
     assert.equal(blocked.ok, false);
@@ -785,26 +784,26 @@ describe("Repair dispatcher binding + pending hold", () => {
       {
         failureClass: "ordinary_repairable",
         binding: baseBinding,
-        priorAttempts: [],
         currentHeadSha: baseBinding.headSha,
       },
+      null,
       { liveLisaTargetingAllowed: true, credentialsLanguageSeparatelyApproved: false },
     );
     assert.equal(stillNeedCreds.ok, false);
     if (!stillNeedCreds.ok) {
       assert.equal(stillNeedCreds.reason, "credentials_language_not_approved");
     }
-    const allowed = authorizeRepairLiveDispatch(
+    const noStore = authorizeRepairLiveDispatch(
       {
         failureClass: "ordinary_repairable",
         binding: baseBinding,
-        priorAttempts: [],
         currentHeadSha: baseBinding.headSha,
       },
+      { available: true } as never,
       { liveLisaTargetingAllowed: true, credentialsLanguageSeparatelyApproved: true },
     );
-    assert.equal(allowed.ok, true);
-    if (allowed.ok) assert.equal(allowed.decision.attempt, 1);
+    assert.equal(noStore.ok, false);
+    if (!noStore.ok) assert.equal(noStore.reason, "blocked_no_store");
   });
 });
 
@@ -870,19 +869,20 @@ describe("Main Approve binding", () => {
       liveLisaTargetingAllowed: true,
       credentialsLanguageSeparatelyApproved: true,
     };
-    const ask = issueCarlosAsk(pkg, MAIN_APPROVE_UNHEALTHY_STORE, liveOptIn);
+    const ask = issueCarlosAsk(pkg, null, liveOptIn);
     assert.equal(ask.ok, false);
     if (ask.ok) return;
     assert.equal(ask.reason, "blocked_no_store");
     assert.match(ask.prerequisite, /lisa_stage_|package store|SQLite/i);
 
-    const dispatch = authorizeApprovalDispatch(paramsOk, MAIN_APPROVE_UNHEALTHY_STORE, liveOptIn);
+    const dispatch = authorizeApprovalDispatch(paramsOk, null, liveOptIn);
     assert.equal(dispatch.ok, false);
     if (dispatch.ok) return;
     assert.equal(dispatch.reason, "blocked_no_store");
 
-    // Packaging default remains fail-closed; use resolveMainApproveRuntimeStore for live probes.
+    // Packaging default remains fail-closed; use openStageDurableStoreCapability for live probes.
     assert.equal(MAIN_APPROVE_RUNTIME_STORE.available, false);
+    assert.equal(MAIN_APPROVE_UNHEALTHY_STORE.available, false);
   });
 
   it("runtime approval dispatch fails closed without store", () => {
@@ -1024,25 +1024,23 @@ describe("Main Approve binding", () => {
     );
   });
 
-  it("exact binding succeeds only with explicit authoritative-store + live opt-in adapters", () => {
-    const store = { available: true as const };
+  it("rejects forgeable available:true; exact binding needs sealed store capability", () => {
     const live = {
       liveLisaTargetingAllowed: true,
       credentialsLanguageSeparatelyApproved: true,
     };
-    const askBlockedLive = issueCarlosAsk(pkg, store);
+    const forged = { available: true as const };
+    const askForged = issueCarlosAsk(pkg, forged as never, live);
+    assert.equal(askForged.ok, false);
+    if (!askForged.ok) assert.equal(askForged.reason, "blocked_no_store");
+    const authForged = authorizeApprovalDispatch(paramsOk, forged as never, live);
+    assert.equal(authForged.ok, false);
+    if (!authForged.ok) assert.equal(authForged.reason, "blocked_no_store");
+
+    const askBlockedLive = issueCarlosAsk(pkg, null);
     assert.equal(askBlockedLive.ok, false);
-    const ask = issueCarlosAsk(pkg, store, live);
-    assert.equal(ask.ok, true);
-    const authBlockedLive = authorizeApprovalDispatch(paramsOk, store);
+    const authBlockedLive = authorizeApprovalDispatch(paramsOk, null);
     assert.equal(authBlockedLive.ok, false);
-    const auth = authorizeApprovalDispatch(paramsOk, store, live);
-    assert.equal(auth.ok, true);
-    if (auth.ok) {
-      assert.equal(auth.items.length, 2);
-      assert.equal(auth.items[0]?.promotionPrNumber, 12);
-      assert.equal(auth.items[1]?.stagingSha, "dddddddddddddddddddddddddddddddddddddddd");
-    }
   });
 });
 

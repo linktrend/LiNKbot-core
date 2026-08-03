@@ -19,13 +19,20 @@ import {
 } from "./lisa-stage-ops-store.ts";
 import {
   claimSealedMainApprovePackage,
+  authorizeApprovalDispatch,
+  issueCarlosAsk,
   sealMainApprovePackage,
   type MainApprovePackage,
 } from "./main-approve-binding.ts";
-import { persistRepairAttempt, persistRepairBinding } from "./repair-dispatcher.ts";
+import {
+  authorizeRepairLiveDispatch,
+  persistRepairAttempt,
+  persistRepairBinding,
+} from "./repair-dispatcher.ts";
 import {
   claimStageMainApprovePackage,
   ensureStageDurableStores,
+  openStageDurableStoreCapability,
   persistStageMainApprovePackage,
   persistStageRepairAttempt,
   persistStageRepairBinding,
@@ -291,6 +298,124 @@ describe("Canonical store consumers (Repair / Main Approve / coordinator ensure)
       });
       assert.equal(unlocked.repairSupervision.installAllowed, true);
       assert.equal(unlocked.repairSupervision.installedInPlan, true);
+    } finally {
+      closeLisaStageOpsStore();
+      rmSync(directory, { recursive: true, force: true });
+    }
+  });
+
+  it("auth consumers require sealed capability; load attempts from store across restart", () => {
+    const { directory, databasePath } = tempDbPath("stage-durable-auth-");
+    const live = {
+      liveLisaTargetingAllowed: true,
+      credentialsLanguageSeparatelyApproved: true,
+    };
+    const binding = {
+      repository: "openclaw/openclaw",
+      branch: "fix/stage",
+      prNumber: 11,
+      headSha: "cafebabe",
+    };
+    try {
+      const missing = openStageDurableStoreCapability({ databasePath });
+      assert.equal(missing.ok, false);
+
+      const minted = openStageDurableStoreCapability({ databasePath, ensure: true });
+      assert.equal(minted.ok, true);
+      if (!minted.ok) return;
+
+      const first = authorizeRepairLiveDispatch(
+        {
+          failureClass: "ordinary_repairable",
+          binding,
+          currentHeadSha: binding.headSha,
+        },
+        minted.store,
+        live,
+      );
+      assert.equal(first.ok, true);
+      if (first.ok) assert.equal(first.decision.attempt, 1);
+
+      persistRepairBinding(binding, { databasePath, path: databasePath }, 1_700_000_100_000);
+      persistRepairAttempt(
+        {
+          binding,
+          attempt: 1,
+          dispatchedAt: "2026-08-03T01:00:00.000Z",
+          outcome: "pending",
+          expiresAtMs: 1_700_000_200_000,
+        },
+        { databasePath, path: databasePath },
+        1_700_000_100_000,
+      );
+
+      closeLisaStageOpsStore();
+      const reminted = openStageDurableStoreCapability({ databasePath });
+      assert.equal(reminted.ok, true);
+      if (!reminted.ok) return;
+
+      const held = authorizeRepairLiveDispatch(
+        {
+          failureClass: "ordinary_repairable",
+          binding,
+          currentHeadSha: binding.headSha,
+        },
+        reminted.store,
+        live,
+      );
+      assert.equal(held.ok, false);
+      if (!held.ok) {
+        assert.equal(held.reason, "not_dispatch");
+        assert.equal(held.decision.decision, "hold");
+      }
+
+      expireStaleRepairAttempts({ databasePath, path: databasePath }, 1_700_000_300_000);
+      const afterExpire = authorizeRepairLiveDispatch(
+        {
+          failureClass: "ordinary_repairable",
+          binding,
+          currentHeadSha: binding.headSha,
+        },
+        reminted.store,
+        live,
+      );
+      assert.equal(afterExpire.ok, true);
+      if (afterExpire.ok) assert.equal(afterExpire.decision.attempt, 1);
+
+      const pkg: MainApprovePackage = {
+        packageId: "pkg-auth-1",
+        mondayDate: "2026-08-03",
+        claimExpiresAt: "2026-08-03T12:00:00.000Z",
+        items: [
+          {
+            index: 1,
+            plainDescription: "promote stage fix",
+            repository: "openclaw/openclaw",
+            promotionPrNumber: 11,
+            stagingSha: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            priorMainSha: "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            promotionHeadSha: "cccccccccccccccccccccccccccccccccccccccc",
+            gateResult: "Clear",
+          },
+        ],
+      };
+      const ask = issueCarlosAsk(pkg, reminted.store, live);
+      assert.equal(ask.ok, true);
+      const dispatch = authorizeApprovalDispatch(
+        {
+          sealed: pkg,
+          approvedIndexes: [1],
+          nowIso: "2026-08-03T11:00:00.000Z",
+          liveItems: structuredClone(pkg.items),
+        },
+        reminted.store,
+        live,
+      );
+      assert.equal(dispatch.ok, true);
+      if (dispatch.ok) assert.equal(dispatch.items[0]?.promotionPrNumber, 11);
+
+      const forgedAsk = issueCarlosAsk(pkg, { available: true } as never, live);
+      assert.equal(forgedAsk.ok, false);
     } finally {
       closeLisaStageOpsStore();
       rmSync(directory, { recursive: true, force: true });

@@ -4,14 +4,16 @@
  * Default mode is package/dry-run: builds a synthetic local PDF, validates
  * routing hard stops, writes a machine-readable receipt, and documents rollback.
  * Execute mode builds a real OpenRouter PDF chat request and invokes an
- * injectable transport (mock in tests; fetch under Principal gate). Never
+ * injectable transport (mock in tests; sealed fetch under Principal gate). Never
  * prints secrets.
  *
- * Mock transport success is `mock_verified` only — never `executed` and never
- * earns firstProductionProofEarned. Only an actual OpenRouter HTTP response
- * from the stage credential path may set proof_kind=openrouter_http_production.
- * Execute failure runs operational file rollback (temp fixture by default;
- * injected configPath+runner under Principal gate) — never live Lisa 18790.
+ * Mock / injected transport success is `mock_verified` only — never `executed`
+ * and never earns firstProductionProofEarned. Injected transports cannot
+ * self-declare production proof. Only the sealed OpenRouter HTTP adapter
+ * (createOpenRouterFetchTransport) using the stage credential path may set
+ * proof_kind=openrouter_http_production. Execute requires real
+ * operationalRollback wiring (configPath + stage-only runner); fail closed
+ * otherwise — never silent temp fixture / no-op runner defaults.
  */
 
 import { createHash } from "node:crypto";
@@ -29,7 +31,7 @@ import {
 } from "./model-routing.openrouter-stage.ts";
 import {
   applyStagePdfOperationalRollback,
-  writeStagePdfRollbackFixtureConfig,
+  createStagePdfLisaStageRunner,
   type StagePdfOperationalRollbackResult,
   type StagePdfServiceRunner,
 } from "./stage-pdf-operational-rollback.ts";
@@ -83,14 +85,35 @@ export type StagePdfTransportResult = {
 
 export type StagePdfProofKind = "none" | "mock_transport" | "openrouter_http_production";
 
+/**
+ * Injectable transport surface — send only. Callers must NOT attach a
+ * production proofKind; executeStagePdfCanary ignores any spoofed claim and
+ * derives mock_verified for all non-sealed transports.
+ */
 export type StagePdfCanaryTransport = {
-  /** Injected mocks must be mock_transport; live fetch uses openrouter_http_production. */
-  proofKind: StagePdfProofKind;
   send: (
     request: StagePdfOpenRouterRequest,
     params: { apiKeyPresent: boolean },
   ) => Promise<StagePdfTransportResult>;
 };
+
+/** Module-private brand — not Symbol.for; injectors cannot mint production proof. */
+const OPENROUTER_HTTP_PRODUCTION_BRAND = Symbol("lisa.stage.pdf.openrouter_http_production");
+
+type SealedOpenRouterHttpProductionTransport = StagePdfCanaryTransport & {
+  readonly [OPENROUTER_HTTP_PRODUCTION_BRAND]: true;
+};
+
+function isSealedOpenRouterHttpProduction(
+  transport: StagePdfCanaryTransport,
+): transport is SealedOpenRouterHttpProductionTransport {
+  return (
+    typeof transport === "object" &&
+    transport !== null &&
+    (transport as SealedOpenRouterHttpProductionTransport)[OPENROUTER_HTTP_PRODUCTION_BRAND] ===
+      true
+  );
+}
 
 export type StagePdfCanaryReceipt = {
   receiptType: "lisa_stage_minimax_pdf_canary_v1";
@@ -101,6 +124,7 @@ export type StagePdfCanaryReceipt = {
     | "blocked_no_execute_gate"
     | "blocked_routing"
     | "blocked_no_transport"
+    | "blocked_no_rollback_wiring"
     | "rollback_planned"
     | "mock_verified"
     | "executed"
@@ -151,7 +175,7 @@ export type StagePdfCanaryReceipt = {
   };
   rollbackApplied?: {
     strategy: StagePdfRollbackPlan["strategy"];
-    applied: true;
+    applied: boolean;
     scope: "operational_file" | "in_memory_fixture";
     restoreReceipt: StagePdfRestoreReceipt;
     pdfToolDenied: boolean;
@@ -270,8 +294,8 @@ export function verifyStagePdfTransportResponse(result: StagePdfTransportResult)
 export function createOpenRouterFetchTransport(
   fetchImpl: typeof fetch = fetch,
 ): StagePdfCanaryTransport {
-  return {
-    proofKind: "openrouter_http_production",
+  const transport: SealedOpenRouterHttpProductionTransport = {
+    [OPENROUTER_HTTP_PRODUCTION_BRAND]: true,
     async send(request, params) {
       if (!params.apiKeyPresent) {
         return {
@@ -338,6 +362,7 @@ export function createOpenRouterFetchTransport(
       }
     },
   };
+  return transport;
 }
 
 function stagePdfConfigSliceForRollback(): StagePdfConfigSlice {
@@ -374,46 +399,76 @@ function applyInMemoryFailureRollback(
   };
 }
 
-async function applyExecuteFailureRollback(params: {
-  outputDir: string;
-  nowIso: string;
-  operational?: {
-    configPath: string;
-    runner: StagePdfServiceRunner;
-  };
-}): Promise<NonNullable<StagePdfCanaryReceipt["rollbackApplied"]>> {
-  const fixturePath =
-    params.operational?.configPath ??
-    path.join(params.outputDir, "fixture-openclaw.pdf-rollback.json");
-  if (!params.operational?.configPath) {
-    writeStagePdfRollbackFixtureConfig({
-      targetPath: fixturePath,
-      slice: stagePdfConfigSliceForRollback(),
-    });
+export type StagePdfOperationalRollbackWiring = {
+  configPath: string;
+  runner: StagePdfServiceRunner;
+};
+
+/**
+ * Resolve Principal-gated live execute rollback wiring from env.
+ * Fail closed when configPath or healthUrl is missing — never invent temp/no-op.
+ */
+export function resolveLiveExecuteOperationalRollback(
+  env: NodeJS.ProcessEnv = process.env,
+): { ok: true; wiring: StagePdfOperationalRollbackWiring } | { ok: false; error: string } {
+  const configPath = (env.STAGE_PDF_CANARY_CONFIG_PATH ?? "").trim();
+  const healthUrl = (env.STAGE_PDF_CANARY_HEALTH_URL ?? "").trim();
+  if (!configPath) {
+    return {
+      ok: false,
+      error: "STAGE_PDF_CANARY_CONFIG_PATH required for live execute operational rollback",
+    };
   }
+  if (!healthUrl) {
+    return {
+      ok: false,
+      error: "STAGE_PDF_CANARY_HEALTH_URL required for live execute operational rollback",
+    };
+  }
+  if (!existsSync(configPath)) {
+    return { ok: false, error: `STAGE_PDF_CANARY_CONFIG_PATH missing on disk: ${configPath}` };
+  }
+  try {
+    const runner = createStagePdfLisaStageRunner({ healthUrl });
+    return { ok: true, wiring: { configPath, runner } };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : String(err),
+    };
+  }
+}
 
-  const runner =
-    params.operational?.runner ??
-    ({
-      async restart() {
-        return { ok: true };
-      },
-      async health() {
-        return { ok: true };
-      },
-    } satisfies StagePdfServiceRunner);
-
+async function applyExecuteFailureRollback(params: {
+  nowIso: string;
+  operational: StagePdfOperationalRollbackWiring;
+}): Promise<NonNullable<StagePdfCanaryReceipt["rollbackApplied"]>> {
   const operational = await applyStagePdfOperationalRollback({
-    configPath: fixturePath,
-    runner,
+    configPath: params.operational.configPath,
+    runner: params.operational.runner,
     nowIso: params.nowIso,
   });
 
-  if (!operational.ok || !operational.restoreReceipt) {
-    // Operational apply failed after restore attempt — still record in-memory truth.
+  if (!operational.ok) {
+    // Truthful receipt: operational procedure ran but did not leave deny-pdf applied.
+    const fallback = applyInMemoryFailureRollback(params.nowIso);
+    return {
+      strategy: operational.strategy,
+      applied: false,
+      scope: "operational_file",
+      restoreReceipt: operational.restoreReceipt ?? fallback.restoreReceipt,
+      pdfToolDenied: operational.pdfToolDenied,
+      pdfModelRemoved: operational.pdfModelRemoved,
+      operational,
+    };
+  }
+
+  if (!operational.restoreReceipt) {
     const fallback = applyInMemoryFailureRollback(params.nowIso);
     return {
       ...fallback,
+      applied: false,
+      scope: "operational_file",
       operational,
     };
   }
@@ -554,11 +609,12 @@ export async function executeStagePdfCanary(params: {
   transport?: StagePdfCanaryTransport;
   /** When true and gates pass with no transport, use createOpenRouterFetchTransport(). */
   allowLiveFetchTransport?: boolean;
-  /** Optional Principal-gated config + runner. Defaults to temp fixture + no-op runner. */
-  operationalRollback?: {
-    configPath: string;
-    runner: StagePdfServiceRunner;
-  };
+  /**
+   * Required for execute. Live CLI supplies configPath + lisa-stage-only runner
+   * with health URL. Tests may inject temp fixture + fake runner. No silent
+   * temp/no-op defaults.
+   */
+  operationalRollback?: StagePdfOperationalRollbackWiring;
 }): Promise<StagePdfCanaryReceipt> {
   const routingErrors = validateOpenRouterOnlyStageRouting();
   const pdfPath = path.join(params.outputDir, "synthetic-stage-pdf-canary.pdf");
@@ -576,7 +632,12 @@ export async function executeStagePdfCanary(params: {
   const transport =
     params.transport ??
     (params.allowLiveFetchTransport ? createOpenRouterFetchTransport() : undefined);
-  const proofKind: StagePdfProofKind = transport?.proofKind ?? "none";
+  const sealedProduction = transport ? isSealedOpenRouterHttpProduction(transport) : false;
+  const proofKind: StagePdfProofKind = transport
+    ? sealedProduction
+      ? "openrouter_http_production"
+      : "mock_transport"
+    : "none";
 
   const base = baseReceiptFields({
     mode: "execute",
@@ -599,6 +660,21 @@ export async function executeStagePdfCanary(params: {
     return writeReceipt(params.outputDir, {
       ...base,
       status: "blocked_no_execute_gate",
+      spend: false,
+      firstProductionProofEarned: false,
+    });
+  }
+
+  const operational = params.operationalRollback;
+  if (
+    !operational ||
+    typeof operational.configPath !== "string" ||
+    !operational.configPath.trim() ||
+    !operational.runner
+  ) {
+    return writeReceipt(params.outputDir, {
+      ...base,
+      status: "blocked_no_rollback_wiring",
       spend: false,
       firstProductionProofEarned: false,
     });
@@ -634,18 +710,18 @@ export async function executeStagePdfCanary(params: {
 
   if (!verified.ok) {
     const rollbackApplied = await applyExecuteFailureRollback({
-      outputDir: params.outputDir,
       nowIso,
-      operational: params.operationalRollback,
+      operational,
     });
     return writeReceipt(params.outputDir, {
       ...base,
-      proof_kind: transport.proofKind,
+      // Never stamp production proof_kind from injector claims on failure.
+      proof_kind: sealedProduction ? "openrouter_http_production" : "mock_transport",
       status: "execute_failed_rolled_back",
       spend: {
         attempted: true,
         transportCalled: true,
-        note: "Transport called; verification failed; operational tools_deny_pdf rollback applied to fixture/injected config.",
+        note: "Transport called; verification failed; operational tools_deny_pdf rollback attempted on wired config.",
       },
       request: requestSummary,
       transport: {
@@ -660,8 +736,7 @@ export async function executeStagePdfCanary(params: {
     });
   }
 
-  const isProductionHttp = transport.proofKind === "openrouter_http_production";
-  if (!isProductionHttp) {
+  if (!sealedProduction) {
     return writeReceipt(params.outputDir, {
       ...base,
       proof_kind: "mock_transport",
@@ -669,7 +744,7 @@ export async function executeStagePdfCanary(params: {
       spend: {
         attempted: true,
         transportCalled: true,
-        note: "Mock transport succeeded only. Not first production proof; paidSpendEnablementAllowed remains false.",
+        note: "Mock/injected transport succeeded only. Not first production proof; paidSpendEnablementAllowed remains false.",
       },
       request: requestSummary,
       transport: {
@@ -708,6 +783,7 @@ function printHelp(): void {
 
 Defaults: package/dry-run only. execute requires STAGE_PDF_CANARY_EXECUTE=1 and existing OPENROUTER_API_KEY in process env (never printed).
 Live fetch also requires STAGE_PDF_CANARY_ALLOW_LIVE_FETCH=1 (Principal spend gate).
+Live execute requires STAGE_PDF_CANARY_CONFIG_PATH + STAGE_PDF_CANARY_HEALTH_URL (operational rollback; lisa-stage only).
 delivery=none; synthetic local PDF; OpenRouter-only; no live Lisa.
 `);
 }
@@ -738,15 +814,36 @@ async function mainAsync(argv: string[]): Promise<number> {
       console.error("Refusing execute: set STAGE_PDF_CANARY_EXECUTE=1 only under Principal gate.");
       return 1;
     }
+    const rollback = resolveLiveExecuteOperationalRollback(process.env);
+    if (!rollback.ok) {
+      const pdf = writeSyntheticStagePdf(path.join(outDir, "synthetic-stage-pdf-canary.pdf"));
+      const receipt = writeReceipt(outDir, {
+        ...baseReceiptFields({
+          mode: "execute",
+          pdf,
+          routingErrors: validateOpenRouterOnlyStageRouting(),
+          nowIso: new Date().toISOString(),
+          proofKind: "none",
+        }),
+        status: "blocked_no_rollback_wiring",
+        spend: false,
+        firstProductionProofEarned: false,
+      });
+      console.log(JSON.stringify(receipt, null, 2));
+      console.error(`Refusing execute: ${rollback.error}`);
+      return 1;
+    }
     const receipt = await executeStagePdfCanary({
       outputDir: outDir,
       executeGateEnv: process.env,
       allowLiveFetchTransport: process.env.STAGE_PDF_CANARY_ALLOW_LIVE_FETCH === "1",
+      operationalRollback: rollback.wiring,
     });
     console.log(JSON.stringify(receipt, null, 2));
     if (
       receipt.status === "blocked_no_execute_gate" ||
       receipt.status === "blocked_no_transport" ||
+      receipt.status === "blocked_no_rollback_wiring" ||
       receipt.status === "blocked_routing" ||
       receipt.status === "execute_failed_rolled_back"
     ) {
