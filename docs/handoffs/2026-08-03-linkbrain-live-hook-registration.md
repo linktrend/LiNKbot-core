@@ -14,7 +14,7 @@
 | Starting branch  | `ocp-linkbrain-live-hook-registration` |
 | Ending branch    | `ocp-linkbrain-live-hook-registration` |
 | Starting commit  | `07c86fdc734ae98c2d8c65c0687e9c57624854a7` |
-| Ending commit    | (filled after commit) |
+| Ending commit    | `5a77c2e87d5c253338d457e56a112014e3286f79` |
 | Starting status  | clean at exact base `07c86f` |
 | Ending status    | fix + regressions committed/pushed |
 

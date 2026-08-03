@@ -14,7 +14,7 @@
 | Coordination home | `/Users/linktrend/Projects/openclaw_prime` (session record written in task worktree; relay if needed) |
 | Session ID        | cursor-local-mac-mini-agents-window-feature-linkbrain-live-hook-registration-20260803-1707 |
 | Started           | 2026-08-03 17:07 Asia/Taipei |
-| Last updated      | 2026-08-03 17:07 Asia/Taipei |
+| Last updated      | 2026-08-03 17:30 Asia/Taipei |
 
 ## Work
 
@@ -23,8 +23,9 @@
 | Objective       | Diagnose why explicitly enabled bundled default-disabled linkbrain registers services but typed hooks are absent (hookCount=0); implement smallest correct runtime fix + regression tests; commit/push on governed branch from `07c86fdc734` |
 | Branch          | `ocp-linkbrain-live-hook-registration` |
 | Starting commit | `07c86fdc734ae98c2d8c65c0687e9c57624854a7` |
-| Status          | `active` |
-| Handoff         | |
+| Ending commit   | `5a77c2e87d5c253338d457e56a112014e3286f79` |
+| Status          | `complete` |
+| Handoff         | `docs/handoffs/2026-08-03-linkbrain-live-hook-registration.md` |
 
 ## Ownership Scope
 
@@ -44,10 +45,12 @@
 ## Progress
 
 - 2026-08-03 17:07 Asia/Taipei: Session opened. HEAD verified at `07c86fdc734`. Beginning root-cause investigation of linkbrain typed-hook absence.
+- 2026-08-03 17:20 Asia/Taipei: Root cause — hook-only plugins lose pinned gateway hook owners to same-plugin ensure reload active closures (`lifecycle === null`); snapshot inspect `hookCount=0` is a red herring.
+- 2026-08-03 17:28 Asia/Taipei: Fix in `hook-runner-global-state.ts` + regressions; tests passed; committed `5a77c2e87d5`.
 
 ## Next Action
 
-- Exact next action: Read plugin docs/work packets + dispatch non-overlapping loader/hook inspection subagents; diagnose registry/loader gap
-- Owner: this Feature agent
+- Exact next action: Orchestrator/coordinator deploys `5a77c2e87d5` to stage and runs live Brain capture canary
+- Owner: coordinator / Carlos
 - Questions for Carlos:
-- Questions for the Orchestrator or next agent:
+- Questions for the Orchestrator or next agent: Ask Orchestrator to refresh `docs/current-status.md`
