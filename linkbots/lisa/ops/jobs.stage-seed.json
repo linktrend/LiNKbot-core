@@ -1,0 +1,109 @@
+{
+  "version": 1,
+  "note": "Repo SOT stage cron seed for Mac Mini lisa-stage. Exactly six jobs, all enabled=false. Heartbeat expr matches live/install wall-clock (includes 06:45; skips 08:45). Repair Dispatcher is intentionally NOT installed on stage until owner-authorized (seed kept separate). Do not enable schedules or force-run full procedures without Principal gate. Current payloads on stage may be STAGE_CANARY dry-run stubs — restore procedure messageFile/toolsAllow before enable.",
+  "jobs": [
+    {
+      "id": "lisa-ship-05",
+      "name": "Ship 05",
+      "enabled": false,
+      "agentId": "lisa-cron",
+      "schedule": { "tz": "Asia/Taipei", "expr": "0 5 * * *" },
+      "payload": {
+        "toolsAllow": [
+          "sessions_spawn",
+          "sessions_wait",
+          "read",
+          "write",
+          "edit",
+          "exec"
+        ],
+        "messageFile": "agents/ship-pull-clock.md"
+      }
+    },
+    {
+      "id": "lisa-pull-07",
+      "name": "Pull 07",
+      "enabled": false,
+      "agentId": "lisa-cron",
+      "schedule": { "tz": "Asia/Taipei", "expr": "0 7 * * *" },
+      "payload": {
+        "toolsAllow": [
+          "sessions_spawn",
+          "sessions_wait",
+          "read",
+          "write",
+          "edit",
+          "exec"
+        ],
+        "messageFile": "agents/ship-pull-clock.md"
+      }
+    },
+    {
+      "id": "lisa-ship-16",
+      "name": "Ship 16",
+      "enabled": false,
+      "agentId": "lisa-cron",
+      "schedule": { "tz": "Asia/Taipei", "expr": "0 16 * * *" },
+      "payload": {
+        "toolsAllow": [
+          "sessions_spawn",
+          "sessions_wait",
+          "read",
+          "write",
+          "edit",
+          "exec"
+        ],
+        "messageFile": "agents/ship-pull-clock.md"
+      }
+    },
+    {
+      "id": "lisa-pull-18",
+      "name": "Pull 18",
+      "enabled": false,
+      "agentId": "lisa-cron",
+      "schedule": { "tz": "Asia/Taipei", "expr": "0 18 * * *" },
+      "payload": {
+        "toolsAllow": [
+          "sessions_spawn",
+          "sessions_wait",
+          "read",
+          "write",
+          "edit",
+          "exec"
+        ],
+        "messageFile": "agents/ship-pull-clock.md"
+      }
+    },
+    {
+      "id": "lisa-morning-digest",
+      "name": "Morning Digest",
+      "enabled": false,
+      "agentId": "lisa-cron",
+      "schedule": { "tz": "Asia/Taipei", "expr": "30 8 * * *" },
+      "payload": {
+        "toolsAllow": ["read", "write", "edit", "exec"],
+        "messageFile": "agents/morning-digest.md"
+      }
+    },
+    {
+      "id": "lisa-heartbeat-45",
+      "name": "Heartbeat 45",
+      "enabled": false,
+      "agentId": "lisa-cron",
+      "schedule": {
+        "tz": "Asia/Taipei",
+        "expr": "45 0,2,4,6,10,12,14,16,18,20,22 * * *"
+      },
+      "payload": {
+        "toolsAllow": ["read", "write", "edit", "exec"],
+        "messageFile": "HEARTBEAT.md"
+      }
+    }
+  ],
+  "notInstalledOnStage": [
+    {
+      "id": "lisa-repair-dispatcher",
+      "reason": "Repair Dispatcher remains planner-only until durable attempt store + owner install; seed may exist outside this six-job stage set."
+    }
+  ]
+}

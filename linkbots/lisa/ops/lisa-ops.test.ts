@@ -862,6 +862,23 @@ describe("Main Approve binding", () => {
     assert.equal(blocked.reason, "live_targeting_disabled");
   });
 
+  it("live opt-in still blocks Main Approve when store.available is false", () => {
+    const liveOptIn = {
+      liveLisaTargetingAllowed: true,
+      credentialsLanguageSeparatelyApproved: true,
+    };
+    const ask = issueCarlosAsk(pkg, MAIN_APPROVE_RUNTIME_STORE, liveOptIn);
+    assert.equal(ask.ok, false);
+    if (ask.ok) return;
+    assert.equal(ask.reason, "blocked_no_store");
+    assert.match(ask.prerequisite, /issue #23|package store/i);
+
+    const dispatch = authorizeApprovalDispatch(paramsOk, MAIN_APPROVE_RUNTIME_STORE, liveOptIn);
+    assert.equal(dispatch.ok, false);
+    if (dispatch.ok) return;
+    assert.equal(dispatch.reason, "blocked_no_store");
+  });
+
   it("runtime approval dispatch fails closed without store", () => {
     const blocked = authorizeApprovalDispatch(paramsOk);
     assert.equal(blocked.ok, false);
@@ -1036,5 +1053,35 @@ describe("Heartbeat/digest GitOps alignment", () => {
     }
     assert.match(pipeline, /PR #19|GITOPS-01|origin\/development/i);
     assert.match(digest, /PR #19|GITOPS-01|origin\/development/i);
+  });
+});
+
+describe("Stage cron seed SOT (six jobs, disabled)", () => {
+  it("keeps exactly six disabled jobs with correct heartbeat wall-clock expr", () => {
+    const seed = JSON.parse(readFileSync(path.join(here, "jobs.stage-seed.json"), "utf8")) as {
+      jobs: Array<{
+        id: string;
+        enabled: boolean;
+        schedule: { expr: string; tz: string };
+        payload: { toolsAllow: string[] };
+      }>;
+      notInstalledOnStage: Array<{ id: string }>;
+    };
+    assert.equal(seed.jobs.length, 6);
+    assert.ok(seed.jobs.every((j) => j.enabled === false));
+    assert.ok(seed.jobs.every((j) => j.schedule.tz === "Asia/Taipei"));
+    const byId = new Map(seed.jobs.map((j) => [j.id, j]));
+    assert.equal(byId.get("lisa-morning-digest")?.schedule.expr, "30 8 * * *");
+    assert.equal(
+      byId.get("lisa-heartbeat-45")?.schedule.expr,
+      "45 0,2,4,6,10,12,14,16,18,20,22 * * *",
+    );
+    assert.ok(!byId.has("lisa-repair-dispatcher"));
+    assert.equal(seed.notInstalledOnStage[0]?.id, "lisa-repair-dispatcher");
+    for (const id of ["lisa-ship-05", "lisa-pull-07", "lisa-ship-16", "lisa-pull-18"]) {
+      const tools = byId.get(id)?.payload.toolsAllow ?? [];
+      assert.ok(tools.includes("sessions_wait"));
+      assert.ok(!tools.includes("sessions_yield"));
+    }
   });
 });
