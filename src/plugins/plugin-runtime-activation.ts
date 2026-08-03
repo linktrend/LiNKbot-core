@@ -9,9 +9,11 @@
 import {
   commitMachineTokenOwnershipSnapshot,
   createMachineTokenFacadeGeneration,
-  destroyMachineTokenFacadeGeneration,
+  destroyCandidateMachineTokenFacadeGeneration,
+  fingerprintMachineTokenGrantedRecords,
   getLiveMachineTokenFacadeGenerationHandle,
   getLiveMachineTokenPluginFacade,
+  liveMachineTokenOwnershipMatchesGrantedRecords,
   type HostMachineTokenBindingRecord,
   type MachineTokenFacadeGenerationHandle,
 } from "../agents/machine-token-host.js";
@@ -75,13 +77,10 @@ function fingerprintOwnershipPlugins(
   plugins: ReadonlyArray<MachineTokenOwnershipPluginBlueprint>,
 ): string {
   return plugins
-    .map((plugin) => {
-      const bindings = plugin.grantedRecords
-        .map((record) => record.bindingFingerprint)
-        .toSorted()
-        .join(",");
-      return `${plugin.pluginId}=${bindings}`;
-    })
+    .map(
+      (plugin) =>
+        `${plugin.pluginId}=${fingerprintMachineTokenGrantedRecords(plugin.grantedRecords)}`,
+    )
     .toSorted()
     .join("|");
 }
@@ -299,19 +298,41 @@ export function activateCombinedPluginRuntimeSnapshot(
 
   const env = params.env ?? process.env;
   const preparedHandles: MachineTokenFacadeGenerationHandle[] = [];
+  const createdGenerationIds = new Set<string>();
   const destroyPrepared = () => {
     for (const handle of preparedHandles.toReversed()) {
-      destroyMachineTokenFacadeGeneration(handle);
+      // Only destroy candidates created by this activation — never a reused live.
+      if (createdGenerationIds.has(handle.generationId)) {
+        destroyCandidateMachineTokenFacadeGeneration(handle);
+      }
     }
     preparedHandles.length = 0;
+    createdGenerationIds.clear();
   };
 
   const priorProcessGlobalState = snapshotPluginProcessGlobalState();
   try {
     if (params.stagedPublishHandles) {
       preparedHandles.push(...params.stagedPublishHandles);
+      // Staged handles from registry-api may mix new candidates and reused live
+      // handles. Track only true candidates for rollback destroy.
+      for (const handle of params.stagedPublishHandles) {
+        const live = getLiveMachineTokenFacadeGenerationHandle(handle.pluginId);
+        if (!live || live.generationId !== handle.generationId) {
+          createdGenerationIds.add(handle.generationId);
+        }
+      }
     } else {
       for (const plugin of ownership.plugins) {
+        if (
+          liveMachineTokenOwnershipMatchesGrantedRecords(plugin.pluginId, plugin.grantedRecords)
+        ) {
+          const liveHandle = getLiveMachineTokenFacadeGenerationHandle(plugin.pluginId);
+          if (liveHandle) {
+            preparedHandles.push(liveHandle);
+            continue;
+          }
+        }
         const created = createMachineTokenFacadeGeneration({
           pluginId: plugin.pluginId,
           grantedRecords: plugin.grantedRecords,
@@ -322,6 +343,7 @@ export function activateCombinedPluginRuntimeSnapshot(
           }),
         });
         preparedHandles.push(created.handle);
+        createdGenerationIds.add(created.handle.generationId);
       }
     }
 

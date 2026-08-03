@@ -9,9 +9,11 @@ import {
   collectGrantedMachineTokenBindingRecords,
   createMachineTokenFacadeGeneration,
   createMachineTokenPluginFacade,
+  destroyCandidateMachineTokenFacadeGeneration,
   destroyMachineTokenFacadeGeneration,
   getLiveMachineTokenFacadeGenerationHandle,
   invalidateMachineTokenCacheForHost,
+  liveMachineTokenOwnershipMatchesGrantedRecords,
   publishMachineTokenFacadeGeneration,
   resolveMachineTokenAccessForHost,
   unregisterMachineTokenFacadesForPlugin,
@@ -248,6 +250,30 @@ describe("agents machine-token-host", () => {
     facade.unregister();
     expect(getLiveMachineTokenFacadeGenerationHandle("linkbrain")).toBeUndefined();
     expect(facade.health("linkbrain-stage").registered).toBe(false);
+  });
+
+  it("ownership match includes bindingId so label renames force replacement", () => {
+    const stage = createMachineTokenFacadeGeneration({
+      pluginId: "linkbrain",
+      grantedRecords: [record("linkbrain-stage")],
+      resolveKeyPem: resolveKeyPemStub(),
+      resolveAccess: async ({ binding }) => ({
+        bindingId: binding.bindingId,
+        bindingFingerprint: `fp-${binding.bindingId}`,
+        accessToken: "token",
+        expiresAt: Date.now() + 60_000,
+        tokenType: "Bearer" as const,
+      }),
+    });
+    publishMachineTokenFacadeGeneration(stage.handle);
+    expect(
+      liveMachineTokenOwnershipMatchesGrantedRecords("linkbrain", [record("linkbrain-stage")]),
+    ).toBe(true);
+    expect(
+      liveMachineTokenOwnershipMatchesGrantedRecords("linkbrain", [record("linkbrain-retained")]),
+    ).toBe(false);
+    destroyCandidateMachineTokenFacadeGeneration(stage.handle);
+    unregisterMachineTokenFacadesForPlugin("linkbrain");
   });
 
   it("lease release after a newer publish leaves the replacement live", async () => {

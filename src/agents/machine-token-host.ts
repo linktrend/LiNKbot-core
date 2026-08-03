@@ -122,9 +122,61 @@ type MachineTokenFacadeGenerationRecord = {
    * restart the same live generation.
    */
   leases: number;
+  /**
+   * Stable fingerprint of granted binding descriptors (no PEM). Same-ownership
+   * rematerialize reuses this live generation instead of publishing a replacement
+   * that would force-retire service-held facades.
+   */
+  ownershipFingerprint: string;
   /** Retire this generation's facade (idempotent). */
   retire: () => void;
 };
+
+/** Per-plugin ownership fingerprint from granted binding descriptors. */
+export function fingerprintMachineTokenGrantedRecords(
+  grantedRecords: readonly HostMachineTokenBindingRecord[],
+): string {
+  // Include operator bindingId — credential fingerprints intentionally omit it,
+  // but ownership reuse must replace when the granted label set changes.
+  return grantedRecords
+    .map((record) => `${record.bindingId}=${record.bindingFingerprint}`)
+    .toSorted()
+    .join(",");
+}
+
+/**
+ * True when the live generation for pluginId matches these granted descriptors.
+ * Used to reuse live ownership across activating rematerialize without retiring
+ * facades closed over by already-started plugin services.
+ */
+export function liveMachineTokenOwnershipMatchesGrantedRecords(
+  pluginId: string,
+  grantedRecords: readonly HostMachineTokenBindingRecord[],
+): boolean {
+  const trimmed = pluginId.trim();
+  if (!trimmed || grantedRecords.length === 0) {
+    return false;
+  }
+  const live = liveGenerationByPluginId.get(trimmed);
+  if (!live || live.state !== "live") {
+    return false;
+  }
+  return live.ownershipFingerprint === fingerprintMachineTokenGrantedRecords(grantedRecords);
+}
+
+/**
+ * Destroy only a candidate generation. No-op for live/retired — rollback and
+ * abandon paths must not retire a reused live generation.
+ */
+export function destroyCandidateMachineTokenFacadeGeneration(
+  handle: MachineTokenFacadeGenerationHandle,
+): void {
+  const generation = generationsById.get(handle.generationId);
+  if (!generation || generation.state !== "candidate") {
+    return;
+  }
+  destroyMachineTokenFacadeGeneration(handle);
+}
 
 /** Live generation only — pluginId → current published generation. */
 const liveGenerationByPluginId = new Map<string, MachineTokenFacadeGenerationRecord>();
@@ -564,6 +616,7 @@ export function createMachineTokenFacadeGeneration(
     facade,
     state: "candidate",
     leases: 0,
+    ownershipFingerprint: fingerprintMachineTokenGrantedRecords(params.grantedRecords),
     retire: retireFacade,
   };
   generationsById.set(handle.generationId, record);

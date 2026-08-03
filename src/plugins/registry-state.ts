@@ -19,6 +19,11 @@ export type PluginSideEffectGuard = {
   /** Candidate/live machine-token generation owned by this registration attempt. */
   machineTokenGeneration?: MachineTokenFacadeGenerationHandle;
   /**
+   * True when this registration reused an already-live generation. Rollback must
+   * not force-retire that shared live ownership.
+   */
+  machineTokenGenerationReused?: boolean;
+  /**
    * Frozen ownership descriptors for this generation — cache blueprint only.
    * Never serialize the live handle into the registry cache.
    */
