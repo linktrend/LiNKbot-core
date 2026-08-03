@@ -14,7 +14,7 @@
 | Starting branch  | `dev/cloudcursor/OCP-MACHINE-FACADE-RELOAD-FIX`                                                      |
 | Ending branch    | `dev/cloudcursor/OCP-MACHINE-FACADE-RELOAD-FIX`                                                      |
 | Starting commit  | `48ffa273a1d2f2202107d40163eb2fae7ecd9951`                                                           |
-| Ending commit    | (see tip after push)                                                                                 |
+| Ending commit    | `783e1fd46d74b1aeff089c8e5b013ea4dcafa3c0` (docs tip `0e45177120f0e8ff39593c6bc6d45e09ac405a71`)     |
 | Starting status  | clean at start SHA                                                                                   |
 | Ending status    | second facade ownership fix + regressions                                                            |
 
