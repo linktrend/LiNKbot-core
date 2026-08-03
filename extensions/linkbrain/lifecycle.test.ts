@@ -102,10 +102,10 @@ describe("linkbrain Phase 3 lifecycle capture", () => {
       "after_compaction",
       "before_reset",
       "session_end",
-      "gateway_start",
-      "gateway_stop",
       "subagent_spawned",
       "subagent_ended",
+      "gateway_start",
+      "gateway_stop",
     ]);
   });
 
