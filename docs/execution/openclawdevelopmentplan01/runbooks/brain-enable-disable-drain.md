@@ -114,6 +114,8 @@ If probe fails → disable MCP immediately; see `mcp-probe-pause-recover.md`.
 2. Watch delivery success/retry/dead-letter (sanitized).
 3. **Expected:** approved redacted batches drain; Skills remains healthy independently.
 
+Drain is the plugin outbox worker (`linkbrain-outbox` / `createBrainDrainWorker`), **not** an MCP tool. For the reproducible canary + machine-readable receipt, use [brain-capture-drain-stage-canary.md](./brain-capture-drain-stage-canary.md).
+
 ### C6. Coordination writes
 
 1. Set `coordinationWrites=true` for bounded scenarios only.
