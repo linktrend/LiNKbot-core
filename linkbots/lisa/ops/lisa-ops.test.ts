@@ -1059,17 +1059,26 @@ describe("Heartbeat/digest GitOps alignment", () => {
 describe("Stage cron seed SOT (six jobs, disabled)", () => {
   it("keeps exactly six disabled jobs with correct heartbeat wall-clock expr", () => {
     const seed = JSON.parse(readFileSync(path.join(here, "jobs.stage-seed.json"), "utf8")) as {
+      version: number;
       jobs: Array<{
         id: string;
         enabled: boolean;
         schedule: { expr: string; tz: string };
-        payload: { toolsAllow: string[] };
+        delivery: { mode: string };
+        payload: { toolsAllow: string[]; message: string; messageFile: string };
+        payloadHash: string;
       }>;
-      notInstalledOnStage: Array<{ id: string }>;
+      payloadHashes: Record<string, string>;
+      notInstalledByDefault: Array<{ id: string }>;
+      repairSupervision: { job: { id: string } };
     };
+    assert.equal(seed.version, 2);
     assert.equal(seed.jobs.length, 6);
     assert.ok(seed.jobs.every((j) => j.enabled === false));
     assert.ok(seed.jobs.every((j) => j.schedule.tz === "Asia/Taipei"));
+    assert.ok(seed.jobs.every((j) => j.delivery.mode === "none"));
+    assert.ok(seed.jobs.every((j) => j.payload.message.includes("STAGE BOUNDED PROCEDURE")));
+    assert.ok(seed.jobs.every((j) => !/^STAGE CANARY ONLY\b/m.test(j.payload.message)));
     const byId = new Map(seed.jobs.map((j) => [j.id, j]));
     assert.equal(byId.get("lisa-morning-digest")?.schedule.expr, "30 8 * * *");
     assert.equal(
@@ -1077,11 +1086,13 @@ describe("Stage cron seed SOT (six jobs, disabled)", () => {
       "45 0,2,4,6,10,12,14,16,18,20,22 * * *",
     );
     assert.ok(!byId.has("lisa-repair-dispatcher"));
-    assert.equal(seed.notInstalledOnStage[0]?.id, "lisa-repair-dispatcher");
+    assert.equal(seed.notInstalledByDefault[0]?.id, "lisa-repair-dispatcher");
+    assert.equal(seed.repairSupervision.job.id, "lisa-repair-dispatcher");
     for (const id of ["lisa-ship-05", "lisa-pull-07", "lisa-ship-16", "lisa-pull-18"]) {
       const tools = byId.get(id)?.payload.toolsAllow ?? [];
       assert.ok(tools.includes("sessions_wait"));
       assert.ok(!tools.includes("sessions_yield"));
+      assert.equal(seed.payloadHashes[id], byId.get(id)?.payloadHash);
     }
   });
 });

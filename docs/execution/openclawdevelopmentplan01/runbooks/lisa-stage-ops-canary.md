@@ -11,17 +11,17 @@
 
 ## Verified stage posture (read-only audit 2026-08-03)
 
-| Surface          | Truth                                                                                          |
-| ---------------- | ---------------------------------------------------------------------------------------------- |
-| Stage root       | `LiNKplatform-staging/lisa` (profile `lisa-stage`, port **18791**)                             |
-| Routing          | OpenRouter-only overlay — see `linkbots/lisa/ops/model-routing.openrouter-stage.contract.json` |
-| Primary          | `openrouter/openai/gpt-5.6-luna`, `thinkingDefault: medium`                                    |
-| Fallbacks        | GLM-5.2 → Kimi K3 → Gemini 3.5 Flash-Lite (all `openrouter/...`)                               |
-| Image/PDF        | `openrouter/minimax/minimax-m3` via `imageModel` + `pdfModel`; PDF `approved_unverified`       |
-| Eval             | Nemotron OpenRouter ref — **not** in defaults / modelPolicy.allow                              |
-| Cron             | **6** jobs installed, **all `enabled=false`**, prior dry-run force-runs `last_run_status=ok`   |
-| Repair           | **Not** installed on stage (planner contracts only)                                            |
-| Native heartbeat | `every: 0m` (disabled); wall-clock owned by `lisa-heartbeat-45` when enabled                   |
+| Surface          | Truth                                                                                                              |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Stage root       | `LiNKplatform-staging/lisa` (profile `lisa-stage`, port **18791**)                                                 |
+| Routing          | OpenRouter-only overlay — see `linkbots/lisa/ops/model-routing.openrouter-stage.contract.json`                     |
+| Primary          | `openrouter/openai/gpt-5.6-luna`, `thinkingDefault: medium`                                                        |
+| Fallbacks        | GLM-5.2 → Kimi K3 → Gemini 3.5 Flash-Lite (all `openrouter/...`)                                                   |
+| Image/PDF        | `openrouter/minimax/minimax-m3` via `imageModel` + `pdfModel`; PDF `approved_unverified`                           |
+| Eval             | Nemotron OpenRouter ref — **not** in defaults / modelPolicy.allow                                                  |
+| Cron SOT         | Repo `linkbots/lisa/ops/jobs.stage-seed.json` v2 — **6** real bounded procedures, `delivery=none`, `enabled=false` |
+| Repair package   | Packaged separately; default decision `blocked_no_store` until durable stores exist                                |
+| Native heartbeat | `every: 0m` (disabled); wall-clock owned by `lisa-heartbeat-45` when enabled                                       |
 
 Job IDs observed 2026-08-03 (re-verify with `cron list` before mutate):
 
@@ -34,7 +34,7 @@ Job IDs observed 2026-08-03 (re-verify with `cron list` before mutate):
 | lisa-ship-16        | `e1ff7019-e805-4770-9329-d6656f85d021` |
 | lisa-pull-18        | `f24bbd94-c9be-4dba-9602-cfa266fffb9c` |
 
-Prior `ok` force-runs were **STAGE_CANARY one-liner dry-runs** (`toolsAllow=["read"]`, `delivery=none`), not full HEARTBEAT/digest/Ship-Pull procedures.
+Prior stage force-runs used **STAGE_CANARY one-liner stubs**. Repo SOT now packages real bounded HEARTBEAT/digest/Ship/Pull payloads (`STAGE BOUNDED PROCEDURE …`, `delivery=none`). Coordinator must **update** stage jobs from SOT before any enable.
 
 ---
 
@@ -50,13 +50,8 @@ export PATH="/opt/homebrew/opt/node@24/bin:$PATH"
 OPENCLAW_STATE_DIR="$STAGE_ROOT" \
 node "$ENGINE" --profile lisa-stage cron list --json
 
-# Redacted routing check (names only)
-python3 - <<'PY'
-import json
-from pathlib import Path
-d=json.loads(Path("/Users/linktrend/Projects/LiNKplatform-staging/lisa/openclaw.json").read_text())["agents"]["defaults"]
-print({k:d.get(k) for k in ("model","imageModel","pdfModel","thinkingDefault")})
-PY
+# Repo plan + payload hashes (no stage mutation)
+node --experimental-strip-types linkbots/lisa/ops/stage-ops-coordinator.ts install --json
 ```
 
 Repo contract tests (no stage mutation):
@@ -65,14 +60,31 @@ Repo contract tests (no stage mutation):
 node --experimental-strip-types --test \
   linkbots/lisa/ops/lisa-ops.test.ts \
   linkbots/lisa/ops/model-routing-contract.test.ts \
-  linkbots/lisa/ops/model-routing.openrouter-stage.test.ts
+  linkbots/lisa/ops/model-routing.openrouter-stage.test.ts \
+  linkbots/lisa/ops/stage-ops-holds.test.ts
 ```
 
 ---
 
-## B) Safe schedule disable / rollback (mutation — Principal gate)
+## B) Coordinator apply commands (mutation — Principal gate)
 
-Keep or restore **disabled** schedules. Prefer disable-all before unload.
+Tooling is **plan-only by default** (`mutateStage=false`, `enableSchedules=false`). `--emit-commands` prints exact shell; a human/coordinator still runs them under Principal gate.
+
+```bash
+# Plan install/update of six bounded payloads (delivery=none, enabled stays false)
+node --experimental-strip-types linkbots/lisa/ops/stage-ops-coordinator.ts update --emit-commands
+
+# Disable all six (safe rollback of schedule enablement)
+node --experimental-strip-types linkbots/lisa/ops/stage-ops-coordinator.ts disable --emit-commands
+
+# Rollback payloads to repo bounded procedures + keep disabled
+node --experimental-strip-types linkbots/lisa/ops/stage-ops-coordinator.ts rollback --emit-commands
+
+# Optional: include Repair/GitOps supervision job (still disabled; blocked_no_store)
+node --experimental-strip-types linkbots/lisa/ops/stage-ops-coordinator.ts install --include-repair --emit-commands
+```
+
+Manual disable fallback (known IDs — re-verify first):
 
 ```bash
 STAGE_ROOT="/Users/linktrend/Projects/LiNKplatform-staging/lisa"
@@ -99,49 +111,38 @@ OC=(env OPENCLAW_STATE_DIR="$STAGE_ROOT" node "$ENGINE" --profile lisa-stage)
 
 ## C) Safe schedule enable (mutation + spend risk — Principal gate)
 
-**Do not enable** while payloads remain STAGE_CANARY stubs or channels are unset without an explicit canary plan.
+**Do not enable** until stage payloads match repo bounded procedures (`payloadHash` / message starts with `STAGE BOUNDED PROCEDURE`) and channels plan is explicit.
 
 Ordered gate:
 
 1. Confirm OpenRouter-only routing + `liveMutationAllowed=false` / `paidSpendEnablementAllowed=false`.
-2. Restore real procedure `messageFile` + `toolsAllow` (Ship/Pull must include `sessions_wait`, exclude `sessions_yield`).
-3. Confirm delivery mode (prefer `none` for first canary).
+2. Apply `stage-ops-coordinator.ts update --emit-commands` so jobs are not STAGE_CANARY stubs.
+3. Confirm `delivery.mode=none` for first canary.
 4. Enable **one** job only; observe; disable on anomaly.
-5. Never enable Repair Dispatcher until durable attempt store exists.
+5. Never enable Repair Dispatcher until durable attempt + Main Approve stores exist (`blocked_no_store` otherwise).
 
 ```bash
 # Example — enable heartbeat only after payload restore (NOT executed by audit agents)
 # OPENCLAW_STATE_DIR=... node openclaw.mjs --profile lisa-stage cron enable 1684ea5f-47ea-464a-8f58-b5990b1ac160
 ```
 
-Optional dry-run while still disabled (still spend-capable if model is called):
-
-```bash
-# Prefer inventory over force-run for Ship/Pull (force-run can announce Clear/Issues).
-# OPENCLAW_STATE_DIR=... node openclaw.mjs --profile lisa-stage cron run <job-id> --wait --wait-timeout 5m
-```
-
 ---
 
-## D) Real MiniMax PDF canary procedure (stage-only; Principal gate)
+## D) Stage MiniMax PDF canary command (package / dry-run; Principal gate for execute)
 
-Capability remains **`approved_unverified`**. Success requires a **first-production-proof receipt**. OpenRouter-only — never mint MiniMax direct keys.
+```bash
+# Package/dry-run: synthetic local PDF + machine-readable receipt; no external delivery; no spend
+node --experimental-strip-types linkbots/lisa/ops/stage-pdf-canary.ts dry-run --out /tmp/lisa-stage-pdf-canary
 
-### Preconditions
+# Rollback plan fragment (does not mutate stage by itself)
+node --experimental-strip-types linkbots/lisa/ops/stage-pdf-canary.ts rollback-plan --out /tmp/lisa-stage-pdf-canary
 
-- lisa-stage healthy on 18791; live Lisa fingerprints unchanged
-- `agents.defaults.pdfModel.primary == openrouter/minimax/minimax-m3`
-- `model-routing.stage.json` / overlay: `capabilityStatus=approved_unverified`, `paidSpendEnablementAllowed=false`
-- Rollback probe present: `probes/rollback-pdf.sh`
-- Backup: `openclaw.json.last-good` present
+# Execute (SPEND) — dual gate only: STAGE_PDF_CANARY_EXECUTE=1 + existing OPENROUTER_API_KEY in process env
+# Never mint MiniMax direct keys. Never print secrets.
+# STAGE_PDF_CANARY_EXECUTE=1 node --experimental-strip-types linkbots/lisa/ops/stage-pdf-canary.ts execute --out /tmp/lisa-stage-pdf-canary
+```
 
-### Steps (coordinator-owned)
-
-1. **Static gate (no spend):** confirm refs + hard stops + last-good backup.
-2. **Controlled PDF call (spend):** one authorized stage agent turn attaching a tiny non-secret PDF through `pdfModel` / document path. Record model ref, outcome, latency, and non-secret error class.
-3. **Pass receipt:** write `receipts/pdf-first-production-proof-<date>.json` with `capabilityStatus` promotion **only if** Principal accepts; otherwise leave `approved_unverified`.
-4. **Fail path:** run `probes/rollback-pdf.sh` (clears `pdfModel` only); confirm primary/image/fallbacks unchanged; emit `pdf_document_routing_validation_failure`; **no** paid alternate model.
-5. **Never** claim proven PDF from static dry-run alone.
+Success still requires a **first-production-proof receipt** accepted by Principal. Package/dry-run alone does **not** earn proof.
 
 ### Rollback truth
 
@@ -150,20 +151,23 @@ disable agents.defaults.pdfModel only
 preserve model.primary + fallbacks + imageModel
 alternatePaidDocumentRoutingAllowed = false
 liveLisaTouched = false
+probe: LiNKplatform-staging/lisa/probes/rollback-pdf.sh
 ```
 
 ---
 
 ## E) Ship/Pull / Repair / GitOps honesty
 
-| Surface                                              | Stage claim                      |
-| ---------------------------------------------------- | -------------------------------- |
-| Ship/Pull contracts + workshop wait/no-yield         | PASS in-repo                     |
-| Stage dry-run cron ok                                | PASS (stub payloads only)        |
-| Full Ship/Pull post-process (ACP wait → CAS → email) | HOLD until spend/ACP gate        |
-| Repair Dispatcher install                            | HOLD (not in six-job stage set)  |
-| Main Approve store                                   | HOLD (`blocked_no_store`)        |
-| GitOps durable control plane                         | HOLD (IDE SoT; Lisa is consumer) |
+| Surface                                              | Stage claim                                      |
+| ---------------------------------------------------- | ------------------------------------------------ |
+| Ship/Pull contracts + workshop wait/no-yield         | PASS in-repo                                     |
+| Six bounded procedure payloads (repo SOT)            | PASS (package; stage apply still Principal gate) |
+| Stage SQLite still holding STAGE_CANARY stubs        | HOLD until coordinator `update` applied          |
+| Full Ship/Pull post-process (ACP wait → CAS → email) | HOLD until spend/ACP gate                        |
+| Repair Dispatcher package + `blocked_no_store`       | PASS packaged; HOLD for durable stores / enable  |
+| Main Approve store                                   | HOLD (`blocked_no_store`)                        |
+| GitOps durable control plane                         | HOLD (IDE SoT; Lisa is consumer)                 |
+| MiniMax PDF canary command                           | PASS packaged dry-run; HOLD for execute/proof    |
 
 ---
 
@@ -172,4 +176,7 @@ liveLisaTouched = false
 - Overlay: `linkbots/lisa/ops/model-routing.openrouter-stage.contract.json`
 - Semantic contract: `linkbots/lisa/ops/model-routing.contract.json`
 - Seed SOT: `linkbots/lisa/ops/jobs.stage-seed.json`
+- Payload builders: `linkbots/lisa/ops/stage-ops-payloads.ts`
+- Coordinator: `linkbots/lisa/ops/stage-ops-coordinator.ts`
+- PDF canary: `linkbots/lisa/ops/stage-pdf-canary.ts`
 - FAKE/TEMPLATE production gates: `docs/execution/openclawdevelopmentplan01/runbooks/stage-prod-canary-controls.md`
