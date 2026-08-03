@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { parseLinkskillsConfig } from "./src/config.js";
 import { findProhibitedSkillsField } from "./src/envelopes.js";
 import { mapSkillsEventTypeToToolName, resolveSkillsDrainToolName } from "./src/tools.js";
-import { resolveLinkskillsTransport } from "./src/transport.js";
+import { buildLinkskillsHttpOperationUrl, resolveLinkskillsTransport } from "./src/transport.js";
 
 function stubApi(config: Record<string, unknown> = {}) {
   return {
@@ -108,10 +108,13 @@ describe("linkskills transport modes", () => {
     expect(result.ok).toBe(true);
   });
 
-  it("http mode posts with SecretRef bearer from env", async () => {
-    const fetchImpl = vi.fn(async (_url: string | URL | Request, init?: RequestInit) => {
+  it("http mode POSTs Gateway /v1/{operation} envelope with SecretRef bearer", async () => {
+    const fetchImpl = vi.fn(async (url: string | URL | Request, init?: RequestInit) => {
+      expect(String(url)).toBe("https://skills.example.test/v1/skills_run_start");
       const headers = new Headers(init?.headers);
       expect(headers.get("authorization")).toBe("Bearer fake-skills-token");
+      expect(headers.get("idempotency-key")).toBe("idem:skills-1");
+      expect(headers.get("x-request-id")).toBe("idem:skills-1");
       const rawBody = init?.body;
       const bodyText =
         typeof rawBody === "string"
@@ -121,13 +124,20 @@ describe("linkskills transport modes", () => {
             : rawBody == null
               ? ""
               : JSON.stringify(rawBody);
-      const body = JSON.parse(bodyText) as { toolName: string };
-      expect(body.toolName).toBe("skills_run_start");
+      const body = JSON.parse(bodyText) as Record<string, unknown>;
+      expect(body).toEqual({
+        params: { run_id: "run:1" },
+        idempotency_key: "idem:skills-1",
+        request_id: "idem:skills-1",
+      });
+      expect(body).not.toHaveProperty("toolName");
+      expect(body).not.toHaveProperty("idempotencyKey");
+      expect(body).not.toHaveProperty("arguments");
       return new Response(JSON.stringify({ ok: true }), { status: 200 });
     });
     const config = parseLinkskillsConfig({
       transportMode: "http",
-      skillsEndpoint: "https://skills.example.test/telemetry",
+      skillsEndpoint: "https://skills.example.test",
       skillsCredential: {
         source: "env",
         provider: "default",
@@ -143,6 +153,57 @@ describe("linkskills transport modes", () => {
     const result = await transport.write(writeArgs);
     expect(result.ok).toBe(true);
     expect(fetchImpl).toHaveBeenCalledOnce();
+  });
+
+  it("buildLinkskillsHttpOperationUrl treats skillsEndpoint as Gateway base", () => {
+    expect(
+      buildLinkskillsHttpOperationUrl("https://skills.example.test", "skills_run_start").href,
+    ).toBe("https://skills.example.test/v1/skills_run_start");
+    expect(
+      buildLinkskillsHttpOperationUrl("https://skills.example.test/", "skills_feedback_submit")
+        .href,
+    ).toBe("https://skills.example.test/v1/skills_feedback_submit");
+    expect(
+      buildLinkskillsHttpOperationUrl(
+        "https://linktrend-mini.tailf7e13a.ts.net:9445",
+        "skills_run_complete",
+      ).href,
+    ).toBe("https://linktrend-mini.tailf7e13a.ts.net:9445/v1/skills_run_complete");
+    // Accidental full operation URL paste strips /v1/... and rebuilds for the drain op.
+    expect(
+      buildLinkskillsHttpOperationUrl(
+        "https://skills.example.test/v1/skills_list",
+        "skills_run_start",
+      ).href,
+    ).toBe("https://skills.example.test/v1/skills_run_start");
+    expect(
+      buildLinkskillsHttpOperationUrl("https://skills.example.test/gateway/", "skills_run_fail")
+        .href,
+    ).toBe("https://skills.example.test/gateway/v1/skills_run_fail");
+  });
+
+  it("buildLinkskillsHttpOperationUrl rejects traversal and origin/host change", () => {
+    expect(() =>
+      buildLinkskillsHttpOperationUrl(
+        "https://skills.example.test",
+        "skills_run_start/../../admin",
+      ),
+    ).toThrow(/allowlist|drain|invalid/i);
+    expect(() =>
+      buildLinkskillsHttpOperationUrl("https://skills.example.test", "../skills_run_start"),
+    ).toThrow(/allowlist|drain|invalid/i);
+    expect(() =>
+      buildLinkskillsHttpOperationUrl("https://skills.example.test", "skills_list"),
+    ).toThrow(/allowlist|drain/i);
+    expect(() =>
+      buildLinkskillsHttpOperationUrl(
+        "https://skills.example.test/foo/../../evil",
+        "skills_run_start",
+      ),
+    ).toThrow(/path|prefix|rejected/i);
+    expect(() =>
+      buildLinkskillsHttpOperationUrl("https://user:pass@skills.example.test", "skills_run_start"),
+    ).toThrow(/userinfo/i);
   });
 
   it("mcp mode calls exact skills_* ops through injected session", async () => {
@@ -236,7 +297,7 @@ describe("linkskills transport modes", () => {
     });
     const config = parseLinkskillsConfig({
       transportMode: "http",
-      skillsEndpoint: "https://skills.example.test/telemetry",
+      skillsEndpoint: "https://skills.example.test",
       machineToken: {
         bindingId: "linkskills-stage",
         issuerUrl: "https://issuer.example.test",
@@ -289,7 +350,7 @@ describe("linkskills transport modes", () => {
       });
       const config = parseLinkskillsConfig({
         transportMode: "http",
-        skillsEndpoint: "https://skills.example.test/telemetry",
+        skillsEndpoint: "https://skills.example.test",
         machineToken: {
           bindingId: "linkskills-stage",
           issuerUrl: "https://issuer.example.test",
@@ -662,7 +723,9 @@ describe("linkskills transport modes", () => {
   });
 
   it("uses api.machineTokenFacade without local resolveMachineTokenAccess", async () => {
-    const fetchImpl = vi.fn(async () => new Response(JSON.stringify({ ok: true }), { status: 200 }));
+    const fetchImpl = vi.fn(
+      async () => new Response(JSON.stringify({ ok: true }), { status: 200 }),
+    );
     const acquire = vi.fn(async ({ bindingId }) => ({
       bindingId,
       bindingFingerprint: `fp-${bindingId}`,
@@ -686,7 +749,7 @@ describe("linkskills transport modes", () => {
     };
     const config = parseLinkskillsConfig({
       transportMode: "http",
-      skillsEndpoint: "https://skills.example.test/telemetry",
+      skillsEndpoint: "https://skills.example.test",
       machineToken: {
         bindingId: "linkskills-stage",
         issuerUrl: "https://issuer.example.test",
@@ -711,7 +774,7 @@ describe("linkskills transport modes", () => {
   it("fail-closes when machineToken is configured without an injected facade", async () => {
     const config = parseLinkskillsConfig({
       transportMode: "http",
-      skillsEndpoint: "https://skills.example.test/telemetry",
+      skillsEndpoint: "https://skills.example.test",
       machineToken: {
         bindingId: "linkskills-stage",
         issuerUrl: "https://issuer.example.test",

@@ -344,19 +344,13 @@ function selectMcpMachineToken(
         return {
           status: "invalid",
           safeMessage:
-            error instanceof Error
-              ? error.message
-              : "mcp server machineToken binding is invalid",
+            error instanceof Error ? error.message : "mcp server machineToken binding is invalid",
         };
       }
-      if (
-        pluginMachineToken &&
-        machineTokenBindingsConflict(serverToken, pluginMachineToken)
-      ) {
+      if (pluginMachineToken && machineTokenBindingsConflict(serverToken, pluginMachineToken)) {
         return {
           status: "invalid",
-          safeMessage:
-            "mcp server machineToken conflicts with plugin-level machineToken binding",
+          safeMessage: "mcp server machineToken conflicts with plugin-level machineToken binding",
         };
       }
       return { status: "selected", machineToken: serverToken };
@@ -619,6 +613,69 @@ async function openDefaultMcpSession(
   };
 }
 
+/**
+ * Build the frozen LiNKskills Gateway operation URL: POST /v1/{operation}.
+ *
+ * `skillsEndpoint` is the Gateway HTTPS base (origin, optional safe mount
+ * prefix, or an accidental `/v1/...` paste). The allowlisted drain `operation`
+ * is the only path segment appended under `/v1/`. Rejects userinfo, raw
+ * traversal probes, unsafe prefix segments, and any origin/host change.
+ */
+export function buildLinkskillsHttpOperationUrl(skillsEndpoint: string, operation: string): URL {
+  if (!isSkillsDrainTool(operation)) {
+    throw new Error(`linkskills: tool "${operation}" is not a Skills drain op`);
+  }
+  // Belt-and-suspenders: allowlist members are single path segments; never join raw input.
+  if (!/^skills_[a-z0-9_]+$/u.test(operation)) {
+    throw new Error("linkskills: invalid Skills operation name");
+  }
+  // Reject traversal probes in the raw config string before URL normalization hides them.
+  if (/(?:^|[\\/]|%2f)(?:\.\.|%2e%2e)(?:[\\/]|%2f|$)/iu.test(skillsEndpoint)) {
+    throw new Error("linkskills: skillsEndpoint path traversal rejected");
+  }
+
+  let base: URL;
+  try {
+    base = new URL(skillsEndpoint);
+  } catch (cause) {
+    throw new Error("linkskills: skillsEndpoint must be a valid absolute URL", { cause });
+  }
+  if (base.username || base.password) {
+    throw new Error("linkskills: skillsEndpoint must not include userinfo");
+  }
+  if (base.protocol !== "https:" && base.protocol !== "http:") {
+    throw new Error("linkskills: skillsEndpoint must use http or https");
+  }
+
+  // Supported forms: origin base; optional safe mount prefix; `/v1` or `/v1/{op}` paste.
+  let pathname = base.pathname || "/";
+  if (/^\/v1(?:\/|$)/iu.test(pathname)) {
+    pathname = "/";
+  } else if (pathname !== "/" && pathname !== "") {
+    const segments = pathname.replace(/\/+$/u, "").split("/").filter(Boolean);
+    if (
+      segments.length === 0 ||
+      segments.some(
+        (segment) => segment === "." || segment === ".." || !/^[a-zA-Z0-9_-]+$/u.test(segment),
+      )
+    ) {
+      throw new Error("linkskills: skillsEndpoint path prefix rejected");
+    }
+  }
+
+  const prefix = pathname === "/" || pathname === "" ? "" : pathname.replace(/\/+$/u, "");
+  const target = new URL(base.origin);
+  target.pathname = `${prefix}/v1/${operation}`;
+  // Keep configured port/host identity; never inherit query/hash from a pasted URL.
+  if (target.origin !== base.origin) {
+    throw new Error("linkskills: operation URL origin mismatch");
+  }
+  if (target.pathname !== `${prefix}/v1/${operation}`) {
+    throw new Error("linkskills: operation URL path mismatch");
+  }
+  return target;
+}
+
 function createHttpTransport(params: {
   endpoint: string;
   config: LinkskillsConfig;
@@ -646,6 +703,18 @@ function createHttpTransport(params: {
           safeMessage: `tool "${writeParams.toolName}" is not a Skills drain op`,
         };
       }
+      let operationUrl: URL;
+      try {
+        operationUrl = buildLinkskillsHttpOperationUrl(params.endpoint, writeParams.toolName);
+      } catch (error) {
+        return {
+          ok: false,
+          retryable: false,
+          terminal: true,
+          errorCode: "endpoint_insecure",
+          safeMessage: error instanceof Error ? error.message : "skillsEndpoint rejected",
+        };
+      }
       const bearer = await resolveBearerToken({
         config: params.config,
         apiConfig: params.apiConfig,
@@ -669,19 +738,23 @@ function createHttpTransport(params: {
         : ssrfPolicyFromHttpBaseUrlAllowedHostname(params.endpoint);
 
       const postOnce = async (accessToken: string) => {
+        // Frozen Gateway contract (LiNKskills server/client): POST /v1/{operation}
+        // with envelope { params, request_id?, idempotency_key? }. Operation is path-only.
         const guarded = await fetchWithSsrFGuard({
-          url: params.endpoint,
+          url: operationUrl.href,
           ...(params.fetchImpl ? { fetchImpl: params.fetchImpl } : {}),
           init: {
             method: "POST",
             headers: {
               "content-type": "application/json",
               authorization: `Bearer ${accessToken}`,
+              "idempotency-key": writeParams.idempotencyKey,
+              "x-request-id": writeParams.idempotencyKey,
             },
             body: JSON.stringify({
-              toolName: writeParams.toolName,
-              idempotencyKey: writeParams.idempotencyKey,
-              arguments: writeParams.arguments,
+              params: writeParams.arguments,
+              idempotency_key: writeParams.idempotencyKey,
+              request_id: writeParams.idempotencyKey,
             }),
           },
           signal: writeParams.signal,
@@ -948,10 +1021,7 @@ function createLocalMachineTokenFacadeAdapter(params: {
           ? { forceRefresh: acquireParams.forceRefresh }
           : {}),
       });
-      fingerprintsByBindingId.set(
-        bindingId,
-        resolved.bindingFingerprint ?? `fp-${bindingId}`,
-      );
+      fingerprintsByBindingId.set(bindingId, resolved.bindingFingerprint ?? `fp-${bindingId}`);
       return resolved;
     },
     invalidate(bindingId) {

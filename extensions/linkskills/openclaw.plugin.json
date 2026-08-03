@@ -53,7 +53,7 @@
     },
     "transportMode": {
       "label": "Transport Mode",
-      "help": "disabled (default), fake (test-only), mcp (managed mcp.servers entry), or http (skillsEndpoint + SecretRef bearer)."
+      "help": "disabled (default), fake (test-only), mcp (managed mcp.servers entry), or http (Gateway HTTPS base skillsEndpoint + /v1/{operation})."
     },
     "mcpServerName": {
       "label": "MCP Server Name",
@@ -61,7 +61,7 @@
     },
     "skillsEndpoint": {
       "label": "Skills Endpoint",
-      "help": "HTTP JSON endpoint for Skills telemetry when transportMode is http."
+      "help": "LiNKskills Gateway HTTPS base URL for transportMode=http. Requests POST /v1/{allowlisted skills_* operation} with {params,idempotency_key,request_id}."
     }
   },
   "configSchema": {
@@ -129,7 +129,7 @@
       },
       "skillsEndpoint": {
         "type": "string",
-        "description": "Skills telemetry endpoint for transportMode=http (SecretRef bearer via skillsCredential)."
+        "description": "LiNKskills Gateway HTTPS base for transportMode=http (POST /v1/{operation}; SecretRef or machineToken bearer)."
       },
       "skillsCredential": {
         "$ref": "#/$defs/secretInput"

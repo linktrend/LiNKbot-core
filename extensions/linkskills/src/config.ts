@@ -35,7 +35,7 @@ export type LinkskillsConfig = {
   transportMode: LinkskillsTransportMode;
   /** Managed MCP server key under api.config.mcp.servers. */
   mcpServerName: string;
-  skillsEndpoint?: string;
+  skillsEndpoint?: string; // Gateway HTTPS base for transportMode=http (POST /v1/{operation})
   skillsCredential?: LinkskillsSecretInput;
   /**
    * Optional machine-token binding. When set, HTTP transport uses
