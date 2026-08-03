@@ -114,7 +114,16 @@ usable. Stop/deactivate cleanup is generation-scoped and idempotent — a late
 cleanup from an old generation cannot remove a newer replacement. Plugin
 `unregister` under a host service lease does not retire the live generation, so
 cache-hit reload stop/restart of the same registry keeps minting; the host
-retires ownership on gateway close and on successful reload commit.
+retires ownership on gateway close and on successful reload commit when
+ownership descriptors change. Same-ownership rematerialize (repeated activating
+loads / agent prewarm) **reuses** the live generation instead of publishing a
+replacement — owner publish would otherwise force-retire facades closed over by
+already-started plugin services and deadletter capture drain. Ownership matching
+hashes a collision-safe canonical JSON of authorization tuples sorted by UTF-8
+bytewise total order (bindingId, domain/tenant partition, endpoints, keyRef,
+client, audience, scopes, environment, and related fields) under an explicit
+version/domain separator — never delimiter-joined operator `bindingId` strings
+and never locale collation (which can equate distinct Unicode forms).
 
 ## External projection
 

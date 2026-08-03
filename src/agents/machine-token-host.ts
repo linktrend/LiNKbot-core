@@ -8,6 +8,7 @@
  * only `bindingId` (+ signal/forceRefresh); SecretRef → PEM resolution and
  * MachineTokenBinding assembly happen inside the facade.
  */
+import { createHash } from "node:crypto";
 import { isSecretRef, type SecretRef } from "../config/types.secrets.js";
 import {
   getCachedMachineToken,
@@ -27,6 +28,9 @@ import {
   invalidateMachineTokenCache as invalidateMachineTokenCacheCore,
   resolveMachineTokenAccess as resolveMachineTokenAccessCore,
 } from "./machine-token.js";
+
+/** Domain separator for ownership fingerprints — upgrades must bump this tag. */
+const MACHINE_TOKEN_OWNERSHIP_DOMAIN = "machine-token-ownership-v1";
 
 export type {
   MachineTokenBinding,
@@ -122,9 +126,113 @@ type MachineTokenFacadeGenerationRecord = {
    * restart the same live generation.
    */
   leases: number;
+  /**
+   * Stable fingerprint of granted binding descriptors (no PEM). Same-ownership
+   * rematerialize reuses this live generation instead of publishing a replacement
+   * that would force-retire service-held facades.
+   */
+  ownershipFingerprint: string;
   /** Retire this generation's facade (idempotent). */
   retire: () => void;
 };
+
+/**
+ * Canonical authorization tuple for one granted binding.
+ *
+ * Structured JSON (not delimiter-joined operator strings) so bindingId values
+ * containing `=` / `,` cannot collide two grant sets into one ownership key.
+ * Includes bindingId, domain partition (tenant/org when represented), endpoints,
+ * keyRef identity, client, audience, scopes, environment, and bindingFingerprint.
+ */
+function canonicalizeMachineTokenOwnershipTuple(
+  record: HostMachineTokenBindingRecord,
+): readonly unknown[] {
+  return [
+    record.bindingId,
+    record.pluginId,
+    record.domain,
+    record.issuerUrl,
+    record.discoveryUrl ?? null,
+    record.tokenEndpoint ?? null,
+    record.clientId,
+    record.keyRef.source,
+    record.keyRef.provider,
+    record.keyRef.id,
+    record.keyRefFingerprint,
+    record.audience ?? null,
+    record.scope ?? null,
+    record.operations ? [...record.operations].toSorted() : null,
+    record.scopes ? [...record.scopes].toSorted() : null,
+    record.environment ?? null,
+    record.service ?? null,
+    record.allowPrivateNetwork === true,
+    record.bindingFingerprint,
+  ];
+}
+
+/**
+ * Total order over JSON encodings for ownership tuples.
+ * UTF-8 bytewise (not localeCompare): en collation equates distinct Unicode
+ * forms (e.g. NFC é vs NFD e+acute), so reversed equal-keys would change the
+ * hashed fingerprint.
+ */
+export function compareMachineTokenCanonicalJson(left: unknown, right: unknown): number {
+  return Buffer.compare(
+    Buffer.from(JSON.stringify(left), "utf8"),
+    Buffer.from(JSON.stringify(right), "utf8"),
+  );
+}
+
+/** Per-plugin ownership fingerprint from granted binding descriptors. */
+export function fingerprintMachineTokenGrantedRecords(
+  grantedRecords: readonly HostMachineTokenBindingRecord[],
+): string {
+  // Collision-safe: sorted length-safe JSON tuples hashed under an explicit
+  // version/domain separator. Delimiter joins of operator bindingId values are
+  // unsafe — `a`/`FPA` + `b`/`FPB` equals one record `a=FPA,b`/`FPB`.
+  const tuples = grantedRecords
+    .map((record) => canonicalizeMachineTokenOwnershipTuple(record))
+    .toSorted(compareMachineTokenCanonicalJson);
+  return createHash("sha256")
+    .update(MACHINE_TOKEN_OWNERSHIP_DOMAIN, "utf8")
+    .update("\0", "utf8")
+    .update(JSON.stringify(tuples), "utf8")
+    .digest("hex");
+}
+
+/**
+ * True when the live generation for pluginId matches these granted descriptors.
+ * Used to reuse live ownership across activating rematerialize without retiring
+ * facades closed over by already-started plugin services.
+ */
+export function liveMachineTokenOwnershipMatchesGrantedRecords(
+  pluginId: string,
+  grantedRecords: readonly HostMachineTokenBindingRecord[],
+): boolean {
+  const trimmed = pluginId.trim();
+  if (!trimmed || grantedRecords.length === 0) {
+    return false;
+  }
+  const live = liveGenerationByPluginId.get(trimmed);
+  if (!live || live.state !== "live") {
+    return false;
+  }
+  return live.ownershipFingerprint === fingerprintMachineTokenGrantedRecords(grantedRecords);
+}
+
+/**
+ * Destroy only a candidate generation. No-op for live/retired — rollback and
+ * abandon paths must not retire a reused live generation.
+ */
+export function destroyCandidateMachineTokenFacadeGeneration(
+  handle: MachineTokenFacadeGenerationHandle,
+): void {
+  const generation = generationsById.get(handle.generationId);
+  if (!generation || generation.state !== "candidate") {
+    return;
+  }
+  destroyMachineTokenFacadeGeneration(handle);
+}
 
 /** Live generation only — pluginId → current published generation. */
 const liveGenerationByPluginId = new Map<string, MachineTokenFacadeGenerationRecord>();
@@ -564,6 +672,7 @@ export function createMachineTokenFacadeGeneration(
     facade,
     state: "candidate",
     leases: 0,
+    ownershipFingerprint: fingerprintMachineTokenGrantedRecords(params.grantedRecords),
     retire: retireFacade,
   };
   generationsById.set(handle.generationId, record);

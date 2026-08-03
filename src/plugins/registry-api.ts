@@ -1,10 +1,14 @@
 import path from "node:path";
 import {
   collectGrantedMachineTokenBindingRecords,
-  createMachineTokenFacadeGeneration,
-  destroyMachineTokenFacadeGeneration,
-  publishMachineTokenFacadeGeneration,
   commitMachineTokenOwnershipSnapshot,
+  createMachineTokenFacadeGeneration,
+  destroyCandidateMachineTokenFacadeGeneration,
+  destroyMachineTokenFacadeGeneration,
+  getLiveMachineTokenFacadeGenerationHandle,
+  getLiveMachineTokenPluginFacade,
+  liveMachineTokenOwnershipMatchesGrantedRecords,
+  publishMachineTokenFacadeGeneration,
   type HostMachineTokenBindingRecord,
   type MachineTokenFacadeGenerationHandle,
 } from "../agents/machine-token-host.js";
@@ -144,8 +148,14 @@ export function createPluginApiFactory(
       guard.active = false;
       const generation = guard.machineTokenGeneration;
       if (generation) {
-        destroyMachineTokenFacadeGeneration(generation);
+        if (guard.machineTokenGenerationReused) {
+          // Shared live ownership — leave minting intact for still-running services.
+        } else {
+          // This registration created (and possibly published) the generation.
+          destroyMachineTokenFacadeGeneration(generation);
+        }
         guard.machineTokenGeneration = undefined;
+        guard.machineTokenGenerationReused = undefined;
       }
     }
     pluginSideEffectGuards.delete(pluginId);
@@ -185,8 +195,9 @@ export function createPluginApiFactory(
   };
 
   /**
-   * Collect exact staged (unpublished) generation handles owned by this
-   * registry builder for the combined ownership snapshot commit.
+   * Collect staged generation handles for the combined ownership commit.
+   * Includes reused live handles so reconcile keep-set preserves same-ownership
+   * generations across rematerialize.
    */
   const collectStagedMachineTokenGenerationHandles = (): MachineTokenFacadeGenerationHandle[] => {
     const handles: MachineTokenFacadeGenerationHandle[] = [];
@@ -261,7 +272,8 @@ export function createPluginApiFactory(
       if (!generation) {
         continue;
       }
-      destroyMachineTokenFacadeGeneration(generation);
+      // Candidate-only: do not retire a reused live generation on abandon.
+      destroyCandidateMachineTokenFacadeGeneration(generation);
       guard.machineTokenGeneration = undefined;
     }
   };
@@ -323,39 +335,53 @@ export function createPluginApiFactory(
       grantedRecords.length > 0;
     let machineTokenFacade: OpenClawPluginApi["machineTokenFacade"];
     if (mayStageMachineTokenFacade) {
-      const generation = createMachineTokenFacadeGeneration({
-        pluginId: record.id,
-        grantedRecords,
-        resolveKeyPem: async ({ bindingId, keyRef }) => {
-          const resolved = await resolveConfiguredSecretInputString({
-            config: openClawConfig,
-            env: process.env,
-            value: keyRef,
-            path: `plugins.entries.${record.id}.machineToken[${bindingId}].clientAssertionKeyRef`,
-          });
-          if (!resolved.value) {
-            throw new Error(
-              resolved.unresolvedRefReason ??
-                `Machine-token binding "${bindingId}" clientAssertionKeyRef unresolved`,
-            );
-          }
-          return resolved.value;
-        },
-      });
-      sideEffectGuard.machineTokenGeneration = generation.handle;
-      sideEffectGuard.machineTokenGrantedRecords = Object.freeze(
-        grantedRecords.map((record) =>
+      const frozenGrantedRecords = Object.freeze(
+        grantedRecords.map((granted) =>
           Object.freeze({
-            ...record,
-            keyRef: Object.freeze({ ...record.keyRef }),
-            ...(record.operations
-              ? { operations: Object.freeze([...record.operations]) }
-              : {}),
-            ...(record.scopes ? { scopes: Object.freeze([...record.scopes]) } : {}),
+            ...granted,
+            keyRef: Object.freeze({ ...granted.keyRef }),
+            ...(granted.operations ? { operations: Object.freeze([...granted.operations]) } : {}),
+            ...(granted.scopes ? { scopes: Object.freeze([...granted.scopes]) } : {}),
           }),
         ),
       );
-      machineTokenFacade = generation.facade;
+      sideEffectGuard.machineTokenGrantedRecords = frozenGrantedRecords;
+      // Same-ownership rematerialize must reuse the live generation. Publishing a
+      // replacement force-retires service-held facades (leases do not block owner
+      // publish) and deadletters capture drain with "facade … is unregistered".
+      if (liveMachineTokenOwnershipMatchesGrantedRecords(record.id, grantedRecords)) {
+        const liveHandle = getLiveMachineTokenFacadeGenerationHandle(record.id);
+        const liveFacade = getLiveMachineTokenPluginFacade(record.id);
+        if (liveHandle && liveFacade) {
+          sideEffectGuard.machineTokenGeneration = liveHandle;
+          sideEffectGuard.machineTokenGenerationReused = true;
+          machineTokenFacade = liveFacade;
+        }
+      }
+      if (!machineTokenFacade) {
+        const generation = createMachineTokenFacadeGeneration({
+          pluginId: record.id,
+          grantedRecords,
+          resolveKeyPem: async ({ bindingId, keyRef }) => {
+            const resolved = await resolveConfiguredSecretInputString({
+              config: openClawConfig,
+              env: process.env,
+              value: keyRef,
+              path: `plugins.entries.${record.id}.machineToken[${bindingId}].clientAssertionKeyRef`,
+            });
+            if (!resolved.value) {
+              throw new Error(
+                resolved.unresolvedRefReason ??
+                  `Machine-token binding "${bindingId}" clientAssertionKeyRef unresolved`,
+              );
+            }
+            return resolved.value;
+          },
+        });
+        sideEffectGuard.machineTokenGeneration = generation.handle;
+        sideEffectGuard.machineTokenGenerationReused = false;
+        machineTokenFacade = generation.facade;
+      }
     }
     return buildPluginApi({
       id: record.id,
