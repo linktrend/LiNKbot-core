@@ -1139,10 +1139,7 @@ describe("loadOpenClawPlugins machine-token generation transaction", () => {
     expect(countMachineTokenFacadeGenerations()).toEqual(baseline);
   });
 
-  it.each([
-    { point: "early" as const },
-    { point: "late" as const },
-  ])(
+  it.each([{ point: "early" as const }, { point: "late" as const }])(
     "rolls back on real hook-runner init $point failure without retiring prior facades",
     ({ point }) => {
       const livePlugin = writeCapturingPlugin({ id: "linkbrain" });
@@ -1406,9 +1403,9 @@ describe("loadOpenClawPlugins setup/channel lifecycle machine-token baselines", 
       configured: false,
       useBundledSetupEntryContract: true,
     });
-    const baselineBeforeNested = { current: null as ReturnType<
-      typeof countMachineTokenFacadeGenerations
-    > | null };
+    const baselineBeforeNested = {
+      current: null as ReturnType<typeof countMachineTokenFacadeGenerations> | null,
+    };
     (globalThis as Record<string, unknown>)[NESTED_LOAD_HOOK_KEY] = () => {
       baselineBeforeNested.current = countMachineTokenFacadeGenerations();
       loadOpenClawPlugins({
@@ -1450,5 +1447,208 @@ describe("loadOpenClawPlugins setup/channel lifecycle machine-token baselines", 
     expect(baselineBeforeNested.current).not.toBeNull();
     expect(getLiveMachineTokenFacadeGenerationHandle("linkbrain")).toBeDefined();
     expect(getLiveMachineTokenFacadeGenerationHandle("wave9-setup-inactive-mt")).toBeUndefined();
+  });
+});
+
+describe("loadOpenClawPlugins machine-token reload acquire lifecycle", () => {
+  afterEach(() => {
+    setPluginLoadActivationFailureInjectorForTest(null);
+    setCombinedPluginRuntimeActivationFailureInjectorForTest(null);
+    setGlobalHookRunnerInitFailureInjectorForTest(null);
+    resetActiveCombinedPluginRuntimeSnapshotIdentityForTest();
+    resetActivatingPluginLoadLockForTest();
+    unregisterMachineTokenFacadesForPlugin("linkbrain");
+    unregisterMachineTokenFacadesForPlugin("linkskills");
+    clearFacadeStore();
+    clearPluginLoaderCache();
+    resetPluginLoaderTestStateForTest();
+    cleanupPluginLoaderFixturesForTest();
+    delete process.env[BRAIN_KEY];
+    delete process.env[SKILLS_KEY];
+    delete process.env[MCP_KEY];
+  });
+
+  it("acquires on the new live facade after successful activating reload for brain and skills", async () => {
+    const brain = writeCapturingPlugin({ id: "linkbrain" });
+    const skills = writeCapturingPlugin({ id: "linkskills" });
+    loadWithMachineTokenPlugins({
+      plugins: [
+        {
+          id: "linkbrain",
+          path: brain.dir,
+          bindingId: "linkbrain-stage",
+          clientId: "brain-v1",
+          keyId: BRAIN_KEY,
+        },
+        {
+          id: "linkskills",
+          path: skills.dir,
+          bindingId: "linkskills-stage",
+          clientId: "skills-v1",
+          keyId: SKILLS_KEY,
+        },
+      ],
+    });
+    const brainV1 = facadeStore().linkbrain!;
+    const skillsV1 = facadeStore().linkskills!;
+    const brainGen1 = getLiveMachineTokenFacadeGenerationHandle("linkbrain")?.generationId;
+    const skillsGen1 = getLiveMachineTokenFacadeGenerationHandle("linkskills")?.generationId;
+
+    const brain2 = writeCapturingPlugin({ id: "linkbrain" });
+    const skills2 = writeCapturingPlugin({ id: "linkskills" });
+    loadWithMachineTokenPlugins({
+      plugins: [
+        {
+          id: "linkbrain",
+          path: brain2.dir,
+          bindingId: "linkbrain-stage",
+          clientId: "brain-v2",
+          keyId: BRAIN_KEY,
+        },
+        {
+          id: "linkskills",
+          path: skills2.dir,
+          bindingId: "linkskills-stage",
+          clientId: "skills-v2",
+          keyId: SKILLS_KEY,
+        },
+      ],
+    });
+
+    const brainV2 = facadeStore().linkbrain!;
+    const skillsV2 = facadeStore().linkskills!;
+    expect(getLiveMachineTokenFacadeGenerationHandle("linkbrain")?.generationId).not.toBe(
+      brainGen1,
+    );
+    expect(getLiveMachineTokenFacadeGenerationHandle("linkskills")?.generationId).not.toBe(
+      skillsGen1,
+    );
+    expect(brainV1.health("linkbrain-stage").registered).toBe(false);
+    expect(skillsV1.health("linkskills-stage").registered).toBe(false);
+    await expect(brainV1.acquire({ bindingId: "linkbrain-stage" })).rejects.toThrow(/unregistered/);
+    await expect(skillsV1.acquire({ bindingId: "linkskills-stage" })).rejects.toThrow(
+      /unregistered/,
+    );
+
+    for (const [facade, bindingId] of [
+      [brainV2, "linkbrain-stage"],
+      [skillsV2, "linkskills-stage"],
+    ] as const) {
+      let acquireError: unknown;
+      try {
+        await facade.acquire({ bindingId });
+      } catch (error) {
+        acquireError = error;
+      }
+      // Test PEM is not a real assertion key; mint may fail, but grant/live must not.
+      expect(String(acquireError ?? "")).not.toMatch(
+        /unregistered|not granted machine-token binding/,
+      );
+    }
+
+    // Stale cleanup from the retired generation must not kill the new live ones.
+    brainV1.unregister();
+    skillsV1.unregister();
+    expect(brainV2.health("linkbrain-stage").registered).toBe(true);
+    expect(skillsV2.health("linkskills-stage").registered).toBe(true);
+    for (const [facade, bindingId] of [
+      [brainV2, "linkbrain-stage"],
+      [skillsV2, "linkskills-stage"],
+    ] as const) {
+      let acquireError: unknown;
+      try {
+        await facade.acquire({ bindingId });
+      } catch (error) {
+        acquireError = error;
+      }
+      expect(String(acquireError ?? "")).not.toMatch(
+        /unregistered|not granted machine-token binding/,
+      );
+    }
+  });
+
+  it("keeps prior live acquireable after failed activating reload", async () => {
+    const livePlugin = writeCapturingPlugin({ id: "linkbrain" });
+    loadWithMachineTokenPlugins({
+      plugins: [
+        {
+          id: "linkbrain",
+          path: livePlugin.dir,
+          bindingId: "linkbrain-stage",
+          clientId: "brain-live",
+          keyId: BRAIN_KEY,
+        },
+      ],
+    });
+    const liveFacade = facadeStore().linkbrain!;
+    const liveHandle = getLiveMachineTokenFacadeGenerationHandle("linkbrain");
+    const failPlugin = writeCapturingPlugin({ id: "linkbrain", failRegister: true });
+    expect(() =>
+      loadWithMachineTokenPlugins({
+        throwOnLoadError: true,
+        plugins: [
+          {
+            id: "linkbrain",
+            path: failPlugin.dir,
+            bindingId: "linkbrain-stage",
+            clientId: "brain-fail",
+            keyId: BRAIN_KEY,
+          },
+        ],
+      }),
+    ).toThrow(/plugin load failed|intentional register failure/);
+
+    expect(getLiveMachineTokenFacadeGenerationHandle("linkbrain")?.generationId).toBe(
+      liveHandle?.generationId,
+    );
+    expect(liveFacade.health("linkbrain-stage").registered).toBe(true);
+    let acquireError: unknown;
+    try {
+      await liveFacade.acquire({ bindingId: "linkbrain-stage" });
+    } catch (error) {
+      acquireError = error;
+    }
+    expect(String(acquireError ?? "")).not.toMatch(
+      /unregistered|not granted machine-token binding/,
+    );
+  });
+
+  it("repeated activating reloads leave only the latest generation acquireable", async () => {
+    let previous: MachineTokenPluginFacade | undefined;
+    let previousGen: string | undefined;
+    for (let round = 1; round <= 3; round += 1) {
+      const plugin = writeCapturingPlugin({ id: "linkbrain" });
+      loadWithMachineTokenPlugins({
+        plugins: [
+          {
+            id: "linkbrain",
+            path: plugin.dir,
+            bindingId: "linkbrain-stage",
+            clientId: `brain-v${round}`,
+            keyId: BRAIN_KEY,
+          },
+        ],
+      });
+      const live = facadeStore().linkbrain!;
+      const gen = getLiveMachineTokenFacadeGenerationHandle("linkbrain")?.generationId;
+      expect(gen).toBeTruthy();
+      if (previous && previousGen) {
+        expect(gen).not.toBe(previousGen);
+        expect(previous.health("linkbrain-stage").registered).toBe(false);
+        previous.unregister();
+      }
+      expect(live.health("linkbrain-stage").registered).toBe(true);
+      let acquireError: unknown;
+      try {
+        await live.acquire({ bindingId: "linkbrain-stage" });
+      } catch (error) {
+        acquireError = error;
+      }
+      expect(String(acquireError ?? "")).not.toMatch(
+        /unregistered|not granted machine-token binding/,
+      );
+      previous = live;
+      previousGen = gen;
+    }
   });
 });
