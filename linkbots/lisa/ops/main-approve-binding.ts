@@ -1,15 +1,23 @@
 /**
  * Main Approve package binding — Carlos sees plain English; internals bind SHAs.
- * Runtime path fails closed until an authoritative IDE/OpenClaw package store exists
+ * Runtime path fails closed until OpenClaw shared-state SQLite health passes
  * **and** live Lisa targeting is explicitly opted in with separately approved
  * credentials language. Pure binding helpers remain available for tests.
  */
 
 import {
+  claimMainApprovePackage,
+  putMainApprovePackage,
+  type LisaStageOpsStoreOptions,
+  type MainApproveClaimRow,
+  type MainApprovePackageRow,
+} from "./lisa-stage-ops-store.ts";
+import {
   authorizeLiveLisaAction,
   LISA_OPS_LIVE_ACTION_DEFAULTS,
   type LisaOpsLiveActionConfig,
 } from "./ship-pull-contract.ts";
+import { resolveMainApproveStoreAvailability } from "./stage-durable-store.ts";
 
 export type MainApproveItem = {
   index: number;
@@ -60,21 +68,92 @@ export type MainApproveAskResult =
       prerequisite: string;
     };
 
-/** Packaging is blocked until an authoritative GitHub/OpenClaw package store exists. */
-export const MAIN_APPROVE_RUNTIME_STORE: {
-  available: false;
+export type MainApproveStoreAvailability = {
+  available: boolean;
   prerequisite: string;
-} = {
-  available: false,
-  prerequisite:
-    "IDE Development issue #23 / OpenClaw must provide an authoritative Main Approve package store (GitHub issue/PR metadata or OpenClaw task binding). Do not use JSON/Markdown sidecars as OpenClaw state.",
 };
 
-/** Test / future adapter — production runtime uses MAIN_APPROVE_RUNTIME_STORE only. */
+export const MAIN_APPROVE_STORE_PREREQUISITE =
+  "OpenClaw shared state SQLite must expose additive lisa_stage_* tables (lazy-ensure via putMainApprovePackage/claimMainApprovePackage). Do not use JSON/Markdown sidecars as OpenClaw state.";
+
+/**
+ * Probe SQLite health for Main Approve (fail-closed, read-only by default).
+ * Optional stateDir/databasePath override for tests.
+ */
+export function resolveMainApproveRuntimeStore(params?: {
+  stateDir?: string;
+  databasePath?: string;
+}): MainApproveStoreAvailability {
+  const resolved = resolveMainApproveStoreAvailability(params);
+  return {
+    available: resolved.available,
+    prerequisite: resolved.available
+      ? MAIN_APPROVE_STORE_PREREQUISITE
+      : (resolved.prerequisite ?? MAIN_APPROVE_STORE_PREREQUISITE),
+  };
+}
+
+/**
+ * Packaging / default runtime adapter: fail-closed until an explicit probe
+ * (resolveMainApproveRuntimeStore) or sealed SQLite path proves health.
+ * Do not live-probe stage from module load / property access.
+ */
+export const MAIN_APPROVE_RUNTIME_STORE: MainApproveStoreAvailability = {
+  available: false,
+  prerequisite: MAIN_APPROVE_STORE_PREREQUISITE,
+};
+
+/** Explicit unhealthy adapter for fail-closed tests. */
+export const MAIN_APPROVE_UNHEALTHY_STORE: MainApproveStoreAvailability = {
+  available: false,
+  prerequisite: MAIN_APPROVE_STORE_PREREQUISITE,
+};
+
+/** Test / future adapter — production runtime probes SQLite via resolveMainApproveRuntimeStore. */
 export type AuthoritativePackageStore = {
   available: true;
   prerequisite?: undefined;
 };
+
+/**
+ * Seal a Main Approve package into OpenClaw SQLite (idempotent put).
+ */
+export function sealMainApprovePackage(
+  pkg: MainApprovePackage,
+  options: LisaStageOpsStoreOptions,
+  nowMs = Date.now(),
+): MainApprovePackageRow {
+  assertImmutableBindings(pkg);
+  const claimExpiresAtMs = parseInstantToEpochMs(pkg.claimExpiresAt);
+  if (claimExpiresAtMs === null) {
+    throw new Error(`invalid claimExpiresAt: ${pkg.claimExpiresAt}`);
+  }
+  return putMainApprovePackage(
+    options,
+    {
+      packageId: pkg.packageId,
+      mondayDate: pkg.mondayDate,
+      claimExpiresAtMs,
+      itemsJson: JSON.stringify(pkg.items),
+    },
+    nowMs,
+  );
+}
+
+/**
+ * Claim a sealed Main Approve package (fail-closed on expiry / conflict).
+ */
+export function claimSealedMainApprovePackage(
+  input: {
+    packageId: string;
+    expiresAtMs: number;
+    claimId?: string;
+  },
+  options: LisaStageOpsStoreOptions,
+  nowMs = Date.now(),
+): MainApproveClaimRow | { ok: false; reason: "expired_package" | "claim_conflict" } {
+  return claimMainApprovePackage(options, input, nowMs);
+}
 
 /**
  * Pure Carlos ask view builder — no store gate.
@@ -106,7 +185,7 @@ export function buildCarlosAskView(pkg: MainApprovePackage): MainApproveAskView 
  */
 export function issueCarlosAsk(
   pkg: MainApprovePackage,
-  store: { available: boolean; prerequisite?: string } = MAIN_APPROVE_RUNTIME_STORE,
+  store: MainApproveStoreAvailability = MAIN_APPROVE_RUNTIME_STORE,
   live: LisaOpsLiveActionConfig = LISA_OPS_LIVE_ACTION_DEFAULTS,
 ): MainApproveAskResult {
   const liveGate = authorizeLiveLisaAction(live);
@@ -122,7 +201,7 @@ export function issueCarlosAsk(
     return {
       ok: false,
       reason: "blocked_no_store",
-      prerequisite: store.prerequisite ?? MAIN_APPROVE_RUNTIME_STORE.prerequisite,
+      prerequisite: store.prerequisite ?? MAIN_APPROVE_STORE_PREREQUISITE,
     };
   }
   assertImmutableBindings(pkg);
@@ -229,7 +308,7 @@ export function authorizeApprovalDispatch(
     nowIso: string;
     liveItems: MainApproveItem[];
   },
-  store: { available: boolean; prerequisite?: string } = MAIN_APPROVE_RUNTIME_STORE,
+  store: MainApproveStoreAvailability = MAIN_APPROVE_RUNTIME_STORE,
   live: LisaOpsLiveActionConfig = LISA_OPS_LIVE_ACTION_DEFAULTS,
 ): ApprovalDispatch {
   const liveGate = authorizeLiveLisaAction(live);
@@ -245,7 +324,7 @@ export function authorizeApprovalDispatch(
     return {
       ok: false,
       reason: "blocked_no_store",
-      prerequisite: store.prerequisite ?? MAIN_APPROVE_RUNTIME_STORE.prerequisite,
+      prerequisite: store.prerequisite ?? MAIN_APPROVE_STORE_PREREQUISITE,
     };
   }
   return validateApprovalBindings(params);
@@ -253,7 +332,7 @@ export function authorizeApprovalDispatch(
 
 /**
  * @deprecated Runtime must use authorizeApprovalDispatch (fail-closed).
- * Kept as alias that still fails closed on the production store.
+ * Kept as alias that still fails closed on the packaging default store.
  */
 export function validateApprovalDispatch(params: {
   sealed: MainApprovePackage;

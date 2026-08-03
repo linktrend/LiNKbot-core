@@ -1,8 +1,12 @@
 /**
- * Durable Lisa stage-ops store (Repair / GitOps / Main Approve) on OpenClaw SQLite.
+ * Workshop Lisa stage-ops store façade for `node --experimental-strip-types --test`.
  *
- * Additive lazy-ensure tables — no schema_version bump. Fail-closed health probe
- * gates Repair supervisor install. IDE Development remains external/untouched.
+ * Schema DDL is owned by `src/state/lisa-stage-ops-schema.ts` (re-exported via
+ * `./lisa-stage-ops-schema.ts`). OpenClaw runtime ownership is the Kysely-backed
+ * `src/state/lisa-stage-ops-store.ts` (pnpm lint:kysely + Vitest).
+ *
+ * This façade keeps a DatabaseSync API so workshop node:test does not load the
+ * full OpenClaw state-db / package graph. Do not invent a second schema.
  */
 
 import { randomUUID } from "node:crypto";

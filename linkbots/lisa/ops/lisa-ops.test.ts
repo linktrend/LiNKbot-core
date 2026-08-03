@@ -16,6 +16,7 @@ import {
   isMainApproveClaimExpired,
   issueCarlosAsk,
   MAIN_APPROVE_RUNTIME_STORE,
+  MAIN_APPROVE_UNHEALTHY_STORE,
   parseInstantToEpochMs,
   validateApprovalBindings,
   type MainApprovePackage,
@@ -848,7 +849,7 @@ describe("Main Approve binding", () => {
     const view = buildCarlosAskViewPure(pkg);
     assert.match(view.telegramBody, /1\) linktrend\/LiNKsites/);
     assert.doesNotMatch(view.telegramBody, /[0-9a-f]{7,}/i);
-    assert.equal(MAIN_APPROVE_RUNTIME_STORE.available, false);
+    assert.equal(MAIN_APPROVE_UNHEALTHY_STORE.available, false);
   });
 
   it("runtime issues no Carlos ask without store and names prerequisite", () => {
@@ -864,21 +865,24 @@ describe("Main Approve binding", () => {
     assert.equal(blocked.reason, "live_targeting_disabled");
   });
 
-  it("live opt-in still blocks Main Approve when store.available is false", () => {
+  it("live opt-in still blocks Main Approve when store is unhealthy/missing", () => {
     const liveOptIn = {
       liveLisaTargetingAllowed: true,
       credentialsLanguageSeparatelyApproved: true,
     };
-    const ask = issueCarlosAsk(pkg, MAIN_APPROVE_RUNTIME_STORE, liveOptIn);
+    const ask = issueCarlosAsk(pkg, MAIN_APPROVE_UNHEALTHY_STORE, liveOptIn);
     assert.equal(ask.ok, false);
     if (ask.ok) return;
     assert.equal(ask.reason, "blocked_no_store");
-    assert.match(ask.prerequisite, /issue #23|package store/i);
+    assert.match(ask.prerequisite, /lisa_stage_|package store|SQLite/i);
 
-    const dispatch = authorizeApprovalDispatch(paramsOk, MAIN_APPROVE_RUNTIME_STORE, liveOptIn);
+    const dispatch = authorizeApprovalDispatch(paramsOk, MAIN_APPROVE_UNHEALTHY_STORE, liveOptIn);
     assert.equal(dispatch.ok, false);
     if (dispatch.ok) return;
     assert.equal(dispatch.reason, "blocked_no_store");
+
+    // Packaging default remains fail-closed; use resolveMainApproveRuntimeStore for live probes.
+    assert.equal(MAIN_APPROVE_RUNTIME_STORE.available, false);
   });
 
   it("runtime approval dispatch fails closed without store", () => {

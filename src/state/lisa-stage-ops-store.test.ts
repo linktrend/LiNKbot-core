@@ -1,7 +1,6 @@
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { DatabaseSync } from "node:sqlite";
 import { afterEach, describe, expect, it } from "vitest";
 import { readSqliteNumberPragma } from "../infra/sqlite-pragma.test-support.js";
 import { LISA_STAGE_OPS_TABLES } from "./lisa-stage-ops-schema.js";
@@ -18,9 +17,10 @@ import {
   resolveOpenClawStateSqlitePath,
   upsertRepairBinding,
 } from "./lisa-stage-ops-store.js";
+import { tableExists } from "./openclaw-state-db-schema-helpers.js";
+import { OPENCLAW_STATE_SCHEMA_VERSION, openOpenClawStateDatabase } from "./openclaw-state-db.js";
 
 const tempDirs: string[] = [];
-const openDbs: DatabaseSync[] = [];
 
 function tempDbPath(prefix = "lisa-stage-ops-"): string {
   const directory = mkdtempSync(join(tmpdir(), prefix));
@@ -28,50 +28,39 @@ function tempDbPath(prefix = "lisa-stage-ops-"): string {
   return join(directory, "openclaw.sqlite");
 }
 
-function openInjected(path: string): DatabaseSync {
-  const db = new DatabaseSync(path);
-  openDbs.push(db);
-  return db;
+function optsFor(databasePath: string) {
+  return { databasePath, path: databasePath, ensure: true as const };
 }
 
 afterEach(() => {
-  for (const db of openDbs.splice(0)) {
-    try {
-      closeLisaStageOpsStore(db);
-    } catch {
-      // already closed
-    }
-  }
+  closeLisaStageOpsStore();
   for (const dir of tempDirs.splice(0)) {
     rmSync(dir, { recursive: true, force: true });
   }
 });
 
 describe("lisa stage ops store", () => {
-  it("lazily ensures all lisa_stage_* tables without bumping user_version / schema_version", () => {
+  it("lazily ensures all lisa_stage_* tables without further bumping schema_version", () => {
     const databasePath = tempDbPath();
-    const db = openInjected(databasePath);
-    expect(readSqliteNumberPragma(db, "user_version")).toBe(0);
+    const options = { databasePath, path: databasePath };
 
-    ensureLisaStageOpsSchema({ databasePath, db, ensure: true });
-
-    const names = (
-      db
-        .prepare(`SELECT name FROM sqlite_master WHERE type = 'table' ORDER BY name`)
-        .all() as Array<{
-        name: string;
-      }>
-    ).map((r) => r.name);
-
+    // Opening the shared state DB applies the canonical OpenClaw schema version.
+    const beforeEnsure = openOpenClawStateDatabase(options);
+    expect(readSqliteNumberPragma(beforeEnsure.db, "user_version")).toBe(
+      OPENCLAW_STATE_SCHEMA_VERSION,
+    );
     for (const table of LISA_STAGE_OPS_TABLES) {
-      expect(names).toContain(table);
+      expect(tableExists(beforeEnsure.db, table)).toBe(false);
     }
-    // Additive lazy-ensure must not advance OpenClaw user_version / schema_meta.
-    expect(readSqliteNumberPragma(db, "user_version")).toBe(0);
-    const openclawMeta = db
-      .prepare(`SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'schema_meta'`)
-      .get() as { name: string } | undefined;
-    expect(openclawMeta).toBeUndefined();
+
+    ensureLisaStageOpsSchema({ ...options, ensure: true });
+
+    const { db } = openOpenClawStateDatabase(options);
+    for (const table of LISA_STAGE_OPS_TABLES) {
+      expect(tableExists(db, table)).toBe(true);
+    }
+    // Additive lazy-ensure must not advance OpenClaw user_version further.
+    expect(readSqliteNumberPragma(db, "user_version")).toBe(OPENCLAW_STATE_SCHEMA_VERSION);
 
     const meta = db
       .prepare(`SELECT meta_value FROM lisa_stage_ops_store_meta WHERE meta_key = ?`)
@@ -79,14 +68,13 @@ describe("lisa stage ops store", () => {
     expect(meta?.meta_value).toBe("1");
 
     // Idempotent re-ensure
-    ensureLisaStageOpsSchema({ databasePath, db, ensure: true });
-    expect(readSqliteNumberPragma(db, "user_version")).toBe(0);
+    ensureLisaStageOpsSchema({ ...options, ensure: true });
+    expect(readSqliteNumberPragma(db, "user_version")).toBe(OPENCLAW_STATE_SCHEMA_VERSION);
   });
 
   it("upserts repair bindings and attempts idempotently without duplicate rows", () => {
     const databasePath = tempDbPath();
-    const db = openInjected(databasePath);
-    const opts = { databasePath, db, ensure: true as const };
+    const opts = optsFor(databasePath);
     const now = 1_700_000_000_000;
 
     const first = upsertRepairBinding(
@@ -112,6 +100,7 @@ describe("lisa stage ops store", () => {
     expect(second.bindingKey).toBe(first.bindingKey);
     expect(second.updatedAtMs).toBe(now + 5_000);
 
+    const { db } = openOpenClawStateDatabase(opts);
     const bindingCount = (
       db.prepare(`SELECT COUNT(*) AS n FROM lisa_stage_repair_bindings`).get() as { n: number }
     ).n;
@@ -155,10 +144,9 @@ describe("lisa stage ops store", () => {
     expect(listRepairAttempts(opts, first.bindingKey)).toHaveLength(1);
   });
 
-  it("survives close + reopen on the same database path", () => {
+  it("survives close + reopen on the same database path (restart persistence)", () => {
     const databasePath = tempDbPath();
-    const db1 = new DatabaseSync(databasePath);
-    const opts1 = { databasePath, db: db1, ensure: true as const };
+    const opts1 = optsFor(databasePath);
     const binding = upsertRepairBinding(opts1, {
       repository: "openclaw/openclaw",
       branch: "main",
@@ -179,13 +167,10 @@ describe("lisa stage ops store", () => {
       outcome: "failed",
       attemptId: "persist-2",
     });
-    closeLisaStageOpsStore(db1);
+    closeLisaStageOpsStore();
 
-    const db2 = openInjected(databasePath);
-    const attempts = listRepairAttempts(
-      { databasePath, db: db2, ensure: true },
-      binding.bindingKey,
-    );
+    const opts2 = optsFor(databasePath);
+    const attempts = listRepairAttempts(opts2, binding.bindingKey);
     expect(attempts).toHaveLength(2);
     expect(attempts.map((a) => a.attemptId)).toEqual(["persist-1", "persist-2"]);
     expect(attempts.map((a) => a.outcome)).toEqual(["pending", "failed"]);
@@ -193,8 +178,7 @@ describe("lisa stage ops store", () => {
 
   it("expires stale pending repair attempts and active main-approve claims", () => {
     const databasePath = tempDbPath();
-    const db = openInjected(databasePath);
-    const opts = { databasePath, db, ensure: true as const };
+    const opts = optsFor(databasePath);
     const now = 2_000_000_000_000;
 
     const binding = upsertRepairBinding(
@@ -265,6 +249,7 @@ describe("lisa stage ops store", () => {
     expect("claimId" in claim && claim.status).toBe("active");
 
     expect(expireMainApproveClaims(opts, now)).toBe(1);
+    const { db } = openOpenClawStateDatabase(opts);
     const claimRow = db
       .prepare(`SELECT status FROM lisa_stage_main_approve_claims WHERE package_id = ?`)
       .get("pkg-1") as { status: string };
@@ -273,8 +258,7 @@ describe("lisa stage ops store", () => {
 
   it("putMainApprovePackage + claimMainApprovePackage: success, conflict, expired_package", () => {
     const databasePath = tempDbPath();
-    const db = openInjected(databasePath);
-    const opts = { databasePath, db, ensure: true as const };
+    const opts = optsFor(databasePath);
     const now = 3_000_000_000_000;
 
     putMainApprovePackage(
@@ -298,6 +282,7 @@ describe("lisa stage ops store", () => {
       },
       now + 1,
     );
+    const { db } = openOpenClawStateDatabase(opts);
     const pkgCount = (
       db.prepare(`SELECT COUNT(*) AS n FROM lisa_stage_main_approve_packages`).get() as {
         n: number;
@@ -356,9 +341,9 @@ describe("lisa stage ops store", () => {
     expect(missingFile.available).toBe(false);
     expect(missingFile.missingTables.length).toBe(LISA_STAGE_OPS_TABLES.length);
 
-    // Empty on-disk DB, still no lisa_stage_* tables — probe must not CREATE.
-    const empty = new DatabaseSync(databasePath);
-    empty.close();
+    // Empty on-disk OpenClaw DB still missing lisa_stage_* — probe must not CREATE.
+    openOpenClawStateDatabase({ path: databasePath });
+    closeLisaStageOpsStore();
 
     const noEnsure = probeLisaStageOpsStoreHealth({ databasePath, ensure: false });
     expect(noEnsure.ok).toBe(false);

@@ -1,6 +1,8 @@
 /**
  * Stage ops HOLD-closure tests — payloads, coordinator, repair supervision, PDF canary.
- * Run: node --experimental-strip-types --test linkbots/lisa/ops/stage-ops-*.test.ts
+ * Run:
+ *   node --import ./linkbots/lisa/ops/register-gateway-protocol-ts-resolve.mjs \
+ *     --experimental-strip-types --test linkbots/lisa/ops/stage-ops-*.test.ts
  */
 import assert from "node:assert/strict";
 import { mkdtempSync, readFileSync, rmSync } from "node:fs";
@@ -8,7 +10,10 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { describe, it } from "node:test";
 import { fileURLToPath } from "node:url";
-import { MAIN_APPROVE_RUNTIME_STORE } from "./main-approve-binding.ts";
+import {
+  MAIN_APPROVE_RUNTIME_STORE,
+  MAIN_APPROVE_UNHEALTHY_STORE,
+} from "./main-approve-binding.ts";
 import { materializeStageSeedJson, planStageOps } from "./stage-ops-coordinator.ts";
 import {
   buildStageOpsJobs,
@@ -88,6 +93,7 @@ describe("Stage Repair/GitOps supervision package", () => {
       assert.ok(decision.missing.includes("repair_attempt_store"));
       assert.ok(decision.missing.includes("main_approve_store"));
     }
+    assert.equal(MAIN_APPROVE_UNHEALTHY_STORE.available, false);
     assert.equal(MAIN_APPROVE_RUNTIME_STORE.available, false);
     const repair = buildStageRepairSupervisionJob();
     assert.equal(repair.enabled, false);
@@ -115,6 +121,12 @@ describe("Stage ops coordinator install/update/disable/rollback", () => {
     "lisa-ship-16": "e1ff7019-e805-4770-9329-d6656f85d021",
     "lisa-pull-18": "f24bbd94-c9be-4dba-9602-cfa266fffb9c",
   };
+
+  function openclawCmds(commands: string[]): string[] {
+    return commands.filter(
+      (c) => !c.startsWith("#") && !c.startsWith("export ") && c.includes("openclaw.mjs"),
+    );
+  }
 
   it("plans idempotent actions without mutating stage or enabling schedules", () => {
     for (const action of ["install", "update", "disable", "rollback"] as const) {
@@ -148,7 +160,64 @@ describe("Stage ops coordinator install/update/disable/rollback", () => {
       assert.ok(plan.typedCronPlan.edits.every((e) => e.preserveExistingUuid === true));
       assert.ok(plan.typedCronPlan.edits.every((e) => e.patch.enabled === false));
       assert.ok(plan.typedCronPlan.edits.every((e) => e.patch.delivery.mode === "none"));
+      assert.ok(plan.typedCronPlan.creates.every((c) => !("dependencies" in c)));
+      assert.deepEqual(plan.typedCronPlan.stageConstraints, {
+        openRouterOnly: true,
+        liveLisaForbidden: true,
+        deliveryAnnounceForbidden: true,
+      });
     }
+  });
+
+  it("update with 6/6 UUIDs edits in-place with --disable + --no-deliver and no follow-up disable", () => {
+    const plan = planStageOps({ action: "update", emitCommands: true, existingJobIds });
+    assert.equal(plan.typedCronPlan.edits.length, 6);
+    assert.equal(plan.typedCronPlan.creates.length, 0);
+    assert.equal(plan.typedCronPlan.disables.length, 0);
+    const cmds = openclawCmds(plan.commands);
+    const edits = cmds.filter((c) => c.includes("'cron'") && c.includes("'edit'"));
+    assert.equal(edits.length, 6);
+    for (const [jobId, uuid] of Object.entries(existingJobIds)) {
+      const edit = edits.find((c) => c.includes(`'${uuid}'`))!;
+      assert.ok(edit, `missing edit for ${jobId}`);
+      assert.ok(edit.includes("'--disable'"), `edit ${jobId} missing --disable`);
+      assert.ok(edit.includes("'--no-deliver'"), `edit ${jobId} missing --no-deliver`);
+      assert.equal(edit.includes("'--disabled'"), false);
+    }
+    assert.equal(
+      cmds.filter((c) => c.includes("'cron'") && c.includes("'disable'")).length,
+      0,
+      "update must not emit separate cron disable after edit",
+    );
+  });
+
+  it("install creates use atomic --disabled + --no-deliver with no enable race", () => {
+    const plan = planStageOps({ action: "install", emitCommands: true });
+    assert.equal(plan.typedCronPlan.creates.length, 6);
+    const cmds = openclawCmds(plan.commands);
+    const adds = cmds.filter((c) => c.includes("'cron'") && c.includes("'add'"));
+    assert.equal(adds.length, 6);
+    for (const add of adds) {
+      assert.ok(add.includes("'--disabled'"), "create must include --disabled");
+      assert.ok(add.includes("'--no-deliver'"), "create must include --no-deliver");
+    }
+    assert.equal(
+      cmds.filter((c) => c.includes("'cron'") && c.includes("'disable'")).length,
+      0,
+      "install must not race a post-create cron disable",
+    );
+    assert.ok(!plan.commands.some((c) => /Then immediately: cron disable/.test(c)));
+  });
+
+  it("disable-only emits cron disable <uuid> consistently", () => {
+    const plan = planStageOps({ action: "disable", emitCommands: true, existingJobIds });
+    const cmds = openclawCmds(plan.commands);
+    const disables = cmds.filter((c) => c.includes("'cron'") && c.includes("'disable'"));
+    assert.equal(disables.length, 6);
+    for (const uuid of Object.values(existingJobIds)) {
+      assert.ok(disables.some((c) => c.includes(`'${uuid}'`)));
+    }
+    assert.equal(cmds.filter((c) => c.includes("'edit'")).length, 0);
   });
 
   it("includes repair only when requested AND store health passes; default stays blocked_no_store", () => {

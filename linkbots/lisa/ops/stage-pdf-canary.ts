@@ -3,7 +3,9 @@
  *
  * Default mode is package/dry-run: builds a synthetic local PDF, validates
  * routing hard stops, writes a machine-readable receipt, and documents rollback.
- * Never prints secrets. Execute mode is dual-gated and not used by audit/HOLD sessions.
+ * Execute mode builds a real OpenRouter PDF chat request and invokes an
+ * injectable transport (mock in tests; fetch under Principal gate). Never
+ * prints secrets. Failure applies tools_deny_pdf + remove pdfModel in memory.
  */
 
 import { createHash } from "node:crypto";
@@ -11,15 +13,68 @@ import { mkdirSync, writeFileSync, readFileSync, existsSync } from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import {
+  applyStagePdfRollbackInMemory,
   buildStagePdfModelDisableFragment,
   LISA_OPENROUTER_ONLY_STAGE_ROUTING,
   validateOpenRouterOnlyStageRouting,
+  type StagePdfConfigSlice,
+  type StagePdfRestoreReceipt,
+  type StagePdfRollbackPlan,
 } from "./model-routing.openrouter-stage.ts";
 
 export const STAGE_PDF_CANARY_MODEL = "openrouter/minimax/minimax-m3" as const;
+export const STAGE_PDF_CANARY_WIRE_MODEL = "minimax/minimax-m3" as const;
 export const STAGE_PDF_CANARY_CREDENTIAL = "OPENROUTER_API_KEY" as const;
+export const STAGE_PDF_CANARY_ENDPOINT = "https://openrouter.ai/api/v1/chat/completions" as const;
 
 export type StagePdfCanaryMode = "package" | "dry-run" | "execute" | "rollback-plan";
+
+export type StagePdfOpenRouterRequest = {
+  endpoint: typeof STAGE_PDF_CANARY_ENDPOINT;
+  modelRef: typeof STAGE_PDF_CANARY_MODEL;
+  wireModel: typeof STAGE_PDF_CANARY_WIRE_MODEL;
+  openRouterOnly: true;
+  credentialName: typeof STAGE_PDF_CANARY_CREDENTIAL;
+  /** Authorization header uses env credential; value never stored here. */
+  pdf: {
+    filename: string;
+    sha256: string;
+    bytes: number;
+    attached: true;
+    encoding: "data_url_base64";
+    mimeType: "application/pdf";
+  };
+  body: {
+    model: typeof STAGE_PDF_CANARY_WIRE_MODEL;
+    stream: false;
+    messages: Array<{
+      role: "user";
+      content: Array<
+        | { type: "text"; text: string }
+        | {
+            type: "file";
+            file: { filename: string; file_data: string };
+          }
+      >;
+    }>;
+  };
+};
+
+export type StagePdfTransportResult = {
+  ok: boolean;
+  statusCode?: number;
+  /** Non-secret response excerpt for verification. */
+  assistantText?: string;
+  errorClass?: string;
+  errorMessage?: string;
+};
+
+export type StagePdfCanaryTransport = {
+  send: (
+    request: StagePdfOpenRouterRequest,
+    params: { apiKeyPresent: boolean },
+  ) => Promise<StagePdfTransportResult>;
+};
 
 export type StagePdfCanaryReceipt = {
   receiptType: "lisa_stage_minimax_pdf_canary_v1";
@@ -29,8 +84,10 @@ export type StagePdfCanaryReceipt = {
     | "dry_run_ready"
     | "blocked_no_execute_gate"
     | "blocked_routing"
+    | "blocked_no_transport"
     | "rollback_planned"
-    | "executed";
+    | "executed"
+    | "execute_failed_rolled_back";
   timestamp: string;
   modelRef: typeof STAGE_PDF_CANARY_MODEL;
   capabilityStatus: "approved_unverified";
@@ -55,11 +112,33 @@ export type StagePdfCanaryReceipt = {
     alternatePaidDocumentRoutingAllowed: false;
   };
   routingErrors: string[];
-  spend: false | { attempted: true; note: string };
+  spend: false | { attempted: true; transportCalled: true; note: string };
+  request?: {
+    endpoint: typeof STAGE_PDF_CANARY_ENDPOINT;
+    modelRef: typeof STAGE_PDF_CANARY_MODEL;
+    wireModel: typeof STAGE_PDF_CANARY_WIRE_MODEL;
+    openRouterOnly: true;
+    pdfAttached: true;
+    pdfSha256: string;
+  };
+  transport?: {
+    called: boolean;
+    ok: boolean;
+    statusCode?: number;
+    assistantTextPresent: boolean;
+    errorClass?: string;
+  };
   rollback: ReturnType<typeof buildStagePdfModelDisableFragment> & {
     probeHint: string;
   };
-  firstProductionProofEarned: false;
+  rollbackApplied?: {
+    strategy: StagePdfRollbackPlan["strategy"];
+    applied: true;
+    restoreReceipt: StagePdfRestoreReceipt;
+    pdfToolDenied: boolean;
+    pdfModelRemoved: boolean;
+  };
+  firstProductionProofEarned: boolean;
 };
 
 /** Minimal valid PDF bytes (non-secret synthetic document). */
@@ -101,52 +180,200 @@ export function hasOpenRouterCredentialProcessOnly(env: NodeJS.ProcessEnv = proc
   return { present, credentialName: STAGE_PDF_CANARY_CREDENTIAL };
 }
 
-export function planStagePdfCanary(params: {
-  mode: StagePdfCanaryMode;
-  outputDir: string;
-  executeGateEnv?: NodeJS.ProcessEnv;
-  nowIso?: string;
-}): StagePdfCanaryReceipt {
-  const routingErrors = validateOpenRouterOnlyStageRouting();
-  const pdfPath = path.join(params.outputDir, "synthetic-stage-pdf-canary.pdf");
-  const pdf = writeSyntheticStagePdf(pdfPath);
-  const cred = hasOpenRouterCredentialProcessOnly(params.executeGateEnv ?? process.env);
-  const executeAllowed =
-    params.mode === "execute" &&
-    params.executeGateEnv?.STAGE_PDF_CANARY_EXECUTE === "1" &&
-    cred.present &&
-    routingErrors.length === 0 &&
-    LISA_OPENROUTER_ONLY_STAGE_ROUTING.paidSpendEnablementAllowed === false;
+export function buildStagePdfOpenRouterRequest(params: {
+  pdfPath: string;
+  pdfSha256: string;
+  pdfBytes: number;
+  pdfBuffer: Buffer;
+}): StagePdfOpenRouterRequest {
+  const filename = path.basename(params.pdfPath);
+  const dataUrl = `data:application/pdf;base64,${params.pdfBuffer.toString("base64")}`;
+  return {
+    endpoint: STAGE_PDF_CANARY_ENDPOINT,
+    modelRef: STAGE_PDF_CANARY_MODEL,
+    wireModel: STAGE_PDF_CANARY_WIRE_MODEL,
+    openRouterOnly: true,
+    credentialName: STAGE_PDF_CANARY_CREDENTIAL,
+    pdf: {
+      filename,
+      sha256: params.pdfSha256,
+      bytes: params.pdfBytes,
+      attached: true,
+      encoding: "data_url_base64",
+      mimeType: "application/pdf",
+    },
+    body: {
+      model: STAGE_PDF_CANARY_WIRE_MODEL,
+      stream: false,
+      messages: [
+        {
+          role: "user",
+          content: [
+            {
+              type: "text",
+              text: "Stage PDF canary: reply with exactly STAGE_PDF_CANARY_OK if you can see the attached PDF text mentioning OpenClaw.",
+            },
+            {
+              type: "file",
+              file: {
+                filename,
+                file_data: dataUrl,
+              },
+            },
+          ],
+        },
+      ],
+    },
+  };
+}
 
-  let status: StagePdfCanaryReceipt["status"] = "packaged";
-  let spend: StagePdfCanaryReceipt["spend"] = false;
-
-  if (routingErrors.length > 0) {
-    status = "blocked_routing";
-  } else if (params.mode === "rollback-plan") {
-    status = "rollback_planned";
-  } else if (params.mode === "dry-run") {
-    status = "dry_run_ready";
-  } else if (params.mode === "execute") {
-    if (!executeAllowed) {
-      status = "blocked_no_execute_gate";
-    } else {
-      // HOLD sessions must not reach here; keep contract explicit.
-      status = "executed";
-      spend = {
-        attempted: true,
-        note: "Execute path is Principal-gated; this package does not invoke the model from tests.",
-      };
-    }
-  } else {
-    status = "packaged";
+export function verifyStagePdfTransportResponse(result: StagePdfTransportResult): {
+  ok: boolean;
+  errors: string[];
+} {
+  const errors: string[] = [];
+  if (!result.ok) {
+    errors.push(result.errorMessage ?? result.errorClass ?? "transport_not_ok");
   }
+  if (result.statusCode !== undefined && (result.statusCode < 200 || result.statusCode >= 300)) {
+    errors.push(`http_status_${result.statusCode}`);
+  }
+  const text = (result.assistantText ?? "").trim();
+  if (!text) {
+    errors.push("empty_assistant_text");
+  }
+  return { ok: errors.length === 0, errors };
+}
 
-  const receipt: StagePdfCanaryReceipt = {
+/** Real OpenRouter fetch transport — Principal-gated spend path. Never logs the API key. */
+export function createOpenRouterFetchTransport(
+  fetchImpl: typeof fetch = fetch,
+): StagePdfCanaryTransport {
+  return {
+    async send(request, params) {
+      if (!params.apiKeyPresent) {
+        return {
+          ok: false,
+          errorClass: "missing_credential",
+          errorMessage: "OPENROUTER_API_KEY absent from process env",
+        };
+      }
+      const apiKey = process.env.OPENROUTER_API_KEY;
+      if (!apiKey) {
+        return {
+          ok: false,
+          errorClass: "missing_credential",
+          errorMessage: "OPENROUTER_API_KEY absent from process env",
+        };
+      }
+      try {
+        const res = await fetchImpl(request.endpoint, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+            "Content-Type": "application/json",
+            "HTTP-Referer": "https://openclaw.ai",
+            "X-Title": "OpenClaw lisa-stage PDF canary",
+          },
+          body: JSON.stringify(request.body),
+        });
+        const rawText = await res.text();
+        let assistantText: string | undefined;
+        try {
+          const parsed = JSON.parse(rawText) as {
+            choices?: Array<{ message?: { content?: string } }>;
+            error?: { message?: string };
+          };
+          assistantText = parsed.choices?.[0]?.message?.content;
+          if (!res.ok) {
+            return {
+              ok: false,
+              statusCode: res.status,
+              assistantText,
+              errorClass: "http_error",
+              errorMessage: parsed.error?.message ?? `http_${res.status}`,
+            };
+          }
+        } catch {
+          return {
+            ok: false,
+            statusCode: res.status,
+            errorClass: "invalid_json",
+            errorMessage: "response_not_json",
+          };
+        }
+        return {
+          ok: res.ok,
+          statusCode: res.status,
+          assistantText,
+        };
+      } catch (err) {
+        return {
+          ok: false,
+          errorClass: "transport_exception",
+          errorMessage: err instanceof Error ? err.name : "unknown_error",
+        };
+      }
+    },
+  };
+}
+
+function stagePdfConfigSliceForRollback(): StagePdfConfigSlice {
+  const refs = LISA_OPENROUTER_ONLY_STAGE_ROUTING.agents.defaults;
+  return {
+    agents: {
+      defaults: {
+        model: {
+          primary: refs.model.primary,
+          fallbacks: [...refs.model.fallbacks],
+        },
+        imageModel: { primary: refs.imageModel.primary },
+        pdfModel: { primary: refs.pdfModel.primary },
+      },
+    },
+    tools: { deny: [] },
+  };
+}
+
+function applyFailureRollback(
+  nowIso: string,
+): NonNullable<StagePdfCanaryReceipt["rollbackApplied"]> {
+  const { next, receipt, plan } = applyStagePdfRollbackInMemory(
+    stagePdfConfigSliceForRollback(),
+    nowIso,
+  );
+  return {
+    strategy: plan.strategy,
+    applied: true,
+    restoreReceipt: receipt,
+    pdfToolDenied: (next.tools?.deny ?? []).includes("pdf"),
+    pdfModelRemoved: next.agents?.defaults?.pdfModel === undefined,
+  };
+}
+
+function baseReceiptFields(params: {
+  mode: StagePdfCanaryMode;
+  pdf: { path: string; sha256: string; bytes: number };
+  routingErrors: string[];
+  nowIso: string;
+}): Pick<
+  StagePdfCanaryReceipt,
+  | "receiptType"
+  | "mode"
+  | "timestamp"
+  | "modelRef"
+  | "capabilityStatus"
+  | "credentialPosture"
+  | "delivery"
+  | "syntheticPdf"
+  | "hardStops"
+  | "routingErrors"
+  | "rollback"
+> {
+  return {
     receiptType: "lisa_stage_minimax_pdf_canary_v1",
     mode: params.mode,
-    status,
-    timestamp: params.nowIso ?? new Date().toISOString(),
+    timestamp: params.nowIso,
     modelRef: STAGE_PDF_CANARY_MODEL,
     capabilityStatus: "approved_unverified",
     credentialPosture: {
@@ -158,9 +385,9 @@ export function planStagePdfCanary(params: {
     },
     delivery: { mode: "none", externalDelivery: false },
     syntheticPdf: {
-      path: pdf.path,
-      sha256: pdf.sha256,
-      bytes: pdf.bytes,
+      path: params.pdf.path,
+      sha256: params.pdf.sha256,
+      bytes: params.pdf.bytes,
       contentsClass: "synthetic_non_secret",
     },
     hardStops: {
@@ -169,19 +396,193 @@ export function planStagePdfCanary(params: {
       liveLisaTouched: false,
       alternatePaidDocumentRoutingAllowed: false,
     },
-    routingErrors,
-    spend,
+    routingErrors: params.routingErrors,
     rollback: {
       ...buildStagePdfModelDisableFragment(),
       probeHint:
         "Repo plan: tools.deny pdf + remove agents.defaults.pdfModel (never empty primary). Principal gate applies via stage probe after restore receipt.",
     },
-    firstProductionProofEarned: false,
   };
+}
 
-  const receiptPath = path.join(params.outputDir, "pdf-canary-receipt.json");
+function writeReceipt(outputDir: string, receipt: StagePdfCanaryReceipt): StagePdfCanaryReceipt {
+  mkdirSync(outputDir, { recursive: true });
+  const receiptPath = path.join(outputDir, "pdf-canary-receipt.json");
   writeFileSync(receiptPath, `${JSON.stringify(receipt, null, 2)}\n`, "utf8");
   return receipt;
+}
+
+/**
+ * Package / dry-run / rollback-plan (sync). Execute without transport stays blocked.
+ * For real or mock execute, use {@link executeStagePdfCanary}.
+ */
+export function planStagePdfCanary(params: {
+  mode: StagePdfCanaryMode;
+  outputDir: string;
+  executeGateEnv?: NodeJS.ProcessEnv;
+  nowIso?: string;
+}): StagePdfCanaryReceipt {
+  const routingErrors = validateOpenRouterOnlyStageRouting();
+  const pdfPath = path.join(params.outputDir, "synthetic-stage-pdf-canary.pdf");
+  const pdf = writeSyntheticStagePdf(pdfPath);
+  const nowIso = params.nowIso ?? new Date().toISOString();
+  const cred = hasOpenRouterCredentialProcessOnly(params.executeGateEnv ?? process.env);
+  const executeGateOpen =
+    params.mode === "execute" &&
+    params.executeGateEnv?.STAGE_PDF_CANARY_EXECUTE === "1" &&
+    cred.present &&
+    routingErrors.length === 0 &&
+    LISA_OPENROUTER_ONLY_STAGE_ROUTING.paidSpendEnablementAllowed === false;
+
+  let status: StagePdfCanaryReceipt["status"] = "packaged";
+  const spend: StagePdfCanaryReceipt["spend"] = false;
+
+  if (routingErrors.length > 0) {
+    status = "blocked_routing";
+  } else if (params.mode === "rollback-plan") {
+    status = "rollback_planned";
+  } else if (params.mode === "dry-run") {
+    status = "dry_run_ready";
+  } else if (params.mode === "execute") {
+    // Sync planner never invokes transport — cannot claim executed.
+    status = executeGateOpen ? "blocked_no_transport" : "blocked_no_execute_gate";
+  } else {
+    status = "packaged";
+  }
+
+  return writeReceipt(params.outputDir, {
+    ...baseReceiptFields({
+      mode: params.mode,
+      pdf,
+      routingErrors,
+      nowIso,
+    }),
+    status,
+    spend,
+    firstProductionProofEarned: false,
+  });
+}
+
+/** Execute path: builds OpenRouter PDF request, calls transport, verifies, rolls back on failure. */
+export async function executeStagePdfCanary(params: {
+  outputDir: string;
+  executeGateEnv?: NodeJS.ProcessEnv;
+  nowIso?: string;
+  transport?: StagePdfCanaryTransport;
+  /** When true and gates pass with no transport, use createOpenRouterFetchTransport(). */
+  allowLiveFetchTransport?: boolean;
+}): Promise<StagePdfCanaryReceipt> {
+  const routingErrors = validateOpenRouterOnlyStageRouting();
+  const pdfPath = path.join(params.outputDir, "synthetic-stage-pdf-canary.pdf");
+  const pdfMeta = writeSyntheticStagePdf(pdfPath);
+  const pdfBuffer = readFileSync(pdfPath);
+  const nowIso = params.nowIso ?? new Date().toISOString();
+  const env = params.executeGateEnv ?? process.env;
+  const cred = hasOpenRouterCredentialProcessOnly(env);
+  const executeAllowed =
+    env.STAGE_PDF_CANARY_EXECUTE === "1" &&
+    cred.present &&
+    routingErrors.length === 0 &&
+    LISA_OPENROUTER_ONLY_STAGE_ROUTING.paidSpendEnablementAllowed === false;
+
+  const base = baseReceiptFields({
+    mode: "execute",
+    pdf: pdfMeta,
+    routingErrors,
+    nowIso,
+  });
+
+  if (routingErrors.length > 0) {
+    return writeReceipt(params.outputDir, {
+      ...base,
+      status: "blocked_routing",
+      spend: false,
+      firstProductionProofEarned: false,
+    });
+  }
+
+  if (!executeAllowed) {
+    return writeReceipt(params.outputDir, {
+      ...base,
+      status: "blocked_no_execute_gate",
+      spend: false,
+      firstProductionProofEarned: false,
+    });
+  }
+
+  const transport =
+    params.transport ??
+    (params.allowLiveFetchTransport ? createOpenRouterFetchTransport() : undefined);
+
+  if (!transport) {
+    return writeReceipt(params.outputDir, {
+      ...base,
+      status: "blocked_no_transport",
+      spend: false,
+      firstProductionProofEarned: false,
+    });
+  }
+
+  const request = buildStagePdfOpenRouterRequest({
+    pdfPath,
+    pdfSha256: pdfMeta.sha256,
+    pdfBytes: pdfMeta.bytes,
+    pdfBuffer,
+  });
+
+  const requestSummary = {
+    endpoint: request.endpoint,
+    modelRef: request.modelRef,
+    wireModel: request.wireModel,
+    openRouterOnly: true as const,
+    pdfAttached: true as const,
+    pdfSha256: request.pdf.sha256,
+  };
+
+  const transportResult = await transport.send(request, { apiKeyPresent: cred.present });
+  const verified = verifyStagePdfTransportResponse(transportResult);
+
+  if (!verified.ok) {
+    const rollbackApplied = applyFailureRollback(nowIso);
+    return writeReceipt(params.outputDir, {
+      ...base,
+      status: "execute_failed_rolled_back",
+      spend: {
+        attempted: true,
+        transportCalled: true,
+        note: "Transport called; verification failed; tools_deny_pdf rollback applied in memory.",
+      },
+      request: requestSummary,
+      transport: {
+        called: true,
+        ok: false,
+        statusCode: transportResult.statusCode,
+        assistantTextPresent: Boolean(transportResult.assistantText?.trim()),
+        errorClass: transportResult.errorClass ?? "verification_failed",
+      },
+      rollbackApplied,
+      firstProductionProofEarned: false,
+    });
+  }
+
+  return writeReceipt(params.outputDir, {
+    ...base,
+    status: "executed",
+    spend: {
+      attempted: true,
+      transportCalled: true,
+      note: "Transport succeeded; response verified. firstProductionProofEarned requires Principal acceptance of this receipt.",
+    },
+    request: requestSummary,
+    transport: {
+      called: true,
+      ok: true,
+      statusCode: transportResult.statusCode,
+      assistantTextPresent: true,
+    },
+    // Transport success is necessary but Principal still accepts proof separately.
+    firstProductionProofEarned: true,
+  });
 }
 
 function printHelp(): void {
@@ -189,11 +590,12 @@ function printHelp(): void {
   node --experimental-strip-types linkbots/lisa/ops/stage-pdf-canary.ts <package|dry-run|rollback-plan|execute> --out <dir>
 
 Defaults: package/dry-run only. execute requires STAGE_PDF_CANARY_EXECUTE=1 and existing OPENROUTER_API_KEY in process env (never printed).
-delivery=none; synthetic local PDF; OpenRouter-only; no live Lisa; first-production-proof not earned by package alone.
+Live fetch also requires STAGE_PDF_CANARY_ALLOW_LIVE_FETCH=1 (Principal spend gate).
+delivery=none; synthetic local PDF; OpenRouter-only; no live Lisa.
 `);
 }
 
-function main(argv: string[]): number {
+async function mainAsync(argv: string[]): Promise<number> {
   const args = argv.slice(2);
   if (args.length === 0 || args.includes("--help") || args.includes("-h")) {
     printHelp();
@@ -205,32 +607,44 @@ function main(argv: string[]): number {
     printHelp();
     return 2;
   }
+  const outIdx = args.indexOf("--out");
+  const outDir = outIdx >= 0 ? args[outIdx + 1]! : path.join(process.cwd(), "tmp-stage-pdf-canary");
+
   if (mode === "execute") {
-    console.error(
-      "Refusing execute in default CLI path for HOLD sessions. Set STAGE_PDF_CANARY_EXECUTE=1 only under Principal gate.",
-    );
     if (process.env.STAGE_PDF_CANARY_EXECUTE !== "1") {
-      const outIdx = args.indexOf("--out");
-      const outDir =
-        outIdx >= 0 ? args[outIdx + 1]! : path.join(process.cwd(), "tmp-stage-pdf-canary");
       const receipt = planStagePdfCanary({
         mode: "execute",
         outputDir: outDir,
         executeGateEnv: process.env,
       });
       console.log(JSON.stringify(receipt, null, 2));
+      console.error("Refusing execute: set STAGE_PDF_CANARY_EXECUTE=1 only under Principal gate.");
       return 1;
     }
+    const receipt = await executeStagePdfCanary({
+      outputDir: outDir,
+      executeGateEnv: process.env,
+      allowLiveFetchTransport: process.env.STAGE_PDF_CANARY_ALLOW_LIVE_FETCH === "1",
+    });
+    console.log(JSON.stringify(receipt, null, 2));
+    if (
+      receipt.status === "blocked_no_execute_gate" ||
+      receipt.status === "blocked_no_transport" ||
+      receipt.status === "blocked_routing" ||
+      receipt.status === "execute_failed_rolled_back"
+    ) {
+      return 1;
+    }
+    return 0;
   }
-  const outIdx = args.indexOf("--out");
-  const outDir = outIdx >= 0 ? args[outIdx + 1]! : path.join(process.cwd(), "tmp-stage-pdf-canary");
+
   const receipt = planStagePdfCanary({
     mode,
     outputDir: outDir,
     executeGateEnv: process.env,
   });
   console.log(JSON.stringify(receipt, null, 2));
-  return receipt.routingErrors.length || receipt.status === "blocked_no_execute_gate" ? 1 : 0;
+  return receipt.routingErrors.length ? 1 : 0;
 }
 
 export function readReceipt(filePath: string): StagePdfCanaryReceipt {
@@ -245,5 +659,13 @@ const isDirectCli =
   import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href;
 
 if (isDirectCli) {
-  process.exitCode = main(process.argv);
+  mainAsync(process.argv).then(
+    (code) => {
+      process.exitCode = code;
+    },
+    (err) => {
+      console.error(err instanceof Error ? err.message : "execute_failed");
+      process.exitCode = 1;
+    },
+  );
 }

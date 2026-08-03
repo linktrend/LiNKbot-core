@@ -1,8 +1,16 @@
 /**
  * Lisa GitOps Repair Dispatcher — exact binding, pending hold, proof gates.
  * Live ACP dispatch is opt-in and fail-closed (see authorizeRepairLiveDispatch).
+ * Persistence helpers write OpenClaw SQLite; nextRepairDecision stays pure.
  */
 
+import {
+  recordRepairAttempt,
+  upsertRepairBinding,
+  type LisaStageOpsStoreOptions,
+  type RepairAttemptRow,
+  type RepairBindingRow,
+} from "./lisa-stage-ops-store.ts";
 import {
   authorizeLiveLisaAction,
   LISA_OPS_LIVE_ACTION_DEFAULTS,
@@ -64,10 +72,7 @@ export type RepairLiveDispatch =
   | { ok: true; decision: Extract<RepairDecision, { decision: "dispatch" }> }
   | {
       ok: false;
-      reason:
-        | "live_targeting_disabled"
-        | "credentials_language_not_approved"
-        | "not_dispatch";
+      reason: "live_targeting_disabled" | "credentials_language_not_approved" | "not_dispatch";
       decision: RepairDecision;
     };
 
@@ -250,4 +255,50 @@ export function recordDispatch(
       proofHeadSha: null,
     },
   ];
+}
+
+/**
+ * Persist an exact repair binding into OpenClaw SQLite (idempotent upsert).
+ * Does not affect pure nextRepairDecision planning.
+ */
+export function persistRepairBinding(
+  binding: RepairBinding,
+  options: LisaStageOpsStoreOptions,
+  nowMs = Date.now(),
+): RepairBindingRow {
+  return upsertRepairBinding(options, binding, nowMs);
+}
+
+/**
+ * Persist a repair attempt into OpenClaw SQLite (idempotent on bindingKey+attempt).
+ * Does not affect pure nextRepairDecision planning.
+ */
+export function persistRepairAttempt(
+  input: {
+    binding: RepairBinding;
+    attempt: number;
+    dispatchedAt: string | null;
+    outcome: RepairAttemptRecord["outcome"];
+    proofHeadSha?: string | null;
+    expiresAtMs?: number | null;
+    attemptId?: string;
+  },
+  options: LisaStageOpsStoreOptions,
+  nowMs = Date.now(),
+): RepairAttemptRow {
+  const dispatchedAtMs = input.dispatchedAt === null ? null : Date.parse(input.dispatchedAt);
+  return recordRepairAttempt(
+    options,
+    {
+      bindingKey: bindingKey(input.binding),
+      attempt: input.attempt,
+      dispatchedAtMs:
+        dispatchedAtMs !== null && Number.isFinite(dispatchedAtMs) ? dispatchedAtMs : null,
+      outcome: input.outcome,
+      proofHeadSha: input.proofHeadSha,
+      expiresAtMs: input.expiresAtMs,
+      attemptId: input.attemptId,
+    },
+    nowMs,
+  );
 }

@@ -1,10 +1,17 @@
 /**
  * Typed lisa-stage cron installer payloads — gateway-valid create/edit shapes.
- * Run: node --experimental-strip-types --test linkbots/lisa/ops/stage-ops-cron-installer.test.ts
+ * Run:
+ *   node --import ./linkbots/lisa/ops/register-strip-types-js-resolve.mjs \
+ *     --experimental-strip-types --test linkbots/lisa/ops/stage-ops-cron-installer.test.ts
  */
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
+  validateCronAddParams,
+  formatValidationErrors,
+} from "../../../packages/gateway-protocol/dist/index.mjs";
+import {
+  buildStageConstraintsReceipt,
   buildStageCronInstallPlan,
   validateStageCronCreatePayload,
   validateStageCronEditPayload,
@@ -21,11 +28,19 @@ const EXISTING_JOB_IDS: Record<string, string> = {
 };
 
 describe("StageCronJobCreatePayload", () => {
-  it("create payloads are enabled=false, delivery none, agentTurn with toolsAllow + timeoutSeconds", () => {
+  it("create payloads are enabled=false, delivery none, no dependencies, gateway-valid", () => {
     const plan = buildStageCronInstallPlan({ action: "install" });
     assert.equal(plan.creates.length, 6);
     assert.equal(plan.edits.length, 0);
     assert.deepEqual(plan.validationErrors, []);
+    assert.deepEqual(plan.stageConstraints, {
+      openRouterOnly: true,
+      liveLisaForbidden: true,
+      deliveryAnnounceForbidden: true,
+    });
+    assert.deepEqual(buildStageConstraintsReceipt(plan.stageConstraints), {
+      stageConstraints: plan.stageConstraints,
+    });
 
     for (const create of plan.creates) {
       assert.equal(create.enabled, false);
@@ -39,6 +54,12 @@ describe("StageCronJobCreatePayload", () => {
       assert.equal(create.agentId, "lisa-cron");
       assert.equal(create.sessionTarget, "isolated");
       assert.equal(create.wakeMode, "now");
+      assert.equal("dependencies" in create, false);
+      assert.equal(
+        validateCronAddParams(create),
+        true,
+        formatValidationErrors(validateCronAddParams.errors),
+      );
       assert.deepEqual(validateStageCronCreatePayload(create), []);
     }
 
@@ -71,12 +92,13 @@ describe("StageCronJobEditPayload", () => {
     assert.equal(edit.patch.payload.kind, "agentTurn");
     assert.ok(edit.patch.payload.toolsAllow.length > 0);
     assert.ok(edit.patch.payload.timeoutSeconds > 0);
+    assert.equal("dependencies" in edit.patch, false);
     assert.deepEqual(validateStageCronEditPayload(edit), []);
   });
 });
 
 describe("buildStageCronInstallPlan update", () => {
-  it("emits edits for known UUIDs with preserveExistingUuid", () => {
+  it("emits edits for all 6 known UUIDs with preserveExistingUuid (no disable race list)", () => {
     const plan = buildStageCronInstallPlan({
       action: "update",
       existingJobIds: EXISTING_JOB_IDS,
@@ -84,6 +106,7 @@ describe("buildStageCronInstallPlan update", () => {
     assert.equal(plan.action, "update");
     assert.equal(plan.creates.length, 0);
     assert.equal(plan.edits.length, 6);
+    assert.equal(plan.disables.length, 0);
     assert.deepEqual(plan.validationErrors, []);
     for (const [jobId, uuid] of Object.entries(EXISTING_JOB_IDS)) {
       const edit = plan.edits.find((e) => e.patch.name === jobId)!;
@@ -91,9 +114,8 @@ describe("buildStageCronInstallPlan update", () => {
       assert.equal(edit.preserveExistingUuid, true);
       assert.equal(edit.patch.enabled, false);
       assert.equal(edit.rollback.enabled, false);
+      assert.equal("dependencies" in edit.patch, false);
     }
-    assert.ok(plan.disables.every((d) => d.enabled === false));
-    assert.equal(plan.disables.length, 6);
   });
 
   it("records missing UUID errors without inventing creates on update", () => {
@@ -108,5 +130,19 @@ describe("buildStageCronInstallPlan update", () => {
     assert.ok(
       plan.validationErrors.some((e) => /update missing UUID for lisa-morning-digest/.test(e)),
     );
+  });
+});
+
+describe("buildStageCronInstallPlan disable", () => {
+  it("uses disables[] only for disable action", () => {
+    const plan = buildStageCronInstallPlan({
+      action: "disable",
+      existingJobIds: EXISTING_JOB_IDS,
+    });
+    assert.equal(plan.edits.length, 0);
+    assert.equal(plan.creates.length, 0);
+    assert.equal(plan.disables.length, 6);
+    assert.ok(plan.disables.every((d) => d.enabled === false));
+    assert.deepEqual(plan.validationErrors, []);
   });
 });

@@ -178,7 +178,8 @@ export function planStageOps(input: StageOpsPlanInput): StageOpsCoordinatorPlan 
         openclawArgs: args,
       });
 
-    if (input.action === "disable" || input.action === "rollback") {
+    if (input.action === "disable") {
+      // disable-only: consistent `cron disable <uuid>` (not edit --disable).
       for (const job of jobs) {
         const jobId = ids[job.id];
         if (!jobId) {
@@ -187,39 +188,15 @@ export function planStageOps(input: StageOpsPlanInput): StageOpsCoordinatorPlan 
         }
         commands.push(oc(["cron", "disable", jobId]));
       }
-      if (input.action === "rollback") {
-        commands.push(
-          `# Rollback payloads to disabled delivery=none bounded procedures (not STAGE_CANARY stubs)`,
-        );
-        for (const edit of typedCronPlan.edits) {
-          commands.push(
-            oc([
-              "cron",
-              "edit",
-              edit.id,
-              "--name",
-              edit.patch.name,
-              "--cron",
-              edit.patch.schedule.expr,
-              "--tz",
-              edit.patch.schedule.tz,
-              "--no-deliver",
-              "--tools",
-              edit.patch.payload.toolsAllow.join(","),
-              "--message",
-              edit.patch.payload.message,
-              "--timeout-seconds",
-              String(edit.patch.payload.timeoutSeconds),
-            ]),
-          );
-          commands.push(oc(["cron", "disable", edit.id]));
-        }
-      }
       commands.push(oc(["cron", "list", "--json"]));
     }
 
-    if (input.action === "install" || input.action === "update") {
+    if (input.action === "rollback") {
+      commands.push(
+        `# Rollback payloads to disabled delivery=none bounded procedures (not STAGE_CANARY stubs)`,
+      );
       for (const edit of typedCronPlan.edits) {
+        // Single mutation: --disable + --no-deliver on the same cron edit.
         commands.push(
           oc([
             "cron",
@@ -231,6 +208,7 @@ export function planStageOps(input: StageOpsPlanInput): StageOpsCoordinatorPlan 
             edit.patch.schedule.expr,
             "--tz",
             edit.patch.schedule.tz,
+            "--disable",
             "--no-deliver",
             "--tools",
             edit.patch.payload.toolsAllow.join(","),
@@ -240,9 +218,42 @@ export function planStageOps(input: StageOpsPlanInput): StageOpsCoordinatorPlan 
             String(edit.patch.payload.timeoutSeconds),
           ]),
         );
-        commands.push(oc(["cron", "disable", edit.id]));
+      }
+      for (const job of jobs) {
+        if (!ids[job.id]) {
+          commands.push(`# MISSING job id for ${job.id} — run cron list --json first`);
+        }
+      }
+      commands.push(oc(["cron", "list", "--json"]));
+    }
+
+    if (input.action === "install" || input.action === "update") {
+      for (const edit of typedCronPlan.edits) {
+        // Single mutation: --disable + --no-deliver on the same cron edit (no follow-up disable).
+        commands.push(
+          oc([
+            "cron",
+            "edit",
+            edit.id,
+            "--name",
+            edit.patch.name,
+            "--cron",
+            edit.patch.schedule.expr,
+            "--tz",
+            edit.patch.schedule.tz,
+            "--disable",
+            "--no-deliver",
+            "--tools",
+            edit.patch.payload.toolsAllow.join(","),
+            "--message",
+            edit.patch.payload.message,
+            "--timeout-seconds",
+            String(edit.patch.payload.timeoutSeconds),
+          ]),
+        );
       }
       for (const create of typedCronPlan.creates) {
+        // Atomic create: --disabled + --no-deliver (no post-create disable race).
         commands.push(
           oc([
             "cron",
@@ -256,6 +267,7 @@ export function planStageOps(input: StageOpsPlanInput): StageOpsCoordinatorPlan 
             create.agentId,
             "--session",
             "isolated",
+            "--disabled",
             "--no-deliver",
             "--tools",
             create.payload.toolsAllow.join(","),
@@ -265,7 +277,6 @@ export function planStageOps(input: StageOpsPlanInput): StageOpsCoordinatorPlan 
             create.payload.message,
           ]),
         );
-        commands.push(`# Then immediately: cron disable <new-job-id> for ${create.name}`);
       }
       if (input.action === "update") {
         for (const job of jobs) {
@@ -396,7 +407,7 @@ export function materializeStageSeedJson(includeRepair = false): unknown {
 
 function printHelp(): void {
   console.log(`Usage:
-  node --experimental-strip-types linkbots/lisa/ops/stage-ops-coordinator.ts <install|update|disable|rollback> [options]
+  node --import ./linkbots/lisa/ops/register-gateway-protocol-ts-resolve.mjs --experimental-strip-types linkbots/lisa/ops/stage-ops-coordinator.ts <install|update|disable|rollback> [options]
 
 Options:
   --include-repair     Include Repair/GitOps supervision job when store health passes
@@ -404,7 +415,8 @@ Options:
   --json               Print machine-readable plan JSON
   --write-seed <path>  Write materialized jobs.stage-seed.json (repo path only)
 
-Hard stops: never enables schedules; delivery=none; OpenRouter-only; stage commands use
+Hard stops: never enables schedules; delivery=none; creates use --disabled + --no-deliver;
+edits use --disable + --no-deliver (single mutation); OpenRouter-only; stage commands use
 LiNKplatform-staging/openclaw_prime via lisa-stage-env-wrapper; no stage mutation from this process.
 `);
 }

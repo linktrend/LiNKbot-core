@@ -1,5 +1,5 @@
 /**
- * Stage durable-store probe + repair install gate tests.
+ * Stage durable-store probe + fail-closed repair gate tests.
  * Run: node --experimental-strip-types --test linkbots/lisa/ops/stage-durable-store.test.ts
  */
 import assert from "node:assert/strict";
@@ -10,7 +10,7 @@ import { DatabaseSync } from "node:sqlite";
 import { describe, it } from "node:test";
 import { probeLisaStageOpsStoreHealth } from "./lisa-stage-ops-store.ts";
 import { probeStageDurableStores } from "./stage-durable-store.ts";
-import { planStageOps } from "./stage-ops-coordinator.ts";
+import { decideRepairSupervision, buildStageRepairSupervisionJob } from "./stage-ops-payloads.ts";
 
 function tempDbPath(prefix = "stage-durable-"): { directory: string; databasePath: string } {
   const directory = mkdtempSync(path.join(tmpdir(), prefix));
@@ -63,34 +63,47 @@ describe("Stage durable store probe", () => {
   });
 });
 
-describe("Stage ops planStageOps durable repair gate", () => {
-  it("installs repair (jobCount 7) when includeRepair and durable store is healthy", () => {
-    const { directory, databasePath } = tempDbPath("stage-durable-plan-ok-");
+describe("Stage durable repair install fail-closed", () => {
+  it("decideRepairSupervision stays blocked_no_store when durable probe is unhealthy", () => {
+    const { directory, databasePath } = tempDbPath("stage-durable-repair-blocked-");
     try {
-      const health = probeLisaStageOpsStoreHealth({ databasePath, ensure: true });
-      assert.equal(health.ok, true);
+      const probe = probeStageDurableStores({ databasePath });
+      assert.equal(probe.health.ok, false);
 
-      const plan = planStageOps({
-        action: "install",
-        includeRepair: true,
-        durableStoreDatabasePath: databasePath,
+      const decision = decideRepairSupervision({
+        repairAttemptStoreAvailable: probe.repairAttemptStoreAvailable,
+        mainApproveStoreAvailable: probe.mainApproveStoreAvailable,
+        repairAttemptStorePrerequisite: probe.repairAttemptStorePrerequisite,
+        mainApproveStorePrerequisite: probe.mainApproveStorePrerequisite,
       });
-      assert.equal(plan.includeRepair, true);
-      assert.equal(plan.jobCount, 7);
-      assert.equal(plan.repairSupervision.installAllowed, true);
-      assert.equal(plan.repairSupervision.installedInPlan, true);
-      assert.equal(plan.repairSupervision.decision.decision, "supervise_readonly");
-      assert.ok(!plan.validationErrors.some((e) => /repair install blocked/i.test(e)));
+      assert.equal(decision.decision, "blocked_no_store");
+      assert.equal(decision.mayDispatchAcp, false);
+
+      const repair = buildStageRepairSupervisionJob();
+      assert.equal(repair.enabled, false);
+      assert.match(repair.payload.message, /blocked_no_store/);
     } finally {
       rmSync(directory, { recursive: true, force: true });
     }
   });
 
-  it("keeps jobCount 6 and validation error when includeRepair without healthy store", () => {
-    const plan = planStageOps({ action: "install", includeRepair: true });
-    assert.equal(plan.includeRepair, false);
-    assert.equal(plan.jobCount, 6);
-    assert.equal(plan.repairSupervision.installAllowed, false);
-    assert.ok(plan.validationErrors.some((e) => /repair install blocked/i.test(e)));
+  it("decideRepairSupervision allows readonly supervise only when probe is healthy", () => {
+    const { directory, databasePath } = tempDbPath("stage-durable-repair-ok-");
+    try {
+      const health = probeLisaStageOpsStoreHealth({ databasePath, ensure: true });
+      assert.equal(health.ok, true);
+      const probe = probeStageDurableStores({ databasePath });
+      assert.equal(probe.repairAttemptStoreAvailable, true);
+      assert.equal(probe.mainApproveStoreAvailable, true);
+
+      const decision = decideRepairSupervision({
+        repairAttemptStoreAvailable: true,
+        mainApproveStoreAvailable: true,
+      });
+      assert.equal(decision.decision, "supervise_readonly");
+      assert.equal(decision.mayDispatchAcp, false);
+    } finally {
+      rmSync(directory, { recursive: true, force: true });
+    }
   });
 });

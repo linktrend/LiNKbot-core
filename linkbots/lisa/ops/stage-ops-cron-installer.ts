@@ -2,8 +2,15 @@
  * Typed lisa-stage cron installer payloads — gateway-valid CronJobCreate / edit
  * shapes with inline bounded procedures, delivery=none, enabled=false defaults,
  * exact UUID preservation on edit, and safe rollback patches.
+ *
+ * Gateway create bodies only accept cron.add fields. Stage hard-stop metadata
+ * lives on the plan/receipt as stageConstraints (never on cron.add payloads).
  */
 
+import {
+  formatValidationErrors,
+  validateCronAddParams,
+} from "../../../packages/gateway-protocol/dist/index.mjs";
 import {
   STAGE_OPS_AGENT_ID,
   STAGE_OPS_DELIVERY_MODE,
@@ -14,6 +21,19 @@ import {
   hashStageJob,
   type StageSeedJob,
 } from "./stage-ops-payloads.ts";
+
+/** Stage hard stops — plan/receipt only; never gateway cron.add fields. */
+export type StageOpsConstraints = {
+  openRouterOnly: true;
+  liveLisaForbidden: true;
+  deliveryAnnounceForbidden: true;
+};
+
+export const STAGE_OPS_CONSTRAINTS: StageOpsConstraints = {
+  openRouterOnly: true,
+  liveLisaForbidden: true,
+  deliveryAnnounceForbidden: true,
+};
 
 /** Gateway-facing create payload (cron.add / CronJobCreate-compatible). */
 export type StageCronJobCreatePayload = {
@@ -35,12 +55,6 @@ export type StageCronJobCreatePayload = {
   };
   delivery: {
     mode: typeof STAGE_OPS_DELIVERY_MODE;
-  };
-  /** Stage-safe: no model/thinking overrides that pull non-OpenRouter deps. */
-  dependencies: {
-    openRouterOnly: true;
-    liveLisaForbidden: true;
-    deliveryAnnounceForbidden: true;
   };
 };
 
@@ -67,8 +81,30 @@ export type StageCronInstallPlan = {
   edits: StageCronJobEditPayload[];
   disables: Array<{ id: string; enabled: false }>;
   payloadHashes: Record<string, string>;
+  stageConstraints: StageOpsConstraints;
   validationErrors: string[];
 };
+
+/** Compact receipt fragment for stageConstraints (plan/receipt, not cron.add). */
+export function buildStageConstraintsReceipt(
+  constraints: StageOpsConstraints = STAGE_OPS_CONSTRAINTS,
+): { stageConstraints: StageOpsConstraints } {
+  return { stageConstraints: { ...constraints } };
+}
+
+function validateStageConstraints(constraints: StageOpsConstraints): string[] {
+  const errors: string[] = [];
+  if (constraints.openRouterOnly !== true) {
+    errors.push("stageConstraints.openRouterOnly must be true");
+  }
+  if (constraints.liveLisaForbidden !== true) {
+    errors.push("stageConstraints.liveLisaForbidden must be true");
+  }
+  if (constraints.deliveryAnnounceForbidden !== true) {
+    errors.push("stageConstraints.deliveryAnnounceForbidden must be true");
+  }
+  return errors;
+}
 
 function toCreatePayload(job: StageSeedJob): StageCronJobCreatePayload {
   return {
@@ -89,11 +125,6 @@ function toCreatePayload(job: StageSeedJob): StageCronJobCreatePayload {
       timeoutSeconds: job.payload.timeoutSeconds,
     },
     delivery: { mode: STAGE_OPS_DELIVERY_MODE },
-    dependencies: {
-      openRouterOnly: true,
-      liveLisaForbidden: true,
-      deliveryAnnounceForbidden: true,
-    },
   };
 }
 
@@ -118,6 +149,14 @@ function toEditPayload(job: StageSeedJob, jobId: string): StageCronJobEditPayloa
 
 export function validateStageCronCreatePayload(payload: StageCronJobCreatePayload): string[] {
   const errors: string[] = [];
+  if ("dependencies" in (payload as object)) {
+    errors.push(`${payload.name}: create payload must not include dependencies`);
+  }
+  if (!validateCronAddParams(payload)) {
+    errors.push(
+      `${payload.name}: gateway cron.add invalid: ${formatValidationErrors(validateCronAddParams.errors)}`,
+    );
+  }
   if (payload.enabled !== false) errors.push(`${payload.name}: enabled must be false`);
   if (payload.delivery.mode !== "none") errors.push(`${payload.name}: delivery.mode must be none`);
   if (payload.sessionTarget !== "isolated") {
@@ -140,12 +179,6 @@ export function validateStageCronCreatePayload(payload: StageCronJobCreatePayloa
     payload.payload.timeoutSeconds <= 0
   ) {
     errors.push(`${payload.name}: timeoutSeconds must be a positive integer`);
-  }
-  if (payload.dependencies.openRouterOnly !== true) {
-    errors.push(`${payload.name}: dependencies.openRouterOnly must be true`);
-  }
-  if (payload.dependencies.deliveryAnnounceForbidden !== true) {
-    errors.push(`${payload.name}: announce delivery must stay forbidden`);
   }
   if (/^STAGE CANARY ONLY\b/m.test(payload.payload.message)) {
     errors.push(`${payload.name}: must not emit STAGE_CANARY stubs`);
@@ -177,11 +210,6 @@ export function validateStageCronEditPayload(payload: StageCronJobEditPayload): 
       schedule: payload.patch.schedule,
       payload: payload.patch.payload,
       delivery: payload.patch.delivery,
-      dependencies: {
-        openRouterOnly: true,
-        liveLisaForbidden: true,
-        deliveryAnnounceForbidden: true,
-      },
     }),
   );
   return errors;
@@ -200,7 +228,8 @@ export function buildStageCronInstallPlan(params: {
   const edits: StageCronJobEditPayload[] = [];
   const disables: Array<{ id: string; enabled: false }> = [];
   const payloadHashes: Record<string, string> = {};
-  const validationErrors: string[] = [];
+  const stageConstraints = { ...STAGE_OPS_CONSTRAINTS };
+  const validationErrors: string[] = [...validateStageConstraints(stageConstraints)];
 
   for (const job of catalog) {
     payloadHashes[job.id] = hashStageJob(job);
@@ -222,7 +251,8 @@ export function buildStageCronInstallPlan(params: {
       }
       continue;
     }
-    // update / rollback both rewrite payloads onto existing UUIDs and keep disabled.
+    // update / rollback rewrite onto existing UUIDs; enabled=false is on the edit
+    // patch / CLI --disable (no separate disables[] race after edit).
     if (!existingId) {
       validationErrors.push(`${params.action} missing UUID for ${job.id}`);
       continue;
@@ -230,7 +260,6 @@ export function buildStageCronInstallPlan(params: {
     const edit = toEditPayload(job, existingId);
     edits.push(edit);
     validationErrors.push(...validateStageCronEditPayload(edit));
-    disables.push({ id: existingId, enabled: false });
   }
 
   return {
@@ -239,6 +268,7 @@ export function buildStageCronInstallPlan(params: {
     edits,
     disables,
     payloadHashes,
+    stageConstraints,
     validationErrors,
   };
 }

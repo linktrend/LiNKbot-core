@@ -11,21 +11,21 @@
 
 ## Verified stage posture (read-only audit 2026-08-03 + launch-blocker close)
 
-| Surface          | Truth                                                                                                              |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------ |
-| Stage root       | `LiNKplatform-staging/lisa` (profile `lisa-stage`, port **18791**)                                                 |
-| Stage engine     | `LiNKplatform-staging/openclaw_prime/openclaw.mjs` via `service-env/ai.openclaw.lisa-stage-env-wrapper.sh`         |
-| Routing          | OpenRouter-only overlay — see `linkbots/lisa/ops/model-routing.openrouter-stage.contract.json`                     |
-| Primary          | `openrouter/openai/gpt-5.6-luna`, `thinkingDefault: medium`                                                        |
-| Fallbacks        | GLM-5.2 → Kimi K3 → Gemini 3.5 Flash-Lite (all `openrouter/...`)                                                   |
-| Image/PDF        | `openrouter/minimax/minimax-m3` via `imageModel` + `pdfModel`; PDF `approved_unverified`                           |
-| PDF rollback     | `tools.deny` includes `pdf` + remove `agents.defaults.pdfModel` (never write empty `primary`) + restore receipt    |
-| Eval             | Nemotron OpenRouter ref — **not** in defaults / modelPolicy.allow                                                  |
-| Cron SOT         | Repo `linkbots/lisa/ops/jobs.stage-seed.json` v2 — **6** real bounded procedures, `delivery=none`, `enabled=false` |
-| Typed installer  | `stage-ops-cron-installer.ts` emits gateway-valid create/edit payloads (UUID preserve, disabled, delivery=none)    |
-| Durable stores   | Additive OpenClaw SQLite `lisa_stage_*` tables (lazy ensure; no schema_version bump). Repair install fail-closed   |
-| Repair package   | Packaged separately; install only when store health passes; default `blocked_no_store`                             |
-| Native heartbeat | `every: 0m` (disabled); wall-clock owned by `lisa-heartbeat-45` when enabled                                       |
+| Surface          | Truth                                                                                                                                                                                          |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Stage root       | `LiNKplatform-staging/lisa` (profile `lisa-stage`, port **18791**)                                                                                                                             |
+| Stage engine     | `LiNKplatform-staging/openclaw_prime/openclaw.mjs`. **Inspect/inventory:** no PACI wrapper. **Apply/runtime:** via `service-env/ai.openclaw.lisa-stage-env-wrapper.sh` (writes PACI JWKs/PEMs) |
+| Routing          | OpenRouter-only overlay — see `linkbots/lisa/ops/model-routing.openrouter-stage.contract.json`                                                                                                 |
+| Primary          | `openrouter/openai/gpt-5.6-luna`, `thinkingDefault: medium`                                                                                                                                    |
+| Fallbacks        | GLM-5.2 → Kimi K3 → Gemini 3.5 Flash-Lite (all `openrouter/...`)                                                                                                                               |
+| Image/PDF        | `openrouter/minimax/minimax-m3` via `imageModel` + `pdfModel`; PDF `approved_unverified`                                                                                                       |
+| PDF rollback     | `tools.deny` includes `pdf` + remove `agents.defaults.pdfModel` (never write empty `primary`) + restore receipt                                                                                |
+| Eval             | Nemotron OpenRouter ref — **not** in defaults / modelPolicy.allow                                                                                                                              |
+| Cron SOT         | Repo `linkbots/lisa/ops/jobs.stage-seed.json` v2 — **6** real bounded procedures, `delivery=none`, `enabled=false`                                                                             |
+| Typed installer  | `stage-ops-cron-installer.ts` emits gateway-valid create/edit payloads (UUID preserve, disabled, delivery=none)                                                                                |
+| Durable stores   | Additive OpenClaw SQLite `lisa_stage_*` tables (lazy ensure; no schema_version bump). Repair install fail-closed                                                                               |
+| Repair package   | Packaged separately; install only when store health passes; default `blocked_no_store`                                                                                                         |
+| Native heartbeat | `every: 0m` (disabled); wall-clock owned by `lisa-heartbeat-45` when enabled                                                                                                                   |
 
 Job IDs observed 2026-08-03 (re-verify with `cron list` before mutate):
 
@@ -44,26 +44,40 @@ Prior stage force-runs used **STAGE_CANARY one-liner stubs**. Repo SOT packages 
 
 ## A) Read-only inventory (safe anytime)
 
+**Do not** use `ai.openclaw.lisa-stage-env-wrapper.sh` for inventory. That wrapper always materializes PACI JWK/PEM files under `secrets/paci-assertions` (and may call gcloud). Use the inspect path instead.
+
+Prefer `OPENCLAW_GATEWAY_TOKEN` already in process env or present in `ai.openclaw.lisa-stage.env`; never call gcloud/PACI project for inventory.
+
 ```bash
+# Print packaged inspect commands (no PACI write; no gcloud)
+node --experimental-strip-types linkbots/lisa/ops/stage-ops-inventory.ts
+
+# Or run the inspect path directly:
 STAGE_ROOT="/Users/linktrend/Projects/LiNKplatform-staging/lisa"
 ENGINE="/Users/linktrend/Projects/LiNKplatform-staging/openclaw_prime/openclaw.mjs"
-WRAPPER="/Users/linktrend/Projects/LiNKplatform-staging/lisa/service-env/ai.openclaw.lisa-stage-env-wrapper.sh"
 ENV_FILE="/Users/linktrend/Projects/LiNKplatform-staging/lisa/service-env/ai.openclaw.lisa-stage.env"
 export PATH="/opt/homebrew/opt/node@24/bin:$PATH"
 
 "$STAGE_ROOT/probes/health.sh"
 
-OPENCLAW_STATE_DIR="$STAGE_ROOT" \
-  "$WRAPPER" "$ENV_FILE" node "$ENGINE" --profile lisa-stage cron list --json
+# Optional: source env file ONLY if OPENCLAW_GATEWAY_TOKEN is already stored there.
+# Do not invoke the PACI-writing wrapper; do not call gcloud.
+# set -a; [ -f "$ENV_FILE" ] && . "$ENV_FILE"; set +a
 
-# Repo plan + payload hashes (no stage mutation)
-node --experimental-strip-types linkbots/lisa/ops/stage-ops-coordinator.ts install --json
+OPENCLAW_STATE_DIR="$STAGE_ROOT" \
+  node "$ENGINE" --profile lisa-stage cron list --json
+
+# Repo plan + payload hashes (no stage mutation; no PACI write)
+# Cron installer imports validateCronAddParams from packages/gateway-protocol/dist.
+STAGE_OPS_NODE=(node --import ./linkbots/lisa/ops/register-strip-types-js-resolve.mjs --experimental-strip-types)
+"${STAGE_OPS_NODE[@]}" linkbots/lisa/ops/stage-ops-coordinator.ts install --json
 ```
 
 Repo contract tests (no stage mutation):
 
 ```bash
-node --experimental-strip-types --test \
+STAGE_OPS_NODE=(node --import ./linkbots/lisa/ops/register-strip-types-js-resolve.mjs --experimental-strip-types)
+"${STAGE_OPS_NODE[@]}" --test \
   linkbots/lisa/ops/lisa-ops.test.ts \
   linkbots/lisa/ops/model-routing-contract.test.ts \
   linkbots/lisa/ops/model-routing.openrouter-stage.test.ts \
@@ -71,27 +85,33 @@ node --experimental-strip-types --test \
   linkbots/lisa/ops/stage-ops-command.test.ts \
   linkbots/lisa/ops/stage-ops-cron-installer.test.ts \
   linkbots/lisa/ops/stage-durable-store.test.ts \
-  linkbots/lisa/ops/stage-pdf-rollback.test.ts
+  linkbots/lisa/ops/stage-pdf-rollback.test.ts \
+  linkbots/lisa/ops/stage-pdf-canary.execute.test.ts \
+  linkbots/lisa/ops/stage-workspace-package.test.ts
+node scripts/run-vitest.mjs src/state/lisa-stage-ops-store.test.ts
+pnpm lint:kysely
 ```
 
 ---
 
 ## B) Coordinator apply / canary / rollback (mutation — Principal gate)
 
-Tooling is **plan-only by default** (`mutateStage=false`, `enableSchedules=false`). `--emit-commands` prints exact shell through the stage env wrapper; a human/coordinator still runs them under Principal gate.
+Tooling is **plan-only by default** (`mutateStage=false`, `enableSchedules=false`). `--emit-commands` prints exact shell through the stage env wrapper (`ai.openclaw.lisa-stage-env-wrapper.sh` — GSM inject + PACI JWK/PEM writes); a human/coordinator still runs them under Principal gate. Section A inventory must **not** use this wrapper. Creates emit `--disabled` + `--no-deliver`; edits emit `--disable` + `--no-deliver` (single mutation).
 
 ```bash
+STAGE_OPS_NODE=(node --import ./linkbots/lisa/ops/register-strip-types-js-resolve.mjs --experimental-strip-types)
+
 # Plan install/update of six bounded payloads (delivery=none, enabled stays false)
-node --experimental-strip-types linkbots/lisa/ops/stage-ops-coordinator.ts update --emit-commands
+"${STAGE_OPS_NODE[@]}" linkbots/lisa/ops/stage-ops-coordinator.ts update --emit-commands
 
 # Disable all six (safe rollback of schedule enablement)
-node --experimental-strip-types linkbots/lisa/ops/stage-ops-coordinator.ts disable --emit-commands
+"${STAGE_OPS_NODE[@]}" linkbots/lisa/ops/stage-ops-coordinator.ts disable --emit-commands
 
 # Rollback payloads to repo bounded procedures + keep disabled
-node --experimental-strip-types linkbots/lisa/ops/stage-ops-coordinator.ts rollback --emit-commands
+"${STAGE_OPS_NODE[@]}" linkbots/lisa/ops/stage-ops-coordinator.ts rollback --emit-commands
 
 # Optional: include Repair/GitOps supervision ONLY when durable SQLite store health passes
-node --experimental-strip-types linkbots/lisa/ops/stage-ops-coordinator.ts install --include-repair --emit-commands
+"${STAGE_OPS_NODE[@]}" linkbots/lisa/ops/stage-ops-coordinator.ts install --include-repair --emit-commands
 ```
 
 Manual disable fallback (known IDs — re-verify first):
@@ -199,17 +219,17 @@ IDE Development remains the external GitOps SoT and is untouched. Repair supervi
 
 ## F) Ship/Pull / Repair / GitOps honesty
 
-| Surface                                              | Stage claim                                      |
-| ---------------------------------------------------- | ------------------------------------------------ |
-| Ship/Pull contracts + workshop wait/no-yield         | PASS in-repo                                     |
-| Six bounded procedure payloads (repo SOT)            | PASS (package; stage apply still Principal gate) |
-| Typed gateway create/edit payloads                   | PASS packaged                                    |
-| Stage command rendering (staging engine + wrapper)   | PASS packaged                                    |
-| Stage SQLite still holding STAGE_CANARY stubs        | HOLD until coordinator `update` applied          |
-| Full Ship/Pull post-process (ACP wait → CAS → email) | HOLD until spend/ACP gate                        |
-| Repair Dispatcher SQLite store + fail-closed install | PASS packaged; HOLD for stage ensure/enable      |
-| Main Approve epoch expiry + SQLite packages/claims   | PASS packaged; HOLD for live store ensure        |
-| MiniMax PDF deny-rollback + restore receipt          | PASS packaged; HOLD for execute/proof            |
+| Surface                                              | Stage claim                                       |
+| ---------------------------------------------------- | ------------------------------------------------- |
+| Ship/Pull contracts + workshop wait/no-yield         | PASS in-repo                                      |
+| Six bounded procedure payloads (repo SOT)            | PASS (package; stage apply still Principal gate)  |
+| Typed gateway create/edit payloads                   | PASS packaged                                     |
+| Stage command rendering (inspect vs apply wrapper)   | PASS packaged (inventory never uses PACI wrapper) |
+| Stage SQLite still holding STAGE_CANARY stubs        | HOLD until coordinator `update` applied           |
+| Full Ship/Pull post-process (ACP wait → CAS → email) | HOLD until spend/ACP gate                         |
+| Repair Dispatcher SQLite store + fail-closed install | PASS packaged; HOLD for stage ensure/enable       |
+| Main Approve epoch expiry + SQLite packages/claims   | PASS packaged; HOLD for live store ensure         |
+| MiniMax PDF deny-rollback + restore receipt          | PASS packaged; HOLD for execute/proof             |
 
 ---
 
@@ -220,7 +240,8 @@ IDE Development remains the external GitOps SoT and is untouched. Repair supervi
 - Seed SOT: `linkbots/lisa/ops/jobs.stage-seed.json`
 - Payload builders: `linkbots/lisa/ops/stage-ops-payloads.ts`
 - Coordinator: `linkbots/lisa/ops/stage-ops-coordinator.ts`
-- Command renderer: `linkbots/lisa/ops/stage-ops-command.ts`
+- Command renderer: `linkbots/lisa/ops/stage-ops-command.ts` (`renderStageOpenClawInspectCommand` vs `renderStageOpenClawCommand`)
+- Read-only inventory CLI: `linkbots/lisa/ops/stage-ops-inventory.ts`
 - Typed cron installer: `linkbots/lisa/ops/stage-ops-cron-installer.ts`
 - Durable store: `src/state/lisa-stage-ops-schema.ts`, `src/state/lisa-stage-ops-store.ts`
 - PDF canary: `linkbots/lisa/ops/stage-pdf-canary.ts`

@@ -5,8 +5,9 @@
  * OPENCLAW_STATE_SCHEMA_VERSION. Lazy-ensure on first feature use
  * (same ownership pattern as user-profiles).
  *
- * Consumer helpers also live under linkbots/lisa/ops/lisa-stage-ops-*.ts for
- * workshop node:test (same DDL — keep aligned). IDE Development remains external.
+ * Canonical owner: src/state/lisa-stage-ops-store.ts.
+ * Workshop re-exports: linkbots/lisa/ops/lisa-stage-ops-*.ts.
+ * IDE Development remains external.
  */
 
 export const LISA_STAGE_OPS_SCHEMA_OWNER = "lisa-stage-ops" as const;
