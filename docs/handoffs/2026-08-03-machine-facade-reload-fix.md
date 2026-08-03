@@ -20,6 +20,8 @@
 
 ## Summary
 
+Fix SHA: `fba36baa482e30dee0696d0f62ae4c02572d158b`. Branch tip after handoff: `03b248fc51892a3fe3e946bf10dc4f6065662d23`.
+
 Root cause: LinkBrain/LinkSkills called `api.machineTokenFacade.unregister()` in `gateway_stop` before gateway close later ran `pluginServices.stop()`, which flushed/drained again against the retired generation. Retryable `machine_token_error` burned attempts and deadlettered. Reload published a new generation before previous services stopped, so prior stop flush could hit the same unregistered path.
 
 Fix: unregister only in `service.stop`; `gateway_stop` best-effort flushes/drains while usable; remote drain skipped when the closed-over generation is already retired (local capture flush still runs); generation-scoped unregister remains intact.
