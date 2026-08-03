@@ -14,7 +14,7 @@
 | Starting branch  | `dev/cloudcursor/OCP-BRAIN-CAPTURE-CONTRACT-FIX`                                                                                                                                                |
 | Ending branch    | `dev/cloudcursor/OCP-BRAIN-CAPTURE-CONTRACT-FIX`                                                                                                                                                |
 | Starting commit  | `ccf7de40f39dcce96042b879f5e1476315cbe11b`                                                                                                                                                      |
-| Ending commit    | PENDING_AFTER_COMMIT                                                                                                                                                                            |
+| Ending commit    | `70b2006f013ffc4fc5035f9e200fe05308971620` (content tip; this amendment docs-only)                                                                                                              |
 | Starting status  | dirty uncommitted adapter WIP from interrupted prior Cursor run at exact base SHA                                                                                                               |
 | Ending status    | committed + pushed; no merge; integration not self-approved                                                                                                                                     |
 
@@ -129,4 +129,4 @@ This branch adds `capture-batch-adapter.ts`, routes flush through Brain wire sha
 
 ## Amendments
 
-- PENDING: record ending commit SHA after commit/push.
+- 2026-08-03 21:46 Asia/Taipei: recorded ending content tip SHA `70b2006f013ffc4fc5035f9e200fe05308971620` after commit (session owner). Push tip may advance by this docs-only amendment.
