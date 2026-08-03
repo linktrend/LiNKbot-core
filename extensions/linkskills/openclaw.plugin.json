@@ -4,7 +4,7 @@
   "description": "Private Skills adapter for Lisa: structured telemetry outbox against Skills Gateway contracts. Default-disabled; never registers conversation hooks; fake-only until activation gates.",
   "enabledByDefault": false,
   "activation": {
-    "onStartup": false
+    "onStartup": true
   },
   "configContracts": {
     "secretInputs": {

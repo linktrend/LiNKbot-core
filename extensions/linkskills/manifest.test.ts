@@ -19,7 +19,7 @@ describe("linkskills manifest/config", () => {
     };
     expect(manifest.id).toBe("linkskills");
     expect(manifest.enabledByDefault).toBe(false);
-    expect(manifest.activation.onStartup).toBe(false);
+    expect(manifest.activation.onStartup).toBe(true);
     expect(manifest.configSchema.properties).toMatchObject({
       mcpDiscoveryRead: expect.any(Object),
       governedExecution: expect.any(Object),

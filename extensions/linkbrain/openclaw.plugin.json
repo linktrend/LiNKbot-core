@@ -4,7 +4,7 @@
   "description": "Private Brain adapter for Lisa: durable capture outbox and coordination against Brain Gateway contracts. Default-disabled; fake-only until activation gates.",
   "enabledByDefault": false,
   "activation": {
-    "onStartup": false
+    "onStartup": true
   },
   "configContracts": {
     "secretInputs": {

@@ -50,6 +50,28 @@ function registryContainsPluginScope(
   return onlyPluginIds.every((pluginId) => loadedPluginIds.has(pluginId));
 }
 
+function channelStartupModeCompatibleLoadOptions(options: PluginLoadOptions): PluginLoadOptions[] {
+  if (options.forceFullRuntimeForChannelPlugins !== true) {
+    return [];
+  }
+  // Agent ensure paths pass forceFull so channel plugins hydrate. A live gateway
+  // registry already chose full/prefer-setup; treat force-full as compatible so
+  // we do not activate a replacement that can drop non-startup MCP toolFilter
+  // overlays while pins retain the prior set.
+  return [
+    {
+      ...options,
+      forceFullRuntimeForChannelPlugins: undefined,
+      preferSetupRuntimeForChannelPlugins: undefined,
+    },
+    {
+      ...options,
+      forceFullRuntimeForChannelPlugins: undefined,
+      preferSetupRuntimeForChannelPlugins: true,
+    },
+  ];
+}
+
 function scopedPluginLoadOptionsMatchWiderActiveCacheKey(
   options: PluginLoadOptions,
   expectedCacheKey: string,
@@ -59,7 +81,25 @@ function scopedPluginLoadOptionsMatchWiderActiveCacheKey(
   if (!registryContainsPluginScope(activeRegistry, onlyPluginIds)) {
     return false;
   }
-  return pluginLoadOptionsMatchCacheKey({ ...options, onlyPluginIds: undefined }, expectedCacheKey);
+  const withoutScope: PluginLoadOptions = { ...options, onlyPluginIds: undefined };
+  if (pluginLoadOptionsMatchCacheKey(withoutScope, expectedCacheKey)) {
+    return true;
+  }
+  return channelStartupModeCompatibleLoadOptions(withoutScope).some((candidate) =>
+    pluginLoadOptionsMatchCacheKey(candidate, expectedCacheKey),
+  );
+}
+
+function pluginLoadOptionsMatchActiveCacheKeyAllowingChannelModeDrift(
+  options: PluginLoadOptions,
+  expectedCacheKey: string,
+): boolean {
+  if (pluginLoadOptionsMatchCacheKey(options, expectedCacheKey)) {
+    return true;
+  }
+  return channelStartupModeCompatibleLoadOptions(options).some((candidate) =>
+    pluginLoadOptionsMatchCacheKey(candidate, expectedCacheKey),
+  );
 }
 
 function getCompatibleActivePluginRegistry(
@@ -81,13 +121,13 @@ function getCompatibleActivePluginRegistry(
   }
   const loadContext = resolvePluginLoadCacheContext(options);
   const matchesActiveCacheKey = (candidate: PluginLoadOptions): boolean => {
-    if (pluginLoadOptionsMatchCacheKey(candidate, activeCacheKey)) {
+    if (pluginLoadOptionsMatchActiveCacheKeyAllowingChannelModeDrift(candidate, activeCacheKey)) {
       return true;
     }
     if (candidate.coreGatewayMethodNames !== undefined) {
       return false;
     }
-    return pluginLoadOptionsMatchCacheKey(
+    return pluginLoadOptionsMatchActiveCacheKeyAllowingChannelModeDrift(
       { ...candidate, coreGatewayMethodNames: activeRegistry.coreGatewayMethodNames },
       activeCacheKey,
     );

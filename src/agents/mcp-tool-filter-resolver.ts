@@ -100,6 +100,9 @@ function listMcpServerToolFiltersByServerName(): Map<string, McpServerToolFilter
   if (testOverrides) {
     return new Map([...testOverrides.entries()].toSorted(([a], [b]) => a.localeCompare(b)));
   }
+  // Active registry is authoritative. Gateway startup must keep enabled
+  // overlay owners in that registry (onStartup + forceFull reuse); do not
+  // gap-fill from pinned surfaces.
   const registry = getActivePluginRegistry();
   const byName = new Map<string, McpServerToolFilterEntry>();
   for (const entry of registry?.mcpServerToolFilters ?? []) {

@@ -475,12 +475,12 @@ describe(`Phase 6 integrated Brain+Skills (${PHASE6_EVIDENCE_TIER})`, () => {
     expect(brainManifest).toMatchObject({
       id: "linkbrain",
       enabledByDefault: false,
-      activation: { onStartup: false },
+      activation: { onStartup: true },
     });
     expect(skillsManifest).toMatchObject({
       id: "linkskills",
       enabledByDefault: false,
-      activation: { onStartup: false },
+      activation: { onStartup: true },
     });
     expect(LINKSKILLS_CONVERSATION_HOOK_POLICY).toMatch(/never registers conversation/i);
 

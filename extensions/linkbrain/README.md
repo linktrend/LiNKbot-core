@@ -8,13 +8,13 @@ This directory does **not** mutate Lisa profile/credentials.
 
 ## Status
 
-| Path                                                 | Role                                                                              |
-| ---------------------------------------------------- | --------------------------------------------------------------------------------- |
-| `fixtures/`                                          | Sanitized JSON contracts (Phase 1; draft pending Brain owner sign-off)            |
-| `fake/`                                              | Deterministic Node ESM fake: stdio MCP or localhost HTTP                          |
-| `openclaw.plugin.json` / `package.json` / `index.ts` | Default-disabled plugin packaging (`enabledByDefault: false`, `onStartup: false`) |
-| `src/`                                               | Outbox runtime, capture batching, §10.1 lifecycle mapping, transport adapters     |
-| `mcp-tool-filter.ts`                                 | Managed MCP §9.1 `toolFilter.include` allowlist (default-deny)                    |
+| Path                                                 | Role                                                                                                     |
+| ---------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `fixtures/`                                          | Sanitized JSON contracts (Phase 1; draft pending Brain owner sign-off)                                   |
+| `fake/`                                              | Deterministic Node ESM fake: stdio MCP or localhost HTTP                                                 |
+| `openclaw.plugin.json` / `package.json` / `index.ts` | Default-disabled plugin packaging (`enabledByDefault: false`, `onStartup: true` when explicitly enabled) |
+| `src/`                                               | Outbox runtime, capture batching, §10.1 lifecycle mapping, transport adapters                            |
+| `mcp-tool-filter.ts`                                 | Managed MCP §9.1 `toolFilter.include` allowlist (default-deny)                                           |
 
 ## Transport modes
 
