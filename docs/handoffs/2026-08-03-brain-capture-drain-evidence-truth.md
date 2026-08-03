@@ -14,9 +14,9 @@
 | Starting branch  | `ocp-brain-drain-proof`                                                                                                            |
 | Ending branch    | `ocp-brain-drain-proof`                                                                                                            |
 | Starting commit  | `5588d333b1f0b76b108e21ca32189da4c1ca58fa`                                                                                         |
-| Ending commit    | 799a943d556                                                                                                                        |
+| Ending commit    | 5d5cbd756a3a762b51eb6c26720a20c526f3f53b                                                                                         |
 | Starting status  | clean at Codex HOLD tip                                                                                                            |
-| Ending status    | committed; push pending at handoff write                                                                                           |
+| Ending status    | committed + pushed                                                                                                                 |
 
 ## Summary
 

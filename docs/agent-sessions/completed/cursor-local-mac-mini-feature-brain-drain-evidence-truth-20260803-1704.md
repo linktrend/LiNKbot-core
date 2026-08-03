@@ -23,7 +23,7 @@
 | Objective       | Correct Codex HOLD evidence-truth defects on `ocp-brain-drain-proof` tip `5588d333b1f` (schema tier invariant, Ajv tests, SHA) |
 | Branch          | ocp-brain-drain-proof                                                                                                          |
 | Starting commit | 5588d333b1f0b76b108e21ca32189da4c1ca58fa                                                                                       |
-| Ending commit   | 799a943d556 (evidence fix; session/handoff may follow)                                                                         |
+| Ending commit   | 5d5cbd756a3a762b51eb6c26720a20c526f3f53b                                                                                       |
 | Status          | `complete`                                                                                                                     |
 | Handoff         | docs/handoffs/2026-08-03-brain-capture-drain-evidence-truth.md                                                                 |
 
