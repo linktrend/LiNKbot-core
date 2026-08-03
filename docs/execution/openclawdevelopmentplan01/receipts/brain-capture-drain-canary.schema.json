@@ -109,6 +109,7 @@
       "type": "object",
       "additionalProperties": false,
       "required": ["exercised", "claimed"],
+      "description": "claimed must not exceed the highest tier present in exercised (FAKE < TEMPLATE < LIVE-STAGE < LIVE-PROD).",
       "properties": {
         "exercised": {
           "type": "array",
@@ -127,7 +128,48 @@
           "type": "string",
           "description": "Evidence label such as fake/integration-local or stage/brain-capture-drain-canary."
         }
-      }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "claimed": { "const": "LIVE-PROD" } },
+            "required": ["claimed"]
+          },
+          "then": {
+            "properties": {
+              "exercised": {
+                "contains": { "const": "LIVE-PROD" }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": { "claimed": { "const": "LIVE-STAGE" } },
+            "required": ["claimed"]
+          },
+          "then": {
+            "properties": {
+              "exercised": {
+                "contains": { "enum": ["LIVE-STAGE", "LIVE-PROD"] }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": { "claimed": { "const": "TEMPLATE" } },
+            "required": ["claimed"]
+          },
+          "then": {
+            "properties": {
+              "exercised": {
+                "contains": { "enum": ["TEMPLATE", "LIVE-STAGE", "LIVE-PROD"] }
+              }
+            }
+          }
+        }
+      ]
     },
     "phases": {
       "type": "object",
