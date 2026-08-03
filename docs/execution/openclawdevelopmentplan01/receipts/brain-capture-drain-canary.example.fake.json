@@ -1,0 +1,66 @@
+{
+  "schemaVersion": "1.0.0",
+  "receiptType": "brain-capture-drain-canary",
+  "canaryId": "canary-brain-drain-fake-20260803-example",
+  "recordedAt": "2026-08-03T09:00:00.000Z",
+  "operator": {
+    "sessionId": "cursor-local-mac-mini-feature-brain-drain-proof-20260803-1651",
+    "role": "feature",
+    "orchestratorKey": "cursor-local-mac-mini-desktop-workspace-orchestrator"
+  },
+  "repo": {
+    "branch": "ocp-brain-drain-proof",
+    "commitSha": "07c86fdc734ae98c2d8c65c0687e9c57624854a7",
+    "baseSha": "07c86fdc734ae98c2d8c65c0687e9c57624854a7"
+  },
+  "architecture": {
+    "drainMode": "worker_outbox",
+    "mcpDrainToolExists": false,
+    "drainExecutablePath": "extensions/linkbrain/index.ts#linkbrain-outbox",
+    "captureWriteTool": "brain_capture_batch",
+    "featureFlags": {
+      "mcpRead": false,
+      "captureEnqueue": true,
+      "captureDrain": true,
+      "coordinationWrites": false
+    }
+  },
+  "evidenceTier": {
+    "exercised": ["FAKE"],
+    "claimed": "FAKE",
+    "label": "fake/integration-local"
+  },
+  "phases": {
+    "enqueue": {
+      "status": "PASS",
+      "notes": "captureEnqueue accepted synthetic event into durable buffer/outbox under reject-new policy"
+    },
+    "drain": {
+      "status": "PASS",
+      "notes": "createBrainDrainWorker / runtime.drainOnce delivered capture_batch; no MCP drain tool"
+    },
+    "visibility": {
+      "status": "PASS",
+      "proofMethod": "fake_transport_ack",
+      "notes": "fake transport acknowledged brain_capture_batch once; outbox cleared for canary key"
+    }
+  },
+  "sanitizedCounts": {
+    "outboxCountBeforeDrain": 1,
+    "outboxCountAfterDrain": 0,
+    "drained": 1,
+    "retried": 0,
+    "deadLettered": 0,
+    "captureBufferCountAfter": 0,
+    "lastDrainStatus": "drained=1;retried=0;dead=0;skipped=0"
+  },
+  "secrets": {
+    "exposed": false,
+    "refsNamedOnly": []
+  },
+  "commands": [
+    "node scripts/run-vitest.mjs extensions/linkbrain/capture.test.ts extensions/linkbrain/feature-flags-drain.test.ts extensions/linkbrain/runtime.test.ts extensions/linkbrain/registered-plugin.test.ts extensions/linkbrain/brain-capture-drain-canary.receipt.test.ts"
+  ],
+  "holdReasons": [],
+  "verdict": "PASS"
+}

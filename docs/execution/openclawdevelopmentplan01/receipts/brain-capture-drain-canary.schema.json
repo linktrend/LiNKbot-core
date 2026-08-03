@@ -1,0 +1,227 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://linktrend.local/openclaw-prime/receipts/brain-capture-drain-canary.schema.json",
+  "title": "BrainCaptureDrainCanaryReceipt",
+  "description": "Machine-readable receipt proving linkbrain capture enqueue → worker/outbox drain → durable Brain visibility without exposing credentials. Drain is worker-only; no MCP capture-drain tool.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "receiptType",
+    "canaryId",
+    "recordedAt",
+    "operator",
+    "repo",
+    "architecture",
+    "evidenceTier",
+    "phases",
+    "secrets",
+    "verdict"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "receiptType": {
+      "type": "string",
+      "const": "brain-capture-drain-canary"
+    },
+    "canaryId": {
+      "type": "string",
+      "minLength": 8,
+      "maxLength": 128,
+      "description": "Opaque synthetic canary correlation id. No secrets, emails, or raw message bodies."
+    },
+    "recordedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "operator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sessionId", "role"],
+      "properties": {
+        "sessionId": { "type": "string", "minLength": 1 },
+        "role": {
+          "type": "string",
+          "enum": ["orchestrator", "lisa", "feature", "coordinator"]
+        },
+        "orchestratorKey": { "type": "string" }
+      }
+    },
+    "repo": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["branch", "commitSha"],
+      "properties": {
+        "branch": { "type": "string", "minLength": 1 },
+        "commitSha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "baseSha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        }
+      }
+    },
+    "architecture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "drainMode",
+        "mcpDrainToolExists",
+        "drainExecutablePath",
+        "captureWriteTool"
+      ],
+      "properties": {
+        "drainMode": {
+          "type": "string",
+          "const": "worker_outbox"
+        },
+        "mcpDrainToolExists": {
+          "type": "boolean",
+          "const": false
+        },
+        "drainExecutablePath": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Repo-root path to worker/service owner (not an MCP tool name)."
+        },
+        "captureWriteTool": {
+          "type": "string",
+          "const": "brain_capture_batch"
+        },
+        "featureFlags": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "mcpRead": { "type": "boolean" },
+            "captureEnqueue": { "type": "boolean" },
+            "captureDrain": { "type": "boolean" },
+            "coordinationWrites": { "type": "boolean" }
+          }
+        }
+      }
+    },
+    "evidenceTier": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["exercised", "claimed"],
+      "properties": {
+        "exercised": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "enum": ["FAKE", "TEMPLATE", "LIVE-STAGE", "LIVE-PROD"]
+          },
+          "uniqueItems": true
+        },
+        "claimed": {
+          "type": "string",
+          "enum": ["FAKE", "TEMPLATE", "LIVE-STAGE", "LIVE-PROD"]
+        },
+        "label": {
+          "type": "string",
+          "description": "Evidence label such as fake/integration-local or stage/brain-capture-drain-canary."
+        }
+      }
+    },
+    "phases": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enqueue", "drain", "visibility"],
+      "properties": {
+        "enqueue": {
+          "$ref": "#/$defs/phaseResult"
+        },
+        "drain": {
+          "$ref": "#/$defs/phaseResult"
+        },
+        "visibility": {
+          "allOf": [
+            { "$ref": "#/$defs/phaseResult" },
+            {
+              "type": "object",
+              "properties": {
+                "proofMethod": {
+                  "type": "string",
+                  "enum": [
+                    "fake_transport_ack",
+                    "runtime_diagnostics",
+                    "brain_private_search",
+                    "brain_private_load",
+                    "brain_episode_checkpoint",
+                    "platform_stage_read_probe"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "sanitizedCounts": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Counts and opaque ids only. Never include tokens, prompt bodies, or message text.",
+      "properties": {
+        "outboxCountBeforeDrain": { "type": "integer", "minimum": 0 },
+        "outboxCountAfterDrain": { "type": "integer", "minimum": 0 },
+        "drained": { "type": "integer", "minimum": 0 },
+        "retried": { "type": "integer", "minimum": 0 },
+        "deadLettered": { "type": "integer", "minimum": 0 },
+        "captureBufferCountAfter": { "type": "integer", "minimum": 0 },
+        "lastDrainStatus": { "type": "string" },
+        "opaqueStreamId": { "type": "string" },
+        "opaqueIdempotencyKeyPrefix": {
+          "type": "string",
+          "description": "Optional truncated/opaque prefix only; never full secret-bearing material."
+        }
+      }
+    },
+    "secrets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["exposed", "refsNamedOnly"],
+      "properties": {
+        "exposed": { "type": "boolean", "const": false },
+        "refsNamedOnly": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "description": "SecretRef / env names only (for example LINKTREND_LINKBRAIN_STAGE_MCP_TOKEN)."
+        }
+      }
+    },
+    "commands": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Exact non-secret commands run for this receipt."
+    },
+    "holdReasons": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "verdict": {
+      "type": "string",
+      "enum": ["PASS", "HOLD", "FAIL"]
+    }
+  },
+  "$defs": {
+    "phaseResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status"],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["PASS", "HOLD", "FAIL", "SKIPPED"]
+        },
+        "notes": { "type": "string" },
+        "proofMethod": { "type": "string" }
+      }
+    }
+  }
+}
