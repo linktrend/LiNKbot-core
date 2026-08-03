@@ -1,5 +1,11 @@
 /** Unit tests for MCP tool-filter composition (operator ∩ plugin overlay). */
 import { afterEach, describe, expect, it } from "vitest";
+import { createEmptyPluginRegistry } from "../plugins/registry-empty.js";
+import {
+  pinActivePluginChannelRegistry,
+  resetPluginRuntimeStateForTest,
+  setActivePluginRegistry,
+} from "../plugins/runtime.js";
 import {
   describeComposedMcpToolFilter,
   resolveMcpToolFilterComposition,
@@ -11,6 +17,7 @@ import {
 describe("mcp tool filter composition", () => {
   afterEach(() => {
     testing.reset();
+    resetPluginRuntimeStateForTest();
   });
 
   it("passes config-only when no plugin resolver is registered", async () => {
@@ -190,5 +197,30 @@ describe("mcp tool filter composition", () => {
         "resources_list",
       ),
     ).toBe(true);
+  });
+
+  it("reads overlays from pinned live registries when active has none", async () => {
+    const pinned = createEmptyPluginRegistry();
+    pinned.mcpServerToolFilters.push({
+      pluginId: "linkbrain",
+      pluginName: "LiNKbrain",
+      resolver: {
+        serverName: "linkbrain",
+        resolve: () => ({ include: ["brain_search"] }),
+      },
+      source: "test",
+      rootDir: "/tmp",
+    });
+    setActivePluginRegistry(pinned, "pinned-with-overlay", "gateway-bindable");
+    pinActivePluginChannelRegistry(pinned);
+    setActivePluginRegistry(createEmptyPluginRegistry(), "empty-active", "gateway-bindable");
+
+    const composition = await resolveMcpToolFilterComposition({
+      serverName: "linkbrain",
+      configSelection: { include: ["brain_search", "brain_capture_batch"] },
+    });
+    expect(composition.kind).toBe("intersect");
+    expect(shouldExposeComposedMcpTool(composition, "brain_search")).toBe(true);
+    expect(shouldExposeComposedMcpTool(composition, "brain_capture_batch")).toBe(false);
   });
 });

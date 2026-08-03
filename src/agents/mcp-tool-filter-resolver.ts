@@ -8,7 +8,7 @@ import {
   getMcpToolFilterRegistrationGeneration,
   resetMcpToolFilterRegistrationGeneration,
 } from "../plugins/mcp-tool-filter-registration.js";
-import { getActivePluginRegistry } from "../plugins/runtime.js";
+import { collectLivePluginRegistries } from "../plugins/runtime.js";
 import type {
   McpServerToolFilterResolved,
   OpenClawPluginMcpServerToolFilter,
@@ -100,18 +100,27 @@ function listMcpServerToolFiltersByServerName(): Map<string, McpServerToolFilter
   if (testOverrides) {
     return new Map([...testOverrides.entries()].toSorted(([a], [b]) => a.localeCompare(b)));
   }
-  const registry = getActivePluginRegistry();
+  // Active plus pinned gateway surfaces. Agent ensure paths can replace the
+  // active registry while channel/http/session pins keep the gateway snapshot
+  // that registered overlays; reading active-only fail-opens to the full
+  // operator ceiling and drops plugin write gating.
   const byName = new Map<string, McpServerToolFilterEntry>();
-  for (const entry of registry?.mcpServerToolFilters ?? []) {
-    const serverName = normalizeOptionalString(entry.resolver.serverName);
-    if (!serverName || typeof entry.resolver.resolve !== "function") {
-      continue;
+  for (const registry of collectLivePluginRegistries()) {
+    for (const entry of registry.mcpServerToolFilters ?? []) {
+      const serverName = normalizeOptionalString(entry.resolver.serverName);
+      if (!serverName || typeof entry.resolver.resolve !== "function") {
+        continue;
+      }
+      // First live registry wins per serverName (active precedes pins).
+      if (byName.has(serverName)) {
+        continue;
+      }
+      byName.set(serverName, {
+        pluginId: entry.pluginId,
+        serverName,
+        resolve: entry.resolver.resolve,
+      });
     }
-    byName.set(serverName, {
-      pluginId: entry.pluginId,
-      serverName,
-      resolve: entry.resolver.resolve,
-    });
   }
   return new Map([...byName.entries()].toSorted(([a], [b]) => a.localeCompare(b)));
 }

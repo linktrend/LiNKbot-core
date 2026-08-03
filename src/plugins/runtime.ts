@@ -6,6 +6,7 @@ import {
   dispatchPluginAgentEventSubscriptions,
 } from "./host-hook-runtime.js";
 import { clearPluginMetadataLifecycleCaches } from "./plugin-metadata-lifecycle.js";
+import { bumpMcpToolFilterRegistrationGeneration } from "./mcp-tool-filter-registration.js";
 import { createEmptyPluginRegistry } from "./registry-empty.js";
 import { markPluginRegistryActive, markPluginRegistryRetired } from "./registry-lifecycle.js";
 import type { PluginRegistry } from "./registry-types.js";
@@ -215,6 +216,9 @@ export function setActivePluginRegistry(
   if (!previousRegistry || previousRegistry === registry) {
     return;
   }
+  // Registry identity changes can move/drop mcpServerToolFilters onto a pinned
+  // surface. Bump so session catalogs rematerialize under the live filter set.
+  bumpMcpToolFilterRegistrationGeneration();
   if (!retirePluginRegistryIfUnused(previousRegistry)) {
     return;
   }
