@@ -14,7 +14,7 @@
 | Starting branch  | `dev/cloudcursor/OCP-MACHINE-TOKEN-SECRETREF-RUNTIME-FIX`                                                                                                |
 | Ending branch    | `dev/cloudcursor/OCP-MACHINE-TOKEN-SECRETREF-RUNTIME-FIX`                                                                                                |
 | Starting commit  | `26d2a9e6ee0f796bbb2a40b28dbffb78b6cd1ad6`                                                                                                               |
-| Ending commit    | (tip after push)                                                                                                                                         |
+| Ending commit    | `7174ee3cba8c94edd85c7d44317fa59f5dbb64aa` (content tip; this amendment docs-only)                                                                       |
 | Starting status  | clean at exact base SHA                                                                                                                                  |
 | Ending status    | committed + pushed; no merge                                                                                                                             |
 
@@ -110,3 +110,5 @@ Fix: remove that path from both plugins' `secretInputs` so the SecretRef remains
 98%
 
 ## Amendments
+
+- 2026-08-03: recorded ending commit SHA `7174ee3cba8c94edd85c7d44317fa59f5dbb64aa` after push (session owner).
