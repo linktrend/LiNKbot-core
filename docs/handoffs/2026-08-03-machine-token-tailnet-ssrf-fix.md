@@ -14,7 +14,7 @@
 | Starting branch  | `dev/cloudcursor/OCP-MACHINE-TOKEN-TAILNET-SSRF-FIX` (from SecretRef tip)               |
 | Ending branch    | `dev/cloudcursor/OCP-MACHINE-TOKEN-TAILNET-SSRF-FIX`                                    |
 | Starting commit  | `7fc467084e276be90ee039c43155923bad12909c`                                              |
-| Ending commit    | 980daed48e8331bbeb580015cbfef37e1732577c                                                |
+| Ending commit    | `f50fece3d9da94566ba603f57a3ab0c8505de69e`                                              |
 | Starting status  | Clean at SecretRef tip                                                                  |
 | Ending status    | Task branch with allowPrivateNetwork opt-in                                             |
 
