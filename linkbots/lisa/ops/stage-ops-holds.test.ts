@@ -126,25 +126,42 @@ describe("Stage ops coordinator install/update/disable/rollback", () => {
       assert.equal(plan.liveMutationAllowed, false);
       assert.equal(plan.paidSpendEnablementAllowed, false);
       assert.equal(plan.jobCount, 6);
-      assert.deepEqual(plan.validationErrors, []);
+      assert.deepEqual(
+        plan.validationErrors.filter((e) => !/repair install blocked/i.test(e)),
+        [],
+      );
       if (action === "disable") {
-        assert.ok(plan.commands.some((c) => c.includes("cron disable")));
+        assert.ok(plan.commands.some((c) => c.includes("'cron'") && c.includes("'disable'")));
       } else {
         assert.ok(plan.commands.some((c) => c.includes("--no-deliver")));
       }
       assert.ok(plan.jobs.every((j) => j.replacesStageCanaryStub && j.enabled === false));
+      assert.ok(
+        plan.commands.some((c) => c.includes("LiNKplatform-staging/openclaw_prime/openclaw.mjs")),
+      );
+      assert.ok(plan.commands.some((c) => c.includes("ai.openclaw.lisa-stage-env-wrapper.sh")));
+      assert.ok(
+        !plan.commands.some((c) =>
+          c.includes("/Users/linktrend/Projects/openclaw_prime/openclaw.mjs"),
+        ),
+      );
+      assert.ok(plan.typedCronPlan.edits.every((e) => e.preserveExistingUuid === true));
+      assert.ok(plan.typedCronPlan.edits.every((e) => e.patch.enabled === false));
+      assert.ok(plan.typedCronPlan.edits.every((e) => e.patch.delivery.mode === "none"));
     }
   });
 
-  it("includes repair only when requested and keeps default repair decision blocked_no_store", () => {
+  it("includes repair only when requested AND store health passes; default stays blocked_no_store", () => {
     const without = planStageOps({ action: "install" });
     assert.equal(without.includeRepair, false);
     assert.equal(without.repairSupervision.installedInPlan, false);
     assert.equal(without.repairSupervision.decision.decision, "blocked_no_store");
-    const withRepair = planStageOps({ action: "install", includeRepair: true });
-    assert.equal(withRepair.jobCount, 7);
-    assert.equal(withRepair.includeRepair, true);
-    assert.ok(withRepair.payloadHashes["lisa-repair-dispatcher"]);
+    assert.equal(without.repairSupervision.installAllowed, false);
+    // Without a healthy durable DB path, --include-repair must not install.
+    const blocked = planStageOps({ action: "install", includeRepair: true });
+    assert.equal(blocked.includeRepair, false);
+    assert.equal(blocked.jobCount, 6);
+    assert.ok(blocked.validationErrors.some((e) => /repair install blocked/i.test(e)));
   });
 });
 
@@ -187,6 +204,35 @@ describe("Stage MiniMax PDF canary command", () => {
       assert.equal(receipt.status, "blocked_no_execute_gate");
       assert.equal(receipt.spend, false);
       assert.equal(receipt.hardStops.liveLisaTouched, false);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("rollback-plan receipt uses tools_deny_pdf and neverWriteEmptyPrimary", () => {
+    const dir = mkdtempSync(path.join(tmpdir(), "stage-pdf-canary-rollback-"));
+    try {
+      const receipt = planStagePdfCanary({
+        mode: "rollback-plan",
+        outputDir: dir,
+        executeGateEnv: {},
+        nowIso: "2026-08-03T12:30:00.000Z",
+      });
+      assert.equal(receipt.status, "rollback_planned");
+      assert.equal(receipt.rollback.strategy, "tools_deny_pdf");
+      assert.equal(receipt.rollback.neverWriteEmptyPrimary, true);
+      assert.equal(receipt.rollback.removePdfModelKey, true);
+      assert.deepEqual(receipt.rollback.toolsDenyAdd, ["pdf"]);
+      assert.equal(receipt.rollback.runtimeConfigNotes.removedKey, "agents.defaults.pdfModel");
+      const raw = JSON.stringify(receipt.rollback);
+      assert.equal(raw.includes('"primary":""'), false);
+      assert.equal(raw.includes('primary:""'), false);
+      const written = JSON.parse(
+        readFileSync(path.join(dir, "pdf-canary-receipt.json"), "utf8"),
+      ) as typeof receipt;
+      assert.equal(written.rollback.strategy, "tools_deny_pdf");
+      assert.equal(written.rollback.neverWriteEmptyPrimary, true);
+      assert.equal(JSON.stringify(written.rollback).includes('"primary":""'), false);
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }

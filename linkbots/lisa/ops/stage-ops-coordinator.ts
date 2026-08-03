@@ -2,14 +2,29 @@
  * Idempotent lisa-stage cron install/update/disable/rollback planner.
  *
  * Defaults to plan-only (no stage mutation). Apply emits exact coordinator
- * commands and requires explicit dual gate; this module never enables schedules
- * and never spends tokens.
+ * commands via lisa-stage env wrapper + LiNKplatform-staging openclaw.mjs,
+ * and typed gateway-valid create/edit payloads. Never enables schedules.
  */
 
 import { writeFileSync } from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { LISA_OPENROUTER_ONLY_STAGE_ROUTING } from "./model-routing.openrouter-stage.ts";
+import { probeStageDurableStores } from "./stage-durable-store.ts";
+import {
+  FORBIDDEN_STAGE_ENGINE_PATH,
+  STAGE_OPS_ENGINE_PATH,
+  STAGE_OPS_ENV_FILE,
+  STAGE_OPS_ENV_WRAPPER,
+  STAGE_OPS_PROFILE,
+  STAGE_OPS_STAGE_ROOT,
+  renderStageOpenClawCommand,
+  validateStageCommandRendering,
+} from "./stage-ops-command.ts";
+import {
+  buildStageCronInstallPlan,
+  type StageCronInstallPlan,
+} from "./stage-ops-cron-installer.ts";
 import {
   buildStageOpsJobs,
   buildStageRepairSupervisionJob,
@@ -52,6 +67,7 @@ export type StageOpsCoordinatorPlan = {
     installedInPlan: boolean;
     decision: ReturnType<typeof decideRepairSupervision>;
     payloadHash: string;
+    installAllowed: boolean;
   };
   routingGuard: {
     provider: "openrouter";
@@ -60,6 +76,7 @@ export type StageOpsCoordinatorPlan = {
     liveMutationAllowed: false;
     paidSpendEnablementAllowed: false;
   };
+  typedCronPlan: StageCronInstallPlan;
   commands: string[];
   validationErrors: string[];
 };
@@ -70,14 +87,12 @@ export type StageOpsPlanInput = {
   stageRoot?: string;
   enginePath?: string;
   profile?: string;
-  /** Known stage job UUID map (name → job_id). Required for update/disable/rollback command emission. */
+  /** Known stage job UUID map (name → job_id). Required for update/disable/rollback. */
   existingJobIds?: Record<string, string>;
   emitCommands?: boolean;
+  /** Optional durable-store DB path for repair install gate (tests). */
+  durableStoreDatabasePath?: string;
 };
-
-const DEFAULT_STAGE_ROOT = "/Users/linktrend/Projects/LiNKplatform-staging/lisa";
-const DEFAULT_ENGINE = "/Users/linktrend/Projects/openclaw_prime/openclaw.mjs";
-const DEFAULT_PROFILE = "lisa-stage";
 
 function selectJobs(includeRepair: boolean): StageSeedJob[] {
   const jobs = buildStageOpsJobs();
@@ -85,26 +100,34 @@ function selectJobs(includeRepair: boolean): StageSeedJob[] {
   return [...jobs, buildStageRepairSupervisionJob()];
 }
 
-function ocPrefix(params: { stageRoot: string; enginePath: string; profile: string }): string {
-  return `OPENCLAW_STATE_DIR=${JSON.stringify(params.stageRoot)} node ${JSON.stringify(params.enginePath)} --profile ${params.profile}`;
-}
-
-function shellQuote(s: string): string {
-  return `'${s.replace(/'/g, `'\\''`)}'`;
-}
-
-function toolsFlag(tools: readonly string[]): string {
-  return `--tools ${shellQuote(tools.join(","))}`;
-}
-
 export function planStageOps(input: StageOpsPlanInput): StageOpsCoordinatorPlan {
-  const includeRepair = input.includeRepair === true;
+  const includeRepairRequested = input.includeRepair === true;
+  const durableProbe = probeStageDurableStores(
+    input.durableStoreDatabasePath
+      ? { databasePath: input.durableStoreDatabasePath }
+      : { stateDir: input.stageRoot ?? STAGE_OPS_STAGE_ROOT },
+  );
+  const repairDecision = decideRepairSupervision({
+    repairAttemptStoreAvailable: durableProbe.repairAttemptStoreAvailable,
+    mainApproveStoreAvailable: durableProbe.mainApproveStoreAvailable,
+    repairAttemptStorePrerequisite: durableProbe.repairAttemptStorePrerequisite,
+    mainApproveStorePrerequisite: durableProbe.mainApproveStorePrerequisite,
+  });
+  // Fail-closed: only install repair when store health passes.
+  const installAllowed = repairDecision.decision === "supervise_readonly";
+  const includeRepair = includeRepairRequested && installAllowed;
   const jobs = selectJobs(includeRepair);
   const repair = buildStageRepairSupervisionJob();
   const validationErrors = validateStageOpsCatalog({
     jobs: buildStageOpsJobs(),
     repair,
   });
+
+  if (includeRepairRequested && !installAllowed) {
+    validationErrors.push(
+      "repair install blocked: durable OpenClaw SQLite store health must pass (blocked_no_store)",
+    );
+  }
 
   if (LISA_OPENROUTER_ONLY_STAGE_ROUTING.liveMutationAllowed !== false) {
     validationErrors.push("OpenRouter stage overlay must keep liveMutationAllowed=false");
@@ -117,14 +140,22 @@ export function planStageOps(input: StageOpsPlanInput): StageOpsCoordinatorPlan 
   for (const job of jobs) payloadHashes[job.id] = hashStageJob(job);
   payloadHashes[repair.id] = hashStageJob(repair);
 
-  const repairDecision = decideRepairSupervision();
-  const stageRoot = input.stageRoot ?? DEFAULT_STAGE_ROOT;
-  const enginePath = input.enginePath ?? DEFAULT_ENGINE;
-  const profile = input.profile ?? DEFAULT_PROFILE;
-  const prefix = ocPrefix({ stageRoot, enginePath, profile });
+  const stageRoot = input.stageRoot ?? STAGE_OPS_STAGE_ROOT;
+  const enginePath = input.enginePath ?? STAGE_OPS_ENGINE_PATH;
+  const profile = input.profile ?? STAGE_OPS_PROFILE;
+  if (enginePath === FORBIDDEN_STAGE_ENGINE_PATH) {
+    validationErrors.push("enginePath must not be Projects/openclaw_prime");
+  }
   const ids = input.existingJobIds ?? {};
   const emit = input.emitCommands === true;
   const commands: string[] = [];
+
+  const typedCronPlan = buildStageCronInstallPlan({
+    action: input.action,
+    includeRepair,
+    existingJobIds: ids,
+  });
+  validationErrors.push(...typedCronPlan.validationErrors);
 
   if (emit) {
     commands.push(
@@ -133,7 +164,19 @@ export function planStageOps(input: StageOpsPlanInput): StageOpsCoordinatorPlan 
     commands.push(
       `# mutateStage=false unless Principal separately authorizes applying these commands`,
     );
+    commands.push(`# engine=${STAGE_OPS_ENGINE_PATH}`);
+    commands.push(`# wrapper=${STAGE_OPS_ENV_WRAPPER}`);
     commands.push(`export PATH="/opt/homebrew/opt/node@24/bin:$PATH"`);
+
+    const oc = (args: string[]) =>
+      renderStageOpenClawCommand({
+        stageRoot,
+        enginePath,
+        envWrapper: STAGE_OPS_ENV_WRAPPER,
+        envFile: STAGE_OPS_ENV_FILE,
+        profile,
+        openclawArgs: args,
+      });
 
     if (input.action === "disable" || input.action === "rollback") {
       for (const job of jobs) {
@@ -142,42 +185,102 @@ export function planStageOps(input: StageOpsPlanInput): StageOpsCoordinatorPlan 
           commands.push(`# MISSING job id for ${job.id} — run cron list --json first`);
           continue;
         }
-        commands.push(`${prefix} cron disable ${jobId}`);
+        commands.push(oc(["cron", "disable", jobId]));
       }
       if (input.action === "rollback") {
         commands.push(
           `# Rollback payloads to disabled delivery=none bounded procedures (not STAGE_CANARY stubs)`,
         );
-        for (const job of jobs) {
-          const jobId = ids[job.id];
-          if (!jobId) continue;
+        for (const edit of typedCronPlan.edits) {
           commands.push(
-            `${prefix} cron edit ${jobId} --name ${shellQuote(job.id)} --cron ${shellQuote(job.schedule.expr)} --tz ${shellQuote(job.schedule.tz)} --no-deliver ${toolsFlag(job.payload.toolsAllow)} --message ${shellQuote(job.payload.message)} --timeout-seconds ${job.payload.timeoutSeconds}`,
+            oc([
+              "cron",
+              "edit",
+              edit.id,
+              "--name",
+              edit.patch.name,
+              "--cron",
+              edit.patch.schedule.expr,
+              "--tz",
+              edit.patch.schedule.tz,
+              "--no-deliver",
+              "--tools",
+              edit.patch.payload.toolsAllow.join(","),
+              "--message",
+              edit.patch.payload.message,
+              "--timeout-seconds",
+              String(edit.patch.payload.timeoutSeconds),
+            ]),
           );
-          commands.push(`${prefix} cron disable ${jobId}`);
+          commands.push(oc(["cron", "disable", edit.id]));
         }
       }
-      commands.push(`${prefix} cron list --json`);
+      commands.push(oc(["cron", "list", "--json"]));
     }
 
     if (input.action === "install" || input.action === "update") {
-      for (const job of jobs) {
-        const jobId = ids[job.id];
-        if (jobId) {
-          commands.push(
-            `${prefix} cron edit ${jobId} --name ${shellQuote(job.id)} --cron ${shellQuote(job.schedule.expr)} --tz ${shellQuote(job.schedule.tz)} --no-deliver ${toolsFlag(job.payload.toolsAllow)} --message ${shellQuote(job.payload.message)} --timeout-seconds ${job.payload.timeoutSeconds}`,
-          );
-          commands.push(`${prefix} cron disable ${jobId}`);
-        } else if (input.action === "install") {
-          commands.push(
-            `${prefix} cron add ${shellQuote(job.schedule.expr)} --tz ${shellQuote(job.schedule.tz)} --name ${shellQuote(job.id)} --agent ${job.agentId} --session isolated --no-deliver ${toolsFlag(job.payload.toolsAllow)} --timeout-seconds ${job.payload.timeoutSeconds} --message ${shellQuote(job.payload.message)}`,
-          );
-          commands.push(`# Then immediately: cron disable <new-job-id> for ${job.id}`);
-        } else {
-          commands.push(`# UPDATE skipped for ${job.id}: no existing job id provided`);
+      for (const edit of typedCronPlan.edits) {
+        commands.push(
+          oc([
+            "cron",
+            "edit",
+            edit.id,
+            "--name",
+            edit.patch.name,
+            "--cron",
+            edit.patch.schedule.expr,
+            "--tz",
+            edit.patch.schedule.tz,
+            "--no-deliver",
+            "--tools",
+            edit.patch.payload.toolsAllow.join(","),
+            "--message",
+            edit.patch.payload.message,
+            "--timeout-seconds",
+            String(edit.patch.payload.timeoutSeconds),
+          ]),
+        );
+        commands.push(oc(["cron", "disable", edit.id]));
+      }
+      for (const create of typedCronPlan.creates) {
+        commands.push(
+          oc([
+            "cron",
+            "add",
+            create.schedule.expr,
+            "--tz",
+            create.schedule.tz,
+            "--name",
+            create.name,
+            "--agent",
+            create.agentId,
+            "--session",
+            "isolated",
+            "--no-deliver",
+            "--tools",
+            create.payload.toolsAllow.join(","),
+            "--timeout-seconds",
+            String(create.payload.timeoutSeconds),
+            "--message",
+            create.payload.message,
+          ]),
+        );
+        commands.push(`# Then immediately: cron disable <new-job-id> for ${create.name}`);
+      }
+      if (input.action === "update") {
+        for (const job of jobs) {
+          if (!ids[job.id] && !typedCronPlan.creates.some((c) => c.name === job.id)) {
+            commands.push(`# UPDATE skipped for ${job.id}: no existing job id provided`);
+          }
         }
       }
-      commands.push(`${prefix} cron list --json`);
+      commands.push(oc(["cron", "list", "--json"]));
+    }
+
+    for (const cmd of commands) {
+      if (cmd.startsWith("#") || cmd.startsWith("export ")) continue;
+      if (!cmd.includes("openclaw.mjs") && !cmd.includes("lisa-stage-env-wrapper")) continue;
+      validationErrors.push(...validateStageCommandRendering(cmd));
     }
   }
 
@@ -210,6 +313,7 @@ export function planStageOps(input: StageOpsPlanInput): StageOpsCoordinatorPlan 
       installedInPlan: includeRepair,
       decision: repairDecision,
       payloadHash: hashStageJob(repair),
+      installAllowed,
     },
     routingGuard: {
       provider: "openrouter",
@@ -218,6 +322,7 @@ export function planStageOps(input: StageOpsPlanInput): StageOpsCoordinatorPlan 
       liveMutationAllowed: false,
       paidSpendEnablementAllowed: false,
     },
+    typedCronPlan,
     commands,
     validationErrors,
   };
@@ -226,10 +331,10 @@ export function planStageOps(input: StageOpsPlanInput): StageOpsCoordinatorPlan 
 /** Sync JSON seed document for humans / staging copy (never auto-written to stage). */
 export function materializeStageSeedJson(includeRepair = false): unknown {
   const plan = planStageOps({ action: "install", includeRepair });
-  const jobs = selectJobs(includeRepair);
+  const jobs = selectJobs(plan.includeRepair);
   return {
     version: 2,
-    note: "Generated from stage-ops-payloads / stage-ops-coordinator. delivery=none; enabled=false; real bounded procedures (not STAGE_CANARY stubs). Repair packaged separately unless includeRepair.",
+    note: "Generated from stage-ops-payloads / stage-ops-coordinator. delivery=none; enabled=false; real bounded procedures (not STAGE_CANARY stubs). Repair packaged separately unless includeRepair and store health passes.",
     hardStops: plan.hardStops,
     deliveryDefault: "none",
     payloadHashes: plan.payloadHashes,
@@ -271,18 +376,19 @@ export function materializeStageSeedJson(includeRepair = false): unknown {
           },
           payloadHash: hashStageJob(repair),
           hardStops: [...repair.hardStops],
-          defaultDecision: decideRepairSupervision(),
+          defaultDecision: plan.repairSupervision.decision,
+          installAllowed: plan.repairSupervision.installAllowed,
         };
       })(),
       installFlag: "--include-repair",
     },
-    notInstalledByDefault: includeRepair
+    notInstalledByDefault: plan.includeRepair
       ? []
       : [
           {
             id: "lisa-repair-dispatcher",
             reason:
-              "Install only via coordinator --include-repair; fail-closed blocked_no_store until durable stores exist.",
+              "Install only via coordinator --include-repair after durable OpenClaw SQLite store health passes; fail-closed blocked_no_store otherwise.",
           },
         ],
   };
@@ -293,12 +399,13 @@ function printHelp(): void {
   node --experimental-strip-types linkbots/lisa/ops/stage-ops-coordinator.ts <install|update|disable|rollback> [options]
 
 Options:
-  --include-repair     Include Repair/GitOps supervision job in the plan
+  --include-repair     Include Repair/GitOps supervision job when store health passes
   --emit-commands      Print exact coordinator shell commands (still mutateStage=false)
   --json               Print machine-readable plan JSON
   --write-seed <path>  Write materialized jobs.stage-seed.json (repo path only)
 
-Hard stops: never enables schedules; delivery=none; OpenRouter-only; no stage mutation from this process.
+Hard stops: never enables schedules; delivery=none; OpenRouter-only; stage commands use
+LiNKplatform-staging/openclaw_prime via lisa-stage-env-wrapper; no stage mutation from this process.
 `);
 }
 
@@ -353,7 +460,7 @@ function main(argv: string[]): number {
     );
     console.log(`payloadHashes: ${JSON.stringify(plan.payloadHashes)}`);
     console.log(
-      `repair: packaged decision=${plan.repairSupervision.decision.decision} installedInPlan=${plan.repairSupervision.installedInPlan}`,
+      `repair: packaged decision=${plan.repairSupervision.decision.decision} installAllowed=${plan.repairSupervision.installAllowed} installedInPlan=${plan.repairSupervision.installedInPlan}`,
     );
     if (plan.validationErrors.length) {
       console.error("validationErrors:", plan.validationErrors);

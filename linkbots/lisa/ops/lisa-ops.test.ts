@@ -13,8 +13,10 @@ import {
   assertImmutableBindings,
   authorizeApprovalDispatch,
   buildCarlosAskViewPure,
+  isMainApproveClaimExpired,
   issueCarlosAsk,
   MAIN_APPROVE_RUNTIME_STORE,
+  parseInstantToEpochMs,
   validateApprovalBindings,
   type MainApprovePackage,
 } from "./main-approve-binding.ts";
@@ -939,6 +941,82 @@ describe("Main Approve binding", () => {
         liveItems: live,
       }).reason,
       "partial_approval",
+    );
+  });
+
+  it("epoch expiry: timezone-offset claim beats lexical string compare", () => {
+    // claimExpiresAt +08:00 noon == 04:00Z. Lexical "05:00Z" < "12:00+08" would wrongly pass.
+    const expires = "2026-08-03T12:00:00+08:00";
+    assert.equal(parseInstantToEpochMs(expires), Date.parse("2026-08-03T04:00:00.000Z"));
+    assert.equal(
+      isMainApproveClaimExpired({
+        nowIso: "2026-08-03T05:00:00.000Z",
+        claimExpiresAt: expires,
+      }),
+      true,
+    );
+    assert.equal(
+      validateApprovalBindings({
+        sealed: pkg,
+        approvedIndexes: [1, 2],
+        nowIso: "2026-08-03T05:00:00.000Z",
+        liveItems: structuredClone(pkg.items),
+      }).reason,
+      "expired_claim",
+    );
+
+    assert.equal(
+      isMainApproveClaimExpired({
+        nowIso: "2026-08-03T03:00:00.000Z",
+        claimExpiresAt: expires,
+      }),
+      false,
+    );
+    assert.equal(
+      validateApprovalBindings({
+        sealed: pkg,
+        approvedIndexes: [1, 2],
+        nowIso: "2026-08-03T03:00:00.000Z",
+        liveItems: structuredClone(pkg.items),
+      }).ok,
+      true,
+    );
+  });
+
+  it("epoch expiry: invalid nowIso or claimExpiresAt fail closed as expired_claim", () => {
+    assert.equal(parseInstantToEpochMs(""), null);
+    assert.equal(parseInstantToEpochMs("not-an-instant"), null);
+    assert.equal(
+      isMainApproveClaimExpired({
+        nowIso: "not-an-instant",
+        claimExpiresAt: "2026-08-03T12:00:00+08:00",
+      }),
+      true,
+    );
+    assert.equal(
+      isMainApproveClaimExpired({
+        nowIso: "2026-08-03T03:00:00.000Z",
+        claimExpiresAt: "",
+      }),
+      true,
+    );
+    assert.equal(
+      validateApprovalBindings({
+        sealed: { ...pkg, claimExpiresAt: "bogus" },
+        approvedIndexes: [1, 2],
+        nowIso: "2026-08-03T03:00:00.000Z",
+        liveItems: structuredClone(pkg.items),
+      }).reason,
+      "expired_claim",
+    );
+    assert.equal(
+      validateApprovalBindings({
+        sealed: pkg,
+        approvedIndexes: [1, 2],
+        nowIso: "",
+        liveItems: structuredClone(pkg.items),
+      }).reason,
+      "expired_claim",
     );
   });
 

@@ -8,12 +8,37 @@ import path from "node:path";
 import { describe, it } from "node:test";
 import { fileURLToPath } from "node:url";
 import {
+  applyStagePdfRollbackInMemory,
   buildStagePdfModelDisableFragment,
+  healthCheckStagePdfRouting,
   LISA_OPENROUTER_ONLY_STAGE_ROUTING,
   OPENROUTER_ONLY_STAGE_CONTRACT_VERSION,
   openRouterOnlyStageRefs,
+  restoreStagePdfFromReceipt,
   validateOpenRouterOnlyStageRouting,
+  validateStagePdfRollbackConfig,
+  type StagePdfConfigSlice,
 } from "./model-routing.openrouter-stage.ts";
+
+function sampleStagePdfConfig(): StagePdfConfigSlice {
+  return {
+    agents: {
+      defaults: {
+        model: {
+          primary: "openrouter/openai/gpt-5.6-luna",
+          fallbacks: [
+            "openrouter/z-ai/glm-5.2",
+            "openrouter/moonshotai/kimi-k3",
+            "openrouter/google/gemini-3.5-flash-lite",
+          ],
+        },
+        imageModel: { primary: "openrouter/minimax/minimax-m3" },
+        pdfModel: { primary: "openrouter/minimax/minimax-m3" },
+      },
+    },
+    tools: { deny: ["browser"] },
+  };
+}
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 
@@ -58,8 +83,10 @@ describe("model-routing.openrouter-stage (non-live)", () => {
     assert.equal(cutover.requiresFirstProductionProofReceipt, true);
     assert.equal(cutover.alternatePaidDocumentRoutingAllowed, false);
     const disable = buildStagePdfModelDisableFragment();
-    assert.equal(disable.pdfModel._stageDisabled, true);
-    assert.equal(disable.pdfModel.primary, "");
+    assert.equal(disable.strategy, "tools_deny_pdf");
+    assert.deepEqual(disable.toolsDenyAdd, ["pdf"]);
+    assert.equal(disable.removePdfModelKey, true);
+    assert.equal(disable.neverWriteEmptyPrimary, true);
     assert.equal(disable.alternatePaidDocumentRoutingAllowed, false);
     assert.equal(disable.preserve.imageModel, true);
   });
@@ -124,5 +151,88 @@ describe("model-routing.openrouter-stage (non-live)", () => {
     assert.ok(!evalOnly.ref.includes(":free"));
     assert.ok(evalOnly.ref.startsWith("openrouter/"));
     assert.match(evalOnly.ref, /nemotron/i);
+  });
+
+  it("applyStagePdfRollbackInMemory denies pdf, removes pdfModel, preserves text/image/fallbacks", () => {
+    const cfg = sampleStagePdfConfig();
+    const { next, receipt, plan, validationErrors } = applyStagePdfRollbackInMemory(
+      cfg,
+      "2026-08-03T12:00:00.000Z",
+    );
+    assert.deepEqual(validationErrors, []);
+    assert.equal(plan.strategy, "tools_deny_pdf");
+    assert.equal(plan.removePdfModelKey, true);
+    assert.equal(plan.neverWriteEmptyPrimary, true);
+    assert.equal(next.agents?.defaults?.pdfModel, undefined);
+    assert.ok(!("pdfModel" in (next.agents?.defaults ?? {})));
+    assert.deepEqual(next.tools?.deny, ["browser", "pdf"]);
+    assert.equal(next.agents?.defaults?.model?.primary, "openrouter/openai/gpt-5.6-luna");
+    assert.deepEqual(next.agents?.defaults?.model?.fallbacks, [
+      "openrouter/z-ai/glm-5.2",
+      "openrouter/moonshotai/kimi-k3",
+      "openrouter/google/gemini-3.5-flash-lite",
+    ]);
+    assert.equal(next.agents?.defaults?.imageModel?.primary, "openrouter/minimax/minimax-m3");
+    assert.equal(receipt.receiptType, "lisa_stage_pdf_rollback_restore_v1");
+    assert.equal(receipt.priorPdfModel?.primary, "openrouter/minimax/minimax-m3");
+    assert.equal(receipt.priorPdfModel?.fallbacks, undefined);
+    assert.deepEqual(receipt.priorToolsDeny, ["browser"]);
+    assert.equal(JSON.stringify(next).includes('"primary":""'), false);
+  });
+
+  it("validateStagePdfRollbackConfig rejects empty pdfModel.primary", () => {
+    const errors = validateStagePdfRollbackConfig({
+      agents: {
+        defaults: {
+          model: { primary: "openrouter/openai/gpt-5.6-luna" },
+          imageModel: { primary: "openrouter/minimax/minimax-m3" },
+          pdfModel: { primary: "" },
+        },
+      },
+    });
+    assert.ok(errors.some((e) => /empty string is forbidden/i.test(e)));
+  });
+
+  it("restoreStagePdfFromReceipt restores prior pdfModel and prior deny list", () => {
+    const cfg = sampleStagePdfConfig();
+    const { next: rolled, receipt } = applyStagePdfRollbackInMemory(
+      cfg,
+      "2026-08-03T12:00:00.000Z",
+    );
+    assert.equal(rolled.agents?.defaults?.pdfModel, undefined);
+    assert.deepEqual(rolled.tools?.deny, ["browser", "pdf"]);
+    const { next: restored, validationErrors } = restoreStagePdfFromReceipt(rolled, receipt);
+    assert.deepEqual(validationErrors, []);
+    assert.deepEqual(restored.agents?.defaults?.pdfModel, {
+      primary: "openrouter/minimax/minimax-m3",
+    });
+    assert.deepEqual(restored.tools?.deny, ["browser"]);
+    assert.equal(restored.agents?.defaults?.model?.primary, "openrouter/openai/gpt-5.6-luna");
+    assert.equal(restored.agents?.defaults?.imageModel?.primary, "openrouter/minimax/minimax-m3");
+  });
+
+  it("healthCheckStagePdfRouting ok after valid rollback; not ok for empty primary", () => {
+    const cfg = sampleStagePdfConfig();
+    const { next } = applyStagePdfRollbackInMemory(cfg);
+    const healthy = healthCheckStagePdfRouting(next);
+    assert.equal(healthy.ok, true);
+    assert.equal(healthy.pdfToolDenied, true);
+    assert.equal(healthy.pdfModelAbsentOrValid, true);
+    assert.equal(healthy.textImagePreserved, true);
+    assert.deepEqual(healthy.errors, []);
+
+    const emptyPrimary = healthCheckStagePdfRouting({
+      agents: {
+        defaults: {
+          model: { primary: "openrouter/openai/gpt-5.6-luna" },
+          imageModel: { primary: "openrouter/minimax/minimax-m3" },
+          pdfModel: { primary: "" },
+        },
+      },
+      tools: { deny: ["pdf"] },
+    });
+    assert.equal(emptyPrimary.ok, false);
+    assert.equal(emptyPrimary.pdfModelAbsentOrValid, false);
+    assert.ok(emptyPrimary.errors.some((e) => /empty/i.test(e)));
   });
 });

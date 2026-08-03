@@ -56,10 +56,7 @@ export type MainApproveAskResult =
   | { ok: true; view: MainApproveAskView }
   | {
       ok: false;
-      reason:
-        | "blocked_no_store"
-        | "live_targeting_disabled"
-        | "credentials_language_not_approved";
+      reason: "blocked_no_store" | "live_targeting_disabled" | "credentials_language_not_approved";
       prerequisite: string;
     };
 
@@ -147,6 +144,31 @@ export function assertImmutableBindings(pkg: MainApprovePackage): void {
 }
 
 /**
+ * Parse an instant to epoch ms. Rejects empty/invalid/NaN times.
+ * Accepts ISO-8601 with timezone offsets (Z or ±HH:MM).
+ */
+export function parseInstantToEpochMs(value: string): number | null {
+  if (typeof value !== "string" || value.trim() === "") return null;
+  const ms = Date.parse(value);
+  if (!Number.isFinite(ms)) return null;
+  return ms;
+}
+
+/**
+ * Compare claim expiry by epoch ms (timezone-offset safe).
+ * Invalid now or expires instants fail closed as expired_claim.
+ */
+export function isMainApproveClaimExpired(params: {
+  nowIso: string;
+  claimExpiresAt: string;
+}): boolean {
+  const nowMs = parseInstantToEpochMs(params.nowIso);
+  const expiresMs = parseInstantToEpochMs(params.claimExpiresAt);
+  if (nowMs === null || expiresMs === null) return true;
+  return nowMs > expiresMs;
+}
+
+/**
  * Pure binding validation — no store gate.
  * Runtime callers must use `authorizeApprovalDispatch`.
  */
@@ -156,7 +178,14 @@ export function validateApprovalBindings(params: {
   nowIso: string;
   liveItems: MainApproveItem[];
 }): ApprovalDispatch {
-  if (params.nowIso > params.sealed.claimExpiresAt) {
+  if (
+    parseInstantToEpochMs(params.nowIso) === null ||
+    parseInstantToEpochMs(params.sealed.claimExpiresAt) === null ||
+    isMainApproveClaimExpired({
+      nowIso: params.nowIso,
+      claimExpiresAt: params.sealed.claimExpiresAt,
+    })
+  ) {
     return { ok: false, reason: "expired_claim" };
   }
   if (params.liveItems.length !== params.sealed.items.length) {

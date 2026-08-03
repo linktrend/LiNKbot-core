@@ -174,7 +174,7 @@ export function planStagePdfCanary(params: {
     rollback: {
       ...buildStagePdfModelDisableFragment(),
       probeHint:
-        "LiNKplatform-staging/lisa/probes/rollback-pdf.sh (Principal gate; clears pdfModel only)",
+        "Repo plan: tools.deny pdf + remove agents.defaults.pdfModel (never empty primary). Principal gate applies via stage probe after restore receipt.",
     },
     firstProductionProofEarned: false,
   };

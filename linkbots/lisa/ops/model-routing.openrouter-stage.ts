@@ -213,20 +213,184 @@ export function validateOpenRouterOnlyStageRouting(
   return errors;
 }
 
-/**
- * Non-secret PDF rollback fragment for stage pdfModel.
- * Does not write disk; coordinator applies via authorized probe.
- */
-export function buildStagePdfModelDisableFragment(): {
-  pdfModel: { primary: ""; fallbacks: []; _stageDisabled: true };
+/** Valid reversible PDF rollback — deny pdf tool; never write empty pdfModel.primary. */
+export type StagePdfRollbackPlan = {
+  strategy: "tools_deny_pdf";
+  toolsDenyAdd: readonly ["pdf"];
+  /** Remove agents.defaults.pdfModel entirely (do not write primary:""). */
+  removePdfModelKey: true;
+  neverWriteEmptyPrimary: true;
   failureEventType: "pdf_document_routing_validation_failure";
   preserve: { primary: true; imageModel: true; fallbacks: true };
   alternatePaidDocumentRoutingAllowed: false;
-} {
+  runtimeConfigNotes: {
+    denyPath: "tools.deny";
+    removedKey: "agents.defaults.pdfModel";
+  };
+};
+
+export type StagePdfRestoreReceipt = {
+  receiptType: "lisa_stage_pdf_rollback_restore_v1";
+  priorPdfModel: { primary: string; fallbacks?: string[] } | null;
+  priorToolsDeny: string[];
+  restoredPdfModel: { primary: string; fallbacks?: string[] } | null;
+  restoredToolsDeny: string[];
+  timestamp: string;
+};
+
+export type StagePdfConfigSlice = {
+  agents?: {
+    defaults?: {
+      model?: { primary?: string; fallbacks?: string[] };
+      imageModel?: { primary?: string; fallbacks?: string[] };
+      pdfModel?: { primary?: string; fallbacks?: string[]; _stageDisabled?: boolean };
+    };
+  };
+  tools?: { deny?: string[] };
+};
+
+/**
+ * Non-secret PDF rollback plan for stage.
+ * Uses tools.deny:["pdf"] and removes pdfModel — never writes primary:"".
+ */
+export function buildStagePdfModelDisableFragment(): StagePdfRollbackPlan {
   return {
-    pdfModel: { primary: "", fallbacks: [], _stageDisabled: true },
+    strategy: "tools_deny_pdf",
+    toolsDenyAdd: ["pdf"],
+    removePdfModelKey: true,
+    neverWriteEmptyPrimary: true,
     failureEventType: "pdf_document_routing_validation_failure",
     preserve: { primary: true, imageModel: true, fallbacks: true },
     alternatePaidDocumentRoutingAllowed: false,
+    runtimeConfigNotes: {
+      denyPath: "tools.deny",
+      removedKey: "agents.defaults.pdfModel",
+    },
+  };
+}
+
+/** Reject empty pdfModel.primary and other invalid rollback shapes. */
+export function validateStagePdfRollbackConfig(cfg: StagePdfConfigSlice): string[] {
+  const errors: string[] = [];
+  const defaults = cfg.agents?.defaults;
+  const pdf = defaults?.pdfModel;
+  if (pdf && typeof pdf.primary === "string" && pdf.primary.trim() === "") {
+    errors.push(
+      "invalid pdfModel.primary: empty string is forbidden; use tools.deny pdf + remove key",
+    );
+  }
+  if (pdf && pdf._stageDisabled === true && pdf.primary === "") {
+    errors.push("legacy empty-primary disable fragment is invalid");
+  }
+  if (!defaults?.model?.primary) {
+    errors.push("rollback must preserve agents.defaults.model.primary");
+  }
+  if (!defaults?.imageModel?.primary) {
+    errors.push("rollback must preserve agents.defaults.imageModel.primary");
+  }
+  return errors;
+}
+
+/** Apply reversible PDF rollback in memory; returns next config + restore receipt. */
+export function applyStagePdfRollbackInMemory(
+  cfg: StagePdfConfigSlice,
+  nowIso = new Date().toISOString(),
+): {
+  next: StagePdfConfigSlice;
+  receipt: StagePdfRestoreReceipt;
+  plan: StagePdfRollbackPlan;
+  validationErrors: string[];
+} {
+  const plan = buildStagePdfModelDisableFragment();
+  const priorPdfModel = cfg.agents?.defaults?.pdfModel
+    ? {
+        primary: cfg.agents.defaults.pdfModel.primary ?? "",
+        ...(cfg.agents.defaults.pdfModel.fallbacks
+          ? { fallbacks: [...cfg.agents.defaults.pdfModel.fallbacks] }
+          : {}),
+      }
+    : null;
+  const priorToolsDeny = [...(cfg.tools?.deny ?? [])];
+  const next: StagePdfConfigSlice = structuredClone(cfg);
+  next.agents = next.agents ?? {};
+  next.agents.defaults = next.agents.defaults ?? {};
+  if (next.agents.defaults.pdfModel) {
+    delete next.agents.defaults.pdfModel;
+  }
+  const deny = new Set(next.tools?.deny ?? []);
+  deny.add("pdf");
+  next.tools = { ...(next.tools ?? {}), deny: [...deny].sort() };
+  const validationErrors = validateStagePdfRollbackConfig(next);
+  // After rollback, pdfModel key is absent — that is valid. Re-check only preserved routes.
+  if (!next.agents.defaults.model?.primary) {
+    validationErrors.push("model.primary missing after rollback");
+  }
+  if (!next.agents.defaults.imageModel?.primary) {
+    validationErrors.push("imageModel.primary missing after rollback");
+  }
+  if (next.agents.defaults.pdfModel) {
+    validationErrors.push(...validateStagePdfRollbackConfig(next));
+  }
+  const receipt: StagePdfRestoreReceipt = {
+    receiptType: "lisa_stage_pdf_rollback_restore_v1",
+    priorPdfModel: priorPdfModel && priorPdfModel.primary.trim().length > 0 ? priorPdfModel : null,
+    priorToolsDeny,
+    restoredPdfModel:
+      priorPdfModel && priorPdfModel.primary.trim().length > 0 ? priorPdfModel : null,
+    restoredToolsDeny: priorToolsDeny,
+    timestamp: nowIso,
+  };
+  return { next, receipt, plan, validationErrors: validationErrors.filter(Boolean) };
+}
+
+/** Restore prior PDF routing from receipt (reversible). */
+export function restoreStagePdfFromReceipt(
+  cfg: StagePdfConfigSlice,
+  receipt: StagePdfRestoreReceipt,
+): { next: StagePdfConfigSlice; validationErrors: string[] } {
+  const next: StagePdfConfigSlice = structuredClone(cfg);
+  next.agents = next.agents ?? {};
+  next.agents.defaults = next.agents.defaults ?? {};
+  if (receipt.restoredPdfModel?.primary?.trim()) {
+    next.agents.defaults.pdfModel = {
+      primary: receipt.restoredPdfModel.primary,
+      ...(receipt.restoredPdfModel.fallbacks
+        ? { fallbacks: [...receipt.restoredPdfModel.fallbacks] }
+        : {}),
+    };
+  } else if (next.agents.defaults.pdfModel) {
+    delete next.agents.defaults.pdfModel;
+  }
+  next.tools = { ...(next.tools ?? {}), deny: [...receipt.restoredToolsDeny] };
+  const validationErrors = validateStagePdfRollbackConfig(next);
+  return { next, validationErrors };
+}
+
+/** Health check: PDF deny rollback applied without empty primary. */
+export function healthCheckStagePdfRouting(cfg: StagePdfConfigSlice): {
+  ok: boolean;
+  pdfToolDenied: boolean;
+  pdfModelAbsentOrValid: boolean;
+  textImagePreserved: boolean;
+  errors: string[];
+} {
+  const errors = validateStagePdfRollbackConfig(cfg);
+  const deny = cfg.tools?.deny ?? [];
+  const pdfToolDenied = deny.includes("pdf");
+  const pdf = cfg.agents?.defaults?.pdfModel;
+  const pdfModelAbsentOrValid =
+    !pdf || (typeof pdf.primary === "string" && pdf.primary.trim().length > 0);
+  const textImagePreserved = Boolean(
+    cfg.agents?.defaults?.model?.primary && cfg.agents?.defaults?.imageModel?.primary,
+  );
+  if (!pdfModelAbsentOrValid) {
+    errors.push("pdfModel.primary empty");
+  }
+  return {
+    ok: errors.length === 0 && pdfModelAbsentOrValid && textImagePreserved,
+    pdfToolDenied,
+    pdfModelAbsentOrValid,
+    textImagePreserved,
+    errors,
   };
 }
