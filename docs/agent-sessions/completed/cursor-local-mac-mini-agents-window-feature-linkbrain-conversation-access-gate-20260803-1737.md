@@ -14,7 +14,7 @@
 | Coordination home | `/Users/linktrend/Projects/openclaw_prime`                                                   |
 | Session ID        | cursor-local-mac-mini-agents-window-feature-linkbrain-conversation-access-gate-20260803-1737 |
 | Started           | 2026-08-03 17:37 Asia/Taipei                                                                 |
-| Last updated      | 2026-08-03 17:37 Asia/Taipei                                                                 |
+| Last updated      | 2026-08-03 17:46 Asia/Taipei                                                                 |
 
 ## Work
 
@@ -23,8 +23,8 @@
 | Objective       | Enforce fail-closed LiNKbrain `allowConversationAccess===true` for all conversation/data-bearing hooks; keep service hooks; preserve pinned-owner fix |
 | Branch          | `ocp-linkbrain-live-hook-registration`                                                                                                                |
 | Starting commit | `f67957f67a9449d2b0a7f4ef9a39ac54c1ab95dd`                                                                                                            |
-| Status          | `active`                                                                                                                                              |
-| Handoff         |                                                                                                                                                       |
+| Status          | `complete`                                                                                                                                            |
+| Handoff         | `docs/handoffs/2026-08-03-linkbrain-conversation-access-gate.md`                                                                                      |
 
 ## Ownership Scope
 

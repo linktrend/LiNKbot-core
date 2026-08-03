@@ -14,7 +14,7 @@
 | Starting branch  | `ocp-linkbrain-live-hook-registration`                                                                 |
 | Ending branch    | `ocp-linkbrain-live-hook-registration`                                                                 |
 | Starting commit  | `f67957f67a9449d2b0a7f4ef9a39ac54c1ab95dd`                                                             |
-| Ending commit    | _(set after commit)_                                                                                   |
+| Ending commit    | `746710651ecc122ef46a772e1d6aaf756a35cbe7` (fix); tip docs sync follows                                |
 | Starting status  | clean tip at HOLD SHA                                                                                  |
 | Ending status    | privacy-gate fix committed/pushed                                                                      |
 
