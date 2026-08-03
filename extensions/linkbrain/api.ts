@@ -33,8 +33,10 @@ export {
 export { createLinkbrainCapture, type LinkbrainCapture } from "./src/capture.js";
 export {
   createLinkbrainLifecycle,
+  isLinkbrainConversationAccessAllowed,
   LINKBRAIN_CONVERSATION_HOOKS,
   LINKBRAIN_REGISTERED_HOOKS,
+  LINKBRAIN_SERVICE_HOOKS,
   type LinkbrainLifecycle,
 } from "./src/lifecycle.js";
 export { LINKBRAIN_ALLOWED_WRITE_TOOLS, isAllowedBrainWriteTool } from "./src/tools.js";

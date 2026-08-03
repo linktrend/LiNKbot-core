@@ -42,10 +42,15 @@ describe("linkbrain plugin boundary", () => {
   it("registers §10.1 lifecycle hooks and documents conversation access", () => {
     const index = fs.readFileSync(path.join(root, "index.ts"), "utf8");
     expect(index).toContain("allowConversationAccess");
+    expect(index).toContain("isLinkbrainConversationAccessAllowed");
     for (const hook of LINKBRAIN_REGISTERED_HOOKS) {
       expect(index, hook).toContain(`"${hook}"`);
     }
-    expect(LINKBRAIN_CONVERSATION_HOOKS).toContain("agent_end");
+    expect([...LINKBRAIN_CONVERSATION_HOOKS]).toEqual(
+      expect.arrayContaining(["message_received", "agent_end", "session_start", "before_reset"]),
+    );
+    expect(LINKBRAIN_CONVERSATION_HOOKS).not.toContain("gateway_start");
+    expect(LINKBRAIN_CONVERSATION_HOOKS).not.toContain("gateway_stop");
     expect(index).not.toMatch(/api\.on\(\s*["']before_prompt/);
     expect(index).not.toMatch(/api\.on\(\s*["']llm_input/);
   });

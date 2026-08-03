@@ -102,8 +102,9 @@ If probe fails → disable MCP immediately; see `mcp-probe-pause-recover.md`.
 
 ### C4. Capture enqueue (drain off)
 
-1. If capture/coordination needs conversation hooks, set **only**:
+1. Conversation/data-bearing Brain hooks are fail-closed. Set **exactly**:
    `plugins.entries.linkbrain.hooks.allowConversationAccess=true`
+   (absent or `false` keeps service/worker hooks only; no `message_received` / capture lifecycle registration).
 2. Set `captureEnqueue=true`, keep `captureDrain=false`.
 3. Inspect local outbox capacity/age (sanitized counts only).
 4. **Expected:** queue grows under reject-new policy; no remote write until drain on.

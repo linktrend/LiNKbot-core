@@ -1,8 +1,8 @@
 /**
  * Typed internal Brain envelopes + allowlist redaction.
  *
- * Conversation-bearing hooks are Phase 3. When those hooks are enabled they
- * require `plugins.entries.linkbrain.hooks.allowConversationAccess=true`.
+ * Conversation/data-bearing §10.1 hooks fail closed unless operators set
+ * `plugins.entries.linkbrain.hooks.allowConversationAccess=true`.
  */
 
 export const LINKBRAIN_REDACTION_POLICY_VERSION = "brain.redaction.v0";

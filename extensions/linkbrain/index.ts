@@ -10,6 +10,7 @@ import { createBrainDrainWorker, type BrainDrainWorker } from "./src/drain-worke
 import { buildLinkbrainFlaggedMcpToolFilter } from "./src/feature-flags.js";
 import {
   createLinkbrainLifecycle,
+  isLinkbrainConversationAccessAllowed,
   LINKBRAIN_CONVERSATION_HOOKS,
   type LinkbrainLifecycle,
 } from "./src/lifecycle.js";
@@ -30,11 +31,12 @@ export default definePluginEntry({
     let lifecycle: LinkbrainLifecycle | null = null;
     let drainWorker: BrainDrainWorker | null = null;
     const flaggedMcp = buildLinkbrainFlaggedMcpToolFilter(config);
+    const conversationAccessAllowed = isLinkbrainConversationAccessAllowed(api.config);
 
-    // Conversation-bearing hooks (agent_end) require:
+    // Conversation/data-bearing hooks fail closed unless:
     // plugins.entries.linkbrain.hooks.allowConversationAccess=true
     api.logger.info(
-      `linkbrain: registered (default-disabled). Phase 3 hooks include conversation-bearing ${LINKBRAIN_CONVERSATION_HOOKS.join(",")}; require ${LINKBRAIN_CONVERSATION_HOOK_REQUIREMENT}; mcpInclude=${flaggedMcp?.include.length ?? 0}; no brain_* plugin tools registered`,
+      `linkbrain: registered (default-disabled). conversationAccess=${conversationAccessAllowed}; governedHooks=${LINKBRAIN_CONVERSATION_HOOKS.join(",")}; require ${LINKBRAIN_CONVERSATION_HOOK_REQUIREMENT}; mcpInclude=${flaggedMcp?.include.length ?? 0}; no brain_* plugin tools registered`,
     );
 
     api.registerMcpServerToolFilter({
@@ -128,6 +130,43 @@ export default definePluginEntry({
     // host timeoutMs is an upper bound only and does not cancel underlying work alone.
     const hookOpts = { timeoutMs: 3_000 } as const;
 
+    // Service/worker hooks stay available without conversation access so an
+    // explicitly enabled plugin can open/drain state without registering
+    // capture/coordination hooks.
+    api.on(
+      "gateway_start",
+      async () => {
+        if (
+          drainWorker &&
+          (config.captureDrain || config.coordinationWrites) &&
+          !drainWorker.running
+        ) {
+          drainWorker.start();
+        }
+        await getLifecycle()?.handleGatewayStart();
+      },
+      hookOpts,
+    );
+
+    api.on(
+      "gateway_stop",
+      async () => {
+        if (drainWorker) {
+          await drainWorker.stop();
+        }
+        await getLifecycle()?.handleGatewayStop();
+        api.machineTokenFacade?.unregister();
+      },
+      hookOpts,
+    );
+
+    if (!conversationAccessAllowed) {
+      api.logger.info(
+        `linkbrain: conversation/data-bearing hooks not registered; set ${LINKBRAIN_CONVERSATION_HOOK_REQUIREMENT} to enable capture/coordination lifecycle hooks`,
+      );
+      return;
+    }
+
     api.on(
       "session_start",
       async (event) => {
@@ -180,29 +219,6 @@ export default definePluginEntry({
       "session_end",
       async (event) => {
         await getLifecycle()?.handleSessionEnd(event);
-      },
-      hookOpts,
-    );
-
-    api.on(
-      "gateway_start",
-      async () => {
-        if (drainWorker && (config.captureDrain || config.coordinationWrites) && !drainWorker.running) {
-          drainWorker.start();
-        }
-        await getLifecycle()?.handleGatewayStart();
-      },
-      hookOpts,
-    );
-
-    api.on(
-      "gateway_stop",
-      async () => {
-        if (drainWorker) {
-          await drainWorker.stop();
-        }
-        await getLifecycle()?.handleGatewayStop();
-        api.machineTokenFacade?.unregister();
       },
       hookOpts,
     );
