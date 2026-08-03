@@ -14,7 +14,7 @@
 | Starting branch  | `dev/cloudcursor/OCP-LINKSKILLS-HTTP-GATEWAY-CONTRACT-FIX` @ `26d2a9e6ee0f796bbb2a40b28dbffb78b6cd1ad6` |
 | Ending branch    | `dev/cloudcursor/OCP-LINKSKILLS-HTTP-GATEWAY-CONTRACT-FIX`                                              |
 | Starting commit  | `26d2a9e6ee0f796bbb2a40b28dbffb78b6cd1ad6`                                                              |
-| Ending commit    | (see git tip after commit)                                                                              |
+| Ending commit    | `0c3d3ceb2d6454ba84dc93315d0a1e87e743c6e6`                                                              |
 | Starting status  | clean worktree at verified base                                                                         |
 | Ending status    | HTTP Gateway contract fix committed and pushed; no merge                                                |
 
