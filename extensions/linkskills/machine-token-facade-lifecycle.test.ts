@@ -6,6 +6,7 @@ import { createTestPluginApi } from "openclaw/plugin-sdk/plugin-test-api";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { fingerprintMachineTokenKeyRef } from "../../src/agents/machine-token-fingerprint.js";
 import {
+  acquireMachineTokenFacadeLeaseForPlugin,
   buildHostMachineTokenBindingFingerprint,
   createMachineTokenFacadeGeneration,
   destroyMachineTokenFacadeGeneration,
@@ -152,5 +153,27 @@ describe("linkskills machine-token facade stop/reload lifecycle", () => {
     );
 
     destroyMachineTokenFacadeGeneration(second.handle);
+  });
+
+  it("host lease keeps the shared live facade across duplicate service.stop then restart", async () => {
+    const generation = createLiveFacade("linkskills-stage");
+    const releaseLease = acquireMachineTokenFacadeLeaseForPlugin("linkskills");
+    const { service: first } = await registerStartedService({ facade: generation.facade });
+
+    await first.stop({} as never);
+    expect(generation.facade.health("linkskills-stage").registered).toBe(true);
+    await expect(
+      generation.facade.acquire({ bindingId: "linkskills-stage" }),
+    ).resolves.toMatchObject({ accessToken: "test-access-token" });
+
+    const { service: second } = await registerStartedService({ facade: generation.facade });
+    await expect(
+      generation.facade.acquire({ bindingId: "linkskills-stage" }),
+    ).resolves.toMatchObject({ accessToken: "test-access-token" });
+
+    releaseLease();
+    await second.stop({} as never);
+    expect(generation.facade.health("linkskills-stage").registered).toBe(false);
+    expect(getLiveMachineTokenFacadeGenerationHandle("linkskills")).toBeUndefined();
   });
 });

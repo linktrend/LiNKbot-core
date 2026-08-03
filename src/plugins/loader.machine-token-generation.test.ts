@@ -1651,4 +1651,117 @@ describe("loadOpenClawPlugins machine-token reload acquire lifecycle", () => {
       previousGen = gen;
     }
   });
+
+  it("cache-hit reuse reload keeps brain+skills acquireable after previous service.stop", async () => {
+    const { startPluginServices } = await import("./services.js");
+    const stateDir = makeTempDir();
+    const env = sharedLoaderEnv(stateDir);
+    const brain = writePlugin({
+      id: "linkbrain",
+      configSchema: MACHINE_TOKEN_SCHEMA,
+      body: `module.exports = {
+  id: "linkbrain",
+  register(api) {
+    globalThis.${FACADE_STORE_KEY} = globalThis.${FACADE_STORE_KEY} || {};
+    globalThis.${FACADE_STORE_KEY}.linkbrain = api.machineTokenFacade;
+    api.registerService({
+      id: "linkbrain-outbox",
+      start: async () => {},
+      stop: async () => { api.machineTokenFacade?.unregister(); },
+    });
+  },
+};
+`,
+    });
+    const skills = writePlugin({
+      id: "linkskills",
+      configSchema: MACHINE_TOKEN_SCHEMA,
+      body: `module.exports = {
+  id: "linkskills",
+  register(api) {
+    globalThis.${FACADE_STORE_KEY} = globalThis.${FACADE_STORE_KEY} || {};
+    globalThis.${FACADE_STORE_KEY}.linkskills = api.machineTokenFacade;
+    api.registerService({
+      id: "linkskills-outbox",
+      start: async () => {},
+      stop: async () => { api.machineTokenFacade?.unregister(); },
+    });
+  },
+};
+`,
+    });
+    const config = {
+      plugins: {
+        enabled: true,
+        load: { paths: [brain.dir, skills.dir] },
+        entries: {
+          linkbrain: {
+            enabled: true,
+            config: machineTokenEntryConfig({
+              bindingId: "linkbrain-stage",
+              clientId: "brain-v1",
+              keyId: BRAIN_KEY,
+            }),
+          },
+          linkskills: {
+            enabled: true,
+            config: machineTokenEntryConfig({
+              bindingId: "linkskills-stage",
+              clientId: "skills-v1",
+              keyId: SKILLS_KEY,
+            }),
+          },
+        },
+      },
+    };
+
+    const first = loadOpenClawPlugins({ cache: true, config, env });
+    const brainGen = getLiveMachineTokenFacadeGenerationHandle("linkbrain")?.generationId;
+    const skillsGen = getLiveMachineTokenFacadeGenerationHandle("linkskills")?.generationId;
+    expect(brainGen).toBeTruthy();
+    expect(skillsGen).toBeTruthy();
+    const previous = await startPluginServices({
+      registry: first,
+      config: config as OpenClawConfig,
+    });
+
+    const second = loadOpenClawPlugins({ cache: true, config, env });
+    expect(second).toBe(first);
+    expect(getLiveMachineTokenFacadeGenerationHandle("linkbrain")?.generationId).toBe(brainGen);
+    expect(getLiveMachineTokenFacadeGenerationHandle("linkskills")?.generationId).toBe(skillsGen);
+
+    await previous.stop();
+    const restarted = await startPluginServices({
+      registry: second,
+      config: config as OpenClawConfig,
+    });
+
+    expect(getLiveMachineTokenFacadeGenerationHandle("linkbrain")?.generationId).toBe(brainGen);
+    expect(getLiveMachineTokenFacadeGenerationHandle("linkskills")?.generationId).toBe(skillsGen);
+    for (const [pluginId, bindingId] of [
+      ["linkbrain", "linkbrain-stage"],
+      ["linkskills", "linkskills-stage"],
+    ] as const) {
+      const facade = facadeStore()[pluginId]!;
+      expect(facade.health(bindingId).registered).toBe(true);
+      let acquireError: unknown;
+      try {
+        await facade.acquire({ bindingId });
+      } catch (error) {
+        acquireError = error;
+      }
+      expect(String(acquireError ?? "")).not.toMatch(
+        /unregistered|not granted machine-token binding/,
+      );
+    }
+
+    await restarted.stop();
+    unregisterMachineTokenFacadesForPlugin("linkbrain");
+    unregisterMachineTokenFacadesForPlugin("linkskills");
+    expect(countMachineTokenFacadeGenerations()).toEqual({
+      candidate: 0,
+      live: 0,
+      total: 0,
+    });
+  });
 });

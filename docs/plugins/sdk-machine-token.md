@@ -49,12 +49,12 @@ facade.unregister(); // reload / plugin unload
 
 ### Contract
 
-| Method       | Behavior                                                                       |
-| ------------ | ------------------------------------------------------------------------------ |
-| `acquire`    | Mint or reuse a Bearer access token for a **granted** binding id only          |
-| `invalidate` | Drop one granted binding's cached token                                        |
-| `health`     | Redacted diagnostics (`granted`, `registered`, `cached`, optional `expiresAt`) |
-| `unregister` | Invalidate all granted bindings and fail-close later use                       |
+| Method       | Behavior                                                                                                                                      |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `acquire`    | Mint or reuse a Bearer access token for a **granted** binding id only                                                                         |
+| `invalidate` | Drop one granted binding's cached token                                                                                                       |
+| `health`     | Redacted diagnostics (`granted`, `registered`, `cached`, optional `expiresAt`)                                                                |
+| `unregister` | Release this facade instance: invalidate granted caches; host owns generation retirement (leases protect live facades across service restart) |
 
 `acquire` accepts only `{ bindingId, signal?, forceRefresh? }`. Plugins cannot
 pass a binding object, PEM, SecretRef, `fetchFn`, `now`, or other
@@ -111,7 +111,10 @@ registers the plugin against it, then **atomically publishes** that generation
 on success (retiring only the prior live generation). Registration failure or
 cancellation destroys only the candidate; the prior live generation stays
 usable. Stop/deactivate cleanup is generation-scoped and idempotent — a late
-cleanup from an old generation cannot remove a newer replacement.
+cleanup from an old generation cannot remove a newer replacement. Plugin
+`unregister` under a host service lease does not retire the live generation, so
+cache-hit reload stop/restart of the same registry keeps minting; the host
+retires ownership on gateway close and on successful reload commit.
 
 ## External projection
 
