@@ -19,7 +19,7 @@
 | Primary          | `openrouter/openai/gpt-5.6-luna`, `thinkingDefault: medium`                                                                                                                                                                                                                                        |
 | Fallbacks        | GLM-5.2 → Kimi K3 → Gemini 3.5 Flash-Lite (all `openrouter/...`)                                                                                                                                                                                                                                   |
 | Image/PDF        | `openrouter/minimax/minimax-m3` via `imageModel` + `pdfModel`; PDF `approved_unverified`                                                                                                                                                                                                           |
-| PDF rollback     | Production CLI pins stage root config + exact `http://127.0.0.1:18791/health` + `ai.openclaw.lisa-stage` only (symlink/escape/18790 rejected). On restart/health failure: restore → recovery restart + health. Tests inject temp stage-root policy only                                            |
+| PDF rollback     | Production CLI hard-pins regular-file stage config (any symlink rejected) + exact `http://127.0.0.1:18791/health` + `ai.openclaw.lisa-stage` only (18790 rejected). On restart/health failure: restore → recovery restart + health. Tests inject temp stage-root policy only                       |
 | PDF proof        | Exported/injected transports are mock-only. Fake local 200 via `createOpenRouterFetchTransport(fakeFetch)` → `mock_verified` / `firstProductionProofEarned=false`. Only private CLI mint (real global fetch) may set `openrouter_http_production` — **pending** live earn                          |
 | Eval             | Nemotron OpenRouter ref — **not** in defaults / modelPolicy.allow                                                                                                                                                                                                                                  |
 | Cron SOT         | Repo `linkbots/lisa/ops/jobs.stage-seed.json` v2 — **6** real bounded procedures, `delivery=none`, `enabled=false`                                                                                                                                                                                 |
@@ -188,11 +188,13 @@ node --experimental-strip-types linkbots/lisa/ops/stage-pdf-canary.ts dry-run --
 # Rollback plan fragment (does not mutate stage by itself)
 node --experimental-strip-types linkbots/lisa/ops/stage-pdf-canary.ts rollback-plan --out /tmp/lisa-stage-pdf-canary
 
-# Execute (SPEND) — gates: STAGE_PDF_CANARY_EXECUTE=1 + OPENROUTER_API_KEY in process env
+# Execute (SPEND) — gates: STAGE_PDF_CANARY_EXECUTE=1 + OpenRouter SecretRef
+# (env:default:OPENROUTER_API_KEY) resolvable via repository SecretRef path.
 # Live HTTP also needs STAGE_PDF_CANARY_ALLOW_LIVE_FETCH=1.
 # Live execute pins LiNKplatform-staging/lisa/openclaw.json + http://127.0.0.1:18791/health
-# (production policy only; env cannot select alternate config/health). Exported fetch factory is mock-only.
-# Never mint MiniMax direct keys. Never print secrets. Never touch live Lisa 18790.
+# (production policy only; env cannot select alternate config/health; any config symlink rejected).
+# Exported fetch factory is mock-only. Never mint MiniMax direct keys. Never print secrets.
+# Never touch live Lisa 18790.
 # STAGE_PDF_CANARY_EXECUTE=1 STAGE_PDF_CANARY_ALLOW_LIVE_FETCH=1 \
 #   node --experimental-strip-types linkbots/lisa/ops/stage-pdf-canary.ts execute --out /tmp/lisa-stage-pdf-canary
 ```
@@ -205,6 +207,7 @@ node --experimental-strip-types linkbots/lisa/ops/stage-pdf-canary.ts rollback-p
 strategy: tools_deny_pdf
 execute requires operationalRollback wiring from pinned stage policy
   — production: /Users/linktrend/Projects/LiNKplatform-staging/lisa/openclaw.json
+  — hard-pin: regular file only; any symlink (including in-root targets) rejected
   — health: exact http://127.0.0.1:18791/health
   — restart label: ai.openclaw.lisa-stage only; restore + recovery restart/health required
   — fail closed as blocked_no_rollback_wiring if pin fails (no env path override; no temp/no-op defaults)

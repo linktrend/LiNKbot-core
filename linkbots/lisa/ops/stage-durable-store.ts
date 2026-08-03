@@ -177,11 +177,17 @@ export function claimStageMainApprovePackage(
   input: {
     packageId: string;
     expiresAtMs: number;
-    claimId?: string;
+    claimId: string;
+    expectedPackageHash: string;
   },
   params?: { stateDir?: string; databasePath?: string },
   nowMs = Date.now(),
-): MainApproveClaimRow | { ok: false; reason: "expired_package" | "claim_conflict" } {
+):
+  | MainApproveClaimRow
+  | {
+      ok: false;
+      reason: "expired_package" | "claim_conflict" | "missing_claim_id" | "missing_package_hash";
+    } {
   const options = resolveStoreOptions(params);
   requireHealthyLisaStageOpsStore(options);
   return claimMainApprovePackage(options, input, nowMs);

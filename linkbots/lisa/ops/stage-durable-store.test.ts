@@ -14,6 +14,7 @@ import {
   closeLisaStageOpsStore,
   expireMainApproveClaims,
   expireStaleRepairAttempts,
+  hashMainApprovePackageContents,
   listRepairAttempts,
   probeLisaStageOpsStoreHealth,
 } from "./lisa-stage-ops-store.ts";
@@ -250,11 +251,18 @@ describe("Canonical store consumers (Repair / Main Approve / coordinator ensure)
         { databasePath },
         1_700_000_000_100,
       );
+      const pkg1Hash = hashMainApprovePackageContents({
+        packageId: "pkg-1",
+        mondayDate: "2026-08-03",
+        claimExpiresAtMs: Date.parse("2026-08-03T12:00:00.000Z"),
+        itemsJson: JSON.stringify(pkg.items),
+      });
       const claim = claimSealedMainApprovePackage(
         {
           packageId: "pkg-1",
           expiresAtMs: Date.parse("2026-08-03T12:00:00.000Z"),
           claimId: "claim-a",
+          expectedPackageHash: pkg1Hash,
         },
         options,
         Date.parse("2026-08-03T11:00:00.000Z"),
@@ -265,6 +273,7 @@ describe("Canonical store consumers (Repair / Main Approve / coordinator ensure)
           packageId: "pkg-1",
           expiresAtMs: Date.parse("2026-08-03T12:00:00.000Z"),
           claimId: "claim-b",
+          expectedPackageHash: pkg1Hash,
         },
         { databasePath },
         Date.parse("2026-08-03T11:30:00.000Z"),
@@ -277,6 +286,7 @@ describe("Canonical store consumers (Repair / Main Approve / coordinator ensure)
           packageId: "pkg-1",
           expiresAtMs: Date.parse("2026-08-03T12:00:00.000Z"),
           claimId: "claim-a",
+          expectedPackageHash: pkg1Hash,
         },
         { databasePath },
         Date.parse("2026-08-03T11:45:00.000Z"),
@@ -285,6 +295,19 @@ describe("Canonical store consumers (Repair / Main Approve / coordinator ensure)
       if (!("ok" in reentry && reentry.ok === false)) {
         assert.equal(reentry.claimId, "claim-a");
       }
+
+      // Adversarial: anonymous concurrency after claim → conflict.
+      const anonymous = claimStageMainApprovePackage(
+        {
+          packageId: "pkg-1",
+          expiresAtMs: Date.parse("2026-08-03T12:00:00.000Z"),
+          claimId: "",
+          expectedPackageHash: pkg1Hash,
+        },
+        { databasePath },
+        Date.parse("2026-08-03T11:50:00.000Z"),
+      );
+      assert.deepEqual(anonymous, { ok: false, reason: "claim_conflict" });
 
       const expiredClaims = expireMainApproveClaims(
         options,
@@ -419,7 +442,11 @@ describe("Canonical store consumers (Repair / Main Approve / coordinator ensure)
 
       // Never-persisted fabricated package must fail even with healthy store.
       const fabricated = issueCarlosAsk(
-        { packageId: "pkg-never-persisted" },
+        {
+          packageId: "pkg-never-persisted",
+          expectedPackageHash: "0".repeat(64),
+          claimId: "fabricated-claim",
+        },
         reminted.store,
         live,
         Date.parse("2026-08-03T11:00:00.000Z"),
@@ -439,7 +466,11 @@ describe("Canonical store consumers (Repair / Main Approve / coordinator ensure)
       if (!afterRestart.ok) return;
 
       const ask = issueCarlosAsk(
-        { packageId: pkg.packageId, expectedPackageHash: sealed.packageHash },
+        {
+          packageId: pkg.packageId,
+          expectedPackageHash: sealed.packageHash,
+          claimId: "claim-owner-1",
+        },
         afterRestart.store,
         live,
         Date.parse("2026-08-03T11:00:00.000Z"),
@@ -447,6 +478,7 @@ describe("Canonical store consumers (Repair / Main Approve / coordinator ensure)
       assert.equal(ask.ok, true);
       if (!ask.ok) return;
       assert.equal(ask.packageHash, sealed.packageHash);
+      assert.equal(ask.claimId, "claim-owner-1");
       assert.equal(ask.package.items[0]?.promotionPrNumber, 11);
 
       // Idempotent re-entry with same claim id.
@@ -477,6 +509,20 @@ describe("Canonical store consumers (Repair / Main Approve / coordinator ensure)
       assert.equal(conflict.ok, false);
       if (!conflict.ok) assert.equal(conflict.reason, "claim_conflict");
 
+      // Adversarial: no-claim-id after a claim → conflict.
+      const noClaimId = issueCarlosAsk(
+        {
+          packageId: pkg.packageId,
+          expectedPackageHash: sealed.packageHash,
+          claimId: "",
+        },
+        afterRestart.store,
+        live,
+        Date.parse("2026-08-03T11:03:00.000Z"),
+      );
+      assert.equal(noClaimId.ok, false);
+      if (!noClaimId.ok) assert.equal(noClaimId.reason, "claim_conflict");
+
       const dispatch = authorizeApprovalDispatch(
         {
           packageId: pkg.packageId,
@@ -500,6 +546,7 @@ describe("Canonical store consumers (Repair / Main Approve / coordinator ensure)
         {
           packageId: pkg.packageId,
           expectedPackageHash: "0".repeat(64),
+          claimId: ask.claimId,
           approvedIndexes: [1],
           nowIso: "2026-08-03T11:00:00.000Z",
         },
@@ -508,6 +555,21 @@ describe("Canonical store consumers (Repair / Main Approve / coordinator ensure)
       );
       assert.equal(badHash.ok, false);
       if (!badHash.ok) assert.equal(badHash.reason, "package_hash_mismatch");
+
+      // Adversarial: dispatch without claimId conflicts after claim.
+      const dispatchNoClaim = authorizeApprovalDispatch(
+        {
+          packageId: pkg.packageId,
+          expectedPackageHash: sealed.packageHash,
+          claimId: "",
+          approvedIndexes: [1],
+          nowIso: "2026-08-03T11:00:00.000Z",
+        },
+        afterRestart.store,
+        live,
+      );
+      assert.equal(dispatchNoClaim.ok, false);
+      if (!dispatchNoClaim.ok) assert.equal(dispatchNoClaim.reason, "claim_conflict");
 
       expireMainApproveClaims(
         { databasePath, path: databasePath },
@@ -519,13 +581,17 @@ describe("Canonical store consumers (Repair / Main Approve / coordinator ensure)
         packageId: "pkg-auth-expired",
         claimExpiresAt: "2026-08-03T10:30:00.000Z",
       };
-      sealMainApprovePackage(
+      const expiredSealed = sealMainApprovePackage(
         expiredPkg,
         { databasePath, path: databasePath },
         Date.parse("2026-08-03T10:00:00.000Z"),
       );
       const expiredAsk = issueCarlosAsk(
-        { packageId: expiredPkg.packageId },
+        {
+          packageId: expiredPkg.packageId,
+          expectedPackageHash: expiredSealed.packageHash,
+          claimId: "expired-claim",
+        },
         afterRestart.store,
         live,
         Date.parse("2026-08-03T11:00:00.000Z"),
@@ -534,7 +600,11 @@ describe("Canonical store consumers (Repair / Main Approve / coordinator ensure)
       if (!expiredAsk.ok) assert.equal(expiredAsk.reason, "expired_package");
 
       const forgedAsk = issueCarlosAsk(
-        { packageId: pkg.packageId },
+        {
+          packageId: pkg.packageId,
+          expectedPackageHash: sealed.packageHash,
+          claimId: "forged",
+        },
         { available: true } as never,
         live,
       );

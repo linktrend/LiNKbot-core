@@ -838,9 +838,17 @@ describe("Main Approve binding", () => {
 
   const paramsOk = {
     packageId: pkg.packageId,
+    expectedPackageHash: "a".repeat(64),
+    claimId: "test-claim-owner",
     approvedIndexes: [1, 2],
     nowIso: "2026-08-03T10:00:00+08:00",
     liveItems: structuredClone(pkg.items),
+  };
+
+  const askRef = {
+    packageId: pkg.packageId,
+    expectedPackageHash: "a".repeat(64),
+    claimId: "test-claim-owner",
   };
 
   it("pure Carlos view is plain English without SHAs", () => {
@@ -852,7 +860,7 @@ describe("Main Approve binding", () => {
   });
 
   it("runtime issues no Carlos ask without store and names prerequisite", () => {
-    const blocked = issueCarlosAsk({ packageId: pkg.packageId });
+    const blocked = issueCarlosAsk(askRef);
     assert.equal(blocked.ok, false);
     if (blocked.ok) return;
     assert.ok(
@@ -869,7 +877,7 @@ describe("Main Approve binding", () => {
       liveLisaTargetingAllowed: true,
       credentialsLanguageSeparatelyApproved: true,
     };
-    const ask = issueCarlosAsk({ packageId: pkg.packageId }, null, liveOptIn);
+    const ask = issueCarlosAsk(askRef, null, liveOptIn);
     assert.equal(ask.ok, false);
     if (ask.ok) return;
     assert.equal(ask.reason, "blocked_no_store");
@@ -1030,14 +1038,14 @@ describe("Main Approve binding", () => {
       credentialsLanguageSeparatelyApproved: true,
     };
     const forged = { available: true as const };
-    const askForged = issueCarlosAsk({ packageId: pkg.packageId }, forged as never, live);
+    const askForged = issueCarlosAsk(askRef, forged as never, live);
     assert.equal(askForged.ok, false);
     if (!askForged.ok) assert.equal(askForged.reason, "blocked_no_store");
     const authForged = authorizeApprovalDispatch(paramsOk, forged as never, live);
     assert.equal(authForged.ok, false);
     if (!authForged.ok) assert.equal(authForged.reason, "blocked_no_store");
 
-    const askBlockedLive = issueCarlosAsk({ packageId: pkg.packageId }, null);
+    const askBlockedLive = issueCarlosAsk(askRef, null);
     assert.equal(askBlockedLive.ok, false);
     const authBlockedLive = authorizeApprovalDispatch(paramsOk, null);
     assert.equal(authBlockedLive.ok, false);

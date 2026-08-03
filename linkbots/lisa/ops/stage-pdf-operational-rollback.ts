@@ -135,7 +135,8 @@ export function assertExactStagePdfHealthUrl(
 
 /**
  * Resolve and pin config path under the policy stage root.
- * Rejects alternate roots, symlink escape, and missing files.
+ * Hard-pins a regular file: rejects any symlink (even when the target stays
+ * inside the stage root), alternate roots, and missing files.
  */
 export function resolvePinnedStagePdfConfigPath(policy: StagePdfLiveRollbackPolicy): string {
   if (policy.serviceLabel !== STAGE_PDF_ROLLBACK_SERVICE) {
@@ -149,17 +150,14 @@ export function resolvePinnedStagePdfConfigPath(policy: StagePdfLiveRollbackPoli
   if (!existsSync(candidate)) {
     throw new Error(`stage config missing: ${candidate}`);
   }
-  // Reject symlink escape: realpath(config) must stay under realpath(stageRoot).
-  const realRoot = realpathSync(stageRootAbs);
+  // Hard-pin: openclaw.json must be a regular file. Any symlink is refused —
+  // including targets that remain inside the stage root.
   if (lstatSync(candidate).isSymbolicLink()) {
-    const realConfig = realpathSync(candidate);
-    if (realConfig !== realRoot && !realConfig.startsWith(`${realRoot}${path.sep}`)) {
-      throw new Error(
-        `refusing symlink escape: config realpath ${realConfig} leaves stage root ${realRoot}`,
-      );
-    }
-    return realConfig;
+    throw new Error(
+      `refusing symlink config path: ${candidate} must be a regular file (hard-pin; no symlink)`,
+    );
   }
+  const realRoot = realpathSync(stageRootAbs);
   const realConfig = realpathSync(candidate);
   if (realConfig !== realRoot && !realConfig.startsWith(`${realRoot}${path.sep}`)) {
     throw new Error(`refusing config outside stage root: ${realConfig} not under ${realRoot}`);

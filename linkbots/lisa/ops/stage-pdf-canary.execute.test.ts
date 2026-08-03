@@ -18,16 +18,20 @@ import path from "node:path";
 import { describe, it } from "node:test";
 import { LISA_OPENROUTER_ONLY_STAGE_ROUTING } from "./model-routing.openrouter-stage.ts";
 import {
+  STAGE_PDF_CANARY_CREDENTIAL,
   STAGE_PDF_CANARY_ENDPOINT,
   STAGE_PDF_CANARY_MODEL,
+  STAGE_PDF_CANARY_OPENROUTER_SECRET_REF,
   STAGE_PDF_CANARY_WIRE_MODEL,
   STAGE_PDF_CANONICAL_HEALTH_URL,
   buildStagePdfOpenRouterRequest,
   buildSyntheticStagePdfBytes,
   createOpenRouterFetchTransport,
   executeStagePdfCanary,
+  inspectOpenRouterCredentialSecretRef,
   planStagePdfCanary,
   resolveLiveExecuteOperationalRollback,
+  resolveOpenRouterApiKeyViaSecretRef,
   type StagePdfCanaryTransport,
   type StagePdfLiveRollbackPolicy,
   type StagePdfOpenRouterRequest,
@@ -248,7 +252,24 @@ describe("Stage PDF canary execute (mock transport)", () => {
         },
       );
       assert.equal(escaped.ok, false);
-      if (!escaped.ok) assert.match(escaped.error, /symlink escape|outside stage root/);
+      if (!escaped.ok) assert.match(escaped.error, /symlink|regular file|hard-pin/);
+
+      // Adversarial: symlink whose target stays inside stage root is still refused.
+      const insideTarget = path.join(stageDir, "real-openclaw.json");
+      writeFileSync(insideTarget, "{}\n");
+      const insideLink = path.join(stageDir, "openclaw-inside-link.json");
+      symlinkSync(insideTarget, insideLink);
+      const insideSymlink = resolveLiveExecuteOperationalRollback(
+        {},
+        {
+          stageRoot: stageDir,
+          configRelativePath: "openclaw-inside-link.json",
+          healthUrl: STAGE_PDF_CANONICAL_HEALTH_URL,
+          serviceLabel: STAGE_PDF_ROLLBACK_SERVICE,
+        },
+      );
+      assert.equal(insideSymlink.ok, false);
+      if (!insideSymlink.ok) assert.match(insideSymlink.error, /symlink|regular file|hard-pin/);
       rmSync(escapeDir, { recursive: true, force: true });
     } finally {
       rmSync(dir, { recursive: true, force: true });
@@ -319,6 +340,8 @@ describe("Stage PDF canary execute (mock transport)", () => {
       assert.equal(receipt.request?.modelRef, STAGE_PDF_CANARY_MODEL);
       assert.equal(receipt.request?.pdfAttached, true);
       assert.equal(receipt.credentialPosture.secretPrinted, false);
+      assert.equal(receipt.credentialPosture.storage, "secretref_env");
+      assert.deepEqual(receipt.credentialPosture.secretRef, STAGE_PDF_CANARY_OPENROUTER_SECRET_REF);
       assert.ok(captured);
       assert.equal(captured.modelRef, STAGE_PDF_CANARY_MODEL);
       assert.equal(captured.pdf.attached, true);
@@ -629,6 +652,54 @@ describe("Stage PDF operational rollback (temp fixture + fake runner)", () => {
           }),
         /only ai\.openclaw\.lisa-stage|refusing/,
       );
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("adversarial: OpenRouter credential uses SecretRef path; never prints secret material", async () => {
+    const inspected = inspectOpenRouterCredentialSecretRef(GATE_ENV);
+    assert.equal(inspected.present, true);
+    assert.equal(inspected.credentialName, STAGE_PDF_CANARY_CREDENTIAL);
+    assert.equal(inspected.storage, "secretref_env");
+    assert.deepEqual(inspected.secretRef, STAGE_PDF_CANARY_OPENROUTER_SECRET_REF);
+    assert.equal(JSON.stringify(inspected).includes("redacted-test-value"), false);
+
+    const resolved = await resolveOpenRouterApiKeyViaSecretRef(GATE_ENV);
+    assert.equal(resolved, GATE_ENV.OPENROUTER_API_KEY);
+
+    const missing = await resolveOpenRouterApiKeyViaSecretRef({});
+    assert.equal(missing, null);
+
+    const dir = mkdtempSync(path.join(tmpdir(), "stage-pdf-secretref-"));
+    const wiring = wireTempRollback(dir);
+    try {
+      const receipt = await executeStagePdfCanary({
+        outputDir: dir,
+        executeGateEnv: GATE_ENV,
+        transport: {
+          async send() {
+            return {
+              ok: true,
+              statusCode: 200,
+              assistantText: "STAGE_PDF_CANARY_OK",
+            };
+          },
+        },
+        operationalRollback: { configPath: wiring.configPath, runner: wiring.runner },
+      });
+      assert.equal(receipt.credentialPosture.storage, "secretref_env");
+      assert.equal(receipt.credentialPosture.secretPrinted, false);
+      assert.equal(receipt.credentialPosture.credentialName, STAGE_PDF_CANARY_CREDENTIAL);
+      assert.deepEqual(receipt.credentialPosture.secretRef, {
+        source: "env",
+        provider: "default",
+        id: STAGE_PDF_CANARY_CREDENTIAL,
+      });
+      const written = readFileSync(path.join(dir, "pdf-canary-receipt.json"), "utf8");
+      assert.equal(written.includes("redacted-test-value"), false);
+      assert.equal(written.includes("Bearer "), false);
+      assert.match(written, /secretref_env/);
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }

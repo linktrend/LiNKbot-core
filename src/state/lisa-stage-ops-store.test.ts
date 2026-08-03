@@ -273,9 +273,20 @@ describe("lisa stage ops store", () => {
       },
       now,
     );
+    const pkg1Hash = hashMainApprovePackageContents({
+      packageId: "pkg-1",
+      mondayDate: "2026-08-03",
+      claimExpiresAtMs: now + 60_000,
+      itemsJson: "[]",
+    });
     const claim = claimMainApprovePackage(
       opts,
-      { packageId: "pkg-1", expiresAtMs: now - 1, claimId: "claim-1" },
+      {
+        packageId: "pkg-1",
+        expiresAtMs: now - 1,
+        claimId: "claim-1",
+        expectedPackageHash: pkg1Hash,
+      },
       now,
     );
     expect("claimId" in claim && claim.status).toBe("active");
@@ -322,9 +333,21 @@ describe("lisa stage ops store", () => {
     ).n;
     expect(Number(pkgCount)).toBe(1);
 
+    const liveHash = hashMainApprovePackageContents({
+      packageId: "pkg-live",
+      mondayDate: "2026-08-03",
+      claimExpiresAtMs: now + 20_000,
+      itemsJson: '["a","b"]',
+    });
+
     const firstClaim = claimMainApprovePackage(
       opts,
-      { packageId: "pkg-live", expiresAtMs: now + 5_000, claimId: "c1" },
+      {
+        packageId: "pkg-live",
+        expiresAtMs: now + 5_000,
+        claimId: "c1",
+        expectedPackageHash: liveHash,
+      },
       now + 2,
     );
     expect(firstClaim).toMatchObject({
@@ -335,10 +358,39 @@ describe("lisa stage ops store", () => {
 
     const conflict = claimMainApprovePackage(
       opts,
-      { packageId: "pkg-live", expiresAtMs: now + 5_000, claimId: "c2" },
+      {
+        packageId: "pkg-live",
+        expiresAtMs: now + 5_000,
+        claimId: "c2",
+        expectedPackageHash: liveHash,
+      },
       now + 3,
     );
     expect(conflict).toEqual({ ok: false, reason: "claim_conflict" });
+
+    // Adversarial: anonymous (no claimId) after a claim must conflict.
+    const anonymous = loadAndClaimMainApprovePackage(
+      opts,
+      {
+        packageId: "pkg-live",
+        expectedPackageHash: liveHash,
+        claimId: "",
+      },
+      now + 3,
+    );
+    expect(anonymous).toEqual({ ok: false, reason: "claim_conflict" });
+
+    // Adversarial: missing hash fails closed.
+    const missingHash = loadAndClaimMainApprovePackage(
+      opts,
+      {
+        packageId: "pkg-live",
+        expectedPackageHash: "",
+        claimId: "c1",
+      },
+      now + 3,
+    );
+    expect(missingHash).toEqual({ ok: false, reason: "missing_package_hash" });
 
     putMainApprovePackage(
       opts,
@@ -350,16 +402,32 @@ describe("lisa stage ops store", () => {
       },
       now - 100,
     );
+    const staleHash = hashMainApprovePackageContents({
+      packageId: "pkg-stale",
+      mondayDate: "2026-07-27",
+      claimExpiresAtMs: now - 1,
+      itemsJson: "[]",
+    });
     const expired = claimMainApprovePackage(
       opts,
-      { packageId: "pkg-stale", expiresAtMs: now + 5_000 },
+      {
+        packageId: "pkg-stale",
+        expiresAtMs: now + 5_000,
+        claimId: "stale-claim",
+        expectedPackageHash: staleHash,
+      },
       now,
     );
     expect(expired).toEqual({ ok: false, reason: "expired_package" });
 
     const missing = claimMainApprovePackage(
       opts,
-      { packageId: "pkg-missing", expiresAtMs: now + 5_000 },
+      {
+        packageId: "pkg-missing",
+        expiresAtMs: now + 5_000,
+        claimId: "missing-claim",
+        expectedPackageHash: "0".repeat(64),
+      },
       now,
     );
     expect(missing).toEqual({ ok: false, reason: "expired_package" });
@@ -368,12 +436,7 @@ describe("lisa stage ops store", () => {
       opts,
       {
         packageId: "pkg-live",
-        expectedPackageHash: hashMainApprovePackageContents({
-          packageId: "pkg-live",
-          mondayDate: "2026-08-03",
-          claimExpiresAtMs: now + 20_000,
-          itemsJson: '["a","b"]',
-        }),
+        expectedPackageHash: liveHash,
         claimId: "c1",
       },
       now + 4,
@@ -384,8 +447,72 @@ describe("lisa stage ops store", () => {
       claim: { claimId: "c1" },
     });
 
-    const absent = loadAndClaimMainApprovePackage(opts, { packageId: "pkg-missing" }, now);
+    // Adversarial: claimId owner cannot be reused on a different package while active.
+    putMainApprovePackage(
+      opts,
+      {
+        packageId: "pkg-other",
+        mondayDate: "2026-08-03",
+        claimExpiresAtMs: now + 20_000,
+        itemsJson: "[]",
+      },
+      now + 5,
+    );
+    const otherHash = hashMainApprovePackageContents({
+      packageId: "pkg-other",
+      mondayDate: "2026-08-03",
+      claimExpiresAtMs: now + 20_000,
+      itemsJson: "[]",
+    });
+    const crossPackage = loadAndClaimMainApprovePackage(
+      opts,
+      {
+        packageId: "pkg-other",
+        expectedPackageHash: otherHash,
+        claimId: "c1",
+      },
+      now + 6,
+    );
+    expect(crossPackage).toEqual({ ok: false, reason: "claim_conflict" });
+
+    const absent = loadAndClaimMainApprovePackage(
+      opts,
+      {
+        packageId: "pkg-missing",
+        expectedPackageHash: "0".repeat(64),
+        claimId: "any-claim",
+      },
+      now,
+    );
     expect(absent).toEqual({ ok: false, reason: "package_absent" });
+
+    // First claim without claimId fails closed (missing_claim_id).
+    putMainApprovePackage(
+      opts,
+      {
+        packageId: "pkg-fresh",
+        mondayDate: "2026-08-03",
+        claimExpiresAtMs: now + 20_000,
+        itemsJson: "[]",
+      },
+      now + 7,
+    );
+    const freshHash = hashMainApprovePackageContents({
+      packageId: "pkg-fresh",
+      mondayDate: "2026-08-03",
+      claimExpiresAtMs: now + 20_000,
+      itemsJson: "[]",
+    });
+    const missingClaimId = loadAndClaimMainApprovePackage(
+      opts,
+      {
+        packageId: "pkg-fresh",
+        expectedPackageHash: freshHash,
+        claimId: "",
+      },
+      now + 8,
+    );
+    expect(missingClaimId).toEqual({ ok: false, reason: "missing_claim_id" });
   });
 
   it("probeLisaStageOpsStoreHealth is read-only by default and ok after ensure", () => {

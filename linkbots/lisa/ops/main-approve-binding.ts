@@ -6,8 +6,8 @@
  *
  * Authorization never trusts caller package contents or availability flags.
  * issueCarlosAsk / authorizeApprovalDispatch atomically load+claim the
- * canonical persisted package by immutable id (optional content hash) and
- * build decisions only from sealed store rows.
+ * canonical persisted package by immutable id + required content hash +
+ * explicit claimId (claim owner) and build decisions only from sealed store rows.
  */
 
 import {
@@ -99,9 +99,10 @@ export type MainApproveStoreAvailability = {
 
 export type MainApprovePersistedRef = {
   packageId: string;
-  /** Optional expected content hash of the sealed store row. */
-  expectedPackageHash?: string;
-  claimId?: string;
+  /** Required expected content hash of the sealed store row. */
+  expectedPackageHash: string;
+  /** Required claim owner id for first claim, reentry, and dispatch. */
+  claimId: string;
 };
 
 export const MAIN_APPROVE_STORE_PREREQUISITE =
@@ -227,16 +228,23 @@ export function sealMainApprovePackage(
 
 /**
  * Claim a sealed Main Approve package (fail-closed on expiry / conflict).
+ * Requires explicit claimId (owner) and expectedPackageHash.
  */
 export function claimSealedMainApprovePackage(
   input: {
     packageId: string;
     expiresAtMs: number;
-    claimId?: string;
+    claimId: string;
+    expectedPackageHash: string;
   },
   options: LisaStageOpsStoreOptions,
   nowMs = Date.now(),
-): MainApproveClaimRow | { ok: false; reason: "expired_package" | "claim_conflict" } {
+):
+  | MainApproveClaimRow
+  | {
+      ok: false;
+      reason: "expired_package" | "claim_conflict" | "missing_claim_id" | "missing_package_hash";
+    } {
   requireHealthyLisaStageOpsStore(options);
   return claimMainApprovePackage(options, input, nowMs);
 }
@@ -266,9 +274,10 @@ export function buildCarlosAskView(pkg: MainApprovePackage): MainApproveAskView 
 }
 
 /**
- * Runtime-facing: atomically load+claim the canonical persisted package by id
- * (optional content hash). Never trusts caller package contents or forgeable
- * `{ available: true }`. Requires sealed store capability + live opt-in.
+ * Runtime-facing: atomically load+claim the canonical persisted package by id,
+ * required content hash, and explicit claimId (owner). Never trusts caller
+ * package contents or forgeable `{ available: true }`. Requires sealed store
+ * capability + live opt-in.
  */
 export function issueCarlosAsk(
   ref: MainApprovePersistedRef,
@@ -414,14 +423,15 @@ export function validateApprovalBindings(params: {
 
 /**
  * Runtime-facing authorization: atomically load+claim the canonical persisted
- * package by id/hash, compare approved indexes against sealed store fields, and
- * never trust caller package contents or forgeable availability flags.
+ * package by required id/hash/claimId, compare approved indexes against sealed
+ * store fields, and never trust caller package contents or forgeable
+ * availability flags.
  */
 export function authorizeApprovalDispatch(
   params: {
     packageId: string;
-    expectedPackageHash?: string;
-    claimId?: string;
+    expectedPackageHash: string;
+    claimId: string;
     approvedIndexes: number[];
     nowIso: string;
     /**
@@ -496,7 +506,8 @@ export function authorizeApprovalDispatch(
  */
 export function validateApprovalDispatch(params: {
   packageId: string;
-  expectedPackageHash?: string;
+  expectedPackageHash: string;
+  claimId: string;
   approvedIndexes: number[];
   nowIso: string;
   liveItems?: MainApproveItem[];

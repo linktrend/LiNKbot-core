@@ -644,22 +644,27 @@ export function putMainApprovePackage(
 export type MainApproveClaimFailureReason =
   | "package_absent"
   | "package_hash_mismatch"
+  | "missing_package_hash"
+  | "missing_claim_id"
   | "expired_package"
   | "claim_conflict";
 
 /**
- * Atomically load the canonical persisted package by id, optionally verify its
- * content hash, and claim it. Idempotent when the same claimId (or no claimId)
- * re-enters an already-active claim; conflicting claimIds fail closed.
+ * Atomically load the canonical persisted package by id, verify its content
+ * hash, and claim it under an explicit claimId (claim owner).
+ *
+ * expectedPackageHash and claimId are required for every entry (including first
+ * claim, reentry, and dispatch). Anonymous / no-claim-id calls conflict once a
+ * claim exists, and claimId reuse is bound to the same package + owner.
  */
 export function loadAndClaimMainApprovePackage(
   options: LisaStageOpsStoreOptions,
   input: {
     packageId: string;
-    expectedPackageHash?: string;
+    expectedPackageHash: string;
     /** Claim lease end; defaults to the package claim_expires_at_ms. */
     expiresAtMs?: number;
-    claimId?: string;
+    claimId: string;
   },
   nowMs = Date.now(),
 ):
@@ -674,6 +679,31 @@ export function loadAndClaimMainApprovePackage(
   prepareStoreForWrite(options);
   return runOpenClawStateWriteTransaction(
     ({ db }) => {
+      const expectedPackageHash =
+        typeof input.expectedPackageHash === "string" ? input.expectedPackageHash.trim() : "";
+      if (!expectedPackageHash) {
+        return { ok: false as const, reason: "missing_package_hash" as const };
+      }
+      const claimId = typeof input.claimId === "string" ? input.claimId.trim() : "";
+      if (!claimId) {
+        // After any active claim exists for this package, anonymous reentry conflicts.
+        const activeWithoutId = executeSqliteQueryTakeFirstSync(
+          db,
+          stageOpsDb(db)
+            .selectFrom("lisa_stage_main_approve_claims")
+            .select(["claim_id", "expires_at_ms", "status"])
+            .where("package_id", "=", input.packageId),
+        );
+        if (
+          activeWithoutId &&
+          activeWithoutId.status === "active" &&
+          activeWithoutId.expires_at_ms >= nowMs
+        ) {
+          return { ok: false as const, reason: "claim_conflict" as const };
+        }
+        return { ok: false as const, reason: "missing_claim_id" as const };
+      }
+
       const pkgRow = executeSqliteQueryTakeFirstSync(
         db,
         stageOpsDb(db)
@@ -698,12 +728,39 @@ export function loadAndClaimMainApprovePackage(
         claimExpiresAtMs: pkg.claimExpiresAtMs,
         itemsJson: pkg.itemsJson,
       });
-      if (input.expectedPackageHash && input.expectedPackageHash !== packageHash) {
+      if (expectedPackageHash !== packageHash) {
         return { ok: false as const, reason: "package_hash_mismatch" as const };
       }
       if (pkg.claimExpiresAtMs < nowMs) {
         return { ok: false as const, reason: "expired_package" as const };
       }
+
+      // Claim owner (claimId) reuse is bound to the same package — active claimId
+      // on a different package fails closed.
+      const ownerRow = executeSqliteQueryTakeFirstSync(
+        db,
+        stageOpsDb(db)
+          .selectFrom("lisa_stage_main_approve_claims")
+          .select([
+            "claim_id",
+            "package_id",
+            "claimed_at_ms",
+            "expires_at_ms",
+            "status",
+            "created_at_ms",
+            "updated_at_ms",
+          ])
+          .where("claim_id", "=", claimId),
+      );
+      if (
+        ownerRow &&
+        ownerRow.package_id !== input.packageId &&
+        ownerRow.status === "active" &&
+        ownerRow.expires_at_ms >= nowMs
+      ) {
+        return { ok: false as const, reason: "claim_conflict" as const };
+      }
+
       const existing = executeSqliteQueryTakeFirstSync(
         db,
         stageOpsDb(db)
@@ -720,7 +777,7 @@ export function loadAndClaimMainApprovePackage(
           .where("package_id", "=", input.packageId),
       );
       if (existing && existing.status === "active" && existing.expires_at_ms >= nowMs) {
-        if (input.claimId && input.claimId !== existing.claim_id) {
+        if (claimId !== existing.claim_id) {
           return { ok: false as const, reason: "claim_conflict" as const };
         }
         return {
@@ -739,7 +796,6 @@ export function loadAndClaimMainApprovePackage(
           idempotentReentry: true,
         };
       }
-      const claimId = input.claimId ?? randomUUID();
       const expiresAtMs = input.expiresAtMs ?? pkg.claimExpiresAtMs;
       const createdAtMs = existing?.created_at_ms ?? nowMs;
       executeSqliteQuerySync(
@@ -791,22 +847,33 @@ export function claimMainApprovePackage(
   input: {
     packageId: string;
     expiresAtMs: number;
-    claimId?: string;
+    claimId: string;
+    expectedPackageHash: string;
   },
   nowMs = Date.now(),
-): MainApproveClaimRow | { ok: false; reason: "expired_package" | "claim_conflict" } {
+):
+  | MainApproveClaimRow
+  | {
+      ok: false;
+      reason: "expired_package" | "claim_conflict" | "missing_claim_id" | "missing_package_hash";
+    } {
   const result = loadAndClaimMainApprovePackage(
     options,
     {
       packageId: input.packageId,
       expiresAtMs: input.expiresAtMs,
       claimId: input.claimId,
+      expectedPackageHash: input.expectedPackageHash,
     },
     nowMs,
   );
   if (!result.ok) {
-    if (result.reason === "claim_conflict") {
-      return { ok: false, reason: "claim_conflict" };
+    if (
+      result.reason === "claim_conflict" ||
+      result.reason === "missing_claim_id" ||
+      result.reason === "missing_package_hash"
+    ) {
+      return { ok: false, reason: result.reason };
     }
     // package_absent / hash_mismatch / expired → preserve prior claim API surface
     return { ok: false, reason: "expired_package" };

@@ -19,6 +19,8 @@ import { createHash } from "node:crypto";
 import { mkdirSync, writeFileSync, readFileSync, existsSync } from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
+import type { SecretRef } from "../../../src/config/types.secrets.ts";
+import { resolveSecretRefString } from "../../../src/secrets/resolve.ts";
 import {
   applyStagePdfRollbackInMemory,
   buildStagePdfModelDisableFragment,
@@ -48,6 +50,17 @@ export const STAGE_PDF_CANARY_MODEL = "openrouter/minimax/minimax-m3" as const;
 export const STAGE_PDF_CANARY_WIRE_MODEL = "minimax/minimax-m3" as const;
 export const STAGE_PDF_CANARY_CREDENTIAL = "OPENROUTER_API_KEY" as const;
 export const STAGE_PDF_CANARY_ENDPOINT = "https://openrouter.ai/api/v1/chat/completions" as const;
+
+/**
+ * Canonical OpenRouter-only SecretRef for the stage PDF canary.
+ * Production execute resolves through the repository SecretRef mechanism and
+ * never treats raw process.env peeking as the credential contract.
+ */
+export const STAGE_PDF_CANARY_OPENROUTER_SECRET_REF = {
+  source: "env",
+  provider: "default",
+  id: STAGE_PDF_CANARY_CREDENTIAL,
+} as const satisfies SecretRef;
 
 export type StagePdfCanaryMode = "package" | "dry-run" | "execute" | "rollback-plan";
 
@@ -101,7 +114,7 @@ export type StagePdfProofKind = "none" | "mock_transport" | "openrouter_http_pro
 export type StagePdfCanaryTransport = {
   send: (
     request: StagePdfOpenRouterRequest,
-    params: { apiKeyPresent: boolean },
+    params: { apiKeyPresent: boolean; env?: NodeJS.ProcessEnv },
   ) => Promise<StagePdfTransportResult>;
 };
 
@@ -144,9 +157,14 @@ export type StagePdfCanaryReceipt = {
   credentialPosture: {
     mode: "openrouter_only";
     credentialName: typeof STAGE_PDF_CANARY_CREDENTIAL;
-    storage: "process_env_only";
+    storage: "secretref_env";
     secretPrinted: false;
     directProviderKeysForbidden: true;
+    secretRef: {
+      source: "env";
+      provider: "default";
+      id: typeof STAGE_PDF_CANARY_CREDENTIAL;
+    };
   };
   delivery: { mode: "none"; externalDelivery: false };
   syntheticPdf: {
@@ -225,12 +243,61 @@ export function writeSyntheticStagePdf(targetPath: string): {
   };
 }
 
+/**
+ * Inspect whether the OpenRouter SecretRef can resolve without materializing
+ * or returning secret bytes. Never prints secret material.
+ */
+export function inspectOpenRouterCredentialSecretRef(env: NodeJS.ProcessEnv = process.env): {
+  present: boolean;
+  credentialName: typeof STAGE_PDF_CANARY_CREDENTIAL;
+  secretRef: typeof STAGE_PDF_CANARY_OPENROUTER_SECRET_REF;
+  storage: "secretref_env";
+} {
+  const ref = STAGE_PDF_CANARY_OPENROUTER_SECRET_REF;
+  // Contract: OpenRouter env SecretRef only — reject drifted refs / ids.
+  const present =
+    ref.source === "env" &&
+    ref.provider === "default" &&
+    ref.id === STAGE_PDF_CANARY_CREDENTIAL &&
+    typeof env[ref.id] === "string" &&
+    (env[ref.id]?.length ?? 0) > 0;
+  return {
+    present,
+    credentialName: STAGE_PDF_CANARY_CREDENTIAL,
+    secretRef: ref,
+    storage: "secretref_env",
+  };
+}
+
+/** @deprecated Use {@link inspectOpenRouterCredentialSecretRef}. */
 export function hasOpenRouterCredentialProcessOnly(env: NodeJS.ProcessEnv = process.env): {
   present: boolean;
   credentialName: typeof STAGE_PDF_CANARY_CREDENTIAL;
 } {
-  const present = Boolean(env.OPENROUTER_API_KEY && env.OPENROUTER_API_KEY.length > 0);
-  return { present, credentialName: STAGE_PDF_CANARY_CREDENTIAL };
+  const inspected = inspectOpenRouterCredentialSecretRef(env);
+  return { present: inspected.present, credentialName: inspected.credentialName };
+}
+
+/**
+ * Resolve the OpenRouter API key exclusively via SecretRef.
+ * Returns null when unresolved. Never logs or returns structured secret dumps.
+ */
+export async function resolveOpenRouterApiKeyViaSecretRef(
+  env: NodeJS.ProcessEnv = process.env,
+): Promise<string | null> {
+  const ref = STAGE_PDF_CANARY_OPENROUTER_SECRET_REF;
+  if (ref.id !== STAGE_PDF_CANARY_CREDENTIAL || ref.source !== "env") {
+    return null;
+  }
+  try {
+    const value = await resolveSecretRefString(ref, {
+      config: {},
+      env,
+    });
+    return value.length > 0 ? value : null;
+  } catch {
+    return null;
+  }
 }
 
 export function buildStagePdfOpenRouterRequest(params: {
@@ -301,21 +368,21 @@ export function verifyStagePdfTransportResponse(result: StagePdfTransportResult)
 async function sendOpenRouterChatRequest(
   fetchImpl: typeof fetch,
   request: StagePdfOpenRouterRequest,
-  params: { apiKeyPresent: boolean },
+  params: { apiKeyPresent: boolean; env?: NodeJS.ProcessEnv },
 ): Promise<StagePdfTransportResult> {
   if (!params.apiKeyPresent) {
     return {
       ok: false,
       errorClass: "missing_credential",
-      errorMessage: "OPENROUTER_API_KEY absent from process env",
+      errorMessage: "OPENROUTER_API_KEY SecretRef unresolved",
     };
   }
-  const apiKey = process.env.OPENROUTER_API_KEY;
+  const apiKey = await resolveOpenRouterApiKeyViaSecretRef(params.env ?? process.env);
   if (!apiKey) {
     return {
       ok: false,
       errorClass: "missing_credential",
-      errorMessage: "OPENROUTER_API_KEY absent from process env",
+      errorMessage: "OPENROUTER_API_KEY SecretRef unresolved",
     };
   }
   try {
@@ -378,22 +445,28 @@ export function createOpenRouterFetchTransport(
 ): StagePdfCanaryTransport {
   return {
     async send(request, params) {
-      return sendOpenRouterChatRequest(fetchImpl, request, params);
+      return sendOpenRouterChatRequest(fetchImpl, request, {
+        apiKeyPresent: params.apiKeyPresent,
+        env: params.env,
+      });
     },
   };
 }
 
 /**
  * Private production mint — CLI composition root only.
- * Uses non-injectable global fetch + process env credential path.
+ * Uses non-injectable global fetch + SecretRef credential resolution.
  * Never exported; never callable from test/import surfaces.
  */
 function mintSealedOpenRouterHttpProductionTransport(): SealedOpenRouterHttpProductionTransport {
   return {
     [OPENROUTER_HTTP_PRODUCTION_BRAND]: true,
     async send(request, params) {
-      // Intentionally non-injectable: always the real global fetch.
-      return sendOpenRouterChatRequest(fetch, request, params);
+      // Intentionally non-injectable: always the real global fetch + SecretRef path.
+      return sendOpenRouterChatRequest(fetch, request, {
+        apiKeyPresent: params.apiKeyPresent,
+        env: params.env,
+      });
     },
   };
 }
@@ -546,9 +619,14 @@ function baseReceiptFields(params: {
     credentialPosture: {
       mode: "openrouter_only",
       credentialName: STAGE_PDF_CANARY_CREDENTIAL,
-      storage: "process_env_only",
+      storage: "secretref_env",
       secretPrinted: false,
       directProviderKeysForbidden: true,
+      secretRef: {
+        source: "env",
+        provider: "default",
+        id: STAGE_PDF_CANARY_CREDENTIAL,
+      },
     },
     delivery: { mode: "none", externalDelivery: false },
     syntheticPdf: {
@@ -594,7 +672,7 @@ export function planStagePdfCanary(params: {
   const pdfPath = path.join(params.outputDir, "synthetic-stage-pdf-canary.pdf");
   const pdf = writeSyntheticStagePdf(pdfPath);
   const nowIso = params.nowIso ?? new Date().toISOString();
-  const cred = hasOpenRouterCredentialProcessOnly(params.executeGateEnv ?? process.env);
+  const cred = inspectOpenRouterCredentialSecretRef(params.executeGateEnv ?? process.env);
   const executeGateOpen =
     params.mode === "execute" &&
     params.executeGateEnv?.STAGE_PDF_CANARY_EXECUTE === "1" &&
@@ -650,7 +728,7 @@ export async function executeStagePdfCanary(params: {
   const pdfBuffer = readFileSync(pdfPath);
   const nowIso = params.nowIso ?? new Date().toISOString();
   const env = params.executeGateEnv ?? process.env;
-  const cred = hasOpenRouterCredentialProcessOnly(env);
+  const cred = inspectOpenRouterCredentialSecretRef(env);
   const executeAllowed =
     env.STAGE_PDF_CANARY_EXECUTE === "1" &&
     cred.present &&
@@ -731,7 +809,10 @@ export async function executeStagePdfCanary(params: {
     pdfSha256: request.pdf.sha256,
   };
 
-  const transportResult = await transport.send(request, { apiKeyPresent: cred.present });
+  const transportResult = await transport.send(request, {
+    apiKeyPresent: cred.present,
+    env,
+  });
   const verified = verifyStagePdfTransportResponse(transportResult);
 
   if (!verified.ok) {
@@ -807,9 +888,9 @@ function printHelp(): void {
   console.log(`Usage:
   node --experimental-strip-types linkbots/lisa/ops/stage-pdf-canary.ts <package|dry-run|rollback-plan|execute> --out <dir>
 
-Defaults: package/dry-run only. execute requires STAGE_PDF_CANARY_EXECUTE=1 and existing OPENROUTER_API_KEY in process env (never printed).
+Defaults: package/dry-run only. execute requires STAGE_PDF_CANARY_EXECUTE=1 and OpenRouter SecretRef (env:default:OPENROUTER_API_KEY) resolvable (never printed).
 Live fetch also requires STAGE_PDF_CANARY_ALLOW_LIVE_FETCH=1 (Principal spend gate).
-Live execute pins LiNKplatform-staging/lisa openclaw.json + http://127.0.0.1:18791/health (lisa-stage only).
+Live execute pins LiNKplatform-staging/lisa openclaw.json + http://127.0.0.1:18791/health (lisa-stage only; any config symlink rejected).
 delivery=none; synthetic local PDF; OpenRouter-only; no live Lisa.
 `);
 }
