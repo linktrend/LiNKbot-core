@@ -209,9 +209,9 @@ function assertNativeBaselinesHold() {
     fs.readFileSync(path.join(repoRoot, "extensions/linkskills/openclaw.plugin.json"), "utf8"),
   ) as { enabledByDefault: boolean; activation: { onStartup: boolean } };
   expect(brainManifest.enabledByDefault).toBe(false);
-  expect(brainManifest.activation.onStartup).toBe(false);
+  expect(brainManifest.activation.onStartup).toBe(true);
   expect(skillsManifest.enabledByDefault).toBe(false);
-  expect(skillsManifest.activation.onStartup).toBe(false);
+  expect(skillsManifest.activation.onStartup).toBe(true);
 }
 
 function assertNoCanary(surfaces: unknown[]) {

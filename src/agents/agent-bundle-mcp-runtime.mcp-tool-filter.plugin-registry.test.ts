@@ -1,34 +1,25 @@
 /**
  * Integration: real linkbrain/linkskills registerMcpServerToolFilter overlays
  * must bound gateway/embedded main-agent catalogs under the operator ceiling.
- * Covers ensureRuntimePluginsLoaded reuse, pin gap-fill, generation invalidation,
- * and fail-closed ambiguous live claims.
+ * Active registry identity remains authoritative after ensureRuntimePluginsLoaded.
  */
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { loadOpenClawPlugins } from "../plugins/loader.js";
-import { getMcpToolFilterRegistrationGeneration } from "../plugins/mcp-tool-filter-registration.js";
-import { createEmptyPluginRegistry } from "../plugins/registry-empty.js";
 import {
   getActivePluginRegistry,
   pinActivePluginChannelRegistry,
   pinActivePluginHttpRouteRegistry,
   pinActivePluginSessionExtensionRegistry,
-  releasePinnedPluginChannelRegistry,
-  releasePinnedPluginHttpRouteRegistry,
-  releasePinnedPluginSessionExtensionRegistry,
   resetPluginRuntimeStateForTest,
   setActivePluginRegistry,
 } from "../plugins/runtime.js";
 import { ensureStandaloneRuntimePluginRegistryLoaded } from "../plugins/runtime/standalone-runtime-registry-loader.js";
 import { createSessionMcpRuntime } from "./agent-bundle-mcp-runtime.js";
 import { writeExecutable } from "./bundle-mcp-shared.test-harness.js";
-import {
-  resolveMcpToolFilterComposition,
-  testing as toolFilterTesting,
-} from "./mcp-tool-filter-resolver.js";
+import { testing as toolFilterTesting } from "./mcp-tool-filter-resolver.js";
 import { ensureRuntimePluginsLoaded } from "./runtime-plugins.js";
 
 vi.mock("./embedded-agent-mcp.js", () => ({
@@ -198,16 +189,10 @@ function buildPluginConfig(params: {
   };
 }
 
-function pinGatewaySurfaces(registry: ReturnType<typeof createEmptyPluginRegistry>) {
+function pinGatewaySurfaces(registry: ReturnType<typeof loadOpenClawPlugins>) {
   pinActivePluginHttpRouteRegistry(registry);
   pinActivePluginChannelRegistry(registry);
   pinActivePluginSessionExtensionRegistry(registry);
-}
-
-function releaseGatewayPins() {
-  releasePinnedPluginHttpRouteRegistry();
-  releasePinnedPluginChannelRegistry();
-  releasePinnedPluginSessionExtensionRegistry();
 }
 
 describe("managed MCP toolFilter live plugin registry → gateway catalog", () => {
@@ -216,94 +201,7 @@ describe("managed MCP toolFilter live plugin registry → gateway catalog", () =
     resetPluginRuntimeStateForTest();
   });
 
-  it("keeps Brain 7 / Skills 5 when active registry is swapped after gateway pin", async () => {
-    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "mcp-toolfilter-live-plugins-"));
-    const brainServerPath = path.join(tempDir, "linkbrain.mjs");
-    const skillsServerPath = path.join(tempDir, "linkskills.mjs");
-    await writeListToolsMcpServer({
-      filePath: brainServerPath,
-      tools: BRAIN_OPERATOR_CEILING,
-    });
-    await writeListToolsMcpServer({
-      filePath: skillsServerPath,
-      tools: SKILLS_OPERATOR_CEILING,
-    });
-
-    const cfg = buildPluginConfig({
-      brain: { mcpRead: true, captureEnqueue: false, coordinationWrites: false },
-      skills: {
-        mcpDiscoveryRead: true,
-        governedExecution: false,
-        telemetryEnqueue: false,
-      },
-    });
-
-    try {
-      const gatewayRegistry = loadOpenClawPlugins({
-        cache: false,
-        onlyPluginIds: ["linkbrain", "linkskills"],
-        config: cfg as never,
-        preferBuiltPluginArtifacts: true,
-        runtimeOptions: { allowGatewaySubagentBinding: true },
-      });
-      expect(
-        gatewayRegistry.mcpServerToolFilters.map((e) => e.resolver.serverName).toSorted(),
-      ).toEqual(["linkbrain", "linkskills"]);
-
-      // Mirror gateway pin surfaces, then replace active with an empty registry
-      // (the observed fail-open: active loses overlays, pins retain them).
-      pinGatewaySurfaces(gatewayRegistry);
-      setActivePluginRegistry(
-        createEmptyPluginRegistry(),
-        "empty-after-gateway",
-        "gateway-bindable",
-      );
-      expect(getActivePluginRegistry()?.mcpServerToolFilters).toEqual([]);
-
-      const runtime = createSessionMcpRuntime({
-        sessionId: "session-live-plugin-filter",
-        workspaceDir: tempDir,
-        cfg: {
-          mcp: {
-            servers: {
-              linkbrain: {
-                command: process.execPath,
-                args: [brainServerPath],
-                toolFilter: { include: [...BRAIN_OPERATOR_CEILING] },
-              },
-              linkskills: {
-                command: process.execPath,
-                args: [skillsServerPath],
-                toolFilter: { include: [...SKILLS_OPERATOR_CEILING] },
-              },
-            },
-          },
-        },
-      });
-
-      try {
-        const catalog = await runtime.getCatalog();
-        const brain = catalog.tools
-          .filter((t) => t.serverName === "linkbrain")
-          .map((t) => t.toolName)
-          .toSorted();
-        const skills = catalog.tools
-          .filter((t) => t.serverName === "linkskills")
-          .map((t) => t.toolName)
-          .toSorted();
-        expect(brain).toEqual([...BRAIN_READ_ONLY].toSorted());
-        expect(skills).toEqual([...SKILLS_DISCOVERY_ONLY].toSorted());
-        expect(brain).not.toContain("brain_capture_batch");
-        expect(skills).not.toContain("skills_run_start");
-      } finally {
-        await runtime.dispose();
-      }
-    } finally {
-      await fs.rm(tempDir, { recursive: true, force: true });
-    }
-  });
-
-  it("loads real registrations, survives ensureRuntimePluginsLoaded, and expands only intended sets", async () => {
+  it("keeps active registry identity after ensure and catalogs Brain 7 / Skills 5", async () => {
     const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "mcp-toolfilter-live-ensure-"));
     const brainServerPath = path.join(tempDir, "linkbrain.mjs");
     const skillsServerPath = path.join(tempDir, "linkskills.mjs");
@@ -334,6 +232,9 @@ describe("managed MCP toolFilter live plugin registry → gateway catalog", () =
         preferSetupRuntimeForChannelPlugins: true,
         runtimeOptions: { allowGatewaySubagentBinding: true },
       });
+      expect(
+        gatewayRegistry.mcpServerToolFilters.map((e) => e.resolver.serverName).toSorted(),
+      ).toEqual(["linkbrain", "linkskills"]);
       pinGatewaySurfaces(gatewayRegistry);
 
       // Same shape as embedded/gateway agent ensure: force-full + startup scope
@@ -382,13 +283,24 @@ describe("managed MCP toolFilter live plugin registry → gateway catalog", () =
 
       const readOnly = mkRuntime("read-only");
       try {
-        const names = (await readOnly.getCatalog()).tools.map((t) => t.toolName).toSorted();
-        expect(names).toEqual([...BRAIN_READ_ONLY, ...SKILLS_DISCOVERY_ONLY].toSorted());
+        const catalog = await readOnly.getCatalog();
+        const brain = catalog.tools
+          .filter((t) => t.serverName === "linkbrain")
+          .map((t) => t.toolName)
+          .toSorted();
+        const skills = catalog.tools
+          .filter((t) => t.serverName === "linkskills")
+          .map((t) => t.toolName)
+          .toSorted();
+        expect(brain).toEqual([...BRAIN_READ_ONLY].toSorted());
+        expect(skills).toEqual([...SKILLS_DISCOVERY_ONLY].toSorted());
+        expect(brain).not.toContain("brain_capture_batch");
+        expect(skills).not.toContain("skills_run_start");
       } finally {
         await readOnly.dispose();
       }
 
-      // Re-register with write/exec flags on; active claim wins over stale pins.
+      // Re-register with write/exec flags on; active overlays expand only intended sets.
       const expandedCfg = buildPluginConfig({
         brain: { mcpRead: true, captureEnqueue: true, coordinationWrites: true },
         skills: {
@@ -405,6 +317,7 @@ describe("managed MCP toolFilter live plugin registry → gateway catalog", () =
         runtimeOptions: { allowGatewaySubagentBinding: true },
       });
       setActivePluginRegistry(expandedRegistry, "expanded-flags", "gateway-bindable");
+      expect(getActivePluginRegistry()).toBe(expandedRegistry);
 
       const allOn = mkRuntime("all-on");
       try {
@@ -416,103 +329,5 @@ describe("managed MCP toolFilter live plugin registry → gateway catalog", () =
     } finally {
       await fs.rm(tempDir, { recursive: true, force: true });
     }
-  });
-
-  it("rematerializes warm catalogs when pin/release changes live filter claims", async () => {
-    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "mcp-toolfilter-live-pin-gen-"));
-    const brainServerPath = path.join(tempDir, "linkbrain.mjs");
-    await writeListToolsMcpServer({
-      filePath: brainServerPath,
-      tools: BRAIN_OPERATOR_CEILING,
-    });
-
-    const cfg = buildPluginConfig({
-      brain: { mcpRead: true, captureEnqueue: false, coordinationWrites: false },
-      skills: {
-        mcpDiscoveryRead: false,
-        governedExecution: false,
-        telemetryEnqueue: false,
-      },
-    });
-
-    try {
-      const gatewayRegistry = loadOpenClawPlugins({
-        cache: false,
-        onlyPluginIds: ["linkbrain"],
-        config: cfg as never,
-        preferBuiltPluginArtifacts: true,
-        runtimeOptions: { allowGatewaySubagentBinding: true },
-      });
-      pinGatewaySurfaces(gatewayRegistry);
-      setActivePluginRegistry(createEmptyPluginRegistry(), "empty-active", "gateway-bindable");
-
-      const runtime = createSessionMcpRuntime({
-        sessionId: "session-live-pin-gen",
-        workspaceDir: tempDir,
-        cfg: {
-          mcp: {
-            servers: {
-              linkbrain: {
-                command: process.execPath,
-                args: [brainServerPath],
-                toolFilter: { include: [...BRAIN_OPERATOR_CEILING] },
-              },
-            },
-          },
-        },
-      });
-
-      try {
-        const gated = await runtime.getCatalog();
-        expect(gated.tools.map((t) => t.toolName).toSorted()).toEqual(
-          [...BRAIN_READ_ONLY].toSorted(),
-        );
-
-        const beforeRelease = getMcpToolFilterRegistrationGeneration();
-        releaseGatewayPins();
-        expect(getMcpToolFilterRegistrationGeneration()).toBeGreaterThan(beforeRelease);
-
-        // Pins gone + empty active → no plugin overlay → operator ceiling only.
-        const ungated = await runtime.getCatalog();
-        expect(ungated.tools.map((t) => t.toolName).toSorted()).toEqual(
-          [...BRAIN_OPERATOR_CEILING].toSorted(),
-        );
-      } finally {
-        await runtime.dispose();
-      }
-    } finally {
-      await fs.rm(tempDir, { recursive: true, force: true });
-    }
-  });
-
-  it("fails closed when distinct live registries claim the same serverName", async () => {
-    const pinRegistry = createEmptyPluginRegistry();
-    pinRegistry.mcpServerToolFilters.push({
-      pluginId: "plugin-a",
-      resolver: {
-        serverName: "linkbrain",
-        resolve: () => ({ include: ["brain_search"] }),
-      },
-      source: "test",
-    });
-    const otherPin = createEmptyPluginRegistry();
-    otherPin.mcpServerToolFilters.push({
-      pluginId: "plugin-b",
-      resolver: {
-        serverName: "linkbrain",
-        resolve: () => ({ include: ["brain_load"] }),
-      },
-      source: "test",
-    });
-
-    setActivePluginRegistry(createEmptyPluginRegistry(), "empty-active");
-    pinActivePluginHttpRouteRegistry(pinRegistry);
-    pinActivePluginChannelRegistry(otherPin);
-
-    const composition = await resolveMcpToolFilterComposition({
-      serverName: "linkbrain",
-      configSelection: { include: ["brain_search", "brain_load"] },
-    });
-    expect(composition).toEqual({ kind: "omit" });
   });
 });

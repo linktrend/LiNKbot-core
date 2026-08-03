@@ -18,7 +18,7 @@ describe("linkbrain manifest/config", () => {
     };
     expect(manifest.id).toBe("linkbrain");
     expect(manifest.enabledByDefault).toBe(false);
-    expect(manifest.activation.onStartup).toBe(false);
+    expect(manifest.activation.onStartup).toBe(true);
     expect(manifest.configSchema.properties).toMatchObject({
       mcpRead: expect.any(Object),
       captureEnqueue: expect.any(Object),

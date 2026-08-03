@@ -180,9 +180,6 @@ function installSurfaceRegistry(
   surface.registry = registry;
   surface.pinned = pinned;
   surface.version += 1;
-  // Pin/release changes the live MCP tool-filter claim set even when active is
-  // unchanged. Catalogs observe the generation to rematerialize.
-  bumpMcpToolFilterRegistrationGeneration();
 }
 
 function syncTrackedSurface(
