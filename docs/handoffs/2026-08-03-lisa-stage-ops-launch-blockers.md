@@ -14,7 +14,7 @@
 | Starting branch  | ocp-stage-ops-canary-final                                                     |
 | Ending branch    | ocp-stage-ops-canary-final                                                     |
 | Starting commit  | 379a339e3cf6ad1dafa05f1123a9aa7b4610b8ea                                       |
-| Ending commit    | PENDING_TIP_SHA                                                                |
+| Ending commit    | bff016c07ecab669cc2217e74aeac1aa5e409187                                       |
 | Starting status  | active                                                                         |
 | Ending status    | complete                                                                       |
 
