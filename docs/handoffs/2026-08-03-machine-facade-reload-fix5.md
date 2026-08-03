@@ -2,21 +2,21 @@
 
 ## Session Metadata
 
-| Field            | Value                                                                              |
-| ---------------- | ---------------------------------------------------------------------------------- |
-| Agent identity   | Cursor Cloud Agent / Cursor / mac-mini / cloud-agent / cloud / feature             |
-| Session ID       | cursor-cloud-mac-mini-feature-machine-facade-reload-fix5-20260803-1951             |
-| Orchestrator key | cursor-mac-mini-cloud-agent-orchestrator                                           |
-| Objective        | Fifth correction: UTF-8 total-order ownership fingerprint sort (not localeCompare) |
-| Scope            | Repo code only; no stage/live/cloud/Supabase/GCP/IDE Development/VPS               |
-| Started          | 2026-08-03 19:51 Asia/Taipei                                                       |
-| Ended            | 2026-08-03 20:05 Asia/Taipei                                                       |
-| Starting branch  | `dev/cloudcursor/OCP-MACHINE-FACADE-RELOAD-FIX`                                    |
-| Ending branch    | `dev/cloudcursor/OCP-MACHINE-FACADE-RELOAD-FIX`                                    |
-| Starting commit  | `b7fb678252dcd2e7ac8f7e32a33408abd4bdd9f7`                                         |
-| Ending commit    | `2581a2cd0c8570c72ac5b1729346ffa1e3ecdfa0` (fix tip; docs tip may follow)          |
-| Starting status  | clean at Carlos-stated tip                                                         |
-| Ending status    | fifth ownership fingerprint Unicode total-order fix + regressions                  |
+| Field            | Value                                                                                                 |
+| ---------------- | ----------------------------------------------------------------------------------------------------- |
+| Agent identity   | Cursor Cloud Agent / Cursor / mac-mini / cloud-agent / cloud / feature                                |
+| Session ID       | cursor-cloud-mac-mini-feature-machine-facade-reload-fix5-20260803-1951                                |
+| Orchestrator key | cursor-mac-mini-cloud-agent-orchestrator                                                              |
+| Objective        | Fifth correction: UTF-8 total-order ownership fingerprint sort (not localeCompare)                    |
+| Scope            | Repo code only; no stage/live/cloud/Supabase/GCP/IDE Development/VPS                                  |
+| Started          | 2026-08-03 19:51 Asia/Taipei                                                                          |
+| Ended            | 2026-08-03 20:05 Asia/Taipei                                                                          |
+| Starting branch  | `dev/cloudcursor/OCP-MACHINE-FACADE-RELOAD-FIX`                                                       |
+| Ending branch    | `dev/cloudcursor/OCP-MACHINE-FACADE-RELOAD-FIX`                                                       |
+| Starting commit  | `b7fb678252dcd2e7ac8f7e32a33408abd4bdd9f7`                                                            |
+| Ending commit    | `f40f8f3cf2d65452ff2d31c3e7b8a86f94e651c8` (docs tip; fix `2581a2cd0c8570c72ac5b1729346ffa1e3ecdfa0`) |
+| Starting status  | clean at Carlos-stated tip                                                                            |
+| Ending status    | fifth ownership fingerprint Unicode total-order fix + regressions                                     |
 
 ## Summary
 
