@@ -11,6 +11,7 @@ import {
   createMachineTokenPluginFacade,
   destroyCandidateMachineTokenFacadeGeneration,
   destroyMachineTokenFacadeGeneration,
+  fingerprintMachineTokenGrantedRecords,
   getLiveMachineTokenFacadeGenerationHandle,
   invalidateMachineTokenCacheForHost,
   liveMachineTokenOwnershipMatchesGrantedRecords,
@@ -274,6 +275,162 @@ describe("agents machine-token-host", () => {
     ).toBe(false);
     destroyCandidateMachineTokenFacadeGeneration(stage.handle);
     unregisterMachineTokenFacadesForPlugin("linkbrain");
+  });
+
+  describe("ownership fingerprint collision safety", () => {
+    function legacyDelimiterOwnershipFingerprint(
+      grantedRecords: readonly HostMachineTokenBindingRecord[],
+    ): string {
+      return grantedRecords
+        .map((entry) => `${entry.bindingId}=${entry.bindingFingerprint}`)
+        .toSorted()
+        .join(",");
+    }
+
+    function publishOwnership(grantedRecords: readonly HostMachineTokenBindingRecord[]) {
+      const generation = createMachineTokenFacadeGeneration({
+        pluginId: "linkbrain",
+        grantedRecords,
+        resolveKeyPem: resolveKeyPemStub(),
+        resolveAccess: async ({ binding }) => ({
+          bindingId: binding.bindingId,
+          bindingFingerprint: `fp-${binding.bindingId}`,
+          accessToken: "token",
+          expiresAt: Date.now() + 60_000,
+          tokenType: "Bearer" as const,
+        }),
+      });
+      publishMachineTokenFacadeGeneration(generation.handle);
+      return generation;
+    }
+
+    it("rejects delimiter-collision grant sets that the legacy join would equate", () => {
+      // Legacy join: a/FPA + b/FPB → "a=FPA,b=FPB" equals one record bindingId "a=FPA,b" / FPB.
+      const twoGrants = [
+        record("a", {
+          bindingFingerprint: "FPA",
+          clientId: "client-a",
+          issuerUrl: "https://a.example.test",
+        }),
+        record("b", {
+          bindingFingerprint: "FPB",
+          clientId: "client-b",
+          issuerUrl: "https://b.example.test",
+        }),
+      ];
+      const collidingSingle = [
+        record("a=FPA,b", {
+          bindingFingerprint: "FPB",
+          clientId: "client-colliding",
+          issuerUrl: "https://colliding.example.test",
+        }),
+      ];
+      expect(legacyDelimiterOwnershipFingerprint(twoGrants)).toBe(
+        legacyDelimiterOwnershipFingerprint(collidingSingle),
+      );
+      expect(fingerprintMachineTokenGrantedRecords(twoGrants)).not.toBe(
+        fingerprintMachineTokenGrantedRecords(collidingSingle),
+      );
+
+      const live = publishOwnership(twoGrants);
+      expect(liveMachineTokenOwnershipMatchesGrantedRecords("linkbrain", twoGrants)).toBe(true);
+      expect(liveMachineTokenOwnershipMatchesGrantedRecords("linkbrain", collidingSingle)).toBe(
+        false,
+      );
+      unregisterMachineTokenFacadesForPlugin("linkbrain");
+      destroyCandidateMachineTokenFacadeGeneration(live.handle);
+    });
+
+    it("preserves same-owner exact reuse and ignores grant reorder", () => {
+      const first = record("alpha", { clientId: "client-alpha" });
+      const second = record("beta", { clientId: "client-beta" });
+      const live = publishOwnership([first, second]);
+      expect(liveMachineTokenOwnershipMatchesGrantedRecords("linkbrain", [first, second])).toBe(
+        true,
+      );
+      expect(liveMachineTokenOwnershipMatchesGrantedRecords("linkbrain", [second, first])).toBe(
+        true,
+      );
+      expect(fingerprintMachineTokenGrantedRecords([first, second])).toBe(
+        fingerprintMachineTokenGrantedRecords([second, first]),
+      );
+      unregisterMachineTokenFacadesForPlugin("linkbrain");
+      destroyCandidateMachineTokenFacadeGeneration(live.handle);
+    });
+
+    it("forces replacement on binding add/remove and authorization field changes", () => {
+      const base = record("linkbrain-stage", {
+        clientId: "client-v1",
+        audience: "aud-v1",
+        scope: "read",
+        environment: "stage",
+        domain: "tenant-a",
+        issuerUrl: "https://issuer-v1.example.test",
+        tokenEndpoint: "https://issuer-v1.example.test/token",
+        keyRef: { source: "env", provider: "default", id: "KEY_V1" },
+      });
+      const live = publishOwnership([base]);
+      expect(liveMachineTokenOwnershipMatchesGrantedRecords("linkbrain", [base])).toBe(true);
+
+      const cases: Array<{ label: string; next: HostMachineTokenBindingRecord[] }> = [
+        { label: "binding-add", next: [base, record("linkbrain-extra")] },
+        { label: "binding-remove", next: [] },
+        {
+          label: "tenant-domain",
+          next: [record("linkbrain-stage", { ...base, domain: "tenant-b" })],
+        },
+        {
+          label: "endpoint",
+          next: [
+            record("linkbrain-stage", {
+              ...base,
+              issuerUrl: "https://issuer-v2.example.test",
+              tokenEndpoint: "https://issuer-v2.example.test/token",
+            }),
+          ],
+        },
+        {
+          label: "keyRef",
+          next: [
+            record("linkbrain-stage", {
+              ...base,
+              keyRef: { source: "env", provider: "default", id: "KEY_V2" },
+            }),
+          ],
+        },
+        {
+          label: "client",
+          next: [record("linkbrain-stage", { ...base, clientId: "client-v2" })],
+        },
+        {
+          label: "audience",
+          next: [record("linkbrain-stage", { ...base, audience: "aud-v2" })],
+        },
+        {
+          label: "scope",
+          next: [record("linkbrain-stage", { ...base, scope: "write" })],
+        },
+        {
+          label: "environment",
+          next: [record("linkbrain-stage", { ...base, environment: "prod" })],
+        },
+      ];
+
+      for (const entry of cases) {
+        expect(
+          liveMachineTokenOwnershipMatchesGrantedRecords("linkbrain", entry.next),
+          entry.label,
+        ).toBe(false);
+        if (entry.next.length > 0) {
+          expect(fingerprintMachineTokenGrantedRecords([base]), entry.label).not.toBe(
+            fingerprintMachineTokenGrantedRecords(entry.next),
+          );
+        }
+      }
+
+      unregisterMachineTokenFacadesForPlugin("linkbrain");
+      destroyCandidateMachineTokenFacadeGeneration(live.handle);
+    });
   });
 
   it("lease release after a newer publish leaves the replacement live", async () => {

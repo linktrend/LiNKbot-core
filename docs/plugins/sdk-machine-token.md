@@ -118,7 +118,11 @@ retires ownership on gateway close and on successful reload commit when
 ownership descriptors change. Same-ownership rematerialize (repeated activating
 loads / agent prewarm) **reuses** the live generation instead of publishing a
 replacement — owner publish would otherwise force-retire facades closed over by
-already-started plugin services and deadletter capture drain.
+already-started plugin services and deadletter capture drain. Ownership matching
+hashes a collision-safe canonical JSON of sorted authorization tuples (bindingId,
+domain/tenant partition, endpoints, keyRef, client, audience, scopes,
+environment, and related fields) under an explicit version/domain separator —
+never delimiter-joined operator `bindingId` strings.
 
 ## External projection
 

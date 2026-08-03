@@ -6,6 +6,7 @@
  * never live generation handles. Final live commit prefers a single synchronous
  * swap after all fallible preparation.
  */
+import { createHash } from "node:crypto";
 import {
   commitMachineTokenOwnershipSnapshot,
   createMachineTokenFacadeGeneration,
@@ -17,6 +18,9 @@ import {
   type HostMachineTokenBindingRecord,
   type MachineTokenFacadeGenerationHandle,
 } from "../agents/machine-token-host.js";
+
+/** Domain separator for multi-plugin ownership blueprint fingerprints. */
+const MACHINE_TOKEN_OWNERSHIP_PLUGINS_DOMAIN = "machine-token-ownership-plugins-v1";
 import type { OpenClawConfig } from "../config/types.openclaw.js";
 import { resolveConfiguredSecretInputString } from "../gateway/resolve-configured-secret-input-string.js";
 import { getGlobalPluginRegistry, initializeGlobalHookRunner } from "./hook-runner-global.js";
@@ -76,13 +80,19 @@ function freezeBindingRecord(record: HostMachineTokenBindingRecord): HostMachine
 function fingerprintOwnershipPlugins(
   plugins: ReadonlyArray<MachineTokenOwnershipPluginBlueprint>,
 ): string {
-  return plugins
-    .map(
-      (plugin) =>
-        `${plugin.pluginId}=${fingerprintMachineTokenGrantedRecords(plugin.grantedRecords)}`,
-    )
-    .toSorted()
-    .join("|");
+  // Structured JSON tuples + domain hash — same delimiter-collision class as
+  // per-plugin granted-record fingerprints (pluginId may contain `=` / `|`).
+  const tuples = plugins
+    .map((plugin) => [
+      plugin.pluginId,
+      fingerprintMachineTokenGrantedRecords(plugin.grantedRecords),
+    ])
+    .toSorted((left, right) => JSON.stringify(left).localeCompare(JSON.stringify(right), "en"));
+  return createHash("sha256")
+    .update(MACHINE_TOKEN_OWNERSHIP_PLUGINS_DOMAIN, "utf8")
+    .update("\0", "utf8")
+    .update(JSON.stringify(tuples), "utf8")
+    .digest("hex");
 }
 
 function normalizeReconcileScope(

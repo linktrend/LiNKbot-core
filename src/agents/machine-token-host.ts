@@ -8,6 +8,7 @@
  * only `bindingId` (+ signal/forceRefresh); SecretRef → PEM resolution and
  * MachineTokenBinding assembly happen inside the facade.
  */
+import { createHash } from "node:crypto";
 import { isSecretRef, type SecretRef } from "../config/types.secrets.js";
 import {
   getCachedMachineToken,
@@ -27,6 +28,9 @@ import {
   invalidateMachineTokenCache as invalidateMachineTokenCacheCore,
   resolveMachineTokenAccess as resolveMachineTokenAccessCore,
 } from "./machine-token.js";
+
+/** Domain separator for ownership fingerprints — upgrades must bump this tag. */
+const MACHINE_TOKEN_OWNERSHIP_DOMAIN = "machine-token-ownership-v1";
 
 export type {
   MachineTokenBinding,
@@ -132,16 +136,59 @@ type MachineTokenFacadeGenerationRecord = {
   retire: () => void;
 };
 
+/**
+ * Canonical authorization tuple for one granted binding.
+ *
+ * Structured JSON (not delimiter-joined operator strings) so bindingId values
+ * containing `=` / `,` cannot collide two grant sets into one ownership key.
+ * Includes bindingId, domain partition (tenant/org when represented), endpoints,
+ * keyRef identity, client, audience, scopes, environment, and bindingFingerprint.
+ */
+function canonicalizeMachineTokenOwnershipTuple(
+  record: HostMachineTokenBindingRecord,
+): readonly unknown[] {
+  return [
+    record.bindingId,
+    record.pluginId,
+    record.domain,
+    record.issuerUrl,
+    record.discoveryUrl ?? null,
+    record.tokenEndpoint ?? null,
+    record.clientId,
+    record.keyRef.source,
+    record.keyRef.provider,
+    record.keyRef.id,
+    record.keyRefFingerprint,
+    record.audience ?? null,
+    record.scope ?? null,
+    record.operations ? [...record.operations].toSorted() : null,
+    record.scopes ? [...record.scopes].toSorted() : null,
+    record.environment ?? null,
+    record.service ?? null,
+    record.allowPrivateNetwork === true,
+    record.bindingFingerprint,
+  ];
+}
+
+function compareCanonicalJson(left: unknown, right: unknown): number {
+  return JSON.stringify(left).localeCompare(JSON.stringify(right), "en");
+}
+
 /** Per-plugin ownership fingerprint from granted binding descriptors. */
 export function fingerprintMachineTokenGrantedRecords(
   grantedRecords: readonly HostMachineTokenBindingRecord[],
 ): string {
-  // Include operator bindingId — credential fingerprints intentionally omit it,
-  // but ownership reuse must replace when the granted label set changes.
-  return grantedRecords
-    .map((record) => `${record.bindingId}=${record.bindingFingerprint}`)
-    .toSorted()
-    .join(",");
+  // Collision-safe: sorted length-safe JSON tuples hashed under an explicit
+  // version/domain separator. Delimiter joins of operator bindingId values are
+  // unsafe — `a`/`FPA` + `b`/`FPB` equals one record `a=FPA,b`/`FPB`.
+  const tuples = grantedRecords
+    .map((record) => canonicalizeMachineTokenOwnershipTuple(record))
+    .toSorted(compareCanonicalJson);
+  return createHash("sha256")
+    .update(MACHINE_TOKEN_OWNERSHIP_DOMAIN, "utf8")
+    .update("\0", "utf8")
+    .update(JSON.stringify(tuples), "utf8")
+    .digest("hex");
 }
 
 /**
