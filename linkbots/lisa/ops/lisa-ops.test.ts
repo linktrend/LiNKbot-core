@@ -308,6 +308,7 @@ describe("Ship/Pull post-processing gate", () => {
     assert.equal(shipPullAllowlistIncludesSessionsWait(SHIP_PULL_REQUIRED_TOOLS), true);
     assert.ok(SHIP_PULL_REQUIRED_TOOLS.includes("sessions_spawn"));
     assert.ok(SHIP_PULL_REQUIRED_TOOLS.includes("sessions_wait"));
+    assert.ok(SHIP_PULL_REQUIRED_TOOLS.includes("apply_patch"));
     assert.ok(!SHIP_PULL_REQUIRED_TOOLS.includes("sessions_yield"));
   });
 
@@ -323,6 +324,7 @@ describe("Ship/Pull post-processing gate", () => {
     const allow = lisaCron?.tools?.allow ?? [];
     assert.ok(allow.includes("sessions_spawn"));
     assert.ok(allow.includes("sessions_wait"));
+    assert.ok(allow.includes("apply_patch"));
     assert.ok(!allow.includes("sessions_yield"));
   });
 
@@ -333,7 +335,7 @@ describe("Ship/Pull post-processing gate", () => {
     }
     assert.match(
       text,
-      /toolsAllow` \*\*and\*\* `agents\.list\[lisa-cron\]\.tools\.allow` must include `sessions_spawn`, `sessions_wait`/,
+      /toolsAllow` \*\*and\*\* `agents\.list\[lisa-cron\]\.tools\.allow` must include `sessions_spawn`, `sessions_wait`, `apply_patch`/,
     );
     assert.equal(shipPullForbidsSessionsYield(text), true);
     assert.equal(shipPullAllowlistIncludesSessionsWait(SHIP_PULL_REQUIRED_TOOLS), true);

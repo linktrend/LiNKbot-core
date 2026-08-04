@@ -103,6 +103,7 @@ export const REPAIR_DISPATCHER_ACP_SPAWN_CONTRACT = {
 export const REPAIR_DISPATCHER_REQUIRED_TOOLS: readonly string[] = [
   "sessions_spawn",
   "sessions_wait",
+  "apply_patch",
   "read",
   "write",
   "edit",
