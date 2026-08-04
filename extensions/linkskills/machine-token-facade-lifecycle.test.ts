@@ -1,64 +1,44 @@
+import type { MachineTokenPluginFacade } from "openclaw/plugin-sdk/machine-token-runtime";
 /**
  * Mirror of linkbrain machine-token facade stop/reload lifecycle proofs for
  * LinkSkills (same dual gateway_stop / service.stop unregister hazard).
  */
 import { createTestPluginApi } from "openclaw/plugin-sdk/plugin-test-api";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { fingerprintMachineTokenKeyRef } from "../../src/agents/machine-token-fingerprint.js";
-import {
-  acquireMachineTokenFacadeLeaseForPlugin,
-  buildHostMachineTokenBindingFingerprint,
-  createMachineTokenFacadeGeneration,
-  destroyMachineTokenFacadeGeneration,
-  getLiveMachineTokenFacadeGenerationHandle,
-  publishMachineTokenFacadeGeneration,
-  unregisterMachineTokenFacadesForPlugin,
-  type HostMachineTokenBindingRecord,
-  type MachineTokenKeyRefIdentity,
-} from "../../src/agents/machine-token-host.js";
 import linkskillsPlugin from "./index.js";
 import type { OpenClawPluginApi, OpenClawPluginService } from "./runtime-api.js";
 import { createMemoryKeyedStore } from "./src/test-support/memory-store.js";
 
-const KEY_REF: MachineTokenKeyRefIdentity = {
-  source: "env",
-  provider: "default",
-  id: "test-skills-lifecycle-assertion-pem",
-};
-
-function grantedRecord(bindingId: string): HostMachineTokenBindingRecord {
-  const keyRef = { ...KEY_REF };
-  const keyRefFingerprint = fingerprintMachineTokenKeyRef(keyRef);
-  const base = {
-    bindingId,
-    issuerUrl: "https://issuer.example.test",
-    clientId: `${bindingId}-client`,
-    keyRef,
-    keyRefFingerprint,
-    pluginId: "linkskills",
-    domain: "linkskills",
-  };
-  return {
-    ...base,
-    bindingFingerprint: buildHostMachineTokenBindingFingerprint(base),
-  };
-}
-
 function createLiveFacade(bindingId: string) {
-  const generation = createMachineTokenFacadeGeneration({
+  let registered = true;
+  const facade: MachineTokenPluginFacade = {
     pluginId: "linkskills",
-    grantedRecords: [grantedRecord(bindingId)],
-    resolveKeyPem: async () => "test-pem",
-    resolveAccess: async ({ binding }) => ({
-      bindingId: binding.bindingId,
-      bindingFingerprint: `fp-${binding.bindingId}`,
-      accessToken: "test-access-token",
-      expiresAt: Date.now() + 60_000,
-      tokenType: "Bearer" as const,
+    grantedBindingIds: new Set([bindingId]),
+    acquire: async ({ bindingId: requestedBindingId }) => {
+      if (!registered || requestedBindingId !== bindingId) {
+        throw new Error("facade is unregistered");
+      }
+      return {
+        bindingId,
+        bindingFingerprint: `fp-${bindingId}`,
+        accessToken: "test-access-token",
+        expiresAt: Date.now() + 60_000,
+        tokenType: "Bearer",
+      };
+    },
+    invalidate: () => undefined,
+    health: (requestedBindingId) => ({
+      pluginId: "linkskills",
+      bindingId: requestedBindingId,
+      granted: requestedBindingId === bindingId,
+      registered: requestedBindingId === bindingId && registered,
+      cached: false,
     }),
-  });
-  publishMachineTokenFacadeGeneration(generation.handle);
-  return generation;
+    unregister: () => {
+      registered = false;
+    },
+  };
+  return { facade };
 }
 
 type HookHandler = (event?: unknown, ctx?: unknown) => void | Promise<void>;
@@ -112,7 +92,6 @@ async function registerStartedService(params: {
 
 describe("linkskills machine-token facade stop/reload lifecycle", () => {
   afterEach(() => {
-    unregisterMachineTokenFacadesForPlugin("linkskills");
     vi.restoreAllMocks();
   });
 
@@ -131,7 +110,6 @@ describe("linkskills machine-token facade stop/reload lifecycle", () => {
 
     await service.stop({} as never);
     expect(generation.facade.health("linkskills-stage").registered).toBe(false);
-    expect(getLiveMachineTokenFacadeGenerationHandle("linkskills")).toBeUndefined();
   });
 
   it("does not let a retired generation's service.stop unregister a newer live facade", async () => {
@@ -139,41 +117,29 @@ describe("linkskills machine-token facade stop/reload lifecycle", () => {
     const { service: previousService } = await registerStartedService({ facade: first.facade });
 
     const second = createLiveFacade("linkskills-stage");
-    expect(first.facade.health("linkskills-stage").registered).toBe(false);
-    expect(second.facade.health("linkskills-stage").registered).toBe(true);
-
+    // A prior service stop must not touch the replacement facade injected into
+    // the new registration.
     await previousService.stop({} as never);
 
+    expect(first.facade.health("linkskills-stage").registered).toBe(false);
     expect(second.facade.health("linkskills-stage").registered).toBe(true);
     await expect(second.facade.acquire({ bindingId: "linkskills-stage" })).resolves.toMatchObject({
       accessToken: "test-access-token",
     });
-    expect(getLiveMachineTokenFacadeGenerationHandle("linkskills")?.generationId).toBe(
-      second.handle.generationId,
-    );
-
-    destroyMachineTokenFacadeGeneration(second.handle);
   });
 
-  it("host lease keeps the shared live facade across duplicate service.stop then restart", async () => {
+  it("keeps a replacement facade independent from a stopped prior service", async () => {
     const generation = createLiveFacade("linkskills-stage");
-    const releaseLease = acquireMachineTokenFacadeLeaseForPlugin("linkskills");
     const { service: first } = await registerStartedService({ facade: generation.facade });
 
     await first.stop({} as never);
-    expect(generation.facade.health("linkskills-stage").registered).toBe(true);
+    const replacement = createLiveFacade("linkskills-stage");
+    const { service: second } = await registerStartedService({ facade: replacement.facade });
     await expect(
-      generation.facade.acquire({ bindingId: "linkskills-stage" }),
+      replacement.facade.acquire({ bindingId: "linkskills-stage" }),
     ).resolves.toMatchObject({ accessToken: "test-access-token" });
 
-    const { service: second } = await registerStartedService({ facade: generation.facade });
-    await expect(
-      generation.facade.acquire({ bindingId: "linkskills-stage" }),
-    ).resolves.toMatchObject({ accessToken: "test-access-token" });
-
-    releaseLease();
     await second.stop({} as never);
-    expect(generation.facade.health("linkskills-stage").registered).toBe(false);
-    expect(getLiveMachineTokenFacadeGenerationHandle("linkskills")).toBeUndefined();
+    expect(replacement.facade.health("linkskills-stage").registered).toBe(false);
   });
 });

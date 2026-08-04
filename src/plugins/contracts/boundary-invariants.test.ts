@@ -55,7 +55,7 @@ const BUNDLED_TYPED_HOOK_REGISTRATION_GUARDS = {
     "subagent_ended",
     "subagent_spawned",
   ],
-  "extensions/linkskills/index.ts": ["gateway_start", "gateway_stop"],
+  "extensions/linkskills/index.ts": ["after_tool_call", "gateway_start", "gateway_stop"],
   "extensions/matrix/subagent-hooks-api.ts": ["subagent_delivery_target", "subagent_ended"],
   "extensions/memory-core/src/dreaming.ts": ["before_agent_reply", "gateway_start", "gateway_stop"],
   "extensions/memory-lancedb/index.ts": ["agent_end", "before_prompt_build", "session_end"],

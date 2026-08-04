@@ -1,3 +1,4 @@
+import type { MachineTokenPluginFacade } from "openclaw/plugin-sdk/machine-token-runtime";
 /**
  * Production defect regression: gateway_stop must not unregister the machine-token
  * facade before service.stop finishes its final flush. Early unregister causes
@@ -6,61 +7,47 @@
  */
 import { createTestPluginApi } from "openclaw/plugin-sdk/plugin-test-api";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { fingerprintMachineTokenKeyRef } from "../../src/agents/machine-token-fingerprint.js";
-import {
-  acquireMachineTokenFacadeLeaseForPlugin,
-  buildHostMachineTokenBindingFingerprint,
-  createMachineTokenFacadeGeneration,
-  destroyMachineTokenFacadeGeneration,
-  getLiveMachineTokenFacadeGenerationHandle,
-  publishMachineTokenFacadeGeneration,
-  unregisterMachineTokenFacadesForPlugin,
-  type HostMachineTokenBindingRecord,
-  type MachineTokenKeyRefIdentity,
-} from "../../src/agents/machine-token-host.js";
 import linkbrainPlugin from "./index.js";
 import type { OpenClawPluginApi, OpenClawPluginService } from "./runtime-api.js";
 import { createMemoryKeyedStore } from "./src/test-support/memory-store.js";
 
-const KEY_REF: MachineTokenKeyRefIdentity = {
-  source: "env",
-  provider: "default",
-  id: "test-brain-lifecycle-assertion-pem",
-};
-
-function grantedRecord(bindingId: string): HostMachineTokenBindingRecord {
-  const keyRef = { ...KEY_REF };
-  const keyRefFingerprint = fingerprintMachineTokenKeyRef(keyRef);
-  const base = {
-    bindingId,
-    issuerUrl: "https://issuer.example.test",
-    clientId: `${bindingId}-client`,
-    keyRef,
-    keyRefFingerprint,
+function createLiveFacade(bindingId: string) {
+  let registered = true;
+  let unregisterCalls = 0;
+  const facade: MachineTokenPluginFacade = {
     pluginId: "linkbrain",
-    domain: "linkbrain",
+    grantedBindingIds: new Set([bindingId]),
+    acquire: async ({ bindingId: requestedBindingId }) => {
+      if (!registered || requestedBindingId !== bindingId) {
+        throw new Error("facade is unregistered");
+      }
+      return {
+        bindingId,
+        bindingFingerprint: `fp-${bindingId}`,
+        accessToken: "test-access-token",
+        expiresAt: Date.now() + 60_000,
+        tokenType: "Bearer",
+      };
+    },
+    invalidate: () => undefined,
+    health: (requestedBindingId) => ({
+      pluginId: "linkbrain",
+      bindingId: requestedBindingId,
+      granted: requestedBindingId === bindingId,
+      registered: requestedBindingId === bindingId && registered,
+      cached: false,
+    }),
+    unregister: () => {
+      unregisterCalls += 1;
+      registered = false;
+    },
   };
   return {
-    ...base,
-    bindingFingerprint: buildHostMachineTokenBindingFingerprint(base),
+    facade,
+    get unregisterCalls() {
+      return unregisterCalls;
+    },
   };
-}
-
-function createLiveFacade(bindingId: string) {
-  const generation = createMachineTokenFacadeGeneration({
-    pluginId: "linkbrain",
-    grantedRecords: [grantedRecord(bindingId)],
-    resolveKeyPem: async () => "test-pem",
-    resolveAccess: async ({ binding }) => ({
-      bindingId: binding.bindingId,
-      bindingFingerprint: `fp-${binding.bindingId}`,
-      accessToken: "test-access-token",
-      expiresAt: Date.now() + 60_000,
-      tokenType: "Bearer" as const,
-    }),
-  });
-  publishMachineTokenFacadeGeneration(generation.handle);
-  return generation;
 }
 
 type HookHandler = (event?: unknown, ctx?: unknown) => void | Promise<void>;
@@ -117,7 +104,6 @@ async function registerStartedService(params: {
 
 describe("linkbrain machine-token facade stop/reload lifecycle", () => {
   afterEach(() => {
-    unregisterMachineTokenFacadesForPlugin("linkbrain");
     vi.restoreAllMocks();
   });
 
@@ -136,7 +122,7 @@ describe("linkbrain machine-token facade stop/reload lifecycle", () => {
 
     await service.stop({} as never);
     expect(generation.facade.health("linkbrain-stage").registered).toBe(false);
-    expect(getLiveMachineTokenFacadeGenerationHandle("linkbrain")).toBeUndefined();
+    expect(generation.unregisterCalls).toBe(1);
   });
 
   it("does not let a retired generation's service.stop unregister a newer live facade", async () => {
@@ -144,21 +130,15 @@ describe("linkbrain machine-token facade stop/reload lifecycle", () => {
     const { service: previousService } = await registerStartedService({ facade: first.facade });
 
     const second = createLiveFacade("linkbrain-stage");
-    expect(first.facade.health("linkbrain-stage").registered).toBe(false);
-    expect(second.facade.health("linkbrain-stage").registered).toBe(true);
-
-    // Reload path: previous services stop after the new generation is published.
+    // A prior service stop must not touch the replacement facade injected into
+    // the new registration.
     await previousService.stop({} as never);
 
+    expect(first.facade.health("linkbrain-stage").registered).toBe(false);
     expect(second.facade.health("linkbrain-stage").registered).toBe(true);
     await expect(second.facade.acquire({ bindingId: "linkbrain-stage" })).resolves.toMatchObject({
       accessToken: "test-access-token",
     });
-    expect(getLiveMachineTokenFacadeGenerationHandle("linkbrain")?.generationId).toBe(
-      second.handle.generationId,
-    );
-
-    destroyMachineTokenFacadeGeneration(second.handle);
   });
 
   it("repeated restart: gateway_stop then service.stop unregisters only once at the end", async () => {
@@ -181,29 +161,18 @@ describe("linkbrain machine-token facade stop/reload lifecycle", () => {
     expect(unregisterSpy).toHaveBeenCalledTimes(2);
   });
 
-  it("host lease keeps the shared live facade across duplicate service.stop then restart", async () => {
+  it("keeps a replacement facade independent from a stopped prior service", async () => {
     const generation = createLiveFacade("linkbrain-stage");
-    const releaseLease = acquireMachineTokenFacadeLeaseForPlugin("linkbrain");
     const { service: first } = await registerStartedService({ facade: generation.facade });
 
     await first.stop({} as never);
-    expect(generation.facade.health("linkbrain-stage").registered).toBe(true);
+    const replacement = createLiveFacade("linkbrain-stage");
+    const { service: second } = await registerStartedService({ facade: replacement.facade });
     await expect(
-      generation.facade.acquire({ bindingId: "linkbrain-stage" }),
-    ).resolves.toMatchObject({ accessToken: "test-access-token" });
-    expect(getLiveMachineTokenFacadeGenerationHandle("linkbrain")?.generationId).toBe(
-      generation.handle.generationId,
-    );
-
-    const { service: second } = await registerStartedService({ facade: generation.facade });
-    await expect(
-      generation.facade.acquire({ bindingId: "linkbrain-stage" }),
+      replacement.facade.acquire({ bindingId: "linkbrain-stage" }),
     ).resolves.toMatchObject({ accessToken: "test-access-token" });
 
-    releaseLease();
     await second.stop({} as never);
-    // No host lease remains — plugin unregister is authoritative.
-    expect(generation.facade.health("linkbrain-stage").registered).toBe(false);
-    expect(getLiveMachineTokenFacadeGenerationHandle("linkbrain")).toBeUndefined();
+    expect(replacement.facade.health("linkbrain-stage").registered).toBe(false);
   });
 });
