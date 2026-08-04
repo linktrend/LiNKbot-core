@@ -33,8 +33,8 @@
     {
       "source": "Personality files/agents/pipeline-status.md",
       "destination": "agents/pipeline-status.md",
-      "sha256": "b762a8f2764133fd8b3071d0c33dfe5a82a82f9e06d769da534055ce298e3583",
-      "bytes": 6994
+      "sha256": "6689d764b731c29173ac57779f659440ca31d1a75024392246fe8c398adec142",
+      "bytes": 6992
     },
     {
       "source": "Personality files/templates/telegram-heartbeat.md",
