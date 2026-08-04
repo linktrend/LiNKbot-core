@@ -1,0 +1,295 @@
+{
+  "version": 2,
+  "note": "Generated from stage-ops-payloads / stage-ops-coordinator. delivery=none; enabled=false; real bounded procedures (not STAGE_CANARY stubs). Repair packaged separately unless includeRepair and store health passes.",
+  "hardStops": [
+    "delivery=none (no Telegram announce / no runner fallback delivery)",
+    "OpenRouter-only credentials (OPENROUTER_API_KEY process-only; never mint direct provider keys)",
+    "do not touch ~/.openclaw-lisa / live Lisa / VPS / IDE Development",
+    "do not enable schedules from this message; schedules stay disabled until Principal gate",
+    "do not mutate other cron jobs (no cron.add / cron.update / cron.remove)",
+    "do not print secrets, tokens, or credential values"
+  ],
+  "deliveryDefault": "none",
+  "payloadHashes": {
+    "lisa-ship-05": "0bfe3e34a52c1e3e90992b16b70ed4733d1c94be0b3ddb841c17bd9210c7d0d0",
+    "lisa-pull-07": "6220b5a299ce046e669a45c6c924eb8a147238bf75fa8e07748036d9af300b27",
+    "lisa-ship-16": "2c7bf9b634ff7cbe7eca569bfeabd6d4990e0de00a1f19175abb04f4b0c50404",
+    "lisa-pull-18": "bf41ff35633c945b8a2a4d3d81b56d8ac1ef42d98ccec7fced4dd6ae6b3ad8da",
+    "lisa-morning-digest": "705e1b1b5e4c99e9c7351d2ca558a6c48a8affe437450f98de16acbee12f54c5",
+    "lisa-heartbeat-45": "f8663376d183fcbc09fe6e893c0f73bf439459d6361a714fbf4b19fb265662c8",
+    "lisa-repair-dispatcher": "d24f83aae7a603e74baee6f4024c82c3a64bdb31417aacc5ba2042a0a6f8f069"
+  },
+  "jobs": [
+    {
+      "id": "lisa-ship-05",
+      "name": "Ship 05",
+      "enabled": false,
+      "agentId": "lisa-cron",
+      "sessionTarget": "isolated",
+      "schedule": {
+        "tz": "Asia/Taipei",
+        "expr": "0 5 * * *"
+      },
+      "delivery": {
+        "mode": "none"
+      },
+      "payload": {
+        "kind": "agentTurn",
+        "toolsAllow": [
+          "sessions_spawn",
+          "sessions_wait",
+          "read",
+          "write",
+          "edit",
+          "exec"
+        ],
+        "messageFile": "agents/ship-pull-clock.md",
+        "message": "STAGE BOUNDED PROCEDURE — Ship 05\nHard stops:\n- delivery=none (no Telegram announce / no runner fallback delivery)\n- OpenRouter-only credentials (OPENROUTER_API_KEY process-only; never mint direct provider keys)\n- do not touch ~/.openclaw-lisa / live Lisa / VPS / IDE Development\n- do not enable schedules from this message; schedules stay disabled until Principal gate\n- do not mutate other cron jobs (no cron.add / cron.update / cron.remove)\n- do not print secrets, tokens, or credential values\nRead and execute agents/ship-pull-clock.md for this wave.\nWave: Ship 05. Spawn Codex ACP shipper only when stage ACP is healthy and the Principal ACP gate allows; otherwise report WAVE: Issues with STAGE_SKIPPED_acp (do not invent Clear).\nExact spawn contract: runtime: \"acp\", agentId: \"codex\", model: \"openai/gpt-5.6-terra\", thinking: \"medium\".\nIf Codex ACP or Terra Medium is unavailable, fail closed with STAGE_SKIPPED_acp and WAVE: Issues. No Cursor/Grok fallback. Do not spawn Cursor. Do not self-write.\nWait contract: park with sessions_wait after spawn; never call sessions_yield.\ndelivery=none: skip Telegram announce and skip email-send unless Principal authorizes stage delivery; note STAGE_SKIPPED_email / STAGE_SKIPPED_telegram; still perform status CAS only against stage workspace pipeline-status (never live Lisa memory).\nIf lisa-safe email-send is the stage adapter or unavailable: record STAGE_SKIPPED_email — do not invent sent mail.\nFinal assistant payload must be exactly `<Wave>: Clear|Issues` when the procedure completes, or STAGE_PROCEDURE_BLOCKED <reason>. Never invent Clear when ACP was skipped (STAGE_SKIPPED_acp → Issues).\nNever reply with STAGE_CANARY_OK alone.",
+        "timeoutSeconds": 1200
+      },
+      "payloadHash": "0bfe3e34a52c1e3e90992b16b70ed4733d1c94be0b3ddb841c17bd9210c7d0d0",
+      "hardStops": [
+        "delivery=none (no Telegram announce / no runner fallback delivery)",
+        "OpenRouter-only credentials (OPENROUTER_API_KEY process-only; never mint direct provider keys)",
+        "do not touch ~/.openclaw-lisa / live Lisa / VPS / IDE Development",
+        "do not enable schedules from this message; schedules stay disabled until Principal gate",
+        "do not mutate other cron jobs (no cron.add / cron.update / cron.remove)",
+        "do not print secrets, tokens, or credential values"
+      ]
+    },
+    {
+      "id": "lisa-pull-07",
+      "name": "Pull 07",
+      "enabled": false,
+      "agentId": "lisa-cron",
+      "sessionTarget": "isolated",
+      "schedule": {
+        "tz": "Asia/Taipei",
+        "expr": "0 7 * * *"
+      },
+      "delivery": {
+        "mode": "none"
+      },
+      "payload": {
+        "kind": "agentTurn",
+        "toolsAllow": [
+          "sessions_spawn",
+          "sessions_wait",
+          "read",
+          "write",
+          "edit",
+          "exec"
+        ],
+        "messageFile": "agents/ship-pull-clock.md",
+        "message": "STAGE BOUNDED PROCEDURE — Pull 07\nHard stops:\n- delivery=none (no Telegram announce / no runner fallback delivery)\n- OpenRouter-only credentials (OPENROUTER_API_KEY process-only; never mint direct provider keys)\n- do not touch ~/.openclaw-lisa / live Lisa / VPS / IDE Development\n- do not enable schedules from this message; schedules stay disabled until Principal gate\n- do not mutate other cron jobs (no cron.add / cron.update / cron.remove)\n- do not print secrets, tokens, or credential values\nRead and execute agents/ship-pull-clock.md for this wave.\nWave: Pull 07. Spawn Codex ACP puller only when stage ACP is healthy and the Principal ACP gate allows; otherwise report WAVE: Issues with STAGE_SKIPPED_acp (do not invent Clear).\nExact spawn contract: runtime: \"acp\", agentId: \"codex\", model: \"openai/gpt-5.6-terra\", thinking: \"medium\".\nIf Codex ACP or Terra Medium is unavailable, fail closed with STAGE_SKIPPED_acp and WAVE: Issues. No Cursor/Grok fallback. Do not spawn Cursor. Do not self-write.\nWait contract: park with sessions_wait after spawn; never call sessions_yield.\ndelivery=none: skip Telegram announce and skip email-send unless Principal authorizes stage delivery; note STAGE_SKIPPED_email / STAGE_SKIPPED_telegram; still perform status CAS only against stage workspace pipeline-status (never live Lisa memory).\nIf lisa-safe email-send is the stage adapter or unavailable: record STAGE_SKIPPED_email — do not invent sent mail.\nFinal assistant payload must be exactly `<Wave>: Clear|Issues` when the procedure completes, or STAGE_PROCEDURE_BLOCKED <reason>. Never invent Clear when ACP was skipped (STAGE_SKIPPED_acp → Issues).\nNever reply with STAGE_CANARY_OK alone.",
+        "timeoutSeconds": 1200
+      },
+      "payloadHash": "6220b5a299ce046e669a45c6c924eb8a147238bf75fa8e07748036d9af300b27",
+      "hardStops": [
+        "delivery=none (no Telegram announce / no runner fallback delivery)",
+        "OpenRouter-only credentials (OPENROUTER_API_KEY process-only; never mint direct provider keys)",
+        "do not touch ~/.openclaw-lisa / live Lisa / VPS / IDE Development",
+        "do not enable schedules from this message; schedules stay disabled until Principal gate",
+        "do not mutate other cron jobs (no cron.add / cron.update / cron.remove)",
+        "do not print secrets, tokens, or credential values"
+      ]
+    },
+    {
+      "id": "lisa-ship-16",
+      "name": "Ship 16",
+      "enabled": false,
+      "agentId": "lisa-cron",
+      "sessionTarget": "isolated",
+      "schedule": {
+        "tz": "Asia/Taipei",
+        "expr": "0 16 * * *"
+      },
+      "delivery": {
+        "mode": "none"
+      },
+      "payload": {
+        "kind": "agentTurn",
+        "toolsAllow": [
+          "sessions_spawn",
+          "sessions_wait",
+          "read",
+          "write",
+          "edit",
+          "exec"
+        ],
+        "messageFile": "agents/ship-pull-clock.md",
+        "message": "STAGE BOUNDED PROCEDURE — Ship 16\nHard stops:\n- delivery=none (no Telegram announce / no runner fallback delivery)\n- OpenRouter-only credentials (OPENROUTER_API_KEY process-only; never mint direct provider keys)\n- do not touch ~/.openclaw-lisa / live Lisa / VPS / IDE Development\n- do not enable schedules from this message; schedules stay disabled until Principal gate\n- do not mutate other cron jobs (no cron.add / cron.update / cron.remove)\n- do not print secrets, tokens, or credential values\nRead and execute agents/ship-pull-clock.md for this wave.\nWave: Ship 16. Spawn Codex ACP shipper only when stage ACP is healthy and the Principal ACP gate allows; otherwise report WAVE: Issues with STAGE_SKIPPED_acp (do not invent Clear).\nExact spawn contract: runtime: \"acp\", agentId: \"codex\", model: \"openai/gpt-5.6-terra\", thinking: \"medium\".\nIf Codex ACP or Terra Medium is unavailable, fail closed with STAGE_SKIPPED_acp and WAVE: Issues. No Cursor/Grok fallback. Do not spawn Cursor. Do not self-write.\nWait contract: park with sessions_wait after spawn; never call sessions_yield.\ndelivery=none: skip Telegram announce and skip email-send unless Principal authorizes stage delivery; note STAGE_SKIPPED_email / STAGE_SKIPPED_telegram; still perform status CAS only against stage workspace pipeline-status (never live Lisa memory).\nIf lisa-safe email-send is the stage adapter or unavailable: record STAGE_SKIPPED_email — do not invent sent mail.\nFinal assistant payload must be exactly `<Wave>: Clear|Issues` when the procedure completes, or STAGE_PROCEDURE_BLOCKED <reason>. Never invent Clear when ACP was skipped (STAGE_SKIPPED_acp → Issues).\nNever reply with STAGE_CANARY_OK alone.",
+        "timeoutSeconds": 1200
+      },
+      "payloadHash": "2c7bf9b634ff7cbe7eca569bfeabd6d4990e0de00a1f19175abb04f4b0c50404",
+      "hardStops": [
+        "delivery=none (no Telegram announce / no runner fallback delivery)",
+        "OpenRouter-only credentials (OPENROUTER_API_KEY process-only; never mint direct provider keys)",
+        "do not touch ~/.openclaw-lisa / live Lisa / VPS / IDE Development",
+        "do not enable schedules from this message; schedules stay disabled until Principal gate",
+        "do not mutate other cron jobs (no cron.add / cron.update / cron.remove)",
+        "do not print secrets, tokens, or credential values"
+      ]
+    },
+    {
+      "id": "lisa-pull-18",
+      "name": "Pull 18",
+      "enabled": false,
+      "agentId": "lisa-cron",
+      "sessionTarget": "isolated",
+      "schedule": {
+        "tz": "Asia/Taipei",
+        "expr": "0 18 * * *"
+      },
+      "delivery": {
+        "mode": "none"
+      },
+      "payload": {
+        "kind": "agentTurn",
+        "toolsAllow": [
+          "sessions_spawn",
+          "sessions_wait",
+          "read",
+          "write",
+          "edit",
+          "exec"
+        ],
+        "messageFile": "agents/ship-pull-clock.md",
+        "message": "STAGE BOUNDED PROCEDURE — Pull 18\nHard stops:\n- delivery=none (no Telegram announce / no runner fallback delivery)\n- OpenRouter-only credentials (OPENROUTER_API_KEY process-only; never mint direct provider keys)\n- do not touch ~/.openclaw-lisa / live Lisa / VPS / IDE Development\n- do not enable schedules from this message; schedules stay disabled until Principal gate\n- do not mutate other cron jobs (no cron.add / cron.update / cron.remove)\n- do not print secrets, tokens, or credential values\nRead and execute agents/ship-pull-clock.md for this wave.\nWave: Pull 18. Spawn Codex ACP puller only when stage ACP is healthy and the Principal ACP gate allows; otherwise report WAVE: Issues with STAGE_SKIPPED_acp (do not invent Clear).\nExact spawn contract: runtime: \"acp\", agentId: \"codex\", model: \"openai/gpt-5.6-terra\", thinking: \"medium\".\nIf Codex ACP or Terra Medium is unavailable, fail closed with STAGE_SKIPPED_acp and WAVE: Issues. No Cursor/Grok fallback. Do not spawn Cursor. Do not self-write.\nWait contract: park with sessions_wait after spawn; never call sessions_yield.\ndelivery=none: skip Telegram announce and skip email-send unless Principal authorizes stage delivery; note STAGE_SKIPPED_email / STAGE_SKIPPED_telegram; still perform status CAS only against stage workspace pipeline-status (never live Lisa memory).\nIf lisa-safe email-send is the stage adapter or unavailable: record STAGE_SKIPPED_email — do not invent sent mail.\nFinal assistant payload must be exactly `<Wave>: Clear|Issues` when the procedure completes, or STAGE_PROCEDURE_BLOCKED <reason>. Never invent Clear when ACP was skipped (STAGE_SKIPPED_acp → Issues).\nNever reply with STAGE_CANARY_OK alone.",
+        "timeoutSeconds": 1200
+      },
+      "payloadHash": "bf41ff35633c945b8a2a4d3d81b56d8ac1ef42d98ccec7fced4dd6ae6b3ad8da",
+      "hardStops": [
+        "delivery=none (no Telegram announce / no runner fallback delivery)",
+        "OpenRouter-only credentials (OPENROUTER_API_KEY process-only; never mint direct provider keys)",
+        "do not touch ~/.openclaw-lisa / live Lisa / VPS / IDE Development",
+        "do not enable schedules from this message; schedules stay disabled until Principal gate",
+        "do not mutate other cron jobs (no cron.add / cron.update / cron.remove)",
+        "do not print secrets, tokens, or credential values"
+      ]
+    },
+    {
+      "id": "lisa-morning-digest",
+      "name": "Morning Digest",
+      "enabled": false,
+      "agentId": "lisa-cron",
+      "sessionTarget": "isolated",
+      "schedule": {
+        "tz": "Asia/Taipei",
+        "expr": "30 8 * * *"
+      },
+      "delivery": {
+        "mode": "none"
+      },
+      "payload": {
+        "kind": "agentTurn",
+        "toolsAllow": [
+          "read",
+          "write",
+          "edit",
+          "exec"
+        ],
+        "messageFile": "agents/morning-digest.md",
+        "message": "STAGE BOUNDED PROCEDURE — lisa-morning-digest\nHard stops:\n- delivery=none (no Telegram announce / no runner fallback delivery)\n- OpenRouter-only credentials (OPENROUTER_API_KEY process-only; never mint direct provider keys)\n- do not touch ~/.openclaw-lisa / live Lisa / VPS / IDE Development\n- do not enable schedules from this message; schedules stay disabled until Principal gate\n- do not mutate other cron jobs (no cron.add / cron.update / cron.remove)\n- do not print secrets, tokens, or credential values\nRead and execute agents/morning-digest.md for profile lisa-stage.\ndelivery=none: do not rely on cron announce; do not email Carlos unless Principal explicitly authorizes a stage delivery exception (default: skip email and note STAGE_SKIPPED_email).\nExternal Google/calendar/email: tools/bin/lisa-safe is the packaged stage adapter only. On missing helper, non-zero skip exit, or STAGE_SKIPPED_google output: record STAGE_SKIPPED_google and continue core file/render checks. Never invent Google results. Never claim external Google checks passed. Never STAGE_PROCEDURE_BLOCKED solely because Google is unavailable under delivery=none.\nCarlos Tasks: tools/bin/lisa-carlos-tasks is the packaged stage adapter only. On missing helper, non-zero skip exit, or STAGE_SKIPPED_task output: record STAGE_SKIPPED_task and continue. Never invent Tasks Yes/No from fake Google. Never claim task checks passed.\nMissing required workspace files (memory/battery-monitor.md, memory/battery-monitor-state.json, agents/pipeline-status.md, memory/pipeline-status.md when needed) remains STAGE_PROCEDURE_BLOCKED — do not paper over missing files with false success.\ndelivery=none: never email, never Telegram-deliver, never schedule battery-monitor-alert-35 to live channels; note STAGE_SKIPPED_email / STAGE_SKIPPED_telegram when those paths are skipped.\nWhen all three external paths are unavailable, render exactly this truthful block:\nStage external integrations (delivery=none):\nGoogle/Calendar: STAGE_SKIPPED_google (unavailable; no result asserted).\nCarlos Tasks: STAGE_SKIPPED_task (unavailable; no Yes/No asserted).\nEmail: STAGE_SKIPPED_email (delivery disabled; no send asserted).\nMain Approve: if authoritative package store is unavailable, record blocked_no_store and continue digest sections without inventing Clear.\nFinal reply must be the Morning Digest Output Format (or STAGE_PROCEDURE_BLOCKED <reason> for missing required workspace files / unrecovered hard denial unrelated to intentional Google/task skips).\nNever reply with STAGE_CANARY_OK alone. Never invent Clear.",
+        "timeoutSeconds": 1200
+      },
+      "payloadHash": "705e1b1b5e4c99e9c7351d2ca558a6c48a8affe437450f98de16acbee12f54c5",
+      "hardStops": [
+        "delivery=none (no Telegram announce / no runner fallback delivery)",
+        "OpenRouter-only credentials (OPENROUTER_API_KEY process-only; never mint direct provider keys)",
+        "do not touch ~/.openclaw-lisa / live Lisa / VPS / IDE Development",
+        "do not enable schedules from this message; schedules stay disabled until Principal gate",
+        "do not mutate other cron jobs (no cron.add / cron.update / cron.remove)",
+        "do not print secrets, tokens, or credential values"
+      ]
+    },
+    {
+      "id": "lisa-heartbeat-45",
+      "name": "Heartbeat 45",
+      "enabled": false,
+      "agentId": "lisa-cron",
+      "sessionTarget": "isolated",
+      "schedule": {
+        "tz": "Asia/Taipei",
+        "expr": "45 0,2,4,6,10,12,14,16,18,20,22 * * *"
+      },
+      "delivery": {
+        "mode": "none"
+      },
+      "payload": {
+        "kind": "agentTurn",
+        "toolsAllow": [
+          "read",
+          "write",
+          "edit",
+          "exec"
+        ],
+        "messageFile": "HEARTBEAT.md",
+        "message": "STAGE BOUNDED PROCEDURE — lisa-heartbeat-45\nHard stops:\n- delivery=none (no Telegram announce / no runner fallback delivery)\n- OpenRouter-only credentials (OPENROUTER_API_KEY process-only; never mint direct provider keys)\n- do not touch ~/.openclaw-lisa / live Lisa / VPS / IDE Development\n- do not enable schedules from this message; schedules stay disabled until Principal gate\n- do not mutate other cron jobs (no cron.add / cron.update / cron.remove)\n- do not print secrets, tokens, or credential values\nRead and execute HEARTBEAT.md for profile lisa-stage (workspace under the stage root).\nUse only the HARD TOOL CONTRACT in HEARTBEAT.md (native read / sessions_list / unpiped lisa-safe forms).\nIf a check requires live Telegram announce, live Lisa paths, or unpaid spend beyond stage OpenRouter policy, skip that check and note STAGE_SKIPPED_<check>.\nExternal Google/calendar/email: tools/bin/lisa-safe is the packaged stage adapter only. On missing helper, non-zero skip exit, or STAGE_SKIPPED_google output: record STAGE_SKIPPED_google and continue core file/render checks. Never invent Google results. Never claim external Google checks passed. Never STAGE_PROCEDURE_BLOCKED solely because Google is unavailable under delivery=none.\nCarlos Tasks: tools/bin/lisa-carlos-tasks is the packaged stage adapter only. On missing helper, non-zero skip exit, or STAGE_SKIPPED_task output: record STAGE_SKIPPED_task and continue. Never invent Tasks Yes/No from fake Google. Never claim task checks passed.\nMissing required workspace files (memory/battery-monitor.md, memory/battery-monitor-state.json, agents/pipeline-status.md, memory/pipeline-status.md when needed) remains STAGE_PROCEDURE_BLOCKED — do not paper over missing files with false success.\ndelivery=none: never email, never Telegram-deliver, never schedule battery-monitor-alert-35 to live channels; note STAGE_SKIPPED_email / STAGE_SKIPPED_telegram when those paths are skipped.\nWhen all three external paths are unavailable, render exactly this truthful block:\nStage external integrations (delivery=none):\nGoogle/Calendar: STAGE_SKIPPED_google (unavailable; no result asserted).\nCarlos Tasks: STAGE_SKIPPED_task (unavailable; no Yes/No asserted).\nEmail: STAGE_SKIPPED_email (delivery disabled; no send asserted).\nFinal reply must follow the Heartbeat output format in HEARTBEAT.md (or STAGE_PROCEDURE_BLOCKED <reason> on unrecovered hard denial unrelated to intentional Google/task skips).\nNever reply with STAGE_CANARY_OK alone. Never invent Clear.",
+        "timeoutSeconds": 900
+      },
+      "payloadHash": "f8663376d183fcbc09fe6e893c0f73bf439459d6361a714fbf4b19fb265662c8",
+      "hardStops": [
+        "delivery=none (no Telegram announce / no runner fallback delivery)",
+        "OpenRouter-only credentials (OPENROUTER_API_KEY process-only; never mint direct provider keys)",
+        "do not touch ~/.openclaw-lisa / live Lisa / VPS / IDE Development",
+        "do not enable schedules from this message; schedules stay disabled until Principal gate",
+        "do not mutate other cron jobs (no cron.add / cron.update / cron.remove)",
+        "do not print secrets, tokens, or credential values"
+      ]
+    }
+  ],
+  "repairSupervision": {
+    "job": {
+      "id": "lisa-repair-dispatcher",
+      "name": "Repair Dispatcher",
+      "enabled": false,
+      "agentId": "lisa-cron",
+      "sessionTarget": "isolated",
+      "schedule": {
+        "tz": "Asia/Taipei",
+        "expr": "15 * * * *"
+      },
+      "delivery": {
+        "mode": "none"
+      },
+      "payload": {
+        "kind": "agentTurn",
+        "toolsAllow": [
+          "sessions_spawn",
+          "sessions_wait",
+          "read",
+          "write",
+          "edit",
+          "exec"
+        ],
+        "messageFile": "agents/repair-dispatcher.md",
+        "message": "STAGE REPAIR/GITOPS SUPERVISION — lisa-repair-dispatcher\nHard stops:\n- delivery=none (no Telegram announce / no runner fallback delivery)\n- OpenRouter-only credentials (OPENROUTER_API_KEY process-only; never mint direct provider keys)\n- do not touch ~/.openclaw-lisa / live Lisa / VPS / IDE Development\n- do not enable schedules from this message; schedules stay disabled until Principal gate\n- do not mutate other cron jobs (no cron.add / cron.update / cron.remove)\n- do not print secrets, tokens, or credential values\nDurable-state gate (fail-closed):\n1) Probe Repair attempt store availability (authoritative OpenClaw/SQLite or IDE control-plane binding — never JSON/Markdown sidecars as state).\n2) Probe Main Approve authoritative store (IDE Development issue #23 / OpenClaw package store).\n3) If either store is unavailable: final reply exactly `blocked_no_store` and STOP. Do not spawn ACP. Do not invent Clear or repair success.\n4) If both stores are present and a genuine ordinary repair dispatch is authorized: use sessions_spawn only with runtime: \"acp\", agentId: \"codex\", model: \"openai/gpt-5.6-terra\", thinking: \"medium\".\n5) If Codex ACP or Terra Medium is unavailable: STOP fail-closed. No Cursor/Grok fallback, Cursor Automation/webhook, internal subagent, direct/self edits, self-write, or alternate automation. Do not spawn Cursor.\n6) After a dispatched repair, sessions_wait is required; sessions_yield is forbidden. Preserve exact binding, max attempts, and durable Repair/Main Approve stores. Stage defaults still forbid live ACP dispatch (authorizeRepairLiveDispatch remains fail-closed).\nNever reply with STAGE_CANARY_OK alone.",
+        "timeoutSeconds": 600
+      },
+      "payloadHash": "d24f83aae7a603e74baee6f4024c82c3a64bdb31417aacc5ba2042a0a6f8f069",
+      "hardStops": [
+        "delivery=none (no Telegram announce / no runner fallback delivery)",
+        "OpenRouter-only credentials (OPENROUTER_API_KEY process-only; never mint direct provider keys)",
+        "do not touch ~/.openclaw-lisa / live Lisa / VPS / IDE Development",
+        "do not enable schedules from this message; schedules stay disabled until Principal gate",
+        "do not mutate other cron jobs (no cron.add / cron.update / cron.remove)",
+        "do not print secrets, tokens, or credential values"
+      ],
+      "defaultDecision": {
+        "decision": "supervise_readonly",
+        "reason": "stores_present",
+        "mayDispatchAcp": false,
+        "note": "Stage defaults still forbid live ACP; evaluate bindings only."
+      },
+      "installAllowed": true
+    },
+    "installFlag": "--include-repair"
+  },
+  "notInstalledByDefault": [
+    {
+      "id": "lisa-repair-dispatcher",
+      "reason": "Install only via coordinator --include-repair after durable OpenClaw SQLite store health passes; fail-closed blocked_no_store otherwise."
+    }
+  ]
+}

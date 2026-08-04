@@ -1,3 +1,5 @@
+import type { MachineTokenFacadeGenerationHandle } from "../agents/machine-token-host.js";
+import type { HostMachineTokenBindingRecord } from "../agents/machine-token-host.js";
 import type { registerInternalHook } from "../hooks/internal-hooks.js";
 import type { PluginDiagnostic } from "./manifest-types.js";
 import { createModelCatalogRegistrationHandlers } from "./model-catalog-registration.js";
@@ -14,6 +16,18 @@ export type PluginTypedHookPolicy = {
 
 export type PluginSideEffectGuard = {
   active: boolean;
+  /** Candidate/live machine-token generation owned by this registration attempt. */
+  machineTokenGeneration?: MachineTokenFacadeGenerationHandle;
+  /**
+   * True when this registration reused an already-live generation. Rollback must
+   * not force-retire that shared live ownership.
+   */
+  machineTokenGenerationReused?: boolean;
+  /**
+   * Frozen ownership descriptors for this generation — cache blueprint only.
+   * Never serialize the live handle into the registry cache.
+   */
+  machineTokenGrantedRecords?: readonly HostMachineTokenBindingRecord[];
 };
 
 type PluginRegistrationCapabilities = {

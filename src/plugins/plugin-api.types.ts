@@ -1,4 +1,5 @@
 import type { AgentHarness } from "../agents/harness/types.js";
+import type { MachineTokenPluginFacade } from "../agents/machine-token-types.js";
 import type { AnyAgentTool } from "../agents/tools/common.js";
 import type { OpenClawConfig } from "../config/types.openclaw.js";
 import type { ContextEngineFactory } from "../context-engine/registry.js";
@@ -172,6 +173,14 @@ export type OpenClawPluginApi = {
   config: OpenClawConfig;
   pluginConfig?: Record<string, unknown>;
   /**
+   * Host-constructed, identity/binding-scoped machine-token facade.
+   *
+   * Present only when the plugin has granted binding ids (pluginConfig and/or
+   * that plugin's managed MCP `machine_token` servers). Plugins must not
+   * construct privileged facades themselves.
+   */
+  machineTokenFacade?: MachineTokenPluginFacade;
+  /**
    * In-process runtime helpers for trusted native plugins.
    *
    * This surface is broader than hooks. Prefer hooks for third-party
@@ -202,9 +211,24 @@ export type OpenClawPluginApi = {
   registerHttpRoute: (params: OpenClawPluginHttpRouteParams) => void;
   /** Register a plugin-owned resolver for browser-style hosted media URLs. */
   registerHostedMediaResolver: (resolver: OpenClawPluginHostedMediaResolver) => void;
-  /** Bind a declared MCP server's transport to the trusted message requester. */ registerMcpServerConnectionResolver: (
+  /** Bind a declared MCP server's transport to the trusted message requester. */
+  registerMcpServerConnectionResolver: (
     resolver: import("./types.mcp-connection.js").OpenClawPluginMcpServerConnectionResolver,
   ) => void;
+  /**
+   * Bind a declared MCP server's process-local tool selection overlay.
+   * Operator `toolFilter` remains the ceiling; overlay is intersected at catalog
+   * materialization and is never written to config.
+   */
+  registerMcpServerToolFilter: (
+    resolver: import("./types.mcp-tool-filter.js").OpenClawPluginMcpServerToolFilter,
+  ) => void;
+  /**
+   * Remove this plugin's process-local tool-filter overlay for a declared MCP
+   * server. Other plugins cannot remove an owned registration. Bumps the
+   * registration generation so live catalogs rematerialize.
+   */
+  unregisterMcpServerToolFilter: (serverName: string) => void;
   /** Register a native messaging channel plugin (channel capability). */
   registerChannel: (registration: OpenClawPluginChannelRegistration | ChannelPlugin) => void;
   /**

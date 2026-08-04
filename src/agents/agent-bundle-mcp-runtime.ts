@@ -15,7 +15,13 @@ import { logWarn } from "../logger.js";
 import type { PluginManifestRegistry } from "../plugins/manifest-registry.js";
 import { runTasksWithConcurrency } from "../utils/run-with-concurrency.js";
 import { mergeMcpToolCatalogs } from "./agent-bundle-mcp-combined.js";
-import { matchesMcpToolFilterPattern } from "./agent-bundle-mcp-filter.js";
+import {
+  describeComposedMcpToolFilter,
+  observeMcpToolFilterRegistrationGeneration,
+  resolveMcpToolFilterComposition,
+  shouldExposeComposedMcpTool,
+  type McpToolSelection,
+} from "./mcp-tool-filter-resolver.js";
 import {
   completeDeferredSessionMcpRuntimeRetirement,
   disposeAllSessionMcpRuntimes,
@@ -96,11 +102,6 @@ function getBundleMcpTestState(): BundleMcpTestState {
   globalStore[BUNDLE_MCP_TEST_STATE_KEY] = state;
   return state;
 }
-
-type McpToolSelection = {
-  include?: readonly string[];
-  exclude?: readonly string[];
-};
 
 type McpServerBackoffState = {
   failures: number;
@@ -302,18 +303,6 @@ function getMcpToolSelection(rawServer: unknown): McpToolSelection {
   };
 }
 
-function shouldExposeMcpTool(selection: McpToolSelection, toolName: string): boolean {
-  const include = selection.include ?? [];
-  const exclude = selection.exclude ?? [];
-  if (
-    include.length > 0 &&
-    !include.some((pattern) => matchesMcpToolFilterPattern(pattern, toolName))
-  ) {
-    return false;
-  }
-  return !exclude.some((pattern) => matchesMcpToolFilterPattern(pattern, toolName));
-}
-
 function summarizeServerCapabilities(capabilities: ServerCapabilities | undefined) {
   return {
     resources: capabilities?.resources
@@ -417,6 +406,7 @@ export function createSessionMcpRuntime(params: {
   let catalog: McpToolCatalog | null = null;
   let catalogInFlight: Promise<McpToolCatalog> | undefined;
   let catalogInvalidationGeneration = 0;
+  let observedToolFilterGeneration = observeMcpToolFilterRegistrationGeneration();
   const sessions = new Map<string, BundleMcpSession>();
   const serverBackoff = new Map<string, McpServerBackoffState>();
   const recordServerToolFailure = (serverName: string, nowMs: number) => {
@@ -509,6 +499,13 @@ export function createSessionMcpRuntime(params: {
 
   const getCatalog = async (): Promise<McpToolCatalog> => {
     failIfDisposed();
+    const toolFilterGeneration = observeMcpToolFilterRegistrationGeneration();
+    if (toolFilterGeneration !== observedToolFilterGeneration) {
+      observedToolFilterGeneration = toolFilterGeneration;
+      catalog = null;
+      catalogInFlight = undefined;
+      catalogInvalidationGeneration += 1;
+    }
     if (catalog) {
       return catalog;
     }
@@ -684,10 +681,15 @@ export function createSessionMcpRuntime(params: {
                   ),
                 });
                 failIfDisposed();
-                const selection = getMcpToolSelection(rawServer);
+                const configSelection = getMcpToolSelection(rawServer);
+                const composition = await resolveMcpToolFilterComposition({
+                  serverName,
+                  configSelection,
+                });
                 const exposedTools = listedTools.filter((tool) =>
-                  shouldExposeMcpTool(selection, tool.name.trim()),
+                  shouldExposeComposedMcpTool(composition, tool.name.trim()),
                 );
+                const effectiveFilter = describeComposedMcpToolFilter(composition);
                 const serverEntry: McpServerCatalog = {
                   serverName,
                   safeServerName,
@@ -707,11 +709,45 @@ export function createSessionMcpRuntime(params: {
                         },
                       }
                     : {}),
-                  ...(selection.include || selection.exclude
+                  ...(effectiveFilter &&
+                  (effectiveFilter.denyAll ||
+                    effectiveFilter.include ||
+                    effectiveFilter.exclude ||
+                    effectiveFilter.operator ||
+                    effectiveFilter.plugin)
                     ? {
                         toolFilter: {
-                          ...(selection.include ? { include: [...selection.include] } : {}),
-                          ...(selection.exclude ? { exclude: [...selection.exclude] } : {}),
+                          ...(effectiveFilter.denyAll ? { denyAll: true } : {}),
+                          ...(effectiveFilter.include
+                            ? { include: [...effectiveFilter.include] }
+                            : {}),
+                          ...(effectiveFilter.exclude
+                            ? { exclude: [...effectiveFilter.exclude] }
+                            : {}),
+                          ...(effectiveFilter.operator
+                            ? {
+                                operator: {
+                                  ...(effectiveFilter.operator.include
+                                    ? { include: [...effectiveFilter.operator.include] }
+                                    : {}),
+                                  ...(effectiveFilter.operator.exclude
+                                    ? { exclude: [...effectiveFilter.operator.exclude] }
+                                    : {}),
+                                },
+                              }
+                            : {}),
+                          ...(effectiveFilter.plugin
+                            ? {
+                                plugin: {
+                                  ...(effectiveFilter.plugin.include
+                                    ? { include: [...effectiveFilter.plugin.include] }
+                                    : {}),
+                                  ...(effectiveFilter.plugin.exclude
+                                    ? { exclude: [...effectiveFilter.plugin.exclude] }
+                                    : {}),
+                                },
+                              }
+                            : {}),
                         },
                       }
                     : {}),

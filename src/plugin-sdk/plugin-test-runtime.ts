@@ -71,7 +71,11 @@ export type { PluginRuntime } from "../plugins/runtime/types.js";
 export type { PluginHookRegistration } from "../plugins/hook-types.js";
 export type { RuntimeEnv } from "../runtime.js";
 export type { MockFn } from "../test-utils/vitest-mock-fn.js";
-export { createOutboundTestPlugin, createTestRegistry } from "../test-utils/channel-plugins.js";
+export {
+  createDirectOutboundTestAdapter,
+  createOutboundTestPlugin,
+  createTestRegistry,
+} from "../test-utils/channel-plugins.js";
 export { readQueuedEntries as readQueuedDeliveryEntriesForTest } from "../infra/outbound/delivery-queue.test-helpers.js";
 export {
   registerProviderPlugin,

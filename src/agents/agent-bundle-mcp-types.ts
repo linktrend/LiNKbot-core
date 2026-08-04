@@ -38,8 +38,23 @@ export type McpServerCatalog = {
   requestTimeoutMs?: number;
   supportsParallelToolCalls?: boolean;
   toolFilter?: {
+    /**
+     * Explicit deny-all from plugin omit / empty include.
+     * Must not be represented as `include: []` — empty include means unrestricted.
+     */
+    denyAll?: boolean;
     include?: string[];
     exclude?: string[];
+    /** Operator ceiling half of an intersect composition (utility tools must pass both). */
+    operator?: {
+      include?: string[];
+      exclude?: string[];
+    };
+    /** Plugin overlay half of an intersect composition (utility tools must pass both). */
+    plugin?: {
+      include?: string[];
+      exclude?: string[];
+    };
   };
 };
 

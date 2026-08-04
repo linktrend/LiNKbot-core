@@ -226,8 +226,34 @@ export const AGENT_FIELD_HELP: Record<string, string> = {
     "Exact MCP tool names or simple '*' globs to expose from this server. When omitted, all server tools remain eligible unless excluded.",
   "mcp.servers.*.toolFilter.exclude":
     "Exact MCP tool names or simple '*' globs to hide from this server.",
+  "mcp.servers.*.auth":
+    'HTTP MCP auth mode: "oauth" for interactive authorization-code/refresh flows, or "machine_token" for non-interactive client_credentials with private_key_jwt. Selection is explicit: a machineToken block never overrides auth="oauth", and machine-token auth activates only when auth is "machine_token".',
+  "mcp.servers.*.oauth":
+    'Interactive OAuth settings for remote MCP HTTP servers. Active only when auth is "oauth"; a co-located machineToken block does not change the driver.',
   "mcp.servers.*.oauth.authProfileId":
     "Refresh-capable auth profile id used to inject the current bearer token into this remote MCP server. When set, OpenClaw resolves and refreshes the profile at runtime and does not project refresh material downstream.",
+  "mcp.servers.*.oauth.scope":
+    "Optional OAuth scope string requested for this remote MCP server during interactive authorization.",
+  "mcp.servers.*.oauth.redirectUrl":
+    "Optional OAuth redirect URL override for interactive MCP authorization. Defaults follow OpenClaw OAuth callback conventions.",
+  "mcp.servers.*.oauth.clientMetadataUrl":
+    "Optional OAuth client metadata URL override for interactive MCP authorization discovery.",
+  "mcp.servers.*.machineToken":
+    'Machine-token binding for non-interactive MCP HTTP auth (client_credentials / private_key_jwt). Required and must be complete when auth="machine_token". Ignored unless auth is explicitly "machine_token"; never overrides auth="oauth".',
+  "mcp.servers.*.machineToken.bindingId":
+    "Stable machine-token binding id used for independent cache, invalidation, and diagnostics for this MCP server.",
+  "mcp.servers.*.machineToken.issuerUrl":
+    "Token issuer base URL used for RFC 8414 metadata discovery and client_credentials token requests.",
+  "mcp.servers.*.machineToken.clientId":
+    "OAuth client id presented during private_key_jwt client authentication.",
+  "mcp.servers.*.machineToken.audience":
+    "Optional access-token audience override for this binding. When omitted, the issuer/resource defaults apply.",
+  "mcp.servers.*.machineToken.scope":
+    "Optional space-delimited scope string requested for this machine-token binding.",
+  "mcp.servers.*.machineToken.allowPrivateNetwork":
+    "Explicit least-privilege opt-in (default false) for HTTPS private/CGNAT/Tailscale issuers. Pins the configured issuer origin/hostname under zero-redirect SSRF limits; does not enable localTest and does not broadly disable SSRF. Metadata/link-local remain blocked.",
+  "mcp.servers.*.machineToken.clientAssertionKeyRef":
+    "SecretRef (env/file/exec) for the private_key_jwt signing key. Literal PEM/string secrets are rejected; resolve the key only through SecretRef at the trusted provider boundary.",
   "mcp.servers.*.codex.agents":
     "Optional non-empty OpenClaw agent ids that should receive this MCP server in Codex app-server thread config. Empty, blank, or invalid lists fail closed; when omitted, the server is projected for all Codex app-server agents.",
   "mcp.servers.*.codex.defaultToolsApprovalMode":

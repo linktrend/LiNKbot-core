@@ -1,18 +1,22 @@
 ---
 type: AgentProcedure
-title: 06:45 Morning Digest
-description: Day-ahead digest for Carlos — email via gws gmail, Telegram via cron announce
+title: 08:30 Morning Digest
+description: Day-ahead digest for Carlos — email via gws gmail, Telegram via cron announce; includes Pipeline + Monday Main Approve
 load: on_demand
 read_when:
   - Running lisa-morning-digest cron
   - Force-running an existing digest cron job for catch-up
-tags: [cron, digest, calendar, tasks, telegram, email, battery-monitoring]
+tags: [cron, digest, calendar, tasks, telegram, email, battery-monitoring, pipeline]
 ---
 
-# 06:45 Morning Digest (`lisa-morning-digest`)
+# 08:30 Morning Digest (`lisa-morning-digest`)
 
-Native cron: `45 6 * * *` Asia/Taipei, isolated session, `agentId: lisa-cron`, announce → Telegram `1123023078`. `lisa-cron` has `sandbox.mode: off`, so this is a fresh transcript on the Mac mini host, not Docker clean room; host `tools/bin/lisa-safe` / `tools/bin/lisa-carlos-tasks` can use `/opt/homebrew/bin` and `~/.config/gws*`. `main` remains the protected default chat agent (`sandbox.mode: non-main`), and `main.tools.exec.host: gateway` must stay unset. Main must not spawn `lisa-cron` for digest catch-ups.
+**Candidate-only / non-live default (fail-closed):** Repository copies of this procedure do **not** authorize live digest runs against `~/.openclaw-lisa`, credential use, or cron mutation. Live targeting requires explicit opt-in **plus** separately approved credentials language in docs/contracts. Until then, treat this as workshop SOT only.
+
+Native cron: `30 8 * * *` Asia/Taipei, isolated session, `agentId: lisa-cron`, announce → Telegram `1123023078`. `lisa-cron` has `sandbox.mode: off`, so this is a fresh transcript on the Mac mini host, not Docker clean room; host `tools/bin/lisa-safe` / `tools/bin/lisa-carlos-tasks` can use `/opt/homebrew/bin` and `~/.config/gws*`. `main` remains the protected default chat agent (`sandbox.mode: non-main`), and `main.tools.exec.host: gateway` must stay unset. Main must not spawn `lisa-cron` for digest catch-ups.
 Email is **not** a second cron announce channel — send it yourself with `tools/bin/lisa-safe email-send` (never improvised bare `gws`, never pipes).
+
+**Why 08:30:** Covers prior evening Ship 16 + Pull 18 and this morning’s Ship 05 + Pull 07 before Review #1. There is **no** 08:45 heartbeat — this digest replaces that slot. A normal heartbeat runs at **06:45**.
 
 ## Catch-up / force-run
 
@@ -22,12 +26,12 @@ For a same-day catch-up, use the existing cron job; do **not** ask main to spawn
 PATH="/opt/homebrew/opt/node@24/bin:$PATH" node /Users/linktrend/Projects/openclaw_prime/openclaw.mjs --profile lisa cron run <lisa-morning-digest-id> --wait --expect-final --wait-timeout 20m
 ```
 
-If CLI force-run is unavailable, tell Carlos to wait for the next scheduled 06:45 run or repair the cron job first.
+If CLI force-run is unavailable, tell Carlos to wait for the next scheduled 08:30 run or repair the cron job first.
 
 ### HARD RULES (digest — no improvisation)
 
 1. **Default Google work:** `tools/bin/lisa-safe …` only (cheat sheet: `tools/lisa-safe.md`).
-2. **Never invent** gws subcommands; never pipes / `2>&1` / `|` / `$()` / `||` / `&&`.
+2. **Never invent** gws subcommands; never pipes / `2>&1` / `|` / `$()` / `||` / `&&`. If a command is hard-denied for opaque shell (`denylist` / `2>&1`), retry the exact allowed unpiped command **once**. Continue only if that retry succeeds. If the retry is denied or fails, stop the run and preserve the fatal failure; do not emit a complete digest from missing checks.
 3. **Missing lisa-safe verb:** stop that check and report — do **not** improvise bare `gws`.
 4. **Carlos Tasks:** `tools/bin/lisa-carlos-tasks` only. **Never** `gws auth …` / `gws keep …`.
 
@@ -35,13 +39,17 @@ If CLI force-run is unavailable, tell Carlos to wait for the next scheduled 06:4
 
 OpenClaw cron has **one** announce target (Telegram). Email is a separate `lisa-safe` side-effect.
 
+### Silent work (mandatory)
+
+Work and think with **tool calls only** until the very last assistant message. Emit **no** mid-run assistant text (“Now I have…”, “Let me build…”, rate recalculation scratch, Current state analysis). The announced Telegram body is **only** the **Morning Digest Output Format** below — if the final reply contains planning/analysis, that is a failure (2026-07-26: ~15k analysis leaked instead of the digest).
+
 1. **EMAIL path:** `write` the email body to `scratch/digest_email.txt`, then send with:
    ```bash
    tools/bin/lisa-safe email-send --to calusa@linktrend.media --subject "<subject>" --body-file scratch/digest_email.txt
    ```
    Never `gws gmail send`, never `--body "$(cat …)"`, never `2>&1`.
    From `lisa@linktrend.media`. Never put the email body into the final assistant reply.
-2. **TELEGRAM path:** The **final plain-text reply** is the Telegram digest only (cron announces it). Produce the **Morning Digest Output Format** below (sections A–C). Include Battery Monitoring in Telegram only.
+2. **TELEGRAM path:** The **final plain-text reply** is the Telegram digest only (cron announces it). Produce the **Morning Digest Output Format** below (sections A–D, plus Main Approve when required). Include Battery Monitoring in Telegram only. No preamble, no postscript, no scratch math.
 3. **Never concatenate.** Do **not** label sections `📧 EMAIL` / `💬 TELEGRAM` in the final reply. Do **not** paste a failed email draft into Telegram.
 4. **If email send fails** (including gws auth): put **one short line** in the Telegram digest (e.g. `Email digest not sent — gws auth needs Carlos to run \`gws auth login\`.`). Then continue with the normal Telegram digest. Do not dump email content.
 5. Battery Monitoring / battery / selfie / compliance / evening-out: **Telegram only**. Never in email.
@@ -79,7 +87,7 @@ tools/bin/lisa-carlos-tasks tasks list --params '{"tasklist":"<LIST_ID>","showCo
 
 Itemize due / overdue / due-today (and other open) items from **Carlos's lists** under section A / `iii. Tasks`. **Tasks: Yes.** if any open task exists on any Carlos list; else **No.** Never invent helpers like `gws tasks +list` or `gws tasks --help | head`. Never count Docs Assign / Chat Space assign / Lisa-primary `gws tasks`.
 
-**Never loop** on `--help`/piped variants after one failure/denial — if the unpiped `lisa-carlos-tasks` calls fail even once, stop retrying tasks-related exec calls for this run. The Summary line (§ Output Format below) must still be a plain `Yes.`/`No.` — "Unknown"/"unavailable" is never valid there; fall back to best-effort Yes/No from the most recent successful check if the live call fails. The itemized `iii. Tasks` section may say "None." or note the check failed, but the Summary line itself never does.
+**Never loop** on `--help`/piped variants. If the exact unpiped `lisa-carlos-tasks` call returns a normal non-denial error, stop retrying tasks-related exec calls for this run. The Summary line (§ Output Format below) must still be a plain `Yes.`/`No.` — "Unknown"/"unavailable" is never valid there; for a normal non-denial error, fall back to best-effort Yes/No from the most recent successful check. The itemized `iii. Tasks` section may say "None." or note the check failed, but the Summary line itself never does. A hard denial follows the fatal retry rule above.
 
 ### Email
 
@@ -99,6 +107,34 @@ Review memory/logs and ACP/session state for Cursor-delegated coding, local `Qwe
 
 **Stale ACP filter:** Do **not** treat old failed `agent:cursor:acp:*` sessions (or Open Issues like "Fix wired default model for Cursor ACP agent") as current coding work when the failure was an unadvertised model that is already fixed in live config (`model.primary` = `grok-4.5[effort=high,fast=true]`). Only list Coding Work / Open Issues for activity in the digest window that still needs a decision, or for successful coding that actually completed overnight.
 
+### Pipeline status (section D)
+
+`read` `/Users/linktrend/.openclaw-lisa/workspace/memory/pipeline-status.md` (or workspace-relative `memory/pipeline-status.md`). Compare its `Cycle date` with today's Asia/Taipei date. Include Ship/Pull lines only when the dates match; never include the metadata line itself. Apply the matching `Staging date` and `Main ready date` checks from `agents/pipeline-status.md` before including those results. Omit stale or undated checkpoint lines. Include exact Ship/Pull/Staging/Main result shapes only. If the file is missing, omit section D rather than inventing Clear.
+
+GitOps alignment (Asia/Taipei): ordinary Ship is **checkpoint-only** (not Review Ready) per the **merged** IDE Development contract on `origin/development` (GITOPS-01 / PR #19). Open follow-on [issue #23](https://github.com/linktrend/IDE-Development/issues/23) hardens lifecycle/repair-control — Lisa does not invent doctrine that replaces IDE Development. **Review Packager** Tue/Fri **08:00**. **Staging** Tue/Fri **10:00**. Weekly Main Approve uses numbered plain-English repo list — never ask Carlos for commit SHAs.
+
+### Template load / fill (deterministic)
+
+1. Read canonical templates `templates/telegram-daily-digest.md` and `templates/email-daily-digest.md` (every section, heading, omission rule, and `{{placeholder}}` is visible in those files).
+2. Build JSON context matching deployed `ops/templates.ts` `TemplateContext` (Telegram includes Battery; email omits Battery).
+3. Render with Lisa-executable (cwd = workspace root `/Users/linktrend/.openclaw-lisa/workspace`):
+   - Telegram: `node --experimental-strip-types ops/render-template.ts telegram-daily-digest <json-path>`
+   - Email: `node --experimental-strip-types ops/render-template.ts email-daily-digest <json-path>`
+4. Reject any output that still contains `{{...}}`. Same inputs → identical body.
+5. Write email body to `scratch/digest_email.txt` from the email render; Telegram final reply = telegram render only.
+
+### Main Approve (Mondays only — section E when needed)
+
+On **Monday**, after reading pipeline status: include a short **Main Approve** ask in **both** email and Telegram (same wording) only when `Main ready date` equals today's Asia/Taipei date, `Main ready (Mon): Clear`, no decision is recorded today, and no current-day `Main approve claim` exists from the last two hours.
+
+**Binding (IDE-aligned):** Carlos sees only numbered plain-English repository descriptions. Internally, every numbered item must bind immutably to: `repository`, `promotionPrNumber`, `stagingSha`, `priorMainSha`, `promotionHeadSha`, and `gateResult`. Approval must dispatch **exactly** those protected identifiers. Any drift invalidates approval and requires a new package/ask.
+
+**Runtime store status:** Packaging is **blocked** until IDE Development issue #23 / OpenClaw provides an authoritative package store (GitHub issue/PR metadata or OpenClaw task binding). Do **not** create JSON/Markdown OpenClaw sidecar state for this. Runtime helpers (`issueCarlosAsk` / `authorizeApprovalDispatch` in deployed `ops/main-approve-binding.ts`) return `blocked_no_store` and must never emit a Carlos ask or `ok: true` while the store is unavailable.
+
+Before including the ask (once a store exists), atomically claim the current timestamp using the compare-and-swap protocol in `agents/pipeline-status.md`. An undated or older result is stale and must not trigger approval. Carlos answers **Approve / yes on Telegram only** (email is notify-only), and the main session records today's decision. Do **not** merge from this digest cron. A later Monday heartbeat can reclaim after two hours if readiness was late or delivery failed.
+
+If not Monday, or Main is not Clear / unknown: omit the Approve ask entirely.
+
 ### Auth / gws failure fallback
 
 On exit `2`, `invalid_rapt`, or reauth errors:
@@ -112,12 +148,17 @@ On exit `2`, `invalid_rapt`, or reauth errors:
 
 Produce this exact structure with **real data** each run. Section rules:
 
+- **TELEGRAM PLAIN TEXT ONLY.** The announced Telegram body must be a normal chat message. **Never** wrap it in Markdown code fences (`/`text / ```markdown). Fences make Telegram show a gray “Text” code card — that is a delivery failure (same bug as overnight heartbeats flipping between plain bubble and code card).
 - **A. Work:** always show the full itemized detail (i through v). Use "None." under ii–v when empty.
 - **`i. Summary` lines are strictly `Yes.` or `No.` — nothing else.** No counts, no parentheticals, no brief reasons, no descriptions appended — even in the digest. All real counts and descriptions belong exclusively in sections `ii`–`v` — never in the Summary line itself.
 - **B. Coding Work & Evals:** when Yes, show full itemized detail (Method / Description / Open Issues per coding item, plus Eval Comparisons). When no coding work and no evals: just `## B. Coding Work & Evals: No`.
-- **C. Battery Monitoring:** always show all 7 numbered items in full (never condensed). Concise, no commentary. Identical to heartbeat section C.
+- **C. Battery Monitoring:** always show all 7 numbered items in full (never condensed). Concise, no commentary. Identical to heartbeat section C. **Telegram only — never copy into email.**
+- **D. Pipeline:** one or more exact status lines (or omit if unknown).
+- **E. Main Approve:** Monday + Clear only; otherwise omit the whole section.
+- **Exec:** never append `2>&1`, pipes, or redirects to `lisa-safe` / `lisa-carlos-tasks`. If opaque shell is hard-denied, retry the exact allowed unpiped command **once**. Continue only after a successful retry; otherwise stop the run and preserve the fatal failure.
 
-```text
+Produce exactly this structure (documentation template — copy the shape, not any fence wrapper):
+
 Morning Digest — <weekday, date>
 
 ## A. Work
@@ -129,21 +170,25 @@ Email: Yes/No.
 Unanswered Messages: Yes/No.
 
 ii. Calendar Events:
+
 1. <time> — <title> — <calendar label>.
 2. ...
-(or "None." if no events)
+   (or "None." if no events)
 
 iii. Tasks:
+
 1. <task> — <due status>.
-(or "None.")
+   (or "None.")
 
 iv. Email Messages:
+
 1. <description of unread email, action taken if from Carlos, or the specific decision/approval needed if from someone else>
-(or "None.")
+   (or "None.")
 
 v. Unanswered Messages:
+
 1. <description of any Carlos message since last cycle that wasn't fully replied to or didn't get necessary info captured into records>
-(or "None.")
+   (or "None.")
 
 ## B. Coding Work & Evals: Yes/No
 
@@ -153,6 +198,7 @@ Coding Work:
 i. Method: Cursor
 Description: <one short paragraph, plain English>
 Open Issues:
+
 1. <decision/action needed, numbered> (or "None.")
 
 ii. Method: Local
@@ -162,6 +208,7 @@ Open Issues: <...>
 (repeat i./ii./iii. etc. for each coding item, using Method: Cursor or Method: Local)
 
 iii. Eval Comparisons:
+
 1. <task, models compared, result, any decision needed>
 
 (if No coding work and no evals, just: "## B. Coding Work & Evals: No")
@@ -175,17 +222,32 @@ iii. Eval Comparisons:
 5. Routine Changes: None | <one short line>
 6. Please report current percentage and plugged status if you can.
 7. Checks: Yes/No
-(if Yes, one or more alert lines below:)
+   (if Yes, one or more alert lines below:)
+
 - Alert — <short alert description> — <short action needed or taken>
-(if No, no alert lines follow — "Checks: No" means all clear/no issues)
-```
+  (if No, no alert lines follow — "Checks: No" means all clear/no issues)
+
+## D. Pipeline
+
+<one or more lines from memory/pipeline-status.md, exact Ship/Pull/Staging/Main shapes only>
+(omit section D entirely if no status file / no known checkpoint)
+
+## E. Main Approve
+
+(Monday only, and only when Main ready (Mon): Clear:)
+Ready to Approve staging→main for these repositories?
+
+1. <repo> — <short plain-English description>
+2. …
+   Reply Approve / yes on Telegram (email is notify-only). Never ask Carlos to identify commit SHAs.
+   (omit section E entirely otherwise)
 
 ### Battery Monitoring Checks (item 7)
 
 Same three checks as heartbeat, reported via Yes/No + alert bullets (not "All OK"):
 
 1. Files exist, readable, and agree
-2. Cron jobs healthy (`lisa-morning-digest` 06:45 + `lisa-heartbeat-45` + `battery-selfie-1745` + `battery-selfie-2145`)
+2. Cron jobs healthy (`lisa-morning-digest` 08:30 + `lisa-heartbeat-45` + `battery-selfie-1745` + `battery-selfie-2145`)
 3. 35% alert path healthy (`pendingAlert35` written if needed; no attempt to cron.add from this digest; no leftover 45%/98% projected jobs)
 
 - **Checks: No** = all clear — print only `7. Checks: No` (no "All OK", no alert bullets).
@@ -199,7 +261,7 @@ Optional one-line email send status (sent / not sent + reason) may appear above 
 2. **Telegram Battery Monitoring source of truth:** use the newest **confirmed** reading (`confirmed: true`). If a confirmed report is newer than any estimate, project expected current charge from that confirmed % / plug state to _now_ for section C item 1. Only use an overnight projection/estimate when there is no newer confirmed report.
 3. **Recalculate learned rates (once daily, here):** Count every plug/unplug segment with two confirmed % readings and duration ≥ 15 minutes in the prior 24h. pp/h = Δ% / hours; average charging vs discharging separately. Update `learned.chargeRate` / `learned.dischargeRate`. If fewer than 1 usable segment of a type, keep previous learned (or baseline +30 / −6.5 if never learned). Persist in state.json.
 4. **Routine Changes:** Merge Carlos chat reports + Google Calendar named **Routine**; persist; show `None` or one short line in item 5.
-5. Record this fixed 06:45 prompt with the real Asia/Taipei timestamp — do not invent Carlos's response. Never overwrite a newer confirmed reading with an estimate when writing state.
+5. Record this fixed 08:30 prompt with the real Asia/Taipei timestamp — do not invent Carlos's response. Never overwrite a newer confirmed reading with an estimate when writing state.
 6. **`battery-monitor.md` is append-only:** when recording the prompt, you MUST preserve all prior events. Standard method: `read` the full file, then `write` the previous contents plus the new entry. Never `write` only the new entry. Do **not** use `exec` shell append (`>>`) — piped/redirected shell never gets "Allow Always".
 7. Only a Carlos report confirms percentage, plug state, plans, location, or selfie status.
 8. Carlos Telegram replies land on `agent:main:main` (not this isolated cron). Main session must persist both Battery Monitoring files **before** other work, recalculate projections, and schedule/reconcile `battery-monitor-alert-35` (skip if plugged). **This digest must not schedule alerts.**
@@ -208,4 +270,6 @@ Optional one-line email send status (sent / not sent + reason) may appear above 
 
 ## Email body shape
 
-Fuller day-ahead covering the same Work (A) and Coding Work & Evals (B) content as the Telegram digest (calendar, Carlos Google Tasks via `lisa-carlos-tasks`, email, unanswered messages, coding/evals). **Exclude** all Battery Monitoring / battery / plugged / selfie / restriction / compliance / evening-out content (section C is Telegram-only).
+Same Work (A) and Coding Work & Evals (B) content as the Telegram digest, **plus** Pipeline (D) exact one-liners, **plus** Main Approve ask when section E applies.
+
+**Exclude** all Battery Monitoring / battery / plugged / selfie / restriction / compliance / evening-out content (section C is Telegram-only).

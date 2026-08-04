@@ -1,0 +1,359 @@
+/**
+ * Stage workspace package — hash verify, receipt, refuse stage/live, hermetic install,
+ * mutable-seed preserve/idempotency, honest Google/task adapters.
+ * Run: node --experimental-strip-types --test linkbots/lisa/ops/stage-workspace-package.test.ts
+ */
+import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
+import {
+  chmodSync,
+  existsSync,
+  mkdtempSync,
+  mkdirSync,
+  readFileSync,
+  rmSync,
+  symlinkSync,
+  writeFileSync,
+} from "node:fs";
+import { tmpdir } from "node:os";
+import path from "node:path";
+import { describe, it } from "node:test";
+import { STAGE_OPS_STAGE_ROOT } from "./stage-ops-command.ts";
+import {
+  STAGE_EXTERNAL_HELPER_SKIP_CONTRACT,
+  buildDigestStageMessage,
+  buildHeartbeatStageMessage,
+  renderStageExternalUnavailableOutput,
+  validateStageExternalUnavailableOutput,
+} from "./stage-ops-payloads.ts";
+import {
+  DEFAULT_MANIFEST_PATH,
+  FORBIDDEN_STAGE_WORKSPACE,
+  isForbiddenLiveLisaTarget,
+  isForbiddenStageWorkspaceTarget,
+  loadStageWorkspacePackageManifest,
+  planStageWorkspacePackage,
+  verifyStageWorkspacePackage,
+} from "./stage-workspace-package.ts";
+
+describe("stage-workspace-package", () => {
+  it("manifest loads with complete hashed files + initializeIfMissing seeds", () => {
+    const manifest = loadStageWorkspacePackageManifest(DEFAULT_MANIFEST_PATH);
+    assert.equal(manifest.manifestType, "lisa_stage_workspace_package_v1");
+    assert.equal(manifest.defaultMutateStageWorkspace, false);
+    assert.equal(manifest.liveMutationAllowed, false);
+    assert.equal(manifest.files.length, 13);
+    assert.equal((manifest.initializeIfMissing ?? []).length, 3);
+    const sources = new Set(manifest.files.map((f) => f.source));
+    assert.ok(sources.has("Personality files/HEARTBEAT.md"));
+    assert.ok(sources.has("Personality files/agents/morning-digest.md"));
+    assert.ok(sources.has("Personality files/agents/ship-pull-clock.md"));
+    assert.ok(sources.has("Personality files/agents/repair-dispatcher.md"));
+    assert.ok(sources.has("Personality files/agents/pipeline-status.md"));
+    assert.ok(sources.has("Personality files/templates/telegram-heartbeat.md"));
+    assert.ok(sources.has("Personality files/templates/telegram-daily-digest.md"));
+    assert.ok(sources.has("Personality files/templates/email-daily-digest.md"));
+    assert.ok(sources.has("Personality files/templates/pipeline-one-liner.md"));
+    assert.ok(sources.has("ops/render-template.ts"));
+    assert.ok(sources.has("ops/templates.ts"));
+    assert.ok(sources.has("ops/stage-workspace-seeds/tools/bin/lisa-safe"));
+    assert.ok(sources.has("ops/stage-workspace-seeds/tools/bin/lisa-carlos-tasks"));
+    const initSources = new Set((manifest.initializeIfMissing ?? []).map((f) => f.source));
+    assert.ok(initSources.has("Personality files/memory/battery-monitor.md"));
+    assert.ok(initSources.has("ops/stage-workspace-seeds/battery-monitor-state.json"));
+    assert.ok(initSources.has("Personality files/memory/pipeline-status.md"));
+    const { ok, files } = verifyStageWorkspacePackage({ manifest });
+    assert.equal(ok, true);
+    assert.ok(files.every((f) => f.ok));
+    assert.equal(files.length, 16);
+  });
+
+  it("hash verify fails when bytes diverge from manifest", () => {
+    const dir = mkdtempSync(path.join(tmpdir(), "stage-ws-hash-fail-"));
+    try {
+      const manifest = loadStageWorkspacePackageManifest();
+      const bad = structuredClone(manifest);
+      bad.files[0]!.sha256 = "0".repeat(64);
+      const { ok, files } = verifyStageWorkspacePackage({
+        manifest: bad,
+      });
+      assert.equal(ok, false);
+      assert.ok(files.some((f) => f.error === "hash_or_size_mismatch"));
+
+      const out = path.join(dir, "out");
+      const receipt = planStageWorkspacePackage({
+        action: "verify",
+        outputDir: out,
+        manifestPath: DEFAULT_MANIFEST_PATH,
+        nowIso: "2026-08-03T13:00:00.000Z",
+      });
+      const badPath = path.join(dir, "bad.manifest.json");
+      writeFileSync(badPath, `${JSON.stringify(bad, null, 2)}\n`);
+      const mismatch = planStageWorkspacePackage({
+        action: "verify",
+        outputDir: out,
+        manifestPath: badPath,
+      });
+      assert.equal(mismatch.status, "hash_mismatch");
+      assert.equal(mismatch.mutateWorkspace, false);
+      assert.equal(mismatch.stageWorkspaceMutated, false);
+      assert.equal(receipt.receiptType, "lisa_stage_workspace_package_receipt_v1");
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("receipt schema on verify (no workspace mutation)", () => {
+    const dir = mkdtempSync(path.join(tmpdir(), "stage-ws-verify-"));
+    try {
+      const receipt = planStageWorkspacePackage({
+        action: "verify",
+        outputDir: dir,
+        nowIso: "2026-08-03T13:01:00.000Z",
+      });
+      assert.equal(receipt.status, "verified");
+      assert.equal(receipt.receiptType, "lisa_stage_workspace_package_receipt_v1");
+      assert.equal(receipt.mutateWorkspace, false);
+      assert.equal(receipt.stageWorkspaceMutated, false);
+      assert.equal(receipt.liveLisaTouched, false);
+      assert.equal(receipt.hardStops.defaultMutateStageWorkspace, false);
+      assert.equal(receipt.installedPaths.length, 0);
+      assert.equal(receipt.files.length, 16);
+      const written = JSON.parse(
+        readFileSync(path.join(dir, "stage-workspace-package-receipt.json"), "utf8"),
+      ) as typeof receipt;
+      assert.equal(written.status, "verified");
+      assert.equal(written.packageId, receipt.packageId);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("refuses mutating default stage root / workspace and live Lisa", () => {
+    assert.equal(isForbiddenStageWorkspaceTarget(STAGE_OPS_STAGE_ROOT), true);
+    assert.equal(isForbiddenStageWorkspaceTarget(FORBIDDEN_STAGE_WORKSPACE), true);
+    assert.equal(
+      isForbiddenStageWorkspaceTarget(path.join(FORBIDDEN_STAGE_WORKSPACE, "agents")),
+      true,
+    );
+    assert.equal(isForbiddenLiveLisaTarget("/Users/linktrend/.openclaw-lisa"), true);
+    assert.equal(isForbiddenLiveLisaTarget("/Users/linktrend/.openclaw-lisa/workspace"), true);
+
+    const dir = mkdtempSync(path.join(tmpdir(), "stage-ws-refuse-"));
+    try {
+      const stageBlocked = planStageWorkspacePackage({
+        action: "install",
+        targetDir: FORBIDDEN_STAGE_WORKSPACE,
+        outputDir: dir,
+        allowForbiddenStageTarget: false,
+      });
+      assert.equal(stageBlocked.status, "blocked_forbidden_target");
+      assert.equal(stageBlocked.mutateWorkspace, false);
+      assert.equal(stageBlocked.installedPaths.length, 0);
+
+      const liveBlocked = planStageWorkspacePackage({
+        action: "install",
+        targetDir: "/Users/linktrend/.openclaw-lisa/workspace",
+        outputDir: dir,
+        allowForbiddenStageTarget: true,
+      });
+      assert.equal(liveBlocked.status, "blocked_forbidden_target");
+      assert.equal(liveBlocked.liveLisaTouched, false);
+      assert.equal(liveBlocked.installedPaths.length, 0);
+
+      const liveCommandsBlocked = planStageWorkspacePackage({
+        action: "emit-commands",
+        targetDir: "/Users/linktrend/.openclaw-lisa/workspace",
+        outputDir: dir,
+      });
+      assert.equal(liveCommandsBlocked.status, "blocked_forbidden_target");
+      assert.deepEqual(liveCommandsBlocked.copyCommands, []);
+
+      const liveAlias = path.join(dir, "alias-to-live-lisa");
+      symlinkSync("/Users/linktrend/.openclaw-lisa", liveAlias);
+      const hiddenLiveTarget = path.join(liveAlias, "workspace", "missing", "nested");
+      assert.equal(isForbiddenLiveLisaTarget(hiddenLiveTarget), true);
+      const symlinkBlocked = planStageWorkspacePackage({
+        action: "install",
+        targetDir: hiddenLiveTarget,
+        outputDir: dir,
+        allowForbiddenStageTarget: true,
+      });
+      assert.equal(symlinkBlocked.status, "blocked_forbidden_target");
+      assert.deepEqual(symlinkBlocked.copyCommands, []);
+      assert.equal(symlinkBlocked.installedPaths.length, 0);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("hermetic install includes procedure deps, adapters, and mutable seeds", () => {
+    const dir = mkdtempSync(path.join(tmpdir(), "stage-ws-hermetic-"));
+    const target = path.join(dir, "workspace");
+    const out = path.join(dir, "out");
+    mkdirSync(target, { recursive: true });
+    try {
+      const receipt = planStageWorkspacePackage({
+        action: "install",
+        targetDir: target,
+        outputDir: out,
+        nowIso: "2026-08-03T13:02:00.000Z",
+      });
+      assert.equal(receipt.status, "installed");
+      assert.equal(receipt.mutateWorkspace, true);
+      assert.equal(receipt.stageWorkspaceMutated, false);
+      assert.equal(receipt.liveLisaTouched, false);
+      assert.ok(receipt.initializedPaths.length === 3);
+      assert.ok(existsSync(path.join(target, "HEARTBEAT.md")));
+      assert.ok(existsSync(path.join(target, "agents", "morning-digest.md")));
+      assert.ok(existsSync(path.join(target, "agents", "ship-pull-clock.md")));
+      assert.ok(existsSync(path.join(target, "agents", "repair-dispatcher.md")));
+      assert.ok(existsSync(path.join(target, "agents", "pipeline-status.md")));
+      assert.ok(existsSync(path.join(target, "templates", "telegram-heartbeat.md")));
+      assert.ok(existsSync(path.join(target, "templates", "telegram-daily-digest.md")));
+      assert.ok(existsSync(path.join(target, "templates", "email-daily-digest.md")));
+      assert.ok(existsSync(path.join(target, "templates", "pipeline-one-liner.md")));
+      assert.ok(existsSync(path.join(target, "ops", "render-template.ts")));
+      assert.ok(existsSync(path.join(target, "ops", "templates.ts")));
+      assert.ok(existsSync(path.join(target, "tools", "bin", "lisa-safe")));
+      assert.ok(existsSync(path.join(target, "tools", "bin", "lisa-carlos-tasks")));
+      assert.ok(existsSync(path.join(target, "memory", "battery-monitor.md")));
+      assert.ok(existsSync(path.join(target, "memory", "battery-monitor-state.json")));
+      assert.ok(existsSync(path.join(target, "memory", "pipeline-status.md")));
+      const state = JSON.parse(
+        readFileSync(path.join(target, "memory", "battery-monitor-state.json"), "utf8"),
+      ) as { source: string; confirmed: null; schema: string };
+      assert.equal(state.schema, "lisa_battery_monitor_state_v1");
+      assert.equal(state.source, "repo_stage_seed_non_personal");
+      assert.equal(state.confirmed, null);
+      assert.equal((state as { learned: { chargeRate: number } }).learned.chargeRate, 30);
+      assert.equal((state as { learned: { dischargeRate: number } }).learned.dischargeRate, -6.5);
+      assert.equal("chargeRatePpPerHour" in (state as { learned: object }).learned, false);
+      assert.equal("dischargeRatePpPerHour" in (state as { learned: object }).learned, false);
+      assert.ok(!JSON.stringify(state).includes("openclaw-lisa"));
+      assert.ok(receipt.copyCommands.length >= 16);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("reinstall preserves existing mutable seeds (idempotent)", () => {
+    const dir = mkdtempSync(path.join(tmpdir(), "stage-ws-preserve-"));
+    const target = path.join(dir, "workspace");
+    const out1 = path.join(dir, "out1");
+    const out2 = path.join(dir, "out2");
+    mkdirSync(target, { recursive: true });
+    try {
+      planStageWorkspacePackage({
+        action: "install",
+        targetDir: target,
+        outputDir: out1,
+      });
+      const statePath = path.join(target, "memory", "battery-monitor-state.json");
+      const pipelinePath = path.join(target, "memory", "pipeline-status.md");
+      const customState = {
+        schema: "lisa_battery_monitor_state_v1",
+        profile: "lisa-stage",
+        source: "stage_runtime_preserved",
+        confirmed: { percent: 77, plugged: true, at: "2026-08-04T01:00:00+08:00" },
+        notes: "must survive reinstall",
+      };
+      writeFileSync(statePath, `${JSON.stringify(customState, null, 2)}\n`);
+      writeFileSync(pipelinePath, "Cycle date: 2026-08-04\nShip 05: Issues\n");
+
+      const second = planStageWorkspacePackage({
+        action: "install",
+        targetDir: target,
+        outputDir: out2,
+      });
+      assert.equal(second.status, "installed");
+      assert.equal(second.preservedPaths.length, 3);
+      assert.equal(second.initializedPaths.length, 0);
+      const preserved = JSON.parse(readFileSync(statePath, "utf8")) as typeof customState;
+      assert.equal(preserved.source, "stage_runtime_preserved");
+      assert.equal(preserved.confirmed?.percent, 77);
+      assert.equal(readFileSync(pipelinePath, "utf8"), "Cycle date: 2026-08-04\nShip 05: Issues\n");
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("stage adapters emit honest STAGE_SKIPPED tokens and never succeed", () => {
+    const dir = mkdtempSync(path.join(tmpdir(), "stage-ws-adapters-"));
+    const target = path.join(dir, "workspace");
+    mkdirSync(target, { recursive: true });
+    try {
+      planStageWorkspacePackage({
+        action: "install",
+        targetDir: target,
+        outputDir: path.join(dir, "out"),
+      });
+      const safe = path.join(target, "tools", "bin", "lisa-safe");
+      const tasks = path.join(target, "tools", "bin", "lisa-carlos-tasks");
+      chmodSync(safe, 0o755);
+      chmodSync(tasks, 0o755);
+      const safeRun = spawnSync(safe, ["gmail-triage", "--max", "5"], { encoding: "utf8" });
+      assert.equal(safeRun.status, 75);
+      assert.match(safeRun.stdout, /STAGE_SKIPPED_google/);
+      assert.doesNotMatch(safeRun.stdout, /Clear|passed|success/i);
+      const tasksRun = spawnSync(tasks, ["tasklists", "list"], { encoding: "utf8" });
+      assert.equal(tasksRun.status, 75);
+      assert.match(tasksRun.stdout, /STAGE_SKIPPED_task/);
+      assert.doesNotMatch(tasksRun.stdout, /Yes\.|No\.|Clear/i);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("payload contract documents STAGE_SKIPPED_google/task without false Clear", () => {
+    const hb = buildHeartbeatStageMessage();
+    const digest = buildDigestStageMessage();
+    for (const msg of [hb, digest]) {
+      assert.match(msg, /STAGE_SKIPPED_google/);
+      assert.match(msg, /STAGE_SKIPPED_task/);
+      assert.match(msg, /Never invent Clear/);
+      assert.match(msg, /delivery=none/);
+      for (const line of STAGE_EXTERNAL_HELPER_SKIP_CONTRACT) {
+        assert.ok(msg.includes(line));
+      }
+    }
+  });
+
+  it("renders and validates truthful stage-only unavailable external output", () => {
+    const output = renderStageExternalUnavailableOutput();
+    assert.deepEqual(validateStageExternalUnavailableOutput(output), []);
+    assert.match(output, /STAGE_SKIPPED_google/);
+    assert.match(output, /STAGE_SKIPPED_task/);
+    assert.match(output, /STAGE_SKIPPED_email/);
+    assert.doesNotMatch(output, /(?:Google\/Calendar|Carlos Tasks|Email):\s*(?:Yes|No)\./);
+    assert.doesNotMatch(output, /\bClear\b/);
+
+    const misleading = output.replace(
+      "Google/Calendar: STAGE_SKIPPED_google (unavailable; no result asserted).",
+      "Google/Calendar: No.",
+    );
+    assert.ok(
+      validateStageExternalUnavailableOutput(misleading).some((error) => /Yes\/No/.test(error)),
+    );
+  });
+
+  it("emit-commands does not install", () => {
+    const dir = mkdtempSync(path.join(tmpdir(), "stage-ws-cmds-"));
+    const target = path.join(dir, "workspace");
+    try {
+      const receipt = planStageWorkspacePackage({
+        action: "emit-commands",
+        targetDir: target,
+        outputDir: dir,
+      });
+      assert.equal(receipt.status, "commands_emitted");
+      assert.equal(receipt.installedPaths.length, 0);
+      assert.equal(existsSync(target), false);
+      assert.ok(receipt.copyCommands.some((c) => c.includes("HEARTBEAT.md")));
+      assert.ok(receipt.copyCommands.some((c) => c.includes("battery-monitor-state.json")));
+      assert.ok(receipt.copyCommands.some((c) => c.includes("if [ ! -e")));
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+});

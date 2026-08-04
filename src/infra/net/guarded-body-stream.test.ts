@@ -69,4 +69,99 @@ describe("wrapGuardedBodyStream", () => {
     expect(cleanup).toHaveBeenCalledOnce();
     expect(source.locked).toBe(false);
   });
+
+  it("errors and cleans up once when cumulative bytes exceed maxBytes", async () => {
+    const cancel = vi.fn(async () => undefined);
+    const cleanup = vi.fn();
+    const secret = "Bearer leaked-token-value-do-not-echo";
+    let pulls = 0;
+    const source = new ReadableStream<Uint8Array>({
+      pull(controller) {
+        pulls += 1;
+        if (pulls === 1) {
+          controller.enqueue(new TextEncoder().encode("aaaa"));
+          return;
+        }
+        controller.enqueue(new TextEncoder().encode(secret));
+      },
+      cancel,
+    });
+    const wrapped = wrapGuardedBodyStream({ body: source, cleanup, maxBytes: 4 });
+    const reader = wrapped.getReader();
+
+    await expect(reader.read()).resolves.toMatchObject({ done: false });
+    const overflow = await reader.read().then(
+      () => undefined,
+      (error: unknown) => error,
+    );
+    expect(overflow).toBeInstanceOf(Error);
+    expect((overflow as Error).message).toBe("Guarded response body exceeds 4 bytes");
+    expect((overflow as Error).message).not.toContain(secret);
+    expect((overflow as Error).message).not.toContain("Bearer");
+    reader.releaseLock();
+
+    expect(cleanup).toHaveBeenCalledOnce();
+    expect(cancel).toHaveBeenCalledOnce();
+    expect(source.locked).toBe(false);
+  });
+
+  it("aborts a never-ending chunked stream at the byte cap without unbounded growth", async () => {
+    const cancel = vi.fn(async () => undefined);
+    const cleanup = vi.fn();
+    const chunk = new Uint8Array(1024).fill(0x61);
+    const source = new ReadableStream<Uint8Array>({
+      pull(controller) {
+        controller.enqueue(chunk);
+      },
+      cancel,
+    });
+    const maxBytes = 8 * 1024;
+    const wrapped = wrapGuardedBodyStream({ body: source, cleanup, maxBytes });
+    const reader = wrapped.getReader();
+
+    let received = 0;
+    let overflow: unknown;
+    for (;;) {
+      try {
+        const result = await reader.read();
+        if (result.done || !result.value) {
+          break;
+        }
+        received += result.value.byteLength;
+      } catch (error) {
+        overflow = error;
+        break;
+      }
+    }
+
+    expect(received).toBeLessThanOrEqual(maxBytes);
+    expect(overflow).toBeInstanceOf(Error);
+    expect((overflow as Error).message).toBe(`Guarded response body exceeds ${maxBytes} bytes`);
+    reader.releaseLock();
+    expect(cleanup).toHaveBeenCalledOnce();
+    expect(cancel).toHaveBeenCalledOnce();
+    expect(source.locked).toBe(false);
+  });
+
+  it("allows bodies that fit exactly at maxBytes", async () => {
+    const cleanup = vi.fn();
+    const payload = new TextEncoder().encode("1234");
+    const source = new ReadableStream<Uint8Array>({
+      start(controller) {
+        controller.enqueue(payload);
+        controller.close();
+      },
+    });
+    const wrapped = wrapGuardedBodyStream({
+      body: source,
+      cleanup,
+      maxBytes: payload.byteLength,
+    });
+    const reader = wrapped.getReader();
+    const chunk = await reader.read();
+    expect(chunk.value).toEqual(payload);
+    await expect(reader.read()).resolves.toEqual({ done: true, value: undefined });
+    reader.releaseLock();
+    expect(cleanup).toHaveBeenCalledOnce();
+  });
 });

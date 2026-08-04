@@ -862,6 +862,14 @@
       "types": "./dist/plugin-sdk/param-readers.d.ts",
       "default": "./dist/plugin-sdk/param-readers.js"
     },
+    "./plugin-sdk/machine-token-runtime": {
+      "types": "./dist/plugin-sdk/machine-token-runtime.d.ts",
+      "default": "./dist/plugin-sdk/machine-token-runtime.js"
+    },
+    "./plugin-sdk/mcp-http-fetch": {
+      "types": "./dist/plugin-sdk/mcp-http-fetch.d.ts",
+      "default": "./dist/plugin-sdk/mcp-http-fetch.js"
+    },
     "./plugin-sdk/secret-input": {
       "types": "./dist/plugin-sdk/secret-input.d.ts",
       "default": "./dist/plugin-sdk/secret-input.js"
@@ -1458,6 +1466,7 @@
     "iconv-lite": "0.7.2",
     "ignore": "7.0.5",
     "jiti": "2.7.0",
+    "jose": "6.2.3",
     "json5": "2.2.3",
     "jszip": "3.10.1",
     "kysely": "0.29.2",

@@ -81,6 +81,41 @@ describe("global hook runner composition (#91918, #107933)", () => {
     expect(activeHook).not.toHaveBeenCalled();
   });
 
+  it("uses the pinned gateway owner for hook-only plugins after active re-register", async () => {
+    // linkbrain-shaped: services stay on the pinned gateway registry while an
+    // ensure/reload re-registers api.on handlers on active with a fresh closure.
+    const gatewayHook = vi.fn();
+    const activeHook = vi.fn();
+    const gateway = createMockPluginRegistry([
+      { hookName: "session_start", handler: gatewayHook, pluginId: "linkbrain" },
+      { hookName: "agent_end", handler: gatewayHook, pluginId: "linkbrain" },
+    ]);
+    const active = createMockPluginRegistry([
+      { hookName: "session_start", handler: activeHook, pluginId: "linkbrain" },
+      { hookName: "agent_end", handler: activeHook, pluginId: "linkbrain" },
+    ]);
+
+    setActivePluginRegistry(gateway);
+    pinActivePluginChannelRegistry(gateway);
+    initializeGlobalHookRunner(gateway);
+    setActivePluginRegistry(active);
+    initializeGlobalHookRunner(active);
+
+    await runner().runSessionStart(
+      { sessionId: "sess-1", sessionKey: "agent:main:main" },
+      { agentId: "main", sessionKey: "agent:main:main", sessionId: "sess-1" },
+    );
+
+    expect(gatewayHook).toHaveBeenCalledOnce();
+    expect(activeHook).not.toHaveBeenCalled();
+    expect(
+      getGlobalHookRunnerRegistry()
+        ?.typedHooks.filter((hook) => hook.pluginId === "linkbrain")
+        .map((hook) => hook.hookName)
+        .toSorted(),
+    ).toEqual(["agent_end", "session_start"]);
+  });
+
   it("uses the active hook when the pinned registry has no matching tool owner", async () => {
     const gatewayHook = vi.fn();
     const activeHook = vi.fn();

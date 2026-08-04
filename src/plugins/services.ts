@@ -1,3 +1,4 @@
+import { acquireMachineTokenFacadeLeaseForPlugin } from "../agents/machine-token-host.js";
 /** Starts, stops, and inspects plugin service registrations. */
 import { STATE_DIR } from "../config/paths.js";
 import type { OpenClawConfig } from "../config/types.openclaw.js";
@@ -145,6 +146,7 @@ export async function startPluginServices(params: {
   const running: Array<{
     id: string;
     stop?: () => void | Promise<void>;
+    releaseMachineTokenLease: () => void;
     revokeGatewayEvents: () => void;
   }> = [];
   let failedCount = 0;
@@ -173,6 +175,9 @@ export async function startPluginServices(params: {
       running.push({
         id: service.id,
         stop: service.stop ? () => service.stop?.(serviceContext) : undefined,
+        // Lease after start so service.stop's facade.unregister cannot retire the
+        // shared live generation during a cache-hit reload restart.
+        releaseMachineTokenLease: acquireMachineTokenFacadeLeaseForPlugin(entry.pluginId),
         revokeGatewayEvents: scopedGatewayEvents.revoke,
       });
     } catch (err) {
@@ -200,6 +205,8 @@ export async function startPluginServices(params: {
         } catch (err) {
           log.warn(`plugin service stop failed (${entry.id}): ${String(err)}`);
         } finally {
+          // Release after service.stop so the final flush can still mint under the lease.
+          entry.releaseMachineTokenLease();
           entry.revokeGatewayEvents();
         }
       }

@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Stage-only Google helper adapter for lisa-stage workspace packages.
+# Never calls gws, Google APIs, or credentials. Never claims success/Clear.
+set -euo pipefail
+printf '%s\n' "STAGE_SKIPPED_google: lisa-safe stage adapter; external Google unavailable under delivery=none"
+exit 75

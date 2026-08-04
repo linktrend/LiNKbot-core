@@ -288,6 +288,8 @@
   "retry-runtime",
   "run-command",
   "param-readers",
+  "machine-token-runtime",
+  "mcp-http-fetch",
   "secret-input",
   "secret-input-runtime",
   "channel-status",

@@ -14,6 +14,7 @@ type BuildPluginApiParams = {
   registrationMode: OpenClawPluginApi["registrationMode"];
   config: OpenClawConfig;
   pluginConfig?: Record<string, unknown>;
+  machineTokenFacade?: OpenClawPluginApi["machineTokenFacade"];
   runtime: PluginRuntime;
   logger: PluginLogger;
   resolvePath: (input: string) => string;
@@ -25,6 +26,8 @@ type BuildPluginApiParams = {
       | "registerHttpRoute"
       | "registerHostedMediaResolver"
       | "registerMcpServerConnectionResolver"
+      | "registerMcpServerToolFilter"
+      | "unregisterMcpServerToolFilter"
       | "registerChannel"
       | "registerGatewayMethod"
       | "registerSessionCatalog"
@@ -94,6 +97,9 @@ const noopRegisterHook: OpenClawPluginApi["registerHook"] = () => {};
 const noopRegisterHttpRoute: OpenClawPluginApi["registerHttpRoute"] = () => {};
 const noopRegisterHostedMediaResolver: OpenClawPluginApi["registerHostedMediaResolver"] = () => {};
 const noopRegisterMcpServerConnectionResolver: OpenClawPluginApi["registerMcpServerConnectionResolver"] =
+  () => {};
+const noopRegisterMcpServerToolFilter: OpenClawPluginApi["registerMcpServerToolFilter"] = () => {};
+const noopUnregisterMcpServerToolFilter: OpenClawPluginApi["unregisterMcpServerToolFilter"] =
   () => {};
 const noopRegisterChannel: OpenClawPluginApi["registerChannel"] = () => {};
 const noopRegisterGatewayMethod: OpenClawPluginApi["registerGatewayMethod"] = () => {};
@@ -197,6 +203,7 @@ export function buildPluginApi(params: BuildPluginApiParams): OpenClawPluginApi 
     registrationMode: params.registrationMode,
     config: params.config,
     pluginConfig: params.pluginConfig,
+    ...(params.machineTokenFacade ? { machineTokenFacade: params.machineTokenFacade } : {}),
     runtime: params.runtime,
     logger: params.logger,
     registerTool: handlers.registerTool ?? noopRegisterTool,
@@ -206,6 +213,10 @@ export function buildPluginApi(params: BuildPluginApiParams): OpenClawPluginApi 
       handlers.registerHostedMediaResolver ?? noopRegisterHostedMediaResolver,
     registerMcpServerConnectionResolver:
       handlers.registerMcpServerConnectionResolver ?? noopRegisterMcpServerConnectionResolver,
+    registerMcpServerToolFilter:
+      handlers.registerMcpServerToolFilter ?? noopRegisterMcpServerToolFilter,
+    unregisterMcpServerToolFilter:
+      handlers.unregisterMcpServerToolFilter ?? noopUnregisterMcpServerToolFilter,
     registerChannel: handlers.registerChannel ?? noopRegisterChannel,
     registerGatewayMethod: handlers.registerGatewayMethod ?? noopRegisterGatewayMethod,
     registerSessionCatalog: handlers.registerSessionCatalog ?? noopRegisterSessionCatalog,
