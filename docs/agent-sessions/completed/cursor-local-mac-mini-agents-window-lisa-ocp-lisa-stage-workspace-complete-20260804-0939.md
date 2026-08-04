@@ -2,29 +2,29 @@
 
 ## Identity
 
-| Field             | Value |
-| ----------------- | ----- |
-| Agent type        | Cursor Local Agent |
-| Platform          | Cursor |
-| Machine           | mac-mini |
-| Surface           | agents-window |
-| Execution         | local |
-| Role              | lisa |
-| Orchestrator key  | cursor-mac-mini-agents-window-orchestrator |
-| Coordination home | `/Users/linktrend/Projects/openclaw_prime` |
+| Field             | Value                                                                                    |
+| ----------------- | ---------------------------------------------------------------------------------------- |
+| Agent type        | Cursor Local Agent                                                                       |
+| Platform          | Cursor                                                                                   |
+| Machine           | mac-mini                                                                                 |
+| Surface           | agents-window                                                                            |
+| Execution         | local                                                                                    |
+| Role              | lisa                                                                                     |
+| Orchestrator key  | cursor-mac-mini-agents-window-orchestrator                                               |
+| Coordination home | `/Users/linktrend/Projects/openclaw_prime`                                               |
 | Session ID        | cursor-local-mac-mini-agents-window-lisa-ocp-lisa-stage-workspace-complete-20260804-0939 |
-| Started           | 2026-08-04 09:39 Asia/Taipei |
-| Last updated      | 2026-08-04 09:50 Asia/Taipei |
+| Started           | 2026-08-04 09:39 Asia/Taipei                                                             |
+| Last updated      | 2026-08-04 09:50 Asia/Taipei                                                             |
 
 ## Work
 
-| Field           | Value                                                        |
-| --------------- | ------------------------------------------------------------ |
+| Field           | Value                                                                                                                                                                                                                    |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Objective       | Correct one bounded lisa-stage production-readiness packaging defect so isolated stage workspace package is complete, deterministic, fail-closed, and canaryable under delivery=none (OCP-LISA-STAGE-WORKSPACE-COMPLETE) |
-| Branch          | `dev/cloudcursor/OCP-LISA-STAGE-WORKSPACE-COMPLETE` |
-| Starting commit | `3d15d278267e33b468cb2b27c42ee615e23468dd` |
-| Status          | `complete` |
-| Handoff         | `docs/handoffs/2026-08-04-lisa-stage-workspace-complete.md` |
+| Branch          | `dev/cloudcursor/OCP-LISA-STAGE-WORKSPACE-COMPLETE`                                                                                                                                                                      |
+| Starting commit | `3d15d278267e33b468cb2b27c42ee615e23468dd`                                                                                                                                                                               |
+| Status          | `complete`                                                                                                                                                                                                               |
+| Handoff         | `docs/handoffs/2026-08-04-lisa-stage-workspace-complete.md`                                                                                                                                                              |
 
 ## Ownership Scope
 

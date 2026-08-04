@@ -9,40 +9,11 @@ import {
   assertBrainWireCaptureBatch,
   type BrainWireCaptureBatch,
 } from "./capture-batch-adapter.js";
+import { LINKBRAIN_PROHIBITED_FIELDS } from "./sanitize.js";
+
+export { LINKBRAIN_PROHIBITED_FIELDS } from "./sanitize.js";
 
 export const LINKBRAIN_REDACTION_POLICY_VERSION = "brain.redaction.v0";
-
-/** Fields never retained in internal envelopes or remote writes. */
-export const LINKBRAIN_PROHIBITED_FIELDS = Object.freeze([
-  "reasoning",
-  "chainOfThought",
-  "chain_of_thought",
-  "secrets",
-  "secret",
-  "authorization",
-  "apiKey",
-  "api_key",
-  "accessToken",
-  "access_token",
-  "rawToolOutput",
-  "unboundedToolOutput",
-  "raw_tool_output",
-  "skillId",
-  "skillsReleaseHash",
-  "skillsRunId",
-  "skills_run_id",
-  "telemetry",
-  // Attachments / prompt bodies excluded even when nested under capture payloads.
-  "attachment",
-  "attachments",
-  "media",
-  "mediaUrl",
-  "mediaUrls",
-  "prompt",
-  "promptBody",
-  "systemPrompt",
-  "developerPrompt",
-]);
 
 /** @deprecated Prefer CaptureBufferEvent / BrainWireCaptureEvent — kept for enqueue API. */
 export type BrainCaptureEvent = {

@@ -2,29 +2,29 @@
 
 ## Identity
 
-| Field             | Value                                                            |
-| ----------------- | ---------------------------------------------------------------- |
-| Agent type        | Cursor Local Agent                                               |
-| Platform          | Cursor                                                           |
-| Machine           | mac-mini                                                         |
-| Surface           | agents-window                                                    |
-| Execution         | local                                                            |
-| Role              | feature                                                          |
-| Orchestrator key  | cursor-local-mac-mini                                            |
-| Coordination home | /Users/linktrend/Projects/openclaw_prime                         |
+| Field             | Value                                                               |
+| ----------------- | ------------------------------------------------------------------- |
+| Agent type        | Cursor Local Agent                                                  |
+| Platform          | Cursor                                                              |
+| Machine           | mac-mini                                                            |
+| Surface           | agents-window                                                       |
+| Execution         | local                                                               |
+| Role              | feature                                                             |
+| Orchestrator key  | cursor-local-mac-mini                                               |
+| Coordination home | /Users/linktrend/Projects/openclaw_prime                            |
 | Session ID        | cursor-local-mac-mini-lisa-stage-ops-third-correction-20260803-1846 |
-| Started           | 2026-08-03 18:46 Asia/Taipei                                     |
-| Last updated      | 2026-08-03 19:00 Asia/Taipei                                     |
+| Started           | 2026-08-03 18:46 Asia/Taipei                                        |
+| Last updated      | 2026-08-03 19:00 Asia/Taipei                                        |
 
 ## Work
 
-| Field           | Value                                                                                                                              |
-| --------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| Objective       | Third correction: PDF mock-proof/rollback truth + canonical Kysely store consumers; truthful docs; no stage/live/cloud mutation    |
-| Branch          | ocp-stage-ops-canary-final                                                                                                         |
-| Starting commit | 1e41bd4897267cf3111139d26b1a8d22a5c6142e                                                                                           |
-| Status          | `complete`                                                                                                                           |
-| Handoff         | docs/handoffs/2026-08-03-lisa-stage-ops-third-correction.md                                                                                                                            |
+| Field           | Value                                                                                                                           |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| Objective       | Third correction: PDF mock-proof/rollback truth + canonical Kysely store consumers; truthful docs; no stage/live/cloud mutation |
+| Branch          | ocp-stage-ops-canary-final                                                                                                      |
+| Starting commit | 1e41bd4897267cf3111139d26b1a8d22a5c6142e                                                                                        |
+| Status          | `complete`                                                                                                                      |
+| Handoff         | docs/handoffs/2026-08-03-lisa-stage-ops-third-correction.md                                                                     |
 
 ## Ownership Scope
 

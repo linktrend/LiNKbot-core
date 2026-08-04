@@ -1,8 +1,8 @@
 # Runbook — Mac Mini lisa-stage ops canary (OpenRouter-only)
 
-**Domain:** Lisa stage (Mac Mini) only  
-**Owner:** OpenClaw Lisa / stage coordinator  
-**Tier:** Stage ops readiness — **no enable / no model invoke / no mutation from audit sessions** unless Principal authorizes  
+**Domain:** Lisa stage (Mac Mini) only
+**Owner:** OpenClaw Lisa / stage coordinator
+**Tier:** Stage ops readiness — **no enable / no model invoke / no mutation from audit sessions** unless Principal authorizes
 **Out of scope:** live Lisa (`~/.openclaw-lisa` / 18790), VPS, IDE Development, merge/promote, cloud/Supabase credential mutation
 
 **Hard stops:** secrets in argv/logs; enabling schedules without Principal gate; claiming MiniMax-M3 PDF proven without first-production-proof receipt; requesting direct provider keys (OpenRouter credential only); touching live Lisa; using `/Users/linktrend/Projects/openclaw_prime` as the stage engine.

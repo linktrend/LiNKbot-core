@@ -2,30 +2,30 @@
 
 ## Identity
 
-| Field             | Value |
-| ----------------- | ----- |
-| Agent type        | Cursor Local Agent |
-| Platform          | Cursor |
-| Machine           | mac-mini |
-| Surface           | agents-window |
-| Execution         | local |
-| Role              | feature |
-| Orchestrator key  | cursor-local-mac-mini-desktop-workspace-orchestrator |
+| Field             | Value                                                                                                 |
+| ----------------- | ----------------------------------------------------------------------------------------------------- |
+| Agent type        | Cursor Local Agent                                                                                    |
+| Platform          | Cursor                                                                                                |
+| Machine           | mac-mini                                                                                              |
+| Surface           | agents-window                                                                                         |
+| Execution         | local                                                                                                 |
+| Role              | feature                                                                                               |
+| Orchestrator key  | cursor-local-mac-mini-desktop-workspace-orchestrator                                                  |
 | Coordination home | `/Users/linktrend/Projects/openclaw_prime` (session record written in task worktree; relay if needed) |
-| Session ID        | cursor-local-mac-mini-agents-window-feature-linkbrain-live-hook-registration-20260803-1707 |
-| Started           | 2026-08-03 17:07 Asia/Taipei |
-| Last updated      | 2026-08-03 17:30 Asia/Taipei |
+| Session ID        | cursor-local-mac-mini-agents-window-feature-linkbrain-live-hook-registration-20260803-1707            |
+| Started           | 2026-08-03 17:07 Asia/Taipei                                                                          |
+| Last updated      | 2026-08-03 17:30 Asia/Taipei                                                                          |
 
 ## Work
 
-| Field           | Value                                                        |
-| --------------- | ------------------------------------------------------------ |
+| Field           | Value                                                                                                                                                                                                                                        |
+| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Objective       | Diagnose why explicitly enabled bundled default-disabled linkbrain registers services but typed hooks are absent (hookCount=0); implement smallest correct runtime fix + regression tests; commit/push on governed branch from `07c86fdc734` |
-| Branch          | `ocp-linkbrain-live-hook-registration` |
-| Starting commit | `07c86fdc734ae98c2d8c65c0687e9c57624854a7` |
-| Ending commit   | `5a77c2e87d5c253338d457e56a112014e3286f79` |
-| Status          | `complete` |
-| Handoff         | `docs/handoffs/2026-08-03-linkbrain-live-hook-registration.md` |
+| Branch          | `ocp-linkbrain-live-hook-registration`                                                                                                                                                                                                       |
+| Starting commit | `07c86fdc734ae98c2d8c65c0687e9c57624854a7`                                                                                                                                                                                                   |
+| Ending commit   | `5a77c2e87d5c253338d457e56a112014e3286f79`                                                                                                                                                                                                   |
+| Status          | `complete`                                                                                                                                                                                                                                   |
+| Handoff         | `docs/handoffs/2026-08-03-linkbrain-live-hook-registration.md`                                                                                                                                                                               |
 
 ## Ownership Scope
 

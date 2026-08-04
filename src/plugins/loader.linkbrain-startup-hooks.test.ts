@@ -7,10 +7,6 @@
  */
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import {
-  LINKBRAIN_CONVERSATION_HOOKS,
-  LINKBRAIN_REGISTERED_HOOKS,
-} from "../../extensions/linkbrain/src/lifecycle.js";
 import { withEnv } from "../test-utils/env.js";
 import { pluginTestRepoRoot as repoRoot } from "./generated-plugin-test-helpers.js";
 import { resetGlobalHookRunner } from "./hook-runner-global.js";
@@ -102,13 +98,6 @@ describe("bundled linkbrain gateway-style startup hooks", () => {
     resetPluginLoaderTestStateForTest();
   });
 
-  it("documents the fail-closed conversation hook set vs service hooks", () => {
-    expect([...LINKBRAIN_CONVERSATION_HOOKS]).toEqual([...EXPECTED_CONVERSATION_HOOKS]);
-    expect([...LINKBRAIN_REGISTERED_HOOKS].toSorted()).toEqual(
-      [...EXPECTED_CONVERSATION_HOOKS, ...EXPECTED_SERVICE_HOOKS].toSorted(),
-    );
-  });
-
   it("registers service hooks and full governed conversation set when allowConversationAccess===true", () => {
     const registry = withBundledExtensionsEnv(() =>
       loadBundledLinkbrain({ enabled: true, allowConversationAccess: true }),
@@ -120,7 +109,9 @@ describe("bundled linkbrain gateway-style startup hooks", () => {
     expect(hasOutboxService(registry)).toBe(true);
 
     const hookNames = linkbrainHookNames(registry);
-    expect(hookNames).toEqual([...LINKBRAIN_REGISTERED_HOOKS].toSorted());
+    expect(hookNames).toEqual(
+      [...EXPECTED_CONVERSATION_HOOKS, ...EXPECTED_SERVICE_HOOKS].toSorted(),
+    );
 
     // No double registration of any governed hook under a single load.
     expect(hookNames).toEqual([...new Set(hookNames)].toSorted());

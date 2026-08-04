@@ -41,7 +41,7 @@ import {
 } from "./runtime.js";
 
 /** One plugin's frozen machine-token ownership descriptors for cache/activate. */
-export type MachineTokenOwnershipPluginBlueprint = {
+type MachineTokenOwnershipPluginBlueprint = {
   readonly pluginId: string;
   readonly grantedRecords: ReadonlyArray<HostMachineTokenBindingRecord>;
 };
@@ -58,7 +58,7 @@ export type MachineTokenOwnershipBlueprint = {
   readonly ownershipFingerprint: string;
 };
 
-export type CombinedPluginRuntimeSnapshotIdentity = {
+type CombinedPluginRuntimeSnapshotIdentity = {
   readonly cacheKey: string;
   readonly ownershipFingerprint: string;
 };
@@ -262,7 +262,7 @@ export function canReuseActiveCombinedPluginRuntimeSnapshot(params: {
   });
 }
 
-export type ActivateCombinedPluginRuntimeSnapshotParams = {
+type ActivateCombinedPluginRuntimeSnapshotParams = {
   registry: PluginRegistry;
   cacheKey: string;
   runtimeSubagentMode: PluginRuntimeSubagentMode;
@@ -279,7 +279,7 @@ export type ActivateCombinedPluginRuntimeSnapshotParams = {
   env?: NodeJS.ProcessEnv;
 };
 
-export type ActivateCombinedPluginRuntimeSnapshotResult = {
+type ActivateCombinedPluginRuntimeSnapshotResult = {
   registry: PluginRegistry;
   /** False when the requested snapshot was already the exact active combined snapshot. */
   activated: boolean;

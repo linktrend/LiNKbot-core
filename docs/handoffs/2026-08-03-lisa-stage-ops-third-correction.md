@@ -2,22 +2,22 @@
 
 ## Session Metadata
 
-| Field                | Value                                                                              |
-| -------------------- | ---------------------------------------------------------------------------------- |
-| Agent identity       | Cursor Local Agent (Grok 4.5 High)                                                 |
-| Session ID           | cursor-local-mac-mini-lisa-stage-ops-third-correction-20260803-1846                |
-| Orchestrator key     | cursor-local-mac-mini                                                              |
-| Objective            | Third correction: PDF mock_verified + operational rollback; canonical store truth  |
-| Scope                | linkbots/lisa ops + src/state lisa-stage store + stage-ops runbook                 |
-| Started              | 2026-08-03 18:46 Asia/Taipei                                                       |
-| Ended                | 2026-08-03 19:00 Asia/Taipei                                                       |
-| Starting branch      | ocp-stage-ops-canary-final                                                         |
-| Ending branch        | ocp-stage-ops-canary-final                                                         |
-| Starting commit      | 1e41bd4897267cf3111139d26b1a8d22a5c6142e                                           |
-| Reviewed content SHA | 0886f673a464153737aea5f82ea3825c1f1f0be6 |
-| Ending commit        | (coordinator populates tip after push; do not self-sync)                           |
-| Starting status      | active                                                                             |
-| Ending status        | complete                                                                           |
+| Field                | Value                                                                             |
+| -------------------- | --------------------------------------------------------------------------------- |
+| Agent identity       | Cursor Local Agent (Grok 4.5 High)                                                |
+| Session ID           | cursor-local-mac-mini-lisa-stage-ops-third-correction-20260803-1846               |
+| Orchestrator key     | cursor-local-mac-mini                                                             |
+| Objective            | Third correction: PDF mock_verified + operational rollback; canonical store truth |
+| Scope                | linkbots/lisa ops + src/state lisa-stage store + stage-ops runbook                |
+| Started              | 2026-08-03 18:46 Asia/Taipei                                                      |
+| Ended                | 2026-08-03 19:00 Asia/Taipei                                                      |
+| Starting branch      | ocp-stage-ops-canary-final                                                        |
+| Ending branch        | ocp-stage-ops-canary-final                                                        |
+| Starting commit      | 1e41bd4897267cf3111139d26b1a8d22a5c6142e                                          |
+| Reviewed content SHA | 0886f673a464153737aea5f82ea3825c1f1f0be6                                          |
+| Ending commit        | (coordinator populates tip after push; do not self-sync)                          |
+| Starting status      | active                                                                            |
+| Ending status        | complete                                                                          |
 
 ## Summary
 
@@ -109,7 +109,7 @@ None for package. Authorize live PDF execute / stage ensure separately if desire
 
 ## Questions for the Orchestrator or Next Agent
 
-Treat reviewed content SHA  as packaging **PASS** for the two core blockers; live production proof and stage mutation remain **HOLD**. Populate Ending commit from push tip without rewriting content SHA.
+Treat reviewed content SHA as packaging **PASS** for the two core blockers; live production proof and stage mutation remain **HOLD**. Populate Ending commit from push tip without rewriting content SHA.
 
 ## Confidence
 

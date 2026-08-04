@@ -2,21 +2,21 @@
 
 ## Session Metadata
 
-| Field            | Value |
-| ---------------- | ----- |
-| Agent identity   | Cursor Local Agent / Grok 4.5 High / Feature |
-| Session ID       | `cursor-local-mac-mini-agents-window-feature-linkbrain-live-hook-registration-20260803-1707` |
-| Orchestrator key | `cursor-local-mac-mini-desktop-workspace-orchestrator` |
+| Field            | Value                                                                                                    |
+| ---------------- | -------------------------------------------------------------------------------------------------------- |
+| Agent identity   | Cursor Local Agent / Grok 4.5 High / Feature                                                             |
+| Session ID       | `cursor-local-mac-mini-agents-window-feature-linkbrain-live-hook-registration-20260803-1707`             |
+| Orchestrator key | `cursor-local-mac-mini-desktop-workspace-orchestrator`                                                   |
 | Objective        | Fix absent live linkbrain typed-hook dispatch for explicitly enabled bundled default-disabled activation |
-| Scope            | Repo loader/hook composition + tests/docs only; no stage/cloud/Lisa/VPS/IDE mutation |
-| Started          | 2026-08-03 17:07 Asia/Taipei |
-| Ended            | 2026-08-03 17:30 Asia/Taipei |
-| Starting branch  | `ocp-linkbrain-live-hook-registration` |
-| Ending branch    | `ocp-linkbrain-live-hook-registration` |
-| Starting commit  | `07c86fdc734ae98c2d8c65c0687e9c57624854a7` |
-| Ending commit    | `5a77c2e87d5c253338d457e56a112014e3286f79` |
-| Starting status  | clean at exact base `07c86f` |
-| Ending status    | fix + regressions committed/pushed |
+| Scope            | Repo loader/hook composition + tests/docs only; no stage/cloud/Lisa/VPS/IDE mutation                     |
+| Started          | 2026-08-03 17:07 Asia/Taipei                                                                             |
+| Ended            | 2026-08-03 17:30 Asia/Taipei                                                                             |
+| Starting branch  | `ocp-linkbrain-live-hook-registration`                                                                   |
+| Ending branch    | `ocp-linkbrain-live-hook-registration`                                                                   |
+| Starting commit  | `07c86fdc734ae98c2d8c65c0687e9c57624854a7`                                                               |
+| Ending commit    | `5a77c2e87d5c253338d457e56a112014e3286f79`                                                               |
+| Starting status  | clean at exact base `07c86f`                                                                             |
+| Ending status    | fix + regressions committed/pushed                                                                       |
 
 ## Summary
 
