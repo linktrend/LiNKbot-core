@@ -35,6 +35,13 @@ minutes. Missing/stale/wrong-provenance or duplicate/malformed managed jobs are
 rejected, and there is **no historical-ID fallback**. Explicit audited maps are
 offline plan-only and cannot emit commands.
 
+Stage cron receipts use the persisted display names (`Ship 05`, `Pull 07`,
+`Ship 16`, `Pull 18`, `Morning Digest`, `Heartbeat 45`, and optionally
+`Repair Dispatcher`). The coordinator reconciles each exact display name to its
+repo internal ID only when UUID, `lisa-cron` agent, isolated session, disabled
+state, exact schedule/timezone, and `delivery=none` all match the seed contract.
+Duplicate aliases or constraint mismatches fail closed.
+
 Prior stage force-runs used **STAGE_CANARY one-liner stubs**. Repo SOT packages real bounded HEARTBEAT/digest/Ship/Pull payloads (`STAGE BOUNDED PROCEDURE …`, `delivery=none`). Coordinator must **update** stage jobs from SOT before any enable.
 
 ---

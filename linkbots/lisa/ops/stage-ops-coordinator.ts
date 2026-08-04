@@ -140,10 +140,37 @@ function coreStageJobNames(): string[] {
   return buildStageOpsJobs().map((job) => job.id);
 }
 
+function acceptedStageJobs(includeRepair: boolean): StageSeedJob[] {
+  const jobs = buildStageOpsJobs();
+  if (includeRepair) jobs.push(buildStageRepairSupervisionJob());
+  return jobs;
+}
+
 function acceptedStageJobNames(includeRepair: boolean): Set<string> {
-  const names = coreStageJobNames();
-  if (includeRepair) names.push(buildStageRepairSupervisionJob().id);
-  return new Set(names);
+  return new Set(acceptedStageJobs(includeRepair).map((job) => job.id));
+}
+
+function validateStageCronReceiptJob(job: JsonRecord, seed: StageSeedJob): string[] {
+  const errors: string[] = [];
+  const prefix = `stage cron receipt job ${seed.id}`;
+  if (job.agentId !== seed.agentId) errors.push(`${prefix} agentId must be ${seed.agentId}`);
+  if (job.sessionTarget !== seed.sessionTarget) {
+    errors.push(`${prefix} sessionTarget must be ${seed.sessionTarget}`);
+  }
+  if (job.enabled !== false) errors.push(`${prefix} enabled must be false`);
+  const schedule = isJsonRecord(job.schedule) ? job.schedule : undefined;
+  if (!schedule || schedule.kind !== "cron") errors.push(`${prefix} schedule.kind must be cron`);
+  if (!schedule || schedule.expr !== seed.schedule.expr) {
+    errors.push(`${prefix} schedule.expr must be ${seed.schedule.expr}`);
+  }
+  if (!schedule || schedule.tz !== seed.schedule.tz) {
+    errors.push(`${prefix} schedule.tz must be ${seed.schedule.tz}`);
+  }
+  const delivery = isJsonRecord(job.delivery) ? job.delivery : undefined;
+  if (!delivery || delivery.mode !== seed.delivery.mode) {
+    errors.push(`${prefix} delivery.mode must be ${seed.delivery.mode}`);
+  }
+  return errors;
 }
 
 function validateResolvedJobIds(params: {
@@ -259,7 +286,18 @@ export function resolveStageCronJobIdsFromReceipt(
     options.maxAgeMs ?? STAGE_CRON_RECEIPT_MAX_AGE_MS,
   );
   const existingJobIds: Record<string, string> = {};
-  const acceptedNames = acceptedStageJobNames(includeRepair);
+  const seeds = acceptedStageJobs(includeRepair);
+  const acceptedNames = new Set(seeds.map((seed) => seed.id));
+  const seedsByAlias = new Map<string, StageSeedJob>();
+  for (const seed of seeds) {
+    for (const alias of [seed.id, seed.name]) {
+      if (seedsByAlias.has(alias)) {
+        errors.push(`ambiguous stage cron catalog alias ${alias}`);
+      } else {
+        seedsByAlias.set(alias, seed);
+      }
+    }
+  }
   const cronList = isJsonRecord(value) ? value.cronList : undefined;
   const jobs = isJsonRecord(cronList) && Array.isArray(cronList.jobs) ? cronList.jobs : undefined;
   if (!jobs) {
@@ -269,18 +307,23 @@ export function resolveStageCronJobIdsFromReceipt(
     };
   }
   for (const job of jobs) {
-    if (!isJsonRecord(job) || typeof job.name !== "string" || !acceptedNames.has(job.name)) {
-      continue;
-    }
+    if (!isJsonRecord(job) || typeof job.name !== "string") continue;
+    const seed = seedsByAlias.get(job.name);
+    if (!seed) continue;
     if (!isUuid(job.id)) {
-      errors.push(`stage cron receipt job ${job.name} must contain a UUID id`);
+      errors.push(`stage cron receipt job ${seed.id} must contain a UUID id`);
       continue;
     }
-    if (Object.hasOwn(existingJobIds, job.name)) {
-      errors.push(`duplicate stage cron receipt name ${job.name}`);
+    if (Object.hasOwn(existingJobIds, seed.id)) {
+      errors.push(`ambiguous stage cron receipt mapping for ${seed.id}`);
       continue;
     }
-    existingJobIds[job.name] = job.id;
+    const constraintErrors = validateStageCronReceiptJob(job, seed);
+    if (constraintErrors.length > 0) {
+      errors.push(...constraintErrors);
+      continue;
+    }
+    existingJobIds[seed.id] = job.id;
   }
   return {
     existingJobIds,

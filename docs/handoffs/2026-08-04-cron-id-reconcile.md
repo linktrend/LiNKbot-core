@@ -126,3 +126,17 @@ Adversarial missing/stale/future/wrong-command metadata tests were added. The
 follow-up focused suite passed 22/22, formatting and diff checks passed, and a
 fresh Terra Medium autoreview returned no actionable findings. No stage
 command, schedule, cloud, credential, service, or live Lisa state was changed.
+
+### 2026-08-04 — display-name alias reconciliation
+
+The first real stage wrapper receipt proved that persisted jobs use seed display
+names (`Ship 05`, `Pull 07`, `Ship 16`, `Pull 18`, `Morning Digest`, and
+`Heartbeat 45`) while the planner keys by internal IDs (`lisa-ship-05`, etc.).
+The resolver now derives both aliases from each `StageSeedJob` and accepts a
+display-name match only when the UUID, `lisa-cron` agent, isolated session,
+disabled state, exact cron expression/timezone, and `delivery=none` match the
+same seed. Duplicate aliases, duplicate UUIDs, wrong schedules, or other
+constraint mismatches fail closed. `Repair Dispatcher` is reconciled only when
+Repair is requested. Real-shape and adversarial tests increased the focused
+suite to 24 passing tests; formatting, diff checks, and fresh Terra Medium
+autoreview also passed. No runtime state was changed.

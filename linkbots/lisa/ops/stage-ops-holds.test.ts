@@ -260,12 +260,12 @@ describe("Stage ops coordinator install/update/disable/rollback", () => {
 
 describe("Stage ops coordinator cron ID sources", () => {
   const names = [
-    "lisa-heartbeat-45",
-    "lisa-morning-digest",
     "lisa-ship-05",
     "lisa-pull-07",
     "lisa-ship-16",
     "lisa-pull-18",
+    "lisa-morning-digest",
+    "lisa-heartbeat-45",
   ];
   const ids = [
     "11111111-1111-4111-8111-111111111111",
@@ -275,6 +275,7 @@ describe("Stage ops coordinator cron ID sources", () => {
     "55555555-5555-4555-8555-555555555555",
     "66666666-6666-4666-8666-666666666666",
   ];
+  const repairId = "77777777-7777-4777-8777-777777777777";
   const map = Object.fromEntries(names.map((name, index) => [name, ids[index]!])) as Record<
     string,
     string
@@ -282,15 +283,30 @@ describe("Stage ops coordinator cron ID sources", () => {
   const capturedAt = "2026-08-04T02:00:00.000Z";
   const nowMs = Date.parse("2026-08-04T02:01:00.000Z");
 
-  function receipt(jobs: Array<{ id: string | undefined; name: string }>) {
+  function currentCronJobs(includeRepair = false): Array<Record<string, unknown>> {
+    const seeds = includeRepair
+      ? [...buildStageOpsJobs(), buildStageRepairSupervisionJob()]
+      : buildStageOpsJobs();
+    return seeds.map((seed, index) => ({
+      id: index < ids.length ? ids[index] : repairId,
+      name: seed.name,
+      agentId: seed.agentId,
+      sessionTarget: seed.sessionTarget,
+      enabled: seed.enabled,
+      schedule: { kind: "cron", expr: seed.schedule.expr, tz: seed.schedule.tz },
+      delivery: { mode: seed.delivery.mode },
+    }));
+  }
+
+  function receipt(jobs: unknown[]) {
     return buildStageCronListReceipt({ jobs }, capturedAt);
   }
 
-  it("resolves a current coordinator receipt and ignores unrelated jobs", () => {
+  it("reconciles real display-name job shapes to internal IDs", () => {
     const resolution = resolveStageCronJobIdsFromReceipt(
       receipt([
-        ...names.map((name, index) => ({ id: ids[index], name })),
-        { id: "77777777-7777-4777-8777-777777777777", name: "unrelated-job" },
+        ...currentCronJobs(),
+        { id: "88888888-8888-4888-8888-888888888888", name: "unrelated-job" },
       ]),
       false,
       { nowMs },
@@ -299,44 +315,83 @@ describe("Stage ops coordinator cron ID sources", () => {
     assert.deepEqual(resolution.existingJobIds, map);
   });
 
-  it("rejects missing, duplicate, or malformed managed receipt jobs", () => {
+  it("accepts internal IDs as deterministic aliases with the same constraints", () => {
+    const jobs = currentCronJobs().map((job, index) => ({ ...job, name: names[index] }));
+    const resolution = resolveStageCronJobIdsFromReceipt(receipt(jobs), false, { nowMs });
+    assert.deepEqual(resolution.validationErrors, []);
+    assert.deepEqual(resolution.existingJobIds, map);
+  });
+
+  it("includes the Repair Dispatcher display alias only when requested", () => {
+    const jobs = currentCronJobs(true);
+    const withRepair = resolveStageCronJobIdsFromReceipt(receipt(jobs), true, { nowMs });
+    assert.deepEqual(withRepair.validationErrors, []);
+    assert.equal(withRepair.existingJobIds["lisa-repair-dispatcher"], repairId);
+
+    const withoutRepair = resolveStageCronJobIdsFromReceipt(receipt(jobs), false, { nowMs });
+    assert.deepEqual(withoutRepair.validationErrors, []);
+    assert.equal(withoutRepair.existingJobIds["lisa-repair-dispatcher"], undefined);
+  });
+
+  it("rejects missing, ambiguous, malformed, or wrong-schedule managed jobs", () => {
     const missing = resolveStageCronJobIdsFromReceipt(
-      receipt(names.slice(0, -1).map((name, index) => ({ id: ids[index], name }))),
+      receipt(currentCronJobs().slice(0, -1)),
       false,
       { nowMs },
     );
     assert.ok(
       missing.validationErrors.some((error) =>
-        /missing stage cron mapping for lisa-pull-18/.test(error),
+        /missing stage cron mapping for lisa-heartbeat-45/.test(error),
       ),
     );
 
-    const duplicateName = resolveStageCronJobIdsFromReceipt(
+    const duplicateAlias = resolveStageCronJobIdsFromReceipt(
       receipt([
-        ...names.map((name, index) => ({ id: ids[index], name })),
-        { id: "77777777-7777-4777-8777-777777777777", name: "lisa-heartbeat-45" },
+        ...currentCronJobs(),
+        { ...currentCronJobs()[0], id: "88888888-8888-4888-8888-888888888888" },
       ]),
       false,
       { nowMs },
     );
     assert.ok(
-      duplicateName.validationErrors.some((error) =>
-        /duplicate stage cron receipt name/.test(error),
+      duplicateAlias.validationErrors.some((error) =>
+        /ambiguous stage cron receipt mapping for lisa-ship-05/.test(error),
       ),
     );
 
-    const duplicateId = resolveStageCronJobIdsFromReceipt(
-      receipt(names.map((name, index) => ({ id: index === 1 ? ids[0] : ids[index], name }))),
-      false,
-      { nowMs },
-    );
+    const duplicateJobs = currentCronJobs();
+    duplicateJobs[1] = { ...duplicateJobs[1], id: ids[0] };
+    const duplicateId = resolveStageCronJobIdsFromReceipt(receipt(duplicateJobs), false, { nowMs });
     assert.ok(
       duplicateId.validationErrors.some((error) => /duplicate stage cron UUID/.test(error)),
+    );
+
+    const wrongScheduleJobs = currentCronJobs();
+    wrongScheduleJobs[0] = {
+      ...wrongScheduleJobs[0],
+      schedule: { kind: "cron", expr: "0 6 * * *", tz: "Asia/Taipei" },
+    };
+    const wrongSchedule = resolveStageCronJobIdsFromReceipt(receipt(wrongScheduleJobs), false, {
+      nowMs,
+    });
+    assert.ok(
+      wrongSchedule.validationErrors.some((error) =>
+        /lisa-ship-05 schedule.expr must be 0 5 \* \* \*/.test(error),
+      ),
+    );
+
+    const malformedJobs = currentCronJobs();
+    malformedJobs[0] = { ...malformedJobs[0], id: "not-a-uuid" };
+    const malformed = resolveStageCronJobIdsFromReceipt(receipt(malformedJobs), false, {
+      nowMs,
+    });
+    assert.ok(
+      malformed.validationErrors.some((error) => /lisa-ship-05 must contain a UUID/.test(error)),
     );
   });
 
   it("rejects missing, stale, future, and wrong-provenance receipt metadata", () => {
-    const current = receipt(names.map((name, index) => ({ id: ids[index], name })));
+    const current = receipt(currentCronJobs());
 
     const missingMetadata = resolveStageCronJobIdsFromReceipt(
       { cronList: current.cronList },
@@ -388,7 +443,7 @@ describe("Stage ops coordinator cron ID sources", () => {
   });
 
   it("enforces the bounded receipt max age", () => {
-    const current = receipt(names.map((name, index) => ({ id: ids[index], name })));
+    const current = receipt(currentCronJobs());
     const atBoundary = resolveStageCronJobIdsFromReceipt(current, false, {
       nowMs: Date.parse(capturedAt) + STAGE_CRON_RECEIPT_MAX_AGE_MS,
     });
@@ -417,7 +472,7 @@ describe("Stage ops coordinator cron ID sources", () => {
     });
     assert.ok(
       missing.validationErrors.some((error) =>
-        /missing stage cron mapping for lisa-pull-18/.test(error),
+        /missing stage cron mapping for lisa-heartbeat-45/.test(error),
       ),
     );
   });
