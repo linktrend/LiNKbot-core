@@ -178,11 +178,22 @@ export function verifyStageWorkspacePackage(params: {
 }
 
 function resolveReal(p: string): string {
-  try {
-    return realpathSync(p);
-  } catch {
-    return path.resolve(p);
+  const resolved = path.resolve(p);
+  let ancestor = resolved;
+  const suffix: string[] = [];
+
+  // `realpathSync` only protects existing paths. For a target such as
+  // `/tmp/link-to-live/new/workspace`, resolve its nearest existing ancestor
+  // first, then reattach the missing tail so a symlink cannot hide live Lisa.
+  while (!existsSync(ancestor)) {
+    const parent = path.dirname(ancestor);
+    if (parent === ancestor) {
+      throw new Error(`cannot resolve existing ancestor for target: ${p}`);
+    }
+    suffix.unshift(path.basename(ancestor));
+    ancestor = parent;
   }
+  return path.resolve(realpathSync(ancestor), ...suffix);
 }
 
 /** True when target is (or is inside) the real stage workspace / stage root. */
@@ -204,6 +215,10 @@ export function isForbiddenLiveLisaTarget(targetDir: string): boolean {
   return FORBIDDEN_LIVE_LISA_PREFIXES.some(
     (prefix) => target === prefix || target.startsWith(`${prefix}${path.sep}`),
   );
+}
+
+function isBlockedTargetAction(action: "verify" | "install" | "emit-commands"): boolean {
+  return action === "install" || action === "emit-commands";
 }
 
 function buildCopyCommands(
@@ -251,9 +266,21 @@ export function planStageWorkspacePackage(params: {
     sourceRoot,
   });
 
-  const targetDir = params.targetDir ? path.resolve(params.targetDir) : null;
-  const copyCommands =
-    targetDir !== null
+  const targetDir = params.targetDir ? resolveReal(params.targetDir) : null;
+  const targetIsLiveLisa = targetDir !== null && isForbiddenLiveLisaTarget(targetDir);
+  const targetIsForbiddenStage =
+    targetDir !== null &&
+    isForbiddenStageWorkspaceTarget(targetDir) &&
+    !params.allowForbiddenStageTarget;
+  // A live Lisa target must be rejected before command construction as well as
+  // before installation. Emitting a command that names a live target is unsafe.
+  const targetBlocked =
+    targetDir !== null &&
+    isBlockedTargetAction(action) &&
+    (targetIsLiveLisa || targetIsForbiddenStage);
+  const copyCommands = targetBlocked
+    ? []
+    : targetDir !== null
       ? buildCopyCommands(manifest, sourceRoot, targetDir)
       : buildCopyCommands(manifest, sourceRoot, "<TARGET_WORKSPACE>");
 
@@ -288,6 +315,21 @@ export function planStageWorkspacePackage(params: {
     return receipt;
   }
 
+  if (targetBlocked) {
+    const receipt: StageWorkspacePackageReceipt = {
+      ...base,
+      status: "blocked_forbidden_target",
+      mutateWorkspace: false,
+      targetDir,
+      stageWorkspaceMutated: false,
+      installedPaths: [],
+      preservedPaths: [],
+      initializedPaths: [],
+    };
+    writeReceipt(params.outputDir, receipt);
+    return receipt;
+  }
+
   if (action === "emit-commands") {
     const receipt: StageWorkspacePackageReceipt = {
       ...base,
@@ -307,37 +349,6 @@ export function planStageWorkspacePackage(params: {
     const receipt: StageWorkspacePackageReceipt = {
       ...base,
       status: "verified",
-      mutateWorkspace: false,
-      targetDir,
-      stageWorkspaceMutated: false,
-      installedPaths: [],
-      preservedPaths: [],
-      initializedPaths: [],
-    };
-    writeReceipt(params.outputDir, receipt);
-    return receipt;
-  }
-
-  // install — refuse live Lisa always; refuse real stage unless Principal escape hatch
-  if (isForbiddenLiveLisaTarget(targetDir)) {
-    const receipt: StageWorkspacePackageReceipt = {
-      ...base,
-      status: "blocked_forbidden_target",
-      mutateWorkspace: false,
-      targetDir,
-      stageWorkspaceMutated: false,
-      installedPaths: [],
-      preservedPaths: [],
-      initializedPaths: [],
-    };
-    writeReceipt(params.outputDir, receipt);
-    return receipt;
-  }
-
-  if (isForbiddenStageWorkspaceTarget(targetDir) && !params.allowForbiddenStageTarget) {
-    const receipt: StageWorkspacePackageReceipt = {
-      ...base,
-      status: "blocked_forbidden_target",
       mutateWorkspace: false,
       targetDir,
       stageWorkspaceMutated: false,

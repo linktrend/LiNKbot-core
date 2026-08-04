@@ -12,6 +12,7 @@ import {
   mkdirSync,
   readFileSync,
   rmSync,
+  symlinkSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
@@ -22,6 +23,8 @@ import {
   STAGE_EXTERNAL_HELPER_SKIP_CONTRACT,
   buildDigestStageMessage,
   buildHeartbeatStageMessage,
+  renderStageExternalUnavailableOutput,
+  validateStageExternalUnavailableOutput,
 } from "./stage-ops-payloads.ts";
 import {
   DEFAULT_MANIFEST_PATH,
@@ -157,6 +160,28 @@ describe("stage-workspace-package", () => {
       assert.equal(liveBlocked.status, "blocked_forbidden_target");
       assert.equal(liveBlocked.liveLisaTouched, false);
       assert.equal(liveBlocked.installedPaths.length, 0);
+
+      const liveCommandsBlocked = planStageWorkspacePackage({
+        action: "emit-commands",
+        targetDir: "/Users/linktrend/.openclaw-lisa/workspace",
+        outputDir: dir,
+      });
+      assert.equal(liveCommandsBlocked.status, "blocked_forbidden_target");
+      assert.deepEqual(liveCommandsBlocked.copyCommands, []);
+
+      const liveAlias = path.join(dir, "alias-to-live-lisa");
+      symlinkSync("/Users/linktrend/.openclaw-lisa", liveAlias);
+      const hiddenLiveTarget = path.join(liveAlias, "workspace", "missing", "nested");
+      assert.equal(isForbiddenLiveLisaTarget(hiddenLiveTarget), true);
+      const symlinkBlocked = planStageWorkspacePackage({
+        action: "install",
+        targetDir: hiddenLiveTarget,
+        outputDir: dir,
+        allowForbiddenStageTarget: true,
+      });
+      assert.equal(symlinkBlocked.status, "blocked_forbidden_target");
+      assert.deepEqual(symlinkBlocked.copyCommands, []);
+      assert.equal(symlinkBlocked.installedPaths.length, 0);
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }
@@ -201,6 +226,10 @@ describe("stage-workspace-package", () => {
       assert.equal(state.schema, "lisa_battery_monitor_state_v1");
       assert.equal(state.source, "repo_stage_seed_non_personal");
       assert.equal(state.confirmed, null);
+      assert.equal((state as { learned: { chargeRate: number } }).learned.chargeRate, 30);
+      assert.equal((state as { learned: { dischargeRate: number } }).learned.dischargeRate, -6.5);
+      assert.equal("chargeRatePpPerHour" in (state as { learned: object }).learned, false);
+      assert.equal("dischargeRatePpPerHour" in (state as { learned: object }).learned, false);
       assert.ok(!JSON.stringify(state).includes("openclaw-lisa"));
       assert.ok(receipt.copyCommands.length >= 16);
     } finally {
@@ -288,6 +317,24 @@ describe("stage-workspace-package", () => {
         assert.ok(msg.includes(line));
       }
     }
+  });
+
+  it("renders and validates truthful stage-only unavailable external output", () => {
+    const output = renderStageExternalUnavailableOutput();
+    assert.deepEqual(validateStageExternalUnavailableOutput(output), []);
+    assert.match(output, /STAGE_SKIPPED_google/);
+    assert.match(output, /STAGE_SKIPPED_task/);
+    assert.match(output, /STAGE_SKIPPED_email/);
+    assert.doesNotMatch(output, /(?:Google\/Calendar|Carlos Tasks|Email):\s*(?:Yes|No)\./);
+    assert.doesNotMatch(output, /\bClear\b/);
+
+    const misleading = output.replace(
+      "Google/Calendar: STAGE_SKIPPED_google (unavailable; no result asserted).",
+      "Google/Calendar: No.",
+    );
+    assert.ok(
+      validateStageExternalUnavailableOutput(misleading).some((error) => /Yes\/No/.test(error)),
+    );
   });
 
   it("emit-commands does not install", () => {

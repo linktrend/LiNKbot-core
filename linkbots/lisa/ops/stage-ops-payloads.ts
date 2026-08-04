@@ -92,6 +92,32 @@ export const STAGE_EXTERNAL_HELPER_SKIP_CONTRACT = [
   "delivery=none: never email, never Telegram-deliver, never schedule battery-monitor-alert-35 to live channels; note STAGE_SKIPPED_email / STAGE_SKIPPED_telegram when those paths are skipped.",
 ] as const;
 
+/**
+ * Stage-only final-output block when Google, Tasks, and email are deliberately
+ * unavailable. It is not a normal Yes/No work summary and cannot claim Clear.
+ */
+export function renderStageExternalUnavailableOutput(): string {
+  return [
+    "Stage external integrations (delivery=none):",
+    "Google/Calendar: STAGE_SKIPPED_google (unavailable; no result asserted).",
+    "Carlos Tasks: STAGE_SKIPPED_task (unavailable; no Yes/No asserted).",
+    "Email: STAGE_SKIPPED_email (delivery disabled; no send asserted).",
+  ].join("\n");
+}
+
+/** Reject misleading normal-production summary language in the stage skip block. */
+export function validateStageExternalUnavailableOutput(output: string): string[] {
+  const errors: string[] = [];
+  for (const token of ["STAGE_SKIPPED_google", "STAGE_SKIPPED_task", "STAGE_SKIPPED_email"]) {
+    if (!output.includes(token)) errors.push(`missing ${token}`);
+  }
+  if (/\bClear\b/.test(output)) errors.push("stage external output must not claim Clear");
+  if (/(?:Google\/Calendar|Carlos Tasks|Email):\s*(?:Yes|No)\./.test(output)) {
+    errors.push("stage external output must not assert Yes/No for unavailable integrations");
+  }
+  return errors;
+}
+
 export function buildHeartbeatStageMessage(): string {
   return [
     "STAGE BOUNDED PROCEDURE — lisa-heartbeat-45",
@@ -100,6 +126,7 @@ export function buildHeartbeatStageMessage(): string {
     "Use only the HARD TOOL CONTRACT in HEARTBEAT.md (native read / sessions_list / unpiped lisa-safe forms).",
     "If a check requires live Telegram announce, live Lisa paths, or unpaid spend beyond stage OpenRouter policy, skip that check and note STAGE_SKIPPED_<check>.",
     ...STAGE_EXTERNAL_HELPER_SKIP_CONTRACT,
+    `When all three external paths are unavailable, render exactly this truthful block:\n${renderStageExternalUnavailableOutput()}`,
     "Final reply must follow the Heartbeat output format in HEARTBEAT.md (or STAGE_PROCEDURE_BLOCKED <reason> on unrecovered hard denial unrelated to intentional Google/task skips).",
     "Never reply with STAGE_CANARY_OK alone. Never invent Clear.",
   ].join("\n");
@@ -112,6 +139,7 @@ export function buildDigestStageMessage(): string {
     "Read and execute agents/morning-digest.md for profile lisa-stage.",
     "delivery=none: do not rely on cron announce; do not email Carlos unless Principal explicitly authorizes a stage delivery exception (default: skip email and note STAGE_SKIPPED_email).",
     ...STAGE_EXTERNAL_HELPER_SKIP_CONTRACT,
+    `When all three external paths are unavailable, render exactly this truthful block:\n${renderStageExternalUnavailableOutput()}`,
     "Main Approve: if authoritative package store is unavailable, record blocked_no_store and continue digest sections without inventing Clear.",
     "Final reply must be the Morning Digest Output Format (or STAGE_PROCEDURE_BLOCKED <reason> for missing required workspace files / unrecovered hard denial unrelated to intentional Google/task skips).",
     "Never reply with STAGE_CANARY_OK alone. Never invent Clear.",

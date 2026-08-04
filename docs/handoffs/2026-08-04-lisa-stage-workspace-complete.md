@@ -2,21 +2,21 @@
 
 ## Session Metadata
 
-| Field            | Value |
-| ---------------- | ----- |
-| Agent identity   | Cursor Local Agent (Grok 4.5 High) |
-| Session ID       | cursor-local-mac-mini-agents-window-lisa-ocp-lisa-stage-workspace-complete-20260804-0939 |
-| Orchestrator key | cursor-mac-mini-agents-window-orchestrator |
-| Objective        | Complete lisa-stage workspace package for hermetic Heartbeat/Digest/Ship-Pull/Repair canary under delivery=none |
-| Scope            | linkbots/lisa ops package/manifest/seeds/payloads/tests + stage-ops runbook + session/handoff |
-| Started          | 2026-08-04 09:39 Asia/Taipei |
-| Ended            | 2026-08-04 09:50 Asia/Taipei |
-| Starting branch  | lisa-stage-workspace-complete @ `3d15d278267e33b468cb2b27c42ee615e23468dd` |
-| Ending branch    | `dev/cloudcursor/OCP-LISA-STAGE-WORKSPACE-COMPLETE` |
-| Starting commit  | `3d15d278267e33b468cb2b27c42ee615e23468dd` |
-| Ending commit    | `f37888e20c79dfab5b35451130148bee20663d9b` (docs tip; packaging content tip `fd8e5e438494293c6d39d204a414bfe4a7c87d21`) |
-| Starting status  | active |
-| Ending status    | complete |
+| Field                 | Value                                                                                                           |
+| --------------------- | --------------------------------------------------------------------------------------------------------------- |
+| Agent identity        | Cursor Local Agent (Grok 4.5 High)                                                                              |
+| Session ID            | cursor-local-mac-mini-agents-window-lisa-ocp-lisa-stage-workspace-complete-20260804-0939                        |
+| Orchestrator key      | cursor-mac-mini-agents-window-orchestrator                                                                      |
+| Objective             | Complete lisa-stage workspace package for hermetic Heartbeat/Digest/Ship-Pull/Repair canary under delivery=none |
+| Scope                 | linkbots/lisa ops package/manifest/seeds/payloads/tests + stage-ops runbook + session/handoff                   |
+| Started               | 2026-08-04 09:39 Asia/Taipei                                                                                    |
+| Ended                 | 2026-08-04 09:50 Asia/Taipei                                                                                    |
+| Starting branch       | lisa-stage-workspace-complete @ `3d15d278267e33b468cb2b27c42ee615e23468dd`                                      |
+| Ending branch         | `dev/cloudcursor/OCP-LISA-STAGE-WORKSPACE-COMPLETE`                                                             |
+| Starting commit       | `3d15d278267e33b468cb2b27c42ee615e23468dd`                                                                      |
+| Packaging content SHA | `fd8e5e438494293c6d39d204a414bfe4a7c87d21` (immutable implementation content commit)                            |
+| Starting status       | active                                                                                                          |
+| Ending status         | complete                                                                                                        |
 
 ## Summary
 
@@ -113,3 +113,11 @@ None beyond dashboard refresh and optional Principal-gated stage install.
 ## Amendments
 
 Append dated factual corrections here. Never silently rewrite an earlier handoff.
+
+### 2026-08-04 14:30 Asia/Taipei — handoff SHA correction
+
+The earlier “Ending commit” wording was self-chasing because this handoff itself
+was amended by later documentation commits. The immutable package-content SHA is
+`fd8e5e438494293c6d39d204a414bfe4a7c87d21`; an independent verifier must fetch
+and resolve `origin/dev/cloudcursor/OCP-LISA-STAGE-WORKSPACE-COMPLETE` separately
+for the current branch tip. This correction makes no runtime or package install.

@@ -5,8 +5,8 @@
   "source": "repo_stage_seed_non_personal",
   "confirmed": null,
   "learned": {
-    "chargeRatePpPerHour": 30,
-    "dischargeRatePpPerHour": -6.5,
+    "chargeRate": 30,
+    "dischargeRate": -6.5,
     "source": "baseline"
   },
   "pendingAlert35": {

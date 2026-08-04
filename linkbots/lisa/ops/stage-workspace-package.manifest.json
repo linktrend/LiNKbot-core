@@ -95,8 +95,8 @@
     {
       "source": "ops/stage-workspace-seeds/battery-monitor-state.json",
       "destination": "memory/battery-monitor-state.json",
-      "sha256": "0650b1540ea190ed78a983700636ec41a815fb606ba0e52a7fefcbffb009cd92",
-      "bytes": 533
+      "sha256": "9763fe8b96f0ae63dc39571b7747b1a2d9578fa049f2266d3b7f7ba49349e80a",
+      "bytes": 515
     },
     {
       "source": "Personality files/memory/pipeline-status.md",
