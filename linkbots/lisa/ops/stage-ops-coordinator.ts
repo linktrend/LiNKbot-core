@@ -6,7 +6,7 @@
  * and typed gateway-valid create/edit payloads. Never enables schedules.
  */
 
-import { writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { LISA_OPENROUTER_ONLY_STAGE_ROUTING } from "./model-routing.openrouter-stage.ts";
@@ -98,6 +98,144 @@ export type StageOpsPlanInput = {
    */
   ensureDurableStore?: boolean;
 };
+
+type JsonRecord = Record<string, unknown>;
+
+export type StageCronJobIdResolution = {
+  existingJobIds: Record<string, string>;
+  validationErrors: string[];
+};
+
+function isJsonRecord(value: unknown): value is JsonRecord {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function isUuid(value: unknown): value is string {
+  return (
+    typeof value === "string" &&
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value)
+  );
+}
+
+function coreStageJobNames(): string[] {
+  return buildStageOpsJobs().map((job) => job.id);
+}
+
+function acceptedStageJobNames(includeRepair: boolean): Set<string> {
+  const names = coreStageJobNames();
+  if (includeRepair) names.push(buildStageRepairSupervisionJob().id);
+  return new Set(names);
+}
+
+function validateResolvedJobIds(params: {
+  existingJobIds: Record<string, string>;
+  requiredNames: readonly string[];
+  acceptedNames: ReadonlySet<string>;
+}): string[] {
+  const errors: string[] = [];
+  const ids = new Map<string, string>();
+  for (const [name, id] of Object.entries(params.existingJobIds)) {
+    if (!params.acceptedNames.has(name)) {
+      errors.push(`unexpected stage cron mapping for ${name}`);
+      continue;
+    }
+    if (!isUuid(id)) {
+      errors.push(`stage cron mapping for ${name} must be a UUID`);
+      continue;
+    }
+    const priorName = ids.get(id);
+    if (priorName) {
+      errors.push(`duplicate stage cron UUID ${id} for ${priorName} and ${name}`);
+      continue;
+    }
+    ids.set(id, name);
+  }
+  for (const name of params.requiredNames) {
+    if (!Object.hasOwn(params.existingJobIds, name)) {
+      errors.push(`missing stage cron mapping for ${name}`);
+    }
+  }
+  return errors;
+}
+
+/**
+ * Resolve the six managed stage jobs from a read-only `cron list --all --json`
+ * receipt. Unrelated cron jobs are ignored; duplicate or malformed managed jobs
+ * are errors. No runtime command is invoked from this parser.
+ */
+export function resolveStageCronJobIdsFromReceipt(
+  value: unknown,
+  includeRepair = false,
+): StageCronJobIdResolution {
+  const errors: string[] = [];
+  const existingJobIds: Record<string, string> = {};
+  const acceptedNames = acceptedStageJobNames(includeRepair);
+  const jobs = isJsonRecord(value) && Array.isArray(value.jobs) ? value.jobs : undefined;
+  if (!jobs) {
+    return {
+      existingJobIds,
+      validationErrors: ["cron receipt must be a JSON object with a jobs array"],
+    };
+  }
+  for (const job of jobs) {
+    if (!isJsonRecord(job) || typeof job.name !== "string" || !acceptedNames.has(job.name)) {
+      continue;
+    }
+    if (!isUuid(job.id)) {
+      errors.push(`stage cron receipt job ${job.name} must contain a UUID id`);
+      continue;
+    }
+    if (Object.hasOwn(existingJobIds, job.name)) {
+      errors.push(`duplicate stage cron receipt name ${job.name}`);
+      continue;
+    }
+    existingJobIds[job.name] = job.id;
+  }
+  return {
+    existingJobIds,
+    validationErrors: [
+      ...errors,
+      ...validateResolvedJobIds({
+        existingJobIds,
+        requiredNames: coreStageJobNames(),
+        acceptedNames,
+      }),
+    ],
+  };
+}
+
+/**
+ * Resolve an explicit, audited JSON map: `{ "existingJobIds": { name: uuid } }`.
+ * The six core stage jobs are mandatory. Repair is allowed only when requested.
+ */
+export function resolveStageCronJobIdsFromExplicitMap(
+  value: unknown,
+  includeRepair = false,
+): StageCronJobIdResolution {
+  const existingJobIds =
+    isJsonRecord(value) && isJsonRecord(value.existingJobIds)
+      ? Object.fromEntries(Object.entries(value.existingJobIds))
+      : {};
+  if (!isJsonRecord(value) || !isJsonRecord(value.existingJobIds)) {
+    return {
+      existingJobIds: {},
+      validationErrors: ["explicit stage cron map must be { existingJobIds: { name: uuid } }"],
+    };
+  }
+  const acceptedNames = acceptedStageJobNames(includeRepair);
+  return {
+    existingJobIds: existingJobIds as Record<string, string>,
+    validationErrors: validateResolvedJobIds({
+      existingJobIds: existingJobIds as Record<string, string>,
+      requiredNames: coreStageJobNames(),
+      acceptedNames,
+    }),
+  };
+}
+
+function readJsonFile(filePath: string): unknown {
+  return JSON.parse(readFileSync(filePath, "utf8")) as unknown;
+}
 
 function selectJobs(includeRepair: boolean): StageSeedJob[] {
   const jobs = buildStageOpsJobs();
@@ -422,11 +560,17 @@ Options:
   --ensure-store       Lazily ensure lisa_stage_* on durableStoreDatabasePath/stage state (Principal gate)
   --emit-commands      Print exact coordinator shell commands (still mutateStage=false)
   --json               Print machine-readable plan JSON
+  --cron-list-receipt <path>
+                       Read a fresh, read-only cron list --all --json receipt
+  --existing-job-ids <path>
+                       Read { "existingJobIds": { name: uuid } } from an audited JSON file
   --write-seed <path>  Write materialized jobs.stage-seed.json (repo path only)
 
 Hard stops: never enables schedules; delivery=none; creates use --disabled + --no-deliver;
 edits use --disable + --no-deliver (single mutation); OpenRouter-only; stage commands use
 LiNKplatform-staging/openclaw_prime via lisa-stage-env-wrapper; no stage mutation from this process.
+Every direct CLI action requires exactly one current job-ID source. The coordinator never uses
+historical UUID defaults. Capture a receipt with the read-only inspect command first.
 `);
 }
 
@@ -448,23 +592,45 @@ function main(argv: string[]): number {
   const asJson = args.includes("--json");
   const writeSeedIdx = args.indexOf("--write-seed");
   const writeSeedPath = writeSeedIdx >= 0 ? args[writeSeedIdx + 1] : undefined;
+  const receiptIdx = args.indexOf("--cron-list-receipt");
+  const receiptPath = receiptIdx >= 0 ? args[receiptIdx + 1] : undefined;
+  const mapIdx = args.indexOf("--existing-job-ids");
+  const mapPath = mapIdx >= 0 ? args[mapIdx + 1] : undefined;
 
-  // Known stage UUIDs from 2026-08-03 read-only audit (re-verify before apply).
-  const existingJobIds = {
-    "lisa-heartbeat-45": "1684ea5f-47ea-464a-8f58-b5990b1ac160",
-    "lisa-morning-digest": "3f46ba9b-1ec4-44a3-b402-e7458a4c0e38",
-    "lisa-ship-05": "a7046889-4190-4df7-8b37-2243347dcd1f",
-    "lisa-pull-07": "ac062761-66a3-4f0a-8811-dec198ba12c7",
-    "lisa-ship-16": "e1ff7019-e805-4770-9329-d6656f85d021",
-    "lisa-pull-18": "f24bbd94-c9be-4dba-9602-cfa266fffb9c",
-  };
+  if ((receiptPath && mapPath) || (!receiptPath && !mapPath)) {
+    console.error(
+      "Provide exactly one of --cron-list-receipt <path> or --existing-job-ids <path>; no historical UUID defaults are available.",
+    );
+    return 2;
+  }
+  if ((receiptIdx >= 0 && !receiptPath) || (mapIdx >= 0 && !mapPath)) {
+    console.error("The stage cron receipt/map option requires a JSON file path.");
+    return 2;
+  }
+
+  let resolution: StageCronJobIdResolution;
+  try {
+    const source = readJsonFile(receiptPath ?? mapPath!);
+    resolution = receiptPath
+      ? resolveStageCronJobIdsFromReceipt(source, includeRepair)
+      : resolveStageCronJobIdsFromExplicitMap(source, includeRepair);
+  } catch (error) {
+    console.error(
+      `Unable to read stage cron mapping source: ${error instanceof Error ? error.message : String(error)}`,
+    );
+    return 2;
+  }
+  if (resolution.validationErrors.length > 0) {
+    console.error("Stage cron mapping rejected:", resolution.validationErrors);
+    return 1;
+  }
 
   const plan = planStageOps({
     action,
     includeRepair,
     emitCommands,
     ensureDurableStore,
-    existingJobIds,
+    existingJobIds: resolution.existingJobIds,
   });
 
   if (writeSeedPath) {

@@ -14,7 +14,12 @@ import {
   MAIN_APPROVE_RUNTIME_STORE,
   MAIN_APPROVE_UNHEALTHY_STORE,
 } from "./main-approve-binding.ts";
-import { materializeStageSeedJson, planStageOps } from "./stage-ops-coordinator.ts";
+import {
+  materializeStageSeedJson,
+  planStageOps,
+  resolveStageCronJobIdsFromExplicitMap,
+  resolveStageCronJobIdsFromReceipt,
+} from "./stage-ops-coordinator.ts";
 import {
   buildStageOpsJobs,
   buildStageRepairSupervisionJob,
@@ -248,6 +253,92 @@ describe("Stage ops coordinator install/update/disable/rollback", () => {
     assert.equal(blocked.includeRepair, false);
     assert.equal(blocked.jobCount, 6);
     assert.ok(blocked.validationErrors.some((e) => /repair install blocked/i.test(e)));
+  });
+});
+
+describe("Stage ops coordinator cron ID sources", () => {
+  const names = [
+    "lisa-heartbeat-45",
+    "lisa-morning-digest",
+    "lisa-ship-05",
+    "lisa-pull-07",
+    "lisa-ship-16",
+    "lisa-pull-18",
+  ];
+  const ids = [
+    "11111111-1111-4111-8111-111111111111",
+    "22222222-2222-4222-8222-222222222222",
+    "33333333-3333-4333-8333-333333333333",
+    "44444444-4444-4444-8444-444444444444",
+    "55555555-5555-4555-8555-555555555555",
+    "66666666-6666-4666-8666-666666666666",
+  ];
+  const map = Object.fromEntries(names.map((name, index) => [name, ids[index]!])) as Record<
+    string,
+    string
+  >;
+
+  it("resolves a current read-only cron list receipt and ignores unrelated jobs", () => {
+    const resolution = resolveStageCronJobIdsFromReceipt({
+      jobs: [
+        ...names.map((name, index) => ({ id: ids[index], name })),
+        { id: "77777777-7777-4777-8777-777777777777", name: "unrelated-job" },
+      ],
+    });
+    assert.deepEqual(resolution.validationErrors, []);
+    assert.deepEqual(resolution.existingJobIds, map);
+  });
+
+  it("rejects missing, duplicate, or malformed managed receipt jobs", () => {
+    const missing = resolveStageCronJobIdsFromReceipt({
+      jobs: names.slice(0, -1).map((name, index) => ({ id: ids[index], name })),
+    });
+    assert.ok(
+      missing.validationErrors.some((error) =>
+        /missing stage cron mapping for lisa-pull-18/.test(error),
+      ),
+    );
+
+    const duplicateName = resolveStageCronJobIdsFromReceipt({
+      jobs: [
+        ...names.map((name, index) => ({ id: ids[index], name })),
+        { id: "77777777-7777-4777-8777-777777777777", name: "lisa-heartbeat-45" },
+      ],
+    });
+    assert.ok(
+      duplicateName.validationErrors.some((error) =>
+        /duplicate stage cron receipt name/.test(error),
+      ),
+    );
+
+    const duplicateId = resolveStageCronJobIdsFromReceipt({
+      jobs: names.map((name, index) => ({ id: index === 1 ? ids[0] : ids[index], name })),
+    });
+    assert.ok(
+      duplicateId.validationErrors.some((error) => /duplicate stage cron UUID/.test(error)),
+    );
+  });
+
+  it("accepts only an exact explicit map and rejects unexpected or missing mappings", () => {
+    const valid = resolveStageCronJobIdsFromExplicitMap({ existingJobIds: map });
+    assert.deepEqual(valid.validationErrors, []);
+    assert.deepEqual(valid.existingJobIds, map);
+
+    const unexpected = resolveStageCronJobIdsFromExplicitMap({
+      existingJobIds: { ...map, "lisa-unexpected": "77777777-7777-4777-8777-777777777777" },
+    });
+    assert.ok(
+      unexpected.validationErrors.some((error) => /unexpected stage cron mapping/.test(error)),
+    );
+
+    const missing = resolveStageCronJobIdsFromExplicitMap({
+      existingJobIds: Object.fromEntries(Object.entries(map).slice(0, -1)),
+    });
+    assert.ok(
+      missing.validationErrors.some((error) =>
+        /missing stage cron mapping for lisa-pull-18/.test(error),
+      ),
+    );
   });
 });
 

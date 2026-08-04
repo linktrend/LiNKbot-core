@@ -28,16 +28,11 @@
 | Repair package   | Packaged separately; install only when store health passes; default `blocked_no_store`                                                                                                                                                                                                             |
 | Native heartbeat | `every: 0m` (disabled); wall-clock owned by `lisa-heartbeat-45` when enabled                                                                                                                                                                                                                       |
 
-Job IDs observed 2026-08-03 (re-verify with `cron list` before mutate):
-
-| Name                | job_id                                 |
-| ------------------- | -------------------------------------- |
-| lisa-heartbeat-45   | `1684ea5f-47ea-464a-8f58-b5990b1ac160` |
-| lisa-morning-digest | `3f46ba9b-1ec4-44a3-b402-e7458a4c0e38` |
-| lisa-ship-05        | `a7046889-4190-4df7-8b37-2243347dcd1f` |
-| lisa-pull-07        | `ac062761-66a3-4f0a-8811-dec198ba12c7` |
-| lisa-ship-16        | `e1ff7019-e805-4770-9329-d6656f85d021` |
-| lisa-pull-18        | `f24bbd94-c9be-4dba-9602-cfa266fffb9c` |
+Cron UUIDs are runtime state, not repository configuration. Before every plan
+or apply, capture a fresh read-only `cron list --all --json` receipt. The
+coordinator requires that receipt (or an exact separately audited JSON map),
+rejects missing/duplicate/malformed managed jobs, and has **no historical-ID
+fallback**.
 
 Prior stage force-runs used **STAGE_CANARY one-liner stubs**. Repo SOT packages real bounded HEARTBEAT/digest/Ship/Pull payloads (`STAGE BOUNDED PROCEDURE …`, `delivery=none`). Coordinator must **update** stage jobs from SOT before any enable.
 
@@ -66,12 +61,13 @@ export PATH="/opt/homebrew/opt/node@24/bin:$PATH"
 # set -a; [ -f "$ENV_FILE" ] && . "$ENV_FILE"; set +a
 
 OPENCLAW_STATE_DIR="$STAGE_ROOT" \
-  node "$ENGINE" --profile lisa-stage cron list --json
+  node "$ENGINE" --profile lisa-stage cron list --all --json > /tmp/lisa-stage-cron-list.json
 
 # Repo plan + payload hashes (no stage mutation; no PACI write)
 # Cron installer imports validateCronAddParams from packages/gateway-protocol/dist.
 STAGE_OPS_NODE=(node --import ./linkbots/lisa/ops/register-strip-types-js-resolve.mjs --experimental-strip-types)
-"${STAGE_OPS_NODE[@]}" linkbots/lisa/ops/stage-ops-coordinator.ts install --json
+"${STAGE_OPS_NODE[@]}" linkbots/lisa/ops/stage-ops-coordinator.ts install --json \
+  --cron-list-receipt /tmp/lisa-stage-cron-list.json
 ```
 
 Repo contract tests (no stage mutation). Store-consuming suites need `tsx` because the
@@ -107,41 +103,45 @@ Tooling is **plan-only by default** (`mutateStage=false`, `enableSchedules=false
 STAGE_OPS_NODE=(node --import ./linkbots/lisa/ops/register-strip-types-js-resolve.mjs --experimental-strip-types)
 
 # Plan install/update of six bounded payloads (delivery=none, enabled stays false)
-"${STAGE_OPS_NODE[@]}" linkbots/lisa/ops/stage-ops-coordinator.ts update --emit-commands
+"${STAGE_OPS_NODE[@]}" linkbots/lisa/ops/stage-ops-coordinator.ts update --emit-commands \
+  --cron-list-receipt /tmp/lisa-stage-cron-list.json
 
 # Disable all six (safe rollback of schedule enablement)
-"${STAGE_OPS_NODE[@]}" linkbots/lisa/ops/stage-ops-coordinator.ts disable --emit-commands
+"${STAGE_OPS_NODE[@]}" linkbots/lisa/ops/stage-ops-coordinator.ts disable --emit-commands \
+  --cron-list-receipt /tmp/lisa-stage-cron-list.json
 
 # Rollback payloads to repo bounded procedures + keep disabled
-"${STAGE_OPS_NODE[@]}" linkbots/lisa/ops/stage-ops-coordinator.ts rollback --emit-commands
+"${STAGE_OPS_NODE[@]}" linkbots/lisa/ops/stage-ops-coordinator.ts rollback --emit-commands \
+  --cron-list-receipt /tmp/lisa-stage-cron-list.json
 
 # Optional: include Repair/GitOps supervision ONLY when durable SQLite store health passes
-"${STAGE_OPS_NODE[@]}" linkbots/lisa/ops/stage-ops-coordinator.ts install --include-repair --emit-commands
+"${STAGE_OPS_NODE[@]}" linkbots/lisa/ops/stage-ops-coordinator.ts install --include-repair --emit-commands \
+  --cron-list-receipt /tmp/lisa-stage-cron-list.json
 
 # Principal-gated: lazily ensure lisa_stage_* on the target state DB, then re-probe (temp DB in tests)
-# "${STAGE_OPS_NODE[@]}" linkbots/lisa/ops/stage-ops-coordinator.ts install --ensure-store --include-repair --emit-commands
+# "${STAGE_OPS_NODE[@]}" linkbots/lisa/ops/stage-ops-coordinator.ts install --ensure-store --include-repair --emit-commands --cron-list-receipt /tmp/lisa-stage-cron-list.json
 ```
 
-Manual disable fallback (known IDs — re-verify first):
+The receipt is a named, read-only operational artifact. Its only expected form
+is the JSON emitted by `cron list --all --json`. As an alternative, an audited
+file may contain exactly:
 
 ```bash
-STAGE_ROOT="/Users/linktrend/Projects/LiNKplatform-staging/lisa"
-ENGINE="/Users/linktrend/Projects/LiNKplatform-staging/openclaw_prime/openclaw.mjs"
-WRAPPER="/Users/linktrend/Projects/LiNKplatform-staging/lisa/service-env/ai.openclaw.lisa-stage-env-wrapper.sh"
-ENV_FILE="/Users/linktrend/Projects/LiNKplatform-staging/lisa/service-env/ai.openclaw.lisa-stage.env"
-export PATH="/opt/homebrew/opt/node@24/bin:$PATH"
-oc() {
-  OPENCLAW_STATE_DIR="$STAGE_ROOT" "$WRAPPER" "$ENV_FILE" node "$ENGINE" --profile lisa-stage "$@"
+{
+  "existingJobIds": {
+    "lisa-heartbeat-45": "<current UUID>",
+    "lisa-morning-digest": "<current UUID>",
+    "lisa-ship-05": "<current UUID>",
+    "lisa-pull-07": "<current UUID>",
+    "lisa-ship-16": "<current UUID>",
+    "lisa-pull-18": "<current UUID>"
+  }
 }
-
-oc cron disable 1684ea5f-47ea-464a-8f58-b5990b1ac160
-oc cron disable 3f46ba9b-1ec4-44a3-b402-e7458a4c0e38
-oc cron disable a7046889-4190-4df7-8b37-2243347dcd1f
-oc cron disable ac062761-66a3-4f0a-8811-dec198ba12c7
-oc cron disable e1ff7019-e805-4770-9329-d6656f85d021
-oc cron disable f24bbd94-c9be-4dba-9602-cfa266fffb9c
-oc cron list --json   # expect enabled=false for all six
 ```
+
+Pass that file with `--existing-job-ids <path>`. Do not manually run UUID-based
+fallback commands: a stale UUID can affect the wrong schedule. The generated
+`disable --emit-commands` plan is the only supported disable path.
 
 ### PDF-only rollback (preserve text/image/fallbacks)
 
@@ -167,14 +167,14 @@ node --experimental-strip-types linkbots/lisa/ops/stage-pdf-canary.ts rollback-p
 Ordered gate:
 
 1. Confirm OpenRouter-only routing + `liveMutationAllowed=false` / `paidSpendEnablementAllowed=false`.
-2. Apply `stage-ops-coordinator.ts update --emit-commands` so jobs are not STAGE_CANARY stubs.
+2. Capture a fresh `cron list --all --json` receipt, then apply `stage-ops-coordinator.ts update --emit-commands --cron-list-receipt <receipt>` so jobs are not STAGE_CANARY stubs.
 3. Confirm `delivery.mode=none` for first canary.
 4. Enable **one** job only; observe; disable on anomaly.
 5. Never enable Repair Dispatcher until durable OpenClaw SQLite store health passes (`blocked_no_store` otherwise).
 
 ```bash
-# Example — enable heartbeat only after payload restore (NOT executed by audit agents)
-# OPENCLAW_STATE_DIR=... wrapper + staging engine: cron enable 1684ea5f-47ea-464a-8f58-b5990b1ac160
+# Example — enable heartbeat only after payload restore (NOT executed by audit agents).
+# Resolve its current UUID from the fresh receipt; never copy a historical UUID.
 ```
 
 ---
@@ -260,11 +260,11 @@ IDE Development remains the external GitOps SoT and is untouched. Repair supervi
 
 **Purpose:** Fresh isolated stage workspaces must include every repo-owned file Heartbeat / Digest / Ship-Pull / Repair need (procedures, renderers, pipeline procedure, battery/pipeline seeds, honest Google/task adapters). Default installer **never** mutates `LiNKplatform-staging/lisa/workspace` or `~/.openclaw-lisa`.
 
-| Kind | Destinations | Install rule |
-| ---- | ------------ | ------------ |
-| Overwrite (hashed) | `HEARTBEAT.md`, `agents/*` procedures, `templates/*`, `ops/render-template.ts`, `ops/templates.ts`, `tools/bin/lisa-safe`, `tools/bin/lisa-carlos-tasks` | Always copy from manifest sources |
-| Initialize-if-missing | `memory/battery-monitor.md`, `memory/battery-monitor-state.json`, `memory/pipeline-status.md` | Copy **only when absent** — reinstall preserves existing stage mutable state |
-| Adapters | `tools/bin/lisa-safe`, `tools/bin/lisa-carlos-tasks` | Stage-only stubs: print `STAGE_SKIPPED_google` / `STAGE_SKIPPED_task`, exit `75`; never call Google/credentials; never invent Clear/Yes/No |
+| Kind                  | Destinations                                                                                                                                             | Install rule                                                                                                                               |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| Overwrite (hashed)    | `HEARTBEAT.md`, `agents/*` procedures, `templates/*`, `ops/render-template.ts`, `ops/templates.ts`, `tools/bin/lisa-safe`, `tools/bin/lisa-carlos-tasks` | Always copy from manifest sources                                                                                                          |
+| Initialize-if-missing | `memory/battery-monitor.md`, `memory/battery-monitor-state.json`, `memory/pipeline-status.md`                                                            | Copy **only when absent** — reinstall preserves existing stage mutable state                                                               |
+| Adapters              | `tools/bin/lisa-safe`, `tools/bin/lisa-carlos-tasks`                                                                                                     | Stage-only stubs: print `STAGE_SKIPPED_google` / `STAGE_SKIPPED_task`, exit `75`; never call Google/credentials; never invent Clear/Yes/No |
 
 ### Verify (safe anytime — no stage mutation)
 
@@ -309,10 +309,10 @@ After install: confirm `memory/battery-monitor.md`, `memory/battery-monitor-stat
 
 ### Rollback
 
-| Timing | Action |
-| ------ | ------ |
-| Pre-deploy | `git revert <this-commit>` on the task branch (or reinstall prior manifest SHA into hermetic/stage only) |
-| Post-deploy (isolated stage only) | Reinstall the **prior** exact `stage-workspace-package.manifest.json` into `LiNKplatform-staging/lisa/workspace` with `STAGE_WORKSPACE_PACKAGE_ALLOW_STAGE=1`; then disable all six schedules (`stage-ops-coordinator.ts disable --emit-commands`). Never edit live Lisa |
+| Timing                            | Action                                                                                                                                                                                                                                                                                                                                     |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Pre-deploy                        | `git revert <this-commit>` on the task branch (or reinstall prior manifest SHA into hermetic/stage only)                                                                                                                                                                                                                                   |
+| Post-deploy (isolated stage only) | Reinstall the **prior** exact `stage-workspace-package.manifest.json` into `LiNKplatform-staging/lisa/workspace` with `STAGE_WORKSPACE_PACKAGE_ALLOW_STAGE=1`; capture a fresh cron receipt, then disable all six schedules through `stage-ops-coordinator.ts disable --emit-commands --cron-list-receipt <receipt>`. Never edit live Lisa |
 
 ---
 
