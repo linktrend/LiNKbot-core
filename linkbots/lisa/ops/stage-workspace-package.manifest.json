@@ -27,8 +27,8 @@
     {
       "source": "Personality files/agents/repair-dispatcher.md",
       "destination": "agents/repair-dispatcher.md",
-      "sha256": "212fe6ddf620a1ab7d9dc56a3516eb2427c3897b90f90b8331d45399acf2b6bc",
-      "bytes": 3290
+      "sha256": "36ab118071bbcf67e6e8d53d966d90dc2bb6968f7e457f574c6d319f6358c99d",
+      "bytes": 3686
     },
     {
       "source": "Personality files/agents/pipeline-status.md",

@@ -118,7 +118,19 @@ describe("Stage Repair/GitOps supervision package", () => {
     assert.equal(repair.enabled, false);
     assert.equal(repair.delivery.mode, "none");
     assert.match(repair.payload.message, /blocked_no_store/);
+    assert.ok(repair.payload.toolsAllow.includes("sessions_spawn"));
+    assert.ok(repair.payload.toolsAllow.includes("sessions_wait"));
     assert.ok(!repair.payload.toolsAllow.includes("sessions_yield"));
+    assert.match(repair.payload.message, /runtime: "acp"/);
+    assert.match(repair.payload.message, /agentId: "codex"/);
+    assert.match(repair.payload.message, /model: "openai\/gpt-5\.6-terra"/);
+    assert.match(repair.payload.message, /thinking: "medium"/);
+    assert.match(repair.payload.message, /No Cursor\/Grok fallback/);
+    assert.match(repair.payload.message, /Cursor Automation\/webhook/);
+    assert.match(repair.payload.message, /internal subagent/);
+    assert.match(repair.payload.message, /direct\/self edits/);
+    assert.doesNotMatch(repair.payload.message, /agentId: "cursor"/);
+    assert.doesNotMatch(repair.payload.message, /model: "grok-4\.5/);
   });
 
   it("allows readonly supervise only when both durable stores are present", () => {

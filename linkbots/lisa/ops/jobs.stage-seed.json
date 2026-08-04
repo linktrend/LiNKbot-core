@@ -17,7 +17,7 @@
     "lisa-pull-18": "bf41ff35633c945b8a2a4d3d81b56d8ac1ef42d98ccec7fced4dd6ae6b3ad8da",
     "lisa-morning-digest": "705e1b1b5e4c99e9c7351d2ca558a6c48a8affe437450f98de16acbee12f54c5",
     "lisa-heartbeat-45": "f8663376d183fcbc09fe6e893c0f73bf439459d6361a714fbf4b19fb265662c8",
-    "lisa-repair-dispatcher": "ed199844f2cdd428204dd738aa50a163a1e509a147bde59a044cbf667cd5a8ef"
+    "lisa-repair-dispatcher": "d24f83aae7a603e74baee6f4024c82c3a64bdb31417aacc5ba2042a0a6f8f069"
   },
   "jobs": [
     {
@@ -256,18 +256,18 @@
       "payload": {
         "kind": "agentTurn",
         "toolsAllow": [
+          "sessions_spawn",
+          "sessions_wait",
           "read",
           "write",
           "edit",
-          "exec",
-          "sessions_spawn",
-          "sessions_wait"
+          "exec"
         ],
         "messageFile": "agents/repair-dispatcher.md",
-        "message": "STAGE REPAIR/GITOPS SUPERVISION — lisa-repair-dispatcher\nHard stops:\n- delivery=none (no Telegram announce / no runner fallback delivery)\n- OpenRouter-only credentials (OPENROUTER_API_KEY process-only; never mint direct provider keys)\n- do not touch ~/.openclaw-lisa / live Lisa / VPS / IDE Development\n- do not enable schedules from this message; schedules stay disabled until Principal gate\n- do not mutate other cron jobs (no cron.add / cron.update / cron.remove)\n- do not print secrets, tokens, or credential values\nDurable-state gate (fail-closed):\n1) Probe Repair attempt store availability (authoritative OpenClaw/SQLite or IDE control-plane binding — never JSON/Markdown sidecars as state).\n2) Probe Main Approve authoritative store (IDE Development issue #23 / OpenClaw package store).\n3) If either store is unavailable: final reply exactly `blocked_no_store` and STOP. Do not spawn ACP. Do not invent Clear or repair success.\n4) If both stores are present: read agents/repair-dispatcher.md and evaluate bindings read-only. Stage defaults still forbid live ACP dispatch (authorizeRepairLiveDispatch remains fail-closed).\nNever reply with STAGE_CANARY_OK alone.",
+        "message": "STAGE REPAIR/GITOPS SUPERVISION — lisa-repair-dispatcher\nHard stops:\n- delivery=none (no Telegram announce / no runner fallback delivery)\n- OpenRouter-only credentials (OPENROUTER_API_KEY process-only; never mint direct provider keys)\n- do not touch ~/.openclaw-lisa / live Lisa / VPS / IDE Development\n- do not enable schedules from this message; schedules stay disabled until Principal gate\n- do not mutate other cron jobs (no cron.add / cron.update / cron.remove)\n- do not print secrets, tokens, or credential values\nDurable-state gate (fail-closed):\n1) Probe Repair attempt store availability (authoritative OpenClaw/SQLite or IDE control-plane binding — never JSON/Markdown sidecars as state).\n2) Probe Main Approve authoritative store (IDE Development issue #23 / OpenClaw package store).\n3) If either store is unavailable: final reply exactly `blocked_no_store` and STOP. Do not spawn ACP. Do not invent Clear or repair success.\n4) If both stores are present and a genuine ordinary repair dispatch is authorized: use sessions_spawn only with runtime: \"acp\", agentId: \"codex\", model: \"openai/gpt-5.6-terra\", thinking: \"medium\".\n5) If Codex ACP or Terra Medium is unavailable: STOP fail-closed. No Cursor/Grok fallback, Cursor Automation/webhook, internal subagent, direct/self edits, self-write, or alternate automation. Do not spawn Cursor.\n6) After a dispatched repair, sessions_wait is required; sessions_yield is forbidden. Preserve exact binding, max attempts, and durable Repair/Main Approve stores. Stage defaults still forbid live ACP dispatch (authorizeRepairLiveDispatch remains fail-closed).\nNever reply with STAGE_CANARY_OK alone.",
         "timeoutSeconds": 600
       },
-      "payloadHash": "ed199844f2cdd428204dd738aa50a163a1e509a147bde59a044cbf667cd5a8ef",
+      "payloadHash": "d24f83aae7a603e74baee6f4024c82c3a64bdb31417aacc5ba2042a0a6f8f069",
       "hardStops": [
         "delivery=none (no Telegram announce / no runner fallback delivery)",
         "OpenRouter-only credentials (OPENROUTER_API_KEY process-only; never mint direct provider keys)",

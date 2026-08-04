@@ -87,6 +87,64 @@ export type RepairLiveDispatch =
 
 export const MAX_REPAIR_ATTEMPTS = 3;
 
+/**
+ * The sole Repair Dispatcher implementation runtime. An unavailable Codex ACP
+ * / Terra route is a stop condition, never a Cursor/Grok, subagent, self-edit,
+ * webhook, or automation fallback.
+ */
+export const REPAIR_DISPATCHER_ACP_SPAWN_CONTRACT = {
+  runtime: "acp",
+  agentId: "codex",
+  model: "openai/gpt-5.6-terra",
+  thinking: "medium",
+} as const;
+
+/** Isolated repair supervision waits on the child registry; it never yields. */
+export const REPAIR_DISPATCHER_REQUIRED_TOOLS: readonly string[] = [
+  "sessions_spawn",
+  "sessions_wait",
+  "read",
+  "write",
+  "edit",
+  "exec",
+] as const;
+
+export function repairDispatcherRequiresCodexTerraSpawnContract(procedureText: string): boolean {
+  const normalized = procedureText.toLowerCase().replace(/`/g, "");
+  const hasSpawnField = (name: string, value: string) =>
+    new RegExp(`"?${name}"?\\s*:\\s*"?${value}`).test(normalized);
+  return (
+    hasSpawnField("runtime", "acp") &&
+    hasSpawnField("agentid", "codex") &&
+    hasSpawnField("model", "openai/gpt-5\\.6-terra") &&
+    hasSpawnField("thinking", "medium")
+  );
+}
+
+export function repairDispatcherForbidsFallbacks(procedureText: string): boolean {
+  const normalized = procedureText.toLowerCase().replace(/`/g, "");
+  return (
+    /no cursor\/grok fallback/.test(normalized) &&
+    /cursor automation\/webhook/.test(normalized) &&
+    /internal subagent/.test(normalized) &&
+    /direct\/self edits?/.test(normalized) &&
+    /alternate automation/.test(normalized) &&
+    /do not spawn cursor/.test(normalized) &&
+    /(?:no|do not) self-write/.test(normalized) &&
+    !/agentid:\s*"cursor"/.test(normalized) &&
+    !/model:\s*"grok-4\.5/.test(normalized)
+  );
+}
+
+export function repairDispatcherRequiresSessionsWait(procedureText: string): boolean {
+  const normalized = procedureText.toLowerCase().replace(/`/g, "");
+  return (
+    /sessions_wait/.test(normalized) &&
+    /sessions_wait.*required/.test(normalized) &&
+    /sessions_yield.*forbidden/.test(normalized)
+  );
+}
+
 const IMMEDIATE_ESCALATE: ReadonlySet<FailureClass> = new Set([
   "credentials",
   "security",

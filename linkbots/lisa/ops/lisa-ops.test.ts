@@ -43,6 +43,9 @@ import {
   evaluateProof,
   MAX_REPAIR_ATTEMPTS,
   nextRepairDecision,
+  repairDispatcherForbidsFallbacks,
+  repairDispatcherRequiresCodexTerraSpawnContract,
+  repairDispatcherRequiresSessionsWait,
   recordDispatch,
   type RepairAttemptRecord,
   type RepairBinding,
@@ -659,6 +662,15 @@ describe("Templates operational", () => {
 });
 
 describe("Repair dispatcher binding + pending hold", () => {
+  it("uses only Codex Terra ACP and forbids every alternate repair route", () => {
+    const procedure = readPersonality("agents/repair-dispatcher.md");
+    assert.equal(repairDispatcherRequiresCodexTerraSpawnContract(procedure), true);
+    assert.equal(repairDispatcherForbidsFallbacks(procedure), true);
+    assert.equal(repairDispatcherRequiresSessionsWait(procedure), true);
+    assert.doesNotMatch(procedure, /agentId": "cursor"/);
+    assert.doesNotMatch(procedure, /model": "grok-4\.5/);
+  });
+
   it("holds when exact binding attempt is already pending (no attempt 2)", () => {
     const prior = recordDispatch([], baseBinding, 1, "2026-07-30T10:00:00Z");
     const again = nextRepairDecision({

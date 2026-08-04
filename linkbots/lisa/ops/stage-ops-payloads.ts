@@ -9,6 +9,10 @@
  */
 
 import { createHash } from "node:crypto";
+import {
+  REPAIR_DISPATCHER_ACP_SPAWN_CONTRACT,
+  REPAIR_DISPATCHER_REQUIRED_TOOLS,
+} from "./repair-dispatcher.ts";
 import { SHIP_PULL_ACP_SPAWN_CONTRACT, SHIP_PULL_REQUIRED_TOOLS } from "./ship-pull-contract.ts";
 
 export const STAGE_OPS_SEED_VERSION = 2 as const;
@@ -71,14 +75,7 @@ export type StageRepairSupervisionDecision =
 
 const HEARTBEAT_DIGEST_TOOLS = ["read", "write", "edit", "exec"] as const;
 
-const REPAIR_SUPERVISION_TOOLS = [
-  "read",
-  "write",
-  "edit",
-  "exec",
-  "sessions_spawn",
-  "sessions_wait",
-] as const;
+const REPAIR_SUPERVISION_TOOLS = REPAIR_DISPATCHER_REQUIRED_TOOLS;
 
 function hardStopBlock(): string {
   return ["Hard stops:", ...STAGE_HARD_STOPS.map((s) => `- ${s}`)].join("\n");
@@ -173,7 +170,9 @@ export function buildRepairSupervisionStageMessage(): string {
     "1) Probe Repair attempt store availability (authoritative OpenClaw/SQLite or IDE control-plane binding — never JSON/Markdown sidecars as state).",
     "2) Probe Main Approve authoritative store (IDE Development issue #23 / OpenClaw package store).",
     "3) If either store is unavailable: final reply exactly `blocked_no_store` and STOP. Do not spawn ACP. Do not invent Clear or repair success.",
-    "4) If both stores are present: read agents/repair-dispatcher.md and evaluate bindings read-only. Stage defaults still forbid live ACP dispatch (authorizeRepairLiveDispatch remains fail-closed).",
+    `4) If both stores are present and a genuine ordinary repair dispatch is authorized: use sessions_spawn only with runtime: "${REPAIR_DISPATCHER_ACP_SPAWN_CONTRACT.runtime}", agentId: "${REPAIR_DISPATCHER_ACP_SPAWN_CONTRACT.agentId}", model: "${REPAIR_DISPATCHER_ACP_SPAWN_CONTRACT.model}", thinking: "${REPAIR_DISPATCHER_ACP_SPAWN_CONTRACT.thinking}".`,
+    "5) If Codex ACP or Terra Medium is unavailable: STOP fail-closed. No Cursor/Grok fallback, Cursor Automation/webhook, internal subagent, direct/self edits, self-write, or alternate automation. Do not spawn Cursor.",
+    "6) After a dispatched repair, sessions_wait is required; sessions_yield is forbidden. Preserve exact binding, max attempts, and durable Repair/Main Approve stores. Stage defaults still forbid live ACP dispatch (authorizeRepairLiveDispatch remains fail-closed).",
     "Never reply with STAGE_CANARY_OK alone.",
   ].join("\n");
 }
