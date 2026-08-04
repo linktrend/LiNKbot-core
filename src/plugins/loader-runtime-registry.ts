@@ -50,9 +50,7 @@ function registryContainsPluginScope(
   return onlyPluginIds.every((pluginId) => loadedPluginIds.has(pluginId));
 }
 
-function channelStartupModeCompatibleLoadOptions(
-  options: PluginLoadOptions,
-): PluginLoadOptions[] {
+function channelStartupModeCompatibleLoadOptions(options: PluginLoadOptions): PluginLoadOptions[] {
   if (options.forceFullRuntimeForChannelPlugins !== true) {
     return [];
   }
