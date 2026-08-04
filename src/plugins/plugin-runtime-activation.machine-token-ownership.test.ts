@@ -32,7 +32,7 @@ describe("machine-token multi-plugin ownership fingerprint Unicode order", () =>
     const nfcPluginId = "\u00e9-plugin";
     const nfdPluginId = "e\u0301-plugin";
     expect(nfcPluginId.localeCompare(nfdPluginId, "en")).toBe(0);
-    expect(nfcPluginId === nfdPluginId).toBe(false);
+    expect(String(nfcPluginId) === String(nfdPluginId)).toBe(false);
 
     // Identical granted descriptors so multi-plugin tuples differ only by the
     // outer pluginId Unicode form — the localeCompare("en") collapse case.

@@ -21,12 +21,17 @@ import {
   type HostMachineTokenBindingRecord,
   type MachineTokenKeyRefIdentity,
 } from "./machine-token-host.js";
+import type { MachineTokenBinding } from "./machine-token-types.js";
 
 const KEY_REF: MachineTokenKeyRefIdentity = {
   source: "env",
   provider: "default",
   id: "LINKTREND_BRAIN_ASSERTION_PEM",
 };
+
+function invalidationFingerprint(value: string | MachineTokenBinding): string {
+  return typeof value === "string" ? value : buildHostMachineTokenBindingFingerprint(value);
+}
 
 function record(
   bindingId: string,
@@ -125,8 +130,9 @@ describe("agents machine-token-host", () => {
       resolveKeyPem: resolveKeyPemStub(),
       resolveAccess,
       invalidateCache: (fingerprint) => {
-        invalidated.push(fingerprint);
-        cache.delete(fingerprint);
+        const cacheKey = invalidationFingerprint(fingerprint);
+        invalidated.push(cacheKey);
+        cache.delete(cacheKey);
       },
       getCached: (fingerprint) => {
         const entry = cache.get(fingerprint);
@@ -148,8 +154,9 @@ describe("agents machine-token-host", () => {
       resolveKeyPem: resolveKeyPemStub(),
       resolveAccess,
       invalidateCache: (fingerprint) => {
-        invalidated.push(fingerprint);
-        cache.delete(fingerprint);
+        const cacheKey = invalidationFingerprint(fingerprint);
+        invalidated.push(cacheKey);
+        cache.delete(cacheKey);
       },
       getCached: (fingerprint) => {
         const entry = cache.get(fingerprint);
@@ -203,7 +210,7 @@ describe("agents machine-token-host", () => {
       resolveKeyPem: resolveKeyPemStub(),
       resolveAccess,
       invalidateCache: (fingerprint) => {
-        invalidated.push(fingerprint);
+        invalidated.push(invalidationFingerprint(fingerprint));
       },
     });
 
@@ -365,7 +372,7 @@ describe("agents machine-token-host", () => {
       const nfcBindingId = "\u00e9";
       const nfdBindingId = "e\u0301";
       expect(nfcBindingId.localeCompare(nfdBindingId, "en")).toBe(0);
-      expect(nfcBindingId === nfdBindingId).toBe(false);
+      expect(String(nfcBindingId) === String(nfdBindingId)).toBe(false);
 
       const sharedKeyRef: MachineTokenKeyRefIdentity = {
         source: "env",
@@ -619,7 +626,7 @@ describe("agents machine-token-host", () => {
       resolveKeyPem: resolveKeyPemStub(),
       resolveAccess,
       invalidateCache: (fingerprint) => {
-        invalidated.push(fingerprint);
+        invalidated.push(invalidationFingerprint(fingerprint));
       },
     });
     const skills = createMachineTokenPluginFacade({
@@ -628,7 +635,7 @@ describe("agents machine-token-host", () => {
       resolveKeyPem: resolveKeyPemStub(),
       resolveAccess,
       invalidateCache: (fingerprint) => {
-        invalidated.push(`skills:${fingerprint}`);
+        invalidated.push(`skills:${invalidationFingerprint(fingerprint)}`);
       },
     });
 
@@ -663,7 +670,7 @@ describe("agents machine-token-host", () => {
       resolveKeyPem: resolveKeyPemStub(),
       resolveAccess,
       invalidateCache: (fingerprint) => {
-        invalidated.push(fingerprint);
+        invalidated.push(invalidationFingerprint(fingerprint));
       },
     });
     publishMachineTokenFacadeGeneration(first.handle);
@@ -675,7 +682,7 @@ describe("agents machine-token-host", () => {
       resolveKeyPem: resolveKeyPemStub(),
       resolveAccess,
       invalidateCache: (fingerprint) => {
-        invalidated.push(fingerprint);
+        invalidated.push(invalidationFingerprint(fingerprint));
       },
     });
     // Candidate must not mint while prior live generation remains published.
@@ -1171,7 +1178,7 @@ describe("agents machine-token-host", () => {
         resolveKeyPem: resolveKeyPemStub(),
         resolveAccess,
         invalidateCache: (fingerprint) => {
-          invalidated.push(fingerprint);
+          invalidated.push(invalidationFingerprint(fingerprint));
         },
       });
       publishMachineTokenFacadeGeneration(first.handle);
@@ -1183,7 +1190,7 @@ describe("agents machine-token-host", () => {
         resolveKeyPem: resolveKeyPemStub(),
         resolveAccess,
         invalidateCache: (fingerprint) => {
-          invalidated.push(fingerprint);
+          invalidated.push(invalidationFingerprint(fingerprint));
         },
       });
       publishMachineTokenFacadeGeneration(second.handle);

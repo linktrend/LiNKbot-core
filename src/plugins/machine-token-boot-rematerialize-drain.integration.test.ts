@@ -185,7 +185,9 @@ describe("machine-token gateway boot rematerialize drain integration", () => {
       expect(getLiveMachineTokenFacadeGenerationHandle("linkbrain")?.generationId).toBe(genBoot);
       expect(held.health("linkbrain-stage").registered).toBe(true);
     }
-    expect((globalThis as Record<string, number>)[REGISTER_COUNT_KEY]).toBeGreaterThanOrEqual(4);
+    expect(
+      (globalThis as unknown as Record<string, number>)[REGISTER_COUNT_KEY],
+    ).toBeGreaterThanOrEqual(4);
 
     // 3) Drain mint must succeed on the service-held facade (not unregistered).
     await drainMintOnHeldFacade(held);

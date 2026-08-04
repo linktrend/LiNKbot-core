@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { resolvePinnedHostnameWithPolicy } from "../infra/net/ssrf.js";
+import { resolvePinnedHostnameWithPolicy, type LookupFn } from "../infra/net/ssrf.js";
 import {
   assertMachineTokenNetworkUrl,
   assertMachineTokenRequestBounds,
@@ -16,6 +16,10 @@ import {
 const { fetchWithSsrFGuardMock } = vi.hoisted(() => ({
   fetchWithSsrFGuardMock: vi.fn(),
 }));
+
+function lookupAddress(address: string): LookupFn {
+  return (async () => [{ address, family: 4 }]) as unknown as LookupFn;
+}
 
 vi.mock("../infra/net/fetch-guard.js", () => ({
   fetchWithSsrFGuard: (...args: unknown[]) => fetchWithSsrFGuardMock(...args),
@@ -34,7 +38,7 @@ function createUnboundedBodyStream(): ReadableStream<Uint8Array> {
 describe("machine-token-network", () => {
   it("documents injected fetchFn as a test seam that bypasses SSRF guard", async () => {
     const fetchFn = vi.fn(
-      async () =>
+      async (_input: RequestInfo | URL, _init?: RequestInit) =>
         new Response(JSON.stringify({ ok: true }), {
           status: 200,
           headers: { "content-type": "application/json" },
@@ -175,7 +179,7 @@ describe("machine-token-network", () => {
 
   it("forces redirect:error on the injected auth test-seam fetch", async () => {
     const fetchFn = vi.fn(
-      async () =>
+      async (_input: RequestInfo | URL, _init?: RequestInit) =>
         new Response("{}", {
           status: 200,
           headers: { "content-type": "application/json" },
@@ -198,7 +202,7 @@ describe("machine-token-network", () => {
       expect(buildMachineTokenSsrFPolicy({ url: tailnetDiscovery })).toBeUndefined();
       await expect(
         resolvePinnedHostnameWithPolicy("linktrend-mini.tailf7e13a.ts.net", {
-          lookupFn: async () => [{ address: tailnetPrivateIp, family: 4 }],
+          lookupFn: lookupAddress(tailnetPrivateIp),
           policy: buildMachineTokenSsrFPolicy({ url: tailnetDiscovery }),
         }),
       ).rejects.toThrow(/resolves to private\/internal\/special-use/iu);
@@ -217,7 +221,7 @@ describe("machine-token-network", () => {
       expect(policy).not.toHaveProperty("allowPrivateNetwork");
 
       const pinned = await resolvePinnedHostnameWithPolicy("linktrend-mini.tailf7e13a.ts.net", {
-        lookupFn: async () => [{ address: tailnetPrivateIp, family: 4 }],
+        lookupFn: lookupAddress(tailnetPrivateIp),
         policy,
       });
       expect(pinned.addresses).toEqual([tailnetPrivateIp]);
@@ -230,13 +234,13 @@ describe("machine-token-network", () => {
       });
       await expect(
         resolvePinnedHostnameWithPolicy("linktrend-mini.tailf7e13a.ts.net", {
-          lookupFn: async () => [{ address: "169.254.169.254", family: 4 }],
+          lookupFn: lookupAddress("169.254.169.254"),
           policy,
         }),
       ).rejects.toThrow(/resolves to private\/internal\/special-use/iu);
       await expect(
         resolvePinnedHostnameWithPolicy("linktrend-mini.tailf7e13a.ts.net", {
-          lookupFn: async () => [{ address: "169.254.1.1", family: 4 }],
+          lookupFn: lookupAddress("169.254.1.1"),
           policy,
         }),
       ).rejects.toThrow(/resolves to private\/internal\/special-use/iu);
@@ -250,7 +254,7 @@ describe("machine-token-network", () => {
       // Cross-origin hostname is not in allowedHostnames and has no private allowance.
       await expect(
         resolvePinnedHostnameWithPolicy("other-issuer.example.com", {
-          lookupFn: async () => [{ address: "10.0.0.9", family: 4 }],
+          lookupFn: lookupAddress("10.0.0.9"),
           policy,
         }),
       ).rejects.toThrow(/private\/internal\/special-use/iu);
