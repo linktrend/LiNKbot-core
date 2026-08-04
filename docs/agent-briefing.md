@@ -5,34 +5,52 @@
 | Field              | Value                                                                                                                                                                   |
 | ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Created            | 2026-07-23 10:12 Asia/Taipei                                                                                                                                            |
-| Last updated       | 2026-07-23 12:36 Asia/Taipei                                                                                                                                            |
+| Last updated       | 2026-08-02 13:30 Asia/Taipei                                                                                                                                            |
 | Created by         | Cursor Local Agent `cursor-local-20260723-1012`                                                                                                                         |
-| Last updated by    | Codex Desktop Agent `codex-desktop-agent-20260723-1110`                                                                                                                 |
-| Repository         | /Users/linktrend/Projects/openclaw_prime                                                                                                                                |
-| Branch             | docs/initial-agent-handoff-20260723                                                                                                                                     |
-| Commit             | ed4b348d889e1a31da8ec90d13c3508127fd71a6                                                                                                                                |
+| Last updated by    | Cursor Local Agent `cursor-local-mac-mini-release-hygiene-20260802-1313` (Carlos-authorized pre-launch hygiene)                                                         |
+| Repository         | OpenClaw Prime fork (`linktrend/openclaw_prime`); coordination home typically `/Users/linktrend/Projects/openclaw_prime`                                                |
+| Branch             | Prefer fresh `origin/development` for integration truth; this briefing is branch-agnostic after the 2026-08-02 refresh                                                  |
+| Commit             | Pre-production baseline at hygiene start: `2025401aafc` (`origin/development`, PR #43 OCP-W30 merge)                                                                    |
 | Task scope         | Documentation-only repository briefing plus the two-stage multi-platform coordination system                                                                            |
-| Runtime inspection | Read-only. No application code, runtime config, services, credentials, deployment settings, or functional files were modified.                                          |
+| Runtime inspection | Historical 2026-07-23 sections below are preserved. 2026-08-02 refresh did **not** mutate live Lisa/stage, credentials, cloud, or production.                           |
 | Secret handling    | Secret values, tokens, private memory contents, emails/messages, and unrelated private data are intentionally omitted. Sensitive locations are named only as locations. |
+
+## Pre-production truth — 2026-08-02 (supersedes stale July dashboard claims)
+
+Use this section before older narrative below when they conflict.
+
+| Topic | Current pre-production truth | Evidence |
+| ----- | ---------------------------- | -------- |
+| Integration tip | `origin/development` at `2025401aafc` includes OCP-W10 Lisa RC, OCP-W20 cross-repo evidence, and OCP-W30 MiniMax-M3 PDF candidate (`approved_unverified`) via PR #43 | `git` / `docs/evidence/ocp-w{10,20,30}-*/` |
+| Live Lisa | Profile `~/.openclaw-lisa`, loopback gateway port **18790**. Do not restart, redeploy, or edit without explicit Carlos approval | LaunchAgent `ai.openclaw.lisa`; briefing/runtime notes |
+| lisa-stage | Port **18791** may exist for stage/canary work. Do not inspect or mutate unless the current task explicitly owns it | Carlos hygiene constraints 2026-08-02 |
+| Canary / routing | Staged canary is **non-live by default**. Workshop contract: `liveMutationAllowed: false`, `paidSpendEnablementAllowed: false`. MiniMax-M3 PDF is `approved_unverified`; first-production-proof receipt required before any success claim | `linkbots/lisa/ops/model-routing.contract.json`; `docs/execution/openclawdevelopmentplan01/runbooks/stage-prod-canary-controls.md` |
+| Candidate models (workshop, not live) | Primary `openai/gpt-5.6-luna`; fallbacks `zai/glm-5.2`, `moonshot/kimi-k3`, `openrouter/google/gemini-3.5-flash-lite`; image/PDF candidate `minimax/MiniMax-M3` | Same contract + `linkbots/lisa/docs/LISA-MODEL-ROUTING-CONTRACT-2026-08-01.md` |
+| `linkbots/` | **Tracked** workshop mirror on `development`. Never treat as live `~/.openclaw-*` | `linkbots/README.md`; `git ls-files linkbots` |
+| Stage 2 LiNKbrain | **Not live** as OpenClaw Prime consumer / branch lock. Stage 1 remains repository-local coordination | `docs/agent-coordination.md` |
+| Superseded workshop docs | Early Phase-1 / Stage-2 kickoff prompts and workshop `openclaw.json.bak-*` / digest preview archived under `docs/archive/linkbots-lisa/` | `docs/archive/README.md` |
+| Dashboard lag | `docs/current-status.md` may lag active sessions and evidence packets — prefer session records + `docs/evidence/` for ownership and release posture | Coordination protocol |
+
+Verified source priority for future agents:
+
+1. Verified runtime/current active config (when the task authorizes runtime inspection).
+2. Repo code on the owned task branch / `origin/development`.
+3. This briefing (especially the 2026-08-02 pre-production section).
+4. `docs/agent-coordination.md`.
+5. Authoritative records in `docs/agent-sessions/active/`.
+6. `docs/evidence/ocp-w*` release/canary packets (when present).
+7. `docs/current-status.md` summary dashboard (may lag).
+8. Recent handoffs in `docs/handoffs/`.
+9. `README.md`.
+10. Other docs / prior chats/memory.
 
 ## 1. Executive Summary
 
 `openclaw_prime` is Carlos's local fork of upstream OpenClaw and currently powers Lisa's Mac mini runtime through the live profile at `~/.openclaw-lisa`. The repository is a large TypeScript/Node monorepo with companion apps, plugins, gateway runtime, docs, tests, Docker assets, and OpenClaw CLI entrypoints.
 
-The active Lisa runtime is not the same thing as the repo workshop copy. Verified source priority for future agents is:
+The active Lisa runtime is not the same thing as the repo workshop copy under `linkbots/lisa/`.
 
-1. Verified runtime/current active config.
-2. Repo code.
-3. `docs/agent-briefing.md`.
-4. `docs/agent-coordination.md`.
-5. Authoritative records in `docs/agent-sessions/active/`.
-6. `docs/current-status.md` summary dashboard.
-7. Recent handoffs in `docs/handoffs/`.
-8. `README.md`.
-9. Other docs.
-10. Prior chats/memory.
-
-The current runtime is reachable on loopback port `18790`, launched by the `ai.openclaw.lisa` LaunchAgent, and the channel-status command reports Google Chat and Telegram configured/running. Health verification is intentionally scoped: the listener and HTTP endpoint respond, the LaunchAgent is active, and channel status succeeds. Fast status skipped probes and security audit, did not check memory, reported 17 task issues plus one audit warning, and emitted a failed shared-state schema-migration check because the SQLite database was locked. This is not evidence of full runtime, memory, task, or security health.
+Historical 2026-07-23 runtime note (preserved): the runtime was reachable on loopback port `18790`, launched by the `ai.openclaw.lisa` LaunchAgent, with Google Chat and Telegram configured/running. Health verification then was intentionally scoped and is **not** current production-readiness proof. Re-verify from fresh evidence before any live claim.
 
 ## 2. Repository Locations and Sources of Truth
 
@@ -45,9 +63,12 @@ The current runtime is reachable on loopback port `18790`, launched by the `ai.o
 | `/Users/linktrend/.openclaw-lisa/workspace-local-coder`        | Dedicated local-coder workspace                | Yes for local-coder runtime behavior | No for this task                                | No                                   | Uses local `ollama/qwen3.5:9b` by profile config.                                                                        |
 | `/Users/linktrend/Library/LaunchAgents/ai.openclaw.lisa.plist` | macOS LaunchAgent for Lisa                     | Yes for service launch               | No for this task                                | No                                   | Verified loaded and running.                                                                                             |
 | `/Users/linktrend/Library/Logs/openclaw/gateway-lisa.log`      | LaunchAgent stdout log target                  | Runtime evidence                     | No for this task                                | No                                   | Location only; contents not reproduced.                                                                                  |
-| `linkbots/`                                                    | Per-bot workshop mirror                        | No, unless synced deliberately       | Yes with care                                   | Untracked at task start              | README states live runtime remains under `~/.openclaw-*`.                                                                |
-| `linkbots/lisa/Personality files/openclaw.json`                | Repo snapshot of Lisa config                   | No when it differs from live         | Yes with care                                   | Untracked at task start              | Differs from live in `agents`, `gateway`, `meta`, `skills`.                                                              |
-| `linkbots/david/README.md`                                     | David placeholder workshop                     | No active runtime yet                | Yes with care                                   | Untracked at task start              | Reserved for future `~/.openclaw-david`.                                                                                 |
+| `linkbots/`                                                    | Per-bot workshop mirror                        | No, unless synced deliberately       | Yes with care                                   | Yes (tracked on development)         | Live runtime remains under `~/.openclaw-*`. See `linkbots/README.md`.                                                    |
+| `linkbots/lisa/Personality files/openclaw.json`                | Repo snapshot of Lisa config                   | No when it differs from live         | Yes with care                                   | Yes (workshop SOT)                   | Differs from live; never copy to live without an approved rollout.                                                       |
+| `linkbots/lisa/ops/model-routing.contract.json`                | Non-live routing / canary candidate contract   | Yes for candidate posture            | Yes with care                                   | Yes                                  | `liveMutationAllowed: false`; PDF MiniMax-M3 `approved_unverified`.                                                      |
+| `docs/evidence/ocp-w*/`                                        | Release/canary evidence packets                | Yes for packet claims                | Add/amend carefully                             | Yes                                  | OCP-W10/W20/W30 present as of `2025401aafc`.                                                                             |
+| `docs/archive/`                                                | Superseded LiNKtrend-specific docs             | Historical only                      | Archive moves only                              | Yes                                  | Do not treat as active ops.                                                                                              |
+| `linkbots/david/README.md`                                     | David placeholder workshop                     | No active runtime yet                | Yes with care                                   | Yes                                  | Reserved for future `~/.openclaw-david`.                                                                                 |
 | `docs/agent-coordination.md`                                   | Canonical multi-platform coordination protocol | Yes for agent workflow               | Yes, by authorized documentation task           | Created by follow-up task            | Defines repository-local Stage 1 and future LiNKbrain Stage 2.                                                           |
 | `docs/agent-sessions/active/`                                  | Unique active session records                  | Yes for session ownership            | Each agent edits only its own record            | Created by follow-up task            | Read for overlap before work.                                                                                            |
 | `docs/current-status.md`                                       | Orchestrator-maintained coordination dashboard | Summary only                         | Orchestrators only                              | Created by this task                 | May lag individual session records.                                                                                      |
@@ -86,7 +107,7 @@ Facts verified from Git and files:
 - The current branch is equal to `origin/main` before this documentation work.
 - Upstream comparison is limited because this is a shallow clone and the current `upstream/main` tip is itself a shallow boundary. Do not use triple-dot upstream diffs or the reported 1/441 count as authoritative until history is deepened or unshallowed.
 - Uncommitted pre-existing application changes affect ACP model/runtime tests and exec approvals denylist code. They are not part of this documentation task.
-- `linkbots/` is intentionally part of this private fork's design as Carlos-requested per-bot workshop content and is currently untracked. `linkbots/README.md` says live runtime remains under `~/.openclaw-*`, not the workshop folder. Whether to commit the workshop content is still pending; its repository ownership is not an open architectural question.
+- `linkbots/` is intentionally part of this private fork's design as Carlos-requested per-bot workshop content and is **tracked** on `development`. `linkbots/README.md` says live runtime remains under `~/.openclaw-*`, not the workshop folder. Historical July text that called `linkbots/` untracked is superseded.
 
 Key architectural differences from stock upstream, inferred from fork files and runtime evidence:
 

@@ -214,6 +214,15 @@ export type SubagentRunRecord = {
   retainAttachmentsOnKeep?: boolean;
   /** Collector-mode runs remain waitable and never announce to the requester. */
   collect?: boolean;
+  /**
+   * First `sessions_wait` observation of a terminal non-collector run.
+   * Replays return the same receipt so restart/re-entry post-processing can stay exactly-once.
+   */
+  requesterWaitObservation?: {
+    firstObservedAt: number;
+    observerSessionKey: string;
+    status: string;
+  };
   /** Stable spawning-session owner for caps, scheduling, and wait authorization. */
   swarmRequesterSessionKey?: string;
   /** Spawner plus ancestor sessions authorized to wait, frozen when the collector is registered. */

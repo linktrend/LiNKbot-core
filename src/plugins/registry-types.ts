@@ -39,6 +39,7 @@ import type {
   OpenClawPluginHttpRouteUpgradeHandler,
 } from "./types.js";
 import type { PluginMcpServerConnectionResolverRegistration } from "./types.mcp-connection.js";
+import type { PluginMcpServerToolFilterRegistration } from "./types.mcp-tool-filter.js";
 type ChannelPlugin = import("../channels/plugins/types.plugin.js").ChannelPlugin;
 type CliBackendPlugin = import("./types.js").CliBackendPlugin;
 type ImageGenerationProviderPlugin = import("./types.js").ImageGenerationProviderPlugin;
@@ -488,6 +489,7 @@ export type PluginRegistry = {
   httpRoutes: PluginHttpRouteRegistration[];
   hostedMediaResolvers: PluginHostedMediaResolverRegistration[];
   mcpServerConnectionResolvers: PluginMcpServerConnectionResolverRegistration[];
+  mcpServerToolFilters: PluginMcpServerToolFilterRegistration[];
   cliRegistrars: PluginCliRegistration[];
   reloads: PluginReloadRegistration[];
   nodeHostCommands: PluginNodeHostCommandRegistration[];

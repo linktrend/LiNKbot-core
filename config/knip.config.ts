@@ -16,6 +16,11 @@ const repositoryScriptEntries = [
   ".github/actions/register-bind-mount-cleanup/main.cjs!",
   ".github/actions/register-bind-mount-cleanup/post.cjs!",
   "apps/android/scripts/build-release-artifacts.ts!",
+  // Stage-ops canary runbooks invoke this fail-closed coordinator directly.
+  "linkbots/lisa/ops/stage-ops-coordinator.ts!",
+  // Stage-ops exposes the canonical store/schema through documented workshop wrappers.
+  "linkbots/lisa/ops/lisa-stage-ops-schema.ts!",
+  "linkbots/lisa/ops/lisa-stage-ops-store.ts!",
   "scripts/build-discord-activity-sdk.mjs!",
   "scripts/check-live-cache.ts!",
   "scripts/check-package-dist-imports.mjs!",
@@ -644,6 +649,17 @@ const config = {
     ]),
     [`${BUNDLED_PLUGIN_ROOT_DIR}/kilocode`]: bundledPluginWorkspace(),
     [`${BUNDLED_PLUGIN_ROOT_DIR}/kimi-coding`]: bundledPluginWorkspace(),
+    [`${BUNDLED_PLUGIN_ROOT_DIR}/linkbrain`]: bundledPluginWorkspace([
+      // Deterministic Brain fake CLI/runtime used by extension and core tests.
+      "fake/runtime.mjs!",
+      "fake/server.mjs!",
+    ]),
+    [`${BUNDLED_PLUGIN_ROOT_DIR}/linkskills`]: bundledPluginWorkspace([
+      // Deterministic Skills fake CLI/harness used by extension and core tests.
+      "fake/cli.mjs!",
+      "fake/harness.mjs!",
+      "fake/index.mjs!",
+    ]),
     [`${BUNDLED_PLUGIN_ROOT_DIR}/matrix`]: bundledPluginWorkspace([
       // Native import wrapper shipped alongside the Matrix runtime bundle.
       "src/plugin-entry.runtime.js!",

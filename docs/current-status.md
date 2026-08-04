@@ -1,5 +1,34 @@
 # Current Repository Status
 
+## Current Status — 2026-08-02 13:30 Asia/Taipei (pre-production hygiene refresh)
+
+Carlos authorized a pre-launch repository hygiene pass. This top section is a Feature/hygiene-leader refresh of **pre-production truth** so agents do not treat July 23–27 dashboard text as current. Unique session records remain ownership authority; Orchestrators may refine this dashboard further.
+
+- Integration tip: `origin/development` at `2025401aafc` (PR #43 OCP-W30 MiniMax-M3 PDF routing candidate `approved_unverified` merged).
+- Release packets present (docs/evidence only; **no production deploy claimed**): OCP-W10 Lisa RC, OCP-W20 cross-repo integration, OCP-W30 approved PDF routing.
+- Canary posture: staged canary **non-live by default**. Workshop contract `linkbots/lisa/ops/model-routing.contract.json` has `liveMutationAllowed: false`, `paidSpendEnablementAllowed: false`. First-PDF proof requires a separately authorized production rollout + receipt.
+- Live Lisa (`~/.openclaw-lisa`, port **18790**) and lisa-stage (**18791**) were **not** mutated by the hygiene session. Do not touch credentials, cloud, production, IDE Development, or `/Users/linktrend/Projects/LiNKplatform-staging` from hygiene work.
+- Stage 1 coordination remains repository-local. Stage 2 LiNKbrain OpenClaw Prime consumer wiring is **not live**.
+- Hygiene branch: `docs/release-hygiene/cursor-local-mac-mini-release-hygiene-20260802-1313` (session `cursor-local-mac-mini-release-hygiene-20260802-1313`). Archives superseded workshop Phase-1 / Stage-2 kickoff docs and bak/preview artifacts under `docs/archive/linkbots-lisa/`. Does **not** move Principal `CURSOR-GROK-*` prompts or the frozen implementation plan (provenance pins).
+- Active session notes (owners must close their own records): release-hygiene (this pass); OCP-W10 Lisa release and ACP wait records still marked `handing-off` under `active/` pending owner/Orchestrator closeout. Shared-checkout untracked canary session `cursor-local-mac-mini-lisa-stage-canary-20260802-0939` must remain untouched outside its owner checkout.
+- Preserved: `stash@{0}: On main: wip-auth-unrelated`; other worktrees; freeze/execution packets; canary/rollback evidence.
+
+Older status sections below are **historical snapshots only**.
+
+## Current Status — 2026-07-27 15:17 Asia/Taipei
+
+This section supersedes the older dashboard snapshots retained below (historical relative to 2026-08-02).
+
+- Carlos directed the Codex Desktop Orchestrator to merge the open PRs into `development` without waiting for or running further checks, resolve actual integration conflicts, deploy the safe merged Lisa files, rebuild/restart Lisa, and verify health.
+- PRs #36, #33, and #34 are merged into `origin/development`. PR #34 merged at `067d1f2ea5ea902f43a919335d95e78cc8d64ff1` using Carlos-authorized admin bypass rather than waiting for its restarted CI matrix.
+- PR #35 is the remaining coordination-only PR. Its branch has merged current `origin/development`; the two conflicts were resolved by preserving the newer Lisa state plus the complete historical Orchestrator record. It is being finalized by this handoff.
+- Local branch `development` is fast-forwarded to and identical with `origin/development` at `067d1f2ea5e` in the dedicated development worktree.
+- The merged source built successfully. The generated `dist/` was deployed to the checkout used by Lisa's LaunchAgent, replacing the temporary surgical runtime patch. Reviewed Lisa personality/procedure files were deployed individually; live config, credentials, databases, and dynamic memory were not replaced.
+- Lisa was restarted successfully. LaunchAgent `ai.openclaw.lisa` is running as PID `89751`; loopback HTTP returns `200`; CLI health reports `ok: true`; Telegram and Google Chat report running; four Ship/Pull jobs, morning digest, and heartbeat are enabled.
+- The live pipeline status remains the existing undated `Pull 07: Clear`. It was not assigned a fabricated cycle date; the deployed monotonic procedure will roll it into the next real cycle.
+- Preserved unrelated state: `stash@{0}: On main: wip-auth-unrelated` was not applied or modified. The coordination branch `docs/initial-agent-handoff-20260723` remains. A separate Codex Feature planning session registered in the shared checkout at 13:53 and was left untouched.
+- No Orchestrator implementation work remains active after PR #35 merges. Older status, PR, CI, worktree, and runtime descriptions below are historical snapshots only.
+
 ## Status Metadata
 
 - Last updated: 2026-07-23 17:40 Asia/Taipei

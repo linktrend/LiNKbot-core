@@ -104,6 +104,7 @@ export type {
   WebSearchProviderToolExecutionContext,
 } from "./web-provider-types.js";
 export type * from "./types.mcp-connection.js";
+export type * from "./types.mcp-tool-filter.js";
 
 export { WorkerProviderError } from "./capability-provider.types.js";
 export type * from "./capability-provider.types.js";

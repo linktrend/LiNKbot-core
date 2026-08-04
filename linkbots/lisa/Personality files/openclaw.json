@@ -4,6 +4,8 @@
       "workspace": "/Users/linktrend/.openclaw-lisa/workspace",
       "thinkingDefault": "medium",
       "reasoningDefault": "off",
+      "verboseDefault": "off",
+      "blockStreamingDefault": "off",
       "model": {
         "primary": "openrouter/minimax/minimax-m3",
         "fallbacks": [
@@ -159,6 +161,8 @@
             "sessions",
             "sessions_list",
             "sessions_history",
+            "sessions_spawn",
+            "sessions_wait",
             "sessions_search",
             "conversations_list"
           ],

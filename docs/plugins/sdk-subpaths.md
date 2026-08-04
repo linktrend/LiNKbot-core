@@ -201,6 +201,8 @@ usage endpoint failed or returned no usable usage data.
     | `plugin-sdk/ssrf-policy` | Host allowlist and private-network SSRF policy helpers |
     | `plugin-sdk/ssrf-dispatcher` | Private-local after July 2026; Narrow pinned-dispatcher helpers without the broad infra runtime surface |
     | `plugin-sdk/ssrf-runtime` | Pinned-dispatcher, SSRF-guarded fetch, SSRF error, and SSRF policy helpers |
+    | `plugin-sdk/mcp-http-fetch` | SSRF-guarded MCP HTTP/SSE/Streamable fetch (`buildPluginMcpHttpFetch`); host ceiling `MCP_HTTP_MAX_RESPONSE_BYTES` (16 MiB) — caller `maxResponseBytes` may only reduce; larger values clamp; invalid values fail closed |
+    | `plugin-sdk/machine-token-runtime` | Host-injected PACI/client_credentials facade types plus minimal helpers (`assertMachineTokenIssuerUrl`, `authorizationHeaderFromMachineToken`, `fingerprintMachineTokenKeyRef`); construction/cache controls stay host-internal; see [Machine-token runtime](/plugins/sdk-machine-token) |
     | `plugin-sdk/secret-input` | Secret input parsing helpers |
     | `plugin-sdk/webhook-ingress` | Webhook request/target helpers and raw websocket/body coercion |
     | `plugin-sdk/webhook-request-guards` | Request body size/timeout helpers and `runDetachedWebhookWork` for tracked post-ack processing |

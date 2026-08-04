@@ -1,0 +1,108 @@
+{
+  "manifestType": "lisa_stage_workspace_package_v1",
+  "packageId": "lisa-stage-bounded-procedures-and-renderer-deps",
+  "description": "Bounded Heartbeat/Digest/Ship-Pull/Repair procedure sources, renderer deps, pipeline procedure, stage Google/task adapters, plus initialize-if-missing battery/pipeline mutable seeds. Hashes bind current repo bytes. Installer defaults never mutate LiNKplatform-staging; mutable seeds preserve existing stage files on reinstall.",
+  "sourceRoot": "linkbots/lisa",
+  "liveMutationAllowed": false,
+  "defaultMutateStageWorkspace": false,
+  "files": [
+    {
+      "source": "Personality files/HEARTBEAT.md",
+      "destination": "HEARTBEAT.md",
+      "sha256": "0da196a01e4fa8ed713e409d0fba86d0d2204b1f6680f2c657638abd31211d71",
+      "bytes": 22269
+    },
+    {
+      "source": "Personality files/agents/morning-digest.md",
+      "destination": "agents/morning-digest.md",
+      "sha256": "9be6057b62fbfc500f1acceaf355ab7eb6b738664b793aa4782dab45b6382bb7",
+      "bytes": 21086
+    },
+    {
+      "source": "Personality files/agents/ship-pull-clock.md",
+      "destination": "agents/ship-pull-clock.md",
+      "sha256": "324f08820958ebf08c4b13e09c1af478b04c2d2cbb8da615c272009598f0dcfd",
+      "bytes": 13458
+    },
+    {
+      "source": "Personality files/agents/repair-dispatcher.md",
+      "destination": "agents/repair-dispatcher.md",
+      "sha256": "36ab118071bbcf67e6e8d53d966d90dc2bb6968f7e457f574c6d319f6358c99d",
+      "bytes": 3686
+    },
+    {
+      "source": "Personality files/agents/pipeline-status.md",
+      "destination": "agents/pipeline-status.md",
+      "sha256": "6689d764b731c29173ac57779f659440ca31d1a75024392246fe8c398adec142",
+      "bytes": 6992
+    },
+    {
+      "source": "Personality files/templates/telegram-heartbeat.md",
+      "destination": "templates/telegram-heartbeat.md",
+      "sha256": "4505a511626e2cfcd18f06c8e4583c0786ea685ced2676e2322196ea04f3de66",
+      "bytes": 2952
+    },
+    {
+      "source": "Personality files/templates/telegram-daily-digest.md",
+      "destination": "templates/telegram-daily-digest.md",
+      "sha256": "299e69474e642bb67201791a72376751356122e13a691de96c1b298e13f51d9a",
+      "bytes": 3218
+    },
+    {
+      "source": "Personality files/templates/email-daily-digest.md",
+      "destination": "templates/email-daily-digest.md",
+      "sha256": "69c0601a7fc8b49f2897d44f400a7092e7481f6811bc5427a6ce3318ba3f4239",
+      "bytes": 1816
+    },
+    {
+      "source": "Personality files/templates/pipeline-one-liner.md",
+      "destination": "templates/pipeline-one-liner.md",
+      "sha256": "0ede999ca81ecbe206afcbd152b8c56f4521228324ebd30041c72f2020ce49c8",
+      "bytes": 872
+    },
+    {
+      "source": "ops/render-template.ts",
+      "destination": "ops/render-template.ts",
+      "sha256": "514d3708d04b329ae9b19d9f2168a5c7ff48319d2ee8f5678fe2497364063362",
+      "bytes": 2142
+    },
+    {
+      "source": "ops/templates.ts",
+      "destination": "ops/templates.ts",
+      "sha256": "f9fd5be86c0b024079bcf040434397077f572eca0a756136a744a0759bb329bb",
+      "bytes": 10164
+    },
+    {
+      "source": "ops/stage-workspace-seeds/tools/bin/lisa-safe",
+      "destination": "tools/bin/lisa-safe",
+      "sha256": "cd2c77e0e3ac0085deac1b34f561e8a3f8b95846d62b93c988302e1448d901c9",
+      "bytes": 303
+    },
+    {
+      "source": "ops/stage-workspace-seeds/tools/bin/lisa-carlos-tasks",
+      "destination": "tools/bin/lisa-carlos-tasks",
+      "sha256": "5d768adabba6e2d59a53d5ddecc4f280c4bf1897fba1ca36e8073c582e828817",
+      "bytes": 309
+    }
+  ],
+  "initializeIfMissing": [
+    {
+      "source": "Personality files/memory/battery-monitor.md",
+      "destination": "memory/battery-monitor.md",
+      "sha256": "056910c302ff12de3402a92bc77ad1e9150046e6a3d9b1a6f10e160e903c12ea",
+      "bytes": 3273
+    },
+    {
+      "source": "ops/stage-workspace-seeds/battery-monitor-state.json",
+      "destination": "memory/battery-monitor-state.json",
+      "sha256": "9763fe8b96f0ae63dc39571b7747b1a2d9578fa049f2266d3b7f7ba49349e80a",
+      "bytes": 515
+    },
+    {
+      "source": "Personality files/memory/pipeline-status.md",
+      "destination": "memory/pipeline-status.md",
+      "sha256": "e32bc5d30e64f0d62e1c1ae275df5d37d19ebc1eed0f2bc4f4c76e13d0bca59a",
+      "bytes": 946
+    }
+  ]
+}

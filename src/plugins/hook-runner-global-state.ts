@@ -113,12 +113,36 @@ function composeLiveHookRegistry(
       claimOwner(tool.pluginId, sourceIndex);
     }
   };
+  // Hook-only plugins (no registerTool) never hit claimToolOwners. Without a
+  // pinned claim, the active-first loaded+hooks walk below prefers a later
+  // ensure/reload that re-registered api.on handlers while the gateway service
+  // keep-alive still owns the original closures (e.g. linkbrain lifecycle).
+  const claimPinnedHookOwners = (registry: PluginRegistry | null | undefined) => {
+    if (!registry) {
+      return;
+    }
+    const sourceIndex = sources.indexOf(registry);
+    if (sourceIndex < 0) {
+      return;
+    }
+    const hookPluginIds = expectDefined(
+      hookPluginIdsBySource[sourceIndex],
+      "pinned hook plugin ids by source entry at index",
+    );
+    for (const plugin of registry.plugins) {
+      if (plugin.status === "loaded" && hookPluginIds.has(plugin.id)) {
+        claimOwner(plugin.id, sourceIndex);
+      }
+    }
+  };
   const runtimeState = getPluginRegistryState();
   // Match tool resolution: an isolated initialized registry stays authoritative,
   // then the pinned Gateway owner wins only for tools it actually registered,
   // followed by the active registry for remaining tool owners.
   claimToolOwners(runtimeState?.channel.pinned ? runtimeState.channel.registry : null);
   claimToolOwners(runtimeState?.activeRegistry);
+  // Same pin preference for hook-only plugins that never registered tools.
+  claimPinnedHookOwners(runtimeState?.channel.pinned ? runtimeState.channel.registry : null);
   // Prefer the highest-precedence source where the plugin loaded AND actually
   // contributes a hook, so a loaded-but-hookless record (failed/disabled scoped
   // reload, or a setup-runtime channel load) cannot shadow a lower-precedence

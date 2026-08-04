@@ -22,6 +22,8 @@ Lisa gateway uses `acp.backend: acpx` with `defaultAgent: cursor` (`cursor-agent
 
 **Required action:** Call `sessions_spawn` with `runtime: "acp"`, `agentId: "cursor"`, and a clear task. Prefer also passing `model` (see below). Report back when Cursor finishes.
 
+**Ship/Pull isolated cron:** Never call `sessions_yield` after ACP spawn — yield kills the isolated cron parent before status CAS / email / final one-liner. See `agents/ship-pull-clock.md` Wait contract and `linkbots/lisa/docs/LISA-OPS-CORE-PREREQUISITE.md`. Main-session Cursor work may still use yield when the parent session stays wakeable.
+
 ## Model preference (wired 2026-07-21 — durable)
 
 **Default / only Grok request:**

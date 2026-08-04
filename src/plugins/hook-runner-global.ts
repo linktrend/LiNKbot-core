@@ -32,11 +32,26 @@ const getLog = () => createSubsystemLogger("plugins");
  * hooks. An isolated SDK registry stays authoritative; runtime registries use
  * the gateway surface precedence shared by plugin tool resolution.
  */
+type HookInitFailurePoint = "early" | "mid" | "late";
+
+let hookInitFailureInjectorForTest: ((point: HookInitFailurePoint) => void) | null = null;
+
+/**
+ * Test helper: throw inside the real initializeGlobalHookRunner at early/mid/late.
+ */
+export function setGlobalHookRunnerInitFailureInjectorForTest(
+  injector: ((point: HookInitFailurePoint) => void) | null,
+): void {
+  hookInitFailureInjectorForTest = injector;
+}
+
 export function initializeGlobalHookRunner(registry: GlobalHookRunnerRegistry): void {
   const state = getHookRunnerGlobalState();
   const log = getLog();
+  hookInitFailureInjectorForTest?.("early");
   state.registry = registry;
   if (!state.hookRunner) {
+    hookInitFailureInjectorForTest?.("mid");
     state.hookRunner = createHookRunner(createComposedHookRegistryFacade(state), {
       logger: {
         debug: (msg) => log.debug(msg),
@@ -52,6 +67,7 @@ export function initializeGlobalHookRunner(registry: GlobalHookRunnerRegistry): 
     });
   }
 
+  hookInitFailureInjectorForTest?.("late");
   const hookCount = registry.hooks.length;
   if (hookCount > 0) {
     log.debug(`hook runner initialized with ${hookCount} registered hooks`);

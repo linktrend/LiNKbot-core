@@ -1,0 +1,63 @@
+{
+  "domain": "LiNKskills",
+  "consumed_at": "2026-07-28T09:52:00+08:00",
+  "consumer": "openclaw_prime",
+  "branch": "issue/ocp-openclawdevelopmentplan01",
+  "source_repo": "LiNKskills",
+  "source_head": "f16103f23a716d0edeb08a1e82e38608ebd563ea",
+  "source_branch_observed": "issue/21-linkskillsdevelopmentplan01",
+  "CONTRACT_VERSION": "skills.api.v0.1",
+  "schema_version_const": "0.1",
+  "schemas_dir": "packages/contracts/schemas",
+  "platform_auth_claims_pin": {
+    "provenance": "historical",
+    "contract_version_string": "platform.auth-claims/1.0.0",
+    "schema_file": "platform-auth-claims.v1.0.0.json",
+    "schema_file_sha256": "b0397cdf34e76ab0986c6d223ecb6c3c66d619ea59557f78cd45c0c015ff50fb",
+    "content_hash": "6bf49618d846662976886f57d5d468f73a08ab1a6574968f68833d82429db251",
+    "note": "Historical Skills upstream vendored AuthClaims 1.0.0 pin from wave-2b consumption. Retained for provenance only. Not authoritative for OpenClaw consumer identity/auth fixtures after wave-8 AuthClaims 1.1.0 refresh."
+  },
+  "platform_auth_claims_consumer_override": {
+    "provenance": "authoritative",
+    "approved": true,
+    "contract_version_string": "platform.auth-claims/1.1.0",
+    "semantic_version": "1.1.0",
+    "package": "@linktrend/platform-contracts@0.2.2",
+    "platform_source_head": "6861a376aae5fa4e12c1b68a808d7b04e7bbfb5b",
+    "schema_file": "platform-auth-claims.v1.1.0.json",
+    "schema_file_sha256": "c2e8bc68b3feb9a3dacc497f5a5d497b466c400804fb4f9e41734c10772ddfa1",
+    "content_hash": "fb518834be897c32574df5f7235704fdb0de708bd3da1b48fc448246e3eca567",
+    "openclaw_skills_fixture_root": "extensions/linkskills/fixtures",
+    "openclaw_skills_fixture_json_count": 71,
+    "openclaw_skills_fixture_aggregate_sha256": "203163711b5db17b8a07d3956e41596384cbd08f0c110bd9f21abfc5c7e5e19a",
+    "fixture_owner_status": "OWNER_COUNTERSIGNED",
+    "inspected_openclaw_tip": "005c9454f1bd3f7427936704131ffe5faa95ef0f",
+    "skills_owner_handoff_commit": "2fb6f8d55f42c2350a6c528f32ff35023f544adc",
+    "wave": "wave-8-authclaims-1.1.0",
+    "note": "Authoritative OpenClaw consumer AuthClaims pin. Aligns with Platform PIN platform.auth-claims/1.1.0, Skills fixture MANIFEST aggregates, and FIXTURE-OWNER-SIGNOFF.md. AuthClaims 1.1 Skills OWNER_COUNTERSIGNED at tip 005c9454… (domain-owner fixture approval only — not Codex certification)."
+  },
+  "immutable_release_certification": {
+    "handoff": "docs/handoffs/2026-07-28-grok-certification-path-correction.md",
+    "status": "corrected_path_pending_codex_reverification",
+    "note": "Suite-authored observed_output / live_echo path withdrawn. Executor receipts required. Do not treat prior canary certification as valid."
+  },
+  "schemas_sha256": {
+    "dependency-types-v0.1.json": "d69d986443845f8783090bbb20ab96b6c8259ca2b853476f61db02ac36cfd33d",
+    "error-envelope-v0.1.json": "2aaf94e6027402e9bb6b2cb2afca5778f960c057e931074ebcca8191d2ceab15",
+    "eval-suite-v0.1.json": "0bcbbe2c32609866e5d68d8fea3a46167ca71f01290819a4f76fd81dcaa185df",
+    "execution-profile-v0.1.json": "5e81f462a2a5868d7d7e75a39e72b65af084333e6a801996ddf56cd8e836da61",
+    "feedback-v0.1.json": "516b194279a55789f8d9ea21f3eecf903d6b1d1039da90e354d5914f4da27daa",
+    "mcp-api-envelope-v0.1.json": "ad278955dcf9f63282a6027b862924f4e1063b468f8961ae7a73703cd4700f05",
+    "platform-auth-claims.v1.0.0.json": "b0397cdf34e76ab0986c6d223ecb6c3c66d619ea59557f78cd45c0c015ff50fb",
+    "release-record-v0.1.json": "b2c076708388896fe519b350888bd0ca5351bfde881d193023bd877456a35478",
+    "run-event-v0.1.json": "a5cdf8e9079ed807ed9251965532ac9f463467319af70766addae47718ae98b1",
+    "runtime-profile-v0.1.json": "834671a1d04a0dd043b5dc3ee07639ea3c17b7d1e4f6f56153f8461a763dc96d",
+    "skill-fragment-v0.1.json": "5c0c2c373ebdf2668ac439f132116d7ba895966d3290d922c094f2dff771a967",
+    "skill-pack-v0.1.json": "85a29f85edd93c19327bfbc64c642615de449fb434a91e466202e520b0db1506",
+    "tool-descriptor-v0.1.json": "c827803d995a561fb2dc31e0ce00a2f9adcb8e8f4e8fca56f15710354a87e1fd"
+  },
+  "schemas_package_aggregate_sha256": "828ac00d3be0e9b2040aacec3ca788176d8bb160c11d13994055d047503981d2",
+  "openclaw_plan_sha256": "17203ee586a3fb2b1281bcddd8b17ae350075ebce537689f3c4bfcbbd14914f7",
+  "correction_wave": "wave-2b-2026-07-28; wave-19-authclaims-provenance-2026-07-29",
+  "sanitization": "No secrets or node_modules. Per-schema SHA-256 of JSON files only. Historical 1.0 source pin retained; authoritative consumer override is 1.1.0."
+}

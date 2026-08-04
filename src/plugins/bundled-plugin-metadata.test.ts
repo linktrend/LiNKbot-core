@@ -45,6 +45,8 @@ const EXPECTED_BUNDLED_STARTUP_PLUGIN_IDS = [
   "diffs-language-pack",
   "file-transfer",
   "google-meet",
+  "linkbrain",
+  "linkskills",
   "linux-canvas",
   "linux-node",
   "llm-task",
@@ -630,6 +632,67 @@ describe("bundled plugin metadata", () => {
         platform: "linux",
       }),
     ).toContain("bonjour");
+  });
+
+  it("startup-selects explicitly enabled linkbrain/linkskills and keeps defaults absent", () => {
+    const brain = listRepoBundledPluginManifests().find(
+      ({ manifest }) => manifest.id === "linkbrain",
+    );
+    const skills = listRepoBundledPluginManifests().find(
+      ({ manifest }) => manifest.id === "linkskills",
+    );
+    expect(brain?.manifest.enabledByDefault).toBeUndefined();
+    expect(brain?.manifest.activation?.onStartup).toBe(true);
+    expect(skills?.manifest.enabledByDefault).toBeUndefined();
+    expect(skills?.manifest.activation?.onStartup).toBe(true);
+
+    const manifestRegistry = createRepoBundledManifestRegistry();
+    const index = createInstalledPluginIndexForManifests(manifestRegistry);
+
+    const emptyStartup = resolveGatewayStartupPluginIdsFromRegistry({
+      config: {},
+      env: {},
+      index,
+      manifestRegistry,
+      platform: "linux",
+    });
+    expect(emptyStartup).not.toContain("linkbrain");
+    expect(emptyStartup).not.toContain("linkskills");
+
+    const disabledStartup = resolveGatewayStartupPluginIdsFromRegistry({
+      config: {
+        plugins: {
+          entries: {
+            linkbrain: { enabled: false },
+            linkskills: { enabled: false },
+          },
+        },
+      },
+      env: {},
+      index,
+      manifestRegistry,
+      platform: "linux",
+    });
+    expect(disabledStartup).not.toContain("linkbrain");
+    expect(disabledStartup).not.toContain("linkskills");
+
+    const enabledStartup = resolveGatewayStartupPluginIdsFromRegistry({
+      config: {
+        plugins: {
+          allow: ["linkbrain", "linkskills"],
+          entries: {
+            linkbrain: { enabled: true },
+            linkskills: { enabled: true },
+          },
+        },
+      },
+      env: {},
+      index,
+      manifestRegistry,
+      platform: "linux",
+    });
+    expect(enabledStartup).toContain("linkbrain");
+    expect(enabledStartup).toContain("linkskills");
   });
 
   it("prefers built generated paths when present and falls back to source paths", () => {

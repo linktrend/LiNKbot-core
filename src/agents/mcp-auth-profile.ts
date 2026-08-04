@@ -47,10 +47,24 @@ export function resolveMcpAuthProfileId(rawServer: unknown): string | undefined 
 
 /** Returns whether a server needs an OpenClaw-managed bearer projected externally. */
 export function requiresMcpBearerProjection(rawServer: unknown): boolean {
-  if (!isRecord(rawServer) || rawServer.auth !== "oauth") {
+  if (!isRecord(rawServer)) {
+    return false;
+  }
+  // Machine tokens must never be externally projected (env/literal headers).
+  if (rawServer.auth === "machine_token") {
+    return false;
+  }
+  if (rawServer.auth !== "oauth") {
     return false;
   }
   return Boolean(resolveMcpAuthProfileId(rawServer) || typeof rawServer.url === "string");
+}
+
+/** Fail-closed error when external projection would mint a machine token. */
+export function machineTokenMcpBearerProjectionUnsupportedError(serverName: string): Error {
+  return new Error(
+    `MCP server "${serverName}" uses machine-token auth; machine-token projection is unsupported. External runtimes must acquire tokens via the machine-token provider seam — never env or literal Authorization headers.`,
+  );
 }
 
 async function resolveMcpAuthProfileBearerToken(
@@ -104,6 +118,10 @@ async function resolveMcpBearerToken(params: {
   cfg?: OpenClawConfig;
   agentDir?: string;
 }): Promise<string | undefined> {
+  // Machine tokens must never be minted into projected bearer bundles.
+  if (isRecord(params.server) && params.server.auth === "machine_token") {
+    throw machineTokenMcpBearerProjectionUnsupportedError(params.serverName);
+  }
   const authProfileId = resolveMcpAuthProfileId(params.server);
   if (authProfileId) {
     return await resolveMcpAuthProfileBearerToken({
@@ -183,6 +201,7 @@ function stripOpenClawOnlyOAuthConfig(server: BundleMcpServerConfig): BundleMcpS
   const next = { ...server };
   delete next.auth;
   delete next.oauth;
+  delete next.machineToken;
   return next;
 }
 
@@ -201,6 +220,18 @@ export async function resolveMcpBearerBundleConfig(
   const tokenProjection = params.tokenProjection ?? "env";
 
   for (const [serverName, server] of Object.entries(params.config.mcpServers)) {
+    // Machine tokens must never be minted into env/literal Authorization headers.
+    if (isRecord(server) && server.auth === "machine_token") {
+      const error = machineTokenMcpBearerProjectionUnsupportedError(serverName);
+      if (params.omitUnavailableOAuthServers) {
+        nextServers ??= { ...params.config.mcpServers };
+        delete nextServers[serverName];
+        params.onServerUnavailable?.(serverName, error);
+        continue;
+      }
+      throw error;
+    }
+
     let token: string | undefined;
     try {
       token = await resolveMcpBearerToken({

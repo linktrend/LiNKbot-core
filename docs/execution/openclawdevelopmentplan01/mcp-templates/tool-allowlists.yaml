@@ -1,0 +1,49 @@
+# Managed MCP configuration allowlists (plan §9).
+# Canonical JSON templates under this directory must keep toolFilter.include
+# identical to these lists. Domain modules:
+# - extensions/linkbrain/mcp-tool-filter.ts
+# - extensions/linkskills/mcp-tool-filter.ts
+
+linkbrain:
+  knowledge:
+    - brain_browse
+    - brain_search
+    - brain_load
+    - brain_append_finding
+  private:
+    - brain_capture_batch
+    - brain_episode_checkpoint
+    - brain_private_search
+    - brain_private_load
+  coordination:
+    - brain_task_start
+    - brain_task_update
+    - brain_inbox_read
+    - brain_conflict_respond
+    - brain_message_send
+    - brain_checkpoint_write
+    - brain_handoff_create
+    - brain_handoff_accept
+    - brain_task_close
+
+linkskills:
+  discovery:
+    - skills_list
+    - skills_search
+    - skills_describe
+    - skills_fragment_get
+    - skills_release_get
+  runs:
+    - skills_run_start
+    - skills_run_update
+    - skills_run_complete
+    - skills_run_fail
+  mediation:
+    - skills_tool_resolve
+    - skills_tool_invoke
+  validation:
+    - skills_input_validate
+    - skills_output_validate
+  evidence:
+    - skills_feedback_submit
+    - skills_trace_candidate_submit

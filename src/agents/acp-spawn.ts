@@ -53,6 +53,7 @@ import {
 import { createSubsystemLogger } from "../logging/subsystem.js";
 import { getGlobalHookRunner } from "../plugins/hook-runner-global.js";
 import {
+  isCronSessionKey,
   isSubagentSessionKey,
   normalizeAgentId,
   normalizeOptionalAgentId,
@@ -241,6 +242,8 @@ export function isSpawnAcpAcceptedResult(result: SpawnAcpResult): result is Spaw
 
 const ACP_SPAWN_ACCEPTED_NOTE =
   "initial ACP task queued in isolated session; follow-ups continue in the bound thread.";
+const ACP_SPAWN_CRON_ACCEPTED_NOTE =
+  "ACP child queued. Do NOT call sessions_yield or poll sessions_list/history. Call sessions_wait with the returned runId, then continue post-processing in this turn.";
 const ACP_SPAWN_SESSION_ACCEPTED_NOTE =
   "thread-bound ACP session stays active after this task; continue in-thread for follow-ups.";
 
@@ -1578,7 +1581,12 @@ export async function spawnAcpDirect(
     mode: spawnMode,
     runTimeoutSeconds,
     ...(deliveryPlan?.useInlineDelivery ? { inlineDelivery: true } : {}),
-    note: spawnMode === "session" ? ACP_SPAWN_SESSION_ACCEPTED_NOTE : ACP_SPAWN_ACCEPTED_NOTE,
+    note:
+      spawnMode === "session"
+        ? ACP_SPAWN_SESSION_ACCEPTED_NOTE
+        : isCronSessionKey(ctx.agentSessionKey)
+          ? ACP_SPAWN_CRON_ACCEPTED_NOTE
+          : ACP_SPAWN_ACCEPTED_NOTE,
   };
 }
 /* oxlint-disable max-lines -- TODO: split this grandfathered oversized file. */
