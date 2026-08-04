@@ -106,4 +106,23 @@ duplicate managed name/UUID, malformed UUID, or unexpected explicit mapping.
 
 ## Amendments
 
-- None.
+### 2026-08-04 — receipt freshness correction
+
+Independent verification found that the first correction accepted a raw
+`{ jobs }` receipt without enforcing its capture time or provenance; a receipt
+labelled `capturedAt: 2020` could therefore emit commands. The coordinator now:
+
+- generates a wrapper receipt by directly running the isolated-stage,
+  read-only `cron list --all --json` command (no env wrapper, gcloud, or PACI
+  materialization);
+- records and validates coordinator identity, exact command arguments, stage
+  root, stage engine, profile, read-only flag, and capture timestamp;
+- rejects missing provenance, invalid/future timestamps, and receipts older
+  than five minutes before emitting commands;
+- keeps explicit audited maps as offline plan-only inputs and rejects their use
+  with `--emit-commands`.
+
+Adversarial missing/stale/future/wrong-command metadata tests were added. The
+follow-up focused suite passed 22/22, formatting and diff checks passed, and a
+fresh Terra Medium autoreview returned no actionable findings. No stage
+command, schedule, cloud, credential, service, or live Lisa state was changed.

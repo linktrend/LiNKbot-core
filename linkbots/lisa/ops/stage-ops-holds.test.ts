@@ -15,10 +15,12 @@ import {
   MAIN_APPROVE_UNHEALTHY_STORE,
 } from "./main-approve-binding.ts";
 import {
+  buildStageCronListReceipt,
   materializeStageSeedJson,
   planStageOps,
   resolveStageCronJobIdsFromExplicitMap,
   resolveStageCronJobIdsFromReceipt,
+  STAGE_CRON_RECEIPT_MAX_AGE_MS,
 } from "./stage-ops-coordinator.ts";
 import {
   buildStageOpsJobs,
@@ -277,46 +279,125 @@ describe("Stage ops coordinator cron ID sources", () => {
     string,
     string
   >;
+  const capturedAt = "2026-08-04T02:00:00.000Z";
+  const nowMs = Date.parse("2026-08-04T02:01:00.000Z");
 
-  it("resolves a current read-only cron list receipt and ignores unrelated jobs", () => {
-    const resolution = resolveStageCronJobIdsFromReceipt({
-      jobs: [
+  function receipt(jobs: Array<{ id: string | undefined; name: string }>) {
+    return buildStageCronListReceipt({ jobs }, capturedAt);
+  }
+
+  it("resolves a current coordinator receipt and ignores unrelated jobs", () => {
+    const resolution = resolveStageCronJobIdsFromReceipt(
+      receipt([
         ...names.map((name, index) => ({ id: ids[index], name })),
         { id: "77777777-7777-4777-8777-777777777777", name: "unrelated-job" },
-      ],
-    });
+      ]),
+      false,
+      { nowMs },
+    );
     assert.deepEqual(resolution.validationErrors, []);
     assert.deepEqual(resolution.existingJobIds, map);
   });
 
   it("rejects missing, duplicate, or malformed managed receipt jobs", () => {
-    const missing = resolveStageCronJobIdsFromReceipt({
-      jobs: names.slice(0, -1).map((name, index) => ({ id: ids[index], name })),
-    });
+    const missing = resolveStageCronJobIdsFromReceipt(
+      receipt(names.slice(0, -1).map((name, index) => ({ id: ids[index], name }))),
+      false,
+      { nowMs },
+    );
     assert.ok(
       missing.validationErrors.some((error) =>
         /missing stage cron mapping for lisa-pull-18/.test(error),
       ),
     );
 
-    const duplicateName = resolveStageCronJobIdsFromReceipt({
-      jobs: [
+    const duplicateName = resolveStageCronJobIdsFromReceipt(
+      receipt([
         ...names.map((name, index) => ({ id: ids[index], name })),
         { id: "77777777-7777-4777-8777-777777777777", name: "lisa-heartbeat-45" },
-      ],
-    });
+      ]),
+      false,
+      { nowMs },
+    );
     assert.ok(
       duplicateName.validationErrors.some((error) =>
         /duplicate stage cron receipt name/.test(error),
       ),
     );
 
-    const duplicateId = resolveStageCronJobIdsFromReceipt({
-      jobs: names.map((name, index) => ({ id: index === 1 ? ids[0] : ids[index], name })),
-    });
+    const duplicateId = resolveStageCronJobIdsFromReceipt(
+      receipt(names.map((name, index) => ({ id: index === 1 ? ids[0] : ids[index], name }))),
+      false,
+      { nowMs },
+    );
     assert.ok(
       duplicateId.validationErrors.some((error) => /duplicate stage cron UUID/.test(error)),
     );
+  });
+
+  it("rejects missing, stale, future, and wrong-provenance receipt metadata", () => {
+    const current = receipt(names.map((name, index) => ({ id: ids[index], name })));
+
+    const missingMetadata = resolveStageCronJobIdsFromReceipt(
+      { cronList: current.cronList },
+      false,
+      { nowMs },
+    );
+    assert.ok(missingMetadata.validationErrors.some((error) => /receipt type/.test(error)));
+    assert.ok(missingMetadata.validationErrors.some((error) => /capturedAt/.test(error)));
+    assert.ok(
+      missingMetadata.validationErrors.some((error) => /provenance is required/.test(error)),
+    );
+
+    const stale = resolveStageCronJobIdsFromReceipt(
+      { ...current, capturedAt: "2020-01-01T00:00:00.000Z" },
+      false,
+      { nowMs },
+    );
+    assert.ok(stale.validationErrors.some((error) => /cron receipt expired/.test(error)));
+
+    const future = resolveStageCronJobIdsFromReceipt(
+      { ...current, capturedAt: "2026-08-04T02:02:00.000Z" },
+      false,
+      { nowMs },
+    );
+    assert.ok(future.validationErrors.some((error) => /must not be in the future/.test(error)));
+
+    const impreciseTimestamp = resolveStageCronJobIdsFromReceipt(
+      { ...current, capturedAt: "2026-08-04" },
+      false,
+      { nowMs },
+    );
+    assert.ok(
+      impreciseTimestamp.validationErrors.some((error) => /valid ISO timestamp/.test(error)),
+    );
+
+    const wrongCommand = resolveStageCronJobIdsFromReceipt(
+      {
+        ...current,
+        provenance: { ...current.provenance, openclawArgs: ["cron", "list", "--json"] },
+      },
+      false,
+      { nowMs },
+    );
+    assert.ok(
+      wrongCommand.validationErrors.some((error) =>
+        /must prove cron list --all --json/.test(error),
+      ),
+    );
+  });
+
+  it("enforces the bounded receipt max age", () => {
+    const current = receipt(names.map((name, index) => ({ id: ids[index], name })));
+    const atBoundary = resolveStageCronJobIdsFromReceipt(current, false, {
+      nowMs: Date.parse(capturedAt) + STAGE_CRON_RECEIPT_MAX_AGE_MS,
+    });
+    assert.deepEqual(atBoundary.validationErrors, []);
+
+    const expired = resolveStageCronJobIdsFromReceipt(current, false, {
+      nowMs: Date.parse(capturedAt) + STAGE_CRON_RECEIPT_MAX_AGE_MS + 1,
+    });
+    assert.ok(expired.validationErrors.some((error) => /cron receipt expired/.test(error)));
   });
 
   it("accepts only an exact explicit map and rejects unexpected or missing mappings", () => {

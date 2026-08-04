@@ -6,6 +6,7 @@
  * and typed gateway-valid create/edit payloads. Never enables schedules.
  */
 
+import { spawnSync } from "node:child_process";
 import { readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
@@ -106,6 +107,24 @@ export type StageCronJobIdResolution = {
   validationErrors: string[];
 };
 
+export const STAGE_CRON_RECEIPT_TYPE = "lisa_stage_cron_list_v1" as const;
+export const STAGE_CRON_RECEIPT_MAX_AGE_MS = 5 * 60 * 1000;
+const STAGE_CRON_LIST_ARGS = ["cron", "list", "--all", "--json"] as const;
+
+export type StageCronListReceipt = {
+  receiptType: typeof STAGE_CRON_RECEIPT_TYPE;
+  capturedAt: string;
+  provenance: {
+    capturedBy: "stage-ops-coordinator";
+    readOnly: true;
+    stageRoot: typeof STAGE_OPS_STAGE_ROOT;
+    enginePath: typeof STAGE_OPS_ENGINE_PATH;
+    profile: typeof STAGE_OPS_PROFILE;
+    openclawArgs: typeof STAGE_CRON_LIST_ARGS;
+  };
+  cronList: unknown;
+};
+
 function isJsonRecord(value: unknown): value is JsonRecord {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
@@ -158,23 +177,95 @@ function validateResolvedJobIds(params: {
   return errors;
 }
 
+export function buildStageCronListReceipt(
+  cronList: unknown,
+  capturedAt = new Date().toISOString(),
+): StageCronListReceipt {
+  return {
+    receiptType: STAGE_CRON_RECEIPT_TYPE,
+    capturedAt,
+    provenance: {
+      capturedBy: "stage-ops-coordinator",
+      readOnly: true,
+      stageRoot: STAGE_OPS_STAGE_ROOT,
+      enginePath: STAGE_OPS_ENGINE_PATH,
+      profile: STAGE_OPS_PROFILE,
+      openclawArgs: STAGE_CRON_LIST_ARGS,
+    },
+    cronList,
+  };
+}
+
+function validateStageCronReceiptEnvelope(
+  value: unknown,
+  nowMs: number,
+  maxAgeMs: number,
+): string[] {
+  const errors: string[] = [];
+  if (!isJsonRecord(value)) return ["cron receipt must be a JSON object"];
+  if (value.receiptType !== STAGE_CRON_RECEIPT_TYPE) {
+    errors.push(`cron receipt type must be ${STAGE_CRON_RECEIPT_TYPE}`);
+  }
+  const capturedMs = typeof value.capturedAt === "string" ? Date.parse(value.capturedAt) : NaN;
+  if (!Number.isFinite(capturedMs) || new Date(capturedMs).toISOString() !== value.capturedAt) {
+    errors.push("cron receipt capturedAt must be a valid ISO timestamp");
+  } else {
+    const ageMs = nowMs - capturedMs;
+    if (ageMs < 0) errors.push("cron receipt capturedAt must not be in the future");
+    if (ageMs > maxAgeMs) {
+      errors.push(`cron receipt expired: age ${ageMs}ms exceeds ${maxAgeMs}ms`);
+    }
+  }
+  const provenance = isJsonRecord(value.provenance) ? value.provenance : undefined;
+  if (!provenance) return [...errors, "cron receipt provenance is required"];
+  if (provenance.capturedBy !== "stage-ops-coordinator") {
+    errors.push("cron receipt provenance.capturedBy must be stage-ops-coordinator");
+  }
+  if (provenance.readOnly !== true) {
+    errors.push("cron receipt provenance.readOnly must be true");
+  }
+  if (provenance.stageRoot !== STAGE_OPS_STAGE_ROOT) {
+    errors.push("cron receipt provenance.stageRoot must be the isolated stage root");
+  }
+  if (provenance.enginePath !== STAGE_OPS_ENGINE_PATH) {
+    errors.push("cron receipt provenance.enginePath must be the isolated stage engine");
+  }
+  if (provenance.profile !== STAGE_OPS_PROFILE) {
+    errors.push("cron receipt provenance.profile must be lisa-stage");
+  }
+  if (
+    !Array.isArray(provenance.openclawArgs) ||
+    provenance.openclawArgs.length !== STAGE_CRON_LIST_ARGS.length ||
+    !STAGE_CRON_LIST_ARGS.every((arg, index) => provenance.openclawArgs?.[index] === arg)
+  ) {
+    errors.push("cron receipt provenance must prove cron list --all --json");
+  }
+  return errors;
+}
+
 /**
- * Resolve the six managed stage jobs from a read-only `cron list --all --json`
- * receipt. Unrelated cron jobs are ignored; duplicate or malformed managed jobs
- * are errors. No runtime command is invoked from this parser.
+ * Resolve the six managed jobs only from a current coordinator-generated
+ * read-only receipt. Unrelated jobs are ignored; malformed metadata, stale
+ * captures, and duplicate/malformed managed jobs fail closed.
  */
 export function resolveStageCronJobIdsFromReceipt(
   value: unknown,
   includeRepair = false,
+  options: { nowMs?: number; maxAgeMs?: number } = {},
 ): StageCronJobIdResolution {
-  const errors: string[] = [];
+  const errors = validateStageCronReceiptEnvelope(
+    value,
+    options.nowMs ?? Date.now(),
+    options.maxAgeMs ?? STAGE_CRON_RECEIPT_MAX_AGE_MS,
+  );
   const existingJobIds: Record<string, string> = {};
   const acceptedNames = acceptedStageJobNames(includeRepair);
-  const jobs = isJsonRecord(value) && Array.isArray(value.jobs) ? value.jobs : undefined;
+  const cronList = isJsonRecord(value) ? value.cronList : undefined;
+  const jobs = isJsonRecord(cronList) && Array.isArray(cronList.jobs) ? cronList.jobs : undefined;
   if (!jobs) {
     return {
       existingJobIds,
-      validationErrors: ["cron receipt must be a JSON object with a jobs array"],
+      validationErrors: [...errors, "cron receipt cronList must contain a jobs array"],
     };
   }
   for (const job of jobs) {
@@ -235,6 +326,36 @@ export function resolveStageCronJobIdsFromExplicitMap(
 
 function readJsonFile(filePath: string): unknown {
   return JSON.parse(readFileSync(filePath, "utf8")) as unknown;
+}
+
+function captureStageCronListReceipt(filePath: string): StageCronListReceipt {
+  const result = spawnSync(
+    process.execPath,
+    [STAGE_OPS_ENGINE_PATH, "--profile", STAGE_OPS_PROFILE, ...STAGE_CRON_LIST_ARGS],
+    {
+      encoding: "utf8",
+      env: { ...process.env, OPENCLAW_STATE_DIR: STAGE_OPS_STAGE_ROOT },
+      maxBuffer: 10 * 1024 * 1024,
+    },
+  );
+  if (result.error || result.status !== 0) {
+    throw new Error("read-only stage cron capture failed; no receipt written");
+  }
+  let cronList: unknown;
+  try {
+    cronList = JSON.parse(result.stdout) as unknown;
+  } catch {
+    throw new Error("read-only stage cron capture returned invalid JSON; no receipt written");
+  }
+  const receipt = buildStageCronListReceipt(cronList);
+  const validation = resolveStageCronJobIdsFromReceipt(receipt);
+  if (validation.validationErrors.length > 0) {
+    throw new Error(
+      `read-only stage cron capture rejected: ${validation.validationErrors.join("; ")}`,
+    );
+  }
+  writeFileSync(filePath, `${JSON.stringify(receipt, null, 2)}\n`, "utf8");
+  return receipt;
 }
 
 function selectJobs(includeRepair: boolean): StageSeedJob[] {
@@ -553,24 +674,26 @@ export function materializeStageSeedJson(includeRepair = false): unknown {
 
 function printHelp(): void {
   console.log(`Usage:
-  node --import ./linkbots/lisa/ops/register-gateway-protocol-ts-resolve.mjs --experimental-strip-types linkbots/lisa/ops/stage-ops-coordinator.ts <install|update|disable|rollback> [options]
+  node --import ./linkbots/lisa/ops/register-strip-types-js-resolve.mjs --experimental-strip-types linkbots/lisa/ops/stage-ops-coordinator.ts <install|update|disable|rollback> [options]
 
 Options:
   --include-repair     Include Repair/GitOps supervision job when store health passes
   --ensure-store       Lazily ensure lisa_stage_* on durableStoreDatabasePath/stage state (Principal gate)
   --emit-commands      Print exact coordinator shell commands (still mutateStage=false)
   --json               Print machine-readable plan JSON
+  --capture-cron-receipt <path>
+                       Run the coordinator-owned read-only stage capture and write its wrapper receipt
   --cron-list-receipt <path>
-                       Read a fresh, read-only cron list --all --json receipt
+                       Read a current coordinator-generated wrapper receipt (maximum age 5 minutes)
   --existing-job-ids <path>
-                       Read { "existingJobIds": { name: uuid } } from an audited JSON file
+                       Offline plan-only audited map; cannot be used with --emit-commands
   --write-seed <path>  Write materialized jobs.stage-seed.json (repo path only)
 
 Hard stops: never enables schedules; delivery=none; creates use --disabled + --no-deliver;
 edits use --disable + --no-deliver (single mutation); OpenRouter-only; stage commands use
 LiNKplatform-staging/openclaw_prime via lisa-stage-env-wrapper; no stage mutation from this process.
-Every direct CLI action requires exactly one current job-ID source. The coordinator never uses
-historical UUID defaults. Capture a receipt with the read-only inspect command first.
+Command emission requires a coordinator-captured receipt proving cron list --all --json and no older
+than 5 minutes. Explicit maps are an offline plan-only input. No historical UUID defaults exist.
 `);
 }
 
@@ -594,26 +717,42 @@ function main(argv: string[]): number {
   const writeSeedPath = writeSeedIdx >= 0 ? args[writeSeedIdx + 1] : undefined;
   const receiptIdx = args.indexOf("--cron-list-receipt");
   const receiptPath = receiptIdx >= 0 ? args[receiptIdx + 1] : undefined;
+  const captureIdx = args.indexOf("--capture-cron-receipt");
+  const capturePath = captureIdx >= 0 ? args[captureIdx + 1] : undefined;
   const mapIdx = args.indexOf("--existing-job-ids");
   const mapPath = mapIdx >= 0 ? args[mapIdx + 1] : undefined;
 
-  if ((receiptPath && mapPath) || (!receiptPath && !mapPath)) {
+  const sourceCount = [capturePath, receiptPath, mapPath].filter(Boolean).length;
+  if (sourceCount !== 1) {
     console.error(
-      "Provide exactly one of --cron-list-receipt <path> or --existing-job-ids <path>; no historical UUID defaults are available.",
+      "Provide exactly one of --capture-cron-receipt <path>, --cron-list-receipt <path>, or --existing-job-ids <path>; no historical UUID defaults are available.",
     );
     return 2;
   }
-  if ((receiptIdx >= 0 && !receiptPath) || (mapIdx >= 0 && !mapPath)) {
+  if (
+    (captureIdx >= 0 && !capturePath) ||
+    (receiptIdx >= 0 && !receiptPath) ||
+    (mapIdx >= 0 && !mapPath)
+  ) {
     console.error("The stage cron receipt/map option requires a JSON file path.");
+    return 2;
+  }
+  if (mapPath && emitCommands) {
+    console.error(
+      "--existing-job-ids is offline plan-only; command emission requires a current coordinator-generated cron receipt.",
+    );
     return 2;
   }
 
   let resolution: StageCronJobIdResolution;
   try {
-    const source = readJsonFile(receiptPath ?? mapPath!);
-    resolution = receiptPath
-      ? resolveStageCronJobIdsFromReceipt(source, includeRepair)
-      : resolveStageCronJobIdsFromExplicitMap(source, includeRepair);
+    const source = capturePath
+      ? captureStageCronListReceipt(capturePath)
+      : readJsonFile(receiptPath ?? mapPath!);
+    resolution =
+      capturePath || receiptPath
+        ? resolveStageCronJobIdsFromReceipt(source, includeRepair)
+        : resolveStageCronJobIdsFromExplicitMap(source, includeRepair);
   } catch (error) {
     console.error(
       `Unable to read stage cron mapping source: ${error instanceof Error ? error.message : String(error)}`,
