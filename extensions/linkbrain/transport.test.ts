@@ -197,11 +197,10 @@ describe("linkbrain transport modes", () => {
     expect(calls).toEqual([
       {
         name: "brain_capture_batch",
-        args: expect.objectContaining({
-          idempotencyKey: "idem:test-1",
-        }),
+        args: { batch: { batchId: "b1" } },
       },
     ]);
+    expect(calls[0]?.args).not.toHaveProperty("idempotencyKey");
   });
 
   it("mcp oauth-only without SecretRef header returns auth_profile_required", async () => {

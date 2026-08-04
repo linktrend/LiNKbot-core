@@ -340,8 +340,23 @@ export function createBrainFake(options = {}) {
       );
     }
 
-    const idempotencyKey =
-      typeof domainArgs.idempotencyKey === "string" ? domainArgs.idempotencyKey : null;
+    const idempotencyKey = (() => {
+      if (typeof domainArgs.idempotencyKey === "string") {
+        return domainArgs.idempotencyKey;
+      }
+      // Live MCP brain_capture_batch schema has no top-level idempotencyKey;
+      // durable key lives at batch.idempotencyKey (additionalProperties:false).
+      if (
+        toolName === "brain_capture_batch" &&
+        domainArgs.batch &&
+        typeof domainArgs.batch === "object" &&
+        !Array.isArray(domainArgs.batch) &&
+        typeof domainArgs.batch.idempotencyKey === "string"
+      ) {
+        return domainArgs.batch.idempotencyKey;
+      }
+      return null;
+    })();
     if (BRAIN_WRITE_TOOLS.has(toolName)) {
       if (!idempotencyKey) {
         return errorResult(

@@ -134,8 +134,10 @@ function computeBackoffMs(attemptCount: number): number {
 
 function transportArgsFromEnvelope(envelope: BrainInternalEnvelope): Record<string, unknown> {
   if (envelope.kind === "capture_batch") {
+    // Live MCP schema is additionalProperties:false and has no top-level
+    // idempotencyKey; durable idempotency stays on the envelope and at
+    // batch.idempotencyKey. Emitting a top-level key causes pre-dispatch rejection.
     return {
-      idempotencyKey: envelope.idempotencyKey,
       batch: envelope.body,
     };
   }
