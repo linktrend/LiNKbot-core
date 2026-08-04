@@ -14,7 +14,7 @@ tags: [pipeline, ship, pull, promote, telegram, email]
 
 **IDE Development is the GitOps source of truth.** Lisa implements the pinned IDE contract on IDE `origin/development` (checkpoint-only Ship, Packager opens PRs, Review Packager 08:00, Staging 10:00 — already merged via GITOPS-01 / PR #19). Open follow-on: [IDE Development issue #23](https://github.com/linktrend/IDE-Development/issues/23) (lifecycle/repair-control hardening; draft PR #24). Do not invent local doctrine that replaces IDE Development.
 
-**Primary clock:** Lisa Option A — `agents/ship-pull-clock.md` (cron → Cursor ACP). Cursor Automations are backup only.  
+**Primary clock:** Lisa Option A — `agents/ship-pull-clock.md` (cron → `sessions_spawn` with `runtime="acp"`, `agentId="codex"`, `model="openai/gpt-5.6-terra"`, and `thinking="medium"`). If Codex ACP or Terra Medium is unavailable, record `STAGE_SKIPPED_acp`, report `WAVE: Issues`, and stop. Cursor/Grok, Cursor Automation/webhook, internal subagents, direct/self edits, and alternate automation are explicitly forbidden as execution or fallback. `sessions_wait` remains required; `sessions_yield` remains forbidden.
 **Channels:** Telegram one-liners on heartbeat/digest; **Ship/Pull completion** also emails the same one line after validated ACP outcome. Main Approve ask is inside the **08:30 morning digest** (email + Telegram); Carlos answers on Telegram only.
 
 **Wave names:** Ship 05, Pull 07, Ship 16, Pull 18.

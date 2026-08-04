@@ -58,3 +58,10 @@ Changed files:
 4. Confirm no executable Cursor/Grok spawn contract remains on these Ship/Pull paths; references that explicitly forbid a fallback are expected.
 5. Re-run the three focused test files and `git diff --check`.
 6. Do not install the package, mutate stage/live Lisa, enable schedules, or promote this branch as part of verification.
+
+## Amendment — 2026-08-04 Asia/Taipei
+
+- **What was wrong:** `Personality files/HEARTBEAT.md` still stated that all four Ship/Pull clocks spawn Cursor ACP and that Cursor Automations are a backup; `Personality files/agents/pipeline-status.md` likewise described Cursor ACP and Cursor Automations as the primary/backup route.
+- **Corrected fact:** Both authority files now require only `sessions_spawn` with `runtime="acp"`, `agentId="codex"`, `model="openai/gpt-5.6-terra"`, and `thinking="medium"`. If Codex ACP or Terra Medium is unavailable, the clock records `STAGE_SKIPPED_acp`, reports `WAVE: Issues`, and stops. Cursor/Grok, Cursor Automation/webhook, internal subagents, direct/self edits, and alternate automation are forbidden as execution or fallback; `sessions_wait` remains required and `sessions_yield` forbidden.
+- **Why:** Independent verification correctly found those authoritative summaries inconsistent with the already-established Codex-only, no-fallback procedure, contract, and stage payloads.
+- **Who and evidence:** Codex Desktop Agent made this bounded correction. `lisa-ops.test.ts` now semantically verifies both files, permitting Cursor only as an explicit prohibition. The focused three-suite command passed 79/79; package manifest hashes were refreshed only for the two changed packaged authority files.

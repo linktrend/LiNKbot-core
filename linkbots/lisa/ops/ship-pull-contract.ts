@@ -339,6 +339,36 @@ export function shipPullForbidsCursorFallback(procedureText: string): boolean {
   );
 }
 
+/**
+ * HEARTBEAT and pipeline-status are operational dispatch authorities too: keep
+ * their abbreviated contract equally fail-closed, while permitting Cursor only
+ * when it is named as a forbidden fallback.
+ */
+export function shipPullDocumentsCodexOnlyAcpContract(documentText: string): boolean {
+  const normalized = documentText.toLowerCase().replace(/`/g, "");
+  const hasSpawnField = (name: string, value: string) =>
+    new RegExp(`${name}\\s*(?::|=)\\s*["']?${value}`).test(normalized);
+  return (
+    /sessions_spawn/.test(normalized) &&
+    hasSpawnField("runtime", "acp") &&
+    hasSpawnField("agentid", "codex") &&
+    hasSpawnField("model", "openai/gpt-5\\.6-terra") &&
+    hasSpawnField("thinking", "medium") &&
+    /stage_skipped_acp/.test(normalized) &&
+    /wave:\s*issues/.test(normalized) &&
+    /stop/.test(normalized) &&
+    /cursor\/grok/.test(normalized) &&
+    /cursor automation\/webhook/.test(normalized) &&
+    /internal subagents/.test(normalized) &&
+    /direct\/self edits/.test(normalized) &&
+    /alternate automation/.test(normalized) &&
+    /sessions_wait.*required/.test(normalized) &&
+    /sessions_yield.*forbidden/.test(normalized) &&
+    !/agentid\s*(?::|=)\s*["']?cursor/.test(normalized) &&
+    !/model\s*(?::|=)\s*["']?grok-4\.5/.test(normalized)
+  );
+}
+
 export function shipPullRespectsIdeAuthority(procedureText: string): boolean {
   const lower = procedureText.toLowerCase();
   if (/this file wins/.test(lower)) return false;

@@ -59,6 +59,7 @@ import {
   resolveWaveOutcome,
   SHIP_PULL_REQUIRED_TOOLS,
   shipPullAllowlistIncludesSessionsWait,
+  shipPullDocumentsCodexOnlyAcpContract,
   shipPullForbidsCursorFallback,
   shipPullForbidsSessionsYield,
   shipPullRequiresCodexTerraSpawnContract,
@@ -291,6 +292,13 @@ describe("Ship/Pull post-processing gate", () => {
     assert.match(text, /thinking: "medium"/);
     assert.doesNotMatch(text, /agentId: "cursor"/);
     assert.doesNotMatch(text, /model: "grok-4\.5/);
+  });
+
+  it("keeps heartbeat and pipeline status fail-closed on the Codex-only ACP contract", () => {
+    for (const rel of ["HEARTBEAT.md", "agents/pipeline-status.md"]) {
+      const text = readPersonality(rel);
+      assert.equal(shipPullDocumentsCodexOnlyAcpContract(text), true, rel);
+    }
   });
 
   it("Ship/Pull allowlist includes sessions_wait and excludes yield", () => {
