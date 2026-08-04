@@ -14,7 +14,7 @@
 | Starting branch  | lisa-stage-workspace-complete @ `3d15d278267e33b468cb2b27c42ee615e23468dd` |
 | Ending branch    | `dev/cloudcursor/OCP-LISA-STAGE-WORKSPACE-COMPLETE` |
 | Starting commit  | `3d15d278267e33b468cb2b27c42ee615e23468dd` |
-| Ending commit    | (set at commit time) |
+| Ending commit    | `fd8e5e438494293c6d39d204a414bfe4a7c87d21` |
 | Starting status  | active |
 | Ending status    | complete |
 
