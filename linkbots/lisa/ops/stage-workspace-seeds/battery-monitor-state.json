@@ -1,0 +1,20 @@
+{
+  "schema": "lisa_battery_monitor_state_v1",
+  "profile": "lisa-stage",
+  "timezone": "Asia/Taipei",
+  "source": "repo_stage_seed_non_personal",
+  "confirmed": null,
+  "learned": {
+    "chargeRatePpPerHour": 30,
+    "dischargeRatePpPerHour": -6.5,
+    "source": "baseline"
+  },
+  "pendingAlert35": {
+    "needed": false,
+    "projectedAt": null,
+    "reason": null
+  },
+  "activeAlertIds": [],
+  "routineChanges": "None",
+  "notes": "Deterministic non-personal stage initializer. Never copy live Lisa or personal battery state."
+}

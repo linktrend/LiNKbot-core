@@ -9,7 +9,6 @@
  */
 
 import { createHash } from "node:crypto";
-import { MAIN_APPROVE_RUNTIME_STORE } from "./main-approve-binding.ts";
 import { SHIP_PULL_REQUIRED_TOOLS } from "./ship-pull-contract.ts";
 
 export const STAGE_OPS_SEED_VERSION = 2 as const;
@@ -85,6 +84,14 @@ function hardStopBlock(): string {
   return ["Hard stops:", ...STAGE_HARD_STOPS.map((s) => `- ${s}`)].join("\n");
 }
 
+/** Honest delivery=none contract for packaged stage Google/task adapters. */
+export const STAGE_EXTERNAL_HELPER_SKIP_CONTRACT = [
+  "External Google/calendar/email: tools/bin/lisa-safe is the packaged stage adapter only. On missing helper, non-zero skip exit, or STAGE_SKIPPED_google output: record STAGE_SKIPPED_google and continue core file/render checks. Never invent Google results. Never claim external Google checks passed. Never STAGE_PROCEDURE_BLOCKED solely because Google is unavailable under delivery=none.",
+  "Carlos Tasks: tools/bin/lisa-carlos-tasks is the packaged stage adapter only. On missing helper, non-zero skip exit, or STAGE_SKIPPED_task output: record STAGE_SKIPPED_task and continue. Never invent Tasks Yes/No from fake Google. Never claim task checks passed.",
+  "Missing required workspace files (memory/battery-monitor.md, memory/battery-monitor-state.json, agents/pipeline-status.md, memory/pipeline-status.md when needed) remains STAGE_PROCEDURE_BLOCKED — do not paper over missing files with false success.",
+  "delivery=none: never email, never Telegram-deliver, never schedule battery-monitor-alert-35 to live channels; note STAGE_SKIPPED_email / STAGE_SKIPPED_telegram when those paths are skipped.",
+] as const;
+
 export function buildHeartbeatStageMessage(): string {
   return [
     "STAGE BOUNDED PROCEDURE — lisa-heartbeat-45",
@@ -92,8 +99,9 @@ export function buildHeartbeatStageMessage(): string {
     "Read and execute HEARTBEAT.md for profile lisa-stage (workspace under the stage root).",
     "Use only the HARD TOOL CONTRACT in HEARTBEAT.md (native read / sessions_list / unpiped lisa-safe forms).",
     "If a check requires live Telegram announce, live Lisa paths, or unpaid spend beyond stage OpenRouter policy, skip that check and note STAGE_SKIPPED_<check>.",
-    "Final reply must follow the Heartbeat output format in HEARTBEAT.md (or STAGE_PROCEDURE_BLOCKED <reason> on unrecovered hard denial).",
-    "Never reply with STAGE_CANARY_OK alone.",
+    ...STAGE_EXTERNAL_HELPER_SKIP_CONTRACT,
+    "Final reply must follow the Heartbeat output format in HEARTBEAT.md (or STAGE_PROCEDURE_BLOCKED <reason> on unrecovered hard denial unrelated to intentional Google/task skips).",
+    "Never reply with STAGE_CANARY_OK alone. Never invent Clear.",
   ].join("\n");
 }
 
@@ -103,9 +111,10 @@ export function buildDigestStageMessage(): string {
     hardStopBlock(),
     "Read and execute agents/morning-digest.md for profile lisa-stage.",
     "delivery=none: do not rely on cron announce; do not email Carlos unless Principal explicitly authorizes a stage delivery exception (default: skip email and note STAGE_SKIPPED_email).",
+    ...STAGE_EXTERNAL_HELPER_SKIP_CONTRACT,
     "Main Approve: if authoritative package store is unavailable, record blocked_no_store and continue digest sections without inventing Clear.",
-    "Final reply must be the Morning Digest Output Format (or STAGE_PROCEDURE_BLOCKED <reason>).",
-    "Never reply with STAGE_CANARY_OK alone.",
+    "Final reply must be the Morning Digest Output Format (or STAGE_PROCEDURE_BLOCKED <reason> for missing required workspace files / unrecovered hard denial unrelated to intentional Google/task skips).",
+    "Never reply with STAGE_CANARY_OK alone. Never invent Clear.",
   ].join("\n");
 }
 
@@ -119,8 +128,9 @@ export function buildShipPullStageMessage(
     "Read and execute agents/ship-pull-clock.md for this wave.",
     `Wave: ${wave}. Spawn Cursor ACP ${kind} only when stage ACP is healthy and Principal spend/ACP gate allows; otherwise report WAVE: Issues with STAGE_SKIPPED_acp (do not invent Clear).`,
     "Wait contract: park with sessions_wait after spawn; never call sessions_yield.",
-    "delivery=none: skip Telegram announce and skip email-send unless Principal authorizes stage delivery; still perform status CAS only against stage workspace pipeline-status (never live Lisa memory).",
-    "Final assistant payload must be exactly `<Wave>: Clear|Issues` when the procedure completes, or STAGE_PROCEDURE_BLOCKED <reason>.",
+    "delivery=none: skip Telegram announce and skip email-send unless Principal authorizes stage delivery; note STAGE_SKIPPED_email / STAGE_SKIPPED_telegram; still perform status CAS only against stage workspace pipeline-status (never live Lisa memory).",
+    "If lisa-safe email-send is the stage adapter or unavailable: record STAGE_SKIPPED_email — do not invent sent mail.",
+    "Final assistant payload must be exactly `<Wave>: Clear|Issues` when the procedure completes, or STAGE_PROCEDURE_BLOCKED <reason>. Never invent Clear when ACP was skipped (STAGE_SKIPPED_acp → Issues).",
     "Never reply with STAGE_CANARY_OK alone.",
   ].join("\n");
 }
@@ -142,8 +152,9 @@ export function buildRepairSupervisionStageMessage(): string {
 export function decideRepairSupervision(
   probe: StageDurableStoreProbe = {
     repairAttemptStoreAvailable: false,
-    mainApproveStoreAvailable: MAIN_APPROVE_RUNTIME_STORE.available,
-    mainApproveStorePrerequisite: MAIN_APPROVE_RUNTIME_STORE.prerequisite,
+    mainApproveStoreAvailable: false,
+    mainApproveStorePrerequisite:
+      "durable OpenClaw SQLite Main Approve store health required (fail-closed default)",
   },
 ): StageRepairSupervisionDecision {
   const missing: Array<"repair_attempt_store" | "main_approve_store"> = [];
@@ -152,7 +163,8 @@ export function decideRepairSupervision(
   if (missing.length > 0) {
     const parts = [
       probe.repairAttemptStorePrerequisite,
-      probe.mainApproveStorePrerequisite ?? MAIN_APPROVE_RUNTIME_STORE.prerequisite,
+      probe.mainApproveStorePrerequisite ??
+        "durable OpenClaw SQLite Main Approve store health required (fail-closed default)",
     ].filter(Boolean);
     return {
       decision: "blocked_no_store",

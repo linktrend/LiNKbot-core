@@ -256,12 +256,74 @@ IDE Development remains the external GitOps SoT and is untouched. Repair supervi
 
 ---
 
+## G) Stage workspace package — install / verify / canary / rollback
+
+**Purpose:** Fresh isolated stage workspaces must include every repo-owned file Heartbeat / Digest / Ship-Pull / Repair need (procedures, renderers, pipeline procedure, battery/pipeline seeds, honest Google/task adapters). Default installer **never** mutates `LiNKplatform-staging/lisa/workspace` or `~/.openclaw-lisa`.
+
+| Kind | Destinations | Install rule |
+| ---- | ------------ | ------------ |
+| Overwrite (hashed) | `HEARTBEAT.md`, `agents/*` procedures, `templates/*`, `ops/render-template.ts`, `ops/templates.ts`, `tools/bin/lisa-safe`, `tools/bin/lisa-carlos-tasks` | Always copy from manifest sources |
+| Initialize-if-missing | `memory/battery-monitor.md`, `memory/battery-monitor-state.json`, `memory/pipeline-status.md` | Copy **only when absent** — reinstall preserves existing stage mutable state |
+| Adapters | `tools/bin/lisa-safe`, `tools/bin/lisa-carlos-tasks` | Stage-only stubs: print `STAGE_SKIPPED_google` / `STAGE_SKIPPED_task`, exit `75`; never call Google/credentials; never invent Clear/Yes/No |
+
+### Verify (safe anytime — no stage mutation)
+
+```bash
+node --experimental-strip-types linkbots/lisa/ops/stage-workspace-package.ts verify --out /tmp/lisa-stage-ws-package
+# Expect status=verified, liveLisaTouched=false, mutateWorkspace=false; all source hashes OK
+```
+
+### Hermetic dry-run install (temp dir only)
+
+```bash
+HERMETIC="$(mktemp -d /tmp/lisa-stage-ws-XXXX)"
+node --experimental-strip-types linkbots/lisa/ops/stage-workspace-package.ts install \
+  --out /tmp/lisa-stage-ws-package --target "$HERMETIC"
+# Expect status=installed; memory/* seeds initialized; tools/bin adapters present
+# Confirm adapters are honest skips:
+"$HERMETIC/tools/bin/lisa-safe" gmail-triage --max 5   # → STAGE_SKIPPED_google, exit 75
+"$HERMETIC/tools/bin/lisa-carlos-tasks" tasklists list  # → STAGE_SKIPPED_task, exit 75
+```
+
+### Principal-gated install into isolated stage workspace
+
+Requires explicit Principal authorization. Still refuses `~/.openclaw-lisa`. Real stage path is blocked unless `STAGE_WORKSPACE_PACKAGE_ALLOW_STAGE=1`.
+
+```bash
+STAGE_ROOT="/Users/linktrend/Projects/LiNKplatform-staging/lisa"
+# Principal gate only:
+# STAGE_WORKSPACE_PACKAGE_ALLOW_STAGE=1 node --experimental-strip-types \
+#   linkbots/lisa/ops/stage-workspace-package.ts install \
+#   --out /tmp/lisa-stage-ws-package --target "$STAGE_ROOT/workspace"
+```
+
+After install: confirm `memory/battery-monitor.md`, `memory/battery-monitor-state.json`, `agents/pipeline-status.md`, `memory/pipeline-status.md`, and `tools/bin/{lisa-safe,lisa-carlos-tasks}` exist. Re-run install to prove mutable seeds are preserved (`preservedPaths` in receipt).
+
+### Canary contract (delivery=none — no email / Telegram / spend from this package)
+
+1. Package verify + hermetic install pass locally (above).
+2. Coordinator payloads declare `STAGE_SKIPPED_google` / `STAGE_SKIPPED_task` / `STAGE_SKIPPED_email` — never invent Clear or claim Google passed.
+3. Force-run disabled jobs only under Principal gate; expect core file/render checks to proceed; Google/task paths record honest skips.
+4. Missing required workspace files still → `STAGE_PROCEDURE_BLOCKED` (do not paper over).
+5. Never touch live Lisa 18790 / `~/.openclaw-lisa`.
+
+### Rollback
+
+| Timing | Action |
+| ------ | ------ |
+| Pre-deploy | `git revert <this-commit>` on the task branch (or reinstall prior manifest SHA into hermetic/stage only) |
+| Post-deploy (isolated stage only) | Reinstall the **prior** exact `stage-workspace-package.manifest.json` into `LiNKplatform-staging/lisa/workspace` with `STAGE_WORKSPACE_PACKAGE_ALLOW_STAGE=1`; then disable all six schedules (`stage-ops-coordinator.ts disable --emit-commands`). Never edit live Lisa |
+
+---
+
 ## Related artifacts
 
 - Overlay: `linkbots/lisa/ops/model-routing.openrouter-stage.contract.json`
 - Semantic contract: `linkbots/lisa/ops/model-routing.contract.json`
 - Seed SOT: `linkbots/lisa/ops/jobs.stage-seed.json`
 - Payload builders: `linkbots/lisa/ops/stage-ops-payloads.ts`
+- Workspace package: `linkbots/lisa/ops/stage-workspace-package.ts` + `stage-workspace-package.manifest.json`
+- Stage seeds/adapters: `linkbots/lisa/ops/stage-workspace-seeds/`
 - Coordinator: `linkbots/lisa/ops/stage-ops-coordinator.ts`
 - Command renderer: `linkbots/lisa/ops/stage-ops-command.ts` (`renderStageOpenClawInspectCommand` vs `renderStageOpenClawCommand`)
 - Read-only inventory CLI: `linkbots/lisa/ops/stage-ops-inventory.ts`

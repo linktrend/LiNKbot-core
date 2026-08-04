@@ -1,7 +1,7 @@
 {
   "manifestType": "lisa_stage_workspace_package_v1",
   "packageId": "lisa-stage-bounded-procedures-and-renderer-deps",
-  "description": "Four bounded procedure sources plus six renderer/template deps for lisa-stage workspace packaging. Hashes bind current repo bytes. Installer defaults never mutate LiNKplatform-staging.",
+  "description": "Bounded Heartbeat/Digest/Ship-Pull/Repair procedure sources, renderer deps, pipeline procedure, stage Google/task adapters, plus initialize-if-missing battery/pipeline mutable seeds. Hashes bind current repo bytes. Installer defaults never mutate LiNKplatform-staging; mutable seeds preserve existing stage files on reinstall.",
   "sourceRoot": "linkbots/lisa",
   "liveMutationAllowed": false,
   "defaultMutateStageWorkspace": false,
@@ -29,6 +29,12 @@
       "destination": "agents/repair-dispatcher.md",
       "sha256": "212fe6ddf620a1ab7d9dc56a3516eb2427c3897b90f90b8331d45399acf2b6bc",
       "bytes": 3290
+    },
+    {
+      "source": "Personality files/agents/pipeline-status.md",
+      "destination": "agents/pipeline-status.md",
+      "sha256": "1d380ca3e91c81bee382506c39280a889ce18447b682af0e466f14a5f9206175",
+      "bytes": 6596
     },
     {
       "source": "Personality files/templates/telegram-heartbeat.md",
@@ -65,6 +71,38 @@
       "destination": "ops/templates.ts",
       "sha256": "f9fd5be86c0b024079bcf040434397077f572eca0a756136a744a0759bb329bb",
       "bytes": 10164
+    },
+    {
+      "source": "ops/stage-workspace-seeds/tools/bin/lisa-safe",
+      "destination": "tools/bin/lisa-safe",
+      "sha256": "cd2c77e0e3ac0085deac1b34f561e8a3f8b95846d62b93c988302e1448d901c9",
+      "bytes": 303
+    },
+    {
+      "source": "ops/stage-workspace-seeds/tools/bin/lisa-carlos-tasks",
+      "destination": "tools/bin/lisa-carlos-tasks",
+      "sha256": "5d768adabba6e2d59a53d5ddecc4f280c4bf1897fba1ca36e8073c582e828817",
+      "bytes": 309
+    }
+  ],
+  "initializeIfMissing": [
+    {
+      "source": "Personality files/memory/battery-monitor.md",
+      "destination": "memory/battery-monitor.md",
+      "sha256": "056910c302ff12de3402a92bc77ad1e9150046e6a3d9b1a6f10e160e903c12ea",
+      "bytes": 3273
+    },
+    {
+      "source": "ops/stage-workspace-seeds/battery-monitor-state.json",
+      "destination": "memory/battery-monitor-state.json",
+      "sha256": "0650b1540ea190ed78a983700636ec41a815fb606ba0e52a7fefcbffb009cd92",
+      "bytes": 533
+    },
+    {
+      "source": "Personality files/memory/pipeline-status.md",
+      "destination": "memory/pipeline-status.md",
+      "sha256": "e32bc5d30e64f0d62e1c1ae275df5d37d19ebc1eed0f2bc4f4c76e13d0bca59a",
+      "bytes": 946
     }
   ]
 }

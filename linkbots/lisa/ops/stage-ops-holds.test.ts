@@ -45,8 +45,13 @@ describe("Stage ops bounded payloads (not STAGE_CANARY stubs)", () => {
     const hb = jobs.find((j) => j.id === "lisa-heartbeat-45")!;
     assert.equal(hb.schedule.expr, "45 0,2,4,6,10,12,14,16,18,20,22 * * *");
     assert.equal(hb.payload.messageFile, "HEARTBEAT.md");
+    assert.match(hb.payload.message, /STAGE_SKIPPED_google/);
+    assert.match(hb.payload.message, /STAGE_SKIPPED_task/);
+    assert.match(hb.payload.message, /Never invent Clear/);
     const digest = jobs.find((j) => j.id === "lisa-morning-digest")!;
     assert.equal(digest.payload.messageFile, "agents/morning-digest.md");
+    assert.match(digest.payload.message, /STAGE_SKIPPED_google/);
+    assert.match(digest.payload.message, /STAGE_SKIPPED_task/);
     assert.match(hashStageJob(hb), /^[a-f0-9]{64}$/);
   });
 
@@ -221,13 +226,25 @@ describe("Stage ops coordinator install/update/disable/rollback", () => {
   });
 
   it("includes repair only when requested AND store health passes; default stays blocked_no_store", () => {
-    const without = planStageOps({ action: "install" });
+    // Isolate from any real LiNKplatform-staging state DB so this assertion is hermetic.
+    const missingDb = path.join(
+      mkdtempSync(path.join(tmpdir(), "stage-ops-no-store-")),
+      "missing-openclaw.sqlite",
+    );
+    const without = planStageOps({
+      action: "install",
+      durableStoreDatabasePath: missingDb,
+    });
     assert.equal(without.includeRepair, false);
     assert.equal(without.repairSupervision.installedInPlan, false);
     assert.equal(without.repairSupervision.decision.decision, "blocked_no_store");
     assert.equal(without.repairSupervision.installAllowed, false);
     // Without a healthy durable DB path, --include-repair must not install.
-    const blocked = planStageOps({ action: "install", includeRepair: true });
+    const blocked = planStageOps({
+      action: "install",
+      includeRepair: true,
+      durableStoreDatabasePath: missingDb,
+    });
     assert.equal(blocked.includeRepair, false);
     assert.equal(blocked.jobCount, 6);
     assert.ok(blocked.validationErrors.some((e) => /repair install blocked/i.test(e)));

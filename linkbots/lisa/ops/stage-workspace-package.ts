@@ -1,9 +1,13 @@
 /**
- * Stage workspace package installer — four bounded procedures + six renderer deps.
+ * Stage workspace package installer — bounded procedures + renderer deps +
+ * stage Google/task adapters + initialize-if-missing mutable seeds.
  *
  * Default: verify SHA256 against manifest and write a receipt. NEVER mutates the
  * real LiNKplatform-staging lisa workspace. Optional --target only for hermetic
  * temp dirs / Principal-gated installs. --emit-commands prints a copy plan.
+ *
+ * Mutable seeds (battery/pipeline state) copy only when the destination is
+ * missing — reinstall preserves existing stage state.
  */
 
 import { createHash } from "node:crypto";
@@ -29,6 +33,11 @@ export const DEFAULT_SOURCE_ROOT = path.resolve(here, "..");
 
 export const FORBIDDEN_STAGE_WORKSPACE = path.join(STAGE_OPS_STAGE_ROOT, "workspace");
 
+/** Live Lisa hard-stop paths — never install here. */
+export const FORBIDDEN_LIVE_LISA_PREFIXES = [
+  path.resolve("/Users/linktrend/.openclaw-lisa"),
+] as const;
+
 export type StageWorkspacePackageManifestFile = {
   source: string;
   destination: string;
@@ -44,6 +53,8 @@ export type StageWorkspacePackageManifest = {
   liveMutationAllowed: false;
   defaultMutateStageWorkspace: false;
   files: StageWorkspacePackageManifestFile[];
+  /** Copied only when destination is absent; preserves existing stage mutable state. */
+  initializeIfMissing?: StageWorkspacePackageManifestFile[];
 };
 
 export type StageWorkspaceFileVerification = {
@@ -54,6 +65,7 @@ export type StageWorkspaceFileVerification = {
   expectedBytes: number;
   actualBytes: number | null;
   ok: boolean;
+  mode: "overwrite" | "initialize_if_missing";
   error?: string;
 };
 
@@ -75,11 +87,24 @@ export type StageWorkspacePackageReceipt = {
   files: StageWorkspaceFileVerification[];
   copyCommands: string[];
   installedPaths: string[];
+  preservedPaths: string[];
+  initializedPaths: string[];
   hardStops: {
     defaultMutateStageWorkspace: false;
     liveMutationAllowed: false;
   };
 };
+
+function allManifestEntries(
+  manifest: StageWorkspacePackageManifest,
+): Array<StageWorkspacePackageManifestFile & { mode: "overwrite" | "initialize_if_missing" }> {
+  const overwrite = manifest.files.map((f) => ({ ...f, mode: "overwrite" as const }));
+  const init = (manifest.initializeIfMissing ?? []).map((f) => ({
+    ...f,
+    mode: "initialize_if_missing" as const,
+  }));
+  return [...overwrite, ...init];
+}
 
 export function loadStageWorkspacePackageManifest(
   manifestPath: string = DEFAULT_MANIFEST_PATH,
@@ -90,6 +115,9 @@ export function loadStageWorkspacePackageManifest(
   }
   if (!Array.isArray(raw.files) || raw.files.length === 0) {
     throw new Error("manifest.files must be a non-empty array");
+  }
+  if (raw.initializeIfMissing !== undefined && !Array.isArray(raw.initializeIfMissing)) {
+    throw new Error("manifest.initializeIfMissing must be an array when present");
   }
   return raw;
 }
@@ -116,7 +144,7 @@ export function verifyStageWorkspacePackage(params: {
     loadStageWorkspacePackageManifest(params.manifestPath ?? DEFAULT_MANIFEST_PATH);
   const sourceRoot = params.sourceRoot ?? DEFAULT_SOURCE_ROOT;
   const files: StageWorkspaceFileVerification[] = [];
-  for (const entry of manifest.files) {
+  for (const entry of allManifestEntries(manifest)) {
     const abs = path.join(sourceRoot, entry.source);
     if (!existsSync(abs)) {
       files.push({
@@ -127,6 +155,7 @@ export function verifyStageWorkspacePackage(params: {
         expectedBytes: entry.bytes,
         actualBytes: null,
         ok: false,
+        mode: entry.mode,
         error: "missing_source",
       });
       continue;
@@ -141,6 +170,7 @@ export function verifyStageWorkspacePackage(params: {
       expectedBytes: entry.bytes,
       actualBytes: bytes,
       ok,
+      mode: entry.mode,
       error: ok ? undefined : "hash_or_size_mismatch",
     });
   }
@@ -168,16 +198,35 @@ export function isForbiddenStageWorkspaceTarget(targetDir: string): boolean {
   );
 }
 
+/** True when target is under live Lisa profile paths. */
+export function isForbiddenLiveLisaTarget(targetDir: string): boolean {
+  const target = resolveReal(targetDir);
+  return FORBIDDEN_LIVE_LISA_PREFIXES.some(
+    (prefix) => target === prefix || target.startsWith(`${prefix}${path.sep}`),
+  );
+}
+
 function buildCopyCommands(
-  files: StageWorkspacePackageManifestFile[],
+  manifest: StageWorkspacePackageManifest,
   sourceRoot: string,
   targetDir: string,
 ): string[] {
-  return files.map((f) => {
+  const cmds: string[] = [];
+  for (const f of manifest.files) {
     const src = path.join(sourceRoot, f.source);
     const dest = path.join(targetDir, f.destination);
-    return `mkdir -p ${shellQuote(path.dirname(dest))} && cp ${shellQuote(src)} ${shellQuote(dest)}`;
-  });
+    cmds.push(
+      `mkdir -p ${shellQuote(path.dirname(dest))} && cp ${shellQuote(src)} ${shellQuote(dest)}`,
+    );
+  }
+  for (const f of manifest.initializeIfMissing ?? []) {
+    const src = path.join(sourceRoot, f.source);
+    const dest = path.join(targetDir, f.destination);
+    cmds.push(
+      `mkdir -p ${shellQuote(path.dirname(dest))} && if [ ! -e ${shellQuote(dest)} ]; then cp ${shellQuote(src)} ${shellQuote(dest)}; fi`,
+    );
+  }
+  return cmds;
 }
 
 function shellQuote(s: string): string {
@@ -205,8 +254,8 @@ export function planStageWorkspacePackage(params: {
   const targetDir = params.targetDir ? path.resolve(params.targetDir) : null;
   const copyCommands =
     targetDir !== null
-      ? buildCopyCommands(manifest.files, sourceRoot, targetDir)
-      : buildCopyCommands(manifest.files, sourceRoot, "<TARGET_WORKSPACE>");
+      ? buildCopyCommands(manifest, sourceRoot, targetDir)
+      : buildCopyCommands(manifest, sourceRoot, "<TARGET_WORKSPACE>");
 
   const base = {
     receiptType: STAGE_WORKSPACE_PACKAGE_RECEIPT_TYPE,
@@ -232,6 +281,8 @@ export function planStageWorkspacePackage(params: {
       targetDir,
       stageWorkspaceMutated: false,
       installedPaths: [],
+      preservedPaths: [],
+      initializedPaths: [],
     };
     writeReceipt(params.outputDir, receipt);
     return receipt;
@@ -245,6 +296,8 @@ export function planStageWorkspacePackage(params: {
       targetDir,
       stageWorkspaceMutated: false,
       installedPaths: [],
+      preservedPaths: [],
+      initializedPaths: [],
     };
     writeReceipt(params.outputDir, receipt);
     return receipt;
@@ -258,12 +311,29 @@ export function planStageWorkspacePackage(params: {
       targetDir,
       stageWorkspaceMutated: false,
       installedPaths: [],
+      preservedPaths: [],
+      initializedPaths: [],
     };
     writeReceipt(params.outputDir, receipt);
     return receipt;
   }
 
-  // install
+  // install — refuse live Lisa always; refuse real stage unless Principal escape hatch
+  if (isForbiddenLiveLisaTarget(targetDir)) {
+    const receipt: StageWorkspacePackageReceipt = {
+      ...base,
+      status: "blocked_forbidden_target",
+      mutateWorkspace: false,
+      targetDir,
+      stageWorkspaceMutated: false,
+      installedPaths: [],
+      preservedPaths: [],
+      initializedPaths: [],
+    };
+    writeReceipt(params.outputDir, receipt);
+    return receipt;
+  }
+
   if (isForbiddenStageWorkspaceTarget(targetDir) && !params.allowForbiddenStageTarget) {
     const receipt: StageWorkspacePackageReceipt = {
       ...base,
@@ -272,17 +342,35 @@ export function planStageWorkspacePackage(params: {
       targetDir,
       stageWorkspaceMutated: false,
       installedPaths: [],
+      preservedPaths: [],
+      initializedPaths: [],
     };
     writeReceipt(params.outputDir, receipt);
     return receipt;
   }
 
   const installedPaths: string[] = [];
+  const preservedPaths: string[] = [];
+  const initializedPaths: string[] = [];
+
   for (const entry of manifest.files) {
     const src = path.join(sourceRoot, entry.source);
     const dest = path.join(targetDir, entry.destination);
     mkdirSync(path.dirname(dest), { recursive: true });
     copyFileSync(src, dest);
+    installedPaths.push(dest);
+  }
+
+  for (const entry of manifest.initializeIfMissing ?? []) {
+    const src = path.join(sourceRoot, entry.source);
+    const dest = path.join(targetDir, entry.destination);
+    mkdirSync(path.dirname(dest), { recursive: true });
+    if (existsSync(dest)) {
+      preservedPaths.push(dest);
+      continue;
+    }
+    copyFileSync(src, dest);
+    initializedPaths.push(dest);
     installedPaths.push(dest);
   }
 
@@ -293,6 +381,8 @@ export function planStageWorkspacePackage(params: {
     targetDir,
     stageWorkspaceMutated: isForbiddenStageWorkspaceTarget(targetDir),
     installedPaths,
+    preservedPaths,
+    initializedPaths,
   };
   writeReceipt(params.outputDir, receipt);
   return receipt;
@@ -313,6 +403,8 @@ function printHelp(): void {
   node --experimental-strip-types linkbots/lisa/ops/stage-workspace-package.ts install --out <dir> --target <hermetic-dir>
 
 Default never writes to ${FORBIDDEN_STAGE_WORKSPACE}.
+Mutable seeds initialize only when missing (preserve on reinstall).
+Never installs under ~/.openclaw-lisa.
 `);
 }
 
