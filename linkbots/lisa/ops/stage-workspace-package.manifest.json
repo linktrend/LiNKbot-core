@@ -21,8 +21,8 @@
     {
       "source": "Personality files/agents/ship-pull-clock.md",
       "destination": "agents/ship-pull-clock.md",
-      "sha256": "46f9aabc6fb5c6de875933c349a2c24a66627cce1bd46eeaf43d6fb64cd00d6d",
-      "bytes": 12865
+      "sha256": "324f08820958ebf08c4b13e09c1af478b04c2d2cbb8da615c272009598f0dcfd",
+      "bytes": 13458
     },
     {
       "source": "Personality files/agents/repair-dispatcher.md",

@@ -48,6 +48,13 @@ describe("Stage ops bounded payloads (not STAGE_CANARY stubs)", () => {
       const job = jobs.find((j) => j.id === id)!;
       assert.ok(job.payload.toolsAllow.includes("sessions_wait"));
       assert.ok(!job.payload.toolsAllow.includes("sessions_yield"));
+      assert.match(job.payload.message, /runtime: "acp"/);
+      assert.match(job.payload.message, /agentId: "codex"/);
+      assert.match(job.payload.message, /model: "openai\/gpt-5\.6-terra"/);
+      assert.match(job.payload.message, /thinking: "medium"/);
+      assert.match(job.payload.message, /No Cursor\/Grok fallback/);
+      assert.doesNotMatch(job.payload.message, /agentId: "cursor"/);
+      assert.doesNotMatch(job.payload.message, /model: "grok-4\.5/);
     }
     const hb = jobs.find((j) => j.id === "lisa-heartbeat-45")!;
     assert.equal(hb.schedule.expr, "45 0,2,4,6,10,12,14,16,18,20,22 * * *");

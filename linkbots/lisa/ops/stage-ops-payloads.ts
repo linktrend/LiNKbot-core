@@ -9,7 +9,7 @@
  */
 
 import { createHash } from "node:crypto";
-import { SHIP_PULL_REQUIRED_TOOLS } from "./ship-pull-contract.ts";
+import { SHIP_PULL_ACP_SPAWN_CONTRACT, SHIP_PULL_REQUIRED_TOOLS } from "./ship-pull-contract.ts";
 
 export const STAGE_OPS_SEED_VERSION = 2 as const;
 export const STAGE_OPS_DELIVERY_MODE = "none" as const;
@@ -154,7 +154,9 @@ export function buildShipPullStageMessage(
     `STAGE BOUNDED PROCEDURE — ${wave}`,
     hardStopBlock(),
     "Read and execute agents/ship-pull-clock.md for this wave.",
-    `Wave: ${wave}. Spawn Cursor ACP ${kind} only when stage ACP is healthy and Principal spend/ACP gate allows; otherwise report WAVE: Issues with STAGE_SKIPPED_acp (do not invent Clear).`,
+    `Wave: ${wave}. Spawn Codex ACP ${kind} only when stage ACP is healthy and the Principal ACP gate allows; otherwise report WAVE: Issues with STAGE_SKIPPED_acp (do not invent Clear).`,
+    `Exact spawn contract: runtime: "${SHIP_PULL_ACP_SPAWN_CONTRACT.runtime}", agentId: "${SHIP_PULL_ACP_SPAWN_CONTRACT.agentId}", model: "${SHIP_PULL_ACP_SPAWN_CONTRACT.model}", thinking: "${SHIP_PULL_ACP_SPAWN_CONTRACT.thinking}".`,
+    "If Codex ACP or Terra Medium is unavailable, fail closed with STAGE_SKIPPED_acp and WAVE: Issues. No Cursor/Grok fallback. Do not spawn Cursor. Do not self-write.",
     "Wait contract: park with sessions_wait after spawn; never call sessions_yield.",
     "delivery=none: skip Telegram announce and skip email-send unless Principal authorizes stage delivery; note STAGE_SKIPPED_email / STAGE_SKIPPED_telegram; still perform status CAS only against stage workspace pipeline-status (never live Lisa memory).",
     "If lisa-safe email-send is the stage adapter or unavailable: record STAGE_SKIPPED_email — do not invent sent mail.",

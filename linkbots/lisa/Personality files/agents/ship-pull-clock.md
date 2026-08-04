@@ -1,13 +1,13 @@
 ---
 type: AgentProcedure
 title: Ship / Pull clock (Lisa Option A)
-description: Primary Ship/Pull clock — Lisa cron spawns Cursor ACP shipper/puller on Mini; checkpoint-only Ship; frozen-tip Pull
+description: Primary Ship/Pull clock — Lisa cron spawns Codex ACP Terra Medium shipper/puller on Mini; checkpoint-only Ship; frozen-tip Pull
 load: on_demand
 read_when:
   - Running lisa-ship-05 / lisa-pull-07 / lisa-ship-16 / lisa-pull-18 cron
   - Carlos asks how Ship/Pull is triggered
   - Installing or repairing Lisa Option A clock jobs
-tags: [pipeline, ship, pull, cron, acp, cursor, option-a]
+tags: [pipeline, ship, pull, cron, acp, codex, terra, option-a]
 ---
 
 # Ship / Pull Clock — Lisa Option A
@@ -20,7 +20,7 @@ tags: [pipeline, ship, pull, cron, acp, cursor, option-a]
 
 **Open IDE dependency:** [IDE Development issue #23](https://github.com/linktrend/IDE-Development/issues/23) / draft PR #24 harden the remaining lifecycle + repair-control plane (completion gate, Lisa ACP Repair Dispatcher wiring, leftover contradictions). Until #23 merges, Lisa consumes the **already-merged** AUTONOMOUS contract above and treats #23 as the open repair/lifecycle follow-on — it must **not** invent local doctrine that replaces IDE Development.
 
-**Primary clock:** This procedure. Cursor Automations are **optional backup only**.
+**Primary clock:** This procedure. Codex ACP Terra Medium is the only Ship/Pull implementation runtime; other automation may observe but must not dispatch a replacement worker.
 
 **Wave names** use **local hour** labels (Asia/Taipei): Ship 05, Pull 07, Ship 16, Pull 18 — not A/B letters.
 
@@ -28,7 +28,7 @@ tags: [pipeline, ship, pull, cron, acp, cursor, option-a]
 
 ## Hard prerequisites (ops)
 
-- **Mac Mini must be awake** so Cursor ACP can spawn.
+- **Mac Mini must be awake** so Codex ACP can spawn.
 - Lisa gateway running with profile `lisa`; ACP/`acpx` healthy.
 - Do **not** put secrets in this repo or cron message text.
 - Isolated cron jobs **must not** call `cron.add` / `cron.update` / `cron.remove` for other jobs.
@@ -78,11 +78,12 @@ Proven failure mode: `sessions_spawn` then `sessions_yield` finalizes/kills the 
 
 1. **Never call `sessions_yield`** on Ship/Pull isolated cron turns.
 2. **Never** poll with `sessions_list`, `sessions_history`, `exec sleep`, or busy-wait loops.
-3. Spawn Cursor ACP (`runtime: "acp"`, `agentId: "cursor"`, `model: "grok-4.5[effort=high,fast=true]"`).
+3. Spawn Codex ACP Terra Medium with this exact contract: `runtime: "acp"`, `agentId: "codex"`, `model: "openai/gpt-5.6-terra"`, `thinking: "medium"`.
 4. Record `childSessionKey` / `runId` from the spawn tool result.
 5. Call `sessions_wait` with the owned ACP `runId` (bounded `timeoutSeconds`) and park until a terminal registry outcome.
 6. Status CAS, email, Telegram one-liner, and the final assistant payload may run **only after** a validated child outcome (`WAVE: Clear` or `WAVE: Issues`).
 7. `canFinishShipPullSuccessfully` semantics: child validated + status CAS done + email attempted + exact one-line final payload.
+8. If Codex ACP or Terra Medium is unavailable, fail closed: record `STAGE_SKIPPED_acp`, produce `WAVE: Issues`, and stop. **No Cursor/Grok fallback. Do not spawn Cursor. Do not self-write.**
 
 ### Public API notes
 
@@ -101,10 +102,10 @@ Templates: `templates/pipeline-one-liner.md` (render via `node --experimental-st
 Emit **no** mid-run assistant text until the final reply. Tool calls only. Final Telegram body = **exactly one line** (`WAVE: Clear` or `WAVE: Issues`) — plain text, never Markdown fences.
 
 1. `read` this file.
-2. Spawn **one** Cursor ACP session with the Shipper or Puller prompt below.
+2. Spawn **one** Codex ACP Terra Medium session with the Shipper or Puller prompt below, using exactly `runtime: "acp"`, `agentId: "codex"`, `model: "openai/gpt-5.6-terra"`, and `thinking: "medium"`.
 3. **Do not** call `sessions_yield`. Call `sessions_wait` on the owned ACP `runId` (park; no poll).
 4. On spawn or wait failure/timeout: status CAS `WAVE: Issues`, email attempt, final one-liner Issues; stop.
-5. On validated success: accept only Cursor's exact `WAVE: Clear` or `WAVE: Issues`, then Lisa writes status via monotonic CAS, then email, then final Telegram one-liner.
+5. On validated success: accept only Codex's exact `WAVE: Clear` or `WAVE: Issues`, then Lisa writes status via monotonic CAS, then email, then final Telegram one-liner.
 6. **Email:** fresh UUID body file under `scratch/pipeline-status-<wave-slug>-<run-uuid>.txt`, then exactly one unpiped:
    ```bash
    tools/bin/lisa-safe email-send --to calusa@linktrend.media --subject "<WAVE> status" --body-file scratch/pipeline-status-<wave-slug>-<run-uuid>.txt
@@ -120,7 +121,7 @@ Never `ls` / explore `tools/bin/lisa-safe`. Never multi-step opaque shell. Invok
 Replace `WAVE` with `Ship 05` or `Ship 16`.
 
 ```text
-WAVE (Asia/Taipei). You are the Implementer shipper under Lisa Option A (checkpoint-only Ship).
+WAVE (Asia/Taipei). You are the Codex Terra Medium Implementer shipper under Lisa Option A (checkpoint-only Ship).
 
 Process ONE REPO AT A TIME in this exact order (skip missing paths):
 1) /Users/linktrend/Projects/IDE Development
@@ -160,7 +161,7 @@ Reply with exactly one line only: `WAVE: Clear` or `WAVE: Issues`.
 Replace `WAVE` with `Pull 07` or `Pull 18`.
 
 ```text
-WAVE (Asia/Taipei). You are the Implementer puller under Lisa Option A.
+WAVE (Asia/Taipei). You are the Codex Terra Medium Implementer puller under Lisa Option A.
 
 Pull is NOT hard-gated on all PRs being merged. Unfinished work rolls forward.
 
@@ -205,5 +206,5 @@ Live cron must **not** be modified in repository-only work. Migration plan: `lin
 - Repair dispatcher: `agents/repair-dispatcher.md`
 - Offline recovery: `agents/offline-recovery.md`
 - Templates: `templates/`
-- Cursor ACP: `tools/cursor-acp.md`
+- Codex ACP Ship/Pull contract: the exact spawn contract in this procedure and `linkbots/lisa/ops/ship-pull-contract.ts`
 - Core wait prerequisite: `linkbots/lisa/docs/LISA-OPS-CORE-PREREQUISITE.md`

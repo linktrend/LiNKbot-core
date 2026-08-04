@@ -59,7 +59,9 @@ import {
   resolveWaveOutcome,
   SHIP_PULL_REQUIRED_TOOLS,
   shipPullAllowlistIncludesSessionsWait,
+  shipPullForbidsCursorFallback,
   shipPullForbidsSessionsYield,
+  shipPullRequiresCodexTerraSpawnContract,
   shipPullRequiresSessionsWait,
   shipPullRespectsIdeAuthority,
   validatePullPromptContract,
@@ -277,6 +279,18 @@ describe("Ship/Pull post-processing gate", () => {
     assert.match(text, /sessions_wait/);
     assert.match(text, /registry persist/i);
     assert.doesNotMatch(text, /call sessions_yield after/i);
+  });
+
+  it("pins Ship/Pull dispatch to Codex Terra Medium with no Cursor fallback", () => {
+    const text = readPersonality("agents/ship-pull-clock.md");
+    assert.equal(shipPullRequiresCodexTerraSpawnContract(text), true);
+    assert.equal(shipPullForbidsCursorFallback(text), true);
+    assert.match(text, /runtime: "acp"/);
+    assert.match(text, /agentId: "codex"/);
+    assert.match(text, /model: "openai\/gpt-5\.6-terra"/);
+    assert.match(text, /thinking: "medium"/);
+    assert.doesNotMatch(text, /agentId: "cursor"/);
+    assert.doesNotMatch(text, /model: "grok-4\.5/);
   });
 
   it("Ship/Pull allowlist includes sessions_wait and excludes yield", () => {
