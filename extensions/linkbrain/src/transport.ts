@@ -38,7 +38,27 @@ import {
   type LinkbrainTransport,
   type LinkbrainTransportResult,
 } from "./runtime.js";
-import { isAllowedBrainWriteTool } from "./tools.js";
+import { isAllowedBrainWriteTool, LINKBRAIN_CAPTURE_TOOL } from "./tools.js";
+
+/**
+ * Map write params to MCP tool arguments.
+ * brain_capture_batch: live schema is additionalProperties:false with batch
+ * (+ optional actor overrides) only — idempotency is batch.idempotencyKey.
+ * Other write tools still require a top-level idempotencyKey.
+ */
+function mcpCallToolArguments(writeParams: {
+  toolName: string;
+  idempotencyKey: string;
+  arguments: Record<string, unknown>;
+}): Record<string, unknown> {
+  if (writeParams.toolName === LINKBRAIN_CAPTURE_TOOL) {
+    return writeParams.arguments;
+  }
+  return {
+    ...writeParams.arguments,
+    idempotencyKey: writeParams.idempotencyKey,
+  };
+}
 
 type ManagedMcpServerEntry = {
   enabled?: boolean;
@@ -842,10 +862,10 @@ function createMcpTransport(params: {
             headers,
           };
           session = await params.createMcpSession(serverWithHeaders);
-          const outcome = await session.callTool(writeParams.toolName, {
-            ...writeParams.arguments,
-            idempotencyKey: writeParams.idempotencyKey,
-          });
+          const outcome = await session.callTool(
+            writeParams.toolName,
+            mcpCallToolArguments(writeParams),
+          );
           if (outcome.isError) {
             return {
               kind: "result" as const,
