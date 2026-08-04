@@ -38,7 +38,27 @@ import {
   type LinkbrainTransport,
   type LinkbrainTransportResult,
 } from "./runtime.js";
-import { isAllowedBrainWriteTool } from "./tools.js";
+import { isAllowedBrainWriteTool, LINKBRAIN_CAPTURE_TOOL } from "./tools.js";
+
+/**
+ * Map write params to MCP tool arguments.
+ * brain_capture_batch: live schema is additionalProperties:false with batch
+ * (+ optional actor overrides) only — idempotency is batch.idempotencyKey.
+ * Other write tools still require a top-level idempotencyKey.
+ */
+function mcpCallToolArguments(writeParams: {
+  toolName: string;
+  idempotencyKey: string;
+  arguments: Record<string, unknown>;
+}): Record<string, unknown> {
+  if (writeParams.toolName === LINKBRAIN_CAPTURE_TOOL) {
+    return writeParams.arguments;
+  }
+  return {
+    ...writeParams.arguments,
+    idempotencyKey: writeParams.idempotencyKey,
+  };
+}
 
 type ManagedMcpServerEntry = {
   enabled?: boolean;
@@ -295,6 +315,21 @@ function machineTokenBindingsConflict(
   if (serverToken.bindingId !== pluginToken.bindingId) {
     return true;
   }
+  if (serverToken.issuerUrl !== pluginToken.issuerUrl) {
+    return true;
+  }
+  if (serverToken.clientId !== pluginToken.clientId) {
+    return true;
+  }
+  if ((serverToken.audience ?? "") !== (pluginToken.audience ?? "")) {
+    return true;
+  }
+  if ((serverToken.scope ?? "") !== (pluginToken.scope ?? "")) {
+    return true;
+  }
+  if ((serverToken.allowPrivateNetwork === true) !== (pluginToken.allowPrivateNetwork === true)) {
+    return true;
+  }
   const serverFp = fingerprintMachineTokenKeyRef({
     source: serverToken.clientAssertionKeyRef.source,
     provider: serverToken.clientAssertionKeyRef.provider,
@@ -341,19 +376,13 @@ function selectMcpMachineToken(
         return {
           status: "invalid",
           safeMessage:
-            error instanceof Error
-              ? error.message
-              : "mcp server machineToken binding is invalid",
+            error instanceof Error ? error.message : "mcp server machineToken binding is invalid",
         };
       }
-      if (
-        pluginMachineToken &&
-        machineTokenBindingsConflict(serverToken, pluginMachineToken)
-      ) {
+      if (pluginMachineToken && machineTokenBindingsConflict(serverToken, pluginMachineToken)) {
         return {
           status: "invalid",
-          safeMessage:
-            "mcp server machineToken conflicts with plugin-level machineToken binding",
+          safeMessage: "mcp server machineToken conflicts with plugin-level machineToken binding",
         };
       }
       return { status: "selected", machineToken: serverToken };
@@ -833,10 +862,10 @@ function createMcpTransport(params: {
             headers,
           };
           session = await params.createMcpSession(serverWithHeaders);
-          const outcome = await session.callTool(writeParams.toolName, {
-            ...writeParams.arguments,
-            idempotencyKey: writeParams.idempotencyKey,
-          });
+          const outcome = await session.callTool(
+            writeParams.toolName,
+            mcpCallToolArguments(writeParams),
+          );
           if (outcome.isError) {
             return {
               kind: "result" as const,
@@ -945,10 +974,7 @@ function createLocalMachineTokenFacadeAdapter(params: {
           ? { forceRefresh: acquireParams.forceRefresh }
           : {}),
       });
-      fingerprintsByBindingId.set(
-        bindingId,
-        resolved.bindingFingerprint ?? `fp-${bindingId}`,
-      );
+      fingerprintsByBindingId.set(bindingId, resolved.bindingFingerprint ?? `fp-${bindingId}`);
       return resolved;
     },
     invalidate(bindingId) {

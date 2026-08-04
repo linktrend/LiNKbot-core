@@ -250,6 +250,8 @@ export const AGENT_FIELD_HELP: Record<string, string> = {
     "Optional access-token audience override for this binding. When omitted, the issuer/resource defaults apply.",
   "mcp.servers.*.machineToken.scope":
     "Optional space-delimited scope string requested for this machine-token binding.",
+  "mcp.servers.*.machineToken.allowPrivateNetwork":
+    "Explicit least-privilege opt-in (default false) for HTTPS private/CGNAT/Tailscale issuers. Pins the configured issuer origin/hostname under zero-redirect SSRF limits; does not enable localTest and does not broadly disable SSRF. Metadata/link-local remain blocked.",
   "mcp.servers.*.machineToken.clientAssertionKeyRef":
     "SecretRef (env/file/exec) for the private_key_jwt signing key. Literal PEM/string secrets are rejected; resolve the key only through SecretRef at the trusted provider boundary.",
   "mcp.servers.*.codex.agents":

@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Stage-only Carlos Tasks adapter for lisa-stage workspace packages.
+# Never calls gws, Google Tasks, or credentials. Never invents Yes/No.
+set -euo pipefail
+printf '%s\n' "STAGE_SKIPPED_task: lisa-carlos-tasks stage adapter; external Google Tasks unavailable under delivery=none"
+exit 75

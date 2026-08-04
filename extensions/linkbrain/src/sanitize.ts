@@ -3,7 +3,37 @@
  * prompt bodies / chain-of-thought before any durable enqueue.
  */
 
-import { LINKBRAIN_PROHIBITED_FIELDS } from "./envelopes.js";
+/** Fields never retained in internal envelopes or remote writes. */
+export const LINKBRAIN_PROHIBITED_FIELDS = Object.freeze([
+  "reasoning",
+  "chainOfThought",
+  "chain_of_thought",
+  "secrets",
+  "secret",
+  "authorization",
+  "apiKey",
+  "api_key",
+  "accessToken",
+  "access_token",
+  "rawToolOutput",
+  "unboundedToolOutput",
+  "raw_tool_output",
+  "skillId",
+  "skillsReleaseHash",
+  "skillsRunId",
+  "skills_run_id",
+  "telemetry",
+  // Attachments / prompt bodies excluded even when nested under capture payloads.
+  "attachment",
+  "attachments",
+  "media",
+  "mediaUrl",
+  "mediaUrls",
+  "prompt",
+  "promptBody",
+  "systemPrompt",
+  "developerPrompt",
+] as const);
 
 /** Max characters retained per capture event text. */
 const LINKBRAIN_MAX_EVENT_TEXT_CHARS = 4_000;

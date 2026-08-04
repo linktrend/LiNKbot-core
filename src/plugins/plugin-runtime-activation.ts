@@ -6,21 +6,25 @@
  * never live generation handles. Final live commit prefers a single synchronous
  * swap after all fallible preparation.
  */
+import { createHash } from "node:crypto";
 import {
   commitMachineTokenOwnershipSnapshot,
   createMachineTokenFacadeGeneration,
-  destroyMachineTokenFacadeGeneration,
+  destroyCandidateMachineTokenFacadeGeneration,
+  compareMachineTokenCanonicalJson,
+  fingerprintMachineTokenGrantedRecords,
   getLiveMachineTokenFacadeGenerationHandle,
   getLiveMachineTokenPluginFacade,
+  liveMachineTokenOwnershipMatchesGrantedRecords,
   type HostMachineTokenBindingRecord,
   type MachineTokenFacadeGenerationHandle,
 } from "../agents/machine-token-host.js";
+
+/** Domain separator for multi-plugin ownership blueprint fingerprints. */
+const MACHINE_TOKEN_OWNERSHIP_PLUGINS_DOMAIN = "machine-token-ownership-plugins-v1";
 import type { OpenClawConfig } from "../config/types.openclaw.js";
 import { resolveConfiguredSecretInputString } from "../gateway/resolve-configured-secret-input-string.js";
-import {
-  getGlobalPluginRegistry,
-  initializeGlobalHookRunner,
-} from "./hook-runner-global.js";
+import { getGlobalPluginRegistry, initializeGlobalHookRunner } from "./hook-runner-global.js";
 import type { PluginRuntimeSubagentMode } from "./loader-types.js";
 import type { PluginProcessGlobalState } from "./plugin-registration-transaction.js";
 import {
@@ -37,7 +41,7 @@ import {
 } from "./runtime.js";
 
 /** One plugin's frozen machine-token ownership descriptors for cache/activate. */
-export type MachineTokenOwnershipPluginBlueprint = {
+type MachineTokenOwnershipPluginBlueprint = {
   readonly pluginId: string;
   readonly grantedRecords: ReadonlyArray<HostMachineTokenBindingRecord>;
 };
@@ -54,7 +58,7 @@ export type MachineTokenOwnershipBlueprint = {
   readonly ownershipFingerprint: string;
 };
 
-export type CombinedPluginRuntimeSnapshotIdentity = {
+type CombinedPluginRuntimeSnapshotIdentity = {
   readonly cacheKey: string;
   readonly ownershipFingerprint: string;
 };
@@ -65,9 +69,7 @@ let activationFailureInjectorForTest: ((phase: ActivationFailurePhase) => void) 
 
 let activeCombinedSnapshotIdentity: CombinedPluginRuntimeSnapshotIdentity | null = null;
 
-function freezeBindingRecord(
-  record: HostMachineTokenBindingRecord,
-): HostMachineTokenBindingRecord {
+function freezeBindingRecord(record: HostMachineTokenBindingRecord): HostMachineTokenBindingRecord {
   return Object.freeze({
     ...record,
     keyRef: Object.freeze({ ...record.keyRef }),
@@ -79,16 +81,19 @@ function freezeBindingRecord(
 function fingerprintOwnershipPlugins(
   plugins: ReadonlyArray<MachineTokenOwnershipPluginBlueprint>,
 ): string {
-  return plugins
-    .map((plugin) => {
-      const bindings = plugin.grantedRecords
-        .map((record) => record.bindingFingerprint)
-        .toSorted()
-        .join(",");
-      return `${plugin.pluginId}=${bindings}`;
-    })
-    .toSorted()
-    .join("|");
+  // Structured JSON tuples + domain hash — same delimiter-collision class as
+  // per-plugin granted-record fingerprints (pluginId may contain `=` / `|`).
+  const tuples = plugins
+    .map((plugin) => [
+      plugin.pluginId,
+      fingerprintMachineTokenGrantedRecords(plugin.grantedRecords),
+    ])
+    .toSorted(compareMachineTokenCanonicalJson);
+  return createHash("sha256")
+    .update(MACHINE_TOKEN_OWNERSHIP_PLUGINS_DOMAIN, "utf8")
+    .update("\0", "utf8")
+    .update(JSON.stringify(tuples), "utf8")
+    .digest("hex");
 }
 
 function normalizeReconcileScope(
@@ -257,7 +262,7 @@ export function canReuseActiveCombinedPluginRuntimeSnapshot(params: {
   });
 }
 
-export type ActivateCombinedPluginRuntimeSnapshotParams = {
+type ActivateCombinedPluginRuntimeSnapshotParams = {
   registry: PluginRegistry;
   cacheKey: string;
   runtimeSubagentMode: PluginRuntimeSubagentMode;
@@ -274,7 +279,7 @@ export type ActivateCombinedPluginRuntimeSnapshotParams = {
   env?: NodeJS.ProcessEnv;
 };
 
-export type ActivateCombinedPluginRuntimeSnapshotResult = {
+type ActivateCombinedPluginRuntimeSnapshotResult = {
   registry: PluginRegistry;
   /** False when the requested snapshot was already the exact active combined snapshot. */
   activated: boolean;
@@ -304,19 +309,41 @@ export function activateCombinedPluginRuntimeSnapshot(
 
   const env = params.env ?? process.env;
   const preparedHandles: MachineTokenFacadeGenerationHandle[] = [];
+  const createdGenerationIds = new Set<string>();
   const destroyPrepared = () => {
     for (const handle of preparedHandles.toReversed()) {
-      destroyMachineTokenFacadeGeneration(handle);
+      // Only destroy candidates created by this activation — never a reused live.
+      if (createdGenerationIds.has(handle.generationId)) {
+        destroyCandidateMachineTokenFacadeGeneration(handle);
+      }
     }
     preparedHandles.length = 0;
+    createdGenerationIds.clear();
   };
 
   const priorProcessGlobalState = snapshotPluginProcessGlobalState();
   try {
     if (params.stagedPublishHandles) {
       preparedHandles.push(...params.stagedPublishHandles);
+      // Staged handles from registry-api may mix new candidates and reused live
+      // handles. Track only true candidates for rollback destroy.
+      for (const handle of params.stagedPublishHandles) {
+        const live = getLiveMachineTokenFacadeGenerationHandle(handle.pluginId);
+        if (!live || live.generationId !== handle.generationId) {
+          createdGenerationIds.add(handle.generationId);
+        }
+      }
     } else {
       for (const plugin of ownership.plugins) {
+        if (
+          liveMachineTokenOwnershipMatchesGrantedRecords(plugin.pluginId, plugin.grantedRecords)
+        ) {
+          const liveHandle = getLiveMachineTokenFacadeGenerationHandle(plugin.pluginId);
+          if (liveHandle) {
+            preparedHandles.push(liveHandle);
+            continue;
+          }
+        }
         const created = createMachineTokenFacadeGeneration({
           pluginId: plugin.pluginId,
           grantedRecords: plugin.grantedRecords,
@@ -327,6 +354,7 @@ export function activateCombinedPluginRuntimeSnapshot(
           }),
         });
         preparedHandles.push(created.handle);
+        createdGenerationIds.add(created.handle.generationId);
       }
     }
 
@@ -400,4 +428,13 @@ export function emptyMachineTokenOwnershipBlueprint(): MachineTokenOwnershipBlue
     plugins: [],
     reconcileScope: "full",
   });
+}
+
+/**
+ * Gateway close: retire every live machine-token generation and clear the
+ * combined snapshot identity. Owner-only; plugins never call this.
+ */
+export function retireActivePluginRuntimeMachineTokenOwnership(): void {
+  commitMachineTokenOwnershipSnapshot({ publish: [], reconcileScope: "full" });
+  activeCombinedSnapshotIdentity = null;
 }

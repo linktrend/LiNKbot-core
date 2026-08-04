@@ -22,6 +22,11 @@ export type LinkskillsMachineTokenConfig = {
   clientId: string;
   audience?: string;
   scope?: string;
+  /**
+   * Explicit HTTPS trusted-private issuer opt-in (Tailscale/CGNAT/private overlay).
+   * Default unset/false. Never use environment=test / localTest for stage PACI.
+   */
+  allowPrivateNetwork?: boolean;
   /** SecretRef only — never literal PEM/JWK/env/CLI strings in config. */
   clientAssertionKeyRef: LinkskillsSecretRef;
 };
@@ -35,7 +40,7 @@ export type LinkskillsConfig = {
   transportMode: LinkskillsTransportMode;
   /** Managed MCP server key under api.config.mcp.servers. */
   mcpServerName: string;
-  skillsEndpoint?: string;
+  skillsEndpoint?: string; // Gateway HTTPS base for transportMode=http (POST /v1/{operation})
   skillsCredential?: LinkskillsSecretInput;
   /**
    * Optional machine-token binding. When set, HTTP transport uses
@@ -235,6 +240,14 @@ export function parseLinkskillsMachineToken(
       throw new Error("linkskills: machineToken.scope must be a non-empty string when set");
     }
     binding.scope = value.scope;
+  }
+  if ("allowPrivateNetwork" in value) {
+    if (typeof value.allowPrivateNetwork !== "boolean") {
+      throw new Error("linkskills: machineToken.allowPrivateNetwork must be a boolean when set");
+    }
+    if (value.allowPrivateNetwork) {
+      binding.allowPrivateNetwork = true;
+    }
   }
   return binding;
 }

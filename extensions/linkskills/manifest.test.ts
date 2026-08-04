@@ -19,7 +19,7 @@ describe("linkskills manifest/config", () => {
     };
     expect(manifest.id).toBe("linkskills");
     expect(manifest.enabledByDefault).toBe(false);
-    expect(manifest.activation.onStartup).toBe(false);
+    expect(manifest.activation.onStartup).toBe(true);
     expect(manifest.configSchema.properties).toMatchObject({
       mcpDiscoveryRead: expect.any(Object),
       governedExecution: expect.any(Object),
@@ -31,9 +31,9 @@ describe("linkskills manifest/config", () => {
       redactionPolicyVersion: expect.any(Object),
       outboxMaxEntries: expect.any(Object),
     });
-    expect(manifest.configContracts.secretInputs.paths.map((entry) => entry.path)).toContain(
+    expect(manifest.configContracts.secretInputs.paths.map((entry) => entry.path)).toEqual([
       "skillsCredential",
-    );
+    ]);
     expect(JSON.stringify(manifest)).not.toContain("allowConversationAccess");
   });
 
@@ -144,9 +144,13 @@ describe("linkskills manifest/config", () => {
           machineToken: { properties: { clientAssertionKeyRef: { $ref: string } } };
         };
       };
+      configContracts: { secretInputs: { paths: Array<{ path: string }> } };
     };
     expect(manifest.configSchema.$defs.machineToken.properties.clientAssertionKeyRef.$ref).toBe(
       "#/$defs/secretRef",
     );
+    expect(manifest.configContracts.secretInputs.paths.map((entry) => entry.path)).toEqual([
+      "skillsCredential",
+    ]);
   });
 });

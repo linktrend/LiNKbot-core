@@ -1,8 +1,12 @@
 /**
  * Plan §10.1 lifecycle → Brain capture/coordination mapping.
  *
- * Conversation-bearing hooks (notably `agent_end`) require operators to set:
+ * Conversation/data-bearing hooks fail closed unless operators set:
  *   plugins.entries.linkbrain.hooks.allowConversationAccess=true
+ *
+ * Service/worker hooks (`gateway_start`, `gateway_stop`) may register without
+ * that gate so harmless outbox startup remains available when the plugin is
+ * explicitly enabled.
  *
  * Handlers never throw uncaught; Brain failures degrade honestly and preserve
  * native OpenClaw compaction/reset/delivery/memory behavior.
@@ -17,7 +21,14 @@ import type { LinkbrainRuntime } from "./runtime.js";
 import { sanitizeCaptureText, stripUnsafeFields } from "./sanitize.js";
 import { LINKBRAIN_CHECKPOINT_TOOL, LINKBRAIN_TASK_UPDATE_TOOL } from "./tools.js";
 
-export const LINKBRAIN_REGISTERED_HOOKS = Object.freeze([
+/** Harmless service/worker hooks that do not require conversation access. */
+export const LINKBRAIN_SERVICE_HOOKS = Object.freeze(["gateway_start", "gateway_stop"] as const);
+
+/**
+ * Conversation/data-bearing §10.1 hooks. These can access or derive conversation
+ * content and must not register unless allowConversationAccess===true.
+ */
+export const LINKBRAIN_CONVERSATION_HOOKS = Object.freeze([
   "session_start",
   "message_received",
   "agent_end",
@@ -25,16 +36,25 @@ export const LINKBRAIN_REGISTERED_HOOKS = Object.freeze([
   "after_compaction",
   "before_reset",
   "session_end",
-  "gateway_start",
-  "gateway_stop",
   "subagent_spawned",
   "subagent_ended",
 ] as const);
 
+export const LINKBRAIN_REGISTERED_HOOKS = Object.freeze([
+  ...LINKBRAIN_CONVERSATION_HOOKS,
+  ...LINKBRAIN_SERVICE_HOOKS,
+] as const);
+
 type LinkbrainRegisteredHook = (typeof LINKBRAIN_REGISTERED_HOOKS)[number];
 
-/** Conversation-bearing hooks from the §10.1 set that need allowConversationAccess. */
-export const LINKBRAIN_CONVERSATION_HOOKS = Object.freeze(["agent_end"] as const);
+/** True only when the operator explicitly opts into Brain conversation hooks. */
+export function isLinkbrainConversationAccessAllowed(config: {
+  plugins?: {
+    entries?: Record<string, { hooks?: { allowConversationAccess?: boolean } } | undefined>;
+  };
+}): boolean {
+  return config.plugins?.entries?.linkbrain?.hooks?.allowConversationAccess === true;
+}
 
 type LifecycleLogger = {
   info: (message: string) => void;
@@ -93,7 +113,12 @@ export type LinkbrainLifecycle = {
     reason?: string;
   }): Promise<void>;
   handleGatewayStart(): Promise<void>;
-  handleGatewayStop(): Promise<void>;
+  /**
+   * Promote local capture buffer to outbox, then optionally remote-drain.
+   * Pass `drain: false` when the closed-over machine-token generation is already
+   * retired (reload commit) so local flush still runs without minting.
+   */
+  handleGatewayStop(options?: { drain?: boolean }): Promise<void>;
   handleSubagentSpawned(event: {
     runId: string;
     childSessionKey: string;
@@ -368,14 +393,15 @@ export function createLinkbrainLifecycle(
       });
     },
 
-    async handleGatewayStop() {
+    async handleGatewayStop(options) {
+      const shouldDrain = options?.drain !== false;
       await safe("gateway_stop", logger, async () => {
         // Overall wall-clock for flush+drain; abandoned stream work retains locks.
         try {
           await runBounded(
             async (signal) => {
               await params.capture.flushAll("gateway_stop", { signal });
-              if (signal.aborted) {
+              if (signal.aborted || !shouldDrain) {
                 return;
               }
               await drainBounded("gateway_stop_drain");

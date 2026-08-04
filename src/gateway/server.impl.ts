@@ -1494,6 +1494,11 @@ export async function startGatewayServer(
       bonjourStop: runtimeState.bonjourStop,
       tailscaleCleanup: runtimeState.tailscaleCleanup,
       releasePluginRouteRegistry,
+      retirePluginMachineTokenOwnership: async () => {
+        const { retireActivePluginRuntimeMachineTokenOwnership } =
+          await import("../plugins/plugin-runtime-activation.js");
+        retireActivePluginRuntimeMachineTokenOwnership();
+      },
       channelIds,
       stopChannel,
       pluginServices: runtimeState.pluginServices,

@@ -23,12 +23,22 @@ Skills fake, and a **default-disabled** plugin with durable telemetry outbox.
 
 ## Transport modes
 
-| Mode       | Behavior                                                                                                                                                                      |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `disabled` | Default. Drain writes return `transport_disabled` (retryable).                                                                                                                |
-| `fake`     | Test-only (`environment=test` + injection, or `fakeForTests`). Rejected in stage/production.                                                                                  |
-| `http`     | POST tool calls to `skillsEndpoint` with SecretRef bearer.                                                                                                                    |
-| `mcp`      | MCP client against `mcp.servers.<mcpServerName>` (default `linkskills`). Prefer SecretRef Authorization headers; oauth `authProfileId` alone returns `auth_profile_required`. |
+| Mode       | Behavior                                                                                                                                                                                                                                                                                        |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `disabled` | Default. Drain writes return `transport_disabled` (retryable).                                                                                                                                                                                                                                  |
+| `fake`     | Test-only (`environment=test` + injection, or `fakeForTests`). Rejected in stage/production.                                                                                                                                                                                                    |
+| `http`     | POST allowlisted `skills_*` ops to Gateway `POST {skillsEndpoint}/v1/{operation}` with envelope `{params,idempotency_key,request_id}` + SecretRef/machine-token bearer. `skillsEndpoint` is the Gateway HTTPS base (origin, optional safe mount prefix, or `/v1/...` paste stripped to origin). |
+| `mcp`      | MCP client against `mcp.servers.<mcpServerName>` (default `linkskills`). Prefer SecretRef Authorization headers; oauth `authProfileId` alone returns `auth_profile_required`.                                                                                                                   |
+
+### HTTP Gateway contract
+
+Frozen against LiNKskills Gateway (`POST /v1/{operation}`):
+
+- `skillsEndpoint` example (stage): `https://linktrend-mini.tailf7e13a.ts.net:9445`
+- Request path: `/v1/{allowlisted drain toolName}` only — no path traversal, no host/origin change, non-drain ops rejected
+- JSON body: `{ "params": <write arguments>, "idempotency_key": <write id>, "request_id": <write id> }`
+- Also sends `Idempotency-Key` and `X-Request-Id` headers (Gateway accepts header or body)
+- Auth, SSRF hostname pin, HTTPS fail-closed (non-test), and one bounded machine-token reissue on 401/403 are unchanged
 
 ## Frozen Skills drain ops
 

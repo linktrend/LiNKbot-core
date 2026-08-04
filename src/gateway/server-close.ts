@@ -673,6 +673,8 @@ export function createGatewayCloseHandler(
     bonjourStop: (() => Promise<void>) | null;
     tailscaleCleanup: (() => Promise<void>) | null;
     releasePluginRouteRegistry?: (() => void) | null;
+    /** Owner-only machine-token generation retire after plugin services stop. */
+    retirePluginMachineTokenOwnership?: (() => Promise<void> | void) | null;
     channelIds?: readonly ChannelId[];
     stopChannel: (name: ChannelId, accountId?: string) => Promise<void>;
     pluginServices: PluginServicesHandle | null;
@@ -854,6 +856,13 @@ export function createGatewayCloseHandler(
       if (params.pluginServices) {
         await measureCloseStep("plugin-services", () =>
           shutdownStep("plugin-services", () => params.pluginServices!.stop(), warnings),
+        );
+      }
+      if (params.retirePluginMachineTokenOwnership) {
+        await shutdownStep(
+          "plugin-machine-token-ownership",
+          () => params.retirePluginMachineTokenOwnership!(),
+          warnings,
         );
       }
       await measureCloseStep("channels", async () => {

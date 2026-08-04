@@ -1,5 +1,5 @@
 {
-  "_comment": "TEMPLATE ONLY — machine-token / client_credentials path for Skills MCP. No secret values. enabled=false. Never reuse Brain bindingId or SecretRef ids. Requires Platform PACI issuer + Principal live unlock.",
+  "_comment": "TEMPLATE ONLY — machine-token / client_credentials path for Skills MCP. No secret values. enabled=false. Never reuse Brain bindingId or SecretRef ids. allowPrivateNetwork=true is the explicit least-privilege opt-in for HTTPS private/Tailscale issuers (default false). Requires Platform PACI issuer + Principal live unlock.",
   "mcp": {
     "servers": {
       "linkskills": {
@@ -14,6 +14,7 @@
           "issuerUrl": "https://auth.stage.linkplatform.linktrend.dev",
           "clientId": "openclaw-lisa-skills-stage",
           "scope": "lskills",
+          "allowPrivateNetwork": true,
           "clientAssertionKeyRef": {
             "source": "env",
             "provider": "default",

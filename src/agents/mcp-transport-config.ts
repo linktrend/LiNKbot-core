@@ -52,6 +52,7 @@ type ResolvedHttpMcpTransportConfig = ResolvedBaseMcpTransportConfig & {
     clientId: string;
     audience?: string;
     scope?: string;
+    allowPrivateNetwork?: boolean;
     clientAssertionKeyRef: unknown;
   };
   sslVerify?: boolean;
@@ -165,12 +166,14 @@ function resolveMachineTokenConfig(
     typeof record.scope === "string" && record.scope.trim().length > 0
       ? record.scope.trim()
       : undefined;
+  const allowPrivateNetwork = record.allowPrivateNetwork === true ? true : undefined;
   return {
     bindingId,
     issuerUrl,
     clientId,
     ...(audience ? { audience } : {}),
     ...(scope ? { scope } : {}),
+    ...(allowPrivateNetwork ? { allowPrivateNetwork } : {}),
     clientAssertionKeyRef: record.clientAssertionKeyRef,
   };
 }

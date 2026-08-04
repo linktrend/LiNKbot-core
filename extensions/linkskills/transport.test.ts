@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { parseLinkskillsConfig } from "./src/config.js";
 import { findProhibitedSkillsField } from "./src/envelopes.js";
 import { mapSkillsEventTypeToToolName, resolveSkillsDrainToolName } from "./src/tools.js";
-import { resolveLinkskillsTransport } from "./src/transport.js";
+import { buildLinkskillsHttpOperationUrl, resolveLinkskillsTransport } from "./src/transport.js";
 
 function stubApi(config: Record<string, unknown> = {}) {
   return {
@@ -108,10 +108,13 @@ describe("linkskills transport modes", () => {
     expect(result.ok).toBe(true);
   });
 
-  it("http mode posts with SecretRef bearer from env", async () => {
-    const fetchImpl = vi.fn(async (_url: string | URL | Request, init?: RequestInit) => {
+  it("http mode POSTs Gateway /v1/{operation} envelope with SecretRef bearer", async () => {
+    const fetchImpl = vi.fn(async (url: string | URL | Request, init?: RequestInit) => {
+      expect(String(url)).toBe("https://skills.example.test/v1/skills_run_start");
       const headers = new Headers(init?.headers);
       expect(headers.get("authorization")).toBe("Bearer fake-skills-token");
+      expect(headers.get("idempotency-key")).toBe("idem:skills-1");
+      expect(headers.get("x-request-id")).toBe("idem:skills-1");
       const rawBody = init?.body;
       const bodyText =
         typeof rawBody === "string"
@@ -121,13 +124,20 @@ describe("linkskills transport modes", () => {
             : rawBody == null
               ? ""
               : JSON.stringify(rawBody);
-      const body = JSON.parse(bodyText) as { toolName: string };
-      expect(body.toolName).toBe("skills_run_start");
+      const body = JSON.parse(bodyText) as Record<string, unknown>;
+      expect(body).toEqual({
+        params: { run_id: "run:1" },
+        idempotency_key: "idem:skills-1",
+        request_id: "idem:skills-1",
+      });
+      expect(body).not.toHaveProperty("toolName");
+      expect(body).not.toHaveProperty("idempotencyKey");
+      expect(body).not.toHaveProperty("arguments");
       return new Response(JSON.stringify({ ok: true }), { status: 200 });
     });
     const config = parseLinkskillsConfig({
       transportMode: "http",
-      skillsEndpoint: "https://skills.example.test/telemetry",
+      skillsEndpoint: "https://skills.example.test",
       skillsCredential: {
         source: "env",
         provider: "default",
@@ -143,6 +153,57 @@ describe("linkskills transport modes", () => {
     const result = await transport.write(writeArgs);
     expect(result.ok).toBe(true);
     expect(fetchImpl).toHaveBeenCalledOnce();
+  });
+
+  it("buildLinkskillsHttpOperationUrl treats skillsEndpoint as Gateway base", () => {
+    expect(
+      buildLinkskillsHttpOperationUrl("https://skills.example.test", "skills_run_start").href,
+    ).toBe("https://skills.example.test/v1/skills_run_start");
+    expect(
+      buildLinkskillsHttpOperationUrl("https://skills.example.test/", "skills_feedback_submit")
+        .href,
+    ).toBe("https://skills.example.test/v1/skills_feedback_submit");
+    expect(
+      buildLinkskillsHttpOperationUrl(
+        "https://linktrend-mini.tailf7e13a.ts.net:9445",
+        "skills_run_complete",
+      ).href,
+    ).toBe("https://linktrend-mini.tailf7e13a.ts.net:9445/v1/skills_run_complete");
+    // Accidental full operation URL paste strips /v1/... and rebuilds for the drain op.
+    expect(
+      buildLinkskillsHttpOperationUrl(
+        "https://skills.example.test/v1/skills_list",
+        "skills_run_start",
+      ).href,
+    ).toBe("https://skills.example.test/v1/skills_run_start");
+    expect(
+      buildLinkskillsHttpOperationUrl("https://skills.example.test/gateway/", "skills_run_fail")
+        .href,
+    ).toBe("https://skills.example.test/gateway/v1/skills_run_fail");
+  });
+
+  it("buildLinkskillsHttpOperationUrl rejects traversal and origin/host change", () => {
+    expect(() =>
+      buildLinkskillsHttpOperationUrl(
+        "https://skills.example.test",
+        "skills_run_start/../../admin",
+      ),
+    ).toThrow(/allowlist|drain|invalid/i);
+    expect(() =>
+      buildLinkskillsHttpOperationUrl("https://skills.example.test", "../skills_run_start"),
+    ).toThrow(/allowlist|drain|invalid/i);
+    expect(() =>
+      buildLinkskillsHttpOperationUrl("https://skills.example.test", "skills_list"),
+    ).toThrow(/allowlist|drain/i);
+    expect(() =>
+      buildLinkskillsHttpOperationUrl(
+        "https://skills.example.test/foo/../../evil",
+        "skills_run_start",
+      ),
+    ).toThrow(/path|prefix|rejected/i);
+    expect(() =>
+      buildLinkskillsHttpOperationUrl("https://user:pass@skills.example.test", "skills_run_start"),
+    ).toThrow(/userinfo/i);
   });
 
   it("mcp mode calls exact skills_* ops through injected session", async () => {
@@ -236,7 +297,7 @@ describe("linkskills transport modes", () => {
     });
     const config = parseLinkskillsConfig({
       transportMode: "http",
-      skillsEndpoint: "https://skills.example.test/telemetry",
+      skillsEndpoint: "https://skills.example.test",
       machineToken: {
         bindingId: "linkskills-stage",
         issuerUrl: "https://issuer.example.test",
@@ -289,7 +350,7 @@ describe("linkskills transport modes", () => {
       });
       const config = parseLinkskillsConfig({
         transportMode: "http",
-        skillsEndpoint: "https://skills.example.test/telemetry",
+        skillsEndpoint: "https://skills.example.test",
         machineToken: {
           bindingId: "linkskills-stage",
           issuerUrl: "https://issuer.example.test",
@@ -647,6 +708,73 @@ describe("linkskills transport modes", () => {
     ).toThrow(/SecretRef object/);
   });
 
+  it("parses allowPrivateNetwork opt-in for trusted-private HTTPS issuers", () => {
+    const config = parseLinkskillsConfig({
+      environment: "stage",
+      machineToken: {
+        bindingId: "linkskills-stage",
+        issuerUrl: "https://linktrend-mini.tailf7e13a.ts.net:9443",
+        clientId: "skills-client",
+        allowPrivateNetwork: true,
+        clientAssertionKeyRef: assertionKeyRef,
+      },
+    });
+    expect(config.machineToken?.allowPrivateNetwork).toBe(true);
+  });
+
+  it("mcp conflicting allowPrivateNetwork flags fail-closes", async () => {
+    const resolveMachineTokenAccess = vi.fn(async ({ bindingId }) => ({
+      bindingId,
+      accessToken: "mt-must-not-apply",
+      expiresAt: Date.now() + 60_000,
+      tokenType: "Bearer" as const,
+    }));
+    const config = parseLinkskillsConfig({
+      transportMode: "mcp",
+      machineToken: {
+        bindingId: "linkskills-stage",
+        issuerUrl: "https://linktrend-mini.tailf7e13a.ts.net:9443",
+        clientId: "skills-client",
+        allowPrivateNetwork: true,
+        clientAssertionKeyRef: assertionKeyRef,
+      },
+    });
+    const transport = resolveLinkskillsTransport({
+      api: stubApi({
+        mcp: {
+          servers: {
+            linkskills: {
+              enabled: true,
+              url: "https://mcp.example.test/skills",
+              auth: "machine_token",
+              machineToken: {
+                bindingId: "linkskills-stage",
+                issuerUrl: "https://linktrend-mini.tailf7e13a.ts.net:9443",
+                clientId: "skills-client",
+                clientAssertionKeyRef: assertionKeyRef,
+              },
+            },
+          },
+        },
+      }),
+      config,
+      env: {
+        LINKTREND_SKILLS_ASSERTION_PEM: "PEM-SKILLS",
+      },
+      resolveMachineTokenAccess,
+      createMcpSession: async () => {
+        throw new Error("should not open MCP session for allowPrivateNetwork conflict");
+      },
+    });
+    const result = await transport.write(writeArgs);
+    expect(result).toMatchObject({
+      ok: false,
+      errorCode: "machine_token_error",
+      safeMessage: expect.stringMatching(/conflict/i),
+    });
+    expect(resolveMachineTokenAccess).not.toHaveBeenCalled();
+  });
+
   it("skills and brain machineToken fixtures use distinct bindingIds", () => {
     const skills = parseLinkskillsConfig({
       machineToken: {
@@ -662,7 +790,9 @@ describe("linkskills transport modes", () => {
   });
 
   it("uses api.machineTokenFacade without local resolveMachineTokenAccess", async () => {
-    const fetchImpl = vi.fn(async () => new Response(JSON.stringify({ ok: true }), { status: 200 }));
+    const fetchImpl = vi.fn(
+      async () => new Response(JSON.stringify({ ok: true }), { status: 200 }),
+    );
     const acquire = vi.fn(async ({ bindingId }) => ({
       bindingId,
       bindingFingerprint: `fp-${bindingId}`,
@@ -686,7 +816,7 @@ describe("linkskills transport modes", () => {
     };
     const config = parseLinkskillsConfig({
       transportMode: "http",
-      skillsEndpoint: "https://skills.example.test/telemetry",
+      skillsEndpoint: "https://skills.example.test",
       machineToken: {
         bindingId: "linkskills-stage",
         issuerUrl: "https://issuer.example.test",
@@ -711,7 +841,7 @@ describe("linkskills transport modes", () => {
   it("fail-closes when machineToken is configured without an injected facade", async () => {
     const config = parseLinkskillsConfig({
       transportMode: "http",
-      skillsEndpoint: "https://skills.example.test/telemetry",
+      skillsEndpoint: "https://skills.example.test",
       machineToken: {
         bindingId: "linkskills-stage",
         issuerUrl: "https://issuer.example.test",

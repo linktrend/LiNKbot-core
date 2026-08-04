@@ -36,6 +36,8 @@ export type DiscoverMachineTokenAuthorizationServerParams = {
   signal?: AbortSignal;
   /** Explicit local-test mode (HTTP loopback only). */
   localTest?: boolean;
+  /** Production HTTPS trusted-private issuer opt-in. */
+  allowPrivateNetwork?: boolean;
 };
 
 function discoveryError(message: string, cause?: unknown): Error {
@@ -92,10 +94,12 @@ function assertSameOriginEndpoint(params: {
   endpoint: string;
   label: string;
   localTest?: boolean;
+  allowPrivateNetwork?: boolean;
 }): void {
   assertMachineTokenNetworkUrl({
     url: params.endpoint,
     localTest: params.localTest,
+    allowPrivateNetwork: params.allowPrivateNetwork,
     label: params.label,
   });
   let endpointUrl: URL;
@@ -250,6 +254,7 @@ export function validateMachineTokenAuthorizationServerMetadata(params: {
   metadata: unknown;
   issuerUrl: string;
   localTest?: boolean;
+  allowPrivateNetwork?: boolean;
 }): MachineTokenAuthorizationServerMetadata {
   const issuer = assertMachineTokenIssuerUrl(params.issuerUrl, params.localTest);
   if (!params.metadata || typeof params.metadata !== "object" || Array.isArray(params.metadata)) {
@@ -289,18 +294,21 @@ export function validateMachineTokenAuthorizationServerMetadata(params: {
     endpoint: raw.token_endpoint,
     label: "token_endpoint",
     localTest: params.localTest,
+    allowPrivateNetwork: params.allowPrivateNetwork,
   });
   assertSameOriginEndpoint({
     issuer,
     endpoint: raw.jwks_uri,
     label: "jwks_uri",
     localTest: params.localTest,
+    allowPrivateNetwork: params.allowPrivateNetwork,
   });
   assertSameOriginEndpoint({
     issuer,
     endpoint: raw.introspection_endpoint,
     label: "introspection_endpoint",
     localTest: params.localTest,
+    allowPrivateNetwork: params.allowPrivateNetwork,
   });
 
   const grantTypes = assertExactStringArray({
@@ -395,6 +403,7 @@ export async function discoverMachineTokenAuthorizationServer(
       fetchFn,
       signal: params.signal,
       localTest: params.localTest,
+      allowPrivateNetwork: params.allowPrivateNetwork,
       label: "discovery",
     }));
   } catch (cause) {
@@ -448,6 +457,7 @@ export async function discoverMachineTokenAuthorizationServer(
       metadata: parsed,
       issuerUrl: params.issuerUrl,
       localTest: params.localTest,
+      allowPrivateNetwork: params.allowPrivateNetwork,
     });
   } finally {
     await release().catch(() => undefined);

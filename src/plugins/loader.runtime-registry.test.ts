@@ -3,6 +3,8 @@ import { afterEach, describe, expect, it } from "vitest";
 import {
   clearPluginRegistryLoadCache,
   loadOpenClawPlugins,
+  resolveCompatibleRuntimePluginRegistry,
+  resolvePluginRegistryLoadCacheKey,
   resolveRuntimePluginRegistry,
 } from "./loader.js";
 import { resetPluginLoaderTestStateForTest } from "./loader.test-fixtures.js";
@@ -12,10 +14,11 @@ import {
 } from "./memory-embedding-providers.js";
 import { buildMemoryPromptSection, registerMemoryCapability } from "./memory-state.js";
 import { createEmptyPluginRegistry } from "./registry.js";
-import { setActivePluginRegistry } from "./runtime.js";
+import { resetPluginRuntimeStateForTest, setActivePluginRegistry } from "./runtime.js";
 
 afterEach(() => {
   resetPluginLoaderTestStateForTest();
+  resetPluginRuntimeStateForTest();
 });
 
 function requireMemoryEmbeddingProvider(providerId: string) {
@@ -32,6 +35,30 @@ describe("resolveRuntimePluginRegistry", () => {
     setActivePluginRegistry(registry, "startup-registry");
 
     expect(resolveRuntimePluginRegistry()).toBe(registry);
+  });
+});
+
+describe("resolveCompatibleRuntimePluginRegistry channel startup mode", () => {
+  it("reuses gateway prefer-setup+prefer-built when agent ensure asks force-full", () => {
+    const gatewayRegistry = createEmptyPluginRegistry();
+    const gatewayOptions = {
+      config: { plugins: { enabled: true, allow: ["demo"] } },
+      preferSetupRuntimeForChannelPlugins: true,
+      preferBuiltPluginArtifacts: true,
+      runtimeOptions: { allowGatewaySubagentBinding: true as const },
+    };
+    setActivePluginRegistry(
+      gatewayRegistry,
+      resolvePluginRegistryLoadCacheKey(gatewayOptions),
+      "gateway-bindable",
+    );
+
+    const compatible = resolveCompatibleRuntimePluginRegistry({
+      config: gatewayOptions.config,
+      forceFullRuntimeForChannelPlugins: true,
+      runtimeOptions: { allowGatewaySubagentBinding: true },
+    });
+    expect(compatible).toBe(gatewayRegistry);
   });
 });
 

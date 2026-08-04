@@ -10,6 +10,7 @@ import { createBrainDrainWorker, type BrainDrainWorker } from "./src/drain-worke
 import { buildLinkbrainFlaggedMcpToolFilter } from "./src/feature-flags.js";
 import {
   createLinkbrainLifecycle,
+  isLinkbrainConversationAccessAllowed,
   LINKBRAIN_CONVERSATION_HOOKS,
   type LinkbrainLifecycle,
 } from "./src/lifecycle.js";
@@ -17,6 +18,24 @@ import { LINKBRAIN_CONVERSATION_HOOK_REQUIREMENT, LINKBRAIN_PLUGIN_ID } from "./
 import { createLinkbrainRuntime, type LinkbrainRuntime } from "./src/runtime.js";
 import { openLinkbrainStoresFromApi } from "./src/stores.js";
 import { resolveLinkbrainTransport } from "./src/transport.js";
+
+/**
+ * Whether stop/flush may safely attempt remote writes that need the injected
+ * machine-token facade. No facade means no generation ownership — flush is OK.
+ * A present but retired generation must not flush (retryable machine_token_error
+ * deadletters durable outbox); leave rows for the new live generation's drain.
+ */
+function canFlushWithMachineTokenFacade(facade: OpenClawPluginApi["machineTokenFacade"]): boolean {
+  if (!facade) {
+    return true;
+  }
+  for (const bindingId of facade.grantedBindingIds) {
+    if (facade.health(bindingId).registered) {
+      return true;
+    }
+  }
+  return false;
+}
 
 export default definePluginEntry({
   id: LINKBRAIN_PLUGIN_ID,
@@ -30,11 +49,12 @@ export default definePluginEntry({
     let lifecycle: LinkbrainLifecycle | null = null;
     let drainWorker: BrainDrainWorker | null = null;
     const flaggedMcp = buildLinkbrainFlaggedMcpToolFilter(config);
+    const conversationAccessAllowed = isLinkbrainConversationAccessAllowed(api.config);
 
-    // Conversation-bearing hooks (agent_end) require:
+    // Conversation/data-bearing hooks fail closed unless:
     // plugins.entries.linkbrain.hooks.allowConversationAccess=true
     api.logger.info(
-      `linkbrain: registered (default-disabled). Phase 3 hooks include conversation-bearing ${LINKBRAIN_CONVERSATION_HOOKS.join(",")}; require ${LINKBRAIN_CONVERSATION_HOOK_REQUIREMENT}; mcpInclude=${flaggedMcp?.include.length ?? 0}; no brain_* plugin tools registered`,
+      `linkbrain: registered (default-disabled). conversationAccess=${conversationAccessAllowed}; governedHooks=${LINKBRAIN_CONVERSATION_HOOKS.join(",")}; require ${LINKBRAIN_CONVERSATION_HOOK_REQUIREMENT}; mcpInclude=${flaggedMcp?.include.length ?? 0}; no brain_* plugin tools registered`,
     );
 
     api.registerMcpServerToolFilter({
@@ -108,14 +128,23 @@ export default definePluginEntry({
           await drainWorker.stop();
           drainWorker = null;
         }
+        // Always promote local capture buffer. Remote drain only while this
+        // generation is still live (or no MT facade). After a successful reload
+        // commit the prior generation is already retired; draining then would
+        // mint against an unregistered facade and deadletter outbox rows.
         if (lifecycle) {
-          await lifecycle.handleGatewayStop();
-          lifecycle = null;
+          await lifecycle.handleGatewayStop({
+            drain: canFlushWithMachineTokenFacade(api.machineTokenFacade),
+          });
         }
+        lifecycle = null;
         if (runtime) {
           await runtime.shutdown();
           runtime = null;
         }
+        // Plugin-side release under a host service lease is a no-op so cache-hit
+        // reload stop/restart keeps the shared live generation. Without a lease
+        // (standalone/test) this remains authoritative teardown.
         api.machineTokenFacade?.unregister();
       },
     };
@@ -127,6 +156,48 @@ export default definePluginEntry({
     // Bounded timeouts are plugin-local AbortController bounds in handlers;
     // host timeoutMs is an upper bound only and does not cancel underlying work alone.
     const hookOpts = { timeoutMs: 3_000 } as const;
+
+    // Service/worker hooks stay available without conversation access so an
+    // explicitly enabled plugin can open/drain state without registering
+    // capture/coordination hooks.
+    api.on(
+      "gateway_start",
+      async () => {
+        if (
+          drainWorker &&
+          (config.captureDrain || config.coordinationWrites) &&
+          !drainWorker.running
+        ) {
+          drainWorker.start();
+        }
+        await getLifecycle()?.handleGatewayStart();
+      },
+      hookOpts,
+    );
+
+    api.on(
+      "gateway_stop",
+      async () => {
+        if (drainWorker) {
+          await drainWorker.stop();
+        }
+        // Best-effort local flush (+ remote drain while live). Do not unregister
+        // here — gateway close runs gateway_stop before pluginServices.stop;
+        // early unregister makes the later service.stop flush hit
+        // machine_token_error and deadletter remaining outbox rows.
+        await getLifecycle()?.handleGatewayStop({
+          drain: canFlushWithMachineTokenFacade(api.machineTokenFacade),
+        });
+      },
+      hookOpts,
+    );
+
+    if (!conversationAccessAllowed) {
+      api.logger.info(
+        `linkbrain: conversation/data-bearing hooks not registered; set ${LINKBRAIN_CONVERSATION_HOOK_REQUIREMENT} to enable capture/coordination lifecycle hooks`,
+      );
+      return;
+    }
 
     api.on(
       "session_start",
@@ -180,29 +251,6 @@ export default definePluginEntry({
       "session_end",
       async (event) => {
         await getLifecycle()?.handleSessionEnd(event);
-      },
-      hookOpts,
-    );
-
-    api.on(
-      "gateway_start",
-      async () => {
-        if (drainWorker && (config.captureDrain || config.coordinationWrites) && !drainWorker.running) {
-          drainWorker.start();
-        }
-        await getLifecycle()?.handleGatewayStart();
-      },
-      hookOpts,
-    );
-
-    api.on(
-      "gateway_stop",
-      async () => {
-        if (drainWorker) {
-          await drainWorker.stop();
-        }
-        await getLifecycle()?.handleGatewayStop();
-        api.machineTokenFacade?.unregister();
       },
       hookOpts,
     );

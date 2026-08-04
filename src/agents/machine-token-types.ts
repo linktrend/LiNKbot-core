@@ -44,6 +44,14 @@ export type MachineTokenBinding = {
    * SSRF private/loopback blocks for that issuer. Production must leave unset.
    */
   localTest?: boolean;
+  /**
+   * Explicit least-privilege opt-in for HTTPS private/CGNAT/Tailscale issuers.
+   * Default false. Production stage/overlay PACI must set this — never use
+   * localTest for non-test environments. Does not broadly disable SSRF:
+   * fetch policy pins the exact configured HTTPS origin/hostname under zero
+   * redirects while metadata/link-local remain blocked.
+   */
+  allowPrivateNetwork?: boolean;
   /** Already-resolved SecretRef material — PKCS#8 PEM for ES256. */
   clientAssertionKeyPem: string;
 };
@@ -130,8 +138,11 @@ export type MachineTokenPluginFacade = {
   /** Redacted health for one binding id (granted or not). */
   health: (bindingId: string) => MachineTokenBindingHealth;
   /**
-   * Unregister this facade: invalidate all granted bindings and mark the
-   * facade inactive so later acquire/invalidate fail closed.
+   * Release this plugin's use of the facade (service stop / unload).
+   * Invalidates granted binding caches and fail-closes later use when the host
+   * does not hold a service lease. Generation retirement stays with the host
+   * runtime owner, so a duplicate or stale stop cannot retire a live facade a
+   * reused registry still needs.
    */
   unregister: () => void;
 };

@@ -21,6 +21,8 @@ Authoritative candidate language on `origin/development` as of PR #43 / `2025401
 
 See `docs/evidence/ocp-w30-approved-pdf-routing/release-graph.md`.
 
+For **Mac Mini lisa-stage** schedule enable/disable/rollback and the real MiniMax PDF canary procedure (OpenRouter-only), use `docs/execution/openclawdevelopmentplan01/runbooks/lisa-stage-ops-canary.md`.
+
 ---
 
 ## FAKE / TEMPLATE rehearsal (safe anytime)

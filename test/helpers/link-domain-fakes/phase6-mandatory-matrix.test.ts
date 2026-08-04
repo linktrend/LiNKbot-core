@@ -54,14 +54,28 @@ export const PHASE6_SECRET_CANARY = "CANARY_SECRET_sk-phase6test00000001abcdef" 
 
 const sampleBrainBatch = {
   batchId: "batch_phase6_matrix",
-  streamId: "stream_phase6_lisa",
-  actorId: "actor_test_lisa",
-  fromSequence: 1,
-  toSequence: 2,
-  contentHash: "sha256:deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+  sessionId: "session_phase6_lisa",
+  idempotencyKey: "cap:session_phase6_lisa:1:2",
+  capturedAt: "2026-07-27T11:00:02.000Z",
   events: [
-    { sequence: 1, role: "user" as const, text: "Private conversation for Brain only." },
-    { sequence: 2, role: "assistant" as const, text: "Acknowledged in Brain capture." },
+    {
+      eventId: "event_phase6_matrix_1",
+      sequence: 1,
+      occurredAt: "2026-07-27T11:00:01.000Z",
+      role: "principal" as const,
+      eventType: "message" as const,
+      content: "Private conversation for Brain only.",
+      classification: "private" as const,
+    },
+    {
+      eventId: "event_phase6_matrix_2",
+      sequence: 2,
+      occurredAt: "2026-07-27T11:00:02.000Z",
+      role: "assistant" as const,
+      eventType: "message" as const,
+      content: "Acknowledged in Brain capture.",
+      classification: "private" as const,
+    },
   ],
 };
 
@@ -209,9 +223,9 @@ function assertNativeBaselinesHold() {
     fs.readFileSync(path.join(repoRoot, "extensions/linkskills/openclaw.plugin.json"), "utf8"),
   ) as { enabledByDefault: boolean; activation: { onStartup: boolean } };
   expect(brainManifest.enabledByDefault).toBe(false);
-  expect(brainManifest.activation.onStartup).toBe(false);
+  expect(brainManifest.activation.onStartup).toBe(true);
   expect(skillsManifest.enabledByDefault).toBe(false);
-  expect(skillsManifest.activation.onStartup).toBe(false);
+  expect(skillsManifest.activation.onStartup).toBe(true);
 }
 
 function assertNoCanary(surfaces: unknown[]) {
@@ -645,8 +659,24 @@ describe(`Phase 6 mandatory matrix (${PHASE6_EVIDENCE_TIER})`, () => {
     const canaryBatch = {
       ...sampleBrainBatch,
       events: [
-        { sequence: 1, role: "user" as const, text: sanitizedText },
-        { sequence: 2, role: "assistant" as const, text: "ack" },
+        {
+          eventId: "event_phase6_canary_1",
+          sequence: 1,
+          occurredAt: "2026-07-27T11:00:01.000Z",
+          role: "principal" as const,
+          eventType: "message" as const,
+          content: sanitizedText,
+          classification: "private" as const,
+        },
+        {
+          eventId: "event_phase6_canary_2",
+          sequence: 2,
+          occurredAt: "2026-07-27T11:00:02.000Z",
+          role: "assistant" as const,
+          eventType: "message" as const,
+          content: "ack",
+          classification: "private" as const,
+        },
       ],
     };
 

@@ -1,8 +1,8 @@
-import { describe, expect, it, vi } from "vitest";
 import { createTestPluginApi } from "openclaw/plugin-sdk/plugin-test-api";
+import { describe, expect, it, vi } from "vitest";
 import linkbrainPlugin from "../linkbrain/index.js";
-import linkskillsPlugin from "../linkskills/index.js";
 import type { OpenClawPluginApi } from "../linkbrain/runtime-api.js";
+import linkskillsPlugin from "../linkskills/index.js";
 
 /**
  * Registered-plugin coexistence: Brain and Skills can register independently
@@ -11,7 +11,71 @@ import type { OpenClawPluginApi } from "../linkbrain/runtime-api.js";
  * unregister the other.
  */
 describe("linkbrain+linkskills registered-plugin coexistence", () => {
-  it("registers both plugins with independent disablement and native isolation", () => {
+  it("registers both plugins with governed Brain hooks when allowConversationAccess===true", () => {
+    const brainHooks: string[] = [];
+    const skillsHooks: string[] = [];
+    const memory = vi.fn();
+    const channel = vi.fn();
+    const compaction = vi.fn();
+
+    const brainApi = createTestPluginApi({
+      id: "linkbrain",
+      config: {
+        plugins: {
+          entries: {
+            linkbrain: {
+              hooks: { allowConversationAccess: true },
+            },
+          },
+        },
+      },
+      pluginConfig: {
+        mcpRead: false,
+        captureEnqueue: true,
+        captureDrain: false,
+        coordinationWrites: false,
+      },
+      on: (name: string) => {
+        brainHooks.push(name);
+      },
+      registerService: () => undefined,
+      registerMemoryCapability: memory,
+      registerChannel: channel,
+      registerCompactionProvider: compaction,
+    } as unknown as Partial<OpenClawPluginApi>);
+
+    const skillsApi = createTestPluginApi({
+      id: "linkskills",
+      pluginConfig: {
+        mcpDiscoveryRead: false,
+        governedExecution: false,
+        telemetryEnqueue: true,
+        telemetryDrain: false,
+      },
+      on: (name: string) => {
+        skillsHooks.push(name);
+      },
+      registerService: () => undefined,
+      registerMemoryCapability: memory,
+      registerChannel: channel,
+      registerCompactionProvider: compaction,
+    } as unknown as Partial<OpenClawPluginApi>);
+
+    linkbrainPlugin.register(brainApi as OpenClawPluginApi);
+    linkskillsPlugin.register(skillsApi as OpenClawPluginApi);
+
+    expect(brainHooks).toContain("before_compaction");
+    expect(brainHooks).toContain("session_start");
+    expect(skillsHooks).toContain("after_tool_call");
+    expect(skillsHooks).not.toContain("agent_end");
+
+    // Native ownership remains with core/other plugins.
+    expect(memory).not.toHaveBeenCalled();
+    expect(channel).not.toHaveBeenCalled();
+    expect(compaction).not.toHaveBeenCalled();
+  });
+
+  it("absent allowConversationAccess: Brain stays service-only while Skills still register", () => {
     const brainHooks: string[] = [];
     const skillsHooks: string[] = [];
     const memory = vi.fn();
@@ -55,12 +119,11 @@ describe("linkbrain+linkskills registered-plugin coexistence", () => {
     linkbrainPlugin.register(brainApi as OpenClawPluginApi);
     linkskillsPlugin.register(skillsApi as OpenClawPluginApi);
 
-    expect(brainHooks).toContain("before_compaction");
-    expect(brainHooks).toContain("session_start");
+    expect(brainHooks).toEqual(["gateway_start", "gateway_stop"]);
+    expect(brainHooks).not.toContain("before_compaction");
+    expect(brainHooks).not.toContain("session_start");
     expect(skillsHooks).toContain("after_tool_call");
     expect(skillsHooks).not.toContain("agent_end");
-
-    // Native ownership remains with core/other plugins.
     expect(memory).not.toHaveBeenCalled();
     expect(channel).not.toHaveBeenCalled();
     expect(compaction).not.toHaveBeenCalled();

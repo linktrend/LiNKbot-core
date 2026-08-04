@@ -22,6 +22,11 @@ export type LinkbrainMachineTokenConfig = {
   clientId: string;
   audience?: string;
   scope?: string;
+  /**
+   * Explicit HTTPS trusted-private issuer opt-in (Tailscale/CGNAT/private overlay).
+   * Default unset/false. Never use environment=test / localTest for stage PACI.
+   */
+  allowPrivateNetwork?: boolean;
   /** SecretRef only — never literal PEM/JWK/env/CLI strings in config. */
   clientAssertionKeyRef: LinkbrainSecretRef;
 };
@@ -237,6 +242,14 @@ export function parseLinkbrainMachineToken(
       throw new Error("linkbrain: machineToken.scope must be a non-empty string when set");
     }
     binding.scope = value.scope;
+  }
+  if ("allowPrivateNetwork" in value) {
+    if (typeof value.allowPrivateNetwork !== "boolean") {
+      throw new Error("linkbrain: machineToken.allowPrivateNetwork must be a boolean when set");
+    }
+    if (value.allowPrivateNetwork) {
+      binding.allowPrivateNetwork = true;
+    }
   }
   return binding;
 }

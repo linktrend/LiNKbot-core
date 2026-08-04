@@ -8,6 +8,7 @@
  * only `bindingId` (+ signal/forceRefresh); SecretRef → PEM resolution and
  * MachineTokenBinding assembly happen inside the facade.
  */
+import { createHash } from "node:crypto";
 import { isSecretRef, type SecretRef } from "../config/types.secrets.js";
 import {
   getCachedMachineToken,
@@ -27,6 +28,9 @@ import {
   invalidateMachineTokenCache as invalidateMachineTokenCacheCore,
   resolveMachineTokenAccess as resolveMachineTokenAccessCore,
 } from "./machine-token.js";
+
+/** Domain separator for ownership fingerprints — upgrades must bump this tag. */
+const MACHINE_TOKEN_OWNERSHIP_DOMAIN = "machine-token-ownership-v1";
 
 export type {
   MachineTokenBinding,
@@ -53,6 +57,10 @@ export type HostMachineTokenBindingRecord = {
   service?: string;
   discoveryUrl?: string;
   tokenEndpoint?: string;
+  /**
+   * Explicit HTTPS trusted-private issuer opt-in. Fingerprinted; default unset/false.
+   */
+  allowPrivateNetwork?: boolean;
   /** SecretRef identity used to resolve PEM at acquire time. */
   keyRef: MachineTokenKeyRefIdentity;
   keyRefFingerprint: string;
@@ -112,9 +120,119 @@ type MachineTokenFacadeGenerationRecord = {
   handle: MachineTokenFacadeGenerationHandle;
   facade: MachineTokenPluginFacade;
   state: MachineTokenFacadeGenerationState;
+  /**
+   * Host-armed consumers (started plugin services) still holding this generation.
+   * While > 0, plugin-side unregister must not retire — cache-hit reloads stop and
+   * restart the same live generation.
+   */
+  leases: number;
+  /**
+   * Stable fingerprint of granted binding descriptors (no PEM). Same-ownership
+   * rematerialize reuses this live generation instead of publishing a replacement
+   * that would force-retire service-held facades.
+   */
+  ownershipFingerprint: string;
   /** Retire this generation's facade (idempotent). */
   retire: () => void;
 };
+
+/**
+ * Canonical authorization tuple for one granted binding.
+ *
+ * Structured JSON (not delimiter-joined operator strings) so bindingId values
+ * containing `=` / `,` cannot collide two grant sets into one ownership key.
+ * Includes bindingId, domain partition (tenant/org when represented), endpoints,
+ * keyRef identity, client, audience, scopes, environment, and bindingFingerprint.
+ */
+function canonicalizeMachineTokenOwnershipTuple(
+  record: HostMachineTokenBindingRecord,
+): readonly unknown[] {
+  return [
+    record.bindingId,
+    record.pluginId,
+    record.domain,
+    record.issuerUrl,
+    record.discoveryUrl ?? null,
+    record.tokenEndpoint ?? null,
+    record.clientId,
+    record.keyRef.source,
+    record.keyRef.provider,
+    record.keyRef.id,
+    record.keyRefFingerprint,
+    record.audience ?? null,
+    record.scope ?? null,
+    record.operations ? [...record.operations].toSorted() : null,
+    record.scopes ? [...record.scopes].toSorted() : null,
+    record.environment ?? null,
+    record.service ?? null,
+    record.allowPrivateNetwork === true,
+    record.bindingFingerprint,
+  ];
+}
+
+/**
+ * Total order over JSON encodings for ownership tuples.
+ * UTF-8 bytewise (not localeCompare): en collation equates distinct Unicode
+ * forms (e.g. NFC é vs NFD e+acute), so reversed equal-keys would change the
+ * hashed fingerprint.
+ */
+export function compareMachineTokenCanonicalJson(left: unknown, right: unknown): number {
+  return Buffer.compare(
+    Buffer.from(JSON.stringify(left), "utf8"),
+    Buffer.from(JSON.stringify(right), "utf8"),
+  );
+}
+
+/** Per-plugin ownership fingerprint from granted binding descriptors. */
+export function fingerprintMachineTokenGrantedRecords(
+  grantedRecords: readonly HostMachineTokenBindingRecord[],
+): string {
+  // Collision-safe: sorted length-safe JSON tuples hashed under an explicit
+  // version/domain separator. Delimiter joins of operator bindingId values are
+  // unsafe — `a`/`FPA` + `b`/`FPB` equals one record `a=FPA,b`/`FPB`.
+  const tuples = grantedRecords
+    .map((record) => canonicalizeMachineTokenOwnershipTuple(record))
+    .toSorted(compareMachineTokenCanonicalJson);
+  return createHash("sha256")
+    .update(MACHINE_TOKEN_OWNERSHIP_DOMAIN, "utf8")
+    .update("\0", "utf8")
+    .update(JSON.stringify(tuples), "utf8")
+    .digest("hex");
+}
+
+/**
+ * True when the live generation for pluginId matches these granted descriptors.
+ * Used to reuse live ownership across activating rematerialize without retiring
+ * facades closed over by already-started plugin services.
+ */
+export function liveMachineTokenOwnershipMatchesGrantedRecords(
+  pluginId: string,
+  grantedRecords: readonly HostMachineTokenBindingRecord[],
+): boolean {
+  const trimmed = pluginId.trim();
+  if (!trimmed || grantedRecords.length === 0) {
+    return false;
+  }
+  const live = liveGenerationByPluginId.get(trimmed);
+  if (!live || live.state !== "live") {
+    return false;
+  }
+  return live.ownershipFingerprint === fingerprintMachineTokenGrantedRecords(grantedRecords);
+}
+
+/**
+ * Destroy only a candidate generation. No-op for live/retired — rollback and
+ * abandon paths must not retire a reused live generation.
+ */
+export function destroyCandidateMachineTokenFacadeGeneration(
+  handle: MachineTokenFacadeGenerationHandle,
+): void {
+  const generation = generationsById.get(handle.generationId);
+  if (!generation || generation.state !== "candidate") {
+    return;
+  }
+  destroyMachineTokenFacadeGeneration(handle);
+}
 
 /** Live generation only — pluginId → current published generation. */
 const liveGenerationByPluginId = new Map<string, MachineTokenFacadeGenerationRecord>();
@@ -194,6 +312,7 @@ export function buildHostMachineTokenBindingFingerprint(
     ...(record.service ? { service: record.service } : {}),
     ...(record.discoveryUrl ? { discoveryUrl: record.discoveryUrl } : {}),
     ...(record.tokenEndpoint ? { tokenEndpoint: record.tokenEndpoint } : {}),
+    ...(record.allowPrivateNetwork === true ? { allowPrivateNetwork: true } : {}),
     keyRefFingerprint: record.keyRefFingerprint,
     // Unused when keyRefFingerprint is set; required by MachineTokenBinding.
     clientAssertionKeyPem: "",
@@ -219,11 +338,11 @@ function normalizeMachineTokenConfigRecord(params: {
   const scope = readOptionalNonEmptyString(params.raw.scope);
   const operations = readOptionalStringList(params.raw.operations);
   const scopes = readOptionalStringList(params.raw.scopes);
-  const environment =
-    readOptionalNonEmptyString(params.raw.environment) ?? params.environment;
+  const environment = readOptionalNonEmptyString(params.raw.environment) ?? params.environment;
   const service = readOptionalNonEmptyString(params.raw.service) ?? params.service;
   const discoveryUrl = readOptionalNonEmptyString(params.raw.discoveryUrl);
   const tokenEndpoint = readOptionalNonEmptyString(params.raw.tokenEndpoint);
+  const allowPrivateNetwork = params.raw.allowPrivateNetwork === true ? true : undefined;
   const base = {
     bindingId,
     issuerUrl,
@@ -236,6 +355,7 @@ function normalizeMachineTokenConfigRecord(params: {
     ...(service ? { service } : {}),
     ...(discoveryUrl ? { discoveryUrl } : {}),
     ...(tokenEndpoint ? { tokenEndpoint } : {}),
+    ...(allowPrivateNetwork ? { allowPrivateNetwork } : {}),
     keyRef,
     keyRefFingerprint,
     pluginId: params.pluginId,
@@ -263,6 +383,7 @@ function assembleBindingFromRecord(
     ...(record.service ? { service: record.service } : {}),
     ...(record.discoveryUrl ? { discoveryUrl: record.discoveryUrl } : {}),
     ...(record.tokenEndpoint ? { tokenEndpoint: record.tokenEndpoint } : {}),
+    ...(record.allowPrivateNetwork === true ? { allowPrivateNetwork: true } : {}),
     keyRefFingerprint: record.keyRefFingerprint,
     clientAssertionKeyPem,
   };
@@ -309,6 +430,11 @@ function assertSmuggledBindingMatchesRegistry(
   expectString("service", record.service, smuggled.service);
   expectString("discoveryUrl", record.discoveryUrl, smuggled.discoveryUrl);
   expectString("tokenEndpoint", record.tokenEndpoint, smuggled.tokenEndpoint);
+  const wantAllowPrivate = record.allowPrivateNetwork === true;
+  const gotAllowPrivate = smuggled.allowPrivateNetwork === true;
+  if (wantAllowPrivate !== gotAllowPrivate) {
+    mismatches.push("allowPrivateNetwork");
+  }
   const wantOperations = [...(record.operations ?? [])]
     .map((entry) => entry.trim())
     .filter((entry) => entry.length > 0)
@@ -486,9 +612,7 @@ export function createMachineTokenFacadeGeneration(
         ...(acquireParams.signal ? { signal: acquireParams.signal } : {}),
       });
       if (typeof pem !== "string" || pem.trim().length === 0) {
-        throw new Error(
-          `Machine-token binding "${bindingId}" key SecretRef resolved to empty PEM`,
-        );
+        throw new Error(`Machine-token binding "${bindingId}" key SecretRef resolved to empty PEM`);
       }
       const binding = assembleBindingFromRecord(record, pem);
       // Public facade deliberately omits fetchFn/now. Even if a caller smuggles
@@ -536,7 +660,10 @@ export function createMachineTokenFacadeGeneration(
       };
     },
     unregister() {
-      destroyMachineTokenFacadeGeneration(handle);
+      // Plugin-side release. Host leases protect a still-needed live generation
+      // across cache-hit service stop/restart; without a lease this remains the
+      // authoritative teardown for standalone/test embeddings.
+      releaseMachineTokenFacadeGeneration(handle);
     },
   };
 
@@ -544,10 +671,60 @@ export function createMachineTokenFacadeGeneration(
     handle,
     facade,
     state: "candidate",
+    leases: 0,
+    ownershipFingerprint: fingerprintMachineTokenGrantedRecords(params.grantedRecords),
     retire: retireFacade,
   };
   generationsById.set(handle.generationId, record);
   return { handle, facade };
+}
+
+/**
+ * Plugin-side release for one generation (service.stop / unload).
+ *
+ * No-op while the host holds a lease so a duplicate or stale stop cannot retire
+ * a live facade a reused registry still needs. With no lease, retires exactly
+ * this generation (standalone embeddings and tests).
+ */
+export function releaseMachineTokenFacadeGeneration(
+  handle: MachineTokenFacadeGenerationHandle,
+): void {
+  const generation = generationsById.get(handle.generationId);
+  if (!generation || generation.state === "retired") {
+    return;
+  }
+  if (generation.leases > 0) {
+    return;
+  }
+  destroyMachineTokenFacadeGeneration(handle);
+}
+
+/**
+ * Host-owned lease on a plugin's live generation, taken when a plugin service
+ * starts. Returns a single-use release; the lease closes over this record so a
+ * later replacement generation is never touched. Does not retire on release —
+ * owner force-retire is publish / destroy / unregisterMachineTokenFacadesForPlugin.
+ */
+export function acquireMachineTokenFacadeLeaseForPlugin(pluginId: string): () => void {
+  const trimmed = pluginId.trim();
+  if (!trimmed) {
+    return () => undefined;
+  }
+  const live = liveGenerationByPluginId.get(trimmed);
+  if (!live || live.state !== "live") {
+    return () => undefined;
+  }
+  live.leases += 1;
+  let done = false;
+  return () => {
+    if (done) {
+      return;
+    }
+    done = true;
+    if (live.leases > 0) {
+      live.leases -= 1;
+    }
+  };
 }
 
 /**
@@ -603,6 +780,8 @@ export function destroyMachineTokenFacadeGeneration(
       liveGenerationByPluginId.delete(handle.pluginId);
     }
   }
+  // Owner force-retire ignores outstanding leases (reload commit / shutdown).
+  generation.leases = 0;
   generation.state = "retired";
   generationsById.delete(handle.generationId);
   generation.retire();

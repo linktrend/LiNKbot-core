@@ -57,14 +57,28 @@ const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../
 
 const sampleBrainBatch = {
   batchId: "batch_phase6_integrated",
-  streamId: "stream_phase6_lisa",
-  actorId: "actor_test_lisa",
-  fromSequence: 1,
-  toSequence: 2,
-  contentHash: "sha256:deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+  sessionId: "session_phase6_lisa",
+  idempotencyKey: "cap:session_phase6_lisa:1:2",
+  capturedAt: "2026-07-27T11:00:02.000Z",
   events: [
-    { sequence: 1, role: "user" as const, text: "Private conversation for Brain only." },
-    { sequence: 2, role: "assistant" as const, text: "Acknowledged in Brain capture." },
+    {
+      eventId: "event_phase6_integrated_1",
+      sequence: 1,
+      occurredAt: "2026-07-27T11:00:01.000Z",
+      role: "principal" as const,
+      eventType: "message" as const,
+      content: "Private conversation for Brain only.",
+      classification: "private" as const,
+    },
+    {
+      eventId: "event_phase6_integrated_2",
+      sequence: 2,
+      occurredAt: "2026-07-27T11:00:02.000Z",
+      role: "assistant" as const,
+      eventType: "message" as const,
+      content: "Acknowledged in Brain capture.",
+      classification: "private" as const,
+    },
   ],
 };
 
@@ -475,12 +489,12 @@ describe(`Phase 6 integrated Brain+Skills (${PHASE6_EVIDENCE_TIER})`, () => {
     expect(brainManifest).toMatchObject({
       id: "linkbrain",
       enabledByDefault: false,
-      activation: { onStartup: false },
+      activation: { onStartup: true },
     });
     expect(skillsManifest).toMatchObject({
       id: "linkskills",
       enabledByDefault: false,
-      activation: { onStartup: false },
+      activation: { onStartup: true },
     });
     expect(LINKSKILLS_CONVERSATION_HOOK_POLICY).toMatch(/never registers conversation/i);
 

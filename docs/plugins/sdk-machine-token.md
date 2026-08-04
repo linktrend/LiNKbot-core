@@ -49,12 +49,12 @@ facade.unregister(); // reload / plugin unload
 
 ### Contract
 
-| Method       | Behavior                                                                       |
-| ------------ | ------------------------------------------------------------------------------ |
-| `acquire`    | Mint or reuse a Bearer access token for a **granted** binding id only          |
-| `invalidate` | Drop one granted binding's cached token                                        |
-| `health`     | Redacted diagnostics (`granted`, `registered`, `cached`, optional `expiresAt`) |
-| `unregister` | Invalidate all granted bindings and fail-close later use                       |
+| Method       | Behavior                                                                                                                                      |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `acquire`    | Mint or reuse a Bearer access token for a **granted** binding id only                                                                         |
+| `invalidate` | Drop one granted binding's cached token                                                                                                       |
+| `health`     | Redacted diagnostics (`granted`, `registered`, `cached`, optional `expiresAt`)                                                                |
+| `unregister` | Release this facade instance: invalidate granted caches; host owns generation retirement (leases protect live facades across service restart) |
 
 `acquire` accepts only `{ bindingId, signal?, forceRefresh? }`. Plugins cannot
 pass a binding object, PEM, SecretRef, `fetchFn`, `now`, or other
@@ -74,6 +74,21 @@ plugin acquire calls.
 
 `fingerprintMachineTokenKeyRef` remains available for local diagnostics and
 config validation; it is not required for facade acquire.
+
+### Trusted-private HTTPS issuers
+
+Machine-token discovery/token fetch defaults to public SSRF policy (private,
+link-local, and special-use addresses blocked). Explicit local-test mode
+(`localTest` / plugin `environment=test`) remains for loopback hermetic tests
+only — do **not** mark stage/production as test.
+
+For stage/production private-overlay issuers (for example Tailscale HTTPS PACI),
+set `machineToken.allowPrivateNetwork: true` on the binding. Default is false.
+When true, the hardened auth path pins the exact configured HTTPS
+issuer/discovery/token origin and hostname under zero redirects and existing
+size/time/TLS limits. Metadata and link-local targets stay blocked. Cross-origin
+private fetch is never granted. Discovery still requires same-origin metadata
+`issuer` and `token_endpoint`. HTTP non-loopback remains rejected.
 
 ### Public exports
 
@@ -96,7 +111,19 @@ registers the plugin against it, then **atomically publishes** that generation
 on success (retiring only the prior live generation). Registration failure or
 cancellation destroys only the candidate; the prior live generation stays
 usable. Stop/deactivate cleanup is generation-scoped and idempotent — a late
-cleanup from an old generation cannot remove a newer replacement.
+cleanup from an old generation cannot remove a newer replacement. Plugin
+`unregister` under a host service lease does not retire the live generation, so
+cache-hit reload stop/restart of the same registry keeps minting; the host
+retires ownership on gateway close and on successful reload commit when
+ownership descriptors change. Same-ownership rematerialize (repeated activating
+loads / agent prewarm) **reuses** the live generation instead of publishing a
+replacement — owner publish would otherwise force-retire facades closed over by
+already-started plugin services and deadletter capture drain. Ownership matching
+hashes a collision-safe canonical JSON of authorization tuples sorted by UTF-8
+bytewise total order (bindingId, domain/tenant partition, endpoints, keyRef,
+client, audience, scopes, environment, and related fields) under an explicit
+version/domain separator — never delimiter-joined operator `bindingId` strings
+and never locale collation (which can equate distinct Unicode forms).
 
 ## External projection
 

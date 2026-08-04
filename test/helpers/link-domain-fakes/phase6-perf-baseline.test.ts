@@ -48,14 +48,28 @@ export const PHASE6_PERF_BUDGETS = Object.freeze({
 
 const sampleBrainBatch = {
   batchId: "batch_phase6_perf",
-  streamId: "stream_phase6_lisa",
-  actorId: "actor_test_lisa",
-  fromSequence: 1,
-  toSequence: 2,
-  contentHash: "sha256:deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+  sessionId: "session_phase6_lisa",
+  idempotencyKey: "cap:session_phase6_lisa:1:2",
+  capturedAt: "2026-07-27T11:00:02.000Z",
   events: [
-    { sequence: 1, role: "user" as const, text: "Perf sample conversation." },
-    { sequence: 2, role: "assistant" as const, text: "Perf ack." },
+    {
+      eventId: "event_phase6_perf_1",
+      sequence: 1,
+      occurredAt: "2026-07-27T11:00:01.000Z",
+      role: "principal" as const,
+      eventType: "message" as const,
+      content: "Perf sample conversation.",
+      classification: "private" as const,
+    },
+    {
+      eventId: "event_phase6_perf_2",
+      sequence: 2,
+      occurredAt: "2026-07-27T11:00:02.000Z",
+      role: "assistant" as const,
+      eventType: "message" as const,
+      content: "Perf ack.",
+      classification: "private" as const,
+    },
   ],
 };
 
@@ -204,8 +218,19 @@ describe(`Phase 6 perf baseline (${PHASE6_PERF_EVIDENCE_TIER})`, () => {
         body: {
           ...sampleBrainBatch,
           batchId: `batch_phase6_perf_${i}`,
-          fromSequence: i * 2 + 1,
-          toSequence: i * 2 + 2,
+          idempotencyKey: `cap:session_phase6_lisa:${i * 2 + 1}:${i * 2 + 2}`,
+          events: [
+            {
+              ...sampleBrainBatch.events[0]!,
+              eventId: `event_phase6_perf_${i}_1`,
+              sequence: i * 2 + 1,
+            },
+            {
+              ...sampleBrainBatch.events[1]!,
+              eventId: `event_phase6_perf_${i}_2`,
+              sequence: i * 2 + 2,
+            },
+          ],
         },
       });
       await skillsRuntime.enqueueTelemetry({

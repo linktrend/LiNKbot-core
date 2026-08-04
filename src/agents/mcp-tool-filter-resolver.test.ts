@@ -1,5 +1,6 @@
 /** Unit tests for MCP tool-filter composition (operator ∩ plugin overlay). */
 import { afterEach, describe, expect, it } from "vitest";
+import { resetPluginRuntimeStateForTest } from "../plugins/runtime.js";
 import {
   describeComposedMcpToolFilter,
   resolveMcpToolFilterComposition,
@@ -11,6 +12,7 @@ import {
 describe("mcp tool filter composition", () => {
   afterEach(() => {
     testing.reset();
+    resetPluginRuntimeStateForTest();
   });
 
   it("passes config-only when no plugin resolver is registered", async () => {

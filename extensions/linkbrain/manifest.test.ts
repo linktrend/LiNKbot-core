@@ -18,7 +18,7 @@ describe("linkbrain manifest/config", () => {
     };
     expect(manifest.id).toBe("linkbrain");
     expect(manifest.enabledByDefault).toBe(false);
-    expect(manifest.activation.onStartup).toBe(false);
+    expect(manifest.activation.onStartup).toBe(true);
     expect(manifest.configSchema.properties).toMatchObject({
       mcpRead: expect.any(Object),
       captureEnqueue: expect.any(Object),
@@ -133,6 +133,58 @@ describe("linkbrain manifest/config", () => {
     ).toThrow(/SecretRef object/);
   });
 
+  it("parses allowPrivateNetwork opt-in for trusted-private HTTPS issuers", () => {
+    const config = parseLinkbrainConfig({
+      environment: "stage",
+      machineToken: {
+        bindingId: "linkbrain-stage",
+        issuerUrl: "https://linktrend-mini.tailf7e13a.ts.net:9443",
+        clientId: "brain-client",
+        allowPrivateNetwork: true,
+        clientAssertionKeyRef: {
+          source: "env",
+          provider: "default",
+          id: "LINKTREND_BRAIN_ASSERTION_PEM",
+        },
+      },
+    });
+    expect(config.machineToken?.allowPrivateNetwork).toBe(true);
+    expect(
+      parseLinkbrainConfig({
+        environment: "stage",
+        machineToken: {
+          bindingId: "linkbrain-stage",
+          issuerUrl: "https://linktrend-mini.tailf7e13a.ts.net:9443",
+          clientId: "brain-client",
+          clientAssertionKeyRef: {
+            source: "env",
+            provider: "default",
+            id: "LINKTREND_BRAIN_ASSERTION_PEM",
+          },
+        },
+      }).machineToken?.allowPrivateNetwork,
+    ).toBeUndefined();
+  });
+
+  it("rejects allowPrivateNetwork with non-boolean values", () => {
+    expect(() =>
+      parseLinkbrainConfig({
+        environment: "stage",
+        machineToken: {
+          bindingId: "linkbrain-stage",
+          issuerUrl: "https://linktrend-mini.tailf7e13a.ts.net:9443",
+          clientId: "brain-client",
+          allowPrivateNetwork: "yes",
+          clientAssertionKeyRef: {
+            source: "env",
+            provider: "default",
+            id: "LINKTREND_BRAIN_ASSERTION_PEM",
+          },
+        },
+      }),
+    ).toThrow(/allowPrivateNetwork/);
+  });
+
   it("schema marks clientAssertionKeyRef as secretRef only", () => {
     const manifest = JSON.parse(
       fs.readFileSync(path.join(root, "openclaw.plugin.json"), "utf8"),
@@ -142,9 +194,14 @@ describe("linkbrain manifest/config", () => {
           machineToken: { properties: { clientAssertionKeyRef: { $ref: string } } };
         };
       };
+      configContracts: { secretInputs: { paths: Array<{ path: string }> } };
     };
     expect(manifest.configSchema.$defs.machineToken.properties.clientAssertionKeyRef.$ref).toBe(
       "#/$defs/secretRef",
     );
+    // Must not be a string-materialized secretInput — host resolves at acquire only.
+    expect(manifest.configContracts.secretInputs.paths.map((entry) => entry.path)).toEqual([
+      "ingestionCredential",
+    ]);
   });
 });

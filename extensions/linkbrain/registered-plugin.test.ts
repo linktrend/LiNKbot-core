@@ -45,7 +45,7 @@ describe("linkbrain registered-plugin feature flags + coexistence surface", () =
     ).toContain("brain_browse");
   });
 
-  it("plugin register wires hooks without mutating native memory/cron/channel surfaces", () => {
+  it("registers only service hooks unless allowConversationAccess===true", () => {
     const hooks: string[] = [];
     const services: string[] = [];
     const api = createTestPluginApi({
@@ -67,17 +67,56 @@ describe("linkbrain registered-plugin feature flags + coexistence surface", () =
 
     linkbrainPlugin.register(api as OpenClawPluginApi);
 
+    expect(hooks).toEqual(["gateway_start", "gateway_stop"]);
+    expect(services).toContain("linkbrain-outbox");
+    expect(api.registerMemoryCapability).not.toHaveBeenCalled();
+    expect(api.registerChannel).not.toHaveBeenCalled();
+  });
+
+  it("registers governed conversation hooks when allowConversationAccess===true", () => {
+    const hooks: string[] = [];
+    const api = createTestPluginApi({
+      config: {
+        plugins: {
+          entries: {
+            linkbrain: {
+              hooks: { allowConversationAccess: true },
+            },
+          },
+        },
+      },
+      pluginConfig: {
+        mcpRead: true,
+        captureEnqueue: false,
+        captureDrain: false,
+        coordinationWrites: false,
+      },
+      on: (name: string) => {
+        hooks.push(name);
+      },
+      registerService: () => undefined,
+      registerMemoryCapability: vi.fn(),
+      registerChannel: vi.fn(),
+    } as unknown as Partial<OpenClawPluginApi>);
+
+    linkbrainPlugin.register(api as OpenClawPluginApi);
+
     expect(hooks).toEqual(
       expect.arrayContaining([
         "session_start",
+        "message_received",
         "agent_end",
         "before_compaction",
         "after_compaction",
+        "before_reset",
+        "session_end",
         "gateway_start",
         "gateway_stop",
+        "subagent_spawned",
+        "subagent_ended",
       ]),
     );
-    expect(services).toContain("linkbrain-outbox");
+    expect(hooks).toHaveLength(11);
     expect(api.registerMemoryCapability).not.toHaveBeenCalled();
     expect(api.registerChannel).not.toHaveBeenCalled();
   });

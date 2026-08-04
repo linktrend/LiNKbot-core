@@ -1,5 +1,5 @@
 {
-  "_comment": "TEMPLATE ONLY — machine-token / client_credentials path for Brain MCP. No secret values. enabled=false. clientAssertionKeyRef is a SecretRef name only. Requires Platform PACI issuer + Principal live unlock.",
+  "_comment": "TEMPLATE ONLY — machine-token / client_credentials path for Brain MCP. No secret values. enabled=false. clientAssertionKeyRef is a SecretRef name only. allowPrivateNetwork=true is the explicit least-privilege opt-in for HTTPS private/Tailscale issuers (default false). Requires Platform PACI issuer + Principal live unlock.",
   "mcp": {
     "servers": {
       "linkbrain": {
@@ -14,6 +14,7 @@
           "issuerUrl": "https://auth.stage.linkplatform.linktrend.dev",
           "clientId": "openclaw-lisa-brain-stage",
           "scope": "lbrain",
+          "allowPrivateNetwork": true,
           "clientAssertionKeyRef": {
             "source": "env",
             "provider": "default",

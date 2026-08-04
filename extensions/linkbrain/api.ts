@@ -31,12 +31,7 @@ export {
   type ResolveLinkbrainTransportParams,
 } from "./src/transport.js";
 export { createLinkbrainCapture, type LinkbrainCapture } from "./src/capture.js";
-export {
-  createLinkbrainLifecycle,
-  LINKBRAIN_CONVERSATION_HOOKS,
-  LINKBRAIN_REGISTERED_HOOKS,
-  type LinkbrainLifecycle,
-} from "./src/lifecycle.js";
+export { createLinkbrainLifecycle, type LinkbrainLifecycle } from "./src/lifecycle.js";
 export { LINKBRAIN_ALLOWED_WRITE_TOOLS, isAllowedBrainWriteTool } from "./src/tools.js";
 export {
   openLinkbrainStores,

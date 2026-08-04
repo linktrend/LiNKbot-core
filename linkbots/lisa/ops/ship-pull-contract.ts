@@ -278,6 +278,20 @@ export const SHIP_PULL_REQUIRED_TOOLS: readonly string[] = [
   "exec",
 ] as const;
 
+/**
+ * The sole Ship/Pull implementation runtime. It is deliberately explicit rather
+ * than inheriting `acp.defaultAgent`: an unavailable Codex ACP/Terra route is an
+ * Issues outcome, never a Cursor/Grok or self-write fallback.
+ */
+export const SHIP_PULL_ACP_SPAWN_CONTRACT = {
+  runtime: "acp",
+  agentId: "codex",
+  model: "openai/gpt-5.6-terra",
+  thinking: "medium",
+} as const;
+
+export type ShipPullAcpSpawnContract = typeof SHIP_PULL_ACP_SPAWN_CONTRACT;
+
 export function shipPullForbidsSessionsYield(procedureText: string): boolean {
   const normalized = procedureText.toLowerCase().replace(/`/g, "");
   return (
@@ -300,6 +314,59 @@ export function shipPullRequiresSessionsWait(procedureText: string): boolean {
 
 export function shipPullAllowlistIncludesSessionsWait(allowlist: readonly string[]): boolean {
   return allowlist.includes("sessions_wait") && !allowlist.includes("sessions_yield");
+}
+
+/** Procedure must use the exact Principal-approved Codex Terra Medium contract. */
+export function shipPullRequiresCodexTerraSpawnContract(procedureText: string): boolean {
+  const normalized = procedureText.toLowerCase().replace(/`/g, "");
+  return (
+    normalized.includes('runtime: "acp"') &&
+    normalized.includes('agentid: "codex"') &&
+    normalized.includes('model: "openai/gpt-5.6-terra"') &&
+    normalized.includes('thinking: "medium"')
+  );
+}
+
+/** Ship/Pull cannot silently re-route work to Cursor/Grok if Codex ACP is unavailable. */
+export function shipPullForbidsCursorFallback(procedureText: string): boolean {
+  const normalized = procedureText.toLowerCase().replace(/`/g, "");
+  return (
+    /no cursor\/grok fallback/.test(normalized) &&
+    /do not spawn cursor/.test(normalized) &&
+    /do not self-write/.test(normalized) &&
+    !/agentid:\s*"cursor"/.test(normalized) &&
+    !/model:\s*"grok-4\.5/.test(normalized)
+  );
+}
+
+/**
+ * HEARTBEAT and pipeline-status are operational dispatch authorities too: keep
+ * their abbreviated contract equally fail-closed, while permitting Cursor only
+ * when it is named as a forbidden fallback.
+ */
+export function shipPullDocumentsCodexOnlyAcpContract(documentText: string): boolean {
+  const normalized = documentText.toLowerCase().replace(/`/g, "");
+  const hasSpawnField = (name: string, value: string) =>
+    new RegExp(`${name}\\s*(?::|=)\\s*["']?${value}`).test(normalized);
+  return (
+    /sessions_spawn/.test(normalized) &&
+    hasSpawnField("runtime", "acp") &&
+    hasSpawnField("agentid", "codex") &&
+    hasSpawnField("model", "openai/gpt-5\\.6-terra") &&
+    hasSpawnField("thinking", "medium") &&
+    /stage_skipped_acp/.test(normalized) &&
+    /wave:\s*issues/.test(normalized) &&
+    /stop/.test(normalized) &&
+    /cursor\/grok/.test(normalized) &&
+    /cursor automation\/webhook/.test(normalized) &&
+    /internal subagents/.test(normalized) &&
+    /direct\/self edits/.test(normalized) &&
+    /alternate automation/.test(normalized) &&
+    /sessions_wait.*required/.test(normalized) &&
+    /sessions_yield.*forbidden/.test(normalized) &&
+    !/agentid\s*(?::|=)\s*["']?cursor/.test(normalized) &&
+    !/model\s*(?::|=)\s*["']?grok-4\.5/.test(normalized)
+  );
 }
 
 export function shipPullRespectsIdeAuthority(procedureText: string): boolean {

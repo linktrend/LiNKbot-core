@@ -21,7 +21,9 @@
 
 `session_start`, `message_received`, `agent_end`, `before_compaction`, `after_compaction`, `before_reset`, `session_end`, `gateway_start`, `gateway_stop`, `subagent_spawned`, `subagent_ended`
 
-Conversation-bearing in this set: `agent_end` → requires `plugins.entries.linkbrain.hooks.allowConversationAccess=true`.
+Conversation/data-bearing in this set (fail-closed unless `plugins.entries.linkbrain.hooks.allowConversationAccess===true`): `session_start`, `message_received`, `agent_end`, `before_compaction`, `after_compaction`, `before_reset`, `session_end`, `subagent_spawned`, `subagent_ended`.
+
+Service/worker hooks (`gateway_start`, `gateway_stop`) and outbox startup remain registerable when the plugin is explicitly enabled without that gate.
 
 ## Proof
 

@@ -1,28 +1,37 @@
 // Host-owned machine-token facade: immutable registry, grants, isolation, smuggle reject.
 import { describe, expect, it, vi } from "vitest";
+import { fingerprintMachineTokenKeyRef } from "./machine-token-fingerprint.js";
 import {
+  acquireMachineTokenFacadeLeaseForPlugin,
   buildHostMachineTokenBindingFingerprint,
   clearMachineTokenCacheForHost,
   collectGrantedMachineTokenBindingIds,
   collectGrantedMachineTokenBindingRecords,
   createMachineTokenFacadeGeneration,
   createMachineTokenPluginFacade,
+  destroyCandidateMachineTokenFacadeGeneration,
   destroyMachineTokenFacadeGeneration,
+  fingerprintMachineTokenGrantedRecords,
   getLiveMachineTokenFacadeGenerationHandle,
   invalidateMachineTokenCacheForHost,
+  liveMachineTokenOwnershipMatchesGrantedRecords,
   publishMachineTokenFacadeGeneration,
   resolveMachineTokenAccessForHost,
   unregisterMachineTokenFacadesForPlugin,
   type HostMachineTokenBindingRecord,
   type MachineTokenKeyRefIdentity,
 } from "./machine-token-host.js";
-import { fingerprintMachineTokenKeyRef } from "./machine-token-fingerprint.js";
+import type { MachineTokenBinding } from "./machine-token-types.js";
 
 const KEY_REF: MachineTokenKeyRefIdentity = {
   source: "env",
   provider: "default",
   id: "LINKTREND_BRAIN_ASSERTION_PEM",
 };
+
+function invalidationFingerprint(value: string | MachineTokenBinding): string {
+  return typeof value === "string" ? value : buildHostMachineTokenBindingFingerprint(value);
+}
 
 function record(
   bindingId: string,
@@ -121,8 +130,9 @@ describe("agents machine-token-host", () => {
       resolveKeyPem: resolveKeyPemStub(),
       resolveAccess,
       invalidateCache: (fingerprint) => {
-        invalidated.push(fingerprint);
-        cache.delete(fingerprint);
+        const cacheKey = invalidationFingerprint(fingerprint);
+        invalidated.push(cacheKey);
+        cache.delete(cacheKey);
       },
       getCached: (fingerprint) => {
         const entry = cache.get(fingerprint);
@@ -144,8 +154,9 @@ describe("agents machine-token-host", () => {
       resolveKeyPem: resolveKeyPemStub(),
       resolveAccess,
       invalidateCache: (fingerprint) => {
-        invalidated.push(fingerprint);
-        cache.delete(fingerprint);
+        const cacheKey = invalidationFingerprint(fingerprint);
+        invalidated.push(cacheKey);
+        cache.delete(cacheKey);
       },
       getCached: (fingerprint) => {
         const entry = cache.get(fingerprint);
@@ -199,7 +210,7 @@ describe("agents machine-token-host", () => {
       resolveKeyPem: resolveKeyPemStub(),
       resolveAccess,
       invalidateCache: (fingerprint) => {
-        invalidated.push(fingerprint);
+        invalidated.push(invalidationFingerprint(fingerprint));
       },
     });
 
@@ -209,6 +220,305 @@ describe("agents machine-token-host", () => {
     expect(facade.health("linkbrain-stage").registered).toBe(false);
     await expect(facade.acquire({ bindingId: "linkbrain-stage" })).rejects.toThrow(/unregistered/);
     expect(() => facade.invalidate("linkbrain-stage")).toThrow(/unregistered/);
+  });
+
+  it("host lease blocks plugin unregister from retiring a still-needed live generation", async () => {
+    const facade = createMachineTokenPluginFacade({
+      pluginId: "linkbrain",
+      grantedRecords: [record("linkbrain-stage")],
+      resolveKeyPem: resolveKeyPemStub(),
+      resolveAccess: async ({ binding }) => ({
+        bindingId: binding.bindingId,
+        bindingFingerprint: `fp-${binding.bindingId}`,
+        accessToken: "token",
+        expiresAt: Date.now() + 60_000,
+        tokenType: "Bearer" as const,
+      }),
+    });
+    const generationId = getLiveMachineTokenFacadeGenerationHandle("linkbrain")?.generationId;
+    expect(generationId).toBeTruthy();
+
+    const releaseLease = acquireMachineTokenFacadeLeaseForPlugin("linkbrain");
+    facade.unregister();
+    facade.unregister();
+    expect(getLiveMachineTokenFacadeGenerationHandle("linkbrain")?.generationId).toBe(generationId);
+    expect(facade.health("linkbrain-stage").registered).toBe(true);
+    await expect(facade.acquire({ bindingId: "linkbrain-stage" })).resolves.toMatchObject({
+      accessToken: "token",
+    });
+
+    releaseLease();
+    releaseLease();
+    expect(getLiveMachineTokenFacadeGenerationHandle("linkbrain")?.generationId).toBe(generationId);
+    expect(facade.health("linkbrain-stage").registered).toBe(true);
+    await expect(facade.acquire({ bindingId: "linkbrain-stage" })).resolves.toMatchObject({
+      accessToken: "token",
+    });
+
+    facade.unregister();
+    expect(getLiveMachineTokenFacadeGenerationHandle("linkbrain")).toBeUndefined();
+    expect(facade.health("linkbrain-stage").registered).toBe(false);
+  });
+
+  it("ownership match includes bindingId so label renames force replacement", () => {
+    const stage = createMachineTokenFacadeGeneration({
+      pluginId: "linkbrain",
+      grantedRecords: [record("linkbrain-stage")],
+      resolveKeyPem: resolveKeyPemStub(),
+      resolveAccess: async ({ binding }) => ({
+        bindingId: binding.bindingId,
+        bindingFingerprint: `fp-${binding.bindingId}`,
+        accessToken: "token",
+        expiresAt: Date.now() + 60_000,
+        tokenType: "Bearer" as const,
+      }),
+    });
+    publishMachineTokenFacadeGeneration(stage.handle);
+    expect(
+      liveMachineTokenOwnershipMatchesGrantedRecords("linkbrain", [record("linkbrain-stage")]),
+    ).toBe(true);
+    expect(
+      liveMachineTokenOwnershipMatchesGrantedRecords("linkbrain", [record("linkbrain-retained")]),
+    ).toBe(false);
+    destroyCandidateMachineTokenFacadeGeneration(stage.handle);
+    unregisterMachineTokenFacadesForPlugin("linkbrain");
+  });
+
+  describe("ownership fingerprint collision safety", () => {
+    function legacyDelimiterOwnershipFingerprint(
+      grantedRecords: readonly HostMachineTokenBindingRecord[],
+    ): string {
+      return grantedRecords
+        .map((entry) => `${entry.bindingId}=${entry.bindingFingerprint}`)
+        .toSorted()
+        .join(",");
+    }
+
+    function publishOwnership(grantedRecords: readonly HostMachineTokenBindingRecord[]) {
+      const generation = createMachineTokenFacadeGeneration({
+        pluginId: "linkbrain",
+        grantedRecords,
+        resolveKeyPem: resolveKeyPemStub(),
+        resolveAccess: async ({ binding }) => ({
+          bindingId: binding.bindingId,
+          bindingFingerprint: `fp-${binding.bindingId}`,
+          accessToken: "token",
+          expiresAt: Date.now() + 60_000,
+          tokenType: "Bearer" as const,
+        }),
+      });
+      publishMachineTokenFacadeGeneration(generation.handle);
+      return generation;
+    }
+
+    it("rejects delimiter-collision grant sets that the legacy join would equate", () => {
+      // Legacy join: a/FPA + b/FPB → "a=FPA,b=FPB" equals one record bindingId "a=FPA,b" / FPB.
+      const twoGrants = [
+        record("a", {
+          bindingFingerprint: "FPA",
+          clientId: "client-a",
+          issuerUrl: "https://a.example.test",
+        }),
+        record("b", {
+          bindingFingerprint: "FPB",
+          clientId: "client-b",
+          issuerUrl: "https://b.example.test",
+        }),
+      ];
+      const collidingSingle = [
+        record("a=FPA,b", {
+          bindingFingerprint: "FPB",
+          clientId: "client-colliding",
+          issuerUrl: "https://colliding.example.test",
+        }),
+      ];
+      expect(legacyDelimiterOwnershipFingerprint(twoGrants)).toBe(
+        legacyDelimiterOwnershipFingerprint(collidingSingle),
+      );
+      expect(fingerprintMachineTokenGrantedRecords(twoGrants)).not.toBe(
+        fingerprintMachineTokenGrantedRecords(collidingSingle),
+      );
+
+      const live = publishOwnership(twoGrants);
+      expect(liveMachineTokenOwnershipMatchesGrantedRecords("linkbrain", twoGrants)).toBe(true);
+      expect(liveMachineTokenOwnershipMatchesGrantedRecords("linkbrain", collidingSingle)).toBe(
+        false,
+      );
+      unregisterMachineTokenFacadesForPlugin("linkbrain");
+      destroyCandidateMachineTokenFacadeGeneration(live.handle);
+    });
+
+    it("preserves same-owner exact reuse and ignores grant reorder", () => {
+      const first = record("alpha", { clientId: "client-alpha" });
+      const second = record("beta", { clientId: "client-beta" });
+      const live = publishOwnership([first, second]);
+      expect(liveMachineTokenOwnershipMatchesGrantedRecords("linkbrain", [first, second])).toBe(
+        true,
+      );
+      expect(liveMachineTokenOwnershipMatchesGrantedRecords("linkbrain", [second, first])).toBe(
+        true,
+      );
+      expect(fingerprintMachineTokenGrantedRecords([first, second])).toBe(
+        fingerprintMachineTokenGrantedRecords([second, first]),
+      );
+      unregisterMachineTokenFacadesForPlugin("linkbrain");
+      destroyCandidateMachineTokenFacadeGeneration(live.handle);
+    });
+
+    it("keeps ownership fingerprints stable across Unicode bindingId reorder", () => {
+      // localeCompare("en") equates NFC é and NFD e+acute (returns 0). Distinct
+      // code-unit IDs with otherwise-identical authorization tuples must still
+      // sort under a total order so reversed input cannot change the hash.
+      const nfcBindingId = "\u00e9";
+      const nfdBindingId = "e\u0301";
+      expect(nfcBindingId.localeCompare(nfdBindingId, "en")).toBe(0);
+      expect(String(nfcBindingId) === String(nfdBindingId)).toBe(false);
+
+      const sharedKeyRef: MachineTokenKeyRefIdentity = {
+        source: "env",
+        provider: "default",
+        id: "SHARED_UNICODE_PEM",
+      };
+      const shared = {
+        pluginId: "linkbrain",
+        domain: "shared-domain",
+        clientId: "client-shared",
+        issuerUrl: "https://issuer.example.test",
+        bindingFingerprint: "FP-SHARED",
+        keyRef: sharedKeyRef,
+        keyRefFingerprint: fingerprintMachineTokenKeyRef(sharedKeyRef),
+      } as const;
+      const nfc = record(nfcBindingId, shared);
+      const nfd = record(nfdBindingId, shared);
+
+      expect(fingerprintMachineTokenGrantedRecords([nfc, nfd])).toBe(
+        fingerprintMachineTokenGrantedRecords([nfd, nfc]),
+      );
+      expect(fingerprintMachineTokenGrantedRecords([nfc])).not.toBe(
+        fingerprintMachineTokenGrantedRecords([nfd]),
+      );
+
+      const live = publishOwnership([nfc, nfd]);
+      expect(liveMachineTokenOwnershipMatchesGrantedRecords("linkbrain", [nfd, nfc])).toBe(true);
+      expect(liveMachineTokenOwnershipMatchesGrantedRecords("linkbrain", [nfc])).toBe(false);
+      expect(liveMachineTokenOwnershipMatchesGrantedRecords("linkbrain", [nfd])).toBe(false);
+      unregisterMachineTokenFacadesForPlugin("linkbrain");
+      destroyCandidateMachineTokenFacadeGeneration(live.handle);
+    });
+
+    it("forces replacement on binding add/remove and authorization field changes", () => {
+      const base = record("linkbrain-stage", {
+        clientId: "client-v1",
+        audience: "aud-v1",
+        scope: "read",
+        environment: "stage",
+        domain: "tenant-a",
+        issuerUrl: "https://issuer-v1.example.test",
+        tokenEndpoint: "https://issuer-v1.example.test/token",
+        keyRef: { source: "env", provider: "default", id: "KEY_V1" },
+      });
+      const live = publishOwnership([base]);
+      expect(liveMachineTokenOwnershipMatchesGrantedRecords("linkbrain", [base])).toBe(true);
+
+      const cases: Array<{ label: string; next: HostMachineTokenBindingRecord[] }> = [
+        { label: "binding-add", next: [base, record("linkbrain-extra")] },
+        { label: "binding-remove", next: [] },
+        {
+          label: "tenant-domain",
+          next: [record("linkbrain-stage", { ...base, domain: "tenant-b" })],
+        },
+        {
+          label: "endpoint",
+          next: [
+            record("linkbrain-stage", {
+              ...base,
+              issuerUrl: "https://issuer-v2.example.test",
+              tokenEndpoint: "https://issuer-v2.example.test/token",
+            }),
+          ],
+        },
+        {
+          label: "keyRef",
+          next: [
+            record("linkbrain-stage", {
+              ...base,
+              keyRef: { source: "env", provider: "default", id: "KEY_V2" },
+            }),
+          ],
+        },
+        {
+          label: "client",
+          next: [record("linkbrain-stage", { ...base, clientId: "client-v2" })],
+        },
+        {
+          label: "audience",
+          next: [record("linkbrain-stage", { ...base, audience: "aud-v2" })],
+        },
+        {
+          label: "scope",
+          next: [record("linkbrain-stage", { ...base, scope: "write" })],
+        },
+        {
+          label: "environment",
+          next: [record("linkbrain-stage", { ...base, environment: "prod" })],
+        },
+      ];
+
+      for (const entry of cases) {
+        expect(
+          liveMachineTokenOwnershipMatchesGrantedRecords("linkbrain", entry.next),
+          entry.label,
+        ).toBe(false);
+        if (entry.next.length > 0) {
+          expect(fingerprintMachineTokenGrantedRecords([base]), entry.label).not.toBe(
+            fingerprintMachineTokenGrantedRecords(entry.next),
+          );
+        }
+      }
+
+      unregisterMachineTokenFacadesForPlugin("linkbrain");
+      destroyCandidateMachineTokenFacadeGeneration(live.handle);
+    });
+  });
+
+  it("lease release after a newer publish leaves the replacement live", async () => {
+    const first = createMachineTokenFacadeGeneration({
+      pluginId: "linkbrain",
+      grantedRecords: [record("linkbrain-stage")],
+      resolveKeyPem: resolveKeyPemStub(),
+      resolveAccess: async ({ binding }) => ({
+        bindingId: binding.bindingId,
+        bindingFingerprint: `fp-${binding.bindingId}`,
+        accessToken: "v1",
+        expiresAt: Date.now() + 60_000,
+        tokenType: "Bearer" as const,
+      }),
+    });
+    publishMachineTokenFacadeGeneration(first.handle);
+    const releaseFirst = acquireMachineTokenFacadeLeaseForPlugin("linkbrain");
+
+    const second = createMachineTokenFacadeGeneration({
+      pluginId: "linkbrain",
+      grantedRecords: [record("linkbrain-stage")],
+      resolveKeyPem: resolveKeyPemStub(),
+      resolveAccess: async ({ binding }) => ({
+        bindingId: binding.bindingId,
+        bindingFingerprint: `fp-${binding.bindingId}`,
+        accessToken: "v2",
+        expiresAt: Date.now() + 60_000,
+        tokenType: "Bearer" as const,
+      }),
+    });
+    publishMachineTokenFacadeGeneration(second.handle);
+    expect(first.facade.health("linkbrain-stage").registered).toBe(false);
+
+    releaseFirst();
+    first.facade.unregister();
+    expect(getLiveMachineTokenFacadeGenerationHandle("linkbrain")?.generationId).toBe(
+      second.handle.generationId,
+    );
+    expect(second.facade.health("linkbrain-stage").registered).toBe(true);
+    destroyMachineTokenFacadeGeneration(second.handle);
   });
 
   it("rejects empty pluginId or empty grants at construction", () => {
@@ -316,7 +626,7 @@ describe("agents machine-token-host", () => {
       resolveKeyPem: resolveKeyPemStub(),
       resolveAccess,
       invalidateCache: (fingerprint) => {
-        invalidated.push(fingerprint);
+        invalidated.push(invalidationFingerprint(fingerprint));
       },
     });
     const skills = createMachineTokenPluginFacade({
@@ -325,7 +635,7 @@ describe("agents machine-token-host", () => {
       resolveKeyPem: resolveKeyPemStub(),
       resolveAccess,
       invalidateCache: (fingerprint) => {
-        invalidated.push(`skills:${fingerprint}`);
+        invalidated.push(`skills:${invalidationFingerprint(fingerprint)}`);
       },
     });
 
@@ -360,7 +670,7 @@ describe("agents machine-token-host", () => {
       resolveKeyPem: resolveKeyPemStub(),
       resolveAccess,
       invalidateCache: (fingerprint) => {
-        invalidated.push(fingerprint);
+        invalidated.push(invalidationFingerprint(fingerprint));
       },
     });
     publishMachineTokenFacadeGeneration(first.handle);
@@ -372,7 +682,7 @@ describe("agents machine-token-host", () => {
       resolveKeyPem: resolveKeyPemStub(),
       resolveAccess,
       invalidateCache: (fingerprint) => {
-        invalidated.push(fingerprint);
+        invalidated.push(invalidationFingerprint(fingerprint));
       },
     });
     // Candidate must not mint while prior live generation remains published.
@@ -528,17 +838,19 @@ describe("agents machine-token-host", () => {
     ]);
     expect(records.every((r) => r.pluginId === "linkbrain")).toBe(true);
     expect(records.find((r) => r.bindingId === "linkbrain-stage")?.environment).toBe("stage");
-    expect(collectGrantedMachineTokenBindingIds({
-      pluginId: "linkbrain",
-      pluginConfig: {
-        machineToken: {
-          bindingId: "linkbrain-stage",
-          issuerUrl: "https://issuer.example.test",
-          clientId: "brain-client",
-          clientAssertionKeyRef: keyRef,
+    expect(
+      collectGrantedMachineTokenBindingIds({
+        pluginId: "linkbrain",
+        pluginConfig: {
+          machineToken: {
+            bindingId: "linkbrain-stage",
+            issuerUrl: "https://issuer.example.test",
+            clientId: "brain-client",
+            clientAssertionKeyRef: keyRef,
+          },
         },
-      },
-    })).toEqual(["linkbrain-stage"]);
+      }),
+    ).toEqual(["linkbrain-stage"]);
   });
 
   it("omits incomplete machineToken blocks that lack issuer/client/keyRef", () => {
@@ -550,6 +862,73 @@ describe("agents machine-token-host", () => {
         },
       }),
     ).toEqual([]);
+  });
+
+  it("threads allowPrivateNetwork into host records and fingerprints", () => {
+    const keyRef = {
+      source: "env" as const,
+      provider: "default",
+      id: "BRAIN_KEY",
+    };
+    const denied = collectGrantedMachineTokenBindingRecords({
+      pluginId: "linkbrain",
+      pluginConfig: {
+        machineToken: {
+          bindingId: "linkbrain-stage",
+          issuerUrl: "https://linktrend-mini.tailf7e13a.ts.net:9443",
+          clientId: "brain-client",
+          clientAssertionKeyRef: keyRef,
+        },
+      },
+    });
+    const allowed = collectGrantedMachineTokenBindingRecords({
+      pluginId: "linkbrain",
+      pluginConfig: {
+        machineToken: {
+          bindingId: "linkbrain-stage",
+          issuerUrl: "https://linktrend-mini.tailf7e13a.ts.net:9443",
+          clientId: "brain-client",
+          allowPrivateNetwork: true,
+          clientAssertionKeyRef: keyRef,
+        },
+      },
+    });
+    expect(denied[0]?.allowPrivateNetwork).toBeUndefined();
+    expect(allowed[0]?.allowPrivateNetwork).toBe(true);
+    expect(allowed[0]?.bindingFingerprint).not.toBe(denied[0]?.bindingFingerprint);
+  });
+
+  it("drops conflicting plugin vs MCP bindings when allowPrivateNetwork mismatches", () => {
+    const keyRef = {
+      source: "env" as const,
+      provider: "default",
+      id: "BRAIN_KEY",
+    };
+    const records = collectGrantedMachineTokenBindingRecords({
+      pluginId: "linkbrain",
+      pluginConfig: {
+        mcpServerName: "linkbrain",
+        machineToken: {
+          bindingId: "linkbrain-stage",
+          issuerUrl: "https://linktrend-mini.tailf7e13a.ts.net:9443",
+          clientId: "brain-client",
+          allowPrivateNetwork: true,
+          clientAssertionKeyRef: keyRef,
+        },
+      },
+      mcpServers: {
+        linkbrain: {
+          auth: "machine_token",
+          machineToken: {
+            bindingId: "linkbrain-stage",
+            issuerUrl: "https://linktrend-mini.tailf7e13a.ts.net:9443",
+            clientId: "brain-client",
+            clientAssertionKeyRef: keyRef,
+          },
+        },
+      },
+    });
+    expect(records).toEqual([]);
   });
 
   describe("adversarial immutable registry scope", () => {
@@ -799,7 +1178,7 @@ describe("agents machine-token-host", () => {
         resolveKeyPem: resolveKeyPemStub(),
         resolveAccess,
         invalidateCache: (fingerprint) => {
-          invalidated.push(fingerprint);
+          invalidated.push(invalidationFingerprint(fingerprint));
         },
       });
       publishMachineTokenFacadeGeneration(first.handle);
@@ -811,7 +1190,7 @@ describe("agents machine-token-host", () => {
         resolveKeyPem: resolveKeyPemStub(),
         resolveAccess,
         invalidateCache: (fingerprint) => {
-          invalidated.push(fingerprint);
+          invalidated.push(invalidationFingerprint(fingerprint));
         },
       });
       publishMachineTokenFacadeGeneration(second.handle);
