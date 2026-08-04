@@ -47,6 +47,7 @@ describe("Stage ops bounded payloads (not STAGE_CANARY stubs)", () => {
     for (const id of ["lisa-ship-05", "lisa-pull-07", "lisa-ship-16", "lisa-pull-18"]) {
       const job = jobs.find((j) => j.id === id)!;
       assert.ok(job.payload.toolsAllow.includes("sessions_wait"));
+      assert.ok(job.payload.toolsAllow.includes("apply_patch"));
       assert.ok(!job.payload.toolsAllow.includes("sessions_yield"));
       assert.match(job.payload.message, /runtime: "acp"/);
       assert.match(job.payload.message, /agentId: "codex"/);
@@ -120,6 +121,7 @@ describe("Stage Repair/GitOps supervision package", () => {
     assert.match(repair.payload.message, /blocked_no_store/);
     assert.ok(repair.payload.toolsAllow.includes("sessions_spawn"));
     assert.ok(repair.payload.toolsAllow.includes("sessions_wait"));
+    assert.ok(repair.payload.toolsAllow.includes("apply_patch"));
     assert.ok(!repair.payload.toolsAllow.includes("sessions_yield"));
     assert.match(repair.payload.message, /runtime: "acp"/);
     assert.match(repair.payload.message, /agentId: "codex"/);
