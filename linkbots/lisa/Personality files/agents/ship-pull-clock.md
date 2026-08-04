@@ -46,7 +46,7 @@ Related GitOps (not these four jobs): **Review Packager** Tue/Fri **08:00**; **S
 
 Each job: isolated `agentTurn`, preferred `agentId: lisa-cron`. Announce → Telegram `1123023078` with the **one-line** Clear/Issues result only. **Also** email that same one line after validated ACP outcome.
 
-**Tool allowlist:** cron `payload.toolsAllow` **and** `agents.list[lisa-cron].tools.allow` must include `sessions_spawn`, `sessions_wait`, `read`, `write`, `edit`, and `exec`. Do **not** include or call `sessions_yield` for Ship/Pull (see Wait contract). See `linkbots/lisa/docs/SHIP-PULL-CLOCK-INSTALL.md` and `linkbots/lisa/docs/LISA-OPS-CRON-MIGRATION-PLAN.md`.
+**Tool allowlist:** cron `payload.toolsAllow` **and** `agents.list[lisa-cron].tools.allow` must include `sessions_spawn`, `sessions_wait`, `apply_patch`, `read`, `write`, `edit`, and `exec`. The ACP runtime validates `apply_patch` and `edit` before spawn even when the bounded child does not call them. Do **not** include or call `sessions_yield` for Ship/Pull (see Wait contract). See `linkbots/lisa/docs/SHIP-PULL-CLOCK-INSTALL.md` and `linkbots/lisa/docs/LISA-OPS-CRON-MIGRATION-PLAN.md`.
 
 ## Repo list (sequential — one at a time)
 

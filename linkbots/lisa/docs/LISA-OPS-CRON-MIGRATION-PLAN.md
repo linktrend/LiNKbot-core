@@ -18,12 +18,12 @@ There is **no** option to deploy personality/cron updates and invent Clear outco
 
 ## Jobs to update (in place — keep IDs) — only after the gate above
 
-| Job            | Action | Message / allowlist changes                                                                                                                                                         |
-| -------------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `lisa-ship-05` | Update | Point at new `agents/ship-pull-clock.md` Ship 05; checkpoint-only wording; `toolsAllow` = spawn + **`sessions_wait`** + read/write/edit/exec; **exclude** `sessions_yield`          |
-| `lisa-pull-07` | Update | Same for Pull 07 + frozen-tip skip                                                                                                                                                  |
-| `lisa-ship-16` | Update | Same as Ship 05                                                                                                                                                                     |
-| `lisa-pull-18` | Update | Same as Pull 07                                                                                                                                                                     |
+| Job            | Action | Message / allowlist changes                                                                                                                                                            |
+| -------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `lisa-ship-05` | Update | Point at new `agents/ship-pull-clock.md` Ship 05; checkpoint-only wording; `toolsAllow` = spawn + **`sessions_wait`** + apply_patch/read/write/edit/exec; **exclude** `sessions_yield` |
+| `lisa-pull-07` | Update | Same for Pull 07 + frozen-tip skip                                                                                                                                                     |
+| `lisa-ship-16` | Update | Same as Ship 05                                                                                                                                                                        |
+| `lisa-pull-18` | Update | Same as Pull 07                                                                                                                                                                        |
 
 Digest / heartbeat jobs stay non-spawning (omit `sessions_spawn` / `sessions_wait`).
 
@@ -38,11 +38,11 @@ Digest / heartbeat jobs stay non-spawning (omit `sessions_spawn` / `sessions_wai
 
 ## Jobs / messages to remove
 
-| Item                                                                                    | When                                                      |
-| --------------------------------------------------------------------------------------- | --------------------------------------------------------- |
-| Any residual `lisa-ship-a` / `lisa-pull-a` / `lisa-ship-06` / `lisa-pull-08` duplicates | After verifying canonical four jobs                       |
-| Cron message text that says “open or update a PR” or “request Bugbot”                   | On update of the four Ship/Pull jobs                      |
-| Cron guidance that requires `sessions_yield` after ACP                                  | On update; replace with `sessions_wait` Wait contract     |
+| Item                                                                                    | When                                                  |
+| --------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| Any residual `lisa-ship-a` / `lisa-pull-a` / `lisa-ship-06` / `lisa-pull-08` duplicates | After verifying canonical four jobs                   |
+| Cron message text that says “open or update a PR” or “request Bugbot”                   | On update of the four Ship/Pull jobs                  |
+| Cron guidance that requires `sessions_yield` after ACP                                  | On update; replace with `sessions_wait` Wait contract |
 
 ## Deploy order (later, with Carlos approval — after hard gate)
 

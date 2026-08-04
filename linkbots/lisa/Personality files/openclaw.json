@@ -163,6 +163,7 @@
             "sessions_history",
             "sessions_spawn",
             "sessions_wait",
+            "apply_patch",
             "sessions_search",
             "conversations_list"
           ],

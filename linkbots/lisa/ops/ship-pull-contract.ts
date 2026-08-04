@@ -272,6 +272,7 @@ export function canFinishShipPullSuccessfully(gate: {
 export const SHIP_PULL_REQUIRED_TOOLS: readonly string[] = [
   "sessions_spawn",
   "sessions_wait",
+  "apply_patch",
   "read",
   "write",
   "edit",
