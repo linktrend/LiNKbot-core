@@ -238,4 +238,67 @@ describe("nemotron shadow plugin", () => {
     expect(complete).not.toHaveBeenCalled();
     expect(stores.get("receipts")?.values.size).toBe(0);
   });
+
+  it("uses the completed assistant message when llm_output arrives after agent_end", async () => {
+    const handlers = new Map<string, (...args: unknown[]) => unknown>();
+    const complete = vi.fn(async () => ({
+      text: "Shadow answer.",
+      provider: "openrouter",
+      model: "nvidia/nemotron-3-super-120b-a12b",
+      agentId: "main",
+      usage: { inputTokens: 4, outputTokens: 3, totalTokens: 7, costUsd: 0.001 },
+      audit: { caller: { kind: "plugin", id: "nemotron-shadow-eval" } },
+    }));
+    const api = {
+      registrationMode: "full",
+      pluginConfig: { sampleEvery: 2, sessionKeys: ["agent:main:main"] },
+      on: (name: string, handler: (...args: unknown[]) => unknown) => handlers.set(name, handler),
+      logger: { warn: vi.fn(), info: vi.fn(), debug: vi.fn(), error: vi.fn() },
+      runtime: {
+        llm: { complete },
+        state: { openSyncKeyedStore: () => new MemoryStore<unknown>() },
+      },
+    } as unknown as OpenClawPluginApi;
+    plugin.register(api);
+
+    for (let index = 1; index <= 2; index += 1) {
+      const runId = `late-output-${index}`;
+      const ctx = {
+        agentId: "main",
+        sessionKey: "agent:main:main",
+        runId,
+        modelProviderId: "openai",
+        modelId: "gpt-5.6-luna",
+      };
+      handlers.get("before_agent_run")!(
+        { prompt: "Explain why leaves appear green.", messages: [] },
+        ctx,
+      );
+      handlers.get("llm_input")!(
+        {
+          runId,
+          sessionId: "session",
+          provider: "openai",
+          model: "gpt-5.6-luna",
+          prompt: "Explain why leaves appear green.",
+          historyMessages: [],
+          imagesCount: 0,
+        },
+        ctx,
+      );
+      await handlers.get("agent_end")!(
+        {
+          runId,
+          success: true,
+          messages: [
+            { role: "user", content: "Explain why leaves appear green." },
+            { role: "assistant", content: [{ type: "text", text: "Primary answer." }] },
+          ],
+        },
+        ctx,
+      );
+    }
+
+    expect(complete).toHaveBeenCalledTimes(1);
+  });
 });
