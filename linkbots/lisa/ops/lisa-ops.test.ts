@@ -328,6 +328,20 @@ describe("Ship/Pull post-processing gate", () => {
     assert.ok(!allow.includes("sessions_yield"));
   });
 
+  it("forces image understanding through MiniMax instead of native Luna vision", () => {
+    const cfgPath = path.join(personalityRoot, "openclaw.json");
+    const cfg = JSON.parse(readFileSync(cfgPath, "utf8")) as {
+      tools?: {
+        media?: {
+          image?: { models?: Array<{ provider?: string; model?: string }> };
+        };
+      };
+    };
+    assert.deepEqual(cfg.tools?.media?.image?.models, [
+      { provider: "openrouter", model: "minimax/minimax-m3" },
+    ]);
+  });
+
   it("procedure allowlist text matches SHIP_PULL_REQUIRED_TOOLS", () => {
     const text = readPersonality("agents/ship-pull-clock.md");
     for (const tool of SHIP_PULL_REQUIRED_TOOLS) {
@@ -423,6 +437,13 @@ describe("Approved model routing (non-live)", () => {
           thinkingDefault: string;
         };
       };
+      tools: {
+        media: {
+          image: {
+            models: Array<{ provider: string; model: string }>;
+          };
+        };
+      };
       evaluationOnly: { enabledInDefaults: boolean; ref: string };
       liveMutationAllowed: boolean;
       pdfDocumentModelsCutover?: { capabilityStatus?: string; state?: string };
@@ -434,6 +455,9 @@ describe("Approved model routing (non-live)", () => {
     assert.equal(raw.agents.defaults.imageModel.primary, fragment.imageModel.primary);
     assert.equal(raw.agents.defaults.pdfModel?.primary, fragment.pdfModel.primary);
     assert.equal(raw.agents.defaults.thinkingDefault, fragment.thinkingDefault);
+    assert.deepEqual(raw.tools.media.image.models, [
+      { provider: "openrouter", model: "minimax/minimax-m3" },
+    ]);
     assert.equal(raw.evaluationOnly.enabledInDefaults, false);
     assert.equal(raw.pdfDocumentModelsCutover?.capabilityStatus, "approved_unverified");
     assert.equal(raw.pdfDocumentModelsCutover?.state, "enabled_candidate");

@@ -69,7 +69,7 @@ You wake up fresh each session. Continuity lives in files:
 - Default model: native OAuth `openai/gpt-5.6-luna` at High reasoning.
 - Orchestration: native OAuth `openai/gpt-5.6-terra` at Medium. Complex planning: native OAuth `openai/gpt-5.6-sol` at Medium.
 - Fallback chain: OpenRouter Luna Medium → OpenRouter GLM-5.2 → OpenRouter Kimi K3 → OpenRouter Gemini 3.5 Flash-Lite.
-- Image and PDF understanding: OpenRouter MiniMax-M3. Capability remains `approved_unverified` until controlled image/PDF receipts exist.
+- Image and PDF understanding: OpenRouter MiniMax-M3. Image input must use the explicit media route so native Luna vision cannot bypass MiniMax; PDF uses the configured `pdfModel` route.
 - Mode A/B controls answer _structure_, not thinking level (see Work Mode Routing)
 - Every coding task delegates first to the permanent `development-orchestrator`; Lisa does not select or call an executor directly. Read `tools/development-orchestrator.md` before dispatch.
 - Sonnet: manual selection only when Carlos explicitly requests by name
