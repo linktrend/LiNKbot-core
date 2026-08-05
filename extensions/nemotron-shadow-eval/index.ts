@@ -39,6 +39,39 @@ type Receipt = {
   qualityVerdict: "unjudged";
 };
 
+function extractLastAssistantText(messages: unknown[]): string | undefined {
+  for (let index = messages.length - 1; index >= 0; index -= 1) {
+    const message = messages[index];
+    if (!message || typeof message !== "object") {
+      continue;
+    }
+    const record = message as Record<string, unknown>;
+    if (record.role !== "assistant") {
+      continue;
+    }
+    if (typeof record.content === "string") {
+      return record.content.trim() || undefined;
+    }
+    if (!Array.isArray(record.content)) {
+      continue;
+    }
+    const text = record.content
+      .flatMap((block) => {
+        if (!block || typeof block !== "object") {
+          return [];
+        }
+        const value = (block as Record<string, unknown>).text;
+        return typeof value === "string" ? [value] : [];
+      })
+      .join("\n")
+      .trim();
+    if (text) {
+      return text;
+    }
+  }
+  return undefined;
+}
+
 export default definePluginEntry({
   id: "nemotron-shadow-eval",
   name: "Nemotron Shadow Evaluation",
@@ -111,10 +144,14 @@ export default definePluginEntry({
       }
       const state = runs.get(runId);
       runs.delete(runId);
-      if (!state || !event.success || state.toolUsed || !state.primaryText || !state.primaryModel) {
+      const primaryText = state?.primaryText ?? extractLastAssistantText(event.messages);
+      const primaryModel =
+        state?.primaryModel ??
+        (ctx.modelProviderId && ctx.modelId ? `${ctx.modelProviderId}/${ctx.modelId}` : undefined);
+      if (!state || !event.success || state.toolUsed || !primaryText || !primaryModel) {
         return;
       }
-      if (state.primaryModel.includes("nemotron")) {
+      if (primaryModel.includes("nemotron")) {
         return;
       }
 
@@ -151,7 +188,6 @@ export default definePluginEntry({
           reasoning: "medium",
           purpose: "nemotron-shadow-eval.sample",
         });
-        const primaryText = state.primaryText;
         const shadowText = shadow.text.trim();
         const costUsd = shadow.usage.costUsd ?? 0;
         daily.register(day, { samples: budget.samples + 1, costUsd: budget.costUsd + costUsd });
@@ -163,7 +199,7 @@ export default definePluginEntry({
           sessionHash: sha256(ctx.sessionKey ?? "unknown"),
           promptHash: sha256(state.prompt),
           contextParity: "prompt_only",
-          primaryModel: state.primaryModel,
+          primaryModel,
           shadowModel: `${shadow.provider}/${shadow.model}`,
           primaryExcerpt: sanitize(primaryText, config.maxOutputChars),
           shadowExcerpt: sanitize(shadowText, config.maxOutputChars),
