@@ -193,7 +193,8 @@
             "music_generate",
             "video_generate",
             "image_generate",
-            "skill_workshop"
+            "skill_workshop",
+            "sessions_yield"
           ]
         }
       },
