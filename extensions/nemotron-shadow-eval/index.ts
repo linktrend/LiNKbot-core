@@ -98,25 +98,18 @@ export default definePluginEntry({
       overflowPolicy: "evict-oldest",
     });
 
-    api.on("before_agent_run", (event, ctx) => {
+    api.on("llm_input", (event, ctx) => {
       const prompt = extractCurrentUserRequest(event.prompt);
       if (
         ctx.agentId !== config.agentId ||
         !ctx.sessionKey ||
         !config.sessionKeys.includes(ctx.sessionKey) ||
-        !ctx.runId ||
+        event.imagesCount !== 0 ||
         !eligiblePrompt(prompt, config)
       ) {
-        return { outcome: "pass" as const };
+        return;
       }
-      runs.set(ctx.runId, { prompt, toolUsed: false });
-      return { outcome: "pass" as const };
-    });
-
-    api.on("llm_input", (event) => {
-      if (event.imagesCount !== 0) {
-        runs.delete(event.runId);
-      }
+      runs.set(event.runId, { prompt, toolUsed: false });
     });
 
     api.on("before_tool_call", (_event, ctx) => {
