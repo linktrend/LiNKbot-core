@@ -1840,7 +1840,7 @@ describe("image tool implicit imageModel config", () => {
         agents: {
           defaults: {
             model: { primary: "openai/gpt-5.6-luna" },
-            imageModel: { primary: "openrouter/minimax/minimax-m3" },
+            imageModel: { primary: "openrouter/google/gemini-2.5-flash-lite" },
           },
         },
         tools: {
@@ -1856,7 +1856,10 @@ describe("image tool implicit imageModel config", () => {
               api: "openai-completions",
               baseUrl: "https://openrouter.ai/api/v1",
               apiKey: "openrouter-test",
-              models: [makeModelDefinition("minimax/minimax-m3", ["text", "image"])],
+              models: [
+                makeModelDefinition("minimax/minimax-m3", ["text", "image"]),
+                makeModelDefinition("google/gemini-2.5-flash-lite", ["text", "image"]),
+              ],
             },
           },
         },
@@ -1873,6 +1876,9 @@ describe("image tool implicit imageModel config", () => {
       });
 
       expect(fetch).toHaveBeenCalledTimes(1);
+      const [, init] = fetchCallAt(fetch, 0) as [unknown, { body?: unknown }];
+      expect(typeof init.body).toBe("string");
+      expect(JSON.parse(String(init.body))).toMatchObject({ model: "minimax/minimax-m3" });
       expectToolText(result, "ok explicit minimax");
     });
   });

@@ -832,10 +832,31 @@ export function createImageTool(options?: {
 }): AnyAgentTool | null {
   const agentDir = options?.agentDir?.trim();
   const modelHasVision = options?.modelHasVision === true;
-  const explicit = coerceImageModelConfig(options?.config);
-  const hasConfiguredImageModel = hasToolModelConfig(explicit);
-  const hasExplicitMediaImageModel =
-    (options?.config?.tools?.media?.image?.models?.length ?? 0) > 0;
+  const defaultImageModelConfig = coerceImageModelConfig(options?.config);
+  const explicitMediaImageRefs = (options?.config?.tools?.media?.image?.models ?? []).flatMap(
+    (entry) => {
+      if (entry.type === "cli") {
+        return [];
+      }
+      const provider = entry.provider?.trim();
+      const model = entry.model?.trim();
+      if (!provider || !model) {
+        return [];
+      }
+      return [model.startsWith(`${provider}/`) ? model : `${provider}/${model}`];
+    },
+  );
+  const explicitMediaImageModelConfig: ImageModelConfig | null = explicitMediaImageRefs.length
+    ? {
+        primary: explicitMediaImageRefs[0],
+        ...(explicitMediaImageRefs.length > 1
+          ? { fallbacks: explicitMediaImageRefs.slice(1) }
+          : {}),
+      }
+    : null;
+  const configuredImageModel = explicitMediaImageModelConfig ?? defaultImageModelConfig;
+  const hasConfiguredImageModel = hasToolModelConfig(configuredImageModel);
+  const hasExplicitMediaImageModel = explicitMediaImageModelConfig !== null;
   const useNativeVision = modelHasVision && !hasExplicitMediaImageModel;
   if (!agentDir) {
     if (hasConfiguredImageModel) {
@@ -847,7 +868,7 @@ export function createImageTool(options?: {
     !useNativeVision && hasConfiguredImageModel
       ? resolveConfiguredImageModelRefs({
           cfg: options?.config,
-          imageModelConfig: explicit,
+          imageModelConfig: configuredImageModel,
         })
       : null;
   const shouldResolveAutoImageModel =
