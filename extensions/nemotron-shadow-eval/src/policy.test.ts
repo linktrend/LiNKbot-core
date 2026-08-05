@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import manifest from "../openclaw.plugin.json" with { type: "json" };
 import {
   DEFAULT_SHADOW_CONFIG,
   eligiblePrompt,
@@ -11,6 +12,10 @@ import {
 } from "./policy.js";
 
 describe("nemotron shadow policy", () => {
+  it("loads at gateway startup so lifecycle hooks are registered", () => {
+    expect(manifest.activation.onStartup).toBe(true);
+  });
+
   it("uses the final line-boundary Codex request header and preserves nonwrapped prompts", () => {
     const wrapped = [
       "OpenClaw assembled context for this turn:",

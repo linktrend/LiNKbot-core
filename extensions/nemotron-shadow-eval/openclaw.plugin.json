@@ -2,7 +2,7 @@
   "id": "nemotron-shadow-eval",
   "name": "Nemotron Shadow Evaluation",
   "description": "Samples every Nth eligible Lisa text response for isolated, non-user-visible Nemotron comparison.",
-  "activation": { "onStartup": false },
+  "activation": { "onStartup": true },
   "configSchema": {
     "type": "object",
     "additionalProperties": false,
