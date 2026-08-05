@@ -38,7 +38,10 @@ export type {
 } from "./prepared-model-runtime.owner.js";
 
 const log = createSubsystemLogger("agents/prepared-model-runtime");
-const DEFAULT_MODEL_RUNTIME_BUILD_TIMEOUT_MS = 30_000;
+// Multi-agent installations can legitimately need more than 30 seconds to build all
+// configured model catalogs in parallel on startup. Keep the guard bounded, but allow
+// enough time for the observed Mac Mini production topology (about 45 seconds).
+const DEFAULT_MODEL_RUNTIME_BUILD_TIMEOUT_MS = 90_000;
 let modelRuntimeBuildTimeoutMs = DEFAULT_MODEL_RUNTIME_BUILD_TIMEOUT_MS;
 
 const owners = new Map<string, PreparedModelRuntimeOwner>();
