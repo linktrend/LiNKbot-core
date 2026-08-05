@@ -41,13 +41,11 @@
       },
       "imageModel": {
         "primary": "openrouter/minimax/minimax-m3",
-        "_comment": "Image via imageModel. PDF uses documentModels.pdf as approved_unverified candidate (not imageModel)."
+        "_comment": "Image uses imageModel. PDF uses pdfModel as the approved_unverified candidate."
       },
-      "documentModels": {
-        "pdf": {
-          "primary": "openrouter/minimax/minimax-m3",
-          "_comment": "Approved PDF/document candidate only (capabilityStatus=approved_unverified). Non-live; first-production-proof receipt required before success claim."
-        }
+      "pdfModel": {
+        "primary": "openrouter/minimax/minimax-m3",
+        "_comment": "Approved PDF/document candidate only (capabilityStatus=approved_unverified). First-production-proof receipt required before success claim."
       },
       "thinkingDefault": "high"
     }

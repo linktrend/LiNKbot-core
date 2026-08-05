@@ -66,12 +66,12 @@ describe("model-routing-contract (non-live)", () => {
     const imagePdf = LISA_APPROVED_MODEL_ROUTING.entries.find((e) => e.slot === "imagePdf");
     assert.ok(imagePdf);
     assert.match(imagePdf.notes ?? "", /approved_unverified/i);
-    assert.match(imagePdf.notes ?? "", /documentModels\.pdf/i);
+    assert.match(imagePdf.notes ?? "", /pdfModel/i);
     assert.ok(!/Image\/PDF via MiniMax native vision catalog/i.test(imagePdf.notes ?? ""));
     assert.ok(!/proven PDF|PDF support proven/i.test(imagePdf.notes ?? ""));
   });
 
-  it("builds non-live agents.defaults fragment with documentModels.pdf candidate", () => {
+  it("builds the agents.defaults fragment with a pdfModel candidate", () => {
     const fragment = buildNonLiveAgentsDefaultsFragment();
     assert.equal(fragment.model.primary, "openai/gpt-5.6-luna");
     assert.equal(fragment.thinkingDefault, "high");
@@ -82,7 +82,7 @@ describe("model-routing-contract (non-live)", () => {
       "openrouter/google/gemini-3.5-flash-lite",
     ]);
     assert.equal(fragment.imageModel.primary, "openrouter/minimax/minimax-m3");
-    assert.equal(fragment.documentModels.pdf.primary, "openrouter/minimax/minimax-m3");
+    assert.equal(fragment.pdfModel.primary, "openrouter/minimax/minimax-m3");
     assert.equal(fragment.evaluationOnly.enabledInDefaults, false);
     assert.ok(!fragment.evaluationOnly.ref.includes(":free"));
     assert.match(fragment.evaluationOnly.ref, /nemotron/i);
@@ -130,7 +130,7 @@ describe("model-routing-contract (non-live)", () => {
         defaults: {
           model: { primary: string; fallbacks: string[] };
           imageModel: { primary: string };
-          documentModels?: { pdf?: { primary: string } };
+          pdfModel?: { primary: string };
           thinkingDefault: string;
         };
       };
@@ -170,10 +170,7 @@ describe("model-routing-contract (non-live)", () => {
     assert.equal(raw.agents.defaults.model.primary, fragment.model.primary);
     assert.deepEqual(raw.agents.defaults.model.fallbacks, fragment.model.fallbacks);
     assert.equal(raw.agents.defaults.imageModel.primary, fragment.imageModel.primary);
-    assert.equal(
-      raw.agents.defaults.documentModels?.pdf?.primary,
-      fragment.documentModels.pdf.primary,
-    );
+    assert.equal(raw.agents.defaults.pdfModel?.primary, fragment.pdfModel.primary);
     assert.equal(raw.agents.defaults.thinkingDefault, fragment.thinkingDefault);
     assert.equal(raw.evaluationOnly.enabledInDefaults, false);
   });

@@ -53,13 +53,13 @@ export type PdfDocumentModelsRollback = {
 };
 
 /**
- * Machine-readable PDF documentModels cutover.
+ * Machine-readable PDF model cutover.
  * Principal-approved MiniMax-M3 candidate at approved_unverified — still
- * non-live; first production proof receipt required before success claims.
+ * first production proof receipt required before success claims.
  */
 export type PdfDocumentModelsCutover = {
   state: PdfCutoverState;
-  /** When true, non-live fragment may set documentModels.pdf as candidate. */
+  /** When true, the runtime fragment may set agents.defaults.pdfModel as candidate. */
   documentModelsEnabled: boolean;
   capabilityStatus: PdfCapabilityStatus;
   /** Approved PDF/document routing candidate ref. */
@@ -241,9 +241,9 @@ export const LISA_APPROVED_MODEL_ROUTING = {
       label: "OpenRouter MiniMax-M3",
       enabledInDefaults: true,
       // Packet slot name remains imagePdf. Image uses agents.defaults.imageModel;
-      // PDF uses agents.defaults.documentModels.pdf as approved_unverified candidate.
+      // PDF uses agents.defaults.pdfModel as approved_unverified candidate.
       notes:
-        "Image via agents.defaults.imageModel (catalog input text+image). PDF via agents.defaults.documentModels.pdf candidate (pdfDocumentModelsCutover.state=enabled_candidate, capabilityStatus=approved_unverified) — Principal-approved but unverified; require first-production-proof receipt before any success claim; never silently substitute another paid document model.",
+        "Image via agents.defaults.imageModel (catalog input text+image). PDF via agents.defaults.pdfModel candidate (pdfDocumentModelsCutover.state=enabled_candidate, capabilityStatus=approved_unverified) — Principal-approved but unverified; require first-production-proof receipt before any success claim; never silently substitute another paid document model.",
       verifiedSources: [
         "extensions/minimax/provider-models.ts MINIMAX_DEFAULT_MODEL_ID",
         "extensions/minimax/provider-models.ts MINIMAX_TEXT_MODEL_CATALOG MiniMax-M3",
@@ -345,7 +345,7 @@ export function imageModelRef(
   return image.ref;
 }
 
-/** Approved PDF/document candidate ref (documentModels.pdf). */
+/** Approved PDF/document candidate ref (agents.defaults.pdfModel). */
 export function pdfDocumentModelRef(
   routing: LisaApprovedModelRouting = LISA_APPROVED_MODEL_ROUTING,
 ): string {
@@ -433,7 +433,7 @@ export function buildNonLiveAgentsDefaultsFragment(
 ): {
   model: { primary: string; fallbacks: string[] };
   imageModel: { primary: string };
-  documentModels: { pdf: { primary: string } };
+  pdfModel: { primary: string };
   thinkingDefault: ReasoningEffort;
   evaluationOnly: { ref: string; enabledInDefaults: false };
   pdfDocumentModelsCutover: {
@@ -462,10 +462,8 @@ export function buildNonLiveAgentsDefaultsFragment(
     imageModel: {
       primary: imageModelRef(routing),
     },
-    documentModels: {
-      pdf: {
-        primary: pdfDocumentModelRef(routing),
-      },
+    pdfModel: {
+      primary: pdfDocumentModelRef(routing),
     },
     thinkingDefault: primaryReasoningEffort(routing),
     evaluationOnly: {
@@ -580,8 +578,8 @@ export function validateApprovedRouting(
     if (!/approved_unverified/i.test(image.notes)) {
       errors.push("imagePdf notes must state capabilityStatus approved_unverified");
     }
-    if (!/documentModels\.pdf/i.test(image.notes)) {
-      errors.push("imagePdf notes must distinguish PDF documentModels.pdf route");
+    if (!/pdfModel/i.test(image.notes)) {
+      errors.push("imagePdf notes must distinguish the PDF pdfModel route");
     }
     if (/proven|production proof (complete|done)|PDF support proven/i.test(image.notes)) {
       errors.push("imagePdf notes must not claim MiniMax-M3 PDF as proven");

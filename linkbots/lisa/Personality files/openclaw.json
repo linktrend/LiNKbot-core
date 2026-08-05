@@ -2,46 +2,55 @@
   "agents": {
     "defaults": {
       "workspace": "/Users/linktrend/.openclaw-lisa/workspace",
-      "thinkingDefault": "medium",
+      "thinkingDefault": "high",
       "reasoningDefault": "off",
       "verboseDefault": "off",
       "blockStreamingDefault": "off",
       "model": {
-        "primary": "openrouter/minimax/minimax-m3",
+        "primary": "openai/gpt-5.6-luna",
         "fallbacks": [
-          "openrouter/deepseek/deepseek-v4-pro",
-          "ollama/qwen3.5:9b"
+          "openrouter/openai/gpt-5.6-luna",
+          "openrouter/z-ai/glm-5.2",
+          "openrouter/moonshotai/kimi-k3",
+          "openrouter/google/gemini-3.5-flash-lite"
         ]
       },
       "models": {
+        "openai/gpt-5.6-luna": {
+          "alias": "Luna High (Native OAuth)"
+        },
+        "openai/gpt-5.6-terra": {
+          "alias": "Terra Medium Orchestrator (Native OAuth)"
+        },
+        "openai/gpt-5.6-sol": {
+          "alias": "Sol Medium Planner (Native OAuth)"
+        },
+        "openrouter/openai/gpt-5.6-luna": {
+          "alias": "Luna Medium (OpenRouter Backup)",
+          "params": {
+            "thinking": "medium"
+          }
+        },
         "openrouter/minimax/minimax-m3": {
-          "alias": "MiniMax M3"
-        },
-        "openrouter/qwen/qwen3.6-plus": {
-          "alias": "Qwen 3.6+"
-        },
-        "openrouter/deepseek/deepseek-v4-pro": {
-          "alias": "DeepSeek v4 Pro"
+          "alias": "MiniMax M3 (Image/PDF via OpenRouter)"
         },
         "openrouter/z-ai/glm-5.2": {
-          "alias": "GLM 5.2 (General)"
+          "alias": "GLM 5.2 (Second Backup via OpenRouter)"
         },
-        "openrouter/moonshotai/kimi-k2": {
-          "alias": "Kimi K2 (Coding)"
+        "openrouter/moonshotai/kimi-k3": {
+          "alias": "Kimi K3 (Subsequent Fallback via OpenRouter)"
         },
-        "openrouter/anthropic/claude-sonnet-5": {
-          "alias": "Sonnet 5 (General)"
+        "openrouter/google/gemini-3.5-flash-lite": {
+          "alias": "Gemini 3.5 Flash-Lite (Utility/Final Fallback)"
         },
-        "openrouter/nvidia/nemotron-3-super-120b-a12b:free": {
-          "alias": "Nemotron 3 (Eval)"
-        },
-        "ollama/qwen3.5:9b": {
-          "alias": "Qwen 9B (Local)"
+        "openrouter/nvidia/nemotron-3-super-120b-a12b": {
+          "alias": "Nemotron 3 Super (Sampled Shadow Evaluation Only)"
         }
       },
+      "utilityModel": "openrouter/google/gemini-3.5-flash-lite",
       "heartbeat": {
         "every": "0m",
-        "model": "openrouter/deepseek/deepseek-v4-pro",
+        "model": "openrouter/google/gemini-3.5-flash-lite",
         "lightContext": true,
         "isolatedSession": true,
         "includeSystemPromptSection": false,
@@ -50,7 +59,12 @@
         "prompt": "Native free-running heartbeat is disabled (every: 0m). Visible heartbeats are cron lisa-heartbeat-45. If this prompt ever runs, ignore internal/runtime metadata; never echo them. Read HEARTBEAT.md and follow it. Produce the exact Heartbeat Output Format. Never invent data. Do not reply with only HEARTBEAT_OK. Reconcile battery-monitor-alert-35 from main/lisa-heartbeat-45 only (never digest cron.add)."
       },
       "subagents": {
-        "runTimeoutSeconds": 900
+        "delegationMode": "prefer",
+        "maxConcurrent": 4,
+        "maxSpawnDepth": 2,
+        "maxChildrenPerAgent": 3,
+        "runTimeoutSeconds": 900,
+        "requireAgentId": true
       },
       "sandbox": {
         "mode": "non-main",
@@ -60,16 +74,22 @@
           "image": "openclaw-sandbox:bookworm-slim"
         }
       },
+      "imageModel": {
+        "primary": "openrouter/minimax/minimax-m3"
+      },
+      "pdfModel": {
+        "primary": "openrouter/minimax/minimax-m3"
+      },
       "modelPolicy": {
         "allow": [
-          "openrouter/minimax/minimax-m3",
-          "openrouter/qwen/qwen3.6-plus",
-          "openrouter/deepseek/deepseek-v4-pro",
+          "openai/gpt-5.6-luna",
+          "openai/gpt-5.6-terra",
+          "openai/gpt-5.6-sol",
+          "openrouter/openai/gpt-5.6-luna",
           "openrouter/z-ai/glm-5.2",
-          "openrouter/moonshotai/kimi-k2",
-          "openrouter/anthropic/claude-sonnet-5",
-          "openrouter/nvidia/nemotron-3-super-120b-a12b:free",
-          "ollama/qwen3.5:9b"
+          "openrouter/moonshotai/kimi-k3",
+          "openrouter/google/gemini-3.5-flash-lite",
+          "openrouter/minimax/minimax-m3"
         ]
       },
       "memorySearch": {
@@ -81,7 +101,7 @@
       {
         "id": "main",
         "default": true,
-        "thinkingDefault": "medium",
+        "thinkingDefault": "high",
         "reasoningDefault": "off",
         "fastModeDefault": false,
         "identity": {
@@ -91,9 +111,11 @@
           "avatar": "assets/lisa-avatar.png"
         },
         "subagents": {
+          "delegationMode": "prefer",
           "allowAgents": [
-            "local-coder"
-          ]
+            "development-orchestrator"
+          ],
+          "requireAgentId": true
         },
         "skills": [
           "acp-router",
@@ -126,7 +148,7 @@
         ],
         "heartbeat": {
           "every": "0m",
-          "model": "openrouter/deepseek/deepseek-v4-pro",
+          "model": "openrouter/google/gemini-3.5-flash-lite",
           "lightContext": true,
           "isolatedSession": true,
           "includeSystemPromptSection": false,
@@ -176,12 +198,131 @@
         }
       },
       {
-        "id": "cursor",
-        "name": "Cursor ACP (Grok)",
+        "id": "development-orchestrator",
+        "name": "Development Orchestrator",
+        "workspace": "/Users/linktrend/.openclaw-lisa/workspace-development-orchestrator",
+        "model": {
+          "primary": "openai/gpt-5.6-terra",
+          "fallbacks": []
+        },
+        "modelPolicy": {
+          "allow": [
+            "openai/gpt-5.6-terra"
+          ]
+        },
+        "thinkingDefault": "medium",
+        "sandbox": {
+          "mode": "off"
+        },
+        "tools": {
+          "profile": "coding",
+          "deny": [
+            "cron",
+            "message",
+            "sessions_yield"
+          ]
+        },
+        "subagents": {
+          "delegationMode": "prefer",
+          "allowAgents": [
+            "planner",
+            "luna-executor",
+            "cursor-executor"
+          ],
+          "requireAgentId": true,
+          "runTimeoutSeconds": 1800
+        },
+        "heartbeat": {
+          "every": "0m"
+        }
+      },
+      {
+        "id": "planner",
+        "name": "Sol Development Planner",
+        "workspace": "/Users/linktrend/.openclaw-lisa/workspace-development-planner",
+        "model": {
+          "primary": "openai/gpt-5.6-sol",
+          "fallbacks": []
+        },
+        "modelPolicy": {
+          "allow": [
+            "openai/gpt-5.6-sol"
+          ]
+        },
+        "thinkingDefault": "medium",
+        "sandbox": {
+          "mode": "off"
+        },
+        "tools": {
+          "allow": [
+            "read",
+            "sessions_history",
+            "sessions_search"
+          ],
+          "deny": [
+            "write",
+            "edit",
+            "apply_patch",
+            "exec",
+            "process",
+            "sessions_spawn",
+            "sessions_yield",
+            "cron",
+            "message"
+          ]
+        },
+        "subagents": {
+          "allowAgents": [],
+          "requireAgentId": true
+        },
+        "heartbeat": {
+          "every": "0m"
+        }
+      },
+      {
+        "id": "luna-executor",
+        "name": "Luna High Development Executor",
+        "workspace": "/Users/linktrend/.openclaw-lisa/workspace-luna-executor",
+        "model": {
+          "primary": "openai/gpt-5.6-luna",
+          "fallbacks": []
+        },
+        "modelPolicy": {
+          "allow": [
+            "openai/gpt-5.6-luna"
+          ]
+        },
+        "thinkingDefault": "high",
+        "sandbox": {
+          "mode": "off"
+        },
+        "tools": {
+          "profile": "coding",
+          "deny": [
+            "sessions_spawn",
+            "sessions_yield",
+            "cron",
+            "message"
+          ]
+        },
+        "subagents": {
+          "allowAgents": [],
+          "requireAgentId": true,
+          "runTimeoutSeconds": 1800
+        },
+        "heartbeat": {
+          "every": "0m"
+        }
+      },
+      {
+        "id": "cursor-executor",
+        "name": "Cursor Grok 4.5 High Fast Executor",
         "runtime": {
           "type": "acp",
           "acp": {
-            "agent": "cursor"
+            "agent": "cursor",
+            "backend": "acpx",
+            "mode": "oneshot"
           }
         },
         "model": {
@@ -193,47 +334,12 @@
             "primary": "grok-4.5[effort=high,fast=true]",
             "fallbacks": []
           },
-          "runTimeoutSeconds": 900
+          "allowAgents": [],
+          "requireAgentId": true,
+          "runTimeoutSeconds": 1800
         },
         "heartbeat": {
           "every": "0m"
-        }
-      },
-      {
-        "id": "local-coder",
-        "name": "Local Coder",
-        "workspace": "/Users/linktrend/.openclaw-lisa/workspace-local-coder",
-        "model": {
-          "primary": "ollama/qwen3.5:9b"
-        },
-        "thinkingDefault": "off",
-        "fastModeDefault": false,
-        "identity": {
-          "name": "Local Coder",
-          "emoji": "💻",
-          "theme": "isolated local coding worker"
-        },
-        "tools": {
-          "profile": "coding",
-          "deny": [
-            "music_generate",
-            "video_generate",
-            "image_generate",
-            "skill_workshop",
-            "browser",
-            "group:web",
-            "sessions_spawn",
-            "sessions_send",
-            "subagents",
-            "message",
-            "cron"
-          ]
-        },
-        "heartbeat": {
-          "every": "0m"
-        },
-        "subagents": {
-          "runTimeoutSeconds": 1200
         }
       }
     ]
@@ -373,6 +479,29 @@
       },
       "googlechat": {
         "enabled": true
+      },
+      "nemotron-shadow-eval": {
+        "enabled": true,
+        "hooks": {
+          "allowConversationAccess": true
+        },
+        "llm": {
+          "allowModelOverride": true,
+          "allowedModels": [
+            "openrouter/nvidia/nemotron-3-super-120b-a12b"
+          ]
+        },
+        "config": {
+          "agentId": "main",
+          "sessionKeys": [
+            "agent:main:main"
+          ],
+          "sampleEvery": 10,
+          "model": "openrouter/nvidia/nemotron-3-super-120b-a12b",
+          "maxTokens": 800,
+          "maxDailySamples": 10,
+          "maxDailyCostUsd": 1
+        }
       }
     }
   },
@@ -384,20 +513,7 @@
     "backend": "acpx",
     "defaultAgent": "cursor",
     "allowedAgents": [
-      "claude",
-      "codex",
-      "copilot",
-      "cursor",
-      "droid",
-      "gemini",
-      "iflow",
-      "kilocode",
-      "kimi",
-      "kiro",
-      "openclaw",
-      "opencode",
-      "pi",
-      "qwen"
+      "cursor"
     ]
   },
   "diagnostics": {
