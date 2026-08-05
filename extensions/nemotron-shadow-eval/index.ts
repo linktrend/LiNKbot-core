@@ -64,18 +64,23 @@ export default definePluginEntry({
       overflowPolicy: "evict-oldest",
     });
 
-    api.on("llm_input", (event, ctx) => {
+    api.on("before_agent_run", (event, ctx) => {
       if (
         ctx.agentId !== config.agentId ||
         !ctx.sessionKey ||
-        !config.sessionKeys.includes(ctx.sessionKey)
+        !config.sessionKeys.includes(ctx.sessionKey) ||
+        !ctx.runId ||
+        !eligiblePrompt(event.prompt, config)
       ) {
         return;
       }
-      if (event.imagesCount !== 0 || !eligiblePrompt(event.prompt, config)) {
-        return;
+      runs.set(ctx.runId, { prompt: event.prompt, toolUsed: false });
+    });
+
+    api.on("llm_input", (event) => {
+      if (event.imagesCount !== 0) {
+        runs.delete(event.runId);
       }
-      runs.set(event.runId, { prompt: event.prompt, toolUsed: false });
     });
 
     api.on("before_tool_call", (_event, ctx) => {
