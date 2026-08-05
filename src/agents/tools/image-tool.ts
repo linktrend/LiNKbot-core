@@ -833,21 +833,25 @@ export function createImageTool(options?: {
   const agentDir = options?.agentDir?.trim();
   const modelHasVision = options?.modelHasVision === true;
   const explicit = coerceImageModelConfig(options?.config);
+  const hasConfiguredImageModel = hasToolModelConfig(explicit);
+  const hasExplicitMediaImageModel =
+    (options?.config?.tools?.media?.image?.models?.length ?? 0) > 0;
+  const useNativeVision = modelHasVision && !hasExplicitMediaImageModel;
   if (!agentDir) {
-    if (hasToolModelConfig(explicit)) {
+    if (hasConfiguredImageModel) {
       throw new Error("createImageTool requires agentDir when enabled");
     }
     return null;
   }
   const explicitImageModelConfig =
-    !modelHasVision && hasToolModelConfig(explicit)
+    !useNativeVision && hasConfiguredImageModel
       ? resolveConfiguredImageModelRefs({
           cfg: options?.config,
           imageModelConfig: explicit,
         })
       : null;
   const shouldResolveAutoImageModel =
-    !modelHasVision && !explicitImageModelConfig && !options?.deferAutoModelResolution;
+    !useNativeVision && !explicitImageModelConfig && !options?.deferAutoModelResolution;
   const resolvedImageModelConfig = shouldResolveAutoImageModel
     ? resolveImageModelConfigForTool({
         cfg: options?.config,
@@ -856,22 +860,22 @@ export function createImageTool(options?: {
         authStore: options?.authProfileStore,
       })
     : explicitImageModelConfig;
-  if (!modelHasVision && !resolvedImageModelConfig && !options?.deferAutoModelResolution) {
+  if (!useNativeVision && !resolvedImageModelConfig && !options?.deferAutoModelResolution) {
     return null;
   }
   const remoteMediaSsrfPolicy = resolveRemoteMediaSsrfPolicy(options?.config);
 
-  const description = modelHasVision
+  const description = useNativeVision
     ? "Load image(s) for direct visual inspection: image one path/URL, images max 20. Prompt images already visible; use only for images not provided."
     : explicitImageModelConfig
       ? "Analyze image(s) with configured model: image one path/URL, images max 20; prompt says inspection."
       : "Analyze image(s) with available vision: image one path/URL, images max 20; prompt says inspection.";
 
   return {
-    label: modelHasVision ? "View Image" : "Image",
+    label: useNativeVision ? "View Image" : "Image",
     name: "image",
     description,
-    ...(modelHasVision ? { catalogMode: "direct-only" as const } : {}),
+    ...(useNativeVision ? { catalogMode: "direct-only" as const } : {}),
     parameters: Type.Object({
       prompt: Type.Optional(Type.String()),
       image: Type.Optional(Type.String({ description: "One image path/URL." })),
@@ -880,7 +884,7 @@ export function createImageTool(options?: {
           description: "Image paths/URLs; maxImages default 20.",
         }),
       ),
-      ...(modelHasVision ? {} : { model: Type.Optional(Type.String()) }),
+      ...(useNativeVision ? {} : { model: Type.Optional(Type.String()) }),
       maxBytesMb: optionalFiniteNumberSchema({ exclusiveMinimum: 0 }),
       maxImages: optionalPositiveIntegerSchema(),
     }),
@@ -944,7 +948,7 @@ export function createImageTool(options?: {
             imageModelConfig: ImageModelConfig;
             imageCompression: ImageCompressionPolicy;
           };
-      if (modelHasVision) {
+      if (useNativeVision) {
         imageRoute = { kind: "native" };
       } else {
         const imageModelConfig =

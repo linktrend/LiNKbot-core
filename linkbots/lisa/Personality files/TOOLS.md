@@ -50,7 +50,7 @@ Native OAuth profiles are agent-scoped and may read through to the main profile;
 - **Primary:** native OAuth `openai/gpt-5.6-luna` at High.
 - **Fallback chain:** OpenRouter Luna Medium → GLM-5.2 → Kimi K3 → Gemini 3.5 Flash-Lite.
 - **Image:** `openrouter/minimax/minimax-m3` via the explicit `tools.media.image.models` route, with `agents.defaults.imageModel.primary` retained as the image-tool fallback. The explicit route prevents native Luna vision from bypassing MiniMax.
-- **PDF / document:** `openrouter/minimax/minimax-m3` via `agents.defaults.pdfModel.primary` — controlled OpenRouter PDF proof passed on 2026-08-05.
+- **PDF / document:** `openrouter/minimax/minimax-m3` via `agents.defaults.pdfModel.primary` — a controlled OpenRouter HTTP 200 proof receipt was captured on 2026-08-05; capability remains `approved_unverified` until Principal acceptance of that receipt.
 - **PDF rollback:** on provider/model validation failure, disable **only** PDF document routing; keep text/image/default-fallback; never silently substitute another paid document model.
 - **Evaluation-only:** paid Nemotron Super — deterministic every-tenth eligible text-only shadow comparison through the fail-closed plugin; absent from defaults/fallbacks.
 - **Speed:** Standard (`fastMode: off`). Slow OK for non-urgent overnight work
