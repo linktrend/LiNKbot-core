@@ -75,7 +75,6 @@ describe("nemotron shadow plugin", () => {
       },
     } as unknown as OpenClawPluginApi;
     plugin.register(api);
-    const beforeAgentRun = handlers.get("before_agent_run")!;
     const llmInput = handlers.get("llm_input")!;
     const llmOutput = handlers.get("llm_output")!;
     const agentEnd = handlers.get("agent_end")!;
@@ -83,8 +82,12 @@ describe("nemotron shadow plugin", () => {
     for (let index = 1; index <= 10; index += 1) {
       const runId = `run-${index}`;
       const ctx = { agentId: "main", sessionKey: "agent:main:main", runId };
-      beforeAgentRun(
+      llmInput(
         {
+          runId,
+          sessionId: "session",
+          provider: "openai",
+          model: "gpt-5.6-luna",
           prompt: [
             "OpenClaw assembled context for this turn:",
             "Quoted production credential safety guidance.",
@@ -92,17 +95,6 @@ describe("nemotron shadow plugin", () => {
             "Current user request:",
             "Explain why the sky appears blue.",
           ].join("\n"),
-          messages: [],
-        },
-        ctx,
-      );
-      llmInput(
-        {
-          runId,
-          sessionId: "session",
-          provider: "openai",
-          model: "gpt-5.6-luna",
-          prompt: "OpenClaw compiled wrapper with production credential safety instructions.",
           historyMessages: [],
           imagesCount: 0,
           tools: [{ name: "read" }],
@@ -154,14 +146,12 @@ describe("nemotron shadow plugin", () => {
       },
     } as unknown as OpenClawPluginApi;
     plugin.register(api);
-    const beforeAgentRun = handlers.get("before_agent_run")!;
     const ctx = {
       agentId: "main",
       sessionKey: "agent:main:main",
       runId: "tool-run",
       toolName: "read",
     };
-    beforeAgentRun({ prompt: "Explain why the sky appears blue.", messages: [] }, ctx);
     handlers.get("llm_input")!(
       {
         runId: "tool-run",
@@ -211,7 +201,6 @@ describe("nemotron shadow plugin", () => {
     } as unknown as OpenClawPluginApi;
     plugin.register(api);
     const ctx = { agentId: "main", sessionKey: "agent:main:main", runId: "image-run" };
-    handlers.get("before_agent_run")!({ prompt: "Explain the sky.", messages: [] }, ctx);
     handlers.get("llm_input")!(
       {
         runId: "image-run",
@@ -270,10 +259,6 @@ describe("nemotron shadow plugin", () => {
         modelProviderId: "openai",
         modelId: "gpt-5.6-luna",
       };
-      handlers.get("before_agent_run")!(
-        { prompt: "Explain why leaves appear green.", messages: [] },
-        ctx,
-      );
       handlers.get("llm_input")!(
         {
           runId,
