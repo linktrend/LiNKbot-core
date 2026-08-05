@@ -107,9 +107,10 @@ export default definePluginEntry({
         !ctx.runId ||
         !eligiblePrompt(prompt, config)
       ) {
-        return;
+        return { outcome: "pass" as const };
       }
       runs.set(ctx.runId, { prompt, toolUsed: false });
+      return { outcome: "pass" as const };
     });
 
     api.on("llm_input", (event) => {
