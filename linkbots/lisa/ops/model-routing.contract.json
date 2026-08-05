@@ -50,6 +50,19 @@
       "thinkingDefault": "high"
     }
   },
+  "tools": {
+    "media": {
+      "image": {
+        "models": [
+          {
+            "provider": "openrouter",
+            "model": "minimax/minimax-m3"
+          }
+        ],
+        "_comment": "Explicit media routing is required because native Luna vision would otherwise bypass agents.defaults.imageModel."
+      }
+    }
+  },
   "evaluationOnly": {
     "ref": "openrouter/nvidia/nemotron-3-super-120b-a12b",
     "enabledInDefaults": false,

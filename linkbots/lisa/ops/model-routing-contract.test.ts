@@ -134,6 +134,13 @@ describe("model-routing-contract (non-live)", () => {
           thinkingDefault: string;
         };
       };
+      tools: {
+        media: {
+          image: {
+            models: Array<{ provider: string; model: string }>;
+          };
+        };
+      };
       evaluationOnly: { enabledInDefaults: boolean; ref: string };
       liveMutationAllowed: boolean;
       paidSpendEnablementAllowed: boolean;
@@ -172,6 +179,9 @@ describe("model-routing-contract (non-live)", () => {
     assert.equal(raw.agents.defaults.imageModel.primary, fragment.imageModel.primary);
     assert.equal(raw.agents.defaults.pdfModel?.primary, fragment.pdfModel.primary);
     assert.equal(raw.agents.defaults.thinkingDefault, fragment.thinkingDefault);
+    assert.deepEqual(raw.tools.media.image.models, [
+      { provider: "openrouter", model: "minimax/minimax-m3" },
+    ]);
     assert.equal(raw.evaluationOnly.enabledInDefaults, false);
   });
 
