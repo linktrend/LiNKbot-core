@@ -228,7 +228,7 @@
           "allowAgents": [
             "planner",
             "luna-executor",
-            "cursor-executor"
+            "cursor"
           ],
           "requireAgentId": true,
           "runTimeoutSeconds": 1800
@@ -307,34 +307,6 @@
           ]
         },
         "subagents": {
-          "allowAgents": [],
-          "requireAgentId": true,
-          "runTimeoutSeconds": 1800
-        },
-        "heartbeat": {
-          "every": "0m"
-        }
-      },
-      {
-        "id": "cursor-executor",
-        "name": "Cursor Grok 4.5 High Fast Executor",
-        "runtime": {
-          "type": "acp",
-          "acp": {
-            "agent": "cursor",
-            "backend": "acpx",
-            "mode": "oneshot"
-          }
-        },
-        "model": {
-          "primary": "grok-4.5[effort=high,fast=true]",
-          "fallbacks": []
-        },
-        "subagents": {
-          "model": {
-            "primary": "grok-4.5[effort=high,fast=true]",
-            "fallbacks": []
-          },
           "allowAgents": [],
           "requireAgentId": true,
           "runTimeoutSeconds": 1800
