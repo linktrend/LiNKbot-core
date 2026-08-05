@@ -75,6 +75,7 @@ describe("nemotron shadow plugin", () => {
       },
     } as unknown as OpenClawPluginApi;
     plugin.register(api);
+    const beforeAgentRun = handlers.get("before_agent_run")!;
     const llmInput = handlers.get("llm_input")!;
     const llmOutput = handlers.get("llm_output")!;
     const agentEnd = handlers.get("agent_end")!;
@@ -82,13 +83,14 @@ describe("nemotron shadow plugin", () => {
     for (let index = 1; index <= 10; index += 1) {
       const runId = `run-${index}`;
       const ctx = { agentId: "main", sessionKey: "agent:main:main", runId };
+      beforeAgentRun({ prompt: "Explain why the sky appears blue.", messages: [] }, ctx);
       llmInput(
         {
           runId,
           sessionId: "session",
           provider: "openai",
           model: "gpt-5.6-luna",
-          prompt: "Explain why the sky appears blue.",
+          prompt: "OpenClaw compiled wrapper with production credential safety instructions.",
           historyMessages: [],
           imagesCount: 0,
           tools: [{ name: "read" }],
@@ -140,12 +142,14 @@ describe("nemotron shadow plugin", () => {
       },
     } as unknown as OpenClawPluginApi;
     plugin.register(api);
+    const beforeAgentRun = handlers.get("before_agent_run")!;
     const ctx = {
       agentId: "main",
       sessionKey: "agent:main:main",
       runId: "tool-run",
       toolName: "read",
     };
+    beforeAgentRun({ prompt: "Explain why the sky appears blue.", messages: [] }, ctx);
     handlers.get("llm_input")!(
       {
         runId: "tool-run",
@@ -171,5 +175,55 @@ describe("nemotron shadow plugin", () => {
     );
     await handlers.get("agent_end")!({ runId: "tool-run", messages: [], success: true }, ctx);
     expect(complete).not.toHaveBeenCalled();
+  });
+
+  it("drops an eligible run when llm_input reports images", async () => {
+    const handlers = new Map<string, (...args: unknown[]) => unknown>();
+    const complete = vi.fn();
+    const stores = new Map<string, MemoryStore<unknown>>();
+    const api = {
+      registrationMode: "full",
+      pluginConfig: { sampleEvery: 2 },
+      on: (name: string, handler: (...args: unknown[]) => unknown) => handlers.set(name, handler),
+      logger: { warn: vi.fn(), info: vi.fn(), debug: vi.fn(), error: vi.fn() },
+      runtime: {
+        llm: { complete },
+        state: {
+          openSyncKeyedStore: ({ namespace }: { namespace: string }) => {
+            const store = new MemoryStore<unknown>();
+            stores.set(namespace, store);
+            return store;
+          },
+        },
+      },
+    } as unknown as OpenClawPluginApi;
+    plugin.register(api);
+    const ctx = { agentId: "main", sessionKey: "agent:main:main", runId: "image-run" };
+    handlers.get("before_agent_run")!({ prompt: "Explain the sky.", messages: [] }, ctx);
+    handlers.get("llm_input")!(
+      {
+        runId: "image-run",
+        sessionId: "session",
+        provider: "openai",
+        model: "gpt-5.6-luna",
+        prompt: "OpenClaw compiled wrapper with production safety instructions.",
+        historyMessages: [],
+        imagesCount: 1,
+      },
+      ctx,
+    );
+    handlers.get("llm_output")!(
+      {
+        runId: "image-run",
+        sessionId: "session",
+        provider: "openai",
+        model: "gpt-5.6-luna",
+        assistantTexts: ["answer"],
+      },
+      ctx,
+    );
+    await handlers.get("agent_end")!({ runId: "image-run", messages: [], success: true }, ctx);
+    expect(complete).not.toHaveBeenCalled();
+    expect(stores.get("receipts")?.values.size).toBe(0);
   });
 });
