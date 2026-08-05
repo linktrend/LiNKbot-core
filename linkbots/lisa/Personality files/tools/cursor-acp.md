@@ -12,15 +12,15 @@ tags: [cursor, acp, acpx, tools]
 
 # Cursor / ACP (OpenClaw acpx) — Full Reference
 
-**Mandatory rule (always in effect, kept in `AGENTS.md`):** when Carlos instructs Lisa to use/delegate to Cursor, on any channel, she must call `sessions_spawn` with `runtime: "acp"`, `agentId: "cursor"` — never substitute an internal subagent or self-write, never mislabel either as "Cursor." This file is the detail behind that rule.
+**Ownership rule:** only `development-orchestrator` may invoke this route as the executor for a scored 0–2 coding packet. Lisa always delegates coding to `development-orchestrator`; she never invokes Cursor directly, substitutes another route, or edits code herself.
 
 Lisa gateway uses `acp.backend: acpx` with `defaultAgent: cursor` (`cursor-agent acp`). ACP coding is **not** the Cursor TypeScript SDK path.
 
 **Critical id rule (2026-07-21):** Cursor ACP on this machine advertises `grok-4.5[effort=high,fast=true]` (among other non-Grok models). CLI catalog ids (`cursor-grok-4.5-medium`) and unadvertised bracket forms (`grok-4.5[effort=medium,fast=false]`, `grok-4.5[effort=high,fast=false]`) **fail** `session/set_config_option` and show as Tool error / failed yield if tried first. Always request the live advertised id below.
 
-**Trigger phrases (non-exhaustive):** `use Cursor`, `delegate to Cursor`, `have Cursor`, `send to Cursor`, dev/build/implement requests where Carlos expects the coding agent — **channel does not matter** (Telegram, Web UI, dashboard tab, iPhone).
+**Trigger:** the Development Orchestrator's deterministic score is 0–2, or a user explicitly requests Cursor and no hard gate applies. Channel does not matter.
 
-**Required action:** Call `sessions_spawn` with `runtime: "acp"`, `agentId: "cursor"`, and a clear task. Prefer also passing `model` (see below). Report back when Cursor finishes.
+**Required action:** the Development Orchestrator calls `sessions_spawn` with `runtime: "acp"`, `agentId: "cursor"`, the complete packet, and the exact model below. It waits, verifies the result, then checks ACP status for the applied model.
 
 **Ship/Pull isolated cron:** Never call `sessions_yield` after ACP spawn — yield kills the isolated cron parent before status CAS / email / final one-liner. See `agents/ship-pull-clock.md` Wait contract and `linkbots/lisa/docs/LISA-OPS-CORE-PREREQUISITE.md`. Main-session Cursor work may still use yield when the parent session stays wakeable.
 
@@ -38,7 +38,7 @@ Do **not** request medium/no-fast or `cursor-grok-4.5-medium` first. Alias remap
 - Live acpx: `plugins.entries.acpx.config.agents.cursor` launches `cursor-agent acp` (no CLI `--model`; ACP model is applied via advertised sessionOptions).
 - Fork behavior: maps CLI aliases and unadvertised Grok bracket ids → `grok-4.5[effort=high,fast=true]` so the first attempt succeeds.
 
-**Lisa must still request the preferred model explicitly when spawning:**
+**The Development Orchestrator must request the preferred model explicitly:**
 
 ```json
 {
@@ -49,7 +49,7 @@ Do **not** request medium/no-fast or `cursor-grok-4.5-medium` first. Alias remap
 }
 ```
 
-Do **not** substitute Composer/GPT/Claude/Auto unless Carlos names one. Quote verbatim errors and stop on spawn failure.
+Do **not** substitute Composer/GPT/Claude/Auto. On failure, record the verbatim error and escalate exactly once to native OAuth Luna High as required by `development-orchestrator.md`.
 
 **Forbidden substitutes — NEVER:**
 
@@ -57,7 +57,7 @@ Do **not** substitute Composer/GPT/Claude/Auto unless Carlos names one. Quote ve
 - Lisa writing/editing code herself via `write` / `edit` / `apply_patch` when Carlos asked for Cursor
 - Labeling subagent or self-work as "Cursor"
 
-**On spawn failure:** Quote the tool error verbatim to Carlos and **STOP**. Do not silently fall back to subagent or self-write.
+**On spawn failure:** preserve the tool error in the route receipt and escalate once to Luna High. A second failure stops the packet. Never retry Cursor in a loop.
 
 **`apply_patch`/`edit` note (2026-07-20):** Both are technically allowed on Lisa's main session again — they had to be, because OpenClaw's ACP runtime inherits the requester's own tool-deny list before it will start a Cursor ACP session at all, so denying Lisa either one was also denying her the ability to spawn Cursor via `runtime: "acp"` (`apply_patch` was tried first; testing then showed `edit` is separately required too — `runtime="acp" is unavailable because the requester denies edit`). This does **not** relax the forbidden-substitutes rule above. The only time Lisa may call `apply_patch`/`edit` herself is when Cursor ACP is confirmed unavailable (a real spawn failure, quoted verbatim) **and** Carlos has explicitly told her to fix it directly in that conversation. Any other direct `apply_patch`/`edit` call from Lisa's main session (`agent:main:main`) triggers an automatic Telegram alert to Carlos (`~/.openclaw-lisa/tripwire/apply-patch-tripwire.mjs`, via the `apply-patch-tripwire` cron job, every 5 minutes) — it is not a silent bypass.
 

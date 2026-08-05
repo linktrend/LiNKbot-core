@@ -23,6 +23,148 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Live gates
   - H2: Phase 13 provisional handoff
 
+## CURSOR-GROK-PACI-INDEPENDENT-VERIFICATION-CORRECTION-2026-07-30.md
+
+- Route: /CURSOR-GROK-PACI-INDEPENDENT-VERIFICATION-CORRECTION-2026-07-30
+- Headings:
+  - H1: OpenClaw PACI Independent-Verification Correction Prompt
+  - H2: Corrections required
+  - H2: Required proof
+
+## CURSOR-GROK-PACI-IV-CORRECTION-WAVE10-2026-07-31.md
+
+- Route: /CURSOR-GROK-PACI-IV-CORRECTION-WAVE10-2026-07-31
+- Headings:
+  - H1: Cursor Grok 4.5 High — OpenClaw PACI IV Correction Wave 10
+  - H2: Independent Codex blocker
+  - H2: Lane A — explicit empty runtime snapshot
+  - H2: Lane B — exhaustive cold-start failure matrix
+  - H2: Lane C — real consumer lifecycle after rematerialization
+  - H2: Lane D — asynchronous setup/channel cancellation
+  - H2: Validation
+  - H2: Platform and hard boundaries
+
+## CURSOR-GROK-PACI-IV-CORRECTION-WAVE2-2026-07-30.md
+
+- Route: /CURSOR-GROK-PACI-IV-CORRECTION-WAVE2-2026-07-30
+- Headings:
+  - H1: Cursor Grok 4.5 High — OpenClaw PACI Independent-Verification Correction Wave 2
+  - H2: Mandatory corrections
+  - H3: Lane A — exact metadata and PACI contract validation
+  - H3: Lane B — hardened token and resource networking
+  - H3: Lane C — host-owned Plugin SDK authority
+  - H3: Lane D — SecretRef-only plugin configuration and transports
+  - H3: Lane E — Platform-parity fake and synchronization gate
+  - H2: Proof required
+  - H2: Hard boundaries
+
+## CURSOR-GROK-PACI-IV-CORRECTION-WAVE3-2026-07-30.md
+
+- Route: /CURSOR-GROK-PACI-IV-CORRECTION-WAVE3-2026-07-30
+- Headings:
+  - H1: Cursor Grok 4.5 High — OpenClaw PACI IV Correction Wave 3
+  - H2: Lane A — production host facade injection
+  - H2: Lane B — hardened MCP resource transport
+  - H2: Lane C — remove public test bypasses
+  - H2: Lane D — invalid explicit binding must fail closed
+  - H2: Lane E — evidence and Platform gate
+
+## CURSOR-GROK-PACI-IV-CORRECTION-WAVE4-2026-07-30.md
+
+- Route: /CURSOR-GROK-PACI-IV-CORRECTION-WAVE4-2026-07-30
+- Headings:
+  - H1: Cursor Grok 4.5 High — OpenClaw PACI IV Correction Wave 4
+  - H2: Lane A — immutable host-owned binding scope
+  - H2: Lane B — bounded MCP response bodies
+  - H2: Platform gate and proof
+
+## CURSOR-GROK-PACI-IV-CORRECTION-WAVE5-2026-07-30.md
+
+- Route: /CURSOR-GROK-PACI-IV-CORRECTION-WAVE5-2026-07-30
+- Headings:
+  - H1: Cursor Grok 4.5 High — OpenClaw PACI IV Correction Wave 5
+  - H2: Independent Codex findings that must be corrected
+  - H2: Parallel lanes
+  - H2: Lane A — atomic facade-generation replacement
+  - H2: Lane B — non-bypassable public MCP body ceiling
+  - H2: Platform pin, fixtures, and coordination
+  - H2: Required validation
+  - H2: Hard boundaries
+
+## CURSOR-GROK-PACI-IV-CORRECTION-WAVE6-2026-07-30.md
+
+- Route: /CURSOR-GROK-PACI-IV-CORRECTION-WAVE6-2026-07-30
+- Headings:
+  - H1: Cursor Grok 4.5 High — OpenClaw PACI IV Correction Wave 6
+  - H2: Independent Codex blocker
+  - H2: Required design — one loader-owned atomic publication boundary
+  - H2: Setup/channel and non-runtime loader paths
+  - H2: Required production-path tests
+  - H2: Platform, fixtures, and coordination
+  - H2: Validation
+  - H2: Hard boundaries
+
+## CURSOR-GROK-PACI-IV-CORRECTION-WAVE7-2026-07-31.md
+
+- Route: /CURSOR-GROK-PACI-IV-CORRECTION-WAVE7-2026-07-31
+- Headings:
+  - H1: Cursor Grok 4.5 High — OpenClaw PACI IV Correction Wave 7
+  - H2: Independent Codex blockers
+  - H2: Required architecture — one complete immutable runtime snapshot
+  - H2: Removed, disabled, and binding-removed behavior
+  - H2: Real concurrency, cancellation, and setup paths
+  - H2: Required production-path tests
+  - H2: Platform, fixtures, and coordination
+  - H2: Validation
+  - H2: Hard boundaries
+
+## CURSOR-GROK-PACI-IV-CORRECTION-WAVE8-2026-07-31.md
+
+- Route: /CURSOR-GROK-PACI-IV-CORRECTION-WAVE8-2026-07-31
+- Headings:
+  - H1: Cursor Grok 4.5 High — OpenClaw PACI IV Correction Wave 8
+  - H2: Independent Codex blockers
+  - H2: One canonical activation path, including cache hits
+  - H2: Make final activation non-fallible or fully rollback-safe
+  - H2: Complete removal and concurrency semantics
+  - H2: Required real-loader assertions
+  - H2: Platform and coordination
+  - H2: Validation
+  - H2: Hard boundaries
+
+## CURSOR-GROK-PACI-IV-CORRECTION-WAVE9-2026-07-31.md
+
+- Route: /CURSOR-GROK-PACI-IV-CORRECTION-WAVE9-2026-07-31
+- Headings:
+  - H1: Cursor Grok 4.5 High — OpenClaw PACI IV Correction Wave 9
+  - H2: Independent Codex blockers
+  - H2: Lane A — plugin instances and facades share one lifetime
+  - H2: Lane B — validate live ownership on same-active hits
+  - H2: Lane C — hook runner and complete activation rollback
+  - H2: Lane D — actual setup/channel lifecycle proof
+  - H2: Required real consumer assertions
+  - H2: Platform and coordination
+  - H2: Validation
+  - H2: Hard boundaries
+
+## CURSOR-GROK-PRODUCTION-EXECUTION-PROMPT-2026-07-30.md
+
+- Route: /CURSOR-GROK-PRODUCTION-EXECUTION-PROMPT-2026-07-30
+- Headings:
+  - H1: OpenClaw Prime PACI and LiNK Integration Execution Prompt
+  - H2: Principal authority and coordination boundary
+  - H2: Required preflight and reading
+  - H2: Parallel work allocation
+  - H2: Required implementation
+  - H3: 1. Generic public machine-token capability
+  - H3: 2. Managed MCP integration
+  - H3: 3. Public Plugin SDK seam
+  - H3: 4. Brain and Skills consumers
+  - H3: 5. Deterministic fake/local proof
+  - H3: 6. Stage/Lisa integration preparation
+  - H2: Likely owned surfaces
+  - H2: Validation and handoff
+
 ## OPENCLAW-PRIME-LISA-LINKBRAIN-LINKSKILLS-DETAILED-IMPLEMENTATION-PLAN.md
 
 - Route: /OPENCLAW-PRIME-LISA-LINKBRAIN-LINKSKILLS-DETAILED-IMPLEMENTATION-PLAN
@@ -124,6 +266,7 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
 - Headings:
   - H1: Repository and Agent Handover Briefing
   - H2: Document Metadata
+  - H2: Pre-production truth — 2026-08-02 (supersedes stale July dashboard claims)
   - H2: 1. Executive Summary
   - H2: 2. Repository Locations and Sources of Truth
   - H2: 3. Git and Upstream Relationship
@@ -194,9 +337,9 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
 - Headings:
   - H1: Active Agent Sessions
 
-## agent-sessions/active/cursor-cloud-ocp-ci-fix-pr38-20260728-0906.md
+## agent-sessions/active/codex-local-mac-mini-desktop-app-lisa-native-oauth-routing-20260805-1226.md
 
-- Route: /agent-sessions/active/cursor-cloud-ocp-ci-fix-pr38-20260728-0906
+- Route: /agent-sessions/active/codex-local-mac-mini-desktop-app-lisa-native-oauth-routing-20260805-1226
 - Headings:
   - H1: Agent Session Record
   - H2: Identity
@@ -206,9 +349,9 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Progress
   - H2: Next Action
 
-## agent-sessions/active/cursor-local-mac-mini-desktop-workspace-orchestrator-20260723-1539.md
+## agent-sessions/active/cursor-cloud-agent-ocp-w10-lisa-release-20260801-0920.md
 
-- Route: /agent-sessions/active/cursor-local-mac-mini-desktop-workspace-orchestrator-20260723-1539
+- Route: /agent-sessions/active/cursor-cloud-agent-ocp-w10-lisa-release-20260801-0920
 - Headings:
   - H1: Agent Session Record
   - H2: Identity
@@ -216,8 +359,42 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Ownership Scope
   - H2: Coordination
   - H2: Progress
-  - H3: 2026-07-23 15:39 Asia/Taipei — Orchestrator onboarding
-  - H3: 2026-07-23 16:05 Asia/Taipei — Re-read Codex primary Orchestrator state
+  - H2: Next Action
+
+## agent-sessions/active/cursor-local-mac-mini-agents-window-lisa-ocp-mac-stage-write-canaries-20260803-1533.md
+
+- Route: /agent-sessions/active/cursor-local-mac-mini-agents-window-lisa-ocp-mac-stage-write-canaries-20260803-1533
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/active/cursor-local-mac-mini-feature-acp-wait-20260731-1504.md
+
+- Route: /agent-sessions/active/cursor-local-mac-mini-feature-acp-wait-20260731-1504
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/active/cursor-local-mac-mini-lisa-stage-canary-20260802-0939.md
+
+- Route: /agent-sessions/active/cursor-local-mac-mini-lisa-stage-canary-20260802-0939
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
   - H2: Next Action
 
 ## agent-sessions/completed/README.md
@@ -289,6 +466,160 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H3: 2026-07-23 17:28 Asia/Taipei — Completed
   - H2: Next Action
 
+## agent-sessions/completed/codex-desktop-cron-display-alias-20260804.md
+
+- Route: /agent-sessions/completed/codex-desktop-cron-display-alias-20260804
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership and Safety
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/codex-desktop-cron-id-reconcile-20260804.md
+
+- Route: /agent-sessions/completed/codex-desktop-cron-id-reconcile-20260804
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/codex-desktop-cron-receipt-freshness-20260804.md
+
+- Route: /agent-sessions/completed/codex-desktop-cron-receipt-freshness-20260804
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/codex-desktop-ocp-acp-tool-policy-20260804-1430.md
+
+- Route: /agent-sessions/completed/codex-desktop-ocp-acp-tool-policy-20260804-1430
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/codex-desktop-repair-dispatcher-codex-20260804-1222.md
+
+- Route: /agent-sessions/completed/codex-desktop-repair-dispatcher-codex-20260804-1222
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/codex-local-mac-mini-desktop-app-feature-final-release-integration-20260804-1237.md
+
+- Route: /agent-sessions/completed/codex-local-mac-mini-desktop-app-feature-final-release-integration-20260804-1237
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/codex-terra-lisa-stage-workspace-independent-corrections-20260804-1430.md
+
+- Route: /agent-sessions/completed/codex-terra-lisa-stage-workspace-independent-corrections-20260804-1430
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/codex-terra-ship-pull-acp-20260804-2215.md
+
+- Route: /agent-sessions/completed/codex-terra-ship-pull-acp-20260804-2215
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/codex-terra-ship-pull-docs-correction-20260804.md
+
+- Route: /agent-sessions/completed/codex-terra-ship-pull-docs-correction-20260804
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/codex-terra-ship-pull-manifest-correction-20260804-1147.md
+
+- Route: /agent-sessions/completed/codex-terra-ship-pull-manifest-correction-20260804-1147
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-cloud-feature-linkbrain-linkskills-machine-token-20260730.md
+
+- Route: /agent-sessions/completed/cursor-cloud-feature-linkbrain-linkskills-machine-token-20260730
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-cloud-feature-machine-token-sdk-host-20260730-1253.md
+
+- Route: /agent-sessions/completed/cursor-cloud-feature-machine-token-sdk-host-20260730-1253
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-cloud-feature-mcp-machine-token-wire-20260730.md
+
+- Route: /agent-sessions/completed/cursor-cloud-feature-mcp-machine-token-wire-20260730
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
 ## agent-sessions/completed/cursor-cloud-feature-openclawdevelopmentplan01-contract-consumption-20260728-0744.md
 
 - Route: /agent-sessions/completed/cursor-cloud-feature-openclawdevelopmentplan01-contract-consumption-20260728-0744
@@ -302,6 +633,101 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
 ## agent-sessions/completed/cursor-cloud-feature-openclawdevelopmentplan01-correction-wave2-20260728-0910.md
 
 - Route: /agent-sessions/completed/cursor-cloud-feature-openclawdevelopmentplan01-correction-wave2-20260728-0910
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-cloud-feature-paci-iv-wave3-lane-c-20260730.md
+
+- Route: /agent-sessions/completed/cursor-cloud-feature-paci-iv-wave3-lane-c-20260730
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-cloud-lisa-ocp-w10-lisa-release-20260801-0138.md
+
+- Route: /agent-sessions/completed/cursor-cloud-lisa-ocp-w10-lisa-release-20260801-0138
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-cloud-mac-mini-agents-window-feature-ocp-brain-capture-mcp-args-fix-20260804-0755.md
+
+- Route: /agent-sessions/completed/cursor-cloud-mac-mini-agents-window-feature-ocp-brain-capture-mcp-args-fix-20260804-0755
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-cloud-mac-mini-feature-machine-facade-reload-fix-20260803-1805.md
+
+- Route: /agent-sessions/completed/cursor-cloud-mac-mini-feature-machine-facade-reload-fix-20260803-1805
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-cloud-mac-mini-feature-machine-facade-reload-fix2-20260803-1842.md
+
+- Route: /agent-sessions/completed/cursor-cloud-mac-mini-feature-machine-facade-reload-fix2-20260803-1842
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-cloud-mac-mini-feature-machine-facade-reload-fix3-20260803-1916.md
+
+- Route: /agent-sessions/completed/cursor-cloud-mac-mini-feature-machine-facade-reload-fix3-20260803-1916
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-cloud-mac-mini-feature-machine-facade-reload-fix4-20260803-1938.md
+
+- Route: /agent-sessions/completed/cursor-cloud-mac-mini-feature-machine-facade-reload-fix4-20260803-1938
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-cloud-mac-mini-feature-machine-facade-reload-fix5-20260803-1951.md
+
+- Route: /agent-sessions/completed/cursor-cloud-mac-mini-feature-machine-facade-reload-fix5-20260803-1951
 - Headings:
   - H1: Agent Session Record
   - H2: Identity
@@ -326,6 +752,18 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
 ## agent-sessions/completed/cursor-cloud-mac-mini-feature-transport-adapters-20260728-0744.md
 
 - Route: /agent-sessions/completed/cursor-cloud-mac-mini-feature-transport-adapters-20260728-0744
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-cloud-ocp-ci-fix-pr38-20260728-0906.md
+
+- Route: /agent-sessions/completed/cursor-cloud-ocp-ci-fix-pr38-20260728-0906
 - Headings:
   - H1: Agent Session Record
   - H2: Identity
@@ -370,9 +808,196 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Coordination
   - H2: Decisions
 
+## agent-sessions/completed/cursor-local-cli-ocp-w10-independent-correction-20260801-1007.md
+
+- Route: /agent-sessions/completed/cursor-local-cli-ocp-w10-independent-correction-20260801-1007
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-cli-ocp-w20-cross-repo-integration-20260801-1115.md
+
+- Route: /agent-sessions/completed/cursor-local-cli-ocp-w20-cross-repo-integration-20260801-1115
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-mac-mini-agents-window-feature-linkbrain-conversation-access-gate-20260803-1737.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-agents-window-feature-linkbrain-conversation-access-gate-20260803-1737
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+  - H2: Closeout
+
+## agent-sessions/completed/cursor-local-mac-mini-agents-window-feature-linkbrain-live-hook-registration-20260803-1707.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-agents-window-feature-linkbrain-live-hook-registration-20260803-1707
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-mac-mini-agents-window-feature-linkskills-coexistence-policy-test-20260803-1750.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-agents-window-feature-linkskills-coexistence-policy-test-20260803-1750
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+  - H2: Closeout
+
+## agent-sessions/completed/cursor-local-mac-mini-agents-window-feature-linkskills-http-gateway-contract-20260803-1454.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-agents-window-feature-linkskills-http-gateway-contract-20260803-1454
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-mac-mini-agents-window-feature-ocp-brain-capture-contract-fix-20260803-2132.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-agents-window-feature-ocp-brain-capture-contract-fix-20260803-2132
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-mac-mini-agents-window-lisa-mac-stage-ops-install-20260803-1543.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-agents-window-lisa-mac-stage-ops-install-20260803-1543
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-mac-mini-agents-window-lisa-mac-stage-ops-preflight-20260803-1533.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-agents-window-lisa-mac-stage-ops-preflight-20260803-1533
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-mac-mini-agents-window-lisa-ocp-lisa-stage-workspace-complete-20260804-0939.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-agents-window-lisa-ocp-lisa-stage-workspace-complete-20260804-0939
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-mac-mini-agents-window-lisa-ocp-mac-stage-integration-20260803-1517.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-agents-window-lisa-ocp-mac-stage-integration-20260803-1517
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-mac-mini-agents-window-lisa-stage-link-integration-20260803-1440.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-agents-window-lisa-stage-link-integration-20260803-1440
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+  - H2: Progress (continued)
+  - H2: Next Action
+
 ## agent-sessions/completed/cursor-local-mac-mini-desktop-workspace-lisa-20260725-2320.md
 
 - Route: /agent-sessions/completed/cursor-local-mac-mini-desktop-workspace-lisa-20260725-2320
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-mac-mini-desktop-workspace-orchestrator-20260723-1539.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-desktop-workspace-orchestrator-20260723-1539
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H3: 2026-07-23 15:39 Asia/Taipei — Orchestrator onboarding
+  - H3: 2026-07-23 16:05 Asia/Taipei — Re-read Codex primary Orchestrator state
+  - H2: Next Action
+  - H2: Amendment 2026-07-28 20:48 Asia/Taipei
+
+## agent-sessions/completed/cursor-local-mac-mini-feature-brain-drain-evidence-truth-20260803-1704.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-feature-brain-drain-evidence-truth-20260803-1704
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-mac-mini-feature-brain-drain-proof-20260803-1651.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-feature-brain-drain-proof-20260803-1651
 - Headings:
   - H1: Agent Session Record
   - H2: Identity
@@ -397,6 +1022,157 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
 ## agent-sessions/completed/cursor-local-mac-mini-feature-linkbrain-phase3-20260727-1902.md
 
 - Route: /agent-sessions/completed/cursor-local-mac-mini-feature-linkbrain-phase3-20260727-1902
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-mac-mini-feature-machine-token-secretref-runtime-fix-20260803-1450.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-feature-machine-token-secretref-runtime-fix-20260803-1450
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-mac-mini-feature-ocp-w30-pdf-routing-20260801-1219.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-feature-ocp-w30-pdf-routing-20260801-1219
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-mac-mini-feature-paci-compat-handoff-closeout-20260730.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-feature-paci-compat-handoff-closeout-20260730
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-mac-mini-feature-paci-iv-wave2-20260730.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-feature-paci-iv-wave2-20260730
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-mac-mini-feature-paci-iv-wave3-20260730.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-feature-paci-iv-wave3-20260730
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-mac-mini-feature-paci-iv-wave4-20260730.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-feature-paci-iv-wave4-20260730
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-mac-mini-feature-paci-iv-wave5-20260730.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-feature-paci-iv-wave5-20260730
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-mac-mini-feature-paci-iv-wave6-20260730.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-feature-paci-iv-wave6-20260730
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-mac-mini-feature-paci-iv-wave7-20260731.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-feature-paci-iv-wave7-20260731
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Coordination
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-mac-mini-feature-paci-iv-wave8-20260731.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-feature-paci-iv-wave8-20260731
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-mac-mini-feature-paci-iv-wave9-20260731.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-feature-paci-iv-wave9-20260731
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-mac-mini-feature-paci-machine-token-20260730.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-feature-paci-machine-token-20260730
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-mac-mini-feature-paci-verification-correction-20260730.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-feature-paci-verification-correction-20260730
 - Headings:
   - H1: Agent Session Record
   - H2: Identity
@@ -442,6 +1218,18 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Progress
   - H2: Next Action
 
+## agent-sessions/completed/cursor-local-mac-mini-lisa-capture-timeout-wave5-20260728.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-lisa-capture-timeout-wave5-20260728
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
 ## agent-sessions/completed/cursor-local-mac-mini-lisa-digest-cron-format-20260727-1055.md
 
 - Route: /agent-sessions/completed/cursor-local-mac-mini-lisa-digest-cron-format-20260727-1055
@@ -466,6 +1254,126 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Progress
   - H2: Next Action
 
+## agent-sessions/completed/cursor-local-mac-mini-lisa-ops01-20260730-1050.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-lisa-ops01-20260730-1050
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-mac-mini-lisa-stage-ops-canary-final-20260803-1726.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-lisa-stage-ops-canary-final-20260803-1726
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-mac-mini-lisa-stage-ops-cert-20260803-1447.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-lisa-stage-ops-cert-20260803-1447
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-mac-mini-lisa-stage-ops-correction-20260803-1817.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-lisa-stage-ops-correction-20260803-1817
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-mac-mini-lisa-stage-ops-fifth-correction-20260803-1922.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-lisa-stage-ops-fifth-correction-20260803-1922
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-mac-mini-lisa-stage-ops-fourth-correction-20260803-1903.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-lisa-stage-ops-fourth-correction-20260803-1903
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-mac-mini-lisa-stage-ops-holds-close-20260803-1737.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-lisa-stage-ops-holds-close-20260803-1737
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-mac-mini-lisa-stage-ops-launch-blockers-20260803-1748.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-lisa-stage-ops-launch-blockers-20260803-1748
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-mac-mini-lisa-stage-ops-sixth-correction-20260803-1951.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-lisa-stage-ops-sixth-correction-20260803-1951
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-mac-mini-lisa-stage-ops-third-correction-20260803-1846.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-lisa-stage-ops-third-correction-20260803-1846
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
 ## agent-sessions/completed/cursor-local-mac-mini-lisa-telegram-silence-20260726-0915.md
 
 - Route: /agent-sessions/completed/cursor-local-mac-mini-lisa-telegram-silence-20260726-0915
@@ -477,6 +1385,102 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Coordination
   - H2: Notes
   - H2: Recovery note — 2026-07-26 09:37 Asia/Taipei
+
+## agent-sessions/completed/cursor-local-mac-mini-lisa-wave6-20260728.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-lisa-wave6-20260728
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Material decisions
+  - H2: Closeout
+
+## agent-sessions/completed/cursor-local-mac-mini-lisa-wave7-20260728.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-lisa-wave7-20260728
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-mac-mini-lisa-wave8-20260729.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-lisa-wave8-20260729
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-mac-mini-lisa-wave9-mcp-toolfilter-20260729-0744.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-lisa-wave9-mcp-toolfilter-20260729-0744
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-mac-mini-release-hygiene-20260802-1313.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-release-hygiene-20260802-1313
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-mac-mini-release-hygiene-correction-20260802-1411.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-release-hygiene-correction-20260802-1411
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-macbook-black-feature-machine-token-tailnet-ssrf-fix-20260803-1504.md
+
+- Route: /agent-sessions/completed/cursor-local-macbook-black-feature-machine-token-tailnet-ssrf-fix-20260803-1504
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-ocp-mcp-toolfilter-live-runtime-fix-20260803-1542.md
+
+- Route: /agent-sessions/completed/cursor-local-ocp-mcp-toolfilter-live-runtime-fix-20260803-1542
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
 
 ## announcements/bluebubbles-imessage.md
 
@@ -3550,6 +4554,7 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
 - Route: /current-status
 - Headings:
   - H1: Current Repository Status
+  - H2: Current Status — 2026-08-02 13:30 Asia/Taipei (pre-production hygiene refresh)
   - H2: Current Status — 2026-07-27 15:17 Asia/Taipei
   - H2: Status Metadata
   - H2: Current Stable State
@@ -3608,6 +4613,77 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Notes
   - H2: Related
 
+## evidence/ocp-w10-lisa-release/README.md
+
+- Route: /evidence/ocp-w10-lisa-release/README
+- Headings:
+  - H1: OCP-W10-LISA-RELEASE — combined rollout evidence (docs only)
+  - H2: Verified inputs (fresh resolve)
+  - H2: Release graph (owned surfaces)
+  - H2: Independent ACP verification (pre-integration)
+  - H2: Model identifier verification (no secrets)
+  - H2: Hard stops honored
+
+## evidence/ocp-w20-cross-repo-integration/lane-a.md
+
+- Route: /evidence/ocp-w20-cross-repo-integration/lane-a
+- Headings:
+  - H1: OCP-W20 Lane A — sessionswait + cross-repo PACI contract
+  - H2: 1. sessionswait wake contract
+  - H2: 2. Prior-input reconciliation (ancestors of base; no merges)
+  - H2: 3. Test strengthenings (Lane A)
+  - H2: 4. Cross-repo contract / fixture (READ-ONLY pins)
+  - H2: 5. Focused local proof
+  - H2: 6. Lane A changed paths
+  - H2: 7. Blockers
+  - H2: 8. Result
+
+## evidence/ocp-w20-cross-repo-integration/lane-b.md
+
+- Route: /evidence/ocp-w20-cross-repo-integration/lane-b
+- Headings:
+  - H1: OCP-W20 Lane B — Lisa ops opt-in / non-live / sessionswait
+  - H2: Scope
+  - H2: Mission outcomes
+  - H2: Proof command
+  - H2: Changed paths (Lane B owned)
+  - H2: Blockers
+  - H2: Notes
+
+## evidence/ocp-w20-cross-repo-integration/lane-c.md
+
+- Route: /evidence/ocp-w20-cross-repo-integration/lane-c
+- Headings:
+  - H1: OCP-W20-CROSS-REPO-INTEGRATION — Lane C evidence
+  - H2: Mission outcomes
+  - H2: READ-ONLY MiniMax PDF evidence
+  - H2: Changed paths (Lane C ownership only)
+  - H2: Validation
+  - H2: Hard stops honored
+
+## evidence/ocp-w20-cross-repo-integration/release-graph.md
+
+- Route: /evidence/ocp-w20-cross-repo-integration/release-graph
+- Headings:
+  - H1: OCP-W20 Cross-Repo Integration — Candidate Release Graph
+  - H2: Immutable certified candidate heads (read-only)
+  - H2: Freshly resolved openclawprime integration leads (already ancestors of base)
+  - H2: Deterministic candidate release order (no source-branch merges)
+  - H2: Remaining gates
+  - H2: Rollback
+
+## evidence/ocp-w30-approved-pdf-routing/release-graph.md
+
+- Route: /evidence/ocp-w30-approved-pdf-routing/release-graph
+- Headings:
+  - H1: OCP-W30 Approved PDF Routing — Candidate Release Graph
+  - H2: Routing summary (candidate)
+  - H2: Candidate posture (not proven)
+  - H2: Deterministic candidate release order
+  - H2: Remaining human gates
+  - H2: Rollback
+  - H2: Honesty bounds
+
 ## execution/openclawdevelopmentplan01/BRAIN-TOOL-NAME-DECISION-PACKET.md
 
 - Route: /execution/openclawdevelopmentplan01/BRAIN-TOOL-NAME-DECISION-PACKET
@@ -3620,6 +4696,30 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Authority
   - H2: Status
   - H2: Principal routing instruction
+
+## execution/openclawdevelopmentplan01/COUNTERSIGN-CLOSEOUT-AUTHCLAIMS-1.1-2026-07-30.md
+
+- Route: /execution/openclawdevelopmentplan01/COUNTERSIGN-CLOSEOUT-AUTHCLAIMS-1.1-2026-07-30
+- Headings:
+  - H1: AuthClaims 1.1 countersign closeout packet
+  - H2: Gate closed (AuthClaims 1.1 only)
+  - H2: Brain residual notes (non-blocking; fixture bytes unchanged)
+  - H2: Explicit non-claims
+  - H2: Docs / provenance updated
+  - H2: Validation (focused local only)
+  - H2: Remaining blockers
+  - H2: Codex ask
+
+## execution/openclawdevelopmentplan01/COUNTERSIGN-REQUEST-WAVE8-AUTHCLAIMS-1.1.md
+
+- Route: /execution/openclawdevelopmentplan01/COUNTERSIGN-REQUEST-WAVE8-AUTHCLAIMS-1.1
+- Headings:
+  - H1: Countersign request — AuthClaims 1.1.0 fixture refresh (wave 8)
+  - H2: Why re-countersign was required
+  - H2: Aggregates (attested)
+  - H2: AuthClaims 1.1 provenance (authoritative)
+  - H2: Owner action required
+  - H2: Explicit non-claims
 
 ## execution/openclawdevelopmentplan01/COUNTERSIGN-REQUEST.md
 
@@ -3635,13 +4735,58 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
 - Route: /execution/openclawdevelopmentplan01/FIXTURE-OWNER-SIGNOFF
 - Headings:
   - H1: Fixture owner sign-off process
-  - H2: Purpose
-  - H2: Aggregate hashes (sorted JSON inventory method)
-  - H2: Related contract pins (correction wave 2b)
-  - H2: Brain denial → correction → countersign path
-  - H2: Countersignature — LiNKbrain owner
-  - H2: Countersignature — LiNKskills owner
+  - H2: Honest status (AuthClaims 1.1.0 — current)
+  - H2: Domain-owner attestation records
+  - H3: LiNKbrain
+  - H3: LiNKskills
+  - H2: Residual non-blocking notes (Brain; fixture bytes unchanged)
+  - H2: Aggregate method
+  - H2: Contract pins (wave 7/8)
+  - H2: Historical countersignatures (AuthClaims 1.0.0 — superseded for positive path)
   - H2: Gate closeout note
+
+## execution/openclawdevelopmentplan01/LISA-MACHINE-TOKEN-INTEGRATION-PACKET-PREPARED-2026-07-30.md
+
+- Route: /execution/openclawdevelopmentplan01/LISA-MACHINE-TOKEN-INTEGRATION-PACKET-PREPARED-2026-07-30
+- Headings:
+  - H1: Lisa stage/production integration packet — PREPARED ONLY (do not apply)
+  - H2: Templates (default-disabled)
+  - H2: SecretRef / binding names (names only — no values)
+  - H2: Redacted operator commands (placeholders)
+  - H2: Combined checklist (with Lisa ops/model branch)
+  - H2: Explicit non-actions for this implementation wave
+
+## execution/openclawdevelopmentplan01/MCP-TOOLFILTER-SDK-PREREQUISITE-DEVIATION.md
+
+- Route: /execution/openclawdevelopmentplan01/MCP-TOOLFILTER-SDK-PREREQUISITE-DEVIATION
+- Headings:
+  - H1: SDK prerequisite / plan deviation — managed MCP feature-flag toolFilter seam
+  - H2: Verdict
+  - H2: Evidence inspected (public / documented)
+  - H2: Current OpenClaw consumer behavior (honest)
+  - H2: Requested generic SDK prerequisite
+  - H2: Classification guidance for Codex (not self-certify)
+  - H2: Explicit non-claims
+
+## execution/openclawdevelopmentplan01/MCP-TOOLFILTER-SDK-SEAM-IMPLEMENTED.md
+
+- Route: /execution/openclawdevelopmentplan01/MCP-TOOLFILTER-SDK-SEAM-IMPLEMENTED
+- Headings:
+  - H1: SDK prerequisite resolution — managed MCP feature-flag toolFilter seam
+  - H2: Status
+  - H2: Explicit non-claims
+
+## execution/openclawdevelopmentplan01/PACI-DRAFT-CONTRACT-PIN-2026-07-30.md
+
+- Route: /execution/openclawdevelopmentplan01/PACI-DRAFT-CONTRACT-PIN-2026-07-30
+- Headings:
+  - H1: Contract-delta packet — PACI frozen pin for OpenClaw local/fake baseline
+  - H2: Platform snapshot (frozen)
+  - H2: Supersedes
+  - H2: Principal decision file vs this prompt
+  - H2: Local/fake baseline use
+  - H2: Protocol behaviors implemented against (frozen)
+  - H2: Explicit non-claims
 
 ## execution/openclawdevelopmentplan01/PHASE-0-FREEZE-PACKET.md
 
@@ -3680,7 +4825,7 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: 3. LiNKbrain pin
   - H3: Tool-name freeze (non-negotiable for OpenClaw)
   - H2: 4. LiNKskills pin
-  - H3: Per-schema SHA-256
+  - H3: Per-schema SHA-256 (Skills upstream package inventory)
   - H2: 5. OpenClaw fixture package aggregates
   - H2: 6. Consumption rules
   - H2: 7. Exact next actions
@@ -3705,6 +4850,7 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Focused proof (re-run by integrator)
   - H2: Exit gate
   - H2: Decision packet — fixture owner sign-off
+  - H3: Historical (superseded for positive AuthClaims path)
   - H2: Exact next action
 
 ## execution/openclawdevelopmentplan01/PHASE-10-STATUS-BLOCKED.md
@@ -3743,6 +4889,149 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Rollback order (plan)
   - H2: Explicit status
 
+## execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md
+
+- Route: /execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX
+- Headings:
+  - H1: Phase 13 — Coverage / Evidence Index (Grok-owned)
+  - H2: Frozen authority
+  - H2: Counts
+  - H3: Grok completion claims (not Codex classifications)
+  - H3: Restored Section 2 source-hierarchy requirements
+  - H3: Phase-0 evidence artifacts (implemented claims)
+  - H2: Descriptive exclusions (reviewed)
+  - H2: Fixture aggregates (unchanged)
+  - H2: Phase-1 fixture gate (reconciled)
+  - H2: Codex next step
+  - H2: Amendment — 2026-07-30 PACI independent-verification correction
+
+## execution/openclawdevelopmentplan01/PHASE-13-PACI-IV-WAVE2-CORRECTION-HANDOFF-2026-07-30.md
+
+- Route: /execution/openclawdevelopmentplan01/PHASE-13-PACI-IV-WAVE2-CORRECTION-HANDOFF-2026-07-30
+- Headings:
+  - H1: Phase-13 provisional handoff — PACI IV correction Wave 2
+  - H2: Exact heads
+  - H2: Lisa operations worktree (preserved)
+  - H2: Lane outcomes (OpenClaw)
+  - H2: Platform repin state
+  - H2: Fixture / countersign state
+  - H2: Public Plugin SDK surface (focused)
+  - H2: Focused proof (trusted local)
+  - H2: Explicit non-claims
+  - H2: Unresolved gates
+  - H2: Exact next action
+
+## execution/openclawdevelopmentplan01/PHASE-13-PACI-IV-WAVE3-CORRECTION-HANDOFF-2026-07-30.md
+
+- Route: /execution/openclawdevelopmentplan01/PHASE-13-PACI-IV-WAVE3-CORRECTION-HANDOFF-2026-07-30
+- Headings:
+  - H1: Phase-13 provisional handoff — PACI IV correction Wave 3
+  - H2: Exact heads
+  - H2: Lisa operations worktree (preserved)
+  - H2: Lane outcomes (OpenClaw)
+  - H2: Platform repin state
+  - H2: Fixture / countersign state
+  - H2: Public Plugin SDK surface (focused)
+  - H2: Focused proof (trusted local)
+  - H2: Explicit non-claims
+  - H2: Unresolved gates
+  - H2: Exact next action
+
+## execution/openclawdevelopmentplan01/PHASE-13-PACI-IV-WAVE4-CORRECTION-HANDOFF-2026-07-30.md
+
+- Route: /execution/openclawdevelopmentplan01/PHASE-13-PACI-IV-WAVE4-CORRECTION-HANDOFF-2026-07-30
+- Headings:
+  - H1: Phase-13 provisional handoff — PACI IV correction Wave 4
+  - H2: Exact heads
+  - H2: Lisa operations worktree (preserved)
+  - H2: Lane outcomes (OpenClaw)
+  - H2: Platform repin state
+  - H2: Fixture / countersign state
+  - H2: Public Plugin SDK surface (focused)
+  - H2: Focused proof (trusted local)
+  - H2: Explicit non-claims
+  - H2: Unresolved gates
+  - H2: Exact next action
+
+## execution/openclawdevelopmentplan01/PHASE-13-PACI-IV-WAVE5-CORRECTION-HANDOFF-2026-07-30.md
+
+- Route: /execution/openclawdevelopmentplan01/PHASE-13-PACI-IV-WAVE5-CORRECTION-HANDOFF-2026-07-30
+- Headings:
+  - H1: Phase-13 provisional handoff — PACI IV correction Wave 5
+  - H2: Exact heads
+  - H2: Lisa operations worktree (preserved)
+  - H2: Lane outcomes (OpenClaw)
+  - H2: Platform repin state
+  - H2: Fixture / countersign state
+  - H2: Public Plugin SDK surface (focused)
+  - H2: Focused proof (trusted local)
+  - H2: Explicit non-claims
+  - H2: Unresolved gates
+  - H2: Exact next action
+
+## execution/openclawdevelopmentplan01/PHASE-13-PACI-IV-WAVE6-CORRECTION-HANDOFF-2026-07-30.md
+
+- Route: /execution/openclawdevelopmentplan01/PHASE-13-PACI-IV-WAVE6-CORRECTION-HANDOFF-2026-07-30
+- Headings:
+  - H1: Phase-13 provisional handoff — PACI IV correction Wave 6
+  - H2: Exact heads
+  - H2: Lisa operations worktree (preserved)
+  - H2: Correction outcome (OpenClaw)
+  - H2: Platform repin state
+  - H2: Fixture / countersign state
+  - H2: Public Plugin SDK surface (focused)
+  - H2: Focused proof (trusted local)
+  - H2: Explicit non-claims
+  - H2: Exact next action
+  - H2: Authoritative tip
+
+## execution/openclawdevelopmentplan01/PHASE-13-PACI-IV-WAVE7-CORRECTION-HANDOFF-2026-07-31.md
+
+- Route: /execution/openclawdevelopmentplan01/PHASE-13-PACI-IV-WAVE7-CORRECTION-HANDOFF-2026-07-31
+- Headings:
+  - H1: Phase-13 provisional handoff — PACI IV correction Wave 7
+  - H2: Exact heads
+  - H2: Lisa operations worktree (preserved)
+  - H2: Correction outcome (OpenClaw)
+  - H2: Platform repin state
+  - H2: Fixture / countersign state
+  - H2: Public Plugin SDK surface (focused)
+  - H2: Focused proof (trusted local)
+  - H2: Explicit non-claims
+  - H2: Exact next action
+
+## execution/openclawdevelopmentplan01/PHASE-13-PACI-IV-WAVE8-CORRECTION-HANDOFF-2026-07-31.md
+
+- Route: /execution/openclawdevelopmentplan01/PHASE-13-PACI-IV-WAVE8-CORRECTION-HANDOFF-2026-07-31
+- Headings:
+  - H1: Phase-13 provisional handoff — PACI IV correction Wave 8
+  - H2: Exact heads
+  - H2: Lisa operations worktree (preserved)
+  - H2: Correction outcome (OpenClaw)
+  - H2: Platform repin state
+  - H2: Fixture / countersign state
+  - H2: Public Plugin SDK surface (focused)
+  - H2: Focused proof (trusted local)
+  - H2: Explicit non-claims
+  - H2: Exact next action
+  - H2: Codex re-verify tip
+
+## execution/openclawdevelopmentplan01/PHASE-13-PACI-IV-WAVE9-CORRECTION-HANDOFF-2026-07-31.md
+
+- Route: /execution/openclawdevelopmentplan01/PHASE-13-PACI-IV-WAVE9-CORRECTION-HANDOFF-2026-07-31
+- Headings:
+  - H1: Phase-13 provisional handoff — PACI IV correction Wave 9
+  - H2: Exact heads
+  - H2: Lisa operations worktree (preserved)
+  - H2: Correction outcome (OpenClaw)
+  - H2: Platform repin state
+  - H2: Fixture / countersign state
+  - H2: Public Plugin SDK surface (focused)
+  - H2: Focused proof (trusted local)
+  - H2: Explicit non-claims
+  - H2: Codex re-verify tip
+  - H2: Exact next action
+
 ## execution/openclawdevelopmentplan01/PHASE-13-PROVISIONAL-GROK-HANDOFF.md
 
 - Route: /execution/openclawdevelopmentplan01/PHASE-13-PROVISIONAL-GROK-HANDOFF
@@ -3758,6 +5047,8 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H3: Tip proof (Phase 6 after transport land) — authoritative for re-verification
   - H3: Phase 6 full matrix — SKIPPEDPLATFORMLIVE items (named)
   - H3: Crabbox / Testbox
+  - H3: Wave 8 correction packet (authoritative for Codex Phase 14 re-verification)
+  - H3: Wave 7 correction packet (historical)
   - H3: Historical (superseded as tip claim)
   - H2: 6. Fixture sign-off
   - H2: 7. Configuration, live actions, Lisa mutation
@@ -3774,7 +5065,17 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: 14. Coverage index (phase / task / gate → evidence) — no final classifications
   - H2: 15. Native behavior and active-work statements
   - H2: Principal instruction (required close)
-  - H2: 16. Correction wave 2 / 2b changelog (2026-07-28)
+  - H2: 16. Correction wave 2 / 2b changelog (2026-07-28) — historical snapshot
+
+## execution/openclawdevelopmentplan01/PHASE-14-CLASSIFICATION-EVIDENCE-INDEX.md
+
+- Route: /execution/openclawdevelopmentplan01/PHASE-14-CLASSIFICATION-EVIDENCE-INDEX
+- Headings:
+  - H1: Plan §13.3 classification evidence index — Codex-owned (Phase 14)
+  - H2: Machine inputs
+  - H2: Classification status
+  - H2: Explicit non-claims
+  - H2: Countersign closeout pointer
 
 ## execution/openclawdevelopmentplan01/PHASE-2-STATUS.md
 
@@ -3858,6 +5159,7 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Next
   - H2: Capture durability amendment (2026-07-28)
   - H2: Capture concurrency amendment (2026-07-28 wave 4)
+  - H2: Capture/lifecycle bounded timeout amendment (2026-07-28 wave 5)
 
 ## execution/openclawdevelopmentplan01/PHASE-7-DECISION-PACKET-PLATFORM-STAGE.md
 
@@ -3899,6 +5201,206 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Rollback
   - H2: Explicit status
 
+## execution/openclawdevelopmentplan01/PLATFORM-PACI-OPENCLAW-COMPATIBILITY-HANDOFF-2026-07-30.md
+
+- Route: /execution/openclawdevelopmentplan01/PLATFORM-PACI-OPENCLAW-COMPATIBILITY-HANDOFF-2026-07-30
+- Headings:
+  - H1: Platform-facing handoff — PACI ↔ OpenClaw consumption compatibility
+  - H2: Verdict (unchanged after Platform correction recheck)
+  - H2: Inspected heads (provenance)
+  - H2: Spec baselines (current — Platform HEAD 20c550fb…)
+  - H3: Platform PACI (draft — not frozen / not live)
+  - H3: Prior Platform HEAD c4acc42… (historical)
+  - H3: OpenClaw (current — HEAD 86cb29a…)
+  - H2: Answers (with evidence) — reconfirmed
+  - H3: 1. Managed MCP OAuth vs PACI clientcredentials
+  - H3: 2. oauth.authProfileId — acquire/rotate PACI tokens?
+  - H3: 3. SecretRef for 15-minute bearer without restart/manual mutation?
+  - H3: 4. Brain HTTP / Skills telemetry share MCP token refresh?
+  - H3: 5–6. Smallest public seam + ownership
+  - H3: 7. Fake/local tests, privacy, state, rollback, live gates
+  - H2: Consumption-path classification matrix (authoritative)
+  - H2: Principal D14 / authorization bound
+  - H2: Implications
+  - H2: Explicit non-claims
+  - H2: Validation performed (this closeout)
+  - H2: Exact next action
+
+## execution/openclawdevelopmentplan01/WAVE10-CORRECTION-PACKET.md
+
+- Route: /execution/openclawdevelopmentplan01/WAVE10-CORRECTION-PACKET
+- Headings:
+  - H1: Wave 10 correction packet — Phase 14 (bounded)
+  - H2: Corrections
+  - H2: Explicit non-claims
+  - H2: Codex ask
+
+## execution/openclawdevelopmentplan01/WAVE11-CORRECTION-PACKET.md
+
+- Route: /execution/openclawdevelopmentplan01/WAVE11-CORRECTION-PACKET
+- Headings:
+  - H1: Wave 11 correction packet — Phase 14 (bounded)
+  - H2: Corrections
+  - H2: Validation (local; crabbox Testbox unavailable)
+  - H2: Explicit non-claims
+  - H2: Codex ask
+
+## execution/openclawdevelopmentplan01/WAVE12-CORRECTION-PACKET.md
+
+- Route: /execution/openclawdevelopmentplan01/WAVE12-CORRECTION-PACKET
+- Headings:
+  - H1: Wave 12 correction packet — Phase 14 (docs/tooling only)
+  - H2: Scope
+  - H2: Corrections
+  - H2: Validation
+  - H2: Explicit non-claims
+  - H2: Codex ask
+
+## execution/openclawdevelopmentplan01/WAVE13-CORRECTION-PACKET.md
+
+- Route: /execution/openclawdevelopmentplan01/WAVE13-CORRECTION-PACKET
+- Headings:
+  - H1: Wave 13 correction packet — Phase 14 (docs/tooling only)
+  - H2: Scope
+  - H2: Corrections
+  - H2: Validation
+  - H2: Explicit non-claims
+  - H2: Codex ask
+
+## execution/openclawdevelopmentplan01/WAVE14-CORRECTION-PACKET.md
+
+- Route: /execution/openclawdevelopmentplan01/WAVE14-CORRECTION-PACKET
+- Headings:
+  - H1: Wave 14 correction packet — Phase 14 (docs/tooling only)
+  - H2: Scope
+  - H2: Corrections
+  - H2: Validation
+  - H2: Explicit non-claims
+  - H2: Codex ask
+
+## execution/openclawdevelopmentplan01/WAVE15-CORRECTION-PACKET.md
+
+- Route: /execution/openclawdevelopmentplan01/WAVE15-CORRECTION-PACKET
+- Headings:
+  - H1: Wave 15 correction packet — Phase 14 (docs/tooling only)
+  - H2: Scope
+  - H2: Corrections
+  - H2: Descriptive allowlist (reviewed)
+  - H2: Validation
+  - H2: Explicit non-claims
+  - H2: Codex ask
+
+## execution/openclawdevelopmentplan01/WAVE16-CORRECTION-PACKET.md
+
+- Route: /execution/openclawdevelopmentplan01/WAVE16-CORRECTION-PACKET
+- Headings:
+  - H1: Wave 16 correction packet — Phase 14 (docs/tooling only)
+  - H2: Scope
+  - H2: Corrections
+  - H2: Exact-line descriptive exclusions (reviewed)
+  - H2: Section 3 requirements now extracted (sample)
+  - H2: Validation
+  - H2: Explicit non-claims
+  - H2: Codex ask
+
+## execution/openclawdevelopmentplan01/WAVE17-CORRECTION-PACKET.md
+
+- Route: /execution/openclawdevelopmentplan01/WAVE17-CORRECTION-PACKET
+- Headings:
+  - H1: Wave 17 correction packet — Phase 13 coverage/evidence (docs/tooling only)
+  - H2: Scope
+  - H2: Corrections
+  - H2: Semantic extraction rules (locked)
+  - H2: Exact-line descriptive exclusions (reviewed)
+  - H2: Machine inventory (Grok Phase-13; no Codex classifications)
+  - H2: Validation
+  - H2: Explicit non-claims
+  - H2: Codex ask
+
+## execution/openclawdevelopmentplan01/WAVE18-CORRECTION-PACKET.md
+
+- Route: /execution/openclawdevelopmentplan01/WAVE18-CORRECTION-PACKET
+- Headings:
+  - H1: Wave 18 correction packet — Phase 13 coverage/evidence (docs/tooling only)
+  - H2: Scope
+  - H2: Corrections
+  - H2: Restored Section 2 anchors
+  - H2: Counts
+  - H3: Evidence-mapped Phase-0 artifact paths
+  - H2: Validation
+  - H2: Explicit non-claims
+  - H2: Codex ask
+
+## execution/openclawdevelopmentplan01/WAVE19-CORRECTION-PACKET.md
+
+- Route: /execution/openclawdevelopmentplan01/WAVE19-CORRECTION-PACKET
+- Headings:
+  - H1: Wave 19 correction packet — AuthClaims documentation/provenance
+  - H2: Scope
+  - H2: Corrections
+  - H2: Authoritative AuthClaims pins / hashes
+  - H2: Changed files
+  - H2: Validation (focused local only)
+  - H2: Explicit non-claims
+  - H2: Codex ask
+
+## execution/openclawdevelopmentplan01/WAVE20-CORRECTION-PACKET.md
+
+- Route: /execution/openclawdevelopmentplan01/WAVE20-CORRECTION-PACKET
+- Headings:
+  - H1: Wave 20 correction packet — AuthClaims Platform HEAD + status provenance
+  - H2: Scope
+  - H2: Corrections
+  - H2: Countersign inspection target
+  - H2: Authoritative AuthClaims / Platform pins
+  - H2: Changed files
+  - H2: Validation (focused local only)
+  - H2: Explicit non-claims
+  - H2: Codex ask
+
+## execution/openclawdevelopmentplan01/WAVE6-CONFORMANCE-LEDGER.md
+
+- Route: /execution/openclawdevelopmentplan01/WAVE6-CONFORMANCE-LEDGER
+- Headings:
+  - H1: Item-level conformance ledger — OpenClaw PR #38 wave 6
+  - H2: Explicit non-claims
+
+## execution/openclawdevelopmentplan01/WAVE7-CORRECTION-PACKET.md
+
+- Route: /execution/openclawdevelopmentplan01/WAVE7-CORRECTION-PACKET
+- Headings:
+  - H1: Correction wave 7 — packet for OpenClaw Codex Phase 14 re-verification
+  - H2: Scope bounds (honored)
+  - H2: Findings addressed
+  - H2: Tip proof (local, focused)
+  - H2: AuthClaims pin (wave 7)
+  - H2: Explicit non-claims
+  - H2: Codex next action
+
+## execution/openclawdevelopmentplan01/WAVE8-CORRECTION-PACKET.md
+
+- Route: /execution/openclawdevelopmentplan01/WAVE8-CORRECTION-PACKET
+- Headings:
+  - H1: Correction wave 8 — packet for OpenClaw Codex Phase 14 re-verification
+  - H2: Scope bounds (honored)
+  - H2: Findings
+  - H2: Tip proof (local)
+  - H2: Fixture aggregates (awaiting owner countersign)
+  - H2: Explicit non-claims
+  - H2: Codex next action
+
+## execution/openclawdevelopmentplan01/WAVE9-CORRECTION-PACKET.md
+
+- Route: /execution/openclawdevelopmentplan01/WAVE9-CORRECTION-PACKET
+- Headings:
+  - H1: Correction wave 9 — packet for OpenClaw Codex Phase 14 re-verification
+  - H2: Scope bounds (honored)
+  - H2: Delivered
+  - H2: Tip proof (local)
+  - H2: Fixture aggregates (unchanged; still awaiting owner countersign)
+  - H2: Explicit non-claims
+  - H2: Codex next action
+
 ## execution/openclawdevelopmentplan01/contracts/README.md
 
 - Route: /execution/openclawdevelopmentplan01/contracts/README
@@ -3911,6 +5413,25 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
 - Route: /execution/openclawdevelopmentplan01/contracts/platform/auth-claims-1.0.0/README
 - Headings:
   - H1: Sanitized pin — platform.auth-claims/1.0.0
+
+## execution/openclawdevelopmentplan01/contracts/platform/auth-claims-1.1.0/FROZEN.md
+
+- Route: /execution/openclawdevelopmentplan01/contracts/platform/auth-claims-1.1.0/FROZEN
+- Headings:
+  - H1: FROZEN: platform.auth-claims/1.1.0
+  - H2: Correction wave 4 delta vs 1.0.0
+  - H2: Artifacts
+  - H2: Hashes (SHA-256 hex)
+  - H3: Schema
+  - H3: TypeScript
+  - H3: Fixtures (packages/contracts/fixtures/claims/)
+  - H2: Integration notes
+
+## execution/openclawdevelopmentplan01/contracts/platform/auth-claims-1.1.0/README.md
+
+- Route: /execution/openclawdevelopmentplan01/contracts/platform/auth-claims-1.1.0/README
+- Headings:
+  - H1: Platform AuthClaims 1.1.0 — OpenClaw pin copy
 
 ## execution/openclawdevelopmentplan01/mcp-templates/README.md
 
@@ -3930,11 +5451,74 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
 - Headings:
   - H1: Operator Runbooks — Brain / Skills Independent Controls
   - H2: Evidence tiers (read first)
-  - H2: Index
+  - H2: Plan §19 index (14 required)
   - H2: Template sources
   - H2: Independence rules
   - H2: Secret handling
   - H2: Related gates
+
+## execution/openclawdevelopmentplan01/runbooks/REHEARSAL-INDEPENDENT-2026-07-28-wave7.md
+
+- Route: /execution/openclawdevelopmentplan01/runbooks/REHEARSAL-INDEPENDENT-2026-07-28-wave7
+- Headings:
+  - H1: Independent Non-Live Runbook Rehearsal — Wave 7
+  - H2: Hard bounds observed
+  - H2: Sources walked
+  - H2: Shared FAKE commands actually executed
+  - H2: Per-runbook rehearsal (plan §19)
+  - H3: 1 — Brain enable/disable/read-only/write/drain
+  - H3: 2 — Skills enable/disable/discovery/execution/telemetry
+  - H3: 3 — Brain credential issue/rotate/revoke/recover
+  - H3: 4 — Skills credential issue/rotate/revoke/recover
+  - H3: 5 — MCP probe, repeated-failure pause, recovery
+  - H3: 6 — Plugin/Gateway restart with durable outboxes
+  - H3: 7 — Queue pressure, reject-new, capacity, dead-letter
+  - H3: 8 — Brain capture hold, retention deletion, Principal exceptions
+  - H3: 9 — Skills bundle/profile mismatch and last-verified-bundle
+  - H3: 10 — Privacy or secret incident containment
+  - H3: 11 — Cross-domain leakage incident containment
+  - H3: 12 — Platform rollback, migration recovery, backup, restore
+  - H3: 13 — Lisa native-behavior regression isolation
+  - H3: 14 — Stage/production canary start/pause/restart/accept/reject
+  - H2: Scoreboard (non-live rehearsal)
+  - H2: Explicit non-claims
+  - H2: Operator attestation
+
+## execution/openclawdevelopmentplan01/runbooks/brain-capture-drain-stage-canary.md
+
+- Route: /execution/openclawdevelopmentplan01/runbooks/brain-capture-drain-stage-canary
+- Headings:
+  - H1: Runbook — Brain capture enqueue → worker drain → durable visibility canary
+  - H2: Intended architecture (do not invent an MCP drain tool)
+  - H2: Evidence tiers
+  - H2: A) FAKE — reproducible non-live proof (safe anytime)
+  - H2: B) LIVE-STAGE — coordinator canary (authorized mutation only)
+  - H3: B1. Baseline (non-destructive read)
+  - H3: B2. Enqueue-only (if not already proven)
+  - H3: B3. Worker drain (the missing stage step)
+  - H3: B4. Durable Brain visibility
+  - H3: B5. Disable / rollback
+  - H2: Receipt requirements
+  - H2: Commands for the active coordinator (copy/paste)
+  - H2: Related
+
+## execution/openclawdevelopmentplan01/runbooks/brain-capture-hold-retention.md
+
+- Route: /execution/openclawdevelopmentplan01/runbooks/brain-capture-hold-retention
+- Headings:
+  - H1: Runbook — 8. Brain capture hold, retention deletion, Principal exceptions
+  - H2: FAKE / TEMPLATE rehearsal (safe anytime)
+  - H2: Expected sanitized evidence
+  - H2: Rehearsal record
+
+## execution/openclawdevelopmentplan01/runbooks/brain-credential-rotate-revoke.md
+
+- Route: /execution/openclawdevelopmentplan01/runbooks/brain-credential-rotate-revoke
+- Headings:
+  - H1: Runbook — 3. Brain credential issue/rotate/revoke/recover
+  - H2: FAKE / TEMPLATE rehearsal (safe anytime)
+  - H2: Expected sanitized evidence
+  - H2: Rehearsal record
 
 ## execution/openclawdevelopmentplan01/runbooks/brain-enable-disable-drain.md
 
@@ -3965,6 +5549,15 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Stop conditions / escalate
   - H2: Related
 
+## execution/openclawdevelopmentplan01/runbooks/cross-domain-leakage-incident.md
+
+- Route: /execution/openclawdevelopmentplan01/runbooks/cross-domain-leakage-incident
+- Headings:
+  - H1: Runbook — 11. Cross-domain leakage incident containment
+  - H2: FAKE / TEMPLATE rehearsal (safe anytime)
+  - H2: Expected sanitized evidence
+  - H2: Rehearsal record
+
 ## execution/openclawdevelopmentplan01/runbooks/gateway-restart-durable-outboxes.md
 
 - Route: /execution/openclawdevelopmentplan01/runbooks/gateway-restart-durable-outboxes
@@ -3979,6 +5572,37 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Failure / escalate
   - H2: Related
 
+## execution/openclawdevelopmentplan01/runbooks/lisa-native-regression-isolation.md
+
+- Route: /execution/openclawdevelopmentplan01/runbooks/lisa-native-regression-isolation
+- Headings:
+  - H1: Runbook — 13. Lisa native-behavior regression isolation
+  - H2: FAKE / TEMPLATE rehearsal (safe anytime)
+  - H2: Expected sanitized evidence
+  - H2: Rehearsal record
+
+## execution/openclawdevelopmentplan01/runbooks/lisa-stage-ops-canary.md
+
+- Route: /execution/openclawdevelopmentplan01/runbooks/lisa-stage-ops-canary
+- Headings:
+  - H1: Runbook — Mac Mini lisa-stage ops canary (OpenRouter-only)
+  - H2: Verified stage posture (read-only audit 2026-08-03 + launch-blocker close)
+  - H2: A) Read-only inventory (safe anytime)
+  - H2: B) Coordinator apply / canary / rollback (mutation — Principal gate)
+  - H3: PDF-only rollback (preserve text/image/fallbacks)
+  - H2: C) Safe schedule enable (mutation + spend risk — Principal gate)
+  - H2: D) Stage MiniMax PDF canary command (package / dry-run; Principal gate for execute)
+  - H3: Rollback truth
+  - H2: E) Durable store schema (additive OpenClaw state)
+  - H2: F) Ship/Pull / Repair / GitOps honesty
+  - H2: G) Stage workspace package — install / verify / canary / rollback
+  - H3: Verify (safe anytime — no stage mutation)
+  - H3: Hermetic dry-run install (temp dir only)
+  - H3: Principal-gated install into isolated stage workspace
+  - H3: Canary contract (delivery=none — no email / Telegram / spend from this package)
+  - H3: Rollback
+  - H2: Related artifacts
+
 ## execution/openclawdevelopmentplan01/runbooks/mcp-probe-pause-recover.md
 
 - Route: /execution/openclawdevelopmentplan01/runbooks/mcp-probe-pause-recover
@@ -3991,6 +5615,42 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Recovery
   - H2: Independence check (mandatory)
   - H2: Related
+
+## execution/openclawdevelopmentplan01/runbooks/platform-rollback-backup-restore.md
+
+- Route: /execution/openclawdevelopmentplan01/runbooks/platform-rollback-backup-restore
+- Headings:
+  - H1: Runbook — 12. Platform environment rollback, migration recovery, backup, restore
+  - H2: FAKE / TEMPLATE rehearsal (safe anytime)
+  - H2: Expected sanitized evidence
+  - H2: Rehearsal record
+
+## execution/openclawdevelopmentplan01/runbooks/privacy-secret-incident.md
+
+- Route: /execution/openclawdevelopmentplan01/runbooks/privacy-secret-incident
+- Headings:
+  - H1: Runbook — 10. Privacy or secret incident containment
+  - H2: FAKE / TEMPLATE rehearsal (safe anytime)
+  - H2: Expected sanitized evidence
+  - H2: Rehearsal record
+
+## execution/openclawdevelopmentplan01/runbooks/skills-bundle-profile-mismatch.md
+
+- Route: /execution/openclawdevelopmentplan01/runbooks/skills-bundle-profile-mismatch
+- Headings:
+  - H1: Runbook — 9. Skills bundle/profile mismatch and last-verified-bundle policy
+  - H2: FAKE / TEMPLATE rehearsal (safe anytime)
+  - H2: Expected sanitized evidence
+  - H2: Rehearsal record
+
+## execution/openclawdevelopmentplan01/runbooks/skills-credential-rotate-revoke.md
+
+- Route: /execution/openclawdevelopmentplan01/runbooks/skills-credential-rotate-revoke
+- Headings:
+  - H1: Runbook — 4. Skills credential issue/rotate/revoke/recover
+  - H2: FAKE / TEMPLATE rehearsal (safe anytime)
+  - H2: Expected sanitized evidence
+  - H2: Rehearsal record
 
 ## execution/openclawdevelopmentplan01/runbooks/skills-enable-disable-drain.md
 
@@ -4018,6 +5678,17 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Expected sanitized evidence
   - H2: Stop conditions / escalate
   - H2: Related
+
+## execution/openclawdevelopmentplan01/runbooks/stage-prod-canary-controls.md
+
+- Route: /execution/openclawdevelopmentplan01/runbooks/stage-prod-canary-controls
+- Headings:
+  - H1: Runbook — 14. Stage/production canary start, pause, restart, accept, reject
+  - H2: Default posture (OCP-W30 candidate)
+  - H2: FAKE / TEMPLATE rehearsal (safe anytime)
+  - H2: Controlled first-PDF proof (production rollout — separate authorization)
+  - H2: Expected sanitized evidence
+  - H2: Rehearsal record
 
 ## gateway/1password.md
 
@@ -5563,6 +7234,30 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Confidence
   - H2: Amendments
 
+## handoffs/2026-07-28-openclawdevelopmentplan01-capture-bounded-timeout-wave5.md
+
+- Route: /handoffs/2026-07-28-openclawdevelopmentplan01-capture-bounded-timeout-wave5
+- Headings:
+  - H1: Agent Session Handoff — Capture/lifecycle bounded timeout (wave 5)
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted / Moved
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
 ## handoffs/2026-07-28-openclawdevelopmentplan01-capture-buffer-durability.md
 
 - Route: /handoffs/2026-07-28-openclawdevelopmentplan01-capture-buffer-durability
@@ -5648,6 +7343,42 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H3: 2026-07-28 — Fixture-owner gate closeout (documentation/evidence only)
   - H3: 2026-07-28 — Capture buffer durability correction
   - H3: 2026-07-28 — Capture same-stream concurrency (wave 4)
+  - H3: 2026-07-28 — Capture/lifecycle bounded timeout (wave 5)
+
+## handoffs/2026-07-28-openclawdevelopmentplan01-wave6-phase14-corrections.md
+
+- Route: /handoffs/2026-07-28-openclawdevelopmentplan01-wave6-phase14-corrections
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Validation
+  - H2: Decisions
+  - H2: Problems / Risks
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions
+  - H2: Confidence
+
+## handoffs/2026-07-28-openclawdevelopmentplan01-wave7-phase14-corrections.md
+
+- Route: /handoffs/2026-07-28-openclawdevelopmentplan01-wave7-phase14-corrections
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Validation
+  - H2: Decisions
+  - H2: Problems / Risks
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions
+  - H2: Confidence
 
 ## handoffs/2026-07-28-phase6-complete-mandatory-matrix.md
 
@@ -5693,6 +7424,1367 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Questions for the Orchestrator or Next Agent
   - H2: Confidence
   - H2: Amendments
+
+## handoffs/2026-07-29-openclawdevelopmentplan01-wave10-phase14-corrections.md
+
+- Route: /handoffs/2026-07-29-openclawdevelopmentplan01-wave10-phase14-corrections
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Commands
+  - H2: Validation
+  - H2: Decisions
+  - H2: Problems
+  - H2: Uncommitted Changes
+  - H2: Risks
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions
+  - H2: Confidence
+
+## handoffs/2026-07-29-openclawdevelopmentplan01-wave11-phase14-corrections.md
+
+- Route: /handoffs/2026-07-29-openclawdevelopmentplan01-wave11-phase14-corrections
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Created
+  - H2: Validation
+  - H2: Exact Next Action
+  - H2: Confidence
+
+## handoffs/2026-07-29-openclawdevelopmentplan01-wave12-phase14-plan-authority-ledger.md
+
+- Route: /handoffs/2026-07-29-openclawdevelopmentplan01-wave12-phase14-plan-authority-ledger
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Created/Modified
+  - H2: Validation
+  - H2: Exact Next Action
+  - H2: Confidence
+
+## handoffs/2026-07-29-openclawdevelopmentplan01-wave13-phase14-fail-closed-coverage.md
+
+- Route: /handoffs/2026-07-29-openclawdevelopmentplan01-wave13-phase14-fail-closed-coverage
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+
+## handoffs/2026-07-29-openclawdevelopmentplan01-wave14-phase14-inherited-context.md
+
+- Route: /handoffs/2026-07-29-openclawdevelopmentplan01-wave14-phase14-inherited-context
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Validation
+  - H2: Exact Next Action
+  - H2: Confidence
+
+## handoffs/2026-07-29-openclawdevelopmentplan01-wave15-phase14-section-policy.md
+
+- Route: /handoffs/2026-07-29-openclawdevelopmentplan01-wave15-phase14-section-policy
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Validation
+  - H2: Exact Next Action
+  - H2: Confidence
+
+## handoffs/2026-07-29-openclawdevelopmentplan01-wave16-phase14-exact-exclusions.md
+
+- Route: /handoffs/2026-07-29-openclawdevelopmentplan01-wave16-phase14-exact-exclusions
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Validation
+  - H2: Exact Next Action
+  - H2: Confidence
+
+## handoffs/2026-07-29-openclawdevelopmentplan01-wave17-phase13-coverage-evidence.md
+
+- Route: /handoffs/2026-07-29-openclawdevelopmentplan01-wave17-phase13-coverage-evidence
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Validation
+  - H2: Exact Next Action
+  - H2: Confidence
+
+## handoffs/2026-07-29-openclawdevelopmentplan01-wave18-phase13-coverage-evidence.md
+
+- Route: /handoffs/2026-07-29-openclawdevelopmentplan01-wave18-phase13-coverage-evidence
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Validation
+  - H2: Exact Next Action
+  - H2: Confidence
+
+## handoffs/2026-07-29-openclawdevelopmentplan01-wave19-authclaims-provenance.md
+
+- Route: /handoffs/2026-07-29-openclawdevelopmentplan01-wave19-authclaims-provenance
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Validation
+  - H2: Exact next action
+  - H2: Confidence
+
+## handoffs/2026-07-29-openclawdevelopmentplan01-wave20-authclaims-platform-head.md
+
+- Route: /handoffs/2026-07-29-openclawdevelopmentplan01-wave20-authclaims-platform-head
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Validation
+  - H2: Exact next action
+  - H2: Confidence
+
+## handoffs/2026-07-29-openclawdevelopmentplan01-wave8-phase14-corrections.md
+
+- Route: /handoffs/2026-07-29-openclawdevelopmentplan01-wave8-phase14-corrections
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Validation
+  - H2: Exact Next Action
+  - H2: Confidence
+
+## handoffs/2026-07-29-openclawdevelopmentplan01-wave9-mcp-toolfilter-seam.md
+
+- Route: /handoffs/2026-07-29-openclawdevelopmentplan01-wave9-mcp-toolfilter-seam
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Validation
+  - H2: Fixture aggregates (unchanged)
+  - H2: Exact Next Action
+  - H2: Confidence
+
+## handoffs/2026-07-30-authclaims-1.1-countersign-closeout.md
+
+- Route: /handoffs/2026-07-30-authclaims-1.1-countersign-closeout
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-07-30-lisa-ops01-operational-improvements.md
+
+- Route: /handoffs/2026-07-30-lisa-ops01-operational-improvements
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+  - H3: 2026-07-30 — Codex correction pass (factual)
+  - H3: 2026-07-30 — IDE #23 attribution fix (factual)
+  - H3: 2026-07-30 — Final bounded correction (factual)
+
+## handoffs/2026-07-30-paci-independent-verification-correction.md
+
+- Route: /handoffs/2026-07-30-paci-independent-verification-correction
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems Encountered
+  - H2: Uncommitted Changes
+  - H2: Risks and Watchouts
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Incoming Agent
+  - H2: Confidence
+  - H2: Lisa worktree preservation
+
+## handoffs/2026-07-30-paci-iv-correction-wave2.md
+
+- Route: /handoffs/2026-07-30-paci-iv-correction-wave2
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Created / Modified
+  - H2: Tests and Verification
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Confidence
+
+## handoffs/2026-07-30-paci-iv-correction-wave3.md
+
+- Route: /handoffs/2026-07-30-paci-iv-correction-wave3
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Created / Modified
+  - H2: Tests and Verification
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Confidence
+
+## handoffs/2026-07-30-paci-iv-correction-wave4.md
+
+- Route: /handoffs/2026-07-30-paci-iv-correction-wave4
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Created / Modified
+  - H2: Tests and Verification
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Confidence
+
+## handoffs/2026-07-30-paci-iv-correction-wave5.md
+
+- Route: /handoffs/2026-07-30-paci-iv-correction-wave5
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Tests and Verification
+  - H2: Exact Next Action
+
+## handoffs/2026-07-30-paci-iv-correction-wave6.md
+
+- Route: /handoffs/2026-07-30-paci-iv-correction-wave6
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-07-30-paci-machine-token-seam-implementation.md
+
+- Route: /handoffs/2026-07-30-paci-machine-token-seam-implementation
+- Headings:
+  - H1: Handoff — PACI machine-token seam implementation (OpenClaw-owned local/fake)
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Public API / config changes
+  - H2: Platform contract pins (draft baseline — not frozen)
+  - H2: Plan SHA
+  - H2: Files created/modified (primary)
+  - H3: Core
+  - H3: MCP / config
+  - H3: Plugin SDK
+  - H3: Consumers
+  - H3: Docs / templates / coordination
+  - H2: Tests and verification
+  - H2: Local / fake / stage / production separation
+  - H2: Lisa overlap boundary
+  - H2: Residual risks / rollback
+  - H2: Coverage index (plan-facing; no Codex classifications)
+  - H2: Explicit non-claims
+  - H2: Exact Next Action
+
+## handoffs/2026-07-30-paci-openclaw-compatibility-handoff-closeout.md
+
+- Route: /handoffs/2026-07-30-paci-openclaw-compatibility-handoff-closeout
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-07-31-acp-wait-reentry.md
+
+- Route: /handoffs/2026-07-31-acp-wait-reentry
+- Headings:
+  - H1: Handoff — ACP wait / re-entry (sessionswait)
+  - H2: Objective completed
+  - H2: Architecture
+  - H2: Wave 10 overlap
+  - H2: Files changed
+  - H2: Tests run (exact)
+  - H2: Live Lisa / cron
+  - H2: Remaining integration requirements
+  - H2: Codex verification checklist
+  - H2: Amendment — 2026-07-31 15:25 CST
+
+## handoffs/2026-07-31-paci-iv-correction-wave7.md
+
+- Route: /handoffs/2026-07-31-paci-iv-correction-wave7
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Confidence
+
+## handoffs/2026-07-31-paci-iv-correction-wave8.md
+
+- Route: /handoffs/2026-07-31-paci-iv-correction-wave8
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Confidence
+
+## handoffs/2026-07-31-paci-iv-correction-wave9.md
+
+- Route: /handoffs/2026-07-31-paci-iv-correction-wave9
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Confidence
+
+## handoffs/2026-08-01-ocp-w10-independent-correction.md
+
+- Route: /handoffs/2026-08-01-ocp-w10-independent-correction
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Validation
+  - H2: Rollback
+  - H2: Confidence
+
+## handoffs/2026-08-01-ocp-w10-lisa-release.md
+
+- Route: /handoffs/2026-08-01-ocp-w10-lisa-release
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Problems and Blockers
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Confidence
+  - H2: Amendment — 2026-08-01 (replacement lane bc-3aa1773f)
+
+## handoffs/2026-08-01-ocp-w20-cross-repo-integration.md
+
+- Route: /handoffs/2026-08-01-ocp-w20-cross-repo-integration
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+
+## handoffs/2026-08-01-ocp-w30-approved-pdf-routing.md
+
+- Route: /handoffs/2026-08-01-ocp-w30-approved-pdf-routing
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions
+  - H2: Confidence
+
+## handoffs/2026-08-02-release-hygiene-cleanup.md
+
+- Route: /handoffs/2026-08-02-release-hygiene-cleanup
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Archive moves
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+  - H3: 2026-08-02 — branch tip after hygiene push
+  - H3: 2026-08-02 14:11 — correction agent (diff --check + SHA reconcile)
+
+## handoffs/2026-08-03-1456-cursor-lisa-stage-linkbrain-linkskills.md
+
+- Route: /handoffs/2026-08-03-1456-cursor-lisa-stage-linkbrain-linkskills
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for Incoming Agent
+  - H2: Confidence
+
+## handoffs/2026-08-03-brain-capture-drain-architecture-canary.md
+
+- Route: /handoffs/2026-08-03-brain-capture-drain-architecture-canary
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-08-03-brain-capture-drain-evidence-truth.md
+
+- Route: /handoffs/2026-08-03-brain-capture-drain-evidence-truth
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-08-03-linkbrain-conversation-access-gate.md
+
+- Route: /handoffs/2026-08-03-linkbrain-conversation-access-gate
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-08-03-linkbrain-live-hook-registration.md
+
+- Route: /handoffs/2026-08-03-linkbrain-live-hook-registration
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-08-03-linkskills-coexistence-policy-test.md
+
+- Route: /handoffs/2026-08-03-linkskills-coexistence-policy-test
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-08-03-linkskills-http-gateway-contract-fix.md
+
+- Route: /handoffs/2026-08-03-linkskills-http-gateway-contract-fix
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-08-03-lisa-mac-stage-ops-cert.md
+
+- Route: /handoffs/2026-08-03-lisa-mac-stage-ops-cert
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-08-03-lisa-mac-stage-ops-install.md
+
+- Route: /handoffs/2026-08-03-lisa-mac-stage-ops-install
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-08-03-lisa-mac-stage-ops-preflight.md
+
+- Route: /handoffs/2026-08-03-lisa-mac-stage-ops-preflight
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-08-03-lisa-stage-ops-canary-final.md
+
+- Route: /handoffs/2026-08-03-lisa-stage-ops-canary-final
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-08-03-lisa-stage-ops-correction.md
+
+- Route: /handoffs/2026-08-03-lisa-stage-ops-correction
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-08-03-lisa-stage-ops-fifth-correction.md
+
+- Route: /handoffs/2026-08-03-lisa-stage-ops-fifth-correction
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-08-03-lisa-stage-ops-fourth-correction.md
+
+- Route: /handoffs/2026-08-03-lisa-stage-ops-fourth-correction
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-08-03-lisa-stage-ops-holds-close.md
+
+- Route: /handoffs/2026-08-03-lisa-stage-ops-holds-close
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-08-03-lisa-stage-ops-launch-blockers.md
+
+- Route: /handoffs/2026-08-03-lisa-stage-ops-launch-blockers
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-08-03-lisa-stage-ops-sixth-correction.md
+
+- Route: /handoffs/2026-08-03-lisa-stage-ops-sixth-correction
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-08-03-lisa-stage-ops-third-correction.md
+
+- Route: /handoffs/2026-08-03-lisa-stage-ops-third-correction
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-08-03-machine-facade-reload-fix.md
+
+- Route: /handoffs/2026-08-03-machine-facade-reload-fix
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-08-03-machine-facade-reload-fix2.md
+
+- Route: /handoffs/2026-08-03-machine-facade-reload-fix2
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-08-03-machine-facade-reload-fix3.md
+
+- Route: /handoffs/2026-08-03-machine-facade-reload-fix3
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-08-03-machine-facade-reload-fix4.md
+
+- Route: /handoffs/2026-08-03-machine-facade-reload-fix4
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-08-03-machine-facade-reload-fix5.md
+
+- Route: /handoffs/2026-08-03-machine-facade-reload-fix5
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-08-03-machine-token-secretref-runtime-fix.md
+
+- Route: /handoffs/2026-08-03-machine-token-secretref-runtime-fix
+- Headings:
+  - H1: Handoff — machine-token SecretRef runtime materialization fix
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-08-03-machine-token-tailnet-ssrf-fix.md
+
+- Route: /handoffs/2026-08-03-machine-token-tailnet-ssrf-fix
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-08-03-ocp-brain-capture-contract-fix.md
+
+- Route: /handoffs/2026-08-03-ocp-brain-capture-contract-fix
+- Headings:
+  - H1: Handoff — OpenClaw Brain capture contract correction
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-08-03-ocp-mac-stage-integration.md
+
+- Route: /handoffs/2026-08-03-ocp-mac-stage-integration
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-08-03-ocp-mcp-toolfilter-live-runtime-fix.md
+
+- Route: /handoffs/2026-08-03-ocp-mcp-toolfilter-live-runtime-fix
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+  - H3: 2026-08-03 16:10 Asia/Taipei — fail-closed live-claim binding (continuation)
+  - H3: 2026-08-03 16:19 Asia/Taipei — reject active-plus-pin multi-registry (Carlos-directed)
+
+## handoffs/2026-08-04-0758-ocp-brain-capture-mcp-args-fix.md
+
+- Route: /handoffs/2026-08-04-0758-ocp-brain-capture-mcp-args-fix
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files modified (committed)
+  - H2: Validation
+  - H2: Exclusions honored
+  - H2: Rollback
+  - H2: Next Action
+
+## handoffs/2026-08-04-1250-codex-final-release-integration.md
+
+- Route: /handoffs/2026-08-04-1250-codex-final-release-integration
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-08-04-codex-terra-ship-pull-acp.md
+
+- Route: /handoffs/2026-08-04-codex-terra-ship-pull-acp
+- Headings:
+  - H1: Ship/Pull Codex Terra ACP replacement handoff
+  - H2: Scope and status
+  - H2: What changed
+  - H2: Evidence and validation
+  - H2: Hard stops retained
+  - H2: Independent verifier checklist
+  - H2: Amendment — 2026-08-04 Asia/Taipei
+
+## handoffs/2026-08-04-cron-id-reconcile.md
+
+- Route: /handoffs/2026-08-04-cron-id-reconcile
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+  - H3: 2026-08-04 — receipt freshness correction
+  - H3: 2026-08-04 — display-name alias reconciliation
+
+## handoffs/2026-08-04-lisa-stage-workspace-complete.md
+
+- Route: /handoffs/2026-08-04-lisa-stage-workspace-complete
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+  - H3: 2026-08-04 14:30 Asia/Taipei — handoff SHA correction
+
+## handoffs/2026-08-04-lisa-stage-workspace-independent-corrections.md
+
+- Route: /handoffs/2026-08-04-lisa-stage-workspace-independent-corrections
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Changes
+  - H2: Validation
+  - H2: Safety and Rollback
+  - H2: Remaining Work
+
+## handoffs/2026-08-04-ocp-acp-tool-policy-hotfix.md
+
+- Route: /handoffs/2026-08-04-ocp-acp-tool-policy-hotfix
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-08-04-repair-dispatcher-codex-terra.md
+
+- Route: /handoffs/2026-08-04-repair-dispatcher-codex-terra
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Modified
+  - H2: Tests and Verification
+  - H2: Risks and Unknowns
+  - H2: Exact Next Action
+  - H2: Confidence
 
 ## handoffs/TEMPLATE.md
 
@@ -7645,6 +10737,12 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Plugin author checklist
   - H2: Related docs
 
+## plugins/nemotron-shadow-eval.md
+
+- Route: /plugins/nemotron-shadow-eval
+- Headings:
+  - H1: Nemotron shadow evaluation
+
 ## plugins/oc-path.md
 
 - Route: /plugins/oc-path
@@ -8217,6 +11315,22 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Surface
   - H2: Related docs
 
+## plugins/reference/linkbrain.md
+
+- Route: /plugins/reference/linkbrain
+- Headings:
+  - H1: Linkbrain plugin
+  - H2: Distribution
+  - H2: Surface
+
+## plugins/reference/linkskills.md
+
+- Route: /plugins/reference/linkskills
+- Headings:
+  - H1: Linkskills plugin
+  - H2: Distribution
+  - H2: Surface
+
 ## plugins/reference/linux-canvas.md
 
 - Route: /plugins/reference/linux-canvas
@@ -8427,6 +11541,15 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H1: Mxc plugin
   - H2: Distribution
   - H2: Surface
+
+## plugins/reference/nemotron-shadow-eval.md
+
+- Route: /plugins/reference/nemotron-shadow-eval
+- Headings:
+  - H1: Nemotron Shadow Eval plugin
+  - H2: Distribution
+  - H2: Surface
+  - H2: Related docs
 
 ## plugins/reference/nextcloud-talk.md
 
@@ -9073,6 +12196,19 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Registration mode
   - H2: Plugin shapes
   - H2: Related
+
+## plugins/sdk-machine-token.md
+
+- Route: /plugins/sdk-machine-token
+- Headings:
+  - H1: Machine-token runtime
+  - H2: Public plugin contract
+  - H3: Contract
+  - H3: Trusted-private HTTPS issuers
+  - H3: Public exports
+  - H2: Host-internal controls
+  - H2: External projection
+  - H2: MCP HTTP fetch ceiling
 
 ## plugins/sdk-migration.md
 
@@ -11979,6 +15115,7 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H3: Delegation prompt mode
   - H3: Tool parameters
   - H3: Task names and targeting
+  - H2: Tool: sessionswait
   - H2: Tool: sessionsyield
   - H2: Tool: subagents
   - H2: Thread-bound sessions

@@ -66,16 +66,14 @@ You wake up fresh each session. Continuity lives in files:
 
 **Routing (summary — full rules in `TOOLS.md`):**
 
-- Default model: `openai/gpt-5.6-luna` (reasoning effort `medium`) — workshop contract `ops/model-routing-contract.ts`
-- Fallback chain: `zai/glm-5.2` → `moonshot/kimi-k3` → `openrouter/google/gemini-3.5-flash-lite`
-- Image: `minimax/MiniMax-M3` via `imageModel.primary`
-- PDF/document: `minimax/MiniMax-M3` via `documentModels.pdf` — capability `approved_unverified` (candidate; not proven). First-production-proof receipt required before any success claim; on validation failure disable PDF routing only (no paid substitute).
+- Default model: native OAuth `openai/gpt-5.6-luna` at High reasoning.
+- Orchestration: native OAuth `openai/gpt-5.6-terra` at Medium. Complex planning: native OAuth `openai/gpt-5.6-sol` at Medium.
+- Fallback chain: OpenRouter Luna Medium → OpenRouter GLM-5.2 → OpenRouter Kimi K3 → OpenRouter Gemini 3.5 Flash-Lite.
+- Image and PDF understanding: OpenRouter MiniMax-M3. Capability remains `approved_unverified` until controlled image/PDF receipts exist.
 - Mode A/B controls answer _structure_, not thinking level (see Work Mode Routing)
-- Coding delegates to Cursor by default. The automatic local-coder window is **Monday 19:00 through Friday 04:00** Asia/Taipei: four overnight windows starting Monday–Thursday at 19:00 and ending Tuesday–Friday at 04:00. Friday 19:00 onward and all Saturday/Sunday hours use Cursor unless Carlos explicitly requests local-coder. The overnight window ends by 04:00 so Ship 05 can run. Cursor ACP remains unchanged.
+- Every coding task delegates first to the permanent `development-orchestrator`; Lisa does not select or call an executor directly. Read `tools/development-orchestrator.md` before dispatch.
 - Sonnet: manual selection only when Carlos explicitly requests by name
-- Nemotron: paid eval only — **disabled** in defaults; never enable paid spend from automation; log to `memory/evals/`
-- Workshop/docs only until a separately approved live rollout — do not mutate `~/.openclaw-lisa` from this packet
-- **Carlos explicitly names a local model / "local coder" for a coding task:** **must** use the dedicated local-coder route — `sessions_spawn` with `runtime: "subagent"`, `agentId: "local-coder"`, `model: "ollama/qwen3.5:9b"` (or the exact local model Carlos named), `context: "isolated"`. Full contract + post-completion tripwire checklist: `tools/local-coder.md`. Verify `resolvedModel`/`modelApplied`. Then `sessions_yield` and wait for the completion announce; verify host scratch artifact (+ run). **If Carlos requested email:** after verify, parent **must** `write` an English body to `scratch/*.txt` and successfully run `tools/bin/lisa-safe email-send … --body-file …` (exit 0) **before** any success claim — never report Test-2-style "done" with email still unsent; child never sends email. **English-only** to Carlos (UI/Telegram/email); ban Chinese refusal after success (e.g. `你好，我无法给到相关内容。`). Deliver **one** final English confirmation only after the checklist. **Never** write the code yourself on Qwen, never substitute Cursor ACP for a local-coder request, and **never** fall back to `exec`/`ollama run`. On spawn/child/email failure, quote the error in English and stop.
+- Nemotron: deterministic every-tenth eligible text-only shadow evaluation. Never user-visible, never in fallbacks, never given tools or side effects, and always fail closed through the `nemotron-shadow-eval` plugin.
 
 **Speed:** Standard (`fastMode` off). Do not enable Fast unless Carlos asks.
 
@@ -125,17 +123,17 @@ In groups: participant, not Carlos's proxy. Quality > quantity; stay silent on b
 
 Skills = tools (`SKILL.md`). Local setup notes = `TOOLS.md`. **Platform formatting & voice:** [`agents/detail.md`](agents/detail.md).
 
-### Cursor delegation (mandatory)
+### Development delegation (mandatory)
 
-When Carlos instructs you to **use Cursor**, **delegate to Cursor**, or expects dev work via the coding agent — **regardless of channel** (Telegram, Web UI, dashboard, iPhone):
+When Carlos requests coding — regardless of channel — spawn `development-orchestrator` using native OAuth Terra Medium and give it the complete task, repository/worktree/base SHA, boundaries, tests, rollback, and return schema.
 
-1. **MUST** call `sessions_spawn` with `runtime: "acp"`, `agentId: "cursor"`, a clear task, and `model: "grok-4.5[effort=high,fast=true]"` (Grok 4.5 High fast — **the ACP-advertised id on this machine**). Do **not** pass bare `grok-4.5`, `cursor-grok-4.5-medium`, or `grok-4.5[effort=medium,fast=false]` — those are not advertised and cause a hard first-spawn failure.
-2. Do not invent other Cursor models unless Carlos names one. If spawn fails after requesting high-fast, quote the error and stop.
-3. **NEVER** substitute an internal subagent (`runtime: "subagent"`) or write/edit code yourself and call it Cursor — this includes `apply_patch` and `edit`, both technically available to you again (2026-07-20) but **not** a green light to code directly.
-4. If spawn **fails**, report the verbatim tool error and **stop** — no silent fallback.
-5. **The one exception:** you may use `apply_patch`/`edit` yourself only if **both** are true — (a) Cursor ACP is genuinely unavailable (confirmed spawn failure, not a guess) **and** (b) Carlos has explicitly authorized a direct fix in that specific conversation. Outside that exact combination, a direct `apply_patch`/`edit` call is a rule violation. A tripwire (`TOOLS.md` § Tool Access) pings Carlos on Telegram the moment your main session calls either directly, so treat it as monitored, not just discouraged.
+1. Lisa never edits code and never bypasses the orchestrator to invoke Cursor, Luna, or Sol.
+2. The orchestrator scores the task deterministically. Score 0–2 routes to Cursor Grok 4.5 High Fast; score 3–4 routes to Luna High; score 5+ or any hard gate routes to Sol Medium for a plan, then back to Terra for Luna execution.
+3. Security, production data, migrations, credentials, destructive work, and irreversible work are hard gates regardless of the numeric total. Uncertainty routes upward.
+4. A failed Cursor execution escalates once to Luna; it never loops and never silently changes the requested model.
+5. Every result must include the machine-readable route receipt defined in `tools/development-orchestrator.md`.
 
-Full ACP rules (trigger phrases, bind mode, honest-reporting rule, headless CLI quirks): `tools/cursor-acp.md`.
+Full policy: `tools/development-orchestrator.md`. Cursor mechanics used only by that orchestrator: `tools/cursor-acp.md`.
 
 ## LiNKdeveloper Executive Supervision
 

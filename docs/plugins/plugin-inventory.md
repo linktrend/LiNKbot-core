@@ -51,7 +51,7 @@ Each entry lists the package, distribution route, and description.
 
 ## Core npm package
 
-69 plugins
+72 plugins
 
 - **[admin-http-rpc](/plugins/reference/admin-http-rpc)** (`@openclaw/admin-http-rpc`) - included in OpenClaw. OpenClaw admin HTTP RPC endpoint.
 
@@ -99,6 +99,10 @@ Each entry lists the package, distribution route, and description.
 
 - **[imessage](/plugins/reference/imessage)** (`@openclaw/imessage`) - included in OpenClaw. Adds the iMessage channel surface for sending and receiving OpenClaw messages.
 
+- **[linkbrain](/plugins/reference/linkbrain)** (`@openclaw/linkbrain`) - included in OpenClaw. Private Brain adapter for Lisa: durable capture outbox and coordination against Brain Gateway contracts. Default-disabled; fake-only until activation gates.
+
+- **[linkskills](/plugins/reference/linkskills)** (`@openclaw/linkskills`) - included in OpenClaw. Private Skills adapter for Lisa: structured telemetry outbox against Skills Gateway contracts. Default-disabled; never registers conversation hooks; fake-only until activation gates.
+
 - **[linux-canvas](/plugins/reference/linux-canvas)** (`@openclaw/linux-canvas`) - included in OpenClaw. Canvas rendering bridge for the OpenClaw Linux desktop app.
 
 - **[linux-node](/plugins/reference/linux-node)** (`@openclaw/linux-node`) - included in OpenClaw. Desktop notifications, camera capture, and location for Linux node hosts.
@@ -128,6 +132,8 @@ Each entry lists the package, distribution route, and description.
 - **[minimax](/plugins/reference/minimax)** (`@openclaw/minimax-provider`) - included in OpenClaw. Adds MiniMax, MiniMax Portal model provider support to OpenClaw.
 
 - **[mistral](/plugins/reference/mistral)** (`@openclaw/mistral-provider`) - included in OpenClaw. Adds Mistral model provider support to OpenClaw.
+
+- **[nemotron-shadow-eval](/plugins/reference/nemotron-shadow-eval)** (`@openclaw/nemotron-shadow-eval`) - included in OpenClaw. Samples every Nth eligible Lisa text response for isolated, non-user-visible Nemotron comparison.
 
 - **[novita](/plugins/reference/novita)** (`@openclaw/novita-provider`) - included in OpenClaw. Adds Novita, Novita AI, Novitaai model provider support to OpenClaw.
 

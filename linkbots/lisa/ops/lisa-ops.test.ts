@@ -390,25 +390,23 @@ describe("Approved model routing (non-live)", () => {
     assert.deepEqual(errors, []);
     const fragment = buildNonLiveAgentsDefaultsFragment();
     assert.equal(fragment.model.primary, "openai/gpt-5.6-luna");
-    assert.equal(fragment.thinkingDefault, "medium");
+    assert.equal(fragment.thinkingDefault, "high");
     assert.deepEqual(fragment.model.fallbacks, [
-      "zai/glm-5.2",
-      "moonshot/kimi-k3",
+      "openrouter/openai/gpt-5.6-luna",
+      "openrouter/z-ai/glm-5.2",
+      "openrouter/moonshotai/kimi-k3",
       "openrouter/google/gemini-3.5-flash-lite",
     ]);
-    assert.equal(fragment.imageModel.primary, "minimax/MiniMax-M3");
+    assert.equal(fragment.imageModel.primary, "openrouter/minimax/minimax-m3");
     assert.equal(fragment.evaluationOnly.enabledInDefaults, false);
     assert.ok(!fragment.evaluationOnly.ref.includes(":free"));
     assert.equal(LISA_APPROVED_MODEL_ROUTING.liveMutationAllowed, false);
-    assert.equal(LISA_APPROVED_MODEL_ROUTING.paidSpendEnablementAllowed, false);
+    assert.equal(LISA_APPROVED_MODEL_ROUTING.paidSpendEnablementAllowed, true);
     const imagePdf = LISA_APPROVED_MODEL_ROUTING.entries.find((e) => e.slot === "imagePdf");
     assert.ok(imagePdf);
-    assert.match(
-      imagePdf.notes ?? "",
-      /documentModels\.pdf|pdfDocumentModelsCutover|approved_unverified/i,
-    );
+    assert.match(imagePdf.notes ?? "", /pdfModel|pdfDocumentModelsCutover|approved_unverified/i);
     assert.ok(!/Image\/PDF via MiniMax native vision catalog/i.test(imagePdf.notes ?? ""));
-    assert.equal(fragment.documentModels.pdf.primary, "minimax/MiniMax-M3");
+    assert.equal(fragment.pdfModel.primary, "openrouter/minimax/minimax-m3");
     assert.equal(fragment.pdfDocumentModelsCutover.capabilityStatus, "approved_unverified");
     assert.equal(fragment.pdfDocumentModelsCutover.state, "enabled_candidate");
   });
@@ -421,7 +419,7 @@ describe("Approved model routing (non-live)", () => {
         defaults: {
           model: { primary: string; fallbacks: string[] };
           imageModel: { primary: string };
-          documentModels?: { pdf?: { primary: string } };
+          pdfModel?: { primary: string };
           thinkingDefault: string;
         };
       };
@@ -434,10 +432,7 @@ describe("Approved model routing (non-live)", () => {
     assert.equal(raw.agents.defaults.model.primary, fragment.model.primary);
     assert.deepEqual(raw.agents.defaults.model.fallbacks, fragment.model.fallbacks);
     assert.equal(raw.agents.defaults.imageModel.primary, fragment.imageModel.primary);
-    assert.equal(
-      raw.agents.defaults.documentModels?.pdf?.primary,
-      fragment.documentModels.pdf.primary,
-    );
+    assert.equal(raw.agents.defaults.pdfModel?.primary, fragment.pdfModel.primary);
     assert.equal(raw.agents.defaults.thinkingDefault, fragment.thinkingDefault);
     assert.equal(raw.evaluationOnly.enabledInDefaults, false);
     assert.equal(raw.pdfDocumentModelsCutover?.capabilityStatus, "approved_unverified");
