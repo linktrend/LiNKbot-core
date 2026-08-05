@@ -23,19 +23,23 @@ import {
 const here = path.dirname(fileURLToPath(import.meta.url));
 
 describe("model-routing-contract (non-live)", () => {
-  it("keeps hard stops false and validates approved slots", () => {
+  it("validates the approved native-OAuth and OpenRouter slots", () => {
     const errors = validateApprovedRouting(LISA_APPROVED_MODEL_ROUTING);
     assert.deepEqual(errors, []);
     assert.equal(LISA_APPROVED_MODEL_ROUTING.liveMutationAllowed, false);
-    assert.equal(LISA_APPROVED_MODEL_ROUTING.paidSpendEnablementAllowed, false);
-    assert.equal(LISA_APPROVED_MODEL_ROUTING.version, "2026-08-01-ocp-w30-approved-pdf-routing");
+    assert.equal(LISA_APPROVED_MODEL_ROUTING.paidSpendEnablementAllowed, true);
+    assert.equal(
+      LISA_APPROVED_MODEL_ROUTING.version,
+      "2026-08-05-native-oauth-development-routing",
+    );
     assert.equal(primaryModelRef(), "openai/gpt-5.6-luna");
-    assert.equal(primaryReasoningEffort(), "medium");
-    assert.equal(imageModelRef(), "minimax/MiniMax-M3");
-    assert.equal(pdfDocumentModelRef(), "minimax/MiniMax-M3");
+    assert.equal(primaryReasoningEffort(), "high");
+    assert.equal(imageModelRef(), "openrouter/minimax/minimax-m3");
+    assert.equal(pdfDocumentModelRef(), "openrouter/minimax/minimax-m3");
     assert.deepEqual(defaultChatFallbackRefs(), [
-      "zai/glm-5.2",
-      "moonshot/kimi-k3",
+      "openrouter/openai/gpt-5.6-luna",
+      "openrouter/z-ai/glm-5.2",
+      "openrouter/moonshotai/kimi-k3",
       "openrouter/google/gemini-3.5-flash-lite",
     ]);
   });
@@ -46,7 +50,7 @@ describe("model-routing-contract (non-live)", () => {
     assert.equal(cutover.documentModelsEnabled, true);
     assert.equal(cutover.capabilityStatus, "approved_unverified");
     assert.notEqual(cutover.capabilityStatus, "proven");
-    assert.equal(cutover.candidateRef, "minimax/MiniMax-M3");
+    assert.equal(cutover.candidateRef, "openrouter/minimax/minimax-m3");
     assert.equal(cutover.firstProof, "controlled_production_rollout");
     assert.equal(cutover.requiresFirstProductionProofReceipt, true);
     assert.equal(cutover.alternatePaidDocumentRoutingAllowed, false);
@@ -70,14 +74,15 @@ describe("model-routing-contract (non-live)", () => {
   it("builds non-live agents.defaults fragment with documentModels.pdf candidate", () => {
     const fragment = buildNonLiveAgentsDefaultsFragment();
     assert.equal(fragment.model.primary, "openai/gpt-5.6-luna");
-    assert.equal(fragment.thinkingDefault, "medium");
+    assert.equal(fragment.thinkingDefault, "high");
     assert.deepEqual(fragment.model.fallbacks, [
-      "zai/glm-5.2",
-      "moonshot/kimi-k3",
+      "openrouter/openai/gpt-5.6-luna",
+      "openrouter/z-ai/glm-5.2",
+      "openrouter/moonshotai/kimi-k3",
       "openrouter/google/gemini-3.5-flash-lite",
     ]);
-    assert.equal(fragment.imageModel.primary, "minimax/MiniMax-M3");
-    assert.equal(fragment.documentModels.pdf.primary, "minimax/MiniMax-M3");
+    assert.equal(fragment.imageModel.primary, "openrouter/minimax/minimax-m3");
+    assert.equal(fragment.documentModels.pdf.primary, "openrouter/minimax/minimax-m3");
     assert.equal(fragment.evaluationOnly.enabledInDefaults, false);
     assert.ok(!fragment.evaluationOnly.ref.includes(":free"));
     assert.match(fragment.evaluationOnly.ref, /nemotron/i);
@@ -98,10 +103,11 @@ describe("model-routing-contract (non-live)", () => {
     assert.equal(result.pdfDocumentModelsCutover.capabilityStatus, "approved_unverified");
     assert.equal(result.pdfDocumentModelsCutover.alternatePaidDocumentRoutingAllowed, false);
     assert.equal(result.preserved.model.primary, "openai/gpt-5.6-luna");
-    assert.equal(result.preserved.imageModel.primary, "minimax/MiniMax-M3");
+    assert.equal(result.preserved.imageModel.primary, "openrouter/minimax/minimax-m3");
     assert.deepEqual(result.preserved.model.fallbacks, [
-      "zai/glm-5.2",
-      "moonshot/kimi-k3",
+      "openrouter/openai/gpt-5.6-luna",
+      "openrouter/z-ai/glm-5.2",
+      "openrouter/moonshotai/kimi-k3",
       "openrouter/google/gemini-3.5-flash-lite",
     ]);
     assert.equal(result.failureEvent.type, "pdf_document_routing_validation_failure");
@@ -147,12 +153,12 @@ describe("model-routing-contract (non-live)", () => {
     };
     const fragment = buildNonLiveAgentsDefaultsFragment();
     assert.equal(raw.liveMutationAllowed, false);
-    assert.equal(raw.paidSpendEnablementAllowed, false);
-    assert.equal(raw.contractVersion, "2026-08-01-ocp-w30-approved-pdf-routing");
+    assert.equal(raw.paidSpendEnablementAllowed, true);
+    assert.equal(raw.contractVersion, "2026-08-05-native-oauth-development-routing");
     assert.equal(raw.pdfDocumentModelsCutover.state, "enabled_candidate");
     assert.equal(raw.pdfDocumentModelsCutover.documentModelsEnabled, true);
     assert.equal(raw.pdfDocumentModelsCutover.capabilityStatus, "approved_unverified");
-    assert.equal(raw.pdfDocumentModelsCutover.candidateRef, "minimax/MiniMax-M3");
+    assert.equal(raw.pdfDocumentModelsCutover.candidateRef, "openrouter/minimax/minimax-m3");
     assert.equal(raw.pdfDocumentModelsCutover.requiresFirstProductionProofReceipt, true);
     assert.equal(raw.pdfDocumentModelsCutover.alternatePaidDocumentRoutingAllowed, false);
     assert.equal(raw.pdfDocumentModelsCutover.observedMediaPdfTextExtraction, "MiniMax-M2.7");
@@ -177,6 +183,6 @@ describe("model-routing-contract (non-live)", () => {
     assert.ok(evalOnly);
     assert.equal(evalOnly.enabledInDefaults, false);
     assert.ok(!evalOnly.ref.includes(":free"));
-    assert.equal(evalOnly.ref, "nvidia/nemotron-3-super-120b-a12b");
+    assert.equal(evalOnly.ref, "openrouter/nvidia/nemotron-3-super-120b-a12b");
   });
 });
