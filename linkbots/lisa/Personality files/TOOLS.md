@@ -49,8 +49,8 @@ Native OAuth profiles are agent-scoped and may read through to the main profile;
 
 - **Primary:** native OAuth `openai/gpt-5.6-luna` at High.
 - **Fallback chain:** OpenRouter Luna Medium → GLM-5.2 → Kimi K3 → Gemini 3.5 Flash-Lite.
-- **Image:** `openrouter/minimax/minimax-m3` via `agents.defaults.imageModel.primary`.
-- **PDF / document:** `openrouter/minimax/minimax-m3` via `agents.defaults.pdfModel.primary` — capability `approved_unverified` until a controlled receipt exists.
+- **Image:** `openrouter/minimax/minimax-m3` via the explicit `tools.media.image.models` route, with `agents.defaults.imageModel.primary` retained as the image-tool fallback. The explicit route prevents native Luna vision from bypassing MiniMax.
+- **PDF / document:** `openrouter/minimax/minimax-m3` via `agents.defaults.pdfModel.primary` — controlled OpenRouter PDF proof passed on 2026-08-05.
 - **PDF rollback:** on provider/model validation failure, disable **only** PDF document routing; keep text/image/default-fallback; never silently substitute another paid document model.
 - **Evaluation-only:** paid Nemotron Super — deterministic every-tenth eligible text-only shadow comparison through the fail-closed plugin; absent from defaults/fallbacks.
 - **Speed:** Standard (`fastMode: off`). Slow OK for non-urgent overnight work
@@ -60,7 +60,7 @@ Native OAuth profiles are agent-scoped and may read through to the main profile;
 1. **Everyday conversation** → native OAuth Luna High; follow the fallback chain above only on model/provider failure.
 2. **Orchestration tasks** → native OAuth Terra Medium.
 3. **Complex/difficult non-coding tasks** → native OAuth Sol Medium.
-4. **Images/PDFs** → OpenRouter MiniMax-M3 understanding route; keep `approved_unverified` until controlled canaries pass.
+4. **Images/PDFs** → OpenRouter MiniMax-M3 understanding route. Image uses the explicit media route; PDF uses `pdfModel`.
 5. **Coding** → always `development-orchestrator`; follow `tools/development-orchestrator.md` and never call an executor directly.
 6. **Utility work** (cheap bounded formatting, classification, title/summary extraction, or schema conversion with no sensitive context or side effects) → OpenRouter Gemini Flash-Lite.
 7. **Nemotron** → plugin-owned sampled shadow only. Never manually duplicate, show the shadow answer, or add it to a fallback.
