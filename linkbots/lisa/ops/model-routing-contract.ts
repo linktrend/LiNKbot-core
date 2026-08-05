@@ -1,9 +1,8 @@
 /**
- * Lisa approved model-routing contract (non-live).
+ * Lisa approved native-OAuth model-routing contract.
  *
- * Workshop/config fragment only — never mutate ~/.openclaw-lisa or enable paid
- * Nemotron spend from this module. Identifiers verified against OpenClaw
- * provider catalogs plus vendor/OpenRouter docs (2026-08-01).
+ * This module is a source-controlled authority and emits no credentials or
+ * provider calls. Live publication remains a separate, backed-up operation.
  *
  * MiniMax-M3 PDF: Principal-approved candidate at capabilityStatus
  * `approved_unverified`. First live proof is deferred to a separately
@@ -15,7 +14,8 @@ export type ReasoningEffort = "low" | "medium" | "high" | "max";
 
 export type ModelRouteSlot =
   | "primary"
-  | "defaultFallback"
+  | "firstFallback"
+  | "secondFallback"
   | "imagePdf"
   | "nextFallback"
   | "utility"
@@ -53,13 +53,13 @@ export type PdfDocumentModelsRollback = {
 };
 
 /**
- * Machine-readable PDF documentModels cutover.
+ * Machine-readable PDF model cutover.
  * Principal-approved MiniMax-M3 candidate at approved_unverified — still
- * non-live; first production proof receipt required before success claims.
+ * first production proof receipt required before success claims.
  */
 export type PdfDocumentModelsCutover = {
   state: PdfCutoverState;
-  /** When true, non-live fragment may set documentModels.pdf as candidate. */
+  /** When true, the runtime fragment may set agents.defaults.pdfModel as candidate. */
   documentModelsEnabled: boolean;
   capabilityStatus: PdfCapabilityStatus;
   /** Approved PDF/document routing candidate ref. */
@@ -89,7 +89,77 @@ export type ModelRouteEntry = {
   verifiedSources: readonly string[];
 };
 
-const PDF_CANDIDATE_REF = "minimax/MiniMax-M3";
+const PDF_CANDIDATE_REF = "openrouter/minimax/minimax-m3";
+
+export const LISA_DEVELOPMENT_COMPLEXITY_POLICY = {
+  cursorMaxScore: 2,
+  lunaMaxScore: 4,
+  rules: {
+    hardGate: {
+      score: 3,
+      matches: [
+        "production or deployment",
+        "authentication, authorization, permissions, credentials, or secrets",
+        "security-sensitive behavior",
+        "database migration or destructive/irreversible action",
+      ],
+    },
+    complex: {
+      score: 2,
+      matches: [
+        "cross-repository change",
+        "architecture, concurrency, or public API change",
+        "unfamiliar failure investigation",
+        "external integration",
+      ],
+    },
+    bounded: {
+      score: 1,
+      matches: [
+        "more than three files",
+        "new dependency",
+        "unclear acceptance criteria",
+        "expected validation longer than ten minutes",
+      ],
+    },
+  },
+  routes: {
+    simple: {
+      score: "0-2",
+      planner: null,
+      orchestrator: "openai/gpt-5.6-terra",
+      executor: "cursor/grok-4.5[effort=high,fast=true]",
+    },
+    complex: {
+      score: "3-4",
+      planner: null,
+      orchestrator: "openai/gpt-5.6-terra",
+      executor: "openai/gpt-5.6-luna",
+    },
+    hard: {
+      score: "5+ or any hard gate",
+      planner: "openai/gpt-5.6-sol",
+      orchestrator: "openai/gpt-5.6-terra",
+      executor: "openai/gpt-5.6-luna",
+    },
+  },
+  uncertaintyRoutesUp: true,
+  cursorFailureEscalatesOnceToLuna: true,
+  receiptRequired: true,
+} as const;
+
+export const LISA_NEMOTRON_SHADOW_POLICY = {
+  ref: "openrouter/nvidia/nemotron-3-super-120b-a12b",
+  sampleEveryEligible: 10,
+  promptParity: "exact_user_prompt_only",
+  userVisible: false,
+  toolsAllowed: false,
+  sideEffectsAllowed: false,
+  secretsAllowed: false,
+  codingAllowed: false,
+  automatedQualityJudgment: false,
+  failClosed: true,
+} as const;
 
 /**
  * Approved OCP-W10 / OCP-W20 / OCP-W30 routing — config/code only.
@@ -98,9 +168,9 @@ const PDF_CANDIDATE_REF = "minimax/MiniMax-M3";
  * PDF documentModels: MiniMax-M3 approved_unverified candidate (non-live).
  */
 export const LISA_APPROVED_MODEL_ROUTING = {
-  version: "2026-08-01-ocp-w30-approved-pdf-routing",
+  version: "2026-08-05-native-oauth-development-routing",
   liveMutationAllowed: false,
-  paidSpendEnablementAllowed: false,
+  paidSpendEnablementAllowed: true,
   /**
    * PDF cutover enabled as Principal-approved candidate only.
    * Capability remains approved_unverified until first-production-proof receipt.
@@ -135,33 +205,45 @@ export const LISA_APPROVED_MODEL_ROUTING = {
       ref: "openai/gpt-5.6-luna",
       label: "OpenAI gpt-5.6-luna",
       enabledInDefaults: true,
-      reasoningEffort: "medium",
-      notes: "Primary chat; reasoning effort medium.",
+      reasoningEffort: "high",
+      notes: "Native ChatGPT OAuth primary; reasoning effort high.",
       verifiedSources: [
         "extensions/openai (repo GPT-5.6 Luna routes)",
         "OpenClaw AGENTS.md example model gpt-5.6-luna",
       ],
     },
     {
-      slot: "defaultFallback",
-      ref: "zai/glm-5.2",
-      label: "GLM-5.2",
+      slot: "firstFallback",
+      ref: "openrouter/openai/gpt-5.6-luna",
+      label: "OpenRouter GPT-5.6 Luna",
       enabledInDefaults: true,
-      notes: "Z.AI direct provider id; OpenRouter alternate openrouter/z-ai/glm-5.2.",
+      reasoningEffort: "medium",
+      notes: "First fallback through OpenRouter; reasoning effort medium.",
       verifiedSources: [
-        "extensions/zai/model-definitions.ts ZAI_CODING_DEFAULT_MODEL_ID",
+        "OpenClaw live OpenRouter catalogue",
+        "OpenRouter model route openai/gpt-5.6-luna",
+      ],
+    },
+    {
+      slot: "secondFallback",
+      ref: "openrouter/z-ai/glm-5.2",
+      label: "OpenRouter GLM-5.2",
+      enabledInDefaults: true,
+      notes: "Second fallback through OpenRouter.",
+      verifiedSources: [
+        "OpenClaw live OpenRouter catalogue",
         "https://docs.z.ai/guides/llm/glm-5.2",
       ],
     },
     {
       slot: "imagePdf",
-      ref: "minimax/MiniMax-M3",
-      label: "MiniMax-M3",
+      ref: "openrouter/minimax/minimax-m3",
+      label: "OpenRouter MiniMax-M3",
       enabledInDefaults: true,
       // Packet slot name remains imagePdf. Image uses agents.defaults.imageModel;
-      // PDF uses agents.defaults.documentModels.pdf as approved_unverified candidate.
+      // PDF uses agents.defaults.pdfModel as approved_unverified candidate.
       notes:
-        "Image via agents.defaults.imageModel (catalog input text+image). PDF via agents.defaults.documentModels.pdf candidate (pdfDocumentModelsCutover.state=enabled_candidate, capabilityStatus=approved_unverified) — Principal-approved but unverified; require first-production-proof receipt before any success claim; never silently substitute another paid document model.",
+        "Image via agents.defaults.imageModel (catalog input text+image). PDF via agents.defaults.pdfModel candidate (pdfDocumentModelsCutover.state=enabled_candidate, capabilityStatus=approved_unverified) — Principal-approved but unverified; require first-production-proof receipt before any success claim; never silently substitute another paid document model.",
       verifiedSources: [
         "extensions/minimax/provider-models.ts MINIMAX_DEFAULT_MODEL_ID",
         "extensions/minimax/provider-models.ts MINIMAX_TEXT_MODEL_CATALOG MiniMax-M3",
@@ -170,7 +252,7 @@ export const LISA_APPROVED_MODEL_ROUTING = {
     },
     {
       slot: "nextFallback",
-      ref: "moonshot/kimi-k3",
+      ref: "openrouter/moonshotai/kimi-k3",
       label: "Kimi K3",
       enabledInDefaults: true,
       notes: "Moonshot direct id; OpenRouter alternate openrouter/moonshotai/kimi-k3.",
@@ -194,11 +276,11 @@ export const LISA_APPROVED_MODEL_ROUTING = {
     },
     {
       slot: "evaluationOnly",
-      ref: "nvidia/nemotron-3-super-120b-a12b",
+      ref: "openrouter/nvidia/nemotron-3-super-120b-a12b",
       label: "paid Nemotron Super (eval only)",
       enabledInDefaults: false,
       notes:
-        "Evaluation-only. Do not enable paid spend. Forbidden: any :free Nemotron id in production chain.",
+        "Paid sampled shadow evaluation only; never a primary or fallback and never user-visible.",
       verifiedSources: [
         "extensions/nvidia/provider-catalog.ts nvidia/nemotron-3-super-120b-a12b",
         "extensions/nvidia/openclaw.plugin.json",
@@ -208,7 +290,7 @@ export const LISA_APPROVED_MODEL_ROUTING = {
 } as const satisfies {
   version: string;
   liveMutationAllowed: false;
-  paidSpendEnablementAllowed: false;
+  paidSpendEnablementAllowed: true;
   pdfDocumentModelsCutover: PdfDocumentModelsCutover & {
     state: "enabled_candidate";
     documentModelsEnabled: true;
@@ -232,7 +314,7 @@ export function defaultChatFallbackRefs(
   routing: LisaApprovedModelRouting = LISA_APPROVED_MODEL_ROUTING,
 ): string[] {
   const bySlot = new Map(routing.entries.map((e) => [e.slot, e]));
-  const ordered: ModelRouteSlot[] = ["defaultFallback", "nextFallback", "utility"];
+  const ordered: ModelRouteSlot[] = ["firstFallback", "secondFallback", "nextFallback", "utility"];
   const refs: string[] = [];
   for (const slot of ordered) {
     const entry = bySlot.get(slot);
@@ -263,7 +345,7 @@ export function imageModelRef(
   return image.ref;
 }
 
-/** Approved PDF/document candidate ref (documentModels.pdf). */
+/** Approved PDF/document candidate ref (agents.defaults.pdfModel). */
 export function pdfDocumentModelRef(
   routing: LisaApprovedModelRouting = LISA_APPROVED_MODEL_ROUTING,
 ): string {
@@ -351,7 +433,7 @@ export function buildNonLiveAgentsDefaultsFragment(
 ): {
   model: { primary: string; fallbacks: string[] };
   imageModel: { primary: string };
-  documentModels: { pdf: { primary: string } };
+  pdfModel: { primary: string };
   thinkingDefault: ReasoningEffort;
   evaluationOnly: { ref: string; enabledInDefaults: false };
   pdfDocumentModelsCutover: {
@@ -380,10 +462,8 @@ export function buildNonLiveAgentsDefaultsFragment(
     imageModel: {
       primary: imageModelRef(routing),
     },
-    documentModels: {
-      pdf: {
-        primary: pdfDocumentModelRef(routing),
-      },
+    pdfModel: {
+      primary: pdfDocumentModelRef(routing),
     },
     thinkingDefault: primaryReasoningEffort(routing),
     evaluationOnly: {
@@ -408,11 +488,11 @@ export function validateApprovedRouting(
   if (routing.liveMutationAllowed !== false) {
     errors.push("liveMutationAllowed must be false");
   }
-  if (routing.paidSpendEnablementAllowed !== false) {
-    errors.push("paidSpendEnablementAllowed must be false");
+  if (routing.paidSpendEnablementAllowed !== true) {
+    errors.push("paidSpendEnablementAllowed must be true for bounded Nemotron shadow evaluation");
   }
-  if (routing.version !== "2026-08-01-ocp-w30-approved-pdf-routing") {
-    errors.push("version must be 2026-08-01-ocp-w30-approved-pdf-routing");
+  if (routing.version !== "2026-08-05-native-oauth-development-routing") {
+    errors.push("version must be 2026-08-05-native-oauth-development-routing");
   }
   const cutover = routing.pdfDocumentModelsCutover;
   if (cutover.state !== "enabled_candidate") {
@@ -428,7 +508,7 @@ export function validateApprovedRouting(
     errors.push("pdfDocumentModelsCutover.capabilityStatus must not be proven");
   }
   if (cutover.candidateRef !== PDF_CANDIDATE_REF) {
-    errors.push("pdfDocumentModelsCutover.candidateRef must be minimax/MiniMax-M3");
+    errors.push("pdfDocumentModelsCutover.candidateRef must be openrouter/minimax/minimax-m3");
   }
   if (cutover.firstProof !== "controlled_production_rollout") {
     errors.push("firstProof must be controlled_production_rollout");
@@ -460,7 +540,8 @@ export function validateApprovedRouting(
   const slots = routing.entries.map((e) => e.slot);
   const required: ModelRouteSlot[] = [
     "primary",
-    "defaultFallback",
+    "firstFallback",
+    "secondFallback",
     "imagePdf",
     "nextFallback",
     "utility",
@@ -475,31 +556,38 @@ export function validateApprovedRouting(
   if (primary?.ref !== "openai/gpt-5.6-luna") {
     errors.push("primary must be openai/gpt-5.6-luna");
   }
-  if (primary?.reasoningEffort !== "medium") {
-    errors.push("primary reasoningEffort must be medium");
+  if (primary?.reasoningEffort !== "high") {
+    errors.push("primary reasoningEffort must be high");
   }
-  const fallback = routing.entries.find((e) => e.slot === "defaultFallback");
-  if (fallback?.ref !== "zai/glm-5.2") {
-    errors.push("defaultFallback must be zai/glm-5.2");
+  const firstFallback = routing.entries.find((e) => e.slot === "firstFallback");
+  if (firstFallback?.ref !== "openrouter/openai/gpt-5.6-luna") {
+    errors.push("firstFallback must be openrouter/openai/gpt-5.6-luna");
+  }
+  if (firstFallback?.reasoningEffort !== "medium") {
+    errors.push("firstFallback reasoningEffort must be medium");
+  }
+  const secondFallback = routing.entries.find((e) => e.slot === "secondFallback");
+  if (secondFallback?.ref !== "openrouter/z-ai/glm-5.2") {
+    errors.push("secondFallback must be openrouter/z-ai/glm-5.2");
   }
   const image = routing.entries.find((e) => e.slot === "imagePdf");
-  if (image?.ref !== "minimax/MiniMax-M3") {
-    errors.push("imagePdf must be minimax/MiniMax-M3");
+  if (image?.ref !== "openrouter/minimax/minimax-m3") {
+    errors.push("imagePdf must be openrouter/minimax/minimax-m3");
   }
   if (image?.notes) {
     if (!/approved_unverified/i.test(image.notes)) {
       errors.push("imagePdf notes must state capabilityStatus approved_unverified");
     }
-    if (!/documentModels\.pdf/i.test(image.notes)) {
-      errors.push("imagePdf notes must distinguish PDF documentModels.pdf route");
+    if (!/pdfModel/i.test(image.notes)) {
+      errors.push("imagePdf notes must distinguish the PDF pdfModel route");
     }
     if (/proven|production proof (complete|done)|PDF support proven/i.test(image.notes)) {
       errors.push("imagePdf notes must not claim MiniMax-M3 PDF as proven");
     }
   }
   const next = routing.entries.find((e) => e.slot === "nextFallback");
-  if (next?.ref !== "moonshot/kimi-k3") {
-    errors.push("nextFallback must be moonshot/kimi-k3");
+  if (next?.ref !== "openrouter/moonshotai/kimi-k3") {
+    errors.push("nextFallback must be openrouter/moonshotai/kimi-k3");
   }
   const utility = routing.entries.find((e) => e.slot === "utility");
   if (utility?.ref !== "openrouter/google/gemini-3.5-flash-lite") {
@@ -512,7 +600,7 @@ export function validateApprovedRouting(
   if (evalOnly?.ref.includes(":free")) {
     errors.push("evaluationOnly must not use free Nemotron ids");
   }
-  if (!evalOnly?.ref.includes("nemotron")) {
+  if (evalOnly?.ref !== LISA_NEMOTRON_SHADOW_POLICY.ref) {
     errors.push("evaluationOnly must reference paid Nemotron");
   }
   for (const entry of routing.entries) {

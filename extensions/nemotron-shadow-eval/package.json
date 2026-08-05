@@ -1,0 +1,13 @@
+{
+  "name": "@openclaw/nemotron-shadow-eval",
+  "version": "2026.7.2",
+  "private": true,
+  "description": "Fail-closed sampled Nemotron shadow evaluation for Lisa",
+  "type": "module",
+  "devDependencies": {
+    "@openclaw/plugin-sdk": "workspace:*"
+  },
+  "openclaw": {
+    "extensions": ["./index.ts"]
+  }
+}
