@@ -12,7 +12,7 @@ Add each applicable item once before dispatch:
 
 Route:
 
-- **0–2:** `cursor-executor`, exact ACP model `grok-4.5[effort=high,fast=true]`.
+- **0–2:** call `sessions_spawn` with `runtime: "acp"`, `agentId: "cursor"`, and exact model `grok-4.5[effort=high,fast=true]`.
 - **3–4:** `luna-executor`, native OAuth `openai/gpt-5.6-luna` at High.
 - **5+ or any hard gate:** `planner`, native OAuth `openai/gpt-5.6-sol` at Medium, returns a complete execution plan; Terra then sends that plan to `luna-executor`.
 
