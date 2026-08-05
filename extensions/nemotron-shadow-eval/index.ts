@@ -1,6 +1,7 @@
 import { definePluginEntry } from "openclaw/plugin-sdk/plugin-entry";
 import {
   eligiblePrompt,
+  extractCurrentUserRequest,
   lexicalOverlap,
   parseShadowConfig,
   sanitize,
@@ -65,16 +66,17 @@ export default definePluginEntry({
     });
 
     api.on("before_agent_run", (event, ctx) => {
+      const prompt = extractCurrentUserRequest(event.prompt);
       if (
         ctx.agentId !== config.agentId ||
         !ctx.sessionKey ||
         !config.sessionKeys.includes(ctx.sessionKey) ||
         !ctx.runId ||
-        !eligiblePrompt(event.prompt, config)
+        !eligiblePrompt(prompt, config)
       ) {
         return;
       }
-      runs.set(ctx.runId, { prompt: event.prompt, toolUsed: false });
+      runs.set(ctx.runId, { prompt, toolUsed: false });
     });
 
     api.on("llm_input", (event) => {

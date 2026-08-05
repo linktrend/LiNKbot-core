@@ -83,7 +83,19 @@ describe("nemotron shadow plugin", () => {
     for (let index = 1; index <= 10; index += 1) {
       const runId = `run-${index}`;
       const ctx = { agentId: "main", sessionKey: "agent:main:main", runId };
-      beforeAgentRun({ prompt: "Explain why the sky appears blue.", messages: [] }, ctx);
+      beforeAgentRun(
+        {
+          prompt: [
+            "OpenClaw assembled context for this turn:",
+            "Quoted production credential safety guidance.",
+            "",
+            "Current user request:",
+            "Explain why the sky appears blue.",
+          ].join("\n"),
+          messages: [],
+        },
+        ctx,
+      );
       llmInput(
         {
           runId,
