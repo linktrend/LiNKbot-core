@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   DEFAULT_SHADOW_CONFIG,
   eligiblePrompt,
+  extractCurrentUserRequest,
   lexicalOverlap,
   parseShadowConfig,
   sanitize,
@@ -10,6 +11,37 @@ import {
 } from "./policy.js";
 
 describe("nemotron shadow policy", () => {
+  it("uses the final line-boundary Codex request header and preserves nonwrapped prompts", () => {
+    const wrapped = [
+      "OpenClaw assembled context for this turn:",
+      "Earlier production credential safety guidance belongs to quoted context.",
+      "Current user request:",
+      "Deploy the old repository.",
+      "",
+      "Current user request:",
+      "Explain why the sky appears blue.",
+    ].join("\n");
+    const request = extractCurrentUserRequest(wrapped);
+
+    expect(request).toBe("Explain why the sky appears blue.");
+    expect(eligiblePrompt(request, DEFAULT_SHADOW_CONFIG)).toBe(true);
+    expect(extractCurrentUserRequest("  Explain the moon phases.  ")).toBe(
+      "Explain the moon phases.",
+    );
+  });
+
+  it("still rejects excluded terms in the extracted current request", () => {
+    const wrapped = [
+      "OpenClaw assembled context for this turn:",
+      "Earlier harmless context.",
+      "",
+      "Current user request:",
+      "Deploy this repository.",
+    ].join("\n");
+
+    expect(eligiblePrompt(extractCurrentUserRequest(wrapped), DEFAULT_SHADOW_CONFIG)).toBe(false);
+  });
+
   it("accepts only bounded non-action text", () => {
     expect(eligiblePrompt("Explain why the sky appears blue.", DEFAULT_SHADOW_CONFIG)).toBe(true);
     for (const prompt of [

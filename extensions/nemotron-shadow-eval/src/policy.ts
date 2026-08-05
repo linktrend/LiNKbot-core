@@ -45,6 +45,23 @@ const REDACTIONS: Array<[RegExp, string]> = [
   [/(?:\/Users\/|\/home\/)[^\s]+/g, "[REDACTED_PATH]"],
 ];
 
+const CODEX_CURRENT_USER_REQUEST = /(?:^|\n)Current user request:\n/g;
+
+/**
+ * Returns the current user request from OpenClaw's native Codex prompt wrapper.
+ * Non-Codex prompts remain unchanged apart from surrounding whitespace.
+ */
+export function extractCurrentUserRequest(prompt: string): string {
+  let lastMatch: RegExpExecArray | undefined;
+  for (const match of prompt.matchAll(CODEX_CURRENT_USER_REQUEST)) {
+    lastMatch = match;
+  }
+  if (!lastMatch || lastMatch.index === undefined) {
+    return prompt.trim();
+  }
+  return prompt.slice(lastMatch.index + lastMatch[0].length).trim();
+}
+
 export function parseShadowConfig(value: unknown): ShadowConfig {
   const raw = value && typeof value === "object" ? (value as Record<string, unknown>) : {};
   const integer = (key: keyof ShadowConfig, min: number, max: number) => {
