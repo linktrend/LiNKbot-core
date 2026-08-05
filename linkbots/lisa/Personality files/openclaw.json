@@ -363,6 +363,16 @@
       "image_generate",
       "skill_workshop"
     ],
+    "media": {
+      "image": {
+        "models": [
+          {
+            "provider": "openrouter",
+            "model": "minimax/minimax-m3"
+          }
+        ]
+      }
+    },
     "byProvider": {
       "ollama/qwen3.5:9b": {
         "deny": [

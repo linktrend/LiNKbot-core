@@ -1833,6 +1833,56 @@ describe("image tool implicit imageModel config", () => {
     });
   });
 
+  it("uses an explicit media image model even when the active model has native vision", async () => {
+    await withTempAgentDir(async (agentDir) => {
+      const fetch = stubOpenAiCompletionsOkFetch("ok explicit minimax");
+      const cfg: OpenClawConfig = {
+        agents: {
+          defaults: {
+            model: { primary: "openai/gpt-5.6-luna" },
+            imageModel: { primary: "openrouter/google/gemini-2.5-flash-lite" },
+          },
+        },
+        tools: {
+          media: {
+            image: {
+              models: [{ provider: "openrouter", model: "minimax/minimax-m3" }],
+            },
+          },
+        },
+        models: {
+          providers: {
+            openrouter: {
+              api: "openai-completions",
+              baseUrl: "https://openrouter.ai/api/v1",
+              apiKey: "openrouter-test",
+              models: [
+                makeModelDefinition("minimax/minimax-m3", ["text", "image"]),
+                makeModelDefinition("google/gemini-2.5-flash-lite", ["text", "image"]),
+              ],
+            },
+          },
+        },
+      };
+
+      const tool = createRequiredImageTool({ config: cfg, agentDir, modelHasVision: true });
+      expect(tool.label).toBe("Image");
+      expect(tool.catalogMode).toBeUndefined();
+      expect(tool.description).toContain("configured model");
+
+      const result = await tool.execute("explicit-minimax", {
+        prompt: "Inspect this image.",
+        image: `data:image/png;base64,${ONE_PIXEL_PNG_B64}`,
+      });
+
+      expect(fetch).toHaveBeenCalledTimes(1);
+      const [, init] = fetchCallAt(fetch, 0) as [unknown, { body?: unknown }];
+      expect(typeof init.body).toBe("string");
+      expect(JSON.parse(String(init.body))).toMatchObject({ model: "minimax/minimax-m3" });
+      expectToolText(result, "ok explicit minimax");
+    });
+  });
+
   it("sends moonshot image requests with user+image payloads only", async () => {
     await withTempAgentDir(async (agentDir) => {
       installFastLocalImageProviderStubs(minimaxProvider, moonshotProvider);
