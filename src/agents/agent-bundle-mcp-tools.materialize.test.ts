@@ -10,6 +10,7 @@ import {
   createBundleMcpToolRuntime,
   materializeBundleMcpToolsForRun,
 } from "./agent-bundle-mcp-materialize.js";
+import { assignSafeServerNames } from "./agent-bundle-mcp-names.js";
 import type { McpCatalogTool } from "./agent-bundle-mcp-types.js";
 import type { McpToolCatalogDiagnostic } from "./agent-bundle-mcp-types.js";
 import type { SessionMcpRuntime } from "./agent-bundle-mcp-types.js";
@@ -393,6 +394,65 @@ describe("createBundleMcpToolRuntime", () => {
     });
 
     expect(runtime.tools.map((tool) => tool.name)).toEqual(["bundleProbe__bundle_probe-2"]);
+  });
+
+  it("keeps same-name tools distinct, deterministic, routed, and reserved-safe", async () => {
+    const serverNames = ["alpha:server", "alpha-server"];
+    const safeServerNames = assignSafeServerNames(serverNames);
+    const tools = serverNames.map((serverName) => ({
+      serverName,
+      safeServerName: safeServerNames.get(serverName)!,
+      toolName: "probe",
+      description: `Probe from ${serverName}`,
+      inputSchema: { type: "object", properties: {} },
+      fallbackDescription: `Probe from ${serverName}`,
+    }));
+    const calls: Array<{ serverName: string; toolName: string }> = [];
+    const base = makeToolRuntime({ tools, serverName: serverNames[0] });
+    const runtime: SessionMcpRuntime = {
+      ...base,
+      getCatalog: async () => ({
+        version: 1,
+        generatedAt: 0,
+        servers: Object.fromEntries(
+          serverNames.map((serverName) => [
+            serverName,
+            {
+              serverName,
+              safeServerName: safeServerNames.get(serverName)!,
+              launchSummary: serverName,
+              toolCount: 1,
+            },
+          ]),
+        ),
+        tools,
+      }),
+      callTool: async (serverName, toolName) => {
+        calls.push({ serverName, toolName });
+        return {
+          content: [{ type: "text", text: `${serverName}:${toolName}` }],
+          isError: false,
+        };
+      },
+    };
+
+    const materialized = await materializeBundleMcpToolsForRun({
+      runtime,
+      reservedToolNames: ["alpha-server__probe"],
+    });
+
+    expect(materialized.tools.map((tool) => tool.name)).toEqual([
+      "alpha-server__probe-2",
+      "alpha-server-2__probe",
+    ]);
+    for (const tool of materialized.tools) {
+      const result = await tool.execute("same-name-call", {}, undefined, undefined);
+      expect(result.content[0]).toMatchObject({ type: "text" });
+    }
+    expect(calls).toEqual([
+      { serverName: "alpha:server", toolName: "probe" },
+      { serverName: "alpha-server", toolName: "probe" },
+    ]);
   });
 
   it("reuses one-shot reserved names for App-only policy projections", async () => {

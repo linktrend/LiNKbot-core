@@ -103,7 +103,16 @@ export async function cleanupCodexAttempt(
     step: "codex-scoped-mcp-dispose",
     log: embeddedAgentLog,
     cleanup: async () => {
-      await prompt.context.attemptTools.scopedMcpTools?.dispose();
+      const results = await Promise.allSettled([
+        prompt.context.attemptTools.hostManagedMcpTools?.dispose(),
+        prompt.context.attemptTools.scopedMcpTools?.dispose(),
+      ]);
+      const failures = results.flatMap((result) =>
+        result.status === "rejected" ? [result.reason] : [],
+      );
+      if (failures.length > 0) {
+        throw new AggregateError(failures, "Codex MCP disposal failed");
+      }
     },
   });
   runAbortController.signal.removeEventListener("abort", abortListener);

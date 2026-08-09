@@ -3790,6 +3790,60 @@ describe("requester-scoped MCP connection resolution", () => {
     await manager.disposeAll();
   });
 
+  it("keeps selected static subsets isolated from the full static runtime", async () => {
+    const created: Array<{ include?: string[]; sessionId: string }> = [];
+    const createRuntime: RuntimeFactory = (params) => {
+      created.push({
+        include: params.includeServerNames ? [...params.includeServerNames] : undefined,
+        sessionId: params.sessionId,
+      });
+      return {
+        ...makeRuntime([{ toolName: "probe", description: "probe" }], "brain"),
+        sessionId: params.sessionId,
+        workspaceDir: params.workspaceDir,
+        configFingerprint: params.configFingerprint ?? "fingerprint",
+      };
+    };
+    const manager = testing.createSessionMcpRuntimeManager({ createRuntime });
+    const cfg = {
+      mcp: {
+        servers: {
+          brain: { command: "true" },
+          notes: { command: "true" },
+        },
+      },
+    };
+
+    const subset = await manager.getOrCreateStaticSubset({
+      sessionId: "session-static-subset",
+      workspaceDir: "/workspace",
+      cfg: cfg as never,
+      serverNames: ["missing", "brain"],
+    });
+    const reused = await manager.getOrCreateStaticSubset({
+      sessionId: "session-static-subset",
+      workspaceDir: "/workspace",
+      cfg: cfg as never,
+      serverNames: ["brain"],
+    });
+    const full = await manager.getOrCreate({
+      sessionId: "session-static-subset",
+      workspaceDir: "/workspace",
+      cfg: cfg as never,
+    });
+
+    expect(subset).toBe(reused);
+    expect(full).not.toBe(subset);
+    expect(created).toEqual([
+      { include: ["brain"], sessionId: "session-static-subset" },
+      { include: undefined, sessionId: "session-static-subset" },
+    ]);
+    expect(manager.listRuntimeKeys()).toHaveLength(2);
+
+    await manager.disposeSession("session-static-subset");
+    expect(manager.listRuntimeKeys()).toEqual([]);
+  });
+
   it("reuses requester cache keys for getOrCreateRequesterScoped", async () => {
     const { testing: resolverTesting } = await import("./mcp-connection-resolver.js");
     let resolveCount = 0;
