@@ -3,6 +3,7 @@ export type { McpToolCatalogDiagnostic } from "./agent-bundle-mcp-types.js";
 export {
   disposeAllSessionMcpRuntimes,
   getOrCreateSessionMcpRuntime,
+  getOrCreateStaticSubsetMcpRuntime,
   peekSessionMcpRuntime,
   resolveSessionMcpConfigSummary,
   retireSessionMcpRuntime,

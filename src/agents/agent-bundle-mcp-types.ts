@@ -155,6 +155,20 @@ export type SessionMcpRuntimeManager = {
     messageChannel?: string | null;
   }) => Promise<SessionMcpRuntime>;
   /**
+   * Selected static-server partition for host-executed harness tools.
+   * Uses a separate managed runtime so harness-native MCP connections are not
+   * duplicated or displaced. Undefined when no selected static server exists.
+   */
+  getOrCreateStaticSubset: (params: {
+    sessionId: string;
+    sessionKey?: string;
+    workspaceDir: string;
+    agentDir?: string;
+    cfg?: OpenClawConfig;
+    manifestRegistry?: Pick<PluginManifestRegistry, "plugins">;
+    serverNames: readonly string[];
+  }) => Promise<SessionMcpRuntime | undefined>;
+  /**
    * Requester-scoped partition only — never creates static transports.
    * Undefined when no scoped servers, no senderId, or nothing resolves.
    */

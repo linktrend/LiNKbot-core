@@ -1,7 +1,4 @@
-/**
- * Harness-facing materialization of requester-scoped MCP tools.
- * Static MCP stays harness-native; this path never opens static transports.
- */
+/** Harness-facing materialization of host-managed and requester-scoped MCP tools. */
 import type { OpenClawConfig } from "../config/types.openclaw.js";
 import type { PluginManifestRegistry } from "../plugins/manifest-registry.js";
 import { getPluginToolMeta } from "../plugins/tools.js";
@@ -12,6 +9,7 @@ import {
 import {
   getAdvertisedScopedMcpCatalog,
   getOrCreateRequesterScopedMcpRuntime,
+  getOrCreateStaticSubsetMcpRuntime,
   rememberAdvertisedScopedMcpCatalog,
 } from "./agent-bundle-mcp-runtime.js";
 import {
@@ -34,6 +32,11 @@ type RequesterScopedHarnessMcpTools = {
   dispose: () => Promise<void>;
 };
 
+type HostManagedHarnessMcpTools = {
+  tools: AnyAgentTool[];
+  dispose: () => Promise<void>;
+};
+
 type MaterializeRequesterScopedMcpToolsForHarnessRunParams = {
   sessionId: string;
   sessionKey?: string;
@@ -53,6 +56,13 @@ type MaterializeRequesterScopedMcpToolsForHarnessRunParams = {
   warn?: (message: string) => void;
 };
 
+type MaterializeHostManagedMcpToolsForHarnessRunParams = Omit<
+  MaterializeRequesterScopedMcpToolsForHarnessRunParams,
+  "requesterSenderId" | "agentAccountId" | "messageChannel"
+> & {
+  serverNames: readonly string[];
+};
+
 function notConnectedToolResult(serverName: string, toolName: string) {
   const message = `Requester has not connected MCP server "${serverName}" (tool "${toolName}") for this turn.`;
   return {
@@ -68,7 +78,9 @@ function notConnectedToolResult(serverName: string, toolName: string) {
 
 function applyHarnessToolPolicy(
   tools: AnyAgentTool[],
-  params: MaterializeRequesterScopedMcpToolsForHarnessRunParams,
+  params:
+    | MaterializeRequesterScopedMcpToolsForHarnessRunParams
+    | MaterializeHostManagedMcpToolsForHarnessRunParams,
 ): AnyAgentTool[] {
   if (tools.length === 0) {
     return tools;
@@ -93,6 +105,46 @@ function applyHarnessToolPolicy(
     conversationCapabilityProfile: profile,
     warn: params.warn ?? (() => undefined),
   });
+}
+
+/**
+ * Materialize selected static MCP servers as host-executed harness tools.
+ * Credentials and transports remain inside OpenClaw; the external harness
+ * receives only dynamic tool schemas and sends calls back to the host.
+ */
+export async function materializeHostManagedMcpToolsForHarnessRun(
+  params: MaterializeHostManagedMcpToolsForHarnessRunParams,
+): Promise<HostManagedHarnessMcpTools | undefined> {
+  const runtime = await getOrCreateStaticSubsetMcpRuntime({
+    sessionId: params.sessionId,
+    sessionKey: params.sessionKey,
+    workspaceDir: params.workspaceDir,
+    agentDir: params.agentDir,
+    cfg: params.cfg,
+    manifestRegistry: params.manifestRegistry,
+    serverNames: params.serverNames,
+  });
+  if (!runtime) {
+    return undefined;
+  }
+  try {
+    const liveRuntime = await materializeBundleMcpToolsForRun({
+      runtime,
+      reservedToolNames: params.reservedToolNames,
+    });
+    const tools = applyHarnessToolPolicy(liveRuntime.tools, params);
+    if (tools.length === 0) {
+      await liveRuntime.dispose();
+      return undefined;
+    }
+    return {
+      tools,
+      dispose: liveRuntime.dispose,
+    };
+  } catch (error) {
+    await runtime.dispose();
+    throw error;
+  }
 }
 
 /**

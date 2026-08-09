@@ -12,4 +12,22 @@ export {
   injectCodexMcpConfigArgs,
   isMachineTokenMcpProjectionUnsupported,
   machineTokenMcpProjectionUnsupportedError,
+  resolveCodexHostManagedMcpServerNames,
 } from "../agents/cli-runner/bundle-mcp-codex.js";
+
+/** Private Codex-plugin seam for OpenClaw-hosted machine-token MCP tools. */
+export async function materializeCodexHostManagedMcpToolsForHarnessRun(
+  params: Parameters<
+    typeof import("../agents/agent-bundle-mcp-harness.js").materializeHostManagedMcpToolsForHarnessRun
+  >[0],
+): Promise<
+  Awaited<
+    ReturnType<
+      typeof import("../agents/agent-bundle-mcp-harness.js").materializeHostManagedMcpToolsForHarnessRun
+    >
+  >
+> {
+  const { materializeHostManagedMcpToolsForHarnessRun: materialize } =
+    await import("../agents/agent-bundle-mcp-harness.js");
+  return materialize(params);
+}

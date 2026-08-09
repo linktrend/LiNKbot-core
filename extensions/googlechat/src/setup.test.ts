@@ -458,6 +458,48 @@ describe("resolveGoogleChatAccount", () => {
     }
   });
 
+  it("keeps a disabled SecretRef-backed account inspectable without resolving it", () => {
+    const resolved = resolveGoogleChatAccount({
+      cfg: {
+        channels: {
+          googlechat: {
+            enabled: false,
+            serviceAccountRef: {
+              source: "exec",
+              provider: "googlechat-test",
+              id: "value",
+            },
+          },
+        },
+      },
+      accountId: "default",
+    });
+
+    expect(resolved.enabled).toBe(false);
+    expect(resolved.credentialSource).toBe("ref");
+    expect(resolved.tokenStatus).toBe("configured_unavailable");
+  });
+
+  it("still rejects an unresolved SecretRef for an enabled account", () => {
+    expect(() =>
+      resolveGoogleChatAccount({
+        cfg: {
+          channels: {
+            googlechat: {
+              enabled: true,
+              serviceAccountRef: {
+                source: "exec",
+                provider: "googlechat-test",
+                id: "value",
+              },
+            },
+          },
+        },
+        accountId: "default",
+      }),
+    ).toThrow(/unresolved SecretRef/);
+  });
+
   it("resolves user-relative service-account files before checking availability", () => {
     const homeDir = makeTempDir("openclaw-googlechat-home-");
     fs.writeFileSync(path.join(homeDir, "service-account.json"), "{}", { mode: 0o600 });

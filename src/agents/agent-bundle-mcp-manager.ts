@@ -54,16 +54,21 @@ export function createSessionMcpRuntimeManager(
   const lifecycle = createSessionMcpRuntimeManagerLifecycle(store);
   const install = createSessionMcpRuntimeManagerInstall(lifecycle);
 
+  const prepareManagedRuntimeLifecycle = async (sessionKey?: string, sessionId?: string) => {
+    const idleTtlMs = resolveSessionMcpRuntimeIdleTtlMs();
+    await lifecycle.sweepIdleRuntimes();
+    if (idleTtlMs > 0) {
+      lifecycle.ensureIdleSweepTimer();
+    }
+    if (sessionKey && sessionId) {
+      store.sessionIdBySessionKey.set(sessionKey, sessionId);
+    }
+    return idleTtlMs;
+  };
+
   const manager: SessionMcpRuntimeManager = {
     async getOrCreate(params) {
-      const idleTtlMs = resolveSessionMcpRuntimeIdleTtlMs();
-      await lifecycle.sweepIdleRuntimes();
-      if (idleTtlMs > 0) {
-        lifecycle.ensureIdleSweepTimer();
-      }
-      if (params.sessionKey) {
-        store.sessionIdBySessionKey.set(params.sessionKey, params.sessionId);
-      }
+      const idleTtlMs = await prepareManagedRuntimeLifecycle(params.sessionKey, params.sessionId);
 
       const fullConfig = loadSessionMcpConfig({
         workspaceDir: params.workspaceDir,
@@ -206,17 +211,51 @@ export function createSessionMcpRuntimeManager(
         parts,
       });
     },
+    async getOrCreateStaticSubset(params) {
+      const idleTtlMs = await prepareManagedRuntimeLifecycle(params.sessionKey, params.sessionId);
+      const fullConfig = loadSessionMcpConfig({
+        workspaceDir: params.workspaceDir,
+        cfg: params.cfg,
+        logDiagnostics: false,
+        manifestRegistry: params.manifestRegistry,
+      });
+      const { staticServers } = partitionMcpServersByConnectionScope(fullConfig.loaded.mcpServers);
+      const selectedNames = [...new Set(params.serverNames)]
+        .filter((serverName) => Object.hasOwn(staticServers, serverName))
+        .toSorted((a, b) => a.localeCompare(b));
+      if (selectedNames.length === 0) {
+        return undefined;
+      }
+      // A host-executed subset must never replace the bare static runtime used
+      // by embedded or harness-native MCP. The composite key keeps both alive
+      // under the same session retirement and idle-lifecycle ownership.
+      const runtimeKey = JSON.stringify({
+        sessionId: params.sessionId,
+        partition: "static-subset",
+        serverNames: selectedNames,
+      });
+      const safeServerNamesByServer = assignSafeServerNames(
+        Object.keys(fullConfig.loaded.mcpServers),
+      );
+      return await lifecycle.runExclusiveOnRuntimeKey(runtimeKey, () =>
+        install.getOrCreateRuntimeEntry({
+          runtimeKey,
+          sessionId: params.sessionId,
+          sessionKey: params.sessionKey,
+          workspaceDir: params.workspaceDir,
+          agentDir: params.agentDir,
+          cfg: params.cfg,
+          manifestRegistry: params.manifestRegistry,
+          idleTtlMs,
+          includeServerNames: new Set(selectedNames),
+          safeServerNamesByServer,
+        }),
+      );
+    },
     async getOrCreateRequesterScoped(params) {
       // Scoped-only path for shared-thread harnesses: never open static transports
       // (those stay harness-native) so we do not double-connect.
-      const idleTtlMs = resolveSessionMcpRuntimeIdleTtlMs();
-      await lifecycle.sweepIdleRuntimes();
-      if (idleTtlMs > 0) {
-        lifecycle.ensureIdleSweepTimer();
-      }
-      if (params.sessionKey) {
-        store.sessionIdBySessionKey.set(params.sessionKey, params.sessionId);
-      }
+      const idleTtlMs = await prepareManagedRuntimeLifecycle(params.sessionKey, params.sessionId);
       const requesterSenderId = normalizeOptionalString(params.requesterSenderId);
       if (!requesterSenderId) {
         return undefined;
