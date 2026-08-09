@@ -43,7 +43,7 @@
 
 ## Progress
 
-- 2026-08-09 19:10: Created isolated feature worktree from current `main`; no runtime mutation.
+- 2026-08-09 19:10: Created isolated `feature/lisa-direct-1` worktree from current `main`; no runtime mutation.
 - 2026-08-09 19:25: Ported only the approved generic source areas from `feature/lisa-eric-step1-core`; excluded candidate files and all Eric deployment assets.
 - 2026-08-09 19:29: Added SQLite online-backup snapshot/verify/relocation/restore tooling, cron identity checks, and Lisa-only VPS service contract; no live profile or service changes.
 - 2026-08-09 19:30: Focused migration/launcher tests passed (9 tests); focused generic Vitest shards passed (153 tests); formatting and `git diff --check` passed.
