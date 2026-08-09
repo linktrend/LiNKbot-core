@@ -71,7 +71,8 @@ export function createSessionMcpRuntimeManagerStore(
   createSessionMcpRuntime: CreateSessionMcpRuntime,
 ): SessionMcpRuntimeManagerStore {
   return {
-    // Keys are bare sessionId for static runtimes, or requester composite JSON keys.
+    // Keys are bare sessionId for the full static runtime, or composite JSON
+    // keys for requester and selected-static partitions.
     runtimesBySessionId: new Map<string, SessionMcpRuntime>(),
     sessionIdBySessionKey: new Map<string, string>(),
     idleTtlMsBySessionId: new Map<string, number>(),
@@ -217,14 +218,14 @@ export function createSessionMcpRuntimeManagerLifecycle(
   /**
    * A busy shared channel can otherwise accumulate one live scoped runtime per
    * sender until the idle TTL fires. Evict LRU zero-lease requester runtimes
-   * beyond the cap; leased runtimes and the bare static runtime never evict.
+   * beyond the cap; leased runtimes and every static partition never evict.
    */
   const enforceRequesterRuntimeCap = async (
     sessionId: string,
     keepRuntimeKey: string,
   ): Promise<void> => {
     const requesterKeys = runtimeKeysForSessionId(sessionId).filter(
-      (runtimeKey) => runtimeKey !== sessionId,
+      (runtimeKey) => store.runtimesBySessionId.get(runtimeKey)?.requesterScope !== undefined,
     );
     const overflow = requesterKeys.length - store.maxIdleRequesterRuntimes;
     if (overflow <= 0) {

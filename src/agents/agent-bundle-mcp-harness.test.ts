@@ -42,6 +42,10 @@ const mocks = vi.hoisted(() => {
         return undefined;
       },
     ),
+    getOrCreateStaticSubsetMcpRuntime: vi.fn(
+      async (_params: { sessionId: string; serverNames: readonly string[] }) =>
+        undefined as Runtime | undefined,
+    ),
     rememberAdvertisedScopedMcpCatalog: vi.fn(
       (sessionId: string, catalog: typeof advertised extends Map<string, infer V> ? V : never) => {
         advertised.set(sessionId, catalog);
@@ -61,12 +65,16 @@ vi.mock("./agent-bundle-mcp-runtime.js", async (importOriginal) => {
   return {
     ...actual,
     getOrCreateRequesterScopedMcpRuntime: mocks.getOrCreateRequesterScopedMcpRuntime,
+    getOrCreateStaticSubsetMcpRuntime: mocks.getOrCreateStaticSubsetMcpRuntime,
     rememberAdvertisedScopedMcpCatalog: mocks.rememberAdvertisedScopedMcpCatalog,
     getAdvertisedScopedMcpCatalog: mocks.getAdvertisedScopedMcpCatalog,
   };
 });
 
-import { materializeRequesterScopedMcpToolsForHarnessRun } from "./agent-bundle-mcp-harness.js";
+import {
+  materializeHostManagedMcpToolsForHarnessRun,
+  materializeRequesterScopedMcpToolsForHarnessRun,
+} from "./agent-bundle-mcp-harness.js";
 
 function makeRuntime(params: { sessionId: string; requesterSenderId: string }): SessionMcpRuntime {
   const serverName = "user-mail";
@@ -137,12 +145,37 @@ function makeRuntime(params: { sessionId: string; requesterSenderId: string }): 
 beforeEach(() => {
   mocks.reset();
   mocks.getOrCreateRequesterScopedMcpRuntime.mockClear();
+  mocks.getOrCreateStaticSubsetMcpRuntime.mockClear();
   mocks.rememberAdvertisedScopedMcpCatalog.mockClear();
   mocks.getAdvertisedScopedMcpCatalog.mockClear();
 });
 
 afterEach(() => {
   mocks.reset();
+});
+
+describe("materializeHostManagedMcpToolsForHarnessRun", () => {
+  it("keeps execution in the selected OpenClaw-owned runtime", async () => {
+    const runtime = {
+      ...makeRuntime({ sessionId: "session-host", requesterSenderId: "host" }),
+      requesterScope: undefined,
+    };
+    mocks.getOrCreateStaticSubsetMcpRuntime.mockResolvedValueOnce(runtime);
+
+    const result = await materializeHostManagedMcpToolsForHarnessRun({
+      sessionId: "session-host",
+      workspaceDir: "/workspace",
+      serverNames: ["brain"],
+    });
+
+    expect(mocks.getOrCreateStaticSubsetMcpRuntime).toHaveBeenCalledWith(
+      expect.objectContaining({ serverNames: ["brain"] }),
+    );
+    expect(result?.tools.map((tool) => tool.name)).toEqual(["user-mail__inbox"]);
+    const call = await result!.tools[0]!.execute("host-call", {});
+    expect(call.content[0]).toMatchObject({ text: "live:inbox:host" });
+    await result!.dispose();
+  });
 });
 
 describe("materializeRequesterScopedMcpToolsForHarnessRun", () => {

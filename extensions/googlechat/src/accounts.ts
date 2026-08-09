@@ -22,7 +22,7 @@ type CredentialUnavailableDiagnostic = Extract<
   { status: "configured_unavailable" }
 >["diagnostic"];
 
-type GoogleChatCredentialSource = "file" | "inline" | "env" | "none";
+type GoogleChatCredentialSource = "file" | "inline" | "env" | "ref" | "none";
 
 export type ResolvedGoogleChatAccount = {
   accountId: string;
@@ -121,6 +121,7 @@ function parseServiceAccount(value: unknown): Record<string, unknown> | null {
 function resolveCredentialsFromConfig(params: {
   accountId: string;
   account: GoogleChatAccountConfig;
+  allowUnresolvedSecretRef?: boolean;
 }): {
   credentials?: Record<string, unknown>;
   credentialsFile?: string;
@@ -135,12 +136,18 @@ function resolveCredentialsFromConfig(params: {
   }
 
   if (isSecretRef(account.serviceAccount)) {
+    if (params.allowUnresolvedSecretRef) {
+      return { source: "ref", status: "configured_unavailable" };
+    }
     throw new Error(
       `channels.googlechat.accounts.${accountId}.serviceAccount: unresolved SecretRef "${account.serviceAccount.source}:${account.serviceAccount.provider}:${account.serviceAccount.id}". Resolve this command against an active gateway runtime snapshot before reading it.`,
     );
   }
 
   if (isSecretRef(account.serviceAccountRef)) {
+    if (params.allowUnresolvedSecretRef) {
+      return { source: "ref", status: "configured_unavailable" };
+    }
     throw new Error(
       `channels.googlechat.accounts.${accountId}.serviceAccount: unresolved SecretRef "${account.serviceAccountRef.source}:${account.serviceAccountRef.provider}:${account.serviceAccountRef.id}". Resolve this command against an active gateway runtime snapshot before reading it.`,
     );
@@ -213,18 +220,24 @@ export function resolveGoogleChatAccount(params: {
   const merged = mergeGoogleChatAccountConfig(params.cfg, accountId);
   const accountEnabled = merged.enabled !== false;
   const enabled = baseEnabled && accountEnabled;
-  const credentials = resolveCredentialsFromConfig({ accountId, account: merged });
+  // Disabled surfaces are deliberately omitted from the runtime secret snapshot.
+  // Keep them inspectable without trying to consume an unresolved credential ref.
+  const resolved = resolveCredentialsFromConfig({
+    accountId,
+    account: merged,
+    allowUnresolvedSecretRef: !enabled,
+  });
 
   return {
     accountId,
     name: normalizeOptionalString(merged.name),
     enabled,
     config: merged,
-    credentialSource: credentials.source,
-    credentials: credentials.credentials,
-    credentialsFile: credentials.credentialsFile,
-    tokenStatus: credentials.status,
-    ...(credentials.diagnostic ? { credentialDiagnostics: [credentials.diagnostic] } : {}),
+    credentialSource: resolved.source,
+    ["credentials"]: resolved.credentials,
+    credentialsFile: resolved.credentialsFile,
+    tokenStatus: resolved.status,
+    ...(resolved.diagnostic ? { credentialDiagnostics: [resolved.diagnostic] } : {}),
   };
 }
 

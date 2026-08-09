@@ -5,6 +5,10 @@ import {
   resolveAgentDir,
 } from "openclaw/plugin-sdk/agent-harness-runtime";
 import {
+  materializeCodexHostManagedMcpToolsForHarnessRun,
+  resolveCodexHostManagedMcpServerNames,
+} from "openclaw/plugin-sdk/codex-mcp-projection";
+import {
   buildDynamicTools,
   formatCodexDynamicToolBuildStageSummary,
   resolveCodexMessageToolProvider,
@@ -144,121 +148,164 @@ export async function prepareCodexAttemptTools(runtime: CodexAttemptRuntime) {
     ignoreDisableMessageTool: true,
     ignoreRuntimePlan: true,
   });
-  // Requester-scoped MCP: dynamic tools on a shared thread (never harness-native MCP).
-  // Specs come from the session advertised-catalog cache so fingerprints stay stable.
-  const scopedMcpTools = await materializeRequesterScopedMcpToolsForHarnessRun({
+  const mcpPolicyContext = {
+    config: params.config,
+    sessionKey: sandboxSessionKey,
+    runSessionKey:
+      params.sessionKey && params.sessionKey !== sandboxSessionKey ? params.sessionKey : undefined,
     sessionId: params.sessionId,
-    sessionKey: params.sessionKey,
-    workspaceDir: effectiveWorkspace,
+    runId: params.runId,
+    agentId: sessionAgentId,
     agentDir: agentDir ?? resolveAgentDir(params.config ?? {}, sessionAgentId),
-    cfg: params.config,
-    requesterSenderId: params.senderId,
     agentAccountId: params.agentAccountId,
-    messageChannel: params.messageChannel ?? params.messageProvider,
-    reservedToolNames: [
-      ...tools.map((tool) => tool.name),
-      ...registeredTools.map((tool) => tool.name),
-    ],
-    toolsAllow: params.toolsAllow,
-    policyContext: {
-      config: params.config,
-      sessionKey: sandboxSessionKey,
-      runSessionKey:
-        params.sessionKey && params.sessionKey !== sandboxSessionKey
-          ? params.sessionKey
-          : undefined,
-      sessionId: params.sessionId,
-      runId: params.runId,
-      agentId: sessionAgentId,
-      agentDir: agentDir ?? resolveAgentDir(params.config ?? {}, sessionAgentId),
-      agentAccountId: params.agentAccountId,
-      messageProvider: params.messageProvider ?? params.messageChannel,
-      messageChannel: params.messageChannel,
-      chatType: params.chatType,
-      messageTo: params.messageTo,
-      messageThreadId: params.messageThreadId,
-      currentChannelId: params.currentChannelId,
-      currentMessagingTarget: params.currentMessagingTarget,
-      currentThreadTs: params.currentThreadTs,
-      currentMessageId: params.currentMessageId,
-      groupId: params.groupId,
-      groupChannel: params.groupChannel,
-      groupSpace: params.groupSpace,
-      memberRoleIds: params.memberRoleIds,
-      spawnedBy: params.spawnedBy,
-      senderId: params.senderId,
-      senderName: params.senderName,
-      senderUsername: params.senderUsername,
-      senderE164: params.senderE164,
-      senderIsOwner: params.senderIsOwner,
-      modelProvider: params.provider,
-      modelId: params.modelId,
-      modelApi: params.model.api,
-      modelContextWindowTokens: params.model.contextWindow,
-      modelHasVision: params.model.input?.includes("image") ?? false,
-      workspaceDir: effectiveWorkspace,
-      cwd: effectiveCwd ?? effectiveWorkspace,
-      sandboxToolPolicy: sandbox?.tools,
-    },
-    warn: (message) => embeddedAgentLog.warn(message),
-  });
-  // Restricted dynamic-tool profiles (private QA, exclusion lists) gate scoped
-  // MCP tools exactly like every other dynamic tool. Filter both lists with the
-  // same rule so execution and advertised specs stay name-aligned.
-  const scopedExecutable = scopedMcpTools
-    ? filterCodexDynamicTools(scopedMcpTools.tools, pluginConfig)
-    : [];
-  const scopedAdvertised = scopedMcpTools
-    ? filterCodexDynamicTools(scopedMcpTools.advertisedTools, pluginConfig)
-    : [];
-  const toolsWithScopedMcp = scopedExecutable.length > 0 ? [...tools, ...scopedExecutable] : tools;
-  const registeredWithScopedMcp =
-    scopedAdvertised.length > 0 ? [...registeredTools, ...scopedAdvertised] : registeredTools;
-  const toolBridge = createCodexDynamicToolBridge({
-    tools: toolsWithScopedMcp,
-    registeredTools: registeredWithScopedMcp,
-    signal: runAbortController.signal,
-    computerContextEpoch,
-    loading: resolveCodexDynamicToolsLoadingForRuntime(pluginConfig, effectiveRuntimeModelId, {
-      connectionClass: connection.appServer.connectionClass,
-    }),
-    directToolNames: resolveCodexDynamicToolDirectNames(
-      params,
-      isHostScopedAgentToolActive("openclaw"),
-    ),
-    hookContext: {
-      agentId: sessionAgentId,
-      config: params.config,
-      workspaceDir: effectiveWorkspace,
-      sessionId: params.sessionId,
-      sessionKey: sandboxSessionKey,
-      runId: params.runId,
-      channelId: hookChannelId,
-      currentChannelProvider: resolveCodexMessageToolProvider(params),
-      currentChannelId: params.currentChannelId,
-      currentMessagingTarget: params.currentMessagingTarget,
-      currentMessageId: params.currentMessageId,
-      currentThreadId: params.currentThreadTs,
-      replyToMode: params.replyToMode,
-      hasRepliedRef: params.hasRepliedRef,
-      sourceReplyDeliveryMode: params.sourceReplyDeliveryMode,
-      onToolOutcome: onCodexToolOutcome,
-      allocateToolOutcomeOrdinal: allocateCodexToolOutcomeOrdinal,
-    },
-  });
-  return {
-    tools: toolsWithScopedMcp,
-    registeredTools: registeredWithScopedMcp,
-    scopedMcpTools,
-    dynamicToolParams,
-    computerContextEpoch,
-    toolBridge,
-    toolState,
-    toolOutcomeOrdinals,
-    suppressedDynamicToolOutcomeOrdinals,
-    onCodexToolOutcome,
-    allocateCodexToolOutcomeOrdinal,
+    messageProvider: params.messageProvider ?? params.messageChannel,
+    messageChannel: params.messageChannel,
+    chatType: params.chatType,
+    messageTo: params.messageTo,
+    messageThreadId: params.messageThreadId,
+    currentChannelId: params.currentChannelId,
+    currentMessagingTarget: params.currentMessagingTarget,
+    currentThreadTs: params.currentThreadTs,
+    currentMessageId: params.currentMessageId,
+    groupId: params.groupId,
+    groupChannel: params.groupChannel,
+    groupSpace: params.groupSpace,
+    memberRoleIds: params.memberRoleIds,
+    spawnedBy: params.spawnedBy,
+    senderId: params.senderId,
+    senderName: params.senderName,
+    senderUsername: params.senderUsername,
+    senderE164: params.senderE164,
+    senderIsOwner: params.senderIsOwner,
+    modelProvider: params.provider,
+    modelId: params.modelId,
+    modelApi: params.model.api,
+    modelContextWindowTokens: params.model.contextWindow,
+    modelHasVision: params.model.input?.includes("image") ?? false,
+    workspaceDir: effectiveWorkspace,
+    cwd: effectiveCwd ?? effectiveWorkspace,
+    sandboxToolPolicy: sandbox?.tools,
   };
+  const hostManagedServerNames = resolveCodexHostManagedMcpServerNames(params.config, {
+    agentId: sessionAgentId,
+  });
+  // Machine credentials stay in OpenClaw. Codex receives dynamic schemas and
+  // calls back through its existing host-tool protocol, never native MCP auth.
+  const hostManagedMcpTools =
+    hostManagedServerNames.length > 0
+      ? await materializeCodexHostManagedMcpToolsForHarnessRun({
+          sessionId: params.sessionId,
+          sessionKey: params.sessionKey,
+          workspaceDir: effectiveWorkspace,
+          agentDir: agentDir ?? resolveAgentDir(params.config ?? {}, sessionAgentId),
+          cfg: params.config,
+          serverNames: hostManagedServerNames,
+          reservedToolNames: [
+            ...tools.map((tool) => tool.name),
+            ...registeredTools.map((tool) => tool.name),
+          ],
+          toolsAllow: params.toolsAllow,
+          policyContext: mcpPolicyContext,
+          warn: (message) => embeddedAgentLog.warn(message),
+        })
+      : undefined;
+  try {
+    // Requester-scoped MCP: dynamic tools on a shared thread (never harness-native MCP).
+    // Specs come from the session advertised-catalog cache so fingerprints stay stable.
+    const scopedMcpTools = await materializeRequesterScopedMcpToolsForHarnessRun({
+      sessionId: params.sessionId,
+      sessionKey: params.sessionKey,
+      workspaceDir: effectiveWorkspace,
+      agentDir: agentDir ?? resolveAgentDir(params.config ?? {}, sessionAgentId),
+      cfg: params.config,
+      requesterSenderId: params.senderId,
+      agentAccountId: params.agentAccountId,
+      messageChannel: params.messageChannel ?? params.messageProvider,
+      reservedToolNames: [
+        ...tools.map((tool) => tool.name),
+        ...registeredTools.map((tool) => tool.name),
+        ...(hostManagedMcpTools?.tools.map((tool) => tool.name) ?? []),
+      ],
+      toolsAllow: params.toolsAllow,
+      policyContext: mcpPolicyContext,
+      warn: (message) => embeddedAgentLog.warn(message),
+    });
+    // Restricted dynamic-tool profiles (private QA, exclusion lists) gate scoped
+    // MCP tools exactly like every other dynamic tool. Filter both lists with the
+    // same rule so execution and advertised specs stay name-aligned.
+    const scopedExecutable = scopedMcpTools
+      ? filterCodexDynamicTools(scopedMcpTools.tools, pluginConfig)
+      : [];
+    const scopedAdvertised = scopedMcpTools
+      ? filterCodexDynamicTools(scopedMcpTools.advertisedTools, pluginConfig)
+      : [];
+    const hostManagedExecutable = hostManagedMcpTools
+      ? filterCodexDynamicTools(hostManagedMcpTools.tools, pluginConfig)
+      : [];
+    const toolsWithHostManaged =
+      hostManagedExecutable.length > 0 ? [...tools, ...hostManagedExecutable] : tools;
+    const registeredWithHostManaged =
+      hostManagedExecutable.length > 0
+        ? [...registeredTools, ...hostManagedExecutable]
+        : registeredTools;
+    const toolsWithScopedMcp =
+      scopedExecutable.length > 0
+        ? [...toolsWithHostManaged, ...scopedExecutable]
+        : toolsWithHostManaged;
+    const registeredWithScopedMcp =
+      scopedAdvertised.length > 0
+        ? [...registeredWithHostManaged, ...scopedAdvertised]
+        : registeredWithHostManaged;
+    const toolBridge = createCodexDynamicToolBridge({
+      tools: toolsWithScopedMcp,
+      registeredTools: registeredWithScopedMcp,
+      signal: runAbortController.signal,
+      computerContextEpoch,
+      loading: resolveCodexDynamicToolsLoadingForRuntime(pluginConfig, effectiveRuntimeModelId, {
+        connectionClass: connection.appServer.connectionClass,
+      }),
+      directToolNames: resolveCodexDynamicToolDirectNames(
+        params,
+        isHostScopedAgentToolActive("openclaw"),
+      ),
+      hookContext: {
+        agentId: sessionAgentId,
+        config: params.config,
+        workspaceDir: effectiveWorkspace,
+        sessionId: params.sessionId,
+        sessionKey: sandboxSessionKey,
+        runId: params.runId,
+        channelId: hookChannelId,
+        currentChannelProvider: resolveCodexMessageToolProvider(params),
+        currentChannelId: params.currentChannelId,
+        currentMessagingTarget: params.currentMessagingTarget,
+        currentMessageId: params.currentMessageId,
+        currentThreadId: params.currentThreadTs,
+        replyToMode: params.replyToMode,
+        hasRepliedRef: params.hasRepliedRef,
+        sourceReplyDeliveryMode: params.sourceReplyDeliveryMode,
+        onToolOutcome: onCodexToolOutcome,
+        allocateToolOutcomeOrdinal: allocateCodexToolOutcomeOrdinal,
+      },
+    });
+    return {
+      tools: toolsWithScopedMcp,
+      registeredTools: registeredWithScopedMcp,
+      hostManagedMcpTools,
+      scopedMcpTools,
+      dynamicToolParams,
+      computerContextEpoch,
+      toolBridge,
+      toolState,
+      toolOutcomeOrdinals,
+      suppressedDynamicToolOutcomeOrdinals,
+      onCodexToolOutcome,
+      allocateCodexToolOutcomeOrdinal,
+    };
+  } catch (error) {
+    await hostManagedMcpTools?.dispose();
+    throw error;
+  }
 }
 
 export type CodexAttemptTools = Awaited<ReturnType<typeof prepareCodexAttemptTools>>;

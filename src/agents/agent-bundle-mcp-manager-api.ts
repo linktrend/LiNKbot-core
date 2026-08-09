@@ -36,6 +36,19 @@ export async function getOrCreateSessionMcpRuntime(params: {
   return await getSessionMcpRuntimeManager().getOrCreate(params);
 }
 
+/** Selected static MCP partition for host-executed harness tools. */
+export async function getOrCreateStaticSubsetMcpRuntime(params: {
+  sessionId: string;
+  sessionKey?: string;
+  workspaceDir: string;
+  agentDir?: string;
+  cfg?: OpenClawConfig;
+  manifestRegistry?: Pick<PluginManifestRegistry, "plugins">;
+  serverNames: readonly string[];
+}): Promise<SessionMcpRuntime | undefined> {
+  return await getSessionMcpRuntimeManager().getOrCreateStaticSubset(params);
+}
+
 /**
  * Requester-scoped MCP runtime only (no static partition).
  * Shared-thread harnesses use this so static MCP stays harness-native.

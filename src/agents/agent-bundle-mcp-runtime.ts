@@ -16,18 +16,12 @@ import type { PluginManifestRegistry } from "../plugins/manifest-registry.js";
 import { runTasksWithConcurrency } from "../utils/run-with-concurrency.js";
 import { mergeMcpToolCatalogs } from "./agent-bundle-mcp-combined.js";
 import {
-  describeComposedMcpToolFilter,
-  observeMcpToolFilterRegistrationGeneration,
-  resolveMcpToolFilterComposition,
-  shouldExposeComposedMcpTool,
-  type McpToolSelection,
-} from "./mcp-tool-filter-resolver.js";
-import {
   completeDeferredSessionMcpRuntimeRetirement,
   disposeAllSessionMcpRuntimes,
   getAdvertisedScopedMcpCatalog,
   getOrCreateRequesterScopedMcpRuntime,
   getOrCreateSessionMcpRuntime,
+  getOrCreateStaticSubsetMcpRuntime,
   getSessionMcpRuntimeManagerForTesting,
   peekSessionMcpRuntime,
   rememberAdvertisedScopedMcpCatalog,
@@ -62,6 +56,13 @@ import {
 import { createMcpJsonSchemaValidator } from "./mcp-json-schema-validator.js";
 import { sanitizeMcpMetadataText } from "./mcp-metadata.js";
 import { OpenClawStdioClientTransport } from "./mcp-stdio-transport.js";
+import {
+  describeComposedMcpToolFilter,
+  observeMcpToolFilterRegistrationGeneration,
+  resolveMcpToolFilterComposition,
+  shouldExposeComposedMcpTool,
+  type McpToolSelection,
+} from "./mcp-tool-filter-resolver.js";
 import { resolveMcpTransport } from "./mcp-transport.js";
 
 type BundleMcpSession = {
@@ -1018,6 +1019,7 @@ export {
   getAdvertisedScopedMcpCatalog,
   getOrCreateRequesterScopedMcpRuntime,
   getOrCreateSessionMcpRuntime,
+  getOrCreateStaticSubsetMcpRuntime,
   peekSessionMcpRuntime,
   rememberAdvertisedScopedMcpCatalog,
   resolveSessionMcpConfigSummary,

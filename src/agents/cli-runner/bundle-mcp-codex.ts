@@ -95,6 +95,27 @@ function isCodexMcpServerAllowedForAgent(
   return agentIds.includes(normalizeAgentId(options.agentId));
 }
 
+/**
+ * Returns user MCP servers that Codex must call through OpenClaw-hosted dynamic
+ * tools because their machine credentials cannot cross into native Codex MCP.
+ */
+export function resolveCodexHostManagedMcpServerNames(
+  cfg: OpenClawConfig | undefined,
+  options?: { agentId?: string },
+): string[] {
+  const userServers = normalizeConfiguredMcpServers(cfg?.mcp?.servers);
+  const { staticServers } = partitionMcpServersByConnectionScope(userServers);
+  return Object.entries(staticServers)
+    .filter(
+      ([, server]) =>
+        server.enabled !== false &&
+        isCodexMcpServerAllowedForAgent(server as BundleMcpServerConfig, options) &&
+        server.auth === "machine_token",
+    )
+    .map(([serverName]) => serverName)
+    .toSorted((a, b) => a.localeCompare(b));
+}
+
 /** Returns Codex CLI args with TOML MCP server overrides injected. */
 export function injectCodexMcpConfigArgs(
   args: string[] | undefined,

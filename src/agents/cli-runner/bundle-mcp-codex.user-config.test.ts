@@ -7,6 +7,7 @@ import {
   injectCodexMcpConfigArgs,
   isMachineTokenMcpProjectionUnsupported,
   machineTokenMcpProjectionUnsupportedError,
+  resolveCodexHostManagedMcpServerNames,
 } from "./bundle-mcp-codex.js";
 
 const authMocks = vi.hoisted(() => ({
@@ -629,6 +630,51 @@ describe("buildCodexUserMcpServersThreadConfigPatch", () => {
     expect(patch?.mcp_servers).not.toHaveProperty("brain");
     assertNoMachineTokenProjectionLeak(patch);
     expect(authMocks.resolveMachineTokenAccess).not.toHaveBeenCalled();
+  });
+
+  it("selects only enabled agent-authorized machine-token servers for host execution", () => {
+    const cfg = {
+      mcp: {
+        servers: {
+          brain: {
+            url: "https://brain.example.test/mcp",
+            auth: "machine_token",
+            machineToken: { bindingId: "brain" },
+            codex: { agents: ["lisa"] },
+          },
+          skills: {
+            url: "https://skills.example.test/mcp",
+            auth: "machine_token",
+            machineToken: { bindingId: "skills" },
+          },
+          disabled: {
+            enabled: false,
+            auth: "machine_token",
+            machineToken: { bindingId: "disabled" },
+          },
+          otherAgent: {
+            auth: "machine_token",
+            machineToken: { bindingId: "other" },
+            codex: { agents: ["eric"] },
+          },
+          notes: { url: "https://notes.example.test/mcp" },
+          oauthWithInactiveMachineToken: {
+            url: "https://oauth.example.test/mcp",
+            auth: "oauth",
+            machineToken: { bindingId: "inactive" },
+          },
+        },
+      },
+    } as unknown as OpenClawConfig;
+
+    expect(resolveCodexHostManagedMcpServerNames(cfg, { agentId: "lisa" })).toEqual([
+      "brain",
+      "skills",
+    ]);
+    expect(resolveCodexHostManagedMcpServerNames(cfg, { agentId: "eric" })).toEqual([
+      "otherAgent",
+      "skills",
+    ]);
   });
 
   it("fail-closes machine_token servers from runtime Codex projection without minting", async () => {
