@@ -45,7 +45,8 @@
 
 - 2026-08-10 15:45: Fresh worktree/branch and active-session preflight completed. Read root and extension instructions plus active records. Confirmed this scope does not modify the active Lisa runtime session's owned files.
 - 2026-08-10 15:55: Verified the local Codex source behavior: external Codex dynamic-tool projection omits managed machine-token MCP servers. Added optional plugin-owned `linkbrain_read` and `linkskills_use` bridges instead. They call only frozen allowlisted operations with a host-injected machine-token facade; model-visible tool results never include credentials.
-- 2026-08-10 15:55: Focused extension tests passed (217 tests) and extensions typecheck passed. Whole-core typecheck remains blocked by unrelated existing core errors in machine-token fetch, sessions_wait, and channel-loader files.
+- 2026-08-10 15:55: Focused extension tests passed (219 tests). The targeted extension typecheck reports only existing unrelated errors in `linkbrain` sanitisation plus core machine-token fetch, sessions_wait, and channel-loader files; no bridge-file type errors remain.
+- 2026-08-10 15:58: Committed and pushed `f0ae95dc1094395362d7108529beccd2fcead4bc`; opened PR #98 to `development`, related to Issue #97. No VPS runtime/configuration mutation was performed.
 
 ## Next Action
 
