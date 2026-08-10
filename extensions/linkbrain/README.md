@@ -47,6 +47,7 @@ mapping is out of scope and must not be added here.
 - Per-operation `AbortController` bounds independent of host hook timeouts
 - Opaque actor/binding/session/task/run/subagent correlations only
 - Brain failures degrade honestly — hooks never throw uncaught; native OpenClaw continues
+- Optional `linkbrain_read` bridge: `brain_browse`, `brain_search`, and `brain_load` for native OAuth runtimes; PACI credentials remain inside the plugin process
 
 ## Conversation access (required for Brain capture/coordination hooks)
 
