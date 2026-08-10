@@ -113,4 +113,3 @@ Refresh `docs/current-status.md` from the completed session record if dashboard 
 98% for the isolated install, verification, preservation, and scope boundary. The remaining 2% is reserved for independent review of the checkpoint before integration; no live or external readiness claim is made.
 
 ## Amendments
-
