@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "agentId": "lisa",
   "bundlePurpose": "Version-controlled non-secret Lisa definition and deployment input.",
-  "liveRuntimeRule": "The running VPS profile is runtime truth. This bundle is deployed only through a reviewed materialization step and must not replace mutable state wholesale.",
+  "liveRuntimeRule": "This bundle is the reviewed source of truth for Lisa's non-secret definition. The running VPS profile reports the currently installed state; any drift is reconciled through a reviewed materialization step and never by replacing mutable state wholesale.",
   "eligibleContent": [
     "reviewed identity and personality instructions",
     "reviewed operating instructions, skills, templates, and agent documentation",
