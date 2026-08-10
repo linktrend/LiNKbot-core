@@ -35,7 +35,7 @@ Skills fake, and a **default-disabled** plugin with durable telemetry outbox.
 Frozen against LiNKskills Gateway (`POST /v1/{operation}`):
 
 - `skillsEndpoint` example (stage): `https://linktrend-mini.tailf7e13a.ts.net:9445`
-- Request path: `/v1/{allowlisted drain toolName}` only — no path traversal, no host/origin change, non-drain ops rejected
+- Request path: `/v1/{allowlisted operation}` only — telemetry drain remains restricted to drain ops; the native OAuth bridge separately permits its discovery/governed subset
 - JSON body: `{ "params": <write arguments>, "idempotency_key": <write id>, "request_id": <write id> }`
 - Also sends `Idempotency-Key` and `X-Request-Id` headers (Gateway accepts header or body)
 - Auth, SSRF hostname pin, HTTPS fail-closed (non-test), and one bounded machine-token reissue on 401/403 are unchanged
@@ -59,7 +59,9 @@ Conversation fields are never accepted.
 The optional `linkskills_use` tool lets native OAuth runtimes request only
 frozen, allowlisted discovery or governed operations. `mcpDiscoveryRead` gates
 discovery; `governedExecution` gates governed operations. PACI credentials
-remain inside the plugin process and are never sent to the model runtime.
+remain inside the plugin process and are never sent to the model runtime. The
+tool uses either managed MCP or the configured HTTP Gateway; HTTP requires the
+host-injected machine-token facade and never falls back to `skillsCredential`.
 
 ## Keyed-store namespaces (§11)
 
