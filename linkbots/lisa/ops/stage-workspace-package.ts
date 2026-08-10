@@ -1,13 +1,13 @@
 /**
- * Stage workspace package installer — bounded procedures + renderer deps +
- * stage Google/task adapters + initialize-if-missing mutable seeds.
+ * Stage workspace package installer — bounded stable procedures + renderer
+ * dependencies + stage Google/task adapters.
  *
  * Default: verify SHA256 against manifest and write a receipt. NEVER mutates the
  * real LiNKplatform-staging lisa workspace. Optional --target only for hermetic
  * temp dirs / Principal-gated installs. --emit-commands prints a copy plan.
  *
- * Mutable seeds (battery/pipeline state) copy only when the destination is
- * missing — reinstall preserves existing stage state.
+ * The checked-in package contains no mutable/private runtime seeds. Any
+ * Personality-files source must be listed by the canonical profile manifest.
  */
 
 import { createHash } from "node:crypto";
@@ -30,6 +30,10 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 export const DEFAULT_MANIFEST_PATH = path.join(here, "stage-workspace-package.manifest.json");
 /** Repo source root: linkbots/lisa */
 export const DEFAULT_SOURCE_ROOT = path.resolve(here, "..");
+export const PROFILE_BUNDLE_MANIFEST_PATH = path.join(
+  DEFAULT_SOURCE_ROOT,
+  "PROFILE_BUNDLE_MANIFEST.json",
+);
 
 export const FORBIDDEN_STAGE_WORKSPACE = path.join(STAGE_OPS_STAGE_ROOT, "workspace");
 
@@ -53,7 +57,7 @@ export type StageWorkspacePackageManifest = {
   liveMutationAllowed: false;
   defaultMutateStageWorkspace: false;
   files: StageWorkspacePackageManifestFile[];
-  /** Copied only when destination is absent; preserves existing stage mutable state. */
+  /** Legacy-compatible field; the current stable package requires this to remain empty. */
   initializeIfMissing?: StageWorkspacePackageManifestFile[];
 };
 
@@ -118,6 +122,27 @@ export function loadStageWorkspacePackageManifest(
   }
   if (raw.initializeIfMissing !== undefined && !Array.isArray(raw.initializeIfMissing)) {
     throw new Error("manifest.initializeIfMissing must be an array when present");
+  }
+  if ((raw.initializeIfMissing ?? []).length !== 0) {
+    throw new Error("stable stage workspace package must not include mutable runtime seeds");
+  }
+  const profileManifest = JSON.parse(readFileSync(PROFILE_BUNDLE_MANIFEST_PATH, "utf8")) as {
+    requiredStableDefinition?: Array<{ path?: string }>;
+    intentionalAssets?: Array<{ path?: string; deploymentRequired?: boolean }>;
+  };
+  const approvedProfileSources = new Set([
+    ...(profileManifest.requiredStableDefinition ?? []).map((entry) => entry.path),
+    ...(profileManifest.intentionalAssets ?? [])
+      .filter((entry) => entry.deploymentRequired === true)
+      .map((entry) => entry.path),
+  ]);
+  for (const entry of raw.files) {
+    if (
+      entry.source.startsWith("Personality files/") &&
+      !approvedProfileSources.has(entry.source)
+    ) {
+      throw new Error(`stage package references excluded profile source: ${entry.source}`);
+    }
   }
   return raw;
 }

@@ -1,7 +1,8 @@
 /**
- * Stage workspace package — hash verify, receipt, refuse stage/live, hermetic install,
- * mutable-seed preserve/idempotency, honest Google/task adapters.
- * Run: node --experimental-strip-types --test linkbots/lisa/ops/stage-workspace-package.test.ts
+ * Stage workspace package — hash verify, receipt, refuse stage/live, hermetic
+ * stable-profile install, and honest Google/task adapters.
+ * Run: node --import tsx --import ./linkbots/lisa/ops/register-strip-types-js-resolve.mjs
+ *   --test linkbots/lisa/ops/stage-workspace-package.test.ts
  */
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
@@ -37,13 +38,13 @@ import {
 } from "./stage-workspace-package.ts";
 
 describe("stage-workspace-package", () => {
-  it("manifest loads with complete hashed files + initializeIfMissing seeds", () => {
+  it("manifest loads only complete hashed stable-definition and operational files", () => {
     const manifest = loadStageWorkspacePackageManifest(DEFAULT_MANIFEST_PATH);
     assert.equal(manifest.manifestType, "lisa_stage_workspace_package_v1");
     assert.equal(manifest.defaultMutateStageWorkspace, false);
     assert.equal(manifest.liveMutationAllowed, false);
     assert.equal(manifest.files.length, 13);
-    assert.equal((manifest.initializeIfMissing ?? []).length, 3);
+    assert.deepEqual(manifest.initializeIfMissing, []);
     const sources = new Set(manifest.files.map((f) => f.source));
     assert.ok(sources.has("Personality files/HEARTBEAT.md"));
     assert.ok(sources.has("Personality files/agents/morning-digest.md"));
@@ -58,14 +59,36 @@ describe("stage-workspace-package", () => {
     assert.ok(sources.has("ops/templates.ts"));
     assert.ok(sources.has("ops/stage-workspace-seeds/tools/bin/lisa-safe"));
     assert.ok(sources.has("ops/stage-workspace-seeds/tools/bin/lisa-carlos-tasks"));
-    const initSources = new Set((manifest.initializeIfMissing ?? []).map((f) => f.source));
-    assert.ok(initSources.has("Personality files/memory/battery-monitor.md"));
-    assert.ok(initSources.has("ops/stage-workspace-seeds/battery-monitor-state.json"));
-    assert.ok(initSources.has("Personality files/memory/pipeline-status.md"));
+    assert.ok([...sources].every((source) => !source.includes("openclaw.json")));
+    assert.ok([...sources].every((source) => !source.includes("/memory/")));
+    assert.ok([...sources].every((source) => !source.endsWith("/MEMORY.md")));
     const { ok, files } = verifyStageWorkspacePackage({ manifest });
     assert.equal(ok, true);
     assert.ok(files.every((f) => f.ok));
-    assert.equal(files.length, 16);
+    assert.equal(files.length, 13);
+  });
+
+  it("rejects mutable/private profile seeds even in a caller-supplied manifest", () => {
+    const dir = mkdtempSync(path.join(tmpdir(), "stage-ws-private-seed-"));
+    try {
+      const bad = structuredClone(loadStageWorkspacePackageManifest());
+      bad.initializeIfMissing = [
+        {
+          source: "Personality files/MEMORY.md",
+          destination: "MEMORY.md",
+          sha256: "0".repeat(64),
+          bytes: 1,
+        },
+      ];
+      const badPath = path.join(dir, "bad.manifest.json");
+      writeFileSync(badPath, `${JSON.stringify(bad, null, 2)}\n`);
+      assert.throws(
+        () => loadStageWorkspacePackageManifest(badPath),
+        /must not include mutable runtime seeds/,
+      );
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
   });
 
   it("hash verify fails when bytes diverge from manifest", () => {
@@ -118,7 +141,7 @@ describe("stage-workspace-package", () => {
       assert.equal(receipt.liveLisaTouched, false);
       assert.equal(receipt.hardStops.defaultMutateStageWorkspace, false);
       assert.equal(receipt.installedPaths.length, 0);
-      assert.equal(receipt.files.length, 16);
+      assert.equal(receipt.files.length, 13);
       const written = JSON.parse(
         readFileSync(path.join(dir, "stage-workspace-package-receipt.json"), "utf8"),
       ) as typeof receipt;
@@ -187,7 +210,7 @@ describe("stage-workspace-package", () => {
     }
   });
 
-  it("hermetic install includes procedure deps, adapters, and mutable seeds", () => {
+  it("hermetic install includes stable procedures and adapters but no mutable state", () => {
     const dir = mkdtempSync(path.join(tmpdir(), "stage-ws-hermetic-"));
     const target = path.join(dir, "workspace");
     const out = path.join(dir, "out");
@@ -203,7 +226,7 @@ describe("stage-workspace-package", () => {
       assert.equal(receipt.mutateWorkspace, true);
       assert.equal(receipt.stageWorkspaceMutated, false);
       assert.equal(receipt.liveLisaTouched, false);
-      assert.ok(receipt.initializedPaths.length === 3);
+      assert.deepEqual(receipt.initializedPaths, []);
       assert.ok(existsSync(path.join(target, "HEARTBEAT.md")));
       assert.ok(existsSync(path.join(target, "agents", "morning-digest.md")));
       assert.ok(existsSync(path.join(target, "agents", "ship-pull-clock.md")));
@@ -217,27 +240,14 @@ describe("stage-workspace-package", () => {
       assert.ok(existsSync(path.join(target, "ops", "templates.ts")));
       assert.ok(existsSync(path.join(target, "tools", "bin", "lisa-safe")));
       assert.ok(existsSync(path.join(target, "tools", "bin", "lisa-carlos-tasks")));
-      assert.ok(existsSync(path.join(target, "memory", "battery-monitor.md")));
-      assert.ok(existsSync(path.join(target, "memory", "battery-monitor-state.json")));
-      assert.ok(existsSync(path.join(target, "memory", "pipeline-status.md")));
-      const state = JSON.parse(
-        readFileSync(path.join(target, "memory", "battery-monitor-state.json"), "utf8"),
-      ) as { source: string; confirmed: null; schema: string };
-      assert.equal(state.schema, "lisa_battery_monitor_state_v1");
-      assert.equal(state.source, "repo_stage_seed_non_personal");
-      assert.equal(state.confirmed, null);
-      assert.equal((state as { learned: { chargeRate: number } }).learned.chargeRate, 30);
-      assert.equal((state as { learned: { dischargeRate: number } }).learned.dischargeRate, -6.5);
-      assert.equal("chargeRatePpPerHour" in (state as { learned: object }).learned, false);
-      assert.equal("dischargeRatePpPerHour" in (state as { learned: object }).learned, false);
-      assert.ok(!JSON.stringify(state).includes("openclaw-lisa"));
-      assert.ok(receipt.copyCommands.length >= 16);
+      assert.equal(existsSync(path.join(target, "memory")), false);
+      assert.equal(receipt.copyCommands.length, 13);
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }
   });
 
-  it("reinstall preserves existing mutable seeds (idempotent)", () => {
+  it("reinstall remains deterministic and does not manage runtime-owned mutable state", () => {
     const dir = mkdtempSync(path.join(tmpdir(), "stage-ws-preserve-"));
     const target = path.join(dir, "workspace");
     const out1 = path.join(dir, "out1");
@@ -249,17 +259,10 @@ describe("stage-workspace-package", () => {
         targetDir: target,
         outputDir: out1,
       });
-      const statePath = path.join(target, "memory", "battery-monitor-state.json");
-      const pipelinePath = path.join(target, "memory", "pipeline-status.md");
-      const customState = {
-        schema: "lisa_battery_monitor_state_v1",
-        profile: "lisa-stage",
-        source: "stage_runtime_preserved",
-        confirmed: { percent: 77, plugged: true, at: "2026-08-04T01:00:00+08:00" },
-        notes: "must survive reinstall",
-      };
-      writeFileSync(statePath, `${JSON.stringify(customState, null, 2)}\n`);
-      writeFileSync(pipelinePath, "Cycle date: 2026-08-04\nShip 05: Issues\n");
+      const runtimeDir = path.join(target, "memory");
+      const runtimePath = path.join(runtimeDir, "runtime-owned.txt");
+      mkdirSync(runtimeDir, { recursive: true });
+      writeFileSync(runtimePath, "runtime owns this state\n");
 
       const second = planStageWorkspacePackage({
         action: "install",
@@ -267,12 +270,9 @@ describe("stage-workspace-package", () => {
         outputDir: out2,
       });
       assert.equal(second.status, "installed");
-      assert.equal(second.preservedPaths.length, 3);
-      assert.equal(second.initializedPaths.length, 0);
-      const preserved = JSON.parse(readFileSync(statePath, "utf8")) as typeof customState;
-      assert.equal(preserved.source, "stage_runtime_preserved");
-      assert.equal(preserved.confirmed?.percent, 77);
-      assert.equal(readFileSync(pipelinePath, "utf8"), "Cycle date: 2026-08-04\nShip 05: Issues\n");
+      assert.deepEqual(second.preservedPaths, []);
+      assert.deepEqual(second.initializedPaths, []);
+      assert.equal(readFileSync(runtimePath, "utf8"), "runtime owns this state\n");
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }
@@ -350,8 +350,8 @@ describe("stage-workspace-package", () => {
       assert.equal(receipt.installedPaths.length, 0);
       assert.equal(existsSync(target), false);
       assert.ok(receipt.copyCommands.some((c) => c.includes("HEARTBEAT.md")));
-      assert.ok(receipt.copyCommands.some((c) => c.includes("battery-monitor-state.json")));
-      assert.ok(receipt.copyCommands.some((c) => c.includes("if [ ! -e")));
+      assert.ok(receipt.copyCommands.every((c) => !c.includes("battery-monitor-state.json")));
+      assert.ok(receipt.copyCommands.every((c) => !c.includes("if [ ! -e")));
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }

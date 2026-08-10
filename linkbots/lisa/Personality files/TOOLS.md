@@ -17,57 +17,46 @@ Skills define _how_ tools work. This file is for _your_ specifics — the stuff 
 - **Web UI:** main session `agent:main:main` — direct chat with Carlos
 - **iPhone:** OpenClaw mobile app (device-pair plugin)
 
-## Model Stack (native OAuth production routing)
+## Model Stack (native OAuth production routing — authoritative)
 
 Read this file before switching models, citing model names, or changing config. Do not guess IDs or aliases.
-**Authoritative non-live fragment:** `linkbots/lisa/ops/model-routing.contract.json` + `ops/model-routing-contract.ts`.
-Native OAuth profiles are agent-scoped and may read through to the main profile; never copy tokens or share agent directories.
-**PDF capability:** `approved_unverified` (Principal-approved candidate — not proven). First live proof is a separately controlled production rollout; require a first-production-proof receipt before any success claim.
 
-### Cloud (menu)
+### Cloud routes
 
-| Alias       | Model ID                                       | Role                                                              |
-| ----------- | ---------------------------------------------- | ----------------------------------------------------------------- |
-| `luna`      | `openai/gpt-5.6-luna`                          | **Default primary** through native OAuth — reasoning High         |
-| `terra`     | `openai/gpt-5.6-terra`                         | Development orchestration through native OAuth — reasoning Medium |
-| `sol`       | `openai/gpt-5.6-sol`                           | Complex planning through native OAuth — reasoning Medium          |
-| `luna-or`   | `openrouter/openai/gpt-5.6-luna`               | First fallback — reasoning Medium                                 |
-| `glm`       | `openrouter/z-ai/glm-5.2`                      | Second fallback                                                   |
-| `minimax`   | `openrouter/minimax/minimax-m3`                | Image/PDF understanding candidate (`approved_unverified`)         |
-| `kimi`      | `openrouter/moonshotai/kimi-k3`                | Subsequent fallback                                               |
-| `flashlite` | `openrouter/google/gemini-3.5-flash-lite`      | **Utility** / optional fallback slot                              |
-| `nemotron`  | `openrouter/nvidia/nemotron-3-super-120b-a12b` | Sampled shadow evaluation only; never a fallback or user-visible  |
-| `sonnet`    | `openrouter/anthropic/claude-sonnet-5`         | Premium — **only when Carlos explicitly asks**                    |
-
-### Local (menu)
-
-| Alias | Model ID            | Role                                     |
-| ----- | ------------------- | ---------------------------------------- |
-| `q9`  | `ollama/qwen3.5:9b` | Local-coder / emergency last resort only |
+| Alias       | Model ID                                                | Role                                                |
+| ----------- | ------------------------------------------------------- | --------------------------------------------------- |
+| `luna`      | `openai/gpt-5.6-luna`                                 | Default native OAuth primary, High                  |
+| `terra`     | `openai/gpt-5.6-terra`                                | Development orchestration, native OAuth Medium      |
+| `sol`       | `openai/gpt-5.6-sol`                                  | Complex planning, native OAuth Medium               |
+| `luna-or`   | `openrouter/openai/gpt-5.6-luna`                      | First fallback, Medium                              |
+| `glm`       | `openrouter/z-ai/glm-5.2`                             | Second fallback                                     |
+| `kimi`      | `openrouter/moonshotai/kimi-k3`                       | Subsequent fallback                                 |
+| `flashlite` | `openrouter/google/gemini-3.5-flash-lite`             | Utility/final fallback                              |
+| `minimax`   | `openrouter/minimax/minimax-m3`                       | Image/PDF understanding, `approved_unverified`      |
+| `nemotron`  | `openrouter/nvidia/nemotron-3-super-120b-a12b`        | Sampled shadow only; never default or user-visible  |
 
 ### Defaults & fallbacks
 
-- **Primary:** native OAuth `openai/gpt-5.6-luna` at High.
-- **Fallback chain:** OpenRouter Luna Medium → GLM-5.2 → Kimi K3 → Gemini 3.5 Flash-Lite.
+- **Primary:** native OAuth Luna High.
+- **Fallback chain:** OpenRouter Luna Medium → GLM-5.2 → Kimi K3 → Gemini Flash-Lite.
 - **Image:** `openrouter/minimax/minimax-m3` via the explicit `tools.media.image.models` route, with `agents.defaults.imageModel.primary` retained as the image-tool fallback. The explicit route prevents native Luna vision from bypassing MiniMax.
 - **PDF / document:** `openrouter/minimax/minimax-m3` via `agents.defaults.pdfModel.primary` — a controlled OpenRouter HTTP 200 proof receipt was captured on 2026-08-05; capability remains `approved_unverified` until Principal acceptance of that receipt.
 - **PDF rollback:** on provider/model validation failure, disable **only** PDF document routing; keep text/image/default-fallback; never silently substitute another paid document model.
-- **Evaluation-only:** paid Nemotron Super — deterministic every-tenth eligible text-only shadow comparison through the fail-closed plugin; absent from defaults/fallbacks.
+- **Thinking:** High for main; Terra, Sol, and OpenRouter Luna fallback are Medium.
 - **Speed:** Standard (`fastMode: off`). Slow OK for non-urgent overnight work
 
 ### Routing rules
 
-1. **Everyday conversation** → native OAuth Luna High; follow the fallback chain above only on model/provider failure.
-2. **Orchestration tasks** → native OAuth Terra Medium.
-3. **Complex/difficult non-coding tasks** → native OAuth Sol Medium.
-4. **Images/PDFs** → OpenRouter MiniMax-M3 understanding route. Image uses the explicit media route; PDF uses `pdfModel`.
-5. **Coding** → always `development-orchestrator`; follow `tools/development-orchestrator.md` and never call an executor directly.
-6. **Utility work** (cheap bounded formatting, classification, title/summary extraction, or schema conversion with no sensitive context or side effects) → OpenRouter Gemini Flash-Lite.
-7. **Nemotron** → plugin-owned sampled shadow only. Never manually duplicate, show the shadow answer, or add it to a fallback.
+1. Everyday conversation uses Luna High; fallbacks activate only on provider/model failure.
+2. Orchestration uses Terra Medium; complex/difficult non-coding tasks use Sol Medium.
+3. All coding goes first to `development-orchestrator`; follow `tools/development-orchestrator.md`.
+4. Images/PDFs use OpenRouter MiniMax-M3 understanding routes. Image uses the explicit media route; PDF uses `pdfModel`.
+5. Utility work means bounded low-risk formatting, classification, title/summary extraction, or schema conversion with no sensitive context or side effects; route it to Gemini Flash-Lite.
+6. Nemotron is plugin-owned sampled shadow only. Never manually duplicate, show its answer, or add it to a fallback.
 
 ### Prompt caching (verified 2026-07-15)
 
-Prompt caching works automatically through OpenRouter where the selected provider supports it — no config needed. Re-verify after any live routing cutover. Full investigation: `audit/06-prompt-cache-verification.md`.
+Prompt caching works automatically where the selected provider supports it. Re-verify after this routing cutover.
 
 ### Reasoning (operator-controlled)
 

@@ -312,34 +312,28 @@ describe("Ship/Pull post-processing gate", () => {
     assert.ok(!SHIP_PULL_REQUIRED_TOOLS.includes("sessions_yield"));
   });
 
-  it("workshop lisa-cron SOT includes sessions_wait and excludes sessions_yield", () => {
-    // Isolated cron parents die on sessions_yield; workshop SOT must fail closed at the
-    // agent allowlist layer so a loose job toolsAllow cannot re-expose the kill path.
-    const cfgPath = path.join(personalityRoot, "openclaw.json");
-    const cfg = JSON.parse(readFileSync(cfgPath, "utf8")) as {
-      agents?: { list?: Array<{ id?: string; tools?: { allow?: string[] } }> };
+  it("keeps environment-specific runtime config outside the stable source bundle", () => {
+    const manifest = JSON.parse(
+      readFileSync(path.resolve(personalityRoot, "../PROFILE_BUNDLE_MANIFEST.json"), "utf8"),
+    ) as {
+      requiredStableDefinition: Array<{ path: string }>;
+      secretAndRuntimeExclusions: Array<{ pattern: string }>;
     };
-    const lisaCron = cfg.agents?.list?.find((a) => a.id === "lisa-cron");
-    assert.ok(lisaCron, "lisa-cron agent missing from workshop openclaw.json");
-    const allow = lisaCron?.tools?.allow ?? [];
-    assert.ok(allow.includes("sessions_spawn"));
-    assert.ok(allow.includes("sessions_wait"));
-    assert.ok(allow.includes("apply_patch"));
-    assert.ok(!allow.includes("sessions_yield"));
+    assert.ok(
+      manifest.secretAndRuntimeExclusions.some(
+        (entry) => entry.pattern === "Personality files/openclaw.json",
+      ),
+    );
+    assert.ok(
+      manifest.requiredStableDefinition.every(
+        (entry) => entry.path !== "Personality files/openclaw.json",
+      ),
+    );
   });
 
-  it("forces image understanding through MiniMax instead of native Luna vision", () => {
-    const cfgPath = path.join(personalityRoot, "openclaw.json");
-    const cfg = JSON.parse(readFileSync(cfgPath, "utf8")) as {
-      tools?: {
-        media?: {
-          image?: { models?: Array<{ provider?: string; model?: string }> };
-        };
-      };
-    };
-    assert.deepEqual(cfg.tools?.media?.image?.models, [
-      { provider: "openrouter", model: "minimax/minimax-m3" },
-    ]);
+  it("keeps MiniMax image routing in the non-live routing contract", () => {
+    const fragment = buildNonLiveAgentsDefaultsFragment();
+    assert.equal(fragment.imageModel.primary, "openrouter/minimax/minimax-m3");
   });
 
   it("procedure allowlist text matches SHIP_PULL_REQUIRED_TOOLS", () => {

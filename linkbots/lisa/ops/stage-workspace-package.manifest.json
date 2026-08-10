@@ -1,7 +1,7 @@
 {
   "manifestType": "lisa_stage_workspace_package_v1",
   "packageId": "lisa-stage-bounded-procedures-and-renderer-deps",
-  "description": "Bounded Heartbeat/Digest/Ship-Pull/Repair procedure sources, renderer deps, pipeline procedure, stage Google/task adapters, plus initialize-if-missing battery/pipeline mutable seeds. Hashes bind current repo bytes. Installer defaults never mutate LiNKplatform-staging; mutable seeds preserve existing stage files on reinstall.",
+  "description": "Bounded stable Heartbeat/Digest/Ship-Pull/Repair procedure sources, renderer dependencies, and stage Google/task adapters. Profile sources are restricted to the canonical non-secret stable-definition manifest. The package contains no private or mutable runtime seeds and never mutates LiNKplatform-staging by default.",
   "sourceRoot": "linkbots/lisa",
   "liveMutationAllowed": false,
   "defaultMutateStageWorkspace": false,
@@ -9,8 +9,8 @@
     {
       "source": "Personality files/HEARTBEAT.md",
       "destination": "HEARTBEAT.md",
-      "sha256": "0da196a01e4fa8ed713e409d0fba86d0d2204b1f6680f2c657638abd31211d71",
-      "bytes": 22269
+      "sha256": "9f63e48584e1ab8cdaf00cd4c604d4175ead665bc364abcfba6d5a73c5554ab1",
+      "bytes": 22211
     },
     {
       "source": "Personality files/agents/morning-digest.md",
@@ -85,24 +85,5 @@
       "bytes": 309
     }
   ],
-  "initializeIfMissing": [
-    {
-      "source": "Personality files/memory/battery-monitor.md",
-      "destination": "memory/battery-monitor.md",
-      "sha256": "056910c302ff12de3402a92bc77ad1e9150046e6a3d9b1a6f10e160e903c12ea",
-      "bytes": 3273
-    },
-    {
-      "source": "ops/stage-workspace-seeds/battery-monitor-state.json",
-      "destination": "memory/battery-monitor-state.json",
-      "sha256": "9763fe8b96f0ae63dc39571b7747b1a2d9578fa049f2266d3b7f7ba49349e80a",
-      "bytes": 515
-    },
-    {
-      "source": "Personality files/memory/pipeline-status.md",
-      "destination": "memory/pipeline-status.md",
-      "sha256": "e32bc5d30e64f0d62e1c1ae275df5d37d19ebc1eed0f2bc4f4c76e13d0bca59a",
-      "bytes": 946
-    }
-  ]
+  "initializeIfMissing": []
 }
