@@ -747,12 +747,13 @@ function createHttpTransport(params: {
         return bearer.error;
       }
       // Hostname pinned to configured endpoint. Private networks are not broadly
-      // allowed — only explicit local-test loopback may opt into private allowance.
+      // allowed — only loopback with an explicit configuration gate may opt in.
       const endpointUrl = new URL(params.endpoint);
-      const localTestLoopback =
-        params.config.environment === "test" &&
-        isLinkskillsLocalTestLoopbackHost(endpointUrl.hostname);
-      const policy = localTestLoopback
+      const explicitlyAllowedLoopback =
+        isLinkskillsLocalTestLoopbackHost(endpointUrl.hostname) &&
+        (params.config.environment === "test" ||
+          params.config.allowProductionLoopbackHttp === true);
+      const policy = explicitlyAllowedLoopback
         ? mergeSsrFPolicies(ssrfPolicyFromHttpBaseUrlAllowedHostname(params.endpoint), {
             allowPrivateNetwork: true,
           })

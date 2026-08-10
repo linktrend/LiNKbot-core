@@ -27,6 +27,7 @@ describe("linkskills manifest/config", () => {
       telemetryDrain: expect.any(Object),
       transportMode: expect.any(Object),
       mcpServerName: expect.any(Object),
+      allowProductionLoopbackHttp: expect.any(Object),
       skillsCredential: expect.any(Object),
       redactionPolicyVersion: expect.any(Object),
       outboxMaxEntries: expect.any(Object),
@@ -86,6 +87,27 @@ describe("linkskills manifest/config", () => {
       mcpServerName: "linkskills",
       redactionPolicyVersion: DEFAULT_LINKSKILLS_CONFIG.redactionPolicyVersion,
     });
+  });
+
+  it("allows production HTTP only for an explicitly gated loopback Skills endpoint", () => {
+    expect(
+      parseLinkskillsConfig({
+        environment: "production",
+        transportMode: "http",
+        skillsEndpoint: "http://127.0.0.1:18788",
+        allowProductionLoopbackHttp: true,
+      }),
+    ).toMatchObject({
+      skillsEndpoint: "http://127.0.0.1:18788",
+      allowProductionLoopbackHttp: true,
+    });
+    expect(() =>
+      parseLinkskillsConfig({
+        environment: "production",
+        transportMode: "http",
+        skillsEndpoint: "http://127.0.0.1:18788",
+      }),
+    ).toThrow(/HTTPS/);
   });
 
   it("rejects malformed SecretRef credentials", () => {
