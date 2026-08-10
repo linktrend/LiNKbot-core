@@ -25,6 +25,12 @@ This directory does **not** mutate Lisa profile/credentials.
 | `http`     | POST tool calls to `ingestionEndpoint` with SecretRef bearer.                                                                                                                                      |
 | `mcp`      | MCP client against `mcp.servers.<mcpServerName>` (default `linkbrain`). Prefer SecretRef Authorization headers; oauth `authProfileId` alone returns `auth_profile_required` until Gateway injects. |
 
+Remote MCP URLs require HTTPS by default. A co-located production deployment may set
+`allowProductionLoopbackHttp: true` to permit only the literal managed MCP URL
+`http://127.0.0.1:18789/mcp`. This exception does not admit `localhost`, IPv6, other loopback
+addresses, ports or paths, LAN/private/reserved addresses, public HTTP, URL credentials, query
+strings, or fragments. The flag has no effect in stage and defaults to false.
+
 ## Frozen Brain write tool names
 
 Lifecycle/outbox delivery uses **only** these frozen OpenClaw §9.1 names:

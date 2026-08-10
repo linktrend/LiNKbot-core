@@ -96,6 +96,36 @@ function captureParams(overrides: Record<string, unknown> = {}) {
 }
 
 describe("linkbrain native OAuth bridge", () => {
+  it("reports only the fixed transport-policy code for an insecure managed MCP endpoint", async () => {
+    const api = toolApi({
+      captureEnqueue: true,
+      captureDrain: true,
+      environment: "production",
+    }) as unknown as {
+      config: Record<string, unknown>;
+    };
+    api.config = {
+      mcp: {
+        servers: {
+          linkbrain: {
+            enabled: true,
+            url: "http://127.0.0.1:18789/mcp",
+            auth: "machine_token",
+          },
+        },
+      },
+      agents: toolContext({ alsoAllow: ["linkbrain_write"] }).config.agents,
+    };
+    const tool = createLinkbrainWriteTool(
+      api as never,
+      toolContext({ alsoAllow: ["linkbrain_write"] }),
+    );
+    expect(tool).not.toBeNull();
+    const result = await tool!.execute("policy", captureParams());
+    expect(result.details).toEqual({ ok: false, reason: "endpoint_insecure" });
+    expect(result.content).toEqual([{ type: "text", text: "LiNKbrain write failed safely." }]);
+  });
+
   it("rejects model-supplied actor identity before opening a transport", async () => {
     const tool = createLinkbrainReadTool({
       pluginConfig: { mcpRead: true, transportMode: "mcp" },

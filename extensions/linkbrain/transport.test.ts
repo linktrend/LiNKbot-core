@@ -27,6 +27,106 @@ const writeArgs = {
 };
 
 describe("linkbrain transport modes", () => {
+  it("allows only the exact opted-in production Brain MCP loopback for reads and writes", async () => {
+    const acquire = vi.fn(async ({ bindingId }) => ({
+      bindingId,
+      bindingFingerprint: `fp-${bindingId}`,
+      accessToken: "fixture",
+      expiresAt: Date.now() + 60_000,
+      tokenType: "Bearer" as const,
+    }));
+    const machineTokenFacade = {
+      pluginId: "linkbrain",
+      grantedBindingIds: new Set(["linkbrain-production"]),
+      acquire,
+      invalidate: vi.fn(),
+      health: () => ({
+        pluginId: "linkbrain",
+        bindingId: "linkbrain-production",
+        granted: true,
+        registered: true,
+        cached: false,
+      }),
+      unregister: vi.fn(),
+    };
+    const config = parseLinkbrainConfig({
+      transportMode: "mcp",
+      environment: "production",
+      allowProductionLoopbackHttp: true,
+      machineToken: {
+        bindingId: "linkbrain-production",
+        issuerUrl: "https://issuer.example.test",
+        clientId: "brain-client",
+        clientAssertionKeyRef: assertionKeyRef,
+      },
+    });
+    const apiConfig = {
+      mcp: {
+        servers: {
+          linkbrain: {
+            enabled: true,
+            url: "http://127.0.0.1:18789/mcp",
+            auth: "machine_token",
+          },
+        },
+      },
+    };
+    const readCall = vi.fn(async () => ({ structuredContent: { items: [] } }));
+    await expect(
+      callLinkbrainMcpTool({
+        api: { ...stubApi(apiConfig), machineTokenFacade },
+        config,
+        toolName: "brain_browse",
+        arguments: {},
+        createMcpSession: async () => ({ callTool: readCall, close: async () => undefined }),
+      }),
+    ).resolves.toEqual({ ok: true, result: { items: [] } });
+
+    const writeCall = vi.fn(async () => ({ structuredContent: { accepted: true } }));
+    const transport = resolveLinkbrainTransport({
+      api: { ...stubApi(apiConfig), machineTokenFacade },
+      config,
+      createMcpSession: async () => ({ callTool: writeCall, close: async () => undefined }),
+    });
+    await expect(transport.write(writeArgs)).resolves.toMatchObject({ ok: true });
+    expect(readCall).toHaveBeenCalledWith("brain_browse", {});
+    expect(writeCall).toHaveBeenCalledWith("brain_capture_batch", writeArgs.arguments);
+    expect(acquire).toHaveBeenCalled();
+  });
+
+  it.each([
+    ["flag disabled", "production", false, "http://127.0.0.1:18789/mcp"],
+    ["stage ignores flag", "stage", true, "http://127.0.0.1:18789/mcp"],
+    ["localhost name", "production", true, "http://localhost:18789/mcp"],
+    ["IPv6 loopback", "production", true, "http://[::1]:18789/mcp"],
+    ["IPv4-mapped loopback", "production", true, "http://[::ffff:127.0.0.1]:18789/mcp"],
+    ["other loopback", "production", true, "http://127.0.0.2:18789/mcp"],
+    ["wrong port", "production", true, "http://127.0.0.1:18790/mcp"],
+    ["wrong path", "production", true, "http://127.0.0.1:18789/other"],
+    ["normalized path", "production", true, "http://127.0.0.1:18789/x/../mcp"],
+    ["trailing slash", "production", true, "http://127.0.0.1:18789/mcp/"],
+    ["query", "production", true, "http://127.0.0.1:18789/mcp?debug=1"],
+    ["fragment", "production", true, "http://127.0.0.1:18789/mcp#debug"],
+    ["private LAN", "production", true, "http://192.168.1.5:18789/mcp"],
+    ["public HTTP", "production", true, "http://brain.example.test/mcp"],
+  ])("rejects production MCP HTTP variant: %s", async (_label, environment, flag, url) => {
+    const config = parseLinkbrainConfig({
+      transportMode: "mcp",
+      environment,
+      allowProductionLoopbackHttp: flag,
+    });
+    const createMcpSession = vi.fn();
+    const result = await callLinkbrainMcpTool({
+      api: stubApi({ mcp: { servers: { linkbrain: { enabled: true, url } } } }),
+      config,
+      toolName: "brain_browse",
+      arguments: {},
+      createMcpSession,
+    });
+    expect(result).toEqual({ ok: false, safeMessage: "linkbrain MCP endpoint is rejected" });
+    expect(createMcpSession).not.toHaveBeenCalled();
+  });
+
   it("calls allowlisted knowledge through the host machine-token facade only", async () => {
     const acquire = vi.fn(async ({ bindingId }) => ({
       bindingId,
