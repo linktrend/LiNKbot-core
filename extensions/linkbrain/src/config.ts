@@ -40,6 +40,12 @@ export type LinkbrainConfig = {
   transportMode: LinkbrainTransportMode;
   /** Managed MCP server key under api.config.mcp.servers. */
   mcpServerName: string;
+  /**
+   * Permit the co-located production Brain MCP gateway at exactly
+   * http://127.0.0.1:18789/mcp. Default unset/false; no other HTTP target is
+   * permitted outside explicit local-test mode.
+   */
+  allowProductionLoopbackHttp?: boolean;
   ingestionEndpoint?: string;
   ingestionCredential?: LinkbrainSecretInput;
   /**
@@ -72,6 +78,8 @@ export const DEFAULT_LINKBRAIN_CONFIG: LinkbrainConfig = Object.freeze({
   outboxAgeAlarmMs: 3_600_000,
   environment: "test",
 });
+
+const PRODUCTION_LINKBRAIN_MCP_LOOPBACK_URL = "http://127.0.0.1:18789/mcp";
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -106,6 +114,7 @@ export function assertLinkbrainRemoteHttpsUrl(
   urlString: string,
   fieldName: string,
   localTest?: boolean,
+  allowProductionLoopbackHttp?: boolean,
 ): URL {
   let url: URL;
   try {
@@ -120,14 +129,24 @@ export function assertLinkbrainRemoteHttpsUrl(
     throw new Error(`linkbrain: ${fieldName} must not include userinfo`);
   }
   const loopback = isLinkbrainLocalTestLoopbackHost(url.hostname);
+  const exactProductionBrainMcp =
+    localTest !== true &&
+    allowProductionLoopbackHttp === true &&
+    urlString === PRODUCTION_LINKBRAIN_MCP_LOOPBACK_URL &&
+    url.protocol === "http:" &&
+    url.hostname === "127.0.0.1" &&
+    url.port === "18789" &&
+    url.pathname === "/mcp" &&
+    url.search === "" &&
+    url.hash === "";
   if (url.protocol === "http:") {
-    if (localTest !== true || !loopback) {
+    if (!(localTest === true && loopback) && !exactProductionBrainMcp) {
       throw new Error(
-        `linkbrain: ${fieldName} must use HTTPS (HTTP allowed only for explicit local-test loopback)`,
+        `linkbrain: ${fieldName} must use HTTPS (HTTP allowed only for explicit loopback)`,
       );
     }
   }
-  if (localTest !== true && loopback) {
+  if (localTest !== true && loopback && !exactProductionBrainMcp) {
     throw new Error(
       `linkbrain: ${fieldName} must not target loopback outside explicit local-test mode`,
     );
@@ -291,6 +310,7 @@ export function parseLinkbrainConfig(value: unknown): LinkbrainConfig {
     typeof raw.mcpServerName === "string" && raw.mcpServerName.length > 0
       ? raw.mcpServerName
       : DEFAULT_LINKBRAIN_CONFIG.mcpServerName;
+  const allowProductionLoopbackHttp = raw.allowProductionLoopbackHttp === true;
   const machineToken = parseLinkbrainMachineToken(raw.machineToken, { localTest });
 
   return {
@@ -327,6 +347,7 @@ export function parseLinkbrainConfig(value: unknown): LinkbrainConfig {
       1000,
     ),
     environment,
+    ...(allowProductionLoopbackHttp ? { allowProductionLoopbackHttp: true } : {}),
   };
 }
 

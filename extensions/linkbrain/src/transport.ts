@@ -799,6 +799,7 @@ function createMcpTransport(params: {
   pluginMachineToken?: LinkbrainMachineTokenConfig;
   machineTokenFacade?: MachineTokenPluginFacade;
   localTest?: boolean;
+  allowProductionLoopbackHttp?: boolean;
 }): LinkbrainTransport {
   return {
     async write(writeParams) {
@@ -821,7 +822,12 @@ function createMcpTransport(params: {
 
       if (typeof params.server.url === "string" && params.server.url.length > 0) {
         try {
-          assertLinkbrainRemoteHttpsUrl(params.server.url, "mcp.servers.url", params.localTest);
+          assertLinkbrainRemoteHttpsUrl(
+            params.server.url,
+            "mcp.servers.url",
+            params.localTest,
+            params.allowProductionLoopbackHttp,
+          );
         } catch (error) {
           return {
             ok: false,
@@ -971,6 +977,8 @@ export async function callLinkbrainMcpTool(params: {
         server.url,
         "mcp.servers.url",
         params.config.environment === "test",
+        params.config.environment === "production" &&
+          params.config.allowProductionLoopbackHttp === true,
       );
     } catch {
       return { ok: false, safeMessage: "linkbrain MCP endpoint is rejected" };
@@ -1247,6 +1255,9 @@ export function resolveLinkbrainTransport(
       pluginMachineToken: params.config.machineToken,
       machineTokenFacade,
       localTest: params.config.environment === "test",
+      allowProductionLoopbackHttp:
+        params.config.environment === "production" &&
+        params.config.allowProductionLoopbackHttp === true,
     });
   }
 
