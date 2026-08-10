@@ -1,52 +1,281 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "agentId": "lisa",
-  "bundlePurpose": "Version-controlled non-secret Lisa definition and deployment input.",
-  "liveRuntimeRule": "This bundle is the reviewed source of truth for Lisa's non-secret definition. The running VPS profile reports the currently installed state; any drift is reconciled through a reviewed materialization step and never by replacing mutable state wholesale.",
-  "eligibleContent": [
-    "reviewed identity and personality instructions",
-    "reviewed operating instructions, skills, templates, and agent documentation",
-    "non-secret deployment manifests and source code"
+  "bundlePurpose": "Version-controlled, non-secret source of truth for Lisa's durable definition and recovery materialization.",
+  "checksumAlgorithm": "sha256",
+  "sourceSnapshot": {
+    "checkedAt": "2026-08-10T15:11:46.714081Z",
+    "liveCodeRevision": "6b8245a4eb8fa6551aad6cbe6898f6190752b1c3",
+    "liveWorkspace": "/var/lib/openclaw/lisa/.openclaw-lisa/workspace",
+    "comparisonMethod": "Path, byte count, and SHA-256 metadata only; document contents and secret values were not recorded in the immutable comparison receipt.",
+    "textNormalization": "Repository text uses LF. A live CRLF file may be declared equivalent only when its LF-normalized SHA-256 equals the repository SHA-256."
+  },
+  "comparisonReceipt": {
+    "path": "PROFILE_BUNDLE_LIVE_COMPARISON_RECEIPT.json",
+    "sha256": "b8c0c2049168f8f6fbd0f5d6f32e90cf45daa647c297730c7ad87096addfa108"
+  },
+  "liveRuntimeRule": "Git restores only the required stable definition and intentional deployment asset. Runtime configuration, secrets, private memory, sessions, databases, and other mutable state are restored through their separately governed mechanisms.",
+  "requiredStableDefinition": [
+    {
+      "path": "Personality files/AGENTS.md",
+      "role": "operating-instructions",
+      "sha256": "08e07802dfb3efc057633a3b5222358b8426a5a159391833c9d620f27cef9709"
+    },
+    {
+      "path": "Personality files/HEARTBEAT.md",
+      "role": "scheduled-operations-instructions",
+      "sha256": "9f63e48584e1ab8cdaf00cd4c604d4175ead665bc364abcfba6d5a73c5554ab1"
+    },
+    {
+      "path": "Personality files/IDENTITY.md",
+      "role": "identity",
+      "sha256": "d156f7748a8bb5fff1b9242f72fb7a19ee71b3c8052d8bbd27ad10b96b5bf6ef"
+    },
+    {
+      "path": "Personality files/SOUL.md",
+      "role": "personality",
+      "sha256": "6829e12c05e11be5299966df58af350b52483c79b18a03430b506e236504f79e"
+    },
+    {
+      "path": "Personality files/TOOLS.md",
+      "role": "tool-policy",
+      "sha256": "6035ab4f333527f8cf3ed694f53044e23b70573055bc79f189d274e78a8722fd"
+    },
+    {
+      "path": "Personality files/VERSION.md",
+      "role": "definition-version",
+      "sha256": "a5fe80136fcc6b3bf4e72f67669e5f818234885b6b9103f6a0e7d63b7bdc7f65"
+    },
+    {
+      "path": "Personality files/agents/detail.md",
+      "role": "agent-operating-detail",
+      "sha256": "0ed7e438e7f4deea378b95f2f6091549b78d8274bbbfd70784962aed0a6ad8cd"
+    },
+    {
+      "path": "Personality files/agents/morning-digest.md",
+      "role": "scheduled-role-definition",
+      "sha256": "9be6057b62fbfc500f1acceaf355ab7eb6b738664b793aa4782dab45b6382bb7"
+    },
+    {
+      "path": "Personality files/agents/pipeline-status.md",
+      "role": "scheduled-role-definition",
+      "sha256": "6689d764b731c29173ac57779f659440ca31d1a75024392246fe8c398adec142"
+    },
+    {
+      "path": "Personality files/agents/repair-dispatcher.md",
+      "role": "scheduled-role-definition",
+      "sha256": "36ab118071bbcf67e6e8d53d966d90dc2bb6968f7e457f574c6d319f6358c99d"
+    },
+    {
+      "path": "Personality files/agents/ship-pull-clock.md",
+      "role": "scheduled-role-definition",
+      "sha256": "217bc1076a6f6588c3ebfec12fdbe7e98285da49d7621eb444526878a34c4ea7"
+    },
+    {
+      "path": "Personality files/skills/lisa-tasks/SKILL.md",
+      "role": "skill-definition",
+      "sha256": "a5ad6d15e87637362a786ca23e8ad3962ad68851e1cf042a0ac6811e81163b01"
+    },
+    {
+      "path": "Personality files/soul/detail.md",
+      "role": "personality-detail",
+      "sha256": "9a8d742eb5b1437e23a96ac7d5bb0fa7171e08634dea993eae6a44a603b41aa2"
+    },
+    {
+      "path": "Personality files/templates/email-daily-digest.md",
+      "role": "output-template",
+      "sha256": "69c0601a7fc8b49f2897d44f400a7092e7481f6811bc5427a6ce3318ba3f4239"
+    },
+    {
+      "path": "Personality files/templates/pipeline-one-liner.md",
+      "role": "output-template",
+      "sha256": "0ede999ca81ecbe206afcbd152b8c56f4521228324ebd30041c72f2020ce49c8"
+    },
+    {
+      "path": "Personality files/templates/telegram-daily-digest.md",
+      "role": "output-template",
+      "sha256": "299e69474e642bb67201791a72376751356122e13a691de96c1b298e13f51d9a"
+    },
+    {
+      "path": "Personality files/templates/telegram-heartbeat.md",
+      "role": "output-template",
+      "sha256": "4505a511626e2cfcd18f06c8e4583c0786ea685ced2676e2322196ea04f3de66"
+    },
+    {
+      "path": "Personality files/tools/cursor-acp.md",
+      "role": "tool-instructions",
+      "sha256": "fec23b8ca18e004c140c18566e9d6958a55cb79291d1798b45402385c88a157e"
+    },
+    {
+      "path": "Personality files/tools/development-orchestrator.md",
+      "role": "tool-instructions",
+      "sha256": "906c8362eb9dabf5d809047eec087d166db2462be2af7189cfbf4a41fd42c79e"
+    },
+    {
+      "path": "Personality files/tools/gws.md",
+      "role": "tool-instructions",
+      "sha256": "37ac12a74be13fbd71856a0d29db610733e320421ca6195df021c1bf77a51ecb"
+    },
+    {
+      "path": "Personality files/tools/lisa-safe.md",
+      "role": "tool-instructions",
+      "sha256": "240abeddaa5429e023d03568942d847552907447646b646cd49367ac77e80fe4"
+    },
+    {
+      "path": "Personality files/tools/local-coder.md",
+      "role": "tool-instructions",
+      "sha256": "7c0c49890048ceef370d2cacad57b18484ac3e1d1ef25bccc4447f1ce85a2abc"
+    }
   ],
-  "excludedContent": [
-    ".env files and all credential payloads",
-    "gateway tokens, passwords, OAuth material, private keys, and Google Secret Manager values",
-    "OpenClaw runtime configuration snapshots unless explicitly redacted and approved",
-    "device pairings, session transcripts, logs, caches, SQLite databases, and dynamic runtime state",
-    "raw private memory and user data"
+  "intentionalAssets": [
+    {
+      "path": "Personality files/assets/lisa-avatar.png",
+      "role": "deployed-avatar",
+      "mediaType": "image/png",
+      "sha256": "24f0199911b2bc903ebe23d2e7612ebd11373bbce91c2f8b2f192919374810a8",
+      "deploymentRequired": true
+    },
+    {
+      "path": "Personality files/assets/lisa-avatar-original.jpg",
+      "role": "editable-source-asset",
+      "mediaType": "image/jpeg",
+      "sha256": "a96b0ab75aefbfb169698815c427e5f3bbfdfc61ade02dc57c4e6f9b9074f49d",
+      "deploymentRequired": false
+    }
   ],
+  "sourceControlledDeploymentComponents": [
+    {
+      "pattern": "Commands/**",
+      "purpose": "non-secret operator commands"
+    },
+    {
+      "pattern": "docs/**",
+      "purpose": "Lisa-specific deployment documentation"
+    },
+    {
+      "pattern": "ops/**",
+      "purpose": "non-secret deployment and operations source"
+    },
+    {
+      "pattern": "audit/**",
+      "purpose": "sanitized historical review evidence"
+    }
+  ],
+  "mutableRuntimeState": [
+    {
+      "pattern": "Personality files/MEMORY.md",
+      "reason": "curated live memory changes over time"
+    },
+    {
+      "pattern": "Personality files/memory/**",
+      "reason": "daily memory, evaluations, indexes, and operational state are mutable or private"
+    },
+    {
+      "pattern": "Personality files/studio/**",
+      "reason": "live project and briefing knowledge is mutable and may be private"
+    },
+    {
+      "pattern": "Personality files/user/**",
+      "reason": "user-specific context and schedule are private mutable data"
+    },
+    {
+      "pattern": "**/sessions/**",
+      "reason": "conversation history is runtime state"
+    },
+    {
+      "pattern": "**/scratch/**",
+      "reason": "temporary work output is not a durable definition"
+    },
+    {
+      "pattern": "**/usage/**",
+      "reason": "usage accounting is runtime state"
+    },
+    {
+      "pattern": "**/cache/**",
+      "reason": "caches are rebuildable runtime state"
+    }
+  ],
+  "secretAndRuntimeExclusions": [
+    {
+      "pattern": "Personality files/openclaw.json",
+      "reason": "live runtime configuration may contain secret references and environment-specific routing"
+    },
+    {
+      "pattern": "**/.env*",
+      "reason": "environment variables and secret material are never committed"
+    },
+    {
+      "pattern": "**/credentials/**",
+      "reason": "credential payloads are never committed"
+    },
+    {
+      "pattern": "**/auth-profiles.json",
+      "reason": "OAuth and provider authentication state is never committed"
+    },
+    {
+      "pattern": "**/device-pairings/**",
+      "reason": "device trust state is restored only from encrypted backup"
+    },
+    {
+      "pattern": "**/*.sqlite*",
+      "reason": "databases are mutable runtime state"
+    },
+    {
+      "pattern": "**/logs/**",
+      "reason": "logs may contain private runtime data"
+    },
+    {
+      "pattern": "**/*service-account*.json",
+      "reason": "service-account material is never committed"
+    },
+    {
+      "pattern": "**/*token*",
+      "reason": "token payloads and token-bearing artifacts are never committed"
+    },
+    {
+      "pattern": "**/*private-key*",
+      "reason": "private-key material is never committed"
+    }
+  ],
+  "alignment": {
+    "requiredStableFiles": 22,
+    "exactLiveMatches": 21,
+    "normalizedLiveMatches": 1,
+    "requiredMissingFromLive": [],
+    "requiredHashMismatches": [],
+    "deploymentAssetsExact": 1,
+    "declaredSourceOnlyAssets": [
+      "Personality files/assets/lisa-avatar-original.jpg"
+    ],
+    "removedSourceOnlyOrMutablePaths": [
+      "Personality files/PERSONALITY_WORKFLOW.md",
+      "Personality files/agents/offline-recovery.md",
+      "Personality files/workspace-local-coder/AGENTS.md",
+      "Personality files/workspace-local-coder/TOOLS.md",
+      "Personality files/MEMORY.md",
+      "Personality files/memory/**",
+      "Personality files/studio/**",
+      "Personality files/user/**",
+      "Personality files/openclaw.json"
+    ],
+    "result": "All required stable definition files and the deployed avatar match the current VPS Lisa source. Remaining non-parity is limited to explicitly excluded mutable/runtime material and one declared source-only asset."
+  },
   "secretHandling": {
     "source": "Google Secret Manager references only",
     "repository": "No secret values are permitted"
   },
-  "comparisonReceipt": {
-    "verifiedDate": "2026-08-10",
-    "macMiniSafeWorkspaceFiles": 171,
-    "vpsSafeWorkspaceFiles": 169,
-    "vpsMissingOnly": [
-      "two disposable Ship/Pull scratch status reports"
-    ],
-    "expectedRuntimeStateDifferences": [
-      "runtime configuration",
-      "battery-monitor state",
-      "pipeline and digest context",
-      "schedule notes"
-    ],
-    "result": "No durable non-secret identity, personality, agent, or knowledge document was missing from the VPS comparison."
-  },
   "restoreContract": {
     "code": "Deploy the approved OpenClaw Prime revision.",
-    "definition": "Materialize only reviewed, non-secret bundle content.",
-    "secrets": "Resolve Google Secret Manager references at runtime.",
-    "mutableState": "Restore only from encrypted off-VPS backup. Git is not a backup for live state.",
+    "definition": "Materialize only requiredStableDefinition entries and deploymentRequired intentionalAssets after validating their SHA-256 values.",
+    "secrets": "Resolve Google Secret Manager references at runtime; never restore secret payloads from Git.",
+    "mutableState": "Restore only from the encrypted off-VPS backup and validate SQLite integrity before starting Lisa.",
     "offVpsBackup": {
       "storage": "Google Cloud Storage bucket linktrend-lisa-recovery-prod, encrypted at rest and transferred over TLS.",
-      "scope": "The Lisa runtime profile, session and device-pairing state, local databases, mutable memory, and other recoverable runtime state. Volatile logs, caches, temporary files, credentials, and local secret copies are excluded.",
-      "identity": "The VPS backup process uses the dedicated lisa-backup Google Cloud workload identity with bucket-only access; it does not use Lisa's runtime secret identity.",
-      "cadence": "Daily systemd timer. Restore is verified from the resulting archive before this contract is accepted.",
+      "identity": "The VPS backup process uses the dedicated lisa-backup Google Cloud workload identity with bucket-only access.",
+      "cadence": "Daily systemd timer.",
       "restoreOrder": [
         "Deploy the approved OpenClaw Prime revision.",
-        "Materialize this reviewed non-secret bundle.",
+        "Validate and materialize this non-secret definition bundle.",
         "Resolve Google Secret Manager references at runtime.",
         "Restore the matching encrypted mutable-state archive and validate SQLite integrity before starting Lisa."
       ]
