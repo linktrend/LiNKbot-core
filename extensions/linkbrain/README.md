@@ -48,6 +48,20 @@ mapping is out of scope and must not be added here.
 - Opaque actor/binding/session/task/run/subagent correlations only
 - Brain failures degrade honestly — hooks never throw uncaught; native OpenClaw continues
 - Optional `linkbrain_read` bridge: `brain_browse`, `brain_search`, and `brain_load` for native OAuth runtimes; PACI credentials remain inside the plugin process
+- Separate optional `linkbrain_write` bridge: only `brain_capture_batch` and `brain_checkpoint_write`; it requires host-owned machine-token auth and never returns Brain result payloads
+
+Native write access is additive and default-denied. Enable it for one agent with
+`agents.list[].tools.alsoAllow: ["linkbrain_write"]`; do not replace the agent's normal profile
+with a broad `tools.allow`. Capture additionally requires both `captureEnqueue` and
+`captureDrain`; checkpoint writes require `coordinationWrites`. The bridge rejects actor/binding
+overrides, unknown operations and fields, oversized payloads, invalid timestamps, duplicate or
+unordered event sequences, and missing idempotency keys.
+
+`linkbrain_write` additionally verifies the trusted current agent entry itself contains the exact
+`tools.alsoAllow` value `linkbrain_write`; generic `tools.allow` grants such as `*`,
+`group:plugins`, or the plugin id do not enable it. Checkpoint callers cannot supply `taskId`.
+The factory derives it only from the out-of-band `toolBindings.linkbrain.taskId` attached to a
+trusted session context, and fails closed when that binding or session identity is absent.
 
 ## Conversation access (required for Brain capture/coordination hooks)
 
