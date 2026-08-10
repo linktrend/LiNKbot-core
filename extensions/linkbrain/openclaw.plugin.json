@@ -6,6 +6,12 @@
   "activation": {
     "onStartup": true
   },
+  "contracts": {
+    "tools": ["linkbrain_read"]
+  },
+  "toolMetadata": {
+    "linkbrain_read": { "optional": true }
+  },
   "configContracts": {
     "secretInputs": {
       "paths": [

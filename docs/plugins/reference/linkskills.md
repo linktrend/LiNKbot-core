@@ -17,3 +17,11 @@ Private Skills adapter for Lisa: structured telemetry outbox against Skills Gate
 ## Surface
 
 plugin
+
+## Native OAuth bridge
+
+`linkskills_use` is an optional tool for native OAuth model runtimes. It keeps
+the managed PACI credential in the Gateway process and exposes only the frozen
+LiNKskills discovery and governed-operation allowlists. Discovery requires
+`mcpDiscoveryRead`; governed operations require `governedExecution`; the tool
+also requires explicit allowlisting before use.

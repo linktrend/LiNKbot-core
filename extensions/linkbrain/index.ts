@@ -15,6 +15,7 @@ import {
   type LinkbrainLifecycle,
 } from "./src/lifecycle.js";
 import { LINKBRAIN_CONVERSATION_HOOK_REQUIREMENT, LINKBRAIN_PLUGIN_ID } from "./src/namespaces.js";
+import { createLinkbrainReadTool } from "./src/oauth-tool.js";
 import { createLinkbrainRuntime, type LinkbrainRuntime } from "./src/runtime.js";
 import { openLinkbrainStoresFromApi } from "./src/stores.js";
 import { resolveLinkbrainTransport } from "./src/transport.js";
@@ -64,6 +65,10 @@ export default definePluginEntry({
         return buildLinkbrainFlaggedMcpToolFilter(live);
       },
     });
+    // Keep the PACI bearer inside the plugin process. This optional local tool
+    // is the safe bridge for native OAuth runtimes that cannot receive a
+    // managed machine-token MCP projection.
+    api.registerTool(createLinkbrainReadTool(api), { optional: true });
 
     const service: OpenClawPluginService = {
       id: "linkbrain-outbox",

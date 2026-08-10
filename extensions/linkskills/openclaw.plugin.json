@@ -6,6 +6,12 @@
   "activation": {
     "onStartup": true
   },
+  "contracts": {
+    "tools": ["linkskills_use"]
+  },
+  "toolMetadata": {
+    "linkskills_use": { "optional": true }
+  },
   "configContracts": {
     "secretInputs": {
       "paths": [
@@ -62,6 +68,10 @@
     "skillsEndpoint": {
       "label": "Skills Endpoint",
       "help": "LiNKskills Gateway HTTPS base URL for transportMode=http. Requests POST /v1/{allowlisted skills_* operation} with {params,idempotency_key,request_id}."
+    },
+    "allowProductionLoopbackHttp": {
+      "label": "Production Loopback HTTP",
+      "help": "Permit only a same-machine localhost/127.0.0.1/::1 HTTP Skills endpoint in production. This does not permit LAN, VPC, Tailscale, or public HTTP."
     }
   },
   "configSchema": {
@@ -135,6 +145,11 @@
       "skillsEndpoint": {
         "type": "string",
         "description": "LiNKskills Gateway HTTPS base for transportMode=http (POST /v1/{operation}; SecretRef or machineToken bearer)."
+      },
+      "allowProductionLoopbackHttp": {
+        "type": "boolean",
+        "default": false,
+        "description": "Explicitly permit HTTP only to same-machine loopback for a co-located production Skills Gateway."
       },
       "skillsCredential": {
         "$ref": "#/$defs/secretInput"

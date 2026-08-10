@@ -2,7 +2,11 @@ import { describe, expect, it, vi } from "vitest";
 import { parseLinkskillsConfig } from "./src/config.js";
 import { findProhibitedSkillsField } from "./src/envelopes.js";
 import { mapSkillsEventTypeToToolName, resolveSkillsDrainToolName } from "./src/tools.js";
-import { buildLinkskillsHttpOperationUrl, resolveLinkskillsTransport } from "./src/transport.js";
+import {
+  buildLinkskillsHttpOperationUrl,
+  callLinkskillsMcpTool,
+  resolveLinkskillsTransport,
+} from "./src/transport.js";
 
 function stubApi(config: Record<string, unknown> = {}) {
   return {
@@ -55,6 +59,64 @@ const writeArgs = {
 };
 
 describe("linkskills transport modes", () => {
+  it("calls allowlisted discovery through the host machine-token facade only", async () => {
+    const acquire = vi.fn(async ({ bindingId }) => ({
+      bindingId,
+      bindingFingerprint: `fp-${bindingId}`,
+      accessToken: "not-exposed-to-model",
+      expiresAt: Date.now() + 60_000,
+      tokenType: "Bearer" as const,
+    }));
+    const config = parseLinkskillsConfig({
+      transportMode: "mcp",
+      machineToken: {
+        bindingId: "linkskills-stage",
+        issuerUrl: "https://issuer.example.test",
+        clientId: "skills-client",
+        clientAssertionKeyRef: assertionKeyRef,
+      },
+    });
+    const callTool = vi.fn(async () => ({ structuredContent: { skills: [] } }));
+    const result = await callLinkskillsMcpTool({
+      api: {
+        ...stubApi({
+          mcp: {
+            servers: {
+              linkskills: {
+                enabled: true,
+                url: "https://skills.example.test/mcp",
+                auth: "machine_token",
+              },
+            },
+          },
+        }),
+        machineTokenFacade: {
+          pluginId: "linkskills",
+          grantedBindingIds: new Set(["linkskills-stage"]),
+          acquire,
+          invalidate: vi.fn(),
+          health: () => ({
+            pluginId: "linkskills",
+            bindingId: "linkskills-stage",
+            granted: true,
+            registered: true,
+            cached: false,
+          }),
+          unregister: vi.fn(),
+        },
+      },
+      config,
+      toolName: "skills_search",
+      arguments: { query: "approved test" },
+      createMcpSession: async () => ({ callTool, close: async () => undefined }),
+    });
+    expect(result).toEqual({ ok: true, result: { skills: [] } });
+    expect(acquire).toHaveBeenCalledWith(
+      expect.objectContaining({ bindingId: "linkskills-stage" }),
+    );
+    expect(callTool).toHaveBeenCalledWith("skills_search", { query: "approved test" });
+  });
+
   it("defaults transportMode to disabled and returns transport_disabled", async () => {
     const config = parseLinkskillsConfig({});
     expect(config.transportMode).toBe("disabled");

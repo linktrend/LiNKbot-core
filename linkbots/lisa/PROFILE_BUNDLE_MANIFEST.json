@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "agentId": "lisa",
+  "bundlePurpose": "Version-controlled non-secret Lisa definition and deployment input.",
+  "liveRuntimeRule": "This bundle is the reviewed source of truth for Lisa's non-secret definition. The running VPS profile reports the currently installed state; any drift is reconciled through a reviewed materialization step and never by replacing mutable state wholesale.",
+  "eligibleContent": [
+    "reviewed identity and personality instructions",
+    "reviewed operating instructions, skills, templates, and agent documentation",
+    "non-secret deployment manifests and source code"
+  ],
+  "excludedContent": [
+    ".env files and all credential payloads",
+    "gateway tokens, passwords, OAuth material, private keys, and Google Secret Manager values",
+    "OpenClaw runtime configuration snapshots unless explicitly redacted and approved",
+    "device pairings, session transcripts, logs, caches, SQLite databases, and dynamic runtime state",
+    "raw private memory and user data"
+  ],
+  "secretHandling": {
+    "source": "Google Secret Manager references only",
+    "repository": "No secret values are permitted"
+  },
+  "comparisonReceipt": {
+    "verifiedDate": "2026-08-10",
+    "macMiniSafeWorkspaceFiles": 171,
+    "vpsSafeWorkspaceFiles": 169,
+    "vpsMissingOnly": [
+      "two disposable Ship/Pull scratch status reports"
+    ],
+    "expectedRuntimeStateDifferences": [
+      "runtime configuration",
+      "battery-monitor state",
+      "pipeline and digest context",
+      "schedule notes"
+    ],
+    "result": "No durable non-secret identity, personality, agent, or knowledge document was missing from the VPS comparison."
+  },
+  "restoreContract": {
+    "code": "Deploy the approved OpenClaw Prime revision.",
+    "definition": "Materialize only reviewed, non-secret bundle content.",
+    "secrets": "Resolve Google Secret Manager references at runtime.",
+    "mutableState": "Restore only from encrypted off-VPS backup. Git is not a backup for live state.",
+    "offVpsBackup": {
+      "storage": "Google Cloud Storage bucket linktrend-lisa-recovery-prod, encrypted at rest and transferred over TLS.",
+      "scope": "The Lisa runtime profile, session and device-pairing state, local databases, mutable memory, and other recoverable runtime state. Volatile logs, caches, temporary files, credentials, and local secret copies are excluded.",
+      "identity": "The VPS backup process uses the dedicated lisa-backup Google Cloud workload identity with bucket-only access; it does not use Lisa's runtime secret identity.",
+      "cadence": "Daily systemd timer. Restore is verified from the resulting archive before this contract is accepted.",
+      "restoreOrder": [
+        "Deploy the approved OpenClaw Prime revision.",
+        "Materialize this reviewed non-secret bundle.",
+        "Resolve Google Secret Manager references at runtime.",
+        "Restore the matching encrypted mutable-state archive and validate SQLite integrity before starting Lisa."
+      ]
+    }
+  }
+}
