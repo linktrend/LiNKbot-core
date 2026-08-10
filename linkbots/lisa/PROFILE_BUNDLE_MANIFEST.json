@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "agentId": "lisa",
+  "bundlePurpose": "Version-controlled non-secret Lisa definition and deployment input.",
+  "liveRuntimeRule": "The running VPS profile is runtime truth. This bundle is deployed only through a reviewed materialization step and must not replace mutable state wholesale.",
+  "eligibleContent": [
+    "reviewed identity and personality instructions",
+    "reviewed operating instructions, skills, templates, and agent documentation",
+    "non-secret deployment manifests and source code"
+  ],
+  "excludedContent": [
+    ".env files and all credential payloads",
+    "gateway tokens, passwords, OAuth material, private keys, and Google Secret Manager values",
+    "OpenClaw runtime configuration snapshots unless explicitly redacted and approved",
+    "device pairings, session transcripts, logs, caches, SQLite databases, and dynamic runtime state",
+    "raw private memory and user data"
+  ],
+  "secretHandling": {
+    "source": "Google Secret Manager references only",
+    "repository": "No secret values are permitted"
+  },
+  "comparisonReceipt": {
+    "verifiedDate": "2026-08-10",
+    "macMiniSafeWorkspaceFiles": 171,
+    "vpsSafeWorkspaceFiles": 169,
+    "vpsMissingOnly": [
+      "two disposable Ship/Pull scratch status reports"
+    ],
+    "expectedRuntimeStateDifferences": [
+      "runtime configuration",
+      "battery-monitor state",
+      "pipeline and digest context",
+      "schedule notes"
+    ],
+    "result": "No durable non-secret identity, personality, agent, or knowledge document was missing from the VPS comparison."
+  },
+  "restoreContract": {
+    "code": "Deploy the approved OpenClaw Prime revision.",
+    "definition": "Materialize only reviewed, non-secret bundle content.",
+    "secrets": "Resolve Google Secret Manager references at runtime.",
+    "mutableState": "Restore only from encrypted off-VPS backup. Git is not a backup for live state."
+  }
+}
