@@ -30,6 +30,7 @@ describe("linkbrain manifest/config", () => {
       coordinationWrites: expect.any(Object),
       transportMode: expect.any(Object),
       mcpServerName: expect.any(Object),
+      allowProductionLoopbackHttp: expect.any(Object),
       redactionPolicyVersion: expect.any(Object),
       batchMaxEvents: expect.any(Object),
       batchMaxBytes: expect.any(Object),
@@ -86,6 +87,16 @@ describe("linkbrain manifest/config", () => {
       mcpServerName: "linkbrain",
       redactionPolicyVersion: DEFAULT_LINKBRAIN_CONFIG.redactionPolicyVersion,
     });
+    expect(parseLinkbrainConfig({}).allowProductionLoopbackHttp).toBeUndefined();
+  });
+
+  it("parses the explicit production loopback flag without enabling it by default", () => {
+    expect(parseLinkbrainConfig({ allowProductionLoopbackHttp: true })).toMatchObject({
+      allowProductionLoopbackHttp: true,
+    });
+    expect(parseLinkbrainConfig({ allowProductionLoopbackHttp: false })).not.toHaveProperty(
+      "allowProductionLoopbackHttp",
+    );
   });
 
   it("rejects malformed SecretRef credentials", () => {

@@ -48,7 +48,7 @@
     },
     "machineToken": {
       "label": "Machine Token Binding",
-      "help": "Optional client_credentials + private_key_jwt binding. When set, HTTP uses machine-token instead of ingestionCredential. clientAssertionKeyRef must be a SecretRef object (no literal PEM/JWK/env/CLI strings). bindingId must not equal Skills bindingId. issuerUrl and endpoints require HTTPS outside explicit local-test loopback. For Tailscale/CGNAT/private-overlay HTTPS issuers set allowPrivateNetwork=true (default false); never use environment=test for stage/production."
+      "help": "Optional client_credentials + private_key_jwt binding. When set, HTTP uses machine-token instead of ingestionCredential. clientAssertionKeyRef must be a SecretRef object (no literal PEM/JWK/env/CLI strings). bindingId must not equal Skills bindingId. issuerUrl requires HTTPS outside explicit local-test loopback; managed MCP endpoints also require HTTPS except for the exact allowProductionLoopbackHttp production exception. For Tailscale/CGNAT/private-overlay HTTPS issuers set allowPrivateNetwork=true (default false); never use environment=test for stage/production."
     },
     "redactionPolicyVersion": {
       "label": "Redaction Policy Version",
@@ -73,6 +73,10 @@
     "mcpServerName": {
       "label": "MCP Server Name",
       "help": "Key under mcp.servers for Brain managed MCP. Default linkbrain."
+    },
+    "allowProductionLoopbackHttp": {
+      "label": "Allow Production Loopback HTTP",
+      "help": "Default false. In production, permits only the co-located Brain MCP endpoint http://127.0.0.1:18789/mcp. It does not permit localhost names, IPv6, other loopback addresses, ports, paths, private networks, or public HTTP."
     },
     "ingestionEndpoint": {
       "label": "Ingestion Endpoint",
@@ -146,6 +150,11 @@
       "mcpServerName": {
         "type": "string",
         "default": "linkbrain"
+      },
+      "allowProductionLoopbackHttp": {
+        "type": "boolean",
+        "default": false,
+        "description": "Explicit production opt-in for only http://127.0.0.1:18789/mcp. All other non-test HTTP targets remain rejected."
       },
       "ingestionEndpoint": {
         "type": "string",
