@@ -12,10 +12,11 @@ Add each applicable item once before dispatch:
 
 Route:
 
-- **0–3:** `luna-executor`, native OAuth `openai/gpt-5.6-luna` at High.
-- **4+ or any hard gate:** `planner`, native OAuth `openai/gpt-5.6-sol` at Medium, returns a complete execution plan; Terra then sends that plan to `luna-executor`.
+- **0–2:** call `sessions_spawn` with `runtime: "acp"`, `agentId: "cursor"`, and exact model `grok-4.5[effort=high,fast=true]`.
+- **3–4:** `luna-executor`, native OAuth `openai/gpt-5.6-luna` at High.
+- **5+ or any hard gate:** `planner`, native OAuth `openai/gpt-5.6-sol` at Medium, returns a complete execution plan; Terra then sends that plan to `luna-executor`.
 
-Uncertainty routes upward. The planner never executes; the executor never plans a replacement architecture; and the orchestrator never edits code. Never loop, downgrade, or silently substitute an unverified model.
+Uncertainty routes upward. One failed Cursor attempt escalates once to Luna. Never loop, downgrade, substitute an unverified model, or let the planner execute. The orchestrator coordinates but does not edit code.
 
 ## Required packet
 
@@ -30,7 +31,7 @@ Every executor packet contains objective, exact repository/worktree/start SHA, o
     "hardGate": false,
     "planner": null,
     "orchestrator": "openai/gpt-5.6-terra",
-    "executor": "openai/gpt-5.6-luna",
+    "executor": "cursor|openai/gpt-5.6-luna",
     "requestedModel": "",
     "appliedModel": "",
     "escalatedFrom": null
@@ -45,4 +46,4 @@ Every executor packet contains objective, exact repository/worktree/start SHA, o
 }
 ```
 
-For native OAuth agents, verify the resolved model in the returned runtime evidence. A missing or mismatched applied model is a failed route proof, not success.
+For Cursor, verify the applied advertised model through ACP status after completion; the immediate spawn acceptance does not contain applied-model metadata. For native OAuth agents, verify the resolved model in the returned runtime evidence. A missing or mismatched applied model is a failed route proof, not success.

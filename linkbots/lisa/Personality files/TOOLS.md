@@ -145,9 +145,13 @@ Supervision rules: `AGENTS.md` § LiNKdeveloper Executive Supervision. Project r
 
 Native free-running heartbeat is **off** (`heartbeat.every: 0m` — OpenClaw has no wall-clock `:45` anchor). Visible cycles are cron **`lisa-heartbeat-45`** (`45 0,2,4,8,10,12,14,16,18,20,22 * * *` Asia/Taipei → Telegram). Follow `HEARTBEAT.md` (schedule table + output format). Detail: `agents/detail.md`.
 
-## Development execution
+## Cursor / ACP (Summary)
 
-The active coding workflow is the five-agent native-OAuth route: Lisa delegates coding to the Terra Development Orchestrator; simple work goes to the Luna High Executor; complex or hard-gated work is planned by Sol before Terra assigns it to the Luna High Executor. Lisa does not write code herself. External Cursor/ACP material in this historical workshop tree is not an active Lisa execution route.
+**Mandatory when Carlos says "use Cursor" (any channel):** call `sessions_spawn` with `runtime: "acp"`, `agentId: "cursor"`, and `model: "grok-4.5[effort=high,fast=true]"` — never substitute a subagent or self-write, never mislabel one as "Cursor." Never pass bare `grok-4.5`, `cursor-grok-4.5-medium`, or medium/no-fast bracket ids (not advertised → first-spawn Tool error). On failure, quote the error verbatim and stop.
+
+**Wired defaults (2026-07-21):** `agents.list` `cursor` primary is `grok-4.5[effort=high,fast=true]`; `plugins.entries.acpx.config.agents.cursor` launches `cursor-agent acp` (model via ACP sessionOptions, not CLI `--model`).
+
+**Full reference (trigger phrases, bind/unbind, honest-reporting rule, headless CLI quirks, model ids):** [`tools/cursor-acp.md`](tools/cursor-acp.md) — read before a spawn fails and you need to know what to do, or when Carlos asks how bind mode works.
 
 ## Google Workspace (`gws`) (Summary)
 
