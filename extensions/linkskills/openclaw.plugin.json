@@ -6,6 +6,12 @@
   "activation": {
     "onStartup": true
   },
+  "contracts": {
+    "tools": ["linkskills_use"]
+  },
+  "toolMetadata": {
+    "linkskills_use": { "optional": true }
+  },
   "configContracts": {
     "secretInputs": {
       "paths": [

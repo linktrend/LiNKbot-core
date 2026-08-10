@@ -24,6 +24,7 @@ import {
   mergeSsrFPolicies,
   ssrfPolicyFromHttpBaseUrlAllowedHostname,
 } from "openclaw/plugin-sdk/ssrf-runtime";
+import { isAllowedLinkskillsMcpTool } from "../mcp-tool-filter.js";
 import type { OpenClawPluginApi } from "../runtime-api.js";
 import {
   assertLinkskillsRemoteHttpsUrl,
@@ -71,6 +72,11 @@ type McpToolSession = {
   ): Promise<{ isError?: boolean; structuredContent?: unknown; content?: unknown }>;
   close(): Promise<void>;
 };
+
+/** Safe result returned to a plugin-owned local tool. Credentials remain host-owned. */
+export type LinkskillsMcpCallResult =
+  | { ok: true; result?: Record<string, unknown> }
+  | { ok: false; safeMessage: string };
 
 type ResolveMachineTokenAccessFn = (params: {
   bindingId: string;
@@ -995,6 +1001,114 @@ function createMcpTransport(params: {
       };
     },
   };
+}
+
+/**
+ * Calls a frozen Skills MCP operation from inside the plugin process.
+ * OAuth-backed models receive only this tool result, never a PACI credential.
+ */
+export async function callLinkskillsMcpTool(params: {
+  api: Pick<OpenClawPluginApi, "config" | "logger"> &
+    Partial<Pick<OpenClawPluginApi, "machineTokenFacade">>;
+  config: LinkskillsConfig;
+  toolName: string;
+  arguments: Record<string, unknown>;
+  signal?: AbortSignal;
+  createMcpSession?: (server: ManagedMcpServerEntry) => Promise<McpToolSession>;
+}): Promise<LinkskillsMcpCallResult> {
+  if (params.config.transportMode !== "mcp") {
+    return { ok: false, safeMessage: "linkskills MCP transport is not enabled" };
+  }
+  if (!isAllowedLinkskillsMcpTool(params.toolName)) {
+    return { ok: false, safeMessage: "linkskills operation is not allowlisted" };
+  }
+  const server = readManagedServer(params.api.config, params.config.mcpServerName);
+  if (!server || server.enabled === false) {
+    return { ok: false, safeMessage: "linkskills managed MCP server is unavailable" };
+  }
+  if (typeof server.url === "string" && server.url.length > 0) {
+    try {
+      assertLinkskillsRemoteHttpsUrl(
+        server.url,
+        "mcp.servers.url",
+        params.config.environment === "test",
+      );
+    } catch {
+      return { ok: false, safeMessage: "linkskills MCP endpoint is rejected" };
+    }
+  }
+  const createSession =
+    params.createMcpSession ??
+    ((entry: ManagedMcpServerEntry) =>
+      openDefaultMcpSession(
+        entry,
+        Object.fromEntries(
+          Object.entries(entry.headers ?? {}).flatMap(([key, value]) => {
+            const coerced = coerceHeaderValue(value);
+            return coerced ? [[key, coerced] as const] : [];
+          }),
+        ),
+      ));
+  const runOnce = async (
+    forceRefresh: boolean,
+  ): Promise<
+    | { kind: "result"; result: LinkskillsMcpCallResult }
+    | { kind: "throw"; error: unknown; bindingId?: string }
+  > => {
+    const resolved = await resolveMcpHeaders({
+      server,
+      apiConfig: params.api.config,
+      env: process.env,
+      pluginMachineToken: params.config.machineToken,
+      signal: params.signal,
+      forceRefresh,
+      localTest: params.config.environment === "test",
+      machineTokenFacade: params.api.machineTokenFacade,
+    });
+    if (resolved.error || resolved.authProfileOnly) {
+      return {
+        kind: "result",
+        result: { ok: false, safeMessage: "linkskills authentication is unavailable" },
+      };
+    }
+    let session: McpToolSession | undefined;
+    try {
+      session = await createSession({ ...server, headers: resolved.headers });
+      const outcome = await session.callTool(params.toolName, params.arguments);
+      if (outcome.isError) {
+        return {
+          kind: "result",
+          result: { ok: false, safeMessage: "linkskills rejected the request" },
+        };
+      }
+      const result = isRecord(outcome.structuredContent)
+        ? outcome.structuredContent
+        : isRecord(outcome.content)
+          ? outcome.content
+          : undefined;
+      return { kind: "result", result: { ok: true, result } };
+    } catch (error) {
+      return { kind: "throw", error, bindingId: resolved.bindingId };
+    } finally {
+      await session?.close().catch(() => undefined);
+    }
+  };
+  const first = await runOnce(false);
+  if (first.kind === "result") {
+    return first.result;
+  }
+  if (
+    first.bindingId &&
+    params.api.machineTokenFacade &&
+    isAuthReissueCandidateError(first.error)
+  ) {
+    params.api.machineTokenFacade.invalidate(first.bindingId);
+    const second = await runOnce(true);
+    if (second.kind === "result") {
+      return second.result;
+    }
+  }
+  return { ok: false, safeMessage: "linkskills MCP connection failed" };
 }
 
 /**
