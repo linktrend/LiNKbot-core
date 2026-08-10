@@ -38,6 +38,18 @@
     "code": "Deploy the approved OpenClaw Prime revision.",
     "definition": "Materialize only reviewed, non-secret bundle content.",
     "secrets": "Resolve Google Secret Manager references at runtime.",
-    "mutableState": "Restore only from encrypted off-VPS backup. Git is not a backup for live state."
+    "mutableState": "Restore only from encrypted off-VPS backup. Git is not a backup for live state.",
+    "offVpsBackup": {
+      "storage": "Google Cloud Storage bucket linktrend-lisa-recovery-prod, encrypted at rest and transferred over TLS.",
+      "scope": "The Lisa runtime profile, session and device-pairing state, local databases, mutable memory, and other recoverable runtime state. Volatile logs, caches, temporary files, credentials, and local secret copies are excluded.",
+      "identity": "The VPS backup process uses the dedicated lisa-backup Google Cloud workload identity with bucket-only access; it does not use Lisa's runtime secret identity.",
+      "cadence": "Daily systemd timer. Restore is verified from the resulting archive before this contract is accepted.",
+      "restoreOrder": [
+        "Deploy the approved OpenClaw Prime revision.",
+        "Materialize this reviewed non-secret bundle.",
+        "Resolve Google Secret Manager references at runtime.",
+        "Restore the matching encrypted mutable-state archive and validate SQLite integrity before starting Lisa."
+      ]
+    }
   }
 }
