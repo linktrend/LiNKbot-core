@@ -78,6 +78,8 @@ export type LinkskillsMcpCallResult =
   | { ok: true; result?: Record<string, unknown> }
   | { ok: false; safeMessage: string };
 
+const HTTP_IDEMPOTENCY_KEY_RE = /^[A-Za-z0-9._:-]{1,128}$/u;
+
 type ResolveMachineTokenAccessFn = (params: {
   bindingId: string;
   signal?: AbortSignal;
@@ -638,13 +640,13 @@ async function openDefaultMcpSession(
  * Build the frozen LiNKskills Gateway operation URL: POST /v1/{operation}.
  *
  * `skillsEndpoint` is the Gateway HTTPS base (origin, optional safe mount
- * prefix, or an accidental `/v1/...` paste). The allowlisted drain `operation`
- * is the only path segment appended under `/v1/`. Rejects userinfo, raw
+ * prefix, or an accidental `/v1/...` paste). The allowlisted `operation` is
+ * the only path segment appended under `/v1/`. Rejects userinfo, raw
  * traversal probes, unsafe prefix segments, and any origin/host change.
  */
 export function buildLinkskillsHttpOperationUrl(skillsEndpoint: string, operation: string): URL {
-  if (!isSkillsDrainTool(operation)) {
-    throw new Error(`linkskills: tool "${operation}" is not a Skills drain op`);
+  if (!isAllowedLinkskillsMcpTool(operation)) {
+    throw new Error(`linkskills: tool "${operation}" is not allowlisted`);
   }
   // Belt-and-suspenders: allowlist members are single path segments; never join raw input.
   if (!/^skills_[a-z0-9_]+$/u.test(operation)) {
@@ -697,6 +699,53 @@ export function buildLinkskillsHttpOperationUrl(skillsEndpoint: string, operatio
   return target;
 }
 
+function buildLinkskillsHttpPolicy(endpoint: string, config: LinkskillsConfig) {
+  const endpointUrl = new URL(endpoint);
+  const explicitlyAllowedLoopback =
+    isLinkskillsLocalTestLoopbackHost(endpointUrl.hostname) &&
+    (config.environment === "test" || config.allowProductionLoopbackHttp === true);
+  return explicitlyAllowedLoopback
+    ? mergeSsrFPolicies(ssrfPolicyFromHttpBaseUrlAllowedHostname(endpoint), {
+        allowPrivateNetwork: true,
+      })
+    : ssrfPolicyFromHttpBaseUrlAllowedHostname(endpoint);
+}
+
+async function postLinkskillsHttpOperation(params: {
+  endpoint: string;
+  operation: string;
+  arguments: Record<string, unknown>;
+  bearer: string;
+  idempotencyKey: string;
+  signal?: AbortSignal;
+  fetchImpl?: typeof fetch;
+  config: LinkskillsConfig;
+}) {
+  const operationUrl = buildLinkskillsHttpOperationUrl(params.endpoint, params.operation);
+  const headers = new Headers({
+    "content-type": "application/json",
+    "idempotency-key": params.idempotencyKey,
+    "x-request-id": params.idempotencyKey,
+  });
+  headers.set("authorization", `Bearer ${params.bearer}`);
+  return await fetchWithSsrFGuard({
+    url: operationUrl.href,
+    ...(params.fetchImpl ? { fetchImpl: params.fetchImpl } : {}),
+    init: {
+      method: "POST",
+      headers,
+      body: JSON.stringify({
+        params: params.arguments,
+        idempotency_key: params.idempotencyKey,
+        request_id: params.idempotencyKey,
+      }),
+    },
+    signal: params.signal,
+    policy: buildLinkskillsHttpPolicy(params.endpoint, params.config),
+    auditContext: "linkskills.http-transport",
+  });
+}
+
 function createHttpTransport(params: {
   endpoint: string;
   config: LinkskillsConfig;
@@ -724,9 +773,8 @@ function createHttpTransport(params: {
           safeMessage: `tool "${writeParams.toolName}" is not a Skills drain op`,
         };
       }
-      let operationUrl: URL;
       try {
-        operationUrl = buildLinkskillsHttpOperationUrl(params.endpoint, writeParams.toolName);
+        buildLinkskillsHttpOperationUrl(params.endpoint, writeParams.toolName);
       } catch (error) {
         return {
           ok: false,
@@ -746,44 +794,19 @@ function createHttpTransport(params: {
       if (bearer.error) {
         return bearer.error;
       }
-      // Hostname pinned to configured endpoint. Private networks are not broadly
-      // allowed — only loopback with an explicit configuration gate may opt in.
-      const endpointUrl = new URL(params.endpoint);
-      const explicitlyAllowedLoopback =
-        isLinkskillsLocalTestLoopbackHost(endpointUrl.hostname) &&
-        (params.config.environment === "test" ||
-          params.config.allowProductionLoopbackHttp === true);
-      const policy = explicitlyAllowedLoopback
-        ? mergeSsrFPolicies(ssrfPolicyFromHttpBaseUrlAllowedHostname(params.endpoint), {
-            allowPrivateNetwork: true,
-          })
-        : ssrfPolicyFromHttpBaseUrlAllowedHostname(params.endpoint);
-
       const postOnce = async (accessToken: string) => {
         // Frozen Gateway contract (LiNKskills server/client): POST /v1/{operation}
         // with envelope { params, request_id?, idempotency_key? }. Operation is path-only.
-        const guarded = await fetchWithSsrFGuard({
-          url: operationUrl.href,
+        return await postLinkskillsHttpOperation({
+          endpoint: params.endpoint,
+          operation: writeParams.toolName,
+          arguments: writeParams.arguments,
+          bearer: accessToken,
+          idempotencyKey: writeParams.idempotencyKey,
+          config: params.config,
           ...(params.fetchImpl ? { fetchImpl: params.fetchImpl } : {}),
-          init: {
-            method: "POST",
-            headers: {
-              "content-type": "application/json",
-              authorization: `Bearer ${accessToken}`,
-              "idempotency-key": writeParams.idempotencyKey,
-              "x-request-id": writeParams.idempotencyKey,
-            },
-            body: JSON.stringify({
-              params: writeParams.arguments,
-              idempotency_key: writeParams.idempotencyKey,
-              request_id: writeParams.idempotencyKey,
-            }),
-          },
-          signal: writeParams.signal,
-          policy,
-          auditContext: "linkskills.http-transport",
+          ...(writeParams.signal ? { signal: writeParams.signal } : {}),
         });
-        return guarded;
       };
 
       let release: (() => Promise<void>) | undefined;
@@ -1001,6 +1024,130 @@ function createMcpTransport(params: {
         safeMessage: first.error instanceof Error ? first.error.message : "MCP connect/call failed",
       };
     },
+  };
+}
+
+/**
+ * Calls the LiNKskills HTTP Gateway from inside the plugin process. Native
+ * model runtimes receive only the response; PACI acquisition stays host-owned.
+ */
+export async function callLinkskillsHttpTool(params: {
+  api: Pick<OpenClawPluginApi, "config" | "logger"> &
+    Partial<Pick<OpenClawPluginApi, "machineTokenFacade">>;
+  config: LinkskillsConfig;
+  toolName: string;
+  arguments: Record<string, unknown>;
+  idempotencyKey: string;
+  signal?: AbortSignal;
+  fetchImpl?: typeof fetch;
+}): Promise<LinkskillsMcpCallResult> {
+  if (params.config.transportMode !== "http") {
+    return { ok: false, safeMessage: "linkskills HTTP transport is not enabled" };
+  }
+  if (!isAllowedLinkskillsMcpTool(params.toolName)) {
+    return { ok: false, safeMessage: "linkskills operation is not allowlisted" };
+  }
+  if (!HTTP_IDEMPOTENCY_KEY_RE.test(params.idempotencyKey)) {
+    return { ok: false, safeMessage: "linkskills request identity is invalid" };
+  }
+  const endpoint = params.config.skillsEndpoint;
+  if (!endpoint) {
+    return { ok: false, safeMessage: "linkskills HTTP endpoint is unavailable" };
+  }
+  try {
+    assertLinkskillsRemoteHttpsUrl(
+      endpoint,
+      "skillsEndpoint",
+      params.config.environment === "test",
+      params.config.allowProductionLoopbackHttp,
+    );
+    buildLinkskillsHttpOperationUrl(endpoint, params.toolName);
+  } catch {
+    return { ok: false, safeMessage: "linkskills HTTP endpoint is rejected" };
+  }
+  const binding = params.config.machineToken;
+  const facade = params.api.machineTokenFacade;
+  // Native OAuth bridging is machine-token only. Never fall through to the
+  // legacy skillsCredential path or project a credential into the model.
+  if (!binding || !facade) {
+    return { ok: false, safeMessage: "linkskills authentication is unavailable" };
+  }
+
+  const runOnce = async (
+    forceRefresh: boolean,
+  ): Promise<
+    | { kind: "result"; result: LinkskillsMcpCallResult }
+    | { kind: "http_error"; status: number; bindingId: string }
+  > => {
+    const bearer = await resolveMachineTokenBearer({
+      bindingId: binding.bindingId,
+      ...(params.signal ? { signal: params.signal } : {}),
+      ...(forceRefresh ? { forceRefresh: true } : {}),
+      machineTokenFacade: facade,
+    });
+    if (bearer.error || !bearer.value || !bearer.bindingId) {
+      return {
+        kind: "result",
+        result: { ok: false, safeMessage: "linkskills authentication is unavailable" },
+      };
+    }
+
+    let release: (() => Promise<void>) | undefined;
+    try {
+      const guarded = await postLinkskillsHttpOperation({
+        endpoint,
+        operation: params.toolName,
+        arguments: params.arguments,
+        bearer: bearer.value,
+        idempotencyKey: params.idempotencyKey,
+        config: params.config,
+        ...(params.signal ? { signal: params.signal } : {}),
+        ...(params.fetchImpl ? { fetchImpl: params.fetchImpl } : {}),
+      });
+      release = guarded.release;
+      if (guarded.response.ok) {
+        let result: Record<string, unknown> | undefined;
+        try {
+          const json = (await guarded.response.json()) as unknown;
+          result = isRecord(json) ? json : undefined;
+        } catch {
+          result = undefined;
+        }
+        return { kind: "result", result: { ok: true, result } };
+      }
+      return {
+        kind: "http_error",
+        status: guarded.response.status,
+        bindingId: bearer.bindingId,
+      };
+    } catch {
+      return {
+        kind: "result",
+        result: { ok: false, safeMessage: "linkskills HTTP connection failed" },
+      };
+    } finally {
+      await release?.();
+    }
+  };
+
+  const first = await runOnce(false);
+  if (first.kind === "result") {
+    return first.result;
+  }
+  if (isBoundedAuthReissueStatus(first.status)) {
+    facade.invalidate(first.bindingId);
+    const second = await runOnce(true);
+    if (second.kind === "result") {
+      return second.result;
+    }
+    return {
+      ok: false,
+      safeMessage: `linkskills request failed (HTTP ${second.status})`,
+    };
+  }
+  return {
+    ok: false,
+    safeMessage: `linkskills request failed (HTTP ${first.status})`,
   };
 }
 
