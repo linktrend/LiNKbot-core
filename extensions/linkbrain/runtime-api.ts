@@ -4,4 +4,5 @@ export type {
   AnyAgentTool,
   OpenClawPluginApi,
   OpenClawPluginService,
+  OpenClawPluginToolContext,
 } from "openclaw/plugin-sdk/plugin-entry";

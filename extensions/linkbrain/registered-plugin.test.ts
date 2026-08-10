@@ -2,17 +2,28 @@ import { createTestPluginApi } from "openclaw/plugin-sdk/plugin-test-api";
 import { describe, expect, it, vi } from "vitest";
 import linkbrainPlugin from "./index.js";
 import type { OpenClawPluginApi, OpenClawPluginService } from "./runtime-api.js";
+import type { OpenClawPluginToolContext } from "./runtime-api.js";
 import { parseLinkbrainConfig } from "./src/config.js";
 import { buildLinkbrainFlaggedMcpToolFilter } from "./src/feature-flags.js";
 
 describe("linkbrain registered-plugin feature flags + coexistence surface", () => {
   it("registers the scoped OAuth bridge without exposing raw brain_* tools", () => {
     const tools: string[] = [];
+    const optionalTools: string[] = [];
+    const factories = new Map<string, (context: OpenClawPluginToolContext) => unknown>();
     const toolFilters: Array<{ serverName: string }> = [];
     const api = createTestPluginApi({
       pluginConfig: { mcpRead: true },
-      registerTool: (tool) => {
-        tools.push(typeof tool === "function" ? "factory" : String(tool.name));
+      registerTool: (tool, options) => {
+        const name =
+          typeof tool === "function" ? String(options?.name ?? "factory") : String(tool.name);
+        if (typeof tool === "function") {
+          factories.set(name, tool as (context: OpenClawPluginToolContext) => unknown);
+        }
+        tools.push(name);
+        if (options?.optional) {
+          optionalTools.push(name);
+        }
       },
       registerService: () => undefined,
       on: () => undefined,
@@ -23,6 +34,30 @@ describe("linkbrain registered-plugin feature flags + coexistence surface", () =
     linkbrainPlugin.register(api);
     expect(tools.filter((n) => n.startsWith("brain_"))).toEqual([]);
     expect(tools).toContain("linkbrain_read");
+    expect(tools).toContain("linkbrain_write");
+    expect(optionalTools).toEqual(expect.arrayContaining(["linkbrain_read", "linkbrain_write"]));
+    const writeFactory = factories.get("linkbrain_write");
+    expect(writeFactory).toBeDefined();
+    expect(
+      writeFactory?.({
+        agentId: "lisa",
+        sessionKey: "agent:lisa:proof",
+        config: { agents: { list: [{ id: "lisa", tools: { allow: ["*"] } }] } },
+        toolBindings: { linkbrain: { taskId: "task-trusted-1" } },
+      }),
+    ).toBeNull();
+    expect(
+      writeFactory?.({
+        agentId: "lisa",
+        sessionKey: "agent:lisa:proof",
+        config: {
+          agents: {
+            list: [{ id: "lisa", tools: { alsoAllow: ["linkbrain_write"] } }],
+          },
+        },
+        toolBindings: { linkbrain: { taskId: "task-trusted-1" } },
+      }),
+    ).toMatchObject({ name: "linkbrain_write" });
     expect(toolFilters).toEqual([{ serverName: "linkbrain" }]);
     expect(
       buildLinkbrainFlaggedMcpToolFilter(

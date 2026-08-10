@@ -7,10 +7,11 @@
     "onStartup": true
   },
   "contracts": {
-    "tools": ["linkbrain_read"]
+    "tools": ["linkbrain_read", "linkbrain_write"]
   },
   "toolMetadata": {
-    "linkbrain_read": { "optional": true }
+    "linkbrain_read": { "optional": true },
+    "linkbrain_write": { "optional": true }
   },
   "configContracts": {
     "secretInputs": {
