@@ -14,11 +14,15 @@ describe("linkbrain manifest/config", () => {
       id: string;
       enabledByDefault: boolean;
       activation: { onStartup: boolean };
+      contracts: { tools: string[] };
+      toolMetadata: Record<string, { optional?: boolean }>;
       configSchema: { properties: Record<string, unknown> };
     };
     expect(manifest.id).toBe("linkbrain");
     expect(manifest.enabledByDefault).toBe(false);
     expect(manifest.activation.onStartup).toBe(true);
+    expect(manifest.contracts.tools).toEqual(["linkbrain_read", "linkbrain_write"]);
+    expect(manifest.toolMetadata.linkbrain_write).toEqual({ optional: true });
     expect(manifest.configSchema.properties).toMatchObject({
       mcpRead: expect.any(Object),
       captureEnqueue: expect.any(Object),

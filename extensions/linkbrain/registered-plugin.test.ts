@@ -8,11 +8,16 @@ import { buildLinkbrainFlaggedMcpToolFilter } from "./src/feature-flags.js";
 describe("linkbrain registered-plugin feature flags + coexistence surface", () => {
   it("registers the scoped OAuth bridge without exposing raw brain_* tools", () => {
     const tools: string[] = [];
+    const optionalTools: string[] = [];
     const toolFilters: Array<{ serverName: string }> = [];
     const api = createTestPluginApi({
       pluginConfig: { mcpRead: true },
-      registerTool: (tool) => {
-        tools.push(typeof tool === "function" ? "factory" : String(tool.name));
+      registerTool: (tool, options) => {
+        const name = typeof tool === "function" ? "factory" : String(tool.name);
+        tools.push(name);
+        if (options?.optional) {
+          optionalTools.push(name);
+        }
       },
       registerService: () => undefined,
       on: () => undefined,
@@ -23,6 +28,8 @@ describe("linkbrain registered-plugin feature flags + coexistence surface", () =
     linkbrainPlugin.register(api);
     expect(tools.filter((n) => n.startsWith("brain_"))).toEqual([]);
     expect(tools).toContain("linkbrain_read");
+    expect(tools).toContain("linkbrain_write");
+    expect(optionalTools).toEqual(expect.arrayContaining(["linkbrain_read", "linkbrain_write"]));
     expect(toolFilters).toEqual([{ serverName: "linkbrain" }]);
     expect(
       buildLinkbrainFlaggedMcpToolFilter(

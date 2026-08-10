@@ -15,7 +15,7 @@ import {
   type LinkbrainLifecycle,
 } from "./src/lifecycle.js";
 import { LINKBRAIN_CONVERSATION_HOOK_REQUIREMENT, LINKBRAIN_PLUGIN_ID } from "./src/namespaces.js";
-import { createLinkbrainReadTool } from "./src/oauth-tool.js";
+import { createLinkbrainReadTool, createLinkbrainWriteTool } from "./src/oauth-tool.js";
 import { createLinkbrainRuntime, type LinkbrainRuntime } from "./src/runtime.js";
 import { openLinkbrainStoresFromApi } from "./src/stores.js";
 import { resolveLinkbrainTransport } from "./src/transport.js";
@@ -55,7 +55,7 @@ export default definePluginEntry({
     // Conversation/data-bearing hooks fail closed unless:
     // plugins.entries.linkbrain.hooks.allowConversationAccess=true
     api.logger.info(
-      `linkbrain: registered (default-disabled). conversationAccess=${conversationAccessAllowed}; governedHooks=${LINKBRAIN_CONVERSATION_HOOKS.join(",")}; require ${LINKBRAIN_CONVERSATION_HOOK_REQUIREMENT}; mcpInclude=${flaggedMcp?.include.length ?? 0}; no brain_* plugin tools registered`,
+      `linkbrain: registered (default-disabled). conversationAccess=${conversationAccessAllowed}; governedHooks=${LINKBRAIN_CONVERSATION_HOOKS.join(",")}; require ${LINKBRAIN_CONVERSATION_HOOK_REQUIREMENT}; mcpInclude=${flaggedMcp?.include.length ?? 0}; optionalNativeTools=linkbrain_read,linkbrain_write; no brain_* plugin tools registered`,
     );
 
     api.registerMcpServerToolFilter({
@@ -69,6 +69,9 @@ export default definePluginEntry({
     // is the safe bridge for native OAuth runtimes that cannot receive a
     // managed machine-token MCP projection.
     api.registerTool(createLinkbrainReadTool(api), { optional: true });
+    // Writes stay a separate optional capability so enabling read never grants
+    // mutation. Operators must explicitly add linkbrain_write via alsoAllow.
+    api.registerTool(createLinkbrainWriteTool(api), { optional: true });
 
     const service: OpenClawPluginService = {
       id: "linkbrain-outbox",
