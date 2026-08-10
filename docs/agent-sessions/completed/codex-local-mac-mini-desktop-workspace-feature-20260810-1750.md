@@ -14,7 +14,7 @@
 | Coordination home | `/Users/linktrend/Projects/openclaw_prime`                     |
 | Session ID        | `codex-local-mac-mini-desktop-workspace-feature-20260810-1750` |
 | Started           | 2026-08-10 17:50 Asia/Taipei                                   |
-| Last updated      | 2026-08-10 18:07 Asia/Taipei                                   |
+| Last updated      | 2026-08-10 18:08 Asia/Taipei                                   |
 
 ## Work
 
@@ -23,8 +23,8 @@
 | Objective       | Correct the native OAuth `linkskills_use` bridge so allowlisted operations can use the deployed HTTP Gateway while PACI credentials remain server-side. |
 | Branch          | `dev/minicodex/WP-0-linkskills-native-http`                                                                                                             |
 | Starting commit | `ceb83ef1f27a696e79527b022f71da1e635eaddf`                                                                                                              |
-| Status          | `active`                                                                                                                                                |
-| Handoff         | Pending                                                                                                                                                 |
+| Status          | `complete`                                                                                                                                              |
+| Handoff         | `docs/handoffs/2026-08-10-1808-codex-desktop-linkskills-native-http.md`                                                                                 |
 
 ## Ownership Scope
 
@@ -49,10 +49,11 @@
 - 2026-08-10 18:04: Autoreview identified tool-call-ID collision risk in the first idempotency derivation. Accepted and corrected it to a fresh UUID per native execution, stable across the internal auth retry; repeated tool-call IDs now have a regression.
 - 2026-08-10 18:07: Final focused proof passed: all `extensions/linkskills` tests (15 files, 102 tests), targeted formatting check, and `git diff --check`. Final autoreview passed with no accepted/actionable findings. Changed-files classifier did not run because its delegated lane attempted non-interactive dependency reconciliation and exited before analysis.
 - 2026-08-10 18:07: Read-only live probe to the assigned `127.0.0.1:18788` endpoint found no listener from this execution environment. No service/config/runtime mutation was attempted; live Lisa-to-Skills E2E remains a deployment-owner acceptance gate.
+- 2026-08-10 18:08: Implementation checkpoint committed as `828af930aa6f169eaa6b47dee97e73a670026089`; session closed for push/PR handoff.
 
 ## Next Action
 
-- Exact next action: finalize handoff, commit/push the bounded branch, and open a PR to `development`; independent review/deploy/live canary remain external gates.
-- Owner: this session.
+- Exact next action: matching Orchestrator independently reviews the PR, then promotes/deploys only after approval and proves a real Lisa-to-Skills call.
+- Owner: matching Orchestrator / deployment owner.
 - Questions for Carlos: none.
 - Questions for the Orchestrator or next agent: independent review and deployment remain required after the PR.
