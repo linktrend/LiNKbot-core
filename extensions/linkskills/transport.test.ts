@@ -242,6 +242,9 @@ describe("linkskills transport modes", () => {
       buildLinkskillsHttpOperationUrl("https://skills.example.test/gateway/", "skills_run_fail")
         .href,
     ).toBe("https://skills.example.test/gateway/v1/skills_run_fail");
+    expect(buildLinkskillsHttpOperationUrl("https://skills.example.test", "skills_list").href).toBe(
+      "https://skills.example.test/v1/skills_list",
+    );
   });
 
   it("buildLinkskillsHttpOperationUrl rejects traversal and origin/host change", () => {
@@ -255,8 +258,8 @@ describe("linkskills transport modes", () => {
       buildLinkskillsHttpOperationUrl("https://skills.example.test", "../skills_run_start"),
     ).toThrow(/allowlist|drain|invalid/i);
     expect(() =>
-      buildLinkskillsHttpOperationUrl("https://skills.example.test", "skills_list"),
-    ).toThrow(/allowlist|drain/i);
+      buildLinkskillsHttpOperationUrl("https://skills.example.test", "skills_unreviewed_admin"),
+    ).toThrow(/allowlist/i);
     expect(() =>
       buildLinkskillsHttpOperationUrl(
         "https://skills.example.test/foo/../../evil",
