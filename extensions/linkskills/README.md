@@ -54,6 +54,13 @@ Conversation fields are never accepted.
 
 `mcpDiscoveryRead`, `governedExecution`, `telemetryEnqueue`, `telemetryDrain` — all default `false`.
 
+## Native OAuth bridge
+
+The optional `linkskills_use` tool lets native OAuth runtimes request only
+frozen, allowlisted discovery or governed operations. `mcpDiscoveryRead` gates
+discovery; `governedExecution` gates governed operations. PACI credentials
+remain inside the plugin process and are never sent to the model runtime.
+
 ## Keyed-store namespaces (§11)
 
 `outbox`, `deadletter`, `cursor`, `health` — `overflowPolicy: "reject-new"`.

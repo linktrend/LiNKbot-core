@@ -1,10 +1,12 @@
 # linkbots
 
-Per-bot workshops and mirrors for OpenClaw profiles.
+Version-controlled, non-secret agent-definition bundles for LiNK OpenClaw agents.
 
-- Each subdirectory (`lisa/`, `david/`, …) is a **profile workshop folder** — docs, personality files, commands, and related materials you edit in the repo.
-- **Live runtime** remains under `~/.openclaw-<profile>` (for example `~/.openclaw-lisa` on port `18790`). Do not treat these workshop folders as the live state directory.
-- Non-live Lisa routing / canary candidate contract: `lisa/ops/model-routing.contract.json` (`liveMutationAllowed: false`). Do not copy into the live profile without a separately approved rollout.
-- Superseded Lisa workshop docs and historical `openclaw.json.bak-*` snapshots live under `docs/archive/linkbots-lisa/` (see `docs/archive/README.md`).
+Each agent directory is a deployment input, not a live OpenClaw state directory:
 
-Use workshops for authoring and syncing; the profile home under `~/.openclaw-*` is what the gateway actually runs.
+- `lisa/` is the declared source bundle for VPS Lisa. Its scope and exclusions are recorded in `lisa/PROFILE_BUNDLE_MANIFEST.json`.
+- Secrets are referenced through Google Secret Manager and are never committed here.
+- Session history, device pairings, SQLite state, logs, caches, dynamic memory, and runtime configuration are not Git content. They require encrypted off-VPS backup and restore procedures.
+- A deployment selects only the bundle(s) intended for that host. It does not copy every agent to every VPS.
+
+The live profile remains the runtime truth for current behavior. A deliberate, reviewed deployment materializes the non-secret bundle and resolves its secret references; it must not overwrite mutable live state wholesale.

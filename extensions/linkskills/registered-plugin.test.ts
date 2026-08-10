@@ -1,13 +1,13 @@
-import { describe, expect, it, vi } from "vitest";
 import { createTestPluginApi } from "openclaw/plugin-sdk/plugin-test-api";
+import { describe, expect, it, vi } from "vitest";
 import linkskillsPlugin from "./index.js";
+import type { OpenClawPluginApi } from "./runtime-api.js";
 import { createSkillsTelemetryCollector } from "./src/collect.js";
 import { parseLinkskillsConfig } from "./src/config.js";
 import { buildLinkskillsFlaggedMcpToolFilter } from "./src/feature-flags.js";
-import type { OpenClawPluginApi } from "./runtime-api.js";
 
 describe("linkskills registered-plugin integration", () => {
-  it("does not register skills_* plugin tools; registers MCP toolFilter and respects flags", () => {
+  it("registers the scoped OAuth bridge without exposing raw skills_* tools", () => {
     const tools: string[] = [];
     const toolFilters: Array<{ serverName: string }> = [];
     const api = createTestPluginApi({
@@ -23,6 +23,7 @@ describe("linkskills registered-plugin integration", () => {
     });
     linkskillsPlugin.register(api);
     expect(tools.filter((n) => n.startsWith("skills_"))).toEqual([]);
+    expect(tools).toContain("linkskills_use");
     expect(toolFilters).toEqual([{ serverName: "linkskills" }]);
     expect(
       buildLinkskillsFlaggedMcpToolFilter(

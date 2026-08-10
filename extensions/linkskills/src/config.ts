@@ -41,6 +41,12 @@ export type LinkskillsConfig = {
   /** Managed MCP server key under api.config.mcp.servers. */
   mcpServerName: string;
   skillsEndpoint?: string; // Gateway HTTPS base for transportMode=http (POST /v1/{operation})
+  /**
+   * Permit plain HTTP only to an explicit same-host loopback endpoint in a
+   * non-test environment. This is for a service co-located with OpenClaw; it
+   * never permits LAN, VPC, Tailscale, or public HTTP.
+   */
+  allowProductionLoopbackHttp?: boolean;
   skillsCredential?: LinkskillsSecretInput;
   /**
    * Optional machine-token binding. When set, HTTP transport uses
@@ -104,6 +110,7 @@ export function assertLinkskillsRemoteHttpsUrl(
   urlString: string,
   fieldName: string,
   localTest?: boolean,
+  allowProductionLoopbackHttp?: boolean,
 ): URL {
   let url: URL;
   try {
@@ -118,14 +125,16 @@ export function assertLinkskillsRemoteHttpsUrl(
     throw new Error(`linkskills: ${fieldName} must not include userinfo`);
   }
   const loopback = isLinkskillsLocalTestLoopbackHost(url.hostname);
+  const explicitlyAllowedProductionLoopback =
+    localTest !== true && allowProductionLoopbackHttp === true && loopback;
   if (url.protocol === "http:") {
-    if (localTest !== true || !loopback) {
+    if (!(localTest === true && loopback) && !explicitlyAllowedProductionLoopback) {
       throw new Error(
-        `linkskills: ${fieldName} must use HTTPS (HTTP allowed only for explicit local-test loopback)`,
+        `linkskills: ${fieldName} must use HTTPS (HTTP allowed only for explicit loopback)`,
       );
     }
   }
-  if (localTest !== true && loopback) {
+  if (localTest !== true && loopback && !explicitlyAllowedProductionLoopback) {
     throw new Error(
       `linkskills: ${fieldName} must not target loopback outside explicit local-test mode`,
     );
@@ -278,8 +287,14 @@ export function parseLinkskillsConfig(value: unknown): LinkskillsConfig {
     typeof raw.skillsEndpoint === "string" && raw.skillsEndpoint.length > 0
       ? raw.skillsEndpoint
       : undefined;
+  const allowProductionLoopbackHttp = raw.allowProductionLoopbackHttp === true;
   if (skillsEndpoint) {
-    assertLinkskillsRemoteHttpsUrl(skillsEndpoint, "skillsEndpoint", localTest);
+    assertLinkskillsRemoteHttpsUrl(
+      skillsEndpoint,
+      "skillsEndpoint",
+      localTest,
+      allowProductionLoopbackHttp,
+    );
   }
   const redactionPolicyVersion =
     typeof raw.redactionPolicyVersion === "string" && raw.redactionPolicyVersion.length > 0
@@ -302,6 +317,7 @@ export function parseLinkskillsConfig(value: unknown): LinkskillsConfig {
     transportMode: parseTransportMode(raw.transportMode),
     mcpServerName,
     ...(skillsEndpoint ? { skillsEndpoint } : {}),
+    ...(allowProductionLoopbackHttp ? { allowProductionLoopbackHttp: true } : {}),
     ...(raw.skillsCredential !== undefined
       ? { skillsCredential: parseSecretInput(raw.skillsCredential, "skillsCredential") }
       : {}),

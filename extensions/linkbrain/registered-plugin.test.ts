@@ -6,7 +6,7 @@ import { parseLinkbrainConfig } from "./src/config.js";
 import { buildLinkbrainFlaggedMcpToolFilter } from "./src/feature-flags.js";
 
 describe("linkbrain registered-plugin feature flags + coexistence surface", () => {
-  it("does not register brain_* plugin tools; registers MCP toolFilter and respects mcpRead", () => {
+  it("registers the scoped OAuth bridge without exposing raw brain_* tools", () => {
     const tools: string[] = [];
     const toolFilters: Array<{ serverName: string }> = [];
     const api = createTestPluginApi({
@@ -22,6 +22,7 @@ describe("linkbrain registered-plugin feature flags + coexistence surface", () =
     });
     linkbrainPlugin.register(api);
     expect(tools.filter((n) => n.startsWith("brain_"))).toEqual([]);
+    expect(tools).toContain("linkbrain_read");
     expect(toolFilters).toEqual([{ serverName: "linkbrain" }]);
     expect(
       buildLinkbrainFlaggedMcpToolFilter(

@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { parseLinkbrainConfig } from "./src/config.js";
-import { resolveLinkbrainTransport } from "./src/transport.js";
+import { callLinkbrainMcpTool, resolveLinkbrainTransport } from "./src/transport.js";
 
 function stubApi(config: Record<string, unknown> = {}) {
   return {
@@ -27,6 +27,62 @@ const writeArgs = {
 };
 
 describe("linkbrain transport modes", () => {
+  it("calls allowlisted knowledge through the host machine-token facade only", async () => {
+    const acquire = vi.fn(async ({ bindingId }) => ({
+      bindingId,
+      bindingFingerprint: `fp-${bindingId}`,
+      accessToken: "not-exposed-to-model",
+      expiresAt: Date.now() + 60_000,
+      tokenType: "Bearer" as const,
+    }));
+    const config = parseLinkbrainConfig({
+      transportMode: "mcp",
+      machineToken: {
+        bindingId: "linkbrain-stage",
+        issuerUrl: "https://issuer.example.test",
+        clientId: "brain-client",
+        clientAssertionKeyRef: assertionKeyRef,
+      },
+    });
+    const callTool = vi.fn(async () => ({ structuredContent: { items: [] } }));
+    const result = await callLinkbrainMcpTool({
+      api: {
+        ...stubApi({
+          mcp: {
+            servers: {
+              linkbrain: {
+                enabled: true,
+                url: "https://brain.example.test/mcp",
+                auth: "machine_token",
+              },
+            },
+          },
+        }),
+        machineTokenFacade: {
+          pluginId: "linkbrain",
+          grantedBindingIds: new Set(["linkbrain-stage"]),
+          acquire,
+          invalidate: vi.fn(),
+          health: () => ({
+            pluginId: "linkbrain",
+            bindingId: "linkbrain-stage",
+            granted: true,
+            registered: true,
+            cached: false,
+          }),
+          unregister: vi.fn(),
+        },
+      },
+      config,
+      toolName: "brain_search",
+      arguments: { query: "approved test" },
+      createMcpSession: async () => ({ callTool, close: async () => undefined }),
+    });
+    expect(result).toEqual({ ok: true, result: { items: [] } });
+    expect(acquire).toHaveBeenCalledWith(expect.objectContaining({ bindingId: "linkbrain-stage" }));
+    expect(callTool).toHaveBeenCalledWith("brain_search", { query: "approved test" });
+  });
+
   it("defaults transportMode to disabled and returns transport_disabled", async () => {
     const config = parseLinkbrainConfig({});
     expect(config.transportMode).toBe("disabled");

@@ -13,6 +13,7 @@ import { linkskillsConfigSchema, parseLinkskillsConfig } from "./src/config.js";
 import { createSkillsDrainWorker, type SkillsDrainWorker } from "./src/drain-worker.js";
 import { buildLinkskillsFlaggedMcpToolFilter } from "./src/feature-flags.js";
 import { LINKSKILLS_CONVERSATION_HOOK_POLICY, LINKSKILLS_PLUGIN_ID } from "./src/namespaces.js";
+import { createLinkskillsTool } from "./src/oauth-tool.js";
 import { createLinkskillsRuntime, type LinkskillsRuntime } from "./src/runtime.js";
 import { openLinkskillsStoresFromApi } from "./src/stores.js";
 import { resolveLinkskillsTransport } from "./src/transport.js";
@@ -59,6 +60,8 @@ export default definePluginEntry({
         return buildLinkskillsFlaggedMcpToolFilter(live);
       },
     });
+    // Keep PACI credentials inside the plugin process for native OAuth models.
+    api.registerTool(createLinkskillsTool(api), { optional: true });
 
     const service: OpenClawPluginService = {
       id: "linkskills-outbox",
