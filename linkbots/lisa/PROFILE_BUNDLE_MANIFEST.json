@@ -4,146 +4,127 @@
   "bundlePurpose": "Version-controlled, non-secret source of truth for Lisa's durable definition and recovery materialization.",
   "checksumAlgorithm": "sha256",
   "sourceSnapshot": {
-    "checkedAt": "2026-08-10T22:52:52+08:00",
+    "checkedAt": "2026-08-10T15:11:46.714081Z",
     "liveCodeRevision": "6b8245a4eb8fa6551aad6cbe6898f6190752b1c3",
     "liveWorkspace": "/var/lib/openclaw/lisa/.openclaw-lisa/workspace",
-    "comparisonMethod": "Path and SHA-256 metadata only; document contents and secret values were not recorded in the receipt.",
+    "comparisonMethod": "Path, byte count, and SHA-256 metadata only; document contents and secret values were not recorded in the immutable comparison receipt.",
     "textNormalization": "Repository text uses LF. A live CRLF file may be declared equivalent only when its LF-normalized SHA-256 equals the repository SHA-256."
+  },
+  "comparisonReceipt": {
+    "path": "PROFILE_BUNDLE_LIVE_COMPARISON_RECEIPT.json",
+    "sha256": "b8c0c2049168f8f6fbd0f5d6f32e90cf45daa647c297730c7ad87096addfa108"
   },
   "liveRuntimeRule": "Git restores only the required stable definition and intentional deployment asset. Runtime configuration, secrets, private memory, sessions, databases, and other mutable state are restored through their separately governed mechanisms.",
   "requiredStableDefinition": [
     {
       "path": "Personality files/AGENTS.md",
       "role": "operating-instructions",
-      "sha256": "08e07802dfb3efc057633a3b5222358b8426a5a159391833c9d620f27cef9709",
-      "liveParity": "exact"
+      "sha256": "08e07802dfb3efc057633a3b5222358b8426a5a159391833c9d620f27cef9709"
     },
     {
       "path": "Personality files/HEARTBEAT.md",
       "role": "scheduled-operations-instructions",
-      "sha256": "9f63e48584e1ab8cdaf00cd4c604d4175ead665bc364abcfba6d5a73c5554ab1",
-      "liveParity": "exact"
+      "sha256": "9f63e48584e1ab8cdaf00cd4c604d4175ead665bc364abcfba6d5a73c5554ab1"
     },
     {
       "path": "Personality files/IDENTITY.md",
       "role": "identity",
-      "sha256": "d156f7748a8bb5fff1b9242f72fb7a19ee71b3c8052d8bbd27ad10b96b5bf6ef",
-      "liveParity": "exact"
+      "sha256": "d156f7748a8bb5fff1b9242f72fb7a19ee71b3c8052d8bbd27ad10b96b5bf6ef"
     },
     {
       "path": "Personality files/SOUL.md",
       "role": "personality",
-      "sha256": "6829e12c05e11be5299966df58af350b52483c79b18a03430b506e236504f79e",
-      "liveParity": "exact"
+      "sha256": "6829e12c05e11be5299966df58af350b52483c79b18a03430b506e236504f79e"
     },
     {
       "path": "Personality files/TOOLS.md",
       "role": "tool-policy",
-      "sha256": "6035ab4f333527f8cf3ed694f53044e23b70573055bc79f189d274e78a8722fd",
-      "liveParity": "exact"
+      "sha256": "6035ab4f333527f8cf3ed694f53044e23b70573055bc79f189d274e78a8722fd"
     },
     {
       "path": "Personality files/VERSION.md",
       "role": "definition-version",
-      "sha256": "a5fe80136fcc6b3bf4e72f67669e5f818234885b6b9103f6a0e7d63b7bdc7f65",
-      "liveParity": "exact"
+      "sha256": "a5fe80136fcc6b3bf4e72f67669e5f818234885b6b9103f6a0e7d63b7bdc7f65"
     },
     {
       "path": "Personality files/agents/detail.md",
       "role": "agent-operating-detail",
-      "sha256": "0ed7e438e7f4deea378b95f2f6091549b78d8274bbbfd70784962aed0a6ad8cd",
-      "liveParity": "exact"
+      "sha256": "0ed7e438e7f4deea378b95f2f6091549b78d8274bbbfd70784962aed0a6ad8cd"
     },
     {
       "path": "Personality files/agents/morning-digest.md",
       "role": "scheduled-role-definition",
-      "sha256": "9be6057b62fbfc500f1acceaf355ab7eb6b738664b793aa4782dab45b6382bb7",
-      "liveParity": "exact"
+      "sha256": "9be6057b62fbfc500f1acceaf355ab7eb6b738664b793aa4782dab45b6382bb7"
     },
     {
       "path": "Personality files/agents/pipeline-status.md",
       "role": "scheduled-role-definition",
-      "sha256": "6689d764b731c29173ac57779f659440ca31d1a75024392246fe8c398adec142",
-      "liveParity": "exact"
+      "sha256": "6689d764b731c29173ac57779f659440ca31d1a75024392246fe8c398adec142"
     },
     {
       "path": "Personality files/agents/repair-dispatcher.md",
       "role": "scheduled-role-definition",
-      "sha256": "36ab118071bbcf67e6e8d53d966d90dc2bb6968f7e457f574c6d319f6358c99d",
-      "liveParity": "exact"
+      "sha256": "36ab118071bbcf67e6e8d53d966d90dc2bb6968f7e457f574c6d319f6358c99d"
     },
     {
       "path": "Personality files/agents/ship-pull-clock.md",
       "role": "scheduled-role-definition",
-      "sha256": "217bc1076a6f6588c3ebfec12fdbe7e98285da49d7621eb444526878a34c4ea7",
-      "liveParity": "exact"
+      "sha256": "217bc1076a6f6588c3ebfec12fdbe7e98285da49d7621eb444526878a34c4ea7"
     },
     {
       "path": "Personality files/skills/lisa-tasks/SKILL.md",
       "role": "skill-definition",
-      "sha256": "a5ad6d15e87637362a786ca23e8ad3962ad68851e1cf042a0ac6811e81163b01",
-      "liveParity": "exact"
+      "sha256": "a5ad6d15e87637362a786ca23e8ad3962ad68851e1cf042a0ac6811e81163b01"
     },
     {
       "path": "Personality files/soul/detail.md",
       "role": "personality-detail",
-      "sha256": "9a8d742eb5b1437e23a96ac7d5bb0fa7171e08634dea993eae6a44a603b41aa2",
-      "liveParity": "exact"
+      "sha256": "9a8d742eb5b1437e23a96ac7d5bb0fa7171e08634dea993eae6a44a603b41aa2"
     },
     {
       "path": "Personality files/templates/email-daily-digest.md",
       "role": "output-template",
-      "sha256": "69c0601a7fc8b49f2897d44f400a7092e7481f6811bc5427a6ce3318ba3f4239",
-      "liveParity": "exact"
+      "sha256": "69c0601a7fc8b49f2897d44f400a7092e7481f6811bc5427a6ce3318ba3f4239"
     },
     {
       "path": "Personality files/templates/pipeline-one-liner.md",
       "role": "output-template",
-      "sha256": "0ede999ca81ecbe206afcbd152b8c56f4521228324ebd30041c72f2020ce49c8",
-      "liveParity": "exact"
+      "sha256": "0ede999ca81ecbe206afcbd152b8c56f4521228324ebd30041c72f2020ce49c8"
     },
     {
       "path": "Personality files/templates/telegram-daily-digest.md",
       "role": "output-template",
-      "sha256": "299e69474e642bb67201791a72376751356122e13a691de96c1b298e13f51d9a",
-      "liveParity": "exact"
+      "sha256": "299e69474e642bb67201791a72376751356122e13a691de96c1b298e13f51d9a"
     },
     {
       "path": "Personality files/templates/telegram-heartbeat.md",
       "role": "output-template",
-      "sha256": "4505a511626e2cfcd18f06c8e4583c0786ea685ced2676e2322196ea04f3de66",
-      "liveParity": "exact"
+      "sha256": "4505a511626e2cfcd18f06c8e4583c0786ea685ced2676e2322196ea04f3de66"
     },
     {
       "path": "Personality files/tools/cursor-acp.md",
       "role": "tool-instructions",
-      "sha256": "fec23b8ca18e004c140c18566e9d6958a55cb79291d1798b45402385c88a157e",
-      "liveParity": "exact"
+      "sha256": "fec23b8ca18e004c140c18566e9d6958a55cb79291d1798b45402385c88a157e"
     },
     {
       "path": "Personality files/tools/development-orchestrator.md",
       "role": "tool-instructions",
-      "sha256": "906c8362eb9dabf5d809047eec087d166db2462be2af7189cfbf4a41fd42c79e",
-      "liveParity": "exact"
+      "sha256": "906c8362eb9dabf5d809047eec087d166db2462be2af7189cfbf4a41fd42c79e"
     },
     {
       "path": "Personality files/tools/gws.md",
       "role": "tool-instructions",
-      "sha256": "37ac12a74be13fbd71856a0d29db610733e320421ca6195df021c1bf77a51ecb",
-      "liveParity": "exact"
+      "sha256": "37ac12a74be13fbd71856a0d29db610733e320421ca6195df021c1bf77a51ecb"
     },
     {
       "path": "Personality files/tools/lisa-safe.md",
       "role": "tool-instructions",
-      "sha256": "240abeddaa5429e023d03568942d847552907447646b646cd49367ac77e80fe4",
-      "liveParity": "lf-normalized-equivalent",
-      "liveComparisonNormalization": "strip-cr"
+      "sha256": "240abeddaa5429e023d03568942d847552907447646b646cd49367ac77e80fe4"
     },
     {
       "path": "Personality files/tools/local-coder.md",
       "role": "tool-instructions",
-      "sha256": "7c0c49890048ceef370d2cacad57b18484ac3e1d1ef25bccc4447f1ce85a2abc",
-      "liveParity": "exact"
+      "sha256": "7c0c49890048ceef370d2cacad57b18484ac3e1d1ef25bccc4447f1ce85a2abc"
     }
   ],
   "intentionalAssets": [
@@ -152,16 +133,14 @@
       "role": "deployed-avatar",
       "mediaType": "image/png",
       "sha256": "24f0199911b2bc903ebe23d2e7612ebd11373bbce91c2f8b2f192919374810a8",
-      "deploymentRequired": true,
-      "liveParity": "exact"
+      "deploymentRequired": true
     },
     {
       "path": "Personality files/assets/lisa-avatar-original.jpg",
       "role": "editable-source-asset",
       "mediaType": "image/jpeg",
       "sha256": "a96b0ab75aefbfb169698815c427e5f3bbfdfc61ade02dc57c4e6f9b9074f49d",
-      "deploymentRequired": false,
-      "liveParity": "source-only"
+      "deploymentRequired": false
     }
   ],
   "sourceControlledDeploymentComponents": [

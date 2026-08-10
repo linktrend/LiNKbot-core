@@ -8,6 +8,7 @@ import { fileURLToPath } from "node:url";
 const bundleRoot = dirname(fileURLToPath(import.meta.url));
 const manifestPath = join(bundleRoot, "PROFILE_BUNDLE_MANIFEST.json");
 const definitionRoot = join(bundleRoot, "Personality files");
+const comparisonReceiptRelativePath = "PROFILE_BUNDLE_LIVE_COMPARISON_RECEIPT.json";
 
 function fail(message) {
   throw new Error(`Lisa profile bundle validation failed: ${message}`);
@@ -15,6 +16,10 @@ function fail(message) {
 
 function sha256(buffer) {
   return createHash("sha256").update(buffer).digest("hex");
+}
+
+function isSha256(value) {
+  return typeof value === "string" && /^[a-f0-9]{64}$/.test(value);
 }
 
 function assertSafeRelativePath(path) {
@@ -55,7 +60,7 @@ function verifyEntry(entry, kind) {
     fail(`${kind} entry must be an object`);
   }
   assertSafeRelativePath(entry.path);
-  if (!/^[a-f0-9]{64}$/.test(entry.sha256 ?? "")) {
+  if (!isSha256(entry.sha256)) {
     fail(`invalid SHA-256 for ${entry.path}`);
   }
   const absolute = resolve(bundleRoot, entry.path);
@@ -83,6 +88,12 @@ if (manifest.agentId !== "lisa") {
 }
 if (manifest.checksumAlgorithm !== "sha256") {
   fail("checksumAlgorithm must be sha256");
+}
+if (
+  manifest.comparisonReceipt?.path !== comparisonReceiptRelativePath ||
+  !isSha256(manifest.comparisonReceipt?.sha256)
+) {
+  fail("comparisonReceipt must pin the immutable live-comparison receipt by path and SHA-256");
 }
 
 const required = manifest.requiredStableDefinition;
@@ -114,6 +125,9 @@ for (const entry of allEntries) {
     entry,
     required.includes(entry) ? "required stable definition" : "intentional asset",
   );
+  if ("liveParity" in entry || "liveComparisonNormalization" in entry) {
+    fail(`live parity must come from the immutable comparison receipt: ${entry.path}`);
+  }
   if (required.includes(entry)) {
     if (typeof entry.role !== "string" || entry.role.length === 0) {
       fail(`required stable definition role is missing: ${entry.path}`);
@@ -124,6 +138,118 @@ for (const entry of allEntries) {
         fail(`secret-shaped value found in ${entry.path}`);
       }
     }
+  }
+}
+
+const comparisonReceiptPath = resolve(bundleRoot, comparisonReceiptRelativePath);
+const comparisonReceiptStat = lstatSync(comparisonReceiptPath, { throwIfNoEntry: false });
+if (!comparisonReceiptStat?.isFile() || comparisonReceiptStat.isSymbolicLink()) {
+  fail("immutable live-comparison receipt is missing or is not a regular file");
+}
+const comparisonReceiptBytes = readFileSync(comparisonReceiptPath);
+if (sha256(comparisonReceiptBytes) !== manifest.comparisonReceipt.sha256) {
+  fail("immutable live-comparison receipt SHA-256 is stale or mismatched");
+}
+const comparisonReceipt = JSON.parse(comparisonReceiptBytes.toString("utf8"));
+if (comparisonReceipt.receiptType !== "lisa_profile_bundle_live_comparison_receipt_v1") {
+  fail("unsupported live-comparison receipt type");
+}
+if (
+  comparisonReceipt.capturedAt !== manifest.sourceSnapshot?.checkedAt ||
+  comparisonReceipt.sourceEnvironment?.codeRevision !== manifest.sourceSnapshot?.liveCodeRevision ||
+  comparisonReceipt.sourceEnvironment?.workspace !== manifest.sourceSnapshot?.liveWorkspace
+) {
+  fail("live-comparison receipt source metadata is stale or differs from the manifest");
+}
+if (
+  typeof comparisonReceipt.sourceEnvironment?.id !== "string" ||
+  comparisonReceipt.sourceEnvironment.id.length === 0 ||
+  comparisonReceipt.capturePolicy?.contentRecorded !== false ||
+  comparisonReceipt.capturePolicy?.secretValuesRecorded !== false
+) {
+  fail("live-comparison receipt must identify its source and remain metadata-only");
+}
+if (
+  comparisonReceipt.capturePolicy?.normalizations?.none !==
+    "Compare the live raw SHA-256 directly with the repository SHA-256." ||
+  comparisonReceipt.capturePolicy?.normalizations?.["strip-cr"] !==
+    "Remove every carriage-return byte (0x0d) from live bytes, then compute SHA-256. Allowed only for text line-ending equivalence."
+) {
+  fail("live-comparison receipt normalization rules are missing or changed");
+}
+
+const receiptRequired = comparisonReceipt.requiredStableDefinition;
+if (!Array.isArray(receiptRequired) || receiptRequired.length !== required.length) {
+  fail("live-comparison receipt must contain every required stable definition path exactly once");
+}
+const receiptByPath = new Map();
+for (const receiptEntry of receiptRequired) {
+  assertSafeRelativePath(receiptEntry?.path);
+  if (receiptByPath.has(receiptEntry.path)) {
+    fail(`duplicate live-comparison receipt path: ${receiptEntry.path}`);
+  }
+  receiptByPath.set(receiptEntry.path, receiptEntry);
+}
+
+let exact = 0;
+let normalized = 0;
+for (const entry of required) {
+  const receiptEntry = receiptByPath.get(entry.path);
+  if (!receiptEntry) {
+    fail(`required stable path missing from live-comparison receipt: ${entry.path}`);
+  }
+  if (
+    receiptEntry.repoSha256 !== entry.sha256 ||
+    !isSha256(receiptEntry.liveRawSha256) ||
+    !Number.isSafeInteger(receiptEntry.liveRawBytes) ||
+    receiptEntry.liveRawBytes < 0
+  ) {
+    fail(`invalid or stale live-comparison metadata for ${entry.path}`);
+  }
+  if (receiptEntry.normalization === "none") {
+    if (receiptEntry.liveRawSha256 !== entry.sha256 || "liveNormalizedSha256" in receiptEntry) {
+      fail(`raw live parity is not exact for ${entry.path}`);
+    }
+    exact += 1;
+    continue;
+  }
+  if (receiptEntry.normalization === "strip-cr") {
+    if (
+      receiptEntry.liveRawSha256 === entry.sha256 ||
+      receiptEntry.liveNormalizedSha256 !== entry.sha256
+    ) {
+      fail(`strip-cr live parity is invalid for ${entry.path}`);
+    }
+    normalized += 1;
+    continue;
+  }
+  fail(`unsupported live-comparison normalization for ${entry.path}`);
+}
+
+const deployedAssets = assets.filter((entry) => entry.deploymentRequired === true);
+const receiptAssets = comparisonReceipt.deployedAssets;
+if (!Array.isArray(receiptAssets) || receiptAssets.length !== deployedAssets.length) {
+  fail("live-comparison receipt must contain every deployment-required asset exactly once");
+}
+const receiptAssetByPath = new Map();
+for (const receiptEntry of receiptAssets) {
+  assertSafeRelativePath(receiptEntry?.path);
+  if (receiptAssetByPath.has(receiptEntry.path)) {
+    fail(`duplicate deployed-asset receipt path: ${receiptEntry.path}`);
+  }
+  receiptAssetByPath.set(receiptEntry.path, receiptEntry);
+}
+for (const entry of deployedAssets) {
+  const receiptEntry = receiptAssetByPath.get(entry.path);
+  if (
+    !receiptEntry ||
+    receiptEntry.repoSha256 !== entry.sha256 ||
+    receiptEntry.liveRawSha256 !== entry.sha256 ||
+    receiptEntry.normalization !== "none" ||
+    !Number.isSafeInteger(receiptEntry.liveRawBytes) ||
+    receiptEntry.liveRawBytes < 0
+  ) {
+    fail(`deployment asset is missing or stale in the live-comparison receipt: ${entry.path}`);
   }
 }
 
@@ -211,16 +337,13 @@ if (
   fail("intentional JPEG asset is missing or has invalid magic bytes");
 }
 
-const exact = required.filter((entry) => entry.liveParity === "exact").length;
-const normalized = required.filter(
-  (entry) => entry.liveParity === "lf-normalized-equivalent",
-).length;
 if (
   manifest.alignment?.requiredStableFiles !== required.length ||
   manifest.alignment?.exactLiveMatches !== exact ||
-  manifest.alignment?.normalizedLiveMatches !== normalized
+  manifest.alignment?.normalizedLiveMatches !== normalized ||
+  manifest.alignment?.deploymentAssetsExact !== deployedAssets.length
 ) {
-  fail("alignment summary does not match requiredStableDefinition");
+  fail("alignment summary does not match the immutable live-comparison receipt");
 }
 if (
   (manifest.alignment?.requiredMissingFromLive ?? []).length !== 0 ||

@@ -4,6 +4,8 @@ This directory is the version-controlled, non-secret definition bundle for Lisa.
 
 `PROFILE_BUNDLE_MANIFEST.json` is the authoritative deployment boundary. It records what is eligible for source control, what is excluded, and the restore process.
 
+`PROFILE_BUNDLE_LIVE_COMPARISON_RECEIPT.json` is the immutable, metadata-only proof used by the validator for the recorded VPS parity result. It contains paths, byte counts, SHA-256 values, the source environment identifier/revision, and the one explicitly allowed line-ending normalization—never file contents or secret values. The manifest pins the receipt by SHA-256 so a stale or edited receipt fails closed.
+
 ## What belongs here
 
 - the stable files listed under `requiredStableDefinition` in the manifest, including reviewed identity, personality, operating instructions, agent roles, skills, templates, and tool guidance;
@@ -26,7 +28,7 @@ From the repository root, run:
 node linkbots/lisa/validate-profile-bundle.mjs
 ```
 
-The validator parses the manifest, verifies every required SHA-256, rejects unclassified files and symlinks, checks required exclusion classes, performs a bounded secret-shape scan of the stable text files, and validates the intentional image assets. It does not contact the VPS or read live data.
+The validator parses the manifest, verifies every required SHA-256, verifies the pinned comparison receipt and its normalization rules, rejects manifest-only parity assertions, rejects unclassified files and symlinks, checks required exclusion classes, performs a bounded secret-shape scan of the stable text files, and validates the intentional image assets. It is deterministic and offline after the receipt is committed; it does not contact the VPS or read live data.
 
 ## Deployment and recovery
 

@@ -14,7 +14,7 @@
 | Coordination home | `/Users/linktrend/Projects/openclaw_prime`                  |
 | Session ID        | `codex-local-mac-mini-desktop-workspace-lisa-20260810-2245` |
 | Started           | 2026-08-10 22:45 Asia/Taipei                                |
-| Last updated      | 2026-08-10 22:59 Asia/Taipei                                |
+| Last updated      | 2026-08-10 23:19 Asia/Taipei                                |
 
 ## Work
 
@@ -45,11 +45,16 @@
 - Recorded two intentional assets: one exact deployed PNG and one non-required repository source JPEG.
 - Removed 29 mutable, private, runtime, or obsolete source-only paths from the Git definition tree.
 - Added a schema-v2 manifest with per-file SHA-256, explicit mutable/runtime/secret exclusions, restore boundaries, and a deterministic local validator.
+- Added a pinned immutable live-comparison receipt and made parity validation derive from its per-path raw/normalized hashes instead of manifest assertions.
+- Repaired the stage workspace package so its profile inputs are restricted to canonical stable definitions and it cannot initialize mutable/private seeds.
+- Replaced two obsolete ops tests that read the deleted workshop runtime config with stable source-contract tests.
 - Preserved the live VPS, Lisa services, runtime configuration, schedules, secrets, and mutable data unchanged.
 
 ## Validation
 
 - `node linkbots/lisa/validate-profile-bundle.mjs`
+- `node --test linkbots/lisa/validate-profile-bundle.test.mjs` (4/4 passed, including missing/stale receipt and invalid-normalization negatives)
+- `node --import tsx --import ./linkbots/lisa/ops/register-strip-types-js-resolve.mjs --test linkbots/lisa/ops/stage-workspace-package.test.ts linkbots/lisa/ops/lisa-ops.test.ts` (63/63 passed)
 - `jq -e . linkbots/lisa/PROFILE_BUNDLE_MANIFEST.json`
 - `git diff --check`
 - bounded secret-shape scan of current added/modified non-secret files
