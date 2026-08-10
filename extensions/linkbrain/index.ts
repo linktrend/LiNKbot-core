@@ -71,7 +71,10 @@ export default definePluginEntry({
     api.registerTool(createLinkbrainReadTool(api), { optional: true });
     // Writes stay a separate optional capability so enabling read never grants
     // mutation. Operators must explicitly add linkbrain_write via alsoAllow.
-    api.registerTool(createLinkbrainWriteTool(api), { optional: true });
+    api.registerTool((context) => createLinkbrainWriteTool(api, context), {
+      name: "linkbrain_write",
+      optional: true,
+    });
 
     const service: OpenClawPluginService = {
       id: "linkbrain-outbox",

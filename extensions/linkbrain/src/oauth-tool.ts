@@ -1,5 +1,5 @@
 import { Type } from "typebox";
-import type { OpenClawPluginApi } from "../runtime-api.js";
+import type { OpenClawPluginApi, OpenClawPluginToolContext } from "../runtime-api.js";
 import type { LinkbrainConfig } from "./config.js";
 import { parseLinkbrainConfig } from "./config.js";
 import { sanitizeCaptureText } from "./sanitize.js";
@@ -88,7 +88,6 @@ const brainCaptureBatchSchema = Type.Object(
 
 const brainCheckpointSchema = Type.Object(
   {
-    taskId: boundedIdSchema,
     idempotencyKey: Type.String({ minLength: 8, maxLength: MAX_ID_CHARS }),
     summary: boundedCheckpointTextSchema,
     decisions: Type.Optional(
@@ -199,7 +198,6 @@ const CAPTURE_EVENT_KEYS = new Set([
   "classification",
 ]);
 const CHECKPOINT_KEYS = new Set([
-  "taskId",
   "idempotencyKey",
   "summary",
   "decisions",
@@ -302,11 +300,11 @@ function validateAndSanitizeCapture(
 
 function validateCheckpoint(
   argumentsValue: Record<string, unknown>,
+  trustedTaskId: string,
 ): { idempotencyKey: string; arguments: Record<string, unknown> } | null {
   if (
     !hasOnlyKeys(argumentsValue, CHECKPOINT_KEYS) ||
     hasActorOverride(argumentsValue) ||
-    !isBoundedId(argumentsValue.taskId) ||
     !isBoundedId(argumentsValue.idempotencyKey, 8) ||
     !isBoundedString(argumentsValue.summary, MAX_CHECKPOINT_TEXT_CHARS) ||
     (argumentsValue.visibility !== undefined && !isBoundedString(argumentsValue.visibility, 64))
@@ -325,7 +323,7 @@ function validateCheckpoint(
     }
   }
   const sanitized = {
-    taskId: argumentsValue.taskId,
+    taskId: trustedTaskId,
     idempotencyKey: argumentsValue.idempotencyKey,
     summary: sanitizeCaptureText(argumentsValue.summary as string, MAX_CHECKPOINT_TEXT_CHARS),
     ...(Array.isArray(argumentsValue.decisions)
@@ -358,6 +356,38 @@ function validateCheckpoint(
     return null;
   }
   return { idempotencyKey: argumentsValue.idempotencyKey, arguments: sanitized };
+}
+
+const LINKBRAIN_WRITE_TOOL_NAME = "linkbrain_write";
+const LINKBRAIN_TOOL_BINDING_KEY = "linkbrain";
+
+function resolveContextConfig(context: OpenClawPluginToolContext) {
+  return context.getRuntimeConfig?.() ?? context.runtimeConfig ?? context.config;
+}
+
+function hasExplicitAgentWriteGrant(context: OpenClawPluginToolContext): boolean {
+  const agentId = context.agentId?.trim();
+  if (!agentId) {
+    return false;
+  }
+  const agent = resolveContextConfig(context)?.agents?.list?.find((entry) => entry.id === agentId);
+  return (
+    Array.isArray(agent?.tools?.alsoAllow) &&
+    agent.tools.alsoAllow.some(
+      (entry) => typeof entry === "string" && entry.trim() === LINKBRAIN_WRITE_TOOL_NAME,
+    )
+  );
+}
+
+function resolveTrustedTaskId(context: OpenClawPluginToolContext): string | null {
+  if (!context.sessionKey && !context.sessionId) {
+    return null;
+  }
+  const binding = context.toolBindings?.[LINKBRAIN_TOOL_BINDING_KEY];
+  if (!isRecord(binding) || !hasOnlyKeys(binding, new Set(["taskId"]))) {
+    return null;
+  }
+  return isBoundedId(binding.taskId) ? binding.taskId : null;
 }
 
 type NativeWriteOutcome = { ok: true } | { ok: false; errorCode: string };
@@ -487,8 +517,12 @@ export function createLinkbrainReadTool(api: OpenClawPluginApi) {
  */
 export function createLinkbrainWriteTool(
   api: OpenClawPluginApi,
+  context: OpenClawPluginToolContext,
   dependencies?: { invokeWrite?: InvokeNativeWrite },
 ) {
+  if (!hasExplicitAgentWriteGrant(context)) {
+    return null;
+  }
   const invokeWrite = dependencies?.invokeWrite ?? invokeNativeWrite;
   return {
     name: "linkbrain_write",
@@ -496,6 +530,14 @@ export function createLinkbrainWriteTool(
     description: "Submit a bounded private capture batch or owned-task checkpoint to LiNKbrain.",
     parameters: brainWriteSchema,
     async execute(_toolCallId: string, params: Record<string, unknown>) {
+      if (!hasExplicitAgentWriteGrant(context)) {
+        return {
+          content: [
+            { type: "text" as const, text: "LiNKbrain writing is not explicitly granted." },
+          ],
+          details: { ok: false, reason: "policy_denied" },
+        };
+      }
       const config = parseLinkbrainConfig(api.pluginConfig);
       const operation = params.operation;
       const argumentsValue = params.arguments;
@@ -533,10 +575,22 @@ export function createLinkbrainWriteTool(
         };
       }
 
+      const trustedTaskId =
+        operation === LINKBRAIN_CHECKPOINT_TOOL ? resolveTrustedTaskId(context) : null;
+      if (operation === LINKBRAIN_CHECKPOINT_TOOL && !trustedTaskId) {
+        return {
+          content: [
+            { type: "text" as const, text: "A trusted LiNKbrain task binding is required." },
+          ],
+          details: { ok: false, reason: "task_binding_unavailable" },
+        };
+      }
       const validated =
         operation === LINKBRAIN_CAPTURE_TOOL
           ? validateAndSanitizeCapture(argumentsValue, config)
-          : validateCheckpoint(argumentsValue);
+          : trustedTaskId
+            ? validateCheckpoint(argumentsValue, trustedTaskId)
+            : null;
       if (!validated) {
         return {
           content: [{ type: "text" as const, text: "Invalid LiNKbrain write request." }],

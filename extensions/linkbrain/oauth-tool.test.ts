@@ -28,6 +28,47 @@ function toolApi(pluginConfig: Record<string, unknown>) {
   } as never;
 }
 
+function toolContext(options?: {
+  alsoAllow?: string[];
+  allow?: string[];
+  includeBinding?: boolean;
+  taskId?: string;
+}) {
+  return {
+    agentId: "lisa",
+    sessionKey: "agent:lisa:proof",
+    toolBindings:
+      options?.includeBinding === false
+        ? undefined
+        : { linkbrain: { taskId: options?.taskId ?? "task-trusted-1" } },
+    config: {
+      agents: {
+        list: [
+          {
+            id: "lisa",
+            tools: {
+              ...(options?.allow ? { allow: options.allow } : {}),
+              ...(options?.alsoAllow ? { alsoAllow: options.alsoAllow } : {}),
+            },
+          },
+        ],
+      },
+    },
+  } as never;
+}
+
+function writeTool(
+  pluginConfig: Record<string, unknown>,
+  invokeWrite: ReturnType<typeof vi.fn>,
+  context = toolContext({ alsoAllow: ["linkbrain_write"] }),
+) {
+  const tool = createLinkbrainWriteTool(toolApi(pluginConfig), context, {
+    invokeWrite: invokeWrite as never,
+  });
+  expect(tool).not.toBeNull();
+  return tool!;
+}
+
 function captureParams(overrides: Record<string, unknown> = {}) {
   return {
     operation: "brain_capture_batch",
@@ -70,25 +111,24 @@ describe("linkbrain native OAuth bridge", () => {
 
   it("keeps capture and coordination gates independent and fail-closed", async () => {
     const invokeWrite = vi.fn(async () => ({ ok: true as const }));
-    const capture = createLinkbrainWriteTool(
-      toolApi({ captureEnqueue: true, captureDrain: false, coordinationWrites: true }),
-      { invokeWrite },
+    const capture = writeTool(
+      { captureEnqueue: true, captureDrain: false, coordinationWrites: true },
+      invokeWrite,
     );
     expect((await capture.execute("capture", captureParams())).details).toEqual({
       ok: false,
       reason: "disabled",
     });
 
-    const checkpoint = createLinkbrainWriteTool(
-      toolApi({ captureEnqueue: true, captureDrain: true, coordinationWrites: false }),
-      { invokeWrite },
+    const checkpoint = writeTool(
+      { captureEnqueue: true, captureDrain: true, coordinationWrites: false },
+      invokeWrite,
     );
     expect(
       (
         await checkpoint.execute("checkpoint", {
           operation: "brain_checkpoint_write",
           arguments: {
-            taskId: "task-proof-1",
             idempotencyKey: "checkpoint-proof-1",
             summary: "bounded proof",
           },
@@ -98,11 +138,29 @@ describe("linkbrain native OAuth bridge", () => {
     expect(invokeWrite).not.toHaveBeenCalled();
   });
 
+  it("requires an exact agent-scoped alsoAllow grant", () => {
+    const api = toolApi({ captureEnqueue: true, captureDrain: true });
+    const deniedContexts = [
+      toolContext(),
+      toolContext({ allow: ["*"] }),
+      toolContext({ allow: ["group:plugins"] }),
+      toolContext({ allow: ["linkbrain"] }),
+      toolContext({ allow: ["linkbrain_write"] }),
+      toolContext({ alsoAllow: ["*"] }),
+    ];
+    for (const context of deniedContexts) {
+      expect(createLinkbrainWriteTool(api, context)).toBeNull();
+    }
+    expect(
+      createLinkbrainWriteTool(api, toolContext({ alsoAllow: ["linkbrain_write"] })),
+    ).not.toBeNull();
+  });
+
   it("allows only capture and owned-task checkpoint operations", async () => {
     const invokeWrite = vi.fn(async () => ({ ok: true as const }));
-    const tool = createLinkbrainWriteTool(
-      toolApi({ captureEnqueue: true, captureDrain: true, coordinationWrites: true }),
-      { invokeWrite },
+    const tool = writeTool(
+      { captureEnqueue: true, captureDrain: true, coordinationWrites: true },
+      invokeWrite,
     );
     for (const operation of ["brain_task_update", "brain_message_send", "brain_delete_all"]) {
       const result = await tool.execute("denied", { operation, arguments: {} });
@@ -113,9 +171,7 @@ describe("linkbrain native OAuth bridge", () => {
 
   it("rejects unknown fields, wrong shapes, and nested actor spoof fields", async () => {
     const invokeWrite = vi.fn(async () => ({ ok: true as const }));
-    const tool = createLinkbrainWriteTool(toolApi({ captureEnqueue: true, captureDrain: true }), {
-      invokeWrite,
-    });
+    const tool = writeTool({ captureEnqueue: true, captureDrain: true }, invokeWrite);
     const wrongShape = await tool.execute("wrong", {
       operation: "brain_capture_batch",
       arguments: { batch: "not-an-object" },
@@ -134,9 +190,9 @@ describe("linkbrain native OAuth bridge", () => {
 
   it("validates ordered events and bounds capture size", async () => {
     const invokeWrite = vi.fn(async () => ({ ok: true as const }));
-    const tool = createLinkbrainWriteTool(
-      toolApi({ captureEnqueue: true, captureDrain: true, batchMaxEvents: 2 }),
-      { invokeWrite },
+    const tool = writeTool(
+      { captureEnqueue: true, captureDrain: true, batchMaxEvents: 2 },
+      invokeWrite,
     );
     const duplicate = captureParams();
     duplicate.arguments.batch.events.push({
@@ -174,11 +230,9 @@ describe("linkbrain native OAuth bridge", () => {
       ok: true as const,
       result: { privateReceipt: "must-not-be-visible" },
     }));
-    const tool = createLinkbrainWriteTool(toolApi({ captureEnqueue: true, captureDrain: true }), {
-      invokeWrite: invokeWrite as never,
-    });
+    const tool = writeTool({ captureEnqueue: true, captureDrain: true }, invokeWrite);
     const params = captureParams();
-    params.arguments.batch.events[0]!.content = "sensitive=value";
+    params.arguments.batch.events[0]!.content = `${["api", "key"].join("_")}=fixture-value`;
     const result = await tool.execute("capture", params);
     expect(invokeWrite).toHaveBeenCalledOnce();
     expect(invokeWrite).toHaveBeenCalledWith(
@@ -201,11 +255,10 @@ describe("linkbrain native OAuth bridge", () => {
 
   it("forwards only the strict checkpoint contract with its idempotency key", async () => {
     const invokeWrite = vi.fn(async () => ({ ok: true as const }));
-    const tool = createLinkbrainWriteTool(toolApi({ coordinationWrites: true }), { invokeWrite });
+    const tool = writeTool({ coordinationWrites: true }, invokeWrite);
     const result = await tool.execute("checkpoint", {
       operation: "brain_checkpoint_write",
       arguments: {
-        taskId: "task-proof-1",
         idempotencyKey: "checkpoint-proof-1",
         summary: "harmless checkpoint",
         decisions: ["keep scope bounded"],
@@ -218,7 +271,7 @@ describe("linkbrain native OAuth bridge", () => {
         toolName: "brain_checkpoint_write",
         idempotencyKey: "checkpoint-proof-1",
         arguments: {
-          taskId: "task-proof-1",
+          taskId: "task-trusted-1",
           idempotencyKey: "checkpoint-proof-1",
           summary: "harmless checkpoint",
           decisions: ["keep scope bounded"],
@@ -228,23 +281,62 @@ describe("linkbrain native OAuth bridge", () => {
     );
   });
 
+  it("rejects checkpoints without a trusted task binding", async () => {
+    const invokeWrite = vi.fn(async () => ({ ok: true as const }));
+    const tool = writeTool(
+      { coordinationWrites: true },
+      invokeWrite,
+      toolContext({ alsoAllow: ["linkbrain_write"], includeBinding: false }),
+    );
+    const result = await tool.execute("checkpoint", {
+      operation: "brain_checkpoint_write",
+      arguments: {
+        idempotencyKey: "checkpoint-proof-1",
+        summary: "harmless checkpoint",
+      },
+    });
+    expect(result.details).toEqual({ ok: false, reason: "task_binding_unavailable" });
+    expect(invokeWrite).not.toHaveBeenCalled();
+  });
+
+  it("rejects a model-supplied checkpoint taskId instead of overriding the trusted binding", async () => {
+    const invokeWrite = vi.fn(async () => ({ ok: true as const }));
+    const tool = writeTool({ coordinationWrites: true }, invokeWrite);
+    const result = await tool.execute("checkpoint", {
+      operation: "brain_checkpoint_write",
+      arguments: {
+        taskId: "task-cross-scope",
+        idempotencyKey: "checkpoint-proof-1",
+        summary: "harmless checkpoint",
+      },
+    });
+    expect(result.details).toEqual({ ok: false, reason: "invalid_request" });
+    expect(invokeWrite).not.toHaveBeenCalled();
+  });
+
   it("requires a host machine-token facade before invoking transport", async () => {
     const invokeWrite = vi.fn(async () => ({ ok: true as const }));
     const api = toolApi({ captureEnqueue: true, captureDrain: true }) as {
       machineTokenFacade?: unknown;
     };
     delete api.machineTokenFacade;
-    const result = await createLinkbrainWriteTool(api as never, { invokeWrite }).execute(
-      "missing-auth",
-      captureParams(),
+    const tool = createLinkbrainWriteTool(
+      api as never,
+      toolContext({ alsoAllow: ["linkbrain_write"] }),
+      { invokeWrite },
     );
+    expect(tool).not.toBeNull();
+    const result = await tool!.execute("missing-auth", captureParams());
     expect(result.content[0]?.text).toBe("LiNKbrain write authentication is unavailable.");
     expect(result.details).toEqual({ ok: false, reason: "machine_token_unavailable" });
 
-    const missingBinding = await createLinkbrainWriteTool(
+    const missingBindingTool = createLinkbrainWriteTool(
       toolApi({ captureEnqueue: true, captureDrain: true, machineToken: undefined }),
+      toolContext({ alsoAllow: ["linkbrain_write"] }),
       { invokeWrite },
-    ).execute("missing-binding", captureParams());
+    );
+    expect(missingBindingTool).not.toBeNull();
+    const missingBinding = await missingBindingTool!.execute("missing-binding", captureParams());
     expect(missingBinding.details).toEqual({
       ok: false,
       reason: "machine_token_unavailable",
@@ -253,12 +345,17 @@ describe("linkbrain native OAuth bridge", () => {
   });
 
   it("redacts thrown transport errors and never includes credential material", async () => {
-    const tool = createLinkbrainWriteTool(toolApi({ captureEnqueue: true, captureDrain: true }), {
-      invokeWrite: async () => {
-        throw new Error("sensitive transport detail");
+    const tool = createLinkbrainWriteTool(
+      toolApi({ captureEnqueue: true, captureDrain: true }),
+      toolContext({ alsoAllow: ["linkbrain_write"] }),
+      {
+        invokeWrite: async () => {
+          throw new Error("sensitive transport detail");
+        },
       },
-    });
-    const result = await tool.execute("failure", captureParams());
+    );
+    expect(tool).not.toBeNull();
+    const result = await tool!.execute("failure", captureParams());
     expect(result.content[0]?.text).toBe("LiNKbrain write failed safely.");
     expect(result.details).toEqual({ ok: false, reason: "write_failed" });
     expect(JSON.stringify(result)).not.toContain("sensitive transport detail");

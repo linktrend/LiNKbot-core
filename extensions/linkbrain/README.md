@@ -57,6 +57,12 @@ with a broad `tools.allow`. Capture additionally requires both `captureEnqueue` 
 overrides, unknown operations and fields, oversized payloads, invalid timestamps, duplicate or
 unordered event sequences, and missing idempotency keys.
 
+`linkbrain_write` additionally verifies the trusted current agent entry itself contains the exact
+`tools.alsoAllow` value `linkbrain_write`; generic `tools.allow` grants such as `*`,
+`group:plugins`, or the plugin id do not enable it. Checkpoint callers cannot supply `taskId`.
+The factory derives it only from the out-of-band `toolBindings.linkbrain.taskId` attached to a
+trusted session context, and fails closed when that binding or session identity is absent.
+
 ## Conversation access (required for Brain capture/coordination hooks)
 
 Fail-closed: conversation/data-bearing §10.1 hooks register **only** when
