@@ -405,6 +405,7 @@ const SAFE_WRITE_ERROR_CODES = new Set([
   "authentication",
   "credential_missing",
   "credential_unresolved",
+  "endpoint_insecure",
   "machine_token_error",
   "mcp_connect_error",
   "mcp_server_unavailable",
