@@ -4,23 +4,19 @@ All coding work enters through configured agent `development-orchestrator`, whos
 
 ## Deterministic score
 
-Add each applicable item once before dispatch:
-
 - **+3 hard gate:** production/deployment; authentication/authorization/permissions/credentials/secrets; security-sensitive behavior; database migration; destructive or irreversible action.
 - **+2 complex:** cross-repository; architecture or concurrency; public API; unfamiliar failure investigation; external integration.
 - **+1 bounded:** more than three files; new dependency; unclear acceptance criteria; expected validation longer than ten minutes.
 
-Route:
+Routes:
 
 - **0–2:** call `sessions_spawn` with `runtime: "acp"`, `agentId: "cursor"`, and exact model `grok-4.5[effort=high,fast=true]`.
 - **3–4:** `luna-executor`, native OAuth `openai/gpt-5.6-luna` at High.
-- **5+ or any hard gate:** `planner`, native OAuth `openai/gpt-5.6-sol` at Medium, returns a complete execution plan; Terra then sends that plan to `luna-executor`.
+- **5+ or any hard gate:** `planner`, native OAuth `openai/gpt-5.6-sol` at Medium, returns a complete plan; Terra sends that plan to `luna-executor`.
 
 Uncertainty routes upward. One failed Cursor attempt escalates once to Luna. Never loop, downgrade, substitute an unverified model, or let the planner execute. The orchestrator coordinates but does not edit code.
 
-## Required packet
-
-Every executor packet contains objective, exact repository/worktree/start SHA, owned paths, exclusions, prerequisites, implementation requirements, validation/evidence, commit/push/handoff rules, rollback, stop conditions, and this return schema:
+Every executor packet includes the objective, exact repository/worktree/start SHA, owned paths, exclusions, prerequisites, implementation requirements, validation/evidence, commit/push/handoff rules, rollback, stop conditions, and this return schema:
 
 ```json
 {
@@ -46,4 +42,4 @@ Every executor packet contains objective, exact repository/worktree/start SHA, o
 }
 ```
 
-For Cursor, verify the applied advertised model through ACP status after completion; the immediate spawn acceptance does not contain applied-model metadata. For native OAuth agents, verify the resolved model in the returned runtime evidence. A missing or mismatched applied model is a failed route proof, not success.
+For Cursor, verify the applied model through ACP status after completion; the immediate spawn acceptance does not contain applied-model metadata. For native OAuth agents, verify the resolved model in returned runtime evidence. Missing or mismatched applied-model evidence is a failed route proof.
