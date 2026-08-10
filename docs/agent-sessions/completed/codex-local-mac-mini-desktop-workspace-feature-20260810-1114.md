@@ -34,7 +34,7 @@
 
 ## Progress
 
-- 2026-08-10 11:14 Asia/Taipei: recorded a non-secret bundle boundary, a safe Mac-mini/VPS document-comparison receipt, and the encrypted off-VPS recovery requirement. JSON parsing and whitespace validation passed.
+- 2026-08-10 11:14 Asia/Taipei: recorded a non-secret bundle boundary, a safe Mac-mini/VPS document-comparison receipt, and the encrypted off-VPS recovery requirement. JSON parsing and whitespace validation passed. Commit: `273ee9bcacc`.
 
 ## Next Action
 

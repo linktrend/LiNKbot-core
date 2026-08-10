@@ -13,7 +13,7 @@
 | Starting branch | `dev/minicodex/WP-0-lisa-profile-source-of-truth` |
 | Ending branch | `dev/minicodex/WP-0-lisa-profile-source-of-truth` |
 | Starting commit | `a5d67da87bbab9edfbc3465c5f505da26d4dbc29` |
-| Ending status | pending commit |
+| Ending status | committed locally as `273ee9bcacc` (not pushed) |
 
 ## Summary
 
