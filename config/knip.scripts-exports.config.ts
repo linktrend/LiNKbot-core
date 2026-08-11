@@ -54,6 +54,12 @@ const config = {
     ],
     // Oxlint consumes this required default export through a JSON config path.
     "scripts/oxlint-boundary-guards.mjs": ["exports"],
+    // These plan/audit modules intentionally export helpers and constants for
+    // their focused test suites. The tests load them through the repository's
+    // dynamic script harness, which Knip cannot resolve statically.
+    "scripts/check-openclawdevelopmentplan01-authclaims-provenance.mjs": ["exports"],
+    "scripts/check-openclawdevelopmentplan01-section-13.3-ledger.mjs": ["exports"],
+    "scripts/lib/openclawdevelopmentplan01-section-13.3-plan-extract.mjs": ["exports"],
     "scripts/repro/code-mode-namespace-live.ts": [
       "exports",
       "nsExports",

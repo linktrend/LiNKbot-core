@@ -14,7 +14,7 @@
 #
 # Defaults:
 #   repo   = linktrend/IDE-Development (or GH_REPO)
-#   checks = Cursor Bugbot + Verify IDE Development + Enforce allowed PR source branches
+#   checks = Cursor Bugbot + openclaw/ci-gate + Enforce allowed PR source branches
 
 set -euo pipefail
 
@@ -22,7 +22,7 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 REPO="${GH_REPO:-linktrend/IDE-Development}"
 CHECKS=(
   "Cursor Bugbot"
-  "Verify IDE Development"
+  "openclaw/ci-gate"
   "Enforce allowed PR source branches"
 )
 CHECKS_SET=0

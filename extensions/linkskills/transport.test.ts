@@ -442,6 +442,7 @@ describe("linkskills transport modes", () => {
     const seenHeaders: Array<Record<string, unknown> | undefined> = [];
     const resolveMachineTokenAccess = vi.fn(async ({ bindingId }) => ({
       bindingId,
+      bindingFingerprint: `fp-${bindingId}`,
       accessToken: "mt-mcp-skills",
       expiresAt: Date.now() + 60_000,
       tokenType: "Bearer" as const,
@@ -498,6 +499,7 @@ describe("linkskills transport modes", () => {
   it("mcp oauth is not overridden by a present machineToken block", async () => {
     const resolveMachineTokenAccess = vi.fn(async ({ bindingId }) => ({
       bindingId,
+      bindingFingerprint: `fp-${bindingId}`,
       accessToken: "mt-must-not-apply",
       expiresAt: Date.now() + 60_000,
       tokenType: "Bearer" as const,
@@ -587,6 +589,7 @@ describe("linkskills transport modes", () => {
   }) {
     const resolveMachineTokenAccess = vi.fn(async ({ bindingId }) => ({
       bindingId,
+      bindingFingerprint: `fp-${bindingId}`,
       accessToken: "mt-plugin-must-not-apply",
       expiresAt: Date.now() + 60_000,
       tokenType: "Bearer" as const,
@@ -706,6 +709,7 @@ describe("linkskills transport modes", () => {
   it("mcp conflicting server vs plugin machineToken bindings fail-closes", async () => {
     const resolveMachineTokenAccess = vi.fn(async ({ bindingId }) => ({
       bindingId,
+      bindingFingerprint: `fp-${bindingId}`,
       accessToken: "mt-must-not-apply",
       expiresAt: Date.now() + 60_000,
       tokenType: "Bearer" as const,
@@ -790,6 +794,7 @@ describe("linkskills transport modes", () => {
   it("mcp conflicting allowPrivateNetwork flags fail-closes", async () => {
     const resolveMachineTokenAccess = vi.fn(async ({ bindingId }) => ({
       bindingId,
+      bindingFingerprint: `fp-${bindingId}`,
       accessToken: "mt-must-not-apply",
       expiresAt: Date.now() + 60_000,
       tokenType: "Bearer" as const,
@@ -898,7 +903,8 @@ describe("linkskills transport modes", () => {
     const result = await transport.write(writeArgs);
     expect(result.ok).toBe(true);
     expect(acquire).toHaveBeenCalledOnce();
-    expect(new Headers(fetchImpl.mock.calls[0]![1]?.headers).get("authorization")).toBe(
+    const fetchCalls = fetchImpl.mock.calls as unknown as Array<[RequestInfo | URL, RequestInit?]>;
+    expect(new Headers(fetchCalls[0]?.[1]?.headers).get("authorization")).toBe(
       "Bearer host-injected-skills-token",
     );
   });

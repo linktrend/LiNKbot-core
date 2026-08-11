@@ -69,10 +69,7 @@ export function resolveMcpHttpMaxResponseBytes(maxResponseBytes?: number): numbe
 }
 
 /** True when a declared Content-Length is present and exceeds the byte cap. */
-function isDeclaredMcpContentLengthOverLimit(
-  response: Response,
-  maxBytes: number,
-): boolean {
+function isDeclaredMcpContentLengthOverLimit(response: Response, maxBytes: number): boolean {
   const raw = response.headers.get("content-length");
   if (raw === null) {
     return false;

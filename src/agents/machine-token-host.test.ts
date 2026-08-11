@@ -1,6 +1,9 @@
 // Host-owned machine-token facade: immutable registry, grants, isolation, smuggle reject.
 import { describe, expect, it, vi } from "vitest";
-import { fingerprintMachineTokenKeyRef } from "./machine-token-fingerprint.js";
+import {
+  buildMachineTokenBindingFingerprint,
+  fingerprintMachineTokenKeyRef,
+} from "./machine-token-fingerprint.js";
 import {
   acquireMachineTokenFacadeLeaseForPlugin,
   buildHostMachineTokenBindingFingerprint,
@@ -30,7 +33,7 @@ const KEY_REF: MachineTokenKeyRefIdentity = {
 };
 
 function invalidationFingerprint(value: string | MachineTokenBinding): string {
-  return typeof value === "string" ? value : buildHostMachineTokenBindingFingerprint(value);
+  return typeof value === "string" ? value : buildMachineTokenBindingFingerprint(value);
 }
 
 function record(

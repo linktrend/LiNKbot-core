@@ -362,7 +362,9 @@ describe("Canonical store consumers (Repair / Main Approve / coordinator ensure)
 
       const minted = openStageDurableStoreCapability({ databasePath, ensure: true });
       assert.equal(minted.ok, true);
-      if (!minted.ok) return;
+      if (!minted.ok) {
+        return;
+      }
 
       const first = authorizeRepairLiveDispatch(
         {
@@ -374,7 +376,9 @@ describe("Canonical store consumers (Repair / Main Approve / coordinator ensure)
         live,
       );
       assert.equal(first.ok, true);
-      if (first.ok) assert.equal(first.decision.attempt, 1);
+      if (first.ok) {
+        assert.equal(first.decision.attempt, 1);
+      }
 
       persistRepairBinding(binding, { databasePath, path: databasePath }, 1_700_000_100_000);
       persistRepairAttempt(
@@ -392,7 +396,9 @@ describe("Canonical store consumers (Repair / Main Approve / coordinator ensure)
       closeLisaStageOpsStore();
       const reminted = openStageDurableStoreCapability({ databasePath });
       assert.equal(reminted.ok, true);
-      if (!reminted.ok) return;
+      if (!reminted.ok) {
+        return;
+      }
 
       const held = authorizeRepairLiveDispatch(
         {
@@ -420,7 +426,9 @@ describe("Canonical store consumers (Repair / Main Approve / coordinator ensure)
         live,
       );
       assert.equal(afterExpire.ok, true);
-      if (afterExpire.ok) assert.equal(afterExpire.decision.attempt, 1);
+      if (afterExpire.ok) {
+        assert.equal(afterExpire.decision.attempt, 1);
+      }
 
       const pkg: MainApprovePackage = {
         packageId: "pkg-auth-1",
@@ -452,7 +460,9 @@ describe("Canonical store consumers (Repair / Main Approve / coordinator ensure)
         Date.parse("2026-08-03T11:00:00.000Z"),
       );
       assert.equal(fabricated.ok, false);
-      if (!fabricated.ok) assert.equal(fabricated.reason, "package_absent");
+      if (!fabricated.ok) {
+        assert.equal(fabricated.reason, "package_absent");
+      }
 
       const sealed = sealMainApprovePackage(
         pkg,
@@ -463,7 +473,9 @@ describe("Canonical store consumers (Repair / Main Approve / coordinator ensure)
       closeLisaStageOpsStore();
       const afterRestart = openStageDurableStoreCapability({ databasePath });
       assert.equal(afterRestart.ok, true);
-      if (!afterRestart.ok) return;
+      if (!afterRestart.ok) {
+        return;
+      }
 
       const ask = issueCarlosAsk(
         {
@@ -476,7 +488,9 @@ describe("Canonical store consumers (Repair / Main Approve / coordinator ensure)
         Date.parse("2026-08-03T11:00:00.000Z"),
       );
       assert.equal(ask.ok, true);
-      if (!ask.ok) return;
+      if (!ask.ok) {
+        return;
+      }
       assert.equal(ask.packageHash, sealed.packageHash);
       assert.equal(ask.claimId, "claim-owner-1");
       assert.equal(ask.package.items[0]?.promotionPrNumber, 11);
@@ -493,7 +507,9 @@ describe("Canonical store consumers (Repair / Main Approve / coordinator ensure)
         Date.parse("2026-08-03T11:01:00.000Z"),
       );
       assert.equal(askAgain.ok, true);
-      if (askAgain.ok) assert.equal(askAgain.claimId, ask.claimId);
+      if (askAgain.ok) {
+        assert.equal(askAgain.claimId, ask.claimId);
+      }
 
       // Concurrent different claim id → conflict.
       const conflict = issueCarlosAsk(
@@ -507,7 +523,9 @@ describe("Canonical store consumers (Repair / Main Approve / coordinator ensure)
         Date.parse("2026-08-03T11:02:00.000Z"),
       );
       assert.equal(conflict.ok, false);
-      if (!conflict.ok) assert.equal(conflict.reason, "claim_conflict");
+      if (!conflict.ok) {
+        assert.equal(conflict.reason, "claim_conflict");
+      }
 
       // Adversarial: no-claim-id after a claim → conflict.
       const noClaimId = issueCarlosAsk(
@@ -521,7 +539,9 @@ describe("Canonical store consumers (Repair / Main Approve / coordinator ensure)
         Date.parse("2026-08-03T11:03:00.000Z"),
       );
       assert.equal(noClaimId.ok, false);
-      if (!noClaimId.ok) assert.equal(noClaimId.reason, "claim_conflict");
+      if (!noClaimId.ok) {
+        assert.equal(noClaimId.reason, "claim_conflict");
+      }
 
       const dispatch = authorizeApprovalDispatch(
         {
@@ -554,7 +574,9 @@ describe("Canonical store consumers (Repair / Main Approve / coordinator ensure)
         live,
       );
       assert.equal(badHash.ok, false);
-      if (!badHash.ok) assert.equal(badHash.reason, "package_hash_mismatch");
+      if (!badHash.ok) {
+        assert.equal(badHash.reason, "package_hash_mismatch");
+      }
 
       // Adversarial: dispatch without claimId conflicts after claim.
       const dispatchNoClaim = authorizeApprovalDispatch(
@@ -569,7 +591,9 @@ describe("Canonical store consumers (Repair / Main Approve / coordinator ensure)
         live,
       );
       assert.equal(dispatchNoClaim.ok, false);
-      if (!dispatchNoClaim.ok) assert.equal(dispatchNoClaim.reason, "claim_conflict");
+      if (!dispatchNoClaim.ok) {
+        assert.equal(dispatchNoClaim.reason, "claim_conflict");
+      }
 
       expireMainApproveClaims(
         { databasePath, path: databasePath },
@@ -597,7 +621,9 @@ describe("Canonical store consumers (Repair / Main Approve / coordinator ensure)
         Date.parse("2026-08-03T11:00:00.000Z"),
       );
       assert.equal(expiredAsk.ok, false);
-      if (!expiredAsk.ok) assert.equal(expiredAsk.reason, "expired_package");
+      if (!expiredAsk.ok) {
+        assert.equal(expiredAsk.reason, "expired_package");
+      }
 
       const forgedAsk = issueCarlosAsk(
         {

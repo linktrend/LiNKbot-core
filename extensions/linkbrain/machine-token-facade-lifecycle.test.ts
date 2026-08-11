@@ -1,4 +1,8 @@
 import type { MachineTokenPluginFacade } from "openclaw/plugin-sdk/machine-token-runtime";
+import type {
+  PluginStateLeaseContext,
+  PluginStateLeaseOptions,
+} from "openclaw/plugin-sdk/plugin-state-runtime";
 /**
  * Production defect regression: gateway_stop must not unregister the machine-token
  * facade before service.stop finishes its final flush. Early unregister causes
@@ -79,7 +83,10 @@ async function registerStartedService(params: {
             maxEntries: options.maxEntries,
             overflowPolicy: options.overflowPolicy,
           }),
-        withLease: async (_options, run) => {
+        withLease: async <T>(
+          _options: PluginStateLeaseOptions,
+          run: (lease: PluginStateLeaseContext) => Promise<T>,
+        ) => {
           const controller = new AbortController();
           return await run({
             signal: controller.signal,
@@ -87,7 +94,7 @@ async function registerStartedService(params: {
           });
         },
       },
-    } as OpenClawPluginApi["runtime"],
+    } as unknown as OpenClawPluginApi["runtime"],
     registerService: (next) => {
       service = next;
     },
@@ -113,14 +120,14 @@ describe("linkbrain machine-token facade stop/reload lifecycle", () => {
     const gatewayStop = hooks.get("gateway_stop");
     expect(gatewayStop).toBeTypeOf("function");
 
-    await gatewayStop!({ reason: "gateway stopping" }, {} as never);
+    await gatewayStop?.({ reason: "gateway stopping" }, {} as never);
 
     expect(generation.facade.health("linkbrain-stage").registered).toBe(true);
     await expect(
       generation.facade.acquire({ bindingId: "linkbrain-stage" }),
     ).resolves.toMatchObject({ accessToken: "test-access-token" });
 
-    await service.stop({} as never);
+    await service.stop?.({} as never);
     expect(generation.facade.health("linkbrain-stage").registered).toBe(false);
     expect(generation.unregisterCalls).toBe(1);
   });
@@ -132,7 +139,7 @@ describe("linkbrain machine-token facade stop/reload lifecycle", () => {
     const second = createLiveFacade("linkbrain-stage");
     // A prior service stop must not touch the replacement facade injected into
     // the new registration.
-    await previousService.stop({} as never);
+    await previousService.stop?.({} as never);
 
     expect(first.facade.health("linkbrain-stage").registered).toBe(false);
     expect(second.facade.health("linkbrain-stage").registered).toBe(true);
@@ -153,8 +160,15 @@ describe("linkbrain machine-token facade stop/reload lifecycle", () => {
         },
       };
       const { service, hooks } = await registerStartedService({ facade });
-      await hooks.get("gateway_stop")!({ reason: "restart" }, {} as never);
+      const gatewayStop = hooks.get("gateway_stop");
+      if (!gatewayStop) {
+        throw new Error("gateway_stop hook was not registered");
+      }
+      await gatewayStop({ reason: "restart" }, {} as never);
       expect(facade.health("linkbrain-stage").registered).toBe(true);
+      if (!service.stop) {
+        throw new Error("service stop handler was not registered");
+      }
       await service.stop({} as never);
       expect(facade.health("linkbrain-stage").registered).toBe(false);
     }
@@ -165,14 +179,14 @@ describe("linkbrain machine-token facade stop/reload lifecycle", () => {
     const generation = createLiveFacade("linkbrain-stage");
     const { service: first } = await registerStartedService({ facade: generation.facade });
 
-    await first.stop({} as never);
+    await first.stop?.({} as never);
     const replacement = createLiveFacade("linkbrain-stage");
     const { service: second } = await registerStartedService({ facade: replacement.facade });
     await expect(
       replacement.facade.acquire({ bindingId: "linkbrain-stage" }),
     ).resolves.toMatchObject({ accessToken: "test-access-token" });
 
-    await second.stop({} as never);
+    await second.stop?.({} as never);
     expect(replacement.facade.health("linkbrain-stage").registered).toBe(false);
   });
 });

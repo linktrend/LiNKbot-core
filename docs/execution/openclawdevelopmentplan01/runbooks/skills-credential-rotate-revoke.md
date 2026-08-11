@@ -12,11 +12,9 @@
 
 ## FAKE / TEMPLATE rehearsal (safe anytime)
 
-
 1. Document Skills SecretRef **names** only (never reuse Brain IDs).
 2. Rehearse revoke by disabling `linkskills` + Skills MCP template independently of Brain.
 3. Recover remains gated on Phase 5 auth + Phase 7 stage clearance.
-
 
 ## Expected sanitized evidence
 
@@ -26,9 +24,9 @@
 
 ## Rehearsal record
 
-| Field | Value |
-| ----- | ----- |
-| Rehearsed | 2026-07-28 Asia/Taipei (wave 6 non-live) |
-| Operator | Cursor Local Grok 4.5 High (docs rehearsal) |
-| Live mutation | **none** |
-| Result | Runbook executable at non-live tier |
+| Field         | Value                                       |
+| ------------- | ------------------------------------------- |
+| Rehearsed     | 2026-07-28 Asia/Taipei (wave 6 non-live)    |
+| Operator      | Cursor Local Grok 4.5 High (docs rehearsal) |
+| Live mutation | **none**                                    |
+| Result        | Runbook executable at non-live tier         |

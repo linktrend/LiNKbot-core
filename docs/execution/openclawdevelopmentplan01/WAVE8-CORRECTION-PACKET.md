@@ -20,13 +20,13 @@
 
 ## Findings
 
-| # | Finding | Result | Evidence |
-| - | ------- | ------ | -------- |
-| 1 | Connect flags to authoritative managed MCP toolFilter via public APIs | **Stopped — SDK prerequisite / deviation** (no public seam; no private internals) | `MCP-TOOLFILTER-SDK-PREREQUISITE-DEVIATION.md` |
-| 2 | Drain ownership until raw drain settles; no post-timeout storm | **Corrected (local)** | `extensions/link{brain,skills}/src/drain-worker.ts`; storm tests in `feature-flags-*.test.ts` |
-| 3 | AuthClaims 1.1.0 consumer conformance + fresh countersign request | **Corrected (local) + PENDING owner countersign** | fixtures 1.1.0; `auth-claims-1.1.ts` + tests; `COUNTERSIGN-REQUEST-WAVE8-AUTHCLAIMS-1.1.md` |
-| 4 | Real coexistence harness with plugin service start + native paths | **Corrected (local)** | `extensions/linkskills/native-coexistence.test.ts` |
-| 5 | Phase 13 totals + complete §13.3 ledger | **Corrected (docs)** | Phase 13; `PHASE-14-CLASSIFICATION-EVIDENCE-INDEX.md` |
+| #   | Finding                                                               | Result                                                                            | Evidence                                                                                      |
+| --- | --------------------------------------------------------------------- | --------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| 1   | Connect flags to authoritative managed MCP toolFilter via public APIs | **Stopped — SDK prerequisite / deviation** (no public seam; no private internals) | `MCP-TOOLFILTER-SDK-PREREQUISITE-DEVIATION.md`                                                |
+| 2   | Drain ownership until raw drain settles; no post-timeout storm        | **Corrected (local)**                                                             | `extensions/link{brain,skills}/src/drain-worker.ts`; storm tests in `feature-flags-*.test.ts` |
+| 3   | AuthClaims 1.1.0 consumer conformance + fresh countersign request     | **Corrected (local) + PENDING owner countersign**                                 | fixtures 1.1.0; `auth-claims-1.1.ts` + tests; `COUNTERSIGN-REQUEST-WAVE8-AUTHCLAIMS-1.1.md`   |
+| 4   | Real coexistence harness with plugin service start + native paths     | **Corrected (local)**                                                             | `extensions/linkskills/native-coexistence.test.ts`                                            |
+| 5   | Phase 13 totals + complete §13.3 ledger                               | **Corrected (docs)**                                                              | Phase 13; `PHASE-14-CLASSIFICATION-EVIDENCE-INDEX.md`                                         |
 
 ## Tip proof (local)
 
@@ -40,10 +40,10 @@ git diff --check origin/development...HEAD
 
 ## Fixture aggregates (awaiting owner countersign)
 
-| Package | Count | Aggregate |
-| ------- | ----- | --------- |
-| Brain | 75 | `4493f71432ef56f9fc272ff4c208b8901242c2bd83e138f53d6f0259b4f4811b` |
-| Skills | 71 | `203163711b5db17b8a07d3956e41596384cbd08f0c110bd9f21abfc5c7e5e19a` |
+| Package | Count | Aggregate                                                          |
+| ------- | ----- | ------------------------------------------------------------------ |
+| Brain   | 75    | `4493f71432ef56f9fc272ff4c208b8901242c2bd83e138f53d6f0259b4f4811b` |
+| Skills  | 71    | `203163711b5db17b8a07d3956e41596384cbd08f0c110bd9f21abfc5c7e5e19a` |
 
 ## Explicit non-claims
 

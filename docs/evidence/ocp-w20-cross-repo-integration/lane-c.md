@@ -1,15 +1,15 @@
 # OCP-W20-CROSS-REPO-INTEGRATION — Lane C evidence
 
-| Field | Value |
-| ----- | ----- |
-| Lane | C — Routing / staged canary |
-| Model | cursor-grok-4.5-high |
-| Branch | `ocp-w20-cross-repo-integration-cli` |
-| Base SHA | `3169119fb697fa28cc6d2c244231729a8206e68d` (no drift) |
-| Date | 2026-08-01 Asia/Taipei |
-| Live Lisa mutation | **none** |
-| Credentials / paid enablement | **none** |
-| Result | `needs_human_gate` (PDF cutover retained disabled) |
+| Field                         | Value                                                 |
+| ----------------------------- | ----------------------------------------------------- |
+| Lane                          | C — Routing / staged canary                           |
+| Model                         | cursor-grok-4.5-high                                  |
+| Branch                        | `ocp-w20-cross-repo-integration-cli`                  |
+| Base SHA                      | `3169119fb697fa28cc6d2c244231729a8206e68d` (no drift) |
+| Date                          | 2026-08-01 Asia/Taipei                                |
+| Live Lisa mutation            | **none**                                              |
+| Credentials / paid enablement | **none**                                              |
+| Result                        | `needs_human_gate` (PDF cutover retained disabled)    |
 
 ## Mission outcomes
 
@@ -31,11 +31,11 @@
 
 ## READ-ONLY MiniMax PDF evidence
 
-| Source | Finding |
-| ------ | ------- |
-| `extensions/minimax/provider-models.ts` | `MiniMax-M3` catalog `input: ["text", "image"]` — no pdf capability listed |
+| Source                                               | Finding                                                                            |
+| ---------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `extensions/minimax/provider-models.ts`              | `MiniMax-M3` catalog `input: ["text", "image"]` — no pdf capability listed         |
 | `extensions/minimax/media-understanding-provider.ts` | `documentModels.pdf.textExtraction: "MiniMax-M2.7"`, `image: false` (api + portal) |
-| `extensions/minimax/openclaw.plugin.json` | Same PDF metadata under `mediaUnderstandingProviderMetadata` |
+| `extensions/minimax/openclaw.plugin.json`            | Same PDF metadata under `mediaUnderstandingProviderMetadata`                       |
 
 **Conclusion:** Do not claim MiniMax-M3 PDF support. Do not substitute another paid document model. Human gate required before any live `documentModels` enablement.
 

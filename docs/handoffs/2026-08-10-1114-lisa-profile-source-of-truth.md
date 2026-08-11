@@ -2,18 +2,18 @@
 
 ## Session Metadata
 
-| Field | Value |
-| --- | --- |
-| Agent identity | Codex Desktop Agent |
-| Session ID | codex-local-mac-mini-desktop-workspace-feature-20260810-1114 |
-| Objective | Establish a non-secret repository source bundle contract for VPS Lisa and retire the unused David placeholder. |
-| Scope | `linkbots/` only, plus this session record and handoff. |
-| Started | 2026-08-10 11:14 Asia/Taipei |
-| Ended | 2026-08-10 11:14 Asia/Taipei |
-| Starting branch | `dev/minicodex/WP-0-lisa-profile-source-of-truth` |
-| Ending branch | `dev/minicodex/WP-0-lisa-profile-source-of-truth` |
-| Starting commit | `a5d67da87bbab9edfbc3465c5f505da26d4dbc29` |
-| Ending status | committed locally as `273ee9bcacc` (not pushed) |
+| Field           | Value                                                                                                          |
+| --------------- | -------------------------------------------------------------------------------------------------------------- |
+| Agent identity  | Codex Desktop Agent                                                                                            |
+| Session ID      | codex-local-mac-mini-desktop-workspace-feature-20260810-1114                                                   |
+| Objective       | Establish a non-secret repository source bundle contract for VPS Lisa and retire the unused David placeholder. |
+| Scope           | `linkbots/` only, plus this session record and handoff.                                                        |
+| Started         | 2026-08-10 11:14 Asia/Taipei                                                                                   |
+| Ended           | 2026-08-10 11:14 Asia/Taipei                                                                                   |
+| Starting branch | `dev/minicodex/WP-0-lisa-profile-source-of-truth`                                                              |
+| Ending branch   | `dev/minicodex/WP-0-lisa-profile-source-of-truth`                                                              |
+| Starting commit | `a5d67da87bbab9edfbc3465c5f505da26d4dbc29`                                                                     |
+| Ending status   | committed locally as `273ee9bcacc` (not pushed)                                                                |
 
 ## Summary
 

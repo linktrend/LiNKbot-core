@@ -2,21 +2,21 @@
 
 ## Session Metadata
 
-| Field            | Value |
-| ---------------- | ----- |
-| Agent identity   | Cursor Local Agent / Grok 4.5 High / Lisa role |
-| Session ID       | `cursor-local-mac-mini-lisa-wave7-20260728` |
-| Orchestrator key | `cursor-local-mac-mini-desktop-workspace-orchestrator` |
-| Objective        | OpenClaw PR #38 correction wave 7 only |
+| Field            | Value                                                                                       |
+| ---------------- | ------------------------------------------------------------------------------------------- |
+| Agent identity   | Cursor Local Agent / Grok 4.5 High / Lisa role                                              |
+| Session ID       | `cursor-local-mac-mini-lisa-wave7-20260728`                                                 |
+| Orchestrator key | `cursor-local-mac-mini-desktop-workspace-orchestrator`                                      |
+| Objective        | OpenClaw PR #38 correction wave 7 only                                                      |
 | Scope            | From exact HEAD `b9f948f9b3a…`; no CI poll; no merge; no Lisa/Platform live; no Phases 7–12 |
-| Started          | 2026-07-28 21:14 Asia/Taipei |
-| Ended            | 2026-07-28 21:40 Asia/Taipei |
-| Starting branch  | `issue/ocp-openclawdevelopmentplan01` |
-| Ending branch    | `issue/ocp-openclawdevelopmentplan01` |
-| Starting commit  | `b9f948f9b3a856e997247355f697c3fc7767e844` |
-| Ending commit    | `6edd16a71440accacfac5dd8c639321a130986d3` |
-| Starting status  | clean at wave-6 tip |
-| Ending status    | wave 7 code+docs committed and pushed |
+| Started          | 2026-07-28 21:14 Asia/Taipei                                                                |
+| Ended            | 2026-07-28 21:40 Asia/Taipei                                                                |
+| Starting branch  | `issue/ocp-openclawdevelopmentplan01`                                                       |
+| Ending branch    | `issue/ocp-openclawdevelopmentplan01`                                                       |
+| Starting commit  | `b9f948f9b3a856e997247355f697c3fc7767e844`                                                  |
+| Ending commit    | `6edd16a71440accacfac5dd8c639321a130986d3`                                                  |
+| Starting status  | clean at wave-6 tip                                                                         |
+| Ending status    | wave 7 code+docs committed and pushed                                                       |
 
 ## Summary
 

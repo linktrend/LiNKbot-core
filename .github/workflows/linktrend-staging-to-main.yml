@@ -34,12 +34,12 @@ on:
         description: "reevaluate / approve-merge: exact promote PR number"
         required: false
         type: string
-  pull_request_target:
+  pull_request_target: # zizmor: ignore[dangerous-triggers] trusted default-branch release code only; promote head is exact-SHA bound before App use
     types: [opened, synchronize, reopened, ready_for_review]
     branches: [main]
-  check_run:
+  check_run: # zizmor: ignore[dangerous-triggers] check metadata only; resolver filters own and unrelated outcomes
     types: [completed]
-  workflow_run:
+  workflow_run: # zizmor: ignore[dangerous-triggers] trusted CI metadata only; no untrusted candidate checkout or execution
     workflows:
       - CI
       - Branch Source Policy
@@ -53,7 +53,7 @@ concurrency:
 
 env:
   TIMEZONE_LABEL: "Asia/Taipei"
-  RELEASE_GATE_CHECKS: ${{ vars.LINKTREND_RELEASE_GATE_CHECKS || 'Verify IDE Development,Enforce allowed PR source branches' }}
+  RELEASE_GATE_CHECKS: ${{ vars.LINKTREND_RELEASE_GATE_CHECKS || 'openclaw/ci-gate,Enforce allowed PR source branches' }}
 
 # Cost note: never use ${{ env.* }} at job-level env (invalid context → zero-job runs).
 # Skip irrelevant wakes: non-promote PR heads, own outcome checks, failed workflow_run.
@@ -93,7 +93,7 @@ jobs:
       mode: ${{ steps.mode.outputs.mode }}
     steps:
       - name: Checkout trusted default branch only
-        uses: actions/checkout@v4
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
         with:
           ref: ${{ github.event.repository.default_branch }}
           persist-credentials: false
@@ -139,12 +139,12 @@ jobs:
       OUTCOME_CHECK_NAME: Linktrend Main Outcome
       # Job-level env cannot reference the env context (GitHub validation → zero-job push failures).
       # Workflow-level RELEASE_GATE_CHECKS already applies; restate via vars for clarity.
-      RELEASE_GATE_CHECKS: ${{ vars.LINKTREND_RELEASE_GATE_CHECKS || 'Verify IDE Development,Enforce allowed PR source branches' }}
+      RELEASE_GATE_CHECKS: ${{ vars.LINKTREND_RELEASE_GATE_CHECKS || 'openclaw/ci-gate,Enforce allowed PR source branches' }}
       REQUIRE_APP_TOKEN: "1"
       LINKTREND_GITOPS_APP_ID: ${{ vars.LINKTREND_GITOPS_APP_ID }}
     steps:
       - name: Checkout trusted default branch only
-        uses: actions/checkout@v4
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
         with:
           ref: ${{ github.event.repository.default_branch }}
           fetch-depth: 0
@@ -237,7 +237,7 @@ jobs:
             *) exit 0 ;;
           esac
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         if: always()
         with:
           name: main-promote-report

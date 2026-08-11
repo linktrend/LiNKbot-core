@@ -23,17 +23,17 @@ Read this file before switching models, citing model names, or changing config. 
 
 ### Cloud routes
 
-| Alias       | Model ID                                                | Role                                                |
-| ----------- | ------------------------------------------------------- | --------------------------------------------------- |
-| `luna`      | `openai/gpt-5.6-luna`                                 | Default native OAuth primary, High                  |
-| `terra`     | `openai/gpt-5.6-terra`                                | Development orchestration, native OAuth Medium      |
-| `sol`       | `openai/gpt-5.6-sol`                                  | Complex planning, native OAuth Medium               |
-| `luna-or`   | `openrouter/openai/gpt-5.6-luna`                      | First fallback, Medium                              |
-| `glm`       | `openrouter/z-ai/glm-5.2`                             | Second fallback                                     |
-| `kimi`      | `openrouter/moonshotai/kimi-k3`                       | Subsequent fallback                                 |
-| `flashlite` | `openrouter/google/gemini-3.5-flash-lite`             | Utility/final fallback                              |
-| `minimax`   | `openrouter/minimax/minimax-m3`                       | Image/PDF understanding, `approved_unverified`      |
-| `nemotron`  | `openrouter/nvidia/nemotron-3-super-120b-a12b`        | Sampled shadow only; never default or user-visible  |
+| Alias       | Model ID                                       | Role                                               |
+| ----------- | ---------------------------------------------- | -------------------------------------------------- |
+| `luna`      | `openai/gpt-5.6-luna`                          | Default native OAuth primary, High                 |
+| `terra`     | `openai/gpt-5.6-terra`                         | Development orchestration, native OAuth Medium     |
+| `sol`       | `openai/gpt-5.6-sol`                           | Complex planning, native OAuth Medium              |
+| `luna-or`   | `openrouter/openai/gpt-5.6-luna`               | First fallback, Medium                             |
+| `glm`       | `openrouter/z-ai/glm-5.2`                      | Second fallback                                    |
+| `kimi`      | `openrouter/moonshotai/kimi-k3`                | Subsequent fallback                                |
+| `flashlite` | `openrouter/google/gemini-3.5-flash-lite`      | Utility/final fallback                             |
+| `minimax`   | `openrouter/minimax/minimax-m3`                | Image/PDF understanding, `approved_unverified`     |
+| `nemotron`  | `openrouter/nvidia/nemotron-3-super-120b-a12b` | Sampled shadow only; never default or user-visible |
 
 ### Defaults & fallbacks
 

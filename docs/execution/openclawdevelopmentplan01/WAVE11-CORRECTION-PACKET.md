@@ -11,12 +11,12 @@
 
 ## Corrections
 
-| # | Deficiency | Correction | Evidence |
-| - | ---------- | ---------- | -------- |
-| 1 | plugin-test-api missing unregister | Added no-op + `satisfies` shape; type/runtime test | `src/plugin-sdk/plugin-test-api.ts`; `plugin-test-api.test.ts` |
-| 2 | Core test deep-imported extension src | Core fixtures only in agents MCP test; Brain/Skills registration proofs in extension scope; coexistence uses `plugin-sdk/channel-test-helpers` | `agent-bundle-mcp-runtime.mcp-tool-filter.test.ts`; extension registration tests; `native-coexistence.test.ts` |
-| 3 | Incomplete §13.3 / grouped phases | 384 atomic rows; Phases 7–12 separate; validator rejects missing/duplicate/grouped/invalid | `section-13.3/*`; check script + tests |
-| 4 | `readonly string[]` vs `McpServerToolFilterResolved.include` | Feature-flag builders return mutable `{ include: [...include] }` | `extensions/linkbrain/src/feature-flags.ts`; `extensions/linkskills/src/feature-flags.ts` |
+| #   | Deficiency                                                   | Correction                                                                                                                                     | Evidence                                                                                                       |
+| --- | ------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| 1   | plugin-test-api missing unregister                           | Added no-op + `satisfies` shape; type/runtime test                                                                                             | `src/plugin-sdk/plugin-test-api.ts`; `plugin-test-api.test.ts`                                                 |
+| 2   | Core test deep-imported extension src                        | Core fixtures only in agents MCP test; Brain/Skills registration proofs in extension scope; coexistence uses `plugin-sdk/channel-test-helpers` | `agent-bundle-mcp-runtime.mcp-tool-filter.test.ts`; extension registration tests; `native-coexistence.test.ts` |
+| 3   | Incomplete §13.3 / grouped phases                            | 384 atomic rows; Phases 7–12 separate; validator rejects missing/duplicate/grouped/invalid                                                     | `section-13.3/*`; check script + tests                                                                         |
+| 4   | `readonly string[]` vs `McpServerToolFilterResolved.include` | Feature-flag builders return mutable `{ include: [...include] }`                                                                               | `extensions/linkbrain/src/feature-flags.ts`; `extensions/linkskills/src/feature-flags.ts`                      |
 
 ## Validation (local; crabbox Testbox unavailable)
 

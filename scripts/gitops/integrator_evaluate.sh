@@ -8,7 +8,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PR_NUMBER="${PR_NUMBER:-}"
 HEAD_SHA="${HEAD_SHA:-}"
-REQUIRED_CHECKS="${REQUIRED_CHECKS:-Verify IDE Development}"
+REQUIRED_CHECKS="${REQUIRED_CHECKS:-openclaw/ci-gate,Enforce allowed PR source branches}"
 BUGBOT_SUCCESS_CHECK_NAME="${BUGBOT_SUCCESS_CHECK_NAME:-Cursor Bugbot}"
 GATE_WAIT_SECONDS="${GATE_WAIT_SECONDS:-120}"
 GATE_POLL_SECONDS="${GATE_POLL_SECONDS:-15}"

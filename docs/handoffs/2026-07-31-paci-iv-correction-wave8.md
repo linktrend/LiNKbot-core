@@ -2,21 +2,21 @@
 
 ## Session Metadata
 
-| Field            | Value |
-| ---------------- | ----- |
-| Agent identity   | Cursor Local Agent / Grok 4.5 High |
-| Session ID       | cursor-local-mac-mini-feature-paci-iv-wave8-20260731 |
-| Orchestrator key | cursor-local-mac-mini-desktop-workspace-orchestrator-20260723-1539 |
-| Objective        | PACI IV correction Wave 8 — complete combined runtime snapshot |
+| Field            | Value                                                                                                                                |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| Agent identity   | Cursor Local Agent / Grok 4.5 High                                                                                                   |
+| Session ID       | cursor-local-mac-mini-feature-paci-iv-wave8-20260731                                                                                 |
+| Orchestrator key | cursor-local-mac-mini-desktop-workspace-orchestrator-20260723-1539                                                                   |
+| Objective        | PACI IV correction Wave 8 — complete combined runtime snapshot                                                                       |
 | Scope            | OpenClaw loader cache+fresh activation, MT blueprint reconstruct, mid-activation rollback, real-loader tests, paci-fake pin comments |
-| Started          | 2026-07-31 09:07 Asia/Taipei |
-| Ended            | 2026-07-31 Asia/Taipei |
-| Starting branch  | `issue/ocp-openclawdevelopmentplan01` |
-| Ending branch    | `issue/ocp-openclawdevelopmentplan01` |
-| Starting commit  | `2426067e81308992ee8b1506ed40b3d594b9ddb1` |
-| Ending commit    | tip after push (`git rev-parse HEAD`) |
-| Starting status  | clean except Wave 8 prompt |
-| Ending status    | clean origin-synced |
+| Started          | 2026-07-31 09:07 Asia/Taipei                                                                                                         |
+| Ended            | 2026-07-31 Asia/Taipei                                                                                                               |
+| Starting branch  | `issue/ocp-openclawdevelopmentplan01`                                                                                                |
+| Ending branch    | `issue/ocp-openclawdevelopmentplan01`                                                                                                |
+| Starting commit  | `2426067e81308992ee8b1506ed40b3d594b9ddb1`                                                                                           |
+| Ending commit    | tip after push (`git rev-parse HEAD`)                                                                                                |
+| Starting status  | clean except Wave 8 prompt                                                                                                           |
+| Ending status    | clean origin-synced                                                                                                                  |
 
 ## Summary
 
@@ -46,13 +46,13 @@ Fixed Wave 7 Codex blockers: cache-hit path now uses the same combined registry+
 
 ## Decisions
 
-| Decision | Reason | Authority |
-| --- | --- | --- |
-| One canonical `activateCombinedPluginRuntimeSnapshot` | Delete registry-only cache activate path | Wave 8 prompt |
-| Cache stores MT ownership blueprint descriptors | Reconstruct generations on A→B→A; never cache live handles | Wave 8 prompt |
-| Lock before activating cache lookup | Prevent lock bypass on cache hit | Wave 8 prompt |
-| Mid-commit injector + registry restore | Prove rollback if activation remains split/fallible | Wave 8 prompt |
-| Keep frozen Platform pin; record Wave 7 failed HEAD in comments | Do not repin uncertified descendant | Wave 8 prompt |
+| Decision                                                        | Reason                                                     | Authority     |
+| --------------------------------------------------------------- | ---------------------------------------------------------- | ------------- |
+| One canonical `activateCombinedPluginRuntimeSnapshot`           | Delete registry-only cache activate path                   | Wave 8 prompt |
+| Cache stores MT ownership blueprint descriptors                 | Reconstruct generations on A→B→A; never cache live handles | Wave 8 prompt |
+| Lock before activating cache lookup                             | Prevent lock bypass on cache hit                           | Wave 8 prompt |
+| Mid-commit injector + registry restore                          | Prove rollback if activation remains split/fallible        | Wave 8 prompt |
+| Keep frozen Platform pin; record Wave 7 failed HEAD in comments | Do not repin uncertified descendant                        | Wave 8 prompt |
 
 ## Tests and Verification
 

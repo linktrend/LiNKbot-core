@@ -1,5 +1,11 @@
 # OpenClaw Prime Agent Coordination
 
+> **Current state, 2026-08-11:** OpenClaw Prime/Lisa is now a live LiNKbrain and
+> LiNKskills consumer. Stage 1 repository coordination remains required, while
+> LiNKbrain provides governed institutional-memory operations. References below
+> to LiNKbrain as future-only are historical and are superseded by this notice,
+> `docs/agent-briefing.md`, and `docs/current-status.md`.
+
 This is the canonical coordination protocol for every AI agent working on this private OpenClaw Prime fork. It applies across Cursor, Codex, and ChatGPT; local and cloud execution; every machine and app surface; and every Orchestrator, Lisa, or Feature role.
 
 This document coordinates repository work. It does not replace Git history, runtime evidence, or LiNKbrain's future institutional-memory role.

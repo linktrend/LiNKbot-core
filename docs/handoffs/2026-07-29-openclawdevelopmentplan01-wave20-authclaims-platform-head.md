@@ -2,21 +2,21 @@
 
 ## Session Metadata
 
-| Field            | Value |
-| ---------------- | ----- |
-| Agent identity   | Cursor Local Agent / Cursor Grok 4.5 High |
-| Session ID       | cursor-local-mac-mini-lisa-openclawdevelopmentplan01-wave20-20260729 |
-| Orchestrator key | cursor-local-mac-mini-desktop-workspace-orchestrator |
-| Objective        | Wave 20 AuthClaims Platform HEAD + status provenance correction |
+| Field            | Value                                                                                                |
+| ---------------- | ---------------------------------------------------------------------------------------------------- |
+| Agent identity   | Cursor Local Agent / Cursor Grok 4.5 High                                                            |
+| Session ID       | cursor-local-mac-mini-lisa-openclawdevelopmentplan01-wave20-20260729                                 |
+| Orchestrator key | cursor-local-mac-mini-desktop-workspace-orchestrator                                                 |
+| Objective        | Wave 20 AuthClaims Platform HEAD + status provenance correction                                      |
 | Scope            | Provenance validator + PHASE-13 handoff + countersign immutable tip; no runtime/fixture JSON changes |
-| Started          | 2026-07-29 Asia/Taipei |
-| Ended            | 2026-07-29 Asia/Taipei |
-| Starting branch  | `issue/ocp-openclawdevelopmentplan01` |
-| Ending branch    | `issue/ocp-openclawdevelopmentplan01` |
-| Starting commit  | `6dc055e0c9ff850dc07107162e380e6bddc46def` |
-| Ending commit    | `005c9454f1bd3f7427936704131ffe5faa95ef0f` |
-| Starting status  | clean at exact HEAD |
-| Ending status    | clean after push |
+| Started          | 2026-07-29 Asia/Taipei                                                                               |
+| Ended            | 2026-07-29 Asia/Taipei                                                                               |
+| Starting branch  | `issue/ocp-openclawdevelopmentplan01`                                                                |
+| Ending branch    | `issue/ocp-openclawdevelopmentplan01`                                                                |
+| Starting commit  | `6dc055e0c9ff850dc07107162e380e6bddc46def`                                                           |
+| Ending commit    | `005c9454f1bd3f7427936704131ffe5faa95ef0f`                                                           |
+| Starting status  | clean at exact HEAD                                                                                  |
+| Ending status    | clean after push                                                                                     |
 
 ## Summary
 

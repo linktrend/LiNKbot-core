@@ -2,29 +2,29 @@
 
 ## Identity
 
-| Field             | Value |
-| ----------------- | ----- |
-| Agent type        | Codex Desktop Agent |
-| Platform          | Codex |
-| Machine           | mac-mini |
-| Surface           | desktop-workspace (Luna High) |
-| Execution         | local |
-| Role              | feature |
-| Orchestrator key  | codex-mac-mini-desktop-app-orchestrator |
+| Field             | Value                                                               |
+| ----------------- | ------------------------------------------------------------------- |
+| Agent type        | Codex Desktop Agent                                                 |
+| Platform          | Codex                                                               |
+| Machine           | mac-mini                                                            |
+| Surface           | desktop-workspace (Luna High)                                       |
+| Execution         | local                                                               |
+| Role              | feature                                                             |
+| Orchestrator key  | codex-mac-mini-desktop-app-orchestrator                             |
 | Coordination home | `/Users/linktrend/Projects/openclaw_prime-worktrees/IDE-deployment` |
-| Session ID        | codex-local-mac-mini-desktop-workspace-feature-20260810-1100 |
-| Started           | 2026-08-10 11:00 Asia/Taipei |
-| Last updated      | 2026-08-10 11:18 Asia/Taipei |
+| Session ID        | codex-local-mac-mini-desktop-workspace-feature-20260810-1100        |
+| Started           | 2026-08-10 11:00 Asia/Taipei                                        |
+| Last updated      | 2026-08-10 11:18 Asia/Taipei                                        |
 
 ## Work
 
-| Field           | Value |
-| --------------- | ----- |
+| Field           | Value                                                                                                                               |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
 | Objective       | Carlos-approved WP04 first portable IDE Development installation for consumer #1 `openclaw_prime` in the isolated rollout worktree. |
-| Branch          | `feature/IDE-deployment` |
-| Starting commit | `a5d67da87bbab9edfbc3465c5f505da26d4dbc29` |
-| Status          | `complete` |
-| Handoff         | `docs/handoffs/2026-08-10-1118-codex-local-mac-mini-desktop-workspace-feature-ide-deployment.md` |
+| Branch          | `feature/IDE-deployment`                                                                                                            |
+| Starting commit | `a5d67da87bbab9edfbc3465c5f505da26d4dbc29`                                                                                          |
+| Status          | `complete`                                                                                                                          |
+| Handoff         | `docs/handoffs/2026-08-10-1118-codex-local-mac-mini-desktop-workspace-feature-ide-deployment.md`                                    |
 
 ## Ownership Scope
 

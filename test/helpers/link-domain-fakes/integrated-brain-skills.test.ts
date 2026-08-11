@@ -340,14 +340,14 @@ describe(`Phase 6 integrated Brain+Skills (${PHASE6_EVIDENCE_TIER})`, () => {
       opened
         .filter((e) => e.domain === LINKBRAIN_PLUGIN_ID)
         .map((e) => e.namespace)
-        .sort(),
-    ).toEqual([...LINKBRAIN_NAMESPACE_LIST].sort());
+        .toSorted(),
+    ).toEqual([...LINKBRAIN_NAMESPACE_LIST].toSorted());
     expect(
       opened
         .filter((e) => e.domain === LINKSKILLS_PLUGIN_ID)
         .map((e) => e.namespace)
-        .sort(),
-    ).toEqual([...LINKSKILLS_NAMESPACE_LIST].sort());
+        .toSorted(),
+    ).toEqual([...LINKSKILLS_NAMESPACE_LIST].toSorted());
 
     // Overlapping bare names open distinct store instances.
     expect(brainStoresByNs.get("outbox")).not.toBe(skillsStoresByNs.get("outbox"));

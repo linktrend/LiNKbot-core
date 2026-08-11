@@ -35,6 +35,12 @@ export const LINKBRAIN_PROHIBITED_FIELDS = Object.freeze([
   "developerPrompt",
 ] as const);
 
+const LINKBRAIN_PROHIBITED_FIELD_SET = new Set<string>(LINKBRAIN_PROHIBITED_FIELDS);
+
+export function isLinkbrainProhibitedField(key: string): boolean {
+  return LINKBRAIN_PROHIBITED_FIELD_SET.has(key);
+}
+
 /** Max characters retained per capture event text. */
 const LINKBRAIN_MAX_EVENT_TEXT_CHARS = 4_000;
 
@@ -64,6 +70,7 @@ const ATTACHMENT_KEYS = Object.freeze([
   "messages",
   "rawMessages",
 ]);
+const ATTACHMENT_KEY_SET = new Set<string>(ATTACHMENT_KEYS);
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -103,7 +110,7 @@ export function stripUnsafeFields(value: unknown): unknown {
   }
   const next: Record<string, unknown> = {};
   for (const [key, child] of Object.entries(value)) {
-    if (LINKBRAIN_PROHIBITED_FIELDS.includes(key) || ATTACHMENT_KEYS.includes(key)) {
+    if (isLinkbrainProhibitedField(key) || ATTACHMENT_KEY_SET.has(key)) {
       continue;
     }
     next[key] = stripUnsafeFields(child);
@@ -120,7 +127,7 @@ export function containsUnsafeField(value: unknown): boolean {
     return false;
   }
   for (const [key, child] of Object.entries(value)) {
-    if (LINKBRAIN_PROHIBITED_FIELDS.includes(key) || ATTACHMENT_KEYS.includes(key)) {
+    if (isLinkbrainProhibitedField(key) || ATTACHMENT_KEY_SET.has(key)) {
       return true;
     }
     if (containsUnsafeField(child)) {

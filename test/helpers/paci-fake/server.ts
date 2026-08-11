@@ -26,7 +26,7 @@ import {
   SignJWT,
   type JWK,
   type JWTPayload,
-  type KeyLike,
+  type JWTHeaderParameters,
 } from "jose";
 import {
   AUTH_CLAIMS_CLAIM_KEY,
@@ -45,11 +45,7 @@ import {
   DEFAULT_ENDPOINT_PATHS,
   type PaciFakeAuthorizationServerMetadata,
 } from "./metadata.js";
-import {
-  formatScopeString,
-  PaciFakeScopeError,
-  resolveGrantedServiceScopes,
-} from "./scope.js";
+import { formatScopeString, PaciFakeScopeError, resolveGrantedServiceScopes } from "./scope.js";
 
 export { PACI_FAKE_ACCESS_TOKEN_EXPIRES_IN_SECONDS } from "./constants.js";
 
@@ -259,7 +255,7 @@ export type PaciFakeServer = {
 
 type RegisteredClient = {
   clientId: string;
-  publicKey: KeyLike | CryptoKey;
+  publicKey: CryptoKey;
   domain: PaciFakeDomain;
   serviceScopes: string[];
   audience: string[];
@@ -291,13 +287,12 @@ type IssuedToken = {
 
 type SigningSlot = {
   kid: string;
-  privateKey: KeyLike | CryptoKey;
+  privateKey: CryptoKey;
   publicJwk: JWK;
 };
 
 /** RFC 4122 UUID (versions 1–8, variant 10xx) — same bar as access-token jti. */
-const UUID_RE =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/iu;
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/iu;
 
 function jsonResponse(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
@@ -363,15 +358,13 @@ function defaultScopesForDomain(domain: PaciFakeDomain): string[] {
   }
 }
 
-function buildIntrospectionPolicy(
-  input: {
-    allowIntrospection?: boolean;
-    introspectionPolicy?: Partial<PaciFakeIntrospectionPolicy>;
-    domain: PaciFakeDomain;
-    clientId: string;
-    audience: readonly string[];
-  },
-): PaciFakeIntrospectionPolicy {
+function buildIntrospectionPolicy(input: {
+  allowIntrospection?: boolean;
+  introspectionPolicy?: Partial<PaciFakeIntrospectionPolicy>;
+  domain: PaciFakeDomain;
+  clientId: string;
+  audience: readonly string[];
+}): PaciFakeIntrospectionPolicy {
   const explicit = input.introspectionPolicy;
   if (explicit) {
     return {
@@ -400,10 +393,7 @@ function buildIntrospectionPolicy(
  * Resource-server caller eligibility — independent of token subject.
  * Fail closed on any domain / audience / minting-client mismatch.
  */
-function callerMayIntrospectToken(
-  caller: RegisteredClient,
-  token: IssuedToken,
-): boolean {
+function callerMayIntrospectToken(caller: RegisteredClient, token: IssuedToken): boolean {
   const policy = caller.introspectionPolicy;
   if (!policy.allowIntrospection) {
     return false;
@@ -872,19 +862,14 @@ export async function createPaciFakeServer(
     isAccessTokenActive: (accessToken) => {
       const issued = issuedTokens.get(accessToken);
       return Boolean(
-        issued &&
-          !issued.revoked &&
-          issued.expiresAt > now() &&
-          publishedSigning.has(issued.kid),
+        issued && !issued.revoked && issued.expiresAt > now() && publishedSigning.has(issued.kid),
       );
     },
     async registerClient(input) {
       if (clients.has(input.clientId)) {
         throw new Error(`Client already registered: ${input.clientId}`);
       }
-      const serviceScopes = [
-        ...(input.serviceScopes ?? defaultScopesForDomain(input.domain)),
-      ];
+      const serviceScopes = [...(input.serviceScopes ?? defaultScopesForDomain(input.domain))];
       const audience = [...(input.audience ?? [`${input.domain}-api`])];
       const policy = buildIntrospectionPolicy({
         allowIntrospection: input.allowIntrospection,
@@ -945,7 +930,7 @@ export async function createPaciFakeServer(
         input.ttlSeconds ?? CLIENT_ASSERTION_MAX_TTL_SECONDS,
         CLIENT_ASSERTION_MAX_TTL_SECONDS,
       );
-      const header: Record<string, string> = {
+      const header: JWTHeaderParameters = {
         alg: input.alg ?? PACI_ALG,
       };
       if (input.kid) {

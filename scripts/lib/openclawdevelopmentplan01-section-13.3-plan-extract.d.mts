@@ -134,10 +134,13 @@ export function buildInventoryFromPlanItems(
   items: unknown[],
   planSha256: string,
   coverage?: unknown[],
-  evidenceMaps?: Map<string, {
-    owner: string;
-    evidence_location: string;
-    completion_claim: string;
-    note: string;
-  }> | null,
+  evidenceMaps?: Map<
+    string,
+    {
+      owner: string;
+      evidence_location: string;
+      completion_claim: string;
+      note: string;
+    }
+  > | null,
 ): Record<string, unknown>;

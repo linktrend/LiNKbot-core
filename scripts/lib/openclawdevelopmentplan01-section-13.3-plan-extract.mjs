@@ -205,136 +205,136 @@ export const NON_REQUIREMENT_REASON_CODES = Object.freeze([
  *   fingerprint: string,
  * }} DescriptiveExclusion
  */
-export const DESCRIPTIVE_EXCLUSIONS /* frozen-plan reviewed */ = Object.freeze([  Object.freeze({
-    "id": "baseline-5.1-L109",
-    "line": 109,
-    "type": "list_item",
-    "text": "managed MCP servers with independent enablement, transport, authentication, timeout, health, tool filter, and hot-apply behavior;",
-    "reason": "Section 5.1 sanitized OpenClaw capability inventory observation",
-    "fingerprint": "34825cb4a1da346da07a5920ee0e5d7a6fec15a9e43173c1dba730347ece4416"
+export const DESCRIPTIVE_EXCLUSIONS /* frozen-plan reviewed */ = Object.freeze([
+  Object.freeze({
+    id: "baseline-5.1-L109",
+    line: 109,
+    type: "list_item",
+    text: "managed MCP servers with independent enablement, transport, authentication, timeout, health, tool filter, and hot-apply behavior;",
+    reason: "Section 5.1 sanitized OpenClaw capability inventory observation",
+    fingerprint: "34825cb4a1da346da07a5920ee0e5d7a6fec15a9e43173c1dba730347ece4416",
   }),
   Object.freeze({
-    "id": "baseline-5.1-L110",
-    "line": 110,
-    "type": "list_item",
-    "text": "plugin manifests, per-plugin config, startup diagnostics, and explicit trust controls;",
-    "reason": "Section 5.1 sanitized OpenClaw capability inventory observation",
-    "fingerprint": "e8f144eb03c0c47de56f34dc677ebdd0a88ba415dd9d80f5303a23382b7180db"
+    id: "baseline-5.1-L110",
+    line: 110,
+    type: "list_item",
+    text: "plugin manifests, per-plugin config, startup diagnostics, and explicit trust controls;",
+    reason: "Section 5.1 sanitized OpenClaw capability inventory observation",
+    fingerprint: "e8f144eb03c0c47de56f34dc677ebdd0a88ba415dd9d80f5303a23382b7180db",
   }),
   Object.freeze({
-    "id": "baseline-5.1-L111",
-    "line": 111,
-    "type": "list_item",
-    "text": "`hooks.allowConversationAccess` for conversation-bearing hooks;",
-    "reason": "Section 5.1 sanitized OpenClaw capability inventory observation",
-    "fingerprint": "f932006e080fe73ff525b648faa64f5c13d54db155e45ff5ecd8e1f45eec915d"
+    id: "baseline-5.1-L111",
+    line: 111,
+    type: "list_item",
+    text: "`hooks.allowConversationAccess` for conversation-bearing hooks;",
+    reason: "Section 5.1 sanitized OpenClaw capability inventory observation",
+    fingerprint: "f932006e080fe73ff525b648faa64f5c13d54db155e45ff5ecd8e1f45eec915d",
   }),
   Object.freeze({
-    "id": "baseline-5.1-L112",
-    "line": 112,
-    "type": "list_item",
-    "text": "public plugin runtime helpers, including SQLite-backed keyed plugin state;",
-    "reason": "Section 5.1 sanitized OpenClaw capability inventory observation",
-    "fingerprint": "bf6cd790322515c0525b5db9935cab00a084ddaddaca60fe87ac0ff4f802f7c9"
+    id: "baseline-5.1-L112",
+    line: 112,
+    type: "list_item",
+    text: "public plugin runtime helpers, including SQLite-backed keyed plugin state;",
+    reason: "Section 5.1 sanitized OpenClaw capability inventory observation",
+    fingerprint: "bf6cd790322515c0525b5db9935cab00a084ddaddaca60fe87ac0ff4f802f7c9",
   }),
   Object.freeze({
-    "id": "baseline-5.1-L113",
-    "line": 113,
-    "type": "list_item",
-    "text": "owner-only OAuth token storage in the shared state database;",
-    "reason": "Section 5.1 sanitized OpenClaw capability inventory observation",
-    "fingerprint": "2818a84067121670ae0e86588b549b38c81020e8c3bfc6900cacf2202ac7b9a8"
+    id: "baseline-5.1-L113",
+    line: 113,
+    type: "list_item",
+    text: "owner-only OAuth token storage in the shared state database;",
+    reason: "Section 5.1 sanitized OpenClaw capability inventory observation",
+    fingerprint: "2818a84067121670ae0e86588b549b38c81020e8c3bfc6900cacf2202ac7b9a8",
   }),
   Object.freeze({
-    "id": "baseline-5.1-L114",
-    "line": 114,
-    "type": "list_item",
-    "text": "`SecretRef`-compatible plugin configuration contracts;",
-    "reason": "Section 5.1 sanitized OpenClaw capability inventory observation",
-    "fingerprint": "5714f98efa8879106309523b88f8ae9495cd35216694e7de39e601bc0300e88f"
+    id: "baseline-5.1-L114",
+    line: 114,
+    type: "list_item",
+    text: "`SecretRef`-compatible plugin configuration contracts;",
+    reason: "Section 5.1 sanitized OpenClaw capability inventory observation",
+    fingerprint: "5714f98efa8879106309523b88f8ae9495cd35216694e7de39e601bc0300e88f",
   }),
   Object.freeze({
-    "id": "baseline-5.1-L115",
-    "line": 115,
-    "type": "list_item",
-    "text": "namespaced plugin tools, services, commands, hooks, and diagnostics;",
-    "reason": "Section 5.1 sanitized OpenClaw capability inventory observation",
-    "fingerprint": "4d673e71d69a80614610ec78aac393a6937c67b4a922295d671d1814e113cf9b"
+    id: "baseline-5.1-L115",
+    line: 115,
+    type: "list_item",
+    text: "namespaced plugin tools, services, commands, hooks, and diagnostics;",
+    reason: "Section 5.1 sanitized OpenClaw capability inventory observation",
+    fingerprint: "4d673e71d69a80614610ec78aac393a6937c67b4a922295d671d1814e113cf9b",
   }),
   Object.freeze({
-    "id": "baseline-5.1-L116",
-    "line": 116,
-    "type": "list_item",
-    "text": "typed session, agent, message, compaction, reset, subagent, tool, cron, and gateway lifecycle events.",
-    "reason": "Section 5.1 sanitized OpenClaw capability inventory observation",
-    "fingerprint": "039f3ab2f4497f559cd0d62763793e304c25535402e3a46d062fed4fcf8cfef7"
+    id: "baseline-5.1-L116",
+    line: 116,
+    type: "list_item",
+    text: "typed session, agent, message, compaction, reset, subagent, tool, cron, and gateway lifecycle events.",
+    reason: "Section 5.1 sanitized OpenClaw capability inventory observation",
+    fingerprint: "039f3ab2f4497f559cd0d62763793e304c25535402e3a46d062fed4fcf8cfef7",
   }),
   Object.freeze({
-    "id": "baseline-5.2-L124",
-    "line": 124,
-    "type": "list_item",
-    "text": "the `lisa` profile validates and its Gateway is reachable;",
-    "reason": "Section 5.2 sanitized Lisa baseline observation",
-    "fingerprint": "53de36f0496e3234f6ce5b03eff452d7a4974f8885c43ada09e49911349c1086"
+    id: "baseline-5.2-L124",
+    line: 124,
+    type: "list_item",
+    text: "the `lisa` profile validates and its Gateway is reachable;",
+    reason: "Section 5.2 sanitized Lisa baseline observation",
+    fingerprint: "53de36f0496e3234f6ce5b03eff452d7a4974f8885c43ada09e49911349c1086",
   }),
   Object.freeze({
-    "id": "baseline-5.2-L125",
-    "line": 125,
-    "type": "list_item",
-    "text": "configured local agent identities include `main`, `lisa-cron`, `cursor`, and `local-coder`;",
-    "reason": "Section 5.2 sanitized Lisa baseline observation",
-    "fingerprint": "bad461c67c465f10099c8dacdfdc8d7532d09225d544bbc8bef5b293030d9e58"
+    id: "baseline-5.2-L125",
+    line: 125,
+    type: "list_item",
+    text: "configured local agent identities include `main`, `lisa-cron`, `cursor`, and `local-coder`;",
+    reason: "Section 5.2 sanitized Lisa baseline observation",
+    fingerprint: "bad461c67c465f10099c8dacdfdc8d7532d09225d544bbc8bef5b293030d9e58",
   }),
   Object.freeze({
-    "id": "baseline-5.2-L126",
-    "line": 126,
-    "type": "list_item",
-    "text": "native memory uses the current local OpenClaw path and remains in place;",
-    "reason": "Section 5.2 sanitized Lisa baseline observation",
-    "fingerprint": "90eab9c163c9fdad156a20a75331f77143eb75a87d67c1954ffb7f9312b27632"
+    id: "baseline-5.2-L126",
+    line: 126,
+    type: "list_item",
+    text: "native memory uses the current local OpenClaw path and remains in place;",
+    reason: "Section 5.2 sanitized Lisa baseline observation",
+    fingerprint: "90eab9c163c9fdad156a20a75331f77143eb75a87d67c1954ffb7f9312b27632",
   }),
   Object.freeze({
-    "id": "baseline-5.2-L127",
-    "line": 127,
-    "type": "list_item",
-    "text": "native heartbeat is disabled and remains unchanged;",
-    "reason": "Section 5.2 sanitized Lisa baseline observation",
-    "fingerprint": "112ffac0a0a1f47b5e71c2fcba2b1206ca3f5bb91d885f18760e3fc60df335ec"
+    id: "baseline-5.2-L127",
+    line: 127,
+    type: "list_item",
+    text: "native heartbeat is disabled and remains unchanged;",
+    reason: "Section 5.2 sanitized Lisa baseline observation",
+    fingerprint: "112ffac0a0a1f47b5e71c2fcba2b1206ca3f5bb91d885f18760e3fc60df335ec",
   }),
   Object.freeze({
-    "id": "baseline-5.2-L128",
-    "line": 128,
-    "type": "list_item",
-    "text": "Telegram, Google Chat, cron, sessions, and native skill inventory are present and remain in place;",
-    "reason": "Section 5.2 sanitized Lisa baseline observation",
-    "fingerprint": "740a0f7cd0a47e8364667d14451426e8ea3247dcc6f4a345545aabd9f91fcf3f"
+    id: "baseline-5.2-L128",
+    line: 128,
+    type: "list_item",
+    text: "Telegram, Google Chat, cron, sessions, and native skill inventory are present and remain in place;",
+    reason: "Section 5.2 sanitized Lisa baseline observation",
+    fingerprint: "740a0f7cd0a47e8364667d14451426e8ea3247dcc6f4a345545aabd9f91fcf3f",
   }),
   Object.freeze({
-    "id": "baseline-5.2-L129",
-    "line": 129,
-    "type": "list_item",
-    "text": "there are no managed MCP servers configured for Lisa;",
-    "reason": "Section 5.2 sanitized Lisa baseline observation",
-    "fingerprint": "113045fbd9652c618e64c3205500db442741aa9bdd6f71f18824329ffef516c3"
+    id: "baseline-5.2-L129",
+    line: 129,
+    type: "list_item",
+    text: "there are no managed MCP servers configured for Lisa;",
+    reason: "Section 5.2 sanitized Lisa baseline observation",
+    fingerprint: "113045fbd9652c618e64c3205500db442741aa9bdd6f71f18824329ffef516c3",
   }),
   Object.freeze({
-    "id": "baseline-5.2-L130",
-    "line": 130,
-    "type": "list_item",
-    "text": "there is no `skills.load.extraDirs` LiNKskills integration;",
-    "reason": "Section 5.2 sanitized Lisa baseline observation",
-    "fingerprint": "9ce344035c0f5024260f143b2686ab4cf0d81a4e51a90fb9f0dacf95461e99aa"
+    id: "baseline-5.2-L130",
+    line: 130,
+    type: "list_item",
+    text: "there is no `skills.load.extraDirs` LiNKskills integration;",
+    reason: "Section 5.2 sanitized Lisa baseline observation",
+    fingerprint: "9ce344035c0f5024260f143b2686ab4cf0d81a4e51a90fb9f0dacf95461e99aa",
   }),
   Object.freeze({
-    "id": "baseline-5.2-L131",
-    "line": 131,
-    "type": "list_item",
-    "text": "there is no verified live LiNKbrain or LiNKskills consumer wiring.",
-    "reason": "Section 5.2 sanitized Lisa baseline observation",
-    "fingerprint": "659b34c29455ab9c3b49aace27f64c5dde776fa1362446353b392d48b45212c8"
+    id: "baseline-5.2-L131",
+    line: 131,
+    type: "list_item",
+    text: "there is no verified live LiNKbrain or LiNKskills consumer wiring.",
+    reason: "Section 5.2 sanitized Lisa baseline observation",
+    fingerprint: "659b34c29455ab9c3b49aace27f64c5dde776fa1362446353b392d48b45212c8",
   }),
 ]);
-
 
 /** @deprecated section-level rules removed; retained empty for migration detection. */
 export const DESCRIPTIVE_ALLOWLIST_RULES = Object.freeze({});
@@ -471,10 +471,7 @@ export function isBindingSourceAuthorityRow(text) {
  * @param {string} text
  */
 export function isSection133ClassificationEnumLabel(text) {
-  const normalized = normalizePlanText(String(text).replace(/[;`']/g, "")).replace(
-    /[.;]+$/g,
-    "",
-  );
+  const normalized = normalizePlanText(String(text).replace(/[;`']/g, "")).replace(/[.;]+$/g, "");
   return (
     normalized === "implemented and proven" ||
     normalized === "implemented but not proven live" ||
@@ -572,9 +569,7 @@ export const STRUCTURAL_ENUM_DEFINITIONS = Object.freeze([
  */
 export function matchStructuralEnumDefinition(line, type, text, enums) {
   const map =
-    enums instanceof Map
-      ? enums
-      : new Map([...enums].map((entry) => [entry.fingerprint, entry]));
+    enums instanceof Map ? enums : new Map([...enums].map((entry) => [entry.fingerprint, entry]));
   const fingerprint = coverageFingerprintFor(line, type, text);
   const hit = map.get(fingerprint);
   if (!hit) {
@@ -699,7 +694,11 @@ export function lineHasBindingObligation(text) {
   if (/\buntil\b/.test(lower) && /\b(gate|readiness|approval|cursor|codex|canary)\b/.test(lower)) {
     return true;
   }
-  if (/\bis complete only when\b|\breturns work\b|\bdoes not silently\b|\bmissing handoff field\b/.test(lower)) {
+  if (
+    /\bis complete only when\b|\breturns work\b|\bdoes not silently\b|\bmissing handoff field\b/.test(
+      lower,
+    )
+  ) {
     return true;
   }
   return false;
@@ -746,7 +745,9 @@ export function detectRequirementInheritanceOpener(line) {
   if (/does not authorize|non-goals and hard boundaries|hard boundaries/.test(lower)) {
     return { code: "HARD_BOUNDARY", kind: "gate" };
   }
-  if (/immediate next action|next action after approval|^after the principal approves/.test(lower)) {
+  if (
+    /immediate next action|next action after approval|^after the principal approves/.test(lower)
+  ) {
     return { code: "NEXT_ACTION", kind: "task" };
   }
   if (/conflict rule|following rules\b|\brules:\s*$/.test(lower)) {
@@ -799,31 +800,31 @@ export function detectStructuralRequirementSection(headingText) {
   if (/^## 4\b/.test(text)) {
     return { code: "HARD_BOUNDARY" };
   }
-  if (/^## 6\b/.test(text) || /^### 6\./.test(text)) {
+  if (/^## 6\b/.test(text) || text.startsWith("### 6.")) {
     return { code: "ACTOR_MAPPING" };
   }
-  if (/^## 7\b/.test(text) || /^### 7\./.test(text)) {
+  if (/^## 7\b/.test(text) || text.startsWith("### 7.")) {
     return { code: "PLUGIN_MCP" };
   }
-  if (/^## 8\b/.test(text) || /^### 8\./.test(text)) {
+  if (/^## 8\b/.test(text) || text.startsWith("### 8.")) {
     return { code: "PRIVACY_FLOW" };
   }
-  if (/^## 9\b/.test(text) || /^### 9\./.test(text)) {
+  if (/^## 9\b/.test(text) || text.startsWith("### 9.")) {
     return { code: "CONTRACT_FIXTURE" };
   }
-  if (/^## 10\b/.test(text) || /^### 10\./.test(text)) {
+  if (/^## 10\b/.test(text) || text.startsWith("### 10.")) {
     return { code: "LIFECYCLE" };
   }
   if (/^## 11\b/.test(text)) {
     return { code: "OUTBOX" };
   }
-  if (/^## 12\b/.test(text) || /^### 12\./.test(text)) {
+  if (/^## 12\b/.test(text) || text.startsWith("### 12.")) {
     return { code: "CONFIG" };
   }
-  if (/^## 13\b/.test(text) || /^### 13\./.test(text)) {
+  if (/^## 13\b/.test(text) || text.startsWith("### 13.")) {
     return { code: "GOVERNANCE" };
   }
-  if (/^## 17\b/.test(text) || /^### 17\./.test(text)) {
+  if (/^## 17\b/.test(text) || text.startsWith("### 17.")) {
     return { code: "OBSERVABILITY" };
   }
   if (/^## 18\b/.test(text)) {
@@ -849,9 +850,7 @@ export function isHardRequirementContext(contextCode) {
  * Soft inherited openers are obsolete under exact-line exclusions.
  * Any hard context code may force requirements; binding language always wins.
  */
-export const STRONG_DESCRIPTIVE_OVERRIDE_CODES = Object.freeze([
-  ...HARD_REQUIREMENT_CONTEXT_CODES,
-]);
+export const STRONG_DESCRIPTIVE_OVERRIDE_CODES = Object.freeze([...HARD_REQUIREMENT_CONTEXT_CODES]);
 
 /**
  * @param {string | null | undefined} contextCode
@@ -1039,20 +1038,29 @@ export function analyzePlanForSection133(planText, options = {}) {
       return text.includes("empty") ? "STRUCTURAL_EMPTY_TABLE_ROW" : "STRUCTURAL_TABLE_HEADER";
     }
     if (/opens /.test(text) || /intro;/i.test(text) || /follow as list/i.test(text)) {
-      return /bold label|Work label|scenario|Inputs|Sequence|Prerequisites|platform evidence/i.test(text)
+      return /bold label|Work label|scenario|Inputs|Sequence|Prerequisites|platform evidence/i.test(
+        text,
+      )
         ? "LABEL_OPENS_FOLLOWING_LIST"
         : "INTRO_OPENS_FOLLOWING_LIST";
     }
     if (/metadata|without ledger obligation|bold label/i.test(text)) {
       return "METADATA_BOLD_LABEL";
     }
-    if (/frontmatter|^\-\-\-|summary:|title:/i.test(text)) {
+    if (/frontmatter|^-\--|summary:|title:/i.test(text)) {
       return "FRONTMATTER_OR_META";
     }
     return "NARRATIVE_CONTEXT";
   };
 
-  const cover = (construct, disposition, reasonOrCode, detailOrIds = "", maybeIds = [], meta = {}) => {
+  const cover = (
+    construct,
+    disposition,
+    reasonOrCode,
+    detailOrIds = "",
+    maybeIds = [],
+    meta = {},
+  ) => {
     /** @type {string} */
     let reasonCode;
     /** @type {string} */
@@ -1066,7 +1074,11 @@ export function analyzePlanForSection133(planText, options = {}) {
       detail = String(reasonOrCode);
       reasonCode = mapLegacyReasonToCode(disposition, detail);
       itemIds = detailOrIds;
-    } else if (NON_REQUIREMENT_REASON_CODES.includes(reasonOrCode) || reasonOrCode === "REQUIREMENT" || reasonOrCode === "UNHANDLED") {
+    } else if (
+      NON_REQUIREMENT_REASON_CODES.includes(reasonOrCode) ||
+      reasonOrCode === "REQUIREMENT" ||
+      reasonOrCode === "UNHANDLED"
+    ) {
       reasonCode = reasonOrCode;
       detail = typeof detailOrIds === "string" ? detailOrIds : "";
       itemIds = Array.isArray(maybeIds) ? maybeIds : [];
@@ -1085,11 +1097,10 @@ export function analyzePlanForSection133(planText, options = {}) {
     }
     const sourceContext = String(extra.sourceContext ?? sectionKey ?? section ?? "");
     const inheritedContext =
-      extra.inheritedContext === undefined ? inherited?.code ?? null : extra.inheritedContext;
+      extra.inheritedContext === undefined ? (inherited?.code ?? null) : extra.inheritedContext;
     const exclusionId = extra.exclusionId ?? null;
     const exclusionReason = extra.exclusionReason ?? null;
-    const sourceAnchor =
-      extra.sourceAnchor ?? `coverage.L${construct.line}.${construct.type}`;
+    const sourceAnchor = extra.sourceAnchor ?? `coverage.L${construct.line}.${construct.type}`;
     const constructText = String(construct.text ?? construct.label ?? "");
     const fingerprint = planItemFingerprint(
       `coverage.L${construct.line}.${construct.type}`,
@@ -1244,7 +1255,12 @@ export function analyzePlanForSection133(planText, options = {}) {
       continue;
     }
 
-    if (type === "blank" || type === "fence_open" || type === "fence_close" || type === "fence_body") {
+    if (
+      type === "blank" ||
+      type === "fence_open" ||
+      type === "fence_close" ||
+      type === "fence_body"
+    ) {
       cover(
         construct,
         "non_requirement",
@@ -1282,20 +1298,26 @@ export function analyzePlanForSection133(planText, options = {}) {
           line,
           `phase.${phase}.title`,
         );
-        cover(construct, "requirement", "REQUIREMENT", "phase heading is an atomic phase task", item ? [item.id] : []);
+        cover(
+          construct,
+          "requirement",
+          "REQUIREMENT",
+          "phase heading is an atomic phase task",
+          item ? [item.id] : [],
+        );
         continue;
       }
-      if (/^## /.test(text) && !/^### /.test(text)) {
+      if (text.startsWith("## ") && !text.startsWith("### ")) {
         phase = null;
       }
       if (/^## 23\. Definition of Done\b/.test(text)) {
         inDod = true;
         dodIndex = 0;
         structuralContext = "DOD";
-      } else if (inDod && /^## /.test(text)) {
+      } else if (inDod && text.startsWith("## ")) {
         inDod = false;
       }
-      if (inDod && /^### /.test(text)) {
+      if (inDod && text.startsWith("### ")) {
         dodSection = text.replace(/^###\s+/, "");
         structuralContext = "DOD";
       }
@@ -1309,7 +1331,7 @@ export function analyzePlanForSection133(planText, options = {}) {
           tableMode = structural.tableMode;
           tableIndex = 0;
         }
-      } else if (/^## /.test(text) && !/^### /.test(text) && !inDod) {
+      } else if (text.startsWith("## ") && !text.startsWith("### ") && !inDod) {
         // New top-level section without structural mode clears prior context.
         structuralContext = null;
       }
@@ -1360,7 +1382,12 @@ export function analyzePlanForSection133(planText, options = {}) {
         structuralContext = "GOVERNANCE";
       }
 
-      cover(construct, "non_requirement", "STRUCTURAL_HEADING", "heading provides structure/context only");
+      cover(
+        construct,
+        "non_requirement",
+        "STRUCTURAL_HEADING",
+        "heading provides structure/context only",
+      );
       continue;
     }
 
@@ -1460,7 +1487,12 @@ export function analyzePlanForSection133(planText, options = {}) {
       if (label === "Deliverables" && phase != null) {
         const ids = [];
         for (const [index, part] of splitAtomicObligations(rest).entries()) {
-          const item = pushItem("deliverable", part, line, `phase.${phase}.deliverable.${index + 1}`);
+          const item = pushItem(
+            "deliverable",
+            part,
+            line,
+            `phase.${phase}.deliverable.${index + 1}`,
+          );
           if (item) {
             ids.push(item.id);
           }
@@ -1502,7 +1534,12 @@ export function analyzePlanForSection133(planText, options = {}) {
       if (label === "Hard prerequisite" && phase != null) {
         const ids = [];
         for (const [index, part] of splitAtomicObligations(rest).entries()) {
-          const item = pushItem("gate", part, line, `phase.${phase}.hard_prerequisite.${index + 1}`);
+          const item = pushItem(
+            "gate",
+            part,
+            line,
+            `phase.${phase}.hard_prerequisite.${index + 1}`,
+          );
           if (item) {
             ids.push(item.id);
           }
@@ -1537,12 +1574,7 @@ export function analyzePlanForSection133(planText, options = {}) {
           cover(construct, "requirement", "OpenClaw work obligations", ids);
         } else if (rest && phase != null && (label === "Objective" || label === "Owner")) {
           const kind = label === "Objective" ? "task" : "evidence_requirement";
-          const item = pushItem(
-            kind,
-            `${label}: ${rest}`,
-            line,
-            `phase.${phase}.${slug(label)}`,
-          );
+          const item = pushItem(kind, `${label}: ${rest}`, line, `phase.${phase}.${slug(label)}`);
           cover(construct, "requirement", `${label} recorded`, item ? [item.id] : []);
         } else {
           cover(construct, "non_requirement", `${label} metadata/context`);
@@ -1681,7 +1713,13 @@ export function analyzePlanForSection133(planText, options = {}) {
       }
       if (listMode === "assumptions") {
         const item = pushItem("assumption", text, line, `assumption.verify.${listIndex}`);
-        cover(construct, "requirement", "REQUIREMENT", "§22.4 assumption to verify", item ? [item.id] : []);
+        cover(
+          construct,
+          "requirement",
+          "REQUIREMENT",
+          "§22.4 assumption to verify",
+          item ? [item.id] : [],
+        );
         continue;
       }
       if (listMode === "resolved_decisions") {
@@ -1714,7 +1752,13 @@ export function analyzePlanForSection133(planText, options = {}) {
           line,
           `dod.${dodIndex}`,
         );
-        cover(construct, "requirement", "REQUIREMENT", "definition-of-done statement", item ? [item.id] : []);
+        cover(
+          construct,
+          "requirement",
+          "REQUIREMENT",
+          "definition-of-done statement",
+          item ? [item.id] : [],
+        );
         continue;
       }
 
@@ -1723,26 +1767,23 @@ export function analyzePlanForSection133(planText, options = {}) {
       const inheritCode = inherited?.code ?? null;
       const underHardObligation =
         isHardRequirementContext(inheritCode) || isHardRequirementContext(structuralContext);
-      const enumDefinition = matchStructuralEnumDefinition(
-        line,
-        type,
-        text,
-        enumByFingerprint,
-      );
+      const enumDefinition = matchStructuralEnumDefinition(line, type, text, enumByFingerprint);
       if (enumDefinition) {
-        cover(construct, "non_requirement", "STRUCTURAL_ENUM_DEFINITION", enumDefinition.reason, [], {
-          exclusionId: enumDefinition.id,
-          exclusionReason: enumDefinition.reason,
-          sourceAnchor: `enum.${enumDefinition.id}.L${line}`,
-        });
+        cover(
+          construct,
+          "non_requirement",
+          "STRUCTURAL_ENUM_DEFINITION",
+          enumDefinition.reason,
+          [],
+          {
+            exclusionId: enumDefinition.id,
+            exclusionReason: enumDefinition.reason,
+            sourceAnchor: `enum.${enumDefinition.id}.L${line}`,
+          },
+        );
         continue;
       }
-      const exclusion = matchDescriptiveExclusion(
-        line,
-        type,
-        text,
-        exclusionByFingerprint,
-      );
+      const exclusion = matchDescriptiveExclusion(line, type, text, exclusionByFingerprint);
       if (exclusion) {
         cover(construct, "non_requirement", "DESCRIPTIVE_EXCLUSION", exclusion.reason, [], {
           exclusionId: exclusion.id,
@@ -1807,18 +1848,11 @@ export function analyzePlanForSection133(planText, options = {}) {
         exclusionByFingerprint,
       );
       if (tableExclusion) {
-        cover(
-          construct,
-          "non_requirement",
-          "DESCRIPTIVE_EXCLUSION",
-          tableExclusion.reason,
-          [],
-          {
-            exclusionId: tableExclusion.id,
-            exclusionReason: tableExclusion.reason,
-            sourceAnchor: `exclusion.${tableExclusion.id}.L${line}`,
-          },
-        );
+        cover(construct, "non_requirement", "DESCRIPTIVE_EXCLUSION", tableExclusion.reason, [], {
+          exclusionId: tableExclusion.id,
+          exclusionReason: tableExclusion.reason,
+          sourceAnchor: `exclusion.${tableExclusion.id}.L${line}`,
+        });
         continue;
       }
       tableIndex += 1;
@@ -1886,7 +1920,13 @@ export function analyzePlanForSection133(planText, options = {}) {
           line,
           `ownership.matrix.${slug(section)}.${tableIndex}`,
         );
-        cover(construct, "requirement", "REQUIREMENT", "§13.4 ownership matrix row", item ? [item.id] : []);
+        cover(
+          construct,
+          "requirement",
+          "REQUIREMENT",
+          "§13.4 ownership matrix row",
+          item ? [item.id] : [],
+        );
         continue;
       }
       // Generic tables: treat data rows as evidence requirements.
@@ -1896,7 +1936,12 @@ export function analyzePlanForSection133(planText, options = {}) {
         line,
         `table.${slug(section)}.${line}.${tableIndex}`,
       );
-      cover(construct, "requirement", "structured table row obligation/evidence", item ? [item.id] : []);
+      cover(
+        construct,
+        "requirement",
+        "structured table row obligation/evidence",
+        item ? [item.id] : [],
+      );
       continue;
     }
 
@@ -1924,7 +1969,13 @@ export function analyzePlanForSection133(planText, options = {}) {
             ids.push(item.id);
           }
         }
-        cover(construct, "requirement", "REQUIREMENT", "verifier correction-ownership / role-separation", ids);
+        cover(
+          construct,
+          "requirement",
+          "REQUIREMENT",
+          "verifier correction-ownership / role-separation",
+          ids,
+        );
         continue;
       }
       const opener = detectRequirementInheritanceOpener(text);
@@ -1965,11 +2016,16 @@ export function analyzePlanForSection133(planText, options = {}) {
         cover(construct, "requirement", "REQUIREMENT", `inheritance opener ${opener.code}`, ids);
         continue;
       }
-      if (inDod && /^Implementation is complete only when/.test(text)) {
+      if (inDod && text.startsWith("Implementation is complete only when")) {
         inherited = { code: "DOD", kind: "dod" };
         const ids = [];
         for (const [index, part] of splitAtomicObligations(text).entries()) {
-          const item = pushItem("evidence_requirement", part, line, `prose.${slug(section)}.${line}.${index + 1}`);
+          const item = pushItem(
+            "evidence_requirement",
+            part,
+            line,
+            `prose.${slug(section)}.${line}.${index + 1}`,
+          );
           if (item) {
             ids.push(item.id);
           }
@@ -1977,16 +2033,26 @@ export function analyzePlanForSection133(planText, options = {}) {
         cover(construct, "requirement", "REQUIREMENT", "DoD intro opens following statements", ids);
         continue;
       }
-      if (/^Return to the Principal if:/.test(text)) {
+      if (text.startsWith("Return to the Principal if:")) {
         inherited = { code: "GATE", kind: "gate" };
-        cover(construct, "non_requirement", "INTRO_OPENS_FOLLOWING_LIST", "§22.2 intro; gates follow as list items");
+        cover(
+          construct,
+          "non_requirement",
+          "INTRO_OPENS_FOLLOWING_LIST",
+          "§22.2 intro; gates follow as list items",
+        );
         continue;
       }
-      if (/^Tests must prove:/.test(text)) {
+      if (text.startsWith("Tests must prove:")) {
         inherited = { code: "REQUIRED", kind: "test" };
         const ids = [];
         for (const [index, part] of splitAtomicObligations(text).entries()) {
-          const item = pushItem("evidence_requirement", part, line, `prose.${slug(section)}.${line}.${index + 1}`);
+          const item = pushItem(
+            "evidence_requirement",
+            part,
+            line,
+            `prose.${slug(section)}.${line}.${index + 1}`,
+          );
           if (item) {
             ids.push(item.id);
           }
@@ -1994,11 +2060,16 @@ export function analyzePlanForSection133(planText, options = {}) {
         cover(construct, "requirement", "REQUIREMENT", "§16.2 intro opens invariant list", ids);
         continue;
       }
-      if (/^Required runbooks:/.test(text)) {
+      if (text.startsWith("Required runbooks:")) {
         inherited = { code: "REQUIRED", kind: "deliverable" };
         const ids = [];
         for (const [index, part] of splitAtomicObligations(text).entries()) {
-          const item = pushItem("evidence_requirement", part, line, `prose.${slug(section)}.${line}.${index + 1}`);
+          const item = pushItem(
+            "evidence_requirement",
+            part,
+            line,
+            `prose.${slug(section)}.${line}.${index + 1}`,
+          );
           if (item) {
             ids.push(item.id);
           }
@@ -2006,7 +2077,7 @@ export function analyzePlanForSection133(planText, options = {}) {
         cover(construct, "requirement", "REQUIREMENT", "§19 intro opens runbook list", ids);
         continue;
       }
-      if (phase != null && /^Synthetic activity may supplement/.test(text)) {
+      if (phase != null && text.startsWith("Synthetic activity may supplement")) {
         const ids = [];
         for (const [index, part] of splitAtomicObligations(text).entries()) {
           const item = pushItem(
@@ -2096,10 +2167,12 @@ export function analyzePlanForSection133(planText, options = {}) {
  * @param {string} value
  */
 function slug(value) {
-  return normalizePlanText(value)
-    .replace(/[^a-z0-9]+/g, "_")
-    .replace(/^_|_$/g, "")
-    .slice(0, 80) || "x";
+  return (
+    normalizePlanText(value)
+      .replace(/[^a-z0-9]+/g, "_")
+      .replace(/^_|_$/g, "")
+      .slice(0, 80) || "x"
+  );
 }
 
 /**
@@ -2176,7 +2249,11 @@ export function loadFrozenPlanItems(opts = {}) {
  */
 export function buildInventoryFromPlanItems(items, planSha256, coverage = [], evidenceMaps = null) {
   const descriptiveExclusions = (Array.isArray(coverage) ? coverage : [])
-    .filter((entry) => entry && /** @type {{ reasonCode?: string }} */ (entry).reasonCode === "DESCRIPTIVE_EXCLUSION")
+    .filter(
+      (entry) =>
+        entry &&
+        /** @type {{ reasonCode?: string }} */ (entry).reasonCode === "DESCRIPTIVE_EXCLUSION",
+    )
     .map((entry) => {
       const row = /** @type {Record<string, unknown>} */ (entry);
       return {

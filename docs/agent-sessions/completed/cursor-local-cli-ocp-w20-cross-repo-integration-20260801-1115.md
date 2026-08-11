@@ -2,29 +2,29 @@
 
 ## Identity
 
-| Field             | Value                                                            |
-| ----------------- | ---------------------------------------------------------------- |
-| Agent type        | Cursor Local Agent                                               |
-| Platform          | Cursor                                                           |
-| Machine           | mac-mini                                                         |
-| Surface           | cli-agents-window                                                |
-| Execution         | local                                                            |
-| Role              | feature                                                          |
-| Orchestrator key  | cursor-local-mac-mini-desktop-workspace-orchestrator             |
-| Coordination home | `/Users/linktrend/Projects/openclaw_prime`                       |
-| Session ID        | cursor-local-cli-ocp-w20-cross-repo-integration-20260801-1115    |
-| Started           | 2026-08-01 11:15 Asia/Taipei                                     |
-| Last updated      | 2026-08-01 11:23 Asia/Taipei                                     |
+| Field             | Value                                                         |
+| ----------------- | ------------------------------------------------------------- |
+| Agent type        | Cursor Local Agent                                            |
+| Platform          | Cursor                                                        |
+| Machine           | mac-mini                                                      |
+| Surface           | cli-agents-window                                             |
+| Execution         | local                                                         |
+| Role              | feature                                                       |
+| Orchestrator key  | cursor-local-mac-mini-desktop-workspace-orchestrator          |
+| Coordination home | `/Users/linktrend/Projects/openclaw_prime`                    |
+| Session ID        | cursor-local-cli-ocp-w20-cross-repo-integration-20260801-1115 |
+| Started           | 2026-08-01 11:15 Asia/Taipei                                  |
+| Last updated      | 2026-08-01 11:23 Asia/Taipei                                  |
 
 ## Work
 
-| Field           | Value                                                         |
-| --------------- | ------------------------------------------------------------- |
-| Objective       | OCP-W20-CROSS-REPO-INTEGRATION candidate-only integration     |
-| Branch          | `dev/cursor/ocp-w20-cross-repo-integration`                   |
-| Starting commit | `3169119fb697fa28cc6d2c244231729a8206e68d`                    |
-| Status          | `complete`                                                    |
-| Handoff         | `docs/handoffs/2026-08-01-ocp-w20-cross-repo-integration.md`  |
+| Field           | Value                                                        |
+| --------------- | ------------------------------------------------------------ |
+| Objective       | OCP-W20-CROSS-REPO-INTEGRATION candidate-only integration    |
+| Branch          | `dev/cursor/ocp-w20-cross-repo-integration`                  |
+| Starting commit | `3169119fb697fa28cc6d2c244231729a8206e68d`                   |
+| Status          | `complete`                                                   |
+| Handoff         | `docs/handoffs/2026-08-01-ocp-w20-cross-repo-integration.md` |
 
 ## Ownership Scope
 

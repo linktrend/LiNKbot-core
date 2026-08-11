@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { createBrainFake } from "./fake/runtime.mjs";
+import { LINKBRAIN_MCP_TOOL_ALLOWLIST } from "./mcp-tool-filter.js";
 import { parseLinkbrainConfig } from "./src/config.js";
 import { createBrainDrainWorker } from "./src/drain-worker.js";
 import {
@@ -7,7 +8,6 @@ import {
   invokeLinkbrainFeatureRead,
 } from "./src/feature-flags.js";
 import { createBrainFakeTransport } from "./src/runtime.js";
-import { LINKBRAIN_MCP_TOOL_ALLOWLIST } from "./mcp-tool-filter.js";
 
 describe("linkbrain feature flags (MCP-gated, no plugin tool stubs)", () => {
   it("gates each Brain flag family independently and deny-alls when all false", () => {
@@ -135,7 +135,7 @@ describe("linkbrain drain worker bounds", () => {
   it("does not launch concurrent ticks", async () => {
     let concurrent = 0;
     let maxConcurrent = 0;
-    let releases: Array<() => void> = [];
+    const releases: Array<() => void> = [];
     const worker = createBrainDrainWorker({
       intervalMs: 5,
       tickTimeoutMs: 500,

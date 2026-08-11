@@ -2,29 +2,29 @@
 
 ## Identity
 
-| Field             | Value |
-| ----------------- | ----- |
-| Agent type        | Cursor Cloud Agent |
-| Platform          | Cursor |
-| Machine           | cloud |
-| Surface           | cloud-agent |
-| Execution         | cloud |
-| Role              | feature |
+| Field             | Value                                                              |
+| ----------------- | ------------------------------------------------------------------ |
+| Agent type        | Cursor Cloud Agent                                                 |
+| Platform          | Cursor                                                             |
+| Machine           | cloud                                                              |
+| Surface           | cloud-agent                                                        |
+| Execution         | cloud                                                              |
+| Role              | feature                                                            |
 | Orchestrator key  | cursor-local-mac-mini-desktop-workspace-orchestrator-20260723-1539 |
-| Coordination home | /Users/linktrend/Projects/openclaw_prime |
-| Session ID        | cursor-cloud-feature-paci-iv-wave3-lane-c-20260730 |
-| Started           | 2026-07-30 14:04 Asia/Taipei |
-| Last updated      | 2026-07-30 14:07 Asia/Taipei |
+| Coordination home | /Users/linktrend/Projects/openclaw_prime                           |
+| Session ID        | cursor-cloud-feature-paci-iv-wave3-lane-c-20260730                 |
+| Started           | 2026-07-30 14:04 Asia/Taipei                                       |
+| Last updated      | 2026-07-30 14:07 Asia/Taipei                                       |
 
 ## Work
 
-| Field           | Value |
-| --------------- | ----- |
+| Field           | Value                                                              |
+| --------------- | ------------------------------------------------------------------ |
 | Objective       | PACI IV Wave 3 Lane C — remove public acquire fetchFn/now bypasses |
-| Branch          | `issue/ocp-openclawdevelopmentplan01` |
-| Starting commit | `2a1cab16be606444145b27074cd998dd63ed46e5` |
-| Status          | `complete` |
-| Handoff         | Lane C complete; uncommitted; parent integrates |
+| Branch          | `issue/ocp-openclawdevelopmentplan01`                              |
+| Starting commit | `2a1cab16be606444145b27074cd998dd63ed46e5`                         |
+| Status          | `complete`                                                         |
+| Handoff         | Lane C complete; uncommitted; parent integrates                    |
 
 ## Ownership Scope
 

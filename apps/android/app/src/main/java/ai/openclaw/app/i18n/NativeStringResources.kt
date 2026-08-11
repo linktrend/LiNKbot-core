@@ -1365,6 +1365,7 @@ internal val nativeStringResourceIds: Map<String, Int> =
     "Voice request failed" to R.string.native_28d55ec6974d84e8,
     "Voice setup" to R.string.native_209b9e597963e7e1,
     "Wait for Agents" to R.string.native_56c4c3d30ceda56e,
+    "Wait for Sessions" to R.string.native_a255f79ac35787b6,
     "Wait for the current response to finish before starting a new chat." to R.string.native_d68f3aaa52604f24,
     "Waiting" to R.string.native_6e293a8c009e0011,
     "Waiting \${duration}" to R.string.native_e841c8273d808b7a,

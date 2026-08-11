@@ -19,7 +19,7 @@ const {
   resolveConfiguredSecretInputStringMock,
   streamableTransportConstructorMock,
 } = vi.hoisted(() => ({
-  machineTokenBearerMock: vi.fn(() => vi.fn(async () => new Response("ok"))),
+  machineTokenBearerMock: vi.fn((_params: unknown) => vi.fn(async () => new Response("ok"))),
   oauthBearerMock: vi.fn(() => vi.fn(async () => new Response("ok"))),
   resolveConfiguredSecretInputStringMock: vi.fn(),
   streamableTransportConstructorMock: vi.fn(),

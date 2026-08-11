@@ -2,21 +2,21 @@
 
 ## Session Metadata
 
-| Field            | Value |
-| ---------------- | ----- |
-| Agent identity   | Cursor Local Agent / Cursor Grok 4.5 High |
-| Session ID       | cursor-local-mac-mini-lisa-openclawdevelopmentplan01-wave16-20260729 |
-| Orchestrator key | cursor-local-mac-mini-desktop-workspace-orchestrator |
-| Objective        | Docs/tooling Phase-14 wave 16: exact-line descriptive exclusions |
+| Field            | Value                                                                                       |
+| ---------------- | ------------------------------------------------------------------------------------------- |
+| Agent identity   | Cursor Local Agent / Cursor Grok 4.5 High                                                   |
+| Session ID       | cursor-local-mac-mini-lisa-openclawdevelopmentplan01-wave16-20260729                        |
+| Orchestrator key | cursor-local-mac-mini-desktop-workspace-orchestrator                                        |
+| Objective        | Docs/tooling Phase-14 wave 16: exact-line descriptive exclusions                            |
 | Scope            | Extractor + validator + regenerated inventory/ledger/tests/docs; no runtime/fixture changes |
-| Started          | 2026-07-29 Asia/Taipei |
-| Ended            | 2026-07-29 Asia/Taipei |
-| Starting branch  | `issue/ocp-openclawdevelopmentplan01` |
-| Ending branch    | `issue/ocp-openclawdevelopmentplan01` |
-| Starting commit  | `ffb5ea141bf744f9c8a3b31997384458b3b385a4` |
-| Ending commit    | tip after tip-record (`git rev-parse HEAD` after push) |
-| Starting status  | clean at exact HEAD |
-| Ending status    | clean after push |
+| Started          | 2026-07-29 Asia/Taipei                                                                      |
+| Ended            | 2026-07-29 Asia/Taipei                                                                      |
+| Starting branch  | `issue/ocp-openclawdevelopmentplan01`                                                       |
+| Ending branch    | `issue/ocp-openclawdevelopmentplan01`                                                       |
+| Starting commit  | `ffb5ea141bf744f9c8a3b31997384458b3b385a4`                                                  |
+| Ending commit    | tip after tip-record (`git rev-parse HEAD` after push)                                      |
+| Starting status  | clean at exact HEAD                                                                         |
+| Ending status    | clean after push                                                                            |
 
 ## Summary
 

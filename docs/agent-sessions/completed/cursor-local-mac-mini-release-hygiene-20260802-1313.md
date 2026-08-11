@@ -2,29 +2,29 @@
 
 ## Identity
 
-| Field             | Value                                                              |
-| ----------------- | ------------------------------------------------------------------ |
-| Agent type        | Cursor Local Agent                                                 |
-| Platform          | Cursor                                                             |
-| Machine           | mac-mini                                                           |
-| Surface           | agents-window                                                      |
-| Execution         | local                                                              |
-| Role              | feature                                                            |
-| Orchestrator key  | cursor-local-mac-mini-desktop-workspace-orchestrator               |
-| Coordination home | /Users/linktrend/Projects/openclaw_prime                           |
-| Session ID        | cursor-local-mac-mini-release-hygiene-20260802-1313                |
-| Started           | 2026-08-02 13:13 Asia/Taipei                                       |
-| Last updated      | 2026-08-02 13:45 Asia/Taipei                                       |
+| Field             | Value                                                |
+| ----------------- | ---------------------------------------------------- |
+| Agent type        | Cursor Local Agent                                   |
+| Platform          | Cursor                                               |
+| Machine           | mac-mini                                             |
+| Surface           | agents-window                                        |
+| Execution         | local                                                |
+| Role              | feature                                              |
+| Orchestrator key  | cursor-local-mac-mini-desktop-workspace-orchestrator |
+| Coordination home | /Users/linktrend/Projects/openclaw_prime             |
+| Session ID        | cursor-local-mac-mini-release-hygiene-20260802-1313  |
+| Started           | 2026-08-02 13:13 Asia/Taipei                         |
+| Last updated      | 2026-08-02 13:45 Asia/Taipei                         |
 
 ## Work
 
-| Field           | Value                                                                                                      |
-| --------------- | ---------------------------------------------------------------------------------------------------------- |
-| Objective       | Pre-launch release hygiene: archive superseded LiNKtrend docs, update ops truth, remove proven dead/temp   |
-| Branch          | docs/release-hygiene/cursor-local-mac-mini-release-hygiene-20260802-1313                                   |
-| Starting commit | 2025401aafc7e877bb11e83c852bb718cdba0a54                                                                   |
-| Status          | `complete`                                                                                                 |
-| Handoff         | docs/handoffs/2026-08-02-release-hygiene-cleanup.md                                                        |
+| Field           | Value                                                                                                    |
+| --------------- | -------------------------------------------------------------------------------------------------------- |
+| Objective       | Pre-launch release hygiene: archive superseded LiNKtrend docs, update ops truth, remove proven dead/temp |
+| Branch          | docs/release-hygiene/cursor-local-mac-mini-release-hygiene-20260802-1313                                 |
+| Starting commit | 2025401aafc7e877bb11e83c852bb718cdba0a54                                                                 |
+| Status          | `complete`                                                                                               |
+| Handoff         | docs/handoffs/2026-08-02-release-hygiene-cleanup.md                                                      |
 
 ## Ownership Scope
 

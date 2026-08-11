@@ -31,28 +31,28 @@ core/managed-core/
 
 ### Consumer materialization (normative)
 
-| Source (system) | Destination (consumer) |
-|---|---|
-| `core/managed-core/VERSION` | `.ide-development/VERSION` |
-| package manifest (`files[]`) | `.ide-development/MANIFEST.json` |
-| `core/managed-core/content/**` | `.ide-development/content/**` |
+| Source (system)                  | Destination (consumer)                                        |
+| -------------------------------- | ------------------------------------------------------------- |
+| `core/managed-core/VERSION`      | `.ide-development/VERSION`                                    |
+| package manifest (`files[]`)     | `.ide-development/MANIFEST.json`                              |
+| `core/managed-core/content/**`   | `.ide-development/content/**`                                 |
 | `core/managed-core/platforms/**` | `.ide-development/platforms/**` plus declared discovery paths |
-| declared Codex skills | `.agents/skills/<name>/SKILL.md` (physical) |
-| declared Cursor entrypoints | `.cursor/rules|commands|skills/...` (physical) |
-| managed AGENTS section | root `AGENTS.md` marker block |
-| installed-state | `.ide-development/installed-state.json` (committed) |
-| transactions / backups | `.git/ide-development/` (Git-local only) |
+| declared Codex skills            | `.agents/skills/<name>/SKILL.md` (physical)                   |
+| declared Cursor entrypoints      | `.cursor/rules                                                | commands | skills/...` (physical) |
+| managed AGENTS section           | root `AGENTS.md` marker block                                 |
+| installed-state                  | `.ide-development/installed-state.json` (committed)           |
+| transactions / backups           | `.git/ide-development/` (Git-local only)                      |
 
 ## Ownership boundaries (Wave 1 packets)
 
-| Path | Owner |
-|---|---|
-| `core/managed-core/` layout, schemas, examples, architecture docs | WP1 |
-| `core/managed-core/platforms/**` adapter bodies | WP3 |
-| `core/managed-core/migrations/**` catalog entries | WP4 |
-| installer engine reading these schemas | WP2 |
-| external protection plan/apply/verify | WP5 |
-| top-level operator docs / VERSION product file | WP6 |
+| Path                                                              | Owner |
+| ----------------------------------------------------------------- | ----- |
+| `core/managed-core/` layout, schemas, examples, architecture docs | WP1   |
+| `core/managed-core/platforms/**` adapter bodies                   | WP3   |
+| `core/managed-core/migrations/**` catalog entries                 | WP4   |
+| installer engine reading these schemas                            | WP2   |
+| external protection plan/apply/verify                             | WP5   |
+| top-level operator docs / VERSION product file                    | WP6   |
 
 ## Hard rules
 

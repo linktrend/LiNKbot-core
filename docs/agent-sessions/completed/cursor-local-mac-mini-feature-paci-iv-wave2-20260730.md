@@ -2,31 +2,31 @@
 
 ## Identity
 
-| Field             | Value |
-| ----------------- | ----- |
-| Agent type        | Cursor Local Agent |
-| Platform          | Cursor |
-| Machine           | Mac mini |
-| Surface           | Desktop workspace |
-| Execution         | local |
-| Role              | feature |
+| Field             | Value                                                              |
+| ----------------- | ------------------------------------------------------------------ |
+| Agent type        | Cursor Local Agent                                                 |
+| Platform          | Cursor                                                             |
+| Machine           | Mac mini                                                           |
+| Surface           | Desktop workspace                                                  |
+| Execution         | local                                                              |
+| Role              | feature                                                            |
 | Orchestrator key  | cursor-local-mac-mini-desktop-workspace-orchestrator-20260723-1539 |
-| Coordination home | /Users/linktrend/Projects/openclaw_prime |
-| Session ID        | cursor-local-mac-mini-feature-paci-iv-wave2-20260730 |
-| Started           | 2026-07-30 12:50 Asia/Taipei |
-| Last updated      | 2026-07-30 13:20 Asia/Taipei |
-| Ended             | 2026-07-30 13:20 Asia/Taipei |
+| Coordination home | /Users/linktrend/Projects/openclaw_prime                           |
+| Session ID        | cursor-local-mac-mini-feature-paci-iv-wave2-20260730               |
+| Started           | 2026-07-30 12:50 Asia/Taipei                                       |
+| Last updated      | 2026-07-30 13:20 Asia/Taipei                                       |
+| Ended             | 2026-07-30 13:20 Asia/Taipei                                       |
 
 ## Work
 
-| Field           | Value |
-| ----------------- | ----- |
-| Objective       | PACI IV correction wave 2; stop for Codex Phase-14; await certified Platform repin |
-| Branch          | `issue/ocp-openclawdevelopmentplan01` |
-| Starting commit | `4126b7f590b4104a479d17795082e140c4f26ce1` |
-| Ending commit   | `ce2df824bf09e6b362d3597fd097ae39c03e12bd` |
-| Status          | `completed` |
-| Handoff         | `docs/handoffs/2026-07-30-paci-iv-correction-wave2.md` |
+| Field           | Value                                                                                              |
+| --------------- | -------------------------------------------------------------------------------------------------- |
+| Objective       | PACI IV correction wave 2; stop for Codex Phase-14; await certified Platform repin                 |
+| Branch          | `issue/ocp-openclawdevelopmentplan01`                                                              |
+| Starting commit | `4126b7f590b4104a479d17795082e140c4f26ce1`                                                         |
+| Ending commit   | `ce2df824bf09e6b362d3597fd097ae39c03e12bd`                                                         |
+| Status          | `completed`                                                                                        |
+| Handoff         | `docs/handoffs/2026-07-30-paci-iv-correction-wave2.md`                                             |
 | Phase-13        | `docs/execution/openclawdevelopmentplan01/PHASE-13-PACI-IV-WAVE2-CORRECTION-HANDOFF-2026-07-30.md` |
 
 ## Ownership Scope

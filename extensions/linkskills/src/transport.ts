@@ -568,7 +568,7 @@ async function openDefaultMcpSession(
     let httpFetch = resourceFetch;
     if (managedMachineToken && accessToken) {
       const resourceOrigin = url.origin;
-      let currentToken = accessToken;
+      const currentToken = accessToken;
       httpFetch = async (requestUrl, init) => {
         const target =
           typeof requestUrl === "string"

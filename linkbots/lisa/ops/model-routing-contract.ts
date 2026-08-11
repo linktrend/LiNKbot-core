@@ -537,7 +537,7 @@ export function validateApprovedRouting(
   if (cutover.evidence.length === 0) {
     errors.push("pdfDocumentModelsCutover.evidence must be non-empty");
   }
-  const slots = routing.entries.map((e) => e.slot);
+  const slots = new Set(routing.entries.map((e) => e.slot));
   const required: ModelRouteSlot[] = [
     "primary",
     "firstFallback",
@@ -548,7 +548,7 @@ export function validateApprovedRouting(
     "evaluationOnly",
   ];
   for (const slot of required) {
-    if (!slots.includes(slot)) {
+    if (!slots.has(slot)) {
       errors.push(`missing slot ${slot}`);
     }
   }

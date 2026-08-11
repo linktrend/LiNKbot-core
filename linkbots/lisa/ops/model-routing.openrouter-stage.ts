@@ -319,7 +319,7 @@ export function applyStagePdfRollbackInMemory(
   }
   const deny = new Set(next.tools?.deny ?? []);
   deny.add("pdf");
-  next.tools = { ...(next.tools ?? {}), deny: [...deny].sort() };
+  next.tools = { ...next.tools, deny: [...deny].toSorted() };
   const validationErrors = validateStagePdfRollbackConfig(next);
   // After rollback, pdfModel key is absent — that is valid. Re-check only preserved routes.
   if (!next.agents.defaults.model?.primary) {
@@ -361,7 +361,7 @@ export function restoreStagePdfFromReceipt(
   } else if (next.agents.defaults.pdfModel) {
     delete next.agents.defaults.pdfModel;
   }
-  next.tools = { ...(next.tools ?? {}), deny: [...receipt.restoredToolsDeny] };
+  next.tools = { ...next.tools, deny: [...receipt.restoredToolsDeny] };
   const validationErrors = validateStagePdfRollbackConfig(next);
   return { next, validationErrors };
 }

@@ -1,14 +1,14 @@
 # OCP-W20 Lane B — Lisa ops opt-in / non-live / sessions_wait
 
-| Field | Value |
-| --- | --- |
-| Lane | B |
-| Model | cursor-grok-4.5-high |
-| Worktree | `ocp-w20-cross-repo-integration-cli` |
-| Base SHA | `3169119fb697fa28cc6d2c244231729a8206e68d` (unchanged) |
-| Reconcile tip | `fb9fe4b68b85fd866670ce748ba1c060cab6a323` (`issue/ocp-lisa-ops01`, ancestor; **not merged**) |
-| When (Asia/Taipei) | 2026-08-01T11:21:45+0800 |
-| Result | passed |
+| Field              | Value                                                                                         |
+| ------------------ | --------------------------------------------------------------------------------------------- |
+| Lane               | B                                                                                             |
+| Model              | cursor-grok-4.5-high                                                                          |
+| Worktree           | `ocp-w20-cross-repo-integration-cli`                                                          |
+| Base SHA           | `3169119fb697fa28cc6d2c244231729a8206e68d` (unchanged)                                        |
+| Reconcile tip      | `fb9fe4b68b85fd866670ce748ba1c060cab6a323` (`issue/ocp-lisa-ops01`, ancestor; **not merged**) |
+| When (Asia/Taipei) | 2026-08-01T11:21:45+0800                                                                      |
+| Result             | passed                                                                                        |
 
 ## Scope
 

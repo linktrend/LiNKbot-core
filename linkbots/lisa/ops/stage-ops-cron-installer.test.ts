@@ -1,15 +1,12 @@
 /**
  * Typed lisa-stage cron installer payloads — gateway-valid create/edit shapes.
  * Run:
- *   node --import ./linkbots/lisa/ops/register-strip-types-js-resolve.mjs \
- *     --experimental-strip-types --test linkbots/lisa/ops/stage-ops-cron-installer.test.ts
+ *   node --import tsx --import ./linkbots/lisa/ops/register-strip-types-js-resolve.mjs \
+ *     --test linkbots/lisa/ops/stage-ops-cron-installer.test.ts
  */
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import {
-  validateCronAddParams,
-  formatValidationErrors,
-} from "../../../packages/gateway-protocol/dist/index.mjs";
+import { validateCronAddParams, formatValidationErrors } from "@openclaw/gateway-protocol";
 import {
   buildStageConstraintsReceipt,
   buildStageCronInstallPlan,

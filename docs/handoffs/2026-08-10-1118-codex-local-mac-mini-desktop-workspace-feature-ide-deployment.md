@@ -2,21 +2,21 @@
 
 ## Session Metadata
 
-| Field            | Value |
-| ---------------- | ----- |
-| Agent identity   | Codex Desktop Agent / Luna High |
-| Session ID       | codex-local-mac-mini-desktop-workspace-feature-20260810-1100 |
-| Orchestrator key | codex-mac-mini-desktop-app-orchestrator |
-| Objective        | Carlos-approved WP04 first portable IDE Development installation for consumer #1 `openclaw_prime`. |
+| Field            | Value                                                                                                                                             |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Agent identity   | Codex Desktop Agent / Luna High                                                                                                                   |
+| Session ID       | codex-local-mac-mini-desktop-workspace-feature-20260810-1100                                                                                      |
+| Orchestrator key | codex-mac-mini-desktop-app-orchestrator                                                                                                           |
+| Objective        | Carlos-approved WP04 first portable IDE Development installation for consumer #1 `openclaw_prime`.                                                |
 | Scope            | Isolated worktree `/Users/linktrend/Projects/openclaw_prime-worktrees/IDE-deployment`; managed installation and scoped coordination records only. |
-| Started          | 2026-08-10 11:00 Asia/Taipei |
-| Ended            | 2026-08-10 11:18 Asia/Taipei |
-| Starting branch  | `feature/IDE-deployment` |
-| Ending branch    | `feature/IDE-deployment` |
-| Starting commit  | `a5d67da87bbab9edfbc3465c5f505da26d4dbc29` |
-| Ending commit    | `7ec63e7e027` installation checkpoint; this handoff is the coordination closeout following that checkpoint. |
-| Starting status  | clean worktree at refreshed `origin/main` |
-| Ending status    | install verified; coordination closeout ready to push; no PR opened |
+| Started          | 2026-08-10 11:00 Asia/Taipei                                                                                                                      |
+| Ended            | 2026-08-10 11:18 Asia/Taipei                                                                                                                      |
+| Starting branch  | `feature/IDE-deployment`                                                                                                                          |
+| Ending branch    | `feature/IDE-deployment`                                                                                                                          |
+| Starting commit  | `a5d67da87bbab9edfbc3465c5f505da26d4dbc29`                                                                                                        |
+| Ending commit    | `7ec63e7e027` installation checkpoint; this handoff is the coordination closeout following that checkpoint.                                       |
+| Starting status  | clean worktree at refreshed `origin/main`                                                                                                         |
+| Ending status    | install verified; coordination closeout ready to push; no PR opened                                                                               |
 
 ## Summary
 

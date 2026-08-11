@@ -16,14 +16,14 @@ Calculating flagged include arrays and logging them, or invoking fake transports
 
 ## Evidence inspected (public / documented)
 
-| Surface | Path | Result |
-| ------- | ---- | ------ |
-| `OpenClawPluginApi` | `src/plugins/plugin-api.types.ts` | Only MCP register method: `registerMcpServerConnectionResolver` (transport URL/headers; tool surface static) |
-| MCP connection contract | `src/plugins/types.mcp-connection.ts` | “Server name/tool surface stay static” |
-| SDK overview | `docs/plugins/sdk-overview.md` | Keep MCP identity (name, tool filter) static in `mcp.servers` |
-| Runtime selection | `src/agents/agent-bundle-mcp-runtime.ts` | Reads saved `rawServer.toolFilter` only |
-| Operator write path | `src/config/mcp-config.ts` `updateConfiguredMcpServerTools` | CLI/`openclaw mcp tools` — **not** plugin-sdk |
-| Plugin-sdk entrypoints | `scripts/lib/plugin-sdk-entrypoints.json` | No `setMcpToolFilter` / `registerMcpServerToolFilter` |
+| Surface                 | Path                                                        | Result                                                                                                       |
+| ----------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `OpenClawPluginApi`     | `src/plugins/plugin-api.types.ts`                           | Only MCP register method: `registerMcpServerConnectionResolver` (transport URL/headers; tool surface static) |
+| MCP connection contract | `src/plugins/types.mcp-connection.ts`                       | “Server name/tool surface stay static”                                                                       |
+| SDK overview            | `docs/plugins/sdk-overview.md`                              | Keep MCP identity (name, tool filter) static in `mcp.servers`                                                |
+| Runtime selection       | `src/agents/agent-bundle-mcp-runtime.ts`                    | Reads saved `rawServer.toolFilter` only                                                                      |
+| Operator write path     | `src/config/mcp-config.ts` `updateConfiguredMcpServerTools` | CLI/`openclaw mcp tools` — **not** plugin-sdk                                                                |
+| Plugin-sdk entrypoints  | `scripts/lib/plugin-sdk-entrypoints.json`                   | No `setMcpToolFilter` / `registerMcpServerToolFilter`                                                        |
 
 ## Current OpenClaw consumer behavior (honest)
 

@@ -321,7 +321,7 @@ export function validateAuthClaimsProvenance(options = {}) {
   /** @type {string[]} */
   const checks = [];
 
-  const requiredRels = [...Object.values(REL)];
+  const requiredRels = Object.values(REL);
   for (const relativePath of requiredRels) {
     requireOk(
       errors,

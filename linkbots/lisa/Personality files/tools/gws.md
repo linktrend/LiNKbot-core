@@ -53,17 +53,17 @@ OpenClaw does **not** have a "require lisa-safe" flag. Enforcement is: (a) docs/
 
 Evidence from Lisa session transcripts (2026-07-14 → 2026-07-21): ~1 in 4 gws-related `exec`s failed. Most were **Lisa improvising bad shell/syntax**, not Google outages.
 
-| What happened | Why | Do this instead |
-|---|---|---|
-| `SYSTEM_RUN_DENIED … denylist screening` on `2>&1`, `\| head`, `\|\| echo`, `$(cat …)` | Opaque shell cannot be proven safe against the auth/keep STOP list → hard-deny (no Allow-once card) | `tools/bin/lisa-safe …` only |
-| `unrecognized subcommand 'send'` / tip `+send` | Wrong helper name | `lisa-safe email-send` |
-| `unrecognized subcommand 'list'` on gmail | Invented — use `+triage` | `lisa-safe gmail-triage --max 5` |
-| `Unknown service 'calendarList'` / `gws calendar get` / `gws events get` | Invented path — service is `calendar`, resource is `calendarList` | `lisa-safe calendar-list` / `calendar-agenda` |
-| `unrecognized subcommand '+list'` on tasks | No such helper | Carlos Tasks: `tools/bin/lisa-carlos-tasks …` |
-| `401 No credentials` / `invalid_rapt` / reauth | OAuth token needs Carlos in a GUI browser | Report exact error to Carlos; **never** `gws auth …` |
-| Keep `403` / denylist `gws keep*` | Upstream Desktop OAuth cannot grant Keep | Doctrine only — do not retry |
-| `lisa-safe: resource root 'files' is not allowed` | Old wrapper required `drive.files` | Use `--resource drive.files` **or** alias `files`; params-only via `--params-file` |
-| Denylist match on `gws gmail list*` / `gws events*` / `gws calendarList*` | Known-bad improvisations blocked | Cheat sheet in `tools/lisa-safe.md` |
+| What happened                                                                          | Why                                                                                                 | Do this instead                                                                    |
+| -------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `SYSTEM_RUN_DENIED … denylist screening` on `2>&1`, `\| head`, `\|\| echo`, `$(cat …)` | Opaque shell cannot be proven safe against the auth/keep STOP list → hard-deny (no Allow-once card) | `tools/bin/lisa-safe …` only                                                       |
+| `unrecognized subcommand 'send'` / tip `+send`                                         | Wrong helper name                                                                                   | `lisa-safe email-send`                                                             |
+| `unrecognized subcommand 'list'` on gmail                                              | Invented — use `+triage`                                                                            | `lisa-safe gmail-triage --max 5`                                                   |
+| `Unknown service 'calendarList'` / `gws calendar get` / `gws events get`               | Invented path — service is `calendar`, resource is `calendarList`                                   | `lisa-safe calendar-list` / `calendar-agenda`                                      |
+| `unrecognized subcommand '+list'` on tasks                                             | No such helper                                                                                      | Carlos Tasks: `tools/bin/lisa-carlos-tasks …`                                      |
+| `401 No credentials` / `invalid_rapt` / reauth                                         | OAuth token needs Carlos in a GUI browser                                                           | Report exact error to Carlos; **never** `gws auth …`                               |
+| Keep `403` / denylist `gws keep*`                                                      | Upstream Desktop OAuth cannot grant Keep                                                            | Doctrine only — do not retry                                                       |
+| `lisa-safe: resource root 'files' is not allowed`                                      | Old wrapper required `drive.files`                                                                  | Use `--resource drive.files` **or** alias `files`; params-only via `--params-file` |
+| Denylist match on `gws gmail list*` / `gws events*` / `gws calendarList*`              | Known-bad improvisations blocked                                                                    | Cheat sheet in `tools/lisa-safe.md`                                                |
 
 **One-shot rule after any denial:** do not retry the same opaque/wrong shape. Switch to the cheat sheet in `tools/lisa-safe.md`. If the verb is missing, stop and report.
 

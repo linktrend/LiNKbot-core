@@ -249,7 +249,7 @@ function writeArtifacts(
     analyzed.coverage,
     evidenceMaps,
   );
-  let rows = parseCsv(buildLedgerCsvFromPlanItems(analyzed.items));
+  const rows = parseCsv(buildLedgerCsvFromPlanItems(analyzed.items));
   if (mutate) {
     mutate(inventory, rows);
   }
@@ -310,14 +310,14 @@ describe("section 13.3 plan-authority ledger validator", () => {
     expect(analyzed.items.some((item) => item.id.startsWith("gate.principal."))).toBe(true);
     expect(analyzed.items.some((item) => item.id.startsWith("assumption.verify."))).toBe(true);
     expect(analyzed.items.some((item) => item.kind === "assumption")).toBe(true);
-    expect(
-      analyzed.items.some((item) => item.id.startsWith("verifier.role_separation.")),
-    ).toBe(true);
+    expect(analyzed.items.some((item) => item.id.startsWith("verifier.role_separation."))).toBe(
+      true,
+    );
     // §22.3 resolved decisions are ledger requirements (binding architecture decisions).
     expect(analyzed.items.some((item) => item.id.startsWith("decision.resolved."))).toBe(true);
-    expect(
-      analyzed.items.some((item) => /two private bundled plugins/.test(item.label)),
-    ).toBe(true);
+    expect(analyzed.items.some((item) => /two private bundled plugins/.test(item.label))).toBe(
+      true,
+    );
     expect(analyzed.items.some((item) => item.id.startsWith("next_action."))).toBe(true);
   });
 
@@ -337,19 +337,23 @@ describe("section 13.3 plan-authority ledger validator", () => {
     expect(
       labels.some((label) => /Record the exact contract, owner, consumer, and impact/.test(label)),
     ).toBe(true);
-    expect(labels.some((label) => /does not authorize architecture changes/.test(label))).toBe(true);
+    expect(labels.some((label) => /does not authorize architecture changes/.test(label))).toBe(
+      true,
+    );
     expect(analyzed.items.some((item) => item.id.startsWith("decision.resolved."))).toBe(true);
     expect(analyzed.items.some((item) => item.id.startsWith("next_action."))).toBe(true);
     const intros = analyzed.coverage.filter(
       (entry) =>
-        entry.disposition === "non_requirement" && entry.reasonCode === "INTRO_OPENS_FOLLOWING_LIST",
+        entry.disposition === "non_requirement" &&
+        entry.reasonCode === "INTRO_OPENS_FOLLOWING_LIST",
     );
     expect(intros.length).toBeGreaterThan(0);
     expect(
       analyzed.coverage
         .filter((entry) => entry.disposition === "non_requirement")
         .every(
-          (entry) => typeof entry.reasonCode === "string" && typeof entry.sourceContext === "string",
+          (entry) =>
+            typeof entry.reasonCode === "string" && typeof entry.sourceContext === "string",
         ),
     ).toBe(true);
     expect(
@@ -425,9 +429,9 @@ describe("section 13.3 plan-authority ledger validator", () => {
     expect(kinds.has("evidence_requirement")).toBe(true);
     expect(new Set(items.map((item) => item.anchor)).size).toBe(items.length);
     expect(new Set(items.map((item) => item.fingerprint)).size).toBe(items.length);
-    expect(items.every((item) => item.fingerprint === planItemFingerprint(item.anchor, item.label))).toBe(
-      true,
-    );
+    expect(
+      items.every((item) => item.fingerprint === planItemFingerprint(item.anchor, item.label)),
+    ).toBe(true);
   });
 
   it("rejects stale plan hashes", () => {
@@ -467,7 +471,7 @@ describe("section 13.3 plan-authority ledger validator", () => {
         inventory.items = items;
         const header = rows[0];
         const data = rows.slice(1).filter((row) => row[0] !== "phase.8.title");
-        const duplicate = [...data[0]];
+        const duplicate = [...data[0]!];
         const invented = [
           "invented.ledger.task",
           "task",
@@ -485,7 +489,7 @@ describe("section 13.3 plan-authority ledger validator", () => {
           grouped[5] = "INPL/BLOCK";
         }
         rows.length = 0;
-        rows.push(header, ...data, duplicate, invented);
+        rows.push(header!, ...data, duplicate, invented);
       });
       const result = validateSection133Ledger({
         root: tmp,
@@ -507,8 +511,10 @@ describe("section 13.3 plan-authority ledger validator", () => {
     const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "section133-class-"));
     try {
       const { planSha } = writeArtifacts(tmp, MINI_PLAN, (inventory, rows) => {
-        (inventory as { classifications?: unknown }).classifications = [{ id: "x", classification: "INPL" }];
-        const header = [...rows[0]];
+        (inventory as { classifications?: unknown }).classifications = [
+          { id: "x", classification: "INPL" },
+        ];
+        const header = [...rows[0]!];
         header[5] = "classification";
         rows[0] = header;
         if (rows[1]) {
@@ -518,7 +524,9 @@ describe("section 13.3 plan-authority ledger validator", () => {
       const result = validateSection133Ledger({ root: tmp, expectedSha256: planSha });
       expect(result.ok).toBe(false);
       const joined = result.errors.join("\n");
-      expect(joined).toMatch(/must not include classifications|classification column|Phase-14 classification/);
+      expect(joined).toMatch(
+        /must not include classifications|classification column|Phase-14 classification/,
+      );
     } finally {
       fs.rmSync(tmp, { recursive: true, force: true });
     }
@@ -555,7 +563,8 @@ describe("section 13.3 plan-authority ledger validator", () => {
     expect(analyzed.coverage.some((entry) => entry.disposition === "unhandled")).toBe(true);
     const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "section133-unhandled-"));
     try {
-      const planRel = "docs/OPENCLAW-PRIME-LISA-LINKBRAIN-LINKSKILLS-DETAILED-IMPLEMENTATION-PLAN.md";
+      const planRel =
+        "docs/OPENCLAW-PRIME-LISA-LINKBRAIN-LINKSKILLS-DETAILED-IMPLEMENTATION-PLAN.md";
       fs.mkdirSync(path.join(tmp, "docs"), { recursive: true });
       fs.mkdirSync(path.join(tmp, "docs/execution/openclawdevelopmentplan01/section-13.3"), {
         recursive: true,
@@ -598,15 +607,13 @@ describe("section 13.3 plan-authority ledger validator", () => {
     const expectSome = (re: RegExp) => expect(ids.some((id) => re.test(id))).toBe(true);
     const expectLabel = (re: RegExp) => expect(labels.some((label) => re.test(label))).toBe(true);
     expectSome(/^source_hierarchy\./);
-    expect(
-      loaded.items.filter((item) => item.id.startsWith("source_hierarchy.")).length,
-    ).toBe(6);
+    expect(loaded.items.filter((item) => item.id.startsWith("source_hierarchy.")).length).toBe(6);
     expect(
       loaded.coverage.filter((entry) => entry.reasonCode === "STRUCTURAL_ENUM_DEFINITION").length,
     ).toBe(7);
-    expect(
-      loaded.items.some((item) => isSection133ClassificationEnumLabel(item.label)),
-    ).toBe(false);
+    expect(loaded.items.some((item) => isSection133ClassificationEnumLabel(item.label))).toBe(
+      false,
+    );
     expectSome(/^phase\.7\./);
     expectSome(/^phase\.8\.window_rule$/);
     expectSome(/^phase\.9\.hard_prerequisite\./);
@@ -644,9 +651,9 @@ describe("section 13.3 plan-authority ledger validator", () => {
     ).toBe(true);
     expect(loaded.items.filter((item) => item.id.startsWith("phase.11.sequence.")).length).toBe(1);
     expect(loaded.items.filter((item) => item.id.startsWith("phase.12.sequence.")).length).toBe(1);
-    expect(loaded.items.filter((item) => item.id.startsWith("phase.9.hard_prerequisite.")).length).toBe(
-      1,
-    );
+    expect(
+      loaded.items.filter((item) => item.id.startsWith("phase.9.hard_prerequisite.")).length,
+    ).toBe(1);
     expect(loaded.items.length).toBeGreaterThan(697);
     expect(loaded.items.every((item) => !isFragmentedPlanLabel(item.label))).toBe(true);
     const bySection = (prefix: string) =>
@@ -742,9 +749,9 @@ Findings:
     expect(analyzed.items.some((item) => /is a gate for live stage proof/.test(item.label))).toBe(
       true,
     );
-    expect(analyzed.items.some((item) => /Skills may not begin the Lisa canary/.test(item.label))).toBe(
-      true,
-    );
+    expect(
+      analyzed.items.some((item) => /Skills may not begin the Lisa canary/.test(item.label)),
+    ).toBe(true);
     expect(
       analyzed.items.some((item) => /sanitized observation without binding words/.test(item.label)),
     ).toBe(false);
@@ -944,9 +951,9 @@ The OpenClaw Codex verifier must classify every task as exactly one of these sev
     expect(
       analyzed.coverage.filter((entry) => entry.reasonCode === "STRUCTURAL_ENUM_DEFINITION").length,
     ).toBe(7);
-    expect(
-      analyzed.items.some((item) => isSection133ClassificationEnumLabel(item.label)),
-    ).toBe(false);
+    expect(analyzed.items.some((item) => isSection133ClassificationEnumLabel(item.label))).toBe(
+      false,
+    );
   });
 
   it("fail-closed: implemented evidence may not point at extractor/validator/ledger tooling", () => {

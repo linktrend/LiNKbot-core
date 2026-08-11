@@ -12,11 +12,9 @@
 
 ## FAKE / TEMPLATE rehearsal (safe anytime)
 
-
 1. If Skills shows Brain fields or Brain shows Skills content: disable both drains.
 2. Preserve outboxes for forensics; do not merge namespaces.
 3. Escalate as shared Platform/security incident only with evidence of shared scope.
-
 
 ## Expected sanitized evidence
 
@@ -26,9 +24,9 @@
 
 ## Rehearsal record
 
-| Field | Value |
-| ----- | ----- |
-| Rehearsed | 2026-07-28 Asia/Taipei (wave 6 non-live) |
-| Operator | Cursor Local Grok 4.5 High (docs rehearsal) |
-| Live mutation | **none** |
-| Result | Runbook executable at non-live tier |
+| Field         | Value                                       |
+| ------------- | ------------------------------------------- |
+| Rehearsed     | 2026-07-28 Asia/Taipei (wave 6 non-live)    |
+| Operator      | Cursor Local Grok 4.5 High (docs rehearsal) |
+| Live mutation | **none**                                    |
+| Result        | Runbook executable at non-live tier         |

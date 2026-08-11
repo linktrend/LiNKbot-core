@@ -12,11 +12,9 @@
 
 ## FAKE / TEMPLATE rehearsal (safe anytime)
 
-
 1. OpenClaw does not own Platform migrations. Record blocked status.
 2. Local recovery: disable plugins; retain keyed-store outboxes; restore prior plugin build if needed.
 3. Backup/restore of Platform DBs is Platform-owned — TEMPLATE note only.
-
 
 ## Expected sanitized evidence
 
@@ -26,9 +24,9 @@
 
 ## Rehearsal record
 
-| Field | Value |
-| ----- | ----- |
-| Rehearsed | 2026-07-28 Asia/Taipei (wave 6 non-live) |
-| Operator | Cursor Local Grok 4.5 High (docs rehearsal) |
-| Live mutation | **none** |
-| Result | Runbook executable at non-live tier |
+| Field         | Value                                       |
+| ------------- | ------------------------------------------- |
+| Rehearsed     | 2026-07-28 Asia/Taipei (wave 6 non-live)    |
+| Operator      | Cursor Local Grok 4.5 High (docs rehearsal) |
+| Live mutation | **none**                                    |
+| Result        | Runbook executable at non-live tier         |
