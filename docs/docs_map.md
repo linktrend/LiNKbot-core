@@ -1095,7 +1095,7 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Ownership Scope
   - H2: Coordination
   - H2: Progress
-  - H2: Next Action
+  - H2: Final Next Action
   - H2: Progress (continued)
   - H2: Next Action
 
@@ -9494,6 +9494,7 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
 - Route: /handoffs/2026-08-11-repository-documentation-cleanup
 - Headings:
   - H1: Repository and documentation cleanup — 2026-08-11
+  - H2: Validation
 
 ## handoffs/TEMPLATE.md
 
