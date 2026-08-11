@@ -33,11 +33,12 @@ RULESET_NAMES = {
     "main": "main-autonomous-release",
 }
 
-DEFAULT_FAST_GATE = ["Verify IDE Development"]
-DEFAULT_STAGING_GATE = ["Verify IDE Development"]
-DEFAULT_RELEASE_GATE = ["Verify IDE Development"]
+DEFAULT_FAST_GATE = ["openclaw/ci-gate"]
+DEFAULT_STAGING_GATE = ["openclaw/ci-gate"]
+DEFAULT_RELEASE_GATE = ["openclaw/ci-gate"]
 SOURCE_POLICY_CHECK = "Enforce allowed PR source branches"
 BUGBOT_CHECK = "Cursor Bugbot"
+DEPRECATED_MANAGED_CHECKS = {"Verify IDE Development"}
 
 GOVERNED = ("development", "staging", "main")
 
@@ -85,7 +86,16 @@ def managed_baseline(
 
 def union_checks(managed: list[str], existing: list[str], extra: list[str] | None = None) -> dict[str, list[str]]:
     managed_u = _unique_ordered(managed)
-    extras = _unique_ordered([*(extra or []), *[c for c in existing if c not in managed_u]])
+    extras = _unique_ordered(
+        [
+            *(extra or []),
+            *[
+                c
+                for c in existing
+                if c not in managed_u and c not in DEPRECATED_MANAGED_CHECKS
+            ],
+        ]
+    )
     preserved = [c for c in extras if c not in managed_u]
     preserved_sorted = sorted(preserved)
     desired = _unique_ordered([*managed_u, *preserved_sorted])

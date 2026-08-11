@@ -53,7 +53,7 @@ concurrency:
 
 env:
   TIMEZONE_LABEL: "Asia/Taipei"
-  RELEASE_GATE_CHECKS: ${{ vars.LINKTREND_RELEASE_GATE_CHECKS || 'Verify IDE Development,Enforce allowed PR source branches' }}
+  RELEASE_GATE_CHECKS: ${{ vars.LINKTREND_RELEASE_GATE_CHECKS || 'openclaw/ci-gate,Enforce allowed PR source branches' }}
 
 # Cost note: never use ${{ env.* }} at job-level env (invalid context → zero-job runs).
 # Skip irrelevant wakes: non-promote PR heads, own outcome checks, failed workflow_run.
@@ -139,7 +139,7 @@ jobs:
       OUTCOME_CHECK_NAME: Linktrend Main Outcome
       # Job-level env cannot reference the env context (GitHub validation → zero-job push failures).
       # Workflow-level RELEASE_GATE_CHECKS already applies; restate via vars for clarity.
-      RELEASE_GATE_CHECKS: ${{ vars.LINKTREND_RELEASE_GATE_CHECKS || 'Verify IDE Development,Enforce allowed PR source branches' }}
+      RELEASE_GATE_CHECKS: ${{ vars.LINKTREND_RELEASE_GATE_CHECKS || 'openclaw/ci-gate,Enforce allowed PR source branches' }}
       REQUIRE_APP_TOKEN: "1"
       LINKTREND_GITOPS_APP_ID: ${{ vars.LINKTREND_GITOPS_APP_ID }}
     steps:
