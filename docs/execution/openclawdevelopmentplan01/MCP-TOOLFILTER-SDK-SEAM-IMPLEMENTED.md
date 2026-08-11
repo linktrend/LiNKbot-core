@@ -9,18 +9,18 @@
 
 **Implemented (local, not Phase-14 certified):** `api.registerMcpServerToolFilter` + `api.unregisterMcpServerToolFilter` on `OpenClawPluginApi`.
 
-| Requirement | Evidence |
-| ----------- | -------- |
-| Public API | `src/plugins/plugin-api.types.ts`; `docs/plugins/sdk-overview.md` |
-| Ownership / diagnostics / unregister | `src/plugins/registry-registrars-network.ts`; ownership tests |
-| Catalog materialization (listTools path) | `src/agents/agent-bundle-mcp-runtime.ts` + `mcp-tool-filter-resolver.ts` |
-| Deny-all ≠ unrestricted empty include | `describeComposedMcpToolFilter` → `{ denyAll: true }`; materialize honors denyAll |
-| Operator ∩ plugin (tools + utilities) | composition + `serverAllowsMcpUtilityTool` + catalog metadata halves |
-| Hot update / same-runtime rematerialize | registration generation bump; Brain/Skills hot catalog test |
-| No config write | process-local overlay only |
-| Default-deny / rollback / removal | `resolve() => null`; same-owner replace; `unregisterMcpServerToolFilter` |
-| Brain/Skills four-flag wiring | `extensions/linkbrain/src/feature-flags.ts`; `extensions/linkskills/src/feature-flags.ts` |
-| Proof flags change exposed tools | `src/agents/agent-bundle-mcp-runtime.mcp-tool-filter.test.ts` |
+| Requirement                              | Evidence                                                                                  |
+| ---------------------------------------- | ----------------------------------------------------------------------------------------- |
+| Public API                               | `src/plugins/plugin-api.types.ts`; `docs/plugins/sdk-overview.md`                         |
+| Ownership / diagnostics / unregister     | `src/plugins/registry-registrars-network.ts`; ownership tests                             |
+| Catalog materialization (listTools path) | `src/agents/agent-bundle-mcp-runtime.ts` + `mcp-tool-filter-resolver.ts`                  |
+| Deny-all ≠ unrestricted empty include    | `describeComposedMcpToolFilter` → `{ denyAll: true }`; materialize honors denyAll         |
+| Operator ∩ plugin (tools + utilities)    | composition + `serverAllowsMcpUtilityTool` + catalog metadata halves                      |
+| Hot update / same-runtime rematerialize  | registration generation bump; Brain/Skills hot catalog test                               |
+| No config write                          | process-local overlay only                                                                |
+| Default-deny / rollback / removal        | `resolve() => null`; same-owner replace; `unregisterMcpServerToolFilter`                  |
+| Brain/Skills four-flag wiring            | `extensions/linkbrain/src/feature-flags.ts`; `extensions/linkskills/src/feature-flags.ts` |
+| Proof flags change exposed tools         | `src/agents/agent-bundle-mcp-runtime.mcp-tool-filter.test.ts`                             |
 
 ## Explicit non-claims
 

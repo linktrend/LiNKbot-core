@@ -699,7 +699,7 @@ describe("release Telegram QA workflow", () => {
     );
     expect(result.status, result.stderr.toString()).toBe(0);
     const selected = result.stdout.toString().split("\0").filter(Boolean);
-    expect(selected).toEqual(logPaths.slice(4).reverse());
+    expect(selected).toEqual(logPaths.slice(4).toReversed());
   });
 
   it("retains only allowlisted verbose runtime diagnostics", () => {

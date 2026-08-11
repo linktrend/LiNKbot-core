@@ -2,21 +2,21 @@
 
 ## Session Metadata
 
-| Field            | Value |
-| ---------------- | ----- |
-| Agent identity   | Cursor Local Agent / Grok 4.5 High / Lisa role |
-| Session ID       | `cursor-local-mac-mini-lisa-wave9-mcp-toolfilter-20260729-0744` |
-| Orchestrator key | `cursor-local-mac-mini-desktop-workspace-orchestrator` |
-| Objective        | Principal-approved public MCP toolFilter SDK seam + wire Brain/Skills flags |
+| Field            | Value                                                                                      |
+| ---------------- | ------------------------------------------------------------------------------------------ |
+| Agent identity   | Cursor Local Agent / Grok 4.5 High / Lisa role                                             |
+| Session ID       | `cursor-local-mac-mini-lisa-wave9-mcp-toolfilter-20260729-0744`                            |
+| Orchestrator key | `cursor-local-mac-mini-desktop-workspace-orchestrator`                                     |
+| Objective        | Principal-approved public MCP toolFilter SDK seam + wire Brain/Skills flags                |
 | Scope            | From `c16dfeaa327…`; draft PR; no CI poll; no merge; no Lisa/Platform live; no Phases 7–12 |
-| Started          | 2026-07-29 07:44 Asia/Taipei |
-| Ended            | 2026-07-29 Asia/Taipei |
-| Starting branch  | `issue/ocp-openclawdevelopmentplan01` |
-| Ending branch    | `issue/ocp-openclawdevelopmentplan01` |
-| Starting commit  | `c16dfeaa32766bc5276eb169f7d3c2b0ab98491a` |
-| Ending commit    | `2fac6e3aaa10a84d8db5ae0aab7f7bf1f9959aa3` |
-| Starting status  | clean at wave-8 tip |
-| Ending status    | wave 9 committed and pushed |
+| Started          | 2026-07-29 07:44 Asia/Taipei                                                               |
+| Ended            | 2026-07-29 Asia/Taipei                                                                     |
+| Starting branch  | `issue/ocp-openclawdevelopmentplan01`                                                      |
+| Ending branch    | `issue/ocp-openclawdevelopmentplan01`                                                      |
+| Starting commit  | `c16dfeaa32766bc5276eb169f7d3c2b0ab98491a`                                                 |
+| Ending commit    | `2fac6e3aaa10a84d8db5ae0aab7f7bf1f9959aa3`                                                 |
+| Starting status  | clean at wave-8 tip                                                                        |
+| Ending status    | wave 9 committed and pushed                                                                |
 
 ## Summary
 
@@ -38,10 +38,10 @@ git diff --check origin/development...HEAD
 
 ## Fixture aggregates (unchanged)
 
-| Package | Count | Aggregate |
-| ------- | ----- | --------- |
-| Brain | 75 | `4493f71432ef56f9fc272ff4c208b8901242c2bd83e138f53d6f0259b4f4811b` |
-| Skills | 71 | `203163711b5db17b8a07d3956e41596384cbd08f0c110bd9f21abfc5c7e5e19a` |
+| Package | Count | Aggregate                                                          |
+| ------- | ----- | ------------------------------------------------------------------ |
+| Brain   | 75    | `4493f71432ef56f9fc272ff4c208b8901242c2bd83e138f53d6f0259b4f4811b` |
+| Skills  | 71    | `203163711b5db17b8a07d3956e41596384cbd08f0c110bd9f21abfc5c7e5e19a` |
 
 ## Exact Next Action
 

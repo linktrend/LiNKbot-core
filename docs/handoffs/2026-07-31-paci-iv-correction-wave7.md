@@ -2,21 +2,21 @@
 
 ## Session Metadata
 
-| Field            | Value |
-| ---------------- | ----- |
-| Agent identity   | Cursor Local Agent / Grok 4.5 High |
-| Session ID       | cursor-local-mac-mini-feature-paci-iv-wave7-20260731 |
-| Orchestrator key | cursor-local-mac-mini-desktop-workspace-orchestrator-20260723-1539 |
-| Objective        | PACI IV correction Wave 7 — combined registry+facade ownership snapshot |
+| Field            | Value                                                                                                                    |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| Agent identity   | Cursor Local Agent / Grok 4.5 High                                                                                       |
+| Session ID       | cursor-local-mac-mini-feature-paci-iv-wave7-20260731                                                                     |
+| Orchestrator key | cursor-local-mac-mini-desktop-workspace-orchestrator-20260723-1539                                                       |
+| Objective        | PACI IV correction Wave 7 — combined registry+facade ownership snapshot                                                  |
 | Scope            | OpenClaw loader activation order, MT reconcile removals, activating-load lock, real-loader tests, paci-fake pin comments |
-| Started          | 2026-07-31 08:27 Asia/Taipei |
-| Ended            | 2026-07-31 Asia/Taipei |
-| Starting branch  | `issue/ocp-openclawdevelopmentplan01` |
-| Ending branch    | `issue/ocp-openclawdevelopmentplan01` |
-| Starting commit  | `aced47c38d3052ec84fbbe610b0c11a2310b1c10` |
-| Ending commit    | `d3ad3dfc23be4d29c6f32114bda7ccbe397da551` |
-| Starting status  | clean except Wave7 prompt |
-| Ending status    | clean origin-synced |
+| Started          | 2026-07-31 08:27 Asia/Taipei                                                                                             |
+| Ended            | 2026-07-31 Asia/Taipei                                                                                                   |
+| Starting branch  | `issue/ocp-openclawdevelopmentplan01`                                                                                    |
+| Ending branch    | `issue/ocp-openclawdevelopmentplan01`                                                                                    |
+| Starting commit  | `aced47c38d3052ec84fbbe610b0c11a2310b1c10`                                                                               |
+| Ending commit    | `d3ad3dfc23be4d29c6f32114bda7ccbe397da551`                                                                               |
+| Starting status  | clean except Wave7 prompt                                                                                                |
+| Ending status    | clean origin-synced                                                                                                      |
 
 ## Summary
 
@@ -46,11 +46,11 @@ Fixed Wave 6 Codex blockers: (1) successful reload now retires obsolete facades 
 
 ## Decisions
 
-| Decision | Reason | Authority |
-| --- | --- | --- |
-| Activate registry before MT ownership commit | Prevent activation throw after predecessor retirement | Wave 7 prompt |
-| Full vs scoped reconcile | Scoped onlyPluginIds must not wipe unrelated domains | Implementation judgment |
-| Reject overlapping activating loads | Deterministic ownership; no mixed snapshot | Wave 7 prompt |
+| Decision                                     | Reason                                                | Authority               |
+| -------------------------------------------- | ----------------------------------------------------- | ----------------------- |
+| Activate registry before MT ownership commit | Prevent activation throw after predecessor retirement | Wave 7 prompt           |
+| Full vs scoped reconcile                     | Scoped onlyPluginIds must not wipe unrelated domains  | Implementation judgment |
+| Reject overlapping activating loads          | Deterministic ownership; no mixed snapshot            | Wave 7 prompt           |
 
 ## Tests and Verification
 

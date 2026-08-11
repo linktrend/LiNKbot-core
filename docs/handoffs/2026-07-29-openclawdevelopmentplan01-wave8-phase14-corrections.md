@@ -2,21 +2,21 @@
 
 ## Session Metadata
 
-| Field            | Value |
-| ---------------- | ----- |
-| Agent identity   | Cursor Local Agent / Grok 4.5 High / Lisa role |
-| Session ID       | `cursor-local-mac-mini-lisa-wave8-20260729` |
-| Orchestrator key | `cursor-local-mac-mini-desktop-workspace-orchestrator` |
-| Objective        | OpenClaw PR #38 Phase-14 correction wave 8 only |
+| Field            | Value                                                                            |
+| ---------------- | -------------------------------------------------------------------------------- |
+| Agent identity   | Cursor Local Agent / Grok 4.5 High / Lisa role                                   |
+| Session ID       | `cursor-local-mac-mini-lisa-wave8-20260729`                                      |
+| Orchestrator key | `cursor-local-mac-mini-desktop-workspace-orchestrator`                           |
+| Objective        | OpenClaw PR #38 Phase-14 correction wave 8 only                                  |
 | Scope            | From `b3e8853b1c1…`; no CI poll; no merge; no Lisa/Platform live; no Phases 7–12 |
-| Started          | 2026-07-29 07:15 Asia/Taipei |
-| Ended            | 2026-07-29 Asia/Taipei |
-| Starting branch  | `issue/ocp-openclawdevelopmentplan01` |
-| Ending branch    | `issue/ocp-openclawdevelopmentplan01` |
-| Starting commit  | `b3e8853b1c15d13429f51ac5054bac448a4256d2` |
-| Ending commit    | `bc1d3133d103b4921be6248b37d2aa9848d3fe0b` |
-| Starting status  | clean at wave-7 tip |
-| Ending status    | wave 8 committed and pushed |
+| Started          | 2026-07-29 07:15 Asia/Taipei                                                     |
+| Ended            | 2026-07-29 Asia/Taipei                                                           |
+| Starting branch  | `issue/ocp-openclawdevelopmentplan01`                                            |
+| Ending branch    | `issue/ocp-openclawdevelopmentplan01`                                            |
+| Starting commit  | `b3e8853b1c15d13429f51ac5054bac448a4256d2`                                       |
+| Ending commit    | `bc1d3133d103b4921be6248b37d2aa9848d3fe0b`                                       |
+| Starting status  | clean at wave-7 tip                                                              |
+| Ending status    | wave 8 committed and pushed                                                      |
 
 ## Summary
 

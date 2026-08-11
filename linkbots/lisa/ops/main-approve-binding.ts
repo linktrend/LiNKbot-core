@@ -171,7 +171,9 @@ function parsePersistedPackage(row: MainApprovePackageRow): MainApprovePackage |
   let items: MainApproveItem[];
   try {
     const parsed = JSON.parse(row.itemsJson) as unknown;
-    if (!Array.isArray(parsed)) return null;
+    if (!Array.isArray(parsed)) {
+      return null;
+    }
     items = parsed as MainApproveItem[];
   } catch {
     return null;
@@ -331,7 +333,9 @@ export function issueCarlosAsk(
 export function assertImmutableBindings(pkg: MainApprovePackage): void {
   const indexes = new Set<number>();
   for (const item of pkg.items) {
-    if (indexes.has(item.index)) throw new Error(`duplicate index ${item.index}`);
+    if (indexes.has(item.index)) {
+      throw new Error(`duplicate index ${item.index}`);
+    }
     indexes.add(item.index);
     if (!item.repository || !item.stagingSha || !item.priorMainSha || !item.promotionHeadSha) {
       throw new Error(`incomplete binding at index ${item.index}`);
@@ -347,9 +351,13 @@ export function assertImmutableBindings(pkg: MainApprovePackage): void {
  * Accepts ISO-8601 with timezone offsets (Z or ±HH:MM).
  */
 export function parseInstantToEpochMs(value: string): number | null {
-  if (typeof value !== "string" || value.trim() === "") return null;
+  if (typeof value !== "string" || value.trim() === "") {
+    return null;
+  }
   const ms = Date.parse(value);
-  if (!Number.isFinite(ms)) return null;
+  if (!Number.isFinite(ms)) {
+    return null;
+  }
   return ms;
 }
 
@@ -363,7 +371,9 @@ export function isMainApproveClaimExpired(params: {
 }): boolean {
   const nowMs = parseInstantToEpochMs(params.nowIso);
   const expiresMs = parseInstantToEpochMs(params.claimExpiresAt);
-  if (nowMs === null || expiresMs === null) return true;
+  if (nowMs === null || expiresMs === null) {
+    return true;
+  }
   return nowMs > expiresMs;
 }
 
@@ -393,7 +403,9 @@ export function validateApprovalBindings(params: {
   for (let i = 0; i < params.sealed.items.length; i++) {
     const a = params.sealed.items[i]!;
     const b = params.liveItems[i]!;
-    if (a.index !== b.index) return { ok: false, reason: "reordered" };
+    if (a.index !== b.index) {
+      return { ok: false, reason: "reordered" };
+    }
     if (
       a.repository !== b.repository ||
       a.promotionPrNumber !== b.promotionPrNumber ||

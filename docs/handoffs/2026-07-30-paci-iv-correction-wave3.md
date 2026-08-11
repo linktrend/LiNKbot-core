@@ -2,21 +2,21 @@
 
 ## Session Metadata
 
-| Field            | Value |
-| ---------------- | ----- |
-| Agent identity   | Cursor Local Agent (Grok 4.5 High) |
-| Session ID       | cursor-local-mac-mini-feature-paci-iv-wave3-20260730 |
-| Orchestrator key | cursor-local-mac-mini-desktop-workspace-orchestrator-20260723-1539 |
-| Objective        | PACI IV correction Wave 3; provisional Phase-13 handoff; stop for Codex |
+| Field            | Value                                                                                              |
+| ---------------- | -------------------------------------------------------------------------------------------------- |
+| Agent identity   | Cursor Local Agent (Grok 4.5 High)                                                                 |
+| Session ID       | cursor-local-mac-mini-feature-paci-iv-wave3-20260730                                               |
+| Orchestrator key | cursor-local-mac-mini-desktop-workspace-orchestrator-20260723-1539                                 |
+| Objective        | PACI IV correction Wave 3; provisional Phase-13 handoff; stop for Codex                            |
 | Scope            | Host facade injection, guarded MCP fetch, public acquire shrink, fail-closed bindings, pin hygiene |
-| Started          | 2026-07-30 13:57 Asia/Taipei |
-| Ended            | 2026-07-30 Asia/Taipei |
-| Starting branch  | `issue/ocp-openclawdevelopmentplan01` |
-| Ending branch    | `issue/ocp-openclawdevelopmentplan01` |
-| Starting commit  | `2a1cab16be606444145b27074cd998dd63ed46e5` |
-| Ending commit | `b3a7eb03c32daf63981be33b1a13ba85ac72f6bf` |
-| Starting status  | clean tip + untracked Wave3 prompt |
-| Ending status    | clean tip after Wave3 push |
+| Started          | 2026-07-30 13:57 Asia/Taipei                                                                       |
+| Ended            | 2026-07-30 Asia/Taipei                                                                             |
+| Starting branch  | `issue/ocp-openclawdevelopmentplan01`                                                              |
+| Ending branch    | `issue/ocp-openclawdevelopmentplan01`                                                              |
+| Starting commit  | `2a1cab16be606444145b27074cd998dd63ed46e5`                                                         |
+| Ending commit    | `b3a7eb03c32daf63981be33b1a13ba85ac72f6bf`                                                         |
+| Starting status  | clean tip + untracked Wave3 prompt                                                                 |
+| Ending status    | clean tip after Wave3 push                                                                         |
 
 ## Summary
 
@@ -41,8 +41,8 @@ Codex Phase-14 re-verification of the pushed tip. Stop.
 
 ## Confidence
 
-| Item | Confidence |
-| --- | --- |
-| Wave3 OpenClaw packet completeness | 0.90 |
-| Focused local proof | 0.94 |
-| Platform permanent pin readiness | 0.0 (blocked on certification) |
+| Item                               | Confidence                     |
+| ---------------------------------- | ------------------------------ |
+| Wave3 OpenClaw packet completeness | 0.90                           |
+| Focused local proof                | 0.94                           |
+| Platform permanent pin readiness   | 0.0 (blocked on certification) |

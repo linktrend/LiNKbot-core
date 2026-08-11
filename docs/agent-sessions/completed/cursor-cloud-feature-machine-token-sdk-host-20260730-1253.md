@@ -2,29 +2,29 @@
 
 ## Identity
 
-| Field             | Value |
-| ----------------- | ----- |
-| Agent type        | Cursor Cloud Agent |
-| Platform          | Cursor |
-| Machine           | cloud |
-| Surface           | cloud-agent |
-| Execution         | cloud |
-| Role              | feature |
-| Orchestrator key  | parent Wave-2 integrator (Lane C) |
-| Coordination home | `/Users/linktrend/Projects/openclaw_prime` |
+| Field             | Value                                                     |
+| ----------------- | --------------------------------------------------------- |
+| Agent type        | Cursor Cloud Agent                                        |
+| Platform          | Cursor                                                    |
+| Machine           | cloud                                                     |
+| Surface           | cloud-agent                                               |
+| Execution         | cloud                                                     |
+| Role              | feature                                                   |
+| Orchestrator key  | parent Wave-2 integrator (Lane C)                         |
+| Coordination home | `/Users/linktrend/Projects/openclaw_prime`                |
 | Session ID        | cursor-cloud-feature-machine-token-sdk-host-20260730-1253 |
-| Started           | 2026-07-30 12:53 Asia/Taipei |
-| Last updated      | 2026-07-30 13:04 Asia/Taipei |
+| Started           | 2026-07-30 12:53 Asia/Taipei                              |
+| Last updated      | 2026-07-30 13:04 Asia/Taipei                              |
 
 ## Work
 
-| Field           | Value                                                        |
-| --------------- | ------------------------------------------------------------ |
+| Field           | Value                                                                                           |
+| --------------- | ----------------------------------------------------------------------------------------------- |
 | Objective       | Lane C: move machine-token facade construction and host cache controls out of public Plugin SDK |
-| Branch          | `issue/ocp-openclawdevelopmentplan01` |
-| Starting commit | `4126b7f590b4104a479d17795082e140c4f26ce1` |
-| Status          | `completed` |
-| Handoff         | Uncommitted Lane C changes; do not commit/push per brief |
+| Branch          | `issue/ocp-openclawdevelopmentplan01`                                                           |
+| Starting commit | `4126b7f590b4104a479d17795082e140c4f26ce1`                                                      |
+| Status          | `completed`                                                                                     |
+| Handoff         | Uncommitted Lane C changes; do not commit/push per brief                                        |
 
 ## Ownership Scope
 

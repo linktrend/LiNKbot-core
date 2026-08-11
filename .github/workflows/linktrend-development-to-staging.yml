@@ -25,12 +25,12 @@ on:
         description: "Expected promote PR head SHA (reevaluate)"
         required: false
         type: string
-  pull_request_target:
+  pull_request_target: # zizmor: ignore[dangerous-triggers] trusted default-branch promotion code only; candidate ref is metadata and exact-SHA checked
     types: [opened, synchronize, reopened, ready_for_review, converted_to_draft]
     branches: [staging]
-  check_run:
+  check_run: # zizmor: ignore[dangerous-triggers] check metadata only; promotion resolver rejects unrelated or stale candidates
     types: [completed]
-  workflow_run:
+  workflow_run: # zizmor: ignore[dangerous-triggers] trusted CI metadata only; no promotion-head code executes with credentials
     workflows:
       - CI
       - Branch Source Policy
@@ -80,7 +80,7 @@ jobs:
       mode: ${{ steps.mode.outputs.mode }}
     steps:
       - name: Checkout trusted default branch only
-        uses: actions/checkout@v4
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
         with:
           ref: ${{ github.event.repository.default_branch }}
           persist-credentials: false
@@ -118,12 +118,12 @@ jobs:
       contents: read
     env:
       OUTCOME_CHECK_NAME: Linktrend Staging Outcome
-      STAGING_GATE_CHECKS: ${{ vars.LINKTREND_STAGING_GATE_CHECKS || 'Verify IDE Development,Enforce allowed PR source branches' }}
+      STAGING_GATE_CHECKS: ${{ vars.LINKTREND_STAGING_GATE_CHECKS || 'openclaw/ci-gate,Enforce allowed PR source branches' }}
       REQUIRE_APP_TOKEN: "1"
       LINKTREND_GITOPS_APP_ID: ${{ vars.LINKTREND_GITOPS_APP_ID }}
     steps:
       - name: Checkout trusted default branch only
-        uses: actions/checkout@v4
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
         with:
           ref: ${{ github.event.repository.default_branch }}
           fetch-depth: 0
@@ -206,7 +206,7 @@ jobs:
             *) exit 0 ;;
           esac
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         if: always()
         with:
           name: staging-promote-report

@@ -99,7 +99,9 @@ export function planStageOpsInventory(
 
     // Every emitted executable line must stay free of PACI-writing wrapper / gcloud / paci paths.
     for (const cmd of commands) {
-      if (cmd.trimStart().startsWith("#")) continue;
+      if (cmd.trimStart().startsWith("#")) {
+        continue;
+      }
       if (cmd.includes("ai.openclaw.lisa-stage-env-wrapper.sh")) {
         validationErrors.push("inventory must not invoke lisa-stage-env-wrapper.sh");
       }
@@ -115,7 +117,9 @@ export function planStageOpsInventory(
   // Deduplicate validation errors while preserving order.
   const seen = new Set<string>();
   const uniqueErrors = validationErrors.filter((e) => {
-    if (seen.has(e)) return false;
+    if (seen.has(e)) {
+      return false;
+    }
     seen.add(e);
     return true;
   });
@@ -155,13 +159,13 @@ ${STAGE_OPS_INSPECT_GATEWAY_TOKEN_NOTE}
 }
 
 function main(argv: string[]): number {
-  const args = argv.slice(2);
-  if (args.includes("--help") || args.includes("-h")) {
+  const args = new Set(argv.slice(2));
+  if (args.has("--help") || args.has("-h")) {
     printHelp();
     return 0;
   }
-  const asJson = args.includes("--json");
-  const emitCommands = !args.includes("--no-emit-commands");
+  const asJson = args.has("--json");
+  const emitCommands = !args.has("--no-emit-commands");
 
   const plan = planStageOpsInventory({ emitCommands });
 

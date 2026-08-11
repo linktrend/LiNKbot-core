@@ -108,6 +108,17 @@ const rootEntries = [
   "src/entry.ts!",
   "src/cli/daemon-cli.ts!",
   "src/agents/code-mode.worker.ts!",
+  // LiNKtrend host contracts are consumed by installed plugins and operations
+  // outside this repository's static graph. Model them as public entries while
+  // retaining unused-internal analysis within each module.
+  "src/agents/agent-bundle-mcp-tools.ts",
+  "src/agents/machine-token*.ts",
+  "src/agents/mcp-auth-profile.ts",
+  "src/agents/mcp-http-fetch.ts",
+  "src/agents/mcp-tool-filter-resolver.ts",
+  "src/agents/tools/sessions-wait-tool.ts",
+  "src/plugins/loader*.ts",
+  "src/plugins/plugin-runtime-activation.ts",
   // Worker-thread and script entrypoints import contracts that production Knip cannot trace.
   "src/agents/compaction-planning.worker.ts!",
   "scripts/print-cli-backend-live-metadata.ts!",
@@ -207,6 +218,8 @@ const bundledPluginEntries = [
 ] as const;
 
 const bundledPluginIgnoredRuntimeDependencies = [
+  // Linkbrain/Linkskills public transport entries resolve the MCP SDK at runtime.
+  "@modelcontextprotocol/sdk",
   "@agentclientprotocol/claude-agent-acp",
   "@a2ui/lit",
   "@azure/identity",
@@ -369,6 +382,30 @@ const config = {
     // Public local-coder artifact helpers are asserted by focused unit tests and
     // consumed by runtime completion paths that knip's production graph misses.
     "src/agents/local-coder-artifacts.ts": ["exports", "types"],
+    // Fork-owned plugin contracts and reset/diagnostic seams are public or
+    // intentionally test-facing even when production has no second static caller.
+    "extensions/linkbrain/src/capture.ts": ["exports"],
+    "extensions/linkbrain/src/tools.ts": ["exports"],
+    "extensions/linkbrain/src/runtime.ts": ["types"],
+    "extensions/linkskills/src/opaque.ts": ["exports"],
+    "extensions/linkskills/src/runtime.ts": ["types"],
+    "src/agents/agent-bundle-mcp-materialize.ts": ["exports"],
+    "src/agents/harness/registry.ts": ["exports"],
+    "src/agents/subagent-registry.ts": ["exports"],
+    "src/plugins/api-lifecycle.ts": ["exports"],
+    "src/plugins/compaction-provider.ts": ["exports"],
+    "src/plugins/installed-plugin-index-record-builder.ts": ["exports"],
+    "src/plugins/mcp-tool-filter-registration.ts": ["exports"],
+    "src/plugins/plugin-control-plane-context.ts": ["exports"],
+    "src/plugins/plugin-lifecycle-trace.ts": ["exports"],
+    "src/plugins/plugin-registration-transaction.ts": ["exports", "types"],
+    "src/plugins/plugin-runtime-artifact-resolution.ts": ["exports"],
+    "src/plugins/plugin-sdk-native-resolver.ts": ["exports"],
+    "src/plugins/runtime-degraded-state.ts": ["exports"],
+    "src/plugins/sdk-alias.ts": ["exports", "types"],
+    "src/plugins/slots.ts": ["exports"],
+    "src/plugins/types.mcp-tool-filter.ts": ["types"],
+    "src/tasks/detached-task-runtime-state.ts": ["exports"],
   },
   workspaces: {
     ".": {
@@ -382,6 +419,9 @@ const config = {
         // Loaded via createRequire in src/agents/utils/syntax-highlight.ts because its
         // d.ts force-includes lib.dom; knip cannot see the dynamic require.
         "highlight.js",
+        // The machine-token host contract is consumed through public/plugin
+        // entries that the production graph intentionally treats as roots.
+        "jose",
         "playwright-core",
         "partial-json",
         // Optional runtime imports: the native Canvas bundle falls back without Markdown,
@@ -649,17 +689,30 @@ const config = {
     ]),
     [`${BUNDLED_PLUGIN_ROOT_DIR}/kilocode`]: bundledPluginWorkspace(),
     [`${BUNDLED_PLUGIN_ROOT_DIR}/kimi-coding`]: bundledPluginWorkspace(),
-    [`${BUNDLED_PLUGIN_ROOT_DIR}/linkbrain`]: bundledPluginWorkspace([
-      // Deterministic Brain fake CLI/runtime used by extension and core tests.
-      "fake/runtime.mjs!",
-      "fake/server.mjs!",
-    ]),
+    [`${BUNDLED_PLUGIN_ROOT_DIR}/linkbrain`]: {
+      ...bundledPluginWorkspace([
+        // Deterministic Brain fake CLI/runtime used by extension and core tests.
+        "fake/runtime.mjs!",
+        "fake/server.mjs!",
+        // Public Brain integration contracts consumed by deployment tooling.
+        "src/{capture-batch-adapter,config,envelopes,feature-flags,lifecycle,sanitize,transport}.ts",
+        // Consumer-conformance contract loaded directly by the focused test suite.
+        "src/auth-claims-1.1.ts",
+      ]),
+      // Contract tests import the root-owned schema validators directly.
+      ignoreDependencies: [...bundledPluginIgnoredRuntimeDependencies, "ajv", "ajv-formats"],
+    },
     [`${BUNDLED_PLUGIN_ROOT_DIR}/linkskills`]: bundledPluginWorkspace([
       // Deterministic Skills fake CLI/harness used by extension and core tests.
       "fake/cli.mjs!",
       "fake/harness.mjs!",
       "fake/index.mjs!",
+      // Public Skills integration contracts consumed by deployment tooling.
+      "src/{collect,config,envelopes,feature-flags,tools,transport}.ts",
+      // Consumer-conformance contract loaded directly by the focused test suite.
+      "src/auth-claims-1.1.ts",
     ]),
+    [`${BUNDLED_PLUGIN_ROOT_DIR}/nemotron-shadow-eval`]: bundledPluginWorkspace(["src/policy.ts"]),
     [`${BUNDLED_PLUGIN_ROOT_DIR}/matrix`]: bundledPluginWorkspace([
       // Native import wrapper shipped alongside the Matrix runtime bundle.
       "src/plugin-entry.runtime.js!",

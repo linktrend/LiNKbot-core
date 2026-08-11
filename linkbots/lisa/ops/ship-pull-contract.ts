@@ -101,10 +101,18 @@ export type WaveOutcome =
 const INTEGRATION = new Set(["development", "staging", "main"]);
 
 export function classifyBranch(branch: string): BranchKind {
-  if (INTEGRATION.has(branch)) return "integration";
-  if (branch.startsWith("issue/")) return "issue";
-  if (branch.startsWith("cursor/")) return "cursor";
-  if (branch.startsWith("dev/")) return "dev";
+  if (INTEGRATION.has(branch)) {
+    return "integration";
+  }
+  if (branch.startsWith("issue/")) {
+    return "issue";
+  }
+  if (branch.startsWith("cursor/")) {
+    return "cursor";
+  }
+  if (branch.startsWith("dev/")) {
+    return "dev";
+  }
   return "unsupported";
 }
 
@@ -261,9 +269,15 @@ export function canFinishShipPullSuccessfully(gate: {
   emailAttempted: boolean;
   finalAssistantPayload: string | null;
 }): boolean {
-  if (!gate.childOutcomeValidated) return false;
-  if (!gate.statusCasDone) return false;
-  if (!gate.emailAttempted) return false;
+  if (!gate.childOutcomeValidated) {
+    return false;
+  }
+  if (!gate.statusCasDone) {
+    return false;
+  }
+  if (!gate.emailAttempted) {
+    return false;
+  }
   const payload = gate.finalAssistantPayload?.trim() ?? "";
   return /^((Ship|Pull) \d{2}): (Clear|Issues)$/.test(payload);
 }
@@ -372,7 +386,9 @@ export function shipPullDocumentsCodexOnlyAcpContract(documentText: string): boo
 
 export function shipPullRespectsIdeAuthority(procedureText: string): boolean {
   const lower = procedureText.toLowerCase();
-  if (/this file wins/.test(lower)) return false;
+  if (/this file wins/.test(lower)) {
+    return false;
+  }
   // Flag positive override claims; allow "must not invent … that replaces IDE".
   if (/\blisa\b.{0,40}\boverrides?\b.{0,40}\bide development\b/.test(lower)) {
     return false;

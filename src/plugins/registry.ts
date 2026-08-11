@@ -60,7 +60,8 @@ export function createPluginRegistry(registryParams: PluginRegistryParams) {
    * only after activatePluginRegistry succeeds.
    */
   const commitPluginGlobalSideEffects = (pluginId: string, params?: { activate?: boolean }) => {
-    const activate = params?.activate !== false && registryParams.activateGlobalSideEffects !== false;
+    const activate =
+      params?.activate !== false && registryParams.activateGlobalSideEffects !== false;
     if (activate) {
       commitPluginSideEffectGuards(pluginId);
       return;

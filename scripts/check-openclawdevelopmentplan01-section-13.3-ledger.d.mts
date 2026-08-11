@@ -8,13 +8,38 @@ export const FROZEN_PLAN_RELATIVE_PATH: string;
 export const FROZEN_PLAN_SHA256: string;
 export const NON_REQUIREMENT_REASON_CODES: readonly string[];
 export const GROK_COMPLETION_CLAIMS: readonly string[];
-export function parseCsv(text: string): string[][];
-export function csvEscape(value: string): string;
-export function grokEvidenceMappingForPlanItem(item: {
+export type Section133PlanItem = {
   id: string;
   kind: string;
   label: string;
-}): {
+  anchor: string;
+  line: number;
+  fingerprint: string;
+};
+export type Section133Construct = {
+  line: number;
+  type: string;
+  text: string;
+  anchor?: string;
+};
+export type Section133CoverageEntry = {
+  line: number;
+  type: string;
+  text?: string;
+  disposition: string;
+  reason: string;
+  reasonCode?: string;
+  sourceContext?: string;
+  inheritedContext?: string | null;
+  structuralContext?: string | null;
+  exclusionId?: string | null;
+  fingerprint: string;
+  itemIds: string[];
+  anchor: string;
+};
+export function parseCsv(text: string): string[][];
+export function csvEscape(value: string): string;
+export function grokEvidenceMappingForPlanItem(item: { id: string; kind: string; label: string }): {
   owner: string;
   evidence_location: string;
   completion_claim: string;
@@ -22,7 +47,7 @@ export function grokEvidenceMappingForPlanItem(item: {
 };
 /** @deprecated Throws — Grok must not emit Phase-14 classifications. */
 export function provisionalClassificationForPlanItem(): never;
-export function buildLedgerCsvFromPlanItems(items: unknown[]): string;
+export function buildLedgerCsvFromPlanItems(items: Section133PlanItem[]): string;
 export function listDescriptiveExclusions(coverage: unknown[]): Array<Record<string, unknown>>;
 export function validateSection133Ledger(opts?: {
   root?: string;
@@ -50,17 +75,17 @@ export function writeSection133ArtifactsFromPlan(opts?: { root?: string }): {
   evidenceMappedCount: number;
   planSha256: string;
 };
-export function extractPlanSection133Items(planText: string): unknown[];
+export function extractPlanSection133Items(planText: string): Section133PlanItem[];
 export function analyzePlanForSection133(
   planText: string,
   options?: { descriptiveExclusions?: ReadonlyArray<unknown> },
 ): {
-  items: unknown[];
-  coverage: unknown[];
+  items: Section133PlanItem[];
+  coverage: Section133CoverageEntry[];
   errors: string[];
-  constructs: unknown[];
+  constructs: Section133Construct[];
 };
-export function tokenizePlanMarkdown(planText: string): unknown[];
+export function tokenizePlanMarkdown(planText: string): Section133Construct[];
 export function splitAtomicObligations(value: string): string[];
 export function isFragmentedPlanLabel(label: string): boolean;
 export function isImperativeInstruction(line: string): boolean;
@@ -72,8 +97,8 @@ export function loadFrozenPlanItems(opts?: Record<string, unknown>): {
   planPath: string;
   planSha256: string;
   expectedSha256: string;
-  items: unknown[];
-  coverage: unknown[];
+  items: Section133PlanItem[];
+  coverage: Section133CoverageEntry[];
 };
 export function sha256Hex(content: string | Buffer): string;
 export function main(

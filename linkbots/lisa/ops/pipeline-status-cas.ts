@@ -47,7 +47,9 @@ export function parsePipelineStatus(text: string): PipelineStatusState {
   };
   for (const raw of text.split(/\r?\n/)) {
     const line = raw.trimEnd();
-    if (!line.trim()) continue;
+    if (!line.trim()) {
+      continue;
+    }
     const cycle = /^Cycle date:\s*(\d{4}-\d{2}-\d{2})\s*$/.exec(line);
     if (cycle) {
       state.cycleDate = cycle[1]!;
@@ -132,38 +134,60 @@ export function selectFreshCheckpointLines(params: {
   if (state.cycleDate === params.reportCycleDate) {
     for (const w of WAVE_ORDER) {
       const line = state.lines[w];
-      if (line) out.push(line);
+      if (line) {
+        out.push(line);
+      }
     }
   }
   if (params.stagingCheckpointDate && state.stagingDate === params.stagingCheckpointDate) {
     for (const key of Object.keys(state.lines)) {
-      if (key.startsWith("Staging promote")) out.push(state.lines[key]!);
+      if (key.startsWith("Staging promote")) {
+        out.push(state.lines[key]!);
+      }
     }
   }
   if (params.mainCheckpointDate && state.mainReadyDate === params.mainCheckpointDate) {
     const main = state.lines["Main ready (Mon)"];
-    if (main) out.push(main);
+    if (main) {
+      out.push(main);
+    }
   }
   return out;
 }
 
 export function serializePipelineStatus(state: PipelineStatusState): string {
   const parts: string[] = [];
-  if (state.cycleDate) parts.push(`Cycle date: ${state.cycleDate}`);
+  if (state.cycleDate) {
+    parts.push(`Cycle date: ${state.cycleDate}`);
+  }
   for (const w of WAVE_ORDER) {
-    if (state.lines[w]) parts.push(state.lines[w]!);
+    if (state.lines[w]) {
+      parts.push(state.lines[w]!);
+    }
   }
-  if (state.stagingDate) parts.push(`Staging date: ${state.stagingDate}`);
-  for (const key of Object.keys(state.lines).sort()) {
-    if (key.startsWith("Staging promote")) parts.push(state.lines[key]!);
+  if (state.stagingDate) {
+    parts.push(`Staging date: ${state.stagingDate}`);
   }
-  if (state.mainReadyDate) parts.push(`Main ready date: ${state.mainReadyDate}`);
-  if (state.lines["Main ready (Mon)"]) parts.push(state.lines["Main ready (Mon)"]!);
-  if (state.mainApproveClaim) parts.push(`Main approve claim: ${state.mainApproveClaim}`);
+  for (const key of Object.keys(state.lines).toSorted()) {
+    if (key.startsWith("Staging promote")) {
+      parts.push(state.lines[key]!);
+    }
+  }
+  if (state.mainReadyDate) {
+    parts.push(`Main ready date: ${state.mainReadyDate}`);
+  }
+  if (state.lines["Main ready (Mon)"]) {
+    parts.push(state.lines["Main ready (Mon)"]!);
+  }
+  if (state.mainApproveClaim) {
+    parts.push(`Main approve claim: ${state.mainApproveClaim}`);
+  }
   if (state.mainApproveDecisionDate) {
     parts.push(`Main approve decision date: ${state.mainApproveDecisionDate}`);
   }
-  for (const other of state.rawOther) parts.push(other);
+  for (const other of state.rawOther) {
+    parts.push(other);
+  }
   return `${parts.join("\n")}\n`;
 }
 
@@ -180,6 +204,8 @@ function formatIsoDate(d: Date): string {
 }
 
 function compareIsoDate(a: string, b: string): number {
-  if (a === b) return 0;
+  if (a === b) {
+    return 0;
+  }
   return a < b ? -1 : 1;
 }

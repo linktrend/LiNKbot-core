@@ -188,6 +188,6 @@ describe("planStageOpsInventory", () => {
 
     // No accidental writes under the temp stage root beyond what we created.
     const top = readdirSync(root);
-    assert.deepEqual(top.sort(), ["service-env"]);
+    assert.deepEqual(top.toSorted(), ["service-env"]);
   });
 });

@@ -89,10 +89,7 @@ describe("plugin-sdk machine-token-runtime", () => {
   });
 
   it("public MachineTokenPluginFacade.acquire accepts only bindingId plus controls", () => {
-    const typesSource = readFileSync(
-      join(scriptDir, "../agents/machine-token-types.ts"),
-      "utf8",
-    );
+    const typesSource = readFileSync(join(scriptDir, "../agents/machine-token-types.ts"), "utf8");
     const acquireContract = typesSource.match(
       /export type MachineTokenPluginFacadeAcquireParams = \{([\s\S]*?)\};/u,
     );

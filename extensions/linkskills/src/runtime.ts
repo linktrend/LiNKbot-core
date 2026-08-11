@@ -334,7 +334,9 @@ export function createLinkskillsRuntime(params: CreateLinkskillsRuntimeParams): 
             0,
             now() -
               Math.min(
-                ...((await sortedOutbox(params.stores)).map((entry) => entry.createdAt) as number[]),
+                ...((await sortedOutbox(params.stores)).map(
+                  (entry) => entry.createdAt,
+                ) as number[]),
               ),
           )
         : null;
@@ -345,9 +347,7 @@ export function createLinkskillsRuntime(params: CreateLinkskillsRuntimeParams): 
     await writeHealth({
       status: ageAlarm ?? (deadLettered > 0 ? "degraded" : drained > 0 ? "ok" : "idle"),
       ...(drained > 0 ? { lastSuccessAtMs: now() } : {}),
-      ...(deadLettered > 0 || retried > 0 || ageAlarm
-        ? { lastFailureAtMs: now() }
-        : {}),
+      ...(deadLettered > 0 || retried > 0 || ageAlarm ? { lastFailureAtMs: now() } : {}),
       ...(ageAlarm ? { lastErrorCode: "outbox_age_alarm" } : {}),
       lastDrainStatus,
       outboxCount,

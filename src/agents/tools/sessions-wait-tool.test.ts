@@ -411,7 +411,7 @@ describe("sessions_wait", () => {
     expect(details).not.toHaveProperty("client_assertion");
     expect(details).not.toHaveProperty("Authorization");
     expect(details).not.toHaveProperty("authorization");
-    expect(Object.keys(details).sort()).toEqual(["completed", "pending"]);
+    expect(Object.keys(details).toSorted()).toEqual(["completed", "pending"]);
     expect(serialized).not.toMatch(/"access_token"\s*:/);
     expect(serialized).not.toMatch(/"client_assertion"\s*:/);
     expect(serialized).not.toMatch(/"Authorization"\s*:/);

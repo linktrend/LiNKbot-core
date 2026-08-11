@@ -96,7 +96,6 @@
 - Questions for the Orchestrator or next agent:
   - None; Codex primary Orchestrator instructions understood.
 
-
 ## Amendment 2026-07-28 20:48 Asia/Taipei
 
 Closed as stale active session during wave 6 closeout. Orchestrator may open a fresh active record if still coordinating.

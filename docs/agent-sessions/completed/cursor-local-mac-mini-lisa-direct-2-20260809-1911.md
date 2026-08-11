@@ -2,29 +2,29 @@
 
 ## Identity
 
-| Field              | Value                                                         |
-| ------------------ | ------------------------------------------------------------- |
-| Agent type         | Cursor Local Agent                                            |
-| Platform           | Cursor                                                        |
-| Machine            | mac-mini                                                      |
-| Surface            | desktop-workspace                                             |
-| Execution          | local                                                         |
-| Role               | lisa                                                          |
-| Orchestrator key   | cursor-local-mac-mini-desktop-workspace-orchestrator          |
-| Coordination home  | `/Users/linktrend/Projects/openclaw_prime`                    |
-| Session ID         | `cursor-local-mac-mini-lisa-direct-2-20260809-1911`           |
-| Started            | 2026-08-09 19:11 Asia/Taipei                                  |
-| Last updated       | 2026-08-09 19:11 Asia/Taipei                                 |
+| Field             | Value                                                |
+| ----------------- | ---------------------------------------------------- |
+| Agent type        | Cursor Local Agent                                   |
+| Platform          | Cursor                                               |
+| Machine           | mac-mini                                             |
+| Surface           | desktop-workspace                                    |
+| Execution         | local                                                |
+| Role              | lisa                                                 |
+| Orchestrator key  | cursor-local-mac-mini-desktop-workspace-orchestrator |
+| Coordination home | `/Users/linktrend/Projects/openclaw_prime`           |
+| Session ID        | `cursor-local-mac-mini-lisa-direct-2-20260809-1911`  |
+| Started           | 2026-08-09 19:11 Asia/Taipei                         |
+| Last updated      | 2026-08-09 19:11 Asia/Taipei                         |
 
 ## Work
 
-| Field           | Value                                                     |
-| --------------- | --------------------------------------------------------- |
-| Objective       | LISA-DIRECT-2 direct production-readiness job             |
-| Branch          | `feature/lisa-direct-2`                                  |
-| Starting commit | `383b8b27adf`                                            |
-| Status          | `active`                                                  |
-| Handoff         |                                                           |
+| Field           | Value                                         |
+| --------------- | --------------------------------------------- |
+| Objective       | LISA-DIRECT-2 direct production-readiness job |
+| Branch          | `feature/lisa-direct-2`                       |
+| Starting commit | `383b8b27adf`                                 |
+| Status          | `active`                                      |
+| Handoff         |                                               |
 
 ## Ownership Scope
 

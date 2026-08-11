@@ -2,20 +2,20 @@
 
 ## Session Metadata
 
-| Field            | Value                                                                                         |
-| ---------------- | --------------------------------------------------------------------------------------------- |
-| Agent identity   | Cursor Local Agent / Grok 4.5 High — OpenClaw Lisa plan execution owner                       |
-| Session ID       | `cursor-local-mac-mini-lisa-capture-timeout-wave5-20260728`                                   |
-| Orchestrator key | `cursor-local-mac-mini-desktop-workspace-orchestrator`                                            |
-| Objective        | Genuine bounded-operation primitive; consolidate capture/lifecycle timeouts                   |
-| Scope            | Documentation/session closeout only for wave 5; functional code already pushed                |
-| Started          | 2026-07-28 18:02 Asia/Taipei                                                                  |
-| Ended            | 2026-07-28 19:17 Asia/Taipei                                                                  |
-| Starting branch  | `issue/ocp-openclawdevelopmentplan01`                                                         |
-| Ending branch    | `issue/ocp-openclawdevelopmentplan01`                                                         |
-| Starting commit  | `11fdce6e81cd7ae8db5a4b0fca1aaa2610e42087`                                                    |
-| Ending commit    | (set after this docs closeout push)                                                           |
-| Ending status    | complete                                                                                      |
+| Field            | Value                                                                          |
+| ---------------- | ------------------------------------------------------------------------------ |
+| Agent identity   | Cursor Local Agent / Grok 4.5 High — OpenClaw Lisa plan execution owner        |
+| Session ID       | `cursor-local-mac-mini-lisa-capture-timeout-wave5-20260728`                    |
+| Orchestrator key | `cursor-local-mac-mini-desktop-workspace-orchestrator`                         |
+| Objective        | Genuine bounded-operation primitive; consolidate capture/lifecycle timeouts    |
+| Scope            | Documentation/session closeout only for wave 5; functional code already pushed |
+| Started          | 2026-07-28 18:02 Asia/Taipei                                                   |
+| Ended            | 2026-07-28 19:17 Asia/Taipei                                                   |
+| Starting branch  | `issue/ocp-openclawdevelopmentplan01`                                          |
+| Ending branch    | `issue/ocp-openclawdevelopmentplan01`                                          |
+| Starting commit  | `11fdce6e81cd7ae8db5a4b0fca1aaa2610e42087`                                     |
+| Ending commit    | (set after this docs closeout push)                                            |
+| Ending status    | complete                                                                       |
 
 ## Summary
 

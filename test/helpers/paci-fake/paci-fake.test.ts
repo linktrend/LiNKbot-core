@@ -31,10 +31,7 @@ async function mintForm(assertion: string, scope?: string): Promise<URLSearchPar
   return form;
 }
 
-async function introspectForm(
-  token: string,
-  assertion: string,
-): Promise<URLSearchParams> {
+async function introspectForm(token: string, assertion: string): Promise<URLSearchParams> {
   return new URLSearchParams({
     token,
     client_assertion_type: CLIENT_ASSERTION_TYPE,
@@ -562,8 +559,8 @@ describe("paci-fake Platform parity", () => {
     const afterRotate = fake
       .getJwks()
       .keys.map((k) => k.kid)
-      .sort();
-    expect(afterRotate).toEqual(["as-original", rotated.kid].sort());
+      .toSorted();
+    expect(afterRotate).toEqual(["as-original", rotated.kid].toSorted());
 
     fake.setMintOverrides(undefined);
     const assertion2 = await fake.signClientAssertion({

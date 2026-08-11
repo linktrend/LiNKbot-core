@@ -2,21 +2,21 @@
 
 ## Session Metadata
 
-| Field            | Value |
-| ---------------- | ----- |
-| Agent identity   | Codex Desktop Agent / Luna High |
-| Session ID       | codex-local-mac-mini-gitops-foundation-20260810-1240 |
-| Orchestrator key | codex-mac-mini-desktop-app-orchestrator |
-| Objective        | Repair openclaw_prime's managed GitOps foundation and resume the reviewed IDE Development v2.1.0 rollout into development. |
+| Field            | Value                                                                                                                                      |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| Agent identity   | Codex Desktop Agent / Luna High                                                                                                            |
+| Session ID       | codex-local-mac-mini-gitops-foundation-20260810-1240                                                                                       |
+| Orchestrator key | codex-mac-mini-desktop-app-orchestrator                                                                                                    |
+| Objective        | Repair openclaw_prime's managed GitOps foundation and resume the reviewed IDE Development v2.1.0 rollout into development.                 |
 | Scope            | Isolated issue #95 worktree; managed workflows/config and required records; GitHub foundation state; no runtime or staging/main promotion. |
-| Started          | 2026-08-10 12:40 Asia/Taipei |
-| Ended            | 2026-08-10 13:00 Asia/Taipei |
-| Starting branch  | `issue/95-restore-managed-gitops-foundation-and-integrate` |
-| Ending branch    | `issue/95-restore-managed-gitops-foundation-and-integrate` |
-| Starting commit  | `111f77f608287093edc7656eaf6f25aa060b3f7f` |
-| Ending commit    | Final checkpoint SHA is reported from the pushed branch in the operator handoff. |
-| Starting status  | Clean issue worktree at `origin/development`. |
-| Ending status    | Managed workflow/config checkpoint prepared; external App-backed integration blocked by absent secure configuration. |
+| Started          | 2026-08-10 12:40 Asia/Taipei                                                                                                               |
+| Ended            | 2026-08-10 13:00 Asia/Taipei                                                                                                               |
+| Starting branch  | `issue/95-restore-managed-gitops-foundation-and-integrate`                                                                                 |
+| Ending branch    | `issue/95-restore-managed-gitops-foundation-and-integrate`                                                                                 |
+| Starting commit  | `111f77f608287093edc7656eaf6f25aa060b3f7f`                                                                                                 |
+| Ending commit    | Final checkpoint SHA is reported from the pushed branch in the operator handoff.                                                           |
+| Starting status  | Clean issue worktree at `origin/development`.                                                                                              |
+| Ending status    | Managed workflow/config checkpoint prepared; external App-backed integration blocked by absent secure configuration.                       |
 
 ## Summary
 

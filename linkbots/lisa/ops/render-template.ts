@@ -30,20 +30,26 @@ function usage(): never {
 
 const args = process.argv.slice(2);
 const kind = args[0] as TemplateKind | undefined;
-if (!kind) usage();
+if (!kind) {
+  usage();
+}
 
 if (kind === "pipeline-one-liner") {
   const waveIdx = args.indexOf("--wave");
   const resultIdx = args.indexOf("--result");
   const wave = waveIdx >= 0 ? args[waveIdx + 1] : undefined;
   const result = resultIdx >= 0 ? args[resultIdx + 1] : undefined;
-  if (!wave || (result !== "Clear" && result !== "Issues")) usage();
+  if (!wave || (result !== "Clear" && result !== "Issues")) {
+    usage();
+  }
   process.stdout.write(`${renderPipelineOneLiner(wave, result)}\n`);
   process.exit(0);
 }
 
 const src = args[1];
-if (!src) usage();
+if (!src) {
+  usage();
+}
 const raw = src === "-" ? readFileSync(0, "utf8") : readFileSync(src, "utf8");
 const ctx = JSON.parse(raw) as TemplateContext;
 

@@ -942,7 +942,8 @@ describe("linkbrain transport modes", () => {
 
   it("uses api.machineTokenFacade without local resolveMachineTokenAccess", async () => {
     const fetchImpl = vi.fn(
-      async () => new Response(JSON.stringify({ ok: true }), { status: 200 }),
+      async (_input: RequestInfo | URL, _init?: RequestInit) =>
+        new Response(JSON.stringify({ ok: true }), { status: 200 }),
     );
     const acquire = vi.fn(async ({ bindingId }) => ({
       bindingId,
@@ -984,7 +985,8 @@ describe("linkbrain transport modes", () => {
     const result = await transport.write(writeArgs);
     expect(result.ok).toBe(true);
     expect(acquire).toHaveBeenCalledOnce();
-    expect(new Headers(fetchImpl.mock.calls[0]![1]?.headers).get("authorization")).toBe(
+    const fetchCalls = fetchImpl.mock.calls as unknown as Array<[RequestInfo | URL, RequestInit?]>;
+    expect(new Headers(fetchCalls[0]?.[1]?.headers).get("authorization")).toBe(
       "Bearer host-injected-token",
     );
   });

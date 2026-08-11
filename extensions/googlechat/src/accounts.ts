@@ -234,7 +234,7 @@ export function resolveGoogleChatAccount(params: {
     enabled,
     config: merged,
     credentialSource: resolved.source,
-    ["credentials"]: resolved.credentials,
+    credentials: resolved.credentials,
     credentialsFile: resolved.credentialsFile,
     tokenStatus: resolved.status,
     ...(resolved.diagnostic ? { credentialDiagnostics: [resolved.diagnostic] } : {}),

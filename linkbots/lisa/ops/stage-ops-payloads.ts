@@ -106,9 +106,13 @@ export function renderStageExternalUnavailableOutput(): string {
 export function validateStageExternalUnavailableOutput(output: string): string[] {
   const errors: string[] = [];
   for (const token of ["STAGE_SKIPPED_google", "STAGE_SKIPPED_task", "STAGE_SKIPPED_email"]) {
-    if (!output.includes(token)) errors.push(`missing ${token}`);
+    if (!output.includes(token)) {
+      errors.push(`missing ${token}`);
+    }
   }
-  if (/\bClear\b/.test(output)) errors.push("stage external output must not claim Clear");
+  if (/\bClear\b/.test(output)) {
+    errors.push("stage external output must not claim Clear");
+  }
   if (/(?:Google\/Calendar|Carlos Tasks|Email):\s*(?:Yes|No)\./.test(output)) {
     errors.push("stage external output must not assert Yes/No for unavailable integrations");
   }
@@ -187,8 +191,12 @@ export function decideRepairSupervision(
   },
 ): StageRepairSupervisionDecision {
   const missing: Array<"repair_attempt_store" | "main_approve_store"> = [];
-  if (!probe.repairAttemptStoreAvailable) missing.push("repair_attempt_store");
-  if (!probe.mainApproveStoreAvailable) missing.push("main_approve_store");
+  if (!probe.repairAttemptStoreAvailable) {
+    missing.push("repair_attempt_store");
+  }
+  if (!probe.mainApproveStoreAvailable) {
+    missing.push("main_approve_store");
+  }
   if (missing.length > 0) {
     const parts = [
       probe.repairAttemptStorePrerequisite,
@@ -396,10 +404,18 @@ export function hashStageJob(job: StageSeedJob): string {
 
 export function validateStageJob(job: StageSeedJob): string[] {
   const errors: string[] = [];
-  if (job.enabled !== false) errors.push(`${job.id}: enabled must be false`);
-  if (job.delivery.mode !== "none") errors.push(`${job.id}: delivery.mode must be none`);
-  if (job.agentId !== STAGE_OPS_AGENT_ID) errors.push(`${job.id}: agentId must be lisa-cron`);
-  if (job.schedule.tz !== STAGE_OPS_TZ) errors.push(`${job.id}: tz must be Asia/Taipei`);
+  if (job.enabled !== false) {
+    errors.push(`${job.id}: enabled must be false`);
+  }
+  if (job.delivery.mode !== "none") {
+    errors.push(`${job.id}: delivery.mode must be none`);
+  }
+  if (job.agentId !== STAGE_OPS_AGENT_ID) {
+    errors.push(`${job.id}: agentId must be lisa-cron`);
+  }
+  if (job.schedule.tz !== STAGE_OPS_TZ) {
+    errors.push(`${job.id}: tz must be Asia/Taipei`);
+  }
   if (
     /^STAGE CANARY ONLY\b/m.test(job.payload.message) ||
     /Reply with exactly one line:\s*STAGE_CANARY_OK/i.test(job.payload.message)
@@ -441,9 +457,10 @@ export function validateStageOpsCatalog(params: {
   repair?: StageSeedJob | null;
 }): string[] {
   const errors: string[] = [];
-  if (params.jobs.length !== 6)
+  if (params.jobs.length !== 6) {
     errors.push(`expected exactly 6 core jobs, got ${params.jobs.length}`);
-  const ids = params.jobs.map((j) => j.id);
+  }
+  const ids = new Set(params.jobs.map((j) => j.id));
   for (const id of [
     "lisa-ship-05",
     "lisa-pull-07",
@@ -452,12 +469,14 @@ export function validateStageOpsCatalog(params: {
     "lisa-morning-digest",
     "lisa-heartbeat-45",
   ]) {
-    if (!ids.includes(id)) errors.push(`missing core job ${id}`);
+    if (!ids.has(id)) errors.push(`missing core job ${id}`);
   }
-  if (ids.includes("lisa-repair-dispatcher")) {
+  if (ids.has("lisa-repair-dispatcher")) {
     errors.push("repair must not be in the six-job core set");
   }
-  for (const job of params.jobs) errors.push(...validateStageJob(job));
+  for (const job of params.jobs) {
+    errors.push(...validateStageJob(job));
+  }
   if (params.repair) {
     errors.push(...validateStageJob(params.repair));
     if (params.repair.id !== "lisa-repair-dispatcher") {
@@ -486,7 +505,9 @@ export function buildStageSeedDocument(params?: { includeRepair?: boolean }): {
   const includeRepair = params?.includeRepair === true;
   const catalog = includeRepair ? [...jobs, repair] : jobs;
   const payloadHashes: Record<string, string> = {};
-  for (const job of catalog) payloadHashes[job.id] = hashStageJob(job);
+  for (const job of catalog) {
+    payloadHashes[job.id] = hashStageJob(job);
+  }
   return {
     version: STAGE_OPS_SEED_VERSION,
     note: "Repo SOT stage cron seed for Mac Mini lisa-stage. Six core jobs are real bounded HEARTBEAT/digest/Ship/Pull procedures with delivery=none and enabled=false. Repair/GitOps supervision is packaged separately (fail-closed blocked_no_store until durable stores exist). Do not enable schedules or force-run without Principal gate. Tooling: stage-ops-coordinator.ts.",

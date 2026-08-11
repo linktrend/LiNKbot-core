@@ -10,66 +10,66 @@
 
 ## Exact heads
 
-| Field | Value |
-| --- | --- |
-| Start HEAD (exact) | `23e06bb94e4acfbb467e2174ef558fa6e869b963` |
-| Primary implementation commit | `a8bef6519d9ae91afbcc20390dde625055b01e5b` |
-| Clean pushed tip | exact `git rev-parse origin/issue/ocp-openclawdevelopmentplan01` after this push (must match local HEAD) |
+| Field                         | Value                                                                                                    |
+| ----------------------------- | -------------------------------------------------------------------------------------------------------- |
+| Start HEAD (exact)            | `23e06bb94e4acfbb467e2174ef558fa6e869b963`                                                               |
+| Primary implementation commit | `a8bef6519d9ae91afbcc20390dde625055b01e5b`                                                               |
+| Clean pushed tip              | exact `git rev-parse origin/issue/ocp-openclawdevelopmentplan01` after this push (must match local HEAD) |
 
 ## Lisa operations worktree (preserved)
 
-| Field | Value |
-| --- | --- |
-| Path | `.worktrees/lisa-ops01` |
-| Branch | `issue/ocp-lisa-ops01` |
-| Current tip | `fb9fe4b68b85fd866670ce748ba1c060cab6a323` |
-| Mutations by this session | **none** |
+| Field                     | Value                                      |
+| ------------------------- | ------------------------------------------ |
+| Path                      | `.worktrees/lisa-ops01`                    |
+| Branch                    | `issue/ocp-lisa-ops01`                     |
+| Current tip               | `fb9fe4b68b85fd866670ce748ba1c060cab6a323` |
+| Mutations by this session | **none**                                   |
 
 ## Correction outcome (OpenClaw)
 
-| Item | Outcome |
-| --- | --- |
-| Lane A — shared lifetime | Activating cache hits rematerialize (fresh register/API/facade) unless already healthy same-active; no host-only reconstruct of facades onto stale plugin instances |
-| Lane B — same-active live ownership | `canReuseActiveCombinedPluginRuntimeSnapshot` requires live facade + binding set health; unregister forces rematerialize |
-| Lane C — hook-init rollback | `liveCommitStarted` marked before `initializeGlobalHookRunner`; early/mid/late injectors; prior registry/hooks/identity/process-globals restored |
-| Lane D — setup/channel | Real `loadOpenClawPlugins` setupEntry proofs: baseline counts, sync throw, activating-lock overlap |
-| Consumer path proof | Captured `facadeStore()` facades after rematerialize; stop/unregister clears without orphan live |
+| Item                                | Outcome                                                                                                                                                             |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Lane A — shared lifetime            | Activating cache hits rematerialize (fresh register/API/facade) unless already healthy same-active; no host-only reconstruct of facades onto stale plugin instances |
+| Lane B — same-active live ownership | `canReuseActiveCombinedPluginRuntimeSnapshot` requires live facade + binding set health; unregister forces rematerialize                                            |
+| Lane C — hook-init rollback         | `liveCommitStarted` marked before `initializeGlobalHookRunner`; early/mid/late injectors; prior registry/hooks/identity/process-globals restored                    |
+| Lane D — setup/channel              | Real `loadOpenClawPlugins` setupEntry proofs: baseline counts, sync throw, activating-lock overlap                                                                  |
+| Consumer path proof                 | Captured `facadeStore()` facades after rematerialize; stop/unregister clears without orphan live                                                                    |
 
 ## Platform repin state
 
-| Field | Value |
-| --- | --- |
-| Failed IV HEAD (Wave 8 Platform) | `d807ad3ca2537853d35ec6c738254b54dcc15d66` |
-| Current frozen OpenClaw pin | Platform HEAD `0455846487d0b8c583859060ba8b4be70e7f0b48`; schema SHA-256 `7173b9f9bca59ce8a0e3e3dc2b78b680dd07fdd2451215e3ecd97ff3dd463eed` |
-| Permanent OpenClaw repin | **BLOCKED** — awaiting Platform Codex-certified corrected descendant |
+| Field                            | Value                                                                                                                                       |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| Failed IV HEAD (Wave 8 Platform) | `d807ad3ca2537853d35ec6c738254b54dcc15d66`                                                                                                  |
+| Current frozen OpenClaw pin      | Platform HEAD `0455846487d0b8c583859060ba8b4be70e7f0b48`; schema SHA-256 `7173b9f9bca59ce8a0e3e3dc2b78b680dd07fdd2451215e3ecd97ff3dd463eed` |
+| Permanent OpenClaw repin         | **BLOCKED** — awaiting Platform Codex-certified corrected descendant                                                                        |
 
 ## Fixture / countersign state
 
-| Field | Value |
-| --- | --- |
-| AuthClaims / envelope fixture JSON bytes changed | **No** |
-| Fixture-owner countersign refresh | **Not required** |
-| Self-countersign | **Forbidden / not done** |
+| Field                                            | Value                    |
+| ------------------------------------------------ | ------------------------ |
+| AuthClaims / envelope fixture JSON bytes changed | **No**                   |
+| Fixture-owner countersign refresh                | **Not required**         |
+| Self-countersign                                 | **Forbidden / not done** |
 
 ## Public Plugin SDK surface (focused)
 
-| Metric | Result |
-| --- | --- |
-| Public entrypoints | 142 |
-| Public exports | 4733 |
-| Public callable exports | 2885 |
-| `build:plugin-sdk:strict-smoke` / export check | PASS |
-| `plugin-sdk:surface:check` | PASS |
+| Metric                                         | Result |
+| ---------------------------------------------- | ------ |
+| Public entrypoints                             | 142    |
+| Public exports                                 | 4733   |
+| Public callable exports                        | 2885   |
+| `build:plugin-sdk:strict-smoke` / export check | PASS   |
+| `plugin-sdk:surface:check`                     | PASS   |
 
 ## Focused proof (trusted local)
 
-| Area | Result |
-| --- | --- |
-| Real-loader Wave 9 suite | PASS — 25 tests |
-| Host generation suite | PASS — 25 tests |
-| MCP transport machine-token | PASS — 12 tests |
-| `git diff --check origin/development...HEAD` | Clean |
-| Hosted CI / Bugbot | **Not polled** (Principal-deferred) |
+| Area                                         | Result                              |
+| -------------------------------------------- | ----------------------------------- |
+| Real-loader Wave 9 suite                     | PASS — 25 tests                     |
+| Host generation suite                        | PASS — 25 tests                     |
+| MCP transport machine-token                  | PASS — 12 tests                     |
+| `git diff --check origin/development...HEAD` | Clean                               |
+| Hosted CI / Bugbot                           | **Not polled** (Principal-deferred) |
 
 ## Explicit non-claims
 

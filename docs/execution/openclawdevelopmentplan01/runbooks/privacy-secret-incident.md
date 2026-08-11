@@ -12,11 +12,9 @@
 
 ## FAKE / TEMPLATE rehearsal (safe anytime)
 
-
 1. Disable Brain conversation hooks / Skills plugin immediately (domain-first).
 2. Revoke affected credential names (request Platform revoke — do not issue here).
 3. Search logs for canaries without printing secret values; open incident note.
-
 
 ## Expected sanitized evidence
 
@@ -26,9 +24,9 @@
 
 ## Rehearsal record
 
-| Field | Value |
-| ----- | ----- |
-| Rehearsed | 2026-07-28 Asia/Taipei (wave 6 non-live) |
-| Operator | Cursor Local Grok 4.5 High (docs rehearsal) |
-| Live mutation | **none** |
-| Result | Runbook executable at non-live tier |
+| Field         | Value                                       |
+| ------------- | ------------------------------------------- |
+| Rehearsed     | 2026-07-28 Asia/Taipei (wave 6 non-live)    |
+| Operator      | Cursor Local Grok 4.5 High (docs rehearsal) |
+| Live mutation | **none**                                    |
+| Result        | Runbook executable at non-live tier         |

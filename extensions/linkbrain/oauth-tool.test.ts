@@ -114,7 +114,9 @@ describe("linkbrain native OAuth bridge", () => {
           },
         },
       },
-      agents: toolContext({ alsoAllow: ["linkbrain_write"] }).config.agents,
+      agents: {
+        list: [{ id: "lisa", tools: { alsoAllow: ["linkbrain_write"] } }],
+      },
     };
     const tool = createLinkbrainWriteTool(
       api as never,
@@ -274,7 +276,8 @@ describe("linkbrain native OAuth bridge", () => {
         }),
       }),
     );
-    const forwarded = invokeWrite.mock.calls[0]?.[0] as {
+    const calls = invokeWrite.mock.calls as unknown as Array<[unknown]>;
+    const forwarded = calls[0]?.[0] as {
       arguments: { batch: { events: Array<{ content?: string }> } };
     };
     expect(forwarded.arguments.batch.events[0]?.content).toBe("[REDACTED]");

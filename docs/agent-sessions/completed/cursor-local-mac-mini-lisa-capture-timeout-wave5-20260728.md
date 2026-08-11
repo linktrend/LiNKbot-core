@@ -2,30 +2,30 @@
 
 ## Identity
 
-| Field             | Value                                                              |
-| ----------------- | ------------------------------------------------------------------ |
-| Agent type        | Cursor Local Agent                                                 |
-| Platform          | Cursor                                                             |
-| Machine           | mac-mini                                                           |
-| Surface           | desktop-workspace                                                  |
-| Execution         | local                                                              |
-| Role              | lisa                                                               |
-| Orchestrator key  | cursor-local-mac-mini-desktop-workspace-orchestrator               |
-| Coordination home | `/Users/linktrend/Projects/openclaw_prime`                         |
-| Session ID        | `cursor-local-mac-mini-lisa-capture-timeout-wave5-20260728`        |
-| Started           | 2026-07-28 18:02 Asia/Taipei                                       |
-| Last updated      | 2026-07-28 19:17 Asia/Taipei                                       |
+| Field             | Value                                                       |
+| ----------------- | ----------------------------------------------------------- |
+| Agent type        | Cursor Local Agent                                          |
+| Platform          | Cursor                                                      |
+| Machine           | mac-mini                                                    |
+| Surface           | desktop-workspace                                           |
+| Execution         | local                                                       |
+| Role              | lisa                                                        |
+| Orchestrator key  | cursor-local-mac-mini-desktop-workspace-orchestrator        |
+| Coordination home | `/Users/linktrend/Projects/openclaw_prime`                  |
+| Session ID        | `cursor-local-mac-mini-lisa-capture-timeout-wave5-20260728` |
+| Started           | 2026-07-28 18:02 Asia/Taipei                                |
+| Last updated      | 2026-07-28 19:17 Asia/Taipei                                |
 
 ## Work
 
-| Field           | Value                                                                                         |
-| --------------- | --------------------------------------------------------------------------------------------- |
-| Objective       | Correction wave 5: genuine bounded-operation primitive for capture + lifecycle timeouts       |
-| Branch          | `issue/ocp-openclawdevelopmentplan01`                                                         |
-| Starting commit | `11fdce6e81cd7ae8db5a4b0fca1aaa2610e42087`                                                    |
-| Ending commit   | docs closeout after code tip `4fa1e9f7ed0b30855dff04082995a7b3b336b7f4`                       |
-| Status          | `complete`                                                                                    |
-| Handoff         | `docs/handoffs/2026-07-28-openclawdevelopmentplan01-capture-bounded-timeout-wave5.md`         |
+| Field           | Value                                                                                   |
+| --------------- | --------------------------------------------------------------------------------------- |
+| Objective       | Correction wave 5: genuine bounded-operation primitive for capture + lifecycle timeouts |
+| Branch          | `issue/ocp-openclawdevelopmentplan01`                                                   |
+| Starting commit | `11fdce6e81cd7ae8db5a4b0fca1aaa2610e42087`                                              |
+| Ending commit   | docs closeout after code tip `4fa1e9f7ed0b30855dff04082995a7b3b336b7f4`                 |
+| Status          | `complete`                                                                              |
+| Handoff         | `docs/handoffs/2026-07-28-openclawdevelopmentplan01-capture-bounded-timeout-wave5.md`   |
 
 ## Ownership Scope
 

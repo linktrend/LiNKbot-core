@@ -82,9 +82,9 @@ describe("plugin API machine-token generation replacement", () => {
 
     expect(api.machineTokenFacade).toBeDefined();
     expect(api.machineTokenFacade!.health("linkbrain-stage").registered).toBe(false);
-    await expect(
-      api.machineTokenFacade!.acquire({ bindingId: "linkbrain-stage" }),
-    ).rejects.toThrow(/unregistered/);
+    await expect(api.machineTokenFacade!.acquire({ bindingId: "linkbrain-stage" })).rejects.toThrow(
+      /unregistered/,
+    );
     expect(getLiveMachineTokenFacadeGenerationHandle("linkbrain")).toBeUndefined();
 
     registry.commitPluginGlobalSideEffects("linkbrain", { activate: true });

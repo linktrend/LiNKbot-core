@@ -20,17 +20,17 @@
 
 ## Delivered
 
-| # | Requirement | Result | Evidence |
-| - | ----------- | ------ | -------- |
-| 1 | Public `registerMcpServerToolFilter` | **Implemented (local)** | plugin API + registrar + docs |
-| 2 | Core/domain separation | **Honored** | generic overlay in core; Brain/Skills policy in plugins |
-| 3 | Ownership, validation, default-deny, hot apply, diagnostics, rollback | **Implemented (local)** | ownership tests; null omit; generation invalidate |
-| 4 | Wire mcpRead / mcpDiscoveryRead / governedExecution | **Wired** | linkbrain + linkskills `register()` |
-| 5 | Prove via managed-MCP listTools path | **Proven (local)** | `agent-bundle-mcp-runtime.mcp-tool-filter.test.ts` |
-| 6 | Preserve drain ownership + coexistence | **Preserved** | tip suite 31/203 still green |
-| 7 | Phase 13 totals 31/203 | **Corrected** | Phase 13 tip proof / reproduction |
-| 8 | §13.3 ledger individual classifications | **Updated (provisional)** | `PHASE-14-CLASSIFICATION-EVIDENCE-INDEX.md` |
-| 9 | AuthClaims 1.1 fixtures | **Unchanged** | aggregates unchanged vs wave 8 |
+| #   | Requirement                                                           | Result                    | Evidence                                                |
+| --- | --------------------------------------------------------------------- | ------------------------- | ------------------------------------------------------- |
+| 1   | Public `registerMcpServerToolFilter`                                  | **Implemented (local)**   | plugin API + registrar + docs                           |
+| 2   | Core/domain separation                                                | **Honored**               | generic overlay in core; Brain/Skills policy in plugins |
+| 3   | Ownership, validation, default-deny, hot apply, diagnostics, rollback | **Implemented (local)**   | ownership tests; null omit; generation invalidate       |
+| 4   | Wire mcpRead / mcpDiscoveryRead / governedExecution                   | **Wired**                 | linkbrain + linkskills `register()`                     |
+| 5   | Prove via managed-MCP listTools path                                  | **Proven (local)**        | `agent-bundle-mcp-runtime.mcp-tool-filter.test.ts`      |
+| 6   | Preserve drain ownership + coexistence                                | **Preserved**             | tip suite 31/203 still green                            |
+| 7   | Phase 13 totals 31/203                                                | **Corrected**             | Phase 13 tip proof / reproduction                       |
+| 8   | §13.3 ledger individual classifications                               | **Updated (provisional)** | `PHASE-14-CLASSIFICATION-EVIDENCE-INDEX.md`             |
+| 9   | AuthClaims 1.1 fixtures                                               | **Unchanged**             | aggregates unchanged vs wave 8                          |
 
 ## Tip proof (local)
 
@@ -54,10 +54,10 @@ git diff --check origin/development...HEAD
 
 Method: from each fixtures root, SHA-256 of sorted `{file_sha256}  {relative_path}` lines.
 
-| Package | Count | Aggregate |
-| ------- | ----- | --------- |
-| Brain | 75 | `4493f71432ef56f9fc272ff4c208b8901242c2bd83e138f53d6f0259b4f4811b` |
-| Skills | 71 | `203163711b5db17b8a07d3956e41596384cbd08f0c110bd9f21abfc5c7e5e19a` |
+| Package | Count | Aggregate                                                          |
+| ------- | ----- | ------------------------------------------------------------------ |
+| Brain   | 75    | `4493f71432ef56f9fc272ff4c208b8901242c2bd83e138f53d6f0259b4f4811b` |
+| Skills  | 71    | `203163711b5db17b8a07d3956e41596384cbd08f0c110bd9f21abfc5c7e5e19a` |
 
 ## Explicit non-claims
 

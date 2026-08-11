@@ -221,7 +221,9 @@ describe("Stage PDF canary execute (mock transport)", () => {
         },
       );
       assert.equal(badLabel.ok, false);
-      if (!badLabel.ok) assert.match(badLabel.error, /runner label|lisa-stage|refusing/);
+      if (!badLabel.ok) {
+        assert.match(badLabel.error, /runner label|lisa-stage|refusing/);
+      }
 
       const altRoot = resolveLiveExecuteOperationalRollback(
         {},
@@ -252,7 +254,9 @@ describe("Stage PDF canary execute (mock transport)", () => {
         },
       );
       assert.equal(escaped.ok, false);
-      if (!escaped.ok) assert.match(escaped.error, /symlink|regular file|hard-pin/);
+      if (!escaped.ok) {
+        assert.match(escaped.error, /symlink|regular file|hard-pin/);
+      }
 
       // Adversarial: symlink whose target stays inside stage root is still refused.
       const insideTarget = path.join(stageDir, "real-openclaw.json");
@@ -269,7 +273,9 @@ describe("Stage PDF canary execute (mock transport)", () => {
         },
       );
       assert.equal(insideSymlink.ok, false);
-      if (!insideSymlink.ok) assert.match(insideSymlink.error, /symlink|regular file|hard-pin/);
+      if (!insideSymlink.ok) {
+        assert.match(insideSymlink.error, /symlink|regular file|hard-pin/);
+      }
       rmSync(escapeDir, { recursive: true, force: true });
     } finally {
       rmSync(dir, { recursive: true, force: true });
@@ -302,8 +308,11 @@ describe("Stage PDF canary execute (mock transport)", () => {
       assert.notEqual(receipt.status, "executed");
       assert.notEqual(receipt.proof_kind, "openrouter_http_production");
     } finally {
-      if (prev === undefined) delete process.env.OPENROUTER_API_KEY;
-      else process.env.OPENROUTER_API_KEY = prev;
+      if (prev === undefined) {
+        delete process.env.OPENROUTER_API_KEY;
+      } else {
+        process.env.OPENROUTER_API_KEY = prev;
+      }
       rmSync(dir, { recursive: true, force: true });
     }
   });
@@ -570,7 +579,9 @@ describe("Stage PDF operational rollback (temp fixture + fake runner)", () => {
       async restart(service) {
         events.push(`restart:${service}`);
         restartCalls += 1;
-        if (restartCalls === 1) return { ok: false, error: "fake_restart_failed" };
+        if (restartCalls === 1) {
+          return { ok: false, error: "fake_restart_failed" };
+        }
         return { ok: true };
       },
       async health(service) {

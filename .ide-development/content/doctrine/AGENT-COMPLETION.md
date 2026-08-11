@@ -20,13 +20,13 @@ There is **no** `.linktrend/review-ready.json` readiness file and no readiness m
 
 ## Modes (`scripts/gitops/completion_gate.py`)
 
-| Mode | Meaning | Exit |
-|---|---|---|
-| `checkpoint` | Commit+push save; work unfinished | `0` ok |
-| `review-ready` | Validate finished work, then publish **`Linktrend Review Ready`** (or fail closed with App-backed route diagnostics) | `0` ok, `78` incomplete, `1` failed |
-| `blocked` | Write durable blocker JSON | `2` blocked |
-| `status` | Report current completion state | `0` ok |
-| `write-evidence` | Write schema-versioned completion evidence for current `HEAD` | `0` ok |
+| Mode             | Meaning                                                                                                              | Exit                                |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
+| `checkpoint`     | Commit+push save; work unfinished                                                                                    | `0` ok                              |
+| `review-ready`   | Validate finished work, then publish **`Linktrend Review Ready`** (or fail closed with App-backed route diagnostics) | `0` ok, `78` incomplete, `1` failed |
+| `blocked`        | Write durable blocker JSON                                                                                           | `2` blocked                         |
+| `status`         | Report current completion state                                                                                      | `0` ok                              |
+| `write-evidence` | Write schema-versioned completion evidence for current `HEAD`                                                        | `0` ok                              |
 
 Exit codes: `0` ok, `78` incomplete, `2` blocked, `1` failed.
 

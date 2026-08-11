@@ -733,8 +733,12 @@ describe(`Phase 6 mandatory matrix (${PHASE6_EVIDENCE_TIER})`, () => {
 
   it("11. Cross-domain namespace isolation", async () => {
     const { brain, skills } = createIsolatedDomainStores();
-    expect([...brain.openedNamespaces].sort()).toEqual([...LINKBRAIN_NAMESPACE_LIST].sort());
-    expect([...skills.openedNamespaces].sort()).toEqual([...LINKSKILLS_NAMESPACE_LIST].sort());
+    expect([...brain.openedNamespaces].toSorted()).toEqual(
+      [...LINKBRAIN_NAMESPACE_LIST].toSorted(),
+    );
+    expect([...skills.openedNamespaces].toSorted()).toEqual(
+      [...LINKSKILLS_NAMESPACE_LIST].toSorted(),
+    );
     expect(LINKBRAIN_NAMESPACES.captureBuffer).toBe("capture-buffer");
     expect(Object.values(LINKSKILLS_NAMESPACES)).not.toContain("capture-buffer");
     expect(LINKBRAIN_PLUGIN_ID).not.toBe(LINKSKILLS_PLUGIN_ID);

@@ -65,15 +65,15 @@ Fix: remove that path from both plugins' `secretInputs` so the SecretRef remains
 
 ## Tests and Verification
 
-| Suite                                                                                    | Result                        |
-| ---------------------------------------------------------------------------------------- | ----------------------------- |
-| `src/secrets/runtime-machine-token-plugin-secretref.integration.test.ts`                 | PASS (5)                      |
-| `extensions/linkbrain/manifest.test.ts` + `linkskills/manifest.test.ts`                  | PASS (16)                     |
-| `src/plugins/loader.machine-token-generation.test.ts` + registry-api machine-token tests | PASS (35)                     |
-| `src/agents/machine-token-host.test.ts`                                                  | PASS (25)                     |
-| `src/secrets/runtime-config-collectors-plugins.test.ts`                                  | PASS (17)                     |
-| `extensions/linkbrain                                                                    | linkskills/transport.test.ts` | PASS (49) |
-| Live Lisa / stage gateway restart                                                        | **Not run** (forbidden)       |
+| Suite                                                                                    | Result                  |
+| ---------------------------------------------------------------------------------------- | ----------------------- |
+| `src/secrets/runtime-machine-token-plugin-secretref.integration.test.ts`                 | PASS (5)                |
+| `extensions/linkbrain/manifest.test.ts` + `linkskills/manifest.test.ts`                  | PASS (16)               |
+| `src/plugins/loader.machine-token-generation.test.ts` + registry-api machine-token tests | PASS (35)               |
+| `src/agents/machine-token-host.test.ts`                                                  | PASS (25)               |
+| `src/secrets/runtime-config-collectors-plugins.test.ts`                                  | PASS (17)               |
+| `extensions/linkbrain/transport.test.ts` + `extensions/linkskills/transport.test.ts`     | PASS (49)               |
+| Live Lisa / stage gateway restart                                                        | **Not run** (forbidden) |
 
 ## Problems and Blockers
 

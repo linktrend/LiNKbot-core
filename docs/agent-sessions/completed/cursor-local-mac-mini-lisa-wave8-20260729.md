@@ -2,28 +2,28 @@
 
 ## Identity
 
-| Field             | Value |
-| ----------------- | ----- |
-| Agent type        | Cursor Local Agent |
-| Platform          | macOS |
-| Machine           | Mac mini |
-| Surface           | Cursor Desktop |
-| Execution         | local |
-| Role              | lisa |
+| Field             | Value                                                |
+| ----------------- | ---------------------------------------------------- |
+| Agent type        | Cursor Local Agent                                   |
+| Platform          | macOS                                                |
+| Machine           | Mac mini                                             |
+| Surface           | Cursor Desktop                                       |
+| Execution         | local                                                |
+| Role              | lisa                                                 |
 | Orchestrator key  | cursor-local-mac-mini-desktop-workspace-orchestrator |
-| Coordination home | openclaw_prime |
-| Session ID        | cursor-local-mac-mini-lisa-wave8-20260729 |
-| Started           | 2026-07-29 07:15 Asia/Taipei |
-| Last updated      | 2026-07-29 07:15 Asia/Taipei |
+| Coordination home | openclaw_prime                                       |
+| Session ID        | cursor-local-mac-mini-lisa-wave8-20260729            |
+| Started           | 2026-07-29 07:15 Asia/Taipei                         |
+| Last updated      | 2026-07-29 07:15 Asia/Taipei                         |
 
 ## Work
 
-| Field           | Value |
-| --------------- | ----- |
-| Objective       | PR #38 Phase-14 correction wave 8 (bounded) |
-| Branch          | issue/ocp-openclawdevelopmentplan01 |
-| Starting commit | b3e8853b1c15d13429f51ac5054bac448a4256d2 |
-| Status          | complete |
+| Field           | Value                                                                           |
+| --------------- | ------------------------------------------------------------------------------- |
+| Objective       | PR #38 Phase-14 correction wave 8 (bounded)                                     |
+| Branch          | issue/ocp-openclawdevelopmentplan01                                             |
+| Starting commit | b3e8853b1c15d13429f51ac5054bac448a4256d2                                        |
+| Status          | complete                                                                        |
 | Handoff         | docs/handoffs/2026-07-29-openclawdevelopmentplan01-wave8-phase14-corrections.md |
 
 ## Ownership Scope

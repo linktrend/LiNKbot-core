@@ -249,7 +249,12 @@ function parseMetrics(raw: unknown): SkillsTelemetryMetrics | undefined {
       continue;
     }
     const value = raw[key];
-    if (typeof value !== "number" || !Number.isFinite(value) || value < 0 || value > MAX_METRICS_VALUE) {
+    if (
+      typeof value !== "number" ||
+      !Number.isFinite(value) ||
+      value < 0 ||
+      value > MAX_METRICS_VALUE
+    ) {
       throw new Error(`linkskills: telemetry metrics.${key} must be a bounded non-negative number`);
     }
     metrics[key] = value;
@@ -370,8 +375,7 @@ export function buildSkillsTelemetryEnvelope(params: {
     event_type: eventType,
     occurred_at: requireBoundedString(params.body, "occurred_at", 64),
     sequence,
-    idempotency_key:
-      optionalBoundedString(params.body, "idempotency_key") ?? params.idempotencyKey,
+    idempotency_key: optionalBoundedString(params.body, "idempotency_key") ?? params.idempotencyKey,
     ...(correlationId ? { correlation_id: correlationId } : {}),
     actor_id: requireBoundedString(params.body, "actor_id"),
     ...(runtimeProfileId ? { runtime_profile_id: runtimeProfileId } : {}),
