@@ -8,6 +8,7 @@ describe("native i18n changed scope", () => {
     const generatedCompanionPaths = [
       "apps/android/app/src/main/res/values/strings.xml",
       "apps/android/app/src/main/res/values/assistant.xml",
+      "apps/shared/OpenClawKit/Sources/OpenClawKit/Resources/tool-display.json",
     ];
     const generatedPaths = [
       "apps/.i18n/native/sv.json",

@@ -72,7 +72,7 @@ After hybrid selection, prefer the smallest domain skill:
 - UI → `frontend-ui-engineering`
 - API → `api-patterns`
 - Data → `database-design`
-- Deploy execute → `deployment-procedures` (ship *decision* → gstack `/ship`)
+- Deploy execute → `deployment-procedures` (ship _decision_ → gstack `/ship`)
 - Browser flows → `webapp-testing`
 - Criterion QA → `persistent-qa`
 - Scaffold LiNKtrend app → `app-builder`
