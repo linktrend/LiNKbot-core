@@ -45,7 +45,7 @@
 
 - 2026-08-03 14:40: Session opened. Live Lisa PID 747 on 18790 healthy. Stage Lisa PID 83561 on 18791 healthy. linkbrain/linkskills schemas inspected via read-only subagents: loopback HTTP only legal with `environment: "test"` (local-test). MachineToken requires SecretRef-only clientAssertionKeyRef; host expects PKCS#8 PEM ES256.
 
-## Next Action
+## Final Next Action
 
 - Exact next action: Inspect live Brain/Skills tool contracts; machine-token host PEM expectation; stage evidence; then configure stage only
 - Owner: this session

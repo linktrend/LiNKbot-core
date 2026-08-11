@@ -2,29 +2,29 @@
 
 ## Identity
 
-| Field             | Value |
-| ----------------- | ----- |
-| Agent type        | Codex Desktop Agent |
-| Platform          | Codex |
-| Machine           | mac-mini |
-| Surface           | desktop-workspace (Luna High) |
-| Execution         | local |
-| Role              | feature |
-| Orchestrator key  | codex-mac-mini-desktop-app-orchestrator |
-| Coordination home | `/Users/linktrend/Projects/openclaw_prime` |
+| Field             | Value                                                |
+| ----------------- | ---------------------------------------------------- |
+| Agent type        | Codex Desktop Agent                                  |
+| Platform          | Codex                                                |
+| Machine           | mac-mini                                             |
+| Surface           | desktop-workspace (Luna High)                        |
+| Execution         | local                                                |
+| Role              | feature                                              |
+| Orchestrator key  | codex-mac-mini-desktop-app-orchestrator              |
+| Coordination home | `/Users/linktrend/Projects/openclaw_prime`           |
 | Session ID        | codex-local-mac-mini-gitops-foundation-20260810-1240 |
-| Started           | 2026-08-10 12:40 Asia/Taipei |
-| Last updated      | 2026-08-10 13:00 Asia/Taipei |
+| Started           | 2026-08-10 12:40 Asia/Taipei                         |
+| Last updated      | 2026-08-10 13:00 Asia/Taipei                         |
 
 ## Work
 
-| Field           | Value |
-| --------------- | ----- |
+| Field           | Value                                                                                                                      |
+| --------------- | -------------------------------------------------------------------------------------------------------------------------- |
 | Objective       | Repair openclaw_prime's managed GitOps foundation and resume the reviewed IDE Development v2.1.0 rollout into development. |
-| Branch          | `issue/95-restore-managed-gitops-foundation-and-integrate` |
-| Starting commit | `111f77f608287093edc7656eaf6f25aa060b3f7f` (`origin/development`) |
-| Status          | `complete` |
-| Handoff         | `docs/handoffs/2026-08-10-1300-codex-luna-high-gitops-foundation-issue-95.md` |
+| Branch          | `issue/95-restore-managed-gitops-foundation-and-integrate`                                                                 |
+| Starting commit | `111f77f608287093edc7656eaf6f25aa060b3f7f` (`origin/development`)                                                          |
+| Status          | `complete`                                                                                                                 |
+| Handoff         | `docs/handoffs/2026-08-10-1300-codex-luna-high-gitops-foundation-issue-95.md`                                              |
 
 ## Ownership Scope
 

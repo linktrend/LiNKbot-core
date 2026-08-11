@@ -2,21 +2,21 @@
 
 ## Session Metadata
 
-| Field            | Value |
-| ---------------- | ----- |
-| Agent identity   | Cursor Local Agent / Grok 4.5 High |
-| Session ID       | cursor-local-mac-mini-feature-paci-iv-wave9-20260731 |
-| Orchestrator key | cursor-local-mac-mini-desktop-workspace-orchestrator-20260723-1539 |
+| Field            | Value                                                                                              |
+| ---------------- | -------------------------------------------------------------------------------------------------- |
+| Agent identity   | Cursor Local Agent / Grok 4.5 High                                                                 |
+| Session ID       | cursor-local-mac-mini-feature-paci-iv-wave9-20260731                                               |
+| Orchestrator key | cursor-local-mac-mini-desktop-workspace-orchestrator-20260723-1539                                 |
 | Objective        | PACI IV correction Wave 9 — facade lifetime, same-active health, hook-init rollback, setup/channel |
-| Scope            | OpenClaw loader/cache/activation, hook-runner-global, real-loader tests, paci-fake pin comments |
-| Started          | 2026-07-31 11:10 Asia/Taipei |
-| Ended            | 2026-07-31 Asia/Taipei |
-| Starting branch  | `issue/ocp-openclawdevelopmentplan01` |
-| Ending branch    | `issue/ocp-openclawdevelopmentplan01` |
-| Starting commit  | `23e06bb94e4acfbb467e2174ef558fa6e869b963` |
-| Ending commit    | tip after push (`git rev-parse HEAD`) |
-| Starting status  | clean except Wave 9 prompt |
-| Ending status    | clean origin-synced |
+| Scope            | OpenClaw loader/cache/activation, hook-runner-global, real-loader tests, paci-fake pin comments    |
+| Started          | 2026-07-31 11:10 Asia/Taipei                                                                       |
+| Ended            | 2026-07-31 Asia/Taipei                                                                             |
+| Starting branch  | `issue/ocp-openclawdevelopmentplan01`                                                              |
+| Ending branch    | `issue/ocp-openclawdevelopmentplan01`                                                              |
+| Starting commit  | `23e06bb94e4acfbb467e2174ef558fa6e869b963`                                                         |
+| Ending commit    | tip after push (`git rev-parse HEAD`)                                                              |
+| Starting status  | clean except Wave 9 prompt                                                                         |
+| Ending status    | clean origin-synced                                                                                |
 
 ## Summary
 
@@ -44,11 +44,11 @@ Fixed Wave 8 Codex blockers: activating cache hits rematerialize plugin runtimes
 
 ## Decisions
 
-| Decision | Reason | Authority |
-| --- | --- | --- |
+| Decision                                                     | Reason                                  | Authority     |
+| ------------------------------------------------------------ | --------------------------------------- | ------------- |
 | Rematerialize on activating cache miss of same-active health | Never reactivate stale captured facades | Wave 9 Lane A |
-| Live ownership check on same-active | Unregister must force rebuild | Wave 9 Lane B |
-| Mark liveCommitStarted before hook init | Restore prior on mid-init throw | Wave 9 Lane C |
+| Live ownership check on same-active                          | Unregister must force rebuild           | Wave 9 Lane B |
+| Mark liveCommitStarted before hook init                      | Restore prior on mid-init throw         | Wave 9 Lane C |
 
 ## Tests and Verification
 

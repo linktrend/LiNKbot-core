@@ -225,7 +225,7 @@ export async function waitForSessionDescendants(params: {
 }): Promise<{
   completed: SessionWaitCompletionResult[];
   pending: string[];
-  errors?: WaitError[];
+  errors?: readonly WaitError[];
   timedOut?: true;
 }> {
   const deadlineAtMs = Date.now() + Math.max(0, params.timeoutMs);

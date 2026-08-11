@@ -23,10 +23,7 @@ export type OpenClawPluginMcpServerToolFilter = {
    * - `{ include }` is intersected with the operator allowlist ceiling.
    * - `{ exclude }` is applied after include (union with operator excludes).
    */
-  resolve: () =>
-    | McpServerToolFilterResolved
-    | null
-    | Promise<McpServerToolFilterResolved | null>;
+  resolve: () => McpServerToolFilterResolved | null | Promise<McpServerToolFilterResolved | null>;
 };
 
 /** Registry entry for a plugin MCP server tool-filter resolver. */

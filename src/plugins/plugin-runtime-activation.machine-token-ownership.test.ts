@@ -1,9 +1,9 @@
 // Multi-plugin ownership blueprint: UTF-8 total-order fingerprint (not localeCompare).
 import { describe, expect, it } from "vitest";
 import { fingerprintMachineTokenKeyRef } from "../agents/machine-token-fingerprint.js";
-import {
-  type HostMachineTokenBindingRecord,
-  type MachineTokenKeyRefIdentity,
+import type {
+  HostMachineTokenBindingRecord,
+  MachineTokenKeyRefIdentity,
 } from "../agents/machine-token-host.js";
 import { captureMachineTokenOwnershipBlueprint } from "./plugin-runtime-activation.js";
 

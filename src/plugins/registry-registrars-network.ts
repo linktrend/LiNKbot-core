@@ -7,13 +7,13 @@ import { normalizePluginGatewayMethodScope } from "../shared/gateway-method-poli
 import { normalizeRegisteredChannelPlugin } from "./channel-validation.js";
 import { normalizePluginHttpPath } from "./http-path.js";
 import { findOverlappingPluginHttpRoute } from "./http-route-overlap.js";
+import { bumpMcpToolFilterRegistrationGeneration } from "./mcp-tool-filter-registration.js";
 import {
   resolvePluginRegistrationCapabilities,
   type PluginRegistryState,
 } from "./registry-state.js";
 import type { PluginHttpRouteRegistration, PluginRecord } from "./registry-types.js";
 import type { SessionCatalogProvider } from "./session-catalog.js";
-import { bumpMcpToolFilterRegistrationGeneration } from "./mcp-tool-filter-registration.js";
 import type {
   OpenClawPluginChannelRegistration,
   OpenClawPluginHostedMediaResolver,

@@ -2,30 +2,30 @@
 
 ## Identity
 
-| Field             | Value |
-| ----------------- | ----- |
-| Agent type        | Cursor Local Agent |
-| Platform          | macOS |
-| Machine           | Mac mini |
-| Surface           | Cursor Desktop |
-| Execution         | local |
-| Role              | lisa |
+| Field             | Value                                                |
+| ----------------- | ---------------------------------------------------- |
+| Agent type        | Cursor Local Agent                                   |
+| Platform          | macOS                                                |
+| Machine           | Mac mini                                             |
+| Surface           | Cursor Desktop                                       |
+| Execution         | local                                                |
+| Role              | lisa                                                 |
 | Orchestrator key  | cursor-local-mac-mini-desktop-workspace-orchestrator |
-| Coordination home | openclaw_prime |
-| Session ID        | cursor-local-mac-mini-lisa-wave7-20260728 |
-| Started           | 2026-07-28 21:14 Asia/Taipei |
-| Last updated      | 2026-07-28 21:40 Asia/Taipei |
-| Ended             | 2026-07-28 21:40 Asia/Taipei |
+| Coordination home | openclaw_prime                                       |
+| Session ID        | cursor-local-mac-mini-lisa-wave7-20260728            |
+| Started           | 2026-07-28 21:14 Asia/Taipei                         |
+| Last updated      | 2026-07-28 21:40 Asia/Taipei                         |
+| Ended             | 2026-07-28 21:40 Asia/Taipei                         |
 
 ## Work
 
-| Field           | Value |
-| --------------- | ----- |
-| Objective       | PR #38 correction wave 7 only |
-| Branch          | issue/ocp-openclawdevelopmentplan01 |
-| Starting commit | b9f948f9b3a856e997247355f697c3fc7767e844 |
-| Ending commit   | 6edd16a71440accacfac5dd8c639321a130986d3 |
-| Status          | complete |
+| Field           | Value                                                                           |
+| --------------- | ------------------------------------------------------------------------------- |
+| Objective       | PR #38 correction wave 7 only                                                   |
+| Branch          | issue/ocp-openclawdevelopmentplan01                                             |
+| Starting commit | b9f948f9b3a856e997247355f697c3fc7767e844                                        |
+| Ending commit   | 6edd16a71440accacfac5dd8c639321a130986d3                                        |
+| Status          | complete                                                                        |
 | Handoff         | docs/handoffs/2026-07-28-openclawdevelopmentplan01-wave7-phase14-corrections.md |
 
 ## Ownership Scope

@@ -2,31 +2,31 @@
 
 ## Identity
 
-| Field             | Value |
-| ----------------- | ----- |
-| Agent type        | Cursor Local Agent |
-| Platform          | Cursor |
-| Machine           | Mac mini |
-| Surface           | Desktop workspace |
-| Execution         | local |
-| Role              | feature |
+| Field             | Value                                                              |
+| ----------------- | ------------------------------------------------------------------ |
+| Agent type        | Cursor Local Agent                                                 |
+| Platform          | Cursor                                                             |
+| Machine           | Mac mini                                                           |
+| Surface           | Desktop workspace                                                  |
+| Execution         | local                                                              |
+| Role              | feature                                                            |
 | Orchestrator key  | cursor-local-mac-mini-desktop-workspace-orchestrator-20260723-1539 |
-| Coordination home | /Users/linktrend/Projects/openclaw_prime |
-| Session ID        | cursor-local-mac-mini-feature-paci-iv-wave3-20260730 |
-| Started           | 2026-07-30 13:57 Asia/Taipei |
-| Last updated      | 2026-07-30 14:24 Asia/Taipei |
-| Ended             | 2026-07-30 14:24 Asia/Taipei |
+| Coordination home | /Users/linktrend/Projects/openclaw_prime                           |
+| Session ID        | cursor-local-mac-mini-feature-paci-iv-wave3-20260730               |
+| Started           | 2026-07-30 13:57 Asia/Taipei                                       |
+| Last updated      | 2026-07-30 14:24 Asia/Taipei                                       |
+| Ended             | 2026-07-30 14:24 Asia/Taipei                                       |
 
 ## Work
 
-| Field           | Value |
-| --------------- | ----- |
-| Objective       | PACI IV correction Wave 3; Phase-13 handoff; stop for Codex Phase-14 |
-| Branch          | `issue/ocp-openclawdevelopmentplan01` |
-| Starting commit | `2a1cab16be606444145b27074cd998dd63ed46e5` |
-| Ending commit | `b3a7eb03c32daf63981be33b1a13ba85ac72f6bf` |
-| Status          | `completed` |
-| Handoff         | `docs/handoffs/2026-07-30-paci-iv-correction-wave3.md` |
+| Field           | Value                                                                                              |
+| --------------- | -------------------------------------------------------------------------------------------------- |
+| Objective       | PACI IV correction Wave 3; Phase-13 handoff; stop for Codex Phase-14                               |
+| Branch          | `issue/ocp-openclawdevelopmentplan01`                                                              |
+| Starting commit | `2a1cab16be606444145b27074cd998dd63ed46e5`                                                         |
+| Ending commit   | `b3a7eb03c32daf63981be33b1a13ba85ac72f6bf`                                                         |
+| Status          | `completed`                                                                                        |
+| Handoff         | `docs/handoffs/2026-07-30-paci-iv-correction-wave3.md`                                             |
 | Phase-13        | `docs/execution/openclawdevelopmentplan01/PHASE-13-PACI-IV-WAVE3-CORRECTION-HANDOFF-2026-07-30.md` |
 
 ## Ownership Scope

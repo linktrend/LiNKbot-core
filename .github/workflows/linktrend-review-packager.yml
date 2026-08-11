@@ -23,15 +23,15 @@ on:
         description: "Why this packaging run is needed"
         required: false
         default: "manual"
-  pull_request_target:
+  pull_request_target: # zizmor: ignore[dangerous-triggers] trusted default-branch packager only; PR code is never checked out or executed
     types: [opened, synchronize, reopened, ready_for_review]
     branches: [development]
-  workflow_run:
+  workflow_run: # zizmor: ignore[dangerous-triggers] trusted CI metadata only; resolver binds current PR and head before App mutation
     workflows:
       - CI
       - Branch Source Policy
     types: [completed]
-  check_run:
+  check_run: # zizmor: ignore[dangerous-triggers] external check metadata only; exact candidate identity is revalidated before evaluation
     types: [completed]
 
 permissions: {}
@@ -46,7 +46,7 @@ concurrency:
 
 env:
   BUGBOT_REVIEW_COMMAND: ${{ vars.LINKTREND_BUGBOT_REVIEW_COMMAND || '@cursor review' }}
-  FAST_GATE_CHECKS: ${{ vars.LINKTREND_INTEGRATOR_REQUIRED_CHECKS || 'Verify IDE Development,Enforce allowed PR source branches' }}
+  FAST_GATE_CHECKS: ${{ vars.LINKTREND_INTEGRATOR_REQUIRED_CHECKS || 'openclaw/ci-gate,Enforce allowed PR source branches' }}
 
 jobs:
   discover:
@@ -58,7 +58,7 @@ jobs:
       contents: read
     steps:
       - name: Checkout trusted default branch only
-        uses: actions/checkout@v4
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
         with:
           ref: ${{ github.event.repository.default_branch }}
           persist-credentials: false
@@ -119,7 +119,7 @@ jobs:
             *) exit 0 ;;
           esac
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         if: always()
         with:
           name: packager-discover-report
@@ -160,7 +160,7 @@ jobs:
       reason: ${{ steps.r.outputs.reason }}
     steps:
       - name: Checkout trusted default branch only
-        uses: actions/checkout@v4
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
         with:
           ref: ${{ github.event.repository.default_branch }}
           persist-credentials: false
@@ -187,7 +187,7 @@ jobs:
       pull-requests: read
     steps:
       - name: Checkout trusted default branch only
-        uses: actions/checkout@v4
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
         with:
           ref: ${{ github.event.repository.default_branch }}
           persist-credentials: false
@@ -258,7 +258,7 @@ jobs:
             *) exit 0 ;;
           esac
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         if: always()
         with:
           name: packager-evaluate-report

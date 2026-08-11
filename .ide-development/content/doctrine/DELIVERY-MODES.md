@@ -11,10 +11,10 @@ Define **configurable generic delivery modes** for how independently accepted Is
 
 ## Modes
 
-| Mode id | Default? | Integration shape |
-|---|---|---|
-| `issue-pr` | **Yes** (preserve existing generic behavior) | Each review-ready work branch may receive its own draft PR into `development` (current Packager discover behavior). |
-| `phase-integration` | Opt-in via config | Frequent Issue **checkpoints** (commit+push only). Independently accepted exact Issue SHAs are included on a **Phase branch**. Packager opens **one Phase PR** into `development` for that Phase head. |
+| Mode id             | Default?                                     | Integration shape                                                                                                                                                                                      |
+| ------------------- | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `issue-pr`          | **Yes** (preserve existing generic behavior) | Each review-ready work branch may receive its own draft PR into `development` (current Packager discover behavior).                                                                                    |
+| `phase-integration` | Opt-in via config                            | Frequent Issue **checkpoints** (commit+push only). Independently accepted exact Issue SHAs are included on a **Phase branch**. Packager opens **one Phase PR** into `development` for that Phase head. |
 
 Checkpoint pushes **never** open a PR and **never** request Bugbot, in either mode.
 
@@ -58,17 +58,17 @@ Under `issue-pr` mode, risk exceptions are unused; normal Packager Issue PR beha
 
 Authorized integration tooling writes / updates a Phase delivery record (fixture and live outputs) with at least:
 
-| Field | Meaning |
-|---|---|
-| `deliveryMode` | `phase-integration` |
-| `phaseBranch` | Phase branch name |
-| `baseSha` | Integration base (usually `development` tip at Phase open) |
-| `headSha` | Exact Phase tip SHA under review |
-| `mergeSha` | Merge commit SHA after Integrator merge, else `null` |
-| `phasePr` | `{ number, url, base }` when a Phase PR exists |
-| `acceptedIssues[]` | `{ branch, sha, accepted, included }` for each required Issue |
-| `namedGateEvidence` | Gate id, exact SHA, status, per-check outcomes |
-| `riskExceptionIssuePrs[]` | Optional Issue PRs opened under explicit risk classes |
+| Field                     | Meaning                                                       |
+| ------------------------- | ------------------------------------------------------------- |
+| `deliveryMode`            | `phase-integration`                                           |
+| `phaseBranch`             | Phase branch name                                             |
+| `baseSha`                 | Integration base (usually `development` tip at Phase open)    |
+| `headSha`                 | Exact Phase tip SHA under review                              |
+| `mergeSha`                | Merge commit SHA after Integrator merge, else `null`          |
+| `phasePr`                 | `{ number, url, base }` when a Phase PR exists                |
+| `acceptedIssues[]`        | `{ branch, sha, accepted, included }` for each required Issue |
+| `namedGateEvidence`       | Gate id, exact SHA, status, per-check outcomes                |
+| `riskExceptionIssuePrs[]` | Optional Issue PRs opened under explicit risk classes         |
 
 Path on the Phase tip: `.linktrend/phase-delivery-record.json`
 

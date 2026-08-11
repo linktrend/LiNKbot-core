@@ -142,7 +142,7 @@ export function classifyActions(
 ) {
   // CI skips generated protocol-only macOS jobs, but the live app embeds these Swift sources.
   const generatedMacProtocolChanged = changedPaths.some((changedPath) =>
-    /^apps\/shared\/OpenClawKit\/Sources\/OpenClawProtocol\//u.test(changedPath),
+    changedPath.startsWith("apps/shared/OpenClawKit/Sources/OpenClawProtocol/"),
   );
   const runMacos =
     changedPaths.length > 0 &&
@@ -1955,6 +1955,7 @@ export function maintainMain(options, dependencies = {}) {
                 controlError,
               ],
               "Gateway control is unavailable and the managed Gateway could not be proven stopped",
+              { cause: controlError },
             );
           }
         }
@@ -1971,6 +1972,7 @@ export function maintainMain(options, dependencies = {}) {
             throw new AggregateError(
               [prepareError, proofError],
               "Gateway suspension failed and the managed Gateway could not be proven stopped",
+              { cause: proofError },
             );
           }
         }
@@ -2012,6 +2014,7 @@ export function maintainMain(options, dependencies = {}) {
             throw new AggregateError(
               [error, resumeError],
               "Gateway stop failed and the prepared maintenance suspension could not be resumed",
+              { cause: resumeError },
             );
           }
           throw error;

@@ -1,14 +1,7 @@
 ---
 name: lisa-tasks
 description: Manage Carlos's Google Tasks (all lists) via a separate OAuth as calusa@linktrend.media. Use for listing/creating/updating/completing/deleting tasks, heartbeat/digest Tasks Yes/No from Carlos's tasks, and any Carlos action-item work. Never use Docs Assign or Chat Space assign as primary.
-metadata:
-  {
-    "openclaw":
-      {
-        "emoji": "✅",
-        "requires": { "bins": ["gws"] },
-      },
-  }
+metadata: { "openclaw": { "emoji": "✅", "requires": { "bins": ["gws"] } } }
 ---
 
 # Lisa Tasks — Carlos Google Tasks
@@ -17,10 +10,10 @@ Full Tasks management on **Carlos's** account (`calusa@linktrend.media`), not Li
 
 ## Auth model (critical)
 
-| Account | Config dir | Wrapper / CLI |
-|---------|------------|---------------|
-| Lisa primary (`lisa@linktrend.media`) | `~/.config/gws` | bare `gws …` (calendar, gmail, drive…) |
-| Carlos Tasks (`calusa@linktrend.media`) | `~/.config/gws-carlos-tasks` | `tools/bin/lisa-carlos-tasks …` |
+| Account                                 | Config dir                   | Wrapper / CLI                          |
+| --------------------------------------- | ---------------------------- | -------------------------------------- |
+| Lisa primary (`lisa@linktrend.media`)   | `~/.config/gws`              | bare `gws …` (calendar, gmail, drive…) |
+| Carlos Tasks (`calusa@linktrend.media`) | `~/.config/gws-carlos-tasks` | `tools/bin/lisa-carlos-tasks …`        |
 
 **Never** run `gws auth login` against the primary `~/.config/gws` for this skill. **Never** overwrite Lisa's primary credentials.
 
@@ -125,8 +118,8 @@ Source of truth = **Carlos's** tasks via this wrapper (any list with open items)
 
 ## Failure handling
 
-| Symptom | Action |
-|---------|--------|
-| Wrapper exit 2, no credentials | Tell Carlos the exact login commands above; stop |
-| `invalid_rapt` / reauth | Report to Carlos; do not logout/login |
-| Empty lists after auth | Confirm signed in as `calusa@` not `lisa@` via `gws auth status` under the carlos-tasks config dir |
+| Symptom                        | Action                                                                                             |
+| ------------------------------ | -------------------------------------------------------------------------------------------------- |
+| Wrapper exit 2, no credentials | Tell Carlos the exact login commands above; stop                                                   |
+| `invalid_rapt` / reauth        | Report to Carlos; do not logout/login                                                              |
+| Empty lists after auth         | Confirm signed in as `calusa@` not `lisa@` via `gws auth status` under the carlos-tasks config dir |

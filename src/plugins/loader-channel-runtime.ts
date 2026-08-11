@@ -46,8 +46,7 @@ export function loadSetupRuntimeChannelCandidate(params: {
   logger: PluginLogger;
   pushPluginLoadError: (message: string) => void;
 }): boolean {
-  const { manifestRecord, record, registrationPlan, runtimeCandidateEntry, registryBuilder } =
-    params;
+  const { manifestRecord, record, registrationPlan, registryBuilder } = params;
   if (!registrationPlan.loadSetupEntry || !manifestRecord.setupSource) {
     return false;
   }
@@ -126,6 +125,9 @@ function finishSetupRuntimeChannelCandidate(params: {
   const { manifestRecord, record, registrationPlan, runtimeCandidateEntry, registryBuilder, api } =
     params;
   const setupRegistration = params.setupRegistration;
+  if (!setupRegistration.plugin) {
+    return true;
+  }
   let mergedSetupRegistration = setupRegistration;
   let runtimeSetterApplied = false;
   if (
@@ -226,22 +228,17 @@ function finishSetupRuntimeChannelCandidate(params: {
       });
       return true;
     }
-    if (runtimePluginRegistration.plugin) {
-      if (
-        runtimePluginRegistration.plugin.id &&
-        runtimePluginRegistration.plugin.id !== record.id
-      ) {
+    const runtimePlugin = runtimePluginRegistration.plugin;
+    if (runtimePlugin) {
+      if (runtimePlugin.id && runtimePlugin.id !== record.id) {
         params.pushPluginLoadError(
-          `plugin id mismatch (config uses "${record.id}", runtime export uses "${runtimePluginRegistration.plugin.id}")`,
+          `plugin id mismatch (config uses "${record.id}", runtime export uses "${runtimePlugin.id}")`,
         );
         return true;
       }
       mergedSetupRegistration = {
         ...setupRegistration,
-        plugin: mergeSetupRuntimeChannelPlugin(
-          runtimePluginRegistration.plugin,
-          setupRegistration.plugin,
-        ),
+        plugin: mergeSetupRuntimeChannelPlugin(runtimePlugin, setupRegistration.plugin),
         setChannelRuntime:
           runtimeRegistration.setChannelRuntime ?? setupRegistration.setChannelRuntime,
       };

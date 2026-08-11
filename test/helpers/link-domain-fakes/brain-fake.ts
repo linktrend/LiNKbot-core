@@ -128,7 +128,7 @@ export async function startBrainFakeHttpServer(
   const child = spawn(process.execPath, args, {
     cwd: repoRoot,
     stdio: ["ignore", "pipe", "pipe"],
-    env: { ...process.env, ...(options.env ?? {}) },
+    env: { ...process.env, ...options.env },
   });
 
   const baseUrl = await new Promise<string>((resolve, reject) => {

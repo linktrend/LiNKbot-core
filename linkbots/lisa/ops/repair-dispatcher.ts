@@ -167,16 +167,30 @@ export function sameBinding(a: RepairBinding, b: RepairBinding): boolean {
 
 export function classifyFailure(input: { labels?: string[]; summary?: string }): FailureClass {
   const hay = `${(input.labels ?? []).join(" ")} ${input.summary ?? ""}`.toLowerCase();
-  if (/credential|secret|auth|token|keychain/.test(hay)) return "credentials";
-  if (/security|cve|xss|rce|injection/.test(hay)) return "security";
+  if (/credential|secret|auth|token|keychain/.test(hay)) {
+    return "credentials";
+  }
+  if (/security|cve|xss|rce|injection/.test(hay)) {
+    return "security";
+  }
   if (/force.?push|hard reset|delete branch|drop database/.test(hay)) {
     return "destructive_action";
   }
-  if (/conflict|merge conflict/.test(hay)) return "ambiguous_conflict";
-  if (/product decision|design choice|which approach/.test(hay)) return "product_decision";
-  if (/approval|awaiting approve|needs principal/.test(hay)) return "approval";
-  if (/billing|quota|rate limit|usage limit/.test(hay)) return "billing_usage_limit";
-  if (/authority|permission denied|unavailable/.test(hay)) return "unavailable_authority";
+  if (/conflict|merge conflict/.test(hay)) {
+    return "ambiguous_conflict";
+  }
+  if (/product decision|design choice|which approach/.test(hay)) {
+    return "product_decision";
+  }
+  if (/approval|awaiting approve|needs principal/.test(hay)) {
+    return "approval";
+  }
+  if (/billing|quota|rate limit|usage limit/.test(hay)) {
+    return "billing_usage_limit";
+  }
+  if (/authority|permission denied|unavailable/.test(hay)) {
+    return "unavailable_authority";
+  }
   return "ordinary_repairable";
 }
 

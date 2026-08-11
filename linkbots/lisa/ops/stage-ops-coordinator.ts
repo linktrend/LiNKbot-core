@@ -142,7 +142,9 @@ function coreStageJobNames(): string[] {
 
 function acceptedStageJobs(includeRepair: boolean): StageSeedJob[] {
   const jobs = buildStageOpsJobs();
-  if (includeRepair) jobs.push(buildStageRepairSupervisionJob());
+  if (includeRepair) {
+    jobs.push(buildStageRepairSupervisionJob());
+  }
   return jobs;
 }
 
@@ -153,13 +155,19 @@ function acceptedStageJobNames(includeRepair: boolean): Set<string> {
 function validateStageCronReceiptJob(job: JsonRecord, seed: StageSeedJob): string[] {
   const errors: string[] = [];
   const prefix = `stage cron receipt job ${seed.id}`;
-  if (job.agentId !== seed.agentId) errors.push(`${prefix} agentId must be ${seed.agentId}`);
+  if (job.agentId !== seed.agentId) {
+    errors.push(`${prefix} agentId must be ${seed.agentId}`);
+  }
   if (job.sessionTarget !== seed.sessionTarget) {
     errors.push(`${prefix} sessionTarget must be ${seed.sessionTarget}`);
   }
-  if (job.enabled !== false) errors.push(`${prefix} enabled must be false`);
+  if (job.enabled !== false) {
+    errors.push(`${prefix} enabled must be false`);
+  }
   const schedule = isJsonRecord(job.schedule) ? job.schedule : undefined;
-  if (!schedule || schedule.kind !== "cron") errors.push(`${prefix} schedule.kind must be cron`);
+  if (!schedule || schedule.kind !== "cron") {
+    errors.push(`${prefix} schedule.kind must be cron`);
+  }
   if (!schedule || schedule.expr !== seed.schedule.expr) {
     errors.push(`${prefix} schedule.expr must be ${seed.schedule.expr}`);
   }
@@ -229,22 +237,29 @@ function validateStageCronReceiptEnvelope(
   maxAgeMs: number,
 ): string[] {
   const errors: string[] = [];
-  if (!isJsonRecord(value)) return ["cron receipt must be a JSON object"];
+  if (!isJsonRecord(value)) {
+    return ["cron receipt must be a JSON object"];
+  }
   if (value.receiptType !== STAGE_CRON_RECEIPT_TYPE) {
     errors.push(`cron receipt type must be ${STAGE_CRON_RECEIPT_TYPE}`);
   }
-  const capturedMs = typeof value.capturedAt === "string" ? Date.parse(value.capturedAt) : NaN;
+  const capturedMs =
+    typeof value.capturedAt === "string" ? Date.parse(value.capturedAt) : Number.NaN;
   if (!Number.isFinite(capturedMs) || new Date(capturedMs).toISOString() !== value.capturedAt) {
     errors.push("cron receipt capturedAt must be a valid ISO timestamp");
   } else {
     const ageMs = nowMs - capturedMs;
-    if (ageMs < 0) errors.push("cron receipt capturedAt must not be in the future");
+    if (ageMs < 0) {
+      errors.push("cron receipt capturedAt must not be in the future");
+    }
     if (ageMs > maxAgeMs) {
       errors.push(`cron receipt expired: age ${ageMs}ms exceeds ${maxAgeMs}ms`);
     }
   }
   const provenance = isJsonRecord(value.provenance) ? value.provenance : undefined;
-  if (!provenance) return [...errors, "cron receipt provenance is required"];
+  if (!provenance) {
+    return [...errors, "cron receipt provenance is required"];
+  }
   if (provenance.capturedBy !== "stage-ops-coordinator") {
     errors.push("cron receipt provenance.capturedBy must be stage-ops-coordinator");
   }
@@ -307,9 +322,13 @@ export function resolveStageCronJobIdsFromReceipt(
     };
   }
   for (const job of jobs) {
-    if (!isJsonRecord(job) || typeof job.name !== "string") continue;
+    if (!isJsonRecord(job) || typeof job.name !== "string") {
+      continue;
+    }
     const seed = seedsByAlias.get(job.name);
-    if (!seed) continue;
+    if (!seed) {
+      continue;
+    }
     if (!isUuid(job.id)) {
       errors.push(`stage cron receipt job ${seed.id} must contain a UUID id`);
       continue;
@@ -403,7 +422,9 @@ function captureStageCronListReceipt(filePath: string): StageCronListReceipt {
 
 function selectJobs(includeRepair: boolean): StageSeedJob[] {
   const jobs = buildStageOpsJobs();
-  if (!includeRepair) return jobs;
+  if (!includeRepair) {
+    return jobs;
+  }
   return [...jobs, buildStageRepairSupervisionJob()];
 }
 
@@ -447,7 +468,9 @@ export function planStageOps(input: StageOpsPlanInput): StageOpsCoordinatorPlan 
   }
 
   const payloadHashes: Record<string, string> = {};
-  for (const job of jobs) payloadHashes[job.id] = hashStageJob(job);
+  for (const job of jobs) {
+    payloadHashes[job.id] = hashStageJob(job);
+  }
   payloadHashes[repair.id] = hashStageJob(repair);
 
   const stageRoot = input.stageRoot ?? STAGE_OPS_STAGE_ROOT;
@@ -599,8 +622,12 @@ export function planStageOps(input: StageOpsPlanInput): StageOpsCoordinatorPlan 
     }
 
     for (const cmd of commands) {
-      if (cmd.startsWith("#") || cmd.startsWith("export ")) continue;
-      if (!cmd.includes("openclaw.mjs") && !cmd.includes("lisa-stage-env-wrapper")) continue;
+      if (cmd.startsWith("#") || cmd.startsWith("export ")) {
+        continue;
+      }
+      if (!cmd.includes("openclaw.mjs") && !cmd.includes("lisa-stage-env-wrapper")) {
+        continue;
+      }
       validationErrors.push(...validateStageCommandRendering(cmd));
     }
   }

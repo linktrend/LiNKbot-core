@@ -12,6 +12,14 @@ import { describe, expect, it } from "vitest";
 import { LINKBRAIN_MCP_TOOL_ALLOWLIST } from "./mcp-tool-filter.js";
 import { LINKBRAIN_MCP_CAPTURE_DRAIN_TOOLS } from "./src/feature-flags.js";
 
+type ReceiptValidationError = { keyword: string };
+type ReceiptValidator = ((data: unknown) => boolean) & {
+  errors?: ReceiptValidationError[] | null;
+};
+type AjvLike = { compile(schema: Record<string, unknown>): ReceiptValidator };
+const Ajv2020Constructor = Ajv2020 as unknown as new (options: Record<string, unknown>) => AjvLike;
+const installFormats = addFormats as unknown as (ajv: AjvLike) => void;
+
 const receiptDir = join(
   dirname(fileURLToPath(import.meta.url)),
   "../../docs/execution/openclawdevelopmentplan01/receipts",
@@ -59,8 +67,8 @@ function loadFakeExample(): Record<string, unknown> {
 }
 
 function compileReceiptValidator() {
-  const ajv = new Ajv2020({ allErrors: true, strict: false });
-  addFormats(ajv);
+  const ajv = new Ajv2020Constructor({ allErrors: true, strict: false });
+  installFormats(ajv);
   return ajv.compile(loadReceiptSchema());
 }
 
@@ -158,7 +166,9 @@ describe("brain-capture-drain-canary receipt + architecture lock", () => {
     dishonestLiveProd.verdict = "PASS";
     expect(validate(dishonestLiveProd)).toBe(false);
     expect(
-      validate.errors?.some((error) => error.keyword === "if" || error.keyword === "contains"),
+      validate.errors?.some(
+        (error: ReceiptValidationError) => error.keyword === "if" || error.keyword === "contains",
+      ),
     ).toBe(true);
 
     const dishonestLiveStage = structuredClone(example) as Record<string, unknown>;

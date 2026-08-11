@@ -417,6 +417,7 @@ Skills own workflows; root owns hard policy and routing.
 - External messaging: no token-delta channel messages. Follow `docs/concepts/streaming.md`.
 
 <!-- BEGIN LINKTREND-IDE-MANAGED -->
+
 ## LiNKtrend IDE-managed development system (do not edit between markers)
 
 This section is maintained by LiNKtrend install/sync tooling. Repository-owned guidance may live **outside** these markers.

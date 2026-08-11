@@ -200,10 +200,10 @@ function loadCronMetadata(filePath) {
   return {
     count: ids.length,
     enabledCount: jobs.filter((job) => job.enabled === true).length,
-    ids: [...ids].sort(),
+    ids: [...ids].toSorted(),
     agentIds: [
       ...new Set(jobs.map((job) => job.agentId).filter((id) => typeof id === "string")),
-    ].sort(),
+    ].toSorted(),
   };
 }
 
@@ -374,7 +374,7 @@ async function snapshot(args) {
       sqliteLockCount: entries.filter((entry) => entry.sqliteLockArtifact).length,
       protectedCategories: Object.fromEntries(
         [...new Set(entries.map((entry) => entry.category))]
-          .sort()
+          .toSorted()
           .map((category) => [
             category,
             entries.filter((entry) => entry.category === category).length,

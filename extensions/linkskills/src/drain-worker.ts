@@ -35,9 +35,7 @@ function isAbortLike(error: unknown): boolean {
   return name === "AbortError" || name === "LinkskillsOperationTimeoutError";
 }
 
-export function createSkillsDrainWorker(
-  params: CreateSkillsDrainWorkerParams,
-): SkillsDrainWorker {
+export function createSkillsDrainWorker(params: CreateSkillsDrainWorkerParams): SkillsDrainWorker {
   const setIntervalFn = params.setIntervalFn ?? setInterval;
   const clearIntervalFn = params.clearIntervalFn ?? clearInterval;
   const setTimeoutFn = params.setTimeoutFn ?? setTimeout;

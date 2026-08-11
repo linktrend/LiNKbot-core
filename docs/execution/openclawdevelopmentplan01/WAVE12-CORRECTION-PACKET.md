@@ -15,12 +15,12 @@ Documentation/tooling only. No runtime behavior change. Fixture bytes unchanged.
 
 ## Corrections
 
-| # | Deficiency | Correction | Evidence |
-| - | ---------- | ---------- | -------- |
-| 1 | Validator trusted hand-maintained `inventory.json` | Frozen plan is sole authority; inventory must match plan extraction | `scripts/lib/openclawdevelopmentplan01-section-13.3-plan-extract.mjs`; validator |
-| 2 | Plan hash not enforced | Pin + verify SHA-256 `17203ee586a3fb2b1281bcddd8b17ae350075ebce537689f3c4bfcbbd14914f7` | extractor + validator |
-| 3 | Incomplete atomic kinds / invented mirror rows | Deterministic extraction for work tasks, tests, deliverables, exit gates, rollbacks, cross-plan gates, risks/controls, evidence requirements, DoD; stable anchors + fingerprints | regenerated `section-13.3/*` (**413** items) |
-| 4 | Weak failure coverage | Tests deliberately omit/group/duplicate/invent/modify/stale-hash and prove failure | `test/scripts/check-openclawdevelopmentplan01-section-13.3-ledger.test.ts` |
+| #   | Deficiency                                         | Correction                                                                                                                                                                       | Evidence                                                                         |
+| --- | -------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| 1   | Validator trusted hand-maintained `inventory.json` | Frozen plan is sole authority; inventory must match plan extraction                                                                                                              | `scripts/lib/openclawdevelopmentplan01-section-13.3-plan-extract.mjs`; validator |
+| 2   | Plan hash not enforced                             | Pin + verify SHA-256 `17203ee586a3fb2b1281bcddd8b17ae350075ebce537689f3c4bfcbbd14914f7`                                                                                          | extractor + validator                                                            |
+| 3   | Incomplete atomic kinds / invented mirror rows     | Deterministic extraction for work tasks, tests, deliverables, exit gates, rollbacks, cross-plan gates, risks/controls, evidence requirements, DoD; stable anchors + fingerprints | regenerated `section-13.3/*` (**413** items)                                     |
+| 4   | Weak failure coverage                              | Tests deliberately omit/group/duplicate/invent/modify/stale-hash and prove failure                                                                                               | `test/scripts/check-openclawdevelopmentplan01-section-13.3-ledger.test.ts`       |
 
 ## Validation
 

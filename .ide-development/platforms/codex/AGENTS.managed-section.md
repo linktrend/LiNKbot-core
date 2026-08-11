@@ -1,4 +1,5 @@
 <!-- BEGIN LINKTREND-IDE-MANAGED -->
+
 ## LiNKtrend IDE-managed development system (do not edit between markers)
 
 This section is maintained by LiNKtrend install/sync tooling. Repository-owned guidance may live **outside** these markers.

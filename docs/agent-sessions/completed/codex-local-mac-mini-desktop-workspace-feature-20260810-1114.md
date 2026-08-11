@@ -2,29 +2,29 @@
 
 ## Identity
 
-| Field | Value |
-| --- | --- |
-| Agent type | Codex Desktop Agent |
-| Platform | Codex |
-| Machine | mac-mini |
-| Surface | desktop-workspace |
-| Execution | local |
-| Role | feature |
-| Orchestrator key | codex-mac-mini-desktop-app-orchestrator |
-| Coordination home | `/Users/linktrend/Projects/openclaw_prime` |
-| Session ID | codex-local-mac-mini-desktop-workspace-feature-20260810-1114 |
-| Started | 2026-08-10 11:14 Asia/Taipei |
-| Last updated | 2026-08-10 11:14 Asia/Taipei |
+| Field             | Value                                                        |
+| ----------------- | ------------------------------------------------------------ |
+| Agent type        | Codex Desktop Agent                                          |
+| Platform          | Codex                                                        |
+| Machine           | mac-mini                                                     |
+| Surface           | desktop-workspace                                            |
+| Execution         | local                                                        |
+| Role              | feature                                                      |
+| Orchestrator key  | codex-mac-mini-desktop-app-orchestrator                      |
+| Coordination home | `/Users/linktrend/Projects/openclaw_prime`                   |
+| Session ID        | codex-local-mac-mini-desktop-workspace-feature-20260810-1114 |
+| Started           | 2026-08-10 11:14 Asia/Taipei                                 |
+| Last updated      | 2026-08-10 11:14 Asia/Taipei                                 |
 
 ## Work
 
-| Field | Value |
-| --- | --- |
-| Objective | Establish a non-secret repository source bundle contract for VPS Lisa and retire the unused David placeholder. |
-| Branch | `dev/minicodex/WP-0-lisa-profile-source-of-truth` |
-| Starting commit | `a5d67da87bbab9edfbc3465c5f505da26d4dbc29` |
-| Status | `complete` |
-| Handoff | `docs/handoffs/2026-08-10-1114-lisa-profile-source-of-truth.md` |
+| Field           | Value                                                                                                          |
+| --------------- | -------------------------------------------------------------------------------------------------------------- |
+| Objective       | Establish a non-secret repository source bundle contract for VPS Lisa and retire the unused David placeholder. |
+| Branch          | `dev/minicodex/WP-0-lisa-profile-source-of-truth`                                                              |
+| Starting commit | `a5d67da87bbab9edfbc3465c5f505da26d4dbc29`                                                                     |
+| Status          | `complete`                                                                                                     |
+| Handoff         | `docs/handoffs/2026-08-10-1114-lisa-profile-source-of-truth.md`                                                |
 
 ## Ownership Scope
 

@@ -1,4 +1,8 @@
 import type { MachineTokenPluginFacade } from "openclaw/plugin-sdk/machine-token-runtime";
+import type {
+  PluginStateLeaseContext,
+  PluginStateLeaseOptions,
+} from "openclaw/plugin-sdk/plugin-state-runtime";
 /**
  * Mirror of linkbrain machine-token facade stop/reload lifecycle proofs for
  * LinkSkills (same dual gateway_stop / service.stop unregister hazard).
@@ -67,7 +71,10 @@ async function registerStartedService(params: {
             maxEntries: options.maxEntries,
             overflowPolicy: options.overflowPolicy,
           }),
-        withLease: async (_options, run) => {
+        withLease: async <T>(
+          _options: PluginStateLeaseOptions,
+          run: (lease: PluginStateLeaseContext) => Promise<T>,
+        ) => {
           const controller = new AbortController();
           return await run({
             signal: controller.signal,
@@ -75,7 +82,7 @@ async function registerStartedService(params: {
           });
         },
       },
-    } as OpenClawPluginApi["runtime"],
+    } as unknown as OpenClawPluginApi["runtime"],
     registerService: (next) => {
       service = next;
     },
@@ -101,14 +108,14 @@ describe("linkskills machine-token facade stop/reload lifecycle", () => {
     const gatewayStop = hooks.get("gateway_stop");
     expect(gatewayStop).toBeTypeOf("function");
 
-    await gatewayStop!({ reason: "gateway stopping" }, {} as never);
+    await gatewayStop?.({ reason: "gateway stopping" }, {} as never);
 
     expect(generation.facade.health("linkskills-stage").registered).toBe(true);
     await expect(
       generation.facade.acquire({ bindingId: "linkskills-stage" }),
     ).resolves.toMatchObject({ accessToken: "test-access-token" });
 
-    await service.stop({} as never);
+    await service.stop?.({} as never);
     expect(generation.facade.health("linkskills-stage").registered).toBe(false);
   });
 
@@ -119,7 +126,7 @@ describe("linkskills machine-token facade stop/reload lifecycle", () => {
     const second = createLiveFacade("linkskills-stage");
     // A prior service stop must not touch the replacement facade injected into
     // the new registration.
-    await previousService.stop({} as never);
+    await previousService.stop?.({} as never);
 
     expect(first.facade.health("linkskills-stage").registered).toBe(false);
     expect(second.facade.health("linkskills-stage").registered).toBe(true);
@@ -132,14 +139,14 @@ describe("linkskills machine-token facade stop/reload lifecycle", () => {
     const generation = createLiveFacade("linkskills-stage");
     const { service: first } = await registerStartedService({ facade: generation.facade });
 
-    await first.stop({} as never);
+    await first.stop?.({} as never);
     const replacement = createLiveFacade("linkskills-stage");
     const { service: second } = await registerStartedService({ facade: replacement.facade });
     await expect(
       replacement.facade.acquire({ bindingId: "linkskills-stage" }),
     ).resolves.toMatchObject({ accessToken: "test-access-token" });
 
-    await second.stop({} as never);
+    await second.stop?.({} as never);
     expect(replacement.facade.health("linkskills-stage").registered).toBe(false);
   });
 });

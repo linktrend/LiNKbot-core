@@ -1,6 +1,6 @@
 import { PluginLoaderCacheState } from "./loader-cache-state.js";
-import type { MachineTokenOwnershipBlueprint } from "./plugin-runtime-activation.js";
 import type { PluginProcessGlobalState } from "./plugin-registration-transaction.js";
+import type { MachineTokenOwnershipBlueprint } from "./plugin-runtime-activation.js";
 import type { PluginRegistry } from "./registry-types.js";
 
 export type CachedPluginState = {

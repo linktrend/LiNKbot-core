@@ -31,9 +31,7 @@ export function wrapGuardedBodyStream(params: {
   let finalized = false;
   let totalBytes = 0;
   const maxBytes =
-    typeof params.maxBytes === "number" &&
-    Number.isFinite(params.maxBytes) &&
-    params.maxBytes >= 0
+    typeof params.maxBytes === "number" && Number.isFinite(params.maxBytes) && params.maxBytes >= 0
       ? Math.floor(params.maxBytes)
       : undefined;
   const cleanupRegistrationToken = {};

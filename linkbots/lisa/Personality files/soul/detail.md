@@ -12,7 +12,7 @@ tags: [soul, reference, archive, linktrend]
 
 # Operating Reference Notes
 
-*Merged from the Senior Expert Soul Operating Specification (vault reference). This file is **not** injected at session start. Canonical runtime persona: `SOUL.md` (Sections I–VII).*
+_Merged from the Senior Expert Soul Operating Specification (vault reference). This file is **not** injected at session start. Canonical runtime persona: `SOUL.md` (Sections I–VII)._
 
 ## Purpose
 

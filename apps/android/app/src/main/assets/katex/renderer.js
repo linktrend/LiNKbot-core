@@ -24,7 +24,7 @@ window.renderMath = async (job) => {
     const finalBounds = container.getBoundingClientRect();
     const height = Math.ceil(Math.max(finalBounds.height, container.scrollHeight));
     ChatMathBridge.onRenderComplete(job.id, width, height, true);
-  } catch (_) {
+  } catch {
     ChatMathBridge.onRenderComplete(job.id, 0, 0, false);
   }
 };

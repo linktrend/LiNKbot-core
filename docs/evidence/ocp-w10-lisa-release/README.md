@@ -54,11 +54,11 @@ Repair Dispatcher / GitOps supervision (ops contracts)
 | Slot             | Ref                   | Sources                                                                                                                |
 | ---------------- | --------------------- | ---------------------------------------------------------------------------------------------------------------------- |
 | Primary          | `openai/gpt-5.6-luna` | OpenClaw repo GPT-5.6 Luna routes / AGENTS examples                                                                    |
-| Default fallback | `zai/glm-5.2`         | `extensions/zai/model-definitions.ts`; https://docs.z.ai/guides/llm/glm-5.2                                            |
+| Default fallback | `zai/glm-5.2`         | `extensions/zai/model-definitions.ts`; [Z.AI model guide](https://docs.z.ai/guides/llm/glm-5.2)                        |
 | Image/PDF        | `minimax/MiniMax-M3`  | imageModel only (catalog text+image). PDF documentModels not in fragment; MiniMax media PDF defaults M2.7 — human gate |
 
 | Next fallback | `moonshot/kimi-k3` | `extensions/moonshot/provider-policy-api.ts`; Moonshot + OpenRouter docs |
-| Utility | `openrouter/google/gemini-3.5-flash-lite` | https://openrouter.ai/google/gemini-3.5-flash-lite |
+| Utility | `openrouter/google/gemini-3.5-flash-lite` | [OpenRouter model page](https://openrouter.ai/google/gemini-3.5-flash-lite) |
 | Eval-only | `nvidia/nemotron-3-super-120b-a12b` | `extensions/nvidia/provider-catalog.ts` — **disabled** |
 
 ## Hard stops honored

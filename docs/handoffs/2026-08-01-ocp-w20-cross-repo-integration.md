@@ -4,7 +4,7 @@
 
 | Field            | Value                                                         |
 | ---------------- | ------------------------------------------------------------- |
-| Agent identity   | Cursor Local Agent (CLI; cursor-grok-4.5-high)                 |
+| Agent identity   | Cursor Local Agent (CLI; cursor-grok-4.5-high)                |
 | Session ID       | cursor-local-cli-ocp-w20-cross-repo-integration-20260801-1115 |
 | Orchestrator key | cursor-local-mac-mini-desktop-workspace-orchestrator          |
 | Objective        | OCP-W20-CROSS-REPO-INTEGRATION                                |

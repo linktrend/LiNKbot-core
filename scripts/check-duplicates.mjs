@@ -16,6 +16,7 @@ const targets = [
   "packages",
   "ui",
   "apps",
+  "linkbots",
   "docs",
   "qa",
   "security",

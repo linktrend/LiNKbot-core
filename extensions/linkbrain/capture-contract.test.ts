@@ -24,6 +24,10 @@ import { openLinkbrainStores } from "./src/stores.js";
 import { createMemoryKeyedStore } from "./src/test-support/memory-store.js";
 import { resolveLinkbrainTransport } from "./src/transport.js";
 
+type AjvValidator = (data: unknown) => boolean;
+type AjvLike = { compile(schema: unknown): AjvValidator };
+const AjvConstructor = Ajv as unknown as new (options: Record<string, unknown>) => AjvLike;
+
 /** Frozen live MCP inputSchema for brain_capture_batch (additionalProperties:false). */
 const FROZEN_BRAIN_CAPTURE_BATCH_MCP_SCHEMA = {
   type: "object",
@@ -477,12 +481,12 @@ describe("linkbrain brain capture contract adapter", () => {
     expect(callTool).toHaveBeenCalledTimes(1);
 
     const emittedArgs = callTool.mock.calls[0]![1] as Record<string, unknown>;
-    expect(Object.keys(emittedArgs).sort()).toEqual(["batch"]);
+    expect(Object.keys(emittedArgs).toSorted()).toEqual(["batch"]);
     expect(emittedArgs).not.toHaveProperty("idempotencyKey");
     const batch = assertBrainWireCaptureBatch(emittedArgs.batch);
     expect(batch.idempotencyKey).toBe(wireBatch.idempotencyKey);
 
-    const ajv = new Ajv({ allErrors: true, strict: false });
+    const ajv = new AjvConstructor({ allErrors: true, strict: false });
     const validate = ajv.compile(FROZEN_BRAIN_CAPTURE_BATCH_MCP_SCHEMA);
     expect(validate(structuredClone(emittedArgs))).toBe(true);
     expect(

@@ -9,7 +9,7 @@ import {
   assertBrainWireCaptureBatch,
   type BrainWireCaptureBatch,
 } from "./capture-batch-adapter.js";
-import { LINKBRAIN_PROHIBITED_FIELDS } from "./sanitize.js";
+import { isLinkbrainProhibitedField } from "./sanitize.js";
 
 export { LINKBRAIN_PROHIBITED_FIELDS } from "./sanitize.js";
 
@@ -111,7 +111,7 @@ function stripProhibited(value: unknown): unknown {
   }
   const next: Record<string, unknown> = {};
   for (const [key, child] of Object.entries(value)) {
-    if (LINKBRAIN_PROHIBITED_FIELDS.includes(key)) {
+    if (isLinkbrainProhibitedField(key)) {
       continue;
     }
     next[key] = stripProhibited(child);
