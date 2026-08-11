@@ -21,6 +21,8 @@
   fetch variance, session wait readonly results, setup-runtime narrowing,
   Linkbrain prohibited-field membership, jose v6 test types, and exact script
   declarations.
+- Fixed cached active-plugin reuse so cleared process-global registrations and
+  the hook runner are restored from the authoritative cached snapshot.
 - Complete preflight and all production/script/extension/root-test typechecks
   pass. The remaining broad lint backlog and one stale AuthClaims fixture
   aggregate assertion are recorded in the handoff and are not claimed fixed.

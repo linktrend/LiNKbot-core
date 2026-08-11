@@ -1,5 +1,6 @@
 import type { OpenClawConfig } from "../config/types.openclaw.js";
 import type { GatewayRequestHandler } from "../gateway/server-methods/types.js";
+import { initializeGlobalHookRunner } from "./hook-runner-global.js";
 import { beginActivatingPluginLoad, finishActivatingPluginLoad } from "./loader-activating-lock.js";
 import {
   getReusableCachedPluginRegistry,
@@ -27,6 +28,7 @@ import {
 import type { PluginLoadOptions } from "./loader-types.js";
 import {
   createPluginRegistrationTransaction,
+  restorePluginProcessGlobalState,
   snapshotPluginProcessGlobalState,
 } from "./plugin-registration-transaction.js";
 import {
@@ -120,6 +122,8 @@ export function loadOpenClawPlugins(options: PluginLoadOptions = {}): PluginRegi
             machineTokenOwnership: cached.state.machineTokenOwnership,
           })
         ) {
+          restorePluginProcessGlobalState(cached.state.processGlobalState);
+          initializeGlobalHookRunner(cached.state.registry);
           return cached.state.registry;
         }
       }

@@ -13,6 +13,8 @@
 - Documented the trust boundary on the five LiNKtrend privileged GitOps
   workflows so the pinned workflow-security audit accepts their intentional
   metadata-only triggers.
+- Restored process-global plugin registrations and the global hook runner on a
+  healthy active-registry cache hit, fixing the bundled-protocol CI shard.
 - Upstream public docs and code-adjacent READMEs were intentionally not moved.
 - No VPS/runtime/profile/personality/database/configuration changes.
 
@@ -25,6 +27,7 @@
 - `node scripts/run-tsgo.mjs -p test/tsconfig/tsconfig.test.root.json ...`
 - `pnpm dup:check:coverage`
 - `pnpm deps:shrinkwrap:check`
+- `pnpm exec vitest run --project bundled src/plugins/loader.test.ts` (173/173)
 - `node scripts/pre-commit/pnpm-audit-prod.mjs --audit-level=high`
 - `uvx 'zizmor==1.22.0' --config .github/zizmor.yml --persona=regular --min-severity=medium --min-confidence=medium .github/workflows`
 - `git diff --check`
