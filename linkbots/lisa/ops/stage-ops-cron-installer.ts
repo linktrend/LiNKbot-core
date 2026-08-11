@@ -7,10 +7,7 @@
  * lives on the plan/receipt as stageConstraints (never on cron.add payloads).
  */
 
-import {
-  formatValidationErrors,
-  validateCronAddParams,
-} from "../../../packages/gateway-protocol/dist/index.mjs";
+import { formatValidationErrors, validateCronAddParams } from "@openclaw/gateway-protocol";
 import {
   STAGE_OPS_AGENT_ID,
   STAGE_OPS_DELIVERY_MODE,
