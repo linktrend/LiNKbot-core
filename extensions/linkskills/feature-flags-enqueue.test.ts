@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { mintFakeToken } from "./fake/auth.mjs";
 import { fixtureSkillsClaim } from "./fake/harness.mjs";
 import { SkillsFakeService } from "./fake/service.mjs";
+import { LINKSKILLS_MCP_TOOL_ALLOWLIST } from "./mcp-tool-filter.js";
 import { isOperationTimeout } from "./src/bounded.js";
 import { parseLinkskillsConfig } from "./src/config.js";
 import { createSkillsDrainWorker } from "./src/drain-worker.js";
@@ -9,13 +10,9 @@ import {
   buildLinkskillsFlaggedMcpToolFilter,
   invokeLinkskillsFeatureOp,
 } from "./src/feature-flags.js";
-import {
-  createLinkskillsRuntime,
-  createSkillsFakeTransport,
-} from "./src/runtime.js";
+import { createLinkskillsRuntime, createSkillsFakeTransport } from "./src/runtime.js";
 import { openLinkskillsStores } from "./src/stores.js";
 import { createMemoryKeyedStore } from "./src/test-support/memory-store.js";
-import { LINKSKILLS_MCP_TOOL_ALLOWLIST } from "./mcp-tool-filter.js";
 
 const sampleTelemetry = {
   schema_version: "0.1",
@@ -243,7 +240,11 @@ describe("linkskills enqueue signal + owned late work", () => {
     const runtime = createLinkskillsRuntime({
       config: parseLinkskillsConfig({ telemetryEnqueue: true, telemetryDrain: false }),
       stores,
-      transport: { async write() { return { ok: true }; } },
+      transport: {
+        async write() {
+          return { ok: true };
+        },
+      },
     });
     await runtime.open();
     const a = runtime.enqueueTelemetry({

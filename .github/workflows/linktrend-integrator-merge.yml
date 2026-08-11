@@ -10,15 +10,15 @@ name: LiNKtrend Integrator Merge To Development
 # .github/linktrend-gitops-consumer.json by scripts/sync-managed-workflows.sh.
 
 on:
-  pull_request_target:
+  pull_request_target: # zizmor: ignore[dangerous-triggers] trusted default-branch checkout only; PR metadata is resolved read-only before App-token evaluation
     types: [opened, synchronize, reopened, ready_for_review]
     branches: [development]
-  workflow_run:
+  workflow_run: # zizmor: ignore[dangerous-triggers] trusted workflow completion metadata only; no candidate checkout or execution
     workflows:
       - CI
       - Branch Source Policy
     types: [completed]
-  check_run:
+  check_run: # zizmor: ignore[dangerous-triggers] external check metadata only; resolver binds the exact current PR head before mutation
     types: [completed]
   workflow_dispatch:
     inputs:

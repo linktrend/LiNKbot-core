@@ -1,8 +1,6 @@
+import type { OpenClawConfig } from "../config/types.openclaw.js";
 import type { GatewayRequestHandler } from "../gateway/server-methods/types.js";
-import {
-  beginActivatingPluginLoad,
-  finishActivatingPluginLoad,
-} from "./loader-activating-lock.js";
+import { beginActivatingPluginLoad, finishActivatingPluginLoad } from "./loader-activating-lock.js";
 import {
   getReusableCachedPluginRegistry,
   pluginLoaderCacheState,
@@ -41,7 +39,6 @@ import {
 import { createPluginIdScopeSet, normalizePluginIdScope } from "./plugin-scope.js";
 import { createEmptyPluginRegistry } from "./registry-empty.js";
 import { createPluginRegistry, type PluginRegistry } from "./registry.js";
-import type { OpenClawConfig } from "../config/types.openclaw.js";
 
 /**
  * Test helper: inject a throw at a combined-activation boundary.

@@ -12,11 +12,9 @@
 
 ## FAKE / TEMPLATE rehearsal (safe anytime)
 
-
 1. Confirm capture-buffer namespace is Brain-only (`extensions/linkbrain`).
 2. Hold/deletion durations remain Principal-gated; rehearse policy wording only.
 3. Exception path: write decision packet — do not delete LIVE data from this tier.
-
 
 ## Expected sanitized evidence
 
@@ -26,9 +24,9 @@
 
 ## Rehearsal record
 
-| Field | Value |
-| ----- | ----- |
-| Rehearsed | 2026-07-28 Asia/Taipei (wave 6 non-live) |
-| Operator | Cursor Local Grok 4.5 High (docs rehearsal) |
-| Live mutation | **none** |
-| Result | Runbook executable at non-live tier |
+| Field         | Value                                       |
+| ------------- | ------------------------------------------- |
+| Rehearsed     | 2026-07-28 Asia/Taipei (wave 6 non-live)    |
+| Operator      | Cursor Local Grok 4.5 High (docs rehearsal) |
+| Live mutation | **none**                                    |
+| Result        | Runbook executable at non-live tier         |

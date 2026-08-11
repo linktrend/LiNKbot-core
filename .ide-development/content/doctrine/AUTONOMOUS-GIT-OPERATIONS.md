@@ -7,10 +7,10 @@
 
 ## Two-layer inheritance
 
-| Layer | What | How |
-|---|---|---|
-| **A. Agent behavior** | Rules, skills, ship/pull checklists | Portable installer (`scripts/ide-development.py`) materialises physical `.ide-development/` + Cursor/Codex adapters inside the consumer. No consumer-to-system `.cursor` symlink. |
-| **B. Robots** | Managed `.github/workflows/*` + Bugbot enablement checklist | Installer / sync paths from `core/github/managed-workflows/`; does **not** overwrite consumer `ci.yml` |
+| Layer                 | What                                                        | How                                                                                                                                                                               |
+| --------------------- | ----------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **A. Agent behavior** | Rules, skills, ship/pull checklists                         | Portable installer (`scripts/ide-development.py`) materialises physical `.ide-development/` + Cursor/Codex adapters inside the consumer. No consumer-to-system `.cursor` symlink. |
+| **B. Robots**         | Managed `.github/workflows/*` + Bugbot enablement checklist | Installer / sync paths from `core/github/managed-workflows/`; does **not** overwrite consumer `ci.yml`                                                                            |
 
 Protection of `development`, `staging`, and `main` is required managed-system behavior for every installed repository (`docs/contracts/REPOSITORY-PROTECTION.md`). Live apply is dry-run-gated and external to packaged secrets.
 
@@ -18,33 +18,33 @@ IDE Development uses the same managed workflows for **self-verification** of the
 
 ## Roles
 
-| Role | Who | Job |
-|---|---|---|
-| Implementer | Long-lived local / Remote Control / Cloud agents | Branch → checkpoint commit/push → mark `review_ready` when finished |
-| Review Packager | GitHub Action (`linktrend-review-packager.yml`) | Tue/Fri 08:00: discover review-ready → open PR → request Bugbot once |
-| Reviewer | **Bugbot** | Review PRs into `development` (pass = GitHub check `Cursor Bugbot` → `success`) |
+| Role              | Who                                                                               | Job                                                                                                                                          |
+| ----------------- | --------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| Implementer       | Long-lived local / Remote Control / Cloud agents                                  | Branch → checkpoint commit/push → mark `review_ready` when finished                                                                          |
+| Review Packager   | GitHub Action (`linktrend-review-packager.yml`)                                   | Tue/Fri 08:00: discover review-ready → open PR → request Bugbot once                                                                         |
+| Reviewer          | **Bugbot**                                                                        | Review PRs into `development` (pass = GitHub check `Cursor Bugbot` → `success`)                                                              |
 | Repair (Lisa ACP) | GitHub records failure task; **Lisa ACP Repair Dispatcher** dispatches Cursor ACP | Repair CI/Bugbot/ordinary conflicts; max **3** attempts; no prefer-incoming; immediate types do not auto-repair; new SHA re-enters packaging |
-| Integrator | GitHub Action (`linktrend-integrator-merge.yml`) | Merge into `development` when **fast-gate** + `Cursor Bugbot` success + head SHA = reviewed SHA |
-| Promoter | GitHub Actions schedules | Tue/Fri **10:00** staging; Mon main package |
-| Lisa | OpenClaw / Telegram (**primary Ship/Pull clock**) | Cron → spawn Cursor ACP shipper/puller on Mini; one-line checkpoint status; ask Principal to Approve main |
-| Principal | Carlos | Approve `staging`→`main` (Mon 08:30 via digest; reply on Telegram); intervene on `Issues` |
+| Integrator        | GitHub Action (`linktrend-integrator-merge.yml`)                                  | Merge into `development` when **fast-gate** + `Cursor Bugbot` success + head SHA = reviewed SHA                                              |
+| Promoter          | GitHub Actions schedules                                                          | Tue/Fri **10:00** staging; Mon main package                                                                                                  |
+| Lisa              | OpenClaw / Telegram (**primary Ship/Pull clock**)                                 | Cron → spawn Cursor ACP shipper/puller on Mini; one-line checkpoint status; ask Principal to Approve main                                    |
+| Principal         | Carlos                                                                            | Approve `staging`→`main` (Mon 08:30 via digest; reply on Telegram); intervene on `Issues`                                                    |
 
 ## Primary clock — Lisa Option A (locked)
 
 **Lisa is the Ship/Pull clock.** She runs OpenClaw cron on the Mac Mini and spawns Cursor ACP agents (shipper / puller). Cursor Automations are **not** the primary clock (optional backup only — see `docs/CURSOR-AUTOMATIONS-SETUP.md`).
 
-| Event | Local time | Who fires | Behavior |
-|---|---|---|---|
-| Ship 05 | 05:00 | Lisa cron → Cursor ACP shipper | One repo at a time: **checkpoint** = commit + push on work branch → **STOP**. No PR. No Bugbot. |
-| Pull 07 | 07:00 | Lisa cron → Cursor ACP puller | Merge latest `origin/development` into unfinished work branches; **skip frozen reviewed SHAs**; unfinished rolls forward |
-| Review Packager | Tue & Fri **08:00** | GitHub (`0 0 * * 2,5` UTC) | **Discover:** ready commit-status tips → draft PRs only (no Bugbot, no serial CI wait). **Evaluate** (PR/check): readiness + fast-gate on exact head → ready → `@cursor review` once |
-| Staging promote | Tue & Fri **10:00** | GitHub (`0 2 * * 2,5` UTC) | Promote only what is already safely in `development`. If not ready: **skip and report why**. Never force. |
-| Ship 16 | 16:00 | Lisa cron → Cursor ACP shipper | Same as Ship 05 (checkpoint only) |
-| Pull 18 | 18:00 | Lisa cron → Cursor ACP puller | Same as Pull 07 |
-| EOD checkpoint | ~17:00 | Agent / operator | Checkpoint commit+push only — not a review request |
-| Main package | Mon 08:00 | GitHub Promoter (`0 0 * * 1` UTC) | Package only; do **not** merge yet |
-| Morning digest | 08:30 | Lisa cron | Email + Telegram day-ahead; Pipeline lines; Mon Main Approve ask when Clear |
-| Main Approve | Mon 08:30 | Lisa digest (Telegram reply) | Principal says Approve → Lisa dispatches merge for **exact SHA** |
+| Event           | Local time          | Who fires                         | Behavior                                                                                                                                                                             |
+| --------------- | ------------------- | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Ship 05         | 05:00               | Lisa cron → Cursor ACP shipper    | One repo at a time: **checkpoint** = commit + push on work branch → **STOP**. No PR. No Bugbot.                                                                                      |
+| Pull 07         | 07:00               | Lisa cron → Cursor ACP puller     | Merge latest `origin/development` into unfinished work branches; **skip frozen reviewed SHAs**; unfinished rolls forward                                                             |
+| Review Packager | Tue & Fri **08:00** | GitHub (`0 0 * * 2,5` UTC)        | **Discover:** ready commit-status tips → draft PRs only (no Bugbot, no serial CI wait). **Evaluate** (PR/check): readiness + fast-gate on exact head → ready → `@cursor review` once |
+| Staging promote | Tue & Fri **10:00** | GitHub (`0 2 * * 2,5` UTC)        | Promote only what is already safely in `development`. If not ready: **skip and report why**. Never force.                                                                            |
+| Ship 16         | 16:00               | Lisa cron → Cursor ACP shipper    | Same as Ship 05 (checkpoint only)                                                                                                                                                    |
+| Pull 18         | 18:00               | Lisa cron → Cursor ACP puller     | Same as Pull 07                                                                                                                                                                      |
+| EOD checkpoint  | ~17:00              | Agent / operator                  | Checkpoint commit+push only — not a review request                                                                                                                                   |
+| Main package    | Mon 08:00           | GitHub Promoter (`0 0 * * 1` UTC) | Package only; do **not** merge yet                                                                                                                                                   |
+| Morning digest  | 08:30               | Lisa cron                         | Email + Telegram day-ahead; Pipeline lines; Mon Main Approve ask when Clear                                                                                                          |
+| Main Approve    | Mon 08:30           | Lisa digest (Telegram reply)      | Principal says Approve → Lisa dispatches merge for **exact SHA**                                                                                                                     |
 
 **Why Packager 08:00 / Staging 10:00:** Pull 07 finishes first; review, CI, integration, and possible repair get a two-hour window. At 10:00 promote only work already merged into `development`. Anything still under review or repair waits for the next window.
 
@@ -54,7 +54,7 @@ IDE Development uses the same managed workflows for **self-verification** of the
 
 This is the **Ship/Pull processing order** for Lisa Option A. It is **not** the consumer install/rollout order. IDE Development appears first as the **system source** (checkpoints / self-verification) and is **not** a portable-install consumer. Locked consumer install order starts at `openclaw_prime`, includes `LiNKtrading-codebase`, and excludes IDE Development — see `docs/GITOPS-CONSUMER-ROLLOUT.md`.
 
-1. IDE Development *(system source — not a consumer install target)*
+1. IDE Development _(system source — not a consumer install target)_
 2. openclaw_prime
 3. LiNKplatform
 4. LiNKskills
@@ -78,12 +78,12 @@ ACP prompts and absolute paths: openclaw_prime `linkbots/lisa/Personality files/
 
 ## Checkpoints vs review-ready
 
-| Action | When | Opens PR? | Bugbot? |
-|---|---|---|---|
-| Checkpoint | Ship waves, EOD, anytime | No | No |
-| Mark review-ready | Issue finished + proof + evidence; App publishes status | No (agent) | No (agent) |
-| Review Packager | Tue/Fri 08:00 | Yes | Yes, once per SHA |
-| Urgent package | `workflow_dispatch` on packager | Yes | Yes, once per SHA |
+| Action            | When                                                    | Opens PR?  | Bugbot?           |
+| ----------------- | ------------------------------------------------------- | ---------- | ----------------- |
+| Checkpoint        | Ship waves, EOD, anytime                                | No         | No                |
+| Mark review-ready | Issue finished + proof + evidence; App publishes status | No (agent) | No (agent)        |
+| Review Packager   | Tue/Fri 08:00                                           | Yes        | Yes, once per SHA |
+| Urgent package    | `workflow_dispatch` on packager                         | Yes        | Yes, once per SHA |
 
 Record: GitHub commit status context `Linktrend Review Ready` on the exact tip SHA — see `core/github/REVIEW-READY.md`.
 
@@ -98,10 +98,10 @@ Completion contract: `docs/contracts/AGENT-COMPLETION.md`.
 
 Configurable modes are defined in `docs/contracts/DELIVERY-MODES.md`:
 
-| Mode | Behavior |
-|---|---|
-| `issue-pr` (default) | Review Packager may open one draft PR per review-ready work branch into `development` (existing generic behavior). |
-| `phase-integration` | Issue checkpoints stay PR-less. Independently accepted Issue SHAs feed a `phase/*` branch. Packager opens **one Phase PR** into `development`. Issue-level PRs require an explicit risk classification (`.linktrend/issue-pr-exception.json`). |
+| Mode                 | Behavior                                                                                                                                                                                                                                       |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `issue-pr` (default) | Review Packager may open one draft PR per review-ready work branch into `development` (existing generic behavior).                                                                                                                             |
+| `phase-integration`  | Issue checkpoints stay PR-less. Independently accepted Issue SHAs feed a `phase/*` branch. Packager opens **one Phase PR** into `development`. Issue-level PRs require an explicit risk classification (`.linktrend/issue-pr-exception.json`). |
 
 Checkpoint pushes never open a PR and never request Bugbot. Named gates still evaluate the **exact** PR head SHA.
 

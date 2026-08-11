@@ -15,14 +15,14 @@ Documentation/tooling only. No runtime behavior change. Fixture bytes unchanged.
 
 ## Corrections
 
-| # | Deficiency | Correction | Evidence |
-| - | ---------- | ---------- | -------- |
-| 1 | Grok tooling emitted provisional seven-classifications | Removed classification generation; ledger/inventory carry Grok completion claims only | no `classification` column; inventory `version: 4` without `classifications` |
-| 2 | Naive comma/semicolon/sentence splitting created noun fragments | `splitAtomicObligations` returns one cleaned item; `splitPlanList` unused by extraction | no `credentials`/`cron`/`migration` fragments; `isFragmentedPlanLabel` rejects them |
-| 3 | Observational baseline / hierarchy rows treated as requirements without reviewed exclusions | Exact-line `DESCRIPTIVE_EXCLUSIONS` (22) with fingerprints + reason codes | inventory `descriptive_exclusions`; validator prints review list |
-| 4 | Blanket reused evidence strings for “implemented” claims | Default `not_claimed`; implemented only with specific `[plan-item:<id>]` evidence; reuse rejected | 13 evidence-mapped implemented claims (Phase 0 tooling) |
-| 5 | Focused test expected observational bullet → requirement | Test now registers observational exclusion; unregistered observational still fail-closed requirement | updated Vitest cases |
-| 6 | Phase-14 index presented Grok classifications as provisional truth | Regenerated Phase-13 coverage/evidence index; Phase-14 index redirected to Codex ownership | `PHASE-13-COVERAGE-EVIDENCE-INDEX.md`; updated `PHASE-14-CLASSIFICATION-EVIDENCE-INDEX.md` |
+| #   | Deficiency                                                                                  | Correction                                                                                           | Evidence                                                                                   |
+| --- | ------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| 1   | Grok tooling emitted provisional seven-classifications                                      | Removed classification generation; ledger/inventory carry Grok completion claims only                | no `classification` column; inventory `version: 4` without `classifications`               |
+| 2   | Naive comma/semicolon/sentence splitting created noun fragments                             | `splitAtomicObligations` returns one cleaned item; `splitPlanList` unused by extraction              | no `credentials`/`cron`/`migration` fragments; `isFragmentedPlanLabel` rejects them        |
+| 3   | Observational baseline / hierarchy rows treated as requirements without reviewed exclusions | Exact-line `DESCRIPTIVE_EXCLUSIONS` (22) with fingerprints + reason codes                            | inventory `descriptive_exclusions`; validator prints review list                           |
+| 4   | Blanket reused evidence strings for “implemented” claims                                    | Default `not_claimed`; implemented only with specific `[plan-item:<id>]` evidence; reuse rejected    | 13 evidence-mapped implemented claims (Phase 0 tooling)                                    |
+| 5   | Focused test expected observational bullet → requirement                                    | Test now registers observational exclusion; unregistered observational still fail-closed requirement | updated Vitest cases                                                                       |
+| 6   | Phase-14 index presented Grok classifications as provisional truth                          | Regenerated Phase-13 coverage/evidence index; Phase-14 index redirected to Codex ownership           | `PHASE-13-COVERAGE-EVIDENCE-INDEX.md`; updated `PHASE-14-CLASSIFICATION-EVIDENCE-INDEX.md` |
 
 ## Semantic extraction rules (locked)
 
@@ -34,24 +34,24 @@ Documentation/tooling only. No runtime behavior change. Fixture bytes unchanged.
 
 **Count: 22**
 
-| Reason code family | Count | Reason summary |
-| --- | ---: | --- |
-| Section 2 frozen-input source hierarchy metadata row | 6 | Source-hierarchy table rows L48–L53 |
-| Section 5.1 sanitized OpenClaw capability inventory observation | 8 | Baseline inventory bullets L109–L116 |
-| Section 5.2 sanitized Lisa baseline observation | 8 | Lisa baseline bullets L124–L131 |
+| Reason code family                                              | Count | Reason summary                       |
+| --------------------------------------------------------------- | ----: | ------------------------------------ |
+| Section 2 frozen-input source hierarchy metadata row            |     6 | Source-hierarchy table rows L48–L53  |
+| Section 5.1 sanitized OpenClaw capability inventory observation |     8 | Baseline inventory bullets L109–L116 |
+| Section 5.2 sanitized Lisa baseline observation                 |     8 | Lisa baseline bullets L124–L131      |
 
 ## Machine inventory (Grok Phase-13; no Codex classifications)
 
-| Field | Value |
-| --- | --- |
-| Plan SHA-256 | `17203ee586a3fb2b1281bcddd8b17ae350075ebce537689f3c4bfcbbd14914f7` |
-| Requirement items | **765** |
-| Coverage rows | **1336** |
-| Descriptive exclusions | **22** |
-| Evidence-mapped (`implemented`) | **13** |
-| Grok claims | `not_claimed` 560 · `blocked` 126 · `outside_ownership` 66 · `implemented` 13 |
-| Inventory version | **4** (`owner_role=OpenClaw_Grok_Phase13_coverage_evidence`, `classification_owner=OpenClaw_Codex_Phase14`) |
-| Ledger columns | `id,kind,item,owner,evidence_location,completion_claim,note,anchor,line,fingerprint` |
+| Field                           | Value                                                                                                       |
+| ------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| Plan SHA-256                    | `17203ee586a3fb2b1281bcddd8b17ae350075ebce537689f3c4bfcbbd14914f7`                                          |
+| Requirement items               | **765**                                                                                                     |
+| Coverage rows                   | **1336**                                                                                                    |
+| Descriptive exclusions          | **22**                                                                                                      |
+| Evidence-mapped (`implemented`) | **13**                                                                                                      |
+| Grok claims                     | `not_claimed` 560 · `blocked` 126 · `outside_ownership` 66 · `implemented` 13                               |
+| Inventory version               | **4** (`owner_role=OpenClaw_Grok_Phase13_coverage_evidence`, `classification_owner=OpenClaw_Codex_Phase14`) |
+| Ledger columns                  | `id,kind,item,owner,evidence_location,completion_claim,note,anchor,line,fingerprint`                        |
 
 ## Validation
 

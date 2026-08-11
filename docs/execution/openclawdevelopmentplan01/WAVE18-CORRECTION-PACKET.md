@@ -15,14 +15,14 @@ Documentation/tooling only. No runtime behavior change. Fixture bytes unchanged.
 
 ## Corrections
 
-| # | Deficiency | Correction |
-| - | ---------- | ---------- |
-| 1 | §2 source-hierarchy rows 48–53 were descriptive exclusions | Restored as requirements with stable anchors `source_hierarchy.1`–`source_hierarchy.6`; binding authority rows cannot be excluded |
-| 2 | Seven §13.3 classification values emitted as tasks | Treated as `STRUCTURAL_ENUM_DEFINITION` (7 exact lines); not implementation tasks |
-| 3 | 13 “implemented” claims pointed at extractor/validator | Replaced with Phase-0 freeze/prompt/pins/session evidence; tooling self-evidence rejected |
-| 4 | Unexecuted rollback claimed implemented | `phase.0.rollback` → `not_claimed` |
-| 5 | PHASE-1-STATUS contradicted fixture signoff | Reconciled: AuthClaims 1.0 historical/superseded; AuthClaims 1.1 Brain/Skills `PENDING_OWNER_COUNTERSIGN` |
-| 6 | Missing fail-closed negatives | Tests for hierarchy exclusion ban, enum non-tasks, tooling-evidence ban |
+| #   | Deficiency                                                 | Correction                                                                                                                        |
+| --- | ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | §2 source-hierarchy rows 48–53 were descriptive exclusions | Restored as requirements with stable anchors `source_hierarchy.1`–`source_hierarchy.6`; binding authority rows cannot be excluded |
+| 2   | Seven §13.3 classification values emitted as tasks         | Treated as `STRUCTURAL_ENUM_DEFINITION` (7 exact lines); not implementation tasks                                                 |
+| 3   | 13 “implemented” claims pointed at extractor/validator     | Replaced with Phase-0 freeze/prompt/pins/session evidence; tooling self-evidence rejected                                         |
+| 4   | Unexecuted rollback claimed implemented                    | `phase.0.rollback` → `not_claimed`                                                                                                |
+| 5   | PHASE-1-STATUS contradicted fixture signoff                | Reconciled: AuthClaims 1.0 historical/superseded; AuthClaims 1.1 Brain/Skills `PENDING_OWNER_COUNTERSIGN`                         |
+| 6   | Missing fail-closed negatives                              | Tests for hierarchy exclusion ban, enum non-tasks, tooling-evidence ban                                                           |
 
 ## Restored Section 2 anchors
 
@@ -35,12 +35,12 @@ Documentation/tooling only. No runtime behavior change. Fixture bytes unchanged.
 
 ## Counts
 
-| Metric | Value |
-| --- | ---: |
-| Requirement items | **764** |
-| Descriptive exclusions | **16** (§5.1×8 + §5.2×8) |
-| Structural enum definitions | **7** (§13.3 classification values) |
-| Evidence-mapped (`implemented`) | **12** |
+| Metric                          |                               Value |
+| ------------------------------- | ----------------------------------: |
+| Requirement items               |                             **764** |
+| Descriptive exclusions          |            **16** (§5.1×8 + §5.2×8) |
+| Structural enum definitions     | **7** (§13.3 classification values) |
+| Evidence-mapped (`implemented`) |                              **12** |
 
 ### Evidence-mapped Phase-0 artifact paths
 

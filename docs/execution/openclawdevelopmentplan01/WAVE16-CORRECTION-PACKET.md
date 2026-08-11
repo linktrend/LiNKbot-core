@@ -15,13 +15,13 @@ Documentation/tooling only. No runtime behavior change. Fixture bytes unchanged.
 
 ## Corrections
 
-| # | Deficiency | Correction | Evidence |
-| - | ---------- | ---------- | -------- |
-| 1 | Blanket §3 / §5 / title section allowlists over-excluded binding lines | Removed all section-level descriptive allowlisting; `classifySectionPolicy` always returns `implementation` | empty `DESCRIPTIVE_ALLOWLIST_RULES`; §3 bindings extracted |
-| 2 | Descriptive exceptions were section-scoped | Exact-line exclusions only (`DESCRIPTIVE_EXCLUSIONS` + fingerprint/anchor/reason) | `matchDescriptiveExclusion`; inventory `descriptive_exclusions` |
-| 3 | Soft obligation detection missed lowercase / gate / sequencing language | Case-insensitive `lineHasBindingObligation` (must/may not/require*/gate/blocked until/retention/canary/credential/rollback/evidence/…) | §3 labels present |
-| 4 | Binding obligation could lose to allowlist | Binding language always overrides an exclusion | override regression test |
-| 5 | No independent exclusion review surface | Validator prints exclusion list; inventory stores `descriptive_exclusions` | CLI output + inventory field |
+| #   | Deficiency                                                              | Correction                                                                                                                             | Evidence                                                        |
+| --- | ----------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| 1   | Blanket §3 / §5 / title section allowlists over-excluded binding lines  | Removed all section-level descriptive allowlisting; `classifySectionPolicy` always returns `implementation`                            | empty `DESCRIPTIVE_ALLOWLIST_RULES`; §3 bindings extracted      |
+| 2   | Descriptive exceptions were section-scoped                              | Exact-line exclusions only (`DESCRIPTIVE_EXCLUSIONS` + fingerprint/anchor/reason)                                                      | `matchDescriptiveExclusion`; inventory `descriptive_exclusions` |
+| 3   | Soft obligation detection missed lowercase / gate / sequencing language | Case-insensitive `lineHasBindingObligation` (must/may not/require*/gate/blocked until/retention/canary/credential/rollback/evidence/…) | §3 labels present                                               |
+| 4   | Binding obligation could lose to allowlist                              | Binding language always overrides an exclusion                                                                                         | override regression test                                        |
+| 5   | No independent exclusion review surface                                 | Validator prints exclusion list; inventory stores `descriptive_exclusions`                                                             | CLI output + inventory field                                    |
 
 ## Exact-line descriptive exclusions (reviewed)
 

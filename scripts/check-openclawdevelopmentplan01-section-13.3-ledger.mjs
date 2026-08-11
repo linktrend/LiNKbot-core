@@ -35,15 +35,7 @@ export const GROK_COMPLETION_CLAIMS = Object.freeze([
 
 const KINDS = new Set(PLAN_ITEM_KINDS);
 const CLAIMS = new Set(GROK_COMPLETION_CLAIMS);
-const FORBIDDEN_CLASSIFICATIONS = new Set([
-  "IAP",
-  "INPL",
-  "PART",
-  "OMIT",
-  "DIFF",
-  "BLOCK",
-  "OUT",
-]);
+const FORBIDDEN_CLASSIFICATIONS = new Set(["IAP", "INPL", "PART", "OMIT", "DIFF", "BLOCK", "OUT"]);
 
 const DEFAULT_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const DEFAULT_INVENTORY = "docs/execution/openclawdevelopmentplan01/section-13.3/inventory.json";
@@ -58,10 +50,8 @@ const TOOLING_SELF_EVIDENCE_RE =
 
 /** Phase-0 underlying evidence paths (not the coverage tooling itself). */
 const PHASE0_EVIDENCE_BY_ID = Object.freeze({
-  "phase.0.title":
-    "docs/execution/openclawdevelopmentplan01/PHASE-0-FREEZE-PACKET.md",
-  "phase.0.objective":
-    "docs/execution/openclawdevelopmentplan01/PHASE-0-FREEZE-PACKET.md",
+  "phase.0.title": "docs/execution/openclawdevelopmentplan01/PHASE-0-FREEZE-PACKET.md",
+  "phase.0.objective": "docs/execution/openclawdevelopmentplan01/PHASE-0-FREEZE-PACKET.md",
   "phase.0.work.1":
     "docs/CURSOR-GROK-EXECUTION-PROMPT.md; docs/execution/openclawdevelopmentplan01/PHASE-0-FREEZE-PACKET.md §1 approved plan reference",
   "phase.0.work.2":
@@ -211,7 +201,9 @@ export function grokEvidenceMappingForPlanItem(item) {
     };
   }
 
-  if (/stage|production|live platform|principal-approved retention|cursor credential/i.test(label)) {
+  if (
+    /stage|production|live platform|principal-approved retention|cursor credential/i.test(label)
+  ) {
     return {
       owner: "Platform / Principal / Cursor maintenance (as labeled)",
       evidence_location:
@@ -231,7 +223,11 @@ export function grokEvidenceMappingForPlanItem(item) {
     };
   }
 
-  if (id.startsWith("next_action.") || id.startsWith("verifier.role_separation.") || id.startsWith("gate.principal.")) {
+  if (
+    id.startsWith("next_action.") ||
+    id.startsWith("verifier.role_separation.") ||
+    id.startsWith("gate.principal.")
+  ) {
     return {
       owner: "Principal / OpenClaw Codex",
       evidence_location:
@@ -425,7 +421,9 @@ export function validateSection133Ledger(opts = {}) {
           FORBIDDEN_CLASSIFICATIONS.has(String(inv.completion_claim || "").toUpperCase()) &&
           String(inv.completion_claim).length <= 4
         ) {
-          errors.push(`inventory item ${inv.id} completion_claim looks like Phase-14 classification`);
+          errors.push(
+            `inventory item ${inv.id} completion_claim looks like Phase-14 classification`,
+          );
         }
       }
       // Fail-closed source coverage: inventory must retain the analyzer coverage map.
@@ -446,9 +444,7 @@ export function validateSection133Ledger(opts = {}) {
           `inventory.coverage count mismatch: inventory=${inventoryCoverage.length} expected=${expectedCoverage.length}`,
         );
       } else {
-        const coverageByAnchor = new Map(
-          inventoryCoverage.map((entry) => [entry.anchor, entry]),
-        );
+        const coverageByAnchor = new Map(inventoryCoverage.map((entry) => [entry.anchor, entry]));
         for (const expected of expectedCoverage) {
           const got = coverageByAnchor.get(expected.anchor);
           if (!got) {
@@ -473,9 +469,7 @@ export function validateSection133Ledger(opts = {}) {
             if (!got.reasonCode || typeof got.reasonCode !== "string") {
               errors.push(`non_requirement missing reasonCode at ${got.anchor}`);
             } else if (!NON_REQUIREMENT_REASON_CODES.includes(got.reasonCode)) {
-              errors.push(
-                `non_requirement invalid reasonCode ${got.reasonCode} at ${got.anchor}`,
-              );
+              errors.push(`non_requirement invalid reasonCode ${got.reasonCode} at ${got.anchor}`);
             }
             if (got.sourceContext === undefined || got.sourceContext === null) {
               errors.push(`non_requirement missing sourceContext at ${got.anchor}`);
@@ -555,9 +549,7 @@ export function validateSection133Ledger(opts = {}) {
               got.reasonCode === "INTRO_OPENS_FOLLOWING_LIST" &&
               lineHasBindingObligation(String(got.text ?? ""))
             ) {
-              errors.push(
-                `INTRO_OPENS_FOLLOWING_LIST carries binding language at ${got.anchor}`,
-              );
+              errors.push(`INTRO_OPENS_FOLLOWING_LIST carries binding language at ${got.anchor}`);
             }
           }
         }
@@ -665,8 +657,13 @@ export function validateSection133Ledger(opts = {}) {
       errors.push(`duplicate ledger fingerprint: ${fingerprint}`);
     }
     seenFingerprints.add(fingerprint);
-    if (FORBIDDEN_CLASSIFICATIONS.has(String(completionClaim).toUpperCase()) && completionClaim.length <= 4) {
-      errors.push(`${id}: completion_claim looks like a Phase-14 classification: ${completionClaim}`);
+    if (
+      FORBIDDEN_CLASSIFICATIONS.has(String(completionClaim).toUpperCase()) &&
+      completionClaim.length <= 4
+    ) {
+      errors.push(
+        `${id}: completion_claim looks like a Phase-14 classification: ${completionClaim}`,
+      );
     }
     if (!CLAIMS.has(completionClaim)) {
       errors.push(`${id}: invalid completion_claim ${JSON.stringify(completionClaim)}`);
@@ -691,10 +688,14 @@ export function validateSection133Ledger(opts = {}) {
         !evidenceLocation.includes("scripts/") &&
         !evidenceLocation.includes("test/")
       ) {
-        errors.push(`${id}: implemented claim requires specific code/test/doc/config evidence path`);
+        errors.push(
+          `${id}: implemented claim requires specific code/test/doc/config evidence path`,
+        );
       }
       if (!evidenceLocation.includes(`[plan-item:${id}]`)) {
-        errors.push(`${id}: implemented evidence must include [plan-item:${id}] specificity marker`);
+        errors.push(
+          `${id}: implemented evidence must include [plan-item:${id}] specificity marker`,
+        );
       }
       if (GENERIC_EVIDENCE_RE.test(evidenceLocation)) {
         errors.push(`${id}: generic blanket evidence_location forbidden for implemented claim`);

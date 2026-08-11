@@ -11,12 +11,12 @@
 
 ## Corrections
 
-| # | Deficiency | Correction | Evidence |
-| - | ---------- | ---------- | -------- |
-| 1 | Deny-all mapped to `include:[]` (unrestricted) | Catalog metadata uses `denyAll: true`; empty plugin include → omit; utilities honor denyAll + operator∩plugin | resolver + materialize + catalog hot tests |
-| 2 | Incomplete Brain/Skills flag → MCP surfaces | All four Brain flags and all four Skills flags gate MCP include (null when empty); invoke helpers check flags | feature-flags + registered-plugin tests |
-| 3 | Hot invalidation not same-runtime / incomplete | Same MCP runtime rematerializes after flag toggle, ownership rejection, replace, rollback, removal, reload, utilities | `agent-bundle-mcp-runtime.mcp-tool-filter.test.ts` |
-| 4 | Combined §13.3 statuses | Atomic single classification per row; separate evidence/owner/deficiency/next action | `PHASE-14-CLASSIFICATION-EVIDENCE-INDEX.md` |
+| #   | Deficiency                                     | Correction                                                                                                            | Evidence                                           |
+| --- | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| 1   | Deny-all mapped to `include:[]` (unrestricted) | Catalog metadata uses `denyAll: true`; empty plugin include → omit; utilities honor denyAll + operator∩plugin         | resolver + materialize + catalog hot tests         |
+| 2   | Incomplete Brain/Skills flag → MCP surfaces    | All four Brain flags and all four Skills flags gate MCP include (null when empty); invoke helpers check flags         | feature-flags + registered-plugin tests            |
+| 3   | Hot invalidation not same-runtime / incomplete | Same MCP runtime rematerializes after flag toggle, ownership rejection, replace, rollback, removal, reload, utilities | `agent-bundle-mcp-runtime.mcp-tool-filter.test.ts` |
+| 4   | Combined §13.3 statuses                        | Atomic single classification per row; separate evidence/owner/deficiency/next action                                  | `PHASE-14-CLASSIFICATION-EVIDENCE-INDEX.md`        |
 
 ## Explicit non-claims
 

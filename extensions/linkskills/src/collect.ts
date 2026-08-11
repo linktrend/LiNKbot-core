@@ -30,8 +30,7 @@ export type SkillsTelemetryCollector = {
   } | null;
 };
 
-const PLACEHOLDER_HASH =
-  "sha256:0000000000000000000000000000000000000000000000000000000000000000";
+const PLACEHOLDER_HASH = "sha256:0000000000000000000000000000000000000000000000000000000000000000";
 
 function readAllowlistedString(
   params: Record<string, unknown> | undefined,

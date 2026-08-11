@@ -6,19 +6,19 @@ production dependency on the private workspace package.
 
 ## Frozen authority (do not drift)
 
-| Pin                         | Value                                                              |
-| --------------------------- | ------------------------------------------------------------------ |
-| Original freeze HEAD        | `0455846487d0b8c583859060ba8b4be70e7f0b48`                         |
+| Pin                                    | Value                                                                |
+| -------------------------------------- | -------------------------------------------------------------------- |
+| Original freeze HEAD                   | `0455846487d0b8c583859060ba8b4be70e7f0b48`                           |
 | Certified Platform candidate (OCP-W20) | `421a35e97bc302be0f5e1f196d0a5e8d132f6fd8` (byte-identical envelope) |
-| ADR                         | 0013 Accepted                                                      |
-| Contract                    | `platform.auth-token-envelope/0.1.0`                               |
-| Package                     | `@linktrend/platform-contracts@0.3.0`                              |
-| Schema SHA-256 (file bytes) | `7173b9f9bca59ce8a0e3e3dc2b78b680dd07fdd2451215e3ecd97ff3dd463eed` |
-| Canonical content hash      | `9335b1855c3b3a5ec01b40c18ea85a98826192cbfba3110e07399d896e890a12` |
-| Access TTL                  | `900` seconds (`PACI_FAKE_ACCESS_TOKEN_EXPIRES_IN_SECONDS`)        |
-| JWT typ                     | `paci+jwt`                                                         |
-| Alg                         | `ES256`                                                            |
-| Refresh                     | none (Phase-1)                                                     |
+| ADR                                    | 0013 Accepted                                                        |
+| Contract                               | `platform.auth-token-envelope/0.1.0`                                 |
+| Package                                | `@linktrend/platform-contracts@0.3.0`                                |
+| Schema SHA-256 (file bytes)            | `7173b9f9bca59ce8a0e3e3dc2b78b680dd07fdd2451215e3ecd97ff3dd463eed`   |
+| Canonical content hash                 | `9335b1855c3b3a5ec01b40c18ea85a98826192cbfba3110e07399d896e890a12`   |
+| Access TTL                             | `900` seconds (`PACI_FAKE_ACCESS_TOKEN_EXPIRES_IN_SECONDS`)          |
+| JWT typ                                | `paci+jwt`                                                           |
+| Alg                                    | `ES256`                                                              |
+| Refresh                                | none (Phase-1)                                                       |
 
 **Repin state:** Certified Platform candidate `421a35e97bc302be0f5e1f196d0a5e8d132f6fd8`
 is a provenance-only descendant of the freeze — schema + fixture SHA-256s match.
@@ -26,6 +26,7 @@ Failed IV HEADs `39c46680…` (Wave 2), `83501b11…` (Wave 3), `ca027417…` (W
 `fbdede7c…` (Wave 5), `96a96f04…` / `a155cbe9…` (Wave 6), `94ff0956…` (Wave 7),
 and `d807ad3c…` (Wave 8) must not replace the freeze bytes. Candidate ≠ live PACI
 issuer.
+
 ### Fixture SHA-256 pins (`packages/contracts/fixtures/auth-token-envelope/`)
 
 | File                                  | SHA-256                                                            |

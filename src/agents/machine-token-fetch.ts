@@ -59,6 +59,9 @@ export function withMachineTokenBearer(params: {
   // Do NOT fall back to params.fetchFn — that would let an injected MCP
   // resource fetch bypass the hardened auth network boundary.
   const authFetchFn = params.authFetchFn;
+  const machineTokenAuthFetch: MachineTokenFetchFn | undefined = authFetchFn
+    ? (input, init) => authFetchFn(input instanceof Request ? input.url : input, init)
+    : undefined;
 
   return async (url, init) => {
     if (new URL(url).origin !== resourceOrigin) {
@@ -69,7 +72,7 @@ export function withMachineTokenBearer(params: {
     const baseHeaders = mergeRequestHeaders(params.headers, init as RequestInit | undefined);
     const first = await resolveMachineTokenAccess({
       binding: params.binding,
-      ...(authFetchFn ? { fetchFn: authFetchFn } : {}),
+      ...(machineTokenAuthFetch ? { fetchFn: machineTokenAuthFetch } : {}),
       ...(signal ? { signal } : {}),
     });
     void params.serverName;
@@ -86,7 +89,7 @@ export function withMachineTokenBearer(params: {
     invalidateMachineTokenCache(params.binding);
     const second = await resolveMachineTokenAccess({
       binding: params.binding,
-      ...(authFetchFn ? { fetchFn: authFetchFn } : {}),
+      ...(machineTokenAuthFetch ? { fetchFn: machineTokenAuthFetch } : {}),
       forceRefresh: true,
       ...(signal ? { signal } : {}),
     });

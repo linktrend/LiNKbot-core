@@ -23,15 +23,15 @@ on:
         description: "Why this packaging run is needed"
         required: false
         default: "manual"
-  pull_request_target:
+  pull_request_target: # zizmor: ignore[dangerous-triggers] trusted default-branch packager only; PR code is never checked out or executed
     types: [opened, synchronize, reopened, ready_for_review]
     branches: [development]
-  workflow_run:
+  workflow_run: # zizmor: ignore[dangerous-triggers] trusted CI metadata only; resolver binds current PR and head before App mutation
     workflows:
       - CI
       - Branch Source Policy
     types: [completed]
-  check_run:
+  check_run: # zizmor: ignore[dangerous-triggers] external check metadata only; exact candidate identity is revalidated before evaluation
     types: [completed]
 
 permissions: {}

@@ -6,16 +6,9 @@
  * packages; OpenClaw owns only the consumer conformance copy.
  */
 export const PLATFORM_AUTH_CLAIMS_CONTRACT_VERSION = "platform.auth-claims/1.1.0" as const;
-export const PLATFORM_AUTH_CLAIMS_PREVIOUS_CONTRACT_VERSION =
-  "platform.auth-claims/1.0.0" as const;
+export const PLATFORM_AUTH_CLAIMS_PREVIOUS_CONTRACT_VERSION = "platform.auth-claims/1.0.0" as const;
 
-const ACTOR_KINDS = new Set([
-  "human",
-  "persona",
-  "service",
-  "adapter",
-  "program_executor",
-]);
+const ACTOR_KINDS = new Set(["human", "persona", "service", "adapter", "program_executor"]);
 
 const CLAIM_KEYS = new Set([
   "claimContractVersion",

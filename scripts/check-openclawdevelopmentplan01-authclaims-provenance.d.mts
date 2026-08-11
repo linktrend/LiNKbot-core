@@ -11,7 +11,20 @@ export const FIXTURE_OWNER_GATE: string;
 export const COUNTERSIGN_INSPECTION_TIP: string;
 export const BRAIN_OWNER_HANDOFF_COMMIT: string;
 export const SKILLS_OWNER_HANDOFF_COMMIT: string;
-export const REL: Readonly<Record<string, string>>;
+export const REL: Readonly<{
+  platformPin: string;
+  skillsPin: string;
+  consumption: string;
+  signoff: string;
+  contractsReadme: string;
+  authClaimsReadme: string;
+  phase13Handoff: string;
+  phase1Status: string;
+  countersignRequest: string;
+  brainManifest: string;
+  skillsManifest: string;
+  schemaCopy: string;
+}>;
 export const PLATFORM_HEAD_RECORD_SPECS: ReadonlyArray<{
   id: string;
   rel: string;

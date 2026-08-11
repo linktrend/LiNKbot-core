@@ -8,20 +8,20 @@
 
 ## Immutable certified candidate heads (read-only)
 
-| System | Checkout | SHA | Notes |
-| --- | --- | --- | --- |
-| Platform | `/Users/linktrend/Projects/LiNKplatform` | `421a35e97bc302be0f5e1f196d0a5e8d132f6fd8` | draft PR #17; not edited |
-| Brain | `brain-repin-diffcheck-correction-2` | `a5bc9fe13f58374e3e5267c7352b1c342d6171c1` | candidate only; not edited |
-| Skills | `skills-repin-certified-platform-cli` | `35d528f510cfb41bfab9ee306556dcd7a495ff16` | draft PR #23; not edited |
+| System   | Checkout                                 | SHA                                        | Notes                      |
+| -------- | ---------------------------------------- | ------------------------------------------ | -------------------------- |
+| Platform | `/Users/linktrend/Projects/LiNKplatform` | `421a35e97bc302be0f5e1f196d0a5e8d132f6fd8` | draft PR #17; not edited   |
+| Brain    | `brain-repin-diffcheck-correction-2`     | `a5bc9fe13f58374e3e5267c7352b1c342d6171c1` | candidate only; not edited |
+| Skills   | `skills-repin-certified-platform-cli`    | `35d528f510cfb41bfab9ee306556dcd7a495ff16` | draft PR #23; not edited   |
 
 ## Freshly resolved openclaw_prime integration leads (already ancestors of base)
 
-| Lead | Ref | SHA | Relation to base |
-| --- | --- | --- | --- |
-| PR #38 | `issue/ocp-openclawdevelopmentplan01` | `3c8dbf9f5741cad1d1cd50d88b260be48dfa97e5` | ancestor — no merge |
-| ACP wait | `issue/ocp-acp-wait-reentry` | `0675755d170aaa264dac898081cc10d58af017a4` | ancestor — no merge |
-| Lisa ops | `issue/ocp-lisa-ops01` | `fb9fe4b68b85fd866670ce748ba1c060cab6a323` | ancestor — no merge |
-| W10 correction | `dev/cursor/ocp-w10-independent-correction` | `3169119fb697fa28cc6d2c244231729a8206e68d` | **start SHA** |
+| Lead           | Ref                                         | SHA                                        | Relation to base    |
+| -------------- | ------------------------------------------- | ------------------------------------------ | ------------------- |
+| PR #38         | `issue/ocp-openclawdevelopmentplan01`       | `3c8dbf9f5741cad1d1cd50d88b260be48dfa97e5` | ancestor — no merge |
+| ACP wait       | `issue/ocp-acp-wait-reentry`                | `0675755d170aaa264dac898081cc10d58af017a4` | ancestor — no merge |
+| Lisa ops       | `issue/ocp-lisa-ops01`                      | `fb9fe4b68b85fd866670ce748ba1c060cab6a323` | ancestor — no merge |
+| W10 correction | `dev/cursor/ocp-w10-independent-correction` | `3169119fb697fa28cc6d2c244231729a8206e68d` | **start SHA**       |
 
 ## Deterministic candidate release order (no source-branch merges)
 

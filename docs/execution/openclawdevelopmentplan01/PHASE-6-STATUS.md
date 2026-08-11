@@ -77,10 +77,10 @@ node scripts/run-vitest.mjs \
 | `test/helpers/link-domain-fakes/` (integrated + matrix + perf + brain-fake) | 4      | 25      |
 | `extensions/linkbrain/**/*.test.ts` (+ fake + transport)                    | 8      | —       |
 | `extensions/linkskills/**/*.test.ts` (+ fake + transport)                   | 8      | —       |
-| **Tip total after wave 8**                                          | **31** | **203** |
-| Tip total after wave 7 (historical)                                 | 29     | 196     |
-| Tip total after wave 6 (historical)                                 | 26     | 185     |
-| Tip total after bounded timeout (historical)                        | 22     | 171     |
+| **Tip total after wave 8**                                                  | **31** | **203** |
+| Tip total after wave 7 (historical)                                         | 29     | 196     |
+| Tip total after wave 6 (historical)                                         | 26     | 185     |
+| Tip total after bounded timeout (historical)                                | 22     | 171     |
 
 Prior packet was 7 integrated / 82 focused. Wave 5 tip **22/171** — **superseded**. Wave 6 tip **26/185** — **superseded**. Wave 7 tip **29/196** — **superseded**. Current tip claim: **31/203**.
 

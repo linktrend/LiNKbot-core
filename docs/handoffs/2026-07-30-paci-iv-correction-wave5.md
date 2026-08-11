@@ -2,21 +2,21 @@
 
 ## Session Metadata
 
-| Field            | Value |
-| ---------------- | ----- |
-| Agent identity   | Cursor Local Agent (Grok 4.5 High) |
-| Session ID       | cursor-local-mac-mini-feature-paci-iv-wave5-20260730 |
-| Orchestrator key | cursor-local-mac-mini-desktop-workspace-orchestrator-20260723-1539 |
+| Field            | Value                                                                   |
+| ---------------- | ----------------------------------------------------------------------- |
+| Agent identity   | Cursor Local Agent (Grok 4.5 High)                                      |
+| Session ID       | cursor-local-mac-mini-feature-paci-iv-wave5-20260730                    |
+| Orchestrator key | cursor-local-mac-mini-desktop-workspace-orchestrator-20260723-1539      |
 | Objective        | PACI IV correction Wave 5; provisional Phase-13 handoff; stop for Codex |
-| Scope            | Atomic facade-generation replacement; non-bypassable MCP body ceiling |
-| Started          | 2026-07-30 18:19 Asia/Taipei |
-| Ended            | 2026-07-30 Asia/Taipei |
-| Starting branch  | `issue/ocp-openclawdevelopmentplan01` |
-| Ending branch    | `issue/ocp-openclawdevelopmentplan01` |
-| Starting commit  | `ab76abe0bbf8c9f01b17c29e5c8c7786c937fe70` |
-| Ending commit    | `13cd943f134eb6312aeacf70e1f1f7f2aa607035` |
-| Starting status  | clean tip + untracked Wave5 prompt |
-| Ending status    | clean tip after Wave5 push |
+| Scope            | Atomic facade-generation replacement; non-bypassable MCP body ceiling   |
+| Started          | 2026-07-30 18:19 Asia/Taipei                                            |
+| Ended            | 2026-07-30 Asia/Taipei                                                  |
+| Starting branch  | `issue/ocp-openclawdevelopmentplan01`                                   |
+| Ending branch    | `issue/ocp-openclawdevelopmentplan01`                                   |
+| Starting commit  | `ab76abe0bbf8c9f01b17c29e5c8c7786c937fe70`                              |
+| Ending commit    | `13cd943f134eb6312aeacf70e1f1f7f2aa607035`                              |
+| Starting status  | clean tip + untracked Wave5 prompt                                      |
+| Ending status    | clean tip after Wave5 push                                              |
 
 ## Summary
 

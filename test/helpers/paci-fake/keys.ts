@@ -4,7 +4,7 @@
  * Never use these keys outside tests. Never copy into production config,
  * fixtures shipped as live credentials, or operator docs with live paths.
  */
-import { exportJWK, exportPKCS8, exportSPKI, generateKeyPair, type JWK, type KeyLike } from "jose";
+import { exportJWK, exportPKCS8, exportSPKI, generateKeyPair, type JWK } from "jose";
 import { PACI_ALG } from "./constants.js";
 
 export type PaciFakeEs256KeyPair = {
@@ -14,8 +14,8 @@ export type PaciFakeEs256KeyPair = {
   publicKeyPem: string;
   /** JWK public key for JWKS responses (TEST ONLY). */
   publicJwk: JWK;
-  privateKey: KeyLike | CryptoKey;
-  publicKey: KeyLike | CryptoKey;
+  privateKey: CryptoKey;
+  publicKey: CryptoKey;
   kid: string;
 };
 

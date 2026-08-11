@@ -31,10 +31,7 @@ async function mintForm(assertion: string, scope?: string): Promise<URLSearchPar
   return form;
 }
 
-async function introspectForm(
-  token: string,
-  assertion: string,
-): Promise<URLSearchParams> {
+async function introspectForm(token: string, assertion: string): Promise<URLSearchParams> {
   return new URLSearchParams({
     token,
     client_assertion_type: CLIENT_ASSERTION_TYPE,

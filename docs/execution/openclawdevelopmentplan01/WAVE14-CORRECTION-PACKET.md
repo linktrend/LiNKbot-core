@@ -15,13 +15,13 @@ Documentation/tooling only. No runtime behavior change. Fixture bytes unchanged.
 
 ## Corrections
 
-| # | Deficiency | Correction | Evidence |
-| - | ---------- | ---------- | -------- |
-| 1 | List children evaluated without parent obligation context | Inherited context from intros (`approved target`, `does not authorize`, `must`/`required`/`rules`/`next action`, etc.) | §1 approved-target children; §4 hard-boundary children |
-| 2 | Imperatives without modal verbs omitted | `isImperativeInstruction` (`depend only…`, `remain default-disabled`, `record the exact…`) | §7.1 plugin packaging items |
-| 3 | Structural sections treated as narrative | Section modes for §1/4/6/7/8/9/13/22.3/24 | `decision.resolved.*`, `next_action.*`, privacy/governance flows |
-| 4 | §22.3 incorrectly non_requirement | Resolved implementation decisions are atomic requirements | `decision.resolved.1–11` |
-| 5 | Soft fail-open non_requirement labels | Machine-checkable `reasonCode` + `sourceContext`; forbid list non_requirement in hard contexts | validator coverage checks; 13 focused tests |
+| #   | Deficiency                                                | Correction                                                                                                             | Evidence                                                         |
+| --- | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| 1   | List children evaluated without parent obligation context | Inherited context from intros (`approved target`, `does not authorize`, `must`/`required`/`rules`/`next action`, etc.) | §1 approved-target children; §4 hard-boundary children           |
+| 2   | Imperatives without modal verbs omitted                   | `isImperativeInstruction` (`depend only…`, `remain default-disabled`, `record the exact…`)                             | §7.1 plugin packaging items                                      |
+| 3   | Structural sections treated as narrative                  | Section modes for §1/4/6/7/8/9/13/22.3/24                                                                              | `decision.resolved.*`, `next_action.*`, privacy/governance flows |
+| 4   | §22.3 incorrectly non_requirement                         | Resolved implementation decisions are atomic requirements                                                              | `decision.resolved.1–11`                                         |
+| 5   | Soft fail-open non_requirement labels                     | Machine-checkable `reasonCode` + `sourceContext`; forbid list non_requirement in hard contexts                         | validator coverage checks; 13 focused tests                      |
 
 ## Validation
 

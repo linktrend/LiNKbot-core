@@ -41,7 +41,13 @@ describe("linkbrain AuthClaims 1.1.0 consumer conformance", () => {
   });
 
   it("keeps lifecycle auth rejects on 1.1.0 contract version strings", () => {
-    for (const name of ["expired", "revoked", "rotated", "wrong-audience", "wrong-scope"] as const) {
+    for (const name of [
+      "expired",
+      "revoked",
+      "rotated",
+      "wrong-audience",
+      "wrong-scope",
+    ] as const) {
       const auth = readFixture("auth", `${name}.json`);
       expect(auth.platformContract).toBe(PLATFORM_AUTH_CLAIMS_CONTRACT_VERSION);
       expect(auth.claims.claimContractVersion).toBe(PLATFORM_AUTH_CLAIMS_CONTRACT_VERSION);
