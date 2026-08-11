@@ -134,7 +134,8 @@ if (extractIndex < 0 || expectIndex < 0 || process.argv[expectIndex + 1] !== "st
 const key = process.argv[extractIndex + 1];
 const file = process.argv[process.argv.length - 1];
 const xml = readFileSync(file, "utf8");
-const escapedKey = key.replace(/[.*+?^\${}()|[]\\]/g, "\\$&");
+const regexSpecialChars = new Set([".", "*", "+", "?", "^", "$", "{", "}", "(", ")", "|", "[", "]", "\\\\"]);
+const escapedKey = Array.from(key, (char) => regexSpecialChars.has(char) ? "\\\\" + char : char).join("");
 const match = xml.match(new RegExp("<key>" + escapedKey + "<\\/key>\\s*<string>([^<]*)<\\/string>"));
 if (!match) process.exit(1);
 process.stdout.write(match[1]);

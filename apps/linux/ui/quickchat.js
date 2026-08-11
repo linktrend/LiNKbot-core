@@ -657,7 +657,8 @@ elements.input.addEventListener("input", () => {
   updateSendButton();
 });
 elements.input.addEventListener("keydown", (event) => {
-  if (event.defaultPrevented || event.isComposing || event.key === 'å') {
+  // eslint-disable-next-line unicorn/prefer-keyboard-event-key -- Legacy IME fallback requires keyCode 229.
+  if (event.defaultPrevented || event.isComposing || event.keyCode === 229) {
     return;
   }
   if (event.key === "Escape") {

@@ -160,9 +160,16 @@ describe("linkbrain machine-token facade stop/reload lifecycle", () => {
         },
       };
       const { service, hooks } = await registerStartedService({ facade });
-      await hooks.get("gateway_stop")?.({ reason: "restart" }, {} as never);
+      const gatewayStop = hooks.get("gateway_stop");
+      if (!gatewayStop) {
+        throw new Error("gateway_stop hook was not registered");
+      }
+      await gatewayStop({ reason: "restart" }, {} as never);
       expect(facade.health("linkbrain-stage").registered).toBe(true);
-      await service.stop?.({} as never);
+      if (!service.stop) {
+        throw new Error("service stop handler was not registered");
+      }
+      await service.stop({} as never);
       expect(facade.health("linkbrain-stage").registered).toBe(false);
     }
     expect(unregisterSpy).toHaveBeenCalledTimes(2);
