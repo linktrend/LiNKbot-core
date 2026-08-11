@@ -246,7 +246,7 @@ def evaluate_pr(pr: int, app_token: str) -> dict:
     required = (
         os.environ.get("FAST_GATE_CHECKS")
         or os.environ.get("LINKTREND_INTEGRATOR_REQUIRED_CHECKS")
-        or "openclaw/ci-gate"
+        or "Verify IDE Development"
     )
 
     meta = pr_meta(pr, app_token)

@@ -2122,12 +2122,7 @@ def _emit(payload: dict[str, Any], path: str | None, *, human: bool = False) -> 
                 EXIT_REFUSED,
             )
     # Also refuse obvious PEM / token markers if somehow present.
-    for marker in (
-        "BEGIN " "PRIVATE KEY",
-        "BEGIN " "RSA PRIVATE KEY",
-        "github_pat_",
-        "ghs_",
-    ):
+    for marker in ("BEGIN PRIVATE KEY", "BEGIN RSA PRIVATE KEY", "github_pat_", "ghs_"):
         if marker in text:
             raise AuditError(
                 f"refusing to emit report: forbidden secret marker {marker!r} in output",

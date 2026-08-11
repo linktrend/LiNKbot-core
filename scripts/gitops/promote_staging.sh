@@ -21,7 +21,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/work-branch-allowlist.sh"
 
 MODE="${MODE:-build}"
-STAGING_GATE_CHECKS="${STAGING_GATE_CHECKS:-openclaw/ci-gate,Enforce allowed PR source branches}"
+STAGING_GATE_CHECKS="${STAGING_GATE_CHECKS:-Verify IDE Development}"
 TIMEZONE_LABEL="${TIMEZONE_LABEL:-Asia/Taipei}"
 REPO="${GH_REPO:-${GITHUB_REPOSITORY:-}}"
 TOKEN="${AUTOMATION_TOKEN:-}"
