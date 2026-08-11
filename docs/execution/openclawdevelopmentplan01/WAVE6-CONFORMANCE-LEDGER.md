@@ -7,7 +7,7 @@
 **Tip proof (local, wave 6 historical):** `node scripts/run-vitest.mjs test/helpers/link-domain-fakes extensions/linkbrain extensions/linkskills` → **26 files / 185 tests** PASS; working-tree `git diff --check` clean
 
 > **Superseded for §13.3 classification duty (wave 7):** use `PHASE-14-CLASSIFICATION-EVIDENCE-INDEX.md` + `WAVE7-CORRECTION-PACKET.md`. This file remains the wave-6 correction-only historical ledger. Tip proof after wave 7 is **29/196**. AuthClaims item 10 below is historical — wave 7 repinned to `1.1.0` / `0.2.2`.
-
+>
 > This ledger lists plan findings addressed in correction wave 6. It does **not** assign the seven Section 13.3 classifications. OpenClaw Codex Phase 14 owns verification.
 
 | Item | Phase 14 finding                                                                                               | Correction status       | Evidence                                                                                                                                                                                                                                                      |

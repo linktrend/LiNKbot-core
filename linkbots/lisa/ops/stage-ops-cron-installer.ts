@@ -157,19 +157,33 @@ export function validateStageCronCreatePayload(payload: StageCronJobCreatePayloa
       `${payload.name}: gateway cron.add invalid: ${formatValidationErrors(validateCronAddParams.errors)}`,
     );
   }
-  if (payload.enabled !== false) errors.push(`${payload.name}: enabled must be false`);
-  if (payload.delivery.mode !== "none") errors.push(`${payload.name}: delivery.mode must be none`);
+  if (payload.enabled !== false) {
+    errors.push(`${payload.name}: enabled must be false`);
+  }
+  if (payload.delivery.mode !== "none") {
+    errors.push(`${payload.name}: delivery.mode must be none`);
+  }
   if (payload.sessionTarget !== "isolated") {
     errors.push(`${payload.name}: sessionTarget must be isolated`);
   }
-  if (payload.wakeMode !== "now") errors.push(`${payload.name}: wakeMode must be now`);
-  if (payload.agentId !== "lisa-cron") errors.push(`${payload.name}: agentId must be lisa-cron`);
-  if (payload.schedule.kind !== "cron") errors.push(`${payload.name}: schedule.kind must be cron`);
-  if (payload.schedule.tz !== "Asia/Taipei") errors.push(`${payload.name}: tz must be Asia/Taipei`);
+  if (payload.wakeMode !== "now") {
+    errors.push(`${payload.name}: wakeMode must be now`);
+  }
+  if (payload.agentId !== "lisa-cron") {
+    errors.push(`${payload.name}: agentId must be lisa-cron`);
+  }
+  if (payload.schedule.kind !== "cron") {
+    errors.push(`${payload.name}: schedule.kind must be cron`);
+  }
+  if (payload.schedule.tz !== "Asia/Taipei") {
+    errors.push(`${payload.name}: tz must be Asia/Taipei`);
+  }
   if (payload.payload.kind !== "agentTurn") {
     errors.push(`${payload.name}: payload.kind must be agentTurn`);
   }
-  if (!payload.payload.message.trim()) errors.push(`${payload.name}: message must be non-empty`);
+  if (!payload.payload.message.trim()) {
+    errors.push(`${payload.name}: message must be non-empty`);
+  }
   if (!Array.isArray(payload.payload.toolsAllow) || payload.payload.toolsAllow.length === 0) {
     errors.push(`${payload.name}: toolsAllow must be a non-empty array`);
   }
@@ -235,8 +249,11 @@ export function buildStageCronInstallPlan(params: {
     payloadHashes[job.id] = hashStageJob(job);
     const existingId = ids[job.id];
     if (params.action === "disable") {
-      if (existingId) disables.push({ id: existingId, enabled: false });
-      else validationErrors.push(`disable missing UUID for ${job.id}`);
+      if (existingId) {
+        disables.push({ id: existingId, enabled: false });
+      } else {
+        validationErrors.push(`disable missing UUID for ${job.id}`);
+      }
       continue;
     }
     if (params.action === "install") {

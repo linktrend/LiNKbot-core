@@ -477,7 +477,7 @@ describe("linkbrain brain capture contract adapter", () => {
     expect(callTool).toHaveBeenCalledTimes(1);
 
     const emittedArgs = callTool.mock.calls[0]![1] as Record<string, unknown>;
-    expect(Object.keys(emittedArgs).sort()).toEqual(["batch"]);
+    expect(Object.keys(emittedArgs).toSorted()).toEqual(["batch"]);
     expect(emittedArgs).not.toHaveProperty("idempotencyKey");
     const batch = assertBrainWireCaptureBatch(emittedArgs.batch);
     expect(batch.idempotencyKey).toBe(wireBatch.idempotencyKey);

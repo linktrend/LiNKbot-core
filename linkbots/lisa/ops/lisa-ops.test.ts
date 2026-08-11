@@ -361,13 +361,17 @@ describe("Lisa ops live-action fail-closed defaults", () => {
     assert.equal(LISA_OPS_LIVE_ACTION_DEFAULTS.heartbeatLiveActionAllowed, false);
     const blocked = authorizeLiveLisaAction();
     assert.equal(blocked.ok, false);
-    if (!blocked.ok) assert.equal(blocked.reason, "live_targeting_disabled");
+    if (!blocked.ok) {
+      assert.equal(blocked.reason, "live_targeting_disabled");
+    }
     const needCreds = authorizeLiveLisaAction({
       liveLisaTargetingAllowed: true,
       credentialsLanguageSeparatelyApproved: false,
     });
     assert.equal(needCreds.ok, false);
-    if (!needCreds.ok) assert.equal(needCreds.reason, "credentials_language_not_approved");
+    if (!needCreds.ok) {
+      assert.equal(needCreds.reason, "credentials_language_not_approved");
+    }
     const shipBlocked = authorizeShipPullLiveAction();
     assert.equal(shipBlocked.ok, false);
   });
@@ -467,7 +471,9 @@ describe("Pipeline status CAS", () => {
       expectedCycleDate: expectedCycleDateForWave("Ship 16", "2026-07-29"),
     });
     assert.equal(first.action, "updated");
-    if (first.action !== "updated") return;
+    if (first.action !== "updated") {
+      return;
+    }
     assert.match(first.nextText, /Cycle date: 2026-07-30/);
     const second = applyWaveCas({
       currentText: first.nextText,
@@ -476,7 +482,9 @@ describe("Pipeline status CAS", () => {
       expectedCycleDate: "2026-07-30",
     });
     assert.equal(second.action, "updated");
-    if (second.action !== "updated") return;
+    if (second.action !== "updated") {
+      return;
+    }
     assert.match(second.nextText, /Ship 16: Clear/);
     assert.match(second.nextText, /Pull 18: Issues/);
     const stale = applyWaveCas({
@@ -852,7 +860,9 @@ describe("Repair dispatcher binding + pending hold", () => {
       { liveLisaTargetingAllowed: true, credentialsLanguageSeparatelyApproved: true },
     );
     assert.equal(noStore.ok, false);
-    if (!noStore.ok) assert.equal(noStore.reason, "blocked_no_store");
+    if (!noStore.ok) {
+      assert.equal(noStore.reason, "blocked_no_store");
+    }
   });
 });
 
@@ -911,7 +921,9 @@ describe("Main Approve binding", () => {
   it("runtime issues no Carlos ask without store and names prerequisite", () => {
     const blocked = issueCarlosAsk(askRef);
     assert.equal(blocked.ok, false);
-    if (blocked.ok) return;
+    if (blocked.ok) {
+      return;
+    }
     assert.ok(
       blocked.reason === "blocked_no_store" ||
         blocked.reason === "live_targeting_disabled" ||
@@ -928,13 +940,17 @@ describe("Main Approve binding", () => {
     };
     const ask = issueCarlosAsk(askRef, null, liveOptIn);
     assert.equal(ask.ok, false);
-    if (ask.ok) return;
+    if (ask.ok) {
+      return;
+    }
     assert.equal(ask.reason, "blocked_no_store");
     assert.match(ask.prerequisite ?? "", /lisa_stage_|package store|SQLite/i);
 
     const dispatch = authorizeApprovalDispatch(paramsOk, null, liveOptIn);
     assert.equal(dispatch.ok, false);
-    if (dispatch.ok) return;
+    if (dispatch.ok) {
+      return;
+    }
     assert.equal(dispatch.reason, "blocked_no_store");
 
     // Packaging default remains fail-closed; use openStageDurableStoreCapability for live probes.
@@ -945,7 +961,9 @@ describe("Main Approve binding", () => {
   it("runtime approval dispatch fails closed without store", () => {
     const blocked = authorizeApprovalDispatch(paramsOk);
     assert.equal(blocked.ok, false);
-    if (blocked.ok) return;
+    if (blocked.ok) {
+      return;
+    }
     assert.equal(blocked.reason, "live_targeting_disabled");
   });
 
@@ -1089,10 +1107,14 @@ describe("Main Approve binding", () => {
     const forged = { available: true as const };
     const askForged = issueCarlosAsk(askRef, forged as never, live);
     assert.equal(askForged.ok, false);
-    if (!askForged.ok) assert.equal(askForged.reason, "blocked_no_store");
+    if (!askForged.ok) {
+      assert.equal(askForged.reason, "blocked_no_store");
+    }
     const authForged = authorizeApprovalDispatch(paramsOk, forged as never, live);
     assert.equal(authForged.ok, false);
-    if (!authForged.ok) assert.equal(authForged.reason, "blocked_no_store");
+    if (!authForged.ok) {
+      assert.equal(authForged.reason, "blocked_no_store");
+    }
 
     const askBlockedLive = issueCarlosAsk(askRef, null);
     assert.equal(askBlockedLive.ok, false);

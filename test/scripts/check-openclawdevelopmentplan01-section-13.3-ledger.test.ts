@@ -249,7 +249,7 @@ function writeArtifacts(
     analyzed.coverage,
     evidenceMaps,
   );
-  let rows = parseCsv(buildLedgerCsvFromPlanItems(analyzed.items));
+  const rows = parseCsv(buildLedgerCsvFromPlanItems(analyzed.items));
   if (mutate) {
     mutate(inventory, rows);
   }

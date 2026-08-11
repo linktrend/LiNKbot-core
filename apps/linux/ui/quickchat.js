@@ -442,7 +442,7 @@ async function openNamedPopover(kind) {
   setPopoverVisibility(kind);
   if (kind === "agents") {
     const selectedIndex = agents.findIndex((agent) => agent.id === activeIdentity.id);
-    menuIndex = selectedIndex >= 0 ? selectedIndex : 0;
+    menuIndex = Math.max(selectedIndex, 0);
     renderAgentList();
     elements.agentList.querySelectorAll(".agent-option")[menuIndex]?.focus();
   } else {
@@ -506,10 +506,10 @@ function acceleratorFromEvent(event) {
     return null;
   }
   const parts = [];
-  if (event.ctrlKey) parts.push("Ctrl");
-  if (event.altKey) parts.push("Alt");
-  if (event.shiftKey) parts.push("Shift");
-  if (event.metaKey) parts.push("Super");
+  if (event.ctrlKey) {parts.push("Ctrl");}
+  if (event.altKey) {parts.push("Alt");}
+  if (event.shiftKey) {parts.push("Shift");}
+  if (event.metaKey) {parts.push("Super");}
   if (parts.length === 0) {
     return null;
   }
@@ -657,7 +657,7 @@ elements.input.addEventListener("input", () => {
   updateSendButton();
 });
 elements.input.addEventListener("keydown", (event) => {
-  if (event.defaultPrevented || event.isComposing || event.keyCode === 229) {
+  if (event.defaultPrevented || event.isComposing || event.key === 'å') {
     return;
   }
   if (event.key === "Escape") {

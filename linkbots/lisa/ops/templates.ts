@@ -56,8 +56,12 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 export function resolveTemplatesDir(opsDir: string = here): string {
   const deployed = path.resolve(opsDir, "../templates");
   const repo = path.resolve(opsDir, "../Personality files/templates");
-  if (existsSync(deployed)) return deployed;
-  if (existsSync(repo)) return repo;
+  if (existsSync(deployed)) {
+    return deployed;
+  }
+  if (existsSync(repo)) {
+    return repo;
+  }
   throw new Error(`templates dir not found (tried ${deployed} and ${repo})`);
 }
 
@@ -100,7 +104,9 @@ export function fillPlaceholders(body: string, vars: Record<string, string>): st
     .replace(/[ \t]+\n/g, "\n")
     .trimEnd();
   // Remove trailing blank lines created by empty optional placeholders.
-  if (out.endsWith("\n\n")) out = out.replace(/\n+$/, "\n");
+  if (out.endsWith("\n\n")) {
+    out = out.replace(/\n+$/, "\n");
+  }
   assertNoUnresolvedPlaceholders(out);
   return out.endsWith("\n") ? out : `${out}\n`;
 }
@@ -126,34 +132,48 @@ export function omitStalePipelineLines(lines: string[], allow: Set<string>): str
 }
 
 function listOrNone(items: string[]): string {
-  if (items.length === 0) return "None.";
+  if (items.length === 0) {
+    return "None.";
+  }
   return items.map((item, i) => `${i + 1}. ${item}`).join("\n");
 }
 
 function batteryAlerts(alerts: string[], checks: "Yes" | "No"): string {
-  if (checks !== "Yes" || alerts.length === 0) return "";
+  if (checks !== "Yes" || alerts.length === 0) {
+    return "";
+  }
   return alerts.map((a) => `- Alert — ${a}`).join("\n");
 }
 
 function pipelineSection(lines: string[]): string {
-  if (lines.length === 0) return "";
+  if (lines.length === 0) {
+    return "";
+  }
   return `## D. Pipeline\n\n${lines.join("\n")}`;
 }
 
 function mainApproveSection(ask: string | null | undefined): string {
-  if (!ask?.trim()) return "";
+  if (!ask?.trim()) {
+    return "";
+  }
   return `## E. Main Approve\n\n${ask.trim()}`;
 }
 
 function codingBlock(codingEvals: "Yes" | "No", codingDetail?: string): string {
-  if (codingEvals === "No") return "## B. Coding Work & Evals: No";
+  if (codingEvals === "No") {
+    return "## B. Coding Work & Evals: No";
+  }
   return `## B. Coding Work & Evals: Yes\n\n${codingDetail ?? "None."}`;
 }
 
 /** Telegram heartbeat — condensed Work/Coding; full Battery; no email body. */
 export function renderTelegramHeartbeat(ctx: TemplateContext): string {
-  if (!ctx.battery) throw new Error("heartbeat requires battery block");
-  if (!ctx.time) throw new Error("heartbeat requires time");
+  if (!ctx.battery) {
+    throw new Error("heartbeat requires battery block");
+  }
+  if (!ctx.time) {
+    throw new Error("heartbeat requires time");
+  }
   const body = loadCanonicalTemplateBody("telegram-heartbeat");
   return (
     fillPlaceholders(body, {
@@ -181,8 +201,12 @@ export function renderTelegramHeartbeat(ctx: TemplateContext): string {
 
 /** Telegram morning digest — itemized Work + Battery + Pipeline. */
 export function renderTelegramDailyDigest(ctx: TemplateContext): string {
-  if (!ctx.battery) throw new Error("telegram digest requires battery block");
-  if (!ctx.digestDetail) throw new Error("telegram digest requires digestDetail");
+  if (!ctx.battery) {
+    throw new Error("telegram digest requires battery block");
+  }
+  if (!ctx.digestDetail) {
+    throw new Error("telegram digest requires digestDetail");
+  }
   const d = ctx.digestDetail;
   const body = loadCanonicalTemplateBody("telegram-daily-digest");
   return (
@@ -214,7 +238,9 @@ export function renderTelegramDailyDigest(ctx: TemplateContext): string {
 
 /** Email digest — Work + Coding + Pipeline + Approve; never Battery. */
 export function renderEmailDailyDigest(ctx: TemplateContext): string {
-  if (!ctx.digestDetail) throw new Error("email digest requires digestDetail");
+  if (!ctx.digestDetail) {
+    throw new Error("email digest requires digestDetail");
+  }
   const d = ctx.digestDetail;
   const body = loadCanonicalTemplateBody("email-daily-digest");
   const out =

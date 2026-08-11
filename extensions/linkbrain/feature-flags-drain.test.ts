@@ -135,7 +135,7 @@ describe("linkbrain drain worker bounds", () => {
   it("does not launch concurrent ticks", async () => {
     let concurrent = 0;
     let maxConcurrent = 0;
-    let releases: Array<() => void> = [];
+    const releases: Array<() => void> = [];
     const worker = createBrainDrainWorker({
       intervalMs: 5,
       tickTimeoutMs: 500,

@@ -91,7 +91,7 @@ function parseManifest(manifestPath) {
   try {
     return JSON.parse(readFileSync(manifestPath, "utf8"));
   } catch (error) {
-    throw new Error(`could not read ${manifestPath}: ${error.message}`);
+    throw new Error(`could not read ${manifestPath}: ${error.message}`, { cause: error });
   }
 }
 

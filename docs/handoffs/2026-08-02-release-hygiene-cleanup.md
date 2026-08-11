@@ -132,4 +132,4 @@ Refresh dashboard from this handoff; close or move handing-off W10/ACP active re
 - Corrected fact: Ending commit = content tip `5453be356db43707292085327e873edb3d595cab`. File ends with a single trailing newline. Later meta/correction commits must not rewrite Ending commit; use `git rev-parse HEAD` or draft PR #45 `headRefOid` for branch tip.
 - Why: Fix whitespace gate without restarting infinite ending-SHA chase.
 - Who: cursor-local-mac-mini-release-hygiene-correction-20260802-1411
-- Evidence: `git diff --check origin/development...HEAD`; PR https://github.com/linktrend/openclaw_prime/pull/45
+- Evidence: `git diff --check origin/development...HEAD`; [PR #45](https://github.com/linktrend/openclaw_prime/pull/45)

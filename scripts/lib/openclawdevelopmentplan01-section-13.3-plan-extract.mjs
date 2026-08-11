@@ -800,31 +800,31 @@ export function detectStructuralRequirementSection(headingText) {
   if (/^## 4\b/.test(text)) {
     return { code: "HARD_BOUNDARY" };
   }
-  if (/^## 6\b/.test(text) || /^### 6\./.test(text)) {
+  if (/^## 6\b/.test(text) || text.startsWith("### 6.")) {
     return { code: "ACTOR_MAPPING" };
   }
-  if (/^## 7\b/.test(text) || /^### 7\./.test(text)) {
+  if (/^## 7\b/.test(text) || text.startsWith("### 7.")) {
     return { code: "PLUGIN_MCP" };
   }
-  if (/^## 8\b/.test(text) || /^### 8\./.test(text)) {
+  if (/^## 8\b/.test(text) || text.startsWith("### 8.")) {
     return { code: "PRIVACY_FLOW" };
   }
-  if (/^## 9\b/.test(text) || /^### 9\./.test(text)) {
+  if (/^## 9\b/.test(text) || text.startsWith("### 9.")) {
     return { code: "CONTRACT_FIXTURE" };
   }
-  if (/^## 10\b/.test(text) || /^### 10\./.test(text)) {
+  if (/^## 10\b/.test(text) || text.startsWith("### 10.")) {
     return { code: "LIFECYCLE" };
   }
   if (/^## 11\b/.test(text)) {
     return { code: "OUTBOX" };
   }
-  if (/^## 12\b/.test(text) || /^### 12\./.test(text)) {
+  if (/^## 12\b/.test(text) || text.startsWith("### 12.")) {
     return { code: "CONFIG" };
   }
-  if (/^## 13\b/.test(text) || /^### 13\./.test(text)) {
+  if (/^## 13\b/.test(text) || text.startsWith("### 13.")) {
     return { code: "GOVERNANCE" };
   }
-  if (/^## 17\b/.test(text) || /^### 17\./.test(text)) {
+  if (/^## 17\b/.test(text) || text.startsWith("### 17.")) {
     return { code: "OBSERVABILITY" };
   }
   if (/^## 18\b/.test(text)) {
@@ -1047,7 +1047,7 @@ export function analyzePlanForSection133(planText, options = {}) {
     if (/metadata|without ledger obligation|bold label/i.test(text)) {
       return "METADATA_BOLD_LABEL";
     }
-    if (/frontmatter|^\-\-\-|summary:|title:/i.test(text)) {
+    if (/frontmatter|^-\--|summary:|title:/i.test(text)) {
       return "FRONTMATTER_OR_META";
     }
     return "NARRATIVE_CONTEXT";
@@ -1307,17 +1307,17 @@ export function analyzePlanForSection133(planText, options = {}) {
         );
         continue;
       }
-      if (/^## /.test(text) && !/^### /.test(text)) {
+      if (text.startsWith("## ") && !text.startsWith("### ")) {
         phase = null;
       }
       if (/^## 23\. Definition of Done\b/.test(text)) {
         inDod = true;
         dodIndex = 0;
         structuralContext = "DOD";
-      } else if (inDod && /^## /.test(text)) {
+      } else if (inDod && text.startsWith("## ")) {
         inDod = false;
       }
-      if (inDod && /^### /.test(text)) {
+      if (inDod && text.startsWith("### ")) {
         dodSection = text.replace(/^###\s+/, "");
         structuralContext = "DOD";
       }
@@ -1331,7 +1331,7 @@ export function analyzePlanForSection133(planText, options = {}) {
           tableMode = structural.tableMode;
           tableIndex = 0;
         }
-      } else if (/^## /.test(text) && !/^### /.test(text) && !inDod) {
+      } else if (text.startsWith("## ") && !text.startsWith("### ") && !inDod) {
         // New top-level section without structural mode clears prior context.
         structuralContext = null;
       }
@@ -2016,7 +2016,7 @@ export function analyzePlanForSection133(planText, options = {}) {
         cover(construct, "requirement", "REQUIREMENT", `inheritance opener ${opener.code}`, ids);
         continue;
       }
-      if (inDod && /^Implementation is complete only when/.test(text)) {
+      if (inDod && text.startsWith("Implementation is complete only when")) {
         inherited = { code: "DOD", kind: "dod" };
         const ids = [];
         for (const [index, part] of splitAtomicObligations(text).entries()) {
@@ -2033,7 +2033,7 @@ export function analyzePlanForSection133(planText, options = {}) {
         cover(construct, "requirement", "REQUIREMENT", "DoD intro opens following statements", ids);
         continue;
       }
-      if (/^Return to the Principal if:/.test(text)) {
+      if (text.startsWith("Return to the Principal if:")) {
         inherited = { code: "GATE", kind: "gate" };
         cover(
           construct,
@@ -2043,7 +2043,7 @@ export function analyzePlanForSection133(planText, options = {}) {
         );
         continue;
       }
-      if (/^Tests must prove:/.test(text)) {
+      if (text.startsWith("Tests must prove:")) {
         inherited = { code: "REQUIRED", kind: "test" };
         const ids = [];
         for (const [index, part] of splitAtomicObligations(text).entries()) {
@@ -2060,7 +2060,7 @@ export function analyzePlanForSection133(planText, options = {}) {
         cover(construct, "requirement", "REQUIREMENT", "§16.2 intro opens invariant list", ids);
         continue;
       }
-      if (/^Required runbooks:/.test(text)) {
+      if (text.startsWith("Required runbooks:")) {
         inherited = { code: "REQUIRED", kind: "deliverable" };
         const ids = [];
         for (const [index, part] of splitAtomicObligations(text).entries()) {
@@ -2077,7 +2077,7 @@ export function analyzePlanForSection133(planText, options = {}) {
         cover(construct, "requirement", "REQUIREMENT", "§19 intro opens runbook list", ids);
         continue;
       }
-      if (phase != null && /^Synthetic activity may supplement/.test(text)) {
+      if (phase != null && text.startsWith("Synthetic activity may supplement")) {
         const ids = [];
         for (const [index, part] of splitAtomicObligations(text).entries()) {
           const item = pushItem(

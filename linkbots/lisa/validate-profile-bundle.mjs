@@ -36,7 +36,7 @@ function assertSafeRelativePath(path) {
 
 function listFiles(root, current = root) {
   const result = [];
-  for (const entry of readdirSync(current, { withFileTypes: true }).sort((a, b) =>
+  for (const entry of readdirSync(current, { withFileTypes: true }).toSorted((a, b) =>
     a.name.localeCompare(b.name),
   )) {
     const absolute = join(current, entry.name);

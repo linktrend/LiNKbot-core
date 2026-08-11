@@ -559,8 +559,8 @@ describe("paci-fake Platform parity", () => {
     const afterRotate = fake
       .getJwks()
       .keys.map((k) => k.kid)
-      .sort();
-    expect(afterRotate).toEqual(["as-original", rotated.kid].sort());
+      .toSorted();
+    expect(afterRotate).toEqual(["as-original", rotated.kid].toSorted());
 
     fake.setMintOverrides(undefined);
     const assertion2 = await fake.signClientAssertion({

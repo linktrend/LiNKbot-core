@@ -60,6 +60,8 @@ const ROOT_TEST_ENTRY_GLOBS = [
   // Loaded with cache-busting query strings so configuration fallback tests
   // get independent module initialization.
   "test/helpers/config/bundled-channel-config-runtime.ts!",
+  // PACI fake is a public test harness imported by external integration suites.
+  "test/helpers/paci-fake/index.ts",
   // The topology analyzer owns these as an intentionally self-contained graph.
   "test/fixtures/ts-topology/basic/**/*.{js,mjs,cjs,ts,mts,cts}!",
   // The focused Oxlint test invokes these deliberate violations by path.
@@ -127,6 +129,38 @@ const config = {
       "enumMembers",
       "namespaceMembers",
     ],
+    // Public plugin contracts and test reset seams are intentionally exported
+    // even when the complete repository graph has no additional static caller.
+    // Plugin-workspace paths are relative to their owning workspace.
+    "src/capture.ts": ["exports"],
+    "src/tools.ts": ["exports"],
+    "src/opaque.ts": ["exports"],
+    "src/runtime.ts": ["types"],
+    "src/agents/agent-bundle-mcp-materialize.ts": ["exports"],
+    "src/agents/harness/registry.ts": ["exports"],
+    "src/agents/subagent-registry.ts": ["exports"],
+    "src/plugins/api-lifecycle.ts": ["exports"],
+    "src/plugins/compaction-provider.ts": ["exports"],
+    "src/plugins/installed-plugin-index-record-builder.ts": ["exports"],
+    "src/plugins/mcp-tool-filter-registration.ts": ["exports"],
+    "src/plugins/plugin-control-plane-context.ts": ["exports"],
+    "src/plugins/plugin-lifecycle-trace.ts": ["exports"],
+    "src/plugins/plugin-registration-transaction.ts": ["exports", "types"],
+    "src/plugins/plugin-runtime-artifact-resolution.ts": ["exports"],
+    "src/plugins/plugin-sdk-native-resolver.ts": ["exports"],
+    "src/plugins/runtime-degraded-state.ts": ["exports"],
+    "src/plugins/sdk-alias.ts": ["exports", "types"],
+    "src/plugins/slots.ts": ["exports"],
+    "src/plugins/types.mcp-tool-filter.ts": ["types"],
+    "src/tasks/detached-task-runtime-state.ts": ["exports"],
+    "scripts/check-openclawdevelopmentplan01-authclaims-provenance.mjs": ["exports"],
+    "scripts/check-openclawdevelopmentplan01-section-13.3-ledger.mjs": ["exports"],
+    "scripts/lib/openclawdevelopmentplan01-section-13.3-plan-extract.mjs": ["exports"],
+    "test/helpers/paci-fake/keys.ts": ["exports"],
+    "test/helpers/paci-fake/metadata.ts": ["types"],
+    "test/helpers/paci-fake/scope.ts": ["exports"],
+    "test/helpers/paci-fake/server.ts": ["exports", "types"],
+    "extensions/linkbrain/src/test-support/deferred.ts": ["types"],
   },
   workspaces,
 };

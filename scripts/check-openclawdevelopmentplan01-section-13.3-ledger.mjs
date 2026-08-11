@@ -155,7 +155,7 @@ export function grokEvidenceMappingForPlanItem(item) {
   const label = item.label;
 
   // Unexecuted rollback / closeout paths are never claimed implemented.
-  if (item.kind === "rollback" || /\.rollback$/.test(id)) {
+  if (item.kind === "rollback" || id.endsWith(".rollback")) {
     return {
       owner: "OpenClaw (rollback path recorded, not executed)",
       evidence_location: `docs/execution/openclawdevelopmentplan01/PHASE-13-COVERAGE-EVIDENCE-INDEX.md#${id}`,
@@ -237,7 +237,7 @@ export function grokEvidenceMappingForPlanItem(item) {
     };
   }
 
-  if (Object.prototype.hasOwnProperty.call(PHASE0_EVIDENCE_BY_ID, id)) {
+  if (Object.hasOwn(PHASE0_EVIDENCE_BY_ID, id)) {
     const base = PHASE0_EVIDENCE_BY_ID[id];
     return {
       owner: "OpenClaw Grok (Phase 0 freeze packet)",
@@ -705,7 +705,7 @@ export function validateSection133Ledger(opts = {}) {
           `${id}: implemented evidence must identify underlying Phase artifacts, not extractor/validator/ledger tooling`,
         );
       }
-      if (planItem.kind === "rollback" || /\.rollback$/.test(id)) {
+      if (planItem.kind === "rollback" || id.endsWith(".rollback")) {
         errors.push(`${id}: unexecuted rollback must not be claimed implemented`);
       }
       evidenceMapped += 1;
