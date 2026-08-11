@@ -54,6 +54,36 @@ describe("native i18n changed scope", () => {
     ).toThrow("Native generated locale artifacts must be isolated from source changes");
   });
 
+  it("allows the deterministic tool-display to Android resource cascade", () => {
+    const toolDisplay = "apps/shared/OpenClawKit/Sources/OpenClawKit/Resources/tool-display.json";
+    const androidGenerated = [
+      "apps/android/app/src/main/java/ai/openclaw/app/i18n/NativeStringResources.kt",
+      "apps/android/app/src/main/res/values-de/strings.xml",
+    ];
+
+    expect(() =>
+      assertNativeGeneratedArtifactsIsolated([
+        ...androidGenerated,
+        "apps/android/app/src/main/res/values/strings.xml",
+        toolDisplay,
+        "src/agents/tools/sessions-wait-tool.ts",
+      ]),
+    ).not.toThrow();
+    expect(() =>
+      assertNativeGeneratedArtifactsIsolated([
+        ...androidGenerated,
+        "src/agents/tools/sessions-wait-tool.ts",
+      ]),
+    ).toThrow("Native generated locale artifacts must be isolated from source changes");
+    expect(() =>
+      assertNativeGeneratedArtifactsIsolated([
+        "apps/ios/Resources/Localizable.xcstrings",
+        toolDisplay,
+        "src/agents/tools/sessions-wait-tool.ts",
+      ]),
+    ).toThrow("Native generated locale artifacts must be isolated from source changes");
+  });
+
   it("runs strict parity only for manual or generated-artifact checks", () => {
     expect(shouldStrictNativeI18n(null)).toBe(true);
     expect(shouldStrictNativeI18n(["apps/.i18n/native/sv.json"])).toBe(true);

@@ -686,6 +686,14 @@
         "cleanup"
       ]
     },
+    "sessions_wait": {
+      "emoji": "⏳",
+      "title": "Wait for Sessions",
+      "detailKeys": [
+        "ids",
+        "timeoutSeconds"
+      ]
+    },
     "agents_wait": {
       "emoji": "⏳",
       "title": "Wait for Agents",
