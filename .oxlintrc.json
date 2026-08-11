@@ -289,7 +289,12 @@
         "**/*.generated.*",
         "**/dist/**",
         "ui/src/i18n/locales/**",
-        "src/wizard/i18n/locales/**"
+        "src/wizard/i18n/locales/**",
+        "src/state/lisa-stage-ops-store.ts",
+        "src/agents/openclaw-tools.ts",
+        "src/agents/machine-token-host.ts",
+        "extensions/linkbrain/src/transport.ts",
+        "extensions/linkskills/src/transport.ts"
       ],
       "rules": {
         "max-lines": ["error", { "max": 700, "skipBlankLines": true, "skipComments": true }]
@@ -357,24 +362,12 @@
         "**/*.generated.*",
         "**/dist/**",
         "ui/src/i18n/locales/**",
-        "src/wizard/i18n/locales/**"
+        "src/wizard/i18n/locales/**",
+        "src/agents/machine-token-host.test.ts",
+        "src/plugins/loader.machine-token-generation.test.ts"
       ],
       "rules": {
         "max-lines": ["error", { "max": 1000, "skipBlankLines": true, "skipComments": true }]
-      }
-    },
-    {
-      "files": [
-        "src/agents/machine-token-host.test.ts",
-        "src/state/lisa-stage-ops-store.ts",
-        "src/agents/openclaw-tools.ts",
-        "src/plugins/loader.machine-token-generation.test.ts",
-        "src/agents/machine-token-host.ts",
-        "extensions/linkbrain/src/transport.ts",
-        "extensions/linkskills/src/transport.ts"
-      ],
-      "rules": {
-        "max-lines": "off"
       }
     },
     {

@@ -10,6 +10,7 @@ OpenClaw-derived draft fixtures for Lisa ↔ LiNKbrain integration tests.
 - **Brain HEAD pin:** `a3cff6e0f04ac968c32beacb7bdb1b81a4d77d3f` — implements full frozen 17 tools in `packages/mcp-server/src/frozen-tools.ts`
 - **Denial handoff (prior tip):** `LiNKbrain/docs/handoffs/OPENCLAW-BRAIN-FIXTURE-COUNTERSIGN-2026-07-28.md` denied aggregate `d539debc…45fb` at OpenClaw tip `0b19e43…`
 - **Live data:** none — all actor IDs, tokens, and payloads are sanitized placeholders
+- **AuthClaims 1.1 owner-countersigned aggregate:** `4493f71432ef56f9fc272ff4c208b8901242c2bd83e138f53d6f0259b4f4811b` (75 JSON; retained as provenance for the closed Wave 8 sign-off)
 
 ## SHA-256 inventory
 
