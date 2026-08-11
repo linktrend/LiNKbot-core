@@ -264,30 +264,11 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
 
 - Route: /agent-briefing
 - Headings:
-  - H1: Repository and Agent Handover Briefing
-  - H2: Document Metadata
-  - H2: Pre-production truth — 2026-08-02 (supersedes stale July dashboard claims)
-  - H2: 1. Executive Summary
-  - H2: 2. Repository Locations and Sources of Truth
-  - H2: 3. Git and Upstream Relationship
-  - H2: 4. Changes from Upstream OpenClaw
-  - H2: 5. System Architecture
-  - H2: 6. Installation and Runtime Environment
-  - H2: 7. Configuration Model
-  - H2: 8. Lisa Profile Configuration
-  - H2: 9. Lisa’s Operating Workflows
-  - H2: 10. Memory, State, Logs, and Data
-  - H2: 11. Security and External-Action Controls
-  - H2: 12. Testing and Verification
-  - H2: 13. Starting, Stopping, Updating, and Recovery
-  - H2: 14. Current Work Status
-  - H2: 15. Planned David Profile
-  - H2: 16. Multi-Agent Development and Handoff Protocol
-  - H2: 17. Known Risks and Failure Modes
-  - H2: 18. Rules for Incoming Agents
-  - H2: 19. Recommended Next Actions
-  - H2: 20. Open Questions and Unknowns
-  - H2: 21. Reference Appendix
+  - H1: OpenClaw Prime and Lisa briefing
+  - H2: Current source of truth
+  - H2: Proven baseline
+  - H2: Boundaries
+  - H2: Agent workflow
 
 ## agent-coordination.md
 
@@ -336,66 +317,6 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
 - Route: /agent-sessions/active/README
 - Headings:
   - H1: Active Agent Sessions
-
-## agent-sessions/active/codex-local-mac-mini-desktop-app-lisa-native-oauth-routing-20260805-1226.md
-
-- Route: /agent-sessions/active/codex-local-mac-mini-desktop-app-lisa-native-oauth-routing-20260805-1226
-- Headings:
-  - H1: Agent Session Record
-  - H2: Identity
-  - H2: Work
-  - H2: Ownership Scope
-  - H2: Coordination
-  - H2: Progress
-  - H2: Next Action
-
-## agent-sessions/active/cursor-cloud-agent-ocp-w10-lisa-release-20260801-0920.md
-
-- Route: /agent-sessions/active/cursor-cloud-agent-ocp-w10-lisa-release-20260801-0920
-- Headings:
-  - H1: Agent Session Record
-  - H2: Identity
-  - H2: Work
-  - H2: Ownership Scope
-  - H2: Coordination
-  - H2: Progress
-  - H2: Next Action
-
-## agent-sessions/active/cursor-local-mac-mini-agents-window-lisa-ocp-mac-stage-write-canaries-20260803-1533.md
-
-- Route: /agent-sessions/active/cursor-local-mac-mini-agents-window-lisa-ocp-mac-stage-write-canaries-20260803-1533
-- Headings:
-  - H1: Agent Session Record
-  - H2: Identity
-  - H2: Work
-  - H2: Ownership Scope
-  - H2: Coordination
-  - H2: Progress
-  - H2: Next Action
-
-## agent-sessions/active/cursor-local-mac-mini-feature-acp-wait-20260731-1504.md
-
-- Route: /agent-sessions/active/cursor-local-mac-mini-feature-acp-wait-20260731-1504
-- Headings:
-  - H1: Agent Session Record
-  - H2: Identity
-  - H2: Work
-  - H2: Ownership Scope
-  - H2: Coordination
-  - H2: Progress
-  - H2: Next Action
-
-## agent-sessions/active/cursor-local-mac-mini-lisa-stage-canary-20260802-0939.md
-
-- Route: /agent-sessions/active/cursor-local-mac-mini-lisa-stage-canary-20260802-0939
-- Headings:
-  - H1: Agent Session Record
-  - H2: Identity
-  - H2: Work
-  - H2: Ownership Scope
-  - H2: Coordination
-  - H2: Progress
-  - H2: Next Action
 
 ## agent-sessions/completed/README.md
 
@@ -466,6 +387,31 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H3: 2026-07-23 17:28 Asia/Taipei — Completed
   - H2: Next Action
 
+## agent-sessions/completed/codex-desktop-agent-lisa-approval-recovery-20260807-0832.md
+
+- Route: /agent-sessions/completed/codex-desktop-agent-lisa-approval-recovery-20260807-0832
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+  - H2: Amendment — 2026-08-07 09:20 Asia/Taipei
+
+## agent-sessions/completed/codex-desktop-agent-lisa-runtime-recovery-20260805-1904.md
+
+- Route: /agent-sessions/completed/codex-desktop-agent-lisa-runtime-recovery-20260805-1904
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
 ## agent-sessions/completed/codex-desktop-cron-display-alias-20260804.md
 
 - Route: /agent-sessions/completed/codex-desktop-cron-display-alias-20260804
@@ -492,6 +438,29 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
 ## agent-sessions/completed/codex-desktop-cron-receipt-freshness-20260804.md
 
 - Route: /agent-sessions/completed/codex-desktop-cron-receipt-freshness-20260804
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/codex-desktop-mac-mini-lisa-delivery-recovery-20260807-1030.md
+
+- Route: /agent-sessions/completed/codex-desktop-mac-mini-lisa-delivery-recovery-20260807-1030
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Scope and Exclusions
+  - H2: Verification
+  - H2: Handoff
+
+## agent-sessions/completed/codex-desktop-mac-mini-lisa-tripwire-repair-20260807-1024.md
+
+- Route: /agent-sessions/completed/codex-desktop-mac-mini-lisa-tripwire-repair-20260807-1024
 - Headings:
   - H1: Agent Session Record
   - H2: Identity
@@ -537,6 +506,156 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Progress
   - H2: Next Action
 
+## agent-sessions/completed/codex-local-mac-mini-desktop-app-lisa-native-oauth-routing-20260805-1226.md
+
+- Route: /agent-sessions/completed/codex-local-mac-mini-desktop-app-lisa-native-oauth-routing-20260805-1226
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/codex-local-mac-mini-desktop-workspace-feature-20260810-1100.md
+
+- Route: /agent-sessions/completed/codex-local-mac-mini-desktop-workspace-feature-20260810-1100
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/codex-local-mac-mini-desktop-workspace-feature-20260810-1114.md
+
+- Route: /agent-sessions/completed/codex-local-mac-mini-desktop-workspace-feature-20260810-1114
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/codex-local-mac-mini-desktop-workspace-feature-20260810-1545.md
+
+- Route: /agent-sessions/completed/codex-local-mac-mini-desktop-workspace-feature-20260810-1545
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/codex-local-mac-mini-desktop-workspace-feature-20260810-1750.md
+
+- Route: /agent-sessions/completed/codex-local-mac-mini-desktop-workspace-feature-20260810-1750
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/codex-local-mac-mini-desktop-workspace-feature-20260810-1755.md
+
+- Route: /agent-sessions/completed/codex-local-mac-mini-desktop-workspace-feature-20260810-1755
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/codex-local-mac-mini-desktop-workspace-feature-20260810-1845.md
+
+- Route: /agent-sessions/completed/codex-local-mac-mini-desktop-workspace-feature-20260810-1845
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/codex-local-mac-mini-desktop-workspace-feature-20260810-1955.md
+
+- Route: /agent-sessions/completed/codex-local-mac-mini-desktop-workspace-feature-20260810-1955
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/codex-local-mac-mini-desktop-workspace-feature-20260810-2058.md
+
+- Route: /agent-sessions/completed/codex-local-mac-mini-desktop-workspace-feature-20260810-2058
+- Headings:
+  - H1: Agent Session Record
+  - H2: Metadata
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/codex-local-mac-mini-desktop-workspace-lisa-20260810-2245.md
+
+- Route: /agent-sessions/completed/codex-local-mac-mini-desktop-workspace-lisa-20260810-2245
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Result
+  - H2: Validation
+  - H2: Next Action
+
+## agent-sessions/completed/codex-local-mac-mini-desktop-workspace-review-fix-20260810-2016.md
+
+- Route: /agent-sessions/completed/codex-local-mac-mini-desktop-workspace-review-fix-20260810-2016
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/codex-local-mac-mini-gitops-foundation-20260810-1240.md
+
+- Route: /agent-sessions/completed/codex-local-mac-mini-gitops-foundation-20260810-1240
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/codex-repository-documentation-cleanup-20260811.md
+
+- Route: /agent-sessions/completed/codex-repository-documentation-cleanup-20260811
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity and work
+  - H2: Result
+
 ## agent-sessions/completed/codex-terra-lisa-stage-workspace-independent-corrections-20260804-1430.md
 
 - Route: /agent-sessions/completed/codex-terra-lisa-stage-workspace-independent-corrections-20260804-1430
@@ -581,6 +700,18 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Identity
   - H2: Work
   - H2: Ownership Scope
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-cloud-agent-ocp-w10-lisa-release-20260801-0920.md
+
+- Route: /agent-sessions/completed/cursor-cloud-agent-ocp-w10-lisa-release-20260801-0920
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
   - H2: Progress
   - H2: Next Action
 
@@ -942,6 +1073,18 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Progress
   - H2: Next Action
 
+## agent-sessions/completed/cursor-local-mac-mini-agents-window-lisa-ocp-mac-stage-write-canaries-20260803-1533.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-agents-window-lisa-ocp-mac-stage-write-canaries-20260803-1533
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
 ## agent-sessions/completed/cursor-local-mac-mini-agents-window-lisa-stage-link-integration-20260803-1440.md
 
 - Route: /agent-sessions/completed/cursor-local-mac-mini-agents-window-lisa-stage-link-integration-20260803-1440
@@ -982,6 +1125,18 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H3: 2026-07-23 16:05 Asia/Taipei — Re-read Codex primary Orchestrator state
   - H2: Next Action
   - H2: Amendment 2026-07-28 20:48 Asia/Taipei
+
+## agent-sessions/completed/cursor-local-mac-mini-feature-acp-wait-20260731-1504.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-feature-acp-wait-20260731-1504
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
 
 ## agent-sessions/completed/cursor-local-mac-mini-feature-brain-drain-evidence-truth-20260803-1704.md
 
@@ -1230,9 +1385,57 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Progress
   - H2: Next Action
 
+## agent-sessions/completed/cursor-local-mac-mini-lisa-controlui-auth-20260810-0740.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-lisa-controlui-auth-20260810-0740
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-mac-mini-lisa-controlui-serve-20260810-0730.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-lisa-controlui-serve-20260810-0730
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
 ## agent-sessions/completed/cursor-local-mac-mini-lisa-digest-cron-format-20260727-1055.md
 
 - Route: /agent-sessions/completed/cursor-local-mac-mini-lisa-digest-cron-format-20260727-1055
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-mac-mini-lisa-direct-1-20260809-1910.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-lisa-direct-1-20260809-1910
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-mac-mini-lisa-direct-2-20260809-1911.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-lisa-direct-2-20260809-1911
 - Headings:
   - H1: Agent Session Record
   - H2: Identity
@@ -1257,6 +1460,18 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
 ## agent-sessions/completed/cursor-local-mac-mini-lisa-ops01-20260730-1050.md
 
 - Route: /agent-sessions/completed/cursor-local-mac-mini-lisa-ops01-20260730-1050
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-mac-mini-lisa-stage-canary-20260802-0939.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-lisa-stage-canary-20260802-0939
 - Headings:
   - H1: Agent Session Record
   - H2: Identity
@@ -1434,6 +1649,18 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Progress
   - H2: Next Action
 
+## agent-sessions/completed/cursor-local-mac-mini-paci-prod-cutover-20260809-2238.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-paci-prod-cutover-20260809-2238
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
 ## agent-sessions/completed/cursor-local-mac-mini-release-hygiene-20260802-1313.md
 
 - Route: /agent-sessions/completed/cursor-local-mac-mini-release-hygiene-20260802-1313
@@ -1449,6 +1676,42 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
 ## agent-sessions/completed/cursor-local-mac-mini-release-hygiene-correction-20260802-1411.md
 
 - Route: /agent-sessions/completed/cursor-local-mac-mini-release-hygiene-correction-20260802-1411
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-mac-mini-vps-base-1-20260809-2017.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-vps-base-1-20260809-2017
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-mac-mini-vps-leftovers-20260809-2134.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-vps-leftovers-20260809-2134
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-mac-mini-vps-wif-1-20260809-2054.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-vps-wif-1-20260809-2054
 - Headings:
   - H1: Agent Session Record
   - H2: Identity
@@ -4553,24 +4816,7 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
 
 - Route: /current-status
 - Headings:
-  - H1: Current Repository Status
-  - H2: Current Status — 2026-08-02 13:30 Asia/Taipei (pre-production hygiene refresh)
-  - H2: Current Status — 2026-07-27 15:17 Asia/Taipei
-  - H2: Status Metadata
-  - H2: Current Stable State
-  - H2: Most Recently Completed Work
-  - H2: Active Work
-  - H3: Retired / superseded (do not resume)
-  - H2: Incomplete or Uncommitted Work
-  - H2: Known Problems and Blockers
-  - H2: Pending Decisions
-  - H2: Next Recommended Action
-  - H2: Recent Relevant Handoffs
-  - H2: Historical Verification Notes — 2026-07-23 15:39 Asia/Taipei
-  - H2: Merge Completion - 2026-07-23 14:00 Asia/Taipei
-  - H2: Lisa Verification Notes — 2026-07-23 15:56-15:59 Asia/Taipei
-  - H2: Cleanup Verification Notes — 2026-07-23 16:10-16:14 Asia/Taipei
-  - H2: Task Completion Notes — 2026-07-23 17:18-17:28 Asia/Taipei
+  - H1: OpenClaw Prime and Lisa current status
 
 ## date-time.md
 
@@ -8786,6 +9032,469 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Exact Next Action
   - H2: Confidence
 
+## handoffs/2026-08-05-1904-codex-desktop-lisa-runtime-recovery.md
+
+- Route: /handoffs/2026-08-05-1904-codex-desktop-lisa-runtime-recovery
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-08-05-lisa-native-oauth-routing-closeout.md
+
+- Route: /handoffs/2026-08-05-lisa-native-oauth-routing-closeout
+- Headings:
+  - H1: Lisa Native OAuth Routing Closeout — 2026-08-05
+  - H2: Outcome
+  - H2: Final evidence
+  - H2: Deferred hosted evidence
+  - H2: Cleanup and next owner
+
+## handoffs/2026-08-07-0839-codex-desktop-lisa-approval-recovery.md
+
+- Route: /handoffs/2026-08-07-0839-codex-desktop-lisa-approval-recovery
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+  - H3: 2026-08-07 09:20 Asia/Taipei — main-session Docker failure correction
+
+## handoffs/2026-08-07-1018-codex-desktop-lisa-tripwire-repair.md
+
+- Route: /handoffs/2026-08-07-1018-codex-desktop-lisa-tripwire-repair
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Tests and Verification
+  - H2: Decisions
+  - H2: Risks and Unknowns
+  - H2: Exact Next Action
+  - H2: Confidence
+
+## handoffs/2026-08-07-1033-codex-desktop-lisa-delivery-recovery.md
+
+- Route: /handoffs/2026-08-07-1033-codex-desktop-lisa-delivery-recovery
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Summary
+  - H2: Change
+  - H2: Evidence
+  - H2: Scope and Risks
+  - H2: Uncommitted Changes
+
+## handoffs/2026-08-09-1938-cursor-local-lisa-direct-1.md
+
+- Route: /handoffs/2026-08-09-1938-cursor-local-lisa-direct-1
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-08-09-2017-cursor-local-vps-base-1.md
+
+- Route: /handoffs/2026-08-09-2017-cursor-local-vps-base-1
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-08-09-2054-cursor-local-vps-wif-1.md
+
+- Route: /handoffs/2026-08-09-2054-cursor-local-vps-wif-1
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-08-09-2145-cursor-local-vps-leftovers.md
+
+- Route: /handoffs/2026-08-09-2145-cursor-local-vps-leftovers
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Exact installed revisions (VPS)
+  - H2: Service posture
+  - H2: WIF facts (no secret material)
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work / Cutover Checklist
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-08-09-2155-cursor-local-vps-channel-cutover.md
+
+- Route: /handoffs/2026-08-09-2155-cursor-local-vps-channel-cutover
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Decisions
+  - H2: Verification
+  - H2: Remaining
+
+## handoffs/2026-08-09-2255-cursor-local-paci-prod-cutover.md
+
+- Route: /handoffs/2026-08-09-2255-cursor-local-paci-prod-cutover
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Decisions
+  - H2: Verification
+  - H2: Remaining
+  - H2: Active client IDs on VPS
+
+## handoffs/2026-08-10-0735-cursor-local-lisa-controlui-serve.md
+
+- Route: /handoffs/2026-08-10-0735-cursor-local-lisa-controlui-serve
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-08-10-0750-cursor-local-lisa-controlui-auth.md
+
+- Route: /handoffs/2026-08-10-0750-cursor-local-lisa-controlui-auth
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-08-10-1114-lisa-profile-source-of-truth.md
+
+- Route: /handoffs/2026-08-10-1114-lisa-profile-source-of-truth
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Modified
+  - H2: Files Created
+  - H2: Files Deleted
+  - H2: Tests and Verification
+  - H2: Risks and Unknowns
+  - H2: Exact Next Action
+
+## handoffs/2026-08-10-1118-codex-local-mac-mini-desktop-workspace-feature-ide-deployment.md
+
+- Route: /handoffs/2026-08-10-1118-codex-local-mac-mini-desktop-workspace-feature-ide-deployment
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-08-10-1300-codex-luna-high-gitops-foundation-issue-95.md
+
+- Route: /handoffs/2026-08-10-1300-codex-luna-high-gitops-foundation-issue-95
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-08-10-1802-codex-local-linkbrain-librarian-live-path.md
+
+- Route: /handoffs/2026-08-10-1802-codex-local-linkbrain-librarian-live-path
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H3: LiNKbrain owner repair packet
+  - H3: LiNKplatform owner repair packet
+  - H3: Live acceptance sequence
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-08-10-1808-codex-desktop-linkskills-native-http.md
+
+- Route: /handoffs/2026-08-10-1808-codex-desktop-linkskills-native-http
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-08-10-1849-codex-repository-hygiene.md
+
+- Route: /handoffs/2026-08-10-1849-codex-repository-hygiene
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Worktree Inventory
+  - H2: Local Branch Inventory
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-08-10-2012-codex-linkbrain-native-governed-writes.md
+
+- Route: /handoffs/2026-08-10-2012-codex-linkbrain-native-governed-writes
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Modified
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Risks and Rollback
+  - H2: Exact Next Action
+  - H2: Amendments
+
+## handoffs/2026-08-10-2026-codex-linkbrain-native-write-review-fix.md
+
+- Route: /handoffs/2026-08-10-2026-codex-linkbrain-native-write-review-fix
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Summary
+  - H2: Changed Files
+  - H2: Verification
+  - H2: Risks and Rollback
+  - H2: Exact Next Action
+  - H2: Amendments
+
+## handoffs/2026-08-10-2106-codex-linkbrain-production-loopback-http.md
+
+- Route: /handoffs/2026-08-10-2106-codex-linkbrain-production-loopback-http
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-08-10-2259-lisa-source-bundle-alignment.md
+
+- Route: /handoffs/2026-08-10-2259-lisa-source-bundle-alignment
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Alignment Receipt
+  - H2: Main Changes
+  - H2: Validation
+  - H2: Rollback
+  - H2: Exact Next Action
+
+## handoffs/2026-08-11-repository-documentation-cleanup.md
+
+- Route: /handoffs/2026-08-11-repository-documentation-cleanup
+- Headings:
+  - H1: Repository and documentation cleanup — 2026-08-11
+
 ## handoffs/TEMPLATE.md
 
 - Route: /handoffs/TEMPLATE
@@ -11322,6 +12031,7 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H1: Linkbrain plugin
   - H2: Distribution
   - H2: Surface
+  - H2: Native OAuth bridge
 
 ## plugins/reference/linkskills.md
 
@@ -11330,6 +12040,7 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H1: Linkskills plugin
   - H2: Distribution
   - H2: Surface
+  - H2: Native OAuth bridge
 
 ## plugins/reference/linux-canvas.md
 
