@@ -13,14 +13,14 @@
 
 GitHub rulesets, classic branch protection, repository settings (`allow_auto_merge`), Apps, secrets, variables, and Bugbot dashboard settings are **external state**.
 
-| Rule         | Requirement                                                                                                  |
-| ------------ | ------------------------------------------------------------------------------------------------------------ |
-| Packaging    | Never package credentials, tokens, App private keys, or secret values into the managed core                  |
-| Default mode | **Plan / dry-run** — produce a before/after plan and rollback snapshot; mutate nothing                       |
-| Apply        | Explicit `--apply` only; never implied by install/update                                                     |
-| Wave 1       | Do **not** apply protections to IDE Development or any consumer during Wave 1                                |
-| Reads        | Live reads may list public protection metadata when an operator opts into live mode; tests use fixtures only |
-| Secrets      | Tools must not create credentials and must not read secret values                                            |
+| Rule | Requirement |
+|------|-------------|
+| Packaging | Never package credentials, tokens, App private keys, or secret values into the managed core |
+| Default mode | **Plan / dry-run** — produce a before/after plan and rollback snapshot; mutate nothing |
+| Apply | Explicit `--apply` only; never implied by install/update |
+| Wave 1 | Do **not** apply protections to IDE Development or any consumer during Wave 1 |
+| Reads | Live reads may list public protection metadata when an operator opts into live mode; tests use fixtures only |
+| Secrets | Tools must not create credentials and must not read secret values |
 
 ---
 
@@ -28,11 +28,11 @@ GitHub rulesets, classic branch protection, repository settings (`allow_auto_mer
 
 Every repository that installs the managed system must protect these three branches:
 
-| Branch        | Ruleset name (when rulesets available) | Managed purpose                                                                                 |
-| ------------- | -------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| `development` | `development-autonomous-merge`         | Strict required checks, work-branch source policy, Bugbot, Integrator auto-merge compatibility  |
-| `staging`     | `staging-autonomous-promote`           | Promotion-only PR sources (`promote/staging/*`) + staging-gate checks                           |
-| `main`        | `main-autonomous-release`              | Promotion-only PR sources (`promote/main/*`) + release-gate checks + Main Approve compatibility |
+| Branch | Ruleset name (when rulesets available) | Managed purpose |
+|--------|----------------------------------------|-----------------|
+| `development` | `development-autonomous-merge` | Strict required checks, work-branch source policy, Bugbot, Integrator auto-merge compatibility |
+| `staging` | `staging-autonomous-promote` | Promotion-only PR sources (`promote/staging/*`) + staging-gate checks |
+| `main` | `main-autonomous-release` | Promotion-only PR sources (`promote/main/*`) + release-gate checks + Main Approve compatibility |
 
 Promotion-only source policy is enforced by the managed workflow check **`Enforce allowed PR source branches`** (see `.github/workflows/branch-source-policy.yml`). Protections require that check on all three branches so GitHub cannot merge disallowed heads even if a human clicks merge.
 
@@ -96,12 +96,12 @@ Fail closed only when the desired set cannot be represented on the available Git
 
 ## Plan / apply / verify / rollback
 
-| Mode             | Mutates?                      | Exit 0 when                                     |
-| ---------------- | ----------------------------- | ----------------------------------------------- |
-| `plan` (default) | No                            | Plan emitted (even if drift exists)             |
-| `verify`         | No                            | Current external state matches desired plan     |
-| `apply`          | Yes (explicit)                | Desired state written; post-apply verify passes |
-| `rollback`       | Yes (explicit, from snapshot) | Restored to recorded before-state               |
+| Mode | Mutates? | Exit 0 when |
+|------|----------|-------------|
+| `plan` (default) | No | Plan emitted (even if drift exists) |
+| `verify` | No | Current external state matches desired plan |
+| `apply` | Yes (explicit) | Desired state written; post-apply verify passes |
+| `rollback` | Yes (explicit, from snapshot) | Restored to recorded before-state |
 
 Every plan and apply response includes:
 
@@ -114,11 +114,11 @@ Every plan and apply response includes:
 
 ## Capability: rulesets vs classic branch protection
 
-| Capability probe                                                                                       | Behavior                                                                                         |
-| ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------ |
-| Rulesets list succeeds                                                                                 | Prefer repository rulesets (`mechanism=rulesets`)                                                |
-| Rulesets unavailable (404 / plan limitation / feature disabled) but classic branch protection readable | Plan classic protection payloads (`mechanism=branch_protection`)                                 |
-| Neither available / insufficient permissions                                                           | `mechanism=unavailable`; plan reports blocked actions; apply refuses; no partial silent mutation |
+| Capability probe | Behavior |
+|------------------|----------|
+| Rulesets list succeeds | Prefer repository rulesets (`mechanism=rulesets`) |
+| Rulesets unavailable (404 / plan limitation / feature disabled) but classic branch protection readable | Plan classic protection payloads (`mechanism=branch_protection`) |
+| Neither available / insufficient permissions | `mechanism=unavailable`; plan reports blocked actions; apply refuses; no partial silent mutation |
 
 Never invent a third mechanism. Document the gap for the Principal; do not force-apply.
 
