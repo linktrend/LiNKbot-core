@@ -15,7 +15,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/work-branch-allowlist.sh"
 
 MODE="${MODE:-package}"
-RELEASE_GATE_CHECKS="${RELEASE_GATE_CHECKS:-openclaw/ci-gate,Enforce allowed PR source branches}"
+RELEASE_GATE_CHECKS="${RELEASE_GATE_CHECKS:-Verify IDE Development,Enforce allowed PR source branches}"
 TIMEZONE_LABEL="${TIMEZONE_LABEL:-Asia/Taipei}"
 EXPECTED_STAGING_SHA="${EXPECTED_STAGING_SHA:-}"
 EXPECTED_PROMOTE_HEAD="${EXPECTED_PROMOTE_HEAD:-}"
@@ -95,9 +95,9 @@ write_out() {
   python3 "${SCRIPT_DIR}/write_outcome.py" --file "${OUTCOME}" --status "$1" --detail "$2"
 }
 
-if [ -z "${TOKEN}" ] || [ "${AUTOMATION_TOKEN_SOURCE:-}" != "github_app" ]; then
-  # App unavailable: local outcome only — no repair/check mutation via workflow token.
-  write_out "automation_credentials_blocked" "main promote requires GitHub App token"
+if [ -z "${TOKEN}" ] || [ "${AUTOMATION_TOKEN_SOURCE:-}" != "github_token" ]; then
+  # automation token unavailable: local outcome only — no repair/check mutation via workflow token.
+  write_out "automation_credentials_blocked" "main promote requires normal GitHub automation token"
   exit 0
 fi
 

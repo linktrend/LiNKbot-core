@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Integrator evaluate/merge for PRs into development.
-# Requires GitHub App automation token (fail closed).
+# Requires GitHub normal automation token (fail closed).
 # Emits integrator-result.json + gitops-outcome.json with honest status.
 # Posts check run "Linktrend Integrator Result" (success only when merged).
 set -euo pipefail
@@ -8,19 +8,19 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PR_NUMBER="${PR_NUMBER:-}"
 HEAD_SHA="${HEAD_SHA:-}"
-REQUIRED_CHECKS="${REQUIRED_CHECKS:-openclaw/ci-gate,Enforce allowed PR source branches}"
+REQUIRED_CHECKS="${REQUIRED_CHECKS:-Verify IDE Development}"
 BUGBOT_SUCCESS_CHECK_NAME="${BUGBOT_SUCCESS_CHECK_NAME:-Cursor Bugbot}"
 GATE_WAIT_SECONDS="${GATE_WAIT_SECONDS:-120}"
 GATE_POLL_SECONDS="${GATE_POLL_SECONDS:-15}"
 GH_REPO="${GH_REPO:-${GITHUB_REPOSITORY:-}}"
 
 TOKEN="${AUTOMATION_TOKEN:-}"
-if [ -z "${TOKEN}" ] || [ "${AUTOMATION_TOKEN_SOURCE:-}" != "github_app" ]; then
-  # App unavailable: local outcome only — no repair/check mutation via workflow token.
+if [ -z "${TOKEN}" ] || [ "${AUTOMATION_TOKEN_SOURCE:-}" != "github_token" ]; then
+  # automation token unavailable: local outcome only — no repair/check mutation via workflow token.
   python3 "${SCRIPT_DIR}/write_outcome.py" \
     --file integrator-result.json \
     --status automation_credentials_blocked \
-    --detail "Integrator requires GitHub App token for autonomous merge"
+    --detail "Integrator requires normal GitHub automation token for autonomous merge"
   cp integrator-result.json gitops-outcome.json 2>/dev/null || true
   exit 0
 fi
