@@ -25,7 +25,11 @@
   "trailingComma": "all",
   "useTabs": false,
   "ignorePatterns": [
+    ".agents/",
+    ".cursor/",
+    ".ide-development/",
     "apps/",
+    "AGENTS.md",
     "CHANGELOG.md",
     "CLAUDE.md",
     "docker-compose.yml",
