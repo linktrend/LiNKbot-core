@@ -2,21 +2,21 @@
 
 ## Session Metadata
 
-| Field            | Value |
-| ---------------- | ----- |
-| Agent identity   | Codex Desktop Agent / Codex / Mac Mini / desktop workspace / feature |
-| Session ID       | codex-local-mac-mini-desktop-workspace-feature-20260812-1730 |
-| Orchestrator key | codex-mac-mini-desktop-app-orchestrator |
+| Field            | Value                                                                                     |
+| ---------------- | ----------------------------------------------------------------------------------------- |
+| Agent identity   | Codex Desktop Agent / Codex / Mac Mini / desktop workspace / feature                      |
+| Session ID       | codex-local-mac-mini-desktop-workspace-feature-20260812-1730                              |
+| Orchestrator key | codex-mac-mini-desktop-app-orchestrator                                                   |
 | Objective        | Prepare the exact corrected IDE Development release on an isolated OpenClaw issue branch. |
-| Scope            | Installer-managed files and coordination records only; no product/runtime code. |
-| Started          | 2026-08-12 17:30 Asia/Taipei |
-| Ended            | 2026-08-12 17:57 Asia/Taipei |
-| Starting branch  | issue/131-install-exact-corrected-ide-development-release |
-| Ending branch    | issue/131-install-exact-corrected-ide-development-release |
-| Starting commit  | 59b1643ac71c4f8c8816ce91ed1261adb85098c3 |
-| Ending commit    | Prepared working tree; checkpoint commit follows this handoff. |
-| Starting status  | Clean isolated worktree at current origin/development. |
-| Ending status    | Exact package verification passed; ready for checkpoint and protected PR. |
+| Scope            | Installer-managed files and coordination records only; no product/runtime code.           |
+| Started          | 2026-08-12 17:30 Asia/Taipei                                                              |
+| Ended            | 2026-08-12 17:57 Asia/Taipei                                                              |
+| Starting branch  | issue/131-install-exact-corrected-ide-development-release                                 |
+| Ending branch    | issue/131-install-exact-corrected-ide-development-release                                 |
+| Starting commit  | 59b1643ac71c4f8c8816ce91ed1261adb85098c3                                                  |
+| Ending commit    | Prepared working tree; checkpoint commit follows this handoff.                            |
+| Starting status  | Clean isolated worktree at current origin/development.                                    |
+| Ending status    | Exact package verification passed; ready for checkpoint and protected PR.                 |
 
 ## Summary
 

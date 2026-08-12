@@ -2,29 +2,29 @@
 
 ## Identity
 
-| Field             | Value |
-| ----------------- | ----- |
-| Agent type        | Codex Desktop Agent |
-| Platform          | Codex |
-| Machine           | mac-mini |
-| Surface           | desktop-workspace |
-| Execution         | local |
-| Role              | feature |
-| Orchestrator key  | codex-mac-mini-desktop-app-orchestrator |
-| Coordination home | /Users/linktrend/Projects/openclaw_prime |
+| Field             | Value                                                        |
+| ----------------- | ------------------------------------------------------------ |
+| Agent type        | Codex Desktop Agent                                          |
+| Platform          | Codex                                                        |
+| Machine           | mac-mini                                                     |
+| Surface           | desktop-workspace                                            |
+| Execution         | local                                                        |
+| Role              | feature                                                      |
+| Orchestrator key  | codex-mac-mini-desktop-app-orchestrator                      |
+| Coordination home | /Users/linktrend/Projects/openclaw_prime                     |
 | Session ID        | codex-local-mac-mini-desktop-workspace-feature-20260812-1730 |
-| Started           | 2026-08-12 17:30 Asia/Taipei |
-| Last updated      | 2026-08-12 17:57 Asia/Taipei |
+| Started           | 2026-08-12 17:30 Asia/Taipei                                 |
+| Last updated      | 2026-08-12 17:57 Asia/Taipei                                 |
 
 ## Work
 
-| Field           | Value |
-| --------------- | ----- |
+| Field           | Value                                                                                                                                    |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
 | Objective       | Install the exact corrected IDE Development release on an isolated OpenClaw issue branch without changing OpenClaw product/runtime code. |
-| Branch          | issue/131-install-exact-corrected-ide-development-release |
-| Starting commit | 59b1643ac71c4f8c8816ce91ed1261adb85098c3 |
-| Status          | complete |
-| Handoff         | docs/handoffs/2026-08-12-1757-codex-local-mac-mini-ide-exact-release.md |
+| Branch          | issue/131-install-exact-corrected-ide-development-release                                                                                |
+| Starting commit | 59b1643ac71c4f8c8816ce91ed1261adb85098c3                                                                                                 |
+| Status          | complete                                                                                                                                 |
+| Handoff         | docs/handoffs/2026-08-12-1757-codex-local-mac-mini-ide-exact-release.md                                                                  |
 
 ## Ownership Scope
 
