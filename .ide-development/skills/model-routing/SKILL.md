@@ -18,14 +18,14 @@ agent-followed doctrine.
 
 ## Subagents (one per route)
 
-| Route ID             | Subagent file                                | Model slug                        |
-| -------------------- | -------------------------------------------- | --------------------------------- |
-| `default`            | `.cursor/agents/route-default.md`            | `claude-sonnet-5-thinking-medium` |
-| `escalation`         | `.cursor/agents/route-escalation.md`         | `gpt-5.6-sol-medium`              |
+| Route ID | Subagent file | Model slug |
+|---|---|---|
+| `default` | `.cursor/agents/route-default.md` | `claude-sonnet-5-thinking-medium` |
+| `escalation` | `.cursor/agents/route-escalation.md` | `gpt-5.6-sol-medium` |
 | `independent_review` | `.cursor/agents/route-independent-review.md` | `claude-opus-4-8-thinking-medium` |
-| `economical`         | `.cursor/agents/route-economical.md`         | `composer-2.5`                    |
-| `bulk_documents`     | `.cursor/agents/route-bulk-documents.md`     | `gemini-2.5-flash`                |
-| `evaluation`         | `.cursor/agents/route-evaluation.md`         | `grok-4.5-medium`                 |
+| `economical` | `.cursor/agents/route-economical.md` | `composer-2.5` |
+| `bulk_documents` | `.cursor/agents/route-bulk-documents.md` | `gemini-2.5-flash` |
+| `evaluation` | `.cursor/agents/route-evaluation.md` | `grok-4.5-medium` |
 
 Spawn the matching subagent (Task tool / `/route-*`) rather than doing the work
 on an unpinned parent model when a route clearly applies.
@@ -103,14 +103,14 @@ When a route's model fails with a **model-quality** signal
    into the active Issue proof artifact or session note (no silent skip).
 2. **Retry once** with the paired different-family route:
 
-| Failed route         | Retry route                  |
-| -------------------- | ---------------------------- |
-| `default`            | `escalation`                 |
-| `economical`         | `default`                    |
-| `evaluation`         | `default`                    |
-| `bulk_documents`     | `default`                    |
-| `escalation`         | _(none — surface to repair)_ |
-| `independent_review` | _(none — surface to repair)_ |
+| Failed route | Retry route |
+|---|---|
+| `default` | `escalation` |
+| `economical` | `default` |
+| `evaluation` | `default` |
+| `bulk_documents` | `default` |
+| `escalation` | *(none — surface to repair)* |
+| `independent_review` | *(none — surface to repair)* |
 
 3. Cap at **one hop**. A second failure surfaces to the Principal / repair —
    do not keep trying models until one works.
