@@ -24,14 +24,14 @@ Agents were not consistently committing, pushing, or opening PRs into `developme
    - **Lisa** — **primary Ship/Pull clock** (Option A): cron on Mini spawns Cursor ACP shipper/puller; Telegram one-line checkpoint status; Principal **Approve** for `staging`→`main` via Telegram.
 5. **Calendar (Asia/Taipei)** — wave names are **clock times** (not A/B letters):
 
-   | Event                   | Time                                                                                |
-   | ----------------------- | ----------------------------------------------------------------------------------- |
-   | Ship 05                 | 05:00                                                                               |
-   | Pull 07                 | 07:00                                                                               |
-   | Ship 16                 | 16:00                                                                               |
-   | Pull 18                 | 18:00                                                                               |
-   | `development`→`staging` | Tue & Fri 08:00 auto                                                                |
-   | `staging`→`main`        | Mon 08:00 package; Principal Approve 08:30 via Lisa morning digest (Telegram reply) |
+   | Event | Time |
+   |---|---|
+   | Ship 05 | 05:00 |
+   | Pull 07 | 07:00 |
+   | Ship 16 | 16:00 |
+   | Pull 18 | 18:00 |
+   | `development`→`staging` | Tue & Fri 08:00 auto |
+   | `staging`→`main` | Mon 08:00 package; Principal Approve 08:30 via Lisa morning digest (Telegram reply) |
 
 6. **Worktrees:** allowed; max **12**; max **20 GB**; delete after merge or abandon.
 7. **Module 6 product Release OK / live deploy** remains Principal-gated. This ADR changes **Git branch promotion**, not product deploy authority.

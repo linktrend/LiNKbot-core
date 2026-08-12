@@ -1909,9 +1909,9 @@ def build_client(args: argparse.Namespace) -> tuple[ReadOnlyGitHubClient, str]:
 def _emit(payload: dict[str, Any], path: str | None, *, human: bool = False) -> None:
     # Defense in depth: never dump known secret env values into stdout/file.
     text = json.dumps(payload, indent=2)
-    # Also refuse obvious PEM / token markers if somehow present.
-    # Construct key-header probes at runtime so the audit itself is not
-    # misidentified as containing a private key by repository secret scans.
+    # Also refuse obvious PEM / token markers if somehow present. Construct
+    # key-header probes at runtime so strict repository scanners do not mistake
+    # this defensive audit code for embedded private-key material.
     for marker in (
         "BEGIN " + "PRIVATE KEY",
         "BEGIN RSA " + "PRIVATE KEY",
