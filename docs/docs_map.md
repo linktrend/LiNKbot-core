@@ -612,6 +612,18 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Progress
   - H2: Next Action
 
+## agent-sessions/completed/codex-local-mac-mini-desktop-workspace-feature-20260812-1730.md
+
+- Route: /agent-sessions/completed/codex-local-mac-mini-desktop-workspace-feature-20260812-1730
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
 ## agent-sessions/completed/codex-local-mac-mini-desktop-workspace-lisa-20260810-2245.md
 
 - Route: /agent-sessions/completed/codex-local-mac-mini-desktop-workspace-lisa-20260810-2245
@@ -9495,6 +9507,30 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
 - Headings:
   - H1: Repository and documentation cleanup — 2026-08-11
   - H2: Validation
+
+## handoffs/2026-08-12-1757-codex-local-mac-mini-ide-exact-release.md
+
+- Route: /handoffs/2026-08-12-1757-codex-local-mac-mini-ide-exact-release
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
 
 ## handoffs/TEMPLATE.md
 
