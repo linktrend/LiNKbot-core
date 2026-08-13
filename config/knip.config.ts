@@ -22,8 +22,8 @@ const repositoryScriptEntries = [
   "linkbots/lisa/ops/lisa-stage-ops-schema.ts!",
   "linkbots/lisa/ops/lisa-stage-ops-store.ts!",
   // Scheduled Lisa operations consume these state contracts outside the static graph.
-  "linkbots/lisa/ops/jobs/lisa-job-state-schema.ts",
-  "linkbots/lisa/ops/jobs/lisa-job-state-store.ts",
+  "src/state/lisa-job-state-schema.ts",
+  "src/state/lisa-job-state-store.ts",
   "src/state/lisa-compliance-state-schema.ts",
   "src/state/lisa-compliance-state-store.ts",
   "scripts/build-discord-activity-sdk.mjs!",
