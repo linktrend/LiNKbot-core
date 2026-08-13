@@ -16,6 +16,7 @@ import {
   symlinkSync,
   writeFileSync,
 } from "node:fs";
+import { createRequire } from "node:module";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { describe, it } from "node:test";
@@ -30,6 +31,7 @@ import {
 import {
   DEFAULT_MANIFEST_PATH,
   FORBIDDEN_STAGE_WORKSPACE,
+  hashStageWorkspacePackageManifest,
   isForbiddenLiveLisaTarget,
   isForbiddenStageWorkspaceTarget,
   loadStageWorkspacePackageManifest,
@@ -43,7 +45,7 @@ describe("stage-workspace-package", () => {
     assert.equal(manifest.manifestType, "lisa_stage_workspace_package_v1");
     assert.equal(manifest.defaultMutateStageWorkspace, false);
     assert.equal(manifest.liveMutationAllowed, false);
-    assert.equal(manifest.files.length, 13);
+    assert.equal(manifest.files.length, 50);
     assert.deepEqual(manifest.initializeIfMissing, []);
     const sources = new Set(manifest.files.map((f) => f.source));
     assert.ok(sources.has("Personality files/HEARTBEAT.md"));
@@ -57,6 +59,12 @@ describe("stage-workspace-package", () => {
     assert.ok(sources.has("Personality files/templates/pipeline-one-liner.md"));
     assert.ok(sources.has("ops/render-template.ts"));
     assert.ok(sources.has("ops/templates.ts"));
+    assert.ok(sources.has("ops/jobs/lisa-job-catalogue.ts"));
+    assert.ok(sources.has("ops/jobs/render-lisa-job-template.ts"));
+    assert.ok(sources.has("ops/jobs/reporting/reporting.ts"));
+    assert.ok(sources.has("ops/jobs/compliance/battery.ts"));
+    assert.ok(sources.has("ops/jobs/time-management/planner.ts"));
+    assert.ok(sources.has("ops/jobs/health/health.ts"));
     assert.ok(sources.has("ops/stage-workspace-seeds/tools/bin/lisa-safe"));
     assert.ok(sources.has("ops/stage-workspace-seeds/tools/bin/lisa-carlos-tasks"));
     assert.ok([...sources].every((source) => !source.includes("openclaw.json")));
@@ -65,7 +73,8 @@ describe("stage-workspace-package", () => {
     const { ok, files } = verifyStageWorkspacePackage({ manifest });
     assert.equal(ok, true);
     assert.ok(files.every((f) => f.ok));
-    assert.equal(files.length, 13);
+    assert.equal(files.length, 50);
+    assert.match(hashStageWorkspacePackageManifest(manifest), /^[a-f0-9]{64}$/);
   });
 
   it("rejects mutable/private profile seeds even in a caller-supplied manifest", () => {
@@ -85,6 +94,22 @@ describe("stage-workspace-package", () => {
       assert.throws(
         () => loadStageWorkspacePackageManifest(badPath),
         /must not include mutable runtime seeds/,
+      );
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("rejects traversal destinations before a disposable copy plan is built", () => {
+    const dir = mkdtempSync(path.join(tmpdir(), "stage-ws-path-guard-"));
+    try {
+      const bad = structuredClone(loadStageWorkspacePackageManifest());
+      bad.files[0]!.destination = "../outside-stage-package";
+      const badPath = path.join(dir, "bad-path.manifest.json");
+      writeFileSync(badPath, `${JSON.stringify(bad, null, 2)}\n`);
+      assert.throws(
+        () => loadStageWorkspacePackageManifest(badPath),
+        /relative non-traversing path/,
       );
     } finally {
       rmSync(dir, { recursive: true, force: true });
@@ -141,7 +166,7 @@ describe("stage-workspace-package", () => {
       assert.equal(receipt.liveLisaTouched, false);
       assert.equal(receipt.hardStops.defaultMutateStageWorkspace, false);
       assert.equal(receipt.installedPaths.length, 0);
-      assert.equal(receipt.files.length, 13);
+      assert.equal(receipt.files.length, 50);
       const written = JSON.parse(
         readFileSync(path.join(dir, "stage-workspace-package-receipt.json"), "utf8"),
       ) as typeof receipt;
@@ -241,7 +266,60 @@ describe("stage-workspace-package", () => {
       assert.ok(existsSync(path.join(target, "tools", "bin", "lisa-safe")));
       assert.ok(existsSync(path.join(target, "tools", "bin", "lisa-carlos-tasks")));
       assert.equal(existsSync(path.join(target, "memory")), false);
-      assert.equal(receipt.copyCommands.length, 13);
+      assert.equal(receipt.copyCommands.length, 50);
+      assert.ok(existsSync(path.join(target, "ops", "jobs", "lisa-job-catalogue.ts")));
+      assert.ok(existsSync(path.join(target, "ops", "jobs", "render-lisa-job-template.ts")));
+      assert.ok(
+        existsSync(
+          path.join(target, "ops", "jobs", "reporting", "templates", "executive-digest.md"),
+        ),
+      );
+      assert.ok(
+        existsSync(path.join(target, "ops", "jobs", "health", "templates", "monthly-report.md")),
+      );
+
+      const inputPath = path.join(dir, "renderer-input.json");
+      writeFileSync(
+        inputPath,
+        JSON.stringify({
+          kind: "pipeline-one-liner",
+          input: { wave: "Ship 05", result: "Issues" },
+        }),
+      );
+      const tsxLoader = createRequire(import.meta.url).resolve("tsx");
+      const rendered = spawnSync(
+        process.execPath,
+        [
+          "--import",
+          tsxLoader,
+          path.join(target, "ops", "jobs", "render-lisa-job-template.ts"),
+          "pipeline-one-liner",
+          inputPath,
+        ],
+        { cwd: target, encoding: "utf8" },
+      );
+      assert.equal(rendered.status, 0, rendered.stderr);
+      assert.equal(rendered.stdout, "Ship 05: Issues\n");
+
+      const stdinRendered = spawnSync(
+        process.execPath,
+        [
+          "--import",
+          tsxLoader,
+          path.join(target, "ops", "jobs", "render-lisa-job-template.ts"),
+          "-",
+        ],
+        {
+          cwd: target,
+          input: JSON.stringify({
+            kind: "pipeline-one-liner",
+            input: { wave: "Pull 07", result: "Clear" },
+          }),
+          encoding: "utf8",
+        },
+      );
+      assert.equal(stdinRendered.status, 0, stdinRendered.stderr);
+      assert.equal(stdinRendered.stdout, "Pull 07: Clear\n");
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }

@@ -137,6 +137,8 @@ export function loadStageWorkspacePackageManifest(
       .map((entry) => entry.path),
   ]);
   for (const entry of raw.files) {
+    assertSafePackagePath(entry.source, "manifest source");
+    assertSafePackagePath(entry.destination, "manifest destination");
     if (
       entry.source.startsWith("Personality files/") &&
       !approvedProfileSources.has(entry.source)
@@ -144,7 +146,51 @@ export function loadStageWorkspacePackageManifest(
       throw new Error(`stage package references excluded profile source: ${entry.source}`);
     }
   }
+  for (const entry of raw.initializeIfMissing ?? []) {
+    assertSafePackagePath(entry.source, "manifest source");
+    assertSafePackagePath(entry.destination, "manifest destination");
+  }
   return raw;
+}
+
+function assertSafePackagePath(value: string, field: string): void {
+  if (
+    typeof value !== "string" ||
+    value.length === 0 ||
+    path.isAbsolute(value) ||
+    value.split(/[\\/]+/u).some((part) => part === "..")
+  ) {
+    throw new Error(`${field} must be a relative non-traversing path`);
+  }
+}
+
+/** Stable manifest bytes used for disposable-package evidence. */
+export function canonicalStageWorkspacePackageManifestBytes(
+  manifest: StageWorkspacePackageManifest = loadStageWorkspacePackageManifest(),
+): string {
+  return JSON.stringify({
+    manifestType: manifest.manifestType,
+    packageId: manifest.packageId,
+    description: manifest.description,
+    sourceRoot: manifest.sourceRoot,
+    liveMutationAllowed: manifest.liveMutationAllowed,
+    defaultMutateStageWorkspace: manifest.defaultMutateStageWorkspace,
+    files: allManifestEntries(manifest).map((entry) => ({
+      source: entry.source,
+      destination: entry.destination,
+      sha256: entry.sha256,
+      bytes: entry.bytes,
+      mode: entry.mode,
+    })),
+  });
+}
+
+export function hashStageWorkspacePackageManifest(
+  manifest: StageWorkspacePackageManifest = loadStageWorkspacePackageManifest(),
+): string {
+  return createHash("sha256")
+    .update(canonicalStageWorkspacePackageManifestBytes(manifest))
+    .digest("hex");
 }
 
 export function sha256File(filePath: string): { sha256: string; bytes: number } {

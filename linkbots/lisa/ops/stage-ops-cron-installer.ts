@@ -9,6 +9,12 @@
 
 import { formatValidationErrors, validateCronAddParams } from "@openclaw/gateway-protocol";
 import {
+  LISA_JOB_CATALOGUE,
+  assertValidLisaJobCatalogue,
+  checkLisaProviderBindings,
+  type LisaProviderBinding,
+} from "./jobs/lisa-job-catalogue.ts";
+import {
   STAGE_OPS_AGENT_ID,
   STAGE_OPS_DELIVERY_MODE,
   STAGE_OPS_SESSION_TARGET,
@@ -81,6 +87,57 @@ export type StageCronInstallPlan = {
   stageConstraints: StageOpsConstraints;
   validationErrors: string[];
 };
+
+/**
+ * Source-only plan for the final ten-family catalogue. These entries are not
+ * gateway cron.add payloads: embedded and hook entries must not become
+ * duplicate timers, and all provider activation remains a separate HOLD.
+ */
+export type LisaCatalogueCronPlan = Readonly<{
+  sourceStatus: "SOURCE_ONLY";
+  enabled: false;
+  deliveryMode: "none";
+  entries: readonly {
+    id: string;
+    family: string;
+    scheduleKind: string;
+    localTimes: readonly string[];
+    preparationDeadlineLocalTime: string;
+    visibleDeliveryDeadlineLocalTime: string | null;
+    completionDeadlineLocalTime: string;
+    idempotencyKey: string;
+  }[];
+  providerDecision: ReturnType<typeof checkLisaProviderBindings>;
+  validationErrors: readonly string[];
+}>;
+
+export function buildLisaCatalogueCronPlan(
+  bindings?: Readonly<Record<string, LisaProviderBinding>>,
+): LisaCatalogueCronPlan {
+  const validationErrors: string[] = [];
+  try {
+    assertValidLisaJobCatalogue();
+  } catch (error) {
+    validationErrors.push(error instanceof Error ? error.message : String(error));
+  }
+  return {
+    sourceStatus: "SOURCE_ONLY",
+    enabled: false,
+    deliveryMode: "none",
+    entries: LISA_JOB_CATALOGUE.entries.map((entry) => ({
+      id: entry.id,
+      family: entry.family,
+      scheduleKind: entry.schedule.kind,
+      localTimes: entry.schedule.localTimes,
+      preparationDeadlineLocalTime: entry.deadlines.preparationDeadlineLocalTime,
+      visibleDeliveryDeadlineLocalTime: entry.deadlines.visibleDeliveryDeadlineLocalTime,
+      completionDeadlineLocalTime: entry.deadlines.completionDeadlineLocalTime,
+      idempotencyKey: entry.idempotencyKey,
+    })),
+    providerDecision: checkLisaProviderBindings(bindings),
+    validationErrors,
+  };
+}
 
 /** Compact receipt fragment for stageConstraints (plan/receipt, not cron.add). */
 export function buildStageConstraintsReceipt(
