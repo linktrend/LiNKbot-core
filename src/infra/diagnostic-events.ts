@@ -529,6 +529,7 @@ export type DiagnosticExecProcessCompletedEvent = DiagnosticBaseEvent & {
   type: "exec.process.completed";
   sessionKey?: string;
   target: "host" | "sandbox";
+  executionPath: "host-adapter" | "host-direct" | "host-elevated" | "sandbox";
   mode: "child" | "pty";
   outcome: "completed" | "failed";
   durationMs: number;

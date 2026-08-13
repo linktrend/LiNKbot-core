@@ -83,6 +83,7 @@ import { createOpenClawTools, filterToolsByClientCaps } from "./openclaw-tools.j
 import type { PreparedModelRuntimeSnapshot } from "./prepared-model-runtime.js";
 import type { SandboxContext } from "./sandbox.js";
 import { SANDBOX_AGENT_WORKSPACE_MOUNT } from "./sandbox/constants.js";
+import { resolveSandboxRuntimeStatus } from "./sandbox/runtime-status.js";
 import { resolveReadOnlyWorkspaceSkillMounts } from "./sandbox/workspace-mounts.js";
 import { createCodingTools, createReadTool } from "./sessions/index.js";
 import { PROCESS_TOOL_DISPLAY_SUMMARY } from "./tool-description-presets.js";
@@ -732,10 +733,20 @@ function createOpenClawCodingToolsInternal(options?: OpenClawCodingToolsOptions)
   options?.recordToolPrepStage?.("base-coding-tools");
   const { cleanupMs: cleanupMsOverride, ...execDefaults } = options?.exec ?? {};
   const effectiveExecPolicy = applyExecPolicyLayer(execConfig, options?.exec);
+  const sandboxRequired =
+    Boolean(options?.sandbox) ||
+    (options?.config && options?.sessionKey
+      ? resolveSandboxRuntimeStatus({
+          cfg: options.config,
+          sessionKey: options.sessionKey,
+          agentId,
+        }).sandboxed
+      : false);
   const execTool = includeShellTools
     ? createLazyExecTool({
         ...execDefaults,
         host: options?.exec?.host ?? execConfig.host,
+        sandboxRequired,
         mode: effectiveExecPolicy.mode,
         security: effectiveExecPolicy.security,
         ask: effectiveExecPolicy.ask,

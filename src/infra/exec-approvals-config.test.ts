@@ -5,6 +5,7 @@ import { describe, expect, it } from "vitest";
 import { makeTempDir } from "./exec-approvals-test-helpers.js";
 import {
   isSafeBinUsage,
+  loadExecApprovals,
   matchAllowlist,
   normalizeExecApprovals,
   normalizeSafeBins,
@@ -180,6 +181,147 @@ describe("exec approvals denylist config", () => {
       agents: { main: { allowlist: [{ pattern: "/bin/hostname" }] } },
     });
     expect(normalized.agents?.main?.denylist).toBeUndefined();
+  });
+});
+
+describe("exec approvals host-adapter config", () => {
+  const sharedAdapter = {
+    id: "shared",
+    target: "gateway" as const,
+    executable: "/usr/local/libexec/shared-wrapper",
+    argvPrefix: ["read"],
+    environment: { PATH: "/usr/local/bin:/usr/bin:/bin" },
+  };
+  const mainAdapter = {
+    id: "main",
+    target: "gateway" as const,
+    executable: "/usr/local/libexec/main-wrapper",
+    argvPrefix: ["dispatch"],
+    environment: { PATH: "/usr/local/bin:/usr/bin:/bin" },
+  };
+
+  it("merges structural host-adapter bindings and explicit secure routing", () => {
+    const resolved = resolveExecApprovalsFromFile({
+      file: {
+        version: 1,
+        agents: {
+          "*": {
+            secureRouting: true,
+            hostAdapters: [sharedAdapter],
+          },
+          main: {
+            hostAdapters: [mainAdapter],
+          },
+        },
+      },
+      agentId: "main",
+    });
+    expect(resolved.hostAdapters).toEqual([sharedAdapter, mainAdapter]);
+    expect(resolved.secureRouting).toBe(true);
+  });
+
+  it("lets unrelated profiles opt into the same secure mechanism with their own STOP policy", () => {
+    const file = {
+      version: 1 as const,
+      agents: {
+        "second-agent": { secureRouting: true, denylist: [{ pattern: "second-stop" }] },
+        "lisa-derived-clone": { secureRouting: true, denylist: [{ pattern: "clone-stop" }] },
+        legacy: { denylist: [{ pattern: "legacy-stop" }] },
+      },
+    };
+    const second = resolveExecApprovalsFromFile({ file, agentId: "second-agent" });
+    const clone = resolveExecApprovalsFromFile({ file, agentId: "lisa-derived-clone" });
+    const legacy = resolveExecApprovalsFromFile({ file, agentId: "legacy" });
+    expect(second.secureRouting).toBe(true);
+    expect(second.denylist).toEqual([{ pattern: "second-stop" }]);
+    expect(clone.secureRouting).toBe(true);
+    expect(clone.denylist).toEqual([{ pattern: "clone-stop" }]);
+    expect(legacy.secureRouting).toBe(false);
+  });
+
+  it("drops malformed host-adapter bindings during normalization", () => {
+    const normalized = normalizeExecApprovals({
+      version: 1,
+      agents: {
+        main: {
+          hostAdapters: [
+            sharedAdapter,
+            {
+              id: "bad-target",
+              target: "node",
+              executable: "/bin/false",
+              argvPrefix: [],
+              environment: {},
+            },
+            { id: "", target: "node", executable: "/bin/false", argvPrefix: [], environment: {} },
+            {
+              id: "bad-path",
+              target: "gateway",
+              executable: "relative",
+              argvPrefix: [],
+              environment: {},
+            },
+            {
+              id: "empty-contract",
+              target: "gateway",
+              executable: "/bin/false",
+              argvPrefix: [],
+              environment: {},
+            },
+            {
+              id: "unsafe-env",
+              target: "gateway",
+              executable: "/bin/false",
+              argvPrefix: ["read"],
+              environment: { PATH: "/usr/bin:/bin", LD_PRELOAD: "/tmp/inject" },
+            },
+            {
+              id: "unsafe-startup",
+              target: "gateway",
+              executable: "/bin/false",
+              argvPrefix: ["read"],
+              environment: { PATH: "/usr/bin:/bin", BASH_ENV: "/tmp/inject" },
+            },
+          ],
+        },
+      },
+    });
+    expect(normalized.agents?.main?.hostAdapters).toEqual([sharedAdapter]);
+  });
+
+  it("drops malformed secure-routing fields during direct normalization", () => {
+    const normalized = normalizeExecApprovals({
+      version: 1,
+      agents: {
+        main: {
+          secureRouting: "true" as unknown as boolean,
+          hostAdapters: [{ id: "legacy", target: "gateway", command: "unsafe" }] as never,
+        },
+      },
+    });
+    expect(normalized.agents?.main?.secureRouting).toBeUndefined();
+    expect(normalized.agents?.main?.hostAdapters).toBeUndefined();
+  });
+
+  it("fails closed when persisted secure-routing state is malformed", () => {
+    const dir = makeTempDir();
+    const previousStateDir = process.env.OPENCLAW_STATE_DIR;
+    try {
+      process.env.OPENCLAW_STATE_DIR = dir;
+      fs.writeFileSync(
+        path.join(dir, "exec-approvals.json"),
+        JSON.stringify({ version: 1, agents: { main: { secureRouting: "true" } } }),
+      );
+      const loaded = loadExecApprovals();
+      expect(loaded.defaults?.security).toBe("deny");
+      expect(loaded.defaults?.ask).toBe("off");
+    } finally {
+      if (previousStateDir === undefined) {
+        delete process.env.OPENCLAW_STATE_DIR;
+      } else {
+        process.env.OPENCLAW_STATE_DIR = previousStateDir;
+      }
+    }
   });
 });
 

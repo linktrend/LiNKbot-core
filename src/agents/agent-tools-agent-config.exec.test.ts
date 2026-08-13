@@ -236,6 +236,20 @@ describe("Agent-specific exec tool defaults", () => {
     ).rejects.toThrow(/requires a sandbox runtime/);
   });
 
+  it("fails closed when configured sandbox initialization provides no runtime context", async () => {
+    const tools = createOpenClawCodingTools({
+      config: {
+        agents: { defaults: { sandbox: { mode: "all" } } },
+      },
+      sessionKey: "agent:main:main",
+      ...createTempAgentDirs("test-configured-sandbox-init-failure"),
+    });
+    const execTool = requireExecTool(tools);
+    await expect(
+      execTool.execute("call-configured-sandbox-init-failure", { command: "printf harmless" }),
+    ).rejects.toThrow(/sandbox unavailable|requires a sandbox runtime/);
+  });
+
   it("should apply agent-specific exec host defaults over global defaults", async () => {
     const cfg = createExecHostDefaultsConfig([
       { id: "main", execHost: "gateway" },

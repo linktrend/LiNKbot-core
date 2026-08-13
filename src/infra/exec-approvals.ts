@@ -23,7 +23,11 @@ import {
 } from "./exec-approvals-allowlist.js";
 import type { ExecCommandSegment } from "./exec-approvals-analysis.js";
 import { sanitizeExecDenylistEntries } from "./exec-approvals-denylist.js";
-import type { ExecAllowlistEntry, ExecDenylistEntry } from "./exec-approvals.types.js";
+import type {
+  ExecAllowlistEntry,
+  ExecDenylistEntry,
+  ExecHostAdapterBinding,
+} from "./exec-approvals.types.js";
 import type { ExecAuthorizationPlan } from "./exec-authorization-plan.js";
 import {
   extractBindableShellWrapperInlineCommand,
@@ -32,6 +36,10 @@ import {
 import { withFileLock } from "./file-lock.js";
 import { assertNoSymlinkParentsSync } from "./fs-safe-advanced.js";
 import { expandHomePrefix, resolveHomeRelativePath, resolveRequiredHomeDir } from "./home-dir.js";
+import {
+  isDangerousHostEnvOverrideVarName,
+  isDangerousHostEnvVarName,
+} from "./host-env-security.js";
 import { requestJsonlSocket } from "./jsonl-socket.js";
 import { isPlainObject } from "./plain-object.js";
 import {
@@ -44,7 +52,7 @@ export * from "./exec-approvals-analysis.js";
 export * from "./exec-approvals-allowlist.js";
 export * from "./exec-approvals-denylist.js";
 export type { ExecApprovalPolicySnapshot } from "./exec-approval-policy-snapshot.js";
-export type { ExecAllowlistEntry } from "./exec-approvals.types.js";
+export type { ExecAllowlistEntry, ExecHostAdapterBinding } from "./exec-approvals.types.js";
 
 export type ExecHost = "sandbox" | "gateway" | "node";
 export type ExecTarget = "auto" | ExecHost;
@@ -271,8 +279,10 @@ export type ExecApprovalsDefaults = {
 };
 
 export type ExecApprovalsAgent = ExecApprovalsDefaults & {
+  secureRouting?: boolean;
   allowlist?: ExecAllowlistEntry[];
   denylist?: ExecDenylistEntry[];
+  hostAdapters?: ExecHostAdapterBinding[];
 };
 
 export type ExecApprovalsFile = {
@@ -306,6 +316,8 @@ export type ExecApprovalsResolved = {
   };
   allowlist: ExecAllowlistEntry[];
   denylist: ExecDenylistEntry[];
+  hostAdapters: ExecHostAdapterBinding[];
+  secureRouting: boolean;
   file: ExecApprovalsFile;
 };
 
@@ -463,6 +475,41 @@ function isValidPersistedExecAllowlistEntry(value: unknown): boolean {
   );
 }
 
+function isValidPersistedExecHostAdapterBinding(value: unknown): boolean {
+  return (
+    isPlainObject(value) &&
+    typeof value.id === "string" &&
+    value.id.trim().length > 0 &&
+    value.target === "gateway" &&
+    typeof value.executable === "string" &&
+    value.executable.startsWith("/") &&
+    Array.isArray(value.argvPrefix) &&
+    value.argvPrefix.length > 0 &&
+    value.argvPrefix.every((entry) => typeof entry === "string") &&
+    isValidExecHostAdapterEnvironment(value.environment)
+  );
+}
+
+function isValidExecHostAdapterEnvironment(value: unknown): value is Record<string, string> {
+  return (
+    isPlainObject(value) &&
+    typeof value.PATH === "string" &&
+    value.PATH.length > 0 &&
+    Object.entries(value).every(([key, entry]) => {
+      const upper = key.toUpperCase();
+      return (
+        /^[A-Za-z_][A-Za-z0-9_]*$/u.test(key) &&
+        typeof entry === "string" &&
+        !entry.includes("\0") &&
+        !entry.includes("\r") &&
+        !entry.includes("\n") &&
+        (upper === "PATH" ||
+          (!isDangerousHostEnvVarName(upper) && !isDangerousHostEnvOverrideVarName(upper)))
+      );
+    })
+  );
+}
+
 function isValidPersistedExecApprovals(value: unknown): value is ExecApprovalsFile {
   if (!isPlainObject(value) || value.version !== 1) {
     return false;
@@ -486,9 +533,13 @@ function isValidPersistedExecApprovals(value: unknown): value is ExecApprovalsFi
     for (const agent of Object.values(value.agents)) {
       if (
         !hasValidExecApprovalPolicyFields(agent) ||
+        (agent.secureRouting !== undefined && typeof agent.secureRouting !== "boolean") ||
         (agent.allowlist !== undefined &&
           (!Array.isArray(agent.allowlist) ||
-            !agent.allowlist.every(isValidPersistedExecAllowlistEntry)))
+            !agent.allowlist.every(isValidPersistedExecAllowlistEntry))) ||
+        (agent.hostAdapters !== undefined &&
+          (!Array.isArray(agent.hostAdapters) ||
+            !agent.hostAdapters.every(isValidPersistedExecHostAdapterBinding)))
       ) {
         return false;
       }
@@ -545,7 +596,9 @@ function mergeLegacyAgent(
     ask: current.ask ?? legacy.ask,
     askFallback: current.askFallback ?? legacy.askFallback,
     autoAllowSkills: current.autoAllowSkills ?? legacy.autoAllowSkills,
+    secureRouting: current.secureRouting ?? legacy.secureRouting,
     allowlist: allowlist.length > 0 ? allowlist : undefined,
+    hostAdapters: current.hostAdapters ?? legacy.hostAdapters,
   };
 }
 
@@ -975,6 +1028,26 @@ function sanitizeExecApprovalPolicy(
   };
 }
 
+function sanitizeExecHostAdapterBindings(value: unknown): ExecHostAdapterBinding[] | undefined {
+  if (!Array.isArray(value)) {
+    return value === undefined ? undefined : [];
+  }
+  const bindings: ExecHostAdapterBinding[] = [];
+  for (const candidate of value) {
+    if (!isValidPersistedExecHostAdapterBinding(candidate)) {
+      continue;
+    }
+    bindings.push({
+      id: candidate.id.trim(),
+      target: candidate.target,
+      executable: candidate.executable,
+      argvPrefix: [...candidate.argvPrefix],
+      environment: { ...candidate.environment },
+    });
+  }
+  return bindings.length > 0 ? bindings : undefined;
+}
+
 export function normalizeExecApprovals(file: ExecApprovalsFile): ExecApprovalsFile {
   const socketPath = file.socket?.path?.trim();
   const token = file.socket?.token?.trim();
@@ -991,10 +1064,14 @@ export function normalizeExecApprovals(file: ExecApprovalsFile): ExecApprovalsFi
     const allowlist = stripAllowlistCommandText(withIds);
     const denylist =
       agent.denylist === undefined ? undefined : sanitizeExecDenylistEntries(agent.denylist);
+    const hostAdapters = sanitizeExecHostAdapterBindings(agent.hostAdapters);
+    const secureRouting = agent.secureRouting === true ? true : undefined;
     const sanitizedPolicy = sanitizeExecApprovalPolicy(agent);
     const agentChanged =
       allowlist !== agent.allowlist ||
       denylist !== agent.denylist ||
+      hostAdapters !== agent.hostAdapters ||
+      secureRouting !== agent.secureRouting ||
       sanitizedPolicy.security !== agent.security ||
       sanitizedPolicy.ask !== agent.ask ||
       sanitizedPolicy.askFallback !== agent.askFallback;
@@ -1003,6 +1080,8 @@ export function normalizeExecApprovals(file: ExecApprovalsFile): ExecApprovalsFi
         ...agent,
         allowlist,
         denylist,
+        hostAdapters,
+        secureRouting,
         security: sanitizedPolicy.security,
         ask: sanitizedPolicy.ask,
         askFallback: sanitizedPolicy.askFallback,
@@ -1752,6 +1831,11 @@ export function resolveExecApprovalsFromFile(params: {
     ...(Array.isArray(wildcard.denylist) ? wildcard.denylist : []),
     ...(Array.isArray(agent.denylist) ? agent.denylist : []),
   ]);
+  const hostAdapters = [
+    ...(Array.isArray(wildcard.hostAdapters) ? wildcard.hostAdapters : []),
+    ...(Array.isArray(agent.hostAdapters) ? agent.hostAdapters : []),
+  ];
+  const secureRouting = agent.secureRouting === true || wildcard.secureRouting === true;
   return {
     path: params.path ?? resolveExecApprovalsPath(),
     socketPath: expandHomePrefix(
@@ -1767,6 +1851,8 @@ export function resolveExecApprovalsFromFile(params: {
     },
     allowlist,
     denylist,
+    hostAdapters,
+    secureRouting,
     file,
   };
 }
