@@ -1,0 +1,3 @@
+export type TimeTaskStatus = "Provisional" | "Ready" | "Scheduled" | "In progress" | "Waiting" | "Blocked" | "Awaiting verification" | "Verified complete" | "Completed — Carlos reported";
+export type TimeTask = { id: string; explicit: boolean; status: TimeTaskStatus; priority: number; hardDeadline?: boolean; capacity: "normal" | "reduced" | "unavailable" | "recovered" };
+export function assertTransition(from: TimeTaskStatus, to: TimeTaskStatus): void { if (from === "Verified complete" || from === "Completed — Carlos reported") throw new Error("terminal task cannot transition"); if (from === "Provisional" && to === "Verified complete") throw new Error("unverified inferred work cannot complete"); }
