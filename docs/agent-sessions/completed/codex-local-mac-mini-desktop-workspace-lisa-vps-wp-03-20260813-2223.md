@@ -2,29 +2,29 @@
 
 ## Identity
 
-| Field             | Value |
-| ----------------- | ----- |
-| Agent type        | Codex Desktop Agent |
-| Platform          | Codex |
-| Machine           | mac-mini |
-| Surface           | desktop-workspace |
-| Execution         | local |
-| Role              | lisa |
-| Orchestrator key  | codex-local-mac-mini-desktop-workspace-orchestrator |
-| Coordination home | `/Users/linktrend/Projects/openclaw_prime` |
+| Field             | Value                                                               |
+| ----------------- | ------------------------------------------------------------------- |
+| Agent type        | Codex Desktop Agent                                                 |
+| Platform          | Codex                                                               |
+| Machine           | mac-mini                                                            |
+| Surface           | desktop-workspace                                                   |
+| Execution         | local                                                               |
+| Role              | lisa                                                                |
+| Orchestrator key  | codex-local-mac-mini-desktop-workspace-orchestrator                 |
+| Coordination home | `/Users/linktrend/Projects/openclaw_prime`                          |
 | Session ID        | codex-local-mac-mini-desktop-workspace-lisa-vps-wp-03-20260813-2223 |
-| Started           | 2026-08-13 22:23 Asia/Taipei |
-| Last updated      | 2026-08-13 22:35 Asia/Taipei |
+| Started           | 2026-08-13 22:23 Asia/Taipei                                        |
+| Last updated      | 2026-08-13 22:35 Asia/Taipei                                        |
 
 ## Work
 
-| Field             | Value |
-| ----------------- | ----- |
-| Objective         | Implement source-only WP-03 Linux Google Workspace portability for VPS Lisa. |
-| Branch            | `feature/lisa-vps-wp-03` |
-| Starting commit   | `c67c7cc65c62e336d0f2922697685ef3192373b1` |
-| Status            | `complete` |
-| Handoff           | `docs/handoffs/2026-08-13-2235-codex-local-mac-mini-desktop-workspace-lisa-vps-wp-03.md` |
+| Field           | Value                                                                                    |
+| --------------- | ---------------------------------------------------------------------------------------- |
+| Objective       | Implement source-only WP-03 Linux Google Workspace portability for VPS Lisa.             |
+| Branch          | `feature/lisa-vps-wp-03`                                                                 |
+| Starting commit | `c67c7cc65c62e336d0f2922697685ef3192373b1`                                               |
+| Status          | `complete`                                                                               |
+| Handoff         | `docs/handoffs/2026-08-13-2235-codex-local-mac-mini-desktop-workspace-lisa-vps-wp-03.md` |
 
 ## Ownership Scope
 

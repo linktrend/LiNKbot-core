@@ -252,8 +252,14 @@ describe("exec approvals host-adapter config", () => {
               executable: "/bin/false",
               argvPrefix: [],
               environment: {},
+            } as unknown,
+            {
+              id: "",
+              target: "gateway",
+              executable: "/bin/false",
+              argvPrefix: [],
+              environment: {},
             },
-            { id: "", target: "node", executable: "/bin/false", argvPrefix: [], environment: {} },
             {
               id: "bad-path",
               target: "gateway",

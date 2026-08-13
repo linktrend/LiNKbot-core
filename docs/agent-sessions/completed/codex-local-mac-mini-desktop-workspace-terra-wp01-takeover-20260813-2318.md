@@ -2,19 +2,19 @@
 
 ## Identity
 
-| Field | Value |
-| --- | --- |
-| Agent type | Codex Desktop Agent |
-| Platform | Codex |
-| Machine | mac-mini |
-| Surface | desktop-workspace |
-| Execution | local |
-| Role | orchestrator |
-| Orchestrator key | `codex-local-mac-mini-desktop-workspace-orchestrator` |
-| Session ID | `codex-local-mac-mini-desktop-workspace-terra-wp01-takeover-20260813-2318` |
-| Started | 2026-08-13 23:18 Asia/Taipei |
-| Status | completed |
-| Completed | 2026-08-14 00:55 Asia/Taipei |
+| Field            | Value                                                                      |
+| ---------------- | -------------------------------------------------------------------------- |
+| Agent type       | Codex Desktop Agent                                                        |
+| Platform         | Codex                                                                      |
+| Machine          | mac-mini                                                                   |
+| Surface          | desktop-workspace                                                          |
+| Execution        | local                                                                      |
+| Role             | orchestrator                                                               |
+| Orchestrator key | `codex-local-mac-mini-desktop-workspace-orchestrator`                      |
+| Session ID       | `codex-local-mac-mini-desktop-workspace-terra-wp01-takeover-20260813-2318` |
+| Started          | 2026-08-13 23:18 Asia/Taipei                                               |
+| Status           | completed                                                                  |
+| Completed        | 2026-08-14 00:55 Asia/Taipei                                               |
 
 ## Work
 

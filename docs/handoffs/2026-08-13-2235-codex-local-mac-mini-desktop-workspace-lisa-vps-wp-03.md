@@ -2,21 +2,21 @@
 
 ## Session Metadata
 
-| Field             | Value |
-| ----------------- | ----- |
-| Agent identity    | Codex Desktop Agent, Codex, mac-mini, desktop-workspace, local |
-| Session ID        | `codex-local-mac-mini-desktop-workspace-lisa-vps-wp-03-20260813-2223` |
-| Orchestrator key  | `codex-local-mac-mini-desktop-workspace-orchestrator` |
-| Objective         | Implement source-only WP-03 Linux Google Workspace portability for VPS Lisa. |
-| Scope             | Lisa-owned Linux installer/pin, constrained Workspace and Carlos Tasks wrappers, offline tests, sanitized receipts, and rotation/rollback documentation. |
-| Started           | 2026-08-13 22:23 Asia/Taipei |
-| Ended             | 2026-08-13 22:35 Asia/Taipei |
-| Starting branch   | `feature/lisa-vps-wp-03` |
-| Ending branch     | `feature/lisa-vps-wp-03` |
-| Starting commit   | `c67c7cc65c62e336d0f2922697685ef3192373b1` |
-| Ending commit     | `e18acc734a6bbb1d35fd73af28cc1e41c6d0e2dc` |
-| Starting status   | Clean isolated worktree |
-| Ending status     | Source commit complete; coordination closeout pending |
+| Field            | Value                                                                                                                                                    |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Agent identity   | Codex Desktop Agent, Codex, mac-mini, desktop-workspace, local                                                                                           |
+| Session ID       | `codex-local-mac-mini-desktop-workspace-lisa-vps-wp-03-20260813-2223`                                                                                    |
+| Orchestrator key | `codex-local-mac-mini-desktop-workspace-orchestrator`                                                                                                    |
+| Objective        | Implement source-only WP-03 Linux Google Workspace portability for VPS Lisa.                                                                             |
+| Scope            | Lisa-owned Linux installer/pin, constrained Workspace and Carlos Tasks wrappers, offline tests, sanitized receipts, and rotation/rollback documentation. |
+| Started          | 2026-08-13 22:23 Asia/Taipei                                                                                                                             |
+| Ended            | 2026-08-13 22:35 Asia/Taipei                                                                                                                             |
+| Starting branch  | `feature/lisa-vps-wp-03`                                                                                                                                 |
+| Ending branch    | `feature/lisa-vps-wp-03`                                                                                                                                 |
+| Starting commit  | `c67c7cc65c62e336d0f2922697685ef3192373b1`                                                                                                               |
+| Ending commit    | `e18acc734a6bbb1d35fd73af28cc1e41c6d0e2dc`                                                                                                               |
+| Starting status  | Clean isolated worktree                                                                                                                                  |
+| Ending status    | Source commit complete; coordination closeout pending                                                                                                    |
 
 ## Summary
 

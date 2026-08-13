@@ -2,29 +2,29 @@
 
 ## Identity
 
-| Field             | Value |
-| ----------------- | ----- |
-| Agent type        | Codex CLI gpt-5.6 Luna High |
-| Platform          | Codex |
-| Machine           | mac-mini |
-| Surface           | desktop-workspace |
-| Execution         | local |
-| Role              | feature |
-| Orchestrator key  | codex-local-mac-mini-desktop-workspace-orchestrator |
-| Coordination home | isolated WP-01 worktree |
+| Field             | Value                                                        |
+| ----------------- | ------------------------------------------------------------ |
+| Agent type        | Codex CLI gpt-5.6 Luna High                                  |
+| Platform          | Codex                                                        |
+| Machine           | mac-mini                                                     |
+| Surface           | desktop-workspace                                            |
+| Execution         | local                                                        |
+| Role              | feature                                                      |
+| Orchestrator key  | codex-local-mac-mini-desktop-workspace-orchestrator          |
+| Coordination home | isolated WP-01 worktree                                      |
 | Session ID        | codex-local-mac-mini-desktop-workspace-feature-20260813-2247 |
-| Started           | 2026-08-13 22:47 Asia/Taipei |
-| Last updated      | 2026-08-13 23:06 Asia/Taipei |
+| Started           | 2026-08-13 22:47 Asia/Taipei                                 |
+| Last updated      | 2026-08-13 23:06 Asia/Taipei                                 |
 
 ## Work
 
-| Field           | Value |
-| --------------- | ----- |
+| Field           | Value                                                                                |
+| --------------- | ------------------------------------------------------------------------------------ |
 | Objective       | Correct rejected WP-01 generic safe-action routing and sandbox fail-closed behavior. |
-| Branch          | feature/lisa-vps-wp-01 |
-| Starting commit | 46d84bb66707228a410ca67d7a9c6aa089e01b3a |
-| Status          | `complete` |
-| Handoff         | docs/handoffs/2026-08-13-2305-codex-cli-wp-01-correction-closeout.md |
+| Branch          | feature/lisa-vps-wp-01                                                               |
+| Starting commit | 46d84bb66707228a410ca67d7a9c6aa089e01b3a                                             |
+| Status          | `complete`                                                                           |
+| Handoff         | docs/handoffs/2026-08-13-2305-codex-cli-wp-01-correction-closeout.md                 |
 
 ## Ownership Scope
 

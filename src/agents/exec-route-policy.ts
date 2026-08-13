@@ -20,7 +20,7 @@ import { buildAuthorizedShellCommandFromPlan } from "../infra/exec-authorization
  */
 import { detectUnsafeExecControlShellCommand } from "../infra/exec-control-command-guard.js";
 
-export type ExecRouteScreen =
+type ExecRouteScreen =
   | { allowed: true; plan: Extract<ExecAuthorizationPlan, { ok: true }> }
   | {
       allowed: false;
@@ -67,7 +67,7 @@ export async function screenExecCommand(params: {
     : { allowed: true, plan };
 }
 
-export type ExecRouteDecision =
+type ExecRouteDecision =
   | { kind: "denied"; reason: "control-command" | "stop-list" | "opaque" }
   | {
       kind: "host-adapter";

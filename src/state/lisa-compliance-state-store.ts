@@ -78,6 +78,7 @@ function assertTimestamp(value: number, label: string): void {
 export function ensureLisaComplianceStateSchema(options: LisaComplianceStoreOptions): void {
   runOpenClawAgentWriteTransaction(
     ({ db }) => {
+      // sqlite-allow-raw: static packet DDL only; all Lisa state DML uses Kysely.
       db.exec(LISA_COMPLIANCE_SCHEMA_SQL);
     },
     options,
