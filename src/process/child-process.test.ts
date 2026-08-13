@@ -46,6 +46,34 @@ describe.skipIf(process.platform === "win32")("releaseChildProcessOutputAfterExi
     expect(output).toContain("TAIL");
   });
 
+  it("observes buffered pipe data between idle timeout and release", async () => {
+    vi.useFakeTimers();
+    const stdout = new PassThrough();
+    const stderr = new PassThrough();
+    stdout.pause();
+    const fakeChild = Object.assign(new EventEmitter(), {
+      stdout,
+      stderr,
+    }) as unknown as ChildProcess;
+    const cleanup = releaseChildProcessOutputAfterExit(fakeChild);
+    let output = "";
+    stdout.on("data", (chunk: Buffer) => {
+      output += chunk.toString();
+    });
+
+    fakeChild.emit("exit", 0);
+    stdout.write("TAIL\n");
+    setTimeout(() => stdout.resume(), 100);
+
+    await vi.advanceTimersByTimeAsync(100);
+    expect(stdout.destroyed).toBe(false);
+    expect(output).toContain("TAIL");
+
+    cleanup();
+    stdout.destroy();
+    stderr.destroy();
+  });
+
   it("releases a quiet inherited pipe after the idle grace", async () => {
     child = execa("/bin/sh", ["-c", 'printf "DONE\\n"; ( sleep 30 ) &'], {
       buffer: false,
