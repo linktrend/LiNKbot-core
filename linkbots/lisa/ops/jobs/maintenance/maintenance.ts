@@ -1,0 +1,3 @@
+import { nextMaintenanceStage, type MaintenanceStage, type MaintenanceStatus } from "./maintenance-contracts.js";
+export function planMaintenance(status: Record<MaintenanceStage, MaintenanceStatus>, nowMinute: number): { stage?: MaintenanceStage; lisaAvailable: boolean; backgroundRetry: boolean } { const stage = nextMaintenanceStage(status); return { stage, lisaAvailable: nowMinute >= 390, backgroundRetry: nowMinute >= 390 && status.backup === "failed" }; }
+export function backupRetention(currentVerified: boolean, restoreVerified: boolean): "retain_previous" | "replace_previous" { return currentVerified && restoreVerified ? "replace_previous" : "retain_previous"; }

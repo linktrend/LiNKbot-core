@@ -1,0 +1,4 @@
+import { createHash } from "node:crypto";
+export type BackupArtifact = { name: string; bytes: number; sha256: string; class: "definition" | "config" | "database" | "session" | "template" | "receipt" };
+export function buildBackupManifest(input: { actor: string; startedAtMs: number; endedAtMs: number; dreamingState: string; artifacts: readonly BackupArtifact[]; encryptedArchiveHash: string }): Record<string, unknown> { if (!/^[a-f0-9]{64}$/u.test(input.encryptedArchiveHash)) throw new Error("invalid encrypted archive hash"); return { formatVersion: 1, actor: input.actor, captureStartedAtMs: input.startedAtMs, captureEndedAtMs: input.endedAtMs, dreamingState: input.dreamingState, artifacts: input.artifacts, encryptedArchiveHash: input.encryptedArchiveHash, unfinishedWorkPreserved: true }; }
+export function hashBackupBytes(value: Uint8Array): string { return createHash("sha256").update(value).digest("hex"); }
