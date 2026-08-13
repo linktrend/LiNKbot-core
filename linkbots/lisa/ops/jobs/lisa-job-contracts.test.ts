@@ -4,6 +4,8 @@ import {
   LISA_JOB_SCHEDULE_METADATA,
   LISA_JOB_TIME_ZONE,
   assertCycleIdentity,
+  assertDestinationBindingId,
+  assertLisaErrorCode,
   assertLisaGenericPrivacyClass,
   assertLisaScheduleMetadata,
   assertProviderFailure,
@@ -46,6 +48,8 @@ describe("Lisa job contracts", () => {
     expect(() => assertSafeIdentifier("someone@example.test", "destinationBindingId")).toThrow(
       /binding identifier/iu,
     );
+    expect(() => assertDestinationBindingId("123456789")).toThrow(/named/iu);
+    expect(() => assertDestinationBindingId("carlos-work")).not.toThrow();
   });
 
   it("accepts exact release/contract references but no address or token-shaped identifier", () => {
@@ -71,5 +75,10 @@ describe("Lisa job contracts", () => {
     expect(() =>
       assertProviderFailure({ code: "timeout", operatorDetail: "\u0000private" }),
     ).toThrow(/not safe/iu);
+    expect(() =>
+      assertProviderFailure({ code: "timeout", operatorDetail: "token: secret-value" }),
+    ).toThrow(/not safe/iu);
+    expect(() => assertLisaErrorCode("provider_timeout")).not.toThrow();
+    expect(() => assertLisaErrorCode("Provider timed out")).toThrow(/payload-free/iu);
   });
 });

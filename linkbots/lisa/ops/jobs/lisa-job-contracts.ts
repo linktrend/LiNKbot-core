@@ -267,6 +267,25 @@ export function assertSafeIdentifier(value: unknown, fieldName: string): asserts
   }
 }
 
+export function assertDestinationBindingId(
+  value: unknown,
+  fieldName = "destinationBindingId",
+): asserts value is string {
+  assertSafeIdentifier(value, fieldName);
+  if (!/^[A-Za-z]/u.test(value)) {
+    throw new Error(`${fieldName} must be a named destination binding identifier`);
+  }
+}
+
+export function assertLisaErrorCode(
+  value: unknown,
+  fieldName = "errorCode",
+): asserts value is string {
+  if (typeof value !== "string" || !/^[a-z][a-z0-9_:-]{0,63}$/u.test(value)) {
+    throw new Error(`${fieldName} must be a payload-free lowercase error code`);
+  }
+}
+
 export function assertProviderReceiptReference(
   value: unknown,
 ): asserts value is LisaProviderReceiptReference {
@@ -318,7 +337,10 @@ export function assertProviderFailure(value: unknown): asserts value is LisaProv
     typeof failure.operatorDetail !== "string" ||
     failure.operatorDetail.length === 0 ||
     failure.operatorDetail.length > 240 ||
-    containsOperatorControlCharacter(failure.operatorDetail)
+    containsOperatorControlCharacter(failure.operatorDetail) ||
+    /(?:[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}|bearer\s+|(?:token|secret|password)\s*[:=]|chat[_ -]?id|drive[_ -]?id)/iu.test(
+      failure.operatorDetail,
+    )
   ) {
     throw new Error("provider operator detail is not safe");
   }

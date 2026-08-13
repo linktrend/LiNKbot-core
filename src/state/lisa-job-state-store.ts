@@ -1,6 +1,8 @@
 import { randomUUID } from "node:crypto";
 import {
+  assertDestinationBindingId,
   assertCycleIdentity,
+  assertLisaErrorCode,
   assertLisaGenericPrivacyClass,
   assertLisaJobId,
   assertLisaJobRunState,
@@ -46,7 +48,6 @@ import {
   openOpenClawAgentDatabase,
   runOpenClawAgentWriteTransaction,
 } from "./openclaw-agent-db.js";
-
 export type LisaJobStateStoreOptions = LisaJobStateSchemaOptions;
 export { hashLisaJobPayload } from "./lisa-job-state-schema.js";
 export { redactLisaJobResultForDiagnostics };
@@ -65,12 +66,15 @@ const delivery = lisaJobStateDelivery;
 const pending = lisaJobStatePending;
 const safeResult = lisaJobStateSafeResult;
 const workPayload = lisaJobStateWorkPayload;
-
+function validatedNow(input?: number): number {
+  const now = input ?? Date.now();
+  assertTimestamp(now, "nowMs");
+  return now;
+}
 export type DeliveryStartResult = {
   readonly status: "started" | "already_started" | "suppressed";
   readonly attempt: LisaDeliveryAttempt;
 };
-
 function ready(options: LisaJobStateStoreOptions): void {
   if (options.ensure === true) {
     ensureLisaJobStateSchema(options);
@@ -86,7 +90,6 @@ export {
   requireHealthyLisaJobStateStore,
   lisaJobStateStoreOptionsFromCapability,
 } from "./lisa-job-state-schema.js";
-
 export function createOrLoadLisaJobRun(
   options: LisaJobStateStoreOptions,
   input: LisaJobRunCreateInput,
@@ -97,8 +100,7 @@ export function createOrLoadLisaJobRun(
   if (input.deadlineAtMs < input.scheduledAtMs) {
     throw new Error("deadlineAtMs must not precede scheduledAtMs");
   }
-  const now = input.nowMs ?? Date.now();
-  assertTimestamp(now, "nowMs");
+  const now = validatedNow(input.nowMs);
   ready(options);
   const resolved = dbOptions(options);
   return runOpenClawAgentWriteTransaction(
@@ -112,6 +114,9 @@ export function createOrLoadLisaJobRun(
           .where("cycle_id", "=", input.cycleId),
       );
       if (existing) {
+        if (existing.local_date !== input.localDate) {
+          throw new Error("Lisa job run identity is immutable and does not match the stored date");
+        }
         return run(existing);
       }
       executeSqliteQuerySync(
@@ -175,13 +180,12 @@ export function transitionLisaJobRun(
   }
   const resultJson = safeResult(input.safeResultJson);
   if (input.errorCode != null) {
-    assertSafeIdentifier(input.errorCode, "errorCode");
+    assertLisaErrorCode(input.errorCode);
   }
   if (input.nextState === "failed" && !input.errorCode) {
     throw new Error("failed Lisa job runs require a payload-free error code");
   }
-  const now = input.nowMs ?? Date.now();
-  assertTimestamp(now, "nowMs");
+  const now = validatedNow(input.nowMs);
   ready(options);
   const resolved = dbOptions(options);
   return runOpenClawAgentWriteTransaction(
@@ -247,7 +251,6 @@ export function transitionLisaJobRun(
     { operationLabel: "lisa-job-state.run.transition" },
   );
 }
-
 export function recordLisaDependencyReceipt(
   options: LisaJobStateStoreOptions,
   input: Omit<LisaDependencyReceipt, "receiptId"> & { receiptId?: string },
@@ -387,36 +390,38 @@ export function validateLisaDependencyReceipt(
   }
   return receipt(found);
 }
-
-function deliveryInput(input: {
+type DeliveryStartInput = {
   channel: string;
   destinationBindingId: string;
   idempotencyKey: string;
   attempt: number;
   renderedHash: string;
-}): void {
+  nowMs?: number;
+};
+function deliveryInput(input: DeliveryStartInput): void {
   assertSafeIdentifier(input.channel, "channel");
-  assertSafeIdentifier(input.destinationBindingId, "destinationBindingId");
+  assertDestinationBindingId(input.destinationBindingId);
   assertSafeIdentifier(input.idempotencyKey, "idempotencyKey");
   if (!Number.isSafeInteger(input.attempt) || input.attempt < 1 || input.attempt > 2) {
     throw new Error("delivery attempts are limited to one retry");
   }
   assertSha256Hash(input.renderedHash, "renderedHash");
 }
+function assertSameDeliveryBinding(row: DeliveryRow, input: DeliveryStartInput): void {
+  if (
+    row.channel !== input.channel ||
+    row.destination_binding_id !== input.destinationBindingId ||
+    row.rendered_hash !== input.renderedHash
+  ) {
+    throw new Error("delivery idempotency binding does not match the stored attempt");
+  }
+}
 export function startLisaDeliveryAttempt(
   options: LisaJobStateStoreOptions,
-  input: {
-    channel: string;
-    destinationBindingId: string;
-    idempotencyKey: string;
-    attempt: number;
-    renderedHash: string;
-    nowMs?: number;
-  },
+  input: DeliveryStartInput,
 ): DeliveryStartResult {
   deliveryInput(input);
-  const now = input.nowMs ?? Date.now();
-  assertTimestamp(now, "nowMs");
+  const now = validatedNow(input.nowMs);
   ready(options);
   const resolved = dbOptions(options);
   return runOpenClawAgentWriteTransaction(
@@ -432,6 +437,7 @@ export function startLisaDeliveryAttempt(
           .orderBy("attempt", "asc"),
       );
       if (success) {
+        assertSameDeliveryBinding(success, input);
         return { status: "suppressed", attempt: delivery(success) };
       }
       const existing = one<DeliveryRow>(
@@ -444,6 +450,7 @@ export function startLisaDeliveryAttempt(
       );
       if (existing) {
         const record = delivery(existing);
+        assertSameDeliveryBinding(existing, input);
         if (record.status === "started") {
           return { status: "already_started", attempt: record };
         }
@@ -461,9 +468,7 @@ export function startLisaDeliveryAttempt(
         if (!first || first.status !== "failed") {
           throw new Error("delivery retry requires a failed first attempt");
         }
-        if (first.rendered_hash !== input.renderedHash) {
-          throw new Error("delivery retry must use the same rendered message hash");
-        }
+        assertSameDeliveryBinding(first, input);
       }
       const attemptId = randomUUID();
       executeSqliteQuerySync(
@@ -508,14 +513,12 @@ export function finishLisaDeliveryAttempt(
     nowMs?: number;
   },
 ): LisaDeliveryAttempt {
-  assertSafeIdentifier(input.attemptId, "attemptId");
   if (input.status === "succeeded") {
     assertSafeIdentifier(input.providerReceiptId, "providerReceiptId");
   } else if (input.providerReceiptId != null) {
     throw new Error("failed delivery attempts cannot store provider receipts");
   }
-  const now = input.nowMs ?? Date.now();
-  assertTimestamp(now, "nowMs");
+  const now = validatedNow(input.nowMs);
   ready(options);
   const resolved = dbOptions(options);
   return runOpenClawAgentWriteTransaction(
@@ -573,7 +576,6 @@ export function finishLisaDeliveryAttempt(
     { operationLabel: "lisa-job-state.delivery.finish" },
   );
 }
-
 export function enqueueLisaWork(
   options: LisaJobStateStoreOptions,
   input: {
@@ -589,8 +591,7 @@ export function enqueueLisaWork(
     }
   }
   const payload = workPayload(input.payload);
-  const now = input.nowMs ?? Date.now();
-  assertTimestamp(now, "nowMs");
+  const now = validatedNow(input.nowMs);
   ready(options);
   const resolved = dbOptions(options);
   return runOpenClawAgentWriteTransaction(
@@ -640,13 +641,13 @@ export function mapLisaTemporaryWorkId(
   options: LisaJobStateStoreOptions,
   input: { temporaryId: string; permanentId: string; nowMs?: number },
 ): LisaPendingWorkRecord {
-  assertSafeIdentifier(input.temporaryId, "temporaryId");
   if (!/^P-\d{4}$/u.test(input.temporaryId)) {
     throw new Error("temporaryId must use the P-0007 form");
   }
-  assertSafeIdentifier(input.permanentId, "permanentId");
-  const now = input.nowMs ?? Date.now();
-  assertTimestamp(now, "nowMs");
+  if (!/^T-\d{6}$/u.test(input.permanentId)) {
+    throw new Error("permanentId must use the T-000042 form");
+  }
+  const now = validatedNow(input.nowMs);
   ready(options);
   const resolved = dbOptions(options);
   return runOpenClawAgentWriteTransaction(

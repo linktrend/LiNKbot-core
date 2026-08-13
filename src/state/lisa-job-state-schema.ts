@@ -1,9 +1,9 @@
 /** Additive Lisa state schema plus private persistence helpers shared by its store. */
-
 import { createHash } from "node:crypto";
 import type { DatabaseSync } from "node:sqlite";
 import type { Compilable } from "kysely";
 import {
+  assertDestinationBindingId,
   assertLisaJobId,
   assertLisaLocalDate,
   assertLisaJobRunState,
@@ -25,8 +25,11 @@ import {
 } from "./openclaw-agent-db.js";
 import { closeOpenClawAgentDatabaseByPath } from "./openclaw-agent-db.js";
 import { resolveOpenClawAgentSqlitePath } from "./openclaw-agent-db.paths.js";
-
 export type LisaJobStateDatabase = {
+  sqlite_master: {
+    type: string;
+    name: string;
+  };
   lisa_job_runs: {
     job_id: string;
     cycle_id: string;
@@ -84,7 +87,6 @@ export type LisaJobStateDatabase = {
     updated_at_ms: number;
   };
 };
-
 export type LisaJobRunDbRow = LisaJobStateDatabase["lisa_job_runs"];
 export type LisaReceiptDbRow = LisaJobStateDatabase["lisa_job_receipts"];
 export type LisaDeliveryDbRow = LisaJobStateDatabase["lisa_delivery_attempts"];
@@ -135,17 +137,18 @@ export type LisaJobRunTransitionInput = LisaCycleIdentity & {
   nowMs?: number;
 };
 const HEALTHY_LISA_JOB_STATE = Symbol("openclaw.lisa_job_state.healthy");
+const healthyLisaJobStateCapabilities = new WeakSet<object>();
 export type HealthyLisaJobStateStore = {
   readonly [HEALTHY_LISA_JOB_STATE]: true;
   readonly agentId: string;
   readonly databasePath: string;
 };
-
 const BAD_KEY =
   /(health|mounjaro|medication|supplement|symptom|weight|waist|food|protein|hydration|exercise|sleep|mood|stress|digestion|bowel|diagnosis|prescription|dosage|photo|document|token|secret|password|authorization|bearer|email|address|chat_id|drive_id|message_body|prompt|reasoning)/iu;
 const BAD_VALUE =
-  /(?:[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}|bearer\s+|-----BEGIN|(?:token|secret|password)\s*[:=])/iu;
-
+  /(?:[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}|bearer\s+|-----BEGIN|\b(?:token|secret|password)\b)/iu;
+const BAD_CONTENT =
+  /\b(?:mounjaro|medication|supplement|symptom|weight|waist|protein|hydration|exercise|sleep|mood|stress|diagnosis|prescription|dosage|bowel|digestion)\b/iu;
 export function lisaJobStateKysely(db: DatabaseSync) {
   return getNodeSqliteKysely<LisaJobStateDatabase>(db);
 }
@@ -168,13 +171,15 @@ export function lisaJobStateDbPath(options: OpenClawAgentDatabaseOptions): strin
   return resolveOpenClawAgentSqlitePath(lisaJobStateDbOptions(options));
 }
 export function lisaJobStateTableExists(db: DatabaseSync, name: string): boolean {
-  return (
-    (
-      db
-        .prepare("SELECT 1 AS ok FROM sqlite_master WHERE type = 'table' AND name = ?")
-        .get(name) as { ok?: unknown } | undefined
-    )?.ok === 1
+  const row = lisaJobStateOne<{ name: string }>(
+    db,
+    lisaJobStateKysely(db)
+      .selectFrom("sqlite_master")
+      .select("name")
+      .where("type", "=", "table")
+      .where("name", "=", name),
   );
+  return row?.name === name;
 }
 export function lisaJobStateHealth(
   db: DatabaseSync,
@@ -227,7 +232,7 @@ export function assertLisaJobStateSafeJson(value: unknown, field: string, depth 
     return;
   }
   if (typeof value === "string") {
-    if (value.length > 4_000 || BAD_VALUE.test(value)) {
+    if (value.length > 4_000 || BAD_VALUE.test(value) || BAD_CONTENT.test(value)) {
       throw new Error(`${field} contains restricted data`);
     }
     return;
@@ -324,6 +329,7 @@ export function lisaJobStateDelivery(row: LisaDeliveryDbRow): LisaDeliveryAttemp
   if (row.status !== "started" && row.status !== "succeeded" && row.status !== "failed") {
     throw new Error(`invalid stored delivery status: ${row.status}`);
   }
+  assertDestinationBindingId(row.destination_binding_id);
   return {
     attemptId: row.attempt_id,
     channel: row.channel,
@@ -343,9 +349,14 @@ export function lisaJobStatePending(row: LisaPendingWorkDbRow): LisaPendingWorkR
   if (row.privacy_class !== "work") {
     throw new Error("generic pending reader encountered private_health data");
   }
+  if (!/^P-\d{4}$/u.test(row.temporary_id)) {
+    throw new Error("stored temporary work ID is invalid");
+  }
+  const payload = lisaJobStateParseObject(row.payload_json, "pending work payload");
+  assertLisaJobStateSafeJson(payload, "pending work payload");
   return {
     temporaryId: row.temporary_id,
-    payload: lisaJobStateParseObject(row.payload_json, "pending work payload"),
+    payload,
     privacyClass: "work",
     deliveryState: row.delivery_state as LisaPendingWorkRecord["deliveryState"],
     permanentId: row.permanent_id,
@@ -357,7 +368,6 @@ export function lisaJobStateHash(value: unknown): string {
   assertLisaJobStateSafeJson(value, "Lisa job payload");
   return createHash("sha256").update(lisaJobStateCanonicalJson(value)).digest("hex");
 }
-
 const lisaJobStateRedactKey =
   /(health|mounjaro|medication|supplement|symptom|weight|waist|food|protein|hydration|exercise|sleep|mood|stress|digestion|bowel|diagnosis|prescription|dosage|photo|document|token|secret|password|authorization|bearer|email|address|chat_id|drive_id|message_body|prompt|reasoning)/iu;
 function lisaJobStateRedacted(value: unknown, key?: string, depth = 0): unknown {
@@ -368,6 +378,9 @@ function lisaJobStateRedacted(value: unknown, key?: string, depth = 0): unknown 
     return "[redacted]";
   }
   if (typeof value === "string") {
+    if (BAD_VALUE.test(value) || BAD_CONTENT.test(value)) {
+      return "[redacted]";
+    }
     return value.length > 240 ? `${value.slice(0, 240)}…[truncated]` : value;
   }
   if (Array.isArray(value)) {
@@ -390,11 +403,9 @@ export function hashLisaJobPayload(value: unknown): string {
   assertLisaJobStateSafeJson(value, "Lisa job payload");
   return createHash("sha256").update(lisaJobStateCanonicalJson(value)).digest("hex");
 }
-
 export const LISA_JOB_STATE_SCHEMA_VERSION = 1 as const;
 export const LISA_JOB_STATE_SCHEMA_OWNER = "lisa-job-state" as const;
 export const LISA_JOB_STATE_SCHEMA_KIND = "additive_lazy_ensure" as const;
-
 export const LISA_JOB_STATE_SCHEMA_SQL = `
 CREATE TABLE IF NOT EXISTS lisa_job_runs (
   job_id TEXT NOT NULL,
@@ -412,10 +423,8 @@ CREATE TABLE IF NOT EXISTS lisa_job_runs (
   updated_at_ms INTEGER NOT NULL,
   PRIMARY KEY (job_id, cycle_id)
 ) STRICT;
-
 CREATE INDEX IF NOT EXISTS idx_lisa_job_runs_due
   ON lisa_job_runs(state, scheduled_at_ms, deadline_at_ms);
-
 CREATE TABLE IF NOT EXISTS lisa_job_receipts (
   receipt_id TEXT NOT NULL PRIMARY KEY,
   job_id TEXT NOT NULL,
@@ -430,10 +439,8 @@ CREATE TABLE IF NOT EXISTS lisa_job_receipts (
   created_at_ms INTEGER NOT NULL,
   UNIQUE (job_id, local_date, cycle_id)
 ) STRICT;
-
 CREATE INDEX IF NOT EXISTS idx_lisa_job_receipts_binding
   ON lisa_job_receipts(job_id, local_date, cycle_id);
-
 CREATE TABLE IF NOT EXISTS lisa_delivery_attempts (
   attempt_id TEXT NOT NULL PRIMARY KEY,
   channel TEXT NOT NULL,
@@ -449,34 +456,31 @@ CREATE TABLE IF NOT EXISTS lisa_delivery_attempts (
   updated_at_ms INTEGER NOT NULL,
   UNIQUE (idempotency_key, attempt)
 ) STRICT;
-
 CREATE UNIQUE INDEX IF NOT EXISTS idx_lisa_delivery_provider_receipt
   ON lisa_delivery_attempts(provider_receipt_id)
   WHERE provider_receipt_id IS NOT NULL;
-
 CREATE INDEX IF NOT EXISTS idx_lisa_delivery_unresolved
   ON lisa_delivery_attempts(status, created_at_ms);
-
 CREATE TABLE IF NOT EXISTS lisa_pending_work (
   temporary_id TEXT NOT NULL PRIMARY KEY CHECK (temporary_id GLOB 'P-[0-9][0-9][0-9][0-9]'),
   payload_json TEXT NOT NULL,
   privacy_class TEXT NOT NULL CHECK (privacy_class = 'work'),
   delivery_state TEXT NOT NULL CHECK (delivery_state IN ('pending', 'delivered', 'failed', 'blocked')),
-  permanent_id TEXT,
+  permanent_id TEXT CHECK (permanent_id IS NULL OR permanent_id GLOB 'T-[0-9][0-9][0-9][0-9][0-9][0-9]'),
   created_at_ms INTEGER NOT NULL,
   updated_at_ms INTEGER NOT NULL
 ) STRICT;
-
 CREATE INDEX IF NOT EXISTS idx_lisa_pending_work_due
   ON lisa_pending_work(delivery_state, created_at_ms);
-
+CREATE UNIQUE INDEX IF NOT EXISTS idx_lisa_pending_work_permanent_id
+  ON lisa_pending_work(permanent_id)
+  WHERE permanent_id IS NOT NULL;
 CREATE TABLE IF NOT EXISTS lisa_job_state_meta (
   meta_key TEXT NOT NULL PRIMARY KEY,
   meta_value TEXT NOT NULL,
   updated_at_ms INTEGER NOT NULL
 ) STRICT;
 `;
-
 export const LISA_JOB_STATE_TABLES = [
   "lisa_job_runs",
   "lisa_job_receipts",
@@ -484,11 +488,8 @@ export const LISA_JOB_STATE_TABLES = [
   "lisa_pending_work",
   "lisa_job_state_meta",
 ] as const;
-
 export const LISA_JOB_STATE_SCHEMA_MARKER = "schema_version" as const;
-
 const ensuredLisaJobStateDatabases = new WeakSet<DatabaseSync>();
-
 export function ensureLisaJobStateSchema(options: LisaJobStateSchemaOptions): void {
   const resolved = lisaJobStateDbOptions(options);
   const database = openOpenClawAgentDatabase(resolved);
@@ -497,6 +498,7 @@ export function ensureLisaJobStateSchema(options: LisaJobStateSchemaOptions): vo
   }
   runOpenClawAgentWriteTransaction(
     ({ db }) => {
+      // sqlite-allow-raw: static packet DDL only; all Lisa state DML uses Kysely.
       db.exec(LISA_JOB_STATE_SCHEMA_SQL);
       executeSqliteQuerySync(
         db,
@@ -520,7 +522,6 @@ export function ensureLisaJobStateSchema(options: LisaJobStateSchemaOptions): vo
   );
   ensuredLisaJobStateDatabases.add(database.db);
 }
-
 export function probeLisaJobStateStoreHealth(
   options: LisaJobStateSchemaOptions,
 ): LisaJobStateStoreHealth {
@@ -563,11 +564,15 @@ export function probeLisaJobStateStoreHealth(
     };
   }
 }
-
 export function listLisaDueJobRuns(
   options: LisaJobStateSchemaOptions,
   nowMs: number,
 ): LisaJobRunRecord[] {
+  if (options.ensure === true) {
+    ensureLisaJobStateSchema(options);
+  } else {
+    requireHealthyLisaJobStateStore(options);
+  }
   const { db } = openOpenClawAgentDatabase(lisaJobStateDbOptions(options));
   return lisaJobStateRows<LisaJobRunDbRow>(
     db,
@@ -582,6 +587,11 @@ export function listLisaDueJobRuns(
 export function listLisaUnresolvedDeliveryAttempts(
   options: LisaJobStateSchemaOptions,
 ): LisaDeliveryAttempt[] {
+  if (options.ensure === true) {
+    ensureLisaJobStateSchema(options);
+  } else {
+    requireHealthyLisaJobStateStore(options);
+  }
   const { db } = openOpenClawAgentDatabase(lisaJobStateDbOptions(options));
   return lisaJobStateRows<LisaDeliveryDbRow>(
     db,
@@ -593,6 +603,11 @@ export function listLisaUnresolvedDeliveryAttempts(
   ).map(lisaJobStateDelivery);
 }
 export function listLisaPendingWork(options: LisaJobStateSchemaOptions): LisaPendingWorkRecord[] {
+  if (options.ensure === true) {
+    ensureLisaJobStateSchema(options);
+  } else {
+    requireHealthyLisaJobStateStore(options);
+  }
   const { db } = openOpenClawAgentDatabase(lisaJobStateDbOptions(options));
   return lisaJobStateRows<LisaPendingWorkDbRow>(
     db,
@@ -634,14 +649,19 @@ export function openHealthyLisaJobStateStore(
   options: LisaJobStateSchemaOptions,
 ): HealthyLisaJobStateStore {
   const result = requireHealthyLisaJobStateStore(options);
-  return {
-    [HEALTHY_LISA_JOB_STATE]: true,
+  const capability = Object.freeze({
+    [HEALTHY_LISA_JOB_STATE]: true as const,
     agentId: result.agentId,
     databasePath: result.databasePath,
-  };
+  });
+  healthyLisaJobStateCapabilities.add(capability);
+  return capability;
 }
 export function isHealthyLisaJobStateStore(value: unknown): value is HealthyLisaJobStateStore {
   if (typeof value !== "object" || value === null) {
+    return false;
+  }
+  if (!healthyLisaJobStateCapabilities.has(value)) {
     return false;
   }
   const candidate = value as HealthyLisaJobStateStore;
@@ -655,6 +675,9 @@ export function isHealthyLisaJobStateStore(value: unknown): value is HealthyLisa
 export function lisaJobStateStoreOptionsFromCapability(
   value: HealthyLisaJobStateStore,
 ): LisaJobStateSchemaOptions {
+  if (!isHealthyLisaJobStateStore(value)) {
+    throw new Error("invalid Lisa healthy-store capability");
+  }
   return { agentId: value.agentId, path: value.databasePath };
 }
 export function closeLisaJobStateStoreForTest(options: LisaJobStateSchemaOptions): boolean {

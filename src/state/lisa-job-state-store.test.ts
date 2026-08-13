@@ -3,7 +3,11 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { readSqliteNumberPragma } from "../infra/sqlite-pragma.test-support.js";
-import { LISA_JOB_STATE_TABLES, LISA_JOB_STATE_SCHEMA_VERSION } from "./lisa-job-state-schema.js";
+import {
+  LISA_JOB_STATE_TABLES,
+  LISA_JOB_STATE_SCHEMA_VERSION,
+  lisaJobStatePending,
+} from "./lisa-job-state-schema.js";
 import {
   closeLisaJobStateStoreForTest,
   createOrLoadLisaJobRun,
@@ -43,6 +47,14 @@ function optionsFor(databasePath: string, ensure = true): LisaJobStateStoreOptio
 const NOW = 1_700_000_000_000;
 const HASH_A = "a".repeat(64);
 const HASH_B = "b".repeat(64);
+const LISA_JOB_STATE_INDEXES = [
+  "idx_lisa_delivery_provider_receipt",
+  "idx_lisa_delivery_unresolved",
+  "idx_lisa_job_receipts_binding",
+  "idx_lisa_job_runs_due",
+  "idx_lisa_pending_work_due",
+  "idx_lisa_pending_work_permanent_id",
+] as const;
 
 afterEach(() => {
   closeOpenClawAgentDatabasesForTest();
@@ -74,13 +86,24 @@ describe("Lisa job state store", () => {
     for (const table of LISA_JOB_STATE_TABLES) {
       expect(tableExists(database.db, table)).toBe(true);
     }
+    for (const table of LISA_JOB_STATE_TABLES) {
+      expect(
+        (
+          database.db.prepare("SELECT strict FROM pragma_table_list WHERE name = ?").get(table) as {
+            strict: number;
+          }
+        ).strict,
+      ).toBe(1);
+    }
     expect(
       (
         database.db
-          .prepare("SELECT strict FROM pragma_table_list WHERE name = ?")
-          .get("lisa_job_runs") as { strict: number }
-      ).strict,
-    ).toBe(1);
+          .prepare(
+            "SELECT name FROM sqlite_master WHERE type = 'index' AND name LIKE 'idx_lisa_%' ORDER BY name",
+          )
+          .all() as Array<{ name: string }>
+      ).map((row) => row.name),
+    ).toEqual([...LISA_JOB_STATE_INDEXES].toSorted());
   });
 
   it("seals the healthy capability and rejects a forgeable plain object", () => {
@@ -97,16 +120,32 @@ describe("Lisa job state store", () => {
     expect(capability.databasePath).toBe(databasePath);
   });
 
-  it("creates and reloads one logical run, then authorizes a same-cycle dependency receipt", () => {
+  it("fails closed for generic readers when the Lisa tables are missing", () => {
+    const options = optionsFor(tempDbPath(), false);
+    expect(() => listLisaNonHealthDuePendingRecords(options, NOW)).toThrow(/blocked_no_store/iu);
+  });
+
+  it("serializes concurrent and repeated creates, then authorizes a same-cycle dependency receipt", async () => {
     const options = optionsFor(tempDbPath());
-    const created = createOrLoadLisaJobRun(options, {
-      jobId: "librarian",
-      cycleId: "cycle-1",
-      localDate: "2026-08-13",
-      scheduledAtMs: NOW,
-      deadlineAtMs: NOW + 30 * 60_000,
-      nowMs: NOW,
-    });
+    const creates = await Promise.all(
+      Array.from({ length: 4 }, (_, index) =>
+        Promise.resolve().then(() =>
+          createOrLoadLisaJobRun(options, {
+            jobId: "librarian",
+            cycleId: "cycle-1",
+            localDate: "2026-08-13",
+            scheduledAtMs: NOW + index * 1_000,
+            deadlineAtMs: NOW + 30 * 60_000 + index * 1_000,
+            nowMs: NOW + index,
+          }),
+        ),
+      ),
+    );
+    const created = creates[0];
+    expect(creates).toHaveLength(4);
+    for (const run of creates) {
+      expect(run).toEqual(created);
+    }
     expect(created.state).toBe("pending");
     expect(
       createOrLoadLisaJobRun(options, {
@@ -179,6 +218,80 @@ describe("Lisa job state store", () => {
         payloadHash: HASH_B,
       }),
     ).toThrow(/binding mismatch/iu);
+    expect(
+      validateLisaDependencyReceipt(options, {
+        consumerJobId: "memory_dreaming",
+        producerJobId: "librarian",
+        localDate: "2026-08-13",
+        cycleId: "other-cycle",
+        producerCompletedAtMs: NOW + 2_000,
+        payloadHash: HASH_A,
+      }),
+    ).toBeNull();
+    expect(
+      validateLisaDependencyReceipt(options, {
+        consumerJobId: "memory_dreaming",
+        producerJobId: "backup",
+        localDate: "2026-08-13",
+        cycleId: "cycle-1",
+        producerCompletedAtMs: NOW + 2_000,
+        payloadHash: HASH_A,
+      }),
+    ).toBeNull();
+  });
+
+  it("rejects receipts for pending, running, or failed producers", () => {
+    const options = optionsFor(tempDbPath());
+    const producerCases = [
+      { jobId: "librarian" as const, cycleId: "pending-producer", state: "pending" as const },
+      { jobId: "memory_dreaming" as const, cycleId: "running-producer", state: "running" as const },
+      { jobId: "backup" as const, cycleId: "failed-producer", state: "failed" as const },
+    ];
+    for (const producer of producerCases) {
+      createOrLoadLisaJobRun(options, {
+        jobId: producer.jobId,
+        cycleId: producer.cycleId,
+        localDate: "2026-08-13",
+        scheduledAtMs: NOW,
+        deadlineAtMs: NOW + 1_000,
+        nowMs: NOW,
+      });
+      if (producer.state === "running") {
+        transitionLisaJobRun(options, {
+          jobId: producer.jobId,
+          cycleId: producer.cycleId,
+          localDate: "2026-08-13",
+          expectedState: "pending",
+          nextState: "running",
+          nowMs: NOW + 1,
+        });
+      } else if (producer.state === "failed") {
+        transitionLisaJobRun(options, {
+          jobId: producer.jobId,
+          cycleId: producer.cycleId,
+          localDate: "2026-08-13",
+          expectedState: "pending",
+          nextState: "failed",
+          errorCode: "provider_failed",
+          nowMs: NOW + 1,
+        });
+      }
+      expect(() =>
+        recordLisaDependencyReceipt(options, {
+          jobId: producer.jobId,
+          cycleId: producer.cycleId,
+          localDate: "2026-08-13",
+          producerCompletedAtMs: NOW + 2,
+          payloadHash: HASH_A,
+          provider: {
+            providerId: "linkbrain",
+            releaseRef: "2026.08.13",
+            contractRef: "librarian@1.0.0",
+            receivedAtMs: NOW + 3,
+          },
+        }),
+      ).toThrow(/completed producer run/iu);
+    }
   });
 
   it("enforces compare-and-set transitions and terminal immutability", () => {
@@ -234,6 +347,16 @@ describe("Lisa job state store", () => {
     expect(first.status).toBe("started");
     const firstAttempt = first.attempt;
     expect(
+      startLisaDeliveryAttempt(options, {
+        channel: "telegram",
+        destinationBindingId: "carlos-work",
+        idempotencyKey: "digest-2026-08-13-am",
+        attempt: 1,
+        renderedHash: HASH_A,
+        nowMs: NOW + 1,
+      }).status,
+    ).toBe("already_started");
+    expect(
       finishLisaDeliveryAttempt(options, {
         attemptId: firstAttempt.attemptId,
         status: "failed",
@@ -269,12 +392,48 @@ describe("Lisa job state store", () => {
       startLisaDeliveryAttempt(options, {
         channel: "telegram",
         destinationBindingId: "carlos-work",
+        idempotencyKey: "digest-2026-08-13-am",
+        attempt: 3,
+        renderedHash: HASH_A,
+        nowMs: NOW + 5,
+      }),
+    ).toThrow(/one retry/iu);
+    expect(() =>
+      startLisaDeliveryAttempt(options, {
+        channel: "telegram",
+        destinationBindingId: "carlos-work",
         idempotencyKey: "new-message",
         attempt: 1,
         renderedHash: HASH_B,
         nowMs: NOW + 5,
       }),
     ).not.toThrow();
+    const secondMessage = startLisaDeliveryAttempt(options, {
+      channel: "telegram",
+      destinationBindingId: "carlos-work",
+      idempotencyKey: "second-message",
+      attempt: 1,
+      renderedHash: HASH_B,
+      nowMs: NOW + 6,
+    });
+    expect(() =>
+      finishLisaDeliveryAttempt(options, {
+        attemptId: secondMessage.attempt.attemptId,
+        status: "succeeded",
+        providerReceiptId: "telegram-receipt-1",
+        nowMs: NOW + 7,
+      }),
+    ).toThrow(/unique|constraint/iu);
+    expect(() =>
+      startLisaDeliveryAttempt(options, {
+        channel: "telegram",
+        destinationBindingId: "other-binding",
+        idempotencyKey: "digest-2026-08-13-am",
+        attempt: 2,
+        renderedHash: HASH_A,
+        nowMs: NOW + 6,
+      }),
+    ).toThrow(/idempotency binding/iu);
   });
 
   it("generates and maps temporary work IDs once, while generic readers exclude private health", () => {
@@ -298,6 +457,18 @@ describe("Lisa job state store", () => {
         nowMs: NOW + 2,
       }),
     ).toThrow(/already been mapped/iu);
+    const secondPending = enqueueLisaWork(options, {
+      payload: { task: "another review" },
+      privacyClass: "work",
+      nowMs: NOW + 2,
+    });
+    expect(() =>
+      mapLisaTemporaryWorkId(options, {
+        temporaryId: secondPending.temporaryId,
+        permanentId: "T-000042",
+        nowMs: NOW + 3,
+      }),
+    ).toThrow(/unique|constraint/iu);
     expect(() =>
       enqueueLisaWork(options, {
         payload: { medication: "synthetic" },
@@ -312,7 +483,27 @@ describe("Lisa job state store", () => {
         nowMs: NOW + 3,
       }),
     ).toThrow(/private_health|privacy class/iu);
-    expect(listLisaNonHealthDuePendingRecords(options, NOW + 10).pendingWork).toHaveLength(0);
+    expect(() =>
+      mapLisaTemporaryWorkId(options, {
+        temporaryId: pending.temporaryId,
+        permanentId: "T-42",
+        nowMs: NOW + 3,
+      }),
+    ).toThrow(/T-000042/iu);
+    expect(() =>
+      lisaJobStatePending({
+        temporary_id: "P-0002",
+        payload_json: '{"task":"synthetic"}',
+        privacy_class: "private_health",
+        delivery_state: "pending",
+        permanent_id: null,
+        created_at_ms: NOW,
+        updated_at_ms: NOW,
+      }),
+    ).toThrow(/private_health/iu);
+    expect(listLisaNonHealthDuePendingRecords(options, NOW + 10).pendingWork).toEqual([
+      secondPending,
+    ]);
   });
 
   it("fails writes closed before explicit ensure and redacts diagnostic output", () => {
@@ -331,6 +522,20 @@ describe("Lisa job state store", () => {
     ).toThrow(/blocked_no_store/iu);
     expect(redactLisaJobResultForDiagnostics({ ok: true, token: "hidden", detail: "x" })).toBe(
       '{"detail":"x","ok":true,"token":"[redacted]"}',
+    );
+    expect(() =>
+      transitionLisaJobRun(options, {
+        jobId: "librarian",
+        cycleId: "cycle-3",
+        localDate: "2026-08-13",
+        expectedState: "pending",
+        nextState: "failed",
+        errorCode: "provider failure with secret",
+        nowMs: NOW + 1,
+      }),
+    ).toThrow(/payload-free/iu);
+    expect(redactLisaJobResultForDiagnostics({ detail: "Mounjaro dose" })).toBe(
+      '{"detail":"[redacted]"}',
     );
     closeLisaJobStateStoreForTest(options);
   });
