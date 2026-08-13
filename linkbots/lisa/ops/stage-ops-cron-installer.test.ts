@@ -9,6 +9,7 @@ import { describe, it } from "node:test";
 import { validateCronAddParams, formatValidationErrors } from "@openclaw/gateway-protocol";
 import {
   buildStageConstraintsReceipt,
+  buildLisaCatalogueCronPlan,
   buildStageCronInstallPlan,
   validateStageCronCreatePayload,
   validateStageCronEditPayload,
@@ -66,6 +67,22 @@ describe("StageCronJobCreatePayload", () => {
       assert.deepEqual(create.payload.toolsAllow, [...job.payload.toolsAllow]);
       assert.equal(create.payload.timeoutSeconds, job.payload.timeoutSeconds);
     }
+  });
+});
+
+describe("WP-07 Lisa catalogue cron plan", () => {
+  it("is a disabled source plan and never produces gateway cron mutations", () => {
+    const plan = buildLisaCatalogueCronPlan();
+    assert.equal(plan.sourceStatus, "SOURCE_ONLY");
+    assert.equal(plan.enabled, false);
+    assert.equal(plan.deliveryMode, "none");
+    assert.equal(plan.validationErrors.length, 0);
+    assert.equal(plan.entries.length, 21);
+    assert.equal(plan.providerDecision.status, "HOLD");
+    assert.ok(plan.entries.every((entry) => entry.idempotencyKey.length === 64));
+    assert.ok(
+      plan.entries.every((entry) => entry.scheduleKind !== "cron" || entry.localTimes.length > 0),
+    );
   });
 });
 

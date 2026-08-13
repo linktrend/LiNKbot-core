@@ -1,6 +1,15 @@
 {
   "version": 2,
   "note": "Generated from stage-ops-payloads / stage-ops-coordinator. delivery=none; enabled=false; real bounded procedures (not STAGE_CANARY stubs). Repair packaged separately unless includeRepair and store health passes.",
+  "lisaJobCatalogue": {
+    "source": "ops/jobs/lisa-job-catalogue.ts",
+    "sourceStatus": "SOURCE_ONLY",
+    "familyCount": 10,
+    "entryCount": 21,
+    "catalogueSha256": "364214189166726b0e3ee4a3e5b6dc8794be13916f8dba80413b6f1ae2098385",
+    "schedulesEnabled": false,
+    "deliveryMode": "none"
+  },
   "hardStops": [
     "delivery=none (no Telegram announce / no runner fallback delivery)",
     "OpenRouter-only credentials (OPENROUTER_API_KEY process-only; never mint direct provider keys)",

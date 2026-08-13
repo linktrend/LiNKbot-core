@@ -6,6 +6,10 @@
  * separately and fails closed with blocked_no_store when durable stores are absent.
  *
  * Package-only: does not mutate stage/runtime/credentials.
+ *
+ * These six payloads remain historical stage-ops compatibility jobs. The
+ * WP-07 ten-family catalogue is defined separately in jobs/lisa-job-catalogue.ts
+ * and is not represented as these six stage payloads.
  */
 
 import { createHash } from "node:crypto";
