@@ -434,7 +434,9 @@ function buildSummary(comparisons) {
 function buildComparisons(localEntries, vpsEntries) {
   const localByKey = new Map(localEntries.map((entry) => [entry.key, entry]));
   const vpsByKey = new Map(vpsEntries.map((entry) => [entry.key, entry]));
-  const keys = [...new Set([...localByKey.keys(), ...vpsByKey.keys()])].toSorted();
+  const keys = [...new Set([...localByKey.keys(), ...vpsByKey.keys()])].toSorted((left, right) =>
+    left.localeCompare(right),
+  );
   return keys.map((key) =>
     Object.assign({ key }, comparePair(localByKey.get(key), vpsByKey.get(key))),
   );
@@ -653,16 +655,19 @@ export async function main(argv = process.argv.slice(2)) {
   if (command === "verify") {
     return verifyCommand(args);
   }
-  fail(`unknown_command:${command ?? "(missing)"}`);
+  return fail(`unknown_command:${command ?? "(missing)"}`);
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   main()
     .then((result) => process.stdout.write(`${JSON.stringify(result)}\n`))
-    .catch((error) => {
-      process.stderr.write(
-        `lisa-vps-reconciliation: ${error instanceof Error ? error.message : String(error)}\n`,
-      );
-      process.exitCode = 2;
-    });
+    .catch(
+      /** @param {unknown} error */
+      (error) => {
+        process.stderr.write(
+          `lisa-vps-reconciliation: ${error instanceof Error ? error.message : String(error)}\n`,
+        );
+        process.exitCode = 2;
+      },
+    );
 }

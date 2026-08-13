@@ -533,14 +533,16 @@ describe("VPS Lisa Google Workspace wrappers", () => {
     assert.equal(realCliProof.disposableEnvironment.platform, "linux/arm64");
     const emittedRoutes = new Set(
       [lisaSafe, tasks]
-        .flatMap((entrypoint) => [
-          ...readFileSync(entrypoint, "utf8").matchAll(/gws_exec_route "([^"]+)"/g),
-        ])
+        .flatMap((entrypoint) =>
+          Array.from(readFileSync(entrypoint, "utf8").matchAll(/gws_exec_route "([^"]+)"/g)),
+        )
         .map((match) => match[1]),
     );
     assert.deepEqual(
-      realCliProof.acceptedCommands.map((item) => item.command.replace(/ --help$/, "")).sort(),
-      [...emittedRoutes].sort(),
+      realCliProof.acceptedCommands
+        .map((item) => item.command.replace(/ --help$/, ""))
+        .toSorted((left, right) => left.localeCompare(right)),
+      [...emittedRoutes].toSorted((left, right) => left.localeCompare(right)),
     );
     assert.equal(realCliProof.summary.commandCount, emittedRoutes.size);
     assert.equal(realCliProof.summary.successfulExitCount, emittedRoutes.size);
