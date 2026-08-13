@@ -14,6 +14,7 @@ import {
   type ExecApprovalsAgent,
   type ExecAllowlistEntry,
   type ExecApprovalsFile,
+  type ExecHostAdapterBinding,
 } from "./exec-approvals.js";
 
 describe("exec approvals wildcard agent", () => {
@@ -252,7 +253,7 @@ describe("exec approvals host-adapter config", () => {
               executable: "/bin/false",
               argvPrefix: [],
               environment: {},
-            } as unknown,
+            } as unknown as ExecHostAdapterBinding,
             {
               id: "",
               target: "gateway",
