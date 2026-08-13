@@ -143,6 +143,10 @@ describe("Lisa job state store", () => {
     );
     const created = creates[0];
     expect(creates).toHaveLength(4);
+    expect(created).toBeDefined();
+    if (!created) {
+      throw new Error("concurrent Lisa job creation returned no run");
+    }
     for (const run of creates) {
       expect(run).toEqual(created);
     }
