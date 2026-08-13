@@ -1,0 +1,34 @@
+{
+  "mondayFourWeekPlan": {
+    "date": "2026-08-17",
+    "horizonStart": "2026-08-17",
+    "description": "Synthetic Monday plan covering four weeks"
+  },
+  "tuesdayChange": {
+    "date": "2026-08-18",
+    "description": "Synthetic Tuesday plan change remains a proposal until review"
+  },
+  "dependencyUnblocking": {
+    "firstTask": "unblock-dependent-work",
+    "secondTask": "optional-improvement"
+  },
+  "flexiblePeriod": {
+    "default": "work",
+    "personalWhen": "Carlos personal work is genuinely current"
+  },
+  "reducedCapacity": {
+    "requires": "time-off decision",
+    "noTimeOff": "easy work at a slower pace"
+  },
+  "providerRecovery": {
+    "temporary": "P-0007",
+    "permanent": "T-000042"
+  },
+  "monthlyReport": {
+    "plannedWorkday": "2026-08-28",
+    "notAssumedFromCalendar": true
+  },
+  "malformedApproval": {
+    "reject": true
+  }
+}

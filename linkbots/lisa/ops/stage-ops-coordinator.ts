@@ -10,6 +10,7 @@ import { spawnSync } from "node:child_process";
 import { readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
+import { catalogueSummary } from "./jobs/lisa-job-catalogue.ts";
 import { LISA_OPENROUTER_ONLY_STAGE_ROUTING } from "./model-routing.openrouter-stage.ts";
 import { ensureStageDurableStores, probeStageDurableStores } from "./stage-durable-store.ts";
 import {
@@ -80,6 +81,7 @@ export type StageOpsCoordinatorPlan = {
   typedCronPlan: StageCronInstallPlan;
   commands: string[];
   validationErrors: string[];
+  lisaJobCatalogue: ReturnType<typeof catalogueSummary>;
 };
 
 export type StageOpsPlanInput = {
@@ -673,6 +675,7 @@ export function planStageOps(input: StageOpsPlanInput): StageOpsCoordinatorPlan 
     typedCronPlan,
     commands,
     validationErrors,
+    lisaJobCatalogue: catalogueSummary(),
   };
 }
 
@@ -684,6 +687,7 @@ export function materializeStageSeedJson(includeRepair = false): unknown {
     version: 2,
     note: "Generated from stage-ops-payloads / stage-ops-coordinator. delivery=none; enabled=false; real bounded procedures (not STAGE_CANARY stubs). Repair packaged separately unless includeRepair and store health passes.",
     hardStops: plan.hardStops,
+    lisaJobCatalogue: catalogueSummary(),
     deliveryDefault: "none",
     payloadHashes: plan.payloadHashes,
     jobs: jobs.map((job) => ({

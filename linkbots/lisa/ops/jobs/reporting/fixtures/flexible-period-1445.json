@@ -1,0 +1,4 @@
+{
+  "name": "14:45 flexible period",
+  "expected": "Decision needed\nCompleted\n- Synthetic completion\n\nIn progress\n- Synthetic work\n\nIssues\n- Synthetic blocker\n\nDecisions needed\nNone.\n\nSupervised agents\n- Awaiting agent evidence\n\nNext expected result\nEvidence bundle by 17:00\n\nBattery Status\nLast observed: 82% plugged; estimate fresh; next routine charge tonight.\n15:30–17:00 becomes personal time"
+}
