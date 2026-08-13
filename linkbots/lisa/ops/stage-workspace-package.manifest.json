@@ -1,11 +1,233 @@
 {
   "manifestType": "lisa_stage_workspace_package_v1",
-  "packageId": "lisa-stage-bounded-procedures-and-renderer-deps",
-  "description": "Bounded stable Heartbeat/Digest/Ship-Pull/Repair procedure sources, renderer dependencies, and stage Google/task adapters. Profile sources are restricted to the canonical non-secret stable-definition manifest. The package contains no private or mutable runtime seeds and never mutates LiNKplatform-staging by default.",
+  "packageId": "lisa-stage-bounded-procedures-renderer-and-domain-modules",
+  "description": "Deterministic source-only Lisa stage package: bounded procedures, ten-family catalogue, unified renderer, domain modules, and templates. No mutable state, private data, credentials, or enabled schedules.",
   "sourceRoot": "linkbots/lisa",
   "liveMutationAllowed": false,
   "defaultMutateStageWorkspace": false,
   "files": [
+    {
+      "source": "ops/jobs/README.md",
+      "destination": "ops/jobs/README.md",
+      "sha256": "3e5508dca157b04c6e4a3dcbb32fe850b3cb0d56468e7c7095446b34872acd70",
+      "bytes": 1443
+    },
+    {
+      "source": "ops/jobs/lisa-job-catalogue.ts",
+      "destination": "ops/jobs/lisa-job-catalogue.ts",
+      "sha256": "3ee2597638943d6060cbbc5e801731a956b8942178e274bdc1f42125e848f254",
+      "bytes": 25049
+    },
+    {
+      "source": "ops/jobs/lisa-job-contracts.ts",
+      "destination": "ops/jobs/lisa-job-contracts.ts",
+      "sha256": "ffe850fe182fa5490b3d0121e5c035a2c032be3e2f999d951557ea158fd6df42",
+      "bytes": 11782
+    },
+    {
+      "source": "ops/jobs/render-lisa-job-template.ts",
+      "destination": "ops/jobs/render-lisa-job-template.ts",
+      "sha256": "88f62d61c310a65ab2d68b99dc73ab9c0f072bb0be78b0210311e9b833a82ef1",
+      "bytes": 11398
+    },
+    {
+      "source": "ops/jobs/maintenance/maintenance-contracts.ts",
+      "destination": "ops/jobs/maintenance/maintenance-contracts.ts",
+      "sha256": "a85bb82100a26009237409e6799e0a13316fe65a8d3bb75e6bbda39ef8a51691",
+      "bytes": 12637
+    },
+    {
+      "source": "ops/jobs/maintenance/maintenance.ts",
+      "destination": "ops/jobs/maintenance/maintenance.ts",
+      "sha256": "5fa4a221e988b68c4e69e090fc85d2bf5096781423e309861eb37c91a23ce70d",
+      "bytes": 3752
+    },
+    {
+      "source": "ops/jobs/maintenance/procedure.md",
+      "destination": "ops/jobs/maintenance/procedure.md",
+      "sha256": "c3d3248038658ce7a039e4b3bb17dd0c3eeb4fa3d32bf13beb1e555c4afffe53",
+      "bytes": 2168
+    },
+    {
+      "source": "ops/jobs/maintenance/templates/digest-status.md",
+      "destination": "ops/jobs/maintenance/templates/digest-status.md",
+      "sha256": "e4e273859d0522f0085374c0f77f21c3be568bda38376ac79e0771155194db9a",
+      "bytes": 652
+    },
+    {
+      "source": "ops/jobs/maintenance/templates/restore-verification.md",
+      "destination": "ops/jobs/maintenance/templates/restore-verification.md",
+      "sha256": "b59d1f2ff9e000a832f1fa93a7fdbf9eee218e2cb0f99110769a38291edb4910",
+      "bytes": 380
+    },
+    {
+      "source": "ops/jobs/reporting/reporting-contracts.ts",
+      "destination": "ops/jobs/reporting/reporting-contracts.ts",
+      "sha256": "87e328906b72da1399c2ebddb93f0cbda40c9197fa8cf3ed76ff9103538dc19c",
+      "bytes": 6067
+    },
+    {
+      "source": "ops/jobs/reporting/reporting.ts",
+      "destination": "ops/jobs/reporting/reporting.ts",
+      "sha256": "8731409898574b6570447b1412bda2e5f38861aee2d9b7c35a2ec2a3e669b1b5",
+      "bytes": 10009
+    },
+    {
+      "source": "ops/jobs/reporting/procedure.md",
+      "destination": "ops/jobs/reporting/procedure.md",
+      "sha256": "2201cddf4657aa1c0ba0b025bef5658daa59ba873a5b21898156607b3084d379",
+      "bytes": 914
+    },
+    {
+      "source": "ops/jobs/reporting/templates/executive-digest.md",
+      "destination": "ops/jobs/reporting/templates/executive-digest.md",
+      "sha256": "2c32230e75d3a3fc5bd688010c77824341ec54f7d8fb1ded1bb91d830f19480b",
+      "bytes": 373
+    },
+    {
+      "source": "ops/jobs/reporting/templates/flash-report.md",
+      "destination": "ops/jobs/reporting/templates/flash-report.md",
+      "sha256": "af1a54879fad41dea2a57b96e2d40f39cc81c1684882d4d8efa63eac597cc131",
+      "bytes": 258
+    },
+    {
+      "source": "ops/jobs/compliance/compliance-contracts.ts",
+      "destination": "ops/jobs/compliance/compliance-contracts.ts",
+      "sha256": "f51adc5e05e286d597cc398ff07eb9b38346b3a11e2b660eb35d35f82f797719",
+      "bytes": 2850
+    },
+    {
+      "source": "ops/jobs/compliance/battery.ts",
+      "destination": "ops/jobs/compliance/battery.ts",
+      "sha256": "39b1bfa49e69b712555e6398bd87ec827c790de7142584b3fca150272627fe1a",
+      "bytes": 7378
+    },
+    {
+      "source": "ops/jobs/compliance/selfie.ts",
+      "destination": "ops/jobs/compliance/selfie.ts",
+      "sha256": "68c701eda10a7a6d9d53e851513469d56e532c376f3d2dc21afe028f49274561",
+      "bytes": 1892
+    },
+    {
+      "source": "ops/jobs/compliance/procedure.md",
+      "destination": "ops/jobs/compliance/procedure.md",
+      "sha256": "5d1c194c40666ee210f45e7f156f5dcd9eb1e429f8c7793a58e55c72ca70a04c",
+      "bytes": 576
+    },
+    {
+      "source": "ops/jobs/compliance/templates/combined-1745.md",
+      "destination": "ops/jobs/compliance/templates/combined-1745.md",
+      "sha256": "0362ba2104fb17efd5c36253d2f12753c4df9d59e617355795e9a70fe3185309",
+      "bytes": 114
+    },
+    {
+      "source": "ops/jobs/compliance/templates/battery-35-alert.md",
+      "destination": "ops/jobs/compliance/templates/battery-35-alert.md",
+      "sha256": "9d8c849685750272637786db698ebc23c7c48f1dcc2f4490499f78fb9433f799",
+      "bytes": 116
+    },
+    {
+      "source": "ops/jobs/compliance/templates/conditional-2145.md",
+      "destination": "ops/jobs/compliance/templates/conditional-2145.md",
+      "sha256": "eba451bb97ea6fd78b47a8f009d12e82198b16fb6f96aa3c0ea849e69200edd0",
+      "bytes": 84
+    },
+    {
+      "source": "ops/jobs/compliance/templates/selfie-acknowledgment.md",
+      "destination": "ops/jobs/compliance/templates/selfie-acknowledgment.md",
+      "sha256": "1e272b7ce03c776d8619c58ad889368cf6195338b74bad8c10698e022409e751",
+      "bytes": 40
+    },
+    {
+      "source": "ops/jobs/compliance/templates/battery-checkpoint.md",
+      "destination": "ops/jobs/compliance/templates/battery-checkpoint.md",
+      "sha256": "3d8bc32cd5b6a6dd3380864a756315fb0a3f9d16ee47899d60d8767ab04c7b0b",
+      "bytes": 140
+    },
+    {
+      "source": "ops/jobs/time-management/time-contracts.ts",
+      "destination": "ops/jobs/time-management/time-contracts.ts",
+      "sha256": "183a1177dd3d8a6e6c4280c87e20b06ff6ef815d8f5fb080049fd5cb9e9cc340",
+      "bytes": 8345
+    },
+    {
+      "source": "ops/jobs/time-management/intake.ts",
+      "destination": "ops/jobs/time-management/intake.ts",
+      "sha256": "68d5ada14d5ee412863ee813c914e29ac84ee8760f3bacd5833da49da579ff23",
+      "bytes": 4579
+    },
+    {
+      "source": "ops/jobs/time-management/planner.ts",
+      "destination": "ops/jobs/time-management/planner.ts",
+      "sha256": "5b76c1bf2af0e89366499a33b9e603a006fd8d9df12f9f48568a4307e8e8383a",
+      "bytes": 18138
+    },
+    {
+      "source": "ops/jobs/time-management/procedure.md",
+      "destination": "ops/jobs/time-management/procedure.md",
+      "sha256": "d5ded49e452e9bff1bf8dea66181a40827eea947bf77eeb69d1d681221d79927",
+      "bytes": 1802
+    },
+    {
+      "source": "ops/jobs/time-management/templates/weekly-plan.md",
+      "destination": "ops/jobs/time-management/templates/weekly-plan.md",
+      "sha256": "66739a90252d50c0d4037284d944857369161040ed68f9d0abcf18a6f643ba14",
+      "bytes": 502
+    },
+    {
+      "source": "ops/jobs/time-management/templates/monthly-work-report.md",
+      "destination": "ops/jobs/time-management/templates/monthly-work-report.md",
+      "sha256": "7d6c3c0b19eea368a57ea6a7fe6e74148ccdf557caab7ab0881a0c3a09b64fed",
+      "bytes": 618
+    },
+    {
+      "source": "ops/jobs/time-management/templates/review.md",
+      "destination": "ops/jobs/time-management/templates/review.md",
+      "sha256": "c124ad61ce693cab1c0568ba1c8a2fd088ecf417541ace33d928063c76adc7e8",
+      "bytes": 531
+    },
+    {
+      "source": "ops/jobs/health/health-contracts.ts",
+      "destination": "ops/jobs/health/health-contracts.ts",
+      "sha256": "b97a7c423a8989bb6d3b15c26eef59601fc891b71222a0a95f101bc204d44567",
+      "bytes": 4831
+    },
+    {
+      "source": "ops/jobs/health/health.ts",
+      "destination": "ops/jobs/health/health.ts",
+      "sha256": "54bad77327bcd10749fadb40fd3c443fde7ab848a9fcf818820ad6b1dd07f3cd",
+      "bytes": 15247
+    },
+    {
+      "source": "ops/jobs/health/procedure.md",
+      "destination": "ops/jobs/health/procedure.md",
+      "sha256": "beda8a658016078dca7bb94015ff1f6be969c9deba397b5b7b9a607d1e10922d",
+      "bytes": 2190
+    },
+    {
+      "source": "ops/jobs/health/templates/check-in.md",
+      "destination": "ops/jobs/health/templates/check-in.md",
+      "sha256": "af448a678e137b8007c97ec0834281d4b342cfb4cead75db110088feb428cd57",
+      "bytes": 823
+    },
+    {
+      "source": "ops/jobs/health/templates/monthly-report.md",
+      "destination": "ops/jobs/health/templates/monthly-report.md",
+      "sha256": "19cd68bd92b691c53b8ae42b26eb96f872b5e775c6675fb77e3b5bcc4b67f036",
+      "bytes": 518
+    },
+    {
+      "source": "ops/jobs/health/templates/appointment-follow-up.md",
+      "destination": "ops/jobs/health/templates/appointment-follow-up.md",
+      "sha256": "94fb7a1f114f5e1da5abdbd5bfd77e566e09fdcad1b85a472442f035b5d92889",
+      "bytes": 375
+    },
+    {
+      "source": "ops/jobs/health/templates/export-plan.md",
+      "destination": "ops/jobs/health/templates/export-plan.md",
+      "sha256": "0379a5a7934c02e20d3735cb383c25c7d3395232826391cd79761cb84ac5bf7b",
+      "bytes": 471
+    },
     {
       "source": "Personality files/HEARTBEAT.md",
       "destination": "HEARTBEAT.md",
@@ -63,14 +285,14 @@
     {
       "source": "ops/render-template.ts",
       "destination": "ops/render-template.ts",
-      "sha256": "514d3708d04b329ae9b19d9f2168a5c7ff48319d2ee8f5678fe2497364063362",
-      "bytes": 2142
+      "sha256": "3ec89e04342c34b5d5a8a5493e41029517db4a1fa6c0300e4091a27839930218",
+      "bytes": 2164
     },
     {
       "source": "ops/templates.ts",
       "destination": "ops/templates.ts",
-      "sha256": "f9fd5be86c0b024079bcf040434397077f572eca0a756136a744a0759bb329bb",
-      "bytes": 10164
+      "sha256": "6739cc0274d636d1e98f2b2e8e25e35c31527b9625bf37c6c56088baedb65953",
+      "bytes": 10294
     },
     {
       "source": "ops/stage-workspace-seeds/tools/bin/lisa-safe",
