@@ -508,19 +508,24 @@ export type BrainV2PrivateCheckpoint = Readonly<{
 }>;
 
 export function preparePrivateCapture(input: {
+  namespace: "private";
   captureRef: string;
   idempotencyKey: string;
   metadata: Readonly<Record<string, unknown>>;
 }): BrainV2PrivateCapture {
-  if (!boundedRef(input.captureRef) || !boundedRef(input.idempotencyKey)) {
+  if (
+    input.namespace !== "private" ||
+    !boundedRef(input.captureRef) ||
+    !boundedRef(input.idempotencyKey)
+  ) {
     throw new Error("brain_v2_capture_reference_invalid");
   }
-  assertBrainV2SafePayload(input.metadata);
+  const metadata = assertBrainV2SafePayload(input.metadata);
   return {
     namespace: "private",
     captureRef: input.captureRef,
     idempotencyKey: input.idempotencyKey,
-    metadata: { ...input.metadata },
+    metadata,
   };
 }
 
@@ -537,12 +542,12 @@ export function preparePrivateCheckpoint(input: {
   ) {
     throw new Error("brain_v2_checkpoint_reference_invalid");
   }
-  assertBrainV2SafePayload(input.metadata);
+  const metadata = assertBrainV2SafePayload(input.metadata);
   return {
     namespace: "private",
     checkpointRef: input.checkpointRef,
     idempotencyKey: input.idempotencyKey,
-    metadata: { ...input.metadata },
+    metadata,
   };
 }
 
@@ -565,6 +570,12 @@ function assertCursorSnapshot(cursor: unknown, snapshotId: unknown): void {
   }
   if (snapshotId !== undefined && !boundedRef(snapshotId)) {
     throw new Error("brain_v2_snapshot_invalid");
+  }
+}
+
+function assertLoadReferences(reference: unknown, snapshotId: unknown): void {
+  if (!boundedRef(reference) || !boundedRef(snapshotId)) {
+    throw new Error("brain_v2_load_reference_invalid");
   }
 }
 
@@ -625,7 +636,7 @@ export function createBrainV2Client(input: {
           "unknown",
         ].includes(status)
       ) {
-        return { ok: false, status, reason: error.reason };
+        return { ok: false, status, reason: `brain_v2_${status}` };
       }
     }
     const reason = error instanceof Error ? error.message : "brain_v2_unavailable";
@@ -638,7 +649,7 @@ export function createBrainV2Client(input: {
         : reason.startsWith("brain_v2_")
           ? "contract_incompatible"
           : "offline";
-    return { ok: false, status, reason };
+    return { ok: false, status, reason: `brain_v2_${status}` };
   };
   const call = async <T>(
     operation: BrainV2Operation,
@@ -735,8 +746,14 @@ export function createBrainV2Client(input: {
         return safeFailure(error);
       }
     },
-    load: (reference, snapshotId) =>
-      call("v2.knowledge.load", { reference, snapshotId }, "record", snapshotId),
+    load: async (reference, snapshotId) => {
+      try {
+        assertLoadReferences(reference, snapshotId);
+        return await call("v2.knowledge.load", { reference, snapshotId }, "record", snapshotId);
+      } catch (error) {
+        return safeFailure(error);
+      }
+    },
     submitFinding: (metadata, idempotencyKey) =>
       mutation("v2.finding.submit", metadata, idempotencyKey),
     readInbox: async (cursor, snapshotId) => {

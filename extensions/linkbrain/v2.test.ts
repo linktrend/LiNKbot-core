@@ -212,6 +212,7 @@ describe("LiNKbrain v2 immutable consumer boundary", () => {
   it("requires explicit private namespaces and bounded idempotency references", () => {
     expect(
       preparePrivateCapture({
+        namespace: "private",
         captureRef: "capture:1",
         idempotencyKey: "idem:1",
         metadata: { kind: "note" },
@@ -227,14 +228,52 @@ describe("LiNKbrain v2 immutable consumer boundary", () => {
     ).toMatchObject({ namespace: "private", checkpointRef: "checkpoint:1" });
     expect(() =>
       preparePrivateCapture({
+        namespace: "private",
         captureRef: "capture:1",
         idempotencyKey: "idem:1",
         metadata: { transcript: "blocked" },
       }),
     ).toThrow();
     expect(() =>
-      preparePrivateCapture({ captureRef: "", idempotencyKey: "idem:1", metadata: {} }),
+      preparePrivateCapture({
+        namespace: "private",
+        captureRef: "",
+        idempotencyKey: "idem:1",
+        metadata: {},
+      }),
     ).toThrow();
+    expect(() =>
+      preparePrivateCapture({
+        captureRef: "capture:1",
+        idempotencyKey: "idem:1",
+        metadata: {},
+      } as never),
+    ).toThrow();
+  });
+
+  it("returns isolated validated metadata from private preparation", () => {
+    const captureMetadata = { nested: { label: "capture" } };
+    const checkpointMetadata = { nested: { label: "checkpoint" } };
+    const capture = preparePrivateCapture({
+      namespace: "private",
+      captureRef: "capture:1",
+      idempotencyKey: "idem:1",
+      metadata: captureMetadata,
+    });
+    const checkpoint = preparePrivateCheckpoint({
+      namespace: "private",
+      checkpointRef: "checkpoint:1",
+      idempotencyKey: "idem:2",
+      metadata: checkpointMetadata,
+    });
+
+    captureMetadata.nested.label = "mutated";
+    checkpointMetadata.nested.label = "mutated";
+
+    expect(capture.metadata).toEqual({ nested: { label: "capture" } });
+    expect(checkpoint.metadata).toEqual({ nested: { label: "checkpoint" } });
+    expect(capture.metadata).not.toBe(captureMetadata);
+    expect(checkpoint.metadata).not.toBe(checkpointMetadata);
   });
 
   it("requires negotiation before calls and never sends the credential reference", async () => {
@@ -267,6 +306,15 @@ describe("LiNKbrain v2 immutable consumer boundary", () => {
     });
     expect(await client.load("knowledge:1", "snapshot:brain-1")).toMatchObject({ ok: true });
     expect(requests[2]?.params).toMatchObject({ snapshotId: "snapshot:brain-1" });
+    expect(await client.load("not a reference", "snapshot:brain-1")).toMatchObject({
+      ok: false,
+      status: "contract_incompatible",
+    });
+    expect(await client.load("knowledge:1", "not a snapshot")).toMatchObject({
+      ok: false,
+      status: "contract_incompatible",
+    });
+    expect(requests).toHaveLength(3);
     expect(await client.search("knowledge", "v2:25", "snapshot:other")).toMatchObject({
       ok: false,
       status: "contract_incompatible",
@@ -328,5 +376,24 @@ describe("LiNKbrain v2 immutable consumer boundary", () => {
     });
     expect(await client.negotiate()).toMatchObject({ ok: false, status: "offline" });
     expect(await client.discovery()).toMatchObject({ ok: false, status: "contract_incompatible" });
+  });
+
+  it("sanitizes transport failure reasons", async () => {
+    const client = createBrainV2Client({
+      identity: identity(),
+      identityExpectation,
+      transport: {
+        request: async () => {
+          throw { status: "offline", reason: "Bearer secret-value" };
+        },
+      },
+      clock: () => NOW,
+    });
+
+    await expect(client.negotiate()).resolves.toEqual({
+      ok: false,
+      status: "offline",
+      reason: "brain_v2_offline",
+    });
   });
 });
