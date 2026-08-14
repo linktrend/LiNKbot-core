@@ -189,6 +189,18 @@ const FORBIDDEN_SECRET_KEYS = new Set([
   "secret",
   "token",
 ]);
+const canonicalKey = (key: string): string => key.replace(/[^A-Za-z0-9]/g, "").toLowerCase();
+const FORBIDDEN_FIELDS_CANONICAL = new Set([...FORBIDDEN_FIELDS].map(canonicalKey));
+const FORBIDDEN_IDENTITY_FIELDS_CANONICAL = new Set(
+  [...FORBIDDEN_IDENTITY_FIELDS].map(canonicalKey),
+);
+const FORBIDDEN_SECRET_KEYS_CANONICAL = new Set([
+  ...[...FORBIDDEN_SECRET_KEYS].map(canonicalKey),
+  "accesstoken",
+  "refreshtoken",
+  "credential",
+  "credentialvalue",
+]);
 const MAX_SAFE_NODES = 1_000;
 const MAX_SAFE_DEPTH = 16;
 const MAX_SAFE_KEYS = 100;
@@ -223,12 +235,22 @@ const assertSafeValue = (value: unknown): void => {
     if (nodes > MAX_SAFE_NODES) {
       throw new Error("brain_v2_payload_too_large");
     }
+    if (current.value === null) continue;
     if (typeof current.value === "string") {
       stringTotal += current.value.length;
       if (current.value.length > 512 || stringTotal > MAX_SAFE_STRING_TOTAL) {
         throw new Error(`brain_v2_unbounded_string:${current.path}`);
       }
       continue;
+    }
+    if (
+      typeof current.value === "boolean" ||
+      (typeof current.value === "number" && Number.isFinite(current.value))
+    ) {
+      continue;
+    }
+    if (typeof current.value !== "object") {
+      throw new Error(`brain_v2_non_json_value:${current.path}`);
     }
     if (Array.isArray(current.value)) {
       if (current.value.length > MAX_SAFE_KEYS || current.depth >= MAX_SAFE_DEPTH) {
@@ -243,7 +265,13 @@ const assertSafeValue = (value: unknown): void => {
       }
       continue;
     }
-    if (!objectRecord(current.value)) continue;
+    if (!objectRecord(current.value)) {
+      throw new Error(`brain_v2_non_plain_object:${current.path}`);
+    }
+    const prototype = Object.getPrototypeOf(current.value);
+    if (prototype !== Object.prototype && prototype !== null) {
+      throw new Error(`brain_v2_non_plain_object:${current.path}`);
+    }
     const entries = Object.entries(current.value);
     if (entries.length > MAX_SAFE_KEYS || current.depth >= MAX_SAFE_DEPTH) {
       throw new Error(`brain_v2_payload_depth_or_object:${current.path}`);
@@ -252,14 +280,18 @@ const assertSafeValue = (value: unknown): void => {
       const entry = entries[index];
       if (!entry) continue;
       const [key, child] = entry;
-      const normalizedKey = key.toLowerCase();
-      if (key.length > MAX_SAFE_KEY_LENGTH || FORBIDDEN_FIELDS.has(key)) {
+      const policyKey = canonicalKey(key);
+      if (key.length > MAX_SAFE_KEY_LENGTH || FORBIDDEN_FIELDS_CANONICAL.has(policyKey)) {
         throw new Error(`brain_v2_private_payload:${key}`);
       }
-      if (FORBIDDEN_IDENTITY_FIELDS.has(key)) {
+      if (FORBIDDEN_IDENTITY_FIELDS_CANONICAL.has(policyKey)) {
         throw new Error(`brain_v2_identity_override:${key}`);
       }
-      if (FORBIDDEN_SECRET_KEYS.has(normalizedKey) || normalizedKey.includes("secret")) {
+      if (
+        FORBIDDEN_SECRET_KEYS_CANONICAL.has(policyKey) ||
+        policyKey.includes("secret") ||
+        policyKey.includes("token")
+      ) {
         throw new Error(`brain_v2_secret_field:${key}`);
       }
       pending.push({ value: child, depth: current.depth + 1, path: `${current.path}.${key}` });
@@ -374,8 +406,9 @@ export function assertBrainV2Negotiation(input: unknown): asserts input is Brain
   }
 }
 
-export function assertBrainV2SafePayload(input: unknown): void {
+export function assertBrainV2SafePayload<T>(input: T): T {
   assertSafeValue(input);
+  return structuredClone(input);
 }
 
 const DISCLOSURE_ORDER: Record<BrainV2Disclosure, number> = {
@@ -525,6 +558,16 @@ function assertIdempotencyKey(value: unknown): asserts value is string {
   }
 }
 
+function assertCursorSnapshot(cursor: unknown, snapshotId: unknown): void {
+  assertCursor(cursor);
+  if (cursor !== undefined && !boundedRef(snapshotId)) {
+    throw new Error("brain_v2_snapshot_required_for_cursor");
+  }
+  if (snapshotId !== undefined && !boundedRef(snapshotId)) {
+    throw new Error("brain_v2_snapshot_invalid");
+  }
+}
+
 export function createBrainV2Client(input: {
   identity: BrainV2PlatformIdentity;
   identityExpectation: Omit<BrainV2IdentityExpectation, "now">;
@@ -533,14 +576,18 @@ export function createBrainV2Client(input: {
 }): {
   negotiate(): Promise<BrainV2SafeResult<BrainV2Negotiation>>;
   discovery(): Promise<BrainV2SafeResult<BrainV2Page<unknown>>>;
-  search(query: string, cursor?: string): Promise<BrainV2SafeResult<BrainV2Page<unknown>>>;
-  browse(cursor?: string): Promise<BrainV2SafeResult<BrainV2Page<unknown>>>;
+  search(
+    query: string,
+    cursor?: string,
+    snapshotId?: string,
+  ): Promise<BrainV2SafeResult<BrainV2Page<unknown>>>;
+  browse(cursor?: string, snapshotId?: string): Promise<BrainV2SafeResult<BrainV2Page<unknown>>>;
   load(reference: string, snapshotId: string): Promise<BrainV2SafeResult<BrainV2Page<unknown>>>;
   submitFinding(
     metadata: Readonly<Record<string, unknown>>,
     idempotencyKey: string,
   ): Promise<BrainV2SafeResult<BrainV2Page<unknown>>>;
-  readInbox(cursor?: string): Promise<BrainV2SafeResult<BrainV2Page<unknown>>>;
+  readInbox(cursor?: string, snapshotId?: string): Promise<BrainV2SafeResult<BrainV2Page<unknown>>>;
   sendMessage(
     metadata: Readonly<Record<string, unknown>>,
     idempotencyKey: string,
@@ -608,17 +655,17 @@ export function createBrainV2Client(input: {
           reason: "brain_v2_negotiation_required",
         };
       }
-      assertBrainV2SafePayload(params);
+      const safeParams = assertBrainV2SafePayload(params);
       const response = await input.transport.request({
         protocolVersion: LINKBRAIN_V2_MCP_PROTOCOL,
         method: "tools/call",
         actorBindingRef: input.identity.runtimeBindingRef,
         organizationRef: input.identity.organizationRef,
         contractVersion: LINKBRAIN_V2_CONTRACT_VERSION,
-        params: { operation, disclosure, ...params },
+        params: { operation, disclosure, ...safeParams },
       });
       assertBrainV2Page<T>(response, operation, snapshotId);
-      return { ok: true, data: response };
+      return { ok: true, data: structuredClone(response) as BrainV2Page<T> };
     } catch (error) {
       return safeFailure(error);
     }
@@ -655,22 +702,35 @@ export function createBrainV2Client(input: {
       }
     },
     discovery: () => call("v2.discovery", {}, "guide"),
-    search: async (query, cursor) => {
+    search: async (query, cursor, snapshotId) => {
       try {
-        assertCursor(cursor);
+        assertCursorSnapshot(cursor, snapshotId);
         return await call(
           "v2.knowledge.search",
-          { query, ...(cursor === undefined ? {} : { cursor }) },
+          {
+            query,
+            ...(cursor === undefined ? {} : { cursor }),
+            ...(snapshotId === undefined ? {} : { snapshotId }),
+          },
           "index",
+          snapshotId,
         );
       } catch (error) {
         return safeFailure(error);
       }
     },
-    browse: async (cursor) => {
+    browse: async (cursor, snapshotId) => {
       try {
-        assertCursor(cursor);
-        return await call("v2.knowledge.browse", cursor === undefined ? {} : { cursor }, "index");
+        assertCursorSnapshot(cursor, snapshotId);
+        return await call(
+          "v2.knowledge.browse",
+          {
+            ...(cursor === undefined ? {} : { cursor }),
+            ...(snapshotId === undefined ? {} : { snapshotId }),
+          },
+          "index",
+          snapshotId,
+        );
       } catch (error) {
         return safeFailure(error);
       }
@@ -679,10 +739,18 @@ export function createBrainV2Client(input: {
       call("v2.knowledge.load", { reference, snapshotId }, "record", snapshotId),
     submitFinding: (metadata, idempotencyKey) =>
       mutation("v2.finding.submit", metadata, idempotencyKey),
-    readInbox: async (cursor) => {
+    readInbox: async (cursor, snapshotId) => {
       try {
-        assertCursor(cursor);
-        return await call("v2.inbox.read", cursor === undefined ? {} : { cursor }, "metadata");
+        assertCursorSnapshot(cursor, snapshotId);
+        return await call(
+          "v2.inbox.read",
+          {
+            ...(cursor === undefined ? {} : { cursor }),
+            ...(snapshotId === undefined ? {} : { snapshotId }),
+          },
+          "metadata",
+          snapshotId,
+        );
       } catch (error) {
         return safeFailure(error);
       }
