@@ -146,6 +146,8 @@ describe("validatePlatformTrustFacts", () => {
     ["wrong capability", { capabilities: ["other"] }],
     ["revoked", { revocationStatus: "revoked" }],
     ["expired", { expiresAt: "2026-08-13T00:00:00.000Z" }],
+    ["malformed issued date", { issuedAt: "2026-02-30T00:00:00.000Z" }],
+    ["malformed expiry date", { expiresAt: "2026-02-30T00:00:00.000Z" }],
     ["private payload field", { privatePayload: "fixture-private-payload" }],
   ] as const)("fails closed for %s", (_name, change) => {
     expect(

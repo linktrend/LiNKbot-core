@@ -86,4 +86,17 @@ describe("normalizeIntegrationStatus", () => {
       error: "malformed",
     });
   });
+
+  it.each(["observedAt", "sourceTimestamp"] as const)(
+    "rejects nonexistent calendar dates in %s",
+    (field) => {
+      expect(
+        normalizeIntegrationStatus({
+          ...base,
+          state: "available",
+          [field]: "2026-02-30T00:00:00.000Z",
+        }),
+      ).toMatchObject({ ok: false, error: "malformed" });
+    },
+  );
 });

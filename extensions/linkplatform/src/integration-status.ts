@@ -1,3 +1,5 @@
+import { parseStrictIsoTimestamp } from "./timestamps.js";
+
 export const INTEGRATION_PROVIDERS = [
   "Platform",
   "Brain",
@@ -66,7 +68,7 @@ const isNonEmptyString = (value: unknown): value is string =>
   typeof value === "string" && value.length > 0;
 
 const isIsoTimestamp = (value: unknown): value is string =>
-  isNonEmptyString(value) && !Number.isNaN(Date.parse(value)) && value.includes("T");
+  isNonEmptyString(value) && parseStrictIsoTimestamp(value) !== undefined;
 
 const isNarrative = (value: unknown): value is string =>
   typeof value === "string" &&

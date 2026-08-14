@@ -1,3 +1,5 @@
+import { parseStrictIsoTimestamp } from "./timestamps.js";
+
 export const PLATFORM_COMMIT = "5452f90a35ed690698a9161117a9d92c69985582" as const;
 export const PLATFORM_TREE = "90b51726f7a77e4620151a463a10cfc3d2007c88" as const;
 export const PLATFORM_AUTH_CLAIMS_CONTRACT_VERSION = "platform.auth-claims/1.1.0" as const;
@@ -192,9 +194,6 @@ const TRUST_KEYS = new Set([
   "revocationStatus",
 ]);
 const TRUST_REF = /^[A-Za-z0-9._:/@-]{1,256}$/;
-const TRUST_TIME = (value: unknown): value is string =>
-  typeof value === "string" && Number.isFinite(Date.parse(value));
-
 /** Validates Platform's already-verified trust projection without exposing credential material. */
 export function validatePlatformTrustFacts(
   input: unknown,
@@ -259,22 +258,22 @@ export function validatePlatformTrustFacts(
   const now =
     expected.now instanceof Date
       ? expected.now.getTime()
-      : Date.parse(expected.now ?? new Date().toISOString());
-  const revocationObservedAt = Date.parse(expected.revocationObservedAt);
+      : parseStrictIsoTimestamp(expected.now ?? new Date().toISOString());
+  const revocationObservedAt = parseStrictIsoTimestamp(expected.revocationObservedAt);
   if (
+    revocationObservedAt === undefined ||
+    now === undefined ||
     !Number.isFinite(revocationObservedAt) ||
     !Number.isFinite(now) ||
     revocationObservedAt > now ||
     now - revocationObservedAt > 5 * 60 * 1000
   )
     return { valid: false, reason: "revocation evidence is stale" };
-  if (!TRUST_TIME(value.issuedAt) || !TRUST_TIME(value.expiresAt))
+  const issuedAt = parseStrictIsoTimestamp(value.issuedAt);
+  const expiresAt = parseStrictIsoTimestamp(value.expiresAt);
+  if (issuedAt === undefined || expiresAt === undefined)
     return { valid: false, reason: "invalid trust timestamps" };
-  if (
-    !Number.isFinite(now) ||
-    Date.parse(value.issuedAt as string) > now ||
-    Date.parse(value.expiresAt as string) <= now
-  )
+  if (now === undefined || issuedAt > now || expiresAt <= now)
     return { valid: false, reason: "trust facts expired or not yet issued" };
   return {
     valid: true,
