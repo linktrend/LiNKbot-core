@@ -3,5 +3,6 @@
   "ciWorkflowName": "CI",
   "branchPolicyWorkflowName": "Branch Source Policy",
   "bugbotCheckName": "Cursor Bugbot",
-  "runnerType": "linktrend-private-macos-arm64"
+  "runnerType": "github-hosted",
+  "fastWorkflowName": "Linktrend Fast Checks"
 }
