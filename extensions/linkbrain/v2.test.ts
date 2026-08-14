@@ -1,0 +1,236 @@
+import { describe, expect, it } from "vitest";
+import {
+  BRAIN_V2_DISCLOSURE_LEVELS,
+  BRAIN_V2_OPERATIONS,
+  LINKBRAIN_V2_COMMIT,
+  LINKBRAIN_V2_CONTRACT_VERSION,
+  LINKBRAIN_V2_MCP_PROTOCOL,
+  LINKBRAIN_V2_TREE,
+  assertBrainV2Negotiation,
+  assertBrainV2Page,
+  assertBrainV2PlatformIdentity,
+  assertBrainV2SafePayload,
+  createBrainV2Client,
+  preparePrivateCapture,
+  preparePrivateCheckpoint,
+  type BrainV2PlatformIdentity,
+  type BrainV2TransportRequest,
+} from "./src/v2.js";
+
+const NOW = "2026-08-14T12:00:00.000Z";
+const identity = (): BrainV2PlatformIdentity => ({
+  providerCandidate: {
+    commit: "5452f90a35ed690698a9161117a9d92c69985582",
+    tree: "90b51726f7a77e4620151a463a10cfc3d2007c88",
+  },
+  claimContractVersion: "platform.auth-claims/1.1.0",
+  schemaVersion: "2026.07.28-w4",
+  actorId: "actor:ocp",
+  organizationRef: "org:linktrend",
+  runtimeBindingRef: "binding:ocp-brain",
+  credentialReference: "credential-ref:platform-brain",
+  issuer: "issuer:platform",
+  audience: "audience:brain",
+  serviceScopes: ["brain.v2"],
+  capabilities: ["brain.knowledge"],
+  issuedAt: "2026-08-14T11:00:00.000Z",
+  expiresAt: "2026-08-14T13:00:00.000Z",
+  revocationStatus: "active",
+});
+
+const expected = {
+  actorId: "actor:ocp",
+  organizationRef: "org:linktrend",
+  runtimeBindingRef: "binding:ocp-brain",
+  issuer: "issuer:platform",
+  audience: "audience:brain",
+  requiredScope: "brain.v2",
+  requiredCapability: "brain.knowledge",
+  now: NOW,
+};
+
+const negotiation = {
+  protocolVersion: LINKBRAIN_V2_MCP_PROTOCOL,
+  sessionless: true,
+  contractVersion: LINKBRAIN_V2_CONTRACT_VERSION,
+  authority: "advisory",
+  executionAuthority: "none",
+  sdkSupportsModernProtocol: true,
+} as const;
+
+const page = (disclosure: "guide" | "index" | "metadata" | "record") => ({
+  snapshotId: "snapshot:brain-1",
+  disclosure,
+  pagination: { limit: 25, nextCursor: "v2:25" },
+  data: { reference: "knowledge:1", title: "bounded metadata" },
+});
+
+describe("LiNKbrain v2 immutable consumer boundary", () => {
+  it("pins the final provider and exposes the ordered contract surface", () => {
+    expect(LINKBRAIN_V2_COMMIT).toBe("8ce1d737f8870a479f07b1741c58d6681cd07aa1");
+    expect(LINKBRAIN_V2_TREE).toBe("0cae42d612342f5e52c7e2e0e76cb6fc2f6d81f3");
+    expect(BRAIN_V2_DISCLOSURE_LEVELS).toEqual([
+      "guide",
+      "index",
+      "metadata",
+      "record",
+      "evidence",
+    ]);
+    expect(BRAIN_V2_OPERATIONS).toContain("v2.knowledge.search");
+    expect(BRAIN_V2_OPERATIONS).toContain("v2.checkpoint.write");
+  });
+
+  it("accepts Platform trust facts only when actor, binding, audience, scope and capability match", () => {
+    expect(() => assertBrainV2PlatformIdentity(identity(), expected)).not.toThrow();
+    for (const field of ["audience", "runtimeBindingRef", "issuer"] as const) {
+      const candidate = { ...identity(), [field]: `${identity()[field]}:wrong` };
+      expect(() => assertBrainV2PlatformIdentity(candidate, expected)).toThrow();
+    }
+    expect(() =>
+      assertBrainV2PlatformIdentity({ ...identity(), serviceScopes: ["other"] }, expected),
+    ).toThrow();
+    expect(() =>
+      assertBrainV2PlatformIdentity({ ...identity(), capabilities: ["other"] }, expected),
+    ).toThrow();
+    expect(() =>
+      assertBrainV2PlatformIdentity({ ...identity(), revocationStatus: "revoked" }, expected),
+    ).toThrow();
+    expect(() =>
+      assertBrainV2PlatformIdentity({ ...identity(), expiresAt: NOW }, expected),
+    ).toThrow();
+    expect(() =>
+      assertBrainV2PlatformIdentity({ ...identity(), secret: "never" }, expected),
+    ).toThrow();
+  });
+
+  it("rejects stale, future, malformed and incorrectly pinned Platform facts", () => {
+    expect(() =>
+      assertBrainV2PlatformIdentity(
+        { ...identity(), issuedAt: "2026-08-14T13:00:01.000Z" },
+        expected,
+      ),
+    ).toThrow();
+    expect(() =>
+      assertBrainV2PlatformIdentity({ ...identity(), expiresAt: "not-a-time" }, expected),
+    ).toThrow();
+    expect(() =>
+      assertBrainV2PlatformIdentity(
+        {
+          ...identity(),
+          providerCandidate: { commit: "a".repeat(40), tree: identity().providerCandidate.tree },
+        },
+        expected,
+      ),
+    ).toThrow();
+  });
+
+  it("requires modern sessionless negotiation and fails closed for v1 or session IDs", () => {
+    expect(() => assertBrainV2Negotiation(negotiation)).not.toThrow();
+    for (const candidate of [
+      { ...negotiation, protocolVersion: "2025-06-18" },
+      { ...negotiation, sessionless: false },
+      { ...negotiation, contractVersion: "1.0.0" },
+      { ...negotiation, sdkSupportsModernProtocol: false },
+      { ...negotiation, sessionId: "session-1" },
+    ]) {
+      expect(() => assertBrainV2Negotiation(candidate)).toThrow();
+    }
+  });
+
+  it("enforces operation-specific disclosure ceilings, snapshot stability and cursors", () => {
+    expect(() => assertBrainV2Page(page("index"), "v2.knowledge.search")).not.toThrow();
+    expect(() => assertBrainV2Page(page("record"), "v2.knowledge.search")).toThrow();
+    expect(() =>
+      assertBrainV2Page(page("record"), "v2.knowledge.load", "snapshot:other"),
+    ).toThrow();
+    expect(() =>
+      assertBrainV2Page(
+        { ...page("index"), pagination: { limit: 25, cursor: "old:1" } },
+        "v2.knowledge.search",
+      ),
+    ).toThrow();
+    expect(() =>
+      assertBrainV2Page({ ...page("index"), data: { content: "private" } }, "v2.knowledge.search"),
+    ).toThrow();
+  });
+
+  it("rejects reasoning, secrets, raw output, payloads and identity overrides", () => {
+    for (const key of [
+      "reasoning",
+      "secret",
+      "rawToolOutput",
+      "transcript",
+      "payload",
+      "actorId",
+    ]) {
+      expect(() => assertBrainV2SafePayload({ [key]: "blocked" })).toThrow();
+    }
+    expect(() =>
+      assertBrainV2SafePayload({ refs: ["knowledge:1"], metadata: { title: "safe" } }),
+    ).not.toThrow();
+    expect(() => assertBrainV2SafePayload({ text: "x".repeat(513) })).toThrow();
+  });
+
+  it("requires explicit private namespaces and bounded idempotency references", () => {
+    expect(
+      preparePrivateCapture({
+        captureRef: "capture:1",
+        idempotencyKey: "idem:1",
+        metadata: { kind: "note" },
+      }),
+    ).toMatchObject({ namespace: "private" });
+    expect(
+      preparePrivateCheckpoint({
+        checkpointRef: "checkpoint:1",
+        idempotencyKey: "idem:2",
+        metadata: { state: "bounded" },
+      }),
+    ).toMatchObject({ namespace: "private" });
+    expect(() =>
+      preparePrivateCapture({
+        captureRef: "capture:1",
+        idempotencyKey: "idem:1",
+        metadata: { transcript: "blocked" },
+      }),
+    ).toThrow();
+    expect(() =>
+      preparePrivateCapture({ captureRef: "", idempotencyKey: "idem:1", metadata: {} }),
+    ).toThrow();
+  });
+
+  it("requires negotiation before calls and never sends the credential reference", async () => {
+    const requests: BrainV2TransportRequest[] = [];
+    const transport = {
+      async request(request: BrainV2TransportRequest) {
+        requests.push(request);
+        return request.method === "discover" ? negotiation : page("index");
+      },
+    };
+    const client = createBrainV2Client({ identity: identity(), transport, now: NOW });
+    expect(await client.search("knowledge")).toMatchObject({
+      ok: false,
+      status: "contract_incompatible",
+    });
+    expect(await client.negotiate()).toMatchObject({ ok: true });
+    expect(await client.search("knowledge")).toMatchObject({
+      ok: true,
+      data: { disclosure: "index" },
+    });
+    expect(requests[1]).not.toHaveProperty("credentialReference");
+    expect(requests[1]).not.toHaveProperty("credentialValue");
+  });
+
+  it("returns safe unavailable results without a silent downgrade", async () => {
+    const client = createBrainV2Client({
+      identity: identity(),
+      transport: {
+        request: async () => {
+          throw new Error("offline");
+        },
+      },
+      now: NOW,
+    });
+    expect(await client.negotiate()).toMatchObject({ ok: false, status: "offline" });
+    expect(await client.discovery()).toMatchObject({ ok: false, status: "contract_incompatible" });
+  });
+});

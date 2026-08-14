@@ -10459,6 +10459,14 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Troubleshooting
   - H2: Related
 
+## link-integrations/ocp-01/brain-consumer.md
+
+- Route: /link-integrations/ocp-01/brain-consumer
+- Headings:
+  - H1: OpenClaw Prime Brain consumer
+  - H2: Immutable provider identity
+  - H2: Consumer boundary
+
 ## link-integrations/ocp-01/platform-foundation.md
 
 - Route: /link-integrations/ocp-01/platform-foundation
