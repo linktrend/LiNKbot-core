@@ -209,6 +209,9 @@ const assertSafeValue = (value: unknown, path = "value"): void => {
     if (FORBIDDEN_FIELDS.has(key)) {
       throw new Error(`brain_v2_private_payload:${key}`);
     }
+    if (FORBIDDEN_IDENTITY_FIELDS.has(key)) {
+      throw new Error(`brain_v2_identity_override:${key}`);
+    }
     assertSafeValue(child, `${path}.${key}`);
   }
 };
@@ -322,13 +325,6 @@ export function assertBrainV2Negotiation(input: unknown): asserts input is Brain
 
 export function assertBrainV2SafePayload(input: unknown): void {
   assertSafeValue(input);
-  if (objectRecord(input)) {
-    for (const key of Object.keys(input)) {
-      if (FORBIDDEN_IDENTITY_FIELDS.has(key)) {
-        throw new Error(`brain_v2_identity_override:${key}`);
-      }
-    }
-  }
 }
 
 const DISCLOSURE_ORDER: Record<BrainV2Disclosure, number> = {
@@ -340,14 +336,25 @@ const DISCLOSURE_ORDER: Record<BrainV2Disclosure, number> = {
 };
 const OPERATION_DISCLOSURE: Readonly<Record<string, BrainV2Disclosure>> = {
   "v2.discovery": "guide",
-  "v2.knowledge.search": "index",
-  "v2.knowledge.browse": "index",
-  "v2.knowledge.load": "record",
-  "v2.finding.submit": "metadata",
+  "v2.capability.status": "metadata",
+  "v2.projection.ingest": "metadata",
+  "v2.projection.list": "index",
+  "v2.projection.get": "record",
+  "v2.projection.evidence": "evidence",
+  "v2.task.get": "record",
+  "v2.task.list": "index",
   "v2.inbox.read": "metadata",
   "v2.message.send": "metadata",
   "v2.checkpoint.write": "metadata",
+  "v2.handoff.create": "metadata",
+  "v2.handoff.accept": "metadata",
   "v2.conflict.report": "metadata",
+  "v2.event.poll": "metadata",
+  "v2.event.ack": "metadata",
+  "v2.finding.submit": "metadata",
+  "v2.knowledge.search": "index",
+  "v2.knowledge.browse": "index",
+  "v2.knowledge.load": "record",
 };
 
 export function assertBrainV2Page<T>(
@@ -378,6 +385,8 @@ export function assertBrainV2Page<T>(
   if (!objectRecord(pagination)) {
     throw new Error("brain_v2_pagination_invalid");
   }
+  assertObjectKeys(pagination, ["limit", "cursor", "nextCursor"]);
+  assertBrainV2SafePayload(pagination);
   if (
     typeof pagination.limit !== "number" ||
     !Number.isSafeInteger(pagination.limit) ||
@@ -404,6 +413,13 @@ export type BrainV2PrivateCapture = Readonly<{
   metadata: Readonly<Record<string, unknown>>;
 }>;
 
+export type BrainV2PrivateCheckpoint = Readonly<{
+  namespace: "private";
+  checkpointRef: string;
+  idempotencyKey: string;
+  metadata: Readonly<Record<string, unknown>>;
+}>;
+
 export function preparePrivateCapture(input: {
   captureRef: string;
   idempotencyKey: string;
@@ -425,18 +441,24 @@ export function preparePrivateCheckpoint(input: {
   checkpointRef: string;
   idempotencyKey: string;
   metadata: Readonly<Record<string, unknown>>;
-}): BrainV2PrivateCapture {
-  return preparePrivateCapture({
-    captureRef: input.checkpointRef,
+}): BrainV2PrivateCheckpoint {
+  if (!boundedRef(input.checkpointRef) || !boundedRef(input.idempotencyKey)) {
+    throw new Error("brain_v2_checkpoint_reference_invalid");
+  }
+  assertBrainV2SafePayload(input.metadata);
+  return {
+    namespace: "private",
+    checkpointRef: input.checkpointRef,
     idempotencyKey: input.idempotencyKey,
-    metadata: input.metadata,
-  });
+    metadata: { ...input.metadata },
+  };
 }
 
 export function createBrainV2Client(input: {
   identity: BrainV2PlatformIdentity;
+  identityExpectation: Omit<BrainV2IdentityExpectation, "now">;
   transport: BrainV2Transport;
-  now?: Date | string;
+  clock?: () => Date | string;
 }): {
   negotiate(): Promise<BrainV2SafeResult<BrainV2Negotiation>>;
   discovery(): Promise<BrainV2SafeResult<BrainV2Page<unknown>>>;
@@ -453,7 +475,7 @@ export function createBrainV2Client(input: {
     idempotencyKey: string,
   ): Promise<BrainV2SafeResult<BrainV2Page<unknown>>>;
   writeCheckpoint(
-    checkpoint: BrainV2PrivateCapture,
+    checkpoint: BrainV2PrivateCheckpoint,
   ): Promise<BrainV2SafeResult<BrainV2Page<unknown>>>;
   reportConflict(
     metadata: Readonly<Record<string, unknown>>,
@@ -461,16 +483,10 @@ export function createBrainV2Client(input: {
   ): Promise<BrainV2SafeResult<BrainV2Page<unknown>>>;
 } {
   let negotiated = false;
-  const expected = {
-    actorId: input.identity.actorId,
-    organizationRef: input.identity.organizationRef,
-    runtimeBindingRef: input.identity.runtimeBindingRef,
-    issuer: input.identity.issuer,
-    audience: input.identity.audience,
-    requiredScope: "brain.v2",
-    requiredCapability: "brain.knowledge",
-    now: input.now,
-  };
+  const currentIdentityExpectation = (): BrainV2IdentityExpectation => ({
+    ...input.identityExpectation,
+    now: input.clock?.() ?? new Date(),
+  });
   const safeFailure = (error: unknown): BrainV2SafeResult<never> => {
     const reason = error instanceof Error ? error.message : "brain_v2_unavailable";
     const status: BrainV2ProviderStatus = /unauthorized|identity|scope|capability|revoked/.test(
@@ -489,7 +505,7 @@ export function createBrainV2Client(input: {
     snapshotId?: string,
   ): Promise<BrainV2SafeResult<BrainV2Page<T>>> => {
     try {
-      assertBrainV2PlatformIdentity(input.identity, expected);
+      assertBrainV2PlatformIdentity(input.identity, currentIdentityExpectation());
       if (!negotiated) {
         return {
           ok: false,
@@ -515,7 +531,7 @@ export function createBrainV2Client(input: {
   return {
     async negotiate() {
       try {
-        assertBrainV2PlatformIdentity(input.identity, expected);
+        assertBrainV2PlatformIdentity(input.identity, currentIdentityExpectation());
         const response = await input.transport.request({
           protocolVersion: LINKBRAIN_V2_MCP_PROTOCOL,
           method: "discover",
@@ -543,7 +559,14 @@ export function createBrainV2Client(input: {
       call("v2.inbox.read", cursor === undefined ? {} : { cursor }, "metadata"),
     sendMessage: (metadata, idempotencyKey) =>
       call("v2.message.send", { metadata, idempotencyKey }, "metadata"),
-    writeCheckpoint: (checkpoint) => call("v2.checkpoint.write", checkpoint, "metadata"),
+    writeCheckpoint: async (checkpoint) => {
+      try {
+        const normalized = preparePrivateCheckpoint(checkpoint);
+        return await call("v2.checkpoint.write", normalized, "metadata");
+      } catch (error) {
+        return safeFailure(error);
+      }
+    },
     reportConflict: (metadata, idempotencyKey) =>
       call("v2.conflict.report", { metadata, idempotencyKey }, "metadata"),
   };

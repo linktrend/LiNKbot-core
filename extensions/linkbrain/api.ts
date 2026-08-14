@@ -72,6 +72,7 @@ export {
   type BrainV2Operation,
   type BrainV2Page,
   type BrainV2PlatformIdentity,
+  type BrainV2PrivateCheckpoint,
   type BrainV2PrivateCapture,
   type BrainV2ProviderStatus,
   type BrainV2SafeResult,

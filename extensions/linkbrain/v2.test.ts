@@ -48,6 +48,15 @@ const expected = {
   requiredCapability: "brain.knowledge",
   now: NOW,
 };
+const identityExpectation = {
+  actorId: expected.actorId,
+  organizationRef: expected.organizationRef,
+  runtimeBindingRef: expected.runtimeBindingRef,
+  issuer: expected.issuer,
+  audience: expected.audience,
+  requiredScope: expected.requiredScope,
+  requiredCapability: expected.requiredCapability,
+};
 
 const negotiation = {
   protocolVersion: LINKBRAIN_V2_MCP_PROTOCOL,
@@ -150,6 +159,12 @@ describe("LiNKbrain v2 immutable consumer boundary", () => {
       ),
     ).toThrow();
     expect(() =>
+      assertBrainV2Page(
+        { ...page("index"), pagination: { limit: 25, payload: { transcript: "blocked" } } },
+        "v2.knowledge.search",
+      ),
+    ).toThrow();
+    expect(() =>
       assertBrainV2Page({ ...page("index"), data: { content: "private" } }, "v2.knowledge.search"),
     ).toThrow();
   });
@@ -168,6 +183,7 @@ describe("LiNKbrain v2 immutable consumer boundary", () => {
     expect(() =>
       assertBrainV2SafePayload({ refs: ["knowledge:1"], metadata: { title: "safe" } }),
     ).not.toThrow();
+    expect(() => assertBrainV2SafePayload({ metadata: { actorId: "other" } })).toThrow();
     expect(() => assertBrainV2SafePayload({ text: "x".repeat(513) })).toThrow();
   });
 
@@ -185,7 +201,7 @@ describe("LiNKbrain v2 immutable consumer boundary", () => {
         idempotencyKey: "idem:2",
         metadata: { state: "bounded" },
       }),
-    ).toMatchObject({ namespace: "private" });
+    ).toMatchObject({ namespace: "private", checkpointRef: "checkpoint:1" });
     expect(() =>
       preparePrivateCapture({
         captureRef: "capture:1",
@@ -206,7 +222,13 @@ describe("LiNKbrain v2 immutable consumer boundary", () => {
         return request.method === "discover" ? negotiation : page("index");
       },
     };
-    const client = createBrainV2Client({ identity: identity(), transport, now: NOW });
+    let now = NOW;
+    const client = createBrainV2Client({
+      identity: identity(),
+      identityExpectation,
+      transport,
+      clock: () => now,
+    });
     expect(await client.search("knowledge")).toMatchObject({
       ok: false,
       status: "contract_incompatible",
@@ -218,17 +240,54 @@ describe("LiNKbrain v2 immutable consumer boundary", () => {
     });
     expect(requests[1]).not.toHaveProperty("credentialReference");
     expect(requests[1]).not.toHaveProperty("credentialValue");
+    now = "2026-08-14T13:00:00.000Z";
+    expect(await client.search("knowledge")).toMatchObject({ ok: false, status: "unauthorized" });
+    expect(requests).toHaveLength(2);
+  });
+
+  it("uses independent trusted expectations and revalidates checkpoint writes at runtime", async () => {
+    const requests: BrainV2TransportRequest[] = [];
+    const transport = {
+      async request(request: BrainV2TransportRequest) {
+        requests.push(request);
+        return request.method === "discover" ? negotiation : page("metadata");
+      },
+    };
+    const client = createBrainV2Client({
+      identity: identity(),
+      identityExpectation: { ...identityExpectation, actorId: "actor:intended" },
+      transport,
+      clock: () => NOW,
+    });
+    expect(await client.negotiate()).toMatchObject({ ok: false, status: "unauthorized" });
+    const validClient = createBrainV2Client({
+      identity: identity(),
+      identityExpectation,
+      transport,
+      clock: () => NOW,
+    });
+    expect(await validClient.negotiate()).toMatchObject({ ok: true });
+    expect(
+      await validClient.writeCheckpoint({
+        namespace: "public",
+        checkpointRef: "",
+        idempotencyKey: "",
+        metadata: {},
+      } as never),
+    ).toMatchObject({ ok: false });
+    expect(requests).toHaveLength(1);
   });
 
   it("returns safe unavailable results without a silent downgrade", async () => {
     const client = createBrainV2Client({
       identity: identity(),
+      identityExpectation,
       transport: {
         request: async () => {
           throw new Error("offline");
         },
       },
-      now: NOW,
+      clock: () => NOW,
     });
     expect(await client.negotiate()).toMatchObject({ ok: false, status: "offline" });
     expect(await client.discovery()).toMatchObject({ ok: false, status: "contract_incompatible" });
