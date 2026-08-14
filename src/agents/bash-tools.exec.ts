@@ -12,6 +12,7 @@ import {
   normalizeOptionalString,
 } from "@openclaw/normalization-core/string-coerce";
 import { normalizeChatChannelId } from "../channels/ids.js";
+import { emitTrustedSecurityEvent } from "../infra/diagnostic-events.js";
 import {
   type ExecAsk,
   type ExecHost,
@@ -62,6 +63,7 @@ import {
   DEFAULT_PENDING_MAX_OUTPUT,
   type ExecProcessHandle,
   type ExecProcessOutcome,
+  type ExecExecutionPath,
   applyPathPrepend,
   applyShellPath,
   normalizePathPrepend,
@@ -90,6 +92,7 @@ import {
   truncateMiddle,
 } from "./bash-tools.shared.js";
 import { createModelExecAutoReviewer } from "./exec-auto-reviewer.js";
+import { decideExecRoute, screenExecCommand } from "./exec-route-policy.js";
 import type { AgentToolResult } from "./runtime/index.js";
 import { EXEC_TOOL_DISPLAY_SUMMARY } from "./tool-description-presets.js";
 import { type AgentToolWithMeta, failedTextResult, textResult } from "./tools/common.js";
@@ -1401,6 +1404,7 @@ export function createExecTool(
       requestedTarget,
       elevatedRequested: elevatedMode !== "off",
       sandboxAvailable: Boolean(defaults?.sandbox),
+      sandboxRequired: defaults?.sandboxRequired,
     }).effectiveHost;
   };
   const buildUnavailableWorkdirResult = (params: {
@@ -1637,7 +1641,63 @@ export function createExecTool(
             : "off"
           : effectiveDefaultMode;
       const elevatedRequested = elevatedMode !== "off";
-      if (elevatedRequested) {
+      if (!params.command) {
+        throw new Error("Provide a command to start.");
+      }
+      // Control commands are universally denied; profile STOP routing is opt-in.
+      await rejectUnsafeExecControlShellCommand(params.command);
+      const resolvedApprovals = resolveExecApprovalsFromFile({
+        file: loadExecApprovals(),
+        agentId,
+        overrides: { security: "full", ask: "off" },
+      });
+      const routeScreen = resolvedApprovals.secureRouting
+        ? await screenExecCommand({
+            command: params.command,
+            denylist: resolvedApprovals.denylist,
+            cwd: params.workdir ?? defaults?.cwd,
+            env: process.env,
+          })
+        : undefined;
+      const requestedTarget = requireValidExecTarget(params.host);
+      const route = decideExecRoute({
+        secureRouting: resolvedApprovals.secureRouting,
+        screen: routeScreen,
+        configuredTarget: defaults?.host ?? "auto",
+        requestedTarget,
+        elevatedRequested,
+        sandboxRequired: defaults?.sandboxRequired === true,
+        hostAdapters: resolvedApprovals.hostAdapters,
+      });
+      if (route.kind === "denied") {
+        emitTrustedSecurityEvent({
+          category: "audit",
+          action: "exec.route.denied",
+          outcome: "denied",
+          severity: "high",
+          actor: { kind: "agent" },
+          target: { kind: "tool", name: "system.exec", owner: "exec" },
+          policy: { id: "exec.route", decision: "deny" },
+          control: { id: "exec.routing", family: "authorization" },
+          reason: "prohibited exec command",
+          attributes: {
+            execution_path: "denied",
+            route_decision: "prohibited",
+            route_reason: route.reason,
+          },
+        });
+        throw new Error(`exec denied: prohibited command (${route.reason})`);
+      }
+      const adapterEnvironment = route.kind === "host-adapter" ? route.environment : undefined;
+      if (route.kind === "host-adapter") {
+        if (params.env && Object.keys(params.env).length > 0) {
+          throw new Error("exec host adapter does not accept caller environment overrides");
+        }
+        // The renderer replays the analyzed argv with safe quoting, not model shell text.
+        params = { ...params, command: route.enforcedCommand };
+      }
+
+      if (route.kind === "host-elevated" && elevatedRequested) {
         if (!elevatedDefaults?.enabled || !elevatedDefaults.allowed) {
           const runtime = defaults?.sandbox ? "sandboxed" : "direct";
           const gates: string[] = [];
@@ -1673,14 +1733,59 @@ export function createExecTool(
           );
         }
       }
-      const requestedTarget = requireValidExecTarget(params.host);
-      const target = resolveExecTarget({
-        configuredTarget: defaults?.host,
-        requestedTarget,
-        elevatedRequested,
-        sandboxAvailable: Boolean(defaults?.sandbox),
-      });
+      const target =
+        route.kind === "sandbox"
+          ? resolveExecTarget({
+              configuredTarget: "auto",
+              requestedTarget: "sandbox",
+              elevatedRequested: false,
+              sandboxAvailable: Boolean(defaults?.sandbox),
+              sandboxRequired: true,
+            })
+          : route.kind === "host-adapter"
+            ? resolveExecTarget({
+                configuredTarget: route.target,
+                requestedTarget: route.target,
+                elevatedRequested: false,
+                sandboxAvailable: Boolean(defaults?.sandbox),
+              })
+            : resolveExecTarget({
+                configuredTarget: defaults?.host,
+                requestedTarget,
+                elevatedRequested,
+                sandboxAvailable: Boolean(defaults?.sandbox),
+                sandboxRequired: defaults?.sandboxRequired,
+              });
       const host: ExecHost = target.effectiveHost;
+      const executionPath: ExecExecutionPath =
+        route.kind === "sandbox"
+          ? "sandbox"
+          : route.kind === "host-adapter"
+            ? "host-adapter"
+            : route.kind === "host-elevated"
+              ? "host-elevated"
+              : "host-direct";
+      emitTrustedSecurityEvent({
+        category: "audit",
+        action: "exec.route.decided",
+        outcome: "success",
+        severity: "info",
+        actor: { kind: "agent" },
+        target: { kind: "tool", name: "system.exec", owner: host },
+        policy: { id: "exec.route", decision: "allow" },
+        control: {
+          id: "exec.routing",
+          family: executionPath === "sandbox" ? "sandbox" : "authorization",
+        },
+        reason: "exec route selected",
+        attributes: {
+          execution_path: executionPath,
+          route_decision: route.kind,
+          adapter_binding: route.kind === "host-adapter" ? "verified" : "none",
+          sandbox_required: defaults?.sandboxRequired === true,
+          elevated_requested: elevatedRequested,
+        },
+      });
 
       const explicitSecurity = defaults?.security;
       const configuredSecurity = explicitSecurity ?? (host === "sandbox" ? "deny" : "full");
@@ -1689,29 +1794,40 @@ export function createExecTool(
         security: configuredSecurity,
         ask: defaults?.ask ?? "off",
       });
-      const approvalPolicy =
-        host === "sandbox"
-          ? undefined
-          : resolveExecApprovalsFromFile({
-              file: loadExecApprovals(),
-              agentId,
-              overrides: {
-                security: "full",
-                ask: "off",
-              },
-            }).agent;
-      let security = minSecurity(
-        modePolicy.security,
-        approvalPolicy?.security ?? modePolicy.security,
-      );
+      const hostAdapterApproved = route.kind === "host-adapter";
+      const approvalPolicy = host === "sandbox" ? undefined : resolvedApprovals.agent;
+      // The verified binding is the host approval. Re-running its enforced argv
+      // through legacy patterns could turn a selected adapter into an approval miss.
+      let security = hostAdapterApproved
+        ? "full"
+        : minSecurity(modePolicy.security, approvalPolicy?.security ?? modePolicy.security);
       if (
+        !hostAdapterApproved &&
         security === "deny" &&
         (host !== "sandbox" || defaults?.mode === "deny" || explicitSecurity === "deny")
       ) {
+        emitTrustedSecurityEvent({
+          category: "audit",
+          action: "exec.route.denied",
+          outcome: "denied",
+          severity: "medium",
+          actor: { kind: "agent" },
+          target: { kind: "tool", name: "system.exec", owner: host },
+          policy: { id: "exec.security", decision: "deny" },
+          control: { id: "exec.routing", family: "sandbox" },
+          reason: "exec security policy denied execution",
+          attributes: {
+            execution_path: "denied",
+            host,
+            security,
+          },
+        });
         throw new Error(`exec denied: host=${host} security=deny`);
       }
       const hostPolicyAllowsFullBypass =
-        (approvalPolicy?.security ?? "full") === "full" && (approvalPolicy?.ask ?? "off") === "off";
+        hostAdapterApproved ||
+        ((approvalPolicy?.security ?? "full") === "full" &&
+          (approvalPolicy?.ask ?? "off") === "off");
       const modePolicyAllowsFullBypass = modePolicy.security === "full" && modePolicy.ask === "off";
       if (
         elevatedRequested &&
@@ -1723,14 +1839,17 @@ export function createExecTool(
       }
       // Keep local exec defaults in sync with exec-approvals.json when tools.exec.* is unset.
       const requestedAsk = normalizeExecAsk(params.ask);
-      const hostAsk = maxAsk(modePolicy.ask, approvalPolicy?.ask ?? modePolicy.ask);
+      const hostAsk = hostAdapterApproved
+        ? "off"
+        : maxAsk(modePolicy.ask, approvalPolicy?.ask ?? modePolicy.ask);
       const trustedAsk = defaults?.messageProvider && hostAsk === "off" ? undefined : requestedAsk;
       let ask = maxAsk(hostAsk, trustedAsk ?? hostAsk);
       const bypassApprovals =
-        elevatedRequested &&
-        elevatedMode === "full" &&
-        modePolicyAllowsFullBypass &&
-        hostPolicyAllowsFullBypass;
+        hostAdapterApproved ||
+        (elevatedRequested &&
+          elevatedMode === "full" &&
+          modePolicyAllowsFullBypass &&
+          hostPolicyAllowsFullBypass);
       if (bypassApprovals) {
         ask = "off";
       }
@@ -1745,10 +1864,6 @@ export function createExecTool(
           ].join("\n"),
         );
       }
-      if (!params.command) {
-        throw new Error("Provide a command to start.");
-      }
-      await rejectUnsafeExecControlShellCommand(params.command);
       let workdir: string | undefined;
       let scriptPreflightCwd: string | null = null;
       let containerWorkdir = sandbox?.containerWorkdir;
@@ -1803,20 +1918,27 @@ export function createExecTool(
         const inheritedBaseEnv = coerceEnv(process.env);
         const resolvedExecEnvState = getResolvedExecEnvPreparedState(params);
         const channelContextEnv = buildChannelContextEnv(defaults?.channelContext);
-        const requestedEnv: Record<string, string> | undefined =
-          params.env !== undefined ||
-          resolvedExecEnvState?.pluginEnv !== undefined ||
-          channelContextEnv !== undefined
+        const requestedEnv: Record<string, string> | undefined = adapterEnvironment
+          ? undefined
+          : params.env !== undefined ||
+              resolvedExecEnvState?.pluginEnv !== undefined ||
+              channelContextEnv !== undefined
             ? { ...params.env, ...resolvedExecEnvState?.pluginEnv, ...channelContextEnv }
             : undefined;
         const hostEnvResult =
           host === "sandbox"
             ? null
-            : sanitizeHostExecEnvWithDiagnostics({
-                baseEnv: inheritedBaseEnv,
-                overrides: requestedEnv,
-                blockPathOverrides: true,
-              });
+            : adapterEnvironment
+              ? {
+                  env: { ...adapterEnvironment },
+                  rejectedOverrideBlockedKeys: [],
+                  rejectedOverrideInvalidKeys: [],
+                }
+              : sanitizeHostExecEnvWithDiagnostics({
+                  baseEnv: inheritedBaseEnv,
+                  overrides: requestedEnv,
+                  blockPathOverrides: true,
+                });
         if (
           hostEnvResult &&
           requestedEnv &&
@@ -1862,7 +1984,7 @@ export function createExecTool(
               })
             : (hostEnvResult?.env ?? inheritedBaseEnv);
 
-        if (!sandbox && host === "gateway" && !requestedEnv?.PATH) {
+        if (!sandbox && host === "gateway" && !requestedEnv?.PATH && !adapterEnvironment) {
           const shellPath = getShellPathFromLoginShell({
             env: process.env,
             timeoutMs: resolveShellEnvFallbackTimeoutMs(process.env),
@@ -1872,7 +1994,9 @@ export function createExecTool(
 
         // `tools.exec.pathPrepend` is only meaningful when exec runs locally (gateway) or in the sandbox.
         // Node hosts intentionally ignore request-scoped PATH overrides, so don't pretend this applies.
-        if (host === "node" && defaultPathPrepend.length > 0) {
+        if (adapterEnvironment) {
+          // Adapter policy owns the entire environment, including PATH.
+        } else if (host === "node" && defaultPathPrepend.length > 0) {
           warnings.push(
             "Warning: tools.exec.pathPrepend is ignored for host=node. Configure PATH on the node host/service instead.",
           );
@@ -2020,6 +2144,8 @@ export function createExecTool(
           eventRouting: defaults?.eventRouting,
           notifyDeliveryContext,
           timeoutSec: effectiveTimeout,
+          executionPath,
+          disableShellSnapshot: adapterEnvironment !== undefined,
           onUpdate,
           onSettledBeforeNotify: (outcome) => {
             settledOutcome = outcome;

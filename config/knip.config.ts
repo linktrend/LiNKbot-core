@@ -21,11 +21,12 @@ const repositoryScriptEntries = [
   // Stage-ops exposes the canonical store/schema through documented workshop wrappers.
   "linkbots/lisa/ops/lisa-stage-ops-schema.ts!",
   "linkbots/lisa/ops/lisa-stage-ops-store.ts!",
-  // Scheduled Lisa operations consume these state contracts outside the static graph.
-  "src/state/lisa-job-state-schema.ts",
-  "src/state/lisa-job-state-store.ts",
-  "src/state/lisa-compliance-state-schema.ts",
-  "src/state/lisa-compliance-state-store.ts",
+  // These source-only Lisa contracts are intentional future foundations. The
+  // wrappers document their ownership without activating jobs or compliance work.
+  "linkbots/lisa/ops/jobs/lisa-job-state-schema.ts!",
+  "linkbots/lisa/ops/jobs/lisa-job-state-store.ts!",
+  "linkbots/lisa/ops/jobs/lisa-compliance-state-schema.ts!",
+  "linkbots/lisa/ops/jobs/lisa-compliance-state-store.ts!",
   "scripts/build-discord-activity-sdk.mjs!",
   "scripts/check-live-cache.ts!",
   "scripts/check-package-dist-imports.mjs!",

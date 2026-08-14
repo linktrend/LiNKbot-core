@@ -31,3 +31,10 @@ or claim stage, cross-system E2E, deployment, or production PASS.
 
 The ten-family catalogue and the disposable stage package contain no mutable
 state, real private data, addresses, chat IDs, Drive IDs, tokens, or secrets.
+
+## Future state contracts
+
+The `lisa-job-state-*` and `lisa-compliance-state-*` wrappers are intentional
+source-only entrypoints for future Lisa job and compliance foundations. They
+expose the canonical `src/state` contracts for static review only. They do not
+activate a job, schedule, database, service, provider, or live Lisa behavior.

@@ -1,0 +1,72 @@
+{
+  "schema": "lisa_google_workspace_identity_scope_receipt_v1",
+  "status": "source-contract-only",
+  "identities": [
+    {
+      "id": "lisa-workspace",
+      "purpose": "Lisa Workspace Gmail, Calendar, Drive, and Docs operations",
+      "configSubdirectory": "lisa",
+      "requestedScopeUrls": [
+        "https://www.googleapis.com/auth/gmail.readonly",
+        "https://www.googleapis.com/auth/gmail.send",
+        "https://www.googleapis.com/auth/calendar.readonly",
+        "https://www.googleapis.com/auth/calendar.events",
+        "https://www.googleapis.com/auth/drive",
+        "https://www.googleapis.com/auth/documents"
+      ],
+      "mandatoryUpstreamIdentityScopeUrls": [
+        "openid",
+        "https://www.googleapis.com/auth/userinfo.email",
+        "https://www.googleapis.com/auth/userinfo.profile"
+      ],
+      "effectiveExpectedScopeUrls": [
+        "openid",
+        "https://www.googleapis.com/auth/userinfo.email",
+        "https://www.googleapis.com/auth/userinfo.profile",
+        "https://www.googleapis.com/auth/gmail.readonly",
+        "https://www.googleapis.com/auth/gmail.send",
+        "https://www.googleapis.com/auth/calendar.readonly",
+        "https://www.googleapis.com/auth/calendar.events",
+        "https://www.googleapis.com/auth/drive",
+        "https://www.googleapis.com/auth/documents"
+      ],
+      "grantedScopeVerification": "later human-controlled sanitized auth-status receipt must equal effectiveExpectedScopeUrls and name no account or unlisted capability scope",
+      "writeOperations": ["email-send-internal", "calendar-insert", "drive-create-document", "drive-share-internal", "docs-append"],
+      "externalRecipients": "denied",
+      "adminOperations": "denied",
+      "keep": "omitted from OAuth scope request"
+    },
+    {
+      "id": "carlos-tasks",
+      "purpose": "Carlos-owned Google Tasks list and task operations",
+      "configSubdirectory": "carlos-tasks",
+      "requestedScopeUrls": ["https://www.googleapis.com/auth/tasks"],
+      "mandatoryUpstreamIdentityScopeUrls": [
+        "openid",
+        "https://www.googleapis.com/auth/userinfo.email",
+        "https://www.googleapis.com/auth/userinfo.profile"
+      ],
+      "effectiveExpectedScopeUrls": [
+        "openid",
+        "https://www.googleapis.com/auth/userinfo.email",
+        "https://www.googleapis.com/auth/userinfo.profile",
+        "https://www.googleapis.com/auth/tasks"
+      ],
+      "grantedScopeVerification": "later human-controlled sanitized auth-status receipt must equal effectiveExpectedScopeUrls and name no account or unlisted capability scope",
+      "writeOperations": ["task-insert", "task-patch", "task-delete"],
+      "externalRecipients": "not applicable",
+      "adminOperations": "denied",
+      "primaryLisaConfigReuse": "denied"
+    }
+  ],
+  "sharedControls": {
+    "configRoot": "LISA_GOOGLE_WORKSPACE_CONFIG_ROOT/<identity>",
+    "directoryMode": "0700",
+    "credentialStore": "credentials.enc plus .encryption_key with GOOGLE_WORKSPACE_CLI_KEYRING_BACKEND=file; plaintext credentials.json is rejected in steady state",
+    "credentialFileModes": ["0400", "0600"],
+    "credentialValues": "not recorded",
+    "accountIdentifiers": "not recorded",
+    "oauthPerformed": false,
+    "liveGoogleCallsPerformed": false
+  }
+}
