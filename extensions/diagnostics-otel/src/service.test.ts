@@ -4687,6 +4687,7 @@ describe("diagnostics-otel service", () => {
     emitDiagnosticEvent({
       type: "exec.process.completed",
       target: "host",
+      executionPath: "host-direct",
       mode: "child",
       outcome: "failed",
       durationMs: 30,

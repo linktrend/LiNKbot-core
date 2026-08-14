@@ -225,6 +225,31 @@ describe("resolveExecTarget", () => {
     );
   });
 
+  it("fails closed when automatic routing requires an unavailable sandbox", () => {
+    expect(() =>
+      resolveExecTarget({
+        configuredTarget: "auto",
+        elevatedRequested: false,
+        sandboxAvailable: false,
+        sandboxRequired: true,
+      }),
+    ).toThrow(/exec sandbox unavailable: sandbox execution is required for this session/);
+  });
+
+  it("does not allow a host override when automatic routing requires a sandbox", () => {
+    expect(() =>
+      resolveExecTarget({
+        configuredTarget: "auto",
+        requestedTarget: "gateway",
+        elevatedRequested: false,
+        sandboxAvailable: false,
+        sandboxRequired: true,
+      }),
+    ).toThrow(
+      "exec host not allowed (requested gateway; configured host is auto; set tools.exec.host=sandbox or auto to allow this override).",
+    );
+  });
+
   it("allows per-call host=node override when configured host is auto", () => {
     expectExecTarget(
       resolveExecTarget({

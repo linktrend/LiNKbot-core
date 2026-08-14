@@ -1,0 +1,41 @@
+{
+  "schema": "lisa_google_workspace_local_capability_disposition_v1",
+  "status": "source-inventory-only",
+  "sourceEvidence": [
+    "linkbots/lisa/Personality files/TOOLS.md",
+    "linkbots/lisa/Personality files/tools/gws.md",
+    "linkbots/lisa/LISA_CONTROL_CHEATSHEET.md"
+  ],
+  "identities": [
+    {
+      "localIdentityCategory": "Lisa Workspace Gmail Calendar Drive Docs",
+      "vpsIdentity": "lisa-workspace",
+      "disposition": "migrate-separated"
+    },
+    {
+      "localIdentityCategory": "Carlos Tasks",
+      "vpsIdentity": "carlos-tasks",
+      "disposition": "migrate-separated"
+    }
+  ],
+  "operations": [
+    { "localOperation": "gmail-triage", "disposition": "migrate", "vpsVerb": "gmail-triage" },
+    { "localOperation": "gmail-search-and-message-read", "disposition": "migrate", "vpsVerb": "gmail-search,gmail-read" },
+    { "localOperation": "internal-email-send", "disposition": "migrate", "vpsVerb": "email-send" },
+    { "localOperation": "calendar-list-agenda-insert", "disposition": "migrate", "vpsVerb": "calendar-list,calendar-agenda,calendar-insert" },
+    { "localOperation": "drive-list", "disposition": "migrate", "vpsVerb": "drive-list" },
+    { "localOperation": "drive-query-and-content-read", "disposition": "migrate-constrained", "vpsVerb": "drive-read", "reason": "content reads require a finite file ID; broad raw query syntax is not carried forward" },
+    { "localOperation": "docs-content-read-and-append", "disposition": "migrate", "vpsVerb": "docs-read,docs-append" },
+    { "localOperation": "drive-document-create-internal-share", "disposition": "migrate", "vpsVerb": "drive-create-doc,drive-share" },
+    { "localOperation": "calendar-meet-helper", "disposition": "omit", "reason": "not required by approved minimum and no finite policy was approved" },
+    { "localOperation": "gmail-html-draft-attachments", "disposition": "omit", "reason": "not required by approved minimum; attachment and draft policy need separate approval" },
+    { "localOperation": "gws-help", "disposition": "supersede", "reason": "runbook and finite wrapper help replace generic upstream command discovery" },
+    { "localOperation": "drive-json", "disposition": "omit-unsafe", "reason": "generic raw request surface defeats constrained policy" },
+    { "localOperation": "Google Keep", "disposition": "omit", "reason": "outside approved OAuth capability and known local CLI limitation" }
+  ],
+  "privacy": {
+    "accountIdentifiers": "not recorded",
+    "credentialValues": "not recorded",
+    "grantedScopeValues": "later sanitized human receipt"
+  }
+}

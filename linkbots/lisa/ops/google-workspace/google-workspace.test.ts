@@ -1,0 +1,552 @@
+import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
+import {
+  chmodSync,
+  mkdtempSync,
+  mkdirSync,
+  readFileSync,
+  realpathSync,
+  rmSync,
+  statSync,
+  symlinkSync,
+  writeFileSync,
+} from "node:fs";
+import { tmpdir } from "node:os";
+import path from "node:path";
+import { describe, it } from "node:test";
+
+const root = path.resolve("linkbots/lisa/ops/google-workspace");
+const lisaSafe = path.join(root, "tools/bin/lisa-safe");
+const tasks = path.join(root, "tools/bin/lisa-carlos-tasks");
+const installer = path.join(root, "gws-linux-install.sh");
+
+function makeFixture() {
+  const directory = mkdtempSync(path.join(tmpdir(), "lisa-gws-wrapper-"));
+  const configRoot = path.join(directory, "google-workspace");
+  const workRoot = path.join(directory, "workspace");
+  const executionRoot = path.join(directory, "execution");
+  const homeRoot = path.join(directory, "home");
+  mkdirSync(path.join(configRoot, "lisa"), { recursive: true, mode: 0o700 });
+  mkdirSync(path.join(configRoot, "carlos-tasks"), { recursive: true, mode: 0o700 });
+  mkdirSync(workRoot, { recursive: true, mode: 0o700 });
+  mkdirSync(path.join(workRoot, "downloads"), { recursive: true, mode: 0o700 });
+  mkdirSync(executionRoot, { recursive: true, mode: 0o555 });
+  mkdirSync(homeRoot, { recursive: true, mode: 0o555 });
+  chmodSync(executionRoot, 0o555);
+  chmodSync(homeRoot, 0o555);
+  for (const identity of ["lisa", "carlos-tasks"]) {
+    writeFileSync(path.join(configRoot, identity, "credentials.enc"), "synthetic-encrypted", {
+      mode: 0o600,
+    });
+    writeFileSync(path.join(configRoot, identity, ".encryption_key"), "synthetic-file-key", {
+      mode: 0o600,
+    });
+  }
+  const fakeGws = path.join(directory, "gws");
+  writeFileSync(
+    fakeGws,
+    '#!/bin/sh\nprintf "cwd=%s\\n" "$PWD"\nprintf "home=%s\\n" "$HOME"\nprintf "config=%s\\n" "$GOOGLE_WORKSPACE_CLI_CONFIG_DIR"\nprintf "token=%s\\n" "${GOOGLE_WORKSPACE_CLI_TOKEN:-}"\nprintf "adc=%s\\n" "${GOOGLE_APPLICATION_CREDENTIALS:-}"\nprintf "%s\\n" "$@"\nwhile [ "$#" -gt 0 ]; do\n  if [ "$1" = "--output" ]; then\n    shift\n    printf synthetic-download > "$1"\n    break\n  fi\n  shift\ndone\n',
+    { mode: 0o700 },
+  );
+  chmodSync(fakeGws, 0o700);
+  return { directory, configRoot, workRoot, executionRoot, homeRoot, fakeGws };
+}
+
+function run(
+  script: string,
+  args: string[],
+  fixture: ReturnType<typeof makeFixture>,
+  extraEnv: Record<string, string> = {},
+) {
+  return spawnSync(script, args, {
+    encoding: "utf8",
+    env: {
+      ...process.env,
+      LISA_GOOGLE_WORKSPACE_CONFIG_ROOT: fixture.configRoot,
+      LISA_GOOGLE_WORKSPACE_WORK_DIR: fixture.workRoot,
+      LISA_GOOGLE_WORKSPACE_EXEC_CWD: fixture.executionRoot,
+      LISA_GOOGLE_WORKSPACE_HOME_DIR: fixture.homeRoot,
+      LISA_GWS_BIN: fixture.fakeGws,
+      LISA_GWS_NODE_BIN: process.execPath,
+      ...extraEnv,
+    },
+  });
+}
+
+describe("VPS Lisa Google Workspace wrappers", () => {
+  it("routes Lisa Calendar through the Lisa config and never through a Mac path", () => {
+    const fixture = makeFixture();
+    try {
+      const result = run(
+        lisaSafe,
+        [
+          "calendar-insert",
+          "--calendar",
+          "shared_calendar",
+          "--summary",
+          "Synthetic test event",
+          "--start",
+          "2026-08-14T10:00:00+08:00",
+          "--end",
+          "2026-08-14T10:30:00+08:00",
+          "--attendee",
+          "test@linktrend.media",
+          "--dry-run",
+        ],
+        fixture,
+      );
+      assert.equal(result.status, 0, result.stderr);
+      const captured = result.stdout;
+      assert.match(captured, new RegExp(`${realpathSync(fixture.configRoot)}/lisa`));
+      assert.match(captured, new RegExp(`cwd=${realpathSync(fixture.executionRoot)}`));
+      assert.match(captured, new RegExp(`home=${realpathSync(fixture.homeRoot)}`));
+      assert.match(captured, /^token=$/mu);
+      assert.match(captured, /^adc=$/mu);
+      assert.match(captured, /calendar\n\+insert/);
+      assert.match(captured, /--dry-run/);
+      assert.doesNotMatch(captured, /homebrew|opt\/homebrew|Applications/);
+    } finally {
+      rmSync(fixture.directory, { recursive: true, force: true });
+    }
+  });
+
+  it("denies external email before invoking gws", () => {
+    const fixture = makeFixture();
+    const body = path.join(fixture.workRoot, "body.txt");
+    writeFileSync(body, "synthetic body\n", { mode: 0o600 });
+    try {
+      const result = run(
+        lisaSafe,
+        ["email-send", "--to", "outside@example.com", "--subject", "Denied", "--body-file", body],
+        fixture,
+      );
+      assert.equal(result.status, 64);
+      assert.match(result.stderr, /external or malformed/);
+      assert.equal(result.stdout, "", "gws must not be invoked");
+    } finally {
+      rmSync(fixture.directory, { recursive: true, force: true });
+    }
+  });
+
+  it("keeps Carlos Tasks on a separate config directory", () => {
+    const fixture = makeFixture();
+    try {
+      const result = run(tasks, ["tasks", "list", "--tasklist", "carlos_list"], fixture);
+      assert.equal(result.status, 0, result.stderr);
+      const captured = result.stdout;
+      assert.match(captured, new RegExp(`${fixture.configRoot}/carlos-tasks`));
+      assert.match(captured, /tasks\ntasks\nlist/);
+      assert.doesNotMatch(captured, new RegExp(`${fixture.configRoot}/lisa`));
+    } finally {
+      rmSync(fixture.directory, { recursive: true, force: true });
+    }
+  });
+
+  it("exposes bounded Gmail and Drive/Docs read verbs", () => {
+    const fixture = makeFixture();
+    try {
+      const search = run(lisaSafe, ["gmail-search", "--query", "is:unread", "--max", "3"], fixture);
+      assert.equal(search.status, 0, search.stderr);
+      assert.match(search.stdout, /gmail\nusers\nmessages\nlist/);
+      assert.match(search.stdout, /"maxResults":3/);
+
+      const message = run(lisaSafe, ["gmail-read", "--message-id", "message_1"], fixture);
+      assert.equal(message.status, 0, message.stderr);
+      assert.match(message.stdout, /gmail\nusers\nmessages\nget/);
+
+      const drive = run(
+        lisaSafe,
+        ["drive-read", "--file-id", "file_1", "--output-file", "file.bin"],
+        fixture,
+      );
+      assert.equal(drive.status, 0, drive.stderr);
+      assert.match(drive.stdout, /drive\nfiles\nget/);
+      const outputPath = path.join(realpathSync(fixture.workRoot), "downloads", "file.bin");
+      assert.match(drive.stdout, new RegExp(`--output\\n${outputPath}`));
+      assert.equal(readFileSync(outputPath, "utf8"), "synthetic-download");
+      assert.equal((statSync(outputPath).mode & 0o777).toString(8), "600");
+
+      const docs = run(lisaSafe, ["docs-read", "--document", "document_1"], fixture);
+      assert.equal(docs.status, 0, docs.stderr);
+      assert.match(docs.stdout, /docs\ndocuments\nget/);
+    } finally {
+      rmSync(fixture.directory, { recursive: true, force: true });
+    }
+  });
+
+  it("builds bounded Carlos Task write bodies without exposing a generic method", () => {
+    const fixture = makeFixture();
+    try {
+      const inserted = run(
+        tasks,
+        [
+          "tasks",
+          "insert",
+          "--tasklist",
+          "carlos_list",
+          "--title",
+          "Synthetic task",
+          "--notes",
+          "No live task was created",
+          "--dry-run",
+        ],
+        fixture,
+      );
+      assert.equal(inserted.status, 0, inserted.stderr);
+      const insertArgs = inserted.stdout.split("\n");
+      const insertJson = insertArgs[insertArgs.indexOf("--json") + 1];
+      assert.deepEqual(JSON.parse(insertJson ?? ""), {
+        title: "Synthetic task",
+        notes: "No live task was created",
+      });
+
+      const patched = run(
+        tasks,
+        [
+          "tasks",
+          "patch",
+          "--tasklist",
+          "carlos_list",
+          "--task",
+          "task_1",
+          "--status",
+          "completed",
+          "--dry-run",
+        ],
+        fixture,
+      );
+      assert.equal(patched.status, 0, patched.stderr);
+      const patchArgs = patched.stdout.split("\n");
+      const patchJson = patchArgs[patchArgs.indexOf("--json") + 1];
+      assert.deepEqual(JSON.parse(patchJson ?? ""), { status: "completed" });
+    } finally {
+      rmSync(fixture.directory, { recursive: true, force: true });
+    }
+  });
+
+  it("rejects arbitrary commands and credentials outside the identity directory", () => {
+    const fixture = makeFixture();
+    try {
+      const unknown = run(lisaSafe, ["gws-help", "drive"], fixture);
+      assert.equal(unknown.status, 64);
+
+      const outside = path.join(fixture.directory, "outside-credentials.json");
+      writeFileSync(outside, "synthetic", { mode: 0o600 });
+      const externalCredential = run(lisaSafe, ["drive-list"], fixture, {
+        GOOGLE_WORKSPACE_CLI_CREDENTIALS_FILE: outside,
+      });
+      assert.equal(externalCredential.status, 64);
+      assert.match(externalCredential.stderr, /inherited auth\/config environment/);
+      assert.equal(externalCredential.stdout, "", "gws must not be invoked");
+    } finally {
+      rmSync(fixture.directory, { recursive: true, force: true });
+    }
+  });
+
+  it("rejects inherited auth sources and hostile dotenv before gws starts", () => {
+    const fixture = makeFixture();
+    try {
+      for (const name of [
+        "GOOGLE_WORKSPACE_CLI_TOKEN",
+        "GOOGLE_WORKSPACE_CLI_CREDENTIALS_FILE",
+        "GOOGLE_APPLICATION_CREDENTIALS",
+        "GOOGLE_WORKSPACE_CLI_CLIENT_ID",
+        "GOOGLE_WORKSPACE_CLI_CLIENT_SECRET",
+        "GOOGLE_WORKSPACE_PROJECT_ID",
+        "GOOGLE_CLOUD_PROJECT",
+        "GOOGLE_CLOUD_QUOTA_PROJECT",
+        "GOOGLE_WORKSPACE_CLI_CONFIG_DIR",
+        "GOOGLE_WORKSPACE_CLI_KEYRING_BACKEND",
+        "CLOUDSDK_CONFIG",
+        "XDG_CONFIG_HOME",
+      ]) {
+        const result = run(lisaSafe, ["drive-list"], fixture, { [name]: "injected" });
+        assert.equal(result.status, 64, `${name} must fail closed`);
+        assert.equal(result.stdout, "", `${name} must not reach gws`);
+      }
+      writeFileSync(path.join(fixture.directory, ".env"), "GOOGLE_WORKSPACE_CLI_TOKEN=hostile\n", {
+        mode: 0o600,
+      });
+      const dotenv = run(lisaSafe, ["drive-list"], fixture);
+      assert.equal(dotenv.status, 64);
+      assert.match(dotenv.stderr, /\.env file in execution cwd ancestry/);
+      assert.equal(dotenv.stdout, "");
+    } finally {
+      rmSync(fixture.directory, { recursive: true, force: true });
+    }
+  });
+
+  it("rejects direct and ancestor symlink escapes before reading work or config files", () => {
+    const fixture = makeFixture();
+    try {
+      const outside = path.join(fixture.directory, "outside.txt");
+      writeFileSync(outside, "synthetic outside content\n", { mode: 0o600 });
+      symlinkSync(outside, path.join(fixture.workRoot, "linked.txt"));
+      const direct = run(
+        lisaSafe,
+        ["docs-append", "--document", "doc_1", "--text-file", "linked.txt"],
+        fixture,
+      );
+      assert.equal(direct.status, 64);
+      assert.match(direct.stderr, /symlink path component/);
+      assert.equal(direct.stdout, "");
+
+      const outsideDir = path.join(fixture.directory, "outside-dir");
+      mkdirSync(outsideDir, { mode: 0o700 });
+      writeFileSync(path.join(outsideDir, "nested.txt"), "synthetic outside content\n", {
+        mode: 0o600,
+      });
+      symlinkSync(outsideDir, path.join(fixture.workRoot, "linked-dir"));
+      const ancestor = run(
+        lisaSafe,
+        ["docs-append", "--document", "doc_1", "--text-file", "linked-dir/nested.txt"],
+        fixture,
+      );
+      assert.equal(ancestor.status, 64);
+      assert.match(ancestor.stderr, /symlink path component/);
+      assert.equal(ancestor.stdout, "");
+
+      const linkedRoot = path.join(fixture.directory, "linked-config");
+      symlinkSync(fixture.configRoot, linkedRoot);
+      const linkedConfig = run(lisaSafe, ["drive-list"], fixture, {
+        LISA_GOOGLE_WORKSPACE_CONFIG_ROOT: linkedRoot,
+      });
+      assert.equal(linkedConfig.status, 64);
+      assert.match(linkedConfig.stderr, /non-symlink directory/);
+      assert.equal(linkedConfig.stdout, "");
+    } finally {
+      rmSync(fixture.directory, { recursive: true, force: true });
+    }
+  });
+
+  it("keeps Drive binary outputs private, contained, and no-overwrite", () => {
+    const fixture = makeFixture();
+    try {
+      const traversal = run(
+        lisaSafe,
+        ["drive-read", "--file-id", "file_1", "--output-file", "../escape.bin"],
+        fixture,
+      );
+      assert.equal(traversal.status, 64);
+      assert.equal(traversal.stdout, "");
+
+      const outside = path.join(fixture.directory, "outside-downloads");
+      mkdirSync(outside, { mode: 0o700 });
+      rmSync(path.join(fixture.workRoot, "downloads"), { recursive: true, force: true });
+      symlinkSync(outside, path.join(fixture.workRoot, "downloads"));
+      const symlink = run(
+        lisaSafe,
+        ["drive-read", "--file-id", "file_1", "--output-file", "escape.bin"],
+        fixture,
+      );
+      assert.equal(symlink.status, 64);
+      assert.equal(symlink.stdout, "");
+
+      rmSync(path.join(fixture.workRoot, "downloads"), { force: true });
+      mkdirSync(path.join(fixture.workRoot, "downloads"), { mode: 0o700 });
+      writeFileSync(path.join(fixture.workRoot, "downloads", "existing.bin"), "preserve", {
+        mode: 0o600,
+      });
+      const overwrite = run(
+        lisaSafe,
+        ["drive-read", "--file-id", "file_1", "--output-file", "existing.bin"],
+        fixture,
+      );
+      assert.equal(overwrite.status, 64);
+      assert.equal(overwrite.stdout, "");
+      assert.equal(
+        readFileSync(path.join(fixture.workRoot, "downloads", "existing.bin"), "utf8"),
+        "preserve",
+      );
+    } finally {
+      rmSync(fixture.directory, { recursive: true, force: true });
+    }
+  });
+
+  it("requires encrypted file-backend material and rejects plaintext steady-state credentials", () => {
+    const fixture = makeFixture();
+    try {
+      writeFileSync(path.join(fixture.configRoot, "lisa", "credentials.json"), "synthetic", {
+        mode: 0o600,
+      });
+      const plaintext = run(lisaSafe, ["drive-list"], fixture);
+      assert.equal(plaintext.status, 64);
+      assert.match(plaintext.stderr, /plaintext credentials\.json/);
+      assert.equal(plaintext.stdout, "");
+    } finally {
+      rmSync(fixture.directory, { recursive: true, force: true });
+    }
+  });
+
+  it("accepts a fresh encrypted login with no cache and validates optional encrypted caches", () => {
+    const fixture = makeFixture();
+    try {
+      const fresh = run(lisaSafe, ["drive-list"], fixture);
+      assert.equal(fresh.status, 0, fresh.stderr);
+      writeFileSync(path.join(fixture.configRoot, "lisa", "token_cache.json"), "synthetic-cache", {
+        mode: 0o600,
+      });
+      const cached = run(lisaSafe, ["drive-list"], fixture);
+      assert.equal(cached.status, 0, cached.stderr);
+    } finally {
+      rmSync(fixture.directory, { recursive: true, force: true });
+    }
+  });
+
+  it("rejects retained OAuth client configuration after encrypted login", () => {
+    const fixture = makeFixture();
+    try {
+      writeFileSync(path.join(fixture.configRoot, "lisa", "client_secret.json"), "synthetic", {
+        mode: 0o600,
+      });
+      const result = run(lisaSafe, ["drive-list"], fixture);
+      assert.equal(result.status, 64);
+      assert.match(result.stderr, /client_secret\.json must be removed/);
+      assert.equal(result.stdout, "");
+    } finally {
+      rmSync(fixture.directory, { recursive: true, force: true });
+    }
+  });
+
+  it("uses the fixed trusted preflight PATH despite a hostile caller PATH", () => {
+    const fixture = makeFixture();
+    try {
+      const shimDir = path.join(fixture.directory, "hostile-bin");
+      const marker = path.join(fixture.directory, "hostile-path-ran");
+      mkdirSync(shimDir, { mode: 0o700 });
+      for (const command of ["dirname", "realpath", "stat"]) {
+        const shim = path.join(shimDir, command);
+        writeFileSync(shim, `#!/bin/sh\nprintf hostile > ${JSON.stringify(marker)}\nexit 97\n`, {
+          mode: 0o700,
+        });
+        chmodSync(shim, 0o700);
+      }
+      const result = run(lisaSafe, ["drive-list"], fixture, { PATH: shimDir });
+      assert.equal(result.status, 0, result.stderr);
+      assert.throws(() => readFileSync(marker, "utf8"), /ENOENT/u);
+      for (const file of [lisaSafe, tasks, path.join(root, "gws-wrapper-common.sh")]) {
+        assert.match(readFileSync(file, "utf8"), /PATH=\/usr\/local\/bin:\/usr\/bin:\/bin/);
+      }
+      assert.match(readFileSync(installer, "utf8"), /default: \/usr\/local\/bin/);
+    } finally {
+      rmSync(fixture.directory, { recursive: true, force: true });
+    }
+  });
+
+  it("pins the official release and records both approved Linux digests", () => {
+    const pin = JSON.parse(readFileSync(path.join(root, "gws-linux-pin.json"), "utf8")) as {
+      release: string;
+      releaseCommit: string;
+      artifacts: Record<string, { sha256: string }>;
+    };
+    const installerText = readFileSync(installer, "utf8");
+    assert.equal(pin.release, "v0.22.5");
+    assert.equal(pin.releaseCommit, "705fb0ecac6f4249679958f6325b809b63fdde17");
+    assert.match(pin.artifacts["x86_64-unknown-linux-gnu"]?.sha256 ?? "", /^[a-f0-9]{64}$/);
+    assert.match(pin.artifacts["aarch64-unknown-linux-gnu"]?.sha256 ?? "", /^[a-f0-9]{64}$/);
+    assert.match(installerText, /GWS_REQUIRE_ATTESTATION/);
+    assert.doesNotMatch(installerText, /curl[^\n]*\|/);
+    assert.doesNotMatch(readFileSync(lisaSafe, "utf8"), /opt\/homebrew|brew/);
+    assert.doesNotMatch(readFileSync(tasks, "utf8"), /opt\/homebrew|brew/);
+    const installerHelp = spawnSync(installer, ["--help"], { encoding: "utf8" });
+    assert.equal(installerHelp.status, 0, installerHelp.stderr);
+  });
+
+  it("records exact least-privilege scope URLs and an explicit Local capability disposition", () => {
+    const receipt = JSON.parse(
+      readFileSync(path.join(root, "receipts/identity-scope.receipt.json"), "utf8"),
+    ) as {
+      identities: Array<{
+        requestedScopeUrls: string[];
+        mandatoryUpstreamIdentityScopeUrls: string[];
+        effectiveExpectedScopeUrls: string[];
+        grantedScopeVerification: string;
+      }>;
+    };
+    const capability = JSON.parse(
+      readFileSync(path.join(root, "receipts/local-capability-disposition.json"), "utf8"),
+    ) as { operations: Array<{ localOperation: string; disposition: string }> };
+    assert.equal(receipt.identities.length, 2);
+    for (const identity of receipt.identities) {
+      assert.ok(identity.requestedScopeUrls.length > 0);
+      assert.deepEqual(identity.effectiveExpectedScopeUrls, [
+        ...identity.mandatoryUpstreamIdentityScopeUrls,
+        ...identity.requestedScopeUrls,
+      ]);
+      assert.ok(
+        identity.requestedScopeUrls.every((scope) =>
+          scope.startsWith("https://www.googleapis.com/auth/"),
+        ),
+      );
+      assert.match(identity.grantedScopeVerification, /equal effectiveExpectedScopeUrls/u);
+    }
+    assert.equal(
+      capability.operations.find((item) => item.localOperation === "drive-json")?.disposition,
+      "omit-unsafe",
+    );
+    assert.equal(
+      capability.operations.find((item) => item.localOperation === "gmail-search-and-message-read")
+        ?.disposition,
+      "migrate",
+    );
+    const adapter = JSON.parse(
+      readFileSync(path.join(root, "receipts/host-adapter-contract.json"), "utf8"),
+    ) as {
+      trustedPath: string;
+      forbiddenInvocationForms: string[];
+      fixedEnvironmentKeys: string[];
+      sourceRelativeEntrypoints: string[];
+      deployedAbsoluteEntrypoints: { status: string };
+    };
+    assert.equal(adapter.trustedPath, "/usr/local/bin:/usr/bin:/bin");
+    assert.ok(adapter.forbiddenInvocationForms.includes("env-prefix"));
+    assert.ok(adapter.fixedEnvironmentKeys.includes("LISA_GWS_BIN"));
+    assert.ok(
+      adapter.sourceRelativeEntrypoints.every((entrypoint) => entrypoint.startsWith("linkbots/")),
+    );
+    assert.equal(adapter.deployedAbsoluteEntrypoints.status, "hold");
+    const realCliProof = JSON.parse(
+      readFileSync(path.join(root, "receipts/real-cli-secretless-proof.json"), "utf8"),
+    ) as {
+      status: string;
+      trust: { prohibitedWorkaround: string };
+      reproducer: { script: string };
+      targetArtifact: { filename: string; sha256: string };
+      disposableEnvironment: { image: string; imageDigest: string; platform: string };
+      acceptedCommands: Array<{ command: string; exitStatus: number }>;
+      summary: { commandCount: number; successfulExitCount: number; failedExitCount: number };
+    };
+    assert.equal(realCliProof.status, "passed-source-only");
+    assert.match(realCliProof.trust.prohibitedWorkaround, /no TLS verification bypass/u);
+    assert.ok(
+      readFileSync(realCliProof.reproducer.script, "utf8").includes("GWS_REAL_CLI_ARCHIVE"),
+    );
+    assert.ok((statSync(realCliProof.reproducer.script).mode & 0o111) !== 0);
+    const pin = JSON.parse(readFileSync(path.join(root, "gws-linux-pin.json"), "utf8")) as {
+      artifacts: Record<string, { url: string; sha256: string }>;
+    };
+    const pinnedArtifact = pin.artifacts["aarch64-unknown-linux-gnu"];
+    assert.equal(realCliProof.targetArtifact.filename, path.basename(pinnedArtifact.url));
+    assert.equal(realCliProof.targetArtifact.sha256, pinnedArtifact.sha256);
+    assert.equal(realCliProof.disposableEnvironment.image, "node:22-bookworm-slim");
+    assert.match(realCliProof.disposableEnvironment.imageDigest, /^node@sha256:[a-f0-9]{64}$/);
+    assert.equal(realCliProof.disposableEnvironment.platform, "linux/arm64");
+    const emittedRoutes = new Set(
+      [lisaSafe, tasks]
+        .flatMap((entrypoint) =>
+          Array.from(readFileSync(entrypoint, "utf8").matchAll(/gws_exec_route "([^"]+)"/g)),
+        )
+        .map((match) => match[1]),
+    );
+    assert.deepEqual(
+      realCliProof.acceptedCommands
+        .map((item) => item.command.replace(/ --help$/, ""))
+        .toSorted((left, right) => left.localeCompare(right)),
+      [...emittedRoutes].toSorted((left, right) => left.localeCompare(right)),
+    );
+    assert.equal(realCliProof.summary.commandCount, emittedRoutes.size);
+    assert.equal(realCliProof.summary.successfulExitCount, emittedRoutes.size);
+    assert.equal(realCliProof.summary.failedExitCount, 0);
+    assert.ok(realCliProof.acceptedCommands.every((item) => item.exitStatus === 0));
+  });
+});

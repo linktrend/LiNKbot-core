@@ -111,6 +111,9 @@ export const DEFAULT_APPROVAL_REQUEST_TIMEOUT_MS = DEFAULT_APPROVAL_TIMEOUT_MS +
 const DEFAULT_APPROVAL_RUNNING_NOTICE_MS = 10_000;
 const APPROVAL_SLUG_LENGTH = 8;
 
+/** Redacted route labels used by trusted execution diagnostics. */
+export type ExecExecutionPath = "host-adapter" | "host-direct" | "host-elevated" | "sandbox";
+
 /** Failure categories used to explain exec process exits. */
 type ExecProcessFailureKind =
   | "shell-command-not-found"
@@ -172,11 +175,13 @@ function emitExecProcessCompleted(params: {
   outcome: ExecProcessOutcome;
   sessionKey?: string;
   target: "host" | "sandbox";
+  executionPath: ExecExecutionPath;
 }): void {
   const exitSignal = normalizeExecExitSignal(params.outcome.exitSignal);
   emitDiagnosticEvent({
     type: "exec.process.completed",
     target: params.target,
+    executionPath: params.executionPath,
     mode: params.mode,
     outcome: params.outcome.status,
     durationMs: params.outcome.durationMs,
@@ -208,11 +213,18 @@ export function isRequestedExecTargetAllowed(params: {
   configuredTarget: ExecTarget;
   requestedTarget: ExecTarget;
   sandboxAvailable?: boolean;
+  sandboxRequired?: boolean;
 }) {
   if (params.requestedTarget === params.configuredTarget) {
     return true;
   }
   if (params.configuredTarget === "auto") {
+    if (
+      params.sandboxRequired &&
+      (params.requestedTarget === "gateway" || params.requestedTarget === "node")
+    ) {
+      return false;
+    }
     if (
       params.sandboxAvailable &&
       (params.requestedTarget === "gateway" || params.requestedTarget === "node")
@@ -230,6 +242,7 @@ export function resolveExecTarget(params: {
   requestedTarget?: ExecTarget | null;
   elevatedRequested: boolean;
   sandboxAvailable: boolean;
+  sandboxRequired?: boolean;
 }) {
   const configuredTarget = params.configuredTarget ?? "auto";
   const requestedTarget = params.requestedTarget ?? null;
@@ -239,6 +252,7 @@ export function resolveExecTarget(params: {
       configuredTarget,
       requestedTarget,
       sandboxAvailable: params.sandboxAvailable,
+      sandboxRequired: params.sandboxRequired,
     })
   ) {
     const allowedConfig = Array.from(
@@ -247,9 +261,11 @@ export function resolveExecTarget(params: {
           params.sandboxAvailable &&
           (requestedTarget === "gateway" || requestedTarget === "node")
           ? [renderExecTargetLabel(requestedTarget)]
-          : requestedTarget === "gateway" && !params.sandboxAvailable
-            ? ["gateway", "auto"]
-            : [renderExecTargetLabel(requestedTarget), "auto"],
+          : configuredTarget === "auto" && params.sandboxRequired
+            ? ["sandbox", "auto"]
+            : requestedTarget === "gateway" && !params.sandboxAvailable
+              ? ["gateway", "auto"]
+              : [renderExecTargetLabel(requestedTarget), "auto"],
       ),
     ).join(" or ");
     throw new Error(
@@ -259,6 +275,17 @@ export function resolveExecTarget(params: {
     );
   }
   const selectedTarget = requestedTarget ?? configuredTarget;
+  if (
+    params.sandboxRequired &&
+    !params.sandboxAvailable &&
+    !params.elevatedRequested &&
+    configuredTarget === "auto" &&
+    (selectedTarget === "auto" || selectedTarget === "sandbox")
+  ) {
+    throw new Error(
+      "exec sandbox unavailable: sandbox execution is required for this session (sandbox runtime required).",
+    );
+  }
   const resolvedTarget = params.elevatedRequested
     ? selectedTarget === "node"
       ? "node"
@@ -609,11 +636,16 @@ export async function runExecProcess(opts: {
   onUpdate?: (partialResult: AgentToolResult<ExecToolDetails>) => void;
   /** Runs after process finalization and before the exit wake is queued. */
   onSettledBeforeNotify?: (outcome: ExecProcessOutcome) => void;
+  executionPath?: ExecExecutionPath;
+  /** Adapter bindings execute with their fixed environment, never a login snapshot. */
+  disableShellSnapshot?: boolean;
 }): Promise<ExecProcessHandle> {
   const startedAt = Date.now();
   const sessionId = createSessionSlug();
   const execCommand = opts.execCommand ?? opts.command;
   const diagnosticTarget = opts.sandbox ? "sandbox" : "host";
+  const executionPath: ExecExecutionPath =
+    opts.executionPath ?? (opts.sandbox ? "sandbox" : "host-direct");
   const supervisor = getProcessSupervisor();
   const shellRuntimeEnv: Record<string, string> = {
     ...opts.env,
@@ -831,13 +863,15 @@ export async function runExecProcess(opts: {
       shellRuntimeEnv,
       opts.pathPrepend,
     );
-    const commandWithShellSnapshot = await maybeWrapCommandWithShellSnapshot({
-      command: commandWithPathPrepend,
-      shell,
-      shellArgs,
-      cwd: opts.workdir,
-      env: shellRuntimeEnv,
-    });
+    const commandWithShellSnapshot = opts.disableShellSnapshot
+      ? commandWithPathPrepend
+      : await maybeWrapCommandWithShellSnapshot({
+          command: commandWithPathPrepend,
+          shell,
+          shellArgs,
+          cwd: opts.workdir,
+          env: shellRuntimeEnv,
+        });
 
     const childArgv = [shell, ...shellArgs, commandWithShellSnapshot];
     if (opts.usePty) {
@@ -945,6 +979,7 @@ export async function runExecProcess(opts: {
           }),
           sessionKey: opts.sessionKey,
           target: diagnosticTarget,
+          executionPath,
         });
         throw retryErr;
       }
@@ -968,6 +1003,7 @@ export async function runExecProcess(opts: {
         }),
         sessionKey: opts.sessionKey,
         target: diagnosticTarget,
+        executionPath,
       });
       throw err;
     }
@@ -998,6 +1034,7 @@ export async function runExecProcess(opts: {
         outcome: finalOutcome,
         sessionKey: opts.sessionKey,
         target: diagnosticTarget,
+        executionPath,
       });
       return finalOutcome;
     })
@@ -1015,6 +1052,7 @@ export async function runExecProcess(opts: {
         outcome: finalOutcome,
         sessionKey: opts.sessionKey,
         target: diagnosticTarget,
+        executionPath,
       });
       return finalOutcome;
     });

@@ -19,3 +19,13 @@ export type ExecDenylistEntry = {
   pattern: string;
   reason?: string;
 };
+
+// A profile-owned constrained host-adapter binding. The executable and static
+// argv prefix are policy facts; generic routing only verifies and enforces them.
+export type ExecHostAdapterBinding = {
+  id: string;
+  target: "gateway";
+  executable: string;
+  argvPrefix: string[];
+  environment: Record<string, string>;
+};
