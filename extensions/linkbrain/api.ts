@@ -77,5 +77,6 @@ export {
   type BrainV2ProviderStatus,
   type BrainV2SafeResult,
   type BrainV2Transport,
+  type BrainV2TransportFailure,
   type BrainV2TransportRequest,
 } from "./src/v2.js";

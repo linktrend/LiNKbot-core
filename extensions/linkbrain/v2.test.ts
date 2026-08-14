@@ -167,6 +167,24 @@ describe("LiNKbrain v2 immutable consumer boundary", () => {
     expect(() =>
       assertBrainV2Page({ ...page("index"), data: { content: "private" } }, "v2.knowledge.search"),
     ).toThrow();
+    expect(() =>
+      assertBrainV2Page(
+        { snapshotId: "snapshot:brain-1", disclosure: "index", pagination: { limit: 25 } },
+        "v2.knowledge.search",
+      ),
+    ).toThrow();
+    expect(() => assertBrainV2SafePayload({ nested: { apiKey: "blocked" } })).toThrow();
+    expect(() =>
+      assertBrainV2SafePayload({ nested: { Authorization: "Bearer blocked" } }),
+    ).toThrow();
+    expect(() =>
+      assertBrainV2SafePayload({ nested: { depth: { deeper: { value: "x" } } } }),
+    ).not.toThrow();
+    expect(() =>
+      assertBrainV2SafePayload(
+        Object.fromEntries(Array.from({ length: 101 }, (_, i) => [`k${i}`, i])),
+      ),
+    ).toThrow();
   });
 
   it("rejects reasoning, secrets, raw output, payloads and identity overrides", () => {
@@ -197,6 +215,7 @@ describe("LiNKbrain v2 immutable consumer boundary", () => {
     ).toMatchObject({ namespace: "private" });
     expect(
       preparePrivateCheckpoint({
+        namespace: "private",
         checkpointRef: "checkpoint:1",
         idempotencyKey: "idem:2",
         metadata: { state: "bounded" },
@@ -238,11 +257,21 @@ describe("LiNKbrain v2 immutable consumer boundary", () => {
       ok: true,
       data: { disclosure: "index" },
     });
+    expect(await client.search("knowledge", "bad-cursor")).toMatchObject({
+      ok: false,
+      status: "contract_incompatible",
+    });
+    expect(await client.load("knowledge:1", "snapshot:brain-1")).toMatchObject({ ok: true });
+    expect(requests[2]?.params).toMatchObject({ snapshotId: "snapshot:brain-1" });
+    expect(await client.sendMessage({}, "")).toMatchObject({
+      ok: false,
+      status: "contract_incompatible",
+    });
     expect(requests[1]).not.toHaveProperty("credentialReference");
     expect(requests[1]).not.toHaveProperty("credentialValue");
     now = "2026-08-14T13:00:00.000Z";
     expect(await client.search("knowledge")).toMatchObject({ ok: false, status: "unauthorized" });
-    expect(requests).toHaveLength(2);
+    expect(requests).toHaveLength(3);
   });
 
   it("uses independent trusted expectations and revalidates checkpoint writes at runtime", async () => {
@@ -270,8 +299,8 @@ describe("LiNKbrain v2 immutable consumer boundary", () => {
     expect(
       await validClient.writeCheckpoint({
         namespace: "public",
-        checkpointRef: "",
-        idempotencyKey: "",
+        checkpointRef: "checkpoint:bad",
+        idempotencyKey: "idem:bad",
         metadata: {},
       } as never),
     ).toMatchObject({ ok: false });
