@@ -18,7 +18,7 @@ export function parseStrictIsoTimestamp(value: unknown): number | undefined {
     return undefined;
   }
   const match = ISO_DATE_TIME.exec(value);
-  if (!match) {
+  if (!match || match[0] !== value) {
     return undefined;
   }
   const year = Number(match[1]);

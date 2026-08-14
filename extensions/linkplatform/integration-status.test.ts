@@ -99,4 +99,14 @@ describe("normalizeIntegrationStatus", () => {
       ).toMatchObject({ ok: false, error: "malformed" });
     },
   );
+
+  it("rejects a trailing newline in timestamps", () => {
+    expect(
+      normalizeIntegrationStatus({
+        ...base,
+        state: "available",
+        observedAt: "2026-08-13T00:00:00.000Z\n",
+      }),
+    ).toMatchObject({ ok: false, error: "malformed" });
+  });
 });

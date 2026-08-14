@@ -202,6 +202,13 @@ const TRUST_KEYS = new Set([
   "revocationStatus",
 ]);
 const TRUST_REF = /^[A-Za-z0-9._:/@-]{1,256}$/;
+const isTrustRef = (value: unknown): value is string => {
+  if (typeof value !== "string") {
+    return false;
+  }
+  const match = TRUST_REF.exec(value);
+  return match?.[0] === value;
+};
 /** Validates Platform's already-verified trust projection without exposing credential material. */
 export function validatePlatformTrustFacts(
   input: unknown,
@@ -252,7 +259,7 @@ export function validatePlatformTrustFacts(
     "issuer",
     "audience",
   ] as const) {
-    if (typeof value[key] !== "string" || !TRUST_REF.test(value[key])) {
+    if (!isTrustRef(value[key])) {
       return { valid: false, reason: `${key} is invalid` };
     }
   }
@@ -266,14 +273,14 @@ export function validatePlatformTrustFacts(
   ) {
     return { valid: false, reason: "wrong audience or revoked credential" };
   }
-  if (value.orgId !== null && (typeof value.orgId !== "string" || !TRUST_REF.test(value.orgId))) {
+  if (value.orgId !== null && !isTrustRef(value.orgId)) {
     return { valid: false, reason: "orgId is invalid" };
   }
   for (const key of ["serviceScopes", "capabilities"] as const) {
     if (
       !Array.isArray(value[key]) ||
       value[key].length === 0 ||
-      !value[key].every((item) => typeof item === "string" && TRUST_REF.test(item))
+      !value[key].every((item) => isTrustRef(item))
     ) {
       return { valid: false, reason: `${key} is invalid` };
     }
