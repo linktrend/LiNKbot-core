@@ -101,12 +101,18 @@ export function validateProviderClaim(
 
   const claim = input as Record<string, unknown>;
   for (const field of Object.keys(claim)) {
-    if (!ALLOWED_CLAIM_FIELDS.has(field)) return { valid: false, reason: `unknown field ${field}` };
+    if (!ALLOWED_CLAIM_FIELDS.has(field)) {
+      return { valid: false, reason: `unknown field ${field}` };
+    }
   }
   for (const field of REQUIRED_FIELDS) {
-    if (!(field in claim)) return { valid: false, reason: `missing ${field}` };
+    if (!(field in claim)) {
+      return { valid: false, reason: `missing ${field}` };
+    }
   }
-  if ("modelActorId" in claim) return { valid: false, reason: "modelActorId is forbidden" };
+  if ("modelActorId" in claim) {
+    return { valid: false, reason: "modelActorId is forbidden" };
+  }
 
   const candidate = claim.providerCandidate;
   if (
@@ -114,8 +120,8 @@ export function validateProviderClaim(
     typeof candidate !== "object" ||
     Array.isArray(candidate) ||
     Object.keys(candidate).length !== 2 ||
-    !Object.prototype.hasOwnProperty.call(candidate, "commit") ||
-    !Object.prototype.hasOwnProperty.call(candidate, "tree") ||
+    !Object.hasOwn(candidate, "commit") ||
+    !Object.hasOwn(candidate, "tree") ||
     (candidate as Record<string, unknown>).commit !== PLATFORM_COMMIT ||
     (candidate as Record<string, unknown>).tree !== PLATFORM_TREE ||
     expected.providerCandidate.commit !== PLATFORM_COMMIT ||
@@ -128,7 +134,9 @@ export function validateProviderClaim(
     if (!isBoundedNonEmptyString(claim[field], MAX_CLAIM_STRING_LENGTH)) {
       return { valid: false, reason: `${field} is invalid` };
     }
-    if (claim[field] !== expected[field]) return { valid: false, reason: `${field} mismatch` };
+    if (claim[field] !== expected[field]) {
+      return { valid: false, reason: `${field} mismatch` };
+    }
   }
   if (
     !Array.isArray(claim.capabilities) ||
@@ -209,13 +217,18 @@ export function validatePlatformTrustFacts(
     now?: Date | string;
   },
 ): PlatformTrustValidation {
-  if (!input || typeof input !== "object" || Array.isArray(input))
+  if (!input || typeof input !== "object" || Array.isArray(input)) {
     return { valid: false, reason: "facts must be an object" };
+  }
   const value = input as Record<string, unknown>;
-  if (Object.keys(value).some((key) => !TRUST_KEYS.has(key)))
+  if (Object.keys(value).some((key) => !TRUST_KEYS.has(key))) {
     return { valid: false, reason: "unknown trust fact" };
-  for (const key of TRUST_KEYS)
-    if (!(key in value)) return { valid: false, reason: `missing ${key}` };
+  }
+  for (const key of TRUST_KEYS) {
+    if (!(key in value)) {
+      return { valid: false, reason: `missing ${key}` };
+    }
+  }
   const candidate = value.providerCandidate;
   if (
     !candidate ||
@@ -223,16 +236,26 @@ export function validatePlatformTrustFacts(
     Array.isArray(candidate) ||
     (candidate as Record<string, unknown>).commit !== PLATFORM_COMMIT ||
     (candidate as Record<string, unknown>).tree !== PLATFORM_TREE
-  )
+  ) {
     return { valid: false, reason: "provider candidate mismatch" };
+  }
   if (
     value.claimContractVersion !== PLATFORM_AUTH_CLAIMS_CONTRACT_VERSION ||
     value.schemaVersion !== PLATFORM_AUTH_CLAIMS_SCHEMA_VERSION
-  )
+  ) {
     return { valid: false, reason: "claim contract version mismatch" };
-  for (const key of ["actorId", "runtimeBindingId", "credentialId", "issuer", "audience"] as const)
-    if (typeof value[key] !== "string" || !TRUST_REF.test(value[key]))
+  }
+  for (const key of [
+    "actorId",
+    "runtimeBindingId",
+    "credentialId",
+    "issuer",
+    "audience",
+  ] as const) {
+    if (typeof value[key] !== "string" || !TRUST_REF.test(value[key])) {
       return { valid: false, reason: `${key} is invalid` };
+    }
+  }
   if (
     value.actorId !== expected.actorId ||
     value.orgId !== expected.orgId ||
@@ -240,21 +263,27 @@ export function validatePlatformTrustFacts(
     value.issuer !== expected.issuer ||
     value.audience !== expected.audience ||
     value.revocationStatus !== "active"
-  )
+  ) {
     return { valid: false, reason: "wrong audience or revoked credential" };
-  if (value.orgId !== null && (typeof value.orgId !== "string" || !TRUST_REF.test(value.orgId)))
+  }
+  if (value.orgId !== null && (typeof value.orgId !== "string" || !TRUST_REF.test(value.orgId))) {
     return { valid: false, reason: "orgId is invalid" };
-  for (const key of ["serviceScopes", "capabilities"] as const)
+  }
+  for (const key of ["serviceScopes", "capabilities"] as const) {
     if (
       !Array.isArray(value[key]) ||
       value[key].length === 0 ||
       !value[key].every((item) => typeof item === "string" && TRUST_REF.test(item))
-    )
+    ) {
       return { valid: false, reason: `${key} is invalid` };
-  if (!(value.capabilities as string[]).includes(expected.capability))
+    }
+  }
+  if (!(value.capabilities as string[]).includes(expected.capability)) {
     return { valid: false, reason: "required capability missing" };
-  if (!(value.serviceScopes as string[]).includes(expected.serviceScope))
+  }
+  if (!(value.serviceScopes as string[]).includes(expected.serviceScope)) {
     return { valid: false, reason: "required service scope missing" };
+  }
   const now =
     expected.now instanceof Date
       ? expected.now.getTime()
@@ -267,14 +296,17 @@ export function validatePlatformTrustFacts(
     !Number.isFinite(now) ||
     revocationObservedAt > now ||
     now - revocationObservedAt > 5 * 60 * 1000
-  )
+  ) {
     return { valid: false, reason: "revocation evidence is stale" };
+  }
   const issuedAt = parseStrictIsoTimestamp(value.issuedAt);
   const expiresAt = parseStrictIsoTimestamp(value.expiresAt);
-  if (issuedAt === undefined || expiresAt === undefined)
+  if (issuedAt === undefined || expiresAt === undefined) {
     return { valid: false, reason: "invalid trust timestamps" };
-  if (now === undefined || issuedAt > now || expiresAt <= now)
+  }
+  if (now === undefined || issuedAt > now || expiresAt <= now) {
     return { valid: false, reason: "trust facts expired or not yet issued" };
+  }
   return {
     valid: true,
     facts: Object.freeze({

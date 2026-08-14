@@ -6,15 +6,21 @@ function isLeapYear(year: number): boolean {
 }
 
 function daysInMonth(year: number, month: number): number {
-  if (month === 2) return isLeapYear(year) ? 29 : 28;
+  if (month === 2) {
+    return isLeapYear(year) ? 29 : 28;
+  }
   return [4, 6, 9, 11].includes(month) ? 30 : 31;
 }
 
 /** Parse RFC3339 date-times without accepting Date.parse calendar normalization. */
 export function parseStrictIsoTimestamp(value: unknown): number | undefined {
-  if (typeof value !== "string") return undefined;
+  if (typeof value !== "string") {
+    return undefined;
+  }
   const match = ISO_DATE_TIME.exec(value);
-  if (!match) return undefined;
+  if (!match) {
+    return undefined;
+  }
   const year = Number(match[1]);
   const month = Number(match[2]);
   const day = Number(match[3]);
@@ -22,7 +28,9 @@ export function parseStrictIsoTimestamp(value: unknown): number | undefined {
   const minute = Number(match[5]);
   const second = Number(match[6]);
   const offset = match[8];
-  if (!offset) return undefined;
+  if (!offset) {
+    return undefined;
+  }
   const offsetHour = offset === "Z" ? 0 : Number(offset.slice(1, 3));
   const offsetMinute = offset === "Z" ? 0 : Number(offset.slice(4, 6));
   if (

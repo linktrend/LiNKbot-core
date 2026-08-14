@@ -70,10 +70,18 @@ const isNonEmptyString = (value: unknown): value is string =>
 const isIsoTimestamp = (value: unknown): value is string =>
   isNonEmptyString(value) && parseStrictIsoTimestamp(value) !== undefined;
 
+const hasControlCharacters = (value: string): boolean => {
+  for (let index = 0; index < value.length; index += 1) {
+    const code = value.charCodeAt(index);
+    if (code <= 0x1f || (code >= 0x7f && code <= 0x9f)) {
+      return true;
+    }
+  }
+  return false;
+};
+
 const isNarrative = (value: unknown): value is string =>
-  typeof value === "string" &&
-  value.length <= MAX_NARRATIVE_LENGTH &&
-  !/[\u0000-\u001F\u007F-\u009F]/.test(value);
+  typeof value === "string" && value.length <= MAX_NARRATIVE_LENGTH && !hasControlCharacters(value);
 
 export function normalizeIntegrationStatus(input: unknown): IntegrationStatusResult {
   const value = input as Partial<IntegrationStatusInput> | null;
@@ -83,7 +91,9 @@ export function normalizeIntegrationStatus(input: unknown): IntegrationStatusRes
     return { ok: false, error: "malformed", issues: ["input must be an object"] };
   }
   for (const field of Object.keys(value)) {
-    if (!ALLOWED_STATUS_FIELDS.has(field)) issues.push(`unknown field ${field}`);
+    if (!ALLOWED_STATUS_FIELDS.has(field)) {
+      issues.push(`unknown field ${field}`);
+    }
   }
   if (!INTEGRATION_PROVIDERS.includes(value.provider as IntegrationProvider)) {
     issues.push("provider is invalid");
@@ -108,12 +118,16 @@ export function normalizeIntegrationStatus(input: unknown): IntegrationStatusRes
   }
 
   if (value.state === "stale") {
-    if (!isNonEmptyString(value.sourceRef)) issues.push("stale requires sourceRef");
+    if (!isNonEmptyString(value.sourceRef)) {
+      issues.push("stale requires sourceRef");
+    }
     if (!isIsoTimestamp(value.sourceTimestamp)) {
       issues.push("stale requires sourceTimestamp as an ISO timestamp");
     }
   }
-  if (issues.length > 0) return { ok: false, error: "malformed", issues };
+  if (issues.length > 0) {
+    return { ok: false, error: "malformed", issues };
+  }
 
   const state = value.state as IntegrationState;
   return {
