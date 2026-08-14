@@ -159,6 +159,7 @@ test("exec emits bounded process diagnostics without command text", async () => 
     }
     expect(event.type).toBe("exec.process.completed");
     expect(event.target).toBe("host");
+    expect(event.executionPath).toBe("host-direct");
     expect(event.mode).toBe("child");
     expect(event.outcome).toBe("completed");
     expect(typeof event?.durationMs).toBe("number");

@@ -624,6 +624,30 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Progress
   - H2: Next Action
 
+## agent-sessions/completed/codex-local-mac-mini-desktop-workspace-feature-20260813-2221.md
+
+- Route: /agent-sessions/completed/codex-local-mac-mini-desktop-workspace-feature-20260813-2221
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/codex-local-mac-mini-desktop-workspace-feature-20260813-2247.md
+
+- Route: /agent-sessions/completed/codex-local-mac-mini-desktop-workspace-feature-20260813-2247
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Progress
+  - H2: Validation
+  - H2: Amendment
+
 ## agent-sessions/completed/codex-local-mac-mini-desktop-workspace-lisa-20260810-2245.md
 
 - Route: /agent-sessions/completed/codex-local-mac-mini-desktop-workspace-lisa-20260810-2245
@@ -637,6 +661,42 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Validation
   - H2: Next Action
 
+## agent-sessions/completed/codex-local-mac-mini-desktop-workspace-lisa-20260813-2218.md
+
+- Route: /agent-sessions/completed/codex-local-mac-mini-desktop-workspace-lisa-20260813-2218
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/codex-local-mac-mini-desktop-workspace-lisa-vps-wp-03-20260813-2223.md
+
+- Route: /agent-sessions/completed/codex-local-mac-mini-desktop-workspace-lisa-vps-wp-03-20260813-2223
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/codex-local-mac-mini-desktop-workspace-lisa-wp02-correction-20260813-2241.md
+
+- Route: /agent-sessions/completed/codex-local-mac-mini-desktop-workspace-lisa-wp02-correction-20260813-2241
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
 ## agent-sessions/completed/codex-local-mac-mini-desktop-workspace-review-fix-20260810-2016.md
 
 - Route: /agent-sessions/completed/codex-local-mac-mini-desktop-workspace-review-fix-20260810-2016
@@ -647,6 +707,27 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Ownership Scope
   - H2: Progress
   - H2: Next Action
+
+## agent-sessions/completed/codex-local-mac-mini-desktop-workspace-terra-wp01-takeover-20260813-2318.md
+
+- Route: /agent-sessions/completed/codex-local-mac-mini-desktop-workspace-terra-wp01-takeover-20260813-2318
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Progress
+  - H2: Closeout
+
+## agent-sessions/completed/codex-local-mac-mini-desktop-workspace-terra-wp03-takeover-20260813-2250.md
+
+- Route: /agent-sessions/completed/codex-local-mac-mini-desktop-workspace-terra-wp03-takeover-20260813-2250
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Attempt Accounting
+  - H2: Completion Evidence
+  - H2: Remaining Gates
 
 ## agent-sessions/completed/codex-local-mac-mini-gitops-foundation-20260810-1240.md
 
@@ -4941,6 +5022,21 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Remaining human gates
   - H2: Rollback
   - H2: Honesty bounds
+
+## execution/lisa-vps-consolidation/WP-01-decision-execution-matrix.md
+
+- Route: /execution/lisa-vps-consolidation/WP-01-decision-execution-matrix
+- Headings:
+  - H1: WP-01 decision and execution matrix
+
+## execution/lisa-vps-consolidation/WP-01-linux-sandbox-plan.md
+
+- Route: /execution/lisa-vps-consolidation/WP-01-linux-sandbox-plan
+- Headings:
+  - H1: WP-01 Linux sandbox installation and rollback plan
+  - H2: Source contract
+  - H2: Installation gate
+  - H2: Configuration and rollback
 
 ## execution/openclawdevelopmentplan01/BRAIN-TOOL-NAME-DECISION-PACKET.md
 
@@ -9531,6 +9627,143 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Questions for the Orchestrator or Next Agent
   - H2: Confidence
   - H2: Amendments
+
+## handoffs/2026-08-13-2218-codex-local-mac-mini-desktop-workspace-lisa-wp-02.md
+
+- Route: /handoffs/2026-08-13-2218-codex-local-mac-mini-desktop-workspace-lisa-wp-02
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-08-13-2235-codex-local-mac-mini-desktop-workspace-lisa-vps-wp-03.md
+
+- Route: /handoffs/2026-08-13-2235-codex-local-mac-mini-desktop-workspace-lisa-vps-wp-03
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-08-13-2239-codex-wp-01-safe-actions-sandbox.md
+
+- Route: /handoffs/2026-08-13-2239-codex-wp-01-safe-actions-sandbox
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Model-Use Receipt
+  - H2: Amendments
+
+## handoffs/2026-08-13-2250-codex-local-mac-mini-desktop-workspace-lisa-wp02-correction.md
+
+- Route: /handoffs/2026-08-13-2250-codex-local-mac-mini-desktop-workspace-lisa-wp02-correction
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+  - H3: 2026-08-13 22:55 Asia/Taipei — commit and session closeout
+  - H3: 2026-08-13 22:57 Asia/Taipei — final clean-status verification
+
+## handoffs/2026-08-13-2303-codex-terra-wp03-takeover.md
+
+- Route: /handoffs/2026-08-13-2303-codex-terra-wp03-takeover
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Validation
+  - H2: Remaining Gates
+  - H2: Model and Attempt Receipt
+  - H2: Amendments
+
+## handoffs/2026-08-13-2305-codex-cli-wp-01-correction-closeout.md
+
+- Route: /handoffs/2026-08-13-2305-codex-cli-wp-01-correction-closeout
+- Headings:
+  - H1: WP-01 correction and closeout handoff
+  - H2: Scope and result
+  - H2: Immutable predecessor receipt
+  - H2: Correction receipt
+  - H2: Model-use receipt
+  - H2: Changed source surfaces
+  - H2: Validation
+  - H2: Scope-exclusion proof
+  - H2: Remaining live gates
+  - H2: Amendment
+
+## handoffs/2026-08-13-2318-codex-terra-wp01-takeover.md
+
+- Route: /handoffs/2026-08-13-2318-codex-terra-wp01-takeover
+- Headings:
+  - H1: WP-01 Terra takeover handoff
+  - H2: Attempt accounting
+  - H2: Source-only boundaries
+  - H2: Functional source receipt
+  - H2: Supervisor acceptance and closeout
+  - H2: Remaining gates
 
 ## handoffs/TEMPLATE.md
 

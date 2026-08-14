@@ -1,0 +1,29 @@
+{
+  "schema": "lisa_google_workspace_host_adapter_contract_v1",
+  "status": "source-contract-only",
+  "sourceRelativeEntrypoints": [
+    "linkbots/lisa/ops/google-workspace/tools/bin/lisa-safe",
+    "linkbots/lisa/ops/google-workspace/tools/bin/lisa-carlos-tasks"
+  ],
+  "deployedAbsoluteEntrypoints": {
+    "status": "hold",
+    "reason": "The trusted VPS checkout/install path cannot be verified until the SSH host-key trust hold is resolved; no absolute adapter path is guessed from source."
+  },
+  "environmentAuthority": "host-adapter profile policy only",
+  "fixedEnvironmentKeys": [
+    "LISA_GOOGLE_WORKSPACE_CONFIG_ROOT",
+    "LISA_GOOGLE_WORKSPACE_WORK_DIR",
+    "LISA_GOOGLE_WORKSPACE_EXEC_CWD",
+    "LISA_GOOGLE_WORKSPACE_HOME_DIR",
+    "LISA_GWS_BIN",
+    "LISA_GWS_NODE_BIN"
+  ],
+  "forbiddenInvocationForms": [
+    "env-prefix",
+    "arbitrary-environment-override",
+    "shell-wrapper",
+    "bare-gws"
+  ],
+  "trustedPath": "/usr/local/bin:/usr/bin:/bin",
+  "livePrerequisite": "verify /usr/local/bin is service-account non-writable before adapter enablement"
+}

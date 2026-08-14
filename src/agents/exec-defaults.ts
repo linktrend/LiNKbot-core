@@ -133,6 +133,7 @@ export function resolveExecDefaults(params: {
   agentId?: string;
   sessionKey?: string;
   sandboxAvailable?: boolean;
+  sandboxRequired?: boolean;
   elevatedRequested?: boolean;
 }): {
   host: ExecTarget;
@@ -162,6 +163,7 @@ export function resolveExecDefaults(params: {
     configuredTarget: host,
     elevatedRequested: params.elevatedRequested === true,
     sandboxAvailable,
+    sandboxRequired: params.sandboxRequired,
   });
   const defaultSecurity = resolved.effectiveHost === "sandbox" ? "deny" : "full";
   const approvalDefaults =
@@ -216,6 +218,7 @@ export function resolveExecDefaults(params: {
       configuredTarget: host,
       requestedTarget: "node",
       sandboxAvailable,
+      sandboxRequired: params.sandboxRequired,
     }),
   };
 }

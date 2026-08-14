@@ -1,0 +1,266 @@
+#!/bin/bash
+# Lisa Workspace identity: Gmail, Calendar, Drive, and Docs only.
+set -euo pipefail
+set -f
+# Set before dirname/source so an inherited PATH cannot replace preflight tools.
+PATH=/usr/local/bin:/usr/bin:/bin
+export PATH
+
+SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+# shellcheck source=../../gws-wrapper-common.sh
+source "$SCRIPT_DIR/../../gws-wrapper-common.sh"
+
+usage() {
+  cat >&2 <<'EOF'
+Usage: lisa-safe <gmail-triage|gmail-search|gmail-read|email-send|calendar-list|calendar-agenda|calendar-insert|drive-list|drive-read|drive-create-doc|docs-read|docs-append|drive-share|smoke-gws> ...
+EOF
+  exit 64
+}
+
+[[ $# -gt 0 ]] || usage
+gws_init lisa
+
+case "$1" in
+  gmail-triage)
+    shift
+    max=20
+    query=is:unread
+    while (($#)); do
+      case "$1" in
+        --max) (($# >= 2)) || gws_die "--max requires a value"; max=$2; shift 2 ;;
+        --query) (($# >= 2)) || gws_die "--query requires a value"; query=$2; shift 2 ;;
+        *) gws_die "unsupported gmail-triage argument" ;;
+      esac
+    done
+    gws_positive_int "$max"
+    gws_exec_route "gmail +triage" gmail +triage --max "$max" --query "$query" --format json
+    ;;
+
+  gmail-search)
+    shift
+    query= max=20
+    while (($#)); do
+      case "$1" in
+        --query) (($# >= 2)) || gws_die "--query requires a value"; query=$2; shift 2 ;;
+        --max) (($# >= 2)) || gws_die "--max requires a value"; max=$2; shift 2 ;;
+        *) gws_die "unsupported gmail-search argument" ;;
+      esac
+    done
+    [[ -n "$query" ]] || gws_die "gmail-search requires --query"
+    gws_positive_int "$max"
+    gws_exec_route "gmail users messages list" gmail users messages list --params "{\"userId\":\"me\",\"q\":$(gws_json_string "$query"),\"maxResults\":$max}" --format json
+    ;;
+
+  gmail-read)
+    shift
+    message=
+    while (($#)); do
+      case "$1" in
+        --message-id) (($# >= 2)) || gws_die "--message-id requires a value"; message=$2; shift 2 ;;
+        *) gws_die "unsupported gmail-read argument" ;;
+      esac
+    done
+    gws_id "$message"
+    gws_exec_route "gmail users messages get" gmail users messages get --params "{\"userId\":\"me\",\"id\":\"$message\",\"format\":\"full\"}" --format json
+    ;;
+
+  email-send)
+    shift
+    to= subject= body_file= dry_run=false
+    while (($#)); do
+      case "$1" in
+        --to) (($# >= 2)) || gws_die "--to requires a value"; to=$2; shift 2 ;;
+        --subject) (($# >= 2)) || gws_die "--subject requires a value"; subject=$2; shift 2 ;;
+        --body-file) (($# >= 2)) || gws_die "--body-file requires a value"; body_file=$2; shift 2 ;;
+        --dry-run) dry_run=true; shift ;;
+        *) gws_die "unsupported email-send argument" ;;
+      esac
+    done
+    [[ -n "$to" && -n "$subject" && -n "$body_file" ]] || gws_die "email-send requires --to, --subject, and --body-file"
+    gws_internal_email_list "$to"
+    body_path=$(gws_require_work_file "$body_file")
+    body=$(<"$body_path")
+    args=(gmail +send --to "$to" --subject "$subject" --body "$body" --format json)
+    [[ "$dry_run" == true ]] && args+=(--dry-run)
+    gws_exec_route "gmail +send" "${args[@]}"
+    ;;
+
+  calendar-list)
+    shift
+    max=50
+    while (($#)); do
+      case "$1" in
+        --max-results) (($# >= 2)) || gws_die "--max-results requires a value"; max=$2; shift 2 ;;
+        *) gws_die "unsupported calendar-list argument" ;;
+      esac
+    done
+    gws_positive_int "$max"
+    gws_exec_route "calendar calendarList list" calendar calendarList list --params "{\"maxResults\":$max}" --format json
+    ;;
+
+  calendar-agenda)
+    shift
+    timezone=Asia/Taipei
+    calendar=
+    range=today
+    while (($#)); do
+      case "$1" in
+        --timezone) (($# >= 2)) || gws_die "--timezone requires a value"; timezone=$2; shift 2 ;;
+        --calendar) (($# >= 2)) || gws_die "--calendar requires a value"; calendar=$2; shift 2 ;;
+        --today|--tomorrow|--week) range=${1#--}; shift ;;
+        --days) (($# >= 2)) || gws_die "--days requires a value"; range=days:$2; shift 2 ;;
+        *) gws_die "unsupported calendar-agenda argument" ;;
+      esac
+    done
+    if [[ "$range" == days:* ]]; then
+      args=(calendar +agenda --days "${range#days:}" --timezone "$timezone" --format json)
+    else
+      args=(calendar +agenda "--$range" --timezone "$timezone" --format json)
+    fi
+    [[ -n "$calendar" ]] && args+=(--calendar "$calendar")
+    gws_exec_route "calendar +agenda" "${args[@]}"
+    ;;
+
+  calendar-insert)
+    shift
+    calendar= summary= start= end= location= description= dry_run=false
+    attendees=()
+    while (($#)); do
+      case "$1" in
+        --calendar) (($# >= 2)) || gws_die "--calendar requires a value"; calendar=$2; shift 2 ;;
+        --summary) (($# >= 2)) || gws_die "--summary requires a value"; summary=$2; shift 2 ;;
+        --start) (($# >= 2)) || gws_die "--start requires a value"; start=$2; shift 2 ;;
+        --end) (($# >= 2)) || gws_die "--end requires a value"; end=$2; shift 2 ;;
+        --location) (($# >= 2)) || gws_die "--location requires a value"; location=$2; shift 2 ;;
+        --description) (($# >= 2)) || gws_die "--description requires a value"; description=$2; shift 2 ;;
+        --attendee) (($# >= 2)) || gws_die "--attendee requires a value"; attendees+=("$2"); shift 2 ;;
+        --dry-run) dry_run=true; shift ;;
+        *) gws_die "unsupported calendar-insert argument" ;;
+      esac
+    done
+    [[ -n "$calendar" && -n "$summary" && -n "$start" && -n "$end" ]] || gws_die "calendar-insert requires explicit --calendar, --summary, --start, and --end"
+    for attendee in "${attendees[@]}"; do gws_internal_email "$attendee"; done
+    args=(calendar +insert --calendar "$calendar" --summary "$summary" --start "$start" --end "$end" --format json)
+    [[ -n "$location" ]] && args+=(--location "$location")
+    [[ -n "$description" ]] && args+=(--description "$description")
+    for attendee in "${attendees[@]}"; do args+=(--attendee "$attendee"); done
+    [[ "$dry_run" == true ]] && args+=(--dry-run)
+    gws_exec_route "calendar +insert" "${args[@]}"
+    ;;
+
+  drive-list)
+    shift
+    page_size=50
+    while (($#)); do
+      case "$1" in
+        --page-size) (($# >= 2)) || gws_die "--page-size requires a value"; page_size=$2; shift 2 ;;
+        *) gws_die "unsupported drive-list argument" ;;
+      esac
+    done
+    gws_positive_int "$page_size"
+    gws_exec_route "drive files list" drive files list --params "{\"pageSize\":$page_size}" --format json
+    ;;
+
+  drive-read)
+    shift
+    file_id= output_file=
+    while (($#)); do
+      case "$1" in
+        --file-id) (($# >= 2)) || gws_die "--file-id requires a value"; file_id=$2; shift 2 ;;
+        --output-file) (($# >= 2)) || gws_die "--output-file requires a value"; output_file=$2; shift 2 ;;
+        *) gws_die "unsupported drive-read argument" ;;
+      esac
+    done
+    gws_id "$file_id"
+    [[ -n "$output_file" ]] || gws_die "drive-read requires --output-file"
+    output_path=$(gws_prepare_download_output "$output_file")
+    gws_exec_route "drive files get" drive files get --params "{\"fileId\":\"$file_id\",\"alt\":\"media\"}" --output "$output_path"
+    ;;
+
+  drive-create-doc)
+    shift
+    name= parent= dry_run=false
+    while (($#)); do
+      case "$1" in
+        --name) (($# >= 2)) || gws_die "--name requires a value"; name=$2; shift 2 ;;
+        --parent) (($# >= 2)) || gws_die "--parent requires a value"; parent=$2; shift 2 ;;
+        --dry-run) dry_run=true; shift ;;
+        *) gws_die "unsupported drive-create-doc argument" ;;
+      esac
+    done
+    name_pattern='^[A-Za-z0-9][A-Za-z0-9 ._:]{0,119}$'
+    [[ "$name" =~ $name_pattern ]] || gws_die "document name contains unsupported characters or is empty"
+    json="{\"name\":$(gws_json_string "$name"),\"mimeType\":\"application/vnd.google-apps.document\""
+    if [[ -n "$parent" ]]; then
+      gws_id "$parent"
+      json+=",\"parents\":[\"$parent\"]"
+    fi
+    json+='}'
+    args=(drive files create --json "$json" --format json)
+    [[ "$dry_run" == true ]] && args+=(--dry-run)
+    gws_exec_route "drive files create" "${args[@]}"
+    ;;
+
+  docs-append)
+    shift
+    document= text_file= dry_run=false
+    while (($#)); do
+      case "$1" in
+        --document) (($# >= 2)) || gws_die "--document requires a value"; document=$2; shift 2 ;;
+        --text-file) (($# >= 2)) || gws_die "--text-file requires a value"; text_file=$2; shift 2 ;;
+        --dry-run) dry_run=true; shift ;;
+        *) gws_die "unsupported docs-append argument" ;;
+      esac
+    done
+    [[ -n "$document" && -n "$text_file" ]] || gws_die "docs-append requires --document and --text-file"
+    gws_id "$document"
+    text_path=$(gws_require_work_file "$text_file")
+    text=$(<"$text_path")
+    args=(docs +write --document "$document" --text "$text" --format json)
+    [[ "$dry_run" == true ]] && args+=(--dry-run)
+    gws_exec_route "docs +write" "${args[@]}"
+    ;;
+
+  docs-read)
+    shift
+    document=
+    while (($#)); do
+      case "$1" in
+        --document) (($# >= 2)) || gws_die "--document requires a value"; document=$2; shift 2 ;;
+        *) gws_die "unsupported docs-read argument" ;;
+      esac
+    done
+    gws_id "$document"
+    gws_exec_route "docs documents get" docs documents get --params "{\"documentId\":\"$document\"}" --format json
+    ;;
+
+  drive-share)
+    shift
+    file_id= email= role= dry_run=false
+    while (($#)); do
+      case "$1" in
+        --file-id) (($# >= 2)) || gws_die "--file-id requires a value"; file_id=$2; shift 2 ;;
+        --email) (($# >= 2)) || gws_die "--email requires a value"; email=$2; shift 2 ;;
+        --role) (($# >= 2)) || gws_die "--role requires a value"; role=$2; shift 2 ;;
+        --dry-run) dry_run=true; shift ;;
+        *) gws_die "unsupported drive-share argument" ;;
+      esac
+    done
+    [[ -n "$file_id" && -n "$email" && -n "$role" ]] || gws_die "drive-share requires --file-id, --email, and --role"
+    gws_id "$file_id"
+    gws_internal_email "$email"
+    case "$role" in reader|commenter|writer) ;; *) gws_die "drive-share role must be reader, commenter, or writer" ;; esac
+    args=(drive permissions create --params "{\"fileId\":\"$file_id\"}" --json "{\"type\":\"user\",\"role\":\"$role\",\"emailAddress\":\"$email\"}" --format json)
+    [[ "$dry_run" == true ]] && args+=(--dry-run)
+    gws_exec_route "drive permissions create" "${args[@]}"
+    ;;
+
+  smoke-gws)
+    [[ $# -eq 1 ]] || gws_die "smoke-gws takes no arguments"
+    gws_exec_route "calendar +agenda" calendar +agenda --today --timezone Asia/Taipei --format json
+    gws_exec_route "drive files list" drive files list --params '{"pageSize":1}' --format json
+    gws_exec_route "gmail +triage" gmail +triage --max 1 --query is:unread --format json
+    ;;
+
+  *) usage ;;
+esac
