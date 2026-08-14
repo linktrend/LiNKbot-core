@@ -39,6 +39,8 @@ const { mockExecApprovals, supervisorSpawnMock } = vi.hoisted(() => {
     },
     allowlist: [],
     denylist: [],
+    secureRouting: false,
+    hostAdapters: [],
     file: {
       version: 1,
       socket: { path: "/tmp/exec-approvals.sock", token: "token" },

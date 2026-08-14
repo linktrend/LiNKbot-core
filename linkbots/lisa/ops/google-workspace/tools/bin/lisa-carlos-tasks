@@ -1,0 +1,114 @@
+#!/bin/bash
+# Carlos Tasks identity: separate OAuth/configuration from Lisa Workspace.
+set -euo pipefail
+set -f
+# Set before dirname/source so an inherited PATH cannot replace preflight tools.
+PATH=/usr/local/bin:/usr/bin:/bin
+export PATH
+
+SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+# shellcheck source=../../gws-wrapper-common.sh
+source "$SCRIPT_DIR/../../gws-wrapper-common.sh"
+
+usage() {
+  cat >&2 <<'EOF'
+Usage: lisa-carlos-tasks <tasklists list|tasks list|tasks insert|tasks patch|tasks delete> ...
+EOF
+  exit 64
+}
+
+[[ $# -ge 2 ]] || usage
+gws_init carlos-tasks
+resource=$1
+method=$2
+shift 2
+
+params='{}'
+json=''
+dry_run=false
+tasklist= task= title= notes= due= status= show_completed=false show_completed_set=false
+
+while (($#)); do
+  case "$1" in
+    --tasklist) (($# >= 2)) || gws_die "--tasklist requires a value"; tasklist=$2; shift 2 ;;
+    --task) (($# >= 2)) || gws_die "--task requires a value"; task=$2; shift 2 ;;
+    --title) (($# >= 2)) || gws_die "--title requires a value"; title=$2; shift 2 ;;
+    --notes) (($# >= 2)) || gws_die "--notes requires a value"; notes=$2; shift 2 ;;
+    --due) (($# >= 2)) || gws_die "--due requires a value"; due=$2; shift 2 ;;
+    --status) (($# >= 2)) || gws_die "--status requires a value"; status=$2; shift 2 ;;
+    --show-completed) (($# >= 2)) || gws_die "--show-completed requires true or false"; show_completed=$2; show_completed_set=true; shift 2 ;;
+    --dry-run) dry_run=true; shift ;;
+    *) gws_die "unsupported Carlos Tasks argument" ;;
+  esac
+done
+
+case "$resource/$method" in
+  tasklists/list)
+    [[ -z "$tasklist$task$title$notes$due$status" && "$show_completed_set" == false && "$dry_run" == false ]] || gws_die "tasklists list takes no arguments"
+    gws_exec_route "tasks tasklists list" tasks tasklists list --format json
+    ;;
+
+  tasks/list)
+    [[ -n "$tasklist" ]] || gws_die "tasks list requires --tasklist"
+    gws_id "$tasklist"
+    [[ "$show_completed" == true || "$show_completed" == false ]] || gws_die "--show-completed must be true or false"
+    params="{\"tasklist\":\"$tasklist\",\"showCompleted\":$show_completed}"
+    gws_exec_route "tasks tasks list" tasks tasks list --params "$params" --format json
+    ;;
+
+  tasks/insert)
+    [[ -n "$tasklist" && -n "$title" ]] || gws_die "tasks insert requires --tasklist and --title"
+    gws_id "$tasklist"
+    [[ -z "$task" && -z "$status" ]] || gws_die "tasks insert does not accept --task or --status"
+    json="{\"title\":$(gws_json_string "$title")"
+    [[ -n "$notes" ]] && json+=",\"notes\":$(gws_json_string "$notes")"
+    [[ -n "$due" ]] && json+=",\"due\":$(gws_json_string "$due")"
+    json+='}'
+    args=(tasks tasks insert --params "{\"tasklist\":\"$tasklist\"}" --json "$json" --format json)
+    [[ "$dry_run" == true ]] && args+=(--dry-run)
+    gws_exec_route "tasks tasks insert" "${args[@]}"
+    ;;
+
+  tasks/patch)
+    [[ -n "$tasklist" && -n "$task" ]] || gws_die "tasks patch requires --tasklist and --task"
+    gws_id "$tasklist"
+    gws_id "$task"
+    [[ -n "$title$notes$due$status" ]] || gws_die "tasks patch requires at least one mutable field"
+    if [[ -n "$status" ]]; then
+      [[ "$status" == completed || "$status" == needsAction ]] || gws_die "unsupported task status"
+    fi
+    json='{}'
+    [[ -n "$title" ]] && json="{\"title\":$(gws_json_string "$title")"
+    if [[ -n "$notes" ]]; then
+      [[ "$json" == '{}' ]] && json='{'
+      [[ "$json" != '{' ]] && json+=','
+      json+="\"notes\":$(gws_json_string "$notes")"
+    fi
+    if [[ -n "$due" ]]; then
+      [[ "$json" == '{}' ]] && json='{'
+      [[ "$json" != '{' ]] && json+=','
+      json+="\"due\":$(gws_json_string "$due")"
+    fi
+    if [[ -n "$status" ]]; then
+      [[ "$json" == '{}' ]] && json='{'
+      [[ "$json" != '{' ]] && json+=','
+      json+="\"status\":$(gws_json_string "$status")"
+    fi
+    [[ "$json" == *'}' ]] || json+='}'
+    args=(tasks tasks patch --params "{\"tasklist\":\"$tasklist\",\"task\":\"$task\"}" --json "$json" --format json)
+    [[ "$dry_run" == true ]] && args+=(--dry-run)
+    gws_exec_route "tasks tasks patch" "${args[@]}"
+    ;;
+
+  tasks/delete)
+    [[ -n "$tasklist" && -n "$task" ]] || gws_die "tasks delete requires --tasklist and --task"
+    [[ -z "$title$notes$due$status" ]] || gws_die "tasks delete takes only --tasklist, --task, and optional --dry-run"
+    gws_id "$tasklist"
+    gws_id "$task"
+    args=(tasks tasks delete --params "{\"tasklist\":\"$tasklist\",\"task\":\"$task\"}" --format json)
+    [[ "$dry_run" == true ]] && args+=(--dry-run)
+    gws_exec_route "tasks tasks delete" "${args[@]}"
+    ;;
+
+  *) usage ;;
+esac

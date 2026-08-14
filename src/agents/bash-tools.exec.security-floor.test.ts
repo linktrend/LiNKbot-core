@@ -7,10 +7,15 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import {
+  onInternalDiagnosticEvent,
+  type DiagnosticEventPayload,
+} from "../infra/diagnostic-events.js";
 import type { ExecAutoReviewer } from "../infra/exec-auto-review.js";
 import { captureEnv, deleteTestEnvValue, setTestEnvValue } from "../test-utils/env.js";
 import { resetProcessRegistryForTests } from "./bash-process-registry.test-support.js";
 import { createExecTool } from "./bash-tools.exec.js";
+import { decideExecRoute, screenExecCommand } from "./exec-route-policy.js";
 import { callGatewayTool } from "./tools/gateway.js";
 
 vi.mock("./tools/gateway.js", () => ({
@@ -51,6 +56,42 @@ function writeFullAskExecApprovalsFixture(root: string): void {
     defaults: { security: "full", ask: "always" },
     agents: {},
   });
+}
+
+function installSecureAdapterFixture(
+  root: string,
+  policy: { security?: "allowlist" | "full"; ask?: "always" | "off" } = {},
+): string {
+  const binDir = path.join(root, "adapter-bin");
+  fs.mkdirSync(binDir, { recursive: true });
+  const wrapper = path.join(binDir, "profile-wrapper");
+  fs.writeFileSync(
+    wrapper,
+    '#!/bin/sh\nprintf \'adapter-ok %s path=%s shell=%s leaked=%s\\n\' "$*" "$PATH" "${OPENCLAW_SHELL:-unset}" "${HOSTILE_ADAPTER_LEAK:-unset}"\n',
+    { mode: 0o755 },
+  );
+  const executable = fs.realpathSync(wrapper);
+  writeExecApprovalsFixture(root, {
+    version: 1,
+    defaults: { security: "full", ask: "off" },
+    agents: {
+      "*": {
+        secureRouting: true,
+        security: policy.security,
+        ask: policy.ask,
+        hostAdapters: [
+          {
+            id: "profile-wrapper",
+            target: "gateway",
+            executable,
+            argvPrefix: ["read"],
+            environment: { PATH: `${binDir}:/usr/bin:/bin` },
+          },
+        ],
+      },
+    },
+  });
+  return wrapper;
 }
 
 describe("exec security floor", () => {
@@ -110,6 +151,150 @@ describe("exec security floor", () => {
     expect(text).not.toMatch(/exec denied/i);
     expect(text).not.toMatch(/allowlist miss/i);
     expect(text.trim()).toContain("hello");
+  });
+
+  it("runs a structural gateway adapter with an enforced command and fixed environment", async () => {
+    const root = tempRoot ?? os.tmpdir();
+    const wrapper = installSecureAdapterFixture(root, { security: "allowlist", ask: "always" });
+    const events: DiagnosticEventPayload[] = [];
+    const unsubscribe = onInternalDiagnosticEvent((event) => events.push(event));
+    process.env.HOSTILE_ADAPTER_LEAK = "must-not-reach-adapter";
+    try {
+      const tool = createExecTool({ host: "gateway", security: "allowlist", ask: "always" });
+      const command = `${wrapper} read --value 'dynamic value'`;
+      const screen = await screenExecCommand({ command, env: process.env });
+      expect(screen.allowed).toBe(true);
+      if (screen.allowed) {
+        const candidate = screen.plan.groups.flatMap((group) => group.candidates)[0];
+        expect(candidate?.sourceSegment.argv.slice(1)).toEqual([
+          "read",
+          "--value",
+          "dynamic value",
+        ]);
+        expect(candidate?.sourceSegment.resolution?.execution.resolvedRealPath).toBe(
+          fs.realpathSync(wrapper),
+        );
+        expect(candidate?.sourceSegment.resolution?.wrapperChain).toEqual([]);
+      }
+      const plannedRoute = decideExecRoute({
+        secureRouting: true,
+        screen,
+        configuredTarget: "gateway",
+        elevatedRequested: false,
+        sandboxRequired: false,
+        hostAdapters: [
+          {
+            id: "profile-wrapper",
+            target: "gateway",
+            executable: fs.realpathSync(wrapper),
+            argvPrefix: ["read"],
+            environment: { PATH: `${path.dirname(wrapper)}:/usr/bin:/bin` },
+          },
+        ],
+      });
+      expect(plannedRoute).toMatchObject({ kind: "host-adapter" });
+      const result = await tool.execute("call-secure-adapter", {
+        command,
+      });
+      expect((result.content[0] as { text?: string }).text ?? "").toContain(
+        "adapter-ok read --value dynamic value",
+      );
+      expect((result.content[0] as { text?: string }).text ?? "").toContain(
+        "path=" + path.join(root, "adapter-bin") + ":/usr/bin:/bin shell=exec leaked=unset",
+      );
+      expect(events).toContainEqual(
+        expect.objectContaining({
+          action: "exec.route.decided",
+          attributes: expect.objectContaining({
+            execution_path: "host-adapter",
+            adapter_binding: "verified",
+          }),
+        }),
+      );
+      expect(events).not.toContainEqual(
+        expect.objectContaining({
+          action: "exec.route.denied",
+          attributes: expect.objectContaining({ execution_path: "host-adapter" }),
+        }),
+      );
+      await expect(
+        tool.execute("call-secure-adapter-env", {
+          command: `${wrapper} read --value value`,
+          env: { PATH: "/tmp/hostile" },
+        }),
+      ).rejects.toThrow(/does not accept caller environment overrides/);
+    } finally {
+      delete process.env.HOSTILE_ADAPTER_LEAK;
+      unsubscribe();
+    }
+  });
+
+  it("fails closed for secure non-adapter and STOP routes while legacy routing remains direct", async () => {
+    const root = tempRoot ?? os.tmpdir();
+    writeExecApprovalsFixture(root, {
+      version: 1,
+      agents: { "*": { secureRouting: true, denylist: [{ pattern: "printf *" }] } },
+    });
+    const secureTool = createExecTool({ host: "gateway", security: "full", ask: "off" });
+    await expect(
+      secureTool.execute("call-secure-stop", { command: "printf prohibited" }),
+    ).rejects.toThrow(/prohibited command/);
+    await expect(
+      secureTool.execute("call-secure-sandbox", { command: "echo harmless" }),
+    ).rejects.toThrow(/sandbox execution is required/);
+
+    writeExecApprovalsFixture(root, { version: 1, agents: { "*": {} } });
+    const legacyTool = createExecTool({ host: "gateway", security: "full", ask: "off" });
+    const result = await legacyTool.execute("call-legacy-direct", { command: "printf legacy" });
+    expect((result.content[0] as { text?: string }).text ?? "").toContain("legacy");
+  });
+
+  it("does not activate a host adapter from a binding with an execution-injection environment key", async () => {
+    const root = tempRoot ?? os.tmpdir();
+    const wrapper = installSecureAdapterFixture(root);
+    writeExecApprovalsFixture(root, {
+      version: 1,
+      defaults: { security: "full", ask: "off" },
+      agents: {
+        "*": {
+          secureRouting: true,
+          hostAdapters: [
+            {
+              id: "unsafe-wrapper",
+              target: "gateway",
+              executable: fs.realpathSync(wrapper),
+              argvPrefix: ["read"],
+              environment: {
+                PATH: `${path.dirname(wrapper)}:/usr/bin:/bin`,
+                NODE_OPTIONS: "--require=/tmp/inject",
+              },
+            },
+          ],
+        },
+      },
+    });
+    const events: DiagnosticEventPayload[] = [];
+    const unsubscribe = onInternalDiagnosticEvent((event) => events.push(event));
+    try {
+      const tool = createExecTool({ host: "gateway", security: "full", ask: "off" });
+      await expect(
+        tool.execute("call-unsafe-adapter", { command: `${wrapper} read --value value` }),
+      ).rejects.toThrow(/exec denied: host=gateway security=deny/i);
+      expect(events).toContainEqual(
+        expect.objectContaining({
+          action: "exec.route.decided",
+          attributes: expect.objectContaining({ execution_path: "host-direct" }),
+        }),
+      );
+      expect(events).not.toContainEqual(
+        expect.objectContaining({
+          action: "exec.route.decided",
+          attributes: expect.objectContaining({ execution_path: "host-adapter" }),
+        }),
+      );
+    } finally {
+      unsubscribe();
+    }
   });
 
   it("enforces configured allowlist security when model also passes allowlist", async () => {
@@ -203,6 +388,39 @@ describe("exec security floor", () => {
         ask: "off",
       }),
     ).rejects.toThrow(/exec denied/i);
+  });
+
+  it("records a redacted denial route for security policy blocks", async () => {
+    const events: DiagnosticEventPayload[] = [];
+    const unsubscribe = onInternalDiagnosticEvent((event) => events.push(event));
+    try {
+      const tool = createExecTool({
+        host: "gateway",
+        security: "deny",
+        ask: "off",
+      });
+
+      await expect(
+        tool.execute("call-denied-route", { command: "printf super-secret-value" }),
+      ).rejects.toThrow("exec denied: host=gateway security=deny");
+
+      const event = events.find(
+        (candidate) =>
+          candidate.type === "security.event" && candidate.action === "exec.route.denied",
+      );
+      expect(event?.type).toBe("security.event");
+      if (event?.type === "security.event") {
+        expect(event.outcome).toBe("denied");
+        expect(event.attributes).toMatchObject({
+          execution_path: "denied",
+          host: "gateway",
+          security: "deny",
+        });
+        expect(JSON.stringify(event)).not.toContain("super-secret-value");
+      }
+    } finally {
+      unsubscribe();
+    }
   });
 
   it("does not let host approval defaults deny implicit sandbox execution", async () => {

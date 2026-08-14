@@ -25,6 +25,8 @@ import type { ExecReviewerConfig } from "./exec-auto-reviewer.js";
 export type ExecToolDefaults = {
   hasCronTool?: boolean;
   host?: ExecTarget;
+  /** Fail closed when automatic routing requires a sandbox that is unavailable. */
+  sandboxRequired?: boolean;
   mode?: ExecMode;
   security?: ExecSecurity;
   ask?: ExecAsk;
