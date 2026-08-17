@@ -31,12 +31,15 @@ const validRelease: ExactRelease = {
   issued_at: "2026-08-12T12:00:00.000Z",
   expires_at: "2026-08-14T00:00:00.000Z",
 };
+const validationOptions = {
+  profile: "runtime:fixture-openclaw-01",
+  expectedSkillId: "skill.echo",
+  expectedVersion: version,
+  now,
+} as const;
 
 const check = (changes: Record<string, unknown>, code: string) => {
-  const result = validateExactRelease(
-    { ...validRelease, ...changes },
-    { profile: "runtime:fixture-openclaw-01", now },
-  );
+  const result = validateExactRelease({ ...validRelease, ...changes }, validationOptions);
   expect(result).toMatchObject({ ok: false, code });
   expect(exactReleaseTelemetry(result)).not.toHaveProperty("conversation");
   return result;
@@ -44,10 +47,7 @@ const check = (changes: Record<string, unknown>, code: string) => {
 
 describe("exact provider Skills releases", () => {
   it("accepts an immutable, qualified, available, attested exact release", () => {
-    const result = validateExactRelease(validRelease, {
-      profile: "runtime:fixture-openclaw-01",
-      now,
-    });
+    const result = validateExactRelease(validRelease, validationOptions);
     expect(result).toMatchObject({
       ok: true,
       release: validRelease,
@@ -61,6 +61,21 @@ describe("exact provider Skills releases", () => {
       }).toThrow();
       expect(result.release.release_id).toBe(validRelease.release_id);
     }
+  });
+
+  it("rejects a valid release that does not match the requested identity", () => {
+    expect(
+      validateExactRelease(validRelease, {
+        ...validationOptions,
+        expectedSkillId: "skill.other",
+      }),
+    ).toMatchObject({ ok: false, code: "invalid_immutability" });
+    expect(
+      validateExactRelease(validRelease, {
+        ...validationOptions,
+        expectedVersion: "2026.08.11",
+      }),
+    ).toMatchObject({ ok: false, code: "invalid_immutability" });
   });
 
   it.each([
@@ -108,14 +123,13 @@ describe("exact provider Skills releases", () => {
   it("rejects invalid clock and max-age inputs", () => {
     expect(
       validateExactRelease(validRelease, {
-        profile: "runtime:fixture-openclaw-01",
+        ...validationOptions,
         now: new Date("invalid"),
       }),
     ).toMatchObject({ ok: false, code: "invalid_timestamp" });
     expect(
       validateExactRelease(validRelease, {
-        profile: "runtime:fixture-openclaw-01",
-        now,
+        ...validationOptions,
         maxAgeMs: Number.NaN,
       }),
     ).toMatchObject({ ok: false, code: "invalid_timestamp" });
@@ -132,7 +146,7 @@ describe("exact provider Skills releases", () => {
     ]) {
       const result = validateExactRelease(
         { ...validRelease, [field]: "must not be accepted" },
-        { profile: "runtime:fixture-openclaw-01", now },
+        validationOptions,
       );
       expect(result).toMatchObject({ ok: false, code: "invalid_shape" });
       expect(exactReleaseTelemetry(result)).not.toHaveProperty(field);
@@ -142,7 +156,7 @@ describe("exact provider Skills releases", () => {
   it("rejects malformed identity and digest objects without leaking or throwing", () => {
     const malformedIdentity = validateExactRelease(
       { ...validRelease, release_id: { secret: "blocked" }, version: { private: "blocked" } },
-      { profile: "runtime:fixture-openclaw-01", now },
+      validationOptions,
     );
     expect(malformedIdentity).toMatchObject({ ok: false, code: "invalid_shape" });
     expect(exactReleaseTelemetry(malformedIdentity)).toEqual({
@@ -155,10 +169,7 @@ describe("exact provider Skills releases", () => {
       { attestation: { ...validRelease.attestation, digest: { toString: null } } },
     ]) {
       expect(() =>
-        validateExactRelease(
-          { ...validRelease, ...changes },
-          { profile: "runtime:fixture-openclaw-01", now },
-        ),
+        validateExactRelease({ ...validRelease, ...changes }, validationOptions),
       ).not.toThrow();
     }
   });
@@ -173,14 +184,14 @@ describe("exact provider Skills releases", () => {
         return getterCalls === 1 ? validRelease.release_id : "skill.other@2026.08.12";
       },
     });
-    expect(
-      validateExactRelease(accessorRelease, { profile: "runtime:fixture-openclaw-01", now }),
-    ).toMatchObject({ ok: false, code: "invalid_shape" });
+    expect(validateExactRelease(accessorRelease, validationOptions)).toMatchObject({
+      ok: false,
+      code: "invalid_shape",
+    });
     expect(getterCalls).toBe(0);
     expect(
       validateExactRelease(Object.create(validRelease), {
-        profile: "runtime:fixture-openclaw-01",
-        now,
+        ...validationOptions,
       }),
     ).toMatchObject({ ok: false, code: "invalid_shape" });
   });

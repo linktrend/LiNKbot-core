@@ -140,6 +140,16 @@ describe("Skills v2 consumer boundary", () => {
         reportRef: "report-1",
       }).ok,
     ).toBe(false);
+    for (const version of ["latest", "current", "stable", "newest"]) {
+      expect(
+        validateSkillsV2Request({
+          ...toolBase,
+          operation: "skills_release_verify",
+          skillId: "skill.echo",
+          version,
+        }).ok,
+      ).toBe(false);
+    }
   });
 
   it("accepts qualification lookup only for an exact release", () => {

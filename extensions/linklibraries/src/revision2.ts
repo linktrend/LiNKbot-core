@@ -356,7 +356,7 @@ export function validateExactRevision2(bundle: unknown): Revision2Validation {
     !digest(manifest.payloadSha256) ||
     !digest(manifest.dependencyLockSha256) ||
     manifest.releaseId.length > 160 ||
-    canonicalDigest(manifest) !== record.releaseManifestSha256
+    canonicalDigest(manifest) !== normalizedSha256(record.releaseManifestSha256)
   )
     return { ok: false, reason: "release manifest does not match catalogue" };
   if (

@@ -167,6 +167,17 @@ describe("LiNKlibraries Revision 2 consumer", () => {
     substitutedBundle.manifest = substitutedManifest;
     expect(validateExactRevision2(substitutedBundle).ok).toBe(false);
   });
+  it("accepts the contract-supported raw manifest digest representation", () => {
+    const value = structuredClone(bundle) as any;
+    const rawManifestDigest = record.releaseManifestSha256.slice("sha256:".length);
+    value.record.releaseManifestSha256 = rawManifestDigest;
+    value.catalogue.records[0].releaseManifestSha256 = rawManifestDigest;
+    value.catalogue.recordsSha256 = canonicalDigest(value.catalogue.records);
+    value.verifiedCache.catalogueRecordsSha256 = value.catalogue.recordsSha256;
+    value.verifiedCache.releaseManifestSha256 = rawManifestDigest;
+    value.consumption.releaseManifestSha256 = rawManifestDigest;
+    expect(validateExactRevision2(value).ok).toBe(true);
+  });
   it("rejects inherited and accessor-backed catalogue records without invoking getters", () => {
     let getterCalls = 0;
     const accessorRecord = { ...record } as Record<string, unknown>;

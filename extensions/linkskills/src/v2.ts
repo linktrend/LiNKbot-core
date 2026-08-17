@@ -93,6 +93,7 @@ export type SkillsV2Request = Readonly<{
 }>;
 
 const legacy = /^(skills_run_|skills_tool_)/;
+const MOVING_VERSION_ALIAS = /^(latest|current|stable|newest)$/iu;
 const SNAPSHOT_CURSOR = /^snapshot:[0-9a-f]{16}:(?:0|[1-9][0-9]*)$/u;
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
@@ -182,6 +183,8 @@ export function validateSkillsV2Request(input: unknown):
   if (value.skillId !== undefined && !bounded(value.skillId))
     return { ok: false, code: "invalid_shape" };
   if (value.version !== undefined && !bounded(value.version, 128))
+    return { ok: false, code: "invalid_shape" };
+  if (typeof value.version === "string" && MOVING_VERSION_ALIAS.test(value.version))
     return { ok: false, code: "invalid_shape" };
   if (value.query !== undefined && !bounded(value.query, 512))
     return { ok: false, code: "invalid_shape" };

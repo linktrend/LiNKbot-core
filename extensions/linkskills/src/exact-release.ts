@@ -38,6 +38,8 @@ export type ExactRelease = Readonly<{
 
 export type ExactReleaseValidationOptions = {
   profile: string;
+  expectedSkillId: string;
+  expectedVersion: string;
   now?: Date | string;
   maxAgeMs?: number;
 };
@@ -234,6 +236,14 @@ export function validateExactRelease(
     /^(latest|current|stable|newest)$/i.test(release.version)
   ) {
     return reject("latest_alias", release);
+  }
+  if (
+    !isString(options.expectedSkillId) ||
+    !isString(options.expectedVersion) ||
+    release.release_id !== `${options.expectedSkillId}@${options.expectedVersion}` ||
+    release.version !== options.expectedVersion
+  ) {
+    return reject("invalid_immutability", release);
   }
   if (
     !isRecord(release.providerCandidate) ||
