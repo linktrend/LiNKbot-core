@@ -383,6 +383,64 @@ describe("LiNKbrain v2 immutable consumer boundary", () => {
     expect(requests).toHaveLength(1);
   });
 
+  it("rejects accessor-backed Platform bindings without invoking their getters", async () => {
+    for (const field of ["runtimeBindingRef", "organizationRef"] as const) {
+      let reads = 0;
+      const accessorIdentity = identity() as unknown as Record<string, unknown>;
+      Object.defineProperty(accessorIdentity, field, {
+        enumerable: true,
+        get() {
+          reads += 1;
+          return reads === 1 ? identity()[field] : `${identity()[field]}:changed`;
+        },
+      });
+      const requests: BrainV2TransportRequest[] = [];
+      const client = createBrainV2Client({
+        identity: accessorIdentity as BrainV2PlatformIdentity,
+        identityExpectation,
+        transport: {
+          request: async (request) => {
+            requests.push(request);
+            return negotiation;
+          },
+        },
+        clock: () => NOW,
+      });
+
+      await expect(client.negotiate()).resolves.toMatchObject({
+        ok: false,
+        status: "unauthorized",
+      });
+      expect(reads).toBe(0);
+      expect(requests).toHaveLength(0);
+    }
+  });
+
+  it("uses only the construction-time Platform identity snapshot for transport", async () => {
+    const sourceIdentity = identity() as unknown as Record<string, unknown>;
+    const requests: BrainV2TransportRequest[] = [];
+    const client = createBrainV2Client({
+      identity: sourceIdentity as BrainV2PlatformIdentity,
+      identityExpectation,
+      transport: {
+        request: async (request) => {
+          requests.push(request);
+          return negotiation;
+        },
+      },
+      clock: () => NOW,
+    });
+
+    sourceIdentity.runtimeBindingRef = "binding:changed-after-construction";
+    sourceIdentity.organizationRef = "org:changed-after-construction";
+
+    await expect(client.negotiate()).resolves.toMatchObject({ ok: true });
+    expect(requests[0]).toMatchObject({
+      actorBindingRef: "binding:ocp-brain",
+      organizationRef: "org:linktrend",
+    });
+  });
+
   it("returns safe unavailable results without a silent downgrade", async () => {
     const client = createBrainV2Client({
       identity: identity(),

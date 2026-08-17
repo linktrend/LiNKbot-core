@@ -250,6 +250,7 @@ const snapshotSafeValue = (
   depth: number,
   path: string,
   state: SafeSnapshotState,
+  enforcePayloadFieldPolicy: boolean,
 ): unknown => {
   state.nodes += 1;
   if (state.nodes > MAX_SAFE_NODES) {
@@ -302,6 +303,7 @@ const snapshotSafeValue = (
         depth + 1,
         `${path}[${key}]`,
         state,
+        enforcePayloadFieldPolicy,
       );
     }
     return Object.freeze(snapshot);
@@ -320,8 +322,16 @@ const snapshotSafeValue = (
     if (!descriptor.enumerable) {
       throw new Error(`brain_v2_non_json_value:${path}.${key}`);
     }
-    assertSafeKey(key);
-    snapshot[key] = snapshotSafeValue(descriptor.value, depth + 1, `${path}.${key}`, state);
+    if (enforcePayloadFieldPolicy) {
+      assertSafeKey(key);
+    }
+    snapshot[key] = snapshotSafeValue(
+      descriptor.value,
+      depth + 1,
+      `${path}.${key}`,
+      state,
+      enforcePayloadFieldPolicy,
+    );
   }
   return Object.freeze(snapshot);
 };
@@ -434,12 +444,32 @@ export function assertBrainV2Negotiation(input: unknown): asserts input is Brain
 }
 
 export function assertBrainV2SafePayload<T>(input: T): T {
-  return snapshotSafeValue(input, 0, "value", {
-    nodes: 0,
-    stringTotal: 0,
-    seen: new WeakSet(),
-  }) as T;
+  return snapshotSafeValue(
+    input,
+    0,
+    "value",
+    {
+      nodes: 0,
+      stringTotal: 0,
+      seen: new WeakSet(),
+    },
+    true,
+  ) as T;
 }
+
+const snapshotBrainV2PlatformIdentity = (input: unknown): BrainV2PlatformIdentity => {
+  try {
+    return snapshotSafeValue(
+      input,
+      0,
+      "identity",
+      { nodes: 0, stringTotal: 0, seen: new WeakSet() },
+      false,
+    ) as BrainV2PlatformIdentity;
+  } catch {
+    throw new Error("brain_v2_identity_snapshot_invalid");
+  }
+};
 
 const DISCLOSURE_ORDER: Record<BrainV2Disclosure, number> = {
   guide: 0,
@@ -653,6 +683,22 @@ export function createBrainV2Client(input: {
     ...input.identityExpectation,
     now: input.clock?.() ?? new Date(),
   });
+  let trustedIdentity: BrainV2PlatformIdentity | undefined;
+  let identityConstructionError: unknown;
+  try {
+    const identitySnapshot = snapshotBrainV2PlatformIdentity(input.identity);
+    assertBrainV2PlatformIdentity(identitySnapshot, currentIdentityExpectation());
+    trustedIdentity = identitySnapshot;
+  } catch (error) {
+    identityConstructionError = error;
+  }
+  const requireTrustedIdentity = (): BrainV2PlatformIdentity => {
+    if (!trustedIdentity) {
+      throw identityConstructionError ?? new Error("brain_v2_identity_snapshot_invalid");
+    }
+    assertBrainV2PlatformIdentity(trustedIdentity, currentIdentityExpectation());
+    return trustedIdentity;
+  };
   const safeFailure = (error: unknown): BrainV2SafeResult<never> => {
     if (
       objectRecord(error) &&
@@ -695,7 +741,7 @@ export function createBrainV2Client(input: {
     snapshotId?: string,
   ): Promise<BrainV2SafeResult<BrainV2Page<T>>> => {
     try {
-      assertBrainV2PlatformIdentity(input.identity, currentIdentityExpectation());
+      const identity = requireTrustedIdentity();
       if (!negotiated) {
         return {
           ok: false,
@@ -707,8 +753,8 @@ export function createBrainV2Client(input: {
       const response = await input.transport.request({
         protocolVersion: LINKBRAIN_V2_MCP_PROTOCOL,
         method: "tools/call",
-        actorBindingRef: input.identity.runtimeBindingRef,
-        organizationRef: input.identity.organizationRef,
+        actorBindingRef: identity.runtimeBindingRef,
+        organizationRef: identity.organizationRef,
         contractVersion: LINKBRAIN_V2_CONTRACT_VERSION,
         params: { operation, disclosure, ...safeParams },
       });
@@ -734,12 +780,12 @@ export function createBrainV2Client(input: {
   return {
     async negotiate() {
       try {
-        assertBrainV2PlatformIdentity(input.identity, currentIdentityExpectation());
+        const identity = requireTrustedIdentity();
         const response = await input.transport.request({
           protocolVersion: LINKBRAIN_V2_MCP_PROTOCOL,
           method: "discover",
-          actorBindingRef: input.identity.runtimeBindingRef,
-          organizationRef: input.identity.organizationRef,
+          actorBindingRef: identity.runtimeBindingRef,
+          organizationRef: identity.organizationRef,
           contractVersion: LINKBRAIN_V2_CONTRACT_VERSION,
         });
         const safeResponse = assertBrainV2SafePayload(response);
