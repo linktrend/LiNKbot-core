@@ -30,8 +30,9 @@ const trustedAuthorization = {
   organizationId: "org:linktrend",
   actorId: base.actorId,
   audience: "lskills-api",
-  serviceScopes: ["skills.read"],
+  serviceScopes: ["lskills"],
   capabilities: ["skills.read"],
+  permittedOperations: ["skills:read", "skills:write"],
   runtimeBindingRef: "runtime:fixture-openclaw-01",
 } as const;
 const validateRequest = (input: unknown, authorization: unknown = trustedAuthorization) =>
@@ -169,6 +170,7 @@ describe("Skills v2 consumer boundary", () => {
       { ...trustedAuthorization, audience: "other" },
       { ...trustedAuthorization, serviceScopes: ["other"] },
       { ...trustedAuthorization, capabilities: ["other"] },
+      { ...trustedAuthorization, permittedOperations: ["skills:read"] },
       { ...trustedAuthorization, runtimeBindingRef: "" },
     ]) {
       expect(validateRequest(feedback, authorization)).toMatchObject({
@@ -176,6 +178,12 @@ describe("Skills v2 consumer boundary", () => {
         code: "invalid_authorization",
       });
     }
+    expect(
+      validateRequest(base, {
+        ...trustedAuthorization,
+        permittedOperations: ["skills:read"],
+      }).ok,
+    ).toBe(true);
   });
 
   it("rejects fields belonging to a different operation", () => {

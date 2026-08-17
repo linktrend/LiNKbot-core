@@ -980,7 +980,13 @@ export function createBrainV2Client(input: {
     const expectation = currentIdentityExpectation();
     assertBrainV2PlatformIdentity(trustedIdentity, expectation);
     const decision = await revocationResolver();
-    assertFreshRevocationDecision(decision, trustedIdentity, expectation.now ?? new Date());
+    const completionExpectation = currentIdentityExpectation();
+    assertBrainV2PlatformIdentity(trustedIdentity, completionExpectation);
+    assertFreshRevocationDecision(
+      decision,
+      trustedIdentity,
+      completionExpectation.now ?? new Date(),
+    );
     return trustedIdentity;
   };
   const safeFailure = (error: unknown): BrainV2SafeResult<never> => {

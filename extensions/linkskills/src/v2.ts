@@ -43,8 +43,10 @@ export const SKILLS_V2_OPERATIONS = Object.freeze([
 ] as const);
 export type SkillsV2Operation = (typeof SKILLS_V2_OPERATIONS)[number];
 export const SKILLS_V2_AUDIENCE = "lskills-api" as const;
-export const SKILLS_V2_REQUIRED_SCOPE = "skills.read" as const;
+export const SKILLS_V2_REQUIRED_SCOPE = "lskills" as const;
 export const SKILLS_V2_REQUIRED_CAPABILITY = "skills.read" as const;
+export const SKILLS_V2_READ_PERMISSION = "skills:read" as const;
+export const SKILLS_V2_WRITE_PERMISSION = "skills:write" as const;
 
 export type SkillsV2TrustedAuthorization = Readonly<{
   organizationId: string;
@@ -52,6 +54,7 @@ export type SkillsV2TrustedAuthorization = Readonly<{
   audience: typeof SKILLS_V2_AUDIENCE;
   serviceScopes: readonly string[];
   capabilities: readonly string[];
+  permittedOperations: readonly string[];
   runtimeBindingRef: string;
 }>;
 
@@ -84,6 +87,10 @@ const OPERATION_REQUEST_FIELDS: Readonly<Record<SkillsV2Operation, readonly stri
   skills_feedback_status_get: ["feedbackRef"],
   skills_librarian_status_get: [],
 };
+const SKILLS_V2_WRITE_OPERATIONS = new Set<SkillsV2Operation>([
+  "skills_use_report_submit",
+  "skills_feedback_submit",
+]);
 
 export type SkillsV2Request = Readonly<{
   providerCandidate: { commit: typeof SKILLS_COMMIT; tree: typeof SKILLS_TREE };
@@ -185,15 +192,17 @@ export function validateSkillsV2Request(
   const authorization = snapshotOwnDataRecord(trustedAuthorization);
   const serviceScopes = snapshotDenseStrings(authorization?.serviceScopes);
   const capabilities = snapshotDenseStrings(authorization?.capabilities);
+  const permittedOperations = snapshotDenseStrings(authorization?.permittedOperations);
   if (
     !authorization ||
     Object.keys(authorization).sort().join(",") !==
-      "actorId,audience,capabilities,organizationId,runtimeBindingRef,serviceScopes" ||
+      "actorId,audience,capabilities,organizationId,permittedOperations,runtimeBindingRef,serviceScopes" ||
     !bounded(authorization.organizationId) ||
     !bounded(authorization.actorId) ||
     authorization.audience !== SKILLS_V2_AUDIENCE ||
     !serviceScopes?.includes(SKILLS_V2_REQUIRED_SCOPE) ||
     !capabilities?.includes(SKILLS_V2_REQUIRED_CAPABILITY) ||
+    !permittedOperations ||
     !bounded(authorization.runtimeBindingRef)
   )
     return { ok: false, code: "invalid_authorization" };
@@ -221,6 +230,11 @@ export function validateSkillsV2Request(
     !bounded(value.idempotencyKey, 160)
   )
     return { ok: false, code: "invalid_shape" };
+  const requiredPermission = SKILLS_V2_WRITE_OPERATIONS.has(value.operation)
+    ? SKILLS_V2_WRITE_PERMISSION
+    : SKILLS_V2_READ_PERMISSION;
+  if (!permittedOperations.includes(requiredPermission))
+    return { ok: false, code: "invalid_authorization" };
   const allowed = new Set([...COMMON_REQUEST_FIELDS, ...OPERATION_REQUEST_FIELDS[value.operation]]);
   if (Object.keys(value).some((key) => !allowed.has(key)))
     return { ok: false, code: "invalid_shape" };

@@ -7,6 +7,7 @@ import {
   pageCatalogue,
   validateExactRevision2,
   type AuthenticatedRevision2CatalogueEvidence,
+  type AuthenticatedRevision2PageEvidence,
   type ExactRevision2Bundle,
   type Revision2Record,
   type VerifiedConsumerMaterializationEvidence,
@@ -121,35 +122,57 @@ const validate = (
   evidence: AuthenticatedRevision2CatalogueEvidence = authenticatedCatalogueEvidence(),
   materialized: VerifiedConsumerMaterializationEvidence = materializationEvidence(),
 ) => validateExactRevision2(value, evidence, materialized);
+const pageEvidence = (
+  records: readonly Revision2Record[] = [record],
+  snapshot = "catalogue-v2",
+): AuthenticatedRevision2PageEvidence => ({
+  source: { commit: LIBRARIES_COMMIT, tree: LIBRARIES_TREE },
+  catalogueSha256: LIBRARIES_CATALOGUE_SHA256,
+  recordsSha256: canonicalDigest(records),
+  snapshot,
+  verified: true,
+});
 
 describe("LiNKlibraries Revision 2 consumer", () => {
   it("pages admitted records and validates exact release evidence", () => {
-    const page = pageCatalogue([record], {
-      commit: LIBRARIES_COMMIT,
-      tree: LIBRARIES_TREE,
-      snapshot: "catalogue-v2",
-      limit: 1,
-    });
+    const page = pageCatalogue(
+      [record],
+      {
+        commit: LIBRARIES_COMMIT,
+        tree: LIBRARIES_TREE,
+        snapshot: "catalogue-v2",
+        limit: 1,
+      },
+      pageEvidence(),
+    );
     expect(page.records).toHaveLength(1);
     expect(validate(bundle)).toMatchObject({ ok: true });
   });
   it("uses canonical object digests and literal snapshot cursor matching", () => {
     expect(canonicalDigest({ a: 1, b: { c: 2 } })).toBe(canonicalDigest({ b: { c: 2 }, a: 1 }));
     expect(
-      pageCatalogue([record], {
-        commit: LIBRARIES_COMMIT,
-        tree: LIBRARIES_TREE,
-        snapshot: "catalogue.*",
-        cursor: "snapshot:catalogue.*:0",
-      }).records,
+      pageCatalogue(
+        [record],
+        {
+          commit: LIBRARIES_COMMIT,
+          tree: LIBRARIES_TREE,
+          snapshot: "catalogue.*",
+          cursor: "snapshot:catalogue.*:0",
+        },
+        pageEvidence([record], "catalogue.*"),
+      ).records,
     ).toHaveLength(1);
     expect(() =>
-      pageCatalogue([record], {
-        commit: LIBRARIES_COMMIT,
-        tree: LIBRARIES_TREE,
-        snapshot: "catalogue.*",
-        cursor: "snapshot:catalogueX:0",
-      }),
+      pageCatalogue(
+        [record],
+        {
+          commit: LIBRARIES_COMMIT,
+          tree: LIBRARIES_TREE,
+          snapshot: "catalogue.*",
+          cursor: "snapshot:catalogueX:0",
+        },
+        pageEvidence([record], "catalogue.*"),
+      ),
     ).toThrow("stale catalogue cursor");
   });
   it("filters valid non-selectable records after structural validation", () => {
@@ -171,8 +194,33 @@ describe("LiNKlibraries Revision 2 consumer", () => {
           tree: LIBRARIES_TREE,
           snapshot: "catalogue-v2",
         },
+        pageEvidence([
+          record,
+          {
+            ...record,
+            entryId: "draft-entry",
+            lifecycle: "draft",
+            selectability: "non_selectable",
+            compatibility: "unknown",
+            bundlePath: "registry/v2/entries/draft-entry/versions/1.0.0",
+          },
+        ]),
       ).records.map((entry) => entry.entryId),
     ).toEqual(["component-echo"]);
+  });
+  it("rejects progressive catalogue records not bound to authenticated evidence", () => {
+    const forged = {
+      ...record,
+      entryId: "forged-entry",
+      bundlePath: "registry/v2/entries/forged-entry/versions/1.0.0",
+    };
+    expect(() =>
+      pageCatalogue(
+        [forged],
+        { commit: LIBRARIES_COMMIT, tree: LIBRARIES_TREE, snapshot: "catalogue-v2" },
+        pageEvidence([record]),
+      ),
+    ).toThrow("invalid authenticated catalogue evidence");
   });
   it("rejects malformed required catalogue record fields", () => {
     expect(validate({ ...bundle, record: { ...record, artifactType: undefined } }).ok).toBe(false);
@@ -255,11 +303,15 @@ describe("LiNKlibraries Revision 2 consumer", () => {
   });
   it("fails closed when pagination receives a malformed provider record", () => {
     expect(() =>
-      pageCatalogue([{ ...record, bundlePath: "" }], {
-        commit: LIBRARIES_COMMIT,
-        tree: LIBRARIES_TREE,
-        snapshot: "catalogue-v2",
-      }),
+      pageCatalogue(
+        [{ ...record, bundlePath: "" }],
+        {
+          commit: LIBRARIES_COMMIT,
+          tree: LIBRARIES_TREE,
+          snapshot: "catalogue-v2",
+        },
+        pageEvidence([{ ...record, bundlePath: "" }]),
+      ),
     ).toThrow("invalid catalogue record");
     expect(
       validate({

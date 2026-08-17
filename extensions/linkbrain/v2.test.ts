@@ -573,6 +573,31 @@ describe("LiNKbrain v2 immutable consumer boundary", () => {
     expect(requests).toHaveLength(1);
   });
 
+  it("rechecks identity and revocation freshness after asynchronous resolution", async () => {
+    let clock = NOW;
+    const requests: BrainV2TransportRequest[] = [];
+    const client = createBrainV2Client({
+      identity: identity(),
+      identityExpectation,
+      resolveRevocationDecision: async () => {
+        clock = "2026-08-14T13:00:00.000Z";
+        return activeRevocationDecision();
+      },
+      transport: {
+        request: async (request) => {
+          requests.push(request);
+          return negotiation;
+        },
+      },
+      clock: () => clock,
+    });
+    await expect(client.negotiate()).resolves.toMatchObject({
+      ok: false,
+      status: "unauthorized",
+    });
+    expect(requests).toHaveLength(0);
+  });
+
   it("keeps negotiation bound to the construction-time transport request", async () => {
     const requests: BrainV2TransportRequest[] = [];
     const replacementRequests: BrainV2TransportRequest[] = [];

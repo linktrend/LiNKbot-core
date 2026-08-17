@@ -80,6 +80,8 @@ export {
   SKILLS_V2_AUDIENCE,
   SKILLS_V2_REQUIRED_CAPABILITY,
   SKILLS_V2_REQUIRED_SCOPE,
+  SKILLS_V2_READ_PERMISSION,
+  SKILLS_V2_WRITE_PERMISSION,
   skillsSnapshotCursor,
   isModernSkillsOperation,
   validateSkillsQualificationIdentity,

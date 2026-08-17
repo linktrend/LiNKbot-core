@@ -360,15 +360,31 @@ export function validateRequestAt(
   } catch {
     return false;
   }
+  const nowMilliseconds = now.getTime();
+  if (
+    !validateRequestSnapshot(value) ||
+    !Number.isFinite(nowMilliseconds) ||
+    value.cancellationRequestedAt !== undefined ||
+    revocationDecision?.status !== "active" ||
+    !iso(revocationDecision.observedAt)
+  )
+    return false;
+  const nowNanos = BigInt(nowMilliseconds) * 1_000_000n;
+  const observedAt = timestampNanos(revocationDecision.observedAt);
+  const issuedAt = timestampNanos(value.platform.issuedAt);
+  const requestExpiresAt = timestampNanos(value.expiresAt);
+  const platformExpiresAt = timestampNanos(value.platform.expiresAt);
+  if (
+    observedAt === undefined ||
+    issuedAt === undefined ||
+    requestExpiresAt === undefined ||
+    platformExpiresAt === undefined
+  )
+    return false;
   return (
-    validateRequestSnapshot(value) &&
-    Number.isFinite(now.getTime()) &&
-    value.cancellationRequestedAt === undefined &&
-    revocationDecision?.status === "active" &&
-    iso(revocationDecision.observedAt) &&
-    Date.parse(revocationDecision.observedAt) >= Date.parse(value.platform.issuedAt) &&
-    Date.parse(revocationDecision.observedAt) <= now.getTime() &&
-    now.getTime() - Date.parse(revocationDecision.observedAt) <= REVOCATION_MAX_AGE_MS &&
+    observedAt >= issuedAt &&
+    observedAt <= nowNanos &&
+    nowNanos - observedAt <= BigInt(REVOCATION_MAX_AGE_MS) * 1_000_000n &&
     revocationDecision.credentialId === value.platform.credentialId &&
     revocationDecision.bindingId === value.platform.bindingId &&
     revocationDecision.orgId === value.platform.orgId &&
@@ -378,9 +394,9 @@ export function validateRequestAt(
     revocationDecision.capability === value.platform.capability &&
     revocationDecision.revocationRef === value.platform.revocationRef &&
     revocationDecision.authorizedOperation === value.operationKind &&
-    Date.parse(value.platform.issuedAt) <= now.getTime() &&
-    Date.parse(value.expiresAt) > now.getTime() &&
-    Date.parse(value.platform.expiresAt) > now.getTime() &&
+    issuedAt <= nowNanos &&
+    requestExpiresAt > nowNanos &&
+    platformExpiresAt > nowNanos &&
     true
   );
 }

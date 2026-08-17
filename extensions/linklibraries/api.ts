@@ -26,6 +26,7 @@ export {
 export type {
   Revision2Record,
   Revision2Page,
+  AuthenticatedRevision2PageEvidence,
   Revision2Validation,
   ExactRevision2Bundle,
   AuthenticatedRevision2CatalogueEvidence,

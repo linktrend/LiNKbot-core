@@ -31,6 +31,13 @@ export type Revision2Page = Readonly<{
   records: readonly Revision2Record[];
   nextCursor: string | null;
 }>;
+export type AuthenticatedRevision2PageEvidence = Readonly<{
+  source: Readonly<{ commit: typeof LIBRARIES_COMMIT; tree: typeof LIBRARIES_TREE }>;
+  catalogueSha256: typeof LIBRARIES_CATALOGUE_SHA256;
+  recordsSha256: Digest;
+  snapshot: string;
+  verified: true;
+}>;
 export type Revision2Validation = Readonly<
   { ok: true; record: Revision2Record } | { ok: false; reason: string }
 >;
@@ -238,7 +245,32 @@ const normalizedSha256 = (value: string): string =>
 export function pageCatalogue(
   records: readonly Revision2Record[],
   input: { commit: string; tree: string; snapshot: string; cursor?: string; limit?: number },
+  authenticatedEvidence: AuthenticatedRevision2PageEvidence,
 ): Revision2Page {
+  let trusted: unknown;
+  try {
+    records = snapshotPlainData(records) as readonly Revision2Record[];
+    trusted = snapshotPlainData(authenticatedEvidence);
+  } catch {
+    throw new Error("invalid authenticated catalogue evidence");
+  }
+  const trustedSource = isObject(trusted) && isObject(trusted.source) ? trusted.source : undefined;
+  if (
+    !Array.isArray(records) ||
+    !isObject(trusted) ||
+    Object.keys(trusted).sort().join(",") !==
+      "catalogueSha256,recordsSha256,snapshot,source,verified" ||
+    !trustedSource ||
+    Object.keys(trustedSource).sort().join(",") !== "commit,tree" ||
+    trustedSource.commit !== LIBRARIES_COMMIT ||
+    trustedSource.tree !== LIBRARIES_TREE ||
+    trusted.catalogueSha256 !== LIBRARIES_CATALOGUE_SHA256 ||
+    !digest(trusted.recordsSha256) ||
+    trusted.recordsSha256 !== canonicalDigest(records) ||
+    trusted.snapshot !== input.snapshot ||
+    trusted.verified !== true
+  )
+    throw new Error("invalid authenticated catalogue evidence");
   if (input.commit !== LIBRARIES_COMMIT || input.tree !== LIBRARIES_TREE)
     throw new Error("wrong Libraries source");
   if (!Number.isInteger(input.limit ?? 25) || (input.limit ?? 25) < 1 || (input.limit ?? 25) > 50)
