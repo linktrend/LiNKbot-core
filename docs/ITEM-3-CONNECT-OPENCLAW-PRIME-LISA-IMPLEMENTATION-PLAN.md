@@ -93,18 +93,18 @@ If an accepted Item 2 barrel is missing an export Lisa needs, stop. File the gap
 
 Every PRD acceptance criterion maps to one primary packet. Some criteria are invariants on every packet.
 
-| Packet | Name                                          | Primary ACs         | Depends on                         | Parallel with                                                                                |
-| ------ | --------------------------------------------- | ------------------- | ---------------------------------- | -------------------------------------------------------------------------------------------- |
-| P-00   | Execution-time freeze                         | AC-01, AC-16        | Independently accepted Item 2 head | Nothing. Serial gate.                                                                        |
-| P-01   | Layer and ownership scaffold                  | AC-01, AC-02, AC-16 | P-00                               | Nothing                                                                                      |
-| P-02   | Lisa identity and permissions                 | AC-03, AC-04        | P-01                               | Nothing. Foundation for domain packets.                                                      |
-| P-03   | Allowed capability matrix and denial          | AC-05, AC-11, AC-12 | P-02                               | Serial before domain packets                                                                 |
-| P-04   | Privacy, memory, and knowledge                | AC-06, AC-07        | P-02                               | After P-03, or with P-05/P-06/P-07 only if those packets do not edit the same privacy module |
-| P-05   | Skills discovery, validation, job execution   | AC-08               | P-03, P-04                         | P-06, P-07                                                                                   |
-| P-06   | Autowork requests, status, handoffs, receipts | AC-09               | P-03, P-04                         | P-05, P-07                                                                                   |
-| P-07   | Libraries discovery and retrieval             | AC-10               | P-03, P-04                         | P-05, P-06                                                                                   |
-| P-08   | Obsolete reference replacement                | AC-13               | P-05, P-06, P-07                   | Nothing after domain packets, so replacements match the new names                            |
-| P-09   | Evidence, checkpoint, and stop                | AC-14, AC-15, AC-16 | P-08                               | Nothing                                                                                      |
+| Packet | Name                                                 | Primary ACs                | Depends on                         | Parallel with                                                                                |
+| ------ | ---------------------------------------------------- | -------------------------- | ---------------------------------- | -------------------------------------------------------------------------------------------- |
+| P-00   | Execution-time freeze                                | AC-01, AC-16               | Independently accepted Item 2 head | Nothing. Serial gate.                                                                        |
+| P-01   | Layer and ownership scaffold                         | AC-01, AC-02, AC-16        | P-00                               | Nothing                                                                                      |
+| P-02   | Lisa identity and permissions                        | AC-03, AC-04               | P-01                               | Nothing. Foundation for domain packets.                                                      |
+| P-03   | Allowed capability matrix and denial                 | AC-05, AC-11, AC-12        | P-02                               | Serial before domain packets                                                                 |
+| P-04   | Privacy, memory, and knowledge                       | AC-06, AC-07               | P-02                               | After P-03, or with P-05/P-06/P-07 only if those packets do not edit the same privacy module |
+| P-05   | Skills discovery, validation, job execution          | AC-08                      | P-03, P-04                         | P-06, P-07                                                                                   |
+| P-06   | Autowork requests, status, handoffs, receipts        | AC-09                      | P-03, P-04                         | P-05, P-07                                                                                   |
+| P-07   | Libraries discovery and retrieval                    | AC-10                      | P-03, P-04                         | P-05, P-06                                                                                   |
+| P-08   | Obsolete reference replacement                       | AC-13                      | P-05, P-06, P-07                   | Nothing after domain packets, so replacements match the new names                            |
+| P-09   | Evidence, non-regression audit, checkpoint, and stop | AC-14, AC-15, AC-16, AC-17 | P-08                               | Nothing                                                                                      |
 
 Invariant on **every** source packet: AC-02, AC-11, AC-15. If a packet would violate them, it stops.
 
@@ -240,9 +240,19 @@ Do not rewrite Issue 183 preserved ledger files. Do not edit Item 2 adapters to 
 
 ### P-09 Evidence, checkpoint, and stop
 
-**Work:** Run the focused tests from P-02 through P-08 in one command. Run `git diff --check`. Write completion evidence only if this issue is finished **and** IDE Development v2.4.0 rollout is recorded. If v2.4.0 is not rolled out, checkpoint with commit+push and stop without `review-ready` and without a PR.
+**Work:** Run the focused tests from P-02 through P-08 in one command. Add a
+focused source/static non-regression audit covering every PRD section 10.4
+ledger entry: model routing, Cursor ACP delegation, main/lisa-cron sandbox
+separation, both Google identities and safe wrappers, Carlos approval gates,
+planning/HOLD behavior, memory/privacy, jobs/heartbeat/channels, Personality
+and tool doctrine, and the source-versus-live runtime boundary. The audit must
+prove that the Item 3 diff does not weaken or bypass those contracts; it must
+not rewrite them to make a test pass. Run `git diff --check`. Write completion
+evidence only if this issue is finished **and** IDE Development v2.4.0 rollout
+is recorded. If v2.4.0 is not rolled out, checkpoint with commit+push and stop
+without `review-ready` and without a PR.
 
-**AC:** AC-14, AC-15, AC-16.
+**AC:** AC-14, AC-15, AC-16, AC-17.
 
 ## 7. Test matrix
 
@@ -263,12 +273,12 @@ Use `node scripts/run-vitest.mjs` on the Lisa policy test files only. Do not sta
 ### 8.1 Review
 
 - Implementer does not open a PR and does not request Bugbot.
-- Independent review of Lisa source happens only after IDE Development v2.4.0 rollout and a clean checkpointed SHA with evidence.
+- Every clean source checkpoint receives an independent exact-head review before acceptance. Post-rollout Packager review remains a separate delivery gate.
 - Codex supervisor acceptance of these two documents is separate from later source review.
 
 ### 8.2 Repair
 
-- Ordinary test or type failures: at most three bounded repair cycles on the same Lisa packet.
+- Continue bounded repair/review while findings are actionable, in scope, and each cycle makes measurable progress. Stop only for repeated unresolved findings, consecutive no-progress cycles, redesign or new-authority requirements, infrastructure retry exhaustion, or an explicit resource limit. Retain the separate two-attempt infrastructure retry limit.
 - If the defect is in Item 2 adapters, stop and return it to Item 2. Do not patch adapters from Item 3.
 - Immediate failure types (credentials, usage limit) are not auto-repaired.
 
@@ -338,7 +348,7 @@ Evidence:
   - git diff --check:
   - HEAD == origin/<branch>:
 Review: none by implementer; no PR; no Bugbot
-Repair budget: 3 ordinary cycles; Item 2 defects returned to Item 2
+Repair policy: continue actionable in-scope repairs while measurable progress continues; stop for repeated unresolved findings, consecutive no-progress cycles, redesign/new authority, infrastructure exhaustion, or an explicit resource limit; Item 2 defects return to Item 2
 Rollback: revert this packet commit or abandon unpushed worktree
 Stop if:
   - Item 2 head no longer matches section 2

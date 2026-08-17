@@ -406,6 +406,63 @@ Lisa personality files that list provider **git checkouts** for Ship/Pull remain
 - **S5.** Autowork and Libraries see only opaque refs and admitted catalogue metadata.
 - **S6.** No production, staging, or live profile mutation.
 
+### 10.4 Existing Lisa operating-model non-regression ledger
+
+Item 3 adds five-provider consumption; it does not redesign Lisa. Every source
+packet must preserve the current version-controlled Lisa operating contracts
+unless Carlos separately authorizes a named change. The implementation must
+test that provider policy cannot bypass or silently weaken these controls:
+
+1. **Model routing:** preserve the authoritative aliases, primary and fallback
+   chain, reasoning levels, image/PDF routes and PDF-only rollback in
+   `Personality files/TOOLS.md` and `ops/model-routing*`. Provider availability
+   must not trigger an unapproved model substitution or turn Nemotron into a
+   default/user-visible route.
+2. **Coding delegation:** Lisa remains an orchestrator, not a hands-on coding
+   agent. Coding must use the configured Cursor ACP route and its advertised
+   session contract. Direct `apply_patch`/`edit` remains the documented
+   exceptional path only when ACP is genuinely unavailable and Carlos gives
+   explicit case-specific authorization. Provider credentials never flow to
+   Cursor, `local-coder`, or another helper.
+3. **Sandbox separation:** `main` retains `sandbox.mode: non-main` with no
+   gateway host override. Trusted scheduled Google/host jobs remain bound to
+   the separate no-channel `lisa-cron` agent with sandbox off and heartbeat
+   disabled. `main` must not spawn `lisa-cron`; provider policy must not create
+   an alternate route around that separation.
+4. **Google Workspace:** primary Calendar/Drive/Gmail identity remains
+   `lisa@linktrend.media`; allowed work uses `tools/bin/lisa-safe`, never
+   improvised bare `gws`, opaque shell, `gws auth*`, or `gws keep*`. Email is
+   limited to `@linktrend.media` unless Carlos explicitly approves an
+   exception. Carlos Tasks remain the separate `calusa@linktrend.media`
+   identity through `tools/bin/lisa-carlos-tasks`; identities and credential
+   stores must never be mixed. Google Keep remains unavailable via CLI.
+5. **Human authority and sandboxed actions:** existing Carlos-held Spec/PRD,
+   Program, Module, launch/release, public-posting, deletion, finance, legal,
+   external-sharing/email, and protected-promotion gates remain fail closed.
+   Provider facts, model output, Autowork receipts, or Brain advice cannot
+   approve an action. Unapproved actions remain planned/held, not executed.
+6. **Planning and prioritization:** preserve Lisa's existing progressive
+   disclosure, project ranking, approval-first gates, source-of-truth checks,
+   and explicit HOLD behavior. Provider results may inform a plan but cannot
+   silently reorder Carlos's priorities or replace a missing decision.
+7. **Memory and privacy:** preserve native memory, daily logs, indexes,
+   sessions, compaction, privacy classes, battery persistence, and the rule
+   that mutable memory and secrets stay outside Git. Brain remains advisory;
+   private health, personal compliance, prompts, transcripts, reasoning,
+   credentials, and live message bodies do not cross provider boundaries.
+8. **Jobs, heartbeat, and channels:** preserve the disabled native heartbeat,
+   the existing Asia/Taipei cron-owned heartbeat/digest schedules, job
+   catalogue disabled/source-only default, templates, Telegram/Web UI session
+   rules, internal-only email limits, and separate Telegram-versus-email
+   content. Item 3 does not enable, reschedule, or activate any job.
+9. **Personality and tools:** preserve the current Personality files, denied
+   media/skill-authoring tools, safe wrappers, skills doctrine, Ship/Pull and
+   approval contracts, except for the narrow obsolete provider references
+   explicitly owned by P-08. Historical documents remain historical.
+10. **Runtime boundary:** source, stage, VPS, credentials, schedules, E2E, and
+    production are separate proof classes. Item 3 source completion must not
+    claim live activation or mutate `~/.openclaw-lisa`.
+
 ## 11. Explicit exclusions
 
 Item 3, including later source packets authorized by an accepted plan, excludes:
@@ -449,24 +506,25 @@ Item 3 source then branches or layers from that exact Item 2 head, even if Item 
 
 A future Item 3 source delivery is complete only when every criterion below is true on a clean worktree layered from the execution-time Item 2 head. Documentation acceptance is Codex supervisor acceptance of this PRD and the companion plan, not these source criteria.
 
-| ID    | Criterion                                                                                                                                                                               |
-| ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| AC-01 | Lisa source packets start only from the independently accepted Item 2 exact commit and tree recorded in execution-time fields.                                                          |
-| AC-02 | Lisa does not modify Item 2 adapter files, provider repositories, workflows, runtime config, credentials, or deployment assets.                                                         |
-| AC-03 | Lisa identity and permissions are expressed as Platform facts validated by Item 2 claims/trust helpers before any Brain, Skills, Libraries, or Autowork call.                           |
-| AC-04 | Helper agents cannot inherit Lisa provider credentials or capabilities.                                                                                                                 |
-| AC-05 | Lisa-allowed provider operations match section 7 exactly. Extra operations are denied.                                                                                                  |
-| AC-06 | Privacy classes and prohibited payloads in section 6 are rejected before transport.                                                                                                     |
-| AC-07 | Local Lisa memory remains separate from shared Brain knowledge; Brain results stay advisory.                                                                                            |
-| AC-08 | Skills discovery, exact-release validation, and job-execution evidence use Item 2 Skills v2 only. Legacy run/tool operations are denied.                                                |
-| AC-09 | Autowork requests, status, handoffs, and receipts use Item 2 Autowork validation plus Brain handoff correlation when required. Terminal regression and idempotency mutation are denied. |
-| AC-10 | Libraries discovery and retrieval accept only admitted selectable revision-2 records with exact-release identity. Contribution remains excluded.                                        |
-| AC-11 | Unavailable, revoked, unauthorized, stale, disabled, and contract-incompatible providers produce typed `unavailable` or `denied` results with HOLD behavior and no silent fallback.     |
-| AC-12 | Retry/replay follows section 8.4. Invalid bodies are not retried as unavailability.                                                                                                     |
-| AC-13 | Obsolete Lisa-owned provider references in section 9 are replaced or labeled historical. No Lisa contract remains on v1 MCP run/write names.                                            |
-| AC-14 | Focused positive, negative, and unavailability tests exist for each provider Lisa consumes, using fakes only.                                                                           |
-| AC-15 | No production, schedule, VPS, service, or live credential proof is claimed.                                                                                                             |
-| AC-16 | Item 3 opens no PR until IDE Development v2.4.0 rollout is recorded. Until then, the only git actions are commit, push, and checkpoint.                                                 |
+| ID    | Criterion                                                                                                                                                                                                                                                               |
+| ----- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| AC-01 | Lisa source packets start only from the independently accepted Item 2 exact commit and tree recorded in execution-time fields.                                                                                                                                          |
+| AC-02 | Lisa does not modify Item 2 adapter files, provider repositories, workflows, runtime config, credentials, or deployment assets.                                                                                                                                         |
+| AC-03 | Lisa identity and permissions are expressed as Platform facts validated by Item 2 claims/trust helpers before any Brain, Skills, Libraries, or Autowork call.                                                                                                           |
+| AC-04 | Helper agents cannot inherit Lisa provider credentials or capabilities.                                                                                                                                                                                                 |
+| AC-05 | Lisa-allowed provider operations match section 7 exactly. Extra operations are denied.                                                                                                                                                                                  |
+| AC-06 | Privacy classes and prohibited payloads in section 6 are rejected before transport.                                                                                                                                                                                     |
+| AC-07 | Local Lisa memory remains separate from shared Brain knowledge; Brain results stay advisory.                                                                                                                                                                            |
+| AC-08 | Skills discovery, exact-release validation, and job-execution evidence use Item 2 Skills v2 only. Legacy run/tool operations are denied.                                                                                                                                |
+| AC-09 | Autowork requests, status, handoffs, and receipts use Item 2 Autowork validation plus Brain handoff correlation when required. Terminal regression and idempotency mutation are denied.                                                                                 |
+| AC-10 | Libraries discovery and retrieval accept only admitted selectable revision-2 records with exact-release identity. Contribution remains excluded.                                                                                                                        |
+| AC-11 | Unavailable, revoked, unauthorized, stale, disabled, and contract-incompatible providers produce typed `unavailable` or `denied` results with HOLD behavior and no silent fallback.                                                                                     |
+| AC-12 | Retry/replay follows section 8.4. Invalid bodies are not retried as unavailability.                                                                                                                                                                                     |
+| AC-13 | Obsolete Lisa-owned provider references in section 9 are replaced or labeled historical. No Lisa contract remains on v1 MCP run/write names.                                                                                                                            |
+| AC-14 | Focused positive, negative, and unavailability tests exist for each provider Lisa consumes, using fakes only.                                                                                                                                                           |
+| AC-15 | No production, schedule, VPS, service, or live credential proof is claimed.                                                                                                                                                                                             |
+| AC-16 | Item 3 opens no PR until IDE Development v2.4.0 rollout is recorded. Until then, the only git actions are commit, push, and checkpoint.                                                                                                                                 |
+| AC-17 | The complete operating-model non-regression ledger in section 10.4 is preserved and covered by focused source/static tests; no provider path bypasses its model, Cursor, sandbox, Google, approval, planning, memory, channel, job, Personality, or runtime boundaries. |
 
 ## 14. Documentation acceptance
 

@@ -242,6 +242,7 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H3: 10.1 Functional
   - H3: 10.2 Nonfunctional
   - H3: 10.3 Security and privacy
+  - H3: 10.4 Existing Lisa operating-model non-regression ledger
   - H2: 11. Explicit exclusions
   - H2: 12. No-production boundary and Item 2 execution-time fields
   - H2: 13. Acceptance criteria
