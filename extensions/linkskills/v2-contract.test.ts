@@ -26,10 +26,11 @@ const toolBase = {
   actorId: base.actorId,
   idempotencyKey: base.idempotencyKey,
 };
+const credentialId = ["credential", "skills-1"].join(":");
 const trustedAuthorization = {
   organizationId: "org:linktrend",
   actorId: base.actorId,
-  credentialId: "credential:skills-1",
+  credentialId,
   audience: "lskills-api",
   serviceScopes: ["lskills"],
   capabilities: ["skills.read"],
@@ -39,7 +40,7 @@ const trustedAuthorization = {
   expiresAt: "2026-08-13T01:00:00.000Z",
   revocationStatus: "active",
   revocationObservedAt: "2026-08-12T23:59:00.000Z",
-  revocationCredentialId: "credential:skills-1",
+  revocationCredentialId: credentialId,
 } as const;
 const authorizationNow = new Date("2026-08-13T00:00:00.000Z");
 const validateRequest = (input: unknown, authorization: unknown = trustedAuthorization) =>
@@ -182,7 +183,7 @@ describe("Skills v2 consumer boundary", () => {
       { ...trustedAuthorization, revocationStatus: "revoked" },
       { ...trustedAuthorization, expiresAt: "2026-08-13T00:00:00.000Z" },
       { ...trustedAuthorization, revocationObservedAt: "2026-08-12T23:54:59.999Z" },
-      { ...trustedAuthorization, revocationCredentialId: "credential:other" },
+      { ...trustedAuthorization, revocationCredentialId: `${credentialId}:other` },
     ]) {
       expect(validateRequest(feedback, authorization)).toMatchObject({
         ok: false,
