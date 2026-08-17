@@ -220,6 +220,13 @@ describe("exact provider Skills releases", () => {
         maxAgeMs: Number.NaN,
       }),
     ).toMatchObject({ ok: false, code: "invalid_timestamp" });
+    const counterfeit = Object.create(Date.prototype) as Date;
+    expect(() =>
+      validateExactRelease(validRelease, { ...validationOptions, now: counterfeit }),
+    ).not.toThrow();
+    expect(
+      validateExactRelease(validRelease, { ...validationOptions, now: counterfeit }),
+    ).toMatchObject({ ok: false, code: "invalid_timestamp" });
   });
 
   it("rejects raw conversation, prompt, reasoning, Brain, and raw-tool telemetry fields", () => {

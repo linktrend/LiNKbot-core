@@ -200,6 +200,45 @@ describe("LinkAutowork final provider contract", () => {
       ),
     ).toBe(false);
   });
+  it("fails closed for counterfeit Date-like clocks", () => {
+    const counterfeit = Object.create(Date.prototype) as Date;
+    const decision = {
+      status: "active" as const,
+      observedAt: "2026-08-13T11:59:00.000Z",
+      credentialId: request.platform.credentialId,
+      bindingId: request.platform.bindingId,
+      orgId: request.platform.orgId,
+      actorId: request.platform.actorId,
+      audience: request.platform.audience,
+      capability: request.platform.capability,
+      revocationRef: request.platform.revocationRef,
+      authorizedOperation: request.operationKind,
+    };
+    const callback = {
+      requestId: uuid,
+      receiptId: receipt.receiptId,
+      orgId: uuid,
+      callbackBindingRef: "evidence://callback/binding",
+      sourceTimestamp: receipt.updatedAt,
+      receipt,
+    };
+    const callbackExpected = {
+      callbackBindingRef: "evidence://callback/binding",
+      now: counterfeit,
+      acceptedState: {
+        latestSourceTimestamp: null,
+        acceptedReceiptIds: [],
+        latestReceiptState: null,
+        latestAttemptCount: null,
+      },
+    } as const;
+    expect(() => validateRequestAt(request, counterfeit, decision)).not.toThrow();
+    expect(validateRequestAt(request, counterfeit, decision)).toBe(false);
+    expect(() => validateReceipt(receipt, request, counterfeit)).not.toThrow();
+    expect(validateReceipt(receipt, request, counterfeit)).toBe(false);
+    expect(() => validateCallback(callback, request, callbackExpected)).not.toThrow();
+    expect(validateCallback(callback, request, callbackExpected)).toBe(false);
+  });
   it("requires an independent current Platform revocation decision", () => {
     const now = new Date("2026-08-13T12:00:00.000Z");
     expect(validateRequestAt(request, now)).toBe(false);

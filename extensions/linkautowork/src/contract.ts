@@ -199,6 +199,14 @@ const timestampNanos = (value: string): bigint | undefined => {
   const fraction = BigInt((match[7] ?? "").padEnd(9, "0"));
   return epochSeconds * 1_000_000_000n + fraction;
 };
+const dateMilliseconds = (value: unknown): number | undefined => {
+  try {
+    const milliseconds = Date.prototype.getTime.call(value);
+    return Number.isFinite(milliseconds) ? milliseconds : undefined;
+  } catch {
+    return undefined;
+  }
+};
 const keys = (
   value: Record<string, unknown>,
   required: readonly string[],
@@ -378,10 +386,10 @@ export function validateRequestAt(
   } catch {
     return false;
   }
-  const nowMilliseconds = now.getTime();
+  const nowMilliseconds = dateMilliseconds(now);
   if (
     !validateRequestSnapshot(value) ||
-    !Number.isFinite(nowMilliseconds) ||
+    nowMilliseconds === undefined ||
     value.cancellationRequestedAt !== undefined ||
     revocationDecision?.status !== "active" ||
     !iso(revocationDecision.observedAt)
@@ -498,8 +506,8 @@ export function validateReceipt(
     return false;
   const acceptedAt = timestampNanos(value.acceptedAt);
   const updatedAt = timestampNanos(value.updatedAt);
-  const nowMilliseconds = now.getTime();
-  if (!Number.isFinite(nowMilliseconds)) return false;
+  const nowMilliseconds = dateMilliseconds(now);
+  if (nowMilliseconds === undefined) return false;
   const nowNanos = BigInt(nowMilliseconds) * 1_000_000n;
   if (
     acceptedAt === undefined ||
@@ -556,6 +564,7 @@ export function validateCallback(
   } catch {
     return false;
   }
+  const nowMilliseconds = expected === undefined ? undefined : dateMilliseconds(expected.now);
   if (
     !plain(value) ||
     !keys(value, [
@@ -596,7 +605,7 @@ export function validateCallback(
       (expected.acceptedState.latestAttemptCount === null) ||
     (expected.acceptedState.latestSourceTimestamp === null) !==
       (expected.acceptedState.latestReceiptState === null) ||
-    !Number.isFinite(expected.now.getTime()) ||
+    nowMilliseconds === undefined ||
     value.callbackBindingRef !== expected.callbackBindingRef ||
     !validateReceipt(value.receipt, request, expected.now, authenticatedEvidence)
   )
@@ -626,7 +635,7 @@ export function validateCallback(
     value.orgId === request.platform.orgId &&
     sourceTimestamp === updatedAt &&
     sourceTimestamp >= acceptedAt &&
-    sourceTimestamp <= BigInt(expected.now.getTime()) * 1_000_000n &&
+    sourceTimestamp <= BigInt(nowMilliseconds) * 1_000_000n &&
     (latestSourceTimestamp === null || sourceTimestamp > latestSourceTimestamp) &&
     !expected.acceptedState.acceptedReceiptIds.includes(value.receiptId) &&
     (latestAttemptCount === null || receipt.attemptCount >= latestAttemptCount) &&

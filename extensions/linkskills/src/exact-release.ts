@@ -404,12 +404,17 @@ export function validateExactRelease(
   )
     return reject("missing_attestation", release);
   const configuredNow = ownOption("now");
-  const now =
-    typeof configuredNow === "undefined"
-      ? Date.now()
-      : configuredNow instanceof Date
-        ? Date.prototype.getTime.call(configuredNow)
-        : parseTime(configuredNow);
+  let now: number | undefined;
+  try {
+    now =
+      typeof configuredNow === "undefined"
+        ? Date.now()
+        : configuredNow instanceof Date
+          ? Date.prototype.getTime.call(configuredNow)
+          : parseTime(configuredNow);
+  } catch {
+    now = undefined;
+  }
   const issuedAt = parseTime(release.issued_at);
   const expiresAt = parseTime(release.expires_at);
   const evaluatedAt = parseTime(attestation.evaluated_at);
