@@ -555,7 +555,12 @@ export function assertBrainV2PlatformIdentity(
   const expiresAt = identityValue("expiresAt");
   assertIso(issuedAt, "issuedAt");
   assertIso(expiresAt, "expiresAt");
-  const now = expected.now === undefined ? Date.now() : new Date(expected.now).getTime();
+  const now =
+    expected.now === undefined
+      ? Date.now()
+      : expected.now instanceof Date
+        ? expected.now.getTime()
+        : new Date(expected.now).getTime();
   if (!Number.isFinite(now) || Date.parse(expiresAt) <= now || Date.parse(issuedAt) > now) {
     throw new Error("brain_v2_identity_expired_or_not_yet_valid");
   }
@@ -678,7 +683,7 @@ const assertFreshRevocationDecision = (
     "credentialReference",
   ]);
   assertIso(snapshot.observedAt, "revocation_observed_at");
-  const nowMs = new Date(now).getTime();
+  const nowMs = now instanceof Date ? now.getTime() : new Date(now).getTime();
   const observedAt = Date.parse(snapshot.observedAt);
   const issuedAt = Date.parse(identity.issuedAt);
   if (

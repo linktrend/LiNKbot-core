@@ -127,6 +127,22 @@ describe("LiNKbrain v2 immutable consumer boundary", () => {
     expect(BRAIN_V2_OPERATIONS).toContain("v2.checkpoint.write");
   });
 
+  it("accepts Date-valued identity and revocation clocks without reparsing them", async () => {
+    expect(() =>
+      assertBrainV2PlatformIdentity(identity(), { ...expected, now: new Date(NOW) }),
+    ).not.toThrow();
+    const client = createBrainV2Client({
+      identity: identity(),
+      identityExpectation,
+      transport: {
+        request: async (request) => (request.method === "discover" ? negotiation : page("index")),
+      },
+      clock: () => new Date(NOW),
+    });
+    await expect(client.negotiate()).resolves.toMatchObject({ ok: true });
+    await expect(client.search("knowledge")).resolves.toMatchObject({ ok: true });
+  });
+
   it("accepts Platform trust facts only when actor, binding, audience, scope and capability match", () => {
     expect(() => assertBrainV2PlatformIdentity(identity(), expected)).not.toThrow();
     for (const field of ["audience", "runtimeBindingRef", "issuer"] as const) {
