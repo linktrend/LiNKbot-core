@@ -14,7 +14,7 @@
 | Starting branch  | `issue/190-implement-lisa-item-3-foundation-packets-p-01-th`                                             |
 | Ending branch    | `issue/190-implement-lisa-item-3-foundation-packets-p-01-th`                                             |
 | Starting commit  | `d04ec06b9192b6b8702a398d69838e5707ecef0a`                                                               |
-| Ending commit    | recorded after checkpoint                                                                                |
+| Ending commit    | `07f1612c91f5c77955b531df0e3c812c19b1b7c3` (docs checkpoint; amend SHA updated in follow-up if needed)   |
 | Starting status  | clean at remote head d04ec06                                                                             |
 | Ending status    | committed and pushed; working tree clean; HEAD equals origin branch                                      |
 
