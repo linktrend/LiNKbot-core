@@ -4,10 +4,11 @@ import {
   AUTOWORK_CONTRACT_VERSION,
   AUTOWORK_PROTOCOL_VERSION,
   AUTOWORK_TREE,
+  autoworkReceiptDigest,
   requestFingerprint,
   sameIdempotencyContent,
-  validateCallback,
-  validateReceipt,
+  validateCallback as validateCallbackRaw,
+  validateReceipt as validateReceiptRaw,
   validateRequestAt,
   validateRequest,
 } from "./src/contract.js";
@@ -64,6 +65,48 @@ const receipt = {
   uncertainOutcome: false,
 } as const;
 
+const authenticatedReceiptEvidence = (value: unknown) => {
+  if ((typeof value !== "object" && typeof value !== "function") || value === null) return;
+  const requestId = Object.getOwnPropertyDescriptor(value, "requestId");
+  const receiptId = Object.getOwnPropertyDescriptor(value, "receiptId");
+  if (!requestId || !("value" in requestId) || !receiptId || !("value" in receiptId)) return;
+  try {
+    return {
+      providerCandidate: { commit: AUTOWORK_COMMIT, tree: AUTOWORK_TREE },
+      contractVersion: AUTOWORK_CONTRACT_VERSION,
+      requestId: requestId.value,
+      receiptId: receiptId.value,
+      receiptDigest: autoworkReceiptDigest(value),
+      verified: true as const,
+    };
+  } catch {
+    return;
+  }
+};
+const validateReceipt = (
+  value: unknown,
+  candidateRequest?: Parameters<typeof validateReceiptRaw>[1],
+  now?: Date,
+) => validateReceiptRaw(value, candidateRequest, now, authenticatedReceiptEvidence(value));
+const validateCallback = (
+  value: unknown,
+  candidateRequest: Parameters<typeof validateCallbackRaw>[1],
+  expected?: Parameters<typeof validateCallbackRaw>[2],
+) => {
+  const receiptDescriptor =
+    (typeof value === "object" || typeof value === "function") && value !== null
+      ? Object.getOwnPropertyDescriptor(value, "receipt")
+      : undefined;
+  const candidateReceipt =
+    receiptDescriptor && "value" in receiptDescriptor ? receiptDescriptor.value : undefined;
+  return validateCallbackRaw(
+    value,
+    candidateRequest,
+    expected,
+    authenticatedReceiptEvidence(candidateReceipt),
+  );
+};
+
 describe("LinkAutowork final provider contract", () => {
   it("accepts exact request, immutable receipt and correlated callback", () => {
     expect(validateRequest(request)).toBe(true);
@@ -92,6 +135,42 @@ describe("LinkAutowork final provider contract", () => {
       ),
     ).toBe(true);
     expect(sameIdempotencyContent(request, structuredClone(request))).toBe(true);
+  });
+
+  it("requires independently authenticated receipt identity and digest evidence", () => {
+    const evidence = authenticatedReceiptEvidence(receipt);
+    const callback = {
+      requestId: uuid,
+      receiptId: receipt.receiptId,
+      orgId: uuid,
+      callbackBindingRef: "evidence://callback/binding",
+      sourceTimestamp: receipt.updatedAt,
+      receipt,
+    };
+    const expected = {
+      callbackBindingRef: "evidence://callback/binding",
+      now: new Date("2026-08-13T12:00:00.000Z"),
+      acceptedState: {
+        latestSourceTimestamp: null,
+        acceptedReceiptIds: [],
+        latestReceiptState: null,
+        latestAttemptCount: null,
+      },
+    } as const;
+    expect(evidence).toBeDefined();
+    expect(validateReceiptRaw(receipt, request, undefined, evidence)).toBe(true);
+    expect(validateReceiptRaw(receipt, request)).toBe(false);
+    expect(validateCallbackRaw(callback, request, expected)).toBe(false);
+    expect(validateCallbackRaw(callback, request, expected, evidence)).toBe(true);
+    expect(validateReceiptRaw({ ...receipt, state: "queued" }, request, undefined, evidence)).toBe(
+      false,
+    );
+    expect(
+      validateReceiptRaw(receipt, request, undefined, {
+        ...evidence!,
+        verified: false,
+      } as never),
+    ).toBe(false);
   });
   it("requires an independent current Platform revocation decision", () => {
     const now = new Date("2026-08-13T12:00:00.000Z");

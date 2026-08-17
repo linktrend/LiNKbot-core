@@ -81,6 +81,14 @@ export type AutoworkReceipt = Readonly<{
   evidenceRefs: readonly OpaqueReference[];
   uncertainOutcome: boolean;
 }>;
+export type AuthenticatedAutoworkReceiptEvidence = Readonly<{
+  providerCandidate: { commit: typeof AUTOWORK_COMMIT; tree: typeof AUTOWORK_TREE };
+  contractVersion: typeof AUTOWORK_CONTRACT_VERSION;
+  requestId: string;
+  receiptId: string;
+  receiptDigest: string;
+  verified: true;
+}>;
 export type AutoworkCallback = Readonly<{
   requestId: string;
   receiptId: string;
@@ -325,6 +333,18 @@ function canonical(value: unknown): unknown {
         )
       : value;
 }
+const digestSnapshot = (value: unknown): string =>
+  `sha256:${createHash("sha256")
+    .update(JSON.stringify(canonical(value)))
+    .digest("hex")}`;
+
+export function autoworkReceiptDigest(value: unknown): string {
+  try {
+    return digestSnapshot(snapshotPlainData(value));
+  } catch {
+    throw new Error("invalid Autowork receipt");
+  }
+}
 export function requestFingerprint(value: unknown): string {
   try {
     value = snapshotPlainData(value);
@@ -332,9 +352,7 @@ export function requestFingerprint(value: unknown): string {
     throw new Error("invalid Autowork request");
   }
   if (!validateRequestSnapshot(value)) throw new Error("invalid Autowork request");
-  return `sha256:${createHash("sha256")
-    .update(JSON.stringify(canonical(value)))
-    .digest("hex")}`;
+  return digestSnapshot(value);
 }
 export function sameIdempotencyContent(a: unknown, b: unknown): boolean {
   try {
@@ -405,10 +423,15 @@ export function validateReceipt(
   value: unknown,
   request?: AutoworkRequest,
   now = new Date(),
+  authenticatedEvidence?: AuthenticatedAutoworkReceiptEvidence,
 ): value is AutoworkReceipt {
   try {
     value = snapshotPlainData(value);
     request = request === undefined ? undefined : (snapshotPlainData(request) as AutoworkRequest);
+    authenticatedEvidence =
+      authenticatedEvidence === undefined
+        ? undefined
+        : (snapshotPlainData(authenticatedEvidence) as AuthenticatedAutoworkReceiptEvidence);
   } catch {
     return false;
   }
@@ -452,6 +475,27 @@ export function validateReceipt(
     typeof value.uncertainOutcome !== "boolean"
   )
     return false;
+  if (
+    !plain(authenticatedEvidence) ||
+    !keys(authenticatedEvidence, [
+      "providerCandidate",
+      "contractVersion",
+      "requestId",
+      "receiptId",
+      "receiptDigest",
+      "verified",
+    ]) ||
+    !plain(authenticatedEvidence.providerCandidate) ||
+    !keys(authenticatedEvidence.providerCandidate, ["commit", "tree"]) ||
+    authenticatedEvidence.providerCandidate.commit !== AUTOWORK_COMMIT ||
+    authenticatedEvidence.providerCandidate.tree !== AUTOWORK_TREE ||
+    authenticatedEvidence.contractVersion !== AUTOWORK_CONTRACT_VERSION ||
+    authenticatedEvidence.requestId !== value.requestId ||
+    authenticatedEvidence.receiptId !== value.receiptId ||
+    authenticatedEvidence.receiptDigest !== digestSnapshot(value) ||
+    authenticatedEvidence.verified !== true
+  )
+    return false;
   const acceptedAt = timestampNanos(value.acceptedAt);
   const updatedAt = timestampNanos(value.updatedAt);
   const nowMilliseconds = now.getTime();
@@ -493,10 +537,15 @@ export function validateCallback(
     now: Date;
     acceptedState: AutoworkAcceptedCallbackState;
   },
+  authenticatedEvidence?: AuthenticatedAutoworkReceiptEvidence,
 ): value is AutoworkCallback {
   try {
     value = snapshotPlainData(value);
     request = snapshotPlainData(request) as AutoworkRequest;
+    authenticatedEvidence =
+      authenticatedEvidence === undefined
+        ? undefined
+        : (snapshotPlainData(authenticatedEvidence) as AuthenticatedAutoworkReceiptEvidence);
     if (expected) {
       expected = {
         callbackBindingRef: expected.callbackBindingRef,
@@ -549,7 +598,7 @@ export function validateCallback(
       (expected.acceptedState.latestReceiptState === null) ||
     !Number.isFinite(expected.now.getTime()) ||
     value.callbackBindingRef !== expected.callbackBindingRef ||
-    !validateReceipt(value.receipt, request, expected.now)
+    !validateReceipt(value.receipt, request, expected.now, authenticatedEvidence)
   )
     return false;
   const sourceTimestamp = timestampNanos(value.sourceTimestamp);

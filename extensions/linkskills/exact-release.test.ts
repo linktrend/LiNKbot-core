@@ -303,6 +303,20 @@ describe("exact provider Skills releases", () => {
     expect(validateProgressiveReleaseTransition(undefined, index)).toBe(true);
     expect(validateProgressiveReleaseTransition(undefined, { stage: "index" })).toBe(false);
     expect(validateProgressiveReleaseTransition(undefined, description)).toBe(false);
+    expect(
+      validateProgressiveReleaseTransition(undefined, {
+        stage: "index",
+        release_id: "latest",
+        version: "latest",
+      }),
+    ).toBe(false);
+    expect(
+      validateProgressiveReleaseTransition(undefined, {
+        stage: "index",
+        release_id: "skill.echo@1.0.0",
+        version: "2.0.0",
+      }),
+    ).toBe(false);
     expect(validateProgressiveReleaseTransition(index, description)).toBe(true);
     expect(validateProgressiveReleaseTransition(description, fragments)).toBe(true);
     expect(validateProgressiveReleaseTransition(fragments, exact)).toBe(true);

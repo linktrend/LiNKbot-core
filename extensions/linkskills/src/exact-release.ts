@@ -99,6 +99,7 @@ export type ProgressiveReleaseState = {
 
 const DIGEST = /^sha256:[0-9a-f]{64}$/;
 const NON_EMPTY = /^[^\s]+$/;
+const MOVING_RELEASE_ALIAS = /^(latest|current|stable|newest)$/iu;
 const STAGES: readonly ExactReleaseStage[] = ["index", "description", "fragments", "exact_release"];
 const isDigest = (value: unknown): value is string =>
   typeof value === "string" && DIGEST.test(value);
@@ -490,7 +491,15 @@ export function validateProgressiveReleaseTransition(
       return false;
     const stage = state.stage as ExactReleaseStage;
     if (Object.keys(state).some((key) => !allowedByStage[stage].includes(key))) return false;
-    if (!isString(state.release_id) || !isString(state.version)) return false;
+    if (
+      !isString(state.release_id) ||
+      !isString(state.version) ||
+      MOVING_RELEASE_ALIAS.test(state.release_id) ||
+      MOVING_RELEASE_ALIAS.test(state.version) ||
+      state.release_id.lastIndexOf("@") < 1 ||
+      state.release_id.slice(state.release_id.lastIndexOf("@") + 1) !== state.version
+    )
+      return false;
     if (stage === "fragments" || stage === "exact_release") {
       if (!isDigest(state.manifest_digest)) return false;
     }

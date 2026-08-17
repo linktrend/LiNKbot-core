@@ -275,7 +275,7 @@ export function pageCatalogue(
     trustedSource.tree !== LIBRARIES_TREE ||
     trusted.catalogueSha256 !== LIBRARIES_CATALOGUE_SHA256 ||
     !digest(trusted.recordsSha256) ||
-    trusted.recordsSha256 !== canonicalDigest(records) ||
+    normalizedSha256(trusted.recordsSha256 as string) !== canonicalDigest(records) ||
     trusted.snapshot !== pageInput.snapshot ||
     trusted.verified !== true
   )

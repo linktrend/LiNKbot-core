@@ -35,6 +35,7 @@ const identity = (): BrainV2PlatformIdentity => ({
   audience: "audience:brain",
   serviceScopes: ["brain.v2"],
   capabilities: ["brain.knowledge"],
+  permittedOperations: ["read", "execute"],
   issuedAt: "2026-08-14T11:00:00.000Z",
   expiresAt: "2026-08-14T13:00:00.000Z",
   revocationStatus: "active",
@@ -517,6 +518,28 @@ describe("LiNKbrain v2 immutable consumer boundary", () => {
     expect(requests).toHaveLength(4);
   });
 
+  it("requires Platform execute authorization for Brain mutations", async () => {
+    const requests: BrainV2TransportRequest[] = [];
+    const client = createBrainV2Client({
+      identity: { ...identity(), permittedOperations: ["read"] },
+      identityExpectation,
+      transport: {
+        request: async (request) => {
+          requests.push(request);
+          return request.method === "discover" ? negotiation : page("index");
+        },
+      },
+      clock: () => NOW,
+    });
+
+    await expect(client.negotiate()).resolves.toMatchObject({ ok: true });
+    await expect(client.search("knowledge")).resolves.toMatchObject({ ok: true });
+    await expect(
+      client.sendMessage({ title: "bounded" }, "idem:brain:write:1"),
+    ).resolves.toMatchObject({ ok: false, status: "unauthorized" });
+    expect(requests).toHaveLength(2);
+  });
+
   it("binds negotiation to authenticated provider evidence and fresh Platform revocation", async () => {
     const requests: BrainV2TransportRequest[] = [];
     let decision = activeRevocationDecision();
@@ -915,8 +938,13 @@ describe("LiNKbrain v2 immutable consumer boundary", () => {
   });
 
   it("rejects accessor-backed authorization elements without invoking getters", async () => {
-    for (const field of ["serviceScopes", "capabilities"] as const) {
-      const values = field === "serviceScopes" ? ["brain.v2"] : ["brain.knowledge"];
+    for (const field of ["serviceScopes", "capabilities", "permittedOperations"] as const) {
+      const values =
+        field === "serviceScopes"
+          ? ["brain.v2"]
+          : field === "capabilities"
+            ? ["brain.knowledge"]
+            : ["read", "execute"];
       let reads = 0;
       Object.defineProperty(values, "0", {
         configurable: true,
@@ -951,10 +979,12 @@ describe("LiNKbrain v2 immutable consumer boundary", () => {
   it("uses construction-time authorization arrays after source mutation", async () => {
     const sourceScopes = [...identity().serviceScopes];
     const sourceCapabilities = [...identity().capabilities];
+    const sourceOperations = [...identity().permittedOperations];
     const sourceIdentity = {
       ...identity(),
       serviceScopes: sourceScopes,
       capabilities: sourceCapabilities,
+      permittedOperations: sourceOperations,
     };
     const requests: BrainV2TransportRequest[] = [];
     const client = createBrainV2Client({
@@ -971,6 +1001,7 @@ describe("LiNKbrain v2 immutable consumer boundary", () => {
 
     sourceScopes[0] = "changed";
     sourceCapabilities[0] = "changed";
+    sourceOperations[0] = "execute";
 
     await expect(client.negotiate()).resolves.toMatchObject({ ok: true });
     expect(requests).toHaveLength(1);

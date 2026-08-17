@@ -241,6 +241,18 @@ describe("LiNKlibraries Revision 2 consumer", () => {
     );
     expect(getterCalls).toBe(0);
   });
+  it("accepts authenticated raw records digests for progressive paging", () => {
+    expect(
+      pageCatalogue(
+        [record],
+        { commit: LIBRARIES_COMMIT, tree: LIBRARIES_TREE, snapshot: "catalogue-v2" },
+        {
+          ...pageEvidence(),
+          recordsSha256: canonicalDigest([record]).slice("sha256:".length),
+        },
+      ).records,
+    ).toHaveLength(1);
+  });
   it("rejects malformed required catalogue record fields", () => {
     expect(validate({ ...bundle, record: { ...record, artifactType: undefined } }).ok).toBe(false);
     expect(validate({ ...bundle, record: { ...record, bundlePath: "" } }).ok).toBe(false);

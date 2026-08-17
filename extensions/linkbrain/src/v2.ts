@@ -53,6 +53,16 @@ export const BRAIN_V2_OPERATIONS = Object.freeze([
 
 export type BrainV2Disclosure = (typeof BRAIN_V2_DISCLOSURE_LEVELS)[number];
 export type BrainV2Operation = (typeof BRAIN_V2_OPERATIONS)[number];
+const BRAIN_V2_EXECUTE_OPERATIONS = new Set<BrainV2Operation>([
+  "v2.projection.ingest",
+  "v2.message.send",
+  "v2.checkpoint.write",
+  "v2.handoff.create",
+  "v2.handoff.accept",
+  "v2.conflict.report",
+  "v2.event.ack",
+  "v2.finding.submit",
+]);
 export type BrainV2ProviderStatus =
   | "available"
   | "degraded"
@@ -77,6 +87,7 @@ export type BrainV2PlatformIdentity = Readonly<{
   audience: string;
   serviceScopes: readonly string[];
   capabilities: readonly string[];
+  permittedOperations: readonly ("read" | "execute")[];
   issuedAt: string;
   expiresAt: string;
   revocationStatus: "active";
@@ -415,7 +426,7 @@ function assertIso(value: unknown, field: string): asserts value is string {
 const assertDenseAuthorizationArray = (
   value: unknown,
   requiredValue: unknown,
-  field: "serviceScopes" | "capabilities",
+  field: "serviceScopes" | "capabilities" | "permittedOperations",
 ): void => {
   if (!Array.isArray(value) || !boundedRef(requiredValue)) {
     throw new Error("brain_v2_scope_or_capability_missing");
@@ -447,6 +458,14 @@ const assertDenseAuthorizationArray = (
   }
 };
 
+const assertBrainV2OperationAuthorized = (
+  identity: BrainV2PlatformIdentity,
+  operation: BrainV2Operation,
+): void => {
+  const required = BRAIN_V2_EXECUTE_OPERATIONS.has(operation) ? "execute" : "read";
+  assertDenseAuthorizationArray(identity.permittedOperations, required, "permittedOperations");
+};
+
 export function assertBrainV2PlatformIdentity(
   input: unknown,
   expected: BrainV2IdentityExpectation,
@@ -467,6 +486,7 @@ export function assertBrainV2PlatformIdentity(
     "audience",
     "serviceScopes",
     "capabilities",
+    "permittedOperations",
     "issuedAt",
     "expiresAt",
     "revocationStatus",
@@ -527,8 +547,10 @@ export function assertBrainV2PlatformIdentity(
   }
   const serviceScopes = identityValue("serviceScopes");
   const capabilities = identityValue("capabilities");
+  const permittedOperations = identityValue("permittedOperations");
   assertDenseAuthorizationArray(serviceScopes, expected.requiredScope, "serviceScopes");
   assertDenseAuthorizationArray(capabilities, expected.requiredCapability, "capabilities");
+  assertDenseAuthorizationArray(permittedOperations, "read", "permittedOperations");
   const issuedAt = identityValue("issuedAt");
   const expiresAt = identityValue("expiresAt");
   assertIso(issuedAt, "issuedAt");
@@ -1051,6 +1073,7 @@ export function createBrainV2Client(input: {
           reason: "brain_v2_negotiation_required",
         };
       }
+      assertBrainV2OperationAuthorized(identity, operation);
       const safeParams = assertBrainV2SafePayload(params);
       if (!transportRequest)
         throw transportConstructionError ?? new Error("brain_v2_transport_invalid");
