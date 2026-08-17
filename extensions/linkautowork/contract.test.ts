@@ -172,6 +172,34 @@ describe("LinkAutowork final provider contract", () => {
       } as never),
     ).toBe(false);
   });
+
+  it("rejects unsafe receipt and persisted retry counters", () => {
+    const unsafeAttemptCount = Number.MAX_SAFE_INTEGER + 1;
+    expect(validateReceipt({ ...receipt, attemptCount: unsafeAttemptCount }, request)).toBe(false);
+    expect(
+      validateCallback(
+        {
+          requestId: uuid,
+          receiptId: receipt.receiptId,
+          orgId: uuid,
+          callbackBindingRef: "evidence://callback/binding",
+          sourceTimestamp: receipt.updatedAt,
+          receipt,
+        },
+        request,
+        {
+          callbackBindingRef: "evidence://callback/binding",
+          now: new Date("2026-08-13T12:00:00.000Z"),
+          acceptedState: {
+            latestSourceTimestamp: receipt.updatedAt,
+            acceptedReceiptIds: ["33333333-3333-4333-8333-333333333333"],
+            latestReceiptState: receipt.state,
+            latestAttemptCount: unsafeAttemptCount,
+          },
+        },
+      ),
+    ).toBe(false);
+  });
   it("requires an independent current Platform revocation decision", () => {
     const now = new Date("2026-08-13T12:00:00.000Z");
     expect(validateRequestAt(request, now)).toBe(false);

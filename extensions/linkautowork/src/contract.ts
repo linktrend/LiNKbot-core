@@ -464,7 +464,7 @@ export function validateReceipt(
     !iso(value.acceptedAt) ||
     !iso(value.updatedAt) ||
     typeof value.attemptCount !== "number" ||
-    !Number.isInteger(value.attemptCount) ||
+    !Number.isSafeInteger(value.attemptCount) ||
     value.attemptCount < 0 ||
     !matches(value.requestFingerprint, SHA256) ||
     !automation(value.automation) ||
@@ -590,7 +590,7 @@ export function validateCallback(
         expected.acceptedState.latestReceiptState,
       )) ||
     (expected.acceptedState.latestAttemptCount !== null &&
-      (!Number.isInteger(expected.acceptedState.latestAttemptCount) ||
+      (!Number.isSafeInteger(expected.acceptedState.latestAttemptCount) ||
         expected.acceptedState.latestAttemptCount < 0)) ||
     (expected.acceptedState.latestReceiptState === null) !==
       (expected.acceptedState.latestAttemptCount === null) ||
