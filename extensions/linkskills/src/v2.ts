@@ -42,6 +42,18 @@ export const SKILLS_V2_OPERATIONS = Object.freeze([
   ...SKILLS_V2_TOOL_OPERATIONS,
 ] as const);
 export type SkillsV2Operation = (typeof SKILLS_V2_OPERATIONS)[number];
+export const SKILLS_V2_AUDIENCE = "lskills-api" as const;
+export const SKILLS_V2_REQUIRED_SCOPE = "skills.read" as const;
+export const SKILLS_V2_REQUIRED_CAPABILITY = "skills.read" as const;
+
+export type SkillsV2TrustedAuthorization = Readonly<{
+  organizationId: string;
+  actorId: string;
+  audience: typeof SKILLS_V2_AUDIENCE;
+  serviceScopes: readonly string[];
+  capabilities: readonly string[];
+  runtimeBindingRef: string;
+}>;
 
 const COMMON_REQUEST_FIELDS = [
   "providerCandidate",
@@ -118,6 +130,28 @@ const bounded = (value: unknown, max = 256): value is string =>
   value.length > 0 &&
   value.length <= max &&
   !/[\u0000-\u001f\u007f]/u.test(value);
+const snapshotDenseStrings = (value: unknown): readonly string[] | undefined => {
+  try {
+    if (!Array.isArray(value) || Object.getPrototypeOf(value) !== Array.prototype) return undefined;
+    const descriptors = Object.getOwnPropertyDescriptors(value) as Record<
+      string,
+      PropertyDescriptor
+    >;
+    const length = descriptors.length?.value;
+    if (!Number.isSafeInteger(length) || length < 0) return undefined;
+    const result: string[] = [];
+    for (let index = 0; index < length; index += 1) {
+      const descriptor = descriptors[String(index)];
+      if (!descriptor || !("value" in descriptor) || !bounded(descriptor.value)) return undefined;
+      result.push(descriptor.value);
+    }
+    if (Object.keys(descriptors).some((key) => key !== "length" && !/^\d+$/u.test(key)))
+      return undefined;
+    return Object.freeze(result);
+  } catch {
+    return undefined;
+  }
+};
 
 export function skillsSnapshotCursor(catalogVersion: string): string {
   if (!bounded(catalogVersion, 512)) throw new Error("invalid Skills catalog version");
@@ -132,10 +166,10 @@ export function isModernSkillsOperation(value: unknown): value is SkillsV2Operat
   );
 }
 
-/** `authenticatedActorId` comes from Platform-authenticated transport facts, never request data. */
+/** Authorization comes from Platform-authenticated transport facts, never request data. */
 export function validateSkillsV2Request(
   input: unknown,
-  authenticatedActorId: string,
+  trustedAuthorization: unknown,
 ):
   | { ok: true; request: SkillsV2Request }
   | {
@@ -145,9 +179,24 @@ export function validateSkillsV2Request(
         | "wrong_provider"
         | "incompatible_protocol"
         | "legacy_execution_disabled"
-        | "invalid_pagination";
+        | "invalid_pagination"
+        | "invalid_authorization";
     } {
-  if (!bounded(authenticatedActorId)) return { ok: false, code: "invalid_shape" };
+  const authorization = snapshotOwnDataRecord(trustedAuthorization);
+  const serviceScopes = snapshotDenseStrings(authorization?.serviceScopes);
+  const capabilities = snapshotDenseStrings(authorization?.capabilities);
+  if (
+    !authorization ||
+    Object.keys(authorization).sort().join(",") !==
+      "actorId,audience,capabilities,organizationId,runtimeBindingRef,serviceScopes" ||
+    !bounded(authorization.organizationId) ||
+    !bounded(authorization.actorId) ||
+    authorization.audience !== SKILLS_V2_AUDIENCE ||
+    !serviceScopes?.includes(SKILLS_V2_REQUIRED_SCOPE) ||
+    !capabilities?.includes(SKILLS_V2_REQUIRED_CAPABILITY) ||
+    !bounded(authorization.runtimeBindingRef)
+  )
+    return { ok: false, code: "invalid_authorization" };
   const value = snapshotOwnDataRecord(input);
   if (!value) return { ok: false, code: "invalid_shape" };
   const candidate = snapshotOwnDataRecord(value.providerCandidate);
@@ -168,7 +217,7 @@ export function validateSkillsV2Request(
   if (
     !isModernSkillsOperation(value.operation) ||
     !bounded(value.actorId) ||
-    value.actorId !== authenticatedActorId ||
+    value.actorId !== authorization.actorId ||
     !bounded(value.idempotencyKey, 160)
   )
     return { ok: false, code: "invalid_shape" };

@@ -192,6 +192,8 @@ const FORBIDDEN_FIELDS = new Set([
 const FORBIDDEN_IDENTITY_FIELDS = new Set([
   "actorId",
   "audience",
+  "capability",
+  "capabilities",
   "credentialId",
   "credentialReference",
   "issuer",

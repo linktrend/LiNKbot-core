@@ -77,9 +77,12 @@ export {
   SKILLS_V2_RESOURCE_OPERATIONS,
   SKILLS_V2_TOOL_OPERATIONS,
   SKILLS_V2_OPERATIONS,
+  SKILLS_V2_AUDIENCE,
+  SKILLS_V2_REQUIRED_CAPABILITY,
+  SKILLS_V2_REQUIRED_SCOPE,
   skillsSnapshotCursor,
   isModernSkillsOperation,
   validateSkillsQualificationIdentity,
   validateSkillsV2Request,
 } from "./src/v2.js";
-export type { SkillsV2Operation, SkillsV2Request } from "./src/v2.js";
+export type { SkillsV2Operation, SkillsV2Request, SkillsV2TrustedAuthorization } from "./src/v2.js";

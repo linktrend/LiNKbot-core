@@ -26,8 +26,16 @@ const toolBase = {
   actorId: base.actorId,
   idempotencyKey: base.idempotencyKey,
 };
-const validateRequest = (input: unknown, authenticatedActorId: string = base.actorId) =>
-  validateSkillsV2Request(input, authenticatedActorId);
+const trustedAuthorization = {
+  organizationId: "org:linktrend",
+  actorId: base.actorId,
+  audience: "lskills-api",
+  serviceScopes: ["skills.read"],
+  capabilities: ["skills.read"],
+  runtimeBindingRef: "runtime:fixture-openclaw-01",
+} as const;
+const validateRequest = (input: unknown, authorization: unknown = trustedAuthorization) =>
+  validateSkillsV2Request(input, authorization);
 describe("Skills v2 consumer boundary", () => {
   it("accepts catalog discovery and exact release detail", () => {
     expect(validateRequest(base).ok).toBe(true);
@@ -136,7 +144,9 @@ describe("Skills v2 consumer boundary", () => {
       version: "1.0.0",
     } as const;
     expect(validateRequest(feedback).ok).toBe(true);
-    expect(validateRequest(feedback, "actor-other")).toMatchObject({
+    expect(
+      validateRequest(feedback, { ...trustedAuthorization, actorId: "actor-other" }),
+    ).toMatchObject({
       ok: false,
       code: "invalid_shape",
     });
@@ -144,6 +154,28 @@ describe("Skills v2 consumer boundary", () => {
       ok: false,
       code: "invalid_shape",
     });
+  });
+
+  it("requires exact trusted Platform authorization facts", () => {
+    const feedback = {
+      ...toolBase,
+      operation: "skills_feedback_submit",
+      feedbackRef: "feedback-1",
+      skillId: "skill.echo",
+      version: "1.0.0",
+    } as const;
+    for (const authorization of [
+      { ...trustedAuthorization, organizationId: "" },
+      { ...trustedAuthorization, audience: "other" },
+      { ...trustedAuthorization, serviceScopes: ["other"] },
+      { ...trustedAuthorization, capabilities: ["other"] },
+      { ...trustedAuthorization, runtimeBindingRef: "" },
+    ]) {
+      expect(validateRequest(feedback, authorization)).toMatchObject({
+        ok: false,
+        code: "invalid_authorization",
+      });
+    }
   });
 
   it("rejects fields belonging to a different operation", () => {
