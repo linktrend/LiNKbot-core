@@ -387,6 +387,7 @@ export function validateReceipt(
   } catch {
     return false;
   }
+  if (request !== undefined && !validateRequestSnapshot(request)) return false;
   if (
     !plain(value) ||
     !keys(value, [

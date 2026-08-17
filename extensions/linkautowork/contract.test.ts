@@ -366,6 +366,28 @@ describe("LinkAutowork final provider contract", () => {
     }
     expect(() => validateReceipt({ ...receipt, receiptId: malformed }, request)).not.toThrow();
     expect(validateReceipt({ ...receipt, receiptId: malformed }, request)).toBe(false);
+    expect(() => validateReceipt(receipt, {} as never)).not.toThrow();
+    expect(validateReceipt(receipt, {} as never)).toBe(false);
+    const callback = {
+      requestId: uuid,
+      receiptId: receipt.receiptId,
+      orgId: uuid,
+      callbackBindingRef: "evidence://callback/binding",
+      sourceTimestamp: receipt.updatedAt,
+      receipt,
+    };
+    const expected = {
+      callbackBindingRef: "evidence://callback/binding",
+      now: new Date("2026-08-13T12:00:00.000Z"),
+      acceptedState: {
+        latestSourceTimestamp: null,
+        acceptedReceiptIds: [],
+        latestReceiptState: null,
+        latestAttemptCount: null,
+      },
+    };
+    expect(() => validateCallback(callback, {} as never, expected)).not.toThrow();
+    expect(validateCallback(callback, {} as never, expected)).toBe(false);
   });
 
   it("rejects inherited and accessor-backed requests without invoking getters", () => {
