@@ -31,10 +31,28 @@ const validRelease: ExactRelease = {
   issued_at: "2026-08-12T12:00:00.000Z",
   expires_at: "2026-08-14T00:00:00.000Z",
 };
+const authenticatedProviderEvidence = {
+  providerCandidate: { commit: SKILLS_COMMIT, tree: SKILLS_TREE },
+  contractVersion: "skills-release/0.2",
+  releaseId,
+  version,
+  manifestDigest,
+  packageDigest: validRelease.package_digest,
+  attestationVerified: true,
+  algorithm: "ES256",
+  keyId: "skills-release-key-1",
+  organization: "org:linktrend",
+  audience: "lskills-api",
+  capability: "skills.publish",
+} as const;
 const validationOptions = {
   profile: "runtime:fixture-openclaw-01",
   expectedSkillId: "skill.echo",
   expectedVersion: version,
+  expectedOrganization: "org:linktrend",
+  expectedAudience: "lskills-api",
+  expectedCapability: "skills.publish",
+  authenticatedProviderEvidence,
   now,
 } as const;
 
@@ -76,6 +94,33 @@ describe("exact provider Skills releases", () => {
         expectedVersion: "2026.08.11",
       }),
     ).toMatchObject({ ok: false, code: "invalid_immutability" });
+  });
+
+  it("rejects self-attested release claims without matching authenticated provider evidence", () => {
+    const forgedManifest =
+      "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
+    const forged = {
+      ...validRelease,
+      manifest_digest: forgedManifest,
+      package_digest: expectedPackageDigest({
+        release_id: releaseId,
+        manifest_digest: forgedManifest,
+      }),
+      attestation: { ...validRelease.attestation, digest: forgedManifest },
+    };
+    expect(validateExactRelease(forged, validationOptions)).toMatchObject({
+      ok: false,
+      code: "invalid_provider_evidence",
+    });
+    expect(
+      validateExactRelease(validRelease, {
+        ...validationOptions,
+        authenticatedProviderEvidence: {
+          ...authenticatedProviderEvidence,
+          attestationVerified: false as true,
+        },
+      }),
+    ).toMatchObject({ ok: false, code: "invalid_provider_evidence" });
   });
 
   it.each([

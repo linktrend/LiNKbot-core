@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { LIBRARIES_CATALOGUE_SHA256 } from "./revision2.js";
 
 export const FROZEN_CANDIDATE_SHA = "0efa68b19686e976ecee93c6a962e81d2a0265f5";
 export const FROZEN_TREE_SHA = "c42d20b3119ca4bfdd24d4c6b06d6bc7a7f50d4a";
@@ -85,6 +86,20 @@ export type ReleaseEvidence = Readonly<{
 export type ExactReleaseResult =
   | Readonly<{ ok: true; evidence: ReleaseEvidence }>
   | Readonly<{ ok: false; errors: readonly string[] }>;
+
+export type AuthenticatedLibraryAssetEvidence = Readonly<{
+  providerCandidate: Readonly<{
+    commit: typeof FROZEN_CANDIDATE_SHA;
+    tree: typeof FROZEN_TREE_SHA;
+  }>;
+  catalogueSha256: typeof LIBRARIES_CATALOGUE_SHA256;
+  inventoryDigest: InventoryDigest;
+  releaseSourceCommitSha: string;
+  releaseSourceRepositoryTreeSha1: string;
+  artifactTreeSha1: string;
+  payloadSha256: InventoryDigest;
+  verified: true;
+}>;
 
 function isNonEmpty(value: unknown): value is string {
   return typeof value === "string" && value.trim().length > 0;
@@ -189,7 +204,10 @@ function validateKeys(
  * Validate externally supplied release evidence only. This function does not
  * admit, select, materialize, or mutate any library asset.
  */
-export function validateExactRelease(candidate: unknown): ExactReleaseResult {
+export function validateExactRelease(
+  candidate: unknown,
+  authenticatedEvidence: AuthenticatedLibraryAssetEvidence,
+): ExactReleaseResult {
   const errors: string[] = [];
 
   try {
@@ -225,6 +243,49 @@ export function validateExactRelease(candidate: unknown): ExactReleaseResult {
   const dependencies = isRecord(input.dependencies) ? input.dependencies : undefined;
   const provenance = isRecord(input.provenance) ? input.provenance : undefined;
   const receipt = isRecord(input.receipt) ? input.receipt : undefined;
+  let trustedEvidence: unknown;
+  try {
+    trustedEvidence = snapshotPlainData(authenticatedEvidence);
+  } catch {
+    trustedEvidence = undefined;
+  }
+  if (!isRecord(trustedEvidence)) {
+    errors.push("authenticated asset evidence is missing");
+  } else {
+    validateKeys(
+      trustedEvidence,
+      "authenticatedEvidence",
+      [
+        "providerCandidate",
+        "catalogueSha256",
+        "inventoryDigest",
+        "releaseSourceCommitSha",
+        "releaseSourceRepositoryTreeSha1",
+        "artifactTreeSha1",
+        "payloadSha256",
+        "verified",
+      ],
+      errors,
+    );
+    const trustedCandidate = isRecord(trustedEvidence.providerCandidate)
+      ? trustedEvidence.providerCandidate
+      : undefined;
+    if (
+      !trustedCandidate ||
+      !validateKeys(
+        trustedCandidate,
+        "authenticatedEvidence.providerCandidate",
+        ["commit", "tree"],
+        errors,
+      ) ||
+      trustedCandidate.commit !== FROZEN_CANDIDATE_SHA ||
+      trustedCandidate.tree !== FROZEN_TREE_SHA ||
+      trustedEvidence.catalogueSha256 !== LIBRARIES_CATALOGUE_SHA256 ||
+      trustedEvidence.verified !== true
+    ) {
+      errors.push("authenticated asset evidence is invalid");
+    }
+  }
   if (!isNonEmpty(input.gitSha) || !GIT_SHA.test(input.gitSha))
     errors.push("gitSha must be an exact 40-hex SHA");
   if (!isNonEmpty(input.treeSha) || !GIT_SHA.test(input.treeSha))
@@ -260,11 +321,29 @@ export function validateExactRelease(candidate: unknown): ExactReleaseResult {
   if (!asset || !isNonEmpty(asset.artifactTreeSha1) || !GIT_SHA.test(asset.artifactTreeSha1))
     errors.push("asset artifact tree must be an exact 40-hex SHA");
   if (!asset || !isDigest(asset.payloadSha256)) errors.push("asset payload digest is invalid");
+  if (
+    trustedEvidence &&
+    isRecord(trustedEvidence) &&
+    asset &&
+    (trustedEvidence.releaseSourceCommitSha !== asset.releaseSourceCommitSha ||
+      trustedEvidence.releaseSourceRepositoryTreeSha1 !== asset.releaseSourceRepositoryTreeSha1 ||
+      trustedEvidence.artifactTreeSha1 !== asset.artifactTreeSha1 ||
+      trustedEvidence.payloadSha256 !== asset.payloadSha256)
+  ) {
+    errors.push("selected asset does not match authenticated provider evidence");
+  }
 
   if (!catalogue) errors.push("catalogue evidence is incomplete");
   else validateKeys(catalogue, "catalogue", ["inventoryDigest", "current", "authorized"], errors);
   if (catalogue && !isDigest(catalogue.inventoryDigest))
     errors.push("catalogue inventory digest is invalid");
+  if (
+    trustedEvidence &&
+    isRecord(trustedEvidence) &&
+    catalogue &&
+    trustedEvidence.inventoryDigest !== catalogue.inventoryDigest
+  )
+    errors.push("catalogue inventory does not match authenticated provider evidence");
   if (catalogue && catalogue.current !== true) errors.push("catalogue is stale");
   if (catalogue && catalogue.authorized !== true) errors.push("catalogue is unauthorized");
   if (!manifest) errors.push("manifest evidence is incomplete");

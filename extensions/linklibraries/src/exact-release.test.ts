@@ -1,7 +1,10 @@
 import { describe, expect, it } from "vitest";
 import {
+  FROZEN_CANDIDATE_SHA,
+  FROZEN_TREE_SHA,
   candidateDependencyClosureDigest,
   validateExactRelease,
+  type AuthenticatedLibraryAssetEvidence,
   type Candidate,
 } from "./exact-release.js";
 
@@ -40,9 +43,25 @@ function validCandidate(): Candidate {
   };
 }
 
+function authenticatedEvidence(candidate = validCandidate()): AuthenticatedLibraryAssetEvidence {
+  return {
+    providerCandidate: { commit: FROZEN_CANDIDATE_SHA, tree: FROZEN_TREE_SHA },
+    catalogueSha256: "sha256:a6af16532f82169094fd1766c3d46a435c9e7ac8d47fb57d5fab3adf6bf210d7",
+    inventoryDigest: candidate.catalogue.inventoryDigest as `sha256:${string}`,
+    releaseSourceCommitSha: candidate.asset.releaseSourceCommitSha,
+    releaseSourceRepositoryTreeSha1: candidate.asset.releaseSourceRepositoryTreeSha1,
+    artifactTreeSha1: candidate.asset.artifactTreeSha1,
+    payloadSha256: candidate.asset.payloadSha256 as `sha256:${string}`,
+    verified: true,
+  };
+}
+
+const validate = (candidate: unknown, evidence = authenticatedEvidence()) =>
+  validateExactRelease(candidate, evidence);
+
 describe("validateExactRelease", () => {
   it("returns progressive evidence views for the frozen candidate", () => {
-    const result = validateExactRelease(validCandidate());
+    const result = validate(validCandidate());
 
     expect(result.ok).toBe(true);
     if (result.ok) {
@@ -66,13 +85,13 @@ describe("validateExactRelease", () => {
       closureDigest: candidateDependencyClosureDigest([]),
       entries: [],
     };
-    expect(validateExactRelease(value)).toMatchObject({ ok: true });
+    expect(validate(value)).toMatchObject({ ok: true });
   });
 
   it("rejects a manifest inventory not authorized by the catalogue", () => {
     const candidate = validCandidate() as unknown as Record<string, any>;
     candidate.catalogue.inventoryDigest = digest("a");
-    expect(validateExactRelease(candidate).ok).toBe(false);
+    expect(validate(candidate).ok).toBe(false);
   });
 
   it.each([
@@ -103,11 +122,11 @@ describe("validateExactRelease", () => {
   ])("fails closed for %s", (_name, mutate) => {
     const candidate = validCandidate();
     mutate(candidate);
-    expect(validateExactRelease(candidate).ok).toBe(false);
+    expect(validate(candidate).ok).toBe(false);
   });
 
   it("fails closed without throwing when evidence is missing", () => {
-    const result = validateExactRelease({});
+    const result = validate({});
     expect(result.ok).toBe(false);
     if (!result.ok) expect(result.errors).toContain("candidate.gitSha is missing");
   });
@@ -132,7 +151,7 @@ describe("validateExactRelease", () => {
   ])("rejects unknown keys in %s", (_name, mutate) => {
     const candidate = validCandidate() as unknown as Record<string, unknown>;
     mutate(candidate as never);
-    expect(validateExactRelease(candidate).ok).toBe(false);
+    expect(validate(candidate).ok).toBe(false);
   });
 
   it.each(["prompt", "reasoning", "transcript", "secret", "raw_tool"])(
@@ -140,7 +159,7 @@ describe("validateExactRelease", () => {
     (key) => {
       const candidate = validCandidate() as unknown as Record<string, any>;
       candidate.manifest.lifecycle[key] = "blocked";
-      const result = validateExactRelease(candidate);
+      const result = validate(candidate);
       expect(result.ok).toBe(false);
       if (!result.ok) expect(result.errors).toContain(`manifest.lifecycle.${key} is forbidden`);
     },
@@ -149,33 +168,35 @@ describe("validateExactRelease", () => {
   it("rejects non-string profile entries before checking support", () => {
     const candidate = validCandidate() as unknown as Record<string, any>;
     candidate.manifest.supportedConsumerProfiles = ["consumer-v1", { prompt: "do not read" }];
-    expect(validateExactRelease(candidate).ok).toBe(false);
+    expect(validate(candidate).ok).toBe(false);
   });
 
   it("rejects malformed dependency names without coercing or throwing", () => {
     const candidate = validCandidate() as unknown as Record<string, any>;
     candidate.dependencies.entries[0].name = { toString: null };
     candidate.dependencies.entries[0].resolved = false;
-    expect(() => validateExactRelease(candidate)).not.toThrow();
-    expect(validateExactRelease(candidate).ok).toBe(false);
+    expect(() => validate(candidate)).not.toThrow();
+    expect(validate(candidate).ok).toBe(false);
   });
 
   it("requires dependency resolution evidence to be the literal boolean true", () => {
     for (const malformed of [false, "false", "yes", {}, 1]) {
       const candidate = validCandidate() as unknown as Record<string, any>;
       candidate.dependencies.entries[0].resolved = malformed;
-      expect(validateExactRelease(candidate).ok).toBe(false);
+      expect(validate(candidate).ok).toBe(false);
     }
   });
 
   it("binds the dependency closure digest to canonical exact entries", () => {
     const candidate = validCandidate() as unknown as Record<string, any>;
     candidate.dependencies.entries[0].version = "2.0.0";
-    expect(validateExactRelease(candidate).ok).toBe(false);
+    expect(validate(candidate).ok).toBe(false);
     candidate.dependencies.closureDigest = candidateDependencyClosureDigest(
       candidate.dependencies.entries,
     );
-    expect(validateExactRelease(candidate).ok).toBe(true);
+    expect(validate(candidate, authenticatedEvidence(candidate as unknown as Candidate)).ok).toBe(
+      true,
+    );
   });
 
   it("rejects inherited and accessor-backed evidence without invoking getters", () => {
@@ -190,9 +211,9 @@ describe("validateExactRelease", () => {
           : "ffffffffffffffffffffffffffffffffffffffff";
       },
     });
-    expect(validateExactRelease(accessorCandidate).ok).toBe(false);
+    expect(validate(accessorCandidate).ok).toBe(false);
     expect(getterCalls).toBe(0);
-    expect(validateExactRelease(Object.create(validCandidate())).ok).toBe(false);
+    expect(validate(Object.create(validCandidate())).ok).toBe(false);
   });
 
   it.each([
@@ -212,6 +233,20 @@ describe("validateExactRelease", () => {
   ])("rejects %s", (_name, mutate) => {
     const candidate = validCandidate() as unknown as Record<string, unknown>;
     mutate(candidate as never);
-    expect(validateExactRelease(candidate).ok).toBe(false);
+    expect(validate(candidate).ok).toBe(false);
+  });
+
+  it("rejects a selected asset that does not match authenticated catalogue evidence", () => {
+    const candidate = validCandidate();
+    const forged = structuredClone(candidate) as Candidate;
+    (forged.asset as { artifactTreeSha1: string }).artifactTreeSha1 =
+      "ffeeddccbbaa0099887766554433221100ffeedd";
+    expect(validate(forged)).toMatchObject({ ok: false });
+    expect(
+      validate(candidate, {
+        ...authenticatedEvidence(candidate),
+        verified: false as true,
+      }),
+    ).toMatchObject({ ok: false });
   });
 });

@@ -6,6 +6,7 @@ import {
   canonicalDigest,
   pageCatalogue,
   validateExactRevision2,
+  type AuthenticatedRevision2CatalogueEvidence,
   type ExactRevision2Bundle,
   type Revision2Record,
 } from "./api.js";
@@ -84,6 +85,27 @@ const bundle: ExactRevision2Bundle = {
     consumerMaterializedTreeSha1: "99887766554433221100ffeeddccbbaa99887766",
   },
 };
+const authenticatedCatalogueEvidence = (
+  value: ExactRevision2Bundle = bundle,
+): AuthenticatedRevision2CatalogueEvidence => ({
+  source: { commit: LIBRARIES_COMMIT, tree: LIBRARIES_TREE },
+  catalogueSha256: LIBRARIES_CATALOGUE_SHA256,
+  recordsSha256: value.catalogue.recordsSha256,
+  selectedRecord: {
+    entryId: value.record.entryId,
+    version: value.record.version,
+    releaseManifestSha256: value.record.releaseManifestSha256,
+    releaseSourceCommitSha: value.record.releaseSource.releaseSourceCommitSha,
+    releaseSourceRepositoryTreeSha1: value.record.releaseSource.releaseSourceRepositoryTreeSha1,
+    artifactTreeSha1: value.record.artifactTreeSha1,
+    inventorySha256: value.record.inventorySha256,
+  },
+  verified: true,
+});
+const validate = (
+  value: unknown,
+  evidence: AuthenticatedRevision2CatalogueEvidence = authenticatedCatalogueEvidence(),
+) => validateExactRevision2(value, evidence);
 
 describe("LiNKlibraries Revision 2 consumer", () => {
   it("pages admitted records and validates exact release evidence", () => {
@@ -94,7 +116,7 @@ describe("LiNKlibraries Revision 2 consumer", () => {
       limit: 1,
     });
     expect(page.records).toHaveLength(1);
-    expect(validateExactRevision2(bundle)).toMatchObject({ ok: true });
+    expect(validate(bundle)).toMatchObject({ ok: true });
   });
   it("uses canonical object digests and literal snapshot cursor matching", () => {
     expect(canonicalDigest({ a: 1, b: { c: 2 } })).toBe(canonicalDigest({ b: { c: 2 }, a: 1 }));
@@ -138,17 +160,13 @@ describe("LiNKlibraries Revision 2 consumer", () => {
     ).toEqual(["component-echo"]);
   });
   it("rejects malformed required catalogue record fields", () => {
-    expect(
-      validateExactRevision2({ ...bundle, record: { ...record, artifactType: undefined } }).ok,
-    ).toBe(false);
-    expect(validateExactRevision2({ ...bundle, record: { ...record, bundlePath: "" } }).ok).toBe(
-      false,
-    );
+    expect(validate({ ...bundle, record: { ...record, artifactType: undefined } }).ok).toBe(false);
+    expect(validate({ ...bundle, record: { ...record, bundlePath: "" } }).ok).toBe(false);
   });
   it("binds the selected record to the canonical catalogue records digest", () => {
     const tamperedCatalogue = structuredClone(bundle) as any;
     tamperedCatalogue.catalogue.records[0].version = "2.0.0";
-    expect(validateExactRevision2(tamperedCatalogue).ok).toBe(false);
+    expect(validate(tamperedCatalogue).ok).toBe(false);
 
     const substitutedRecord = {
       ...record,
@@ -166,13 +184,13 @@ describe("LiNKlibraries Revision 2 consumer", () => {
       releaseManifestSha256: canonicalDigest(substitutedManifest),
     };
     substitutedBundle.manifest = substitutedManifest;
-    expect(validateExactRevision2(substitutedBundle).ok).toBe(false);
+    expect(validate(substitutedBundle).ok).toBe(false);
   });
   it("rejects a self-consistent catalogue digest that is not the pinned provider digest", () => {
     const value = structuredClone(bundle) as any;
     value.catalogue.catalogueSha256 = d("d");
     value.verifiedCache.catalogueSha256 = d("d");
-    expect(validateExactRevision2(value)).toMatchObject({
+    expect(validate(value)).toMatchObject({
       ok: false,
       reason: "invalid catalogue evidence",
     });
@@ -186,7 +204,7 @@ describe("LiNKlibraries Revision 2 consumer", () => {
     value.verifiedCache.catalogueRecordsSha256 = value.catalogue.recordsSha256;
     value.verifiedCache.releaseManifestSha256 = rawManifestDigest;
     value.consumption.releaseManifestSha256 = rawManifestDigest;
-    expect(validateExactRevision2(value).ok).toBe(true);
+    expect(validate(value, authenticatedCatalogueEvidence(value)).ok).toBe(true);
   });
   it("rejects inherited and accessor-backed catalogue records without invoking getters", () => {
     let getterCalls = 0;
@@ -198,9 +216,9 @@ describe("LiNKlibraries Revision 2 consumer", () => {
         return getterCalls === 1 ? record.entryId : "other-entry";
       },
     });
-    expect(validateExactRevision2({ ...bundle, record: accessorRecord }).ok).toBe(false);
+    expect(validate({ ...bundle, record: accessorRecord }).ok).toBe(false);
     expect(getterCalls).toBe(0);
-    expect(validateExactRevision2({ ...bundle, record: Object.create(record) }).ok).toBe(false);
+    expect(validate({ ...bundle, record: Object.create(record) }).ok).toBe(false);
   });
   it.each([
     "../../outside",
@@ -209,14 +227,14 @@ describe("LiNKlibraries Revision 2 consumer", () => {
     "registry/v2/entries/other/versions/1.0.0",
     "registry/v2/entries/component-echo/versions/2.0.0",
   ])("rejects unsafe or mismatched bundle path %s", (bundlePath) => {
-    expect(validateExactRevision2({ ...bundle, record: { ...record, bundlePath } }).ok).toBe(false);
+    expect(validate({ ...bundle, record: { ...record, bundlePath } }).ok).toBe(false);
   });
   it.each([
     ["withdrawn lifecycle", { lifecycle: "withdrawn" }],
     ["non-selectable record", { selectability: "non_selectable" }],
     ["incompatible record", { compatibility: "incompatible" }],
   ] as const)("rejects exact release with %s", (_name, changes) => {
-    expect(validateExactRevision2({ ...bundle, record: { ...record, ...changes } }).ok).toBe(false);
+    expect(validate({ ...bundle, record: { ...record, ...changes } }).ok).toBe(false);
   });
   it("fails closed when pagination receives a malformed provider record", () => {
     expect(() =>
@@ -227,7 +245,7 @@ describe("LiNKlibraries Revision 2 consumer", () => {
       }),
     ).toThrow("invalid catalogue record");
     expect(
-      validateExactRevision2({
+      validate({
         ...bundle,
         record: { ...record, releaseSource: { ...source, extra: "payload" } },
       }).ok,
@@ -241,12 +259,35 @@ describe("LiNKlibraries Revision 2 consumer", () => {
       if (failure === "wrong manifest") value.manifest.payloadSha256 = d("a");
       if (failure === "stale cache") value.verifiedCache.catalogueSha256 = d("z");
       if (failure === "failed consumption") value.consumption.result = "fail";
-      expect(validateExactRevision2(value).ok).toBe(false);
+      expect(validate(value).ok).toBe(false);
     },
   );
   it("rejects an unrelated consumption receipt", () => {
     const value = structuredClone(bundle) as any;
     value.consumption.entryId = "other-entry";
-    expect(validateExactRevision2(value).ok).toBe(false);
+    expect(validate(value).ok).toBe(false);
+  });
+
+  it("fails closed for malformed catalogue entries without throwing", () => {
+    const value = structuredClone(bundle) as any;
+    value.catalogue.records = [undefined];
+    value.catalogue.recordsSha256 = canonicalDigest(value.catalogue.records);
+    expect(() => validate(value)).not.toThrow();
+    expect(validate(value)).toMatchObject({ ok: false });
+  });
+
+  it("requires the selected record to match independently authenticated catalogue evidence", () => {
+    expect(
+      validate(bundle, {
+        ...authenticatedCatalogueEvidence(),
+        selectedRecord: {
+          ...authenticatedCatalogueEvidence().selectedRecord,
+          artifactTreeSha1: "ffeeddccbbaa0099887766554433221100ffeedd",
+        },
+      }),
+    ).toMatchObject({
+      ok: false,
+      reason: "selected record does not match authenticated catalogue",
+    });
   });
 });

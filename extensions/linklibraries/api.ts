@@ -6,6 +6,7 @@ export {
   type Candidate,
   type CandidateDependency,
   type ExactReleaseResult,
+  type AuthenticatedLibraryAssetEvidence,
   type InventoryDigest,
   type ReleaseEvidence,
 } from "./src/exact-release.js";
@@ -27,4 +28,5 @@ export type {
   Revision2Page,
   Revision2Validation,
   ExactRevision2Bundle,
+  AuthenticatedRevision2CatalogueEvidence,
 } from "./src/revision2.js";

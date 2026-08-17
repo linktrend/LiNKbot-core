@@ -87,6 +87,22 @@ export type ExactRevision2Bundle = Readonly<{
   };
 }>;
 
+export type AuthenticatedRevision2CatalogueEvidence = Readonly<{
+  source: Readonly<{ commit: typeof LIBRARIES_COMMIT; tree: typeof LIBRARIES_TREE }>;
+  catalogueSha256: typeof LIBRARIES_CATALOGUE_SHA256;
+  recordsSha256: Digest;
+  selectedRecord: Readonly<{
+    entryId: string;
+    version: string;
+    releaseManifestSha256: Digest;
+    releaseSourceCommitSha: string;
+    releaseSourceRepositoryTreeSha1: string;
+    artifactTreeSha1: string;
+    inventorySha256: Digest;
+  }>;
+  verified: true;
+}>;
+
 const SHA1 = /^[0-9a-f]{40}$/;
 const SHA256 = /^[0-9a-f]{64}$/;
 const BUNDLE_PATH =
@@ -303,11 +319,37 @@ export function validateRevision2Record(value: unknown): Revision2Validation {
   };
 }
 
-export function validateExactRevision2(bundle: unknown): Revision2Validation {
+export function validateExactRevision2(
+  bundle: unknown,
+  authenticatedEvidence: AuthenticatedRevision2CatalogueEvidence,
+): Revision2Validation {
   try {
     bundle = snapshotPlainData(bundle);
+    authenticatedEvidence = snapshotPlainData(
+      authenticatedEvidence,
+    ) as AuthenticatedRevision2CatalogueEvidence;
   } catch {
     return { ok: false, reason: "invalid exact release evidence" };
+  }
+  const trusted = authenticatedEvidence as unknown as Record<string, unknown>;
+  const trustedSource = isObject(trusted?.source) ? trusted.source : undefined;
+  const trustedRecord = isObject(trusted?.selectedRecord) ? trusted.selectedRecord : undefined;
+  if (
+    !isObject(trusted) ||
+    Object.keys(trusted).sort().join(",") !==
+      "catalogueSha256,recordsSha256,selectedRecord,source,verified" ||
+    !trustedSource ||
+    Object.keys(trustedSource).sort().join(",") !== "commit,tree" ||
+    trustedSource.commit !== LIBRARIES_COMMIT ||
+    trustedSource.tree !== LIBRARIES_TREE ||
+    trusted.catalogueSha256 !== LIBRARIES_CATALOGUE_SHA256 ||
+    !digest(trusted.recordsSha256) ||
+    trusted.verified !== true ||
+    !trustedRecord ||
+    Object.keys(trustedRecord).sort().join(",") !==
+      "artifactTreeSha1,entryId,inventorySha256,releaseManifestSha256,releaseSourceCommitSha,releaseSourceRepositoryTreeSha1,version"
+  ) {
+    return { ok: false, reason: "invalid authenticated catalogue evidence" };
   }
   if (
     !isObject(bundle) ||
@@ -324,19 +366,41 @@ export function validateExactRevision2(bundle: unknown): Revision2Validation {
     !digest(bundle.catalogue.catalogueSha256) ||
     normalizedSha256(bundle.catalogue.catalogueSha256) !== LIBRARIES_CATALOGUE_SHA256 ||
     !digest(bundle.catalogue.recordsSha256) ||
+    normalizedSha256(bundle.catalogue.recordsSha256) !==
+      normalizedSha256(trusted.recordsSha256 as string) ||
     !Array.isArray(bundle.catalogue.records) ||
     canonicalDigest(bundle.catalogue.records) !== normalizedSha256(bundle.catalogue.recordsSha256)
   )
     return { ok: false, reason: "invalid catalogue evidence" };
+  const validatedCatalogueRecords: Revision2Record[] = [];
+  for (const candidate of bundle.catalogue.records) {
+    const candidateResult = validateRevision2Record(candidate);
+    if (!candidateResult.ok) return { ok: false, reason: "invalid catalogue record schema" };
+    validatedCatalogueRecords.push(candidateResult.record);
+  }
   const recordResult = validateRevision2Record(bundle.record);
   if (!recordResult.ok) return recordResult;
   const record = recordResult.record;
   if (
-    !(bundle.catalogue.records as unknown[]).some(
+    !validatedCatalogueRecords.some(
       (candidate) => canonicalDigest(candidate) === canonicalDigest(record),
     )
   ) {
     return { ok: false, reason: "catalogue does not contain selected record" };
+  }
+  if (
+    trustedRecord.entryId !== record.entryId ||
+    trustedRecord.version !== record.version ||
+    normalizedSha256(trustedRecord.releaseManifestSha256 as string) !==
+      normalizedSha256(record.releaseManifestSha256) ||
+    trustedRecord.releaseSourceCommitSha !== record.releaseSource.releaseSourceCommitSha ||
+    trustedRecord.releaseSourceRepositoryTreeSha1 !==
+      record.releaseSource.releaseSourceRepositoryTreeSha1 ||
+    trustedRecord.artifactTreeSha1 !== record.artifactTreeSha1 ||
+    normalizedSha256(trustedRecord.inventorySha256 as string) !==
+      normalizedSha256(record.inventorySha256)
+  ) {
+    return { ok: false, reason: "selected record does not match authenticated catalogue" };
   }
   if (
     record.lifecycle !== "admitted" ||

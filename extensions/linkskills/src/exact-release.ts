@@ -40,9 +40,28 @@ export type ExactReleaseValidationOptions = {
   profile: string;
   expectedSkillId: string;
   expectedVersion: string;
+  expectedOrganization: string;
+  expectedAudience: string;
+  expectedCapability: string;
+  authenticatedProviderEvidence: AuthenticatedSkillsReleaseEvidence;
   now?: Date | string;
   maxAgeMs?: number;
 };
+
+export type AuthenticatedSkillsReleaseEvidence = Readonly<{
+  providerCandidate: Readonly<{ commit: typeof SKILLS_COMMIT; tree: typeof SKILLS_TREE }>;
+  contractVersion: typeof SKILLS_RELEASE_CONTRACT_VERSION;
+  releaseId: string;
+  version: string;
+  manifestDigest: string;
+  packageDigest: string;
+  attestationVerified: true;
+  algorithm: "ES256";
+  keyId: string;
+  organization: string;
+  audience: string;
+  capability: string;
+}>;
 
 export type ExactReleaseTelemetry = {
   outcome: "accepted" | "rejected";
@@ -62,6 +81,7 @@ export type ExactReleaseRejectionCode =
   | "stale_timestamp"
   | "invalid_timestamp"
   | "invalid_provider_candidate"
+  | "invalid_provider_evidence"
   | "invalid_immutability";
 
 export type ExactReleaseValidation =
@@ -96,6 +116,20 @@ const RELEASE_KEYS = new Set([
 ]);
 const ATTESTATION_KEYS = new Set(["issuer", "digest", "evaluated_at", "valid_until"]);
 const PROVIDER_CANDIDATE_KEYS = new Set(["commit", "tree"]);
+const PROVIDER_EVIDENCE_KEYS = new Set([
+  "providerCandidate",
+  "contractVersion",
+  "releaseId",
+  "version",
+  "manifestDigest",
+  "packageDigest",
+  "attestationVerified",
+  "algorithm",
+  "keyId",
+  "organization",
+  "audience",
+  "capability",
+]);
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -272,6 +306,33 @@ export function validateExactRelease(
     })
   )
     return reject("invalid_digest", release);
+  let providerEvidence: unknown;
+  try {
+    providerEvidence = snapshotPlainData(options.authenticatedProviderEvidence);
+  } catch {
+    return reject("invalid_provider_evidence", release);
+  }
+  if (
+    !isRecord(providerEvidence) ||
+    !hasOnlyKeys(providerEvidence, PROVIDER_EVIDENCE_KEYS) ||
+    !isRecord(providerEvidence.providerCandidate) ||
+    !hasOnlyKeys(providerEvidence.providerCandidate, PROVIDER_CANDIDATE_KEYS) ||
+    providerEvidence.providerCandidate.commit !== SKILLS_COMMIT ||
+    providerEvidence.providerCandidate.tree !== SKILLS_TREE ||
+    providerEvidence.contractVersion !== SKILLS_RELEASE_CONTRACT_VERSION ||
+    providerEvidence.releaseId !== release.release_id ||
+    providerEvidence.version !== release.version ||
+    providerEvidence.manifestDigest !== release.manifest_digest ||
+    providerEvidence.packageDigest !== release.package_digest ||
+    providerEvidence.attestationVerified !== true ||
+    providerEvidence.algorithm !== "ES256" ||
+    !isString(providerEvidence.keyId) ||
+    providerEvidence.organization !== options.expectedOrganization ||
+    providerEvidence.audience !== options.expectedAudience ||
+    providerEvidence.capability !== options.expectedCapability
+  ) {
+    return reject("invalid_provider_evidence", release);
+  }
   if (release.lifecycle !== "qualified") return reject("invalid_lifecycle", release);
   if (release.state !== "available") return reject("invalid_state", release);
   if (!Array.isArray(release.compatible_profiles) || !release.compatible_profiles.every(isString)) {
