@@ -293,6 +293,10 @@ describe("LiNKbrain v2 immutable consumer boundary", () => {
     for (const sensitive of [
       ["Bear", "er credential-value"].join(""),
       [["api", "key"].join("_"), "credential-value"].join("="),
+      [["pass", "word"].join(""), ["hunter", "2"].join("")].join("="),
+      [["client", "secret"].join("_"), "credential-value"].join(":"),
+      [["private", "key"].join("_"), "credential-value"].join("="),
+      [["to", "ken"].join(""), "credential-value"].join(":"),
       [["raw", "transcript"].join(" "), "from a private conversation"].join(" "),
       ["-----BEGIN", ["PRIVATE", "KEY-----"].join(" ")].join(" "),
     ]) {

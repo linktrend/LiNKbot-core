@@ -6,6 +6,8 @@ export const LIBRARIES_SCHEMA_VERSION = 2 as const;
 export const LIBRARIES_SCHEMA_REVISION = 2 as const;
 export const LIBRARIES_SCHEMA_VERSION_LABEL = "2.2" as const;
 export const LIBRARIES_CONTRACT_VERSION = "libraries.v2/revision-2" as const;
+export const LIBRARIES_CATALOGUE_SHA256 =
+  "sha256:a6af16532f82169094fd1766c3d46a435c9e7ac8d47fb57d5fab3adf6bf210d7" as const;
 
 type Digest = string;
 export type Revision2Record = Readonly<{
@@ -320,6 +322,7 @@ export function validateExactRevision2(bundle: unknown): Revision2Validation {
     bundle.catalogue.schemaRevision !== 2 ||
     bundle.catalogue.catalogueType !== "catalogue" ||
     !digest(bundle.catalogue.catalogueSha256) ||
+    normalizedSha256(bundle.catalogue.catalogueSha256) !== LIBRARIES_CATALOGUE_SHA256 ||
     !digest(bundle.catalogue.recordsSha256) ||
     !Array.isArray(bundle.catalogue.records) ||
     canonicalDigest(bundle.catalogue.records) !== normalizedSha256(bundle.catalogue.recordsSha256)
@@ -375,7 +378,8 @@ export function validateExactRevision2(bundle: unknown): Revision2Validation {
     cache.releaseSource.releaseSourceCommitSha !== record.releaseSource.releaseSourceCommitSha ||
     cache.releaseSource.releaseSourceRepositoryTreeSha1 !==
       record.releaseSource.releaseSourceRepositoryTreeSha1 ||
-    cache.catalogueSha256 !== bundle.catalogue.catalogueSha256 ||
+    !digest(cache.catalogueSha256) ||
+    normalizedSha256(cache.catalogueSha256) !== LIBRARIES_CATALOGUE_SHA256 ||
     cache.catalogueRecordsSha256 !== bundle.catalogue.recordsSha256 ||
     cache.entryId !== record.entryId ||
     cache.version !== record.version ||

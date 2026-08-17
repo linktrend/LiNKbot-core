@@ -16,6 +16,7 @@ export {
   LIBRARIES_SCHEMA_REVISION,
   LIBRARIES_SCHEMA_VERSION_LABEL,
   LIBRARIES_CONTRACT_VERSION,
+  LIBRARIES_CATALOGUE_SHA256,
   canonicalDigest,
   pageCatalogue,
   validateRevision2Record,

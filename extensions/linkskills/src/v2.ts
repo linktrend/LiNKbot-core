@@ -132,7 +132,11 @@ export function isModernSkillsOperation(value: unknown): value is SkillsV2Operat
   );
 }
 
-export function validateSkillsV2Request(input: unknown):
+/** `authenticatedActorId` comes from Platform-authenticated transport facts, never request data. */
+export function validateSkillsV2Request(
+  input: unknown,
+  authenticatedActorId: string,
+):
   | { ok: true; request: SkillsV2Request }
   | {
       ok: false;
@@ -143,6 +147,7 @@ export function validateSkillsV2Request(input: unknown):
         | "legacy_execution_disabled"
         | "invalid_pagination";
     } {
+  if (!bounded(authenticatedActorId)) return { ok: false, code: "invalid_shape" };
   const value = snapshotOwnDataRecord(input);
   if (!value) return { ok: false, code: "invalid_shape" };
   const candidate = snapshotOwnDataRecord(value.providerCandidate);
@@ -163,6 +168,7 @@ export function validateSkillsV2Request(input: unknown):
   if (
     !isModernSkillsOperation(value.operation) ||
     !bounded(value.actorId) ||
+    value.actorId !== authenticatedActorId ||
     !bounded(value.idempotencyKey, 160)
   )
     return { ok: false, code: "invalid_shape" };

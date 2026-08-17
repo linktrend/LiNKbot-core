@@ -26,29 +26,28 @@ const toolBase = {
   actorId: base.actorId,
   idempotencyKey: base.idempotencyKey,
 };
+const validateRequest = (input: unknown, authenticatedActorId: string = base.actorId) =>
+  validateSkillsV2Request(input, authenticatedActorId);
 describe("Skills v2 consumer boundary", () => {
   it("accepts catalog discovery and exact release detail", () => {
-    expect(validateSkillsV2Request(base).ok).toBe(true);
+    expect(validateRequest(base).ok).toBe(true);
+    expect(validateRequest({ ...base, operation: "skills_catalog_search", query: "echo" }).ok).toBe(
+      true,
+    );
     expect(
-      validateSkillsV2Request({ ...base, operation: "skills_catalog_search", query: "echo" }).ok,
-    ).toBe(true);
-    expect(
-      validateSkillsV2Request({
+      validateRequest({
         ...base,
         operation: "skills_release_describe",
         skillId: "skill.echo",
         version: "1.0.0",
       }).ok,
     ).toBe(true);
-    expect(validateSkillsV2Request({ ...base, cursor: "snapshot:0123456789abcdef:25" }).ok).toBe(
-      true,
-    );
+    expect(validateRequest({ ...base, cursor: "snapshot:0123456789abcdef:25" }).ok).toBe(true);
     expect(
-      validateSkillsV2Request({ ...base, operation: "skills_release_list", skillId: "skill.echo" })
-        .ok,
+      validateRequest({ ...base, operation: "skills_release_list", skillId: "skill.echo" }).ok,
     ).toBe(true);
     expect(
-      validateSkillsV2Request({
+      validateRequest({
         ...base,
         operation: "skills_release_list",
         skillId: "skill.echo",
@@ -59,7 +58,7 @@ describe("Skills v2 consumer boundary", () => {
   it("generates an initial cursor accepted by the request validator", () => {
     const cursor = skillsSnapshotCursor("catalog-v2");
     expect(cursor).toMatch(/^snapshot:[0-9a-f]{16}:0$/u);
-    expect(validateSkillsV2Request({ ...base, cursor }).ok).toBe(true);
+    expect(validateRequest({ ...base, cursor }).ok).toBe(true);
   });
   it("rejects inherited and accessor-backed request data without invoking getters", () => {
     let getterCalls = 0;
@@ -71,12 +70,12 @@ describe("Skills v2 consumer boundary", () => {
         return getterCalls < 4 ? "skills_catalog_list" : "skills_run_start";
       },
     });
-    expect(validateSkillsV2Request(accessorRequest)).toMatchObject({
+    expect(validateRequest(accessorRequest)).toMatchObject({
       ok: false,
       code: "invalid_shape",
     });
     expect(getterCalls).toBe(0);
-    expect(validateSkillsV2Request(Object.create(base))).toMatchObject({
+    expect(validateRequest(Object.create(base))).toMatchObject({
       ok: false,
       code: "invalid_shape",
     });
@@ -84,7 +83,7 @@ describe("Skills v2 consumer boundary", () => {
       ...base,
       providerCandidate: Object.create(base.providerCandidate),
     };
-    expect(validateSkillsV2Request(inheritedCandidate)).toMatchObject({
+    expect(validateRequest(inheritedCandidate)).toMatchObject({
       ok: false,
       code: "wrong_provider",
     });
@@ -113,12 +112,12 @@ describe("Skills v2 consumer boundary", () => {
     ["missing catalog search query", { operation: "skills_catalog_search" }, "invalid_shape"],
     ["missing qualification identity", { operation: "skills_qualification_get" }, "invalid_shape"],
   ] as const)("fails closed for %s", (_name, changes, code) =>
-    expect(validateSkillsV2Request({ ...base, ...changes })).toMatchObject({ ok: false, code }),
+    expect(validateRequest({ ...base, ...changes })).toMatchObject({ ok: false, code }),
   );
 
   it("accepts feedback submission only when bound to an exact release", () => {
     expect(
-      validateSkillsV2Request({
+      validateRequest({
         ...toolBase,
         operation: "skills_feedback_submit",
         feedbackRef: "feedback-1",
@@ -128,10 +127,29 @@ describe("Skills v2 consumer boundary", () => {
     ).toBe(true);
   });
 
+  it("binds mutating requests to the independently authenticated actor", () => {
+    const feedback = {
+      ...toolBase,
+      operation: "skills_feedback_submit",
+      feedbackRef: "feedback-1",
+      skillId: "skill.echo",
+      version: "1.0.0",
+    } as const;
+    expect(validateRequest(feedback).ok).toBe(true);
+    expect(validateRequest(feedback, "actor-other")).toMatchObject({
+      ok: false,
+      code: "invalid_shape",
+    });
+    expect(validateRequest({ ...feedback, actorId: "actor-other" })).toMatchObject({
+      ok: false,
+      code: "invalid_shape",
+    });
+  });
+
   it("rejects fields belonging to a different operation", () => {
-    expect(validateSkillsV2Request({ ...base, feedbackRef: "feedback-1" }).ok).toBe(false);
+    expect(validateRequest({ ...base, feedbackRef: "feedback-1" }).ok).toBe(false);
     expect(
-      validateSkillsV2Request({
+      validateRequest({
         ...toolBase,
         operation: "skills_feedback_submit",
         skillId: "skill.echo",
@@ -142,7 +160,7 @@ describe("Skills v2 consumer boundary", () => {
     ).toBe(false);
     for (const version of ["latest", "current", "stable", "newest"]) {
       expect(
-        validateSkillsV2Request({
+        validateRequest({
           ...toolBase,
           operation: "skills_release_verify",
           skillId: "skill.echo",
@@ -154,7 +172,7 @@ describe("Skills v2 consumer boundary", () => {
 
   it("accepts qualification lookup only for an exact release", () => {
     expect(
-      validateSkillsV2Request({
+      validateRequest({
         ...base,
         operation: "skills_qualification_get",
         skillId: "skill.echo",

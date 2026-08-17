@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   LIBRARIES_COMMIT,
+  LIBRARIES_CATALOGUE_SHA256,
   LIBRARIES_TREE,
   canonicalDigest,
   pageCatalogue,
@@ -46,7 +47,7 @@ const bundle: ExactRevision2Bundle = {
     schemaVersion: 2,
     schemaRevision: 2,
     catalogueType: "catalogue",
-    catalogueSha256: d("c"),
+    catalogueSha256: LIBRARIES_CATALOGUE_SHA256,
     recordsSha256: canonicalDigest([record]),
     records: [record],
   },
@@ -62,7 +63,7 @@ const bundle: ExactRevision2Bundle = {
       immutable: true,
     },
     releaseSource: source,
-    catalogueSha256: d("c"),
+    catalogueSha256: LIBRARIES_CATALOGUE_SHA256,
     catalogueRecordsSha256: canonicalDigest([record]),
     entryId: record.entryId,
     version: record.version,
@@ -166,6 +167,15 @@ describe("LiNKlibraries Revision 2 consumer", () => {
     };
     substitutedBundle.manifest = substitutedManifest;
     expect(validateExactRevision2(substitutedBundle).ok).toBe(false);
+  });
+  it("rejects a self-consistent catalogue digest that is not the pinned provider digest", () => {
+    const value = structuredClone(bundle) as any;
+    value.catalogue.catalogueSha256 = d("d");
+    value.verifiedCache.catalogueSha256 = d("d");
+    expect(validateExactRevision2(value)).toMatchObject({
+      ok: false,
+      reason: "invalid catalogue evidence",
+    });
   });
   it("accepts the contract-supported raw manifest digest representation", () => {
     const value = structuredClone(bundle) as any;

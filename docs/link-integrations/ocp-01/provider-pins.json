@@ -51,6 +51,7 @@
       "schemaVersions": ["2.2"],
       "mcpProtocol": null,
       "artifacts": {
+        "indexes/v2/catalog.json": "sha256:a6af16532f82169094fd1766c3d46a435c9e7ac8d47fb57d5fab3adf6bf210d7",
         "schemas/v2/catalogue-record.schema.json": "sha256:162acc0ebecaf52c173dc347175b17cea06dbc4fe4237a9b41f004a1328ba409",
         "schemas/v2/release-manifest.schema.json": "sha256:acdab0f2a874a54d8eca534bdfd07f83c8e82cc3230c322f6ea41ac2941ff164",
         "schemas/v2/consumption-receipt.schema.json": "sha256:74f265dd5ef1592f15b1ac4c9777b707514e24d4654e35206a52dc973f2670de",
