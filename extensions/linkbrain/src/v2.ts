@@ -247,11 +247,7 @@ const assertSafeKey = (key: string): void => {
   if (FORBIDDEN_IDENTITY_FIELDS_CANONICAL.has(policyKey)) {
     throw new Error(`brain_v2_identity_override:${key}`);
   }
-  if (
-    FORBIDDEN_SECRET_KEYS_CANONICAL.has(policyKey) ||
-    policyKey.includes("secret") ||
-    policyKey.includes("token")
-  ) {
+  if ([...FORBIDDEN_SECRET_KEYS_CANONICAL].some((secretKey) => policyKey.includes(secretKey))) {
     throw new Error(`brain_v2_secret_field:${key}`);
   }
 };
@@ -506,10 +502,22 @@ export function assertBrainV2PlatformIdentity(
 }
 
 export function assertBrainV2Negotiation(input: unknown): asserts input is BrainV2Negotiation {
-  if (!objectRecord(input)) {
+  let snapshot: unknown;
+  try {
+    snapshot = snapshotSafeValue(
+      input,
+      0,
+      "negotiation",
+      { nodes: 0, stringTotal: 0, seen: new WeakSet() },
+      false,
+    );
+  } catch {
     throw new Error("brain_v2_negotiation_not_object");
   }
-  assertObjectKeys(input, [
+  if (!objectRecord(snapshot)) {
+    throw new Error("brain_v2_negotiation_not_object");
+  }
+  assertObjectKeys(snapshot, [
     "protocolVersion",
     "sessionless",
     "contractVersion",
@@ -518,12 +526,12 @@ export function assertBrainV2Negotiation(input: unknown): asserts input is Brain
     "sdkSupportsModernProtocol",
   ]);
   if (
-    input.protocolVersion !== LINKBRAIN_V2_MCP_PROTOCOL ||
-    input.sessionless !== true ||
-    input.contractVersion !== LINKBRAIN_V2_CONTRACT_VERSION ||
-    input.authority !== "advisory" ||
-    input.executionAuthority !== "none" ||
-    input.sdkSupportsModernProtocol !== true
+    snapshot.protocolVersion !== LINKBRAIN_V2_MCP_PROTOCOL ||
+    snapshot.sessionless !== true ||
+    snapshot.contractVersion !== LINKBRAIN_V2_CONTRACT_VERSION ||
+    snapshot.authority !== "advisory" ||
+    snapshot.executionAuthority !== "none" ||
+    snapshot.sdkSupportsModernProtocol !== true
   ) {
     throw new Error("brain_v2_negotiation_incompatible");
   }
@@ -671,18 +679,29 @@ export function preparePrivateCapture(input: {
   idempotencyKey: string;
   metadata: Readonly<Record<string, unknown>>;
 }): BrainV2PrivateCapture {
+  const snapshot = snapshotSafeValue(
+    input,
+    0,
+    "capture",
+    { nodes: 0, stringTotal: 0, seen: new WeakSet() },
+    false,
+  ) as Record<string, unknown>;
+  assertObjectKeys(snapshot, ["namespace", "captureRef", "idempotencyKey", "metadata"]);
   if (
-    input.namespace !== "private" ||
-    !boundedRef(input.captureRef) ||
-    !boundedRef(input.idempotencyKey)
+    snapshot.namespace !== "private" ||
+    !boundedRef(snapshot.captureRef) ||
+    !boundedRef(snapshot.idempotencyKey)
   ) {
     throw new Error("brain_v2_capture_reference_invalid");
   }
-  const metadata = assertBrainV2SafePayload(input.metadata);
+  const metadata = assertBrainV2SafePayload(snapshot.metadata);
+  if (!objectRecord(metadata)) {
+    throw new Error("brain_v2_capture_metadata_invalid");
+  }
   return {
     namespace: "private",
-    captureRef: input.captureRef,
-    idempotencyKey: input.idempotencyKey,
+    captureRef: snapshot.captureRef,
+    idempotencyKey: snapshot.idempotencyKey,
     metadata,
   };
 }
@@ -693,18 +712,29 @@ export function preparePrivateCheckpoint(input: {
   idempotencyKey: string;
   metadata: Readonly<Record<string, unknown>>;
 }): BrainV2PrivateCheckpoint {
+  const snapshot = snapshotSafeValue(
+    input,
+    0,
+    "checkpoint",
+    { nodes: 0, stringTotal: 0, seen: new WeakSet() },
+    false,
+  ) as Record<string, unknown>;
+  assertObjectKeys(snapshot, ["namespace", "checkpointRef", "idempotencyKey", "metadata"]);
   if (
-    input.namespace !== "private" ||
-    !boundedRef(input.checkpointRef) ||
-    !boundedRef(input.idempotencyKey)
+    snapshot.namespace !== "private" ||
+    !boundedRef(snapshot.checkpointRef) ||
+    !boundedRef(snapshot.idempotencyKey)
   ) {
     throw new Error("brain_v2_checkpoint_reference_invalid");
   }
-  const metadata = assertBrainV2SafePayload(input.metadata);
+  const metadata = assertBrainV2SafePayload(snapshot.metadata);
+  if (!objectRecord(metadata)) {
+    throw new Error("brain_v2_checkpoint_metadata_invalid");
+  }
   return {
     namespace: "private",
-    checkpointRef: input.checkpointRef,
-    idempotencyKey: input.idempotencyKey,
+    checkpointRef: snapshot.checkpointRef,
+    idempotencyKey: snapshot.idempotencyKey,
     metadata,
   };
 }

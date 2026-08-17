@@ -147,6 +147,18 @@ describe("LiNKbrain v2 immutable consumer boundary", () => {
     ]) {
       expect(() => assertBrainV2Negotiation(candidate)).toThrow();
     }
+    expect(() => assertBrainV2Negotiation(Object.create(negotiation))).toThrow();
+    let getterCalls = 0;
+    const accessorNegotiation = { ...negotiation } as Record<string, unknown>;
+    Object.defineProperty(accessorNegotiation, "contractVersion", {
+      enumerable: true,
+      get() {
+        getterCalls += 1;
+        return LINKBRAIN_V2_CONTRACT_VERSION;
+      },
+    });
+    expect(() => assertBrainV2Negotiation(accessorNegotiation)).toThrow();
+    expect(getterCalls).toBe(0);
   });
 
   it("enforces operation-specific disclosure ceilings, snapshot stability and cursors", () => {
@@ -210,6 +222,11 @@ describe("LiNKbrain v2 immutable consumer boundary", () => {
       "transcript",
       "payload",
       "actorId",
+      "databasePassword",
+      "openaiApiKey",
+      "authorizationHeader",
+      "privateKeyPem",
+      "awsAccessKey",
     ]) {
       expect(() => assertBrainV2SafePayload({ [key]: "blocked" })).toThrow();
     }
@@ -300,6 +317,39 @@ describe("LiNKbrain v2 immutable consumer boundary", () => {
     expect(checkpoint.metadata).toEqual({ nested: { label: "checkpoint" } });
     expect(capture.metadata).not.toBe(captureMetadata);
     expect(checkpoint.metadata).not.toBe(checkpointMetadata);
+  });
+
+  it("rejects accessor-backed private wrappers without invoking getters", () => {
+    let getterCalls = 0;
+    const capture = {
+      namespace: "private",
+      idempotencyKey: "idem:1",
+      metadata: { title: "safe" },
+    } as Record<string, unknown>;
+    Object.defineProperty(capture, "captureRef", {
+      enumerable: true,
+      get() {
+        getterCalls += 1;
+        return getterCalls === 1 ? "capture:1" : "x".repeat(600);
+      },
+    });
+    expect(() => preparePrivateCapture(capture as never)).toThrow();
+    expect(getterCalls).toBe(0);
+
+    const checkpoint = {
+      namespace: "private",
+      checkpointRef: "checkpoint:1",
+      metadata: { title: "safe" },
+    } as Record<string, unknown>;
+    Object.defineProperty(checkpoint, "idempotencyKey", {
+      enumerable: true,
+      get() {
+        getterCalls += 1;
+        return "idem:2";
+      },
+    });
+    expect(() => preparePrivateCheckpoint(checkpoint as never)).toThrow();
+    expect(getterCalls).toBe(0);
   });
 
   it("requires negotiation before calls and never sends the credential reference", async () => {

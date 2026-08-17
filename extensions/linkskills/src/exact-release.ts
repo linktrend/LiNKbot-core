@@ -329,6 +329,12 @@ export function validateProgressiveReleaseTransition(
   previous: ProgressiveReleaseState | undefined,
   next: ProgressiveReleaseState,
 ): boolean {
+  try {
+    previous = snapshotPlainData(previous) as ProgressiveReleaseState | undefined;
+    next = snapshotPlainData(next) as ProgressiveReleaseState;
+  } catch {
+    return false;
+  }
   const allowedByStage: Record<ExactReleaseStage, readonly string[]> = {
     index: ["stage", "release_id", "version"],
     description: ["stage", "release_id", "version"],

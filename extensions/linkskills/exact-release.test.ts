@@ -237,6 +237,29 @@ describe("exact provider Skills releases", () => {
     ).toBe(false);
   });
 
+  it("rejects inherited and accessor-backed progressive states without invoking getters", () => {
+    const inherited = Object.create({
+      stage: "index",
+      release_id: validRelease.release_id,
+      version: validRelease.version,
+    });
+    expect(validateProgressiveReleaseTransition(undefined, inherited)).toBe(false);
+    let getterCalls = 0;
+    const accessorState = {
+      release_id: validRelease.release_id,
+      version: validRelease.version,
+    } as Record<string, unknown>;
+    Object.defineProperty(accessorState, "stage", {
+      enumerable: true,
+      get() {
+        getterCalls += 1;
+        return "index";
+      },
+    });
+    expect(validateProgressiveReleaseTransition(undefined, accessorState as never)).toBe(false);
+    expect(getterCalls).toBe(0);
+  });
+
   it("matches the provider package digest construction", () => {
     expect(
       expectedPackageDigest({
