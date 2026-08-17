@@ -796,10 +796,10 @@ function assertBrainV2PageSnapshot<T>(
   ) {
     throw new Error("brain_v2_pagination_cursor_mismatch");
   }
-  const currentOffset = expectedCursor === undefined ? 0 : Number(expectedCursor.slice(3));
+  const currentOffset = expectedCursor === undefined ? 0n : BigInt(expectedCursor.slice(3));
   if (
     typeof pagination.nextCursor === "string" &&
-    Number(pagination.nextCursor.slice(3)) <= currentOffset
+    BigInt(pagination.nextCursor.slice(3)) <= currentOffset
   ) {
     throw new Error("brain_v2_pagination_nextCursor_not_advanced");
   }

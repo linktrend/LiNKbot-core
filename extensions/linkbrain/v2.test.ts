@@ -264,6 +264,36 @@ describe("LiNKbrain v2 immutable consumer boundary", () => {
     ).toThrow("brain_v2_pagination_nextCursor_not_advanced");
     expect(() =>
       assertBrainV2Page(
+        {
+          ...page("index"),
+          pagination: {
+            limit: 25,
+            cursor: "v2:9007199254740992",
+            nextCursor: "v2:9007199254740993",
+          },
+        },
+        "v2.knowledge.search",
+        "snapshot:brain-1",
+        "v2:9007199254740992",
+      ),
+    ).not.toThrow();
+    expect(() =>
+      assertBrainV2Page(
+        {
+          ...page("index"),
+          pagination: {
+            limit: 25,
+            cursor: "v2:9007199254740993",
+            nextCursor: "v2:9007199254740992",
+          },
+        },
+        "v2.knowledge.search",
+        "snapshot:brain-1",
+        "v2:9007199254740993",
+      ),
+    ).toThrow("brain_v2_pagination_nextCursor_not_advanced");
+    expect(() =>
+      assertBrainV2Page(
         { ...page("index"), pagination: { limit: 25, cursor: "v2:0" } },
         "v2.knowledge.search",
         "snapshot:brain-1",
