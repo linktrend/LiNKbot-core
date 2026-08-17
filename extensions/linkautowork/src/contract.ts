@@ -503,7 +503,7 @@ export function validateCallback(
     (expected.acceptedState.latestSourceTimestamp !== null &&
       !iso(expected.acceptedState.latestSourceTimestamp)) ||
     !Array.isArray(expected.acceptedState.acceptedReceiptIds) ||
-    !expected.acceptedState.acceptedReceiptIds.every((receiptId) => UUID.test(receiptId)) ||
+    !expected.acceptedState.acceptedReceiptIds.every((receiptId) => matches(receiptId, UUID)) ||
     (expected.acceptedState.latestReceiptState !== null &&
       !(AUTOWORK_STATES as readonly unknown[]).includes(
         expected.acceptedState.latestReceiptState,

@@ -450,6 +450,29 @@ describe("LinkAutowork final provider contract", () => {
     ).toBe(false);
   });
 
+  it("rejects malformed persisted receipt IDs without coercing or throwing", () => {
+    const callback = {
+      requestId: uuid,
+      receiptId: receipt.receiptId,
+      orgId: uuid,
+      callbackBindingRef: "evidence://callback/binding",
+      sourceTimestamp: receipt.updatedAt,
+      receipt,
+    };
+    const expected = {
+      callbackBindingRef: "evidence://callback/binding",
+      now: new Date("2026-08-13T12:00:00.000Z"),
+      acceptedState: {
+        latestSourceTimestamp: null,
+        acceptedReceiptIds: [{}],
+        latestReceiptState: null,
+        latestAttemptCount: null,
+      },
+    };
+    expect(() => validateCallback(callback, request, expected as never)).not.toThrow();
+    expect(validateCallback(callback, request, expected as never)).toBe(false);
+  });
+
   it("rejects callback state regression after a terminal receipt", () => {
     const regressedReceipt = {
       ...receipt,
