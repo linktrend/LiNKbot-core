@@ -55,6 +55,7 @@ export type AuthenticatedSkillsReleaseEvidence = Readonly<{
   version: string;
   manifestDigest: string;
   packageDigest: string;
+  eligibilityDigest: string;
   attestationVerified: true;
   algorithm: "ES256";
   keyId: string;
@@ -123,6 +124,7 @@ const PROVIDER_EVIDENCE_KEYS = new Set([
   "version",
   "manifestDigest",
   "packageDigest",
+  "eligibilityDigest",
   "attestationVerified",
   "algorithm",
   "keyId",
@@ -203,6 +205,10 @@ function hasOnlyKeys(record: Record<string, unknown>, allowed: Set<string>): boo
   return Object.keys(record).every((key) => allowed.has(key));
 }
 
+function hasExactKeys(record: Record<string, unknown>, expected: Set<string>): boolean {
+  return Object.keys(record).length === expected.size && hasOnlyKeys(record, expected);
+}
+
 function canonical(value: unknown): unknown {
   return Array.isArray(value)
     ? value.map(canonical)
@@ -227,6 +233,29 @@ export function expectedPackageDigest(release: {
           release_id: release.release_id,
           files_digest: release.manifest_digest,
           contract_version: SKILLS_RELEASE_CONTRACT_VERSION,
+        }),
+      ),
+    )
+    .digest("hex")}`;
+}
+
+/** Binds every provider-supplied fact used to decide whether an exact release is eligible now. */
+export function expectedEligibilityDigest(release: ExactRelease): string {
+  return `sha256:${createHash("sha256")
+    .update(
+      JSON.stringify(
+        canonical({
+          release_id: release.release_id,
+          version: release.version,
+          provider_candidate: release.providerCandidate,
+          manifest_digest: release.manifest_digest,
+          package_digest: release.package_digest,
+          lifecycle: release.lifecycle,
+          state: release.state,
+          compatible_profiles: release.compatible_profiles,
+          attestation: release.attestation,
+          issued_at: release.issued_at,
+          expires_at: release.expires_at,
         }),
       ),
     )
@@ -260,7 +289,32 @@ export function validateExactRelease(
   } catch {
     return reject("invalid_shape");
   }
-  if (!isRecord(snapshot) || !isString(options.profile)) return reject("invalid_shape");
+  let optionDescriptors: PropertyDescriptorMap;
+  try {
+    optionDescriptors = Object.getOwnPropertyDescriptors(options);
+  } catch {
+    return reject("invalid_provider_evidence");
+  }
+  const ownOption = (key: keyof ExactReleaseValidationOptions): unknown => {
+    const descriptor = optionDescriptors[key];
+    return descriptor && "value" in descriptor ? descriptor.value : undefined;
+  };
+  const profile = ownOption("profile");
+  const expectedSkillId = ownOption("expectedSkillId");
+  const expectedVersion = ownOption("expectedVersion");
+  const expectedOrganization = ownOption("expectedOrganization");
+  const expectedAudience = ownOption("expectedAudience");
+  const expectedCapability = ownOption("expectedCapability");
+  if (
+    !isRecord(snapshot) ||
+    !isString(profile) ||
+    !isString(expectedSkillId) ||
+    !isString(expectedVersion) ||
+    !isString(expectedOrganization) ||
+    !isString(expectedAudience) ||
+    !isString(expectedCapability)
+  )
+    return reject("invalid_provider_evidence");
   const release = snapshot as Partial<ExactRelease>;
   if (!hasOnlyKeys(snapshot, RELEASE_KEYS)) return reject("invalid_shape", release);
   if (!isString(release.release_id) || !isString(release.version))
@@ -272,10 +326,8 @@ export function validateExactRelease(
     return reject("latest_alias", release);
   }
   if (
-    !isString(options.expectedSkillId) ||
-    !isString(options.expectedVersion) ||
-    release.release_id !== `${options.expectedSkillId}@${options.expectedVersion}` ||
-    release.version !== options.expectedVersion
+    release.release_id !== `${expectedSkillId}@${expectedVersion}` ||
+    release.version !== expectedVersion
   ) {
     return reject("invalid_immutability", release);
   }
@@ -308,15 +360,15 @@ export function validateExactRelease(
     return reject("invalid_digest", release);
   let providerEvidence: unknown;
   try {
-    providerEvidence = snapshotPlainData(options.authenticatedProviderEvidence);
+    providerEvidence = snapshotPlainData(ownOption("authenticatedProviderEvidence"));
   } catch {
     return reject("invalid_provider_evidence", release);
   }
   if (
     !isRecord(providerEvidence) ||
-    !hasOnlyKeys(providerEvidence, PROVIDER_EVIDENCE_KEYS) ||
+    !hasExactKeys(providerEvidence, PROVIDER_EVIDENCE_KEYS) ||
     !isRecord(providerEvidence.providerCandidate) ||
-    !hasOnlyKeys(providerEvidence.providerCandidate, PROVIDER_CANDIDATE_KEYS) ||
+    !hasExactKeys(providerEvidence.providerCandidate, PROVIDER_CANDIDATE_KEYS) ||
     providerEvidence.providerCandidate.commit !== SKILLS_COMMIT ||
     providerEvidence.providerCandidate.tree !== SKILLS_TREE ||
     providerEvidence.contractVersion !== SKILLS_RELEASE_CONTRACT_VERSION ||
@@ -324,12 +376,13 @@ export function validateExactRelease(
     providerEvidence.version !== release.version ||
     providerEvidence.manifestDigest !== release.manifest_digest ||
     providerEvidence.packageDigest !== release.package_digest ||
+    !isDigest(providerEvidence.eligibilityDigest) ||
     providerEvidence.attestationVerified !== true ||
     providerEvidence.algorithm !== "ES256" ||
     !isString(providerEvidence.keyId) ||
-    providerEvidence.organization !== options.expectedOrganization ||
-    providerEvidence.audience !== options.expectedAudience ||
-    providerEvidence.capability !== options.expectedCapability
+    providerEvidence.organization !== expectedOrganization ||
+    providerEvidence.audience !== expectedAudience ||
+    providerEvidence.capability !== expectedCapability
   ) {
     return reject("invalid_provider_evidence", release);
   }
@@ -338,7 +391,7 @@ export function validateExactRelease(
   if (!Array.isArray(release.compatible_profiles) || !release.compatible_profiles.every(isString)) {
     return reject("incompatible_profile", release);
   }
-  if (!release.compatible_profiles.includes(options.profile))
+  if (!release.compatible_profiles.includes(profile))
     return reject("incompatible_profile", release);
   if (!isRecord(release.attestation) || !hasOnlyKeys(release.attestation, ATTESTATION_KEYS))
     return reject("missing_attestation", release);
@@ -349,12 +402,13 @@ export function validateExactRelease(
     !isDigest(attestation.digest)
   )
     return reject("missing_attestation", release);
+  const configuredNow = ownOption("now");
   const now =
-    typeof options.now === "undefined"
+    typeof configuredNow === "undefined"
       ? Date.now()
-      : options.now instanceof Date
-        ? options.now.getTime()
-        : parseTime(options.now);
+      : configuredNow instanceof Date
+        ? Date.prototype.getTime.call(configuredNow)
+        : parseTime(configuredNow);
   const issuedAt = parseTime(release.issued_at);
   const expiresAt = parseTime(release.expires_at);
   const evaluatedAt = parseTime(attestation.evaluated_at);
@@ -369,8 +423,10 @@ export function validateExactRelease(
   ) {
     return reject("invalid_timestamp", release);
   }
-  const maxAge = options.maxAgeMs ?? 24 * 60 * 60 * 1000;
-  if (!Number.isFinite(maxAge) || maxAge < 0) return reject("invalid_timestamp", release);
+  const configuredMaxAge = ownOption("maxAgeMs");
+  const maxAge = configuredMaxAge ?? 24 * 60 * 60 * 1000;
+  if (typeof maxAge !== "number" || !Number.isFinite(maxAge) || maxAge < 0)
+    return reject("invalid_timestamp", release);
   if (
     issuedAt > now ||
     expiresAt <= now ||
@@ -381,6 +437,8 @@ export function validateExactRelease(
   ) {
     return reject("stale_timestamp", release);
   }
+  if (providerEvidence.eligibilityDigest !== expectedEligibilityDigest(release as ExactRelease))
+    return reject("invalid_provider_evidence", release);
   const exact: ExactRelease = {
     release_id: release.release_id,
     version: release.version,

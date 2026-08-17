@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   exactReleaseTelemetry,
+  expectedEligibilityDigest,
   expectedPackageDigest,
   SKILLS_COMMIT,
   SKILLS_TREE,
@@ -38,6 +39,7 @@ const authenticatedProviderEvidence = {
   version,
   manifestDigest,
   packageDigest: validRelease.package_digest,
+  eligibilityDigest: expectedEligibilityDigest(validRelease),
   attestationVerified: true,
   algorithm: "ES256",
   keyId: "skills-release-key-1",
@@ -121,6 +123,45 @@ describe("exact provider Skills releases", () => {
         },
       }),
     ).toMatchObject({ ok: false, code: "invalid_provider_evidence" });
+  });
+
+  it("rejects replayed evidence when any provider eligibility claim changes", () => {
+    for (const changes of [
+      { compatible_profiles: [...validRelease.compatible_profiles, "runtime:other"] },
+      { issued_at: "2026-08-12T13:00:00.000Z" },
+      { expires_at: "2026-08-14T01:00:00.000Z" },
+      {
+        attestation: {
+          ...validRelease.attestation,
+          valid_until: "2026-08-14T01:00:00.000Z",
+        },
+      },
+    ]) {
+      expect(
+        validateExactRelease({ ...validRelease, ...changes }, validationOptions),
+      ).toMatchObject({ ok: false, code: "invalid_provider_evidence" });
+    }
+  });
+
+  it("fails closed when authorization expectations or evidence fields are absent", () => {
+    for (const key of ["expectedOrganization", "expectedAudience", "expectedCapability"] as const) {
+      const options = { ...validationOptions } as Record<string, unknown>;
+      delete options[key];
+      expect(validateExactRelease(validRelease, options as never)).toMatchObject({
+        ok: false,
+        code: "invalid_provider_evidence",
+      });
+    }
+    for (const key of ["organization", "audience", "capability", "eligibilityDigest"] as const) {
+      const evidence = { ...authenticatedProviderEvidence } as Record<string, unknown>;
+      delete evidence[key];
+      expect(
+        validateExactRelease(validRelease, {
+          ...validationOptions,
+          authenticatedProviderEvidence: evidence as never,
+        }),
+      ).toMatchObject({ ok: false, code: "invalid_provider_evidence" });
+    }
   });
 
   it.each([
