@@ -394,6 +394,10 @@ describe("LiNKbrain v2 immutable consumer boundary", () => {
           return reads === 1 ? identity()[field] : `${identity()[field]}:changed`;
         },
       });
+      expect(() => assertBrainV2PlatformIdentity(accessorIdentity, expected)).toThrow(
+        `brain_v2_identity_field_not_own_data:${field}`,
+      );
+      expect(reads).toBe(0);
       const requests: BrainV2TransportRequest[] = [];
       const client = createBrainV2Client({
         identity: accessorIdentity as BrainV2PlatformIdentity,
@@ -413,6 +417,42 @@ describe("LiNKbrain v2 immutable consumer boundary", () => {
       });
       expect(reads).toBe(0);
       expect(requests).toHaveLength(0);
+    }
+  });
+
+  it("rejects inherited Platform bindings even when Object.prototype is polluted", async () => {
+    const sourceIdentity = identity() as unknown as Record<string, unknown>;
+    delete sourceIdentity.runtimeBindingRef;
+    let reads = 0;
+    Object.defineProperty(Object.prototype, "runtimeBindingRef", {
+      configurable: true,
+      get() {
+        reads += 1;
+        return reads === 1 ? "binding:ocp-brain" : "binding:changed";
+      },
+    });
+    try {
+      const requests: BrainV2TransportRequest[] = [];
+      const client = createBrainV2Client({
+        identity: sourceIdentity as BrainV2PlatformIdentity,
+        identityExpectation,
+        transport: {
+          request: async (request) => {
+            requests.push(request);
+            return negotiation;
+          },
+        },
+        clock: () => NOW,
+      });
+
+      await expect(client.negotiate()).resolves.toMatchObject({
+        ok: false,
+        status: "unauthorized",
+      });
+      expect(reads).toBe(0);
+      expect(requests).toHaveLength(0);
+    } finally {
+      delete (Object.prototype as Record<string, unknown>).runtimeBindingRef;
     }
   });
 

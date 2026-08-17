@@ -317,7 +317,7 @@ const snapshotSafeValue = (
   if (entries.length > MAX_SAFE_KEYS || depth >= MAX_SAFE_DEPTH) {
     throw new Error(`brain_v2_payload_depth_or_object:${path}`);
   }
-  const snapshot: Record<string, unknown> = {};
+  const snapshot = Object.create(null) as Record<string, unknown>;
   for (const [key, descriptor] of entries) {
     if (!descriptor.enumerable) {
       throw new Error(`brain_v2_non_json_value:${path}.${key}`);
@@ -349,7 +349,8 @@ export function assertBrainV2PlatformIdentity(
   if (!objectRecord(input)) {
     throw new Error("brain_v2_identity_not_object");
   }
-  assertObjectKeys(input, [
+  const identityDescriptors = Object.getOwnPropertyDescriptors(input);
+  assertObjectKeys(identityDescriptors, [
     "providerCandidate",
     "claimContractVersion",
     "schemaVersion",
@@ -365,18 +366,41 @@ export function assertBrainV2PlatformIdentity(
     "expiresAt",
     "revocationStatus",
   ]);
-  const candidate = input.providerCandidate;
+  const identityValue = (field: string): unknown => {
+    const descriptorHolder = Object.getOwnPropertyDescriptor(identityDescriptors, field);
+    const descriptor = descriptorHolder?.value as PropertyDescriptor | undefined;
+    if (!descriptor || !("value" in descriptor) || !descriptor.enumerable) {
+      throw new Error(`brain_v2_identity_field_not_own_data:${field}`);
+    }
+    return descriptor.value;
+  };
+  const candidate = identityValue("providerCandidate");
+  const candidateDescriptors = objectRecord(candidate)
+    ? Object.getOwnPropertyDescriptors(candidate)
+    : undefined;
+  const candidateDescriptor = (field: "commit" | "tree"): PropertyDescriptor | undefined => {
+    const holder = candidateDescriptors
+      ? Object.getOwnPropertyDescriptor(candidateDescriptors, field)
+      : undefined;
+    return holder?.value as PropertyDescriptor | undefined;
+  };
+  const commitDescriptor = candidateDescriptor("commit");
+  const treeDescriptor = candidateDescriptor("tree");
   if (
-    !objectRecord(candidate) ||
-    Object.keys(candidate).length !== 2 ||
-    candidate.commit !== PLATFORM_COMMIT ||
-    candidate.tree !== PLATFORM_TREE
+    !candidateDescriptors ||
+    Object.keys(candidateDescriptors).length !== 2 ||
+    commitDescriptor?.value !== PLATFORM_COMMIT ||
+    treeDescriptor?.value !== PLATFORM_TREE ||
+    commitDescriptor.get !== undefined ||
+    commitDescriptor.set !== undefined ||
+    treeDescriptor.get !== undefined ||
+    treeDescriptor.set !== undefined
   ) {
     throw new Error("brain_v2_platform_candidate_mismatch");
   }
   if (
-    input.claimContractVersion !== PLATFORM_AUTH_CLAIMS_CONTRACT_VERSION ||
-    input.schemaVersion !== PLATFORM_AUTH_CLAIMS_SCHEMA_VERSION
+    identityValue("claimContractVersion") !== PLATFORM_AUTH_CLAIMS_CONTRACT_VERSION ||
+    identityValue("schemaVersion") !== PLATFORM_AUTH_CLAIMS_SCHEMA_VERSION
   ) {
     throw new Error("brain_v2_platform_contract_mismatch");
   }
@@ -387,34 +411,36 @@ export function assertBrainV2PlatformIdentity(
     ["issuer", expected.issuer],
     ["audience", expected.audience],
   ] as const) {
-    if (!boundedRef(input[field]) || input[field] !== expectedValue) {
+    const value = identityValue(field);
+    if (!boundedRef(value) || value !== expectedValue) {
       throw new Error(`brain_v2_identity_mismatch:${field}`);
     }
   }
-  if (!boundedRef(input.credentialReference)) {
+  const credentialReference = identityValue("credentialReference");
+  if (!boundedRef(credentialReference)) {
     throw new Error("brain_v2_credential_reference_invalid");
   }
+  const serviceScopes = identityValue("serviceScopes");
+  const capabilities = identityValue("capabilities");
   if (
-    !Array.isArray(input.serviceScopes) ||
-    !input.serviceScopes.every(boundedRef) ||
-    !input.serviceScopes.includes(expected.requiredScope) ||
-    !Array.isArray(input.capabilities) ||
-    !input.capabilities.every(boundedRef) ||
-    !input.capabilities.includes(expected.requiredCapability)
+    !Array.isArray(serviceScopes) ||
+    !serviceScopes.every(boundedRef) ||
+    !serviceScopes.includes(expected.requiredScope) ||
+    !Array.isArray(capabilities) ||
+    !capabilities.every(boundedRef) ||
+    !capabilities.includes(expected.requiredCapability)
   ) {
     throw new Error("brain_v2_scope_or_capability_missing");
   }
-  assertIso(input.issuedAt, "issuedAt");
-  assertIso(input.expiresAt, "expiresAt");
+  const issuedAt = identityValue("issuedAt");
+  const expiresAt = identityValue("expiresAt");
+  assertIso(issuedAt, "issuedAt");
+  assertIso(expiresAt, "expiresAt");
   const now = expected.now === undefined ? Date.now() : new Date(expected.now).getTime();
-  if (
-    !Number.isFinite(now) ||
-    Date.parse(input.expiresAt) <= now ||
-    Date.parse(input.issuedAt) > now
-  ) {
+  if (!Number.isFinite(now) || Date.parse(expiresAt) <= now || Date.parse(issuedAt) > now) {
     throw new Error("brain_v2_identity_expired_or_not_yet_valid");
   }
-  if (input.revocationStatus !== "active") {
+  if (identityValue("revocationStatus") !== "active") {
     throw new Error("brain_v2_identity_revoked");
   }
 }
