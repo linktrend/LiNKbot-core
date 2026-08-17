@@ -29,4 +29,5 @@ export type {
   Revision2Validation,
   ExactRevision2Bundle,
   AuthenticatedRevision2CatalogueEvidence,
+  VerifiedConsumerMaterializationEvidence,
 } from "./src/revision2.js";

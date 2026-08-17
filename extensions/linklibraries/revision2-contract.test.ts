@@ -9,6 +9,7 @@ import {
   type AuthenticatedRevision2CatalogueEvidence,
   type ExactRevision2Bundle,
   type Revision2Record,
+  type VerifiedConsumerMaterializationEvidence,
 } from "./api.js";
 
 const d = (letter: string) => `sha256:${letter.repeat(64)}`;
@@ -56,7 +57,6 @@ const bundle: ExactRevision2Bundle = {
   manifest,
   inventorySha256: record.inventorySha256,
   dependencyLockSha256: d("f"),
-  expectedConsumerMaterializedTreeSha1: "99887766554433221100ffeeddccbbaa99887766",
   verifiedCache: {
     sourceEvidence: {
       selectedRepositoryCommitSha: LIBRARIES_COMMIT,
@@ -102,10 +102,25 @@ const authenticatedCatalogueEvidence = (
   },
   verified: true,
 });
+const materializationEvidence = (
+  value: ExactRevision2Bundle = bundle,
+): VerifiedConsumerMaterializationEvidence => ({
+  entryId: value.record.entryId,
+  version: value.record.version,
+  releaseManifestSha256: value.record.releaseManifestSha256,
+  releaseSourceCommitSha: value.record.releaseSource.releaseSourceCommitSha,
+  releaseSourceRepositoryTreeSha1: value.record.releaseSource.releaseSourceRepositoryTreeSha1,
+  artifactTreeSha1: value.record.artifactTreeSha1,
+  inventorySha256: value.record.inventorySha256,
+  payloadSha256: value.manifest.payloadSha256,
+  consumerMaterializedTreeSha1: value.consumption.consumerMaterializedTreeSha1,
+  verified: true,
+});
 const validate = (
   value: unknown,
   evidence: AuthenticatedRevision2CatalogueEvidence = authenticatedCatalogueEvidence(),
-) => validateExactRevision2(value, evidence);
+  materialized: VerifiedConsumerMaterializationEvidence = materializationEvidence(),
+) => validateExactRevision2(value, evidence, materialized);
 
 describe("LiNKlibraries Revision 2 consumer", () => {
   it("pages admitted records and validates exact release evidence", () => {
@@ -204,7 +219,9 @@ describe("LiNKlibraries Revision 2 consumer", () => {
     value.verifiedCache.catalogueRecordsSha256 = value.catalogue.recordsSha256;
     value.verifiedCache.releaseManifestSha256 = rawManifestDigest;
     value.consumption.releaseManifestSha256 = rawManifestDigest;
-    expect(validate(value, authenticatedCatalogueEvidence(value)).ok).toBe(true);
+    expect(
+      validate(value, authenticatedCatalogueEvidence(value), materializationEvidence(value)).ok,
+    ).toBe(true);
   });
   it("rejects inherited and accessor-backed catalogue records without invoking getters", () => {
     let getterCalls = 0;
@@ -266,6 +283,22 @@ describe("LiNKlibraries Revision 2 consumer", () => {
     const value = structuredClone(bundle) as any;
     value.consumption.entryId = "other-entry";
     expect(validate(value).ok).toBe(false);
+  });
+
+  it("rejects a forged pass receipt that does not match independent materialization evidence", () => {
+    const value = structuredClone(bundle) as any;
+    value.expectedConsumerMaterializedTreeSha1 = "ffeeddccbbaa0099887766554433221100ffeedd";
+    value.consumption.consumerMaterializedTreeSha1 = "ffeeddccbbaa0099887766554433221100ffeedd";
+    expect(validate(value)).toMatchObject({
+      ok: false,
+      reason: "consumption receipt is not a pass",
+    });
+    expect(
+      validate(bundle, authenticatedCatalogueEvidence(), {
+        ...materializationEvidence(),
+        verified: false as true,
+      }),
+    ).toMatchObject({ ok: false, reason: "invalid materialization verification evidence" });
   });
 
   it("fails closed for malformed catalogue entries without throwing", () => {

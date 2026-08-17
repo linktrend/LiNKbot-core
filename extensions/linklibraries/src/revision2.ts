@@ -57,7 +57,6 @@ export type ExactRevision2Bundle = Readonly<{
   };
   inventorySha256: Digest;
   dependencyLockSha256: Digest;
-  expectedConsumerMaterializedTreeSha1: string;
   verifiedCache: {
     sourceEvidence: {
       selectedRepositoryCommitSha: typeof LIBRARIES_COMMIT;
@@ -100,6 +99,19 @@ export type AuthenticatedRevision2CatalogueEvidence = Readonly<{
     artifactTreeSha1: string;
     inventorySha256: Digest;
   }>;
+  verified: true;
+}>;
+
+export type VerifiedConsumerMaterializationEvidence = Readonly<{
+  entryId: string;
+  version: string;
+  releaseManifestSha256: Digest;
+  releaseSourceCommitSha: string;
+  releaseSourceRepositoryTreeSha1: string;
+  artifactTreeSha1: string;
+  inventorySha256: Digest;
+  payloadSha256: Digest;
+  consumerMaterializedTreeSha1: string;
   verified: true;
 }>;
 
@@ -322,18 +334,23 @@ export function validateRevision2Record(value: unknown): Revision2Validation {
 export function validateExactRevision2(
   bundle: unknown,
   authenticatedEvidence: AuthenticatedRevision2CatalogueEvidence,
+  materializationEvidence: VerifiedConsumerMaterializationEvidence,
 ): Revision2Validation {
   try {
     bundle = snapshotPlainData(bundle);
     authenticatedEvidence = snapshotPlainData(
       authenticatedEvidence,
     ) as AuthenticatedRevision2CatalogueEvidence;
+    materializationEvidence = snapshotPlainData(
+      materializationEvidence,
+    ) as VerifiedConsumerMaterializationEvidence;
   } catch {
     return { ok: false, reason: "invalid exact release evidence" };
   }
   const trusted = authenticatedEvidence as unknown as Record<string, unknown>;
   const trustedSource = isObject(trusted?.source) ? trusted.source : undefined;
   const trustedRecord = isObject(trusted?.selectedRecord) ? trusted.selectedRecord : undefined;
+  const materialized = materializationEvidence as unknown as Record<string, unknown>;
   if (
     !isObject(trusted) ||
     Object.keys(trusted).sort().join(",") !==
@@ -350,6 +367,16 @@ export function validateExactRevision2(
       "artifactTreeSha1,entryId,inventorySha256,releaseManifestSha256,releaseSourceCommitSha,releaseSourceRepositoryTreeSha1,version"
   ) {
     return { ok: false, reason: "invalid authenticated catalogue evidence" };
+  }
+  if (
+    !isObject(materialized) ||
+    Object.keys(materialized).sort().join(",") !==
+      "artifactTreeSha1,consumerMaterializedTreeSha1,entryId,inventorySha256,payloadSha256,releaseManifestSha256,releaseSourceCommitSha,releaseSourceRepositoryTreeSha1,verified,version" ||
+    materialized.verified !== true ||
+    typeof materialized.consumerMaterializedTreeSha1 !== "string" ||
+    !SHA1.test(materialized.consumerMaterializedTreeSha1)
+  ) {
+    return { ok: false, reason: "invalid materialization verification evidence" };
   }
   if (
     !isObject(bundle) ||
@@ -464,11 +491,18 @@ export function validateExactRevision2(
     bundle.consumption.releaseSourceRepositoryTreeSha1 !==
       record.releaseSource.releaseSourceRepositoryTreeSha1 ||
     bundle.consumption.artifactTreeSha1 !== record.artifactTreeSha1 ||
-    typeof bundle.expectedConsumerMaterializedTreeSha1 !== "string" ||
-    !SHA1.test(bundle.expectedConsumerMaterializedTreeSha1) ||
     typeof bundle.consumption.consumerMaterializedTreeSha1 !== "string" ||
     !SHA1.test(bundle.consumption.consumerMaterializedTreeSha1) ||
-    bundle.consumption.consumerMaterializedTreeSha1 !== bundle.expectedConsumerMaterializedTreeSha1
+    materialized.entryId !== record.entryId ||
+    materialized.version !== record.version ||
+    materialized.releaseManifestSha256 !== record.releaseManifestSha256 ||
+    materialized.releaseSourceCommitSha !== record.releaseSource.releaseSourceCommitSha ||
+    materialized.releaseSourceRepositoryTreeSha1 !==
+      record.releaseSource.releaseSourceRepositoryTreeSha1 ||
+    materialized.artifactTreeSha1 !== record.artifactTreeSha1 ||
+    materialized.inventorySha256 !== record.inventorySha256 ||
+    materialized.payloadSha256 !== manifest.payloadSha256 ||
+    bundle.consumption.consumerMaterializedTreeSha1 !== materialized.consumerMaterializedTreeSha1
   )
     return { ok: false, reason: "consumption receipt is not a pass" };
   return { ok: true, record };

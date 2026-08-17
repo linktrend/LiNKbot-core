@@ -98,6 +98,7 @@ export type AuthenticatedLibraryAssetEvidence = Readonly<{
   releaseSourceRepositoryTreeSha1: string;
   artifactTreeSha1: string;
   payloadSha256: InventoryDigest;
+  eligibilityDigest: InventoryDigest;
   verified: true;
 }>;
 
@@ -113,22 +114,41 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
+function canonicalString(value: unknown): string {
+  if (Array.isArray(value)) return `[${value.map(canonicalString).join(",")}]`;
+  if (isRecord(value)) {
+    return `{${Object.keys(value)
+      .sort()
+      .map((key) => `${JSON.stringify(key)}:${canonicalString(value[key])}`)
+      .join(",")}}`;
+  }
+  return JSON.stringify(value);
+}
+
 export function candidateDependencyClosureDigest(
   entries: readonly CandidateDependency[],
 ): InventoryDigest {
   const snapshot = snapshotPlainData(entries);
   if (!Array.isArray(snapshot)) throw new Error("invalid dependency closure entries");
-  const canonicalize = (value: unknown): string => {
-    if (Array.isArray(value)) return `[${value.map(canonicalize).join(",")}]`;
-    if (isRecord(value)) {
-      return `{${Object.keys(value)
-        .sort()
-        .map((key) => `${JSON.stringify(key)}:${canonicalize(value[key])}`)
-        .join(",")}}`;
-    }
-    return JSON.stringify(value);
-  };
-  return `sha256:${createHash("sha256").update(canonicalize(snapshot)).digest("hex")}`;
+  return `sha256:${createHash("sha256").update(canonicalString(snapshot)).digest("hex")}`;
+}
+
+/** Binds every provider-supplied fact used to admit and select a portable release. */
+export function candidateEligibilityDigest(candidate: Candidate): InventoryDigest {
+  const snapshot = snapshotPlainData(candidate);
+  if (!isRecord(snapshot)) throw new Error("invalid release eligibility evidence");
+  return `sha256:${createHash("sha256")
+    .update(
+      canonicalString({
+        catalogue: snapshot.catalogue,
+        manifest: snapshot.manifest,
+        consumerProfile: snapshot.consumerProfile,
+        dependencies: snapshot.dependencies,
+        provenance: snapshot.provenance,
+        receipt: snapshot.receipt,
+      }),
+    )
+    .digest("hex")}`;
 }
 
 function snapshotPlainData(value: unknown, seen = new WeakSet<object>()): unknown {
@@ -263,6 +283,7 @@ export function validateExactRelease(
         "releaseSourceRepositoryTreeSha1",
         "artifactTreeSha1",
         "payloadSha256",
+        "eligibilityDigest",
         "verified",
       ],
       errors,
@@ -281,6 +302,7 @@ export function validateExactRelease(
       trustedCandidate.commit !== FROZEN_CANDIDATE_SHA ||
       trustedCandidate.tree !== FROZEN_TREE_SHA ||
       trustedEvidence.catalogueSha256 !== LIBRARIES_CATALOGUE_SHA256 ||
+      !isDigest(trustedEvidence.eligibilityDigest) ||
       trustedEvidence.verified !== true
     ) {
       errors.push("authenticated asset evidence is invalid");
@@ -448,6 +470,14 @@ export function validateExactRelease(
   else validateKeys(receipt, "receipt", ["complete", "ref"], errors);
   if (!receipt || receipt.complete !== true || !isNonEmpty(receipt.ref)) {
     errors.push("admission receipt reference is incomplete");
+  }
+
+  if (
+    trustedEvidence &&
+    isRecord(trustedEvidence) &&
+    trustedEvidence.eligibilityDigest !== candidateEligibilityDigest(input as unknown as Candidate)
+  ) {
+    errors.push("release eligibility does not match authenticated provider evidence");
   }
 
   if (errors.length > 0) return { ok: false, errors };

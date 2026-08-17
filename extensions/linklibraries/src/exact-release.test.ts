@@ -3,6 +3,7 @@ import {
   FROZEN_CANDIDATE_SHA,
   FROZEN_TREE_SHA,
   candidateDependencyClosureDigest,
+  candidateEligibilityDigest,
   validateExactRelease,
   type AuthenticatedLibraryAssetEvidence,
   type Candidate,
@@ -52,6 +53,7 @@ function authenticatedEvidence(candidate = validCandidate()): AuthenticatedLibra
     releaseSourceRepositoryTreeSha1: candidate.asset.releaseSourceRepositoryTreeSha1,
     artifactTreeSha1: candidate.asset.artifactTreeSha1,
     payloadSha256: candidate.asset.payloadSha256 as `sha256:${string}`,
+    eligibilityDigest: candidateEligibilityDigest(candidate),
     verified: true,
   };
 }
@@ -85,7 +87,9 @@ describe("validateExactRelease", () => {
       closureDigest: candidateDependencyClosureDigest([]),
       entries: [],
     };
-    expect(validate(value)).toMatchObject({ ok: true });
+    expect(validate(value, authenticatedEvidence(value as unknown as Candidate))).toMatchObject({
+      ok: true,
+    });
   });
 
   it("rejects a manifest inventory not authorized by the catalogue", () => {
@@ -197,6 +201,16 @@ describe("validateExactRelease", () => {
     expect(validate(candidate, authenticatedEvidence(candidate as unknown as Candidate)).ok).toBe(
       true,
     );
+  });
+
+  it("rejects self-consistent eligibility and dependency substitutions against prior evidence", () => {
+    const original = validCandidate();
+    const forged = structuredClone(original) as Candidate;
+    (forged.dependencies as { entries: Candidate["dependencies"]["entries"] }).entries = [];
+    (forged.dependencies as { closureDigest: string }).closureDigest =
+      candidateDependencyClosureDigest([]);
+    (forged.manifest.supportedConsumerProfiles as string[]).push("consumer-other");
+    expect(validate(forged, authenticatedEvidence(original))).toMatchObject({ ok: false });
   });
 
   it("rejects inherited and accessor-backed evidence without invoking getters", () => {
