@@ -1,126 +1,34 @@
 import { createHash } from "node:crypto";
 
-export const LIBRARIES_COMMIT = "0efa68b19686e976ecee93c6a962e81d2a0265f5" as const;
-export const LIBRARIES_TREE = "c42d20b3119ca4bfdd24d4c6b06d6bc7a7f50d4a" as const;
-export const LIBRARIES_SCHEMA_VERSION = 2 as const;
-export const LIBRARIES_SCHEMA_REVISION = 2 as const;
-export const LIBRARIES_SCHEMA_VERSION_LABEL = "2.2" as const;
-export const LIBRARIES_CONTRACT_VERSION = "libraries.v2/revision-2" as const;
-export const LIBRARIES_CATALOGUE_SHA256 =
-  "sha256:a6af16532f82169094fd1766c3d46a435c9e7ac8d47fb57d5fab3adf6bf210d7" as const;
+export {
+  LIBRARIES_COMMIT,
+  LIBRARIES_TREE,
+  LIBRARIES_SCHEMA_VERSION,
+  LIBRARIES_SCHEMA_REVISION,
+  LIBRARIES_SCHEMA_VERSION_LABEL,
+  LIBRARIES_CONTRACT_VERSION,
+  LIBRARIES_CATALOGUE_SHA256,
+  type Digest,
+  type Revision2Record,
+  type Revision2Page,
+  type AuthenticatedRevision2PageEvidence,
+  type Revision2Validation,
+  type ExactRevision2Bundle,
+  type AuthenticatedRevision2CatalogueEvidence,
+  type VerifiedConsumerMaterializationEvidence,
+} from "./revision2-pins.js";
 
-type Digest = string;
-export type Revision2Record = Readonly<{
-  schemaVersion: 2;
-  schemaRevision: 2;
-  recordType: "catalogue_record";
-  entryId: string;
-  version: string;
-  artifactType: "component" | "starter_kit" | "website_template";
-  releaseManifestSha256: Digest;
-  releaseSource: { releaseSourceCommitSha: string; releaseSourceRepositoryTreeSha1: string };
-  artifactTreeSha1: string;
-  inventorySha256: Digest;
-  lifecycle: string;
-  selectability: string;
-  compatibility: string;
-  bundlePath: string;
-}>;
-export type Revision2Page = Readonly<{
-  snapshot: string;
-  records: readonly Revision2Record[];
-  nextCursor: string | null;
-}>;
-export type AuthenticatedRevision2PageEvidence = Readonly<{
-  source: Readonly<{ commit: typeof LIBRARIES_COMMIT; tree: typeof LIBRARIES_TREE }>;
-  catalogueSha256: typeof LIBRARIES_CATALOGUE_SHA256;
-  recordsSha256: Digest;
-  snapshot: string;
-  verified: true;
-}>;
-export type Revision2Validation = Readonly<
-  { ok: true; record: Revision2Record } | { ok: false; reason: string }
->;
-export type ExactRevision2Bundle = Readonly<{
-  source: { commit: typeof LIBRARIES_COMMIT; tree: typeof LIBRARIES_TREE };
-  catalogue: {
-    schemaVersion: 2;
-    schemaRevision: 2;
-    catalogueType: "catalogue";
-    catalogueSha256: Digest;
-    recordsSha256: Digest;
-    records: readonly Revision2Record[];
-  };
-  record: Revision2Record;
-  manifest: {
-    releaseId: string;
-    entryId: string;
-    version: string;
-    releaseSource: Revision2Record["releaseSource"];
-    artifactTreeSha1: string;
-    payloadSha256: Digest;
-    inventorySha256: Digest;
-    dependencyLockSha256: Digest;
-  };
-  inventorySha256: Digest;
-  dependencyLockSha256: Digest;
-  verifiedCache: {
-    sourceEvidence: {
-      selectedRepositoryCommitSha: typeof LIBRARIES_COMMIT;
-      selectedRepositoryTreeSha1: typeof LIBRARIES_TREE;
-      immutable: true;
-    };
-    releaseSource: Revision2Record["releaseSource"];
-    catalogueSha256: Digest;
-    catalogueRecordsSha256: Digest;
-    entryId: string;
-    version: string;
-    releaseManifestSha256: Digest;
-    inventorySha256: Digest;
-    payloadSha256: Digest;
-    artifactTreeSha1: string;
-  };
-  consumption: {
-    receiptType: "consumption";
-    result: "pass";
-    entryId: string;
-    version: string;
-    releaseManifestSha256: Digest;
-    releaseSourceCommitSha: string;
-    releaseSourceRepositoryTreeSha1: string;
-    artifactTreeSha1: string;
-    consumerMaterializedTreeSha1: string;
-  };
-}>;
-
-export type AuthenticatedRevision2CatalogueEvidence = Readonly<{
-  source: Readonly<{ commit: typeof LIBRARIES_COMMIT; tree: typeof LIBRARIES_TREE }>;
-  catalogueSha256: typeof LIBRARIES_CATALOGUE_SHA256;
-  recordsSha256: Digest;
-  selectedRecord: Readonly<{
-    entryId: string;
-    version: string;
-    releaseManifestSha256: Digest;
-    releaseSourceCommitSha: string;
-    releaseSourceRepositoryTreeSha1: string;
-    artifactTreeSha1: string;
-    inventorySha256: Digest;
-  }>;
-  verified: true;
-}>;
-
-export type VerifiedConsumerMaterializationEvidence = Readonly<{
-  entryId: string;
-  version: string;
-  releaseManifestSha256: Digest;
-  releaseSourceCommitSha: string;
-  releaseSourceRepositoryTreeSha1: string;
-  artifactTreeSha1: string;
-  inventorySha256: Digest;
-  payloadSha256: Digest;
-  consumerMaterializedTreeSha1: string;
-  verified: true;
-}>;
+import {
+  LIBRARIES_COMMIT,
+  LIBRARIES_TREE,
+  LIBRARIES_CATALOGUE_SHA256,
+  type Revision2Record,
+  type Revision2Page,
+  type AuthenticatedRevision2PageEvidence,
+  type Revision2Validation,
+  type AuthenticatedRevision2CatalogueEvidence,
+  type VerifiedConsumerMaterializationEvidence,
+} from "./revision2-pins.js";
 
 const SHA1 = /^[0-9a-f]{40}$/;
 const SHA256 = /^[0-9a-f]{64}$/;
@@ -231,32 +139,48 @@ function snapshotPlainData(value: unknown, seen = new WeakSet<object>()): unknow
     typeof value === "string" ||
     typeof value === "number" ||
     typeof value === "boolean"
-  )
+  ) {
     return value;
-  if (typeof value !== "object" || seen.has(value)) throw new Error("invalid_plain_data");
+  }
+  if (typeof value !== "object" || seen.has(value)) {
+    throw new Error("invalid_plain_data");
+  }
   seen.add(value);
   try {
-    if (Object.getOwnPropertySymbols(value).length > 0) throw new Error("invalid_plain_data");
+    if (Object.getOwnPropertySymbols(value).length > 0) {
+      throw new Error("invalid_plain_data");
+    }
     const descriptors = Object.getOwnPropertyDescriptors(value);
     if (Array.isArray(value)) {
-      if (Object.getPrototypeOf(value) !== Array.prototype) throw new Error("invalid_plain_data");
+      if (Object.getPrototypeOf(value) !== Array.prototype) {
+        throw new Error("invalid_plain_data");
+      }
       const length = descriptors.length?.value;
-      if (!Number.isSafeInteger(length) || length < 0) throw new Error("invalid_plain_data");
+      if (!Number.isSafeInteger(length) || length < 0) {
+        throw new Error("invalid_plain_data");
+      }
       const snapshot: unknown[] = [];
       for (let index = 0; index < length; index += 1) {
         const descriptor = descriptors[String(index)];
-        if (!descriptor || !("value" in descriptor)) throw new Error("invalid_plain_data");
+        if (!descriptor || !("value" in descriptor)) {
+          throw new Error("invalid_plain_data");
+        }
         snapshot.push(snapshotPlainData(descriptor.value, seen));
       }
-      if (Object.keys(descriptors).some((key) => key !== "length" && !/^\d+$/u.test(key)))
+      if (Object.keys(descriptors).some((key) => key !== "length" && !/^\d+$/u.test(key))) {
         throw new Error("invalid_plain_data");
+      }
       return snapshot;
     }
     const prototype = Object.getPrototypeOf(value);
-    if (prototype !== Object.prototype && prototype !== null) throw new Error("invalid_plain_data");
+    if (prototype !== Object.prototype && prototype !== null) {
+      throw new Error("invalid_plain_data");
+    }
     const snapshot = Object.create(null) as Record<string, unknown>;
     for (const [key, descriptor] of Object.entries(descriptors)) {
-      if (!("value" in descriptor)) throw new Error("invalid_plain_data");
+      if (!("value" in descriptor)) {
+        throw new Error("invalid_plain_data");
+      }
       snapshot[key] = snapshotPlainData(descriptor.value, seen);
     }
     return snapshot;
@@ -281,17 +205,26 @@ function canonical(value: unknown): unknown {
     : isObject(value)
       ? Object.fromEntries(
           Object.entries(value)
-            .sort(([a], [b]) => a.localeCompare(b))
+            .toSorted(([a], [b]) => a.localeCompare(b))
             .map(([key, child]) => [key, canonical(child)]),
         )
       : value;
 }
 
+const hasControlCharacters = (value: string): boolean => {
+  for (let i = 0; i < value.length; i += 1) {
+    const code = value.charCodeAt(i);
+    if (code <= 0x1f || code === 0x7f) {
+      return true;
+    }
+  }
+  return false;
+};
 const boundedText = (value: unknown, max: number): value is string =>
   typeof value === "string" &&
   value.length > 0 &&
   value.length <= max &&
-  !/[\u0000-\u001f\u007f]/u.test(value);
+  !hasControlCharacters(value);
 
 export function canonicalDigest(value: unknown): string {
   return `sha256:${createHash("sha256")
@@ -315,8 +248,9 @@ export function pageCatalogue(
 ): Revision2Page {
   let trusted: unknown;
   let pageInput: unknown;
+  let sealedRecords: readonly Revision2Record[];
   try {
-    records = snapshotPlainData(records) as readonly Revision2Record[];
+    sealedRecords = snapshotPlainData(records) as readonly Revision2Record[];
     trusted = snapshotPlainData(authenticatedEvidence);
     pageInput = snapshotPlainData(input);
   } catch {
@@ -327,27 +261,30 @@ export function pageCatalogue(
     Object.keys(pageInput).some(
       (key) => !["commit", "tree", "snapshot", "cursor", "limit"].includes(key),
     )
-  )
+  ) {
     throw new Error("invalid page input");
+  }
   const trustedSource = isObject(trusted) && isObject(trusted.source) ? trusted.source : undefined;
   if (
-    !Array.isArray(records) ||
+    !Array.isArray(sealedRecords) ||
     !isObject(trusted) ||
-    Object.keys(trusted).sort().join(",") !==
+    Object.keys(trusted).toSorted().join(",") !==
       "catalogueSha256,recordsSha256,snapshot,source,verified" ||
     !trustedSource ||
-    Object.keys(trustedSource).sort().join(",") !== "commit,tree" ||
+    Object.keys(trustedSource).toSorted().join(",") !== "commit,tree" ||
     trustedSource.commit !== LIBRARIES_COMMIT ||
     trustedSource.tree !== LIBRARIES_TREE ||
     trusted.catalogueSha256 !== LIBRARIES_CATALOGUE_SHA256 ||
     !digest(trusted.recordsSha256) ||
-    normalizedSha256(trusted.recordsSha256 as string) !== canonicalDigest(records) ||
+    normalizedSha256(trusted.recordsSha256 as string) !== canonicalDigest(sealedRecords) ||
     trusted.snapshot !== pageInput.snapshot ||
     trusted.verified !== true
-  )
+  ) {
     throw new Error("invalid authenticated catalogue evidence");
-  if (pageInput.commit !== LIBRARIES_COMMIT || pageInput.tree !== LIBRARIES_TREE)
+  }
+  if (pageInput.commit !== LIBRARIES_COMMIT || pageInput.tree !== LIBRARIES_TREE) {
     throw new Error("wrong Libraries source");
+  }
   const requestedLimit = pageInput.limit;
   if (
     requestedLimit !== undefined &&
@@ -355,25 +292,35 @@ export function pageCatalogue(
       !Number.isInteger(requestedLimit) ||
       requestedLimit < 1 ||
       requestedLimit > 50)
-  )
+  ) {
     throw new Error("invalid page limit");
-  if (!boundedText(pageInput.snapshot, 512)) throw new Error("invalid catalogue snapshot");
+  }
+  if (!boundedText(pageInput.snapshot, 512)) {
+    throw new Error("invalid catalogue snapshot");
+  }
   const snapshot = pageInput.snapshot;
   let offset = 0;
   if (pageInput.cursor !== undefined) {
     const prefix = `snapshot:${snapshot}:`;
-    if (!boundedText(pageInput.cursor, 600) || !pageInput.cursor.startsWith(prefix))
+    if (!boundedText(pageInput.cursor, 600) || !pageInput.cursor.startsWith(prefix)) {
       throw new Error("stale catalogue cursor");
+    }
     const offsetText = pageInput.cursor.slice(prefix.length);
-    if (!/^\d+$/u.test(offsetText)) throw new Error("stale catalogue cursor");
+    if (!/^\d+$/u.test(offsetText)) {
+      throw new Error("stale catalogue cursor");
+    }
     offset = Number(offsetText);
-    if (!Number.isSafeInteger(offset)) throw new Error("stale catalogue cursor");
+    if (!Number.isSafeInteger(offset)) {
+      throw new Error("stale catalogue cursor");
+    }
   }
   const limit = requestedLimit ?? 25;
-  const ordered = [...records]
+  const ordered = [...sealedRecords]
     .map((record) => {
       const result = validateRevision2Record(record);
-      if (!result.ok) throw new Error(`invalid catalogue record: ${result.reason}`);
+      if (!result.ok) {
+        throw new Error(`invalid catalogue record: ${result.reason}`);
+      }
       return result.record;
     })
     .filter(
@@ -382,7 +329,7 @@ export function pageCatalogue(
         record.selectability === "selectable" &&
         record.compatibility === "compatible",
     )
-    .sort((a, b) => {
+    .toSorted((a, b) => {
       const left = `${a.entryId}@${a.version}`;
       const right = `${b.entryId}@${b.version}`;
       return left < right ? -1 : left > right ? 1 : 0;
@@ -396,50 +343,53 @@ export function pageCatalogue(
 }
 
 export function validateRevision2Record(value: unknown): Revision2Validation {
+  let sealed: unknown;
   try {
-    value = snapshotPlainData(value);
+    sealed = snapshotPlainData(value);
   } catch {
     return { ok: false, reason: "invalid catalogue record schema" };
   }
   if (
-    !isObject(value) ||
-    Object.keys(value).some((key) => !RECORD_KEYS.has(key)) ||
-    value.schemaVersion !== 2 ||
-    value.schemaRevision !== 2 ||
-    value.recordType !== "catalogue_record"
-  )
+    !isObject(sealed) ||
+    Object.keys(sealed).some((key) => !RECORD_KEYS.has(key)) ||
+    sealed.schemaVersion !== 2 ||
+    sealed.schemaRevision !== 2 ||
+    sealed.recordType !== "catalogue_record"
+  ) {
     return { ok: false, reason: "invalid catalogue record schema" };
+  }
   if (
-    !boundedText(value.entryId, 256) ||
-    !boundedText(value.version, 128) ||
-    typeof value.artifactType !== "string" ||
-    !ARTIFACT_TYPES.has(value.artifactType) ||
-    !digest(value.releaseManifestSha256) ||
-    !source(value.releaseSource) ||
-    typeof value.artifactTreeSha1 !== "string" ||
-    !SHA1.test(value.artifactTreeSha1) ||
-    !digest(value.inventorySha256) ||
-    typeof value.lifecycle !== "string" ||
-    !LIFECYCLE_VALUES.has(value.lifecycle) ||
-    typeof value.selectability !== "string" ||
-    !SELECTABILITY_VALUES.has(value.selectability) ||
-    typeof value.compatibility !== "string" ||
-    !COMPATIBILITY_VALUES.has(value.compatibility) ||
-    !boundedText(value.bundlePath, 512) ||
-    !BUNDLE_PATH.test(value.bundlePath) ||
-    value.bundlePath !== `registry/v2/entries/${value.entryId}/versions/${value.version}`
-  )
+    !boundedText(sealed.entryId, 256) ||
+    !boundedText(sealed.version, 128) ||
+    typeof sealed.artifactType !== "string" ||
+    !ARTIFACT_TYPES.has(sealed.artifactType) ||
+    !digest(sealed.releaseManifestSha256) ||
+    !source(sealed.releaseSource) ||
+    typeof sealed.artifactTreeSha1 !== "string" ||
+    !SHA1.test(sealed.artifactTreeSha1) ||
+    !digest(sealed.inventorySha256) ||
+    typeof sealed.lifecycle !== "string" ||
+    !LIFECYCLE_VALUES.has(sealed.lifecycle) ||
+    typeof sealed.selectability !== "string" ||
+    !SELECTABILITY_VALUES.has(sealed.selectability) ||
+    typeof sealed.compatibility !== "string" ||
+    !COMPATIBILITY_VALUES.has(sealed.compatibility) ||
+    !boundedText(sealed.bundlePath, 512) ||
+    !BUNDLE_PATH.test(sealed.bundlePath) ||
+    sealed.bundlePath !== `registry/v2/entries/${sealed.entryId}/versions/${sealed.version}`
+  ) {
     return { ok: false, reason: "catalogue record is not admitted and selectable" };
+  }
   const releaseSource = {
-    releaseSourceCommitSha: (value.releaseSource as Record<string, unknown>)
+    releaseSourceCommitSha: (sealed.releaseSource as Record<string, unknown>)
       .releaseSourceCommitSha as string,
-    releaseSourceRepositoryTreeSha1: (value.releaseSource as Record<string, unknown>)
+    releaseSourceRepositoryTreeSha1: (sealed.releaseSource as Record<string, unknown>)
       .releaseSourceRepositoryTreeSha1 as string,
   } as const;
   return {
     ok: true,
     record: Object.freeze({
-      ...(value as Revision2Record),
+      ...(sealed as Revision2Record),
       releaseSource: Object.freeze(releaseSource),
     }),
   };
@@ -450,34 +400,37 @@ export function validateExactRevision2(
   authenticatedEvidence: AuthenticatedRevision2CatalogueEvidence,
   materializationEvidence: VerifiedConsumerMaterializationEvidence,
 ): Revision2Validation {
+  let sealedBundle: unknown;
+  let sealedAuthenticatedEvidence: AuthenticatedRevision2CatalogueEvidence;
+  let sealedMaterializationEvidence: VerifiedConsumerMaterializationEvidence;
   try {
-    bundle = snapshotPlainData(bundle);
-    authenticatedEvidence = snapshotPlainData(
+    sealedBundle = snapshotPlainData(bundle);
+    sealedAuthenticatedEvidence = snapshotPlainData(
       authenticatedEvidence,
     ) as AuthenticatedRevision2CatalogueEvidence;
-    materializationEvidence = snapshotPlainData(
+    sealedMaterializationEvidence = snapshotPlainData(
       materializationEvidence,
     ) as VerifiedConsumerMaterializationEvidence;
   } catch {
     return { ok: false, reason: "invalid exact release evidence" };
   }
-  const trusted = authenticatedEvidence as unknown as Record<string, unknown>;
+  const trusted = sealedAuthenticatedEvidence as unknown as Record<string, unknown>;
   const trustedSource = isObject(trusted?.source) ? trusted.source : undefined;
   const trustedRecord = isObject(trusted?.selectedRecord) ? trusted.selectedRecord : undefined;
-  const materialized = materializationEvidence as unknown as Record<string, unknown>;
+  const materialized = sealedMaterializationEvidence as unknown as Record<string, unknown>;
   if (
     !isObject(trusted) ||
-    Object.keys(trusted).sort().join(",") !==
+    Object.keys(trusted).toSorted().join(",") !==
       "catalogueSha256,recordsSha256,selectedRecord,source,verified" ||
     !trustedSource ||
-    Object.keys(trustedSource).sort().join(",") !== "commit,tree" ||
+    Object.keys(trustedSource).toSorted().join(",") !== "commit,tree" ||
     trustedSource.commit !== LIBRARIES_COMMIT ||
     trustedSource.tree !== LIBRARIES_TREE ||
     trusted.catalogueSha256 !== LIBRARIES_CATALOGUE_SHA256 ||
     !digest(trusted.recordsSha256) ||
     trusted.verified !== true ||
     !trustedRecord ||
-    Object.keys(trustedRecord).sort().join(",") !==
+    Object.keys(trustedRecord).toSorted().join(",") !==
       "artifactTreeSha1,entryId,inventorySha256,releaseManifestSha256,releaseSourceCommitSha,releaseSourceRepositoryTreeSha1,version" ||
     !boundedText(trustedRecord.entryId, 256) ||
     !boundedText(trustedRecord.version, 128) ||
@@ -494,7 +447,7 @@ export function validateExactRevision2(
   }
   if (
     !isObject(materialized) ||
-    Object.keys(materialized).sort().join(",") !==
+    Object.keys(materialized).toSorted().join(",") !==
       "artifactTreeSha1,consumerMaterializedTreeSha1,entryId,inventorySha256,payloadSha256,releaseManifestSha256,releaseSourceCommitSha,releaseSourceRepositoryTreeSha1,verified,version" ||
     materialized.verified !== true ||
     typeof materialized.consumerMaterializedTreeSha1 !== "string" ||
@@ -503,37 +456,44 @@ export function validateExactRevision2(
     return { ok: false, reason: "invalid materialization verification evidence" };
   }
   if (
-    !isObject(bundle) ||
-    !hasExactKeys(bundle, BUNDLE_KEYS) ||
-    !isObject(bundle.source) ||
-    !hasExactKeys(bundle.source, PROVIDER_SOURCE_KEYS) ||
-    bundle.source.commit !== LIBRARIES_COMMIT ||
-    bundle.source.tree !== LIBRARIES_TREE
-  )
+    !isObject(sealedBundle) ||
+    !hasExactKeys(sealedBundle, BUNDLE_KEYS) ||
+    !isObject(sealedBundle.source) ||
+    !hasExactKeys(sealedBundle.source, PROVIDER_SOURCE_KEYS) ||
+    sealedBundle.source.commit !== LIBRARIES_COMMIT ||
+    sealedBundle.source.tree !== LIBRARIES_TREE
+  ) {
     return { ok: false, reason: "wrong source commit or tree" };
+  }
   if (
-    !isObject(bundle.catalogue) ||
-    !hasExactKeys(bundle.catalogue, CATALOGUE_KEYS) ||
-    bundle.catalogue.schemaVersion !== 2 ||
-    bundle.catalogue.schemaRevision !== 2 ||
-    bundle.catalogue.catalogueType !== "catalogue" ||
-    !digest(bundle.catalogue.catalogueSha256) ||
-    normalizedSha256(bundle.catalogue.catalogueSha256) !== LIBRARIES_CATALOGUE_SHA256 ||
-    !digest(bundle.catalogue.recordsSha256) ||
-    normalizedSha256(bundle.catalogue.recordsSha256) !==
+    !isObject(sealedBundle.catalogue) ||
+    !hasExactKeys(sealedBundle.catalogue, CATALOGUE_KEYS) ||
+    sealedBundle.catalogue.schemaVersion !== 2 ||
+    sealedBundle.catalogue.schemaRevision !== 2 ||
+    sealedBundle.catalogue.catalogueType !== "catalogue" ||
+    !digest(sealedBundle.catalogue.catalogueSha256) ||
+    normalizedSha256(sealedBundle.catalogue.catalogueSha256) !== LIBRARIES_CATALOGUE_SHA256 ||
+    !digest(sealedBundle.catalogue.recordsSha256) ||
+    normalizedSha256(sealedBundle.catalogue.recordsSha256) !==
       normalizedSha256(trusted.recordsSha256 as string) ||
-    !Array.isArray(bundle.catalogue.records) ||
-    canonicalDigest(bundle.catalogue.records) !== normalizedSha256(bundle.catalogue.recordsSha256)
-  )
+    !Array.isArray(sealedBundle.catalogue.records) ||
+    canonicalDigest(sealedBundle.catalogue.records) !==
+      normalizedSha256(sealedBundle.catalogue.recordsSha256)
+  ) {
     return { ok: false, reason: "invalid catalogue evidence" };
+  }
   const validatedCatalogueRecords: Revision2Record[] = [];
-  for (const candidate of bundle.catalogue.records) {
+  for (const candidate of sealedBundle.catalogue.records) {
     const candidateResult = validateRevision2Record(candidate);
-    if (!candidateResult.ok) return { ok: false, reason: "invalid catalogue record schema" };
+    if (!candidateResult.ok) {
+      return { ok: false, reason: "invalid catalogue record schema" };
+    }
     validatedCatalogueRecords.push(candidateResult.record);
   }
-  const recordResult = validateRevision2Record(bundle.record);
-  if (!recordResult.ok) return recordResult;
+  const recordResult = validateRevision2Record(sealedBundle.record);
+  if (!recordResult.ok) {
+    return recordResult;
+  }
   const record = recordResult.record;
   if (
     !validatedCatalogueRecords.some(
@@ -560,9 +520,10 @@ export function validateExactRevision2(
     record.lifecycle !== "admitted" ||
     record.selectability !== "selectable" ||
     record.compatibility !== "compatible"
-  )
+  ) {
     return { ok: false, reason: "record is not admitted, selectable, and compatible" };
-  const manifest = bundle.manifest;
+  }
+  const manifest = sealedBundle.manifest;
   if (
     !isObject(manifest) ||
     !hasExactKeys(manifest, MANIFEST_KEYS) ||
@@ -580,17 +541,19 @@ export function validateExactRevision2(
     !digest(manifest.dependencyLockSha256) ||
     manifest.releaseId.length > 160 ||
     canonicalDigest(manifest) !== normalizedSha256(record.releaseManifestSha256)
-  )
+  ) {
     return { ok: false, reason: "release manifest does not match catalogue" };
+  }
   if (
-    !digest(bundle.inventorySha256) ||
-    normalizedSha256(bundle.inventorySha256) !== normalizedSha256(record.inventorySha256) ||
-    !digest(bundle.dependencyLockSha256) ||
-    normalizedSha256(bundle.dependencyLockSha256) !==
+    !digest(sealedBundle.inventorySha256) ||
+    normalizedSha256(sealedBundle.inventorySha256) !== normalizedSha256(record.inventorySha256) ||
+    !digest(sealedBundle.dependencyLockSha256) ||
+    normalizedSha256(sealedBundle.dependencyLockSha256) !==
       normalizedSha256(manifest.dependencyLockSha256)
-  )
+  ) {
     return { ok: false, reason: "inventory or dependency evidence mismatch" };
-  const cache = bundle.verifiedCache;
+  }
+  const cache = sealedBundle.verifiedCache;
   if (
     !isObject(cache) ||
     !hasExactKeys(cache, CACHE_KEYS) ||
@@ -607,7 +570,7 @@ export function validateExactRevision2(
     normalizedSha256(cache.catalogueSha256) !== LIBRARIES_CATALOGUE_SHA256 ||
     !digest(cache.catalogueRecordsSha256) ||
     normalizedSha256(cache.catalogueRecordsSha256) !==
-      normalizedSha256(bundle.catalogue.recordsSha256) ||
+      normalizedSha256(sealedBundle.catalogue.recordsSha256) ||
     cache.entryId !== record.entryId ||
     cache.version !== record.version ||
     !digest(cache.releaseManifestSha256) ||
@@ -618,24 +581,26 @@ export function validateExactRevision2(
     !digest(cache.payloadSha256) ||
     normalizedSha256(cache.payloadSha256) !== normalizedSha256(manifest.payloadSha256) ||
     cache.artifactTreeSha1 !== record.artifactTreeSha1
-  )
+  ) {
     return { ok: false, reason: "verified cache receipt mismatch" };
+  }
   if (
-    !isObject(bundle.consumption) ||
-    !hasExactKeys(bundle.consumption, CONSUMPTION_KEYS) ||
-    bundle.consumption.receiptType !== "consumption" ||
-    bundle.consumption.result !== "pass" ||
-    bundle.consumption.entryId !== record.entryId ||
-    bundle.consumption.version !== record.version ||
-    !digest(bundle.consumption.releaseManifestSha256) ||
-    normalizedSha256(bundle.consumption.releaseManifestSha256) !==
+    !isObject(sealedBundle.consumption) ||
+    !hasExactKeys(sealedBundle.consumption, CONSUMPTION_KEYS) ||
+    sealedBundle.consumption.receiptType !== "consumption" ||
+    sealedBundle.consumption.result !== "pass" ||
+    sealedBundle.consumption.entryId !== record.entryId ||
+    sealedBundle.consumption.version !== record.version ||
+    !digest(sealedBundle.consumption.releaseManifestSha256) ||
+    normalizedSha256(sealedBundle.consumption.releaseManifestSha256) !==
       normalizedSha256(record.releaseManifestSha256) ||
-    bundle.consumption.releaseSourceCommitSha !== record.releaseSource.releaseSourceCommitSha ||
-    bundle.consumption.releaseSourceRepositoryTreeSha1 !==
+    sealedBundle.consumption.releaseSourceCommitSha !==
+      record.releaseSource.releaseSourceCommitSha ||
+    sealedBundle.consumption.releaseSourceRepositoryTreeSha1 !==
       record.releaseSource.releaseSourceRepositoryTreeSha1 ||
-    bundle.consumption.artifactTreeSha1 !== record.artifactTreeSha1 ||
-    typeof bundle.consumption.consumerMaterializedTreeSha1 !== "string" ||
-    !SHA1.test(bundle.consumption.consumerMaterializedTreeSha1) ||
+    sealedBundle.consumption.artifactTreeSha1 !== record.artifactTreeSha1 ||
+    typeof sealedBundle.consumption.consumerMaterializedTreeSha1 !== "string" ||
+    !SHA1.test(sealedBundle.consumption.consumerMaterializedTreeSha1) ||
     materialized.entryId !== record.entryId ||
     materialized.version !== record.version ||
     !digest(materialized.releaseManifestSha256) ||
@@ -651,8 +616,10 @@ export function validateExactRevision2(
     !digest(materialized.payloadSha256) ||
     normalizedSha256(materialized.payloadSha256 as string) !==
       normalizedSha256(manifest.payloadSha256) ||
-    bundle.consumption.consumerMaterializedTreeSha1 !== materialized.consumerMaterializedTreeSha1
-  )
+    sealedBundle.consumption.consumerMaterializedTreeSha1 !==
+      materialized.consumerMaterializedTreeSha1
+  ) {
     return { ok: false, reason: "consumption receipt is not a pass" };
+  }
   return { ok: true, record };
 }

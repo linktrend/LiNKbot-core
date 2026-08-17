@@ -132,7 +132,9 @@ describe("validateExactRelease", () => {
   it("fails closed without throwing when evidence is missing", () => {
     const result = validate({});
     expect(result.ok).toBe(false);
-    if (!result.ok) expect(result.errors).toContain("candidate.gitSha is missing");
+    if (!result.ok) {
+      expect(result.errors).toContain("candidate.gitSha is missing");
+    }
   });
 
   it.each([
@@ -165,7 +167,9 @@ describe("validateExactRelease", () => {
       candidate.manifest.lifecycle[key] = "blocked";
       const result = validate(candidate);
       expect(result.ok).toBe(false);
-      if (!result.ok) expect(result.errors).toContain(`manifest.lifecycle.${key} is forbidden`);
+      if (!result.ok) {
+        expect(result.errors).toContain(`manifest.lifecycle.${key} is forbidden`);
+      }
     },
   );
 

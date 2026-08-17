@@ -258,7 +258,7 @@ describe("LiNKlibraries Revision 2 consumer", () => {
     expect(validate({ ...bundle, record: { ...record, bundlePath: "" } }).ok).toBe(false);
   });
   it("binds the selected record to the canonical catalogue records digest", () => {
-    const tamperedCatalogue = structuredClone(bundle) as any;
+    const tamperedCatalogue = structuredClone(bundle) as Record<string, unknown>;
     tamperedCatalogue.catalogue.records[0].version = "2.0.0";
     expect(validate(tamperedCatalogue).ok).toBe(false);
 
@@ -272,7 +272,7 @@ describe("LiNKlibraries Revision 2 consumer", () => {
       releaseId: "substituted-component@1.0.0",
       entryId: "substituted-component",
     };
-    const substitutedBundle = structuredClone(bundle) as any;
+    const substitutedBundle = structuredClone(bundle) as Record<string, unknown>;
     substitutedBundle.record = {
       ...substitutedRecord,
       releaseManifestSha256: canonicalDigest(substitutedManifest),
@@ -281,7 +281,7 @@ describe("LiNKlibraries Revision 2 consumer", () => {
     expect(validate(substitutedBundle).ok).toBe(false);
   });
   it("rejects a self-consistent catalogue digest that is not the pinned provider digest", () => {
-    const value = structuredClone(bundle) as any;
+    const value = structuredClone(bundle) as Record<string, unknown>;
     value.catalogue.catalogueSha256 = d("d");
     value.verifiedCache.catalogueSha256 = d("d");
     expect(validate(value)).toMatchObject({
@@ -290,7 +290,7 @@ describe("LiNKlibraries Revision 2 consumer", () => {
     });
   });
   it("accepts the contract-supported raw manifest digest representation", () => {
-    const value = structuredClone(bundle) as any;
+    const value = structuredClone(bundle) as Record<string, unknown>;
     const rawManifestDigest = record.releaseManifestSha256.slice("sha256:".length);
     value.record.releaseManifestSha256 = rawManifestDigest;
     value.catalogue.records[0].releaseManifestSha256 = rawManifestDigest;
@@ -303,7 +303,7 @@ describe("LiNKlibraries Revision 2 consumer", () => {
     ).toBe(true);
   });
   it("normalizes mixed raw and prefixed digest evidence", () => {
-    const value = structuredClone(bundle) as any;
+    const value = structuredClone(bundle) as Record<string, unknown>;
     value.inventorySha256 = value.inventorySha256.slice("sha256:".length);
     value.dependencyLockSha256 = value.dependencyLockSha256.slice("sha256:".length);
     value.verifiedCache.catalogueRecordsSha256 = value.verifiedCache.catalogueRecordsSha256.slice(
@@ -345,18 +345,25 @@ describe("LiNKlibraries Revision 2 consumer", () => {
     ).toBe(true);
   });
   it.each([
-    ["bundle", (value: any): void => void (value.extra = true)],
-    ["source", (value: any): void => void (value.source.extra = true)],
-    ["catalogue", (value: any): void => void (value.catalogue.extra = true)],
-    ["manifest", (value: any): void => void (value.manifest.extra = true)],
-    ["verified cache", (value: any): void => void (value.verifiedCache.extra = true)],
+    ["bundle", (value: Record<string, unknown>): void => void (value.extra = true)],
+    ["source", (value: Record<string, unknown>): void => void (value.source.extra = true)],
+    ["catalogue", (value: Record<string, unknown>): void => void (value.catalogue.extra = true)],
+    ["manifest", (value: Record<string, unknown>): void => void (value.manifest.extra = true)],
+    [
+      "verified cache",
+      (value: Record<string, unknown>): void => void (value.verifiedCache.extra = true),
+    ],
     [
       "cache source evidence",
-      (value: any): void => void (value.verifiedCache.sourceEvidence.extra = true),
+      (value: Record<string, unknown>): void =>
+        void (value.verifiedCache.sourceEvidence.extra = true),
     ],
-    ["consumption receipt", (value: any): void => void (value.consumption.extra = true)],
+    [
+      "consumption receipt",
+      (value: Record<string, unknown>): void => void (value.consumption.extra = true),
+    ],
   ] as const)("rejects unknown fields in the exact %s envelope", (_name, mutate) => {
-    const value = structuredClone(bundle) as any;
+    const value = structuredClone(bundle) as Record<string, unknown>;
     mutate(value);
     expect(validate(value).ok).toBe(false);
   });
@@ -412,22 +419,30 @@ describe("LiNKlibraries Revision 2 consumer", () => {
   it.each(["wrong source", "wrong manifest", "stale cache", "failed consumption"] as const)(
     "rejects %s",
     (failure) => {
-      const value = structuredClone(bundle) as any;
-      if (failure === "wrong source") value.source.commit = "other";
-      if (failure === "wrong manifest") value.manifest.payloadSha256 = d("a");
-      if (failure === "stale cache") value.verifiedCache.catalogueSha256 = d("z");
-      if (failure === "failed consumption") value.consumption.result = "fail";
+      const value = structuredClone(bundle) as Record<string, unknown>;
+      if (failure === "wrong source") {
+        value.source.commit = "other";
+      }
+      if (failure === "wrong manifest") {
+        value.manifest.payloadSha256 = d("a");
+      }
+      if (failure === "stale cache") {
+        value.verifiedCache.catalogueSha256 = d("z");
+      }
+      if (failure === "failed consumption") {
+        value.consumption.result = "fail";
+      }
       expect(validate(value).ok).toBe(false);
     },
   );
   it("rejects an unrelated consumption receipt", () => {
-    const value = structuredClone(bundle) as any;
+    const value = structuredClone(bundle) as Record<string, unknown>;
     value.consumption.entryId = "other-entry";
     expect(validate(value).ok).toBe(false);
   });
 
   it("rejects a forged pass receipt that does not match independent materialization evidence", () => {
-    const value = structuredClone(bundle) as any;
+    const value = structuredClone(bundle) as Record<string, unknown>;
     value.consumption.consumerMaterializedTreeSha1 = "ffeeddccbbaa0099887766554433221100ffeedd";
     expect(validate(value)).toMatchObject({
       ok: false,
@@ -442,7 +457,7 @@ describe("LiNKlibraries Revision 2 consumer", () => {
   });
 
   it("fails closed for malformed catalogue entries without throwing", () => {
-    const value = structuredClone(bundle) as any;
+    const value = structuredClone(bundle) as Record<string, unknown>;
     value.catalogue.records = [undefined];
     value.catalogue.recordsSha256 = canonicalDigest(value.catalogue.records);
     expect(() => validate(value)).not.toThrow();
@@ -466,7 +481,7 @@ describe("LiNKlibraries Revision 2 consumer", () => {
 
   it("fails closed without throwing for malformed authenticated selected-record digests", () => {
     for (const field of ["releaseManifestSha256", "inventorySha256"] as const) {
-      const evidence = structuredClone(authenticatedCatalogueEvidence()) as any;
+      const evidence = structuredClone(authenticatedCatalogueEvidence()) as Record<string, unknown>;
       evidence.selectedRecord[field] = null;
       expect(() => validate(bundle, evidence)).not.toThrow();
       expect(validate(bundle, evidence)).toMatchObject({

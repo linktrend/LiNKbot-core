@@ -115,10 +115,12 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function canonicalString(value: unknown): string {
-  if (Array.isArray(value)) return `[${value.map(canonicalString).join(",")}]`;
+  if (Array.isArray(value)) {
+    return `[${value.map(canonicalString).join(",")}]`;
+  }
   if (isRecord(value)) {
     return `{${Object.keys(value)
-      .sort()
+      .toSorted()
       .map((key) => `${JSON.stringify(key)}:${canonicalString(value[key])}`)
       .join(",")}}`;
   }
@@ -129,14 +131,18 @@ export function candidateDependencyClosureDigest(
   entries: readonly CandidateDependency[],
 ): InventoryDigest {
   const snapshot = snapshotPlainData(entries);
-  if (!Array.isArray(snapshot)) throw new Error("invalid dependency closure entries");
+  if (!Array.isArray(snapshot)) {
+    throw new Error("invalid dependency closure entries");
+  }
   return `sha256:${createHash("sha256").update(canonicalString(snapshot)).digest("hex")}`;
 }
 
 /** Binds every provider-supplied fact used to admit and select a portable release. */
 export function candidateEligibilityDigest(candidate: Candidate): InventoryDigest {
   const snapshot = snapshotPlainData(candidate);
-  if (!isRecord(snapshot)) throw new Error("invalid release eligibility evidence");
+  if (!isRecord(snapshot)) {
+    throw new Error("invalid release eligibility evidence");
+  }
   return `sha256:${createHash("sha256")
     .update(
       canonicalString({
@@ -158,32 +164,48 @@ function snapshotPlainData(value: unknown, seen = new WeakSet<object>()): unknow
     typeof value === "string" ||
     typeof value === "number" ||
     typeof value === "boolean"
-  )
+  ) {
     return value;
-  if (typeof value !== "object" || seen.has(value)) throw new Error("invalid_plain_data");
+  }
+  if (typeof value !== "object" || seen.has(value)) {
+    throw new Error("invalid_plain_data");
+  }
   seen.add(value);
   try {
-    if (Object.getOwnPropertySymbols(value).length > 0) throw new Error("invalid_plain_data");
+    if (Object.getOwnPropertySymbols(value).length > 0) {
+      throw new Error("invalid_plain_data");
+    }
     const descriptors = Object.getOwnPropertyDescriptors(value);
     if (Array.isArray(value)) {
-      if (Object.getPrototypeOf(value) !== Array.prototype) throw new Error("invalid_plain_data");
+      if (Object.getPrototypeOf(value) !== Array.prototype) {
+        throw new Error("invalid_plain_data");
+      }
       const length = descriptors.length?.value;
-      if (!Number.isSafeInteger(length) || length < 0) throw new Error("invalid_plain_data");
+      if (!Number.isSafeInteger(length) || length < 0) {
+        throw new Error("invalid_plain_data");
+      }
       const snapshot: unknown[] = [];
       for (let index = 0; index < length; index += 1) {
         const descriptor = descriptors[String(index)];
-        if (!descriptor || !("value" in descriptor)) throw new Error("invalid_plain_data");
+        if (!descriptor || !("value" in descriptor)) {
+          throw new Error("invalid_plain_data");
+        }
         snapshot.push(snapshotPlainData(descriptor.value, seen));
       }
-      if (Object.keys(descriptors).some((key) => key !== "length" && !/^\d+$/u.test(key)))
+      if (Object.keys(descriptors).some((key) => key !== "length" && !/^\d+$/u.test(key))) {
         throw new Error("invalid_plain_data");
+      }
       return snapshot;
     }
     const prototype = Object.getPrototypeOf(value);
-    if (prototype !== Object.prototype && prototype !== null) throw new Error("invalid_plain_data");
+    if (prototype !== Object.prototype && prototype !== null) {
+      throw new Error("invalid_plain_data");
+    }
     const snapshot = Object.create(null) as Record<string, unknown>;
     for (const [key, descriptor] of Object.entries(descriptors)) {
-      if (!("value" in descriptor)) throw new Error("invalid_plain_data");
+      if (!("value" in descriptor)) {
+        throw new Error("invalid_plain_data");
+      }
       snapshot[key] = snapshotPlainData(descriptor.value, seen);
     }
     return snapshot;
@@ -230,17 +252,18 @@ export function validateExactRelease(
 ): ExactReleaseResult {
   const errors: string[] = [];
 
+  let sealed: unknown;
   try {
-    candidate = snapshotPlainData(candidate);
+    sealed = snapshotPlainData(candidate);
   } catch {
     return { ok: false, errors: ["candidate is not immutable plain data"] };
   }
 
-  if (!isRecord(candidate)) {
+  if (!isRecord(sealed)) {
     return { ok: false, errors: ["candidate is missing"] };
   }
   validateKeys(
-    candidate,
+    sealed,
     "candidate",
     [
       "gitSha",
@@ -255,7 +278,7 @@ export function validateExactRelease(
     ],
     errors,
   );
-  const input = candidate;
+  const input = sealed;
   const asset = isRecord(input.asset) ? input.asset : undefined;
   const catalogue = isRecord(input.catalogue) ? input.catalogue : undefined;
   const manifest = isRecord(input.manifest) ? input.manifest : undefined;
@@ -308,15 +331,22 @@ export function validateExactRelease(
       errors.push("authenticated asset evidence is invalid");
     }
   }
-  if (!isNonEmpty(input.gitSha) || !GIT_SHA.test(input.gitSha))
+  if (!isNonEmpty(input.gitSha) || !GIT_SHA.test(input.gitSha)) {
     errors.push("gitSha must be an exact 40-hex SHA");
-  if (!isNonEmpty(input.treeSha) || !GIT_SHA.test(input.treeSha))
+  }
+  if (!isNonEmpty(input.treeSha) || !GIT_SHA.test(input.treeSha)) {
     errors.push("treeSha must be an exact 40-hex tree SHA");
-  if (input.gitSha !== FROZEN_CANDIDATE_SHA) errors.push("gitSha is not the frozen candidate");
-  if (input.treeSha !== FROZEN_TREE_SHA) errors.push("treeSha is not the frozen candidate tree");
+  }
+  if (input.gitSha !== FROZEN_CANDIDATE_SHA) {
+    errors.push("gitSha is not the frozen candidate");
+  }
+  if (input.treeSha !== FROZEN_TREE_SHA) {
+    errors.push("treeSha is not the frozen candidate tree");
+  }
 
-  if (!asset) errors.push("asset identity evidence is incomplete");
-  else
+  if (!asset) {
+    errors.push("asset identity evidence is incomplete");
+  } else {
     validateKeys(
       asset,
       "asset",
@@ -328,21 +358,27 @@ export function validateExactRelease(
       ],
       errors,
     );
+  }
   if (
     !asset ||
     !isNonEmpty(asset.releaseSourceCommitSha) ||
     !GIT_SHA.test(asset.releaseSourceCommitSha)
-  )
+  ) {
     errors.push("asset release source commit must be an exact 40-hex SHA");
+  }
   if (
     !asset ||
     !isNonEmpty(asset.releaseSourceRepositoryTreeSha1) ||
     !GIT_SHA.test(asset.releaseSourceRepositoryTreeSha1)
-  )
+  ) {
     errors.push("asset release source tree must be an exact 40-hex SHA");
-  if (!asset || !isNonEmpty(asset.artifactTreeSha1) || !GIT_SHA.test(asset.artifactTreeSha1))
+  }
+  if (!asset || !isNonEmpty(asset.artifactTreeSha1) || !GIT_SHA.test(asset.artifactTreeSha1)) {
     errors.push("asset artifact tree must be an exact 40-hex SHA");
-  if (!asset || !isDigest(asset.payloadSha256)) errors.push("asset payload digest is invalid");
+  }
+  if (!asset || !isDigest(asset.payloadSha256)) {
+    errors.push("asset payload digest is invalid");
+  }
   if (
     trustedEvidence &&
     isRecord(trustedEvidence) &&
@@ -355,39 +391,56 @@ export function validateExactRelease(
     errors.push("selected asset does not match authenticated provider evidence");
   }
 
-  if (!catalogue) errors.push("catalogue evidence is incomplete");
-  else validateKeys(catalogue, "catalogue", ["inventoryDigest", "current", "authorized"], errors);
-  if (catalogue && !isDigest(catalogue.inventoryDigest))
+  if (!catalogue) {
+    errors.push("catalogue evidence is incomplete");
+  } else {
+    validateKeys(catalogue, "catalogue", ["inventoryDigest", "current", "authorized"], errors);
+  }
+  if (catalogue && !isDigest(catalogue.inventoryDigest)) {
     errors.push("catalogue inventory digest is invalid");
+  }
   if (
     trustedEvidence &&
     isRecord(trustedEvidence) &&
     catalogue &&
     trustedEvidence.inventoryDigest !== catalogue.inventoryDigest
-  )
+  ) {
     errors.push("catalogue inventory does not match authenticated provider evidence");
-  if (catalogue && catalogue.current !== true) errors.push("catalogue is stale");
-  if (catalogue && catalogue.authorized !== true) errors.push("catalogue is unauthorized");
-  if (!manifest) errors.push("manifest evidence is incomplete");
-  else
+  }
+  if (catalogue && catalogue.current !== true) {
+    errors.push("catalogue is stale");
+  }
+  if (catalogue && catalogue.authorized !== true) {
+    errors.push("catalogue is unauthorized");
+  }
+  if (!manifest) {
+    errors.push("manifest evidence is incomplete");
+  } else {
     validateKeys(
       manifest,
       "manifest",
       ["inventoryDigest", "current", "authorized", "lifecycle", "supportedConsumerProfiles"],
       errors,
     );
-  if (manifest && !isDigest(manifest.inventoryDigest))
+  }
+  if (manifest && !isDigest(manifest.inventoryDigest)) {
     errors.push("manifest inventory digest is invalid");
+  }
   if (
     catalogue &&
     manifest &&
     isDigest(catalogue.inventoryDigest) &&
     isDigest(manifest.inventoryDigest) &&
     manifest.inventoryDigest !== catalogue.inventoryDigest
-  )
+  ) {
     errors.push("manifest inventory digest does not match catalogue");
-  if (manifest && manifest.current !== true) errors.push("manifest is stale");
-  if (manifest && manifest.authorized !== true) errors.push("manifest is unauthorized");
+  }
+  if (manifest && manifest.current !== true) {
+    errors.push("manifest is stale");
+  }
+  if (manifest && manifest.authorized !== true) {
+    errors.push("manifest is unauthorized");
+  }
   const lifecycle = manifest && isRecord(manifest.lifecycle) ? manifest.lifecycle : undefined;
   if (!lifecycle) {
     errors.push("manifest lifecycle is missing");
@@ -401,10 +454,17 @@ export function validateExactRelease(
     errors.push("manifest is not selectable");
   }
 
-  if (!profile) errors.push("consumer profile evidence is incomplete");
-  else validateKeys(profile, "consumerProfile", ["id", "compatible"], errors);
-  if (!profile || !isNonEmpty(profile.id)) errors.push("consumer profile is missing");
-  if (!profile || profile.compatible !== true) errors.push("consumer profile is incompatible");
+  if (!profile) {
+    errors.push("consumer profile evidence is incomplete");
+  } else {
+    validateKeys(profile, "consumerProfile", ["id", "compatible"], errors);
+  }
+  if (!profile || !isNonEmpty(profile.id)) {
+    errors.push("consumer profile is missing");
+  }
+  if (!profile || profile.compatible !== true) {
+    errors.push("consumer profile is incompatible");
+  }
   if (
     !manifest ||
     !Array.isArray(manifest.supportedConsumerProfiles) ||
@@ -416,14 +476,20 @@ export function validateExactRelease(
     errors.push("consumer profile is not supported by the manifest");
   }
 
-  if (!dependencies) errors.push("dependencies evidence is incomplete");
-  else validateKeys(dependencies, "dependencies", ["complete", "closureDigest", "entries"], errors);
-  if (!dependencies || dependencies.complete !== true)
+  if (!dependencies) {
+    errors.push("dependencies evidence is incomplete");
+  } else {
+    validateKeys(dependencies, "dependencies", ["complete", "closureDigest", "entries"], errors);
+  }
+  if (!dependencies || dependencies.complete !== true) {
     errors.push("dependency closure is incomplete");
-  if (dependencies && !isDigest(dependencies.closureDigest))
+  }
+  if (dependencies && !isDigest(dependencies.closureDigest)) {
     errors.push("dependency closure digest is invalid");
-  if (!dependencies || !Array.isArray(dependencies.entries))
+  }
+  if (!dependencies || !Array.isArray(dependencies.entries)) {
     errors.push("dependency closure is empty");
+  }
   for (const dependency of dependencies && Array.isArray(dependencies.entries)
     ? dependencies.entries
     : []) {
@@ -441,9 +507,12 @@ export function validateExactRelease(
       errors.push("dependency entry is incomplete");
     }
     const dependencyName = isNonEmpty(dependency.name) ? dependency.name : "<unknown>";
-    if (dependency.resolved !== true) errors.push(`dependency ${dependencyName} is unresolved`);
-    if (!isNonEmpty(dependency.provenanceRef))
+    if (dependency.resolved !== true) {
+      errors.push(`dependency ${dependencyName} is unresolved`);
+    }
+    if (!isNonEmpty(dependency.provenanceRef)) {
       errors.push(`dependency ${dependencyName} lacks provenance`);
+    }
   }
   if (
     dependencies &&
@@ -461,13 +530,19 @@ export function validateExactRelease(
     errors.push("dependency closure digest does not match entries");
   }
 
-  if (!provenance) errors.push("provenance evidence is incomplete");
-  else validateKeys(provenance, "provenance", ["complete", "ref"], errors);
+  if (!provenance) {
+    errors.push("provenance evidence is incomplete");
+  } else {
+    validateKeys(provenance, "provenance", ["complete", "ref"], errors);
+  }
   if (!provenance || provenance.complete !== true || !isNonEmpty(provenance.ref)) {
     errors.push("provenance receipt reference is incomplete");
   }
-  if (!receipt) errors.push("receipt evidence is incomplete");
-  else validateKeys(receipt, "receipt", ["complete", "ref"], errors);
+  if (!receipt) {
+    errors.push("receipt evidence is incomplete");
+  } else {
+    validateKeys(receipt, "receipt", ["complete", "ref"], errors);
+  }
   if (!receipt || receipt.complete !== true || !isNonEmpty(receipt.ref)) {
     errors.push("admission receipt reference is incomplete");
   }
@@ -480,7 +555,9 @@ export function validateExactRelease(
     errors.push("release eligibility does not match authenticated provider evidence");
   }
 
-  if (errors.length > 0) return { ok: false, errors };
+  if (errors.length > 0) {
+    return { ok: false, errors };
+  }
 
   return {
     ok: true,

@@ -15,7 +15,7 @@ const canonical = (value: unknown): unknown =>
     : value !== null && typeof value === "object"
       ? Object.fromEntries(
           Object.entries(value)
-            .sort(([left], [right]) => left.localeCompare(right))
+            .toSorted(([left], [right]) => left.localeCompare(right))
             .map(([key, child]) => [key, canonical(child)]),
         )
       : value;

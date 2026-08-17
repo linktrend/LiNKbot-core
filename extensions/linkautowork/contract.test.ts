@@ -65,11 +65,26 @@ const receipt = {
   uncertainOutcome: false,
 } as const;
 
-const authenticatedReceiptEvidence = (value: unknown) => {
-  if ((typeof value !== "object" && typeof value !== "function") || value === null) return;
+const authenticatedReceiptEvidence = (
+  value: unknown,
+):
+  | {
+      providerCandidate: { commit: typeof AUTOWORK_COMMIT; tree: typeof AUTOWORK_TREE };
+      contractVersion: typeof AUTOWORK_CONTRACT_VERSION;
+      requestId: unknown;
+      receiptId: unknown;
+      receiptDigest: string;
+      verified: true;
+    }
+  | undefined => {
+  if ((typeof value !== "object" && typeof value !== "function") || value === null) {
+    return undefined;
+  }
   const requestId = Object.getOwnPropertyDescriptor(value, "requestId");
   const receiptId = Object.getOwnPropertyDescriptor(value, "receiptId");
-  if (!requestId || !("value" in requestId) || !receiptId || !("value" in receiptId)) return;
+  if (!requestId || !("value" in requestId) || !receiptId || !("value" in receiptId)) {
+    return undefined;
+  }
   try {
     return {
       providerCandidate: { commit: AUTOWORK_COMMIT, tree: AUTOWORK_TREE },
@@ -80,7 +95,7 @@ const authenticatedReceiptEvidence = (value: unknown) => {
       verified: true as const,
     };
   } catch {
-    return;
+    return undefined;
   }
 };
 const validateReceipt = (
@@ -485,8 +500,9 @@ describe("LinkAutowork final provider contract", () => {
   ] as const)("fails closed for %s", (_name, changes, valid) => {
     const candidate = { ...request, ...changes };
     expect(validateRequest(candidate)).toBe(valid);
-    if (_name === "changed idempotency content")
+    if (_name === "changed idempotency content") {
       expect(sameIdempotencyContent(request, candidate)).toBe(false);
+    }
   });
   it("rejects callback replay or receipt fingerprint mismatch", () => {
     expect(

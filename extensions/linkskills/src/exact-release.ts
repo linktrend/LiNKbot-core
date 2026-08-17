@@ -145,32 +145,48 @@ function snapshotPlainData(value: unknown, seen = new WeakSet<object>()): unknow
     typeof value === "string" ||
     typeof value === "number" ||
     typeof value === "boolean"
-  )
+  ) {
     return value;
-  if (typeof value !== "object" || seen.has(value)) throw new Error("invalid_plain_data");
+  }
+  if (typeof value !== "object" || seen.has(value)) {
+    throw new Error("invalid_plain_data");
+  }
   seen.add(value);
   try {
-    if (Object.getOwnPropertySymbols(value).length > 0) throw new Error("invalid_plain_data");
+    if (Object.getOwnPropertySymbols(value).length > 0) {
+      throw new Error("invalid_plain_data");
+    }
     const descriptors = Object.getOwnPropertyDescriptors(value);
     if (Array.isArray(value)) {
-      if (Object.getPrototypeOf(value) !== Array.prototype) throw new Error("invalid_plain_data");
+      if (Object.getPrototypeOf(value) !== Array.prototype) {
+        throw new Error("invalid_plain_data");
+      }
       const length = descriptors.length?.value;
-      if (!Number.isSafeInteger(length) || length < 0) throw new Error("invalid_plain_data");
+      if (!Number.isSafeInteger(length) || length < 0) {
+        throw new Error("invalid_plain_data");
+      }
       const snapshot: unknown[] = [];
       for (let index = 0; index < length; index += 1) {
         const descriptor = descriptors[String(index)];
-        if (!descriptor || !("value" in descriptor)) throw new Error("invalid_plain_data");
+        if (!descriptor || !("value" in descriptor)) {
+          throw new Error("invalid_plain_data");
+        }
         snapshot.push(snapshotPlainData(descriptor.value, seen));
       }
-      if (Object.keys(descriptors).some((key) => key !== "length" && !/^\d+$/u.test(key)))
+      if (Object.keys(descriptors).some((key) => key !== "length" && !/^\d+$/u.test(key))) {
         throw new Error("invalid_plain_data");
+      }
       return snapshot;
     }
     const prototype = Object.getPrototypeOf(value);
-    if (prototype !== Object.prototype && prototype !== null) throw new Error("invalid_plain_data");
+    if (prototype !== Object.prototype && prototype !== null) {
+      throw new Error("invalid_plain_data");
+    }
     const snapshot = Object.create(null) as Record<string, unknown>;
     for (const [key, descriptor] of Object.entries(descriptors)) {
-      if (!("value" in descriptor)) throw new Error("invalid_plain_data");
+      if (!("value" in descriptor)) {
+        throw new Error("invalid_plain_data");
+      }
       snapshot[key] = snapshotPlainData(descriptor.value, seen);
     }
     return snapshot;
@@ -186,11 +202,17 @@ function isString(value: unknown): value is string {
 }
 
 function parseTime(value: unknown): number | undefined {
-  if (!isString(value)) return undefined;
+  if (!isString(value)) {
+    return undefined;
+  }
   const match = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})\.(\d{3})Z$/u.exec(value);
-  if (!match) return undefined;
+  if (!match) {
+    return undefined;
+  }
   const time = Date.parse(value);
-  if (!Number.isFinite(time)) return undefined;
+  if (!Number.isFinite(time)) {
+    return undefined;
+  }
   const date = new Date(time);
   return date.getUTCFullYear() === Number(match[1]) &&
     date.getUTCMonth() + 1 === Number(match[2]) &&
@@ -216,7 +238,7 @@ function canonical(value: unknown): unknown {
     : isRecord(value)
       ? Object.fromEntries(
           Object.entries(value)
-            .sort(([left], [right]) => left.localeCompare(right))
+            .toSorted(([left], [right]) => left.localeCompare(right))
             .map(([key, child]) => [key, canonical(child)]),
         )
       : value;
@@ -311,12 +333,16 @@ export function validateExactRelease(
     !isString(expectedOrganization) ||
     !isString(expectedAudience) ||
     !isString(expectedCapability)
-  )
+  ) {
     return reject("invalid_provider_evidence");
+  }
   const release = snapshot as Partial<ExactRelease>;
-  if (!hasOnlyKeys(snapshot, RELEASE_KEYS)) return reject("invalid_shape", release);
-  if (!isString(release.release_id) || !isString(release.version))
+  if (!hasOnlyKeys(snapshot, RELEASE_KEYS)) {
     return reject("invalid_shape", release);
+  }
+  if (!isString(release.release_id) || !isString(release.version)) {
+    return reject("invalid_shape", release);
+  }
   if (
     /^(latest|current|stable|newest)$/i.test(release.release_id) ||
     /^(latest|current|stable|newest)$/i.test(release.version)
@@ -340,22 +366,25 @@ export function validateExactRelease(
   if (!isDigest(release.manifest_digest) || !isDigest(release.package_digest)) {
     return reject("invalid_digest", release);
   }
-  if (release.manifest_digest === release.package_digest)
+  if (release.manifest_digest === release.package_digest) {
     return reject("invalid_immutability", release);
+  }
   const releaseId = release.release_id as string;
   const version = release.version as string;
   const manifestDigest = release.manifest_digest as string;
   const releaseIdSeparator = releaseId.lastIndexOf("@");
-  if (releaseIdSeparator < 1 || releaseId.slice(releaseIdSeparator + 1) !== version)
+  if (releaseIdSeparator < 1 || releaseId.slice(releaseIdSeparator + 1) !== version) {
     return reject("invalid_immutability", release);
+  }
   if (
     release.package_digest !==
     expectedPackageDigest({
       release_id: releaseId,
       manifest_digest: manifestDigest,
     })
-  )
+  ) {
     return reject("invalid_digest", release);
+  }
   let providerEvidence: unknown;
   try {
     providerEvidence = snapshotPlainData(ownOption("authenticatedProviderEvidence"));
@@ -384,27 +413,34 @@ export function validateExactRelease(
   ) {
     return reject("invalid_provider_evidence", release);
   }
-  if (release.lifecycle !== "qualified") return reject("invalid_lifecycle", release);
-  if (release.state !== "available") return reject("invalid_state", release);
+  if (release.lifecycle !== "qualified") {
+    return reject("invalid_lifecycle", release);
+  }
+  if (release.state !== "available") {
+    return reject("invalid_state", release);
+  }
   if (!Array.isArray(release.compatible_profiles) || !release.compatible_profiles.every(isString)) {
     return reject("incompatible_profile", release);
   }
-  if (!release.compatible_profiles.includes(profile))
+  if (!release.compatible_profiles.includes(profile)) {
     return reject("incompatible_profile", release);
-  if (!isRecord(release.attestation) || !hasOnlyKeys(release.attestation, ATTESTATION_KEYS))
+  }
+  if (!isRecord(release.attestation) || !hasOnlyKeys(release.attestation, ATTESTATION_KEYS)) {
     return reject("missing_attestation", release);
+  }
   const attestation = release.attestation as Partial<ReleaseAttestation>;
   if (
     attestation.issuer !== "librarian" ||
     attestation.digest !== release.manifest_digest ||
     !isDigest(attestation.digest)
-  )
+  ) {
     return reject("missing_attestation", release);
+  }
   const configuredNow = ownOption("now");
   let now: number | undefined;
   try {
     now =
-      typeof configuredNow === "undefined"
+      configuredNow === undefined
         ? Date.now()
         : configuredNow instanceof Date
           ? Date.prototype.getTime.call(configuredNow)
@@ -428,8 +464,9 @@ export function validateExactRelease(
   }
   const configuredMaxAge = ownOption("maxAgeMs");
   const maxAge = configuredMaxAge ?? 24 * 60 * 60 * 1000;
-  if (typeof maxAge !== "number" || !Number.isFinite(maxAge) || maxAge < 0)
+  if (typeof maxAge !== "number" || !Number.isFinite(maxAge) || maxAge < 0) {
     return reject("invalid_timestamp", release);
+  }
   if (
     issuedAt > now ||
     expiresAt <= now ||
@@ -440,8 +477,9 @@ export function validateExactRelease(
   ) {
     return reject("stale_timestamp", release);
   }
-  if (providerEvidence.eligibilityDigest !== expectedEligibilityDigest(release as ExactRelease))
+  if (providerEvidence.eligibilityDigest !== expectedEligibilityDigest(release as ExactRelease)) {
     return reject("invalid_provider_evidence", release);
+  }
   const exact: ExactRelease = {
     release_id: release.release_id,
     version: release.version,
@@ -472,9 +510,11 @@ export function validateProgressiveReleaseTransition(
   previous: ProgressiveReleaseState | undefined,
   next: ProgressiveReleaseState,
 ): boolean {
+  let sealedPrevious: ProgressiveReleaseState | undefined;
+  let sealedNext: ProgressiveReleaseState;
   try {
-    previous = snapshotPlainData(previous) as ProgressiveReleaseState | undefined;
-    next = snapshotPlainData(next) as ProgressiveReleaseState;
+    sealedPrevious = snapshotPlainData(previous) as ProgressiveReleaseState | undefined;
+    sealedNext = snapshotPlainData(next) as ProgressiveReleaseState;
   } catch {
     return false;
   }
@@ -489,10 +529,13 @@ export function validateProgressiveReleaseTransition(
       !isRecord(state) ||
       typeof state.stage !== "string" ||
       !STAGES.includes(state.stage as ExactReleaseStage)
-    )
+    ) {
       return false;
+    }
     const stage = state.stage as ExactReleaseStage;
-    if (Object.keys(state).some((key) => !allowedByStage[stage].includes(key))) return false;
+    if (Object.keys(state).some((key) => !allowedByStage[stage].includes(key))) {
+      return false;
+    }
     if (
       !isString(state.release_id) ||
       !isString(state.version) ||
@@ -500,21 +543,39 @@ export function validateProgressiveReleaseTransition(
       MOVING_RELEASE_ALIAS.test(state.version) ||
       state.release_id.lastIndexOf("@") < 1 ||
       state.release_id.slice(state.release_id.lastIndexOf("@") + 1) !== state.version
-    )
+    ) {
       return false;
-    if (stage === "fragments" || stage === "exact_release") {
-      if (!isDigest(state.manifest_digest)) return false;
     }
-    if (stage === "exact_release" && !isDigest(state.package_digest)) return false;
+    if (stage === "fragments" || stage === "exact_release") {
+      if (!isDigest(state.manifest_digest)) {
+        return false;
+      }
+    }
+    if (stage === "exact_release" && !isDigest(state.package_digest)) {
+      return false;
+    }
     return true;
   };
-  if (!validState(next)) return false;
-  if (previous && !validState(previous)) return false;
-  if (!previous && next.stage !== "index") return false;
-  if (previous && STAGES.indexOf(next.stage) !== STAGES.indexOf(previous.stage) + 1) return false;
-  if (previous) {
+  if (!validState(sealedNext)) {
+    return false;
+  }
+  if (sealedPrevious && !validState(sealedPrevious)) {
+    return false;
+  }
+  if (!sealedPrevious && sealedNext.stage !== "index") {
+    return false;
+  }
+  if (
+    sealedPrevious &&
+    STAGES.indexOf(sealedNext.stage) !== STAGES.indexOf(sealedPrevious.stage) + 1
+  ) {
+    return false;
+  }
+  if (sealedPrevious) {
     for (const key of ["release_id", "version", "manifest_digest", "package_digest"] as const) {
-      if (previous[key] !== undefined && next[key] !== previous[key]) return false;
+      if (sealedPrevious[key] !== undefined && sealedNext[key] !== sealedPrevious[key]) {
+        return false;
+      }
     }
   }
   return true;

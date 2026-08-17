@@ -117,14 +117,22 @@ const AUTHORIZATION_MAX_AGE_MS = 5 * 60 * 1000;
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
 const snapshotOwnDataRecord = (value: unknown): Record<string, unknown> | undefined => {
-  if (!isRecord(value)) return undefined;
+  if (!isRecord(value)) {
+    return undefined;
+  }
   try {
     const prototype = Object.getPrototypeOf(value);
-    if (prototype !== Object.prototype && prototype !== null) return undefined;
-    if (Object.getOwnPropertySymbols(value).length > 0) return undefined;
+    if (prototype !== Object.prototype && prototype !== null) {
+      return undefined;
+    }
+    if (Object.getOwnPropertySymbols(value).length > 0) {
+      return undefined;
+    }
     const snapshot = Object.create(null) as Record<string, unknown>;
     for (const [key, descriptor] of Object.entries(Object.getOwnPropertyDescriptors(value))) {
-      if (!("value" in descriptor)) return undefined;
+      if (!("value" in descriptor)) {
+        return undefined;
+      }
       snapshot[key] = descriptor.value;
     }
     return snapshot;
@@ -132,39 +140,61 @@ const snapshotOwnDataRecord = (value: unknown): Record<string, unknown> | undefi
     return undefined;
   }
 };
+const hasControlCharacters = (value: string): boolean => {
+  for (let i = 0; i < value.length; i += 1) {
+    const code = value.charCodeAt(i);
+    if (code <= 0x1f || code === 0x7f) {
+      return true;
+    }
+  }
+  return false;
+};
 const bounded = (value: unknown, max = 256): value is string =>
   typeof value === "string" &&
   value.length > 0 &&
   value.length <= max &&
-  !/[\u0000-\u001f\u007f]/u.test(value);
+  !hasControlCharacters(value);
 const snapshotDenseStrings = (value: unknown): readonly string[] | undefined => {
   try {
-    if (!Array.isArray(value) || Object.getPrototypeOf(value) !== Array.prototype) return undefined;
+    if (!Array.isArray(value) || Object.getPrototypeOf(value) !== Array.prototype) {
+      return undefined;
+    }
     const descriptors = Object.getOwnPropertyDescriptors(value) as Record<
       string,
       PropertyDescriptor
     >;
     const length = descriptors.length?.value;
-    if (!Number.isSafeInteger(length) || length < 0) return undefined;
+    if (!Number.isSafeInteger(length) || length < 0) {
+      return undefined;
+    }
     const result: string[] = [];
     for (let index = 0; index < length; index += 1) {
       const descriptor = descriptors[String(index)];
-      if (!descriptor || !("value" in descriptor) || !bounded(descriptor.value)) return undefined;
+      if (!descriptor || !("value" in descriptor) || !bounded(descriptor.value)) {
+        return undefined;
+      }
       result.push(descriptor.value);
     }
-    if (Object.keys(descriptors).some((key) => key !== "length" && !/^\d+$/u.test(key)))
+    if (Object.keys(descriptors).some((key) => key !== "length" && !/^\d+$/u.test(key))) {
       return undefined;
+    }
     return Object.freeze(result);
   } catch {
     return undefined;
   }
 };
 const authorizationTime = (value: unknown): number | undefined => {
-  if (typeof value !== "string") return undefined;
+  if (typeof value !== "string") {
+    return undefined;
+  }
   const match = AUTH_TIMESTAMP.exec(value);
-  if (!match) return undefined;
+  if (!match) {
+    return undefined;
+  }
   const parsed = Date.parse(value);
-  if (!Number.isFinite(parsed)) return undefined;
+  if (!Number.isFinite(parsed)) {
+    return undefined;
+  }
   const date = new Date(parsed);
   return date.getUTCFullYear() === Number(match[1]) &&
     date.getUTCMonth() + 1 === Number(match[2]) &&
@@ -178,7 +208,9 @@ const authorizationTime = (value: unknown): number | undefined => {
 };
 
 export function skillsSnapshotCursor(catalogVersion: string): string {
-  if (!bounded(catalogVersion, 512)) throw new Error("invalid Skills catalog version");
+  if (!bounded(catalogVersion, 512)) {
+    throw new Error("invalid Skills catalog version");
+  }
   return `snapshot:${createHash("sha256").update(catalogVersion).digest("hex").slice(0, 16)}:0`;
 }
 
@@ -222,7 +254,7 @@ export function validateSkillsV2Request(
   const revocationObservedAt = authorizationTime(authorization?.revocationObservedAt);
   if (
     !authorization ||
-    Object.keys(authorization).sort().join(",") !==
+    Object.keys(authorization).toSorted().join(",") !==
       "actorId,audience,capabilities,credentialId,expiresAt,issuedAt,organizationId,permittedOperations,revocationCredentialId,revocationObservedAt,revocationStatus,runtimeBindingRef,serviceScopes" ||
     !bounded(authorization.organizationId) ||
     !bounded(authorization.actorId) ||
@@ -243,68 +275,92 @@ export function validateSkillsV2Request(
     revocationObservedAt < issuedAt ||
     revocationObservedAt > nowMilliseconds ||
     nowMilliseconds - revocationObservedAt > AUTHORIZATION_MAX_AGE_MS
-  )
+  ) {
     return { ok: false, code: "invalid_authorization" };
+  }
   const value = snapshotOwnDataRecord(input);
-  if (!value) return { ok: false, code: "invalid_shape" };
+  if (!value) {
+    return { ok: false, code: "invalid_shape" };
+  }
   const candidate = snapshotOwnDataRecord(value.providerCandidate);
   if (
     !candidate ||
     Object.keys(candidate).length !== 2 ||
     candidate.commit !== SKILLS_COMMIT ||
     candidate.tree !== SKILLS_TREE
-  )
+  ) {
     return { ok: false, code: "wrong_provider" };
+  }
   if (
     value.protocolVersion !== SKILLS_MCP_PROTOCOL_VERSION ||
     value.contractVersion !== SKILLS_CONTRACT_VERSION
-  )
+  ) {
     return { ok: false, code: "incompatible_protocol" };
-  if (typeof value.operation === "string" && legacy.test(value.operation))
+  }
+  if (typeof value.operation === "string" && legacy.test(value.operation)) {
     return { ok: false, code: "legacy_execution_disabled" };
+  }
   if (
     !isModernSkillsOperation(value.operation) ||
     !bounded(value.actorId) ||
     value.actorId !== authorization.actorId ||
     !bounded(value.idempotencyKey, 160)
-  )
+  ) {
     return { ok: false, code: "invalid_shape" };
+  }
   const requiredPermission = SKILLS_V2_WRITE_OPERATIONS.has(value.operation)
     ? SKILLS_V2_WRITE_PERMISSION
     : SKILLS_V2_READ_PERMISSION;
-  if (!permittedOperations.includes(requiredPermission))
+  if (!permittedOperations.includes(requiredPermission)) {
     return { ok: false, code: "invalid_authorization" };
+  }
   const allowed = new Set([...COMMON_REQUEST_FIELDS, ...OPERATION_REQUEST_FIELDS[value.operation]]);
-  if (Object.keys(value).some((key) => !allowed.has(key)))
+  if (Object.keys(value).some((key) => !allowed.has(key))) {
     return { ok: false, code: "invalid_shape" };
+  }
   const limit = value.limit;
   if (
     limit !== undefined &&
     (typeof limit !== "number" || !Number.isInteger(limit) || limit < 1 || limit > 100)
-  )
+  ) {
     return { ok: false, code: "invalid_pagination" };
+  }
   if (
     value.cursor !== undefined &&
     (!bounded(value.cursor, 256) || !SNAPSHOT_CURSOR.test(value.cursor))
-  )
+  ) {
     return { ok: false, code: "invalid_pagination" };
-  if (value.skillId !== undefined && !bounded(value.skillId))
+  }
+  if (value.skillId !== undefined && !bounded(value.skillId)) {
     return { ok: false, code: "invalid_shape" };
-  if (value.version !== undefined && !bounded(value.version, 128))
+  }
+  if (value.version !== undefined && !bounded(value.version, 128)) {
     return { ok: false, code: "invalid_shape" };
-  if (typeof value.version === "string" && MOVING_VERSION_ALIAS.test(value.version))
+  }
+  if (typeof value.version === "string" && MOVING_VERSION_ALIAS.test(value.version)) {
     return { ok: false, code: "invalid_shape" };
-  if (value.query !== undefined && !bounded(value.query, 512))
+  }
+  if (value.query !== undefined && !bounded(value.query, 512)) {
     return { ok: false, code: "invalid_shape" };
-  for (const field of ["sectionId", "resourceId", "contentId", "feedbackRef", "reportRef"] as const)
-    if (value[field] !== undefined && !bounded(value[field]))
+  }
+  for (const field of [
+    "sectionId",
+    "resourceId",
+    "contentId",
+    "feedbackRef",
+    "reportRef",
+  ] as const) {
+    if (value[field] !== undefined && !bounded(value[field])) {
       return { ok: false, code: "invalid_shape" };
+    }
+  }
   if (
     (value.operation === "skills_release_describe" ||
       value.operation === "skills_release_verify") &&
     (!bounded(value.skillId) || !bounded(value.version))
-  )
+  ) {
     return { ok: false, code: "invalid_shape" };
+  }
   const requiresReleaseIdentity = new Set([
     "skills_release_sections_list",
     "skills_release_section_get",
@@ -315,38 +371,47 @@ export function validateSkillsV2Request(
     "skills_release_entrypoint_get",
     "skills_qualification_get",
   ]);
-  if (value.operation === "skills_release_list" && !bounded(value.skillId))
+  if (value.operation === "skills_release_list" && !bounded(value.skillId)) {
     return { ok: false, code: "invalid_shape" };
-  if (value.operation === "skills_catalog_search" && !bounded(value.query, 512))
+  }
+  if (value.operation === "skills_catalog_search" && !bounded(value.query, 512)) {
     return { ok: false, code: "invalid_shape" };
+  }
   if (
     requiresReleaseIdentity.has(value.operation) &&
     (!bounded(value.skillId) || !bounded(value.version))
-  )
+  ) {
     return { ok: false, code: "invalid_shape" };
-  if (value.operation === "skills_release_section_get" && !bounded(value.sectionId))
+  }
+  if (value.operation === "skills_release_section_get" && !bounded(value.sectionId)) {
     return { ok: false, code: "invalid_shape" };
-  if (value.operation === "skills_release_resource_get" && !bounded(value.resourceId))
+  }
+  if (value.operation === "skills_release_resource_get" && !bounded(value.resourceId)) {
     return { ok: false, code: "invalid_shape" };
-  if (value.operation === "skills_release_content_get" && !bounded(value.contentId))
+  }
+  if (value.operation === "skills_release_content_get" && !bounded(value.contentId)) {
     return { ok: false, code: "invalid_shape" };
+  }
   if (
     (value.operation === "skills_feedback_submit" ||
       value.operation === "skills_feedback_status_get") &&
     !bounded(value.feedbackRef)
-  )
+  ) {
     return { ok: false, code: "invalid_shape" };
+  }
   if (
     value.operation === "skills_feedback_submit" &&
     (!bounded(value.skillId) || !bounded(value.version))
-  )
+  ) {
     return { ok: false, code: "invalid_shape" };
+  }
   if (
     (value.operation === "skills_use_report_submit" ||
       value.operation === "skills_use_report_status_get") &&
     !bounded(value.reportRef)
-  )
+  ) {
     return { ok: false, code: "invalid_shape" };
+  }
   return {
     ok: true,
     request: Object.freeze({

@@ -1,120 +1,43 @@
 import { createHash } from "node:crypto";
 
-export const AUTOWORK_COMMIT = "4eb29203766b1ccf200a2dc10b39cc58d175c90c" as const;
-export const AUTOWORK_TREE = "5f306d674780a5a26048017f916da6048d71e7a5" as const;
-export const AUTOWORK_CONTRACT_VERSION = "2026-08-13.v1" as const;
-export const AUTOWORK_SCHEMA_VERSION = "provider-contract-v1" as const;
-export const AUTOWORK_PROTOCOL_VERSION = "2026-07-28" as const;
-export const AUTOWORK_AUDIENCE = "autowork" as const;
-export const AUTOWORK_OPERATIONS = Object.freeze([
-  "status_collection",
-  "precheck",
-  "evidence_collection",
-  "notification_delivery",
-  "external_assistance",
-  "artifact_transform",
-  "media_package",
-  "outreach_adapter",
-] as const);
-export const AUTOWORK_STATES = Object.freeze([
-  "accepted",
-  "queued",
-  "running",
-  "succeeded",
-  "failed",
-  "expired",
-  "cancelled",
-  "timed_out",
-  "rejected",
-  "blocked",
-  "quarantined",
-  "unavailable",
-  "contract_incompatible",
-] as const);
-export type Operation = (typeof AUTOWORK_OPERATIONS)[number];
-export type ReceiptState = (typeof AUTOWORK_STATES)[number];
-export type OpaqueReference = Readonly<{ ref: string; digest: string; observedAt: string }>;
-export type AutoworkRequest = Readonly<{
-  providerCandidate: { commit: typeof AUTOWORK_COMMIT; tree: typeof AUTOWORK_TREE };
-  contractVersion: typeof AUTOWORK_CONTRACT_VERSION;
-  protocolVersion: string;
-  requestId: string;
-  platform: Readonly<{
-    orgId: string;
-    actorId: string;
-    audience: string;
-    capability: string;
-    credentialId: string;
-    bindingId: string;
-    issuedAt: string;
-    expiresAt: string;
-    revocationRef: string;
-  }>;
-  automation: Readonly<{
-    automationId: string;
-    version: string;
-    definitionDigest: string;
-    configurationRef: OpaqueReference;
-  }>;
-  operationKind: Operation;
-  inputRef: OpaqueReference;
-  artifactRefs: readonly OpaqueReference[];
-  resultDestinationRef: string;
-  correlationRefs: readonly OpaqueReference[];
-  brainHandoffRef?: OpaqueReference;
-  idempotencyKey: string;
-  expiresAt: string;
-  cancellationRequestedAt?: string;
-}>;
-export type AutoworkReceipt = Readonly<{
-  providerCandidate: { commit: typeof AUTOWORK_COMMIT; tree: typeof AUTOWORK_TREE };
-  contractVersion: typeof AUTOWORK_CONTRACT_VERSION;
-  requestId: string;
-  receiptId: string;
-  state: ReceiptState;
-  acceptedAt: string;
-  updatedAt: string;
-  attemptCount: number;
-  requestFingerprint: string;
-  automation: AutoworkRequest["automation"];
-  resultRefs: readonly OpaqueReference[];
-  evidenceRefs: readonly OpaqueReference[];
-  uncertainOutcome: boolean;
-}>;
-export type AuthenticatedAutoworkReceiptEvidence = Readonly<{
-  providerCandidate: { commit: typeof AUTOWORK_COMMIT; tree: typeof AUTOWORK_TREE };
-  contractVersion: typeof AUTOWORK_CONTRACT_VERSION;
-  requestId: string;
-  receiptId: string;
-  receiptDigest: string;
-  verified: true;
-}>;
-export type AutoworkCallback = Readonly<{
-  requestId: string;
-  receiptId: string;
-  orgId: string;
-  callbackBindingRef: string;
-  sourceTimestamp: string;
-  receipt: AutoworkReceipt;
-}>;
-export type AutoworkAcceptedCallbackState = Readonly<{
-  latestSourceTimestamp: string | null;
-  acceptedReceiptIds: readonly string[];
-  latestReceiptState: ReceiptState | null;
-  latestAttemptCount: number | null;
-}>;
-export type PlatformRevocationDecision = Readonly<{
-  status: "active" | "revoked";
-  observedAt: string;
-  credentialId: string;
-  bindingId: string;
-  orgId: string;
-  actorId: string;
-  audience: string;
-  capability: string;
-  revocationRef: string;
-  authorizedOperation: Operation;
-}>;
+export {
+  AUTOWORK_COMMIT,
+  AUTOWORK_TREE,
+  AUTOWORK_CONTRACT_VERSION,
+  AUTOWORK_SCHEMA_VERSION,
+  AUTOWORK_PROTOCOL_VERSION,
+  AUTOWORK_AUDIENCE,
+  AUTOWORK_OPERATIONS,
+  AUTOWORK_STATES,
+  type Operation,
+  type ReceiptState,
+  type OpaqueReference,
+  type AutoworkRequest,
+  type AutoworkReceipt,
+  type AuthenticatedAutoworkReceiptEvidence,
+  type AutoworkCallback,
+  type AutoworkAcceptedCallbackState,
+  type PlatformRevocationDecision,
+} from "./contract-pins.js";
+
+import {
+  AUTOWORK_COMMIT,
+  AUTOWORK_TREE,
+  AUTOWORK_CONTRACT_VERSION,
+  AUTOWORK_PROTOCOL_VERSION,
+  AUTOWORK_AUDIENCE,
+  AUTOWORK_OPERATIONS,
+  AUTOWORK_STATES,
+  type ReceiptState,
+  type OpaqueReference,
+  type AutoworkRequest,
+  type AutoworkReceipt,
+  type AuthenticatedAutoworkReceiptEvidence,
+  type AutoworkCallback,
+  type AutoworkAcceptedCallbackState,
+  type PlatformRevocationDecision,
+} from "./contract-pins.js";
+
 const REVOCATION_MAX_AGE_MS = 5 * 60 * 1000;
 const NON_TERMINAL_RECEIPT_STATES = ["accepted", "queued", "running"] as const;
 
@@ -122,11 +45,20 @@ const SHA256 = /^sha256:[0-9a-f]{64}$/;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const OPAQUE = /^[a-z][a-z0-9+.-]*:\/\/[A-Za-z0-9._~/%:-]+$/;
 const UTC_TIMESTAMP = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.(\d{1,9}))?Z$/u;
+const hasControlCharacters = (value: string): boolean => {
+  for (let i = 0; i < value.length; i += 1) {
+    const code = value.charCodeAt(i);
+    if (code <= 0x1f || code === 0x7f) {
+      return true;
+    }
+  }
+  return false;
+};
 const bounded = (value: unknown, max = 512): value is string =>
   typeof value === "string" &&
   value.length > 0 &&
   value.length <= max &&
-  !/[\u0000-\u001f\u007f]/u.test(value);
+  !hasControlCharacters(value);
 const matches = (value: unknown, pattern: RegExp): value is string =>
   typeof value === "string" && pattern.test(value);
 const plain = (value: unknown): value is Record<string, unknown> =>
@@ -141,32 +73,48 @@ function snapshotPlainData(value: unknown, seen = new WeakSet<object>()): unknow
     typeof value === "string" ||
     typeof value === "number" ||
     typeof value === "boolean"
-  )
+  ) {
     return value;
-  if (typeof value !== "object" || seen.has(value)) throw new Error("invalid_plain_data");
+  }
+  if (typeof value !== "object" || seen.has(value)) {
+    throw new Error("invalid_plain_data");
+  }
   seen.add(value);
   try {
-    if (Object.getOwnPropertySymbols(value).length > 0) throw new Error("invalid_plain_data");
+    if (Object.getOwnPropertySymbols(value).length > 0) {
+      throw new Error("invalid_plain_data");
+    }
     const descriptors = Object.getOwnPropertyDescriptors(value);
     if (Array.isArray(value)) {
-      if (Object.getPrototypeOf(value) !== Array.prototype) throw new Error("invalid_plain_data");
+      if (Object.getPrototypeOf(value) !== Array.prototype) {
+        throw new Error("invalid_plain_data");
+      }
       const length = descriptors.length?.value;
-      if (!Number.isSafeInteger(length) || length < 0) throw new Error("invalid_plain_data");
+      if (!Number.isSafeInteger(length) || length < 0) {
+        throw new Error("invalid_plain_data");
+      }
       const snapshot: unknown[] = [];
       for (let index = 0; index < length; index += 1) {
         const descriptor = descriptors[String(index)];
-        if (!descriptor || !("value" in descriptor)) throw new Error("invalid_plain_data");
+        if (!descriptor || !("value" in descriptor)) {
+          throw new Error("invalid_plain_data");
+        }
         snapshot.push(snapshotPlainData(descriptor.value, seen));
       }
-      if (Object.keys(descriptors).some((key) => key !== "length" && !/^\d+$/u.test(key)))
+      if (Object.keys(descriptors).some((key) => key !== "length" && !/^\d+$/u.test(key))) {
         throw new Error("invalid_plain_data");
+      }
       return snapshot;
     }
     const prototype = Object.getPrototypeOf(value);
-    if (prototype !== Object.prototype && prototype !== null) throw new Error("invalid_plain_data");
+    if (prototype !== Object.prototype && prototype !== null) {
+      throw new Error("invalid_plain_data");
+    }
     const snapshot = Object.create(null) as Record<string, unknown>;
     for (const [key, descriptor] of Object.entries(descriptors)) {
-      if (!("value" in descriptor)) throw new Error("invalid_plain_data");
+      if (!("value" in descriptor)) {
+        throw new Error("invalid_plain_data");
+      }
       snapshot[key] = snapshotPlainData(descriptor.value, seen);
     }
     return snapshot;
@@ -175,11 +123,17 @@ function snapshotPlainData(value: unknown, seen = new WeakSet<object>()): unknow
   }
 }
 const iso = (value: unknown): value is string => {
-  if (!bounded(value, 64)) return false;
+  if (!bounded(value, 64)) {
+    return false;
+  }
   const match = UTC_TIMESTAMP.exec(value);
-  if (!match) return false;
+  if (!match) {
+    return false;
+  }
   const parsed = Date.parse(value);
-  if (!Number.isFinite(parsed)) return false;
+  if (!Number.isFinite(parsed)) {
+    return false;
+  }
   const date = new Date(parsed);
   return (
     date.getUTCFullYear() === Number(match[1]) &&
@@ -191,9 +145,13 @@ const iso = (value: unknown): value is string => {
   );
 };
 const timestampNanos = (value: string): bigint | undefined => {
-  if (!iso(value)) return undefined;
+  if (!iso(value)) {
+    return undefined;
+  }
   const match = UTC_TIMESTAMP.exec(value);
-  if (!match) return undefined;
+  if (!match) {
+    return undefined;
+  }
   const milliseconds = Date.parse(value);
   const epochSeconds = BigInt(Math.floor(milliseconds / 1000));
   const fraction = BigInt((match[7] ?? "").padEnd(9, "0"));
@@ -260,16 +218,18 @@ function validateRequestSnapshot(value: unknown): value is AutoworkRequest {
       ],
       ["brainHandoffRef", "cancellationRequestedAt"],
     )
-  )
+  ) {
     return false;
+  }
   const candidate = value.providerCandidate;
   if (
     !plain(candidate) ||
     Object.keys(candidate).length !== 2 ||
     candidate.commit !== AUTOWORK_COMMIT ||
     candidate.tree !== AUTOWORK_TREE
-  )
+  ) {
     return false;
+  }
   const platform = value.platform;
   if (
     !plain(platform) ||
@@ -293,8 +253,9 @@ function validateRequestSnapshot(value: unknown): value is AutoworkRequest {
     !iso(platform.issuedAt) ||
     !iso(platform.expiresAt) ||
     !matches(platform.revocationRef, OPAQUE)
-  )
+  ) {
     return false;
+  }
   if (
     value.contractVersion !== AUTOWORK_CONTRACT_VERSION ||
     value.protocolVersion !== AUTOWORK_PROTOCOL_VERSION ||
@@ -312,13 +273,18 @@ function validateRequestSnapshot(value: unknown): value is AutoworkRequest {
     !bounded(value.idempotencyKey, 160) ||
     !/^[A-Za-z0-9._:-]{16,160}$/.test(value.idempotencyKey) ||
     !iso(value.expiresAt)
-  )
+  ) {
     return false;
-  if (value.brainHandoffRef !== undefined && !ref(value.brainHandoffRef)) return false;
-  if (value.cancellationRequestedAt !== undefined && !iso(value.cancellationRequestedAt))
+  }
+  if (value.brainHandoffRef !== undefined && !ref(value.brainHandoffRef)) {
     return false;
-  if (value.operationKind === "external_assistance" && value.brainHandoffRef === undefined)
+  }
+  if (value.cancellationRequestedAt !== undefined && !iso(value.cancellationRequestedAt)) {
     return false;
+  }
+  if (value.operationKind === "external_assistance" && value.brainHandoffRef === undefined) {
+    return false;
+  }
   return true;
 }
 
@@ -336,7 +302,7 @@ function canonical(value: unknown): unknown {
     : plain(value)
       ? Object.fromEntries(
           Object.entries(value)
-            .sort(([a], [b]) => a.localeCompare(b))
+            .toSorted(([a], [b]) => a.localeCompare(b))
             .map(([key, child]) => [key, canonical(child)]),
         )
       : value;
@@ -354,13 +320,16 @@ export function autoworkReceiptDigest(value: unknown): string {
   }
 }
 export function requestFingerprint(value: unknown): string {
+  let sealed: unknown;
   try {
-    value = snapshotPlainData(value);
+    sealed = snapshotPlainData(value);
   } catch {
     throw new Error("invalid Autowork request");
   }
-  if (!validateRequestSnapshot(value)) throw new Error("invalid Autowork request");
-  return digestSnapshot(value);
+  if (!validateRequestSnapshot(sealed)) {
+    throw new Error("invalid Autowork request");
+  }
+  return digestSnapshot(sealed);
 }
 export function sameIdempotencyContent(a: unknown, b: unknown): boolean {
   try {
@@ -370,17 +339,20 @@ export function sameIdempotencyContent(a: unknown, b: unknown): boolean {
   }
 }
 export function assertIdempotency(existingFingerprint: string, incoming: unknown): void {
-  if (existingFingerprint !== requestFingerprint(incoming))
+  if (existingFingerprint !== requestFingerprint(incoming)) {
     throw new Error("idempotency key conflicts with changed request");
+  }
 }
 export function validateRequestAt(
   value: unknown,
   now = new Date(),
   revocationDecision?: PlatformRevocationDecision,
 ): value is AutoworkRequest {
+  let sealed: unknown;
+  let sealedRevocation: PlatformRevocationDecision | undefined;
   try {
-    value = snapshotPlainData(value);
-    revocationDecision = snapshotPlainData(revocationDecision) as
+    sealed = snapshotPlainData(value);
+    sealedRevocation = snapshotPlainData(revocationDecision) as
       | PlatformRevocationDecision
       | undefined;
   } catch {
@@ -388,38 +360,40 @@ export function validateRequestAt(
   }
   const nowMilliseconds = dateMilliseconds(now);
   if (
-    !validateRequestSnapshot(value) ||
+    !validateRequestSnapshot(sealed) ||
     nowMilliseconds === undefined ||
-    value.cancellationRequestedAt !== undefined ||
-    revocationDecision?.status !== "active" ||
-    !iso(revocationDecision.observedAt)
-  )
+    sealed.cancellationRequestedAt !== undefined ||
+    sealedRevocation?.status !== "active" ||
+    !iso(sealedRevocation.observedAt)
+  ) {
     return false;
+  }
   const nowNanos = BigInt(nowMilliseconds) * 1_000_000n;
-  const observedAt = timestampNanos(revocationDecision.observedAt);
-  const issuedAt = timestampNanos(value.platform.issuedAt);
-  const requestExpiresAt = timestampNanos(value.expiresAt);
-  const platformExpiresAt = timestampNanos(value.platform.expiresAt);
+  const observedAt = timestampNanos(sealedRevocation.observedAt);
+  const issuedAt = timestampNanos(sealed.platform.issuedAt);
+  const requestExpiresAt = timestampNanos(sealed.expiresAt);
+  const platformExpiresAt = timestampNanos(sealed.platform.expiresAt);
   if (
     observedAt === undefined ||
     issuedAt === undefined ||
     requestExpiresAt === undefined ||
     platformExpiresAt === undefined
-  )
+  ) {
     return false;
+  }
   return (
     observedAt >= issuedAt &&
     observedAt <= nowNanos &&
     nowNanos - observedAt <= BigInt(REVOCATION_MAX_AGE_MS) * 1_000_000n &&
-    revocationDecision.credentialId === value.platform.credentialId &&
-    revocationDecision.bindingId === value.platform.bindingId &&
-    revocationDecision.orgId === value.platform.orgId &&
-    revocationDecision.actorId === value.platform.actorId &&
-    revocationDecision.audience === AUTOWORK_AUDIENCE &&
-    value.platform.audience === AUTOWORK_AUDIENCE &&
-    revocationDecision.capability === value.platform.capability &&
-    revocationDecision.revocationRef === value.platform.revocationRef &&
-    revocationDecision.authorizedOperation === value.operationKind &&
+    sealedRevocation.credentialId === sealed.platform.credentialId &&
+    sealedRevocation.bindingId === sealed.platform.bindingId &&
+    sealedRevocation.orgId === sealed.platform.orgId &&
+    sealedRevocation.actorId === sealed.platform.actorId &&
+    sealedRevocation.audience === AUTOWORK_AUDIENCE &&
+    sealed.platform.audience === AUTOWORK_AUDIENCE &&
+    sealedRevocation.capability === sealed.platform.capability &&
+    sealedRevocation.revocationRef === sealed.platform.revocationRef &&
+    sealedRevocation.authorizedOperation === sealed.operationKind &&
     issuedAt <= nowNanos &&
     requestExpiresAt > nowNanos &&
     platformExpiresAt > nowNanos &&
@@ -433,20 +407,26 @@ export function validateReceipt(
   now = new Date(),
   authenticatedEvidence?: AuthenticatedAutoworkReceiptEvidence,
 ): value is AutoworkReceipt {
+  let sealed: unknown;
+  let sealedRequest: AutoworkRequest | undefined;
+  let sealedEvidence: AuthenticatedAutoworkReceiptEvidence | undefined;
   try {
-    value = snapshotPlainData(value);
-    request = request === undefined ? undefined : (snapshotPlainData(request) as AutoworkRequest);
-    authenticatedEvidence =
+    sealed = snapshotPlainData(value);
+    sealedRequest =
+      request === undefined ? undefined : (snapshotPlainData(request) as AutoworkRequest);
+    sealedEvidence =
       authenticatedEvidence === undefined
         ? undefined
         : (snapshotPlainData(authenticatedEvidence) as AuthenticatedAutoworkReceiptEvidence);
   } catch {
     return false;
   }
-  if (request !== undefined && !validateRequestSnapshot(request)) return false;
+  if (sealedRequest !== undefined && !validateRequestSnapshot(sealedRequest)) {
+    return false;
+  }
   if (
-    !plain(value) ||
-    !keys(value, [
+    !plain(sealed) ||
+    !keys(sealed, [
       "providerCandidate",
       "contractVersion",
       "requestId",
@@ -461,31 +441,32 @@ export function validateReceipt(
       "evidenceRefs",
       "uncertainOutcome",
     ]) ||
-    value.contractVersion !== AUTOWORK_CONTRACT_VERSION ||
-    !plain(value.providerCandidate) ||
-    Object.keys(value.providerCandidate).length !== 2 ||
-    value.providerCandidate.commit !== AUTOWORK_COMMIT ||
-    value.providerCandidate.tree !== AUTOWORK_TREE ||
-    !matches(value.requestId, UUID) ||
-    !matches(value.receiptId, UUID) ||
-    !(AUTOWORK_STATES as readonly unknown[]).includes(value.state) ||
-    !iso(value.acceptedAt) ||
-    !iso(value.updatedAt) ||
-    typeof value.attemptCount !== "number" ||
-    !Number.isSafeInteger(value.attemptCount) ||
-    value.attemptCount < 0 ||
-    !matches(value.requestFingerprint, SHA256) ||
-    !automation(value.automation) ||
-    !Array.isArray(value.resultRefs) ||
-    !value.resultRefs.every(ref) ||
-    !Array.isArray(value.evidenceRefs) ||
-    !value.evidenceRefs.every(ref) ||
-    typeof value.uncertainOutcome !== "boolean"
-  )
+    sealed.contractVersion !== AUTOWORK_CONTRACT_VERSION ||
+    !plain(sealed.providerCandidate) ||
+    Object.keys(sealed.providerCandidate).length !== 2 ||
+    sealed.providerCandidate.commit !== AUTOWORK_COMMIT ||
+    sealed.providerCandidate.tree !== AUTOWORK_TREE ||
+    !matches(sealed.requestId, UUID) ||
+    !matches(sealed.receiptId, UUID) ||
+    !(AUTOWORK_STATES as readonly unknown[]).includes(sealed.state) ||
+    !iso(sealed.acceptedAt) ||
+    !iso(sealed.updatedAt) ||
+    typeof sealed.attemptCount !== "number" ||
+    !Number.isSafeInteger(sealed.attemptCount) ||
+    sealed.attemptCount < 0 ||
+    !matches(sealed.requestFingerprint, SHA256) ||
+    !automation(sealed.automation) ||
+    !Array.isArray(sealed.resultRefs) ||
+    !sealed.resultRefs.every(ref) ||
+    !Array.isArray(sealed.evidenceRefs) ||
+    !sealed.evidenceRefs.every(ref) ||
+    typeof sealed.uncertainOutcome !== "boolean"
+  ) {
     return false;
+  }
   if (
-    !plain(authenticatedEvidence) ||
-    !keys(authenticatedEvidence, [
+    !plain(sealedEvidence) ||
+    !keys(sealedEvidence, [
       "providerCandidate",
       "contractVersion",
       "requestId",
@@ -493,33 +474,37 @@ export function validateReceipt(
       "receiptDigest",
       "verified",
     ]) ||
-    !plain(authenticatedEvidence.providerCandidate) ||
-    !keys(authenticatedEvidence.providerCandidate, ["commit", "tree"]) ||
-    authenticatedEvidence.providerCandidate.commit !== AUTOWORK_COMMIT ||
-    authenticatedEvidence.providerCandidate.tree !== AUTOWORK_TREE ||
-    authenticatedEvidence.contractVersion !== AUTOWORK_CONTRACT_VERSION ||
-    authenticatedEvidence.requestId !== value.requestId ||
-    authenticatedEvidence.receiptId !== value.receiptId ||
-    authenticatedEvidence.receiptDigest !== digestSnapshot(value) ||
-    authenticatedEvidence.verified !== true
-  )
+    !plain(sealedEvidence.providerCandidate) ||
+    !keys(sealedEvidence.providerCandidate, ["commit", "tree"]) ||
+    sealedEvidence.providerCandidate.commit !== AUTOWORK_COMMIT ||
+    sealedEvidence.providerCandidate.tree !== AUTOWORK_TREE ||
+    sealedEvidence.contractVersion !== AUTOWORK_CONTRACT_VERSION ||
+    sealedEvidence.requestId !== sealed.requestId ||
+    sealedEvidence.receiptId !== sealed.receiptId ||
+    sealedEvidence.receiptDigest !== digestSnapshot(sealed) ||
+    !sealedEvidence.verified
+  ) {
     return false;
-  const acceptedAt = timestampNanos(value.acceptedAt);
-  const updatedAt = timestampNanos(value.updatedAt);
+  }
+  const acceptedAt = timestampNanos(sealed.acceptedAt);
+  const updatedAt = timestampNanos(sealed.updatedAt);
   const nowMilliseconds = dateMilliseconds(now);
-  if (nowMilliseconds === undefined) return false;
+  if (nowMilliseconds === undefined) {
+    return false;
+  }
   const nowNanos = BigInt(nowMilliseconds) * 1_000_000n;
   if (
     acceptedAt === undefined ||
     updatedAt === undefined ||
     acceptedAt > updatedAt ||
     updatedAt > nowNanos
-  )
+  ) {
     return false;
-  if (request) {
-    const issuedAt = timestampNanos(request.platform.issuedAt);
-    const requestExpiresAt = timestampNanos(request.expiresAt);
-    const platformExpiresAt = timestampNanos(request.platform.expiresAt);
+  }
+  if (sealedRequest) {
+    const issuedAt = timestampNanos(sealedRequest.platform.issuedAt);
+    const requestExpiresAt = timestampNanos(sealedRequest.expiresAt);
+    const platformExpiresAt = timestampNanos(sealedRequest.platform.expiresAt);
     if (
       issuedAt === undefined ||
       requestExpiresAt === undefined ||
@@ -527,13 +512,15 @@ export function validateReceipt(
       acceptedAt < issuedAt ||
       acceptedAt >= requestExpiresAt ||
       acceptedAt >= platformExpiresAt ||
-      value.requestId !== request.requestId ||
-      value.providerCandidate.commit !== request.providerCandidate.commit ||
-      value.providerCandidate.tree !== request.providerCandidate.tree ||
-      value.requestFingerprint !== requestFingerprint(request) ||
-      JSON.stringify(canonical(value.automation)) !== JSON.stringify(canonical(request.automation))
-    )
+      sealed.requestId !== sealedRequest.requestId ||
+      sealed.providerCandidate.commit !== sealedRequest.providerCandidate.commit ||
+      sealed.providerCandidate.tree !== sealedRequest.providerCandidate.tree ||
+      sealed.requestFingerprint !== requestFingerprint(sealedRequest) ||
+      JSON.stringify(canonical(sealed.automation)) !==
+        JSON.stringify(canonical(sealedRequest.automation))
+    ) {
       return false;
+    }
   }
   return true;
 }
@@ -547,15 +534,25 @@ export function validateCallback(
   },
   authenticatedEvidence?: AuthenticatedAutoworkReceiptEvidence,
 ): value is AutoworkCallback {
+  let sealed: unknown;
+  let sealedRequest: AutoworkRequest;
+  let sealedEvidence: AuthenticatedAutoworkReceiptEvidence | undefined;
+  let sealedExpected:
+    | {
+        callbackBindingRef: string;
+        now: Date;
+        acceptedState: AutoworkAcceptedCallbackState;
+      }
+    | undefined;
   try {
-    value = snapshotPlainData(value);
-    request = snapshotPlainData(request) as AutoworkRequest;
-    authenticatedEvidence =
+    sealed = snapshotPlainData(value);
+    sealedRequest = snapshotPlainData(request) as AutoworkRequest;
+    sealedEvidence =
       authenticatedEvidence === undefined
         ? undefined
         : (snapshotPlainData(authenticatedEvidence) as AuthenticatedAutoworkReceiptEvidence);
     if (expected) {
-      expected = {
+      sealedExpected = {
         callbackBindingRef: expected.callbackBindingRef,
         now: expected.now,
         acceptedState: snapshotPlainData(expected.acceptedState) as AutoworkAcceptedCallbackState,
@@ -564,10 +561,11 @@ export function validateCallback(
   } catch {
     return false;
   }
-  const nowMilliseconds = expected === undefined ? undefined : dateMilliseconds(expected.now);
+  const nowMilliseconds =
+    sealedExpected === undefined ? undefined : dateMilliseconds(sealedExpected.now);
   if (
-    !plain(value) ||
-    !keys(value, [
+    !plain(sealed) ||
+    !keys(sealed, [
       "requestId",
       "receiptId",
       "orgId",
@@ -575,51 +573,54 @@ export function validateCallback(
       "sourceTimestamp",
       "receipt",
     ]) ||
-    !matches(value.requestId, UUID) ||
-    !matches(value.receiptId, UUID) ||
-    !matches(value.orgId, UUID) ||
-    !matches(value.callbackBindingRef, OPAQUE) ||
-    !iso(value.sourceTimestamp) ||
-    !expected ||
-    !plain(expected.acceptedState) ||
-    !keys(expected.acceptedState, [
+    !matches(sealed.requestId, UUID) ||
+    !matches(sealed.receiptId, UUID) ||
+    !matches(sealed.orgId, UUID) ||
+    !matches(sealed.callbackBindingRef, OPAQUE) ||
+    !iso(sealed.sourceTimestamp) ||
+    !sealedExpected ||
+    !plain(sealedExpected.acceptedState) ||
+    !keys(sealedExpected.acceptedState, [
       "latestSourceTimestamp",
       "acceptedReceiptIds",
       "latestReceiptState",
       "latestAttemptCount",
     ]) ||
-    (expected.acceptedState.latestSourceTimestamp !== null &&
-      !iso(expected.acceptedState.latestSourceTimestamp)) ||
-    !Array.isArray(expected.acceptedState.acceptedReceiptIds) ||
-    !expected.acceptedState.acceptedReceiptIds.every((receiptId) => matches(receiptId, UUID)) ||
-    (expected.acceptedState.acceptedReceiptIds.length === 0) !==
-      (expected.acceptedState.latestSourceTimestamp === null) ||
-    (expected.acceptedState.latestReceiptState !== null &&
+    (sealedExpected.acceptedState.latestSourceTimestamp !== null &&
+      !iso(sealedExpected.acceptedState.latestSourceTimestamp)) ||
+    !Array.isArray(sealedExpected.acceptedState.acceptedReceiptIds) ||
+    !sealedExpected.acceptedState.acceptedReceiptIds.every((receiptId) =>
+      matches(receiptId, UUID),
+    ) ||
+    (sealedExpected.acceptedState.acceptedReceiptIds.length === 0) !==
+      (sealedExpected.acceptedState.latestSourceTimestamp === null) ||
+    (sealedExpected.acceptedState.latestReceiptState !== null &&
       !(AUTOWORK_STATES as readonly unknown[]).includes(
-        expected.acceptedState.latestReceiptState,
+        sealedExpected.acceptedState.latestReceiptState,
       )) ||
-    (expected.acceptedState.latestAttemptCount !== null &&
-      (!Number.isSafeInteger(expected.acceptedState.latestAttemptCount) ||
-        expected.acceptedState.latestAttemptCount < 0)) ||
-    (expected.acceptedState.latestReceiptState === null) !==
-      (expected.acceptedState.latestAttemptCount === null) ||
-    (expected.acceptedState.latestSourceTimestamp === null) !==
-      (expected.acceptedState.latestReceiptState === null) ||
+    (sealedExpected.acceptedState.latestAttemptCount !== null &&
+      (!Number.isSafeInteger(sealedExpected.acceptedState.latestAttemptCount) ||
+        sealedExpected.acceptedState.latestAttemptCount < 0)) ||
+    (sealedExpected.acceptedState.latestReceiptState === null) !==
+      (sealedExpected.acceptedState.latestAttemptCount === null) ||
+    (sealedExpected.acceptedState.latestSourceTimestamp === null) !==
+      (sealedExpected.acceptedState.latestReceiptState === null) ||
     nowMilliseconds === undefined ||
-    value.callbackBindingRef !== expected.callbackBindingRef ||
-    !validateReceipt(value.receipt, request, expected.now, authenticatedEvidence)
-  )
+    sealed.callbackBindingRef !== sealedExpected.callbackBindingRef ||
+    !validateReceipt(sealed.receipt, sealedRequest, sealedExpected.now, sealedEvidence)
+  ) {
     return false;
-  const sourceTimestamp = timestampNanos(value.sourceTimestamp);
-  const acceptedAt = timestampNanos((value.receipt as AutoworkReceipt).acceptedAt);
-  const updatedAt = timestampNanos((value.receipt as AutoworkReceipt).updatedAt);
+  }
+  const sourceTimestamp = timestampNanos(sealed.sourceTimestamp);
+  const acceptedAt = timestampNanos((sealed.receipt as AutoworkReceipt).acceptedAt);
+  const updatedAt = timestampNanos((sealed.receipt as AutoworkReceipt).updatedAt);
   const latestSourceTimestamp =
-    expected.acceptedState.latestSourceTimestamp === null
+    sealedExpected.acceptedState.latestSourceTimestamp === null
       ? null
-      : timestampNanos(expected.acceptedState.latestSourceTimestamp);
-  const receipt = value.receipt as AutoworkReceipt;
-  const latestReceiptState = expected.acceptedState.latestReceiptState;
-  const latestAttemptCount = expected.acceptedState.latestAttemptCount;
+      : timestampNanos(sealedExpected.acceptedState.latestSourceTimestamp);
+  const receipt = sealed.receipt as AutoworkReceipt;
+  const latestReceiptState = sealedExpected.acceptedState.latestReceiptState;
+  const latestAttemptCount = sealedExpected.acceptedState.latestAttemptCount;
   const latestStateIsTerminal =
     latestReceiptState !== null &&
     !(NON_TERMINAL_RECEIPT_STATES as readonly ReceiptState[]).includes(latestReceiptState);
@@ -630,14 +631,14 @@ export function validateCallback(
     acceptedAt !== undefined &&
     updatedAt !== undefined &&
     latestSourceTimestamp !== undefined &&
-    value.requestId === receipt.requestId &&
-    value.receiptId === receipt.receiptId &&
-    value.orgId === request.platform.orgId &&
+    sealed.requestId === receipt.requestId &&
+    sealed.receiptId === receipt.receiptId &&
+    sealed.orgId === sealedRequest.platform.orgId &&
     sourceTimestamp === updatedAt &&
     sourceTimestamp >= acceptedAt &&
     sourceTimestamp <= BigInt(nowMilliseconds) * 1_000_000n &&
     (latestSourceTimestamp === null || sourceTimestamp > latestSourceTimestamp) &&
-    !expected.acceptedState.acceptedReceiptIds.includes(value.receiptId) &&
+    !sealedExpected.acceptedState.acceptedReceiptIds.includes(sealed.receiptId) &&
     (latestAttemptCount === null || receipt.attemptCount >= latestAttemptCount) &&
     !latestStateIsTerminal &&
     (latestReceiptState === null ||
