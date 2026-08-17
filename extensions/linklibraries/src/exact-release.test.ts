@@ -148,6 +148,23 @@ describe("validateExactRelease", () => {
     expect(validateExactRelease(candidate).ok).toBe(false);
   });
 
+  it("rejects inherited and accessor-backed evidence without invoking getters", () => {
+    let getterCalls = 0;
+    const accessorCandidate = validCandidate() as unknown as Record<string, unknown>;
+    Object.defineProperty(accessorCandidate, "gitSha", {
+      enumerable: true,
+      get() {
+        getterCalls += 1;
+        return getterCalls === 1
+          ? "0efa68b19686e976ecee93c6a962e81d2a0265f5"
+          : "ffffffffffffffffffffffffffffffffffffffff";
+      },
+    });
+    expect(validateExactRelease(accessorCandidate).ok).toBe(false);
+    expect(getterCalls).toBe(0);
+    expect(validateExactRelease(Object.create(validCandidate())).ok).toBe(false);
+  });
+
   it.each([
     ["missing asset identity", (candidate: Record<string, any>) => delete candidate.asset],
     [

@@ -296,6 +296,33 @@ describe("LinkAutowork final provider contract", () => {
     expect(validateReceipt({ ...receipt, receiptId: malformed }, request)).toBe(false);
   });
 
+  it("rejects inherited and accessor-backed requests without invoking getters", () => {
+    let getterCalls = 0;
+    const accessorRequest = { ...request } as Record<string, unknown>;
+    Object.defineProperty(accessorRequest, "operationKind", {
+      enumerable: true,
+      get() {
+        getterCalls += 1;
+        return getterCalls === 1 ? "status_collection" : "external_assistance";
+      },
+    });
+    expect(validateRequest(accessorRequest)).toBe(false);
+    expect(() => requestFingerprint(accessorRequest)).toThrow("invalid Autowork request");
+    expect(getterCalls).toBe(0);
+    expect(validateRequest(Object.create(request))).toBe(false);
+
+    const nestedAccessor = { ...request, platform: { ...request.platform } } as Record<string, any>;
+    Object.defineProperty(nestedAccessor.platform, "bindingId", {
+      enumerable: true,
+      get() {
+        getterCalls += 1;
+        return request.platform.bindingId;
+      },
+    });
+    expect(validateRequest(nestedAccessor)).toBe(false);
+    expect(getterCalls).toBe(0);
+  });
+
   it("requires explicit accepted callback state and rejects replay or stale chronology", () => {
     const callback = {
       requestId: uuid,

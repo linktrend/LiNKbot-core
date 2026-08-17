@@ -623,6 +623,34 @@ describe("LiNKbrain v2 immutable consumer boundary", () => {
     });
   });
 
+  it("contains accessor-backed transport failures without invoking getters", async () => {
+    let getterCalls = 0;
+    const failure = {} as Record<string, unknown>;
+    Object.defineProperty(failure, "status", {
+      enumerable: true,
+      get() {
+        getterCalls += 1;
+        throw new Error("must not run");
+      },
+    });
+    const client = createBrainV2Client({
+      identity: identity(),
+      identityExpectation,
+      transport: {
+        request: async () => {
+          throw failure;
+        },
+      },
+      clock: () => NOW,
+    });
+    await expect(client.negotiate()).resolves.toEqual({
+      ok: false,
+      status: "offline",
+      reason: "brain_v2_offline",
+    });
+    expect(getterCalls).toBe(0);
+  });
+
   it("rejects accessor-backed provider pages before any getter can change values", async () => {
     let reads = 0;
     const providerPage = page("index") as Record<string, unknown>;

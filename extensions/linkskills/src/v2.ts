@@ -66,6 +66,22 @@ const legacy = /^(skills_run_|skills_tool_)/;
 const SNAPSHOT_CURSOR = /^snapshot:[0-9a-f]{16}:(?:0|[1-9][0-9]*)$/u;
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
+const snapshotOwnDataRecord = (value: unknown): Record<string, unknown> | undefined => {
+  if (!isRecord(value)) return undefined;
+  try {
+    const prototype = Object.getPrototypeOf(value);
+    if (prototype !== Object.prototype && prototype !== null) return undefined;
+    if (Object.getOwnPropertySymbols(value).length > 0) return undefined;
+    const snapshot = Object.create(null) as Record<string, unknown>;
+    for (const [key, descriptor] of Object.entries(Object.getOwnPropertyDescriptors(value))) {
+      if (!("value" in descriptor)) return undefined;
+      snapshot[key] = descriptor.value;
+    }
+    return snapshot;
+  } catch {
+    return undefined;
+  }
+};
 const bounded = (value: unknown, max = 256): value is string =>
   typeof value === "string" &&
   value.length > 0 &&
@@ -96,9 +112,8 @@ export function validateSkillsV2Request(input: unknown):
         | "legacy_execution_disabled"
         | "invalid_pagination";
     } {
-  if (!input || typeof input !== "object" || Array.isArray(input))
-    return { ok: false, code: "invalid_shape" };
-  const value = input as Record<string, unknown>;
+  const value = snapshotOwnDataRecord(input);
+  if (!value) return { ok: false, code: "invalid_shape" };
   const allowed = new Set([
     "providerCandidate",
     "protocolVersion",
@@ -119,7 +134,7 @@ export function validateSkillsV2Request(input: unknown):
   ]);
   if (Object.keys(value).some((key) => !allowed.has(key)))
     return { ok: false, code: "invalid_shape" };
-  const candidate = value.providerCandidate as Record<string, unknown> | undefined;
+  const candidate = snapshotOwnDataRecord(value.providerCandidate);
   if (!candidate || candidate.commit !== SKILLS_COMMIT || candidate.tree !== SKILLS_TREE)
     return { ok: false, code: "wrong_provider" };
   if (

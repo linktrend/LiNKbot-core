@@ -121,6 +121,46 @@ const plain = (value: unknown): value is Record<string, unknown> =>
   value !== null &&
   !Array.isArray(value) &&
   (Object.getPrototypeOf(value) === Object.prototype || Object.getPrototypeOf(value) === null);
+function snapshotPlainData(value: unknown, seen = new WeakSet<object>()): unknown {
+  if (
+    value === null ||
+    value === undefined ||
+    typeof value === "string" ||
+    typeof value === "number" ||
+    typeof value === "boolean"
+  )
+    return value;
+  if (typeof value !== "object" || seen.has(value)) throw new Error("invalid_plain_data");
+  seen.add(value);
+  try {
+    if (Object.getOwnPropertySymbols(value).length > 0) throw new Error("invalid_plain_data");
+    const descriptors = Object.getOwnPropertyDescriptors(value);
+    if (Array.isArray(value)) {
+      if (Object.getPrototypeOf(value) !== Array.prototype) throw new Error("invalid_plain_data");
+      const length = descriptors.length?.value;
+      if (!Number.isSafeInteger(length) || length < 0) throw new Error("invalid_plain_data");
+      const snapshot: unknown[] = [];
+      for (let index = 0; index < length; index += 1) {
+        const descriptor = descriptors[String(index)];
+        if (!descriptor || !("value" in descriptor)) throw new Error("invalid_plain_data");
+        snapshot.push(snapshotPlainData(descriptor.value, seen));
+      }
+      if (Object.keys(descriptors).some((key) => key !== "length" && !/^\d+$/u.test(key)))
+        throw new Error("invalid_plain_data");
+      return snapshot;
+    }
+    const prototype = Object.getPrototypeOf(value);
+    if (prototype !== Object.prototype && prototype !== null) throw new Error("invalid_plain_data");
+    const snapshot = Object.create(null) as Record<string, unknown>;
+    for (const [key, descriptor] of Object.entries(descriptors)) {
+      if (!("value" in descriptor)) throw new Error("invalid_plain_data");
+      snapshot[key] = snapshotPlainData(descriptor.value, seen);
+    }
+    return snapshot;
+  } finally {
+    seen.delete(value);
+  }
+}
 const iso = (value: unknown): value is string =>
   bounded(value, 64) && Number.isFinite(Date.parse(value));
 const keys = (
@@ -154,7 +194,7 @@ function automation(value: unknown): value is AutoworkRequest["automation"] {
   );
 }
 
-export function validateRequest(value: unknown): value is AutoworkRequest {
+function validateRequestSnapshot(value: unknown): value is AutoworkRequest {
   if (
     !plain(value) ||
     !keys(
@@ -238,6 +278,14 @@ export function validateRequest(value: unknown): value is AutoworkRequest {
   return true;
 }
 
+export function validateRequest(value: unknown): value is AutoworkRequest {
+  try {
+    return validateRequestSnapshot(snapshotPlainData(value));
+  } catch {
+    return false;
+  }
+}
+
 function canonical(value: unknown): unknown {
   return Array.isArray(value)
     ? value.map(canonical)
@@ -250,15 +298,22 @@ function canonical(value: unknown): unknown {
       : value;
 }
 export function requestFingerprint(value: unknown): string {
-  if (!validateRequest(value)) throw new Error("invalid Autowork request");
+  try {
+    value = snapshotPlainData(value);
+  } catch {
+    throw new Error("invalid Autowork request");
+  }
+  if (!validateRequestSnapshot(value)) throw new Error("invalid Autowork request");
   return `sha256:${createHash("sha256")
     .update(JSON.stringify(canonical(value)))
     .digest("hex")}`;
 }
 export function sameIdempotencyContent(a: unknown, b: unknown): boolean {
-  return (
-    validateRequest(a) && validateRequest(b) && requestFingerprint(a) === requestFingerprint(b)
-  );
+  try {
+    return requestFingerprint(a) === requestFingerprint(b);
+  } catch {
+    return false;
+  }
 }
 export function assertIdempotency(existingFingerprint: string, incoming: unknown): void {
   if (existingFingerprint !== requestFingerprint(incoming))
@@ -269,8 +324,16 @@ export function validateRequestAt(
   now = new Date(),
   revocationDecision?: PlatformRevocationDecision,
 ): value is AutoworkRequest {
+  try {
+    value = snapshotPlainData(value);
+    revocationDecision = snapshotPlainData(revocationDecision) as
+      | PlatformRevocationDecision
+      | undefined;
+  } catch {
+    return false;
+  }
   return (
-    validateRequest(value) &&
+    validateRequestSnapshot(value) &&
     Number.isFinite(now.getTime()) &&
     value.cancellationRequestedAt === undefined &&
     revocationDecision?.status === "active" &&
@@ -297,6 +360,12 @@ export function validateReceipt(
   request?: AutoworkRequest,
   now = new Date(),
 ): value is AutoworkReceipt {
+  try {
+    value = snapshotPlainData(value);
+    request = request === undefined ? undefined : (snapshotPlainData(request) as AutoworkRequest);
+  } catch {
+    return false;
+  }
   if (
     !plain(value) ||
     !keys(value, [
@@ -374,6 +443,19 @@ export function validateCallback(
     acceptedState: AutoworkAcceptedCallbackState;
   },
 ): value is AutoworkCallback {
+  try {
+    value = snapshotPlainData(value);
+    request = snapshotPlainData(request) as AutoworkRequest;
+    if (expected) {
+      expected = {
+        callbackBindingRef: expected.callbackBindingRef,
+        now: expected.now,
+        acceptedState: snapshotPlainData(expected.acceptedState) as AutoworkAcceptedCallbackState,
+      };
+    }
+  } catch {
+    return false;
+  }
   if (
     !plain(value) ||
     !keys(value, [

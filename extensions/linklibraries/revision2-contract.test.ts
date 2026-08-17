@@ -142,6 +142,20 @@ describe("LiNKlibraries Revision 2 consumer", () => {
       false,
     );
   });
+  it("rejects inherited and accessor-backed catalogue records without invoking getters", () => {
+    let getterCalls = 0;
+    const accessorRecord = { ...record } as Record<string, unknown>;
+    Object.defineProperty(accessorRecord, "entryId", {
+      enumerable: true,
+      get() {
+        getterCalls += 1;
+        return getterCalls === 1 ? record.entryId : "other-entry";
+      },
+    });
+    expect(validateExactRevision2({ ...bundle, record: accessorRecord }).ok).toBe(false);
+    expect(getterCalls).toBe(0);
+    expect(validateExactRevision2({ ...bundle, record: Object.create(record) }).ok).toBe(false);
+  });
   it.each([
     "../../outside",
     "/registry/v2/entries/component-echo/versions/1.0.0",

@@ -96,6 +96,47 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
+function snapshotPlainData(value: unknown, seen = new WeakSet<object>()): unknown {
+  if (
+    value === null ||
+    value === undefined ||
+    typeof value === "string" ||
+    typeof value === "number" ||
+    typeof value === "boolean"
+  )
+    return value;
+  if (typeof value !== "object" || seen.has(value)) throw new Error("invalid_plain_data");
+  seen.add(value);
+  try {
+    if (Object.getOwnPropertySymbols(value).length > 0) throw new Error("invalid_plain_data");
+    const descriptors = Object.getOwnPropertyDescriptors(value);
+    if (Array.isArray(value)) {
+      if (Object.getPrototypeOf(value) !== Array.prototype) throw new Error("invalid_plain_data");
+      const length = descriptors.length?.value;
+      if (!Number.isSafeInteger(length) || length < 0) throw new Error("invalid_plain_data");
+      const snapshot: unknown[] = [];
+      for (let index = 0; index < length; index += 1) {
+        const descriptor = descriptors[String(index)];
+        if (!descriptor || !("value" in descriptor)) throw new Error("invalid_plain_data");
+        snapshot.push(snapshotPlainData(descriptor.value, seen));
+      }
+      if (Object.keys(descriptors).some((key) => key !== "length" && !/^\d+$/u.test(key)))
+        throw new Error("invalid_plain_data");
+      return snapshot;
+    }
+    const prototype = Object.getPrototypeOf(value);
+    if (prototype !== Object.prototype && prototype !== null) throw new Error("invalid_plain_data");
+    const snapshot = Object.create(null) as Record<string, unknown>;
+    for (const [key, descriptor] of Object.entries(descriptors)) {
+      if (!("value" in descriptor)) throw new Error("invalid_plain_data");
+      snapshot[key] = snapshotPlainData(descriptor.value, seen);
+    }
+    return snapshot;
+  } finally {
+    seen.delete(value);
+  }
+}
+
 const FORBIDDEN_KEYS = new Set(["prompt", "reasoning", "transcript", "secret", "raw_tool"]);
 
 function validateKeys(
@@ -116,7 +157,7 @@ function validateKeys(
     }
   }
   for (const key of allowed) {
-    if (!(key in value)) {
+    if (!Object.hasOwn(value, key)) {
       errors.push(`${path}.${key} is missing`);
       valid = false;
     }
@@ -130,6 +171,12 @@ function validateKeys(
  */
 export function validateExactRelease(candidate: unknown): ExactReleaseResult {
   const errors: string[] = [];
+
+  try {
+    candidate = snapshotPlainData(candidate);
+  } catch {
+    return { ok: false, errors: ["candidate is not immutable plain data"] };
+  }
 
   if (!isRecord(candidate)) {
     return { ok: false, errors: ["candidate is missing"] };

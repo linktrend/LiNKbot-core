@@ -41,6 +41,34 @@ describe("Skills v2 consumer boundary", () => {
     expect(cursor).toMatch(/^snapshot:[0-9a-f]{16}:0$/u);
     expect(validateSkillsV2Request({ ...base, cursor }).ok).toBe(true);
   });
+  it("rejects inherited and accessor-backed request data without invoking getters", () => {
+    let getterCalls = 0;
+    const accessorRequest = { ...base } as Record<string, unknown>;
+    Object.defineProperty(accessorRequest, "operation", {
+      enumerable: true,
+      get() {
+        getterCalls += 1;
+        return getterCalls < 4 ? "skills_catalog_list" : "skills_run_start";
+      },
+    });
+    expect(validateSkillsV2Request(accessorRequest)).toMatchObject({
+      ok: false,
+      code: "invalid_shape",
+    });
+    expect(getterCalls).toBe(0);
+    expect(validateSkillsV2Request(Object.create(base))).toMatchObject({
+      ok: false,
+      code: "invalid_shape",
+    });
+    const inheritedCandidate = {
+      ...base,
+      providerCandidate: Object.create(base.providerCandidate),
+    };
+    expect(validateSkillsV2Request(inheritedCandidate)).toMatchObject({
+      ok: false,
+      code: "wrong_provider",
+    });
+  });
   it.each([
     ["legacy run", { operation: "skills_run_start" }, "legacy_execution_disabled"],
     ["legacy tool", { operation: "skills_tool_invoke" }, "legacy_execution_disabled"],

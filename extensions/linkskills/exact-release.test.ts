@@ -146,6 +146,28 @@ describe("exact provider Skills releases", () => {
     }
   });
 
+  it("rejects inherited and accessor-backed releases without invoking getters", () => {
+    let getterCalls = 0;
+    const accessorRelease = { ...validRelease } as Record<string, unknown>;
+    Object.defineProperty(accessorRelease, "release_id", {
+      enumerable: true,
+      get() {
+        getterCalls += 1;
+        return getterCalls === 1 ? validRelease.release_id : "skill.other@2026.08.12";
+      },
+    });
+    expect(
+      validateExactRelease(accessorRelease, { profile: "runtime:fixture-openclaw-01", now }),
+    ).toMatchObject({ ok: false, code: "invalid_shape" });
+    expect(getterCalls).toBe(0);
+    expect(
+      validateExactRelease(Object.create(validRelease), {
+        profile: "runtime:fixture-openclaw-01",
+        now,
+      }),
+    ).toMatchObject({ ok: false, code: "invalid_shape" });
+  });
+
   it("requires progressive index -> description -> fragments -> exact release", () => {
     const index = {
       stage: "index" as const,

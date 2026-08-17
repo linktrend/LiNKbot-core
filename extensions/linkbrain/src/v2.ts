@@ -209,6 +209,17 @@ const MAX_SAFE_STRING_TOTAL = 32_768;
 
 const objectRecord = (value: unknown): value is Record<string, unknown> =>
   Boolean(value) && typeof value === "object" && !Array.isArray(value);
+const ownDataString = (value: unknown, key: string): string | undefined => {
+  if (!objectRecord(value)) return undefined;
+  try {
+    const descriptor = Object.getOwnPropertyDescriptor(value, key);
+    return descriptor && "value" in descriptor && typeof descriptor.value === "string"
+      ? descriptor.value
+      : undefined;
+  } catch {
+    return undefined;
+  }
+};
 
 const boundedRef = (value: unknown): value is string =>
   typeof value === "string" && REF.test(value);
@@ -780,12 +791,10 @@ export function createBrainV2Client(input: {
     return trustedIdentity;
   };
   const safeFailure = (error: unknown): BrainV2SafeResult<never> => {
-    if (
-      objectRecord(error) &&
-      typeof error.status === "string" &&
-      typeof error.reason === "string"
-    ) {
-      const status = error.status as BrainV2ProviderStatus;
+    const providerStatus = ownDataString(error, "status");
+    const providerReason = ownDataString(error, "reason");
+    if (providerStatus !== undefined && providerReason !== undefined) {
+      const status = providerStatus as BrainV2ProviderStatus;
       if (
         [
           "available",
@@ -802,7 +811,7 @@ export function createBrainV2Client(input: {
         return { ok: false, status, reason: `brain_v2_${status}` };
       }
     }
-    const reason = error instanceof Error ? error.message : "brain_v2_unavailable";
+    const reason = ownDataString(error, "message") ?? "offline";
     const status: BrainV2ProviderStatus = /unauthorized|identity|scope|capability|revoked/.test(
       reason,
     )
