@@ -389,6 +389,8 @@ export function validateSkillsQualificationIdentity(value: unknown, expected: un
     bounded(evidence.version, 128) &&
     bounded(expectation.skillId) &&
     bounded(expectation.version, 128) &&
+    !MOVING_VERSION_ALIAS.test(evidence.version) &&
+    !MOVING_VERSION_ALIAS.test(expectation.version) &&
     evidence.skillId === expectation.skillId &&
     evidence.version === expectation.version
   );

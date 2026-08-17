@@ -252,6 +252,17 @@ describe("Skills v2 consumer boundary", () => {
       ),
     ).toBe(true);
   });
+  it.each(["latest", "current", "stable", "newest"])(
+    "rejects moving qualification version %s even when both identities match",
+    (version) => {
+      expect(
+        validateSkillsQualificationIdentity(
+          { skillId: "skill.echo", version },
+          { skillId: "skill.echo", version },
+        ),
+      ).toBe(false);
+    },
+  );
   it("rejects inherited and accessor-backed qualification identities without invoking getters", () => {
     const expectedIdentity = { skillId: "skill.echo", version: "1.0.0" };
     expect(
