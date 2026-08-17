@@ -78,4 +78,20 @@ describe("P-08 Wave A obsolete reference replacement", () => {
     expect(policyTests).toMatch(/brain_capture_batch/u);
     expect(policyTests).toMatch(/legacy_operation/u);
   });
+
+  it("marks the July 2026 two-provider plan as historical, not current Lisa contract", () => {
+    const historicalPlan = readFileSync(
+      path.join(
+        repoRoot,
+        "docs/OPENCLAW-PRIME-LISA-LINKBRAIN-LINKSKILLS-DETAILED-IMPLEMENTATION-PLAN.md",
+      ),
+      "utf8",
+    );
+    expect(historicalPlan).toMatch(/Historical \(Wave A Item 3\)/u);
+    expect(historicalPlan).toMatch(/not\*\* the current Lisa five-provider/u);
+    expect(historicalPlan).toMatch(
+      /Status:\*\* Historical \/ superseded as Lisa five-provider authority/u,
+    );
+    expect(historicalPlan).not.toMatch(/\*\*Status:\*\* Proposed execution baseline/u);
+  });
 });
