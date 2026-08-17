@@ -182,6 +182,15 @@ const iso = (value: unknown): value is string => {
     date.getUTCSeconds() === Number(match[6])
   );
 };
+const timestampNanos = (value: string): bigint | undefined => {
+  if (!iso(value)) return undefined;
+  const match = UTC_TIMESTAMP.exec(value);
+  if (!match) return undefined;
+  const milliseconds = Date.parse(value);
+  const epochSeconds = BigInt(Math.floor(milliseconds / 1000));
+  const fraction = BigInt((match[7] ?? "").padEnd(9, "0"));
+  return epochSeconds * 1_000_000_000n + fraction;
+};
 const keys = (
   value: Record<string, unknown>,
   required: readonly string[],
@@ -427,22 +436,26 @@ export function validateReceipt(
     typeof value.uncertainOutcome !== "boolean"
   )
     return false;
-  const acceptedAt = Date.parse(value.acceptedAt);
-  const updatedAt = Date.parse(value.updatedAt);
+  const acceptedAt = timestampNanos(value.acceptedAt);
+  const updatedAt = timestampNanos(value.updatedAt);
+  const nowMilliseconds = now.getTime();
+  if (!Number.isFinite(nowMilliseconds)) return false;
+  const nowNanos = BigInt(nowMilliseconds) * 1_000_000n;
   if (
-    !Number.isFinite(now.getTime()) ||
-    !Number.isFinite(acceptedAt) ||
-    !Number.isFinite(updatedAt) ||
+    acceptedAt === undefined ||
+    updatedAt === undefined ||
     acceptedAt > updatedAt ||
-    updatedAt > now.getTime()
+    updatedAt > nowNanos
   )
     return false;
   if (request) {
-    const issuedAt = Date.parse(request.platform.issuedAt);
-    const requestExpiresAt = Date.parse(request.expiresAt);
-    const platformExpiresAt = Date.parse(request.platform.expiresAt);
+    const issuedAt = timestampNanos(request.platform.issuedAt);
+    const requestExpiresAt = timestampNanos(request.expiresAt);
+    const platformExpiresAt = timestampNanos(request.platform.expiresAt);
     if (
-      ![acceptedAt, issuedAt, requestExpiresAt, platformExpiresAt].every(Number.isFinite) ||
+      issuedAt === undefined ||
+      requestExpiresAt === undefined ||
+      platformExpiresAt === undefined ||
       acceptedAt < issuedAt ||
       acceptedAt >= requestExpiresAt ||
       acceptedAt >= platformExpiresAt ||
@@ -505,6 +518,8 @@ export function validateCallback(
       !iso(expected.acceptedState.latestSourceTimestamp)) ||
     !Array.isArray(expected.acceptedState.acceptedReceiptIds) ||
     !expected.acceptedState.acceptedReceiptIds.every((receiptId) => matches(receiptId, UUID)) ||
+    (expected.acceptedState.acceptedReceiptIds.length === 0) !==
+      (expected.acceptedState.latestSourceTimestamp === null) ||
     (expected.acceptedState.latestReceiptState !== null &&
       !(AUTOWORK_STATES as readonly unknown[]).includes(
         expected.acceptedState.latestReceiptState,
@@ -521,13 +536,13 @@ export function validateCallback(
     !validateReceipt(value.receipt, request, expected.now)
   )
     return false;
-  const sourceTimestamp = Date.parse(value.sourceTimestamp);
-  const acceptedAt = Date.parse((value.receipt as AutoworkReceipt).acceptedAt);
-  const updatedAt = Date.parse((value.receipt as AutoworkReceipt).updatedAt);
+  const sourceTimestamp = timestampNanos(value.sourceTimestamp);
+  const acceptedAt = timestampNanos((value.receipt as AutoworkReceipt).acceptedAt);
+  const updatedAt = timestampNanos((value.receipt as AutoworkReceipt).updatedAt);
   const latestSourceTimestamp =
     expected.acceptedState.latestSourceTimestamp === null
       ? null
-      : Date.parse(expected.acceptedState.latestSourceTimestamp);
+      : timestampNanos(expected.acceptedState.latestSourceTimestamp);
   const receipt = value.receipt as AutoworkReceipt;
   const latestReceiptState = expected.acceptedState.latestReceiptState;
   const latestAttemptCount = expected.acceptedState.latestAttemptCount;
@@ -537,12 +552,16 @@ export function validateCallback(
   const stateRank = (state: ReceiptState): number =>
     state === "accepted" ? 0 : state === "queued" ? 1 : state === "running" ? 2 : 3;
   return (
+    sourceTimestamp !== undefined &&
+    acceptedAt !== undefined &&
+    updatedAt !== undefined &&
+    latestSourceTimestamp !== undefined &&
     value.requestId === receipt.requestId &&
     value.receiptId === receipt.receiptId &&
     value.orgId === request.platform.orgId &&
     sourceTimestamp === updatedAt &&
     sourceTimestamp >= acceptedAt &&
-    sourceTimestamp <= expected.now.getTime() &&
+    sourceTimestamp <= BigInt(expected.now.getTime()) * 1_000_000n &&
     (latestSourceTimestamp === null || sourceTimestamp > latestSourceTimestamp) &&
     !expected.acceptedState.acceptedReceiptIds.includes(value.receiptId) &&
     (latestAttemptCount === null || receipt.attemptCount >= latestAttemptCount) &&

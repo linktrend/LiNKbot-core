@@ -495,6 +495,57 @@ describe("LinkAutowork final provider contract", () => {
     expect(validateCallback(callback, request, expected as never)).toBe(false);
   });
 
+  it("requires coherent callback history and preserves sub-millisecond chronology", () => {
+    const preciseReceipt = {
+      ...receipt,
+      receiptId: "88888888-8888-4888-8888-888888888888",
+      acceptedAt: "2026-08-13T00:00:00.0000Z",
+      updatedAt: "2026-08-13T00:00:00.0002Z",
+      state: "running" as const,
+    };
+    const callback = {
+      requestId: request.requestId,
+      receiptId: preciseReceipt.receiptId,
+      orgId: request.platform.orgId,
+      callbackBindingRef: "evidence://callback/binding",
+      sourceTimestamp: preciseReceipt.updatedAt,
+      receipt: preciseReceipt,
+    };
+    const expected = {
+      callbackBindingRef: "evidence://callback/binding",
+      now: new Date("2026-08-13T12:00:00.000Z"),
+      acceptedState: {
+        latestSourceTimestamp: "2026-08-13T00:00:00.0001Z",
+        acceptedReceiptIds: [receipt.receiptId],
+        latestReceiptState: "queued" as const,
+        latestAttemptCount: receipt.attemptCount,
+      },
+    };
+    expect(validateCallback(callback, request, expected)).toBe(true);
+    expect(
+      validateCallback({ ...callback, sourceTimestamp: "2026-08-13T00:00:00.0009Z" }, request, {
+        ...expected,
+        acceptedState: {
+          latestSourceTimestamp: null,
+          acceptedReceiptIds: [],
+          latestReceiptState: null,
+          latestAttemptCount: null,
+        },
+      }),
+    ).toBe(false);
+    expect(
+      validateCallback(callback, request, {
+        ...expected,
+        acceptedState: {
+          latestSourceTimestamp: null,
+          acceptedReceiptIds: [receipt.receiptId],
+          latestReceiptState: null,
+          latestAttemptCount: null,
+        },
+      }),
+    ).toBe(false);
+  });
+
   it("rejects callback state regression after a terminal receipt", () => {
     const regressedReceipt = {
       ...receipt,
