@@ -209,6 +209,31 @@ describe("LinkAutowork final provider contract", () => {
       ),
     ).toBe(false);
   });
+  it("rejects non-canonical and invalid-calendar validity timestamps", () => {
+    for (const issuedAt of [
+      "2026-08-13",
+      "2026-02-30T00:00:00.000Z",
+      "2026-08-13T00:00:00+00:00",
+    ]) {
+      expect(validateRequest({ ...request, platform: { ...request.platform, issuedAt } })).toBe(
+        false,
+      );
+    }
+    expect(
+      validateRequestAt(request, new Date("2026-08-13T12:00:00.000Z"), {
+        status: "active",
+        observedAt: "2026-08-13",
+        credentialId: request.platform.credentialId,
+        bindingId: request.platform.bindingId,
+        orgId: request.platform.orgId,
+        actorId: request.platform.actorId,
+        audience: request.platform.audience,
+        capability: request.platform.capability,
+        revocationRef: request.platform.revocationRef,
+        authorizedOperation: request.operationKind,
+      }),
+    ).toBe(false);
+  });
   it("requires receipt acceptance within the request validity window", () => {
     const issueBoundary = {
       ...receipt,

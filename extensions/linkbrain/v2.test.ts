@@ -649,7 +649,15 @@ describe("LiNKbrain v2 immutable consumer boundary", () => {
         metadata: {},
       } as never),
     ).toMatchObject({ ok: false });
-    expect(requests).toHaveLength(1);
+    expect(
+      await validClient.writeCheckpoint({
+        namespace: "private",
+        checkpointRef: "checkpoint:array",
+        idempotencyKey: "idem:array",
+        metadata: { tags: ["safe", "bounded"] },
+      }),
+    ).toMatchObject({ ok: true });
+    expect(requests).toHaveLength(2);
   });
 
   it("rejects accessor-backed Platform bindings without invoking their getters", async () => {

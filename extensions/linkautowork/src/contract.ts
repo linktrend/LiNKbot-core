@@ -113,6 +113,7 @@ const NON_TERMINAL_RECEIPT_STATES = ["accepted", "queued", "running"] as const;
 const SHA256 = /^sha256:[0-9a-f]{64}$/;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const OPAQUE = /^[a-z][a-z0-9+.-]*:\/\/[A-Za-z0-9._~/%:-]+$/;
+const UTC_TIMESTAMP = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.(\d{1,9}))?Z$/u;
 const bounded = (value: unknown, max = 512): value is string =>
   typeof value === "string" &&
   value.length > 0 &&
@@ -165,8 +166,22 @@ function snapshotPlainData(value: unknown, seen = new WeakSet<object>()): unknow
     seen.delete(value);
   }
 }
-const iso = (value: unknown): value is string =>
-  bounded(value, 64) && Number.isFinite(Date.parse(value));
+const iso = (value: unknown): value is string => {
+  if (!bounded(value, 64)) return false;
+  const match = UTC_TIMESTAMP.exec(value);
+  if (!match) return false;
+  const parsed = Date.parse(value);
+  if (!Number.isFinite(parsed)) return false;
+  const date = new Date(parsed);
+  return (
+    date.getUTCFullYear() === Number(match[1]) &&
+    date.getUTCMonth() + 1 === Number(match[2]) &&
+    date.getUTCDate() === Number(match[3]) &&
+    date.getUTCHours() === Number(match[4]) &&
+    date.getUTCMinutes() === Number(match[5]) &&
+    date.getUTCSeconds() === Number(match[6])
+  );
+};
 const keys = (
   value: Record<string, unknown>,
   required: readonly string[],

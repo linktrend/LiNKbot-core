@@ -148,8 +148,19 @@ function isString(value: unknown): value is string {
 
 function parseTime(value: unknown): number | undefined {
   if (!isString(value)) return undefined;
+  const match = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.(\d{1,9}))?Z$/u.exec(value);
+  if (!match) return undefined;
   const time = Date.parse(value);
-  return Number.isFinite(time) ? time : undefined;
+  if (!Number.isFinite(time)) return undefined;
+  const date = new Date(time);
+  return date.getUTCFullYear() === Number(match[1]) &&
+    date.getUTCMonth() + 1 === Number(match[2]) &&
+    date.getUTCDate() === Number(match[3]) &&
+    date.getUTCHours() === Number(match[4]) &&
+    date.getUTCMinutes() === Number(match[5]) &&
+    date.getUTCSeconds() === Number(match[6])
+    ? time
+    : undefined;
 }
 
 function hasOnlyKeys(record: Record<string, unknown>, allowed: Set<string>): boolean {

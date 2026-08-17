@@ -82,6 +82,13 @@ describe("exact provider Skills releases", () => {
     [{ compatible_profiles: ["runtime:other"] }, "incompatible_profile"],
     [{ attestation: undefined }, "missing_attestation"],
     [{ issued_at: "not-a-time" }, "invalid_timestamp"],
+    [{ issued_at: "2026-08-12" }, "invalid_timestamp"],
+    [{ issued_at: "2026-02-30T12:00:00.000Z" }, "invalid_timestamp"],
+    [{ issued_at: "2026-08-12T12:00:00+00:00" }, "invalid_timestamp"],
+    [
+      { attestation: { ...validRelease.attestation, evaluated_at: "2026-08-12" } },
+      "invalid_timestamp",
+    ],
     [{ expires_at: "2026-08-12T23:59:59.000Z" }, "stale_timestamp"],
     [{ issued_at: "2026-08-01T00:00:00.000Z" }, "stale_timestamp"],
   ] as const)("rejects %j", (changes, code) => {

@@ -43,6 +43,18 @@ describe("Skills v2 consumer boundary", () => {
     expect(validateSkillsV2Request({ ...base, cursor: "snapshot:0123456789abcdef:25" }).ok).toBe(
       true,
     );
+    expect(
+      validateSkillsV2Request({ ...base, operation: "skills_release_list", skillId: "skill.echo" })
+        .ok,
+    ).toBe(true);
+    expect(
+      validateSkillsV2Request({
+        ...base,
+        operation: "skills_release_list",
+        skillId: "skill.echo",
+        version: "1.0.0",
+      }).ok,
+    ).toBe(false);
   });
   it("generates an initial cursor accepted by the request validator", () => {
     const cursor = skillsSnapshotCursor("catalog-v2");

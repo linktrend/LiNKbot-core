@@ -55,7 +55,7 @@ const OPERATION_REQUEST_FIELDS: Readonly<Record<SkillsV2Operation, readonly stri
   skills_capabilities_get: [],
   skills_catalog_list: ["cursor", "limit"],
   skills_catalog_search: ["query", "cursor", "limit"],
-  skills_release_list: ["skillId", "version", "cursor", "limit"],
+  skills_release_list: ["skillId", "cursor", "limit"],
   skills_release_describe: ["skillId", "version", "cursor", "limit"],
   skills_qualification_get: ["skillId", "version", "cursor", "limit"],
   skills_release_entrypoint_get: ["skillId", "version", "cursor", "limit"],
@@ -195,7 +195,6 @@ export function validateSkillsV2Request(input: unknown):
   )
     return { ok: false, code: "invalid_shape" };
   const requiresReleaseIdentity = new Set([
-    "skills_release_list",
     "skills_release_sections_list",
     "skills_release_section_get",
     "skills_release_resources_list",
@@ -205,6 +204,8 @@ export function validateSkillsV2Request(input: unknown):
     "skills_release_entrypoint_get",
     "skills_qualification_get",
   ]);
+  if (value.operation === "skills_release_list" && !bounded(value.skillId))
+    return { ok: false, code: "invalid_shape" };
   if (value.operation === "skills_catalog_search" && !bounded(value.query, 512))
     return { ok: false, code: "invalid_shape" };
   if (

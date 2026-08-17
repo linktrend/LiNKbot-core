@@ -311,7 +311,8 @@ const snapshotSafeValue = (
   }
 
   if (Array.isArray(value)) {
-    if (Object.getPrototypeOf(value) !== Array.prototype || depth >= MAX_SAFE_DEPTH) {
+    const prototype = Object.getPrototypeOf(value);
+    if ((prototype !== Array.prototype && prototype !== null) || depth >= MAX_SAFE_DEPTH) {
       throw new Error(`brain_v2_payload_depth_or_array:${path}`);
     }
     const lengthHolder = Object.getOwnPropertyDescriptor(descriptors, "length");
