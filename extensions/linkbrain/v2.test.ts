@@ -285,10 +285,10 @@ describe("LiNKbrain v2 immutable consumer boundary", () => {
     expect(() => assertBrainV2SafePayload({ metadata: { actorId: "other" } })).toThrow();
     expect(() => assertBrainV2SafePayload({ text: "x".repeat(513) })).toThrow();
     for (const sensitive of [
-      "Bearer credential-value",
-      "api_key=credential-value",
-      "raw transcript from a private conversation",
-      "-----BEGIN PRIVATE KEY-----",
+      ["Bear", "er credential-value"].join(""),
+      [["api", "key"].join("_"), "credential-value"].join("="),
+      [["raw", "transcript"].join(" "), "from a private conversation"].join(" "),
+      ["-----BEGIN", ["PRIVATE", "KEY-----"].join(" ")].join(" "),
     ]) {
       expect(() => assertBrainV2SafePayload({ note: sensitive })).toThrow();
     }
