@@ -14,7 +14,7 @@
 | Starting branch  | `issue/190-implement-lisa-item-3-foundation-packets-p-01-th`                                   |
 | Ending branch    | `issue/190-implement-lisa-item-3-foundation-packets-p-01-th`                                   |
 | Starting commit  | Wave A tip layered on `90dad7381cce213db23fa81881787c4ea7d1ad0a`                                |
-| Ending commit    | `c0df124bfb` tip at closeout; post-push tip recorded in Amendments if rewritten |
+| Ending commit    | `2e9f0f842ccc68ffaea0a978cadc1ad7afd06740` / tree `25ecd38c2d9acab6dcc1ecb73fa701b6c09639ad` |
 | Starting status  | dirty with P-10 wiring in progress                                                             |
 | Ending status    | committed and pushed; working tree clean; HEAD equals origin/issue/190                         |
 
