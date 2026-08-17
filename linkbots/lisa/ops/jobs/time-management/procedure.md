@@ -14,4 +14,11 @@ The planner ranks prevention/hard deadlines, dependency unblocking, the current 
 
 ## Provider outage
 
-Google Tasks and Calendar remain routing contracts only. Non-Carlos tasks are Wave A policy HOLD until a later Wave B packet may bind Brain v2. Do not claim a live LiNKbrain write. If the destination is HOLD, enqueue the task locally with a temporary `P-*` ID and map it once to the permanent `T-*` ID after a later bound recovery. Never invent a permanent ID, lose queued work, or claim that an external action occurred.
+Google Tasks and Calendar remain routing contracts only. Non-Carlos tasks stay
+policy HOLD for live writes. Wave B records the Brain v2 bind surface as
+`createBrainV2Client` / `BRAIN_V2_OPERATIONS` / `LINKBRAIN_V2_COMMIT` from
+`extensions/linkbrain/api.ts` on the accepted Item 2 head; that naming does not
+authorize a live LiNKbrain write. Do not claim a live LiNKbrain write. If the
+destination is HOLD, enqueue the task locally with a temporary `P-*` ID and map
+it once to the permanent `T-*` ID after a later bound recovery. Never invent a
+permanent ID, lose queued work, or claim that an external action occurred.

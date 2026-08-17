@@ -61,7 +61,8 @@ describe("P-08 Wave A obsolete reference replacement", () => {
       externalActionPerformed: false,
     });
     const procedure = readFileSync(path.join(here, "../jobs/time-management/procedure.md"), "utf8");
-    expect(procedure).toMatch(/Wave A policy HOLD/u);
+    expect(procedure).toMatch(/policy HOLD/u);
+    expect(procedure).toMatch(/createBrainV2Client/u);
     expect(procedure).toMatch(/Do not claim a live LiNKbrain write/u);
   });
 

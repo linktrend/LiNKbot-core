@@ -16,7 +16,10 @@ function readLisa(relPath: string): string {
 
 function providerPolicySources(): string[] {
   return readdirSync(here)
-    .filter((name) => name.endsWith(".ts") && !name.endsWith(".test.ts"))
+    .filter(
+      (name) =>
+        name.endsWith(".ts") && !name.endsWith(".test.ts") && name !== "wiring.ts",
+    )
     .map((name) => readFileSync(path.join(here, name), "utf8"));
 }
 
@@ -75,6 +78,16 @@ describe("P-09 operating-model non-regression ledger", () => {
     expect(sources).not.toMatch(/Nemotron/u);
     expect(sources).not.toMatch(/skill-creator/u);
     expect(sources).not.toMatch(/clawhub/u);
+    const wiring = readFileSync(path.join(here, "wiring.ts"), "utf8");
+    expect(wiring).toMatch(/extensions\/linkplatform\/api\.js/u);
+    expect(wiring).toMatch(/extensions\/linkbrain\/api\.js/u);
+    expect(wiring).toMatch(/extensions\/linkskills\/api\.js/u);
+    expect(wiring).toMatch(/extensions\/linklibraries\/api\.js/u);
+    expect(wiring).toMatch(/extensions\/linkautowork\/api\.js/u);
+    expect(wiring).not.toMatch(/extensions\/link\w+\/src\//u);
+    expect(wiring).not.toMatch(/LaunchAgent/u);
+    expect(wiring).not.toMatch(/gws auth/u);
+    expect(wiring).not.toMatch(/sessions_spawn/u);
     const accepted = authorizeLisaProviderOperation(
       {
         agentId: "main",
