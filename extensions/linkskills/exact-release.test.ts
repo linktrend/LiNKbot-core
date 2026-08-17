@@ -1,14 +1,51 @@
+import { createHash } from "node:crypto";
 import { describe, expect, it } from "vitest";
 import {
   exactReleaseTelemetry,
-  expectedEligibilityDigest,
-  expectedPackageDigest,
   SKILLS_COMMIT,
   SKILLS_TREE,
   validateExactRelease,
   validateProgressiveReleaseTransition,
   type ExactRelease,
 } from "./src/exact-release.js";
+
+const canonical = (value: unknown): unknown =>
+  Array.isArray(value)
+    ? value.map(canonical)
+    : value !== null && typeof value === "object"
+      ? Object.fromEntries(
+          Object.entries(value)
+            .sort(([left], [right]) => left.localeCompare(right))
+            .map(([key, child]) => [key, canonical(child)]),
+        )
+      : value;
+
+const digest = (value: unknown): string =>
+  `sha256:${createHash("sha256")
+    .update(JSON.stringify(canonical(value)))
+    .digest("hex")}`;
+
+const expectedPackageDigest = (release: { release_id: string; manifest_digest: string }): string =>
+  digest({
+    release_id: release.release_id,
+    files_digest: release.manifest_digest,
+    contract_version: "skills-release/0.2",
+  });
+
+const expectedEligibilityDigest = (release: ExactRelease): string =>
+  digest({
+    release_id: release.release_id,
+    version: release.version,
+    provider_candidate: release.providerCandidate,
+    manifest_digest: release.manifest_digest,
+    package_digest: release.package_digest,
+    lifecycle: release.lifecycle,
+    state: release.state,
+    compatible_profiles: release.compatible_profiles,
+    attestation: release.attestation,
+    issued_at: release.issued_at,
+    expires_at: release.expires_at,
+  });
 
 const now = "2026-08-13T00:00:00.000Z";
 const releaseId = "skill.echo@2026.08.12";

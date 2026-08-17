@@ -3,17 +3,9 @@ import {
   SKILLS_COMMIT,
   SKILLS_CONTRACT_VERSION,
   SKILLS_MCP_PROTOCOL_VERSION,
-  SKILLS_RELEASE_CONTRACT_VERSION,
   SKILLS_TREE,
 } from "./exact-release.js";
 
-export {
-  SKILLS_COMMIT,
-  SKILLS_TREE,
-  SKILLS_MCP_PROTOCOL_VERSION,
-  SKILLS_CONTRACT_VERSION,
-  SKILLS_RELEASE_CONTRACT_VERSION,
-};
 export const SKILLS_V2_RESOURCE_OPERATIONS = Object.freeze([
   "skills_capabilities_get",
   "skills_catalog_list",

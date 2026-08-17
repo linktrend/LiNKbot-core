@@ -63,6 +63,7 @@ export {
   validateExactRelease,
   validateProgressiveReleaseTransition,
   type ExactRelease,
+  type AuthenticatedSkillsReleaseEvidence,
   type ExactReleaseLifecycle,
   type ExactReleaseRejectionCode,
   type ExactReleaseStage,

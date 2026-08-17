@@ -1,8 +1,8 @@
 // Kept local to preserve extension package boundaries; these are facts issued by Platform.
-export const PLATFORM_COMMIT = "5452f90a35ed690698a9161117a9d92c69985582" as const;
-export const PLATFORM_TREE = "90b51726f7a77e4620151a463a10cfc3d2007c88" as const;
-export const PLATFORM_AUTH_CLAIMS_CONTRACT_VERSION = "platform.auth-claims/1.1.0" as const;
-export const PLATFORM_AUTH_CLAIMS_SCHEMA_VERSION = "2026.07.28-w4" as const;
+const PLATFORM_COMMIT = "5452f90a35ed690698a9161117a9d92c69985582" as const;
+const PLATFORM_TREE = "90b51726f7a77e4620151a463a10cfc3d2007c88" as const;
+const PLATFORM_AUTH_CLAIMS_CONTRACT_VERSION = "platform.auth-claims/1.1.0" as const;
+const PLATFORM_AUTH_CLAIMS_SCHEMA_VERSION = "2026.07.28-w4" as const;
 
 export const LINKBRAIN_V2_COMMIT = "8ce1d737f8870a479f07b1741c58d6681cd07aa1" as const;
 export const LINKBRAIN_V2_TREE = "0cae42d612342f5e52c7e2e0e76cb6fc2f6d81f3" as const;

@@ -223,10 +223,7 @@ function canonical(value: unknown): unknown {
 }
 
 /** Matches LiNKskills' immutable package digest claim construction. */
-export function expectedPackageDigest(release: {
-  release_id: string;
-  manifest_digest: string;
-}): string {
+function expectedPackageDigest(release: { release_id: string; manifest_digest: string }): string {
   return `sha256:${createHash("sha256")
     .update(
       JSON.stringify(
@@ -241,7 +238,7 @@ export function expectedPackageDigest(release: {
 }
 
 /** Binds every provider-supplied fact used to decide whether an exact release is eligible now. */
-export function expectedEligibilityDigest(release: ExactRelease): string {
+function expectedEligibilityDigest(release: ExactRelease): string {
   return `sha256:${createHash("sha256")
     .update(
       JSON.stringify(
