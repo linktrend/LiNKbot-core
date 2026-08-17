@@ -134,10 +134,13 @@ describe("LiNKbrain v2 immutable consumer boundary", () => {
   });
 
   it("requires modern sessionless negotiation and fails closed for v1 or session IDs", () => {
+    expect(LINKBRAIN_V2_CONTRACT_VERSION).toBe("brain.v2/2.0.0");
     expect(() => assertBrainV2Negotiation(negotiation)).not.toThrow();
     for (const candidate of [
       { ...negotiation, protocolVersion: "2025-06-18" },
       { ...negotiation, sessionless: false },
+      { ...negotiation, contractVersion: "2.0.0" },
+      { ...negotiation, contractVersion: "other.v2/2.0.0" },
       { ...negotiation, contractVersion: "1.0.0" },
       { ...negotiation, sdkSupportsModernProtocol: false },
       { ...negotiation, sessionId: "session-1" },
@@ -207,6 +210,21 @@ describe("LiNKbrain v2 immutable consumer boundary", () => {
     ).not.toThrow();
     expect(() => assertBrainV2SafePayload({ metadata: { actorId: "other" } })).toThrow();
     expect(() => assertBrainV2SafePayload({ text: "x".repeat(513) })).toThrow();
+  });
+
+  it("rejects accessor-backed payloads without evaluating changing getters", () => {
+    let reads = 0;
+    const changingPayload = {} as Record<string, unknown>;
+    Object.defineProperty(changingPayload, "metadata", {
+      enumerable: true,
+      get() {
+        reads += 1;
+        return reads === 1 ? { title: "safe" } : { token: "secret" };
+      },
+    });
+
+    expect(() => assertBrainV2SafePayload(changingPayload)).toThrow("brain_v2_accessor_payload");
+    expect(reads).toBe(0);
   });
 
   it("requires explicit private namespaces and bounded idempotency references", () => {
@@ -296,6 +314,7 @@ describe("LiNKbrain v2 immutable consumer boundary", () => {
       status: "contract_incompatible",
     });
     expect(await client.negotiate()).toMatchObject({ ok: true });
+    expect(requests[0]?.contractVersion).toBe("brain.v2/2.0.0");
     expect(await client.search("knowledge")).toMatchObject({
       ok: true,
       data: { disclosure: "index" },
@@ -325,6 +344,7 @@ describe("LiNKbrain v2 immutable consumer boundary", () => {
     });
     expect(requests[1]).not.toHaveProperty("credentialReference");
     expect(requests[1]).not.toHaveProperty("credentialValue");
+    expect(requests[1]?.contractVersion).toBe("brain.v2/2.0.0");
     now = "2026-08-14T13:00:00.000Z";
     expect(await client.search("knowledge")).toMatchObject({ ok: false, status: "unauthorized" });
     expect(requests).toHaveLength(4);
@@ -395,5 +415,32 @@ describe("LiNKbrain v2 immutable consumer boundary", () => {
       status: "offline",
       reason: "brain_v2_offline",
     });
+  });
+
+  it("rejects accessor-backed provider pages before any getter can change values", async () => {
+    let reads = 0;
+    const providerPage = page("index") as Record<string, unknown>;
+    Object.defineProperty(providerPage, "data", {
+      enumerable: true,
+      get() {
+        reads += 1;
+        return reads === 1 ? { reference: "knowledge:1", title: "safe" } : { token: "secret" };
+      },
+    });
+    const client = createBrainV2Client({
+      identity: identity(),
+      identityExpectation,
+      transport: {
+        request: async (request) => (request.method === "discover" ? negotiation : providerPage),
+      },
+      clock: () => NOW,
+    });
+
+    await expect(client.negotiate()).resolves.toMatchObject({ ok: true });
+    await expect(client.search("knowledge")).resolves.toMatchObject({
+      ok: false,
+      status: "contract_incompatible",
+    });
+    expect(reads).toBe(0);
   });
 });

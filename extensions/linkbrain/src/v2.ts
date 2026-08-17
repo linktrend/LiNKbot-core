@@ -6,7 +6,7 @@ export const PLATFORM_AUTH_CLAIMS_SCHEMA_VERSION = "2026.07.28-w4" as const;
 
 export const LINKBRAIN_V2_COMMIT = "8ce1d737f8870a479f07b1741c58d6681cd07aa1" as const;
 export const LINKBRAIN_V2_TREE = "0cae42d612342f5e52c7e2e0e76cb6fc2f6d81f3" as const;
-export const LINKBRAIN_V2_CONTRACT_VERSION = "2.0.0" as const;
+export const LINKBRAIN_V2_CONTRACT_VERSION = "brain.v2/2.0.0" as const;
 export const LINKBRAIN_V2_PIN_CONTRACT_VERSION = "brain.v2/2.0.0" as const;
 export const LINKBRAIN_V2_SCHEMA_VERSION = "2.0.0" as const;
 export const LINKBRAIN_V2_MCP_PROTOCOL = "2026-07-28" as const;
@@ -222,81 +222,108 @@ const assertObjectKeys = (value: Record<string, unknown>, allowed: readonly stri
   }
 };
 
-const assertSafeValue = (value: unknown): void => {
-  const pending: Array<{ value: unknown; depth: number; path: string }> = [
-    { value, depth: 0, path: "value" },
-  ];
-  let nodes = 0;
-  let stringTotal = 0;
-  while (pending.length > 0) {
-    const current = pending.pop();
-    if (!current) continue;
-    nodes += 1;
-    if (nodes > MAX_SAFE_NODES) {
-      throw new Error("brain_v2_payload_too_large");
+type SafeSnapshotState = {
+  nodes: number;
+  stringTotal: number;
+  readonly seen: WeakSet<object>;
+};
+
+const assertSafeKey = (key: string): void => {
+  const policyKey = canonicalKey(key);
+  if (key.length > MAX_SAFE_KEY_LENGTH || FORBIDDEN_FIELDS_CANONICAL.has(policyKey)) {
+    throw new Error(`brain_v2_private_payload:${key}`);
+  }
+  if (FORBIDDEN_IDENTITY_FIELDS_CANONICAL.has(policyKey)) {
+    throw new Error(`brain_v2_identity_override:${key}`);
+  }
+  if (
+    FORBIDDEN_SECRET_KEYS_CANONICAL.has(policyKey) ||
+    policyKey.includes("secret") ||
+    policyKey.includes("token")
+  ) {
+    throw new Error(`brain_v2_secret_field:${key}`);
+  }
+};
+
+const snapshotSafeValue = (
+  value: unknown,
+  depth: number,
+  path: string,
+  state: SafeSnapshotState,
+): unknown => {
+  state.nodes += 1;
+  if (state.nodes > MAX_SAFE_NODES) {
+    throw new Error("brain_v2_payload_too_large");
+  }
+  if (value === null || typeof value === "boolean") return value;
+  if (typeof value === "string") {
+    state.stringTotal += value.length;
+    if (value.length > 512 || state.stringTotal > MAX_SAFE_STRING_TOTAL) {
+      throw new Error(`brain_v2_unbounded_string:${path}`);
     }
-    if (current.value === null) continue;
-    if (typeof current.value === "string") {
-      stringTotal += current.value.length;
-      if (current.value.length > 512 || stringTotal > MAX_SAFE_STRING_TOTAL) {
-        throw new Error(`brain_v2_unbounded_string:${current.path}`);
-      }
-      continue;
-    }
-    if (
-      typeof current.value === "boolean" ||
-      (typeof current.value === "number" && Number.isFinite(current.value))
-    ) {
-      continue;
-    }
-    if (typeof current.value !== "object") {
-      throw new Error(`brain_v2_non_json_value:${current.path}`);
-    }
-    if (Array.isArray(current.value)) {
-      if (current.value.length > MAX_SAFE_KEYS || current.depth >= MAX_SAFE_DEPTH) {
-        throw new Error(`brain_v2_payload_depth_or_array:${current.path}`);
-      }
-      for (let index = current.value.length - 1; index >= 0; index -= 1) {
-        pending.push({
-          value: current.value[index],
-          depth: current.depth + 1,
-          path: `${current.path}[${index}]`,
-        });
-      }
-      continue;
-    }
-    if (!objectRecord(current.value)) {
-      throw new Error(`brain_v2_non_plain_object:${current.path}`);
-    }
-    const prototype = Object.getPrototypeOf(current.value);
-    if (prototype !== Object.prototype && prototype !== null) {
-      throw new Error(`brain_v2_non_plain_object:${current.path}`);
-    }
-    const entries = Object.entries(current.value);
-    if (entries.length > MAX_SAFE_KEYS || current.depth >= MAX_SAFE_DEPTH) {
-      throw new Error(`brain_v2_payload_depth_or_object:${current.path}`);
-    }
-    for (let index = entries.length - 1; index >= 0; index -= 1) {
-      const entry = entries[index];
-      if (!entry) continue;
-      const [key, child] = entry;
-      const policyKey = canonicalKey(key);
-      if (key.length > MAX_SAFE_KEY_LENGTH || FORBIDDEN_FIELDS_CANONICAL.has(policyKey)) {
-        throw new Error(`brain_v2_private_payload:${key}`);
-      }
-      if (FORBIDDEN_IDENTITY_FIELDS_CANONICAL.has(policyKey)) {
-        throw new Error(`brain_v2_identity_override:${key}`);
-      }
-      if (
-        FORBIDDEN_SECRET_KEYS_CANONICAL.has(policyKey) ||
-        policyKey.includes("secret") ||
-        policyKey.includes("token")
-      ) {
-        throw new Error(`brain_v2_secret_field:${key}`);
-      }
-      pending.push({ value: child, depth: current.depth + 1, path: `${current.path}.${key}` });
+    return value;
+  }
+  if (typeof value === "number" && Number.isFinite(value)) return value;
+  if (typeof value !== "object") {
+    throw new Error(`brain_v2_non_json_value:${path}`);
+  }
+  if (state.seen.has(value)) {
+    throw new Error(`brain_v2_cyclic_payload:${path}`);
+  }
+  state.seen.add(value);
+
+  const descriptors = Object.getOwnPropertyDescriptors(value);
+  const symbolKeys = Object.getOwnPropertySymbols(descriptors);
+  if (symbolKeys.length > 0) {
+    throw new Error(`brain_v2_non_json_value:${path}`);
+  }
+  for (const descriptor of Object.values(descriptors)) {
+    if (descriptor.get !== undefined || descriptor.set !== undefined) {
+      throw new Error(`brain_v2_accessor_payload:${path}`);
     }
   }
+
+  if (Array.isArray(value)) {
+    if (Object.getPrototypeOf(value) !== Array.prototype || depth >= MAX_SAFE_DEPTH) {
+      throw new Error(`brain_v2_payload_depth_or_array:${path}`);
+    }
+    const length = descriptors.length?.value;
+    if (!Number.isSafeInteger(length) || length < 0 || length > MAX_SAFE_KEYS) {
+      throw new Error(`brain_v2_payload_depth_or_array:${path}`);
+    }
+    const snapshot = new Array<unknown>(length);
+    for (const [key, descriptor] of Object.entries(descriptors)) {
+      if (key === "length") continue;
+      if (!descriptor.enumerable || !/^(?:0|[1-9]\d*)$/.test(key) || Number(key) >= length) {
+        throw new Error(`brain_v2_non_json_value:${path}.${key}`);
+      }
+      snapshot[Number(key)] = snapshotSafeValue(
+        descriptor.value,
+        depth + 1,
+        `${path}[${key}]`,
+        state,
+      );
+    }
+    return Object.freeze(snapshot);
+  }
+
+  const prototype = Object.getPrototypeOf(value);
+  if (prototype !== Object.prototype && prototype !== null) {
+    throw new Error(`brain_v2_non_plain_object:${path}`);
+  }
+  const entries = Object.entries(descriptors);
+  if (entries.length > MAX_SAFE_KEYS || depth >= MAX_SAFE_DEPTH) {
+    throw new Error(`brain_v2_payload_depth_or_object:${path}`);
+  }
+  const snapshot: Record<string, unknown> = {};
+  for (const [key, descriptor] of entries) {
+    if (!descriptor.enumerable) {
+      throw new Error(`brain_v2_non_json_value:${path}.${key}`);
+    }
+    assertSafeKey(key);
+    snapshot[key] = snapshotSafeValue(descriptor.value, depth + 1, `${path}.${key}`, state);
+  }
+  return Object.freeze(snapshot);
 };
 
 function assertIso(value: unknown, field: string): asserts value is string {
@@ -407,8 +434,11 @@ export function assertBrainV2Negotiation(input: unknown): asserts input is Brain
 }
 
 export function assertBrainV2SafePayload<T>(input: T): T {
-  assertSafeValue(input);
-  return structuredClone(input);
+  return snapshotSafeValue(input, 0, "value", {
+    nodes: 0,
+    stringTotal: 0,
+    seen: new WeakSet(),
+  }) as T;
 }
 
 const DISCLOSURE_ORDER: Record<BrainV2Disclosure, number> = {
@@ -446,6 +476,15 @@ export function assertBrainV2Page<T>(
   operation: BrainV2Operation,
   expectedSnapshotId?: string,
 ): asserts input is BrainV2Page<T> {
+  const snapshot = assertBrainV2SafePayload(input);
+  assertBrainV2PageSnapshot<T>(snapshot, operation, expectedSnapshotId);
+}
+
+function assertBrainV2PageSnapshot<T>(
+  input: unknown,
+  operation: BrainV2Operation,
+  expectedSnapshotId?: string,
+): asserts input is BrainV2Page<T> {
   if (!objectRecord(input)) {
     throw new Error("brain_v2_response_not_object");
   }
@@ -473,7 +512,6 @@ export function assertBrainV2Page<T>(
     throw new Error("brain_v2_pagination_invalid");
   }
   assertObjectKeys(pagination, ["limit", "cursor", "nextCursor"]);
-  assertBrainV2SafePayload(pagination);
   if (
     typeof pagination.limit !== "number" ||
     !Number.isSafeInteger(pagination.limit) ||
@@ -490,7 +528,6 @@ export function assertBrainV2Page<T>(
       throw new Error(`brain_v2_pagination_${key}_invalid`);
     }
   }
-  assertBrainV2SafePayload(input.data);
 }
 
 export type BrainV2PrivateCapture = Readonly<{
@@ -675,8 +712,9 @@ export function createBrainV2Client(input: {
         contractVersion: LINKBRAIN_V2_CONTRACT_VERSION,
         params: { operation, disclosure, ...safeParams },
       });
-      assertBrainV2Page<T>(response, operation, snapshotId);
-      return { ok: true, data: structuredClone(response) as BrainV2Page<T> };
+      const safeResponse = assertBrainV2SafePayload(response);
+      assertBrainV2PageSnapshot<T>(safeResponse, operation, snapshotId);
+      return { ok: true, data: safeResponse };
     } catch (error) {
       return safeFailure(error);
     }
@@ -704,9 +742,10 @@ export function createBrainV2Client(input: {
           organizationRef: input.identity.organizationRef,
           contractVersion: LINKBRAIN_V2_CONTRACT_VERSION,
         });
-        assertBrainV2Negotiation(response);
+        const safeResponse = assertBrainV2SafePayload(response);
+        assertBrainV2Negotiation(safeResponse);
         negotiated = true;
-        return { ok: true, data: response };
+        return { ok: true, data: safeResponse };
       } catch (error) {
         negotiated = false;
         return safeFailure(error);
