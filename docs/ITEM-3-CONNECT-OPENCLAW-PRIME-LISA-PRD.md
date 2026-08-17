@@ -1,14 +1,15 @@
 ---
-summary: "PRD for Lisa-specific consumption of the accepted OpenClaw Prime five-provider connection"
+summary: "PRD for Lisa-specific five-provider policy: Wave A Item2-independent source now, Wave B adapter wiring after accepted Item 2"
 read_when:
   - Authoring or reviewing Orchestrator Item 3 Lisa provider connection work
-  - Planning Lisa identity, privacy, Skills, Autowork, or Libraries policy on top of Item 2
+  - Planning or executing Lisa identity, privacy, Skills, Autowork, or Libraries policy
+  - Starting Item 3 Wave A source packets from origin/development
 title: "Item 3 Connect OpenClaw Prime Lisa PRD"
 ---
 
 # Item 3 Connect OpenClaw Prime Lisa PRD
 
-**Status:** Draft for Codex supervisor acceptance. This document authorizes no source, runtime, credential, or production change.
+**Status:** Draft for Codex supervisor acceptance. Principal superseding authorization 2026-08-17: Item 3 pre-rollout **Wave A** source may start now. This document still authorizes no runtime, VPS, credential, schedule, production, or PR change.
 
 **Scope owner:** Lisa-specific OpenClaw Prime consumer policy.
 
@@ -16,13 +17,15 @@ title: "Item 3 Connect OpenClaw Prime Lisa PRD"
 
 **Planning date:** 2026-08-17 Asia/Taipei.
 
+**Amendment date:** 2026-08-17 Asia/Taipei. Principal superseded the wait-for-Item-2 source gate.
+
 **Documentation branch:** `issue/189-author-lisa-five-provider-connection-prd-and-imp`.
 
-**Documentation start SHA / tree:** `f1ca4e8ad32ef87babad397a2ee14c44d5512c1b` / `8843e51cd6d3e2df695d33c68c27724e7ff56502` (`origin/development` at authoring).
+**Documentation start SHA / tree:** `f1ca4e8ad32ef87babad397a2ee14c44d5512c1b` / `8843e51cd6d3e2df695d33c68c27724e7ff56502` (`origin/development` at original authoring).
 
 ## 1. Purpose
 
-Lisa must consume the **final independently accepted Item 2** OpenClaw Prime connection to the five providers, then add only Lisa-specific policy:
+Lisa adds only Lisa-specific policy on top of the five-provider OpenClaw connection:
 
 - identity and permissions;
 - allowed provider capabilities;
@@ -33,7 +36,12 @@ Lisa must consume the **final independently accepted Item 2** OpenClaw Prime con
 - safe denial, provider unavailability, retry/replay, and fail-closed behavior;
 - replacement of obsolete provider references.
 
-Item 2 owns the reusable OpenClaw adapters. Item 3 owns Lisa as one canonical actor on top of those adapters. Item 3 must not re-implement provider contracts, mutate provider repositories, or treat a still-reviewing Item 2 candidate as an accepted head.
+Execution is split:
+
+- **Wave A (now):** Item2-independent Lisa policy source packets, built from `origin/development`, through dependency-injected Lisa-owned ports and deterministic fakes.
+- **Wave B (later):** one narrow adapter-wiring packet after Item 2 has a clean independently accepted exact head. It binds those ports to public Item 2 barrels and records exact pins.
+
+Item 2 owns the reusable OpenClaw provider adapters. Item 3 owns Lisa as one canonical actor. Item 3 must not edit, re-implement, or duplicate those adapters, must not deep-import plugin internals, must not guess adapter exports, must not mutate provider repositories, and must not treat a still-reviewing Item 2 candidate as an accepted head.
 
 Companion execution document: [Item 3 implementation plan](/ITEM-3-CONNECT-OPENCLAW-PRIME-LISA-IMPLEMENTATION-PLAN).
 
@@ -64,7 +72,7 @@ Issue 183 `docs/link-integrations/ocp-01/PROVIDER-CONSUMER-MAP.md` and `docs/lin
 | Provider repositories     | Contract, release, catalogue, dispatch, and domain data                                                       | Be edited by Item 3                                             |
 | Platform                  | Actor identity, runtime binding, credential references, issuer/audience/scope, capability facts, revocation   | Be issued, minted, or bypassed by OpenClaw or Lisa              |
 | OpenClaw Item 2 consumers | Validate supplied evidence against frozen pins; return typed safe failures                                    | Issue credentials, mutate provider state, or silently downgrade |
-| Lisa Item 3               | Bind the one Lisa actor to allowed Item 2 operations; enforce Lisa privacy and obsolete-reference replacement | Own provider truth, activate runtime, or widen Item 2 adapters  |
+| Lisa Item 3               | Bind the one Lisa actor to allowed operations; enforce Lisa privacy and obsolete-reference replacement; Wave A via ports/fakes, Wave B via public Item 2 barrels | Own provider truth, activate runtime, edit or duplicate Item 2 adapters, or guess adapter exports |
 
 ### 2.3 Current development consumer surface
 
@@ -100,7 +108,7 @@ Item 2 Autowork closed operations are `status_collection`, `precheck`, `evidence
 
 Item 2 Libraries consume revision-2 catalogue records and exact-release evidence. OpenClaw validates; Libraries remain authoritative for catalogue admission.
 
-**Critical rule:** the still-reviewing Item 2 commit/tree observed during this documentation session is inspection evidence only. It must not be copied into Item 3 source packets as the execution base. Execution-time fields are defined in section 12 and in the implementation plan.
+**Critical rule:** the still-reviewing Item 2 commit/tree observed during this documentation session is inspection evidence only. It must not be copied into Item 3 source packets as the execution base. Wave A uses recorded `origin/development` identity from section 12. Wave B uses an independently accepted Item 2 exact head recorded at wiring time. Do not guess adapter exports from this inspection.
 
 ### 2.5 Current Lisa source
 
@@ -123,39 +131,43 @@ Verified Lisa job-catalogue facts from `linkbots/lisa/ops/jobs/`:
 - Catalogue hard stops forbid mutating Google, Telegram, email, GSM, LiNKbrain, or any provider from this source package.
 - Time-management routes Carlos-owned tasks to Google Tasks and other tasks to a string destination `linkbrain` / ledger `LiNKbrain`, without the Item 2 v2 client.
 
-Historical Lisa Brain/Skills plan `docs/OPENCLAW-PRIME-LISA-LINKBRAIN-LINKSKILLS-DETAILED-IMPLEMENTATION-PLAN.md` (2026-07-27) remains on development. It is a two-provider plan. It does not define Libraries or Autowork. It still describes v1 MCP tool families and managed MCP activation. It is superseded as Lisa five-provider authority by this PRD plus the accepted Item 2 head.
+Historical Lisa Brain/Skills plan `docs/OPENCLAW-PRIME-LISA-LINKBRAIN-LINKSKILLS-DETAILED-IMPLEMENTATION-PLAN.md` (2026-07-27) remains on development. It is a two-provider plan. It does not define Libraries or Autowork. It still describes v1 MCP tool families and managed MCP activation. It is superseded as Lisa five-provider authority by this PRD. Wave A encodes Lisa policy against ports and fakes. Wave B binds that policy to the accepted Item 2 public barrels.
 
 Live briefing `docs/agent-briefing.md` records that VPS Lisa already reaches LiNKskills and LiNKbrain through governed native bridges. That is a **live-runtime** fact. Item 3 is source-only Lisa policy on the Item 2 consumers. Item 3 must not treat live VPS wiring as completed Item 3 source, and must not change that runtime.
 
 ### 2.6 Coordination and process facts
 
-- Item 3 documentation may complete now.
-- No Lisa source packet may start until Item 2 has a clean independently accepted exact head.
-- Item 3 source may then branch or layer from that exact Item 2 head before Item 2 PR or merge, and may proceed only through commit, push, and checkpoint.
+- Item 3 documentation may complete now on this issue branch.
+- On 2026-08-17 the Principal superseded the earlier wait-for-Item-2 source gate: Item 3 pre-rollout source implementation may start now and does not wait for Item 2 completion.
+- **Wave A** Item2-independent Lisa policy source packets may start from recorded `origin/development`, using Lisa-owned ports and deterministic fakes.
+- **Wave B** is a later narrow adapter-wiring packet. It starts only after Item 2 has a clean independently accepted exact head. It binds Wave A ports to public Item 2 barrels and records exact pins. No deep imports. No guessed adapter exports.
+- Item 2 owns reusable OpenClaw provider adapters. Item 3 must not edit or duplicate them in either wave.
+- Both waves proceed only through commit, push, and checkpoint.
 - No Item 3 PR may open until IDE Development v2.4.0 is rolled out.
-- The Codex supervisor reads and corrects both Item 3 documents and remains responsible for acceptance.
+- The Codex supervisor reads and corrects both Item 3 documents and remains responsible for documentation acceptance.
 
 ## 3. Assumptions
 
-These are planning assumptions, not verified current facts. An Item 3 source packet must re-verify them against the accepted Item 2 head before coding.
+These are planning assumptions, not verified current facts. Wave A re-verifies them against recorded `origin/development` and Lisa-owned contracts. Wave B re-verifies barrel exports and pins against the accepted Item 2 head before wiring. Do not treat inspection-time Item 2 candidate export names as Wave A imports.
 
-1. The independently accepted Item 2 head will expose the five consumers through the public barrels `extensions/linkplatform/api.ts`, `extensions/linkbrain/api.ts`, `extensions/linkskills/api.ts`, `extensions/linklibraries/api.ts`, and `extensions/linkautowork/api.ts`.
-2. Item 2 will keep provider pins identical to the current `provider-pins.json` identities unless a recorded pin amendment exists on the accepted head.
-3. Lisa remains one Platform actor with one runtime binding. `main` and `lisa-cron` stay subordinate roles of that actor. `cursor` and `local-coder` do not inherit Lisa provider credentials.
-4. Native OpenClaw memory, compaction, sessions, channels, cron, and native skills remain in place. Item 3 adds provider consumption; it does not replace those subsystems.
-5. Platform will later issue Lisa-scoped credential references, audiences, and capabilities. Item 3 source uses opaque references and fixtures only.
-6. Brain knowledge is advisory. Skills, Libraries, and Autowork results are not execution authority for Git, GitHub, VPS, or production actions.
-7. Autowork handoffs that need Brain correlation will use Item 2 `brainHandoffRef` plus Lisa policy, not a new OpenClaw ledger.
-8. Libraries contribution intake remains out of Lisa Item 3 unless a later issue explicitly adds it.
-9. Historical v1 Brain/Skills MCP names in current Lisa-adjacent allowlists become obsolete on the Item 2 head and must be replaced in Lisa-owned references, not by forking Item 2 adapters.
-10. The July 2026 Lisa Brain/Skills implementation plan remains historical context. Where it conflicts with this PRD or accepted Item 2, this PRD plus Item 2 win.
+1. Wave A can express Lisa identity, capability, privacy, and domain request/outcome policy through Lisa-owned ports plus deterministic fakes without importing Item 2 adapters.
+2. The independently accepted Item 2 head will expose the five consumers through the public barrels `extensions/linkplatform/api.ts`, `extensions/linkbrain/api.ts`, `extensions/linkskills/api.ts`, `extensions/linklibraries/api.ts`, and `extensions/linkautowork/api.ts`. Wave B records the actual exported symbols from that head. Wave A must not guess those export names.
+3. Item 2 will keep provider pins identical to the current `provider-pins.json` identities unless a recorded pin amendment exists on the accepted head.
+4. Lisa remains one Platform actor with one runtime binding. `main` and `lisa-cron` stay subordinate roles of that actor. `cursor` and `local-coder` do not inherit Lisa provider credentials.
+5. Native OpenClaw memory, compaction, sessions, channels, cron, and native skills remain in place. Item 3 adds provider consumption; it does not replace those subsystems.
+6. Platform will later issue Lisa-scoped credential references, audiences, and capabilities. Item 3 source uses opaque references and fixtures only.
+7. Brain knowledge is advisory. Skills, Libraries, and Autowork results are not execution authority for Git, GitHub, VPS, or production actions.
+8. Autowork handoffs that need Brain correlation will use a Lisa port field for the handoff ref plus Lisa policy, not a new OpenClaw ledger. Wave B binds that field to the public Item 2 Brain/Autowork contract actually exported on the accepted head.
+9. Libraries contribution intake remains out of Lisa Item 3 unless a later issue explicitly adds it.
+10. Historical v1 Brain/Skills MCP names in current Lisa-adjacent allowlists are obsolete as Lisa contracts. Wave A denies them in Lisa-owned policy. Wave B does not fork Item 2 adapters to delete v1 compatibility Item 2 still owns.
+11. The July 2026 Lisa Brain/Skills implementation plan remains historical context. Where it conflicts with this PRD, this PRD wins. Where Wave B wiring conflicts with a still-reviewing Item 2 candidate, the accepted Item 2 head wins.
 
 ## 4. Goals and non-goals
 
 ### 4.1 Goals
 
-1. Define Lisa as the first consumer of the accepted five-provider OpenClaw connection.
-2. Bind Lisa identity, permissions, and capabilities to Platform facts validated by Item 2.
+1. Define Lisa as the first consumer of the five-provider OpenClaw connection: Wave A policy now, Wave B binding after accepted Item 2.
+2. Bind Lisa identity, permissions, and capabilities to Platform facts. Wave A enforces those requirements through Lisa-owned ports and fakes. Wave B binds the identity port to Item 2 public claim/trust helpers.
 3. Constrain each provider to the Lisa-allowed operation set in section 7.
 4. Keep private memory, private health, credentials, prompts, transcripts, and reasoning out of Skills, Libraries, Autowork, and shared Brain knowledge.
 5. Specify Skills discovery/validation/job-execution, Autowork request/status/handoff/receipt, and Libraries discovery/retrieval behavior for Lisa.
@@ -164,7 +176,7 @@ These are planning assumptions, not verified current facts. An Item 3 source pac
 
 ### 4.2 Non-goals
 
-See section 11. Documentation completion is not source authorization.
+See section 11. This documentation issue does not start Lisa source packets. Wave A source is authorized to start on a new issue branch from recorded `origin/development`. Wave B remains gated on an independently accepted Item 2 exact head. Runtime, VPS, credentials, schedules, production, and PRs before IDE Development v2.4.0 remain unauthorized.
 
 ## 5. Actor, identity, and permissions
 
@@ -172,7 +184,7 @@ See section 11. Documentation completion is not source authorization.
 
 Lisa is exactly one canonical Platform actor. OpenClaw profile `lisa`, installation, agents, sessions, cron runs, and tools are subordinate records.
 
-Required Lisa identity fields, validated through Item 2 Platform claims and never minted by Lisa:
+Required Lisa identity fields, never minted by Lisa. Wave A validates them through the Lisa identity port and deterministic fakes that encode these checks. Wave B binds that port to Item 2 public Platform claim/trust helpers. Do not guess the Item 2 export names during Wave A.
 
 - actor id;
 - organization / tenancy boundary;
@@ -213,7 +225,7 @@ Lisa source policy must enforce:
 | ---------------------------------------------------------------- | ------------------------ | --------------------------------------------------------------------- |
 | Local OpenClaw memory, daily logs, indexes, sessions, compaction | Lisa / OpenClaw          | Remains canonical for Lisa continuity. Not replaced by Brain.         |
 | Private health ledger and personal compliance state              | Lisa job privacy classes | Never sent to Skills, Libraries, Autowork, or shared Brain knowledge. |
-| Shared Brain knowledge and governed coordination                 | LiNKbrain                | Advisory read/write through Item 2 v2 only, after redaction.          |
+| Shared Brain knowledge and governed coordination                 | LiNKbrain                | Advisory read/write through the Lisa Brain port after redaction. Wave B binds that port to public Item 2 v2. |
 | Skills bundles and run evidence                                  | LiNKskills               | Structured skill metadata and exact releases only.                    |
 | Library catalogue and artifacts                                  | LiNKlibraries            | Discovery/retrieval of admitted selectable records only.              |
 | Autowork receipts                                                | LiNKautowork             | Opaque input/result refs; no private payload in OpenClaw.             |
@@ -237,7 +249,7 @@ Brain knowledge browse/search/load results are references and redacted records. 
 
 ## 7. Allowed Lisa provider capabilities
 
-Lisa may request only the operations below, and only after Platform identity, audience, capability, pin, and revocation checks succeed on the accepted Item 2 consumers. Anything else is a typed denial.
+Lisa may request only the operations below, and only after Platform identity, audience, capability, pin, and revocation checks succeed. Wave A performs those checks through Lisa-owned ports and fakes. Wave B binds the same checks to public Item 2 consumers after the accepted head is recorded. Anything else is a typed denial.
 
 ### 7.1 Platform
 
@@ -245,7 +257,7 @@ Lisa consumes Platform facts. Lisa never issues them. Required checks: actor, bi
 
 ### 7.2 Brain
 
-Allowed Lisa operations from the Item 2 v2 map:
+Allowed Lisa operations from the Item 2 v2 map. Wave A encodes this allowlist in Lisa policy. Wave B binds admitted operations to public Item 2 Brain exports actually present on the accepted head:
 
 - `v2.discovery`
 - `v2.capability.status`
@@ -267,7 +279,7 @@ Not allowed for Item 3 Lisa source:
 
 ### 7.3 Skills
 
-Allowed Lisa operations from the Item 2 v2 closed map:
+Allowed Lisa operations from the Item 2 v2 closed map. Wave A encodes discovery, validation, and job-execution evidence as Lisa domain request/outcome policy. Wave B binds those requests to public Item 2 Skills exports actually present on the accepted head:
 
 - discovery/read: `skills_capabilities_get`, `skills_catalog_list`, `skills_catalog_search`, `skills_release_list`, `skills_release_describe`, `skills_qualification_get`, `skills_release_entrypoint_get`, `skills_release_sections_list`, `skills_release_section_get`, `skills_release_resources_list`, `skills_release_resource_get`, `skills_release_content_get`, `skills_release_package_get`
 - validation: `skills_release_verify`
@@ -284,7 +296,7 @@ Lisa job execution through Skills means: resolve an exact release, verify it, an
 
 ### 7.4 Autowork
 
-Allowed Lisa operations from the Item 2 closed set, each as request/status/receipt only:
+Allowed Lisa operations from the Item 2 closed set, each as request/status/receipt only. Wave A encodes this domain policy against ports and fakes. Wave B binds it to public Item 2 Autowork exports actually present on the accepted head:
 
 - `status_collection`
 - `precheck`
@@ -297,10 +309,10 @@ Allowed Lisa operations from the Item 2 closed set, each as request/status/recei
 Lisa Autowork flow:
 
 1. Build a request with opaque input/artifact refs, exact pin, audience `autowork`, Lisa actor/binding, and idempotency key.
-2. Validate through Item 2 `validateRequest` / `validateRequestAt` plus a fresh correlated Platform revocation decision.
+2. Validate through the Lisa Autowork port (Wave A fake, Wave B public Item 2 request/receipt helpers actually exported on the accepted head) plus a fresh correlated Platform revocation decision.
 3. Accept only an immutable receipt bound to the request fingerprint.
-4. Track status through callbacks that Item 2 accepts; reject terminal regression.
-5. Create or accept Brain handoffs only through Item 2 Brain operations plus `brainHandoffRef` when the Autowork request carries one.
+4. Track status through callbacks the bound Autowork port accepts; reject terminal regression.
+5. Create or accept Brain handoffs only through the Lisa Brain port plus a Lisa handoff-ref field when the Autowork request carries one. Wave B binds that field to the public Item 2 contract; do not guess the export name in Wave A.
 
 Lisa must not locally invent Autowork state, replay a mutated body under the same idempotency key, or treat `uncertainOutcome` as success.
 
@@ -324,7 +336,7 @@ Not allowed in Item 3:
 
 Every Lisa provider call returns one closed outcome:
 
-- `accepted` with bounded Item 2 evidence;
+- `accepted` with bounded evidence from the bound port (Wave A fake evidence, Wave B Item 2 public-barrel evidence);
 - `denied` for identity, permission, capability, privacy, or obsolete-reference violations;
 - `unavailable` for provider status `offline`, `degraded`, `stale`, `disabled`, `unauthorized`, `forbidden`, `contract_incompatible`, or transport failure;
 - `invalid` for malformed, inherited, or accessor-backed input.
@@ -337,7 +349,7 @@ Denial is operator-visible, redacted, and non-retryable for the same invalid bod
 
 ### 8.3 Unavailability
 
-If Item 2 reports the provider unavailable or Lisa cannot prove the accepted pin/head, Lisa records `HOLD` / `unavailable`. Job catalogue entries that depend on that provider stay skipped. No substitute provider, cached unverified catalogue, or guessed release is used.
+If the bound provider port reports unavailable, or Wave B cannot prove the accepted pin/head, Lisa records `HOLD` / `unavailable`. Wave A uses fake unavailability statuses and must not claim a live provider ran. Job catalogue entries that depend on that provider stay skipped. No substitute provider, cached unverified catalogue, or guessed release is used.
 
 ### 8.4 Retry and replay
 
@@ -345,35 +357,42 @@ Retry is allowed only for `unavailable` with:
 
 - the exact previously accepted request fingerprint;
 - unchanged opaque refs and body;
-- a fresh revocation observation that is not older than the Item 2 max age and not before credential issuance;
+- a fresh revocation observation that is not older than the bound port max age and not before credential issuance;
 - attempt counting owned by the provider receipt, not a Lisa-invented success.
 
 Replay of a different body under the same idempotency key is `invalid`. Callbacks that regress from a terminal Autowork state are `invalid`. Brain snapshot cursors must not be reused across incompatible snapshots.
 
 ### 8.5 Fail-closed defaults
 
-- Missing Item 2 accepted head: no Lisa source packet starts.
-- Missing adapter export on that head: packet stops; do not re-implement the adapter in `linkbots/lisa`.
+- Missing recorded `origin/development` commit/tree: no Wave A packet starts.
+- Missing Item 2 accepted head: no Wave B adapter-wiring packet starts. Wave A may continue.
+- Missing public adapter export on the accepted Item 2 head: Wave B stops. Do not re-implement the adapter in `linkbots/lisa`. Do not deep-import. Do not guess the export.
+- Missing Lisa-owned port or fake in Wave A: packet stops. Do not substitute a live provider or copy Item 2 internals.
 - Missing pin, digest, or schema: deny.
-- Accessor-backed or inherited fields: deny, matching Item 2 own-data rules.
+- Accessor-backed or inherited fields: deny, matching own-data rules.
 - Private class data present: deny without sending.
 
 ## 9. Obsolete provider reference replacement
 
-Item 3 must replace Lisa-owned obsolete references so Lisa points at accepted Item 2 consumers and current pins. Provider repositories stay unchanged.
+Item 3 must replace Lisa-owned obsolete references. Provider repositories stay unchanged. Item 2 adapters stay unchanged.
+
+Wave A replaces **contract-independent** Lisa-owned references: historical two-provider authority, live VPS claimed as Item 3 completion, and v1 names treated as current Lisa contracts.
+
+Wave B completes **contract-dependent** leftovers that require public Item 2 export names or accepted-head pin binding. Until then those leftovers stay HOLD or explicitly historical.
 
 Inventory of obsolete or superseded Lisa-adjacent references found during inspection:
 
-| Current reference                                                                                               | Why it is obsolete                                 | Replacement                                             |
-| --------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- | ------------------------------------------------------- |
-| `docs/OPENCLAW-PRIME-LISA-LINKBRAIN-LINKSKILLS-DETAILED-IMPLEMENTATION-PLAN.md` as five-provider Lisa authority | Two-provider, v1 MCP, July 2026                    | This PRD plus accepted Item 2                           |
-| Issue 183 five-provider candidate as live implementation                                                        | Preserved ledger only; retired unresolved findings | Pins remain; source is accepted Item 2                  |
-| Placeholder job provider IDs `linkbrain-librarian`, `source-contract-wp04`                                      | Not OCP-01 commits/trees                           | Pin-backed provider ids and contract refs               |
-| Time-management destination string `linkbrain` without v2 client                                                | No Item 2 validation                               | Item 2 Brain v2 knowledge/handoff APIs or explicit HOLD |
-| Skills MCP v1 names `skills_list`, `skills_run_*`, `skills_tool_*`                                              | Item 2 rejects legacy execution                    | Skills v2 closed map                                    |
-| Brain v1 write names `brain_capture_batch` and siblings as Lisa contract                                        | Replaced by Brain v2 operations                    | Brain v2 allowlist in section 7.2                       |
-| Compatibility profile v1 operation titles on Issue 183                                                          | Historical map; not on current development         | Item 2 operation ids                                    |
-| Live VPS native Brain/Skills bridges as Item 3 completion                                                       | Runtime, out of scope                              | Source-only Lisa policy tests against Item 2 fakes      |
+| Current reference                                                                                               | Why it is obsolete                                 | Replacement                                             | Wave |
+| --------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- | ------------------------------------------------------- | ---- |
+| `docs/OPENCLAW-PRIME-LISA-LINKBRAIN-LINKSKILLS-DETAILED-IMPLEMENTATION-PLAN.md` as five-provider Lisa authority | Two-provider, v1 MCP, July 2026                    | This PRD                                                | A    |
+| Issue 183 five-provider candidate as live implementation                                                        | Preserved ledger only; retired unresolved findings | Pins remain; Wave B binds accepted Item 2               | A    |
+| Placeholder job provider IDs `linkbrain-librarian`, `source-contract-wp04`                                      | Not OCP-01 commits/trees                           | Pin-backed ids from `origin/development` pins; HOLD if the replacement would name an unaccepted Item 2 export | A    |
+| Time-management destination string `linkbrain` without v2 client                                                | No validated Brain client                          | Lisa policy HOLD in Wave A; Wave B may bind Brain v2    | A    |
+| Skills MCP v1 names `skills_list`, `skills_run_*`, `skills_tool_*`                                              | Legacy execution is not a Lisa contract            | Skills v2 closed map in Lisa policy                     | A    |
+| Brain v1 write names `brain_capture_batch` and siblings as Lisa contract                                        | Replaced by Brain v2 operations                    | Brain v2 allowlist in section 7.2                       | A    |
+| Compatibility profile v1 operation titles on Issue 183                                                          | Historical map; not on current development         | Lisa section 7 operation ids                            | A    |
+| Live VPS native Brain/Skills bridges as Item 3 completion                                                       | Runtime, out of scope                              | Source-only Lisa policy tests against fakes             | A    |
+| Remaining replacements that must name public Item 2 barrel exports                                              | Export names are not Wave A contracts              | Bind after inspecting the accepted Item 2 head          | B    |
 
 Lisa personality files that list provider **git checkouts** for Ship/Pull remain operational checkout lists. They are not provider-consumer contracts and must not be rewritten into live MCP endpoints by Item 3.
 
@@ -381,17 +400,17 @@ Lisa personality files that list provider **git checkouts** for Ship/Pull remain
 
 ### 10.1 Functional
 
-- **F1.** Lisa identity is supplied as Platform facts and validated by Item 2 before any domain call.
+- **F1.** Lisa identity is supplied as Platform facts. Wave A validates them through the Lisa identity port and fakes before any domain call. Wave B binds that port to Item 2 public claim/trust helpers.
 - **F2.** Lisa capability allowlists in section 7 are exhaustive for Item 3.
-- **F3.** Skills discovery, exact-release validation, and use/feedback status work through Item 2 Skills v2.
-- **F4.** Autowork request, status, handoff correlation, and receipt validation work through Item 2 Autowork plus Brain handoff operations.
-- **F5.** Libraries discovery and exact retrieval work through Item 2 Libraries revision-2 / exact-release.
-- **F6.** Obsolete Lisa-owned provider references in section 9 are replaced or explicitly marked historical.
-- **F7.** Every path has positive, negative, and unavailability tests as specified in the implementation plan.
+- **F3.** Skills discovery, exact-release validation, and use/feedback status are Lisa domain request/outcome policy in Wave A. Wave B binds them to public Item 2 Skills v2 exports actually present on the accepted head.
+- **F4.** Autowork request, status, handoff correlation, and receipt validation are Lisa domain request/outcome policy in Wave A. Wave B binds them to public Item 2 Autowork and Brain exports actually present on the accepted head.
+- **F5.** Libraries discovery and exact retrieval are Lisa domain request/outcome policy in Wave A. Wave B binds them to public Item 2 Libraries revision-2 / exact-release exports actually present on the accepted head.
+- **F6.** Obsolete Lisa-owned provider references in section 9 are replaced when contract-independent (Wave A) or after accepted-head binding (Wave B), or explicitly marked historical.
+- **F7.** Every path has positive, negative, and unavailability tests as specified in the implementation plan. Wave A tests use deterministic fakes. Wave B adds wiring tests against public barrels without live providers.
 
 ### 10.2 Nonfunctional
 
-- **N1.** Lisa policy modules import public Item 2 barrels only. No deep plugin internals from core, and no copy of provider contracts into Lisa.
+- **N1.** Wave A Lisa policy modules depend on Lisa-owned ports only. Tests inject deterministic fakes. Wave B wiring imports public Item 2 barrels only (`extensions/link*/api.ts`). No deep plugin internals, no copy of provider contracts or Item 2 adapters into Lisa, and no guessed adapter exports.
 - **N2.** No new SQLite schema version. No new JSON/JSONL sidecar for runtime provider state.
 - **N3.** Deterministic tests with fakes; no live provider, GSM, VPS, or network dependency.
 - **N4.** Redacted operator errors; no secret or private-body leakage in tests, docs, or logs.
@@ -476,6 +495,9 @@ Item 3, including later source packets authorized by an accepted plan, excludes:
 - provider repository changes;
 - broad OpenClaw redesign;
 - Item 2 source modification;
+- duplicating Item 2 adapters under `linkbots/lisa`;
+- deep imports of `extensions/*/src/**`;
+- guessed Item 2 adapter exports;
 - Full suite as a merge gate;
 - opening a PR before IDE Development v2.4.0 rollout;
 - merge, promotion, and branch-protection changes;
@@ -485,11 +507,28 @@ Item 3, including later source packets authorized by an accepted plan, excludes:
 - Autowork `external_assistance`, `media_package`, and `outreach_adapter`;
 - conversation-bearing Brain capture.
 
-## 12. No-production boundary and Item 2 execution-time fields
+## 12. No-production boundary and execution-time fields
 
-Item 3 documentation is complete when the two named docs exist, pass documentation validation, and are checkpointed. That does not authorize Lisa source.
+This documentation issue is complete when the two named docs exist, pass documentation validation, and are checkpointed. It does not start Lisa source packets and still authorizes no runtime, VPS, credential, schedule, production, or PR change.
 
-Lisa source packets may start only when all of the following are recorded at execution time, not copied from this PRD's inspection notes:
+Principal authorization 2026-08-17: Wave A pre-rollout source may start now on a **new** Lisa issue branch. Wave B stays gated on accepted Item 2. Both waves stay checkpoint-only until IDE Development v2.4.0 rollout is recorded.
+
+### 12.1 Wave A fields
+
+Fill these at Wave A source-packet start from `origin/development`, not from a still-reviewing Item 2 SHA and not from this PRD's inspection notes.
+
+| Execution-time field     | How it is filled                                         | Forbidden stand-in                                      |
+| ------------------------ | -------------------------------------------------------- | ------------------------------------------------------- |
+| Development commit       | Exact `origin/development` SHA at Wave A branch creation | Item 2 candidate SHA; dirty local tree                  |
+| Development tree         | `git rev-parse DEVELOPMENT^{tree}`                       | Tree of an unrecorded later commit                      |
+| Wave A issue / branch    | New `issue/<n>-<slug>` from that development commit      | This docs issue 189                                     |
+| Lisa port modules        | Lisa-owned port paths created in P-01                    | Item 2 adapter files; `extensions/*/src/**`             |
+| Fake modules             | Deterministic fakes injected in tests                    | Live provider, VPS, GSM, network                        |
+| Adapter-edit confirmation | Diff contains no Item 2 adapter or pin-file edits        | Copied adapter code under `linkbots/lisa`               |
+
+### 12.2 Wave B fields
+
+Leave these blank until Item 2 has a clean independently accepted exact head. Fill them at Wave B start by inspecting that head. Do not copy inspection-time candidate exports into this table.
 
 | Execution-time field        | How it is filled                                                  | Forbidden stand-in                                                       |
 | --------------------------- | ----------------------------------------------------------------- | ------------------------------------------------------------------------ |
@@ -499,32 +538,37 @@ Lisa source packets may start only when all of the following are recorded at exe
 | Item 2 accepted tree        | `git rev-parse ACCEPTED^{tree}`                                   | Tree of a later unreviewed commit                                        |
 | Independent review identity | Reviewer/session that declared the exact head clean               | Implementer self-review                                                  |
 | Pin profile                 | `ocp-01` pins on that accepted tree                               | Older candidate pins inside adapters                                     |
+| Public barrels present      | Checklist of the five `extensions/link*/api.ts` barrels on that head | Assumed barrels from this PRD                                          |
+| Actual public exports       | Symbols read from those barrels on that head                      | Guessed names from Item 2 candidate inspection                           |
+| Port-to-barrel binding map  | Wave A ports bound to those recorded exports                      | Deep imports; duplicated adapters                                        |
 
-Item 3 source then branches or layers from that exact Item 2 head, even if Item 2 has no PR yet, and proceeds only through commit, push, and checkpoint. No Item 3 PR opens until IDE Development v2.4.0 is rolled out.
+Wave A branches from the recorded development commit/tree. Wave B layers onto the recorded Item 2 accepted head, even if Item 2 has no PR yet. Both waves proceed only through commit, push, and checkpoint. No Item 3 PR opens until IDE Development v2.4.0 is rolled out.
 
 ## 13. Acceptance criteria
 
-A future Item 3 source delivery is complete only when every criterion below is true on a clean worktree layered from the execution-time Item 2 head. Documentation acceptance is Codex supervisor acceptance of this PRD and the companion plan, not these source criteria.
+Item 3 source delivery is complete when every criterion below is true. Wave A may be checkpoint-complete before Wave B. Full five-provider Lisa consumption is complete only after Wave B binds ports on the accepted Item 2 head. Documentation acceptance is Codex supervisor acceptance of this PRD and the companion plan, not these source criteria.
 
 | ID    | Criterion                                                                                                                                                                                                                                                               |
 | ----- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| AC-01 | Lisa source packets start only from the independently accepted Item 2 exact commit and tree recorded in execution-time fields.                                                                                                                                          |
-| AC-02 | Lisa does not modify Item 2 adapter files, provider repositories, workflows, runtime config, credentials, or deployment assets.                                                                                                                                         |
-| AC-03 | Lisa identity and permissions are expressed as Platform facts validated by Item 2 claims/trust helpers before any Brain, Skills, Libraries, or Autowork call.                                                                                                           |
+| AC-01 | Wave A Item2-independent Lisa policy packets start from the recorded `origin/development` commit and tree in section 12.1. They do not wait for Item 2 completion. They must not use a still-reviewing Item 2 SHA as the execution base.                               |
+| AC-02 | Lisa does not modify Item 2 adapter files, provider repositories, workflows, runtime config, credentials, or deployment assets. Lisa does not duplicate those adapters under `linkbots/lisa`.                                                                           |
+| AC-03 | Lisa identity and permissions are expressed as Platform facts. Wave A validates them through the Lisa identity port and fakes before any domain call. Wave B binds that port to Item 2 public claim/trust helpers recorded from the accepted head.                      |
 | AC-04 | Helper agents cannot inherit Lisa provider credentials or capabilities.                                                                                                                                                                                                 |
 | AC-05 | Lisa-allowed provider operations match section 7 exactly. Extra operations are denied.                                                                                                                                                                                  |
 | AC-06 | Privacy classes and prohibited payloads in section 6 are rejected before transport.                                                                                                                                                                                     |
 | AC-07 | Local Lisa memory remains separate from shared Brain knowledge; Brain results stay advisory.                                                                                                                                                                            |
-| AC-08 | Skills discovery, exact-release validation, and job-execution evidence use Item 2 Skills v2 only. Legacy run/tool operations are denied.                                                                                                                                |
-| AC-09 | Autowork requests, status, handoffs, and receipts use Item 2 Autowork validation plus Brain handoff correlation when required. Terminal regression and idempotency mutation are denied.                                                                                 |
-| AC-10 | Libraries discovery and retrieval accept only admitted selectable revision-2 records with exact-release identity. Contribution remains excluded.                                                                                                                        |
+| AC-08 | Skills discovery, exact-release validation, and job-execution evidence are Lisa domain request/outcome policy. Legacy run/tool operations are denied. Wave B binds Skills requests to public Item 2 Skills exports actually present on the accepted head.               |
+| AC-09 | Autowork requests, status, handoffs, and receipts are Lisa domain request/outcome policy. Terminal regression and idempotency mutation are denied. Wave B binds them to public Item 2 Autowork and Brain exports actually present on the accepted head.                 |
+| AC-10 | Libraries discovery and retrieval accept only admitted selectable revision-2 records with exact-release identity. Contribution remains excluded. Wave B binds Libraries requests to public Item 2 Libraries exports actually present on the accepted head.               |
 | AC-11 | Unavailable, revoked, unauthorized, stale, disabled, and contract-incompatible providers produce typed `unavailable` or `denied` results with HOLD behavior and no silent fallback.                                                                                     |
 | AC-12 | Retry/replay follows section 8.4. Invalid bodies are not retried as unavailability.                                                                                                                                                                                     |
-| AC-13 | Obsolete Lisa-owned provider references in section 9 are replaced or labeled historical. No Lisa contract remains on v1 MCP run/write names.                                                                                                                            |
-| AC-14 | Focused positive, negative, and unavailability tests exist for each provider Lisa consumes, using fakes only.                                                                                                                                                           |
+| AC-13 | Obsolete Lisa-owned provider references in section 9 are replaced when contract-independent, completed in Wave B when export-dependent, or labeled historical. No Lisa contract remains on v1 MCP run/write names.                                                      |
+| AC-14 | Focused positive, negative, and unavailability tests exist for each provider Lisa consumes, using fakes only. Wave B adds wiring tests against public barrels without live providers.                                                                                   |
 | AC-15 | No production, schedule, VPS, service, or live credential proof is claimed.                                                                                                                                                                                             |
 | AC-16 | Item 3 opens no PR until IDE Development v2.4.0 rollout is recorded. Until then, the only git actions are commit, push, and checkpoint.                                                                                                                                 |
 | AC-17 | The complete operating-model non-regression ledger in section 10.4 is preserved and covered by focused source/static tests; no provider path bypasses its model, Cursor, sandbox, Google, approval, planning, memory, channel, job, Personality, or runtime boundaries. |
+| AC-18 | Wave A depends only on Lisa-owned ports and deterministic fakes. No deep imports of `extensions/*/src/**`. No guessed Item 2 adapter exports.                                                                                                                           |
+| AC-19 | Wave B is a single narrow adapter-wiring packet that starts only after a clean independently accepted Item 2 exact commit and tree from section 12.2. It binds Wave A ports to public `extensions/link*/api.ts` barrels, records exact pins and actual exports from that head, and stops if a required public export is missing.     |
 
 ## 14. Documentation acceptance
 
@@ -532,7 +576,8 @@ This PRD is accepted when the Codex supervisor records that:
 
 1. verified facts and assumptions remain correctly separated;
 2. ownership, requirements, exclusions, and no-production boundaries are complete;
-3. every acceptance criterion is implementable without violating Item 2;
-4. execution-time Item 2 fields are not hard-coded to a still-reviewing candidate.
+3. the Principal Wave A/B split is recorded and every acceptance criterion is implementable without editing or duplicating Item 2 adapters;
+4. Wave B execution-time Item 2 fields are not hard-coded to a still-reviewing candidate;
+5. Wave A is authorized to start from recorded `origin/development` without waiting for Item 2 completion.
 
 The supervising Codex agent remains responsible for that acceptance.

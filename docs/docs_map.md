@@ -171,7 +171,11 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
 - Headings:
   - H1: Item 3 Connect OpenClaw Prime Lisa Implementation Plan
   - H2: 1. Execution gate
-  - H2: 2. Item 2 execution-time fields
+  - H3: 1.1 Wave A gate (now)
+  - H3: 1.2 Wave B gate (later)
+  - H2: 2. Execution-time fields
+  - H3: 2.1 Wave A fields
+  - H3: 2.2 Wave B Item 2 fields
   - H2: 3. Layering and git mechanics
   - H2: 4. Path ownership
   - H3: 4.1 Lisa Item 3 may add or edit
@@ -179,16 +183,17 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: 5. Packet map
   - H3: 5.1 Safe parallelism
   - H2: 6. Packet specifications
-  - H3: P-00 Execution-time freeze
-  - H3: P-01 Layer and ownership scaffold
-  - H3: P-02 Lisa identity and permissions
+  - H3: P-00 Wave A execution-time freeze
+  - H3: P-01 Layer, ports, and fake scaffold
+  - H3: P-02 Lisa identity requirements
   - H3: P-03 Allowed capability matrix and denial
   - H3: P-04 Privacy, memory, and knowledge
-  - H3: P-05 Skills discovery, validation, and job execution
-  - H3: P-06 Autowork requests, status, handoffs, and receipts
-  - H3: P-07 Libraries discovery and retrieval
-  - H3: P-08 Obsolete reference replacement
-  - H3: P-09 Evidence, checkpoint, and stop
+  - H3: P-05 Skills domain request and outcome policy
+  - H3: P-06 Autowork domain request and outcome policy
+  - H3: P-07 Libraries domain request and outcome policy
+  - H3: P-08 Contract-independent obsolete reference replacement
+  - H3: P-09 Non-regression audit, checkpoint, and stop
+  - H3: P-10 Adapter wiring and exact pin record
   - H2: 7. Test matrix
   - H2: 8. Review, repair, evidence, rollback, and stop
   - H3: 8.1 Review
@@ -244,7 +249,9 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H3: 10.3 Security and privacy
   - H3: 10.4 Existing Lisa operating-model non-regression ledger
   - H2: 11. Explicit exclusions
-  - H2: 12. No-production boundary and Item 2 execution-time fields
+  - H2: 12. No-production boundary and execution-time fields
+  - H3: 12.1 Wave A fields
+  - H3: 12.2 Wave B fields
   - H2: 13. Acceptance criteria
   - H2: 14. Documentation acceptance
 
