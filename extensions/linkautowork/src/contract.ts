@@ -114,6 +114,8 @@ const bounded = (value: unknown, max = 512): value is string =>
   value.length > 0 &&
   value.length <= max &&
   !/[\u0000-\u001f\u007f]/u.test(value);
+const matches = (value: unknown, pattern: RegExp): value is string =>
+  typeof value === "string" && pattern.test(value);
 const plain = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" &&
   value !== null &&
@@ -147,7 +149,7 @@ function automation(value: unknown): value is AutoworkRequest["automation"] {
     keys(value, ["automationId", "version", "definitionDigest", "configurationRef"]) &&
     bounded(value.automationId, 256) &&
     bounded(value.version, 64) &&
-    SHA256.test(String(value.definitionDigest)) &&
+    matches(value.definitionDigest, SHA256) &&
     ref(value.configurationRef)
   );
 }
@@ -198,7 +200,7 @@ export function validateRequest(value: unknown): value is AutoworkRequest {
       "expiresAt",
       "revocationRef",
     ]) ||
-    !UUID.test(String(platform.orgId)) ||
+    !matches(platform.orgId, UUID) ||
     !bounded(platform.actorId, 256) ||
     !bounded(platform.audience, 256) ||
     !bounded(platform.capability, 256) ||
@@ -206,13 +208,13 @@ export function validateRequest(value: unknown): value is AutoworkRequest {
     !bounded(platform.bindingId, 256) ||
     !iso(platform.issuedAt) ||
     !iso(platform.expiresAt) ||
-    !OPAQUE.test(String(platform.revocationRef))
+    !matches(platform.revocationRef, OPAQUE)
   )
     return false;
   if (
     value.contractVersion !== AUTOWORK_CONTRACT_VERSION ||
     value.protocolVersion !== AUTOWORK_PROTOCOL_VERSION ||
-    !UUID.test(String(value.requestId)) ||
+    !matches(value.requestId, UUID) ||
     !automation(value.automation) ||
     !(AUTOWORK_OPERATIONS as readonly unknown[]).includes(value.operationKind) ||
     !ref(value.inputRef) ||
@@ -317,15 +319,15 @@ export function validateReceipt(
     Object.keys(value.providerCandidate).length !== 2 ||
     value.providerCandidate.commit !== AUTOWORK_COMMIT ||
     value.providerCandidate.tree !== AUTOWORK_TREE ||
-    !UUID.test(String(value.requestId)) ||
-    !UUID.test(String(value.receiptId)) ||
+    !matches(value.requestId, UUID) ||
+    !matches(value.receiptId, UUID) ||
     !(AUTOWORK_STATES as readonly unknown[]).includes(value.state) ||
     !iso(value.acceptedAt) ||
     !iso(value.updatedAt) ||
     typeof value.attemptCount !== "number" ||
     !Number.isInteger(value.attemptCount) ||
     value.attemptCount < 0 ||
-    !SHA256.test(String(value.requestFingerprint)) ||
+    !matches(value.requestFingerprint, SHA256) ||
     !automation(value.automation) ||
     !Array.isArray(value.resultRefs) ||
     !value.resultRefs.every(ref) ||
@@ -382,10 +384,10 @@ export function validateCallback(
       "sourceTimestamp",
       "receipt",
     ]) ||
-    !UUID.test(String(value.requestId)) ||
-    !UUID.test(String(value.receiptId)) ||
-    !UUID.test(String(value.orgId)) ||
-    !OPAQUE.test(String(value.callbackBindingRef)) ||
+    !matches(value.requestId, UUID) ||
+    !matches(value.receiptId, UUID) ||
+    !matches(value.orgId, UUID) ||
+    !matches(value.callbackBindingRef, OPAQUE) ||
     !iso(value.sourceTimestamp) ||
     !expected ||
     !plain(expected.acceptedState) ||

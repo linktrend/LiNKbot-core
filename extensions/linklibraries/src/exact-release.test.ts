@@ -140,6 +140,14 @@ describe("validateExactRelease", () => {
     expect(validateExactRelease(candidate).ok).toBe(false);
   });
 
+  it("rejects malformed dependency names without coercing or throwing", () => {
+    const candidate = validCandidate() as unknown as Record<string, any>;
+    candidate.dependencies.entries[0].name = { toString: null };
+    candidate.dependencies.entries[0].resolved = false;
+    expect(() => validateExactRelease(candidate)).not.toThrow();
+    expect(validateExactRelease(candidate).ok).toBe(false);
+  });
+
   it.each([
     ["missing asset identity", (candidate: Record<string, any>) => delete candidate.asset],
     [

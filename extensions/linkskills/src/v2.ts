@@ -74,7 +74,7 @@ const bounded = (value: unknown, max = 256): value is string =>
 
 export function skillsSnapshotCursor(catalogVersion: string): string {
   if (!bounded(catalogVersion, 512)) throw new Error("invalid Skills catalog version");
-  return `snapshot:${createHash("sha256").update(catalogVersion).digest("hex").slice(0, 16)}`;
+  return `snapshot:${createHash("sha256").update(catalogVersion).digest("hex").slice(0, 16)}:0`;
 }
 
 export function isModernSkillsOperation(value: unknown): value is SkillsV2Operation {

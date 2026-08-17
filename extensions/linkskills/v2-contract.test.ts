@@ -4,6 +4,7 @@ import {
   SKILLS_TREE,
   SKILLS_CONTRACT_VERSION,
   SKILLS_MCP_PROTOCOL_VERSION,
+  skillsSnapshotCursor,
   validateSkillsQualificationIdentity,
   validateSkillsV2Request,
 } from "./api.js";
@@ -34,6 +35,11 @@ describe("Skills v2 consumer boundary", () => {
     expect(validateSkillsV2Request({ ...base, cursor: "snapshot:0123456789abcdef:25" }).ok).toBe(
       true,
     );
+  });
+  it("generates an initial cursor accepted by the request validator", () => {
+    const cursor = skillsSnapshotCursor("catalog-v2");
+    expect(cursor).toMatch(/^snapshot:[0-9a-f]{16}:0$/u);
+    expect(validateSkillsV2Request({ ...base, cursor }).ok).toBe(true);
   });
   it.each([
     ["legacy run", { operation: "skills_run_start" }, "legacy_execution_disabled"],

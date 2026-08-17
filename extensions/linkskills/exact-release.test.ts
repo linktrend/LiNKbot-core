@@ -122,6 +122,30 @@ describe("exact provider Skills releases", () => {
     }
   });
 
+  it("rejects malformed identity and digest objects without leaking or throwing", () => {
+    const malformedIdentity = validateExactRelease(
+      { ...validRelease, release_id: { secret: "blocked" }, version: { private: "blocked" } },
+      { profile: "runtime:fixture-openclaw-01", now },
+    );
+    expect(malformedIdentity).toMatchObject({ ok: false, code: "invalid_shape" });
+    expect(exactReleaseTelemetry(malformedIdentity)).toEqual({
+      outcome: "rejected",
+      reason: "invalid_shape",
+    });
+    for (const changes of [
+      { manifest_digest: { toString: null } },
+      { package_digest: { toString: null } },
+      { attestation: { ...validRelease.attestation, digest: { toString: null } } },
+    ]) {
+      expect(() =>
+        validateExactRelease(
+          { ...validRelease, ...changes },
+          { profile: "runtime:fixture-openclaw-01", now },
+        ),
+      ).not.toThrow();
+    }
+  });
+
   it("requires progressive index -> description -> fragments -> exact release", () => {
     const index = {
       stage: "index" as const,

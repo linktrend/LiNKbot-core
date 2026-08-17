@@ -281,6 +281,21 @@ describe("LinkAutowork final provider contract", () => {
     ).toBe(false);
   });
 
+  it("rejects malformed primitive fields without coercing or throwing", () => {
+    const malformed = { toString: null };
+    for (const candidate of [
+      { ...request, requestId: malformed },
+      { ...request, automation: { ...request.automation, definitionDigest: malformed } },
+      { ...request, platform: { ...request.platform, orgId: malformed } },
+      { ...request, platform: { ...request.platform, revocationRef: malformed } },
+    ]) {
+      expect(() => validateRequest(candidate)).not.toThrow();
+      expect(validateRequest(candidate)).toBe(false);
+    }
+    expect(() => validateReceipt({ ...receipt, receiptId: malformed }, request)).not.toThrow();
+    expect(validateReceipt({ ...receipt, receiptId: malformed }, request)).toBe(false);
+  });
+
   it("requires explicit accepted callback state and rejects replay or stale chronology", () => {
     const callback = {
       requestId: uuid,

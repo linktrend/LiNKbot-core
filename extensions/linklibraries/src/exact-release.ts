@@ -264,10 +264,10 @@ export function validateExactRelease(candidate: unknown): ExactReleaseResult {
     if (!isNonEmpty(dependency.name) || !isNonEmpty(dependency.version)) {
       errors.push("dependency entry is incomplete");
     }
-    if (!dependency.resolved)
-      errors.push(`dependency ${dependency.name || "<unknown>"} is unresolved`);
+    const dependencyName = isNonEmpty(dependency.name) ? dependency.name : "<unknown>";
+    if (!dependency.resolved) errors.push(`dependency ${dependencyName} is unresolved`);
     if (!isNonEmpty(dependency.provenanceRef))
-      errors.push(`dependency ${dependency.name || "<unknown>"} lacks provenance`);
+      errors.push(`dependency ${dependencyName} lacks provenance`);
   }
 
   if (!provenance) errors.push("provenance evidence is incomplete");

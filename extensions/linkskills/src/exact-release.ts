@@ -154,8 +154,8 @@ function reject(
     code,
     telemetry: {
       outcome: "rejected",
-      ...(release?.release_id ? { release_id: release.release_id } : {}),
-      ...(release?.version ? { version: release.version } : {}),
+      ...(isString(release?.release_id) ? { release_id: release.release_id } : {}),
+      ...(isString(release?.version) ? { version: release.version } : {}),
       reason: code,
     },
   };
@@ -185,10 +185,7 @@ export function validateExactRelease(
   ) {
     return reject("invalid_provider_candidate", release);
   }
-  if (
-    !DIGEST.test(String(release.manifest_digest)) ||
-    !DIGEST.test(String(release.package_digest))
-  ) {
+  if (!isDigest(release.manifest_digest) || !isDigest(release.package_digest)) {
     return reject("invalid_digest", release);
   }
   if (release.manifest_digest === release.package_digest)
@@ -220,7 +217,7 @@ export function validateExactRelease(
   if (
     attestation.issuer !== "librarian" ||
     attestation.digest !== release.manifest_digest ||
-    !DIGEST.test(String(attestation.digest))
+    !isDigest(attestation.digest)
   )
     return reject("missing_attestation", release);
   const now =

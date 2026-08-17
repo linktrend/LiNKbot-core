@@ -163,6 +163,14 @@ describe("LiNKbrain v2 immutable consumer boundary", () => {
     ).toThrow();
     expect(() =>
       assertBrainV2Page(
+        { ...page("index"), pagination: { limit: 25, cursor: "v2:0" } },
+        "v2.knowledge.search",
+        "snapshot:brain-1",
+        "v2:25",
+      ),
+    ).toThrow("brain_v2_pagination_cursor_mismatch");
+    expect(() =>
+      assertBrainV2Page(
         { ...page("index"), pagination: { limit: 25, payload: { transcript: "blocked" } } },
         "v2.knowledge.search",
       ),

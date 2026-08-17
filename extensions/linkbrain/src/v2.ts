@@ -580,15 +580,17 @@ export function assertBrainV2Page<T>(
   input: unknown,
   operation: BrainV2Operation,
   expectedSnapshotId?: string,
+  expectedCursor?: string,
 ): asserts input is BrainV2Page<T> {
   const snapshot = assertBrainV2SafePayload(input);
-  assertBrainV2PageSnapshot<T>(snapshot, operation, expectedSnapshotId);
+  assertBrainV2PageSnapshot<T>(snapshot, operation, expectedSnapshotId, expectedCursor);
 }
 
 function assertBrainV2PageSnapshot<T>(
   input: unknown,
   operation: BrainV2Operation,
   expectedSnapshotId?: string,
+  expectedCursor?: string,
 ): asserts input is BrainV2Page<T> {
   if (!objectRecord(input)) {
     throw new Error("brain_v2_response_not_object");
@@ -632,6 +634,9 @@ function assertBrainV2PageSnapshot<T>(
     ) {
       throw new Error(`brain_v2_pagination_${key}_invalid`);
     }
+  }
+  if (expectedCursor !== undefined && pagination.cursor !== expectedCursor) {
+    throw new Error("brain_v2_pagination_cursor_mismatch");
   }
 }
 
@@ -814,6 +819,7 @@ export function createBrainV2Client(input: {
     params: Record<string, unknown>,
     disclosure: BrainV2Disclosure,
     snapshotId?: string,
+    cursor?: string,
   ): Promise<BrainV2SafeResult<BrainV2Page<T>>> => {
     try {
       const identity = requireTrustedIdentity();
@@ -834,7 +840,7 @@ export function createBrainV2Client(input: {
         params: { operation, disclosure, ...safeParams },
       });
       const safeResponse = assertBrainV2SafePayload(response);
-      assertBrainV2PageSnapshot<T>(safeResponse, operation, snapshotId);
+      assertBrainV2PageSnapshot<T>(safeResponse, operation, snapshotId, cursor);
       return { ok: true, data: safeResponse };
     } catch (error) {
       return safeFailure(error);
@@ -885,6 +891,7 @@ export function createBrainV2Client(input: {
           },
           "index",
           snapshotId,
+          cursor,
         );
       } catch (error) {
         return safeFailure(error);
@@ -901,6 +908,7 @@ export function createBrainV2Client(input: {
           },
           "index",
           snapshotId,
+          cursor,
         );
       } catch (error) {
         return safeFailure(error);
@@ -927,6 +935,7 @@ export function createBrainV2Client(input: {
           },
           "metadata",
           snapshotId,
+          cursor,
         );
       } catch (error) {
         return safeFailure(error);
