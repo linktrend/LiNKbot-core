@@ -186,7 +186,7 @@ function isString(value: unknown): value is string {
 
 function parseTime(value: unknown): number | undefined {
   if (!isString(value)) return undefined;
-  const match = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.(\d{1,9}))?Z$/u.exec(value);
+  const match = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})\.(\d{3})Z$/u.exec(value);
   if (!match) return undefined;
   const time = Date.parse(value);
   if (!Number.isFinite(time)) return undefined;

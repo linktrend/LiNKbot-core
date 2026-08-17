@@ -158,7 +158,7 @@ export type BrainV2Transport = Readonly<{
 }>;
 
 const REF = /^[A-Za-z0-9][A-Za-z0-9._~:/@-]{0,255}$/;
-const ISO = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.(\d{1,9}))?Z$/u;
+const ISO = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})\.(\d{3})Z$/u;
 const SENSITIVE_VALUE =
   /(?:\bbearer\s+\S+|\b(?:api[ _-]?key|access[ _-]?token|refresh[ _-]?token|client[ _-]?secret|password|private[ _-]?key|token|secret|authorization)\s*[:=]\s*\S+|\bsk-[A-Za-z0-9]{16,}\b|\bghp_[A-Za-z0-9]{20,}\b|-----BEGIN\s+[A-Z ]*PRIVATE KEY-----|\b(?:system prompt|developer prompt|chat transcript|raw transcript|raw tool output|chain of thought|internal reasoning|private memory|case vault)\b)/iu;
 const REVOCATION_MAX_AGE_MS = 5 * 60 * 1000;

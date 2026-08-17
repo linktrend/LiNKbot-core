@@ -196,6 +196,7 @@ describe("exact provider Skills releases", () => {
     [{ issued_at: "2026-08-12" }, "invalid_timestamp"],
     [{ issued_at: "2026-02-30T12:00:00.000Z" }, "invalid_timestamp"],
     [{ issued_at: "2026-08-12T12:00:00+00:00" }, "invalid_timestamp"],
+    [{ issued_at: "2026-08-13T00:00:00.0009Z" }, "invalid_timestamp"],
     [
       { attestation: { ...validRelease.attestation, evaluated_at: "2026-08-12" } },
       "invalid_timestamp",

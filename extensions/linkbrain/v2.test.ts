@@ -173,6 +173,12 @@ describe("LiNKbrain v2 immutable consumer boundary", () => {
     ).toThrow();
     expect(() =>
       assertBrainV2PlatformIdentity(
+        { ...identity(), issuedAt: "2026-08-14T12:00:00.0009Z" },
+        expected,
+      ),
+    ).toThrow();
+    expect(() =>
+      assertBrainV2PlatformIdentity(
         {
           ...identity(),
           providerCandidate: { commit: "a".repeat(40), tree: identity().providerCandidate.tree },
