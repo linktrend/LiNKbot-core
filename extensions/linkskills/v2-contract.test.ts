@@ -138,4 +138,24 @@ describe("Skills v2 consumer boundary", () => {
       ),
     ).toBe(true);
   });
+  it("rejects inherited and accessor-backed qualification identities without invoking getters", () => {
+    const expectedIdentity = { skillId: "skill.echo", version: "1.0.0" };
+    expect(
+      validateSkillsQualificationIdentity(Object.create(expectedIdentity), expectedIdentity),
+    ).toBe(false);
+    expect(
+      validateSkillsQualificationIdentity(expectedIdentity, Object.create(expectedIdentity)),
+    ).toBe(false);
+    let getterCalls = 0;
+    const evidence = { version: "1.0.0" } as Record<string, unknown>;
+    Object.defineProperty(evidence, "skillId", {
+      enumerable: true,
+      get() {
+        getterCalls += 1;
+        return "skill.echo";
+      },
+    });
+    expect(validateSkillsQualificationIdentity(evidence, expectedIdentity)).toBe(false);
+    expect(getterCalls).toBe(0);
+  });
 });

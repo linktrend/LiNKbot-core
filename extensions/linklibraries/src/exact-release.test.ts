@@ -13,7 +13,7 @@ function validCandidate(): Candidate {
       artifactTreeSha1: "11223344556677889900aabbccddeeff00112233",
       payloadSha256: digest("d"),
     },
-    catalogue: { inventoryDigest: digest("a"), current: true, authorized: true },
+    catalogue: { inventoryDigest: digest("b"), current: true, authorized: true },
     manifest: {
       inventoryDigest: digest("b"),
       current: true,
@@ -40,7 +40,7 @@ describe("validateExactRelease", () => {
 
     expect(result.ok).toBe(true);
     if (result.ok) {
-      expect(result.evidence.catalogue.inventoryDigest).toBe(digest("a"));
+      expect(result.evidence.catalogue.inventoryDigest).toBe(digest("b"));
       expect(result.evidence.shortlistedManifest.consumerProfile).toBe("consumer-v1");
       expect(result.evidence.selectedAsset).toEqual({
         releaseSourceCommitSha: "1234567890abcdef1234567890abcdef12345678",
@@ -61,6 +61,12 @@ describe("validateExactRelease", () => {
       entries: [],
     };
     expect(validateExactRelease(value)).toMatchObject({ ok: true });
+  });
+
+  it("rejects a manifest inventory not authorized by the catalogue", () => {
+    const candidate = validCandidate() as unknown as Record<string, any>;
+    candidate.catalogue.inventoryDigest = digest("a");
+    expect(validateExactRelease(candidate).ok).toBe(false);
   });
 
   it.each([

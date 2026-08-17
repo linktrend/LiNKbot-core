@@ -241,14 +241,16 @@ export function validateSkillsV2Request(input: unknown):
 
 /** Accepts qualification evidence only when it names the requested exact release. */
 export function validateSkillsQualificationIdentity(value: unknown, expected: unknown): boolean {
+  const evidence = snapshotOwnDataRecord(value);
+  const expectation = snapshotOwnDataRecord(expected);
   return (
-    isRecord(value) &&
-    isRecord(expected) &&
-    bounded(value.skillId) &&
-    bounded(value.version, 128) &&
-    bounded(expected.skillId) &&
-    bounded(expected.version, 128) &&
-    value.skillId === expected.skillId &&
-    value.version === expected.version
+    evidence !== undefined &&
+    expectation !== undefined &&
+    bounded(evidence.skillId) &&
+    bounded(evidence.version, 128) &&
+    bounded(expectation.skillId) &&
+    bounded(expectation.version, 128) &&
+    evidence.skillId === expectation.skillId &&
+    evidence.version === expectation.version
   );
 }

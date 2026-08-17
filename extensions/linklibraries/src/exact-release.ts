@@ -257,6 +257,14 @@ export function validateExactRelease(candidate: unknown): ExactReleaseResult {
     );
   if (manifest && !isDigest(manifest.inventoryDigest))
     errors.push("manifest inventory digest is invalid");
+  if (
+    catalogue &&
+    manifest &&
+    isDigest(catalogue.inventoryDigest) &&
+    isDigest(manifest.inventoryDigest) &&
+    manifest.inventoryDigest !== catalogue.inventoryDigest
+  )
+    errors.push("manifest inventory digest does not match catalogue");
   if (manifest && manifest.current !== true) errors.push("manifest is stale");
   if (manifest && manifest.authorized !== true) errors.push("manifest is unauthorized");
   const lifecycle = manifest && isRecord(manifest.lifecycle) ? manifest.lifecycle : undefined;
