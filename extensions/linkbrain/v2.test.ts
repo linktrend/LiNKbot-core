@@ -282,6 +282,12 @@ describe("LiNKbrain v2 immutable consumer boundary", () => {
     expect(() =>
       assertBrainV2SafePayload({ refs: ["knowledge:1"], metadata: { title: "safe" } }),
     ).not.toThrow();
+    const safeArray = assertBrainV2SafePayload({ refs: ["knowledge:1", "knowledge:2"] });
+    expect(safeArray.refs.map((value) => value.toUpperCase())).toEqual([
+      "KNOWLEDGE:1",
+      "KNOWLEDGE:2",
+    ]);
+    expect([...safeArray.refs]).toEqual(["knowledge:1", "knowledge:2"]);
     expect(() => assertBrainV2SafePayload({ metadata: { actorId: "other" } })).toThrow();
     expect(() => assertBrainV2SafePayload({ text: "x".repeat(513) })).toThrow();
     for (const sensitive of [
@@ -926,6 +932,24 @@ describe("LiNKbrain v2 immutable consumer boundary", () => {
       clock: () => NOW,
     });
 
+    await expect(client.negotiate()).resolves.toEqual({
+      ok: false,
+      status: "offline",
+      reason: "brain_v2_offline",
+    });
+  });
+
+  it("never reports a failed transport operation as available", async () => {
+    const client = createBrainV2Client({
+      identity: identity(),
+      identityExpectation,
+      transport: {
+        request: async () => {
+          throw { status: "available", reason: "malformed" };
+        },
+      },
+      clock: () => NOW,
+    });
     await expect(client.negotiate()).resolves.toEqual({
       ok: false,
       status: "offline",

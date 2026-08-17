@@ -12,20 +12,20 @@ export type ExactReleaseLifecycle = "qualified";
 export type ExactReleaseState = "available";
 export type ExactReleaseStage = "index" | "description" | "fragments" | "exact_release";
 
-export type ReleaseAttestation = {
+export type ReleaseAttestation = Readonly<{
   issuer: string;
   digest: string;
   evaluated_at: string;
   valid_until: string;
-};
+}>;
 
-export type ExactRelease = {
+export type ExactRelease = Readonly<{
   release_id: string;
   version: string;
-  providerCandidate: {
+  providerCandidate: Readonly<{
     commit: typeof SKILLS_COMMIT;
     tree: typeof SKILLS_TREE;
-  };
+  }>;
   manifest_digest: string;
   package_digest: string;
   lifecycle: ExactReleaseLifecycle;
@@ -34,7 +34,7 @@ export type ExactRelease = {
   attestation: ReleaseAttestation;
   issued_at: string;
   expires_at: string;
-};
+}>;
 
 export type ExactReleaseValidationOptions = {
   profile: string;
@@ -330,7 +330,7 @@ export function validateExactRelease(
   };
   return {
     ok: true,
-    release: exact,
+    release: Object.freeze(exact),
     telemetry: { outcome: "accepted", release_id: exact.release_id, version: exact.version },
   };
 }

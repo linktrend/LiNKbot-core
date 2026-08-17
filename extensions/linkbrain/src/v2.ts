@@ -63,6 +63,7 @@ export type BrainV2ProviderStatus =
   | "contract_incompatible"
   | "disabled"
   | "unknown";
+export type BrainV2FailureStatus = Exclude<BrainV2ProviderStatus, "available">;
 
 export type BrainV2PlatformIdentity = Readonly<{
   providerCandidate: Readonly<{ commit: typeof PLATFORM_COMMIT; tree: typeof PLATFORM_TREE }>;
@@ -134,12 +135,12 @@ export type BrainV2SafeResult<T> =
   | Readonly<{ ok: true; data: T }>
   | Readonly<{
       ok: false;
-      status: BrainV2ProviderStatus;
+      status: BrainV2FailureStatus;
       reason: string;
     }>;
 
 export type BrainV2TransportFailure = Readonly<{
-  status: BrainV2ProviderStatus;
+  status: BrainV2FailureStatus;
   reason: string;
 }>;
 
@@ -317,7 +318,7 @@ const snapshotSafeValue = (
 
   if (Array.isArray(value)) {
     const prototype = Object.getPrototypeOf(value);
-    if ((prototype !== Array.prototype && prototype !== null) || depth >= MAX_SAFE_DEPTH) {
+    if (prototype !== Array.prototype || depth >= MAX_SAFE_DEPTH) {
       throw new Error(`brain_v2_payload_depth_or_array:${path}`);
     }
     const lengthHolder = Object.getOwnPropertyDescriptor(descriptors, "length");
@@ -327,7 +328,6 @@ const snapshotSafeValue = (
       throw new Error(`brain_v2_payload_depth_or_array:${path}`);
     }
     const snapshot = new Array<unknown>(length);
-    Object.setPrototypeOf(snapshot, null);
     for (let index = 0; index < length; index += 1) {
       const key = String(index);
       const holder = Object.getOwnPropertyDescriptor(descriptors, key);
@@ -985,10 +985,9 @@ export function createBrainV2Client(input: {
     const providerStatus = ownDataString(error, "status");
     const providerReason = ownDataString(error, "reason");
     if (providerStatus !== undefined && providerReason !== undefined) {
-      const status = providerStatus as BrainV2ProviderStatus;
+      const status = providerStatus as BrainV2FailureStatus;
       if (
         [
-          "available",
           "degraded",
           "offline",
           "unauthorized",
@@ -1003,7 +1002,7 @@ export function createBrainV2Client(input: {
       }
     }
     const reason = ownDataString(error, "message") ?? "offline";
-    const status: BrainV2ProviderStatus = /unauthorized|identity|scope|capability|revoked/.test(
+    const status: BrainV2FailureStatus = /unauthorized|identity|scope|capability|revoked/.test(
       reason,
     )
       ? "unauthorized"

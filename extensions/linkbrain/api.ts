@@ -76,6 +76,7 @@ export {
   type BrainV2PlatformRevocationDecision,
   type BrainV2PrivateCheckpoint,
   type BrainV2PrivateCapture,
+  type BrainV2FailureStatus,
   type BrainV2ProviderStatus,
   type BrainV2SafeResult,
   type BrainV2Transport,

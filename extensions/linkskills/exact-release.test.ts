@@ -44,13 +44,23 @@ const check = (changes: Record<string, unknown>, code: string) => {
 
 describe("exact provider Skills releases", () => {
   it("accepts an immutable, qualified, available, attested exact release", () => {
-    expect(
-      validateExactRelease(validRelease, { profile: "runtime:fixture-openclaw-01", now }),
-    ).toMatchObject({
+    const result = validateExactRelease(validRelease, {
+      profile: "runtime:fixture-openclaw-01",
+      now,
+    });
+    expect(result).toMatchObject({
       ok: true,
       release: validRelease,
       telemetry: { outcome: "accepted", release_id: validRelease.release_id },
     });
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(Object.isFrozen(result.release)).toBe(true);
+      expect(() => {
+        (result.release as { release_id: string }).release_id = "skill.changed@1.0.0";
+      }).toThrow();
+      expect(result.release.release_id).toBe(validRelease.release_id);
+    }
   });
 
   it.each([
