@@ -10,10 +10,12 @@ import {
   assertBrainV2Page,
   assertBrainV2PlatformIdentity,
   assertBrainV2SafePayload,
-  createBrainV2Client,
+  createBrainV2Client as createBrainV2ClientRaw,
   preparePrivateCapture,
   preparePrivateCheckpoint,
+  type BrainV2AuthenticatedProviderEvidence,
   type BrainV2PlatformIdentity,
+  type BrainV2PlatformRevocationDecision,
   type BrainV2TransportRequest,
 } from "./src/v2.js";
 
@@ -57,6 +59,41 @@ const identityExpectation = {
   requiredScope: expected.requiredScope,
   requiredCapability: expected.requiredCapability,
 };
+
+const authenticatedProviderEvidence: BrainV2AuthenticatedProviderEvidence = {
+  providerCandidate: { commit: LINKBRAIN_V2_COMMIT, tree: LINKBRAIN_V2_TREE },
+  contractVersion: LINKBRAIN_V2_CONTRACT_VERSION,
+  artifactDigests: {
+    contractsSchema: "sha256:ff02970e0327fc578295637f26e99904d736af8c412a1523586744756881682b",
+    sessionlessMcp: "sha256:f88ba9474d23f5a8c46fd39fee6cd1bf4b50b87c40c7c68cefba2023d566eaea",
+    httpRegistry: "sha256:fb076dd096d7719202c9790f97699750e2b8e842105d9ebe36baed4048aefe25",
+    contractTypes: "sha256:ca2f68671f7fb8738bba7a1629d09de6c8f84d94551d91cea7b908f45ec41950",
+    discoveryFixture: "sha256:c45caff2baeba4e47fe108f7ad264efae58373dd57608ffc54485ae2908d00ad",
+    projectionFixture: "sha256:4995f99925e9ba2911b24818d0b96550249f11ecdc7f428ca1ae49906d3da36e",
+  },
+};
+
+const activeRevocationDecision = (): BrainV2PlatformRevocationDecision => ({
+  status: "active",
+  observedAt: NOW,
+  actorId: identity().actorId,
+  organizationRef: identity().organizationRef,
+  runtimeBindingRef: identity().runtimeBindingRef,
+  credentialReference: identity().credentialReference,
+});
+
+type BrainV2ClientInput = Parameters<typeof createBrainV2ClientRaw>[0];
+const createBrainV2Client = (
+  input: Omit<BrainV2ClientInput, "authenticatedProviderEvidence" | "resolveRevocationDecision"> &
+    Partial<
+      Pick<BrainV2ClientInput, "authenticatedProviderEvidence" | "resolveRevocationDecision">
+    >,
+) =>
+  createBrainV2ClientRaw({
+    authenticatedProviderEvidence,
+    resolveRevocationDecision: activeRevocationDecision,
+    ...input,
+  });
 
 const negotiation = {
   protocolVersion: LINKBRAIN_V2_MCP_PROTOCOL,
@@ -406,6 +443,133 @@ describe("LiNKbrain v2 immutable consumer boundary", () => {
     now = "2026-08-14T13:00:00.000Z";
     expect(await client.search("knowledge")).toMatchObject({ ok: false, status: "unauthorized" });
     expect(requests).toHaveLength(4);
+  });
+
+  it("binds negotiation to authenticated provider evidence and fresh Platform revocation", async () => {
+    const requests: BrainV2TransportRequest[] = [];
+    let decision = activeRevocationDecision();
+    const client = createBrainV2Client({
+      identity: identity(),
+      identityExpectation,
+      authenticatedProviderEvidence: {
+        ...authenticatedProviderEvidence,
+        providerCandidate: { ...authenticatedProviderEvidence.providerCandidate, tree: "wrong" },
+      } as unknown as BrainV2AuthenticatedProviderEvidence,
+      resolveRevocationDecision: () => decision,
+      transport: {
+        request: async (request) => {
+          requests.push(request);
+          return request.method === "discover" ? negotiation : page("index");
+        },
+      },
+      clock: () => NOW,
+    });
+    await expect(client.negotiate()).resolves.toMatchObject({
+      ok: false,
+      status: "contract_incompatible",
+    });
+    expect(requests).toHaveLength(0);
+
+    const validClient = createBrainV2Client({
+      identity: identity(),
+      identityExpectation,
+      resolveRevocationDecision: () => decision,
+      transport: {
+        request: async (request) => {
+          requests.push(request);
+          return request.method === "discover" ? negotiation : page("index");
+        },
+      },
+      clock: () => NOW,
+    });
+    await expect(validClient.negotiate()).resolves.toMatchObject({ ok: true });
+    decision = { ...decision, status: "revoked" };
+    await expect(validClient.search("knowledge")).resolves.toMatchObject({
+      ok: false,
+      status: "unauthorized",
+    });
+    expect(requests).toHaveLength(1);
+
+    decision = { ...activeRevocationDecision(), observedAt: "2026-08-14T11:54:59.000Z" };
+    await expect(validClient.discovery()).resolves.toMatchObject({
+      ok: false,
+      status: "unauthorized",
+    });
+    expect(requests).toHaveLength(1);
+  });
+
+  it("rejects accessor-backed provider evidence and revocation facts without invoking getters", async () => {
+    let getterCalls = 0;
+    const requests: BrainV2TransportRequest[] = [];
+    const transport = {
+      request: async (request: BrainV2TransportRequest) => {
+        requests.push(request);
+        return negotiation;
+      },
+    };
+    const evidenceInput = {
+      identity: identity(),
+      identityExpectation,
+      resolveRevocationDecision: activeRevocationDecision,
+      transport,
+      clock: () => NOW,
+    } as unknown as BrainV2ClientInput;
+    Object.defineProperty(evidenceInput, "authenticatedProviderEvidence", {
+      enumerable: true,
+      get() {
+        getterCalls += 1;
+        return authenticatedProviderEvidence;
+      },
+    });
+    const evidenceClient = createBrainV2ClientRaw(evidenceInput);
+    await expect(evidenceClient.negotiate()).resolves.toMatchObject({
+      ok: false,
+      status: "contract_incompatible",
+    });
+    expect(getterCalls).toBe(0);
+
+    const resolverInput = {
+      identity: identity(),
+      identityExpectation,
+      authenticatedProviderEvidence,
+      transport,
+      clock: () => NOW,
+    } as unknown as BrainV2ClientInput;
+    Object.defineProperty(resolverInput, "resolveRevocationDecision", {
+      enumerable: true,
+      get() {
+        getterCalls += 1;
+        return activeRevocationDecision;
+      },
+    });
+    const resolverClient = createBrainV2ClientRaw(resolverInput);
+    await expect(resolverClient.negotiate()).resolves.toMatchObject({
+      ok: false,
+      status: "contract_incompatible",
+    });
+    expect(getterCalls).toBe(0);
+
+    const accessorDecision = { ...activeRevocationDecision() } as Record<string, unknown>;
+    Object.defineProperty(accessorDecision, "status", {
+      enumerable: true,
+      get() {
+        getterCalls += 1;
+        return "active";
+      },
+    });
+    const decisionClient = createBrainV2Client({
+      identity: identity(),
+      identityExpectation,
+      resolveRevocationDecision: () => accessorDecision as BrainV2PlatformRevocationDecision,
+      transport,
+      clock: () => NOW,
+    });
+    await expect(decisionClient.negotiate()).resolves.toMatchObject({
+      ok: false,
+      status: "contract_incompatible",
+    });
+    expect(getterCalls).toBe(0);
+    expect(requests).toHaveLength(0);
   });
 
   it("uses independent trusted expectations and revalidates checkpoint writes at runtime", async () => {

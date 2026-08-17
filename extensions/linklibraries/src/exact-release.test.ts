@@ -154,6 +154,14 @@ describe("validateExactRelease", () => {
     expect(validateExactRelease(candidate).ok).toBe(false);
   });
 
+  it("requires dependency resolution evidence to be the literal boolean true", () => {
+    for (const malformed of [false, "false", "yes", {}, 1]) {
+      const candidate = validCandidate() as unknown as Record<string, any>;
+      candidate.dependencies.entries[0].resolved = malformed;
+      expect(validateExactRelease(candidate).ok).toBe(false);
+    }
+  });
+
   it("rejects inherited and accessor-backed evidence without invoking getters", () => {
     let getterCalls = 0;
     const accessorCandidate = validCandidate() as unknown as Record<string, unknown>;

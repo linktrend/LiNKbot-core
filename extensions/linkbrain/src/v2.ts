@@ -81,6 +81,24 @@ export type BrainV2PlatformIdentity = Readonly<{
   revocationStatus: "active";
 }>;
 
+export type BrainV2PlatformRevocationDecision = Readonly<{
+  status: "active" | "revoked";
+  observedAt: string;
+  actorId: string;
+  organizationRef: string;
+  runtimeBindingRef: string;
+  credentialReference: string;
+}>;
+
+export type BrainV2AuthenticatedProviderEvidence = Readonly<{
+  providerCandidate: Readonly<{
+    commit: typeof LINKBRAIN_V2_COMMIT;
+    tree: typeof LINKBRAIN_V2_TREE;
+  }>;
+  contractVersion: typeof LINKBRAIN_V2_PIN_CONTRACT_VERSION;
+  artifactDigests: typeof LINKBRAIN_V2_ARTIFACT_DIGESTS;
+}>;
+
 export type BrainV2IdentityExpectation = Readonly<{
   actorId: string;
   organizationRef: string;
@@ -140,6 +158,7 @@ export type BrainV2Transport = Readonly<{
 
 const REF = /^[A-Za-z0-9][A-Za-z0-9._~:/@-]{0,255}$/;
 const ISO = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z$/;
+const REVOCATION_MAX_AGE_MS = 5 * 60 * 1000;
 const FORBIDDEN_FIELDS = new Set([
   "body",
   "binary",
@@ -565,6 +584,72 @@ const snapshotBrainV2PlatformIdentity = (input: unknown): BrainV2PlatformIdentit
   }
 };
 
+const assertAuthenticatedProviderEvidence = (input: unknown): void => {
+  const snapshot = snapshotSafeValue(
+    input,
+    0,
+    "providerEvidence",
+    { nodes: 0, stringTotal: 0, seen: new WeakSet() },
+    false,
+  );
+  if (!objectRecord(snapshot)) throw new Error("brain_v2_provider_evidence_invalid");
+  assertObjectKeys(snapshot, ["providerCandidate", "contractVersion", "artifactDigests"]);
+  if (!objectRecord(snapshot.providerCandidate) || !objectRecord(snapshot.artifactDigests)) {
+    throw new Error("brain_v2_provider_evidence_invalid");
+  }
+  const artifactDigests = snapshot.artifactDigests;
+  assertObjectKeys(snapshot.providerCandidate, ["commit", "tree"]);
+  assertObjectKeys(artifactDigests, Object.keys(LINKBRAIN_V2_ARTIFACT_DIGESTS));
+  if (
+    snapshot.providerCandidate.commit !== LINKBRAIN_V2_COMMIT ||
+    snapshot.providerCandidate.tree !== LINKBRAIN_V2_TREE ||
+    snapshot.contractVersion !== LINKBRAIN_V2_PIN_CONTRACT_VERSION ||
+    Object.entries(LINKBRAIN_V2_ARTIFACT_DIGESTS).some(
+      ([key, digest]) => artifactDigests[key] !== digest,
+    )
+  ) {
+    throw new Error("brain_v2_provider_evidence_mismatch");
+  }
+};
+
+const assertFreshRevocationDecision = (
+  input: unknown,
+  identity: BrainV2PlatformIdentity,
+  now: Date | string,
+): void => {
+  const snapshot = snapshotSafeValue(
+    input,
+    0,
+    "revocationDecision",
+    { nodes: 0, stringTotal: 0, seen: new WeakSet() },
+    false,
+  );
+  if (!objectRecord(snapshot)) throw new Error("brain_v2_revocation_decision_invalid");
+  assertObjectKeys(snapshot, [
+    "status",
+    "observedAt",
+    "actorId",
+    "organizationRef",
+    "runtimeBindingRef",
+    "credentialReference",
+  ]);
+  assertIso(snapshot.observedAt, "revocation_observed_at");
+  const nowMs = new Date(now).getTime();
+  const observedAt = Date.parse(snapshot.observedAt);
+  if (
+    snapshot.status !== "active" ||
+    !Number.isFinite(nowMs) ||
+    observedAt > nowMs ||
+    nowMs - observedAt > REVOCATION_MAX_AGE_MS ||
+    snapshot.actorId !== identity.actorId ||
+    snapshot.organizationRef !== identity.organizationRef ||
+    snapshot.runtimeBindingRef !== identity.runtimeBindingRef ||
+    snapshot.credentialReference !== identity.credentialReference
+  ) {
+    throw new Error("brain_v2_identity_revoked_or_stale");
+  }
+};
+
 const DISCLOSURE_ORDER: Record<BrainV2Disclosure, number> = {
   guide: 0,
   index: 1,
@@ -770,6 +855,10 @@ function assertLoadReferences(reference: unknown, snapshotId: unknown): void {
 export function createBrainV2Client(input: {
   identity: BrainV2PlatformIdentity;
   identityExpectation: Omit<BrainV2IdentityExpectation, "now">;
+  authenticatedProviderEvidence: BrainV2AuthenticatedProviderEvidence;
+  resolveRevocationDecision: () =>
+    | BrainV2PlatformRevocationDecision
+    | Promise<BrainV2PlatformRevocationDecision>;
   transport: BrainV2Transport;
   clock?: () => Date | string;
 }): {
@@ -806,6 +895,10 @@ export function createBrainV2Client(input: {
   });
   let trustedIdentity: BrainV2PlatformIdentity | undefined;
   let identityConstructionError: unknown;
+  let providerEvidenceError: unknown;
+  let revocationResolver:
+    | (() => BrainV2PlatformRevocationDecision | Promise<BrainV2PlatformRevocationDecision>)
+    | undefined;
   try {
     const identitySnapshot = snapshotBrainV2PlatformIdentity(input.identity);
     assertBrainV2PlatformIdentity(identitySnapshot, currentIdentityExpectation());
@@ -813,11 +906,33 @@ export function createBrainV2Client(input: {
   } catch (error) {
     identityConstructionError = error;
   }
-  const requireTrustedIdentity = (): BrainV2PlatformIdentity => {
-    if (!trustedIdentity) {
+  try {
+    // This evidence is supplied by the authenticated transport owner, not by the Brain response.
+    const descriptor = Object.getOwnPropertyDescriptor(input, "authenticatedProviderEvidence");
+    if (!descriptor || !("value" in descriptor)) {
+      throw new Error("brain_v2_provider_evidence_invalid");
+    }
+    assertAuthenticatedProviderEvidence(descriptor.value);
+  } catch (error) {
+    providerEvidenceError = error;
+  }
+  try {
+    const descriptor = Object.getOwnPropertyDescriptor(input, "resolveRevocationDecision");
+    if (!descriptor || !("value" in descriptor) || typeof descriptor.value !== "function") {
+      throw new Error("brain_v2_revocation_resolver_invalid");
+    }
+    revocationResolver = descriptor.value as typeof revocationResolver;
+  } catch (error) {
+    identityConstructionError ??= error;
+  }
+  const requireTrustedIdentity = async (): Promise<BrainV2PlatformIdentity> => {
+    if (!trustedIdentity || !revocationResolver) {
       throw identityConstructionError ?? new Error("brain_v2_identity_snapshot_invalid");
     }
-    assertBrainV2PlatformIdentity(trustedIdentity, currentIdentityExpectation());
+    const expectation = currentIdentityExpectation();
+    assertBrainV2PlatformIdentity(trustedIdentity, expectation);
+    const decision = await revocationResolver();
+    assertFreshRevocationDecision(decision, trustedIdentity, expectation.now ?? new Date());
     return trustedIdentity;
   };
   const safeFailure = (error: unknown): BrainV2SafeResult<never> => {
@@ -861,7 +976,7 @@ export function createBrainV2Client(input: {
     cursor?: string,
   ): Promise<BrainV2SafeResult<BrainV2Page<T>>> => {
     try {
-      const identity = requireTrustedIdentity();
+      const identity = await requireTrustedIdentity();
       if (!negotiated) {
         return {
           ok: false,
@@ -900,7 +1015,8 @@ export function createBrainV2Client(input: {
   return {
     async negotiate() {
       try {
-        const identity = requireTrustedIdentity();
+        if (providerEvidenceError) throw providerEvidenceError;
+        const identity = await requireTrustedIdentity();
         const response = await input.transport.request({
           protocolVersion: LINKBRAIN_V2_MCP_PROTOCOL,
           method: "discover",

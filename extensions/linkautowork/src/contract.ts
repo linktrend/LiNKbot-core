@@ -91,6 +91,8 @@ export type AutoworkCallback = Readonly<{
 export type AutoworkAcceptedCallbackState = Readonly<{
   latestSourceTimestamp: string | null;
   acceptedReceiptIds: readonly string[];
+  latestReceiptState: ReceiptState | null;
+  latestAttemptCount: number | null;
 }>;
 export type PlatformRevocationDecision = Readonly<{
   status: "active" | "revoked";
@@ -105,6 +107,7 @@ export type PlatformRevocationDecision = Readonly<{
   authorizedOperation: Operation;
 }>;
 const REVOCATION_MAX_AGE_MS = 5 * 60 * 1000;
+const NON_TERMINAL_RECEIPT_STATES = ["accepted", "queued", "running"] as const;
 
 const SHA256 = /^sha256:[0-9a-f]{64}$/;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -473,11 +476,27 @@ export function validateCallback(
     !iso(value.sourceTimestamp) ||
     !expected ||
     !plain(expected.acceptedState) ||
-    !keys(expected.acceptedState, ["latestSourceTimestamp", "acceptedReceiptIds"]) ||
+    !keys(expected.acceptedState, [
+      "latestSourceTimestamp",
+      "acceptedReceiptIds",
+      "latestReceiptState",
+      "latestAttemptCount",
+    ]) ||
     (expected.acceptedState.latestSourceTimestamp !== null &&
       !iso(expected.acceptedState.latestSourceTimestamp)) ||
     !Array.isArray(expected.acceptedState.acceptedReceiptIds) ||
     !expected.acceptedState.acceptedReceiptIds.every((receiptId) => UUID.test(receiptId)) ||
+    (expected.acceptedState.latestReceiptState !== null &&
+      !(AUTOWORK_STATES as readonly unknown[]).includes(
+        expected.acceptedState.latestReceiptState,
+      )) ||
+    (expected.acceptedState.latestAttemptCount !== null &&
+      (!Number.isInteger(expected.acceptedState.latestAttemptCount) ||
+        expected.acceptedState.latestAttemptCount < 0)) ||
+    (expected.acceptedState.latestReceiptState === null) !==
+      (expected.acceptedState.latestAttemptCount === null) ||
+    (expected.acceptedState.latestSourceTimestamp === null) !==
+      (expected.acceptedState.latestReceiptState === null) ||
     !Number.isFinite(expected.now.getTime()) ||
     value.callbackBindingRef !== expected.callbackBindingRef ||
     !validateReceipt(value.receipt, request, expected.now)
@@ -490,14 +509,28 @@ export function validateCallback(
     expected.acceptedState.latestSourceTimestamp === null
       ? null
       : Date.parse(expected.acceptedState.latestSourceTimestamp);
+  const receipt = value.receipt as AutoworkReceipt;
+  const latestReceiptState = expected.acceptedState.latestReceiptState;
+  const latestAttemptCount = expected.acceptedState.latestAttemptCount;
+  const latestStateIsTerminal =
+    latestReceiptState !== null &&
+    !(NON_TERMINAL_RECEIPT_STATES as readonly ReceiptState[]).includes(latestReceiptState);
+  const stateRank = (state: ReceiptState): number =>
+    state === "accepted" ? 0 : state === "queued" ? 1 : state === "running" ? 2 : 3;
   return (
-    value.requestId === (value.receipt as AutoworkReceipt).requestId &&
-    value.receiptId === (value.receipt as AutoworkReceipt).receiptId &&
+    value.requestId === receipt.requestId &&
+    value.receiptId === receipt.receiptId &&
     value.orgId === request.platform.orgId &&
     sourceTimestamp === updatedAt &&
     sourceTimestamp >= acceptedAt &&
     sourceTimestamp <= expected.now.getTime() &&
     (latestSourceTimestamp === null || sourceTimestamp > latestSourceTimestamp) &&
-    !expected.acceptedState.acceptedReceiptIds.includes(value.receiptId)
+    !expected.acceptedState.acceptedReceiptIds.includes(value.receiptId) &&
+    (latestAttemptCount === null || receipt.attemptCount >= latestAttemptCount) &&
+    !latestStateIsTerminal &&
+    (latestReceiptState === null ||
+      latestAttemptCount === null ||
+      receipt.attemptCount > latestAttemptCount ||
+      stateRank(receipt.state) >= stateRank(latestReceiptState))
   );
 }

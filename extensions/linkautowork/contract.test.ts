@@ -82,7 +82,12 @@ describe("LinkAutowork final provider contract", () => {
         {
           callbackBindingRef: "evidence://callback/binding",
           now: new Date("2026-08-13T12:00:00.000Z"),
-          acceptedState: { latestSourceTimestamp: null, acceptedReceiptIds: [] },
+          acceptedState: {
+            latestSourceTimestamp: null,
+            acceptedReceiptIds: [],
+            latestReceiptState: null,
+            latestAttemptCount: null,
+          },
         },
       ),
     ).toBe(true);
@@ -275,7 +280,12 @@ describe("LinkAutowork final provider contract", () => {
         {
           callbackBindingRef: "evidence://callback/binding",
           now: new Date("2026-08-13T12:00:00.000Z"),
-          acceptedState: { latestSourceTimestamp: null, acceptedReceiptIds: [] },
+          acceptedState: {
+            latestSourceTimestamp: null,
+            acceptedReceiptIds: [],
+            latestReceiptState: null,
+            latestAttemptCount: null,
+          },
         },
       ),
     ).toBe(false);
@@ -338,8 +348,10 @@ describe("LinkAutowork final provider contract", () => {
         callbackBindingRef: "evidence://callback/binding",
         now: new Date("2026-08-13T12:00:00.000Z"),
         acceptedState: {
-          latestSourceTimestamp: null,
+          latestSourceTimestamp: receipt.updatedAt,
           acceptedReceiptIds: [receipt.receiptId],
+          latestReceiptState: receipt.state,
+          latestAttemptCount: receipt.attemptCount,
         },
       }),
     ).toBe(false);
@@ -350,6 +362,8 @@ describe("LinkAutowork final provider contract", () => {
         acceptedState: {
           latestSourceTimestamp: receipt.updatedAt,
           acceptedReceiptIds: [],
+          latestReceiptState: "running",
+          latestAttemptCount: receipt.attemptCount,
         },
       }),
     ).toBe(false);
@@ -363,9 +377,55 @@ describe("LinkAutowork final provider contract", () => {
         {
           callbackBindingRef: "evidence://callback/binding",
           now: new Date("2026-08-13T12:00:00.000Z"),
-          acceptedState: { latestSourceTimestamp: null, acceptedReceiptIds: [] },
+          acceptedState: {
+            latestSourceTimestamp: null,
+            acceptedReceiptIds: [],
+            latestReceiptState: null,
+            latestAttemptCount: null,
+          },
         },
       ),
+    ).toBe(false);
+  });
+
+  it("rejects callback state regression after a terminal receipt", () => {
+    const regressedReceipt = {
+      ...receipt,
+      receiptId: "88888888-8888-4888-8888-888888888888",
+      state: "running" as const,
+      updatedAt: "2026-08-13T00:00:02.000Z",
+    };
+    const callback = {
+      requestId: request.requestId,
+      receiptId: regressedReceipt.receiptId,
+      orgId: request.platform.orgId,
+      callbackBindingRef: "evidence://callback/binding",
+      sourceTimestamp: regressedReceipt.updatedAt,
+      receipt: regressedReceipt,
+    };
+    expect(
+      validateCallback(callback, request, {
+        callbackBindingRef: "evidence://callback/binding",
+        now: new Date("2026-08-13T12:00:00.000Z"),
+        acceptedState: {
+          latestSourceTimestamp: receipt.updatedAt,
+          acceptedReceiptIds: [receipt.receiptId],
+          latestReceiptState: "queued",
+          latestAttemptCount: receipt.attemptCount,
+        },
+      }),
+    ).toBe(true);
+    expect(
+      validateCallback(callback, request, {
+        callbackBindingRef: "evidence://callback/binding",
+        now: new Date("2026-08-13T12:00:00.000Z"),
+        acceptedState: {
+          latestSourceTimestamp: receipt.updatedAt,
+          acceptedReceiptIds: [receipt.receiptId],
+          latestReceiptState: "succeeded",
+          latestAttemptCount: receipt.attemptCount,
+        },
+      }),
     ).toBe(false);
   });
 });
