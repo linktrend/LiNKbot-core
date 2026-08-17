@@ -161,6 +161,18 @@ describe("LiNKbrain v2 immutable consumer boundary", () => {
     ).toThrow();
     expect(() =>
       assertBrainV2PlatformIdentity(
+        { ...identity(), issuedAt: "2026-02-30T00:00:00.000Z" },
+        expected,
+      ),
+    ).toThrow();
+    expect(() =>
+      assertBrainV2PlatformIdentity(
+        { ...identity(), issuedAt: "2026-08-14T24:00:00.000Z" },
+        expected,
+      ),
+    ).toThrow();
+    expect(() =>
+      assertBrainV2PlatformIdentity(
         {
           ...identity(),
           providerCandidate: { commit: "a".repeat(40), tree: identity().providerCandidate.tree },
@@ -272,6 +284,14 @@ describe("LiNKbrain v2 immutable consumer boundary", () => {
     ).not.toThrow();
     expect(() => assertBrainV2SafePayload({ metadata: { actorId: "other" } })).toThrow();
     expect(() => assertBrainV2SafePayload({ text: "x".repeat(513) })).toThrow();
+    for (const sensitive of [
+      "Bearer credential-value",
+      "api_key=credential-value",
+      "raw transcript from a private conversation",
+      "-----BEGIN PRIVATE KEY-----",
+    ]) {
+      expect(() => assertBrainV2SafePayload({ note: sensitive })).toThrow();
+    }
   });
 
   it("rejects accessor-backed payloads without evaluating changing getters", () => {
@@ -516,6 +536,27 @@ describe("LiNKbrain v2 immutable consumer boundary", () => {
     await expect(preIssueDecisionClient.negotiate()).resolves.toMatchObject({
       ok: false,
       status: "unauthorized",
+    });
+    expect(requests).toHaveLength(1);
+
+    const malformedDecisionClient = createBrainV2Client({
+      identity: identity(),
+      identityExpectation,
+      resolveRevocationDecision: () => ({
+        ...activeRevocationDecision(),
+        observedAt: "2026-02-30T00:00:00.000Z",
+      }),
+      transport: {
+        request: async (request) => {
+          requests.push(request);
+          return negotiation;
+        },
+      },
+      clock: () => NOW,
+    });
+    await expect(malformedDecisionClient.negotiate()).resolves.toMatchObject({
+      ok: false,
+      status: "contract_incompatible",
     });
     expect(requests).toHaveLength(1);
   });

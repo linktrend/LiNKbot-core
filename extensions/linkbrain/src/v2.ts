@@ -157,7 +157,9 @@ export type BrainV2Transport = Readonly<{
 }>;
 
 const REF = /^[A-Za-z0-9][A-Za-z0-9._~:/@-]{0,255}$/;
-const ISO = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z$/;
+const ISO = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.(\d{1,9}))?Z$/u;
+const SENSITIVE_VALUE =
+  /(?:\bbearer\s+\S+|\b(?:api[_-]?key|access[_-]?token|secret|authorization)\s*[:=]\s*\S+|\bsk-[A-Za-z0-9]{16,}\b|\bghp_[A-Za-z0-9]{20,}\b|-----BEGIN\s+[A-Z ]*PRIVATE KEY-----|\b(?:system prompt|developer prompt|chat transcript|raw transcript|raw tool output|chain of thought|internal reasoning|private memory|case vault)\b)/iu;
 const REVOCATION_MAX_AGE_MS = 5 * 60 * 1000;
 const FORBIDDEN_FIELDS = new Set([
   "body",
@@ -288,6 +290,9 @@ const snapshotSafeValue = (
     if (value.length > 512 || state.stringTotal > MAX_SAFE_STRING_TOTAL) {
       throw new Error(`brain_v2_unbounded_string:${path}`);
     }
+    if (enforcePayloadFieldPolicy && SENSITIVE_VALUE.test(value)) {
+      throw new Error(`brain_v2_sensitive_string:${path}`);
+    }
     return value;
   }
   if (typeof value === "number" && Number.isFinite(value)) return value;
@@ -386,7 +391,21 @@ const snapshotSafeValue = (
 };
 
 function assertIso(value: unknown, field: string): asserts value is string {
-  if (typeof value !== "string" || !ISO.test(value) || !Number.isFinite(Date.parse(value))) {
+  if (typeof value !== "string") {
+    throw new Error(`brain_v2_invalid_timestamp:${field}`);
+  }
+  const match = ISO.exec(value);
+  const parsed = Date.parse(value);
+  if (!match || !Number.isFinite(parsed)) throw new Error(`brain_v2_invalid_timestamp:${field}`);
+  const date = new Date(parsed);
+  if (
+    date.getUTCFullYear() !== Number(match[1]) ||
+    date.getUTCMonth() + 1 !== Number(match[2]) ||
+    date.getUTCDate() !== Number(match[3]) ||
+    date.getUTCHours() !== Number(match[4]) ||
+    date.getUTCMinutes() !== Number(match[5]) ||
+    date.getUTCSeconds() !== Number(match[6])
+  ) {
     throw new Error(`brain_v2_invalid_timestamp:${field}`);
   }
 }
