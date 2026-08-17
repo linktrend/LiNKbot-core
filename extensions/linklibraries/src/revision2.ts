@@ -162,8 +162,68 @@ const RECORD_KEYS = new Set([
   "compatibility",
   "bundlePath",
 ]);
+const BUNDLE_KEYS = new Set([
+  "source",
+  "catalogue",
+  "record",
+  "manifest",
+  "inventorySha256",
+  "dependencyLockSha256",
+  "verifiedCache",
+  "consumption",
+]);
+const PROVIDER_SOURCE_KEYS = new Set(["commit", "tree"]);
+const CATALOGUE_KEYS = new Set([
+  "schemaVersion",
+  "schemaRevision",
+  "catalogueType",
+  "catalogueSha256",
+  "recordsSha256",
+  "records",
+]);
+const MANIFEST_KEYS = new Set([
+  "releaseId",
+  "entryId",
+  "version",
+  "releaseSource",
+  "artifactTreeSha1",
+  "payloadSha256",
+  "inventorySha256",
+  "dependencyLockSha256",
+]);
+const CACHE_KEYS = new Set([
+  "sourceEvidence",
+  "releaseSource",
+  "catalogueSha256",
+  "catalogueRecordsSha256",
+  "entryId",
+  "version",
+  "releaseManifestSha256",
+  "inventorySha256",
+  "payloadSha256",
+  "artifactTreeSha1",
+]);
+const SOURCE_EVIDENCE_KEYS = new Set([
+  "selectedRepositoryCommitSha",
+  "selectedRepositoryTreeSha1",
+  "immutable",
+]);
+const CONSUMPTION_KEYS = new Set([
+  "receiptType",
+  "result",
+  "entryId",
+  "version",
+  "releaseManifestSha256",
+  "releaseSourceCommitSha",
+  "releaseSourceRepositoryTreeSha1",
+  "artifactTreeSha1",
+  "consumerMaterializedTreeSha1",
+]);
 const isObject = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
+const hasExactKeys = (value: Record<string, unknown>, expected: ReadonlySet<string>): boolean =>
+  Object.keys(value).length === expected.size &&
+  Object.keys(value).every((key) => expected.has(key));
 function snapshotPlainData(value: unknown, seen = new WeakSet<object>()): unknown {
   if (
     value === null ||
@@ -241,6 +301,12 @@ export function canonicalDigest(value: unknown): string {
 
 const normalizedSha256 = (value: string): string =>
   value.startsWith("sha256:") ? value : `sha256:${value}`;
+const canonicalRecordDigest = (value: Revision2Record): string =>
+  canonicalDigest({
+    ...value,
+    releaseManifestSha256: normalizedSha256(value.releaseManifestSha256),
+    inventorySha256: normalizedSha256(value.inventorySha256),
+  });
 
 export function pageCatalogue(
   records: readonly Revision2Record[],
@@ -438,13 +504,16 @@ export function validateExactRevision2(
   }
   if (
     !isObject(bundle) ||
+    !hasExactKeys(bundle, BUNDLE_KEYS) ||
     !isObject(bundle.source) ||
+    !hasExactKeys(bundle.source, PROVIDER_SOURCE_KEYS) ||
     bundle.source.commit !== LIBRARIES_COMMIT ||
     bundle.source.tree !== LIBRARIES_TREE
   )
     return { ok: false, reason: "wrong source commit or tree" };
   if (
     !isObject(bundle.catalogue) ||
+    !hasExactKeys(bundle.catalogue, CATALOGUE_KEYS) ||
     bundle.catalogue.schemaVersion !== 2 ||
     bundle.catalogue.schemaRevision !== 2 ||
     bundle.catalogue.catalogueType !== "catalogue" ||
@@ -468,7 +537,7 @@ export function validateExactRevision2(
   const record = recordResult.record;
   if (
     !validatedCatalogueRecords.some(
-      (candidate) => canonicalDigest(candidate) === canonicalDigest(record),
+      (candidate) => canonicalRecordDigest(candidate) === canonicalRecordDigest(record),
     )
   ) {
     return { ok: false, reason: "catalogue does not contain selected record" };
@@ -496,6 +565,7 @@ export function validateExactRevision2(
   const manifest = bundle.manifest;
   if (
     !isObject(manifest) ||
+    !hasExactKeys(manifest, MANIFEST_KEYS) ||
     manifest.entryId !== record.entryId ||
     manifest.version !== record.version ||
     manifest.releaseId !== `${record.entryId}@${record.version}` ||
@@ -504,7 +574,8 @@ export function validateExactRevision2(
     manifest.releaseSource.releaseSourceRepositoryTreeSha1 !==
       record.releaseSource.releaseSourceRepositoryTreeSha1 ||
     manifest.artifactTreeSha1 !== record.artifactTreeSha1 ||
-    manifest.inventorySha256 !== record.inventorySha256 ||
+    !digest(manifest.inventorySha256) ||
+    normalizedSha256(manifest.inventorySha256) !== normalizedSha256(record.inventorySha256) ||
     !digest(manifest.payloadSha256) ||
     !digest(manifest.dependencyLockSha256) ||
     manifest.releaseId.length > 160 ||
@@ -512,14 +583,19 @@ export function validateExactRevision2(
   )
     return { ok: false, reason: "release manifest does not match catalogue" };
   if (
-    bundle.inventorySha256 !== record.inventorySha256 ||
-    bundle.dependencyLockSha256 !== manifest.dependencyLockSha256
+    !digest(bundle.inventorySha256) ||
+    normalizedSha256(bundle.inventorySha256) !== normalizedSha256(record.inventorySha256) ||
+    !digest(bundle.dependencyLockSha256) ||
+    normalizedSha256(bundle.dependencyLockSha256) !==
+      normalizedSha256(manifest.dependencyLockSha256)
   )
     return { ok: false, reason: "inventory or dependency evidence mismatch" };
   const cache = bundle.verifiedCache;
   if (
     !isObject(cache) ||
+    !hasExactKeys(cache, CACHE_KEYS) ||
     !isObject(cache.sourceEvidence) ||
+    !hasExactKeys(cache.sourceEvidence, SOURCE_EVIDENCE_KEYS) ||
     cache.sourceEvidence.selectedRepositoryCommitSha !== LIBRARIES_COMMIT ||
     cache.sourceEvidence.selectedRepositoryTreeSha1 !== LIBRARIES_TREE ||
     cache.sourceEvidence.immutable !== true ||
@@ -529,22 +605,31 @@ export function validateExactRevision2(
       record.releaseSource.releaseSourceRepositoryTreeSha1 ||
     !digest(cache.catalogueSha256) ||
     normalizedSha256(cache.catalogueSha256) !== LIBRARIES_CATALOGUE_SHA256 ||
-    cache.catalogueRecordsSha256 !== bundle.catalogue.recordsSha256 ||
+    !digest(cache.catalogueRecordsSha256) ||
+    normalizedSha256(cache.catalogueRecordsSha256) !==
+      normalizedSha256(bundle.catalogue.recordsSha256) ||
     cache.entryId !== record.entryId ||
     cache.version !== record.version ||
-    cache.releaseManifestSha256 !== record.releaseManifestSha256 ||
-    cache.inventorySha256 !== record.inventorySha256 ||
-    cache.payloadSha256 !== manifest.payloadSha256 ||
+    !digest(cache.releaseManifestSha256) ||
+    normalizedSha256(cache.releaseManifestSha256) !==
+      normalizedSha256(record.releaseManifestSha256) ||
+    !digest(cache.inventorySha256) ||
+    normalizedSha256(cache.inventorySha256) !== normalizedSha256(record.inventorySha256) ||
+    !digest(cache.payloadSha256) ||
+    normalizedSha256(cache.payloadSha256) !== normalizedSha256(manifest.payloadSha256) ||
     cache.artifactTreeSha1 !== record.artifactTreeSha1
   )
     return { ok: false, reason: "verified cache receipt mismatch" };
   if (
     !isObject(bundle.consumption) ||
+    !hasExactKeys(bundle.consumption, CONSUMPTION_KEYS) ||
     bundle.consumption.receiptType !== "consumption" ||
     bundle.consumption.result !== "pass" ||
     bundle.consumption.entryId !== record.entryId ||
     bundle.consumption.version !== record.version ||
-    bundle.consumption.releaseManifestSha256 !== record.releaseManifestSha256 ||
+    !digest(bundle.consumption.releaseManifestSha256) ||
+    normalizedSha256(bundle.consumption.releaseManifestSha256) !==
+      normalizedSha256(record.releaseManifestSha256) ||
     bundle.consumption.releaseSourceCommitSha !== record.releaseSource.releaseSourceCommitSha ||
     bundle.consumption.releaseSourceRepositoryTreeSha1 !==
       record.releaseSource.releaseSourceRepositoryTreeSha1 ||
@@ -553,13 +638,19 @@ export function validateExactRevision2(
     !SHA1.test(bundle.consumption.consumerMaterializedTreeSha1) ||
     materialized.entryId !== record.entryId ||
     materialized.version !== record.version ||
-    materialized.releaseManifestSha256 !== record.releaseManifestSha256 ||
+    !digest(materialized.releaseManifestSha256) ||
+    normalizedSha256(materialized.releaseManifestSha256 as string) !==
+      normalizedSha256(record.releaseManifestSha256) ||
     materialized.releaseSourceCommitSha !== record.releaseSource.releaseSourceCommitSha ||
     materialized.releaseSourceRepositoryTreeSha1 !==
       record.releaseSource.releaseSourceRepositoryTreeSha1 ||
     materialized.artifactTreeSha1 !== record.artifactTreeSha1 ||
-    materialized.inventorySha256 !== record.inventorySha256 ||
-    materialized.payloadSha256 !== manifest.payloadSha256 ||
+    !digest(materialized.inventorySha256) ||
+    normalizedSha256(materialized.inventorySha256 as string) !==
+      normalizedSha256(record.inventorySha256) ||
+    !digest(materialized.payloadSha256) ||
+    normalizedSha256(materialized.payloadSha256 as string) !==
+      normalizedSha256(manifest.payloadSha256) ||
     bundle.consumption.consumerMaterializedTreeSha1 !== materialized.consumerMaterializedTreeSha1
   )
     return { ok: false, reason: "consumption receipt is not a pass" };

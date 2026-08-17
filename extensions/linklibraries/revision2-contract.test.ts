@@ -302,6 +302,64 @@ describe("LiNKlibraries Revision 2 consumer", () => {
       validate(value, authenticatedCatalogueEvidence(value), materializationEvidence(value)).ok,
     ).toBe(true);
   });
+  it("normalizes mixed raw and prefixed digest evidence", () => {
+    const value = structuredClone(bundle) as any;
+    value.inventorySha256 = value.inventorySha256.slice("sha256:".length);
+    value.dependencyLockSha256 = value.dependencyLockSha256.slice("sha256:".length);
+    value.verifiedCache.catalogueRecordsSha256 = value.verifiedCache.catalogueRecordsSha256.slice(
+      "sha256:".length,
+    );
+    value.verifiedCache.releaseManifestSha256 = value.verifiedCache.releaseManifestSha256.slice(
+      "sha256:".length,
+    );
+    value.verifiedCache.inventorySha256 = value.verifiedCache.inventorySha256.slice(
+      "sha256:".length,
+    );
+    value.verifiedCache.payloadSha256 = value.verifiedCache.payloadSha256.slice("sha256:".length);
+    value.consumption.releaseManifestSha256 = value.consumption.releaseManifestSha256.slice(
+      "sha256:".length,
+    );
+    const evidence = authenticatedCatalogueEvidence();
+    const materialized = materializationEvidence();
+    expect(
+      validate(
+        value,
+        {
+          ...evidence,
+          recordsSha256: evidence.recordsSha256.slice("sha256:".length),
+          selectedRecord: {
+            ...evidence.selectedRecord,
+            releaseManifestSha256: evidence.selectedRecord.releaseManifestSha256.slice(
+              "sha256:".length,
+            ),
+            inventorySha256: evidence.selectedRecord.inventorySha256.slice("sha256:".length),
+          },
+        },
+        {
+          ...materialized,
+          releaseManifestSha256: materialized.releaseManifestSha256.slice("sha256:".length),
+          inventorySha256: materialized.inventorySha256.slice("sha256:".length),
+          payloadSha256: materialized.payloadSha256.slice("sha256:".length),
+        },
+      ).ok,
+    ).toBe(true);
+  });
+  it.each([
+    ["bundle", (value: any): void => void (value.extra = true)],
+    ["source", (value: any): void => void (value.source.extra = true)],
+    ["catalogue", (value: any): void => void (value.catalogue.extra = true)],
+    ["manifest", (value: any): void => void (value.manifest.extra = true)],
+    ["verified cache", (value: any): void => void (value.verifiedCache.extra = true)],
+    [
+      "cache source evidence",
+      (value: any): void => void (value.verifiedCache.sourceEvidence.extra = true),
+    ],
+    ["consumption receipt", (value: any): void => void (value.consumption.extra = true)],
+  ] as const)("rejects unknown fields in the exact %s envelope", (_name, mutate) => {
+    const value = structuredClone(bundle) as any;
+    mutate(value);
+    expect(validate(value).ok).toBe(false);
+  });
   it("rejects inherited and accessor-backed catalogue records without invoking getters", () => {
     let getterCalls = 0;
     const accessorRecord = { ...record } as Record<string, unknown>;
@@ -370,7 +428,6 @@ describe("LiNKlibraries Revision 2 consumer", () => {
 
   it("rejects a forged pass receipt that does not match independent materialization evidence", () => {
     const value = structuredClone(bundle) as any;
-    value.expectedConsumerMaterializedTreeSha1 = "ffeeddccbbaa0099887766554433221100ffeedd";
     value.consumption.consumerMaterializedTreeSha1 = "ffeeddccbbaa0099887766554433221100ffeedd";
     expect(validate(value)).toMatchObject({
       ok: false,
