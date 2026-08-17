@@ -7,7 +7,7 @@ and the local Skills fake MCP. They are derived from:
 
 - `docs/OPENCLAW-PRIME-LISA-LINKBRAIN-LINKSKILLS-DETAILED-IMPLEMENTATION-PLAN.md` §8–§9
 - LiNKskills plan tool names (`skills_*`) and envelope shapes (`packages/contracts/schemas/*`)
-- Corrected Skills HEAD `f16103f23a716d0edeb08a1e82e38608ebd563ea` (immutable-release certification path + Platform claims)
+- Final Skills main `6269cb173a7c9e0170b29f35c539343c29eab795` / tree `6c36e6c98f90e55d957fba781327b1b0ef90860a` (v2 immutable-release certification path)
 - Exact Platform contract `platform.auth-claims/1.1.0` (camelCase AuthClaims in `identity/` + `auth/`)
 
 ## Rules
@@ -35,7 +35,7 @@ and the local Skills fake MCP. They are derived from:
 
 - `schema_version`: `0.1`
 - `contract_version`: `0.1`
-- API label: `skills.api.v0.1`
+- API label: `skills.api.v0.2` (legacy execution fixtures below are retained as disabled compatibility evidence)
 - Platform claims: `platform.auth-claims/1.1.0`
 
 ## Consumption package hash
@@ -46,8 +46,8 @@ and the local Skills fake MCP. They are derived from:
 | JSON file count                       | 71                                                                         |
 | **Fixture package aggregate SHA-256** | `203163711b5db17b8a07d3956e41596384cbd08f0c110bd9f21abfc5c7e5e19a`         |
 | OpenClaw plan SHA-256                 | `17203ee586a3fb2b1281bcddd8b17ae350075ebce537689f3c4bfcbbd14914f7`         |
-| Skills contracts HEAD pin             | `f16103f23a716d0edeb08a1e82e38608ebd563ea`                                 |
-| `CONTRACT_VERSION`                    | `skills.api.v0.1`                                                          |
+| Skills contracts final main pin       | `6269cb173a7c9e0170b29f35c539343c29eab795`                                 |
+| `CONTRACT_VERSION`                    | `skills.api.v0.2`                                                          |
 | Upstream schemas aggregate SHA-256    | `828ac00d3be0e9b2040aacec3ca788176d8bb160c11d13994055d047503981d2`         |
 | Platform auth-claims schema SHA-256   | `c2e8bc68b3feb9a3dacc497f5a5d497b466c400804fb4f9e41734c10772ddfa1`         |
 | Platform auth-claims contentHash      | `fb518834be897c32574df5f7235704fdb0de708bd3da1b48fc448246e3eca567`         |

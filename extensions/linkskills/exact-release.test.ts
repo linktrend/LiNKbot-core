@@ -1,0 +1,197 @@
+import { describe, expect, it } from "vitest";
+import {
+  exactReleaseTelemetry,
+  expectedPackageDigest,
+  SKILLS_COMMIT,
+  SKILLS_TREE,
+  validateExactRelease,
+  validateProgressiveReleaseTransition,
+  type ExactRelease,
+} from "./src/exact-release.js";
+
+const now = "2026-08-13T00:00:00.000Z";
+const validRelease: ExactRelease = {
+  release_id: "rel:echo:2026-08-12",
+  version: "2026.08.12",
+  providerCandidate: { commit: SKILLS_COMMIT, tree: SKILLS_TREE },
+  manifest_digest: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  package_digest: "sha256:5cc3608b236c8701d51fc6096c8ed5413004382e78a44fb81c4cb8af94db5665",
+  lifecycle: "qualified",
+  state: "available",
+  compatible_profiles: ["runtime:fixture-openclaw-01"],
+  attestation: {
+    issuer: "librarian",
+    digest: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    evaluated_at: "2026-08-12T12:00:00.000Z",
+    valid_until: "2026-08-14T00:00:00.000Z",
+  },
+  issued_at: "2026-08-12T12:00:00.000Z",
+  expires_at: "2026-08-14T00:00:00.000Z",
+};
+
+const check = (changes: Record<string, unknown>, code: string) => {
+  const result = validateExactRelease(
+    { ...validRelease, ...changes },
+    { profile: "runtime:fixture-openclaw-01", now },
+  );
+  expect(result).toMatchObject({ ok: false, code });
+  expect(exactReleaseTelemetry(result)).not.toHaveProperty("conversation");
+  return result;
+};
+
+describe("exact provider Skills releases", () => {
+  it("accepts an immutable, qualified, available, attested exact release", () => {
+    expect(
+      validateExactRelease(validRelease, { profile: "runtime:fixture-openclaw-01", now }),
+    ).toMatchObject({
+      ok: true,
+      release: validRelease,
+      telemetry: { outcome: "accepted", release_id: validRelease.release_id },
+    });
+  });
+
+  it.each([
+    [{ release_id: "latest" }, "latest_alias"],
+    [{ version: "latest" }, "latest_alias"],
+    [{ providerCandidate: undefined }, "invalid_provider_candidate"],
+    [{ providerCandidate: { commit: "other", tree: SKILLS_TREE } }, "invalid_provider_candidate"],
+    [{ providerCandidate: { commit: SKILLS_COMMIT, tree: "other" } }, "invalid_provider_candidate"],
+    [
+      { providerCandidate: { commit: SKILLS_COMMIT, tree: SKILLS_TREE, extra: true } },
+      "invalid_provider_candidate",
+    ],
+    [{ manifest_digest: "latest" }, "invalid_digest"],
+    [{ manifest_digest: "unpinned" }, "invalid_digest"],
+    [{ package_digest: "corrupt" }, "invalid_digest"],
+    [
+      { package_digest: "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" },
+      "invalid_digest",
+    ],
+    [
+      { package_digest: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" },
+      "invalid_immutability",
+    ],
+    [{ lifecycle: "published" }, "invalid_lifecycle"],
+    [{ state: "revoked" }, "invalid_state"],
+    [{ state: "quarantined" }, "invalid_state"],
+    [{ compatible_profiles: ["runtime:other"] }, "incompatible_profile"],
+    [{ attestation: undefined }, "missing_attestation"],
+    [{ issued_at: "not-a-time" }, "invalid_timestamp"],
+    [{ expires_at: "2026-08-12T23:59:59.000Z" }, "stale_timestamp"],
+    [{ issued_at: "2026-08-01T00:00:00.000Z" }, "stale_timestamp"],
+  ] as const)("rejects %j", (changes, code) => {
+    check(changes, code);
+  });
+
+  it("rejects invalid clock and max-age inputs", () => {
+    expect(
+      validateExactRelease(validRelease, {
+        profile: "runtime:fixture-openclaw-01",
+        now: new Date("invalid"),
+      }),
+    ).toMatchObject({ ok: false, code: "invalid_timestamp" });
+    expect(
+      validateExactRelease(validRelease, {
+        profile: "runtime:fixture-openclaw-01",
+        now,
+        maxAgeMs: Number.NaN,
+      }),
+    ).toMatchObject({ ok: false, code: "invalid_timestamp" });
+  });
+
+  it("rejects raw conversation, prompt, reasoning, Brain, and raw-tool telemetry fields", () => {
+    for (const field of [
+      "conversation",
+      "prompt",
+      "reasoning",
+      "brain_findings",
+      "raw_tool_args",
+      "raw_tool_result",
+    ]) {
+      const result = validateExactRelease(
+        { ...validRelease, [field]: "must not be accepted" },
+        { profile: "runtime:fixture-openclaw-01", now },
+      );
+      expect(result).toMatchObject({ ok: false, code: "invalid_shape" });
+      expect(exactReleaseTelemetry(result)).not.toHaveProperty(field);
+    }
+  });
+
+  it("requires progressive index -> description -> fragments -> exact release", () => {
+    const index = {
+      stage: "index" as const,
+      release_id: validRelease.release_id,
+      version: validRelease.version,
+    };
+    const description = { ...index, stage: "description" as const };
+    const fragments = {
+      ...description,
+      stage: "fragments" as const,
+      manifest_digest: validRelease.manifest_digest,
+    };
+    const exact = {
+      ...fragments,
+      stage: "exact_release" as const,
+      package_digest: validRelease.package_digest,
+    };
+    expect(validateProgressiveReleaseTransition(undefined, index)).toBe(true);
+    expect(validateProgressiveReleaseTransition(undefined, { stage: "index" })).toBe(false);
+    expect(validateProgressiveReleaseTransition(undefined, description)).toBe(false);
+    expect(validateProgressiveReleaseTransition(index, description)).toBe(true);
+    expect(validateProgressiveReleaseTransition(description, fragments)).toBe(true);
+    expect(validateProgressiveReleaseTransition(fragments, exact)).toBe(true);
+    expect(validateProgressiveReleaseTransition(index, fragments)).toBe(false);
+    expect(validateProgressiveReleaseTransition(fragments, { ...exact, version: "other" })).toBe(
+      false,
+    );
+    expect(
+      validateProgressiveReleaseTransition(undefined, {
+        stage: "index",
+        release_id: { nested: true } as unknown as string,
+        version: validRelease.version,
+      }),
+    ).toBe(false);
+    expect(
+      validateProgressiveReleaseTransition(description, {
+        ...fragments,
+        manifest_digest: "sha256:not-a-digest",
+      }),
+    ).toBe(false);
+    expect(
+      validateProgressiveReleaseTransition(description, {
+        ...fragments,
+        manifest_digest: { toString: () => validRelease.manifest_digest } as unknown as string,
+      }),
+    ).toBe(false);
+    expect(() =>
+      validateProgressiveReleaseTransition(description, {
+        ...fragments,
+        manifest_digest: { toString: null } as unknown as string,
+      }),
+    ).not.toThrow();
+    expect(
+      validateProgressiveReleaseTransition({ ...fragments, stage: "unknown" as never }, exact),
+    ).toBe(false);
+    expect(
+      validateProgressiveReleaseTransition(
+        { ...description, stage: "fragments", manifest_digest: undefined },
+        exact,
+      ),
+    ).toBe(false);
+    expect(
+      validateProgressiveReleaseTransition(
+        { ...index, stage: "description", release_id: undefined },
+        fragments,
+      ),
+    ).toBe(false);
+  });
+
+  it("matches the provider package digest construction", () => {
+    expect(
+      expectedPackageDigest({
+        release_id: validRelease.release_id,
+        manifest_digest: validRelease.manifest_digest,
+      }),
+    ).toBe(validRelease.package_digest);
+  });
+});

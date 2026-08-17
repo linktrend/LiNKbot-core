@@ -53,3 +53,33 @@ export {
   isAllowedLinkskillsMcpTool,
   assertAllowedLinkskillsMcpTool,
 } from "./mcp-tool-filter.js";
+export {
+  SKILLS_COMMIT,
+  SKILLS_TREE,
+  SKILLS_MCP_PROTOCOL_VERSION,
+  SKILLS_CONTRACT_VERSION,
+  SKILLS_RELEASE_CONTRACT_VERSION,
+  exactReleaseTelemetry,
+  validateExactRelease,
+  validateProgressiveReleaseTransition,
+  type ExactRelease,
+  type ExactReleaseLifecycle,
+  type ExactReleaseRejectionCode,
+  type ExactReleaseStage,
+  type ExactReleaseState,
+  type ExactReleaseTelemetry,
+  type ExactReleaseValidation,
+  type ExactReleaseValidationOptions,
+  type ProgressiveReleaseState,
+  type ReleaseAttestation,
+} from "./src/exact-release.js";
+export {
+  SKILLS_V2_RESOURCE_OPERATIONS,
+  SKILLS_V2_TOOL_OPERATIONS,
+  SKILLS_V2_OPERATIONS,
+  skillsSnapshotCursor,
+  isModernSkillsOperation,
+  validateSkillsQualificationIdentity,
+  validateSkillsV2Request,
+} from "./src/v2.js";
+export type { SkillsV2Operation, SkillsV2Request } from "./src/v2.js";

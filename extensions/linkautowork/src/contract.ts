@@ -1,0 +1,418 @@
+import { createHash } from "node:crypto";
+
+export const AUTOWORK_COMMIT = "4eb29203766b1ccf200a2dc10b39cc58d175c90c" as const;
+export const AUTOWORK_TREE = "5f306d674780a5a26048017f916da6048d71e7a5" as const;
+export const AUTOWORK_CONTRACT_VERSION = "2026-08-13.v1" as const;
+export const AUTOWORK_SCHEMA_VERSION = "provider-contract-v1" as const;
+export const AUTOWORK_OPERATIONS = Object.freeze([
+  "status_collection",
+  "precheck",
+  "evidence_collection",
+  "notification_delivery",
+  "external_assistance",
+  "artifact_transform",
+  "media_package",
+  "outreach_adapter",
+] as const);
+export const AUTOWORK_STATES = Object.freeze([
+  "accepted",
+  "queued",
+  "running",
+  "succeeded",
+  "failed",
+  "expired",
+  "cancelled",
+  "timed_out",
+  "rejected",
+  "blocked",
+  "quarantined",
+  "unavailable",
+  "contract_incompatible",
+] as const);
+export type Operation = (typeof AUTOWORK_OPERATIONS)[number];
+export type ReceiptState = (typeof AUTOWORK_STATES)[number];
+export type OpaqueReference = Readonly<{ ref: string; digest: string; observedAt: string }>;
+export type AutoworkRequest = Readonly<{
+  providerCandidate: { commit: typeof AUTOWORK_COMMIT; tree: typeof AUTOWORK_TREE };
+  contractVersion: typeof AUTOWORK_CONTRACT_VERSION;
+  protocolVersion: string;
+  requestId: string;
+  platform: Readonly<{
+    orgId: string;
+    actorId: string;
+    audience: string;
+    capability: string;
+    credentialId: string;
+    bindingId: string;
+    issuedAt: string;
+    expiresAt: string;
+    revocationRef: string;
+  }>;
+  automation: Readonly<{
+    automationId: string;
+    version: string;
+    definitionDigest: string;
+    configurationRef: OpaqueReference;
+  }>;
+  operationKind: Operation;
+  inputRef: OpaqueReference;
+  artifactRefs: readonly OpaqueReference[];
+  resultDestinationRef: string;
+  correlationRefs: readonly OpaqueReference[];
+  brainHandoffRef?: OpaqueReference;
+  idempotencyKey: string;
+  expiresAt: string;
+  cancellationRequestedAt?: string;
+}>;
+export type AutoworkReceipt = Readonly<{
+  providerCandidate: { commit: typeof AUTOWORK_COMMIT; tree: typeof AUTOWORK_TREE };
+  contractVersion: typeof AUTOWORK_CONTRACT_VERSION;
+  requestId: string;
+  receiptId: string;
+  state: ReceiptState;
+  acceptedAt: string;
+  updatedAt: string;
+  attemptCount: number;
+  requestFingerprint: string;
+  automation: AutoworkRequest["automation"];
+  resultRefs: readonly OpaqueReference[];
+  evidenceRefs: readonly OpaqueReference[];
+  uncertainOutcome: boolean;
+}>;
+export type AutoworkCallback = Readonly<{
+  requestId: string;
+  receiptId: string;
+  orgId: string;
+  callbackBindingRef: string;
+  sourceTimestamp: string;
+  receipt: AutoworkReceipt;
+}>;
+export type AutoworkAcceptedCallbackState = Readonly<{
+  latestSourceTimestamp: string | null;
+  acceptedReceiptIds: readonly string[];
+}>;
+export type PlatformRevocationDecision = Readonly<{
+  status: "active" | "revoked";
+  observedAt: string;
+  credentialId: string;
+  bindingId: string;
+  orgId: string;
+  actorId: string;
+  audience: string;
+  capability: string;
+  revocationRef: string;
+  authorizedOperation: Operation;
+}>;
+const REVOCATION_MAX_AGE_MS = 5 * 60 * 1000;
+
+const SHA256 = /^sha256:[0-9a-f]{64}$/;
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const OPAQUE = /^[a-z][a-z0-9+.-]*:\/\/[A-Za-z0-9._~/%:-]+$/;
+const bounded = (value: unknown, max = 512): value is string =>
+  typeof value === "string" &&
+  value.length > 0 &&
+  value.length <= max &&
+  !/[\u0000-\u001f\u007f]/u.test(value);
+const plain = (value: unknown): value is Record<string, unknown> =>
+  typeof value === "object" &&
+  value !== null &&
+  !Array.isArray(value) &&
+  (Object.getPrototypeOf(value) === Object.prototype || Object.getPrototypeOf(value) === null);
+const iso = (value: unknown): value is string =>
+  bounded(value, 64) && Number.isFinite(Date.parse(value));
+const keys = (
+  value: Record<string, unknown>,
+  required: readonly string[],
+  optional: readonly string[] = [],
+) => {
+  const actual = Object.keys(value);
+  return (
+    required.every((key) => actual.includes(key)) &&
+    actual.every((key) => required.includes(key) || optional.includes(key))
+  );
+};
+const ref = (value: unknown): value is OpaqueReference =>
+  plain(value) &&
+  keys(value, ["ref", "digest", "observedAt"]) &&
+  bounded(value.ref) &&
+  OPAQUE.test(value.ref) &&
+  typeof value.digest === "string" &&
+  SHA256.test(value.digest) &&
+  iso(value.observedAt);
+
+function automation(value: unknown): value is AutoworkRequest["automation"] {
+  return (
+    plain(value) &&
+    keys(value, ["automationId", "version", "definitionDigest", "configurationRef"]) &&
+    bounded(value.automationId, 256) &&
+    bounded(value.version, 64) &&
+    SHA256.test(String(value.definitionDigest)) &&
+    ref(value.configurationRef)
+  );
+}
+
+export function validateRequest(value: unknown): value is AutoworkRequest {
+  if (
+    !plain(value) ||
+    !keys(
+      value,
+      [
+        "providerCandidate",
+        "contractVersion",
+        "protocolVersion",
+        "requestId",
+        "platform",
+        "automation",
+        "operationKind",
+        "inputRef",
+        "artifactRefs",
+        "resultDestinationRef",
+        "correlationRefs",
+        "idempotencyKey",
+        "expiresAt",
+      ],
+      ["brainHandoffRef", "cancellationRequestedAt"],
+    )
+  )
+    return false;
+  const candidate = value.providerCandidate;
+  if (
+    !plain(candidate) ||
+    Object.keys(candidate).length !== 2 ||
+    candidate.commit !== AUTOWORK_COMMIT ||
+    candidate.tree !== AUTOWORK_TREE
+  )
+    return false;
+  const platform = value.platform;
+  if (
+    !plain(platform) ||
+    !keys(platform, [
+      "orgId",
+      "actorId",
+      "audience",
+      "capability",
+      "credentialId",
+      "bindingId",
+      "issuedAt",
+      "expiresAt",
+      "revocationRef",
+    ]) ||
+    !UUID.test(String(platform.orgId)) ||
+    !bounded(platform.actorId, 256) ||
+    !bounded(platform.audience, 256) ||
+    !bounded(platform.capability, 256) ||
+    !bounded(platform.credentialId, 256) ||
+    !bounded(platform.bindingId, 256) ||
+    !iso(platform.issuedAt) ||
+    !iso(platform.expiresAt) ||
+    !OPAQUE.test(String(platform.revocationRef))
+  )
+    return false;
+  if (
+    value.contractVersion !== AUTOWORK_CONTRACT_VERSION ||
+    !bounded(value.protocolVersion, 64) ||
+    !UUID.test(String(value.requestId)) ||
+    !automation(value.automation) ||
+    !(AUTOWORK_OPERATIONS as readonly unknown[]).includes(value.operationKind) ||
+    !ref(value.inputRef) ||
+    !Array.isArray(value.artifactRefs) ||
+    !value.artifactRefs.every(ref) ||
+    !bounded(value.resultDestinationRef) ||
+    !OPAQUE.test(value.resultDestinationRef) ||
+    !Array.isArray(value.correlationRefs) ||
+    value.correlationRefs.length < 1 ||
+    !value.correlationRefs.every(ref) ||
+    !bounded(value.idempotencyKey, 160) ||
+    !/^[A-Za-z0-9._:-]{16,160}$/.test(value.idempotencyKey) ||
+    !iso(value.expiresAt)
+  )
+    return false;
+  if (value.brainHandoffRef !== undefined && !ref(value.brainHandoffRef)) return false;
+  if (value.cancellationRequestedAt !== undefined && !iso(value.cancellationRequestedAt))
+    return false;
+  if (value.operationKind === "external_assistance" && value.brainHandoffRef === undefined)
+    return false;
+  return true;
+}
+
+function canonical(value: unknown): unknown {
+  return Array.isArray(value)
+    ? value.map(canonical)
+    : plain(value)
+      ? Object.fromEntries(
+          Object.entries(value)
+            .sort(([a], [b]) => a.localeCompare(b))
+            .map(([key, child]) => [key, canonical(child)]),
+        )
+      : value;
+}
+export function requestFingerprint(value: unknown): string {
+  if (!validateRequest(value)) throw new Error("invalid Autowork request");
+  return `sha256:${createHash("sha256")
+    .update(JSON.stringify(canonical(value)))
+    .digest("hex")}`;
+}
+export function sameIdempotencyContent(a: unknown, b: unknown): boolean {
+  return (
+    validateRequest(a) && validateRequest(b) && requestFingerprint(a) === requestFingerprint(b)
+  );
+}
+export function assertIdempotency(existingFingerprint: string, incoming: unknown): void {
+  if (existingFingerprint !== requestFingerprint(incoming))
+    throw new Error("idempotency key conflicts with changed request");
+}
+export function validateRequestAt(
+  value: unknown,
+  now = new Date(),
+  revocationDecision?: PlatformRevocationDecision,
+): value is AutoworkRequest {
+  return (
+    validateRequest(value) &&
+    Number.isFinite(now.getTime()) &&
+    value.cancellationRequestedAt === undefined &&
+    revocationDecision?.status === "active" &&
+    iso(revocationDecision.observedAt) &&
+    Date.parse(revocationDecision.observedAt) <= now.getTime() &&
+    now.getTime() - Date.parse(revocationDecision.observedAt) <= REVOCATION_MAX_AGE_MS &&
+    revocationDecision.credentialId === value.platform.credentialId &&
+    revocationDecision.bindingId === value.platform.bindingId &&
+    revocationDecision.orgId === value.platform.orgId &&
+    revocationDecision.actorId === value.platform.actorId &&
+    revocationDecision.audience === value.platform.audience &&
+    revocationDecision.capability === value.platform.capability &&
+    revocationDecision.revocationRef === value.platform.revocationRef &&
+    revocationDecision.authorizedOperation === value.operationKind &&
+    Date.parse(value.platform.issuedAt) <= now.getTime() &&
+    Date.parse(value.expiresAt) > now.getTime() &&
+    Date.parse(value.platform.expiresAt) > now.getTime() &&
+    true
+  );
+}
+
+export function validateReceipt(
+  value: unknown,
+  request?: AutoworkRequest,
+  now = new Date(),
+): value is AutoworkReceipt {
+  if (
+    !plain(value) ||
+    !keys(value, [
+      "providerCandidate",
+      "contractVersion",
+      "requestId",
+      "receiptId",
+      "state",
+      "acceptedAt",
+      "updatedAt",
+      "attemptCount",
+      "requestFingerprint",
+      "automation",
+      "resultRefs",
+      "evidenceRefs",
+      "uncertainOutcome",
+    ]) ||
+    value.contractVersion !== AUTOWORK_CONTRACT_VERSION ||
+    !plain(value.providerCandidate) ||
+    Object.keys(value.providerCandidate).length !== 2 ||
+    value.providerCandidate.commit !== AUTOWORK_COMMIT ||
+    value.providerCandidate.tree !== AUTOWORK_TREE ||
+    !UUID.test(String(value.requestId)) ||
+    !UUID.test(String(value.receiptId)) ||
+    !(AUTOWORK_STATES as readonly unknown[]).includes(value.state) ||
+    !iso(value.acceptedAt) ||
+    !iso(value.updatedAt) ||
+    typeof value.attemptCount !== "number" ||
+    !Number.isInteger(value.attemptCount) ||
+    value.attemptCount < 0 ||
+    !SHA256.test(String(value.requestFingerprint)) ||
+    !automation(value.automation) ||
+    !Array.isArray(value.resultRefs) ||
+    !value.resultRefs.every(ref) ||
+    !Array.isArray(value.evidenceRefs) ||
+    !value.evidenceRefs.every(ref) ||
+    typeof value.uncertainOutcome !== "boolean"
+  )
+    return false;
+  const acceptedAt = Date.parse(value.acceptedAt);
+  const updatedAt = Date.parse(value.updatedAt);
+  if (
+    !Number.isFinite(now.getTime()) ||
+    !Number.isFinite(acceptedAt) ||
+    !Number.isFinite(updatedAt) ||
+    acceptedAt > updatedAt ||
+    updatedAt > now.getTime()
+  )
+    return false;
+  if (request) {
+    const issuedAt = Date.parse(request.platform.issuedAt);
+    const requestExpiresAt = Date.parse(request.expiresAt);
+    const platformExpiresAt = Date.parse(request.platform.expiresAt);
+    if (
+      ![acceptedAt, issuedAt, requestExpiresAt, platformExpiresAt].every(Number.isFinite) ||
+      acceptedAt < issuedAt ||
+      acceptedAt >= requestExpiresAt ||
+      acceptedAt >= platformExpiresAt ||
+      value.requestId !== request.requestId ||
+      value.providerCandidate.commit !== request.providerCandidate.commit ||
+      value.providerCandidate.tree !== request.providerCandidate.tree ||
+      value.requestFingerprint !== requestFingerprint(request) ||
+      JSON.stringify(canonical(value.automation)) !== JSON.stringify(canonical(request.automation))
+    )
+      return false;
+  }
+  return true;
+}
+export function validateCallback(
+  value: unknown,
+  request: AutoworkRequest,
+  expected?: {
+    callbackBindingRef: string;
+    now: Date;
+    acceptedState: AutoworkAcceptedCallbackState;
+  },
+): value is AutoworkCallback {
+  if (
+    !plain(value) ||
+    !keys(value, [
+      "requestId",
+      "receiptId",
+      "orgId",
+      "callbackBindingRef",
+      "sourceTimestamp",
+      "receipt",
+    ]) ||
+    !UUID.test(String(value.requestId)) ||
+    !UUID.test(String(value.receiptId)) ||
+    !UUID.test(String(value.orgId)) ||
+    !OPAQUE.test(String(value.callbackBindingRef)) ||
+    !iso(value.sourceTimestamp) ||
+    !expected ||
+    !plain(expected.acceptedState) ||
+    !keys(expected.acceptedState, ["latestSourceTimestamp", "acceptedReceiptIds"]) ||
+    (expected.acceptedState.latestSourceTimestamp !== null &&
+      !iso(expected.acceptedState.latestSourceTimestamp)) ||
+    !Array.isArray(expected.acceptedState.acceptedReceiptIds) ||
+    !expected.acceptedState.acceptedReceiptIds.every((receiptId) => UUID.test(receiptId)) ||
+    !Number.isFinite(expected.now.getTime()) ||
+    value.callbackBindingRef !== expected.callbackBindingRef ||
+    !validateReceipt(value.receipt, request, expected.now)
+  )
+    return false;
+  const sourceTimestamp = Date.parse(value.sourceTimestamp);
+  const acceptedAt = Date.parse((value.receipt as AutoworkReceipt).acceptedAt);
+  const updatedAt = Date.parse((value.receipt as AutoworkReceipt).updatedAt);
+  const latestSourceTimestamp =
+    expected.acceptedState.latestSourceTimestamp === null
+      ? null
+      : Date.parse(expected.acceptedState.latestSourceTimestamp);
+  return (
+    value.requestId === (value.receipt as AutoworkReceipt).requestId &&
+    value.receiptId === (value.receipt as AutoworkReceipt).receiptId &&
+    value.orgId === request.platform.orgId &&
+    sourceTimestamp === updatedAt &&
+    sourceTimestamp >= acceptedAt &&
+    sourceTimestamp <= expected.now.getTime() &&
+    (latestSourceTimestamp === null || sourceTimestamp > latestSourceTimestamp) &&
+    !expected.acceptedState.acceptedReceiptIds.includes(value.receiptId)
+  );
+}

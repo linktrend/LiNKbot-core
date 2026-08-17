@@ -1,0 +1,25 @@
+export {
+  AUTOWORK_COMMIT,
+  AUTOWORK_TREE,
+  AUTOWORK_CONTRACT_VERSION,
+  AUTOWORK_SCHEMA_VERSION,
+  AUTOWORK_OPERATIONS,
+  AUTOWORK_STATES,
+  assertIdempotency,
+  requestFingerprint,
+  validateCallback,
+  validateRequestAt,
+  sameIdempotencyContent,
+  validateReceipt,
+  validateRequest,
+} from "./src/contract.js";
+export type {
+  AutoworkReceipt,
+  AutoworkRequest,
+  AutoworkCallback,
+  AutoworkAcceptedCallbackState,
+  OpaqueReference,
+  Operation,
+  ReceiptState,
+  PlatformRevocationDecision,
+} from "./src/contract.js";
