@@ -481,6 +481,106 @@ describe("LiNKbrain v2 immutable consumer boundary", () => {
     });
   });
 
+  it("rejects sparse authorization arrays populated through Array.prototype", async () => {
+    const sparseScopes = new Array<string>(1);
+    const sourceIdentity = { ...identity(), serviceScopes: sparseScopes };
+    const requests: BrainV2TransportRequest[] = [];
+    let reads = 0;
+    let client: ReturnType<typeof createBrainV2Client>;
+    Object.defineProperty(Array.prototype, "0", {
+      configurable: true,
+      get() {
+        reads += 1;
+        return "brain.v2";
+      },
+    });
+    try {
+      client = createBrainV2Client({
+        identity: sourceIdentity,
+        identityExpectation,
+        transport: {
+          request: async (request) => {
+            requests.push(request);
+            return negotiation;
+          },
+        },
+        clock: () => NOW,
+      });
+      expect(reads).toBe(0);
+    } finally {
+      delete (Array.prototype as unknown as Record<string, unknown>)["0"];
+    }
+
+    await expect(client!.negotiate()).resolves.toMatchObject({
+      ok: false,
+      status: "unauthorized",
+    });
+    expect(reads).toBe(0);
+    expect(requests).toHaveLength(0);
+  });
+
+  it("rejects accessor-backed authorization elements without invoking getters", async () => {
+    for (const field of ["serviceScopes", "capabilities"] as const) {
+      const values = field === "serviceScopes" ? ["brain.v2"] : ["brain.knowledge"];
+      let reads = 0;
+      Object.defineProperty(values, "0", {
+        configurable: true,
+        enumerable: true,
+        get() {
+          reads += 1;
+          return reads === 1 ? identity()[field][0] : "changed";
+        },
+      });
+      const requests: BrainV2TransportRequest[] = [];
+      const client = createBrainV2Client({
+        identity: { ...identity(), [field]: values },
+        identityExpectation,
+        transport: {
+          request: async (request) => {
+            requests.push(request);
+            return negotiation;
+          },
+        },
+        clock: () => NOW,
+      });
+
+      await expect(client.negotiate()).resolves.toMatchObject({
+        ok: false,
+        status: "unauthorized",
+      });
+      expect(reads).toBe(0);
+      expect(requests).toHaveLength(0);
+    }
+  });
+
+  it("uses construction-time authorization arrays after source mutation", async () => {
+    const sourceScopes = [...identity().serviceScopes];
+    const sourceCapabilities = [...identity().capabilities];
+    const sourceIdentity = {
+      ...identity(),
+      serviceScopes: sourceScopes,
+      capabilities: sourceCapabilities,
+    };
+    const requests: BrainV2TransportRequest[] = [];
+    const client = createBrainV2Client({
+      identity: sourceIdentity,
+      identityExpectation,
+      transport: {
+        request: async (request) => {
+          requests.push(request);
+          return negotiation;
+        },
+      },
+      clock: () => NOW,
+    });
+
+    sourceScopes[0] = "changed";
+    sourceCapabilities[0] = "changed";
+
+    await expect(client.negotiate()).resolves.toMatchObject({ ok: true });
+    expect(requests).toHaveLength(1);
+  });
+
   it("returns safe unavailable results without a silent downgrade", async () => {
     const client = createBrainV2Client({
       identity: identity(),

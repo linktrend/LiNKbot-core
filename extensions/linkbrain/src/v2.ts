@@ -288,23 +288,45 @@ const snapshotSafeValue = (
     if (Object.getPrototypeOf(value) !== Array.prototype || depth >= MAX_SAFE_DEPTH) {
       throw new Error(`brain_v2_payload_depth_or_array:${path}`);
     }
-    const length = descriptors.length?.value;
+    const lengthHolder = Object.getOwnPropertyDescriptor(descriptors, "length");
+    const lengthDescriptor = lengthHolder?.value as PropertyDescriptor | undefined;
+    const length = lengthDescriptor?.value;
     if (!Number.isSafeInteger(length) || length < 0 || length > MAX_SAFE_KEYS) {
       throw new Error(`brain_v2_payload_depth_or_array:${path}`);
     }
     const snapshot = new Array<unknown>(length);
+    Object.setPrototypeOf(snapshot, null);
+    for (let index = 0; index < length; index += 1) {
+      const key = String(index);
+      const holder = Object.getOwnPropertyDescriptor(descriptors, key);
+      const descriptor = holder?.value as PropertyDescriptor | undefined;
+      if (
+        !descriptor ||
+        !("value" in descriptor) ||
+        !descriptor.enumerable ||
+        descriptor.get !== undefined ||
+        descriptor.set !== undefined
+      ) {
+        throw new Error(`brain_v2_sparse_or_accessor_array:${path}[${key}]`);
+      }
+      Object.defineProperty(snapshot, key, {
+        configurable: false,
+        enumerable: true,
+        writable: false,
+        value: snapshotSafeValue(
+          descriptor.value,
+          depth + 1,
+          `${path}[${key}]`,
+          state,
+          enforcePayloadFieldPolicy,
+        ),
+      });
+    }
     for (const [key, descriptor] of Object.entries(descriptors)) {
       if (key === "length") continue;
       if (!descriptor.enumerable || !/^(?:0|[1-9]\d*)$/.test(key) || Number(key) >= length) {
         throw new Error(`brain_v2_non_json_value:${path}.${key}`);
       }
-      snapshot[Number(key)] = snapshotSafeValue(
-        descriptor.value,
-        depth + 1,
-        `${path}[${key}]`,
-        state,
-        enforcePayloadFieldPolicy,
-      );
     }
     return Object.freeze(snapshot);
   }
@@ -341,6 +363,41 @@ function assertIso(value: unknown, field: string): asserts value is string {
     throw new Error(`brain_v2_invalid_timestamp:${field}`);
   }
 }
+
+const assertDenseAuthorizationArray = (
+  value: unknown,
+  requiredValue: unknown,
+  field: "serviceScopes" | "capabilities",
+): void => {
+  if (!Array.isArray(value) || !boundedRef(requiredValue)) {
+    throw new Error("brain_v2_scope_or_capability_missing");
+  }
+  const lengthDescriptor = Object.getOwnPropertyDescriptor(value, "length");
+  const length = lengthDescriptor?.value;
+  if (!Number.isSafeInteger(length) || length < 1 || length > MAX_SAFE_KEYS) {
+    throw new Error("brain_v2_scope_or_capability_missing");
+  }
+  let requiredValueFound = false;
+  for (let index = 0; index < length; index += 1) {
+    const descriptor = Object.getOwnPropertyDescriptor(value, String(index));
+    if (
+      !descriptor ||
+      !("value" in descriptor) ||
+      !descriptor.enumerable ||
+      descriptor.get !== undefined ||
+      descriptor.set !== undefined ||
+      !boundedRef(descriptor.value)
+    ) {
+      throw new Error(`brain_v2_authorization_array_not_dense:${field}`);
+    }
+    if (descriptor.value === requiredValue) {
+      requiredValueFound = true;
+    }
+  }
+  if (!requiredValueFound) {
+    throw new Error("brain_v2_scope_or_capability_missing");
+  }
+};
 
 export function assertBrainV2PlatformIdentity(
   input: unknown,
@@ -422,16 +479,8 @@ export function assertBrainV2PlatformIdentity(
   }
   const serviceScopes = identityValue("serviceScopes");
   const capabilities = identityValue("capabilities");
-  if (
-    !Array.isArray(serviceScopes) ||
-    !serviceScopes.every(boundedRef) ||
-    !serviceScopes.includes(expected.requiredScope) ||
-    !Array.isArray(capabilities) ||
-    !capabilities.every(boundedRef) ||
-    !capabilities.includes(expected.requiredCapability)
-  ) {
-    throw new Error("brain_v2_scope_or_capability_missing");
-  }
+  assertDenseAuthorizationArray(serviceScopes, expected.requiredScope, "serviceScopes");
+  assertDenseAuthorizationArray(capabilities, expected.requiredCapability, "capabilities");
   const issuedAt = identityValue("issuedAt");
   const expiresAt = identityValue("expiresAt");
   assertIso(issuedAt, "issuedAt");
