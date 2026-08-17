@@ -496,6 +496,53 @@ describe("LiNKbrain v2 immutable consumer boundary", () => {
       status: "unauthorized",
     });
     expect(requests).toHaveLength(1);
+
+    const newlyIssuedIdentity = { ...identity(), issuedAt: "2026-08-14T11:58:00.000Z" };
+    const preIssueDecisionClient = createBrainV2Client({
+      identity: newlyIssuedIdentity,
+      identityExpectation,
+      resolveRevocationDecision: () => ({
+        ...activeRevocationDecision(),
+        observedAt: "2026-08-14T11:57:00.000Z",
+      }),
+      transport: {
+        request: async (request) => {
+          requests.push(request);
+          return negotiation;
+        },
+      },
+      clock: () => NOW,
+    });
+    await expect(preIssueDecisionClient.negotiate()).resolves.toMatchObject({
+      ok: false,
+      status: "unauthorized",
+    });
+    expect(requests).toHaveLength(1);
+  });
+
+  it("keeps negotiation bound to the construction-time transport request", async () => {
+    const requests: BrainV2TransportRequest[] = [];
+    const replacementRequests: BrainV2TransportRequest[] = [];
+    const transport = {
+      request: async (request: BrainV2TransportRequest) => {
+        requests.push(request);
+        return request.method === "discover" ? negotiation : page("index");
+      },
+    };
+    const client = createBrainV2Client({
+      identity: identity(),
+      identityExpectation,
+      transport,
+      clock: () => NOW,
+    });
+    await expect(client.negotiate()).resolves.toMatchObject({ ok: true });
+    transport.request = async (request: BrainV2TransportRequest) => {
+      replacementRequests.push(request);
+      return page("index");
+    };
+    await expect(client.search("knowledge")).resolves.toMatchObject({ ok: true });
+    expect(requests).toHaveLength(2);
+    expect(replacementRequests).toHaveLength(0);
   });
 
   it("rejects accessor-backed provider evidence and revocation facts without invoking getters", async () => {

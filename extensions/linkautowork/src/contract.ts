@@ -342,6 +342,7 @@ export function validateRequestAt(
     value.cancellationRequestedAt === undefined &&
     revocationDecision?.status === "active" &&
     iso(revocationDecision.observedAt) &&
+    Date.parse(revocationDecision.observedAt) >= Date.parse(value.platform.issuedAt) &&
     Date.parse(revocationDecision.observedAt) <= now.getTime() &&
     now.getTime() - Date.parse(revocationDecision.observedAt) <= REVOCATION_MAX_AGE_MS &&
     revocationDecision.credentialId === value.platform.credentialId &&

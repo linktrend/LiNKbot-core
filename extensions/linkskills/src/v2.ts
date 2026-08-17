@@ -43,6 +43,36 @@ export const SKILLS_V2_OPERATIONS = Object.freeze([
 ] as const);
 export type SkillsV2Operation = (typeof SKILLS_V2_OPERATIONS)[number];
 
+const COMMON_REQUEST_FIELDS = [
+  "providerCandidate",
+  "protocolVersion",
+  "contractVersion",
+  "operation",
+  "actorId",
+  "idempotencyKey",
+] as const;
+const OPERATION_REQUEST_FIELDS: Readonly<Record<SkillsV2Operation, readonly string[]>> = {
+  skills_capabilities_get: [],
+  skills_catalog_list: ["cursor", "limit"],
+  skills_catalog_search: ["query", "cursor", "limit"],
+  skills_release_list: ["skillId", "version", "cursor", "limit"],
+  skills_release_describe: ["skillId", "version", "cursor", "limit"],
+  skills_qualification_get: ["skillId", "version", "cursor", "limit"],
+  skills_release_entrypoint_get: ["skillId", "version", "cursor", "limit"],
+  skills_release_sections_list: ["skillId", "version", "cursor", "limit"],
+  skills_release_section_get: ["skillId", "version", "sectionId", "cursor", "limit"],
+  skills_release_resources_list: ["skillId", "version", "cursor", "limit"],
+  skills_release_resource_get: ["skillId", "version", "resourceId", "cursor", "limit"],
+  skills_release_content_get: ["skillId", "version", "contentId", "cursor", "limit"],
+  skills_release_package_get: ["skillId", "version", "cursor", "limit"],
+  skills_release_verify: ["skillId", "version"],
+  skills_use_report_submit: ["reportRef"],
+  skills_use_report_status_get: ["reportRef"],
+  skills_feedback_submit: ["skillId", "version", "feedbackRef"],
+  skills_feedback_status_get: ["feedbackRef"],
+  skills_librarian_status_get: [],
+};
+
 export type SkillsV2Request = Readonly<{
   providerCandidate: { commit: typeof SKILLS_COMMIT; tree: typeof SKILLS_TREE };
   protocolVersion: typeof SKILLS_MCP_PROTOCOL_VERSION;
@@ -114,28 +144,13 @@ export function validateSkillsV2Request(input: unknown):
     } {
   const value = snapshotOwnDataRecord(input);
   if (!value) return { ok: false, code: "invalid_shape" };
-  const allowed = new Set([
-    "providerCandidate",
-    "protocolVersion",
-    "contractVersion",
-    "operation",
-    "actorId",
-    "idempotencyKey",
-    "skillId",
-    "version",
-    "query",
-    "sectionId",
-    "resourceId",
-    "contentId",
-    "feedbackRef",
-    "reportRef",
-    "cursor",
-    "limit",
-  ]);
-  if (Object.keys(value).some((key) => !allowed.has(key)))
-    return { ok: false, code: "invalid_shape" };
   const candidate = snapshotOwnDataRecord(value.providerCandidate);
-  if (!candidate || candidate.commit !== SKILLS_COMMIT || candidate.tree !== SKILLS_TREE)
+  if (
+    !candidate ||
+    Object.keys(candidate).length !== 2 ||
+    candidate.commit !== SKILLS_COMMIT ||
+    candidate.tree !== SKILLS_TREE
+  )
     return { ok: false, code: "wrong_provider" };
   if (
     value.protocolVersion !== SKILLS_MCP_PROTOCOL_VERSION ||
@@ -149,6 +164,9 @@ export function validateSkillsV2Request(input: unknown):
     !bounded(value.actorId) ||
     !bounded(value.idempotencyKey, 160)
   )
+    return { ok: false, code: "invalid_shape" };
+  const allowed = new Set([...COMMON_REQUEST_FIELDS, ...OPERATION_REQUEST_FIELDS[value.operation]]);
+  if (Object.keys(value).some((key) => !allowed.has(key)))
     return { ok: false, code: "invalid_shape" };
   const limit = value.limit;
   if (
@@ -177,6 +195,7 @@ export function validateSkillsV2Request(input: unknown):
   )
     return { ok: false, code: "invalid_shape" };
   const requiresReleaseIdentity = new Set([
+    "skills_release_list",
     "skills_release_sections_list",
     "skills_release_section_get",
     "skills_release_resources_list",

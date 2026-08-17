@@ -636,9 +636,11 @@ const assertFreshRevocationDecision = (
   assertIso(snapshot.observedAt, "revocation_observed_at");
   const nowMs = new Date(now).getTime();
   const observedAt = Date.parse(snapshot.observedAt);
+  const issuedAt = Date.parse(identity.issuedAt);
   if (
     snapshot.status !== "active" ||
     !Number.isFinite(nowMs) ||
+    observedAt < issuedAt ||
     observedAt > nowMs ||
     nowMs - observedAt > REVOCATION_MAX_AGE_MS ||
     snapshot.actorId !== identity.actorId ||
@@ -896,6 +898,8 @@ export function createBrainV2Client(input: {
   let trustedIdentity: BrainV2PlatformIdentity | undefined;
   let identityConstructionError: unknown;
   let providerEvidenceError: unknown;
+  let transportRequest: BrainV2Transport["request"] | undefined;
+  let transportConstructionError: unknown;
   let revocationResolver:
     | (() => BrainV2PlatformRevocationDecision | Promise<BrainV2PlatformRevocationDecision>)
     | undefined;
@@ -924,6 +928,28 @@ export function createBrainV2Client(input: {
     revocationResolver = descriptor.value as typeof revocationResolver;
   } catch (error) {
     identityConstructionError ??= error;
+  }
+  try {
+    const transportDescriptor = Object.getOwnPropertyDescriptor(input, "transport");
+    if (
+      !transportDescriptor ||
+      !("value" in transportDescriptor) ||
+      !objectRecord(transportDescriptor.value)
+    ) {
+      throw new Error("brain_v2_transport_invalid");
+    }
+    const transport = transportDescriptor.value;
+    const requestDescriptor = Object.getOwnPropertyDescriptor(transport, "request");
+    if (
+      !requestDescriptor ||
+      !("value" in requestDescriptor) ||
+      typeof requestDescriptor.value !== "function"
+    ) {
+      throw new Error("brain_v2_transport_invalid");
+    }
+    transportRequest = requestDescriptor.value.bind(transport) as BrainV2Transport["request"];
+  } catch (error) {
+    transportConstructionError = error;
   }
   const requireTrustedIdentity = async (): Promise<BrainV2PlatformIdentity> => {
     if (!trustedIdentity || !revocationResolver) {
@@ -985,7 +1011,9 @@ export function createBrainV2Client(input: {
         };
       }
       const safeParams = assertBrainV2SafePayload(params);
-      const response = await input.transport.request({
+      if (!transportRequest)
+        throw transportConstructionError ?? new Error("brain_v2_transport_invalid");
+      const response = await transportRequest({
         protocolVersion: LINKBRAIN_V2_MCP_PROTOCOL,
         method: "tools/call",
         actorBindingRef: identity.runtimeBindingRef,
@@ -1017,7 +1045,9 @@ export function createBrainV2Client(input: {
       try {
         if (providerEvidenceError) throw providerEvidenceError;
         const identity = await requireTrustedIdentity();
-        const response = await input.transport.request({
+        if (!transportRequest)
+          throw transportConstructionError ?? new Error("brain_v2_transport_invalid");
+        const response = await transportRequest({
           protocolVersion: LINKBRAIN_V2_MCP_PROTOCOL,
           method: "discover",
           actorBindingRef: identity.runtimeBindingRef,

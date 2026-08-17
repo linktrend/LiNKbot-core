@@ -18,6 +18,14 @@ const base = {
   idempotencyKey: "skills-idem-00000001",
   limit: 25,
 } as const;
+const toolBase = {
+  providerCandidate: base.providerCandidate,
+  protocolVersion: base.protocolVersion,
+  contractVersion: base.contractVersion,
+  operation: base.operation,
+  actorId: base.actorId,
+  idempotencyKey: base.idempotencyKey,
+};
 describe("Skills v2 consumer boundary", () => {
   it("accepts catalog discovery and exact release detail", () => {
     expect(validateSkillsV2Request(base).ok).toBe(true);
@@ -99,13 +107,27 @@ describe("Skills v2 consumer boundary", () => {
   it("accepts feedback submission only when bound to an exact release", () => {
     expect(
       validateSkillsV2Request({
-        ...base,
+        ...toolBase,
         operation: "skills_feedback_submit",
         feedbackRef: "feedback-1",
         skillId: "skill.echo",
         version: "1.0.0",
       }).ok,
     ).toBe(true);
+  });
+
+  it("rejects fields belonging to a different operation", () => {
+    expect(validateSkillsV2Request({ ...base, feedbackRef: "feedback-1" }).ok).toBe(false);
+    expect(
+      validateSkillsV2Request({
+        ...toolBase,
+        operation: "skills_feedback_submit",
+        skillId: "skill.echo",
+        version: "1.0.0",
+        feedbackRef: "feedback-1",
+        reportRef: "report-1",
+      }).ok,
+    ).toBe(false);
   });
 
   it("accepts qualification lookup only for an exact release", () => {
