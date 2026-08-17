@@ -222,6 +222,25 @@ describe("LiNKlibraries Revision 2 consumer", () => {
       ),
     ).toThrow("invalid authenticated catalogue evidence");
   });
+  it("rejects accessor-backed paging input without invoking getters", () => {
+    let getterCalls = 0;
+    const input = {
+      commit: LIBRARIES_COMMIT,
+      tree: LIBRARIES_TREE,
+      snapshot: "catalogue-v2",
+    } as Record<string, unknown>;
+    Object.defineProperty(input, "limit", {
+      enumerable: true,
+      get() {
+        getterCalls += 1;
+        return getterCalls === 1 ? 1 : 100;
+      },
+    });
+    expect(() => pageCatalogue([record], input as never, pageEvidence())).toThrow(
+      "invalid authenticated catalogue evidence",
+    );
+    expect(getterCalls).toBe(0);
+  });
   it("rejects malformed required catalogue record fields", () => {
     expect(validate({ ...bundle, record: { ...record, artifactType: undefined } }).ok).toBe(false);
     expect(validate({ ...bundle, record: { ...record, bundlePath: "" } }).ok).toBe(false);

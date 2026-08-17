@@ -248,12 +248,21 @@ export function pageCatalogue(
   authenticatedEvidence: AuthenticatedRevision2PageEvidence,
 ): Revision2Page {
   let trusted: unknown;
+  let pageInput: unknown;
   try {
     records = snapshotPlainData(records) as readonly Revision2Record[];
     trusted = snapshotPlainData(authenticatedEvidence);
+    pageInput = snapshotPlainData(input);
   } catch {
     throw new Error("invalid authenticated catalogue evidence");
   }
+  if (
+    !isObject(pageInput) ||
+    Object.keys(pageInput).some(
+      (key) => !["commit", "tree", "snapshot", "cursor", "limit"].includes(key),
+    )
+  )
+    throw new Error("invalid page input");
   const trustedSource = isObject(trusted) && isObject(trusted.source) ? trusted.source : undefined;
   if (
     !Array.isArray(records) ||
@@ -267,27 +276,34 @@ export function pageCatalogue(
     trusted.catalogueSha256 !== LIBRARIES_CATALOGUE_SHA256 ||
     !digest(trusted.recordsSha256) ||
     trusted.recordsSha256 !== canonicalDigest(records) ||
-    trusted.snapshot !== input.snapshot ||
+    trusted.snapshot !== pageInput.snapshot ||
     trusted.verified !== true
   )
     throw new Error("invalid authenticated catalogue evidence");
-  if (input.commit !== LIBRARIES_COMMIT || input.tree !== LIBRARIES_TREE)
+  if (pageInput.commit !== LIBRARIES_COMMIT || pageInput.tree !== LIBRARIES_TREE)
     throw new Error("wrong Libraries source");
-  if (!Number.isInteger(input.limit ?? 25) || (input.limit ?? 25) < 1 || (input.limit ?? 25) > 50)
+  const requestedLimit = pageInput.limit;
+  if (
+    requestedLimit !== undefined &&
+    (typeof requestedLimit !== "number" ||
+      !Number.isInteger(requestedLimit) ||
+      requestedLimit < 1 ||
+      requestedLimit > 50)
+  )
     throw new Error("invalid page limit");
-  if (!boundedText(input.snapshot, 512)) throw new Error("invalid catalogue snapshot");
-  const snapshot = input.snapshot;
+  if (!boundedText(pageInput.snapshot, 512)) throw new Error("invalid catalogue snapshot");
+  const snapshot = pageInput.snapshot;
   let offset = 0;
-  if (input.cursor !== undefined) {
+  if (pageInput.cursor !== undefined) {
     const prefix = `snapshot:${snapshot}:`;
-    if (!boundedText(input.cursor, 600) || !input.cursor.startsWith(prefix))
+    if (!boundedText(pageInput.cursor, 600) || !pageInput.cursor.startsWith(prefix))
       throw new Error("stale catalogue cursor");
-    const offsetText = input.cursor.slice(prefix.length);
+    const offsetText = pageInput.cursor.slice(prefix.length);
     if (!/^\d+$/u.test(offsetText)) throw new Error("stale catalogue cursor");
     offset = Number(offsetText);
     if (!Number.isSafeInteger(offset)) throw new Error("stale catalogue cursor");
   }
-  const limit = input.limit ?? 25;
+  const limit = requestedLimit ?? 25;
   const ordered = [...records]
     .map((record) => {
       const result = validateRevision2Record(record);

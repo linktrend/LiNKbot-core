@@ -29,14 +29,21 @@ const toolBase = {
 const trustedAuthorization = {
   organizationId: "org:linktrend",
   actorId: base.actorId,
+  credentialId: "credential:skills-1",
   audience: "lskills-api",
   serviceScopes: ["lskills"],
   capabilities: ["skills.read"],
   permittedOperations: ["skills:read", "skills:write"],
   runtimeBindingRef: "runtime:fixture-openclaw-01",
+  issuedAt: "2026-08-12T23:00:00.000Z",
+  expiresAt: "2026-08-13T01:00:00.000Z",
+  revocationStatus: "active",
+  revocationObservedAt: "2026-08-12T23:59:00.000Z",
+  revocationCredentialId: "credential:skills-1",
 } as const;
+const authorizationNow = new Date("2026-08-13T00:00:00.000Z");
 const validateRequest = (input: unknown, authorization: unknown = trustedAuthorization) =>
-  validateSkillsV2Request(input, authorization);
+  validateSkillsV2Request(input, authorization, authorizationNow);
 describe("Skills v2 consumer boundary", () => {
   it("accepts catalog discovery and exact release detail", () => {
     expect(validateRequest(base).ok).toBe(true);
@@ -172,6 +179,10 @@ describe("Skills v2 consumer boundary", () => {
       { ...trustedAuthorization, capabilities: ["other"] },
       { ...trustedAuthorization, permittedOperations: ["skills:read"] },
       { ...trustedAuthorization, runtimeBindingRef: "" },
+      { ...trustedAuthorization, revocationStatus: "revoked" },
+      { ...trustedAuthorization, expiresAt: "2026-08-13T00:00:00.000Z" },
+      { ...trustedAuthorization, revocationObservedAt: "2026-08-12T23:54:59.999Z" },
+      { ...trustedAuthorization, revocationCredentialId: "credential:other" },
     ]) {
       expect(validateRequest(feedback, authorization)).toMatchObject({
         ok: false,

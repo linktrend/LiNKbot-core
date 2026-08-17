@@ -51,11 +51,17 @@ export const SKILLS_V2_WRITE_PERMISSION = "skills:write" as const;
 export type SkillsV2TrustedAuthorization = Readonly<{
   organizationId: string;
   actorId: string;
+  credentialId: string;
   audience: typeof SKILLS_V2_AUDIENCE;
   serviceScopes: readonly string[];
   capabilities: readonly string[];
   permittedOperations: readonly string[];
   runtimeBindingRef: string;
+  issuedAt: string;
+  expiresAt: string;
+  revocationStatus: "active";
+  revocationObservedAt: string;
+  revocationCredentialId: string;
 }>;
 
 const COMMON_REQUEST_FIELDS = [
@@ -114,6 +120,8 @@ export type SkillsV2Request = Readonly<{
 const legacy = /^(skills_run_|skills_tool_)/;
 const MOVING_VERSION_ALIAS = /^(latest|current|stable|newest)$/iu;
 const SNAPSHOT_CURSOR = /^snapshot:[0-9a-f]{16}:(?:0|[1-9][0-9]*)$/u;
+const AUTH_TIMESTAMP = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})\.(\d{3})Z$/u;
+const AUTHORIZATION_MAX_AGE_MS = 5 * 60 * 1000;
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
 const snapshotOwnDataRecord = (value: unknown): Record<string, unknown> | undefined => {
@@ -159,6 +167,23 @@ const snapshotDenseStrings = (value: unknown): readonly string[] | undefined => 
     return undefined;
   }
 };
+const authorizationTime = (value: unknown): number | undefined => {
+  if (typeof value !== "string") return undefined;
+  const match = AUTH_TIMESTAMP.exec(value);
+  if (!match) return undefined;
+  const parsed = Date.parse(value);
+  if (!Number.isFinite(parsed)) return undefined;
+  const date = new Date(parsed);
+  return date.getUTCFullYear() === Number(match[1]) &&
+    date.getUTCMonth() + 1 === Number(match[2]) &&
+    date.getUTCDate() === Number(match[3]) &&
+    date.getUTCHours() === Number(match[4]) &&
+    date.getUTCMinutes() === Number(match[5]) &&
+    date.getUTCSeconds() === Number(match[6]) &&
+    date.getUTCMilliseconds() === Number(match[7])
+    ? parsed
+    : undefined;
+};
 
 export function skillsSnapshotCursor(catalogVersion: string): string {
   if (!bounded(catalogVersion, 512)) throw new Error("invalid Skills catalog version");
@@ -177,6 +202,7 @@ export function isModernSkillsOperation(value: unknown): value is SkillsV2Operat
 export function validateSkillsV2Request(
   input: unknown,
   trustedAuthorization: unknown,
+  now = new Date(),
 ):
   | { ok: true; request: SkillsV2Request }
   | {
@@ -193,17 +219,38 @@ export function validateSkillsV2Request(
   const serviceScopes = snapshotDenseStrings(authorization?.serviceScopes);
   const capabilities = snapshotDenseStrings(authorization?.capabilities);
   const permittedOperations = snapshotDenseStrings(authorization?.permittedOperations);
+  let nowMilliseconds = Number.NaN;
+  try {
+    nowMilliseconds = Date.prototype.getTime.call(now);
+  } catch {
+    // Invalid caller clocks fail through the authorization checks below.
+  }
+  const issuedAt = authorizationTime(authorization?.issuedAt);
+  const expiresAt = authorizationTime(authorization?.expiresAt);
+  const revocationObservedAt = authorizationTime(authorization?.revocationObservedAt);
   if (
     !authorization ||
     Object.keys(authorization).sort().join(",") !==
-      "actorId,audience,capabilities,organizationId,permittedOperations,runtimeBindingRef,serviceScopes" ||
+      "actorId,audience,capabilities,credentialId,expiresAt,issuedAt,organizationId,permittedOperations,revocationCredentialId,revocationObservedAt,revocationStatus,runtimeBindingRef,serviceScopes" ||
     !bounded(authorization.organizationId) ||
     !bounded(authorization.actorId) ||
+    !bounded(authorization.credentialId) ||
     authorization.audience !== SKILLS_V2_AUDIENCE ||
     !serviceScopes?.includes(SKILLS_V2_REQUIRED_SCOPE) ||
     !capabilities?.includes(SKILLS_V2_REQUIRED_CAPABILITY) ||
     !permittedOperations ||
-    !bounded(authorization.runtimeBindingRef)
+    !bounded(authorization.runtimeBindingRef) ||
+    authorization.revocationStatus !== "active" ||
+    authorization.revocationCredentialId !== authorization.credentialId ||
+    !Number.isFinite(nowMilliseconds) ||
+    issuedAt === undefined ||
+    expiresAt === undefined ||
+    revocationObservedAt === undefined ||
+    issuedAt > nowMilliseconds ||
+    expiresAt <= nowMilliseconds ||
+    revocationObservedAt < issuedAt ||
+    revocationObservedAt > nowMilliseconds ||
+    nowMilliseconds - revocationObservedAt > AUTHORIZATION_MAX_AGE_MS
   )
     return { ok: false, code: "invalid_authorization" };
   const value = snapshotOwnDataRecord(input);
