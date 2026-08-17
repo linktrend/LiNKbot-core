@@ -37,8 +37,10 @@ export type ExactRevision2Bundle = Readonly<{
   catalogue: {
     schemaVersion: 2;
     schemaRevision: 2;
+    catalogueType: "catalogue";
     catalogueSha256: Digest;
     recordsSha256: Digest;
+    records: readonly Revision2Record[];
   };
   record: Revision2Record;
   manifest: {
@@ -200,6 +202,9 @@ export function canonicalDigest(value: unknown): string {
     .digest("hex")}`;
 }
 
+const normalizedSha256 = (value: string): string =>
+  value.startsWith("sha256:") ? value : `sha256:${value}`;
+
 export function pageCatalogue(
   records: readonly Revision2Record[],
   input: { commit: string; tree: string; snapshot: string; cursor?: string; limit?: number },
@@ -313,13 +318,23 @@ export function validateExactRevision2(bundle: unknown): Revision2Validation {
     !isObject(bundle.catalogue) ||
     bundle.catalogue.schemaVersion !== 2 ||
     bundle.catalogue.schemaRevision !== 2 ||
+    bundle.catalogue.catalogueType !== "catalogue" ||
     !digest(bundle.catalogue.catalogueSha256) ||
-    !digest(bundle.catalogue.recordsSha256)
+    !digest(bundle.catalogue.recordsSha256) ||
+    !Array.isArray(bundle.catalogue.records) ||
+    canonicalDigest(bundle.catalogue.records) !== normalizedSha256(bundle.catalogue.recordsSha256)
   )
     return { ok: false, reason: "invalid catalogue evidence" };
   const recordResult = validateRevision2Record(bundle.record);
   if (!recordResult.ok) return recordResult;
   const record = recordResult.record;
+  if (
+    !(bundle.catalogue.records as unknown[]).some(
+      (candidate) => canonicalDigest(candidate) === canonicalDigest(record),
+    )
+  ) {
+    return { ok: false, reason: "catalogue does not contain selected record" };
+  }
   if (
     record.lifecycle !== "admitted" ||
     record.selectability !== "selectable" ||

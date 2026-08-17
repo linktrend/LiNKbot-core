@@ -45,8 +45,10 @@ const bundle: ExactRevision2Bundle = {
   catalogue: {
     schemaVersion: 2,
     schemaRevision: 2,
+    catalogueType: "catalogue",
     catalogueSha256: d("c"),
-    recordsSha256: d("d"),
+    recordsSha256: canonicalDigest([record]),
+    records: [record],
   },
   record,
   manifest,
@@ -61,7 +63,7 @@ const bundle: ExactRevision2Bundle = {
     },
     releaseSource: source,
     catalogueSha256: d("c"),
-    catalogueRecordsSha256: d("d"),
+    catalogueRecordsSha256: canonicalDigest([record]),
     entryId: record.entryId,
     version: record.version,
     releaseManifestSha256: record.releaseManifestSha256,
@@ -141,6 +143,29 @@ describe("LiNKlibraries Revision 2 consumer", () => {
     expect(validateExactRevision2({ ...bundle, record: { ...record, bundlePath: "" } }).ok).toBe(
       false,
     );
+  });
+  it("binds the selected record to the canonical catalogue records digest", () => {
+    const tamperedCatalogue = structuredClone(bundle) as any;
+    tamperedCatalogue.catalogue.records[0].version = "2.0.0";
+    expect(validateExactRevision2(tamperedCatalogue).ok).toBe(false);
+
+    const substitutedRecord = {
+      ...record,
+      entryId: "substituted-component",
+      bundlePath: "registry/v2/entries/substituted-component/versions/1.0.0",
+    };
+    const substitutedManifest = {
+      ...manifest,
+      releaseId: "substituted-component@1.0.0",
+      entryId: "substituted-component",
+    };
+    const substitutedBundle = structuredClone(bundle) as any;
+    substitutedBundle.record = {
+      ...substitutedRecord,
+      releaseManifestSha256: canonicalDigest(substitutedManifest),
+    };
+    substitutedBundle.manifest = substitutedManifest;
+    expect(validateExactRevision2(substitutedBundle).ok).toBe(false);
   });
   it("rejects inherited and accessor-backed catalogue records without invoking getters", () => {
     let getterCalls = 0;

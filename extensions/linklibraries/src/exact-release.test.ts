@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { validateExactRelease, type Candidate } from "./exact-release.js";
+import {
+  candidateDependencyClosureDigest,
+  validateExactRelease,
+  type Candidate,
+} from "./exact-release.js";
 
 const digest = (letter: string) => `sha256:${letter.repeat(64)}`;
 
@@ -24,7 +28,9 @@ function validCandidate(): Candidate {
     consumerProfile: { id: "consumer-v1", compatible: true },
     dependencies: {
       complete: true,
-      closureDigest: digest("c"),
+      closureDigest: candidateDependencyClosureDigest([
+        { name: "demo", version: "1.0.0", resolved: true, provenanceRef: "dep:demo@1.0.0" },
+      ]),
       entries: [
         { name: "demo", version: "1.0.0", resolved: true, provenanceRef: "dep:demo@1.0.0" },
       ],
@@ -57,7 +63,7 @@ describe("validateExactRelease", () => {
     const value = validCandidate() as unknown as Record<string, unknown>;
     value.dependencies = {
       complete: true,
-      closureDigest: digest("d"),
+      closureDigest: candidateDependencyClosureDigest([]),
       entries: [],
     };
     expect(validateExactRelease(value)).toMatchObject({ ok: true });
@@ -160,6 +166,16 @@ describe("validateExactRelease", () => {
       candidate.dependencies.entries[0].resolved = malformed;
       expect(validateExactRelease(candidate).ok).toBe(false);
     }
+  });
+
+  it("binds the dependency closure digest to canonical exact entries", () => {
+    const candidate = validCandidate() as unknown as Record<string, any>;
+    candidate.dependencies.entries[0].version = "2.0.0";
+    expect(validateExactRelease(candidate).ok).toBe(false);
+    candidate.dependencies.closureDigest = candidateDependencyClosureDigest(
+      candidate.dependencies.entries,
+    );
+    expect(validateExactRelease(candidate).ok).toBe(true);
   });
 
   it("rejects inherited and accessor-backed evidence without invoking getters", () => {

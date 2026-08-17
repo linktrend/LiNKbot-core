@@ -1,6 +1,7 @@
 export {
   FROZEN_CANDIDATE_SHA,
   FROZEN_TREE_SHA,
+  candidateDependencyClosureDigest,
   validateExactRelease,
   type Candidate,
   type CandidateDependency,

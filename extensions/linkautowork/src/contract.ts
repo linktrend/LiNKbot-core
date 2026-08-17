@@ -5,6 +5,7 @@ export const AUTOWORK_TREE = "5f306d674780a5a26048017f916da6048d71e7a5" as const
 export const AUTOWORK_CONTRACT_VERSION = "2026-08-13.v1" as const;
 export const AUTOWORK_SCHEMA_VERSION = "provider-contract-v1" as const;
 export const AUTOWORK_PROTOCOL_VERSION = "2026-07-28" as const;
+export const AUTOWORK_AUDIENCE = "autowork" as const;
 export const AUTOWORK_OPERATIONS = Object.freeze([
   "status_collection",
   "precheck",
@@ -245,7 +246,7 @@ function validateRequestSnapshot(value: unknown): value is AutoworkRequest {
     ]) ||
     !matches(platform.orgId, UUID) ||
     !bounded(platform.actorId, 256) ||
-    !bounded(platform.audience, 256) ||
+    platform.audience !== AUTOWORK_AUDIENCE ||
     !bounded(platform.capability, 256) ||
     !bounded(platform.credentialId, 256) ||
     !bounded(platform.bindingId, 256) ||
@@ -347,7 +348,8 @@ export function validateRequestAt(
     revocationDecision.bindingId === value.platform.bindingId &&
     revocationDecision.orgId === value.platform.orgId &&
     revocationDecision.actorId === value.platform.actorId &&
-    revocationDecision.audience === value.platform.audience &&
+    revocationDecision.audience === AUTOWORK_AUDIENCE &&
+    value.platform.audience === AUTOWORK_AUDIENCE &&
     revocationDecision.capability === value.platform.capability &&
     revocationDecision.revocationRef === value.platform.revocationRef &&
     revocationDecision.authorizedOperation === value.operationKind &&

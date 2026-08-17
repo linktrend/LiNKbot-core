@@ -142,6 +142,25 @@ describe("LinkAutowork final provider contract", () => {
         },
       ),
     ).toBe(false);
+    const wrongAudienceRequest = {
+      ...request,
+      platform: { ...request.platform, audience: "other-service" },
+    };
+    expect(validateRequest(wrongAudienceRequest)).toBe(false);
+    expect(
+      validateRequestAt(wrongAudienceRequest, now, {
+        status: "active",
+        observedAt: "2026-08-13T11:59:00.000Z",
+        credentialId: request.platform.credentialId,
+        bindingId: request.platform.bindingId,
+        orgId: request.platform.orgId,
+        actorId: request.platform.actorId,
+        audience: "other-service",
+        capability: request.platform.capability,
+        revocationRef: request.platform.revocationRef,
+        authorizedOperation: request.operationKind,
+      }),
+    ).toBe(false);
   });
   it("rejects cancellation markers on the ordinary execution path", () => {
     const now = new Date("2026-08-13T12:00:00.000Z");

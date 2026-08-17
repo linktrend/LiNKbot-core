@@ -1,3 +1,5 @@
+import { createHash } from "node:crypto";
+
 export const FROZEN_CANDIDATE_SHA = "0efa68b19686e976ecee93c6a962e81d2a0265f5";
 export const FROZEN_TREE_SHA = "c42d20b3119ca4bfdd24d4c6b06d6bc7a7f50d4a";
 
@@ -94,6 +96,24 @@ function isDigest(value: unknown): value is InventoryDigest {
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+export function candidateDependencyClosureDigest(
+  entries: readonly CandidateDependency[],
+): InventoryDigest {
+  const snapshot = snapshotPlainData(entries);
+  if (!Array.isArray(snapshot)) throw new Error("invalid dependency closure entries");
+  const canonicalize = (value: unknown): string => {
+    if (Array.isArray(value)) return `[${value.map(canonicalize).join(",")}]`;
+    if (isRecord(value)) {
+      return `{${Object.keys(value)
+        .sort()
+        .map((key) => `${JSON.stringify(key)}:${canonicalize(value[key])}`)
+        .join(",")}}`;
+    }
+    return JSON.stringify(value);
+  };
+  return `sha256:${createHash("sha256").update(canonicalize(snapshot)).digest("hex")}`;
 }
 
 function snapshotPlainData(value: unknown, seen = new WeakSet<object>()): unknown {
@@ -323,6 +343,21 @@ export function validateExactRelease(candidate: unknown): ExactReleaseResult {
     if (dependency.resolved !== true) errors.push(`dependency ${dependencyName} is unresolved`);
     if (!isNonEmpty(dependency.provenanceRef))
       errors.push(`dependency ${dependencyName} lacks provenance`);
+  }
+  if (
+    dependencies &&
+    Array.isArray(dependencies.entries) &&
+    dependencies.entries.every(
+      (dependency): dependency is CandidateDependency =>
+        isRecord(dependency) &&
+        isNonEmpty(dependency.name) &&
+        isNonEmpty(dependency.version) &&
+        dependency.resolved === true &&
+        isNonEmpty(dependency.provenanceRef),
+    ) &&
+    dependencies.closureDigest !== candidateDependencyClosureDigest(dependencies.entries)
+  ) {
+    errors.push("dependency closure digest does not match entries");
   }
 
   if (!provenance) errors.push("provenance evidence is incomplete");
