@@ -14,4 +14,4 @@ The planner ranks prevention/hard deadlines, dependency unblocking, the current 
 
 ## Provider outage
 
-Google Tasks, Calendar, and LiNKbrain are routing contracts only. If LiNKbrain is unavailable, enqueue the task locally with a temporary `P-*` ID and map it once to the permanent `T-*` ID after recovery. Never invent a permanent ID, lose queued work, or claim that an external action occurred.
+Google Tasks and Calendar remain routing contracts only. Non-Carlos tasks are Wave A policy HOLD until a later Wave B packet may bind Brain v2. Do not claim a live LiNKbrain write. If the destination is HOLD, enqueue the task locally with a temporary `P-*` ID and map it once to the permanent `T-*` ID after a later bound recovery. Never invent a permanent ID, lose queued work, or claim that an external action occurred.

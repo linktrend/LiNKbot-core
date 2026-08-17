@@ -1,9 +1,10 @@
-# Lisa provider policy (Item 3 Wave A foundation)
+# Lisa provider policy (Item 3 Wave A)
 
-Lisa-owned source policy for five-provider consumption. This directory is the
-P-01 through P-04 scaffold: identity, capabilities, privacy, and injected
-ports. Later domain packets may bind Platform/Brain/Skills/Libraries/Autowork
-consumers through those ports.
+Lisa-owned source policy for five-provider consumption. This directory holds
+the Wave A P-01 through P-09 scaffold: identity, capabilities, privacy, Skills,
+Autowork, Libraries, obsolete-reference replacement, and the non-regression
+audit. Wave B may later bind ports to public Item 2 barrels after an
+independently accepted Item 2 head.
 
 Wave A uses Lisa-owned ports and deterministic fakes only. Do not import Item 2
 adapters, guess adapter exports, or activate runtime.

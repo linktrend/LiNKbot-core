@@ -343,20 +343,22 @@ export function proposeStandingRule(
 
 export type RoutePlan = {
   taskId: string;
-  taskLedger: "Google Tasks" | "LiNKbrain";
+  taskLedger: "Google Tasks" | "HOLD";
   calendar: "proposal-only" | "not-applicable";
   externalActionPerformed: false;
+  liveBrainWriteClaimed: false;
 };
 
 export function planProviderRouting(task: Pick<TimeTask, "id" | "owner" | "status">): RoutePlan {
   return {
     taskId: task.id,
-    taskLedger: task.owner === "Carlos" ? "Google Tasks" : "LiNKbrain",
+    taskLedger: task.owner === "Carlos" ? "Google Tasks" : "HOLD",
     calendar:
       task.status === "Scheduled" || task.status === "In progress"
         ? "proposal-only"
         : "not-applicable",
     externalActionPerformed: false,
+    liveBrainWriteClaimed: false,
   };
 }
 

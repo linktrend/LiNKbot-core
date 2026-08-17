@@ -39,6 +39,10 @@ describe("Lisa provider policy facade invariants", () => {
       "fakes.ts",
       "outcomes.ts",
       "own-data.ts",
+      "pin-identities.ts",
+      "skills.ts",
+      "autowork.ts",
+      "libraries.ts",
     ];
     for (const fileName of files) {
       const source = readFileSync(path.join(here, fileName), "utf8");

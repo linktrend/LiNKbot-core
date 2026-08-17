@@ -67,6 +67,15 @@ export function readOwnStringArray(value: object, key: string): readonly string[
   return Object.freeze([...raw]);
 }
 
+export function readOwnBoolean(value: object, key: string): boolean | undefined {
+  const raw = readOwnDataValue(value, key);
+  return typeof raw === "boolean" ? raw : undefined;
+}
+
+export function ownDataKeys(value: object): readonly string[] {
+  return Object.keys(value).filter((key) => hasOwnDataField(value, key));
+}
+
 export function isSafeOpaqueRef(value: string): boolean {
   return SAFE_ID_RE.test(value) && !SECRET_SHAPE_RE.test(value);
 }

@@ -7,6 +7,11 @@
  */
 import { createHash } from "node:crypto";
 import {
+  LISA_OCP01_PIN_IDENTITIES,
+  LISA_WAVE_A_HOLD_RELEASE_REF,
+  toLisaCatalogueContractRef,
+} from "../providers/pin-identities.ts";
+import {
   LISA_JOB_IDS,
   LISA_JOB_SCHEDULE_METADATA,
   LISA_JOB_TIME_ZONE,
@@ -95,20 +100,20 @@ export type LisaCatalogueProviderDecision = Readonly<{
 
 const PROVIDER = {
   librarian: {
-    providerId: "linkbrain-librarian",
-    releaseRef: "source-contract-wp04",
-    contractRef: "librarian-receipt-v1",
-    credentialBindingId: "linkbrain-librarian-binding",
+    providerId: LISA_OCP01_PIN_IDENTITIES.brain.repository,
+    releaseRef: LISA_OCP01_PIN_IDENTITIES.brain.commit,
+    contractRef: toLisaCatalogueContractRef(LISA_OCP01_PIN_IDENTITIES.brain.contractRef),
+    credentialBindingId: "ocp-01-brain-binding-hold",
   },
   dreaming: {
     providerId: "memory-dreaming",
-    releaseRef: "source-contract-wp04",
+    releaseRef: LISA_WAVE_A_HOLD_RELEASE_REF,
     contractRef: "dreaming-receipt-v1",
     credentialBindingId: "memory-dreaming-binding",
   },
   backup: {
     providerId: "backup-adapter",
-    releaseRef: "source-contract-wp04",
+    releaseRef: LISA_WAVE_A_HOLD_RELEASE_REF,
     contractRef: "encrypted-backup-v1",
     credentialBindingId: "backup-adapter-binding",
   },
