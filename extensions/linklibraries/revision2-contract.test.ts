@@ -123,6 +123,7 @@ describe("LiNKlibraries Revision 2 consumer", () => {
             lifecycle: "draft",
             selectability: "non_selectable",
             compatibility: "unknown",
+            bundlePath: "registry/v2/entries/draft-entry/versions/1.0.0",
           },
         ],
         {
@@ -140,6 +141,15 @@ describe("LiNKlibraries Revision 2 consumer", () => {
     expect(validateExactRevision2({ ...bundle, record: { ...record, bundlePath: "" } }).ok).toBe(
       false,
     );
+  });
+  it.each([
+    "../../outside",
+    "/registry/v2/entries/component-echo/versions/1.0.0",
+    "registry\\v2\\entries\\component-echo\\versions\\1.0.0",
+    "registry/v2/entries/other/versions/1.0.0",
+    "registry/v2/entries/component-echo/versions/2.0.0",
+  ])("rejects unsafe or mismatched bundle path %s", (bundlePath) => {
+    expect(validateExactRevision2({ ...bundle, record: { ...record, bundlePath } }).ok).toBe(false);
   });
   it.each([
     ["withdrawn lifecycle", { lifecycle: "withdrawn" }],

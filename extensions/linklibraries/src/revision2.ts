@@ -85,6 +85,8 @@ export type ExactRevision2Bundle = Readonly<{
 
 const SHA1 = /^[0-9a-f]{40}$/;
 const SHA256 = /^[0-9a-f]{64}$/;
+const BUNDLE_PATH =
+  /^registry\/v2\/entries\/[a-z0-9]+(?:-[a-z0-9]+)*\/versions\/(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)(?:-[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/u;
 const ARTIFACT_TYPES = new Set(["component", "starter_kit", "website_template"]);
 const LIFECYCLE_VALUES = new Set([
   "draft",
@@ -229,7 +231,9 @@ export function validateRevision2Record(value: unknown): Revision2Validation {
     !SELECTABILITY_VALUES.has(value.selectability) ||
     typeof value.compatibility !== "string" ||
     !COMPATIBILITY_VALUES.has(value.compatibility) ||
-    !boundedText(value.bundlePath, 512)
+    !boundedText(value.bundlePath, 512) ||
+    !BUNDLE_PATH.test(value.bundlePath) ||
+    value.bundlePath !== `registry/v2/entries/${value.entryId}/versions/${value.version}`
   )
     return { ok: false, reason: "catalogue record is not admitted and selectable" };
   const releaseSource = {

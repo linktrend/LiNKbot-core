@@ -31,6 +31,9 @@ describe("Skills v2 consumer boundary", () => {
         version: "1.0.0",
       }).ok,
     ).toBe(true);
+    expect(validateSkillsV2Request({ ...base, cursor: "snapshot:0123456789abcdef:25" }).ok).toBe(
+      true,
+    );
   });
   it.each([
     ["legacy run", { operation: "skills_run_start" }, "legacy_execution_disabled"],
@@ -42,6 +45,8 @@ describe("Skills v2 consumer boundary", () => {
       "wrong_provider",
     ],
     ["unbounded page", { limit: 101 }, "invalid_pagination"],
+    ["malformed snapshot cursor", { cursor: "snapshot:0123456789abcdef" }, "invalid_pagination"],
+    ["negative snapshot offset", { cursor: "snapshot:0123456789abcdef:-1" }, "invalid_pagination"],
     ["malformed optional skill", { skillId: { nested: true } }, "invalid_shape"],
     ["malformed optional version", { version: { nested: true } }, "invalid_shape"],
     ["missing feedback reference", { operation: "skills_feedback_submit" }, "invalid_shape"],

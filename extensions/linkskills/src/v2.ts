@@ -63,6 +63,7 @@ export type SkillsV2Request = Readonly<{
 }>;
 
 const legacy = /^(skills_run_|skills_tool_)/;
+const SNAPSHOT_CURSOR = /^snapshot:[0-9a-f]{16}:(?:0|[1-9][0-9]*)$/u;
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
 const bounded = (value: unknown, max = 256): value is string =>
@@ -140,7 +141,10 @@ export function validateSkillsV2Request(input: unknown):
     (typeof limit !== "number" || !Number.isInteger(limit) || limit < 1 || limit > 100)
   )
     return { ok: false, code: "invalid_pagination" };
-  if (value.cursor !== undefined && !bounded(value.cursor, 256))
+  if (
+    value.cursor !== undefined &&
+    (!bounded(value.cursor, 256) || !SNAPSHOT_CURSOR.test(value.cursor))
+  )
     return { ok: false, code: "invalid_pagination" };
   if (value.skillId !== undefined && !bounded(value.skillId))
     return { ok: false, code: "invalid_shape" };

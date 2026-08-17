@@ -4,6 +4,7 @@ export const AUTOWORK_COMMIT = "4eb29203766b1ccf200a2dc10b39cc58d175c90c" as con
 export const AUTOWORK_TREE = "5f306d674780a5a26048017f916da6048d71e7a5" as const;
 export const AUTOWORK_CONTRACT_VERSION = "2026-08-13.v1" as const;
 export const AUTOWORK_SCHEMA_VERSION = "provider-contract-v1" as const;
+export const AUTOWORK_PROTOCOL_VERSION = "2026-07-28" as const;
 export const AUTOWORK_OPERATIONS = Object.freeze([
   "status_collection",
   "precheck",
@@ -210,7 +211,7 @@ export function validateRequest(value: unknown): value is AutoworkRequest {
     return false;
   if (
     value.contractVersion !== AUTOWORK_CONTRACT_VERSION ||
-    !bounded(value.protocolVersion, 64) ||
+    value.protocolVersion !== AUTOWORK_PROTOCOL_VERSION ||
     !UUID.test(String(value.requestId)) ||
     !automation(value.automation) ||
     !(AUTOWORK_OPERATIONS as readonly unknown[]).includes(value.operationKind) ||

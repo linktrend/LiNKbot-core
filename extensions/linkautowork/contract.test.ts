@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   AUTOWORK_COMMIT,
   AUTOWORK_CONTRACT_VERSION,
+  AUTOWORK_PROTOCOL_VERSION,
   AUTOWORK_TREE,
   requestFingerprint,
   sameIdempotencyContent,
@@ -20,7 +21,7 @@ const ref = (name: string) => ({
 const request = {
   providerCandidate: { commit: AUTOWORK_COMMIT, tree: AUTOWORK_TREE },
   contractVersion: AUTOWORK_CONTRACT_VERSION,
-  protocolVersion: "2026-07-28",
+  protocolVersion: AUTOWORK_PROTOCOL_VERSION,
   requestId: uuid,
   platform: {
     orgId: uuid,
@@ -246,6 +247,7 @@ describe("LinkAutowork final provider contract", () => {
       true,
     ],
     ["malformed result reference", { resultDestinationRef: "not-a-ref" }, false],
+    ["wrong protocol", { protocolVersion: "2025-03-26" }, false],
     ["changed idempotency content", { inputRef: ref("different") }, true],
     ["missing correlation", { correlationRefs: [] }, false],
     ["expired request", { expiresAt: "2026-08-12T00:00:00.000Z" }, true],

@@ -10,12 +10,15 @@ import {
 } from "./src/exact-release.js";
 
 const now = "2026-08-13T00:00:00.000Z";
+const releaseId = "skill.echo@2026.08.12";
+const version = "2026.08.12";
+const manifestDigest = "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
 const validRelease: ExactRelease = {
-  release_id: "rel:echo:2026-08-12",
-  version: "2026.08.12",
+  release_id: releaseId,
+  version,
   providerCandidate: { commit: SKILLS_COMMIT, tree: SKILLS_TREE },
-  manifest_digest: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-  package_digest: "sha256:5cc3608b236c8701d51fc6096c8ed5413004382e78a44fb81c4cb8af94db5665",
+  manifest_digest: manifestDigest,
+  package_digest: expectedPackageDigest({ release_id: releaseId, manifest_digest: manifestDigest }),
   lifecycle: "qualified",
   state: "available",
   compatible_profiles: ["runtime:fixture-openclaw-01"],
@@ -53,6 +56,8 @@ describe("exact provider Skills releases", () => {
   it.each([
     [{ release_id: "latest" }, "latest_alias"],
     [{ version: "latest" }, "latest_alias"],
+    [{ version: "2026.08.13" }, "invalid_immutability"],
+    [{ release_id: "skill.echo" }, "invalid_immutability"],
     [{ providerCandidate: undefined }, "invalid_provider_candidate"],
     [{ providerCandidate: { commit: "other", tree: SKILLS_TREE } }, "invalid_provider_candidate"],
     [{ providerCandidate: { commit: SKILLS_COMMIT, tree: "other" } }, "invalid_provider_candidate"],

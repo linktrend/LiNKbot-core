@@ -194,7 +194,11 @@ export function validateExactRelease(
   if (release.manifest_digest === release.package_digest)
     return reject("invalid_immutability", release);
   const releaseId = release.release_id as string;
+  const version = release.version as string;
   const manifestDigest = release.manifest_digest as string;
+  const releaseIdSeparator = releaseId.lastIndexOf("@");
+  if (releaseIdSeparator < 1 || releaseId.slice(releaseIdSeparator + 1) !== version)
+    return reject("invalid_immutability", release);
   if (
     release.package_digest !==
     expectedPackageDigest({
