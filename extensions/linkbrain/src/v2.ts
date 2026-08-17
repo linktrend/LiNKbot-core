@@ -763,8 +763,18 @@ function assertBrainV2PageSnapshot<T>(
       throw new Error(`brain_v2_pagination_${key}_invalid`);
     }
   }
-  if (expectedCursor !== undefined && pagination.cursor !== expectedCursor) {
+  if (
+    (expectedCursor === undefined && pagination.cursor !== undefined) ||
+    (expectedCursor !== undefined && pagination.cursor !== expectedCursor)
+  ) {
     throw new Error("brain_v2_pagination_cursor_mismatch");
+  }
+  const currentOffset = expectedCursor === undefined ? 0 : Number(expectedCursor.slice(3));
+  if (
+    typeof pagination.nextCursor === "string" &&
+    Number(pagination.nextCursor.slice(3)) <= currentOffset
+  ) {
+    throw new Error("brain_v2_pagination_nextCursor_not_advanced");
   }
 }
 
@@ -799,7 +809,9 @@ export function preparePrivateCapture(input: {
   if (
     snapshot.namespace !== "private" ||
     !boundedRef(snapshot.captureRef) ||
-    !boundedRef(snapshot.idempotencyKey)
+    !boundedRef(snapshot.idempotencyKey) ||
+    SENSITIVE_VALUE.test(snapshot.captureRef) ||
+    SENSITIVE_VALUE.test(snapshot.idempotencyKey)
   ) {
     throw new Error("brain_v2_capture_reference_invalid");
   }
@@ -832,7 +844,9 @@ export function preparePrivateCheckpoint(input: {
   if (
     snapshot.namespace !== "private" ||
     !boundedRef(snapshot.checkpointRef) ||
-    !boundedRef(snapshot.idempotencyKey)
+    !boundedRef(snapshot.idempotencyKey) ||
+    SENSITIVE_VALUE.test(snapshot.checkpointRef) ||
+    SENSITIVE_VALUE.test(snapshot.idempotencyKey)
   ) {
     throw new Error("brain_v2_checkpoint_reference_invalid");
   }

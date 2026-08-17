@@ -230,6 +230,23 @@ describe("LiNKbrain v2 immutable consumer boundary", () => {
     ).toThrow();
     expect(() =>
       assertBrainV2Page(
+        { ...page("index"), pagination: { limit: 25, cursor: "v2:999" } },
+        "v2.knowledge.search",
+      ),
+    ).toThrow("brain_v2_pagination_cursor_mismatch");
+    expect(() =>
+      assertBrainV2Page(
+        {
+          ...page("index"),
+          pagination: { limit: 25, cursor: "v2:25", nextCursor: "v2:25" },
+        },
+        "v2.knowledge.search",
+        "snapshot:brain-1",
+        "v2:25",
+      ),
+    ).toThrow("brain_v2_pagination_nextCursor_not_advanced");
+    expect(() =>
+      assertBrainV2Page(
         { ...page("index"), pagination: { limit: 25, cursor: "v2:0" } },
         "v2.knowledge.search",
         "snapshot:brain-1",
@@ -350,6 +367,23 @@ describe("LiNKbrain v2 immutable consumer boundary", () => {
         captureRef: "capture:1",
         idempotencyKey: "idem:1",
         metadata: { transcript: "blocked" },
+      }),
+    ).toThrow();
+    const credentialShaped = [["gh", "p_"].join(""), "a".repeat(20)].join("");
+    expect(() =>
+      preparePrivateCapture({
+        namespace: "private",
+        captureRef: credentialShaped,
+        idempotencyKey: "idem:1",
+        metadata: {},
+      }),
+    ).toThrow();
+    expect(() =>
+      preparePrivateCheckpoint({
+        namespace: "private",
+        checkpointRef: "checkpoint:1",
+        idempotencyKey: credentialShaped,
+        metadata: {},
       }),
     ).toThrow();
     expect(() =>
