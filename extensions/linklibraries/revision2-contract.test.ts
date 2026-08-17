@@ -323,4 +323,16 @@ describe("LiNKlibraries Revision 2 consumer", () => {
       reason: "selected record does not match authenticated catalogue",
     });
   });
+
+  it("fails closed without throwing for malformed authenticated selected-record digests", () => {
+    for (const field of ["releaseManifestSha256", "inventorySha256"] as const) {
+      const evidence = structuredClone(authenticatedCatalogueEvidence()) as any;
+      evidence.selectedRecord[field] = null;
+      expect(() => validate(bundle, evidence)).not.toThrow();
+      expect(validate(bundle, evidence)).toMatchObject({
+        ok: false,
+        reason: "invalid authenticated catalogue evidence",
+      });
+    }
+  });
 });

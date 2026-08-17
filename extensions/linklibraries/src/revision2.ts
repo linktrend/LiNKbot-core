@@ -364,7 +364,17 @@ export function validateExactRevision2(
     trusted.verified !== true ||
     !trustedRecord ||
     Object.keys(trustedRecord).sort().join(",") !==
-      "artifactTreeSha1,entryId,inventorySha256,releaseManifestSha256,releaseSourceCommitSha,releaseSourceRepositoryTreeSha1,version"
+      "artifactTreeSha1,entryId,inventorySha256,releaseManifestSha256,releaseSourceCommitSha,releaseSourceRepositoryTreeSha1,version" ||
+    !boundedText(trustedRecord.entryId, 256) ||
+    !boundedText(trustedRecord.version, 128) ||
+    !digest(trustedRecord.releaseManifestSha256) ||
+    !digest(trustedRecord.inventorySha256) ||
+    typeof trustedRecord.releaseSourceCommitSha !== "string" ||
+    !SHA1.test(trustedRecord.releaseSourceCommitSha) ||
+    typeof trustedRecord.releaseSourceRepositoryTreeSha1 !== "string" ||
+    !SHA1.test(trustedRecord.releaseSourceRepositoryTreeSha1) ||
+    typeof trustedRecord.artifactTreeSha1 !== "string" ||
+    !SHA1.test(trustedRecord.artifactTreeSha1)
   ) {
     return { ok: false, reason: "invalid authenticated catalogue evidence" };
   }
