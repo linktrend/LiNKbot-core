@@ -369,6 +369,7 @@ describe("LiNKbrain v2 immutable consumer boundary", () => {
       [["client", "secret"].join("_"), "credential-value"].join(":"),
       [["private", "key"].join("_"), "credential-value"].join("="),
       [["to", "ken"].join(""), "credential-value"].join(":"),
+      [["s", "k-proj-"].join(""), "a".repeat(24)].join(""),
       [["raw", "transcript"].join(" "), "from a private conversation"].join(" "),
       ["-----BEGIN", ["PRIVATE", "KEY-----"].join(" ")].join(" "),
     ]) {
