@@ -9,7 +9,7 @@ title: "Item 3 Connect OpenClaw Prime Lisa Implementation Plan"
 
 # Item 3 Connect OpenClaw Prime Lisa Implementation Plan
 
-**Status:** Draft for Codex supervisor acceptance. Principal superseding authorization 2026-08-17: Wave A Item2-independent Lisa policy source may start now. Wave B adapter wiring stays gated on an independently accepted Item 2 exact head. This plan still authorizes no runtime, VPS, credential, schedule, production, or PR change.
+**Status:** Accepted docs baseline with Wave B §2.2 execution-time amendment on issue/190. Principal superseding authorization 2026-08-17 enabled Wave A; Wave B §2.2 filled 2026-08-17 against independently accepted Item 2 head `90dad7381cce213db23fa81881787c4ea7d1ad0a` / tree `8358bc165dbe0d5c48d61c7c906c773ee6f14ac1`. This plan still authorizes no runtime, VPS, credential, schedule, production, or PR change.
 
 **Companion PRD:** [Item 3 Lisa PRD](/ITEM-3-CONNECT-OPENCLAW-PRIME-LISA-PRD).
 
@@ -18,6 +18,8 @@ title: "Item 3 Connect OpenClaw Prime Lisa Implementation Plan"
 **Documentation start SHA / tree:** `f1ca4e8ad32ef87babad397a2ee14c44d5512c1b` / `8843e51cd6d3e2df695d33c68c27724e7ff56502`.
 
 **Amendment date:** 2026-08-17 Asia/Taipei. Principal superseded the wait-for-Item-2 source gate.
+
+**Wave B §2.2 amendment (issue/190):** 2026-08-17 Asia/Taipei. Filled from independently accepted Item 2 public-barrel identity at commit `90dad7381cce213db23fa81881787c4ea7d1ad0a` / tree `8358bc165dbe0d5c48d61c7c906c773ee6f14ac1` without modifying Issue #188 / PR #191.
 
 ## 1. Execution gate
 
@@ -69,19 +71,23 @@ Inspection-time non-authority: on 2026-08-17 this documentation session observed
 
 ### 2.2 Wave B Item 2 fields
 
-Fill these at Wave B start. Leave them blank in this documentation revision.
+Filled at Wave B start on issue/190 from the independently accepted Item 2
+public-barrel identity (PR #191 non-draft/unmerged; no edits to #188/#191).
+Canonical machine record: `linkbots/lisa/ops/providers/wiring.ts`
+(`LISA_WAVE_B_ACCEPTED_ITEM2`, `LISA_WAVE_B_RECORDED_EXPORTS`,
+`LISA_WAVE_B_PORT_BINDING_MAP`).
 
 | Field                       | Value at Wave B start                                            |
 | --------------------------- | ---------------------------------------------------------------- |
-| Item 2 issue                | _execution-time_                                                 |
-| Item 2 branch               | _execution-time_                                                 |
-| Item 2 accepted commit      | _execution-time_                                                 |
-| Item 2 accepted tree        | _execution-time_                                                 |
-| Independent review identity | _execution-time_                                                 |
-| Pin profile on that tree    | _execution-time; expected `ocp-01` unless a recorded amendment exists_ |
-| Public barrels present      | _execution-time checklist of the five `extensions/link*/api.ts` barrels_ |
-| Actual public exports       | _execution-time symbols read from those barrels; never guessed_  |
-| Port-to-barrel binding map  | _execution-time map from Wave A ports to recorded exports_       |
+| Item 2 issue                | #188                                                             |
+| Item 2 branch               | `issue/188-connect-openclaw-prime-remaining-providers` (phase `phase/188-connect-openclaw-prime-providers`; PR #191) |
+| Item 2 accepted commit      | `90dad7381cce213db23fa81881787c4ea7d1ad0a`                       |
+| Item 2 accepted tree        | `8358bc165dbe0d5c48d61c7c906c773ee6f14ac1`                       |
+| Independent review identity | Orchestrator-accepted Item 2 public-barrel head for Lisa P-10; PR #191 open non-draft/unmerged at that exact head/tree |
+| Pin profile on that tree    | `ocp-01`                                                         |
+| Public barrels present      | `extensions/linkplatform/api.ts`, `extensions/linkbrain/api.ts`, `extensions/linkskills/api.ts`, `extensions/linklibraries/api.ts`, `extensions/linkautowork/api.ts` |
+| Actual public exports       | Platform: `PLATFORM_COMMIT`, `PLATFORM_TREE`, `PLATFORM_AUTH_CLAIMS_CONTRACT_VERSION`, `PLATFORM_AUTH_CLAIMS_SCHEMA_VERSION`, `PROVIDER_STATUSES`, `validatePlatformTrustFacts`. Brain: `LINKBRAIN_V2_COMMIT`, `LINKBRAIN_V2_TREE`, `BRAIN_V2_OPERATIONS`, `createBrainV2Client`. Skills: `SKILLS_COMMIT`, `SKILLS_TREE`, `isModernSkillsOperation`, `validateExactRelease`. Libraries: `LIBRARIES_COMMIT`, `LIBRARIES_TREE`, `validateRevision2Record`. Autowork: `AUTOWORK_COMMIT`, `AUTOWORK_TREE`, `AUTOWORK_AUDIENCE`, `AUTOWORK_OPERATIONS`, `requestFingerprint`, `assertIdempotency`. |
+| Port-to-barrel binding map  | platform → `validatePlatformTrustFacts` + `PLATFORM_*`; providerStatus → `PROVIDER_STATUSES` (hyphenated `contract-incompatible` mapped to Lisa `contract_incompatible`); skills → `isModernSkillsOperation` + pin constants + `validateExactRelease`; autowork → `AUTOWORK_*` + recorded fingerprint/idempotency helpers (Lisa fingerprints retained; no live Autowork transport); libraries → `LIBRARIES_*` + `validateRevision2Record`; brain → `BRAIN_V2_OPERATIONS` + pin constants + `createBrainV2Client` named only (no live transport); clock → Lisa-injected `LisaPolicyClock`. |
 
 ## 3. Layering and git mechanics
 

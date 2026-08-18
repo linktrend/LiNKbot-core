@@ -1,15 +1,22 @@
 ---
-summary: "Detailed gated implementation plan for separate LiNKbrain and LiNKskills integrations in OpenClaw Prime/Lisa"
+summary: "Historical July 2026 two-provider Brain/Skills plan; superseded as Lisa five-provider authority by Item 3"
 read_when:
-  - Implementing or reviewing the OpenClaw Prime/Lisa LiNKbrain integration
-  - Implementing or reviewing the OpenClaw Prime/Lisa LiNKskills integration
-  - Coordinating Platform identity, credentials, rollout, or evidence for the Lisa integrations
-title: "OpenClaw Prime/Lisa LiNKbrain and LiNKskills Implementation Plan"
+  - Reading historical Lisa Brain/Skills planning provenance
+  - Confirming Item 3 Wave A P-08 marked the two-provider plan non-current
+title: "OpenClaw Prime/Lisa LiNKbrain and LiNKskills Implementation Plan (historical)"
 ---
 
 # OpenClaw Prime/Lisa + LiNKbrain + LiNKskills Detailed Implementation Plan
 
-**Status:** Proposed execution baseline; implementation requires Principal approval
+> **Historical (Wave A Item 3):** This July 2026 two-provider Brain/Skills plan is
+> retained for provenance only. It is **not** the current Lisa five-provider
+> contract. It does not define Libraries or Autowork, and it still describes v1
+> MCP tool families. Authoritative Lisa five-provider policy is the accepted
+> Item 3 PRD and implementation plan on `issue/189` (`docs/ITEM-3-CONNECT-OPENCLAW-PRIME-LISA-PRD.md`,
+> `docs/ITEM-3-CONNECT-OPENCLAW-PRIME-LISA-IMPLEMENTATION-PLAN.md`), with Wave A
+> source under `linkbots/lisa/ops/providers/`.
+
+**Status:** Historical / superseded as Lisa five-provider authority (Item 3 Wave A P-08)
 
 **Scope owner:** OpenClaw Prime/Lisa
 

@@ -147,6 +147,15 @@ export type LisaDeliveryAttempt = {
   readonly updatedAtMs: number;
 };
 
+/** Closed Lisa provider-policy outcomes. Silent success is unrepresentable. */
+export const LISA_PROVIDER_POLICY_STATUSES = [
+  "accepted",
+  "denied",
+  "unavailable",
+  "invalid",
+] as const;
+export type LisaProviderPolicyStatus = (typeof LISA_PROVIDER_POLICY_STATUSES)[number];
+
 export type LisaProviderFailureCode =
   | "unavailable"
   | "timeout"

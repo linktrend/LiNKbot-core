@@ -119,11 +119,16 @@ export function canPerformExternalAction(permission: boolean): boolean {
 }
 
 export function routeTask(task: Pick<TimeTask, "owner" | "status">): {
-  destination: "google-tasks" | "linkbrain";
+  destination: "google-tasks" | "hold";
   calendarProposal: boolean;
+  hold: boolean;
+  liveBrainWriteClaimed: false;
 } {
+  const carlosOwned = task.owner === "Carlos";
   return {
-    destination: task.owner === "Carlos" ? "google-tasks" : "linkbrain",
+    destination: carlosOwned ? "google-tasks" : "hold",
     calendarProposal: task.status === "Scheduled" || task.status === "In progress",
+    hold: !carlosOwned,
+    liveBrainWriteClaimed: false,
   };
 }

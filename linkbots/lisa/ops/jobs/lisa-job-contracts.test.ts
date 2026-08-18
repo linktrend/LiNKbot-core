@@ -3,6 +3,7 @@ import {
   LISA_JOB_IDS,
   LISA_JOB_SCHEDULE_METADATA,
   LISA_JOB_TIME_ZONE,
+  LISA_PROVIDER_POLICY_STATUSES,
   assertCycleIdentity,
   assertDestinationBindingId,
   assertLisaErrorCode,
@@ -18,6 +19,7 @@ import {
 
 describe("Lisa job contracts", () => {
   it("defines exactly ten canonical jobs with disabled Taipei metadata", () => {
+    expect(LISA_PROVIDER_POLICY_STATUSES).toEqual(["accepted", "denied", "unavailable", "invalid"]);
     expect(LISA_JOB_IDS).toHaveLength(10);
     for (const jobId of LISA_JOB_IDS) {
       expect(isLisaJobId(jobId)).toBe(true);
