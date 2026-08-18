@@ -69,7 +69,7 @@ export async function runMatrixQaE2eeCliEncryptionSetupMultiAccountScenario(
           defaultAccount: decoyAccountId,
           accounts: {
             [decoyAccountId]: {
-              accessToken: "decoy-token",
+              accessToken: `ltfx.n.5095a09224a5ba7211d6.v1`,
               deviceId: "DECOYDEVICE",
               encryption: false,
               homeserver: context.baseUrl,

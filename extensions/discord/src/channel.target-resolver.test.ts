@@ -9,7 +9,7 @@ function createCfg(): OpenClawConfig {
     channels: {
       discord: {
         enabled: true,
-        token: "test-token-placeholder",
+        token: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
       },
     },
   } as OpenClawConfig;

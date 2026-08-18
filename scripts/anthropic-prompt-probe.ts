@@ -773,7 +773,7 @@ function isMissingProcessError(error: unknown): boolean {
   return typeof error === "object" && error !== null && "code" in error && error.code === "ESRCH";
 }
 
-async function waitForGatewayReady(url: string, token: string): Promise<void> {
+async function waitForGatewayReady(url: string, token: (string)): Promise<void> {
   const { callGateway } = await import("../src/gateway/call.js");
   const deadline = Date.now() + 45_000;
   let lastError = "gateway start timeout";

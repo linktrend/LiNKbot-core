@@ -2,7 +2,7 @@
 import { describe, expect, it } from "vitest";
 import { includesSystemEventToken } from "./dreaming-shared.js";
 
-const TOKEN = "__openclaw_memory_core_short_term_promotion_dream__";
+const TOKEN = `ltfx.n.f4c56c255003f1aba04b.v1`;
 
 describe("includesSystemEventToken", () => {
   it("matches the bare token", () => {

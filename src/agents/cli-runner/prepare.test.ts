@@ -141,7 +141,7 @@ function createTestMcpLoopbackClientGrant(params: {
   context: McpLoopbackRequestContext;
 }): McpLoopbackClientGrant {
   return {
-    token: "loopback-token",
+    token: `ltfx.n.e1975e4ca31d44f2f61b.v1`,
     context: structuredClone(params.context),
   };
 }
@@ -535,7 +535,7 @@ describe("prepareCliRunContext", () => {
       env: { GEMINI_CLI_HOME: path.join(agentDir, "gemini-home") },
     }));
     const resolveApiKeyForProfile = vi.fn(async () => ({
-      apiKey: JSON.stringify({ token: "provider-formatted-access", projectId: "project-1" }),
+      apiKey: JSON.stringify({ token: `ltfx.n.60b0077603d399952762.v1`, projectId: "project-1" }),
       profileId: authProfileId,
       profileType: "oauth" as const,
       provider: "google-gemini-cli",
@@ -627,7 +627,7 @@ describe("prepareCliRunContext", () => {
       env: { GEMINI_CLI_HOME: path.join(agentDir, "gemini-home") },
     }));
     const resolveApiKeyForProfile = vi.fn(async () => ({
-      apiKey: JSON.stringify({ token: "provider-formatted-access", projectId: "project-1" }),
+      apiKey: JSON.stringify({ token: `ltfx.n.60b0077603d399952762.v1`, projectId: "project-1" }),
       profileId: resolvedProfileId,
       profileType: "oauth" as const,
       provider: "google-gemini-cli",
@@ -723,7 +723,7 @@ describe("prepareCliRunContext", () => {
       env: { GEMINI_CLI_HOME: path.join(agentDir, "gemini-home") },
     }));
     const resolveApiKeyForProfile = vi.fn(async () => ({
-      apiKey: JSON.stringify({ token: "provider-formatted-access", projectId: "project-1" }),
+      apiKey: JSON.stringify({ token: `ltfx.n.60b0077603d399952762.v1`, projectId: "project-1" }),
       profileId: authProfileId,
       profileType: "oauth" as const,
       provider: "google-gemini-cli",
@@ -825,7 +825,7 @@ describe("prepareCliRunContext", () => {
       env: { GEMINI_CLI_HOME: path.join(agentDir, "gemini-home") },
     }));
     const resolveApiKeyForProfile = vi.fn(async () => ({
-      apiKey: JSON.stringify({ token: "provider-formatted-access", projectId: "project-1" }),
+      apiKey: JSON.stringify({ token: `ltfx.n.60b0077603d399952762.v1`, projectId: "project-1" }),
       profileId: authProfileId,
       profileType: "oauth" as const,
       provider: "google-gemini-cli",
@@ -927,7 +927,7 @@ describe("prepareCliRunContext", () => {
           [authProfileId]: {
             type: "api_key",
             provider: "test-cli",
-            key: "secret-key",
+            key: `ltfx.n.85dbe15d75ef9308c7ae.v1`,
           },
         },
       },
@@ -1002,7 +1002,7 @@ describe("prepareCliRunContext", () => {
           [authProfileId]: {
             type: "api_key",
             provider: "claude-cli",
-            key: "stored-key",
+            key: `ltfx.n.c1f8fdb114cdd1062d18.v1`,
           },
         },
       },
@@ -1048,8 +1048,8 @@ describe("prepareCliRunContext", () => {
     const profileSystemSettingsPath = path.join(dir, "profile-system-settings.json");
     const getActiveMcpLoopbackRuntime = vi.fn(() => ({
       port: 31783,
-      ownerToken: "loopback-owner-token",
-      nonOwnerToken: "loopback-non-owner-token",
+      ownerToken: `ltfx.n.4b15b93c87b9aea73182.v1`,
+      nonOwnerToken: `ltfx.n.e251edbc7cb7d9ab92aa.v1`,
     }));
     const prepareExecution = vi.fn(async (_ctx: unknown) => ({
       env: {
@@ -1172,8 +1172,8 @@ describe("prepareCliRunContext", () => {
     let generatedSystemSettingsPath: string | undefined;
     const getActiveMcpLoopbackRuntime = vi.fn(() => ({
       port: 31783,
-      ownerToken: "loopback-owner-token",
-      nonOwnerToken: "loopback-non-owner-token",
+      ownerToken: `ltfx.n.4b15b93c87b9aea73182.v1`,
+      nonOwnerToken: `ltfx.n.e251edbc7cb7d9ab92aa.v1`,
     }));
     const prepareExecution = vi.fn(async (ctx: unknown) => {
       generatedSystemSettingsPath = (ctx as { env?: Record<string, string> }).env
@@ -1303,8 +1303,8 @@ describe("prepareCliRunContext", () => {
     setTestEnvValue("TEMP", tempRoot);
     const getActiveMcpLoopbackRuntime = vi.fn(() => ({
       port: 31783,
-      ownerToken: "loopback-owner-token",
-      nonOwnerToken: "loopback-non-owner-token",
+      ownerToken: `ltfx.n.4b15b93c87b9aea73182.v1`,
+      nonOwnerToken: `ltfx.n.e251edbc7cb7d9ab92aa.v1`,
     }));
     setCliRunnerPrepareTestDeps({
       getActiveMcpLoopbackRuntime,
@@ -2481,8 +2481,8 @@ describe("prepareCliRunContext", () => {
       try {
         const getActiveMcpLoopbackRuntime = vi.fn(() => ({
           port: 31783,
-          ownerToken: "loopback-owner-token",
-          nonOwnerToken: "loopback-non-owner-token",
+          ownerToken: `ltfx.n.4b15b93c87b9aea73182.v1`,
+          nonOwnerToken: `ltfx.n.e251edbc7cb7d9ab92aa.v1`,
         }));
         const resolveMcpLoopbackScopedTools = vi.fn(() => ({
           agentId: "main",
@@ -2664,8 +2664,8 @@ describe("prepareCliRunContext", () => {
     try {
       const getActiveMcpLoopbackRuntime = vi.fn(() => ({
         port: 31783,
-        ownerToken: "loopback-owner-token",
-        nonOwnerToken: "loopback-non-owner-token",
+        ownerToken: `ltfx.n.4b15b93c87b9aea73182.v1`,
+        nonOwnerToken: `ltfx.n.e251edbc7cb7d9ab92aa.v1`,
       }));
       const resolveMcpLoopbackScopedTools = vi.fn((scope: { senderIsOwner?: boolean }) => ({
         agentId: "main",
@@ -2925,8 +2925,8 @@ describe("prepareCliRunContext", () => {
     try {
       const getActiveMcpLoopbackRuntime = vi.fn(() => ({
         port: 31783,
-        ownerToken: "loopback-owner-token",
-        nonOwnerToken: "loopback-non-owner-token",
+        ownerToken: `ltfx.n.4b15b93c87b9aea73182.v1`,
+        nonOwnerToken: `ltfx.n.e251edbc7cb7d9ab92aa.v1`,
       }));
       const ensureMcpLoopbackServer = vi.fn(createTestMcpLoopbackServer);
       const createMcpLoopbackServerConfig = vi.fn(createTestMcpLoopbackServerConfig);
@@ -2970,8 +2970,8 @@ describe("prepareCliRunContext", () => {
       );
       const getActiveMcpLoopbackRuntime = vi.fn(() => ({
         port: 31783,
-        ownerToken: "loopback-owner-token",
-        nonOwnerToken: "loopback-non-owner-token",
+        ownerToken: `ltfx.n.4b15b93c87b9aea73182.v1`,
+        nonOwnerToken: `ltfx.n.e251edbc7cb7d9ab92aa.v1`,
       }));
       const ensureMcpLoopbackServer = vi.fn(createTestMcpLoopbackServer);
       const createMcpLoopbackServerConfig = vi.fn(createTestMcpLoopbackServerConfig);
@@ -3190,8 +3190,8 @@ describe("prepareCliRunContext", () => {
     try {
       const getActiveMcpLoopbackRuntime = vi.fn(() => ({
         port: 31783,
-        ownerToken: "loopback-owner-token",
-        nonOwnerToken: "loopback-non-owner-token",
+        ownerToken: `ltfx.n.4b15b93c87b9aea73182.v1`,
+        nonOwnerToken: `ltfx.n.e251edbc7cb7d9ab92aa.v1`,
       }));
       const ensureMcpLoopbackServer = vi.fn(createTestMcpLoopbackServer);
       const createMcpLoopbackServerConfig = vi.fn(createTestMcpLoopbackServerConfig);
@@ -3299,7 +3299,7 @@ describe("prepareCliRunContext", () => {
       });
 
       expect(context.preparedBackend.env).toMatchObject({
-        OPENCLAW_MCP_TOKEN: "loopback-token",
+        OPENCLAW_MCP_TOKEN: `ltfx.n.e1975e4ca31d44f2f61b.v1`,
         OPENCLAW_MCP_CLI_CAPTURE_KEY: "",
       });
       expect(mintMcpLoopbackClientGrant).toHaveBeenCalledWith({
@@ -3357,18 +3357,18 @@ describe("prepareCliRunContext", () => {
           groupSpace: "workspace-a",
           spawnedBy: "agent:main:telegram:group:parent",
         },
-        runtimeOwnerToken: "loopback-owner-token",
+        runtimeOwnerToken: `ltfx.n.4b15b93c87b9aea73182.v1`,
       });
       context.preparedBackend.mcpClientGrantCapture?.activate("capture-test");
       context.preparedBackend.mcpClientGrantCapture?.deactivate("capture-test");
       expect(activateMcpLoopbackClientGrantCapture).toHaveBeenCalledExactlyOnceWith({
-        token: "loopback-token",
-        runtimeOwnerToken: "loopback-owner-token",
+        token: `ltfx.n.e1975e4ca31d44f2f61b.v1`,
+        runtimeOwnerToken: `ltfx.n.4b15b93c87b9aea73182.v1`,
         captureKey: "capture-test",
       });
       expect(deactivateMcpLoopbackClientGrantCapture).toHaveBeenCalledExactlyOnceWith({
-        token: "loopback-token",
-        runtimeOwnerToken: "loopback-owner-token",
+        token: `ltfx.n.e1975e4ca31d44f2f61b.v1`,
+        runtimeOwnerToken: `ltfx.n.4b15b93c87b9aea73182.v1`,
         captureKey: "capture-test",
       });
       expect(context.mcpDeliveryCapture).toBe(true);
@@ -3426,8 +3426,8 @@ describe("prepareCliRunContext", () => {
       setCliRunnerPrepareTestDeps({
         getActiveMcpLoopbackRuntime: vi.fn(() => ({
           port: 31783,
-          ownerToken: "loopback-owner-token",
-          nonOwnerToken: "loopback-non-owner-token",
+          ownerToken: `ltfx.n.4b15b93c87b9aea73182.v1`,
+          nonOwnerToken: `ltfx.n.e251edbc7cb7d9ab92aa.v1`,
         })),
         createMcpLoopbackServerConfig: vi.fn(createTestMcpLoopbackServerConfig),
       });
@@ -3477,8 +3477,8 @@ describe("prepareCliRunContext", () => {
     try {
       const getActiveMcpLoopbackRuntime = vi.fn(() => ({
         port: 31783,
-        ownerToken: "loopback-owner-token",
-        nonOwnerToken: "loopback-non-owner-token",
+        ownerToken: `ltfx.n.4b15b93c87b9aea73182.v1`,
+        nonOwnerToken: `ltfx.n.e251edbc7cb7d9ab92aa.v1`,
       }));
       setCliRunnerPrepareTestDeps({
         getActiveMcpLoopbackRuntime,
@@ -3537,8 +3537,8 @@ describe("prepareCliRunContext", () => {
     setCliRunnerPrepareTestDeps({
       getActiveMcpLoopbackRuntime: vi.fn(() => ({
         port: 31783,
-        ownerToken: "loopback-owner-token",
-        nonOwnerToken: "loopback-non-owner-token",
+        ownerToken: `ltfx.n.4b15b93c87b9aea73182.v1`,
+        nonOwnerToken: `ltfx.n.e251edbc7cb7d9ab92aa.v1`,
       })),
       ensureMcpLoopbackServer: vi.fn(createTestMcpLoopbackServer),
       createMcpLoopbackServerConfig: vi.fn(createTestMcpLoopbackServerConfig),
@@ -3689,8 +3689,8 @@ describe("prepareCliRunContext", () => {
     try {
       const getActiveMcpLoopbackRuntime = vi.fn(() => ({
         port: 31783,
-        ownerToken: "loopback-owner-token",
-        nonOwnerToken: "loopback-non-owner-token",
+        ownerToken: `ltfx.n.4b15b93c87b9aea73182.v1`,
+        nonOwnerToken: `ltfx.n.e251edbc7cb7d9ab92aa.v1`,
       }));
       setCliRunnerPrepareTestDeps({
         getActiveMcpLoopbackRuntime,

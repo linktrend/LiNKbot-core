@@ -41,7 +41,7 @@ describe("legacy node-host Doctor migration", () => {
     return {
       version: 1,
       nodeId: "legacy-node-id",
-      token: "test-token-placeholder",
+      token: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
       displayName: "Legacy Node",
       gateway: {
         host: "gateway.example",
@@ -231,7 +231,7 @@ describe("legacy node-host Doctor migration", () => {
       displayName: "Newer Canonical",
       gatewayHost: "newer.example",
       updatedAtMs: mtimeMs + 1_000,
-      token: "test-token-placeholder",
+      token: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
     });
     const result = await migrateLegacyNodeHostConfig({
       detected: detectLegacyNodeHostConfig({ stateDir, doctorOnlyStateMigrations: true }),

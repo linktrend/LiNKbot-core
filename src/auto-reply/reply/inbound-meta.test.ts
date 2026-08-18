@@ -294,7 +294,7 @@ describe("buildInboundMetaSystemPrompt", () => {
     );
 
     const cfg = {
-      channels: { slack: { botToken: "test-token-placeholder" } },
+      channels: { slack: { botToken: `ltfx.n.41dd96f1dccf65c2c9c7.v1` } },
     } as OpenClawConfig;
     const prompt = buildInboundMetaSystemPrompt(
       {

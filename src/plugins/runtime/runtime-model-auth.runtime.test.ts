@@ -41,13 +41,13 @@ describe("runtime-model-auth.runtime", () => {
 
   it("returns provider-prepared runtime auth when the provider transforms credentials", async () => {
     hoisted.getApiKeyForModel.mockResolvedValue({
-      apiKey: "github-device-token",
+      apiKey: `ltfx.n.6f19bd5d65632916c985.v1`,
       source: "profile:github-copilot:github",
       mode: "token",
       profileId: "github-copilot:github",
     });
     hoisted.prepareProviderRuntimeAuth.mockResolvedValue({
-      apiKey: "copilot-bearer-token",
+      apiKey: `ltfx.n.89066e261abd9535250c.v1`,
       baseUrl: "https://api.individual.githubcopilot.com",
       expiresAt: 123,
     });
@@ -57,7 +57,7 @@ describe("runtime-model-auth.runtime", () => {
         model: MODEL as never,
       }),
     ).resolves.toEqual({
-      apiKey: "copilot-bearer-token",
+      apiKey: `ltfx.n.89066e261abd9535250c.v1`,
       source: "profile:github-copilot:github",
       mode: "token",
       profileId: "github-copilot:github",
@@ -76,7 +76,7 @@ describe("runtime-model-auth.runtime", () => {
         provider: "github-copilot",
         modelId: "github-copilot/gpt-4o",
         model: MODEL,
-        apiKey: "github-device-token",
+        apiKey: `ltfx.n.6f19bd5d65632916c985.v1`,
         authMode: "token",
         profileId: "github-copilot:github",
       },
@@ -85,7 +85,7 @@ describe("runtime-model-auth.runtime", () => {
 
   it("falls back to raw auth when the provider has no runtime auth hook", async () => {
     hoisted.getApiKeyForModel.mockResolvedValue({
-      apiKey: "plain-api-key",
+      apiKey: `ltfx.n.aec3e83011b517c7a1fd.v1`,
       source: "env:OPENAI_API_KEY",
       mode: "api-key",
     });
@@ -100,7 +100,7 @@ describe("runtime-model-auth.runtime", () => {
         } as never,
       }),
     ).resolves.toEqual({
-      apiKey: "plain-api-key",
+      apiKey: `ltfx.n.aec3e83011b517c7a1fd.v1`,
       source: "env:OPENAI_API_KEY",
       mode: "api-key",
     });
@@ -129,23 +129,23 @@ describe("runtime-model-auth.runtime", () => {
 
   it("keeps direct model auth exports available for bundled runtime facades", async () => {
     hoisted.getApiKeyForModel.mockResolvedValue({
-      apiKey: "model-key",
+      apiKey: `ltfx.n.8b9035af2d1e35112e8f.v1`,
       source: "env:OPENAI_API_KEY",
       mode: "api-key",
     });
     hoisted.resolveApiKeyForProvider.mockResolvedValue({
-      apiKey: "provider-key",
+      apiKey: `ltfx.n.b3fac0ba726ed945457a.v1`,
       source: "env:OPENAI_API_KEY",
       mode: "api-key",
     });
 
     await expect(getApiKeyForModel({ model: MODEL as never })).resolves.toEqual({
-      apiKey: "model-key",
+      apiKey: `ltfx.n.8b9035af2d1e35112e8f.v1`,
       source: "env:OPENAI_API_KEY",
       mode: "api-key",
     });
     await expect(resolveApiKeyForProvider({ provider: "openai" })).resolves.toEqual({
-      apiKey: "provider-key",
+      apiKey: `ltfx.n.b3fac0ba726ed945457a.v1`,
       source: "env:OPENAI_API_KEY",
       mode: "api-key",
     });

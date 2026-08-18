@@ -601,7 +601,7 @@ describe("resolveEmbeddedAgentStreamFn", () => {
         input: ["text"],
         cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
       } as never,
-      resolvedApiKey: "sk-ant-test",
+      resolvedApiKey: `ltfx.n.cdba95a3170e3a312d5c.v1`,
     });
 
     expect(streamFn).not.toBe(currentStreamFn);

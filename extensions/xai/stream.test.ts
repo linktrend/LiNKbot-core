@@ -130,7 +130,7 @@ async function captureXaiResponsesPayloadWithThinking(
       model,
       { messages: [{ role: "user", content: "hello", timestamp: 0 }] },
       {
-        apiKey: "test-api-key",
+        apiKey: `ltfx.n.4c806362b613f7496abf.v1`,
         cacheRetention: "none",
         reasoning,
         onPayload: (payload) => {

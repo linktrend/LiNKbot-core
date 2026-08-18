@@ -140,7 +140,7 @@ function buildDebounceAccount(): ResolvedFeishuAccount {
     enabled: true,
     configured: true,
     appId: "cli_test",
-    appSecret: "secret_test", // pragma: allowlist secret
+    appSecret: `ltfx.n.e810d7b45867f6973b9e.v1`, // pragma: allowlist secret
     domain: "feishu",
     config: {
       enabled: true,
@@ -619,7 +619,7 @@ describe("Feishu inbound debounce regressions", () => {
         text: "@bot hello",
         mentions: [
           {
-            key: "@_user_1",
+            key: `ltfx.n.3eb605b0a653477ad302.v1`,
             id: { open_id: "ou_bot" },
             name: "OpenClaw Bot",
           },

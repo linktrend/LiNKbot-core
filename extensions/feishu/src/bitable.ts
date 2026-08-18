@@ -74,7 +74,7 @@ const FIELD_TYPE_NAMES: Record<number, string> = {
 // ============ Core Functions ============
 
 /** Parse bitable URL and extract tokens */
-function parseBitableUrl(url: string): { token: string; tableId?: string; isWiki: boolean } | null {
+function parseBitableUrl(url: (string)): { token: string; tableId?: string; isWiki: boolean } | null {
   try {
     const u = new URL(url);
     const tableId = u.searchParams.get("table") ?? undefined;
@@ -104,7 +104,7 @@ function parseBitableUrl(url: string): { token: string; tableId?: string; isWiki
 }
 
 /** Get app_token from wiki node_token */
-async function getAppTokenFromWiki(client: Lark.Client, nodeToken: string): Promise<string> {
+async function getAppTokenFromWiki(client: Lark.Client, nodeToken: (string)): Promise<string> {
   const res = await client.wiki.space.getNode({
     params: { token: nodeToken },
   });
@@ -206,7 +206,7 @@ async function listRecords(
   return {
     records: res.data?.items ?? [],
     has_more: res.data?.has_more ?? false,
-    page_token: res.data?.page_token,
+    page_token: (res.data?.page_token,)
     total: res.data?.total,
   };
 }
@@ -398,7 +398,7 @@ async function createApp(
   });
   ensureLarkSuccess(res, "bitable.app.create", { name, folderToken });
 
-  const appToken = res.data?.app?.app_token;
+  const appToken = (res.data?.app?.app_token;)
   if (!appToken) {
     throw new Error("Failed to create Bitable: no app_token returned");
   }
@@ -428,7 +428,7 @@ async function createApp(
     app_token: appToken,
     table_id: tableId,
     name: res.data?.app?.name,
-    url: res.data?.app?.url,
+    url: (res.data?.app?.url,)
     cleaned_placeholder_rows: cleanedRows,
     cleaned_default_fields: cleanedFields,
     hint: tableId
@@ -498,14 +498,14 @@ const ListFieldsSchema = Type.Object({
   app_token: Type.String({
     description: "Bitable app token (use feishu_bitable_get_meta to get from URL)",
   }),
-  table_id: Type.String({ description: "Table ID (from URL: ?table=YYY)" }),
+  table_id: Type.String({ description: "Table ID (from URL: (?table=YYY)" }),)
 });
 
 const ListRecordsSchema = Type.Object({
   app_token: Type.String({
     description: "Bitable app token (use feishu_bitable_get_meta to get from URL)",
   }),
-  table_id: Type.String({ description: "Table ID (from URL: ?table=YYY)" }),
+  table_id: Type.String({ description: "Table ID (from URL: (?table=YYY)" }),)
   page_size: optionalPositiveIntegerSchema({
     description: "Number of records per page (1-500, default 100)",
     maximum: 500,
@@ -519,7 +519,7 @@ const GetRecordSchema = Type.Object({
   app_token: Type.String({
     description: "Bitable app token (use feishu_bitable_get_meta to get from URL)",
   }),
-  table_id: Type.String({ description: "Table ID (from URL: ?table=YYY)" }),
+  table_id: Type.String({ description: "Table ID (from URL: (?table=YYY)" }),)
   record_id: Type.String({ description: "Record ID to retrieve" }),
 });
 
@@ -533,7 +533,7 @@ const CreateRecordSchema = Type.Object({
   app_token: Type.String({
     description: "Bitable app token (use feishu_bitable_get_meta to get from URL)",
   }),
-  table_id: Type.String({ description: "Table ID (from URL: ?table=YYY)" }),
+  table_id: Type.String({ description: "Table ID (from URL: (?table=YYY)" }),)
   fields: Type.Record(Type.String(), BitableFieldValueSchema, {
     description:
       "Field values keyed by field name. Format by type: Text='string', Number=123, SingleSelect='Option', MultiSelect=['A','B'], DateTime=timestamp_ms, User=[{id:'ou_xxx'}], URL={text:'Display',link:'https://...'}",
@@ -556,7 +556,7 @@ const CreateFieldSchema = Type.Object({
     description:
       "Bitable app token (use feishu_bitable_get_meta to get from URL, or feishu_bitable_create_app to create new)",
   }),
-  table_id: Type.String({ description: "Table ID (from URL: ?table=YYY)" }),
+  table_id: Type.String({ description: "Table ID (from URL: (?table=YYY)" }),)
   field_name: Type.String({ description: "Name for the new field" }),
   field_type: Type.Number({
     description:
@@ -574,7 +574,7 @@ const UpdateRecordSchema = Type.Object({
   app_token: Type.String({
     description: "Bitable app token (use feishu_bitable_get_meta to get from URL)",
   }),
-  table_id: Type.String({ description: "Table ID (from URL: ?table=YYY)" }),
+  table_id: Type.String({ description: "Table ID (from URL: (?table=YYY)" }),)
   record_id: Type.String({ description: "Record ID to update" }),
   fields: Type.Record(Type.String(), BitableFieldValueSchema, {
     description: "Field values to update (same format as create_record)",

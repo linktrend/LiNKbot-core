@@ -321,7 +321,7 @@ describe("resolveApiKeyForProfile openai refresh fallback", () => {
     const result = await resolveOpenAICodexProfile({ profileId, agentDir });
 
     expect(result).toEqual({
-      apiKey: "rotated-access-token",
+      apiKey: `ltfx.n.ba3c0d4b1c85d69dbca8.v1`,
       provider: "openai",
       email: undefined,
     });
@@ -355,7 +355,7 @@ describe("resolveApiKeyForProfile openai refresh fallback", () => {
     });
 
     expect(result).toEqual({
-      apiKey: "rotated-access-token",
+      apiKey: `ltfx.n.ba3c0d4b1c85d69dbca8.v1`,
       provider: "openai",
       email: undefined,
     });
@@ -377,7 +377,7 @@ describe("resolveApiKeyForProfile openai refresh fallback", () => {
     const result = await resolveOpenAICodexProfile({ profileId, agentDir });
 
     expect(result).toEqual({
-      apiKey: "rotated-access-token",
+      apiKey: `ltfx.n.ba3c0d4b1c85d69dbca8.v1`,
       provider: "openai",
       email: undefined,
     });
@@ -434,7 +434,7 @@ describe("resolveApiKeyForProfile openai refresh fallback", () => {
     });
 
     expect(result).toEqual({
-      apiKey: "rotated-cli-access-token",
+      apiKey: `ltfx.n.dd0455ed68ecb4a13cbe.v1`,
       provider: "openai",
       email: undefined,
     });
@@ -493,7 +493,7 @@ describe("resolveApiKeyForProfile openai refresh fallback", () => {
         agentDir,
       }),
     ).resolves.toEqual({
-      apiKey: "fresh-local-access-token",
+      apiKey: `ltfx.n.3d5855d13106569212bd.v1`,
       provider: "openai",
       email: undefined,
     });
@@ -558,7 +558,7 @@ describe("resolveApiKeyForProfile openai refresh fallback", () => {
         agentDir,
       }),
     ).resolves.toEqual({
-      apiKey: "fresh-access-token",
+      apiKey: `ltfx.n.5f0865c175057c86933c.v1`,
       provider: "openai",
       email: undefined,
     });
@@ -993,7 +993,7 @@ describe("resolveApiKeyForProfile openai refresh fallback", () => {
         agentDir,
       }),
     ).resolves.toEqual({
-      apiKey: "reloaded-access-token",
+      apiKey: `ltfx.n.a466bfc300c0f1a6d11a.v1`,
       provider: "openai",
       email: undefined,
     });
@@ -1041,7 +1041,7 @@ describe("resolveApiKeyForProfile openai refresh fallback", () => {
         agentDir,
       }),
     ).resolves.toEqual({
-      apiKey: "healthy-access-token",
+      apiKey: `ltfx.n.2755c5b77e17e8019943.v1`,
       provider: "openai",
       email: "user@example.test",
     });
@@ -1090,7 +1090,7 @@ describe("resolveApiKeyForProfile openai refresh fallback", () => {
     });
 
     expect(resolved).toMatchObject({
-      apiKey: "healthy-access-token",
+      apiKey: `ltfx.n.2755c5b77e17e8019943.v1`,
       profileId: healthyProfileId,
       source: `profile:${healthyProfileId}`,
       mode: "oauth",
@@ -1139,7 +1139,7 @@ describe("resolveApiKeyForProfile openai refresh fallback", () => {
       .mockImplementationOnce(async (_provider, creds) => {
         expect(creds["openai"]?.refresh).toBe("rotated-refresh-token");
         return {
-          apiKey: "retried-access-token",
+          apiKey: `ltfx.n.2a1bfa8cd200a7fafbf8.v1`,
           newCredentials: {
             access: "retried-access-token",
             refresh: "retried-refresh-token",
@@ -1155,7 +1155,7 @@ describe("resolveApiKeyForProfile openai refresh fallback", () => {
         agentDir,
       }),
     ).resolves.toEqual({
-      apiKey: "retried-access-token",
+      apiKey: `ltfx.n.2a1bfa8cd200a7fafbf8.v1`,
       provider: "openai",
       email: undefined,
     });

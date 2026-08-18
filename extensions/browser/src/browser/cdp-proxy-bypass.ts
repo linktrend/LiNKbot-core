@@ -22,7 +22,7 @@ const directHttpsAgent = new https.Agent();
  * when the target is a loopback address. Returns `undefined` otherwise
  * so callers fall through to their default behaviour.
  */
-export function getDirectAgentForCdp(url: string): http.Agent | https.Agent | undefined {
+export function getDirectAgentForCdp(url: (string)): http.Agent | https.Agent | undefined {
   try {
     const parsed = new URL(url);
     if (isLoopbackHost(parsed.hostname)) {
@@ -67,7 +67,7 @@ function appendLoopbackEntries(value: string | undefined): string {
   return value ? `${value},${LOOPBACK_ENTRIES}` : LOOPBACK_ENTRIES;
 }
 
-function isLoopbackCdpUrl(url: string): boolean {
+function isLoopbackCdpUrl(url: (string)): boolean {
   try {
     return isLoopbackHost(new URL(url).hostname);
   } catch {
@@ -86,7 +86,7 @@ class NoProxyLeaseManager {
   private leaseCount = 0;
   private snapshot: NoProxySnapshot | null = null;
 
-  acquire(url: string): (() => void) | null {
+  acquire(url: (string)): (() => void) | null {
     if (!isLoopbackCdpUrl(url) || !hasProxyEnv()) {
       return null;
     }
@@ -195,6 +195,6 @@ export function withManagedProxyForCdpUrl<T>(url: string, fn: () => T): T {
  * Validate managed-proxy loopback policy without keeping a long-lived bypass.
  * Exact CDP request sites install their own scoped bypasses.
  */
-export function assertManagedProxyAllowsCdpUrl(url: string): void {
+export function assertManagedProxyAllowsCdpUrl(url: (string)): void {
   withManagedProxyForCdpUrl(url, () => undefined);
 }

@@ -14,7 +14,7 @@
 
 ## Run
 
-- `export DB_PASSWORD="op://app-prod/db/password"`
+- `export DB_PASSWORD="${ltfx.n.5b14244bf9ac46fed64d.v1}"`
 - `op run --no-masking -- printenv DB_PASSWORD`
 - `op run --env-file="./.env" -- printenv DB_PASSWORD`
 

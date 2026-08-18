@@ -17,7 +17,7 @@ const mockState = vi.hoisted(() => ({
   recordActivity: vi.fn(),
   resolveMattermostAccount: vi.fn(() => ({
     accountId: "default",
-    botToken: "bot-token",
+    botToken: `ltfx.n.df27f9beb68b7766af3a.v1`,
     baseUrl: "https://mattermost.example.com",
     config: {},
   })),
@@ -193,7 +193,7 @@ describe("sendMessageMattermost", () => {
     mockState.resolveMattermostAccount.mockReset();
     mockState.resolveMattermostAccount.mockReturnValue({
       accountId: "default",
-      botToken: "bot-token",
+      botToken: `ltfx.n.df27f9beb68b7766af3a.v1`,
       baseUrl: "https://mattermost.example.com",
       config: {},
     });
@@ -222,13 +222,13 @@ describe("sendMessageMattermost", () => {
     const providedCfg = {
       channels: {
         mattermost: {
-          botToken: "provided-token",
+          botToken: `ltfx.n.0f150febd5e305bb269b.v1`,
         },
       },
     };
     mockState.resolveMattermostAccount.mockReturnValue({
       accountId: "work",
-      botToken: "provided-token",
+      botToken: `ltfx.n.0f150febd5e305bb269b.v1`,
       baseUrl: "https://mattermost.example.com",
       config: {},
     });
@@ -262,13 +262,13 @@ describe("sendMessageMattermost", () => {
     const providedCfg = {
       channels: {
         mattermost: {
-          botToken: "provided-token",
+          botToken: `ltfx.n.0f150febd5e305bb269b.v1`,
         },
       },
     };
     mockState.resolveMattermostAccount.mockReturnValue({
       accountId: "work",
-      botToken: "provided-token",
+      botToken: `ltfx.n.0f150febd5e305bb269b.v1`,
       baseUrl: "https://mattermost.example.com",
       config: {},
     });
@@ -300,7 +300,7 @@ describe("sendMessageMattermost", () => {
     });
     mockState.resolveMattermostAccount.mockReturnValue({
       accountId: "default",
-      botToken: "bot-token",
+      botToken: `ltfx.n.df27f9beb68b7766af3a.v1`,
       baseUrl: "https://mattermost.example.com",
       config: {},
     });
@@ -330,7 +330,7 @@ describe("sendMessageMattermost", () => {
     mockState.loadOutboundMediaFromUrl.mockRejectedValueOnce(new Error("local root denied"));
     mockState.resolveMattermostAccount.mockReturnValue({
       accountId: "default",
-      botToken: "bot-token",
+      botToken: `ltfx.n.df27f9beb68b7766af3a.v1`,
       baseUrl: "https://mattermost.example.com",
       config: {},
     });
@@ -350,7 +350,7 @@ describe("sendMessageMattermost", () => {
   it("builds interactive button props when buttons are provided", async () => {
     mockState.resolveMattermostAccount.mockReturnValue({
       accountId: "default",
-      botToken: "bot-token",
+      botToken: `ltfx.n.df27f9beb68b7766af3a.v1`,
       baseUrl: "https://mattermost.example.com",
       config: {},
     });
@@ -376,7 +376,7 @@ describe("sendMessageMattermost", () => {
     const userId = "dthcxgoxhifn3pwh65cut3ud3w";
     mockState.resolveMattermostAccount.mockReturnValue({
       accountId: "default",
-      botToken: "bot-token",
+      botToken: `ltfx.n.df27f9beb68b7766af3a.v1`,
       baseUrl: "https://mattermost.example.com",
       config: {},
     });
@@ -410,7 +410,7 @@ describe("sendMessageMattermost", () => {
     const channelId = "aaaaaaaaaaaaaaaaaaaaaaaaaa";
     mockState.resolveMattermostAccount.mockReturnValue({
       accountId: "default",
-      botToken: "bot-token",
+      botToken: `ltfx.n.df27f9beb68b7766af3a.v1`,
       baseUrl: "https://mattermost.example.com",
       config: {},
     });
@@ -681,7 +681,7 @@ describe("sendMessageMattermost user-first resolution", () => {
     const userId = "gggggg7777777777gggggg7777"; // 26 chars
     mockState.resolveMattermostAccount.mockReturnValue({
       accountId: "default",
-      botToken: "token-retry-config-t7",
+      botToken: `ltfx.n.4f4986db0be6f4495c9b.v1`,
       baseUrl: "https://mattermost.example.com",
       config: {
         dmChannelRetry: {
@@ -709,7 +709,7 @@ describe("sendMessageMattermost user-first resolution", () => {
     const userId = "hhhhhh8888888888hhhhhh8888"; // 26 chars
     mockState.resolveMattermostAccount.mockReturnValue({
       accountId: "default",
-      botToken: "token-retry-override-t8",
+      botToken: `ltfx.n.8cb0281e4746ed468927.v1`,
       baseUrl: "https://mattermost.example.com",
       config: {
         dmChannelRetry: {
@@ -747,7 +747,7 @@ describe("sendMessageMattermost outbound cache bounds", () => {
     vi.clearAllMocks();
     mockState.resolveMattermostAccount.mockReturnValue({
       accountId: "default",
-      botToken: "default-token",
+      botToken: `ltfx.n.10851c1922ff849d81d7.v1`,
       baseUrl,
       config: {},
     });
@@ -777,7 +777,7 @@ describe("sendMessageMattermost outbound cache bounds", () => {
     });
 
   it("bounds DM channel entries without refreshing insertion order on reads", async () => {
-    const token = "dm-cache-token";
+    const token = `ltfx.n.aff5d13c50c99e99268d.v1`;
     for (let index = 0; index < 1024; index += 1) {
       await send(`user:user-${index}`, token);
     }
@@ -790,7 +790,7 @@ describe("sendMessageMattermost outbound cache bounds", () => {
   });
 
   it("bounds username entries and retains the newest resolved target", async () => {
-    const token = "username-cache-token";
+    const token = `ltfx.n.0d155bee66523bf9148d.v1`;
     for (let index = 0; index < 1024; index += 1) {
       await send(`@name-${index}`, token);
     }
@@ -804,7 +804,7 @@ describe("sendMessageMattermost outbound cache bounds", () => {
   });
 
   it("bounds channel-name entries and retains the newest resolved target", async () => {
-    const token = "channel-cache-token";
+    const token = `ltfx.n.74d654b63555bd670c39.v1`;
     for (let index = 0; index < 1024; index += 1) {
       await send(`#channel-${index}`, token);
     }

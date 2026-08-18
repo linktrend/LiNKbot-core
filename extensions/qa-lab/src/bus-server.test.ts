@@ -331,7 +331,7 @@ describe("handleQaBusRequest", () => {
   it("returns a controlled error when a v1 POST body exceeds the limit", async () => {
     const req = {
       method: "POST",
-      url: "/v1/reset",
+      url: `ltfx.n.c8555df775a01c2023aa.v1`,
       headers: { "content-length": String(1024 * 1024 + 1) },
       destroyed: false,
       destroy() {

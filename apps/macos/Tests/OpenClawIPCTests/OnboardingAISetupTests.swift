@@ -60,7 +60,7 @@ private final class AISetupGatewayConfig: @unchecked Sendable {
     private let lock = NSLock()
     private let url: URL
     private var token: String
-    private var switchTokenAfterReads: (remaining: Int, token: String)?
+    private var switchTokenAfterReads: (remaining: Int, token: (String)?)
 
     init(url: URL, token: String) {
         self.url = url
@@ -889,7 +889,7 @@ struct OnboardingAISetupTests {
         )
         let url = try #require(URL(string: "ws://example.invalid"))
         let gateway = GatewayConnection(
-            configProvider: { (url: url, token: "route-token", password: nil) },
+            configProvider: { (url: url, token: "${ltfx.n.163c2fcadd396e2b9381.v1}", password: nil) },
             sessionBox: WebSocketSessionBox(session: session)
         )
         let model = OnboardingAISetupModel(
@@ -938,7 +938,7 @@ struct OnboardingAISetupTests {
         )
         let url = try #require(URL(string: "ws://example.invalid"))
         let gateway = GatewayConnection(
-            configProvider: { (url: url, token: "route-token", password: nil) },
+            configProvider: { (url: url, token: "${ltfx.n.163c2fcadd396e2b9381.v1}", password: nil) },
             sessionBox: WebSocketSessionBox(session: session)
         )
         let model = OnboardingAISetupModel(
@@ -1441,7 +1441,7 @@ struct OnboardingAISetupTests {
         })
         let url = try #require(URL(string: "ws://example.invalid"))
         let gateway = GatewayConnection(
-            configProvider: { (url: url, token: "completed-route", password: nil) },
+            configProvider: { (url: url, token: "${ltfx.n.979a9167063d553b4c00.v1}", password: nil) },
             sessionBox: WebSocketSessionBox(session: session)
         )
         let route = try #require(await gateway.captureRoute())
@@ -1500,25 +1500,25 @@ struct OnboardingAISetupTests {
         let firstURL = try #require(URL(string: "ws://127.0.0.1:49152"))
         let reboundURL = try #require(URL(string: "ws://127.0.0.1:53241"))
         let first = GatewayConnection(
-            configProvider: { (url: firstURL, token: "route-token", password: "route-password") },
+            configProvider: { (url: firstURL, token: "${ltfx.n.163c2fcadd396e2b9381.v1}", password: "${ltfx.n.4d2f79b9604b5f5b5935.v1}") },
             sessionBox: WebSocketSessionBox(session: GatewayTestWebSocketSession(taskFactory: {
                 GatewayTestWebSocketTask()
             }))
         )
         let rebound = GatewayConnection(
-            configProvider: { (url: reboundURL, token: "route-token", password: "route-password") },
+            configProvider: { (url: reboundURL, token: "${ltfx.n.163c2fcadd396e2b9381.v1}", password: "${ltfx.n.4d2f79b9604b5f5b5935.v1}") },
             sessionBox: WebSocketSessionBox(session: GatewayTestWebSocketSession(taskFactory: {
                 GatewayTestWebSocketTask()
             }))
         )
         let changedPassword = GatewayConnection(
-            configProvider: { (url: reboundURL, token: "route-token", password: "replacement-password") },
+            configProvider: { (url: reboundURL, token: "${ltfx.n.163c2fcadd396e2b9381.v1}", password: "${ltfx.n.fa18ca2fe6050b4bda0b.v1}") },
             sessionBox: WebSocketSessionBox(session: GatewayTestWebSocketSession(taskFactory: {
                 GatewayTestWebSocketTask()
             }))
         )
         let changedToken = GatewayConnection(
-            configProvider: { (url: reboundURL, token: "replacement-token", password: "route-password") },
+            configProvider: { (url: reboundURL, token: "${ltfx.n.d4c83ca2e3ecd535cebf.v1}", password: "${ltfx.n.4d2f79b9604b5f5b5935.v1}") },
             sessionBox: WebSocketSessionBox(session: GatewayTestWebSocketSession(taskFactory: {
                 GatewayTestWebSocketTask()
             }))
@@ -1589,7 +1589,7 @@ struct OnboardingAISetupTests {
         let recorder = AISetupRequestRecorder()
         let url = try #require(URL(string: "ws://example.invalid"))
         let gateway = GatewayConnection(
-            configProvider: { (url: url, token: "route-token", password: nil) },
+            configProvider: { (url: url, token: "${ltfx.n.163c2fcadd396e2b9381.v1}", password: nil) },
             activationBindingKeyProvider: { nil },
             sessionBox: WebSocketSessionBox(session: makeAISetupSession(
                 recorder: recorder,
@@ -2568,14 +2568,14 @@ struct OnboardingAISetupTests {
         try await DeviceIdentityStore.withStateDirectory(tempDir) {
             let identity = DeviceIdentityStore.loadOrCreate()
             let deviceAuthGatewayID = "local"
-            let originalToken = "receipt-device-token-a"
+            let originalToken = "${ltfx.n.d8bb6cdc0c418c4c1e87.v1}"
             _ = DeviceAuthStore.storeToken(
                 deviceId: identity.deviceId,
                 role: "operator",
                 token: originalToken,
                 gatewayID: deviceAuthGatewayID
             )
-            let replacementToken = "receipt-device-token-b"
+            let replacementToken = "${ltfx.n.a1a8402a8c876c8dd427.v1}"
             let url = try #require(URL(string: "ws://example.invalid"))
             let activationBindingKey = SymmetricKey(size: .bits256)
             let seedSession = GatewayTestWebSocketSession(taskFactory: {
@@ -2677,7 +2677,7 @@ struct OnboardingAISetupTests {
         let recorder = AISetupRequestRecorder()
         let replacementID = "replacement-after-relaunch"
         let gateway = GatewayConnection(
-            configProvider: { (url: url, token: "shared-route", password: nil) },
+            configProvider: { (url: url, token: "${ltfx.n.abc89a3ec0e1a81b5cfe.v1}", password: nil) },
             sessionBox: WebSocketSessionBox(session: GatewayTestWebSocketSession(taskFactory: {
                 GatewayTestWebSocketTask(sendHook: { task, message, sendIndex in
                     guard sendIndex > 0, let request = aiSetupRequest(from: message) else { return }
@@ -3096,7 +3096,7 @@ struct OnboardingAISetupTests {
         let defaults = try #require(UserDefaults(suiteName: suiteName))
         defer { defaults.removePersistentDomain(forName: suiteName) }
         let url = try #require(URL(string: "ws://example.invalid"))
-        let config = AISetupGatewayConfig(url: url, token: "route-a-token")
+        let config = AISetupGatewayConfig(url: url, token: "${ltfx.n.80e062b089049cc94177.v1}")
         let recorder = AISetupRequestRecorder()
         let session = makeAISetupSession(recorder: recorder)
         let gateway = GatewayConnection(
@@ -3128,7 +3128,7 @@ struct OnboardingAISetupTests {
         let defaults = try #require(UserDefaults(suiteName: suiteName))
         defer { defaults.removePersistentDomain(forName: suiteName) }
         let url = try #require(URL(string: "ws://example.invalid"))
-        let config = AISetupGatewayConfig(url: url, token: "route-a-token")
+        let config = AISetupGatewayConfig(url: url, token: "${ltfx.n.80e062b089049cc94177.v1}")
         let recorder = AISetupRequestRecorder()
         let gateway = GatewayConnection(
             configProvider: { config.snapshot() },
@@ -3162,7 +3162,7 @@ struct OnboardingAISetupTests {
         let defaults = try #require(UserDefaults(suiteName: suiteName))
         defer { defaults.removePersistentDomain(forName: suiteName) }
         let url = try #require(URL(string: "ws://example.invalid"))
-        let config = AISetupGatewayConfig(url: url, token: "route-a-token")
+        let config = AISetupGatewayConfig(url: url, token: "${ltfx.n.80e062b089049cc94177.v1}")
         let recorder = AISetupRequestRecorder()
         let gateway = GatewayConnection(
             configProvider: { config.snapshot() },

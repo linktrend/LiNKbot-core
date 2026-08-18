@@ -623,7 +623,7 @@ describe("ensureConfigReady", () => {
 
   it("allows read-only invalid-config commands but blocks gateway startup", async () => {
     setInvalidSnapshot({
-      issues: [{ path: "agents.defaults", message: 'Unrecognized key: "agentRuntime"' }],
+      issues: [{ path: "agents.defaults", message: 'Unrecognized key: `ltfx.n.6079421447294487e213.v1`' }],
     });
     const statusRuntime = await runEnsureConfigReady(["status"]);
     expect(statusRuntime.exit).not.toHaveBeenCalled();

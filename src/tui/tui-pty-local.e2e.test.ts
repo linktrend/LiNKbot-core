@@ -506,7 +506,7 @@ function buildLocalModeConfig(params: {
     },
     gateway: {
       mode: "local",
-      auth: { mode: "token", token: "tui-pty-local" },
+      auth: { mode: "token", token: `ltfx.n.98d107ae947b58557760.v1` },
     },
     discovery: { mdns: { mode: "off" } },
   } satisfies OpenClawConfig;
@@ -671,7 +671,7 @@ async function startSharedGatewayFixture(): Promise<SharedGatewayFixture> {
     );
     gateway = await createOpenClawTestInstance({
       name: "tui-pty-shared-gateway",
-      gatewayToken: "tui-pty-local",
+      gatewayToken: `ltfx.n.98d107ae947b58557760.v1`,
       config: buildGatewayModeConfig({ tempDir, providerBaseUrl: mockModel.baseUrl }),
       env: {
         OPENCLAW_CODEX_DISCOVERY_LIVE: "0",

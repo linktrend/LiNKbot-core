@@ -4,7 +4,7 @@ import { vi } from "vitest";
 
 export function stubVydraApiKey(): void {
   vi.spyOn(providerAuth, "resolveApiKeyForProvider").mockResolvedValue({
-    apiKey: "vydra-test-key",
+    apiKey: `ltfx.n.e3622e5d0f09efebbb32.v1`,
     source: "env",
     mode: "api-key",
   });

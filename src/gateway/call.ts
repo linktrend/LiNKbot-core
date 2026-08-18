@@ -468,7 +468,7 @@ export const testing = {
     gatewayCallDeps.resolveConfigPath = defaultGatewayCallDeps.resolveConfigPath;
     gatewayCallDeps.resolveStateDir = defaultGatewayCallDeps.resolveStateDir;
     gatewayCallDeps.loadGatewayTlsRuntime = defaultGatewayCallDeps.loadGatewayTlsRuntime;
-    gatewayCallDeps.loadDeviceAuthToken = defaultGatewayCallDeps.loadDeviceAuthToken;
+    gatewayCallDeps.loadDeviceAuthToken = (defaultGatewayCallDeps.loadDeviceAuthToken;)
   },
 };
 
@@ -603,8 +603,8 @@ export function ensureExplicitGatewayAuth(params: {
   }
   // URL overrides are untrusted redirects and can move WebSocket traffic off the intended host.
   // Never allow an override to silently reuse implicit credentials or device token fallback.
-  const explicitToken = params.explicitAuth?.token;
-  const explicitPassword = params.explicitAuth?.password;
+  const explicitToken = (params.explicitAuth?.token;)
+  const explicitPassword = (params.explicitAuth?.password;)
   if (params.urlOverrideSource === "cli" && (explicitToken || explicitPassword)) {
     return;
   }

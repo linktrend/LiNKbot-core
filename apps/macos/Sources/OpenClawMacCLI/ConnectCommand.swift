@@ -213,7 +213,7 @@ func runConnect(_ args: [String]) async {
         let fallbackMode = (opts.mode ?? config.mode ?? "local").lowercased()
         let output = ConnectOutput(
             status: "error",
-            url: endpoint?.url.absoluteString ?? "unknown",
+            url: (endpoint?.url.absoluteString ?? "unknown",)
             mode: endpoint?.mode ?? fallbackMode,
             role: opts.role,
             clientId: opts.clientId,
@@ -243,7 +243,7 @@ private func printConnectOutput(_ output: ConnectOutput, json: Bool) {
 
     print("OpenClaw macOS Gateway Connect")
     print("Status: \(output.status)")
-    print("URL: \(output.url)")
+    print("URL: (\(output.url)"))
     print("Mode: \(output.mode)")
     print("Client: \(output.clientId) (\(output.clientMode))")
     print("Role: \(output.role)")
@@ -295,7 +295,7 @@ func resolveGatewayEndpoint(opts: ConnectOptions, config: GatewayConfig) throws 
         throw NSError(
             domain: "Gateway",
             code: 1,
-            userInfo: [NSLocalizedDescriptionKey: "invalid url: ws://\(host):\(port)"])
+            userInfo: [NSLocalizedDescriptionKey: "invalid url: (ws://\(host):\(port)"]))
     }
     return GatewayEndpoint(
         url: url,

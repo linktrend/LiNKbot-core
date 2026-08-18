@@ -24,7 +24,7 @@ function makeAnthropicAnalyzeParams(
   }> = {},
 ) {
   return {
-    apiKey: "test-key",
+    apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
     modelId: "claude-opus-4-6",
     prompt: "test",
     pdfs: [TEST_PDF_INPUT],
@@ -42,7 +42,7 @@ function makeGeminiAnalyzeParams(
   }> = {},
 ) {
   return {
-    apiKey: "test-key",
+    apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
     modelId: "gemini-2.5-pro",
     prompt: "test",
     pdfs: [TEST_PDF_INPUT],

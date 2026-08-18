@@ -34,14 +34,14 @@ let resolveDeliveredSlackReplyThreadTs: typeof import("./replies.js").resolveDel
 let resolveSlackThreadTs: typeof import("./replies.js").resolveSlackThreadTs;
 import { deliverSlackSlashReplies } from "./replies.js";
 
-const SLACK_TEST_CFG = { channels: { slack: { botToken: "xoxb-test" } } };
+const SLACK_TEST_CFG = { channels: { slack: { botToken: `ltfx.n.87894fe048938b686cfb.v1` } } };
 
 function baseParams(overrides?: Record<string, unknown>) {
   return {
     cfg: SLACK_TEST_CFG,
     replies: [{ text: "hello" }],
     target: "C123",
-    token: "xoxb-test",
+    token: `ltfx.n.87894fe048938b686cfb.v1`,
     runtime: { log: () => {}, error: () => {}, exit: () => {} },
     textLimit: 4000,
     replyToMode: "off" as const,
@@ -227,7 +227,7 @@ describe("deliverReplies identity passthrough", () => {
     expect(sendMock).toHaveBeenCalledTimes(2);
     expect(sendMock).toHaveBeenNthCalledWith(1, "C123", "Revenue summary", {
       cfg: enterpriseCfg,
-      token: "xoxb-test",
+      token: `ltfx.n.87894fe048938b686cfb.v1`,
       mediaUrl: "https://example.com/report.png",
       threadTs: "thread-ts",
       accountId: "work",
@@ -240,7 +240,7 @@ describe("deliverReplies identity passthrough", () => {
     });
     expect(sendMock).toHaveBeenNthCalledWith(2, "C123", "", {
       cfg: enterpriseCfg,
-      token: "xoxb-test",
+      token: `ltfx.n.87894fe048938b686cfb.v1`,
       threadTs: "thread-ts",
       accountId: "work",
       client: listenerClient,

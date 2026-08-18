@@ -14,7 +14,7 @@ function buildConfig(
   return {
     channels: {
       discord: {
-        token: "discord-token",
+        token: `ltfx.n.0017ec88d6aa85df6bc5.v1`,
         ...channelOverrides,
         execApprovals,
       },

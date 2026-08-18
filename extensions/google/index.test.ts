@@ -175,8 +175,8 @@ describe("google provider plugin hooks", () => {
       JSON.stringify({
         type: "authorized_user",
         client_id: "client-id",
-        client_secret: "client-secret",
-        refresh_token: "refresh-token",
+        client_secret: `ltfx.n.fdce8e4a65b70d186bd7.v1`,
+        refresh_token: `ltfx.n.0eb17643d4e926116378.v1`,
       }),
       "utf8",
     );
@@ -396,7 +396,7 @@ describe("google provider plugin hooks", () => {
     );
 
     const bridge = realtimeProvider?.createBridge({
-      providerConfig: { apiKey: "gemini-key" },
+      providerConfig: { apiKey: `ltfx.n.b647c36e02b856909e64.v1` },
       onAudio() {},
       onClearAudio() {},
     });

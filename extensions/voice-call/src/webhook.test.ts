@@ -906,7 +906,7 @@ describe("VoiceCallWebhookServer path matching", () => {
       const result = await runWebhookPipeline(
         {
           method: "POST",
-          url: "/voice/webhook?type=status",
+          url: `ltfx.n.5f3514f131a7d6a6372e.v1`,
           headers: { host: "[" },
           socket: { remoteAddress: "127.0.0.1" },
         } as unknown as IncomingMessage,
@@ -999,7 +999,7 @@ describe("VoiceCallWebhookServer replay handling", () => {
     const plivoProvider = new PlivoProvider(
       {
         authId: "MA000000000000000000",
-        authToken: "test-token",
+        authToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
       },
       { skipVerification: true },
     );
@@ -1010,7 +1010,7 @@ describe("VoiceCallWebhookServer replay handling", () => {
       skipSignatureVerification: true,
       plivo: {
         authId: "MA000000000000000000",
-        authToken: "test-token",
+        authToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
       },
     });
     const server = new VoiceCallWebhookServer(config, manager, plivoProvider);
@@ -1060,7 +1060,7 @@ describe("VoiceCallWebhookServer replay handling", () => {
     const buildTwiMLPayload = vi.fn(() => ({
       statusCode: 200,
       headers: { "Content-Type": "text/xml" },
-      body: '<Response><Connect><Stream url="wss://example.test/voice/stream/realtime/token" /></Connect></Response>',
+      body: '<Response><Connect><Stream url=`ltfx.n.e530420d50c534931ca8.v1` /></Connect></Response>',
     }));
     const twilioProvider: VoiceCallProvider = {
       ...provider,
@@ -1115,7 +1115,7 @@ describe("VoiceCallWebhookServer replay handling", () => {
       const buildTwiMLPayload = vi.fn(() => ({
         statusCode: 200,
         headers: { "Content-Type": "text/xml" },
-        body: '<Response><Connect><Stream url="wss://example.test/voice/stream/realtime/token" /></Connect></Response>',
+        body: '<Response><Connect><Stream url=`ltfx.n.e530420d50c534931ca8.v1` /></Connect></Response>',
       }));
       const twilioProvider: VoiceCallProvider = {
         ...provider,
@@ -1172,7 +1172,7 @@ describe("VoiceCallWebhookServer replay handling", () => {
       const buildTwiMLPayload = vi.fn(() => ({
         statusCode: 200,
         headers: { "Content-Type": "text/xml" },
-        body: '<Response><Connect><Stream url="wss://example.test/voice/stream/realtime/token" /></Connect></Response>',
+        body: '<Response><Connect><Stream url=`ltfx.n.e530420d50c534931ca8.v1` /></Connect></Response>',
       }));
       const twilioProvider: VoiceCallProvider = {
         ...provider,
@@ -1238,7 +1238,7 @@ describe("VoiceCallWebhookServer replay handling", () => {
     const buildTwiMLPayload = vi.fn(() => ({
       statusCode: 200,
       headers: { "Content-Type": "text/xml" },
-      body: '<Response><Connect><Stream url="wss://example.test/voice/stream/realtime/server-token" /></Connect></Response>',
+      body: '<Response><Connect><Stream url=`ltfx.n.4533c5efc0f0f0d96b6d.v1` /></Connect></Response>',
     }));
     const { manager, processEvent } = createManager([]);
     const config = createConfig({
@@ -1295,7 +1295,7 @@ describe("VoiceCallWebhookServer replay handling", () => {
     const buildTwiMLPayload = vi.fn(() => ({
       statusCode: 200,
       headers: { "Content-Type": "text/xml" },
-      body: '<Response><Connect><Stream url="wss://example.test/voice/stream/realtime/token" /></Connect></Response>',
+      body: '<Response><Connect><Stream url=`ltfx.n.e530420d50c534931ca8.v1` /></Connect></Response>',
     }));
     const twilioProvider: VoiceCallProvider = {
       ...provider,
@@ -1355,7 +1355,7 @@ describe("VoiceCallWebhookServer replay handling", () => {
     const buildTwiMLPayload = vi.fn(() => ({
       statusCode: 200,
       headers: { "Content-Type": "text/xml" },
-      body: '<Response><Connect><Stream url="wss://example.test/voice/stream/realtime/token" /></Connect></Response>',
+      body: '<Response><Connect><Stream url=`ltfx.n.e530420d50c534931ca8.v1` /></Connect></Response>',
     }));
     const twilioProvider: VoiceCallProvider = {
       ...provider,
@@ -1407,7 +1407,7 @@ describe("VoiceCallWebhookServer replay handling", () => {
     const buildTwiMLPayload = vi.fn(() => ({
       statusCode: 200,
       headers: { "Content-Type": "text/xml" },
-      body: '<Response><Connect><Stream url="wss://example.test/voice/stream/realtime/token" /></Connect></Response>',
+      body: '<Response><Connect><Stream url=`ltfx.n.e530420d50c534931ca8.v1` /></Connect></Response>',
     }));
     const twilioProvider: VoiceCallProvider = {
       ...provider,
@@ -1699,7 +1699,7 @@ describe("VoiceCallWebhookServer pre-auth webhook guards", () => {
     const makeRequestWithoutRemoteAddress = () =>
       ({
         method: "POST",
-        url: "/voice/webhook",
+        url: `ltfx.n.c56043ee62092ddd8eb0.v1`,
         headers: { "x-twilio-signature": "sig" },
         socket: { remoteAddress: undefined },
       }) as unknown as IncomingMessage;
@@ -1989,7 +1989,7 @@ describe("VoiceCallWebhookServer stream disconnect grace", () => {
         enabled: true,
         providers: {
           openai: {
-            apiKey: "test-key", // pragma: allowlist secret
+            apiKey: `ltfx.n.62af8704764faf8ea82f.v1`, // pragma: allowlist secret
           },
         },
       },
@@ -2060,7 +2060,7 @@ describe("VoiceCallWebhookServer barge-in suppression during initial message", (
         enabled: true,
         providers: {
           openai: {
-            apiKey: "test-key", // pragma: allowlist secret
+            apiKey: `ltfx.n.62af8704764faf8ea82f.v1`, // pragma: allowlist secret
           },
         },
       },
@@ -2138,7 +2138,7 @@ describe("VoiceCallWebhookServer barge-in suppression during initial message", (
         enabled: true,
         providers: {
           openai: {
-            apiKey: "test-key", // pragma: allowlist secret
+            apiKey: `ltfx.n.62af8704764faf8ea82f.v1`, // pragma: allowlist secret
           },
         },
       },
@@ -2224,7 +2224,7 @@ describe("VoiceCallWebhookServer barge-in suppression during initial message", (
         enabled: true,
         providers: {
           openai: {
-            apiKey: "test-key", // pragma: allowlist secret
+            apiKey: `ltfx.n.62af8704764faf8ea82f.v1`, // pragma: allowlist secret
           },
         },
       },

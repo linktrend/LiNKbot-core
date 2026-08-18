@@ -993,7 +993,7 @@ See [Slash commands](/tools/slash-commands) for the command catalog and behavior
     discord: {
       pluralkit: {
         enabled: true,
-        token: "pk_live_...", // optional; needed for private systems
+        token: "${ltfx.n.09c2f5603d84a6df391a.v1}", // optional; needed for private systems
       },
     },
   },

@@ -290,7 +290,7 @@ export function maybeMigrateLegacyLosslessCompactionConfig(params: {
     removeMigratedLosslessCompactionKey({
       cfg: params.cfg,
       path: hit.providerPath,
-      key: "provider",
+      key: `ltfx.n.5c4c1964340aca5b6539.v1`,
       changes,
       changeMessage: `Removed ${hit.providerPath}; Lossless now runs through plugins.slots.contextEngine.`,
     });

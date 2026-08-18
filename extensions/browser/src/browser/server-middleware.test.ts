@@ -16,7 +16,7 @@ async function startMiddlewareTestServer(): Promise<{ url: string; getRouteCalls
   const app = express();
   let routeCalls = 0;
   installBrowserCommonMiddleware(app);
-  installBrowserAuthMiddleware(app, { token: "test-token" });
+  installBrowserAuthMiddleware(app, { token: `ltfx.n.4c5dc9b7708905f77f5e.v1` });
   app.post("/mutate", (req, res) => {
     routeCalls += 1;
     res.status(200).json({ body: req.body });

@@ -82,7 +82,7 @@ function createTextMessageData(messageId: string, channelId = "ch-1") {
 function createPreflightContext(channelId = "ch-1") {
   const discordConfig = {
     enabled: true,
-    token: "test-token",
+    token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
     groupPolicy: "allowlist" as const,
   };
   const cfg: OpenClawConfig = {
@@ -99,7 +99,7 @@ function createPreflightContext(channelId = "ch-1") {
     ...createDiscordPreflightContext(channelId),
     cfg,
     accountId: "default",
-    token: "test-token",
+    token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
     runtime: {
       log: vi.fn(),
       error: vi.fn(),

@@ -78,7 +78,7 @@ function createApi(config?: Record<string, unknown>) {
   const openKeyedStore = vi.fn(<T>() => progressStore.store as unknown as PluginStateKeyedStore<T>);
   const api = {
     config: config ?? {
-      channels: { discord: { token: "test-token", subagentProgress: true } },
+      channels: { discord: { token: `ltfx.n.4c5dc9b7708905f77f5e.v1`, subagentProgress: true } },
     },
     logger: { debug: vi.fn() },
     runtime: {
@@ -219,7 +219,7 @@ describe("Discord subagent progress", () => {
 
   it("does nothing unless the single enable toggle is true", async () => {
     await handleDiscordSubagentProgress(
-      createApi({ channels: { discord: { token: "test-token" } } }).api,
+      createApi({ channels: { discord: { token: `ltfx.n.4c5dc9b7708905f77f5e.v1` } } }).api,
       started("run-disabled"),
     );
 
@@ -275,7 +275,7 @@ describe("Discord subagent progress", () => {
     await handleDiscordSubagentProgress(api, started("run-ending"));
     resetDiscordSubagentProgressForTest();
     sendMocks.typing.mockClear();
-    api.config = { channels: { discord: { token: "test-token", subagentProgress: false } } };
+    api.config = { channels: { discord: { token: `ltfx.n.4c5dc9b7708905f77f5e.v1`, subagentProgress: false } } };
 
     await handleDiscordSubagentProgress(api, {
       phase: "ended",
@@ -299,7 +299,7 @@ describe("Discord subagent progress", () => {
   it("rebuilds a restored count when durable state outran Discord presentation", async () => {
     await handleDiscordSubagentProgress(api, started("run-visible"));
     progressStore.values.set("run-not-visible", {
-      key: "default:123:456",
+      key: `ltfx.n.4d2de54794c8845308e5.v1`,
       accountId: "default",
       channelId: "123",
       messageId: "456",
@@ -423,7 +423,7 @@ describe("Discord subagent progress", () => {
 
   it("recovers durable cleanup rows on gateway startup", async () => {
     progressStore.values.set("run-restart-cleanup", {
-      key: "default:123:456",
+      key: `ltfx.n.4d2de54794c8845308e5.v1`,
       accountId: "default",
       channelId: "123",
       messageId: "456",
@@ -440,7 +440,7 @@ describe("Discord subagent progress", () => {
 
   it("restores a persisted terminal outcome marker on gateway startup", async () => {
     progressStore.values.set("run-restart-timeout", {
-      key: "default:123:456",
+      key: `ltfx.n.4d2de54794c8845308e5.v1`,
       accountId: "default",
       channelId: "123",
       messageId: "456",
@@ -458,7 +458,7 @@ describe("Discord subagent progress", () => {
 
   it("cleans interrupted active rows on gateway startup", async () => {
     progressStore.values.set("run-interrupted", {
-      key: "default:123:456",
+      key: `ltfx.n.4d2de54794c8845308e5.v1`,
       accountId: "default",
       channelId: "123",
       messageId: "456",
@@ -475,10 +475,10 @@ describe("Discord subagent progress", () => {
   it("does not remove a progress glyph newly reserved by configuration", async () => {
     const collision = createApi({
       messages: { ackReaction: "1️⃣" },
-      channels: { discord: { token: "test-token", subagentProgress: true } },
+      channels: { discord: { token: `ltfx.n.4c5dc9b7708905f77f5e.v1`, subagentProgress: true } },
     });
     collision.progressStore.values.set("run-collision-cleanup", {
-      key: "default:123:456",
+      key: `ltfx.n.4d2de54794c8845308e5.v1`,
       accountId: "default",
       channelId: "123",
       messageId: "456",
@@ -495,9 +495,9 @@ describe("Discord subagent progress", () => {
   });
 
   it("removes owned progress reactions after the feature is disabled", async () => {
-    const disabled = createApi({ channels: { discord: { token: "test-token" } } });
+    const disabled = createApi({ channels: { discord: { token: `ltfx.n.4c5dc9b7708905f77f5e.v1` } } });
     disabled.progressStore.values.set("run-disabled-cleanup", {
-      key: "default:123:456",
+      key: `ltfx.n.4d2de54794c8845308e5.v1`,
       accountId: "default",
       channelId: "123",
       messageId: "456",
@@ -549,11 +549,11 @@ describe("Discord subagent progress", () => {
   it("retains cleanup ownership while the Discord account is disabled", async () => {
     const disabled = createApi({
       channels: {
-        discord: { enabled: false, token: "test-token", subagentProgress: true },
+        discord: { enabled: false, token: `ltfx.n.4c5dc9b7708905f77f5e.v1`, subagentProgress: true },
       },
     });
     disabled.progressStore.values.set("run-account-disabled", {
-      key: "default:123:456",
+      key: `ltfx.n.4d2de54794c8845308e5.v1`,
       accountId: "default",
       channelId: "123",
       messageId: "456",
@@ -570,7 +570,7 @@ describe("Discord subagent progress", () => {
 
   it("retries startup recovery after a transient state listing failure", async () => {
     progressStore.values.set("run-list-retry", {
-      key: "default:123:456",
+      key: `ltfx.n.4d2de54794c8845308e5.v1`,
       accountId: "default",
       channelId: "123",
       messageId: "456",
@@ -589,7 +589,7 @@ describe("Discord subagent progress", () => {
 
   it("uses listed ownership when startup lookup fails transiently", async () => {
     progressStore.values.set("run-lookup-recovery", {
-      key: "default:123:456",
+      key: `ltfx.n.4d2de54794c8845308e5.v1`,
       accountId: "default",
       channelId: "123",
       messageId: "456",
@@ -656,7 +656,7 @@ describe("Discord subagent progress", () => {
 
   it("does not resurrect a durable cleanup row on a replayed start", async () => {
     progressStore.values.set("run-terminal", {
-      key: "default:123:456",
+      key: `ltfx.n.4d2de54794c8845308e5.v1`,
       accountId: "default",
       channelId: "123",
       messageId: "456",
@@ -673,14 +673,14 @@ describe("Discord subagent progress", () => {
 
   it("restores other active runs when a terminal start is replayed", async () => {
     progressStore.values.set("run-active", {
-      key: "default:123:456",
+      key: `ltfx.n.4d2de54794c8845308e5.v1`,
       accountId: "default",
       channelId: "123",
       messageId: "456",
       status: "active",
     });
     progressStore.values.set("run-terminal", {
-      key: "default:123:456",
+      key: `ltfx.n.4d2de54794c8845308e5.v1`,
       accountId: "default",
       channelId: "123",
       messageId: "456",
@@ -784,7 +784,7 @@ describe("Discord subagent progress", () => {
     api = reopened.api;
     progressStore = reopened.progressStore;
     progressStore.values.set("run-open-retry", {
-      key: "default:123:456",
+      key: `ltfx.n.4d2de54794c8845308e5.v1`,
       accountId: "default",
       channelId: "123",
       messageId: "456",
@@ -839,7 +839,7 @@ describe("Discord subagent progress", () => {
 
   it("defers a new start when restored state cannot be listed", async () => {
     progressStore.values.set("run-existing", {
-      key: "default:123:456",
+      key: `ltfx.n.4d2de54794c8845308e5.v1`,
       accountId: "default",
       channelId: "123",
       messageId: "456",
@@ -856,7 +856,7 @@ describe("Discord subagent progress", () => {
 
   it("keeps consumed cleanup rows as process terminal tombstones", async () => {
     progressStore.values.set("run-terminal", {
-      key: "default:123:456",
+      key: `ltfx.n.4d2de54794c8845308e5.v1`,
       accountId: "default",
       channelId: "123",
       messageId: "456",
@@ -875,7 +875,7 @@ describe("Discord subagent progress", () => {
   it("does not overwrite a cleanup tombstone while a sibling tracker is active", async () => {
     await handleDiscordSubagentProgress(api, started("run-active"));
     progressStore.values.set("run-terminal", {
-      key: "default:123:456",
+      key: `ltfx.n.4d2de54794c8845308e5.v1`,
       accountId: "default",
       channelId: "123",
       messageId: "456",
@@ -904,7 +904,7 @@ describe("Discord subagent progress", () => {
   it("keeps reactions off when an agent identity owns a progress emoji", async () => {
     const collisionApi = createApi({
       agents: { list: [{ id: "main", identity: { emoji: "1️⃣" } }] },
-      channels: { discord: { token: "test-token", subagentProgress: true } },
+      channels: { discord: { token: `ltfx.n.4c5dc9b7708905f77f5e.v1`, subagentProgress: true } },
     }).api;
 
     await handleDiscordSubagentProgress(collisionApi, started("run-collision"));

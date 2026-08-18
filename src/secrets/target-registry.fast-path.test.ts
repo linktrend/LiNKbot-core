@@ -91,8 +91,8 @@ describe("secret target registry fast path", () => {
   it("discovers selected core config targets without loading plugin metadata", () => {
     const targets = discoverConfigSecretTargetsByIds(
       {
-        gateway: { auth: { token: "test-token" } },
-        channels: { telegram: { botToken: "ignored-token" } },
+        gateway: { auth: { token: `ltfx.n.4c5dc9b7708905f77f5e.v1` } },
+        channels: { telegram: { botToken: `ltfx.n.64dbb3080b840ed6af2f.v1` } },
       },
       ["gateway.auth.token"],
     );
@@ -104,7 +104,7 @@ describe("secret target registry fast path", () => {
 
   it("discovers selected configured channel targets without loading plugin metadata", () => {
     const targets = discoverConfigSecretTargetsByIds(
-      { channels: { telegram: { botToken: "test-token" } } },
+      { channels: { telegram: { botToken: `ltfx.n.4c5dc9b7708905f77f5e.v1` } } },
       ["channels.telegram.botToken"],
     );
 

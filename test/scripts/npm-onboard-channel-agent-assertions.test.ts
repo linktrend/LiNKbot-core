@@ -205,7 +205,7 @@ describe("npm onboard channel agent assertions", () => {
           "openai:api-key": {
             type: "api_key",
             provider: "openai",
-            key: "sk-openclaw-npm-onboard-e2e",
+            key: `ltfx.n.287f6bb6dd0ec1d8fb36.v1`,
           },
         },
       });
@@ -223,9 +223,9 @@ describe("npm onboard channel agent assertions", () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-channel-assertions-"));
     try {
       writeConfig(tempDir, {
-        discord: { enabled: true, token: "discord-token" },
-        slack: { enabled: true, appToken: "xapp-token", botToken: "xoxb-token" },
-        telegram: { enabled: true, botToken: "telegram-token" },
+        discord: { enabled: true, token: `ltfx.n.0017ec88d6aa85df6bc5.v1` },
+        slack: { enabled: true, appToken: `ltfx.n.b6677d47c696ef22d576.v1`, botToken: `ltfx.n.b5503bdfaa6676e8dfec.v1` },
+        telegram: { enabled: true, botToken: `ltfx.n.7dd2947618bb72c28c67.v1` },
       });
 
       expect(runAssert(tempDir, "telegram", "telegram-token").status).toBe(0);
@@ -240,7 +240,7 @@ describe("npm onboard channel agent assertions", () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-channel-assertions-"));
     try {
       writeConfig(tempDir, {
-        telegram: { enabled: true, token: "telegram-token" },
+        telegram: { enabled: true, token: `ltfx.n.7dd2947618bb72c28c67.v1` },
       });
 
       const result = runAssert(tempDir, "telegram", "telegram-token");

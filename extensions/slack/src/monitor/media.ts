@@ -53,7 +53,7 @@ function assertSlackFileUrl(rawUrl: string): URL {
   return parsed;
 }
 
-function createSlackAuthHeaders(token: string): HeadersInit {
+function createSlackAuthHeaders(token: (string)): HeadersInit {
   return { Authorization: `Bearer ${token}` };
 }
 

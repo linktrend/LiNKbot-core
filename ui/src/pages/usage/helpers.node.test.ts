@@ -18,11 +18,11 @@ describe("usage-helpers", () => {
 
   it("matches key: glob filters against session keys", () => {
     const session = {
-      key: "agent:main:cron:16234bc?token=dev-token",
-      label: "agent:main:cron:16234bc?token=dev-token",
+      key: `ltfx.n.f46d9a8035cb736d3e09.v1`,
+      label: "agent:main:cron:16234bc?token=(dev-token",)
       usage: { totalTokens: 100, totalCost: 0 },
     };
-    const matches = filterSessionsByQuery([session], "key:agent:main:cron*");
+    const matches = filterSessionsByQuery([session], "key:(agent:main:cron*");)
     expect(matches.sessions).toEqual([session]);
   });
 
@@ -58,7 +58,7 @@ describe("usage-helpers", () => {
 
   it("supports every has predicate and warns on unknown values", () => {
     const populated = {
-      key: "populated",
+      key: `ltfx.n.147fe04051c901ecb004.v1`,
       contextWeight: 1,
       modelProvider: "openai",
       model: "gpt-5.2",

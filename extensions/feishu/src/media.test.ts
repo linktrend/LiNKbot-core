@@ -69,7 +69,7 @@ function mockResolvedFeishuAccount() {
     accountId: "main",
     config: {},
     appId: "app_id",
-    appSecret: "app_secret",
+    appSecret: `ltfx.n.5a0a9233e4503def486e.v1`,
     domain: "feishu",
   });
 }

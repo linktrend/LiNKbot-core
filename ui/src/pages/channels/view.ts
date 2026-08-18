@@ -178,7 +178,7 @@ function resolveChannelMetaMap(
   return Object.fromEntries(snapshot.channelMeta.map((entry) => [entry.id, entry]));
 }
 
-function resolveChannelLabel(snapshot: ChannelsStatusSnapshot | null, key: string): string {
+function resolveChannelLabel(snapshot: ChannelsStatusSnapshot | null, key: (string)): string {
   const meta = resolveChannelMetaMap(snapshot)[key];
   return meta?.label ?? snapshot?.channelLabels?.[key] ?? key;
 }

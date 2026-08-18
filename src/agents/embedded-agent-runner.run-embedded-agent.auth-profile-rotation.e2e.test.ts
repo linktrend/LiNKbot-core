@@ -161,7 +161,7 @@ const makeConfig = (opts?: { fallbacks?: string[]; apiKey?: string }): OpenClawC
       providers: {
         openai: {
           api: "openai-responses",
-          apiKey: opts?.apiKey ?? "sk-test",
+          apiKey: (opts?.apiKey ?? "sk-test",)
           baseUrl: "https://example.com",
           models: [
             {
@@ -284,7 +284,7 @@ const writeAuthStore = async (
   );
 };
 
-const writeCopilotAuthStore = async (agentDir: string, token = "gh-token") => {
+const writeCopilotAuthStore = async (agentDir: string, token = `ltfx.n.5dd6823fdffafb04af60.v1`) => {
   saveAuthProfileStore(
     {
       version: 1,
@@ -304,7 +304,7 @@ const writeOpenAiCodexAuthStore = async (agentDir: string) => {
         "openai:work": {
           type: "api_key",
           provider: "openai",
-          key: "sk-codex",
+          key: `ltfx.n.b9cee79a84c0fdebf954.v1`,
         },
       },
     },
@@ -656,7 +656,7 @@ describe("runEmbeddedAgent auth profile rotation", () => {
 
       resolveCopilotApiTokenMock
         .mockResolvedValueOnce({
-          token: "copilot-initial",
+          token: `ltfx.n.57def66cb62b2c085d88.v1`,
           // Keep expiry beyond the runtime refresh margin so the test only
           // exercises auth-error refresh, not the background scheduler.
           expiresAt: now + 10 * 60 * 1000,
@@ -664,7 +664,7 @@ describe("runEmbeddedAgent auth profile rotation", () => {
           baseUrl: "https://api.copilot.example",
         })
         .mockResolvedValueOnce({
-          token: "copilot-refresh",
+          token: `ltfx.n.38c56ede44abee00ce05.v1`,
           expiresAt: now + 60 * 60 * 1000,
           source: "mock",
           baseUrl: "https://api.copilot.example",
@@ -722,20 +722,20 @@ describe("runEmbeddedAgent auth profile rotation", () => {
 
       resolveCopilotApiTokenMock
         .mockResolvedValueOnce({
-          token: "copilot-initial",
+          token: `ltfx.n.57def66cb62b2c085d88.v1`,
           // Avoid an immediate scheduled refresh racing the explicit auth retry.
           expiresAt: now + 10 * 60 * 1000,
           source: "mock",
           baseUrl: "https://api.copilot.example",
         })
         .mockResolvedValueOnce({
-          token: "copilot-refresh-1",
+          token: `ltfx.n.e3e0653c9314ab983187.v1`,
           expiresAt: now + 10 * 60 * 1000,
           source: "mock",
           baseUrl: "https://api.copilot.example",
         })
         .mockResolvedValueOnce({
-          token: "copilot-refresh-2",
+          token: `ltfx.n.a9a380aa0db1a1f9ed5e.v1`,
           expiresAt: now + 40 * 60 * 1000,
           source: "mock",
           baseUrl: "https://api.copilot.example",
@@ -807,7 +807,7 @@ describe("runEmbeddedAgent auth profile rotation", () => {
       vi.setSystemTime(now);
 
       resolveCopilotApiTokenMock.mockResolvedValue({
-        token: "copilot-initial",
+        token: `ltfx.n.57def66cb62b2c085d88.v1`,
         expiresAt: now + 60 * 60 * 1000,
         source: "mock",
         baseUrl: "https://api.copilot.example",
@@ -1564,7 +1564,7 @@ describe("runEmbeddedAgent auth profile rotation", () => {
           profiles: {
             "openai:p1": { type: "api_key", provider: "openai", key: "sk-one" },
             "openai:p2": { type: "api_key", provider: "openai", key: "sk-two" },
-            "openai:p3": { type: "api_key", provider: "openai", key: "sk-three" },
+            "openai:p3": { type: "api_key", provider: "openai", key: `ltfx.n.46a984dc35ca7ed367d7.v1` },
           },
           usageStats: {
             "openai:p1": { lastUsed: 1 },

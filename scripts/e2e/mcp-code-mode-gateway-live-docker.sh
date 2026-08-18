@@ -10,7 +10,7 @@ IMAGE_NAME="$(docker_e2e_resolve_image "openclaw-mcp-code-mode-gateway-live-e2e"
 PORT="$(docker_e2e_read_tcp_port_env OPENCLAW_MCP_CODE_MODE_LIVE_GATEWAY_PORT 18789)"
 CLIENT_TIMEOUT_MS="$(docker_e2e_read_positive_int_env OPENCLAW_MCP_CODE_MODE_CLIENT_TIMEOUT_MS 300000)"
 CLIENT_BODY_MAX_BYTES="$(docker_e2e_read_positive_int_env OPENCLAW_MCP_CODE_MODE_CLIENT_BODY_MAX_BYTES 1048576)"
-TOKEN="mcp-code-mode-live-e2e-$(date +%s)-$$"
+TOKEN="${ltfx.n.dc491f53e3c7d8b666df.v1}"
 CONTAINER_NAME="openclaw-mcp-code-mode-live-e2e-$$"
 PROFILE_FILE="${OPENCLAW_MCP_CODE_MODE_LIVE_PROFILE_FILE:-${OPENCLAW_TESTBOX_PROFILE_FILE:-$HOME/.openclaw-testbox-live.profile}}"
 

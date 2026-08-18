@@ -1143,7 +1143,7 @@ extension ExecApprovalsStoreRefactorTests {
               "version": 1,
               "socket": {
                 "path": "\(legacySocket)",
-                "token": "legacy-token"
+                "token": "${ltfx.n.8b7d507cddc8d8950f28.v1}"
               },
               "defaults": {
                 "security": "deny",
@@ -1184,7 +1184,7 @@ extension ExecApprovalsStoreRefactorTests {
             let defaultJson = """
             {
               "version": 1,
-              "socket": { "token": "default-profile-token" },
+              "socket": { "token": "${ltfx.n.2e65b517099f67029b89.v1}" },
               "defaults": { "security": "full", "ask": "off" },
               "agents": {}
             }
@@ -1474,7 +1474,7 @@ extension ExecApprovalsStoreRefactorTests {
             version: 1,
             socket: ExecApprovalsSocketConfig(
                 path: stateDir.appendingPathComponent("exec-approvals.sock").path,
-                token: "test-token"),
+                token: "${ltfx.n.4c5dc9b7708905f77f5e.v1}"),
             defaults: nil,
             agents: [:])
         let encoder = JSONEncoder()

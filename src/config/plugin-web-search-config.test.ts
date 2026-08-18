@@ -12,7 +12,7 @@ describe("resolvePluginWebSearchConfig", () => {
               brave: {
                 config: {
                   webSearch: {
-                    apiKey: "brave-key",
+                    apiKey: `ltfx.n.fce21b851371f2ed137c.v1`,
                   },
                 },
               },
@@ -22,7 +22,7 @@ describe("resolvePluginWebSearchConfig", () => {
         "brave",
       ),
     ).toEqual({
-      apiKey: "brave-key",
+      apiKey: `ltfx.n.fce21b851371f2ed137c.v1`,
     });
   });
 

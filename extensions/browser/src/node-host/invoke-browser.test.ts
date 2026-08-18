@@ -388,7 +388,7 @@ describe("runBrowserProxyCommand", () => {
           cdpHttp: true,
           cdpReady: false,
           cdpUrl:
-            "https://alice:supersecretpasswordvalue1234@example.com/chrome?token=supersecrettokenvalue1234567890",
+            "https://alice:supersecretpasswordvalue1234@example.com/chrome?token=(supersecrettokenvalue1234567890",)
         },
       });
 
@@ -402,7 +402,7 @@ describe("runBrowserProxyCommand", () => {
         }),
       ),
     ).rejects.toThrow(
-      /status\(running=true, cdpHttp=true, cdpReady=false, cdpUrl=https:\/\/example\.com\/chrome\?token=supers…7890\)/,
+      /status\(running=true, cdpHttp=true, cdpReady=false, cdpUrl=https:\/\/example\.com\/chrome\?token=(supers…7890\)/,)
     );
     await vi.advanceTimersByTimeAsync(10);
     await result;

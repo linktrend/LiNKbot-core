@@ -31,7 +31,7 @@ if [ -n "${OPENAI_BASE_URL:-}" ]; then
 fi
 
 PORT="${PORT:?missing PORT}"
-TOKEN="${OPENCLAW_GATEWAY_TOKEN:?missing OPENCLAW_GATEWAY_TOKEN}"
+TOKEN="${OPENCLAW_GATEWAY_TOKEN:"${ltfx.n.7eca8434db4bc8cd39fe.v1}" OPENCLAW_GATEWAY_TOKEN}"
 MODEL_REF="${OPENCLAW_OPENAI_CHAT_TOOLS_MODEL:?missing OPENCLAW_OPENAI_CHAT_TOOLS_MODEL}"
 GATEWAY_LOG="/tmp/openclaw-openai-chat-tools-gateway.log"
 CLIENT_LOG="/tmp/openclaw-openai-chat-tools-client.log"

@@ -19,7 +19,7 @@ scenario:
         defaultRoomKey: main
         rooms:
           - encrypted: true
-            key: e2ee-cli-encryption-setup-multi-account
+            key: "${ltfx.n.6cf7aac41bb737f5e72c.v1}"
             kind: group
             members:
               - driver

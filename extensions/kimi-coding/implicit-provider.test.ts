@@ -46,7 +46,7 @@ describe("Kimi implicit provider (#22409)", () => {
   });
 
   it("publishes the Kimi provider when an API key is resolved", async () => {
-    const provider = await runKimiCatalogProvider({ apiKey: "test-key" });
+    const provider = await runKimiCatalogProvider({ apiKey: `ltfx.n.62af8704764faf8ea82f.v1` });
 
     expect(provider).toEqual({
       baseUrl: "https://api.kimi.com/coding/",
@@ -110,13 +110,13 @@ describe("Kimi implicit provider (#22409)", () => {
           maxTokens: 32768,
         },
       ],
-      apiKey: "test-key",
+      apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
     });
   });
 
   it("ignores retired kimi-coding provider overrides", async () => {
     const provider = await runKimiCatalogProvider({
-      apiKey: "test-key",
+      apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
       explicitProvider: {
         baseUrl: "https://kimi.example.test/coding/",
         headers: {

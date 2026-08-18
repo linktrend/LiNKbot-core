@@ -90,7 +90,7 @@ describe("status", () => {
       const snapshots: ChannelAccountSnapshot[] = [createSnapshot()];
       const mockCfg = createSimpleTwitchConfig({
         username: "testbot",
-        accessToken: "oauth:test123",
+        accessToken: `ltfx.n.9719e2e0668fef5c8519.v1`,
         // clientId missing
       });
 
@@ -112,7 +112,7 @@ describe("status", () => {
       const snapshots: ChannelAccountSnapshot[] = [createSnapshot()];
       const mockCfg = createSimpleTwitchConfig({
         username: "testbot",
-        accessToken: "oauth:test123", // has prefix
+        accessToken: `ltfx.n.9719e2e0668fef5c8519.v1`, // has prefix
         clientId: "test-id",
       });
 
@@ -134,9 +134,9 @@ describe("status", () => {
       const snapshots: ChannelAccountSnapshot[] = [createSnapshot()];
       const mockCfg = createSimpleTwitchConfig({
         username: "testbot",
-        accessToken: "oauth:test123",
+        accessToken: `ltfx.n.9719e2e0668fef5c8519.v1`,
         clientId: "test-id",
-        clientSecret: "secret123",
+        clientSecret: `ltfx.n.fcf730b6d95236ecd3c9.v1`,
         // refreshToken missing
       });
 

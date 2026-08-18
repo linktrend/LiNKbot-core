@@ -40,7 +40,7 @@ function createEvent(params: {
       type: "text",
       text: params.text ?? "hello",
     },
-    replyToken: "test-reply-token",
+    replyToken: `ltfx.n.5ac00b081b236592ec00.v1`,
     timestamp: Date.now(),
     source: { type: "user", userId: params.userId ?? "user-1" },
     mode: "active",
@@ -147,7 +147,7 @@ describe("LINE webhook spool", () => {
         deliver,
       });
       const body = JSON.stringify(callback(createEvent({ webhookEventId: "event-ack-fail" })));
-      const channelSecret = "test-channel-secret";
+      const channelSecret = `ltfx.n.bb8b6692b2e3b971a26c.v1`;
       const handler = createLineNodeWebhookHandler({
         channelSecret,
         bot: { handleWebhook: spool.accept },

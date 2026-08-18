@@ -101,7 +101,7 @@ export async function probeFeishu(
     const responseResult = await raceWithTimeoutAndAbort<FeishuPingResponse>(
       client.request({
         method: "POST",
-        url: "/open-apis/bot/v1/openclaw_bot/ping",
+        url: `ltfx.n.57750070ee96412a4782.v1`,
         data: { needBotInfo: true },
         timeout: timeoutMs,
       }),

@@ -424,7 +424,7 @@ module.exports = {
       capabilities: { chatTypes: ["direct"] },
       config: {
         listAccountIds: () => ["default"],
-        resolveAccount: () => ({ accountId: "default", token: "configured" }),
+        resolveAccount: () => ({ accountId: "default", token: `ltfx.n.20158224750041d653cd.v1` }),
       },
       outbound: { deliveryMode: "direct" },
     };
@@ -450,7 +450,7 @@ module.exports = {
       capabilities: { chatTypes: ["direct"] },
       config: {
         listAccountIds: () => ["default"],
-        resolveAccount: () => ({ accountId: "default", token: "configured" }),
+        resolveAccount: () => ({ accountId: "default", token: `ltfx.n.20158224750041d653cd.v1` }),
       },
       outbound: { deliveryMode: "direct" },
     };
@@ -509,7 +509,7 @@ describe("listReadOnlyChannelPluginsForConfig", () => {
     const plugins = listReadOnlyChannelPluginsForConfig(
       {
         channels: {
-          "external-chat": { token: "configured" },
+          "external-chat": { token: `ltfx.n.20158224750041d653cd.v1` },
         },
         plugins: {
           load: { paths: [pluginDir] },
@@ -532,7 +532,7 @@ describe("listReadOnlyChannelPluginsForConfig", () => {
     const plugins = listReadOnlyChannelPluginsForConfig(
       {
         channels: {
-          "external-chat": { token: "configured" },
+          "external-chat": { token: `ltfx.n.20158224750041d653cd.v1` },
         },
         plugins: {
           load: { paths: [pluginDir] },
@@ -572,7 +572,7 @@ describe("listReadOnlyChannelPluginsForConfig", () => {
       {
         activationSourceConfig: {
           channels: {
-            "external-chat": { token: "configured" },
+            "external-chat": { token: `ltfx.n.20158224750041d653cd.v1` },
           },
           plugins: {
             load: { paths: [pluginDir] },
@@ -592,7 +592,7 @@ describe("listReadOnlyChannelPluginsForConfig", () => {
     const { pluginDir, fullMarker, setupMarker } = writeExternalSetupChannelPlugin();
     const cfg = {
       channels: {
-        "external-chat": { token: "configured" },
+        "external-chat": { token: `ltfx.n.20158224750041d653cd.v1` },
       },
       plugins: {
         load: { paths: [pluginDir] },
@@ -621,7 +621,7 @@ describe("listReadOnlyChannelPluginsForConfig", () => {
   });
 
   it("refreshes cached read-only channel plugins when the active channel registry changes", () => {
-    const cfg = { channels: { "external-chat": { token: "configured" } } } as never;
+    const cfg = { channels: { "external-chat": { token: `ltfx.n.20158224750041d653cd.v1` } } } as never;
     const createRegistryPlugin = (blurb: string) => {
       const base = createChannelTestPluginBase({ id: "external-chat" as never });
       return {
@@ -656,7 +656,7 @@ describe("listReadOnlyChannelPluginsForConfig", () => {
   });
 
   it("refreshes cached read-only channel plugins when active registry channels mutate in place", () => {
-    const cfg = { channels: { "external-chat": { token: "configured" } } } as never;
+    const cfg = { channels: { "external-chat": { token: `ltfx.n.20158224750041d653cd.v1` } } } as never;
     const registry = createTestRegistry([]);
     setActivePluginRegistry(registry);
 
@@ -714,7 +714,7 @@ describe("listReadOnlyChannelPluginsForConfig", () => {
     const { pluginDir, fullMarker, setupMarker } = writeExternalSetupChannelPlugin();
     const cfg = {
       channels: {
-        "external-chat": { token: "configured" },
+        "external-chat": { token: `ltfx.n.20158224750041d653cd.v1` },
       },
       plugins: {
         load: { paths: [pluginDir] },
@@ -752,7 +752,7 @@ describe("listReadOnlyChannelPluginsForConfig", () => {
     const plugins = listReadOnlyChannelPluginsForConfig(
       {
         channels: {
-          "external-chat": { token: "configured" },
+          "external-chat": { token: `ltfx.n.20158224750041d653cd.v1` },
         },
         plugins: {
           load: { paths: [pluginDir] },
@@ -783,8 +783,8 @@ describe("listReadOnlyChannelPluginsForConfig", () => {
     const plugins = listReadOnlyChannelPluginsForConfig(
       {
         channels: {
-          "alpha-chat": { token: "configured" },
-          "beta-chat": { token: "configured" },
+          "alpha-chat": { token: `ltfx.n.20158224750041d653cd.v1` },
+          "beta-chat": { token: `ltfx.n.20158224750041d653cd.v1` },
         },
         plugins: {
           load: { paths: [pluginDir] },
@@ -812,8 +812,8 @@ describe("listReadOnlyChannelPluginsForConfig", () => {
     expect(
       betaPlugin?.config.resolveAccount({
         channels: {
-          "alpha-chat": { token: "alpha-token" },
-          "beta-chat": { token: "beta-token" },
+          "alpha-chat": { token: `ltfx.n.a336d9b1d8b864787523.v1` },
+          "beta-chat": { token: `ltfx.n.863d63c0bd3a94bfca84.v1` },
         },
       } as never).token,
     ).toBe("beta-token");
@@ -831,7 +831,7 @@ describe("listReadOnlyChannelPluginsForConfig", () => {
     const plugins = listReadOnlyChannelPluginsForConfig(
       {
         channels: {
-          "beta-chat": { token: "beta-token" },
+          "beta-chat": { token: `ltfx.n.863d63c0bd3a94bfca84.v1` },
         },
         plugins: {
           load: { paths: [pluginDir] },
@@ -856,7 +856,7 @@ describe("listReadOnlyChannelPluginsForConfig", () => {
     expect(
       betaPlugin?.config.resolveAccount({
         channels: {
-          "beta-chat": { token: "beta-token" },
+          "beta-chat": { token: `ltfx.n.863d63c0bd3a94bfca84.v1` },
         },
       } as never).token,
     ).toBe("beta-token");
@@ -871,7 +871,7 @@ describe("listReadOnlyChannelPluginsForConfig", () => {
     const plugins = listReadOnlyChannelPluginsForConfig(
       {
         channels: {
-          "external-chat": { token: "configured" },
+          "external-chat": { token: `ltfx.n.20158224750041d653cd.v1` },
         },
         plugins: {
           load: { paths: [pluginDir] },
@@ -892,7 +892,7 @@ describe("listReadOnlyChannelPluginsForConfig", () => {
     expect(
       plugin?.config.listAccountIds({
         channels: {
-          "external-chat": { token: "configured" },
+          "external-chat": { token: `ltfx.n.20158224750041d653cd.v1` },
         },
       } as never),
     ).toEqual(["default"]);
@@ -912,8 +912,8 @@ describe("listReadOnlyChannelPluginsForConfig", () => {
         "external-chat": {
           defaultAccount: "Ops Team",
           accounts: {
-            "Ops Team": { token: "configured" },
-            chat: { token: "chat-token" },
+            "Ops Team": { token: `ltfx.n.20158224750041d653cd.v1` },
+            chat: { token: `ltfx.n.f782c6855e3280eaef1d.v1` },
           },
         },
       },
@@ -945,7 +945,7 @@ describe("listReadOnlyChannelPluginsForConfig", () => {
     const plugins = listReadOnlyChannelPluginsForConfig(
       {
         channels: {
-          "external-chat": { token: "configured" },
+          "external-chat": { token: `ltfx.n.20158224750041d653cd.v1` },
         },
         plugins: {
           load: { paths: [pluginDir] },
@@ -974,12 +974,12 @@ describe("listReadOnlyChannelPluginsForConfig", () => {
       plugin?.config.listAccountIds({ channels: { "external-chat": { token: "t" } } } as never),
     ).toEqual(["default"]);
     const account = plugin?.config.resolveAccount({
-      channels: { "external-chat": { token: "configured" } },
+      channels: { "external-chat": { token: `ltfx.n.20158224750041d653cd.v1` } },
     } as never);
     const accountFields = expectRecordFields(account, {
       accountId: "default",
     });
-    expectRecordFields(accountFields.config, { token: "configured" });
+    expectRecordFields(accountFields.config, { token: `ltfx.n.20158224750041d653cd.v1` });
     expect(fs.existsSync(setupMarker)).toBe(false);
     expect(fs.existsSync(fullMarker)).toBe(false);
   });
@@ -996,7 +996,7 @@ describe("listReadOnlyChannelPluginsForConfig", () => {
     const plugins = listReadOnlyChannelPluginsForConfig(
       {
         channels: {
-          "external-chat": { token: "configured" },
+          "external-chat": { token: `ltfx.n.20158224750041d653cd.v1` },
         },
         plugins: {
           load: { paths: [pluginDir] },
@@ -1026,7 +1026,7 @@ describe("listReadOnlyChannelPluginsForConfig", () => {
     });
     const plugins = listReadOnlyChannelPluginsForConfig(
       {
-        channels: Object.fromEntries([[unsafeChannelId, { token: "configured" }]]),
+        channels: Object.fromEntries([[unsafeChannelId, { token: `ltfx.n.20158224750041d653cd.v1` }]]),
         plugins: {
           load: { paths: [pluginDir] },
           allow: ["external-chat-plugin"],
@@ -1051,10 +1051,10 @@ describe("listReadOnlyChannelPluginsForConfig", () => {
       manifestChannelConfig: true,
     });
     const inheritedAccounts = Object.create({
-      inherited: { token: "prototype-token" },
+      inherited: { token: `ltfx.n.d53d334be8f1200accf5.v1` },
     }) as Record<string, unknown>;
-    inheritedAccounts.default = { token: "default-token" };
-    inheritedAccounts.named = { token: "named-token" };
+    inheritedAccounts.default = { token: `ltfx.n.10851c1922ff849d81d7.v1` };
+    inheritedAccounts.named = { token: `ltfx.n.a408d1ca21c1d0f20c1d.v1` };
     const cfg = {
       channels: {
         "external-chat": {
@@ -1076,7 +1076,7 @@ describe("listReadOnlyChannelPluginsForConfig", () => {
     const defaultFields = expectRecordFields(defaultAccount, {
       accountId: "default",
     });
-    expectRecordFields(defaultFields.config, { token: "default-token" });
+    expectRecordFields(defaultFields.config, { token: `ltfx.n.10851c1922ff849d81d7.v1` });
     const inheritedAccount = plugin?.config.resolveAccount(cfg, "inherited") as
       | { config?: { token?: string } }
       | undefined;
@@ -1095,7 +1095,7 @@ describe("listReadOnlyChannelPluginsForConfig", () => {
         "external-chat": {
           accounts: {
             "constructor ": {
-              token: "blocked-token",
+              token: `ltfx.n.baf3f2d88d70f4b6f7df.v1`,
             },
           },
         },
@@ -1167,7 +1167,7 @@ describe("listReadOnlyChannelPluginsForConfig", () => {
     const plugins = listReadOnlyChannelPluginsForConfig(
       {
         channels: {
-          "external-chat": { token: "configured" },
+          "external-chat": { token: `ltfx.n.20158224750041d653cd.v1` },
         },
         plugins: {
           load: { paths: [pluginDir] },
@@ -1200,7 +1200,7 @@ describe("listReadOnlyChannelPluginsForConfig", () => {
         },
       } as never,
       {
-        env: { ...process.env, EXTERNAL_CHAT_TOKEN: "configured" },
+        env: { ...process.env, EXTERNAL_CHAT_TOKEN: `ltfx.n.20158224750041d653cd.v1` },
         includePersistedAuthState: false,
         includeSetupFallbackPlugins: true,
       },
@@ -1225,7 +1225,7 @@ describe("listReadOnlyChannelPluginsForConfig", () => {
         },
       } as never,
       {
-        env: { ...process.env, EXTERNAL_CHAT_TOKEN: "configured" },
+        env: { ...process.env, EXTERNAL_CHAT_TOKEN: `ltfx.n.20158224750041d653cd.v1` },
         includePersistedAuthState: false,
       },
     );
@@ -1347,7 +1347,7 @@ describe("listReadOnlyChannelPluginsForConfig", () => {
           ...process.env,
           cache: "true",
           env: "prod",
-          EXTERNAL_CHAT_TOKEN: "configured",
+          EXTERNAL_CHAT_TOKEN: `ltfx.n.20158224750041d653cd.v1`,
           workspaceDir: "workspace-env-value",
         },
         includeSetupFallbackPlugins: true,
@@ -1377,7 +1377,7 @@ describe("listReadOnlyChannelPluginsForConfig", () => {
           },
         },
         channels: {
-          "external-chat": { token: "configured" },
+          "external-chat": { token: `ltfx.n.20158224750041d653cd.v1` },
         },
         plugins: {
           allow: ["external-chat-plugin"],
@@ -1406,7 +1406,7 @@ describe("listReadOnlyChannelPluginsForConfig", () => {
     const plugins = listReadOnlyChannelPluginsForConfig(
       {
         channels: {
-          "external-chat": { token: "configured" },
+          "external-chat": { token: `ltfx.n.20158224750041d653cd.v1` },
         },
         plugins: {
           load: { paths: [pluginDir] },
@@ -1439,7 +1439,7 @@ describe("listReadOnlyChannelPluginsForConfig", () => {
     const result = resolveReadOnlyChannelPluginsForConfig(
       {
         channels: {
-          "external-chat": { token: "configured" },
+          "external-chat": { token: `ltfx.n.20158224750041d653cd.v1` },
         },
         plugins: {
           load: { paths: [pluginDir] },

@@ -496,7 +496,7 @@ describe("onboard (non-interactive): gateway and remote auth", () => {
           installDaemon: false,
           gatewayBind: "loopback",
           gatewayAuth: "token",
-          gatewayToken: "tok_plugin_installs",
+          gatewayToken: `ltfx.n.088a039778fcf5e9cfd6.v1`,
         },
         runtime,
       );
@@ -515,12 +515,12 @@ describe("onboard (non-interactive): gateway and remote auth", () => {
 
   it("writes gateway token auth into config", async () => {
     await withStateDir("state-noninteractive-", async (stateDir) => {
-      const token = "tok_test_123";
+      const token = `ltfx.n.b6e94ac1b70bc20e7fe9.v1`;
       const workspace = path.join(stateDir, "openclaw");
       testConfigStore.set(resolveTestConfigPath(), {
         gateway: {
           bind: "lan",
-          auth: { mode: "password", password: "test-password" },
+          auth: { mode: "password", password: `ltfx.n.c638833f69bbfb3c267a.v1` },
           tailscale: { mode: "serve", resetOnExit: true },
         },
       } as OpenClawConfig);
@@ -707,17 +707,17 @@ describe("onboard (non-interactive): gateway and remote auth", () => {
   it("writes gateway.remote url/token", async () => {
     await withStateDir("state-remote-", async (_stateDir) => {
       const port = getPseudoPort(30_000);
-      const token = "tok_remote_123";
+      const token = `ltfx.n.5bf676b7e51e79e3f19c.v1`;
       testConfigStore.set(resolveTestConfigPath(), {
         gateway: {
           remote: {
-            url: "wss://old.example.test",
+            url: `ltfx.n.4069379924c76983932c.v1`,
             transport: "ssh",
             remotePort: 24680,
             sshTarget: "operator@old.example.test",
             sshIdentity: "/tmp/old-identity",
             sshHostKeyPolicy: "openssh",
-            token: "test-token",
+            token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
             password: { source: "env", provider: "default", id: "REMOTE_PASSWORD" },
             tlsFingerprint: "sha256:test-fingerprint",
           },
@@ -812,7 +812,7 @@ describe("onboard (non-interactive): gateway and remote auth", () => {
   it("allows remote onboard plugin install-record migration size drops", async () => {
     await withStateDir("state-remote-plugin-installs-", async (stateDir) => {
       const port = getPseudoPort(30_000);
-      const token = "tok_remote_seed";
+      const token = `ltfx.n.611c0fe9e5b5f33cc46f.v1`;
       testConfigStore.set(resolveTestConfigPath(), {
         plugins: {
           installs: {
@@ -899,7 +899,7 @@ describe("onboard (non-interactive): gateway and remote auth", () => {
 
   it("passes pinned gateway auth through non-interactive health checks", async () => {
     await withStateDir("state-local-daemon-health-auth-", async (stateDir) => {
-      const token = "tok_noninteractive_health";
+      const token = `ltfx.n.96f4ad98ed8b2543d6c3.v1`;
       waitForGatewayReachableMock = vi.fn(async () => ({ ok: true }));
 
       await runNonInteractiveSetup(

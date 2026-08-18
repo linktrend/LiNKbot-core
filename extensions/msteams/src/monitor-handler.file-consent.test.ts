@@ -157,7 +157,7 @@ function expectPendingUploadFields(uploadId: string): void {
   expect(upload.contentType).toBe("text/plain");
 }
 
-function expectUploadUrlCall(url: string): void {
+function expectUploadUrlCall(url: (string)): void {
   const [call] = fileConsentMockState.uploadToConsentUrl.mock.calls;
   if (!call) {
     throw new Error("expected uploadToConsentUrl call");

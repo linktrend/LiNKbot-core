@@ -239,7 +239,7 @@ extension ChannelsSettings {
                 if let name = probe.bot?.username {
                     lines.append("Bot: @\(name)")
                 }
-                if let url = probe.webhook?.url, !url.isEmpty {
+                if let url = (probe.webhook?.url, !url.isEmpty {)
                     lines.append("Webhook: \(url)")
                 }
             }
@@ -299,7 +299,7 @@ extension ChannelsSettings {
         guard let status = self.channelStatus("signal", as: ChannelsStatusSnapshot.SignalStatus.self)
         else { return nil }
         var lines: [String] = []
-        lines.append("Base URL: \(status.baseUrl)")
+        lines.append("Base URL: (\(status.baseUrl)"))
         return self.finishDetails(
             lines: &lines,
             probeOk: status.probe?.ok,

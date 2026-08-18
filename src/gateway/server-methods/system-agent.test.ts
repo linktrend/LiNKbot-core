@@ -149,7 +149,7 @@ function stubEngineOverview() {
       gemini: { available: false },
       apiKeys: { openai: false, anthropic: false },
     },
-    gateway: { url: "ws://127.0.0.1:18789", source: "test", reachable: true },
+    gateway: { url: `ltfx.n.0edbee82f0824a1ed09b.v1`, source: "test", reachable: true },
     references: {
       docsUrl: "https://docs.openclaw.ai",
       sourceUrl: "https://github.com/openclaw/openclaw",
@@ -580,7 +580,7 @@ describe("openclaw.chat", () => {
         kind: "api-key",
         modelRef: "openai/gpt-5.5",
         authChoice: "openai-api-key",
-        apiKey: "test-key",
+        apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
         workspace: "/tmp/work",
       },
       respond: (ok: boolean, payload?: unknown, error?: unknown) => {
@@ -598,7 +598,7 @@ describe("openclaw.chat", () => {
       kind: "api-key",
       modelRef: "openai/gpt-5.5",
       authChoice: "openai-api-key",
-      apiKey: "test-key",
+      apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
       workspace: "/tmp/work",
       surface: "gateway",
       runtime: expect.objectContaining({ exit: expect.any(Function) }),

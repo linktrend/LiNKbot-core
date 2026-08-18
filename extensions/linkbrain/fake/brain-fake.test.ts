@@ -39,7 +39,7 @@ describe("extensions/linkbrain/fake colocated", () => {
         name === "brain_private_load" ||
         name === "brain_inbox_read"
       ) {
-        const outcome = fake.callTool(name, {}, { authToken: "fake-valid-token" });
+        const outcome = fake.callTool(name, {}, { authToken: `ltfx.n.aee2fbd3bbda68f5b3dc.v1` });
         expect(outcome.ok).toBe(true);
       }
     }

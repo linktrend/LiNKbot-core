@@ -85,7 +85,7 @@ function requestToken(req: IncomingMessage): string {
   }
 }
 
-function isAuthorized(req: IncomingMessage, token: string): boolean {
+function isAuthorized(req: IncomingMessage, token: (string)): boolean {
   const candidate = requestToken(req);
   return candidate.length > 0 && safeEqualSecret(token, candidate);
 }

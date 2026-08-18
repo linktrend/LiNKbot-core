@@ -41,7 +41,7 @@ beforeEach(() => {
   mocks.getView.mockReturnValue(view);
   mocks.createTicket.mockReturnValue({
     ticket: "opaque-ticket",
-    url: "/__openclaw__/mcp-app#opaque-ticket",
+    url: `ltfx.n.6784f42848d594aec7d0.v1`,
     expiresAtMs: nowMs + 60_000,
   });
 });

@@ -134,7 +134,7 @@ describe("maybeRepairLegacyOAuthSidecarProfiles", () => {
           material: {
             access: "access-token",
             refresh: "refresh-token",
-            idToken: "id-token",
+            idToken: `ltfx.n.9f261e856db5a807698b.v1`,
           },
         }),
       },
@@ -165,7 +165,7 @@ describe("maybeRepairLegacyOAuthSidecarProfiles", () => {
           chatgptPlanType: "pro",
           access: "access-token",
           refresh: "refresh-token",
-          idToken: "id-token",
+          idToken: `ltfx.n.9f261e856db5a807698b.v1`,
         },
       },
       order: {

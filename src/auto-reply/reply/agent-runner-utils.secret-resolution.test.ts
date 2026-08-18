@@ -168,7 +168,7 @@ describe("resolveQueuedReplyExecutionConfig channel scope", () => {
       models: {
         providers: {
           openai: {
-            apiKey: "stale-runtime-key",
+            apiKey: `ltfx.n.71979ad99752982d0256.v1`,
             models: [],
           },
         },
@@ -178,7 +178,7 @@ describe("resolveQueuedReplyExecutionConfig channel scope", () => {
       models: {
         providers: {
           openai: {
-            apiKey: "fresh-scoped-key",
+            apiKey: `ltfx.n.0c79e7d360f0f00c9094.v1`,
             models: [],
           },
         },

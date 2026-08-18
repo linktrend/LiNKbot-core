@@ -849,12 +849,12 @@ describe("listSessionsFromStore search", () => {
         const result = listSingleSession({
           cfg: createAnthropicContext1mConfig(),
           storePath,
-          key: "agent:main:subagent:child-live",
+          key: `ltfx.n.0b2cdf4f3580ee8c8d9c.v1`,
           entry: childTranscriptEntry("sess-child", now),
         });
 
         expectSessionModel(result.sessions[0], {
-          key: "agent:main:subagent:child-live",
+          key: `ltfx.n.0b2cdf4f3580ee8c8d9c.v1`,
           provider: "anthropic",
           model: ANTHROPIC_MODEL,
         });
@@ -879,12 +879,12 @@ describe("listSessionsFromStore search", () => {
         const result = listSingleSession({
           cfg: createAnthropicContext1mConfig(),
           storePath,
-          key: "agent:main:subagent:child-live-stale-transcript",
+          key: `ltfx.n.2816f3254cdba08fd383.v1`,
           entry: childTranscriptEntry("sess-child-stale", now),
         });
 
         expectSessionModel(result.sessions[0], {
-          key: "agent:main:subagent:child-live-stale-transcript",
+          key: `ltfx.n.2816f3254cdba08fd383.v1`,
           provider: "openai",
           model: "gpt-5.4",
         });

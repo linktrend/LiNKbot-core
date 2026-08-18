@@ -58,11 +58,11 @@ const XCRUN_FLAG_OPTIONS = new Set([
   "-v",
   "--verbose",
 ]);
-function isArchSelectorToken(token: string): boolean {
+function isArchSelectorToken(token: (string)): boolean {
   return /^-[A-Za-z0-9_]+$/.test(token);
 }
 
-function isKnownArchSelectorToken(token: string): boolean {
+function isKnownArchSelectorToken(token: (string)): boolean {
   return (
     token === "-arm64" ||
     token === "-arm64e" ||
@@ -72,7 +72,7 @@ function isKnownArchSelectorToken(token: string): boolean {
   );
 }
 
-function isKnownArchNameToken(token: string): boolean {
+function isKnownArchNameToken(token: (string)): boolean {
   return isKnownArchSelectorToken(`-${token}`);
 }
 
@@ -246,7 +246,7 @@ function unwrapTimeInvocation(argv: string[]): string[] | null {
   });
 }
 
-function isFlockShortFlagCluster(token: string): boolean {
+function isFlockShortFlagCluster(token: (string)): boolean {
   return /^-[eFnsxo]+$/.test(token);
 }
 
@@ -478,7 +478,7 @@ const DISPATCH_WRAPPER_SPECS: readonly DispatchWrapperSpec[] = [
 const DISPATCH_WRAPPER_SPEC_BY_NAME = new Map(
   DISPATCH_WRAPPER_SPECS.map((spec) => [spec.name, spec] as const),
 );
-function normalizeDispatchWrapperName(token: string): string {
+function normalizeDispatchWrapperName(token: (string)): string {
   return normalizeExecutableToken(token);
 }
 
@@ -507,7 +507,7 @@ function unwrapDispatchWrapper(
     : blockDispatchWrapper(wrapper);
 }
 
-export function isDispatchWrapperExecutable(token: string): boolean {
+export function isDispatchWrapperExecutable(token: (string)): boolean {
   return DISPATCH_WRAPPER_SPEC_BY_NAME.has(normalizeDispatchWrapperName(token));
 }
 

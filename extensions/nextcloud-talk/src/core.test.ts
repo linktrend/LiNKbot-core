@@ -80,7 +80,7 @@ describe("nextcloud talk core", () => {
     const body = JSON.stringify({ hello: "world" });
     const generated = generateNextcloudTalkSignature({
       body,
-      secret: "secret-123",
+      secret: `ltfx.n.300109590f69536a400b.v1`,
     });
 
     expect(generated.random).toMatch(/^[0-9a-f]{64}$/);
@@ -90,7 +90,7 @@ describe("nextcloud talk core", () => {
         signature: generated.signature,
         random: generated.random,
         body,
-        secret: "secret-123",
+        secret: `ltfx.n.300109590f69536a400b.v1`,
       }),
     ).toBe(true);
     expect(
@@ -132,7 +132,7 @@ describe("nextcloud talk core", () => {
     const body = JSON.stringify({ hello: "world" });
     const generated = generateNextcloudTalkSignature({
       body,
-      secret: "secret-123",
+      secret: `ltfx.n.300109590f69536a400b.v1`,
     });
 
     expect(
@@ -140,7 +140,7 @@ describe("nextcloud talk core", () => {
         signature: generated.signature,
         random: generated.random,
         body: JSON.stringify({ hello: "tampered" }),
-        secret: "secret-123",
+        secret: `ltfx.n.300109590f69536a400b.v1`,
       }),
     ).toBe(false);
     expect(
@@ -148,7 +148,7 @@ describe("nextcloud talk core", () => {
         signature: generated.signature,
         random: generated.random,
         body,
-        secret: "wrong-secret",
+        secret: `ltfx.n.539e915a40033497f3a9.v1`,
       }),
     ).toBe(false);
     expect(
@@ -156,7 +156,7 @@ describe("nextcloud talk core", () => {
         signature: "a".repeat(generated.signature.length),
         random: generated.random,
         body,
-        secret: "secret-123",
+        secret: `ltfx.n.300109590f69536a400b.v1`,
       }),
     ).toBe(false);
   });
@@ -198,7 +198,7 @@ describe("nextcloud talk core", () => {
       const body = JSON.stringify({ hello: "world" });
       const generated = generateNextcloudTalkSignatureLocal({
         body,
-        secret: "secret-123",
+        secret: `ltfx.n.300109590f69536a400b.v1`,
       });
       const shortSignature = generated.signature.slice(0, 12);
 
@@ -207,7 +207,7 @@ describe("nextcloud talk core", () => {
           signature: shortSignature,
           random: generated.random,
           body,
-          secret: "secret-123",
+          secret: `ltfx.n.300109590f69536a400b.v1`,
         }),
       ).toBe(false);
 

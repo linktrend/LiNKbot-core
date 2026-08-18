@@ -429,11 +429,11 @@ describe("AcpSessionManager runtime config", () => {
       value: "openai/gpt-5.4",
     });
     expectMockCallFields(runtimeState.setConfigOption, {
-      key: "thinking",
+      key: `ltfx.n.6ee16429668c2d820770.v1`,
       value: "high",
     });
     expectMockCallFields(runtimeState.setConfigOption, {
-      key: "approval_policy",
+      key: `ltfx.n.e3ffbfbd94ca2fbf05b3.v1`,
       value: "strict",
     });
     expectMockCallFields(runtimeState.setConfigOption, {
@@ -607,7 +607,7 @@ describe("AcpSessionManager runtime config", () => {
       value: "high",
     });
     expectNoMockCallFields(runtimeState.setConfigOption, {
-      key: "thinking",
+      key: `ltfx.n.6ee16429668c2d820770.v1`,
     });
   });
 
@@ -646,22 +646,22 @@ describe("AcpSessionManager runtime config", () => {
     });
 
     expectMockCallFields(runtimeState.setConfigOption, {
-      key: "thought_level",
+      key: `ltfx.n.775843d22ac386f91145.v1`,
       value: "high",
     });
     expectMockCallFields(runtimeState.setConfigOption, {
-      key: "permissions",
+      key: `ltfx.n.4fe3cdd404ea0290bad9.v1`,
       value: "strict",
     });
     expectMockCallFields(runtimeState.setConfigOption, {
-      key: "timeout_seconds",
+      key: `ltfx.n.9cf70d8a9b2d5c57c778.v1`,
       value: "120",
     });
     expectNoMockCallFields(runtimeState.setConfigOption, {
-      key: "thinking",
+      key: `ltfx.n.6ee16429668c2d820770.v1`,
     });
     expectNoMockCallFields(runtimeState.setConfigOption, {
-      key: "approval_policy",
+      key: `ltfx.n.e3ffbfbd94ca2fbf05b3.v1`,
     });
     expectNoMockCallFields(runtimeState.setConfigOption, {
       key: "timeout",
@@ -831,7 +831,7 @@ describe("AcpSessionManager runtime config", () => {
     });
 
     expectMockCallFields(runtimeState.setConfigOption, {
-      key: "reasoning_effort",
+      key: `ltfx.n.a692e305fae85dbf68de.v1`,
       value: "high",
     });
   });
@@ -857,7 +857,7 @@ describe("AcpSessionManager runtime config", () => {
       manager.setSessionConfigOption({
         cfg: baseCfg,
         sessionKey: "agent:opencode:acp:session-1",
-        key: "thinking",
+        key: `ltfx.n.6ee16429668c2d820770.v1`,
         value: "high",
       }),
       { code: "ACP_BACKEND_UNSUPPORTED_CONTROL" },
@@ -886,7 +886,7 @@ describe("AcpSessionManager runtime config", () => {
     const nextOptions = await manager.setSessionConfigOption({
       cfg: baseCfg,
       sessionKey: "agent:claude:acp:session-1",
-      key: "thinking",
+      key: `ltfx.n.6ee16429668c2d820770.v1`,
       value: "high",
     });
 
@@ -922,7 +922,7 @@ describe("AcpSessionManager runtime config", () => {
     const nextOptions = await manager.setSessionConfigOption({
       cfg: baseCfg,
       sessionKey: "agent:claude:acp:session-1",
-      key: "thinking",
+      key: `ltfx.n.6ee16429668c2d820770.v1`,
       value: "high",
     });
 
@@ -985,12 +985,12 @@ describe("AcpSessionManager runtime config", () => {
     const nextOptions = await manager.setSessionConfigOption({
       cfg: baseCfg,
       sessionKey: "agent:claude:acp:session-1",
-      key: "permission_mode",
+      key: `ltfx.n.7cbf4e1263d39d449c2e.v1`,
       value: "strict",
     });
 
     expectMockCallFields(runtimeState.setConfigOption, {
-      key: "permission_mode",
+      key: `ltfx.n.7cbf4e1263d39d449c2e.v1`,
       value: "strict",
     });
     expect(nextOptions).toEqual({ permissionProfile: "strict" });

@@ -698,7 +698,7 @@ describe("augmentChatHistoryWithCanvasBlocks", () => {
       view: {
         backend: "canvas",
         id: "cv_user_text",
-        url: "/__openclaw__/canvas/documents/cv_user_text/index.html",
+        url: `ltfx.n.ae9cc623f4dff4c12c3d.v1`,
         title: "User pasted preview",
         preferred_height: 240,
       },
@@ -1776,7 +1776,7 @@ describe("projectRecentChatDisplayMessages", () => {
           {
             type: "attachment",
             attachment: {
-              url: "/tmp/tts.mp3",
+              url: `ltfx.n.0d2cab14eac878a2c91f.v1`,
               kind: "audio",
               label: "tts.mp3",
               mimeType: "audio/mpeg",
@@ -1807,7 +1807,7 @@ describe("projectRecentChatDisplayMessages", () => {
           {
             type: "attachment",
             attachment: {
-              url: "/tmp/tts.mp3",
+              url: `ltfx.n.0d2cab14eac878a2c91f.v1`,
               kind: "audio",
               label: "tts.mp3",
               mimeType: "audio/mpeg",
@@ -2208,7 +2208,7 @@ describe("projectRecentChatDisplayMessages", () => {
           {
             type: "attachment",
             attachment: {
-              url: "/tmp/tts.mp3",
+              url: `ltfx.n.0d2cab14eac878a2c91f.v1`,
               kind: "audio",
               label: "tts.mp3",
               mimeType: "audio/mpeg",
@@ -2233,7 +2233,7 @@ describe("projectRecentChatDisplayMessages", () => {
           {
             type: "attachment",
             attachment: {
-              url: "/tmp/tts.mp3",
+              url: `ltfx.n.0d2cab14eac878a2c91f.v1`,
               kind: "audio",
               label: "tts.mp3",
               mimeType: "audio/mpeg",
@@ -2268,7 +2268,7 @@ describe("projectRecentChatDisplayMessages", () => {
           {
             type: "attachment",
             attachment: {
-              url: "/tmp/tts.mp3",
+              url: `ltfx.n.0d2cab14eac878a2c91f.v1`,
               kind: "audio",
               label: "tts.mp3",
               mimeType: "audio/mpeg",
@@ -2288,7 +2288,7 @@ describe("projectRecentChatDisplayMessages", () => {
           {
             type: "attachment",
             attachment: {
-              url: "/tmp/tts.mp3",
+              url: `ltfx.n.0d2cab14eac878a2c91f.v1`,
               kind: "audio",
               label: "tts.mp3",
               mimeType: "audio/mpeg",
@@ -2319,7 +2319,7 @@ describe("projectRecentChatDisplayMessages", () => {
             {
               type: "attachment",
               attachment: {
-                url: "/tmp/tts.mp3",
+                url: `ltfx.n.0d2cab14eac878a2c91f.v1`,
                 kind: "audio",
                 label: "tts.mp3",
                 mimeType: "audio/mpeg",
@@ -2341,7 +2341,7 @@ describe("projectRecentChatDisplayMessages", () => {
           {
             type: "attachment",
             attachment: {
-              url: "/tmp/tts.mp3",
+              url: `ltfx.n.0d2cab14eac878a2c91f.v1`,
               kind: "audio",
               label: "tts.mp3",
               mimeType: "audio/mpeg",
@@ -2376,7 +2376,7 @@ describe("projectRecentChatDisplayMessages", () => {
           {
             type: "attachment",
             attachment: {
-              url: "/tmp/tts.mp3",
+              url: `ltfx.n.0d2cab14eac878a2c91f.v1`,
               kind: "audio",
               label: "tts.mp3",
               mimeType: "audio/mpeg",
@@ -2406,7 +2406,7 @@ describe("projectRecentChatDisplayMessages", () => {
           {
             type: "attachment",
             attachment: {
-              url: "/tmp/tts.mp3",
+              url: `ltfx.n.0d2cab14eac878a2c91f.v1`,
               kind: "audio",
               label: "tts.mp3",
               mimeType: "audio/mpeg",

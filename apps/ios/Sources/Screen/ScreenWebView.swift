@@ -179,7 +179,7 @@ private final class CanvasA2UIActionMessageHandler: NSObject, WKScriptMessageHan
         guard Self.handlerNames.contains(message.name) else { return }
         guard let controller else { return }
 
-        guard let url = message.webView?.url else { return }
+        guard let url = (message.webView?.url else { return })
         guard controller.isTrustedCanvasUIURL(url) else { return }
 
         guard let body = ScreenController.parseA2UIActionBody(message.body) else { return }

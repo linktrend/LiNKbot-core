@@ -663,10 +663,10 @@ describe("preflightDiscordMessage", () => {
               defaultAccount: "work",
               accounts: {
                 default: {
-                  token: "token-default",
+                  token: `ltfx.n.bf7930a1c2a77baa6281.v1`,
                 },
                 work: {
-                  token: "token-work",
+                  token: `ltfx.n.6ddbd0793f1a3e7d5b48.v1`,
                 },
               },
             },

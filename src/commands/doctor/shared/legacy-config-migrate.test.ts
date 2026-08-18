@@ -303,7 +303,7 @@ describe("legacy memory search config migrate", () => {
       models: {
         providers: {
           openai: {
-            apiKey: "placeholder",
+            apiKey: `ltfx.n.4097889236a2af26c293.v1`,
             models: [{ id: "text-embedding-3-small" }],
           },
           codex: {
@@ -321,7 +321,7 @@ describe("legacy memory search config migrate", () => {
       models: [{ id: "gpt-5.6-sol", api: "openai-chatgpt-responses" }],
     });
     expect(res.config?.models?.providers?.openai).toEqual({
-      apiKey: "placeholder",
+      apiKey: `ltfx.n.4097889236a2af26c293.v1`,
       models: [{ id: "text-embedding-3-small" }],
     });
     expect(res.changes).toContain(
@@ -343,7 +343,7 @@ describe("legacy memory search config migrate", () => {
       models: {
         providers: {
           openai: {
-            apiKey: "placeholder",
+            apiKey: `ltfx.n.4097889236a2af26c293.v1`,
             models: [{ id: "text-embedding-3-small" }],
           },
           "openai-codex": {
@@ -369,7 +369,7 @@ describe("legacy memory search config migrate", () => {
       models: {
         providers: {
           openai: {
-            apiKey: "placeholder",
+            apiKey: `ltfx.n.4097889236a2af26c293.v1`,
             models: [
               {
                 id: "gpt-5.6-sol",
@@ -1627,7 +1627,7 @@ describe("legacy Feishu account bot name migrate", () => {
           accounts: {
             main: {
               appId: "cli_xxx",
-              appSecret: "redacted",
+              appSecret: `ltfx.n.b68919aff001d8366249.v1`,
               botName: "Legacy Feishu Bot",
               domain: "feishu",
             },
@@ -1638,7 +1638,7 @@ describe("legacy Feishu account bot name migrate", () => {
 
     expect(res.config?.channels?.feishu?.accounts?.main).toEqual({
       appId: "cli_xxx",
-      appSecret: "redacted",
+      appSecret: `ltfx.n.b68919aff001d8366249.v1`,
       name: "Legacy Feishu Bot",
       domain: "feishu",
     });
@@ -2211,7 +2211,7 @@ describe("legacy migrate x_search auth", () => {
       tools: {
         web: {
           x_search: {
-            apiKey: "xai-legacy-key",
+            apiKey: `ltfx.n.fd91d5ff25ff24d832b4.v1`,
             enabled: true,
             model: "grok-4-1-fast",
           },
@@ -2227,7 +2227,7 @@ describe("legacy migrate x_search auth", () => {
       enabled: true,
       config: {
         webSearch: {
-          apiKey: "xai-legacy-key",
+          apiKey: `ltfx.n.fd91d5ff25ff24d832b4.v1`,
         },
       },
     });

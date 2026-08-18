@@ -821,7 +821,7 @@ describePosix("scripts/pr per-PR operation lock", () => {
     try {
       const unrelatedPgid = unrelated.pid!;
       const result = runLockShell(repoDir, [
-        `owner_oid=$(printf 'version=3\\nstate=active\\npgid=%s\\nsupervisor_pid=2147483647\\nsupervisor_birth=Mon Jan 1 00:00:00 1900\\ntoken=11111111-1111-1111-1111-111111111111\\n' '${unrelatedPgid}' | git hash-object -w --stdin)`,
+        `owner_oid=$(printf 'version=3\\nstate=active\\npgid=%s\\nsupervisor_pid=2147483647\\nsupervisor_birth=Mon Jan 1 00:00:00 1900\\ntoken=(11111111-1111-1111-1111-111111111111\\n' '${unrelatedPgid}' | git hash-object -w --stdin)`,)
         `git update-ref '${lockRef}' "$owner_oid"`,
         "set +e",
         "acquire_pr_operation_lock 42",
@@ -875,7 +875,7 @@ describePosix("scripts/pr per-PR operation lock", () => {
     const repoDir = createRepo();
     const result = runLockShell(repoDir, [
       "prepare_pr_operation_lock_candidate 42",
-      "stale_oid=$(printf 'version=3\\nstate=active\\npgid=2147483647\\nsupervisor_pid=2147483647\\nsupervisor_birth=Mon Jan 1 00:00:00 1900\\ntoken=11111111-1111-1111-1111-111111111111\\n' | git hash-object -w --stdin)",
+      "stale_oid=$(printf 'version=3\\nstate=active\\npgid=2147483647\\nsupervisor_pid=2147483647\\nsupervisor_birth=Mon Jan 1 00:00:00 1900\\ntoken=(11111111-1111-1111-1111-111111111111\\n' | git hash-object -w --stdin)",)
       `git update-ref '${lockRef}' "$stale_oid"`,
       "pr_operation_lock_process_group_status() {",
       `  command git -C '${repoDir}' update-ref --no-deref -d '${lockRef}' "$stale_oid"`,
@@ -1687,7 +1687,7 @@ describePosix("scripts/pr per-PR operation lock", () => {
       const repoDir = createRepo();
       const result = runLockShell(repoDir, [
         'supervisor_birth=$(pr_operation_lock_process_birth "$$")',
-        `bad_oid=$(printf 'version=3\\nstate=active\\npgid=${pgid}\\nsupervisor_pid=%s\\nsupervisor_birth=%s\\ntoken=11111111-1111-1111-1111-111111111111\\n' "$$" "$supervisor_birth" | git hash-object -w --stdin)`,
+        `bad_oid=$(printf 'version=3\\nstate=active\\npgid=${pgid}\\nsupervisor_pid=%s\\nsupervisor_birth=%s\\ntoken=(11111111-1111-1111-1111-111111111111\\n' "$$" "$supervisor_birth" | git hash-object -w --stdin)`,)
         `git update-ref '${lockRef}' "$bad_oid"`,
         "set +e",
         "try_acquire_pr_operation_lock 42",
@@ -1705,7 +1705,7 @@ describePosix("scripts/pr per-PR operation lock", () => {
     const result = runLockShell(repoDir, [
       "prepare_pr_operation_lock_candidate 42",
       'supervisor_birth=$(pr_operation_lock_process_birth "$$")',
-      'owner_oid=$(printf \'version=3\\nstate=active\\npgid=2\\nsupervisor_pid=%s\\nsupervisor_birth=%s\\ntoken=11111111-1111-1111-1111-111111111111\\n\' "$$" "$supervisor_birth" | git hash-object -w --stdin)',
+      'owner_oid=$(printf \'version=3\\nstate=active\\npgid=2\\nsupervisor_pid=%s\\nsupervisor_birth=%s\\ntoken=(11111111-1111-1111-1111-111111111111\\n\' "$$" "$supervisor_birth" | git hash-object -w --stdin)',)
       `git update-ref '${lockRef}' "$owner_oid"`,
       "node() { printf 'indeterminate\\n'; }",
       "set +e",
@@ -1758,7 +1758,7 @@ describePosix("scripts/pr per-PR operation lock", () => {
 
         const blocked = runLockShell(repoDir, [
           'supervisor_birth=$(pr_operation_lock_process_birth "$$")',
-          `owner_oid=$(printf 'version=3\\nstate=active\\npgid=%s\\nsupervisor_pid=%s\\nsupervisor_birth=%s\\ntoken=11111111-1111-1111-1111-111111111111\\n' '${zombiePgid}' "$$" "$supervisor_birth" | git hash-object -w --stdin)`,
+          `owner_oid=$(printf 'version=3\\nstate=active\\npgid=%s\\nsupervisor_pid=%s\\nsupervisor_birth=%s\\ntoken=(11111111-1111-1111-1111-111111111111\\n' '${zombiePgid}' "$$" "$supervisor_birth" | git hash-object -w --stdin)`,)
           `git update-ref '${lockRef}' "$owner_oid"`,
           "set +e",
           "try_acquire_pr_operation_lock 42",
@@ -1788,7 +1788,7 @@ describePosix("scripts/pr per-PR operation lock", () => {
   it("keeps a dead owner sticky instead of guessing that detached work ended", () => {
     const repoDir = createRepo();
     const result = runLockShell(repoDir, [
-      "stale_oid=$(printf 'version=3\\nstate=active\\npgid=2147483647\\nsupervisor_pid=2147483647\\nsupervisor_birth=Mon Jan 1 00:00:00 1900\\ntoken=11111111-1111-1111-1111-111111111111\\n' | git hash-object -w --stdin)",
+      "stale_oid=$(printf 'version=3\\nstate=active\\npgid=2147483647\\nsupervisor_pid=2147483647\\nsupervisor_birth=Mon Jan 1 00:00:00 1900\\ntoken=(11111111-1111-1111-1111-111111111111\\n' | git hash-object -w --stdin)",)
       `git update-ref '${lockRef}' "$stale_oid"`,
       "set +e",
       "acquire_pr_operation_lock 42",

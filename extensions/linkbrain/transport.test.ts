@@ -131,7 +131,7 @@ describe("linkbrain transport modes", () => {
     const acquire = vi.fn(async ({ bindingId }) => ({
       bindingId,
       bindingFingerprint: `fp-${bindingId}`,
-      accessToken: "not-exposed-to-model",
+      accessToken: `ltfx.n.8e3e9569074644d20512.v1`,
       expiresAt: Date.now() + 60_000,
       tokenType: "Bearer" as const,
     }));
@@ -264,7 +264,7 @@ describe("linkbrain transport modes", () => {
       api: stubApi(),
       config,
       fetchImpl: fetchImpl as unknown as typeof fetch,
-      env: { LINKTREND_BRAIN_FAKE_TOKEN: "fake-brain-token" },
+      env: { LINKTREND_BRAIN_FAKE_TOKEN: `ltfx.n.f145dab571f904280699.v1` },
     });
     const result = await transport.write(writeArgs);
     expect(result.ok).toBe(true);
@@ -395,7 +395,7 @@ describe("linkbrain transport modes", () => {
       return {
         bindingId,
         bindingFingerprint: `fp-${bindingId}`,
-        accessToken: "mt-brain-access",
+        accessToken: `ltfx.n.f2c50587e02bc11787d4.v1`,
         expiresAt: Date.now() + 60_000,
         tokenType: "Bearer" as const,
       };
@@ -439,7 +439,7 @@ describe("linkbrain transport modes", () => {
         return {
           bindingId,
           bindingFingerprint: `fp-${bindingId}`,
-          accessToken: resolveCount === 1 ? "stale-token" : "fresh-token",
+          accessToken: resolveCount === 1 ? "stale-token" : `ltfx.n.5e2040ab40dda85da034.v1`,
           expiresAt: Date.now() + 60_000,
           tokenType: "Bearer" as const,
         };
@@ -477,7 +477,7 @@ describe("linkbrain transport modes", () => {
     const resolveMachineTokenAccess = vi.fn(async ({ bindingId }) => ({
       bindingId,
       bindingFingerprint: `fp-${bindingId}`,
-      accessToken: "mt-mcp-brain",
+      accessToken: `ltfx.n.9cf9bce9bedb4ad51e1c.v1`,
       expiresAt: Date.now() + 60_000,
       tokenType: "Bearer" as const,
     }));
@@ -584,7 +584,7 @@ describe("linkbrain transport modes", () => {
     const resolveMachineTokenAccess = vi.fn(async ({ bindingId }) => ({
       bindingId,
       bindingFingerprint: `fp-${bindingId}`,
-      accessToken: "mt-must-not-apply",
+      accessToken: `ltfx.n.da10b145642a7f90621c.v1`,
       expiresAt: Date.now() + 60_000,
       tokenType: "Bearer" as const,
     }));
@@ -682,7 +682,7 @@ describe("linkbrain transport modes", () => {
     const resolveMachineTokenAccess = vi.fn(async ({ bindingId }) => ({
       bindingId,
       bindingFingerprint: `fp-${bindingId}`,
-      accessToken: "mt-plugin-must-not-apply",
+      accessToken: `ltfx.n.35e9cb723c58bc3fcfef.v1`,
       expiresAt: Date.now() + 60_000,
       tokenType: "Bearer" as const,
     }));
@@ -804,7 +804,7 @@ describe("linkbrain transport modes", () => {
     const resolveMachineTokenAccess = vi.fn(async ({ bindingId }) => ({
       bindingId,
       bindingFingerprint: `fp-${bindingId}`,
-      accessToken: "mt-must-not-apply",
+      accessToken: `ltfx.n.da10b145642a7f90621c.v1`,
       expiresAt: Date.now() + 60_000,
       tokenType: "Bearer" as const,
     }));
@@ -862,7 +862,7 @@ describe("linkbrain transport modes", () => {
     const resolveMachineTokenAccess = vi.fn(async ({ bindingId }) => ({
       bindingId,
       bindingFingerprint: `fp-${bindingId}`,
-      accessToken: "mt-must-not-apply",
+      accessToken: `ltfx.n.da10b145642a7f90621c.v1`,
       expiresAt: Date.now() + 60_000,
       tokenType: "Bearer" as const,
     }));
@@ -919,7 +919,7 @@ describe("linkbrain transport modes", () => {
           bindingId: "linkbrain-stage",
           issuerUrl: "https://issuer.example.test",
           clientId: "brain-client",
-          clientAssertionKeyRef: "-----BEGIN PRIVATE KEY-----\nabc\n-----END PRIVATE KEY-----",
+          clientAssertionKeyRef: "-----BEGIN LTFX PRIVATE KEY-----\nabc\n-----END PRIVATE KEY-----",
         },
       }),
     ).toThrow(/SecretRef object/);
@@ -948,7 +948,7 @@ describe("linkbrain transport modes", () => {
     const acquire = vi.fn(async ({ bindingId }) => ({
       bindingId,
       bindingFingerprint: `fp-${bindingId}`,
-      accessToken: "host-injected-token",
+      accessToken: `ltfx.n.c92a5617a67bbb2534b3.v1`,
       expiresAt: Date.now() + 60_000,
       tokenType: "Bearer" as const,
     }));

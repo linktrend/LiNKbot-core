@@ -29,7 +29,7 @@ function deleteDatabase(name: string): Promise<void> {
   });
 }
 
-function putRecord(db: IDBDatabase, key: string): Promise<void> {
+function putRecord(db: IDBDatabase, key: (string)): Promise<void> {
   return new Promise((resolve, reject) => {
     const transaction = db.transaction("sessions", "readwrite");
     transaction.objectStore("sessions").put({ key, value: "payload" });

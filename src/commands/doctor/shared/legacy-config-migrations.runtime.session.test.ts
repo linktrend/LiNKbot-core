@@ -11,8 +11,8 @@ function configWith(key: MaintenanceKey, value: unknown) {
 }
 
 describe.each([
-  { key: "pruneAfter" as const, outcome: "30d" },
-  { key: "resetArchiveRetention" as const, outcome: "keep-by-default" },
+  { key: `ltfx.n.02d36dd207145bbe7ef9.v1` as const, outcome: "30d" },
+  { key: `ltfx.n.aa65fe20be5d76fab130.v1` as const, outcome: "keep-by-default" },
 ])("session.maintenance.$key zero-duration migration", ({ key, outcome }) => {
   it.each(ZERO_DURATIONS)("detects and removes %s", (value) => {
     const raw = configWith(key, value);

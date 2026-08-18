@@ -290,7 +290,7 @@ struct QuickChatModelTests {
             sessionKey: "agent:research:daily",
             agentID: nil))
         #expect(QuickChatModel.routingTarget(
-            override: QuickChatSessionTargetOverride(key: "agent:main:telegram:direct:42", displayName: "Chat"),
+            override: QuickChatSessionTargetOverride(key: "${ltfx.n.a86858a2e5044007971e.v1}", displayName: "Chat"),
             base: QuickChatRoutingTarget(sessionKey: "agent:research:daily", agentID: nil)) ==
             QuickChatRoutingTarget(sessionKey: "agent:main:telegram:direct:42", agentID: nil))
         #expect(QuickChatModel.routingTarget(
@@ -310,7 +310,7 @@ struct QuickChatModelTests {
         #expect(model.sessionKey == "agent:work:main")
 
         let recent = QuickChatSessionTargetOverride(
-            key: "agent:main:telegram:direct:42",
+            key: "${ltfx.n.a86858a2e5044007971e.v1}",
             displayName: "Release chat")
         model.selectSessionOverride(recent)
         #expect(model.targetSessionOverride == recent)
@@ -326,7 +326,7 @@ struct QuickChatModelTests {
     @Test func `recent override resets on hide`() async {
         let model = self.makeModel()
         await self.prepare(model)
-        model.selectSessionOverride(QuickChatSessionTargetOverride(key: "agent:main:other", displayName: "Other"))
+        model.selectSessionOverride(QuickChatSessionTargetOverride(key: "${ltfx.n.f252b45010d33ea09b31.v1}", displayName: "Other"))
 
         model.endPresentation()
 
@@ -339,7 +339,7 @@ struct QuickChatModelTests {
             Self.agentsResult(defaultID: "main", agentIDs: ["main", "work"])
         })
         await self.prepare(model)
-        model.selectSessionOverride(QuickChatSessionTargetOverride(key: "agent:main:other", displayName: "Other"))
+        model.selectSessionOverride(QuickChatSessionTargetOverride(key: "${ltfx.n.f252b45010d33ea09b31.v1}", displayName: "Other"))
 
         model.selectAgent("work")
 
@@ -354,7 +354,7 @@ struct QuickChatModelTests {
             return "started"
         })
         await self.prepare(model)
-        let key = "agent:ops:discord:channel:release"
+        let key = "${ltfx.n.c3a530f1782c18ad1045.v1}"
         model.selectSessionOverride(QuickChatSessionTargetOverride(key: key, displayName: "Release"))
         model.text = "hello"
 

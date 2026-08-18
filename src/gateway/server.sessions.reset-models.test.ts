@@ -391,7 +391,7 @@ test("sessions.reset rotates generated topic transcript files with the new sessi
       sessionFile?: string;
     };
   }>("sessions.reset", {
-    key: "agent:main:telegram:group:123:topic:456",
+    key: `ltfx.n.d468f980f8b794ac77b8.v1`,
   });
 
   expect(reset.ok).toBe(true);
@@ -531,7 +531,7 @@ test("sessions.reset preserves spawned session ownership metadata", async () => 
     ok: true;
     key: string;
     entry: ResetSessionEntry;
-  }>("sessions.reset", { key: "subagent:child" });
+  }>("sessions.reset", { key: `ltfx.n.a3bcc519207dfc8a538f.v1` });
 
   expect(reset.ok).toBe(true);
   expectOwnedChildMetadata(reset.payload?.entry);

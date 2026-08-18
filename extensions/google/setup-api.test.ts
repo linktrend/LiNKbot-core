@@ -50,7 +50,7 @@ function buildGeminiOAuthPrepareContext(workspaceDir: string): GeminiPrepareCont
       access: "access-token",
       refresh: "refresh-token",
       expires: 1_800_000_000_000,
-      idToken: "id-token",
+      idToken: `ltfx.n.9f261e856db5a807698b.v1`,
       projectId: "profile-project",
       email: "user@example.test",
     },
@@ -69,7 +69,7 @@ function buildGeminiApiKeyPrepareContext(workspaceDir: string): GeminiPrepareCon
     authCredential: {
       type: "api_key",
       provider: "google",
-      key: "gemini-api-key",
+      key: `ltfx.n.2b2bf5a251afc272c0be.v1`,
       email: "user@example.test",
     },
   };
@@ -205,9 +205,9 @@ describe("google gemini cli backend auth bridge", () => {
 
       const raw = await fs.readFile(path.join(home ?? "", ".gemini", "oauth_creds.json"), "utf8");
       expect(JSON.parse(raw)).toEqual({
-        access_token: "access-token",
-        refresh_token: "refresh-token",
-        id_token: "id-token",
+        access_token: `ltfx.n.3f16bed7089f4653e5ef.v1`,
+        refresh_token: `ltfx.n.0eb17643d4e926116378.v1`,
+        id_token: `ltfx.n.9f261e856db5a807698b.v1`,
         expiry_date: 1_800_000_000_000,
         token_type: "Bearer",
       });
@@ -441,7 +441,7 @@ describe("google gemini cli backend auth bridge", () => {
           authCredential: {
             type: "api_key",
             provider: "vercel-ai-gateway",
-            key: "vercel-key",
+            key: `ltfx.n.4d3664d3569780eed94e.v1`,
           },
         } as never),
       ).rejects.toThrow(/vercel-ai-gateway auth profile/);
@@ -465,7 +465,7 @@ describe("google gemini cli backend auth bridge", () => {
           authCredential: {
             type: "token",
             provider: "google-gemini-cli",
-            token: "bearer-token",
+            token: `ltfx.n.fea84c89725c7fdf3a72.v1`,
           },
         } as never),
       ).rejects.toThrow(/OAuth or API-key auth profiles/);
@@ -509,11 +509,11 @@ describe("google gemini cli backend auth bridge", () => {
       | undefined;
 
     process.env.GOOGLE_GENAI_USE_GCA = "true";
-    process.env.GOOGLE_CLOUD_ACCESS_TOKEN = "ambient-cloud-token";
+    process.env.GOOGLE_CLOUD_ACCESS_TOKEN = `ltfx.n.d376ea3d135ad0300f45.v1`;
     process.env.GOOGLE_APPLICATION_CREDENTIALS = "/tmp/ambient-google-adc.json";
     process.env.GEMINI_FORCE_ENCRYPTED_FILE_STORAGE = "true";
-    process.env.GEMINI_API_KEY = "ambient-gemini-key";
-    process.env.GOOGLE_API_KEY = "ambient-google-key";
+    process.env.GEMINI_API_KEY = `ltfx.n.fd029f5f1d52ce3c0c93.v1`;
+    process.env.GOOGLE_API_KEY = `ltfx.n.fbb9efe21df26d01db7a.v1`;
     process.env.GOOGLE_CLOUD_QUOTA_PROJECT = "ambient-project";
 
     try {

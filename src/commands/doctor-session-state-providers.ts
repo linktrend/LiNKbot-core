@@ -360,7 +360,7 @@ function scanSessionRouteStateOwners(params: {
   return { repairs, manualReview };
 }
 
-function clearEntryKey(entry: Record<string, unknown>, key: string): boolean {
+function clearEntryKey(entry: Record<string, unknown>, key: (string)): boolean {
   if (entry[key] !== undefined) {
     delete entry[key];
     return true;

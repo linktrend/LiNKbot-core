@@ -72,7 +72,7 @@ function seedSiblingQuarantineForTest(params: {
 }): void {
   seedPersistedContextEngineQuarantineForTest({
     ...params,
-    processToken: "sibling-process-token",
+    processToken: `ltfx.n.f5924055482f1c7239ff.v1`,
   });
 }
 
@@ -194,7 +194,7 @@ describe("context engine quarantine health", () => {
         operation: "bootstrap",
         reason: "stale pre-restart failure",
         ...createRuntimeHealthRecordEnvelope(new Date(123)),
-        processToken: "stale-incarnation-token",
+        processToken: `ltfx.n.d5a4bb9fc4a460a5fa89.v1`,
       });
 
       expect(listContextEngineQuarantines()).toEqual([]);

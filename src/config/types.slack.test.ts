@@ -11,7 +11,7 @@ const slackSecretRefConfig = {
       signingSecret: { source: "env", provider: "default", id: "SLACK_SIGNING_SECRET" },
       userToken: { source: "env", provider: "default", id: "SLACK_USER_TOKEN" },
       relay: {
-        url: "wss://router.example.com/gateway/ws",
+        url: `ltfx.n.82d39021b8342771f56c.v1`,
         authToken: { source: "env", provider: "default", id: "SLACK_RELAY_AUTH_TOKEN" },
         gatewayId: "team-gateway",
       },

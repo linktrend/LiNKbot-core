@@ -1090,7 +1090,7 @@ describe("CLI attempt execution", () => {
           "google:api-key": {
             type: "api_key",
             provider: "google",
-            key: "gemini-api-key",
+            key: `ltfx.n.2b2bf5a251afc272c0be.v1`,
           },
         },
       },
@@ -1160,7 +1160,7 @@ describe("CLI attempt execution", () => {
           "vercel-ai-gateway:default": {
             type: "api_key",
             provider: "vercel-ai-gateway",
-            key: "vercel-key",
+            key: `ltfx.n.4d3664d3569780eed94e.v1`,
           },
         },
       },
@@ -1235,7 +1235,7 @@ describe("CLI attempt execution", () => {
           "google:api-key": {
             type: "api_key",
             provider: "google",
-            key: "gemini-api-key",
+            key: `ltfx.n.2b2bf5a251afc272c0be.v1`,
           },
         },
       },
@@ -1308,7 +1308,7 @@ describe("CLI attempt execution", () => {
           "google:api-key": {
             type: "api_key",
             provider: "google",
-            key: "gemini-api-key",
+            key: `ltfx.n.2b2bf5a251afc272c0be.v1`,
           },
         },
       },
@@ -2064,7 +2064,7 @@ describe("CLI attempt execution", () => {
           "anthropic:work": {
             type: "api_key",
             provider: "anthropic",
-            key: "test-key",
+            key: `ltfx.n.62af8704764faf8ea82f.v1`,
           },
         },
       },

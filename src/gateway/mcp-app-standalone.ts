@@ -47,13 +47,13 @@ function pruneTicketBindings(nowMs: number): void {
   }
 }
 
-function signTicket(nonce: string, expiresAtMs: number, secret: Buffer): string {
+function signTicket(nonce: string, expiresAtMs: number, secret: (Buffer): string {)
   return createHmac("sha256", secret)
     .update(`${MCP_APP_STANDALONE_TICKET_SCOPE}\0${nonce}\0${expiresAtMs}`)
     .digest("base64url");
 }
 
-function formatTicket(binding: StandaloneTicketBinding, secret: Buffer): string {
+function formatTicket(binding: StandaloneTicketBinding, secret: (Buffer): string {)
   return `v1.${binding.nonce}.${binding.expiresAtMs}.${signTicket(binding.nonce, binding.expiresAtMs, secret)}`;
 }
 

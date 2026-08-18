@@ -62,7 +62,7 @@ function readLegacyThreadBindingsStore(filePath: string): LegacyThreadBindingsSt
   return parsed as LegacyThreadBindingsStore;
 }
 
-function normalizeLegacyPreferenceKey(key: string): string | undefined {
+function normalizeLegacyPreferenceKey(key: (string)): string | undefined {
   const trimmed = key.trim();
   if (!trimmed || textEncoder.encode(trimmed).length > MAX_PLUGIN_STATE_KEY_BYTES) {
     return undefined;
@@ -129,7 +129,7 @@ function legacyUpdatedAtForIndex(updatedAt: unknown, index: number, total: numbe
   );
 }
 
-function readFiniteNumberField(entry: Record<string, unknown>, key: string): number | undefined {
+function readFiniteNumberField(entry: Record<string, unknown>, key: (string)): number | undefined {
   const value = entry[key];
   return typeof value === "number" && Number.isFinite(value) ? Math.floor(value) : undefined;
 }

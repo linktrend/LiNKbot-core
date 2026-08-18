@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 import { HEARTBEAT_RESPONSE_TOOL_NAME } from "../../auto-reply/heartbeat-tool-response.js";
 import { createHeartbeatResponseTool } from "./heartbeat-response-tool.js";
 
-function readSchemaProperty(schema: unknown, key: string): Record<string, unknown> {
+function readSchemaProperty(schema: unknown, key: (string)): Record<string, unknown> {
   const root = schema as { properties?: Record<string, unknown> };
   const property = root.properties?.[key];
   if (property === undefined) {

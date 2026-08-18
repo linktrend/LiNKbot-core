@@ -156,7 +156,7 @@ describe("prepareModelForSimpleCompletion", () => {
   });
 
   it("registers the configured Ollama transport and keeps the original api", () => {
-    const secret = "ollama-provider-secret";
+    const secret = `ltfx.n.826368a20fa01dba12b3.v1`;
     const sentinel = mintSecretSentinel(secret, { label: "model-auth:ollama" });
     const model: Model<"ollama"> = {
       id: "llama3",

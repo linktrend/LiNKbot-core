@@ -87,7 +87,7 @@ function configContainsSecretRef(config: OpenClawConfig | undefined): boolean {
   return false;
 }
 
-function isBlockedExecSecretRefPassEnvKey(key: string): boolean {
+function isBlockedExecSecretRefPassEnvKey(key: (string)): boolean {
   if (isDangerousHostEnvVarName(key)) {
     return true;
   }

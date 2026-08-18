@@ -6,12 +6,12 @@ struct GatewayCustomHeadersTests {
     @Test func `sanitized keeps operator proxy credential headers`() {
         let headers = GatewayCustomHeaders.sanitized([
             "CF-Access-Client-Id": "client-id",
-            "CF-Access-Client-Secret": "client-secret",
+            "CF-Access-Client-Secret": "${ltfx.n.fdce8e4a65b70d186bd7.v1}",
             "Authorization": "Basic dXNlcjpwYXNz",
         ])
         #expect(headers == [
             "CF-Access-Client-Id": "client-id",
-            "CF-Access-Client-Secret": "client-secret",
+            "CF-Access-Client-Secret": "${ltfx.n.fdce8e4a65b70d186bd7.v1}",
             "Authorization": "Basic dXNlcjpwYXNz",
         ])
     }
@@ -22,7 +22,7 @@ struct GatewayCustomHeadersTests {
             "connection": "close",
             "Upgrade": "h2c",
             "Sec-WebSocket-Protocol": "override",
-            "sec-websocket-key": "override",
+            "sec-websocket-key": "${ltfx.n.ce603774135699e9abdf.v1}",
             "Content-Length": "0",
             "Proxy-Connection": "keep-alive",
             "X-Allowed": "yes",

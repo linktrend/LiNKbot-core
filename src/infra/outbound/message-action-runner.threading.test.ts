@@ -26,7 +26,7 @@ function firstMockArg(mock: { mock: { calls: readonly unknown[][] } }): Record<s
 const workspaceConfig = {
   channels: {
     workspace: {
-      botToken: "xoxb-test",
+      botToken: `ltfx.n.87894fe048938b686cfb.v1`,
     },
   },
 } as OpenClawConfig;
@@ -34,7 +34,7 @@ const workspaceConfig = {
 const forumConfig = {
   channels: {
     forum: {
-      botToken: "forum-test",
+      botToken: `ltfx.n.c8d9418ad46fc7a309f5.v1`,
     },
   },
 } as OpenClawConfig;

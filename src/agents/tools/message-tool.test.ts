@@ -993,7 +993,7 @@ describe("message tool secret scoping", () => {
     mocks.getRuntimeConfig.mockReturnValue({
       gateway: {
         mode: "remote",
-        remote: { url: "wss://gateway.example" },
+        remote: { url: `ltfx.n.2ec8b0b0f4c7fc92b531.v1` },
       },
     });
     const sessionKey = "agent:main:telegram:direct:123";
@@ -1612,9 +1612,9 @@ describe("message tool secret scoping", () => {
     const resolvedConfig = {
       channels: {
         discord: {
-          token: "resolved-discord-token",
+          token: `ltfx.n.f5ecfcacbcab10a3cd26.v1`,
           accounts: {
-            ops: { token: "resolved-discord-ops-token" },
+            ops: { token: `ltfx.n.81c6c1f2ae455dee1800.v1` },
           },
         },
       },

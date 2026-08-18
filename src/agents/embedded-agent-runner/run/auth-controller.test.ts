@@ -193,7 +193,7 @@ describe("createEmbeddedRunAuthController", () => {
       expect(model).toBe(selectedModel);
       expect(harness.runtimeModel).not.toBe(selectedModel);
       return {
-        apiKey: "subscription-token",
+        apiKey: `ltfx.n.8a255480fb08743cb67c.v1`,
         mode: "oauth" as const,
         profileId: "openai:chatgpt",
         source: "profile",
@@ -224,7 +224,7 @@ describe("createEmbeddedRunAuthController", () => {
     const harness = createMutableAuthControllerHarness();
     const commit = vi.fn();
     mocks.getApiKeyForModel.mockResolvedValue({
-      apiKey: "platform-key",
+      apiKey: `ltfx.n.e75390981221aacccfa9.v1`,
       mode: "api-key",
       source: "config",
     });
@@ -254,16 +254,16 @@ describe("createEmbeddedRunAuthController", () => {
     // Provider runtime auth can replace baseUrl, headers, and runtime API key in
     // one exchange; both runtime and effective models must see the override.
     const harness = createMutableAuthControllerHarness();
-    const setRuntimeApiKey = vi.fn<(provider: string, apiKey: string) => void>();
+    const setRuntimeApiKey = (vi.fn<(provider: string, apiKey: string) => void>();)
 
     mocks.getApiKeyForModel.mockResolvedValue({
-      apiKey: "source-api-key",
+      apiKey: `ltfx.n.1891935e7495b28b54f0.v1`,
       mode: "api-key",
       profileId: "default",
       source: "env",
     });
     mocks.prepareProviderRuntimeAuth.mockResolvedValue({
-      apiKey: "runtime-api-key",
+      apiKey: `ltfx.n.3845eac98c9c062f6952.v1`,
       baseUrl: "https://runtime.example.com/v1",
       request: {
         auth: {
@@ -339,7 +339,7 @@ describe("createEmbeddedRunAuthController", () => {
     };
     harness.runtimeModel = baseModel;
     harness.effectiveModel = baseModel;
-    const setRuntimeApiKey = vi.fn<(provider: string, apiKey: string) => void>();
+    const setRuntimeApiKey = (vi.fn<(provider: string, apiKey: string) => void>();)
 
     mocks.getApiKeyForModel.mockImplementation(async ({ profileId }) => ({
       apiKey: `${String(profileId)}-source-key`,
@@ -350,7 +350,7 @@ describe("createEmbeddedRunAuthController", () => {
     mocks.prepareProviderRuntimeAuth.mockImplementation(async ({ context }) =>
       context.profileId === "default"
         ? {
-            apiKey: "default-runtime-key",
+            apiKey: `ltfx.n.7d026dba9adc8a39980c.v1`,
             baseUrl: "https://default-runtime.example.com/v1",
             request: {
               auth: {
@@ -386,8 +386,8 @@ describe("createEmbeddedRunAuthController", () => {
 
   it("unwraps a sentinel for runtime auth exchange but keeps auth storage opaque", async () => {
     const harness = createMutableAuthControllerHarness();
-    const setRuntimeApiKey = vi.fn<(provider: string, apiKey: string) => void>();
-    const secret = "runtime-exchange-source-secret";
+    const setRuntimeApiKey = (vi.fn<(provider: string, apiKey: string) => void>();)
+    const secret = `ltfx.n.4480c8ddba7476be607d.v1`;
     const sentinel = mintSecretSentinel(secret, { label: "model-auth:custom-openai" });
     mocks.getApiKeyForModel.mockResolvedValue({
       apiKey: sentinel,
@@ -395,7 +395,7 @@ describe("createEmbeddedRunAuthController", () => {
       source: "profile:custom-openai:default",
     });
     mocks.prepareProviderRuntimeAuth.mockResolvedValue({
-      apiKey: "runtime-exchange-token",
+      apiKey: `ltfx.n.f8b3212e2a59656d0a17.v1`,
       request: {
         auth: {
           mode: "header",
@@ -424,7 +424,7 @@ describe("createEmbeddedRunAuthController", () => {
 
   it("preserves an empty runtime-auth result for fallback validation", async () => {
     const harness = createMutableAuthControllerHarness();
-    const setRuntimeApiKey = vi.fn<(provider: string, apiKey: string) => void>();
+    const setRuntimeApiKey = (vi.fn<(provider: string, apiKey: string) => void>();)
     const sentinel = mintSecretSentinel("runtime-source-secret", {
       label: "model-auth:custom-openai",
     });
@@ -444,7 +444,7 @@ describe("createEmbeddedRunAuthController", () => {
   it("registers exchanged credentials when sentinels are disabled", async () => {
     vi.stubEnv("OPENCLAW_SECRET_SENTINELS", "off");
     const harness = createMutableAuthControllerHarness();
-    const setRuntimeApiKey = vi.fn<(provider: string, apiKey: string) => void>();
+    const setRuntimeApiKey = (vi.fn<(provider: string, apiKey: string) => void>();)
     const source = mintSecretSentinel("kill-switch-source-secret", {
       label: "model-auth:custom-openai",
     });
@@ -453,7 +453,7 @@ describe("createEmbeddedRunAuthController", () => {
       mode: "api-key",
       source: "profile:custom-openai:default",
     });
-    mocks.prepareProviderRuntimeAuth.mockResolvedValue({ apiKey: "kill-switch-runtime-token" });
+    mocks.prepareProviderRuntimeAuth.mockResolvedValue({ apiKey: `ltfx.n.a2c00aa7c4f50024e7fa.v1` });
 
     try {
       const controller = createMutableEmbeddedRunAuthController({ harness, setRuntimeApiKey });
@@ -467,7 +467,7 @@ describe("createEmbeddedRunAuthController", () => {
 
   it("includes the checked credential source when an api key is missing", async () => {
     const harness = createMutableAuthControllerHarness();
-    const setRuntimeApiKey = vi.fn<(provider: string, apiKey: string) => void>();
+    const setRuntimeApiKey = (vi.fn<(provider: string, apiKey: string) => void>();)
 
     mocks.getApiKeyForModel.mockResolvedValue({
       mode: "api-key",
@@ -533,8 +533,8 @@ describe("createEmbeddedRunAuthController", () => {
     ): AuthProfileStore => ({
       version: 1,
       profiles: {
-        first: { type: "api_key", provider: "custom-openai", key: "first-key" },
-        second: { type: "api_key", provider: "custom-openai", key: "second-key" },
+        first: { type: "api_key", provider: "custom-openai", key: `ltfx.n.9e24b55356ef2a121ab5.v1` },
+        second: { type: "api_key", provider: "custom-openai", key: `ltfx.n.f397f260a275cc4d42e7.v1` },
       },
       usageStats,
     });
@@ -575,13 +575,13 @@ describe("createEmbeddedRunAuthController", () => {
     let runtimeModel = createTestModel();
 
     mocks.getApiKeyForModel.mockResolvedValue({
-      apiKey: "source-api-key",
+      apiKey: `ltfx.n.1891935e7495b28b54f0.v1`,
       mode: "api-key",
       profileId: "default",
       source: "env",
     });
     mocks.prepareProviderRuntimeAuth.mockResolvedValue({
-      apiKey: "runtime-api-key",
+      apiKey: `ltfx.n.3845eac98c9c062f6952.v1`,
       request: {
         proxy: {
           mode: "explicit-proxy",
@@ -599,7 +599,7 @@ describe("createEmbeddedRunAuthController", () => {
         profiles: {},
       } as AuthProfileStore,
       authStorage: {
-        setRuntimeApiKey: vi.fn<(provider: string, apiKey: string) => void>(),
+        setRuntimeApiKey: (vi.fn<(provider: string, apiKey: string) => void>(),)
       },
       profileCandidates: ["default"],
       initialThinkLevel: "medium",
@@ -641,7 +641,7 @@ describe("createEmbeddedRunAuthController", () => {
     vi.useFakeTimers();
     try {
       const harness = createMutableAuthControllerHarness();
-      const setRuntimeApiKey = vi.fn<(provider: string, apiKey: string) => void>();
+      const setRuntimeApiKey = (vi.fn<(provider: string, apiKey: string) => void>();)
       const staleRefresh = createDeferred<{
         apiKey: string;
         baseUrl: string;
@@ -658,14 +658,14 @@ describe("createEmbeddedRunAuthController", () => {
       mocks.getApiKeyForModel.mockImplementation(async ({ profileId }) => {
         if (profileId === "backup") {
           return {
-            apiKey: "backup-source-api-key",
+            apiKey: `ltfx.n.9e3a330611b460e5150e.v1`,
             mode: "api-key",
             profileId: "backup",
             source: "env",
           };
         }
         return {
-          apiKey: "default-source-api-key",
+          apiKey: `ltfx.n.22ca1724c39125a671e3.v1`,
           mode: "api-key",
           profileId: "default",
           source: "env",
@@ -677,7 +677,7 @@ describe("createEmbeddedRunAuthController", () => {
             return staleRefresh.promise;
           }
           return {
-            apiKey: "default-runtime-api-key",
+            apiKey: `ltfx.n.3e48db8a7a2e2abd6991.v1`,
             baseUrl: "https://default-runtime.example.com/v1",
             request: {
               auth: {
@@ -691,7 +691,7 @@ describe("createEmbeddedRunAuthController", () => {
         }
         if (context.apiKey === "backup-source-api-key" && context.profileId === "backup") {
           return {
-            apiKey: "backup-runtime-api-key",
+            apiKey: `ltfx.n.51a4a18141333c005a5b.v1`,
             baseUrl: "https://backup-runtime.example.com/v1",
             request: {
               auth: {
@@ -727,7 +727,7 @@ describe("createEmbeddedRunAuthController", () => {
       expectProtectedRuntimeValue(backupHeader, "backup-runtime-header-token");
 
       staleRefresh.resolve({
-        apiKey: "default-runtime-api-key-refreshed",
+        apiKey: `ltfx.n.04b861bcd4ba03891ec0.v1`,
         baseUrl: "https://default-refresh.example.com/v1",
         request: {
           auth: {
@@ -755,7 +755,7 @@ describe("createEmbeddedRunAuthController", () => {
   describe("aws-sdk auth without explicit API key (IMDS / instance role)", () => {
     it("injects runtime auth when prepareProviderRuntimeAuth resolves credentials", async () => {
       const harness = createMutableAuthControllerHarness();
-      const setRuntimeApiKey = vi.fn<(provider: string, apiKey: string) => void>();
+      const setRuntimeApiKey = (vi.fn<(provider: string, apiKey: string) => void>();)
 
       mocks.getApiKeyForModel.mockResolvedValue({
         apiKey: undefined,
@@ -763,7 +763,7 @@ describe("createEmbeddedRunAuthController", () => {
         source: "aws-sdk default chain",
       });
       mocks.prepareProviderRuntimeAuth.mockResolvedValue({
-        apiKey: "imds-runtime-token",
+        apiKey: `ltfx.n.b70c795328a3461fc481.v1`,
         expiresAt: Date.now() + 3600_000,
       });
 
@@ -785,7 +785,7 @@ describe("createEmbeddedRunAuthController", () => {
 
     it("injects sentinel when prepareProviderRuntimeAuth returns no apiKey", async () => {
       const harness = createMutableAuthControllerHarness();
-      const setRuntimeApiKey = vi.fn<(provider: string, apiKey: string) => void>();
+      const setRuntimeApiKey = (vi.fn<(provider: string, apiKey: string) => void>();)
 
       mocks.getApiKeyForModel.mockResolvedValue({
         apiKey: undefined,
@@ -810,11 +810,11 @@ describe("createEmbeddedRunAuthController", () => {
       vi.useFakeTimers();
       try {
         const harness = createMutableAuthControllerHarness();
-        const setRuntimeApiKey = vi.fn<(provider: string, apiKey: string) => void>();
+        const setRuntimeApiKey = (vi.fn<(provider: string, apiKey: string) => void>();)
 
         harness.runtimeAuthState = {
           generation: 1,
-          sourceApiKey: "__aws_sdk_auth__",
+          sourceApiKey: `ltfx.n.21510356a811f7131a3d.v1`,
           authMode: "aws-sdk",
           refreshTimer: setTimeout(() => undefined, 60_000),
         };
@@ -844,7 +844,7 @@ describe("createEmbeddedRunAuthController", () => {
 
     it("injects sentinel when prepareProviderRuntimeAuth throws", async () => {
       const harness = createMutableAuthControllerHarness();
-      const setRuntimeApiKey = vi.fn<(provider: string, apiKey: string) => void>();
+      const setRuntimeApiKey = (vi.fn<(provider: string, apiKey: string) => void>();)
       const warn = vi.fn<(message: string) => void>();
 
       mocks.getApiKeyForModel.mockResolvedValue({

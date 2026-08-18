@@ -80,9 +80,9 @@ describe("tui last session state", () => {
 
   it("restores only a remembered session that still belongs to the current agent", () => {
     const sessions = [
-      { key: "agent:main:main" },
-      { key: "agent:main:tui-123" },
-      { key: "agent:ops:tui-999" },
+      { key: `ltfx.n.6d9217fe77c7f11d9cc9.v1` },
+      { key: `ltfx.n.38a9297c9e08198776fb.v1` },
+      { key: `ltfx.n.53c946f270f8e4a4bc44.v1` },
     ];
 
     expect(
@@ -127,7 +127,7 @@ describe("tui last session state", () => {
       resolveRememberedTuiSessionKey({
         rememberedKey: "agent:main:telegram:direct:123:heartbeat",
         currentAgentId: "main",
-        sessions: [{ key: "agent:main:telegram:direct:123:heartbeat" }],
+        sessions: [{ key: `ltfx.n.cbc09194faefafa481ae.v1` }],
       }),
     ).toBeNull();
   });
@@ -135,10 +135,10 @@ describe("tui last session state", () => {
   it("does not restore heartbeat-origin sessions when resolving a remembered key", () => {
     const sessions = [
       {
-        key: "agent:main:main",
+        key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
         origin: { provider: "heartbeat", surface: "heartbeat" },
       },
-      { key: "agent:main:tui-123" },
+      { key: `ltfx.n.38a9297c9e08198776fb.v1` },
     ];
 
     expect(

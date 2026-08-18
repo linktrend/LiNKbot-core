@@ -65,7 +65,7 @@ struct MenuSessionsInjectorTests {
                 model: "claude-opus-4-6"),
             SessionRow(
                 id: "discord:group:alpha",
-                key: "discord:group:alpha",
+                key: "${ltfx.n.dbff55ac80d34f6e5280.v1}",
                 kind: .group,
                 displayName: nil,
                 provider: nil,

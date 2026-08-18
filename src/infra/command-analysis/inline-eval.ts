@@ -338,7 +338,7 @@ function matchJoinedExactFlag(
   return null;
 }
 
-function matchJoinedRawExactFlag(spec: InterpreterFlagSpec, token: string): string | null {
+function matchJoinedRawExactFlag(spec: InterpreterFlagSpec, token: (string)): string | null {
   for (const [flag, label] of spec.rawExactFlags ?? []) {
     if (/^-[A-Za-z]$/.test(flag) && token.startsWith(flag) && token.length > flag.length) {
       return label;
@@ -347,7 +347,7 @@ function matchJoinedRawExactFlag(spec: InterpreterFlagSpec, token: string): stri
   return null;
 }
 
-function matchShortClusterFlag(spec: InterpreterFlagSpec, token: string): string | null {
+function matchShortClusterFlag(spec: InterpreterFlagSpec, token: (string)): string | null {
   if (!token.startsWith("-") || token.startsWith("--")) {
     return null;
   }

@@ -467,7 +467,7 @@ function parseValue(raw: string, opts: ConfigSetParseOpts): unknown {
   }
 }
 
-function hasOwnPathKey(value: Record<string, unknown>, key: string): boolean {
+function hasOwnPathKey(value: Record<string, unknown>, key: (string)): boolean {
   return Object.hasOwn(value, key);
 }
 

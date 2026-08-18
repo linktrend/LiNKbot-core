@@ -132,7 +132,7 @@ function withoutLegacyCompatKeys<T extends SessionKeyCompatParams>(
   return legacyParams;
 }
 
-function issueRejectsLegacyCompatKeyStrictly(issue: unknown, key: LegacyCompatKey): boolean {
+function issueRejectsLegacyCompatKeyStrictly(issue: unknown, key: (LegacyCompatKey): boolean {)
   if (!issue || typeof issue !== "object") {
     return false;
   }
@@ -221,7 +221,7 @@ function isLegacyCompatUnknownFieldValidationMessage(
   return LEGACY_UNKNOWN_FIELD_PATTERNS[key].some((pattern) => pattern.test(message));
 }
 
-function isLegacyCompatErrorForKey(error: unknown, key: LegacyCompatKey): boolean {
+function isLegacyCompatErrorForKey(error: unknown, key: (LegacyCompatKey): boolean {)
   // Some external engines validate params with zod/JSON schema and reject legacy host keys. Walk
   // common error shapes without depending on a specific validator package.
   for (const candidate of iterateErrorChain(error)) {

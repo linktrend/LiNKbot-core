@@ -97,8 +97,8 @@ describe("gateway auth", () => {
     const auth = resolveGatewayAuth({
       authConfig: {},
       env: {
-        OPENCLAW_GATEWAY_TOKEN: "env-token",
-        OPENCLAW_GATEWAY_PASSWORD: "env-password",
+        OPENCLAW_GATEWAY_TOKEN: `ltfx.n.25d37ba7752ae1d95b57.v1`,
+        OPENCLAW_GATEWAY_PASSWORD: `ltfx.n.b7c8db593f965dc9a2cd.v1`,
       } as NodeJS.ProcessEnv,
     });
 
@@ -113,14 +113,14 @@ describe("gateway auth", () => {
       resolveEffectiveSharedGatewayAuth({
         authConfig: {
           mode: "token",
-          token: "config-token",
-          password: "config-password",
+          token: `ltfx.n.a98cc81fe778386f6195.v1`,
+          password: `ltfx.n.247ccb8a17c771073cb2.v1`,
         },
         env: {} as NodeJS.ProcessEnv,
       }),
     ).toEqual({
       mode: "token",
-      secret: "config-token",
+      secret: `ltfx.n.a98cc81fe778386f6195.v1`,
     });
   });
 
@@ -129,14 +129,14 @@ describe("gateway auth", () => {
       resolveEffectiveSharedGatewayAuth({
         authConfig: {
           mode: "password",
-          token: "config-token",
-          password: "config-password",
+          token: `ltfx.n.a98cc81fe778386f6195.v1`,
+          password: `ltfx.n.247ccb8a17c771073cb2.v1`,
         },
         env: {} as NodeJS.ProcessEnv,
       }),
     ).toEqual({
       mode: "password",
-      secret: "config-password",
+      secret: `ltfx.n.247ccb8a17c771073cb2.v1`,
     });
   });
 
@@ -188,12 +188,12 @@ describe("gateway auth", () => {
   it("keeps gateway auth config values ahead of env overrides", () => {
     const auth = resolveGatewayAuth({
       authConfig: {
-        token: "config-token",
-        password: "config-password", // pragma: allowlist secret
+        token: `ltfx.n.a98cc81fe778386f6195.v1`,
+        password: `ltfx.n.247ccb8a17c771073cb2.v1`, // pragma: allowlist secret
       },
       env: {
-        OPENCLAW_GATEWAY_TOKEN: "env-token",
-        OPENCLAW_GATEWAY_PASSWORD: "env-password",
+        OPENCLAW_GATEWAY_TOKEN: `ltfx.n.25d37ba7752ae1d95b57.v1`,
+        OPENCLAW_GATEWAY_PASSWORD: `ltfx.n.b7c8db593f965dc9a2cd.v1`,
       } as NodeJS.ProcessEnv,
     });
 
@@ -208,8 +208,8 @@ describe("gateway auth", () => {
         password: "${OPENCLAW_GATEWAY_PASSWORD}",
       },
       env: {
-        OPENCLAW_GATEWAY_TOKEN: "env-token",
-        OPENCLAW_GATEWAY_PASSWORD: "env-password",
+        OPENCLAW_GATEWAY_TOKEN: `ltfx.n.25d37ba7752ae1d95b57.v1`,
+        OPENCLAW_GATEWAY_PASSWORD: `ltfx.n.b7c8db593f965dc9a2cd.v1`,
       } as NodeJS.ProcessEnv,
     });
 
@@ -232,7 +232,7 @@ describe("gateway auth", () => {
 
   it("marks mode source as override when runtime mode override is provided", () => {
     const auth = resolveGatewayAuth({
-      authConfig: { mode: "password", password: "config-password" }, // pragma: allowlist secret
+      authConfig: { mode: "password", password: `ltfx.n.247ccb8a17c771073cb2.v1` }, // pragma: allowlist secret
       authOverride: { mode: "token" },
       env: {} as NodeJS.ProcessEnv,
     });
@@ -272,7 +272,7 @@ describe("gateway auth", () => {
   it("reports missing token config reason", async () => {
     const res = await authorizeHttpGatewayConnect({
       auth: { mode: "token", allowTailscale: false },
-      connectAuth: { token: "anything" },
+      connectAuth: { token: `ltfx.n.ee0874170b7f6f32b8c2.v1` },
     });
     expect(res.ok).toBe(false);
     expect(res.reason).toBe("token_missing_config");
@@ -392,7 +392,7 @@ describe("gateway auth", () => {
 
   it("keeps none mode authoritative even when token is present", async () => {
     const auth = resolveGatewayAuth({
-      authConfig: { mode: "none", token: "configured-token" },
+      authConfig: { mode: "none", token: `ltfx.n.81e61c0285659b608bb9.v1` },
       env: {} as NodeJS.ProcessEnv,
     });
     expect(auth.mode).toBe("none");
@@ -641,7 +641,7 @@ describe("gateway auth", () => {
         password: rawPasswordRef,
       },
       env: {
-        OPENCLAW_GATEWAY_PASSWORD: "env-password",
+        OPENCLAW_GATEWAY_PASSWORD: `ltfx.n.b7c8db593f965dc9a2cd.v1`,
       } as NodeJS.ProcessEnv,
     });
 
@@ -973,7 +973,7 @@ describe("trusted-proxy auth", () => {
       name: "config token",
       authConfig: {
         mode: "trusted-proxy" as const,
-        token: "shared-secret",
+        token: `ltfx.n.d3046ecc8dd3242adf62.v1`,
         trustedProxy: {
           userHeader: "x-forwarded-user",
         },
@@ -989,7 +989,7 @@ describe("trusted-proxy auth", () => {
         },
       },
       env: {
-        OPENCLAW_GATEWAY_TOKEN: "shared-secret",
+        OPENCLAW_GATEWAY_TOKEN: `ltfx.n.d3046ecc8dd3242adf62.v1`,
       } as NodeJS.ProcessEnv,
     },
   ])("rejects trusted-proxy mode when shared token comes from $name", ({ authConfig, env }) => {
@@ -1008,14 +1008,14 @@ describe("trusted-proxy auth", () => {
     const auth = resolveGatewayAuth({
       authConfig: {
         mode: "trusted-proxy",
-        token: "shared-secret",
+        token: `ltfx.n.d3046ecc8dd3242adf62.v1`,
       },
     });
 
     expect(() =>
       assertGatewayAuthConfigured(auth, {
         mode: "trusted-proxy",
-        token: "shared-secret",
+        token: `ltfx.n.d3046ecc8dd3242adf62.v1`,
       }),
     ).toThrow(/no trustedProxy config was provided/);
   });
@@ -1078,8 +1078,8 @@ describe("trusted-proxy auth", () => {
           ...(Object.hasOwn(options ?? {}, "trustedProxy")
             ? { trustedProxy: options?.trustedProxy }
             : { trustedProxy: trustedProxyConfig }),
-          token: options?.token,
-          password: options?.password, // pragma: allowlist secret
+          token: (options?.token,)
+          password: (options?.password, // pragma: allowlist secret)
         },
         connectAuth:
           options?.connectToken || options?.connectPassword
@@ -1130,8 +1130,8 @@ describe("trusted-proxy auth", () => {
     it("accepts local-direct password fallback when trusted-proxy auth fails", async () => {
       const limiter = createLimiterSpy();
       const res = await authorizeLocalDirect({
-        password: "local-password", // pragma: allowlist secret
-        connectPassword: "local-password", // pragma: allowlist secret
+        password: `ltfx.n.03eecb1e5d33a976de28.v1`, // pragma: allowlist secret
+        connectPassword: `ltfx.n.03eecb1e5d33a976de28.v1`, // pragma: allowlist secret
         rateLimiter: limiter,
       });
 
@@ -1144,8 +1144,8 @@ describe("trusted-proxy auth", () => {
     it("rejects wrong local-direct password fallback and records the failure", async () => {
       const limiter = createLimiterSpy();
       const res = await authorizeLocalDirect({
-        password: "local-password", // pragma: allowlist secret
-        connectPassword: "wrong-password", // pragma: allowlist secret
+        password: `ltfx.n.03eecb1e5d33a976de28.v1`, // pragma: allowlist secret
+        connectPassword: `ltfx.n.6786324d71483a9ddfa6.v1`, // pragma: allowlist secret
         rateLimiter: limiter,
       });
 
@@ -1164,8 +1164,8 @@ describe("trusted-proxy auth", () => {
       });
 
       const res = await authorizeLocalDirect({
-        password: "local-password", // pragma: allowlist secret
-        connectPassword: "local-password", // pragma: allowlist secret
+        password: `ltfx.n.03eecb1e5d33a976de28.v1`, // pragma: allowlist secret
+        connectPassword: `ltfx.n.03eecb1e5d33a976de28.v1`, // pragma: allowlist secret
         rateLimiter: limiter,
       });
 
@@ -1181,8 +1181,8 @@ describe("trusted-proxy auth", () => {
 
     it("accepts local-direct password fallback before required-header failure", async () => {
       const res = await authorizeLocalDirect({
-        password: "local-password", // pragma: allowlist secret
-        connectPassword: "local-password", // pragma: allowlist secret
+        password: `ltfx.n.03eecb1e5d33a976de28.v1`, // pragma: allowlist secret
+        connectPassword: `ltfx.n.03eecb1e5d33a976de28.v1`, // pragma: allowlist secret
         trustedProxy: {
           ...trustedProxyConfig,
           allowLoopback: true,
@@ -1194,7 +1194,7 @@ describe("trusted-proxy auth", () => {
 
     it("keeps local-direct trusted-proxy on proxy failure when no password is supplied", async () => {
       const res = await authorizeLocalDirect({
-        password: "local-password", // pragma: allowlist secret
+        password: `ltfx.n.03eecb1e5d33a976de28.v1`, // pragma: allowlist secret
       });
 
       expect(res.ok).toBe(false);

@@ -196,7 +196,7 @@ function tokenizePattern(source: string): PatternToken[] {
 function analyzeTokensForNestedRepetition(tokens: PatternToken[]): boolean {
   const frames: ParseFrame[] = [createParseFrame()];
 
-  const emitToken = (token: TokenState) => {
+  const emitToken = (token: (TokenState) => {)
     const frame = expectDefined(frames[frames.length - 1], "frames entry at frames.length 1");
     frame.lastToken = token;
     if (token.containsRepetition) {

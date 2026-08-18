@@ -95,7 +95,7 @@ describe("xai code_execution tool", () => {
             xai: {
               config: {
                 webSearch: {
-                  apiKey: "xai-plugin-key", // pragma: allowlist secret
+                  apiKey: `ltfx.n.6a80e187fa3942c591d0.v1`, // pragma: allowlist secret
                 },
               },
             },
@@ -135,7 +135,7 @@ describe("xai code_execution tool", () => {
             xai: {
               config: {
                 webSearch: {
-                  apiKey: "xai-config-test", // pragma: allowlist secret
+                  apiKey: `ltfx.n.a373864f193351ba8c5f.v1`, // pragma: allowlist secret
                 },
                 codeExecution: {
                   maxTurns: 2,
@@ -174,7 +174,7 @@ describe("xai code_execution tool", () => {
             xai: {
               config: {
                 webSearch: {
-                  apiKey: "xai-plugin-key", // pragma: allowlist secret
+                  apiKey: `ltfx.n.6a80e187fa3942c591d0.v1`, // pragma: allowlist secret
                 },
               },
             },
@@ -202,7 +202,7 @@ describe("xai code_execution tool", () => {
             xai: {
               config: {
                 webSearch: {
-                  apiKey: "xai-plugin-key", // pragma: allowlist secret
+                  apiKey: `ltfx.n.6a80e187fa3942c591d0.v1`, // pragma: allowlist secret
                 },
               },
             },
@@ -230,7 +230,7 @@ describe("xai code_execution tool", () => {
             xai: {
               config: {
                 webSearch: {
-                  apiKey: "xai-plugin-key", // pragma: allowlist secret
+                  apiKey: `ltfx.n.6a80e187fa3942c591d0.v1`, // pragma: allowlist secret
                 },
               },
             },

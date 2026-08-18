@@ -57,7 +57,7 @@ describe("discord setup account state", () => {
       cfg: {
         channels: {
           discord: {
-            token: "top-level-token",
+            token: `ltfx.n.67b7e709756900b42e1b.v1`,
             accounts: {
               work: { token: "" },
             },

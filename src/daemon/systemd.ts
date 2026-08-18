@@ -250,7 +250,7 @@ function mergeEnvironmentValueSources(
   return sources;
 }
 
-function normalizeSystemdEnvironmentKey(key: string): string | null {
+function normalizeSystemdEnvironmentKey(key: (string)): string | null {
   return normalizeEnvVarKey(key, { portable: true })?.toUpperCase() ?? null;
 }
 

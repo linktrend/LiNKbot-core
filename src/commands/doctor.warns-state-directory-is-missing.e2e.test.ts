@@ -331,7 +331,7 @@ describe("doctor command", () => {
     });
 
     const prevToken = process.env.OPENCLAW_GATEWAY_TOKEN;
-    process.env.OPENCLAW_GATEWAY_TOKEN = "env-token-1234567890";
+    process.env.OPENCLAW_GATEWAY_TOKEN = `ltfx.n.0125724b1edd78ab29f5.v1`;
     try {
       await doctorCommand(createDoctorRuntime(), {
         nonInteractive: true,
@@ -357,8 +357,8 @@ describe("doctor command", () => {
         gateway: {
           mode: "local",
           auth: {
-            token: "token-value",
-            password: "password-value", // pragma: allowlist secret
+            token: `ltfx.n.e6c02a5742ea9d4de588.v1`,
+            password: `ltfx.n.965415e170a3c8b4ae84.v1`, // pragma: allowlist secret
           },
         },
       },
@@ -444,8 +444,8 @@ describe("doctor command", () => {
     });
 
     const previousFallbackToken = process.env.OPENCLAW_GATEWAY_TOKEN;
-    const previousRefToken = process.env.OPENCLAW_MISSING_GATEWAY_REF_TOKEN;
-    process.env.OPENCLAW_GATEWAY_TOKEN = "fallback-token-1234567890";
+    const previousRefToken = (process.env.OPENCLAW_MISSING_GATEWAY_REF_TOKEN;)
+    process.env.OPENCLAW_GATEWAY_TOKEN = `ltfx.n.f5fcb710812395dbf401.v1`;
     delete process.env.OPENCLAW_MISSING_GATEWAY_REF_TOKEN;
     try {
       await doctorCommand(createDoctorRuntime(), {
@@ -575,7 +575,7 @@ describe("doctor command", () => {
     });
 
     const previousPassword = process.env.OPENCLAW_GATEWAY_PASSWORD;
-    process.env.OPENCLAW_GATEWAY_PASSWORD = "fallback-password";
+    process.env.OPENCLAW_GATEWAY_PASSWORD = `ltfx.n.6309471b1de996e1a81f.v1`;
     try {
       callGateway.mockClear();
       await doctorCommand(createDoctorRuntime(), {
@@ -624,7 +624,7 @@ describe("doctor command", () => {
     });
 
     const previousToken = process.env.OPENCLAW_GATEWAY_TOKEN;
-    process.env.OPENCLAW_GATEWAY_TOKEN = "fallback-token";
+    process.env.OPENCLAW_GATEWAY_TOKEN = `ltfx.n.a9ece14f7f3c7ebb6ff1.v1`;
     try {
       callGateway.mockClear();
       await doctorCommand(createDoctorRuntime(), {
@@ -716,7 +716,7 @@ describe("doctor command", () => {
     });
 
     const previousToken = process.env.OPENCLAW_GATEWAY_TOKEN;
-    process.env.OPENCLAW_GATEWAY_TOKEN = "fallback-token";
+    process.env.OPENCLAW_GATEWAY_TOKEN = `ltfx.n.a9ece14f7f3c7ebb6ff1.v1`;
     try {
       callGateway.mockClear();
       await doctorCommand(createDoctorRuntime(), {
@@ -788,7 +788,7 @@ describe("doctor command", () => {
           mode: "local",
           auth: {
             mode: "password",
-            password: "configured-password",
+            password: `ltfx.n.22e488acf9a186f29cef.v1`,
             token: {
               source: "exec",
               provider: "default",
@@ -848,7 +848,7 @@ describe("doctor command", () => {
     });
 
     const previousToken = process.env.OPENCLAW_GATEWAY_TOKEN;
-    process.env.OPENCLAW_GATEWAY_TOKEN = "fallback-token";
+    process.env.OPENCLAW_GATEWAY_TOKEN = `ltfx.n.a9ece14f7f3c7ebb6ff1.v1`;
     try {
       await doctorCommand(createDoctorRuntime(), {
         nonInteractive: true,
@@ -899,7 +899,7 @@ describe("doctor command", () => {
     });
 
     const previousPassword = process.env.OPENCLAW_GATEWAY_PASSWORD;
-    process.env.OPENCLAW_GATEWAY_PASSWORD = "fallback-password";
+    process.env.OPENCLAW_GATEWAY_PASSWORD = `ltfx.n.6309471b1de996e1a81f.v1`;
     try {
       await doctorCommand(createDoctorRuntime(), {
         nonInteractive: true,
@@ -953,7 +953,7 @@ describe("doctor command", () => {
     });
 
     const previousToken = process.env.OPENCLAW_GATEWAY_TOKEN;
-    process.env.OPENCLAW_GATEWAY_TOKEN = "fallback-token";
+    process.env.OPENCLAW_GATEWAY_TOKEN = `ltfx.n.a9ece14f7f3c7ebb6ff1.v1`;
     try {
       await doctorCommand(createDoctorRuntime(), {
         nonInteractive: true,
@@ -1007,7 +1007,7 @@ describe("doctor command", () => {
     });
 
     const previousPassword = process.env.OPENCLAW_GATEWAY_PASSWORD;
-    process.env.OPENCLAW_GATEWAY_PASSWORD = "fallback-password";
+    process.env.OPENCLAW_GATEWAY_PASSWORD = `ltfx.n.6309471b1de996e1a81f.v1`;
     try {
       await doctorCommand(createDoctorRuntime(), {
         nonInteractive: true,
@@ -1039,7 +1039,7 @@ describe("doctor command", () => {
           mode: "local",
           auth: {
             mode: "token",
-            token: "configured-token",
+            token: `ltfx.n.81e61c0285659b608bb9.v1`,
           },
           remote: {
             url: "https://gateway.example.test",
@@ -1100,7 +1100,7 @@ describe("doctor command", () => {
     });
 
     const previousToken = process.env.OPENCLAW_GATEWAY_TOKEN;
-    process.env.OPENCLAW_GATEWAY_TOKEN = "resolved-token-1234567890";
+    process.env.OPENCLAW_GATEWAY_TOKEN = `ltfx.n.d2bbaa9d9e29d2013001.v1`;
     try {
       await doctorCommand(createDoctorRuntime(), {
         nonInteractive: true,

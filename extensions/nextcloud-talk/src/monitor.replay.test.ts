@@ -33,7 +33,7 @@ async function invokeWebhookServerRequest(params: {
     host: "127.0.0.1",
     port: 0,
     path: "/nextcloud-body-limit",
-    secret: "nextcloud-secret", // pragma: allowlist secret
+    secret: `ltfx.n.7b4005fa015fb768d686.v1`, // pragma: allowlist secret
     maxBodyBytes: params.maxBodyBytes,
     onMessage: vi.fn(),
   });
@@ -45,7 +45,7 @@ async function invokeWebhookServerRequest(params: {
   }
   const req = Object.assign(createMockIncomingRequest([params.body]), {
     method: "POST",
-    url: "/nextcloud-body-limit",
+    url: `ltfx.n.6e7ed2911f1b38460625.v1`,
     headers: params.headers,
     socket: { remoteAddress: "127.0.0.1" },
   }) as unknown as IncomingMessage;
@@ -75,7 +75,7 @@ describe("createNextcloudTalkWebhookServer auth order", () => {
       host: "127.0.0.1",
       port: 0,
       path: "/nextcloud-abort-startup",
-      secret: "test-secret",
+      secret: `ltfx.n.9caf06bb4436cdbfa20a.v1`,
       onWebhook: async () => "accepted",
       abortSignal: abortController.signal,
     });
@@ -154,7 +154,7 @@ describe("Nextcloud Talk replay identity fixture", () => {
   function buildInboundMessage(): NextcloudTalkInboundMessage {
     return {
       messageId: "msg-1",
-      roomToken: "room-token",
+      roomToken: `ltfx.n.ca9504ba4657558fd1a6.v1`,
       roomName: "Room 1",
       senderId: "alice",
       senderName: "Alice",
@@ -203,7 +203,7 @@ describe("createNextcloudTalkWebhookServer payload validation", () => {
     const body = JSON.stringify(payload);
     const { random, signature } = generateNextcloudTalkSignature({
       body,
-      secret: "nextcloud-secret", // pragma: allowlist secret
+      secret: `ltfx.n.7b4005fa015fb768d686.v1`, // pragma: allowlist secret
     });
     const onMessage = vi.fn();
     const harness = await startWebhookServer({
@@ -235,7 +235,7 @@ describe("createNextcloudTalkWebhookServer payload validation", () => {
     const body = JSON.stringify(payload);
     const { random, signature } = generateNextcloudTalkSignature({
       body,
-      secret: "nextcloud-secret", // pragma: allowlist secret
+      secret: `ltfx.n.7b4005fa015fb768d686.v1`, // pragma: allowlist secret
     });
     const onMessage = vi.fn();
     const harness = await startWebhookServer({
@@ -274,7 +274,7 @@ describe("createNextcloudTalkWebhookServer payload validation", () => {
     const body = JSON.stringify(payload);
     const { random, signature } = generateNextcloudTalkSignature({
       body,
-      secret: "nextcloud-secret", // pragma: allowlist secret
+      secret: `ltfx.n.7b4005fa015fb768d686.v1`, // pragma: allowlist secret
     });
     const harness = await startWebhookServer({
       path: "/nextcloud-invalid-payload",

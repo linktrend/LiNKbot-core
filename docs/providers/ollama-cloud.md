@@ -27,7 +27,7 @@ openclaw onboard --auth-choice ollama-cloud
 Or set:
 
 ```bash
-export OLLAMA_API_KEY="<your-ollama-cloud-api-key>" # pragma: allowlist secret
+export OLLAMA_API_KEY="${ltfx.n.57ca44dc9283fd61fae1.v1}" # pragma: allowlist secret
 ```
 
 Non-interactive onboarding accepts the key directly:
@@ -85,7 +85,7 @@ For Ollama Cloud API-key smoke tests, point the Ollama live test at the hosted
 endpoint and choose a model from your current catalog:
 
 ```bash
-export OLLAMA_API_KEY="<your-ollama-cloud-api-key>" # pragma: allowlist secret
+export OLLAMA_API_KEY="${ltfx.n.57ca44dc9283fd61fae1.v1}" # pragma: allowlist secret
 
 OPENCLAW_LIVE_TEST=1 \
 OPENCLAW_LIVE_OLLAMA=1 \

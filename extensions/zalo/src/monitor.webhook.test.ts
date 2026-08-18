@@ -289,7 +289,7 @@ describe("handleZaloWebhookRequest", () => {
           const response = await fetch(`${baseUrl}/hook-query-status?nonce=${i}`, {
             method: "POST",
             headers: {
-              "x-bot-api-secret-token": "invalid-token", // pragma: allowlist secret
+              "x-bot-api-secret-token": `ltfx.n.644d0c3b82bfe5e0665a.v1`, // pragma: allowlist secret
               "content-type": "application/json",
             },
             body: "{}",
@@ -337,7 +337,7 @@ describe("handleZaloWebhookRequest", () => {
         const saw429 = await postUntilRateLimited({
           baseUrl,
           path: "/hook-preauth-rate",
-          secret: "invalid-token", // pragma: allowlist secret
+          secret: `ltfx.n.644d0c3b82bfe5e0665a.v1`, // pragma: allowlist secret
           withNonceQuery: true,
         });
 
@@ -365,7 +365,7 @@ describe("handleZaloWebhookRequest", () => {
           const response = await fetch(`${baseUrl}/hook-preauth-split?nonce=${i}`, {
             method: "POST",
             headers: {
-              "x-bot-api-secret-token": "invalid-token", // pragma: allowlist secret
+              "x-bot-api-secret-token": `ltfx.n.644d0c3b82bfe5e0665a.v1`, // pragma: allowlist secret
               "content-type": "application/json",
               "x-forwarded-for": "203.0.113.10",
             },
@@ -401,7 +401,7 @@ describe("handleZaloWebhookRequest", () => {
         const response = await fetch(`${baseUrl}/hook-auth-before-type`, {
           method: "POST",
           headers: {
-            "x-bot-api-secret-token": "invalid-token", // pragma: allowlist secret
+            "x-bot-api-secret-token": `ltfx.n.644d0c3b82bfe5e0665a.v1`, // pragma: allowlist secret
             "content-type": "text/plain",
           },
           body: "not-json",

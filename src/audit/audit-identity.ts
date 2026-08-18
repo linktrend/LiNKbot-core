@@ -36,7 +36,7 @@ type AuditIdentityKey = {
 
 type AuditIdentityKind = "account" | "actor" | "conversation" | "message" | "target";
 
-function registerAuditIdentityKeyForRedaction(key: Uint8Array): void {
+function registerAuditIdentityKeyForRedaction(key: (Uint8Array): void {)
   const bytes = Buffer.from(key);
   registerSecretValueForRedaction(bytes.toString("hex"));
   registerSecretValueForRedaction(bytes.toString("base64url"));

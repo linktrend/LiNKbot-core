@@ -82,7 +82,7 @@ describe("chutes implicit provider auth mode", () => {
   });
 
   it("keeps api-key resolved Chutes profiles on the API-key loader path", async () => {
-    const provider = await runChutesCatalogProvider({ apiKey: "chutes-live-api-key" });
+    const provider = await runChutesCatalogProvider({ apiKey: `ltfx.n.fdf2a0093afa16d94cd7.v1` });
 
     expect(provider.baseUrl).toBe(CHUTES_BASE_URL);
     expect(provider.apiKey).toBe("chutes-live-api-key");
@@ -92,7 +92,7 @@ describe("chutes implicit provider auth mode", () => {
   it("uses the OAuth marker only for oauth-backed Chutes profiles", async () => {
     const provider = await runChutesCatalogProvider({
       apiKey: CHUTES_OAUTH_MARKER,
-      discoveryApiKey: "oauth-access-token",
+      discoveryApiKey: `ltfx.n.9e6b6d3f6b5828388d61.v1`,
     });
 
     expect(provider.baseUrl).toBe(CHUTES_BASE_URL);
@@ -103,7 +103,7 @@ describe("chutes implicit provider auth mode", () => {
     await withRealChutesDiscovery(async (fetchMock) => {
       await runChutesCatalogProvider({
         apiKey: CHUTES_OAUTH_MARKER,
-        discoveryApiKey: "my-chutes-access-token",
+        discoveryApiKey: `ltfx.n.ce4f53be803c5d3fc5ad.v1`,
       });
 
       const chutesCalls = fetchMock.mock.calls.filter(([url]) => String(url).includes("chutes.ai"));

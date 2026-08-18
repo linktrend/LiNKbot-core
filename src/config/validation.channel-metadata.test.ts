@@ -317,7 +317,7 @@ describe("validateConfigObjectWithPlugins channel metadata (applyDefaults: true)
         mattermost: {
           enabled: true,
           baseUrl: "https://chat.example.com",
-          botToken: "test-token",
+          botToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
           dmPolicy: "open",
         },
       },
@@ -340,7 +340,7 @@ describe("validateConfigObjectWithPlugins channel metadata (applyDefaults: true)
             work: {
               enabled: true,
               baseUrl: "https://chat.example.com",
-              botToken: "test-token",
+              botToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
               dmPolicy: "open",
             },
           },
@@ -364,7 +364,7 @@ describe("validateConfigObjectWithPlugins channel metadata (applyDefaults: true)
     const result = validateConfigObjectWithPlugins({
       channels: {
         telegram: {
-          botToken: "test-token",
+          botToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
           dmPolicy: "open",
         },
       },
@@ -385,7 +385,7 @@ describe("validateConfigObjectWithPlugins channel metadata (applyDefaults: true)
         mattermost: {
           enabled: true,
           baseUrl: "https://chat.example.com",
-          botToken: "test-token",
+          botToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
           dmPolicy: "open",
           allowFrom: ["*"],
         },
@@ -403,7 +403,7 @@ describe("validateConfigObjectWithPlugins channel metadata (applyDefaults: true)
       channels: {
         mattermost: {
           baseUrl: "https://chat.example.com",
-          botToken: "test-token",
+          botToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
           allowFrom: ["*"],
           accounts: {
             work: {
@@ -425,7 +425,7 @@ describe("validateConfigObjectWithPlugins channel metadata (applyDefaults: true)
       channels: {
         discord: {
           enabled: true,
-          token: "test-token",
+          token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
           dmPolicy: "open",
           allowFrom: ["*"],
         },

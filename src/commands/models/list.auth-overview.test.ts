@@ -241,7 +241,7 @@ describe("resolveProviderAuthOverview", () => {
 
   it("treats env-var marker as usable only when the env key is currently resolvable", () => {
     const prior = process.env.OPENAI_API_KEY;
-    process.env.OPENAI_API_KEY = "sk-openai-from-env"; // pragma: allowlist secret
+    process.env.OPENAI_API_KEY = `ltfx.n.01bbea56ce269bf7f7ab.v1`; // pragma: allowlist secret
     try {
       const overview = resolveOpenAiOverview("OPENAI_API_KEY");
       expect(overview.effective.kind).toBe("env");

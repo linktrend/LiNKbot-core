@@ -157,7 +157,7 @@ describe("noteMemorySearchHealth", () => {
     resolveMemorySearchConfig.mockReturnValue({
       provider,
       local: {},
-      remote: { apiKey: "from-config" },
+      remote: { apiKey: `ltfx.n.e7eb488c3d4e07f6b343.v1` },
     });
 
     await noteMemorySearchHealth(cfg, {});

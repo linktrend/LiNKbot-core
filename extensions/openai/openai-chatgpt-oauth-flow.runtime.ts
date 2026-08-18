@@ -178,7 +178,7 @@ async function startLocalOAuthServer(state: string): Promise<OAuthServerInfo> {
   });
 }
 
-function getAccountId(accessToken: string): string | null {
+function getAccountId(accessToken: (string)): string | null {
   const accountId = resolveCodexAuthIdentity({ accessToken }).accountId;
   return typeof accountId === "string" && accountId.length > 0 ? accountId : null;
 }
@@ -333,7 +333,7 @@ export async function loginOpenAICodex(options: {
 /**
  * Refresh OpenAI Codex OAuth token
  */
-export async function refreshOpenAICodexToken(refreshToken: string): Promise<OAuthCredentials> {
+export async function refreshOpenAICodexToken(refreshToken: (string)): Promise<OAuthCredentials> {
   const result = await refreshOpenAIAccessToken(refreshToken);
   if (result.type !== "success") {
     throw new Error(result.message);

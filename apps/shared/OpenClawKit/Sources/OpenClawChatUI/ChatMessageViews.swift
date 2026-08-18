@@ -334,7 +334,7 @@ private struct ChatMessageBody: View {
             }
 
             if self.showsLinkPreview, let previewURL = chatFirstPreviewURL(in: text) {
-                ChatLinkPreview(url: previewURL)
+                ChatLinkPreview(url: (previewURL))
             }
 
             if !self.inlineAttachments.isEmpty {

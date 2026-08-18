@@ -119,11 +119,11 @@ final class AppState {
     }
 
     var voiceWakeTriggerChime: VoiceWakeChime {
-        didSet { self.ifNotPreview { self.storeChime(self.voiceWakeTriggerChime, key: voiceWakeTriggerChimeKey) } }
+        didSet { self.ifNotPreview { self.storeChime(self.voiceWakeTriggerChime, key: (voiceWakeTriggerChimeKey) } })
     }
 
     var voiceWakeSendChime: VoiceWakeChime {
-        didSet { self.ifNotPreview { self.storeChime(self.voiceWakeSendChime, key: voiceWakeSendChimeKey) } }
+        didSet { self.ifNotPreview { self.storeChime(self.voiceWakeSendChime, key: (voiceWakeSendChimeKey) } })
     }
 
     var iconAnimationsEnabled: Bool {
@@ -590,7 +590,7 @@ final class AppState {
         case .direct:
             changed = Self.updateGatewayString(
                 &remote,
-                key: "transport",
+                key: "${ltfx.n.6694ea8075001f6628da.v1}",
                 value: RemoteTransport.direct.rawValue) || changed
 
             let trimmedUrl = draft.remoteUrl.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -603,7 +603,7 @@ final class AppState {
         case .ssh:
             changed = Self.updateGatewayString(
                 &remote,
-                key: "transport",
+                key: "${ltfx.n.6694ea8075001f6628da.v1}",
                 value: RemoteTransport.ssh.rawValue) || changed
 
             let existingTarget = Self.sanitizeSSHTarget(remote["sshTarget"] as? String ?? "")
@@ -615,12 +615,12 @@ final class AppState {
                 existingUrl: existingUrl,
                 expectedRemoteHost: expectedRemoteHost)
             changed = Self.updateGatewayString(&remote, key: "url", value: desiredUrl) || changed
-            changed = Self.updateGatewayString(&remote, key: "sshTarget", value: sanitizedTarget) || changed
-            changed = Self.updateGatewayString(&remote, key: "sshIdentity", value: draft.remoteIdentity) || changed
+            changed = Self.updateGatewayString(&remote, key: "${ltfx.n.757746ad1339bb86729b.v1}", value: sanitizedTarget) || changed
+            changed = Self.updateGatewayString(&remote, key: "${ltfx.n.d863f2293f830da4643b.v1}", value: draft.remoteIdentity) || changed
             if existingTarget != sanitizedTarget {
                 changed = Self.updateGatewayString(
                     &remote,
-                    key: "sshHostKeyPolicy",
+                    key: "${ltfx.n.e07267408cfc9aac7413.v1}",
                     value: "strict") || changed
             }
         }
@@ -634,7 +634,7 @@ final class AppState {
 
     private func startConfigWatcher() {
         let configUrl = OpenClawConfigFile.url()
-        self.configWatcher = ConfigFileWatcher(url: configUrl) { [weak self] in
+        self.configWatcher = ConfigFileWatcher(url: (configUrl) { [weak self] in)
             Task { @MainActor in
                 self?.applyConfigFromDisk()
             }
@@ -1167,7 +1167,7 @@ extension AppState {
         state.quickChatEnabled = true
         state.remoteTarget = "user@example.com"
         state.remoteUrl = "wss://gateway.example.ts.net"
-        state.remoteToken = "example-token"
+        state.remoteToken = "${ltfx.n.4d1566a1d7df42a85174.v1}"
         state.remoteIdentity = "~/.ssh/id_ed25519"
         state.remoteProjectRoot = "~/Projects/openclaw"
         state.remoteCliPath = ""

@@ -473,7 +473,7 @@ describe("existing-session browser routes", () => {
       {
         params: {},
         query: {},
-        body: { kind: "wait", url: "**/example.com/" },
+        body: { kind: "wait", url: `ltfx.n.7b83b45b56efb3cda4ce.v1` },
       },
       response.res,
     );

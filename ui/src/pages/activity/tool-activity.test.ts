@@ -27,8 +27,8 @@ describe("activity model output preview redaction", () => {
   it("redacts dotted API key assignments emitted by tool output", () => {
     const preview = buildResultPreview({
       text: [
-        "app.api.key=visible-leaked-value-1234567890",
-        "spring.datasource.password=visible-db-password-1234567890",
+        "app.api.key=(visible-leaked-value-1234567890",)
+        "spring.datasource.password=(visible-db-password-1234567890",)
         "server.port=8080",
       ].join("\n"),
     });

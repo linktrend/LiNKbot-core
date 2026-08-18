@@ -128,7 +128,7 @@ describe("security audit gateway config findings", () => {
       {
         gatewayAuthOverride: {
           mode: "password",
-          password: "runtime-gateway-password-1234567890", // pragma: allowlist secret
+          password: `ltfx.n.be7c82ff77253c4647b2.v1`, // pragma: allowlist secret
         },
       },
     );
@@ -138,10 +138,10 @@ describe("security audit gateway config findings", () => {
 
   it("warns when OPENCLAW_GATEWAY_TOKEN shadows a different configured token source", () => {
     const cfg: OpenClawConfig = {
-      gateway: { auth: { token: "config-token" } },
+      gateway: { auth: { token: `ltfx.n.a98cc81fe778386f6195.v1` } },
     };
     const findings = collectGatewayConfigFindings(cfg, cfg, {
-      OPENCLAW_GATEWAY_TOKEN: "env-token",
+      OPENCLAW_GATEWAY_TOKEN: `ltfx.n.25d37ba7752ae1d95b57.v1`,
     });
 
     expect(hasFinding("gateway.env_token_overrides_config", findings)).toBe(true);
@@ -149,10 +149,10 @@ describe("security audit gateway config findings", () => {
 
   it("does not warn inside the managed gateway service credential context", () => {
     const cfg: OpenClawConfig = {
-      gateway: { auth: { token: "config-token" } },
+      gateway: { auth: { token: `ltfx.n.a98cc81fe778386f6195.v1` } },
     };
     const findings = collectGatewayConfigFindings(cfg, cfg, {
-      OPENCLAW_GATEWAY_TOKEN: "env-token",
+      OPENCLAW_GATEWAY_TOKEN: `ltfx.n.25d37ba7752ae1d95b57.v1`,
       OPENCLAW_SERVICE_KIND: "gateway",
     });
 
@@ -165,7 +165,7 @@ describe("security audit gateway config findings", () => {
       secrets: { providers: { default: { source: "env" } } },
     };
     const findings = collectGatewayConfigFindings(cfg, cfg, {
-      OPENCLAW_GATEWAY_TOKEN: "env-token",
+      OPENCLAW_GATEWAY_TOKEN: `ltfx.n.25d37ba7752ae1d95b57.v1`,
     });
 
     expect(hasFinding("gateway.env_token_overrides_config", findings)).toBe(false);
@@ -175,12 +175,12 @@ describe("security audit gateway config findings", () => {
     const cfg: OpenClawConfig = {
       gateway: {
         mode: "remote",
-        remote: { token: "remote-token" },
-        auth: { token: "local-token" },
+        remote: { token: `ltfx.n.b79f8018a1bfa2040be5.v1` },
+        auth: { token: `ltfx.n.c7ec7c548f5992a239dc.v1` },
       },
     };
     const findings = collectGatewayConfigFindings(cfg, cfg, {
-      OPENCLAW_GATEWAY_TOKEN: "env-token",
+      OPENCLAW_GATEWAY_TOKEN: `ltfx.n.25d37ba7752ae1d95b57.v1`,
     });
 
     expect(hasFinding("gateway.env_token_overrides_config", findings)).toBe(false);

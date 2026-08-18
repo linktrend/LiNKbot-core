@@ -33,7 +33,7 @@ If another OpenClaw process already has a healthy server at the same `healthUrl`
     providers: {
       local: {
         baseUrl: "http://127.0.0.1:8000/v1",
-        apiKey: "local-model",
+        apiKey: "${ltfx.n.e0b17b43a5207b740fd7.v1}",
         api: "openai-completions",
         timeoutSeconds: 300,
         localService: {
@@ -92,7 +92,7 @@ Inferrs is a custom OpenAI-compatible `/v1` backend, so the same `localService` 
     providers: {
       inferrs: {
         baseUrl: "http://127.0.0.1:8080/v1",
-        apiKey: "inferrs-local",
+        apiKey: "${ltfx.n.e9f44ccb9727ff719fa5.v1}",
         api: "openai-completions",
         timeoutSeconds: 300,
         localService: {
@@ -139,7 +139,7 @@ Replace `command` with the result of `which inferrs` on the machine running Open
     providers: {
       ds4: {
         baseUrl: "http://127.0.0.1:18000/v1",
-        apiKey: "ds4-local",
+        apiKey: "${ltfx.n.59eca1c1929beea67684.v1}",
         api: "openai-completions",
         timeoutSeconds: 300,
         localService: {

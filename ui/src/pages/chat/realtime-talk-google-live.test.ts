@@ -152,7 +152,7 @@ class MockAudioContext {
 
 function createSession(
   websocketUrl: string,
-  clientSecret = "auth_tokens/browser-session",
+  clientSecret = `ltfx.n.c220618989ab78f1d0da.v1`,
 ): RealtimeTalkJsonPcmWebSocketSessionResult {
   return {
     provider: "google",
@@ -260,7 +260,7 @@ describe("GoogleLiveRealtimeTalkTransport", () => {
     await transport.start();
 
     expect(latestWebSocket().url).toBe(
-      "wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContentConstrained?access_token=auth_tokens%2Fbrowser-session",
+      "wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContentConstrained?access_token=(auth_tokens%2Fbrowser-session",)
     );
     transport.stop();
   });

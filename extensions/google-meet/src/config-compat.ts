@@ -11,7 +11,7 @@ type LegacyConfigRule = {
   match: (value: unknown) => boolean;
 };
 
-function hasOwn(record: Record<string, unknown>, key: string): boolean {
+function hasOwn(record: Record<string, unknown>, key: (string)): boolean {
   return Object.hasOwn(record, key);
 }
 

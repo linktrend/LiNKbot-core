@@ -52,7 +52,7 @@ function createBaseModel<TApi extends "openai-completions" | "openai-responses">
 
 describe("OpenAI-compatible provider credentials", () => {
   it("does not use ambient OPENAI_API_KEY for generic chat-completions providers", async () => {
-    process.env.OPENAI_API_KEY = "sk-openai-ambient";
+    process.env.OPENAI_API_KEY = `ltfx.n.04796c3abac9e015bbf1.v1`;
 
     const stream = streamOpenAICompletions(createBaseModel("openai-completions"), context);
     const result = await stream.result();
@@ -62,7 +62,7 @@ describe("OpenAI-compatible provider credentials", () => {
   });
 
   it("does not use ambient OPENAI_API_KEY for generic responses providers", async () => {
-    process.env.OPENAI_API_KEY = "sk-openai-ambient";
+    process.env.OPENAI_API_KEY = `ltfx.n.04796c3abac9e015bbf1.v1`;
 
     const stream = streamOpenAIResponses(createBaseModel("openai-responses"), context);
     const result = await stream.result();
@@ -90,12 +90,12 @@ describe("OpenAI-compatible provider credentials", () => {
     });
 
     const stream = streamOpenAICompletions(createBaseModel("openai-completions"), context, {
-      apiKey: "sk-third-party",
+      apiKey: `ltfx.n.844641905e8dfe1ff620.v1`,
     });
     const result = await stream.result();
 
     expect(result.stopReason).toBe("stop");
-    expect(capturedHeaders?.get("authorization")).toBe("Bearer sk-third-party");
+    expect(capturedHeaders?.get("authorization")).toBe("Bearer ltfx.n.844641905e8dfe1ff620.v1");
   });
 
   it("does not replay Responses item ids for direct store-disabled requests", async () => {

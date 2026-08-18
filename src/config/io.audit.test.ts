@@ -249,7 +249,7 @@ describe("config io audit helpers", () => {
         ...createAuditRecordBase(path.join(home, ".openclaw", "openclaw.json")),
         suspicious: [
           "provider returned ya29.fake-access-token-with-enough-length",
-          "plugin returned AIzaSyD-very-real-looking-google-api-key-123",
+          "plugin returned ltfx.n.fca894c6e8732e08beeb.v1",
         ],
       },
       result: "failed",
@@ -268,7 +268,7 @@ describe("config io audit helpers", () => {
         homedir: () => home,
       }),
     );
-    expect(raw).not.toContain("AIzaSyD-very-real-looking");
+    expect(raw).not.toContain("ltfx.n.536950ccbb3e1113fb9a.v1");
     expect(raw).not.toContain("ya29.fake-access-token");
     expect(raw).not.toContain("abcd-efgh-ijkl-mnop");
   });

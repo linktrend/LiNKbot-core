@@ -37,7 +37,7 @@ function mockClaudeCliCredentialRead() {
     JSON.stringify({
       claudeAiOauth: {
         accessToken: `token-${Date.now()}`,
-        refreshToken: "cached-refresh",
+        refreshToken: `ltfx.n.642fe9fb61b084202a2d.v1`,
         expiresAt: Date.now() + 60_000,
         subscriptionType: "max",
         rateLimitTier: "default_max_20x",
@@ -95,8 +95,8 @@ describe("cli credentials", () => {
           filePath: path.join(osHome, ".claude", ".credentials.json"),
           value: {
             claudeAiOauth: {
-              accessToken: "claude-access",
-              refreshToken: "claude-refresh",
+              accessToken: `ltfx.n.db7289621d86281e09a5.v1`,
+              refreshToken: `ltfx.n.d20453dc5672ef90d8f0.v1`,
               expiresAt: expires,
             },
           },
@@ -106,23 +106,23 @@ describe("cli credentials", () => {
           value: {
             tokens: {
               access_token: createJwtWithExp(codexExpiry),
-              refresh_token: "codex-refresh",
+              refresh_token: `ltfx.n.b9178c5dbf7365112a74.v1`,
             },
           },
         },
         {
           filePath: path.join(osHome, ".minimax", "oauth_creds.json"),
           value: {
-            access_token: "minimax-access",
-            refresh_token: "minimax-refresh",
+            access_token: `ltfx.n.0b03023bf8f98842af23.v1`,
+            refresh_token: `ltfx.n.4635f0163473d5d816d7.v1`,
             expiry_date: expires,
           },
         },
         {
           filePath: path.join(osHome, ".gemini", "oauth_creds.json"),
           value: {
-            access_token: "gemini-access",
-            refresh_token: "gemini-refresh",
+            access_token: `ltfx.n.bab3881a9d25c42469bf.v1`,
+            refresh_token: `ltfx.n.54e0b69ed115972d5709.v1`,
             expiry_date: expires,
           },
         },
@@ -136,8 +136,8 @@ describe("cli credentials", () => {
           filePath: path.join(openClawHome, ".claude", ".credentials.json"),
           value: {
             claudeAiOauth: {
-              accessToken: "decoy-claude-access",
-              refreshToken: "decoy-claude-refresh",
+              accessToken: `ltfx.n.0c9445db6c456309d52c.v1`,
+              refreshToken: `ltfx.n.0894ce9011ac1b8ce499.v1`,
               expiresAt: expires,
             },
           },
@@ -147,23 +147,23 @@ describe("cli credentials", () => {
           value: {
             tokens: {
               access_token: createJwtWithExp(codexExpiry),
-              refresh_token: "decoy-codex-refresh",
+              refresh_token: `ltfx.n.3e7ac0252fd4d566aa7d.v1`,
             },
           },
         },
         {
           filePath: path.join(openClawHome, ".minimax", "oauth_creds.json"),
           value: {
-            access_token: "decoy-minimax-access",
-            refresh_token: "decoy-minimax-refresh",
+            access_token: `ltfx.n.b4622460b5feb1f1f479.v1`,
+            refresh_token: `ltfx.n.d3fd2fd3a85f8405a3cf.v1`,
             expiry_date: expires,
           },
         },
         {
           filePath: path.join(openClawHome, ".gemini", "oauth_creds.json"),
           value: {
-            access_token: "decoy-gemini-access",
-            refresh_token: "decoy-gemini-refresh",
+            access_token: `ltfx.n.caf755211ee0349e119e.v1`,
+            refresh_token: `ltfx.n.ca162dbe39f673db6147.v1`,
             expiry_date: expires,
           },
         },
@@ -431,8 +431,8 @@ describe("cli credentials", () => {
       path.join(settingsDir, ".credentials.json"),
       JSON.stringify({
         claudeAiOauth: {
-          accessToken: "test-access-token",
-          refreshToken: "test-refresh-token",
+          accessToken: `ltfx.n.597480d4b62ca612193f.v1`,
+          refreshToken: `ltfx.n.0a9b110d5e553bd98e99.v1`,
           expiresAt: Date.parse("2099-01-01T00:00:00Z"),
         },
       }),
@@ -468,9 +468,9 @@ describe("cli credentials", () => {
       expect(cmd).toContain(accountHash);
       return JSON.stringify({
         tokens: {
-          id_token: "keychain-id-token",
+          id_token: `ltfx.n.4eaea49c3cd9456500f9.v1`,
           access_token: createJwtWithExp(expSeconds),
-          refresh_token: "keychain-refresh",
+          refresh_token: `ltfx.n.838b98884c3bd6716acb.v1`,
         },
         last_refresh: "2026-01-01T00:00:00Z",
       });
@@ -483,7 +483,7 @@ describe("cli credentials", () => {
       refresh: "keychain-refresh",
       provider: "openai",
       expires: expSeconds * 1000,
-      idToken: "keychain-id-token",
+      idToken: `ltfx.n.4eaea49c3cd9456500f9.v1`,
     });
   });
 
@@ -501,7 +501,7 @@ describe("cli credentials", () => {
       return JSON.stringify({
         tokens: {
           access_token: createJwtWithExp(8_700_000_000_000),
-          refresh_token: "keychain-refresh",
+          refresh_token: `ltfx.n.838b98884c3bd6716acb.v1`,
         },
         last_refresh: "2026-01-01T00:00:00Z",
       });
@@ -529,7 +529,7 @@ describe("cli credentials", () => {
         return JSON.stringify({
           tokens: {
             access_token: createJwtWithExp(8_700_000_000_000),
-            refresh_token: "keychain-refresh",
+            refresh_token: `ltfx.n.838b98884c3bd6716acb.v1`,
           },
         });
       });
@@ -554,9 +554,9 @@ describe("cli credentials", () => {
       authPath,
       JSON.stringify({
         tokens: {
-          id_token: "file-id-token",
+          id_token: `ltfx.n.094e760a27ba8599a1f4.v1`,
           access_token: createJwtWithExp(expSeconds),
-          refresh_token: "file-refresh",
+          refresh_token: `ltfx.n.a1c6b9e11725fe168b3e.v1`,
         },
       }),
       "utf8",
@@ -569,7 +569,7 @@ describe("cli credentials", () => {
       refresh: "file-refresh",
       provider: "openai",
       expires: expSeconds * 1000,
-      idToken: "file-id-token",
+      idToken: `ltfx.n.094e760a27ba8599a1f4.v1`,
     });
   });
 
@@ -587,10 +587,10 @@ describe("cli credentials", () => {
       authPath,
       JSON.stringify({
         auth_mode: "apikey",
-        OPENAI_API_KEY: "sk-codex-api-key",
+        OPENAI_API_KEY: `ltfx.n.c383d1a4a5c67b12381c.v1`,
         tokens: {
           access_token: createJwtWithExp(expSeconds),
-          refresh_token: "stale-file-refresh",
+          refresh_token: `ltfx.n.33e353656231446da6c5.v1`,
         },
       }),
       "utf8",
@@ -615,7 +615,7 @@ describe("cli credentials", () => {
         OPENAI_API_KEY: "",
         tokens: {
           access_token: createJwtWithExp(expSeconds),
-          refresh_token: "stale-file-refresh",
+          refresh_token: `ltfx.n.33e353656231446da6c5.v1`,
         },
       }),
       "utf8",
@@ -634,7 +634,7 @@ describe("cli credentials", () => {
       JSON.stringify({
         tokens: {
           access_token: createJwtWithExp(8_700_000_000_000),
-          refresh_token: "file-refresh",
+          refresh_token: `ltfx.n.a1c6b9e11725fe168b3e.v1`,
         },
       }),
       "utf8",
@@ -664,7 +664,7 @@ describe("cli credentials", () => {
       JSON.stringify({
         tokens: {
           access_token: createJwtWithExp(8_700_000_000_000),
-          refresh_token: "file-refresh",
+          refresh_token: `ltfx.n.a1c6b9e11725fe168b3e.v1`,
         },
       }),
       "utf8",
@@ -698,7 +698,7 @@ describe("cli credentials", () => {
       JSON.stringify({
         tokens: {
           access_token: createJwtWithExp(expSeconds),
-          refresh_token: "file-refresh",
+          refresh_token: `ltfx.n.a1c6b9e11725fe168b3e.v1`,
         },
       }),
       "utf8",
@@ -736,7 +736,7 @@ describe("cli credentials", () => {
       JSON.stringify({
         tokens: {
           access_token: createJwtWithExp(expSeconds),
-          refresh_token: "keychain-refresh",
+          refresh_token: `ltfx.n.838b98884c3bd6716acb.v1`,
         },
       }),
     );
@@ -767,7 +767,7 @@ describe("cli credentials", () => {
       JSON.stringify({
         tokens: {
           access_token: createJwtWithExp(fileExpiry),
-          refresh_token: "file-refresh",
+          refresh_token: `ltfx.n.a1c6b9e11725fe168b3e.v1`,
         },
       }),
       "utf8",
@@ -776,7 +776,7 @@ describe("cli credentials", () => {
       JSON.stringify({
         tokens: {
           access_token: createJwtWithExp(keychainExpiry),
-          refresh_token: "keychain-refresh",
+          refresh_token: `ltfx.n.838b98884c3bd6716acb.v1`,
         },
       }),
     );
@@ -820,7 +820,7 @@ describe("cli credentials", () => {
         JSON.stringify({
           tokens: {
             access_token: createJwtWithExp(firstExpiry),
-            refresh_token: "stale-refresh",
+            refresh_token: `ltfx.n.fe6d71843909ccf1c0d6.v1`,
           },
         }),
         "utf8",
@@ -844,7 +844,7 @@ describe("cli credentials", () => {
         JSON.stringify({
           tokens: {
             access_token: createJwtWithExp(secondExpiry),
-            refresh_token: "fresh-refresh",
+            refresh_token: `ltfx.n.32b0812ab044c6c91683.v1`,
           },
         }),
         "utf8",
@@ -879,8 +879,8 @@ describe("cli credentials", () => {
       fs.writeFileSync(
         credPath,
         JSON.stringify({
-          access_token: "gemini-access",
-          refresh_token: "gemini-refresh",
+          access_token: `ltfx.n.bab3881a9d25c42469bf.v1`,
+          refresh_token: `ltfx.n.54e0b69ed115972d5709.v1`,
           id_token: idToken,
           expiry_date: Date.parse("2026-04-25T12:00:00Z"),
         }),
@@ -910,8 +910,8 @@ describe("cli credentials", () => {
       fs.writeFileSync(
         credPath,
         JSON.stringify({
-          access_token: "gemini-access",
-          refresh_token: "gemini-refresh",
+          access_token: `ltfx.n.bab3881a9d25c42469bf.v1`,
+          refresh_token: `ltfx.n.54e0b69ed115972d5709.v1`,
           expiry_date: Date.parse("2026-04-25T12:00:00Z"),
         }),
         "utf8",

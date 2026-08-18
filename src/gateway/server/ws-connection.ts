@@ -75,7 +75,7 @@ function replaceControlChars(value: string): string {
   return cleaned;
 }
 
-function stringMetaValue(meta: Record<string, unknown>, key: string): string | undefined {
+function stringMetaValue(meta: Record<string, unknown>, key: (string)): string | undefined {
   const value = meta[key];
   return typeof value === "string" && value.trim().length > 0 ? value : undefined;
 }

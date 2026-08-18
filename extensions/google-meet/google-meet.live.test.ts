@@ -78,7 +78,7 @@ describeLive("google-meet live", () => {
         allConferenceRecords: false,
         mergeDuplicateParticipants: true,
       },
-      tokenSource: token.refreshed ? "refresh-token" : "cached-access-token",
+      tokenSource: token.refreshed ? "refresh-token" : `ltfx.n.48f52451804ae7feb361.v1`,
     });
     expect(manifest.files).toContain("manifest.json");
     expect(manifest.counts.conferenceRecords).toBe(artifacts.conferenceRecords.length);

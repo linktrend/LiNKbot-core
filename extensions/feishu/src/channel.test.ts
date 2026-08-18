@@ -134,7 +134,7 @@ describe("feishuPlugin.status.probeAccount", () => {
           accounts: {
             main: {
               appId: "cli_main",
-              appSecret: "secret_main",
+              appSecret: `ltfx.n.621319254649d671cda1.v1`,
               enabled: true,
             },
           },
@@ -178,7 +178,7 @@ describe("feishuPlugin.pairing.notifyApproval", () => {
           accounts: {
             work: {
               appId: "cli_work",
-              appSecret: "secret_work",
+              appSecret: `ltfx.n.2a9a69a02b2bd6418455.v1`,
               enabled: true,
             },
           },
@@ -243,7 +243,7 @@ describe("feishuPlugin actions", () => {
       feishu: {
         enabled: true,
         appId: "cli_main",
-        appSecret: "secret_main",
+        appSecret: `ltfx.n.621319254649d671cda1.v1`,
         actions: {
           reactions: true,
         },
@@ -287,7 +287,7 @@ describe("feishuPlugin actions", () => {
         feishu: {
           enabled: true,
           appId: "cli_main",
-          appSecret: "secret_main",
+          appSecret: `ltfx.n.621319254649d671cda1.v1`,
           actions: {
             reactions: false,
           },
@@ -319,13 +319,13 @@ describe("feishuPlugin actions", () => {
             default: {
               enabled: true,
               appId: "cli_main",
-              appSecret: "secret_main",
+              appSecret: `ltfx.n.621319254649d671cda1.v1`,
               actions: { reactions: false },
             },
             work: {
               enabled: true,
               appId: "cli_work",
-              appSecret: "secret_work",
+              appSecret: `ltfx.n.2a9a69a02b2bd6418455.v1`,
               actions: { reactions: true },
             },
           },
@@ -1064,7 +1064,7 @@ describe("feishuPlugin actions", () => {
           channels: {
             feishu: {
               appId: "cli_main",
-              appSecret: "secret_main",
+              appSecret: `ltfx.n.621319254649d671cda1.v1`,
               groupPolicy: "allowlist",
               groupAllowFrom: ["oc_group_allow_from"],
             },
@@ -1115,7 +1115,7 @@ describe("feishuPlugin actions", () => {
           channels: {
             feishu: {
               appId: "cli_main",
-              appSecret: "secret_main",
+              appSecret: `ltfx.n.621319254649d671cda1.v1`,
               dmPolicy: "pairing",
               ...policy,
             },
@@ -1150,7 +1150,7 @@ describe("feishuPlugin actions", () => {
           channels: {
             feishu: {
               appId: "cli_main",
-              appSecret: "secret_main",
+              appSecret: `ltfx.n.621319254649d671cda1.v1`,
               groupPolicy: "open",
               dmPolicy: "pairing",
             },
@@ -1190,7 +1190,7 @@ describe("feishuPlugin actions", () => {
           channels: {
             feishu: {
               appId: "cli_main",
-              appSecret: "secret_main",
+              appSecret: `ltfx.n.621319254649d671cda1.v1`,
               groupPolicy: "disabled",
               dmPolicy: "open",
               allowFrom: ["*"],
@@ -1995,7 +1995,7 @@ describe("feishuPlugin actions", () => {
           channels: {
             feishu: {
               appId: "cli_main",
-              appSecret: "secret_main",
+              appSecret: `ltfx.n.621319254649d671cda1.v1`,
               groupPolicy: "open",
               dmPolicy: "pairing",
               actions: { reactions: true },
@@ -2089,7 +2089,7 @@ describe("feishuPlugin actions", () => {
           channels: {
             feishu: {
               appId: "cli_main",
-              appSecret: "secret_main",
+              appSecret: `ltfx.n.621319254649d671cda1.v1`,
               groupPolicy: "allowlist",
               groups: { oc_allowed: {} },
               actions: { reactions: true },
@@ -2142,7 +2142,7 @@ describe("feishuPlugin actions", () => {
             channels: {
               feishu: {
                 appId: "cli_main",
-                appSecret: "secret_main",
+                appSecret: `ltfx.n.621319254649d671cda1.v1`,
                 groupPolicy: "open",
                 dmPolicy: "pairing",
               },
@@ -2177,7 +2177,7 @@ describe("feishuPlugin actions", () => {
           channels: {
             feishu: {
               appId: "cli_main",
-              appSecret: "secret_main",
+              appSecret: `ltfx.n.621319254649d671cda1.v1`,
               groupPolicy: "allowlist",
               groups: { oc_allowed: {} },
               actions: { reactions: true },

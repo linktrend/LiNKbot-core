@@ -11,12 +11,12 @@ describe("sanitizeEnvVars", () => {
   it("keeps normal env vars and blocks obvious credentials", () => {
     const result = sanitizeEnvVars({
       NODE_ENV: "test",
-      OPENAI_API_KEY: "sk-live-xxx", // pragma: allowlist secret
-      OPENAI_ADMIN_KEY: "sk-admin-live-xxx", // pragma: allowlist secret
-      ANTHROPIC_ADMIN_KEY: "sk-ant-admin-live-xxx", // pragma: allowlist secret
-      ANTHROPIC_ADMIN_API_KEY: "sk-ant-admin-api-live-xxx", // pragma: allowlist secret
+      OPENAI_API_KEY: `ltfx.n.347117a3cfea01746e71.v1`, // pragma: allowlist secret
+      OPENAI_ADMIN_KEY: `ltfx.n.2aed01279008d0baa7dd.v1`, // pragma: allowlist secret
+      ANTHROPIC_ADMIN_KEY: `ltfx.n.111d0dc79e234d5db5e9.v1`, // pragma: allowlist secret
+      ANTHROPIC_ADMIN_API_KEY: `ltfx.n.07904c7cb8cd96335d9a.v1`, // pragma: allowlist secret
       FOO: "bar",
-      GITHUB_TOKEN: "gh-token", // pragma: allowlist secret
+      GITHUB_TOKEN: `ltfx.n.5dd6823fdffafb04af60.v1`, // pragma: allowlist secret
     });
 
     expect(result.allowed).toEqual({
@@ -85,17 +85,17 @@ describe("sanitizeEnvVars", () => {
     // Explicit sandbox env config is operator intent; value validation still
     // runs, but name-based credential blocking does not.
     const result = sanitizeExplicitSandboxEnvVars({
-      GEMINI_API_KEY: "dummy-gemini-api-key",
-      GOOGLE_CLIENT_SECRET: "dummy-google-client-secret",
-      HIMALAYA_PASSWORD: "dummy-himalaya-password",
-      RESEND_API_KEY: "dummy-resend-api-key",
+      GEMINI_API_KEY: `ltfx.n.acf0066e077bd2092865.v1`,
+      GOOGLE_CLIENT_SECRET: `ltfx.n.d5e4145968bb3d4df46c.v1`,
+      HIMALAYA_PASSWORD: `ltfx.n.c50948a8b07e646161a5.v1`,
+      RESEND_API_KEY: `ltfx.n.1c5e7c4345603e33e2e2.v1`,
     });
 
     expect(result.allowed).toEqual({
-      GEMINI_API_KEY: "dummy-gemini-api-key",
-      GOOGLE_CLIENT_SECRET: "dummy-google-client-secret",
-      HIMALAYA_PASSWORD: "dummy-himalaya-password",
-      RESEND_API_KEY: "dummy-resend-api-key",
+      GEMINI_API_KEY: `ltfx.n.acf0066e077bd2092865.v1`,
+      GOOGLE_CLIENT_SECRET: `ltfx.n.d5e4145968bb3d4df46c.v1`,
+      HIMALAYA_PASSWORD: `ltfx.n.c50948a8b07e646161a5.v1`,
+      RESEND_API_KEY: `ltfx.n.1c5e7c4345603e33e2e2.v1`,
     });
     expect(result.blocked).toStrictEqual([]);
   });

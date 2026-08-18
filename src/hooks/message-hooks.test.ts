@@ -19,7 +19,7 @@ type ActionCase = {
 const actionCases: ActionCase[] = [
   {
     label: "message:received",
-    key: "message:received",
+    key: `ltfx.n.e52c698acad820e0e70c.v1`,
     action: "received",
     context: {
       from: "signal:+15551234567",
@@ -48,7 +48,7 @@ const actionCases: ActionCase[] = [
   },
   {
     label: "message:transcribed",
-    key: "message:transcribed",
+    key: `ltfx.n.e0b716bae1e52bcbf0b1.v1`,
     action: "transcribed",
     context: {
       body: "🎤 [Audio]",
@@ -66,7 +66,7 @@ const actionCases: ActionCase[] = [
   },
   {
     label: "message:preprocessed",
-    key: "message:preprocessed",
+    key: `ltfx.n.41f78409ff0175c4b50c.v1`,
     action: "preprocessed",
     context: {
       body: "🎤 [Audio]",
@@ -84,7 +84,7 @@ const actionCases: ActionCase[] = [
   },
   {
     label: "message:sent",
-    key: "message:sent",
+    key: `ltfx.n.b5fda9ee5e5525c4e30d.v1`,
     action: "sent",
     context: {
       from: "bot:456",

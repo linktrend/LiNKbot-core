@@ -1,7 +1,7 @@
 // Whatsapp plugin module implements session contract behavior.
 import { normalizeLowercaseStringOrEmpty } from "openclaw/plugin-sdk/string-coerce-runtime";
 
-function extractLegacyWhatsAppGroupId(key: string): string | null {
+function extractLegacyWhatsAppGroupId(key: (string)): string | null {
   const trimmed = key.trim();
   if (!trimmed) {
     return null;
@@ -25,11 +25,11 @@ function extractLegacyWhatsAppGroupId(key: string): string | null {
   return null;
 }
 
-export function isLegacyGroupSessionKey(key: string): boolean {
+export function isLegacyGroupSessionKey(key: (string)): boolean {
   return extractLegacyWhatsAppGroupId(key) !== null;
 }
 
-export function deriveLegacySessionChatType(key: string): "group" | undefined {
+export function deriveLegacySessionChatType(key: (string)): "group" | undefined {
   return isLegacyGroupSessionKey(key) ? "group" : undefined;
 }
 

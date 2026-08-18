@@ -66,8 +66,8 @@ describe("openclaw test instance", () => {
     const previousHome = process.env.HOME;
     const inst = await createOpenClawTestInstance({
       name: "instance-unit",
-      gatewayToken: "gateway-token",
-      hookToken: "hook-token",
+      gatewayToken: `ltfx.n.f15ae5b5899f8327f527.v1`,
+      hookToken: `ltfx.n.64eeb5ca0d40b2cc6c09.v1`,
       config: {
         gateway: {
           bind: "loopback",
@@ -95,7 +95,7 @@ describe("openclaw test instance", () => {
           port: inst.port,
           auth: {
             mode: "token",
-            token: "gateway-token",
+            token: `ltfx.n.f15ae5b5899f8327f527.v1`,
           },
           controlUi: {
             enabled: false,
@@ -103,7 +103,7 @@ describe("openclaw test instance", () => {
         },
         hooks: {
           enabled: true,
-          token: "hook-token",
+          token: `ltfx.n.64eeb5ca0d40b2cc6c09.v1`,
           path: "/hooks",
         },
       });

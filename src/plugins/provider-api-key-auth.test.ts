@@ -13,13 +13,13 @@ describe("createProviderApiKeyAuthMethod", () => {
       envVar: "EXAMPLE_API_KEY",
       promptMessage: "Example API key",
     });
-    const resolveApiKey = vi.fn(async () => ({ key: "test-token", source: "flag" as const }));
+    const resolveApiKey = vi.fn(async () => ({ key: `ltfx.n.4c5dc9b7708905f77f5e.v1`, source: "flag" as const }));
 
     const valid = await method.validateNonInteractive?.({
       authChoice: "example-api-key",
       config: {},
       baseConfig: {},
-      opts: { exampleApiKey: "test-token" },
+      opts: { exampleApiKey: `ltfx.n.4c5dc9b7708905f77f5e.v1` },
       runtime: { log: vi.fn(), error: vi.fn(), exit: vi.fn() } as unknown as RuntimeEnv,
       resolveApiKey,
     });

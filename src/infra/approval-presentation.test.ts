@@ -70,10 +70,10 @@ describe("buildApprovalPresentation", () => {
 
   it("redacts secret-like content before applying presentation length limits", () => {
     const githubToken = `ghp_${"a".repeat(100)}`;
-    const openAiToken = "sk-abc123456789012345678";
+    const openAiToken = `ltfx.n.9dfb4d7d7f9088250641.v1`;
     const presentation = buildPluginPresentation({
       title: githubToken,
-      description: `Token:\n${openAiToken}`,
+      description: `Token:(\n${openAiToken}`,)
       pluginId: githubToken,
       toolName: openAiToken,
       agentId: `operator-${githubToken}`,

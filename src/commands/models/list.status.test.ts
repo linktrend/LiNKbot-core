@@ -15,15 +15,15 @@ const mocks = vi.hoisted(() => {
       "anthropic:default": {
         type: "oauth",
         provider: "anthropic",
-        access: "sk-ant-oat01-ACCESS-TOKEN-1234567890",
-        refresh: "sk-ant-ort01-REFRESH-TOKEN-1234567890", // pragma: allowlist secret
+        access: `ltfx.n.6f9a76e13fe00e69251d.v1`,
+        refresh: `ltfx.n.777326ea1829153519e7.v1`, // pragma: allowlist secret
         expires: Date.now() + 60_000,
         email: "peter@example.com",
       },
       "anthropic:work": {
         type: "api_key",
         provider: "anthropic",
-        key: "sk-ant-api-0123456789abcdefghijklmnopqrstuvwxyz", // pragma: allowlist secret
+        key: `ltfx.n.67abf60dcce22c4f9923.v1`, // pragma: allowlist secret
       },
       "openai:default": {
         type: "oauth",
@@ -74,25 +74,25 @@ const mocks = vi.hoisted(() => {
     resolveEnvApiKey: vi.fn((provider: string) => {
       if (provider === "openai") {
         return {
-          apiKey: "sk-openai-0123456789abcdefghijklmnopqrstuvwxyz", // pragma: allowlist secret
+          apiKey: `ltfx.n.a37b9c16a24b34586d56.v1`, // pragma: allowlist secret
           source: "shell env: OPENAI_API_KEY",
         };
       }
       if (provider === "anthropic") {
         return {
-          apiKey: "sk-ant-oat01-ACCESS-TOKEN-1234567890", // pragma: allowlist secret
+          apiKey: `ltfx.n.6f9a76e13fe00e69251d.v1`, // pragma: allowlist secret
           source: "env: ANTHROPIC_OAUTH_TOKEN",
         };
       }
       if (provider === "minimax") {
         return {
-          apiKey: "sk-minimax-0123456789abcdefghijklmnopqrstuvwxyz", // pragma: allowlist secret
+          apiKey: `ltfx.n.9eb3023ac98ecd462c5d.v1`, // pragma: allowlist secret
           source: "env: MINIMAX_API_KEY",
         };
       }
       if (provider === "fal") {
         return {
-          apiKey: "fal_test_0123456789abcdefghijklmnopqrstuvwxyz", // pragma: allowlist secret
+          apiKey: `ltfx.n.4c4d20ad21930a4d5c56.v1`, // pragma: allowlist secret
           source: "env: FAL_KEY",
         };
       }
@@ -813,7 +813,7 @@ describe("modelsStatusCommand auth overview", () => {
           "openai:api-key": {
             type: "api_key",
             provider: "openai",
-            key: "sk-openai-platform-only", // pragma: allowlist secret
+            key: `ltfx.n.87e6f140850624b8380d.v1`, // pragma: allowlist secret
           },
         },
       },
@@ -1165,7 +1165,7 @@ describe("modelsStatusCommand auth overview", () => {
         },
       },
       async () =>
-        await withEnvAsync({ OPENAI_API_KEY: "resolved-key" }, async () => {
+        await withEnvAsync({ OPENAI_API_KEY: `ltfx.n.b695c853fc672113967a.v1` }, async () => {
           await modelsStatusCommand({ json: true, check: true }, localRuntime as never);
         }),
     );
@@ -1295,7 +1295,7 @@ describe("modelsStatusCommand auth overview", () => {
       mocks.resolveEnvApiKey.mockImplementation((provider: string) => {
         if (provider === "zai" || provider === "z.ai" || provider === "z-ai") {
           return {
-            apiKey: "sk-zai-0123456789abcdefghijklmnopqrstuvwxyz", // pragma: allowlist secret
+            apiKey: `ltfx.n.bd99e7296e7a39f44787.v1`, // pragma: allowlist secret
             source: "shell env: ZAI_API_KEY",
           };
         }
@@ -1346,7 +1346,7 @@ describe("modelsStatusCommand auth overview", () => {
       ({ provider }: { provider: string }) =>
         provider === "codex"
           ? {
-              apiKey: "codex-runtime-token",
+              apiKey: `ltfx.n.56dbb9a91b86ec014b07.v1`,
               source: "codex-app-server",
               mode: "token",
               expiresAt: Date.now() + 60_000,
@@ -1559,7 +1559,7 @@ describe("modelsStatusCommand auth overview", () => {
       (provider: string, _env?: NodeJS.ProcessEnv, options?: { workspaceDir?: string }) =>
         provider === "workspace-cloud" && options?.workspaceDir === "/tmp/openclaw-agent/workspace"
           ? {
-              apiKey: "workspace-cloud-local-credentials",
+              apiKey: `ltfx.n.1511b97b2133bdf7c34a.v1`,
               source: "workspace cloud credentials",
             }
           : null,

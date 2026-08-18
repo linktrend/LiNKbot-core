@@ -33,7 +33,7 @@ describe("guarded model fetch secret sentinel integration", () => {
         api: "openai-responses",
         baseUrl,
       } as unknown as Model<"openai-responses">;
-      const secret = "integration-provider-secret";
+      const secret = `ltfx.n.efa841938aa5c54c2d2f.v1`;
       const sentinel = mintSecretSentinel(secret, { label: "model-auth:integration" });
 
       const response = await buildGuardedModelFetch(model)(`${baseUrl}/responses`, {

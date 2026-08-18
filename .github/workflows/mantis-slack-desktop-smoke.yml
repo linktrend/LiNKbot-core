@@ -185,7 +185,7 @@ jobs:
           path: |
             ~/.local/share/pnpm/store
             ~/.cache/pnpm
-          key: mantis-slack-pnpm-${{ runner.os }}-${{ env.NODE_VERSION }}-${{ hashFiles('pnpm-lock.yaml') }}
+          key: "${ltfx.n.69b5b1fb6b3f3d0da66b.v1}" runner.os }}-${{ env.NODE_VERSION }}-${{ hashFiles('pnpm-lock.yaml') }}
           restore-keys: |
             mantis-slack-pnpm-${{ runner.os }}-${{ env.NODE_VERSION }}-
 
@@ -258,7 +258,7 @@ jobs:
           }
 
           CRABBOX_COORDINATOR="${CRABBOX_COORDINATOR:-${OPENCLAW_QA_MANTIS_CRABBOX_COORDINATOR:-}}"
-          CRABBOX_COORDINATOR_TOKEN="${CRABBOX_COORDINATOR_TOKEN:-${OPENCLAW_QA_MANTIS_CRABBOX_COORDINATOR_TOKEN:-}}"
+          CRABBOX_COORDINATOR_TOKEN="${CRABBOX_COORDINATOR_TOKEN:(ltfx.n.51351bd34802ce1b4ead.v1)}}"
           export CRABBOX_COORDINATOR CRABBOX_COORDINATOR_TOKEN
 
           require_var OPENCLAW_LIVE_OPENAI_KEY

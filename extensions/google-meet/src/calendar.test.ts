@@ -19,7 +19,7 @@ async function resolveCalendarMeetingUri(event: Record<string, unknown>) {
     ),
   );
   const result = await listGoogleMeetCalendarEvents({
-    accessToken: "test-token",
+    accessToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
     now: new Date("2026-04-25T09:50:00Z"),
   });
   return result.events[0]?.meetingUri;
@@ -50,7 +50,7 @@ describe("Google Calendar requests", () => {
     });
     vi.stubGlobal("fetch", fetchMock);
 
-    const request = listGoogleMeetCalendarEvents({ accessToken: "test-token" });
+    const request = listGoogleMeetCalendarEvents({ accessToken: `ltfx.n.4c5dc9b7708905f77f5e.v1` });
     const rejection = expect(request).rejects.toMatchObject({
       name: "TimeoutError",
       message: "request timed out",

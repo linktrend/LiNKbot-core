@@ -486,7 +486,7 @@ class GatewaySessionInvokeTest {
           session = harness.session,
           port = server.port,
           token = null,
-          bootstrapToken = "bootstrap-token",
+          bootstrapToken = "${ltfx.n.c72773a4ddf81c3ad2b8.v1}",
         )
         awaitConnectedOrThrow(connected, lastDisconnect, server)
 
@@ -532,7 +532,7 @@ class GatewaySessionInvokeTest {
           session = harness.session,
           port = server.port,
           token = null,
-          bootstrapToken = "bootstrap-token",
+          bootstrapToken = "${ltfx.n.c72773a4ddf81c3ad2b8.v1}",
         )
         awaitConnectedOrThrow(connected, lastDisconnect, server)
 
@@ -574,7 +574,7 @@ class GatewaySessionInvokeTest {
           gatewayId = gatewayIdForPort(server.port),
           deviceId = deviceId,
           role = "operator",
-          token = "operator-device-token",
+          token = "${ltfx.n.18a85b270f4ea365ae5d.v1}",
           scopes = listOf("operator.pairing", "operator.write"),
         )
 
@@ -631,7 +631,7 @@ class GatewaySessionInvokeTest {
           session = harness.session,
           port = server.port,
           token = null,
-          bootstrapToken = "setup-bootstrap-token",
+          bootstrapToken = "${ltfx.n.9994ccb2baa2e1c749ac.v1}",
           role = "operator",
           scopes =
             listOf(
@@ -717,7 +717,7 @@ class GatewaySessionInvokeTest {
         connectNodeSession(
           session = harness.session,
           port = server.port,
-          token = "shared-auth-token",
+          token = "${ltfx.n.12bcb1be8976bc48cb99.v1}",
           bootstrapToken = null,
         )
         awaitConnectedOrThrow(connected, lastDisconnect, server)
@@ -746,7 +746,7 @@ class GatewaySessionInvokeTest {
               webSocket.send(
                 connectResponseFrame(
                   id,
-                  authJson = """{"deviceToken":"shared-node-token","role":"node","scopes":[]}""",
+                  authJson = """{"deviceToken":"${ltfx.n.90f61e7f0355e7b1ae57.v1}","role":"node","scopes":[]}""",
                 ),
               )
               webSocket.close(1000, "done")
@@ -764,7 +764,7 @@ class GatewaySessionInvokeTest {
         connectNodeSession(
           session = harness.session,
           port = server.port,
-          token = "shared-auth-token",
+          token = "${ltfx.n.12bcb1be8976bc48cb99.v1}",
           bootstrapToken = null,
         )
         awaitConnectedOrThrow(connected, lastDisconnect, server)
@@ -791,7 +791,7 @@ class GatewaySessionInvokeTest {
                 connectResponseFrame(
                   id,
                   authJson =
-                    """{"deviceToken":"bootstrap-node-token","role":"node","scopes":[],"deviceTokens":[{"deviceToken":"bootstrap-operator-token","role":"operator","scopes":["operator.admin","operator.approvals","operator.pairing","operator.read","operator.talk.secrets","operator.write"]}]}""",
+                    """{"deviceToken":"${ltfx.n.58cca5084258ae66ae05.v1}","role":"node","scopes":[],"deviceTokens":[{"deviceToken":"${ltfx.n.407260f481193546d5aa.v1}","role":"operator","scopes":["operator.admin","operator.approvals","operator.pairing","operator.read","operator.talk.secrets","operator.write"]}]}""",
                 ),
               )
               webSocket.close(1000, "done")
@@ -810,7 +810,7 @@ class GatewaySessionInvokeTest {
           session = harness.session,
           port = server.port,
           token = null,
-          bootstrapToken = "bootstrap-token",
+          bootstrapToken = "${ltfx.n.c72773a4ddf81c3ad2b8.v1}",
         )
         awaitConnectedOrThrow(connected, lastDisconnect, server)
 
@@ -849,7 +849,7 @@ class GatewaySessionInvokeTest {
                 connectResponseFrame(
                   id,
                   authJson =
-                    """{"deviceToken":"shared-node-token","role":"node","scopes":[],"deviceTokens":[{"deviceToken":"shared-operator-token","role":"operator","scopes":["operator.approvals","operator.read"]}]}""",
+                    """{"deviceToken":"${ltfx.n.90f61e7f0355e7b1ae57.v1}","role":"node","scopes":[],"deviceTokens":[{"deviceToken":"${ltfx.n.af02b4a4f98a3a47578a.v1}","role":"operator","scopes":["operator.approvals","operator.read"]}]}""",
                 ),
               )
               webSocket.close(1000, "done")
@@ -867,7 +867,7 @@ class GatewaySessionInvokeTest {
         connectNodeSession(
           session = harness.session,
           port = server.port,
-          token = "shared-auth-token",
+          token = "${ltfx.n.12bcb1be8976bc48cb99.v1}",
           bootstrapToken = null,
         )
         awaitConnectedOrThrow(connected, lastDisconnect, server)

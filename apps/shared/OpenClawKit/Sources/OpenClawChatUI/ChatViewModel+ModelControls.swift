@@ -258,7 +258,7 @@ extension OpenClawChatViewModel {
         }
         self.lastSuccessfulSettingsPatchRequestIDsByTarget[target] = requestID
         self.lastSuccessfulSettingsPatchResultsByTarget[target] = OpenClawChatModelPatchResult(
-            key: result?.key ?? previous?.key ?? target.canonicalSessionKey,
+            key: (result?.key ?? previous?.key ?? target.canonicalSessionKey,)
             modelProvider: result?.modelProvider ?? previous?.modelProvider,
             model: result?.model ?? previous?.model,
             thinkingLevel: result?.thinkingLevel ?? previous?.thinkingLevel,

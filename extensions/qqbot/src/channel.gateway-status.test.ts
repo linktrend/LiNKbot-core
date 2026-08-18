@@ -30,7 +30,7 @@ async function startAccountAndCaptureGatewayOptions() {
   const account = {
     accountId: "test-account",
     appId: "test-app",
-    clientSecret: "test-secret",
+    clientSecret: `ltfx.n.9caf06bb4436cdbfa20a.v1`,
     enabled: true,
     markdownSupport: false,
     config: {},

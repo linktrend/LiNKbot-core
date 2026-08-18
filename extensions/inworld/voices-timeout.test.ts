@@ -29,7 +29,7 @@ describe("listInworldVoices live timeout", () => {
 
           await expect(
             listInworldVoices({
-              apiKey: "test-key",
+              apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
               baseUrl: "https://custom.inworld.example.com",
               timeoutMs: 250,
             }),

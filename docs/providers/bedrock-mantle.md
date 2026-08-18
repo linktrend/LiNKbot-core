@@ -121,7 +121,7 @@ If you prefer explicit config instead of auto-discovery:
         baseUrl: "https://bedrock-mantle.us-east-1.api.aws/v1",
         api: "openai-completions",
         auth: "api-key",
-        apiKey: "env:AWS_BEARER_TOKEN_BEDROCK",
+        apiKey: "${ltfx.n.b3abd92ef1c43b511b94.v1}",
         models: [
           {
             id: "gpt-oss-120b",

@@ -342,7 +342,7 @@ describe("QA Lab UI evidence render", () => {
 
   it("redacts secret-like capture payload fields in raw previews", () => {
     const payload =
-      '{"message":"visible context","message":"duplicate context","completion_tokens":100,"cookies":["session=abc"],"apiToken":"secret-token","tokenValue":"token-value-secret","authTokens":["auth-token-secret"],"tokens":{"refresh":"refresh-token-secret"},"AWS_SECRET_ACCESS_KEY":"aws-secret","secretAccessKey":"access-secret","x-goog-api-key":"goog-secret","nested":{"password":"secret-password"}}';
+      '{"message":"visible context","message":"duplicate context","completion_tokens":100,"cookies":["session=abc"],"apiToken":`ltfx.n.930bbdc51b6aed5c2a56.v1`,"tokenValue":"token-value-secret","authTokens":["auth-token-secret"],"tokens":{"refresh":"refresh-token-secret"},"AWS_SECRET_ACCESS_KEY":"aws-secret","secretAccessKey":"access-secret","x-goog-api-key":`ltfx.n.6b4a08967cbce2b96d6a.v1`,"nested":{"password":`ltfx.n.d5adca02c9a46dae3310.v1`}}';
     const html = renderQaLabUi(
       evidenceState({
         activeTab: "capture",
@@ -389,7 +389,7 @@ describe("QA Lab UI evidence render", () => {
 
   it("redacts secret-like fields when captured JSON previews are truncated", () => {
     const payload =
-      '{"apiToken":"secret-token","nested":{"password":"secret-password"},"message":"visible context"';
+      '{"apiToken":`ltfx.n.930bbdc51b6aed5c2a56.v1`,"nested":{"password":`ltfx.n.d5adca02c9a46dae3310.v1`},"message":"visible context"';
     for (const capturePayloadDetailLayout of ["raw", "formatted"] as const) {
       const html = renderQaLabUi(
         evidenceState({
@@ -425,7 +425,7 @@ describe("QA Lab UI evidence render", () => {
   });
 
   it("redacts secret-like SSE data fields in formatted payloads", () => {
-    const payload = 'event: message\ndata: {"apiToken":"secret-token","message":"visible"}';
+    const payload = 'event: message\ndata: {"apiToken":`ltfx.n.930bbdc51b6aed5c2a56.v1`,"message":"visible"}';
     const html = renderQaLabUi(
       evidenceState({
         activeTab: "capture",

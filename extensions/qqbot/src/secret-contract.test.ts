@@ -48,7 +48,7 @@ describe("qqbot secret contract", () => {
           },
         },
       } as OpenClawConfig,
-      { QQBOT_CLIENT_SECRET: "resolved-top-level-secret" },
+      { QQBOT_CLIENT_SECRET: `ltfx.n.984164397b7871886c48.v1` },
     );
 
     expect(resolvedConfig.channels?.qqbot?.clientSecret).toBe("resolved-top-level-secret");
@@ -71,7 +71,7 @@ describe("qqbot secret contract", () => {
           },
         },
       } as OpenClawConfig,
-      { QQBOT_BOT2_SECRET: "resolved-bot2-secret" },
+      { QQBOT_BOT2_SECRET: `ltfx.n.a6e5d3a24578504c0580.v1` },
     );
 
     expect(resolvedConfig.channels?.qqbot?.accounts?.bot2?.clientSecret).toBe(
@@ -98,8 +98,8 @@ describe("qqbot secret contract", () => {
         },
       } as OpenClawConfig,
       {
-        QQBOT_DEFAULT_SECRET: "resolved-default-secret",
-        QQBOT_BOT2_SECRET: "resolved-bot2-secret",
+        QQBOT_DEFAULT_SECRET: `ltfx.n.bdbbd9abde541f83dbbf.v1`,
+        QQBOT_BOT2_SECRET: `ltfx.n.a6e5d3a24578504c0580.v1`,
       },
     );
 

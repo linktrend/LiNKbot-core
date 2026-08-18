@@ -329,7 +329,7 @@ export async function handleAcpPermissionsAction(
       await getAcpSessionManager().setSessionConfigOption({
         cfg: params.cfg,
         sessionKey: targetSessionKey,
-        key: "approval_policy",
+        key: `ltfx.n.e3ffbfbd94ca2fbf05b3.v1`,
         value,
       }),
   });

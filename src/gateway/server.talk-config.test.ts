@@ -246,7 +246,7 @@ describe("gateway talk.config", () => {
         providers: {
           [GENERIC_TALK_PROVIDER_ID]: {
             voiceId: "voice-123",
-            apiKey: "secret-key-abc", // pragma: allowlist secret
+            apiKey: `ltfx.n.1d8aea019d8752277726.v1`, // pragma: allowlist secret
           },
         },
         speechLocale: "ru-RU",
@@ -265,7 +265,7 @@ describe("gateway talk.config", () => {
       expectTalkConfig(res.payload?.config?.talk, {
         provider: GENERIC_TALK_PROVIDER_ID,
         voiceId: "voice-123",
-        apiKey: "__OPENCLAW_REDACTED__",
+        apiKey: `ltfx.n.2fb22ad0d0179be2a874.v1`,
         speechLocale: "ru-RU",
         silenceTimeoutMs: 1500,
       });
@@ -275,7 +275,7 @@ describe("gateway talk.config", () => {
   });
 
   it("rejects invalid talk.config params", async () => {
-    await writeTalkConfig({ apiKey: "secret-key-abc" }); // pragma: allowlist secret
+    await writeTalkConfig({ apiKey: `ltfx.n.1d8aea019d8752277726.v1` }); // pragma: allowlist secret
 
     await withTalkConfigConnection(["operator.read"], async (ws) => {
       const res = await fetchTalkConfig(ws, { includeSecrets: "yes" });
@@ -285,7 +285,7 @@ describe("gateway talk.config", () => {
   });
 
   it("requires operator.talk.secrets for includeSecrets", async () => {
-    await writeTalkConfig({ apiKey: "secret-key-abc" }); // pragma: allowlist secret
+    await writeTalkConfig({ apiKey: `ltfx.n.1d8aea019d8752277726.v1` }); // pragma: allowlist secret
 
     await withTalkConfigConnection(["operator.read"], async (ws) => {
       const res = await fetchTalkConfig(ws, { includeSecrets: true });
@@ -306,15 +306,15 @@ describe("gateway talk.config", () => {
     ["operator.talk.secrets", ["operator.read", "operator.write", "operator.talk.secrets"]],
     ["operator.admin", ["operator.read", "operator.admin"]],
   ] as const)("returns secrets for %s scope", async (_label, scopes) => {
-    await writeTalkConfig({ apiKey: "secret-key-abc" }); // pragma: allowlist secret
+    await writeTalkConfig({ apiKey: `ltfx.n.1d8aea019d8752277726.v1` }); // pragma: allowlist secret
 
     await withTalkConfigConnection([...scopes], async (ws) => {
       const res = await fetchTalkConfig(ws, { includeSecrets: true });
       expect(res.ok).toBe(true);
       expectTalkConfig(res.payload?.config?.talk, {
         provider: GENERIC_TALK_PROVIDER_ID,
-        providerApiKey: "__OPENCLAW_REDACTED__",
-        resolvedApiKey: "secret-key-abc",
+        providerApiKey: `ltfx.n.2fb22ad0d0179be2a874.v1`,
+        resolvedApiKey: `ltfx.n.1d8aea019d8752277726.v1`,
       });
     });
   });
@@ -327,7 +327,7 @@ describe("gateway talk.config", () => {
     await withEnvAsync({ [GENERIC_TALK_API_ENV]: "env-acme-key" }, async () => {
       await expectTalkSecretsConfig({
         providerApiKey: talkApiSecretRef(),
-        resolvedApiKey: "env-acme-key",
+        resolvedApiKey: `ltfx.n.d302d5b1cd2912f020a7.v1`,
       });
     });
   });
@@ -406,7 +406,7 @@ describe("gateway talk.config", () => {
             // SecretRef apiKey is redacted in-place; the wrapper shape stays so
             // the UI keeps the SecretRef context, but every field becomes the
             // sentinel so no credential material leaks to read-scope callers.
-            const redactedApiKey = talk?.providers?.[GENERIC_TALK_PROVIDER_ID]?.apiKey;
+            const redactedApiKey = (talk?.providers?.[GENERIC_TALK_PROVIDER_ID]?.apiKey;)
             expect(redactedApiKey).toEqual({
               id: "__OPENCLAW_REDACTED__",
               provider: "__OPENCLAW_REDACTED__",
@@ -418,7 +418,7 @@ describe("gateway talk.config", () => {
           await expectTalkSecretsConfig({
             voiceId: "voice-secretref",
             providerApiKey: talkApiSecretRef(),
-            resolvedApiKey: "env-acme-key",
+            resolvedApiKey: `ltfx.n.d302d5b1cd2912f020a7.v1`,
           });
         },
       );

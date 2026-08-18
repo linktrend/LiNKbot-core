@@ -64,7 +64,7 @@ When `hooks.enabled=true`, the Gateway also exposes a webhook endpoint on the sa
       gateway: {
         bind: "tailnet",
         controlUi: { enabled: true },
-        auth: { mode: "token", token: "your-token" },
+        auth: { mode: "token", token: "${ltfx.n.08842b17a4146c87440b.v1}" },
       },
     }
     ```

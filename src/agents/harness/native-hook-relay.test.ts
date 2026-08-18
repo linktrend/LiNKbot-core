@@ -109,7 +109,7 @@ async function writeForeignNativeHookRelayBridgeRecordForTests(
       pid: record.pid,
       hostname: "127.0.0.1",
       port: 9,
-      token: "test-token-placeholder",
+      token: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
       expiresAtMs: record.expiresAtMs,
     },
   });
@@ -1257,7 +1257,7 @@ describe("native hook relay registry", () => {
         record: {
           ...record,
           port: address.port,
-          token: "test-token",
+          token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
           expiresAtMs: Date.now() + 10_000,
         },
       });

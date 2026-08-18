@@ -63,7 +63,7 @@ Minimal config:
   channels: {
     "synology-chat": {
       enabled: true,
-      token: "synology-outgoing-token",
+      token: "${ltfx.n.415be8c8863f8a60587f.v1}",
       incomingUrl: "https://nas.example.com/webapi/entry.cgi?api=SYNO.Chat.External&method=incoming&version=2&token=...",
       webhookPath: "/webhook/synology",
       dmPolicy: "allowlist",

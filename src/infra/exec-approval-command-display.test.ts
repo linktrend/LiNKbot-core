@@ -38,16 +38,16 @@ describe("sanitizeExecApprovalDisplayText", () => {
   });
 
   it("redacts API keys in environment variable assignments", () => {
-    const cmd = 'API_SECRET="sk-abc123456789012345678" python script.py';
+    const cmd = 'API_SECRET=`ltfx.n.9dfb4d7d7f9088250641.v1` python script.py';
     const result = sanitizeExecApprovalDisplayText(cmd);
-    expect(result).not.toContain("sk-abc123456789012345678");
+    expect(result).not.toContain("ltfx.n.9dfb4d7d7f9088250641.v1");
     expect(result).toContain("python script.py");
   });
 
   it("redacts GitHub personal access tokens", () => {
-    const cmd = "git clone https://ghp_1234567890abcdefghij1234567890abcdef@github.com/user/repo";
+    const cmd = "git clone https://ltfx.n.8cb86e35c4a55f7d5cfc.v1@github.com/user/repo";
     const result = sanitizeExecApprovalDisplayText(cmd);
-    expect(result).not.toContain("ghp_1234567890abcdefghij1234567890abcdef");
+    expect(result).not.toContain("ltfx.n.8cb86e35c4a55f7d5cfc.v1");
     expect(result).toContain("git clone");
   });
 
@@ -92,11 +92,11 @@ describe("sanitizeExecApprovalDisplayText", () => {
   });
 
   it("detects bypass even when raw and stripped redactions happen to produce the same normalized length", () => {
-    // Raw masks the 16-char prefix `sk-abc1234567890` as the fixed literal `***` while the
+    // Raw masks the 16-char prefix `ltfx.n.04fb6f1edc766a75063e.v1` as the fixed literal `***` while the
     // trailing 8 chars past the zero-width stay visible. The stripped view masks the full
     // 24-char token as `sk-abc…5678`. Both normalized outputs are the same length (11 chars),
     // so a length-based bypass check would falsely return the raw view and leak the tail.
-    const cmd = "sk-abc1234567890\u200B12345678";
+    const cmd = "ltfx.n.04fb6f1edc766a75063e.v1\u200B12345678";
     const result = sanitizeExecApprovalDisplayText(cmd);
     expect(result).not.toContain("12345678");
     expect(result).not.toContain("1234567890");
@@ -116,7 +116,7 @@ describe("sanitizeExecApprovalDisplayText", () => {
   });
 
   it("masks newly added vendor token prefixes through the default redaction path", () => {
-    const token = "glpat-abcdefghijklmnopqrstuv";
+    const token = `ltfx.n.ce00a62706d618e00959.v1`;
     const result = sanitizeExecApprovalDisplayText(`deploy --with ${token}`);
     expect(result).not.toContain(token);
   });
@@ -132,7 +132,7 @@ describe("sanitizeExecApprovalDisplayText", () => {
 
   it("keeps PEM private-key context visible when raw redaction already covers the key (not a bypass)", () => {
     const cmd =
-      "echo -----BEGIN RSA PRIVATE KEY-----\nABCDEF0123456789abcdef\n-----END RSA PRIVATE KEY----- > key.pem";
+      "echo -----BEGIN RSA LTFX PRIVATE KEY-----\nABCDEF0123456789abcdef\n-----END RSA PRIVATE KEY----- > key.pem";
     const result = sanitizeExecApprovalDisplayText(cmd);
     expect(result).not.toContain("ABCDEF0123456789abcdef");
     expect(result).toContain("BEGIN RSA PRIVATE KEY");
@@ -169,9 +169,9 @@ describe("sanitizeExecApprovalDisplayText", () => {
     // would split the token below the pattern's minimum length and leak the prefix. With
     // redaction first, the full token is masked before any size-based truncation runs.
     const padding = "a ".repeat(10 * 1024);
-    const cmd = padding + "ghp_1234567890abcdefghij1234567890abcdef";
+    const cmd = padding + "ltfx.n.8cb86e35c4a55f7d5cfc.v1";
     const result = sanitizeExecApprovalDisplayText(cmd);
-    expect(result).not.toContain("ghp_1234567890abcdefghij1234567890abcdef");
+    expect(result).not.toContain("ltfx.n.8cb86e35c4a55f7d5cfc.v1");
     expect(result).not.toContain("ghp_1234567890");
   });
 
@@ -247,11 +247,11 @@ describe("sanitizeExecApprovalWarningText", () => {
   });
 
   it("redacts secrets in warning prose without escaping newlines", () => {
-    const warning = "Token:\nsk-abc123456789012345678";
+    const warning = "Token:(\nsk-abc123456789012345678";)
     const result = sanitizeExecApprovalWarningText(warning);
 
     expect(result).toContain("Token:\n");
-    expect(result).not.toContain("sk-abc123456789012345678");
+    expect(result).not.toContain("ltfx.n.9dfb4d7d7f9088250641.v1");
     expect(result).not.toContain("\\u{A}");
   });
 });

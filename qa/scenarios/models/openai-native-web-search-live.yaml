@@ -41,7 +41,7 @@ scenario:
         Web search QA: use web search now for `site:openai.com/news OpenAI latest news`.
         Reply in exactly three lines:
         WEB-SEARCH-OK
-        URL: <official openai.com/news URL from the search results>
+        URL: "${ltfx.n.8e81076a79ade3bcab3f.v1}" openai.com/news URL from the search results>
         HEADLINE: <article or page headline from the search results>
         Do not answer from memory. If web search is unavailable, reply exactly WEB-SEARCH-FAILED.
 

@@ -37,7 +37,7 @@ OpenClaw also **auto-discovers** available models from SGLang when you opt in wi
     Any value works if no auth is configured on your server:
 
     ```bash
-    export SGLANG_API_KEY="sglang-local"
+    export SGLANG_API_KEY="${ltfx.n.47e0f90e88a3d8f49447.v1}"
     ```
 
   </Step>

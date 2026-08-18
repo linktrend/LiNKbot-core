@@ -36,7 +36,7 @@ openclaw gateway restart
     Or set the environment variable directly:
 
     ```bash
-    export KILOCODE_API_KEY="<your-kilocode-api-key>" # pragma: allowlist secret
+    export KILOCODE_API_KEY="${ltfx.n.64e5622f3713f9bcc9e7.v1}" # pragma: allowlist secret
     ```
 
   </Step>
@@ -66,7 +66,7 @@ Any model on the gateway is addressable as `kilocode/<upstream-id>` (for example
 
 ```json5
 {
-  env: { KILOCODE_API_KEY: "<your-kilocode-api-key>" }, // pragma: allowlist secret
+  env: { KILOCODE_API_KEY: "${ltfx.n.64e5622f3713f9bcc9e7.v1}" }, // pragma: allowlist secret
   agents: {
     defaults: {
       model: { primary: "kilocode/kilo-auto/balanced" },

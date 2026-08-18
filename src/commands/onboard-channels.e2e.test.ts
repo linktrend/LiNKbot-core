@@ -1175,7 +1175,7 @@ describe("setupChannels", () => {
         ...cfg,
         channels: {
           ...cfg.channels,
-          telegram: { ...cfg.channels?.telegram, botToken: "new-token" },
+          telegram: { ...cfg.channels?.telegram, botToken: `ltfx.n.348e9df2a42bd6e3c635.v1` },
         },
       } as OpenClawConfig,
       accountId: "acct-1",
@@ -1201,7 +1201,7 @@ describe("setupChannels", () => {
         ...cfg,
         channels: {
           ...cfg.channels,
-          telegram: { ...cfg.channels?.telegram, botToken: "updated-token" },
+          telegram: { ...cfg.channels?.telegram, botToken: `ltfx.n.a4eb3a04e58f3e486df0.v1` },
         },
       } as OpenClawConfig,
       accountId: "acct-2",

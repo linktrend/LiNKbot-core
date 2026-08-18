@@ -122,7 +122,7 @@ describe("acp session UX bridge behavior", () => {
           },
           sessions: [
             {
-              key: "agent:main:work",
+              key: `ltfx.n.a0bd29bf0efe5fca6ae0.v1`,
               label: "main-work",
               displayName: "Main work",
               derivedTitle: "Fix ACP bridge",
@@ -250,7 +250,7 @@ describe("acp session UX bridge behavior", () => {
           },
           sessions: [
             {
-              key: "agent:main:recover",
+              key: `ltfx.n.a91ae7155b2208d49250.v1`,
               label: "recover",
               displayName: "Recover session",
               kind: "direct",

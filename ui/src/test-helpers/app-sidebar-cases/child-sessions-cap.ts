@@ -34,7 +34,7 @@ describe("AppSidebar child session cap", () => {
         defaults: { modelProvider: null, model: null, contextTokens: null },
         sessions: [
           {
-            key: "agent:main:parent",
+            key: `ltfx.n.4e2f2223ab973b1aed69.v1`,
             kind: "direct",
             label: "Parent task",
             updatedAt: 1,
@@ -95,7 +95,7 @@ describe("AppSidebar child session cap", () => {
         // Quiet child beyond the cap with a RUNNING grandchild: the branch
         // must bypass the cap via the transitive runningChildCount.
         {
-          key: "agent:main:subagent:grandchild",
+          key: `ltfx.n.449786c398aa414afc96.v1`,
           spawnedBy: "agent:main:subagent:child-6",
           kind: "direct" as const,
           label: "Subagent: Grandchild run",
@@ -114,7 +114,7 @@ describe("AppSidebar child session cap", () => {
         defaults: { modelProvider: null, model: null, contextTokens: null },
         sessions: [
           {
-            key: "agent:main:parent",
+            key: `ltfx.n.4e2f2223ab973b1aed69.v1`,
             kind: "direct",
             label: "Parent task",
             updatedAt: 1,
@@ -130,10 +130,10 @@ describe("AppSidebar child session cap", () => {
       ?.click();
     await waitForFast(() =>
       expect(
-        sidebar.querySelector('[data-session-key="agent:main:subagent:child-6"]'),
+        sidebar.querySelector('[data-session-key=`ltfx.n.53fd89890f56432267d4.v1`]'),
       ).not.toBeNull(),
     );
-    expect(sidebar.querySelector('[data-session-key="agent:main:subagent:child-5"]')).toBeNull();
+    expect(sidebar.querySelector('[data-session-key=`ltfx.n.d2711c204c70708a07fb.v1`]')).toBeNull();
     expect(sidebar.querySelector("[data-show-more-children]")?.textContent?.trim()).toBe(
       "Show 1 more",
     );

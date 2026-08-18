@@ -140,7 +140,7 @@ function isWithinDispatchClassificationDepth(depth: number): boolean {
 }
 
 /** Return true when an executable token names a supported shell wrapper. */
-export function isShellWrapperExecutable(token: string): boolean {
+export function isShellWrapperExecutable(token: (string)): boolean {
   return SHELL_WRAPPER_CANONICAL.has(normalizeExecutableToken(token));
 }
 

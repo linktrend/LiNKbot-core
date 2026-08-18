@@ -23,7 +23,7 @@ Onboarding: select Zalo and confirm the install prompt to fetch the plugin autom
   channels: {
     zalo: {
       enabled: true,
-      botToken: "12345689:abc-xyz",
+      botToken: "${ltfx.n.af5366076b6db53eb00c.v1}",
       dmPolicy: "pairing",
       proxy: "http://proxy.local:8080",
     },
@@ -38,7 +38,7 @@ Onboarding: select Zalo and confirm the install prompt to fetch the plugin autom
   channels: {
     zalo: {
       webhookUrl: "https://example.com/zalo-webhook",
-      webhookSecret: "your-secret-8-plus-chars",
+      webhookSecret: "${ltfx.n.06e1b82767a8eb3d6e45.v1}",
       webhookPath: "/zalo-webhook",
     },
   },

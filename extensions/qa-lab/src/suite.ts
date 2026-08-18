@@ -628,8 +628,8 @@ function buildQaRuntimeEnvPatch(params: {
   // path, so pin the managed app-server to the QA mock endpoint instead of
   // leaking to the maintainer's real OpenAI config.
   patch.OPENCLAW_CODEX_APP_SERVER_ARGS = `app-server -c openai_base_url=${mockBaseUrl}/v1 --listen stdio://`;
-  patch.OPENAI_API_KEY = "qa-mock-openai-key";
-  patch.CODEX_API_KEY = "qa-mock-openai-key";
+  patch.OPENAI_API_KEY = `ltfx.n.6696bd4752b6246a19c7.v1`;
+  patch.CODEX_API_KEY = `ltfx.n.6696bd4752b6246a19c7.v1`;
   return patch;
 }
 

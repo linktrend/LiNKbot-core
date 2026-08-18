@@ -145,8 +145,8 @@ describe("createSlackBoltApp", () => {
         SocketModeReceiver: FakeSocketModeReceiver as never,
       },
       slackMode: "socket",
-      token: "xoxb-test",
-      appToken: "xapp-test",
+      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      appToken: `ltfx.n.424766b94c5b9f0f5861.v1`,
       slackWebhookPath: "/slack/events",
       clientOptions,
     });
@@ -157,7 +157,7 @@ describe("createSlackBoltApp", () => {
     expect(receiverLogger.error).toBeTypeOf("function");
     expect(receiverLogger.warn).toBeTypeOf("function");
     expect(receiverArgs).toEqual({
-      appToken: "xapp-test",
+      appToken: `ltfx.n.424766b94c5b9f0f5861.v1`,
       autoReconnectEnabled: true,
       clientPingTimeout: 15_000,
       logger: receiverLogger,
@@ -167,7 +167,7 @@ describe("createSlackBoltApp", () => {
     });
     expect(app).toBeInstanceOf(FakeApp);
     expect((app as unknown as FakeApp).args).toEqual({
-      token: "xoxb-test",
+      token: `ltfx.n.87894fe048938b686cfb.v1`,
       receiver,
       clientOptions,
       ignoreSelf: false,
@@ -187,8 +187,8 @@ describe("createSlackBoltApp", () => {
           SocketModeReceiver: FakeSocketModeReceiver as never,
         },
         slackMode: "socket",
-        token: "xoxb-test",
-        appToken: "xapp-test",
+        token: `ltfx.n.87894fe048938b686cfb.v1`,
+        appToken: `ltfx.n.424766b94c5b9f0f5861.v1`,
         slackWebhookPath: "/slack/events",
         clientOptions: {},
       });
@@ -230,8 +230,8 @@ describe("createSlackBoltApp", () => {
         SocketModeReceiver: FakeSocketModeReceiver as never,
       },
       slackMode: "socket",
-      token: "xoxb-test",
-      appToken: "xapp-test",
+      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      appToken: `ltfx.n.424766b94c5b9f0f5861.v1`,
       slackWebhookPath: "/slack/events",
       clientOptions: {},
     });
@@ -335,8 +335,8 @@ describe("createSlackBoltApp", () => {
         SocketModeReceiver: FakeObservedSocketModeReceiver as never,
       },
       slackMode: "socket",
-      token: "xoxb-test",
-      appToken: "xapp-test",
+      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      appToken: `ltfx.n.424766b94c5b9f0f5861.v1`,
       slackWebhookPath: "/slack/events",
       clientOptions: {},
     });
@@ -365,8 +365,8 @@ describe("createSlackBoltApp", () => {
         SocketModeReceiver: FakeSocketModeReceiver as never,
       },
       slackMode: "socket",
-      token: "xoxb-test",
-      appToken: "xapp-test",
+      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      appToken: `ltfx.n.424766b94c5b9f0f5861.v1`,
       slackWebhookPath: "/slack/events",
       clientOptions,
       socketMode: {
@@ -381,7 +381,7 @@ describe("createSlackBoltApp", () => {
     expect(receiverLogger.error).toBeTypeOf("function");
     expect(receiverLogger.warn).toBeTypeOf("function");
     expect(receiverArgs).toEqual({
-      appToken: "xapp-test",
+      appToken: `ltfx.n.424766b94c5b9f0f5861.v1`,
       autoReconnectEnabled: true,
       clientPingTimeout: 20_000,
       serverPingTimeout: 45_000,
@@ -402,7 +402,7 @@ describe("createSlackBoltApp", () => {
         SocketModeReceiver: FakeSocketModeReceiver as never,
       },
       slackMode: "http",
-      token: "xoxb-test",
+      token: `ltfx.n.87894fe048938b686cfb.v1`,
       signingSecret: "secret",
       slackWebhookPath: "/slack/events",
       clientOptions,
@@ -415,7 +415,7 @@ describe("createSlackBoltApp", () => {
     });
     expect(app).toBeInstanceOf(FakeApp);
     expect((app as unknown as FakeApp).args).toEqual({
-      token: "xoxb-test",
+      token: `ltfx.n.87894fe048938b686cfb.v1`,
       receiver,
       clientOptions,
       ignoreSelf: false,
@@ -436,10 +436,10 @@ describe("createSlackBoltApp", () => {
           SocketModeReceiver: FakeSocketModeReceiver as never,
         },
         slackMode,
-        token: "test-bot-token",
+        token: `ltfx.n.19434281d9f1460bdb2b.v1`,
         ...(slackMode === "socket"
-          ? { appToken: "test-app-token" }
-          : { signingSecret: "test-signing-secret" }),
+          ? { appToken: `ltfx.n.229a79260e17de2a406e.v1` }
+          : { signingSecret: `ltfx.n.f0da581c64135cb6a8b8.v1` }),
         slackWebhookPath: "/slack/events",
         clientOptions: {},
         wrapReceiver,
@@ -473,8 +473,8 @@ describe("createSlackBoltApp", () => {
         SocketModeReceiver: FakeSocketModeReceiver as never,
       },
       slackMode: "socket",
-      token: "xoxb-invalid",
-      appToken: "xapp-test",
+      token: `ltfx.n.92fbca0f60c7d9eb34a9.v1`,
+      appToken: `ltfx.n.424766b94c5b9f0f5861.v1`,
       slackWebhookPath: "/slack/events",
       clientOptions: {},
     });

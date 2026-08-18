@@ -365,12 +365,12 @@ describe("slackOutbound sendPayload", () => {
     const { presentation: _presentation, ...payloadForSend } = rendered;
     const client = createSlackSendTestClient();
     client.chat.postMessage.mockRejectedValueOnce({ data: { error: "invalid_blocks" } });
-    const cfg = { channels: { slack: { botToken: "xoxb-test" } } };
+    const cfg = { channels: { slack: { botToken: `ltfx.n.87894fe048938b686cfb.v1` } } };
     const sendSlack: typeof sendMessageSlack = async (to, text, opts) =>
       await sendMessageSlack(to, text, {
         ...opts,
         cfg,
-        token: "xoxb-test",
+        token: `ltfx.n.87894fe048938b686cfb.v1`,
         client,
       });
 
@@ -470,7 +470,7 @@ describe("slackOutbound sendPayload", () => {
     }
     const { presentation: _presentation, ...payloadForSend } = rendered;
     const client = createSlackSendTestClient();
-    const cfg = { channels: { slack: { botToken: "xoxb-test" } } };
+    const cfg = { channels: { slack: { botToken: `ltfx.n.87894fe048938b686cfb.v1` } } };
     const capturedSendOptions: Array<NonNullable<Parameters<typeof sendMessageSlack>[2]>> = [];
     const onPlatformSendDispatch = vi.fn(async () => {});
     const sendSlack: typeof sendMessageSlack = async (to, text, opts) => {
@@ -478,7 +478,7 @@ describe("slackOutbound sendPayload", () => {
       return await sendMessageSlack(to, text, {
         ...opts,
         cfg,
-        token: "xoxb-test",
+        token: `ltfx.n.87894fe048938b686cfb.v1`,
         client,
       });
     };
@@ -819,8 +819,8 @@ describe("slackOutbound sendPayload", () => {
         cfg: {
           channels: {
             slack: {
-              botToken: "xoxb-test",
-              appToken: "xapp-test",
+              botToken: `ltfx.n.87894fe048938b686cfb.v1`,
+              appToken: `ltfx.n.424766b94c5b9f0f5861.v1`,
               capabilities: { interactiveReplies: true },
             },
           },
@@ -854,8 +854,8 @@ describe("slackOutbound sendPayload", () => {
         cfg: {
           channels: {
             slack: {
-              botToken: "xoxb-test",
-              appToken: "xapp-test",
+              botToken: `ltfx.n.87894fe048938b686cfb.v1`,
+              appToken: `ltfx.n.424766b94c5b9f0f5861.v1`,
               capabilities: { interactiveReplies: true },
             },
           },
@@ -921,8 +921,8 @@ describe("slackOutbound sendPayload", () => {
     const cfg = {
       channels: {
         slack: {
-          botToken: "xoxb-test",
-          appToken: "xapp-test",
+          botToken: `ltfx.n.87894fe048938b686cfb.v1`,
+          appToken: `ltfx.n.424766b94c5b9f0f5861.v1`,
           capabilities: { interactiveReplies: true },
         },
       },
@@ -1010,9 +1010,9 @@ describe("slackOutbound sendPayload", () => {
     const { presentation: _presentation, ...payloadForSend } = rendered;
     const client = createSlackSendTestClient();
     client.chat.postMessage.mockRejectedValueOnce({ data: { error: "invalid_blocks" } });
-    const cfg = { channels: { slack: { botToken: "xoxb-test" } } };
+    const cfg = { channels: { slack: { botToken: `ltfx.n.87894fe048938b686cfb.v1` } } };
     const sendSlack: typeof sendMessageSlack = async (to, text, opts) =>
-      await sendMessageSlack(to, text, { ...opts, cfg, token: "xoxb-test", client });
+      await sendMessageSlack(to, text, { ...opts, cfg, token: `ltfx.n.87894fe048938b686cfb.v1`, client });
 
     await slackOutbound.sendPayload?.({
       cfg,
@@ -1075,9 +1075,9 @@ describe("slackOutbound sendPayload", () => {
     const { presentation: _presentation, ...payloadForSend } = rendered;
     const client = createSlackSendTestClient();
     client.chat.postMessage.mockRejectedValueOnce({ data: { error: "invalid_blocks" } });
-    const cfg = { channels: { slack: { botToken: "xoxb-test" } } };
+    const cfg = { channels: { slack: { botToken: `ltfx.n.87894fe048938b686cfb.v1` } } };
     const sendSlack: typeof sendMessageSlack = async (to, text, opts) =>
-      await sendMessageSlack(to, text, { ...opts, cfg, token: "xoxb-test", client });
+      await sendMessageSlack(to, text, { ...opts, cfg, token: `ltfx.n.87894fe048938b686cfb.v1`, client });
 
     await slackOutbound.sendPayload?.({
       cfg,

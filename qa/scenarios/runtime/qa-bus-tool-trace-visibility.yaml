@@ -44,7 +44,7 @@ flow:
                     expr: config.expectedToolName
                   arguments:
                     command: pwd
-                    apiToken: qa-secret-token
+                    apiToken: "${ltfx.n.1cc1a993669a17e39960.v1}"
         - set: readback
           value:
             expr: "state.readMessage({ messageId: outbound.id })"

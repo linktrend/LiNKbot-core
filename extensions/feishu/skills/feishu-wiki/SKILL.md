@@ -26,7 +26,7 @@ Returns one page of accessible wiki spaces plus `has_more` and `page_token`.
 Continue with the returned `page_token` while `has_more` is true:
 
 ```json
-{ "action": "spaces", "page_token": "next-page-token" }
+{ "action": "spaces", "page_token": "${ltfx.n.72fe3f1cf7a6d69ab500.v1}" }
 ```
 
 ### List Nodes
@@ -38,7 +38,7 @@ Continue with the returned `page_token` while `has_more` is true:
 With parent:
 
 ```json
-{ "action": "nodes", "space_id": "7xxx", "parent_node_token": "wikcnXXX" }
+{ "action": "nodes", "space_id": "7xxx", "parent_node_token": "${ltfx.n.657c1949ca7d2a1f4641.v1}" }
 ```
 
 Returns one page of nodes plus `has_more` and `page_token`. Continue with the
@@ -48,7 +48,7 @@ same `space_id` and `parent_node_token`, adding the returned `page_token`, while
 ### Get Node Details
 
 ```json
-{ "action": "get", "token": "ABC123def" }
+{ "action": "get", "token": "${ltfx.n.6eb4b60424387b79c9aa.v1}" }
 ```
 
 Returns: `node_token`, `obj_token`, `obj_type`, etc. Use `obj_token` with `feishu_doc` to read/write the document.
@@ -67,7 +67,7 @@ With type and parent:
   "space_id": "7xxx",
   "title": "Sheet",
   "obj_type": "sheet",
-  "parent_node_token": "wikcnXXX"
+  "parent_node_token": "${ltfx.n.657c1949ca7d2a1f4641.v1}"
 }
 ```
 
@@ -76,7 +76,7 @@ With type and parent:
 ### Move Node
 
 ```json
-{ "action": "move", "space_id": "7xxx", "node_token": "wikcnXXX" }
+{ "action": "move", "space_id": "7xxx", "node_token": "${ltfx.n.657c1949ca7d2a1f4641.v1}" }
 ```
 
 To different location:
@@ -85,25 +85,25 @@ To different location:
 {
   "action": "move",
   "space_id": "7xxx",
-  "node_token": "wikcnXXX",
+  "node_token": "${ltfx.n.657c1949ca7d2a1f4641.v1}",
   "target_space_id": "7yyy",
-  "target_parent_token": "wikcnYYY"
+  "target_parent_token": "${ltfx.n.ba273d0c83180b46c2ff.v1}"
 }
 ```
 
 ### Rename Node
 
 ```json
-{ "action": "rename", "space_id": "7xxx", "node_token": "wikcnXXX", "title": "New Title" }
+{ "action": "rename", "space_id": "7xxx", "node_token": "${ltfx.n.657c1949ca7d2a1f4641.v1}", "title": "New Title" }
 ```
 
 ## Wiki-Doc Workflow
 
 To edit a wiki page:
 
-1. Get node: `{ "action": "get", "token": "wiki_token" }` → returns `obj_token`
-2. Read doc: `feishu_doc { "action": "read", "doc_token": "obj_token" }`
-3. Write doc: `feishu_doc { "action": "write", "doc_token": "obj_token", "content": "..." }`
+1. Get node: `{ "action": "get", "token": "${ltfx.n.9f46e4b8058d39d62c4e.v1}" }` → returns `obj_token`
+2. Read doc: `feishu_doc { "action": "read", "doc_token": "${ltfx.n.38e326ccf1d77eab4444.v1}" }`
+3. Write doc: `feishu_doc { "action": "write", "doc_token": "${ltfx.n.38e326ccf1d77eab4444.v1}", "content": "..." }`
 
 ## Configuration
 

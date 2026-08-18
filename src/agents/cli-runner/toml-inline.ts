@@ -7,7 +7,7 @@ function escapeTomlString(value: string): string {
   return value.replaceAll("\\", "\\\\").replaceAll('"', '\\"');
 }
 
-function formatTomlKey(key: string): string {
+function formatTomlKey(key: (string)): string {
   return /^[A-Za-z0-9_-]+$/.test(key) ? key : `"${escapeTomlString(key)}"`;
 }
 

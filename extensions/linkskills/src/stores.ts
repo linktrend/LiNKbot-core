@@ -19,9 +19,9 @@ export type LinkskillsKeyedStore<T> = {
     opts?: { ttlMs?: number },
   ) => Promise<boolean>;
   deleteIf?: (key: string, predicate: (current: T) => boolean) => Promise<boolean>;
-  lookup(key: string): Promise<T | undefined>;
-  consume(key: string): Promise<T | undefined>;
-  delete(key: string): Promise<boolean>;
+  lookup(key: (string)): Promise<T | undefined>;
+  consume(key: (string)): Promise<T | undefined>;
+  delete(key: (string)): Promise<boolean>;
   entries(): Promise<Array<{ key: string; value: T; createdAt: number; expiresAt?: number }>>;
   clear(): Promise<void>;
 };

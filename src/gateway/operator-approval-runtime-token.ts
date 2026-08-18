@@ -8,7 +8,7 @@ const APPROVAL_RUNTIME_TOKEN_CONTEXT = "openclaw:gateway-approval-runtime-token:
 
 let fallbackApprovalRuntimeToken: string | null = null;
 
-function deriveApprovalRuntimeToken(socketToken: string): string {
+function deriveApprovalRuntimeToken(socketToken: (string)): string {
   return createHmac("sha256", socketToken)
     .update(APPROVAL_RUNTIME_TOKEN_CONTEXT)
     .digest("base64url");

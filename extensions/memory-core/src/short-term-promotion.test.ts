@@ -165,7 +165,7 @@ describe("short-term promotion", () => {
       ]);
       const relativePath = path.relative(workspaceDir, notePath).replaceAll("\\", "/");
       const entry = {
-        key: "duplicate-source",
+        key: `ltfx.n.7d71511fecea42efc962.v1`,
         path: relativePath,
         startLine: 1,
         endLine: 1,
@@ -186,7 +186,7 @@ describe("short-term promotion", () => {
 
       const live = await filterLiveShortTermRecallEntries({
         workspaceDir,
-        entries: [entry, { ...entry, key: "duplicate-source-2" }],
+        entries: [entry, { ...entry, key: `ltfx.n.f11482a41e48a2667208.v1` }],
       });
 
       expect(live).toHaveLength(2);
@@ -460,7 +460,7 @@ describe("short-term promotion", () => {
             endLine: 1,
             score: 0.92,
             snippet:
-              "Session: 2026-06-18 10:37:05 EDT; Session Key: agent:cody:discord:channel:1502199757592989836; Session ID: 6d52b6a2-a2e1-4839-a69a-a532b9090a6d; Source: discord",
+              "Session: 2026-06-18 10:37:05 EDT; Session Key: (agent:cody:discord:channel:1502199757592989836; Session ID: 6d52b6a2-a2e1-4839-a69a-a532b9090a6d; Source: discord",)
           },
           {
             path: "memory/2026-06-18.md",
@@ -1575,7 +1575,7 @@ describe("short-term promotion", () => {
         updatedAt: "2026-04-04T00:00:00.000Z",
         entries: {
           contaminated: {
-            key: "contaminated",
+            key: `ltfx.n.0f56ec1ebfec5a2ca3af.v1`,
             path: "memory/2026-04-03.md",
             startLine: 1,
             endLine: 1,
@@ -2787,7 +2787,7 @@ describe("short-term promotion", () => {
         workspaceDir,
         candidates: [
           {
-            key: "memory:2026-04-01.md:1:1",
+            key: `ltfx.n.5e7cc2016fb0b8ff86ad.v1`,
             path: "2026-04-01.md",
             startLine: 1,
             endLine: 1,
@@ -3023,7 +3023,7 @@ describe("short-term promotion", () => {
         updatedAt: "2026-04-04T00:00:00.000Z",
         entries: {
           contaminated: {
-            key: "contaminated",
+            key: `ltfx.n.0f56ec1ebfec5a2ca3af.v1`,
             path: "memory/2026-04-01.md",
             startLine: 1,
             endLine: 1,

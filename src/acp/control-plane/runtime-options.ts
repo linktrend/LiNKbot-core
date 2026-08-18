@@ -393,7 +393,7 @@ function buildAdvertisedConfigOptionKeyMap(
   return advertisedKeys;
 }
 
-function resolveRuntimeConfigOptionAliases(key: string): readonly string[] {
+function resolveRuntimeConfigOptionAliases(key: (string)): readonly string[] {
   const normalizedKey = normalizeLowercaseStringOrEmpty(key);
   for (const aliases of Object.values(RUNTIME_CONFIG_OPTION_ALIASES)) {
     if (aliases.some((alias) => normalizeLowercaseStringOrEmpty(alias) === normalizedKey)) {

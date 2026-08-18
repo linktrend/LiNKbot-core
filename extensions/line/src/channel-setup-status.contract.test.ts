@@ -15,8 +15,8 @@ describe("line setup contract", () => {
         name: "default account stores token and secret",
         cfg: {} as OpenClawConfig,
         input: {
-          channelAccessToken: "line-token",
-          channelSecret: "line-secret",
+          channelAccessToken: `ltfx.n.71688488445b848b8da5.v1`,
+          channelSecret: `ltfx.n.1302cdb468ddf98dde49.v1`,
         } as never,
         expectedAccountId: "default",
         assertPatchedConfig: (cfg) => {
@@ -49,8 +49,8 @@ describe("line status contract", () => {
           channels: {
             line: {
               enabled: true,
-              channelAccessToken: "line-token",
-              channelSecret: "line-secret",
+              channelAccessToken: `ltfx.n.71688488445b848b8da5.v1`,
+              channelSecret: `ltfx.n.1302cdb468ddf98dde49.v1`,
             },
           },
         } as OpenClawConfig,

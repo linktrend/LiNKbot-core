@@ -9,7 +9,7 @@ const resolvePluginDiscoveryProvidersRuntime = vi.hoisted(() =>
       label: "Anthropic Vertex",
       auth: [],
       resolveSyntheticAuth: () => ({
-        apiKey: "gcp-vertex-credentials",
+        apiKey: `ltfx.n.8e9d25977f930dcab7d3.v1`,
         source: "gcp-vertex-credentials (ADC)",
         mode: "api-key" as const,
       }),
@@ -27,7 +27,7 @@ const resolvePluginDiscoveryProvidersRuntime = vi.hoisted(() =>
       }) =>
         providerConfig?.api === "ollama" && providerConfig.baseUrl?.startsWith("http://10.")
           ? {
-              apiKey: "ollama-local",
+              apiKey: `ltfx.n.18ab0c9c00ad3478e4db.v1`,
               source: `models.providers.${provider} (synthetic local key)`,
               mode: "api-key" as const,
             }
@@ -84,7 +84,7 @@ describe("resolveProviderSyntheticAuthWithPlugin", () => {
         },
       }),
     ).toEqual({
-      apiKey: "gcp-vertex-credentials",
+      apiKey: `ltfx.n.8e9d25977f930dcab7d3.v1`,
       source: "gcp-vertex-credentials (ADC)",
       mode: "api-key",
     });
@@ -102,13 +102,13 @@ describe("resolveProviderSyntheticAuthWithPlugin", () => {
           providerConfig: {
             api: "ollama",
             baseUrl: "http://10.0.0.8:11434",
-            apiKey: "ollama-local",
+            apiKey: `ltfx.n.18ab0c9c00ad3478e4db.v1`,
             models: [],
           },
         },
       }),
     ).toEqual({
-      apiKey: "ollama-local",
+      apiKey: `ltfx.n.18ab0c9c00ad3478e4db.v1`,
       source: "models.providers.ollama-remote (synthetic local key)",
       mode: "api-key",
     });

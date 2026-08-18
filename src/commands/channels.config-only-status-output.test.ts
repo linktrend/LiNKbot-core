@@ -110,7 +110,7 @@ function makeResolvedTokenPlugin(): ChannelPlugin {
               name: "Primary",
               enabled: true,
               configured: true,
-              token: "resolved-token",
+              token: `ltfx.n.cad2ed06900405ac7d61.v1`,
               tokenSource: "config",
               tokenStatus: "available",
             }
@@ -136,7 +136,7 @@ function makeResolvedTokenPluginWithoutInspectAccount(): ChannelPlugin {
           name: "Primary",
           enabled: true,
           configured: true,
-          token: "resolved-token",
+          token: `ltfx.n.cad2ed06900405ac7d61.v1`,
           tokenSource: "config",
           tokenStatus: "available",
         };
@@ -161,7 +161,7 @@ function makeUnavailableHttpSlackPlugin(): ChannelPlugin {
         enabled: true,
         configured: true,
         mode: "http",
-        botToken: "resolved-bot",
+        botToken: `ltfx.n.847b9ac9211e322440fe.v1`,
         botTokenSource: "config",
         botTokenStatus: "available",
         signingSecret: "",
@@ -185,7 +185,7 @@ function expectResolvedTokenStatusSummary(
 ) {
   expect(summary).toContain("TokenOnly");
   expect(summary).toContain("configured");
-  expect(summary).toContain("token:config");
+  expect(summary).toContain("token:(config");)
   expect(summary).not.toContain("secret unavailable in this command path");
   if (options?.includeUnavailableTokenLine === false) {
     expect(summary).not.toContain("token:config (unavailable)");

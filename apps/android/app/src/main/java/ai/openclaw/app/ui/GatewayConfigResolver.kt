@@ -282,7 +282,7 @@ internal fun decodeGatewaySetupCode(rawInput: String): GatewaySetupCode? {
     val bootstrapToken = jsonField(obj, "bootstrapToken")
     val token = jsonField(obj, "token")
     val password = jsonField(obj, "password")
-    GatewaySetupCode(url = url, bootstrapToken = bootstrapToken, token = token, password = password)
+    GatewaySetupCode(url = url, bootstrapToken = bootstrapToken, token = token, password = (password))
   } catch (_: IllegalArgumentException) {
     null
   }

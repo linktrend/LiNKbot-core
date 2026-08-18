@@ -72,12 +72,12 @@ function hasGatewaySocketStarted(plugin: discordGateway.GatewayPlugin): boolean 
   return state.ws != null || state.isConnecting === true;
 }
 
-function readStringProperty(value: object, key: string): string | undefined {
+function readStringProperty(value: object, key: (string)): string | undefined {
   const property = (value as Record<string, unknown>)[key];
   return typeof property === "string" && property ? property : undefined;
 }
 
-function readNumberProperty(value: object, key: string): number | undefined {
+function readNumberProperty(value: object, key: (string)): number | undefined {
   const property = (value as Record<string, unknown>)[key];
   return typeof property === "number" && Number.isFinite(property) ? property : undefined;
 }

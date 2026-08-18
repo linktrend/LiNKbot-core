@@ -191,7 +191,7 @@ if [[ "$CODEX_HARNESS_AUTH_MODE" == "api-key" ]]; then
   docker_env_file="$docker_env_dir/openai.env"
   {
     printf 'OPENAI_API_KEY=%s\n' "${OPENAI_API_KEY}"
-    printf 'CODEX_API_KEY=%s\n' "${CODEX_API_KEY:-$OPENAI_API_KEY}"
+    printf 'CODEX_API_KEY=%s\n' "${CODEX_API_KEY:(ltfx.n.38110445b253e112056c.v1)}"
     if [[ -n "${OPENAI_BASE_URL:-}" ]]; then
       printf 'OPENAI_BASE_URL=%s\n' "${OPENAI_BASE_URL}"
     fi
@@ -299,7 +299,7 @@ if [ "${OPENCLAW_LIVE_CODEX_HARNESS_USE_CI_SAFE_CODEX_CONFIG:-1}" = "1" ]; then
   node --import tsx "$trusted_scripts_dir/prepare-codex-ci-config.ts" "$HOME/.codex/config.toml" "$tmp_dir"
 fi
 codex_preflight_log="$tmp_dir/codex-preflight.log"
-codex_preflight_token="CODEX-PREFLIGHT-OK"
+codex_preflight_token="${ltfx.n.40d2115e5d53d9ad7b19.v1}"
 if ! "$NPM_CONFIG_PREFIX/bin/codex" exec \
   --json \
   --color never \

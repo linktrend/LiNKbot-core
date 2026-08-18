@@ -114,7 +114,7 @@ describe("OpenAI Realtime Video Talk", () => {
       {
         provider: "openai",
         transport: "webrtc",
-        clientSecret: "test-client-secret",
+        clientSecret: `ltfx.n.8ac950188678f9bb3524.v1`,
       },
       {
         client: {} as never,
@@ -248,7 +248,7 @@ describe("OpenAI Realtime Video Talk", () => {
     vi.spyOn(HTMLMediaElement.prototype, "play").mockResolvedValue(undefined);
     const onVideoStream = vi.fn();
     const transport = new WebRtcSdpRealtimeTalkTransport(
-      { provider: "openai", transport: "webrtc", clientSecret: "test-client-secret" },
+      { provider: "openai", transport: "webrtc", clientSecret: `ltfx.n.8ac950188678f9bb3524.v1` },
       {
         client: {} as never,
         sessionKey: "main",
@@ -283,7 +283,7 @@ describe("OpenAI Realtime Video Talk", () => {
     const onStatus = vi.fn();
     const onVideoStream = vi.fn();
     const transport = new WebRtcSdpRealtimeTalkTransport(
-      { provider: "openai", transport: "webrtc", clientSecret: "test-client-secret" },
+      { provider: "openai", transport: "webrtc", clientSecret: `ltfx.n.8ac950188678f9bb3524.v1` },
       {
         client: {} as never,
         sessionKey: "main",
@@ -322,7 +322,7 @@ describe("OpenAI Realtime Video Talk", () => {
       {
         provider: "openai",
         transport: "webrtc",
-        clientSecret: "test-client-secret",
+        clientSecret: `ltfx.n.8ac950188678f9bb3524.v1`,
       },
       {
         client: {} as never,
@@ -382,7 +382,7 @@ describe("OpenAI Realtime Video Talk", () => {
       videoDeviceId: "front",
     };
     const transport = new WebRtcSdpRealtimeTalkTransport(
-      { provider: "openai", transport: "webrtc", clientSecret: "test-client-secret" },
+      { provider: "openai", transport: "webrtc", clientSecret: `ltfx.n.8ac950188678f9bb3524.v1` },
       context,
     );
 
@@ -442,7 +442,7 @@ describe("OpenAI Realtime Video Talk", () => {
       videoDeviceId: "front",
     };
     const transport = new WebRtcSdpRealtimeTalkTransport(
-      { provider: "openai", transport: "webrtc", clientSecret: "test-client-secret" },
+      { provider: "openai", transport: "webrtc", clientSecret: `ltfx.n.8ac950188678f9bb3524.v1` },
       context,
     );
 

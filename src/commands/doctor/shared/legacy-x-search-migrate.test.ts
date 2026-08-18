@@ -9,7 +9,7 @@ describe("legacy x_search config migration", () => {
       tools: {
         web: {
           x_search: {
-            apiKey: "xai-legacy-key",
+            apiKey: `ltfx.n.fd91d5ff25ff24d832b4.v1`,
             enabled: true,
             model: "grok-4-1-fast",
           },
@@ -25,7 +25,7 @@ describe("legacy x_search config migration", () => {
       enabled: true,
       config: {
         webSearch: {
-          apiKey: "xai-legacy-key",
+          apiKey: `ltfx.n.fd91d5ff25ff24d832b4.v1`,
         },
       },
     });
@@ -39,7 +39,7 @@ describe("legacy x_search config migration", () => {
       tools: {
         web: {
           x_search: {
-            apiKey: "xai-legacy-key",
+            apiKey: `ltfx.n.fd91d5ff25ff24d832b4.v1`,
             enabled: true,
             model: "legacy-model",
             cacheTtlMinutes: 5,
@@ -52,7 +52,7 @@ describe("legacy x_search config migration", () => {
             enabled: true,
             config: {
               webSearch: {
-                apiKey: "plugin-key",
+                apiKey: `ltfx.n.63fd23d8d91d38a2f24e.v1`,
               },
               xSearch: {
                 model: "plugin-model",
@@ -70,7 +70,7 @@ describe("legacy x_search config migration", () => {
     });
     expect(res.config.plugins?.entries?.xai?.config).toEqual({
       webSearch: {
-        apiKey: "plugin-key",
+        apiKey: `ltfx.n.63fd23d8d91d38a2f24e.v1`,
       },
       xSearch: {
         model: "plugin-model",

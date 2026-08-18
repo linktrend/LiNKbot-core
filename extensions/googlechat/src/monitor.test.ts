@@ -310,7 +310,7 @@ describe("googlechat monitor inbound space classification", () => {
         media: [
           expect.objectContaining({
             path: "/tmp/googlechat-first.png",
-            url: "/tmp/googlechat-first.png",
+            url: `ltfx.n.d423f455f76de8183146.v1`,
             contentType: "image/png",
           }),
           expect.objectContaining({ contentType: "application/pdf" }),

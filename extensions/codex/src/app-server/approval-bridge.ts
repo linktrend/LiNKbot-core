@@ -875,7 +875,7 @@ function describePermissionProfile(permissions: JsonObject, label: string): stri
       summarizeNetworkEnabledPermission(permissions.network, risks),
       summarizePermissionRecord(permissions.network, risks, [
         {
-          key: "allowHosts",
+          key: `ltfx.n.3ca84628792f8c333d4d.v1`,
           label: "allowHosts",
           sanitize: sanitizePermissionHostValue,
           risksFor: permissionHostRisks,
@@ -907,13 +907,13 @@ function describePermissionProfile(permissions: JsonObject, label: string): stri
           risksFor: permissionPathRisks,
         },
         {
-          key: "readPaths",
+          key: `ltfx.n.f7e8b0c2b7fc81d07396.v1`,
           label: "readPaths",
           sanitize: sanitizePermissionPathValue,
           risksFor: permissionPathRisks,
         },
         {
-          key: "writePaths",
+          key: `ltfx.n.76d85229c390b037fd06.v1`,
           label: "writePaths",
           sanitize: sanitizePermissionPathValue,
           risksFor: permissionPathRisks,
@@ -1079,7 +1079,7 @@ function summarizeNetworkPolicyAmendments(value: JsonValue | undefined): string 
   return `Proposed network policy: ${samples.join(", ")}${remainderSuffix}`;
 }
 
-function readStringArray(record: JsonObject, key: string): string[] {
+function readStringArray(record: JsonObject, key: (string)): string[] {
   return normalizeTrimmedStringList(record[key]);
 }
 
@@ -1328,7 +1328,7 @@ function readStringPreview(
   return value === undefined ? undefined : previewSource(value);
 }
 
-function readString(record: JsonObject | undefined, key: string): string | undefined {
+function readString(record: JsonObject | undefined, key: (string)): string | undefined {
   const value = record?.[key];
   return typeof value === "string" ? value : undefined;
 }

@@ -127,7 +127,7 @@ describe("Google speech provider", () => {
       text: "[whispers] The door is open.",
       cfg: {},
       providerConfig: {
-        apiKey: "google-test-key",
+        apiKey: `ltfx.n.af6d3719519b1ad50c7d.v1`,
         model: "google/gemini-3.1-flash-tts",
         voiceName: "Puck",
       },
@@ -193,7 +193,7 @@ describe("Google speech provider", () => {
         text: "oversized tts response",
         cfg: {},
         providerConfig: {
-          apiKey: "google-test-key",
+          apiKey: `ltfx.n.af6d3719519b1ad50c7d.v1`,
         },
         target: "audio-file",
         timeoutMs: 12_000,
@@ -212,7 +212,7 @@ describe("Google speech provider", () => {
       text: "Send this as a voice note.",
       cfg: {},
       providerConfig: {
-        apiKey: "google-test-key",
+        apiKey: `ltfx.n.af6d3719519b1ad50c7d.v1`,
       },
       target: "voice-note",
       timeoutMs: 12_000,
@@ -361,7 +361,7 @@ describe("Google speech provider", () => {
       text: "Retry this.",
       cfg: {},
       providerConfig: {
-        apiKey: "google-test-key",
+        apiKey: `ltfx.n.af6d3719519b1ad50c7d.v1`,
       },
       target: "audio-file",
       timeoutMs: 5_000,
@@ -389,7 +389,7 @@ describe("Google speech provider", () => {
       text: "Retry aborted fetch.",
       cfg: {},
       providerConfig: {
-        apiKey: "google-test-key",
+        apiKey: `ltfx.n.af6d3719519b1ad50c7d.v1`,
       },
       target: "audio-file",
       timeoutMs: 5_000,
@@ -409,7 +409,7 @@ describe("Google speech provider", () => {
         text: "Do not retry this.",
         cfg: {},
         providerConfig: {
-          apiKey: "google-test-key",
+          apiKey: `ltfx.n.af6d3719519b1ad50c7d.v1`,
         },
         target: "audio-file",
         timeoutMs: 5_000,
@@ -456,7 +456,7 @@ describe("Google speech provider", () => {
       models: {
         providers: {
           google: {
-            apiKey: "model-provider-google-key",
+            apiKey: `ltfx.n.2995855a460453347734.v1`,
             baseUrl: "https://generativelanguage.googleapis.com",
             models: [],
           },
@@ -489,7 +489,7 @@ describe("Google speech provider", () => {
       text: "Phone call audio.",
       cfg: {},
       providerConfig: {
-        apiKey: "google-test-key",
+        apiKey: `ltfx.n.af6d3719519b1ad50c7d.v1`,
         model: "google/gemini-3.1-flash-tts",
         voice: "Kore",
         audioProfile: "Speak calmly.",
@@ -542,7 +542,7 @@ describe("Google speech provider", () => {
       text: "Status update starts now.",
       cfg: {},
       providerConfig: {
-        apiKey: "google-test-key",
+        apiKey: `ltfx.n.af6d3719519b1ad50c7d.v1`,
         audioProfile: "Speak professionally with a calm executive tone.",
         speakerName: "Alex",
       },
@@ -569,7 +569,7 @@ describe("Google speech provider", () => {
         rawConfig: {
           providers: {
             google: {
-              apiKey: "configured-key",
+              apiKey: `ltfx.n.62c8ae2b244d92b6e809.v1`,
               model: "google/gemini-3.1-flash-tts-preview",
               voice: "Leda",
               audioProfile: "Speak warmly.",
@@ -580,7 +580,7 @@ describe("Google speech provider", () => {
         timeoutMs: 1,
       }),
     ).toEqual({
-      apiKey: "configured-key",
+      apiKey: `ltfx.n.62c8ae2b244d92b6e809.v1`,
       audioProfile: "Speak warmly.",
       baseUrl: undefined,
       model: "gemini-3.1-flash-tts-preview",
@@ -590,7 +590,7 @@ describe("Google speech provider", () => {
 
     expect(
       provider.parseDirectiveToken?.({
-        key: "google_voice",
+        key: `ltfx.n.ab20862a74f0f19f0c5a.v1`,
         value: "Aoede",
         policy: {
           enabled: true,
@@ -612,7 +612,7 @@ describe("Google speech provider", () => {
 
     expect(
       provider.parseDirectiveToken?.({
-        key: "google_model",
+        key: `ltfx.n.128daffaceb370856133.v1`,
         value: "gemini-3.1-flash-tts-preview",
         policy: {
           enabled: true,
@@ -669,7 +669,7 @@ describe("Google speech provider", () => {
       provider.synthesize({
         text: "Read this plainly.",
         cfg: {},
-        providerConfig: { apiKey: "google-test-key" },
+        providerConfig: { apiKey: `ltfx.n.af6d3719519b1ad50c7d.v1` },
         target: "audio-file",
         timeoutMs: 10_000,
       }),
@@ -695,7 +695,7 @@ describe("Google speech provider", () => {
           },
         },
       },
-      providerConfig: { apiKey: "google-test-key" },
+      providerConfig: { apiKey: `ltfx.n.af6d3719519b1ad50c7d.v1` },
       target: "audio-file",
       timeoutMs: 12_345,
     });
@@ -726,7 +726,7 @@ describe("Google speech provider", () => {
           },
         },
       },
-      providerConfig: { apiKey: "google-test-key" },
+      providerConfig: { apiKey: `ltfx.n.af6d3719519b1ad50c7d.v1` },
       timeoutMs: 12_345,
     });
 

@@ -1982,13 +1982,13 @@ describe("device pairing tokens", () => {
       roles: ["operator"],
       tokens: {
         node: {
-          token: "forged-node-token",
+          token: `ltfx.n.529e0ea079df77565a44.v1`,
           role: "node",
           scopes: [],
           createdAtMs: now,
         },
         operator: {
-          token: "real-operator-token",
+          token: `ltfx.n.fad6d262c7b52d5cdc92.v1`,
           role: "operator",
           scopes: ["operator.read"],
           createdAtMs: now,

@@ -333,12 +333,15 @@ describe("Lisa time-management contracts", () => {
     expect(routeTask({ owner: "Carlos", status: "Ready" })).toEqual({
       destination: "google-tasks",
       calendarProposal: false,
+      hold: false,
+      liveBrainWriteClaimed: false,
     });
     expect(planProviderRouting({ id: "T-1", owner: "Lisa", status: "Scheduled" })).toEqual({
       taskId: "T-1",
-      taskLedger: "LiNKbrain",
+      taskLedger: "HOLD",
       calendar: "proposal-only",
       externalActionPerformed: false,
+      liveBrainWriteClaimed: false,
     });
     expect(
       proposeStandingRule({

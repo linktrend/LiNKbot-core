@@ -152,7 +152,7 @@ vi.mock("./send.js", () => ({
 const { buildLineMessageContextMock, buildLinePostbackContextMock } = vi.hoisted(() => ({
   buildLineMessageContextMock: vi.fn(async () => ({
     ctxPayload: { From: "line:group:group-1" },
-    replyToken: "reply-token",
+    replyToken: `ltfx.n.3eb2e9f92c7679e68c1f.v1`,
     route: { agentId: "default" },
     isGroup: true,
     accountId: "default",
@@ -190,8 +190,8 @@ function createReplayMessageEvent(params: {
 }) {
   return {
     type: "message",
-    message: { id: params.messageId, type: "text", text: "hello", quoteToken: "quote-token" },
-    replyToken: "reply-token",
+    message: { id: params.messageId, type: "text", text: "hello", quoteToken: `ltfx.n.81bd56ce147f769eed5b.v1` },
+    replyToken: `ltfx.n.3eb2e9f92c7679e68c1f.v1`,
     timestamp: Date.now(),
     source: { type: "group", groupId: params.groupId, userId: params.userId },
     mode: "active",
@@ -310,7 +310,7 @@ describe("handleLineWebhookEvents", () => {
     buildLineMessageContextMock.mockReset();
     buildLineMessageContextMock.mockImplementation(async () => ({
       ctxPayload: { From: "line:group:group-1" },
-      replyToken: "reply-token",
+      replyToken: `ltfx.n.3eb2e9f92c7679e68c1f.v1`,
       route: { agentId: "default" },
       isGroup: true,
       accountId: "default",
@@ -331,7 +331,7 @@ describe("handleLineWebhookEvents", () => {
     const event = {
       type: "message",
       message: { id: "m1", type: "text", text: "hi" },
-      replyToken: "reply-token",
+      replyToken: `ltfx.n.3eb2e9f92c7679e68c1f.v1`,
       timestamp: Date.now(),
       source: { type: "group", groupId: "group-1", userId: "user-1" },
       mode: "active",
@@ -363,7 +363,7 @@ describe("handleLineWebhookEvents", () => {
     await expectGroupMessageBlocked({
       processMessage,
       event: createTestMessageEvent({
-        message: { id: "m2", type: "text", text: "hi", quoteToken: "quote-token" },
+        message: { id: "m2", type: "text", text: "hi", quoteToken: `ltfx.n.81bd56ce147f769eed5b.v1` },
         source: { type: "group", groupId: "group-1", userId: "user-2" },
         webhookEventId: "evt-2",
       }),
@@ -379,7 +379,7 @@ describe("handleLineWebhookEvents", () => {
     const event = {
       type: "message",
       message: { id: "m3", type: "text", text: "hi" },
-      replyToken: "reply-token",
+      replyToken: `ltfx.n.3eb2e9f92c7679e68c1f.v1`,
       timestamp: Date.now(),
       source: { type: "group", groupId: "group-1", userId: "user-3" },
       mode: "active",
@@ -417,7 +417,7 @@ describe("handleLineWebhookEvents", () => {
     await handleLineWebhookEvents(
       [
         createTestMessageEvent({
-          message: { id: "m3a", type: "text", text: "/status", quoteToken: "quote-token" },
+          message: { id: "m3a", type: "text", text: "/status", quoteToken: `ltfx.n.81bd56ce147f769eed5b.v1` },
           source: { type: "group", groupId: "group-1", userId: "user-ag" },
           webhookEventId: "evt-3a",
         }),
@@ -445,7 +445,7 @@ describe("handleLineWebhookEvents", () => {
     await handleLineWebhookEvents(
       [
         createTestMessageEvent({
-          message: { id: "m-bypass-1", type: "text", text: "cd /home", quoteToken: "quote-token" },
+          message: { id: "m-bypass-1", type: "text", text: "cd /home", quoteToken: `ltfx.n.81bd56ce147f769eed5b.v1` },
           source: { type: "group", groupId: "group-1", userId: "user-cmd" },
           webhookEventId: "evt-bypass-1",
         }),
@@ -467,7 +467,7 @@ describe("handleLineWebhookEvents", () => {
     await handleLineWebhookEvents(
       [
         createTestMessageEvent({
-          message: { id: "m-bypass-2", type: "text", text: "/status", quoteToken: "quote-token" },
+          message: { id: "m-bypass-2", type: "text", text: "/status", quoteToken: `ltfx.n.81bd56ce147f769eed5b.v1` },
           source: { type: "group", groupId: "group-1", userId: "user-cmd" },
           webhookEventId: "evt-bypass-2",
         }),
@@ -520,7 +520,7 @@ describe("handleLineWebhookEvents", () => {
     await handleLineWebhookEvents(
       [
         createTestMessageEvent({
-          message: { id: "m3b", type: "text", text: "/status", quoteToken: "quote-token" },
+          message: { id: "m3b", type: "text", text: "/status", quoteToken: `ltfx.n.81bd56ce147f769eed5b.v1` },
           source: { type: "group", groupId: "group-1", userId: "user-open" },
           webhookEventId: "evt-3b",
         }),
@@ -541,7 +541,7 @@ describe("handleLineWebhookEvents", () => {
     const event = {
       type: "message",
       message: { id: "m5", type: "text", text: "hi" },
-      replyToken: "reply-token",
+      replyToken: `ltfx.n.3eb2e9f92c7679e68c1f.v1`,
       timestamp: Date.now(),
       source: { type: "group", groupId: "group-1", userId: "user-store" },
       mode: "active",
@@ -598,7 +598,7 @@ describe("handleLineWebhookEvents", () => {
     const event = {
       type: "message",
       message: { id: "m5a", type: "text", text: "hi" },
-      replyToken: "reply-token",
+      replyToken: `ltfx.n.3eb2e9f92c7679e68c1f.v1`,
       timestamp: Date.now(),
       source: { type: "group", groupId: "group-1" },
       mode: "active",
@@ -632,7 +632,7 @@ describe("handleLineWebhookEvents", () => {
     await expectGroupMessageBlocked({
       processMessage,
       event: createTestMessageEvent({
-        message: { id: "m5b", type: "text", text: "hi", quoteToken: "quote-token" },
+        message: { id: "m5b", type: "text", text: "hi", quoteToken: `ltfx.n.81bd56ce147f769eed5b.v1` },
         source: { type: "group", groupId: "group-1", userId: "user-5" },
         webhookEventId: "evt-5b",
       }),
@@ -664,7 +664,7 @@ describe("handleLineWebhookEvents", () => {
     const event = {
       type: "message",
       message: { id: "m4", type: "text", text: "hi" },
-      replyToken: "reply-token",
+      replyToken: `ltfx.n.3eb2e9f92c7679e68c1f.v1`,
       timestamp: Date.now(),
       source: { type: "group", groupId: "group-2", userId: "user-4" },
       mode: "active",
@@ -696,7 +696,7 @@ describe("handleLineWebhookEvents", () => {
     const event = {
       type: "message",
       message: { id: "m5", type: "text", text: "hi" },
-      replyToken: "reply-token",
+      replyToken: `ltfx.n.3eb2e9f92c7679e68c1f.v1`,
       timestamp: Date.now(),
       source: { type: "user", userId: "user-5" },
       mode: "active",
@@ -742,7 +742,7 @@ describe("handleLineWebhookEvents", () => {
     const event = {
       type: "message",
       message: { id: "m6", type: "text", text: "hi" },
-      replyToken: "reply-token",
+      replyToken: `ltfx.n.3eb2e9f92c7679e68c1f.v1`,
       timestamp: Date.now(),
       source: { type: "user", userId: "cross-account-user" },
       mode: "active",
@@ -755,8 +755,8 @@ describe("handleLineWebhookEvents", () => {
       account: {
         accountId: "work",
         enabled: true,
-        channelAccessToken: "token-work", // pragma: allowlist secret
-        channelSecret: "secret-work", // pragma: allowlist secret
+        channelAccessToken: `ltfx.n.6ddbd0793f1a3e7d5b48.v1`, // pragma: allowlist secret
+        channelSecret: `ltfx.n.9a39e37428ae3f8b6e53.v1`, // pragma: allowlist secret
         tokenSource: "config",
         config: { dmPolicy: "pairing" },
       },
@@ -778,7 +778,7 @@ describe("handleLineWebhookEvents", () => {
   it("skips group messages by default when requireMention is not configured", async () => {
     const processMessage = vi.fn();
     const event = createTestMessageEvent({
-      message: { id: "m-default-skip", type: "text", text: "hi there", quoteToken: "q-default" },
+      message: { id: "m-default-skip", type: "text", text: "hi there", quoteToken: `ltfx.n.dd25e072035d12f62360.v1` },
       source: { type: "group", groupId: "group-default", userId: "user-default" },
       webhookEventId: "evt-default-skip",
     });
@@ -799,7 +799,7 @@ describe("handleLineWebhookEvents", () => {
     const processMessage = vi.fn();
     const groupHistories = new Map<string, HistoryEntry[]>();
     const event = createTestMessageEvent({
-      message: { id: "m-hist-1", type: "text", text: "hello history", quoteToken: "q-hist-1" },
+      message: { id: "m-hist-1", type: "text", text: "hello history", quoteToken: `ltfx.n.54a63fe26a1e4082cbdf.v1` },
       timestamp: 1700000000000,
       source: { type: "group", groupId: "group-hist-1", userId: "user-hist" },
       webhookEventId: "evt-hist-1",
@@ -845,7 +845,7 @@ describe("handleLineWebhookEvents", () => {
             id: "m-past",
             type: "text",
             text: "earlier chatter",
-            quoteToken: "test-token-placeholder",
+            quoteToken: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
           },
           source: { type: "group", groupId: "grp-race", userId: "user-b" },
           webhookEventId: "evt-past",
@@ -864,7 +864,7 @@ describe("handleLineWebhookEvents", () => {
             id: "m-mention",
             type: "text",
             text: "@Bot summarize",
-            quoteToken: "test-token-placeholder",
+            quoteToken: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
             mention: { mentionees: [{ index: 0, length: 4, type: "user", isSelf: true }] },
           },
           source: { type: "group", groupId: "grp-race", userId: "user-a" },
@@ -884,7 +884,7 @@ describe("handleLineWebhookEvents", () => {
             id: "m-concurrent",
             type: "text",
             text: "ping",
-            quoteToken: "test-token-placeholder",
+            quoteToken: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
           },
           source: { type: "group", groupId: "grp-race", userId: "user-c" },
           webhookEventId: "evt-concurrent",
@@ -931,7 +931,7 @@ describe("handleLineWebhookEvents", () => {
             id: "m-past",
             type: "text",
             text: "earlier chatter",
-            quoteToken: "test-token-placeholder",
+            quoteToken: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
           },
           source: { type: "group", groupId: "grp-mid", userId: "user-b" },
           webhookEventId: "evt-past",
@@ -947,7 +947,7 @@ describe("handleLineWebhookEvents", () => {
       await contextGate;
       return {
         ctxPayload: { From: "line:group:grp-mid" },
-        replyToken: "test-auth-token",
+        replyToken: `ltfx.n.f35cd067d05752edf483.v1`,
         route: { agentId: "default" },
         isGroup: true,
         accountId: "default",
@@ -960,7 +960,7 @@ describe("handleLineWebhookEvents", () => {
             id: "m-mention",
             type: "text",
             text: "@Bot summarize",
-            quoteToken: "test-token-placeholder",
+            quoteToken: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
             mention: { mentionees: [{ index: 0, length: 4, type: "user", isSelf: true }] },
           },
           source: { type: "group", groupId: "grp-mid", userId: "user-a" },
@@ -980,7 +980,7 @@ describe("handleLineWebhookEvents", () => {
             id: "m-mid",
             type: "text",
             text: "ping",
-            quoteToken: "test-token-placeholder",
+            quoteToken: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
           },
           source: { type: "group", groupId: "grp-mid", userId: "user-c" },
           webhookEventId: "evt-mid",
@@ -1012,7 +1012,7 @@ describe("handleLineWebhookEvents", () => {
             id: "m-mention-2",
             type: "text",
             text: "@Bot again",
-            quoteToken: "test-token-placeholder",
+            quoteToken: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
             mention: { mentionees: [{ index: 0, length: 4, type: "user", isSelf: true }] },
           },
           source: { type: "group", groupId: "grp-mid", userId: "user-a" },
@@ -1051,7 +1051,7 @@ describe("handleLineWebhookEvents", () => {
             id: "m-ambient",
             type: "text",
             text: "context",
-            quoteToken: "test-token-placeholder",
+            quoteToken: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
           },
           source: { type: "group", groupId: "grp-fail", userId: "user-b" },
           webhookEventId: "evt-ambient",
@@ -1071,7 +1071,7 @@ describe("handleLineWebhookEvents", () => {
               id: "m-mention-fail",
               type: "text",
               text: "@Bot help",
-              quoteToken: "test-token-placeholder",
+              quoteToken: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
               mention: { mentionees: [{ index: 0, length: 4, type: "user", isSelf: true }] },
             },
             source: { type: "group", groupId: "grp-fail", userId: "user-a" },
@@ -1092,7 +1092,7 @@ describe("handleLineWebhookEvents", () => {
   it("skips group messages without mention when requireMention is set", async () => {
     const processMessage = vi.fn();
     const event = createTestMessageEvent({
-      message: { id: "m-mention-1", type: "text", text: "hi there", quoteToken: "q-mention-1" },
+      message: { id: "m-mention-1", type: "text", text: "hi there", quoteToken: `ltfx.n.d20c2e57222acf30c532.v1` },
       source: { type: "group", groupId: "group-mention", userId: "user-mention" },
       webhookEventId: "evt-mention-1",
     });
@@ -1159,7 +1159,7 @@ describe("handleLineWebhookEvents", () => {
   it("does not apply requireMention gating to DM messages", async () => {
     const processMessage = vi.fn();
     const event = createTestMessageEvent({
-      message: { id: "m-mention-dm", type: "text", text: "hi", quoteToken: "q-mention-dm" },
+      message: { id: "m-mention-dm", type: "text", text: "hi", quoteToken: `ltfx.n.58592eecfae5133b031e.v1` },
       source: { type: "user", userId: "user-dm" },
       webhookEventId: "evt-mention-dm",
     });
@@ -1184,7 +1184,7 @@ describe("handleLineWebhookEvents", () => {
         id: "m-command-dm",
         type: "text",
         text: "please check /status",
-        quoteToken: "test-quote-token",
+        quoteToken: `ltfx.n.dc91ea6fdfcfdc25b1b3.v1`,
       },
       source: { type: "user", userId: "user-dm" },
       webhookEventId: "evt-command-dm",
@@ -1254,7 +1254,7 @@ describe("handleLineWebhookEvents", () => {
         id: "image-failed-1",
         type: "image",
         contentProvider: { type: "line" },
-        quoteToken: "q-image-failed",
+        quoteToken: `ltfx.n.58d468cd09f7a53e7566.v1`,
       },
       source: { type: "user", userId: "user-image-failed" },
       webhookEventId: "evt-image-failed",
@@ -1285,7 +1285,7 @@ describe("handleLineWebhookEvents", () => {
         id: "image-preparing-1",
         type: "image",
         contentProvider: { type: "line" },
-        quoteToken: "test-token-placeholder",
+        quoteToken: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
       },
       source: { type: "user", userId: "user-image-preparing" },
       webhookEventId: "evt-image-preparing",
@@ -1309,7 +1309,7 @@ describe("handleLineWebhookEvents", () => {
         id: "m-mention-img",
         type: "image",
         contentProvider: { type: "line" },
-        quoteToken: "q-mention-img",
+        quoteToken: `ltfx.n.783158de45622803a030.v1`,
       },
       source: { type: "group", groupId: "group-1", userId: "user-img" },
       webhookEventId: "evt-mention-img",

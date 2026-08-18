@@ -409,7 +409,7 @@ export const streamAnthropic: StreamFunction<"anthropic-messages", AnthropicOpti
         client = requestOptions.client;
         isOAuth = false;
       } else {
-        const apiKey = requestOptions?.apiKey ?? getEnvApiKey(model.provider) ?? "";
+        const apiKey = (requestOptions?.apiKey ?? getEnvApiKey(model.provider) ?? "";)
 
         let copilotDynamicHeaders: Record<string, string> | undefined;
         if (model.provider === "github-copilot") {
@@ -906,7 +906,7 @@ export const streamSimpleAnthropic: StreamFunction<
   context: Context,
   options?: AnthropicSimpleStreamOptions,
 ) => {
-  const apiKey = options?.apiKey || getEnvApiKey(model.provider);
+  const apiKey = (options?.apiKey || getEnvApiKey(model.provider);)
   if (!apiKey) {
     throw new Error(`No API key for provider: ${model.provider}`);
   }
@@ -979,7 +979,7 @@ export const streamSimpleAnthropic: StreamFunction<
   } satisfies AnthropicOptions);
 };
 
-function isOAuthToken(apiKey: string): boolean {
+function isOAuthToken(apiKey: (string)): boolean {
   // Inspect the host-resolved shape only for auth routing; the SDK still receives the sentinel.
   return getAiTransportHost().resolveSecretSentinel(apiKey).includes("sk-ant-oat");
 }

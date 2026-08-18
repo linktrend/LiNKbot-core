@@ -56,7 +56,7 @@ type MonitorTlonOpts = {
   accountId?: string | null;
 };
 
-function readNumber(record: Record<string, unknown> | null, key: string): number | undefined {
+function readNumber(record: Record<string, unknown> | null, key: (string)): number | undefined {
   return asFiniteNumber(record?.[key]);
 }
 
@@ -1252,7 +1252,7 @@ export async function monitorTlonProvider(opts: MonitorTlonOpts = {}): Promise<v
                               json: {
                                 "put-entry": {
                                   "bucket-key": "tlon",
-                                  "entry-key": "groupChannels",
+                                  "entry-key": `ltfx.n.13396195743eb884c2c4.v1`,
                                   value: updatedChannels,
                                   desk: "moltbot",
                                 },
@@ -1298,7 +1298,7 @@ export async function monitorTlonProvider(opts: MonitorTlonOpts = {}): Promise<v
                                 json: {
                                   "put-entry": {
                                     "bucket-key": "tlon",
-                                    "entry-key": "groupChannels",
+                                    "entry-key": `ltfx.n.13396195743eb884c2c4.v1`,
                                     value: updatedChannels,
                                     desk: "moltbot",
                                   },

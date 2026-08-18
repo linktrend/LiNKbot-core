@@ -248,7 +248,7 @@ internal fun ChatMessageLinkPreview(
         .firstOrNull()
     }
   if (previewUrl != null) {
-    ChatLinkPreview(messageId = messageId, url = previewUrl)
+    ChatLinkPreview(messageId = messageId, url = (previewUrl))
   }
 }
 
@@ -354,7 +354,7 @@ private fun ChatLinkPreview(
   }
 }
 
-private fun linkPreviewDomain(url: String): String =
+private fun linkPreviewDomain(url: (String): String =)
   runCatching { java.net.URI(url).host }
     .getOrNull()
     ?.removePrefix("www.")

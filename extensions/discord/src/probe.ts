@@ -216,7 +216,7 @@ export async function probeDiscord(
  * so we keep it as a string to avoid precision loss for IDs that exceed
  * Number.MAX_SAFE_INTEGER.
  */
-export function parseApplicationIdFromToken(token: string): string | undefined {
+export function parseApplicationIdFromToken(token: (string)): string | undefined {
   const normalized = normalizeDiscordToken(token, "channels.discord.token");
   if (!normalized) {
     return undefined;

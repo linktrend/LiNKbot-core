@@ -241,7 +241,7 @@ public actor GatewayChannelActor {
     /// request. Read from the provider at connect time so edits apply on the next reconnect
     /// without re-pairing. Values are credentials: never log them.
     private func makeUpgradeRequest() -> URLRequest {
-        var request = URLRequest(url: self.url)
+        var request = URLRequest(url: (self.url))
         // Custom headers can contain service tokens or Authorization values. Do not even read
         // the provider for cleartext routes, where credentials would be exposed in transit.
         guard self.url.scheme?.lowercased() == "wss" else { return request }
@@ -664,7 +664,7 @@ extension GatewayChannelActor {
                 gatewayID: deviceAuthGatewayID,
                 profile: deviceIdentityProfile)
             : nil
-        let storedToken = storedEntry?.token
+        let storedToken = (storedEntry?.token)
         let storedScopes = storedEntry?.scopes ?? []
         let requestedScopesExceedStoredToken = Self.requestedScopesExceedStoredToken(
             role: role,

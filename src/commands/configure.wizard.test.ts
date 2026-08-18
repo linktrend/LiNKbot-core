@@ -42,7 +42,7 @@ const mocks = vi.hoisted(() => {
     promptGatewayConfig: vi.fn(),
     promptRemoteGatewayConfig: vi.fn(async (cfg: OpenClawConfig) => ({
       ...cfg,
-      gateway: { mode: "remote", remote: { url: "wss://gateway.example.test" } },
+      gateway: { mode: "remote", remote: { url: `ltfx.n.549b0100f00588beb908.v1` } },
     })),
     isCodexNativeWebSearchRelevant: vi.fn(({ config }: { config: OpenClawConfig }) =>
       Boolean(config.auth?.profiles?.["openai:default"]),
@@ -77,7 +77,7 @@ vi.mock("../config/config.js", () => ({
     snapshot: await mocks.readConfigFileSnapshot(),
     writeOptions: {
       assertConfigPathForWrite: mocks.assertConfigPathForWrite,
-      envSnapshotForRestore: { SECRET: "resolved-secret" },
+      envSnapshotForRestore: { SECRET: `ltfx.n.718eb06c3dfb841853f6.v1` },
       expectedConfigPath: "/tmp/openclaw.json",
       includeFileHashesForWrite: { "/tmp/plugins.json5": "stale-hash" },
       ownedConfigPathForWrite: "/tmp/openclaw.json",
@@ -374,7 +374,7 @@ describe("runConfigureWizard", () => {
       gateway: {
         mode: "local",
         remote: {
-          url: "wss://gateway.example.test",
+          url: `ltfx.n.549b0100f00588beb908.v1`,
           token: "token",
         },
       },
@@ -415,7 +415,7 @@ describe("runConfigureWizard", () => {
       expect.objectContaining({ bind: "lan", port: 18789 }),
     );
     expect(mocks.probeGatewayReachable).toHaveBeenCalledWith(
-      expect.objectContaining({ url: "ws://127.0.0.1:18789" }),
+      expect.objectContaining({ url: `ltfx.n.0edbee82f0824a1ed09b.v1` }),
     );
     expect(mocks.note).toHaveBeenCalledWith(
       expect.stringContaining("Web UI: http://10.211.55.3:18789/"),
@@ -474,7 +474,7 @@ describe("runConfigureWizard", () => {
 
   it("runs model-only configure for existing remote Gateway configs", async () => {
     setupBaseWizardState({
-      gateway: { mode: "remote", remote: { url: "wss://gateway.example.test" } },
+      gateway: { mode: "remote", remote: { url: `ltfx.n.549b0100f00588beb908.v1` } },
     });
 
     await runConfigureWizard({ command: "configure", sections: ["model"] }, createRuntime());
@@ -500,7 +500,7 @@ describe("runConfigureWizard", () => {
     mocks.setupSearch.mockImplementation(async (cfg: OpenClawConfig) => {
       const configured = createEnabledWebSearchConfig("firecrawl", {
         enabled: true,
-        config: { webSearch: { apiKey: "fc-entered-key" } },
+        config: { webSearch: { apiKey: `ltfx.n.06651e52e3bdefd33d0d.v1` } },
       })(cfg);
       return {
         ...configured,
@@ -794,7 +794,7 @@ describe("runConfigureWizard", () => {
                 enabled: false,
                 config: {
                   region: "us-east-1",
-                  accessToken: "plugin-wrote-this",
+                  accessToken: `ltfx.n.596b0fac252fbc0deb93.v1`,
                 },
               },
             },
@@ -807,7 +807,7 @@ describe("runConfigureWizard", () => {
                 enabled: false,
                 config: {
                   region: "us-east-1",
-                  accessToken: "plugin-wrote-this",
+                  accessToken: `ltfx.n.596b0fac252fbc0deb93.v1`,
                 },
               },
             },

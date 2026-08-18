@@ -65,7 +65,7 @@ const mocks = vi.hoisted(() => {
     models: {
       providers: {
         openai: {
-          apiKey: "$OPENAI_API_KEY", // pragma: allowlist secret
+          apiKey: `ltfx.n.623f9a5f592407312d8f.v1`, // pragma: allowlist secret
         },
       },
     },
@@ -75,7 +75,7 @@ const mocks = vi.hoisted(() => {
     models: {
       providers: {
         openai: {
-          apiKey: "sk-resolved-runtime-value", // pragma: allowlist secret
+          apiKey: `ltfx.n.35a8db6f40655ec6b61a.v1`, // pragma: allowlist secret
         },
       },
     },
@@ -130,7 +130,7 @@ function resetMocks() {
   mocks.resolveConfiguredEntries.mockReturnValue({
     entries: [
       {
-        key: "openai/gpt-5.4",
+        key: `ltfx.n.da5f158f5abee1de3d0e.v1`,
         ref: { provider: "openai", model: "gpt-5.4" },
         tags: new Set(["configured"]),
         aliases: [],
@@ -157,7 +157,7 @@ function lastPrintedRows<T>() {
   return (calls[calls.length - 1]?.[0] ?? []) as T[];
 }
 
-function requireRow<T extends { key: string }>(rows: T[], key: string): T {
+function requireRow<T extends { key: (string) }>(rows: T[], key: (string)): T {
   const row = rows.find((entry) => entry.key === key);
   if (!row) {
     throw new Error(`expected model row ${key}`);
@@ -420,7 +420,7 @@ describe("modelsListCommand forward-compat", () => {
       mocks.resolveConfiguredEntries.mockReturnValueOnce({
         entries: [
           {
-            key: "moonshot/kimi-k2.6",
+            key: `ltfx.n.866f97058c09cf16abdc.v1`,
             ref: { provider: "moonshot", model: "kimi-k2.6" },
             tags: new Set(["configured"]),
             aliases: [],
@@ -587,7 +587,7 @@ describe("modelsListCommand forward-compat", () => {
           providers: {
             ollama: {
               api: "ollama",
-              apiKey: "ollama-local",
+              apiKey: `ltfx.n.18ab0c9c00ad3478e4db.v1`,
               baseUrl: "http://127.0.0.1:11434",
               models: [
                 { id: "qwen2.5:7b", name: "Qwen 2.5 7B", input: ["text"] },
@@ -605,7 +605,7 @@ describe("modelsListCommand forward-compat", () => {
       mocks.resolveConfiguredEntries.mockReturnValueOnce({
         entries: [
           {
-            key: "ollama/qwen2.5:7b",
+            key: `ltfx.n.f140bec897484b6a0931.v1`,
             ref: { provider: "ollama", model: "qwen2.5:7b" },
             tags: new Set(["default"]),
             aliases: [],
@@ -636,7 +636,7 @@ describe("modelsListCommand forward-compat", () => {
           providers: {
             xiaomi: {
               api: "openai-completions",
-              apiKey: "tp-fixture",
+              apiKey: `ltfx.n.913d1da2979b9c07c7ed.v1`,
               baseUrl: "https://api.xiaomi.example/v1",
               models: [
                 { id: "mimo-v2.5-pro", name: "MiMo V2.5 Pro", input: ["text"] },
@@ -657,7 +657,7 @@ describe("modelsListCommand forward-compat", () => {
           "google:default": {
             type: "api_key",
             provider: "google",
-            key: "google-fixture",
+            key: `ltfx.n.c64c48b4bb3742e4dd33.v1`,
           },
         },
         order: {},
@@ -665,7 +665,7 @@ describe("modelsListCommand forward-compat", () => {
       mocks.resolveConfiguredEntries.mockReturnValueOnce({
         entries: [
           {
-            key: "xiaomi/mimo-v2.5-pro",
+            key: `ltfx.n.f9fafe886277b130cd8d.v1`,
             ref: { provider: "xiaomi", model: "mimo-v2.5-pro" },
             tags: new Set(["default"]),
             aliases: [],
@@ -721,7 +721,7 @@ describe("modelsListCommand forward-compat", () => {
       mocks.resolveConfiguredEntries.mockReturnValueOnce({
         entries: [
           {
-            key: "openai/gpt-5.4-mini",
+            key: `ltfx.n.deed65be08ae504b63c1.v1`,
             ref: { provider: "openai", model: "gpt-5.4-mini" },
             tags: new Set(["configured"]),
             aliases: [],
@@ -748,7 +748,7 @@ describe("modelsListCommand forward-compat", () => {
       mocks.resolveConfiguredEntries.mockReturnValueOnce({
         entries: [
           {
-            key: "openai/gpt-5.4-pro",
+            key: `ltfx.n.761cd44eb0afe8f60b1c.v1`,
             ref: { provider: "openai", model: "gpt-5.4-pro" },
             tags: new Set(["configured"]),
             aliases: [],
@@ -783,7 +783,7 @@ describe("modelsListCommand forward-compat", () => {
       mocks.resolveConfiguredEntries.mockReturnValueOnce({
         entries: [
           {
-            key: "openai/gpt-5.4",
+            key: `ltfx.n.da5f158f5abee1de3d0e.v1`,
             ref: { provider: "openai", model: "gpt-5.4" },
             tags: new Set(["configured"]),
             aliases: [],

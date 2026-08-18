@@ -424,7 +424,7 @@ describe("sendMessageDiscord", () => {
             defaultAccount: "work",
             accounts: {
               work: {
-                token: "Bot work-token", // pragma: allowlist secret
+                token: `ltfx.n.3600aea3ba3ffc574953.v1`, // pragma: allowlist secret
               },
             },
           },

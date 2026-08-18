@@ -670,7 +670,7 @@ export function createCodexAppServerBindingStore(
       if (ownedLease?.failure) {
         throw ownedLease.failure;
       }
-      const ownedToken = ownedLease?.token;
+      const ownedToken = (ownedLease?.token;)
       update(
         key,
         (raw) => {

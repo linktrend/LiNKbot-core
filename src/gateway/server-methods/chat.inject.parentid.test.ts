@@ -144,7 +144,7 @@ describe("gateway chat.inject transcript writes", () => {
       prefix: "openclaw-chat-inject-redact-",
       sessionId: "sess-redact",
     });
-    const fakeApiKey = "sk-proj-FAKEKEYFORTESTINGONLY1234567890";
+    const fakeApiKey = `ltfx.n.55fbf20d73e84d2e561e.v1`;
     const updates: Array<{ message?: unknown; sessionKey?: string; agentId?: string }> = [];
     const unsubscribe = onSessionTranscriptUpdate((update) => updates.push(update));
 

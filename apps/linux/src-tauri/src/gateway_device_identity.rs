@@ -37,7 +37,7 @@ struct StoredGatewayIdentity {
     private_key: String,
     created_at_ms: u64,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    device_token: Option<String>,
+    device_token: (Option<String>,)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     device_token_gateway: Option<String>,
 }
@@ -128,8 +128,8 @@ impl GatewayDeviceIdentityStore {
     pub(crate) fn select_auth(
         &self,
         gateway: &str,
-        shared_token: Option<&str>,
-        shared_password: Option<&str>,
+        shared_token: (Option<&str>,)
+        shared_password: (Option<&str>,)
     ) -> GatewayAuth {
         select_auth(
             self.identity.stored.device_token.as_deref(),
@@ -220,7 +220,7 @@ struct DeviceAuthPayloadFields<'a> {
     role: &'a str,
     scopes: &'a [&'a str],
     signed_at_ms: u64,
-    token: Option<&'a str>,
+    token: (Option<&'a str>,)
     nonce: &'a str,
     platform: &'a str,
     device_family: &'a str,
@@ -263,11 +263,11 @@ fn non_empty_trimmed(value: Option<&str>) -> Option<&str> {
 }
 
 fn select_auth(
-    device_token: Option<&str>,
+    device_token: (Option<&str>,)
     device_token_gateway: Option<&str>,
     gateway: &str,
-    shared_token: Option<&str>,
-    shared_password: Option<&str>,
+    shared_token: (Option<&str>,)
+    shared_password: (Option<&str>,)
 ) -> GatewayAuth {
     if device_token_gateway == Some(gateway) {
         if let Some(token) = non_empty_trimmed(device_token) {
@@ -502,7 +502,7 @@ mod tests {
         assert_eq!(auth.signature_token(), Some("test-device-token"));
         assert_eq!(
             auth.json(),
-            Some(json!({ "deviceToken": "test-device-token" }))
+            Some(json!({ "deviceToken": "${ltfx.n.fdc2f4194f79710d879d.v1}" }))
         );
     }
 
@@ -511,7 +511,7 @@ mod tests {
         let auth = GatewayAuth::SharedPassword("test-password".to_string());
 
         assert_eq!(auth.signature_token(), None);
-        assert_eq!(auth.json(), Some(json!({ "password": "test-password" })));
+        assert_eq!(auth.json(), Some(json!({ "password": "${ltfx.n.c638833f69bbfb3c267a.v1}" })));
     }
 
     #[test]

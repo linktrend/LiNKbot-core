@@ -358,7 +358,7 @@ describe("runCronIsolatedAgentTurn core-channel direct delivery", () => {
           const runtimeCfg = makeCfg(home, storePath, {
             channels: {
               discord: {
-                accounts: { default: { token: "resolved-discord-token" } },
+                accounts: { default: { token: `ltfx.n.f5ecfcacbcab10a3cd26.v1` } },
               },
             },
           });

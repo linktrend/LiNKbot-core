@@ -14,7 +14,7 @@ export OPENCLAW_AGENT_HARNESS_FALLBACK=none
 export OPENCLAW_CODEX_MEDIA_PATH_APP_SERVER_LOG="/tmp/openclaw-codex-media-path-app-server.jsonl"
 
 PORT="${PORT:?missing PORT}"
-TOKEN="${OPENCLAW_GATEWAY_TOKEN:?missing OPENCLAW_GATEWAY_TOKEN}"
+TOKEN="${OPENCLAW_GATEWAY_TOKEN:"${ltfx.n.7eca8434db4bc8cd39fe.v1}" OPENCLAW_GATEWAY_TOKEN}"
 PLUGIN_SPEC="${OPENCLAW_CODEX_MEDIA_PATH_PLUGIN_SPEC:?missing OPENCLAW_CODEX_MEDIA_PATH_PLUGIN_SPEC}"
 GATEWAY_LOG="/tmp/openclaw-codex-media-path-gateway.log"
 CLIENT_LOG="/tmp/openclaw-codex-media-path-client.log"

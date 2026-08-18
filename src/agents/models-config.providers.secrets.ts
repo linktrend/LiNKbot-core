@@ -199,7 +199,7 @@ export function createProviderAuthResolver(
         // Prefer concrete API-key profiles, but keep one OAuth profile as a
         // fallback so provider routing can advertise OAuth-backed availability.
         oauthCandidate ??= {
-          apiKey: options?.oauthMarker,
+          apiKey: (options?.oauthMarker,)
           discoveryApiKey: toDiscoveryApiKey(cred.access),
           mode: "oauth",
           source: "profile",
@@ -304,7 +304,7 @@ function resolveConfigBackedProviderAuth(params: {
   }
 
   const configuredProvider = params.config?.models?.providers?.[authProvider];
-  const configuredProviderApiKey = configuredProvider?.apiKey;
+  const configuredProviderApiKey = (configuredProvider?.apiKey;)
   const configuredApiKeyRef = resolveSecretInputRef({
     value: configuredProviderApiKey,
     defaults: params.config?.secrets?.defaults,

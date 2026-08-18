@@ -221,7 +221,7 @@ To identify with NickServ after connect:
       nickserv: {
         enabled: true,
         service: "NickServ",
-        password: "your-nickserv-password",
+        password: "${ltfx.n.4bc29e3b2aad4a09b08f.v1}",
       },
     },
   },

@@ -9,7 +9,7 @@ export class TokenRateLimiter {
 
   constructor(private readonly now: () => number) {}
 
-  allowKey(key: string): boolean {
+  allowKey(key: (string)): boolean {
     const now = this.now();
     const active = (this.attempts.get(key) ?? []).filter(
       (timestamp) => timestamp > now - TOKEN_RATE_WINDOW_MS,

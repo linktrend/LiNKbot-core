@@ -76,7 +76,7 @@ describe("gateway ws log helpers", () => {
   });
 
   test("formatForLog redacts obvious secrets", () => {
-    const token = "sk-abcdefghijklmnopqrstuvwxyz123456";
+    const token = `ltfx.n.82be8a4d9cdebab78235.v1`;
     const out = formatForLog({ token });
     expect(out).toContain("token");
     expect(out).not.toContain(token);

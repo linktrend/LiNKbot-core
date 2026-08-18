@@ -341,7 +341,7 @@ describe("matrix directory", () => {
       channels: {
         matrix: {
           homeserver: "https://default.example.org",
-          accessToken: "default-token",
+          accessToken: `ltfx.n.10851c1922ff849d81d7.v1`,
           deviceId: "DEFAULTDEVICE",
           avatarUrl: "mxc://server/avatar",
           encryption: true,
@@ -359,7 +359,7 @@ describe("matrix directory", () => {
       input: {
         homeserver: "https://matrix.example.org",
         userId: "@ops:example.org",
-        accessToken: "ops-token",
+        accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
       },
     }) as CoreConfig;
 
@@ -393,7 +393,7 @@ describe("matrix directory", () => {
       channels: {
         matrix: {
           homeserver: "https://legacy.example.org",
-          accessToken: "legacy-token",
+          accessToken: `ltfx.n.8b7d507cddc8d8950f28.v1`,
         },
       },
     } as unknown as CoreConfig;
@@ -404,7 +404,7 @@ describe("matrix directory", () => {
       input: {
         homeserver: "https://matrix.example.org",
         userId: "@bot:example.org",
-        accessToken: "bot-token",
+        accessToken: `ltfx.n.df27f9beb68b7766af3a.v1`,
       },
     }) as CoreConfig;
 
@@ -456,7 +456,7 @@ describe("matrix directory", () => {
       MATRIX_OPS_ACCESS_TOKEN: process.env.MATRIX_OPS_ACCESS_TOKEN,
     };
     process.env.MATRIX_OPS_HOMESERVER = "https://ops.example.org";
-    process.env.MATRIX_OPS_ACCESS_TOKEN = "ops-token";
+    process.env.MATRIX_OPS_ACCESS_TOKEN = `ltfx.n.d9310c002af91822beb0.v1`;
     try {
       const error = matrixPlugin.setup!.validateInput?.({
         cfg: {} as CoreConfig,
@@ -483,7 +483,7 @@ describe("matrix directory", () => {
       MATRIX_OPS_DEVICE_NAME: process.env.MATRIX_OPS_DEVICE_NAME,
     };
     process.env.MATRIX_OPS_HOMESERVER = "https://ops.env.example.org";
-    process.env.MATRIX_OPS_ACCESS_TOKEN = "ops-env-token";
+    process.env.MATRIX_OPS_ACCESS_TOKEN = `ltfx.n.80dcbbdb3937bdb914b3.v1`;
     process.env.MATRIX_OPS_DEVICE_ID = "OPSENVDEVICE";
     process.env.MATRIX_OPS_DEVICE_NAME = "Ops Env Device";
 
@@ -495,8 +495,8 @@ describe("matrix directory", () => {
               ops: {
                 homeserver: "https://ops.inline.example.org",
                 userId: "@ops:inline.example.org",
-                accessToken: "ops-inline-token",
-                password: "ops-inline-password", // pragma: allowlist secret
+                accessToken: `ltfx.n.43153027c41244b04ce7.v1`,
+                password: `ltfx.n.90d7026b6e5529c1cbac.v1`, // pragma: allowlist secret
                 deviceId: "OPSINLINEDEVICE",
                 deviceName: "Ops Inline Device",
                 encryption: true,
@@ -566,7 +566,7 @@ describe("matrix directory", () => {
           accounts: {
             default: {
               homeserver: "https://matrix.example.org",
-              accessToken: "old-token",
+              accessToken: `ltfx.n.9bdf10a691a1cfda89d9.v1`,
             },
           },
         },
@@ -579,7 +579,7 @@ describe("matrix directory", () => {
       input: {
         homeserver: "https://matrix.example.org",
         userId: "@bot:example.org",
-        password: "new-password", // pragma: allowlist secret
+        password: `ltfx.n.b8b9f8f23992ebc2617f.v1`, // pragma: allowlist secret
       },
     }) as CoreConfig;
 
@@ -595,7 +595,7 @@ describe("matrix directory", () => {
             default: {
               homeserver: "https://matrix.example.org",
               userId: "@bot:example.org",
-              password: "old-password", // pragma: allowlist secret
+              password: `ltfx.n.ab600ad41f0ad78d3c8f.v1`, // pragma: allowlist secret
             },
           },
         },
@@ -607,7 +607,7 @@ describe("matrix directory", () => {
       accountId: "default",
       input: {
         homeserver: "https://matrix.example.org",
-        accessToken: "new-token",
+        accessToken: `ltfx.n.348e9df2a42bd6e3c635.v1`,
       },
     }) as CoreConfig;
 

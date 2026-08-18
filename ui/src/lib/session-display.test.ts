@@ -79,7 +79,7 @@ describe("resolveSessionDisplayName", () => {
   });
 
   it("can omit only the subagent prefix while preserving its untitled fallback", () => {
-    const key = "agent:main:subagent:worker";
+    const key = `ltfx.n.f3fd014fb107b4395e4c.v1`;
     expect(resolveSessionDisplayName(key, { label: "Research sources" })).toBe(
       "Subagent: Research sources",
     );

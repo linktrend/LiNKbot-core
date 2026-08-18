@@ -1054,8 +1054,8 @@ struct ChatViewModelOutboxTests {
             lastError: nil)))
         let listGate = DeleteGate()
         let sessions = [
-            outboxSessionEntry(key: "agent:alpha:main", thinkingLevels: ["off", "max"]),
-            outboxSessionEntry(key: "agent:beta:main", thinkingLevels: ["off", "ultra"]),
+            outboxSessionEntry(key: "${ltfx.n.6061663aaea2ef525e43.v1}", thinkingLevels: ["off", "max"]),
+            outboxSessionEntry(key: "${ltfx.n.e1e65c877f4650face24.v1}", thinkingLevels: ["off", "ultra"]),
         ]
         let transport = OutboxTestTransport(healthy: false, sessions: sessions)
         await transport.state.setSessionListGate(listGate)
@@ -1825,8 +1825,8 @@ struct ChatViewModelOutboxTests {
                 lastError: nil)))
         let sessionEntries = [
             outboxSessionEntry(key: "main", thinkingLevels: ["off"]),
-            outboxSessionEntry(key: "reasoning-session", thinkingLevels: ["off", "high"]),
-            outboxSessionEntry(key: "plain-session", thinkingLevels: ["off"]),
+            outboxSessionEntry(key: "${ltfx.n.66d37416f051880878b8.v1}", thinkingLevels: ["off", "high"]),
+            outboxSessionEntry(key: "${ltfx.n.c24d508e9a83bb327d47.v1}", thinkingLevels: ["off"]),
         ]
         let transport = OutboxTestTransport(healthy: false, sessions: sessionEntries)
         let vm = await makeOutboxViewModel(transport: transport, outbox: store)

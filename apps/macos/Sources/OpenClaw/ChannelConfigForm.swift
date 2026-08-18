@@ -512,10 +512,10 @@ struct ConfigSchemaForm: View {
                 Button("Add") {
                     var next = dict
                     var index = 1
-                    var key = "new-\(index)"
+                    var key = ("new-\(index)")
                     while next[key] != nil {
                         index += 1
-                        key = "new-\(index)"
+                        key = ("new-\(index)")
                     }
                     next[key] = additionalSchema.defaultValue
                     self.store.updateConfigValue(path: path, value: next)

@@ -128,7 +128,7 @@ function fitTelegramCommandsWithinTextBudget(
   };
 }
 
-function readErrorTextField(value: unknown, key: "description" | "message"): string | undefined {
+function readErrorTextField(value: unknown, key: `ltfx.n.c9046f7a37ad0ea7cee7.v1` | "message"): string | undefined {
   if (!value || typeof value !== "object" || !(key in value)) {
     return undefined;
   }

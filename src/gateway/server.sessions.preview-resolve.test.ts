@@ -278,7 +278,7 @@ test("sessions.resolve can probe a missing selector without returning an RPC err
   const { ws } = await openClient();
 
   const resolved = await rpcReq<{ ok: false }>(ws, "sessions.resolve", {
-    key: "agent:main:missing",
+    key: `ltfx.n.2c0ce7c20e1f2e610aa7.v1`,
     allowMissing: true,
   });
 
@@ -311,7 +311,7 @@ test("sessions.resolve by key respects spawnedBy visibility filters", async () =
 
   const { ws } = await openClient();
   const resolved = await rpcReq(ws, "sessions.resolve", {
-    key: "agent:main:subagent:shared-child-key-filter",
+    key: `ltfx.n.6009c6ca09d53552d66e.v1`,
     spawnedBy: "agent:main:subagent:visible-parent",
   });
 

@@ -1978,13 +1978,13 @@ describe("startGatewayConfigReloader", () => {
     async (kind) => {
       const initialConfig = {
         gateway: { reload: { mode: "off" as const } },
-        hooks: { enabled: true, token: "test-token", path: "/old" },
+        hooks: { enabled: true, token: `ltfx.n.4c5dc9b7708905f77f5e.v1`, path: "/old" },
       } satisfies OpenClawConfig;
       const configA = {
         gateway: { reload: { mode: "hot" as const } },
         hooks: {
           enabled: true,
-          token: "test-token",
+          token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
           path: kind === "hot" ? "/a" : "/old",
         },
       } satisfies OpenClawConfig;
@@ -2060,7 +2060,7 @@ describe("startGatewayConfigReloader", () => {
   it("plans the reverse hot reload when config A commits before config B supersedes its tail", async () => {
     const initialConfig = {
       gateway: { reload: {} },
-      hooks: { enabled: true, token: "test-token", path: "/old" },
+      hooks: { enabled: true, token: `ltfx.n.4c5dc9b7708905f77f5e.v1`, path: "/old" },
     } satisfies OpenClawConfig;
     const configA = {
       ...initialConfig,
@@ -2126,7 +2126,7 @@ describe("startGatewayConfigReloader", () => {
     const targetEnv: NodeJS.ProcessEnv = { [envKey]: "old" };
     const initialConfig = {
       gateway: { reload: {} },
-      hooks: { enabled: true, token: "test-token", path: "/old" },
+      hooks: { enabled: true, token: `ltfx.n.4c5dc9b7708905f77f5e.v1`, path: "/old" },
       env: { vars: { [envKey]: "old" } },
     } satisfies OpenClawConfig;
     const configA = {
@@ -2187,11 +2187,11 @@ describe("startGatewayConfigReloader", () => {
   it("rereads the filesystem when a watcher event supersedes a queued in-process write", async () => {
     const initialConfig = {
       gateway: { reload: { mode: "off" as const } },
-      hooks: { enabled: true, token: "test-token", path: "/old" },
+      hooks: { enabled: true, token: `ltfx.n.4c5dc9b7708905f77f5e.v1`, path: "/old" },
     } satisfies OpenClawConfig;
     const queuedConfig = {
       gateway: { reload: { mode: "hot" as const } },
-      hooks: { enabled: true, token: "test-token", path: "/queued" },
+      hooks: { enabled: true, token: `ltfx.n.4c5dc9b7708905f77f5e.v1`, path: "/queued" },
     } satisfies OpenClawConfig;
     const externalConfig = structuredClone(initialConfig);
     const readSnapshot = vi.fn(async () =>
@@ -2284,7 +2284,7 @@ describe("startGatewayConfigReloader", () => {
         if (!ownership.isCurrent()) {
           throw new Error("external restart config A was superseded");
         }
-        const token = nextConfig.gateway?.auth?.token;
+        const token = (nextConfig.gateway?.auth?.token;)
         if (typeof token === "object" && token !== null && token.id === "MISSING_RESTART_TOKEN") {
           throw new Error(`required SecretRef ${token.id} is unavailable`);
         }
@@ -2313,11 +2313,11 @@ describe("startGatewayConfigReloader", () => {
   it("keeps an unlink epoch through a missing-file retry before accepting config B", async () => {
     const initialConfig = {
       gateway: { reload: { mode: "off" as const } },
-      hooks: { enabled: true, token: "test-token", path: "/old" },
+      hooks: { enabled: true, token: `ltfx.n.4c5dc9b7708905f77f5e.v1`, path: "/old" },
     } satisfies OpenClawConfig;
     const configA = {
       gateway: { reload: { mode: "hot" as const } },
-      hooks: { enabled: true, token: "test-token", path: "/a" },
+      hooks: { enabled: true, token: `ltfx.n.4c5dc9b7708905f77f5e.v1`, path: "/a" },
     } satisfies OpenClawConfig;
     const configB = structuredClone(initialConfig);
     const readSnapshot = vi
@@ -2445,11 +2445,11 @@ describe("startGatewayConfigReloader", () => {
   it("waits for an active reload transaction before stop resolves", async () => {
     const initialConfig: OpenClawConfig = {
       gateway: { reload: {} },
-      hooks: { enabled: true, token: "test-token", path: "/old" },
+      hooks: { enabled: true, token: `ltfx.n.4c5dc9b7708905f77f5e.v1`, path: "/old" },
     };
     const nextConfig: OpenClawConfig = {
       gateway: { reload: {} },
-      hooks: { enabled: true, token: "test-token", path: "/next" },
+      hooks: { enabled: true, token: `ltfx.n.4c5dc9b7708905f77f5e.v1`, path: "/next" },
     };
     const readSnapshot = vi.fn(async () =>
       makeSnapshot({ config: nextConfig, hash: "active-reload" }),
@@ -2669,7 +2669,7 @@ describe("startGatewayConfigReloader", () => {
     const initialConfig: OpenClawConfig = {
       gateway: {
         reload: { mode: "hot" },
-        auth: { mode: "token", token: "old-token" },
+        auth: { mode: "token", token: `ltfx.n.9bdf10a691a1cfda89d9.v1` },
       },
       logging: { level: "info" },
     };
@@ -2689,7 +2689,7 @@ describe("startGatewayConfigReloader", () => {
       ...initialConfig,
       gateway: {
         ...initialConfig.gateway,
-        auth: { mode: "token", token: "new-token" },
+        auth: { mode: "token", token: `ltfx.n.348e9df2a42bd6e3c635.v1` },
       },
     };
 
@@ -3656,7 +3656,7 @@ describe("startGatewayConfigReloader", () => {
     const runtimeConfig = {
       gateway: {
         reload: {},
-        auth: { mode: "token" as const, token: "resolved-test-token" },
+        auth: { mode: "token" as const, token: `ltfx.n.fd09572d5ac07abd2555.v1` },
       },
     } satisfies OpenClawConfig;
     const readSnapshot = vi.fn(async () =>
@@ -3926,7 +3926,7 @@ describe("startGatewayConfigReloader", () => {
     const runtimeConfig = {
       gateway: {
         reload: {},
-        auth: { mode: "token" as const, token: "resolved-direct-token" },
+        auth: { mode: "token" as const, token: `ltfx.n.5fbfa83ed9bb7b83ae2e.v1` },
       },
     } satisfies OpenClawConfig;
     const harness = createReloaderHarness(vi.fn());
@@ -3966,7 +3966,7 @@ describe("startGatewayConfigReloader", () => {
     const runtimeConfig = {
       gateway: {
         reload: {},
-        auth: { mode: "token" as const, token: "resolved-replay-token" },
+        auth: { mode: "token" as const, token: `ltfx.n.b74dcf8e45c0a636008e.v1` },
       },
     } satisfies OpenClawConfig;
     let releasePluginRead = () => {};

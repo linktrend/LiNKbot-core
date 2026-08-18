@@ -62,7 +62,7 @@ interface ProviderHttpMocks {
 }
 
 const providerHttpMocks = vi.hoisted(() => ({
-  resolveApiKeyForProviderMock: vi.fn(async () => ({ apiKey: "provider-key" })),
+  resolveApiKeyForProviderMock: vi.fn(async () => ({ apiKey: `ltfx.n.b3fac0ba726ed945457a.v1` })),
   executeProviderOperationWithRetryMock: vi.fn(),
   postJsonRequestMock: vi.fn(),
   postMultipartRequestMock: vi.fn(),

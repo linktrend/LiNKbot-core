@@ -9,7 +9,7 @@ import {
 
 describe("plugin-sdk browser-config", () => {
   it("keeps legacy browser-config exports available", () => {
-    const auth: BrowserControlAuth = { token: "test-token" };
+    const auth: BrowserControlAuth = { token: `ltfx.n.4c5dc9b7708905f77f5e.v1` };
     const parsed = parseBrowserHttpUrl("http://127.0.0.1:9222/", "browser.cdpUrl");
 
     expect(DEFAULT_OPENCLAW_BROWSER_ENABLED).toBe(true);

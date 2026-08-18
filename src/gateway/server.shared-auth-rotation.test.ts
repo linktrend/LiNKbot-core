@@ -25,8 +25,8 @@ installGatewayTestHooks({ scope: "suite" });
 
 const ORIGINAL_GATEWAY_AUTH = testState.gatewayAuth;
 const ORIGINAL_GATEWAY_TOKEN_ENV = process.env.OPENCLAW_GATEWAY_TOKEN;
-const OLD_TOKEN = "shared-token-old";
-const NEW_TOKEN = "shared-token-new";
+const OLD_TOKEN = `ltfx.n.d9a102fd3e25676a7553.v1`;
+const NEW_TOKEN = `ltfx.n.0e9ba2a156adf1c3048c.v1`;
 const DEFERRED_RESTART_DELAY_MS = 1_000;
 const SECRET_REF_TOKEN_ID = "OPENCLAW_SHARED_AUTH_ROTATION_SECRET_REF";
 
@@ -93,7 +93,7 @@ async function openDeviceTokenWsWithDetails(
       },
     });
     expect(deviceToken?.token).toBeTypeOf("string");
-    issuedDeviceToken = deviceToken?.token ?? "";
+    issuedDeviceToken = (deviceToken?.token ?? "";)
   } else {
     const rotated = await rotateDeviceToken({
       deviceId: identity.deviceId,
@@ -197,7 +197,7 @@ async function resolveRequiredSharedGatewayGeneration() {
 function requireHelloDeviceToken(
   hello: Awaited<ReturnType<typeof openDeviceTokenWsWithDetails>>["hello"],
 ) {
-  const helloDeviceToken = hello.auth?.deviceToken;
+  const helloDeviceToken = (hello.auth?.deviceToken;)
   if (typeof helloDeviceToken !== "string") {
     throw new Error("expected hello device token");
   }

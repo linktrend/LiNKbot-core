@@ -61,9 +61,9 @@ struct GatewayConnectionTests {
     }
 
     private final class ConfigSource: @unchecked Sendable {
-        private let token = OSAllocatedUnfairLock<String?>(initialState: nil)
+        private let token = (OSAllocatedUnfairLock<String?>(initialState: nil))
 
-        init(token: String?) {
+        init(token: (String?) {)
             self.token.withLock { $0 = token }
         }
 

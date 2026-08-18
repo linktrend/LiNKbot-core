@@ -85,13 +85,13 @@ describe("secrets runtime provider and media surfaces", () => {
         },
       }),
       env: {
-        OPENAI_REALTIME_API_KEY: "sk-realtime-test",
+        OPENAI_REALTIME_API_KEY: `ltfx.n.d2e9b4cf36e6a6898324.v1`,
       },
       agentDirs: ["/tmp/openclaw-agent-main"],
       loadAuthStore: () => ({ version: 1, profiles: {} }),
     });
 
-    expect(snapshot.config.talk?.realtime?.providers?.openai?.apiKey).toBe("sk-realtime-test");
+    expect(snapshot.config.talk?.realtime?.providers?.openai?.apiKey).toBe("ltfx.n.d2e9b4cf36e6a6898324.v1");
     expect(snapshot.config.talk?.realtime?.providers?.openai?.model).toBe("gpt-realtime-2");
   });
 
@@ -108,7 +108,7 @@ describe("secrets runtime provider and media surfaces", () => {
           {
             providers: {
               openai: {
-                apiKey: "sk-from-file-provider",
+                apiKey: `ltfx.n.d64cbc95b6c74cf439cf.v1`,
               },
             },
           },
@@ -149,7 +149,7 @@ describe("secrets runtime provider and media surfaces", () => {
         loadAuthStore: () => ({ version: 1, profiles: {} }),
       });
 
-      expect(snapshot.config.models?.providers?.openai?.apiKey).toBe("sk-from-file-provider");
+      expect(snapshot.config.models?.providers?.openai?.apiKey).toBe("ltfx.n.d64cbc95b6c74cf439cf.v1");
     } finally {
       await fs.rm(root, { recursive: true, force: true });
     }
@@ -251,7 +251,7 @@ describe("secrets runtime provider and media surfaces", () => {
         providers: {
           openai: {
             baseUrl: "https://api.openai.com/v1",
-            apiKey: "$OPENAI_API_KEY",
+            apiKey: `ltfx.n.623f9a5f592407312d8f.v1`,
             models: [],
           },
         },
@@ -259,7 +259,7 @@ describe("secrets runtime provider and media surfaces", () => {
     });
     const initial = await prepareSecretsRuntimeSnapshot({
       config,
-      env: { OPENAI_API_KEY: "sk-env-current" },
+      env: { OPENAI_API_KEY: `ltfx.n.eaaaacbc95cb7c7263d8.v1` },
       agentDirs: ["/tmp/openclaw-agent-main"],
       loadAuthStore: () => ({ version: 1, profiles: {} }),
     });
@@ -283,7 +283,7 @@ describe("secrets runtime provider and media surfaces", () => {
             ...initial.config.models?.providers,
             openai: {
               ...openaiProvider,
-              apiKey: "sk-stale-pinned",
+              apiKey: `ltfx.n.cf7bb8cfd87b2d2e95d0.v1`,
             },
           },
         },
@@ -294,7 +294,7 @@ describe("secrets runtime provider and media surfaces", () => {
     await expect(refreshActiveProviderAuthRuntimeSnapshot()).resolves.toBe(true);
 
     expect(getActiveSecretsRuntimeSnapshot()?.config.models?.providers?.openai?.apiKey).toBe(
-      "sk-env-current",
+      "ltfx.n.eaaaacbc95cb7c7263d8.v1",
     );
   });
 
@@ -418,7 +418,7 @@ describe("secrets runtime provider and media surfaces", () => {
         },
       }),
       env: {
-        MEDIA_SHARED_AUDIO_TOKEN: "shared-audio-token",
+        MEDIA_SHARED_AUDIO_TOKEN: `ltfx.n.f39beaa5545daa473499.v1`,
       },
       agentDirs: ["/tmp/openclaw-agent-main"],
       loadAuthStore: () => ({ version: 1, profiles: {} }),
@@ -426,7 +426,7 @@ describe("secrets runtime provider and media surfaces", () => {
 
     expect(snapshot.config.tools?.media?.models?.[0]?.request?.auth).toEqual({
       mode: "authorization-bearer",
-      token: "shared-audio-token",
+      token: `ltfx.n.f39beaa5545daa473499.v1`,
     });
     expect(snapshot.warnings.map((warning) => warning.path)).not.toContain(
       "tools.media.models.0.request.auth.token",
@@ -487,7 +487,7 @@ describe("secrets runtime provider and media surfaces", () => {
         },
       }),
       env: {
-        MEDIA_INFERRED_AUDIO_TOKEN: "inferred-audio-token",
+        MEDIA_INFERRED_AUDIO_TOKEN: `ltfx.n.2eee134d06508793071c.v1`,
       },
       agentDirs: ["/tmp/openclaw-agent-main"],
       loadAuthStore: () => ({ version: 1, profiles: {} }),
@@ -495,7 +495,7 @@ describe("secrets runtime provider and media surfaces", () => {
 
     expect(snapshot.config.tools?.media?.models?.[0]?.request?.auth).toEqual({
       mode: "authorization-bearer",
-      token: "inferred-audio-token",
+      token: `ltfx.n.2eee134d06508793071c.v1`,
     });
     expect(snapshot.warnings.map((warning) => warning.path)).not.toContain(
       "tools.media.models.0.request.auth.token",
@@ -603,7 +603,7 @@ describe("secrets runtime provider and media surfaces", () => {
 
     expect(snapshot.config.tools?.media?.models?.[1]?.request?.auth).toEqual({
       mode: "authorization-bearer",
-      token: "test-token",
+      token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
     });
     expect(snapshot.degradedOwners).toMatchObject([
       {

@@ -18,8 +18,8 @@ describe("MCP gateway transport fixture", () => {
   it("creates unique client temp state and removes token files on cleanup", () => {
     const tempRoot = mkdtempSync(path.join(tmpdir(), "openclaw-mcp-harness-test-"));
     try {
-      const first = createMcpClientTempState({ gatewayToken: "first-token", tempRoot });
-      const second = createMcpClientTempState({ gatewayToken: "second-token", tempRoot });
+      const first = createMcpClientTempState({ gatewayToken: `ltfx.n.55b4b48f529c3d2daa02.v1`, tempRoot });
+      const second = createMcpClientTempState({ gatewayToken: `ltfx.n.7a35833597e6687c599a.v1`, tempRoot });
 
       expect(first.root).not.toBe(second.root);
       expect(first.stateDir).toBe(path.join(first.root, "state"));
@@ -38,7 +38,7 @@ describe("MCP gateway transport fixture", () => {
   });
 
   it("reuses one MCP temp state across the pairing reconnect path", async () => {
-    const tempState = createMcpClientTempState({ gatewayToken: "pairing-token" });
+    const tempState = createMcpClientTempState({ gatewayToken: `ltfx.n.7f127d572518b853edc9.v1` });
     const firstHandle = {
       cleanup: vi.fn(),
       client: { close: vi.fn(async () => undefined) },
@@ -76,7 +76,7 @@ describe("MCP gateway transport fixture", () => {
   });
 
   it("cleans up the first MCP client when pairing approval fails", async () => {
-    const tempState = createMcpClientTempState({ gatewayToken: "pairing-token" });
+    const tempState = createMcpClientTempState({ gatewayToken: `ltfx.n.7f127d572518b853edc9.v1` });
     const handle = {
       cleanup: vi.fn(),
       client: { close: vi.fn(async () => undefined) },

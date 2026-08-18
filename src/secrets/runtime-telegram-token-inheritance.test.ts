@@ -89,7 +89,7 @@ describe("secrets runtime snapshot telegram token inheritance", () => {
         },
       }),
       env: {
-        TELEGRAM_WORK_TOKEN: "telegram-work-token",
+        TELEGRAM_WORK_TOKEN: `ltfx.n.5ea6811e146f5cdaacc3.v1`,
       },
       agentDirs: ["/tmp/openclaw-agent-main"],
       loadAuthStore: () => loadAuthStoreWithProfiles({}),
@@ -156,7 +156,7 @@ describe("secrets runtime snapshot telegram token inheritance", () => {
         },
       }),
       env: {
-        TELEGRAM_BASE_TOKEN: "telegram-base-token",
+        TELEGRAM_BASE_TOKEN: `ltfx.n.871c7e5e6a5c6050dd4f.v1`,
       },
       agentDirs: ["/tmp/openclaw-agent-main"],
       loadAuthStore: () => loadAuthStoreWithProfiles({}),

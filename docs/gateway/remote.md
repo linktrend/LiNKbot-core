@@ -60,8 +60,8 @@ Persist a remote target so CLI commands use it by default:
   gateway: {
     mode: "remote",
     remote: {
-      url: "ws://127.0.0.1:18789",
-      token: "your-token",
+      url: "${ltfx.n.0edbee82f0824a1ed09b.v1}",
+      token: "${ltfx.n.08842b17a4146c87440b.v1}",
     },
   },
 }
@@ -79,8 +79,8 @@ For a Gateway already reachable on a trusted LAN or Tailnet, use direct mode:
     mode: "remote",
     remote: {
       transport: "direct",
-      url: "ws://192.168.0.202:18789",
-      token: "your-token",
+      url: "${ltfx.n.246f3024bcc80f211320.v1}",
+      token: "${ltfx.n.08842b17a4146c87440b.v1}",
     },
   },
 }

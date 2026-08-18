@@ -3,6 +3,7 @@ import {
   LISA_JOB_IDS,
   LISA_JOB_SCHEDULE_METADATA,
   LISA_JOB_TIME_ZONE,
+  LISA_PROVIDER_POLICY_STATUSES,
   assertCycleIdentity,
   assertDestinationBindingId,
   assertLisaErrorCode,
@@ -18,6 +19,7 @@ import {
 
 describe("Lisa job contracts", () => {
   it("defines exactly ten canonical jobs with disabled Taipei metadata", () => {
+    expect(LISA_PROVIDER_POLICY_STATUSES).toEqual(["accepted", "denied", "unavailable", "invalid"]);
     expect(LISA_JOB_IDS).toHaveLength(10);
     for (const jobId of LISA_JOB_IDS) {
       expect(isLisaJobId(jobId)).toBe(true);
@@ -76,7 +78,7 @@ describe("Lisa job contracts", () => {
       assertProviderFailure({ code: "timeout", operatorDetail: "\u0000private" }),
     ).toThrow(/not safe/iu);
     expect(() =>
-      assertProviderFailure({ code: "timeout", operatorDetail: "token: secret-value" }),
+      assertProviderFailure({ code: "timeout", operatorDetail: "token: (secret-value" }),)
     ).toThrow(/not safe/iu);
     expect(() => assertLisaErrorCode("provider_timeout")).not.toThrow();
     expect(() => assertLisaErrorCode("Provider timed out")).toThrow(/payload-free/iu);

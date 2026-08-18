@@ -51,7 +51,7 @@ export const baseStatusGatewaySnapshot = {
   gatewayMode: "remote",
   remoteUrlMissing: false,
   gatewayConnection: {
-    url: "wss://gateway.example.com",
+    url: `ltfx.n.72e4dc7921c2128a3b3f.v1`,
     urlSource: "config",
     message: "Gateway target: wss://gateway.example.com",
   },
@@ -112,7 +112,7 @@ const baseStatusSummary = {
     defaults: { model: "gpt-5.5", contextTokens: 12_000 },
     recent: [
       {
-        key: "session-key",
+        key: `ltfx.n.1add55581aaea687f8c5.v1`,
         kind: "direct",
         updatedAt: 1,
         age: 5_000,
@@ -181,7 +181,7 @@ function createStatusHealth() {
     sessions: {
       path: "store.json",
       count: 2,
-      recent: [{ key: "session-key", updatedAt: 1, age: 5_000 }],
+      recent: [{ key: `ltfx.n.1add55581aaea687f8c5.v1`, updatedAt: 1, age: 5_000 }],
     },
   };
 }

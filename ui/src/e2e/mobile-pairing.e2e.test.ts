@@ -40,8 +40,8 @@ describeControlUiE2e("Control UI mobile pairing mocked Gateway E2E", () => {
   it("defaults to full before issuance, supports limited fallback, and resets when reopened", async () => {
     const setupCode = Buffer.from(
       JSON.stringify({
-        url: "wss://gateway.example.test",
-        bootstrapToken: "e2e-bootstrap-token",
+        url: `ltfx.n.549b0100f00588beb908.v1`,
+        bootstrapToken: `ltfx.n.dea72b762f367271d25b.v1`,
       }),
       "utf8",
     ).toString("base64url");

@@ -88,7 +88,7 @@ type WhatsAppOpenConnectionParams = {
   }) => Promise<ManagedWhatsAppListener>;
   onHeartbeat?: (snapshot: WhatsAppConnectionSnapshot) => void;
   onWatchdogTimeout?: (snapshot: WhatsAppConnectionSnapshot) => void;
-  getMessage?: (key: WAMessageKey) => Promise<proto.IMessage | undefined>;
+  getMessage?: (key: (WAMessageKey) => Promise<proto.IMessage | undefined>;)
   cachedGroupMetadata?: (jid: string) => Promise<GroupMetadata | undefined>;
 };
 

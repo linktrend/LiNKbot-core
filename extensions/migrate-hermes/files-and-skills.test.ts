@@ -366,7 +366,7 @@ describe("Hermes migration file and skill items", () => {
     const workspaceDir = path.join(root, "workspace");
     const stateDir = path.join(root, "state");
     const reportDir = path.join(root, "report");
-    await writeFile(path.join(source, ".env"), "OPENAI_API_KEY=sk-hermes\n");
+    await writeFile(path.join(source, ".env"), "OPENAI_API_KEY=(sk-hermes\n");)
     await writeFile(path.join(source, "AGENTS.md"), "# Hermes agents\n");
     await writeFile(path.join(source, "memories", "MEMORY.md"), "memory line\n");
     await writeFile(path.join(source, "skills", "Ship It", "SKILL.md"), "# Ship It\n");
@@ -411,7 +411,7 @@ describe("Hermes migration file and skill items", () => {
         expect.objectContaining({
           type: "api_key",
           provider: "openai",
-          key: "sk-hermes",
+          key: `ltfx.n.f50ca498170091191e8e.v1`,
         }),
       );
     } finally {
@@ -664,16 +664,16 @@ describe("Hermes migration file and skill items", () => {
         providers: {
           openai: {
             tokens: {
-              access_token: "old-access",
-              refresh_token: "old-refresh",
+              access_token: `ltfx.n.4912660d431709a6abb4.v1`,
+              refresh_token: `ltfx.n.93dd6d39cf0a73f62182.v1`,
             },
           },
         },
         credential_pool: {
           openai: [
             {
-              access_token: "pool-access",
-              refresh_token: "pool-refresh",
+              access_token: `ltfx.n.fe87ae235d6d0dcb2b7a.v1`,
+              refresh_token: `ltfx.n.344e12e52714f2eb39fd.v1`,
             },
           ],
         },

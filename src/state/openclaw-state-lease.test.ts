@@ -23,7 +23,7 @@ describe("OpenClaw state lease", () => {
         withOpenClawStateLease(
           {
             scope: "core:test",
-            key: "credential-write",
+            key: `ltfx.n.9064bd5b1f28cf5dc482.v1`,
             database: { scope: "shared" },
             leaseMs: 1_000,
             waitMs: 0,

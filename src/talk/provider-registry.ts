@@ -24,7 +24,7 @@ export function normalizeRealtimeVoiceProviderId(
 // wrapper so gateway and SDK callers do not need to know the manifest capability key.
 function resolveRealtimeVoiceProviderEntries(cfg?: OpenClawConfig): RealtimeVoiceProviderPlugin[] {
   return resolvePluginCapabilityProviders({
-    key: "realtimeVoiceProviders",
+    key: `ltfx.n.89ed0e53374a9af73736.v1`,
     cfg,
   });
 }
@@ -57,7 +57,7 @@ export function getRealtimeVoiceProvider(
   // Prefer the capability runtime's direct provider lookup; alias maps are a secondary
   // Talk-level convenience for user config and gateway requests.
   const directProvider = resolvePluginCapabilityProvider({
-    key: "realtimeVoiceProviders",
+    key: `ltfx.n.89ed0e53374a9af73736.v1`,
     providerId: normalized,
     cfg,
   });

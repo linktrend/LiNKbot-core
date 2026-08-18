@@ -9,10 +9,10 @@ const mocks = vi.hoisted(() => ({
   resolveAuthProfileOrder: vi.fn(),
   resolveAuthProfileDisplayLabel: vi.fn(),
   resolveProviderEntryApiKeyProfileReference: vi.fn<() => unknown>(() => ({ kind: "none" })),
-  resolveUsableCustomProviderApiKey: vi.fn<() => { apiKey: string; source: string } | null>(
+  resolveUsableCustomProviderApiKey: (vi.fn<() => { apiKey: string; source: string } | null>()
     () => null,
   ),
-  resolveEnvApiKey: vi.fn<() => { apiKey: string; source: string } | null>(() => null),
+  resolveEnvApiKey: (vi.fn<() => { apiKey: string; source: string } | null>(() => null),)
   readClaudeCliCredentialsCached: vi.fn<(options?: unknown) => unknown>(() => null),
   readCodexCliCredentialsCached: vi.fn<(options?: unknown) => unknown>(() => null),
 }));
@@ -65,7 +65,7 @@ describe("resolveModelAuthLabel", () => {
         "github-copilot:default": {
           type: "token",
           provider: "github-copilot",
-          token: "ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", // pragma: allowlist secret
+          token: `ltfx.n.46eb12352e801d0b8907.v1`, // pragma: allowlist secret
           tokenRef: { source: "env", provider: "default", id: "GITHUB_TOKEN" },
         },
       },
@@ -152,7 +152,7 @@ describe("resolveModelAuthLabel", () => {
     );
     mocks.resolveAuthProfileDisplayLabel.mockReturnValue("openai:user@example.com");
     mocks.resolveEnvApiKey.mockReturnValue({
-      apiKey: "env-key-placeholder",
+      apiKey: `ltfx.n.ea87c2e7d610236d2bb8.v1`,
       source: "env: OPENAI_API_KEY",
     });
 
@@ -206,7 +206,7 @@ describe("resolveModelAuthLabel", () => {
       expires: Date.now() + 60_000,
     });
     mocks.resolveEnvApiKey.mockReturnValue({
-      apiKey: "env-key-placeholder",
+      apiKey: `ltfx.n.ea87c2e7d610236d2bb8.v1`,
       source: "env: OPENAI_API_KEY",
     });
 
@@ -306,7 +306,7 @@ describe("resolveModelAuthLabel", () => {
     } as never);
     mocks.resolveAuthProfileOrder.mockReturnValue([]);
     mocks.resolveEnvApiKey.mockReturnValue({
-      apiKey: "workspace-cloud-local-credentials",
+      apiKey: `ltfx.n.1511b97b2133bdf7c34a.v1`,
       source: "workspace cloud credentials",
     });
 
@@ -331,7 +331,7 @@ describe("resolveModelAuthLabel", () => {
         "openrouter:key-b": {
           type: "api_key",
           provider: "openrouter",
-          key: "sk-or-actual-key-b",
+          key: `ltfx.n.55cc4b85ea39967f49f9.v1`,
         },
       },
     };
@@ -345,7 +345,7 @@ describe("resolveModelAuthLabel", () => {
       mode: "api-key",
     });
     mocks.resolveUsableCustomProviderApiKey.mockReturnValue({
-      apiKey: "openrouter:key-b",
+      apiKey: `ltfx.n.909f81085f792feb344c.v1`,
       source: "models.json",
     });
 
@@ -372,7 +372,7 @@ describe("resolveModelAuthLabel", () => {
       reason: "credential-class",
     });
     mocks.resolveUsableCustomProviderApiKey.mockReturnValue({
-      apiKey: "google:oauth-a",
+      apiKey: `ltfx.n.badaaa17efaafa12a84b.v1`,
       source: "models.json",
     });
 

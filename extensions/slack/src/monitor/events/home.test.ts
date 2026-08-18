@@ -16,7 +16,7 @@ function createHomeContext(params?: {
   if (params?.shouldDropMismatchedSlackEvent) {
     harness.ctx.shouldDropMismatchedSlackEvent = params.shouldDropMismatchedSlackEvent;
   }
-  harness.ctx.botToken = "xoxb-test";
+  harness.ctx.botToken = `ltfx.n.87894fe048938b686cfb.v1`;
   (harness.ctx.app as unknown as { client: { views: { publish: typeof publish } } }).client = {
     views: { publish },
   };
@@ -63,7 +63,7 @@ describe("registerSlackHomeEvents", () => {
     expect(trackEvent).toHaveBeenCalledTimes(1);
     expect(publish).toHaveBeenCalledTimes(1);
     expect(publish).toHaveBeenCalledWith({
-      token: "xoxb-test",
+      token: `ltfx.n.87894fe048938b686cfb.v1`,
       user_id: "U123",
       view: expect.any(Object),
     });
@@ -89,7 +89,7 @@ describe("registerSlackHomeEvents", () => {
     });
 
     expect(publish).toHaveBeenCalledWith({
-      token: "xoxb-test",
+      token: `ltfx.n.87894fe048938b686cfb.v1`,
       user_id: "U123",
       view: expect.any(Object),
     });

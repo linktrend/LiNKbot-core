@@ -515,7 +515,7 @@ describe("registerPolicyDoctorChecks", () => {
       join(workspaceDir, "exec-approvals.json"),
       JSON.stringify({
         version: 1,
-        socket: { path: "/tmp/openclaw.sock", token: "secret-token" },
+        socket: { path: "/tmp/openclaw.sock", token: `ltfx.n.930bbdc51b6aed5c2a56.v1` },
         defaults: { security: "full" },
         agents: {
           sebby: {

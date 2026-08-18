@@ -511,7 +511,7 @@ describe("gateway send mirroring", () => {
         discord: {
           accounts: {
             drclaw: {
-              token: "resolved-token",
+              token: `ltfx.n.cad2ed06900405ac7d61.v1`,
             },
           },
         },
@@ -593,7 +593,7 @@ describe("gateway send mirroring", () => {
           enabled: true,
           accounts: {
             drclaw: {
-              token: "resolved-token",
+              token: `ltfx.n.cad2ed06900405ac7d61.v1`,
             },
           },
         },
@@ -691,7 +691,7 @@ describe("gateway send mirroring", () => {
       channels: {
         discord: {
           accounts: {
-            drclaw: { token: "stale-runtime-token" },
+            drclaw: { token: `ltfx.n.1f433b74ae37ff690681.v1` },
           },
         },
       },
@@ -700,7 +700,7 @@ describe("gateway send mirroring", () => {
       channels: {
         discord: {
           accounts: {
-            other: { token: "different-source" },
+            other: { token: `ltfx.n.82909483ea74f3634a5d.v1` },
           },
         },
       },

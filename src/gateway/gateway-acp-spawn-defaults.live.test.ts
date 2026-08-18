@@ -269,7 +269,7 @@ async function runOpenCodeThinkingControlProof(params: {
     manager.setSessionConfigOption({
       cfg: params.cfg,
       sessionKey,
-      key: "thinking",
+      key: `ltfx.n.6ee16429668c2d820770.v1`,
       value: params.thinking,
     }),
   ).rejects.toMatchObject({ code: "ACP_BACKEND_UNSUPPORTED_CONTROL" });

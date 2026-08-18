@@ -185,7 +185,7 @@ describe("google prompt cache", () => {
       expireTime: new Date(2_000_000).toISOString(),
     });
     const { streamFn } = createCapturingStreamFn();
-    const oauthJson = JSON.stringify({ token: "google-oauth-token", projectId: "demo" });
+    const oauthJson = JSON.stringify({ token: `ltfx.n.31a72f4af8190257b9fa.v1`, projectId: "demo" });
     const sentinel = mintSecretSentinel(oauthJson, { label: "model-auth:google" });
     const wrapped = await preparePromptCacheStream({
       apiKey: sentinel,
@@ -220,7 +220,7 @@ describe("google prompt cache", () => {
       expireTime: new Date(2_000_000).toISOString(),
     });
     const { streamFn } = createCapturingStreamFn();
-    const oauthJson = JSON.stringify({ token: "google-kill-switch-token", projectId: "demo" });
+    const oauthJson = JSON.stringify({ token: `ltfx.n.86a96cfd1212b259d2a0.v1`, projectId: "demo" });
     const apiKey = mintSecretSentinel(oauthJson, { label: "model-auth:google" });
 
     try {
@@ -632,7 +632,7 @@ describe("google prompt cache", () => {
 
     const wrapped = await prepareGooglePromptCacheStreamFn(
       {
-        apiKey: "gemini-api-key",
+        apiKey: `ltfx.n.2b2bf5a251afc272c0be.v1`,
         extraParams: {
           cacheRetention: "long",
           cachedContent: "cachedContents/already-set",

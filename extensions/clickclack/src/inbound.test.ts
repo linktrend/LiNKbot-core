@@ -127,7 +127,7 @@ function createAgentAccount(
     enabled: true,
     configured: true,
     baseUrl: "http://127.0.0.1:8080",
-    token: "test-token-placeholder",
+    token: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
     workspace: "wsp_1",
     replyMode: "agent",
     toolsAllow: [],
@@ -194,7 +194,7 @@ describe("handleClickClackInbound", () => {
       enabled: true,
       configured: true,
       baseUrl: "http://127.0.0.1:8080",
-      token: "test-auth-token",
+      token: `ltfx.n.f35cd067d05752edf483.v1`,
       workspace: "wsp_1",
       agentId: "service-bot",
       replyMode: "model",
@@ -609,7 +609,7 @@ describe("handleClickClackInbound", () => {
           clickclack: {
             enabled: true,
             baseUrl: "http://127.0.0.1:8080",
-            token: "test-token-placeholder",
+            token: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
             workspace: "wsp_1",
             discussions: { enabled: true, workspace: "wsp_1" },
           },
@@ -684,7 +684,7 @@ describe("handleClickClackInbound", () => {
           clickclack: {
             enabled: true,
             baseUrl: "http://127.0.0.1:8080",
-            token: "test-token-placeholder",
+            token: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
             workspace: "wsp_1",
             discussions: { enabled: true, workspace: "wsp_1" },
           },
@@ -727,7 +727,7 @@ describe("handleClickClackInbound", () => {
           clickclack: {
             enabled: true,
             baseUrl: "http://127.0.0.1:8080",
-            token: "test-token-placeholder",
+            token: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
             workspace: "wsp_1",
             discussions: { enabled: true, workspace: "wsp_1" },
           },
@@ -775,7 +775,7 @@ describe("handleClickClackInbound", () => {
           clickclack: {
             enabled: true,
             baseUrl: "http://127.0.0.1:8080",
-            token: "test-token-placeholder",
+            token: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
             workspace: "wsp_1",
             discussions: { enabled: true, workspace: "wsp_1" },
           },

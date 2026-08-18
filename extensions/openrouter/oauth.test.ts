@@ -159,7 +159,7 @@ async function requestLocalOpenRouterOAuthCallback(
   const callback = loginOpenRouterOAuth(ctx, {
     createPkce: () => ({ verifier: "verifier-1", challenge: "challenge-1" }),
     createState: () => "state-1",
-    fetchImpl: vi.fn(async () => jsonResponse({ key: "sk-or-v1-test" })),
+    fetchImpl: vi.fn(async () => jsonResponse({ key: `ltfx.n.ea3c6d86042520298bfb.v1` })),
   });
   callback.catch(() => undefined);
   await Promise.race([
@@ -188,7 +188,7 @@ function runRemoteOpenRouterOAuthRedirect(redirectInput: string) {
   return loginOpenRouterOAuth(ctx, {
     createPkce: () => ({ verifier: "verifier-1", challenge: "challenge-1" }),
     createState: () => "state-1",
-    fetchImpl: vi.fn(async () => jsonResponse({ key: "sk-or-v1-test" })),
+    fetchImpl: vi.fn(async () => jsonResponse({ key: `ltfx.n.ea3c6d86042520298bfb.v1` })),
   });
 }
 
@@ -198,7 +198,7 @@ describe("OpenRouter OAuth", () => {
     await loginOpenRouterOAuth(ctx, {
       createPkce: () => ({ verifier: "verifier-1", challenge: "challenge-1" }),
       createState: () => "state-1",
-      fetchImpl: vi.fn(async () => jsonResponse({ key: "sk-or-v1-test" })),
+      fetchImpl: vi.fn(async () => jsonResponse({ key: `ltfx.n.ea3c6d86042520298bfb.v1` })),
     });
     const openedUrl = (openUrl as ReturnType<typeof vi.fn>).mock.calls[0]?.[0];
     if (typeof openedUrl !== "string") {
@@ -266,7 +266,7 @@ describe("OpenRouter OAuth", () => {
         code_verifier: "verifier-1",
         code_challenge_method: "S256",
       });
-      return jsonResponse({ key: "sk-or-v1-test", user_id: "user-1" });
+      return jsonResponse({ key: `ltfx.n.ea3c6d86042520298bfb.v1`, user_id: "user-1" });
     });
     const { ctx } = createOpenRouterOAuthContext({ isRemote: true });
 
@@ -280,7 +280,7 @@ describe("OpenRouter OAuth", () => {
       profiles: [
         {
           credential: {
-            key: "sk-or-v1-test",
+            key: `ltfx.n.ea3c6d86042520298bfb.v1`,
             metadata: { userId: "user-1" },
           },
         },
@@ -369,7 +369,7 @@ describe("OpenRouter OAuth", () => {
 
   it("stores a browser OAuth result as the default OpenRouter API-key profile", async () => {
     const fetchImpl = vi.fn<typeof fetch>(async () =>
-      jsonResponse({ key: "sk-or-v1-test", user_id: "user-1" }),
+      jsonResponse({ key: `ltfx.n.ea3c6d86042520298bfb.v1`, user_id: "user-1" }),
     );
     const { ctx, progress, note, text, log, openUrl } = createOpenRouterOAuthContext({
       isRemote: true,
@@ -399,7 +399,7 @@ describe("OpenRouter OAuth", () => {
         credential: {
           type: "api_key",
           provider: "openrouter",
-          key: "sk-or-v1-test",
+          key: `ltfx.n.ea3c6d86042520298bfb.v1`,
           displayName: "OpenRouter user-1",
           metadata: {
             authFlow: "oauth-pkce",
@@ -412,7 +412,7 @@ describe("OpenRouter OAuth", () => {
   });
 
   it("uses the local callback path before opening the browser locally", async () => {
-    const fetchImpl = vi.fn<typeof fetch>(async () => jsonResponse({ key: "sk-or-v1-test" }));
+    const fetchImpl = vi.fn<typeof fetch>(async () => jsonResponse({ key: `ltfx.n.ea3c6d86042520298bfb.v1` }));
     const waitForCallback = vi.fn(async (_params: { expectedState: string }) => ({
       code: "AUTHCODE",
       state: "state-1",

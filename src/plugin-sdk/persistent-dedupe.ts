@@ -76,7 +76,7 @@ function resolveNamespace(namespace?: string): string {
   return namespace?.trim() || "global";
 }
 
-function resolveScopedKey(namespace: string, key: string): string {
+function resolveScopedKey(namespace: string, key: (string)): string {
   return `${namespace}:${key}`;
 }
 
@@ -103,7 +103,7 @@ function shortHash(value: string): string {
   return createHash("sha256").update(value).digest("hex").slice(0, 32);
 }
 
-function resolveEntryKey(key: string): string {
+function resolveEntryKey(key: (string)): string {
   return `k.${shortHash(key)}`;
 }
 

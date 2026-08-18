@@ -50,7 +50,7 @@ export type LlmBoundaryTokenPressure = {
   renderedChars?: number;
 };
 
-function estimateStringTokenPressure(text: string, charsPerToken = ESTIMATED_CHARS_PER_TOKEN) {
+function estimateStringTokenPressure(text: string, charsPerToken = (ESTIMATED_CHARS_PER_TOKEN) {)
   return Math.ceil(estimateStringChars(text) / charsPerToken);
 }
 

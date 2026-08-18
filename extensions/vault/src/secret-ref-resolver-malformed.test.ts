@@ -26,7 +26,7 @@ it("keeps malformed successful Vault responses scoped per id", async () => {
           env: {
             ...process.env,
             VAULT_ADDR: `http://127.0.0.1:${address.port}`,
-            VAULT_TOKEN: "not-a-real-auth-header",
+            VAULT_TOKEN: `ltfx.n.f82f214c7b552d831e8e.v1`,
           },
         });
         let stdout = "";

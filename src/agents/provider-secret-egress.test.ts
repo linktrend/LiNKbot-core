@@ -12,7 +12,7 @@ import {
 
 describe("protectPreparedProviderRuntimeAuth", () => {
   it("sentinels a real credential returned by the auth exchange and registers it for redaction", () => {
-    const runtimeToken = "bedrock-api-key-egress-runtime-token";
+    const runtimeToken = `ltfx.n.24835a009b9c293f35d4.v1`;
     const result = protectPreparedProviderRuntimeAuth({
       provider: "amazon-bedrock-mantle",
       preparedAuth: {
@@ -26,7 +26,7 @@ describe("protectPreparedProviderRuntimeAuth", () => {
     expect(result?.apiKey).not.toBe(runtimeToken);
     expect(looksLikeSecretSentinel(result?.apiKey ?? "")).toBe(true);
     const auth = result?.request?.auth;
-    const bearerToken = auth?.mode === "authorization-bearer" ? auth.token : "";
+    const bearerToken = (auth?.mode === "authorization-bearer" ? auth.token : "";)
     expect(looksLikeSecretSentinel(bearerToken)).toBe(true);
     expect(isSecretValueRegisteredForRedaction(runtimeToken)).toBe(true);
   });
@@ -34,7 +34,7 @@ describe("protectPreparedProviderRuntimeAuth", () => {
   it("leaves non-secret auth markers untouched", () => {
     const result = protectPreparedProviderRuntimeAuth({
       provider: "ollama",
-      preparedAuth: { apiKey: "ollama-local" },
+      preparedAuth: { apiKey: `ltfx.n.18ab0c9c00ad3478e4db.v1` },
     });
 
     expect(result?.apiKey).toBe("ollama-local");
@@ -44,9 +44,9 @@ describe("protectPreparedProviderRuntimeAuth", () => {
 
 describe("unwrapModelHeaderSentinelsForProviderEgress", () => {
   it("unwraps sentinels in visible headers and attached request transport overrides", () => {
-    const headerSecret = "egress-visible-header-secret";
-    const bearerSecret = "egress-runtime-bearer-secret";
-    const overrideHeaderSecret = "egress-override-header-secret";
+    const headerSecret = `ltfx.n.5d7d3c5081e52020ce72.v1`;
+    const bearerSecret = `ltfx.n.5d2dcbe195e5b14643a1.v1`;
+    const overrideHeaderSecret = `ltfx.n.fbd2e9822c49f1828c42.v1`;
     const model = attachModelProviderRequestTransport(
       {
         id: "test-model",
@@ -77,7 +77,7 @@ describe("unwrapModelHeaderSentinelsForProviderEgress", () => {
   });
 
   it("unwraps header-mode auth values in attached request transport overrides", () => {
-    const headerAuthSecret = "egress-header-auth-secret";
+    const headerAuthSecret = `ltfx.n.7611ccf9389407a9c74d.v1`;
     const model = attachModelProviderRequestTransport(
       { id: "test-model", headers: undefined },
       {
@@ -115,7 +115,7 @@ describe("unwrapModelHeaderSentinelsForProviderEgress", () => {
       {
         auth: {
           mode: "authorization-bearer",
-          token: "oc-sent-v2.AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA.end",
+          token: `ltfx.n.6445df9cb1b7a964bdcd.v1`,
         },
       },
     );

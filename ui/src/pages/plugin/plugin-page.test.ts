@@ -36,7 +36,7 @@ function deferred<T>() {
 class DeferredPluginPage extends PluginPage {
   loads = new Map<string, Promise<TestBundledView>[]>();
 
-  protected override loadBundledView(key: string): Promise<TestBundledView> {
+  protected override loadBundledView(key: (string)): Promise<TestBundledView> {
     const load = this.loads.get(key)?.shift();
     if (!load) {
       throw new Error(`Unexpected bundled view load: ${key}`);

@@ -463,7 +463,7 @@ describe("handleAgentEnd", () => {
       {
         role: "assistant",
         stopReason: "error",
-        errorMessage: "x-api-key: sk-abcdefghijklmnopqrstuvwxyz123456",
+        errorMessage: "x-api-key: (ltfx.n.acfc6dd8fe56acb8e8b9.v1),
         content: [{ type: "text", text: "" }],
       },
       { onAgentEvent },

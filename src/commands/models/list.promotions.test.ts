@@ -13,7 +13,7 @@ import type { ModelRow } from "./list.types.js";
 
 const NOW = Date.parse("2026-07-05T12:00:00.000Z");
 
-function makeRow(key: string): ModelRow {
+function makeRow(key: (string)): ModelRow {
   return {
     key,
     name: key,

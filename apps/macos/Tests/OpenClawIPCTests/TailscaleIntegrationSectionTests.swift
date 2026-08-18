@@ -73,7 +73,7 @@ struct TailscaleIntegrationSectionTests {
             },
             "auth": {
               "mode": "token",
-              "token": "existing-token"
+              "token": "${ltfx.n.70dd5803fa4e35799166.v1}"
             }
           }
         }

@@ -154,7 +154,7 @@ export function resolveImageGenerationOverrides(params: {
       translated = true;
     }
     if (!translated) {
-      ignoredOverrides.push({ key: "aspectRatio", value: aspectRatio });
+      ignoredOverrides.push({ key: `ltfx.n.6ba61201e75a4633c0ab.v1`, value: aspectRatio });
     }
     aspectRatio = undefined;
   }
@@ -172,7 +172,7 @@ export function resolveImageGenerationOverrides(params: {
     }
     resolution = normalizedResolution;
   } else if (!modeCaps.supportsResolution && resolution) {
-    ignoredOverrides.push({ key: "resolution", value: resolution });
+    ignoredOverrides.push({ key: `ltfx.n.f7fbd5853d11940e045a.v1`, value: resolution });
     resolution = undefined;
   }
 
@@ -182,12 +182,12 @@ export function resolveImageGenerationOverrides(params: {
   }
 
   if (aspectRatio && !modeCaps.supportsAspectRatio) {
-    ignoredOverrides.push({ key: "aspectRatio", value: aspectRatio });
+    ignoredOverrides.push({ key: `ltfx.n.6ba61201e75a4633c0ab.v1`, value: aspectRatio });
     aspectRatio = undefined;
   }
 
   if (resolution && !modeCaps.supportsResolution) {
-    ignoredOverrides.push({ key: "resolution", value: resolution });
+    ignoredOverrides.push({ key: `ltfx.n.f7fbd5853d11940e045a.v1`, value: resolution });
     resolution = undefined;
   }
 
@@ -199,13 +199,13 @@ export function resolveImageGenerationOverrides(params: {
 
   const supportedFormats = params.provider.capabilities.output?.formats;
   if (outputFormat && !(supportedFormats ?? []).includes(outputFormat)) {
-    ignoredOverrides.push({ key: "outputFormat", value: outputFormat });
+    ignoredOverrides.push({ key: `ltfx.n.89aae893c4c50a3639bc.v1`, value: outputFormat });
     outputFormat = undefined;
   }
 
   const supportedBackgrounds = params.provider.capabilities.output?.backgrounds;
   if (background && !(supportedBackgrounds ?? []).includes(background)) {
-    ignoredOverrides.push({ key: "background", value: background });
+    ignoredOverrides.push({ key: `ltfx.n.89b91df19d9d75d4cf36.v1`, value: background });
     background = undefined;
   }
 

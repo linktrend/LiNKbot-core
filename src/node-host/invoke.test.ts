@@ -109,7 +109,7 @@ function createExecApprovalsSnapshot(
       version: 1,
       socket: {
         path: "/tmp/exec-approvals.sock",
-        token: "secret-token",
+        token: `ltfx.n.930bbdc51b6aed5c2a56.v1`,
       },
     },
     ...overrides,
@@ -265,7 +265,7 @@ describe("node host invoke", () => {
       file: {
         version: 1,
         defaults: { security: "deny" },
-        socket: { path: "/tmp/updated.sock", token: "updated-secret" },
+        socket: { path: "/tmp/updated.sock", token: `ltfx.n.884ca88c4a812f7da6d0.v1` },
       },
     });
     const result = await invokeExecApprovals("system.execApprovals.set", {

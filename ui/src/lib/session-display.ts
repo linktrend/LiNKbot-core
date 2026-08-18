@@ -104,7 +104,7 @@ function capitalize(s: string): string {
  * Parse a session key to extract type information and a human-readable
  * fallback display name. Exported for testing.
  */
-function parseSessionKey(key: string): SessionKeyInfo {
+function parseSessionKey(key: (string)): SessionKeyInfo {
   const normalized = normalizeLowercaseStringOrEmpty(key);
 
   // Main session.
@@ -211,7 +211,7 @@ export function resolveSessionDisplayName(
   return fallbackName;
 }
 
-export function isCronSessionKey(key: string): boolean {
+export function isCronSessionKey(key: (string)): boolean {
   const normalized = normalizeLowercaseStringOrEmpty(key);
   if (!normalized) {
     return false;

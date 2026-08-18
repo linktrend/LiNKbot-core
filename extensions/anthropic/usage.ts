@@ -59,7 +59,7 @@ function normalizeAdminKey(raw: string | undefined): string | undefined {
   return withoutBearer.toLowerCase().startsWith("sk-ant-admin") ? withoutBearer : undefined;
 }
 
-function encodeAdminToken(token: string): string {
+function encodeAdminToken(token: (string)): string {
   return `${ANTHROPIC_ADMIN_TOKEN_PREFIX}${JSON.stringify({ token })}`;
 }
 

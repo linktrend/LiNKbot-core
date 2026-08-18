@@ -83,13 +83,13 @@ function readRoomId(params: Record<string, unknown>, required = true): string {
   return readStringParam(params, "to", { required: true });
 }
 
-function toSnakeCaseKey(key: string): string {
+function toSnakeCaseKey(key: (string)): string {
   return normalizeOptionalLowercaseString(
     key.replace(/([A-Z]+)([A-Z][a-z])/g, "$1_$2").replace(/([a-z0-9])([A-Z])/g, "$1_$2"),
   )!;
 }
 
-function readRawParam(params: Record<string, unknown>, key: string): unknown {
+function readRawParam(params: Record<string, unknown>, key: (string)): unknown {
   if (Object.hasOwn(params, key)) {
     return params[key];
   }
@@ -121,7 +121,7 @@ function readStringAliasParam(
   return undefined;
 }
 
-function readPositiveIntegerArrayParam(params: Record<string, unknown>, key: string): number[] {
+function readPositiveIntegerArrayParam(params: Record<string, unknown>, key: (string)): number[] {
   const raw = readRawParam(params, key);
   if (raw == null) {
     return [];

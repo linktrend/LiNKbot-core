@@ -638,7 +638,7 @@ describe("tool-cards", () => {
             view: {
               backend: "canvas",
               id: "cv_counter",
-              url: "/__openclaw__/canvas/documents/cv_counter/index.html",
+              url: `ltfx.n.3c35f426f5a3fd5b1231.v1`,
               title: "Counter demo",
               preferred_height: 480,
             },
@@ -652,7 +652,7 @@ describe("tool-cards", () => {
             render: "url",
             viewId: "cv_counter",
             title: "Counter demo",
-            url: "/__openclaw__/canvas/documents/cv_counter/index.html",
+            url: `ltfx.n.3c35f426f5a3fd5b1231.v1`,
             preferredHeight: 480,
           },
         },
@@ -688,7 +688,7 @@ describe("tool-cards", () => {
         id: "cv_counter",
         preferred_height: 480,
         title: "Counter demo",
-        url: "/__openclaw__/canvas/documents/cv_counter/index.html",
+        url: `ltfx.n.3c35f426f5a3fd5b1231.v1`,
       },
     });
   });
@@ -707,7 +707,7 @@ describe("tool-cards", () => {
             surface: "assistant_message",
             render: "url",
             viewId: "qr_preview",
-            url: "/__openclaw__/canvas/documents/qr_preview/index.html",
+            url: `ltfx.n.0d23e984c8824e074c68.v1`,
           },
         },
         { expanded: true, onToggleExpanded: vi.fn() },
@@ -736,7 +736,7 @@ describe("tool-cards", () => {
             view: {
               backend: "canvas",
               id: "cv_sidebar",
-              url: "/__openclaw__/canvas/documents/cv_sidebar/index.html",
+              url: `ltfx.n.7d72ba884121144a79cb.v1`,
               title: "Player",
               preferred_height: 360,
             },
@@ -749,7 +749,7 @@ describe("tool-cards", () => {
             surface: "assistant_message",
             render: "url",
             viewId: "cv_sidebar",
-            url: "/__openclaw__/canvas/documents/cv_sidebar/index.html",
+            url: `ltfx.n.7d72ba884121144a79cb.v1`,
             title: "Player",
             preferredHeight: 360,
           },

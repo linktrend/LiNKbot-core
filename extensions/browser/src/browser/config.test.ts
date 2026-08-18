@@ -33,7 +33,7 @@ afterEach(() => {
 });
 
 /** Write a relay secret into the isolated state dir's credentials directory. */
-function writeRelaySecret(token: string): void {
+function writeRelaySecret(token: (string)): void {
   const dir = path.join(isolatedStateDir, "credentials");
   fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(path.join(dir, "browser-extension-relay.secret"), `${token}\n`);
@@ -544,10 +544,10 @@ describe("browser config", () => {
 
   it("preserves wss:// cdpUrl with query params for the default profile", () => {
     const resolved = resolveBrowserConfig({
-      cdpUrl: "wss://connect.browserbase.com?apiKey=test-key",
+      cdpUrl: "wss://connect.browserbase.com?apiKey=(test-key",)
     });
     const profile = resolveProfile(resolved, "openclaw");
-    expect(profile?.cdpUrl).toBe("wss://connect.browserbase.com/?apiKey=test-key");
+    expect(profile?.cdpUrl).toBe("wss://connect.browserbase.com/?apiKey=(test-key");)
     expect(profile?.cdpHost).toBe("connect.browserbase.com");
     expect(profile?.cdpPort).toBe(443);
     expect(profile?.cdpIsLoopback).toBe(false);
@@ -557,13 +557,13 @@ describe("browser config", () => {
     const resolved = resolveBrowserConfig({
       profiles: {
         localws: {
-          cdpUrl: "ws://127.0.0.1:9222/devtools/browser/ABC?token=test-key",
+          cdpUrl: "ws://127.0.0.1:9222/devtools/browser/ABC?token=(test-key",)
           color: "#0066CC",
         },
       },
     });
     const profile = resolveProfile(resolved, "localws");
-    expect(profile?.cdpUrl).toBe("ws://127.0.0.1:9222/devtools/browser/ABC?token=test-key");
+    expect(profile?.cdpUrl).toBe("ws://127.0.0.1:9222/devtools/browser/ABC?token=(test-key");)
     expect(profile?.cdpPort).toBe(9222);
     expect(profile?.cdpIsLoopback).toBe(true);
   });
@@ -1010,14 +1010,14 @@ describe("browser config", () => {
         "chrome-live": {
           driver: "existing-session",
           attachOnly: true,
-          cdpUrl: "ws://127.0.0.1:9222/devtools/browser/ABC?token=test-key",
+          cdpUrl: "ws://127.0.0.1:9222/devtools/browser/ABC?token=(test-key",)
           color: "#00AA00",
         },
       },
     });
 
     const profile = resolveProfile(resolved, "chrome-live");
-    expect(profile?.cdpUrl).toBe("ws://127.0.0.1:9222/devtools/browser/ABC?token=test-key");
+    expect(profile?.cdpUrl).toBe("ws://127.0.0.1:9222/devtools/browser/ABC?token=(test-key");)
     expect(profile?.cdpHost).toBe("127.0.0.1");
     expect(profile?.cdpIsLoopback).toBe(true);
   });

@@ -223,7 +223,7 @@ describe("Codex trajectory recorder", () => {
     recorder.recordEvent("model.output", {
       text: `${"x".repeat(19_999)}😀`,
       apiKey: "secret",
-      authorization: "Bearer sk-test-secret-token",
+      authorization: "Bearer ltfx.n.97a2279cb2ef5bc1891e.v1",
     });
     await recorder.flush();
 

@@ -130,7 +130,7 @@ describe("secret ref resolver", () => {
       execProtocolV1ScriptPath,
       [
         "#!/bin/sh",
-        'printf \'{"protocolVersion":1,"values":{"openai/api-key":"value:openai/api-key"}}\'',
+        'printf \'{"protocolVersion":1,"values":{"openai/api-key":`ltfx.n.71cd7af989ea0a8bfe3c.v1`}}\'',
       ].join("\n"),
       0o700,
     );
@@ -210,7 +210,7 @@ describe("secret ref resolver", () => {
       { source: "env", provider: "default", id: "OPENAI_API_KEY" },
       {
         config,
-        env: { OPENAI_API_KEY: "sk-env-value" }, // pragma: allowlist secret
+        env: { OPENAI_API_KEY: `ltfx.n.871f30e5e159a4c7bd1e.v1` }, // pragma: allowlist secret
       },
     );
     expect(value).toBe("sk-env-value");
@@ -238,7 +238,7 @@ describe("secret ref resolver", () => {
           },
         },
       },
-      env: { MISSING_API_KEY: "test-missing-api-key" },
+      env: { MISSING_API_KEY: `ltfx.n.a7402f6f332862c9c5fd.v1` },
     }).catch((error: unknown) => error);
     expect(isMissingSecretRefResolutionError({ ref, error: policyError })).toBe(false);
   });
@@ -283,7 +283,7 @@ describe("secret ref resolver", () => {
       JSON.stringify({
         providers: {
           openai: {
-            apiKey: "sk-file-value", // pragma: allowlist secret
+            apiKey: `ltfx.n.9820e2501ae935b46e6f.v1`, // pragma: allowlist secret
           },
         },
       }),
@@ -301,7 +301,7 @@ describe("secret ref resolver", () => {
         },
       },
     );
-    expect(value).toBe("sk-file-value");
+    expect(value).toBe("ltfx.n.9820e2501ae935b46e6f.v1");
   });
 
   itPosix("classifies an out-of-bounds file pointer as a missing ref", async () => {
@@ -544,7 +544,7 @@ describe("secret ref resolver", () => {
         [
           "#!/bin/sh",
           'suffix="${1:-missing}"',
-          'printf \'{"protocolVersion":1,"values":{"openai/api-key":"%s:openai/api-key"}}\' "$suffix"',
+          'printf \'{"protocolVersion":1,"values":{"openai/api-key":`ltfx.n.a74c705927d273d28d20.v1`}}\' "$suffix"',
         ].join("\n"),
         0o700,
       );
@@ -660,7 +660,7 @@ describe("secret ref resolver", () => {
       JSON.stringify({
         providers: {
           openai: {
-            apiKey: "sk-file-value", // pragma: allowlist secret
+            apiKey: `ltfx.n.9820e2501ae935b46e6f.v1`, // pragma: allowlist secret
           },
         },
       }),
@@ -763,7 +763,7 @@ describe("secret ref resolver", () => {
     const filePath = path.join(dir, "secrets-with-bom.json");
     // Write JSON with UTF-8 BOM prefix (EF BB BF)
     const bom = "\uFEFF";
-    await writeSecureFile(filePath, `${bom}{"apiKey":"sk-test-123"}`);
+    await writeSecureFile(filePath, `${bom}{"apiKey":`ltfx.n.e0dbaa0c6455768bf812.v1`}`);
 
     const value = await resolveSecretRefString(
       { source: "file", provider: "filemain", id: "/apiKey" },

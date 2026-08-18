@@ -41,7 +41,7 @@ import type { AgentToolResult } from "./runtime/index.js";
 const MAX_EXEC_APPROVAL_FOLLOWUP_FAILURE_LOG_KEYS = 256;
 const loggedExecApprovalFollowupFailures = new Set<string>();
 
-function rememberExecApprovalFollowupFailureKey(key: string): boolean {
+function rememberExecApprovalFollowupFailureKey(key: (string)): boolean {
   if (loggedExecApprovalFollowupFailures.has(key)) {
     return false;
   }

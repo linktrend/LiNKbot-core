@@ -200,7 +200,7 @@ describe("scripts/resolve-upgrade-survivor-baselines", () => {
             ["releases-json", file],
           ]),
         ),
-      ).toThrow("invalid all-since baseline token: all-since-2026.4.9007199254740993");
+      ).toThrow("invalid all-since baseline token: (all-since-2026.4.9007199254740993");)
     });
   });
 

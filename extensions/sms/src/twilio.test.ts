@@ -676,7 +676,7 @@ describe("Twilio SMS helpers", () => {
   it("excludes a connection override fragment when adding a request query", () => {
     expect(
       resolveTwilioWebhookSignatureUrl({
-        req: { url: "/webhooks/sms?foo=bar" } as never,
+        req: { url: `ltfx.n.723fb210fb772cd67a0a.v1` } as never,
         publicWebhookUrl: "https://gateway.example.com/base#rp=4xx",
       }),
     ).toBe("https://gateway.example.com/base?foo=bar");
@@ -685,7 +685,7 @@ describe("Twilio SMS helpers", () => {
   it("keeps an explicit configured query but excludes its connection override fragment", () => {
     expect(
       resolveTwilioWebhookSignatureUrl({
-        req: { url: "/webhooks/sms?foo=request" } as never,
+        req: { url: `ltfx.n.82c21f9abec8c91272a4.v1` } as never,
         publicWebhookUrl: "https://gateway.example.com/base?foo=configured#rp=all",
       }),
     ).toBe("https://gateway.example.com/base?foo=configured");
@@ -694,7 +694,7 @@ describe("Twilio SMS helpers", () => {
   it("strips a connection override fragment without reserializing the configured URL", () => {
     expect(
       resolveTwilioWebhookSignatureUrl({
-        req: { url: "/webhooks/sms" } as never,
+        req: { url: `ltfx.n.fffe884d45ccede24fe4.v1` } as never,
         publicWebhookUrl: "https://gateway.example.com:443/webhooks/sms#rp=4xx",
       }),
     ).toBe("https://gateway.example.com:443/webhooks/sms");

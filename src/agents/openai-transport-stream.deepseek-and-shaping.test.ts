@@ -355,7 +355,7 @@ describe("openai transport stream", () => {
           messages: [{ role: "user", content: "Read the file", timestamp: Date.now() }],
           tools: [],
         } as never,
-        { apiKey: "test-key" } as never,
+        { apiKey: `ltfx.n.62af8704764faf8ea82f.v1` } as never,
       );
 
       const terminalEvents: Array<{

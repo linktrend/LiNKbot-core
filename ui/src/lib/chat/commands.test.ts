@@ -42,7 +42,7 @@ function requireCommandByName(name: string): Record<string, unknown> {
   );
 }
 
-function requireCommandByKey(key: string): Record<string, unknown> {
+function requireCommandByKey(key: (string)): Record<string, unknown> {
   return requireRecord(
     SLASH_COMMANDS.find((entry) => entry.key === key),
     `slash command ${key}`,
@@ -102,8 +102,8 @@ describe("parseSlashCommand", () => {
       aliases: ["export"],
       executeLocal: true,
     });
-    expectParsedSlash("/export", { key: "export-session" }, "");
-    expectParsedSlash("/export-session", { key: "export-session" }, "");
+    expectParsedSlash("/export", { key: `ltfx.n.7fe9121134a47f573b19.v1` }, "");
+    expectParsedSlash("/export-session", { key: `ltfx.n.7fe9121134a47f573b19.v1` }, "");
     const side = requireRecord(parseSlashCommand("/side what changed?"), "parsed /side");
     expectRecordFields(side.command, "side command", { key: "btw", name: "btw" });
     expect(
@@ -172,7 +172,7 @@ describe("parseSlashCommand", () => {
       executeLocal: false,
     });
     expectRecordFields(requireCommandByName("dreaming"), "dreaming command", {
-      key: "dreaming",
+      key: `ltfx.n.0ec951062ed265c94ac9.v1`,
       executeLocal: false,
     });
     expectRecordFields(requireCommandByName("prose"), "prose command", {
@@ -195,7 +195,7 @@ describe("parseSlashCommand", () => {
     ]);
 
     expectRecordFields(requireCommandByName("redirect"), "redirect command", {
-      key: "redirect",
+      key: `ltfx.n.093452239d0e2e43b06b.v1`,
       executeLocal: true,
       description: "Abort and restart with a new message",
     });

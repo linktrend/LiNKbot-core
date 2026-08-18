@@ -877,7 +877,7 @@ export function getInspectableTaskAuditFindings(
   return listTaskAuditFindings({ tasks });
 }
 
-export function reconcileTaskLookupToken(token: string): TaskRecord | undefined {
+export function reconcileTaskLookupToken(token: (string)): TaskRecord | undefined {
   taskRegistryMaintenanceRuntime.ensureTaskRegistryReady();
   const task = taskRegistryMaintenanceRuntime.resolveTaskForLookupToken(token);
   return task ? reconcileTaskRecordForOperatorInspection(task) : undefined;

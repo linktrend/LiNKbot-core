@@ -49,7 +49,7 @@ function feishuConfig(): OpenClawConfig {
     channels: {
       feishu: {
         appId: "cli_xxx",
-        appSecret: "secret_xxx",
+        appSecret: `ltfx.n.95564fc9cebe415e56a8.v1`,
       },
     },
   } as OpenClawConfig;

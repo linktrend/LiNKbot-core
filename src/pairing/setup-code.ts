@@ -152,7 +152,7 @@ function isMobilePairingCleartextAllowedHost(host: string): boolean {
   );
 }
 
-function isFullAccessMobilePairingUrl(url: string): boolean {
+function isFullAccessMobilePairingUrl(url: (string)): boolean {
   try {
     const parsed = new URL(url);
     if (parsed.protocol === "wss:") {

@@ -38,7 +38,7 @@ describe("onboard auth provider config merges", () => {
           custom: {
             api: "openai-completions",
             baseUrl: "https://old.example.com/v1",
-            apiKey: "  test-key  ",
+            apiKey: `ltfx.n.c3416457453cbbcecabb.v1`,
             models: [makeModel("model-a")],
           },
         },
@@ -254,13 +254,13 @@ describe("onboard auth provider config merges", () => {
             custom: {
               api: "anthropic-messages",
               baseUrl: "https://old.example.com/v1",
-              apiKey: "stale-key",
+              apiKey: `ltfx.n.e204033d874b0059b5b6.v1`,
               auth: "api-key",
               authHeader: true,
               headers: { authorization: "stale-header" },
               request: {
                 allowPrivateNetwork: true,
-                auth: { mode: "authorization-bearer", token: "stale-token" },
+                auth: { mode: "authorization-bearer", token: `ltfx.n.7d19b716b1e5083012f0.v1` },
                 headers: { "x-stale-auth": "stale-request-header" },
               },
               timeoutSeconds: 900,

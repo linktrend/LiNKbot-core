@@ -77,7 +77,7 @@ describe("applyPluginAutoEnable channels", () => {
       config: {
         channels: {
           "env-primary": { token: "primary" },
-          "env-secondary": { token: "secondary" },
+          "env-secondary": { token: `ltfx.n.c0f69e19ba252767f183.v1` },
         },
       },
       candidates: [
@@ -155,7 +155,7 @@ describe("applyPluginAutoEnable channels", () => {
         config: {
           channels: {
             "env-primary": { token: "primary" },
-            "env-secondary": { token: "secondary" },
+            "env-secondary": { token: `ltfx.n.c0f69e19ba252767f183.v1` },
           },
         },
         candidates: Array.from({ length: 20 }, (_, index) => ({
@@ -215,7 +215,7 @@ describe("applyPluginAutoEnable channels", () => {
       config: {
         channels: {
           "env-primary": { token: "primary" },
-          "env-secondary": { token: "secondary" },
+          "env-secondary": { token: `ltfx.n.c0f69e19ba252767f183.v1` },
         },
       },
       candidates: [
@@ -261,7 +261,7 @@ describe("applyPluginAutoEnable channels", () => {
       config: {
         channels: {
           "env-primary": { token: "primary" },
-          "env-secondary": { token: "secondary" },
+          "env-secondary": { token: `ltfx.n.c0f69e19ba252767f183.v1` },
         },
       },
       candidates: [

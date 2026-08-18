@@ -27,7 +27,7 @@ describe("matrix client storage paths", () => {
   const defaultStorageAuth = {
     homeserver: "https://matrix.example.org",
     userId: "@bot:example.org",
-    accessToken: "secret-token",
+    accessToken: `ltfx.n.930bbdc51b6aed5c2a56.v1`,
   };
 
   beforeEach(() => {
@@ -106,7 +106,7 @@ describe("matrix client storage paths", () => {
       stateDir,
       homeserver: defaultStorageAuth.homeserver,
       userId: defaultStorageAuth.userId,
-      accessToken: "secret-token-new",
+      accessToken: `ltfx.n.e9aa911538c3a9286702.v1`,
     });
     fs.mkdirSync(canonicalPaths.rootDir, { recursive: true });
     seedStorageMeta(canonicalPaths.rootDir, {
@@ -142,13 +142,13 @@ describe("matrix client storage paths", () => {
     }
 
     const oldStoragePaths = seedExistingStorageRoot({
-      accessToken: "secret-token-old",
+      accessToken: `ltfx.n.3df686240be852ce91f7.v1`,
       deviceId: "DEVICE123",
       storageMeta: {
         homeserver: defaultStorageAuth.homeserver,
         userId: defaultStorageAuth.userId,
         accountId: "default",
-        accessTokenHash: resolveDefaultStoragePaths({ accessToken: "secret-token-old" }).tokenHash,
+        accessTokenHash: resolveDefaultStoragePaths({ accessToken: `ltfx.n.3df686240be852ce91f7.v1` }).tokenHash,
         deviceId: "DEVICE123",
       },
     });
@@ -305,18 +305,18 @@ describe("matrix client storage paths", () => {
   function expectCanonicalRootForNewDevice(stateDir: string) {
     const newerCanonicalPaths = seedCanonicalStorageRoot({
       stateDir,
-      accessToken: "secret-token-new",
+      accessToken: `ltfx.n.e9aa911538c3a9286702.v1`,
       storageMeta: {
         homeserver: defaultStorageAuth.homeserver,
         userId: defaultStorageAuth.userId,
         accountId: "default",
-        accessTokenHash: resolveDefaultStoragePaths({ accessToken: "secret-token-new" }).tokenHash,
+        accessTokenHash: resolveDefaultStoragePaths({ accessToken: `ltfx.n.e9aa911538c3a9286702.v1` }).tokenHash,
         deviceId: "NEWDEVICE",
       },
     });
 
     const resolvedPaths = resolveDefaultStoragePaths({
-      accessToken: "secret-token-new",
+      accessToken: `ltfx.n.e9aa911538c3a9286702.v1`,
       deviceId: "NEWDEVICE",
     });
 
@@ -330,7 +330,7 @@ describe("matrix client storage paths", () => {
     const storagePaths = resolveMatrixStoragePaths({
       homeserver: "https://matrix.example.org",
       userId: "@Bot:example.org",
-      accessToken: "secret-token",
+      accessToken: `ltfx.n.930bbdc51b6aed5c2a56.v1`,
       accountId: "ops",
       env: {},
     });
@@ -422,17 +422,17 @@ describe("matrix client storage paths", () => {
   it("keeps the canonical current-token storage root when deviceId is still unknown", () => {
     const stateDir = setupStateDir();
     const oldStoragePaths = seedExistingStorageRoot({
-      accessToken: "secret-token-old",
+      accessToken: `ltfx.n.3df686240be852ce91f7.v1`,
     });
 
     const rotatedStoragePaths = resolveDefaultStoragePaths({
-      accessToken: "secret-token-new",
+      accessToken: `ltfx.n.e9aa911538c3a9286702.v1`,
     });
     const canonicalPaths = resolveMatrixAccountStorageRoot({
       stateDir,
       homeserver: defaultStorageAuth.homeserver,
       userId: defaultStorageAuth.userId,
-      accessToken: "secret-token-new",
+      accessToken: `ltfx.n.e9aa911538c3a9286702.v1`,
     });
 
     expect(rotatedStoragePaths.rootDir).toBe(canonicalPaths.rootDir);
@@ -444,19 +444,19 @@ describe("matrix client storage paths", () => {
     const logger = createTestLogger();
     setupStateDir(undefined, logger);
     const oldStoragePaths = seedExistingStorageRoot({
-      accessToken: "secret-token-old",
+      accessToken: `ltfx.n.3df686240be852ce91f7.v1`,
       deviceId: "DEVICE123",
       storageMeta: {
         homeserver: defaultStorageAuth.homeserver,
         userId: defaultStorageAuth.userId,
         accountId: "default",
-        accessTokenHash: resolveDefaultStoragePaths({ accessToken: "secret-token-old" }).tokenHash,
+        accessTokenHash: resolveDefaultStoragePaths({ accessToken: `ltfx.n.3df686240be852ce91f7.v1` }).tokenHash,
         deviceId: "DEVICE123",
       },
     });
 
     const rotatedStoragePaths = resolveDefaultStoragePaths({
-      accessToken: "secret-token-new",
+      accessToken: `ltfx.n.e9aa911538c3a9286702.v1`,
       deviceId: "DEVICE123",
     });
 
@@ -470,31 +470,31 @@ describe("matrix client storage paths", () => {
     const logger = createTestLogger();
     const stateDir = setupStateDir(undefined, logger);
     const oldStoragePaths = seedExistingStorageRoot({
-      accessToken: "secret-token-old",
+      accessToken: `ltfx.n.3df686240be852ce91f7.v1`,
       deviceId: "DEVICE123",
       storageMeta: {
         homeserver: defaultStorageAuth.homeserver,
         userId: defaultStorageAuth.userId,
         accountId: "default",
-        accessTokenHash: resolveDefaultStoragePaths({ accessToken: "secret-token-old" }).tokenHash,
+        accessTokenHash: resolveDefaultStoragePaths({ accessToken: `ltfx.n.3df686240be852ce91f7.v1` }).tokenHash,
         deviceId: "DEVICE123",
       },
     });
     const canonicalPaths = seedCanonicalStorageRoot({
       stateDir,
-      accessToken: "secret-token-new",
+      accessToken: `ltfx.n.e9aa911538c3a9286702.v1`,
       storageMeta: {
         homeserver: defaultStorageAuth.homeserver,
         userId: defaultStorageAuth.userId,
         accountId: "default",
-        accessTokenHash: resolveDefaultStoragePaths({ accessToken: "secret-token-new" }).tokenHash,
+        accessTokenHash: resolveDefaultStoragePaths({ accessToken: `ltfx.n.e9aa911538c3a9286702.v1` }).tokenHash,
         deviceId: "DEVICE123",
       },
     });
     fs.mkdirSync(path.join(canonicalPaths.rootDir, "crypto"), { recursive: true });
 
     const resolvedPaths = resolveDefaultStoragePaths({
-      accessToken: "secret-token-new",
+      accessToken: `ltfx.n.e9aa911538c3a9286702.v1`,
       deviceId: "DEVICE123",
     });
 
@@ -516,7 +516,7 @@ describe("matrix client storage paths", () => {
   it("reads legacy storage metadata until doctor migrates it to SQLite", () => {
     setupStateDir();
     const oldStoragePaths = resolveDefaultStoragePaths({
-      accessToken: "secret-token-old",
+      accessToken: `ltfx.n.3df686240be852ce91f7.v1`,
       deviceId: "DEVICE123",
     });
     seedLegacyStorageMeta(oldStoragePaths.rootDir, {
@@ -529,7 +529,7 @@ describe("matrix client storage paths", () => {
     });
 
     const rotatedStoragePaths = resolveDefaultStoragePaths({
-      accessToken: "secret-token-new",
+      accessToken: `ltfx.n.e9aa911538c3a9286702.v1`,
       deviceId: "DEVICE123",
     });
 
@@ -544,7 +544,7 @@ describe("matrix client storage paths", () => {
     (legacyFilename) => {
       const stateDir = setupStateDir();
       const oldStoragePaths = resolveDefaultStoragePaths({
-        accessToken: "secret-token-old",
+        accessToken: `ltfx.n.3df686240be852ce91f7.v1`,
         deviceId: "DEVICE123",
       });
       seedLegacyStorageMeta(oldStoragePaths.rootDir, {
@@ -558,19 +558,19 @@ describe("matrix client storage paths", () => {
 
       seedCanonicalStorageRoot({
         stateDir,
-        accessToken: "secret-token-new",
+        accessToken: `ltfx.n.e9aa911538c3a9286702.v1`,
         storageMeta: {
           homeserver: defaultStorageAuth.homeserver,
           userId: defaultStorageAuth.userId,
           accountId: "default",
-          accessTokenHash: resolveDefaultStoragePaths({ accessToken: "secret-token-new" })
+          accessTokenHash: resolveDefaultStoragePaths({ accessToken: `ltfx.n.e9aa911538c3a9286702.v1` })
             .tokenHash,
           deviceId: "DEVICE123",
         },
       });
 
       const rotatedStoragePaths = resolveDefaultStoragePaths({
-        accessToken: "secret-token-new",
+        accessToken: `ltfx.n.e9aa911538c3a9286702.v1`,
         deviceId: "DEVICE123",
       });
 
@@ -582,30 +582,30 @@ describe("matrix client storage paths", () => {
     const stateDir = setupStateDir();
     const oldStoragePaths = seedCanonicalStorageRoot({
       stateDir,
-      accessToken: "secret-token-old",
+      accessToken: `ltfx.n.3df686240be852ce91f7.v1`,
       storageMeta: {
         homeserver: defaultStorageAuth.homeserver,
         userId: defaultStorageAuth.userId,
         accountId: "default",
-        accessTokenHash: resolveDefaultStoragePaths({ accessToken: "secret-token-old" }).tokenHash,
+        accessTokenHash: resolveDefaultStoragePaths({ accessToken: `ltfx.n.3df686240be852ce91f7.v1` }).tokenHash,
         currentTokenStateClaimed: true,
         deviceId: "DEVICE123",
       },
     });
     seedCanonicalStorageRoot({
       stateDir,
-      accessToken: "secret-token-new",
+      accessToken: `ltfx.n.e9aa911538c3a9286702.v1`,
       storageMeta: {
         homeserver: defaultStorageAuth.homeserver,
         userId: defaultStorageAuth.userId,
         accountId: "default",
-        accessTokenHash: resolveDefaultStoragePaths({ accessToken: "secret-token-new" }).tokenHash,
+        accessTokenHash: resolveDefaultStoragePaths({ accessToken: `ltfx.n.e9aa911538c3a9286702.v1` }).tokenHash,
         deviceId: "DEVICE123",
       },
     });
 
     const rotatedStoragePaths = resolveDefaultStoragePaths({
-      accessToken: "secret-token-new",
+      accessToken: `ltfx.n.e9aa911538c3a9286702.v1`,
       deviceId: "DEVICE123",
     });
 
@@ -616,19 +616,19 @@ describe("matrix client storage paths", () => {
   it("does not reuse a populated older token-hash root while deviceId is unknown", () => {
     const stateDir = setupStateDir();
     const oldStoragePaths = seedExistingStorageRoot({
-      accessToken: "secret-token-old",
+      accessToken: `ltfx.n.3df686240be852ce91f7.v1`,
     });
 
     const newerCanonicalPaths = seedCanonicalStorageRoot({
       stateDir,
-      accessToken: "secret-token-new",
+      accessToken: `ltfx.n.e9aa911538c3a9286702.v1`,
       storageMeta: {
-        accessTokenHash: resolveDefaultStoragePaths({ accessToken: "secret-token-new" }).tokenHash,
+        accessTokenHash: resolveDefaultStoragePaths({ accessToken: `ltfx.n.e9aa911538c3a9286702.v1` }).tokenHash,
       },
     });
 
     const resolvedPaths = resolveDefaultStoragePaths({
-      accessToken: "secret-token-new",
+      accessToken: `ltfx.n.e9aa911538c3a9286702.v1`,
     });
 
     expect(resolvedPaths.rootDir).toBe(newerCanonicalPaths.rootDir);
@@ -639,7 +639,7 @@ describe("matrix client storage paths", () => {
   it("does not reuse a populated sibling storage root from a different device", () => {
     const stateDir = setupStateDir();
     seedExistingStorageRoot({
-      accessToken: "secret-token-old",
+      accessToken: `ltfx.n.3df686240be852ce91f7.v1`,
       deviceId: "OLDDEVICE",
       startupVerificationDeviceId: "OLDDEVICE",
     });
@@ -649,7 +649,7 @@ describe("matrix client storage paths", () => {
   it("does not reuse a populated sibling storage root with ambiguous device metadata", () => {
     const stateDir = setupStateDir();
     seedExistingStorageRoot({
-      accessToken: "secret-token-old",
+      accessToken: `ltfx.n.3df686240be852ce91f7.v1`,
     });
     expectCanonicalRootForNewDevice(stateDir);
   });
@@ -663,7 +663,7 @@ describe("matrix client storage paths", () => {
     repairCurrentTokenStorageMetaDeviceId({
       homeserver: defaultStorageAuth.homeserver,
       userId: defaultStorageAuth.userId,
-      accessToken: "secret-token-new",
+      accessToken: `ltfx.n.e9aa911538c3a9286702.v1`,
       accountId: "default",
       deviceId: "DEVICE123",
       env: createMigrationEnv(stateDir),
@@ -671,11 +671,11 @@ describe("matrix client storage paths", () => {
 
     expect(readStorageMeta(canonicalPaths.rootDir)).toMatchObject({ deviceId: "DEVICE123" });
     const startupPaths = resolveDefaultStoragePaths({
-      accessToken: "secret-token-new",
+      accessToken: `ltfx.n.e9aa911538c3a9286702.v1`,
     });
     expect(startupPaths.rootDir).toBe(canonicalPaths.rootDir);
     const restartedPaths = resolveDefaultStoragePaths({
-      accessToken: "secret-token-new",
+      accessToken: `ltfx.n.e9aa911538c3a9286702.v1`,
       deviceId: "DEVICE123",
     });
     expect(restartedPaths.rootDir).toBe(canonicalPaths.rootDir);
@@ -690,14 +690,14 @@ describe("matrix client storage paths", () => {
     repairCurrentTokenStorageMetaDeviceId({
       homeserver: defaultStorageAuth.homeserver,
       userId: defaultStorageAuth.userId,
-      accessToken: "secret-token-new",
+      accessToken: `ltfx.n.e9aa911538c3a9286702.v1`,
       accountId: "default",
       deviceId: "DEVICE123",
       env: createMigrationEnv(stateDir),
     });
 
     const restartedPaths = resolveDefaultStoragePaths({
-      accessToken: "secret-token-new",
+      accessToken: `ltfx.n.e9aa911538c3a9286702.v1`,
       deviceId: "DEVICE123",
     });
     expect(restartedPaths.rootDir).toBe(oldStoragePaths.rootDir);

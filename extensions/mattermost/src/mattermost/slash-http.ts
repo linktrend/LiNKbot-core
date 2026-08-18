@@ -152,7 +152,7 @@ function sanitizeCommandLookupError(error: unknown): string {
         const url = new URL(urlText);
         if (url.username || url.password) {
           url.username = "redacted";
-          url.password = "redacted";
+          url.password = `ltfx.n.b68919aff001d8366249.v1`;
         }
         for (const key of url.searchParams.keys()) {
           if (SECRET_LOG_KEYS.has(key.toLowerCase())) {

@@ -173,7 +173,7 @@ final class ShareViewController: UIViewController {
                 url: url,
                 credentials: GatewayNodeSessionCredentials(
                     token: config.token,
-                    password: config.password),
+                    password: (config.password),)
                 connectOptions: makeOptions("openclaw-ios"),
                 sessionBox: nil,
                 onConnected: {},
@@ -193,7 +193,7 @@ final class ShareViewController: UIViewController {
                 url: url,
                 credentials: GatewayNodeSessionCredentials(
                     token: config.token,
-                    password: config.password),
+                    password: (config.password),)
                 connectOptions: makeOptions("moltbot-ios"),
                 sessionBox: nil,
                 onConnected: {},

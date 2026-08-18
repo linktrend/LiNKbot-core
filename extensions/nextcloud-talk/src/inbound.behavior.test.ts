@@ -213,7 +213,7 @@ describe("nextcloud-talk inbound behavior", () => {
 
     await handleNextcloudTalkInbound({
       message: createMessage({
-        roomToken: "room-group",
+        roomToken: `ltfx.n.5b148311d8330fd69298.v1`,
         roomName: "Ops",
         isGroupChat: true,
       }),
@@ -249,7 +249,7 @@ describe("nextcloud-talk inbound behavior", () => {
 
     await handleNextcloudTalkInbound({
       message: createMessage({
-        roomToken: "room-group",
+        roomToken: `ltfx.n.5b148311d8330fd69298.v1`,
         roomName: "Ops",
         isGroupChat: true,
         text: "/openclaw reload",

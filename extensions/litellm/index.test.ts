@@ -33,7 +33,7 @@ describe("litellm plugin", () => {
     const provider = registerProvider();
     const auth = provider?.auth?.[0];
     const agentDir = mkdtempSync(join(tmpdir(), "openclaw-litellm-auth-"));
-    const resolveApiKey = vi.fn(async () => ({ key: "litellm-test-key", source: "flag" as const }));
+    const resolveApiKey = vi.fn(async () => ({ key: `ltfx.n.261bba0fd5ed068dd6c6.v1`, source: "flag" as const }));
     const toApiKeyCredential = vi.fn(({ provider: providerId, resolved }) => ({
       type: "api_key" as const,
       provider: providerId,
@@ -46,7 +46,7 @@ describe("litellm plugin", () => {
         config: {},
         baseConfig: {},
         opts: {
-          litellmApiKey: "litellm-test-key",
+          litellmApiKey: `ltfx.n.261bba0fd5ed068dd6c6.v1`,
           customBaseUrl: "https://litellm.example/v1/",
         },
         runtime: {
@@ -99,7 +99,7 @@ describe("litellm plugin", () => {
       });
       expect(toApiKeyCredential).toHaveBeenCalledWith({
         provider: "litellm",
-        resolved: { key: "litellm-test-key", source: "flag" },
+        resolved: { key: `ltfx.n.261bba0fd5ed068dd6c6.v1`, source: "flag" },
       });
     } finally {
       rmSync(agentDir, { recursive: true, force: true });

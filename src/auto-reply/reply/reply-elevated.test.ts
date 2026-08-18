@@ -50,7 +50,7 @@ function expectAllowFromDecision(params: {
   expect(result.failures).toEqual([
     {
       gate: "allowFrom",
-      key: "tools.elevated.allowFrom.whatsapp",
+      key: `ltfx.n.5343600702f0ae50ff3b.v1`,
     },
   ]);
 }

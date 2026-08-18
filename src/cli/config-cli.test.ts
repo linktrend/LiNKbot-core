@@ -989,8 +989,8 @@ describe("config cli", () => {
         gateway: {
           auth: {
             mode: "password",
-            token: "token-keep",
-            password: "password-drop", // pragma: allowlist secret
+            token: `ltfx.n.b853d7c97baa047b710d.v1`,
+            password: `ltfx.n.2eb914d142f42f149cdd.v1`, // pragma: allowlist secret
             allowTailscale: true,
           },
         },
@@ -1003,7 +1003,7 @@ describe("config cli", () => {
       const written = firstWrittenConfig();
       expect(written.gateway?.auth).toEqual({
         mode: "token",
-        token: "token-keep",
+        token: `ltfx.n.b853d7c97baa047b710d.v1`,
         allowTailscale: true,
       });
       expectLogIncludes("Removed inactive gateway.auth.password for gateway.auth.mode=token");
@@ -1014,8 +1014,8 @@ describe("config cli", () => {
         gateway: {
           auth: {
             mode: "token",
-            token: "token-drop",
-            password: "password-keep", // pragma: allowlist secret
+            token: `ltfx.n.6fca22bd8912f9b087d0.v1`,
+            password: `ltfx.n.7f5429bf718e81e9f548.v1`, // pragma: allowlist secret
           },
         },
       };
@@ -1027,7 +1027,7 @@ describe("config cli", () => {
       const written = firstWrittenConfig();
       expect(written.gateway?.auth).toEqual({
         mode: "password",
-        password: "password-keep", // pragma: allowlist secret
+        password: `ltfx.n.7f5429bf718e81e9f548.v1`, // pragma: allowlist secret
       });
       expectLogIncludes("Removed inactive gateway.auth.token for gateway.auth.mode=password");
     });
@@ -1037,8 +1037,8 @@ describe("config cli", () => {
         gateway: {
           auth: {
             mode: "password",
-            token: "token-keep",
-            password: "password-drop", // pragma: allowlist secret
+            token: `ltfx.n.b853d7c97baa047b710d.v1`,
+            password: `ltfx.n.2eb914d142f42f149cdd.v1`, // pragma: allowlist secret
           },
         },
       };
@@ -1055,7 +1055,7 @@ describe("config cli", () => {
       const written = firstWrittenConfig();
       expect(written.gateway?.auth).toEqual({
         mode: "token",
-        token: "token-keep",
+        token: `ltfx.n.b853d7c97baa047b710d.v1`,
       });
       expectLogIncludes("Removed inactive gateway.auth.password for gateway.auth.mode=token");
     });
@@ -1066,7 +1066,7 @@ describe("config cli", () => {
       const resolved: OpenClawConfig = {
         gateway: {
           auth: {
-            token: "super-secret-token",
+            token: `ltfx.n.599a7f359d1e11124054.v1`,
           },
         },
       };

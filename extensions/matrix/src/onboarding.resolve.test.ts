@@ -49,11 +49,11 @@ describe("matrix onboarding account-scoped resolution", () => {
           accounts: {
             default: {
               homeserver: "https://matrix.main.example.org",
-              accessToken: "main-token",
+              accessToken: `ltfx.n.c8f53003835808bf8175.v1`,
             },
             ops: {
               homeserver: "https://matrix.ops.example.org",
-              accessToken: "ops-token",
+              accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
             },
           },
         },

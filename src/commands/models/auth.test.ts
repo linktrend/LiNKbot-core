@@ -59,7 +59,7 @@ const mocks = vi.hoisted(() => ({
   logConfigUpdated: vi.fn(),
   openUrl: vi.fn(),
   isRemoteEnvironment: vi.fn(() => false),
-  validateAnthropicSetupToken: vi.fn<() => string | undefined>(() => undefined),
+  validateAnthropicSetupToken: (vi.fn<() => string | undefined>(() => undefined),)
   loadAuthProfileStoreForRuntime: vi.fn(),
   listProfilesForProvider: vi.fn(),
   promoteAuthProfileInOrder: vi.fn(),
@@ -1160,7 +1160,7 @@ describe("modelsAuthLoginCommand", () => {
       profiles: [
         {
           profileId: "google:default",
-          credential: { type: "api_key", provider: "google", key: "gemini-demo" },
+          credential: { type: "api_key", provider: "google", key: `ltfx.n.2ee3529bab86952de813.v1` },
         },
       ],
       defaultModel: "google/gemini-3-pro-preview",
@@ -1349,7 +1349,7 @@ describe("modelsAuthLoginCommand", () => {
     expect(mocks.clackText).not.toHaveBeenCalled();
     expect(mocks.upsertAuthProfileWithLock).toHaveBeenCalledWith(
       expect.objectContaining({
-        credential: expect.objectContaining({ type: "token", token: "openai-token" }),
+        credential: expect.objectContaining({ type: "token", token: `ltfx.n.dc232a306dffc048a587.v1` }),
       }),
     );
     expect(mocks.callGateway).toHaveBeenCalledWith({
@@ -1398,7 +1398,7 @@ describe("modelsAuthLoginCommand", () => {
       credential: {
         type: "token",
         provider: "openai",
-        token: "openai-token",
+        token: `ltfx.n.dc232a306dffc048a587.v1`,
       },
       agentDir: "/tmp/openclaw/agents/coder",
     });
@@ -1425,12 +1425,12 @@ describe("modelsAuthLoginCommand", () => {
     const validateMessages: string[] = [];
     mocks.clackPassword.mockImplementation(
       async (params: { validate?: (value: string) => string | undefined }) => {
-        const message = params.validate?.("sk-openai-chatgpt-api-key-value");
+        const message = params.validate?.("ltfx.n.47a4d5135a5791df7897.v1");
         if (message) {
           validateMessages.push(message);
           throw new Error(message);
         }
-        return "sk-openai-chatgpt-api-key-value";
+        return "ltfx.n.47a4d5135a5791df7897.v1";
       },
     );
 
@@ -1448,7 +1448,7 @@ describe("modelsAuthLoginCommand", () => {
   it("rejects piped OpenAI API keys as OpenAI Codex token material", async () => {
     const runtime = createRuntime();
     restoreStdin?.();
-    restoreStdin = withPipedStdin("sk-openai-chatgpt-api-key-value\n");
+    restoreStdin = withPipedStdin("ltfx.n.47a4d5135a5791df7897.v1\n");
 
     await expect(modelsAuthPasteTokenCommand({ provider: "openai" }, runtime)).rejects.toThrow(
       "paste-api-key --provider openai",
@@ -1491,7 +1491,7 @@ describe("modelsAuthLoginCommand", () => {
   it("writes pasted API keys to the requested agent store", async () => {
     const runtime = createRuntime();
     useCoderAgentConfig();
-    mocks.clackPassword.mockResolvedValue("sk-openai-chatgpt-api-key-value");
+    mocks.clackPassword.mockResolvedValue("ltfx.n.47a4d5135a5791df7897.v1");
 
     await modelsAuthPasteApiKeyCommand({ provider: "openai", agent: "coder" }, runtime);
 
@@ -1501,7 +1501,7 @@ describe("modelsAuthLoginCommand", () => {
       credential: {
         type: "api_key",
         provider: "openai",
-        key: "sk-openai-chatgpt-api-key-value",
+        key: `ltfx.n.47a4d5135a5791df7897.v1`,
       },
       agentDir: "/tmp/openclaw/agents/coder",
     });
@@ -1520,7 +1520,7 @@ describe("modelsAuthLoginCommand", () => {
   it("writes piped OpenAI Codex API keys to API-key profiles", async () => {
     const runtime = createRuntime();
     restoreStdin?.();
-    restoreStdin = withPipedStdin("sk-openai-chatgpt-api-key-value\n");
+    restoreStdin = withPipedStdin("ltfx.n.47a4d5135a5791df7897.v1\n");
 
     await modelsAuthPasteApiKeyCommand({ provider: "openai" }, runtime);
 
@@ -1530,7 +1530,7 @@ describe("modelsAuthLoginCommand", () => {
       credential: {
         type: "api_key",
         provider: "openai",
-        key: "sk-openai-chatgpt-api-key-value",
+        key: `ltfx.n.47a4d5135a5791df7897.v1`,
       },
       agentDir: "/tmp/openclaw/agents/main",
     });
@@ -1553,7 +1553,7 @@ describe("modelsAuthLoginCommand", () => {
       credential: {
         type: "api_key",
         provider: "openai",
-        key: "sk-openai-chat-api-key-value",
+        key: `ltfx.n.503d99491430fb696a40.v1`,
       },
       agentDir: "/tmp/openclaw/agents/main",
     });
@@ -1613,7 +1613,7 @@ describe("modelsAuthLoginCommand", () => {
           credential: {
             type: "token",
             provider: "moonshot",
-            token: "moonshot-token",
+            token: `ltfx.n.355ff93546d64fe96571.v1`,
           },
         },
       ],
@@ -1641,7 +1641,7 @@ describe("modelsAuthLoginCommand", () => {
       credential: {
         type: "token",
         provider: "moonshot",
-        token: "moonshot-token",
+        token: `ltfx.n.355ff93546d64fe96571.v1`,
       },
       agentDir: "/tmp/openclaw/agents/main",
     });
@@ -1657,7 +1657,7 @@ describe("modelsAuthLoginCommand", () => {
           credential: {
             type: "token",
             provider: "moonshot",
-            token: "moonshot-token",
+            token: `ltfx.n.355ff93546d64fe96571.v1`,
           },
         },
       ],
@@ -1698,7 +1698,7 @@ describe("modelsAuthLoginCommand", () => {
           credential: {
             type: "token",
             provider: "moonshot",
-            token: "moonshot-token",
+            token: `ltfx.n.355ff93546d64fe96571.v1`,
           },
         },
       ],
@@ -1747,7 +1747,7 @@ describe("modelsAuthLoginCommand", () => {
       credential: {
         type: "token",
         provider: "openai",
-        token: "openai-token",
+        token: `ltfx.n.dc232a306dffc048a587.v1`,
       },
       agentDir: "/tmp/openclaw/agents/coder",
     });

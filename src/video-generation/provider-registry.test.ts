@@ -65,7 +65,7 @@ describe("video-generation provider registry", () => {
     expect(delegationCase.providers).toStrictEqual([]);
     expect(delegationCase.calls).toContainEqual([
       {
-        key: "videoGenerationProviders",
+        key: `ltfx.n.ef33178afa7883f23adc.v1`,
         cfg: undefined,
       },
     ]);
@@ -79,7 +79,7 @@ describe("video-generation provider registry", () => {
 
     expect(provider?.id).toBe("custom-video");
     expect(resolvePluginCapabilityProvidersMock).toHaveBeenCalledWith({
-      key: "videoGenerationProviders",
+      key: `ltfx.n.ef33178afa7883f23adc.v1`,
       cfg: undefined,
     });
   });

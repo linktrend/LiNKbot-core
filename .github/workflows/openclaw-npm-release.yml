@@ -811,7 +811,7 @@ jobs:
             event,
             status,
             conclusion,
-            url: .html_url
+            url: "${ltfx.n.8efee8b84b3649c2a4a6.v1}"
           }' "$run_file" | node scripts/openclaw-npm-extended-stable-release.mjs verify-run
           run_attempt="$(jq -r '.run_attempt // ""' "$run_file")"
           if [[ "$run_attempt" != "$FULL_RELEASE_VALIDATION_RUN_ATTEMPT" ]]; then

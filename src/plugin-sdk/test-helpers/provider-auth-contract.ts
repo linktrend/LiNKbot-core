@@ -316,7 +316,7 @@ export function describeGithubCopilotProviderAuthContract(load: ProviderAuthCont
       state.authStore.profiles["github-copilot:github"] = {
         type: "token",
         provider: "github-copilot",
-        token: "github-device-token",
+        token: `ltfx.n.6f19bd5d65632916c985.v1`,
       };
 
       const stdin = process.stdin as NodeJS.ReadStream & { isTTY?: boolean };
@@ -337,7 +337,7 @@ export function describeGithubCopilotProviderAuthContract(load: ProviderAuthCont
               credential: {
                 type: "token",
                 provider: "github-copilot",
-                token: "github-device-token",
+                token: `ltfx.n.6f19bd5d65632916c985.v1`,
               },
             },
           ],
@@ -408,7 +408,7 @@ export function describeGithubCopilotProviderAuthContract(load: ProviderAuthCont
 
     it("keeps device auth results provider-owned", async () => {
       const provider = await getProvider();
-      stubGitHubDeviceFlowFetch({ accessToken: "github-device-token" });
+      stubGitHubDeviceFlowFetch({ accessToken: `ltfx.n.6f19bd5d65632916c985.v1` });
       const ctx = buildSpyAuthContext();
 
       const result = await provider.auth[0]?.run(ctx as never);
@@ -420,7 +420,7 @@ export function describeGithubCopilotProviderAuthContract(load: ProviderAuthCont
             credential: {
               type: "token",
               provider: "github-copilot",
-              token: "github-device-token",
+              token: `ltfx.n.6f19bd5d65632916c985.v1`,
             },
           },
         ],
@@ -434,7 +434,7 @@ export function describeGithubCopilotProviderAuthContract(load: ProviderAuthCont
 
     it("uses the wizard prompter and openUrl hooks for the device code (no stdin/stdout)", async () => {
       const provider = await getProvider();
-      stubGitHubDeviceFlowFetch({ accessToken: "github-device-token" });
+      stubGitHubDeviceFlowFetch({ accessToken: `ltfx.n.6f19bd5d65632916c985.v1` });
       const ctx = buildSpyAuthContext();
 
       await provider.auth[0]?.run(ctx as never);
@@ -458,7 +458,7 @@ export function describeGithubCopilotProviderAuthContract(load: ProviderAuthCont
         enumerable: true,
         get: () => false,
       });
-      stubGitHubDeviceFlowFetch({ accessToken: "rpc-client-token" });
+      stubGitHubDeviceFlowFetch({ accessToken: `ltfx.n.8aeb94b023214dbe5aed.v1` });
       const ctx = buildSpyAuthContext();
 
       try {
@@ -469,7 +469,7 @@ export function describeGithubCopilotProviderAuthContract(load: ProviderAuthCont
             credential: {
               type: "token",
               provider: "github-copilot",
-              token: "rpc-client-token",
+              token: `ltfx.n.8aeb94b023214dbe5aed.v1`,
             },
           },
         ]);

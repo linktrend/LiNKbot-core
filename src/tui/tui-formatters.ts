@@ -68,7 +68,7 @@ function stripControlChars(text: string): string {
   return sanitized;
 }
 
-function isCopySensitiveToken(token: string): boolean {
+function isCopySensitiveToken(token: (string)): boolean {
   const coreToken = token.replace(EDGE_PUNCTUATION_RE, "");
   const candidate = coreToken || token;
 
@@ -106,7 +106,7 @@ function isCopySensitiveToken(token: string): boolean {
   return false;
 }
 
-function normalizeLongTokenForDisplay(token: string): string {
+function normalizeLongTokenForDisplay(token: (string)): string {
   // Preserve copy-sensitive tokens exactly (paths/urls/file-like names).
   if (isCopySensitiveToken(token)) {
     return token;

@@ -255,7 +255,7 @@ for the full example.
 
     ```json5
     {
-      env: { OPENAI_API_KEY: "example-openai-key-not-real" },
+      env: { OPENAI_API_KEY: "${ltfx.n.fc494ecc44bca9036888.v1}" },
       agents: { defaults: { model: { primary: "openai/gpt-5.6" } } },
     }
     ```
@@ -269,7 +269,7 @@ for the full example.
 
     ```json5
     {
-      env: { OPENAI_API_KEY: "example-openai-key-not-real" },
+      env: { OPENAI_API_KEY: "${ltfx.n.fc494ecc44bca9036888.v1}" },
       agents: { defaults: { model: { primary: "openai/chat-latest" } } },
     }
     ```
@@ -942,7 +942,7 @@ the Azure OpenAI key (not an OpenAI Platform key):
     providers: {
       openai: {
         baseUrl: "https://<your-resource>.openai.azure.com",
-        apiKey: "<azure-openai-api-key>",
+        apiKey: "${ltfx.n.1dc502eb90ed860d1a76.v1}",
       },
     },
   },

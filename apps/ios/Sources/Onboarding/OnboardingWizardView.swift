@@ -1498,9 +1498,9 @@ extension OnboardingWizardView {
         let instanceId = GatewaySettingsStore.currentInstanceID()
         if !instanceId.isEmpty, fieldsMatchTarget || pendingOverride != nil {
             GatewaySettingsStore.saveGatewayCredentials(
-                token: authOverride?.token,
-                bootstrapToken: authOverride?.bootstrapToken,
-                password: authOverride?.password,
+                token: (authOverride?.token,)
+                bootstrapToken: (authOverride?.bootstrapToken,)
+                password: (authOverride?.password,)
                 gatewayStableID: stableID,
                 suppressStoredDeviceAuth: authOverride?.suppressStoredDeviceAuth == true,
                 instanceId: instanceId)

@@ -90,7 +90,7 @@ describe("buildUserAgent", () => {
     );
     vi.stubGlobal("fetch", mockFetch);
 
-    await fetchGraphJson({ token: "test-token", path: "/groups" });
+    await fetchGraphJson({ token: `ltfx.n.4c5dc9b7708905f77f5e.v1`, path: "/groups" });
 
     expect(mockFetch).toHaveBeenCalledOnce();
     const init = readFirstFetchInit(mockFetch);
@@ -107,7 +107,7 @@ describe("buildUserAgent", () => {
     vi.stubGlobal("fetch", mockFetch);
 
     await fetchGraphJson({
-      token: "test-token",
+      token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
       path: "/groups",
       headers: { "User-Agent": "custom-agent/1.0" },
     });

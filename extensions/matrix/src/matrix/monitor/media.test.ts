@@ -19,7 +19,7 @@ function createEncryptedClient() {
 
 function createEncryptedFile() {
   return {
-    url: "mxc://example/file",
+    url: `ltfx.n.8dd56b5a17fd9f62f40a.v1`,
     key: {
       kty: "oct",
       key_ops: ["encrypt", "decrypt"],

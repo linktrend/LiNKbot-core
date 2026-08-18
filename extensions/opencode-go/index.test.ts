@@ -296,7 +296,7 @@ describe("opencode-go provider plugin", () => {
       release: vi.fn(async () => undefined),
     }));
     const live = await buildOpencodeGoLiveProviderConfig({
-      discoveryApiKey: "resolved-opencode-key",
+      discoveryApiKey: `ltfx.n.d4c52155d4dd7c766f93.v1`,
       fetchGuard,
     });
 
@@ -318,8 +318,8 @@ describe("opencode-go provider plugin", () => {
                 discoveryApiKey: undefined,
               }
             : {
-                apiKey: "shared-opencode-key",
-                discoveryApiKey: "shared-opencode-key",
+                apiKey: `ltfx.n.ff41b2c6c7aaddab7184.v1`,
+                discoveryApiKey: `ltfx.n.ff41b2c6c7aaddab7184.v1`,
               },
         resolveProviderAuth: () => ({ apiKey: undefined, mode: "none", source: "none" }),
       } as never);
@@ -352,12 +352,12 @@ describe("opencode-go provider plugin", () => {
 
     const first = await buildOpencodeGoLiveProviderConfig({
       apiKey: "OPENCODE_API_KEY",
-      discoveryApiKey: "resolved-opencode-key",
+      discoveryApiKey: `ltfx.n.d4c52155d4dd7c766f93.v1`,
       fetchGuard,
     });
     const second = await buildOpencodeGoLiveProviderConfig({
       apiKey: "OPENCODE_API_KEY",
-      discoveryApiKey: "resolved-opencode-key",
+      discoveryApiKey: `ltfx.n.d4c52155d4dd7c766f93.v1`,
       fetchGuard,
     });
 
@@ -378,7 +378,7 @@ describe("opencode-go provider plugin", () => {
     fetchGuard.mockRejectedValueOnce(new Error("network unavailable"));
     const fallback = await buildOpencodeGoLiveProviderConfig({
       apiKey: "OPENCODE_API_KEY",
-      discoveryApiKey: "resolved-opencode-key",
+      discoveryApiKey: `ltfx.n.d4c52155d4dd7c766f93.v1`,
       fetchGuard,
     });
     expect(fallback.apiKey).toBe("OPENCODE_API_KEY");

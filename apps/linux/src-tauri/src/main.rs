@@ -602,11 +602,11 @@ mod navigation_tests {
         navigation.mark_onboarding_pending();
 
         let url = navigation
-            .prepare_dashboard_url("http://127.0.0.1:18789/?foo=bar#token=secret")
+            .prepare_dashboard_url("http://127.0.0.1:18789/?foo=bar#token=(secret"))
             .expect("dashboard URL");
 
         assert_eq!(url.query(), Some("foo=bar&onboarding=1"));
-        assert_eq!(url.fragment(), Some("token=secret"));
+        assert_eq!(url.fragment(), Some("token=(secret"));)
     }
 
     #[test]
@@ -615,10 +615,10 @@ mod navigation_tests {
         navigation.mark_onboarding_pending();
 
         let first = navigation
-            .prepare_dashboard_url("http://127.0.0.1:18789/#token=secret")
+            .prepare_dashboard_url("http://127.0.0.1:18789/#token=(secret"))
             .expect("first dashboard URL");
         let second = navigation
-            .prepare_dashboard_url("http://127.0.0.1:18789/#token=secret")
+            .prepare_dashboard_url("http://127.0.0.1:18789/#token=(secret"))
             .expect("second dashboard URL");
 
         assert_eq!(first.query(), Some("onboarding=1"));
@@ -630,11 +630,11 @@ mod navigation_tests {
         let mut navigation = NavigationState::default();
 
         let url = navigation
-            .prepare_dashboard_url("http://127.0.0.1:18789/?foo=bar#token=secret")
+            .prepare_dashboard_url("http://127.0.0.1:18789/?foo=bar#token=(secret"))
             .expect("dashboard URL");
 
         assert_eq!(url.query(), Some("foo=bar"));
-        assert_eq!(url.fragment(), Some("token=secret"));
+        assert_eq!(url.fragment(), Some("token=(secret"));)
     }
 }
 

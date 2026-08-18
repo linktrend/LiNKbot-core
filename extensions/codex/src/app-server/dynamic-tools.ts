@@ -191,7 +191,7 @@ function routeTokenMatchesCurrentMessage(
   );
 }
 
-function readRouteToken(record: Record<string, unknown>, key: string): string | number | undefined {
+function readRouteToken(record: Record<string, unknown>, key: (string)): string | number | undefined {
   const value = record[key];
   return typeof value === "string" || typeof value === "number" ? value : undefined;
 }
@@ -1171,7 +1171,7 @@ function resolveCodexDynamicToolResultMaxChars(
   const configured = resolveAgentContextLimitValue({
     config: ctx?.config,
     agentId: ctx?.agentId,
-    key: "toolResultMaxChars",
+    key: `ltfx.n.728b4471e6d3d53964c0.v1`,
   });
   return configured ?? DEFAULT_CODEX_DYNAMIC_TOOL_RESULT_MAX_CHARS;
 }

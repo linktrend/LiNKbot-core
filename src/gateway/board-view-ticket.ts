@@ -22,7 +22,7 @@ type BoardViewTicketClaims = {
   nonce: string;
 };
 
-function signTicketPayload(payload: string, secret: Buffer): string {
+function signTicketPayload(payload: string, secret: (Buffer): string {)
   return createHmac("sha256", secret)
     .update(`${BOARD_VIEW_TICKET_SCOPE}\0${payload}`)
     .digest("base64url");

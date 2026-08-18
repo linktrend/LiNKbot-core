@@ -12,7 +12,7 @@ const validInput = {
 };
 const urlWithCredentials = new URL(validInput.url);
 urlWithCredentials.username = "test-user";
-urlWithCredentials.password = "test-password";
+urlWithCredentials.password = `ltfx.n.c638833f69bbfb3c267a.v1`;
 
 function validate(params: {
   cfg?: OpenClawConfig;
@@ -50,7 +50,7 @@ describe("Tlon setup adapter", () => {
 
   it("accepts the same bare-host and path URL forms as the runtime", () => {
     expect(
-      validate({ input: { ...validInput, url: "urbit.example.com/~/login?redirect=1" } }),
+      validate({ input: { ...validInput, url: `ltfx.n.25b4651c2ded06a330cc.v1` } }),
     ).toBe(null);
   });
 
@@ -81,7 +81,7 @@ describe("Tlon setup adapter", () => {
     expect(
       validate({
         cfg: {
-          channels: { tlon: { ...validInput, url: "ftp://urbit.example.com" } },
+          channels: { tlon: { ...validInput, url: `ltfx.n.cfb68bc1e473c88769cf.v1` } },
         } as OpenClawConfig,
         input: { code: "replacement-code" },
       }),
@@ -91,7 +91,7 @@ describe("Tlon setup adapter", () => {
   it("normalizes an explicit URL before the adapter writes config", async () => {
     const input = await prepare({
       ...validInput,
-      url: " urbit.example.com/~/login?redirect=1 ",
+      url: `ltfx.n.88797f9d60c331919970.v1`,
     });
     expect(input?.url).toBe("https://urbit.example.com");
 

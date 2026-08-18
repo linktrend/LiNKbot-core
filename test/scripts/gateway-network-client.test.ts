@@ -156,7 +156,7 @@ describe("gateway network client", () => {
         {
           statePath: "/tmp/unused-gateway-network-state.json",
           token: "x",
-          url: "ws://127.0.0.1:12345",
+          url: `ltfx.n.8ea907e482c0eeffc3ab.v1`,
           timeoutMs: 25,
         },
         { fetchImpl },
@@ -197,7 +197,7 @@ describe("gateway network client", () => {
         {
           statePath: "/tmp/unused-gateway-network-state.json",
           token: "x",
-          url: "ws://127.0.0.1:12345",
+          url: `ltfx.n.8ea907e482c0eeffc3ab.v1`,
           timeoutMs: 25,
         },
         { fetchImpl },
@@ -233,7 +233,7 @@ describe("gateway network client", () => {
         {
           statePath,
           token: "x",
-          url: "ws://127.0.0.1:12345",
+          url: `ltfx.n.8ea907e482c0eeffc3ab.v1`,
           timeoutMs: 25,
         },
         { fetchImpl },
@@ -343,7 +343,7 @@ describe("gateway network client", () => {
     const harness = createNetworkClientHarness([{ ok: true }, healthResponse()]);
 
     await runGatewayNetworkClient(
-      { token: "test-token", url: "ws://127.0.0.1:12345", timeoutMs: 1000 },
+      { token: `ltfx.n.4c5dc9b7708905f77f5e.v1`, url: `ltfx.n.8ea907e482c0eeffc3ab.v1`, timeoutMs: 1000 },
       harness.deps,
     );
 
@@ -358,7 +358,7 @@ describe("gateway network client", () => {
     const onceFrameMock = vi.fn(harness.deps.onceFrame);
 
     await runGatewayNetworkClient(
-      { token: "test-token", url: "ws://127.0.0.1:12345", timeoutMs: 250 },
+      { token: `ltfx.n.4c5dc9b7708905f77f5e.v1`, url: `ltfx.n.8ea907e482c0eeffc3ab.v1`, timeoutMs: 250 },
       {
         ...harness.deps,
         onceFrame: onceFrameMock,
@@ -385,7 +385,7 @@ describe("gateway network client", () => {
     try {
       await expect(
         runGatewayNetworkClient(
-          { token: "test-token", url: "ws://127.0.0.1:12345", timeoutMs: 250 },
+          { token: `ltfx.n.4c5dc9b7708905f77f5e.v1`, url: `ltfx.n.8ea907e482c0eeffc3ab.v1`, timeoutMs: 250 },
           {
             delay: async (ms: number) => {
               delays.push(ms);
@@ -412,7 +412,7 @@ describe("gateway network client", () => {
 
     await expect(
       runGatewayNetworkClient(
-        { token: "test-token", url: "ws://127.0.0.1:12345", timeoutMs: 1000 },
+        { token: `ltfx.n.4c5dc9b7708905f77f5e.v1`, url: `ltfx.n.8ea907e482c0eeffc3ab.v1`, timeoutMs: 1000 },
         harness.deps,
       ),
     ).rejects.toThrow("health failed: missing health summary payload");
@@ -430,7 +430,7 @@ describe("gateway network client", () => {
 
     await expect(
       runGatewayNetworkClient(
-        { token: "test-token", url: "ws://127.0.0.1:12345", timeoutMs: 1000 },
+        { token: `ltfx.n.4c5dc9b7708905f77f5e.v1`, url: `ltfx.n.8ea907e482c0eeffc3ab.v1`, timeoutMs: 1000 },
         harness.deps,
       ),
     ).rejects.toThrow("health failed: health unavailable");

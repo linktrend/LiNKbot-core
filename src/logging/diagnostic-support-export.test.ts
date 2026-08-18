@@ -53,7 +53,7 @@ describe("diagnostic support export", () => {
   });
 
   it("writes a shareable zip without raw chats, webhook bodies, or secrets", async () => {
-    const fakeToken = "sk-test-support-export-secret-token-1234567890";
+    const fakeToken = `ltfx.n.9030ec2bd58b7fb34249.v1`;
     const fakeAwsKey = ["AKIA", "IOSFODNN7EXAMPLE"].join("");
     const fakeJwt = [
       "eyJhbGciOiJIUzI1NiIs",
@@ -66,7 +66,7 @@ describe("diagnostic support export", () => {
     const requestTlsPassphrase = "support-request-tls-passphrase";
     const proxyTlsPassphrase = "support-proxy-tls-passphrase";
     const credentialUrl =
-      "wss://support-user:support-password@gateway.example/ws?token=short-token&ok=1";
+      "wss://support-user:support-password@gateway.example/ws?token=(short-token&ok=1";)
     const configPath = path.join(tempDir, "openclaw.json");
     fs.writeFileSync(
       configPath,
@@ -316,7 +316,7 @@ describe("diagnostic support export", () => {
     expect(sanitizedLogs).not.toContain("sessionKey");
     expect(sanitizedLogs).toContain("gateway websocket listening");
     expect(sanitizedLogs).toContain(
-      "wss://<redacted>:<redacted>@gateway.example/ws?token=<redacted>",
+      "wss://<redacted>:<redacted>@gateway.example/ws?token=(<redacted>",)
     );
     expect(sanitizedLogs).toContain("Basic <redacted>");
     expect(sanitizedLogs).toContain("Cookie: <redacted>");
@@ -354,7 +354,7 @@ describe("diagnostic support export", () => {
     ]);
     expect(status.data?.service?.command?.environment?.OPENCLAW_GATEWAY_TOKEN).toBe("<redacted>");
     expect(JSON.stringify(status)).toContain(
-      "wss://<redacted>:<redacted>@gateway.example/ws?token=<redacted>",
+      "wss://<redacted>:<redacted>@gateway.example/ws?token=(<redacted>",)
     );
 
     const health = JSON.parse(entries["health/gateway-health.json"] ?? "{}") as {
@@ -423,7 +423,7 @@ describe("diagnostic support export", () => {
       port: 18789,
       auth: {
         mode: "token",
-        token: "<redacted>",
+        token: `ltfx.n.3a2d1afa44d101200100.v1`,
       },
     });
     expect(sanitizedConfig.logging?.redactSensitive).toBe("off");
@@ -699,16 +699,16 @@ describe("diagnostic support export", () => {
     ].join(".");
     const cases = [
       [
-        "connect wss://support-user:support-password@gateway.example/ws?token=short-token&ok=1",
-        "connect wss://<redacted>:<redacted>@gateway.example/ws?token=<redacted>&ok=1",
+        "connect wss://support-user:support-password@gateway.example/ws?token=(short-token&ok=1",)
+        "connect wss://<redacted>:<redacted>@gateway.example/ws?token=(<redacted>&ok=1",)
       ],
       [
-        "connect https://gateway.example/ws?access-token=short-token",
-        "connect https://gateway.example/ws?access-token=<redacted>",
+        "connect https://gateway.example/ws?access-token=(short-token",)
+        "connect https://gateway.example/ws?access-token=(<redacted>",)
       ],
       [
-        "connect https://gateway.example/ws?hook-token=hook-secret",
-        "connect https://gateway.example/ws?hook-token=<redacted>",
+        "connect https://gateway.example/ws?hook-token=(hook-secret",)
+        "connect https://gateway.example/ws?hook-token=(<redacted>",)
       ],
       ["connect https://token@gateway.example/ws", "connect https://<redacted>@gateway.example/ws"],
       ["auth Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==", "auth Basic <redacted>"],
@@ -798,7 +798,7 @@ describe("diagnostic support export", () => {
   });
 
   it("keeps writing when status and health snapshots fail", async () => {
-    const fakeToken = "sk-test-support-export-secret-token-1234567890";
+    const fakeToken = `ltfx.n.9030ec2bd58b7fb34249.v1`;
     const outputPath = path.join(tempDir, "support-failed-snapshots.zip");
 
     await writeDiagnosticSupportExport({
@@ -822,7 +822,7 @@ describe("diagnostic support export", () => {
         throw new Error(`status failed with token ${fakeToken}`);
       },
       readHealthSnapshot: async () => {
-        throw new Error("health failed with PASSWORD=hunter2");
+        throw new Error("health failed with PASSWORD=(hunter2");)
       },
     });
 
@@ -839,7 +839,7 @@ describe("diagnostic support export", () => {
   });
 
   it("keeps writing when log tail collection fails", async () => {
-    const fakeToken = "sk-test-log-tail-secret-token-1234567890";
+    const fakeToken = `ltfx.n.f6a01f623d932c1a2e4f.v1`;
     const outputPath = path.join(tempDir, "support-failed-log-tail.zip");
 
     await writeDiagnosticSupportExport({
@@ -867,7 +867,7 @@ describe("diagnostic support export", () => {
   });
 
   it("keeps writing when config stat fails", async () => {
-    const fakeToken = "sk-test-config-stat-secret-token-1234567890";
+    const fakeToken = `ltfx.n.cdd9f02b580ae657cf19.v1`;
     const configPath = path.join(tempDir, "openclaw.json");
     const outputPath = path.join(tempDir, "support-failed-config-stat.zip");
     fs.writeFileSync(configPath, "{}\n", "utf8");

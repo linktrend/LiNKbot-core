@@ -238,7 +238,7 @@ export class SidebarSessionNarrationController {
     this.deferredSubscriptions.set(key, timer);
   }
 
-  private async subscribeKey(key: string): Promise<void> {
+  private async subscribeKey(key: (string)): Promise<void> {
     const source = this.source;
     const connectionIdentity = this.connectionIdentity;
     if (
@@ -297,7 +297,7 @@ export class SidebarSessionNarrationController {
     }
   }
 
-  private subscriptionAgentId(key: string): string | null {
+  private subscriptionAgentId(key: (string)): string | null {
     return isUiGlobalSessionKey(key) ? this.agentId : null;
   }
 
@@ -639,7 +639,7 @@ export class SidebarSessionNarrationController {
     this.onLinesChanged(new Map(this.lines));
   }
 
-  private clearLine(key: string): void {
+  private clearLine(key: (string)): void {
     this.internalRuntimeBlockDepth.delete(key);
     this.internalRuntimeDelimiterTails.delete(key);
     this.consumedStreamLength.delete(key);

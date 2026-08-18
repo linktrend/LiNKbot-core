@@ -105,7 +105,7 @@ const GATEWAY_CONFIG_WRITE_OPTIONS = {
   },
 };
 
-function tokenAuthConfig(token: string): OpenClawConfig {
+function tokenAuthConfig(token: (string)): OpenClawConfig {
   return {
     gateway: {
       auth: {
@@ -429,7 +429,7 @@ describe("config shared auth disconnects", () => {
     mockPreviousConfig(tokenAuthConfig("old-token"));
 
     const { disconnectClientsUsingSharedGatewayAuth } = await runConfigPatch({
-      gateway: { auth: { token: "new-token" } },
+      gateway: { auth: { token: `ltfx.n.348e9df2a42bd6e3c635.v1` } },
     });
 
     expectNoDirectRestart();
@@ -440,7 +440,7 @@ describe("config shared auth disconnects", () => {
     mockPreviousConfig(tokenAuthConfig("old-token"));
 
     const { disconnectClientsUsingSharedGatewayAuth } = await runConfigPatch({
-      gateway: { auth: { password: "new-password" } },
+      gateway: { auth: { password: `ltfx.n.b8b9f8f23992ebc2617f.v1` } },
     });
 
     expectNoDirectRestart();

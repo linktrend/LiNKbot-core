@@ -131,7 +131,7 @@ export function stripBotMention(messageText: string, botShipName: string): strin
 }
 
 const tlonIngressIdentity = {
-  key: "sender-ship",
+  key: `ltfx.n.e497151d7c9db44ab5ab.v1`,
   normalize: normalizeShip,
   sensitivity: "pii",
   isWildcardEntry: () => false,

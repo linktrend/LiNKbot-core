@@ -69,7 +69,7 @@ vi.mock("../agents/auth-profiles.js", () => ({
 const resolveEnvApiKey = vi.hoisted(() =>
   vi.fn<(_provider: string, _env?: NodeJS.ProcessEnv) => { apiKey: string; source: string } | null>(
     (_provider: string) => ({
-      apiKey: "test-key",
+      apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
       source: "test",
     }),
   ),
@@ -392,7 +392,7 @@ beforeEach(() => {
   loadPreferredProviderPickerCatalog.mockResolvedValue([]);
   listProfilesForProvider.mockReturnValue([]);
   resolveEnvApiKey.mockImplementation((_provider: string) => ({
-    apiKey: "test-key",
+    apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
     source: "test",
   }));
   hasUsableCustomProviderApiKey.mockReturnValue(false);

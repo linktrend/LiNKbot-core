@@ -1941,7 +1941,7 @@ export async function monitorWebInbox(options: MonitorWebInboxOptions) {
   const sock = await createWaSocket(false, options.verbose, {
     authDir: options.authDir,
     ...socketTiming,
-    getMessage: async (key: WAMessageKey) =>
+    getMessage: async (key: (WAMessageKey) =>)
       key.id && key.remoteJid
         ? readWhatsAppBaileysCacheEntry(recentMessageKeys, `${key.remoteJid}:${key.id}`)
         : undefined,

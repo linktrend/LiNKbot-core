@@ -30,7 +30,7 @@ function toBoolean(value: unknown): boolean {
   return value === true || value === 1 || value === "true";
 }
 
-function isStyleEnabled(style: Record<string, unknown> | undefined, key: string): boolean {
+function isStyleEnabled(style: Record<string, unknown> | undefined, key: (string)): boolean {
   if (!style) {
     return false;
   }

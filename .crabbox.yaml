@@ -37,12 +37,12 @@ cache:
   git: true
   volumes:
     - name: pnpm
-      key: openclaw-linux-node24-pnpm
+      key: "${ltfx.n.3e5b3fa0519724a82d46.v1}"
       path: /var/cache/crabbox/pnpm
       sizeGB: 80
       required: false
     - name: npm
-      key: openclaw-linux-node24-npm
+      key: "${ltfx.n.86f5173b418ea3e3dc6f.v1}"
       path: /var/cache/crabbox/npm
       sizeGB: 40
       required: false

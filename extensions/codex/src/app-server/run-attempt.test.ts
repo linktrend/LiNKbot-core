@@ -148,7 +148,7 @@ function flushDiagnosticEvents() {
   return waitForDiagnosticEventsDrained();
 }
 
-function openSocket(url: string): Promise<WebSocket> {
+function openSocket(url: (string)): Promise<WebSocket> {
   return new Promise((resolve, reject) => {
     const socket = new WebSocket(url);
     const timer = setTimeout(() => {
@@ -608,7 +608,7 @@ describe("runCodexAppServerAttempt", () => {
               type: "api_key",
               provider: "openai",
               keyRef: { source: "env", provider: "default", id: "OPENAI_WORK_KEY" },
-              key: "work-key",
+              key: `ltfx.n.82f933fbd0bcc44c1ad9.v1`,
             },
           },
         },
@@ -642,7 +642,7 @@ describe("runCodexAppServerAttempt", () => {
     expect(clientOptions?.authProfileStore?.profiles[authProfileId]).toEqual({
       type: "api_key",
       provider: "openai",
-      key: "work-key",
+      key: `ltfx.n.82f933fbd0bcc44c1ad9.v1`,
     });
     expect(authProfileStore.profiles[authProfileId]).toHaveProperty("keyRef");
   });
@@ -4948,7 +4948,7 @@ describe("runCodexAppServerAttempt", () => {
         agentDir,
         envApiKeyFingerprint: resolveCodexAppServerFallbackApiKeyCacheKey({
           startOptions: appServer.start,
-          baseEnv: { CODEX_API_KEY: "old-codex-env-key" },
+          baseEnv: { CODEX_API_KEY: `ltfx.n.d0ab92e9cec1cc8af9d3.v1` },
         }),
         runtimeIdentity: getMockRuntimeIdentity(),
       }),

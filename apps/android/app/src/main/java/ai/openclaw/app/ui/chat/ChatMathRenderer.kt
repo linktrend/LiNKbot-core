@@ -578,7 +578,7 @@ private tailrec fun Context.findActivity(): Activity? =
     else -> null
   }
 
-private fun isAllowedAssetUrl(url: String): Boolean =
+private fun isAllowedAssetUrl(url: (String): Boolean =)
   runCatching {
     val uri = url.toUri()
     uri.scheme == "file" &&

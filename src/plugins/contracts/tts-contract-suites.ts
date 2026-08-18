@@ -153,7 +153,7 @@ function createOpenAiTelephonyCfg(model: "tts-1" | "gpt-4o-mini-tts"): OpenClawC
         provider: "openai",
         providers: {
           openai: {
-            apiKey: "test-key",
+            apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
             model,
             voice: "alloy",
             instructions: "Speak warmly",
@@ -432,7 +432,7 @@ function createPrepareSimpleCompletionModelMock(): SummarizeTextDeps["prepareSim
   return vi.fn(async ({ provider, modelId }) => ({
     model: createResolvedModel(provider, modelId).model,
     auth: {
-      apiKey: "test-api-key",
+      apiKey: `ltfx.n.4c806362b613f7496abf.v1`,
       source: "test",
       mode: "api-key" as const,
     },
@@ -647,7 +647,7 @@ export function describeTtsConfigContract() {
         {
           name: "openai key available",
           env: {
-            OPENAI_API_KEY: "test-openai-key",
+            OPENAI_API_KEY: `ltfx.n.b10394de41d87ecb7c4a.v1`,
             ELEVENLABS_API_KEY: undefined,
             XI_API_KEY: undefined,
           },
@@ -658,7 +658,7 @@ export function describeTtsConfigContract() {
           name: "elevenlabs key available",
           env: {
             OPENAI_API_KEY: undefined,
-            ELEVENLABS_API_KEY: "test-elevenlabs-key",
+            ELEVENLABS_API_KEY: `ltfx.n.737e4667c5b6d845c2b7.v1`,
             XI_API_KEY: undefined,
           },
           prefsPath: "/tmp/tts-prefs-elevenlabs.json",
@@ -714,7 +714,7 @@ export function describeTtsConfigContract() {
               models: {
                 providers: {
                   google: {
-                    apiKey: "model-provider-google-key",
+                    apiKey: `ltfx.n.2995855a460453347734.v1`,
                   },
                 },
               },
@@ -895,7 +895,7 @@ export function describeTtsSummarizationContract() {
       expect((callArgs[2] as { maxTokens?: number } | undefined)?.maxTokens).toBe(250);
       expect((callArgs[2] as { temperature?: number } | undefined)?.temperature).toBe(0.3);
       expect(requireApiKeyMock).toHaveBeenCalledWith(
-        expect.objectContaining({ apiKey: "test-api-key" }),
+        expect.objectContaining({ apiKey: `ltfx.n.4c806362b613f7496abf.v1` }),
         "openai",
       );
     });
@@ -921,7 +921,7 @@ export function describeTtsSummarizationContract() {
           ...createResolvedModel("local-summary", "demo-model").model,
           baseUrl: "http://127.0.0.1:4000/v1",
         },
-        auth: { apiKey: "test-api-key", source: "test", mode: "api-key" },
+        auth: { apiKey: `ltfx.n.4c806362b613f7496abf.v1`, source: "test", mode: "api-key" },
       });
 
       await runSummarizeText();
@@ -972,22 +972,22 @@ export function describeTtsProviderRuntimeContract() {
       it("redacts sensitive tokens in provider errors", () => {
         const result = formatTtsProviderError(
           "openai",
-          new Error("Authorization: Bearer sk-super-secret-token-1234567890"),
+          new Error("Authorization: Bearer ltfx.n.a51bafa04556fe89cd4a.v1"),
         );
 
         expect(result).toContain("openai:");
         expect(result).toContain("Authorization: Bearer");
-        expect(result).not.toContain("sk-super-secret-token-1234567890");
+        expect(result).not.toContain("ltfx.n.a51bafa04556fe89cd4a.v1");
       });
 
       it("escapes control characters in verbose fallback error logs", () => {
         const result = sanitizeTtsErrorForLog(
-          new Error("failed\nAuthorization: Bearer sk-super-secret-token-1234567890\tboom"),
+          new Error("failed\nAuthorization: Bearer ltfx.n.a51bafa04556fe89cd4a.v1\tboom"),
         );
 
         expect(result).toContain("\\n");
         expect(result).toContain("\\t");
-        expect(result).not.toContain("sk-super-secret-token-1234567890");
+        expect(result).not.toContain("ltfx.n.a51bafa04556fe89cd4a.v1");
       });
     });
 
@@ -1000,7 +1000,7 @@ export function describeTtsProviderRuntimeContract() {
             autoSelectOrder: 10,
             resolveConfig: () => ({}),
             isConfigured: () => {
-              throw new Error("Authorization: Bearer sk-readiness-throw-token-1234567890\nboom");
+              throw new Error("Authorization: Bearer ltfx.n.95ca4ad517676d5a1ba8.v1\nboom");
             },
             synthesize: async () => {
               throw new Error("unexpected synthesize call");
@@ -1052,7 +1052,7 @@ export function describeTtsProviderRuntimeContract() {
           expect(result.attempts?.[0]?.personaBinding).toBe("none");
           expect(typeof result.attempts?.[0]?.latencyMs).toBe("number");
           expect(result.attempts?.[0]?.error).toContain("openai: Authorization: Bearer");
-          expect(result.attempts?.[0]?.error).not.toContain("sk-readiness-throw-token-1234567890");
+          expect(result.attempts?.[0]?.error).not.toContain("ltfx.n.95ca4ad517676d5a1ba8.v1");
           expect(result.attempts?.[1]?.provider).toBe("microsoft");
           expect(result.attempts?.[1]?.outcome).toBe("success");
           expect(result.attempts?.[1]?.reasonCode).toBe("success");
@@ -1071,7 +1071,7 @@ export function describeTtsProviderRuntimeContract() {
             autoSelectOrder: 10,
             resolveConfig: () => ({}),
             isConfigured: () => {
-              throw new Error("Authorization: Bearer sk-telephony-throw-token-1234567890\tboom");
+              throw new Error("Authorization: Bearer ltfx.n.8550204ff3678ff216e7.v1\tboom");
             },
             synthesize: async () => {
               throw new Error("unexpected synthesize call");
@@ -1128,7 +1128,7 @@ export function describeTtsProviderRuntimeContract() {
           expect(result.attempts?.[0]?.personaBinding).toBe("none");
           expect(typeof result.attempts?.[0]?.latencyMs).toBe("number");
           expect(result.attempts?.[0]?.error).toContain("primary-throws: Authorization: Bearer");
-          expect(result.attempts?.[0]?.error).not.toContain("sk-telephony-throw-token-1234567890");
+          expect(result.attempts?.[0]?.error).not.toContain("ltfx.n.8550204ff3678ff216e7.v1");
           expect(result.attempts?.[1]?.provider).toBe("microsoft");
           expect(result.attempts?.[1]?.outcome).toBe("success");
           expect(result.attempts?.[1]?.reasonCode).toBe("success");
@@ -1166,7 +1166,7 @@ export function describeTtsProviderRuntimeContract() {
                     provider: "openai",
                     openai: {
                       baseUrl: `http://127.0.0.1:${port}/v1`,
-                      apiKey: "fixture-api-key",
+                      apiKey: `ltfx.n.fdab98033749d02f02a5.v1`,
                     },
                   },
                 },
@@ -1275,7 +1275,7 @@ export function describeTtsAutoApplyContract() {
           auto: "inbound",
           provider: "openai",
           providers: {
-            openai: { apiKey: "test-key", model: "gpt-4o-mini-tts", voice: "alloy" },
+            openai: { apiKey: `ltfx.n.62af8704764faf8ea82f.v1`, model: "gpt-4o-mini-tts", voice: "alloy" },
           },
         },
       },

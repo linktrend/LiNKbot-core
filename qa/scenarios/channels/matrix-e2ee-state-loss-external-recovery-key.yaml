@@ -19,7 +19,7 @@ scenario:
         defaultRoomKey: main
         rooms:
           - encrypted: true
-            key: e2ee-state-loss-external-recovery-key
+            key: "${ltfx.n.4b7951545fb133317c1b.v1}"
             kind: group
             members:
               - driver

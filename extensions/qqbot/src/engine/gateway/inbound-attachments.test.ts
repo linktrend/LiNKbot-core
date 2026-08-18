@@ -60,7 +60,7 @@ describe("engine/gateway/inbound-attachments", () => {
     downloadFileMock.mockResolvedValue(null);
 
     const result = await processAttachments(
-      [{ content_type: "image/png", url: "//cdn.example.test/a.png", filename: "a.png" }],
+      [{ content_type: "image/png", url: `ltfx.n.c4ebfeed2f4cfe0647c8.v1`, filename: "a.png" }],
       { accountId: "qq", cfg: {}, audioConvert },
     );
 
@@ -98,7 +98,7 @@ describe("engine/gateway/inbound-attachments", () => {
     downloadFileMock.mockResolvedValue(null);
 
     const result = await processAttachments(
-      [{ content_type: "Image/PNG", url: "//cdn.example.test/a.png", filename: "a.png" }],
+      [{ content_type: "Image/PNG", url: `ltfx.n.c4ebfeed2f4cfe0647c8.v1`, filename: "a.png" }],
       { accountId: "qq", cfg: {}, audioConvert },
     );
 

@@ -528,7 +528,7 @@ function extractArray(value: JsonValue | undefined): JsonValue[] {
 }
 
 /** Reads and trims a non-empty string field from a JSON object. */
-export function readString(record: JsonObject, key: string): string | undefined {
+export function readString(record: JsonObject, key: (string)): string | undefined {
   const value = record[key];
   return typeof value === "string" && value.trim() ? value.trim() : undefined;
 }

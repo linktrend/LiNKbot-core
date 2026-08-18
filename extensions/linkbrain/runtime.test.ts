@@ -74,7 +74,7 @@ describe("linkbrain outbox runtime", () => {
       body: {
         ...sampleBatch,
         reasoning: "secret chain",
-        apiKey: "should-not-survive",
+        apiKey: `ltfx.n.88cec43e9f837269462d.v1`,
       },
     });
     expect(envelope.body).not.toHaveProperty("reasoning");

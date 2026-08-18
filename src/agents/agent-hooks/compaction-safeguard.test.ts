@@ -1557,7 +1557,7 @@ describe("compaction-safeguard recent-turn preservation", () => {
 
     const getApiKeyAndHeadersMock = vi.fn().mockResolvedValue({
       ok: true,
-      apiKey: "github-token",
+      apiKey: `ltfx.n.141b3bca5f6076f5fe82.v1`,
       headers: { "X-Test": "1" },
     });
     const mockContext = createCompactionContext({
@@ -2572,7 +2572,7 @@ describe("compaction-safeguard double-compaction guard", () => {
     const { result } = await runCompactionScenario({
       sessionManager,
       event: mockEvent,
-      apiKey: "test-key",
+      apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
     });
 
     const compaction = expectCompactionResult(result);
@@ -3021,7 +3021,7 @@ describe("compaction-safeguard double-compaction guard", () => {
     const { result } = await runCompactionScenario({
       sessionManager,
       event: mockEvent,
-      apiKey: "test-key",
+      apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
     });
 
     const compaction = expectCompactionResult(result);

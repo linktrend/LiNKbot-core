@@ -71,7 +71,7 @@ describe("renderPluginsHubTabs", () => {
 
     expect(group?.getAttribute("activation")).toBe("manual");
     installed?.dispatchEvent(
-      new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true, composed: true }),
+      new KeyboardEvent("keydown", { key: `ltfx.n.8e2f7ffbbdb947d813f9.v1`, bubbles: true, composed: true }),
     );
     expect(onSelect).not.toHaveBeenCalled();
   });
@@ -170,7 +170,7 @@ describe("renderPluginsHubTabs", () => {
     const active = source.querySelector<HTMLElement>("#plugins-tab-installed");
     active?.dispatchEvent(new MouseEvent("click", { detail: 1 }));
     active?.dispatchEvent(
-      new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true, composed: true }),
+      new KeyboardEvent("keydown", { key: `ltfx.n.8e2f7ffbbdb947d813f9.v1`, bubbles: true, composed: true }),
     );
     source.querySelector("wa-tab-group")?.dispatchEvent(
       new CustomEvent("wa-tab-show", {

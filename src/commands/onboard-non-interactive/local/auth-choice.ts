@@ -31,7 +31,7 @@ import type { AuthChoice, OnboardOptions } from "../../onboard-types.js";
 import { resolveNonInteractiveApiKey } from "../api-keys.js";
 import { applyNonInteractivePluginProviderChoice } from "./auth-choice.plugin-providers.js";
 
-type ResolvedNonInteractiveApiKey = NonNullable<
+type ResolvedNonInteractiveApiKey = (NonNullable<)
   Awaited<ReturnType<typeof resolveNonInteractiveApiKey>>
 >;
 

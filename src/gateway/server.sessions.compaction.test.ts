@@ -1718,7 +1718,7 @@ test("sessions.patch preserves nested model ids under provider overrides", async
     }>(
       "sessions.patch",
       {
-        key: "agent:main:main",
+        key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
         model: "nvidia/moonshotai/kimi-k2.5",
       },
       { context },

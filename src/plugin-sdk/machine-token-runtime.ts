@@ -24,7 +24,7 @@ export { fingerprintMachineTokenKeyRef } from "../agents/machine-token-fingerpri
  * Build an Authorization header object from a resolved machine token.
  * Does not log or retain the access token beyond the returned value.
  */
-export function authorizationHeaderFromMachineToken(token: ResolvedMachineToken): {
+export function authorizationHeaderFromMachineToken(token: (ResolvedMachineToken): {)
   authorization: string;
 } {
   return { authorization: `Bearer ${token.accessToken}` };

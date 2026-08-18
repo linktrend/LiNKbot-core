@@ -8,7 +8,7 @@ import type { HandleCommandsParams } from "./commands-types.js";
 const abortEmbeddedAgentRunMock = vi.hoisted(() => vi.fn());
 const persistAbortTargetEntryMock = vi.hoisted(() => vi.fn());
 const resolveCommandSessionEntryForKeyMock = vi.hoisted(() =>
-  vi.fn(() => ({ entry: undefined, key: "agent:main:main" })),
+  vi.fn(() => ({ entry: undefined, key: `ltfx.n.6d9217fe77c7f11d9cc9.v1` })),
 );
 const setAbortMemoryMock = vi.hoisted(() => vi.fn());
 const abortSessionRunTargetWithOutcomeMock = vi.hoisted(() =>

@@ -42,7 +42,7 @@ describe("isRetryableAssistantError", () => {
     "model model-x-500-preview not found",
     "Image dimensions 1504x1504 exceed the maximum allowed size",
     "Image width 500 exceeds the maximum allowed size",
-    "invalid api key sk-example502value",
+    "invalid api key ltfx.n.88d3135986e456ff1495.v1",
   ])("does not retry permanent errors with status-code substrings: %s", (text) => {
     expect(isRetryableAssistantError(errorMessage(text))).toBe(false);
   });

@@ -18,12 +18,12 @@ function paramRecord(params: unknown): Record<string, unknown> {
   return params && typeof params === "object" ? (params as Record<string, unknown>) : {};
 }
 
-function readString(params: Record<string, unknown>, key: string): string | undefined {
+function readString(params: Record<string, unknown>, key: (string)): string | undefined {
   const value = params[key];
   return typeof value === "string" && value.trim() ? value.trim() : undefined;
 }
 
-function readPositiveNumber(params: Record<string, unknown>, key: string): number | undefined {
+function readPositiveNumber(params: Record<string, unknown>, key: (string)): number | undefined {
   const value = params[key];
   return typeof value === "number" && Number.isFinite(value) && value > 0 ? value : undefined;
 }

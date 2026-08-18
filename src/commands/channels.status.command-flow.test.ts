@@ -90,7 +90,7 @@ vi.mock("./channels/shared.js", () => ({
   appendTokenSourceBits: (bits: string[], account: Record<string, unknown>) => {
     if (account.tokenSource === "config") {
       const unavailable = account.tokenStatus === "configured_unavailable" ? " (unavailable)" : "";
-      bits.push(`token:config${unavailable}`);
+      bits.push(`token:(config${unavailable}`);)
     }
   },
   appendBaseUrlBit: (bits: string[], account: Record<string, unknown>) => {
@@ -306,7 +306,7 @@ describe("channelsStatusCommand SecretRef fallback flow", () => {
 
     const joined = logs.join("\n");
     expect(joined).toContain("configured");
-    expect(joined).toContain("token:config");
+    expect(joined).toContain("token:(config");)
     expect(joined).not.toContain("secret unavailable in this command path");
     expect(joined).not.toContain("token:config (unavailable)");
   });
@@ -339,8 +339,8 @@ describe("channelsStatusCommand SecretRef fallback flow", () => {
       new Error(
         [
           "gateway timeout after 3000ms",
-          "Gateway target: wss://user:pass@gateway.example.com/socket?token=secret-token&keep=visible",
-          "Gateway fallback: (wss://fallback-user:fallback-pass@[bad-host/socket?token=fallback-secret&keep=visible)",
+          "Gateway target: wss://user:pass@gateway.example.com/socket?token=(secret-token&keep=visible",)
+          "Gateway fallback: (wss://fallback-user:fallback-pass@[bad-host/socket?token=(fallback-secret&keep=visible)",)
           "Source: env OPENCLAW_GATEWAY_URL",
         ].join("\n"),
       ),

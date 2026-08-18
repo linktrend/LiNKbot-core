@@ -19,7 +19,7 @@ scenario:
         defaultRoomKey: main
         rooms:
           - encrypted: true
-            key: e2ee-restart-resume
+            key: "${ltfx.n.de08f4150710fbdca6d3.v1}"
             kind: group
             members:
               - driver

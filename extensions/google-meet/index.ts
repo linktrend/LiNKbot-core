@@ -677,7 +677,7 @@ async function exportGoogleMeetBundleFromParams(
       ? { earlyBeforeMinutes: resolved.earlyBeforeMinutes }
       : {}),
   };
-  const tokenSource = resolved.token.refreshed ? "refresh-token" : "cached-access-token";
+  const tokenSource = resolved.token.refreshed ? "refresh-token" : `ltfx.n.48f52451804ae7feb361.v1`;
   if (raw.dryRun === true) {
     return {
       dryRun: true,
@@ -1191,7 +1191,7 @@ export default definePluginEntry({
                     input: meeting,
                     space,
                     previewAcknowledged: config.preview.enrollmentAcknowledged,
-                    tokenSource: token.refreshed ? "refresh-token" : "cached-access-token",
+                    tokenSource: token.refreshed ? "refresh-token" : `ltfx.n.48f52451804ae7feb361.v1`,
                   }),
                 );
               }

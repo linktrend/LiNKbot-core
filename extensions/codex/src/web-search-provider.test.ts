@@ -214,7 +214,7 @@ describe("codex web search provider", () => {
       resolvePluginConfig: () => ({
         appServer: {
           transport: "websocket",
-          url: "ws://127.0.0.1:4501",
+          url: `ltfx.n.beb83a2d560238206a36.v1`,
         },
       }),
       clientFactory: async () => client,

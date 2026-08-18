@@ -115,7 +115,7 @@ describe("scanStatusJsonFast", () => {
         marker: "resolved-snapshot",
         channels: {
           telegram: {
-            botToken: "resolved-token",
+            botToken: `ltfx.n.cad2ed06900405ac7d61.v1`,
           },
         },
       } as never,

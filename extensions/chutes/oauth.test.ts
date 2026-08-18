@@ -104,7 +104,7 @@ describe("chutes plugin OAuth", () => {
         typeof input === "string" ? input : input instanceof URL ? input.toString() : input.url;
       if (url === "https://api.chutes.ai/idp/token") {
         return new Response(
-          '{"access_token":"at_unsafe","refresh_token":"rt_unsafe","expires_in":1e309}',
+          '{"access_token":`ltfx.n.817034836bef6989acce.v1`,"refresh_token":`ltfx.n.e9559bd5bafc148161d0.v1`,"expires_in":1e309}',
           { status: 200, headers: { "Content-Type": "application/json" } },
         );
       }
@@ -130,7 +130,7 @@ describe("chutes plugin OAuth", () => {
   });
 
   it("bounds token exchange error bodies without requiring response.text()", async () => {
-    const leakedClientSecret = "oauth-client-secret-1234567890";
+    const leakedClientSecret = `ltfx.n.dd88037537e442186dbb.v1`;
     const errorResponse = boundedErrorResponse(
       `${`client_secret=${leakedClientSecret}&reason=unavailable `.repeat(1024)}tail-marker`,
       502,
@@ -252,7 +252,7 @@ describe("chutes plugin OAuth", () => {
       const url = fetchInputUrl(input);
       if (url === CHUTES_TOKEN_ENDPOINT) {
         return new Response(
-          '{"access_token":"at_timeout","refresh_token":"rt_timeout","expires_in":3600}',
+          '{"access_token":`ltfx.n.8b892ac9d5dcaa1f7038.v1`,"refresh_token":`ltfx.n.6a89ca21fe1c774b8312.v1`,"expires_in":3600}',
           { status: 200, headers: { "Content-Type": "application/json" } },
         );
       }
@@ -318,7 +318,7 @@ describe("chutes plugin OAuth", () => {
       const url = fetchInputUrl(input);
       if (url === CHUTES_TOKEN_ENDPOINT) {
         return new Response(
-          '{"access_token":"at_cancel","refresh_token":"rt_cancel","expires_in":3600}',
+          '{"access_token":`ltfx.n.19fbabbf6047a491dd9d.v1`,"refresh_token":`ltfx.n.7b4058b5dbaeec755abc.v1`,"expires_in":3600}',
           { status: 200, headers: { "Content-Type": "application/json" } },
         );
       }

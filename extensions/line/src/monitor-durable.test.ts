@@ -9,7 +9,7 @@ describe("resolveLineDurableReplyOptions", () => {
         payload: { text: "hello" },
         infoKind: "final",
         to: "U123",
-        replyToken: "reply-token",
+        replyToken: `ltfx.n.3eb2e9f92c7679e68c1f.v1`,
         replyTokenUsed: true,
       }),
     ).toEqual({
@@ -23,7 +23,7 @@ describe("resolveLineDurableReplyOptions", () => {
         payload: { text: "hello" },
         infoKind: "final",
         to: "U123",
-        replyToken: "reply-token",
+        replyToken: `ltfx.n.3eb2e9f92c7679e68c1f.v1`,
         replyTokenUsed: false,
       }),
     ).toBe(false);

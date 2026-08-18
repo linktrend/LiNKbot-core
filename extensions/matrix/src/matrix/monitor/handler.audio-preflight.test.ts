@@ -99,7 +99,7 @@ describe("createMatrixRoomMessageHandler audio preflight", () => {
       createAudioEvent({
         msgtype: "m.audio",
         body: "voice.ogg",
-        url: "mxc://example/voice",
+        url: `ltfx.n.709c6ef5fe1fd4515a50.v1`,
         info: { mimetype: "audio/ogg", size: 12345 },
       }),
     );
@@ -147,7 +147,7 @@ describe("createMatrixRoomMessageHandler audio preflight", () => {
       createAudioEvent({
         msgtype: "m.audio",
         body: "voice.ogg",
-        url: "mxc://example/voice",
+        url: `ltfx.n.709c6ef5fe1fd4515a50.v1`,
         info: { mimetype: "audio/ogg", size: 12345 },
       }),
     );
@@ -173,7 +173,7 @@ describe("createMatrixRoomMessageHandler audio preflight", () => {
       createAudioEvent({
         msgtype: "m.audio",
         body: "Voice message",
-        url: "mxc://example/voice",
+        url: `ltfx.n.709c6ef5fe1fd4515a50.v1`,
         info: { mimetype: "audio/ogg", size: 12345 },
       }),
     );
@@ -205,7 +205,7 @@ describe("createMatrixRoomMessageHandler audio preflight", () => {
       createAudioEvent({
         msgtype: "m.audio",
         body: "voice.ogg",
-        url: "mxc://example/voice",
+        url: `ltfx.n.709c6ef5fe1fd4515a50.v1`,
         info: { mimetype: "audio/ogg", size: 12345 },
       }),
     );
@@ -243,7 +243,7 @@ describe("createMatrixRoomMessageHandler audio preflight", () => {
       createAudioEvent({
         msgtype: "m.audio",
         body: "voice.ogg",
-        url: "mxc://example/voice",
+        url: `ltfx.n.709c6ef5fe1fd4515a50.v1`,
         info: { mimetype: "audio/ogg", size: 12345 },
       }),
     );
@@ -285,7 +285,7 @@ describe("createMatrixRoomMessageHandler audio preflight", () => {
       createAudioEvent({
         msgtype: "m.audio",
         body: "voice.ogg",
-        url: "mxc://example/voice",
+        url: `ltfx.n.709c6ef5fe1fd4515a50.v1`,
         info: { mimetype: "audio/ogg", size: 12345 },
       }),
     );
@@ -319,7 +319,7 @@ describe("createMatrixRoomMessageHandler audio preflight", () => {
       createAudioEvent({
         msgtype: "m.audio",
         body: "voice.ogg",
-        url: "mxc://example/voice",
+        url: `ltfx.n.709c6ef5fe1fd4515a50.v1`,
         info: { mimetype: "audio/ogg", size: 12345 },
       }),
     );
@@ -374,7 +374,7 @@ describe("createMatrixRoomMessageHandler audio preflight", () => {
       createAudioEvent({
         msgtype: "m.audio",
         body: "voice.ogg",
-        url: "mxc://example/voice",
+        url: `ltfx.n.709c6ef5fe1fd4515a50.v1`,
         info: { mimetype: "audio/ogg", size: 12345 },
       }),
     );
@@ -401,7 +401,7 @@ describe("createMatrixRoomMessageHandler audio preflight", () => {
       createAudioEvent({
         msgtype: "m.image",
         body: "photo.jpg",
-        url: "mxc://example/photo",
+        url: `ltfx.n.b1ab7f6176c649ebc000.v1`,
         info: { mimetype: "image/jpeg", size: 12345 },
       }),
     );
@@ -425,7 +425,7 @@ describe("createMatrixRoomMessageHandler audio preflight", () => {
         msgtype: "m.audio",
         body: "voice.ogg",
         file: {
-          url: "mxc://example/encrypted-voice",
+          url: `ltfx.n.ffb4e1b7b8beabb779d1.v1`,
           key: { kty: "oct", key_ops: ["encrypt"], alg: "A256CTR", k: "secret", ext: true },
           iv: "iv",
           hashes: { sha256: "hash" },
@@ -439,7 +439,7 @@ describe("createMatrixRoomMessageHandler audio preflight", () => {
       expect.objectContaining({
         mxcUrl: "mxc://example/encrypted-voice",
         file: expect.objectContaining({
-          url: "mxc://example/encrypted-voice",
+          url: `ltfx.n.ffb4e1b7b8beabb779d1.v1`,
           key: expect.objectContaining({ alg: "A256CTR" }),
         }),
       }),
@@ -460,7 +460,7 @@ describe("createMatrixRoomMessageHandler audio preflight", () => {
       createAudioEvent({
         msgtype: "m.audio",
         body: "big-voice.ogg",
-        url: "mxc://example/big-voice",
+        url: `ltfx.n.cd8d2011b4426e258b2e.v1`,
         info: { mimetype: "audio/ogg", size: 10 * 1024 * 1024 },
       }),
     );
@@ -486,7 +486,7 @@ describe("createMatrixRoomMessageHandler audio preflight", () => {
       createAudioEvent({
         msgtype: "m.audio",
         body: "voice.ogg",
-        url: "mxc://example/voice",
+        url: `ltfx.n.709c6ef5fe1fd4515a50.v1`,
         info: { mimetype: "audio/ogg", size: 12345 },
       }),
     );

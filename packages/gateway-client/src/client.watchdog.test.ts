@@ -575,7 +575,7 @@ describe("GatewayClient", () => {
 
   test("rejects mismatched tls fingerprint", async () => {
     const key = [
-      "-----BEGIN PRIVATE KEY-----", // pragma: allowlist secret
+      "-----BEGIN LTFX PRIVATE KEY-----", // pragma: allowlist secret
       "MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDrur5CWp4psMMb",
       "DTPY1aN46HPDxRchGgh8XedNkrlc4z1KFiyLUsXpVIhuyoXq1fflpTDz7++pGEDJ",
       "Q5pEdChn3fuWgi7gC+pvd5VQ1eAX/7qVE72fhx14NxhaiZU3hCzXjG2SflTEEExk",

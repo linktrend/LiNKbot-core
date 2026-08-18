@@ -294,7 +294,7 @@ function resetGatewayCallMocks() {
   deviceIdentityState.throwOnLoad = false;
   loadDeviceAuthTokenMock.mockReset();
   loadDeviceAuthTokenMock.mockReturnValue({
-    token: "paired-device-token",
+    token: `ltfx.n.9b592e25e37b8d8e5228.v1`,
     role: "operator",
     scopes: ["operator.read"],
     updatedAtMs: 123,
@@ -311,11 +311,11 @@ function setLocalLoopbackGatewayConfig(port = 18789) {
   setGatewayNetworkDefaults(port);
 }
 
-function makeRemotePasswordGatewayConfig(remotePassword: string, localPassword = "from-config") {
+function makeRemotePasswordGatewayConfig(remotePassword: string, localPassword = `ltfx.n.e7eb488c3d4e07f6b343.v1`) {
   return {
     gateway: {
       mode: "remote",
-      remote: { url: "wss://remote.example:18789", password: remotePassword },
+      remote: { url: `ltfx.n.e7a188aaecb9f270b021.v1`, password: remotePassword },
       auth: { password: localPassword },
     },
   };
@@ -422,8 +422,8 @@ describe("callGateway url resolution", () => {
 
     await callGateway({
       method: "health",
-      url: "wss://override.example/ws",
-      token: "explicit-token",
+      url: `ltfx.n.7fe4a610c833de51b161.v1`,
+      token: `ltfx.n.3f7a118b174381ebc867.v1`,
     });
 
     expect(lastClientOptions?.url).toBe("wss://override.example/ws");
@@ -437,8 +437,8 @@ describe("callGateway url resolution", () => {
 
     await callGatewayCli({
       method: "health",
-      url: "ws://127.0.0.1:18800",
-      token: "test-token",
+      url: `ltfx.n.93120601b71aa1134466.v1`,
+      token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
     });
 
     expect(getRuntimeConfig).not.toHaveBeenCalled();
@@ -451,7 +451,7 @@ describe("callGateway url resolution", () => {
 
     await callGateway({
       method: "health",
-      token: "explicit-token",
+      token: `ltfx.n.3f7a118b174381ebc867.v1`,
     });
 
     expect(lastClientOptions?.url).toBe("ws://127.0.0.1:18789");
@@ -502,7 +502,7 @@ describe("callGateway url resolution", () => {
     });
     setGatewayNetworkDefaults();
     loadDeviceAuthTokenMock.mockReturnValue({
-      token: "paired-device-token",
+      token: `ltfx.n.9b592e25e37b8d8e5228.v1`,
       role: "operator",
       scopes: ["operator.read"],
       updatedAtMs: 123,
@@ -519,7 +519,7 @@ describe("callGateway url resolution", () => {
     getRuntimeConfig.mockReturnValue({
       gateway: {
         mode: "remote",
-        remote: { url: "wss://openclaw.example.test" },
+        remote: { url: `ltfx.n.e891d8628e5da10cebd7.v1` },
         auth: { mode: "token", allowTailscale: true },
       },
     });
@@ -536,7 +536,7 @@ describe("callGateway url resolution", () => {
     getRuntimeConfig.mockReturnValue({
       gateway: {
         mode: "remote",
-        remote: { url: "wss://openclaw.example.test" },
+        remote: { url: `ltfx.n.e891d8628e5da10cebd7.v1` },
         auth: { mode: "token" },
         tailscale: { mode: "serve" },
       },
@@ -555,7 +555,7 @@ describe("callGateway url resolution", () => {
 
     await callGateway({
       method: "health",
-      token: "explicit-token",
+      token: `ltfx.n.3f7a118b174381ebc867.v1`,
       clientName: GATEWAY_CLIENT_NAMES.CLI,
       mode: GATEWAY_CLIENT_MODES.CLI,
     });
@@ -570,7 +570,7 @@ describe("callGateway url resolution", () => {
       gateway: { mode: "local", bind: "loopback", auth: { mode: "none" } },
     });
     setGatewayNetworkDefaults();
-    process.env.OPENCLAW_GATEWAY_TOKEN = "inactive-env-token";
+    process.env.OPENCLAW_GATEWAY_TOKEN = `ltfx.n.ad1be2d28f8c871af271.v1`;
 
     await callGatewayCli({ method: "health" });
 
@@ -584,7 +584,7 @@ describe("callGateway url resolution", () => {
 
     await callGateway({
       method: "health",
-      token: "explicit-token",
+      token: `ltfx.n.3f7a118b174381ebc867.v1`,
     });
 
     expect(lastClientOptions?.url).toBe("ws://127.0.0.1:18789");
@@ -599,7 +599,7 @@ describe("callGateway url resolution", () => {
 
     await callGateway({
       method: "health",
-      token: "explicit-token",
+      token: `ltfx.n.3f7a118b174381ebc867.v1`,
     });
 
     expect(lastClientOptions?.url).toBe("wss://remote.example:18789");
@@ -614,7 +614,7 @@ describe("callGateway url resolution", () => {
 
     await callGateway({
       method: "health",
-      token: "explicit-token",
+      token: `ltfx.n.3f7a118b174381ebc867.v1`,
       deviceIdentity: null,
     });
 
@@ -630,7 +630,7 @@ describe("callGateway url resolution", () => {
     resolveGatewayPort.mockReturnValue(18789);
     pickPrimaryTailnetIPv4.mockReturnValue(undefined);
     process.env.OPENCLAW_GATEWAY_URL = "wss://gateway-in-container.internal:9443/ws";
-    process.env.OPENCLAW_GATEWAY_TOKEN = "env-token";
+    process.env.OPENCLAW_GATEWAY_TOKEN = `ltfx.n.25d37ba7752ae1d95b57.v1`;
 
     await callGateway({
       method: "health",
@@ -652,11 +652,11 @@ describe("callGateway url resolution", () => {
     pickPrimaryTailnetIPv4.mockReturnValue(undefined);
     process.env.OPENCLAW_GATEWAY_URL = "wss://gateway-in-container.internal:9443/ws";
     process.env.OPENCLAW_GATEWAY_PORT = "19001";
-    process.env.OPENCLAW_GATEWAY_TOKEN = "env-token";
+    process.env.OPENCLAW_GATEWAY_TOKEN = `ltfx.n.25d37ba7752ae1d95b57.v1`;
 
     await callGateway({
       method: "health",
-      token: "explicit-token",
+      token: `ltfx.n.3f7a118b174381ebc867.v1`,
       localPortOverride: 19082,
     });
 
@@ -682,7 +682,7 @@ describe("callGateway url resolution", () => {
     resolveGatewayPort.mockReturnValue(18789);
     pickPrimaryTailnetIPv4.mockReturnValue(undefined);
     process.env.OPENCLAW_GATEWAY_URL = "wss://gateway-in-container.internal:9443/ws";
-    process.env.OPENCLAW_GATEWAY_TOKEN = "env-token";
+    process.env.OPENCLAW_GATEWAY_TOKEN = `ltfx.n.25d37ba7752ae1d95b57.v1`;
 
     await callGateway({
       method: "health",
@@ -698,7 +698,7 @@ describe("callGateway url resolution", () => {
       gateway: {
         mode: "remote",
         remote: {
-          url: "wss://remote.example:9443/ws",
+          url: `ltfx.n.217dfa0c6d2261d681c1.v1`,
           tlsFingerprint: "remote-fingerprint",
         },
       },
@@ -706,7 +706,7 @@ describe("callGateway url resolution", () => {
     setGatewayNetworkDefaults(18789);
     pickPrimaryTailnetIPv4.mockReturnValue(undefined);
     process.env.OPENCLAW_GATEWAY_URL = "wss://gateway-in-container.internal:9443/ws";
-    process.env.OPENCLAW_GATEWAY_TOKEN = "env-token";
+    process.env.OPENCLAW_GATEWAY_TOKEN = `ltfx.n.25d37ba7752ae1d95b57.v1`;
 
     await callGateway({
       method: "health",
@@ -720,7 +720,7 @@ describe("callGateway url resolution", () => {
       gateway: {
         mode: "remote",
         remote: {
-          url: "wss://remote.example:9443/ws",
+          url: `ltfx.n.217dfa0c6d2261d681c1.v1`,
           tlsFingerprint: "remote-fingerprint",
         },
       },
@@ -730,8 +730,8 @@ describe("callGateway url resolution", () => {
 
     await callGateway({
       method: "health",
-      url: "wss://override.example:9443/ws",
-      token: "explicit-token",
+      url: `ltfx.n.68232e3d2a821adb30c5.v1`,
+      token: `ltfx.n.3f7a118b174381ebc867.v1`,
     });
 
     expect(lastClientOptions?.tlsFingerprint).toBeUndefined();
@@ -806,7 +806,7 @@ describe("callGateway url resolution", () => {
   it("reuses stored device auth without requesting stronger scopes", async () => {
     setLocalLoopbackGatewayConfig();
     loadDeviceAuthTokenMock.mockReturnValue({
-      token: "paired-device-token",
+      token: `ltfx.n.9b592e25e37b8d8e5228.v1`,
       role: "operator",
       scopes: ["operator.read", "operator.pairing"],
       updatedAtMs: 123,
@@ -826,7 +826,7 @@ describe("callGateway url resolution", () => {
     await expect(
       callGatewayCli({
         method: "node.list",
-        token: "explicit-token",
+        token: `ltfx.n.3f7a118b174381ebc867.v1`,
         useStoredDeviceAuth: true,
       }),
     ).rejects.toMatchObject({ name: "GatewayStoredDeviceAuthUnavailableError" });
@@ -839,7 +839,7 @@ describe("callGateway url resolution", () => {
       gateway: {
         mode: "local",
         bind: "loopback",
-        auth: { mode: "token", token: "configured-token" },
+        auth: { mode: "token", token: `ltfx.n.81e61c0285659b608bb9.v1` },
       },
     });
     setGatewayNetworkDefaults();
@@ -877,7 +877,7 @@ describe("callGateway url resolution", () => {
   it("rejects stored device auth that lacks caller-required scopes", async () => {
     setLocalLoopbackGatewayConfig();
     loadDeviceAuthTokenMock.mockReturnValue({
-      token: "paired-device-token",
+      token: `ltfx.n.9b592e25e37b8d8e5228.v1`,
       role: "operator",
       scopes: ["operator.read"],
       updatedAtMs: 123,
@@ -925,7 +925,7 @@ describe("callGateway url resolution", () => {
 
     await callGateway({
       method: "node.list",
-      token: "explicit-token",
+      token: `ltfx.n.3f7a118b174381ebc867.v1`,
       scopes: ["operator.read", "operator.pairing"],
       requireLocalBackendSharedAuth: true,
     });
@@ -960,8 +960,8 @@ describe("callGateway url resolution", () => {
     await expect(
       callGateway({
         method: "node.list",
-        url: "wss://remote.example.test",
-        token: "explicit-token",
+        url: `ltfx.n.079eeeac1c391e62b7c4.v1`,
+        token: `ltfx.n.3f7a118b174381ebc867.v1`,
         scopes: ["operator.read", "operator.pairing"],
         requireLocalBackendSharedAuth: true,
       }),
@@ -974,8 +974,8 @@ describe("callGateway url resolution", () => {
     await expect(
       callGateway({
         method: "node.list",
-        url: "ws://127.0.0.1:18789",
-        token: "explicit-token",
+        url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+        token: `ltfx.n.3f7a118b174381ebc867.v1`,
         scopes: ["operator.read", "operator.pairing"],
         requireLocalBackendSharedAuth: true,
       }),
@@ -989,8 +989,8 @@ describe("callGateway url resolution", () => {
       gateway: {
         mode: "remote",
         remote: {
-          url: "ws://127.0.0.1:18789",
-          token: "remote-token",
+          url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+          token: `ltfx.n.b79f8018a1bfa2040be5.v1`,
         },
       },
     });
@@ -1013,7 +1013,7 @@ describe("callGateway url resolution", () => {
     await callGateway({
       method: "sessions.delete",
       scopes: ["operator.admin"],
-      token: "explicit-token",
+      token: `ltfx.n.3f7a118b174381ebc867.v1`,
     });
 
     expect(lastClientOptions?.clientName).toBe(GATEWAY_CLIENT_NAMES.GATEWAY_CLIENT);
@@ -1059,7 +1059,7 @@ describe("callGateway url resolution", () => {
     await callGateway({
       method: "exec.approval.waitDecision",
       scopes: ["operator.approvals"],
-      approvalRuntimeToken: "runtime-token",
+      approvalRuntimeToken: `ltfx.n.f8e1f3c257c8d1a3d07a.v1`,
     });
 
     expect(lastClientOptions?.approvalRuntimeToken).toBe("runtime-token");
@@ -1122,7 +1122,7 @@ describe("buildGatewayConnectionDetails", () => {
     pickPrimaryTailnetIPv4.mockReturnValue("100.64.0.1");
 
     const details = buildGatewayConnectionDetails({
-      url: "wss://example.com/ws",
+      url: `ltfx.n.296bdc828539d76d60da.v1`,
     });
 
     expect(details.url).toBe("wss://example.com/ws");
@@ -1206,7 +1206,7 @@ describe("buildGatewayConnectionDetails", () => {
     const config = {
       gateway: {
         mode: "remote",
-        remote: { url: "wss://selected-gateway.example/ws" },
+        remote: { url: `ltfx.n.1f86226e27ac07648a06.v1` },
       },
     } satisfies OpenClawConfig;
     const prevUrl = process.env.OPENCLAW_GATEWAY_URL;
@@ -1233,12 +1233,12 @@ describe("buildGatewayConnectionDetails", () => {
     setLocalLoopbackGatewayConfig(18800);
 
     const details = buildGatewayConnectionDetails({
-      url: "wss://user:pass@example.com/ws?token=secret-token&keep=visible",
+      url: `ltfx.n.b0bed589426930fbd528.v1`,
     });
 
-    expect(details.url).toBe("wss://user:pass@example.com/ws?token=secret-token&keep=visible");
+    expect(details.url).toBe("wss://user:pass@example.com/ws?token=(secret-token&keep=visible");)
     expect(details.message).toContain(
-      "Gateway target: wss://***:***@example.com/ws?token=***&keep=visible",
+      "Gateway target: wss://***:***@example.com/ws?token=(***&keep=visible",)
     );
     expect(details.message).not.toContain("user:pass");
     expect(details.message).not.toContain("secret-token");
@@ -1291,7 +1291,7 @@ describe("buildGatewayConnectionDetails", () => {
       gateway: {
         mode: "remote",
         bind: "tailnet",
-        remote: { url: "wss://remote.example.com/ws" },
+        remote: { url: `ltfx.n.ea2c9c96167d4cd9fb05.v1` },
       },
     });
     resolveGatewayPort.mockReturnValue(18800);
@@ -1385,7 +1385,7 @@ describe("buildGatewayConnectionDetails", () => {
       gateway: {
         mode: "remote",
         bind: "loopback",
-        remote: { url: "ws://remote.example.com:18789" },
+        remote: { url: `ltfx.n.3b66113f8d45c25d52f9.v1` },
       },
     });
     resolveGatewayPort.mockReturnValue(18789);
@@ -1410,7 +1410,7 @@ describe("buildGatewayConnectionDetails", () => {
       gateway: {
         mode: "remote",
         bind: "loopback",
-        remote: { url: "ws://user:pass@remote.example.com:18789/ws?token=secret-token" },
+        remote: { url: `ltfx.n.549c5ff9f12281d43998.v1` },
       },
     });
     resolveGatewayPort.mockReturnValue(18789);
@@ -1432,7 +1432,7 @@ describe("buildGatewayConnectionDetails", () => {
       gateway: {
         mode: "remote",
         bind: "loopback",
-        remote: { url: "ws://10.0.0.8:18789" },
+        remote: { url: `ltfx.n.039dc662a21538e8af07.v1` },
       },
     });
     resolveGatewayPort.mockReturnValue(18789);
@@ -1449,7 +1449,7 @@ describe("buildGatewayConnectionDetails", () => {
       gateway: {
         mode: "remote",
         bind: "loopback",
-        remote: { url: "ws://openclaw-gateway.ai:18789" },
+        remote: { url: `ltfx.n.09e65ee60c2266931140.v1` },
       },
     });
     resolveGatewayPort.mockReturnValue(18789);
@@ -1565,8 +1565,8 @@ describe("callGateway error details", () => {
     await expect(
       callGateway({
         method: "cron.remove",
-        token: "explicit-token",
-        agentRuntimeIdentityToken: "identity-token",
+        token: `ltfx.n.3f7a118b174381ebc867.v1`,
+        agentRuntimeIdentityToken: `ltfx.n.39cc331e11201cedff20.v1`,
       }),
     ).rejects.toThrow(
       "gateway rejected required agent runtime identity auth field; refusing to retry without it",
@@ -1660,7 +1660,7 @@ describe("callGateway error details", () => {
         reason: "no close reason",
       },
       gateway: {
-        url: "ws://127.0.0.1:18789",
+        url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
         urlSource: "local loopback",
         bindDetail: "Bind: loopback",
       },
@@ -2248,17 +2248,17 @@ describe("callGateway url override auth requirements", () => {
   });
 
   it("throws when url override is set without explicit credentials", async () => {
-    process.env.OPENCLAW_GATEWAY_TOKEN = "env-token";
-    process.env.OPENCLAW_GATEWAY_PASSWORD = "env-password";
+    process.env.OPENCLAW_GATEWAY_TOKEN = `ltfx.n.25d37ba7752ae1d95b57.v1`;
+    process.env.OPENCLAW_GATEWAY_PASSWORD = `ltfx.n.b7c8db593f965dc9a2cd.v1`;
     getRuntimeConfig.mockReturnValue({
       gateway: {
         mode: "local",
-        auth: { token: "local-token", password: "local-password" },
+        auth: { token: `ltfx.n.c7ec7c548f5992a239dc.v1`, password: `ltfx.n.03eecb1e5d33a976de28.v1` },
       },
     });
 
     await expect(
-      callGateway({ method: "health", url: "wss://override.example/ws" }),
+      callGateway({ method: "health", url: `ltfx.n.7fe4a610c833de51b161.v1` }),
     ).rejects.toThrow(/remove --url to use the configured target/i);
   });
 
@@ -2267,7 +2267,7 @@ describe("callGateway url override auth requirements", () => {
     getRuntimeConfig.mockReturnValue({
       gateway: {
         mode: "local",
-        auth: { token: "local-token", password: "local-password" },
+        auth: { token: `ltfx.n.c7ec7c548f5992a239dc.v1`, password: `ltfx.n.03eecb1e5d33a976de28.v1` },
       },
     });
 
@@ -2336,27 +2336,27 @@ describe("callGateway password resolution", () => {
     },
     {
       label: "prefers env password over local config password",
-      envPassword: "from-env",
+      envPassword: `ltfx.n.43d6d63b060c2e893fe6.v1`,
       config: {
         gateway: {
           mode: "local",
           bind: "loopback",
-          auth: { password: "from-config" },
+          auth: { password: `ltfx.n.e7eb488c3d4e07f6b343.v1` },
         },
       },
-      expectedPassword: "from-env",
+      expectedPassword: `ltfx.n.43d6d63b060c2e893fe6.v1`,
     },
     {
       label: "uses remote password in remote mode when env is unset",
       envPassword: undefined,
       config: makeRemotePasswordGatewayConfig("remote-secret"),
-      expectedPassword: "remote-secret",
+      expectedPassword: `ltfx.n.ebe352d8b3576158b1c3.v1`,
     },
     {
       label: "prefers env password over remote password in remote mode",
-      envPassword: "from-env",
+      envPassword: `ltfx.n.43d6d63b060c2e893fe6.v1`,
       config: makeRemotePasswordGatewayConfig("remote-secret"),
-      expectedPassword: "from-env",
+      expectedPassword: `ltfx.n.43d6d63b060c2e893fe6.v1`,
     },
   ])("$label", async ({ envPassword, config, expectedPassword }) => {
     if (envPassword !== undefined) {
@@ -2370,7 +2370,7 @@ describe("callGateway password resolution", () => {
   });
 
   it("resolves gateway.auth.password SecretInput refs for gateway calls", async () => {
-    process.env.LOCAL_REF_PASSWORD = "resolved-local-ref-password"; // pragma: allowlist secret
+    process.env.LOCAL_REF_PASSWORD = `ltfx.n.d76eb6695eee53e39325.v1`; // pragma: allowlist secret
     getRuntimeConfig.mockReturnValue({
       gateway: {
         mode: "local",
@@ -2393,7 +2393,7 @@ describe("callGateway password resolution", () => {
   });
 
   it("does not resolve local password ref when env password takes precedence", async () => {
-    process.env.OPENCLAW_GATEWAY_PASSWORD = "from-env";
+    process.env.OPENCLAW_GATEWAY_PASSWORD = `ltfx.n.43d6d63b060c2e893fe6.v1`;
     getRuntimeConfig.mockReturnValue({
       gateway: {
         mode: "local",
@@ -2422,7 +2422,7 @@ describe("callGateway password resolution", () => {
         bind: "loopback",
         auth: {
           mode: "token",
-          token: "token-auth",
+          token: `ltfx.n.9275366dc510b85c2c53.v1`,
           password: { source: "env", provider: "default", id: "MISSING_LOCAL_REF_PASSWORD" },
         },
       },
@@ -2439,7 +2439,7 @@ describe("callGateway password resolution", () => {
   });
 
   it("resolves local password ref before unresolved local token ref can block auth", async () => {
-    process.env.LOCAL_FALLBACK_PASSWORD = "resolved-local-fallback-password"; // pragma: allowlist secret
+    process.env.LOCAL_FALLBACK_PASSWORD = `ltfx.n.6d3804a01ade4ff1e36a.v1`; // pragma: allowlist secret
     getRuntimeConfig.mockReturnValue({
       gateway: {
         mode: "local",
@@ -2463,7 +2463,7 @@ describe("callGateway password resolution", () => {
   });
 
   it("fails closed when unresolved local token SecretRef would otherwise fall back to remote token", async () => {
-    process.env.LOCAL_REMOTE_FALLBACK_TOKEN = "resolved-local-remote-fallback-token";
+    process.env.LOCAL_REMOTE_FALLBACK_TOKEN = `ltfx.n.21862caca7c44d4365a6.v1`;
     getRuntimeConfig.mockReturnValue({
       gateway: {
         mode: "local",
@@ -2510,7 +2510,7 @@ describe("callGateway password resolution", () => {
   });
 
   it("resolves local password refs when auth mode is trusted-proxy", async () => {
-    process.env.LOCAL_TRUSTED_PROXY_PASSWORD = "resolved-trusted-proxy-password";
+    process.env.LOCAL_TRUSTED_PROXY_PASSWORD = `ltfx.n.4dfcefe9ae1b8912ef5f.v1`;
     getRuntimeConfig.mockReturnValue({
       gateway: {
         mode: "local",
@@ -2563,8 +2563,8 @@ describe("callGateway password resolution", () => {
           password: { source: "env", provider: "default", id: "MISSING_LOCAL_REF_PASSWORD" },
         },
         remote: {
-          url: "wss://remote.example:18789",
-          password: "remote-secret",
+          url: `ltfx.n.e7a188aaecb9f270b021.v1`,
+          password: `ltfx.n.ebe352d8b3576158b1c3.v1`,
         },
       },
       secrets: {
@@ -2580,14 +2580,14 @@ describe("callGateway password resolution", () => {
   });
 
   it("resolves gateway.remote.token SecretInput refs when remote token is required", async () => {
-    process.env.REMOTE_REF_TOKEN = "resolved-remote-ref-token";
+    process.env.REMOTE_REF_TOKEN = `ltfx.n.207bf3058d7728e5b261.v1`;
     getRuntimeConfig.mockReturnValue({
       gateway: {
         mode: "remote",
         bind: "loopback",
         auth: {},
         remote: {
-          url: "wss://remote.example:18789",
+          url: `ltfx.n.e7a188aaecb9f270b021.v1`,
           token: { source: "env", provider: "default", id: "REMOTE_REF_TOKEN" },
         },
       },
@@ -2604,14 +2604,14 @@ describe("callGateway password resolution", () => {
   });
 
   it("resolves gateway.remote.password SecretInput refs when remote password is required", async () => {
-    process.env.REMOTE_REF_PASSWORD = "resolved-remote-ref-password"; // pragma: allowlist secret
+    process.env.REMOTE_REF_PASSWORD = `ltfx.n.7044404e1a80593d211f.v1`; // pragma: allowlist secret
     getRuntimeConfig.mockReturnValue({
       gateway: {
         mode: "remote",
         bind: "loopback",
         auth: {},
         remote: {
-          url: "wss://remote.example:18789",
+          url: `ltfx.n.e7a188aaecb9f270b021.v1`,
           password: { source: "env", provider: "default", id: "REMOTE_REF_PASSWORD" },
         },
       },
@@ -2634,9 +2634,9 @@ describe("callGateway password resolution", () => {
         bind: "loopback",
         auth: {},
         remote: {
-          url: "wss://remote.example:18789",
+          url: `ltfx.n.e7a188aaecb9f270b021.v1`,
           token: { source: "env", provider: "default", id: "MISSING_REMOTE_TOKEN" },
-          password: "remote-password", // pragma: allowlist secret
+          password: `ltfx.n.de3ebec174fd3a1387de.v1`, // pragma: allowlist secret
         },
       },
       secrets: {
@@ -2653,14 +2653,14 @@ describe("callGateway password resolution", () => {
   });
 
   it("resolves remote token ref before unresolved remote password ref can block auth", async () => {
-    process.env.REMOTE_REF_TOKEN = "resolved-remote-ref-token";
+    process.env.REMOTE_REF_TOKEN = `ltfx.n.207bf3058d7728e5b261.v1`;
     getRuntimeConfig.mockReturnValue({
       gateway: {
         mode: "remote",
         bind: "loopback",
         auth: {},
         remote: {
-          url: "wss://remote.example:18789",
+          url: `ltfx.n.e7a188aaecb9f270b021.v1`,
           token: { source: "env", provider: "default", id: "REMOTE_REF_TOKEN" },
           password: { source: "env", provider: "default", id: "MISSING_REMOTE_PASSWORD" },
         },
@@ -2685,8 +2685,8 @@ describe("callGateway password resolution", () => {
         bind: "loopback",
         auth: {},
         remote: {
-          url: "wss://remote.example:18789",
-          token: "remote-token",
+          url: `ltfx.n.e7a188aaecb9f270b021.v1`,
+          token: `ltfx.n.b79f8018a1bfa2040be5.v1`,
           password: { source: "env", provider: "default", id: "MISSING_REMOTE_PASSWORD" },
         },
       },
@@ -2704,7 +2704,7 @@ describe("callGateway password resolution", () => {
   });
 
   it("resolves remote token refs on local-mode calls when fallback token can win", async () => {
-    process.env.LOCAL_FALLBACK_REMOTE_TOKEN = "resolved-local-fallback-remote-token";
+    process.env.LOCAL_FALLBACK_REMOTE_TOKEN = `ltfx.n.459cf53039302dc3ac64.v1`;
     getRuntimeConfig.mockReturnValue({
       gateway: {
         mode: "local",
@@ -2735,7 +2735,7 @@ describe("callGateway password resolution", () => {
         bind: "loopback",
         auth: { mode: "none" },
         remote: {
-          url: "wss://remote.example:18789",
+          url: `ltfx.n.e7a188aaecb9f270b021.v1`,
           token: { source: "env", provider: "default", id: "MISSING_REMOTE_TOKEN" },
           password: { source: "env", provider: "default", id: "MISSING_REMOTE_PASSWORD" },
         },
@@ -2760,7 +2760,7 @@ describe("callGateway password resolution", () => {
         bind: "loopback",
         auth: { mode: "trusted-proxy" },
         remote: {
-          url: "wss://remote.example:18789",
+          url: `ltfx.n.e7a188aaecb9f270b021.v1`,
           token: { source: "env", provider: "default", id: "MISSING_REMOTE_TOKEN" },
           password: { source: "env", provider: "default", id: "MISSING_REMOTE_PASSWORD" },
         },
@@ -2793,7 +2793,7 @@ describe("callGateway password resolution", () => {
 
     await callGateway({
       method: "health",
-      url: "wss://override.example/ws",
+      url: `ltfx.n.7fe4a610c833de51b161.v1`,
       [testCase.authKey]: testCase.explicitValue,
     });
 

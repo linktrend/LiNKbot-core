@@ -87,8 +87,8 @@ struct AppStateRemoteConfigTests {
                     "mode": "remote",
                     "remote": [
                         "transport": "direct",
-                        "url": "wss://gateway-a.example.test",
-                        "token": "route-a-token",
+                        "url": "${ltfx.n.68c8d3ebc91c14d4a55b.v1}",
+                        "token": "${ltfx.n.80e062b089049cc94177.v1}",
                     ],
                 ],
             ]))
@@ -170,7 +170,7 @@ struct AppStateRemoteConfigTests {
                     "mode": "remote",
                     "remote": [
                         "transport": "ssh",
-                        "url": "ws://127.0.0.1:18789",
+                        "url": "${ltfx.n.0edbee82f0824a1ed09b.v1}",
                         "sshTarget": "alice@gateway-a.example.test",
                     ],
                 ],
@@ -204,7 +204,7 @@ struct AppStateRemoteConfigTests {
                     "mode": "remote",
                     "remote": [
                         "transport": "ssh",
-                        "url": "ws://127.0.0.1:18789",
+                        "url": "${ltfx.n.0edbee82f0824a1ed09b.v1}",
                         "sshTarget": "alice@gateway.example.test",
                         "sshIdentity": "/tmp/old-identity",
                     ],
@@ -252,7 +252,7 @@ struct AppStateRemoteConfigTests {
                 "mode": "remote",
                 "remote": [
                     "transport": "direct",
-                    "url": "wss://gateway-b.example.test",
+                    "url": "${ltfx.n.1783849197505f0adad2.v1}",
                 ],
             ],
         ])
@@ -287,7 +287,7 @@ struct AppStateRemoteConfigTests {
                 "mode": "remote",
                 "remote": [
                     "transport": "ssh",
-                    "url": "ws://127.0.0.1:18789",
+                    "url": "${ltfx.n.0edbee82f0824a1ed09b.v1}",
                     "sshTarget": "bob@gateway-b.example.test",
                 ],
             ],
@@ -315,7 +315,7 @@ struct AppStateRemoteConfigTests {
                 "mode": "remote",
                 "remote": [
                     "transport": "ssh",
-                    "url": "ws://127.0.0.1:18789",
+                    "url": "${ltfx.n.0edbee82f0824a1ed09b.v1}",
                     "sshTarget": "   ",
                     "sshIdentity": "   ",
                 ],
@@ -342,7 +342,7 @@ struct AppStateRemoteConfigTests {
                     "mode": "remote",
                     "remote": [
                         "transport": "direct",
-                        "url": "wss://gateway-b.example.test",
+                        "url": "${ltfx.n.1783849197505f0adad2.v1}",
                     ],
                 ],
             ]))
@@ -382,7 +382,7 @@ struct AppStateRemoteConfigTests {
                         "mode": "remote",
                         "remote": [
                             "transport": "ssh",
-                            "url": "ws://127.0.0.1:18789",
+                            "url": "${ltfx.n.0edbee82f0824a1ed09b.v1}",
                             "sshTarget": "bob@gateway-b.example.test",
                             "sshIdentity": "/tmp/gateway-b-id",
                         ],
@@ -428,7 +428,7 @@ struct AppStateRemoteConfigTests {
                         "mode": "remote",
                         "remote": [
                             "transport": "ssh",
-                            "url": "ws://127.0.0.1:18789",
+                            "url": "${ltfx.n.0edbee82f0824a1ed09b.v1}",
                             "sshTarget": "   ",
                             "sshIdentity": "   ",
                         ],
@@ -455,7 +455,7 @@ struct AppStateRemoteConfigTests {
                 remoteHost: "gateway.example",
                 remoteTarget: "alice@gateway.example",
                 remoteIdentity: "/tmp/id_ed25519",
-                remoteToken: "  secret-token  ",
+                remoteToken: "${ltfx.n.cfba7da32ab39a537434.v1}",
                 remoteTokenDirty: true))
 
         #expect(remote["token"] as? String == "secret-token")
@@ -464,7 +464,7 @@ struct AppStateRemoteConfigTests {
     @Test
     func `updated remote gateway config clears token when blank`() {
         let remote = AppState._testUpdatedRemoteGatewayConfig(
-            current: ["token": "old-token"],
+            current: ["token": "${ltfx.n.9bdf10a691a1cfda89d9.v1}"],
             draft: .init(
                 transport: .direct,
                 remoteUrl: "wss://gateway.example",
@@ -480,7 +480,7 @@ struct AppStateRemoteConfigTests {
     @Test
     func `updated remote gateway config pins loopback url for ssh transport`() {
         let remote = AppState._testUpdatedRemoteGatewayConfig(
-            current: ["url": "ws://gateway.example:18789"],
+            current: ["url": "${ltfx.n.07d3a9b26f18ab64e08c.v1}"],
             draft: .init(
                 transport: .ssh,
                 remoteUrl: "",
@@ -531,7 +531,7 @@ struct AppStateRemoteConfigTests {
     @Test
     func `updated remote gateway config preserves custom loopback tunnel port`() {
         let remote = AppState._testUpdatedRemoteGatewayConfig(
-            current: ["url": "ws://localhost.:29876"],
+            current: ["url": "${ltfx.n.921787884a7e01f9f666.v1}"],
             draft: .init(
                 transport: .ssh,
                 remoteUrl: "",
@@ -547,7 +547,7 @@ struct AppStateRemoteConfigTests {
     @Test
     func `updated remote gateway config preserves custom port when existing host matches ssh target`() {
         let remote = AppState._testUpdatedRemoteGatewayConfig(
-            current: ["url": "ws://gateway.example:19999"],
+            current: ["url": "${ltfx.n.aba140171adceb968996.v1}"],
             draft: .init(
                 transport: .ssh,
                 remoteUrl: "",
@@ -563,7 +563,7 @@ struct AppStateRemoteConfigTests {
     @Test
     func `updated remote gateway config drops custom port when existing host does not match ssh target`() {
         let remote = AppState._testUpdatedRemoteGatewayConfig(
-            current: ["url": "ws://other-host.example:19999"],
+            current: ["url": "${ltfx.n.13a87bce3195358ed2a0.v1}"],
             draft: .init(
                 transport: .ssh,
                 remoteUrl: "",
@@ -579,7 +579,7 @@ struct AppStateRemoteConfigTests {
     @Test
     func `updated remote gateway config does not preserve port for hostname prefix collision`() {
         let remote = AppState._testUpdatedRemoteGatewayConfig(
-            current: ["url": "ws://example.attacker.tld:19999"],
+            current: ["url": "${ltfx.n.0ae44d8a4d83d8943686.v1}"],
             draft: .init(
                 transport: .ssh,
                 remoteUrl: "",
@@ -603,7 +603,7 @@ struct AppStateRemoteConfigTests {
                 "gateway": [
                     "mode": "remote",
                     "remote": [
-                        "url": "ws://127.0.0.1:19999",
+                        "url": "${ltfx.n.c5125bd6319742b7446b.v1}",
                     ],
                 ],
             ])
@@ -624,7 +624,7 @@ struct AppStateRemoteConfigTests {
                 "gateway": [
                     "mode": "remote",
                     "remote": [
-                        "url": "ws://127.0.0.1:19999",
+                        "url": "${ltfx.n.c5125bd6319742b7446b.v1}",
                     ],
                 ],
             ])
@@ -645,7 +645,7 @@ struct AppStateRemoteConfigTests {
                 "gateway": [
                     "mode": "remote",
                     "remote": [
-                        "url": "ws://127.0.0.1:18789",
+                        "url": "${ltfx.n.0edbee82f0824a1ed09b.v1}",
                         "sshTarget": "steipete@192.168.0.202",
                     ],
                 ],
@@ -664,7 +664,7 @@ struct AppStateRemoteConfigTests {
                 "mode": "remote",
                 "remote": [
                     "transport": "direct",
-                    "url": "wss://old-gateway.example",
+                    "url": "${ltfx.n.60c1e883894efd4e7407.v1}",
                     "token": [
                         "$secretRef": "gateway-token", // pragma: allowlist secret
                     ],
@@ -717,7 +717,7 @@ struct AppStateRemoteConfigTests {
                 remoteHost: nil,
                 remoteTarget: "",
                 remoteIdentity: "",
-                remoteToken: "  fresh-token  ",
+                remoteToken: "${ltfx.n.6ea9d44436fea7cd8d25.v1}",
                 remoteTokenDirty: true))
 
         #expect(remote["token"] as? String == "fresh-token")
@@ -763,11 +763,11 @@ struct AppStateRemoteConfigTests {
                 "mode": "remote",
                 "auth": [
                     "mode": "token",
-                    "token": "test-token", // pragma: allowlist secret
+                    "token": "${ltfx.n.4c5dc9b7708905f77f5e.v1}", // pragma: allowlist secret
                 ],
                 "remote": [
                     "transport": "direct",
-                    "url": "wss://old-gateway.example",
+                    "url": "${ltfx.n.60c1e883894efd4e7407.v1}",
                 ],
             ],
         ]

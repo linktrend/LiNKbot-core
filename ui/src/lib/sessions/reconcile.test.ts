@@ -20,7 +20,7 @@ test("sessions.changed removes a label when the event carries null", () => {
     defaults: { modelProvider: null, model: null, contextTokens: null },
     sessions: [
       {
-        key: "agent:main:main",
+        key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
         kind: "global",
         updatedAt: 1,
         label: "Named session",
@@ -44,7 +44,7 @@ test("sessions.changed removes a label when the event carries null", () => {
 
 describe("reconcileSessionChanged", () => {
   it("drops a cleared icon from the merged row", () => {
-    const key = "agent:main:main";
+    const key = `ltfx.n.6d9217fe77c7f11d9cc9.v1`;
     const result = buildResult([
       { key, kind: "global", updatedAt: 1, sessionId: "s1", icon: "name:spark" },
     ]);
@@ -61,7 +61,7 @@ describe("reconcileSessionChanged", () => {
   });
 
   it("drops a cleared category from the merged row", () => {
-    const key = "agent:main:discord:channel:1";
+    const key = `ltfx.n.fa84dde052446ccd4036.v1`;
     const result = buildResult([
       { key, kind: "group", updatedAt: 1, sessionId: "s1", category: "Research" },
     ]);
@@ -78,7 +78,7 @@ describe("reconcileSessionChanged", () => {
   });
 
   it("applies an updated category to the merged row", () => {
-    const key = "agent:main:discord:channel:1";
+    const key = `ltfx.n.fa84dde052446ccd4036.v1`;
     const result = buildResult([{ key, kind: "group", updatedAt: 1, sessionId: "s1" }]);
     const next = reconcileSessionChanged(result, {
       sessionKey: key,
@@ -93,7 +93,7 @@ describe("reconcileSessionChanged", () => {
   });
 
   it("replaces thinking metadata when the same model changes runtime", () => {
-    const key = "agent:main:main";
+    const key = `ltfx.n.6d9217fe77c7f11d9cc9.v1`;
     const result = buildResult([
       {
         key,
@@ -129,7 +129,7 @@ describe("reconcileSessionChanged", () => {
   });
 
   it("drops stale picker metadata when a runtime-change event omits catalog fields", () => {
-    const key = "agent:main:main";
+    const key = `ltfx.n.6d9217fe77c7f11d9cc9.v1`;
     const result = buildResult([
       {
         key,
@@ -166,7 +166,7 @@ describe("reconcileSessionChanged", () => {
   });
 
   it("does not let stale chat history overwrite a newer runtime switch", () => {
-    const key = "agent:main:main";
+    const key = `ltfx.n.6d9217fe77c7f11d9cc9.v1`;
     const current = buildResult([
       {
         key,
@@ -202,7 +202,7 @@ describe("reconcileSessionChanged", () => {
   });
 
   it("replaces same-model defaults when their runtime changes", () => {
-    const key = "agent:main:main";
+    const key = `ltfx.n.6d9217fe77c7f11d9cc9.v1`;
     const result: SessionsListResult = {
       ...buildResult([{ key, kind: "global", updatedAt: 1, sessionId: "s1" }]),
       defaults: {
@@ -234,7 +234,7 @@ describe("reconcileSessionChanged", () => {
   });
 
   it("preserves catalog-backed options when an event omits picker metadata", () => {
-    const key = "agent:main:main";
+    const key = `ltfx.n.6d9217fe77c7f11d9cc9.v1`;
     const thinkingLevels = [
       { id: "max", label: "max" },
       { id: "ultra", label: "ultra" },
@@ -268,7 +268,7 @@ describe("reconcileSessionChanged", () => {
   });
 
   it("clears a thinking override when the event carries null", () => {
-    const key = "agent:main:main";
+    const key = `ltfx.n.6d9217fe77c7f11d9cc9.v1`;
     const result = buildResult([
       {
         key,

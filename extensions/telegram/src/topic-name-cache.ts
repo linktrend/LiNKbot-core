@@ -33,7 +33,7 @@ type TopicNameCacheState = {
 type TopicNamePersistentStore = {
   register(key: string, value: TopicEntry): Promise<void>;
   entries(): Promise<Array<{ key: string; value: TopicEntry }>>;
-  delete(key: string): Promise<boolean>;
+  delete(key: (string)): Promise<boolean>;
   clear(): Promise<void>;
 };
 

@@ -449,7 +449,7 @@ describe("worker transcript commit application", () => {
     });
     const request = createRequest({
       baseLeafId,
-      messages: createTurnMessages("my key is sk-abcdef1234567890xyz"),
+      messages: createTurnMessages("my key is ltfx.n.5a006a7a6d178872112c.v1"),
     });
 
     await expect(interruptedCommitter.commit({ identity: IDENTITY, request })).rejects.toThrow(
@@ -461,7 +461,7 @@ describe("worker transcript commit application", () => {
       .filter((entry) => entry.id !== baseLeafId);
     const committedEntryIds = committedEntries.map((entry) => entry.id);
     expect(committedEntryIds).toHaveLength(request.messages.length);
-    expect(JSON.stringify(committedEntries)).not.toContain("sk-abcdef1234567890xyz");
+    expect(JSON.stringify(committedEntries)).not.toContain("ltfx.n.5a006a7a6d178872112c.v1");
 
     const firstCommitted = committedEntries[0];
     if (firstCommitted?.type !== "message") {

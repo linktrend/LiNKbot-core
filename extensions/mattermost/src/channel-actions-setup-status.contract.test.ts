@@ -19,7 +19,7 @@ describe("mattermost actions contract", () => {
           channels: {
             mattermost: {
               enabled: true,
-              botToken: "test-token",
+              botToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
               baseUrl: "https://chat.example.com",
             },
           },
@@ -33,7 +33,7 @@ describe("mattermost actions contract", () => {
           channels: {
             mattermost: {
               enabled: true,
-              botToken: "test-token",
+              botToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
               baseUrl: "https://chat.example.com",
               actions: { reactions: false },
             },
@@ -66,7 +66,7 @@ describe("mattermost setup contract", () => {
         name: "default account stores token and normalized base URL",
         cfg: {} as OpenClawConfig,
         input: {
-          botToken: "test-token",
+          botToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
           httpUrl: "https://chat.example.com/",
         },
         expectedAccountId: "default",
@@ -103,7 +103,7 @@ describe("mattermost status contract", () => {
           channels: {
             mattermost: {
               enabled: true,
-              botToken: "test-token",
+              botToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
               baseUrl: "https://chat.example.com",
             },
           },

@@ -178,7 +178,7 @@ async function captureProviderPayload<
         messages: [{ role: "user", content: "hello", timestamp: 0 }],
       },
       {
-        apiKey: params.model.api === "openai-chatgpt-responses" ? codexTestToken : "test-api-key",
+        apiKey: params.model.api === "openai-chatgpt-responses" ? codexTestToken : `ltfx.n.4c806362b613f7496abf.v1`,
         cacheRetention: "none",
         ...params.options,
         onPayload: (payload) => {

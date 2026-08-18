@@ -205,7 +205,7 @@ describe("appendConfiguredRows", () => {
       rows,
       entries: [
         {
-          key: "openai/gpt-5.5",
+          key: `ltfx.n.9a8f4a62b182ff6404e9.v1`,
           ref: { provider: "openai", model: "gpt-5.5" },
           tags: new Set(["default"]),
           aliases: [],
@@ -336,7 +336,7 @@ describe("appendProviderCatalogRows", () => {
           [
             "openai/gpt-5.5",
             {
-              key: "openai/gpt-5.5",
+              key: `ltfx.n.9a8f4a62b182ff6404e9.v1`,
               ref: { provider: "openai", model: "gpt-5.5" },
               tags: new Set(["configured"]),
               aliases: [],
@@ -674,7 +674,7 @@ describe("appendAuthenticatedCatalogRows", () => {
     });
 
     expect(requireOnlyRow(rows)).toMatchObject({
-      key: "local-openai/local-model",
+      key: `ltfx.n.93d7710f9842b3dd7235.v1`,
       local: true,
       available: true,
     });

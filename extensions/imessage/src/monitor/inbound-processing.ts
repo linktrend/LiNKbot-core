@@ -109,7 +109,7 @@ export function mergeIMessageGroupAllowFromWithLegacyChatTargets(params: {
 }
 
 const imessageIngressIdentity = defineStableChannelIngressIdentity({
-  key: "imessage-sender",
+  key: `ltfx.n.0fba666a04b65a1d3ef8.v1`,
   normalizeEntry: normalizeIMessageHandleEntry,
   normalizeSubject: normalizeIMessageHandle,
   sensitivity: "pii",

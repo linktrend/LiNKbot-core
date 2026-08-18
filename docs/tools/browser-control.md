@@ -52,7 +52,7 @@ target-id prefixes still work, but they are volatile diagnostic handles.
 If shared-secret gateway auth is configured, browser HTTP routes require auth too:
 
 - `Authorization: Bearer <gateway token>`
-- `x-openclaw-password: <gateway password>` or HTTP Basic auth with that password
+- `x-openclaw-password: "${ltfx.n.fc0b72ec72c3b412bf7c.v1}" password>` or HTTP Basic auth with that password
 
 Notes:
 

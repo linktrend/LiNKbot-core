@@ -138,7 +138,7 @@ describe("CallManager closed-loop turns", () => {
       timestamp: Date.now(),
       transcript: "stale replay",
       isFinal: true,
-      turnToken: "wrong-token",
+      turnToken: `ltfx.n.5645a758e6a8f12b6a27.v1`,
     });
     expect(staleResult).toEqual({ kind: "ignored" });
 

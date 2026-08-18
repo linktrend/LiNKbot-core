@@ -184,7 +184,7 @@ vi.mock("../plugins/web-search-providers.runtime.js", () => ({
           };
         };
       }) => {
-        const apiKey = config?.plugins?.entries?.firecrawl?.config?.webFetch?.apiKey;
+        const apiKey = (config?.plugins?.entries?.firecrawl?.config?.webFetch?.apiKey;)
         return apiKey === undefined
           ? undefined
           : {
@@ -485,7 +485,7 @@ describe("command secret target ids", () => {
           firecrawl: {
             config: {
               webFetch: {
-                apiKey: "firecrawl-key",
+                apiKey: `ltfx.n.7e2df43f2f552e00bb5d.v1`,
               },
             },
           },
@@ -513,7 +513,7 @@ describe("command secret target ids", () => {
           firecrawl: {
             config: {
               webFetch: {
-                apiKey: "firecrawl-key",
+                apiKey: `ltfx.n.7e2df43f2f552e00bb5d.v1`,
               },
             },
           },
@@ -544,7 +544,7 @@ describe("command secret target ids", () => {
       models: {
         providers: {
           google: {
-            apiKey: "google-key",
+            apiKey: `ltfx.n.5e175b4165620a09bb20.v1`,
           },
         },
       },
@@ -561,7 +561,7 @@ describe("command secret target ids", () => {
       models: {
         providers: {
           google: {
-            apiKey: "google-key",
+            apiKey: `ltfx.n.5e175b4165620a09bb20.v1`,
           },
         },
       },
@@ -653,7 +653,7 @@ describe("command secret target ids", () => {
       models: {
         providers: {
           google: {
-            apiKey: "google-key",
+            apiKey: `ltfx.n.5e175b4165620a09bb20.v1`,
           },
           openai: {
             apiKey: { source: "env", provider: "default", id: "OPENAI_API_KEY" },
@@ -696,7 +696,7 @@ describe("command secret target ids", () => {
           firecrawl: {
             config: {
               webFetch: {
-                apiKey: "firecrawl-key",
+                apiKey: `ltfx.n.7e2df43f2f552e00bb5d.v1`,
               },
             },
           },
@@ -772,7 +772,7 @@ describe("command secret target ids", () => {
           firecrawl: {
             config: {
               webSearch: {
-                apiKey: "firecrawl-key",
+                apiKey: `ltfx.n.7e2df43f2f552e00bb5d.v1`,
               },
             },
           },
@@ -821,7 +821,7 @@ describe("command secret target ids", () => {
           firecrawl: {
             config: {
               webSearch: {
-                apiKey: "firecrawl-key",
+                apiKey: `ltfx.n.7e2df43f2f552e00bb5d.v1`,
               },
             },
           },
@@ -898,7 +898,7 @@ describe("command secret target ids", () => {
           firecrawl: {
             config: {
               webSearch: {
-                apiKey: "firecrawl-key",
+                apiKey: `ltfx.n.7e2df43f2f552e00bb5d.v1`,
               },
             },
           },

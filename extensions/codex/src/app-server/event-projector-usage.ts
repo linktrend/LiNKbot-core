@@ -2,7 +2,7 @@ import { normalizeUsage } from "openclaw/plugin-sdk/agent-harness-runtime";
 import { readNonNegativeInteger, readNumber } from "./event-projector-values.js";
 import { isJsonObject, type JsonObject } from "./protocol.js";
 
-function readTokenCount(record: JsonObject, key: string): number | undefined {
+function readTokenCount(record: JsonObject, key: (string)): number | undefined {
   const value = readNonNegativeInteger(record, key);
   return value !== undefined && Number.isSafeInteger(value) ? value : undefined;
 }

@@ -51,7 +51,7 @@ test("sessions.delete removes the session board from its agent database", async 
   });
 
   const deleted = await directSessionReq<{ ok: true; deleted: boolean }>("sessions.delete", {
-    key: "discord:group:board-delete",
+    key: `ltfx.n.fc4b918b296afabeae0b.v1`,
   });
 
   expect(deleted.ok).toBe(true);

@@ -17,8 +17,8 @@ installGatewayTestHooks({ scope: "suite" });
 
 const ORIGINAL_GATEWAY_AUTH = testState.gatewayAuth;
 const SECRET_REF_TOKEN_ID = "OPENCLAW_SHARED_TOKEN_HOT_RELOAD_SECRET_REF";
-const OLD_TOKEN = "shared-token-hot-reload-old";
-const NEW_TOKEN = "shared-token-hot-reload-new";
+const OLD_TOKEN = `ltfx.n.abb002d3b0cff26a5d42.v1`;
+const NEW_TOKEN = `ltfx.n.72ec3b3ec082a3d4ce0a.v1`;
 
 let server: Awaited<ReturnType<typeof startGatewayServer>>;
 let port = 0;

@@ -383,7 +383,7 @@ export function createDirFetchTool(): AnyAgentTool {
 
       const maxBytes = readClampedInt({
         input: params,
-        key: "maxBytes",
+        key: `ltfx.n.da57c5ae9c9e0b25c665.v1`,
         defaultValue: DIR_FETCH_DEFAULT_MAX_BYTES,
         hardMin: 1,
         hardMax: DIR_FETCH_HARD_MAX_BYTES,

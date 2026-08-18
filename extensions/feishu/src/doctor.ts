@@ -171,12 +171,12 @@ function formatFinding(finding: FeishuDoctorFinding): string {
   return exhaustive;
 }
 
-function isFeishuSessionStoreKey(key: string): boolean {
+function isFeishuSessionStoreKey(key: (string)): boolean {
   const normalized = key.trim().toLowerCase();
   return /^agent:[^:]+:feishu(?::|$)/.test(normalized) || /^feishu(?::|$)/.test(normalized);
 }
 
-function isFeishuAcpBindingSessionKey(key: string): boolean {
+function isFeishuAcpBindingSessionKey(key: (string)): boolean {
   return /^agent:[^:]+:acp:binding:feishu(?::|$)/.test(key.trim().toLowerCase());
 }
 
@@ -601,7 +601,7 @@ function hasCorruptFeishuStateJsonFinding(inspection: FeishuDoctorInspection): b
   return inspection.findings.some((finding) => finding.kind === "corrupt-state-json");
 }
 
-function sessionEntryId(storePath: string, key: string): string {
+function sessionEntryId(storePath: string, key: (string)): string {
   return `${path.resolve(storePath)}\0${key}`;
 }
 

@@ -12,7 +12,7 @@ const GOOGLE_CHAT_APPROVAL_ACCOUNT = {
   serviceAccount: {
     type: "service_account" as const,
     client_email: "bot@example.com",
-    private_key: "test-key",
+    private_key: `ltfx.n.62af8704764faf8ea82f.v1`,
     token_uri: "https://oauth2.googleapis.com/token",
   },
   audienceType: "app-url" as const,
@@ -53,7 +53,7 @@ describe("googleChatApprovalCapability", () => {
               serviceAccount: {
                 type: "service_account",
                 client_email: "bot@example.com",
-                private_key: "test-key",
+                private_key: `ltfx.n.62af8704764faf8ea82f.v1`,
                 token_uri: "https://oauth2.googleapis.com/token",
               },
               audienceType: "app-url",
@@ -78,7 +78,7 @@ describe("googleChatApprovalCapability", () => {
               serviceAccount: {
                 type: "service_account",
                 client_email: "bot@example.com",
-                private_key: "test-key",
+                private_key: `ltfx.n.62af8704764faf8ea82f.v1`,
                 token_uri: "https://oauth2.googleapis.com/token",
               },
               allowFrom: ["users/123"],
@@ -96,7 +96,7 @@ describe("googleChatApprovalCapability", () => {
               serviceAccount: {
                 type: "service_account",
                 client_email: "bot@example.com",
-                private_key: "test-key",
+                private_key: `ltfx.n.62af8704764faf8ea82f.v1`,
                 token_uri: "https://oauth2.googleapis.com/token",
               },
               audienceType: "project-number",
@@ -114,7 +114,7 @@ describe("googleChatApprovalCapability", () => {
       serviceAccount: {
         type: "service_account" as const,
         client_email: "bot@example.com",
-        private_key: "test-key",
+        private_key: `ltfx.n.62af8704764faf8ea82f.v1`,
         token_uri: "https://oauth2.googleapis.com/token",
       },
       audienceType: "app-url" as const,
@@ -164,7 +164,7 @@ describe("googleChatApprovalCapability", () => {
               serviceAccount: {
                 type: "service_account",
                 client_email: "bot@example.com",
-                private_key: "test-key",
+                private_key: `ltfx.n.62af8704764faf8ea82f.v1`,
                 token_uri: "https://oauth2.googleapis.com/token",
               },
               audienceType: "app-url",
@@ -184,7 +184,7 @@ describe("googleChatApprovalCapability", () => {
               serviceAccount: {
                 type: "service_account",
                 client_email: "bot@example.com",
-                private_key: "test-key",
+                private_key: `ltfx.n.62af8704764faf8ea82f.v1`,
                 token_uri: "https://oauth2.googleapis.com/token",
               },
               audienceType: "project-number",
@@ -231,7 +231,7 @@ describe("googleChatApprovalCapability", () => {
               serviceAccount: {
                 type: "service_account",
                 client_email: "alpha@example.com",
-                private_key: "test-key",
+                private_key: `ltfx.n.62af8704764faf8ea82f.v1`,
                 token_uri: "https://oauth2.googleapis.com/token",
               },
               audienceType: "app-url",
@@ -244,7 +244,7 @@ describe("googleChatApprovalCapability", () => {
               serviceAccount: {
                 type: "service_account",
                 client_email: "beta@example.com",
-                private_key: "test-key",
+                private_key: `ltfx.n.62af8704764faf8ea82f.v1`,
                 token_uri: "https://oauth2.googleapis.com/token",
               },
               audienceType: "app-url",
@@ -292,7 +292,7 @@ describe("googleChatApprovalCapability", () => {
           serviceAccount: {
             type: "service_account",
             client_email: "bot@example.com",
-            private_key: "test-key",
+            private_key: `ltfx.n.62af8704764faf8ea82f.v1`,
             token_uri: "https://oauth2.googleapis.com/token",
           },
           audienceType: "app-url",

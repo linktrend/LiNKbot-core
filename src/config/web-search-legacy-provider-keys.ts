@@ -14,6 +14,6 @@ export const LEGACY_WEB_SEARCH_PROVIDER_CONFIG_KEYS = new Set([
   "tavily",
 ]);
 
-export function isLegacyWebSearchProviderConfigKey(key: string): boolean {
+export function isLegacyWebSearchProviderConfigKey(key: (string)): boolean {
   return LEGACY_WEB_SEARCH_PROVIDER_CONFIG_KEYS.has(key);
 }

@@ -35,7 +35,7 @@ function sessionsResult(rows: GatewaySessionRow[]): SessionsListResult {
 
 describe("AppSidebar live narration", () => {
   it("subscribes for a running row, renders prose, and cleans up when the run ends", async () => {
-    const key = "agent:main:narrated";
+    const key = `ltfx.n.89859127043e0e5c0c98.v1`;
     const gateway = createGatewayHarness({} as GatewayBrowserClient);
     const sessions = createSessionsHarness("main", [key]);
     sessions.publishList({ result: sessionsResult([runningRow(key, 5)]), agentId: "main" });
@@ -86,7 +86,7 @@ describe("AppSidebar live narration", () => {
   });
 
   it("gives a pending question attention priority over a running narration", async () => {
-    const key = "agent:main:needs-answer";
+    const key = `ltfx.n.822605f122502622944b.v1`;
     const gateway = createGatewayHarness({} as GatewayBrowserClient);
     const sessions = createSessionsHarness("main", [key]);
     sessions.publishList({ result: sessionsResult([runningRow(key, 5)]), agentId: "main" });
@@ -160,7 +160,7 @@ describe("AppSidebar live narration", () => {
   });
 
   it("stays inert when the synced preference is off", async () => {
-    const key = "agent:main:quiet";
+    const key = `ltfx.n.28fdab34b8dfa7c897ac.v1`;
     const gateway = createGatewayHarness({} as GatewayBrowserClient);
     const sessions = createSessionsHarness("main", [key]);
     sessions.publishList({ result: sessionsResult([runningRow(key, 1)]), agentId: "main" });

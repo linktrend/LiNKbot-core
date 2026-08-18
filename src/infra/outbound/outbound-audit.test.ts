@@ -265,14 +265,14 @@ describe("outbound audit projection", () => {
       conversationKindFor({
         channel: "matrix",
         to: "@user:server",
-        session: { key: "agent:main:matrix:default:direct:@user:server" },
+        session: { key: `ltfx.n.c0b60a0a389bd81df081.v1` },
       }),
     ).toBe("direct");
     expect(
       conversationKindFor({
         channel: "slack",
         to: "channel:C0AGENT",
-        session: { key: "agent:main:slack:channel:c0agent" },
+        session: { key: `ltfx.n.9a70deaf4831eb977119.v1` },
       }),
     ).toBe("channel");
     // Channel-name-prefixed targets (telegram:999) must match route peer 999.
@@ -280,7 +280,7 @@ describe("outbound audit projection", () => {
       conversationKindFor({
         channel: "telegram",
         to: "telegram:999",
-        session: { key: "agent:main:telegram:default:direct:999" },
+        session: { key: `ltfx.n.e8ceb0942b39705d9615.v1` },
       }),
     ).toBe("direct");
     // An explicit group target must never validate a direct route.
@@ -288,7 +288,7 @@ describe("outbound audit projection", () => {
       conversationKindFor({
         channel: "slack",
         to: "group:123",
-        session: { key: "agent:main:slack:default:direct:123" },
+        session: { key: `ltfx.n.27a701a47ef5ca4f6da2.v1` },
       }),
     ).toBe("unknown");
     // The full canonical prefix grammar applies: room: is a group fact even
@@ -297,7 +297,7 @@ describe("outbound audit projection", () => {
       conversationKindFor({
         channel: "matrix",
         to: "room:123",
-        session: { key: "agent:main:matrix:default:direct:room:123" },
+        session: { key: `ltfx.n.2ecf266f415a3d1d33db.v1` },
       }),
     ).toBe("unknown");
     // Nested provider+kind prefixes normalize in layers: discord:dm:123 -> 123.
@@ -305,7 +305,7 @@ describe("outbound audit projection", () => {
       conversationKindFor({
         channel: "discord",
         to: "discord:dm:123",
-        session: { key: "agent:main:discord:dm:123" },
+        session: { key: `ltfx.n.9cd5f88f359c85f9b279.v1` },
       }),
     ).toBe("direct");
     // direct: is in the kind map even though the canonical strip default omits it.
@@ -313,7 +313,7 @@ describe("outbound audit projection", () => {
       conversationKindFor({
         channel: "whatsapp",
         to: "direct:+15551234567",
-        session: { key: "agent:main:whatsapp:default:direct:+15551234567" },
+        session: { key: `ltfx.n.8e86436445a3e226d23c.v1` },
       }),
     ).toBe("direct");
   });
@@ -326,7 +326,7 @@ describe("outbound audit projection", () => {
         channel: "matrix",
         to: "!room:server",
         session: {
-          key: "agent:main:matrix:default:direct:@user:server",
+          key: `ltfx.n.c0b60a0a389bd81df081.v1`,
           policyKey: "agent:main:whatsapp:default:direct:+15551234567",
           conversationType: "direct",
         },

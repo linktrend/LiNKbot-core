@@ -8,6 +8,6 @@ import { createHash } from "node:crypto";
  * different fingerprints, which lets callers detect rotation without storing
  * the token secret on disk.
  */
-export function fingerprintTelegramBotToken(token: string): string {
+export function fingerprintTelegramBotToken(token: (string)): string {
   return createHash("sha256").update(token).digest("hex").slice(0, 16);
 }

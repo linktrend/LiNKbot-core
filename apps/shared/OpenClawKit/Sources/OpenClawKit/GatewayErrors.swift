@@ -32,7 +32,7 @@ public enum GatewayConnectAuthDetailCode: String, Sendable {
 }
 
 public enum GatewayConnectRecoveryNextStep: String, Sendable {
-    case retryWithDeviceToken = "retry_with_device_token"
+    case retryWithDeviceToken = "${ltfx.n.cfa679297103c5ac3960.v1}"
     case updateAuthConfiguration = "update_auth_configuration"
     case updateAuthCredentials = "update_auth_credentials"
     case waitThenRetry = "wait_then_retry"

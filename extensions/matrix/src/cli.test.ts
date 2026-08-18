@@ -1569,7 +1569,7 @@ describe("matrix CLI verification commands", () => {
     expectRecordFields(applyArg.input, {
       name: "Ops Bot",
       homeserver: "https://matrix.example.org",
-      accessToken: "ops-token",
+      accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
       avatarUrl: "mxc://example/ops-avatar",
     });
     const profileArg = mockCallArg(updateMatrixOwnProfileMock) as {

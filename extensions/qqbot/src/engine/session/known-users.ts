@@ -35,7 +35,7 @@ function createKnownUsersStore() {
   });
 }
 
-function knownUserStateKey(key: string): string {
+function knownUserStateKey(key: (string)): string {
   return crypto.createHash("sha256").update(key).digest("hex");
 }
 

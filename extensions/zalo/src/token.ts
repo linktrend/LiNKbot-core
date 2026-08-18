@@ -29,7 +29,7 @@ export function resolveZaloToken(
   const accountHasBotToken = Boolean(accountConfig && Object.hasOwn(accountConfig, "botToken"));
 
   if (accountConfig && accountHasBotToken) {
-    const token = options?.allowUnresolvedSecretRef
+    const token = (options?.allowUnresolvedSecretRef)
       ? normalizeSecretInputString(accountConfig.botToken)
       : normalizeResolvedSecretInputString({
           value: accountConfig.botToken,
@@ -52,7 +52,7 @@ export function resolveZaloToken(
   }
 
   if (!accountHasBotToken) {
-    const token = options?.allowUnresolvedSecretRef
+    const token = (options?.allowUnresolvedSecretRef)
       ? normalizeSecretInputString(baseConfig?.botToken)
       : normalizeResolvedSecretInputString({
           value: baseConfig?.botToken,

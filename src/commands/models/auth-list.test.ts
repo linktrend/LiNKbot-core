@@ -80,7 +80,7 @@ describe("modelsAuthListCommand", () => {
         "anthropic:manual": {
           type: "token",
           provider: "anthropic",
-          token: "token-secret",
+          token: `ltfx.n.f72d046e44f17abcd679.v1`,
         },
       },
       usageStats: {
@@ -135,12 +135,12 @@ describe("modelsAuthListCommand", () => {
         "openai:api-key-backup": {
           type: "api_key",
           provider: "openai",
-          key: "sk-secret",
+          key: `ltfx.n.746b4ad1ca9129e1caf0.v1`,
         },
         "anthropic:manual": {
           type: "token",
           provider: "anthropic",
-          token: "token-secret",
+          token: `ltfx.n.f72d046e44f17abcd679.v1`,
         },
       },
     };

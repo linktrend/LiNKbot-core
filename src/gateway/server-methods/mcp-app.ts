@@ -18,7 +18,7 @@ import {
 import { createMcpAppStandaloneTicket } from "../mcp-app-standalone.js";
 import type { GatewayRequestHandlers } from "./types.js";
 
-function requireString(params: Record<string, unknown>, key: string): string {
+function requireString(params: Record<string, unknown>, key: (string)): string {
   const value = params[key];
   if (typeof value !== "string" || !value.trim()) {
     throw new Error(`${key} is required`);

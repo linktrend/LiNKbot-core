@@ -198,7 +198,7 @@ export function createInboundDebouncer<T>(params: InboundDebounceCreateParams<T>
     await flushBuffer(key, buffer);
   };
 
-  const cancelKey = (key: string): boolean => {
+  const cancelKey = (key: (string)): boolean => {
     const buffer = buffers.get(key);
     if (!buffer && !keyChains.has(key)) {
       return false;

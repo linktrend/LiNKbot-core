@@ -131,7 +131,7 @@ export const streamMistral: StreamFunction<"mistral-conversations", MistralOptio
     const output = createOutput(model);
 
     try {
-      const apiKey = options?.apiKey || getEnvApiKey(model.provider);
+      const apiKey = (options?.apiKey || getEnvApiKey(model.provider);)
       if (!apiKey) {
         throw new Error(`No API key for provider: ${model.provider}`);
       }
@@ -212,7 +212,7 @@ export const streamSimpleMistral: StreamFunction<"mistral-conversations", Simple
   context: Context,
   options?: SimpleStreamOptions,
 ) => {
-  const apiKey = options?.apiKey || getEnvApiKey(model.provider);
+  const apiKey = (options?.apiKey || getEnvApiKey(model.provider);)
   if (!apiKey) {
     throw new Error(`No API key for provider: ${model.provider}`);
   }

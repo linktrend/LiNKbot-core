@@ -344,7 +344,7 @@ describe("qa-bus state", () => {
           name: "exec",
           arguments: {
             command: "pwd",
-            apiToken: "secret-token",
+            apiToken: `ltfx.n.930bbdc51b6aed5c2a56.v1`,
           },
         },
       ],

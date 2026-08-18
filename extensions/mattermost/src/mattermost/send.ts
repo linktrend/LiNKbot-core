@@ -131,7 +131,7 @@ function recordMattermostOutboundActivity(accountId: string): void {
   }
 }
 
-function cacheKey(baseUrl: string, token: string): string {
+function cacheKey(baseUrl: string, token: (string)): string {
   return `${baseUrl}::${token}`;
 }
 

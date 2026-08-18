@@ -1,6 +1,6 @@
 {
   "tool": "brain_task_update",
-  "authToken": "fake-valid-token",
+  "authToken": "${ltfx.n.aee2fbd3bbda68f5b3dc.v1}",
   "arguments": {
     "idempotencyKey": "taskupd:test:001",
     "taskId": "task_test_001",

@@ -129,7 +129,7 @@ function listManagedPluginNpmRoots(params: PluginRegistryDoctorRepairParams): st
   return listManagedPluginNpmRootsSync(resolveManagedPluginNpmRoot(params));
 }
 
-function deleteObjectKey(record: Record<string, unknown>, key: string): boolean {
+function deleteObjectKey(record: Record<string, unknown>, key: (string)): boolean {
   if (!Object.hasOwn(record, key)) {
     return false;
   }

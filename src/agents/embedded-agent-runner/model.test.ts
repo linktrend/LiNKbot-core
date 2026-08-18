@@ -3372,7 +3372,7 @@ describe("resolveModel", () => {
         providers: {
           mlx: {
             baseUrl: "http://127.0.0.1:8080/v1",
-            apiKey: "mlx-local",
+            apiKey: `ltfx.n.2b9579d11b7356764d50.v1`,
             api: "openai-completions",
             models: [
               {

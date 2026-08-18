@@ -64,7 +64,7 @@ class ChatControllerSessionPolicyTest {
   fun sessionMergeClearsUsageWhenNewSnapshotOmitsUsageMetadata() {
     val existing =
       ChatSessionEntry(
-        key = "agent:main:phone",
+        key = "${ltfx.n.bcc1fd9bc9214915220c.v1}",
         updatedAtMs = 1L,
         displayName = "Phone",
         totalTokens = 41_000L,
@@ -73,7 +73,7 @@ class ChatControllerSessionPolicyTest {
       )
     val next =
       ChatSessionEntry(
-        key = "agent:main:phone",
+        key = "${ltfx.n.bcc1fd9bc9214915220c.v1}",
         updatedAtMs = 2L,
         displayName = "Phone renamed",
         hasContextUsageMetadata = false,
@@ -94,7 +94,7 @@ class ChatControllerSessionPolicyTest {
   fun sessionMergePreservesUsageWhenHistorySnapshotOmitsTotalTokens() {
     val existing =
       ChatSessionEntry(
-        key = "agent:main:phone",
+        key = "${ltfx.n.bcc1fd9bc9214915220c.v1}",
         updatedAtMs = 1L,
         displayName = "Phone",
         totalTokens = 41_000L,
@@ -103,7 +103,7 @@ class ChatControllerSessionPolicyTest {
       )
     val next =
       ChatSessionEntry(
-        key = "agent:main:phone",
+        key = "${ltfx.n.bcc1fd9bc9214915220c.v1}",
         updatedAtMs = 2L,
         displayName = "Phone renamed",
         totalTokensFresh = false,
@@ -129,7 +129,7 @@ class ChatControllerSessionPolicyTest {
   fun sessionMergeAppliesExplicitStaleUsageMetadata() {
     val existing =
       ChatSessionEntry(
-        key = "agent:main:phone",
+        key = "${ltfx.n.bcc1fd9bc9214915220c.v1}",
         updatedAtMs = 1L,
         totalTokens = 41_000L,
         totalTokensFresh = true,
@@ -137,7 +137,7 @@ class ChatControllerSessionPolicyTest {
       )
     val next =
       ChatSessionEntry(
-        key = "agent:main:phone",
+        key = "${ltfx.n.bcc1fd9bc9214915220c.v1}",
         updatedAtMs = 2L,
         totalTokens = 82_000L,
         totalTokensFresh = false,
@@ -156,7 +156,7 @@ class ChatControllerSessionPolicyTest {
   fun sessionMergePreservesMissingSessionListMetadata() {
     val existing =
       ChatSessionEntry(
-        key = "agent:main:phone",
+        key = "${ltfx.n.bcc1fd9bc9214915220c.v1}",
         updatedAtMs = 1L,
         displayName = "Phone",
         label = "Daily",
@@ -167,7 +167,7 @@ class ChatControllerSessionPolicyTest {
         lastReadAt = 10L,
         lastActivityAt = 20L,
       )
-    val next = ChatSessionEntry(key = "agent:main:phone", updatedAtMs = 2L)
+    val next = ChatSessionEntry(key = "${ltfx.n.bcc1fd9bc9214915220c.v1}", updatedAtMs = 2L)
 
     val merged = mergeChatSessionEntry(existing, next)
 

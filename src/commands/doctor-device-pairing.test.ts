@@ -203,7 +203,7 @@ describe("noteDevicePairingHealth", () => {
       storeDeviceAuthToken({
         deviceId: identity.deviceId,
         role: "operator",
-        token: "stale-local-token",
+        token: `ltfx.n.dfd77077808a20eff7c3.v1`,
         scopes: ["operator.read"],
       });
       const deviceAuthPath = path.join(stateDir, "identity", "device-auth.json");
@@ -241,7 +241,7 @@ describe("noteDevicePairingHealth", () => {
       storeDeviceAuthToken({
         deviceId: identity.deviceId,
         role: "node",
-        token: "stale-node-token",
+        token: `ltfx.n.aacda305cc3393839bec.v1`,
         scopes: [],
       });
 
@@ -375,7 +375,7 @@ describe("noteDevicePairingHealth", () => {
       storeDeviceAuthToken({
         deviceId: identity.deviceId,
         role: "operator",
-        token: "stale-local-token",
+        token: `ltfx.n.dfd77077808a20eff7c3.v1`,
         scopes: ["operator.read"],
       });
       await revokeDeviceToken({

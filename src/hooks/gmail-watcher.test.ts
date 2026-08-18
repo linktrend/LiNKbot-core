@@ -36,11 +36,11 @@ function createGmailConfig(account = "me@example.com", renewEveryMinutes?: numbe
   return {
     hooks: {
       enabled: true,
-      token: "hook-token",
+      token: `ltfx.n.64eeb5ca0d40b2cc6c09.v1`,
       gmail: {
         account,
         topic: "projects/demo/topics/gmail",
-        pushToken: "push-token",
+        pushToken: `ltfx.n.13550d36c32499b89fb2.v1`,
         renewEveryMinutes,
       },
     },
@@ -175,11 +175,11 @@ describe("startGmailWatcher", () => {
       {
         hooks: {
           enabled: true,
-          token: "hook-token",
+          token: `ltfx.n.64eeb5ca0d40b2cc6c09.v1`,
           gmail: {
             account: "me@example.com",
             topic: "projects/demo/topics/gmail",
-            pushToken: "push-token",
+            pushToken: `ltfx.n.13550d36c32499b89fb2.v1`,
             tailscale: { mode: "serve" },
           },
         },

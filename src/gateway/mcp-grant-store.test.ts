@@ -98,12 +98,12 @@ describe("mcp-grant-store", () => {
     };
     const grant = mintMcpLoopbackClientGrant({
       context,
-      runtimeOwnerToken: "runtime-one",
+      runtimeOwnerToken: `ltfx.n.5cbfccb321655cdc5014.v1`,
     });
     expect(
       activateMcpLoopbackClientGrantCapture({
         token: grant.token,
-        runtimeOwnerToken: "runtime-one",
+        runtimeOwnerToken: `ltfx.n.5cbfccb321655cdc5014.v1`,
         captureKey: "capture-one",
       }),
     ).toBe(true);
@@ -114,7 +114,7 @@ describe("mcp-grant-store", () => {
     expect(
       resolveMcpLoopbackClientGrant({
         token: grant.token,
-        runtimeOwnerToken: "runtime-one",
+        runtimeOwnerToken: `ltfx.n.5cbfccb321655cdc5014.v1`,
         captureKey: "capture-one",
       })?.context,
     ).toEqual({
@@ -127,7 +127,7 @@ describe("mcp-grant-store", () => {
   it("admits only the active capture on the grant's Gateway runtime", () => {
     const grant = mintMcpLoopbackClientGrant({
       context: { sessionKey: "agent:main:first", senderIsOwner: false },
-      runtimeOwnerToken: "runtime-one",
+      runtimeOwnerToken: `ltfx.n.5cbfccb321655cdc5014.v1`,
     });
     const resolve = (runtimeOwnerToken: string, captureKey: string) =>
       resolveMcpLoopbackClientGrant({
@@ -140,14 +140,14 @@ describe("mcp-grant-store", () => {
     expect(
       activateMcpLoopbackClientGrantCapture({
         token: grant.token,
-        runtimeOwnerToken: "runtime-other",
+        runtimeOwnerToken: `ltfx.n.5399064519f348639181.v1`,
         captureKey: "capture-a",
       }),
     ).toBe(false);
     expect(
       activateMcpLoopbackClientGrantCapture({
         token: grant.token,
-        runtimeOwnerToken: "runtime-one",
+        runtimeOwnerToken: `ltfx.n.5cbfccb321655cdc5014.v1`,
         captureKey: "capture-a",
       }),
     ).toBe(true);
@@ -158,7 +158,7 @@ describe("mcp-grant-store", () => {
     expect(
       activateMcpLoopbackClientGrantCapture({
         token: grant.token,
-        runtimeOwnerToken: "runtime-one",
+        runtimeOwnerToken: `ltfx.n.5cbfccb321655cdc5014.v1`,
         captureKey: "capture-b",
       }),
     ).toBe(true);
@@ -166,7 +166,7 @@ describe("mcp-grant-store", () => {
     expect(
       deactivateMcpLoopbackClientGrantCapture({
         token: grant.token,
-        runtimeOwnerToken: "runtime-one",
+        runtimeOwnerToken: `ltfx.n.5cbfccb321655cdc5014.v1`,
         captureKey: "capture-a",
       }),
     ).toBe(false);
@@ -174,7 +174,7 @@ describe("mcp-grant-store", () => {
     expect(
       deactivateMcpLoopbackClientGrantCapture({
         token: grant.token,
-        runtimeOwnerToken: "runtime-one",
+        runtimeOwnerToken: `ltfx.n.5cbfccb321655cdc5014.v1`,
         captureKey: "capture-b",
       }),
     ).toBe(true);
@@ -201,7 +201,7 @@ describe("mcp-grant-store", () => {
     expect(() =>
       mintMcpLoopbackClientGrant({
         context: { sessionKey: "  ", senderIsOwner: false },
-        runtimeOwnerToken: "runtime-one",
+        runtimeOwnerToken: `ltfx.n.5cbfccb321655cdc5014.v1`,
       }),
     ).toThrow(/sessionKey is required/);
     expect(() =>

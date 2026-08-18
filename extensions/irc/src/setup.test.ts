@@ -331,7 +331,7 @@ describe("irc setup", () => {
           nick: " openclaw ",
           username: " claw ",
           realname: " OpenClaw Bot ",
-          password: " secret ",
+          password: `ltfx.n.7da58f1fc4d3bf786493.v1`,
           channels: ["#openclaw"],
         },
       } as never),

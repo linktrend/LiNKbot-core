@@ -233,7 +233,7 @@ class ChatControllerCommandControlsTest {
           requestGateway = { method, paramsJson ->
             requests += method to paramsJson
             when (method) {
-              "sessions.create" -> """{"ok":true,"key":"agent:main:dashboard:fresh"}"""
+              "sessions.create" -> """{"ok":true,"key":"${ltfx.n.027dc45ee814bb436d29.v1}"}"""
               "chat.history" -> """{"sessionId":"fresh-session","messages":[]}"""
               "health" -> "{}"
               "sessions.list" -> """{"sessions":[]}"""
@@ -283,7 +283,7 @@ class ChatControllerCommandControlsTest {
                     ),
                   )
                 }
-                """{"ok":true,"key":"agent:main:dashboard:fresh"}"""
+                """{"ok":true,"key":"${ltfx.n.027dc45ee814bb436d29.v1}"}"""
               }
               "chat.history" -> """{"sessionId":"fresh-session","messages":[]}"""
               "health" -> "{}"
@@ -321,7 +321,7 @@ class ChatControllerCommandControlsTest {
           requestGateway = { method, paramsJson ->
             requests += method to paramsJson
             when (method) {
-              "sessions.create" -> """{"ok":true,"key":"agent:main:dashboard:worktree"}"""
+              "sessions.create" -> """{"ok":true,"key":"${ltfx.n.67d09637d9ad7a272e96.v1}"}"""
               "chat.history" -> """{"sessionId":"worktree-session","messages":[]}"""
               "health" -> "{}"
               "sessions.list" -> """{"sessions":[]}"""
@@ -396,9 +396,9 @@ class ChatControllerCommandControlsTest {
             when (method) {
               "sessions.list" ->
                 if (paramsJson.orEmpty().contains("\"archived\":true")) {
-                  """{"sessions":[{"key":"agent:main:active","category":"Work"},{"key":"agent:main:archived","category":" Work "}]}"""
+                  """{"sessions":[{"key":"${ltfx.n.74e68db8ce1ca0729443.v1}","category":"Work"},{"key":"${ltfx.n.467676aa3a8755614750.v1}","category":" Work "}]}"""
                 } else {
-                  """{"sessions":[{"key":"agent:main:active","category":"Work"},{"key":"agent:main:other","category":"Play"}]}"""
+                  """{"sessions":[{"key":"${ltfx.n.74e68db8ce1ca0729443.v1}","category":"Work"},{"key":"${ltfx.n.f252b45010d33ea09b31.v1}","category":"Play"}]}"""
                 }
               else -> "{}"
             }
@@ -435,9 +435,9 @@ class ChatControllerCommandControlsTest {
             when (method) {
               "sessions.list" ->
                 if (paramsJson.orEmpty().contains("\"archived\":true")) {
-                  """{"sessions":[{"key":"agent:main:archived","category":"Work"}]}"""
+                  """{"sessions":[{"key":"${ltfx.n.467676aa3a8755614750.v1}","category":"Work"}]}"""
                 } else {
-                  """{"sessions":[{"key":"agent:main:a","category":"Work"},{"key":"agent:main:b","category":"Work"}]}"""
+                  """{"sessions":[{"key":"${ltfx.n.8d58a705b979a4e362ea.v1}","category":"Work"},{"key":"${ltfx.n.55d2be10b02ac88a86ac.v1}","category":"Work"}]}"""
                 }
               "sessions.patch" -> {
                 patchCount += 1
@@ -468,7 +468,7 @@ class ChatControllerCommandControlsTest {
           requestGateway = { method, paramsJson ->
             requests += method to paramsJson
             when (method) {
-              "sessions.create" -> """{"session":{"key":"agent:main:forked"}}"""
+              "sessions.create" -> """{"session":{"key":"${ltfx.n.6f3bab9aaf6dae42dc7a.v1}"}}"""
               "sessions.list" -> """{"sessions":[]}"""
               else -> "{}"
             }
@@ -628,7 +628,7 @@ class ChatControllerCommandControlsTest {
           requestGateway = { method, paramsJson ->
             requests += method to paramsJson
             when (method) {
-              "sessions.list" -> """{"sessions":[{"key":"agent:main:side"}]}"""
+              "sessions.list" -> """{"sessions":[{"key":"${ltfx.n.305b9c1d194085127c08.v1}"}]}"""
               "sessions.delete" -> """{"deleted":true}"""
               else -> "{}"
             }
@@ -639,7 +639,7 @@ class ChatControllerCommandControlsTest {
       advanceUntilIdle()
       assertEquals("agent:main:side", controller.sessionKey.value)
 
-      controller.patchSession(key = "agent:main:side", archived = true)
+      controller.patchSession(key = "${ltfx.n.305b9c1d194085127c08.v1}", archived = true)
       advanceUntilIdle()
       assertEquals("main", controller.sessionKey.value)
 
@@ -707,7 +707,7 @@ class ChatControllerCommandControlsTest {
           requestGateway = { method, paramsJson ->
             requests += method to paramsJson
             when (method) {
-              "sessions.create" -> """{"ok":true,"key":"agent:main:dashboard:first"}"""
+              "sessions.create" -> """{"ok":true,"key":"${ltfx.n.5c7652b51dc043666800.v1}"}"""
               "chat.history" -> """{"sessionId":"first-session","messages":[]}"""
               "health" -> "{}"
               "sessions.list" -> """{"sessions":[]}"""
@@ -738,15 +738,15 @@ class ChatControllerCommandControlsTest {
           requestGateway = { method, paramsJson ->
             requests += method to paramsJson
             when (method) {
-              "sessions.create" -> """{"ok":true,"key":"agent:main:dashboard:fresh-3"}"""
+              "sessions.create" -> """{"ok":true,"key":"${ltfx.n.12f3aedd765d7cd98579.v1}"}"""
               "chat.history" -> """{"sessionId":"fresh-session-3","messages":[]}"""
               "health" -> "{}"
               "sessions.list" ->
                 """
                 {
                   "sessions": [
-                    {"key":"agent:main:dashboard:fresh","displayName":"New chat"},
-                    {"key":"agent:main:dashboard:fresh-2","displayName":"New chat 2"}
+                    {"key":"${ltfx.n.027dc45ee814bb436d29.v1}","displayName":"New chat"},
+                    {"key":"${ltfx.n.7a7586025709db3bd1b1.v1}","displayName":"New chat 2"}
                   ]
                 }
                 """.trimIndent()
@@ -777,7 +777,7 @@ class ChatControllerCommandControlsTest {
           requestGateway = { method, paramsJson ->
             requests += method to paramsJson
             when (method) {
-              "sessions.create" -> """{"ok":true,"key":"agent:ops:dashboard:fresh"}"""
+              "sessions.create" -> """{"ok":true,"key":"${ltfx.n.a3e2a94448de56269baf.v1}"}"""
               "chat.history" -> """{"sessionId":"ops-session","messages":[]}"""
               "health" -> "{}"
               "sessions.list" -> """{"sessions":[]}"""
@@ -867,7 +867,7 @@ class ChatControllerCommandControlsTest {
                 createCount += 1
                 createEntered.complete(Unit)
                 releaseCreate.await()
-                """{"ok":true,"key":"agent:main:dashboard:fresh"}"""
+                """{"ok":true,"key":"${ltfx.n.027dc45ee814bb436d29.v1}"}"""
               }
               "chat.history" -> """{"sessionId":"fresh-session","messages":[]}"""
               "health" -> "{}"
@@ -906,7 +906,7 @@ class ChatControllerCommandControlsTest {
             when (method) {
               "sessions.create" -> {
                 controller.switchSession("agent:main:dashboard:other")
-                """{"ok":true,"key":"agent:main:dashboard:fresh"}"""
+                """{"ok":true,"key":"${ltfx.n.027dc45ee814bb436d29.v1}"}"""
               }
               "chat.history" -> """{"sessionId":"other-session","messages":[]}"""
               "health" -> "{}"

@@ -17,7 +17,7 @@ From URL `https://xxx.feishu.cn/docx/ABC123def` → `doc_token` = `ABC123def`
 ### Read Document
 
 ```json
-{ "action": "read", "doc_token": "ABC123def" }
+{ "action": "read", "doc_token": "${ltfx.n.6eb4b60424387b79c9aa.v1}" }
 ```
 
 Returns: title, plain text content, block statistics. Check `hint` field - if present, structured content (tables, images) exists that requires `list_blocks`.
@@ -25,7 +25,7 @@ Returns: title, plain text content, block statistics. Check `hint` field - if pr
 ### Write Document (Replace All)
 
 ```json
-{ "action": "write", "doc_token": "ABC123def", "content": "# Title\n\nMarkdown content..." }
+{ "action": "write", "doc_token": "${ltfx.n.6eb4b60424387b79c9aa.v1}", "content": "# Title\n\nMarkdown content..." }
 ```
 
 Replaces entire document with markdown content. Supports: headings, lists, code blocks, quotes, links, images (`![](url)` auto-uploaded), bold/italic/strikethrough.
@@ -35,7 +35,7 @@ Replaces entire document with markdown content. Supports: headings, lists, code 
 ### Append Content
 
 ```json
-{ "action": "append", "doc_token": "ABC123def", "content": "Additional content" }
+{ "action": "append", "doc_token": "${ltfx.n.6eb4b60424387b79c9aa.v1}", "content": "Additional content" }
 ```
 
 Appends markdown to end of document.
@@ -52,7 +52,7 @@ With folder:
 {
   "action": "create",
   "title": "New Document",
-  "folder_token": "fldcnXXX",
+  "folder_token": "${ltfx.n.d84001ca2751503d7e0b.v1}",
   "owner_open_id": "ou_xxx"
 }
 ```
@@ -62,7 +62,7 @@ With folder:
 ### List Blocks
 
 ```json
-{ "action": "list_blocks", "doc_token": "ABC123def" }
+{ "action": "list_blocks", "doc_token": "${ltfx.n.6eb4b60424387b79c9aa.v1}" }
 ```
 
 Returns full block data including tables, images. Use this to read structured content.
@@ -70,7 +70,7 @@ Returns full block data including tables, images. Use this to read structured co
 ### Get Single Block
 
 ```json
-{ "action": "get_block", "doc_token": "ABC123def", "block_id": "doxcnXXX" }
+{ "action": "get_block", "doc_token": "${ltfx.n.6eb4b60424387b79c9aa.v1}", "block_id": "doxcnXXX" }
 ```
 
 ### Update Block Text
@@ -78,7 +78,7 @@ Returns full block data including tables, images. Use this to read structured co
 ```json
 {
   "action": "update_block",
-  "doc_token": "ABC123def",
+  "doc_token": "${ltfx.n.6eb4b60424387b79c9aa.v1}",
   "block_id": "doxcnXXX",
   "content": "New text"
 }
@@ -87,7 +87,7 @@ Returns full block data including tables, images. Use this to read structured co
 ### Delete Block
 
 ```json
-{ "action": "delete_block", "doc_token": "ABC123def", "block_id": "doxcnXXX" }
+{ "action": "delete_block", "doc_token": "${ltfx.n.6eb4b60424387b79c9aa.v1}", "block_id": "doxcnXXX" }
 ```
 
 ### Create Table (Docx Table Block)
@@ -95,7 +95,7 @@ Returns full block data including tables, images. Use this to read structured co
 ```json
 {
   "action": "create_table",
-  "doc_token": "ABC123def",
+  "doc_token": "${ltfx.n.6eb4b60424387b79c9aa.v1}",
   "row_size": 2,
   "column_size": 2,
   "column_width": [200, 200]
@@ -109,7 +109,7 @@ Optional: `parent_block_id` to insert under a specific block.
 ```json
 {
   "action": "write_table_cells",
-  "doc_token": "ABC123def",
+  "doc_token": "${ltfx.n.6eb4b60424387b79c9aa.v1}",
   "table_block_id": "doxcnTABLE",
   "values": [
     ["A1", "B1"],
@@ -123,7 +123,7 @@ Optional: `parent_block_id` to insert under a specific block.
 ```json
 {
   "action": "create_table_with_values",
-  "doc_token": "ABC123def",
+  "doc_token": "${ltfx.n.6eb4b60424387b79c9aa.v1}",
   "row_size": 2,
   "column_size": 2,
   "column_width": [200, 200],
@@ -141,7 +141,7 @@ Optional: `parent_block_id` to insert under a specific block.
 ```json
 {
   "action": "upload_image",
-  "doc_token": "ABC123def",
+  "doc_token": "${ltfx.n.6eb4b60424387b79c9aa.v1}",
   "url": "https://example.com/image.png"
 }
 ```
@@ -151,7 +151,7 @@ Or local path with position control:
 ```json
 {
   "action": "upload_image",
-  "doc_token": "ABC123def",
+  "doc_token": "${ltfx.n.6eb4b60424387b79c9aa.v1}",
   "file_path": "/tmp/image.png",
   "parent_block_id": "doxcnParent",
   "index": 5
@@ -167,7 +167,7 @@ Optional `index` (0-based) inserts the image at a specific position among siblin
 ```json
 {
   "action": "upload_file",
-  "doc_token": "ABC123def",
+  "doc_token": "${ltfx.n.6eb4b60424387b79c9aa.v1}",
   "url": "https://example.com/report.pdf"
 }
 ```
@@ -177,7 +177,7 @@ Or local path:
 ```json
 {
   "action": "upload_file",
-  "doc_token": "ABC123def",
+  "doc_token": "${ltfx.n.6eb4b60424387b79c9aa.v1}",
   "file_path": "/tmp/report.pdf",
   "filename": "Q1-report.pdf"
 }

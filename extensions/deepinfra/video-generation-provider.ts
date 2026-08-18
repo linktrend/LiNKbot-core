@@ -64,14 +64,14 @@ function resolveDeepInfraNativeBaseUrl(req: VideoGenerationRequest): string {
   return DEEPINFRA_NATIVE_BASE_URL;
 }
 
-function normalizeDeepInfraVideoUrl(url: string): string {
+function normalizeDeepInfraVideoUrl(url: (string)): string {
   if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("data:")) {
     return url;
   }
   return new URL(url, "https://api.deepinfra.com").href;
 }
 
-function parseVideoDataUrl(url: string): GeneratedVideoAsset | undefined {
+function parseVideoDataUrl(url: (string)): GeneratedVideoAsset | undefined {
   const match = /^data:([^;,]+);base64,(.+)$/u.exec(url);
   if (!match) {
     return undefined;

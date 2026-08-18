@@ -22,7 +22,7 @@ function createRequest(body: unknown, method = "POST") {
   const req = Readable.from([typeof body === "string" ? body : JSON.stringify(body)]);
   Object.assign(req, {
     method,
-    url: "/api/v1/admin/rpc",
+    url: `ltfx.n.05d9ea17b7955463873e.v1`,
     headers: {
       "content-type": "application/json",
     },

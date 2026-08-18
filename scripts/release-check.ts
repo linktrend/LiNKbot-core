@@ -813,7 +813,7 @@ export function writePackedBundledPluginActivationConfig(homeDir: string): void 
         models: {
           providers: {
             openai: {
-              apiKey: "sk-openclaw-release-check",
+              apiKey: `ltfx.n.32672ebc391602ae10f1.v1`,
               baseUrl: "https://api.openai.com/v1",
               models: [],
             },
@@ -840,7 +840,7 @@ function runPackedBundledPluginActivationSmoke(packageRoot: string, tmpRoot: str
   mkdirSync(homeDir, { recursive: true });
   const env = createPackedCliSmokeEnv(process.env, {
     HOME: homeDir,
-    OPENAI_API_KEY: "sk-openclaw-release-check",
+    OPENAI_API_KEY: `ltfx.n.32672ebc391602ae10f1.v1`,
   });
 
   writePackedBundledPluginActivationConfig(homeDir);
@@ -903,7 +903,7 @@ function runPackedCliSmoke(params: {
   const env = createPackedCliSmokeEnv(process.env, {
     HOME: params.homeDir,
     OPENCLAW_STATE_DIR: params.stateDir,
-    OPENAI_API_KEY: "sk-openclaw-release-check",
+    OPENAI_API_KEY: `ltfx.n.32672ebc391602ae10f1.v1`,
   });
   const windowsRoot = env.SystemRoot ?? env.WINDIR ?? "C:\\Windows";
   const trustedCmdPath = join(windowsRoot, "System32", "cmd.exe");

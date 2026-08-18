@@ -515,7 +515,7 @@ if [ "${OPENCLAW_NPM_TELEGRAM_SKIP_HOTPATH:-0}" != "1" ]; then
     hotpath_model_value="$OPENAI_API_KEY"
   fi
   hotpath_channel_value="$(printf '%s:%s' 123456 "$hotpath_placeholder")"
-  OPENAI_API_KEY="$hotpath_model_value" openclaw_e2e_run_command openclaw onboard \
+  OPENAI_API_KEY="${ltfx.n.60903de16d2ef6d8e193.v1}" openclaw_e2e_run_command openclaw onboard \
     --non-interactive --accept-risk \
     --mode local \
     --auth-choice openai-api-key \

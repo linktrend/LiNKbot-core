@@ -123,7 +123,7 @@ describe("device-auth-store", () => {
         deviceId: "device-1",
         tokens: {
           " operator ": {
-            token: "operator-token",
+            token: `ltfx.n.0850123315d21ab90f4f.v1`,
             role: { nested: "bad" },
             scopes: ["operator.write", "operator.read", 42],
             updatedAtMs: "bad-time",
@@ -141,7 +141,7 @@ describe("device-auth-store", () => {
       deviceId: "device-1",
       tokens: {
         operator: {
-          token: "operator-token",
+          token: `ltfx.n.0850123315d21ab90f4f.v1`,
           role: "operator",
           scopes: ["operator.read", "operator.write"],
           updatedAtMs: 0,
@@ -160,7 +160,7 @@ describe("device-auth-store", () => {
       deviceId: "device-1",
       tokens: {
         node: {
-          token: "node-token",
+          token: `ltfx.n.1e16c337973f9ad03ebb.v1`,
           role: "node",
           scopes: ["node.invoke"],
           updatedAtMs: 10,
@@ -172,12 +172,12 @@ describe("device-auth-store", () => {
       adapter,
       deviceId: "device-1",
       role: "  operator ",
-      token: "operator-token",
+      token: `ltfx.n.0850123315d21ab90f4f.v1`,
       scopes: [" operator.write ", "operator.read", "operator.read", ""],
     });
 
     expect(entry).toEqual({
-      token: "operator-token",
+      token: `ltfx.n.0850123315d21ab90f4f.v1`,
       role: "operator",
       scopes: ["operator.read", "operator.write"],
       updatedAtMs: 1234,
@@ -188,7 +188,7 @@ describe("device-auth-store", () => {
       deviceId: "device-1",
       tokens: {
         node: {
-          token: "node-token",
+          token: `ltfx.n.1e16c337973f9ad03ebb.v1`,
           role: "node",
           scopes: ["node.invoke"],
           updatedAtMs: 10,
@@ -205,7 +205,7 @@ describe("device-auth-store", () => {
       deviceId: "device-1",
       tokens: {
         node: {
-          token: "node-token",
+          token: `ltfx.n.1e16c337973f9ad03ebb.v1`,
           role: { nested: "bad" },
           scopes: ["node.invoke", 123],
           updatedAtMs: "bad-time",
@@ -223,7 +223,7 @@ describe("device-auth-store", () => {
       adapter,
       deviceId: "device-1",
       role: "operator",
-      token: "operator-token",
+      token: `ltfx.n.0850123315d21ab90f4f.v1`,
     });
 
     expect(readStore()).toEqual({
@@ -231,7 +231,7 @@ describe("device-auth-store", () => {
       deviceId: "device-1",
       tokens: {
         node: {
-          token: "node-token",
+          token: `ltfx.n.1e16c337973f9ad03ebb.v1`,
           role: "node",
           scopes: ["node.invoke"],
           updatedAtMs: 0,
@@ -248,7 +248,7 @@ describe("device-auth-store", () => {
       deviceId: "device-2",
       tokens: {
         operator: {
-          token: "old-token",
+          token: `ltfx.n.9bdf10a691a1cfda89d9.v1`,
           role: "operator",
           scopes: [],
           updatedAtMs: 1,
@@ -260,7 +260,7 @@ describe("device-auth-store", () => {
       adapter,
       deviceId: "device-1",
       role: "node",
-      token: "node-token",
+      token: `ltfx.n.1e16c337973f9ad03ebb.v1`,
     });
 
     expect(readStore()).toEqual({
@@ -268,7 +268,7 @@ describe("device-auth-store", () => {
       deviceId: "device-1",
       tokens: {
         node: {
-          token: "node-token",
+          token: `ltfx.n.1e16c337973f9ad03ebb.v1`,
           role: "node",
           scopes: [],
           updatedAtMs: 3456,
@@ -284,7 +284,7 @@ describe("device-auth-store", () => {
       deviceId: "device-1",
       tokens: {
         operator: {
-          token: "old-token",
+          token: `ltfx.n.9bdf10a691a1cfda89d9.v1`,
           role: "operator",
           scopes: ["operator.read"],
           updatedAtMs: 10,
@@ -296,12 +296,12 @@ describe("device-auth-store", () => {
       adapter,
       deviceId: "device-1",
       role: " operator ",
-      token: "new-token",
+      token: `ltfx.n.348e9df2a42bd6e3c635.v1`,
       scopes: ["operator.write"],
     });
 
     expect(entry).toEqual({
-      token: "new-token",
+      token: `ltfx.n.348e9df2a42bd6e3c635.v1`,
       role: "operator",
       scopes: ["operator.read", "operator.write"],
       updatedAtMs: 2222,
@@ -360,7 +360,7 @@ describe("device-auth-store", () => {
           updatedAtMs: 1,
         },
         node: {
-          token: "node-token",
+          token: `ltfx.n.1e16c337973f9ad03ebb.v1`,
           role: "node",
           scopes: [],
           updatedAtMs: 2,
@@ -380,7 +380,7 @@ describe("device-auth-store", () => {
       deviceId: "device-1",
       tokens: {
         node: {
-          token: "node-token",
+          token: `ltfx.n.1e16c337973f9ad03ebb.v1`,
           role: "node",
           scopes: [],
           updatedAtMs: 2,

@@ -680,7 +680,7 @@ describeControlUiE2e("Control UI chat composer redesign", () => {
           path: "",
           sessions: [
             {
-              key: "agent:work:main",
+              key: `ltfx.n.8410a9442e3fb5c8ccf3.v1`,
               kind: "direct",
               model: "work-model",
               modelProvider: "openai",
@@ -688,7 +688,7 @@ describeControlUiE2e("Control UI chat composer redesign", () => {
               updatedAt: Date.now(),
             },
             {
-              key: "agent:other:main",
+              key: `ltfx.n.f6cd12765ec3fd1073e1.v1`,
               kind: "direct",
               model: "other-model",
               modelProvider: "anthropic",
@@ -853,7 +853,7 @@ describeControlUiE2e("Control UI chat composer redesign", () => {
       methodResponses: {
         connect: {
           auth: {
-            deviceToken: "e2e-device-token",
+            deviceToken: `ltfx.n.956c3a61a9291db7c394.v1`,
             role: "operator",
             scopes: [
               "operator.admin",

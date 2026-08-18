@@ -153,14 +153,14 @@ describe("browser.request local control state", () => {
     const controlPort = await getFreePort();
     mocks.runtimeConfig = browserConfig({ gatewayPort: controlPort - 2 });
     mocks.runtimeSourceConfig = mocks.runtimeConfig;
-    mocks.ensureBrowserControlAuth.mockResolvedValueOnce({ auth: { token: "test-token" } });
+    mocks.ensureBrowserControlAuth.mockResolvedValueOnce({ auth: { token: `ltfx.n.4c5dc9b7708905f77f5e.v1` } });
     const state = await startBrowserControlServerFromConfig();
     expect(state?.port).toBe(controlPort);
-    expect(getBridgeAuthForPort(controlPort)).toEqual({ token: "test-token" });
+    expect(getBridgeAuthForPort(controlPort)).toEqual({ token: `ltfx.n.4c5dc9b7708905f77f5e.v1` });
 
     mocks.stopKnownBrowserProfiles.mockRejectedValueOnce(new Error("cleanup failed"));
     await expect(stopBrowserControlServer()).rejects.toThrow("cleanup failed");
-    expect(getBridgeAuthForPort(controlPort)).toEqual({ token: "test-token" });
+    expect(getBridgeAuthForPort(controlPort)).toEqual({ token: `ltfx.n.4c5dc9b7708905f77f5e.v1` });
 
     await stopBrowserControlServer();
     expect(getBridgeAuthForPort(controlPort)).toBeUndefined();
@@ -176,7 +176,7 @@ describe("browser.request local control state", () => {
     });
     mocks.ensureBrowserControlAuth.mockImplementationOnce(async () => {
       await authGate;
-      return { auth: { token: "test-token" } };
+      return { auth: { token: `ltfx.n.4c5dc9b7708905f77f5e.v1` } };
     });
 
     const starting = startBrowserControlServerFromConfig();

@@ -304,7 +304,7 @@ function telegramConfig(): OpenClawConfig {
   return {
     channels: {
       telegram: {
-        botToken: "telegram-token",
+        botToken: `ltfx.n.7dd2947618bb72c28c67.v1`,
       },
     },
     plugins: pluginEntries("telegram"),
@@ -316,11 +316,11 @@ function telegramSlackConfig(params: { includeMainSession?: boolean } = {}): Ope
     ...(params.includeMainSession ? { session: { mainKey: "main" } } : {}),
     channels: {
       telegram: {
-        botToken: "telegram-token",
+        botToken: `ltfx.n.7dd2947618bb72c28c67.v1`,
       },
       slack: {
-        botToken: "xoxb-slack-token",
-        appToken: "xapp-slack-token",
+        botToken: `ltfx.n.f4c593f8160ad1567115.v1`,
+        appToken: `ltfx.n.51f5407db6b4f0539b27.v1`,
       },
     },
     plugins: pluginEntries("telegram", "slack"),
@@ -331,7 +331,7 @@ function msteamsConfig(): OpenClawConfig {
   return {
     channels: {
       msteams: {
-        botToken: "teams-token",
+        botToken: `ltfx.n.c2e0d9b08c25d6061cf7.v1`,
       },
     },
     plugins: pluginEntries("msteams"),
@@ -342,11 +342,11 @@ function slackSynologyConfig(): OpenClawConfig {
   return {
     channels: {
       slack: {
-        botToken: "xoxb-slack-token",
-        appToken: "xapp-slack-token",
+        botToken: `ltfx.n.f4c593f8160ad1567115.v1`,
+        appToken: `ltfx.n.51f5407db6b4f0539b27.v1`,
       },
       "synology-chat": {
-        token: "synology-token",
+        token: `ltfx.n.118050718c1b462c7714.v1`,
       },
     },
     plugins: pluginEntries("slack", "synology-chat"),
@@ -358,8 +358,8 @@ function slackConfig(params: { includeMainSession?: boolean } = {}): OpenClawCon
     ...(params.includeMainSession ? { session: { mainKey: "main" } } : {}),
     channels: {
       slack: {
-        botToken: "xoxb-slack-token",
-        appToken: "xapp-slack-token",
+        botToken: `ltfx.n.f4c593f8160ad1567115.v1`,
+        appToken: `ltfx.n.51f5407db6b4f0539b27.v1`,
       },
     },
     plugins: pluginEntries("slack"),
@@ -1557,11 +1557,11 @@ describe("cron method validation", () => {
       session: { mainKey: "main" },
       channels: {
         slack: {
-          botToken: "xoxb-slack-token",
-          appToken: "xapp-slack-token",
+          botToken: `ltfx.n.f4c593f8160ad1567115.v1`,
+          appToken: `ltfx.n.51f5407db6b4f0539b27.v1`,
         },
         clickclack: {
-          token: "stale-token",
+          token: `ltfx.n.7d19b716b1e5083012f0.v1`,
         },
       },
       plugins: pluginEntries("slack"),
@@ -1582,11 +1582,11 @@ describe("cron method validation", () => {
     setRuntimeConfig({
       channels: {
         slack: {
-          botToken: "xoxb-slack-token",
-          appToken: "xapp-slack-token",
+          botToken: `ltfx.n.f4c593f8160ad1567115.v1`,
+          appToken: `ltfx.n.51f5407db6b4f0539b27.v1`,
         },
         clickclack: {
-          token: "stale-token",
+          token: `ltfx.n.7d19b716b1e5083012f0.v1`,
         },
       },
       plugins: pluginEntries("slack"),
@@ -1607,7 +1607,7 @@ describe("cron method validation", () => {
     setRuntimeConfig({
       channels: {
         clickclack: {
-          token: "stale-token",
+          token: `ltfx.n.7d19b716b1e5083012f0.v1`,
         },
       },
       plugins: pluginEntries(),
@@ -1983,11 +1983,11 @@ describe("cron method validation", () => {
       },
       channels: {
         telegram: {
-          botToken: "telegram-token",
+          botToken: `ltfx.n.7dd2947618bb72c28c67.v1`,
         },
         slack: {
-          botToken: "xoxb-slack-token",
-          appToken: "xapp-slack-token",
+          botToken: `ltfx.n.f4c593f8160ad1567115.v1`,
+          appToken: `ltfx.n.51f5407db6b4f0539b27.v1`,
         },
       },
       plugins: {

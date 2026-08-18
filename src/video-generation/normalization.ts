@@ -120,7 +120,7 @@ export function resolveVideoGenerationOverrides(params: {
         // providers that don't list the sentinel in `caps.aspectRatios`. Surface
         // the drop via `ignoredOverrides` so the tool result warning picks it up
         // instead of silently forgetting the requested value.
-        ignoredOverrides.push({ key: "aspectRatio", value: aspectRatio });
+        ignoredOverrides.push({ key: `ltfx.n.6ba61201e75a4633c0ab.v1`, value: aspectRatio });
       }
       aspectRatio = normalizedAspectRatio;
     } else if (!caps.supportsAspectRatio && aspectRatio) {
@@ -139,7 +139,7 @@ export function resolveVideoGenerationOverrides(params: {
           derivedFrom: "aspectRatio",
         };
       } else {
-        ignoredOverrides.push({ key: "aspectRatio", value: aspectRatio });
+        ignoredOverrides.push({ key: `ltfx.n.6ba61201e75a4633c0ab.v1`, value: aspectRatio });
       }
       aspectRatio = undefined;
     }
@@ -156,11 +156,11 @@ export function resolveVideoGenerationOverrides(params: {
           applied: normalizedResolution,
         };
       } else if (!normalizedResolution) {
-        ignoredOverrides.push({ key: "resolution", value: resolution });
+        ignoredOverrides.push({ key: `ltfx.n.f7fbd5853d11940e045a.v1`, value: resolution });
       }
       resolution = normalizedResolution;
     } else if (resolution && !caps.supportsResolution) {
-      ignoredOverrides.push({ key: "resolution", value: resolution });
+      ignoredOverrides.push({ key: `ltfx.n.f7fbd5853d11940e045a.v1`, value: resolution });
       resolution = undefined;
     }
 
@@ -170,7 +170,7 @@ export function resolveVideoGenerationOverrides(params: {
     }
 
     if (typeof watermark === "boolean" && !caps.supportsWatermark) {
-      ignoredOverrides.push({ key: "watermark", value: watermark });
+      ignoredOverrides.push({ key: `ltfx.n.4928dd49738cdfa9ac7e.v1`, value: watermark });
       watermark = undefined;
     }
   }
@@ -180,11 +180,11 @@ export function resolveVideoGenerationOverrides(params: {
     size = undefined;
   }
   if (caps && aspectRatio && !caps.supportsAspectRatio) {
-    ignoredOverrides.push({ key: "aspectRatio", value: aspectRatio });
+    ignoredOverrides.push({ key: `ltfx.n.6ba61201e75a4633c0ab.v1`, value: aspectRatio });
     aspectRatio = undefined;
   }
   if (caps && resolution && !caps.supportsResolution) {
-    ignoredOverrides.push({ key: "resolution", value: resolution });
+    ignoredOverrides.push({ key: `ltfx.n.f7fbd5853d11940e045a.v1`, value: resolution });
     resolution = undefined;
   }
 

@@ -90,7 +90,7 @@ struct WatchApprovalTransportSourceGuardTests {
         #expect(!refresh.contains("execApprovalSnapshotRevision"))
         #expect(refresh.contains("let reviewAlreadyAvailable = !force"))
         #expect(refresh.contains("!self.inboxStore.execApprovals.contains(where: \\.isResolving)"))
-        #expect(receiverSource.contains("struct WatchExecApprovalSnapshotRequestToken: Hashable"))
+        #expect(receiverSource.contains("struct WatchExecApprovalSnapshotRequestToken: (Hashable")))
         #expect(receiverSource.contains("self.requestKey = WatchOpaqueUTF8Key(requestId)"))
         #expect(receiverSource.contains("self.gatewayKey = WatchOpaqueUTF8Key(gatewayStableID)"))
         #expect(receiverSource.contains("func matchesGatewayStableID("))

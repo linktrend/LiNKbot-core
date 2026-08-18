@@ -59,7 +59,7 @@ describe("resolveTelegramAccount", () => {
       { TELEGRAM_BOT_TOKEN: "" },
       {
         channels: {
-          telegram: { accounts: { work: { botToken: "tok-work" } } },
+          telegram: { accounts: { work: { botToken: `ltfx.n.8acd672e15296404be8c.v1` } } },
         },
       },
     );
@@ -73,7 +73,7 @@ describe("resolveTelegramAccount", () => {
       { TELEGRAM_BOT_TOKEN: "tok-env" },
       {
         channels: {
-          telegram: { accounts: { work: { botToken: "tok-work" } } },
+          telegram: { accounts: { work: { botToken: `ltfx.n.8acd672e15296404be8c.v1` } } },
         },
       },
     );
@@ -87,7 +87,7 @@ describe("resolveTelegramAccount", () => {
       { TELEGRAM_BOT_TOKEN: "tok-env" },
       {
         channels: {
-          telegram: { botToken: "tok-config" },
+          telegram: { botToken: `ltfx.n.82ccaf966075fab35a95.v1` },
         },
       },
     );
@@ -101,7 +101,7 @@ describe("resolveTelegramAccount", () => {
       { TELEGRAM_BOT_TOKEN: "" },
       {
         channels: {
-          telegram: { accounts: { work: { botToken: "tok-work" } } },
+          telegram: { accounts: { work: { botToken: `ltfx.n.8acd672e15296404be8c.v1` } } },
         },
       },
       "default",
@@ -115,7 +115,7 @@ describe("resolveTelegramAccount", () => {
     withEnv({ TELEGRAM_BOT_TOKEN: "", OPENCLAW_DEBUG_TELEGRAM_ACCOUNTS: "1" }, () => {
       const cfg: OpenClawConfig = {
         channels: {
-          telegram: { accounts: { work: { botToken: "tok-work" } } },
+          telegram: { accounts: { work: { botToken: `ltfx.n.8acd672e15296404be8c.v1` } } },
         },
       };
 
@@ -137,7 +137,7 @@ describe("resolveTelegramAccount", () => {
               enabled: false,
               botToken: { source: "exec", provider: "vault", id: "telegram/disabled" },
             },
-            work: { botToken: "tok-work" },
+            work: { botToken: `ltfx.n.8acd672e15296404be8c.v1` },
           },
         },
       },
@@ -153,12 +153,12 @@ describe("resolveTelegramAccount", () => {
     const cfg = {
       channels: {
         telegram: {
-          botToken: "tok-default",
+          botToken: `ltfx.n.9c529707df4449bcf58c.v1`,
           accounts: {
             fusion: {
               enabled: false,
               name: "Fusion",
-              botToken: "tok-fusion",
+              botToken: `ltfx.n.04c1541eaa6f85c1a1cc.v1`,
             },
           },
         },
@@ -182,11 +182,11 @@ describe("resolveTelegramAccount", () => {
       {
         channels: {
           telegram: {
-            botToken: "tok-top-level",
+            botToken: `ltfx.n.7c1c0985318ba69df3ff.v1`,
             defaultAccount: "secondary",
             accounts: {
-              primary: { botToken: "tok-primary" },
-              secondary: { botToken: "tok-secondary" },
+              primary: { botToken: `ltfx.n.bdf422fa856837f3e3aa.v1` },
+              secondary: { botToken: `ltfx.n.26b5925350e14daaf756.v1` },
             },
           },
         },
@@ -203,11 +203,11 @@ describe("resolveTelegramAccount", () => {
       {
         channels: {
           telegram: {
-            botToken: "tok-top-level",
+            botToken: `ltfx.n.7c1c0985318ba69df3ff.v1`,
             defaultAccount: "secondary",
             accounts: {
-              primary: { botToken: "tok-primary" },
-              secondary: { botToken: "tok-secondary" },
+              primary: { botToken: `ltfx.n.bdf422fa856837f3e3aa.v1` },
+              secondary: { botToken: `ltfx.n.26b5925350e14daaf756.v1` },
             },
           },
         },
@@ -234,7 +234,7 @@ describe("resolveDefaultTelegramAccountId", () => {
     const cfg: OpenClawConfig = {
       channels: {
         telegram: {
-          accounts: { work: { botToken: "tok-work" }, alerts: { botToken: "tok-alerts" } },
+          accounts: { work: { botToken: `ltfx.n.8acd672e15296404be8c.v1` }, alerts: { botToken: `ltfx.n.46eab3998fb0ae46d9c7.v1` } },
         },
       },
     };
@@ -250,7 +250,7 @@ describe("resolveDefaultTelegramAccountId", () => {
     const cfg: OpenClawConfig = {
       channels: {
         telegram: {
-          accounts: { default: { botToken: "tok-default" }, work: { botToken: "tok-work" } },
+          accounts: { default: { botToken: `ltfx.n.9c529707df4449bcf58c.v1` }, work: { botToken: `ltfx.n.8acd672e15296404be8c.v1` } },
         },
       },
     };
@@ -264,7 +264,7 @@ describe("resolveDefaultTelegramAccountId", () => {
       channels: {
         telegram: {
           defaultAccount: "work",
-          accounts: { work: { botToken: "tok-work" } },
+          accounts: { work: { botToken: `ltfx.n.8acd672e15296404be8c.v1` } },
         },
       },
     };
@@ -279,8 +279,8 @@ describe("resolveDefaultTelegramAccountId", () => {
         telegram: {
           defaultAccount: "alerts",
           accounts: {
-            alerts: { botToken: "tok-alerts" },
-            work: { botToken: "tok-work" },
+            alerts: { botToken: `ltfx.n.46eab3998fb0ae46d9c7.v1` },
+            work: { botToken: `ltfx.n.8acd672e15296404be8c.v1` },
           },
         },
       },
@@ -294,7 +294,7 @@ describe("resolveDefaultTelegramAccountId", () => {
     const cfg: OpenClawConfig = {
       channels: {
         telegram: {
-          accounts: { work: { botToken: "tok-work" } },
+          accounts: { work: { botToken: `ltfx.n.8acd672e15296404be8c.v1` } },
         },
       },
     };
@@ -307,7 +307,7 @@ describe("resolveDefaultTelegramAccountId", () => {
     const cfg: OpenClawConfig = {
       channels: {
         telegram: {
-          accounts: { work: { botToken: "tok-work" }, alerts: { botToken: "tok-alerts" } },
+          accounts: { work: { botToken: `ltfx.n.8acd672e15296404be8c.v1` }, alerts: { botToken: `ltfx.n.46eab3998fb0ae46d9c7.v1` } },
         },
       },
     };
@@ -327,7 +327,7 @@ describe("resolveDefaultTelegramAccountId", () => {
       channels: {
         telegram: {
           defaultAccount: "work",
-          accounts: { default: { botToken: "tok-default" }, work: { botToken: "tok-work" } },
+          accounts: { default: { botToken: `ltfx.n.9c529707df4449bcf58c.v1` }, work: { botToken: `ltfx.n.8acd672e15296404be8c.v1` } },
         },
       },
     };
@@ -340,7 +340,7 @@ describe("resolveDefaultTelegramAccountId", () => {
       channels: {
         telegram: {
           defaultAccount: "Router D",
-          accounts: { "router-d": { botToken: "tok-work" } },
+          accounts: { "router-d": { botToken: `ltfx.n.8acd672e15296404be8c.v1` } },
         },
       },
     };
@@ -353,7 +353,7 @@ describe("resolveDefaultTelegramAccountId", () => {
       channels: {
         telegram: {
           defaultAccount: "missing",
-          accounts: { default: { botToken: "tok-default" }, work: { botToken: "tok-work" } },
+          accounts: { default: { botToken: `ltfx.n.9c529707df4449bcf58c.v1` }, work: { botToken: `ltfx.n.8acd672e15296404be8c.v1` } },
         },
       },
     };
@@ -372,7 +372,7 @@ describe("resolveTelegramAccount allowFrom precedence", () => {
             groupAllowFrom: ["top-group"],
             accounts: {
               default: {
-                botToken: "123:default",
+                botToken: `ltfx.n.b91f13060b4bb6d5a0dd.v1`,
                 allowFrom: ["default"],
                 groupAllowFrom: ["default-group"],
               },
@@ -395,7 +395,7 @@ describe("resolveTelegramAccount allowFrom precedence", () => {
             allowFrom: ["top"],
             groupAllowFrom: ["top-group"],
             accounts: {
-              work: { botToken: "123:work" },
+              work: { botToken: `ltfx.n.7acc6d84efa7e200f35e.v1` },
             },
           },
         },
@@ -414,11 +414,11 @@ describe("resolveTelegramAccount allowFrom precedence", () => {
           telegram: {
             accounts: {
               default: {
-                botToken: "123:default",
+                botToken: `ltfx.n.b91f13060b4bb6d5a0dd.v1`,
                 allowFrom: ["default"],
                 groupAllowFrom: ["default-group"],
               },
-              work: { botToken: "123:work" },
+              work: { botToken: `ltfx.n.7acc6d84efa7e200f35e.v1` },
             },
           },
         },
@@ -443,11 +443,11 @@ describe("mergeTelegramAccountConfig", () => {
           accounts: {
             bot1: {
               enabled: true,
-              botToken: "bot-1-token",
+              botToken: `ltfx.n.3e04149027588cef7dd1.v1`,
             },
             bot2: {
               enabled: true,
-              botToken: "bot-2-token",
+              botToken: `ltfx.n.28c6eadbcbaf9da190cc.v1`,
             },
           },
         },
@@ -477,7 +477,7 @@ describe("mergeTelegramAccountConfig", () => {
           groupPolicy: "allowlist",
           accounts: {
             default: {
-              botToken: "legacy-token",
+              botToken: `ltfx.n.8b7d507cddc8d8950f28.v1`,
             },
           },
         },
@@ -501,7 +501,7 @@ describe("mergeTelegramAccountConfig", () => {
           accounts: {
             alerts: {
               enabled: true,
-              botToken: "bot-token",
+              botToken: `ltfx.n.df27f9beb68b7766af3a.v1`,
               dmPolicy: "open",
               allowFrom: ["*"],
             },
@@ -524,7 +524,7 @@ describe("mergeTelegramAccountConfig", () => {
           allowFrom: ["123"],
           accounts: {
             alerts: {
-              botToken: "bot-token",
+              botToken: `ltfx.n.df27f9beb68b7766af3a.v1`,
               dmPolicy: "open",
               allowFrom: ["456", "*"],
             },
@@ -566,7 +566,7 @@ describe("resolveTelegramPollActionGateState", () => {
             defaultAccount: "work",
             accounts: {
               work: {
-                botToken: "123:work",
+                botToken: `ltfx.n.7acc6d84efa7e200f35e.v1`,
                 actions: { sendMessage: true, poll: true },
               },
             },
@@ -586,7 +586,7 @@ describe("resolveTelegramAccount groups inheritance (#30673)", () => {
       telegram: {
         groups: { "-100123": { requireMention: false } },
         accounts: {
-          default: { botToken: "123:default" },
+          default: { botToken: `ltfx.n.b91f13060b4bb6d5a0dd.v1` },
           dev: { botToken: "456:dev" },
         },
       },
@@ -599,7 +599,7 @@ describe("resolveTelegramAccount groups inheritance (#30673)", () => {
         groups: { "-100999": { requireMention: true } },
         accounts: {
           default: {
-            botToken: "123:default",
+            botToken: `ltfx.n.b91f13060b4bb6d5a0dd.v1`,
             groups: { "-100123": { requireMention: false } },
           },
           ...(includeDevAccount ? { dev: { botToken: "456:dev" } } : {}),
@@ -615,7 +615,7 @@ describe("resolveTelegramAccount groups inheritance (#30673)", () => {
           telegram: {
             groups: { "-100123": { requireMention: false } },
             accounts: {
-              default: { botToken: "123:default" },
+              default: { botToken: `ltfx.n.b91f13060b4bb6d5a0dd.v1` },
             },
           },
         },
@@ -633,7 +633,7 @@ describe("resolveTelegramAccount groups inheritance (#30673)", () => {
           telegram: {
             groups: { "-100123": { requireMention: false } },
             accounts: {
-              default: { botToken: "123:default", groups: {} },
+              default: { botToken: `ltfx.n.b91f13060b4bb6d5a0dd.v1`, groups: {} },
             },
           },
         },
@@ -694,7 +694,7 @@ describe("resolveTelegramMediaRuntimeOptions", () => {
             trustedLocalFileRoots: ["/srv/telegram/cache"],
             accounts: {
               work: {
-                botToken: "123:work",
+                botToken: `ltfx.n.7acc6d84efa7e200f35e.v1`,
                 apiRoot: "http://tg-proxy.internal:8081",
                 network: {
                   dangerouslyAllowPrivateNetwork: true,
@@ -706,11 +706,11 @@ describe("resolveTelegramMediaRuntimeOptions", () => {
         },
       },
       accountId: "work",
-      token: "123:work",
+      token: `ltfx.n.7acc6d84efa7e200f35e.v1`,
     });
 
     expect(resolved).toEqual({
-      token: "123:work",
+      token: `ltfx.n.7acc6d84efa7e200f35e.v1`,
       apiRoot: "http://tg-proxy.internal:8081",
       trustedLocalFileRoots: ["/var/lib/telegram-bot-api"],
       dangerouslyAllowPrivateNetwork: true,
@@ -730,18 +730,18 @@ describe("resolveTelegramMediaRuntimeOptions", () => {
             trustedLocalFileRoots: ["/srv/telegram/cache"],
             accounts: {
               work: {
-                botToken: "123:work",
+                botToken: `ltfx.n.7acc6d84efa7e200f35e.v1`,
               },
             },
           },
         },
       },
       accountId: "work",
-      token: "123:work",
+      token: `ltfx.n.7acc6d84efa7e200f35e.v1`,
     });
 
     expect(resolved).toEqual({
-      token: "123:work",
+      token: `ltfx.n.7acc6d84efa7e200f35e.v1`,
       apiRoot: "http://tg-proxy.internal:8081",
       trustedLocalFileRoots: ["/srv/telegram/cache"],
       dangerouslyAllowPrivateNetwork: true,

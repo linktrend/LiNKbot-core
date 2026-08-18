@@ -39,7 +39,7 @@ describe("provider runtime harness usage", () => {
           config: {},
           env: {},
           provider: "openai",
-          token: "test-token-placeholder",
+          token: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
           timeoutMs: 5_000,
           fetchFn: fetch,
         },
@@ -50,7 +50,7 @@ describe("provider runtime harness usage", () => {
       windows: [{ label: "5h", usedPercent: 9 }],
     });
     expect(fetchUsageSnapshot).toHaveBeenCalledWith(
-      expect.objectContaining({ provider: "openai", token: "test-token-placeholder" }),
+      expect.objectContaining({ provider: "openai", token: `ltfx.n.41dd96f1dccf65c2c9c7.v1` }),
     );
   });
 
@@ -76,7 +76,7 @@ describe("provider runtime harness usage", () => {
           config: {},
           env: {},
           provider: "openai",
-          token: "test-token-placeholder",
+          token: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
           timeoutMs: 5_000,
           fetchFn: fetch,
         },

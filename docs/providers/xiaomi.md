@@ -121,7 +121,7 @@ message.
       provider: "xiaomi",
       providers: {
         xiaomi: {
-          apiKey: "xiaomi_api_key",
+          apiKey: "${ltfx.n.44f9c1d4a4bad8322a9c.v1}",
           model: "mimo-v2.5-tts",
           speakerVoice: "mimo_default",
           format: "mp3",
@@ -168,7 +168,7 @@ mono Opus with `ffmpeg` before delivery.
 
 ```json5
 {
-  env: { XIAOMI_API_KEY: "your-key" },
+  env: { XIAOMI_API_KEY: "${ltfx.n.74c53a400d948f89d2bd.v1}" },
   agents: { defaults: { model: { primary: "xiaomi/mimo-v2.5" } } },
   models: {
     mode: "merge",
@@ -207,7 +207,7 @@ Token Plan:
 
 ```json5
 {
-  env: { XIAOMI_TOKEN_PLAN_API_KEY: "tp-your-key" },
+  env: { XIAOMI_TOKEN_PLAN_API_KEY: "${ltfx.n.32cf9c1e5ac65e39926a.v1}" },
   agents: { defaults: { model: { primary: "xiaomi-token-plan/mimo-v2.5-pro" } } },
   models: {
     mode: "merge",

@@ -98,7 +98,7 @@ describe("resolveSlackChannelType", () => {
         cfg: {
           channels: {
             slack: {
-              botToken: "xoxb-test",
+              botToken: `ltfx.n.87894fe048938b686cfb.v1`,
             },
           },
         } as never,
@@ -163,7 +163,7 @@ describe("resolveSlackChannelType", () => {
           channels: {
             slack: {
               identity: "user",
-              userToken: "test-user-token",
+              userToken: `ltfx.n.19bbb7d9c45e18a41bce.v1`,
             },
           },
         } as never,
@@ -263,8 +263,8 @@ describe("resolveSlackChannelType", () => {
         cfg: {
           channels: {
             slack: {
-              botToken: "xoxb-writer",
-              userToken: "xoxp-reader",
+              botToken: `ltfx.n.bcb99fc2c2b070012704.v1`,
+              userToken: `ltfx.n.ee4414445cb626d6d1c5.v1`,
             },
           },
         } as never,
@@ -299,7 +299,7 @@ describe("resolveSlackChannelType", () => {
         cfg: {
           channels: {
             slack: {
-              botToken: "xoxb-before",
+              botToken: `ltfx.n.ad70e33183f0abb5844f.v1`,
             },
           },
         } as never,
@@ -311,7 +311,7 @@ describe("resolveSlackChannelType", () => {
         cfg: {
           channels: {
             slack: {
-              botToken: "xoxb-after",
+              botToken: `ltfx.n.d32a5dabea4009f0605e.v1`,
             },
           },
         } as never,
@@ -341,7 +341,7 @@ describe("resolveSlackChannelType", () => {
     const cfg = {
       channels: {
         slack: {
-          botToken: "xoxb-test",
+          botToken: `ltfx.n.87894fe048938b686cfb.v1`,
         },
       },
     } as never;
@@ -372,7 +372,7 @@ describe("resolveSlackChannelType", () => {
         cfg: {
           channels: {
             slack: {
-              botToken: "xoxb-test",
+              botToken: `ltfx.n.87894fe048938b686cfb.v1`,
             },
           },
         } as never,
@@ -412,7 +412,7 @@ describe("resolveSlackChannelType", () => {
           cfg: {
             channels: {
               slack: {
-                botToken: "xoxb-test",
+                botToken: `ltfx.n.87894fe048938b686cfb.v1`,
                 ...slackConfig,
               },
             },
@@ -439,7 +439,7 @@ describe("resolveSlackChannelType", () => {
         cfg: {
           channels: {
             slack: {
-              botToken: "xoxb-test",
+              botToken: `ltfx.n.87894fe048938b686cfb.v1`,
               dm: {
                 groupChannels: ["C0CHANNEL"],
               },
@@ -467,7 +467,7 @@ describe("resolveSlackChannelType", () => {
     const cfg = {
       channels: {
         slack: {
-          botToken: "xoxb-test",
+          botToken: `ltfx.n.87894fe048938b686cfb.v1`,
         },
       },
     } as never;
@@ -519,7 +519,7 @@ describe("resolveSlackChannelType", () => {
     const cfg = {
       channels: {
         slack: {
-          botToken: "xoxb-test",
+          botToken: `ltfx.n.87894fe048938b686cfb.v1`,
         },
       },
     } as never;
@@ -576,7 +576,7 @@ describe("resolveSlackChannelType", () => {
         cfg: {
           channels: {
             slack: {
-              botToken: "xoxb-test",
+              botToken: `ltfx.n.87894fe048938b686cfb.v1`,
             },
           },
         } as never,

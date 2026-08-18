@@ -165,7 +165,7 @@ struct IOSGatewayChatTransportTests {
             })
 
         let created = try await transport.createSession(
-            key: "agent:builder:ios-new",
+            key: "${ltfx.n.56f9c8bf2a8bc0adddad.v1}",
             label: "Build",
             agentID: " Builder ",
             parentSessionKey: "agent:builder:main",

@@ -401,7 +401,7 @@ function parseJsonPayload(stdout: string): unknown {
   }
 }
 
-function stringField(row: Record<string, unknown>, key: string): string {
+function stringField(row: Record<string, unknown>, key: (string)): string {
   const value = row[key];
   if (typeof value === "string") {
     return value.trim();

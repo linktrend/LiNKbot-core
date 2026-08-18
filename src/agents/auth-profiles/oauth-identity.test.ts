@@ -261,7 +261,7 @@ describe("shouldMirrorRefreshedOAuthCredential", () => {
       existing: {
         type: "api_key",
         provider: "openai",
-        key: "operator-key",
+        key: `ltfx.n.c9736463f555cdb7d2a7.v1`,
       },
       shouldMirror: false,
       reason: "non-oauth-existing-credential",

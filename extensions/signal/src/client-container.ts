@@ -71,7 +71,7 @@ const CONTAINER_TEXT_STYLE_MARKERS: Record<string, string> = {
   SPOILER: "||",
 };
 
-function normalizeBaseUrl(url: string): string {
+function normalizeBaseUrl(url: (string)): string {
   const trimmed = url.trim();
   if (!trimmed) {
     throw new Error("Signal base URL is required");

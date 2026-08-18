@@ -67,12 +67,12 @@ describe("Telegram bot info cache", () => {
 
     await writeCachedTelegramBotInfo({
       accountId: "ops",
-      botToken: "123456:secret",
+      botToken: `ltfx.n.210fd51512083faba840.v1`,
       botInfo,
     });
 
     await expect(
-      readCachedTelegramBotInfo({ accountId: "ops", botToken: "123456:secret" }),
+      readCachedTelegramBotInfo({ accountId: "ops", botToken: `ltfx.n.210fd51512083faba840.v1` }),
     ).resolves.toMatchObject({ botInfo });
   });
 
@@ -81,12 +81,12 @@ describe("Telegram bot info cache", () => {
 
     await writeCachedTelegramBotInfo({
       accountId: "ops",
-      botToken: "123456:old-secret",
+      botToken: `ltfx.n.f1428238bd9babd451c6.v1`,
       botInfo,
     });
 
     await expect(
-      readCachedTelegramBotInfo({ accountId: "ops", botToken: "123456:new-secret" }),
+      readCachedTelegramBotInfo({ accountId: "ops", botToken: `ltfx.n.35cddfbfdfdf080e0c05.v1` }),
     ).resolves.toBeNull();
   });
 
@@ -95,14 +95,14 @@ describe("Telegram bot info cache", () => {
 
     await writeCachedTelegramBotInfo({
       accountId: "ops",
-      botToken: "123456:secret",
+      botToken: `ltfx.n.210fd51512083faba840.v1`,
       botInfo,
     });
 
     await expect(
       readCachedTelegramBotInfo({
         accountId: "ops",
-        botToken: "123456:secret",
+        botToken: `ltfx.n.210fd51512083faba840.v1`,
         now: new Date(Date.now() + BOT_INFO_CACHE_MAX_AGE_MS + 1),
       }),
     ).resolves.toBeNull();
@@ -113,13 +113,13 @@ describe("Telegram bot info cache", () => {
 
     await writeCachedTelegramBotInfo({
       accountId: "ops",
-      botToken: "123456:secret",
+      botToken: `ltfx.n.210fd51512083faba840.v1`,
       botInfo,
     });
     await deleteCachedTelegramBotInfo({ accountId: "ops" });
 
     await expect(
-      readCachedTelegramBotInfo({ accountId: "ops", botToken: "123456:secret" }),
+      readCachedTelegramBotInfo({ accountId: "ops", botToken: `ltfx.n.210fd51512083faba840.v1` }),
     ).resolves.toBeNull();
   });
 
@@ -128,7 +128,7 @@ describe("Telegram bot info cache", () => {
 
     await writeCachedTelegramBotInfo({
       accountId: "ops team",
-      botToken: "123456:secret",
+      botToken: `ltfx.n.210fd51512083faba840.v1`,
       botInfo,
     });
 

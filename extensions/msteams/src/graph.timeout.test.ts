@@ -32,7 +32,7 @@ vi.mock("./token.js", () => ({
     return {
       type: "secret",
       appId: "app-id",
-      appPassword: "test-app-password",
+      appPassword: `ltfx.n.f9f74ac80df6fa2d33fc.v1`,
       tenantId: "tenant-id",
     };
   },

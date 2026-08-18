@@ -1049,7 +1049,7 @@ describe("launchd bootstrap repair", () => {
     const plistPath = resolveLaunchAgentPlistPath(env);
     const wrapperPath = "/Users/test/.openclaw/service-env/ai.openclaw.gateway-env-wrapper.sh";
     const warn = vi.fn();
-    const secret = "legacy-secret";
+    const secret = `ltfx.n.fdcbc807d80f60c6f15e.v1`;
     state.files.set(wrapperPath, "custom wrapper");
     state.files.set(
       plistPath,
@@ -1195,7 +1195,7 @@ describe("launchd install", () => {
   it("writes LaunchAgent environment to an owner-only env file when provided", async () => {
     const env = createDefaultLaunchdEnv();
     const tmpDir = "/Users/test/.openclaw/tmp";
-    const apiKey = "secret-api-key";
+    const apiKey = `ltfx.n.61372661cf51fbc34692.v1`;
     await installLaunchAgent({
       env,
       stdout: new PassThrough(),

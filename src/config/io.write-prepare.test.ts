@@ -869,7 +869,7 @@ describe("config io write prepare", () => {
           defaults: {
             cliBackends: {
               codex: {
-                env: { OPENAI_API_KEY: "sk-secret" },
+                env: { OPENAI_API_KEY: `ltfx.n.746b4ad1ca9129e1caf0.v1` },
               },
             },
           },
@@ -881,7 +881,7 @@ describe("config io write prepare", () => {
           defaults: {
             cliBackends: {
               codex: {
-                env: { OPENAI_API_KEY: "sk-secret" },
+                env: { OPENAI_API_KEY: `ltfx.n.746b4ad1ca9129e1caf0.v1` },
               },
             },
           },
@@ -901,7 +901,7 @@ describe("config io write prepare", () => {
           defaults: {
             cliBackends: {
               codex: {
-                env: { OPENAI_API_KEY: "sk-secret" },
+                env: { OPENAI_API_KEY: `ltfx.n.746b4ad1ca9129e1caf0.v1` },
               },
             },
           },
@@ -1030,7 +1030,7 @@ describe("config io write prepare", () => {
       {
         agents: [
           { id: "real", token: "${TOKEN}" },
-          { id: "literal", token: "$${TOKEN}" },
+          { id: "literal", token: `ltfx.n.665607ca2c3c45aa3caf.v1` },
         ],
       },
       "",
@@ -1042,7 +1042,7 @@ describe("config io write prepare", () => {
     expect(restored).toEqual({
       agents: [
         { id: "real", token: "${TOKEN}" },
-        { id: "literal", token: "$${TOKEN}" },
+        { id: "literal", token: `ltfx.n.665607ca2c3c45aa3caf.v1` },
       ],
     });
   });
@@ -1080,7 +1080,7 @@ describe("config io write prepare", () => {
   });
 
   it("keeps the read-time env snapshot when writing the same config path", () => {
-    const snapshot = { OPENAI_API_KEY: "sk-secret" };
+    const snapshot = { OPENAI_API_KEY: `ltfx.n.746b4ad1ca9129e1caf0.v1` };
     expect(
       resolveWriteEnvSnapshotForPath({
         actualConfigPath: "/tmp/openclaw.json",
@@ -1095,7 +1095,7 @@ describe("config io write prepare", () => {
       resolveWriteEnvSnapshotForPath({
         actualConfigPath: "/tmp/openclaw.json",
         expectedConfigPath: "/tmp/other.json",
-        envSnapshotForRestore: { OPENAI_API_KEY: "sk-secret" },
+        envSnapshotForRestore: { OPENAI_API_KEY: `ltfx.n.746b4ad1ca9129e1caf0.v1` },
       }),
     ).toBeUndefined();
   });

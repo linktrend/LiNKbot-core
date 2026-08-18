@@ -94,7 +94,7 @@ function buildConfig(options: Options, workspaceDir: string): OpenClawConfig {
   for (let providerIndex = 0; providerIndex < options.providers; providerIndex += 1) {
     providers[`perf-${providerIndex}`] = {
       api: providerIndex % 2 === 0 ? "openai-responses" : "openai-completions",
-      apiKey: "perf-key",
+      apiKey: `ltfx.n.0c0b6643d8b0e6640a7d.v1`,
       baseUrl: `http://127.0.0.1:${20_000 + providerIndex}/v1`,
       models: Array.from({ length: options.modelsPerProvider }, (_, modelIndex) => ({
         api: modelIndex % 2 === 0 ? "openai-responses" : "openai-completions",

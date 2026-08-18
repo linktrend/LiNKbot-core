@@ -31,7 +31,7 @@ describe("legacy migrate provider-shaped config", () => {
           provider: "openai",
           providers: {
             openai: {
-              apiKey: "test-key",
+              apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
               custom: true,
             },
           },
@@ -53,7 +53,7 @@ describe("legacy migrate provider-shaped config", () => {
       provider: "openai",
       providers: {
         openai: {
-          apiKey: "test-key",
+          apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
           custom: true,
         },
       },
@@ -61,7 +61,7 @@ describe("legacy migrate provider-shaped config", () => {
         provider: "openai",
         providers: {
           openai: {
-            apiKey: "test-key",
+            apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
             custom: true,
           },
         },
@@ -159,7 +159,7 @@ describe("legacy migrate provider-shaped config", () => {
         tts: {
           provider: "elevenlabs",
           elevenlabs: {
-            apiKey: "test-key",
+            apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
             voiceId: "voice-1",
           },
         },
@@ -174,7 +174,7 @@ describe("legacy migrate provider-shaped config", () => {
       provider: "elevenlabs",
       providers: {
         elevenlabs: {
-          apiKey: "test-key",
+          apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
           speakerVoiceId: "voice-1",
         },
       },
@@ -665,7 +665,7 @@ describe("legacy migrate provider-shaped config", () => {
         voiceId: "voice-1",
         modelId: "eleven_v3",
         outputFormat: "pcm_44100",
-        apiKey: "test-key",
+        apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
       },
     });
 

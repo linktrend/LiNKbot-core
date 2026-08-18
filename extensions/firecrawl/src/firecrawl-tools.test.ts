@@ -218,7 +218,7 @@ describe("firecrawl tools", () => {
         {
           url: "https://api.firecrawl.dev/v2/search",
           timeoutSeconds: 5,
-          apiKey: "firecrawl-key",
+          apiKey: `ltfx.n.7e2df43f2f552e00bb5d.v1`,
           body: { query: "openclaw" },
           errorLabel: "Firecrawl search",
         },
@@ -248,7 +248,7 @@ describe("firecrawl tools", () => {
       {
         url: "https://api.firecrawl.dev/v2/search",
         timeoutSeconds: 5,
-        apiKey: "firecrawl-test-\r\nkey",
+        apiKey: `ltfx.n.5c16b18f9ccdda14e310.v1`,
         body: { query: "openclaw" },
         errorLabel: "Firecrawl search",
       },
@@ -379,7 +379,7 @@ describe("firecrawl tools", () => {
             firecrawl: {
               config: {
                 webSearch: {
-                  apiKey: "fc-configured-paid-key",
+                  apiKey: `ltfx.n.f086e9a39574345c5a12.v1`,
                   baseUrl: "https://api.firecrawl.dev",
                 },
               },
@@ -452,7 +452,7 @@ describe("firecrawl tools", () => {
               firecrawl: {
                 config: {
                   webSearch: {
-                    apiKey: "firecrawl-key",
+                    apiKey: `ltfx.n.7e2df43f2f552e00bb5d.v1`,
                     baseUrl: "https://api.firecrawl.dev",
                   },
                 },
@@ -485,7 +485,7 @@ describe("firecrawl tools", () => {
             firecrawl: {
               config: {
                 webSearch: {
-                  apiKey: "firecrawl-key",
+                  apiKey: `ltfx.n.7e2df43f2f552e00bb5d.v1`,
                   baseUrl: "https://api.firecrawl.dev",
                 },
               },
@@ -531,11 +531,11 @@ describe("firecrawl tools", () => {
     }
 
     try {
-      firecrawlClientTesting.assertFirecrawlScrapeTargetAllowed("not-a-valid-url?token=secret");
+      firecrawlClientTesting.assertFirecrawlScrapeTargetAllowed("not-a-valid-url?token=(secret");)
       expect.fail("Expected invalid URL to be blocked");
     } catch (error) {
       expect((error as Error).message).toBe("Invalid URL supplied to Firecrawl scrape");
-      expect((error as Error).message).not.toContain("token=secret");
+      expect((error as Error).message).not.toContain("token=(secret");)
     }
   });
 
@@ -551,7 +551,7 @@ describe("firecrawl tools", () => {
               firecrawl: {
                 config: {
                   webFetch: {
-                    apiKey: "firecrawl-key",
+                    apiKey: `ltfx.n.7e2df43f2f552e00bb5d.v1`,
                     baseUrl: "https://api.firecrawl.dev",
                   },
                 },
@@ -654,7 +654,7 @@ describe("firecrawl tools", () => {
     await fetchFirecrawlContent({
       url: "https://docs.openclaw.ai",
       extractMode: "markdown",
-      apiKey: "firecrawl-key",
+      apiKey: `ltfx.n.7e2df43f2f552e00bb5d.v1`,
       baseUrl: "https://api.firecrawl.dev",
       onlyMainContent: false,
       maxAgeMs: 5000,
@@ -672,7 +672,7 @@ describe("firecrawl tools", () => {
               enabled: true,
               config: {
                 webFetch: {
-                  apiKey: "firecrawl-key",
+                  apiKey: `ltfx.n.7e2df43f2f552e00bb5d.v1`,
                   baseUrl: "https://api.firecrawl.dev",
                   onlyMainContent: false,
                   maxAgeMs: 5000,
@@ -942,7 +942,7 @@ describe("firecrawl tools", () => {
           firecrawl: {
             config: {
               webSearch: {
-                apiKey: "plugin-key",
+                apiKey: `ltfx.n.63fd23d8d91d38a2f24e.v1`,
                 baseUrl: "https://plugin.firecrawl.test",
               },
             },
@@ -953,7 +953,7 @@ describe("firecrawl tools", () => {
         web: {
           search: {
             firecrawl: {
-              apiKey: "legacy-key",
+              apiKey: `ltfx.n.94eeb7bbe979dd0d2f0b.v1`,
               baseUrl: "https://legacy.firecrawl.test",
             },
           },
@@ -1158,7 +1158,7 @@ describe("firecrawl tools", () => {
       {
         url: "http://127.0.0.1:8787/v2/search",
         timeoutSeconds: 5,
-        apiKey: "firecrawl-key",
+        apiKey: `ltfx.n.7e2df43f2f552e00bb5d.v1`,
         body: { query: "openclaw" },
         errorLabel: "Firecrawl Search",
       },
@@ -1186,7 +1186,7 @@ describe("firecrawl tools", () => {
               firecrawl: {
                 config: {
                   webSearch: {
-                    apiKey: "firecrawl-key",
+                    apiKey: `ltfx.n.7e2df43f2f552e00bb5d.v1`,
                     baseUrl: "https://api.firecrawl.dev",
                   },
                 },
@@ -1270,7 +1270,7 @@ describe("firecrawl tools", () => {
               firecrawl: {
                 config: {
                   webFetch: {
-                    apiKey: "firecrawl-key",
+                    apiKey: `ltfx.n.7e2df43f2f552e00bb5d.v1`,
                     baseUrl: "https://api.firecrawl.dev",
                   },
                 },

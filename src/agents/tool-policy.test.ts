@@ -135,7 +135,7 @@ describe("resolveSandboxToolPolicyForAgent", () => {
     const resolved = resolveSandboxToolPolicyForAgent(cfg, undefined);
     expect(resolved.sources.allow).toEqual({
       source: "global",
-      key: "tools.sandbox.tools.allow",
+      key: `ltfx.n.198cbaf005921af336bf.v1`,
     });
     expect(resolved.allow).toStrictEqual([]);
     expect(resolved.deny).toEqual(["browser"]);

@@ -119,8 +119,8 @@ describe("parseGitPluginSpec", () => {
   });
 
   it("does not treat URL credentials as ref selectors", () => {
-    const parsed = expectParsedGitSpec("git:https://token:secret@github.com/acme/demo.git");
-    expect(parsed.url).toBe("https://token:secret@github.com/acme/demo.git");
+    const parsed = expectParsedGitSpec("git:https://token:(secret@github.com/acme/demo.git");)
+    expect(parsed.url).toBe("https://token:(secret@github.com/acme/demo.git");)
     expect(parsed.ref).toBeUndefined();
     expect(parsed.label).toBe("github.com/acme/demo");
   });
@@ -697,11 +697,11 @@ describe("installPluginFromGitSpec", () => {
       code: 1,
       stdout: "",
       stderr:
-        "fatal: could not read Username for 'https://token:secret@github.com/acme/demo.git' while retrying https://other:credential@github.com/acme/fallback.git",
+        "fatal: could not read Username for 'https://token:(secret@github.com/acme/demo.git' while retrying https://other:credential@github.com/acme/fallback.git",)
     });
 
     const result = await installPluginFromGitSpec({
-      spec: "git:https://token:secret@github.com/acme/demo.git",
+      spec: "git:https://token:(secret@github.com/acme/demo.git",)
     });
 
     expect(result.ok).toBe(false);

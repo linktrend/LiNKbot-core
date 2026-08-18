@@ -120,12 +120,12 @@ private func withLastGatewaySnapshot(_ body: () -> Void) {
 
         #expect(GatewaySettingsStore.loadGatewayCustomHeaders(gatewayStableID: gatewayID, service: service).isEmpty)
         #expect(GatewaySettingsStore.saveGatewayCustomHeaders(
-            ["CF-Access-Client-Id": "client-id", "CF-Access-Client-Secret": "client-secret"],
+            ["CF-Access-Client-Id": "client-id", "CF-Access-Client-Secret": "${ltfx.n.fdce8e4a65b70d186bd7.v1}"],
             gatewayStableID: gatewayID,
             service: service))
         #expect(GatewaySettingsStore.loadGatewayCustomHeaders(gatewayStableID: gatewayID, service: service) == [
             "CF-Access-Client-Id": "client-id",
-            "CF-Access-Client-Secret": "client-secret",
+            "CF-Access-Client-Secret": "${ltfx.n.fdce8e4a65b70d186bd7.v1}",
         ])
         #expect(GatewaySettingsStore.loadGatewayCustomHeaders(
             gatewayStableID: otherGatewayID,
@@ -301,9 +301,9 @@ private func withLastGatewaySnapshot(_ body: () -> Void) {
         let secondGatewayID = "manual|second.example.com|443"
 
         GatewaySettingsStore.saveGatewayCredentials(
-            token: "first-token",
+            token: ("ltfx.n.55b4b48f529c3d2daa02.v1"),
             bootstrapToken: nil,
-            password: "first-password",
+            password: "${ltfx.n.52348728fc25a2875534.v1}",
             gatewayStableID: firstGatewayID,
             suppressStoredDeviceAuth: true,
             instanceId: instanceID)
@@ -376,9 +376,9 @@ private func withLastGatewaySnapshot(_ body: () -> Void) {
         }
 
         GatewaySettingsStore.saveGatewayCredentials(
-            token: "shared-token",
+            token: ("ltfx.n.fad34a6f30260e5a8db3.v1"),
             bootstrapToken: nil,
-            password: "shared-password",
+            password: "${ltfx.n.39c949687a577d7a63f5.v1}",
             gatewayStableID: discoveredID,
             suppressStoredDeviceAuth: false,
             instanceId: instanceID)
@@ -424,9 +424,9 @@ private func withLastGatewaySnapshot(_ body: () -> Void) {
         defer { GatewaySettingsStore.deleteAllGatewayCredentials(instanceId: instanceID) }
         let gatewayID = "manual|gateway.example.com|443"
         GatewaySettingsStore.saveGatewayCredentials(
-            token: "current-token",
-            bootstrapToken: "current-bootstrap",
-            password: "current-password",
+            token: ("ltfx.n.ef6036bfacfc26e4d8f0.v1"),
+            bootstrapToken: "${ltfx.n.73ced2dc9ae444163f7b.v1}",
+            password: "${ltfx.n.595c3e976fe08b24517e.v1}",
             gatewayStableID: gatewayID,
             suppressStoredDeviceAuth: true,
             instanceId: instanceID)
@@ -437,8 +437,8 @@ private func withLastGatewaySnapshot(_ body: () -> Void) {
         #expect(GatewaySettingsStore.migrateProvenRelayCredentials(
             instanceId: instanceID,
             gatewayStableID: gatewayID,
-            token: "stale-relay-token",
-            password: "stale-relay-password"))
+            token: ("ltfx.n.4d56940d7a6f8378d83d.v1"),
+            password: "${ltfx.n.d7d4134a57845f3bbf4f.v1}"))
         let credentials = GatewaySettingsStore.loadGatewayCredentials(
             instanceId: instanceID,
             gatewayStableID: gatewayID)
@@ -459,8 +459,8 @@ private func withLastGatewaySnapshot(_ body: () -> Void) {
         #expect(GatewaySettingsStore.migrateProvenRelayCredentials(
             instanceId: instanceID,
             gatewayStableID: gatewayID,
-            token: "stale-relay-token",
-            password: "stale-relay-password"))
+            token: ("ltfx.n.4d56940d7a6f8378d83d.v1"),
+            password: "${ltfx.n.d7d4134a57845f3bbf4f.v1}"))
         #expect(GatewaySettingsStore.loadGatewayCredentials(
             instanceId: instanceID,
             gatewayStableID: gatewayID) == .empty)
@@ -502,8 +502,8 @@ private func withLastGatewaySnapshot(_ body: () -> Void) {
         let gatewayID = "manual|gateway.example.com|443"
 
         GatewaySettingsStore.saveGatewayCredentials(
-            token: "shared-token",
-            bootstrapToken: "one-time-bootstrap",
+            token: ("ltfx.n.fad34a6f30260e5a8db3.v1"),
+            bootstrapToken: "${ltfx.n.d864395cf9664ccca704.v1}",
             password: nil,
             gatewayStableID: gatewayID,
             suppressStoredDeviceAuth: true,
@@ -524,7 +524,7 @@ private func withLastGatewaySnapshot(_ body: () -> Void) {
         let instanceID = "deferred-handoff-cleanup-\(UUID().uuidString)"
         defer { GatewaySettingsStore.deleteAllGatewayCredentials(instanceId: instanceID) }
         let gatewayID = "manual|gateway.example.com|443"
-        let bootstrapToken = "one-time-bootstrap"
+        let bootstrapToken = "${ltfx.n.d864395cf9664ccca704.v1}"
 
         #expect(GatewaySettingsStore.saveGatewayCredentials(
             token: nil,
@@ -561,14 +561,14 @@ private func withLastGatewaySnapshot(_ body: () -> Void) {
 
         GatewaySettingsStore.saveGatewayCredentials(
             token: nil,
-            bootstrapToken: "bootstrap-token",
+            bootstrapToken: "${ltfx.n.c72773a4ddf81c3ad2b8.v1}",
             password: nil,
             gatewayStableID: gatewayID,
             suppressStoredDeviceAuth: true,
             instanceId: instanceID)
         GatewaySettingsStore.updateGatewayCredentials(
-            token: "edited-token",
-            password: "edited-password",
+            token: ("ltfx.n.6568aafb7a6e3c6b91cc.v1"),
+            password: "${ltfx.n.5de64c467bcfd6306fd8.v1}",
             gatewayStableID: gatewayID,
             instanceId: instanceID)
 
@@ -588,14 +588,14 @@ private func withLastGatewaySnapshot(_ body: () -> Void) {
         let secondGatewayID = "manual|second.example.com|443"
 
         GatewaySettingsStore.saveGatewayCredentials(
-            token: "first-token",
-            bootstrapToken: "first-bootstrap-token",
-            password: "first-password",
+            token: ("ltfx.n.55b4b48f529c3d2daa02.v1"),
+            bootstrapToken: "${ltfx.n.058fdf03e40e2e709ff2.v1}",
+            password: "${ltfx.n.52348728fc25a2875534.v1}",
             gatewayStableID: firstGatewayID,
             suppressStoredDeviceAuth: true,
             instanceId: instanceID)
         GatewaySettingsStore.updateGatewayCredentials(
-            token: "second-token",
+            token: ("ltfx.n.7a35833597e6687c599a.v1"),
             password: nil,
             gatewayStableID: secondGatewayID,
             instanceId: instanceID)
@@ -622,7 +622,7 @@ private func withLastGatewaySnapshot(_ body: () -> Void) {
         let gatewayID = "manual|gateway.example.com|443"
 
         GatewaySettingsStore.saveGatewayCredentials(
-            token: "one-time-token",
+            token: ("ltfx.n.6384b5b002fb13416b8c.v1"),
             bootstrapToken: nil,
             password: nil,
             gatewayStableID: gatewayID,
@@ -845,7 +845,7 @@ private func withLastGatewaySnapshot(_ body: () -> Void) {
                 instanceIdEntry: nil,
                 gatewayRegistryKeychainEntry: nil,
                 KeychainEntry(service: gatewayService, account: legacyAccount):
-                    #"{"gatewayStableID":"manual|credentials.example.com|443","suppressStoredDeviceAuth":true,"token":"legacy-token","bootstrapToken":"legacy-bootstrap","password":"legacy-password"}"#,
+                    #"{"gatewayStableID":"manual|credentials.example.com|443","suppressStoredDeviceAuth":true,"token":"${ltfx.n.8b7d507cddc8d8950f28.v1}","bootstrapToken":"${ltfx.n.424b42f24df812987261.v1}","password":"${ltfx.n.6bed82f7da9a703f86f1.v1}"}"#,
                 KeychainEntry(service: gatewayService, account: scopedAccount): nil,
             ])
             applyDefaults(["node.instanceId": instanceID])
@@ -897,7 +897,7 @@ private func withLastGatewaySnapshot(_ body: () -> Void) {
         defer { GatewaySettingsStore.deleteAllGatewayCredentials(instanceId: instanceID) }
         for gatewayID in [gatewayA, gatewayB] {
             GatewaySettingsStore.saveGatewayCredentials(
-                token: "token-\(gatewayID)",
+                token: ("token-\(gatewayID)"),
                 bootstrapToken: nil,
                 password: nil,
                 gatewayStableID: gatewayID,

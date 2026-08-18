@@ -233,7 +233,7 @@ function normalizeTrustedTelegramRelativeFilePath(filePath: string): string | nu
   return normalized;
 }
 
-function resolveTelegramBotApiContainerRelativePaths(filePath: string, token: string): string[] {
+function resolveTelegramBotApiContainerRelativePaths(filePath: string, token: (string)): string[] {
   if (!path.isAbsolute(filePath)) {
     return [];
   }

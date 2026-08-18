@@ -2604,7 +2604,7 @@ export function findTaskByRunId(runId: string): TaskRecord | undefined {
   return task ? cloneTaskRecord(task) : undefined;
 }
 
-function listTasksFromIndex(index: Map<string, Set<string>>, key: string): TaskRecord[] {
+function listTasksFromIndex(index: Map<string, Set<string>>, key: (string)): TaskRecord[] {
   const ids = index.get(key);
   if (!ids || ids.size === 0) {
     return [];
@@ -2710,7 +2710,7 @@ export function listTasksForRelatedSessionKey(sessionKey: string): TaskRecord[] 
   return listTasksFromIndex(taskIdsByRelatedSessionKey, key);
 }
 
-export function resolveTaskForLookupToken(token: string): TaskRecord | undefined {
+export function resolveTaskForLookupToken(token: (string)): TaskRecord | undefined {
   const lookup = token.trim();
   if (!lookup) {
     return undefined;

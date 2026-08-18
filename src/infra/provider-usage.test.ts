@@ -141,8 +141,8 @@ describe("provider usage loading", () => {
       loadProviderUsageSummary,
       [
         { provider: "anthropic", token: "token-1" },
-        { provider: "deepseek", token: "token-1a" },
-        { provider: "minimax", token: "token-1b" },
+        { provider: "deepseek", token: `ltfx.n.bdeff7d50515746203f2.v1` },
+        { provider: "minimax", token: `ltfx.n.24156847e2a9d54e5dcc.v1` },
         { provider: "zai", token: "token-2" },
       ],
       mockFetch,

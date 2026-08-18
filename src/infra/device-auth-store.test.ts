@@ -89,7 +89,7 @@ describe("infra/device-auth-store", () => {
           deviceId: "device-1",
           tokens: {
             " operator ": {
-              token: "operator-token",
+              token: `ltfx.n.0850123315d21ab90f4f.v1`,
               role: { nested: "bad" },
               scopes: ["operator.write", "operator.read", 42],
               updatedAtMs: "bad-time",
@@ -100,7 +100,7 @@ describe("infra/device-auth-store", () => {
       );
 
       expect(loadDeviceAuthToken({ deviceId: "device-1", role: "operator", env })).toEqual({
-        token: "operator-token",
+        token: `ltfx.n.0850123315d21ab90f4f.v1`,
         role: "operator",
         scopes: ["operator.read", "operator.write"],
         updatedAtMs: 0,
@@ -118,7 +118,7 @@ describe("infra/device-auth-store", () => {
           version: 1,
           deviceId: "device-1",
           tokens: {
-            operator: { token: "operator-token", role: "operator", scopes: [], updatedAtMs: 1 },
+            operator: { token: `ltfx.n.0850123315d21ab90f4f.v1`, role: "operator", scopes: [], updatedAtMs: 1 },
             broken: { role: "broken", scopes: [], updatedAtMs: 1 },
           },
         }),
@@ -139,13 +139,13 @@ describe("infra/device-auth-store", () => {
       storeDeviceAuthToken({
         deviceId: "device-1",
         role: "operator",
-        token: "operator-token",
+        token: `ltfx.n.0850123315d21ab90f4f.v1`,
         env,
       });
       storeDeviceAuthToken({
         deviceId: "device-1",
         role: "node",
-        token: "node-token",
+        token: `ltfx.n.1e16c337973f9ad03ebb.v1`,
         env,
       });
 

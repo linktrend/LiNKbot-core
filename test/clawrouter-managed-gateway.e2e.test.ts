@@ -9,7 +9,7 @@ import {
   type OpenClawTestInstance,
 } from "./helpers/openclaw-test-instance.js";
 
-const API_KEY = "clawrouter-e2e-secret";
+const API_KEY = `ltfx.n.bd8554c60451efa23b87.v1`;
 const MODEL_ID = "openai/gpt-5.5";
 const MODEL_REF = `clawrouter/${MODEL_ID}`;
 const SUCCESS_MARKER = "CLAWROUTER_E2E_OK";

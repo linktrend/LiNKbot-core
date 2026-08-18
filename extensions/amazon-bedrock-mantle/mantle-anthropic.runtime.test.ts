@@ -66,7 +66,7 @@ describe("createMantleAnthropicStreamFn", () => {
     deps.stream.mockReturnValue(stream as never);
 
     const result = createMantleAnthropicStreamFn(deps)(model, context, {
-      apiKey: "bedrock-bearer-token",
+      apiKey: `ltfx.n.4acbe30e6e8681db44a6.v1`,
       headers: {
         "X-Caller": "caller-header",
       },
@@ -100,7 +100,7 @@ describe("createMantleAnthropicStreamFn", () => {
     deps.stream.mockReturnValue({ kind: "anthropic-stream" } as never);
 
     void createMantleAnthropicStreamFn(deps)(model, context, {
-      apiKey: "bedrock-bearer-token",
+      apiKey: `ltfx.n.4acbe30e6e8681db44a6.v1`,
       temperature: 0.2,
       reasoning: "high",
     });
@@ -123,7 +123,7 @@ describe("createMantleAnthropicStreamFn", () => {
     deps.stream.mockReturnValue({ kind: "anthropic-stream" } as never);
 
     void createMantleAnthropicStreamFn(deps)(model, context, {
-      apiKey: "bedrock-bearer-token",
+      apiKey: `ltfx.n.4acbe30e6e8681db44a6.v1`,
     });
 
     expectFirstStreamCall(deps, model, context);
@@ -151,7 +151,7 @@ describe("createMantleAnthropicStreamFn", () => {
       model,
       { messages: [] },
       {
-        apiKey: "bedrock-bearer-token",
+        apiKey: `ltfx.n.4acbe30e6e8681db44a6.v1`,
         reasoning,
         temperature: 0.2,
       },
@@ -177,7 +177,7 @@ describe("createMantleAnthropicStreamFn", () => {
     deps.stream.mockReturnValue({ kind: "anthropic-stream" } as never);
 
     void createMantleAnthropicStreamFn(deps)(model, context, {
-      apiKey: "bedrock-bearer-token",
+      apiKey: `ltfx.n.4acbe30e6e8681db44a6.v1`,
       reasoning: "max",
     });
 
@@ -201,7 +201,7 @@ describe("createMantleAnthropicStreamFn", () => {
       model,
       { messages: [] },
       {
-        apiKey: "bedrock-bearer-token",
+        apiKey: `ltfx.n.4acbe30e6e8681db44a6.v1`,
         reasoning: "minimal",
       },
     );
@@ -224,7 +224,7 @@ describe("createMantleAnthropicStreamFn", () => {
     void createMantleAnthropicStreamFn(deps)(
       model,
       { messages: [] },
-      { apiKey: "bedrock-bearer-token", reasoning: "low" },
+      { apiKey: `ltfx.n.4acbe30e6e8681db44a6.v1`, reasoning: "low" },
     );
 
     expect(firstStreamOptions(deps)).toMatchObject({ maxTokens: 1500, thinkingEnabled: false });
@@ -250,7 +250,7 @@ describe("createMantleAnthropicStreamFn", () => {
       model,
       { messages: [] },
       {
-        apiKey: "bedrock-bearer-token",
+        apiKey: `ltfx.n.4acbe30e6e8681db44a6.v1`,
         maxTokens: 1_000,
         temperature: 0.2,
         ...(reasoning ? { reasoning } : {}),

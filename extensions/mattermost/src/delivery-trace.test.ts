@@ -91,7 +91,7 @@ function createRecordingMattermostClient(recorder: WireRecorder): MattermostClie
   return {
     baseUrl: "https://chat.example.com",
     apiBaseUrl: "https://chat.example.com/api/v4",
-    token: "test-token",
+    token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
     request: vi.fn(requestImpl) as MattermostClient["request"],
     fetchImpl: vi.fn() as MattermostClient["fetchImpl"],
   };

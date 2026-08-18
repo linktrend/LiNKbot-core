@@ -269,7 +269,7 @@ describe("createSessionVisibilityGuard", () => {
       });
 
       expect(guard.check({ key: watchedSessionKey })).toEqual({ allowed: true });
-      expect(guard.check({ key: "agent:main:telegram:group:unwatched" })).toEqual({
+      expect(guard.check({ key: `ltfx.n.9ea5593716eedefab488.v1` })).toEqual({
         allowed: false,
         status: "forbidden",
         error:
@@ -316,7 +316,7 @@ describe("createSessionVisibilityGuard", () => {
 
     expect(
       guard.check({
-        key: "agent:codex:acp:child-1",
+        key: `ltfx.n.7e4b58c12dac15f7db3e.v1`,
         spawnedBy: "agent:main:main",
       }),
     ).toEqual({ allowed: true });
@@ -334,7 +334,7 @@ describe("createSessionVisibilityGuard", () => {
 
     expect(
       guard.check({
-        key: "agent:codex:acp:child-1",
+        key: `ltfx.n.7e4b58c12dac15f7db3e.v1`,
         spawnedBy: "agent:main:main",
       }),
     ).toEqual({ allowed: true });
@@ -352,7 +352,7 @@ describe("createSessionVisibilityGuard", () => {
 
     expect(
       guard.check({
-        key: "agent:codex:acp:child-1",
+        key: `ltfx.n.7e4b58c12dac15f7db3e.v1`,
         spawnedBy: "agent:main:main",
       }),
     ).toEqual({
@@ -365,7 +365,7 @@ describe("createSessionVisibilityGuard", () => {
 
   it("does not do spawned lookup for list visibility without row metadata", async () => {
     const callGateway = vi.fn(async () => ({
-      sessions: [{ key: "agent:codex:acp:child-1" }],
+      sessions: [{ key: `ltfx.n.7e4b58c12dac15f7db3e.v1` }],
     }));
     sessionsResolutionTesting.setDepsForTest({
       callGateway: callGateway as never,
@@ -390,7 +390,7 @@ describe("createSessionVisibilityGuard", () => {
         if (request.method === "sessions.list") {
           expect(request.params?.spawnedBy).toBe("agent:main:main");
           return {
-            sessions: [{ key: "agent:codex:acp:child-1" }],
+            sessions: [{ key: `ltfx.n.7e4b58c12dac15f7db3e.v1` }],
           };
         }
         return {};
@@ -431,7 +431,7 @@ describe("createSessionVisibilityGuard", () => {
         if (request.method === "sessions.list") {
           expect(request.params?.spawnedBy).toBe("agent:main:main");
           return {
-            sessions: [{ key: "agent:codex:acp:child-1" }],
+            sessions: [{ key: `ltfx.n.7e4b58c12dac15f7db3e.v1` }],
           };
         }
         return {};
@@ -456,7 +456,7 @@ describe("createSessionVisibilityGuard", () => {
         if (request.method === "sessions.list") {
           expect(request.params?.spawnedBy).toBe("agent:main:main");
           return {
-            sessions: [{ key: "agent:codex:acp:child-1" }],
+            sessions: [{ key: `ltfx.n.7e4b58c12dac15f7db3e.v1` }],
           };
         }
         return {};
@@ -479,7 +479,7 @@ describe("createSessionVisibilityGuard", () => {
     sessionsResolutionTesting.setDepsForTest({
       callGateway: vi.fn(async (request: { method?: string; params?: { key?: string } }) => {
         if (request.method === "sessions.resolve") {
-          return { key: request.params?.key };
+          return { key: (request.params?.key };)
         }
         if (request.method === "sessions.list") {
           return {
@@ -487,7 +487,7 @@ describe("createSessionVisibilityGuard", () => {
               ...Array.from({ length: 500 }, (_, index) => ({
                 key: `agent:main:subagent:worker-${index}`,
               })),
-              { key: "agent:main:subagent:worker-999" },
+              { key: `ltfx.n.1d270fe6db5f674b45c4.v1` },
             ],
           };
         }

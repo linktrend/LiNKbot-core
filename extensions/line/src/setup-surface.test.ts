@@ -286,12 +286,12 @@ describe("line setup wizard", () => {
         channels: {
           line: {
             defaultAccount: "work",
-            channelAccessToken: "root-token",
-            channelSecret: "root-secret",
+            channelAccessToken: `ltfx.n.2cff60a244379d429c18.v1`,
+            channelSecret: `ltfx.n.633cd8d24fedcc77768b.v1`,
             accounts: {
               alerts: {
-                channelAccessToken: "alerts-token",
-                channelSecret: "alerts-secret",
+                channelAccessToken: `ltfx.n.f86de021b56c190634de.v1`,
+                channelSecret: `ltfx.n.6e2e54a726fc07b58d2a.v1`,
               },
               work: {
                 channelAccessToken: "",

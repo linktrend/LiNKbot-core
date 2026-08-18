@@ -200,7 +200,7 @@ describe("AppSidebar session source lifecycle", () => {
     await sidebar.updateComplete;
 
     const menuButton = sidebar.querySelector<HTMLButtonElement>(
-      '[data-session-key="agent:main:locked"] [data-session-menu="true"]',
+      '[data-session-key=`ltfx.n.1bf35d4e26b6cbe86d9d.v1`] [data-session-menu="true"]',
     );
     if (!menuButton) {
       throw new Error("Expected sidebar session menu button");
@@ -318,7 +318,7 @@ describe("AppSidebar session source lifecycle", () => {
 
 describe("AppSidebar session accessibility", () => {
   it("exposes a derived title through native list and link semantics", async () => {
-    const key = "agent:main:dashboard:opaque-id";
+    const key = `ltfx.n.0caede8810e784ad45df.v1`;
     const gateway = createGateway({} as GatewayBrowserClient);
     const harness = createSessionsHarness("main", [key]);
     const { sidebar } = await mountSidebar(gateway, harness.sessions);
@@ -522,7 +522,7 @@ describe("AppSidebar session mutation feedback", () => {
     expect(confirm).toHaveBeenCalledWith('Stop the cloud worker for "a"?');
     expect(request).toHaveBeenCalledWith(
       "sessions.reclaim",
-      { key: "agent:main:a", agentId: "main" },
+      { key: `ltfx.n.8d58a705b979a4e362ea.v1`, agentId: "main" },
       { timeoutMs: 10 * 60_000 },
     );
     await waitForFast(() => expect(harness.refreshReplacement).toHaveBeenCalledWith("main"));
@@ -565,7 +565,7 @@ describe("AppSidebar session mutation feedback", () => {
       selectSession(sidebar, "agent:main:a");
       selectSession(sidebar, "agent:main:b");
       await sidebar.updateComplete;
-      const row = sidebar.querySelector('[data-session-key="agent:main:b"]');
+      const row = sidebar.querySelector('[data-session-key=`ltfx.n.55d2be10b02ac88a86ac.v1`]');
       row?.dispatchEvent(new MouseEvent("contextmenu", { bubbles: true, cancelable: true }));
       await sidebar.updateComplete;
       const menu = sidebar.querySelector<TestSessionMenu>("openclaw-session-menu");
@@ -607,7 +607,7 @@ describe("AppSidebar session mutation feedback", () => {
     selectSession(sidebar, "agent:main:a");
     selectSession(sidebar, "agent:main:b");
     await sidebar.updateComplete;
-    const row = sidebar.querySelector('[data-session-key="agent:main:b"]');
+    const row = sidebar.querySelector('[data-session-key=`ltfx.n.55d2be10b02ac88a86ac.v1`]');
     row?.dispatchEvent(new MouseEvent("contextmenu", { bubbles: true, cancelable: true }));
     await sidebar.updateComplete;
     const menu = sidebar.querySelector<TestSessionMenu>("openclaw-session-menu");
@@ -633,7 +633,7 @@ describe("AppSidebar session mutation feedback", () => {
     selectSession(sidebar, "agent:main:a");
     selectSession(sidebar, "agent:main:b");
     await sidebar.updateComplete;
-    const row = sidebar.querySelector('[data-session-key="agent:main:b"]');
+    const row = sidebar.querySelector('[data-session-key=`ltfx.n.55d2be10b02ac88a86ac.v1`]');
 
     row?.dispatchEvent(new MouseEvent("contextmenu", { bubbles: true, cancelable: true }));
     await sidebar.updateComplete;

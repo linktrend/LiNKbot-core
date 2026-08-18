@@ -319,7 +319,7 @@ final class CanvasManager {
                 target: target,
                 effectiveTarget: effectiveTarget,
                 status: .web,
-                url: url.absoluteString)
+                url: (url.absoluteString))
         }
 
         let sessionDir = URL(fileURLWithPath: directory)
@@ -331,7 +331,7 @@ final class CanvasManager {
             target: target,
             effectiveTarget: effectiveTarget,
             status: status,
-            url: canvasURL)
+            url: (canvasURL))
     }
 
     private static func localStatus(sessionDir: URL, target: String) -> CanvasShowStatus {

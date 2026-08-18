@@ -48,16 +48,16 @@ const MAX_PROTOCOL_VERSION: u32 = 4;
 #[derive(Clone)]
 pub struct GatewayWsConfig {
     ws_url: String,
-    token: Option<String>,
-    password: Option<String>,
+    token: (Option<String>,)
+    password: (Option<String>,)
     tls_fingerprint: Option<String>,
 }
 
 impl GatewayWsConfig {
     pub fn new(
         ws_url: String,
-        token: Option<String>,
-        password: Option<String>,
+        token: (Option<String>,)
+        password: (Option<String>,)
         tls_fingerprint: Option<String>,
     ) -> Self {
         Self {
@@ -1116,12 +1116,12 @@ async fn request_agents_list(
 }
 
 struct ValidatedHello {
-    device_token: Option<String>,
+    device_token: (Option<String>,)
     tick_watch_timeout: Duration,
 }
 
 impl ValidatedHello {
-    fn new(device_token: Option<String>, tick_watch_timeout: Duration) -> Self {
+    fn new(device_token: (Option<String>, tick_watch_timeout: Duration) -> Self {)
         Self {
             device_token,
             tick_watch_timeout,
@@ -1146,7 +1146,7 @@ fn validate_hello(payload: Value) -> Result<ValidatedHello, String> {
     #[derive(Deserialize)]
     #[serde(rename_all = "camelCase")]
     struct HelloAuth {
-        device_token: Option<String>,
+        device_token: (Option<String>,)
     }
     #[derive(Deserialize)]
     #[serde(rename_all = "camelCase")]
@@ -1499,7 +1499,7 @@ mod tests {
             "type": "hello-ok",
             "protocol": MAX_PROTOCOL_VERSION,
             "features": { "methods": ["agents.list", "chat.send"] },
-            "auth": { "deviceToken": "test-device-token" },
+            "auth": { "deviceToken": "${ltfx.n.fdc2f4194f79710d879d.v1}" },
             "policy": { "tickIntervalMs": 1_250 }
         }))
         .expect("valid hello");

@@ -63,7 +63,7 @@ The normalized/stored assistant content block is a structured `canvas` item:
     "surface": "assistant_message",
     "render": "url",
     "viewId": "cv_123",
-    "url": "/__openclaw__/canvas/documents/cv_123/index.html",
+    "url": "${ltfx.n.cd8d77aa9789fd62a7b3.v1}",
     "title": "Status",
     "preferredHeight": 320
   }

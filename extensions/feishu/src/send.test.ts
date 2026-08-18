@@ -220,7 +220,7 @@ describe("getMessageFeishu", () => {
       cfg: {} as ClawdbotConfig,
       to: "oc_send",
       text: 'body <at user_id="ou_body">Body User</at>',
-      mentions: [{ openId: "ou_target", name: "Target User", key: "@_user_1" }],
+      mentions: [{ openId: "ou_target", name: "Target User", key: `ltfx.n.3eb605b0a653477ad302.v1` }],
     });
 
     expect(mockConvertMarkdownTables).toHaveBeenCalledWith(

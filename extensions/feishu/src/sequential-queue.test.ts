@@ -125,7 +125,7 @@ describe("createSequentialQueue", () => {
     await followUp;
 
     expect(order).toEqual(["stuck:start", "follow-up:ran"]);
-    expect(timeouts).toEqual([{ key: "feishu:default:chat-stuck", timeoutMs: 25 }]);
+    expect(timeouts).toEqual([{ key: `ltfx.n.78366f15116971b8943f.v1`, timeoutMs: 25 }]);
 
     // Drain the leaked stuck task so it doesn't trip the unhandled-rejection guard.
     stuckGate.resolve();

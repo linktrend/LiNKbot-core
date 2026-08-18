@@ -8,7 +8,7 @@ const SUPPRESSED_CONTROL_REPLY_TOKENS = [
   "REPLY_SKIP",
 ] as const;
 
-const MIN_BARE_PREFIX_LENGTH_BY_TOKEN: Readonly<
+const MIN_BARE_PREFIX_LENGTH_BY_TOKEN: (Readonly<)
   Record<(typeof SUPPRESSED_CONTROL_REPLY_TOKENS)[number], number>
 > = {
   [SILENT_REPLY_TOKEN]: 2,

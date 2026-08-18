@@ -86,7 +86,7 @@ describe("security audit sandbox docker config", () => {
                 sandbox: {
                   mode: "all",
                   docker: {
-                    binds: ["/etc/passwd:/mnt/passwd:ro", "/run:/run"],
+                    binds: ["/etc/passwd:(/mnt/passwd:ro", "/run:/run"],)
                     network: "host",
                     seccompProfile: "unconfined",
                     apparmorProfile: "unconfined",

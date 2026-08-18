@@ -77,7 +77,7 @@ describe("Codex sandbox exec-server lifecycle", () => {
       buildExecSpec: async () => ({
         argv: ["sandbox-child"],
         env: {},
-        finalizeToken: "process-token",
+        finalizeToken: `ltfx.n.a269a39faf6dc8d1c0c3.v1`,
         stdinMode: "pipe-closed",
       }),
       finalizeExec,
@@ -114,7 +114,7 @@ describe("Codex sandbox exec-server lifecycle", () => {
       status: "failed",
       exitCode: 23,
       timedOut: false,
-      token: "process-token",
+      token: `ltfx.n.a269a39faf6dc8d1c0c3.v1`,
     });
     expect(socket.send.mock.calls.map(([payload]) => JSON.parse(String(payload)).method)).toEqual([
       "process/exited",
@@ -136,7 +136,7 @@ describe("Codex sandbox exec-server lifecycle", () => {
       buildExecSpec: async () => ({
         argv,
         env: {},
-        finalizeToken: "process-start-token",
+        finalizeToken: `ltfx.n.4556d607422815e22170.v1`,
         stdinMode: "pipe-closed",
       }),
       finalizeExec,
@@ -155,7 +155,7 @@ describe("Codex sandbox exec-server lifecycle", () => {
       status: "failed",
       exitCode: null,
       timedOut: false,
-      token: "process-start-token",
+      token: `ltfx.n.4556d607422815e22170.v1`,
     });
   });
 
@@ -167,7 +167,7 @@ describe("Codex sandbox exec-server lifecycle", () => {
       buildExecSpec: async () => ({
         argv: ["sandbox-http-child"],
         env: {},
-        finalizeToken: "http-token",
+        finalizeToken: `ltfx.n.c9c3aaaf93014aa3aead.v1`,
         stdinMode: "pipe-closed",
       }),
       finalizeExec,
@@ -203,7 +203,7 @@ describe("Codex sandbox exec-server lifecycle", () => {
       status: "failed",
       exitCode: 29,
       timedOut: false,
-      token: "http-token",
+      token: `ltfx.n.c9c3aaaf93014aa3aead.v1`,
     });
   });
 
@@ -225,7 +225,7 @@ describe("Codex sandbox exec-server lifecycle", () => {
       buildExecSpec: async () => ({
         argv,
         env: {},
-        finalizeToken: "http-start-token",
+        finalizeToken: `ltfx.n.c5bb0de9a57774162640.v1`,
         stdinMode: "pipe-closed",
       }),
       finalizeExec,
@@ -243,7 +243,7 @@ describe("Codex sandbox exec-server lifecycle", () => {
       status: "failed",
       exitCode: null,
       timedOut: false,
-      token: "http-start-token",
+      token: `ltfx.n.c5bb0de9a57774162640.v1`,
     });
   });
 });

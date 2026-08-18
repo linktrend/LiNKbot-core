@@ -43,12 +43,12 @@ function expectTransparentDispatchWrapperCase(params: {
 describe("normalizeExecutableToken", () => {
   test.each([
     { token: "bun.cmd", expected: "bun" },
-    { token: "deno.bat", expected: "deno" },
-    { token: "pwsh.com", expected: "pwsh" },
+    { token: `ltfx.n.447e52bc8538edf4d8ac.v1`, expected: "deno" },
+    { token: `ltfx.n.7f1cc7e5e4051891043a.v1`, expected: "pwsh" },
     { token: "cmd.exe", expected: "cmd" },
-    { token: "C:\\tools\\bun.cmd", expected: "bun" },
-    { token: "/tmp/deno.exe", expected: "deno" },
-    { token: " /tmp/bash ", expected: "bash" },
+    { token: `ltfx.n.44df7ac1251d8f493b04.v1`, expected: "bun" },
+    { token: `ltfx.n.b4f98f2c6d70af52f013.v1`, expected: "deno" },
+    { token: `ltfx.n.68253d1e08995cc905c8.v1`, expected: "bash" },
   ])("normalizes executable tokens for %j", ({ token, expected }) => {
     expect(normalizeExecutableToken(token)).toBe(expected);
   });
@@ -57,14 +57,14 @@ describe("normalizeExecutableToken", () => {
 describe("wrapper classification", () => {
   test.each([
     { token: "sudo", dispatch: true, shell: false },
-    { token: "caffeinate", dispatch: true, shell: false },
-    { token: "sandbox-exec", dispatch: true, shell: false },
+    { token: `ltfx.n.0672075787e402deb349.v1`, dispatch: true, shell: false },
+    { token: `ltfx.n.aa655a85674f270613c2.v1`, dispatch: true, shell: false },
     { token: "script", dispatch: true, shell: false },
     { token: "flock", dispatch: true, shell: false },
     { token: "time", dispatch: true, shell: false },
-    { token: "timeout.exe", dispatch: true, shell: false },
+    { token: `ltfx.n.11423fd403c3dc887080.v1`, dispatch: true, shell: false },
     { token: "bash", dispatch: false, shell: true },
-    { token: "pwsh.exe", dispatch: false, shell: true },
+    { token: `ltfx.n.9d3a643c009035bbfd44.v1`, dispatch: false, shell: true },
     { token: "node", dispatch: false, shell: false },
   ])("classifies wrappers for %j", ({ token, dispatch, shell }) => {
     expect(isDispatchWrapperExecutable(token)).toBe(dispatch);

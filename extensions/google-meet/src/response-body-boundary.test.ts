@@ -36,7 +36,7 @@ describe("google-meet response body boundary", () => {
     const { fetchGoogleMeetSpace } = await import("./meet.js");
     await expect(
       fetchGoogleMeetSpace({
-        accessToken: "fake-token",
+        accessToken: `ltfx.n.e1466187c844c921b622.v1`,
         meeting: "abc-defg-hij",
       }),
     ).rejects.toThrow("Google Meet spaces.get: JSON response exceeds");

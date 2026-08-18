@@ -107,7 +107,7 @@ describe("secrets runtime snapshot gateway-auth integration", () => {
             },
           }),
           env: {
-            GATEWAY_AUTH_TOKEN: "gateway-runtime-token",
+            GATEWAY_AUTH_TOKEN: `ltfx.n.f978ec79bf8b76f1c540.v1`,
           },
           agentDirs: ["/tmp/openclaw-agent-main"],
           loadablePluginOrigins: EMPTY_LOADABLE_PLUGIN_ORIGINS,

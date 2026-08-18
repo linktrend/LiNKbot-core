@@ -438,12 +438,12 @@ describe("plugin runtime command execution", () => {
     };
     const cfg = { plugins: { allow: ["workspace-cloud"] } } as OpenClawConfig;
     runtimeModelAuthMocks.getApiKeyForModel.mockResolvedValue({
-      apiKey: "model-key",
+      apiKey: `ltfx.n.8b9035af2d1e35112e8f.v1`,
       source: "workspace cloud credentials",
       mode: "api-key",
     });
     runtimeModelAuthMocks.resolveApiKeyForProvider.mockResolvedValue({
-      apiKey: "provider-key",
+      apiKey: `ltfx.n.b3fac0ba726ed945457a.v1`,
       source: "workspace cloud credentials",
       mode: "api-key",
     });

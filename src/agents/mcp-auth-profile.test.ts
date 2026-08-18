@@ -195,7 +195,7 @@ describe("mcp auth profile bearer projection", () => {
       },
     });
     authMocks.resolveApiKeyForProfile.mockResolvedValueOnce({
-      apiKey: "fresh-access-token",
+      apiKey: `ltfx.n.5f0865c175057c86933c.v1`,
       provider: "ducktape",
       profileId: "ducktape:mcp",
       profileType: "oauth",
@@ -253,7 +253,7 @@ describe("mcp auth profile bearer projection", () => {
         "ducktape:static": {
           type: "token",
           provider: "ducktape",
-          token: "expired-static-token",
+          token: `ltfx.n.f17a577b1fd4feb750ce.v1`,
           expires: 1,
         },
       },
@@ -289,7 +289,7 @@ describe("mcp auth profile bearer projection", () => {
     });
     authMocks.resolveApiKeyForProfile.mockResolvedValueOnce({
       apiKey: JSON.stringify({
-        token: "raw-google-access-token",
+        token: `ltfx.n.2844cf4f851fa928ad07.v1`,
         projectId: "demo-project",
       }),
       provider: "google",
@@ -340,7 +340,7 @@ describe("mcp auth profile bearer projection", () => {
       },
     });
     authMocks.resolveApiKeyForProfile.mockResolvedValue({
-      apiKey: "fresh-access-token",
+      apiKey: `ltfx.n.5f0865c175057c86933c.v1`,
       provider: "ducktape",
       profileId: "ducktape:mcp",
       profileType: "oauth",

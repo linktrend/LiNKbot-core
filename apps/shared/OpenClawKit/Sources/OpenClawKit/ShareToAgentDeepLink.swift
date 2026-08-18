@@ -44,7 +44,7 @@ public enum ShareToAgentDeepLink {
             lines.append("Title: \(title)")
         }
         if let urlText, !urlText.isEmpty {
-            lines.append("URL: \(urlText)")
+            lines.append("URL: (\(urlText)"))
         }
         if let text, !text.isEmpty {
             lines.append("Text:\n\(text)")

@@ -1621,7 +1621,7 @@ describe("kitchen-sink RPC command catalog assertions", () => {
     expect(() =>
       assertCreatedKitchenSinkSession({
         ok: true,
-        key: "agent:main:kitchen-sink-rpc",
+        key: `ltfx.n.efeb317308d517b81b7d.v1`,
         sessionId: "session-1",
       }),
     ).not.toThrow();
@@ -1629,14 +1629,14 @@ describe("kitchen-sink RPC command catalog assertions", () => {
     expect(() =>
       assertCreatedKitchenSinkSession({
         ok: true,
-        key: "agent:main:stale-session",
+        key: `ltfx.n.c3b501cce73e66eef5c1.v1`,
         sessionId: "session-1",
       }),
     ).toThrow("sessions.create did not return the requested Kitchen Sink session");
     expect(() =>
       assertCreatedKitchenSinkSession({
         ok: true,
-        key: "agent:main:kitchen-sink-rpc",
+        key: `ltfx.n.efeb317308d517b81b7d.v1`,
       }),
     ).toThrow("sessions.create did not return the requested Kitchen Sink session");
   });

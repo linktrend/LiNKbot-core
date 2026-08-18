@@ -6,7 +6,7 @@ struct ChatSessionsCodingTests {
     @Test func `decodes session organization and read state fields`() throws {
         let data = Data(#"""
         {
-            "key":"agent:main:telegram:group:1",
+            "key":"${ltfx.n.7535796027921449f0a2.v1}",
             "label":"Release room",
             "category":"Operations",
             "pinned":true,

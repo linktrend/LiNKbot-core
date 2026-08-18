@@ -76,7 +76,7 @@ describe("applyModelDefaults", () => {
         providers: {
           mistral: {
             baseUrl: "https://api.mistral.ai/v1",
-            apiKey: "sk-mistral", // pragma: allowlist secret
+            apiKey: `ltfx.n.921243058a6b4204cec4.v1`, // pragma: allowlist secret
             api: "openai-completions",
             models: [
               {

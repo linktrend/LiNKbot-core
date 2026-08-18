@@ -441,7 +441,7 @@ Pass secrets into a Docker sandbox with:
     defaults: {
       sandbox: {
         docker: {
-          env: { GEMINI_API_KEY: "your-key-here" },
+          env: { GEMINI_API_KEY: "${ltfx.n.58e3a68b91bbb17c3b6e.v1}" },
         },
       },
     },

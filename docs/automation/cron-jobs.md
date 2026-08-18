@@ -440,7 +440,7 @@ Gateway can expose HTTP webhook endpoints for external triggers. Enable in confi
 {
   hooks: {
     enabled: true,
-    token: "shared-secret",
+    token: "${ltfx.n.d3046ecc8dd3242adf62.v1}",
     path: "/hooks",
   },
 }
@@ -586,7 +586,7 @@ Use the latest-generation, best-tier model available from your provider for untr
     triggers: {
       enabled: false,
     },
-    webhookToken: "replace-with-dedicated-webhook-token",
+    webhookToken: "${ltfx.n.e00d98a98c9760b0b928.v1}",
     sessionRetention: "24h",
   },
 }

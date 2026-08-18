@@ -136,21 +136,21 @@ struct UpdateOrchestrationTests {
                 return PostUpdateSessionsResponse(
                     sessions: [
                         PostUpdateSession(
-                            key: "agent:main:group:release",
+                            key: "${ltfx.n.97b3825abcf56e16618c.v1}",
                             kind: "group",
                             lastChannel: "webchat",
                             lastInteractionAt: 500,
                             spawnedBy: nil,
                             parentSessionKey: nil),
                         PostUpdateSession(
-                            key: "agent:main:telegram:direct:other-user",
+                            key: "${ltfx.n.d97180d7f010644bc713.v1}",
                             kind: "direct",
                             lastChannel: "telegram",
                             lastInteractionAt: 450,
                             spawnedBy: nil,
                             parentSessionKey: nil),
                         PostUpdateSession(
-                            key: "agent:main:subagent:child",
+                            key: "${ltfx.n.3c3dbd6de91d4e00f4c7.v1}",
                             kind: "direct",
                             lastChannel: "webchat",
                             lastInteractionAt: 400,
@@ -162,7 +162,7 @@ struct UpdateOrchestrationTests {
             return PostUpdateSessionsResponse(
                 sessions: [
                     PostUpdateSession(
-                        key: "agent:main:main",
+                        key: "${ltfx.n.6d9217fe77c7f11d9cc9.v1}",
                         kind: "direct",
                         lastChannel: "webchat",
                         lastInteractionAt: 300,

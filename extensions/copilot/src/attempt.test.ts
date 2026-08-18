@@ -2516,14 +2516,14 @@ describe("runCopilotAttempt", () => {
 
     await runCopilotAttempt(
       makeParams({
-        auth: { gitHubToken: "unrelated-token" } as never,
+        auth: { gitHubToken: `ltfx.n.3b3f038c9f8658fc1040.v1` } as never,
         model: {
           api: "openai-responses",
           baseUrl: "https://api.example.test/v1",
           id: "gpt-test",
           provider: "custom-openai",
         } as never,
-        resolvedApiKey: "byok-token",
+        resolvedApiKey: `ltfx.n.4a507d81c7a38eeab419.v1`,
         authProfileId: "custom-openai:main",
       } as never),
       { pool },
@@ -2547,7 +2547,7 @@ describe("runCopilotAttempt", () => {
     expect(options.useLoggedInUser).toBe(false);
     expect(cfg.provider).toEqual(
       expect.objectContaining({
-        apiKey: "byok-token",
+        apiKey: `ltfx.n.4a507d81c7a38eeab419.v1`,
         baseUrl: expect.stringMatching(/^http:\/\/127\.0\.0\.1:\d+\/[a-f0-9]{24}\/v1$/),
       }),
     );
@@ -2569,7 +2569,7 @@ describe("runCopilotAttempt", () => {
           id: "claude-test",
           provider: "anthropic-proxy",
         } as never,
-        resolvedApiKey: "byok-token",
+        resolvedApiKey: `ltfx.n.4a507d81c7a38eeab419.v1`,
         authProfileId: "anthropic-proxy:main",
       } as never),
       { pool },
@@ -2598,7 +2598,7 @@ describe("runCopilotAttempt", () => {
       {
         api: "openai-responses",
         baseUrl: "https://proxy.example.test/v1",
-        headers: { "x-api-key": "header-secret" },
+        headers: { "x-api-key": `ltfx.n.33d77b8677ea0231b9dc.v1` },
         id: "gpt-test",
         provider: "custom-header-proxy",
       },
@@ -2608,7 +2608,7 @@ describe("runCopilotAttempt", () => {
     await runCopilotAttempt(
       makeParams({
         model: model as never,
-        resolvedApiKey: "header-secret",
+        resolvedApiKey: `ltfx.n.33d77b8677ea0231b9dc.v1`,
         authProfileId: "custom-header-proxy:main",
       } as never),
       { pool },
@@ -2622,11 +2622,11 @@ describe("runCopilotAttempt", () => {
     };
     expect(cfg.provider).toEqual(
       expect.objectContaining({
-        headers: { "x-api-key": "header-secret" },
+        headers: { "x-api-key": `ltfx.n.33d77b8677ea0231b9dc.v1` },
       }),
     );
     expect(cfg.provider).not.toHaveProperty("apiKey");
-    expect(sendOptions.requestHeaders).toEqual({ "x-api-key": "header-secret" });
+    expect(sendOptions.requestHeaders).toEqual({ "x-api-key": `ltfx.n.33d77b8677ea0231b9dc.v1` });
   });
 
   it("rejects BYOK providers with request transport policy overrides before creating a SDK session", async () => {
@@ -2645,7 +2645,7 @@ describe("runCopilotAttempt", () => {
     const result = await runCopilotAttempt(
       makeParams({
         model: model as never,
-        resolvedApiKey: "header-secret",
+        resolvedApiKey: `ltfx.n.33d77b8677ea0231b9dc.v1`,
         authProfileId: "custom-header-proxy:main",
       } as never),
       { pool },
@@ -2671,7 +2671,7 @@ describe("runCopilotAttempt", () => {
       await runCopilotAttempt(
         makeParams({
           auth: {} as never,
-          resolvedApiKey: "contract-token-xyz",
+          resolvedApiKey: `ltfx.n.aa409b19d80c68388a64.v1`,
           authProfileId: "github-copilot:main",
         } as never),
         { pool },
@@ -2689,7 +2689,7 @@ describe("runCopilotAttempt", () => {
 
       await runCopilotAttempt(
         makeParams({
-          auth: { gitHubToken: "explicit-token", profileId: "p", profileVersion: "v1" } as never,
+          auth: { gitHubToken: `ltfx.n.3f7a118b174381ebc867.v1`, profileId: "p", profileVersion: "v1" } as never,
         }),
         { pool },
       );
@@ -2707,7 +2707,7 @@ describe("runCopilotAttempt", () => {
       await runCopilotAttempt(
         makeParams({
           auth: {} as never,
-          resolvedApiKey: "contract-token-resume",
+          resolvedApiKey: `ltfx.n.66ddd9184a08716fc6a3.v1`,
           authProfileId: "github-copilot:main",
           initialReplayState: { sdkSessionId: "resume-target" } as never,
         } as never),
@@ -2725,14 +2725,14 @@ describe("runCopilotAttempt", () => {
 
       await runCopilotAttempt(
         makeParams({
-          auth: { gitHubToken: "unrelated-token" } as never,
+          auth: { gitHubToken: `ltfx.n.3b3f038c9f8658fc1040.v1` } as never,
           model: {
             api: "openai-responses",
             baseUrl: "https://api.example.test/v1",
             id: "gpt-test",
             provider: "custom-openai",
           } as never,
-          resolvedApiKey: "byok-token",
+          resolvedApiKey: `ltfx.n.4a507d81c7a38eeab419.v1`,
           authProfileId: "custom-openai:main",
           initialReplayState: { sdkSessionId: "resume-target" } as never,
         } as never),
@@ -2744,7 +2744,7 @@ describe("runCopilotAttempt", () => {
       };
       expect(resumeCfg.provider).toEqual(
         expect.objectContaining({
-          apiKey: "byok-token",
+          apiKey: `ltfx.n.4a507d81c7a38eeab419.v1`,
           baseUrl: expect.stringMatching(/^http:\/\/127\.0\.0\.1:\d+\/[a-f0-9]{24}\/v1$/),
         }),
       );

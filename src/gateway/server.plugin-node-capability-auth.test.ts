@@ -388,7 +388,7 @@ async function withCanvasGatewayHarness(params: {
 describe("gateway plugin node capability auth", () => {
   const tokenResolvedAuth: ResolvedGatewayAuth = {
     mode: "token",
-    token: "test-token",
+    token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
     password: undefined,
     allowTailscale: false,
   };
@@ -516,7 +516,7 @@ describe("gateway plugin node capability auth", () => {
             "Host: localhost",
             "Upgrade: websocket",
             "Connection: Upgrade",
-            "Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==",
+            "Sec-WebSocket-Key: (dGhlIHNhbXBsZSBub25jZQ==",)
             "Sec-WebSocket-Version: 13",
           ],
         });
@@ -582,7 +582,7 @@ describe("gateway plugin node capability auth", () => {
 
         currentAuth = {
           ...tokenResolvedAuth,
-          token: "rotated-token",
+          token: `ltfx.n.950141f5143d92b8f45b.v1`,
         };
 
         await expectWsRejected(url, {

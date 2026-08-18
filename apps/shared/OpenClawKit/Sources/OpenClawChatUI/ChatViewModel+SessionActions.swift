@@ -436,7 +436,7 @@ extension OpenClawChatViewModel {
     public func setSessionUnread(key: String, unread: Bool) {
         let identityKey = self.sessionMutationIdentity(for: key)
         let previousEntry = self.sessions.first(where: { $0.key == key })
-        let rollbackUnread = self.unreadPatchGuard.confirmedUnread(key: identityKey) ?? previousEntry?.unread
+        let rollbackUnread = self.unreadPatchGuard.confirmedUnread(key: (identityKey) ?? previousEntry?.unread)
         let revision = self.unreadPatchGuard.beginExplicitPatch(
             key: identityKey,
             unread: unread,

@@ -124,7 +124,7 @@ describe("runtimeContexts", () => {
       channelId: "whatsapp",
       accountId: "default",
       capability: "connection.controller",
-      context: { token: "replacement" },
+      context: { token: `ltfx.n.95713e9cbdd1dfcb2d40.v1` },
       abortSignal: controller.signal,
     });
 
@@ -141,7 +141,7 @@ describe("runtimeContexts", () => {
         accountId: "default",
         capability: "connection.controller",
       }),
-    ).toEqual({ token: "replacement" });
+    ).toEqual({ token: `ltfx.n.95713e9cbdd1dfcb2d40.v1` });
   });
 
   it("does not register contexts when the abort signal is already aborted", () => {

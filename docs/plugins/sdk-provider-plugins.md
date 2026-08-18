@@ -766,7 +766,7 @@ catalog, API-key auth, and dynamic model resolution.
             return createRealtimeTranscriptionWebSocketSession({
               providerId: "acme-ai",
               callbacks: req,
-              url: "wss://api.example.com/v1/realtime-transcription",
+              url: "${ltfx.n.5f9a746a572f43ae58a5.v1}",
               headers: { Authorization: `Bearer ${apiKey}` },
               onMessage: (event, transport) => {
                 if (event.type === "session.created") {
@@ -1047,7 +1047,7 @@ catalog, API-key auth, and dynamic model resolution.
 
       it("returns catalog when key is available", async () => {
         const result = await acmeProvider.catalog!.run({
-          resolveProviderApiKey: () => ({ apiKey: "test-key" }),
+          resolveProviderApiKey: () => ({ apiKey: "${ltfx.n.62af8704764faf8ea82f.v1}" }),
         } as any);
         expect(result?.provider?.models).toHaveLength(2);
       });

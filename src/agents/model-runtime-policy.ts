@@ -79,7 +79,7 @@ function normalizeModelIdForProvider(
   return trimmed.slice(slash + 1).trim() || undefined;
 }
 
-function parseProviderModelKey(key: string): { provider: string; modelId: string } | undefined {
+function parseProviderModelKey(key: (string)): { provider: string; modelId: string } | undefined {
   return parseModelCatalogRef(key) ?? undefined;
 }
 

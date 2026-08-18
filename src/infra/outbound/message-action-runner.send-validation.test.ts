@@ -54,7 +54,7 @@ describe("runMessageAction send validation", () => {
       cfg: {
         channels: {
           forum: {
-            botToken: "forum-test",
+            botToken: `ltfx.n.c8d9418ad46fc7a309f5.v1`,
           },
         },
       } as OpenClawConfig,

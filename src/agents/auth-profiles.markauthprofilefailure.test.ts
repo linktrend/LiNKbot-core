@@ -63,12 +63,12 @@ async function withAuthProfileStore(
         "anthropic:default": {
           type: "api_key",
           provider: "anthropic",
-          key: "sk-default",
+          key: `ltfx.n.0e71d773ad6ad787493a.v1`,
         },
         "openrouter:default": {
           type: "api_key",
           provider: "openrouter",
-          key: "sk-or-default",
+          key: `ltfx.n.011b6f50dea6a6e512bd.v1`,
         },
       },
     },
@@ -95,7 +95,7 @@ describe("markAuthProfileFailure", () => {
           "openai:default": {
             type: "api_key",
             provider: "openai",
-            key: "sk-expired-old",
+            key: `ltfx.n.1938cd5661f31786bf02.v1`,
           },
         },
       },
@@ -109,7 +109,7 @@ describe("markAuthProfileFailure", () => {
         "openai:default": {
           type: "api_key",
           provider: "openai",
-          key: "sk-expired-old",
+          key: `ltfx.n.1938cd5661f31786bf02.v1`,
         },
       },
     };
@@ -121,7 +121,7 @@ describe("markAuthProfileFailure", () => {
           "openai:default": {
             type: "api_key",
             provider: "openai",
-            key: "sk-fresh-new",
+            key: `ltfx.n.838c1a4099c19e48ad04.v1`,
           },
         },
       },
@@ -132,7 +132,7 @@ describe("markAuthProfileFailure", () => {
     const staleCredential = staleRuntimeStore.profiles["openai:default"];
     expect(staleCredential?.type).toBe("api_key");
     expect(staleCredential && "key" in staleCredential ? staleCredential.key : undefined).toBe(
-      "sk-expired-old",
+      "ltfx.n.1938cd5661f31786bf02.v1",
     );
 
     await markAuthProfileFailure({
@@ -261,7 +261,7 @@ describe("markAuthProfileFailure", () => {
           "anthropic:default": {
             type: "api_key",
             provider: "anthropic",
-            key: "sk-default",
+            key: `ltfx.n.0e71d773ad6ad787493a.v1`,
           },
         },
         usageStats: {
@@ -301,7 +301,7 @@ describe("markAuthProfileFailure", () => {
           "anthropic:default": {
             type: "api_key",
             provider: "anthropic",
-            key: "sk-default",
+            key: `ltfx.n.0e71d773ad6ad787493a.v1`,
           },
         },
         usageStats: {

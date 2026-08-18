@@ -84,7 +84,7 @@ describe("maybeMigrateAuthProfileJsonStoresToSqlite", () => {
         "openai:default": {
           type: "api_key",
           provider: "openai",
-          key: "sk-migrated",
+          key: `ltfx.n.0f120f4e33b0b90d8a5e.v1`,
         },
       },
     });
@@ -106,7 +106,7 @@ describe("maybeMigrateAuthProfileJsonStoresToSqlite", () => {
         "openai:default": {
           type: "api_key",
           provider: "openai",
-          key: "sk-migrated",
+          key: `ltfx.n.0f120f4e33b0b90d8a5e.v1`,
         },
       },
       lastGood: { openai: "openai:default" },
@@ -130,7 +130,7 @@ describe("maybeMigrateAuthProfileJsonStoresToSqlite", () => {
         "openrouter:default": {
           type: "api_key",
           provider: "openrouter",
-          key: "sk-openrouter",
+          key: `ltfx.n.a9517e6bc71b199b3c3f.v1`,
         },
       },
     });
@@ -158,7 +158,7 @@ describe("maybeMigrateAuthProfileJsonStoresToSqlite", () => {
       "openrouter:default": {
         type: "api_key",
         provider: "openrouter",
-        key: "sk-openrouter",
+        key: `ltfx.n.a9517e6bc71b199b3c3f.v1`,
       },
     });
     expect(fs.existsSync(authPath)).toBe(false);
@@ -248,7 +248,7 @@ describe("maybeMigrateAuthProfileJsonStoresToSqlite", () => {
         "openai:default": {
           type: "api_key",
           provider: "openai",
-          key: "sk-imported",
+          key: `ltfx.n.bad806c6c8c69b1f6b01.v1`,
         },
         "openai:user@example.com": {
           type: "oauth",
@@ -277,7 +277,7 @@ describe("maybeMigrateAuthProfileJsonStoresToSqlite", () => {
         "openai:default": {
           type: "api_key",
           provider: "openai",
-          key: "sk-imported",
+          key: `ltfx.n.bad806c6c8c69b1f6b01.v1`,
         },
       },
       order: { openai: ["openai:default"] },
@@ -310,7 +310,7 @@ describe("maybeMigrateAuthProfileJsonStoresToSqlite", () => {
           "openai:default": {
             type: "api_key",
             provider: "openai",
-            key: "sk-fresh-sqlite",
+            key: `ltfx.n.cd2302511f8389f6ccde.v1`,
           },
         },
       },
@@ -323,7 +323,7 @@ describe("maybeMigrateAuthProfileJsonStoresToSqlite", () => {
         "openai:default": {
           type: "api_key",
           provider: "openai",
-          key: "sk-stale-json",
+          key: `ltfx.n.704bb95e5207eb8d1911.v1`,
         },
       },
     });
@@ -338,7 +338,7 @@ describe("maybeMigrateAuthProfileJsonStoresToSqlite", () => {
     expect(loadPersistedAuthProfileStore(state.agentDir())?.profiles["openai:default"]).toEqual({
       type: "api_key",
       provider: "openai",
-      key: "sk-fresh-sqlite",
+      key: `ltfx.n.cd2302511f8389f6ccde.v1`,
     });
     expect(fs.existsSync(authPath)).toBe(false);
     expect(fs.existsSync(`${authPath}.sqlite-import.461.bak`)).toBe(true);
@@ -352,7 +352,7 @@ describe("maybeMigrateAuthProfileJsonStoresToSqlite", () => {
         "openai:default": {
           type: "api_key",
           provider: "openai",
-          key: "sk-openai",
+          key: `ltfx.n.45ca28bb99fbb3964300.v1`,
         },
         "openai:work": {
           type: "api_key",
@@ -388,7 +388,7 @@ describe("maybeMigrateAuthProfileJsonStoresToSqlite", () => {
         "openrouter:default": {
           type: "api_key",
           provider: "openrouter",
-          api_key: "sk-openrouter-legacy",
+          api_key: `ltfx.n.faa63440c94c3cb98d1b.v1`,
         },
       },
     });
@@ -403,7 +403,7 @@ describe("maybeMigrateAuthProfileJsonStoresToSqlite", () => {
       "openrouter:default": {
         type: "api_key",
         provider: "openrouter",
-        key: "sk-openrouter-legacy",
+        key: `ltfx.n.faa63440c94c3cb98d1b.v1`,
       },
     });
     expect(fs.existsSync(authPath)).toBe(false);
@@ -418,7 +418,7 @@ describe("maybeMigrateAuthProfileJsonStoresToSqlite", () => {
         "openrouter:default": {
           type: "api_key",
           provider: "openrouter",
-          key: "sk-openrouter",
+          key: `ltfx.n.a9517e6bc71b199b3c3f.v1`,
         },
       },
     });
@@ -451,7 +451,7 @@ describe("maybeMigrateAuthProfileJsonStoresToSqlite", () => {
           "openai:default": {
             provider: "openai",
             mode: "api_key",
-            key: "sk-config",
+            key: `ltfx.n.d1e9eae88b332c8bcf34.v1`,
           },
           "anthropic:default": {
             provider: "anthropic",
@@ -507,7 +507,7 @@ describe("maybeMigrateAuthProfileJsonStoresToSqlite", () => {
         "openai:default": {
           type: "api_key",
           provider: "openai",
-          key: "sk-config",
+          key: `ltfx.n.d1e9eae88b332c8bcf34.v1`,
         },
         "anthropic:default": {
           type: "token",
@@ -544,7 +544,7 @@ describe("maybeMigrateAuthProfileJsonStoresToSqlite", () => {
           "openai:default": {
             provider: "openai",
             mode: "api_key",
-            key: "sk-config",
+            key: `ltfx.n.d1e9eae88b332c8bcf34.v1`,
           },
         },
       },
@@ -569,7 +569,7 @@ describe("maybeMigrateAuthProfileJsonStoresToSqlite", () => {
         "openai:default": {
           type: "api_key",
           provider: "openai",
-          key: "sk-config",
+          key: `ltfx.n.d1e9eae88b332c8bcf34.v1`,
         },
       },
       order: { openai: ["openai:default"] },
@@ -586,14 +586,14 @@ describe("maybeMigrateAuthProfileJsonStoresToSqlite", () => {
       {
         profileId: "openai:default",
         cfg: {
-          auth: { profiles: { "openai:default": { key: "sk-config" } } },
+          auth: { profiles: { "openai:default": { key: `ltfx.n.d1e9eae88b332c8bcf34.v1` } } },
         } as unknown as OpenClawConfig,
         now: 468,
       },
       {
         profileId: "work",
         cfg: {
-          auth: { profiles: { work: { key: "sk-config" } } },
+          auth: { profiles: { work: { key: `ltfx.n.d1e9eae88b332c8bcf34.v1` } } },
           agents: { defaults: { model: { primary: "openai/gpt-5.5@work" } } },
         } as unknown as OpenClawConfig,
         now: 470,
@@ -602,7 +602,7 @@ describe("maybeMigrateAuthProfileJsonStoresToSqlite", () => {
         profileId: "ordered",
         cfg: {
           auth: {
-            profiles: { ordered: { key: "sk-config" } },
+            profiles: { ordered: { key: `ltfx.n.d1e9eae88b332c8bcf34.v1` } },
             order: { openai: ["ordered"] },
           },
         } as unknown as OpenClawConfig,
@@ -629,7 +629,7 @@ describe("maybeMigrateAuthProfileJsonStoresToSqlite", () => {
       expect(loadPersistedAuthProfileStore(state.agentDir())?.profiles[entry.profileId]).toEqual({
         type: "api_key",
         provider: "openai",
-        key: "sk-config",
+        key: `ltfx.n.d1e9eae88b332c8bcf34.v1`,
       });
       expect(fs.existsSync(authPath)).toBe(false);
       expect(fs.existsSync(`${authPath}.sqlite-import.${entry.now}.bak`)).toBe(false);
@@ -662,12 +662,12 @@ describe("maybeMigrateAuthProfileJsonStoresToSqlite", () => {
           "openai:default": {
             provider: "openai",
             mode: "api_key",
-            key: "sk-config",
+            key: `ltfx.n.d1e9eae88b332c8bcf34.v1`,
           },
           "anthropic:default": {
             provider: "anthropic",
             mode: "api_key",
-            key: "sk-anthropic",
+            key: `ltfx.n.12c521683ebed75a51fc.v1`,
           },
         },
         order: {
@@ -699,7 +699,7 @@ describe("maybeMigrateAuthProfileJsonStoresToSqlite", () => {
       "anthropic:default": {
         type: "api_key",
         provider: "anthropic",
-        key: "sk-anthropic",
+        key: `ltfx.n.12c521683ebed75a51fc.v1`,
       },
     });
     expect(cfg.auth?.profiles?.["openai:default"]).toEqual({
@@ -793,7 +793,7 @@ describe("maybeMigrateAuthProfileJsonStoresToSqlite", () => {
         existing: {
           type: "api_key" as const,
           provider: "openai",
-          key: "sk-sqlite",
+          key: `ltfx.n.279054a1d9aca13f0510.v1`,
         },
         expectedKey: "sk-sqlite",
       },
@@ -824,7 +824,7 @@ describe("maybeMigrateAuthProfileJsonStoresToSqlite", () => {
             "openai:default": {
               provider: "openai",
               mode: "api_key",
-              key: "sk-config",
+              key: `ltfx.n.d1e9eae88b332c8bcf34.v1`,
             },
           },
         },
@@ -856,7 +856,7 @@ describe("maybeRepairLegacyFlatAuthProfileStores", () => {
     const state = await makeTestState();
     const legacy = {
       "ollama-windows": {
-        apiKey: "ollama-local",
+        apiKey: `ltfx.n.18ab0c9c00ad3478e4db.v1`,
         baseUrl: "http://10.0.2.2:11434/v1",
       },
     };
@@ -879,7 +879,7 @@ describe("maybeRepairLegacyFlatAuthProfileStores", () => {
         "ollama-windows:default": {
           type: "api_key",
           provider: "ollama-windows",
-          key: "ollama-local",
+          key: `ltfx.n.18ab0c9c00ad3478e4db.v1`,
         },
       },
     });
@@ -891,7 +891,7 @@ describe("maybeRepairLegacyFlatAuthProfileStores", () => {
     const state = await makeTestState();
     const legacy = {
       openai: {
-        apiKey: "sk-openai",
+        apiKey: `ltfx.n.45ca28bb99fbb3964300.v1`,
       },
     };
     const authPath = await writeLegacyAuthProfilesJson(state, legacy);
@@ -919,7 +919,7 @@ describe("maybeRepairLegacyFlatAuthProfileStores", () => {
         "openrouter:default": {
           type: "api_key",
           provider: "openrouter",
-          key: "sk-openrouter",
+          key: `ltfx.n.a9517e6bc71b199b3c3f.v1`,
         },
       },
     };
@@ -953,7 +953,7 @@ describe("maybeRepairLegacyFlatAuthProfileStores", () => {
         "openrouter:default": {
           type: "api_key",
           provider: "openrouter",
-          key: "sk-openrouter",
+          key: `ltfx.n.a9517e6bc71b199b3c3f.v1`,
         },
       },
     });
@@ -1285,7 +1285,7 @@ describe("maybeRepairOpenAICodexAuthProfileStores", () => {
         "openai:default": {
           type: "api_key",
           provider: "openai",
-          key: "sk-openai",
+          key: `ltfx.n.45ca28bb99fbb3964300.v1`,
         },
         "openai-codex:default": {
           type: "oauth",
@@ -1383,7 +1383,7 @@ describe("maybeRepairOpenAICodexAuthProfileStores", () => {
         "openai:media-api": {
           type: "api_key",
           provider: "openai",
-          key: "test-api-key",
+          key: `ltfx.n.4c806362b613f7496abf.v1`,
         },
         "openai-codex:qa-oauth": {
           type: "oauth",

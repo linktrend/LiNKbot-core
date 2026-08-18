@@ -73,7 +73,7 @@ describe("createModelAuthAvailabilityResolver", () => {
       profile: {
         type: "api_key" as const,
         provider: "openai",
-        key: "platform-key",
+        key: `ltfx.n.e75390981221aacccfa9.v1`,
       },
       selectedRoute: platformRoute,
       selectedAuthMode: "api_key",
@@ -164,7 +164,7 @@ describe("createModelAuthAvailabilityResolver", () => {
       "openai:cooldown": {
         type: "api_key",
         provider: "openai",
-        key: "platform-key",
+        key: `ltfx.n.e75390981221aacccfa9.v1`,
       },
     });
     cooldownStore.usageStats = {
@@ -209,7 +209,7 @@ describe("createModelAuthAvailabilityResolver", () => {
   it.each([
     {
       auth: "oauth" as const,
-      profile: { type: "api_key" as const, provider: "openai", key: "platform-key" },
+      profile: { type: "api_key" as const, provider: "openai", key: `ltfx.n.e75390981221aacccfa9.v1` },
       route: subscriptionRoute,
     },
     {
@@ -244,7 +244,7 @@ describe("createModelAuthAvailabilityResolver", () => {
         providers: {
           openai: {
             auth: "api-key",
-            apiKey: "configured-platform-key",
+            apiKey: `ltfx.n.48fcb6b834314dfba1bc.v1`,
             baseUrl: platformRoute.baseUrl,
             models: [],
           },
@@ -287,7 +287,7 @@ describe("createModelAuthAvailabilityResolver", () => {
           },
           models: {
             providers: {
-              openai: { apiKey: "openai:bound", baseUrl: "", models: [] },
+              openai: { apiKey: `ltfx.n.82c92c3b3311bc4d1f6b.v1`, baseUrl: "", models: [] },
             },
           },
         } as OpenClawConfig,
@@ -295,7 +295,7 @@ describe("createModelAuthAvailabilityResolver", () => {
           "openai:bound": {
             type: "api_key",
             provider: "openai",
-            key: "bound-platform-key",
+            key: `ltfx.n.63e87ada46e51a1ba721.v1`,
           },
         }),
       }),
@@ -313,7 +313,7 @@ describe("createModelAuthAvailabilityResolver", () => {
       models: {
         providers: {
           openai: {
-            apiKey: "configured-platform-key",
+            apiKey: `ltfx.n.48fcb6b834314dfba1bc.v1`,
             baseUrl: platformRoute.baseUrl,
             models: [],
           },
@@ -328,7 +328,7 @@ describe("createModelAuthAvailabilityResolver", () => {
           "openai:platform": {
             type: "api_key",
             provider: "openai",
-            key: "profile-key",
+            key: `ltfx.n.78e9a0b0da3e1c943f21.v1`,
           },
         }),
       }),
@@ -346,7 +346,7 @@ describe("createModelAuthAvailabilityResolver", () => {
         providers: {
           openai: {
             auth: "oauth",
-            apiKey: "configured-oauth-token",
+            apiKey: `ltfx.n.0c75f4d1fbd0106d0477.v1`,
             models: [],
           },
         },
@@ -367,7 +367,7 @@ describe("createModelAuthAvailabilityResolver", () => {
         providers: {
           openai: {
             auth: "oauth",
-            apiKey: "configured-oauth-token",
+            apiKey: `ltfx.n.0c75f4d1fbd0106d0477.v1`,
             models: [],
           },
         },
@@ -396,7 +396,7 @@ describe("createModelAuthAvailabilityResolver", () => {
   it("treats preferred and locked profiles as distinct source-order facts", () => {
     const store = authStore(
       {
-        "openai:platform": { type: "api_key", provider: "openai", key: "platform-key" },
+        "openai:platform": { type: "api_key", provider: "openai", key: `ltfx.n.e75390981221aacccfa9.v1` },
         "openai:chatgpt": {
           type: "oauth",
           provider: "openai",
@@ -428,7 +428,7 @@ describe("createModelAuthAvailabilityResolver", () => {
 
   it("falls through an unavailable preferred profile to the configured order", () => {
     const store = authStore({
-      "openai:platform": { type: "api_key", provider: "openai", key: "platform-key" },
+      "openai:platform": { type: "api_key", provider: "openai", key: `ltfx.n.e75390981221aacccfa9.v1` },
       "openai:expired": {
         type: "oauth",
         provider: "openai",
@@ -451,7 +451,7 @@ describe("createModelAuthAvailabilityResolver", () => {
   });
 
   it("classifies direct environment auth as Platform API-key evidence", () => {
-    expect(evaluate({ env: { OPENAI_API_KEY: "environment-key" } })).toMatchObject({
+    expect(evaluate({ env: { OPENAI_API_KEY: `ltfx.n.a0ef3e034d912dcbe888.v1` } })).toMatchObject({
       availability: true,
       evidence: "environment",
       selectedAuthMode: "api-key",
@@ -465,11 +465,11 @@ describe("createModelAuthAvailabilityResolver", () => {
         cfg: {
           models: {
             providers: {
-              openai: { apiKey: "configured-platform-key", baseUrl: "", models: [] },
+              openai: { apiKey: `ltfx.n.48fcb6b834314dfba1bc.v1`, baseUrl: "", models: [] },
             },
           },
         } as OpenClawConfig,
-        env: { OPENAI_API_KEY: "environment-key" },
+        env: { OPENAI_API_KEY: `ltfx.n.a0ef3e034d912dcbe888.v1` },
       }),
     ).toMatchObject({
       availability: true,
@@ -482,7 +482,7 @@ describe("createModelAuthAvailabilityResolver", () => {
   it.each([
     {
       label: "Platform environment after unavailable OAuth",
-      env: { OPENAI_API_KEY: "environment-key" },
+      env: { OPENAI_API_KEY: `ltfx.n.a0ef3e034d912dcbe888.v1` },
       profileId: "openai:oauth-missing",
       profile: { type: "oauth" as const, provider: "openai", access: "", refresh: "" },
       route: platformRoute,
@@ -493,7 +493,7 @@ describe("createModelAuthAvailabilityResolver", () => {
       cfg: {
         models: { providers: { openai: { auth: "oauth", baseUrl: "", models: [] } } },
       } as OpenClawConfig,
-      env: { OPENAI_API_KEY: "environment-token" },
+      env: { OPENAI_API_KEY: `ltfx.n.1f5fe75e227abdb41392.v1` },
       profileId: "openai:platform-missing",
       profile: { type: "api_key" as const, provider: "openai", key: "" },
       route: subscriptionRoute,
@@ -509,7 +509,7 @@ describe("createModelAuthAvailabilityResolver", () => {
   });
 
   it.each([
-    { env: { OPENAI_API_KEY: "resolved-key" }, availability: true },
+    { env: { OPENAI_API_KEY: `ltfx.n.b695c853fc672113967a.v1` }, availability: true },
     { env: {}, availability: undefined },
   ])("reports a SecretRef profile as $availability", ({ availability, env }) => {
     expect(
@@ -612,7 +612,7 @@ describe("createModelAuthAvailabilityResolver", () => {
     const resolver = createModelAuthAvailabilityResolver({
       cfg: { auth: { order: { openai: ["openai:chatgpt", "openai:platform"] } } },
       authStore: authStore({
-        "openai:platform": { type: "api_key", provider: "openai", key: "platform-key" },
+        "openai:platform": { type: "api_key", provider: "openai", key: `ltfx.n.e75390981221aacccfa9.v1` },
         "openai:chatgpt": {
           type: "oauth",
           provider: "openai",

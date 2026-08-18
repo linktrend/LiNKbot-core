@@ -430,11 +430,11 @@ selects the forum topic:
       accounts: {
         default: {
           name: "Primary bot",
-          botToken: "env:TELEGRAM_PRIMARY_BOT_TOKEN",
+          botToken: "${ltfx.n.f6fa444b66167cd54c9a.v1}",
         },
         "ops-bot": {
           name: "Operations bot",
-          botToken: "env:TELEGRAM_OPS_BOT_TOKEN",
+          botToken: "${ltfx.n.de074ee8ee20864a6a02.v1}",
         },
       },
     },

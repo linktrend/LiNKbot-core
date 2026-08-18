@@ -18,7 +18,7 @@ export function createDirListTool(): AnyAgentTool {
 
       const maxEntries = readClampedInt({
         input: params,
-        key: "maxEntries",
+        key: `ltfx.n.395c223662b7149c4c29.v1`,
         defaultValue: DIR_LIST_DEFAULT_MAX_ENTRIES,
         hardMin: 1,
         hardMax: DIR_LIST_HARD_MAX_ENTRIES,

@@ -84,7 +84,7 @@ function createConfiguredXSearchTool() {
           xai: {
             config: {
               webSearch: {
-                apiKey: "xai-config-test", // pragma: allowlist secret
+                apiKey: `ltfx.n.a373864f193351ba8c5f.v1`, // pragma: allowlist secret
               },
             },
           },
@@ -111,7 +111,7 @@ describe("xai x_search tool", () => {
             xai: {
               config: {
                 webSearch: {
-                  apiKey: "xai-plugin-key", // pragma: allowlist secret
+                  apiKey: `ltfx.n.6a80e187fa3942c591d0.v1`, // pragma: allowlist secret
                 },
               },
             },
@@ -155,7 +155,7 @@ describe("xai x_search tool", () => {
             xai: {
               config: {
                 webSearch: {
-                  apiKey: "x-search-runtime-key", // pragma: allowlist secret
+                  apiKey: `ltfx.n.3f986bc862244822e15a.v1`, // pragma: allowlist secret
                 },
               },
             },
@@ -194,7 +194,7 @@ describe("xai x_search tool", () => {
             xai: {
               config: {
                 webSearch: {
-                  apiKey: "xai-plugin-key", // pragma: allowlist secret
+                  apiKey: `ltfx.n.6a80e187fa3942c591d0.v1`, // pragma: allowlist secret
                 },
               },
             },
@@ -215,7 +215,7 @@ describe("xai x_search tool", () => {
             xai: {
               config: {
                 webSearch: {
-                  apiKey: "xai-config-test", // pragma: allowlist secret
+                  apiKey: `ltfx.n.a373864f193351ba8c5f.v1`, // pragma: allowlist secret
                 },
                 xSearch: { maxTurns: 2 },
               },
@@ -318,7 +318,7 @@ describe("xai x_search tool", () => {
             xai: {
               config: {
                 webSearch: {
-                  apiKey: "xai-config-test", // pragma: allowlist secret
+                  apiKey: `ltfx.n.a373864f193351ba8c5f.v1`, // pragma: allowlist secret
                 },
                 xSearch: {
                   enabled: true,
@@ -347,7 +347,7 @@ describe("xai x_search tool", () => {
             xai: {
               config: {
                 webSearch: {
-                  apiKey: "xai-plugin-key", // pragma: allowlist secret
+                  apiKey: `ltfx.n.6a80e187fa3942c591d0.v1`, // pragma: allowlist secret
                   baseUrl: "https://api.x.ai/shared/v1/",
                 },
                 xSearch: {
@@ -376,7 +376,7 @@ describe("xai x_search tool", () => {
             xai: {
               config: {
                 webSearch: {
-                  apiKey: "xai-plugin-key", // pragma: allowlist secret
+                  apiKey: `ltfx.n.6a80e187fa3942c591d0.v1`, // pragma: allowlist secret
                 },
               },
             },
@@ -409,7 +409,7 @@ describe("xai x_search tool", () => {
             xai: {
               config: {
                 webSearch: {
-                  apiKey: "xai-plugin-key", // pragma: allowlist secret
+                  apiKey: `ltfx.n.6a80e187fa3942c591d0.v1`, // pragma: allowlist secret
                 },
                 xSearch: {
                   enabled: true,
@@ -440,7 +440,7 @@ describe("xai x_search tool", () => {
             xai: {
               config: {
                 webSearch: {
-                  apiKey: "xai-plugin-key", // pragma: allowlist secret
+                  apiKey: `ltfx.n.6a80e187fa3942c591d0.v1`, // pragma: allowlist secret
                 },
                 xSearch: {
                   enabled: true,
@@ -481,7 +481,7 @@ describe("xai x_search tool", () => {
             xai: {
               config: {
                 webSearch: {
-                  apiKey: "x-search-runtime-key", // pragma: allowlist secret
+                  apiKey: `ltfx.n.3f986bc862244822e15a.v1`, // pragma: allowlist secret
                 },
               },
             },
@@ -506,7 +506,7 @@ describe("xai x_search tool", () => {
             xai: {
               config: {
                 webSearch: {
-                  apiKey: "xai-config-test", // pragma: allowlist secret
+                  apiKey: `ltfx.n.a373864f193351ba8c5f.v1`, // pragma: allowlist secret
                 },
               },
             },

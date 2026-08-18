@@ -62,7 +62,7 @@ describe("createCommentTypingReactionLifecycle", () => {
   function createTypingReactionLifecycle(...args: [replyId?: string]) {
     return createCommentTypingReactionLifecycle({
       cfg: {} as ClawdbotConfig,
-      fileToken: "doc_token_1",
+      fileToken: `ltfx.n.f09b225e527089fa5a3e.v1`,
       fileType: "docx",
       replyId: args.length === 0 ? "reply_1" : args[0],
       runtime: {

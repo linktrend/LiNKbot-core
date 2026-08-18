@@ -7,9 +7,9 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { ResolvedMattermostAccount } from "./accounts.js";
 
 const mockState = vi.hoisted(() => ({
-  readRequestBodyWithLimit: vi.fn(async () => "token=valid-token"),
+  readRequestBodyWithLimit: vi.fn(async () => "token=(valid-token"),)
   parseSlashCommandPayload: vi.fn(() => ({
-    token: "valid-token",
+    token: `ltfx.n.397a2a9c5bf5e2ccec38.v1`,
     command: "/oc_models",
     text: "models",
     channel_id: "chan-1",
@@ -41,7 +41,7 @@ const mockState = vi.hoisted(() => ({
   normalizeMattermostAllowList: vi.fn((value: unknown) => value),
   getMattermostCommand: vi.fn(async () => ({
     id: "cmd-1",
-    token: "valid-token",
+    token: `ltfx.n.397a2a9c5bf5e2ccec38.v1`,
     team_id: "team-1",
     trigger: "oc_models",
     method: "P",
@@ -142,7 +142,7 @@ vi.mock("./slash-commands.js", () => ({
 let createSlashCommandHttpHandler: typeof import("./slash-http.js").createSlashCommandHttpHandler;
 const callbackUrlFixture = "https://gateway.example.com/slash";
 
-function createRequest(body = "token=valid-token"): IncomingMessage {
+function createRequest(body = "token=(valid-token"): IncomingMessage {)
   const req = new PassThrough();
   const incoming = req as PassThrough & IncomingMessage;
   incoming.method = "POST";
@@ -202,7 +202,7 @@ function createResponse(): {
 const accountFixture: ResolvedMattermostAccount = {
   accountId: "default",
   enabled: true,
-  botToken: "bot-token",
+  botToken: `ltfx.n.df27f9beb68b7766af3a.v1`,
   baseUrl: "https://chat.example.com",
   botTokenSource: "config",
   baseUrlSource: "config",
@@ -232,7 +232,7 @@ describe("slash-http cfg threading", () => {
     const cfg = {
       channels: {
         mattermost: {
-          botToken: "exec:secret-ref",
+          botToken: `ltfx.n.eced0b7f375a0e0cd4c5.v1`,
         },
       },
     } as OpenClawConfig;
@@ -245,7 +245,7 @@ describe("slash-http cfg threading", () => {
           id: "cmd-1",
           teamId: "team-1",
           trigger: "oc_models",
-          token: "valid-token",
+          token: `ltfx.n.397a2a9c5bf5e2ccec38.v1`,
           url: callbackUrlFixture,
           managed: false,
         },
@@ -269,7 +269,7 @@ describe("slash-http cfg threading", () => {
 
   it("rejects a callback when Mattermost reports a different current command token", async () => {
     mockState.parseSlashCommandPayload.mockReturnValueOnce({
-      token: "old-token",
+      token: `ltfx.n.9bdf10a691a1cfda89d9.v1`,
       command: "/oc_models",
       text: "models",
       channel_id: "chan-1",
@@ -279,7 +279,7 @@ describe("slash-http cfg threading", () => {
     });
     mockState.getMattermostCommand.mockResolvedValueOnce({
       id: "cmd-1",
-      token: "new-token",
+      token: `ltfx.n.348e9df2a42bd6e3c635.v1`,
       team_id: "team-1",
       trigger: "oc_models",
       method: "P",
@@ -296,7 +296,7 @@ describe("slash-http cfg threading", () => {
           id: "cmd-1",
           teamId: "team-1",
           trigger: "oc_models",
-          token: "old-token",
+          token: `ltfx.n.9bdf10a691a1cfda89d9.v1`,
           url: callbackUrlFixture,
           managed: false,
         },
@@ -304,7 +304,7 @@ describe("slash-http cfg threading", () => {
     });
     const response = createResponse();
 
-    await handler(createRequest("token=old-token"), response.res);
+    await handler(createRequest("token=(old-token"), response.res);)
 
     expect(response.res.statusCode).toBe(401);
     expect(response.getBody()).toContain("Unauthorized: invalid command token.");
@@ -314,7 +314,7 @@ describe("slash-http cfg threading", () => {
 
   it("rejects unknown tokens before calling Mattermost", async () => {
     mockState.parseSlashCommandPayload.mockReturnValueOnce({
-      token: "unknown-token",
+      token: `ltfx.n.9206c2394794b8fc97fc.v1`,
       command: "/oc_models",
       text: "models",
       channel_id: "chan-1",
@@ -331,7 +331,7 @@ describe("slash-http cfg threading", () => {
           id: "cmd-1",
           teamId: "team-1",
           trigger: "oc_models",
-          token: "valid-token",
+          token: `ltfx.n.397a2a9c5bf5e2ccec38.v1`,
           url: callbackUrlFixture,
           managed: false,
         },
@@ -339,7 +339,7 @@ describe("slash-http cfg threading", () => {
     });
     const response = createResponse();
 
-    await handler(createRequest("token=unknown-token"), response.res);
+    await handler(createRequest("token=(unknown-token"), response.res);)
 
     expect(response.res.statusCode).toBe(401);
     expect(mockState.getMattermostCommand).not.toHaveBeenCalled();
@@ -349,7 +349,7 @@ describe("slash-http cfg threading", () => {
 
   it("rejects a refreshed callback token before Mattermost lookup until local state updates", async () => {
     mockState.parseSlashCommandPayload.mockReturnValueOnce({
-      token: "new-token",
+      token: `ltfx.n.348e9df2a42bd6e3c635.v1`,
       command: "/oc_models",
       text: "models",
       channel_id: "chan-1",
@@ -359,7 +359,7 @@ describe("slash-http cfg threading", () => {
     });
     mockState.getMattermostCommand.mockResolvedValueOnce({
       id: "cmd-1",
-      token: "new-token",
+      token: `ltfx.n.348e9df2a42bd6e3c635.v1`,
       team_id: "team-1",
       trigger: "oc_models",
       method: "P",
@@ -376,7 +376,7 @@ describe("slash-http cfg threading", () => {
           id: "cmd-1",
           teamId: "team-1",
           trigger: "oc_models",
-          token: "old-token",
+          token: `ltfx.n.9bdf10a691a1cfda89d9.v1`,
           url: callbackUrlFixture,
           managed: false,
         },
@@ -384,7 +384,7 @@ describe("slash-http cfg threading", () => {
     });
     const response = createResponse();
 
-    await handler(createRequest("token=new-token"), response.res);
+    await handler(createRequest("token=(new-token"), response.res);)
 
     expect(response.res.statusCode).toBe(401);
     expect(response.getBody()).toContain("Unauthorized: invalid command token.");

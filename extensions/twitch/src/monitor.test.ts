@@ -131,7 +131,7 @@ describe("monitorTwitchProvider", () => {
         return mocks.unregister;
       },
     );
-    const account = { ...BASE_TWITCH_TEST_ACCOUNT, accessToken: "oauth:test-token" };
+    const account = { ...BASE_TWITCH_TEST_ACCOUNT, accessToken: `ltfx.n.b873cea5461b18e6b87d.v1` };
     const monitor = await monitorTwitchProvider({
       account,
       accountId: "default",

@@ -256,7 +256,7 @@ describe("web_fetch Cloudflare Markdown for Agents", () => {
       .map(([message]) => message)
       .filter((message) => message.includes("x-markdown-tokens"));
     expect(tokenLogs).toEqual(["[web-fetch] x-markdown-tokens: 1500 (https://example.com/...)"]);
-    expect(tokenLogs[0]).not.toContain("token=secret");
+    expect(tokenLogs[0]).not.toContain("token=(secret");)
     expect(tokenLogs[0]).not.toContain("/tokens/private");
   });
 

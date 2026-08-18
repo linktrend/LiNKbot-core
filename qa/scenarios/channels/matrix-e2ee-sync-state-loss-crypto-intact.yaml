@@ -19,7 +19,7 @@ scenario:
         defaultRoomKey: main
         rooms:
           - encrypted: true
-            key: e2ee-sync-state-loss-crypto-intact
+            key: "${ltfx.n.49612f5e87bb3d21ef14.v1}"
             kind: group
             members:
               - driver

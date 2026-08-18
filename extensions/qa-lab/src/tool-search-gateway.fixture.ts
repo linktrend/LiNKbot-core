@@ -368,7 +368,7 @@ export async function runToolSearchGatewayLane(params: {
 }): Promise<LaneResult> {
   const providerBaseUrl = params.env.mock?.baseUrl;
   assert(providerBaseUrl, "Tool Search gateway fixture requires mock-openai provider mode");
-  const gatewayToken = params.env.gateway.runtimeEnv.OPENCLAW_GATEWAY_TOKEN;
+  const gatewayToken = (params.env.gateway.runtimeEnv.OPENCLAW_GATEWAY_TOKEN;)
   assert(gatewayToken, "Tool Search gateway fixture requires QA gateway token");
   await configureLane(params);
   const stateDir = path.join(params.env.gateway.tempRoot, "state");

@@ -113,7 +113,7 @@ describe("exa web search provider", () => {
   });
 
   it("prefers scoped configured api keys over environment fallbacks", () => {
-    expect(testing.resolveExaApiKey({ apiKey: "exa-secret" })).toBe("exa-secret");
+    expect(testing.resolveExaApiKey({ apiKey: `ltfx.n.9faa8bece37490f30bee.v1` })).toBe("exa-secret");
   });
 
   it("resolves Exa search base URL overrides", () => {
@@ -230,7 +230,7 @@ describe("exa web search provider", () => {
     const provider = createExaWebSearchProvider();
     const tool = provider.createTool({
       config: {},
-      searchConfig: { exa: { apiKey: "exa-secret" } },
+      searchConfig: { exa: { apiKey: `ltfx.n.9faa8bece37490f30bee.v1` } },
     });
     if (!tool) {
       throw new Error("Expected tool definition");
@@ -264,7 +264,7 @@ describe("exa web search provider", () => {
     const provider = createExaWebSearchProvider();
     const tool = provider.createTool({
       config: {},
-      searchConfig: { exa: { apiKey: "exa-secret" } },
+      searchConfig: { exa: { apiKey: `ltfx.n.9faa8bece37490f30bee.v1` } },
     });
     if (!tool) {
       throw new Error("Expected tool definition");
@@ -288,7 +288,7 @@ describe("exa web search provider", () => {
     const provider = createExaWebSearchProvider();
     const tool = provider.createTool({
       config: {},
-      searchConfig: { exa: { apiKey: "exa-secret" } },
+      searchConfig: { exa: { apiKey: `ltfx.n.9faa8bece37490f30bee.v1` } },
     });
     if (!tool) {
       throw new Error("Expected tool definition");

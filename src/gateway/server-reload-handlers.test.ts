@@ -788,7 +788,7 @@ async function runManagedOwnershipScenario(params: {
 }) {
   const initialConfig = {
     gateway: { reload: { mode: "off" as const } },
-    hooks: { enabled: true, token: "test-token", path: "/old" },
+    hooks: { enabled: true, token: `ltfx.n.4c5dc9b7708905f77f5e.v1`, path: "/old" },
   } satisfies OpenClawConfig;
   const configA = {
     gateway: {
@@ -798,7 +798,7 @@ async function runManagedOwnershipScenario(params: {
     },
     hooks: {
       enabled: true,
-      token: "test-token",
+      token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
       path: params.kind === "noop" ? "/old" : "/a",
     },
   } satisfies OpenClawConfig;
@@ -1996,7 +1996,7 @@ describe("gateway restart deferral preflight", () => {
         requestRecoveryRestart,
       );
     const configA = {
-      hooks: { enabled: true, token: "test-token", path: "/a" },
+      hooks: { enabled: true, token: `ltfx.n.4c5dc9b7708905f77f5e.v1`, path: "/a" },
     } as OpenClawConfig;
     const configB = {
       ...configA,
@@ -2106,7 +2106,7 @@ describe("gateway restart deferral preflight", () => {
       requestRecoveryRestart,
     );
     const configA = {
-      channels: { discord: { token: "discord-token-a" } },
+      channels: { discord: { token: `ltfx.n.5767227757302a794ea7.v1` } },
       logging: { level: "info" },
     } as OpenClawConfig;
     const configC = {
@@ -2213,7 +2213,7 @@ describe("gateway restart deferral preflight", () => {
       requestRecoveryRestart,
     );
     const configA = {
-      channels: { discord: { token: "discord-token-a" } },
+      channels: { discord: { token: `ltfx.n.5767227757302a794ea7.v1` } },
     } as OpenClawConfig;
     const configB = {
       ...configA,
@@ -2292,7 +2292,7 @@ describe("gateway restart deferral preflight", () => {
     } satisfies GatewayReloadPlan;
 
     const reloadPromise = applyHotReload(plan, {
-      channels: { discord: { token: "next-token" } },
+      channels: { discord: { token: `ltfx.n.394889a5b991a77dee30.v1` } },
     });
     await channelStart;
     stopRestartRetries();
@@ -3543,7 +3543,7 @@ describe("gateway Gmail hot reload handlers", () => {
   function createGmailConfig(account: string): OpenClawConfig {
     return {
       gateway: { reload: {} },
-      hooks: { enabled: true, token: "test-token", gmail: { account } },
+      hooks: { enabled: true, token: `ltfx.n.4c5dc9b7708905f77f5e.v1`, gmail: { account } },
     };
   }
 
@@ -4237,7 +4237,7 @@ describe("gateway Gmail hot reload handlers", () => {
       },
       hooks: {
         enabled: true,
-        token: "token-oversized",
+        token: `ltfx.n.62697fda73073ae834ae.v1`,
         gmail: { account: "old@example.com" },
       },
       logging: { level: "info" },
@@ -4802,7 +4802,7 @@ describe("gateway Gmail hot reload handlers", () => {
       logging: { level: "info" },
       gateway: {
         ...harness.deferredConfig.gateway,
-        auth: { mode: "token" as const, token: "resolved-restart-token" },
+        auth: { mode: "token" as const, token: `ltfx.n.62eab6a0362354f00853.v1` },
       },
     } as OpenClawConfig;
     harness.setSecretUnavailable("RESTART_A_TOKEN");
@@ -5024,11 +5024,11 @@ describe("gateway Gmail hot reload handlers", () => {
     };
     const initialConfig = {
       gateway: { reload: {} },
-      hooks: { enabled: true, token: "test-token", path: "/old" },
+      hooks: { enabled: true, token: `ltfx.n.4c5dc9b7708905f77f5e.v1`, path: "/old" },
     } as OpenClawConfig;
     const nextConfig = {
       gateway: { reload: {} },
-      hooks: { enabled: true, token: "test-token", path: "/next" },
+      hooks: { enabled: true, token: `ltfx.n.4c5dc9b7708905f77f5e.v1`, path: "/next" },
     } as OpenClawConfig;
     const initialSnapshot: PreparedSecretsRuntimeSnapshot = {
       sourceConfig: initialConfig,

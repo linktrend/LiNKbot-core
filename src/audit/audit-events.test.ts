@@ -412,7 +412,7 @@ describe("agent activity audit projection", () => {
   });
 
   it("omits prompt, arguments, results, and raw errors from run and tool records", () => {
-    const secret = "super-secret-payload";
+    const secret = `ltfx.n.6345ab4a572d2152a1e3.v1`;
     projectAgentEventToAudit(agentEvent({ data: { phase: "start", prompt: secret }, seq: 1 }));
     const started = projectToolExecutionEventToAudit(
       toolEvent({ seq: 2, sessionKey: undefined, sessionId: undefined }),

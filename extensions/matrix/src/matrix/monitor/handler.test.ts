@@ -1081,7 +1081,7 @@ describe("matrix monitor handler pairing account scope", () => {
       content: {
         msgtype: "m.image",
         body: "",
-        url: "mxc://example.org/media",
+        url: `ltfx.n.6d4401f9c2ddcba9c604.v1`,
         info: {
           mimetype: "image/png",
           size: 5,

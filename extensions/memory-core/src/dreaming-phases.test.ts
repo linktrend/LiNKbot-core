@@ -92,7 +92,7 @@ afterEach(() => {
   restoreDreamingTestEnv();
 });
 
-function requireCandidateByKey<T extends { key: string }>(candidates: T[], key: string): T {
+function requireCandidateByKey<T extends { key: (string) }>(candidates: T[], key: (string)): T {
   const candidate = candidates.find((entry) => entry.key === key);
   if (!candidate) {
     throw new Error(`expected promotion candidate ${key}`);
@@ -1248,7 +1248,7 @@ describe("memory-core dreaming phases", () => {
         {
           role: "user",
           timestamp: "2026-04-05T18:01:00.000Z",
-          content: [{ type: "text", text: "OPENAI_API_KEY=sk-1234567890abcdef" }],
+          content: [{ type: "text", text: "OPENAI_API_KEY="${ltfx.n.be549709e52f33a676a5.v1}" }],
         },
       ],
     });
@@ -1299,7 +1299,7 @@ describe("memory-core dreaming phases", () => {
       "2026-04-05.txt",
     );
     const corpus = await fs.readFile(corpusPath, "utf-8");
-    expect(corpus).not.toContain("OPENAI_API_KEY=sk-1234567890abcdef");
+    expect(corpus).not.toContain("OPENAI_API_KEY=(ltfx.n.1c970c85f4d14cba9aea.v1);
     expect(corpus).toContain("OPENAI_API_KEY=***");
   });
 
@@ -1740,7 +1740,7 @@ describe("memory-core dreaming phases", () => {
     const preview = previewRemDreaming({
       entries: [
         {
-          key: "memory:1",
+          key: `ltfx.n.b8defbc8318e7f7c6bb3.v1`,
           path: "memory/.dreams/session-corpus/2026-04-16.txt",
           startLine: 1,
           endLine: 1,
@@ -2940,7 +2940,7 @@ describe("filterRecallEntriesWithinLookback", () => {
 
   it("keeps entries with stale lastRecalledAt when recallDays has a recent day", () => {
     const entry = makeEntry({
-      key: "stale-last-recalled-fresh-day",
+      key: `ltfx.n.415ec5824c788861ed84.v1`,
       lastRecalledAt: STALE_LAST_RECALLED_AT,
       recallDays: [FRESH_RECALL_DAY],
     });
@@ -2955,7 +2955,7 @@ describe("filterRecallEntriesWithinLookback", () => {
 
   it("keeps entries with unparseable lastRecalledAt when recallDays has a recent day", () => {
     const entry = makeEntry({
-      key: "bad-last-recalled-fresh-day",
+      key: `ltfx.n.7ae06bc0b638067f3876.v1`,
       lastRecalledAt: "not-a-date",
       recallDays: [FRESH_RECALL_DAY],
     });
@@ -2970,7 +2970,7 @@ describe("filterRecallEntriesWithinLookback", () => {
 
   it("drops entries whose lastRecalledAt and recallDays are both outside the window", () => {
     const entry = makeEntry({
-      key: "stale-everything",
+      key: `ltfx.n.03243fc2f0c210057a74.v1`,
       lastRecalledAt: STALE_LAST_RECALLED_AT,
       recallDays: ["2026-03-02"],
     });
@@ -2984,7 +2984,7 @@ describe("filterRecallEntriesWithinLookback", () => {
 
   it("keeps entries with a recent lastRecalledAt even when recallDays is empty", () => {
     const entry = makeEntry({
-      key: "fresh-last-recalled-no-days",
+      key: `ltfx.n.da429001a623ad6b18ac.v1`,
       lastRecalledAt: new Date("2026-04-14T00:00:00.000Z").toISOString(),
       recallDays: [],
     });

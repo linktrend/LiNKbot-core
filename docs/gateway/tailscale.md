@@ -56,7 +56,7 @@ Use this to have the gateway listen directly on the Tailnet IP, with no Serve/Fu
 {
   gateway: {
     bind: "tailnet",
-    auth: { mode: "token", token: "your-token" },
+    auth: { mode: "token", token: "${ltfx.n.08842b17a4146c87440b.v1}" },
   },
 }
 ```
@@ -77,7 +77,7 @@ When a bindable Tailnet IPv4 is present, the Gateway also requires `http://127.0
   gateway: {
     bind: "loopback",
     tailscale: { mode: "funnel" },
-    auth: { mode: "password", password: "replace-me" },
+    auth: { mode: "password", password: "${ltfx.n.1df4b07d05b9b3b1115b.v1}" },
   },
 }
 ```

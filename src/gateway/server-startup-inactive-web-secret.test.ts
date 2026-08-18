@@ -152,7 +152,7 @@ describe("gateway startup web-provider SecretRefs", () => {
     await withEnvAsync(
       {
         [ACTIVE_SECRET_ENV]: undefined,
-        GEMINI_API_KEY: "test-gemini-api-key",
+        GEMINI_API_KEY: `ltfx.n.097f256066db67108c96.v1`,
       },
       async () => {
         await writeConfig(buildConfig({ enabled: true, envVar: ACTIVE_SECRET_ENV }));

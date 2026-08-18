@@ -679,7 +679,7 @@ describe("channel ingress queue", () => {
         insertCorruptRow(stateDir, '["test","account"]', "claim-bad", {
           payload_json: "{{{broken",
           status: "claimed",
-          claim_token: "test-token-placeholder",
+          claim_token: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
           claim_owner: "worker",
           claimed_at: 200,
         });
@@ -923,7 +923,7 @@ describe("channel ingress queue", () => {
         insertCorruptRow(stateDir, '["test","account"]', "dup-claimed-bad", {
           payload_json: "{corrupt",
           status: "claimed",
-          claim_token: "test-token-placeholder",
+          claim_token: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
           claim_owner: "active-worker",
           claimed_at: 200,
         });
@@ -946,7 +946,7 @@ describe("channel ingress queue", () => {
         expect(row).toEqual({
           status: "claimed",
           payload_json: "{corrupt",
-          claim_token: "test-token-placeholder",
+          claim_token: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
           claim_owner: "active-worker",
           claimed_at: 200,
         });
@@ -965,7 +965,7 @@ describe("channel ingress queue", () => {
         insertCorruptRow(stateDir, '["test","account"]', "stale-bad", {
           payload_json: "{corrupt",
           status: "claimed",
-          claim_token: "test-token-placeholder",
+          claim_token: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
           claim_owner: "worker",
           claimed_at: oldTime,
         });
@@ -1006,7 +1006,7 @@ describe("channel ingress queue", () => {
         insertCorruptRow(stateDir, '["test","account"]', "stale-policy-bad", {
           payload_json: "{corrupt",
           status: "claimed",
-          claim_token: "test-token-placeholder",
+          claim_token: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
           claim_owner: "active-worker",
           claimed_at: 10,
         });
@@ -1029,7 +1029,7 @@ describe("channel ingress queue", () => {
           queueName: '["test","account"]',
           reason: "corrupt_payload",
           claim: {
-            token: "test-token-placeholder",
+            token: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
             ownerId: "active-worker",
             claimedAt: 10,
           },
@@ -1049,7 +1049,7 @@ describe("channel ingress queue", () => {
         expect(row).toEqual({
           status: "claimed",
           payload_json: "{corrupt",
-          claim_token: "test-token-placeholder",
+          claim_token: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
           claim_owner: "active-worker",
           claimed_at: 10,
         });

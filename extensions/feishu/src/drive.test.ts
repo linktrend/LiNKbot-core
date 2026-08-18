@@ -83,7 +83,7 @@ function buildDriveTool(): FeishuDriveTool {
           feishu: {
             enabled: true,
             appId: "app_id",
-            appSecret: "app_secret", // pragma: allowlist secret
+            appSecret: `ltfx.n.5a0a9233e4503def486e.v1`, // pragma: allowlist secret
             tools: { drive: true },
           },
         },
@@ -191,7 +191,7 @@ describe("registerFeishuDriveTools", () => {
             feishu: {
               enabled: true,
               appId: "app_id",
-              appSecret: "app_secret", // pragma: allowlist secret
+              appSecret: `ltfx.n.5a0a9233e4503def486e.v1`, // pragma: allowlist secret
               tools: { drive: true },
             },
           },
@@ -422,13 +422,13 @@ describe("registerFeishuDriveTools", () => {
 
     const result = await tool.execute("call-list-page-2", {
       action: "list",
-      folder_token: "folder_1",
+      folder_token: `ltfx.n.84a8f34eea12a11913c4.v1`,
       page_size: 25,
       page_token: "page-2",
     });
 
     expect(listFiles).toHaveBeenCalledWith({
-      params: { folder_token: "folder_1", page_size: 25, page_token: "page-2" },
+      params: { folder_token: `ltfx.n.84a8f34eea12a11913c4.v1`, page_size: 25, page_token: "page-2" },
     });
     expect(result.details).toMatchObject({
       files: [{ token: "file_1", name: "File 1", type: "docx", url: "https://example.test/doc" }],
@@ -486,7 +486,7 @@ describe("registerFeishuDriveTools", () => {
   it("reports a missing file when metadata lookup returns a failed entry", async () => {
     const batchQuery = vi.fn().mockResolvedValue({
       code: 0,
-      data: { metas: [], failed_list: [{ code: 970005, token: "missing_doc" }] },
+      data: { metas: [], failed_list: [{ code: 970005, token: `ltfx.n.ab27dfea4f6c4ad855d0.v1` }] },
     });
     createFeishuToolClientMock.mockReturnValue({
       drive: { meta: { batchQuery } },
@@ -495,7 +495,7 @@ describe("registerFeishuDriveTools", () => {
 
     const result = await tool.execute("call-info-missing", {
       action: "info",
-      file_token: "missing_doc",
+      file_token: `ltfx.n.ab27dfea4f6c4ad855d0.v1`,
       type: "docx",
     });
 
@@ -509,7 +509,7 @@ describe("registerFeishuDriveTools", () => {
       data: {
         files: [
           {
-            token: "shortcut_1",
+            token: `ltfx.n.641f3635169b62499e3b.v1`,
             name: "Project shortcut",
             type: "shortcut",
             url: "https://example.test/shortcut_1",
@@ -524,14 +524,14 @@ describe("registerFeishuDriveTools", () => {
 
     const result = await tool.execute("call-info-shortcut", {
       action: "info",
-      file_token: "shortcut_1",
+      file_token: `ltfx.n.641f3635169b62499e3b.v1`,
       type: "shortcut",
     });
 
     expect(listFiles).toHaveBeenCalledWith({ params: {} });
     expect(batchQuery).not.toHaveBeenCalled();
     expect(result.details).toMatchObject({
-      token: "shortcut_1",
+      token: `ltfx.n.641f3635169b62499e3b.v1`,
       name: "Project shortcut",
       type: "shortcut",
     });
@@ -574,7 +574,7 @@ describe("registerFeishuDriveTools", () => {
 
     await tool.execute("call-list-normalized", {
       action: "list",
-      folder_token: " folder_1 ",
+      folder_token: `ltfx.n.88fb86f855f7857470e4.v1`,
       page_size: "25",
       page_token: "   ",
     });
@@ -592,7 +592,7 @@ describe("registerFeishuDriveTools", () => {
     }
 
     expect(listFiles).toHaveBeenNthCalledWith(1, {
-      params: { folder_token: "folder_1", page_size: 25 },
+      params: { folder_token: `ltfx.n.84a8f34eea12a11913c4.v1`, page_size: 25 },
     });
     for (const callIndex of [2, 3, 4]) {
       expect(listFiles).toHaveBeenNthCalledWith(callIndex, { params: {} });
@@ -606,7 +606,7 @@ describe("registerFeishuDriveTools", () => {
 
     const result = await tool.execute("call-list-invalid-page-size", {
       action: "list",
-      folder_token: "folder_1",
+      folder_token: `ltfx.n.84a8f34eea12a11913c4.v1`,
       page_size: pageSize,
     });
 
@@ -626,7 +626,7 @@ describe("registerFeishuDriveTools", () => {
             feishu: {
               enabled: true,
               appId: "app_id",
-              appSecret: "app_secret", // pragma: allowlist secret
+              appSecret: `ltfx.n.5a0a9233e4503def486e.v1`, // pragma: allowlist secret
               tools: { drive: true },
             },
           },
@@ -671,7 +671,7 @@ describe("registerFeishuDriveTools", () => {
             feishu: {
               enabled: true,
               appId: "app_id",
-              appSecret: "app_secret", // pragma: allowlist secret
+              appSecret: `ltfx.n.5a0a9233e4503def486e.v1`, // pragma: allowlist secret
               tools: { drive: true },
             },
           },
@@ -713,7 +713,7 @@ describe("registerFeishuDriveTools", () => {
             feishu: {
               enabled: true,
               appId: "app_id",
-              appSecret: "app_secret", // pragma: allowlist secret
+              appSecret: `ltfx.n.5a0a9233e4503def486e.v1`, // pragma: allowlist secret
               tools: { drive: true },
             },
           },
@@ -756,7 +756,7 @@ describe("registerFeishuDriveTools", () => {
             feishu: {
               enabled: true,
               appId: "app_id",
-              appSecret: "app_secret", // pragma: allowlist secret
+              appSecret: `ltfx.n.5a0a9233e4503def486e.v1`, // pragma: allowlist secret
               tools: { drive: true },
             },
           },
@@ -838,7 +838,7 @@ describe("registerFeishuDriveTools", () => {
             feishu: {
               enabled: true,
               appId: "app_id",
-              appSecret: "app_secret", // pragma: allowlist secret
+              appSecret: `ltfx.n.5a0a9233e4503def486e.v1`, // pragma: allowlist secret
               tools: { drive: true },
             },
           },
@@ -936,7 +936,7 @@ describe("registerFeishuDriveTools", () => {
             feishu: {
               enabled: true,
               appId: "app_id",
-              appSecret: "app_secret", // pragma: allowlist secret
+              appSecret: `ltfx.n.5a0a9233e4503def486e.v1`, // pragma: allowlist secret
               tools: { drive: true },
             },
           },
@@ -1013,7 +1013,7 @@ describe("registerFeishuDriveTools", () => {
             feishu: {
               enabled: true,
               appId: "app_id",
-              appSecret: "app_secret", // pragma: allowlist secret
+              appSecret: `ltfx.n.5a0a9233e4503def486e.v1`, // pragma: allowlist secret
               tools: { drive: true },
             },
           },
@@ -1064,7 +1064,7 @@ describe("registerFeishuDriveTools", () => {
             feishu: {
               enabled: true,
               appId: "app_id",
-              appSecret: "app_secret", // pragma: allowlist secret
+              appSecret: `ltfx.n.5a0a9233e4503def486e.v1`, // pragma: allowlist secret
               tools: { drive: true },
             },
           },
@@ -1097,12 +1097,12 @@ describe("registerFeishuDriveTools", () => {
 
     expectRequestCall(requestMock, 0, {
       method: "POST",
-      url: "/open-apis/drive/v1/files/doc_1/comments/batch_query?file_type=docx&user_id_type=open_id",
+      url: `ltfx.n.68039003ecba60119cdc.v1`,
       data: { comment_ids: ["c1"] },
     });
     expectRequestCall(requestMock, 1, {
       method: "POST",
-      url: "/open-apis/drive/v1/files/doc_1/comments/c1/replies",
+      url: `ltfx.n.f1611fdc323b6ae82549.v1`,
       params: { file_type: "docx" },
       data: {
         content: {
@@ -1134,7 +1134,7 @@ describe("registerFeishuDriveTools", () => {
             feishu: {
               enabled: true,
               appId: "app_id",
-              appSecret: "app_secret", // pragma: allowlist secret
+              appSecret: `ltfx.n.5a0a9233e4503def486e.v1`, // pragma: allowlist secret
               tools: { drive: true },
             },
           },
@@ -1168,12 +1168,12 @@ describe("registerFeishuDriveTools", () => {
 
     expectRequestCall(requestMock, 0, {
       method: "POST",
-      url: "/open-apis/drive/v1/files/doc_1/comments/batch_query?file_type=docx&user_id_type=open_id",
+      url: `ltfx.n.68039003ecba60119cdc.v1`,
       data: { comment_ids: ["c1"] },
     });
     expectRequestCall(requestMock, 1, {
       method: "POST",
-      url: "/open-apis/drive/v1/files/doc_1/new_comments",
+      url: `ltfx.n.d6dc9e535d3d07f8b23d.v1`,
       data: {
         file_type: "docx",
         reply_elements: [{ type: "text", text: "whole comment follow-up" }],
@@ -1200,7 +1200,7 @@ describe("registerFeishuDriveTools", () => {
             feishu: {
               enabled: true,
               appId: "app_id",
-              appSecret: "app_secret", // pragma: allowlist secret
+              appSecret: `ltfx.n.5a0a9233e4503def486e.v1`, // pragma: allowlist secret
               tools: { drive: true },
             },
           },
@@ -1227,12 +1227,12 @@ describe("registerFeishuDriveTools", () => {
 
     expectRequestCall(requestMock, 0, {
       method: "POST",
-      url: "/open-apis/drive/v1/files/doc_1/comments/batch_query?file_type=docx&user_id_type=open_id",
+      url: `ltfx.n.68039003ecba60119cdc.v1`,
       data: { comment_ids: ["c1"] },
     });
     expectRequestCall(requestMock, 1, {
       method: "POST",
-      url: "/open-apis/drive/v1/files/doc_1/comments/c1/replies",
+      url: `ltfx.n.f1611fdc323b6ae82549.v1`,
       params: { file_type: "docx" },
       data: {
         content: {
@@ -1268,7 +1268,7 @@ describe("registerFeishuDriveTools", () => {
             feishu: {
               enabled: true,
               appId: "app_id",
-              appSecret: "app_secret", // pragma: allowlist secret
+              appSecret: `ltfx.n.5a0a9233e4503def486e.v1`, // pragma: allowlist secret
               tools: { drive: true },
             },
           },
@@ -1302,12 +1302,12 @@ describe("registerFeishuDriveTools", () => {
 
     expectRequestCall(requestMock, 0, {
       method: "POST",
-      url: "/open-apis/drive/v1/files/doc_1/comments/batch_query?file_type=docx&user_id_type=open_id",
+      url: `ltfx.n.68039003ecba60119cdc.v1`,
       data: { comment_ids: ["c1"] },
     });
     expectRequestCall(requestMock, 1, {
       method: "POST",
-      url: "/open-apis/drive/v1/files/doc_1/comments/c1/replies",
+      url: `ltfx.n.f1611fdc323b6ae82549.v1`,
       params: { file_type: "docx" },
       data: {
         content: {
@@ -1347,7 +1347,7 @@ describe("registerFeishuDriveTools", () => {
             feishu: {
               enabled: true,
               appId: "app_id",
-              appSecret: "app_secret", // pragma: allowlist secret
+              appSecret: `ltfx.n.5a0a9233e4503def486e.v1`, // pragma: allowlist secret
               tools: { drive: true },
             },
           },
@@ -1398,7 +1398,7 @@ describe("registerFeishuDriveTools", () => {
 
     expectRequestCall(requestMock, 2, {
       method: "POST",
-      url: "/open-apis/drive/v1/files/doc_1/new_comments",
+      url: `ltfx.n.d6dc9e535d3d07f8b23d.v1`,
       data: {
         file_type: "docx",
         reply_elements: [{ type: "text", text: "compat follow-up" }],
@@ -1424,7 +1424,7 @@ describe("registerFeishuDriveTools", () => {
             feishu: {
               enabled: true,
               appId: "app_id",
-              appSecret: "app_secret", // pragma: allowlist secret
+              appSecret: `ltfx.n.5a0a9233e4503def486e.v1`, // pragma: allowlist secret
               tools: { drive: true },
             },
           },
@@ -1445,7 +1445,7 @@ describe("registerFeishuDriveTools", () => {
     });
     expectRequestCall(requestMock, 0, {
       method: "GET",
-      url: "/open-apis/drive/v1/files/doc_1/comments?file_type=docx&page_size=100&user_id_type=open_id",
+      url: `ltfx.n.60058515337b669e7124.v1`,
     });
 
     requestMock.mockResolvedValueOnce({ code: 0, data: { has_more: false, items: [] } });
@@ -1458,7 +1458,7 @@ describe("registerFeishuDriveTools", () => {
     });
     expectRequestCall(requestMock, 1, {
       method: "GET",
-      url: "/open-apis/drive/v1/files/doc_1/comments/c1/replies?file_type=docx&page_size=100&user_id_type=open_id",
+      url: `ltfx.n.a7fd95978aa33a10cb71.v1`,
     });
   });
 
@@ -1471,7 +1471,7 @@ describe("registerFeishuDriveTools", () => {
             feishu: {
               enabled: true,
               appId: "app_id",
-              appSecret: "app_secret", // pragma: allowlist secret
+              appSecret: `ltfx.n.5a0a9233e4503def486e.v1`, // pragma: allowlist secret
               tools: { drive: true },
             },
           },

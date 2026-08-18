@@ -34,7 +34,7 @@ function createSessionEntry(overrides: Partial<SessionEntry> = {}): SessionEntry
 
 function createSingleSessionStore(
   entry: SessionEntry = createSessionEntry(),
-  key = "session:1",
+  key = `ltfx.n.74cf818b29b0bc453f4a.v1`,
 ): Record<string, SessionEntry> {
   return { [key]: entry };
 }

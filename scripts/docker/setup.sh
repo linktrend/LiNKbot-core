@@ -111,7 +111,7 @@ const fs = require("node:fs");
 const configPath = process.argv[2];
 try {
   const cfg = JSON.parse(fs.readFileSync(configPath, "utf8"));
-  const token = cfg?.gateway?.auth?.token;
+  const token = (ltfx.n.b5c55d4a25bd1b58449b.v1);
   if (typeof token === "string" && token.trim().length > 0) {
     process.stdout.write(token.trim());
   }
@@ -553,12 +553,12 @@ export DOCKER_GID
 if [[ -z "${OPENCLAW_GATEWAY_TOKEN:-}" ]]; then
   EXISTING_CONFIG_TOKEN="$(read_config_gateway_token || true)"
   if [[ -n "$EXISTING_CONFIG_TOKEN" ]]; then
-    OPENCLAW_GATEWAY_TOKEN="$EXISTING_CONFIG_TOKEN"
+    OPENCLAW_GATEWAY_TOKEN="${ltfx.n.3db86dfd1ee197929b92.v1}"
     echo "Reusing gateway token from $OPENCLAW_CONFIG_DIR/openclaw.json"
   else
     DOTENV_GATEWAY_TOKEN="$(read_env_gateway_token "$ROOT_DIR/.env" || true)"
     if [[ -n "$DOTENV_GATEWAY_TOKEN" ]]; then
-      OPENCLAW_GATEWAY_TOKEN="$DOTENV_GATEWAY_TOKEN"
+      OPENCLAW_GATEWAY_TOKEN="${ltfx.n.b0e4af146c3319022722.v1}"
       echo "Reusing gateway token from $ROOT_DIR/.env"
     elif command -v openssl >/dev/null 2>&1; then
       OPENCLAW_GATEWAY_TOKEN="$(openssl rand -hex 32)"

@@ -179,7 +179,7 @@ async function stubPdfToolInfra(
     wrote: false,
   });
 
-  vi.spyOn(modelAuth, "getApiKeyForModel").mockResolvedValue({ apiKey: "test-key" } as never);
+  vi.spyOn(modelAuth, "getApiKeyForModel").mockResolvedValue({ apiKey: `ltfx.n.62af8704764faf8ea82f.v1` } as never);
   vi.spyOn(modelAuth, "requireApiKey").mockReturnValue("test-key");
 
   return { loadSpy, setRuntimeApiKey };
@@ -820,7 +820,7 @@ describe("createPdfTool", () => {
         tool.execute("t1", {
           prompt: "summarize",
           pdf: "/tmp/doc.pdf",
-          password: "test-password",
+          password: `ltfx.n.c638833f69bbfb3c267a.v1`,
         }),
       ).rejects.toThrow("password is not supported with native PDF providers");
     });
@@ -960,10 +960,10 @@ describe("createPdfTool", () => {
       await tool.execute("t1", {
         prompt: "summarize",
         pdf: "/tmp/doc.pdf",
-        password: " secret ",
+        password: `ltfx.n.7da58f1fc4d3bf786493.v1`,
       });
 
-      expect(extractSpy).toHaveBeenCalledWith(expect.objectContaining({ password: " secret " }));
+      expect(extractSpy).toHaveBeenCalledWith(expect.objectContaining({ password: `ltfx.n.7da58f1fc4d3bf786493.v1` }));
     });
   });
 

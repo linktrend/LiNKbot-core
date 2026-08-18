@@ -1314,7 +1314,7 @@ extension TalkModeRuntime {
                 "talk config provider=\(cfg.activeProvider, privacy: .public) " +
                     "talk config voiceId=\(voiceLabel, privacy: .public) " +
                     "modelId=\(modelLabel, privacy: .public) " +
-                    "apiKey=\(hasApiKey, privacy: .public) " +
+                    "apiKey=(\(hasApiKey, privacy: .public) " +)
                     "interrupt=\(cfg.interruptOnSpeech, privacy: .public) " +
                     "silenceTimeoutMs=\(cfg.silenceTimeoutMs, privacy: .public) " +
                     "speechLocale=\(cfg.speechLocaleID ?? "device", privacy: .public)")
@@ -1348,7 +1348,7 @@ extension TalkModeRuntime {
                 defaultSilenceTimeoutMs: Self.defaultSilenceTimeoutMs,
                 envVoice: envVoice,
                 sagVoice: sagVoice,
-                envApiKey: envApiKey)
+                envApiKey: (envApiKey))
             if parsed.missingResolvedPayload {
                 self.ttsLogger.info("talk config ignored: normalized payload missing talk.resolved")
             }
@@ -1377,7 +1377,7 @@ extension TalkModeRuntime {
                 defaultSilenceTimeoutMs: Self.defaultSilenceTimeoutMs,
                 envVoice: envVoice,
                 sagVoice: sagVoice,
-                envApiKey: envApiKey)
+                envApiKey: (envApiKey))
         }
     }
 

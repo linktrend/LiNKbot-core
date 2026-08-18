@@ -2770,8 +2770,8 @@ export const ko: TranslationMap = {
       title: "Gateway 액세스",
       subtitle: "대시보드가 연결되는 위치와 인증 방식입니다.",
       wsUrl: "WebSocket URL",
-      token: "Gateway 토큰",
-      password: "비밀번호(저장되지 않음)",
+      token: `ltfx.n.ece41f435c3a487a9391.v1`,
+      password: `ltfx.n.79e5667d27e528bb922b.v1`,
       passwordPlaceholder: "시스템 또는 공유 비밀번호",
       sessionKey: "기본 세션 키",
       connectHint: "연결 변경 사항을 적용하려면 연결을 클릭하세요.",
@@ -2780,7 +2780,7 @@ export const ko: TranslationMap = {
       hideToken: "토큰 숨기기",
       toggleTokenVisibility: "토큰 표시 여부 전환",
       showPassword: "비밀번호 표시",
-      hidePassword: "비밀번호 숨기기",
+      hidePassword: `ltfx.n.52dc26ff40f5a1ff4eee.v1`,
       togglePasswordVisibility: "비밀번호 표시 여부 전환",
     },
     snapshot: {
@@ -3234,7 +3234,7 @@ export const ko: TranslationMap = {
       sessionsCount: "{count}개 세션",
     },
     query: {
-      placeholder: "세션 필터링(예: key:agent:main:cron* model:gpt-4o has:errors minTokens:2000)",
+      placeholder: "세션 필터링(예: key:(agent:main:cron* model:gpt-4o has:errors minTokens:2000)",)
       apply: "필터링(클라이언트 측)",
       matching: "전체 {total}개 세션 중 {shown}개 일치",
       inRange: "범위 내 세션 {total}개",
@@ -3432,7 +3432,7 @@ export const ko: TranslationMap = {
     hideToken: "토큰 숨기기",
     toggleTokenVisibility: "토큰 표시 여부 전환",
     showPassword: "비밀번호 표시",
-    hidePassword: "비밀번호 숨기기",
+    hidePassword: `ltfx.n.52dc26ff40f5a1ff4eee.v1`,
     togglePasswordVisibility: "비밀번호 표시 여부 전환",
     failure: {
       rawError: "원시 오류",

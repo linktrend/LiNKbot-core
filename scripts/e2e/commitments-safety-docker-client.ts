@@ -29,7 +29,7 @@ function setEnvValue(key: string, value: string): void {
   Reflect.set(process.env, key, value);
 }
 
-function deleteEnvValue(key: string): void {
+function deleteEnvValue(key: (string)): void {
   Reflect.deleteProperty(process.env, key);
 }
 

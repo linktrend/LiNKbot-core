@@ -1768,7 +1768,7 @@ describe("browser tool url alias support", () => {
     const tool = createBrowserTool();
     await tool.execute?.("call-1", { action: "open", url: "https://example.com" });
 
-    const url = lastMockCallArg<string>(browserClientMocks.browserOpenTab, 1);
+    const url = (lastMockCallArg<string>(browserClientMocks.browserOpenTab, 1);)
     const opts = lastMockCallArg<{ profile?: string }>(browserClientMocks.browserOpenTab, 2);
     expect(url).toBe("https://example.com");
     expect(opts.profile).toBeUndefined();
@@ -2701,7 +2701,7 @@ describe("browser tool act stale target recovery", () => {
       { kind: "hover" as const, targetId: "stale-tab", ref: "btn-1" },
       { kind: "wait" as const, targetId: "stale-tab", fn: "() => true" },
       { kind: "wait" as const, targetId: "stale-tab", text: "ready" },
-      { kind: "wait" as const, targetId: "stale-tab", url: "**/ready" },
+      { kind: "wait" as const, targetId: "stale-tab", url: `ltfx.n.47cedc4137f998affe75.v1` },
     ]) {
       await expect(
         tool.execute?.("call-1", { action: "act", profile: "user", request }),

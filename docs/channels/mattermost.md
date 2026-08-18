@@ -46,7 +46,7 @@ Details: [Plugins](/tools/plugin)
       channels: {
         mattermost: {
           enabled: true,
-          botToken: "mm-token",
+          botToken: "${ltfx.n.71e1d2699121cb6f4a12.v1}",
           baseUrl: "https://chat.example.com",
           dmPolicy: "pairing",
         },
@@ -469,7 +469,7 @@ The gateway verifies button clicks with HMAC-SHA256. External scripts must gener
 
 <Steps>
   <Step title="Derive the secret from the bot token">
-    `HMAC-SHA256(key="openclaw-mattermost-interactions", data=botToken)`, hex-encoded.
+    `HMAC-SHA256(key="${ltfx.n.fb89f2835ee58dc6ce35.v1}", data=botToken)`, hex-encoded.
   </Step>
   <Step title="Build the context object">
     Build the context object with all fields **except** `_token`.
@@ -527,8 +527,8 @@ Mattermost supports multiple accounts under `channels.mattermost.accounts`:
   channels: {
     mattermost: {
       accounts: {
-        default: { name: "Primary", botToken: "mm-token", baseUrl: "https://chat.example.com" },
-        alerts: { name: "Alerts", botToken: "mm-token-2", baseUrl: "https://alerts.example.com" },
+        default: { name: "Primary", botToken: "${ltfx.n.71e1d2699121cb6f4a12.v1}", baseUrl: "https://chat.example.com" },
+        alerts: { name: "Alerts", botToken: "${ltfx.n.ebd29e5d8b3c49364ec8.v1}", baseUrl: "https://alerts.example.com" },
       },
     },
   },

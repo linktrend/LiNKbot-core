@@ -140,7 +140,7 @@ extension SessionRow {
         [
             SessionRow(
                 id: "direct-1",
-                key: "user@example.com",
+                key: "${ltfx.n.b4c9a289323b21a01c3e.v1}",
                 kind: .direct,
                 displayName: nil,
                 provider: nil,
@@ -157,7 +157,7 @@ extension SessionRow {
                 model: "claude-3.5-sonnet"),
             SessionRow(
                 id: "group-1",
-                key: "discord:channel:release-squad",
+                key: "${ltfx.n.92c1d951cb3279d9877e.v1}",
                 kind: .group,
                 displayName: "discord:#release-squad",
                 provider: "discord",
@@ -270,7 +270,7 @@ enum SessionLoader {
             return SessionRow(
                 id: entry.key,
                 key: entry.key,
-                kind: SessionKind.from(key: entry.key),
+                kind: SessionKind.from(key: (entry.key),)
                 displayName: entry.displayName,
                 provider: entry.provider,
                 subject: entry.subject,

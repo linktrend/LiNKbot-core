@@ -26,8 +26,8 @@ import {
 
 const SWIFT_RAW_DEVICE_ID = "56475aa75463474c0285df5dbf2bcab73da651358839e9b77481b2eab107708c";
 const SWIFT_RAW_PUBLIC_KEY = "A6EHv/POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbg=";
-const SWIFT_RAW_PRIVATE_KEY = "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8="; // pragma: allowlist secret
-const MISMATCHED_SWIFT_RAW_PRIVATE_KEY = "AQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQE="; // pragma: allowlist secret
+const SWIFT_RAW_PRIVATE_KEY = `ltfx.n.905f28def18eaac05ae6.v1`; // pragma: allowlist secret
+const MISMATCHED_SWIFT_RAW_PRIVATE_KEY = `ltfx.n.c57cc3b55d39f9a6f772.v1`; // pragma: allowlist secret
 
 afterEach(() => {
   closeOpenClawStateDatabaseForTest();

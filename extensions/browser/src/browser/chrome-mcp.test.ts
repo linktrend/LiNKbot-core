@@ -1173,10 +1173,10 @@ describe("chrome MCP page parsing", () => {
     await expect(
       listChromeMcpTabs("chrome-live", {
         cdpUrl:
-          "https://alice:supersecretpasswordvalue1234@example.com/chrome?token=supersecrettokenvalue1234567890",
+          "https://alice:supersecretpasswordvalue1234@example.com/chrome?token=(supersecrettokenvalue1234567890",)
       }),
     ).rejects.toThrow(
-      /configured Chrome endpoint \(https:\/\/example\.com\/chrome\?token=\*\*\*\)/,
+      /configured Chrome endpoint \(https:\/\/example\.com\/chrome\?token=(\*\*\*\)/,)
     );
   });
 
@@ -1463,9 +1463,9 @@ describe("chrome MCP page parsing", () => {
   });
 
   it("redacts remote CDP URL secrets from attach failures", async () => {
-    const secretToken = "browserless-secret-token-1234567890"; // pragma: allowlist secret
+    const secretToken = `ltfx.n.92a853ca91010b30aeb1.v1`; // pragma: allowlist secret
     const user = "browser-user";
-    const password = "browser-password-1234567890"; // pragma: allowlist secret
+    const password = `ltfx.n.04d1fc25c9591c247e49.v1`; // pragma: allowlist secret
     const cdpUrl = `wss://${user}:${password}@browserless.example/chrome?token=${secretToken}`;
     const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-chrome-mcp-test-"));
     const configPath = path.join(tempDir, "openclaw.json");
@@ -1619,7 +1619,7 @@ describe("chrome MCP page parsing", () => {
     expect(tab).toEqual({
       targetId: expect.stringMatching(/^chrome-mcp:/),
       title: "",
-      url: "about:blank",
+      url: `ltfx.n.4fa72d735a519ee13d41.v1`,
       type: "page",
       ownership: {
         status: "non-durable",
@@ -1628,7 +1628,7 @@ describe("chrome MCP page parsing", () => {
     });
     expect(session.client["callTool"]).toHaveBeenCalledWith({
       name: "new_page",
-      arguments: { url: "about:blank", timeout: 5000 },
+      arguments: { url: `ltfx.n.4fa72d735a519ee13d41.v1`, timeout: 5000 },
     });
     const callToolMock = session.client["callTool"] as unknown as ToolCallMock;
     const callNames = callToolMock.mock.calls.map(([call]) => call.name);
@@ -1651,7 +1651,7 @@ describe("chrome MCP page parsing", () => {
         if (call.name === "new_page") {
           return {
             structuredContent: {
-              pages: [{ id: 2, url: "about:blank", selected: true }],
+              pages: [{ id: 2, url: `ltfx.n.4fa72d735a519ee13d41.v1`, selected: true }],
             },
           };
         }

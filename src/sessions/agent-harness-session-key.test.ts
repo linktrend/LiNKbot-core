@@ -24,7 +24,7 @@ describe("agent harness session keys", () => {
   });
 
   it("ties trusted creation to the matching persisted harness owner", () => {
-    const key = "agent:main:harness:codex:supervision:native-thread";
+    const key = `ltfx.n.1d01c261be684b1bb4cb.v1`;
     expect(isAgentHarnessSessionKeyOwnedBy(key, "codex")).toBe(true);
     expect(isAgentHarnessSessionKeyOwnedBy(key, "CODEX-APP-SERVER")).toBe(true);
     expect(isAgentHarnessSessionKeyOwnedBy(key, "other")).toBe(false);
@@ -32,7 +32,7 @@ describe("agent harness session keys", () => {
   });
 
   it("compares the exact owner segment instead of an owner-id prefix", () => {
-    const key = "agent:main:harness:foo:bar:native-thread";
+    const key = `ltfx.n.d6da5304e7add3352447.v1`;
     expect(isAgentHarnessSessionKeyOwnedBy(key, "foo")).toBe(true);
     expect(isAgentHarnessSessionKeyOwnedBy(key, "foo:bar")).toBe(false);
     expect(
@@ -52,7 +52,7 @@ describe("agent harness session keys", () => {
   });
 
   it("validates durable lock metadata for reserved and ordinary rows", () => {
-    const key = "agent:main:harness:codex:supervision:native-thread";
+    const key = `ltfx.n.1d01c261be684b1bb4cb.v1`;
     expect(
       resolveAgentHarnessSessionStoreEntryError(key, {
         agentHarnessId: "codex",
@@ -94,7 +94,7 @@ describe("agent harness session keys", () => {
   });
 
   it("requires a valid durable row for protected reserved runtime contexts", () => {
-    const key = "agent:main:harness:codex:supervision:native-thread";
+    const key = `ltfx.n.1d01c261be684b1bb4cb.v1`;
     expect(resolveAgentHarnessSessionContextError(key, undefined)).toMatch(/reserved/i);
     expect(
       resolveAgentHarnessSessionContextError(key, {
@@ -122,7 +122,7 @@ describe("agent harness session keys", () => {
   });
 
   it("keeps pre-existing unlocked harness-prefixed sessions ordinary", () => {
-    const key = "agent:main:harness:notes";
+    const key = `ltfx.n.3eb2b0fc78824e986360.v1`;
     const entry = {
       agentHarnessId: "openclaw",
       sessionId: "legacy-session",

@@ -23,7 +23,7 @@ function resolveRealtimeTranscriptionProviderEntries(
   cfg?: OpenClawConfig,
 ): RealtimeTranscriptionProviderPlugin[] {
   return resolvePluginCapabilityProviders({
-    key: "realtimeTranscriptionProviders",
+    key: `ltfx.n.6d2483504d73b17254f3.v1`,
     cfg,
   });
 }
@@ -52,7 +52,7 @@ export function getRealtimeTranscriptionProvider(
     return undefined;
   }
   const directProvider = resolvePluginCapabilityProvider({
-    key: "realtimeTranscriptionProviders",
+    key: `ltfx.n.6d2483504d73b17254f3.v1`,
     providerId: normalized,
     cfg,
   });

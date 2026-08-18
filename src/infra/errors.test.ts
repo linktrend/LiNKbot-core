@@ -96,15 +96,15 @@ describe("error helpers", () => {
   });
 
   it("redacts sensitive tokens from formatted error messages", () => {
-    const token = "sk-abcdefghijklmnopqrstuv";
+    const token = `ltfx.n.cfd467d34b70cd6bf224.v1`;
     const formatted = formatErrorMessage(new Error(`Authorization: Bearer ${token}`));
     expect(formatted).toContain("Authorization: Bearer");
     expect(formatted).not.toContain(token);
   });
 
   it("redacts HTTP client config secrets from formatted error chains", () => {
-    const appSecret = "feishu_app_secret_1234567890";
-    const tenantToken = "feishu_tenant_access_abcdef123456";
+    const appSecret = `ltfx.n.e2cf1a45e90c2c4af2b1.v1`;
+    const tenantToken = `ltfx.n.dfb58fb2ae49a056fb19.v1`;
     const rootCause = new Error(
       `request config: { appSecret: '${appSecret}', headers: { authorization: 'Bearer ${tenantToken}' } }`,
     );
@@ -122,16 +122,16 @@ describe("error helpers", () => {
   });
 
   it("uses message-only formatting for INVALID_CONFIG and stack formatting otherwise", () => {
-    const invalidConfig = Object.assign(new Error("TOKEN=sk-abcdefghijklmnopqrstuv"), {
+    const invalidConfig = Object.assign(new Error("TOKEN=(ltfx.n.e7a2eb05faf557280647.v1, {)
       code: "INVALID_CONFIG",
-      stack: "Error: TOKEN=sk-abcdefghijklmnopqrstuv\n    at ignored",
+      stack: "Error: TOKEN=(ltfx.n.bc3a34afe907a78a06b3.v1    at ignored",)
     });
     expect(formatUncaughtError(invalidConfig)).not.toContain("at ignored");
 
     const uncaught = new Error("boom");
-    uncaught.stack = "Error: Authorization: Bearer sk-abcdefghijklmnopqrstuv\n    at runTask";
+    uncaught.stack = "Error: Authorization: Bearer ltfx.n.cfd467d34b70cd6bf224.v1\n    at runTask";
     const formatted = formatUncaughtError(uncaught);
     expect(formatted).toContain("at runTask");
-    expect(formatted).not.toContain("sk-abcdefghijklmnopqrstuv");
+    expect(formatted).not.toContain("ltfx.n.cfd467d34b70cd6bf224.v1");
   });
 });

@@ -220,7 +220,7 @@ describe("Codex app-server runtime artifact", () => {
     await withTempDir("openclaw-codex-runtime-secret-", async (root) => {
       const command = path.join(root, "codex");
       await fs.writeFile(command, "native-v1");
-      const secret = "provider.api_key=super-secret-value";
+      const secret = `ltfx.n.8851d28910b052b60f7b.v1`;
       const options = startOptions(command, { args: ["-c", secret, "app-server"] });
 
       const { binding } = await captureBinding({ options });
@@ -232,7 +232,7 @@ describe("Codex app-server runtime artifact", () => {
   it("fails closed for remote WebSocket runtimes", async () => {
     const options = startOptions("codex", {
       transport: "websocket",
-      url: "ws://127.0.0.1:1234",
+      url: `ltfx.n.59027a55228fb3686dfd.v1`,
     });
     await expect(
       captureCodexAppServerRuntimeArtifactBeforeStart({

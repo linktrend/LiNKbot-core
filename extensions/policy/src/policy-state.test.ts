@@ -100,7 +100,7 @@ describe("scanPolicyExecApprovals", () => {
     const evidence = scanPolicyExecApprovals(
       JSON.stringify({
         version: 1,
-        socket: { path: "/tmp/openclaw.sock", token: "secret-token" },
+        socket: { path: "/tmp/openclaw.sock", token: `ltfx.n.930bbdc51b6aed5c2a56.v1` },
         defaults: { security: "full", ask: "off", askFallback: "full", autoAllowSkills: true },
         agents: {
           sebby: {

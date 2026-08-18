@@ -36,8 +36,8 @@ describe("LINE accounts", () => {
         channels: {
           line: {
             enabled: true,
-            channelAccessToken: "test-token",
-            channelSecret: "test-secret",
+            channelAccessToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+            channelSecret: `ltfx.n.9caf06bb4436cdbfa20a.v1`,
             name: "Test Bot",
           },
         },
@@ -80,8 +80,8 @@ describe("LINE accounts", () => {
             accounts: {
               business: {
                 enabled: true,
-                channelAccessToken: "business-token",
-                channelSecret: "business-secret",
+                channelAccessToken: `ltfx.n.d58270c25e3950b7b3df.v1`,
+                channelSecret: `ltfx.n.97bfdc0dc0ce3cf6bf4c.v1`,
                 name: "Business Bot",
               },
             },
@@ -106,8 +106,8 @@ describe("LINE accounts", () => {
             accounts: {
               business: {
                 enabled: true,
-                channelAccessToken: "business-token",
-                channelSecret: "business-secret",
+                channelAccessToken: `ltfx.n.d58270c25e3950b7b3df.v1`,
+                channelSecret: `ltfx.n.97bfdc0dc0ce3cf6bf4c.v1`,
                 name: "Business Bot",
               },
             },
@@ -223,7 +223,7 @@ describe("LINE accounts", () => {
         channels: {
           line: {
             tokenFile,
-            channelSecret: "test-channel-secret",
+            channelSecret: `ltfx.n.bb8b6692b2e3b971a26c.v1`,
           },
         },
       };
@@ -242,8 +242,8 @@ describe("LINE accounts", () => {
             enabled: true,
             accounts: {
               default: {
-                channelAccessToken: "default-token",
-                channelSecret: "default-secret",
+                channelAccessToken: `ltfx.n.10851c1922ff849d81d7.v1`,
+                channelSecret: `ltfx.n.0a9f34c448a4bb29e6f2.v1`,
                 name: "Default Bot",
               },
             },
@@ -266,12 +266,12 @@ describe("LINE accounts", () => {
         channels: {
           line: {
             enabled: true,
-            channelAccessToken: "base-token",
-            channelSecret: "base-secret",
+            channelAccessToken: `ltfx.n.e1501ed8b13353b142a7.v1`,
+            channelSecret: `ltfx.n.e24296b69402098bdf55.v1`,
             accounts: {
               default: {
-                channelAccessToken: "override-token",
-                channelSecret: "override-secret",
+                channelAccessToken: `ltfx.n.3af631932174740eec72.v1`,
+                channelSecret: `ltfx.n.a7e43c7272be9f71c5d5.v1`,
               },
             },
           },
@@ -291,8 +291,8 @@ describe("LINE accounts", () => {
             enabled: true,
             accounts: {
               twgreen: {
-                channelAccessToken: "twgreen-token",
-                channelSecret: "twgreen-secret",
+                channelAccessToken: `ltfx.n.9b216e28eff6260cfaa7.v1`,
+                channelSecret: `ltfx.n.a66799d76b02fece0d75.v1`,
               },
             },
           },
@@ -314,8 +314,8 @@ describe("LINE accounts", () => {
             accounts: {
               twgreen: {
                 enabled: true,
-                channelAccessToken: "twgreen-token",
-                channelSecret: "twgreen-secret",
+                channelAccessToken: `ltfx.n.9b216e28eff6260cfaa7.v1`,
+                channelSecret: `ltfx.n.a66799d76b02fece0d75.v1`,
               },
             },
           },
@@ -334,8 +334,8 @@ describe("LINE accounts", () => {
             enabled: false,
             accounts: {
               default: {
-                channelAccessToken: "default-token",
-                channelSecret: "default-secret",
+                channelAccessToken: `ltfx.n.10851c1922ff849d81d7.v1`,
+                channelSecret: `ltfx.n.0a9f34c448a4bb29e6f2.v1`,
               },
             },
           },
@@ -355,8 +355,8 @@ describe("LINE accounts", () => {
             accounts: {
               twgreen: {
                 enabled: false,
-                channelAccessToken: "twgreen-token",
-                channelSecret: "twgreen-secret",
+                channelAccessToken: `ltfx.n.9b216e28eff6260cfaa7.v1`,
+                channelSecret: `ltfx.n.a66799d76b02fece0d75.v1`,
               },
             },
           },
@@ -376,8 +376,8 @@ describe("LINE accounts", () => {
             name: "Top-level Bot",
             accounts: {
               default: {
-                channelAccessToken: "default-token",
-                channelSecret: "default-secret",
+                channelAccessToken: `ltfx.n.10851c1922ff849d81d7.v1`,
+                channelSecret: `ltfx.n.0a9f34c448a4bb29e6f2.v1`,
                 name: "Default Account Bot",
               },
             },
@@ -454,7 +454,7 @@ describe("LINE accounts", () => {
         cfg: {
           channels: {
             line: {
-              channelAccessToken: "base-token",
+              channelAccessToken: `ltfx.n.e1501ed8b13353b142a7.v1`,
               accounts: {
                 business: { enabled: true },
               },

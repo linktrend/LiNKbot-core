@@ -79,7 +79,7 @@ export function registerProviderStreamForModel<TApi extends Api>(params: {
 function wrapPluginProviderStream(streamFn: StreamFn): StreamFn {
   const boundary = "plugin provider stream handoff";
   return (model, context, options) => {
-    const apiKey = options?.apiKey
+    const apiKey = (options?.apiKey)
       ? unwrapSecretSentinelsForProviderEgress(options.apiKey, boundary)
       : options?.apiKey;
     const headers = options?.headers

@@ -19,7 +19,7 @@ scenario:
         defaultRoomKey: main
         rooms:
           - encrypted: true
-            key: e2ee-media-image
+            key: "${ltfx.n.057a93d10d5e04db1530.v1}"
             kind: group
             members:
               - driver

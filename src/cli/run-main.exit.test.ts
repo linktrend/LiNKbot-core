@@ -937,12 +937,12 @@ describe("runCli exit behavior", () => {
     const configPath = path.join(configDir, "openclaw.json");
     await fs.mkdir(stateDir, { recursive: true });
     await fs.mkdir(configDir, { recursive: true });
-    await fs.writeFile(path.join(stateDir, ".env"), "OPENCLAW_GATEWAY_TOKEN=state-token\n");
+    await fs.writeFile(path.join(stateDir, ".env"), "OPENCLAW_GATEWAY_TOKEN=(state-token\n");)
     await fs.writeFile(
       path.join(configDir, ".env"),
       [
-        "OPENCLAW_GATEWAY_PASSWORD=config-root-password",
-        "OPENCLAW_GATEWAY_TOKEN=config-root-token",
+        "OPENCLAW_GATEWAY_PASSWORD=(config-root-password",)
+        "OPENCLAW_GATEWAY_TOKEN=(config-root-token",)
         "",
       ].join("\n"),
     );
@@ -973,7 +973,7 @@ describe("runCli exit behavior", () => {
     const legacyStateDir = path.join(homeDir, ".clawdbot");
     const newStateDir = path.join(homeDir, ".openclaw");
     await fs.mkdir(legacyStateDir, { recursive: true });
-    await fs.writeFile(path.join(legacyStateDir, ".env"), "OPENCLAW_GATEWAY_TOKEN=legacy-token\n");
+    await fs.writeFile(path.join(legacyStateDir, ".env"), "OPENCLAW_GATEWAY_TOKEN=(legacy-token\n");)
     try {
       await withEnvAsync(
         {
@@ -1242,7 +1242,7 @@ describe("runCli exit behavior", () => {
                 exists: true,
                 valid: true,
                 sourceConfig: {
-                  env: { vars: { OPENCLAW_GATEWAY_TOKEN: "selected-token" } },
+                  env: { vars: { OPENCLAW_GATEWAY_TOKEN: `ltfx.n.28601ccd8e3ef5bf1179.v1` } },
                   gateway: { mode: "local" },
                 },
               }
@@ -1252,7 +1252,7 @@ describe("runCli exit behavior", () => {
                 sourceConfig: {
                   env: {
                     vars: {
-                      OPENCLAW_GATEWAY_TOKEN: "superseded-token",
+                      OPENCLAW_GATEWAY_TOKEN: `ltfx.n.7f64724ef08376bf42dd.v1`,
                       OPENCLAW_STATE_DIR: "/tmp/openclaw-selected-state",
                     },
                   },
@@ -1402,7 +1402,7 @@ describe("runCli exit behavior", () => {
           exists: true,
           valid: true,
           sourceConfig: {
-            env: { vars: { OPENCLAW_GATEWAY_TOKEN: "discarded-token" } },
+            env: { vars: { OPENCLAW_GATEWAY_TOKEN: `ltfx.n.724c0b0b217c41a08f8e.v1` } },
             gateway: { mode: "local" },
           },
           hash: "clobbered",
@@ -1481,7 +1481,7 @@ describe("runCli exit behavior", () => {
     const homeDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-gateway-selected-env-"));
     const stateDir = path.join(homeDir, "state");
     await fs.mkdir(stateDir, { recursive: true });
-    await fs.writeFile(path.join(stateDir, ".env"), "OPENCLAW_GATEWAY_TOKEN=state-token\n");
+    await fs.writeFile(path.join(stateDir, ".env"), "OPENCLAW_GATEWAY_TOKEN=(state-token\n");)
     try {
       await withEnvAsync(
         {
@@ -1498,7 +1498,7 @@ describe("runCli exit behavior", () => {
             sourceConfig: {
               env: {
                 vars: {
-                  OPENCLAW_GATEWAY_TOKEN: "config-token",
+                  OPENCLAW_GATEWAY_TOKEN: `ltfx.n.a98cc81fe778386f6195.v1`,
                   OPENCLAW_STATE_DIR: stateDir,
                 },
               },
@@ -1531,13 +1531,13 @@ describe("runCli exit behavior", () => {
       path.join(defaultStateDir, ".env"),
       [
         `OPENCLAW_STATE_DIR=${selectedStateDir}`,
-        "OPENCLAW_GATEWAY_TOKEN=superseded-token",
+        "OPENCLAW_GATEWAY_TOKEN=(superseded-token",)
         "",
       ].join("\n"),
     );
     await fs.writeFile(
       path.join(selectedStateDir, ".env"),
-      "OPENCLAW_GATEWAY_TOKEN=selected-token\n",
+      "OPENCLAW_GATEWAY_TOKEN=(selected-token\n",)
     );
     try {
       await withEnvAsync(
@@ -1575,14 +1575,14 @@ describe("runCli exit behavior", () => {
       path.join(gatewayEnvDir, "gateway.env"),
       [
         "OPENCLAW_CONFIG_PATH=/tmp/wrong-openclaw.json",
-        "OPENCLAW_GATEWAY_TOKEN=fallback-token",
+        "OPENCLAW_GATEWAY_TOKEN=(fallback-token",)
         "",
       ].join("\n"),
     );
     await fs.writeFile(
       path.join(selectedStateDir, ".env"),
       [
-        "OPENCLAW_GATEWAY_TOKEN=selected-token",
+        "OPENCLAW_GATEWAY_TOKEN=(selected-token",)
         "OPENCLAW_INCLUDE_ROOTS=/tmp/untrusted-include-root",
         "NODE_OPTIONS=--require /tmp/untrusted.js",
         "",
@@ -1619,13 +1619,13 @@ describe("runCli exit behavior", () => {
     await fs.mkdir(gatewayEnvDir, { recursive: true });
     await fs.writeFile(
       path.join(gatewayEnvDir, "gateway.env"),
-      [`OPENCLAW_STATE_DIR=${selectedStateDir}`, "OPENCLAW_GATEWAY_TOKEN=fallback-token", ""].join(
+      [`OPENCLAW_STATE_DIR=${selectedStateDir}`, "OPENCLAW_GATEWAY_TOKEN=(fallback-token", ""].join()
         "\n",
       ),
     );
     await fs.writeFile(
       path.join(selectedStateDir, ".env"),
-      "OPENCLAW_GATEWAY_TOKEN=selected-token\n",
+      "OPENCLAW_GATEWAY_TOKEN=(selected-token\n",)
     );
     try {
       await withEnvAsync(
@@ -1659,11 +1659,11 @@ describe("runCli exit behavior", () => {
     await fs.mkdir(selectedStateDir, { recursive: true });
     await fs.writeFile(
       path.join(defaultStateDir, ".env"),
-      "OPENCLAW_GATEWAY_TOKEN=superseded-token\n",
+      "OPENCLAW_GATEWAY_TOKEN=(superseded-token\n",)
     );
     await fs.writeFile(
       path.join(selectedStateDir, ".env"),
-      "OPENCLAW_GATEWAY_TOKEN=selected-token\n",
+      "OPENCLAW_GATEWAY_TOKEN=(selected-token\n",)
     );
     try {
       await withEnvAsync(
@@ -1703,10 +1703,10 @@ describe("runCli exit behavior", () => {
     const selectedStateDir = path.join(homeDir, "selected-state");
     await fs.mkdir(defaultStateDir, { recursive: true });
     await fs.mkdir(selectedStateDir, { recursive: true });
-    await fs.writeFile(path.join(defaultStateDir, ".env"), "OPENCLAW_GATEWAY_TOKEN=early-token\n");
+    await fs.writeFile(path.join(defaultStateDir, ".env"), "OPENCLAW_GATEWAY_TOKEN=(early-token\n");)
     await fs.writeFile(
       path.join(selectedStateDir, ".env"),
-      "OPENCLAW_GATEWAY_TOKEN=selected-token\n",
+      "OPENCLAW_GATEWAY_TOKEN=(selected-token\n",)
     );
     try {
       await withEnvAsync(
@@ -1758,7 +1758,7 @@ describe("runCli exit behavior", () => {
         sourceConfig: {
           env: {
             vars: {
-              Z_AI_API_KEY: useReplacement ? "replacement-key" : "superseded-key",
+              Z_AI_API_KEY: useReplacement ? "replacement-key" : `ltfx.n.c07cbb3f14241df8c117.v1`,
             },
           },
           gateway: { mode: "local" },
@@ -1888,7 +1888,7 @@ describe("runCli exit behavior", () => {
             env: {
               vars: {
                 OPENCLAW_CONFIG_PATH: "/tmp/openclaw-reset/openclaw.json",
-                OPENCLAW_GATEWAY_TOKEN: "old-token",
+                OPENCLAW_GATEWAY_TOKEN: `ltfx.n.9bdf10a691a1cfda89d9.v1`,
                 OPENCLAW_HOME: "/tmp/openclaw-reset-home",
                 OPENCLAW_INCLUDE_ROOTS: "/tmp/openclaw-reset-includes",
                 OPENCLAW_PROFILE: "config-dev",
@@ -2793,7 +2793,7 @@ describe("runCli exit behavior", () => {
       },
     });
 
-    await withEnvAsync({ OPENCLAW_GATEWAY_PASSWORD: "gateway-ref-password" }, async () => {
+    await withEnvAsync({ OPENCLAW_GATEWAY_PASSWORD: `ltfx.n.8c27b909cc49a0fcbbd0.v1` }, async () => {
       await withInteractiveTty(async () => {
         await runCli(["node", "openclaw"]);
       });
@@ -2803,8 +2803,8 @@ describe("runCli exit behavior", () => {
     expect(setupWizardCommandMock).not.toHaveBeenCalled();
     expect(readActiveGatewayLockPortMock).toHaveBeenCalledTimes(1);
     expect(probeGatewayConfiguredModelMock).toHaveBeenCalledWith({
-      url: "ws://127.0.0.1:18789",
-      password: "gateway-ref-password",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      password: `ltfx.n.8c27b909cc49a0fcbbd0.v1`,
     });
     expect(launchTuiCliMock).toHaveBeenCalledWith(
       { deliver: false },
@@ -2818,8 +2818,8 @@ describe("runCli exit behavior", () => {
       gateway: {
         mode: "remote",
         remote: {
-          url: "wss://gateway.example/ws",
-          token: "remote-token",
+          url: `ltfx.n.220960bbd8d741e2dfde.v1`,
+          token: `ltfx.n.b79f8018a1bfa2040be5.v1`,
           tlsFingerprint: "sha256:remote",
         },
       },
@@ -2842,7 +2842,7 @@ describe("runCli exit behavior", () => {
     expect(runRemoteGatewayInferenceOnboardingMock).toHaveBeenCalledWith({
       config: sourceConfig,
       gatewayUrl: "wss://gateway.example/ws",
-      token: "remote-token",
+      token: `ltfx.n.b79f8018a1bfa2040be5.v1`,
       tlsFingerprint: "sha256:remote",
     });
     expect(launchTuiCliMock).not.toHaveBeenCalled();
@@ -2877,7 +2877,7 @@ describe("runCli exit behavior", () => {
       sourceConfig: {
         gateway: {
           mode: "remote",
-          remote: { url: "wss://gateway.example/ws", token: "remote-token" },
+          remote: { url: `ltfx.n.220960bbd8d741e2dfde.v1`, token: `ltfx.n.b79f8018a1bfa2040be5.v1` },
         },
       },
     });
@@ -2925,7 +2925,7 @@ describe("runCli exit behavior", () => {
         gateway: {
           mode: "local",
           port: 18789,
-          auth: { mode: "token", token: "configured-token" },
+          auth: { mode: "token", token: `ltfx.n.81e61c0285659b608bb9.v1` },
         },
       },
     });
@@ -2936,8 +2936,8 @@ describe("runCli exit behavior", () => {
     });
 
     expect(probeGatewayConfiguredModelMock).toHaveBeenCalledWith({
-      url: "ws://127.0.0.1:48789",
-      token: "configured-token",
+      url: `ltfx.n.13575c798269c0152f0f.v1`,
+      token: `ltfx.n.81e61c0285659b608bb9.v1`,
     });
     expect(launchTuiCliMock).toHaveBeenCalledWith(
       { deliver: false },
@@ -2953,7 +2953,7 @@ describe("runCli exit behavior", () => {
         gateway: {
           mode: "local",
           port: 18789,
-          auth: { mode: "token", token: "configured-token" },
+          auth: { mode: "token", token: `ltfx.n.81e61c0285659b608bb9.v1` },
         },
       },
     });
@@ -2967,8 +2967,8 @@ describe("runCli exit behavior", () => {
 
     expect(readActiveGatewayLockPortMock).not.toHaveBeenCalled();
     expect(probeGatewayConfiguredModelMock).toHaveBeenCalledWith({
-      url: "ws://127.0.0.1:19001",
-      token: "configured-token",
+      url: `ltfx.n.766a0ec1af7dba7196c2.v1`,
+      token: `ltfx.n.81e61c0285659b608bb9.v1`,
     });
   });
 
@@ -2980,7 +2980,7 @@ describe("runCli exit behavior", () => {
         gateway: {
           mode: "local",
           tls: { enabled: true },
-          auth: { mode: "token", token: "configured-token" },
+          auth: { mode: "token", token: `ltfx.n.81e61c0285659b608bb9.v1` },
         },
       },
     });
@@ -2995,8 +2995,8 @@ describe("runCli exit behavior", () => {
     });
 
     expect(probeGatewayConfiguredModelMock).toHaveBeenCalledWith({
-      url: "wss://127.0.0.1:18789",
-      token: "configured-token",
+      url: `ltfx.n.c7184bff3e2a8226ab2e.v1`,
+      token: `ltfx.n.81e61c0285659b608bb9.v1`,
       tlsFingerprint: "sha256:local-self-signed-fingerprint",
     });
     expect(launchTuiCliMock).toHaveBeenCalledWith(
@@ -3017,15 +3017,15 @@ describe("runCli exit behavior", () => {
       },
     });
 
-    await withEnvAsync({ OPENCLAW_GATEWAY_TOKEN: "env-token" }, async () => {
+    await withEnvAsync({ OPENCLAW_GATEWAY_TOKEN: `ltfx.n.25d37ba7752ae1d95b57.v1` }, async () => {
       await withInteractiveTty(async () => {
         await runCli(["node", "openclaw"]);
       });
     });
 
     expect(probeGatewayConfiguredModelMock).toHaveBeenCalledWith({
-      url: "ws://127.0.0.1:18789",
-      token: "env-token",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      token: `ltfx.n.25d37ba7752ae1d95b57.v1`,
     });
     expect(launchTuiCliMock).toHaveBeenCalledWith(
       { deliver: false },
@@ -3040,12 +3040,12 @@ describe("runCli exit behavior", () => {
     const tokenProgram = [
       "const fs=require('node:fs');",
       `fs.writeFileSync(${JSON.stringify(tokenMarker)},'1');`,
-      "process.stdout.write(JSON.stringify({ protocolVersion: 1, values: { TOKEN_SECRET: 'token-from-exec' } }));", // pragma: allowlist secret
+      "process.stdout.write(JSON.stringify({ protocolVersion: 1, values: { TOKEN_SECRET: `ltfx.n.c68dedfebdf225161221.v1` } }));", // pragma: allowlist secret
     ].join("");
     const passwordProgram = [
       "const fs=require('node:fs');",
       `fs.writeFileSync(${JSON.stringify(passwordMarker)},'1');`,
-      "process.stdout.write(JSON.stringify({ protocolVersion: 1, values: { PASSWORD_SECRET: 'password-from-exec' } }));", // pragma: allowlist secret
+      "process.stdout.write(JSON.stringify({ protocolVersion: 1, values: { PASSWORD_SECRET: `ltfx.n.625809de2910fa6ee0c4.v1` } }));", // pragma: allowlist secret
     ].join("");
     readConfigFileSnapshotMock.mockResolvedValueOnce({
       exists: true,
@@ -3088,8 +3088,8 @@ describe("runCli exit behavior", () => {
       });
 
       expect(probeGatewayConfiguredModelMock).toHaveBeenCalledWith({
-        url: "ws://127.0.0.1:18789",
-        password: "password-from-exec",
+        url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+        password: `ltfx.n.625809de2910fa6ee0c4.v1`,
       });
       await expect(fs.access(tokenMarker)).rejects.toThrow();
       await expect(fs.access(passwordMarker)).resolves.toBeUndefined();
@@ -3112,7 +3112,7 @@ describe("runCli exit behavior", () => {
           bind: "lan",
           auth: {
             mode: "token",
-            token: "local-token",
+            token: `ltfx.n.c7ec7c548f5992a239dc.v1`,
           },
         },
       },
@@ -3124,8 +3124,8 @@ describe("runCli exit behavior", () => {
 
     expect(readActiveGatewayLockPortMock).toHaveBeenCalledTimes(1);
     expect(probeGatewayConfiguredModelMock).toHaveBeenCalledWith({
-      url: "ws://127.0.0.1:18789",
-      token: "local-token",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      token: `ltfx.n.c7ec7c548f5992a239dc.v1`,
     });
     expect(launchTuiCliMock).toHaveBeenCalledWith(
       { deliver: false },
@@ -3143,7 +3143,7 @@ describe("runCli exit behavior", () => {
           bind: "tailnet",
           auth: {
             mode: "token",
-            token: "local-token",
+            token: `ltfx.n.c7ec7c548f5992a239dc.v1`,
           },
         },
       },
@@ -3168,12 +3168,12 @@ describe("runCli exit behavior", () => {
     });
 
     expect(probeGatewayConfiguredModelMock).toHaveBeenNthCalledWith(1, {
-      url: "ws://127.0.0.1:18789",
-      token: "local-token",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      token: `ltfx.n.c7ec7c548f5992a239dc.v1`,
     });
     expect(probeGatewayConfiguredModelMock).toHaveBeenNthCalledWith(2, {
-      url: "ws://100.64.0.10:18789",
-      token: "local-token",
+      url: `ltfx.n.312d35d12efdbe1a9de5.v1`,
+      token: `ltfx.n.c7ec7c548f5992a239dc.v1`,
     });
     expect(launchTuiCliMock).toHaveBeenCalledWith(
       { deliver: false },
@@ -3189,7 +3189,7 @@ describe("runCli exit behavior", () => {
         gateway: {
           mode: "local",
           bind: "tailnet",
-          auth: { mode: "token", token: "local-token" },
+          auth: { mode: "token", token: `ltfx.n.c7ec7c548f5992a239dc.v1` },
         },
       },
     });
@@ -3225,7 +3225,7 @@ describe("runCli exit behavior", () => {
         gateway: {
           mode: "local",
           bind: "tailnet",
-          auth: { mode: "token", token: "local-token" },
+          auth: { mode: "token", token: `ltfx.n.c7ec7c548f5992a239dc.v1` },
         },
       },
     });
@@ -3253,13 +3253,13 @@ describe("runCli exit behavior", () => {
   });
 
   it("keeps a reachable unverified Gateway ahead of local inference fallback", async () => {
-    const url = "ws://127.0.0.1:18789";
+    const url = `ltfx.n.0edbee82f0824a1ed09b.v1`;
     readConfigFileSnapshotMock.mockResolvedValueOnce({
       exists: true,
       valid: true,
       sourceConfig: {
         agents: { defaults: { model: { primary: "openai/local-only-model" } } },
-        gateway: { mode: "remote", remote: { url, token: "remote-token" } },
+        gateway: { mode: "remote", remote: { url, token: `ltfx.n.b79f8018a1bfa2040be5.v1` } },
       },
     });
     probeGatewayConfiguredModelMock.mockResolvedValueOnce({
@@ -3279,12 +3279,12 @@ describe("runCli exit behavior", () => {
   });
 
   it("keeps a configured remote Gateway authoritative across a transient cold-restart probe", async () => {
-    const url = "wss://gateway.example/ws";
+    const url = `ltfx.n.220960bbd8d741e2dfde.v1`;
     readConfigFileSnapshotMock.mockResolvedValueOnce({
       exists: true,
       valid: true,
       sourceConfig: {
-        gateway: { mode: "remote", remote: { url, token: "remote-token" } },
+        gateway: { mode: "remote", remote: { url, token: `ltfx.n.b79f8018a1bfa2040be5.v1` } },
       },
     });
     probeGatewayConfiguredModelMock.mockResolvedValueOnce({
@@ -3309,7 +3309,7 @@ describe("runCli exit behavior", () => {
       exists: true,
       valid: true,
       sourceConfig: {
-        gateway: { mode: "local", auth: { mode: "token", token: "local-token" } },
+        gateway: { mode: "local", auth: { mode: "token", token: `ltfx.n.c7ec7c548f5992a239dc.v1` } },
       },
     });
     probeGatewayConfiguredModelMock.mockResolvedValueOnce({
@@ -3349,9 +3349,9 @@ describe("runCli exit behavior", () => {
   });
 
   it.each([
-    { label: "LAN IP", url: "ws://192.168.1.10:18789" },
-    { label: "mDNS", url: "ws://gateway.local:18789" },
-    { label: "Tailnet DNS", url: "ws://machine.tail123.ts.net:18789" },
+    { label: "LAN IP", url: `ltfx.n.2521477bd4a5044efcac.v1` },
+    { label: "mDNS", url: `ltfx.n.c07f6a3fc6ad8f2dc96c.v1` },
+    { label: "Tailnet DNS", url: `ltfx.n.20d24510c9ede6d4faee.v1` },
   ])("does not probe a plaintext remote gateway over $label without opt-in", async ({ url }) => {
     readConfigFileSnapshotMock.mockResolvedValueOnce({
       exists: true,
@@ -3361,7 +3361,7 @@ describe("runCli exit behavior", () => {
           mode: "remote",
           remote: {
             url,
-            token: "remote-token",
+            token: `ltfx.n.b79f8018a1bfa2040be5.v1`,
           },
         },
       },
@@ -3379,7 +3379,7 @@ describe("runCli exit behavior", () => {
   });
 
   it("probes a plaintext remote loopback gateway", async () => {
-    const url = "ws://127.0.0.1:18789";
+    const url = `ltfx.n.0edbee82f0824a1ed09b.v1`;
     readConfigFileSnapshotMock.mockResolvedValueOnce({
       exists: true,
       valid: true,
@@ -3388,7 +3388,7 @@ describe("runCli exit behavior", () => {
           mode: "remote",
           remote: {
             url,
-            token: "remote-token",
+            token: `ltfx.n.b79f8018a1bfa2040be5.v1`,
           },
         },
       },
@@ -3402,7 +3402,7 @@ describe("runCli exit behavior", () => {
 
     expect(probeGatewayConfiguredModelMock).toHaveBeenCalledWith({
       url,
-      token: "remote-token",
+      token: `ltfx.n.b79f8018a1bfa2040be5.v1`,
     });
     expect(setupWizardCommandMock).not.toHaveBeenCalled();
     expect(launchTuiCliMock).toHaveBeenCalledWith(
@@ -3412,7 +3412,7 @@ describe("runCli exit behavior", () => {
   });
 
   it("keeps configured remote password authoritative from preflight through TUI launch", async () => {
-    const url = "ws://127.0.0.1:18789";
+    const url = `ltfx.n.0edbee82f0824a1ed09b.v1`;
     readConfigFileSnapshotMock.mockResolvedValueOnce({
       exists: true,
       valid: true,
@@ -3421,13 +3421,13 @@ describe("runCli exit behavior", () => {
           mode: "remote",
           remote: {
             url,
-            password: "configured-remote-password", // pragma: allowlist secret
+            password: `ltfx.n.0b9d1b2542c32fe424be.v1`, // pragma: allowlist secret
           },
         },
       },
     });
 
-    await withEnvAsync({ OPENCLAW_GATEWAY_PASSWORD: "stale-env-password" }, async () => {
+    await withEnvAsync({ OPENCLAW_GATEWAY_PASSWORD: `ltfx.n.7d9195869c40ea9c51dc.v1` }, async () => {
       await withInteractiveTty(async () => {
         await runCli(["node", "openclaw"]);
       });
@@ -3435,7 +3435,7 @@ describe("runCli exit behavior", () => {
 
     expect(probeGatewayConfiguredModelMock).toHaveBeenCalledWith({
       url,
-      password: "configured-remote-password",
+      password: `ltfx.n.0b9d1b2542c32fe424be.v1`,
     });
     expect(launchTuiCliMock).toHaveBeenCalledWith(
       { deliver: false },
@@ -3444,7 +3444,7 @@ describe("runCli exit behavior", () => {
   });
 
   it("falls back to gateway env auth when configured remote SecretRefs are unresolved", async () => {
-    const url = "ws://127.0.0.1:18789";
+    const url = `ltfx.n.0edbee82f0824a1ed09b.v1`;
     readConfigFileSnapshotMock.mockResolvedValueOnce({
       exists: true,
       valid: true,
@@ -3472,8 +3472,8 @@ describe("runCli exit behavior", () => {
       {
         MISSING_REMOTE_GATEWAY_TOKEN: undefined,
         MISSING_REMOTE_GATEWAY_PASSWORD: undefined,
-        OPENCLAW_GATEWAY_TOKEN: "env-remote-token",
-        OPENCLAW_GATEWAY_PASSWORD: "env-remote-password",
+        OPENCLAW_GATEWAY_TOKEN: `ltfx.n.cf55b9df71b0375c6579.v1`,
+        OPENCLAW_GATEWAY_PASSWORD: `ltfx.n.53fa779518469387a0ae.v1`,
       },
       async () => {
         await withInteractiveTty(async () => {
@@ -3484,15 +3484,15 @@ describe("runCli exit behavior", () => {
 
     expect(probeGatewayConfiguredModelMock).toHaveBeenCalledWith({
       url,
-      token: "env-remote-token",
-      password: "env-remote-password",
+      token: `ltfx.n.cf55b9df71b0375c6579.v1`,
+      password: `ltfx.n.53fa779518469387a0ae.v1`,
     });
     expect(setupWizardCommandMock).not.toHaveBeenCalled();
     expect(launchTuiCliMock).toHaveBeenCalledWith({ deliver: false }, { gatewayUrl: url });
   });
 
   it("probes an explicitly allowed plaintext private remote gateway", async () => {
-    const url = "ws://192.168.1.10:18789";
+    const url = `ltfx.n.2521477bd4a5044efcac.v1`;
     readConfigFileSnapshotMock.mockResolvedValueOnce({
       exists: true,
       valid: true,
@@ -3501,7 +3501,7 @@ describe("runCli exit behavior", () => {
           mode: "remote",
           remote: {
             url,
-            token: "remote-token",
+            token: `ltfx.n.b79f8018a1bfa2040be5.v1`,
           },
         },
       },
@@ -3515,7 +3515,7 @@ describe("runCli exit behavior", () => {
 
     expect(probeGatewayConfiguredModelMock).toHaveBeenCalledWith({
       url,
-      token: "remote-token",
+      token: `ltfx.n.b79f8018a1bfa2040be5.v1`,
     });
     expect(setupWizardCommandMock).not.toHaveBeenCalled();
     expect(launchTuiCliMock).toHaveBeenCalledWith(
@@ -3532,8 +3532,8 @@ describe("runCli exit behavior", () => {
         gateway: {
           mode: "remote",
           remote: {
-            url: "wss://gateway.example.com:18789",
-            token: "remote-token",
+            url: `ltfx.n.f5e15cc7530f3463a0a2.v1`,
+            token: `ltfx.n.b79f8018a1bfa2040be5.v1`,
             tlsFingerprint: "sha256:11:22:33:44",
           },
         },
@@ -3545,8 +3545,8 @@ describe("runCli exit behavior", () => {
     });
 
     expect(probeGatewayConfiguredModelMock).toHaveBeenCalledWith({
-      url: "wss://gateway.example.com:18789",
-      token: "remote-token",
+      url: `ltfx.n.f5e15cc7530f3463a0a2.v1`,
+      token: `ltfx.n.b79f8018a1bfa2040be5.v1`,
       tlsFingerprint: "sha256:11:22:33:44",
     });
     expect(launchTuiCliMock).toHaveBeenCalledWith(
@@ -3563,8 +3563,8 @@ describe("runCli exit behavior", () => {
         gateway: {
           mode: "remote",
           remote: {
-            url: "ws://gateway.example.com:18789",
-            token: "remote-token",
+            url: `ltfx.n.9c9c500873c6318f48a3.v1`,
+            token: `ltfx.n.b79f8018a1bfa2040be5.v1`,
           },
         },
       },

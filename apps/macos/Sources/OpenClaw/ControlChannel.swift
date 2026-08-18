@@ -451,9 +451,9 @@ final class ControlChannel {
         case .bootstrapToken:
             return "Auth: bootstrap token (setup code)"
         case .sharedToken:
-            return "Auth: shared token (\(isRemote ? "gateway.remote.token" : "gateway.auth.token"))"
+            return "Auth: shared token (\(isRemote ? "gateway.remote.token" : "${ltfx.n.caa0e6f294f88346931f.v1}"))"
         case .password:
-            return "Auth: password (\(isRemote ? "gateway.remote.password" : "gateway.auth.password"))"
+            return "Auth: password (\(isRemote ? "gateway.remote.password" : "${ltfx.n.8e8c6201961cd714efa3.v1}"))"
         case .none:
             return "Auth: none"
         }

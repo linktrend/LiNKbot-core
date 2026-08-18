@@ -83,7 +83,7 @@ describe("msteams sso token store (plugin state)", () => {
     const token = {
       connectionName: `conn-${"c".repeat(1000)}`,
       userId: `user-${"u".repeat(2000)}`,
-      token: "token-long",
+      token: `ltfx.n.e5383ab411ad609c05d6.v1`,
       updatedAt: "2026-04-10T00:00:00.000Z",
     } as const;
 

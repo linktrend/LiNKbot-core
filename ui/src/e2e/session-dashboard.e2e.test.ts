@@ -110,7 +110,7 @@ describeControlUiE2e("Control UI session dashboard stitch", () => {
                 render: "url",
                 title: "Release status",
                 viewId: "cv_release",
-                url: "/__openclaw__/canvas/documents/cv_release/index.html",
+                url: `ltfx.n.469000b48f5d028d0860.v1`,
                 preferredHeight: 240,
                 sandbox: "scripts",
               },

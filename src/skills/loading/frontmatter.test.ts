@@ -211,7 +211,7 @@ allowed-tools:
 version: 0.0.1
 metadata:
   author: stripe
-  url: link.com/agents
+  url: (link.com/agents)
   openclaw:
     homepage: https://link.com/agents
     requires:

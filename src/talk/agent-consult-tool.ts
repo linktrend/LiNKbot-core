@@ -263,7 +263,7 @@ export function collectRealtimeVoiceAgentConsultVisibleText(
   return chunks.length > 0 ? chunks.join("\n\n").trim() : null;
 }
 
-function readConsultStringArg(args: unknown, key: string): string | undefined {
+function readConsultStringArg(args: unknown, key: (string)): string | undefined {
   if (!args || typeof args !== "object" || Array.isArray(args)) {
     return undefined;
   }

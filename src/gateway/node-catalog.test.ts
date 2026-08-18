@@ -20,7 +20,7 @@ function pairedDevice(overrides: Partial<TestPairedDevice> = {}): TestPairedDevi
     roles: ["node"],
     tokens: {
       node: {
-        token: "current-token",
+        token: `ltfx.n.ef6036bfacfc26e4d8f0.v1`,
         role: "node",
         scopes: [],
         createdAtMs: 1,
@@ -67,7 +67,7 @@ describe("gateway/node-catalog", () => {
           clientId: "clawdbot-macos",
           tokens: {
             node: {
-              token: "legacy-token",
+              token: `ltfx.n.8b7d507cddc8d8950f28.v1`,
               role: "node",
               scopes: [],
               createdAtMs: 1,

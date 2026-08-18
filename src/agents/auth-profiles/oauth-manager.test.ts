@@ -157,7 +157,7 @@ describe("OAuthManagerRefreshError", () => {
         "openai:oauth": createCredential({
           access: "store-access",
           refresh: "store-refresh",
-          idToken: "store-id-token",
+          idToken: `ltfx.n.a54ea05d82813267780b.v1`,
         }),
       },
     };
@@ -165,7 +165,7 @@ describe("OAuthManagerRefreshError", () => {
       credential: createCredential({
         access: "error-access",
         refresh: "error-refresh",
-        idToken: "error-id-token",
+        idToken: `ltfx.n.079c8bb2ee251a5e4895.v1`,
       }),
       profileId: "openai:oauth",
       refreshedStore,
@@ -193,7 +193,7 @@ describe("OAuthManagerRefreshError", () => {
   });
 
   it("redacts token-shaped credential secrets before generic masking", () => {
-    const access = "sk-oauthreviewredaction1234567890zzzz";
+    const access = `ltfx.n.960826457cb75b4b2f01.v1`;
     const refresh = "ya29.oauthreviewredaction1234567890yyyy";
     const error = new OAuthManagerRefreshError({
       credential: createCredential({ access, refresh }),
@@ -221,7 +221,7 @@ describe("OAuthManagerRefreshError", () => {
     (cause) => {
       const error = new OAuthManagerRefreshError({
         credential: createCredential({
-          access: "sk-nonjsonredaction1234567890zzzz",
+          access: `ltfx.n.03eb7fb13b1ce5ade999.v1`,
         }),
         profileId: "openai:oauth",
         refreshedStore: { version: 1, profiles: {} },
@@ -732,7 +732,7 @@ describe("createOAuthManager", () => {
         provider: "minimax-portal",
         access: "external-attempt-access",
         refresh: "external-attempt-refresh",
-        idToken: "external-attempt-id-token",
+        idToken: `ltfx.n.18771049a6951c71ea53.v1`,
         expires: Date.now() - 30_000,
       });
       saveAuthProfileStore(

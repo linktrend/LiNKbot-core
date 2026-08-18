@@ -124,7 +124,7 @@ describe("sendMessageSlack Enterprise listener scope", () => {
       await expect(
         sendMessageSlack("channel:C123", message, {
           cfg: ENTERPRISE_CFG,
-          token: "xoxb-enterprise",
+          token: `ltfx.n.c43735a0aefe9205fbd6.v1`,
           client,
         }),
       ).rejects.toThrow("unsupported_enterprise_slack_delivery");
@@ -145,7 +145,7 @@ describe("sendMessageSlack Enterprise listener scope", () => {
     await expect(
       sendMessageSlack("channel:C123", "hello", {
         ...enterpriseOptions(client),
-        cfg: { channels: { slack: { botToken: "xoxb-workspace" } } },
+        cfg: { channels: { slack: { botToken: `ltfx.n.5be52b6e246caea3f30a.v1` } } },
       }),
     ).rejects.toThrow("unexpected_enterprise_slack_listener_scope");
     expect(client.chat.postMessage).not.toHaveBeenCalled();
@@ -160,7 +160,7 @@ describe("sendMessageSlack Enterprise listener scope", () => {
       cfg: {
         channels: {
           slack: {
-            botToken: "xoxb-enterprise",
+            botToken: `ltfx.n.c43735a0aefe9205fbd6.v1`,
             enterpriseOrgInstall: true,
             unfurlLinks: true,
             unfurlMedia: true,

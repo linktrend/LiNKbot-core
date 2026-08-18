@@ -32,7 +32,7 @@ describe("hasOpenAICompatibleConversationTurn", () => {
     ).toBe(true);
     expect(
       hasOpenAICompatibleConversationTurn([
-        { role: "user", content: [{ type: "image_url", image_url: { url: "data:image/png" } }] },
+        { role: "user", content: [{ type: "image_url", image_url: { url: `ltfx.n.98c4ce56c6627fb914fb.v1` } }] },
       ]),
     ).toBe(true);
     expect(hasOpenAICompatibleConversationTurn([{ role: "assistant", content: "answer" }])).toBe(

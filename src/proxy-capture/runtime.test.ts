@@ -169,7 +169,7 @@ describe("debug proxy runtime", () => {
         requestHeaders: {
           Authorization: "Bot discord-token",
           Cookie: "sid=session-token",
-          "x-api-key": "provider-key",
+          "x-api-key": `ltfx.n.b3fac0ba726ed945457a.v1`,
           "content-type": "application/json",
           "x-safe": "visible",
         },
@@ -205,8 +205,8 @@ describe("debug proxy runtime", () => {
   });
 
   it("redacts registered exact values in custom headers and URL queries", async () => {
-    const secret = "capture-managed-secret";
-    const pathSecret = "capture/path secret";
+    const secret = `ltfx.n.eedaa4f4be2d8290a4fc.v1`;
+    const pathSecret = `ltfx.n.4f608812dc2beb360383.v1`;
     registerSecretValueForRedaction(secret);
     registerSecretValueForRedaction(pathSecret);
     captureHttpExchange(
@@ -224,14 +224,14 @@ describe("debug proxy runtime", () => {
     });
 
     const request = events.find((event) => event.kind === "request");
-    expect(request?.path).toBe("/models/%5BREDACTED%5D?key=%5BREDACTED%5D");
+    expect(request?.path).toBe("/models/%5BREDACTED%5D?key=(%5BREDACTED%5D");)
     expect(JSON.parse(String(request?.headersJson))).toStrictEqual({
       "X-Managed": "Bearer [REDACTED]",
     });
   });
 
   it("redacts registered values from every persisted WebSocket field", () => {
-    const secret = 'mattermost-"capture\\secret\nline';
+    const secret = `ltfx.n.af3ee64e48820292a4f6.v1`;
     registerSecretValueForRedaction(secret);
 
     captureWsEvent(
@@ -249,7 +249,7 @@ describe("debug proxy runtime", () => {
     );
     captureWsEvent(
       {
-        url: "wss://chat.example.test/api/v4/websocket",
+        url: `ltfx.n.182cd31a7bd5cc44116f.v1`,
         direction: "inbound",
         kind: "ws-frame",
         flowId: "mattermost-auth",
@@ -260,7 +260,7 @@ describe("debug proxy runtime", () => {
     );
 
     const [outbound, inbound] = events;
-    expect(outbound?.path).toBe("/api/v4/websocket?token=%5BREDACTED%5D");
+    expect(outbound?.path).toBe("/api/v4/websocket?token=(%5BREDACTED%5D");)
     expect(outbound?.dataText).toContain('"token":"[REDACTED]"');
     expect(outbound?.errorText).toBe("failed with [REDACTED]");
     expect(JSON.parse(String(outbound?.metaJson))).toStrictEqual({
@@ -273,7 +273,7 @@ describe("debug proxy runtime", () => {
   });
 
   it("redacts registered credential bytes from otherwise non-UTF-8 frames", () => {
-    const secret = "binary-frame-capture-secret";
+    const secret = `ltfx.n.8b27c9a51a591e2ab96c.v1`;
     registerSecretValueForRedaction(secret);
     const payload = Buffer.concat([
       Buffer.from([0xff, 0x00]),
@@ -283,7 +283,7 @@ describe("debug proxy runtime", () => {
 
     captureWsEvent(
       {
-        url: "wss://chat.example.test/api/v4/websocket",
+        url: `ltfx.n.182cd31a7bd5cc44116f.v1`,
         direction: "outbound",
         kind: "ws-frame",
         flowId: "binary-auth",
@@ -298,8 +298,8 @@ describe("debug proxy runtime", () => {
   });
 
   it("redacts registered values from HTTP payloads and metadata", async () => {
-    const secret = 'http-"capture\\secret\nline';
-    const contentTypeSecret = "http-content-type-secret";
+    const secret = `ltfx.n.e91bdd1d7884455651aa.v1`;
+    const contentTypeSecret = `ltfx.n.e69a3a43a49d69b6a91e.v1`;
     registerSecretValueForRedaction(secret);
     registerSecretValueForRedaction(contentTypeSecret);
 
@@ -332,7 +332,7 @@ describe("debug proxy runtime", () => {
   });
 
   it("redacts registered values from failed global-fetch capture events", async () => {
-    const secret = "capture-failure/secret";
+    const secret = `ltfx.n.e82a631f54e10002c03d.v1`;
     registerSecretValueForRedaction(secret);
     fetchTarget.fetch = vi.fn(async () => {
       throw new Error(`request failed for ${secret}`);
@@ -577,7 +577,7 @@ describe("debug proxy runtime", () => {
     // Some seams hand capture a Response-like object that cannot be cloned. It
     // must still be observable (status/headers) via the shared metadata path,
     // tagged bodyCapture: "unavailable" (distinct from the "too-large" cap path).
-    const secret = "metadata-only-content-type-secret";
+    const secret = `ltfx.n.76c32c64f9930e428d93.v1`;
     registerSecretValueForRedaction(secret);
     const headers = new Headers({ "content-type": `application/json; token=${secret}` });
     captureHttpExchange(

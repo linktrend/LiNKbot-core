@@ -133,7 +133,7 @@ describe("trajectory metadata", () => {
       config: {
         providers: {
           openai: {
-            apiKey: "super-secret",
+            apiKey: `ltfx.n.aec8084845b41a6952d4.v1`,
           },
         },
       } as never,

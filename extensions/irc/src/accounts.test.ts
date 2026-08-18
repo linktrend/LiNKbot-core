@@ -223,7 +223,7 @@ describe("resolveIrcAccount", () => {
               work: {
                 host: "irc.example.com",
                 nick: "claw",
-                password: "test-password",
+                password: `ltfx.n.c638833f69bbfb3c267a.v1`,
                 passwordFile,
               },
             },

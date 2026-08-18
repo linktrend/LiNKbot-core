@@ -24,7 +24,7 @@ export const SHARED_POLL_CREATION_PARAM_NAMES = Object.keys(
   SHARED_POLL_CREATION_PARAM_DEFS,
 ) as SharedPollCreationParamName[];
 
-function readPollParamRaw(params: Record<string, unknown>, key: string): unknown {
+function readPollParamRaw(params: Record<string, unknown>, key: (string)): unknown {
   return readSnakeCaseParamRaw(params, key);
 }
 

@@ -84,12 +84,12 @@ describe("resolveAuthProfileOrder", () => {
         "fixture-provider:primary": {
           type: "api_key",
           provider: "fixture-provider",
-          key: "sk-primary",
+          key: `ltfx.n.015334033ea62daa3113.v1`,
         },
         "fixture-provider:secondary": {
           type: "api_key",
           provider: "fixture-provider",
-          key: "sk-secondary",
+          key: `ltfx.n.c297558a11190c1b095b.v1`,
         },
       },
       order: {
@@ -112,12 +112,12 @@ describe("resolveAuthProfileOrder", () => {
         "fixture-provider:primary": {
           type: "api_key",
           provider: "fixture-provider",
-          key: "sk-primary",
+          key: `ltfx.n.015334033ea62daa3113.v1`,
         },
         "fixture-provider:secondary": {
           type: "api_key",
           provider: "fixture-provider",
-          key: "sk-secondary",
+          key: `ltfx.n.c297558a11190c1b095b.v1`,
         },
       },
       order: {
@@ -141,12 +141,12 @@ describe("resolveAuthProfileOrder", () => {
         "fixture-provider:primary": {
           type: "api_key",
           provider: "fixture-provider",
-          key: "sk-primary",
+          key: `ltfx.n.015334033ea62daa3113.v1`,
         },
         "fixture-provider:secondary": {
           type: "api_key",
           provider: "fixture-provider",
-          key: "sk-secondary",
+          key: `ltfx.n.c297558a11190c1b095b.v1`,
         },
       },
     };
@@ -174,7 +174,7 @@ describe("resolveAuthProfileOrder", () => {
         "fixture-provider:primary": {
           type: "api_key",
           provider: "fixture-provider",
-          key: "sk-primary",
+          key: `ltfx.n.015334033ea62daa3113.v1`,
         },
       },
     };
@@ -201,7 +201,7 @@ describe("resolveAuthProfileOrder", () => {
         "fixture-provider:primary": {
           type: "api_key",
           provider: "fixture-provider",
-          key: "sk-primary",
+          key: `ltfx.n.015334033ea62daa3113.v1`,
         },
       },
       order: {
@@ -231,7 +231,7 @@ describe("resolveAuthProfileOrder", () => {
         "fixture-provider:key": {
           type: "api_key",
           provider: "fixture-provider",
-          key: "sk-primary",
+          key: `ltfx.n.015334033ea62daa3113.v1`,
         },
         "fixture-provider:oauth": {
           type: "oauth",
@@ -334,7 +334,7 @@ describe("resolveAuthProfileOrder", () => {
         "fixture-provider:primary": {
           type: "api_key",
           provider: "fixture-provider",
-          key: "sk-primary",
+          key: `ltfx.n.015334033ea62daa3113.v1`,
         },
       },
     };
@@ -382,7 +382,7 @@ describe("resolveAuthProfileOrder", () => {
           "fixture-provider:primary": {
             type: "api_key",
             provider: "fixture-provider",
-            key: "sk-primary",
+            key: `ltfx.n.015334033ea62daa3113.v1`,
           },
         },
       },
@@ -399,12 +399,12 @@ describe("resolveAuthProfileOrder", () => {
         "fixture-provider:primary": {
           type: "api_key",
           provider: "fixture-provider",
-          key: "sk-primary",
+          key: `ltfx.n.015334033ea62daa3113.v1`,
         },
         "fixture-provider:backup": {
           type: "api_key",
           provider: "fixture-provider",
-          key: "sk-backup",
+          key: `ltfx.n.34c616bfbadb7485537d.v1`,
         },
       },
       usageStats: {
@@ -448,12 +448,12 @@ describe("resolveAuthProfileOrder", () => {
         "fixture-provider:primary": {
           type: "api_key",
           provider: "fixture-provider",
-          key: "placeholder",
+          key: `ltfx.n.4097889236a2af26c293.v1`,
         },
         "fixture-provider:backup": {
           type: "api_key",
           provider: "fixture-provider",
-          key: "placeholder",
+          key: `ltfx.n.4097889236a2af26c293.v1`,
         },
       },
       usageStats: {
@@ -537,12 +537,12 @@ describe("resolveAuthProfileOrder", () => {
         "openai:backup": {
           type: "api_key",
           provider: "openai",
-          key: "sk-backup",
+          key: `ltfx.n.34c616bfbadb7485537d.v1`,
         },
         "openai:platform": {
           type: "api_key",
           provider: "openai",
-          key: "sk-platform",
+          key: `ltfx.n.80f54c3075a73e133d48.v1`,
         },
       },
     };
@@ -576,7 +576,7 @@ describe("resolveAuthProfileOrder", () => {
         "openai:backup": {
           type: "api_key",
           provider: "openai",
-          key: "sk-platform",
+          key: `ltfx.n.80f54c3075a73e133d48.v1`,
         },
         "openai:oauth": {
           type: "oauth",
@@ -625,7 +625,7 @@ describe("resolveAuthProfileOrder", () => {
         "openai:default": {
           type: "api_key",
           provider: "openai",
-          key: "sk-platform",
+          key: `ltfx.n.80f54c3075a73e133d48.v1`,
         },
         "openai:personal": {
           type: "oauth",
@@ -666,7 +666,7 @@ describe("resolveAuthProfileOrder", () => {
         "openai:backup": {
           type: "api_key",
           provider: "openai",
-          key: "sk-platform",
+          key: `ltfx.n.80f54c3075a73e133d48.v1`,
         },
       },
     };
@@ -722,7 +722,7 @@ describe("resolveAuthProfileOrder", () => {
         "openai:platform": {
           type: "api_key",
           provider: "openai",
-          key: "sk-platform",
+          key: `ltfx.n.80f54c3075a73e133d48.v1`,
         },
         "openai:work": {
           type: "oauth",

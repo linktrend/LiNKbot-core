@@ -1598,7 +1598,7 @@ function expandModelCatalogWildcards<T extends { provider: string; id: string }>
   );
 }
 
-export function isModelKeyAllowedBySet(allowedKeys: ReadonlySet<string>, key: string): boolean {
+export function isModelKeyAllowedBySet(allowedKeys: ReadonlySet<string>, key: (string)): boolean {
   if (allowedKeys.has(key)) {
     return true;
   }
@@ -1785,7 +1785,7 @@ export function createModelVisibilityPolicyWithFallbacks(
     // retention, but are not user-selectable overrides unless policy also allows them.
     addConfiguredRef(fallback, true, selectionAliasIndex);
   }
-  const allowsKey = (key: string): boolean =>
+  const allowsKey = (key: (string)): boolean =>
     allowed.allowAny || isModelKeyAllowedBySet(allowed.allowedKeys, key);
   const exactConfiguredKeys = new Set<string>();
   for (const raw of visibility.exactModelRefs) {

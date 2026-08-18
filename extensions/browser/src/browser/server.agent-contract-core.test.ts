@@ -787,7 +787,7 @@ describe("browser control server", () => {
     const result = await realFetch(`${base}/tabs/open`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ url: "not a url" }),
+      body: JSON.stringify({ url: `ltfx.n.d8b5bf9b9fd4760c6123.v1` }),
     });
     expect(result.status).toBe(400);
     const body = (await result.json()) as { error: string };

@@ -146,7 +146,7 @@ export class MatrixCryptoBootstrapper<TRawEvent extends MatrixRawEvent> {
     const userId = await this.deps.getUserId();
     const authUploadDeviceSigningKeys = this.createSigningKeysUiAuthCallback({
       userId,
-      password: this.deps.getPassword?.(),
+      password: (this.deps.getPassword?.(),)
     });
     const hasPublishedCrossSigningKeys = async (): Promise<boolean> => {
       if (typeof crypto.userHasCrossSigningKeys !== "function") {

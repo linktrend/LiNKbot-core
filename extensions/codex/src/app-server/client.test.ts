@@ -96,7 +96,7 @@ describe("CodexAppServerClient", () => {
     const harness = createClientHarness();
     clients.push(harness.client);
 
-    harness.process.stdout.write('{"token":"secret-value"} trailing\n');
+    harness.process.stdout.write('{"token":`ltfx.n.31160254d1297393d2ad.v1`} trailing\n');
 
     await vi.waitFor(() => expect(warn).toHaveBeenCalledTimes(1));
     const [message, rawMetadata] = warn.mock.calls[0] ?? [];
@@ -115,7 +115,7 @@ describe("CodexAppServerClient", () => {
       "Unexpected non-whitespace character after JSON at position 25 (line 1 column 26)",
     );
     expect(metadata?.fragmentCount).toBe(1);
-    expect(metadata?.linePreview).toBe('{"token":"<redacted>"} trailing');
+    expect(metadata?.linePreview).toBe('{"token":`ltfx.n.3a2d1afa44d101200100.v1`} trailing');
     expect(metadata?.consoleMessage).toBe(
       'failed to parse codex app-server message: preview="{\\"token\\":\\"<redacted>\\"} trailing"',
     );
@@ -476,11 +476,11 @@ describe("CodexAppServerClient", () => {
     clients.push(harness.client);
 
     const pending = harness.client.request("test/method");
-    harness.process.stderr.write('fatal token="secret-value" while booting\n');
+    harness.process.stderr.write('fatal token=`ltfx.n.31160254d1297393d2ad.v1` while booting\n');
     harness.process.emit("exit", 1, null);
 
     await expect(pending).rejects.toThrow(
-      'codex app-server exited: code=1 signal=null stderr="fatal token=\\"<redacted>\\" while booting"',
+      'codex app-server exited: code=1 signal=null stderr="fatal token=(\\"<redacted>\\" while booting"',)
     );
     await expect(harness.client.request("another/method")).rejects.toThrow(
       "codex app-server exited: code=1 signal=null",

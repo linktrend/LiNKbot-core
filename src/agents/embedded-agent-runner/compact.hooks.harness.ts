@@ -20,7 +20,7 @@ type MockResolvedModel = {
     contextWindow?: number;
   };
   error: null;
-  authStorage: { setRuntimeApiKey: Mock<(provider?: string, apiKey?: string) => void> };
+  authStorage: { setRuntimeApiKey: (Mock<(provider?: string, apiKey?: string) => void> };)
   modelRegistry: Record<string, never>;
 };
 type MockMemorySearchManager = {

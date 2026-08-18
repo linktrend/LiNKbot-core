@@ -663,7 +663,7 @@ describe("startCodexAttemptThread", () => {
   it("forwards prepared auth without a legacy profile selector", async () => {
     const preparedAuth = {
       kind: "api-key" as const,
-      apiKey: "prepared-platform-key",
+      apiKey: `ltfx.n.34ddaf60896be843d9bb.v1`,
     };
     const clientFactory = vi.fn<CodexAppServerClientFactory>(async () => {
       throw new Error("stop after option capture");

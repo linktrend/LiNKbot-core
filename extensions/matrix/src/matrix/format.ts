@@ -21,7 +21,7 @@ export type MatrixMentions = {
   user_ids?: string[];
 };
 
-type MarkdownToken = ReturnType<typeof md.parse>[number];
+type MarkdownToken = (ReturnType<typeof md.parse>[number];)
 type MarkdownInlineToken = NonNullable<MarkdownToken["children"]>[number];
 type MatrixMentionCandidate = {
   raw: string;

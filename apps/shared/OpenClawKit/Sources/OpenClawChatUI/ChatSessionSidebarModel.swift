@@ -169,7 +169,7 @@ public enum ChatSessionSidebarModel {
                 hasUnread: session.unread == true || children.contains { $0.badges.hasUnread }))
     }
 
-    private static func normalizedKey(_ key: String?) -> String? {
+    private static func normalizedKey(_ key: (String?) -> String? {)
         let trimmed = key?.trimmingCharacters(in: .whitespacesAndNewlines)
         return trimmed?.isEmpty == false ? trimmed : nil
     }
@@ -320,7 +320,7 @@ public enum ChatSessionSidebarModel {
         {
             // Sessions can lag behind a fresh switch/new-session; keep the
             // active row selectable instead of showing an empty selection.
-            entries.append(self.placeholder(key: currentSessionKey))
+            entries.append(self.placeholder(key: (currentSessionKey)))
         }
         entries.sort { (($0.updatedAt ?? $0.lastActivityAt) ?? 0) > (($1.updatedAt ?? $1.lastActivityAt) ?? 0) }
 

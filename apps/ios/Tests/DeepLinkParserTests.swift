@@ -67,7 +67,7 @@ private func agentAction(
     @Test func parseAgentLinkParsesTargetRoutingFields() {
         let url =
             URL(
-                string: "openclaw://agent?message=Hello%20World&deliver=1&to=%2B15551234567&channel=whatsapp&key=secret")!
+                string: "openclaw://agent?message=Hello%20World&deliver=1&to=%2B15551234567&channel=whatsapp&key=(secret")!)
         #expect(DeepLinkParser.parse(url) == agentAction(
             message: "Hello World",
             deliver: true,
@@ -83,7 +83,7 @@ private func agentAction(
 
     @Test func parseGatewayLinkParsesCommonFields() {
         let url = URL(
-            string: "openclaw://gateway?host=openclaw.local&port=18789&tls=1&token=abc&password=def")!
+            string: "openclaw://gateway?host=openclaw.local&port=18789&tls=1&token=(abc&password=def")!)
         #expect(
             DeepLinkParser.parse(url) == .gateway(
                 .init(
@@ -132,7 +132,7 @@ private func agentAction(
     }
 
     @Test func parseGatewaySetupCodeParsesBase64UrlPayload() {
-        let payload = #"{"url":"wss://gateway.example.com:443","bootstrapToken":"tok","password":"pw"}"#
+        let payload = #"{"url":"${ltfx.n.58c67554253c3f623595.v1}","bootstrapToken":"tok","password":"pw"}"#
         let link = GatewayConnectDeepLink.fromSetupCode(setupCode(from: payload))
 
         #expect(link == .init(
@@ -167,7 +167,7 @@ private func agentAction(
     }
 
     @Test func parseGatewaySetupCodeDefaultsTo443ForWssWithoutPort() {
-        let payload = #"{"url":"wss://gateway.example.com","bootstrapToken":"tok"}"#
+        let payload = #"{"url":"${ltfx.n.72e4dc7921c2128a3b3f.v1}","bootstrapToken":"tok"}"#
         let link = GatewayConnectDeepLink.fromSetupCode(setupCode(from: payload))
 
         #expect(link == .init(
@@ -180,19 +180,19 @@ private func agentAction(
     }
 
     @Test func parseGatewaySetupCodeRejectsInsecureNonLoopbackWs() {
-        let payload = #"{"url":"ws://attacker.example:18789","bootstrapToken":"tok"}"#
+        let payload = #"{"url":"${ltfx.n.c989f66cdfeeabad1961.v1}","bootstrapToken":"tok"}"#
         let link = GatewayConnectDeepLink.fromSetupCode(setupCode(from: payload))
         #expect(link == nil)
     }
 
     @Test func parseGatewaySetupCodeRejectsInsecurePrefixBypassHost() {
-        let payload = #"{"url":"ws://127.attacker.example:18789","bootstrapToken":"tok"}"#
+        let payload = #"{"url":"${ltfx.n.3bf765a79bd79bda2ad7.v1}","bootstrapToken":"tok"}"#
         let link = GatewayConnectDeepLink.fromSetupCode(setupCode(from: payload))
         #expect(link == nil)
     }
 
     @Test func parseGatewaySetupCodeAllowsLoopbackWs() {
-        let payload = #"{"url":"ws://127.0.0.1:18789","bootstrapToken":"tok"}"#
+        let payload = #"{"url":"${ltfx.n.0edbee82f0824a1ed09b.v1}","bootstrapToken":"tok"}"#
         let link = GatewayConnectDeepLink.fromSetupCode(setupCode(from: payload))
 
         #expect(link == .init(
@@ -205,7 +205,7 @@ private func agentAction(
     }
 
     @Test func parseGatewaySetupCodeAllowsPrivateLanWs() {
-        let payload = #"{"url":"ws://openclaw.local:18789","bootstrapToken":"tok"}"#
+        let payload = #"{"url":"${ltfx.n.1f2267023544086b2a2d.v1}","bootstrapToken":"tok"}"#
         let link = GatewayConnectDeepLink.fromSetupCode(setupCode(from: payload))
 
         #expect(link == .init(
@@ -218,13 +218,13 @@ private func agentAction(
     }
 
     @Test func parseGatewaySetupCodeRejectsTailnetPlaintextWs() {
-        let payload = #"{"url":"ws://gateway.tailnet.ts.net:18789","bootstrapToken":"tok"}"#
+        let payload = #"{"url":"${ltfx.n.5f7c061017c63257ae28.v1}","bootstrapToken":"tok"}"#
         let link = GatewayConnectDeepLink.fromSetupCode(setupCode(from: payload))
         #expect(link == nil)
     }
 
     @Test func parseGatewaySetupInputParsesFullCopiedSetupMessage() {
-        let payload = #"{"url":"wss://gateway.example.com","bootstrapToken":"tok"}"#
+        let payload = #"{"url":"${ltfx.n.72e4dc7921c2128a3b3f.v1}","bootstrapToken":"tok"}"#
         let link = GatewayConnectDeepLink.fromSetupInput("""
         Pairing setup code generated.
 

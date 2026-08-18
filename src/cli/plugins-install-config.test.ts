@@ -244,7 +244,7 @@ describe("loadConfigForInstall", () => {
         installs: { discord: { source: "npm", installPath: "/gone" } },
         load: { paths: ["/gone", "/keep"] },
       },
-      channels: { discord: { token: "preserve-me" } },
+      channels: { discord: { token: `ltfx.n.4818de1c16b9b00826d4.v1` } },
     } as unknown as OpenClawConfig;
     readConfigFileSnapshotMock.mockResolvedValue(
       makeSnapshot({
@@ -273,7 +273,7 @@ describe("loadConfigForInstall", () => {
           installs: { discord: { source: "npm", installPath: "/gone" } },
           load: { paths: ["/keep"] },
         },
-        channels: { discord: { token: "preserve-me" } },
+        channels: { discord: { token: `ltfx.n.4818de1c16b9b00826d4.v1` } },
       },
       baseHash: "abc",
       writeOptions: installWriteOptions,

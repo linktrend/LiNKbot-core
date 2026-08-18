@@ -202,7 +202,7 @@ describe("ensureGatewayReadyForOperation", () => {
       rpc: {
         ok: false,
         error: "gateway closed (1008): auth failed",
-        url: "ws://127.0.0.1:49876",
+        url: `ltfx.n.cfa54f07e34ec4c23e63.v1`,
       },
     });
     const confirm = vi.fn();
@@ -234,7 +234,7 @@ describe("ensureGatewayReadyForOperation", () => {
       rpc: {
         ok: false,
         error: "device identity required",
-        url: "ws://127.0.0.1:18789",
+        url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       },
     });
     const confirm = vi.fn();
@@ -263,7 +263,7 @@ describe("ensureGatewayReadyForOperation", () => {
         runtime: { status: "running" },
       },
       port: { port: 18789, status: "busy", listeners: [], hints: [] },
-      rpc: { ok: false, error: "timeout", url: "ws://127.0.0.1:18789" },
+      rpc: { ok: false, error: "timeout", url: `ltfx.n.0edbee82f0824a1ed09b.v1` },
     });
     const confirm = vi.fn();
 
@@ -296,7 +296,7 @@ describe("ensureGatewayReadyForOperation", () => {
       rpc: {
         ok: false,
         error: "Unexpected server response: 200",
-        url: "ws://127.0.0.1:18789",
+        url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       },
     });
     const confirm = vi.fn();

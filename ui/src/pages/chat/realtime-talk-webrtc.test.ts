@@ -89,7 +89,7 @@ function createOpenAiTransport(
     {
       provider: "openai",
       transport: "webrtc",
-      clientSecret: "client-secret-123",
+      clientSecret: `ltfx.n.972bc11acbeba057ff41.v1`,
     },
     {
       client: client as never,
@@ -290,7 +290,7 @@ describe("WebRtcSdpRealtimeTalkTransport", () => {
       {
         provider: "openai",
         transport: "webrtc",
-        clientSecret: "client-secret-123",
+        clientSecret: `ltfx.n.972bc11acbeba057ff41.v1`,
         offerUrl: "https://api.openai.com/v1/realtime/calls",
         offerHeaders: {
           originator: "openclaw",
@@ -421,7 +421,7 @@ describe("WebRtcSdpRealtimeTalkTransport", () => {
       {
         provider: "openai",
         transport: "webrtc",
-        clientSecret: "client-secret-123",
+        clientSecret: `ltfx.n.972bc11acbeba057ff41.v1`,
       },
       {
         client: {} as never,
@@ -456,7 +456,7 @@ describe("WebRtcSdpRealtimeTalkTransport", () => {
       {
         provider: "openai",
         transport: "webrtc",
-        clientSecret: "client-secret-123",
+        clientSecret: `ltfx.n.972bc11acbeba057ff41.v1`,
       },
       {
         client: {} as never,
@@ -504,7 +504,7 @@ describe("WebRtcSdpRealtimeTalkTransport", () => {
       {
         provider: "openai",
         transport: "webrtc",
-        clientSecret: "client-secret-123",
+        clientSecret: `ltfx.n.972bc11acbeba057ff41.v1`,
       },
       {
         client: {} as never,
@@ -586,7 +586,7 @@ describe("WebRtcSdpRealtimeTalkTransport", () => {
         {
           provider: "openai",
           transport: "webrtc",
-          clientSecret: "client-secret-123",
+          clientSecret: `ltfx.n.972bc11acbeba057ff41.v1`,
         },
         {
           client: {} as never,
@@ -650,7 +650,7 @@ describe("WebRtcSdpRealtimeTalkTransport", () => {
       {
         provider: "openai",
         transport: "webrtc",
-        clientSecret: "client-secret-123",
+        clientSecret: `ltfx.n.972bc11acbeba057ff41.v1`,
       },
       {
         client: {
@@ -862,7 +862,7 @@ describe("WebRtcSdpRealtimeTalkTransport", () => {
       {
         provider: "openai",
         transport: "webrtc",
-        clientSecret: "client-secret-123",
+        clientSecret: `ltfx.n.972bc11acbeba057ff41.v1`,
       },
       {
         client: {
@@ -933,7 +933,7 @@ describe("WebRtcSdpRealtimeTalkTransport", () => {
       {
         provider: "openai",
         transport: "webrtc",
-        clientSecret: "client-secret-123",
+        clientSecret: `ltfx.n.972bc11acbeba057ff41.v1`,
       },
       {
         client: {

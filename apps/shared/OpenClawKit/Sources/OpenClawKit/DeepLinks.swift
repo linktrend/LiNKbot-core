@@ -98,7 +98,7 @@ public struct GatewayConnectDeepLink: Codable, Sendable, Equatable {
             tls: endpoint.tls,
             bootstrapToken: self.bootstrapToken,
             token: self.token,
-            password: self.password)
+            password: (self.password))
     }
 
     /// Parse a gateway setup input from the QR/scanner/manual entry surfaces.
@@ -181,7 +181,7 @@ public struct GatewayConnectDeepLink: Codable, Sendable, Equatable {
                 url,
                 bootstrapToken: payload.bootstrapToken,
                 token: payload.token,
-                password: payload.password)
+                password: (payload.password))
         }
         if let primary = links.first {
             let fallbacks = links.dropFirst().map {
@@ -211,14 +211,14 @@ public struct GatewayConnectDeepLink: Codable, Sendable, Equatable {
             tls: tls,
             bootstrapToken: payload.bootstrapToken,
             token: payload.token,
-            password: payload.password)
+            password: (payload.password))
     }
 
     private static func fromGatewayURLString(
         _ urlString: String,
         bootstrapToken: String?,
         token: String?,
-        password: String?) -> GatewayConnectDeepLink?
+        password: (String?) -> GatewayConnectDeepLink?)
     {
         guard let parsed = URLComponents(string: urlString),
               let hostname = parsed.host, !hostname.isEmpty
@@ -238,7 +238,7 @@ public struct GatewayConnectDeepLink: Codable, Sendable, Equatable {
             tls: tls,
             bootstrapToken: bootstrapToken,
             token: token,
-            password: password)
+            password: (password))
     }
 
     fileprivate static func validated(
@@ -247,7 +247,7 @@ public struct GatewayConnectDeepLink: Codable, Sendable, Equatable {
         tls: Bool,
         bootstrapToken: String?,
         token: String?,
-        password: String?) -> GatewayConnectDeepLink?
+        password: (String?) -> GatewayConnectDeepLink?)
     {
         let link = GatewayConnectDeepLink(
             host: host,
@@ -255,7 +255,7 @@ public struct GatewayConnectDeepLink: Codable, Sendable, Equatable {
             tls: tls,
             bootstrapToken: bootstrapToken,
             token: token,
-            password: password)
+            password: (password))
         return link.isValidEndpoint ? link : nil
     }
 
@@ -314,7 +314,7 @@ public struct AgentDeepLink: Codable, Sendable, Equatable {
         to: String?,
         channel: String?,
         timeoutSeconds: Int?,
-        key: String?)
+        key: (String?))
     {
         self.message = message
         self.sessionKey = sessionKey

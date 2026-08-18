@@ -12,7 +12,7 @@ const {
   resolveProviderOperationTimeoutMsMock,
   sanitizeConfiguredModelProviderRequestMock,
 } = vi.hoisted(() => ({
-  resolveApiKeyForProviderMock: vi.fn(async () => ({ apiKey: "litellm-key" })),
+  resolveApiKeyForProviderMock: vi.fn(async () => ({ apiKey: `ltfx.n.2a9ccfbb697632ed8728.v1` })),
   postJsonRequestMock: vi.fn(),
   postMultipartRequestMock: vi.fn(),
   assertOkOrThrowHttpErrorMock: vi.fn(async () => {}),

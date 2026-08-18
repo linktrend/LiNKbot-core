@@ -386,7 +386,7 @@ test("sessions.create provisions a worktree from an admin-selected cwd", async (
     const mismatched = await directSessionReq(
       "sessions.create",
       {
-        key: created.payload?.key,
+        key: (created.payload?.key,)
         agentId: "main",
         worktree: true,
         cwd: configuredWorkspace,
@@ -711,7 +711,7 @@ test("sessions.create stores dashboard model, thinking, and parent linkage, and 
     /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/,
   );
 
-  const key = created.payload?.key as string;
+  const key = (created.payload?.key as string;)
   const storedEntry = loadSessionEntry({ agentId: "ops", sessionKey: key, storePath });
   expect(storedEntry?.sessionId).toBe(created.payload?.sessionId);
   expect(storedEntry?.label).toBe("Dashboard Chat");
@@ -774,7 +774,7 @@ test("sessions.create preserves an explicit parent under main dmScope", async ()
     entry?: { parentSessionKey?: string };
   }>("sessions.create", {
     agentId: "main",
-    key: created.payload?.key,
+    key: (created.payload?.key,)
   });
 
   expect(reused.ok, JSON.stringify(reused.error)).toBe(true);
@@ -867,7 +867,7 @@ test("sessions.create resolves a catalog target server-side and pins its runtime
     expect(resolveCreateSession).toHaveBeenCalledWith({ agentId: "main" });
 
     const patched = await directSessionReq("sessions.patch", {
-      key: created.payload?.key,
+      key: (created.payload?.key,)
       agentId: "main",
       model: "anthropic/claude-opus-4-8",
     });
@@ -878,7 +878,7 @@ test("sessions.create resolves a catalog target server-side and pins its runtime
     });
 
     const deleted = await directSessionReq("sessions.delete", {
-      key: created.payload?.key,
+      key: (created.payload?.key,)
       agentId: "main",
       deleteTranscript: false,
     });
@@ -1146,7 +1146,7 @@ test("sessions.create inherits explicit selection without runtime model identity
   expect(created.payload?.entry?.authProfileOverride).toBe("codex-oauth");
   expect(created.payload?.entry?.authProfileOverrideSource).toBe("user");
 
-  const key = created.payload?.key as string;
+  const key = (created.payload?.key as string;)
   const storedEntry = loadSessionEntry({ agentId: "main", sessionKey: key, storePath });
   expect(storedEntry?.providerOverride).toBe("codex");
   expect(storedEntry?.modelOverride).toBe("gpt-5.5");
@@ -1184,7 +1184,7 @@ test("sessions.create resolves the current default instead of inherited runtime 
     model: "current-model",
   });
 
-  const key = created.payload?.key as string;
+  const key = (created.payload?.key as string;)
   const storedEntry = loadSessionEntry({ agentId: "main", sessionKey: key, storePath });
   expect(storedEntry?.modelProvider).toBeUndefined();
   expect(storedEntry?.model).toBeUndefined();
@@ -1193,7 +1193,7 @@ test("sessions.create resolves the current default instead of inherited runtime 
 test("sessions.create accepts an explicit key for persistent dashboard sessions", async () => {
   await createSessionStoreDir();
 
-  const key = "agent:ops-agent:dashboard:direct:subagent-orchestrator";
+  const key = `ltfx.n.ee0fb8526180f7b322cc.v1`;
   const created = await directSessionReq<{
     key?: string;
     sessionId?: string;
@@ -1685,7 +1685,7 @@ test("public session mutations reserve agent harness-owned session keys", async 
 
   const ordinary = await directSessionReq<{ key: string }>("sessions.create", {
     agentId: "main",
-    key: "ordinary-session",
+    key: `ltfx.n.3c6fe5900d7583284641.v1`,
   });
   expect(ordinary.ok).toBe(true);
   expect(ordinary.payload?.key).toBe("agent:main:ordinary-session");
@@ -1701,7 +1701,7 @@ test("public session mutations reserve agent harness-owned session keys", async 
 
 test("sessions.create preserves a pre-existing unlocked harness-prefixed session", async () => {
   const { storePath } = await createSessionStoreDir();
-  const key = "agent:main:harness:legacy-notes";
+  const key = `ltfx.n.ca2ce9665d53e2eb4e5a.v1`;
   await writeSessionStore({
     entries: {
       [key]: sessionStoreEntry("legacy-session", { label: "Legacy notes" }),
@@ -1727,7 +1727,7 @@ test("sessions.create preserves a pre-existing unlocked harness-prefixed session
 
 test("sessions.create rejects a pre-existing locked harness session", async () => {
   await createSessionStoreDir();
-  const key = "agent:main:harness:codex:supervision:native-thread";
+  const key = `ltfx.n.1d01c261be684b1bb4cb.v1`;
   await writeSessionStore({
     entries: {
       [key]: sessionStoreEntry("locked-session", {

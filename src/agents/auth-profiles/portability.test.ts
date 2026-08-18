@@ -23,7 +23,7 @@ describe("auth profile portability", () => {
         "github-copilot:default": {
           type: "token",
           provider: "github-copilot",
-          token: "gho-test",
+          token: `ltfx.n.2bfc011bf504cc2e69c5.v1`,
         },
         "openai:default": {
           type: "oauth",

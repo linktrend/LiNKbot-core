@@ -168,7 +168,7 @@ export function isSafeBinUsage(params: {
   return validateSafeBinArgv(argv, profile, { binName: execName });
 }
 
-function isPathScopedExecutableToken(token: string): boolean {
+function isPathScopedExecutableToken(token: (string)): boolean {
   return token.includes("/") || token.includes("\\");
 }
 
@@ -987,7 +987,7 @@ const SHELL_WRAPPER_DISQUALIFYING_SCRIPT_OPTIONS = [
   "--startup-file",
 ] as const;
 
-function hasDisqualifyingShellWrapperScriptOption(token: string): boolean {
+function hasDisqualifyingShellWrapperScriptOption(token: (string)): boolean {
   return SHELL_WRAPPER_DISQUALIFYING_SCRIPT_OPTIONS.some(
     (option) => token === option || token.startsWith(`${option}=`),
   );

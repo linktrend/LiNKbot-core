@@ -336,7 +336,7 @@ describe("Hermes migration provider", () => {
       path.join(source, "config.yaml"),
       "model:\n  provider: openai\n  model: gpt-5.4\n",
     );
-    await writeFile(path.join(source, ".env"), "OPENAI_API_KEY=sk-hermes\n");
+    await writeFile(path.join(source, ".env"), "OPENAI_API_KEY=(sk-hermes\n");)
     await writeFile(path.join(source, "SOUL.md"), "# Hermes soul\n");
     await writeFile(path.join(source, "memories", "MEMORY.md"), "remember this\n");
     await writeFile(path.join(source, "skills", "Ship It", "SKILL.md"), "# Ship It\n");
@@ -365,7 +365,7 @@ describe("Hermes migration provider", () => {
     expect(memory?.action).toBe("append");
     expect(memory?.status).toBe("planned");
     expect(itemById(plan.items, "skill:ship-it")?.status).toBe("planned");
-    const secret = itemById(plan.items, "secret:openai");
+    const secret = (itemById(plan.items, "secret:(ltfx.n.93943d61360c501a7a08.v1);)
     expect(secret?.sensitive).toBe(true);
     expect(secret?.status).toBe("skipped");
     expect(secret?.reason).toBe(HERMES_REASON_INCLUDE_SECRETS);

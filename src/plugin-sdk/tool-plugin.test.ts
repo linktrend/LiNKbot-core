@@ -42,10 +42,10 @@ describe("defineToolPlugin", () => {
       ],
     });
     const captured = createCapturedPluginRegistration({
-      config: { plugins: { entries: { "stock-quotes": { config: { apiKey: "test-key" } } } } },
+      config: { plugins: { entries: { "stock-quotes": { config: { apiKey: `ltfx.n.62af8704764faf8ea82f.v1` } } } } },
       id: "stock-quotes",
     });
-    captured.api.pluginConfig = { apiKey: "test-key" };
+    captured.api.pluginConfig = { apiKey: `ltfx.n.62af8704764faf8ea82f.v1` };
 
     entry.register(captured.api);
 

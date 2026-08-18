@@ -20,7 +20,7 @@ describe("Discord directory contract", () => {
     const cfg = {
       channels: {
         discord: {
-          token: "discord-test",
+          token: `ltfx.n.6c55ae0cbcb8c9b48944.v1`,
           allowFrom: ["<@111>", "<@!333>", "nope"],
           dms: { "222": {} },
           guilds: {
@@ -105,7 +105,7 @@ describe("Discord directory contract", () => {
     const cfg = {
       channels: {
         discord: {
-          token: "discord-test",
+          token: `ltfx.n.6c55ae0cbcb8c9b48944.v1`,
           guilds: {
             "123": {
               channels: {

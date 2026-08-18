@@ -2232,7 +2232,7 @@ struct GatewayNodeSessionTests {
 
         try await gateway.connect(
             url: #require(URL(string: "ws://first.example.invalid")),
-            credentials: .init(token: "first-token"),
+            credentials: .init(token: "${ltfx.n.55b4b48f529c3d2daa02.v1}"),
             connectOptions: options,
             sessionBox: WebSocketSessionBox(session: session),
             onConnected: {},
@@ -2242,7 +2242,7 @@ struct GatewayNodeSessionTests {
         let replacement = Task {
             try await gateway.connect(
                 url: #require(URL(string: "ws://stale.example.invalid")),
-                credentials: .init(token: "stale-token"),
+                credentials: .init(token: "${ltfx.n.7d19b716b1e5083012f0.v1}"),
                 connectOptions: options,
                 sessionBox: WebSocketSessionBox(session: session),
                 onConnected: {},
@@ -2294,7 +2294,7 @@ struct GatewayNodeSessionTests {
 
         try await gateway.connect(
             url: #require(URL(string: "ws://first.example.invalid")),
-            credentials: .init(token: "first-token"),
+            credentials: .init(token: "${ltfx.n.55b4b48f529c3d2daa02.v1}"),
             connectOptions: options,
             sessionBox: WebSocketSessionBox(session: session),
             onConnected: {},
@@ -2316,7 +2316,7 @@ struct GatewayNodeSessionTests {
 
         try await gateway.connect(
             url: #require(URL(string: "ws://replacement.example.invalid")),
-            credentials: .init(token: "replacement-token"),
+            credentials: .init(token: "${ltfx.n.d4c83ca2e3ecd535cebf.v1}"),
             connectOptions: options,
             sessionBox: WebSocketSessionBox(session: session),
             onConnected: {},
@@ -2586,7 +2586,7 @@ struct GatewayNodeSessionTests {
         let staleGate = AsyncGate()
         let freshProbe = ComputerInvokeProbe()
         let paramsJSON = #"{"action":"type","text":"hello"}"#
-        let key = "computer.act:v1:stale-reconnect"
+        let key = "${ltfx.n.27b25f0f3ccc4de27dc9.v1}"
         let scope = "gateway:test"
         let stale = Task {
             await gateway.invokeComputerWithReceiptForTesting(
@@ -2648,7 +2648,7 @@ struct GatewayNodeSessionTests {
         let replayProbe = ComputerInvokeProbe()
         await replayProbe.release()
         let scope = "gateway:timeout-capacity"
-        let key = "computer.act:v1:unsettled"
+        let key = "${ltfx.n.d3f09e62e8bb42210069.v1}"
         let paramsJSON = #"{"action":"type","text":"blocked"}"#
 
         let timedOut = await gateway.invokeComputerWithReceiptForTesting(
@@ -2696,7 +2696,7 @@ struct GatewayNodeSessionTests {
         _ = DeviceAuthStore.storeToken(
             deviceId: identity.deviceId,
             role: "operator",
-            token: "stored-device-token")
+            token: "${ltfx.n.c3f79732393a0ff6e042.v1}")
 
         let session = FakeGatewayWebSocketSession()
         let gateway = GatewayNodeSession()
@@ -2713,7 +2713,7 @@ struct GatewayNodeSessionTests {
 
         try await gateway.connect(
             url: #require(URL(string: "ws://example.invalid")),
-            credentials: .init(bootstrapToken: "fresh-bootstrap-token"),
+            credentials: .init(bootstrapToken: "${ltfx.n.46db8532060ec0b39636.v1}"),
             connectOptions: options,
             sessionBox: WebSocketSessionBox(session: session),
             onConnected: {},
@@ -2736,7 +2736,7 @@ struct GatewayNodeSessionTests {
         _ = DeviceAuthStore.storeToken(
             deviceId: identity.deviceId,
             role: "node",
-            token: "previous-gateway-device-token")
+            token: "${ltfx.n.00d1ed26fee68910c620.v1}")
 
         let session = FakeGatewayWebSocketSession()
         let gateway = GatewayNodeSession()
@@ -2780,7 +2780,7 @@ struct GatewayNodeSessionTests {
         _ = DeviceAuthStore.storeToken(
             deviceId: identity.deviceId,
             role: "node",
-            token: "gateway-a-device-token",
+            token: "${ltfx.n.73a19451d6193851188a.v1}",
             gatewayID: "gateway-a")
 
         let session = FakeGatewayWebSocketSession()
@@ -2826,10 +2826,10 @@ struct GatewayNodeSessionTests {
         _ = DeviceAuthStore.storeToken(
             deviceId: primaryIdentity.deviceId,
             role: "node",
-            token: "primary-node-token")
+            token: "${ltfx.n.9c1fefe30b3a8f6ad297.v1}")
 
         let session = FakeGatewayWebSocketSession(helloAuth: [
-            "deviceToken": "share-node-token",
+            "deviceToken": "${ltfx.n.16f4f26f8de07cec1d17.v1}",
             "role": "node",
             "scopes": [],
         ])
@@ -2848,7 +2848,7 @@ struct GatewayNodeSessionTests {
 
         try await gateway.connect(
             url: #require(URL(string: "ws://example.invalid")),
-            credentials: .init(password: "shared-password"),
+            credentials: .init(password: "${ltfx.n.39c949687a577d7a63f5.v1}"),
             connectOptions: options,
             sessionBox: WebSocketSessionBox(session: session),
             onConnected: {},
@@ -2889,8 +2889,8 @@ struct GatewayNodeSessionTests {
         try await gateway.connect(
             url: #require(URL(string: "ws://example.invalid")),
             credentials: .init(
-                bootstrapToken: "stale-bootstrap-token",
-                password: "shared-password"),
+                bootstrapToken: "${ltfx.n.3e355cac6ea6b489b79c.v1}",
+                password: "${ltfx.n.39c949687a577d7a63f5.v1}"),
             connectOptions: options,
             sessionBox: WebSocketSessionBox(session: session),
             onConnected: {},
@@ -2935,7 +2935,7 @@ struct GatewayNodeSessionTests {
         do {
             try await gateway.connect(
                 url: #require(URL(string: "ws://example.invalid")),
-                credentials: .init(token: "shared-token"),
+                credentials: .init(token: "${ltfx.n.fad34a6f30260e5a8db3.v1}"),
                 connectOptions: options,
                 sessionBox: WebSocketSessionBox(session: session),
                 onConnected: {},
@@ -2983,7 +2983,7 @@ struct GatewayNodeSessionTests {
 
         try await gateway.connect(
             url: #require(URL(string: "wss://example.invalid")),
-            credentials: .init(token: "shared-token"),
+            credentials: .init(token: "${ltfx.n.fad34a6f30260e5a8db3.v1}"),
             connectOptions: options,
             sessionBox: WebSocketSessionBox(session: firstSession),
             onConnected: {},
@@ -2994,7 +2994,7 @@ struct GatewayNodeSessionTests {
 
         try await gateway.connect(
             url: #require(URL(string: "wss://example.invalid")),
-            credentials: .init(token: "shared-token"),
+            credentials: .init(token: "${ltfx.n.fad34a6f30260e5a8db3.v1}"),
             connectOptions: options,
             sessionBox: WebSocketSessionBox(session: secondSession),
             onConnected: {},
@@ -3013,13 +3013,13 @@ struct GatewayNodeSessionTests {
     func `bootstrap hello stores additional device tokens`() async throws {
         let identity = DeviceIdentityStore.loadOrCreate()
         let session = FakeGatewayWebSocketSession(helloAuth: [
-            "deviceToken": "node-device-token",
+            "deviceToken": "${ltfx.n.b7297242ebd77031c317.v1}",
             "role": "node",
             "scopes": [],
             "issuedAtMs": 1000,
             "deviceTokens": [
                 [
-                    "deviceToken": "operator-device-token",
+                    "deviceToken": "${ltfx.n.18a85b270f4ea365ae5d.v1}",
                     "role": "operator",
                     "scopes": [
                         "node.exec",
@@ -3048,7 +3048,7 @@ struct GatewayNodeSessionTests {
 
         try await gateway.connect(
             url: #require(URL(string: "wss://example.invalid")),
-            credentials: .init(bootstrapToken: "fresh-bootstrap-token"),
+            credentials: .init(bootstrapToken: "${ltfx.n.46db8532060ec0b39636.v1}"),
             connectOptions: options,
             sessionBox: WebSocketSessionBox(session: session),
             onConnected: {},
@@ -3085,7 +3085,7 @@ struct GatewayNodeSessionTests {
         defer { try? FileManager.default.removeItem(at: blocker) }
 
         let session = FakeGatewayWebSocketSession(helloAuth: [
-            "deviceToken": "node-device-token",
+            "deviceToken": "${ltfx.n.b7297242ebd77031c317.v1}",
             "role": "node",
             "scopes": [],
         ])
@@ -3103,7 +3103,7 @@ struct GatewayNodeSessionTests {
 
         try await gateway.connect(
             url: #require(URL(string: "wss://example.invalid")),
-            credentials: .init(bootstrapToken: "fresh-bootstrap-token"),
+            credentials: .init(bootstrapToken: "${ltfx.n.46db8532060ec0b39636.v1}"),
             connectOptions: options,
             sessionBox: WebSocketSessionBox(session: session),
             onConnected: {},
@@ -3120,12 +3120,12 @@ struct GatewayNodeSessionTests {
     func `non bootstrap hello stores primary device token but not additional bootstrap tokens`() async throws {
         let identity = DeviceIdentityStore.loadOrCreate()
         let session = FakeGatewayWebSocketSession(helloAuth: [
-            "deviceToken": "server-node-token",
+            "deviceToken": "${ltfx.n.8ee3d206636c5d2dba85.v1}",
             "role": "node",
             "scopes": [],
             "deviceTokens": [
                 [
-                    "deviceToken": "server-operator-token",
+                    "deviceToken": "${ltfx.n.57687d40e45f174a9d82.v1}",
                     "role": "operator",
                     "scopes": ["operator.admin"],
                 ],
@@ -3145,7 +3145,7 @@ struct GatewayNodeSessionTests {
 
         try await gateway.connect(
             url: #require(URL(string: "wss://example.invalid")),
-            credentials: .init(token: "shared-token"),
+            credentials: .init(token: "${ltfx.n.fad34a6f30260e5a8db3.v1}"),
             connectOptions: options,
             sessionBox: WebSocketSessionBox(session: session),
             onConnected: {},
@@ -3166,12 +3166,12 @@ struct GatewayNodeSessionTests {
     func `untrusted bootstrap hello does not persist bootstrap handoff tokens`() async throws {
         let identity = DeviceIdentityStore.loadOrCreate()
         let session = FakeGatewayWebSocketSession(helloAuth: [
-            "deviceToken": "untrusted-node-token",
+            "deviceToken": "${ltfx.n.1afa6e6fda8fa11367dd.v1}",
             "role": "node",
             "scopes": [],
             "deviceTokens": [
                 [
-                    "deviceToken": "untrusted-operator-token",
+                    "deviceToken": "${ltfx.n.908e9455f2c364175097.v1}",
                     "role": "operator",
                     "scopes": [
                         "operator.approvals",
@@ -3194,7 +3194,7 @@ struct GatewayNodeSessionTests {
 
         try await gateway.connect(
             url: #require(URL(string: "ws://example.invalid")),
-            credentials: .init(bootstrapToken: "fresh-bootstrap-token"),
+            credentials: .init(bootstrapToken: "${ltfx.n.46db8532060ec0b39636.v1}"),
             connectOptions: options,
             sessionBox: WebSocketSessionBox(session: session),
             onConnected: {},
@@ -3214,12 +3214,12 @@ struct GatewayNodeSessionTests {
         let identity = DeviceIdentityStore.loadOrCreate()
         let url = try #require(URL(string: "ws://192.168.50.164:18889"))
         let bootstrapSession = FakeGatewayWebSocketSession(helloAuth: [
-            "deviceToken": "lan-node-token",
+            "deviceToken": "${ltfx.n.5770b73c7207c8ea558f.v1}",
             "role": "node",
             "scopes": [],
             "deviceTokens": [
                 [
-                    "deviceToken": "lan-operator-token",
+                    "deviceToken": "${ltfx.n.79b2afa276b771203b98.v1}",
                     "role": "operator",
                     "scopes": [
                         "operator.approvals",
@@ -3242,7 +3242,7 @@ struct GatewayNodeSessionTests {
 
         try await gateway.connect(
             url: url,
-            credentials: .init(bootstrapToken: "fresh-bootstrap-token"),
+            credentials: .init(bootstrapToken: "${ltfx.n.46db8532060ec0b39636.v1}"),
             connectOptions: options,
             sessionBox: WebSocketSessionBox(session: bootstrapSession),
             onConnected: {},
@@ -3288,7 +3288,7 @@ struct GatewayNodeSessionTests {
         _ = DeviceAuthStore.storeToken(
             deviceId: identity.deviceId,
             role: "operator",
-            token: "stored-device-token")
+            token: "${ltfx.n.c3f79732393a0ff6e042.v1}")
 
         let options = GatewayConnectOptions(
             role: "operator",
@@ -3318,7 +3318,7 @@ struct GatewayNodeSessionTests {
                 do {
                     try await gateway.connect(
                         url: url,
-                        credentials: .init(token: "shared-gateway-token"),
+                        credentials: .init(token: "${ltfx.n.2b1f9bd388cf6424831a.v1}"),
                         connectOptions: options,
                         sessionBox: WebSocketSessionBox(session: session),
                         onConnected: {},

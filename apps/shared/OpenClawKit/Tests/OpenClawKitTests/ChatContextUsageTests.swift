@@ -195,7 +195,7 @@ struct ChatContextUsageTests {
             transport: ContextUsageTestTransport(),
             activeAgentId: "ops")
         vm.sessions = [OpenClawChatSessionEntry(
-            key: "agent:ops:global",
+            key: "${ltfx.n.d116636f6900e6640747.v1}",
             kind: nil,
             displayName: nil,
             surface: nil,

@@ -27,7 +27,7 @@ import {
 } from "./live-events.js";
 
 const SID = "session-worker-live";
-const KEY = "agent:main:worker-live";
+const KEY = `ltfx.n.719d536b3b10ba5c2c5f.v1`;
 const EPOCH = 7;
 const RUN = "run-worker-live";
 const LOCAL = { agentId: "main", sessionId: SID, sessionKey: KEY };

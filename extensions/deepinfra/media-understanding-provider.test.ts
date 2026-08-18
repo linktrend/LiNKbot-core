@@ -49,7 +49,7 @@ describe("deepinfra media understanding provider", () => {
     const result = await deepinfraMediaUnderstandingProvider.transcribeAudio!({
       buffer,
       fileName: "clip.mp3",
-      apiKey: "deepinfra-key",
+      apiKey: `ltfx.n.7aac61b28eedbcec0b95.v1`,
       timeoutMs: 30_000,
     });
 
@@ -59,7 +59,7 @@ describe("deepinfra media understanding provider", () => {
         {
           buffer,
           fileName: "clip.mp3",
-          apiKey: "deepinfra-key",
+          apiKey: `ltfx.n.7aac61b28eedbcec0b95.v1`,
           timeoutMs: 30_000,
           provider: "deepinfra",
           defaultBaseUrl: "https://api.deepinfra.com/v1/openai",

@@ -86,7 +86,7 @@ function makeCtx() {
     account: {
       accountId: "qq-main",
       appId: "app-x",
-      clientSecret: "secret-x",
+      clientSecret: `ltfx.n.1e89d0ffac8232659018.v1`,
       markdownSupport: false,
       config: {},
     },

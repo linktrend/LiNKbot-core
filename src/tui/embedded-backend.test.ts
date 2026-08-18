@@ -228,7 +228,7 @@ vi.mock("../gateway/session-create-service.js", () => ({
 vi.mock("../gateway/session-reset-service.js", () => ({
   performGatewaySessionReset: () => ({
     ok: true,
-    key: "agent:main:main",
+    key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
     entry: {},
     resolved: { modelProvider: "openai", model: "gpt-5.4" },
   }),
@@ -317,7 +317,7 @@ describe("EmbeddedTuiBackend", () => {
     createGatewaySessionMock.mockReset();
     createGatewaySessionMock.mockResolvedValue({
       ok: true,
-      key: "agent:main:tui-created",
+      key: `ltfx.n.d4ba972112f29611ea4a.v1`,
       entry: { sessionId: "created-session" },
       resolved: { modelProvider: "openai", model: "gpt-5.4" },
       resetExisting: false,
@@ -384,7 +384,7 @@ describe("EmbeddedTuiBackend", () => {
     const backend = new EmbeddedTuiBackend();
 
     const result = await backend.createSession({
-      key: "tui-created",
+      key: `ltfx.n.1da4e4b3649eefa21e7e.v1`,
       agentId: "main",
       parentSessionKey: "agent:main:main",
     });
@@ -392,7 +392,7 @@ describe("EmbeddedTuiBackend", () => {
     expect(createGatewaySessionMock).toHaveBeenCalledWith(
       expect.objectContaining({
         cfg: {},
-        key: "tui-created",
+        key: `ltfx.n.1da4e4b3649eefa21e7e.v1`,
         agentId: "main",
         parentSessionKey: "agent:main:main",
         emitCommandHooks: true,
@@ -402,7 +402,7 @@ describe("EmbeddedTuiBackend", () => {
     );
     expect(result).toEqual({
       ok: true,
-      key: "agent:main:tui-created",
+      key: `ltfx.n.d4ba972112f29611ea4a.v1`,
       entry: { sessionId: "created-session" },
       resolved: { modelProvider: "openai", model: "gpt-5.4" },
     });
@@ -414,7 +414,7 @@ describe("EmbeddedTuiBackend", () => {
 
     await expect(backend.resetSession("main", "new")).resolves.toEqual({
       ok: true,
-      key: "agent:main:main",
+      key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
       entry: {},
       resolved: { modelProvider: "openai", model: "gpt-5.4" },
     });
@@ -714,12 +714,12 @@ describe("EmbeddedTuiBackend", () => {
 
     await expect(
       backend.patchSession({
-        key: "agent:main:main",
+        key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
         model: "tui-pty-mock/discovered",
       }),
     ).resolves.toMatchObject({
       ok: true,
-      key: "agent:main:main",
+      key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
     });
     expect(loadGatewayModelCatalogMock).toHaveBeenCalledWith({ readOnly: false });
   });

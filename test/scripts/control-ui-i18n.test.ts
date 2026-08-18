@@ -245,8 +245,8 @@ describe("control-ui-i18n process runner", () => {
         encoding: "utf8",
         env: {
           ...process.env,
-          ANTHROPIC_API_KEY: "redacted",
-          OPENAI_API_KEY: "redacted",
+          ANTHROPIC_API_KEY: `ltfx.n.b68919aff001d8366249.v1`,
+          OPENAI_API_KEY: `ltfx.n.b68919aff001d8366249.v1`,
         },
       },
     );
@@ -261,7 +261,7 @@ describe("control-ui-i18n process runner", () => {
     const items = [
       {
         cacheKey: "cache-key",
-        key: "configView.viewPendingChange",
+        key: `ltfx.n.15c573a1263ed21e9665.v1`,
         text: "View pending change ({count})",
         textHash: "text-hash",
       },
@@ -302,7 +302,7 @@ describe("control-ui-i18n process runner", () => {
     const items = [
       {
         cacheKey: "cache-key",
-        key: "configView.viewPendingChange",
+        key: `ltfx.n.15c573a1263ed21e9665.v1`,
         text: "View pending change ({count})",
         textHash: "text-hash",
       },

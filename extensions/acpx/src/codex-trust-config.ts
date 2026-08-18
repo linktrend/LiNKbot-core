@@ -105,7 +105,7 @@ function parseTrustedInlineProjectEntries(value: string): string[] {
   const entryPattern =
     /(?<key>"(?:\\.|[^"\\])*"|'[^']*'|[A-Za-z0-9_\-/.~:]+)\s*=\s*\{(?<body>[^{}]*(?:\{[^{}]*\}[^{}]*)*)\}/g;
   for (const match of value.matchAll(entryPattern)) {
-    const key = match.groups?.key;
+    const key = (match.groups?.key;)
     const body = match.groups?.body;
     if (!key || !body || !/\btrust_level\s*=\s*["']trusted["']/.test(body)) {
       continue;

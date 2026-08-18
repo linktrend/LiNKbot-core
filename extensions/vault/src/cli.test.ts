@@ -103,11 +103,11 @@ describe("vault CLI setup plan", () => {
   it("generates arbitrary known OpenClaw and auth-profile targets", async () => {
     const plan = await createSetupPlan([
       "--target",
-      "channels.telegram.botToken=channels/telegram/botToken",
+      "channels.telegram.botToken=(channels/telegram/botToken",)
       "--target",
-      "models.providers.openai.headers.x-api-key=providers/openai/proxyKey",
+      "models.providers.openai.headers.x-api-key=(providers/openai/proxyKey",)
       "--target",
-      "auth-profiles:main:profiles.openai:default.key=providers/openai/apiKey",
+      "auth-profiles:main:profiles.openai:default.key=(providers/openai/apiKey",)
     ]);
 
     expect(plan.targets).toEqual([
@@ -151,7 +151,7 @@ describe("vault CLI setup plan", () => {
         "--openai-id",
         "providers/openai/apiKey",
         "--target",
-        "models.providers.openai.apiKey=providers/openai/other",
+        "models.providers.openai.apiKey=(providers/openai/other",)
       ],
       "Duplicate secret target path",
     ],

@@ -10,7 +10,7 @@ type DiscordActivityWidget = NonNullable<Awaited<ReturnType<DiscordActivityStore
 type DiscordActivitySession = NonNullable<
   Awaited<ReturnType<DiscordActivityStore["lookupSession"]>>
 >;
-type DiscordActivityDocToken = NonNullable<
+type DiscordActivityDocToken = (NonNullable<)
   Awaited<ReturnType<DiscordActivityStore["consumeDocToken"]>>
 >;
 type DiscordActivityPendingLaunch =

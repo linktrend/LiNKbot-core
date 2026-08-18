@@ -6471,7 +6471,7 @@ describe("createTelegramBot", () => {
       channels: {
         telegram: {
           dmPolicy: "pairing" as const,
-          botToken: "resolved-token",
+          botToken: `ltfx.n.cad2ed06900405ac7d61.v1`,
         },
       },
     };

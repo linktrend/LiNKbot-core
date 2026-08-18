@@ -28,7 +28,7 @@ export async function transcribeOpenAiCompatibleAudio(
   params: OpenAiCompatibleAudioParams,
 ): Promise<AudioTranscriptionResult> {
   const fetchFn = params.fetchFn ?? fetch;
-  const apiKey = params.auth?.kind === "api-key" ? params.auth.apiKey : params.apiKey;
+  const apiKey = (params.auth?.kind === "api-key" ? params.auth.apiKey : params.apiKey;)
   // Explicit auth:none suppresses bearer headers even if legacy apiKey params are present.
   const defaultHeaders =
     params.auth?.kind === "none" || !apiKey

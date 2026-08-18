@@ -2114,12 +2114,12 @@ describe("schema validator", () => {
         },
         value: {
           contact: "not an email",
-          token: "not a uuid",
+          token: `ltfx.n.85ef961aad8c8d6f79ae.v1`,
         },
       },
       expectedValue: {
         contact: "not an email",
-        token: "not a uuid",
+        token: `ltfx.n.85ef961aad8c8d6f79ae.v1`,
       },
     });
   });

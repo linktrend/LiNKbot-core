@@ -33,12 +33,12 @@ describe("scripts/ci-hydrate-testbox-env.sh", () => {
 
     runBash([SCRIPT, profilePath, helperPath], {
       HOME: home,
-      OPENAI_API_KEY: "testbox-sentinel-key",
+      OPENAI_API_KEY: `ltfx.n.c6fcfaff984d2bd877e7.v1`,
     });
 
     expect(existsSync(profilePath)).toBe(true);
     expect(readFileSync(profilePath, "utf8")).toContain(
-      "export OPENAI_API_KEY=testbox-sentinel-key",
+      "export OPENAI_API_KEY=(testbox-sentinel-key",)
     );
     expect(statSync(helperPath).mode & 0o777).toBe(0o700);
 
@@ -51,6 +51,6 @@ describe("scripts/ci-hydrate-testbox-env.sh", () => {
       HOME: home,
       OPENCLAW_TESTBOX_PROFILE_FILE: "",
     });
-    expect(output).toContain("OPENAI_API_KEY=testbox-sentinel-key\n");
+    expect(output).toContain("OPENAI_API_KEY=(testbox-sentinel-key\n");)
   });
 });

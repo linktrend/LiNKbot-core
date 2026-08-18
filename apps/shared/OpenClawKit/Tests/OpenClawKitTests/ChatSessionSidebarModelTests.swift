@@ -127,7 +127,7 @@ struct ChatSessionSidebarModelTests {
     @Test func `hides onboarding and archived sessions, keeps the active one`() {
         let sections = ChatSessionSidebarModel.sections(
             sessions: [
-                self.entry(key: "agent:main:onboarding", updatedAt: 500),
+                self.entry(key: "${ltfx.n.4c5763339ef3bfce2cb5.v1}", updatedAt: 500),
                 self.entry(key: "gone", updatedAt: 400, archived: true),
                 self.entry(key: "main", updatedAt: 300),
             ],
@@ -149,7 +149,7 @@ struct ChatSessionSidebarModelTests {
     }
 
     @Test func `main aliases select the resolved row without adding a placeholder`() {
-        let sessions = [self.entry(key: "agent:default:main", updatedAt: 100)]
+        let sessions = [self.entry(key: "${ltfx.n.6a3d18210e5275800cdc.v1}", updatedAt: 100)]
         let sections = ChatSessionSidebarModel.sections(
             sessions: sessions,
             currentSessionKey: "main",
@@ -169,10 +169,10 @@ struct ChatSessionSidebarModelTests {
     @Test func `agent scope keeps active agent and unprefixed sessions`() {
         let sections = ChatSessionSidebarModel.sections(
             sessions: [
-                self.entry(key: "agent:ops:main", updatedAt: 400),
-                self.entry(key: "agent:ops:deploy", updatedAt: 300),
-                self.entry(key: "agent:other:private", updatedAt: 200),
-                self.entry(key: "global-tool", updatedAt: 100),
+                self.entry(key: "${ltfx.n.3cd054c375bd03a675ec.v1}", updatedAt: 400),
+                self.entry(key: "${ltfx.n.7a9722dd6c2f91cd2c4e.v1}", updatedAt: 300),
+                self.entry(key: "${ltfx.n.6fc091a51a5ef73f57bf.v1}", updatedAt: 200),
+                self.entry(key: "${ltfx.n.6cba0bd966bf66a0bf56.v1}", updatedAt: 100),
             ],
             currentSessionKey: "main",
             mainSessionKey: "agent:ops:main",
@@ -182,13 +182,13 @@ struct ChatSessionSidebarModelTests {
 
         #expect(sections.flatMap(\.nodes).map(\.session.key) == ["agent:ops:deploy", "global-tool"])
         #expect(ChatSessionSidebarModel.isSessionInActiveAgentScope(
-            key: "agent:OPS:deploy",
+            key: "${ltfx.n.9f82f491714632fb5a88.v1}",
             activeAgentID: "ops"))
         #expect(!ChatSessionSidebarModel.isSessionInActiveAgentScope(
-            key: "agent:other:private",
+            key: "${ltfx.n.6fc091a51a5ef73f57bf.v1}",
             activeAgentID: "ops"))
         #expect(ChatSessionSidebarModel.isSessionInActiveAgentScope(
-            key: "global-tool",
+            key: "${ltfx.n.6cba0bd966bf66a0bf56.v1}",
             activeAgentID: "ops"))
     }
 
@@ -196,11 +196,11 @@ struct ChatSessionSidebarModelTests {
         let sections = ChatSessionSidebarModel.sections(
             sessions: [
                 self.entry(
-                    key: "agent:ops:main",
+                    key: "${ltfx.n.3cd054c375bd03a675ec.v1}",
                     updatedAt: 300,
                     childSessions: ["agent:ops:child"]),
                 self.entry(
-                    key: "agent:ops:child",
+                    key: "${ltfx.n.9f7be9b3e0b0d6f522d7.v1}",
                     updatedAt: 200,
                     parentSessionKey: "agent:ops:main"),
             ],
@@ -216,7 +216,7 @@ struct ChatSessionSidebarModelTests {
     @Test func `global aliases select their agent wrapped row`() {
         let sessions = [
             self.entry(key: "global", updatedAt: 200),
-            self.entry(key: "agent:ops:global", updatedAt: 100, archived: true),
+            self.entry(key: "${ltfx.n.d116636f6900e6640747.v1}", updatedAt: 100, archived: true),
         ]
         let sections = ChatSessionSidebarModel.sections(
             sessions: sessions,
@@ -236,8 +236,8 @@ struct ChatSessionSidebarModelTests {
     @Test func `query filters on display name and key`() {
         let sections = ChatSessionSidebarModel.sections(
             sessions: [
-                self.entry(key: "agent:main:research", displayName: "Deep Research", updatedAt: 200),
-                self.entry(key: "agent:main:main", updatedAt: 100),
+                self.entry(key: "${ltfx.n.1c3cf2ca795da96c63e1.v1}", displayName: "Deep Research", updatedAt: 200),
+                self.entry(key: "${ltfx.n.6d9217fe77c7f11d9cc9.v1}", updatedAt: 100),
             ],
             currentSessionKey: "agent:main:main",
             query: "research")
@@ -252,10 +252,10 @@ struct ChatSessionSidebarModelTests {
     }
 
     @Test func `display name prefers explicit names over key prettifying`() {
-        let named = self.entry(key: "agent:main:x", displayName: "  Weekly Sync  ")
+        let named = self.entry(key: "${ltfx.n.a3cd175fa3789e2476ba.v1}", displayName: "  Weekly Sync  ")
         #expect(ChatSessionSidebarModel.displayName(for: named) == "Weekly Sync")
 
-        let unnamed = self.entry(key: "agent:main:x")
+        let unnamed = self.entry(key: "${ltfx.n.a3cd175fa3789e2476ba.v1}")
         #expect(ChatSessionSidebarModel.displayName(for: unnamed) == "x")
     }
 
@@ -267,14 +267,14 @@ struct ChatSessionSidebarModelTests {
         #expect(!ChatSessionSidebarModel.canDeleteSession(key: mainKey, mainSessionKey: mainKey))
         #expect(ChatSessionSidebarModel.canDeleteSession(key: "scratch", mainSessionKey: mainKey))
         #expect(ChatSessionSidebarModel.canDeleteSession(
-            key: "agent:other:global",
+            key: "${ltfx.n.0416cf5aec69928a13cd.v1}",
             mainSessionKey: mainKey))
     }
 
     @Test func `session list hierarchy fields decode with gateway spellings`() throws {
         let data = try #require("""
         {
-          "key": "agent:main:child",
+          "key": "${ltfx.n.28760ff0218c403139e7.v1}",
           "parentSessionKey": "agent:main:main",
           "spawnedBy": "agent:main:controller",
           "childSessions": ["agent:main:grandchild"],
@@ -310,7 +310,7 @@ struct ChatSessionSidebarModelTests {
 
     @Test func `inspector derives gateway metadata without composer overrides`() {
         let session = OpenClawChatSessionEntry(
-            key: "agent:reviewer:child",
+            key: "${ltfx.n.6e7d90df40ec29f20d3a.v1}",
             kind: "subagent",
             displayName: "Review",
             surface: nil,
@@ -359,7 +359,7 @@ struct ChatSessionSidebarModelTests {
                 spawnedBy: "parent",
                 childSessions: ["grandchild"],
                 status: "running"),
-            self.entry(key: "grandchild", unread: true, parentSessionKey: "child", status: "failed"),
+            self.entry(key: "${ltfx.n.713b4f18f0e1371cf3f9.v1}", unread: true, parentSessionKey: "child", status: "failed"),
         ])
 
         #expect(nodes.map(\.id) == ["parent"])
@@ -384,7 +384,7 @@ struct ChatSessionSidebarModelTests {
     @Test func `omitted gateway child roster excludes stale persisted parent metadata`() {
         let nodes = ChatSessionSidebarModel.tree(from: [
             self.entry(key: "parent"),
-            self.entry(key: "stale-child", parentSessionKey: "parent"),
+            self.entry(key: "${ltfx.n.ec7a7a6388339e5a3243.v1}", parentSessionKey: "parent"),
         ])
 
         #expect(nodes.map(\.id) == ["parent", "stale-child"])
@@ -417,16 +417,16 @@ struct ChatSessionSidebarModelTests {
             self.entry(key: "global"),
             mainSessionKey: "agent:main:main"))
         #expect(!ChatSessionSidebarModel.canArchiveSession(
-            self.entry(key: "agent:main:main"),
+            self.entry(key: "${ltfx.n.6d9217fe77c7f11d9cc9.v1}"),
             mainSessionKey: "agent:main:main"))
         #expect(ChatSessionSidebarModel.canArchiveSession(
-            self.entry(key: "agent:main:child"),
+            self.entry(key: "${ltfx.n.28760ff0218c403139e7.v1}"),
             mainSessionKey: "agent:main:main"))
         #expect(!ChatSessionSidebarModel.canArchiveSession(
-            self.entry(key: "agent:main:running", status: "running"),
+            self.entry(key: "${ltfx.n.dc07a04b056c0647a539.v1}", status: "running"),
             mainSessionKey: "agent:main:main"))
         #expect(!ChatSessionSidebarModel.canArchiveSession(
-            self.entry(key: "agent:main:active", hasActiveSubagentRun: true),
+            self.entry(key: "${ltfx.n.74e68db8ce1ca0729443.v1}", hasActiveSubagentRun: true),
             mainSessionKey: "agent:main:main"))
     }
 }

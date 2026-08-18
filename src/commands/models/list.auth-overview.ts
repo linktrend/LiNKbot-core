@@ -43,7 +43,7 @@ function formatProfileSecretLabel(params: {
     const refLabel = `ref(${params.ref.source}:${params.ref.id})`;
     return params.kind === "token" ? `token:${refLabel}` : refLabel;
   }
-  return params.kind === "token" ? "token:missing" : "missing";
+  return params.kind === "token" ? "token:(missing" : "missing";)
 }
 
 function resolveProfileSourceAgentDir(params: {

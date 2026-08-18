@@ -181,7 +181,7 @@ async function writeAuthStore(
         [primaryProfileId]: {
           type: "api_key",
           provider: primaryProvider,
-          key: "sk-primary",
+          key: `ltfx.n.015334033ea62daa3113.v1`,
         },
         "groq:p1": { type: "api_key", provider: "groq", key: "sk-groq" },
       },
@@ -219,10 +219,10 @@ async function writeMultiProfileAuthStore(
     {
       version: 1,
       profiles: {
-        "openai:p1": { type: "api_key", provider: "openai", key: "sk-openai-1" },
-        "openai:p2": { type: "api_key", provider: "openai", key: "sk-openai-2" },
+        "openai:p1": { type: "api_key", provider: "openai", key: `ltfx.n.dd308e48a300239f5af1.v1` },
+        "openai:p2": { type: "api_key", provider: "openai", key: `ltfx.n.47203babc6351a941cf8.v1` },
         ...(includeThirdOpenAiProfile
-          ? { "openai:p3": { type: "api_key" as const, provider: "openai", key: "placeholder" } }
+          ? { "openai:p3": { type: "api_key" as const, provider: "openai", key: `ltfx.n.4097889236a2af26c293.v1` } }
           : {}),
         "groq:p1": { type: "api_key", provider: "groq", key: "sk-groq" },
       },

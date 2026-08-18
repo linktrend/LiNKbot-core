@@ -116,7 +116,7 @@ function createMemoryEmbeddingOptions(overrides?: {
     documentInputType: "document",
     remote: {
       baseUrl: overrides?.baseUrl,
-      apiKey: "fixture-token",
+      apiKey: `ltfx.n.d07f963c2bb7a3cc74a9.v1`,
       headers: {
         Authorization: "Bearer ignored",
         "x-api-key": "hidden",
@@ -208,7 +208,7 @@ describe("memory-core generic embedding provider bridge", () => {
     expect(server.requests).toHaveLength(3);
     expect(server.requests[0]).toMatchObject({
       method: "POST",
-      url: "/v1/embeddings",
+      url: `ltfx.n.01f25d4ec8988fe59d1a.v1`,
       body: {
         model: "text-embedding-bge-m3",
         input: ["hello"],

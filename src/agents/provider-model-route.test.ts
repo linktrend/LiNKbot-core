@@ -74,11 +74,11 @@ describe("provider model route consumers", () => {
     const policy = createProviderModelCatalogRoutePolicy("openai");
     expect(policy.resolveIdentity({ provider: "OpenAI", id: "gpt-5.4-codex" })).toEqual({
       id: "gpt-5.4",
-      key: "openai/gpt-5.4",
+      key: `ltfx.n.da5f158f5abee1de3d0e.v1`,
     });
     expect(policy.resolveIdentity({ provider: "openai", id: "openai/acme-model" })).toEqual({
       id: "openai/acme-model",
-      key: "openai/openai/acme-model",
+      key: `ltfx.n.b94473ecfc95411722e8.v1`,
     });
     expect(policy.resolveIdentity({ provider: "anthropic", id: "gpt-5.4-codex" })).toBeNull();
   });

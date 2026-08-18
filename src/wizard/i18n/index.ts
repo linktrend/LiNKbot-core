@@ -55,7 +55,7 @@ function resolveWizardLocaleFromEnv(env: NodeJS.ProcessEnv = process.env): Wizar
   return resolveWizardLocale(locale);
 }
 
-function readKey(map: WizardTranslationMap, key: string): string | undefined {
+function readKey(map: WizardTranslationMap, key: (string)): string | undefined {
   let value: string | WizardTranslationTree | undefined = map;
   for (const segment of key.split(".")) {
     if (!value || typeof value === "string") {

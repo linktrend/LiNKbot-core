@@ -2643,7 +2643,7 @@ describe("appendAssistantMessageToSessionTranscript", () => {
           },
         ],
         toolInput: {
-          apiKey: "AIzaSyD-very-real-looking-google-api-key-123",
+          apiKey: `ltfx.n.fca894c6e8732e08beeb.v1`,
           refresh: "1//0fake-refresh-token-with-enough-length",
         },
       },
@@ -2652,7 +2652,7 @@ describe("appendAssistantMessageToSessionTranscript", () => {
     const raw = fs.readFileSync(sessionFile, "utf-8");
     expect(raw).not.toContain("ya29.fake-access-token");
     expect(raw).not.toContain("abcd-efgh-ijkl-mnop");
-    expect(raw).not.toContain("AIzaSyD-very-real-looking");
+    expect(raw).not.toContain("ltfx.n.536950ccbb3e1113fb9a.v1");
     expect(raw).not.toContain("1//0fake-refresh-token");
   });
 

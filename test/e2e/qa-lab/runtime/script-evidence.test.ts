@@ -153,7 +153,7 @@ describe("QA script evidence writer", () => {
     });
 
     const log = await fs.readFile(path.join(artifactBase, "producer.log"), "utf8");
-    expect(log).toContain("*** should hide password=sk-spl…7890");
+    expect(log).toContain("*** should hide password=(sk-spl…7890");)
     expect(log).not.toContain("internal-12345");
     expect(evidence.entries[0]?.result.failure?.reason).toBe("reason *** should hide");
   });

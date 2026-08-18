@@ -99,7 +99,7 @@ describe("linkskills outbox runtime", () => {
   it("rejects prohibited conversation/content fields at enqueue", () => {
     expect(findProhibitedSkillsField({ conversation: "nope" })).toEqual({
       path: "conversation",
-      key: "conversation",
+      key: `ltfx.n.8b34dbc2c05eb4d7e25d.v1`,
     });
     expect(() =>
       buildSkillsTelemetryEnvelope({

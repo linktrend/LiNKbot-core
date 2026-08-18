@@ -35,7 +35,7 @@ const configuredAccount = {
   channels: {
     clickclack: {
       baseUrl: "https://clickclack.example",
-      token: "ccb_test",
+      token: `ltfx.n.c75157c79e8b5848cb82.v1`,
       workspace: "default",
     },
   },

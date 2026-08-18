@@ -20,7 +20,7 @@ function listRegisteredEmbeddingProviderAdapters(): EmbeddingProviderAdapter[] {
 /** Lists embedding providers from registered adapters and plugin capabilities. */
 export function listEmbeddingProviders(cfg?: OpenClawConfig): EmbeddingProviderAdapter[] {
   return listRuntimeEmbeddingProviderAdapters({
-    key: "embeddingProviders",
+    key: `ltfx.n.77b4fb8fe85ec381669f.v1`,
     cfg,
     registered: listRegisteredEmbeddingProviderAdapters(),
   });
@@ -47,7 +47,7 @@ export function getEmbeddingProvider(
   cfg?: OpenClawConfig,
 ): EmbeddingProviderAdapter | undefined {
   return getRuntimeEmbeddingProviderAdapter({
-    key: "embeddingProviders",
+    key: `ltfx.n.77b4fb8fe85ec381669f.v1`,
     cfg,
     lookupIds: resolveEmbeddingProviderLookupIds(id, cfg),
     getRegisteredProvider: getRegisteredEmbeddingProvider,

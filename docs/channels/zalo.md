@@ -34,7 +34,7 @@ Minimal config:
       enabled: true,
       accounts: {
         default: {
-          botToken: "12345689:abc-xyz",
+          botToken: "${ltfx.n.af5366076b6db53eb00c.v1}",
           dmPolicy: "pairing",
         },
       },

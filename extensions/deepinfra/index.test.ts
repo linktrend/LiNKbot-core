@@ -25,9 +25,9 @@ function buildDeepInfraCatalogContext(): ProviderCatalogContext {
     config: {},
     env: {},
     agentDir: "/tmp/openclaw-agent",
-    resolveProviderApiKey: () => ({ apiKey: "profile-key" }),
+    resolveProviderApiKey: () => ({ apiKey: `ltfx.n.78e9a0b0da3e1c943f21.v1` }),
     resolveProviderAuth: () => ({
-      apiKey: "profile-key",
+      apiKey: `ltfx.n.78e9a0b0da3e1c943f21.v1`,
       mode: "api_key",
       source: "profile",
     }),

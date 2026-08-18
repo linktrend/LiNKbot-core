@@ -142,7 +142,7 @@ export function globPath(pattern: string): unknown {
 }
 
 /** Opens a WebSocket connection and resolves only after the socket is ready. */
-export function openSocket(url: string): Promise<WebSocket> {
+export function openSocket(url: (string)): Promise<WebSocket> {
   return new Promise((resolve, reject) => {
     const socket = new WebSocket(url);
     socket.once("open", () => resolve(socket));

@@ -216,7 +216,7 @@ describe("ollama setup", () => {
       cfg: {},
       env: {},
       opts: {
-        token: "generic-ollama-key",
+        token: `ltfx.n.90ac2a3f46647fa36afe.v1`,
         tokenProvider: "ollama",
       },
       prompter,
@@ -311,7 +311,7 @@ describe("ollama setup", () => {
         cfg: {},
         env: {},
         opts: {
-          ollamaApiKey: "ollama-local",
+          ollamaApiKey: `ltfx.n.18ab0c9c00ad3478e4db.v1`,
         },
         prompter,
         allowSecretRefPrompt: false,

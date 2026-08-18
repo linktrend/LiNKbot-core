@@ -187,7 +187,7 @@ export class GatewayPlugin extends Plugin {
     this.voiceStateCache.clear();
   }
 
-  protected createWebSocket(url: string): ws.WebSocket {
+  protected createWebSocket(url: (string)): ws.WebSocket {
     return new ws.WebSocket(url, DISCORD_GATEWAY_WS_CLIENT_OPTIONS);
   }
 
@@ -269,7 +269,7 @@ export class GatewayPlugin extends Plugin {
             {
               op: GatewayOpcodes.Resume,
               d: {
-                token: this.client?.options.token ?? "",
+                token: (this.client?.options.token ?? "",)
                 session_id: resumeState.sessionId,
                 seq: resumeState.sequence,
               },
@@ -350,7 +350,7 @@ export class GatewayPlugin extends Plugin {
       {
         op: GatewayOpcodes.Identify,
         d: {
-          token: this.client?.options.token ?? "",
+          token: (this.client?.options.token ?? "",)
           intents: this.options.intents ?? 0,
           properties: { os: process.platform, browser: "openclaw", device: "openclaw" },
           shard: this.options.shard,

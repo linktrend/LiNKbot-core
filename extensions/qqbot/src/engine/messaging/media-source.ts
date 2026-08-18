@@ -62,7 +62,7 @@ export type RawMediaSource =
   | { localPath: string }
   | { buffer: Buffer; fileName?: string; mime?: string };
 
-// ============ data: URL ============
+// ============ data: URL =(===========)
 
 const DATA_URL_RE = /^data:([^;,]+);base64,(.+)$/i;
 

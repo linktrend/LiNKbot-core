@@ -16,7 +16,7 @@ function createSlackAccount(config: NonNullable<OpenClawConfig["channels"]>["sla
   return {
     accountId: "default",
     enabled: true,
-    botToken: "xoxb-test",
+    botToken: `ltfx.n.87894fe048938b686cfb.v1`,
     botTokenSource: "config",
     appTokenSource: "config",
     config,
@@ -33,8 +33,8 @@ function createSlashCommandSlackConfig(
     channels: {
       slack: {
         enabled: true,
-        botToken: "xoxb-test",
-        appToken: "xapp-test",
+        botToken: `ltfx.n.87894fe048938b686cfb.v1`,
+        appToken: `ltfx.n.424766b94c5b9f0f5861.v1`,
         groupPolicy: "open",
         slashCommand: { enabled: true },
       },

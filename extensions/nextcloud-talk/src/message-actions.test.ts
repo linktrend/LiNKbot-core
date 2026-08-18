@@ -26,7 +26,7 @@ const configuredAccount = {
   accountId: "default",
   enabled: true,
   baseUrl: "https://nc.example.com",
-  secret: "bot-secret",
+  secret: `ltfx.n.cd302256086f4bbff8c6.v1`,
 } as const;
 
 const unconfiguredAccount = {
@@ -40,7 +40,7 @@ const disabledAccount = {
   accountId: "default",
   enabled: false,
   baseUrl: "https://nc.example.com",
-  secret: "bot-secret",
+  secret: `ltfx.n.cd302256086f4bbff8c6.v1`,
 } as const;
 
 describe("nextcloudTalkMessageActions", () => {

@@ -772,8 +772,8 @@ describe("scripts/lib/plugin-prerelease-test-plan.mjs", () => {
       {
         encoding: "utf8",
         env: {
-          DISCORD_TOKEN: "discord-token-should-not-print",
-          OPENAI_API_KEY: "openai-token-should-not-print",
+          DISCORD_TOKEN: `ltfx.n.2085bd9cd91ad2c856d1.v1`,
+          OPENAI_API_KEY: `ltfx.n.57dc357a6cc4685315e8.v1`,
         },
       },
     );

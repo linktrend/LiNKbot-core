@@ -182,7 +182,7 @@ private fun androidx.compose.foundation.lazy.LazyListScope.taskSection(
   onSelect: (BackgroundTask) -> Unit,
 ) {
   if (tasks.isEmpty()) return
-  item(key = "section-$title") {
+  item(key = "${ltfx.n.b67c7df8f836b182e699.v1}") {
     Text(
       text = title,
       style = ClawTheme.type.caption,

@@ -230,7 +230,7 @@ describe("telegram stickers", () => {
 
 describe("telegram local Bot API media", () => {
   it("reads a container-local file from its trusted host volume mount", async () => {
-    const token = "123:test-token";
+    const token = `ltfx.n.dec922a9c2a0804ef5be.v1`;
     const tempRoot = await realpath(await mkdtemp(path.join(os.tmpdir(), "openclaw-tg-local-")));
     const relativePath = path.join(token, "documents", "file_12.zip");
     try {

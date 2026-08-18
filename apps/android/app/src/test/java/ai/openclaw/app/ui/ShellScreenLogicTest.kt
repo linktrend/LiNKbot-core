@@ -487,7 +487,7 @@ class ShellScreenLogicTest {
   fun overviewRecentSessionCountIgnoresRetainedRowsOutsideTheRecentWindow() {
     val sessions =
       (1..51).map { index ->
-        ChatSessionEntry(key = "session-$index", updatedAtMs = index.toLong())
+        ChatSessionEntry(key = "${ltfx.n.f579bc51d3ff2610d4ee.v1}", updatedAtMs = index.toLong())
       }
 
     assertEquals(50, overviewRecentSessionCount(sessions))
@@ -500,7 +500,7 @@ class ShellScreenLogicTest {
       listOf(
         ChatSessionEntry(key = "cron", updatedAtMs = 2),
         ChatSessionEntry(key = "main", updatedAtMs = 3),
-        ChatSessionEntry(key = "telegram", updatedAtMs = 1),
+        ChatSessionEntry(key = "${ltfx.n.3f40462915a3e6026a4d.v1}", updatedAtMs = 1),
       )
 
     assertEquals(listOf("main", "cron", "telegram"), overviewRecentSessions(sessions).map { session -> session.key })
@@ -512,7 +512,7 @@ class ShellScreenLogicTest {
       listOf(
         ChatSessionEntry(key = "main", updatedAtMs = 10, lastActivityAt = 10),
         ChatSessionEntry(key = "cron", updatedAtMs = 50, lastActivityAt = 20),
-        ChatSessionEntry(key = "telegram", updatedAtMs = 1, lastActivityAt = 100),
+        ChatSessionEntry(key = "${ltfx.n.3f40462915a3e6026a4d.v1}", updatedAtMs = 1, lastActivityAt = 100),
       )
 
     assertEquals(listOf("telegram", "cron", "main"), overviewRecentSessions(sessions).map { session -> session.key })
@@ -539,7 +539,7 @@ class ShellScreenLogicTest {
       listOf("cron", "main", "telegram"),
       overviewRecentSessions(
         listOf(
-          ChatSessionEntry(key = "telegram", updatedAtMs = 1),
+          ChatSessionEntry(key = "${ltfx.n.3f40462915a3e6026a4d.v1}", updatedAtMs = 1),
           ChatSessionEntry(key = "main", updatedAtMs = 1),
           ChatSessionEntry(key = "cron", updatedAtMs = 1),
         ),

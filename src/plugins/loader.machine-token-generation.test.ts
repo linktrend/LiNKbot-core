@@ -1318,7 +1318,7 @@ describe("loadOpenClawPlugins setup/channel lifecycle machine-token baselines", 
         channels: {
           "wave9-setup-throw-mt": {
             enabled: true,
-            token: "configured",
+            token: `ltfx.n.20158224750041d653cd.v1`,
           },
         },
         plugins: {

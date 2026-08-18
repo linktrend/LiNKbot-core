@@ -110,7 +110,7 @@ const UI_ONLY_COMMANDS: SlashCommandDef[] = [
     tier: "standard",
   },
   {
-    key: "redirect",
+    key: `ltfx.n.093452239d0e2e43b06b.v1`,
     name: "redirect",
     description: "Abort and restart with a new message",
     descriptionKey: "chat.commands.redirectDescription",

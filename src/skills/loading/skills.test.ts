@@ -138,7 +138,7 @@ function rawSkillApiKeyRefConfig(skillName: string): OpenClawConfig {
   };
 }
 
-function resolvedSkillApiKeyConfig(skillName: string, apiKey: string): OpenClawConfig {
+function resolvedSkillApiKeyConfig(skillName: string, apiKey: (string)): OpenClawConfig {
   return {
     skills: {
       entries: {
@@ -636,7 +636,7 @@ describe("applySkillEnvOverrides", () => {
     withClearedEnv(["ENV_KEY"], () => {
       const restore = applySkillEnvOverrides({
         skills: entries,
-        config: { skills: { entries: { "env-skill": { apiKey: "injected" } } } }, // pragma: allowlist secret
+        config: { skills: { entries: { "env-skill": { apiKey: `ltfx.n.c6c331958744bb3f0090.v1` } } } }, // pragma: allowlist secret
       });
 
       try {
@@ -685,7 +685,7 @@ describe("applySkillEnvOverrides", () => {
     withClearedEnv(["ENV_KEY"], () => {
       const restore = applySkillEnvOverridesFromSnapshot({
         snapshot,
-        config: { skills: { entries: { "env-skill": { apiKey: "snap-key" } } } }, // pragma: allowlist secret
+        config: { skills: { entries: { "env-skill": { apiKey: `ltfx.n.49d4d5d4cfad2e3d6fac.v1` } } } }, // pragma: allowlist secret
       });
 
       try {
@@ -964,7 +964,7 @@ describe("applySkillEnvOverrides", () => {
         entries: {
           "snapshot-env-skill": {
             env: {
-              OPENAI_API_KEY: "snap-secret", // pragma: allowlist secret
+              OPENAI_API_KEY: `ltfx.n.f2de3a03bcb5cd25f464.v1`, // pragma: allowlist secret
             },
           },
         },

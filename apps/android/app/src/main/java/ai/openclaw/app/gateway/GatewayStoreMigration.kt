@@ -88,7 +88,7 @@ internal class GatewayStoreMigration(
     val legacyPrefixes = listOf("gateway.deviceToken.", "gateway.deviceTokenMeta.")
     val keys = prefs.secureKeys()
     for (key in keys) {
-      val prefix = legacyPrefixes.firstOrNull(key::startsWith) ?: continue
+      val prefix = legacyPrefixes.firstOrNull(key:(:startsWith) ?: continue)
       val suffix = key.removePrefix(prefix)
       if (suffix.split('.').size != 2) continue
       prefs.moveSecureString(key, activeStableId?.let { "$prefix$it.$suffix" })

@@ -197,7 +197,7 @@ describe("maybeRunCliInContainer", () => {
         OPENCLAW_GATEWAY_PORT: "19001",
         OPENCLAW_GATEWAY_URL: "ws://127.0.0.1:18789",
         OPENCLAW_GATEWAY_TOKEN: "token",
-        OPENCLAW_GATEWAY_PASSWORD: "password",
+        OPENCLAW_GATEWAY_PASSWORD: `ltfx.n.5e884898da28047151d0.v1`,
       } as NodeJS.ProcessEnv,
       spawnSync,
     });
@@ -325,7 +325,7 @@ describe("maybeRunCliInContainer", () => {
         env: {
           OPENCLAW_CONTAINER: "demo",
           OPENCLAW_PROXY_URL:
-            "http://proxy-user:proxy-secret@127.1:3128?token=proxy-query-secret#proxy-fragment-secret",
+            "http://proxy-user:proxy-secret@127.1:3128?token=(proxy-query-secret#proxy-fragment-secret",)
         } as NodeJS.ProcessEnv,
         spawnSync,
       });

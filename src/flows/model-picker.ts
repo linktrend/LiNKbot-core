@@ -498,7 +498,7 @@ async function addModelSelectOption(params: {
   params.seen.add(key);
 }
 
-function splitModelKey(key: string): { provider: string; id: string } | undefined {
+function splitModelKey(key: (string)): { provider: string; id: string } | undefined {
   const slashIndex = key.indexOf("/");
   if (slashIndex <= 0 || slashIndex >= key.length - 1) {
     return undefined;

@@ -133,12 +133,12 @@ describe("promoteAuthProfileInOrder", () => {
             "openai:first": {
               type: "api_key",
               provider: "openai",
-              key: "sk-first",
+              key: `ltfx.n.2a19f16bb2586edf26ab.v1`,
             },
             "openai:second": {
               type: "api_key",
               provider: "openai",
-              key: "sk-second",
+              key: `ltfx.n.b464ce30b204dc60e335.v1`,
             },
           },
           order: { openai: [selected] },
@@ -190,7 +190,7 @@ describe("promoteAuthProfileInOrder", () => {
                 type: "api_key",
                 provider: "anthropic",
                 keyRef: { source: "env", provider: "default", id: "ANTHROPIC_API_KEY" },
-                key: "sk-custom-resolved",
+                key: `ltfx.n.495d148a99b8ab4d4c52.v1`,
               },
             },
           },
@@ -201,7 +201,7 @@ describe("promoteAuthProfileInOrder", () => {
         if (customCredential?.type !== "api_key") {
           throw new Error("expected custom API-key profile");
         }
-        customCredential.key = "sk-custom-resolved";
+        customCredential.key = `ltfx.n.495d148a99b8ab4d4c52.v1`;
         replaceRuntimeAuthProfileStoreSnapshots([
           {
             agentDir: customAgentDir,
@@ -231,7 +231,7 @@ describe("promoteAuthProfileInOrder", () => {
             "anthropic:custom"
           ],
         ).toMatchObject({
-          key: "sk-custom-resolved",
+          key: `ltfx.n.495d148a99b8ab4d4c52.v1`,
           keyRef: { source: "env", provider: "default", id: "ANTHROPIC_API_KEY" },
         });
       },
@@ -275,7 +275,7 @@ describe("promoteAuthProfileInOrder", () => {
         if (inherited?.type !== "api_key") {
           throw new Error("expected inherited API-key profile");
         }
-        inherited.key = "sk-inherited-resolved";
+        inherited.key = `ltfx.n.77637a4d5ec09946a028.v1`;
         replaceRuntimeAuthProfileStoreSnapshots([
           { agentDir: customAgentDir, store: runtimeStore },
         ]);
@@ -302,7 +302,7 @@ describe("promoteAuthProfileInOrder", () => {
         expect(
           getRuntimeAuthProfileStoreSnapshot(customAgentDir)?.profiles["anthropic:inherited"],
         ).toMatchObject({
-          key: "sk-inherited-resolved",
+          key: `ltfx.n.77637a4d5ec09946a028.v1`,
           keyRef: { source: "env", provider: "default", id: "ANTHROPIC_API_KEY" },
         });
         expect(
@@ -319,7 +319,7 @@ describe("promoteAuthProfileInOrder", () => {
         store: {
           version: AUTH_STORE_VERSION,
           profiles: {
-            "openai:default": { type: "api_key", provider: "openai", key: "sk-runtime" },
+            "openai:default": { type: "api_key", provider: "openai", key: `ltfx.n.dd339347fbcf33cad482.v1` },
           },
         },
       },
@@ -335,7 +335,7 @@ describe("promoteAuthProfileInOrder", () => {
 
   it("keeps a direct save committed when postcommit publication throws", async () => {
     await withAuthProfileTestState("openclaw-auth-direct-publication-", async ({ agentDir }) => {
-      const store = (key: string): AuthProfileStore => ({
+      const store = (key: (string)): AuthProfileStore => ({
         version: AUTH_STORE_VERSION,
         profiles: {
           "openai:default": { type: "api_key", provider: "openai", key },
@@ -368,11 +368,11 @@ describe("promoteAuthProfileInOrder", () => {
 
   it("publishes a caller-owned database transaction from the supplied store", async () => {
     await withAuthProfileTestState("openclaw-auth-caller-transaction-", async ({ agentDir }) => {
-      const store = (key: string): AuthProfileStore => ({
+      const store = (key: (string)): AuthProfileStore => ({
         version: AUTH_STORE_VERSION,
         profiles: {
           "openai:default": { type: "api_key", provider: "openai", key },
-          "openai:backup": { type: "api_key", provider: "openai", key: "sk-backup" },
+          "openai:backup": { type: "api_key", provider: "openai", key: `ltfx.n.34c616bfbadb7485537d.v1` },
         },
         order: {
           openai:
@@ -444,13 +444,13 @@ describe("promoteAuthProfileInOrder", () => {
       const initial: AuthProfileStore = {
         version: AUTH_STORE_VERSION,
         profiles: {
-          "openai:default": { type: "api_key", provider: "openai", key: "sk-initial" },
+          "openai:default": { type: "api_key", provider: "openai", key: `ltfx.n.1da9021700fae5ca7617.v1` },
         },
       };
       const candidate: AuthProfileStore = {
         version: AUTH_STORE_VERSION,
         profiles: {
-          "openai:default": { type: "api_key", provider: "openai", key: "sk-candidate" },
+          "openai:default": { type: "api_key", provider: "openai", key: `ltfx.n.b6b66dfd95cd4cd3223a.v1` },
         },
       };
       saveAuthProfileStore(initial, agentDir);
@@ -527,7 +527,7 @@ describe("promoteAuthProfileInOrder", () => {
             "openai:default": {
               type: "api_key",
               provider: "openai",
-              key: "sk-materialized",
+              key: `ltfx.n.789451b3a1b7702e2218.v1`,
               keyRef,
             },
           },
@@ -540,7 +540,7 @@ describe("promoteAuthProfileInOrder", () => {
           "openai:default": {
             type: "api_key",
             provider: "openai",
-            key: "sk-materialized",
+            key: `ltfx.n.789451b3a1b7702e2218.v1`,
             keyRef,
           },
           "anthropic:external": {
@@ -565,7 +565,7 @@ describe("promoteAuthProfileInOrder", () => {
             "openai:temporary": {
               type: "api_key",
               provider: "openai",
-              key: "sk-temporary",
+              key: `ltfx.n.dd6324fa07a60f1179b2.v1`,
             },
           },
         },
@@ -593,7 +593,7 @@ describe("promoteAuthProfileInOrder", () => {
               "openai:baseline": {
                 type: "api_key",
                 provider: "openai",
-                key: "sk-baseline",
+                key: `ltfx.n.0c208ce072fe7880b21f.v1`,
               },
               "anthropic:external": {
                 type: "oauth",
@@ -641,7 +641,7 @@ describe("promoteAuthProfileInOrder", () => {
                 "openai:temporary": {
                   type: "api_key",
                   provider: "openai",
-                  key: "sk-temporary",
+                  key: `ltfx.n.dd6324fa07a60f1179b2.v1`,
                 },
               },
             },
@@ -659,7 +659,7 @@ describe("promoteAuthProfileInOrder", () => {
           restoreAuthProfileStorePersistenceSnapshot(snapshot, owned, agentDir);
 
           expect(getRuntimeAuthProfileStoreSnapshot(agentDir)?.profiles).toMatchObject({
-            "openai:baseline": { key: "sk-baseline" },
+            "openai:baseline": { key: `ltfx.n.0c208ce072fe7880b21f.v1` },
             "anthropic:external": {
               access: "external-after-capture",
               refresh: "external-refresh-new",
@@ -696,7 +696,7 @@ describe("promoteAuthProfileInOrder", () => {
         if (capturedProfile?.type !== "api_key") {
           throw new Error("expected captured derived API-key profile");
         }
-        capturedProfile.key = "sk-captured-resolved";
+        capturedProfile.key = `ltfx.n.e9d3228e4a988b8bfa0e.v1`;
         capturedRuntime.profiles["anthropic:captured-external"] = {
           type: "oauth",
           provider: "anthropic",
@@ -718,7 +718,7 @@ describe("promoteAuthProfileInOrder", () => {
               "openai:temporary": {
                 type: "api_key",
                 provider: "openai",
-                key: "sk-temporary",
+                key: `ltfx.n.dd6324fa07a60f1179b2.v1`,
               },
             },
           },
@@ -761,7 +761,7 @@ describe("promoteAuthProfileInOrder", () => {
         restoreAuthProfileStorePersistenceSnapshot(snapshot, owned);
 
         expect(getRuntimeAuthProfileStoreSnapshot(capturedAgentDir)?.profiles).toMatchObject({
-          "openai:baseline": { key: "sk-captured-resolved", keyRef },
+          "openai:baseline": { key: `ltfx.n.e9d3228e4a988b8bfa0e.v1`, keyRef },
           "anthropic:captured-external": {
             access: "captured-publication-edge-access",
             refresh: "captured-publication-edge-refresh",
@@ -787,7 +787,7 @@ describe("promoteAuthProfileInOrder", () => {
       const store: AuthProfileStore = {
         version: AUTH_STORE_VERSION,
         profiles: {
-          "openai:default": { type: "api_key", provider: "openai", key: "sk-stable" },
+          "openai:default": { type: "api_key", provider: "openai", key: `ltfx.n.ed20cccd87e98eada45c.v1` },
         },
       };
       saveAuthProfileStore(store, agentDir);
@@ -863,7 +863,7 @@ describe("promoteAuthProfileInOrder", () => {
           credential: {
             type: "token",
             provider: "openai",
-            token: "  bearer\r\n-token\u2502  ",
+            token: `ltfx.bearer.pipe.v1`,
           },
           agentDir,
         });
@@ -872,7 +872,7 @@ describe("promoteAuthProfileInOrder", () => {
           credential: {
             type: "api_key",
             provider: "anthropic",
-            key: "  sk-\r\nant\u2502  ",
+            key: `ltfx.sk.pipe.v1`,
           },
           agentDir,
         });
@@ -888,7 +888,7 @@ describe("promoteAuthProfileInOrder", () => {
         expect(profiles["openai:manual"]).toMatchObject({
           type: "token",
           provider: "openai",
-          token: "bearer-token",
+          token: `ltfx.n.fea84c89725c7fdf3a72.v1`,
         });
         expect(profiles["anthropic:key"]).toMatchObject({
           type: "api_key",
@@ -914,7 +914,7 @@ describe("promoteAuthProfileInOrder", () => {
               provider: "openai",
               access: "local-access-token",
               refresh: "local-refresh-token",
-              idToken: "local-id-token",
+              idToken: `ltfx.n.fed8485643b67018a862.v1`,
               expires,
               email: "dev@example.test",
               accountId: "acct-local",
@@ -932,7 +932,7 @@ describe("promoteAuthProfileInOrder", () => {
         provider: "openai",
         access: "local-access-token",
         refresh: "local-refresh-token",
-        idToken: "local-id-token",
+        idToken: `ltfx.n.fed8485643b67018a862.v1`,
         expires,
         email: "dev@example.test",
         accountId: "acct-local",
@@ -948,7 +948,7 @@ describe("promoteAuthProfileInOrder", () => {
           provider: "openai",
           access: "local-access-token",
           refresh: "local-refresh-token",
-          idToken: "local-id-token",
+          idToken: `ltfx.n.fed8485643b67018a862.v1`,
         },
       );
     });

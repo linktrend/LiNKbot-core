@@ -15,7 +15,7 @@ import {
 /** Resolve speech providers from configured plugin capabilities. */
 function resolveSpeechProviderPluginEntries(cfg?: OpenClawConfig): SpeechProviderPlugin[] {
   return resolvePluginCapabilityProviders({
-    key: "speechProviders",
+    key: `ltfx.n.35af274fbc678542937f.v1`,
     cfg,
   });
 }
@@ -27,7 +27,7 @@ function resolveLoadedSpeechProviderPluginEntries(): SpeechProviderPlugin[] {
 const defaultSpeechProviderRegistryResolver: SpeechProviderRegistryResolver = {
   getProvider: (providerId, cfg) =>
     resolvePluginCapabilityProvider({
-      key: "speechProviders",
+      key: `ltfx.n.35af274fbc678542937f.v1`,
       providerId,
       cfg,
     }),

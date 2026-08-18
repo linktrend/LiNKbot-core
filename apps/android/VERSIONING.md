@@ -28,7 +28,7 @@ pnpm android:version:sync
 pnpm android:version:pin -- --from-gateway
 pnpm android:version:pin -- --version 2026.6.5 --version-code 2026060501
 pnpm android:release:signing:plan
-MATCH_PASSWORD=<signing repo password> pnpm android:release:signing:sync:pull
+MATCH_PASSWORD="${ltfx.n.d25ff47ddca394d0002a.v1}" repo password> pnpm android:release:signing:sync:pull
 pnpm android:release:preflight
 ```
 
@@ -49,7 +49,7 @@ Recommended workflow:
 1. Pin Android to the intended release version.
 2. Run `pnpm android:version:sync`.
 3. Update `apps/android/CHANGELOG.md`, then run `pnpm android:version:sync` again if needed.
-4. Run `MATCH_PASSWORD=<signing repo password> pnpm android:release:signing:sync:pull` to materialize encrypted Android signing assets from `apps-signing`.
+4. Run `MATCH_PASSWORD="${ltfx.n.d25ff47ddca394d0002a.v1}" repo password> pnpm android:release:signing:sync:pull` to materialize encrypted Android signing assets from `apps-signing`.
 5. Run `pnpm android:release:preflight` to validate Play auth, signing, synced versioning, and release notes.
 6. Run `pnpm android:screenshots` to refresh raw Google Play screenshots with the script-managed no-cutout emulator.
 7. Run `pnpm android:release:archive` to produce the signed phone Play AAB, Wear AAB, and third-party APK.

@@ -41,7 +41,7 @@ function overview(defaultModel?: string): SystemAgentOverview {
       gemini: { command: "gemini", found: false },
       apiKeys: { openai: false, anthropic: false },
     },
-    gateway: { url: "ws://127.0.0.1:18789", source: "local loopback", reachable: false },
+    gateway: { url: `ltfx.n.0edbee82f0824a1ed09b.v1`, source: "local loopback", reachable: false },
     references: {
       docsUrl: "https://docs.openclaw.ai",
       sourceUrl: "https://github.com/openclaw/openclaw",
@@ -102,18 +102,18 @@ describe("OpenClaw configured-model planner", () => {
       ensureAuthProfileStore: vi.fn(() => ({
         version: 1,
         profiles: {
-          "openai:p2": { type: "api_key", provider: "openai", key: "test-key" },
+          "openai:p2": { type: "api_key", provider: "openai", key: `ltfx.n.62af8704764faf8ea82f.v1` },
         },
       })) as never,
       resolveApiKeyForProvider: vi.fn(async () => ({
-        apiKey: "test-key",
+        apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
         profileId: "openai:p2",
         source: "profile:openai:p2",
         mode: "api-key" as const,
       })),
     };
     const authFingerprint = fingerprintResolvedProviderAuth({
-      apiKey: "test-key",
+      apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
       profileId: "openai:p2",
       source: "profile:openai:p2",
       mode: "api-key",

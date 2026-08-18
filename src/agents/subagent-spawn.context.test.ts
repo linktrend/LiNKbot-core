@@ -144,7 +144,7 @@ describe("sessions_spawn context modes", () => {
     return result;
   }
 
-  function requireStoreEntry(store: SessionStore, key: string): Record<string, unknown> {
+  function requireStoreEntry(store: SessionStore, key: (string)): Record<string, unknown> {
     const entry = store[key];
     if (!entry) {
       throw new Error(`expected session store entry ${key}`);

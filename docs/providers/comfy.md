@@ -104,10 +104,10 @@ Choose between running ComfyUI on your own machine or using Comfy Cloud.
         openclaw onboard --comfy-api-key "your-key"
 
         # Environment variable (preferred for daemons)
-        export COMFY_API_KEY="your-key"
+        export COMFY_API_KEY="${ltfx.n.74c53a400d948f89d2bd.v1}"
 
         # Alternative environment variable
-        export COMFY_CLOUD_API_KEY="your-key"
+        export COMFY_CLOUD_API_KEY="${ltfx.n.74c53a400d948f89d2bd.v1}"
 
         # Or inline in config
         openclaw config set plugins.entries.comfy.config.apiKey "your-key"

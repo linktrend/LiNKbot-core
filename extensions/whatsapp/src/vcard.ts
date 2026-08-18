@@ -56,7 +56,7 @@ export function parseVcard(vcard?: string): ParsedVcard {
   return { name: nameFromFn ?? nameFromN, phones };
 }
 
-function normalizeVcardKey(key: string): string | undefined {
+function normalizeVcardKey(key: (string)): string | undefined {
   const [primary] = key.split(";");
   if (!primary) {
     return undefined;

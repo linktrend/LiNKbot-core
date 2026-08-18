@@ -71,7 +71,7 @@ describe("embedding provider runtime resolution", () => {
     expect(runtimeModule.getEmbeddingProvider("ollama")?.id).toBe("ollama");
     expect(mocks.resolvePluginCapabilityProviders).toHaveBeenCalledTimes(1);
     expect(mocks.resolvePluginCapabilityProvider).toHaveBeenCalledWith({
-      key: "embeddingProviders",
+      key: `ltfx.n.77b4fb8fe85ec381669f.v1`,
       providerId: "ollama",
       cfg: undefined,
     });
@@ -98,7 +98,7 @@ describe("embedding provider runtime resolution", () => {
       "openai-compatible",
     );
     expect(mocks.resolvePluginCapabilityProvider).not.toHaveBeenCalledWith({
-      key: "embeddingProviders",
+      key: `ltfx.n.77b4fb8fe85ec381669f.v1`,
       providerId: "tenant-embeddings",
       cfg,
     });

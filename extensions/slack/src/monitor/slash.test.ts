@@ -25,14 +25,14 @@ vi.mock("./slash-commands.runtime.js", () => {
   const loginCommand = { key: "login", nativeName: "login" };
   const usageCommand = { key: "usage", nativeName: "usage" };
   const reportCommand = { key: "report", nativeName: "report" };
-  const reportCompactCommand = { key: "reportcompact", nativeName: "reportcompact" };
-  const reportExternalCommand = { key: "reportexternal", nativeName: "reportexternal" };
-  const reportLongCommand = { key: "reportlong", nativeName: "reportlong" };
-  const reportLongButtonCommand = { key: "reportlongbutton", nativeName: "reportlongbutton" };
-  const reportHugeButtonCommand = { key: "reporthugebutton", nativeName: "reporthugebutton" };
-  const reportHugeValueCommand = { key: "reporthugevalue", nativeName: "reporthugevalue" };
-  const unsafeConfirmCommand = { key: "unsafeconfirm", nativeName: "unsafeconfirm" };
-  const longConfirmCommand = { key: "longconfirm", nativeName: "longconfirm" };
+  const reportCompactCommand = { key: `ltfx.n.925a46e858438fb2fc27.v1`, nativeName: "reportcompact" };
+  const reportExternalCommand = { key: `ltfx.n.0877548c63ba3cb83c01.v1`, nativeName: "reportexternal" };
+  const reportLongCommand = { key: `ltfx.n.ecf78cb96d0c7f8c8c36.v1`, nativeName: "reportlong" };
+  const reportLongButtonCommand = { key: `ltfx.n.3ac9e67ba4c3fe049bde.v1`, nativeName: "reportlongbutton" };
+  const reportHugeButtonCommand = { key: `ltfx.n.a49a7171f96d1b2815af.v1`, nativeName: "reporthugebutton" };
+  const reportHugeValueCommand = { key: `ltfx.n.e1e68fde06dc6bccbdad.v1`, nativeName: "reporthugevalue" };
+  const unsafeConfirmCommand = { key: `ltfx.n.098a55dc9079660ce45a.v1`, nativeName: "unsafeconfirm" };
+  const longConfirmCommand = { key: `ltfx.n.fdc42f833776782d9aa0.v1`, nativeName: "longconfirm" };
   const statusAliasCommand = { key: "status", nativeName: "status" };
   const thinkCommand = {
     key: "think",
@@ -397,7 +397,7 @@ function createArgMenusHarness(
   const ctx = {
     cfg,
     runtime: {},
-    botToken: "bot-token",
+    botToken: `ltfx.n.df27f9beb68b7766af3a.v1`,
     botUserId: "bot",
     teamId: "T1",
     allowFrom: ["*"],
@@ -1293,7 +1293,7 @@ function createPolicyHarness(overrides?: {
   const ctx = {
     cfg: { commands: { native: false } },
     runtime: {},
-    botToken: "bot-token",
+    botToken: `ltfx.n.df27f9beb68b7766af3a.v1`,
     botUserId: "bot",
     teamId: "T1",
     allowFrom: overrides?.allowFrom ?? ["*"],

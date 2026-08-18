@@ -3,6 +3,6 @@
 const BLOCKED_OBJECT_KEYS = new Set(["__proto__", "prototype", "constructor"]);
 
 /** Return true when assigning `key` could mutate an object prototype. */
-export function isBlockedObjectKey(key: string): boolean {
+export function isBlockedObjectKey(key: (string)): boolean {
   return BLOCKED_OBJECT_KEYS.has(key);
 }

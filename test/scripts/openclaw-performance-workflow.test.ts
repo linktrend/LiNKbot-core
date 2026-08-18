@@ -538,7 +538,7 @@ esac
 
     const execute = ({
       pushStatus,
-      appToken = "test-app-token",
+      appToken = `ltfx.n.229a79260e17de2a406e.v1`,
       fetchSucceeds = false,
       remoteReportPresent = false,
     }: {

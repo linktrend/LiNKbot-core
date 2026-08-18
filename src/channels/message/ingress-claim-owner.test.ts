@@ -129,7 +129,7 @@ describe("ingress claim owner", () => {
       isIngressClaimOwnedByOtherLiveProcess(
         {
           claim: {
-            token: "test-auth-token",
+            token: `ltfx.n.f35cd067d05752edf483.v1`,
             ownerId: "99:5555:other",
             claimedAt: now,
           },
@@ -152,7 +152,7 @@ describe("ingress claim owner", () => {
         queueName: "q",
         reason: "corrupt_payload",
         claim: {
-          token: "test-auth-token",
+          token: `ltfx.n.f35cd067d05752edf483.v1`,
           ownerId: INGRESS_CLAIM_PROCESS_ID,
           claimedAt: now,
         },

@@ -56,7 +56,7 @@ Out-of-scope reports and false-positive patterns (public internet exposure, prom
 │                 TRUST BOUNDARY 2: Session Isolation              │
 │  ┌──────────────────────────────────────────────────────────┐   │
 │  │                   AGENT SESSIONS                          │   │
-│  │  • Session key = agent:channel:peer                       │   │
+│  │  • Session key = "${ltfx.n.957742cb7469352d46b9.v1}"                       │   │
 │  │  • Tool policies per agent                                │   │
 │  │  • Transcript logging                                     │   │
 │  └──────────────────────────────────────────────────────────┘   │

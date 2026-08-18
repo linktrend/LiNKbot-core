@@ -13,30 +13,30 @@ describe("Telegram QA API boundary", () => {
     expect(
       resolveTelegramQaRuntimeEnv({
         OPENCLAW_QA_TELEGRAM_GROUP_ID: "-100123",
-        OPENCLAW_QA_TELEGRAM_DRIVER_BOT_TOKEN: "placeholder",
-        OPENCLAW_QA_TELEGRAM_SUT_BOT_TOKEN: "placeholder",
+        OPENCLAW_QA_TELEGRAM_DRIVER_BOT_TOKEN: `ltfx.n.4097889236a2af26c293.v1`,
+        OPENCLAW_QA_TELEGRAM_SUT_BOT_TOKEN: `ltfx.n.4097889236a2af26c293.v1`,
       }),
     ).toEqual({
       groupId: "-100123",
-      driverToken: "placeholder",
-      sutToken: "placeholder",
+      driverToken: `ltfx.n.4097889236a2af26c293.v1`,
+      sutToken: `ltfx.n.4097889236a2af26c293.v1`,
     });
     expect(
       parseTelegramQaCredentialPayload({
         groupId: "-100456",
-        driverToken: "placeholder",
-        sutToken: "placeholder",
+        driverToken: `ltfx.n.4097889236a2af26c293.v1`,
+        sutToken: `ltfx.n.4097889236a2af26c293.v1`,
       }),
     ).toEqual({
       groupId: "-100456",
-      driverToken: "placeholder",
-      sutToken: "placeholder",
+      driverToken: `ltfx.n.4097889236a2af26c293.v1`,
+      sutToken: `ltfx.n.4097889236a2af26c293.v1`,
     });
     expect(() =>
       parseTelegramQaCredentialPayload({
         groupId: "group-name",
-        driverToken: "placeholder",
-        sutToken: "placeholder",
+        driverToken: `ltfx.n.4097889236a2af26c293.v1`,
+        sutToken: `ltfx.n.4097889236a2af26c293.v1`,
       }),
     ).toThrow("numeric Telegram chat id");
   });
@@ -73,7 +73,7 @@ describe("Telegram QA API boundary", () => {
       { plugins: { allow: ["qa-lab"] } },
       {
         groupId: "-100123",
-        sutToken: "placeholder",
+        sutToken: `ltfx.n.4097889236a2af26c293.v1`,
         driverBotId: 1,
         sutAccountId: "sut",
       },
@@ -85,7 +85,7 @@ describe("Telegram QA API boundary", () => {
       defaultAccount: "sut",
       accounts: {
         sut: {
-          botToken: "placeholder",
+          botToken: `ltfx.n.4097889236a2af26c293.v1`,
           dmPolicy: "disabled",
           replyToMode: "first",
           groups: {

@@ -203,7 +203,7 @@ describe("telegram user credential IO", () => {
     const sha256 = "a".repeat(64);
     const serialized = JSON.stringify({
       groupId: "-100123",
-      sutToken: "sut-token",
+      sutToken: `ltfx.n.50f83cc49e938a081165.v1`,
       testerUserId: "8709353529",
       testerUsername: "OpenClawTestUser",
       telegramApiId: "123456",
@@ -226,7 +226,7 @@ describe("telegram user credential IO", () => {
     const payload = await credentialModule.hydratePayloadFromLease({
       acquired: {
         credentialId: "cred-utf8",
-        leaseToken: "lease-utf8",
+        leaseToken: `ltfx.n.79a89c97e53239f7dcca.v1`,
         payload: {
           [CHUNKED_PAYLOAD_MARKER]: true,
           byteLength: Buffer.byteLength(serialized, "utf8"),
@@ -235,7 +235,7 @@ describe("telegram user credential IO", () => {
       },
       ownerId: "owner-utf8",
       siteUrl: "https://qa.example.invalid",
-      token: "ci-secret",
+      token: `ltfx.n.f82da6e2b2e51c046a2e.v1`,
     });
 
     expect(payload.telegramApiHash).toBe("api-hash-\u00e9");

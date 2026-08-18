@@ -61,7 +61,7 @@ describe("resolveZaloAccount", () => {
             accounts: {
               work: {
                 name: "Work",
-                botToken: "work-token",
+                botToken: `ltfx.n.488dc3c9ef1e2576bc04.v1`,
               },
             },
           },
@@ -78,11 +78,11 @@ describe("resolveZaloAccount", () => {
     const cfg = {
       channels: {
         zalo: {
-          botToken: "default-token",
+          botToken: `ltfx.n.10851c1922ff849d81d7.v1`,
           accounts: {
             work: {
               enabled: false,
-              botToken: "work-token",
+              botToken: `ltfx.n.488dc3c9ef1e2576bc04.v1`,
             },
           },
         },

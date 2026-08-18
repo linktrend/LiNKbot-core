@@ -73,7 +73,7 @@ describe("OpenAI provider usage", () => {
     });
 
     const result = await fetchAdminUsage({
-      apiKey: "sk-admin-test",
+      apiKey: `ltfx.n.d091874f1da5363b8d73.v1`,
       projectId: "proj_test",
       fetchFn: fetchFn as typeof fetch,
     });
@@ -115,14 +115,14 @@ describe("OpenAI provider usage", () => {
       expect(url.searchParams.get("project_ids")).toBe("proj_test");
       expect(url.searchParams.get("bucket_width")).toBe("1d");
       expect((init as RequestInit).headers).toMatchObject({
-        Authorization: "Bearer sk-admin-test",
+        Authorization: "Bearer ltfx.n.d091874f1da5363b8d73.v1",
       });
     }
   });
 
   it("reports when organization usage rejects a non-admin key", async () => {
     const result = await fetchAdminUsage({
-      apiKey: "sk-proj-test",
+      apiKey: `ltfx.n.ce091c4384262de622f9.v1`,
       fetchFn: vi.fn(async () => new Response("", { status: 403 })) as typeof fetch,
     });
     expect(result.error).toBe("Admin API key required");
@@ -140,13 +140,13 @@ describe("OpenAI provider usage", () => {
           },
         },
       },
-      env: { OPENAI_ADMIN_KEY: "sk-admin-explicit" },
+      env: { OPENAI_ADMIN_KEY: `ltfx.n.001929bc90bf19c327b6.v1` },
       provider: "openai",
-      resolveApiKeyFromConfigAndStore: () => "sk-proj-fallback",
-      resolveOAuthToken: async () => ({ token: "oauth-token" }),
+      resolveApiKeyFromConfigAndStore: () => "ltfx.n.cdbaedccbd3648b3fb72.v1",
+      resolveOAuthToken: async () => ({ token: `ltfx.n.3bbc3a9700a71c6a53a3.v1` }),
     });
     expect(result).toEqual({
-      token: 'openclaw:openai-admin:v1:{"token":"sk-admin-explicit"}',
+      token: `ltfx.n.00b5484fc0c81fa1b084.v1`,
     });
   });
 
@@ -180,12 +180,12 @@ describe("OpenAI provider usage", () => {
   });
 
   it("does not repurpose inference credentials for organization usage", async () => {
-    const resolveCandidates = vi.fn(async () => ["sk-admin-secretref"]);
+    const resolveCandidates = vi.fn(async () => ["ltfx.n.f3748058817d100c973d.v1"]);
     const result = await resolveOpenAIUsageAuth({
       config: {},
       env: {},
       provider: "openai",
-      resolveApiKeyFromConfigAndStore: () => "sk-proj-inference",
+      resolveApiKeyFromConfigAndStore: () => "ltfx.n.145246559c4103cceb98.v1",
       resolveApiKeyCandidatesFromConfigAndStore: resolveCandidates,
       resolveOAuthToken: async () => null,
     });

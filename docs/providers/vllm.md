@@ -31,7 +31,7 @@ vLLM serves open-source (and some custom) models through an **OpenAI-compatible*
     Any non-empty value works if your server does not enforce auth:
 
     ```bash
-    export VLLM_API_KEY="vllm-local"
+    export VLLM_API_KEY="${ltfx.n.2bad35cb7a81633dcf7c.v1}"
     ```
 
   </Step>

@@ -166,7 +166,7 @@ describe("check-memory-fd-repro", () => {
       await expect(
         invokeMemorySearch({
           port,
-          token: "test-token",
+          token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
           timeoutMs: MAX_TIMER_TIMEOUT_MS + 1,
         }),
       ).resolves.toMatchObject({
@@ -193,7 +193,7 @@ describe("check-memory-fd-repro", () => {
         homeDir,
         workspaceDir,
         port: 12345,
-        token: "test-token",
+        token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
       });
       const config = JSON.parse(fs.readFileSync(configPath, "utf8"));
       const memorySearch = config.agents.defaults.memorySearch;

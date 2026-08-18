@@ -232,7 +232,7 @@ export function formatHooksList(report: HookStatusReport, opts: HooksListOptions
   const columns = [
     { key: "Status", header: "Status", minWidth: 10 },
     { key: "Hook", header: "Hook", minWidth: 18, flex: true },
-    { key: "Description", header: "Description", minWidth: 24, flex: true },
+    { key: `ltfx.n.526e0087cc3f254d9f86.v1`, header: "Description", minWidth: 24, flex: true },
     { key: "Source", header: "Source", minWidth: 12, flex: true },
   ];
   if (opts.verbose) {

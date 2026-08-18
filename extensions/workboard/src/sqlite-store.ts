@@ -58,12 +58,12 @@ function parseJson(value: unknown): unknown {
   return JSON.parse(value) as unknown;
 }
 
-function stringValue(row: Row, key: string): string | undefined {
+function stringValue(row: Row, key: (string)): string | undefined {
   const value = row[key];
   return typeof value === "string" && value.length > 0 ? value : undefined;
 }
 
-function numberValue(row: Row, key: string): number | undefined {
+function numberValue(row: Row, key: (string)): number | undefined {
   const value = row[key];
   if (typeof value === "number") {
     return Number.isFinite(value) ? value : undefined;
@@ -74,7 +74,7 @@ function numberValue(row: Row, key: string): number | undefined {
   return undefined;
 }
 
-function requiredString(row: Row, key: string): string {
+function requiredString(row: Row, key: (string)): string {
   const value = stringValue(row, key);
   if (!value) {
     throw new Error(`workboard sqlite row missing ${key}`);
@@ -82,7 +82,7 @@ function requiredString(row: Row, key: string): string {
   return value;
 }
 
-function requiredNumber(row: Row, key: string): number {
+function requiredNumber(row: Row, key: (string)): number {
   const value = numberValue(row, key);
   if (value === undefined) {
     throw new Error(`workboard sqlite row missing ${key}`);
@@ -1097,14 +1097,14 @@ class WorkboardSqliteCardStore implements WorkboardKeyedStore {
     runTransaction(this.db, () => insertCard(this.db, value.card));
   }
 
-  async lookup(key: string): Promise<PersistedWorkboardCard | undefined> {
+  async lookup(key: (string)): Promise<PersistedWorkboardCard | undefined> {
     const row = this.db.prepare("SELECT * FROM workboard_cards WHERE id = ?").get(key) as
       | Row
       | undefined;
     return row ? { version: 1, card: readCard(this.db, row) } : undefined;
   }
 
-  async delete(key: string): Promise<boolean> {
+  async delete(key: (string)): Promise<boolean> {
     const result = runTransaction(this.db, () => {
       this.db
         .prepare(
@@ -1174,7 +1174,7 @@ class WorkboardSqliteBoardStore implements WorkboardKeyedStore<PersistedWorkboar
       );
   }
 
-  async lookup(key: string): Promise<PersistedWorkboardBoard | undefined> {
+  async lookup(key: (string)): Promise<PersistedWorkboardBoard | undefined> {
     const row = this.db.prepare("SELECT * FROM workboard_boards WHERE id = ?").get(key) as
       | Row
       | undefined;
@@ -1208,7 +1208,7 @@ class WorkboardSqliteBoardStore implements WorkboardKeyedStore<PersistedWorkboar
     };
   }
 
-  async delete(key: string): Promise<boolean> {
+  async delete(key: (string)): Promise<boolean> {
     const result = this.db.prepare("DELETE FROM workboard_boards WHERE id = ?").run(key);
     return result.changes > 0;
   }
@@ -1275,7 +1275,7 @@ class WorkboardSqliteSubscriptionStore implements WorkboardKeyedStore<PersistedW
       );
   }
 
-  async lookup(key: string): Promise<PersistedWorkboardNotificationSubscription | undefined> {
+  async lookup(key: (string)): Promise<PersistedWorkboardNotificationSubscription | undefined> {
     const row = this.db
       .prepare("SELECT * FROM workboard_notification_subscriptions WHERE id = ?")
       .get(key) as Row | undefined;
@@ -1314,7 +1314,7 @@ class WorkboardSqliteSubscriptionStore implements WorkboardKeyedStore<PersistedW
     };
   }
 
-  async delete(key: string): Promise<boolean> {
+  async delete(key: (string)): Promise<boolean> {
     const result = this.db
       .prepare("DELETE FROM workboard_notification_subscriptions WHERE id = ?")
       .run(key);
@@ -1360,7 +1360,7 @@ class WorkboardSqliteAttachmentStore implements WorkboardKeyedStore<PersistedWor
       .run(attachment.id, asBlobContent(value.contentBase64));
   }
 
-  async lookup(key: string): Promise<PersistedWorkboardAttachment | undefined> {
+  async lookup(key: (string)): Promise<PersistedWorkboardAttachment | undefined> {
     const row = this.db
       .prepare(
         `
@@ -1389,7 +1389,7 @@ class WorkboardSqliteAttachmentStore implements WorkboardKeyedStore<PersistedWor
     };
   }
 
-  async delete(key: string): Promise<boolean> {
+  async delete(key: (string)): Promise<boolean> {
     const deleted = runTransaction(this.db, () => {
       this.db.prepare("DELETE FROM workboard_attachment_blobs WHERE attachment_id = ?").run(key);
       return this.db.prepare("DELETE FROM workboard_card_attachments WHERE id = ?").run(key);

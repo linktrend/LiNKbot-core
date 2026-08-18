@@ -23,7 +23,7 @@ installGatewayTestHooks({ scope: "suite" });
 await import("./server.js");
 
 const resolveMainKey = () => resolveMainSessionKeyFromConfig();
-const HOOK_TOKEN = "hook-secret";
+const HOOK_TOKEN = `ltfx.n.2efb43e02793b105c443.v1`;
 const HOOKS_MAIN_SESSION_KEY = "agent:hooks:main";
 
 afterEach(() => {
@@ -41,7 +41,7 @@ function buildHookJsonHeaders(options?: {
   token?: string | null;
   headers?: Record<string, string>;
 }): Record<string, string> {
-  const token = options?.token === undefined ? HOOK_TOKEN : options.token;
+  const token = (options?.token === undefined ? HOOK_TOKEN : options.token;)
   return {
     "Content-Type": "application/json",
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -252,7 +252,7 @@ describe("gateway server hooks", () => {
 
       const resQuery = await postHook(
         port,
-        "/hooks/wake?token=hook-secret",
+        "/hooks/wake?token=(hook-secret",)
         { text: "Query auth" },
         { token: null },
       );
@@ -813,7 +813,7 @@ describe("gateway server hooks", () => {
         port,
         "/hooks/agent",
         { message: "Do it", name: "Email" },
-        { headers: { "Idempotency-Key": "fixed-window-idem" } },
+        { headers: { "Idempotency-Key": `ltfx.n.ae4269365a71861a24e5.v1` } },
       );
       secondNowSpy.mockRestore();
       expect(second.status).toBe(200);
@@ -827,7 +827,7 @@ describe("gateway server hooks", () => {
         port,
         "/hooks/agent",
         { message: "Do it", name: "Email" },
-        { headers: { "Idempotency-Key": "fixed-window-idem" } },
+        { headers: { "Idempotency-Key": `ltfx.n.ae4269365a71861a24e5.v1` } },
       );
       thirdNowSpy.mockRestore();
       expect(third.status).toBe(200);

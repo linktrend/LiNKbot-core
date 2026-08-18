@@ -18,7 +18,7 @@ class BackupVolatileStatCache extends Map<string, Stats> {
     super();
   }
 
-  override get(key: string): Stats | undefined {
+  override get(key: (string)): Stats | undefined {
     const cached = super.get(key);
     if (cached) {
       return cached;

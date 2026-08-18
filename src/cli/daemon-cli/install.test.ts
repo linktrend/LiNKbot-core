@@ -254,7 +254,7 @@ describe("mergeInstallInvocationEnv", () => {
     const env = mergeInstallInvocationEnv({
       env: {
         Path: "C:\\Windows\\System32",
-        openai_api_key: "service-openai-key",
+        openai_api_key: `ltfx.n.5bdbf24218baef6a3819.v1`,
         NODE_OPTIONS: "--require C:\\temp\\untrusted.js",
       },
       platform: "win32",
@@ -262,7 +262,7 @@ describe("mergeInstallInvocationEnv", () => {
 
     expectFields(env, {
       PATH: "C:\\Windows\\System32",
-      OPENAI_API_KEY: "service-openai-key",
+      OPENAI_API_KEY: `ltfx.n.5bdbf24218baef6a3819.v1`,
     });
     expect(env.Path).toBeUndefined();
     expect(env.openai_api_key).toBeUndefined();
@@ -383,7 +383,7 @@ describe("runDaemonInstall", () => {
       programArguments: ["openclaw", "gateway", "run"],
       workingDirectory: "/tmp",
       environment: {
-        OPENROUTER_API_KEY: "or-operator-key",
+        OPENROUTER_API_KEY: `ltfx.n.48432ebc6c1323057fe6.v1`,
       },
       environmentValueSources: {
         OPENROUTER_API_KEY: "file",
@@ -410,7 +410,7 @@ describe("runDaemonInstall", () => {
         }
       | undefined;
     expect(installOptions?.environment).toEqual({
-      OPENROUTER_API_KEY: "or-operator-key",
+      OPENROUTER_API_KEY: `ltfx.n.48432ebc6c1323057fe6.v1`,
     });
     expect(installOptions?.environmentValueSources).toEqual({
       OPENROUTER_API_KEY: "file",
@@ -474,22 +474,22 @@ describe("runDaemonInstall", () => {
       .mockResolvedValueOnce({
         exists: true,
         valid: true,
-        config: { gateway: { auth: { mode: "token", token: "durable-token" } } },
-        sourceConfig: { gateway: { auth: { mode: "token", token: "durable-token" } } },
+        config: { gateway: { auth: { mode: "token", token: `ltfx.n.d228050e2b06f665e31e.v1` } } },
+        sourceConfig: { gateway: { auth: { mode: "token", token: `ltfx.n.d228050e2b06f665e31e.v1` } } },
       })
       .mockResolvedValue({
         exists: true,
         valid: true,
         config: {
-          gateway: { mode: "local", auth: { mode: "token", token: "durable-token" } },
+          gateway: { mode: "local", auth: { mode: "token", token: `ltfx.n.d228050e2b06f665e31e.v1` } },
         },
         sourceConfig: {
-          gateway: { mode: "local", auth: { mode: "token", token: "durable-token" } },
+          gateway: { mode: "local", auth: { mode: "token", token: `ltfx.n.d228050e2b06f665e31e.v1` } },
         },
       });
     resolveGatewayAuthMock.mockReturnValue({
       mode: "token",
-      token: "durable-token",
+      token: `ltfx.n.d228050e2b06f665e31e.v1`,
       password: undefined,
       allowTailscale: false,
     });
@@ -505,7 +505,7 @@ describe("runDaemonInstall", () => {
     expectFields(readFirstInstallPlanArg().config as Record<string, unknown>, {
       gateway: {
         mode: "local",
-        auth: { mode: "token", token: "durable-token" },
+        auth: { mode: "token", token: `ltfx.n.d228050e2b06f665e31e.v1` },
       },
     });
   });
@@ -517,7 +517,7 @@ describe("runDaemonInstall", () => {
         bind: "lan",
         auth: {
           mode: "none",
-          token: "test-token",
+          token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
         },
       },
     };
@@ -529,7 +529,7 @@ describe("runDaemonInstall", () => {
     });
     resolveGatewayAuthMock.mockReturnValue({
       mode: "none",
-      token: "test-token",
+      token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
       password: undefined,
       allowTailscale: false,
     });
@@ -652,8 +652,8 @@ describe("runDaemonInstall", () => {
     readConfigFileSnapshotMock.mockResolvedValue({
       exists: true,
       valid: true,
-      config: { gateway: { auth: { mode: "token", token: "durable-token" } } },
-      sourceConfig: { gateway: { auth: { mode: "token", token: "durable-token" } } },
+      config: { gateway: { auth: { mode: "token", token: `ltfx.n.d228050e2b06f665e31e.v1` } } },
+      sourceConfig: { gateway: { auth: { mode: "token", token: `ltfx.n.d228050e2b06f665e31e.v1` } } },
     });
     isGatewayDaemonRuntimeMock.mockReturnValue(false);
 
@@ -728,7 +728,7 @@ describe("runDaemonInstall", () => {
     service.readCommand.mockResolvedValue({
       programArguments: ["openclaw", "gateway", "run"],
       environment: {
-        OPENCLAW_GATEWAY_TOKEN: "stale-service-token",
+        OPENCLAW_GATEWAY_TOKEN: `ltfx.n.a4c6f9a0f8ac25146a89.v1`,
       },
     } as never);
 
@@ -745,14 +745,14 @@ describe("runDaemonInstall", () => {
     service.readCommand.mockResolvedValue({
       programArguments: ["openclaw", "gateway", "run"],
       environment: {
-        OPENCLAW_GATEWAY_TOKEN: "durable-token",
+        OPENCLAW_GATEWAY_TOKEN: `ltfx.n.d228050e2b06f665e31e.v1`,
       },
     } as never);
     buildGatewayInstallPlanMock.mockResolvedValueOnce({
       programArguments: ["openclaw", "gateway", "run"],
       workingDirectory: "/tmp",
       environment: {
-        OPENCLAW_GATEWAY_TOKEN: "durable-token",
+        OPENCLAW_GATEWAY_TOKEN: `ltfx.n.d228050e2b06f665e31e.v1`,
       },
     });
 
@@ -810,14 +810,14 @@ describe("runDaemonInstall", () => {
     service.readCommand.mockResolvedValue({
       programArguments: ["openclaw", "gateway", "run"],
       environment: {
-        OPENCLAW_GATEWAY_TOKEN: "stale-service-token",
+        OPENCLAW_GATEWAY_TOKEN: `ltfx.n.a4c6f9a0f8ac25146a89.v1`,
       },
     } as never);
     buildGatewayInstallPlanMock.mockResolvedValueOnce({
       programArguments: ["openclaw", "gateway", "run"],
       workingDirectory: "/tmp",
       environment: {
-        OPENCLAW_GATEWAY_TOKEN: "fresh-token",
+        OPENCLAW_GATEWAY_TOKEN: `ltfx.n.5e2040ab40dda85da034.v1`,
       },
     });
 
@@ -834,7 +834,7 @@ describe("runDaemonInstall", () => {
     service.readCommand.mockResolvedValue({
       programArguments: ["openclaw", "gateway", "run"],
       environment: {
-        OPENCLAW_GATEWAY_TOKEN: "env-file-token",
+        OPENCLAW_GATEWAY_TOKEN: `ltfx.n.83f381bb9adc3b1d0c4e.v1`,
       },
       environmentValueSources: {
         OPENCLAW_GATEWAY_TOKEN: "file",
@@ -890,7 +890,7 @@ describe("runDaemonInstall", () => {
     service.readCommand.mockResolvedValue({
       programArguments: ["openclaw", "gateway", "run"],
       environment: {
-        OPENAI_API_KEY: "service-openai-key",
+        OPENAI_API_KEY: `ltfx.n.5bdbf24218baef6a3819.v1`,
       },
     } as never);
     const previous = process.env.OPENAI_API_KEY;
@@ -901,7 +901,7 @@ describe("runDaemonInstall", () => {
       await runDaemonInstall({ json: true, force: true });
 
       expectFields(readFirstInstallPlanArg().env, {
-        OPENAI_API_KEY: "service-openai-key",
+        OPENAI_API_KEY: `ltfx.n.5bdbf24218baef6a3819.v1`,
       });
       expect(installDaemonServiceAndEmitMock).toHaveBeenCalledTimes(1);
     } finally {
@@ -925,10 +925,10 @@ describe("runDaemonInstall", () => {
       environment: {
         OPENCLAW_STATE_DIR: "/tmp/openclaw-doctor-manual",
         OPENCLAW_CONFIG_PATH: "/tmp/openclaw-doctor-manual/openclaw.json",
-        OPENCLAW_GATEWAY_TOKEN: "stale-service-token",
+        OPENCLAW_GATEWAY_TOKEN: `ltfx.n.a4c6f9a0f8ac25146a89.v1`,
         PATH: "/tmp/doctor-bin:/usr/bin",
         NODE_OPTIONS: "--require /tmp/evil.js",
-        OPENAI_API_KEY: "service-openai-key",
+        OPENAI_API_KEY: `ltfx.n.5bdbf24218baef6a3819.v1`,
       },
     } as never);
 
@@ -938,7 +938,7 @@ describe("runDaemonInstall", () => {
       await runDaemonInstall({ json: true, force: true });
 
       expectFields(readFirstInstallPlanArg().env, {
-        OPENAI_API_KEY: "service-openai-key",
+        OPENAI_API_KEY: `ltfx.n.5bdbf24218baef6a3819.v1`,
       });
       const env = readFirstInstallPlanArg().env as Record<string, string | undefined>;
       expect(env.OPENCLAW_STATE_DIR).toBeUndefined();

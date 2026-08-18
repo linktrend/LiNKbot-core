@@ -68,7 +68,7 @@ function normalizeNostrSenderPubkey(value: string): string | null {
 }
 
 const nostrIngressIdentity = {
-  key: "nostr-pubkey",
+  key: `ltfx.n.68d48a65c95fa1a63544.v1`,
   normalizeEntry: normalizeNostrAllowEntry,
   normalizeSubject: normalizeNostrSenderPubkey,
   sensitivity: "pii",

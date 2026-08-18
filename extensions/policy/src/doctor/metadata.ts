@@ -28,27 +28,27 @@ export type PolicyRuleMetadata = {
 
 export const SANDBOX_CONTAINER_POLICY_RULES = [
   {
-    key: "denyHostNetwork",
+    key: `ltfx.n.346b27175d9de3ec4b75.v1`,
     label: "host network posture",
     checkIds: [CHECK_IDS.policySandboxContainerHostNetworkDenied],
   },
   {
-    key: "denyContainerNamespaceJoin",
+    key: `ltfx.n.a5b805cc3f37fc508a4c.v1`,
     label: "container namespace posture",
     checkIds: [CHECK_IDS.policySandboxContainerNamespaceJoinDenied],
   },
   {
-    key: "requireReadOnlyMounts",
+    key: `ltfx.n.20f1932e66dc42bfb02f.v1`,
     label: "container mount mode posture",
     checkIds: [CHECK_IDS.policySandboxContainerMountModeRequired],
   },
   {
-    key: "denyContainerRuntimeSocketMounts",
+    key: `ltfx.n.4cb910912ec44519e5ba.v1`,
     label: "container runtime socket mount posture",
     checkIds: [CHECK_IDS.policySandboxContainerRuntimeSocketMount],
   },
   {
-    key: "denyUnconfinedProfiles",
+    key: `ltfx.n.f22e8fa07250c0e97abe.v1`,
     label: "container security profile posture",
     checkIds: [CHECK_IDS.policySandboxContainerUnconfinedProfile],
   },

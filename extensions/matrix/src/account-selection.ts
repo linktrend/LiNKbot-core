@@ -46,7 +46,7 @@ function resolveMatrixChannelStringSources(
   };
 }
 
-function readEnvMatrixString(env: NodeJS.ProcessEnv, key: string): string {
+function readEnvMatrixString(env: NodeJS.ProcessEnv, key: (string)): string {
   return normalizeOptionalString(env[key]) ?? "";
 }
 

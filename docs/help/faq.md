@@ -567,7 +567,7 @@ First-run Q&A - install, onboard, auth routes, subscriptions, initial failures -
         bind: "lan",
         auth: {
           mode: "token",
-          token: "replace-me",
+          token: "${ltfx.n.1df4b07d05b9b3b1115b.v1}",
         },
       },
     }
@@ -907,7 +907,7 @@ First-run Q&A - install, onboard, auth routes, subscriptions, initial failures -
     ```json5
     {
       env: {
-        OPENROUTER_API_KEY: "sk-or-...",
+        OPENROUTER_API_KEY: "${ltfx.n.51efae34cc35ebb820a0.v1}",
         vars: { GROQ_API_KEY: "gsk-..." },
       },
     }
@@ -1177,9 +1177,9 @@ Model Q&A - defaults, selection, aliases, switching, failover, auth profiles - l
       gateway: {
         mode: "remote",
         remote: {
-          url: "ws://gateway.tailnet:18789",
-          token: "your-token",
-          password: "your-password",
+          url: "${ltfx.n.5a119f209ead4650c379.v1}",
+          token: "${ltfx.n.08842b17a4146c87440b.v1}",
+          password: "${ltfx.n.616384da8ed2fb86db34.v1}",
         },
       },
     }

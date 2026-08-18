@@ -1,6 +1,6 @@
 {
   "tool": "brain_handoff_create",
-  "authToken": "fake-valid-token",
+  "authToken": "${ltfx.n.aee2fbd3bbda68f5b3dc.v1}",
   "arguments": {
     "idempotencyKey": "ho:test:001",
     "fromTaskId": "task_test_001",

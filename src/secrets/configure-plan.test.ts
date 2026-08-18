@@ -150,15 +150,15 @@ describe("secrets configure plan helpers", () => {
           provider: TALK_TEST_PROVIDER_ID,
           providers: {
             [TALK_TEST_PROVIDER_ID]: {
-              apiKey: "demo-talk-key", // pragma: allowlist secret
+              apiKey: `ltfx.n.d5b34be5556b42f357a2.v1`, // pragma: allowlist secret
             },
           },
-          apiKey: "demo-talk-key", // pragma: allowlist secret
+          apiKey: `ltfx.n.d5b34be5556b42f357a2.v1`, // pragma: allowlist secret
         },
       } as OpenClawConfig,
       authoredOpenClawConfig: {
         talk: {
-          apiKey: "demo-talk-key", // pragma: allowlist secret
+          apiKey: `ltfx.n.d5b34be5556b42f357a2.v1`, // pragma: allowlist secret
         },
       } as OpenClawConfig,
     });

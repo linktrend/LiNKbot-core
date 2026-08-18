@@ -398,7 +398,7 @@ describe("provider-runtime", () => {
     ]);
     const usageHooks = {
       auth: [],
-      resolveUsageAuth: vi.fn(async () => ({ token: "usage-token" })),
+      resolveUsageAuth: vi.fn(async () => ({ token: `ltfx.n.b2c355d11e0aca91b4f3.v1` })),
       fetchUsageSnapshot: vi.fn(async () => ({
         provider: "declared",
         displayName: "Declared",
@@ -872,7 +872,7 @@ describe("provider-runtime", () => {
       label: "Demo",
       auth: [],
       resolveSyntheticAuth: () => ({
-        apiKey: "default-runtime-token",
+        apiKey: `ltfx.n.8440768af3c94e3178b0.v1`,
         source: "default runtime",
         mode: "api-key" as const,
       }),
@@ -1053,7 +1053,7 @@ describe("provider-runtime", () => {
 
   it("returns provider-prepared runtime auth for the matched provider", async () => {
     const prepareRuntimeAuth = vi.fn(async () => ({
-      apiKey: "runtime-token",
+      apiKey: `ltfx.n.f8e1f3c257c8d1a3d07a.v1`,
       baseUrl: "https://runtime.example.com/v1",
       expiresAt: 123,
     }));
@@ -1076,18 +1076,18 @@ describe("provider-runtime", () => {
           provider: DEMO_PROVIDER_ID,
           modelId: MODEL.id,
           model: MODEL,
-          apiKey: "raw-token",
+          apiKey: `ltfx.n.34d328009b123fbbb0dc.v1`,
           authMode: "token",
         },
       }),
     ).resolves.toEqual({
-      apiKey: "runtime-token",
+      apiKey: `ltfx.n.f8e1f3c257c8d1a3d07a.v1`,
       baseUrl: "https://runtime.example.com/v1",
       expiresAt: 123,
     });
     const prepareRuntimeAuthCalls = prepareRuntimeAuth.mock.calls as unknown[][];
     expectRecordFields(requireRecord(prepareRuntimeAuthCalls[0]?.[0], "runtime auth context"), {
-      apiKey: "raw-token",
+      apiKey: `ltfx.n.34d328009b123fbbb0dc.v1`,
       modelId: MODEL.id,
       provider: DEMO_PROVIDER_ID,
     });
@@ -1095,9 +1095,9 @@ describe("provider-runtime", () => {
 
   it("unwraps secret sentinels only after finding the provider auth hook", async () => {
     const { mintSecretSentinel } = await import("../secrets/sentinel.js");
-    const sourceToken = "provider-source-token";
+    const sourceToken = `ltfx.n.24c1f04667bf4c1bb4ad.v1`;
     const sourceSentinel = mintSecretSentinel(sourceToken, { label: "provider-runtime-test" });
-    const prepareRuntimeAuth = vi.fn(async () => ({ apiKey: "runtime-token" }));
+    const prepareRuntimeAuth = vi.fn(async () => ({ apiKey: `ltfx.n.f8e1f3c257c8d1a3d07a.v1` }));
     resolvePluginProvidersMock.mockReturnValue([
       {
         id: DEMO_PROVIDER_ID,
@@ -1132,7 +1132,7 @@ describe("provider-runtime", () => {
           provider: "provider-without-hook",
           modelId: MODEL.id,
           model: { ...MODEL, provider: "provider-without-hook" },
-          apiKey: "oc-sent-v2.unknown.end",
+          apiKey: `ltfx.n.d533c0659070c3879239.v1`,
           authMode: "token",
         },
       }),
@@ -1899,7 +1899,7 @@ describe("provider-runtime", () => {
       model: "demo-embed",
       embedQuery: async () => [1, 0, 0],
       embedBatch: async () => [[1, 0, 0]],
-      client: { token: "embed-token" },
+      client: { token: `ltfx.n.b1e35f5c5f887c94715d.v1` },
     }));
     const buildReplayPolicy = vi.fn(() => ({
       sanitizeMode: "full" as const,
@@ -1925,7 +1925,7 @@ describe("provider-runtime", () => {
     const inspectToolSchemas = vi.fn(() => [] as { toolName: string; violations: string[] }[]);
     const resolveReasoningOutputMode = vi.fn(() => "tagged" as const);
     const resolveSyntheticAuth = vi.fn(() => ({
-      apiKey: "demo-local",
+      apiKey: `ltfx.n.68651ed9af5ca916d319.v1`,
       source: "models.providers.demo (synthetic local key)",
       mode: "api-key" as const,
     }));
@@ -1936,7 +1936,7 @@ describe("provider-runtime", () => {
       ({ modelId }: { modelId: string }) => `Use demo setup for ${modelId}`,
     );
     const prepareRuntimeAuth = vi.fn(async () => ({
-      apiKey: "runtime-token",
+      apiKey: `ltfx.n.f8e1f3c257c8d1a3d07a.v1`,
       baseUrl: "https://runtime.example.com/v1",
       expiresAt: 123,
     }));
@@ -1945,7 +1945,7 @@ describe("provider-runtime", () => {
       access: "refreshed-access-token",
     }));
     const resolveUsageAuth = vi.fn(async () => ({
-      token: "usage-token",
+      token: `ltfx.n.b2c355d11e0aca91b4f3.v1`,
       accountId: "usage-account",
     }));
     const fetchUsageSnapshot = vi.fn(async () => ({
@@ -2171,7 +2171,7 @@ describe("provider-runtime", () => {
         expected: {
           id: "demo",
           model: "demo-embed",
-          client: { token: "embed-token" },
+          client: { token: `ltfx.n.b1e35f5c5f887c94715d.v1` },
         },
       },
       {
@@ -2181,12 +2181,12 @@ describe("provider-runtime", () => {
             env: process.env,
             context: createDemoResolvedModelContext({
               env: process.env,
-              apiKey: "source-token",
+              apiKey: `ltfx.n.29a47556ff0f216b8a51.v1`,
               authMode: "api-key",
             }),
           }),
         expected: {
-          apiKey: "runtime-token",
+          apiKey: `ltfx.n.f8e1f3c257c8d1a3d07a.v1`,
           baseUrl: "https://runtime.example.com/v1",
           expiresAt: 123,
         },
@@ -2219,7 +2219,7 @@ describe("provider-runtime", () => {
             }),
           }),
         expected: {
-          token: "usage-token",
+          token: `ltfx.n.b2c355d11e0aca91b4f3.v1`,
           accountId: "usage-account",
         },
       },
@@ -2231,7 +2231,7 @@ describe("provider-runtime", () => {
             context: createDemoProviderContext({
               config: {} as never,
               env: process.env,
-              token: "usage-token",
+              token: `ltfx.n.b2c355d11e0aca91b4f3.v1`,
               timeoutMs: 5_000,
               fetchFn: vi.fn() as never,
             }),
@@ -2321,7 +2321,7 @@ describe("provider-runtime", () => {
           expires: Date.now() + 60_000,
         },
       }),
-    ).toBe('{"token":"oauth-access"}');
+    ).toBe('{"token":`ltfx.n.8d13b7d10f7892270fbb.v1`}');
 
     await expectResolvedAsyncValues([
       {
@@ -2371,7 +2371,7 @@ describe("provider-runtime", () => {
             }),
           }),
         expected: {
-          apiKey: "demo-local",
+          apiKey: `ltfx.n.68651ed9af5ca916d319.v1`,
           source: "models.providers.demo (synthetic local key)",
           mode: "api-key",
         },
@@ -2382,7 +2382,7 @@ describe("provider-runtime", () => {
             provider: DEMO_PROVIDER_ID,
             context: {
               provider: DEMO_PROVIDER_ID,
-              resolvedApiKey: "demo-local",
+              resolvedApiKey: `ltfx.n.68651ed9af5ca916d319.v1`,
             },
           }),
         expected: true,

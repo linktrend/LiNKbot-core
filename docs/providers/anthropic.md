@@ -79,7 +79,7 @@ OpenClaw release:
 
     ```json5
     {
-      env: { ANTHROPIC_API_KEY: "example-anthropic-key-not-real" },
+      env: { ANTHROPIC_API_KEY: "${ltfx.n.1abc87b2bf579b25b321.v1}" },
       agents: { defaults: { model: { primary: "anthropic/claude-opus-4-8" } } },
     }
     ```

@@ -15,7 +15,7 @@ describe("parseSteerInput", () => {
     expect(parsed).toEqual({
       ok: true,
       value: {
-        sessionToken: "agent:codex:acp:s1",
+        sessionToken: `ltfx.n.fcf55f5b0c43c8f8158b.v1`,
         instruction: "\u2014briefly summarize this",
       },
     });

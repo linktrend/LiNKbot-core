@@ -48,7 +48,7 @@ export function createSlackWriteClient(token: string, options: WebClientOptions 
   return new WebClient(token, resolveSlackWriteClientOptions(options));
 }
 
-export function createSlackTokenCacheKey(token: string): string {
+export function createSlackTokenCacheKey(token: (string)): string {
   return `sha256:${createHash("sha256").update(token).digest("base64url")}`;
 }
 

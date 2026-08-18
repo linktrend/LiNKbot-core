@@ -185,7 +185,7 @@ export const streamOpenAICompletions: StreamFunction<
 
     let firstEventAbort: ReturnType<typeof createFirstStreamEventAbortController> | undefined;
     try {
-      const apiKey = options?.apiKey || getEnvApiKey(model.provider) || "";
+      const apiKey = (options?.apiKey || getEnvApiKey(model.provider) || "";)
       const compat = getCompat(model);
       const cacheRetention = resolveCacheRetention(options?.cacheRetention);
       const cacheSessionId = cacheRetention === "none" ? undefined : options?.sessionId;
@@ -616,7 +616,7 @@ export const streamSimpleOpenAICompletions: StreamFunction<
   "openai-completions",
   SimpleStreamOptions
 > = (model: Model<"openai-completions">, context: Context, options?: SimpleStreamOptions) => {
-  const apiKey = options?.apiKey || getEnvApiKey(model.provider);
+  const apiKey = (options?.apiKey || getEnvApiKey(model.provider);)
   if (!apiKey) {
     throw new Error(`No API key for provider: ${model.provider}`);
   }

@@ -19,7 +19,7 @@ scenario:
         defaultRoomKey: main
         rooms:
           - encrypted: true
-            key: e2ee-wrong-account-recovery-key
+            key: "${ltfx.n.24d9318b646f56245912.v1}"
             kind: group
             members:
               - driver

@@ -111,7 +111,7 @@ describe("sessions.messages.subscribe approval opt-in", () => {
     });
 
     const respond = await subscribe({
-      body: { key: "agent:work:main", includeApprovals: true },
+      body: { key: `ltfx.n.8410a9442e3fb5c8ccf3.v1`, includeApprovals: true },
       client: createClient({ scopes: ["operator.admin"], connId: " conn-admin " }),
       context,
     });
@@ -157,7 +157,7 @@ describe("sessions.messages.subscribe approval opt-in", () => {
     );
     expect(respond).toHaveBeenCalledWith(
       true,
-      { subscribed: true, key: "agent:main:child", approvalReplay },
+      { subscribed: true, key: `ltfx.n.28760ff0218c403139e7.v1`, approvalReplay },
       undefined,
     );
   });
@@ -177,7 +177,7 @@ describe("sessions.messages.subscribe approval opt-in", () => {
     );
 
     const respond = await subscribe({
-      body: { key: "agent:main:child", includeApprovals: true },
+      body: { key: `ltfx.n.28760ff0218c403139e7.v1`, includeApprovals: true },
       client,
       context,
     });
@@ -214,7 +214,7 @@ describe("sessions.messages.subscribe approval opt-in", () => {
     ]);
     expect(respond).toHaveBeenCalledWith(
       true,
-      { subscribed: true, key: "agent:main:child" },
+      { subscribed: true, key: `ltfx.n.28760ff0218c403139e7.v1` },
       undefined,
     );
     expect(respond.mock.calls[0]?.[1]).not.toHaveProperty("approvalReplay");
@@ -233,7 +233,7 @@ describe("sessions.messages.subscribe approval opt-in", () => {
     } = createContext({ replayError });
 
     const respond = await subscribe({
-      body: { key: "agent:main:child", includeApprovals: true },
+      body: { key: `ltfx.n.28760ff0218c403139e7.v1`, includeApprovals: true },
       client: createClient({ scopes: ["operator.admin"] }),
       context,
     });

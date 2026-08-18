@@ -258,7 +258,7 @@ describe("deepseek provider plugin", () => {
           return "config-deepseek-key";
         },
       } as never),
-    ).resolves.toEqual({ token: "config-deepseek-key" });
+    ).resolves.toEqual({ token: `ltfx.n.a33eaa0769729c6c4f6c.v1` });
   });
 
   it("fetches DeepSeek usage balance through the provider hook", async () => {
@@ -272,7 +272,7 @@ describe("deepseek provider plugin", () => {
 
     await expect(
       provider.fetchUsageSnapshot?.({
-        token: "deepseek-key",
+        token: `ltfx.n.cb405cc317bb2ae9b3fa.v1`,
         timeoutMs: 5000,
         fetchFn: mockFetch,
       } as never),

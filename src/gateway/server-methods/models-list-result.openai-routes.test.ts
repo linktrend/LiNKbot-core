@@ -81,7 +81,7 @@ describe("models.list OpenAI routes", () => {
     const resolveRoutes = vi.fn(() => null);
     const createResolver = vi.fn(() => resolveRoutes);
     await withEnvAsync(
-      { ...WITHOUT_OPENAI_ENV_AUTH, OPENAI_API_KEY: "test-token-placeholder" },
+      { ...WITHOUT_OPENAI_ENV_AUTH, OPENAI_API_KEY: `ltfx.n.41dd96f1dccf65c2c9c7.v1` },
       async () => {
         await expect(
           listModels({
@@ -200,7 +200,7 @@ describe("models.list OpenAI routes", () => {
       reasoning: true,
     } as ModelCatalogEntry;
 
-    await withEnvAsync({ ...WITHOUT_OPENAI_ENV_AUTH, OPENAI_API_KEY: "test-key" }, async () => {
+    await withEnvAsync({ ...WITHOUT_OPENAI_ENV_AUTH, OPENAI_API_KEY: `ltfx.n.62af8704764faf8ea82f.v1` }, async () => {
       await expect(listModels({ catalog: [row], cfg })).resolves.toEqual({
         models: [
           {
@@ -299,7 +299,7 @@ describe("models.list OpenAI routes", () => {
               "openai:key": {
                 type: "api_key",
                 provider: "openai",
-                key: "test-key",
+                key: `ltfx.n.62af8704764faf8ea82f.v1`,
               },
             },
           });
@@ -552,7 +552,7 @@ describe("models.list OpenAI routes", () => {
     } as unknown as OpenClawConfig;
 
     await withEnvAsync(
-      { ...WITHOUT_OPENAI_ENV_AUTH, OPENAI_API_KEY: "test-token-placeholder" },
+      { ...WITHOUT_OPENAI_ENV_AUTH, OPENAI_API_KEY: `ltfx.n.41dd96f1dccf65c2c9c7.v1` },
       async () => {
         const result = await listModels({
           cfg,

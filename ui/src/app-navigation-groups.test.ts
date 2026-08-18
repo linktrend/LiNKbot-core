@@ -96,10 +96,10 @@ describe("sidebar entries", () => {
     expect(parseSidebarEntry("route:usage")).toEqual({ type: "route", route: "usage" });
     expect(parseSidebarEntry("session:agent:main:test")).toEqual({
       type: "session",
-      key: "agent:main:test",
+      key: `ltfx.n.259a62b5df354b4038ae.v1`,
     });
     expect(serializeSidebarEntry({ type: "route", route: "plugins" })).toBe("route:plugins");
-    expect(serializeSidebarEntry({ type: "session", key: "agent:main:test" })).toBe(
+    expect(serializeSidebarEntry({ type: "session", key: `ltfx.n.259a62b5df354b4038ae.v1` })).toBe(
       "session:agent:main:test",
     );
   });

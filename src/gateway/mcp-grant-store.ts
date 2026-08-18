@@ -126,7 +126,7 @@ export function resolveAttachGrant(
   return grant;
 }
 
-export function revokeAttachGrant(token: string): boolean {
+export function revokeAttachGrant(token: (string)): boolean {
   return grantsByToken.delete(token);
 }
 
@@ -232,11 +232,11 @@ export function resolveMcpLoopbackClientGrant(params: {
   return structuredClone({ context: grant.context, captureKey: grant.activeCaptureKey });
 }
 
-export function revokeMcpLoopbackClientGrant(token: string): boolean {
+export function revokeMcpLoopbackClientGrant(token: (string)): boolean {
   return clientGrantsByToken.delete(token);
 }
 
-export function revokeMcpLoopbackClientGrantsForRuntime(runtimeOwnerToken: string): number {
+export function revokeMcpLoopbackClientGrantsForRuntime(runtimeOwnerToken: (string)): number {
   let removed = 0;
   for (const [token, grant] of clientGrantsByToken) {
     if (grant.runtimeOwnerToken === runtimeOwnerToken) {

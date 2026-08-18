@@ -101,7 +101,7 @@ describe("resolveGatewayProbeSnapshot", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mocks.buildGatewayConnectionDetailsWithResolvers.mockReturnValue({
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       urlSource: "local loopback",
       message: "Gateway target: ws://127.0.0.1:18789",
     });
@@ -135,7 +135,7 @@ describe("resolveGatewayProbeSnapshot", () => {
     expect(result.gatewayReachable).toBe(false);
     expect(result.gatewaySelf).toBeNull();
     expect(result.gatewayCallOverrides).toEqual({
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       token: undefined,
       password: undefined,
     });
@@ -144,7 +144,7 @@ describe("resolveGatewayProbeSnapshot", () => {
   it("can probe the local fallback when remote url is missing", async () => {
     mocks.probeGateway.mockResolvedValue({
       ok: true,
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       connectLatencyMs: 12,
       error: null,
       close: null,
@@ -171,7 +171,7 @@ describe("resolveGatewayProbeSnapshot", () => {
     expect(result.gatewayReachable).toBe(true);
     expect(result.gatewaySelf).toEqual({ host: "box" });
     expect(result.gatewayCallOverrides).toEqual({
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       token: "tok",
       password: "pw",
     });
@@ -186,7 +186,7 @@ describe("resolveGatewayProbeSnapshot", () => {
     });
     mocks.probeGateway.mockResolvedValue({
       ok: false,
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       connectLatencyMs: null,
       error: "timeout",
       close: null,
@@ -212,7 +212,7 @@ describe("resolveGatewayProbeSnapshot", () => {
     });
     mocks.probeGateway.mockResolvedValue({
       ok: false,
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       connectLatencyMs: 51,
       error: "missing scope: operator.read",
       close: null,
@@ -248,7 +248,7 @@ describe("resolveGatewayProbeSnapshot", () => {
     });
     mocks.probeGateway.mockResolvedValue({
       ok: false,
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       connectLatencyMs: null,
       error: "timeout",
       close: null,
@@ -296,7 +296,7 @@ describe("resolveGatewayProbeSnapshot", () => {
     });
     mocks.probeGateway.mockResolvedValue({
       ok: false,
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       connectLatencyMs: null,
       error: "timeout",
       close: null,
@@ -333,7 +333,7 @@ describe("resolveGatewayProbeSnapshot", () => {
     });
     mocks.probeGateway.mockResolvedValue({
       ok: false,
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       connectLatencyMs: null,
       error: "timeout",
       close: null,
@@ -372,7 +372,7 @@ describe("resolveGatewayProbeSnapshot", () => {
     });
     mocks.probeGateway.mockResolvedValue({
       ok: false,
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       connectLatencyMs: null,
       error: "timeout",
       close: null,
@@ -412,7 +412,7 @@ describe("resolveGatewayProbeSnapshot", () => {
     });
     mocks.probeGateway.mockResolvedValue({
       ok: false,
-      url: "wss://gateway.example/ws",
+      url: `ltfx.n.220960bbd8d741e2dfde.v1`,
       connectLatencyMs: null,
       error: "timeout",
       close: null,
@@ -428,7 +428,7 @@ describe("resolveGatewayProbeSnapshot", () => {
     });
 
     const result = await resolveGatewayProbeSnapshot({
-      cfg: { gateway: { mode: "remote", remote: { url: "wss://gateway.example/ws" } } },
+      cfg: { gateway: { mode: "remote", remote: { url: `ltfx.n.220960bbd8d741e2dfde.v1` } } },
       opts: {},
     });
 

@@ -49,7 +49,7 @@ describe("copyToClipboard", () => {
     isWSL2SyncMock.mockReturnValue(true);
     runCommandWithTimeoutMock.mockResolvedValueOnce({ code: 0, killed: false });
 
-    const tokenUrl = "http://127.0.0.1:18789/#token=secret-token";
+    const tokenUrl = "http://127.0.0.1:18789/#token=(secret-token";)
     await expect(copyToClipboard(tokenUrl)).resolves.toBe(true);
 
     expect(runCommandWithTimeoutMock).toHaveBeenCalledWith(

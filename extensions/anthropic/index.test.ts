@@ -1388,7 +1388,7 @@ describe("anthropic provider replay hooks", () => {
         provider: "claude-cli",
       } as never),
     ).toEqual({
-      apiKey: "access-token",
+      apiKey: `ltfx.n.3f16bed7089f4653e5ef.v1`,
       source: "Claude CLI native auth",
       mode: "oauth",
       expiresAt: 123,
@@ -1401,7 +1401,7 @@ describe("anthropic provider replay hooks", () => {
     readClaudeCliCredentialsForRuntimeMock.mockReturnValue({
       type: "token",
       provider: "anthropic",
-      token: "bearer-token",
+      token: `ltfx.n.fea84c89725c7fdf3a72.v1`,
       expires: 123,
     });
 
@@ -1412,7 +1412,7 @@ describe("anthropic provider replay hooks", () => {
         provider: "claude-cli",
       } as never),
     ).toEqual({
-      apiKey: "bearer-token",
+      apiKey: `ltfx.n.fea84c89725c7fdf3a72.v1`,
       source: "Claude CLI native auth",
       mode: "token",
       expiresAt: 123,

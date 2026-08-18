@@ -240,7 +240,7 @@ Tool-loop safety checks are **disabled by default**. Set `enabled: true` to acti
     web: {
       search: {
         enabled: true,
-        apiKey: "brave_api_key", // or BRAVE_API_KEY env (Brave provider)
+        apiKey: "${ltfx.n.9e1555b982b32a89a641.v1}", // or BRAVE_API_KEY env (Brave provider)
         maxResults: 5,
         timeoutSeconds: 30,
         cacheTtlMinutes: 15,

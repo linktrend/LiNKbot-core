@@ -19,7 +19,7 @@ scenario:
         defaultRoomKey: main
         rooms:
           - encrypted: true
-            key: e2ee-server-device-deleted-relogin-recovers
+            key: "${ltfx.n.bdb52de154b8ca6a9044.v1}"
             kind: group
             members:
               - driver

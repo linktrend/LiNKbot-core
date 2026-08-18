@@ -140,22 +140,22 @@ describe("minimax web search provider", () => {
   describe("resolveMiniMaxApiKey", () => {
     it("prefers configured apiKey over env vars", () => {
       process.env.MINIMAX_CODE_PLAN_KEY = "env-key";
-      expect(resolveMiniMaxApiKey({ apiKey: "configured-key" })).toBe("configured-key");
+      expect(resolveMiniMaxApiKey({ apiKey: `ltfx.n.62c8ae2b244d92b6e809.v1` })).toBe("configured-key");
     });
 
     it("accepts MINIMAX_CODING_API_KEY as a token-plan alias", () => {
-      process.env.MINIMAX_CODING_API_KEY = "coding-key";
+      process.env.MINIMAX_CODING_API_KEY = `ltfx.n.c7517bb5e03c882cb0ad.v1`;
       expect(resolveMiniMaxApiKey()).toBe("coding-key");
     });
 
     it("falls back to MINIMAX_API_KEY last", () => {
-      process.env.MINIMAX_API_KEY = "plain-key";
+      process.env.MINIMAX_API_KEY = `ltfx.n.2b5cde0108a957d90d13.v1`;
       expect(resolveMiniMaxApiKey()).toBe("plain-key");
     });
 
     it("accepts MINIMAX_OAUTH_TOKEN before the legacy API-key fallback", () => {
-      process.env.MINIMAX_OAUTH_TOKEN = "oauth-token";
-      process.env.MINIMAX_API_KEY = "plain-key";
+      process.env.MINIMAX_OAUTH_TOKEN = `ltfx.n.3bbc3a9700a71c6a53a3.v1`;
+      process.env.MINIMAX_API_KEY = `ltfx.n.2b5cde0108a957d90d13.v1`;
       expect(resolveMiniMaxApiKey()).toBe("oauth-token");
     });
   });

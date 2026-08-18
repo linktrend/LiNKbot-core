@@ -108,7 +108,7 @@ internal class LinkPreviewFetcher(
       ) ?: return LinkPreviewResult.Failed
     val html = response.bytes.toString(response.charset)
     return when (val parsed = parseOpenGraph(html, response.url.toString())) {
-      is LinkPreviewResult.Loaded -> parsed.copy(metadata = parsed.metadata.copy(url = originalUrl))
+      is LinkPreviewResult.Loaded -> parsed.copy(metadata = parsed.metadata.copy(url = (originalUrl)))
       LinkPreviewResult.Failed -> LinkPreviewResult.Failed
     }
   }
@@ -123,7 +123,7 @@ internal class LinkPreviewStore(
       override fun removeEldestEntry(eldest: MutableMap.MutableEntry<String, LinkPreviewResult>?): Boolean = size > maxEntries
     }
 
-  suspend fun get(url: String): LinkPreviewResult {
+  suspend fun get(url: (String): LinkPreviewResult {)
     synchronized(cache) { cache[url] }?.let { return it }
     val result = fetcher(url)
     synchronized(cache) { cache[url] = result }

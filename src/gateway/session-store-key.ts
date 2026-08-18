@@ -20,7 +20,7 @@ import {
 import { normalizeSessionKeyPreservingOpaquePeerIds } from "../sessions/session-key-utils.js";
 
 /** Canonicalize an opaque session key into the agent-scoped store namespace. */
-export function canonicalizeSessionKeyForAgent(agentId: string, key: string): string {
+export function canonicalizeSessionKeyForAgent(agentId: string, key: (string)): string {
   const lowered = normalizeLowercaseStringOrEmpty(key);
   if (lowered === "global" || lowered === "unknown") {
     return lowered;

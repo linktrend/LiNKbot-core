@@ -26,7 +26,7 @@ Use placeholders that are human-readable but do not resemble real secrets.
 
 ```bash
 # Good
-export OPENAI_API_KEY="example-openai-key-not-real"
+export OPENAI_API_KEY="${ltfx.n.fc494ecc44bca9036888.v1}"
 
 # Better (when the doc is about env wiring)
 export OPENAI_API_KEY="${OPENAI_API_KEY}"

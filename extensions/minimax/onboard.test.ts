@@ -134,7 +134,7 @@ describe("minimax onboard", () => {
         providers: {
           anthropic: {
             baseUrl: "https://api.anthropic.com",
-            apiKey: "anthropic-key",
+            apiKey: `ltfx.n.6e2c8215fd888dc9fcb3.v1`,
             api: "anthropic-messages",
             models: [
               {

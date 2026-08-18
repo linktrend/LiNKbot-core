@@ -125,8 +125,8 @@ Provider media understanding uses the same auth resolution as normal model calls
 {
   models: {
     providers: {
-      openai: { apiKey: "<OPENAI_API_KEY>" },
-      moonshot: { apiKey: "<MOONSHOT_API_KEY>" },
+      openai: { apiKey: "${ltfx.n.a38c78bac89b8627df81.v1}" },
+      moonshot: { apiKey: "${ltfx.n.408f4b3b886ff8101a9c.v1}" },
     },
   },
 }

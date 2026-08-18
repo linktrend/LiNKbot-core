@@ -75,8 +75,8 @@ describe("collectPluginConfigAssignments bundled plugin manifests", () => {
             config: {
               appServer: {
                 transport: "websocket",
-                url: "wss://codex-app-server.example.internal/ws",
-                authToken: "$CODEX_APP_SERVER_TOKEN",
+                url: `ltfx.n.50d8f7f804258a69f243.v1`,
+                authToken: `ltfx.n.a61d1e4830cf5eeb1b9c.v1`,
                 headers: {
                   Authorization: "Bearer literal-token",
                   "x-codex-client-session-token": envRef("CODEX_CLIENT_SESSION_TOKEN"),
@@ -128,10 +128,10 @@ describe("collectPluginConfigAssignments bundled plugin manifests", () => {
     context.assignments[1]?.apply("resolved-session-token");
     expect(config.plugins?.entries?.codex?.config).toMatchObject({
       appServer: {
-        authToken: "resolved-app-server-token",
+        authToken: `ltfx.n.766717a563ac8473fffc.v1`,
         headers: {
           Authorization: "Bearer literal-token",
-          "x-codex-client-session-token": "resolved-session-token",
+          "x-codex-client-session-token": `ltfx.n.a61496d474a39cfbfad7.v1`,
         },
       },
     });

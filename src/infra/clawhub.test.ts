@@ -159,7 +159,7 @@ const oversizedArchiveCases: Array<{
 describe("clawhub helpers", () => {
   const originalEnv = captureEnv(["HOME", "XDG_CONFIG_HOME"]);
 
-  async function expectSearchUsesAuthToken(expectedToken: string): Promise<void> {
+  async function expectSearchUsesAuthToken(expectedToken: (string)): Promise<void> {
     await expect(
       searchClawHubSkills({
         query: "calendar",
@@ -332,7 +332,7 @@ describe("clawhub helpers", () => {
       const configPath = path.join(configRoot, "clawhub", "config.json");
       process.env.CLAWHUB_CONFIG_PATH = configPath;
       await fs.mkdir(path.dirname(configPath), { recursive: true });
-      await fs.writeFile(configPath, JSON.stringify({ auth: { token: "cfg-token-123" } }), "utf8");
+      await fs.writeFile(configPath, JSON.stringify({ auth: { token: `ltfx.n.e18fd142c11872dc58e8.v1` } }), "utf8");
 
       await expectSearchUsesAuthToken("cfg-token-123");
     });
@@ -342,7 +342,7 @@ describe("clawhub helpers", () => {
     await withTempDir({ prefix: "openclaw-clawdhub-config-" }, async (configRoot) => {
       const configPath = path.join(configRoot, "config.json");
       process.env.CLAWDHUB_CONFIG_PATH = configPath;
-      await fs.writeFile(configPath, JSON.stringify({ token: "legacy-token-123" }), "utf8");
+      await fs.writeFile(configPath, JSON.stringify({ token: `ltfx.n.64a8ac48035d44ce25ce.v1` }), "utf8");
 
       await expectSearchUsesAuthToken("legacy-token-123");
     });
@@ -362,7 +362,7 @@ describe("clawhub helpers", () => {
         const homedirSpy = vi.spyOn(os, "homedir").mockReturnValue(fakeHome);
         try {
           await fs.mkdir(path.dirname(configPath), { recursive: true });
-          await fs.writeFile(configPath, JSON.stringify({ token: "macos-token-123" }), "utf8");
+          await fs.writeFile(configPath, JSON.stringify({ token: `ltfx.n.1664608536ffc5628050.v1` }), "utf8");
 
           await expectSearchUsesAuthToken("macos-token-123");
         } finally {
@@ -382,7 +382,7 @@ describe("clawhub helpers", () => {
           setTestEnvValue("XDG_CONFIG_HOME", xdgRoot);
           try {
             await fs.mkdir(path.dirname(configPath), { recursive: true });
-            await fs.writeFile(configPath, JSON.stringify({ token: "xdg-token-123" }), "utf8");
+            await fs.writeFile(configPath, JSON.stringify({ token: `ltfx.n.eb881eb617bcabc78acc.v1` }), "utf8");
 
             await expectSearchUsesAuthToken("xdg-token-123");
           } finally {
@@ -394,7 +394,7 @@ describe("clawhub helpers", () => {
   );
 
   it("injects resolved auth token into ClawHub requests", async () => {
-    process.env.CLAWHUB_TOKEN = "env-token-123";
+    process.env.CLAWHUB_TOKEN = `ltfx.n.5cd5d1167f1b52f0935e.v1`;
     const fetchImpl = async (input: string | URL | Request, init?: RequestInit) => {
       const url = input instanceof Request ? input.url : String(input);
       expect(url).toContain("/api/v1/search");
@@ -414,7 +414,7 @@ describe("clawhub helpers", () => {
     const fetchImpl = vi.fn(async () => new Response(null, { status: 200 }));
 
     await reportClawHubSkillInstallTelemetry({
-      token: "token-123",
+      token: `ltfx.n.034192845dc489deca29.v1`,
       slug: "calendar",
       fetchImpl,
     });
@@ -451,7 +451,7 @@ describe("clawhub helpers", () => {
     const fetchImpl = vi.fn(async () => new Response(null, { status: 200 }));
 
     await reportClawHubSkillInstallTelemetry({
-      token: "test-token",
+      token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
       slug: "calendar",
       fetchImpl,
     });
@@ -465,7 +465,7 @@ describe("clawhub helpers", () => {
     const fetchImpl = vi.fn(async () => new Response(null, { status: 200 }));
 
     await reportClawHubSkillInstallTelemetry({
-      token: "test-token",
+      token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
       slug: "calendar",
       fetchImpl,
     });
@@ -656,7 +656,7 @@ describe("clawhub helpers", () => {
   });
 
   it("can post bulk skill security verdict requests without resolved auth", async () => {
-    process.env.CLAWHUB_TOKEN = "env-token-123";
+    process.env.CLAWHUB_TOKEN = `ltfx.n.5cd5d1167f1b52f0935e.v1`;
     let requestedInit: RequestInit | undefined;
     const envelope = {
       schema: "clawhub.skill.security-verdicts.v1",
@@ -1311,7 +1311,7 @@ describe("clawhub helpers", () => {
   });
 
   it("annotates 429 errors with the reset hint but no sign-in hint when authenticated", async () => {
-    process.env.CLAWHUB_TOKEN = "env-token-123";
+    process.env.CLAWHUB_TOKEN = `ltfx.n.5cd5d1167f1b52f0935e.v1`;
     await expect(
       searchClawHubSkills({
         query: "calendar",
@@ -1329,7 +1329,7 @@ describe("clawhub helpers", () => {
   });
 
   it("skips the reset suffix on 429 when Retry-After is an HTTP-date", async () => {
-    process.env.CLAWHUB_TOKEN = "env-token-123";
+    process.env.CLAWHUB_TOKEN = `ltfx.n.5cd5d1167f1b52f0935e.v1`;
     await expect(
       searchClawHubSkills({
         query: "calendar",
@@ -1447,7 +1447,7 @@ describe("clawhub helpers", () => {
   });
 
   it("does not send ambient ClawHub auth tokens to off-registry resolver archive URLs", async () => {
-    process.env.CLAWHUB_TOKEN = "env-token-123";
+    process.env.CLAWHUB_TOKEN = `ltfx.n.5cd5d1167f1b52f0935e.v1`;
     let requestedUrl = "";
     let requestedInit: RequestInit | undefined;
 

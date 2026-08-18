@@ -8,13 +8,13 @@ import {
 
 describe("whatsapp legacy session contract", () => {
   it("canonicalizes legacy WhatsApp group keys to channel-qualified agent keys", () => {
-    expect(canonicalizeLegacySessionKey({ key: "group:123@g.us", agentId: "main" })).toBe(
+    expect(canonicalizeLegacySessionKey({ key: `ltfx.n.07f7ec94f8fce2adf870.v1`, agentId: "main" })).toBe(
       "agent:main:whatsapp:group:123@g.us",
     );
-    expect(canonicalizeLegacySessionKey({ key: "123@g.us", agentId: "main" })).toBe(
+    expect(canonicalizeLegacySessionKey({ key: `ltfx.n.765a09cb00057fc4bb63.v1`, agentId: "main" })).toBe(
       "agent:main:whatsapp:group:123@g.us",
     );
-    expect(canonicalizeLegacySessionKey({ key: "whatsapp:123@g.us", agentId: "main" })).toBe(
+    expect(canonicalizeLegacySessionKey({ key: `ltfx.n.d35c0c4c8585273404cf.v1`, agentId: "main" })).toBe(
       "agent:main:whatsapp:group:123@g.us",
     );
   });
@@ -22,7 +22,7 @@ describe("whatsapp legacy session contract", () => {
   it("does not claim generic non-WhatsApp group keys", () => {
     expect(isLegacyGroupSessionKey("group:abc")).toBe(false);
     expect(deriveLegacySessionChatType("group:abc")).toBeUndefined();
-    expect(canonicalizeLegacySessionKey({ key: "group:abc", agentId: "main" })).toBeNull();
+    expect(canonicalizeLegacySessionKey({ key: `ltfx.n.b0f69bad262ba16a8700.v1`, agentId: "main" })).toBeNull();
   });
 
   it("derives chat type for legacy WhatsApp group keys", () => {

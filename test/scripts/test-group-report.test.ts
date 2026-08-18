@@ -100,7 +100,7 @@ function writeGroupedReport(filePath: string) {
           configs: ["unit-fast"],
           durationMs: 100,
           fileCount: 1,
-          key: "test/scripts",
+          key: `ltfx.n.4af2273c0e46010f3ac8.v1`,
           testCount: 1,
         },
       ],
@@ -109,7 +109,7 @@ function writeGroupedReport(filePath: string) {
           configs: ["unit-fast"],
           durationMs: 100,
           fileCount: 1,
-          key: "unit-fast",
+          key: `ltfx.n.ef8c2d621f1c9ef0df0c.v1`,
           testCount: 1,
         },
       ],
@@ -186,7 +186,7 @@ describe("scripts/test-group-report aggregation", () => {
     expect(report.configs).toStrictEqual([
       {
         configs: ["commands"],
-        key: "commands",
+        key: `ltfx.n.10f5f77eef9a6b43dc5b.v1`,
         durationMs: 850,
         fileCount: 2,
         testCount: 3,
@@ -530,10 +530,10 @@ describe("scripts/test-group-report comparison", () => {
         groupBy: "area",
         totals: { durationMs: 1000, fileCount: 2, testCount: 4 },
         groups: [
-          { key: "src/commands", durationMs: 700, fileCount: 1, testCount: 2 },
-          { key: "extensions/discord", durationMs: 300, fileCount: 1, testCount: 2 },
+          { key: `ltfx.n.f0f9cc2d816c784657b8.v1`, durationMs: 700, fileCount: 1, testCount: 2 },
+          { key: `ltfx.n.b87f6aab1460804d3f85.v1`, durationMs: 300, fileCount: 1, testCount: 2 },
         ],
-        configs: [{ key: "commands", durationMs: 1000, fileCount: 2, testCount: 4 }],
+        configs: [{ key: `ltfx.n.10f5f77eef9a6b43dc5b.v1`, durationMs: 1000, fileCount: 2, testCount: 4 }],
         topFiles: [
           {
             config: "commands",
@@ -562,8 +562,8 @@ describe("scripts/test-group-report comparison", () => {
       after: {
         groupBy: "area",
         totals: { durationMs: 900, fileCount: 2, testCount: 5 },
-        groups: [{ key: "src/commands", durationMs: 900, fileCount: 2, testCount: 5 }],
-        configs: [{ key: "commands", durationMs: 900, fileCount: 2, testCount: 5 }],
+        groups: [{ key: `ltfx.n.f0f9cc2d816c784657b8.v1`, durationMs: 900, fileCount: 2, testCount: 5 }],
+        configs: [{ key: `ltfx.n.10f5f77eef9a6b43dc5b.v1`, durationMs: 900, fileCount: 2, testCount: 5 }],
         topFiles: [
           {
             config: "commands",

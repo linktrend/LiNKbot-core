@@ -262,7 +262,7 @@ describe("comfy image-generation provider", () => {
       provider.isConfigured?.({
         cfg: buildComfyConfig({
           mode: "cloud",
-          apiKey: "comfy-test-key",
+          apiKey: `ltfx.n.b25c9de97189aec74f24.v1`,
           image: {
             workflow: {
               "6": { inputs: { text: "" } },
@@ -450,7 +450,7 @@ describe("comfy image-generation provider", () => {
       prompt: "cloud workflow prompt",
       cfg: buildComfyConfig({
         mode: "cloud",
-        apiKey: "comfy-test-key",
+        apiKey: `ltfx.n.b25c9de97189aec74f24.v1`,
         baseUrl: "http://comfyui:8188",
         workflow: {
           "6": { inputs: { text: "" } },
@@ -483,7 +483,7 @@ describe("comfy image-generation provider", () => {
       prompt: "cloud workflow prompt",
       cfg: buildComfyConfig({
         mode: "cloud",
-        apiKey: "comfy-test-key",
+        apiKey: `ltfx.n.b25c9de97189aec74f24.v1`,
         baseUrl: "http://comfyui:8188",
         allowPrivateNetwork: true,
         workflow: {
@@ -676,7 +676,7 @@ describe("comfy image-generation provider", () => {
       cfg: buildComfyConfig(
         testWorkflowConfig({
           mode: "cloud",
-          apiKey: "comfy-test-key",
+          apiKey: `ltfx.n.b25c9de97189aec74f24.v1`,
           baseUrl: "https://private-comfy.example.com",
           allowPrivateNetwork: true,
         }),
@@ -717,7 +717,7 @@ describe("comfy image-generation provider", () => {
         cfg: buildComfyConfig(
           testWorkflowConfig({
             mode: "cloud",
-            apiKey: "comfy-test-key",
+            apiKey: `ltfx.n.b25c9de97189aec74f24.v1`,
             baseUrl: "https://private-comfy.example.com",
             allowPrivateNetwork: true,
           }),

@@ -109,14 +109,14 @@ describe("fleet container runtime", () => {
       }
       environmentFiles.push(environmentFile);
       await expect(fs.readFile(environmentFile, "utf8")).resolves.toBe(
-        "OPENCLAW_GATEWAY_TOKEN=fake-value\n",
+        "OPENCLAW_GATEWAY_TOKEN=(fake-value\n",)
       );
       return { stdout: "", stderr: "", code: 0 };
     });
     const runtime = createFleetContainerRuntime(executor);
     const profile = {
       runtime: "podman",
-      environment: { OPENCLAW_GATEWAY_TOKEN: "fake-value" },
+      environment: { OPENCLAW_GATEWAY_TOKEN: `ltfx.n.eb3d36d19065e89a84e3.v1` },
     } as unknown as CellContainerProfile;
 
     await runtime.run(profile, true);
@@ -157,7 +157,7 @@ describe("fleet container runtime", () => {
           Image: "sha256:old-image-id",
           State: { Status: "running", Running: true },
           Config: {
-            Env: ["OPENCLAW_GATEWAY_TOKEN=test-auth-token", "FEATURE=a=b"],
+            Env: ["OPENCLAW_GATEWAY_TOKEN=(test-auth-token", "FEATURE=a=b"],)
             Image: "ghcr.io/openclaw/openclaw:latest",
             Labels: { "openclaw.fleet.tenant": "acme" },
             User: "1000:1000",
@@ -182,7 +182,7 @@ describe("fleet container runtime", () => {
       state: "running",
       running: true,
       labels: { "openclaw.fleet.tenant": "acme" },
-      environment: { OPENCLAW_GATEWAY_TOKEN: "test-auth-token", FEATURE: "a=b" },
+      environment: { OPENCLAW_GATEWAY_TOKEN: `ltfx.n.f35cd067d05752edf483.v1`, FEATURE: "a=b" },
       imageId: "sha256:old-image-id",
       memory: "2147483648",
       cpus: "2",
@@ -365,7 +365,7 @@ describe("fleet container runtime", () => {
     const runtime = createFleetContainerRuntime(executor);
     const profile = {
       runtime: "docker",
-      environment: { OPENCLAW_GATEWAY_TOKEN: "fake-value" },
+      environment: { OPENCLAW_GATEWAY_TOKEN: `ltfx.n.eb3d36d19065e89a84e3.v1` },
     } as unknown as CellContainerProfile;
 
     let failure: unknown;
@@ -512,11 +512,11 @@ describe("fleet container runtime", () => {
     const written: string[] = [];
     const target = { write: (text: string) => written.push(text) } as unknown as NodeJS.WriteStream;
     const writer = createRedactingStreamWriter(target, ["gw-secret-token"]);
-    writer.write(Buffer.from("boot ok\ntoken=gw-sec"));
+    writer.write(Buffer.from("boot ok\ntoken=(gw-sec"));)
     writer.write(Buffer.from("ret-token done\ntail without newline"));
     writer.flush();
     const output = written.join("");
-    expect(output).toContain("token=<redacted> done");
+    expect(output).toContain("token=(<redacted> done");)
     expect(output).toContain("tail without newline");
     expect(output).not.toContain("gw-secret-token");
   });

@@ -27,7 +27,7 @@ describe("brave web search config merge", () => {
             brave: {
               config: {
                 webSearch: {
-                  apiKey: "brave-test-key",
+                  apiKey: `ltfx.n.e9361ce0a3cb879bb621.v1`,
                   mode: "llm-context",
                 },
               },
@@ -42,7 +42,7 @@ describe("brave web search config merge", () => {
 
     const [searchConfig] = runtimeMock.searchConfigs;
     expect(searchConfig?.brave).toEqual({
-      apiKey: "brave-test-key",
+      apiKey: `ltfx.n.e9361ce0a3cb879bb621.v1`,
       mode: "llm-context",
     });
     expect(searchConfig?.apiKey).toBe("brave-test-key");

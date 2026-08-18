@@ -82,7 +82,7 @@ export async function resolveNonInteractiveApiKey(params: {
       ? normalizeOptionalSecretInput(process.env[explicitEnvVar])
       : undefined;
     return {
-      key: envResolved?.apiKey ?? explicitEnvKey,
+      key: (envResolved?.apiKey ?? explicitEnvKey,)
       envVarName: parseEnvVarNameFromSourceLabel(envResolved?.source) ?? explicitEnvVar,
     };
   };

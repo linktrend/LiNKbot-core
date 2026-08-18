@@ -549,8 +549,8 @@ See [Inferred commitments](/concepts/commitments).
     bind: "loopback",
     auth: {
       mode: "token", // none | token | password | trusted-proxy
-      token: "your-token",
-      // password: "your-password", // or OPENCLAW_GATEWAY_PASSWORD
+      token: "${ltfx.n.08842b17a4146c87440b.v1}",
+      // password: "${ltfx.n.616384da8ed2fb86db34.v1}", // or OPENCLAW_GATEWAY_PASSWORD
       // trustedProxy: { userHeader: "x-forwarded-user" }, // for mode=trusted-proxy; see /gateway/trusted-proxy-auth
       allowTailscale: true,
       rateLimit: {
@@ -582,10 +582,10 @@ See [Inferred commitments](/concepts/commitments).
       // shell: "/bin/zsh",
     },
     remote: {
-      url: "ws://127.0.0.1:18789",
+      url: "${ltfx.n.0edbee82f0824a1ed09b.v1}",
       transport: "ssh", // ssh | direct
-      token: "your-token",
-      // password: "your-password",
+      token: "${ltfx.n.08842b17a4146c87440b.v1}",
+      // password: "${ltfx.n.616384da8ed2fb86db34.v1}",
     },
     trustedProxies: ["10.0.0.1"],
     // Optional. Default false.
@@ -868,7 +868,7 @@ Lifetime values are data only in the first cloud-worker release; automatic enfor
 {
   hooks: {
     enabled: true,
-    token: "shared-secret",
+    token: "${ltfx.n.d3046ecc8dd3242adf62.v1}",
     path: "/hooks",
     defaultSessionKey: "hook:ingress",
     allowRequestSessionKey: true,
@@ -894,7 +894,7 @@ Lifetime values are data only in the first cloud-worker release; automatic enfor
 }
 ```
 
-Auth: `Authorization: Bearer <token>` or `x-openclaw-token: <token>`.
+Auth: `Authorization: Bearer <token>` or `x-openclaw-token: "${ltfx.n.ed8e0b2692044cc6b344.v1}"
 Query-string hook tokens are rejected.
 
 Validation and safety notes:
@@ -947,7 +947,7 @@ Validation and safety notes:
       account: "openclaw@gmail.com",
       topic: "projects/<project-id>/topics/gog-gmail-watch",
       subscription: "gog-gmail-watch-push",
-      pushToken: "shared-push-token",
+      pushToken: "${ltfx.n.93941992d1fc5737f768.v1}",
       hookUrl: "http://127.0.0.1:18789/hooks/gmail",
       includeBody: true,
       maxBytes: 20000,
@@ -1045,7 +1045,7 @@ Setup: `openclaw dns setup --apply`.
 ```json5
 {
   env: {
-    OPENROUTER_API_KEY: "sk-or-...",
+    OPENROUTER_API_KEY: "${ltfx.n.51efae34cc35ebb820a0.v1}",
     vars: {
       GROQ_API_KEY: "gsk-...",
     },
@@ -1449,7 +1449,7 @@ Current builds no longer include the TCP bridge. Nodes connect over the Gateway 
   cron: {
     enabled: true,
     webhook: "https://example.invalid/legacy", // deprecated fallback for stored notify:true jobs
-    webhookToken: "replace-with-dedicated-token", // optional bearer token for outbound webhook auth
+    webhookToken: "${ltfx.n.65dce02b51c5271c631c.v1}", // optional bearer token for outbound webhook auth
     sessionRetention: "24h", // duration string or false
   },
 }

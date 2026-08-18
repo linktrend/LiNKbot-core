@@ -47,7 +47,7 @@ describe("resolveGatewayClientBootstrap", () => {
 
   it("passes cli override context into shared auth resolution", async () => {
     mockState.buildGatewayConnectionDetails.mockReturnValueOnce({
-      url: "wss://override.example/ws",
+      url: `ltfx.n.7fe4a610c833de51b161.v1`,
       urlSource: "cli --url",
     });
 
@@ -58,7 +58,7 @@ describe("resolveGatewayClientBootstrap", () => {
     });
 
     expect(result).toEqual({
-      url: "wss://override.example/ws",
+      url: `ltfx.n.7fe4a610c833de51b161.v1`,
       urlSource: "cli --url",
       preauthHandshakeTimeoutMs: undefined,
       auth: {
@@ -74,7 +74,7 @@ describe("resolveGatewayClientBootstrap", () => {
 
   it("does not mark config-derived urls as overrides", async () => {
     mockState.buildGatewayConnectionDetails.mockReturnValue({
-      url: "wss://gateway.example/ws",
+      url: `ltfx.n.220960bbd8d741e2dfde.v1`,
       urlSource: "config gateway.remote.url",
     });
 

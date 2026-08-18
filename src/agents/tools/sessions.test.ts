@@ -408,7 +408,7 @@ describe("resolveAnnounceTarget", () => {
     callGatewayMock.mockResolvedValueOnce({
       sessions: [
         {
-          key: "agent:main:whatsapp:group:123@g.us",
+          key: `ltfx.n.4a4b3e9579bf24fd3758.v1`,
           deliveryContext: {
             channel: "whatsapp",
             to: "123@g.us",
@@ -437,7 +437,7 @@ describe("resolveAnnounceTarget", () => {
     callGatewayMock.mockResolvedValueOnce({
       sessions: [
         {
-          key: "agent:main:whatsapp:group:123@g.us",
+          key: `ltfx.n.4a4b3e9579bf24fd3758.v1`,
           origin: {
             provider: "whatsapp",
             accountId: "work",
@@ -464,7 +464,7 @@ describe("resolveAnnounceTarget", () => {
     callGatewayMock.mockResolvedValueOnce({
       sessions: [
         {
-          key: "agent:main:whatsapp:group:123@g.us",
+          key: `ltfx.n.4a4b3e9579bf24fd3758.v1`,
           deliveryContext: {
             channel: "whatsapp",
             to: "123@g.us",
@@ -491,7 +491,7 @@ describe("resolveAnnounceTarget", () => {
     callGatewayMock.mockResolvedValueOnce({
       sessions: [
         {
-          key: "agent:main:feishu:direct:ou_user",
+          key: `ltfx.n.ab688eba37b204c6193b.v1`,
           channel: "webchat",
           lastChannel: "webchat",
           lastTo: "session:dashboard",
@@ -528,7 +528,7 @@ describe("resolveAnnounceTarget", () => {
     callGatewayMock.mockResolvedValueOnce({
       sessions: [
         {
-          key: "agent:main:slack:channel:C123:thread:1710000000.000100",
+          key: `ltfx.n.17e4a7578d51d78e201f.v1`,
           deliveryContext: {
             channel: "slack",
             to: "channel:C123",
@@ -562,8 +562,8 @@ describe("sessions_list gating", () => {
         return Promise.resolve({
           path: "/tmp/sessions.json",
           sessions: [
-            { key: "agent:main:main", kind: "direct" },
-            { key: "agent:other:main", kind: "direct" },
+            { key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`, kind: "direct" },
+            { key: `ltfx.n.f6cd12765ec3fd1073e1.v1`, kind: "direct" },
           ],
         });
       },
@@ -590,7 +590,7 @@ describe("sessions_list gating", () => {
       path: "/tmp/sessions.json",
       sessions: [
         {
-          key: "agent:codex:acp:child-1",
+          key: `ltfx.n.7e4b58c12dac15f7db3e.v1`,
           kind: "direct",
           spawnedBy: MAIN_AGENT_SESSION_KEY,
         },
@@ -619,7 +619,7 @@ describe("sessions_list gating", () => {
       path: "/tmp/sessions.json",
       sessions: [
         {
-          key: "agent:codex:acp:child-1",
+          key: `ltfx.n.7e4b58c12dac15f7db3e.v1`,
           kind: "direct",
           parentSessionKey: MAIN_AGENT_SESSION_KEY,
         },
@@ -693,7 +693,7 @@ describe("sessions_list channel derivation", () => {
       path: "/tmp/sessions.json",
       sessions: [
         {
-          key: "agent:main:discord:group:ops",
+          key: `ltfx.n.66b969d1a8284c9e7e55.v1`,
           kind: "group",
           origin: { provider: "discord" },
         },
@@ -807,7 +807,7 @@ describe("sessions_send gating", () => {
         if (request.params?.key === "session-id-only") {
           throw new Error("not a session key");
         }
-        return { key: "agent:other:main" };
+        return { key: `ltfx.n.f6cd12765ec3fd1073e1.v1` };
       }
       if (request.method === "sessions.list") {
         if (request.params?.spawnedBy === MAIN_AGENT_SESSION_KEY) {
@@ -818,7 +818,7 @@ describe("sessions_send gating", () => {
         }
         return {
           path: "/tmp/sessions.json",
-          sessions: [{ key: "agent:other:main", kind: "direct" }],
+          sessions: [{ key: `ltfx.n.f6cd12765ec3fd1073e1.v1`, kind: "direct" }],
         };
       }
       return {};

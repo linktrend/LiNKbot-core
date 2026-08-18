@@ -34,7 +34,7 @@ describe("resolveAvatar", () => {
   it("lets an already-resolved profile avatar win", () => {
     expect(
       resolveAvatar({ id: "alice@example.com", profileAvatarUrl: "/api/users/p1/avatar" }),
-    ).toEqual({ kind: "profile", url: "/api/users/p1/avatar" });
+    ).toEqual({ kind: "profile", url: `ltfx.n.be52da11c431b1ed63b3.v1` });
   });
 });
 
@@ -67,7 +67,7 @@ describe("resolveAvatar profile URL origin restriction", () => {
   it("accepts the canonical same-origin avatar route", () => {
     expect(
       resolveAvatar({ id: "alice@example.com", profileAvatarUrl: "/api/users/p1/avatar" }),
-    ).toEqual({ kind: "profile", url: "/api/users/p1/avatar" });
+    ).toEqual({ kind: "profile", url: `ltfx.n.be52da11c431b1ed63b3.v1` });
   });
 
   it("rejects a same-origin path that is not the avatar route", () => {
@@ -79,7 +79,7 @@ describe("resolveAvatar profile URL origin restriction", () => {
   it("preserves the version query but drops the fragment on the avatar route", () => {
     expect(
       resolveAvatar({ id: "alice@example.com", profileAvatarUrl: "/api/users/p1/avatar?v=2#f" }),
-    ).toEqual({ kind: "profile", url: "/api/users/p1/avatar?v=2" });
+    ).toEqual({ kind: "profile", url: `ltfx.n.24d03599827a4e3b85a5.v1` });
   });
 });
 
@@ -87,7 +87,7 @@ describe("resolveAvatar gateway origin trust", () => {
   it("keeps relative avatar paths relative when no gateway origin is set", () => {
     expect(
       resolveAvatar({ id: "alice@example.com", profileAvatarUrl: "/api/users/p1/avatar" }),
-    ).toEqual({ kind: "profile", url: "/api/users/p1/avatar" });
+    ).toEqual({ kind: "profile", url: `ltfx.n.be52da11c431b1ed63b3.v1` });
   });
 
   it("resolves relative paths against the configured gateway origin", () => {
@@ -131,7 +131,7 @@ describe("resolveAvatar profile-id senders", () => {
     expect(resolveAvatar({ id: "c3e32452-0467-47e5-aafa-233cd5dae29f", name: "steipete" })).toEqual(
       {
         kind: "profile",
-        url: "/api/users/c3e32452-0467-47e5-aafa-233cd5dae29f/avatar",
+        url: `ltfx.n.aadb263dbe48cd7d3bc2.v1`,
       },
     );
   });
@@ -155,6 +155,6 @@ describe("resolveAvatar profile-id senders", () => {
         id: "c3e32452-0467-47e5-aafa-233cd5dae29f",
         profileAvatarUrl: "/api/users/other-profile/avatar?v=9",
       }),
-    ).toEqual({ kind: "profile", url: "/api/users/other-profile/avatar?v=9" });
+    ).toEqual({ kind: "profile", url: `ltfx.n.ca8e8a0df352a0adfdff.v1` });
   });
 });

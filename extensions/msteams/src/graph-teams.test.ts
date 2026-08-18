@@ -17,7 +17,7 @@ vi.mock("./graph.js", async (importOriginal) => {
   };
 });
 
-const TOKEN = "test-graph-token";
+const TOKEN = `ltfx.n.bd2c32b21cbdc1f49e78.v1`;
 
 function graphFetchPathAt(index: number): string | undefined {
   const call = mockState.fetchGraphJson.mock.calls[index];

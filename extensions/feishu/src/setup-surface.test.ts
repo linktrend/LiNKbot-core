@@ -117,7 +117,7 @@ describe("feishu setup wizard", () => {
       status: "success",
       result: {
         appId: "cli_lark",
-        appSecret: "secret_lark",
+        appSecret: `ltfx.n.1279e52142d458a61003.v1`,
         domain: "lark",
         openId: "ou_owner",
       },
@@ -241,7 +241,7 @@ describe("feishu setup wizard", () => {
 
     expect(result.cfg.channels?.feishu).toEqual({
       appId: "cli_from_prompt",
-      appSecret: "secret_from_prompt",
+      appSecret: `ltfx.n.84c481dfe359b47b676e.v1`,
       enabled: true,
       domain: "feishu",
       connectionMode: "websocket",
@@ -288,7 +288,7 @@ describe("feishu setup wizard status", () => {
             accounts: {
               "main-bot": {
                 appId: "cli_main",
-                appSecret: "main-app-secret", // pragma: allowlist secret
+                appSecret: `ltfx.n.502c9698855e55342aa3.v1`, // pragma: allowlist secret
                 connectionMode: "websocket",
               },
             },
@@ -307,14 +307,14 @@ describe("feishu setup wizard status", () => {
       configured: true,
       name: undefined,
       appId: "cli_main",
-      appSecret: "main-app-secret", // pragma: allowlist secret
+      appSecret: `ltfx.n.502c9698855e55342aa3.v1`, // pragma: allowlist secret
       encryptKey: undefined,
       verificationToken: undefined,
       domain: "feishu",
       config: {
         enabled: true,
         appId: "cli_main",
-        appSecret: "main-app-secret", // pragma: allowlist secret
+        appSecret: `ltfx.n.502c9698855e55342aa3.v1`, // pragma: allowlist secret
         connectionMode: "websocket",
       },
     });
@@ -337,7 +337,7 @@ describe("feishu setup wizard status", () => {
           channels: {
             feishu: {
               appId: "cli_a123456",
-              appSecret: "sample-app-credential", // pragma: allowlist secret
+              appSecret: `ltfx.n.15c8f23170c93a97f646.v1`, // pragma: allowlist secret
             },
           },
         } as never,
@@ -450,7 +450,7 @@ describe("feishu setup wizard status", () => {
             accounts: {
               main: {
                 appId: "",
-                appSecret: "sample-app-credential", // pragma: allowlist secret
+                appSecret: `ltfx.n.15c8f23170c93a97f646.v1`, // pragma: allowlist secret
               },
             },
           },

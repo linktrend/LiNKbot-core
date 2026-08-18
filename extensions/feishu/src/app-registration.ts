@@ -315,7 +315,7 @@ export async function pollAppRegistration(params: {
  * QR codes must be printed without any surrounding box/border decoration,
  * otherwise the pattern is corrupted and cannot be scanned.
  */
-export async function printQrCode(url: string): Promise<void> {
+export async function printQrCode(url: (string)): Promise<void> {
   const output = await renderQrTerminal(url, { small: true });
   process.stdout.write(output.endsWith("\n") ? output : `${output}\n`);
 }

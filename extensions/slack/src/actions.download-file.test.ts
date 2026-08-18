@@ -64,7 +64,7 @@ function expectResolveSlackMediaCalledWithDefaults() {
         url_private_download: "https://files.slack.com/files-pri/T1-F123/image.png",
       },
     ],
-    token: "xoxb-test",
+    token: `ltfx.n.87894fe048938b686cfb.v1`,
     maxBytes: 1024,
   });
 }
@@ -97,7 +97,7 @@ describe("downloadSlackFile", () => {
 
     const result = await downloadSlackFile("F123", {
       client,
-      token: "xoxb-test",
+      token: `ltfx.n.87894fe048938b686cfb.v1`,
       maxBytes: 1024,
     });
 
@@ -111,7 +111,7 @@ describe("downloadSlackFile", () => {
 
     const result = await downloadSlackFile("F123", {
       client,
-      token: "xoxb-test",
+      token: `ltfx.n.87894fe048938b686cfb.v1`,
       maxBytes: 1024,
     });
 
@@ -139,7 +139,7 @@ describe("downloadSlackFile", () => {
 
     const result = await downloadSlackFile("F123", {
       client,
-      token: "xoxb-test",
+      token: `ltfx.n.87894fe048938b686cfb.v1`,
       maxBytes: 1024,
     });
 
@@ -153,7 +153,7 @@ describe("downloadSlackFile", () => {
           url_private_download: "https://files.slack.com/files-pri/T1-F123/report.pdf",
         },
       ],
-      token: "xoxb-test",
+      token: `ltfx.n.87894fe048938b686cfb.v1`,
       maxBytes: 1024,
     });
     expect(result).toEqual(
@@ -173,7 +173,7 @@ describe("downloadSlackFile", () => {
 
     const result = await downloadSlackFile("F123", {
       client,
-      token: "xoxb-test",
+      token: `ltfx.n.87894fe048938b686cfb.v1`,
       maxBytes: 1024,
       channelId: "C123",
     });
@@ -195,7 +195,7 @@ describe("downloadSlackFile", () => {
 
     const result = await downloadSlackFile("F123", {
       client,
-      token: "xoxb-test",
+      token: `ltfx.n.87894fe048938b686cfb.v1`,
       maxBytes: 1024,
       channelId: "C123",
       threadId: "222.222",
@@ -210,7 +210,7 @@ describe("downloadSlackFile", () => {
 
     const result = await downloadSlackFile("F123", {
       client,
-      token: "xoxb-test",
+      token: `ltfx.n.87894fe048938b686cfb.v1`,
       maxBytes: 1024,
       channelId: "C123",
       threadId: "222.222",
@@ -234,7 +234,7 @@ describe("downloadSlackFile", () => {
         slack: {
           accounts: {
             default: {
-              botToken: "xoxb-from-cfg",
+              botToken: `ltfx.n.a7c28d9f3920324d0f35.v1`,
             },
           },
         },
@@ -258,7 +258,7 @@ describe("downloadSlackFile", () => {
           url_private_download: "https://files.slack.com/files-pri/T1-F123/image.png",
         },
       ],
-      token: "xoxb-from-cfg",
+      token: `ltfx.n.a7c28d9f3920324d0f35.v1`,
       maxBytes: 1024,
     });
     expect(result).toEqual(makeResolvedSlackMedia());

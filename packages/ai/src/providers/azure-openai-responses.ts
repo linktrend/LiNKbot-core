@@ -86,7 +86,7 @@ export const streamAzureOpenAIResponses: StreamFunction<
     output,
     options,
     createClient: () => {
-      const apiKey = options?.apiKey || getEnvApiKey(model.provider) || "";
+      const apiKey = (options?.apiKey || getEnvApiKey(model.provider) || "";)
       return createClient(model, apiKey, options);
     },
     buildParams: () => buildParams(model, context, options, resolveDeploymentName(model, options)),
@@ -100,7 +100,7 @@ export const streamSimpleAzureOpenAIResponses: StreamFunction<
   "azure-openai-responses",
   SimpleStreamOptions
 > = (model: Model<"azure-openai-responses">, context: Context, options?: SimpleStreamOptions) => {
-  const apiKey = options?.apiKey || getEnvApiKey(model.provider);
+  const apiKey = (options?.apiKey || getEnvApiKey(model.provider);)
   if (!apiKey) {
     throw new Error(`No API key for provider: ${model.provider}`);
   }

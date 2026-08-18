@@ -579,7 +579,7 @@ describe("zai provider plugin", () => {
           env: { HOME: home },
           resolveApiKeyFromConfigAndStore: () => undefined,
         } as never),
-      ).resolves.toEqual({ token: "legacy-zai-token" });
+      ).resolves.toEqual({ token: `ltfx.n.03bc948e8721d21b74d7.v1` });
     } finally {
       await fs.rm(home, { recursive: true, force: true });
     }

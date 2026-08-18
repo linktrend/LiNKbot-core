@@ -38,7 +38,7 @@ describe("createDiscordRestClient proxy support", () => {
     const cfg = {
       channels: {
         discord: {
-          token: "Bot test-token",
+          token: `ltfx.n.dc83eb77fb263ff7d935.v1`,
           proxy: "http://127.0.0.1:8080",
         },
       },
@@ -59,7 +59,7 @@ describe("createDiscordRestClient proxy support", () => {
     const cfg = {
       channels: {
         discord: {
-          token: "Bot test-token",
+          token: `ltfx.n.dc83eb77fb263ff7d935.v1`,
           proxy: "http://mitm-proxy:8080",
         },
       },
@@ -80,7 +80,7 @@ describe("createDiscordRestClient proxy support", () => {
     const cfg = {
       channels: {
         discord: {
-          token: "Bot test-token",
+          token: `ltfx.n.dc83eb77fb263ff7d935.v1`,
           proxy: "https://proxy.example:8443",
         },
       },
@@ -101,7 +101,7 @@ describe("createDiscordRestClient proxy support", () => {
     const cfg = {
       channels: {
         discord: {
-          token: "Bot test-token",
+          token: `ltfx.n.dc83eb77fb263ff7d935.v1`,
           proxy: "http://user:secret@mitm-proxy:8080",
         },
       },
@@ -120,7 +120,7 @@ describe("createDiscordRestClient proxy support", () => {
     const cfg = {
       channels: {
         discord: {
-          token: "Bot test-token",
+          token: `ltfx.n.dc83eb77fb263ff7d935.v1`,
           proxy: "http://proxy.test:8080",
         },
       },
@@ -139,7 +139,7 @@ describe("createDiscordRestClient proxy support", () => {
     const cfg = {
       channels: {
         discord: {
-          token: "Bot test-token",
+          token: `ltfx.n.dc83eb77fb263ff7d935.v1`,
         },
       },
     } as OpenClawConfig;
@@ -156,7 +156,7 @@ describe("createDiscordRestClient proxy support", () => {
     const cfg = {
       channels: {
         discord: {
-          token: "Bot test-token",
+          token: `ltfx.n.dc83eb77fb263ff7d935.v1`,
           proxy: "bad-proxy",
         },
       },
@@ -175,7 +175,7 @@ describe("createDiscordRestClient proxy support", () => {
     const cfg = {
       channels: {
         discord: {
-          token: "Bot test-token",
+          token: `ltfx.n.dc83eb77fb263ff7d935.v1`,
           proxy: "http://10.0.0.10:8080",
         },
       },
@@ -194,7 +194,7 @@ describe("createDiscordRestClient proxy support", () => {
     const cfg = {
       channels: {
         discord: {
-          token: "Bot test-token",
+          token: `ltfx.n.dc83eb77fb263ff7d935.v1`,
           proxy: "http://[::1]:8080",
         },
       },
@@ -266,7 +266,7 @@ describe("createDiscordRestClient proxy support", () => {
       const cfg = {
         channels: {
           discord: {
-            token: "Bot test-token",
+            token: `ltfx.n.dc83eb77fb263ff7d935.v1`,
             proxy: `http://127.0.0.1:${proxyPort}`,
           },
         },

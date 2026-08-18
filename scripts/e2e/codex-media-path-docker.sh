@@ -8,7 +8,7 @@ IMAGE_NAME="$(docker_e2e_resolve_image "openclaw-codex-media-path-e2e" OPENCLAW_
 PORT="$(docker_e2e_read_tcp_port_env OPENCLAW_CODEX_MEDIA_PATH_PORT 18790)"
 TIMEOUT_SECONDS="$(docker_e2e_read_positive_int_env OPENCLAW_CODEX_MEDIA_PATH_TIMEOUT_SECONDS 180)"
 LOG_TAIL_MAX_BYTES="$(docker_e2e_read_positive_int_env OPENCLAW_CODEX_MEDIA_PATH_LOG_TAIL_MAX_BYTES 2097152)"
-TOKEN="codex-media-path-e2e-$$"
+TOKEN="${ltfx.n.3574417bad87917768b0.v1}"
 CODEX_PLUGIN_SPEC="${OPENCLAW_CODEX_MEDIA_PATH_PLUGIN_SPEC:-npm:@openclaw/codex}"
 
 docker_e2e_build_or_reuse "$IMAGE_NAME" codex-media-path "$ROOT_DIR/scripts/e2e/Dockerfile" "$ROOT_DIR"

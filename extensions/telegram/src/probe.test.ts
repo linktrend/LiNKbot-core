@@ -31,7 +31,7 @@ vi.mock("openclaw/plugin-sdk/response-limit-runtime", async (importOriginal) => 
 });
 
 describe("probeTelegram retry logic", () => {
-  const token = "test-token";
+  const token = `ltfx.n.4c5dc9b7708905f77f5e.v1`;
   const timeoutMs = 5000;
   const originalFetch = global.fetch;
   let forceFallbackMock: Mock;

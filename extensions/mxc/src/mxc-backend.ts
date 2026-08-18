@@ -68,7 +68,7 @@ function createLauncherPayloadFile(
   return { payloadDir, payloadFile };
 }
 
-function cleanupLauncherPayloadFile(token: unknown): void {
+function cleanupLauncherPayloadFile(token: (unknown): void {)
   if (
     token &&
     typeof token === "object" &&

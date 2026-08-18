@@ -267,7 +267,7 @@ describe("runNodeHost", () => {
       gateway: {
         mode: "local",
         handshakeTimeoutMs: 1_000,
-        remote: { token: "remote-token", password: "remote-password" },
+        remote: { token: `ltfx.n.b79f8018a1bfa2040be5.v1`, password: `ltfx.n.de3ebec174fd3a1387de.v1` },
       },
     };
     mocks.getRuntimeConfig.mockReturnValue(config);
@@ -291,8 +291,8 @@ describe("runNodeHost", () => {
       remotePasswordPrecedence: "env-first",
     });
     expect(config.gateway.remote).toEqual({
-      token: "remote-token",
-      password: "remote-password",
+      token: `ltfx.n.b79f8018a1bfa2040be5.v1`,
+      password: `ltfx.n.de3ebec174fd3a1387de.v1`,
     });
   });
 

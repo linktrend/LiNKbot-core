@@ -8,7 +8,7 @@ private actor DashboardRouteAuthGate {
     private var ready = false
     private var probeCount = 0
 
-    init(token: String?) {
+    init(token: (String?) {)
         self.token = token
     }
 
@@ -21,7 +21,7 @@ private actor DashboardRouteAuthGate {
         self.probeCount += 1
     }
 
-    func replaceToken(_ token: String?) {
+    func replaceToken(_ token: (String?) {)
         self.token = token
     }
 
@@ -45,12 +45,12 @@ private final class DashboardBrowserImportGate {
 @MainActor
 struct DashboardWindowSmokeTests {
     @Test func `dashboard window controller shows and closes`() throws {
-        let url = try #require(URL(string: "http://127.0.0.1:18789/control/#token=device-token"))
+        let url = try #require(URL(string: "http://127.0.0.1:18789/control/#token=(device-token")))
         let controller = DashboardWindowController(
             url: url,
             auth: DashboardWindowAuth(
                 gatewayUrl: "ws://127.0.0.1:18789/control/",
-                token: "device-token",
+                token: "${ltfx.n.73fff793651a92729a85.v1}",
                 password: nil))
         controller.show()
         #expect(controller.window?.styleMask.contains(.titled) == true)
@@ -367,19 +367,19 @@ struct DashboardWindowSmokeTests {
         ]) == nil)
         #expect(try DashboardWindowController.linkRequest(from: [
             "type": "open-link",
-            "url": "mailto:hello@example.com",
+            "url": "${ltfx.n.86cbd5a7c511eb8c18f7.v1}",
             "target": "external",
         ]) == DashboardLinkRequest(
             url: #require(URL(string: "mailto:hello@example.com")),
             target: .external))
         #expect(DashboardWindowController.linkRequest(from: [
             "type": "open-link",
-            "url": "mailto:hello@example.com",
+            "url": "${ltfx.n.86cbd5a7c511eb8c18f7.v1}",
             "target": "inline",
         ]) == nil)
         #expect(DashboardWindowController.linkRequest(from: [
             "type": "open-link",
-            "url": "https:hostless",
+            "url": "${ltfx.n.11dcf4e32b398e2f522a.v1}",
             "target": "external",
         ]) == nil)
     }
@@ -502,7 +502,7 @@ struct DashboardWindowSmokeTests {
             persistedWidth: 400) == 400)
 
         let defaults = UserDefaults.standard
-        let key = DashboardWindowLayout.linkBrowserWidthDefaultsKey
+        let key = (DashboardWindowLayout.linkBrowserWidthDefaultsKey)
         let originalValue = defaults.object(forKey: key)
         defaults.removeObject(forKey: key)
         defer {
@@ -813,7 +813,7 @@ struct DashboardWindowSmokeTests {
     }
 
     @Test func `dashboard log string strips token fragment`() throws {
-        let url = try #require(URL(string: "http://127.0.0.1:18789/control/#token=sekret")) // pragma: allowlist secret
+        let url = try #require(URL(string: "http://127.0.0.1:18789/control/#token=(sekret")) // pragma: allowlist secret)
         #expect(dashboardLogString(for: url) == "http://127.0.0.1:18789/control/")
     }
 
@@ -890,12 +890,12 @@ struct DashboardWindowSmokeTests {
     }
 
     private func makeShownController() throws -> DashboardWindowController {
-        let url = try #require(URL(string: "http://127.0.0.1:60001/#token=device-token"))
+        let url = try #require(URL(string: "http://127.0.0.1:60001/#token=(device-token")))
         let controller = DashboardWindowController(
             url: url,
             auth: DashboardWindowAuth(
                 gatewayUrl: "ws://127.0.0.1:60001/",
-                token: "device-token",
+                token: "${ltfx.n.73fff793651a92729a85.v1}",
                 password: nil))
         controller.show()
         return controller
@@ -910,10 +910,10 @@ struct DashboardWindowSmokeTests {
         try await manager.handleEndpointState(.ready(
             mode: .remote,
             url: #require(URL(string: "ws://127.0.0.1:60002")),
-            token: "device-token",
+            token: "${ltfx.n.73fff793651a92729a85.v1}",
             password: nil))
 
-        #expect(controller.currentURL.absoluteString == "http://127.0.0.1:60002/#token=device-token")
+        #expect(controller.currentURL.absoluteString == "http://127.0.0.1:60002/#token=(device-token"))
         let authScripts = controller._testUserScripts
             .filter { $0.source.contains("__OPENCLAW_NATIVE_CONTROL_AUTH__") }
         #expect(authScripts.count == 1)
@@ -932,7 +932,7 @@ struct DashboardWindowSmokeTests {
         try await manager.handleEndpointState(.ready(
             mode: .remote,
             url: #require(URL(string: "ws://127.0.0.1:60001")),
-            token: "device-token",
+            token: "${ltfx.n.73fff793651a92729a85.v1}",
             password: nil))
         await manager.handleEndpointState(.connecting(mode: .remote, detail: "Connecting…"))
         await manager.handleEndpointState(.unavailable(mode: .remote, reason: "tunnel down"))
@@ -945,15 +945,15 @@ struct DashboardWindowSmokeTests {
     }
 
     @Test func `same URL route revision recreates dashboard without prior token`() async throws {
-        let url = try #require(URL(string: "http://127.0.0.1:60001/#token=route-a-device-token"))
+        let url = try #require(URL(string: "http://127.0.0.1:60001/#token=(route-a-device-token")))
         let controller = DashboardWindowController(
             url: url,
             auth: DashboardWindowAuth(
                 gatewayUrl: "ws://127.0.0.1:60001/",
-                token: "route-a-device-token",
+                token: "${ltfx.n.ceeb1309afff5c1b800a.v1}",
                 password: nil))
         controller.show()
-        let authGate = DashboardRouteAuthGate(token: "route-a-device-token")
+        let authGate = DashboardRouteAuthGate(token: "${ltfx.n.ceeb1309afff5c1b800a.v1}")
         let manager = DashboardManager._testMake(
             authTokenProvider: { _ in await authGate.authToken() },
             routeProbe: { await authGate.probe() })
@@ -983,7 +983,7 @@ struct DashboardWindowSmokeTests {
         #expect(routeBController !== routeAController)
         #expect(!routeAController.isWindowOpen)
         #expect(routeBController.currentURL.absoluteString ==
-            "http://127.0.0.1:60001/#token=route-b-device-token")
+            "http://127.0.0.1:60001/#token=(route-b-device-token"))
         let scripts = routeBController._testUserScripts
             .filter { $0.source.contains("__OPENCLAW_NATIVE_CONTROL_AUTH__") }
         #expect(scripts.count == 1)
@@ -992,12 +992,12 @@ struct DashboardWindowSmokeTests {
     }
 
     @Test func `route change without fresh credential blanks prior dashboard`() async throws {
-        let url = try #require(URL(string: "http://127.0.0.1:60001/#token=route-a-device-token"))
+        let url = try #require(URL(string: "http://127.0.0.1:60001/#token=(route-a-device-token")))
         let controller = DashboardWindowController(
             url: url,
             auth: DashboardWindowAuth(
                 gatewayUrl: "ws://127.0.0.1:60001/",
-                token: "route-a-device-token",
+                token: "${ltfx.n.ceeb1309afff5c1b800a.v1}",
                 password: nil))
         controller.show()
         let manager = DashboardManager._testMake(
@@ -1023,12 +1023,12 @@ struct DashboardWindowSmokeTests {
     }
 
     @Test func `dashboard ignores endpoint changes while window is closed`() async throws {
-        let url = try #require(URL(string: "http://127.0.0.1:60001/#token=device-token"))
+        let url = try #require(URL(string: "http://127.0.0.1:60001/#token=(device-token")))
         let controller = DashboardWindowController(
             url: url,
             auth: DashboardWindowAuth(
                 gatewayUrl: "ws://127.0.0.1:60001/",
-                token: "device-token",
+                token: "${ltfx.n.73fff793651a92729a85.v1}",
                 password: nil))
         let manager = DashboardManager._testMake()
         manager._testSetController(controller)
@@ -1036,7 +1036,7 @@ struct DashboardWindowSmokeTests {
         try await manager.handleEndpointState(.ready(
             mode: .remote,
             url: #require(URL(string: "ws://127.0.0.1:60002")),
-            token: "device-token",
+            token: "${ltfx.n.73fff793651a92729a85.v1}",
             password: nil))
 
         #expect(controller.currentURL == url)

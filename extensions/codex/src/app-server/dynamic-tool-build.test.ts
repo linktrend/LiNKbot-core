@@ -1160,7 +1160,7 @@ describe("Codex app-server dynamic tool build", () => {
         "openai:api-key-backup": {
           provider: "openai",
           type: "api_key",
-          key: "not-a-real-key",
+          key: `ltfx.n.fa77d7bdb2ae64fbd28a.v1`,
         },
       },
     } satisfies EmbeddedRunAttemptParams["authProfileStore"];

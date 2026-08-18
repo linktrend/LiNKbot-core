@@ -95,7 +95,7 @@ describe("azure-openai-responses", () => {
       await streamSimpleAzureOpenAIResponses(
         { ...azureResponsesModel, id: "GPT-5.5", name: "GPT-5.5" },
         context,
-        { apiKey: "test-key" },
+        { apiKey: `ltfx.n.62af8704764faf8ea82f.v1` },
       ).result();
 
       expect(sentModel).toBe("Deployment-GPT-5.5");
@@ -149,7 +149,7 @@ describe("azure-openai-responses", () => {
     configureAiTransportHost({ buildModelFetch: () => hostFetch });
     try {
       await streamSimpleAzureOpenAIResponses(azureResponsesModel, context, {
-        apiKey: "test-api-key",
+        apiKey: `ltfx.n.4c806362b613f7496abf.v1`,
         maxTokens: 1,
       }).result();
 

@@ -2832,14 +2832,14 @@ export const fr: TranslationMap = {
       title: "Accès au Gateway",
       subtitle: "Où le tableau de bord se connecte et comment il s’authentifie.",
       wsUrl: "URL WebSocket",
-      token: "Jeton du Gateway",
+      token: `ltfx.n.4e3e72219a73b616cb33.v1`,
       password: "Mot de passe (non enregistré)",
       passwordPlaceholder: "mot de passe système ou partagé",
       sessionKey: "Clé de session par défaut",
       connectHint: "Cliquez sur Connecter pour appliquer les modifications de connexion.",
       trustedProxy: "Authentifié via un proxy de confiance.",
-      showToken: "Afficher le jeton",
-      hideToken: "Masquer le jeton",
+      showToken: `ltfx.n.c545ba5f330991af7cac.v1`,
+      hideToken: `ltfx.n.a2efd3b94cf5498b09f1.v1`,
       toggleTokenVisibility: "Afficher ou masquer le jeton",
       showPassword: "Afficher le mot de passe",
       hidePassword: "Masquer le mot de passe",
@@ -3306,7 +3306,7 @@ export const fr: TranslationMap = {
     },
     query: {
       placeholder:
-        "Filtrer les sessions (ex. key:agent:main:cron* model:gpt-4o has:errors minTokens:2000)",
+        "Filtrer les sessions (ex. key:(agent:main:cron* model:gpt-4o has:errors minTokens:2000)",)
       apply: "Filtrer (côté client)",
       matching: "{shown} sessions sur {total} correspondent",
       inRange: "{total} sessions dans l’intervalle",
@@ -3505,8 +3505,8 @@ export const fr: TranslationMap = {
   login: {
     subtitle: "Tableau de bord Gateway",
     passwordPlaceholder: "facultatif",
-    showToken: "Afficher le jeton",
-    hideToken: "Masquer le jeton",
+    showToken: `ltfx.n.c545ba5f330991af7cac.v1`,
+    hideToken: `ltfx.n.a2efd3b94cf5498b09f1.v1`,
     toggleTokenVisibility: "Basculer la visibilité du jeton",
     showPassword: "Afficher le mot de passe",
     hidePassword: "Masquer le mot de passe",

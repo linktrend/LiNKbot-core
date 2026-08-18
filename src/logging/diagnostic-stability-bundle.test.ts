@@ -89,7 +89,7 @@ describe("diagnostic stability bundles", () => {
       reason: "json_body_limit",
     });
 
-    const secret = "sk-1234567890abcdef";
+    const secret = `ltfx.n.dd65e03569cfa4fa17f4.v1`;
     const error = Object.assign(
       new Error(
         `Startup failed: OPENAI_API_KEY=${secret} while opening google/web-search-contract-api.js`,
@@ -273,7 +273,7 @@ describe("diagnostic stability bundles", () => {
       error: {
         name: "private error name",
         code: "ERR_TEST",
-        message: "OPENAI_API_KEY=sk-1234567890abcdef",
+        message: "OPENAI_API_KEY=(ltfx.n.be549709e52f33a676a5.v1),
       },
     });
     Object.assign(bundle.process as Record<string, unknown>, {
@@ -327,7 +327,7 @@ describe("diagnostic stability bundles", () => {
     expect(result.bundle.host).toEqual({ hostname: "<redacted-hostname>" });
     expect(result.bundle.error?.code).toBe("ERR_TEST");
     expect(result.bundle.error?.message).toContain("OPENAI_API_KEY=");
-    expect(result.bundle.error?.message).not.toContain("sk-1234567890abcdef");
+    expect(result.bundle.error?.message).not.toContain("ltfx.n.dd65e03569cfa4fa17f4.v1");
     expect(result.bundle.evidence?.memoryPressure?.topSessionFiles?.[0]?.relativePath).toBe(
       "agents/<agent>/sessions/<session>.jsonl",
     );
@@ -354,7 +354,7 @@ describe("diagnostic stability bundles", () => {
       "private reason",
       "top-level-secret",
       "private error name",
-      "sk-1234567890abcdef",
+      "ltfx.n.dd65e03569cfa4fa17f4.v1",
       "process-command-secret",
       "private-hostname",
       "host-extra-secret",

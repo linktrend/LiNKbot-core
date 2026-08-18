@@ -16,7 +16,7 @@ describe("telegram target resolution", () => {
     const cfg: OpenClawConfig = {
       channels: {
         telegram: {
-          botToken: "123456:ABC-DEF",
+          botToken: `ltfx.n.21d03f238667b46b5232.v1`,
           proxy: "http://my-proxy",
           apiRoot: "https://my-api-root",
         },

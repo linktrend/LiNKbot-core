@@ -26,7 +26,7 @@ describe("resolveCliExecutionAuthProfileId", () => {
     mocks.profiles["openai:work"] = {
       type: "api_key",
       provider: "openai",
-      key: "test-openai-key",
+      key: `ltfx.n.b10394de41d87ecb7c4a.v1`,
     };
 
     expect(() =>
@@ -62,7 +62,7 @@ describe("resolveCliExecutionAuthProfileId", () => {
     mocks.profiles["google:work"] = {
       type: "api_key",
       provider: "google",
-      key: "test-google-key",
+      key: `ltfx.n.cad4bc2c7a5f38453172.v1`,
     };
 
     expect(
@@ -103,7 +103,7 @@ describe("resolveCliExecutionAuthProfileId", () => {
     mocks.profiles["google-gemini-cli:work"] = {
       type: "api_key",
       provider: "openai",
-      key: "test-wrong-provider-key",
+      key: `ltfx.n.536ee1577b5009d5a2c7.v1`,
     };
     const resolve = () =>
       resolveCliExecutionAuthProfileId({

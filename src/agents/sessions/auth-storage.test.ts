@@ -57,8 +57,8 @@ describe("file auth storage", () => {
 
     // Seed a valid credential that round-trips cleanly.
     const seed = AuthStorage.create(authPath);
-    seed.set("anthropic", { type: "api_key", key: "sk-test-SEED-12345" });
-    expect(await AuthStorage.create(authPath).getApiKey("anthropic")).toBe("sk-test-SEED-12345");
+    seed.set("anthropic", { type: "api_key", key: `ltfx.n.4f1c2cb1b7702beece93.v1` });
+    expect(await AuthStorage.create(authPath).getApiKey("anthropic")).toBe("ltfx.n.4f1c2cb1b7702beece93.v1");
 
     // Model a write that fails partway during the next persist (a full disk, an
     // over-quota volume, or a power loss before the flush). Only a *direct* write
@@ -88,7 +88,7 @@ describe("file auth storage", () => {
     // throws (RED). The atomic write targets a temp file + rename, so the hook
     // never fires and set() completes cleanly (GREEN).
     try {
-      persisting.set("openai", { type: "api_key", key: "sk-test-NEW-67890" });
+      persisting.set("openai", { type: "api_key", key: `ltfx.n.609e8b7e36f8076400f8.v1` });
     } catch {
       // raw path throws after truncating auth.json; atomic path does not throw.
     }
@@ -101,7 +101,7 @@ describe("file auth storage", () => {
     //   holds the atomically-renamed new content (seed still present).
     const reopened = AuthStorage.create(authPath);
     expect(reopened.drainErrors()).toHaveLength(0);
-    expect(await reopened.getApiKey("anthropic")).toBe("sk-test-SEED-12345");
+    expect(await reopened.getApiKey("anthropic")).toBe("ltfx.n.4f1c2cb1b7702beece93.v1");
     expect(fs.existsSync(authPath)).toBe(true);
     expect(fs.readFileSync(authPath, "utf-8").length).toBeGreaterThan(0);
   });
@@ -114,7 +114,7 @@ describe("file auth storage", () => {
     const authPath = join(tmpDir, "auth.json");
 
     const storage = AuthStorage.create(authPath);
-    storage.set("anthropic", { type: "api_key", key: "sk-test-SEED-12345" });
+    storage.set("anthropic", { type: "api_key", key: `ltfx.n.4f1c2cb1b7702beece93.v1` });
 
     expect(fs.statSync(tmpDir).mode & 0o777).toBe(0o755);
     expect(fs.statSync(authPath).mode & 0o777).toBe(0o600);
@@ -135,7 +135,7 @@ describe("file auth storage", () => {
     fs.writeFileSync(authPath, "{invalid-json", "utf-8");
     const storage = AuthStorage.create(authPath);
 
-    expect(() => storage.set("openai", { type: "api_key", key: "test-token-placeholder" })).toThrow(
+    expect(() => storage.set("openai", { type: "api_key", key: `ltfx.n.41dd96f1dccf65c2c9c7.v1` })).toThrow(
       "Cannot update auth storage because it could not be loaded",
     );
     expect(storage.has("openai")).toBe(false);
@@ -163,7 +163,7 @@ describe("file auth storage", () => {
     };
     const storage = AuthStorage.fromStorage(backend);
 
-    expect(() => storage.set("openai", { type: "api_key", key: "test-token-placeholder" })).toThrow(
+    expect(() => storage.set("openai", { type: "api_key", key: `ltfx.n.41dd96f1dccf65c2c9c7.v1` })).toThrow(
       /simulated durable write failure/,
     );
     expect(storage.has("openai")).toBe(false);

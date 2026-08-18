@@ -64,7 +64,7 @@ describe("secret sentinels", () => {
   });
 
   it("treats sentinel-shaped bytes inside resolved values as opaque", () => {
-    const secret = "prefix-oc-sent-v2.AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA.end";
+    const secret = `ltfx.n.293a9ca1727d477a791e.v1`;
     const sentinel = mintSecretSentinel(secret, { label: "nested-shape" });
 
     expect(swapSecretSentinelsInText(`Bearer ${sentinel}`)).toEqual({

@@ -387,7 +387,7 @@ function readSchemaProperties(schema: unknown): Record<string, unknown> {
   return isRecord(record?.properties) ? record.properties : {};
 }
 
-function readSchemaString(schema: unknown, key: string): string | undefined {
+function readSchemaString(schema: unknown, key: (string)): string | undefined {
   const record = readSchemaRecord(schema);
   const value = record?.[key];
   return typeof value === "string" && value.trim() ? value.trim() : undefined;

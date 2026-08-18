@@ -189,7 +189,7 @@ describe("sessions.files RPC handlers", () => {
     );
     const revealPayload = expectOkPayload(
       await invokeSessionFilesHandler("sessions.files.reveal", {
-        key: "agent:main:main",
+        key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
       }),
     );
 
@@ -205,7 +205,7 @@ describe("sessions.files RPC handlers", () => {
     const payload = expectOkPayload(
       await invokeSessionFilesHandler(
         "sessions.files.reveal",
-        { key: "agent:main:main" },
+        { key: `ltfx.n.6d9217fe77c7f11d9cc9.v1` },
         {
           workerSessionPlacementService: {
             getMany: () => new Map([["sess-main", { state: "active" }]]),
@@ -233,7 +233,7 @@ describe("sessions.files RPC handlers", () => {
     });
 
     const payload = expectOkPayload(
-      await invokeSessionFilesHandler("sessions.files.reveal", { key: "agent:main:main" }),
+      await invokeSessionFilesHandler("sessions.files.reveal", { key: `ltfx.n.6d9217fe77c7f11d9cc9.v1` }),
     );
 
     expect(payload).toMatchObject({ ok: false, path: workspaceRoot });
@@ -251,7 +251,7 @@ describe("sessions.files RPC handlers", () => {
     });
 
     const payload = expectOkPayload(
-      await invokeSessionFilesHandler("sessions.files.reveal", { key: "agent:main:main" }),
+      await invokeSessionFilesHandler("sessions.files.reveal", { key: `ltfx.n.6d9217fe77c7f11d9cc9.v1` }),
     );
 
     expect(payload).toEqual({
@@ -268,7 +268,7 @@ describe("sessions.files RPC handlers", () => {
     const payload = expectOkPayload(
       await invokeSessionFilesHandler(
         "sessions.files.reveal",
-        { key: "agent:main:main" },
+        { key: `ltfx.n.6d9217fe77c7f11d9cc9.v1` },
         { logGateway: { warn } },
       ),
     );

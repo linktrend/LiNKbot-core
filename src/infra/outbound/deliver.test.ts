@@ -951,7 +951,7 @@ describe("deliverOutboundPayloads", () => {
       payloads: [{ text: "NO_REPLY" }],
       deps: { matrix: sendMatrix },
       session: {
-        key: "agent:main:matrix:slash:!room",
+        key: `ltfx.n.bd8b1f07ae0004e226d5.v1`,
         policyKey: "agent:main:matrix:direct:!room",
       },
       deliveryCompletion: {
@@ -2402,7 +2402,7 @@ describe("deliverOutboundPayloads", () => {
         to: "!room:example",
         payloads: [{ text: "secret delivery body" }],
         deps: { matrix: sendMatrix },
-        session: { key: "session-1" },
+        session: { key: `ltfx.n.84097828fc31a8c8d292.v1` },
       });
       await flushDiagnosticEvents();
     } finally {
@@ -2442,7 +2442,7 @@ describe("deliverOutboundPayloads", () => {
         payloads: [{ text: "secret delivery body" }],
         deps: { matrix: sendMatrix },
         bestEffort: true,
-        session: { key: "session-1" },
+        session: { key: `ltfx.n.84097828fc31a8c8d292.v1` },
       });
       await flushDiagnosticEvents();
     } finally {
@@ -2480,7 +2480,7 @@ describe("deliverOutboundPayloads", () => {
         payloads: [{ text: "secret delivery body" }],
         deps: { matrix: sendMatrix },
         session: {
-          key: "secret-session-key",
+          key: `ltfx.n.beacc7dbb286c414ef51.v1`,
           agentId: "agent-main",
           conversationType: "direct",
         },
@@ -2578,7 +2578,7 @@ describe("deliverOutboundPayloads", () => {
       payloads: [{ text: "hello", mediaUrl: "file:///tmp/policy.png" }],
       deps: { matrix: sendMatrix },
       session: {
-        key: "agent:main:matrix:room:ops",
+        key: `ltfx.n.a3f741d58872a415b2df.v1`,
         requesterSenderId: "attacker",
       },
     });
@@ -2627,7 +2627,7 @@ describe("deliverOutboundPayloads", () => {
       payloads: [{ text: "heartbeat media", mediaUrl: "file:///tmp/policy.png" }],
       deps: { matrix: sendMatrix },
       session: {
-        key: "agent:main:matrix:group:ops:heartbeat",
+        key: `ltfx.n.16e8d37dad9ba3b3d025.v1`,
         policyKey: "agent:main:matrix:group:ops",
         requesterSenderId: "attacker",
       },
@@ -2663,7 +2663,7 @@ describe("deliverOutboundPayloads", () => {
       payloads: [{ text: "hello", mediaUrl: "file:///tmp/policy.png" }],
       deps: { matrix: sendMatrix },
       session: {
-        key: "agent:main:matrix:room:ops",
+        key: `ltfx.n.a3f741d58872a415b2df.v1`,
         requesterSenderId: "id:matrix:123",
         requesterSenderName: "Alice",
         requesterSenderUsername: "alice_u",
@@ -2701,7 +2701,7 @@ describe("deliverOutboundPayloads", () => {
       payloads: [{ text: "hello", mediaUrl: "file:///tmp/policy.png" }],
       deps: { matrix: sendMatrix },
       session: {
-        key: "agent:main:matrix:room:ops",
+        key: `ltfx.n.a3f741d58872a415b2df.v1`,
         requesterAccountId: "source-account",
         requesterSenderId: "attacker",
       },
@@ -2734,7 +2734,7 @@ describe("deliverOutboundPayloads", () => {
       payloads: [{ text: "hello" }],
       deps: { matrix: sendMatrix },
       session: {
-        key: "agent:main:matrix:room:ops",
+        key: `ltfx.n.a3f741d58872a415b2df.v1`,
         requesterSenderId: "attacker",
       },
     });
@@ -2768,7 +2768,7 @@ describe("deliverOutboundPayloads", () => {
       payloads: [{ text: "hello" }],
       deps: { matrix: sendMatrix },
       session: {
-        key: "agent:main:matrix:room:ops",
+        key: `ltfx.n.a3f741d58872a415b2df.v1`,
         agentId: "main",
         requesterSenderId: "sender-1",
       },
@@ -5018,7 +5018,7 @@ describe("deliverOutboundPayloads", () => {
         channel: "matrix",
         to: "!room:example",
         payloads: [payload],
-        session: { key: "session-ws", agentId: "proofagent" },
+        session: { key: `ltfx.n.3cb0e03414a983120702.v1`, agentId: "proofagent" },
         deps: { matrix: sendMatrix },
       });
 
@@ -5134,7 +5134,7 @@ describe("deliverOutboundPayloads", () => {
       payloads: [{ text: "NO_REPLY" }],
       deps: { matrix: sendMatrix },
       session: {
-        key: "agent:main:matrix:slash:!room",
+        key: `ltfx.n.bd8b1f07ae0004e226d5.v1`,
         policyKey: "agent:main:matrix:direct:!room",
       },
     });
@@ -5152,7 +5152,7 @@ describe("deliverOutboundPayloads", () => {
       payloads: [{ text: "NO_REPLY" }],
       deps: { matrix: sendMatrix },
       session: {
-        key: "agent:main:matrix:group:ops",
+        key: `ltfx.n.6f045122d1f07125e498.v1`,
       },
     });
 
@@ -5423,7 +5423,7 @@ describe("deliverOutboundPayloads", () => {
       channel: "matrix",
       to: "!room",
       payloads: [{ text: "hello" }],
-      session: { key: "agent:tank:main" },
+      session: { key: `ltfx.n.b6f4a28fe09c41f84160.v1` },
     });
 
     expect(hookMocks.runner.runMessageSending).toHaveBeenCalledTimes(1);
@@ -5468,7 +5468,7 @@ describe("deliverOutboundPayloads", () => {
       to: "!room",
       payloads: [{ text: "hi" }],
       session: {
-        key: "agent:tank:main",
+        key: `ltfx.n.b6f4a28fe09c41f84160.v1`,
         policyKey: "agent:tank:discord:tank:direct:1594",
       },
     });
@@ -5546,7 +5546,7 @@ describe("deliverOutboundPayloads", () => {
       channel: "matrix",
       to: "!room",
       payloads: [{ text: "hello" }],
-      session: { key: "agent:tank:main" },
+      session: { key: `ltfx.n.b6f4a28fe09c41f84160.v1` },
     });
 
     expect(hookMocks.runner.runMessageSent).toHaveBeenCalledTimes(1);

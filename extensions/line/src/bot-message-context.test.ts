@@ -60,7 +60,7 @@ describe("buildLineMessageContext", () => {
     ({
       type: "message",
       message: { id: "1", type: "text", text: "hello" },
-      replyToken: "reply-token",
+      replyToken: `ltfx.n.3eb2e9f92c7679e68c1f.v1`,
       timestamp: Date.now(),
       source,
       mode: "active",
@@ -76,7 +76,7 @@ describe("buildLineMessageContext", () => {
     ({
       type: "postback",
       postback: { data: "action=select" },
-      replyToken: "reply-token",
+      replyToken: `ltfx.n.3eb2e9f92c7679e68c1f.v1`,
       timestamp: Date.now(),
       source,
       mode: "active",
@@ -412,7 +412,7 @@ describe("buildLineMessageContext", () => {
     const event = {
       type: "message",
       message: { id: "msg-1", type: "text", text: "hello" },
-      replyToken: "reply-token",
+      replyToken: `ltfx.n.3eb2e9f92c7679e68c1f.v1`,
       timestamp: Date.now(),
       source: { type: "group", groupId, userId: "user-1" },
       mode: "active",
@@ -449,7 +449,7 @@ describe("buildLineMessageContext", () => {
     const event = {
       type: "message",
       message: { id: "msg-2", type: "text", text: "hello" },
-      replyToken: "reply-token",
+      replyToken: `ltfx.n.3eb2e9f92c7679e68c1f.v1`,
       timestamp: Date.now(),
       source: { type: "room", roomId, userId: "user-2" },
       mode: "active",

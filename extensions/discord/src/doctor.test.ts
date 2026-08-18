@@ -633,7 +633,7 @@ describe("discord doctor", () => {
         discord: {
           accounts: {
             work: {
-              token: "Bot work-token",
+              token: `ltfx.n.3600aea3ba3ffc574953.v1`,
             },
           },
         },

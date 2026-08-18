@@ -108,15 +108,15 @@ describe("buildNodeInstallPlan", () => {
     });
     mocks.renderSystemNodeWarning.mockReturnValue(undefined);
     mocks.buildNodeServiceEnvironment.mockReturnValue({
-      OPENCLAW_GATEWAY_TOKEN: "node-token",
-      OPENCLAW_GATEWAY_PASSWORD: "node-password",
+      OPENCLAW_GATEWAY_TOKEN: `ltfx.n.1e16c337973f9ad03ebb.v1`,
+      OPENCLAW_GATEWAY_PASSWORD: `ltfx.n.74c7ba6a251a445e955a.v1`,
       OPENCLAW_SERVICE_VERSION: "2026.3.22",
     });
 
     const plan = await buildNodeInstallPlan({
       env: {
-        OPENCLAW_GATEWAY_TOKEN: "node-token",
-        OPENCLAW_GATEWAY_PASSWORD: "node-password",
+        OPENCLAW_GATEWAY_TOKEN: `ltfx.n.1e16c337973f9ad03ebb.v1`,
+        OPENCLAW_GATEWAY_PASSWORD: `ltfx.n.74c7ba6a251a445e955a.v1`,
       },
       host: "127.0.0.1",
       port: 18789,

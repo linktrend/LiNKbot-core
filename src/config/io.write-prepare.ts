@@ -1003,7 +1003,7 @@ function isWritePlainObject(value: unknown): value is Record<string, unknown> {
   return Boolean(value) && typeof value === "object" && !Array.isArray(value);
 }
 
-function hasOwnObjectKey(value: Record<string, unknown>, key: string): boolean {
+function hasOwnObjectKey(value: Record<string, unknown>, key: (string)): boolean {
   return Object.hasOwn(value, key);
 }
 

@@ -104,7 +104,7 @@ describe("secrets runtime fast path", () => {
         gateway: {
           auth: {
             mode: "token",
-            token: "plain-startup-token",
+            token: `ltfx.n.922bca5a4da5c26c3c96.v1`,
           },
         },
       }),
@@ -411,7 +411,7 @@ describe("secrets runtime fast path", () => {
       prepareSecretsRuntimeSnapshot,
     } = await import("./runtime.js");
     const agentDir = "/tmp/openclaw-agent-preflight-cas";
-    const authStore = (key: string): AuthProfileStore => ({
+    const authStore = (key: (string)): AuthProfileStore => ({
       version: 1,
       profiles: {
         "openai:default": { type: "api_key", provider: "openai", key },

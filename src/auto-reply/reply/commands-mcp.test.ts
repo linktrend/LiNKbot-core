@@ -194,11 +194,11 @@ describe("handleCommands /mcp", () => {
           return true;
         },
       );
-      const headerSecret = "Bearer sk-test-secret-value";
-      const envSecret = "stdio-process-token-value";
-      const separateArgSecret = "plain-separate-arg-secret";
-      const inlineArgSecret = "plain-inline-arg-secret";
-      const positionalArgSecret = "ghp_realgithubtoken1234567890ABCD";
+      const headerSecret = `ltfx.n.d20444be5cae2223780b.v1`;
+      const envSecret = `ltfx.n.c192f5eeaa2006650907.v1`;
+      const separateArgSecret = `ltfx.n.34b56c37623fd950cdb7.v1`;
+      const inlineArgSecret = `ltfx.n.4db009941c0a1ecc3d3d.v1`;
+      const positionalArgSecret = `ltfx.n.6296a7c949bdc7b32007.v1`;
       const secretKeyArg = "opaque-secret-key-value";
       const awsSecretAccessKeyArg = "opaque-aws-secret-access-key-value";
       const underscoreApiKeyArg = "opaque-underscore-api-key-value";
@@ -234,7 +234,7 @@ describe("handleCommands /mcp", () => {
         command: "uvx",
         args: ["local-mcp"],
         env: {
-          TOOL_API_KEY: "local-env-secret-value",
+          TOOL_API_KEY: `ltfx.n.9de8d0d8406fc6d95ce2.v1`,
         },
       });
 
@@ -276,7 +276,7 @@ describe("handleCommands /mcp", () => {
       expect(namedText).not.toContain(awsSecretAccessKeyArg);
       expect(namedText).not.toContain(underscoreApiKeyArg);
       expect(namedText).not.toContain(pluralCredentialsArg);
-      expect(namedText).not.toContain("sk-test-secret-value");
+      expect(namedText).not.toContain("ltfx.n.73aa7f6502a1d784e1b3.v1");
 
       const allParams = buildCommandTestParams("/mcp show", buildCfg(), undefined, {
         workspaceDir,
@@ -320,7 +320,7 @@ describe("handleCommands /mcp", () => {
   ])("fails closed for group /mcp show with $name", async (route) => {
     await withTempHome("openclaw-command-mcp-home-", async () => {
       const workspaceDir = await workspaceHarness.createWorkspace();
-      const secret = "group-route-secret-value";
+      const secret = `ltfx.n.be83ee122c4e2897983e.v1`;
       mcpServers.set("billing-server", {
         command: "uvx",
         args: ["billing-mcp", "--api-key", secret],

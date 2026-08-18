@@ -193,7 +193,7 @@ describe("media store redirects", () => {
     await saveMediaSource("https://example.com/start", {
       Authorization: "Bearer secret",
       Cookie: "session=abc",
-      "X-Api-Key": "custom-secret",
+      "X-Api-Key": `ltfx.n.86f3f00cb77b08bb8963.v1`,
       Accept: "text/plain",
       "User-Agent": "OpenClaw-Test/1.0",
     });

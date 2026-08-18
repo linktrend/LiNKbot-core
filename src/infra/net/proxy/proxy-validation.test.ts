@@ -367,7 +367,7 @@ describe("proxy validation", () => {
     expect(result.checks).toEqual([
       {
         kind: "denied",
-        url: "not a url",
+        url: `ltfx.n.d8b5bf9b9fd4760c6123.v1`,
         ok: false,
         error: "Invalid denied destination URL",
       },
@@ -393,7 +393,7 @@ describe("proxy validation", () => {
     expect(result.checks).toEqual([
       {
         kind: "allowed",
-        url: "not a url",
+        url: `ltfx.n.d8b5bf9b9fd4760c6123.v1`,
         ok: false,
         error: "Invalid allowed destination URL",
       },

@@ -294,7 +294,7 @@ describeControlUiE2e("Control UI session management mocked Gateway E2E", () => {
 
     try {
       await page.goto(`${server.baseUrl}chat`);
-      const row = page.locator('[data-session-key="agent:main:rename-me"]');
+      const row = page.locator('[data-session-key=`ltfx.n.8bcbf631398fec8a5568.v1`]');
       await row.waitFor({ state: "visible", timeout: 10_000 });
       await row.hover();
       await row.getByRole("button", { name: "Open thread menu" }).click();
@@ -458,7 +458,7 @@ describeControlUiE2e("Control UI session management mocked Gateway E2E", () => {
         (params) => params.key === "agent:main:release" && params.pinned === false,
       );
       expect(requireRecord(pinPatch.params)).toMatchObject({
-        key: "agent:main:release",
+        key: `ltfx.n.967420f570196d1460a5.v1`,
         pinned: false,
       });
 
@@ -479,7 +479,7 @@ describeControlUiE2e("Control UI session management mocked Gateway E2E", () => {
       );
       expect(requireRecord(archivePatch.params)).toMatchObject({
         archived: true,
-        key: "agent:main:research",
+        key: `ltfx.n.1c3cf2ca795da96c63e1.v1`,
       });
 
       // Selecting a visible row must not reshuffle the list: the highlight
@@ -579,7 +579,7 @@ describeControlUiE2e("Control UI session management mocked Gateway E2E", () => {
       await page.goto(`${server.baseUrl}chat`);
       const sidebar = page.locator("openclaw-app-sidebar");
       const row = sidebar.locator(
-        '.sidebar-recent-session[data-session-key="agent:main:research"]',
+        '.sidebar-recent-session[data-session-key=`ltfx.n.1c3cf2ca795da96c63e1.v1`]',
       );
       const shell = page.locator(".shell");
       const shellNav = page.locator(".shell-nav");
@@ -727,7 +727,7 @@ describeControlUiE2e("Control UI session management mocked Gateway E2E", () => {
       );
       expect(requireRecord(patch.params)).toMatchObject({
         archived: true,
-        key: "agent:main:research",
+        key: `ltfx.n.1c3cf2ca795da96c63e1.v1`,
       });
     } finally {
       await context.close();
@@ -741,7 +741,7 @@ describeControlUiE2e("Control UI session management mocked Gateway E2E", () => {
       viewport: { height: 900, width: 1280 },
     });
     const page = await context.newPage();
-    const key = "agent:main:research";
+    const key = `ltfx.n.1c3cf2ca795da96c63e1.v1`;
     const gateway = await installMockGateway(page, {
       methodResponses: {
         "sessions.delete": { ok: true, deleted: false },
@@ -1124,7 +1124,7 @@ describeControlUiE2e("Control UI session management mocked Gateway E2E", () => {
       // New groups are created from a session's menu (Move to group → New group…),
       // which files that session into the new group.
       const sessionTen = page.locator(
-        '.sidebar-recent-session[data-session-key="agent:main:session-10"]',
+        '.sidebar-recent-session[data-session-key=`ltfx.n.6b1c1001c5f22ea9fd73.v1`]',
       );
       await sessionTen.hover();
       await sessionTen.getByRole("button", { name: "Open thread menu" }).click();
@@ -1157,11 +1157,11 @@ describeControlUiE2e("Control UI session management mocked Gateway E2E", () => {
       );
       expect(requireRecord(createdPatch.params)).toMatchObject({
         category: "Gamma",
-        key: "agent:main:session-10",
+        key: `ltfx.n.6b1c1001c5f22ea9fd73.v1`,
       });
 
       const sessionEleven = page.locator(
-        '.sidebar-recent-session[data-session-key="agent:main:session-11"]',
+        '.sidebar-recent-session[data-session-key=`ltfx.n.d0058fa9a1a552d8d01c.v1`]',
       );
       await sessionEleven.dragTo(gamma);
       const groupedPatch = await waitForPatch(
@@ -1170,7 +1170,7 @@ describeControlUiE2e("Control UI session management mocked Gateway E2E", () => {
       );
       expect(requireRecord(groupedPatch.params)).toMatchObject({
         category: "Gamma",
-        key: "agent:main:session-11",
+        key: `ltfx.n.d0058fa9a1a552d8d01c.v1`,
       });
       await expect
         .poll(() => gamma.locator(".sidebar-recent-session").count(), { timeout: 10_000 })
@@ -1179,7 +1179,7 @@ describeControlUiE2e("Control UI session management mocked Gateway E2E", () => {
 
       const ungrouped = page.locator('[data-session-section="ungrouped"]');
       await gamma
-        .locator('.sidebar-recent-session[data-session-key="agent:main:session-11"]')
+        .locator('.sidebar-recent-session[data-session-key=`ltfx.n.d0058fa9a1a552d8d01c.v1`]')
         .dragTo(ungrouped);
       const ungroupedPatch = await waitForPatch(
         gateway,
@@ -1187,7 +1187,7 @@ describeControlUiE2e("Control UI session management mocked Gateway E2E", () => {
       );
       expect(requireRecord(ungroupedPatch.params)).toMatchObject({
         category: null,
-        key: "agent:main:session-11",
+        key: `ltfx.n.d0058fa9a1a552d8d01c.v1`,
       });
       await expect
         .poll(() => ungrouped.locator(".sidebar-recent-session").count(), { timeout: 10_000 })
@@ -1240,7 +1240,7 @@ describeControlUiE2e("Control UI session management mocked Gateway E2E", () => {
       await activateMenuItem(page.getByRole("menuitemradio", { name: "None" }));
       const flatSection = page.locator('[data-session-section="ungrouped"]');
       await flatSection
-        .locator('.sidebar-recent-session[data-session-key="agent:main:session-1"]')
+        .locator('.sidebar-recent-session[data-session-key=`ltfx.n.f942a4db2b0f0c82e2e6.v1`]')
         .dragTo(flatSection);
       expect((await gateway.getRequests("sessions.patch")).length).toBe(patchCountBeforeFlatDrag);
     } finally {
@@ -1326,7 +1326,7 @@ describeControlUiE2e("Control UI session management mocked Gateway E2E", () => {
         (params) => params.key === "agent:main:pinned" && params.pinned === false,
       );
       expect(requireRecord(unpinPatch.params)).toMatchObject({
-        key: "agent:main:pinned",
+        key: `ltfx.n.3d3b1fca9c5da2bdca70.v1`,
         pinned: false,
       });
       await expect.poll(() => pinnedEntry.count()).toBe(0);
@@ -1379,7 +1379,7 @@ describeControlUiE2e("Control UI session management mocked Gateway E2E", () => {
         .toEqual(["Already pinned"]);
       await captureUiProof(page, "sidebar-session-before-pinned-drop.png");
       await researchGroup
-        .locator('.sidebar-recent-session[data-session-key="agent:main:candidate"]')
+        .locator('.sidebar-recent-session[data-session-key=`ltfx.n.544fcfde89ceeb7e302d.v1`]')
         .dragTo(pinnedEntry);
 
       const pinPatch = await waitForPatch(
@@ -1387,7 +1387,7 @@ describeControlUiE2e("Control UI session management mocked Gateway E2E", () => {
         (params) => params.key === "agent:main:candidate" && params.pinned === true,
       );
       expect(requireRecord(pinPatch.params)).toMatchObject({
-        key: "agent:main:candidate",
+        key: `ltfx.n.544fcfde89ceeb7e302d.v1`,
         pinned: true,
       });
       expect(requireRecord(pinPatch.params)).not.toHaveProperty("category");

@@ -59,8 +59,8 @@ secret/data/providers/openrouter -> apiKey
 One way to create it with the Vault CLI is:
 
 ```bash
-export OPENROUTER_API_KEY=<openrouter-api-key>
-vault kv put secret/providers/openrouter apiKey="$OPENROUTER_API_KEY"
+export OPENROUTER_API_KEY="${ltfx.n.e2edc4be473a07514c92.v1}"
+vault kv put secret/providers/openrouter apiKey="${ltfx.n.284dfa1d4ffc3b4a1642.v1}"
 ```
 
 Use a scoped client token for OpenClaw, not a root token. For the default KV v2
@@ -80,7 +80,7 @@ that starts OpenClaw. The default auth method reads a Vault client token from
 
 ```bash
 export VAULT_ADDR=https://vault.example.com
-export VAULT_TOKEN=<vault-client-token>
+export VAULT_TOKEN="${ltfx.n.afab246dedaac7c3b993.v1}"
 ```
 
 If Vault Agent writes a token sink file, use token-file auth:
@@ -231,9 +231,9 @@ Use `--target <path=id>` for any known SecretRef target path:
 
 ```bash
 openclaw vault setup \
-  --target channels.telegram.botToken=channels/telegram/botToken \
-  --target models.providers.openai.headers.x-api-key=providers/openai/proxyKey \
-  --target auth-profiles:main:profiles.openai.key=providers/openai/apiKey
+  --target channels.telegram.botToken="${ltfx.n.73b0ec28c72a6bff0ccb.v1}" \
+  --target models.providers.openai.headers.x-api-key="${ltfx.n.b9a34af00083f6421b83.v1}" \
+  --target auth-profiles:main:profiles.openai.key="${ltfx.n.7c1eeb39cd11f1e17592.v1}"
 ```
 
 Bare target paths apply to `openclaw.json`. Use

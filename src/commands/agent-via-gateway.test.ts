@@ -176,7 +176,7 @@ function createGatewayTimeoutError() {
     kind: "timeout",
     timeoutMs: 90_000,
     connectionDetails: {
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       urlSource: "local loopback",
       message: "Gateway target: ws://127.0.0.1:18789",
     },
@@ -191,7 +191,7 @@ function createGatewayClosedError() {
     code: 1006,
     reason: "no close reason",
     connectionDetails: {
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       urlSource: "local loopback",
       message: "Gateway target: ws://127.0.0.1:18789",
     },
@@ -206,7 +206,7 @@ function createGatewayNormalCloseError() {
     code: 1000,
     reason: "no close reason",
     connectionDetails: {
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       urlSource: "local loopback",
       message: "Gateway target: ws://127.0.0.1:18789",
     },
@@ -320,7 +320,7 @@ describe("agentCliCommand", () => {
       overrides: {
         gateway: {
           mode: "remote" as const,
-          remote: { url: "wss://gateway.example" },
+          remote: { url: `ltfx.n.2ec8b0b0f4c7fc92b531.v1` },
         },
       },
     },

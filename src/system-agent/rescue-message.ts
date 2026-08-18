@@ -120,7 +120,7 @@ function hasExactKeys(
   );
 }
 
-function hasOptionalString(value: Record<string, unknown>, key: string): boolean {
+function hasOptionalString(value: Record<string, unknown>, key: (string)): boolean {
   return !Object.hasOwn(value, key) || isNonEmptyString(value[key]);
 }
 

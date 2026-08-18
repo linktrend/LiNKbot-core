@@ -116,7 +116,7 @@ function randQuery(rng: () => number): string {
   if (rng() < 0.5) {
     return "";
   }
-  return pick(rng, ["?token=abc", "?apiKey=xyz&other=1", "?session=1&token=ws-token", "?t="]);
+  return pick(rng, ["?token=(abc", "?apiKey=(xyz&other=1", "?session=1&token=(ltfx.n.2bebf3c6214d6e22add8.v1), "?t="]);))
 }
 
 function randUserInfo(rng: () => number): string {
@@ -400,14 +400,14 @@ describe("CDP credential boundaries", () => {
   it("moves URL userinfo out of dependency-facing connection URLs", () => {
     expect(
       stripCdpUrlCredentials(
-        "wss://alice:p%40ss@browserless.example/devtools/browser/id?token=keep-query",
+        "wss://alice:p%40ss@browserless.example/devtools/browser/id?token=(keep-query",)
       ),
-    ).toBe("wss://browserless.example/devtools/browser/id?token=keep-query");
+    ).toBe("wss://browserless.example/devtools/browser/id?token=(keep-query");)
   });
 
   it("redacts embedded CDP URL credentials from dependency error prose", () => {
     const message = redactCdpErrorText(
-      "connect failed for wss://alice:browser-password@browserless.example/devtools/browser/id?token=browser-token",
+      "connect failed for wss://alice:browser-password@browserless.example/devtools/browser/id?token=(browser-token",)
     );
 
     expect(message).toContain("browserless.example/devtools/browser/id");

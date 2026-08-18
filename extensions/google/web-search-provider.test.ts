@@ -124,7 +124,7 @@ describe("google web search provider", () => {
             google: {
               config: {
                 webSearch: {
-                  apiKey: "AIza-plugin-test",
+                  apiKey: `ltfx.n.82b93f0be935d58a3530.v1`,
                   baseUrl: "https://generativelanguage.googleapis.com/proxy/v1beta/",
                 },
               },
@@ -170,7 +170,7 @@ describe("google web search provider", () => {
             google: {
               config: {
                 webSearch: {
-                  apiKey: "AIza-plugin-test",
+                  apiKey: `ltfx.n.82b93f0be935d58a3530.v1`,
                 },
               },
             },
@@ -203,7 +203,7 @@ describe("google web search provider", () => {
             google: {
               config: {
                 webSearch: {
-                  apiKey: "AIza-plugin-test",
+                  apiKey: `ltfx.n.82b93f0be935d58a3530.v1`,
                 },
               },
             },
@@ -231,7 +231,7 @@ describe("google web search provider", () => {
             google: {
               config: {
                 webSearch: {
-                  apiKey: "AIza-plugin-test",
+                  apiKey: `ltfx.n.82b93f0be935d58a3530.v1`,
                 },
               },
             },
@@ -265,7 +265,7 @@ describe("google web search provider", () => {
             google: {
               config: {
                 webSearch: {
-                  apiKey: "AIza-plugin-test",
+                  apiKey: `ltfx.n.82b93f0be935d58a3530.v1`,
                 },
               },
             },
@@ -292,7 +292,7 @@ describe("google web search provider", () => {
             google: {
               config: {
                 webSearch: {
-                  apiKey: "AIza-plugin-test",
+                  apiKey: `ltfx.n.82b93f0be935d58a3530.v1`,
                 },
               },
             },
@@ -317,7 +317,7 @@ describe("google web search provider", () => {
           models: {
             providers: {
               google: createGoogleModelProviderConfig({
-                apiKey: "AIza-provider-test",
+                apiKey: `ltfx.n.3d9240f6ecc82d4de54a.v1`,
               }),
             },
           },
@@ -333,7 +333,7 @@ describe("google web search provider", () => {
   });
 
   it("keeps plugin web search keys ahead of env and provider keys", async () => {
-    await withEnvAsync({ GEMINI_API_KEY: "AIza-env-test" }, async () => {
+    await withEnvAsync({ GEMINI_API_KEY: `ltfx.n.cca463525e83dac285c1.v1` }, async () => {
       const mockFetch = installGeminiFetch();
       const provider = createGeminiWebSearchProvider();
       const tool = provider.createTool({
@@ -343,7 +343,7 @@ describe("google web search provider", () => {
               google: {
                 config: {
                   webSearch: {
-                    apiKey: "AIza-plugin-test",
+                    apiKey: `ltfx.n.82b93f0be935d58a3530.v1`,
                   },
                 },
               },
@@ -352,7 +352,7 @@ describe("google web search provider", () => {
           models: {
             providers: {
               google: createGoogleModelProviderConfig({
-                apiKey: "AIza-provider-test",
+                apiKey: `ltfx.n.3d9240f6ecc82d4de54a.v1`,
               }),
             },
           },
@@ -375,7 +375,7 @@ describe("google web search provider", () => {
         models: {
           providers: {
             google: createGoogleModelProviderConfig({
-              apiKey: "AIza-provider-test",
+              apiKey: `ltfx.n.3d9240f6ecc82d4de54a.v1`,
               baseUrl: "https://generativelanguage.googleapis.com/provider/v1beta/",
             }),
           },
@@ -401,7 +401,7 @@ describe("google web search provider", () => {
             google: {
               config: {
                 webSearch: {
-                  apiKey: "AIza-plugin-test",
+                  apiKey: `ltfx.n.82b93f0be935d58a3530.v1`,
                   baseUrl: "https://generativelanguage.googleapis.com/plugin/v1beta/",
                 },
               },
@@ -436,7 +436,7 @@ describe("google web search provider", () => {
             google: {
               config: {
                 webSearch: {
-                  apiKey: "AIza-plugin-test",
+                  apiKey: `ltfx.n.82b93f0be935d58a3530.v1`,
                 },
               },
             },
@@ -467,7 +467,7 @@ describe("google web search provider", () => {
             google: {
               config: {
                 webSearch: {
-                  apiKey: "AIza-plugin-test",
+                  apiKey: `ltfx.n.82b93f0be935d58a3530.v1`,
                 },
               },
             },
@@ -499,7 +499,7 @@ describe("google web search provider", () => {
             google: {
               config: {
                 webSearch: {
-                  apiKey: "AIza-plugin-test",
+                  apiKey: `ltfx.n.82b93f0be935d58a3530.v1`,
                 },
               },
             },
@@ -556,7 +556,7 @@ describe("google web search provider", () => {
             google: {
               config: {
                 webSearch: {
-                  apiKey: "AIza-plugin-test",
+                  apiKey: `ltfx.n.82b93f0be935d58a3530.v1`,
                 },
               },
             },
@@ -590,7 +590,7 @@ describe("google web search provider", () => {
             google: {
               config: {
                 webSearch: {
-                  apiKey: "AIza-plugin-test",
+                  apiKey: `ltfx.n.82b93f0be935d58a3530.v1`,
                 },
               },
             },
@@ -623,7 +623,7 @@ describe("google web search provider", () => {
             google: {
               config: {
                 webSearch: {
-                  apiKey: "AIza-plugin-test",
+                  apiKey: `ltfx.n.82b93f0be935d58a3530.v1`,
                 },
               },
             },

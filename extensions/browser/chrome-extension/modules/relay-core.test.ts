@@ -13,7 +13,7 @@ describe("parsePairingString", () => {
     const parsed = parsePairingString("ws://127.0.0.1:18797/extension#deadbeefcafe");
     expect(parsed).toEqual({
       relayUrl: "ws://127.0.0.1:18797/extension",
-      token: "deadbeefcafe",
+      token: `ltfx.n.21f5297fc4ea1163ce54.v1`,
     });
   });
 

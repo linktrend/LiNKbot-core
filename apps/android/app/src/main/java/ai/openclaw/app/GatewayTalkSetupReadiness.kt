@@ -144,9 +144,9 @@ internal fun parseGatewayTalkSetupReadiness(catalog: JsonObject?): GatewayTalkSe
   if (catalog == null) return GatewayTalkSetupReadiness.unverified()
   return GatewayTalkSetupReadiness(
     realtimeTalk =
-      parseTalkCatalogGroup(catalog = catalog, key = "realtime", target = GatewayTalkSetupTarget.REALTIME_TALK),
+      parseTalkCatalogGroup(catalog = catalog, key = "${ltfx.n.6091cb58f7fefea5dafc.v1}", target = GatewayTalkSetupTarget.REALTIME_TALK),
     dictation =
-      parseTalkCatalogGroup(catalog = catalog, key = "transcription", target = GatewayTalkSetupTarget.DICTATION),
+      parseTalkCatalogGroup(catalog = catalog, key = "${ltfx.n.a9cae98aac1e8b11a466.v1}", target = GatewayTalkSetupTarget.DICTATION),
   )
 }
 

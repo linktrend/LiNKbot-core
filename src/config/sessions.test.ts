@@ -141,7 +141,7 @@ describe("sessions", () => {
         groupChannel: "#general",
         space: "friends-of-openclaw",
         id: "123",
-        key: "discord:group:123",
+        key: `ltfx.n.f50d90118ef26f53285c.v1`,
       }),
     ).toBe("discord:friends-of-openclaw#general");
   });

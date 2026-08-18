@@ -106,7 +106,7 @@ Example (node host -> gateway host):
 ssh -N -L 18790:127.0.0.1:18789 user@gateway-host
 
 # Terminal B: export the gateway token and connect through the tunnel
-export OPENCLAW_GATEWAY_TOKEN="<gateway-token>"
+export OPENCLAW_GATEWAY_TOKEN="${ltfx.n.cf6aae2618f82cb875eb.v1}"
 openclaw node run --host 127.0.0.1 --port 18790 --display-name "Build Node"
 ```
 

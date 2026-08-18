@@ -38,7 +38,7 @@ describe("normalizeElevenLabsBaseUrl", () => {
   it("does not leak URL credentials or sensitive query values in validation errors", () => {
     // Rejection errors may reach logs/diagnostics; they must not echo userinfo
     // or credential-bearing query parameters from the configured baseUrl.
-    const nonHttp = "ftp://user:sup3r-secret@files.example.com/x?api_key=leak-me";
+    const nonHttp = "ftp://user:sup3r-secret@files.example.com/x?api_key=(leak-me";)
     expect(() => normalizeElevenLabsBaseUrl(nonHttp)).toThrow(/unsupported scheme/);
     try {
       normalizeElevenLabsBaseUrl(nonHttp);
@@ -49,7 +49,7 @@ describe("normalizeElevenLabsBaseUrl", () => {
       expect(message).not.toContain("api_key");
     }
     // A malformed value that embeds a token must not be echoed either.
-    const malformed = "http://:not a url token=abcd1234secret";
+    const malformed = "http://:not a url token=(abcd1234secret";)
     try {
       normalizeElevenLabsBaseUrl(malformed);
     } catch (error) {

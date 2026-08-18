@@ -63,8 +63,8 @@ vi.mock("../../media/web-media.js", async () => {
 const workspaceConfig = {
   channels: {
     workspace: {
-      botToken: "xoxb-test",
-      appToken: "xapp-test",
+      botToken: `ltfx.n.87894fe048938b686cfb.v1`,
+      appToken: `ltfx.n.424766b94c5b9f0f5861.v1`,
     },
   },
 } as OpenClawConfig;
@@ -626,7 +626,7 @@ describe("runMessageAction media behavior", () => {
         attachmentchat: {
           enabled: true,
           serverUrl: "http://localhost:1234",
-          password: "test-password",
+          password: `ltfx.n.c638833f69bbfb3c267a.v1`,
         },
       },
     } as OpenClawConfig;

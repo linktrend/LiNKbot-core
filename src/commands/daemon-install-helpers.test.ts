@@ -194,7 +194,7 @@ async function buildPluginConfigExecSecretRefPlan(home: string) {
   });
 
   return await buildGatewayInstallPlan({
-    env: { HOME: home, ACME_SECRETS_TOKEN: "secret-token" },
+    env: { HOME: home, ACME_SECRETS_TOKEN: `ltfx.n.930bbdc51b6aed5c2a56.v1` },
     port: 3000,
     runtime: "node",
     config: {
@@ -480,7 +480,7 @@ describe("buildGatewayInstallPlan", () => {
           EMPTY_KEY: "",
           TRIMMED_KEY: "  ",
           vars: {
-            GOOGLE_API_KEY: "test-key", // pragma: allowlist secret
+            GOOGLE_API_KEY: `ltfx.n.62af8704764faf8ea82f.v1`, // pragma: allowlist secret
             OPENCLAW_PORT: "9999",
             NODE_OPTIONS: "--require /tmp/evil.js",
             SAFE_KEY: "safe-value",
@@ -512,7 +512,7 @@ describe("buildGatewayInstallPlan", () => {
 
     const plan = await buildGatewayInstallPlan({
       env: isolatedPlanEnv({
-        DISCORD_BOT_TOKEN: "discord-test-token",
+        DISCORD_BOT_TOKEN: `ltfx.n.c1ea6ba9606d2340ad46.v1`,
       }),
       port: 3000,
       runtime: "node",
@@ -540,7 +540,7 @@ describe("buildGatewayInstallPlan", () => {
 
     const plan = await buildGatewayInstallPlan({
       env: isolatedPlanEnv({
-        DISCORD_BOT_TOKEN: "discord-test-token",
+        DISCORD_BOT_TOKEN: `ltfx.n.c1ea6ba9606d2340ad46.v1`,
       }),
       port: 3000,
       runtime: "node",
@@ -568,7 +568,7 @@ describe("buildGatewayInstallPlan", () => {
 
     const plan = await buildGatewayInstallPlan({
       env: isolatedPlanEnv({
-        OPENAI_API_KEY: "sk-openai-test",
+        OPENAI_API_KEY: `ltfx.n.35b0cf0dc927db76c75d.v1`,
       }),
       port: 3000,
       runtime: "node",
@@ -596,7 +596,7 @@ describe("buildGatewayInstallPlan", () => {
       },
     });
 
-    expect(plan.environment.OPENAI_API_KEY).toBe("sk-openai-test");
+    expect(plan.environment.OPENAI_API_KEY).toBe("ltfx.n.35b0cf0dc927db76c75d.v1");
     expect(plan.environmentValueSources?.OPENAI_API_KEY).toBe("file");
     expect(plan.environment.OPENCLAW_SERVICE_MANAGED_ENV_KEYS).toBe("OPENAI_API_KEY");
   });
@@ -610,7 +610,7 @@ describe("buildGatewayInstallPlan", () => {
 
     const plan = await buildGatewayInstallPlan({
       env: isolatedPlanEnv({
-        OP_CONNECT_TOKEN: "op-connect-token",
+        OP_CONNECT_TOKEN: `ltfx.n.2b1d38e1b49c8526c3b9.v1`,
       }),
       port: 3000,
       runtime: "node",
@@ -669,7 +669,7 @@ describe("buildGatewayInstallPlan", () => {
     const plan = await buildGatewayInstallPlan({
       env: isolatedPlanEnv({
         ACME_SECRETS_ADDR: "http://secrets.example.test",
-        ACME_SECRETS_TOKEN: "secret-token",
+        ACME_SECRETS_TOKEN: `ltfx.n.930bbdc51b6aed5c2a56.v1`,
       }),
       port: 3000,
       runtime: "node",
@@ -714,7 +714,7 @@ describe("buildGatewayInstallPlan", () => {
 
     const plan = await buildGatewayInstallPlan({
       env: isolatedPlanEnv({
-        OP_CONNECT_TOKEN: "op-connect-token",
+        OP_CONNECT_TOKEN: `ltfx.n.2b1d38e1b49c8526c3b9.v1`,
       }),
       port: 3000,
       runtime: "node",
@@ -782,7 +782,7 @@ describe("buildGatewayInstallPlan", () => {
     const plan = await buildGatewayInstallPlan({
       env: isolatedPlanEnv({
         ACME_SECRETS_ADDR: "http://secrets.example.test",
-        ACME_SECRETS_TOKEN: "secret-token",
+        ACME_SECRETS_TOKEN: `ltfx.n.930bbdc51b6aed5c2a56.v1`,
       }),
       port: 3000,
       runtime: "node",
@@ -833,7 +833,7 @@ describe("buildGatewayInstallPlan", () => {
         BASH_ENV: "/tmp/openclaw-test-bashenv",
         XDG_CONFIG_HOME: "/tmp/openclaw-test-xdg-home",
         XDG_CONFIG_DIRS: "/etc/xdg:/opt/xdg",
-        GH_TOKEN: "gh-test-token",
+        GH_TOKEN: `ltfx.n.abfa019514a6761f8298.v1`,
         AWS_ACCESS_KEY_ID: "aws-access-key",
         DOCKER_HOST: "tcp://docker.example.test:2376",
         NODE_TLS_REJECT_UNAUTHORIZED: "0",
@@ -962,7 +962,7 @@ describe("buildGatewayInstallPlan", () => {
 
     const plan = await buildGatewayInstallPlan({
       env: isolatedPlanEnv({
-        OP_CONNECT_TOKEN: "op-connect-token",
+        OP_CONNECT_TOKEN: `ltfx.n.2b1d38e1b49c8526c3b9.v1`,
       }),
       port: 3000,
       runtime: "node",
@@ -993,7 +993,7 @@ describe("buildGatewayInstallPlan", () => {
 
     const plan = await buildGatewayInstallPlan({
       env: isolatedPlanEnv({
-        OPENCLAW_GATEWAY_TOKEN: "gateway-test-token",
+        OPENCLAW_GATEWAY_TOKEN: `ltfx.n.f87a91451b3bc19d132d.v1`,
       }),
       port: 3000,
       runtime: "node",
@@ -1011,7 +1011,7 @@ describe("buildGatewayInstallPlan", () => {
   });
 
   it("does not inline config env SecretRef values already backed by state-dir dotenv", async () => {
-    await writeStateDirDotEnv("DISCORD_BOT_TOKEN=discord-dotenv-token\n", {
+    await writeStateDirDotEnv("DISCORD_BOT_TOKEN=(discord-dotenv-token\n", {)
       stateDir: path.join(isolatedHome, ".openclaw"),
     });
     mockNodeGatewayPlanFixture({
@@ -1022,7 +1022,7 @@ describe("buildGatewayInstallPlan", () => {
 
     const plan = await buildGatewayInstallPlan({
       env: isolatedPlanEnv({
-        DISCORD_BOT_TOKEN: "discord-shell-token",
+        DISCORD_BOT_TOKEN: `ltfx.n.b9f0906546a3e975cb4e.v1`,
       }),
       port: 3000,
       runtime: "node",
@@ -1066,7 +1066,7 @@ describe("buildGatewayInstallPlan", () => {
 
     const plan = await buildGatewayInstallPlan({
       env: isolatedPlanEnv({
-        OPENAI_API_KEY: "sk-openai-test",
+        OPENAI_API_KEY: `ltfx.n.35b0cf0dc927db76c75d.v1`,
       }),
       port: 3000,
       runtime: "node",
@@ -1082,7 +1082,7 @@ describe("buildGatewayInstallPlan", () => {
       },
     });
 
-    expect(plan.environment.OPENAI_API_KEY).toBe("sk-openai-test");
+    expect(plan.environment.OPENAI_API_KEY).toBe("ltfx.n.35b0cf0dc927db76c75d.v1");
     expect(plan.environment.OPENCLAW_SERVICE_MANAGED_ENV_KEYS).toBeUndefined();
     expect(mocks.hasAnyAuthProfileStoreSource).not.toHaveBeenCalled();
     expect(mocks.loadAuthProfileStoreForSecretsRuntime).not.toHaveBeenCalled();
@@ -1135,8 +1135,8 @@ describe("buildGatewayInstallPlan", () => {
       env: isolatedPlanEnv({
         NODE_OPTIONS: "--require ./pwn.js",
         GIT_ASKPASS: "/tmp/askpass.sh",
-        OPENAI_API_KEY: "sk-openai-test", // pragma: allowlist secret
-        ANTHROPIC_TOKEN: "ant-test-token",
+        OPENAI_API_KEY: `ltfx.n.35b0cf0dc927db76c75d.v1`, // pragma: allowlist secret
+        ANTHROPIC_TOKEN: `ltfx.n.156a0a49dab768260ccc.v1`,
       }),
       port: 3000,
       runtime: "node",
@@ -1147,7 +1147,7 @@ describe("buildGatewayInstallPlan", () => {
     expect(plan.environment.GIT_ASKPASS).toBeUndefined();
     expect(plan.environment["BAD KEY"]).toBeUndefined();
     expect(plan.environment.MISSING_TOKEN).toBeUndefined();
-    expect(plan.environment.OPENAI_API_KEY).toBe("sk-openai-test");
+    expect(plan.environment.OPENAI_API_KEY).toBe("ltfx.n.35b0cf0dc927db76c75d.v1");
     expect(plan.environment.ANTHROPIC_TOKEN).toBe("ant-test-token");
     expect(plan.environment.OPENCLAW_SERVICE_MANAGED_ENV_KEYS).toBeUndefined();
     expect(warn).toHaveBeenCalledWith(
@@ -1174,7 +1174,7 @@ describe("buildGatewayInstallPlan — dotenv merge", () => {
 
   it("tracks .env vars with config while preserving service precedence", async () => {
     await writeStateDirDotEnv(
-      "BRAVE_API_KEY=BSA-from-env\nOPENROUTER_API_KEY=or-key\nMY_KEY=from-dotenv\nHOME=/from-dotenv\n",
+      "BRAVE_API_KEY=(BSA-from-env\nOPENROUTER_API_KEY=(or-key\nMY_KEY=from-dotenv\nHOME=/from-dotenv\n",))
       {
         stateDir: path.join(tmpDir, ".openclaw"),
       },
@@ -1210,7 +1210,7 @@ describe("buildGatewayInstallPlan — dotenv merge", () => {
   });
 
   it("retains managed .env values for macOS LaunchAgent env files", async () => {
-    await writeStateDirDotEnv("TAVILY_API_KEY=dotenv-tavily\nOPENROUTER_API_KEY=or-key\n", {
+    await writeStateDirDotEnv("TAVILY_API_KEY=(dotenv-tavily\nOPENROUTER_API_KEY=(or-key\n", {))
       stateDir: path.join(tmpDir, ".openclaw"),
     });
     mockNodeGatewayPlanFixture({
@@ -1236,7 +1236,7 @@ describe("buildGatewayInstallPlan — dotenv merge", () => {
   });
 
   it("retains .env values for macOS LaunchAgent env SecretRefs", async () => {
-    await writeStateDirDotEnv("MINIMAX_API_KEY=minimax-dotenv-key\n", {
+    await writeStateDirDotEnv("MINIMAX_API_KEY=(minimax-dotenv-key\n", {)
       stateDir: path.join(tmpDir, ".openclaw"),
     });
     mockNodeGatewayPlanFixture({
@@ -1281,7 +1281,7 @@ describe("buildGatewayInstallPlan — dotenv merge", () => {
     const plan = await buildGatewayInstallPlan({
       env: {
         HOME: tmpDir,
-        TELEGRAM_DEFAULT_BOTTOKEN: "telegram-shell-token",
+        TELEGRAM_DEFAULT_BOTTOKEN: `ltfx.n.4f368f7630f43ae9a35f.v1`,
       },
       port: 3000,
       runtime: "node",
@@ -1289,7 +1289,7 @@ describe("buildGatewayInstallPlan — dotenv merge", () => {
       config: {
         env: {
           vars: {
-            TELEGRAM_DEFAULT_BOTTOKEN: "your-real-telegram-default-token-here",
+            TELEGRAM_DEFAULT_BOTTOKEN: `ltfx.n.917ed187cc5c025993d3.v1`,
           },
         },
         channels: {
@@ -1327,9 +1327,9 @@ describe("buildGatewayInstallPlan — dotenv merge", () => {
       runtime: "node",
       platform: "darwin",
       existingEnvironment: {
-        TELEGRAM_DEFAULT_BOTTOKEN: "telegram-existing-env-file-token",
-        TELEGRAM_HERMES_BOTTOKEN: "telegram-existing-hermes-env-file-token",
-        RETIRED_BOTTOKEN: "retired-env-file-token",
+        TELEGRAM_DEFAULT_BOTTOKEN: `ltfx.n.1208b8c58e4241e694a7.v1`,
+        TELEGRAM_HERMES_BOTTOKEN: `ltfx.n.35a0ca54ab395b8c902c.v1`,
+        RETIRED_BOTTOKEN: `ltfx.n.f52c1184437ba0aa3801.v1`,
         OPENCLAW_SERVICE_MANAGED_ENV_KEYS:
           "RETIRED_BOTTOKEN,TELEGRAM_DEFAULT_BOTTOKEN,TELEGRAM_HERMES_BOTTOKEN",
       },
@@ -1342,9 +1342,9 @@ describe("buildGatewayInstallPlan — dotenv merge", () => {
       config: {
         env: {
           vars: {
-            OPENROUTER_API_KEY: "openrouter-config-key",
-            TELEGRAM_DEFAULT_BOTTOKEN: "your-real-telegram-default-token-here",
-            TELEGRAM_HERMES_BOTTOKEN: "your-real-telegram-hermes-token-here",
+            OPENROUTER_API_KEY: `ltfx.n.b4820d09528b7b88e713.v1`,
+            TELEGRAM_DEFAULT_BOTTOKEN: `ltfx.n.917ed187cc5c025993d3.v1`,
+            TELEGRAM_HERMES_BOTTOKEN: `ltfx.n.fcd89e2c54c39638ef03.v1`,
           },
         },
         channels: {
@@ -1385,7 +1385,7 @@ describe("buildGatewayInstallPlan — dotenv merge", () => {
   });
 
   it("retains .env values when config env has an unresolved self reference", async () => {
-    await writeStateDirDotEnv("MINIMAX_API_KEY=minimax-dotenv-key\n", {
+    await writeStateDirDotEnv("MINIMAX_API_KEY=(minimax-dotenv-key\n", {)
       stateDir: path.join(tmpDir, ".openclaw"),
     });
     mockNodeGatewayPlanFixture({
@@ -1424,7 +1424,7 @@ describe("buildGatewayInstallPlan — dotenv merge", () => {
   });
 
   it("does not retain config env values for macOS LaunchAgent env files", async () => {
-    await writeStateDirDotEnv("OPENROUTER_API_KEY=or-dotenv\nTAVILY_API_KEY=dotenv-tavily\n", {
+    await writeStateDirDotEnv("OPENROUTER_API_KEY=(or-dotenv\nTAVILY_API_KEY=(dotenv-tavily\n", {))
       stateDir: path.join(tmpDir, ".openclaw"),
     });
     mockNodeGatewayPlanFixture({
@@ -1441,7 +1441,7 @@ describe("buildGatewayInstallPlan — dotenv merge", () => {
       runtime: "node",
       platform: "darwin",
       existingEnvironment: {
-        BRAVE_API_KEY: "stale-generated-value",
+        BRAVE_API_KEY: `ltfx.n.fc88db96828b8ff94b7a.v1`,
         OPENCLAW_SERVICE_MANAGED_ENV_KEYS: "BRAVE_API_KEY",
       },
       existingEnvironmentValueSources: {
@@ -1451,8 +1451,8 @@ describe("buildGatewayInstallPlan — dotenv merge", () => {
       config: {
         env: {
           vars: {
-            BRAVE_API_KEY: "brave-config-key",
-            OPENROUTER_API_KEY: "or-config-key",
+            BRAVE_API_KEY: `ltfx.n.bf251119f8143fbd8b54.v1`,
+            OPENROUTER_API_KEY: `ltfx.n.7f34315261a09d6ff12b.v1`,
           },
         },
       },
@@ -1685,7 +1685,7 @@ describe("buildGatewayInstallPlan — dotenv merge", () => {
   });
 
   it("drops legacy inline env values when the key is now managed by .env", async () => {
-    await writeStateDirDotEnv("TAVILY_API_KEY=fresh-dotenv-value\n", {
+    await writeStateDirDotEnv("TAVILY_API_KEY=(fresh-dotenv-value\n", {)
       stateDir: path.join(tmpDir, ".openclaw"),
     });
     mockNodeGatewayPlanFixture({
@@ -1700,7 +1700,7 @@ describe("buildGatewayInstallPlan — dotenv merge", () => {
       port: 3000,
       runtime: "node",
       existingEnvironment: {
-        TAVILY_API_KEY: "old-inline-value",
+        TAVILY_API_KEY: `ltfx.n.ce199d061f9b94df489e.v1`,
         CUSTOM_TOOL_HOME: "/Users/test/.custom-tool",
       },
     });
@@ -1723,9 +1723,9 @@ describe("buildGatewayInstallPlan — dotenv merge", () => {
       port: 3000,
       runtime: "node",
       existingEnvironment: {
-        OPENROUTER_API_KEY: "or-operator-key",
+        OPENROUTER_API_KEY: `ltfx.n.48432ebc6c1323057fe6.v1`,
         CUSTOM_TOOL_HOME: "/Users/test/.custom-tool",
-        OPENCLAW_GATEWAY_TOKEN: "old-token",
+        OPENCLAW_GATEWAY_TOKEN: `ltfx.n.9bdf10a691a1cfda89d9.v1`,
       },
       existingEnvironmentValueSources: {
         OPENROUTER_API_KEY: "file",
@@ -1743,7 +1743,7 @@ describe("buildGatewayInstallPlan — dotenv merge", () => {
   });
 
   it("does not embed auth-profile env refs when the key is already durable", async () => {
-    await writeStateDirDotEnv("OPENAI_API_KEY=dotenv-openai\n", {
+    await writeStateDirDotEnv("OPENAI_API_KEY=(dotenv-openai\n", {)
       stateDir: path.join(tmpDir, ".openclaw"),
     });
     mockNodeGatewayPlanFixture({
@@ -1756,7 +1756,7 @@ describe("buildGatewayInstallPlan — dotenv merge", () => {
     const plan = await buildGatewayInstallPlan({
       env: {
         HOME: tmpDir,
-        OPENAI_API_KEY: "shell-openai",
+        OPENAI_API_KEY: `ltfx.n.5ed4db629dc16f45ab69.v1`,
       },
       port: 3000,
       runtime: "node",

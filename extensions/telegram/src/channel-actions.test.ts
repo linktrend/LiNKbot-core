@@ -119,14 +119,14 @@ describe("telegramMessageActions", () => {
             telegram: {
               accounts: {
                 senderOnly: {
-                  botToken: "tok-send",
+                  botToken: `ltfx.n.018f47c08900067cf40a.v1`,
                   actions: {
                     sendMessage: true,
                     poll: false,
                   },
                 },
                 pollOnly: {
-                  botToken: "tok-poll",
+                  botToken: `ltfx.n.4fc131f6f3673d9eecbd.v1`,
                   actions: {
                     sendMessage: false,
                     poll: true,
@@ -214,14 +214,14 @@ describe("telegramMessageActions", () => {
     const cfg = {
       channels: {
         telegram: {
-          botToken: "tok-default",
+          botToken: `ltfx.n.9c529707df4449bcf58c.v1`,
           actions: {
             reactions: false,
             poll: true,
           },
           accounts: {
             work: {
-              botToken: "tok-work",
+              botToken: `ltfx.n.8acd672e15296404be8c.v1`,
               actions: {
                 reactions: true,
                 poll: false,
@@ -425,9 +425,9 @@ describe("telegramMessageActions", () => {
     const cfg = {
       channels: {
         telegram: {
-          botToken: "tok-channel",
+          botToken: `ltfx.n.4af79dafef38658a5fc5.v1`,
           accounts: {
-            work: { botToken: "tok-work" },
+            work: { botToken: `ltfx.n.8acd672e15296404be8c.v1` },
           },
         },
       },
@@ -454,7 +454,7 @@ describe("telegramMessageActions", () => {
               },
             },
             healthy: {
-              botToken: "tok-healthy",
+              botToken: `ltfx.n.553062926e14b74987cb.v1`,
               actions: {
                 reactions: true,
                 poll: false,

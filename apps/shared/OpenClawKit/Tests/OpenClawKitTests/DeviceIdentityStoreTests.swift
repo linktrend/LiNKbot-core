@@ -55,15 +55,15 @@ struct DeviceIdentityStoreTests {
         let compatibleEntry: DeviceAuthEntry = DeviceAuthStore.storeToken(
             deviceId: "unwritable-device",
             role: "node",
-            token: "must-not-be-acknowledged")
+            token: "${ltfx.n.efcb27966979e9fd984d.v1}")
         let stored = DeviceAuthStore.storeTokenResult(
             deviceId: "unwritable-device",
             role: "node",
-            token: "must-not-be-acknowledged")
+            token: "${ltfx.n.efcb27966979e9fd984d.v1}")
         let publicWritePersisted = DeviceAuthStore.storeTokenPersisted(
             deviceId: "unwritable-device",
             role: "node",
-            token: "also-must-not-be-acknowledged")
+            token: "${ltfx.n.fd955f3a312ebfd5749c.v1}")
         let durableIdentity = DeviceIdentityStore.loadOrCreatePersisted(profile: .primary)
 
         #expect(compatibleEntry.token == "must-not-be-acknowledged")
@@ -77,7 +77,7 @@ struct DeviceIdentityStoreTests {
     func `device auth entry round-trips epoch milliseconds beyond Int32`() throws {
         let epochMilliseconds: Int64 = 1_800_000_000_000
         let entry = DeviceAuthEntry(
-            token: "device-token",
+            token: "${ltfx.n.73fff793651a92729a85.v1}",
             role: "node",
             scopes: [],
             updatedAtMs: epochMilliseconds)
@@ -113,18 +113,18 @@ struct DeviceIdentityStoreTests {
     @Test(.stateDirectoryIsolated)
     func `device auth tokens are isolated by gateway owner`() {
         let deviceID = "test-device"
-        _ = DeviceAuthStore.storeToken(deviceId: deviceID, role: "node", token: "legacy-token")
+        _ = DeviceAuthStore.storeToken(deviceId: deviceID, role: "node", token: "${ltfx.n.8b7d507cddc8d8950f28.v1}")
         #expect(DeviceAuthStore.loadToken(deviceId: deviceID, role: "node", gatewayID: "gateway-a") == nil)
 
         _ = DeviceAuthStore.storeToken(
             deviceId: deviceID,
             role: "node",
-            token: "gateway-a-token",
+            token: "${ltfx.n.ad74f54edb034c574d3c.v1}",
             gatewayID: "gateway-a")
         _ = DeviceAuthStore.storeToken(
             deviceId: deviceID,
             role: "node",
-            token: "gateway-b-token",
+            token: "${ltfx.n.9b0fa21ef4e1de480891.v1}",
             gatewayID: "gateway-b")
 
         #expect(DeviceAuthStore.loadToken(deviceId: deviceID, role: "node")?.token == "legacy-token")
@@ -159,7 +159,7 @@ struct DeviceIdentityStoreTests {
         #expect(!DeviceAuthStore.storeTokenPersisted(
             deviceId: deviceID,
             role: "node",
-            token: "must-not-become-unscoped",
+            token: "${ltfx.n.25959c3dcb9bff44d78f.v1}",
             gatewayID: ""))
         #expect(DeviceAuthStore.loadToken(deviceId: deviceID, role: "node") == nil)
 
@@ -222,7 +222,7 @@ struct DeviceIdentityStoreTests {
             "deviceId": deviceID,
             "tokens": [
                 "\(composedOwner)\u{1F}node": [
-                    "token": "legacy-composed-token",
+                    "token": "${ltfx.n.5a6ad6d72cf2b1d755b1.v1}",
                     "role": "node",
                     "scopes": [],
                     "updatedAtMs": 1,
@@ -239,7 +239,7 @@ struct DeviceIdentityStoreTests {
         #expect(DeviceAuthStore.storeTokenPersisted(
             deviceId: deviceID,
             role: "node",
-            token: "new-decomposed-token",
+            token: "${ltfx.n.39e5a067471cde637720.v1}",
             gatewayID: decomposedOwner))
         #expect(DeviceAuthStore.loadToken(
             deviceId: deviceID,
@@ -257,11 +257,11 @@ struct DeviceIdentityStoreTests {
         _ = DeviceAuthStore.storeToken(
             deviceId: deviceID,
             role: "node",
-            token: "legacy-node-token")
+            token: "${ltfx.n.2676f7ba5b94ac142c79.v1}")
         _ = DeviceAuthStore.storeToken(
             deviceId: deviceID,
             role: "operator",
-            token: "legacy-operator-token")
+            token: "${ltfx.n.0a7beca87ca7f9f661bb.v1}")
 
         #expect(DeviceAuthStore.migrateUnscopedToken(
             deviceId: deviceID,
@@ -291,7 +291,7 @@ struct DeviceIdentityStoreTests {
         _ = DeviceAuthStore.storeToken(
             deviceId: deviceID,
             role: "node",
-            token: "ambiguous-legacy-token")
+            token: "${ltfx.n.e280609a683c0ebebfcc.v1}")
         #expect(DeviceAuthStore.discardUnscopedTokens(deviceId: deviceID) == 2)
         #expect(DeviceAuthStore.loadToken(deviceId: deviceID, role: "node") == nil)
         #expect(DeviceAuthStore.loadToken(
@@ -380,16 +380,16 @@ struct DeviceIdentityStoreTests {
         _ = DeviceAuthStore.storeToken(
             deviceId: primaryIdentity.deviceId,
             role: "node",
-            token: "primary-token")
+            token: "${ltfx.n.130aff3c5e27db209cfc.v1}")
         _ = DeviceAuthStore.storeToken(
             deviceId: nodeIdentity.deviceId,
             role: "node",
-            token: "node-token",
+            token: "${ltfx.n.1e16c337973f9ad03ebb.v1}",
             profile: .node)
         _ = DeviceAuthStore.storeToken(
             deviceId: shareIdentity.deviceId,
             role: "node",
-            token: "share-token",
+            token: "${ltfx.n.44f6dec62a26f139f0d0.v1}",
             profile: .shareExtension)
 
         // getenv, not ProcessInfo: the trait pins OPENCLAW_STATE_DIR via setenv and
@@ -932,7 +932,7 @@ struct DeviceIdentityStoreTests {
             contents: Self.nodePEMIdentityJSON())
         let sourceAuth = """
         {"version":1,"deviceId":"\(Self
-            .fixtureDeviceID)","tokens":{"node":{"token":"source-token","role":"node","scopes":[],"updatedAtMs":100}}}
+            .fixtureDeviceID)","tokens":{"node":{"token":"${ltfx.n.29a47556ff0f216b8a51.v1}","role":"node","scopes":[],"updatedAtMs":100}}}
         """
         try sourceAuth.write(to: source.authURL, atomically: true, encoding: .utf8)
         let destination = tempDir.appendingPathComponent("legacy", isDirectory: true)
@@ -968,7 +968,7 @@ struct DeviceIdentityStoreTests {
             contents: Self.nodePEMIdentityJSON())
         let sourceAuth = """
         {"version":1,"deviceId":"\(Self
-            .fixtureDeviceID)","tokens":{"legacy":{"token":"source-token","role":"node","scopes":["write","read"],"updatedAtMs":100}}}
+            .fixtureDeviceID)","tokens":{"legacy":{"token":"${ltfx.n.29a47556ff0f216b8a51.v1}","role":"node","scopes":["write","read"],"updatedAtMs":100}}}
         """
         try sourceAuth.write(to: source.authURL, atomically: true, encoding: .utf8)
         let destination = tempDir.appendingPathComponent("legacy", isDirectory: true)
@@ -978,7 +978,7 @@ struct DeviceIdentityStoreTests {
             withIntermediateDirectories: true)
         let destinationAuth = """
         {"version":1,"deviceId":"\(Self
-            .fixtureDeviceID)","tokens":{"node":{"token":"source-token","role":"node","scopes":["read","write"],"updatedAtMs":100}}}
+            .fixtureDeviceID)","tokens":{"node":{"token":"${ltfx.n.29a47556ff0f216b8a51.v1}","role":"node","scopes":["read","write"],"updatedAtMs":100}}}
         """
         try destinationAuth.write(to: destinationAuthURL, atomically: true, encoding: .utf8)
 

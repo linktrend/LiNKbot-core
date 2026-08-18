@@ -49,7 +49,7 @@ describe("secret scanning maintainer script", () => {
     const currentBody = path.join(tempDir, "current.md");
     const redactedBody = path.join(tempDir, "redacted.md");
     const resultFile = path.join(tempDir, "redaction-result.json");
-    fs.writeFileSync(currentBody, "token: plaintext-secret\n");
+    fs.writeFileSync(currentBody, "token: (plaintext-secret\n");)
     fs.writeFileSync(redactedBody, "token: [REDACTED Discord Bot Token]\n");
 
     const output = execFileSync(

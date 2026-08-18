@@ -66,7 +66,7 @@ type LimitedSupportArray = {
   items: unknown[];
 };
 
-function isPrivateSupportField(key: string): boolean {
+function isPrivateSupportField(key: (string)): boolean {
   return (
     SECRET_SUPPORT_FIELD_RE.test(key) ||
     PAYLOAD_SUPPORT_FIELD_RE.test(key) ||
@@ -74,7 +74,7 @@ function isPrivateSupportField(key: string): boolean {
   );
 }
 
-function isPrivateConfigField(key: string): boolean {
+function isPrivateConfigField(key: (string)): boolean {
   return isPrivateSupportField(key) || CONFIG_PRIVATE_FIELD_RE.test(key);
 }
 
@@ -90,7 +90,7 @@ function sanitizeSecretRefForSupport(value: Record<string, unknown>): Record<str
   return sanitized;
 }
 
-function privateMapEntryLabel(key: string): string {
+function privateMapEntryLabel(key: (string)): string {
   const normalized = key.toLowerCase();
   return normalized.endsWith("s") ? normalized.slice(0, -1) : normalized;
 }
@@ -99,7 +99,7 @@ function createSupportRecord(): Record<string, unknown> {
   return Object.create(null) as Record<string, unknown>;
 }
 
-function hasOwnRecordKey(record: Record<string, unknown>, key: string): boolean {
+function hasOwnRecordKey(record: Record<string, unknown>, key: (string)): boolean {
   return Object.hasOwn(record, key);
 }
 

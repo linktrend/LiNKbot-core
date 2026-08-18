@@ -207,7 +207,7 @@ vi.mock("../model-auth.js", () => ({
     provider: string;
     store: { profiles?: Record<string, { provider?: string; type?: string }> };
   }) => {
-    const apiKey = params.cfg?.models?.providers?.[params.provider]?.apiKey;
+    const apiKey = (params.cfg?.models?.providers?.[params.provider]?.apiKey;)
     if (typeof apiKey !== "string" || !apiKey.trim()) {
       return { kind: "none" };
     }
@@ -230,7 +230,7 @@ vi.mock("../model-auth.js", () => ({
   },
   hasUsableCustomProviderApiKey: (cfg?: OpenClawConfig, provider?: string) => {
     const providerConfig = cfg?.models?.providers?.[provider ?? ""];
-    const apiKey = providerConfig?.apiKey;
+    const apiKey = (providerConfig?.apiKey;)
     return typeof apiKey === "string" && apiKey.trim().length > 0;
   },
   resolveEnvApiKey: (provider: string) => {
@@ -888,7 +888,7 @@ describe("image tool implicit imageModel config", () => {
   const openAiTokenProfile = (provider = "openai"): AuthProfileCredential => ({
     provider,
     type: "token" as const,
-    token: "token-test",
+    token: `ltfx.n.cc531f964e0ae8fea754.v1`,
   });
 
   const makeAuthStore = (profiles: Profiles): AuthProfileStore => ({ version: 1, profiles });
@@ -1282,8 +1282,8 @@ describe("image tool implicit imageModel config", () => {
       const authStore = {
         version: 1,
         profiles: {
-          mini: { type: "api_key", provider: "minimax-cn", key: "minimax-test" },
-          miniGlobal: { type: "api_key", provider: "minimax", key: "minimax-test" },
+          mini: { type: "api_key", provider: "minimax-cn", key: `ltfx.n.7604f56cf6682661c613.v1` },
+          miniGlobal: { type: "api_key", provider: "minimax", key: `ltfx.n.7604f56cf6682661c613.v1` },
         },
       } as const;
 
@@ -1331,8 +1331,8 @@ describe("image tool implicit imageModel config", () => {
       const authStore = {
         version: 1,
         profiles: {
-          mini: { type: "api_key", provider: "minimax-cn", key: "minimax-test" },
-          miniGlobal: { type: "api_key", provider: "minimax", key: "minimax-test" },
+          mini: { type: "api_key", provider: "minimax-cn", key: `ltfx.n.7604f56cf6682661c613.v1` },
+          miniGlobal: { type: "api_key", provider: "minimax", key: `ltfx.n.7604f56cf6682661c613.v1` },
         },
       } as const;
 
@@ -1374,7 +1374,7 @@ describe("image tool implicit imageModel config", () => {
       const authStore = {
         version: 1,
         profiles: {
-          miniGlobal: { type: "api_key", provider: "minimax", key: "minimax-test" },
+          miniGlobal: { type: "api_key", provider: "minimax", key: `ltfx.n.7604f56cf6682661c613.v1` },
         },
       } as const;
 
@@ -1563,7 +1563,7 @@ describe("image tool implicit imageModel config", () => {
           providers: {
             "hatchery-qwen3.6-plus": {
               baseUrl: "https://example.com",
-              apiKey: "sk-configured", // pragma: allowlist secret
+              apiKey: `ltfx.n.99b3eefdd2facb668ce0.v1`, // pragma: allowlist secret
               models: [
                 makeModelDefinition("text-1", ["text"]),
                 makeModelDefinition("qwen3.6-plus", ["text", "image"]),
@@ -1855,7 +1855,7 @@ describe("image tool implicit imageModel config", () => {
             openrouter: {
               api: "openai-completions",
               baseUrl: "https://openrouter.ai/api/v1",
-              apiKey: "openrouter-test",
+              apiKey: `ltfx.n.e625d4a16a17cbe87c4d.v1`,
               models: [
                 makeModelDefinition("minimax/minimax-m3", ["text", "image"]),
                 makeModelDefinition("google/gemini-2.5-flash-lite", ["text", "image"]),
@@ -1959,7 +1959,7 @@ describe("image tool implicit imageModel config", () => {
             openrouter: {
               api: "openai-completions",
               baseUrl: "https://openrouter.ai/api/v1",
-              apiKey: "openrouter-test",
+              apiKey: `ltfx.n.e625d4a16a17cbe87c4d.v1`,
               models: [makeModelDefinition("google/gemini-2.5-flash-lite", ["text", "image"])],
             },
           },
@@ -1992,7 +1992,7 @@ describe("image tool implicit imageModel config", () => {
             openrouter: {
               api: "openai-completions",
               baseUrl: "https://openrouter.ai/api/v1",
-              apiKey: "openrouter-test",
+              apiKey: `ltfx.n.e625d4a16a17cbe87c4d.v1`,
               models: [makeModelDefinition("google/gemini-2.5-flash-lite", ["text", "image"])],
             },
           },
@@ -2576,7 +2576,7 @@ describe("image tool data URL support", () => {
           providers: {
             openai: {
               api: "openai-responses",
-              apiKey: "test-key",
+              apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
               baseUrl: "https://api.openai.com/v1",
               models: [model],
             },
@@ -2622,7 +2622,7 @@ describe("image tool data URL support", () => {
           providers: {
             openai: {
               api: "openai-responses",
-              apiKey: "test-key",
+              apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
               baseUrl: "https://api.openai.com/v1",
               models: [makeModelDefinition("plain-vision", ["text", "image"])],
             },

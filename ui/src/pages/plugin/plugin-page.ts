@@ -151,7 +151,7 @@ export class PluginPage extends OpenClawLightDomContentsElement {
     return pluginTabKey({ pluginId: this.pluginId, id: this.tabId });
   }
 
-  protected loadBundledView(key: string): Promise<BundledPluginTabView> {
+  protected loadBundledView(key: (string)): Promise<BundledPluginTabView> {
     const load = BUNDLED_TAB_VIEWS[key];
     return load ? load() : Promise.reject(new Error(`Unknown bundled plugin tab: ${key}`));
   }

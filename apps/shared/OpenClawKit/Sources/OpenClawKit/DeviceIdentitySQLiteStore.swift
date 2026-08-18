@@ -155,7 +155,7 @@ enum DeviceIdentitySQLiteStore {
         let database = try OpenClawNativeStateSQLite(databaseURL: databaseURL)
         let authoritative = try database.withImmediateTransaction {
             try database.ensureCanonicalTable(.deviceIdentities)
-            let existing = try self.readIdentity(database, key: profile.rawValue)
+            let existing = try self.readIdentity(database, key: (profile.rawValue))
             let selected: DeviceIdentityMaterial
             if let existing {
                 if let migrated = claims.first?.material,
@@ -180,7 +180,7 @@ enum DeviceIdentitySQLiteStore {
 
             // The row reread under the write transaction is authoritative. Never return generated
             // or migrated key material unless SQLite reports the exact canonical receipt.
-            guard let authoritative = try self.readIdentity(database, key: profile.rawValue),
+            guard let authoritative = try self.readIdentity(database, key: (profile.rawValue),)
                   authoritative == selected
             else {
                 throw DeviceIdentityStore.storageError("SQLite did not preserve the authoritative device identity")
@@ -193,7 +193,7 @@ enum DeviceIdentitySQLiteStore {
             try afterLegacyCommit?()
             // The committed reread is the destructive-cleanup receipt. Doctor cannot alter the
             // row while the native claim remains visible to every Node identity entry point.
-            guard let committedIdentity = try self.readIdentity(database, key: profile.rawValue),
+            guard let committedIdentity = try self.readIdentity(database, key: (profile.rawValue),)
                   committedIdentity == authoritative
             else {
                 throw DeviceIdentityStore.storageError(

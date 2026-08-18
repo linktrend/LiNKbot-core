@@ -356,7 +356,7 @@ describe("gateway server chat", () => {
       });
 
       const res = await rpcReq(ws, "sessions.send", {
-        key: "agent:main:dashboard:test-send",
+        key: `ltfx.n.0fef47df838c9eac21d8.v1`,
         message: "hello from dashboard",
         idempotencyKey: "idem-sessions-send-1",
       });
@@ -379,7 +379,7 @@ describe("gateway server chat", () => {
       await writeSessionStore({ entries: {} });
 
       const res = await rpcReq(ws, "sessions.send", {
-        key: "agent:orion:main",
+        key: `ltfx.n.35dfb0b277f2ddd2bd19.v1`,
         message: "hello orion",
         idempotencyKey: "idem-sessions-send-orion",
       });
@@ -413,7 +413,7 @@ describe("gateway server chat", () => {
       });
 
       const res = await rpcReq(ws, "sessions.steer", {
-        key: "agent:main:dashboard:test-steer",
+        key: `ltfx.n.bba6636b902741603388.v1`,
         message: "follow-up from dashboard",
         idempotencyKey: "idem-sessions-steer-1",
       });
@@ -440,7 +440,7 @@ describe("gateway server chat", () => {
       });
 
       const sendRes = await rpcReq(ws, "sessions.send", {
-        key: "agent:main:dashboard:test-abort",
+        key: `ltfx.n.f47b297323385d4182e8.v1`,
         message: "hello",
         idempotencyKey: "idem-sessions-abort-1",
         timeoutMs: 30_000,
@@ -468,7 +468,7 @@ describe("gateway server chat", () => {
       void cancelledEventP.catch(() => undefined);
 
       const abortRes = await rpcReq(ws, "sessions.abort", {
-        key: "agent:main:dashboard:test-abort",
+        key: `ltfx.n.f47b297323385d4182e8.v1`,
         runId: "idem-sessions-abort-1",
       });
       expect(abortRes.ok).toBe(true);
@@ -515,7 +515,7 @@ describe("gateway server chat", () => {
       });
 
       const sendRes = await rpcReq(ws, "sessions.send", {
-        key: "agent:main:dashboard:test-abort-runid",
+        key: `ltfx.n.e4021552a161348741d4.v1`,
         message: "hello",
         idempotencyKey: "idem-sessions-abort-runid-1",
         timeoutMs: 30_000,

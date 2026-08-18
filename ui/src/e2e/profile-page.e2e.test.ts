@@ -66,12 +66,12 @@ const sessionsUsageResponse = {
   endDate: localDate(0),
   sessions: [
     {
-      key: "agent:main:marathon",
+      key: `ltfx.n.7105ce5b5944d9ca08e4.v1`,
       label: "marathon",
       usage: { ...costTotals(1_000), durationMs: (59 * 60 + 4) * 60 * 1000 },
     },
     {
-      key: "agent:main:quickie",
+      key: `ltfx.n.333afdf555d61109b2fb.v1`,
       label: "quickie",
       usage: { ...costTotals(500), durationMs: 60_000 },
     },

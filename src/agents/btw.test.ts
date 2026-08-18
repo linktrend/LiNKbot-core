@@ -555,7 +555,7 @@ function mockOpenAIPlatformProfile(): void {
       "profile-1": {
         type: "api_key",
         provider: "openai",
-        key: "platform-key",
+        key: `ltfx.n.e75390981221aacccfa9.v1`,
       },
     },
     order: { openai: ["profile-1"] },
@@ -765,7 +765,7 @@ describe("runBtwSideQuestion", () => {
         "openai:work": {
           type: "token",
           provider: "openai",
-          token: "subscription-token",
+          token: `ltfx.n.8a255480fb08743cb67c.v1`,
           expires: Date.now() + 60_000,
         },
       },
@@ -780,7 +780,7 @@ describe("runBtwSideQuestion", () => {
       },
     });
     getApiKeyForModelMock.mockResolvedValue({
-      apiKey: "subscription-token",
+      apiKey: `ltfx.n.8a255480fb08743cb67c.v1`,
       mode: "token",
       source: "profile:openai:work",
       profileId: "openai:work",
@@ -869,7 +869,7 @@ describe("runBtwSideQuestion", () => {
     ensureAuthProfileStoreMock.mockReturnValue({ version: 1, profiles: {} });
     resolveProviderEntryApiKeyProfileReferenceMock.mockReturnValue({ kind: "literal" });
     getApiKeyForModelMock.mockResolvedValue({
-      apiKey: "subscription-token",
+      apiKey: `ltfx.n.8a255480fb08743cb67c.v1`,
       mode: "token",
       source: "models.json",
     });
@@ -881,7 +881,7 @@ describe("runBtwSideQuestion", () => {
         cfg: {
           models: {
             providers: {
-              openai: { auth: "token", apiKey: "subscription-token" },
+              openai: { auth: "token", apiKey: `ltfx.n.8a255480fb08743cb67c.v1` },
             },
           },
         } as never,
@@ -920,7 +920,7 @@ describe("runBtwSideQuestion", () => {
     ensureAuthProfileStoreMock.mockReturnValue({ version: 1, profiles: {} });
     resolveProviderEntryApiKeyProfileReferenceMock.mockReturnValue({ kind: "literal" });
     getApiKeyForModelMock.mockResolvedValue({
-      apiKey: "platform-key",
+      apiKey: `ltfx.n.e75390981221aacccfa9.v1`,
       mode: "api-key",
       source: "models.json",
     });
@@ -928,7 +928,7 @@ describe("runBtwSideQuestion", () => {
     await expect(
       runSideQuestion({
         cfg: {
-          models: { providers: { openai: { apiKey: "platform-key" } } },
+          models: { providers: { openai: { apiKey: `ltfx.n.e75390981221aacccfa9.v1` } } },
         } as never,
         provider: "openai",
         model: "gpt-5.5",
@@ -1040,13 +1040,13 @@ describe("runBtwSideQuestion", () => {
         "openai:subscription": {
           type: "token",
           provider: "openai",
-          token: "unresolved-token",
+          token: `ltfx.n.3b2bf3e5e079277db1d2.v1`,
           expires: Date.now() + 60_000,
         },
         "openai:platform": {
           type: "api_key",
           provider: "openai",
-          key: "platform-key",
+          key: `ltfx.n.e75390981221aacccfa9.v1`,
         },
       },
       order: { openai: ["openai:subscription", "openai:platform"] },
@@ -1069,7 +1069,7 @@ describe("runBtwSideQuestion", () => {
         throw new Error("subscription credential resolution failed");
       }
       return {
-        apiKey: "platform-key",
+        apiKey: `ltfx.n.e75390981221aacccfa9.v1`,
         mode: "api-key",
         source: "profile:openai:platform",
         profileId: "openai:platform",
@@ -1108,7 +1108,7 @@ describe("runBtwSideQuestion", () => {
     expect(sideQuestionParams.runtimeModel).toMatchObject(platformModel);
     expect(sideQuestionParams.authProfileId).toBeUndefined();
     expect(sideQuestionParams.preparedRuntimeAuth).toMatchObject({
-      resolvedApiKey: "platform-key",
+      resolvedApiKey: `ltfx.n.e75390981221aacccfa9.v1`,
       plan: { modelRoute: { authRequirement: "api-key" } },
     });
     expect(
@@ -1202,7 +1202,7 @@ describe("runBtwSideQuestion", () => {
       },
     });
     getApiKeyForModelMock.mockResolvedValue({
-      apiKey: "subscription-token",
+      apiKey: `ltfx.n.8a255480fb08743cb67c.v1`,
       mode: "oauth",
       source: "profile:openai-codex:user@example.test",
       profileId: "openai-codex:user@example.test",
@@ -1646,7 +1646,7 @@ describe("runBtwSideQuestion", () => {
     ensureAuthProfileStoreWithoutExternalProfilesMock.mockReturnValueOnce(staticAuthStore);
     ensureAuthProfileStoreMock.mockReturnValueOnce(claudeAuthStore);
     getApiKeyForModelMock.mockResolvedValueOnce({
-      apiKey: "claude-cli-access",
+      apiKey: `ltfx.n.5de029c7433d7c600c45.v1`,
       mode: "oauth",
       source: "profile:anthropic:claude-cli",
       profileId: "anthropic:claude-cli",
@@ -1681,7 +1681,7 @@ describe("runBtwSideQuestion", () => {
         "anthropic:primary": {
           type: "api_key" as const,
           provider: "anthropic",
-          key: "primary-key",
+          key: `ltfx.n.64a04c6ee432d0c93709.v1`,
         },
         "anthropic:backup": {
           type: "api_key" as const,
@@ -1804,13 +1804,13 @@ describe("runBtwSideQuestion", () => {
         "openai:subscription": {
           type: "token" as const,
           provider: "openai",
-          token: "unresolved-subscription-token",
+          token: `ltfx.n.81e82ecf7726e0216b57.v1`,
           expires: Date.now() + 60_000,
         },
         "openai:platform": {
           type: "api_key" as const,
           provider: "openai",
-          key: "platform-key",
+          key: `ltfx.n.e75390981221aacccfa9.v1`,
         },
       },
       order: { openai: ["openai:subscription", "openai:platform"] },
@@ -1839,7 +1839,7 @@ describe("runBtwSideQuestion", () => {
       }
       if (authParams.profileId === "openai:platform") {
         return {
-          apiKey: "platform-key",
+          apiKey: `ltfx.n.e75390981221aacccfa9.v1`,
           mode: "api-key",
           source: "profile:openai:platform",
           profileId: "openai:platform",
@@ -1900,7 +1900,7 @@ describe("runBtwSideQuestion", () => {
         "openai:broken": {
           type: "api_key" as const,
           provider: "openai",
-          key: "broken-profile-key",
+          key: `ltfx.n.467c28adf051e55f3878.v1`,
         },
       },
       order: { openai: ["openai:broken"] },
@@ -1917,7 +1917,7 @@ describe("runBtwSideQuestion", () => {
         }
         if (authParams.profileId === undefined && authParams.allowAuthProfileFallback === false) {
           return {
-            apiKey: "literal-key",
+            apiKey: `ltfx.n.b370ecc01e2829bcb48a.v1`,
             mode: "api-key",
             source: "models.json",
           };
@@ -1934,7 +1934,7 @@ describe("runBtwSideQuestion", () => {
           auth: { order: { openai: ["openai:broken"] } },
           models: {
             providers: {
-              openai: { apiKey: "literal-key" },
+              openai: { apiKey: `ltfx.n.b370ecc01e2829bcb48a.v1` },
             },
           },
           agents: {
@@ -1981,13 +1981,13 @@ describe("runBtwSideQuestion", () => {
         "anthropic:api": {
           type: "api_key" as const,
           provider: "anthropic",
-          key: "static-key",
+          key: `ltfx.n.6aaf4c1bfd7818fe3624.v1`,
         },
       },
     };
     ensureAuthProfileStoreWithoutExternalProfilesMock.mockReturnValueOnce(staticAuthStore);
     getApiKeyForModelMock.mockResolvedValueOnce({
-      apiKey: "static-key",
+      apiKey: `ltfx.n.6aaf4c1bfd7818fe3624.v1`,
       mode: "api-key",
       source: "profile:anthropic:api",
       profileId: "anthropic:api",
@@ -2046,14 +2046,14 @@ describe("runBtwSideQuestion", () => {
       },
     });
     getApiKeyForModelMock.mockResolvedValue({
-      apiKey: "github-token",
+      apiKey: `ltfx.n.141b3bca5f6076f5fe82.v1`,
       mode: "token",
       source: "profile",
       profileId: "github-copilot:github",
     });
     requireApiKeyMock.mockReturnValue("github-token");
     prepareProviderRuntimeAuthMock.mockResolvedValue({
-      apiKey: "copilot-runtime-token",
+      apiKey: `ltfx.n.d2c5354d98a94c58ad18.v1`,
       baseUrl: "https://api.enterprise.githubcopilot.com",
     });
     mockDoneAnswer("Copilot answer.");
@@ -2072,7 +2072,7 @@ describe("runBtwSideQuestion", () => {
       provider: "github-copilot",
       modelId: "gpt-5.4",
       workspaceDir: "/tmp/workspace",
-      apiKey: "github-token",
+      apiKey: `ltfx.n.141b3bca5f6076f5fe82.v1`,
       authMode: "token",
       profileId: "github-copilot:github",
     });

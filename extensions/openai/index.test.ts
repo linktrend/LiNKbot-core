@@ -138,7 +138,7 @@ function expectNoBeforePromptBuildHook(on: unknown): void {
   expect(hasBeforePromptBuild).toBe(false);
 }
 
-function expectNoRequestUrl(mocked: unknown, url: string): void {
+function expectNoRequestUrl(mocked: unknown, url: (string)): void {
   const hasUrl = mockCalls(mocked).some((call) => {
     const arg = call[0] as { url?: unknown } | undefined;
     return arg?.url === url;

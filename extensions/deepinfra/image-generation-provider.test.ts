@@ -14,7 +14,7 @@ const {
   assertOkOrThrowHttpErrorMock: vi.fn(async () => {}),
   postJsonRequestMock: vi.fn(),
   postMultipartRequestMock: vi.fn(),
-  resolveApiKeyForProviderMock: vi.fn(async () => ({ apiKey: "deepinfra-key" })),
+  resolveApiKeyForProviderMock: vi.fn(async () => ({ apiKey: `ltfx.n.7aac61b28eedbcec0b95.v1` })),
   createProviderOperationDeadlineMock: vi.fn((params: Record<string, unknown>) => params),
   resolveProviderOperationTimeoutMsMock: vi.fn(
     (params: Record<string, unknown>) => params.defaultTimeoutMs,

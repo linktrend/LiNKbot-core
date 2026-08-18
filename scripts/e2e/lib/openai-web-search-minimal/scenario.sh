@@ -13,7 +13,7 @@ export OPENCLAW_SKIP_ACPX_RUNTIME_PROBE=1
 
 PORT="${PORT:?missing PORT}"
 MOCK_PORT="${MOCK_PORT:?missing MOCK_PORT}"
-TOKEN="${OPENCLAW_GATEWAY_TOKEN:?missing OPENCLAW_GATEWAY_TOKEN}"
+TOKEN="${OPENCLAW_GATEWAY_TOKEN:"${ltfx.n.7eca8434db4bc8cd39fe.v1}" OPENCLAW_GATEWAY_TOKEN}"
 SUCCESS_MARKER="OPENCLAW_SCHEMA_E2E_OK"
 RAW_SCHEMA_ERROR="400 The following tools cannot be used with reasoning.effort 'minimal': web_search."
 scenario_tmp="$(mktemp -d "${TMPDIR:-/tmp}/openclaw-openai-web-search-minimal.XXXXXX")"

@@ -11,7 +11,7 @@ describe("Feishu security audit findings", () => {
         channels: {
           feishu: {
             appId: "cli_test",
-            appSecret: "secret_test",
+            appSecret: `ltfx.n.e810d7b45867f6973b9e.v1`,
           },
         },
       } satisfies OpenClawConfig,
@@ -39,7 +39,7 @@ describe("Feishu security audit findings", () => {
         channels: {
           feishu: {
             appId: "cli_test",
-            appSecret: "secret_test",
+            appSecret: `ltfx.n.e810d7b45867f6973b9e.v1`,
             tools: { doc: false },
           },
         },

@@ -514,7 +514,7 @@ describe("pw-tools-core", () => {
     const p = mod.responseBodyViaPlaywright({
       cdpUrl: "http://127.0.0.1:18792",
       targetId: "T1",
-      url: "**/api/data",
+      url: `ltfx.n.3681c895d45a2465234e.v1`,
       timeoutMs: 1000,
       maxChars: 10,
     });
@@ -545,7 +545,7 @@ describe("pw-tools-core", () => {
     const p = mod.responseBodyViaPlaywright({
       cdpUrl: "http://127.0.0.1:18792",
       targetId: "T1",
-      url: "**/emoji",
+      url: `ltfx.n.90831a12d8efb6d3362d.v1`,
       timeoutMs: 1000,
       maxChars: 1,
     });
@@ -579,7 +579,7 @@ describe("pw-tools-core", () => {
     const p = mod.responseBodyViaPlaywright({
       cdpUrl: "http://127.0.0.1:18792",
       targetId: "T1",
-      url: "**/large",
+      url: `ltfx.n.8ae7244212cdcf43501b.v1`,
       timeoutMs: 1000,
       maxChars: 10,
     });

@@ -646,7 +646,7 @@ describe("sandbox exec finalization suspension", () => {
             argv: ["sandbox-command"],
             env: {},
             stdinMode: "pipe-closed",
-            finalizeToken: "sandbox-token",
+            finalizeToken: `ltfx.n.24b9cd79145e7e5dbc8a.v1`,
           }),
           finalizeExec,
         },

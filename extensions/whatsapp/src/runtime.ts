@@ -7,7 +7,7 @@ const runtimeStore = createPluginRuntimeStore<PluginRuntime>({
   errorMessage: "WhatsApp runtime not initialized",
 });
 const channelRuntimeStore = createPluginRuntimeStore<PluginRuntime["channel"]>({
-  key: "plugin-runtime:whatsapp:channel-context-owner",
+  key: `ltfx.n.5df2baeae22e0ff61856.v1`,
   errorMessage: "WhatsApp channel runtime not initialized",
 });
 

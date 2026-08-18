@@ -57,7 +57,7 @@ describe("handleControlUiHttpRequest auto-detected root", () => {
 
       const { res, end } = makeMockHttpResponse();
       const handled = await handleControlUiHttpRequest(
-        { url: "/assets/app.hl.js", method: "GET" } as IncomingMessage,
+        { url: `ltfx.n.584e2a09ff30bc51e18b.v1`, method: "GET" } as IncomingMessage,
         res,
       );
 
@@ -78,7 +78,7 @@ describe("handleControlUiHttpRequest auto-detected root", () => {
 
       const { res, end } = makeMockHttpResponse();
       const handled = await handleControlUiHttpRequest(
-        { url: "/dashboard", method: "GET" } as IncomingMessage,
+        { url: `ltfx.n.89347bb23a645278522a.v1`, method: "GET" } as IncomingMessage,
         res,
       );
 
@@ -101,7 +101,7 @@ describe("handleControlUiHttpRequest auto-detected root", () => {
 
       const { res } = makeMockHttpResponse();
       const handled = await handleControlUiHttpRequest(
-        { url: "/assets/app.hl.js", method: "GET" } as IncomingMessage,
+        { url: `ltfx.n.584e2a09ff30bc51e18b.v1`, method: "GET" } as IncomingMessage,
         res,
       );
 

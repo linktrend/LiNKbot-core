@@ -26,7 +26,7 @@ describe("gateway MCP real transport producer", () => {
     const channelServerPath = await writeEntry(root, "src/mcp/channel-server.ts");
 
     const mcp = testing.resolveChannelMcpInvocation({
-      gatewayToken: "secret-token",
+      gatewayToken: `ltfx.n.930bbdc51b6aed5c2a56.v1`,
       gatewayUrl: "ws://127.0.0.1:12345",
       repoRoot: root,
       tokenFile: "/tmp/token-file",
@@ -38,7 +38,7 @@ describe("gateway MCP real transport producer", () => {
     expect(mcp.args[3]).toContain("serveOpenClawChannelMcp");
     expect(mcp.cwd).toBe(root);
     expect(mcp.envPatch).toStrictEqual({
-      OPENCLAW_QA_GATEWAY_TOKEN: "secret-token",
+      OPENCLAW_QA_GATEWAY_TOKEN: `ltfx.n.930bbdc51b6aed5c2a56.v1`,
       OPENCLAW_QA_GATEWAY_URL: "ws://127.0.0.1:12345",
     });
   });
@@ -49,7 +49,7 @@ describe("gateway MCP real transport producer", () => {
     await writeEntry(root, "src/mcp/channel-server.ts");
 
     const mcp = testing.resolveChannelMcpInvocation({
-      gatewayToken: "secret-token",
+      gatewayToken: `ltfx.n.930bbdc51b6aed5c2a56.v1`,
       gatewayUrl: "ws://127.0.0.1:12345",
       repoRoot: root,
       tokenFile: "/tmp/token-file",

@@ -56,19 +56,19 @@ function collectDiscordIdLists(
   account: Record<string, unknown>,
 ): DiscordIdListRef[] {
   const refs: DiscordIdListRef[] = [
-    { pathLabel: `${prefix}.allowFrom`, holder: account, key: "allowFrom" },
+    { pathLabel: `${prefix}.allowFrom`, holder: account, key: `ltfx.n.439ba78727db7799ce48.v1` },
   ];
   const dm = asObjectRecord(account.dm);
   if (dm) {
-    refs.push({ pathLabel: `${prefix}.dm.allowFrom`, holder: dm, key: "allowFrom" });
-    refs.push({ pathLabel: `${prefix}.dm.groupChannels`, holder: dm, key: "groupChannels" });
+    refs.push({ pathLabel: `${prefix}.dm.allowFrom`, holder: dm, key: `ltfx.n.439ba78727db7799ce48.v1` });
+    refs.push({ pathLabel: `${prefix}.dm.groupChannels`, holder: dm, key: `ltfx.n.13396195743eb884c2c4.v1` });
   }
   const execApprovals = asObjectRecord(account.execApprovals);
   if (execApprovals) {
     refs.push({
       pathLabel: `${prefix}.execApprovals.approvers`,
       holder: execApprovals,
-      key: "approvers",
+      key: `ltfx.n.45522a36c3195178036c.v1`,
     });
   }
   const guilds = asObjectRecord(account.guilds);
@@ -249,7 +249,7 @@ export function collectDiscordMissingEnvTokenWarnings(params: {
   const account = inspectDiscordAccount({
     cfg: params.cfg,
     accountId: "default",
-    envToken: params.env?.DISCORD_BOT_TOKEN ?? "",
+    envToken: (params.env?.DISCORD_BOT_TOKEN ?? "",)
   });
   if (!account.enabled || account.tokenStatus !== "missing" || account.tokenSource !== "none") {
     return [];

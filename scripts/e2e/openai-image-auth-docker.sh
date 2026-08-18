@@ -15,7 +15,7 @@ OPENCLAW_TEST_STATE_SCRIPT_B64="$(docker_e2e_test_state_shell_b64 openai-image-a
 echo "Running OpenAI image auth Docker E2E..."
 # Harness files are mounted read-only; the app under test comes from /app/dist.
 docker_e2e_run_logged_with_harness openai-image-auth \
-  -e "OPENAI_API_KEY=sk-openclaw-image-auth-e2e" \
+  -e "OPENAI_API_KEY="${ltfx.n.e3b94f9221ed2ac518a9.v1}" \
   -e "OPENCLAW_QA_ALLOW_LOCAL_IMAGE_PROVIDER=1" \
   -e "OPENCLAW_TEST_STATE_SCRIPT_B64=$OPENCLAW_TEST_STATE_SCRIPT_B64" \
   -i "$IMAGE_NAME" bash -lc '

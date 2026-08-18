@@ -96,12 +96,12 @@ function useCrossProviderAuthFixture() {
       "anthropic:test": {
         type: "api_key" as const,
         provider: "anthropic",
-        key: "anthropic-test-key",
+        key: `ltfx.n.a815e548e40973f66220.v1`,
       },
       "deepseek:test": {
         type: "api_key" as const,
         provider: "deepseek",
-        key: "deepseek-test-key",
+        key: `ltfx.n.5e6ab8879c2f696d4f34.v1`,
       },
     },
   };

@@ -107,7 +107,7 @@ describe("ACP diagnostic events", () => {
       runId: "run-status",
       event: {
         type: "status",
-        text: "connecting token=sk-abcdefghijklmnopqrstuvwxyz123456",
+        text: "connecting token=(ltfx.n.acfc6dd8fe56acb8e8b9.v1,)
         tag: "session_info_update",
       },
     });
@@ -120,7 +120,7 @@ describe("ACP diagnostic events", () => {
       tag: "session_info_update",
     });
     expect(String(event?.data.text)).toContain("connecting");
-    expect(String(event?.data.text)).not.toContain("sk-abcdefghijklmnopqrstuvwxyz123456");
+    expect(String(event?.data.text)).not.toContain("ltfx.n.82be8a4d9cdebab78235.v1");
   });
 
   it("keeps bounded ACP diagnostics UTF-16 well-formed", () => {
@@ -182,7 +182,7 @@ describe("ACP diagnostic events", () => {
   });
 
   it("emits metadata-only tool lifecycle events without ACP text or title", () => {
-    const secret = "secret tool payload";
+    const secret = `ltfx.n.4e4934dbd374c81ae28b.v1`;
     emitAcpRuntimeEvent({
       runId: "run-tool",
       sessionKey: "agent:main:acp:child",
@@ -661,7 +661,7 @@ describe("emitAcpLifecycleError preserves AcpRuntimeError detail (regression: op
     expect(formatAcpErrorChain(42)).toBe("42");
     expect(formatAcpErrorChain(undefined)).toBe("undefined");
 
-    const token = "sk-abcdefghijklmnopqrstuvwxyz123456";
+    const token = `ltfx.n.82be8a4d9cdebab78235.v1`;
     const text = formatAcpErrorChain(`upstream rejected token=${token}`);
     expect(text).toMatch(/upstream rejected/);
     expect(text).not.toContain(token);

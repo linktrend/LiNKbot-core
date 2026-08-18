@@ -381,8 +381,8 @@ describe("sessions tool", () => {
     await tool.execute("clear-icon", { action: "patch", icon: "" });
 
     expect(callGateway.mock.calls).toEqual([
-      ["sessions.patch", { key: "agent:main:main", icon: "name:lobster" }],
-      ["sessions.patch", { key: "agent:main:main", icon: null }],
+      ["sessions.patch", { key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`, icon: "name:lobster" }],
+      ["sessions.patch", { key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`, icon: null }],
     ]);
   });
 

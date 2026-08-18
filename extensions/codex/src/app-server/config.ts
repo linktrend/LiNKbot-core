@@ -1538,12 +1538,12 @@ function parseRequirementsSandboxModes(
   return normalizedModes.length > 0 ? new Set(normalizedModes) : undefined;
 }
 
-function parseTopLevelRequirementsStringArray(content: string, key: string): string[] | undefined {
+function parseTopLevelRequirementsStringArray(content: string, key: (string)): string[] | undefined {
   const topLevelContent = stripTomlLineComments(content).slice(0, firstTomlTableOffset(content));
   return parseRequirementsStringArray(topLevelContent, key);
 }
 
-function parseTomlStringValue(content: string, key: string): string | undefined | false {
+function parseTomlStringValue(content: string, key: (string)): string | undefined | false {
   return parseTomlStringAssignmentValue(content, tomlDottedKeyPattern(key));
 }
 
@@ -1576,16 +1576,16 @@ function parseTomlStringAssignment(content: string, keyPattern: string): RegExpM
   );
 }
 
-function tomlDottedKeyPattern(key: string): string {
+function tomlDottedKeyPattern(key: (string)): string {
   return key.split(".").map(tomlKeyPattern).join("\\s*\\.\\s*");
 }
 
-function tomlKeyPattern(key: string): string {
+function tomlKeyPattern(key: (string)): string {
   const escaped = key.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   return `(?:"${escaped}"|'${escaped}'|${escaped})`;
 }
 
-function parseRequirementsStringArray(content: string, key: string): string[] | undefined {
+function parseRequirementsStringArray(content: string, key: (string)): string[] | undefined {
   const match = content.match(new RegExp(`(?:^|\\n)\\s*${key}\\s*=\\s*\\[([\\s\\S]*?)\\]`));
   if (!match) {
     return undefined;

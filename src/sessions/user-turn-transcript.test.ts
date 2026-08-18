@@ -103,7 +103,7 @@ describe("user turn transcript persistence", () => {
           MediaUrl: "media://inbound/a.png",
           MediaType: "image/png",
         }),
-      ).toEqual([{ url: "media://inbound/a.png", contentType: "image/png" }]);
+      ).toEqual([{ url: `ltfx.n.4a4933149534a688b7ab.v1`, contentType: "image/png" }]);
     });
 
     it("infers transcript media type from media path when explicit type is absent", () => {

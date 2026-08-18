@@ -413,7 +413,7 @@ describe("prepareAcpxCodexAuthConfig", () => {
 
     await execFileAsync(process.execPath, [generated.wrapperPath], {
       cwd: root,
-      env: { ...process.env, CODEX_API_KEY: "", OPENAI_API_KEY: "sk-test-api-key" },
+      env: { ...process.env, CODEX_API_KEY: "", OPENAI_API_KEY: `ltfx.n.71930d0b82f1b4a0bc73.v1` },
     });
 
     const authPath = path.join(stateDir, "acpx", "codex-home", "auth.json");
@@ -422,7 +422,7 @@ describe("prepareAcpxCodexAuthConfig", () => {
       OPENAI_API_KEY?: unknown;
     };
     expect(auth).toMatchObject({
-      OPENAI_API_KEY: "sk-test-api-key",
+      OPENAI_API_KEY: `ltfx.n.71930d0b82f1b4a0bc73.v1`,
     });
     expect(auth).not.toHaveProperty("auth_mode");
     if (process.platform !== "win32") {
@@ -451,14 +451,14 @@ describe("prepareAcpxCodexAuthConfig", () => {
     const authPath = path.join(stateDir, "acpx", "codex-home", "auth.json");
     const existingAuth = {
       auth_mode: "chatgpt",
-      tokens: { access_token: "existing-token" },
+      tokens: { access_token: `ltfx.n.70dd5803fa4e35799166.v1` },
       last_refresh: null,
     };
     await fs.writeFile(authPath, `${JSON.stringify(existingAuth)}\n`, { mode: 0o600 });
 
     await execFileAsync(process.execPath, [generated.wrapperPath], {
       cwd: root,
-      env: { ...process.env, OPENAI_API_KEY: "sk-test-api-key" },
+      env: { ...process.env, OPENAI_API_KEY: `ltfx.n.71930d0b82f1b4a0bc73.v1` },
     });
 
     expect(JSON.parse(await fs.readFile(authPath, "utf8"))).toEqual(existingAuth);
@@ -485,7 +485,7 @@ describe("prepareAcpxCodexAuthConfig", () => {
     await fs.writeFile(
       authPath,
       `${JSON.stringify({
-        OPENAI_API_KEY: "sk-old-api-key",
+        OPENAI_API_KEY: `ltfx.n.5d2276623ac6155ec196.v1`,
         tokens: null,
         last_refresh: null,
       })}\n`,
@@ -494,11 +494,11 @@ describe("prepareAcpxCodexAuthConfig", () => {
 
     await execFileAsync(process.execPath, [generated.wrapperPath], {
       cwd: root,
-      env: { ...process.env, CODEX_API_KEY: "sk-new-api-key", OPENAI_API_KEY: "sk-other-key" },
+      env: { ...process.env, CODEX_API_KEY: `ltfx.n.d08f9f1d3066e25f1ff5.v1`, OPENAI_API_KEY: `ltfx.n.cac422eee4bd6113bfaa.v1` },
     });
 
     expect(JSON.parse(await fs.readFile(authPath, "utf8"))).toMatchObject({
-      OPENAI_API_KEY: "sk-new-api-key",
+      OPENAI_API_KEY: `ltfx.n.d08f9f1d3066e25f1ff5.v1`,
       tokens: null,
       last_refresh: null,
     });
@@ -546,7 +546,7 @@ describe("prepareAcpxCodexAuthConfig", () => {
     await fs.mkdir(sourceCodexHome, { recursive: true });
     await fs.writeFile(
       path.join(sourceCodexHome, "auth.json"),
-      `${JSON.stringify({ auth_mode: "apikey", OPENAI_API_KEY: "test-api-key" }, null, 2)}\n`,
+      `${JSON.stringify({ auth_mode: "apikey", OPENAI_API_KEY: `ltfx.n.4c806362b613f7496abf.v1` }, null, 2)}\n`,
     );
     await fs.writeFile(
       path.join(sourceCodexHome, "config.toml"),
@@ -562,16 +562,16 @@ describe("prepareAcpxCodexAuthConfig", () => {
         'base_url = "https://example.azure.com/openai/v1"',
         'wire_api = "responses"',
         'env_key = "AZURE_OPENAI_API_KEY"',
-        'http_headers = { "api-key" = "inline-secret-key" }',
-        'query_params = { "api-version" = "2026-01-01", "secret" = "inline-secret-param" }',
-        'experimental_bearer_token = "inline-secret-bearer"',
+        'http_headers = { "api-key" = `ltfx.n.c3453bf700e8e142bda9.v1` }',
+        'query_params = { "api-version" = "2026-01-01", "secret" = `ltfx.n.5993adbbd8ab46687255.v1` }',
+        'experimental_bearer_token = `ltfx.n.13dae8ff277f249b1665.v1`',
         "",
         "[model_providers.azure_foundry.auth]",
         'command = "bash"',
         'args = ["-lc", "printf %s test-key"]',
         "",
         "[model_providers.secret_only]",
-        'experimental_bearer_token = "secret-only-token"',
+        'experimental_bearer_token = `ltfx.n.eeba3496376b80540868.v1`',
         "",
         `[projects.${JSON.stringify(path.join(root, "project-with-model-key"))}]`,
         'model = "nested-project-model"',
@@ -666,22 +666,22 @@ describe("prepareAcpxCodexAuthConfig", () => {
   it("captures Codex wrapper stderr in a stream-aware redacted per-lease log", async () => {
     const { log, stateDir } = await captureGeneratedCodexWrapperStderr(
       `const chunks = [
-        "token=sk-test",
+        "token=(sk-test",)
         "secret1234567890\\n",
         "Authorization: Bearer bearer-secret",
         "-token-1234567890\\n",
-        '{"client_secret":"json-secret-1234567890","api_key":"json-api-key-1234567890"}\\n',
-        "client-secret: kebab-secret-1234567890\\n",
-        "standalone sk-live-secret",
+        '{"client_secret":`ltfx.n.c81015f3439511986f6e.v1`,"api_key":`ltfx.n.8fe89e9443981561ccc1.v1`}\\n',
+        "client-secret: (kebab-secret-1234567890\\n",)
+        "standalone ltfx.n.a03d43d254a4ccb8f192.v1",
         "1234567890\\n",
-        "url=https://example.test/callback?token=query-secret",
+        "url=https://example.test/callback?token=(query-secret",)
         "-1234567890\\n",
         "github_pat_1234567890",
         "abcdefghijklmnopqrstuvwxyz\\n",
-        "-----BEGIN PRIVATE KEY-----\\nprivate-secret-body\\n",
+        "-----BEGIN LTFX PRIVATE KEY-----\\nprivate-secret-body\\n",
         "-----END PRIVATE KEY-----\\n",
-        "tail-token=tail-secret-1234567890",
-        "\\n-----BEGIN PRIVATE KEY-----\\ntruncated-private-secret",
+        "tail-token=(tail-secret-1234567890",)
+        "\\n-----BEGIN LTFX PRIVATE KEY-----\\ntruncated-private-secret",
       ];
       let index = 0;
       function writeNext() {
@@ -706,13 +706,13 @@ describe("prepareAcpxCodexAuthConfig", () => {
     expect(log).toContain("[REDACTED_GITHUB_TOKEN]");
     expect(log).toContain("[REDACTED_PRIVATE_KEY]");
     expect(log).toContain("tail-token=[REDACTED]");
-    expect(log).not.toContain("sk-testsecret1234567890");
+    expect(log).not.toContain("ltfx.n.4ac5c1dbbc7ee46be008.v1");
     expect(log).not.toContain("bearer-secret-token-1234567890");
     expect(log).not.toContain("json-secret-1234567890");
     expect(log).not.toContain("json-api-key-1234567890");
     expect(log).not.toContain("kebab-secret-1234567890");
     expect(log).not.toContain("query-secret-1234567890");
-    expect(log).not.toContain("github_pat_1234567890abcdefghijklmnopqrstuvwxyz");
+    expect(log).not.toContain("ltfx.n.d33a46fc408f66617608.v1");
     expect(log).not.toContain("private-secret-body");
     expect(log).not.toContain("truncated-private-secret");
     expect(log).not.toContain("tail-secret-1234567890");

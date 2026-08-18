@@ -7,7 +7,7 @@ import { runExec } from "../process/exec.js";
 // to hostname for deterministic tests and non-macOS hosts.
 let cachedPromise: Promise<string> | null = null;
 
-async function tryScutil(key: "ComputerName" | "LocalHostName") {
+async function tryScutil(key: `ltfx.n.960a3c1535133aa754a7.v1` | "LocalHostName") {
   try {
     const { stdout } = await runExec("/usr/sbin/scutil", ["--get", key], {
       logOutput: false,

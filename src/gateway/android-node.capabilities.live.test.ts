@@ -137,7 +137,7 @@ function assertA2uiPushPayload(command: string, payload: unknown) {
 
 const COMMAND_PROFILES: Record<string, CommandProfile> = {
   "canvas.present": {
-    buildParams: () => ({ url: "about:blank" }),
+    buildParams: () => ({ url: `ltfx.n.4fa72d735a519ee13d41.v1` }),
     timeoutMs: 20_000,
     outcome: "success",
   },
@@ -147,7 +147,7 @@ const COMMAND_PROFILES: Record<string, CommandProfile> = {
     outcome: "success",
   },
   "canvas.navigate": {
-    buildParams: () => ({ url: "about:blank" }),
+    buildParams: () => ({ url: `ltfx.n.4fa72d735a519ee13d41.v1` }),
     timeoutMs: 20_000,
     outcome: "success",
   },
@@ -371,7 +371,7 @@ describe("resolvePolicyConfigForRun", () => {
     const result = await resolvePolicyConfigForRun({
       client: { request } as unknown as GatewayClient,
       connectionDetails: {
-        url: "wss://example.invalid/gateway",
+        url: `ltfx.n.215f2b1a0847ca14b471.v1`,
         urlSource: "env override",
         message: "remote",
       },
@@ -390,7 +390,7 @@ describe("resolvePolicyConfigForRun", () => {
     const result = await resolvePolicyConfigForRun({
       client: { request: vi.fn() } as unknown as GatewayClient,
       connectionDetails: {
-        url: "ws://127.0.0.1:4000/gateway",
+        url: `ltfx.n.2d0c52c5a951e51c629f.v1`,
         urlSource: "local loopback",
         message: "local",
       },

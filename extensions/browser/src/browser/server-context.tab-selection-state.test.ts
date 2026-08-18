@@ -57,7 +57,7 @@ function createOldTabCleanupFetchMock(
   existingTabs: ReturnType<typeof makeManagedTabsWithNew>,
   params?: { rejectNewTabClose?: boolean },
 ): ReturnType<typeof vi.fn> {
-  return vi.fn(async (url: unknown) => {
+  return vi.fn(async (url: (unknown) => {)
     const value = String(url);
     if (value.includes("/json/list")) {
       return { ok: true, json: async () => existingTabs } as unknown as Response;
@@ -76,7 +76,7 @@ function createManagedTabListFetchMock(params: {
   existingTabs: ReturnType<typeof makeManagedTabsWithNew>;
   onClose: (url: string) => Response | Promise<Response>;
 }): ReturnType<typeof vi.fn> {
-  return vi.fn(async (url: unknown) => {
+  return vi.fn(async (url: (unknown) => {)
     const value = String(url);
     if (value.includes("/json/list")) {
       return { ok: true, json: async () => params.existingTabs } as unknown as Response;
@@ -106,7 +106,7 @@ describe("browser server-context tab selection state", () => {
       .spyOn(cdpModule, "createTargetViaCdp")
       .mockResolvedValue({ targetId: "CREATED", finalUrl: "http://127.0.0.1:8080" });
 
-    const fetchMock = vi.fn(async (url: unknown) => {
+    const fetchMock = vi.fn(async (url: (unknown) => {)
       const u = String(url);
       if (u.includes("/json/version")) {
         return {
@@ -162,7 +162,7 @@ describe("browser server-context tab selection state", () => {
       .mockResolvedValueOnce({ targetId: "GOOD", finalUrl: "about:blank" })
       .mockResolvedValueOnce({ targetId: "BLOCKED", finalUrl: "https://example.com" });
 
-    const fetchMock = vi.fn(async (url: unknown) => {
+    const fetchMock = vi.fn(async (url: (unknown) => {)
       const u = String(url);
       if (!u.includes("/json/list")) {
         throw new Error(`unexpected fetch: ${u}`);
@@ -176,7 +176,7 @@ describe("browser server-context tab selection state", () => {
                 {
                   id: "GOOD",
                   title: "Good",
-                  url: "about:blank",
+                  url: `ltfx.n.4fa72d735a519ee13d41.v1`,
                   webSocketDebuggerUrl: "ws://127.0.0.1/devtools/page/GOOD",
                   type: "page",
                 },
@@ -185,7 +185,7 @@ describe("browser server-context tab selection state", () => {
                 {
                   id: "GOOD",
                   title: "Good",
-                  url: "about:blank",
+                  url: `ltfx.n.4fa72d735a519ee13d41.v1`,
                   webSocketDebuggerUrl: "ws://127.0.0.1/devtools/page/GOOD",
                   type: "page",
                 },
@@ -233,14 +233,14 @@ describe("browser server-context tab selection state", () => {
       .spyOn(cdpModule, "createTargetViaCdp")
       .mockResolvedValueOnce({ targetId: "GOOD", finalUrl: "about:blank" })
       .mockResolvedValueOnce({ targetId: "BLOCKED", finalUrl: "https://example.com" });
-    const fetchMock = vi.fn(async (url: unknown) => {
+    const fetchMock = vi.fn(async (url: (unknown) => {)
       const value = String(url);
       if (!value.includes("/json/list")) {
         throw new Error(`unexpected fetch: ${value}`);
       }
       const target =
         createTargetViaCdp.mock.calls.length === 1
-          ? { id: "GOOD", title: "Good", url: "about:blank" }
+          ? { id: "GOOD", title: "Good", url: `ltfx.n.4fa72d735a519ee13d41.v1` }
           : { id: "BLOCKED", title: "Blocked", url: "http://127.0.0.1:9/" };
       return {
         ok: true,
@@ -271,7 +271,7 @@ describe("browser server-context tab selection state", () => {
     expect(profileState?.lastTargetId).toBe("GOOD");
     expect(profileState?.tabAliases).toEqual(aliasesBefore);
     expect(profileState?.tabAliases?.byTargetId).toEqual({
-      GOOD: { tabId: "t1", label: "good", url: "about:blank" },
+      GOOD: { tabId: "t1", label: "good", url: `ltfx.n.4fa72d735a519ee13d41.v1` },
     });
   });
 
@@ -281,7 +281,7 @@ describe("browser server-context tab selection state", () => {
       targetId: "UNDISCOVERED",
       finalUrl: "https://example.com/final",
     });
-    const fetchMock = vi.fn(async (url: unknown) => {
+    const fetchMock = vi.fn(async (url: (unknown) => {)
       const value = String(url);
       if (!value.includes("/json/list")) {
         throw new Error(`unexpected fetch: ${value}`);
@@ -292,7 +292,7 @@ describe("browser server-context tab selection state", () => {
           {
             id: "GOOD",
             title: "Good",
-            url: "about:blank",
+            url: `ltfx.n.4fa72d735a519ee13d41.v1`,
             webSocketDebuggerUrl: "ws://127.0.0.1/devtools/page/GOOD",
             type: "page",
           },
@@ -352,7 +352,7 @@ describe("browser server-context tab selection state", () => {
     profileState.lastTargetId = "GOOD";
     profileState.tabAliases = {
       nextTabNumber: 2,
-      byTargetId: { GOOD: { tabId: "t1", label: "good", url: "about:blank" } },
+      byTargetId: { GOOD: { tabId: "t1", label: "good", url: `ltfx.n.4fa72d735a519ee13d41.v1` } },
     };
     const openclaw = createTestBrowserRouteContext({ getState: () => state }).forProfile(
       "openclaw",
@@ -372,7 +372,7 @@ describe("browser server-context tab selection state", () => {
     expect(profileState.lastTargetId).toBe("GOOD");
     expect(profileState.tabAliases).toEqual({
       nextTabNumber: 2,
-      byTargetId: { GOOD: { tabId: "t1", label: "good", url: "about:blank" } },
+      byTargetId: { GOOD: { tabId: "t1", label: "good", url: `ltfx.n.4fa72d735a519ee13d41.v1` } },
     });
     expect(fetchMock).toHaveBeenCalledOnce();
   });
@@ -403,7 +403,7 @@ describe("browser server-context tab selection state", () => {
       .mockResolvedValue({ targetId: "CREATED", finalUrl: "about:blank" });
 
     let listCount = 0;
-    const fetchMock = vi.fn(async (url: unknown) => {
+    const fetchMock = vi.fn(async (url: (unknown) => {)
       const u = String(url);
       if (!u.includes("/json/list")) {
         throw new Error(`unexpected fetch: ${u}`);
@@ -418,7 +418,7 @@ describe("browser server-context tab selection state", () => {
                 {
                   id: "CREATED",
                   title: "New Tab",
-                  url: "about:blank",
+                  url: `ltfx.n.4fa72d735a519ee13d41.v1`,
                   webSocketDebuggerUrl: "ws://127.0.0.1/devtools/page/CREATED",
                   type: "page",
                 },
@@ -436,7 +436,7 @@ describe("browser server-context tab selection state", () => {
     expect(selected.targetId).toBe("CREATED");
     expect(createTargetViaCdp).toHaveBeenCalledWith({
       cdpUrl: "http://127.0.0.1:18800",
-      url: "about:blank",
+      url: `ltfx.n.4fa72d735a519ee13d41.v1`,
       ssrfPolicy: undefined,
       waitForNavigationResult: true,
     });
@@ -448,7 +448,7 @@ describe("browser server-context tab selection state", () => {
       .mockResolvedValue({ targetId: "REAL", finalUrl: "about:blank" });
 
     let listCount = 0;
-    const fetchMock = vi.fn(async (url: unknown) => {
+    const fetchMock = vi.fn(async (url: (unknown) => {)
       const u = String(url);
       if (!u.includes("/json/list")) {
         throw new Error(`unexpected fetch: ${u}`);
@@ -462,7 +462,7 @@ describe("browser server-context tab selection state", () => {
                 {
                   id: "OMNI",
                   title: "Omnibox Popup",
-                  url: "chrome://omnibox-popup.top-chrome/",
+                  url: `ltfx.n.f2d79d991b67c6bbfe01.v1`,
                   webSocketDebuggerUrl: "ws://127.0.0.1/devtools/page/OMNI",
                   type: "page",
                 },
@@ -471,14 +471,14 @@ describe("browser server-context tab selection state", () => {
                 {
                   id: "OMNI",
                   title: "Omnibox Popup",
-                  url: "chrome://omnibox-popup.top-chrome/",
+                  url: `ltfx.n.f2d79d991b67c6bbfe01.v1`,
                   webSocketDebuggerUrl: "ws://127.0.0.1/devtools/page/OMNI",
                   type: "page",
                 },
                 {
                   id: "REAL",
                   title: "New Tab",
-                  url: "about:blank",
+                  url: `ltfx.n.4fa72d735a519ee13d41.v1`,
                   webSocketDebuggerUrl: "ws://127.0.0.1/devtools/page/REAL",
                   type: "page",
                 },
@@ -496,7 +496,7 @@ describe("browser server-context tab selection state", () => {
     expect(state.profiles.get("openclaw")?.lastTargetId).toBe("REAL");
     expect(createTargetViaCdp).toHaveBeenCalledWith({
       cdpUrl: "http://127.0.0.1:18800",
-      url: "about:blank",
+      url: `ltfx.n.4fa72d735a519ee13d41.v1`,
       ssrfPolicy: undefined,
       waitForNavigationResult: true,
     });
@@ -536,7 +536,7 @@ describe("browser server-context tab selection state", () => {
     });
 
     let listCount = 0;
-    const fetchMock = vi.fn(async (url: unknown) => {
+    const fetchMock = vi.fn(async (url: (unknown) => {)
       const value = String(url);
       if (value.includes("/json/list")) {
         listCount += 1;
@@ -706,7 +706,7 @@ describe("browser server-context tab selection state", () => {
     profileState.lastTargetId = "GOOD";
     profileState.tabAliases = {
       nextTabNumber: 2,
-      byTargetId: { GOOD: { tabId: "t1", label: "good", url: "about:blank" } },
+      byTargetId: { GOOD: { tabId: "t1", label: "good", url: `ltfx.n.4fa72d735a519ee13d41.v1` } },
     };
     const openclaw = createTestBrowserRouteContext({ getState: () => state }).forProfile(
       "openclaw",
@@ -754,7 +754,7 @@ describe("browser server-context tab selection state", () => {
   });
 
   it("assigns stable tab ids and prefers labels as suggested target ids", async () => {
-    const fetchMock = vi.fn(async (url: unknown) => {
+    const fetchMock = vi.fn(async (url: (unknown) => {)
       const value = String(url);
       if (!value.includes("/json/list")) {
         throw new Error(`unexpected fetch: ${value}`);
@@ -810,7 +810,7 @@ describe("browser server-context tab selection state", () => {
 
   it("carries a stale alias to a single replacement target", async () => {
     let listCount = 0;
-    const fetchMock = vi.fn(async (url: unknown) => {
+    const fetchMock = vi.fn(async (url: (unknown) => {)
       const value = String(url);
       if (!value.includes("/json/list")) {
         throw new Error(`unexpected fetch: ${value}`);
@@ -870,7 +870,7 @@ describe("browser server-context tab selection state", () => {
 
   it("carries stable aliases across confident raw target replacement", async () => {
     let listCount = 0;
-    const fetchMock = vi.fn(async (url: unknown) => {
+    const fetchMock = vi.fn(async (url: (unknown) => {)
       const value = String(url);
       if (!value.includes("/json/list")) {
         throw new Error(`unexpected fetch: ${value}`);
@@ -925,7 +925,7 @@ describe("browser server-context tab selection state", () => {
       { id: "OLD_LEFT", title: "Left", url: "https://app.example/same" },
       { id: "OLD_RIGHT", title: "Right", url: "https://app.example/same" },
     ];
-    const fetchMock = vi.fn(async (url: unknown) => {
+    const fetchMock = vi.fn(async (url: (unknown) => {)
       const value = String(url);
       if (!value.includes("/json/list")) {
         throw new Error(`unexpected fetch: ${value}`);
@@ -986,7 +986,7 @@ describe("browser server-context tab selection state", () => {
   });
 
   it("resolves friendly tab references before backend focus and close calls", async () => {
-    const fetchMock = vi.fn(async (url: unknown) => {
+    const fetchMock = vi.fn(async (url: (unknown) => {)
       const value = String(url);
       if (value.includes("/json/list")) {
         return {

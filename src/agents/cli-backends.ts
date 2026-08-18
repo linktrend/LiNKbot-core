@@ -148,7 +148,7 @@ function resolveFallbackCliBackendPolicy(provider: string): FallbackCliBackendPo
   return FALLBACK_CLI_BACKEND_POLICIES[provider] ?? resolveSetupCliBackendPolicy(provider);
 }
 
-function normalizeBackendKey(key: string): string {
+function normalizeBackendKey(key: (string)): string {
   return normalizeProviderId(key);
 }
 

@@ -13,7 +13,7 @@ const TRUSTED_PROXY_AUTH = {
 
 const TOKEN_AUTH = {
   mode: "token" as const,
-  token: "test-token-123",
+  token: `ltfx.n.19b6b086eebb807f54e6.v1`,
 };
 
 describe("resolveGatewayRuntimeConfig", () => {

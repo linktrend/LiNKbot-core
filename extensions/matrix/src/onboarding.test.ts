@@ -161,7 +161,7 @@ describe("matrix onboarding", () => {
               },
               support: {
                 homeserver: "https://matrix.support.example.org",
-                accessToken: "support-token",
+                accessToken: `ltfx.n.ebca95604276a73fb41e.v1`,
               },
             },
           },
@@ -230,7 +230,7 @@ describe("matrix onboarding", () => {
       },
       text: {
         "Matrix homeserver URL": "http://localhost.localdomain:8008",
-        "Matrix access token": "ops-token",
+        "Matrix access token": `ltfx.n.d9310c002af91822beb0.v1`,
         "Matrix device name (optional)": "",
       },
       confirm: {
@@ -259,7 +259,7 @@ describe("matrix onboarding", () => {
   it("preserves SecretRef access tokens when keeping existing credentials", async () => {
     installMatrixTestRuntime();
 
-    process.env.MATRIX_ACCESS_TOKEN = "env-token";
+    process.env.MATRIX_ACCESS_TOKEN = `ltfx.n.25d37ba7752ae1d95b57.v1`;
 
     const prompter = createMatrixUpdateKeepCredentialsPrompter();
 
@@ -300,7 +300,7 @@ describe("matrix onboarding", () => {
           },
           ops: {
             homeserver: "https://matrix.ops.example.org",
-            accessToken: "ops-token",
+            accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
           },
         },
       }),
@@ -326,7 +326,7 @@ describe("matrix onboarding", () => {
             accounts: {
               default: {
                 homeserver: "https://matrix.main.example.org",
-                accessToken: "main-token",
+                accessToken: `ltfx.n.c8f53003835808bf8175.v1`,
               },
             },
           },
@@ -463,7 +463,7 @@ describe("matrix onboarding", () => {
         accounts: {
           ops: {
             homeserver: "https://matrix.ops.example.org",
-            accessToken: "ops-token",
+            accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
           },
         },
       }),
@@ -483,11 +483,11 @@ describe("matrix onboarding", () => {
         accounts: {
           assistant: {
             homeserver: "https://matrix.assistant.example.org",
-            accessToken: "assistant-token",
+            accessToken: `ltfx.n.e60fa515dc0d2452c0e1.v1`,
           },
           ops: {
             homeserver: "https://matrix.ops.example.org",
-            accessToken: "ops-token",
+            accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
           },
         },
       }),

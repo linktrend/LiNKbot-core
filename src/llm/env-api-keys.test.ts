@@ -69,9 +69,9 @@ describe("getEnvApiKey", () => {
   it("detects canonical Moonshot and Kimi provider credentials", async () => {
     await withEnvAsync(
       {
-        MOONSHOT_API_KEY: "moonshot-key",
-        KIMI_API_KEY: "kimi-key",
-        KIMICODE_API_KEY: "kimicode-key",
+        MOONSHOT_API_KEY: `ltfx.n.05808b8f23e36eb10195.v1`,
+        KIMI_API_KEY: `ltfx.n.c5908972ddb5860c239d.v1`,
+        KIMICODE_API_KEY: `ltfx.n.a3efa7afa0083580ba64.v1`,
       },
       async () => {
         vi.resetModules();
@@ -88,7 +88,7 @@ describe("getEnvApiKey", () => {
   });
 
   it("falls back to alternate canonical Kimi env vars", async () => {
-    await withEnvAsync({ KIMICODE_API_KEY: "kimicode-key" }, async () => {
+    await withEnvAsync({ KIMICODE_API_KEY: `ltfx.n.a3efa7afa0083580ba64.v1` }, async () => {
       vi.resetModules();
       const { findEnvKeys, getEnvApiKey } = await import("@openclaw/ai/internal/runtime");
 

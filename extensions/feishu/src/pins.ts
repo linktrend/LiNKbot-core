@@ -104,6 +104,6 @@ export async function listPinsFeishu(params: {
     chatId: params.chatId,
     pins: (response.data?.items ?? []).map(normalizePin),
     hasMore: response.data?.has_more === true,
-    pageToken: response.data?.page_token,
+    pageToken: (response.data?.page_token,)
   };
 }

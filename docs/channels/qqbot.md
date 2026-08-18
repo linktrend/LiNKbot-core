@@ -160,12 +160,12 @@ Run multiple QQ bots under a single OpenClaw instance:
     qqbot: {
       enabled: true,
       appId: "111111111",
-      clientSecret: "secret-of-bot-1",
+      clientSecret: "${ltfx.n.04e4ee96612e49eecfff.v1}",
       accounts: {
         bot2: {
           enabled: true,
           appId: "222222222",
-          clientSecret: "secret-of-bot-2",
+          clientSecret: "${ltfx.n.b76c7e5f62c4bd6252ae.v1}",
         },
       },
     },

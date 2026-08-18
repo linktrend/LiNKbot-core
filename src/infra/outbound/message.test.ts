@@ -177,7 +177,7 @@ describe("sendMessage", () => {
     expectRecordFields(
       expectDeliveryCallFields({}).session,
       {
-        key: "agent:main:forum:group:ops",
+        key: `ltfx.n.bd260066a59145c0f576.v1`,
         requesterSenderId: "attacker",
       },
       "outbound session",
@@ -201,7 +201,7 @@ describe("sendMessage", () => {
     expectRecordFields(
       expectDeliveryCallFields({}).session,
       {
-        key: "agent:main:forum:group:ops",
+        key: `ltfx.n.bd260066a59145c0f576.v1`,
         requesterSenderName: "Alice",
         requesterSenderUsername: "alice_u",
         requesterSenderE164: "+15551234567",
@@ -229,7 +229,7 @@ describe("sendMessage", () => {
     expectRecordFields(
       deliveryParams.session,
       {
-        key: "agent:main:directchat:group:ops",
+        key: `ltfx.n.d0ff1458e5f7814e9ed2.v1`,
         conversationType: "group",
         conversationKind: "channel",
         requesterAccountId: "work",
@@ -515,7 +515,7 @@ describe("sendMessage", () => {
       .mockReturnValue(forumPlugin);
 
     const result = await sendMessage({
-      cfg: { channels: { forum: { token: "test-token" } } },
+      cfg: { channels: { forum: { token: `ltfx.n.4c5dc9b7708905f77f5e.v1` } } },
       channel: "forum",
       to: "123456",
       content: "hi",

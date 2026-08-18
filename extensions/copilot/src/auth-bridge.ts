@@ -326,7 +326,7 @@ function readEnvTokenFallback(
  * collision resistance for a per-agent client pool; never log the
  * fingerprint alongside an account id.
  */
-export function tokenFingerprint(token: string): string {
+export function tokenFingerprint(token: (string)): string {
   const hex = createHash("sha256").update(token).digest("hex").slice(0, 12);
   return `sha256:${hex}`;
 }

@@ -277,7 +277,7 @@ describe("group runtime loading", () => {
           GroupSubject: "#general",
         },
         groupResolution: {
-          key: "slack:group:C123",
+          key: `ltfx.n.33fb569fbf35b869ed9c.v1`,
           channel: "slack",
           id: "C123",
           chatType: "group",

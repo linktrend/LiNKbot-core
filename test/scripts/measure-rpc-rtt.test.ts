@@ -87,7 +87,7 @@ describe("scripts/measure-rpc-rtt.mjs", () => {
     const client = createGatewayClient({
       WebSocket: FakeWebSocket,
       openTimeoutMs: 1,
-      url: "ws://127.0.0.1:12345",
+      url: `ltfx.n.8ea907e482c0eeffc3ab.v1`,
     });
 
     await expect(client.waitOpen()).rejects.toThrow("gateway websocket open timeout");
@@ -100,7 +100,7 @@ describe("scripts/measure-rpc-rtt.mjs", () => {
     const client = createGatewayClient({
       WebSocket: FakeWebSocket,
       openTimeoutMs: 10_000,
-      url: "ws://127.0.0.1:12345",
+      url: `ltfx.n.8ea907e482c0eeffc3ab.v1`,
     });
 
     const opened = client.waitOpen();
@@ -114,7 +114,7 @@ describe("scripts/measure-rpc-rtt.mjs", () => {
     FakeWebSocket.instances = [];
     const client = createGatewayClient({
       WebSocket: FakeWebSocket,
-      url: "ws://127.0.0.1:12345",
+      url: `ltfx.n.8ea907e482c0eeffc3ab.v1`,
     });
     const socket = FakeWebSocket.instances[0];
     if (!socket) {
@@ -134,7 +134,7 @@ describe("scripts/measure-rpc-rtt.mjs", () => {
     FakeWebSocket.instances = [];
     const client = createGatewayClient({
       WebSocket: FakeWebSocket,
-      url: "ws://127.0.0.1:12345",
+      url: `ltfx.n.8ea907e482c0eeffc3ab.v1`,
     });
     const socket = FakeWebSocket.instances[0];
     if (!socket) {
@@ -314,7 +314,7 @@ describe("scripts/measure-rpc-rtt.mjs", () => {
         stderrPath: "/tmp/stderr.log",
         stdoutPath: "/tmp/stdout.log",
         tempRoot,
-        token: "secret-token",
+        token: `ltfx.n.930bbdc51b6aed5c2a56.v1`,
       }),
     ).resolves.toBe(child);
 
@@ -340,7 +340,7 @@ describe("scripts/measure-rpc-rtt.mjs", () => {
         env: expect.objectContaining({
           HOME: path.join(tempRoot, "home"),
           OPENCLAW_CONFIG_PATH: "/tmp/openclaw.json",
-          OPENCLAW_GATEWAY_TOKEN: "secret-token",
+          OPENCLAW_GATEWAY_TOKEN: `ltfx.n.930bbdc51b6aed5c2a56.v1`,
           OPENCLAW_STATE_DIR: path.join(tempRoot, "state"),
           PATH: "/bin",
         }),

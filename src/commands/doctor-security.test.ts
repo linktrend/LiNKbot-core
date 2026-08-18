@@ -148,7 +148,7 @@ describe("noteSecurityWarnings gateway exposure", () => {
   });
 
   it("uses env token to avoid critical warning", async () => {
-    process.env.OPENCLAW_GATEWAY_TOKEN = "token-123";
+    process.env.OPENCLAW_GATEWAY_TOKEN = `ltfx.n.034192845dc489deca29.v1`;
     const cfg = { gateway: { bind: "lan" } } as OpenClawConfig;
     await noteSecurityWarnings(cfg);
     const message = lastMessage();
@@ -173,11 +173,11 @@ describe("noteSecurityWarnings gateway exposure", () => {
   });
 
   it("warns when OPENCLAW_GATEWAY_TOKEN env conflicts with gateway.auth.token config (#74271)", async () => {
-    process.env.OPENCLAW_GATEWAY_TOKEN = "env-token-123";
+    process.env.OPENCLAW_GATEWAY_TOKEN = `ltfx.n.5cd5d1167f1b52f0935e.v1`;
     const cfg = {
       gateway: {
         auth: {
-          token: "config-token-456",
+          token: `ltfx.n.d499bd9c2a18de0f5693.v1`,
         },
       },
     } as OpenClawConfig;
@@ -189,7 +189,7 @@ describe("noteSecurityWarnings gateway exposure", () => {
   });
 
   it("does not warn when only env token is set without config token", async () => {
-    process.env.OPENCLAW_GATEWAY_TOKEN = "env-token-only";
+    process.env.OPENCLAW_GATEWAY_TOKEN = `ltfx.n.002c5805a314da439527.v1`;
     const cfg = { gateway: { bind: "lan" } } as OpenClawConfig;
     await noteSecurityWarnings(cfg);
     const message = lastMessage();
@@ -197,12 +197,12 @@ describe("noteSecurityWarnings gateway exposure", () => {
   });
 
   it("does not warn inside the managed gateway service credential context", async () => {
-    process.env.OPENCLAW_GATEWAY_TOKEN = "env-token-123";
+    process.env.OPENCLAW_GATEWAY_TOKEN = `ltfx.n.5cd5d1167f1b52f0935e.v1`;
     process.env.OPENCLAW_SERVICE_KIND = "gateway";
     const cfg = {
       gateway: {
         auth: {
-          token: "config-token-456",
+          token: `ltfx.n.d499bd9c2a18de0f5693.v1`,
         },
       },
     } as OpenClawConfig;
@@ -212,7 +212,7 @@ describe("noteSecurityWarnings gateway exposure", () => {
   });
 
   it("does not warn when config token uses OPENCLAW_GATEWAY_TOKEN SecretRef", async () => {
-    process.env.OPENCLAW_GATEWAY_TOKEN = "env-token-123";
+    process.env.OPENCLAW_GATEWAY_TOKEN = `ltfx.n.5cd5d1167f1b52f0935e.v1`;
     const cfg = {
       gateway: { auth: { token: "${OPENCLAW_GATEWAY_TOKEN}" } },
       secrets: { providers: { default: { source: "env" } } },
@@ -223,12 +223,12 @@ describe("noteSecurityWarnings gateway exposure", () => {
   });
 
   it("does not warn about local gateway auth token precedence in remote mode", async () => {
-    process.env.OPENCLAW_GATEWAY_TOKEN = "env-token-123";
+    process.env.OPENCLAW_GATEWAY_TOKEN = `ltfx.n.5cd5d1167f1b52f0935e.v1`;
     const cfg = {
       gateway: {
         mode: "remote",
-        remote: { token: "remote-token" },
-        auth: { token: "local-token" },
+        remote: { token: `ltfx.n.b79f8018a1bfa2040be5.v1` },
+        auth: { token: `ltfx.n.c7ec7c548f5992a239dc.v1` },
       },
     } as OpenClawConfig;
     await noteSecurityWarnings(cfg);
@@ -346,7 +346,7 @@ describe("noteSecurityWarnings gateway exposure", () => {
       models: {
         providers: {
           openai: {
-            apiKey: "sk-openai-plaintext",
+            apiKey: `ltfx.n.7a4f82cb7e353fa56417.v1`,
           },
         },
       },
@@ -364,7 +364,7 @@ describe("noteSecurityWarnings gateway exposure", () => {
         providers: {
           openai: {
             headers: {
-              Authorization: "Bearer sk-header-plaintext",
+              Authorization: "Bearer ltfx.n.23f4285a45acb05fc68d.v1",
             },
           },
         },

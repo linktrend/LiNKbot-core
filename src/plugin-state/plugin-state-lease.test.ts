@@ -581,7 +581,7 @@ describe("plugin state SQLite leases", () => {
           "memory-core",
           {
             namespace: "qmd",
-            key: "max-duration",
+            key: `ltfx.n.a9065d524020256d5a50.v1`,
             database: { scope: "shared" },
             leaseMs: MAX_TIMER_TIMEOUT_MS,
             waitMs: MAX_TIMER_TIMEOUT_MS,

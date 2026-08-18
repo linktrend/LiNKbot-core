@@ -12,7 +12,7 @@ import { createGatewayHttpServer } from "./server-http.js";
 
 const resolvedAuth: ResolvedGatewayAuth = {
   mode: "token",
-  token: "test-token",
+  token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
   allowTailscale: false,
 };
 const tempDirs: string[] = [];

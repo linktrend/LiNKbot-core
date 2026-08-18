@@ -232,7 +232,7 @@ final class DashboardLinkBrowserView: NSView {
 
     func updateChrome() {
         let tab = self.activeTab
-        let url = tab?.representedURL
+        let url = (tab?.representedURL)
         self.addressLabel.stringValue = url?.host(percentEncoded: false) ?? url?.absoluteString ?? ""
         self.addressLabel.toolTip = url?.absoluteString
         self.backButton.isEnabled = tab?.webView.canGoBack == true

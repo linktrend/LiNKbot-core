@@ -28,7 +28,7 @@ describe("transcribeOpenAiAudio", () => {
     const result = await openaiMediaUnderstandingProvider.transcribeAudio!({
       buffer: Buffer.from("audio"),
       fileName: "note.mp3",
-      apiKey: "test-key",
+      apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
       timeoutMs: 1000,
       headers: { authorization: "Bearer override" },
       fetchFn,
@@ -44,7 +44,7 @@ describe("transcribeOpenAiAudio", () => {
     const result = await openaiMediaUnderstandingProvider.transcribeAudio!({
       buffer: Buffer.from("audio-bytes"),
       fileName: "voice.wav",
-      apiKey: "test-key",
+      apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
       timeoutMs: 1234,
       baseUrl: "https://api.example.com/v1/",
       model: " ",
@@ -88,7 +88,7 @@ describe("transcribeOpenAiAudio", () => {
       openaiMediaUnderstandingProvider.transcribeAudio!({
         buffer: Buffer.from("audio-bytes"),
         fileName: "voice.wav",
-        apiKey: "test-key",
+        apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
         timeoutMs: 1234,
         fetchFn,
       }),

@@ -446,12 +446,12 @@ function makeSingleProviderStore(params: {
           ? {
               type: "token",
               provider: params.provider,
-              token: "test-token",
+              token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
             }
           : {
               type: "api_key",
               provider: params.provider,
-              key: "test-key",
+              key: `ltfx.n.62af8704764faf8ea82f.v1`,
             },
     },
     usageStats: {
@@ -491,7 +491,7 @@ async function expectSkippedUnavailableProvider(params: {
       "fallback:default": {
         type: "api_key",
         provider: "fallback",
-        key: "test-key",
+        key: `ltfx.n.62af8704764faf8ea82f.v1`,
       },
     },
   };
@@ -1124,8 +1124,8 @@ describe("runWithModelFallback", () => {
     setAuthRuntimeStore(tempDir, {
       version: AUTH_STORE_VERSION,
       profiles: {
-        "openai:default": { type: "api_key", provider: "openai", key: "test-key" },
-        "anthropic:default": { type: "api_key", provider: "anthropic", key: "test-key" },
+        "openai:default": { type: "api_key", provider: "openai", key: `ltfx.n.62af8704764faf8ea82f.v1` },
+        "anthropic:default": { type: "api_key", provider: "anthropic", key: `ltfx.n.62af8704764faf8ea82f.v1` },
       },
       usageStats: {
         "openai:default": {
@@ -1173,8 +1173,8 @@ describe("runWithModelFallback", () => {
     setAuthRuntimeStore(tempDir, {
       version: AUTH_STORE_VERSION,
       profiles: {
-        "openai:default": { type: "api_key", provider: "openai", key: "test-key" },
-        "anthropic:default": { type: "api_key", provider: "anthropic", key: "test-key" },
+        "openai:default": { type: "api_key", provider: "openai", key: `ltfx.n.62af8704764faf8ea82f.v1` },
+        "anthropic:default": { type: "api_key", provider: "anthropic", key: `ltfx.n.62af8704764faf8ea82f.v1` },
       },
       usageStats: {
         "openai:default": {
@@ -1214,8 +1214,8 @@ describe("runWithModelFallback", () => {
     setAuthRuntimeStore(tempDir, {
       version: AUTH_STORE_VERSION,
       profiles: {
-        "openai:default": { type: "api_key", provider: "openai", key: "test-key" },
-        "anthropic:default": { type: "api_key", provider: "anthropic", key: "test-key" },
+        "openai:default": { type: "api_key", provider: "openai", key: `ltfx.n.62af8704764faf8ea82f.v1` },
+        "anthropic:default": { type: "api_key", provider: "anthropic", key: `ltfx.n.62af8704764faf8ea82f.v1` },
       },
       usageStats: {
         "openai:default": {
@@ -1271,8 +1271,8 @@ describe("runWithModelFallback", () => {
     setAuthRuntimeStore(tempDir, {
       version: AUTH_STORE_VERSION,
       profiles: {
-        "anthropic:default": { type: "api_key", provider: "anthropic", key: "test-key" },
-        "openai:default": { type: "api_key", provider: "openai", key: "test-key" },
+        "anthropic:default": { type: "api_key", provider: "anthropic", key: `ltfx.n.62af8704764faf8ea82f.v1` },
+        "openai:default": { type: "api_key", provider: "openai", key: `ltfx.n.62af8704764faf8ea82f.v1` },
       },
       usageStats: {
         "anthropic:default": {
@@ -1324,7 +1324,7 @@ describe("runWithModelFallback", () => {
     setAuthRuntimeStore(tempDir, {
       version: AUTH_STORE_VERSION,
       profiles: {
-        "anthropic:default": { type: "api_key", provider: "anthropic", key: "test-key" },
+        "anthropic:default": { type: "api_key", provider: "anthropic", key: `ltfx.n.62af8704764faf8ea82f.v1` },
       },
       usageStats: {
         "anthropic:default": {
@@ -1409,8 +1409,8 @@ describe("runWithModelFallback", () => {
     setAuthRuntimeStore(tempDir, {
       version: AUTH_STORE_VERSION,
       profiles: {
-        "anthropic:default": { type: "api_key", provider: "anthropic", key: "test-key" },
-        "openai:default": { type: "api_key", provider: "openai", key: "test-key" },
+        "anthropic:default": { type: "api_key", provider: "anthropic", key: `ltfx.n.62af8704764faf8ea82f.v1` },
+        "openai:default": { type: "api_key", provider: "openai", key: `ltfx.n.62af8704764faf8ea82f.v1` },
       },
       usageStats: {
         "anthropic:default": {
@@ -1460,9 +1460,9 @@ describe("runWithModelFallback", () => {
         "claude-cli:default": {
           type: "api_key",
           provider: "claude-cli",
-          key: "test-key",
+          key: `ltfx.n.62af8704764faf8ea82f.v1`,
         },
-        "openai:default": { type: "api_key", provider: "openai", key: "test-key" },
+        "openai:default": { type: "api_key", provider: "openai", key: `ltfx.n.62af8704764faf8ea82f.v1` },
       },
       usageStats: {
         "claude-cli:default": {
@@ -2924,8 +2924,8 @@ describe("runWithModelFallback", () => {
     const store: AuthProfileStore = {
       version: AUTH_STORE_VERSION,
       profiles: {
-        "anthropic:default": { type: "api_key", provider: "anthropic", key: "anthropic-key" },
-        "openai:default": { type: "api_key", provider: "openai", key: "openai-key" },
+        "anthropic:default": { type: "api_key", provider: "anthropic", key: `ltfx.n.6e2c8215fd888dc9fcb3.v1` },
+        "openai:default": { type: "api_key", provider: "openai", key: `ltfx.n.97aba22fd3c830fb7840.v1` },
       },
     };
 
@@ -2981,8 +2981,8 @@ describe("runWithModelFallback", () => {
     const store: AuthProfileStore = {
       version: AUTH_STORE_VERSION,
       profiles: {
-        "anthropic:default": { type: "api_key", provider: "anthropic", key: "anthropic-key" },
-        "openai:default": { type: "api_key", provider: "openai", key: "openai-key" },
+        "anthropic:default": { type: "api_key", provider: "anthropic", key: `ltfx.n.6e2c8215fd888dc9fcb3.v1` },
+        "openai:default": { type: "api_key", provider: "openai", key: `ltfx.n.97aba22fd3c830fb7840.v1` },
       },
       usageStats: {
         "anthropic:default": {
@@ -3532,7 +3532,7 @@ describe("runWithModelFallback", () => {
       const store: AuthProfileStore = {
         version: AUTH_STORE_VERSION,
         profiles: {
-          [`${provider}:default`]: { type: "api_key", provider, key: "test-key" },
+          [`${provider}:default`]: { type: "api_key", provider, key: `ltfx.n.62af8704764faf8ea82f.v1` },
         },
         usageStats: {
           [`${provider}:default`]:
@@ -3658,8 +3658,8 @@ describe("runWithModelFallback", () => {
       const store: AuthProfileStore = {
         version: AUTH_STORE_VERSION,
         profiles: {
-          "anthropic:default": { type: "api_key", provider: "anthropic", key: "test-key" },
-          "groq:default": { type: "api_key", provider: "groq", key: "test-key" },
+          "anthropic:default": { type: "api_key", provider: "anthropic", key: `ltfx.n.62af8704764faf8ea82f.v1` },
+          "groq:default": { type: "api_key", provider: "groq", key: `ltfx.n.62af8704764faf8ea82f.v1` },
         },
         usageStats: {
           "anthropic:default": {

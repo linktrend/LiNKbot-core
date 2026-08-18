@@ -31,7 +31,7 @@ daemon. For install and product docs, see [lmstudio.ai](https://lmstudio.ai/).
   </Step>
   <Step title="Set an API key if auth is enabled">
     ```bash
-    export LM_API_TOKEN="your-lm-studio-api-token"
+    export LM_API_TOKEN="${ltfx.n.c6594ee038346b8c65fd.v1}"
     ```
 
     If LM Studio authentication is disabled, leave the API key blank during setup. See
@@ -176,7 +176,7 @@ loopback on that machine:
     providers: {
       lmstudio: {
         baseUrl: "http://gpu-box.local:1234/v1",
-        apiKey: "lmstudio",
+        apiKey: "${ltfx.n.c8c175e4fd9aacec1feb.v1}",
         api: "openai-completions",
         models: [{ id: "qwen/qwen3.5-9b" }],
       },

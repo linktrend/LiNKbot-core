@@ -244,14 +244,14 @@ describe("OpenClaw app lifecycle", () => {
     } as ApplicationGatewaySnapshot;
     const firstGateway = {
       snapshot,
-      connection: { gatewayUrl: "ws://first.test", token: "first", password: "first-password" },
+      connection: { gatewayUrl: "ws://first.test", token: "first", password: `ltfx.n.52348728fc25a2875534.v1` },
     } as ApplicationGateway;
     const secondGateway = {
       snapshot,
       connection: {
         gatewayUrl: "ws://second.test",
         token: "second",
-        password: "second-password",
+        password: `ltfx.n.5b7865cd940ba26f00ee.v1`,
       },
     } as ApplicationGateway;
     app.synchronizeGateway(firstGateway);

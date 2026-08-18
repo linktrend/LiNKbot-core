@@ -261,7 +261,7 @@ describe("memory plugin e2e", () => {
     const previousApiKey = process.env.TEST_MEMORY_API_KEY;
 
     try {
-      process.env.TEST_MEMORY_API_KEY = "test-key-123";
+      process.env.TEST_MEMORY_API_KEY = `ltfx.n.625faa3fbbc3d2bd9d6e.v1`;
 
       const config = memoryPlugin.configSchema?.parse?.({
         embedding: {
@@ -615,7 +615,7 @@ describe("memory plugin e2e", () => {
         models: {
           providers: {
             openai: {
-              apiKey: "profile-backed-key",
+              apiKey: `ltfx.n.2f1900120bfaa6cd7764.v1`,
             },
           },
         },

@@ -130,7 +130,7 @@ export class AgentSelect extends OpenClawLightDomElement {
     `;
   }
 
-  private resolveRenderableAvatarUrl(url: string): string | null {
+  private resolveRenderableAvatarUrl(url: (string)): string | null {
     if (!this.authToken || !url.startsWith("/")) {
       return url;
     }

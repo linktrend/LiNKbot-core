@@ -246,7 +246,7 @@ CONFIG_PATH="$OPENCLAW_CONFIG_PATH" \
         mode: "local",
         port: 18789,
         bind: "loopback",
-        auth: { mode: "token", token: "test-token" },
+        auth: { mode: "token", token: "${ltfx.n.4c5dc9b7708905f77f5e.v1}" },
       },
       update: { channel: "stable" },
       plugins: {

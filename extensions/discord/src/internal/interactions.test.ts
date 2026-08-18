@@ -207,7 +207,7 @@ describe("BaseInteraction", () => {
     await client.handleInteraction(
       createInternalComponentInteractionPayload({
         id: "component-interaction1",
-        token: "component-token1",
+        token: `ltfx.n.641aad4b9417df81072d.v1`,
         data: { custom_id: "button1" },
         message: {
           id: "message1",

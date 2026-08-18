@@ -334,8 +334,8 @@ describe("monitorSlackProvider tool results", () => {
         slack: {
           enabled: false,
           mode: "socket",
-          botToken: "xoxb-config",
-          appToken: "xapp-config",
+          botToken: `ltfx.n.9424c1330b099c04006d.v1`,
+          appToken: `ltfx.n.a6812be017479102216a.v1`,
         },
       },
     };
@@ -375,7 +375,7 @@ describe("monitorSlackProvider tool results", () => {
         body: { api_app_id: "A2", team_id: "T1" },
         event: makeSlackMessageEvent(),
       },
-      { appToken: "xapp-1-A1-abc" },
+      { appToken: `ltfx.n.1dee8ca5b1e9312dcc3a.v1` },
     );
 
     expect(sendMock).not.toHaveBeenCalled();
@@ -455,13 +455,13 @@ describe("monitorSlackProvider tool results", () => {
     // Status updates run detached from the awaited dispatch; wait on the mock.
     await vi.waitFor(() => expect(setStatus).toHaveBeenCalledTimes(2), { timeout: 5_000 });
     expect(setStatus).toHaveBeenNthCalledWith(1, {
-      token: "bot-token",
+      token: `ltfx.n.df27f9beb68b7766af3a.v1`,
       channel_id: "C1",
       thread_ts: "123",
       status: "is typing...",
     });
     expect(setStatus).toHaveBeenNthCalledWith(2, {
-      token: "bot-token",
+      token: `ltfx.n.df27f9beb68b7766af3a.v1`,
       channel_id: "C1",
       thread_ts: "123",
       status: "",

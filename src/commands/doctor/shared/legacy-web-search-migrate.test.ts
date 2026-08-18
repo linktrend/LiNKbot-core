@@ -21,13 +21,13 @@ describe("legacy web search config", () => {
         web: {
           search: {
             provider: "grok",
-            apiKey: "brave-key",
+            apiKey: `ltfx.n.fce21b851371f2ed137c.v1`,
             grok: {
               apiKey: "xai-key",
               model: "grok-4-1-fast",
             },
             kimi: {
-              apiKey: "kimi-key",
+              apiKey: `ltfx.n.c5908972ddb5860c239d.v1`,
               model: "kimi-k2.5",
             },
           },
@@ -42,7 +42,7 @@ describe("legacy web search config", () => {
       enabled: true,
       config: {
         webSearch: {
-          apiKey: "brave-key",
+          apiKey: `ltfx.n.fce21b851371f2ed137c.v1`,
         },
       },
     });
@@ -59,7 +59,7 @@ describe("legacy web search config", () => {
       enabled: true,
       config: {
         webSearch: {
-          apiKey: "kimi-key",
+          apiKey: `ltfx.n.c5908972ddb5860c239d.v1`,
           model: "kimi-k2.5",
         },
       },
@@ -106,7 +106,7 @@ describe("legacy web search config", () => {
         web: {
           search: {
             provider: "grok",
-            apiKey: "brave-key",
+            apiKey: `ltfx.n.fce21b851371f2ed137c.v1`,
             grok: {
               apiKey: "xai-key",
               model: "grok-4-search",
@@ -131,7 +131,7 @@ describe("legacy web search config", () => {
       tools: {
         web: {
           search: {
-            apiKey: "brave-key",
+            apiKey: `ltfx.n.fce21b851371f2ed137c.v1`,
             customSearch: {
               endpoint: "https://search.example.test",
               mode: "strict",
@@ -157,7 +157,7 @@ describe("legacy web search config", () => {
       enabled: true,
       config: {
         webSearch: {
-          apiKey: "brave-key",
+          apiKey: `ltfx.n.fce21b851371f2ed137c.v1`,
         },
       },
     });
@@ -168,7 +168,7 @@ describe("legacy web search config", () => {
       tools: {
         web: {
           search: {
-            apiKey: "brave-key",
+            apiKey: `ltfx.n.fce21b851371f2ed137c.v1`,
             ["__proto__"]: {
               polluted: true,
             },
@@ -199,7 +199,7 @@ describe("legacy web search config", () => {
         tools: {
           web: {
             search: {
-              apiKey: "brave-key",
+              apiKey: `ltfx.n.fce21b851371f2ed137c.v1`,
               grok: {
                 apiKey: "xai-key",
                 model: "grok-4-search",

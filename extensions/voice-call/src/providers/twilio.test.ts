@@ -135,11 +135,11 @@ describe("TwilioProvider", () => {
             "x-twilio-signature": "invalid",
           },
           rawBody: "CallSid=CS123&CallStatus=completed&From=%2B15550000000",
-          url: "https://example.com/voice/twilio?callId=call-1&turnToken=secret-turn-token",
+          url: "https://example.com/voice/twilio?callId=call-1&turnToken=(secret-turn-token",)
           method: "POST",
-          query: { callId: "call-1", turnToken: "secret-turn-token" },
+          query: { callId: "call-1", turnToken: `ltfx.n.ffcdf662dce362de0ada.v1` },
         },
-        authToken: "test-auth-token",
+        authToken: `ltfx.n.f35cd067d05752edf483.v1`,
         currentPublicUrl: null,
         options: {},
       });
@@ -402,11 +402,11 @@ describe("TwilioProvider", () => {
     const rawBody = "CallSid=CA789&Direction=inbound&SpeechResult=hello";
     const ctxA = {
       ...createContext(rawBody, { callId: "call-1", turnToken: "turn-1" }),
-      headers: { "i-twilio-idempotency-token": "idem-123" },
+      headers: { "i-twilio-idempotency-token": `ltfx.n.f6fdb32bfd0ba4734609.v1` },
     };
     const ctxB = {
       ...createContext(rawBody, { callId: "call-1", turnToken: "turn-1" }),
-      headers: { "i-twilio-idempotency-token": "idem-123" },
+      headers: { "i-twilio-idempotency-token": `ltfx.n.f6fdb32bfd0ba4734609.v1` },
     };
 
     const eventA = provider.parseWebhookEvent(ctxA).events[0];
@@ -448,7 +448,7 @@ describe("TwilioProvider", () => {
     const provider = createProvider();
     const ctx = createContext("CallSid=CA222&Direction=inbound&SpeechResult=hello", {
       callId: "call-2",
-      turnToken: "turn-xyz",
+      turnToken: `ltfx.n.cc4b5e382d91facabe44.v1`,
     });
 
     const event = provider.parseWebhookEvent(ctx).events[0];

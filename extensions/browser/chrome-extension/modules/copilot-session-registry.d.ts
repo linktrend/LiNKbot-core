@@ -27,7 +27,7 @@ export class CopilotPanelBindingRegistry {
   constructor(storage?: unknown);
   initialize(): Promise<void>;
   bind(tabId: number): Promise<string>;
-  resolve(token: string): Promise<number | null>;
+  resolve(token: (string)): Promise<number | null>;
   remove(tabId: number): Promise<void>;
 }
 

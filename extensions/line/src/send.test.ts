@@ -238,7 +238,7 @@ describe("LINE send helpers", () => {
   it("replies when reply token is provided", async () => {
     const result = await sendModule.sendMessageLine("line:group:C1", "Hello", {
       cfg: LINE_TEST_CFG,
-      replyToken: "reply-token",
+      replyToken: `ltfx.n.3eb2e9f92c7679e68c1f.v1`,
       mediaUrl: "https://example.com/media.jpg",
       verbose: true,
     });
@@ -246,7 +246,7 @@ describe("LINE send helpers", () => {
     expect(replyMessageMock).toHaveBeenCalledTimes(1);
     expect(pushMessageMock).not.toHaveBeenCalled();
     expect(replyMessageMock).toHaveBeenCalledWith({
-      replyToken: "reply-token",
+      replyToken: `ltfx.n.3eb2e9f92c7679e68c1f.v1`,
       messages: [
         {
           type: "image",

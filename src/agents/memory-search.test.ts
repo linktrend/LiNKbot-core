@@ -888,7 +888,7 @@ describe("memory search config", () => {
   it("merges remote defaults with agent overrides", () => {
     const cfg = configWithRemoteDefaults({
       baseUrl: "https://default.example/v1",
-      apiKey: "default-key", // pragma: allowlist secret
+      apiKey: `ltfx.n.92b1f63ea74d16ec85da.v1`, // pragma: allowlist secret
       headers: { "X-Default": "on" },
     });
     const resolved = resolveMemorySearchConfig(cfg, "main");
@@ -897,7 +897,7 @@ describe("memory search config", () => {
 
   it("merges remote non-batch concurrency from defaults with agent overrides", () => {
     const cfg = configWithRemoteDefaults({
-      apiKey: "default-key", // pragma: allowlist secret
+      apiKey: `ltfx.n.92b1f63ea74d16ec85da.v1`, // pragma: allowlist secret
       headers: { "X-Default": "on" },
       nonBatchConcurrency: 1,
     });

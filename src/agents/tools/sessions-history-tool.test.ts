@@ -131,12 +131,12 @@ describe("sessions_history redaction", () => {
     // Recalled transcript content is model-visible, so it is always redacted
     // even when normal logging redaction is configured off.
     useLoggingConfig("redaction-off.json", { redactSensitive: "off" });
-    const tool = createHistoryToolWithMessage("OPENROUTER_API_KEY=sk-or-v1-abcdef0123456789");
+    const tool = createHistoryToolWithMessage("OPENROUTER_API_KEY=(ltfx.n.ef807a392d02dee038f9.v1);
 
     const result = await tool.execute("call-1", { sessionKey: "main" });
     const serialized = JSON.stringify(result.details);
 
-    expect(serialized).not.toContain("sk-or-v1-abcdef0123456789");
+    expect(serialized).not.toContain("ltfx.n.dcb9668e750b1e0e0c24.v1");
     expect(serialized).toContain("OPENROUTER_API_KEY=");
     expect((result.details as { contentRedacted?: unknown }).contentRedacted).toBe(true);
   });

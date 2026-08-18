@@ -106,7 +106,7 @@ describe("Mistral provider", () => {
 
   it("forwards simple stop sequences to Mistral stop", async () => {
     const stream = streamSimpleMistral(makeMistralModel(), context, {
-      apiKey: "sk-mistral-provider",
+      apiKey: `ltfx.n.b129568ee4c745234a0f.v1`,
       stop: ["STOP"],
     });
 
@@ -124,7 +124,7 @@ describe("Mistral provider", () => {
     });
 
     const result = await streamMistral(makeMistralModel(), context, {
-      apiKey: "sk-mistral-provider",
+      apiKey: `ltfx.n.b129568ee4c745234a0f.v1`,
     }).result();
 
     expect(result.errorMessage).toBe(`Mistral API error (400): ${prefix}... [truncated 6 chars]`);
@@ -134,7 +134,7 @@ describe("Mistral provider", () => {
     const hostFetch = vi.fn<typeof fetch>(async () => new Response("guarded"));
     configureAiTransportHost({ buildModelFetch: () => hostFetch });
 
-    await streamMistral(makeMistralModel(), context, { apiKey: "sentinel-key" }).result();
+    await streamMistral(makeMistralModel(), context, { apiKey: `ltfx.n.bd0f294365a3726f00cb.v1` }).result();
 
     const config = mistralMockState.configs[0] as {
       apiKey?: string;
@@ -156,7 +156,7 @@ describe("Mistral provider", () => {
       },
       context,
       {
-        apiKey: "sk-mistral-provider",
+        apiKey: `ltfx.n.b129568ee4c745234a0f.v1`,
         reasoning: "high",
       },
     );
@@ -192,7 +192,7 @@ describe("Mistral provider", () => {
         ] as never,
       },
       {
-        apiKey: "sk-mistral-provider",
+        apiKey: `ltfx.n.b129568ee4c745234a0f.v1`,
       },
     );
 
@@ -225,7 +225,7 @@ describe("Mistral provider", () => {
         tools: [makeUnreadableParameterTool()] as never,
       },
       {
-        apiKey: "sk-mistral-provider",
+        apiKey: `ltfx.n.b129568ee4c745234a0f.v1`,
         toolChoice: "auto",
       },
     );
@@ -300,7 +300,7 @@ describe("Mistral provider", () => {
         },
       };
       const result = await streamMistral(makeMistralModel(), context, {
-        apiKey: "sk-mistral-provider",
+        apiKey: `ltfx.n.b129568ee4c745234a0f.v1`,
       }).result();
       const toolCalls = result.content.filter((block) => block.type === "toolCall");
       expect(toolCalls).toHaveLength(2);
@@ -377,7 +377,7 @@ describe("Mistral provider", () => {
     };
 
     const result = await streamMistral(makeMistralModel(), context, {
-      apiKey: "sk-mistral-provider",
+      apiKey: `ltfx.n.b129568ee4c745234a0f.v1`,
     }).result();
     const toolCalls = result.content.filter((block) => block.type === "toolCall");
 
@@ -446,7 +446,7 @@ describe("Mistral provider", () => {
     };
 
     const result = await streamMistral(makeMistralModel(), context, {
-      apiKey: "sk-mistral-provider",
+      apiKey: `ltfx.n.b129568ee4c745234a0f.v1`,
     }).result();
     const toolCalls = result.content.filter((block) => block.type === "toolCall");
 
@@ -515,7 +515,7 @@ describe("Mistral provider", () => {
     };
 
     const result = await streamMistral(makeMistralModel(), context, {
-      apiKey: "sk-mistral-provider",
+      apiKey: `ltfx.n.b129568ee4c745234a0f.v1`,
     }).result();
     const toolCalls = result.content.filter((block) => block.type === "toolCall");
 
@@ -572,7 +572,7 @@ describe("Mistral provider", () => {
     };
 
     const result = await streamMistral(makeMistralModel(), context, {
-      apiKey: "sk-mistral-provider",
+      apiKey: `ltfx.n.b129568ee4c745234a0f.v1`,
     }).result();
 
     expect(result.stopReason).toBe("error");
@@ -626,7 +626,7 @@ describe("Mistral provider", () => {
     };
 
     const result = await streamMistral(makeMistralModel(), context, {
-      apiKey: "sk-mistral-provider",
+      apiKey: `ltfx.n.b129568ee4c745234a0f.v1`,
     }).result();
     const toolCalls = result.content.filter((block) => block.type === "toolCall");
 
@@ -673,7 +673,7 @@ describe("Mistral provider", () => {
     };
 
     const result = await streamMistral(makeMistralModel(), context, {
-      apiKey: "sk-mistral-provider",
+      apiKey: `ltfx.n.b129568ee4c745234a0f.v1`,
     }).result();
     const toolCalls = result.content.filter((block) => block.type === "toolCall");
 
@@ -702,7 +702,7 @@ describe("Mistral provider", () => {
         ] as never,
       },
       {
-        apiKey: "sk-mistral-provider",
+        apiKey: `ltfx.n.b129568ee4c745234a0f.v1`,
         toolChoice: { type: "function", function: { name: "broken_tool" } },
       },
     );
@@ -734,7 +734,7 @@ describe("Mistral provider", () => {
         ] as never,
       },
       {
-        apiKey: "sk-mistral-provider",
+        apiKey: `ltfx.n.b129568ee4c745234a0f.v1`,
         toolChoice: {
           type: "function",
           function: {
@@ -764,7 +764,7 @@ describe("Mistral provider", () => {
         systemPrompt: `Stable${SYSTEM_PROMPT_CACHE_BOUNDARY}Dynamic`,
         messages: [{ role: "user", content: "hello", timestamp: 0 }],
       },
-      { apiKey: "sk-mistral-provider" },
+      { apiKey: `ltfx.n.b129568ee4c745234a0f.v1` },
     );
 
     await stream.result();
@@ -894,7 +894,7 @@ describe("Mistral provider", () => {
     } as unknown as Context;
 
     const stream = streamMistral(makeMistralModel(), testContext, {
-      apiKey: "sk-mistral-provider",
+      apiKey: `ltfx.n.b129568ee4c745234a0f.v1`,
     });
     await stream.result();
 
@@ -983,7 +983,7 @@ describe("Mistral provider", () => {
     } as unknown as Context;
 
     const stream = streamMistral(makeMistralModel(), testContext, {
-      apiKey: "sk-mistral-provider",
+      apiKey: `ltfx.n.b129568ee4c745234a0f.v1`,
     });
     await stream.result();
 

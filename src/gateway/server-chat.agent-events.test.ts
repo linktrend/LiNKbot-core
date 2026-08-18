@@ -1847,7 +1847,7 @@ describe("agent event handler", () => {
     });
 
     vi.mocked(loadGatewaySessionRow).mockReturnValue({
-      key: "session-1",
+      key: `ltfx.n.84097828fc31a8c8d292.v1`,
       kind: "direct",
       spawnedBy: "agent:main:main",
       spawnedWorkspaceDir: "/tmp/subagent",
@@ -2042,7 +2042,7 @@ describe("agent event handler", () => {
     });
 
     vi.mocked(loadGatewaySessionRow).mockReturnValue({
-      key: "session-1",
+      key: `ltfx.n.84097828fc31a8c8d292.v1`,
       kind: "direct",
       spawnedBy: "agent:main:main",
       spawnedWorkspaceDir: "/tmp/subagent",
@@ -2164,7 +2164,7 @@ describe("agent event handler", () => {
     });
 
     vi.mocked(loadGatewaySessionRow).mockReturnValue({
-      key: "session-1",
+      key: `ltfx.n.84097828fc31a8c8d292.v1`,
       kind: "direct",
       spawnedBy: "agent:main:main",
       spawnedWorkspaceDir: "/tmp/subagent",
@@ -2221,7 +2221,7 @@ describe("agent event handler", () => {
 
   it("broadcasts terminal session status to session subscribers on lifecycle end", async () => {
     vi.mocked(loadGatewaySessionRow).mockReturnValue({
-      key: "session-finished",
+      key: `ltfx.n.2f8a593d7847b2eeac74.v1`,
       kind: "direct",
       updatedAt: 1_700,
       status: "done",
@@ -2315,7 +2315,7 @@ describe("agent event handler", () => {
 
   it("does not project stale pre-reset lifecycle events into session subscriber snapshots", async () => {
     vi.mocked(loadGatewaySessionRow).mockReturnValue({
-      key: "session-reset",
+      key: `ltfx.n.171ec8b033edd5d4fb60.v1`,
       kind: "direct",
       sessionId: "new-session",
       updatedAt: 2_000,
@@ -2568,7 +2568,7 @@ describe("agent event handler", () => {
       legacyKey: undefined,
     });
     vi.mocked(loadGatewaySessionRow).mockReturnValue({
-      key: "session-recovery",
+      key: `ltfx.n.0f6f245f3962ffd7b6df.v1`,
       kind: "direct",
       sessionId: "session-recovery",
       updatedAt: 2_000,
@@ -2639,7 +2639,7 @@ describe("agent event handler", () => {
       legacyKey: undefined,
     });
     let currentRow = {
-      key: "session-recovery",
+      key: `ltfx.n.0f6f245f3962ffd7b6df.v1`,
       kind: "direct" as const,
       sessionId: "session-recovery",
       updatedAt: 2_000,
@@ -2729,7 +2729,7 @@ describe("agent event handler", () => {
       legacyKey: undefined,
     });
     let currentRow = {
-      key: "session-recovery",
+      key: `ltfx.n.0f6f245f3962ffd7b6df.v1`,
       kind: "direct" as const,
       sessionId: "session-recovery",
       updatedAt: 2_000,
@@ -2788,7 +2788,7 @@ describe("agent event handler", () => {
 
   it("broadcasts a terminal fallback snapshot when persistence fails", async () => {
     vi.mocked(loadGatewaySessionRow).mockReturnValue({
-      key: "session-failed-write",
+      key: `ltfx.n.efd87afbc1ddcd625e96.v1`,
       kind: "direct",
       sessionId: "session-failed-write",
       updatedAt: 2_000,
@@ -2797,7 +2797,7 @@ describe("agent event handler", () => {
       abortedLastRun: false,
     });
     persistGatewaySessionLifecycleEventMock.mockRejectedValueOnce(
-      new Error("disk full sk-abcdefghijklmnopqrstuvwxyz123456"),
+      new Error("disk full ltfx.n.82be8a4d9cdebab78235.v1"),
     );
     const markTrackedRunTerminalPersisted = vi.fn();
     const { broadcastToConnIds, handler, sessionEventSubscribers } = createHarness({
@@ -3009,7 +3009,7 @@ describe("agent event handler", () => {
 
   it("clears tracked active runs before terminal sessions.changed broadcasts", async () => {
     vi.mocked(loadGatewaySessionRow).mockReturnValue({
-      key: "session-finished",
+      key: `ltfx.n.2f8a593d7847b2eeac74.v1`,
       kind: "direct",
       updatedAt: 1_650,
       status: "running",
@@ -3325,7 +3325,7 @@ describe("agent event handler", () => {
 
   it("keeps live session setting metadata at the top level for lifecycle updates", async () => {
     vi.mocked(loadGatewaySessionRow).mockReturnValue({
-      key: "session-finished",
+      key: `ltfx.n.2f8a593d7847b2eeac74.v1`,
       kind: "direct",
       updatedAt: 1_650,
       spawnedBy: "agent:main:main",
@@ -4651,7 +4651,7 @@ describe("agent event handler", () => {
   describe("spawnedBy enrichment in chat and agent broadcasts", () => {
     it("includes spawnedBy in chat delta broadcasts for subagent sessions", () => {
       vi.mocked(loadGatewaySessionRow).mockReturnValue({
-        key: "agent:coder:subagent:abc",
+        key: `ltfx.n.7f40018c42b7e7ad8670.v1`,
         kind: "direct",
         updatedAt: null,
         spawnedBy: "agent:conductor:task:parent-1",
@@ -4692,7 +4692,7 @@ describe("agent event handler", () => {
 
     it("includes spawnedBy in chat final broadcasts for subagent sessions", () => {
       vi.mocked(loadGatewaySessionRow).mockReturnValue({
-        key: "agent:coder:subagent:abc",
+        key: `ltfx.n.7f40018c42b7e7ad8670.v1`,
         kind: "direct",
         updatedAt: null,
         spawnedBy: "agent:conductor:task:parent-1",
@@ -4815,7 +4815,7 @@ describe("agent event handler", () => {
 
     it("omits spawnedBy from chat broadcasts for non-subagent sessions", () => {
       vi.mocked(loadGatewaySessionRow).mockReturnValue({
-        key: "agent:main:main",
+        key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
         kind: "direct",
         updatedAt: null,
       });
@@ -4879,7 +4879,7 @@ describe("agent event handler", () => {
 
     it("includes spawnedBy in non-tool agent event broadcasts for subagent sessions", () => {
       vi.mocked(loadGatewaySessionRow).mockReturnValue({
-        key: "agent:coder:subagent:xyz",
+        key: `ltfx.n.109fbd35e97d099a7a1b.v1`,
         kind: "direct",
         updatedAt: null,
         spawnedBy: "agent:conductor:task:parent-2",
@@ -4909,7 +4909,7 @@ describe("agent event handler", () => {
 
     it("includes spawnedBy in chat error final broadcasts for subagent sessions", () => {
       vi.mocked(loadGatewaySessionRow).mockReturnValue({
-        key: "agent:coder:subagent:err",
+        key: `ltfx.n.4bbea7be9f6823b51ed4.v1`,
         kind: "direct",
         updatedAt: null,
         spawnedBy: "agent:conductor:task:parent-err",
@@ -4958,7 +4958,7 @@ describe("agent event handler", () => {
       const nowSpy = vi.spyOn(Date, "now").mockImplementation(() => now);
 
       vi.mocked(loadGatewaySessionRow).mockReturnValue({
-        key: "agent:coder:subagent:flush",
+        key: `ltfx.n.7a07aa2c2566e272f0dd.v1`,
         kind: "direct",
         updatedAt: null,
         spawnedBy: "agent:conductor:task:parent-flush",
@@ -5020,7 +5020,7 @@ describe("agent event handler", () => {
 
     it("includes spawnedBy in seq gap error broadcasts for subagent sessions", () => {
       vi.mocked(loadGatewaySessionRow).mockReturnValue({
-        key: "agent:coder:subagent:gap",
+        key: `ltfx.n.010c17891d54ce8d63d8.v1`,
         kind: "direct",
         updatedAt: null,
         spawnedBy: "agent:conductor:task:parent-gap",
@@ -5063,7 +5063,7 @@ describe("agent event handler", () => {
     it("caches spawnedBy lookup so repeated events for the same subagent session only load the row once", () => {
       vi.mocked(loadGatewaySessionRow).mockClear();
       vi.mocked(loadGatewaySessionRow).mockReturnValue({
-        key: "agent:coder:subagent:cache-test",
+        key: `ltfx.n.808a06946865f9077828.v1`,
         kind: "direct",
         updatedAt: null,
         spawnedBy: "agent:conductor:task:parent-cache",
@@ -5117,7 +5117,7 @@ describe("agent event handler", () => {
     it("caches null spawnedBy for eligible subagent sessions that lack a spawnedBy value", () => {
       vi.mocked(loadGatewaySessionRow).mockClear();
       vi.mocked(loadGatewaySessionRow).mockReturnValue({
-        key: "agent:coder:subagent:no-lineage",
+        key: `ltfx.n.3c22fef3c06e21ef5bdf.v1`,
         kind: "direct",
         updatedAt: null,
         // no spawnedBy field

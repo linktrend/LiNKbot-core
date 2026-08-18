@@ -2339,7 +2339,7 @@ describe("createImageGenerateTool", () => {
       provider: "openai",
       model: "gpt-image-1",
       attempts: [],
-      ignoredOverrides: [{ key: "aspectRatio", value: "1:1" }],
+      ignoredOverrides: [{ key: `ltfx.n.6ba61201e75a4633c0ab.v1`, value: "1:1" }],
       images: [
         {
           buffer: Buffer.from("png-out"),
@@ -2370,7 +2370,7 @@ describe("createImageGenerateTool", () => {
     expect(details.warning).toBe(
       "Ignored unsupported overrides for openai/gpt-image-1: aspectRatio=1:1.",
     );
-    expect(details.ignoredOverrides).toEqual([{ key: "aspectRatio", value: "1:1" }]);
+    expect(details.ignoredOverrides).toEqual([{ key: `ltfx.n.6ba61201e75a4633c0ab.v1`, value: "1:1" }]);
   });
 
   it("surfaces normalized image geometry from runtime metadata", async () => {
@@ -2695,7 +2695,7 @@ describe("createImageGenerateTool", () => {
       provider: "fal",
       model: "fal-ai/flux/dev",
       attempts: [],
-      ignoredOverrides: [{ key: "aspectRatio", value: "16:9" }],
+      ignoredOverrides: [{ key: `ltfx.n.6ba61201e75a4633c0ab.v1`, value: "16:9" }],
       images: [
         {
           buffer: Buffer.from("png-out"),

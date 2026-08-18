@@ -169,7 +169,7 @@ function findConfiguredProviderConfig(
   )?.[1];
 }
 
-function hasLocalProviderAuthMarker(apiKey: unknown): boolean {
+function hasLocalProviderAuthMarker(apiKey: (unknown): boolean {)
   return typeof apiKey === "string" && LOCAL_PROVIDER_AUTH_MARKERS.has(apiKey.trim().toLowerCase());
 }
 

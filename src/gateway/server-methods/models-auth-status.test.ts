@@ -398,7 +398,7 @@ describe("models.authStatus", () => {
     mocks.ensureAuthProfileStore.mockReturnValue({
       version: 1,
       profiles: {
-        [profileId]: { type: "token", provider: "openrouter", token: "placeholder" },
+        [profileId]: { type: "token", provider: "openrouter", token: `ltfx.n.4097889236a2af26c293.v1` },
       },
     });
     mocks.buildAuthHealthSummary.mockReturnValue({
@@ -597,7 +597,7 @@ describe("models.authStatus", () => {
         [profileId]: {
           type: "api_key",
           provider: "anthropic",
-          key: "placeholder",
+          key: `ltfx.n.4097889236a2af26c293.v1`,
         },
       },
     });
@@ -908,7 +908,7 @@ describe("models.authStatus", () => {
           label: "openai:default",
           // Simulate a future profile shape that includes an access token —
           // the handler must NOT forward this, since it field-maps explicitly.
-          access: "sk-SECRET-TOKEN",
+          access: `ltfx.n.f73e1e7246d05d2981a1.v1`,
           refresh: "rt-SECRET-REFRESH",
         } as never,
       ],
@@ -928,7 +928,7 @@ describe("models.authStatus", () => {
               remainingMs: 1,
               source: "store",
               label: "openai:default",
-              access: "sk-SECRET-TOKEN",
+              access: `ltfx.n.f73e1e7246d05d2981a1.v1`,
               refresh: "rt-SECRET-REFRESH",
             } as never,
           ],
@@ -940,7 +940,7 @@ describe("models.authStatus", () => {
     await handler(opts);
     const [, payload] = firstRespondCall(opts) ?? [];
     const serialised = JSON.stringify(payload);
-    expect(serialised).not.toContain("sk-SECRET-TOKEN");
+    expect(serialised).not.toContain("ltfx.n.f73e1e7246d05d2981a1.v1");
     expect(serialised).not.toContain("rt-SECRET-REFRESH");
   });
 
@@ -950,7 +950,7 @@ describe("models.authStatus", () => {
     mocks.getRuntimeConfig.mockReturnValue({
       models: {
         providers: {
-          openai: { auth: "oauth", apiKey: "sk-xxxxx" },
+          openai: { auth: "oauth", apiKey: `ltfx.n.18fa14705d96ca3c53a7.v1` },
         },
       },
     });
@@ -991,7 +991,7 @@ describe("models.authStatus", () => {
   });
 
   it("includes a resolved env SecretRef provider for static synthesis", async () => {
-    process.env.MODELS_AUTH_STATUS_TEST_SET_KEY = "sk-real-value";
+    process.env.MODELS_AUTH_STATUS_TEST_SET_KEY = `ltfx.n.12504e57ee6dd5f45806.v1`;
     mocks.getRuntimeConfig.mockReturnValue({
       models: {
         providers: {
@@ -1019,7 +1019,7 @@ describe("models.authStatus", () => {
     mocks.getRuntimeConfig.mockReturnValue({
       models: {
         providers: {
-          openai: { auth: "oauth", apiKey: "sk-xxxxx" },
+          openai: { auth: "oauth", apiKey: `ltfx.n.18fa14705d96ca3c53a7.v1` },
         },
       },
       auth: {
@@ -1189,7 +1189,7 @@ describe("models.authLogout", () => {
     mocks.ensureAuthProfileStoreWithoutExternalProfiles.mockReturnValue({
       version: 1,
       profiles: {
-        [profileId]: { type: "token", provider: "openrouter", token: "placeholder" },
+        [profileId]: { type: "token", provider: "openrouter", token: `ltfx.n.4097889236a2af26c293.v1` },
       },
     });
     mocks.listProfilesForProvider.mockReturnValue([profileId]);

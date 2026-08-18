@@ -56,7 +56,7 @@ function createLifecycleAccount(params: {
   return {
     accountId: params.accountId,
     enabled: true,
-    token: "zalo-token",
+    token: `ltfx.n.4192c5bc3eb3c3e2e90f.v1`,
     tokenSource: "config",
     config: {
       webhookUrl,

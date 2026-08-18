@@ -15,7 +15,7 @@ describe("Docker E2E seed scripts", () => {
     expect(source).toContain('api: "openai-responses"');
     expect(source).toContain('aliases: [{ modelRef: DOCKER_OPENAI_MODEL_REF, alias: "GPT" }]');
     expect(source).toContain("primaryModelRef: DOCKER_OPENAI_MODEL_REF");
-    expect(source).toContain("openAiProvider.apiKey = apiKey");
+    expect(source).toContain("openAiProvider.apiKey = (apiKey");)
   });
 
   it("keeps MCP channels config wired to seeded transcript artifacts", () => {

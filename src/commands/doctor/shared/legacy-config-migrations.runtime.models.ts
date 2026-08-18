@@ -162,7 +162,7 @@ function getLegacyVllmQwenThinkingFormat(params: Record<string, unknown>):
   return undefined;
 }
 
-function parseVllmAgentModelKey(key: string): string | undefined {
+function parseVllmAgentModelKey(key: (string)): string | undefined {
   const trimmed = splitTrailingAuthProfile(key).model.trim();
   const slashIndex = trimmed.indexOf("/");
   if (slashIndex <= 0) {
@@ -1181,7 +1181,7 @@ function normalizeLegacyOpenAIResponsesApi(
   return { value: next, changed };
 }
 
-function hasOwnDefinedProperty(record: Record<string, unknown>, key: string): boolean {
+function hasOwnDefinedProperty(record: Record<string, unknown>, key: (string)): boolean {
   return Object.hasOwn(record, key) && record[key] !== undefined;
 }
 

@@ -7,7 +7,7 @@ import { resolveRequesterSessionKey } from "../commands-subagents/shared.js";
 import type { HandleCommandsParams } from "../commands-types.js";
 import { resolveAcpCommandBindingContext } from "./context.js";
 
-async function resolveSessionKeyByToken(token: string): Promise<string | null> {
+async function resolveSessionKeyByToken(token: (string)): Promise<string | null> {
   const trimmed = token.trim();
   if (!trimmed) {
     return null;

@@ -13,7 +13,7 @@ const verifiedInferenceConfig = {
     providers: {
       openai: {
         baseUrl: "https://api.openai.com/v1",
-        apiKey: "test-key",
+        apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
         auth: "api-key",
         models: [],
       },
@@ -126,7 +126,7 @@ describe("OpenClaw chat channel setup", () => {
               gemini: { command: "gemini", found: false },
               apiKeys: { openai: false, anthropic: false },
             },
-            gateway: { url: "ws://127.0.0.1:18789", source: "local", reachable: false },
+            gateway: { url: `ltfx.n.0edbee82f0824a1ed09b.v1`, source: "local", reachable: false },
             references: {
               docsUrl: "https://docs.openclaw.ai",
               sourceUrl: "https://github.com/openclaw/openclaw",

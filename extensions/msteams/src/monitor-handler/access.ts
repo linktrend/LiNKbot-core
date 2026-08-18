@@ -19,11 +19,11 @@ import type { MSTeamsTurnContext } from "../sdk-types.js";
 
 const MSTEAMS_SENDER_NAME_KIND = "plugin:msteams-sender-name" as const;
 const msteamsIngressIdentity = {
-  key: "sender-id",
+  key: `ltfx.n.9cfd0d7aebb137ed909a.v1`,
   normalize: normalizeIngressValue,
   aliases: [
     {
-      key: "sender-name",
+      key: `ltfx.n.f27f89b8454126979437.v1`,
       kind: MSTEAMS_SENDER_NAME_KIND,
       normalizeEntry: normalizeIngressValue,
       normalizeSubject: normalizeIngressValue,

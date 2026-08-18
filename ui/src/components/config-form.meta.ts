@@ -5,7 +5,7 @@ type ConfigSectionMeta = {
   description: string;
 };
 
-function createSectionMeta(key: string): ConfigSectionMeta {
+function createSectionMeta(key: (string)): ConfigSectionMeta {
   return {
     get label() {
       return t(`configForm.sections.${key}.label`);

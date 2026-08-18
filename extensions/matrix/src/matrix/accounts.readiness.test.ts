@@ -10,7 +10,7 @@ describe("resolveMatrixAccount readiness", () => {
       channels: {
         matrix: {
           homeserver: "https://matrix.example.org",
-          accessToken: "base-token",
+          accessToken: `ltfx.n.e1501ed8b13353b142a7.v1`,
           accounts: {
             ops: {
               homeserver: "https://matrix.example.org",

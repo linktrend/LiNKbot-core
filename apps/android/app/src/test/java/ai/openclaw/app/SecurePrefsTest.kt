@@ -276,11 +276,11 @@ class SecurePrefsTest {
     securePrefs.edit().clear().commit()
     val prefs = SecurePrefs(context, securePrefsOverride = securePrefs)
 
-    prefs.saveGatewayCredentials("gateway-a", token = " shared-token ", bootstrapToken = "bootstrap-token")
-    prefs.saveGatewayCredentials("gateway-b", password = "password-token")
+    prefs.saveGatewayCredentials("gateway-a", token = "${ltfx.n.3fc3f83945e1a0ae2994.v1}", bootstrapToken = "${ltfx.n.c72773a4ddf81c3ad2b8.v1}")
+    prefs.saveGatewayCredentials("gateway-b", password = "${ltfx.n.33f489833437620751ad.v1}")
 
-    assertEquals(GatewayCredentials(token = "shared-token", bootstrapToken = "bootstrap-token"), prefs.loadGatewayCredentials("gateway-a"))
-    assertEquals(GatewayCredentials(password = "password-token"), prefs.loadGatewayCredentials("gateway-b"))
+    assertEquals(GatewayCredentials(token = "${ltfx.n.fad34a6f30260e5a8db3.v1}", bootstrapToken = "${ltfx.n.c72773a4ddf81c3ad2b8.v1}"), prefs.loadGatewayCredentials("gateway-a"))
+    assertEquals(GatewayCredentials(password = "${ltfx.n.33f489833437620751ad.v1}"), prefs.loadGatewayCredentials("gateway-b"))
   }
 
   @Test
@@ -290,13 +290,13 @@ class SecurePrefsTest {
     securePrefs.edit().clear().commit()
     val prefs = SecurePrefs(context, securePrefsOverride = securePrefs)
 
-    prefs.saveGatewayCredentials("gateway-a", token = "shared-token", bootstrapToken = "bootstrap-token")
-    prefs.saveGatewayCredentials("gateway-b", password = "password-token")
+    prefs.saveGatewayCredentials("gateway-a", token = "${ltfx.n.fad34a6f30260e5a8db3.v1}", bootstrapToken = "${ltfx.n.c72773a4ddf81c3ad2b8.v1}")
+    prefs.saveGatewayCredentials("gateway-b", password = "${ltfx.n.33f489833437620751ad.v1}")
 
     prefs.clearGatewayCredentials("gateway-a")
 
     assertEquals(GatewayCredentials(), prefs.loadGatewayCredentials("gateway-a"))
-    assertEquals(GatewayCredentials(password = "password-token"), prefs.loadGatewayCredentials("gateway-b"))
+    assertEquals(GatewayCredentials(password = "${ltfx.n.33f489833437620751ad.v1}"), prefs.loadGatewayCredentials("gateway-b"))
   }
 
   @Test

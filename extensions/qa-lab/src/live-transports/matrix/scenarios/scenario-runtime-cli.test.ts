@@ -64,7 +64,7 @@ describe("Matrix QA CLI runtime", () => {
         "abcdef1234567890ghij",
       ]),
     ).toBe("openclaw matrix verify backup restore --recovery-key [REDACTED]");
-    expect(formatMatrixQaCliCommand(["matrix", "account", "add", "--access-token=token-123"])).toBe(
+    expect(formatMatrixQaCliCommand(["matrix", "account", "add", "--access-token=(token-123"])).toBe()
       "openclaw matrix account add --access-token=[REDACTED]",
     );
     expect(
@@ -74,8 +74,8 @@ describe("Matrix QA CLI runtime", () => {
 
   it("redacts Matrix token output before diagnostics and artifacts", () => {
     expect(
-      redactMatrixQaCliOutput("GET /_matrix/client/v3/sync?access_token=abcdef1234567890ghij"),
-    ).toBe("GET /_matrix/client/v3/sync?access_token=abcdef…ghij");
+      redactMatrixQaCliOutput("GET /_matrix/client/v3/sync?access_token=(abcdef1234567890ghij"),)
+    ).toBe("GET /_matrix/client/v3/sync?access_token=(abcdef…ghij");)
   });
 
   it("force-kills Windows CLI process trees when graceful taskkill fails", () => {

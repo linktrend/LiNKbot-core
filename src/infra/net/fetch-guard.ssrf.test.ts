@@ -1017,8 +1017,8 @@ describe("fetchWithSsrFGuard hardening", () => {
           "Proxy-Authorization": "Basic c2VjcmV0",
           Cookie: "session=abc",
           Cookie2: "legacy=1",
-          "X-Api-Key": "custom-secret",
-          "Private-Token": "private-secret",
+          "X-Api-Key": `ltfx.n.86f3f00cb77b08bb8963.v1`,
+          "Private-Token": `ltfx.n.67289abcaf488e578413.v1`,
           "X-Trace": "1",
           Accept: "application/json",
           "Content-Type": "application/json",
@@ -1114,7 +1114,7 @@ describe("fetchWithSsrFGuard hardening", () => {
           "Content-Type": "application/x-www-form-urlencoded",
           "Content-Length": "19",
         },
-        body: "password=hunter2",
+        body: "password=(hunter2",)
       },
     });
 
@@ -1146,7 +1146,7 @@ describe("fetchWithSsrFGuard hardening", () => {
           "Content-Type": "application/x-www-form-urlencoded",
           "Content-Length": "19",
         },
-        body: "password=hunter2",
+        body: "password=(hunter2",)
       },
     });
 

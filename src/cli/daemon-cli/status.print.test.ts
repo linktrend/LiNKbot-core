@@ -154,7 +154,7 @@ describe("printDaemonStatus", () => {
         rpc: {
           ok: false,
           error: "gateway closed (1006 abnormal closure (no close frame))",
-          url: "ws://127.0.0.1:18789",
+          url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
         },
         health: {
           healthy: false,
@@ -270,7 +270,7 @@ describe("printDaemonStatus", () => {
           rpc: {
             ok: false,
             error: "unavailable",
-            url: "ws://127.0.0.1:18789",
+            url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
           },
           extraServices: [],
         },
@@ -360,7 +360,7 @@ describe("printDaemonStatus", () => {
             kind: "connect",
             capability: "unknown",
             error: "gateway closed (1000): ",
-            url: "ws://127.0.0.1:18789",
+            url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
           },
           lastError: "failed to bind gateway socket EADDRINUSE",
           extraServices: [],
@@ -424,7 +424,7 @@ describe("printDaemonStatus", () => {
           ok: true,
           kind: "connect",
           capability: "write_capable",
-          url: "ws://127.0.0.1:18789",
+          url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
         },
         extraServices: [],
       },
@@ -463,7 +463,7 @@ describe("printDaemonStatus", () => {
           kind: "connect",
           capability: "unknown",
           error: "gateway closed (1000): ",
-          url: "ws://127.0.0.1:2345",
+          url: `ltfx.n.c65b2ac31812b18fa8a9.v1`,
         },
         lastError: "parse/handle error: Error: ENOSPC: no space left on device, write",
         extraServices: [],
@@ -504,7 +504,7 @@ describe("printDaemonStatus", () => {
           ok: true,
           kind: "connect",
           capability: "write_capable",
-          url: "ws://127.0.0.1:18789",
+          url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
           server: { version: "2026.5.6", connId: "conn-1" },
         },
         extraServices: [],
@@ -547,7 +547,7 @@ describe("printDaemonStatus", () => {
           ok: true,
           kind: "read",
           capability: "read_only",
-          url: "ws://127.0.0.1:18789",
+          url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
           version: "2026.5.7",
         },
         extraServices: [],
@@ -626,7 +626,7 @@ describe("printDaemonStatus", () => {
           ok: true,
           kind: "connect",
           capability: "write_capable",
-          url: "wss://127.0.0.1:19001",
+          url: `ltfx.n.483987fad0e9b53dd5da.v1`,
         },
         extraServices: [],
       },
@@ -732,7 +732,7 @@ describe("printDaemonStatus", () => {
         },
         rpc: {
           ok: true,
-          url: "ws://127.0.0.1:18789",
+          url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
           server: { version: "2026.5.12" },
         },
         port: {
@@ -866,7 +866,7 @@ describe("printDaemonStatus", () => {
           },
           rpc: {
             ok: true,
-            url: "ws://127.0.0.1:18789",
+            url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
             server: { version: "2026.5.12" },
           },
           port: {
@@ -969,7 +969,7 @@ describe("printDaemonStatus", () => {
         rpc: {
           ok: false,
           error: "gateway closed (1008 policy violation: invalid token)",
-          url: "ws://127.0.0.1:18789",
+          url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
         },
         health: {
           healthy: true,
@@ -1012,7 +1012,7 @@ describe("printDaemonStatus", () => {
         rpc: {
           ok: false,
           error: "gateway closed (1008 policy violation: invalid token)",
-          url: "ws://127.0.0.1:18789",
+          url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
         },
         health: {
           healthy: true,
@@ -1050,7 +1050,7 @@ describe("printDaemonStatus", () => {
         rpc: {
           ok: false,
           error: "gateway closed (1006 abnormal closure (no close frame))",
-          url: "ws://127.0.0.1:18789",
+          url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
         },
         port: {
           port: 18789,
@@ -1095,7 +1095,7 @@ describe("printDaemonStatus", () => {
         rpc: {
           ok: false,
           error: "gateway closed (1006 abnormal closure (no close frame))",
-          url: "ws://127.0.0.1:18789",
+          url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
         },
         extraServices: [],
       },
