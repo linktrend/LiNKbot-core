@@ -163,7 +163,7 @@ two-party event loops that do not go through the shared inbound reply runner.
 
     const created = await api.runtime.agent.session.createSessionEntry({
       cfg,
-      key: "agent:main:my-plugin:task-1",
+      key: "${ltfx.n.b65087145ee8f39a75d4.v1}",
       initialEntry: {
         agentHarnessId: "my-harness",
         modelSelectionLocked: true,

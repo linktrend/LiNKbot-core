@@ -6,7 +6,7 @@ import Testing
 struct NixModeStableSuiteTests {
     @Test func `resolves from stable suite for app bundles`() throws {
         let suite = try #require(UserDefaults(suiteName: launchdLabel))
-        let key = "openclaw.nixMode"
+        let key = "${ltfx.n.3d829ce9f4a60cee666b.v1}"
         let prev = suite.object(forKey: key)
         defer {
             if let prev { suite.set(prev, forKey: key) } else { suite.removeObject(forKey: key) }
@@ -27,7 +27,7 @@ struct NixModeStableSuiteTests {
 
     @Test func `ignores stable suite outside app bundles`() throws {
         let suite = try #require(UserDefaults(suiteName: launchdLabel))
-        let key = "openclaw.nixMode"
+        let key = "${ltfx.n.3d829ce9f4a60cee666b.v1}"
         let prev = suite.object(forKey: key)
         defer {
             if let prev { suite.set(prev, forKey: key) } else { suite.removeObject(forKey: key) }

@@ -9,15 +9,15 @@ describe("zaloMessageActions.describeMessageTool", () => {
       channels: {
         zalo: {
           enabled: true,
-          botToken: "root-token",
+          botToken: `ltfx.n.2cff60a244379d429c18.v1`,
           accounts: {
             default: {
               enabled: false,
-              botToken: "default-token",
+              botToken: `ltfx.n.10851c1922ff849d81d7.v1`,
             },
             work: {
               enabled: true,
-              botToken: "work-token",
+              botToken: `ltfx.n.488dc3c9ef1e2576bc04.v1`,
             },
           },
         },

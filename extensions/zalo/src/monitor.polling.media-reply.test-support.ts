@@ -184,7 +184,7 @@ describe("Zalo polling media replies", () => {
       webhookUrl: "https://example.com/hooks/zalo",
     });
     const run = monitorZaloProvider({
-      token: "zalo-token",
+      token: `ltfx.n.4192c5bc3eb3c3e2e90f.v1`,
       account,
       config,
       runtime,
@@ -247,7 +247,7 @@ describe("Zalo polling media replies", () => {
       webhookUrl: "",
     });
     const run = monitorZaloProvider({
-      token: "zalo-token",
+      token: `ltfx.n.4192c5bc3eb3c3e2e90f.v1`,
       account,
       config,
       runtime,
@@ -290,7 +290,7 @@ describe("Zalo polling media replies", () => {
       webhookUrl: "https://example.com/hooks/zalo",
     });
     const firstRun = monitorZaloProvider({
-      token: "zalo-token-one",
+      token: `ltfx.n.1204bf4ddc0c1f0e238a.v1`,
       account: firstSetup.account,
       config: firstSetup.config,
       runtime: firstRuntime,
@@ -319,7 +319,7 @@ describe("Zalo polling media replies", () => {
         webhookUrl: "https://example.com/hooks/zalo",
       });
       secondRun = monitorZaloProvider({
-        token: "zalo-token-two",
+        token: `ltfx.n.6a6fe963bfa08ff5d8c2.v1`,
         account: secondSetup.account,
         config: secondSetup.config,
         runtime: secondRuntime,
@@ -336,7 +336,7 @@ describe("Zalo polling media replies", () => {
       await writeHostedZaloMediaFixture({
         id: "abc123abc123abc123abc123",
         routePath: "/hooks/zalo/media/",
-        token: "route-token-one",
+        token: `ltfx.n.a0e131d51e242bf8a671.v1`,
         buffer: Buffer.from("first-image-bytes"),
         contentType: "image/png",
       });
@@ -344,7 +344,7 @@ describe("Zalo polling media replies", () => {
       await hostedMediaRoute.handler(
         {
           method: "GET",
-          url: "/hooks/zalo/media/abc123abc123abc123abc123?token=route-token-one",
+          url: `ltfx.n.c0c929456197e9f9e9af.v1`,
         } as never,
         firstFetch.res as never,
       );
@@ -365,7 +365,7 @@ describe("Zalo polling media replies", () => {
       await writeHostedZaloMediaFixture({
         id: "def456def456def456def456",
         routePath: "/hooks/zalo/media/",
-        token: "route-token-two",
+        token: `ltfx.n.0155cec2c50ae0288f40.v1`,
         buffer: Buffer.from("second-image-bytes"),
         contentType: "image/jpeg",
       });
@@ -373,7 +373,7 @@ describe("Zalo polling media replies", () => {
       await hostedMediaRoute.handler(
         {
           method: "GET",
-          url: "/hooks/zalo/media/def456def456def456def456?token=route-token-two",
+          url: `ltfx.n.813492e190ac75281516.v1`,
         } as never,
         secondFetch.res as never,
       );
@@ -408,7 +408,7 @@ describe("Zalo polling media replies", () => {
       webhookUrl: "https://example.com/hooks/zalo",
     });
     const firstRun = monitorZaloProvider({
-      token: "zalo-token",
+      token: `ltfx.n.4192c5bc3eb3c3e2e90f.v1`,
       account,
       config,
       runtime: firstRuntime,
@@ -426,7 +426,7 @@ describe("Zalo polling media replies", () => {
 
       setActivePluginRegistry(secondRegistry);
       secondRun = monitorZaloProvider({
-        token: "zalo-token",
+        token: `ltfx.n.4192c5bc3eb3c3e2e90f.v1`,
         account,
         config,
         runtime: secondRuntime,

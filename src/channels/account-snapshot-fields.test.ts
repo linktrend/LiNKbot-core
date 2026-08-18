@@ -132,9 +132,9 @@ describe("projectSafeChannelAccountSnapshotFields", () => {
       lastMessageAt: null,
       lastEventAt: 345,
       lastTransportActivityAt: 456,
-      channelAccessToken: "line-token",
-      channelSecret: "line-secret", // pragma: allowlist secret
-      probe: { ok: true, token: "probe-secret" },
+      channelAccessToken: `ltfx.n.71688488445b848b8da5.v1`,
+      channelSecret: `ltfx.n.1302cdb468ddf98dde49.v1`, // pragma: allowlist secret
+      probe: { ok: true, token: `ltfx.n.9741626176e3e651505c.v1` },
     });
 
     expect(snapshot).toEqual({

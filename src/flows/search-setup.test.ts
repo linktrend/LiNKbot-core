@@ -421,7 +421,7 @@ describe("runSearchSetupFlow", () => {
               enabled: true,
               config: {
                 webSearch: {
-                  apiKey: "xai-test-key",
+                  apiKey: `ltfx.n.6ccc25dc7ade3810857a.v1`,
                 },
               },
             },
@@ -455,7 +455,7 @@ describe("runSearchSetupFlow", () => {
               enabled: true,
               config: {
                 webSearch: {
-                  apiKey: "xai-test-key",
+                  apiKey: `ltfx.n.6ccc25dc7ade3810857a.v1`,
                 },
               },
             },
@@ -497,7 +497,7 @@ describe("runSearchSetupFlow", () => {
             xai: {
               config: {
                 webSearch: {
-                  apiKey: "xai-test-key",
+                  apiKey: `ltfx.n.6ccc25dc7ade3810857a.v1`,
                 },
               },
             },

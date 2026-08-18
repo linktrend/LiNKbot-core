@@ -130,7 +130,7 @@ export function renderCustodianEarlierDivider(
   return message.id === boundaryAfterId
     ? renderChatDivider({
         kind: "divider",
-        key: "custodian-earlier",
+        key: `ltfx.n.e283ca35efa75dd9a386.v1`,
         label: t("custodian.earlier"),
         timestamp: message.at,
       })

@@ -1252,7 +1252,7 @@ describe("resolveGroupRequireMention", () => {
       GroupSpace: "145",
     };
     const groupResolution: GroupKeyResolution = {
-      key: "discord:group:123",
+      key: `ltfx.n.f50d90118ef26f53285c.v1`,
       channel: "discord",
       id: "123",
       chatType: "group",
@@ -1277,7 +1277,7 @@ describe("resolveGroupRequireMention", () => {
       GroupSubject: "#general",
     };
     const groupResolution: GroupKeyResolution = {
-      key: "slack:group:C123",
+      key: `ltfx.n.33fb569fbf35b869ed9c.v1`,
       channel: "slack",
       id: "C123",
       chatType: "group",
@@ -1307,7 +1307,7 @@ describe("resolveGroupRequireMention", () => {
       GroupSubject: "#alerts",
     };
     const groupResolution: GroupKeyResolution = {
-      key: "slack:group:C123",
+      key: `ltfx.n.33fb569fbf35b869ed9c.v1`,
       channel: "slack",
       id: "C123",
       chatType: "group",
@@ -1337,7 +1337,7 @@ describe("resolveGroupRequireMention", () => {
       GroupSubject: "#alerts",
     };
     const groupResolution: GroupKeyResolution = {
-      key: "slack:group:C123",
+      key: `ltfx.n.33fb569fbf35b869ed9c.v1`,
       channel: "slack",
       id: "C123",
       chatType: "group",
@@ -1366,7 +1366,7 @@ describe("resolveGroupRequireMention", () => {
       GroupSpace: "dev",
     };
     const groupResolution: GroupKeyResolution = {
-      key: "discord:group:123",
+      key: `ltfx.n.f50d90118ef26f53285c.v1`,
       channel: "discord",
       id: "123",
       chatType: "group",
@@ -1397,7 +1397,7 @@ describe("resolveGroupRequireMention", () => {
       GroupSpace: "guild-slug",
     };
     const groupResolution: GroupKeyResolution = {
-      key: "discord:group:999",
+      key: `ltfx.n.8d7a8830053753a50f81.v1`,
       channel: "discord",
       id: "999",
       chatType: "group",
@@ -1421,7 +1421,7 @@ describe("resolveGroupRequireMention", () => {
       From: "line:room:r123",
     };
     const groupResolution: GroupKeyResolution = {
-      key: "line:group:r123",
+      key: `ltfx.n.816f92565c6fa069da30.v1`,
       channel: "line",
       id: "r123",
       chatType: "group",
@@ -1445,7 +1445,7 @@ describe("resolveGroupRequireMention", () => {
       From: "imessage:group:chat:primary",
     };
     const groupResolution: GroupKeyResolution = {
-      key: "imessage:group:chat:primary",
+      key: `ltfx.n.2f36f40da22904488a28.v1`,
       channel: "imessage",
       id: "chat:primary",
       chatType: "group",

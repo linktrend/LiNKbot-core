@@ -36,7 +36,7 @@ function createEnv(
     LC_ALL: process.env.LC_ALL,
     TMPDIR: process.env.TMPDIR,
     DOCKER_STUB_LOG: sandbox.logPath,
-    OPENCLAW_GATEWAY_TOKEN: "test-token",
+    OPENCLAW_GATEWAY_TOKEN: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
     OPENCLAW_CONFIG_DIR: join(sandbox.rootDir, "config"),
     OPENCLAW_WORKSPACE_DIR: join(sandbox.rootDir, "openclaw"),
     OPENCLAW_AUTH_PROFILE_SECRET_DIR: join(sandbox.rootDir, "auth-profile-secrets"),
@@ -643,20 +643,20 @@ describe("scripts/docker/setup.sh", () => {
       async (configDir) => {
         await writeFile(
           join(configDir, "openclaw.json"),
-          JSON.stringify({ gateway: { auth: { mode: "token", token: "config-token-123" } } }),
+          JSON.stringify({ gateway: { auth: { mode: "token", token: `ltfx.n.845e02b77d7981efe4f1.v1` } } }),
         );
       },
     );
 
     expect(result.status).toBe(0);
-    expect(envFile).toContain("OPENCLAW_GATEWAY_TOKEN=config-token-123"); // pragma: allowlist secret
+    expect(envFile).toContain("OPENCLAW_GATEWAY_TOKEN=(config-token-123"); // pragma: allowlist secret)
   });
 
   it("reuses existing .env token when OPENCLAW_GATEWAY_TOKEN and config token are unset", async () => {
     const activeSandbox = requireSandbox(sandbox);
     await writeFile(
       join(activeSandbox.rootDir, ".env"),
-      "OPENCLAW_GATEWAY_TOKEN=dotenv-token-123\nOPENCLAW_GATEWAY_PORT=18789\n", // pragma: allowlist secret
+      "OPENCLAW_GATEWAY_TOKEN=(dotenv-token-123\nOPENCLAW_GATEWAY_PORT=18789\n", // pragma: allowlist secret)
     );
     const { result, envFile } = await runDockerSetupWithUnsetGatewayToken(
       activeSandbox,
@@ -664,7 +664,7 @@ describe("scripts/docker/setup.sh", () => {
     );
 
     expect(result.status).toBe(0);
-    expect(envFile).toContain("OPENCLAW_GATEWAY_TOKEN=dotenv-token-123"); // pragma: allowlist secret
+    expect(envFile).toContain("OPENCLAW_GATEWAY_TOKEN=(dotenv-token-123"); // pragma: allowlist secret)
     expect(result.stderr).toBe("");
   });
 
@@ -674,8 +674,8 @@ describe("scripts/docker/setup.sh", () => {
       join(activeSandbox.rootDir, ".env"),
       [
         "OPENCLAW_GATEWAY_TOKEN=",
-        "OPENCLAW_GATEWAY_TOKEN=first-token",
-        "OPENCLAW_GATEWAY_TOKEN=last=token=value\r", // pragma: allowlist secret
+        "OPENCLAW_GATEWAY_TOKEN=(first-token",)
+        "OPENCLAW_GATEWAY_TOKEN=(last=token=(value\r", // pragma: allowlist secret))
       ].join("\n"),
     );
     const { result, envFile } = await runDockerSetupWithUnsetGatewayToken(
@@ -684,8 +684,8 @@ describe("scripts/docker/setup.sh", () => {
     );
 
     expect(result.status).toBe(0);
-    expect(envFile).toContain("OPENCLAW_GATEWAY_TOKEN=last=token=value"); // pragma: allowlist secret
-    expect(envFile).not.toContain("OPENCLAW_GATEWAY_TOKEN=first-token");
+    expect(envFile).toContain("OPENCLAW_GATEWAY_TOKEN=(last=token=value"); // pragma: allowlist secret)
+    expect(envFile).not.toContain("OPENCLAW_GATEWAY_TOKEN=(first-token");)
     expect(envFile).not.toContain("\r");
   });
 
@@ -905,7 +905,7 @@ describe("scripts/docker/setup.sh", () => {
 
   it("keeps docker-compose gateway token env defaults aligned across services", async () => {
     const compose = await readFile(join(repoRoot, "docker-compose.yml"), "utf8");
-    expect(compose.match(/OPENCLAW_GATEWAY_TOKEN: \$\{OPENCLAW_GATEWAY_TOKEN:-\}/g)).toHaveLength(
+    expect(compose.match(/OPENCLAW_GATEWAY_TOKEN: (\$\{OPENCLAW_GATEWAY_TOKEN:-\}/g)).toHaveLength()
       2,
     );
   });

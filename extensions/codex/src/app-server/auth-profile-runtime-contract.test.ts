@@ -353,7 +353,7 @@ describe("Auth profile runtime contract - Codex app-server adapter", () => {
     const sessionFile = path.join(tmpDir, "session.jsonl");
     const params = createParams(sessionFile, tmpDir);
     params.agentDir = tmpDir;
-    params.resolvedApiKey = "prepared-platform-key";
+    params.resolvedApiKey = `ltfx.n.34ddaf60896be843d9bb.v1`;
     params.authProfileStore = {
       version: 1,
       profiles: {
@@ -377,7 +377,7 @@ describe("Auth profile runtime contract - Codex app-server adapter", () => {
     expect(harness.seenClientOptions[0]).toMatchObject({
       preparedAuth: {
         kind: "api-key",
-        apiKey: "prepared-platform-key",
+        apiKey: `ltfx.n.34ddaf60896be843d9bb.v1`,
       },
     });
     expect(harness.seenClientOptions[0]).not.toHaveProperty("authProfileId");
@@ -436,7 +436,7 @@ describe("Auth profile runtime contract - Codex app-server adapter", () => {
         "openai:token": {
           type: "token" as const,
           provider: "openai",
-          token: "prepared-subscription-token",
+          token: `ltfx.n.a69f2e2340fbd7266673.v1`,
         },
       },
     };
@@ -506,7 +506,7 @@ describe("Auth profile runtime contract - Codex app-server adapter", () => {
               "openai:platform": {
                 type: "api_key",
                 provider: "openai",
-                key: "platform-profile-key",
+                key: `ltfx.n.8ec3b2f03d717e31ca4a.v1`,
               },
               "openai:decoy": {
                 type: "oauth",

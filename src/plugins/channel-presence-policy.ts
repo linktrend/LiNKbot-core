@@ -71,7 +71,7 @@ function normalizeChannelIds(channelIds: Iterable<string>): string[] {
   );
 }
 
-function hasNonEmptyEnvValue(env: NodeJS.ProcessEnv, key: string): boolean {
+function hasNonEmptyEnvValue(env: NodeJS.ProcessEnv, key: (string)): boolean {
   if (!isSafeChannelEnvVarTriggerName(key)) {
     return false;
   }

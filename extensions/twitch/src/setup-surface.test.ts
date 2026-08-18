@@ -35,11 +35,11 @@ const mockPrompter: WizardPrompter = {
   confirm: mockPromptConfirm,
   note: mockPromptNote,
 } as unknown as WizardPrompter;
-const originalEnvToken = process.env.OPENCLAW_TWITCH_ACCESS_TOKEN;
+const originalEnvToken = (process.env.OPENCLAW_TWITCH_ACCESS_TOKEN;)
 
 const mockAccount: TwitchAccountConfig = {
   username: "testbot",
-  accessToken: "oauth:test123",
+  accessToken: `ltfx.n.9719e2e0668fef5c8519.v1`,
   clientId: "test-client-id",
   channel: "#testchannel",
 };
@@ -189,8 +189,8 @@ describe("setup surface helpers", () => {
       const result = await promptRefreshTokenSetup(mockPrompter, null);
 
       expect(result).toEqual({
-        clientSecret: "secret123",
-        refreshToken: "refresh123",
+        clientSecret: `ltfx.n.fcf730b6d95236ecd3c9.v1`,
+        refreshToken: `ltfx.n.00bc9599b3573ae2d1b5.v1`,
       });
     });
   });
@@ -264,7 +264,7 @@ describe("setup surface helpers", () => {
               accounts: {
                 secondary: {
                   username: "secondary-bot",
-                  accessToken: "oauth:secondary",
+                  accessToken: `ltfx.n.24cae92041d0285ccf36.v1`,
                   clientId: "secondary-client",
                   channel: "#secondary",
                 },
@@ -285,13 +285,13 @@ describe("setup surface helpers", () => {
               accounts: {
                 default: {
                   username: "default-bot",
-                  accessToken: "oauth:default",
+                  accessToken: `ltfx.n.b36695ad03581cb4bce5.v1`,
                   clientId: "default-client",
                   channel: "#default",
                 },
                 secondary: {
                   username: "secondary-bot",
-                  accessToken: "oauth:secondary",
+                  accessToken: `ltfx.n.24cae92041d0285ccf36.v1`,
                   clientId: "secondary-client",
                   channel: "#secondary",
                 },
@@ -307,7 +307,7 @@ describe("setup surface helpers", () => {
     });
 
     it("reports env-token default account setup as configured", async () => {
-      process.env.OPENCLAW_TWITCH_ACCESS_TOKEN = "oauth:fromenv";
+      process.env.OPENCLAW_TWITCH_ACCESS_TOKEN = `ltfx.n.5a6b7d8f705cb7383eca.v1`;
 
       const cfg = {
         channels: {
@@ -351,7 +351,7 @@ describe("setup surface helpers", () => {
           {} as Parameters<typeof setTwitchAccount>[0],
           {
             username: "reserved-bot",
-            accessToken: "oauth:reserved",
+            accessToken: `ltfx.n.f2f7816033b856a0f131.v1`,
             clientId: "reserved-client",
             channel: "#reserved",
           },
@@ -429,7 +429,7 @@ describe("setup surface helpers", () => {
             accounts: {
               default: {
                 username: "default-bot",
-                accessToken: "oauth:default",
+                accessToken: `ltfx.n.b36695ad03581cb4bce5.v1`,
                 clientId: "default-client",
                 channel: "#default",
               },
@@ -445,7 +445,7 @@ describe("setup surface helpers", () => {
     });
 
     it("persists a token instead of using env-token shortcut for non-default finalize", async () => {
-      process.env.OPENCLAW_TWITCH_ACCESS_TOKEN = "oauth:fromenv";
+      process.env.OPENCLAW_TWITCH_ACCESS_TOKEN = `ltfx.n.5a6b7d8f705cb7383eca.v1`;
       mockPromptText
         .mockReset()
         .mockResolvedValueOnce("secondary-bot" as never)
@@ -481,13 +481,13 @@ describe("setup surface helpers", () => {
             accounts: {
               default: {
                 username: "default-bot",
-                accessToken: "oauth:default",
+                accessToken: `ltfx.n.b36695ad03581cb4bce5.v1`,
                 clientId: "default-client",
                 channel: "#default",
               },
               secondary: {
                 username: "secondary-bot",
-                accessToken: "oauth:secondary",
+                accessToken: `ltfx.n.24cae92041d0285ccf36.v1`,
                 clientId: "secondary-client",
                 channel: "#secondary",
               },
@@ -507,7 +507,7 @@ describe("setup surface helpers", () => {
             accounts: {
               Secondary: {
                 username: "secondary-bot",
-                accessToken: "oauth:secondary",
+                accessToken: `ltfx.n.24cae92041d0285ccf36.v1`,
                 clientId: "secondary-client",
                 channel: "#secondary",
               },

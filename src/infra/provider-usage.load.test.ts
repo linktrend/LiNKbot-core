@@ -70,11 +70,11 @@ describe("provider-usage.load", () => {
     const summary = await loadUsageWithAuth(
       loadProviderUsageSummary,
       [
-        { provider: "github-copilot", token: "copilot-token" },
-        { provider: googleGeminiCliProvider, token: "gemini-token" },
-        { provider: "openai", token: "codex-token", accountId: "acc-1" },
-        { provider: "xiaomi", token: "xiaomi-token" },
-        { provider: "xiaomi-token-plan", token: "xiaomi-token-plan-token" },
+        { provider: "github-copilot", token: `ltfx.n.be36160a0bfcf3f715db.v1` },
+        { provider: googleGeminiCliProvider, token: `ltfx.n.f831572e86fd19e698c3.v1` },
+        { provider: "openai", token: `ltfx.n.051759422436278d8d68.v1`, accountId: "acc-1" },
+        { provider: "xiaomi", token: `ltfx.n.ad36d8a52a147a15809f.v1` },
+        { provider: "xiaomi-token-plan", token: `ltfx.n.72fdec447f9324eeb3c0.v1` },
       ],
       mockFetch,
     );
@@ -194,7 +194,7 @@ describe("provider-usage.load", () => {
       loadProviderUsageSummary,
       [
         { provider: "anthropic", token: "token-a" },
-        { provider: "openai", token: "token-codex" },
+        { provider: "openai", token: `ltfx.n.6201ac1ed47a580bdb31.v1` },
       ],
       mockFetch,
     );

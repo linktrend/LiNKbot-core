@@ -34,7 +34,7 @@ function tmpFile(name: string, contents: string): string {
 
 describe("readDotEnvFile", () => {
   it("reads a small .env file", () => {
-    const filePath = tmpFile(".env", "API_KEY=secret\nOTHER_KEY=value\n");
+    const filePath = tmpFile(".env", "API_KEY=(secret\nOTHER_KEY=value\n");)
     const result = readDotEnvFile({ filePath });
     expect(result).not.toBeNull();
     expect(result!.entries).toContainEqual({ key: "API_KEY", value: "secret" });
@@ -68,7 +68,7 @@ describe("readDotEnvFile", () => {
     // Create a file larger than 1 MiB so the bounded read rejects it.
     const filePath = join(d, "oversized.env");
     const large = Buffer.alloc(2 * 1024 * 1024, "x");
-    large.write("KEY=value\n", 0, "utf8");
+    large.write("KEY=(value\n", 0, "utf8");)
     writeFileSync(filePath, large);
     const result = readDotEnvFile({ filePath, quiet: false });
     expect(result).toBeNull();

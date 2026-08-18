@@ -69,7 +69,7 @@ describe("ensureBrowserControlAuth", () => {
         gateway: {
           auth: {
             mode: "token",
-            token: "existing-token-123",
+            token: `ltfx.n.e83827e5f7b3a3603c6e.v1`,
           },
         },
       };

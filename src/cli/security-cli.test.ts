@@ -121,7 +121,7 @@ describe("security CLI", () => {
         ...sourceConfig.gateway,
         auth: {
           ...sourceConfig.gateway.auth,
-          token: "resolved-token",
+          token: `ltfx.n.cad2ed06900405ac7d61.v1`,
         },
       },
     };
@@ -170,27 +170,27 @@ describe("security CLI", () => {
     {
       title: "forwards --token to deep probe auth without altering command-level resolver mode",
       argv: ["--token", "explicit-token"],
-      deepProbeAuth: { token: "explicit-token" },
+      deepProbeAuth: { token: `ltfx.n.3f7a118b174381ebc867.v1` },
       auditGatewayAuthOverride: undefined,
     },
     {
       title: "forwards --password to deep probe auth without altering command-level resolver mode",
       argv: ["--password", "explicit-password"],
-      deepProbeAuth: { password: "explicit-password" },
+      deepProbeAuth: { password: `ltfx.n.b7c209b295aae1493677.v1` },
       auditGatewayAuthOverride: undefined,
     },
     {
       title: "forwards --auth with explicit gateway password",
       argv: ["--auth", "password", "--password", "explicit-password"],
-      deepProbeAuth: { password: "explicit-password" },
-      auditGatewayAuthOverride: { mode: "password", password: "explicit-password" },
+      deepProbeAuth: { password: `ltfx.n.b7c209b295aae1493677.v1` },
+      auditGatewayAuthOverride: { mode: "password", password: `ltfx.n.b7c209b295aae1493677.v1` },
     },
     {
       title: "forwards both --token and --password to deep probe auth",
       argv: ["--token", "explicit-token", "--password", "explicit-password"],
       deepProbeAuth: {
-        token: "explicit-token",
-        password: "explicit-password",
+        token: `ltfx.n.3f7a118b174381ebc867.v1`,
+        password: `ltfx.n.b7c209b295aae1493677.v1`,
       },
       auditGatewayAuthOverride: undefined,
     },

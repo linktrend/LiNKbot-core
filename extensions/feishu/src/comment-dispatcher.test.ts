@@ -59,7 +59,7 @@ describe("createFeishuCommentReplyDispatcher", () => {
       agentId: "main",
       runtime: { log: vi.fn(), error: vi.fn() } as never,
       accountId: "main",
-      fileToken: "doc_token_1",
+      fileToken: `ltfx.n.f09b225e527089fa5a3e.v1`,
       fileType: "docx",
       commentId: "comment_1",
       replyId: "reply_1",
@@ -83,7 +83,7 @@ describe("createFeishuCommentReplyDispatcher", () => {
     resolveFeishuRuntimeAccountMock.mockReturnValue({
       accountId: "main",
       appId: "app_id",
-      appSecret: "app_secret",
+      appSecret: `ltfx.n.5a0a9233e4503def486e.v1`,
       domain: "feishu",
       config: {},
     });
@@ -138,7 +138,7 @@ describe("createFeishuCommentReplyDispatcher", () => {
       throw new Error("Expected Feishu client");
     }
     expect(deliverCommentThreadTextMock).toHaveBeenCalledWith(client, {
-      file_token: "doc_token_1",
+      file_token: `ltfx.n.f09b225e527089fa5a3e.v1`,
       file_type: "docx",
       comment_id: "comment_1",
       content: "hello world",

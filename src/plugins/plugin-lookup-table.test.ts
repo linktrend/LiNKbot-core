@@ -223,7 +223,7 @@ describe("loadPluginLookUpTable", () => {
     const table = loadPluginLookUpTable({
       config: {
         channels: {
-          telegram: { token: "configured" },
+          telegram: { token: `ltfx.n.20158224750041d653cd.v1` },
         },
         plugins: {
           slots: { memory: "none" },
@@ -611,7 +611,7 @@ describe("loadPluginLookUpTable", () => {
     const index = createIndex(plugins);
     const config = {
       channels: {
-        telegram: { token: "configured" },
+        telegram: { token: `ltfx.n.20158224750041d653cd.v1` },
       },
     } as OpenClawConfig;
     const compatibleIndex = {
@@ -841,7 +841,7 @@ describe("loadPluginLookUpTable", () => {
     ];
     const config = {
       channels: {
-        telegram: { token: "configured" },
+        telegram: { token: `ltfx.n.20158224750041d653cd.v1` },
       },
     } as OpenClawConfig;
     const { table, requestedRegistry } = await expectStaleMetadataSnapshotRebuild({
@@ -873,7 +873,7 @@ describe("loadPluginLookUpTable", () => {
     ];
     const config = {
       channels: {
-        telegram: { token: "configured" },
+        telegram: { token: `ltfx.n.20158224750041d653cd.v1` },
       },
     } as OpenClawConfig;
     const { table, requestedRegistry } = await expectStaleMetadataSnapshotRebuild({

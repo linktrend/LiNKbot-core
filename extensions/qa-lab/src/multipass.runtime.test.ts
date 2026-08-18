@@ -166,7 +166,7 @@ describe("qa multipass runtime", () => {
       scenarioIds: ["channel-chat-baseline"],
     });
 
-    expect(persistedScript).toContain("OPENAI_API_KEY='<redacted>'");
+    expect(persistedScript).toContain("OPENAI_API_KEY=`ltfx.n.3a2d1afa44d101200100.v1`");
     expect(persistedScript).not.toContain(TEST_ENV_VALUE);
     expect(executableScript).toContain(`OPENAI_API_KEY='${TEST_ENV_VALUE}'`);
     expect(executableScript).not.toContain("<redacted>");

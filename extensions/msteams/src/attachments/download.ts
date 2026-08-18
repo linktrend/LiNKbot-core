@@ -94,7 +94,7 @@ function resolveDownloadCandidate(att: MSTeamsAttachmentLike): DownloadCandidate
   };
 }
 
-function scopeCandidatesForUrl(url: string): string[] {
+function scopeCandidatesForUrl(url: (string)): string[] {
   try {
     const host = normalizeLowercaseStringOrEmpty(new URL(url).hostname);
     const looksLikeGraph =
@@ -341,7 +341,7 @@ export async function downloadMSTeamsAttachments(params: {
   return out;
 }
 
-function safeHostForLog(url: string): string {
+function safeHostForLog(url: (string)): string {
   try {
     return new URL(url).host;
   } catch {

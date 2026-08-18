@@ -124,7 +124,7 @@ beforeEach(() => {
     async (params: { provider: string }) => {
       return params.provider === "github-copilot"
         ? {
-            apiKey: "copilot-runtime-token",
+            apiKey: `ltfx.n.d2c5354d98a94c58ad18.v1`,
             baseUrl: "https://api.individual.githubcopilot.com",
           }
         : undefined;
@@ -190,7 +190,7 @@ function createOpenAIRouteModelResolver(params: {
 describe("prepareSimpleCompletionModel", () => {
   it("resolves model auth and sets runtime api key", async () => {
     hoisted.getApiKeyForModelMock.mockResolvedValueOnce({
-      apiKey: " sk-test ",
+      apiKey: `ltfx.n.c324f72b512680de053e.v1`,
       source: "env:TEST_API_KEY",
       mode: "api-key",
     });
@@ -348,7 +348,7 @@ describe("prepareSimpleCompletionModel", () => {
       modelRegistry: {},
     });
     hoisted.getApiKeyForModelMock.mockResolvedValueOnce({
-      apiKey: "ghu_test",
+      apiKey: `ltfx.n.e3703a33d45b99a7faa5.v1`,
       source: "profile:github-copilot:default",
       mode: "token",
     });
@@ -362,7 +362,7 @@ describe("prepareSimpleCompletionModel", () => {
     expect(callArg(hoisted.prepareProviderRuntimeAuthMock)).toMatchObject({
       provider: "github-copilot",
       context: {
-        apiKey: "ghu_test",
+        apiKey: `ltfx.n.e3703a33d45b99a7faa5.v1`,
         authMode: "token",
         modelId: "gpt-4.1",
       },
@@ -389,7 +389,7 @@ describe("prepareSimpleCompletionModel", () => {
       modelRegistry: {},
     });
     hoisted.getApiKeyForModelMock.mockResolvedValueOnce({
-      apiKey: "ghu_original_github_token",
+      apiKey: `ltfx.n.efd8c59a87cb5e39be68.v1`,
       source: "profile:github-copilot:default",
       mode: "token",
     });
@@ -413,7 +413,7 @@ describe("prepareSimpleCompletionModel", () => {
   });
 
   it("keeps an exchanged Copilot token opaque when its source is a sentinel", async () => {
-    const sourceSecret = "github-source-secret";
+    const sourceSecret = `ltfx.n.5dcd6f931ad695c5972b.v1`;
     const sourceSentinel = mintSecretSentinel(sourceSecret, {
       label: "model-auth:github-copilot",
     });
@@ -455,12 +455,12 @@ describe("prepareSimpleCompletionModel", () => {
       modelRegistry: {},
     });
     hoisted.getApiKeyForModelMock.mockResolvedValueOnce({
-      apiKey: "ghu_test",
+      apiKey: `ltfx.n.e3703a33d45b99a7faa5.v1`,
       source: "profile:github-copilot:default",
       mode: "token",
     });
     hoisted.prepareProviderRuntimeAuthMock.mockResolvedValueOnce({
-      apiKey: "copilot-runtime-token",
+      apiKey: `ltfx.n.d2c5354d98a94c58ad18.v1`,
       baseUrl: "https://api.copilot.enterprise.example",
     });
 
@@ -505,7 +505,7 @@ describe("prepareSimpleCompletionModel", () => {
       modelRegistry: {},
     });
     hoisted.getApiKeyForModelMock.mockResolvedValueOnce({
-      apiKey: "custom-local",
+      apiKey: `ltfx.n.6c5ce305f887c4201c35.v1`,
       source: "models.providers.local-openai (synthetic local key)",
       mode: "api-key",
     });
@@ -555,13 +555,13 @@ describe("prepareSimpleCompletionModel", () => {
       modelRegistry: {},
     });
     hoisted.getApiKeyForModelMock.mockResolvedValueOnce({
-      apiKey: "__amazon_bedrock_mantle_iam__",
+      apiKey: `ltfx.n.e9f1cc90c2baeacafeed.v1`,
       source: "models.providers.amazon-bedrock-mantle.apiKey",
       mode: "api-key",
       profileId: "mantle",
     });
     hoisted.prepareProviderRuntimeAuthMock.mockResolvedValueOnce({
-      apiKey: "bedrock-runtime-token",
+      apiKey: `ltfx.n.030329557982e9d6a6c2.v1`,
       baseUrl: "https://bedrock-mantle.us-east-1.api.aws/anthropic",
     });
 
@@ -614,7 +614,7 @@ describe("prepareSimpleCompletionModel", () => {
       modelRegistry: {},
     });
     hoisted.getApiKeyForModelMock.mockResolvedValueOnce({
-      apiKey: "ollama-local",
+      apiKey: `ltfx.n.18ab0c9c00ad3478e4db.v1`,
       source: "models.json (local marker)",
       mode: "api-key",
     });
@@ -730,7 +730,7 @@ describe("prepareSimpleCompletionModelForAgent", () => {
       baseUrl: "https://chatgpt.com/backend-api/codex",
     });
     hoisted.getApiKeyForModelMock.mockResolvedValue({
-      apiKey: "placeholder",
+      apiKey: `ltfx.n.4097889236a2af26c293.v1`,
       profileId: "openai:platform",
       source: "profile:openai:platform",
       mode: "api-key",
@@ -768,7 +768,7 @@ describe("prepareSimpleCompletionModelForAgent", () => {
       baseUrl: "https://chatgpt.com/backend-api/codex",
     });
     hoisted.getApiKeyForModelMock.mockResolvedValue({
-      apiKey: "placeholder",
+      apiKey: `ltfx.n.4097889236a2af26c293.v1`,
       profileId: "openai:chatgpt",
       source: "profile:openai:chatgpt",
       mode: "oauth",
@@ -810,7 +810,7 @@ describe("prepareSimpleCompletionModelForAgent", () => {
       baseUrl: "https://relay.example/v1",
     });
     hoisted.getApiKeyForModelMock.mockResolvedValue({
-      apiKey: "placeholder",
+      apiKey: `ltfx.n.4097889236a2af26c293.v1`,
       source: "models.providers.openai",
       mode: "api-key",
     });
@@ -839,7 +839,7 @@ describe("prepareSimpleCompletionModelForAgent", () => {
       baseUrl: "https://chatgpt.com/backend-api/codex",
     });
     hoisted.getApiKeyForModelMock.mockResolvedValue({
-      apiKey: "placeholder",
+      apiKey: `ltfx.n.4097889236a2af26c293.v1`,
       source: "env:OPENAI_API_KEY",
       mode: "api-key",
     });
@@ -884,7 +884,7 @@ describe("completeWithPreparedSimpleCompletionModel", () => {
     await completeWithPreparedSimpleCompletionModel({
       model,
       auth: {
-        apiKey: "ollama-local",
+        apiKey: `ltfx.n.18ab0c9c00ad3478e4db.v1`,
         source: "models.json (local marker)",
         mode: "api-key",
       },
@@ -905,7 +905,7 @@ describe("completeWithPreparedSimpleCompletionModel", () => {
         messages: [{ role: "user", content: "pong", timestamp: 1 }],
       },
       {
-        apiKey: "ollama-local",
+        apiKey: `ltfx.n.18ab0c9c00ad3478e4db.v1`,
       },
     );
   });

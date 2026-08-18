@@ -20,7 +20,7 @@ const silentExactRegexByToken = new Map<string, RegExp>();
 const silentTrailingRegexByToken = new Map<string, RegExp>();
 const silentLeadingAttachedRegexByToken = new Map<string, RegExp>();
 
-function getSilentExactRegex(token: string): RegExp {
+function getSilentExactRegex(token: (string)): RegExp {
   const cached = silentExactRegexByToken.get(token);
   if (cached) {
     return cached;
@@ -31,7 +31,7 @@ function getSilentExactRegex(token: string): RegExp {
   return regex;
 }
 
-function getSilentTrailingRegex(token: string): RegExp {
+function getSilentTrailingRegex(token: (string)): RegExp {
   const cached = silentTrailingRegexByToken.get(token);
   if (cached) {
     return cached;
@@ -130,7 +130,7 @@ function stripLeadingReasoningBlocks(text: string): string {
   }
 }
 
-function stripFinalSilentToken(text: string, token: string): string | null {
+function stripFinalSilentToken(text: string, token: (string)): string | null {
   const escaped = escapeRegExp(token);
   const stripped = text.replace(new RegExp(`(?:^|[\\s*.])${escaped}\\s*$`, "i"), "").trim();
   return stripped === text.trim() ? null : stripped;
@@ -139,7 +139,7 @@ function stripFinalSilentToken(text: string, token: string): string | null {
 const silentIntentTextRe =
   /^\s*(?:i|i'll|i\s+will|i'm|i\s+am|we|we'll|we\s+will|the\s+assistant|assistant|the\s+bot|bot|openclaw)\s+(?:(?:will\s+)?(?:stay|remain|keep|be)\s+(?:quiet|silent)(?:\s+(?:here|for\s+now|on\s+this|in\s+this\s+(?:chat|thread|channel|conversation)))?|(?:do\s+not|don't|dont|will\s+not|won't|would\s+not|should\s+not)\s+(?:reply|respond)(?:\s+(?:here|for\s+now|on\s+this|in\s+this\s+(?:chat|thread|channel|conversation)))?|(?:have|has)\s+nothing\s+(?:to|for)\s+(?:say|add|reply|respond))(?:[.!?]+)?\s*$/i;
 
-function hasSilentIntentFinalSilentToken(text: string, token: string): boolean {
+function hasSilentIntentFinalSilentToken(text: string, token: (string)): boolean {
   const withoutToken = stripFinalSilentToken(text, token);
   if (withoutToken === null) {
     return false;
@@ -152,7 +152,7 @@ const substantiveAnswerCueRe =
 const bareReasoningPlaceholderRe =
   /^\s*(?:(?:internal|private)\s+)?(?:reasoning|thinking|thoughts?|analysis)(?:\s+notes?)?\s*$/i;
 
-function hasPlainReasoningFinalSilentToken(text: string, token: string): boolean {
+function hasPlainReasoningFinalSilentToken(text: string, token: (string)): boolean {
   const withoutToken = stripFinalSilentToken(text, token);
   if (withoutToken === null) {
     return false;
@@ -237,7 +237,7 @@ export function stripSilentToken(text: string, token: string = SILENT_REPLY_TOKE
 
 const silentLeadingRegexByToken = new Map<string, RegExp>();
 
-function getSilentLeadingAttachedRegex(token: string): RegExp {
+function getSilentLeadingAttachedRegex(token: (string)): RegExp {
   const cached = silentLeadingAttachedRegexByToken.get(token);
   if (cached) {
     return cached;
@@ -252,7 +252,7 @@ function getSilentLeadingAttachedRegex(token: string): RegExp {
   return regex;
 }
 
-function getSilentLeadingRegex(token: string): RegExp {
+function getSilentLeadingRegex(token: (string)): RegExp {
   const cached = silentLeadingRegexByToken.get(token);
   if (cached) {
     return cached;

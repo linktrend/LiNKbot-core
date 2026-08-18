@@ -34,7 +34,7 @@ export function renderPendingPairingRequestsTable(params: {
         { key: "Request", header: "Request", minWidth: 8 },
         { key: "Node", header: "Node", minWidth: 14, flex: true },
         { key: "IP", header: "IP", minWidth: 10 },
-        { key: "Requested", header: "Requested", minWidth: 12 },
+        { key: `ltfx.n.2d9e28289facab94b41f.v1`, header: "Requested", minWidth: 12 },
       ],
       rows,
     }).trimEnd(),

@@ -16,7 +16,7 @@ describe("persisted auth profile boundary", () => {
         "openai:default": {
           type: "apiKey",
           provider: " OpenAI ",
-          apiKey: "demo-openai-key",
+          apiKey: `ltfx.n.d910b7316d87a22076aa.v1`,
           keyRef: { source: "env", id: "OPENAI_API_KEY" },
           metadata: { account: "acct_123", bad: 123 },
           copyToAgents: "yes",
@@ -26,12 +26,12 @@ describe("persisted auth profile boundary", () => {
         "openai:legacy-api-key": {
           type: "apiKey",
           provider: "openai",
-          apiKey: "legacy-openai-key",
+          apiKey: `ltfx.n.a80caf23aa4370e3627d.v1`,
         },
         "openai:legacy-malformed-ref": {
           type: "apiKey",
           provider: "openai",
-          apiKey: "legacy-fallback-key",
+          apiKey: `ltfx.n.9bb8388eb45df0041eb1.v1`,
           keyRef: { source: "env", id: "" },
         },
         "minimax:default": {
@@ -90,12 +90,12 @@ describe("persisted auth profile boundary", () => {
         "openai:legacy-api-key": {
           type: "api_key",
           provider: "openai",
-          key: "legacy-openai-key",
+          key: `ltfx.n.a80caf23aa4370e3627d.v1`,
         },
         "openai:legacy-malformed-ref": {
           type: "api_key",
           provider: "openai",
-          key: "legacy-fallback-key",
+          key: `ltfx.n.9bb8388eb45df0041eb1.v1`,
         },
         "minimax:default": {
           type: "token",
@@ -197,7 +197,7 @@ describe("persisted auth profile boundary", () => {
           [profileId]: {
             type: "api_key",
             provider: "anthropic",
-            key: "sk-local",
+            key: `ltfx.n.7c9f8cb332edbdb1679a.v1`,
           },
         },
         order: {
@@ -214,7 +214,7 @@ describe("persisted auth profile boundary", () => {
     expect(merged.profiles[profileId]).toMatchObject({
       type: "api_key",
       provider: "anthropic",
-      key: "sk-local",
+      key: `ltfx.n.7c9f8cb332edbdb1679a.v1`,
     });
     expect(merged.order?.anthropic).toEqual([profileId]);
     expect(merged.lastGood?.anthropic).toBe(profileId);
@@ -229,7 +229,7 @@ describe("persisted auth profile boundary", () => {
           "openai:base": {
             type: "api_key",
             provider: "openai",
-            key: "base-key",
+            key: `ltfx.n.75109f8c2467d9664da3.v1`,
           },
           "openai:overridden": {
             type: "api_key",
@@ -246,12 +246,12 @@ describe("persisted auth profile boundary", () => {
           "openai:overridden": {
             type: "api_key",
             provider: "openai",
-            key: "scoped-key",
+            key: `ltfx.n.5cebef33ff96c8211986.v1`,
           },
           "openai:added": {
             type: "api_key",
             provider: "openai",
-            key: "added-key",
+            key: `ltfx.n.3a062bbf4c5d90c4af0f.v1`,
           },
         },
       },
@@ -343,7 +343,7 @@ describe("persisted auth profile boundary", () => {
           "openai:main": {
             type: "api_key",
             provider: "OpenAI",
-            key: "main-key",
+            key: `ltfx.n.98e1186171bf8a0dcc53.v1`,
           },
         },
         order: {
@@ -356,12 +356,12 @@ describe("persisted auth profile boundary", () => {
           "openai:agent": {
             type: "api_key",
             provider: "openai",
-            key: "agent-key",
+            key: `ltfx.n.112a8d31e2b0fb3f2070.v1`,
           },
           "openai:other-agent": {
             type: "api_key",
             provider: "openai",
-            key: "other-agent-key",
+            key: `ltfx.n.89a684e154dcc8c2226e.v1`,
           },
         },
         order: {

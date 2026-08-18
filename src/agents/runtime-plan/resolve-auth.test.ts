@@ -57,13 +57,13 @@ describe("resolvePreparedRuntimeModelAuth", () => {
         "openai:subscription": {
           type: "token",
           provider: "openai",
-          token: "subscription-token",
+          token: `ltfx.n.8a255480fb08743cb67c.v1`,
           expires: Date.now() + 60_000,
         },
         "openai:platform": {
           type: "api_key",
           provider: "openai",
-          key: "platform-key",
+          key: `ltfx.n.e75390981221aacccfa9.v1`,
         },
       }),
       order: { openai: ["openai:subscription", "openai:platform"] },
@@ -115,7 +115,7 @@ describe("resolvePreparedRuntimeModelAuth", () => {
       "openai:backup": {
         type: "api_key",
         provider: "openai",
-        key: "backup-key",
+        key: `ltfx.n.054a82561269425111ef.v1`,
       },
     });
 
@@ -157,7 +157,7 @@ describe("resolvePreparedRuntimeModelAuth", () => {
         "openai:platform": {
           type: "api_key",
           provider: "openai",
-          key: "platform-key",
+          key: `ltfx.n.e75390981221aacccfa9.v1`,
         },
       });
 
@@ -219,7 +219,7 @@ describe("resolvePreparedRuntimeModelAuth", () => {
 
     expect(resolved).toMatchObject({
       auth: {
-        apiKey: "ambient-platform-key",
+        apiKey: `ltfx.n.4fe68f2c6000c6671d73.v1`,
         mode: "api-key",
       },
       plan: {
@@ -235,7 +235,7 @@ describe("resolvePreparedRuntimeModelAuth", () => {
       "openai:chatgpt": {
         type: "token",
         provider: "openai",
-        token: "subscription-token",
+        token: `ltfx.n.8a255480fb08743cb67c.v1`,
       },
     });
 
@@ -259,7 +259,7 @@ describe("resolvePreparedRuntimeModelAuth", () => {
           models: {
             providers: {
               openai: {
-                apiKey: "configured-platform-key",
+                apiKey: `ltfx.n.48fcb6b834314dfba1bc.v1`,
                 baseUrl: "https://api.openai.com/v1",
                 models: [],
               },
@@ -278,7 +278,7 @@ describe("resolvePreparedRuntimeModelAuth", () => {
       "openai:platform": {
         type: "api_key",
         provider: "openai",
-        key: "platform-key",
+        key: `ltfx.n.e75390981221aacccfa9.v1`,
       },
     });
     await expect(
@@ -302,7 +302,7 @@ describe("resolvePreparedRuntimeModelAuth", () => {
             providers: {
               openai: {
                 auth: "oauth",
-                apiKey: "configured-subscription-credential",
+                apiKey: `ltfx.n.11af581124b82aa02e05.v1`,
                 baseUrl: "https://chatgpt.com/backend-api/codex",
                 models: [],
               },
@@ -314,7 +314,7 @@ describe("resolvePreparedRuntimeModelAuth", () => {
       }),
     ).resolves.toMatchObject({
       auth: {
-        apiKey: "configured-subscription-credential",
+        apiKey: `ltfx.n.11af581124b82aa02e05.v1`,
         source: "models.json",
         mode: "oauth",
       },
@@ -330,12 +330,12 @@ describe("resolvePreparedRuntimeModelAuth", () => {
       "openai:changed": {
         type: "api_key",
         provider: "openai",
-        key: "platform-key",
+        key: `ltfx.n.e75390981221aacccfa9.v1`,
       },
       "openai:backup": {
         type: "token",
         provider: "openai",
-        token: "subscription-token",
+        token: `ltfx.n.8a255480fb08743cb67c.v1`,
         expires: Date.now() + 60_000,
       },
     });
@@ -378,12 +378,12 @@ describe("resolvePreparedRuntimeModelAuth", () => {
       "openai:first": {
         type: "api_key",
         provider: "openai",
-        key: "first-key",
+        key: `ltfx.n.9e24b55356ef2a121ab5.v1`,
       },
       "openai:backup": {
         type: "api_key",
         provider: "openai",
-        key: "backup-key",
+        key: `ltfx.n.054a82561269425111ef.v1`,
       },
     });
     const plan = {
@@ -429,8 +429,8 @@ describe("resolvePreparedRuntimeModelAuth", () => {
 
   it("fails closed when every prepared automatic candidate is in cooldown", async () => {
     const store = authStore({
-      "openai:first": { type: "api_key", provider: "openai", key: "first-key" },
-      "openai:backup": { type: "api_key", provider: "openai", key: "backup-key" },
+      "openai:first": { type: "api_key", provider: "openai", key: `ltfx.n.9e24b55356ef2a121ab5.v1` },
+      "openai:backup": { type: "api_key", provider: "openai", key: `ltfx.n.054a82561269425111ef.v1` },
     });
     store.usageStats = Object.fromEntries(
       ["openai:first", "openai:backup"].map((profileId) => [
@@ -462,7 +462,7 @@ describe("resolvePreparedRuntimeModelAuth", () => {
 
   it("does not unlock direct fallback when a profile cools during materialization", async () => {
     const store = authStore({
-      "openai:first": { type: "api_key", provider: "openai", key: "first-key" },
+      "openai:first": { type: "api_key", provider: "openai", key: `ltfx.n.9e24b55356ef2a121ab5.v1` },
     });
     const profilePlan = {
       providerForAuth: "openai",
@@ -564,7 +564,7 @@ describe("resolvePreparedRuntimeModelAuth", () => {
       "github-copilot:first": {
         type: "token",
         provider: "github-copilot",
-        token: "profile-token",
+        token: `ltfx.n.f6ccb990acf9bce993b1.v1`,
       },
     });
     const profilePlan = {
@@ -664,7 +664,7 @@ describe("resolvePreparedRuntimeModelAuth", () => {
       "openai:unbound": {
         type: "api_key",
         provider: "openai",
-        key: "must-not-be-borrowed",
+        key: `ltfx.n.2ee8030b80db4cd7a1c4.v1`,
       },
     });
 
@@ -693,7 +693,7 @@ describe("resolvePreparedRuntimeModelAuth", () => {
       "openai:locked": {
         type: "api_key",
         provider: "openai",
-        key: "codex-app-server",
+        key: `ltfx.n.2bbc6ce9917113417ef2.v1`,
       },
     });
 

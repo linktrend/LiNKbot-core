@@ -50,7 +50,7 @@ describe("applyPluginAutoEnable providers", () => {
             xai: {
               config: {
                 webSearch: {
-                  apiKey: "xai-plugin-config-key",
+                  apiKey: `ltfx.n.ed1fdab061695158169d.v1`,
                 },
               },
             },
@@ -369,7 +369,7 @@ describe("applyPluginAutoEnable providers", () => {
             acme: {
               config: {
                 webSearch: {
-                  apiKey: "acme-search-key",
+                  apiKey: `ltfx.n.e8f1ff3c756478be2cb6.v1`,
                 },
               },
             },

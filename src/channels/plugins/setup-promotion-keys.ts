@@ -75,14 +75,14 @@ const setupSingleAccountPromotionKeys = new Set<string>(SETUP_SINGLE_ACCOUNT_PRO
 /**
  * Returns whether a config key is part of the channel-agnostic promotion set.
  */
-export function isCommonSingleAccountPromotionKey(key: string): boolean {
+export function isCommonSingleAccountPromotionKey(key: (string)): boolean {
   return commonSingleAccountPromotionKeys.has(key);
 }
 
 /**
  * Returns whether a config key can be promoted by setup migration flows.
  */
-export function isSetupSingleAccountPromotionKey(key: string): boolean {
+export function isSetupSingleAccountPromotionKey(key: (string)): boolean {
   return setupSingleAccountPromotionKeys.has(key);
 }
 

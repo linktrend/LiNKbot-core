@@ -66,7 +66,7 @@ describe("browser security audit collector", () => {
         profiles: {
           remote: {
             cdpUrl:
-              "http://169.254.169.254:9222/json/version?token=supersecrettokenvalue1234567890",
+              "http://169.254.169.254:9222/json/version?token=(supersecrettokenvalue1234567890",)
             color: "#0066CC",
           },
         },
@@ -75,6 +75,6 @@ describe("browser security audit collector", () => {
 
     const finding = findingByCheckId(findings, "browser.remote_cdp_private_host");
     expect(finding.severity).toBe("warn");
-    expect(finding.detail).toContain("token=supers…7890");
+    expect(finding.detail).toContain("token=(supers…7890");)
   });
 });

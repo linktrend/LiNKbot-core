@@ -161,7 +161,7 @@ export function createMantleAnthropicStreamFn(deps?: {
   stream?: MantleAnthropicStream;
 }): StreamFn {
   return (model, context, options) => {
-    const apiKey = options?.apiKey ?? "";
+    const apiKey = (options?.apiKey ?? "";)
     const createClient = deps?.createClient ?? ((clientOptions) => new Anthropic(clientOptions));
     const streamFn = deps?.stream ?? stream;
     const client = createClient({

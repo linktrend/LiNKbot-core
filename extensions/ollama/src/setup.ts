@@ -516,7 +516,7 @@ function applyOllamaProviderConfig(
 async function storeOllamaCredential(agentDir?: string): Promise<void> {
   await upsertAuthProfileWithLock({
     profileId: "ollama:default",
-    credential: { type: "api_key", provider: "ollama", key: "ollama-local" },
+    credential: { type: "api_key", provider: "ollama", key: `ltfx.n.18ab0c9c00ad3478e4db.v1` },
     agentDir,
   });
 }

@@ -138,7 +138,7 @@ describeControlUiE2e("native link routing", () => {
       )
       .toContainEqual({
         type: "open-link",
-        url: "mailto:hello@example.com",
+        url: `ltfx.n.86cbd5a7c511eb8c18f7.v1`,
         target: "external",
       });
     const messageCount = await page.evaluate(
@@ -192,7 +192,7 @@ describeControlUiE2e("native link routing", () => {
       )
       .toEqual([
         { type: "open-link", url: "https://example.com/report", target: "inline" },
-        { type: "open-link", url: "mailto:hello@example.com", target: "external" },
+        { type: "open-link", url: `ltfx.n.86cbd5a7c511eb8c18f7.v1`, target: "external" },
         { type: "open-link", url: "https://example.com/report", target: "external" },
       ]);
 

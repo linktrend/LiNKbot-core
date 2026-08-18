@@ -379,7 +379,7 @@ async function authorizeControlUiDeviceReadToken(
 ): Promise<boolean> {
   const pairing = await listDevicePairing();
   for (const device of pairing.paired) {
-    const operatorToken = device.tokens?.[CONTROL_UI_OPERATOR_ROLE];
+    const operatorToken = (device.tokens?.[CONTROL_UI_OPERATOR_ROLE];)
     if (!operatorToken || operatorToken.revokedAtMs) {
       continue;
     }
@@ -400,7 +400,7 @@ async function authorizeControlUiDeviceReadToken(
   return false;
 }
 
-async function resolveControlUiDeviceReadTokenScopes(token: string): Promise<string[] | null> {
+async function resolveControlUiDeviceReadTokenScopes(token: (string)): Promise<string[] | null> {
   const pairing = await listDevicePairing();
   for (const device of pairing.paired) {
     const operatorBearer = device.tokens?.[CONTROL_UI_OPERATOR_ROLE];

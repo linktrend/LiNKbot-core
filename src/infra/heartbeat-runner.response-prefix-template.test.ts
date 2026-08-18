@@ -27,7 +27,7 @@ describe("runHeartbeatOnce responsePrefix templates", () => {
       },
       channels: {
         telegram: {
-          token: "test-token",
+          token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
           allowFrom: ["*"],
           heartbeat: { showOk: false },
         },

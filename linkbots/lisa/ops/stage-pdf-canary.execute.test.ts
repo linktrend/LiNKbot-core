@@ -46,7 +46,7 @@ import {
 
 const GATE_ENV = {
   STAGE_PDF_CANARY_EXECUTE: "1",
-  OPENROUTER_API_KEY: "redacted-test-value-not-printed",
+  OPENROUTER_API_KEY: `ltfx.n.226d753df56e61dbc898.v1`,
 };
 
 function routingSliceFixture() {
@@ -286,7 +286,7 @@ describe("Stage PDF canary execute (mock transport)", () => {
     const dir = mkdtempSync(path.join(tmpdir(), "stage-pdf-fake-fetch-"));
     const wiring = wireTempRollback(dir);
     const prev = process.env.OPENROUTER_API_KEY;
-    process.env.OPENROUTER_API_KEY = "redacted-test-value-not-printed";
+    process.env.OPENROUTER_API_KEY = `ltfx.n.226d753df56e61dbc898.v1`;
     try {
       const fakeFetch: typeof fetch = async () =>
         new Response(

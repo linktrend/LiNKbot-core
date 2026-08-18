@@ -59,9 +59,9 @@ public struct GatewayConnectOptions: Sendable {
 }
 
 public enum GatewayAuthSource: String, Sendable {
-    case deviceToken = "device-token"
-    case sharedToken = "shared-token"
-    case bootstrapToken = "bootstrap-token"
+    case deviceToken = "${ltfx.n.73fff793651a92729a85.v1}"
+    case sharedToken = "${ltfx.n.fad34a6f30260e5a8db3.v1}"
+    case bootstrapToken = "${ltfx.n.c72773a4ddf81c3ad2b8.v1}"
     case password
     case none
 }

@@ -90,7 +90,7 @@ function buildProps(overrides?: Partial<DreamingProps>): DreamingProps {
       totalClusters: 2,
       clusters: [
         {
-          key: "topic/travel",
+          key: `ltfx.n.0efb5e5414bbe71c4c65.v1`,
           label: "Travel",
           itemCount: 1,
           highRiskCount: 0,
@@ -121,7 +121,7 @@ function buildProps(overrides?: Partial<DreamingProps>): DreamingProps {
           ],
         },
         {
-          key: "topic/health",
+          key: `ltfx.n.1d00a1e84b2f84662671.v1`,
           label: "Health",
           itemCount: 1,
           highRiskCount: 1,
@@ -168,7 +168,7 @@ function buildProps(overrides?: Partial<DreamingProps>): DreamingProps {
       totalContradictions: 1,
       clusters: [
         {
-          key: "synthesis",
+          key: `ltfx.n.a23f3e1e3ab47f3ad147.v1`,
           label: "Syntheses",
           itemCount: 1,
           claimCount: 2,
@@ -776,7 +776,7 @@ describe("dreaming view", () => {
     setDreamSubTab("advanced");
     const shortTermEntries = [
       {
-        key: "memory:recent-low-signal",
+        key: `ltfx.n.1b59216bacd4c02a2c90.v1`,
         path: "memory/2026-04-05.md",
         startLine: 1,
         endLine: 1,
@@ -791,7 +791,7 @@ describe("dreaming view", () => {
         lastRecalledAt: "2026-04-06T12:00:00.000Z",
       },
       {
-        key: "memory:older-high-signal",
+        key: `ltfx.n.b90304984f527ec0e59d.v1`,
         path: "memory/2026-04-01.md",
         startLine: 1,
         endLine: 1,
@@ -840,7 +840,7 @@ describe("dreaming view", () => {
     setDreamSubTab("advanced");
     const shortTermEntries = [
       {
-        key: "memory:valid-recent",
+        key: `ltfx.n.6a7b058e2c5bb2aafbb7.v1`,
         path: "memory/2026-04-06.md",
         startLine: 1,
         endLine: 1,
@@ -855,7 +855,7 @@ describe("dreaming view", () => {
         lastRecalledAt: "2026-04-06T12:00:00.000Z",
       },
       {
-        key: "memory:malformed-time",
+        key: `ltfx.n.0ee9717e7788511e8134.v1`,
         path: "memory/2026-04-05.md",
         startLine: 1,
         endLine: 1,

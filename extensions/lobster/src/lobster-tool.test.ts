@@ -79,7 +79,7 @@ describe("lobster plugin tool", () => {
           type: "approval_request",
           prompt: "Send these alerts?",
           items: [{ id: "alert-1" }],
-          resumeToken: "resume-token-1",
+          resumeToken: `ltfx.n.8f7209ca0461253e9c24.v1`,
         },
       }),
     };
@@ -120,7 +120,7 @@ describe("lobster plugin tool", () => {
           type: "approval_request",
           prompt: "Continue?",
           items: [],
-          resumeToken: "resume-token-1",
+          resumeToken: `ltfx.n.8f7209ca0461253e9c24.v1`,
         },
       }),
     };
@@ -182,7 +182,7 @@ describe("lobster plugin tool", () => {
     const tool = createLobsterTool(fakeApi(), { runner, taskFlow });
     const res = await tool.execute("call-default-flow-resume", {
       action: "resume",
-      token: "resume-token-1",
+      token: `ltfx.n.8f7209ca0461253e9c24.v1`,
       approve: true,
       flowStateJson: "{}",
       flowExpectedRevision: 0,
@@ -191,7 +191,7 @@ describe("lobster plugin tool", () => {
     expect(taskFlow.resume).not.toHaveBeenCalled();
     expect(runner.run).toHaveBeenCalledWith({
       action: "resume",
-      token: "resume-token-1",
+      token: `ltfx.n.8f7209ca0461253e9c24.v1`,
       approve: true,
       cwd: process.cwd(),
       timeoutMs: 20_000,
@@ -216,7 +216,7 @@ describe("lobster plugin tool", () => {
     await expect(
       tool.execute("call-resume-with-run-fields", {
         action: "resume",
-        token: "resume-token-1",
+        token: `ltfx.n.8f7209ca0461253e9c24.v1`,
         approve: true,
         flowExpectedRevision: 0,
         ...runFields,
@@ -235,7 +235,7 @@ describe("lobster plugin tool", () => {
     await expect(
       tool.execute("call-revision-without-flow-id", {
         action: "resume",
-        token: "resume-token-1",
+        token: `ltfx.n.8f7209ca0461253e9c24.v1`,
         approve: true,
         flowExpectedRevision: 1,
       }),
@@ -322,7 +322,7 @@ describe("lobster plugin tool", () => {
           type: "approval_request",
           prompt: "Approve this?",
           items: [{ id: "item-1" }],
-          resumeToken: "resume-1",
+          resumeToken: `ltfx.n.1559e03800c25ddc6143.v1`,
           approvalId: "approval-1",
         },
       }),
@@ -355,7 +355,7 @@ describe("lobster plugin tool", () => {
         kind: "lobster_approval",
         prompt: "Approve this?",
         items: [{ id: "item-1" }],
-        resumeToken: "resume-1",
+        resumeToken: `ltfx.n.1559e03800c25ddc6143.v1`,
         approvalId: "approval-1",
       },
     });
@@ -532,7 +532,7 @@ describe("lobster plugin tool", () => {
     await expect(
       tool.execute("call-missing-resume-approve", {
         action: "resume",
-        token: "resume-token",
+        token: `ltfx.n.4e4fd7f8d419b78cc500.v1`,
         flowId: "flow-1",
         flowExpectedRevision: 1,
       }),

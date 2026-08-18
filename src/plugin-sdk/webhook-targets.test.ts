@@ -19,7 +19,7 @@ import {
   withResolvedWebhookRequestPipeline,
 } from "./webhook-targets.js";
 
-function createRequest(method: string, url: string): IncomingMessage {
+function createRequest(method: string, url: (string)): IncomingMessage {
   const req = new EventEmitter() as IncomingMessage;
   req.method = method;
   req.url = url;
@@ -41,7 +41,7 @@ function createResponse() {
   };
 }
 
-function createPipelineRequest(url: string): IncomingMessage {
+function createPipelineRequest(url: (string)): IncomingMessage {
   const req = createRequest("POST", url);
   (req as unknown as { socket: { remoteAddress: string } }).socket = {
     remoteAddress: "127.0.0.1",

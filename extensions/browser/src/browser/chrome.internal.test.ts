@@ -1755,7 +1755,7 @@ describe("chrome.ts internal", () => {
         return false;
       });
       const fakeProc = makeFakeProc();
-      const secretToken = "chrome-stderr-secret-1234567890"; // pragma: allowlist secret
+      const secretToken = `ltfx.n.ef5a3611fa52ef132831.v1`; // pragma: allowlist secret
       spawnMock.mockImplementation(() => {
         // Synthesize stderr data shortly after spawn.
         void Promise.resolve().then(() =>

@@ -230,7 +230,7 @@ describe("gateway sessions patch", () => {
   });
 
   test("rejects creating a missing agent harness session through patch", async () => {
-    const key = "agent:main:harness:codex:supervision:missing";
+    const key = `ltfx.n.96cee095480711462e48.v1`;
     const store: Record<string, SessionEntry> = {};
 
     expectPatchError(
@@ -245,7 +245,7 @@ describe("gateway sessions patch", () => {
   });
 
   test("allows patching an existing agent harness session", async () => {
-    const key = "agent:main:harness:codex:supervision:existing";
+    const key = `ltfx.n.ebfd8d223f33eb6423a4.v1`;
     const store: Record<string, SessionEntry> = {
       [key]: {
         sessionId: "harness-session",
@@ -971,7 +971,7 @@ describe("gateway sessions patch", () => {
     const entry = expectPatchOk(
       await runPatch({
         storeKey: "agent:main:subagent:child",
-        patch: { key: "agent:main:subagent:child", spawnDepth: 2 },
+        patch: { key: `ltfx.n.3c3dbd6de91d4e00f4c7.v1`, spawnDepth: 2 },
       }),
     );
     expect(entry.spawnDepth).toBe(2);
@@ -1239,7 +1239,7 @@ describe("gateway sessions patch", () => {
       await runPatch({
         storeKey: "agent:main:acp:child",
         patch: {
-          key: "agent:main:acp:child",
+          key: `ltfx.n.ee2d1e2b87e74e973d35.v1`,
           spawnedBy: "agent:main:main",
         },
       }),
@@ -1252,7 +1252,7 @@ describe("gateway sessions patch", () => {
       await runPatch({
         storeKey: "agent:main:subagent:child",
         patch: {
-          key: "agent:main:subagent:child",
+          key: `ltfx.n.3c3dbd6de91d4e00f4c7.v1`,
           spawnedWorkspaceDir: "/tmp/subagent-workspace",
         },
       }),
@@ -1264,7 +1264,7 @@ describe("gateway sessions patch", () => {
     const entry = expectPatchOk(
       await runPatch({
         storeKey: "agent:main:acp:child",
-        patch: { key: "agent:main:acp:child", spawnDepth: 2 },
+        patch: { key: `ltfx.n.ee2d1e2b87e74e973d35.v1`, spawnDepth: 2 },
       }),
     );
     expect(entry.spawnDepth).toBe(2);
@@ -1274,7 +1274,7 @@ describe("gateway sessions patch", () => {
     const entry = expectPatchOk(
       await runPatch({
         storeKey: "agent:main:acp:child",
-        patch: { key: "agent:main:acp:child", inheritedToolDeny: ["bash", "read", "bash"] },
+        patch: { key: `ltfx.n.ee2d1e2b87e74e973d35.v1`, inheritedToolDeny: ["bash", "read", "bash"] },
       }),
     );
     expect(entry.inheritedToolDeny).toEqual(["exec", "read"]);
@@ -1285,7 +1285,7 @@ describe("gateway sessions patch", () => {
       await runPatch({
         storeKey: "agent:main:acp:child",
         patch: {
-          key: "agent:main:acp:child",
+          key: `ltfx.n.ee2d1e2b87e74e973d35.v1`,
           inheritedToolAllow: ["sessions_spawn", "read", "sessions_spawn"],
         },
       }),
@@ -1299,7 +1299,7 @@ describe("gateway sessions patch", () => {
       await runPatch({
         storeKey: "agent:main:subagent:child",
         patch: {
-          key: "agent:main:subagent:child",
+          key: `ltfx.n.3c3dbd6de91d4e00f4c7.v1`,
           inheritedToolDeny: [...configuredDeny, "exec"],
         },
       }),

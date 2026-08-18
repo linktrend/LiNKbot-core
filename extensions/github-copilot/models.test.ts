@@ -381,7 +381,7 @@ describe("github-copilot token", () => {
   it("uses cache when token is still valid", async () => {
     const now = Date.now();
     jsonStoreMocks.loadJsonFile.mockReturnValue({
-      token: "cached;proxy-ep=proxy.example.com;",
+      token: `ltfx.n.f06af84e35980334b2e7.v1`,
       expiresAt: now + 60 * 60 * 1000,
       updatedAt: now,
       integrationId: "vscode-chat",
@@ -410,7 +410,7 @@ describe("github-copilot token", () => {
     const fetchImpl = vi.fn().mockResolvedValue(
       new Response(
         JSON.stringify({
-          token: "fresh;proxy-ep=https://proxy.contoso.test;",
+          token: `ltfx.n.8a95006c677098e7ce2c.v1`,
           expires_at: Math.floor(Date.now() / 1000) + 3600,
         }),
         {
@@ -607,7 +607,7 @@ describe("fetchCopilotModelCatalog", () => {
     const fetchImpl = vi.fn().mockResolvedValue(makeResponse(200, sampleApiResponse));
 
     const out = await fetchCopilotModelCatalog({
-      copilotApiToken: "tid=test",
+      copilotApiToken: `ltfx.n.eb5173fde5f8102d702b.v1`,
       baseUrl: "https://api.githubcopilot.com",
       fetchImpl: fetchImpl as unknown as typeof fetch,
     });
@@ -680,7 +680,7 @@ describe("fetchCopilotModelCatalog", () => {
     const fetchImpl = vi.fn().mockResolvedValue(makeResponse(200, { data: [] }));
 
     await fetchCopilotModelCatalog({
-      copilotApiToken: "tid=test",
+      copilotApiToken: `ltfx.n.eb5173fde5f8102d702b.v1`,
       baseUrl: "https://api.githubcopilot.com/",
       fetchImpl: fetchImpl as unknown as typeof fetch,
     });
@@ -715,7 +715,7 @@ describe("fetchCopilotModelCatalog", () => {
     );
 
     const out = await fetchCopilotModelCatalog({
-      copilotApiToken: "tid=test",
+      copilotApiToken: `ltfx.n.eb5173fde5f8102d702b.v1`,
       baseUrl: "https://api.githubcopilot.com",
       fetchImpl: fetchImpl as unknown as typeof fetch,
     });
@@ -759,7 +759,7 @@ describe("fetchCopilotModelCatalog", () => {
     );
 
     const out = await fetchCopilotModelCatalog({
-      copilotApiToken: "tid=test",
+      copilotApiToken: `ltfx.n.eb5173fde5f8102d702b.v1`,
       baseUrl: "https://api.githubcopilot.com",
       fetchImpl: fetchImpl as unknown as typeof fetch,
     });
@@ -808,7 +808,7 @@ describe("fetchCopilotModelCatalog", () => {
 
       await expect(
         fetchCopilotModelCatalog({
-          copilotApiToken: "tid=test",
+          copilotApiToken: `ltfx.n.eb5173fde5f8102d702b.v1`,
           baseUrl: "https://api.githubcopilot.com",
           fetchImpl: fetchImpl as unknown as typeof fetch,
         }),
@@ -829,7 +829,7 @@ describe("fetchCopilotModelCatalog", () => {
 
     await expect(
       fetchCopilotModelCatalog({
-        copilotApiToken: "tid=test",
+        copilotApiToken: `ltfx.n.eb5173fde5f8102d702b.v1`,
         baseUrl: "",
         fetchImpl: fetchImpl as unknown as typeof fetch,
       }),

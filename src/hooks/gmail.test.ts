@@ -11,11 +11,11 @@ import {
 
 const baseConfig = {
   hooks: {
-    token: "hook-token",
+    token: `ltfx.n.64eeb5ca0d40b2cc6c09.v1`,
     gmail: {
       account: "openclaw@gmail.com",
       topic: "projects/demo/topics/gog-gmail-watch",
-      pushToken: "push-token",
+      pushToken: `ltfx.n.13550d36c32499b89fb2.v1`,
     },
   },
 } satisfies OpenClawConfig;
@@ -27,11 +27,11 @@ describe("gmail hook config", () => {
     return resolveGmailHookRuntimeConfig(
       {
         hooks: {
-          token: "hook-token",
+          token: `ltfx.n.64eeb5ca0d40b2cc6c09.v1`,
           gmail: {
             account: "openclaw@gmail.com",
             topic: "projects/demo/topics/gog-gmail-watch",
-            pushToken: "push-token",
+            pushToken: `ltfx.n.13550d36c32499b89fb2.v1`,
             ...overrides,
           },
         },
@@ -119,7 +119,7 @@ describe("gmail hook config", () => {
           gmail: {
             account: "openclaw@gmail.com",
             topic: "projects/demo/topics/gog-gmail-watch",
-            pushToken: "push-token",
+            pushToken: `ltfx.n.13550d36c32499b89fb2.v1`,
           },
         },
       },

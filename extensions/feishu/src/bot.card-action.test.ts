@@ -285,7 +285,7 @@ describe("Feishu Card Action Handler", () => {
     try {
       const event: FeishuCardActionEvent = {
         operator: { open_id: "u123", user_id: "uid1", union_id: "un1" },
-        token: "tok4-boundary",
+        token: `ltfx.n.ec7cea8bf2b889b6de89.v1`,
         action: {
           value: createFeishuCardInteractionEnvelope({
             k: "meta",
@@ -437,12 +437,12 @@ describe("Feishu Card Action Handler", () => {
         },
       });
       const firstEvent = createCardActionEvent({
-        token: "tok9b-boundary-1",
+        token: `ltfx.n.9c5cc0e76fa9843019f1.v1`,
         chatId: "oc_dm_chat_boundary",
         actionValue: { text: "/help" },
       });
       const secondEvent = createCardActionEvent({
-        token: "tok9b-boundary-2",
+        token: `ltfx.n.51cc0d21d4682224fa88.v1`,
         chatId: "oc_dm_chat_boundary",
         actionValue: { text: "/help" },
       });
@@ -518,7 +518,7 @@ describe("Feishu Card Action Handler", () => {
       },
     });
     const event = createCardActionEvent({
-      token: "tok9d-utf16",
+      token: `ltfx.n.b533f0e6c69263c4152d.v1`,
       chatId: "oc_unknown_chat_utf16",
       actionValue: { text: "/help" },
     });
@@ -564,7 +564,7 @@ describe("Feishu Card Action Handler", () => {
 
   it("does not log raw duplicate callback tokens", async () => {
     const log = vi.fn();
-    const callbackToken = "test-token-placeholder";
+    const callbackToken = `ltfx.n.41dd96f1dccf65c2c9c7.v1`;
     const event = createStructuredQuickActionEvent({
       token: callbackToken,
       action: "feishu.quick_actions.help",
@@ -584,7 +584,7 @@ describe("Feishu Card Action Handler", () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date(8_640_000_000_000_000));
     const event = createCardActionEvent({
-      token: "tok10-boundary",
+      token: `ltfx.n.bcc4f904240e1a582672.v1`,
       actionValue: { text: "/help" },
     });
 

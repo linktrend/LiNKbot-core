@@ -166,7 +166,7 @@ describe("directive behavior", () => {
       elevatedFailures: [
         {
           gate: "agents.list[].tools.elevated.enabled",
-          key: "agents.list.restricted.tools.elevated.enabled",
+          key: `ltfx.n.3934b54fe79cae654c1a.v1`,
         },
       ],
     });
@@ -182,7 +182,7 @@ describe("directive behavior", () => {
       elevatedFailures: [
         {
           gate: "agents.list[].tools.elevated.allowFrom.whatsapp",
-          key: "agents.list.work.tools.elevated.allowFrom.whatsapp",
+          key: `ltfx.n.9ffa77a40feed379e35b.v1`,
         },
       ],
     });

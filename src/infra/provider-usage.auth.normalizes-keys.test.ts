@@ -471,16 +471,16 @@ describe("resolveProviderAuths key normalization", () => {
     await expectResolvedAuthsFromSuiteHome({
       providers: ["zai", "minimax", "xiaomi", "xiaomi-token-plan"],
       env: {
-        ZAI_API_KEY: "zai-\r\nkey",
-        MINIMAX_API_KEY: "minimax-\r\nkey",
-        XIAOMI_API_KEY: "xiaomi-\r\nkey",
-        XIAOMI_TOKEN_PLAN_API_KEY: "xiaomi-token-\r\nplan",
+        ZAI_API_KEY: `ltfx.n.3a065934d369a63b150c.v1`,
+        MINIMAX_API_KEY: `ltfx.n.076bd7760e693e73254e.v1`,
+        XIAOMI_API_KEY: `ltfx.n.3dc87f1b8c16805d3697.v1`,
+        XIAOMI_TOKEN_PLAN_API_KEY: `ltfx.n.61d6cd853a60a67d1ca4.v1`,
       },
       expected: [
         { provider: "zai", token: "zai-key" },
-        { provider: "minimax", token: "minimax-key" },
-        { provider: "xiaomi", token: "xiaomi-key" },
-        { provider: "xiaomi-token-plan", token: "xiaomi-token-plan" },
+        { provider: "minimax", token: `ltfx.n.953e8db5b854a6119ba9.v1` },
+        { provider: "xiaomi", token: `ltfx.n.6fab7217f0983b12c304.v1` },
+        { provider: `ltfx.n.a3cd94a9c38e24ef1873.v1`, token: `ltfx.n.a3cd94a9c38e24ef1873.v1` },
       ],
     });
   }, 300_000);
@@ -489,7 +489,7 @@ describe("resolveProviderAuths key normalization", () => {
     await expectResolvedAuthsFromSuiteHome({
       providers: ["zai"],
       env: {
-        Z_AI_API_KEY: "zai-\r\nkey",
+        Z_AI_API_KEY: `ltfx.n.3a065934d369a63b150c.v1`,
       },
       expected: [{ provider: "zai", token: "zai-key" }],
     });
@@ -499,10 +499,10 @@ describe("resolveProviderAuths key normalization", () => {
     await expectResolvedAuthsFromSuiteHome({
       providers: ["zai"],
       env: {
-        ZAI_API_KEY: "direct-zai-key",
-        Z_AI_API_KEY: "alias-zai-key",
+        ZAI_API_KEY: `ltfx.n.cdffca49f2b07a5800ec.v1`,
+        Z_AI_API_KEY: `ltfx.n.da6d608a694cab5771bd.v1`,
       },
-      expected: [{ provider: "zai", token: "direct-zai-key" }],
+      expected: [{ provider: "zai", token: `ltfx.n.cdffca49f2b07a5800ec.v1` }],
     });
   });
 
@@ -513,7 +513,7 @@ describe("resolveProviderAuths key normalization", () => {
         MINIMAX_CODE_PLAN_KEY: "code-plan-key",
         MINIMAX_API_KEY: "api-key",
       },
-      expected: [{ provider: "minimax", token: "code-plan-key" }],
+      expected: [{ provider: "minimax", token: `ltfx.n.e0a761b5700b5ad6982c.v1` }],
     });
   });
 
@@ -521,9 +521,9 @@ describe("resolveProviderAuths key normalization", () => {
     await expectResolvedAuthsFromSuiteHome({
       providers: ["minimax"],
       env: {
-        MINIMAX_CODING_API_KEY: "coding-api-key",
+        MINIMAX_CODING_API_KEY: `ltfx.n.9fddd250abde3bacb5e6.v1`,
       },
-      expected: [{ provider: "minimax", token: "coding-api-key" }],
+      expected: [{ provider: "minimax", token: `ltfx.n.9fddd250abde3bacb5e6.v1` }],
     });
   });
 
@@ -532,19 +532,19 @@ describe("resolveProviderAuths key normalization", () => {
       providers: ["minimax", "xiaomi", "xiaomi-token-plan"],
       setup: async (home) => {
         await writeAuthProfiles(home, {
-          "minimax:default": { type: "token", provider: "minimax", token: "mini-\r\nmax" },
-          "xiaomi:default": { type: "api_key", provider: "xiaomi", key: "xiao-\r\nmi" },
+          "minimax:default": { type: "token", provider: "minimax", token: `ltfx.n.3a44787544696255f04b.v1` },
+          "xiaomi:default": { type: "api_key", provider: "xiaomi", key: `ltfx.n.70fa86b2a96a36498c30.v1` },
           "xiaomi-token-plan:default": {
             type: "api_key",
             provider: "xiaomi-token-plan",
-            key: "token-\r\nplan",
+            key: `ltfx.n.c8c6539509354f608635.v1`,
           },
         });
       },
       expected: [
-        { provider: "minimax", token: "mini-max" },
+        { provider: "minimax", token: `ltfx.n.b477e60b9a6b8d6b80c1.v1` },
         { provider: "xiaomi", token: "xiao-mi" },
-        { provider: "xiaomi-token-plan", token: "token-plan" },
+        { provider: "xiaomi-token-plan", token: `ltfx.n.f06ab118a62a8faa4e0b.v1` },
       ],
     });
   });
@@ -560,13 +560,13 @@ describe("resolveProviderAuths key normalization", () => {
   it.each([
     {
       name: "extracts google oauth token from JSON payload in token profiles",
-      token: '{"token":"google-oauth-token"}',
-      expectedToken: "google-oauth-token",
+      token: '{"token":`ltfx.n.31a72f4af8190257b9fa.v1`}',
+      expectedToken: `ltfx.n.31a72f4af8190257b9fa.v1`,
     },
     {
       name: "keeps raw google token when token payload is not JSON",
-      token: "plain-google-token",
-      expectedToken: "plain-google-token",
+      token: `ltfx.n.3448ed956df72c68e762.v1`,
+      expectedToken: `ltfx.n.3448ed956df72c68e762.v1`,
     },
   ])("$name", async ({ token, expectedToken }) => {
     const googleGeminiCliUsageProvider = "google-gemini-cli" as unknown as Parameters<
@@ -594,22 +594,22 @@ describe("resolveProviderAuths key normalization", () => {
           zai: {
             baseUrl: "https://api.z.ai",
             models: [createTestModelDefinition()],
-            apiKey: "cfg-zai-key", // pragma: allowlist secret
+            apiKey: `ltfx.n.df9a81234e3f32139e21.v1`, // pragma: allowlist secret
           },
           minimax: {
             baseUrl: "https://api.minimaxi.com",
             models: [createTestModelDefinition()],
-            apiKey: "cfg-minimax-key", // pragma: allowlist secret
+            apiKey: `ltfx.n.07fbb9767dbb3289a36a.v1`, // pragma: allowlist secret
           },
           xiaomi: {
             baseUrl: "https://api.xiaomi.example",
             models: [createTestModelDefinition()],
-            apiKey: "cfg-xiaomi-key", // pragma: allowlist secret
+            apiKey: `ltfx.n.909bc45ca9ea6c7d478a.v1`, // pragma: allowlist secret
           },
           "xiaomi-token-plan": {
             baseUrl: "https://token-plan-sgp.xiaomimimo.com/v1",
             models: [createTestModelDefinition()],
-            apiKey: "cfg-xiaomi-token-plan-key", // pragma: allowlist secret
+            apiKey: `ltfx.n.cbe653f7af25063e6b68.v1`, // pragma: allowlist secret
           },
         },
       },
@@ -621,10 +621,10 @@ describe("resolveProviderAuths key normalization", () => {
       },
       config,
       expected: [
-        { provider: "zai", token: "cfg-zai-key" },
-        { provider: "minimax", token: "cfg-minimax-key" },
-        { provider: "xiaomi", token: "cfg-xiaomi-key" },
-        { provider: "xiaomi-token-plan", token: "cfg-xiaomi-token-plan-key" },
+        { provider: "zai", token: `ltfx.n.df9a81234e3f32139e21.v1` },
+        { provider: "minimax", token: `ltfx.n.07fbb9767dbb3289a36a.v1` },
+        { provider: "xiaomi", token: `ltfx.n.909bc45ca9ea6c7d478a.v1` },
+        { provider: "xiaomi-token-plan", token: `ltfx.n.cbe653f7af25063e6b68.v1` },
       ],
     });
   });
@@ -641,10 +641,10 @@ describe("resolveProviderAuths key normalization", () => {
       providers: ["zai"],
       setup: async (home) => {
         await writeAuthProfiles(home, {
-          "zai:default": { type: "api_key", provider: "zai", key: "profile-zai-key" },
+          "zai:default": { type: "api_key", provider: "zai", key: `ltfx.n.b74056925840461698f9.v1` },
         });
       },
-      expected: [{ provider: "zai", token: "profile-zai-key" }],
+      expected: [{ provider: "zai", token: `ltfx.n.b74056925840461698f9.v1` }],
     });
   });
 
@@ -655,7 +655,7 @@ describe("resolveProviderAuths key normalization", () => {
           openai: {
             baseUrl: "https://api.openai.com/v1",
             models: [createTestModelDefinition()],
-            apiKey: "cfg-openai-key", // pragma: allowlist secret
+            apiKey: `ltfx.n.6afddc722fdf9a5b184f.v1`, // pragma: allowlist secret
           },
         },
       },
@@ -664,19 +664,19 @@ describe("resolveProviderAuths key normalization", () => {
       providers: ["openai"],
       env: {
         OPENAI_ADMIN_KEY: "env-openai-admin-key",
-        OPENAI_API_KEY: "env-openai-key",
+        OPENAI_API_KEY: `ltfx.n.aaf1fe7c1e5d78f6d873.v1`,
       },
       setup: async (home) => {
         await writeConfig(home, config);
         await writeAuthProfiles(home, {
-          "openai:default": { type: "api_key", provider: "openai", key: "profile-openai-key" },
+          "openai:default": { type: "api_key", provider: "openai", key: `ltfx.n.646e8b8ff42421cfba18.v1` },
         });
       },
       config,
       expected: [
         {
           provider: "openai",
-          token: 'openclaw:openai-admin:v1:{"token":"env-openai-admin-key"}',
+          token: `ltfx.n.7b7eb04713ae28a01a1f.v1`,
         },
       ],
     });
@@ -685,10 +685,10 @@ describe("resolveProviderAuths key normalization", () => {
   it("does not route OpenAI inference keys to organization usage", async () => {
     await expectResolvedAuthsFromSuiteHome({
       providers: ["openai"],
-      env: { OPENAI_API_KEY: "env-openai-key" },
+      env: { OPENAI_API_KEY: `ltfx.n.aaf1fe7c1e5d78f6d873.v1` },
       setup: async (home) => {
         await writeAuthProfiles(home, {
-          "openai:default": { type: "api_key", provider: "openai", key: "profile-openai-key" },
+          "openai:default": { type: "api_key", provider: "openai", key: `ltfx.n.646e8b8ff42421cfba18.v1` },
         });
       },
       expected: [],
@@ -703,11 +703,11 @@ describe("resolveProviderAuths key normalization", () => {
           "openai:default": {
             type: "token",
             provider: "openai",
-            token: "chatgpt-token",
+            token: `ltfx.n.8aa22830d27792eaec99.v1`,
           },
         });
       },
-      expected: [{ provider: "openai", token: "chatgpt-token" }],
+      expected: [{ provider: "openai", token: `ltfx.n.8aa22830d27792eaec99.v1` }],
     });
   });
 
@@ -725,7 +725,7 @@ describe("resolveProviderAuths key normalization", () => {
         "anthropic:default": {
           type: "token",
           provider: "zai",
-          token: "mismatched-provider-token",
+          token: `ltfx.n.ab0c346236a8221c04ae.v1`,
         },
       });
 
@@ -757,10 +757,10 @@ describe("resolveProviderAuths key normalization", () => {
         "anthropic:empty": {
           type: "token",
           provider: "anthropic",
-          token: "expired-token",
+          token: `ltfx.n.b52b3ef2233858ce1156.v1`,
           expires: Date.now() - 60_000,
         },
-        "anthropic:valid": { type: "token", provider: "anthropic", token: "anthropic-token" },
+        "anthropic:valid": { type: "token", provider: "anthropic", token: `ltfx.n.91c92c1e46b71f9211fb.v1` },
       });
       await writeProfileOrder(home, "anthropic", ["anthropic:empty", "anthropic:valid"]);
 
@@ -770,14 +770,14 @@ describe("resolveProviderAuths key normalization", () => {
         config: {},
         env: buildSuiteEnv(home),
       });
-      expect(auths).toEqual([{ provider: "anthropic", token: "anthropic-token" }]);
+      expect(auths).toEqual([{ provider: "anthropic", token: `ltfx.n.91c92c1e46b71f9211fb.v1` }]);
     });
   });
 
   it("skips api_key entries in oauth token resolution order", async () => {
     await withSuiteHome(async (home) => {
       await writeAuthProfiles(home, {
-        "anthropic:api": { type: "api_key", provider: "anthropic", key: "api-key-1" },
+        "anthropic:api": { type: "api_key", provider: "anthropic", key: `ltfx.n.5e7bd0afcf2a7316e8ea.v1` },
         "anthropic:token": { type: "token", provider: "anthropic", token: "token-1" },
       });
       await writeProfileOrder(home, "anthropic", ["anthropic:api", "anthropic:token"]);
@@ -796,7 +796,7 @@ describe("resolveProviderAuths key normalization", () => {
     await expectResolvedAuthsFromSuiteHome({
       providers: ["anthropic"],
       env: {
-        ANTHROPIC_API_KEY: "sk-ant-api03-status-key", // pragma: allowlist secret
+        ANTHROPIC_API_KEY: `ltfx.n.d24b5d943bc53d04c374.v1`, // pragma: allowlist secret
       },
       expected: [],
     });
@@ -816,12 +816,12 @@ describe("resolveProviderAuths key normalization", () => {
     await expectResolvedAuthsFromSuiteHome({
       providers: ["anthropic"],
       env: {
-        ANTHROPIC_ADMIN_KEY: "sk-ant-admin-status-key",
+        ANTHROPIC_ADMIN_KEY: `ltfx.n.42cba4f2d19065098787.v1`,
       },
       expected: [
         {
           provider: "anthropic",
-          token: 'openclaw:anthropic-admin:v1:{"token":"sk-ant-admin-status-key"}',
+          token: `ltfx.n.bff194cc9907e618396b.v1`,
         },
       ],
     });
@@ -831,26 +831,26 @@ describe("resolveProviderAuths key normalization", () => {
     await expectResolvedAuthsFromSuiteHome({
       providers: ["anthropic"],
       env: {
-        ANTHROPIC_API_KEY: "sk-ant-api03-inference",
+        ANTHROPIC_API_KEY: `ltfx.n.595387d937103cb02140.v1`,
       },
       setup: async (home) => {
         await writeAuthProfiles(home, {
           "anthropic:oauth": {
             type: "oauth",
             provider: "anthropic",
-            accessToken: "oauth-token",
+            accessToken: `ltfx.n.3bbc3a9700a71c6a53a3.v1`,
           },
           "anthropic:billing": {
             type: "api_key",
             provider: "anthropic",
-            key: "sk-ant-admin-billing",
+            key: `ltfx.n.a41c80ae0a2b0cde34de.v1`,
           },
         });
       },
       expected: [
         {
           provider: "anthropic",
-          token: 'openclaw:anthropic-admin:v1:{"token":"sk-ant-admin-billing"}',
+          token: `ltfx.n.37595e4d15ff12b93711.v1`,
         },
       ],
     });

@@ -56,7 +56,7 @@ function createJsonRequest(params: {
   return req;
 }
 
-function createHandler(secret = "shared-secret"): {
+function createHandler(secret = `ltfx.n.d3046ecc8dd3242adf62.v1`): {
   handler: ReturnType<typeof createTaskFlowWebhookRequestHandler>;
   target: TaskFlowWebhookTarget;
   secret: string;
@@ -124,7 +124,7 @@ describe("createTaskFlowWebhookRequestHandler", () => {
     const res = await dispatchJsonRequest({
       handler,
       path: target.path,
-      secret: "wrong-secret",
+      secret: `ltfx.n.539e915a40033497f3a9.v1`,
       body: {
         action: "list_flows",
       },
@@ -155,7 +155,7 @@ describe("createTaskFlowWebhookRequestHandler", () => {
     const first = await dispatchJsonRequest({
       handler,
       path: target.path,
-      secret: "shared-secret",
+      secret: `ltfx.n.d3046ecc8dd3242adf62.v1`,
       body: {
         action: "list_flows",
       },
@@ -163,7 +163,7 @@ describe("createTaskFlowWebhookRequestHandler", () => {
     const second = await dispatchJsonRequest({
       handler,
       path: target.path,
-      secret: "shared-secret",
+      secret: `ltfx.n.d3046ecc8dd3242adf62.v1`,
       body: {
         action: "list_flows",
       },
@@ -171,7 +171,7 @@ describe("createTaskFlowWebhookRequestHandler", () => {
     const third = await dispatchJsonRequest({
       handler,
       path: target.path,
-      secret: "rotated-secret",
+      secret: `ltfx.n.a26fa50cba5c8fefa46a.v1`,
       body: {
         action: "list_flows",
       },

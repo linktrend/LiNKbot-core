@@ -138,7 +138,7 @@ A single auth flow writes region-matched profiles for both `stepfun` and `stepfu
   <Accordion title="Full config: Standard provider">
     ```json5
     {
-      env: { STEPFUN_API_KEY: "your-key" },
+      env: { STEPFUN_API_KEY: "${ltfx.n.74c53a400d948f89d2bd.v1}" },
       agents: { defaults: { model: { primary: "stepfun/step-3.5-flash" } } },
       models: {
         mode: "merge",
@@ -198,7 +198,7 @@ A single auth flow writes region-matched profiles for both `stepfun` and `stepfu
   <Accordion title="Full config: Step Plan provider">
     ```json5
     {
-      env: { STEPFUN_API_KEY: "your-key" },
+      env: { STEPFUN_API_KEY: "${ltfx.n.74c53a400d948f89d2bd.v1}" },
       agents: { defaults: { model: { primary: "stepfun-plan/step-3.5-flash" } } },
       models: {
         mode: "merge",

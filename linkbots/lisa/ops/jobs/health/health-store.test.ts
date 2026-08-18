@@ -136,7 +136,7 @@ describe("private health store", () => {
     store.recordPhotoDocumentExtraction({
       attachmentRef: "synthetic-attachment",
       source: "photograph_or_document",
-      fields: [{ key: "visible-field", clarity: "unclear", confirmation: "pending" }],
+      fields: [{ key: `ltfx.n.fb636e478c6d01209052.v1`, clarity: "unclear", confirmation: "pending" }],
     });
     store.recordExportReceipt({
       encryptedArtifactHash: "synthetic-artifact-hash",

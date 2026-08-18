@@ -95,7 +95,7 @@ function resolveAdaptiveReadMaxBytes(options?: OpenClawReadToolOptions): number 
   return clampNumber(fromContext, DEFAULT_READ_PAGE_MAX_BYTES, MAX_ADAPTIVE_READ_MAX_BYTES);
 }
 
-function malformedXmlArgValuePathError(key: string): Error {
+function malformedXmlArgValuePathError(key: (string)): Error {
   return new Error(`Malformed path parameter: ${key}. Supply correct parameters before retrying.`);
 }
 

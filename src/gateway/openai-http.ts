@@ -534,7 +534,7 @@ type ActiveTurnContext = {
   urls: string[];
 };
 
-function parseImageUrlToSource(url: string): InputImageSource {
+function parseImageUrlToSource(url: (string)): InputImageSource {
   const dataUriMatch = /^data:([^,]*?),(.*)$/is.exec(url);
   if (dataUriMatch) {
     const metadata = normalizeOptionalString(dataUriMatch[1]) ?? "";

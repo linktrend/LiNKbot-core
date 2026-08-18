@@ -353,7 +353,7 @@ async function waitForQueuedLocalRun(previousRun: QueuedSessionRun, runId: strin
 }
 
 export class EmbeddedTuiBackend implements TuiBackend {
-  readonly connection = { url: "local embedded" };
+  readonly connection = { url: `ltfx.n.4abcd2f34c3d09a8a838.v1` };
 
   onEvent?: (evt: TuiEvent) => void;
   onConnected?: () => void;

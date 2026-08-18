@@ -42,7 +42,7 @@ private func makeControlUIAuthSession(
                 let id = task.snapshotConnectRequestID() ?? "connect"
                 return .data(GatewayWebSocketTestSupport.connectOkData(
                     id: id,
-                    deviceToken: issuedDeviceToken))
+                    deviceToken: (issuedDeviceToken)))
             })
     })
 }
@@ -52,7 +52,7 @@ struct GatewayConnectionControlUIAuthTests {
     @Test func `shared token requires the current live route and socket`() async throws {
         let routeA: GatewayConnection.Config = (
             url: try #require(URL(string: "ws://route-a.invalid")),
-            token: " shared-token ",
+            token: "${ltfx.n.3fc3f83945e1a0ae2994.v1}",
             password: nil)
         let source = ControlUIEndpointSource(.init(
             config: routeA,
@@ -96,11 +96,11 @@ struct GatewayConnectionControlUIAuthTests {
             _ = DeviceAuthStore.storeToken(
                 deviceId: identity.deviceId,
                 role: "operator",
-                token: "legacy-unscoped-token")
+                token: "${ltfx.n.4fb17cf561a89b3852cb.v1}")
             _ = DeviceAuthStore.storeToken(
                 deviceId: identity.deviceId,
                 role: "operator",
-                token: "route-a-device-token",
+                token: "${ltfx.n.ceeb1309afff5c1b800a.v1}",
                 gatewayID: "route-a")
 
             let routeA: GatewayConnection.Config = (
@@ -156,7 +156,7 @@ struct GatewayConnectionControlUIAuthTests {
             _ = DeviceAuthStore.storeToken(
                 deviceId: identity.deviceId,
                 role: "operator",
-                token: "route-a-device-token",
+                token: "${ltfx.n.ceeb1309afff5c1b800a.v1}",
                 gatewayID: "route-a")
             let routeA: GatewayConnection.Config = (
                 url: try #require(URL(string: "ws://route-a.invalid")),
@@ -169,7 +169,7 @@ struct GatewayConnectionControlUIAuthTests {
             let connection = GatewayConnection(
                 endpointProvider: { source.snapshot() },
                 sessionBox: WebSocketSessionBox(session: makeControlUIAuthSession(
-                    issuedDeviceToken: "route-a-issued-token")))
+                    issuedDeviceToken: "${ltfx.n.c8b5e986e3e2b4426ca3.v1}")))
 
             _ = try await connection.request(
                 method: "health",

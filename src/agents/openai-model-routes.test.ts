@@ -81,7 +81,7 @@ describe("OpenAI model route adapter", () => {
         provider: "OpenAI",
         id: "openai/gpt-5.4-codex@work",
       }),
-    ).toEqual({ id: "gpt-5.4", key: "openai/gpt-5.4" });
+    ).toEqual({ id: "gpt-5.4", key: `ltfx.n.da5f158f5abee1de3d0e.v1` });
     expect(
       openAIModelCatalogRoutePolicy.resolveIdentity({ provider: "custom", id: "custom/model" }),
     ).toBeNull();

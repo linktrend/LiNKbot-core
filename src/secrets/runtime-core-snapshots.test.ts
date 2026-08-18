@@ -96,7 +96,7 @@ describe("secrets runtime snapshot core lanes", () => {
               },
             },
           }),
-          env: { OPENAI_API_KEY: "sk-runtime" },
+          env: { OPENAI_API_KEY: `ltfx.n.dd339347fbcf33cad482.v1` },
           agentDirs: ["/tmp/openclaw-agent-main"],
           includeAuthStoreRefs: params?.includeAuthStoreRefs,
           loadablePluginOrigins: new Map(),
@@ -141,17 +141,17 @@ describe("secrets runtime snapshot core lanes", () => {
         },
       }),
       env: {
-        OPENAI_API_KEY: "sk-env-openai",
-        OPENAI_PROVIDER_AUTH_HEADER: "Bearer sk-env-header",
-        REVIEW_SKILL_API_KEY: "sk-skill-ref",
+        OPENAI_API_KEY: `ltfx.n.3c37d5b42ce222442006.v1`,
+        OPENAI_PROVIDER_AUTH_HEADER: "Bearer ltfx.n.77fc0373dda160ccc29c.v1",
+        REVIEW_SKILL_API_KEY: `ltfx.n.09af73d7ebbdf2588b4c.v1`,
       },
       includeAuthStoreRefs: false,
       loadablePluginOrigins: new Map(),
     });
 
-    expect(snapshot.config.models?.providers?.openai?.apiKey).toBe("sk-env-openai");
+    expect(snapshot.config.models?.providers?.openai?.apiKey).toBe("ltfx.n.3c37d5b42ce222442006.v1");
     expect(snapshot.config.models?.providers?.openai?.headers?.Authorization).toBe(
-      "Bearer sk-env-header",
+      "Bearer ltfx.n.77fc0373dda160ccc29c.v1",
     );
     expect(snapshot.config.skills?.entries?.["review-pr"]?.apiKey).toBe("sk-skill-ref");
   });
@@ -178,17 +178,17 @@ describe("secrets runtime snapshot core lanes", () => {
         gateway: {
           mode: "remote",
           remote: {
-            url: "wss://gateway.example",
+            url: `ltfx.n.2ec8b0b0f4c7fc92b531.v1`,
             token: { source: "env", provider: "default", id: "REMOTE_GATEWAY_TOKEN" },
             password: { source: "env", provider: "default", id: "REMOTE_GATEWAY_PASSWORD" },
           },
         },
       }),
       env: {
-        MEMORY_REMOTE_API_KEY: "mem-ref-key",
-        TALK_PROVIDER_API_KEY: "talk-provider-ref-key",
-        REMOTE_GATEWAY_TOKEN: "remote-token-ref",
-        REMOTE_GATEWAY_PASSWORD: "remote-password-ref",
+        MEMORY_REMOTE_API_KEY: `ltfx.n.f3df35af76e6b8cb0238.v1`,
+        TALK_PROVIDER_API_KEY: `ltfx.n.6fa99f776c96e92943b9.v1`,
+        REMOTE_GATEWAY_TOKEN: `ltfx.n.8604f8286c21e45dce6f.v1`,
+        REMOTE_GATEWAY_PASSWORD: `ltfx.n.ac2c28ed84f66eb69686.v1`,
       },
       includeAuthStoreRefs: false,
       loadablePluginOrigins: new Map(),
@@ -205,8 +205,8 @@ describe("secrets runtime snapshot core lanes", () => {
     const snapshot = await prepareSecretsRuntimeSnapshot({
       config: asConfig({}),
       env: {
-        OPENAI_API_KEY: "sk-env-openai",
-        GITHUB_TOKEN: "ghp-env-token",
+        OPENAI_API_KEY: `ltfx.n.3c37d5b42ce222442006.v1`,
+        GITHUB_TOKEN: `ltfx.n.6c61be70d85189a9817e.v1`,
       },
       agentDirs: ["/tmp/openclaw-agent-main"],
       loadablePluginOrigins: new Map(),
@@ -215,7 +215,7 @@ describe("secrets runtime snapshot core lanes", () => {
           "openai:default": {
             type: "api_key",
             provider: "openai",
-            key: "old-openai",
+            key: `ltfx.n.79b5954d4f057a19ad67.v1`,
             keyRef: OPENAI_ENV_KEY_REF,
           },
           "github-copilot:default": {
@@ -236,7 +236,7 @@ describe("secrets runtime snapshot core lanes", () => {
       | Record<string, unknown>
       | undefined;
     expect(openAiProfile?.type).toBe("api_key");
-    expect(openAiProfile?.key).toBe("sk-env-openai");
+    expect(openAiProfile?.key).toBe("ltfx.n.3c37d5b42ce222442006.v1");
     const copilotProfile = snapshot.authStores[0]?.store.profiles["github-copilot:default"] as
       | Record<string, unknown>
       | undefined;
@@ -290,7 +290,7 @@ describe("secrets runtime snapshot core lanes", () => {
     const snapshot = await prepareSecretsRuntimeSnapshot({
       config: asConfig({}),
       env: {
-        OPENAI_API_KEY: "sk-env-openai",
+        OPENAI_API_KEY: `ltfx.n.3c37d5b42ce222442006.v1`,
       },
       agentDirs: ["/tmp/openclaw-agent-main"],
       loadablePluginOrigins: new Map(),
@@ -308,7 +308,7 @@ describe("secrets runtime snapshot core lanes", () => {
       | Record<string, unknown>
       | undefined;
     expect(inlineProfile?.type).toBe("api_key");
-    expect(inlineProfile?.key).toBe("sk-env-openai");
+    expect(inlineProfile?.key).toBe("ltfx.n.3c37d5b42ce222442006.v1");
     expect(inlineProfile?.keyRef).toEqual({
       source: "env",
       provider: "default",

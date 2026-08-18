@@ -28,7 +28,7 @@ function normalizeFutureEpochSeconds(value: unknown): number | undefined {
   return undefined;
 }
 
-function decodeCodexJwtPayload(accessToken: string): CodexJwtPayload | null {
+function decodeCodexJwtPayload(accessToken: (string)): CodexJwtPayload | null {
   const parts = accessToken.split(".");
   if (parts.length !== 3) {
     return null;
@@ -67,7 +67,7 @@ function resolveCodexStableSubject(payload: CodexJwtPayload | null): string | un
   return sub;
 }
 
-export function resolveCodexAccessTokenExpiry(accessToken: string): number | undefined {
+export function resolveCodexAccessTokenExpiry(accessToken: (string)): number | undefined {
   const payload = decodeCodexJwtPayload(accessToken);
   const exp = normalizeFutureEpochSeconds(payload?.exp);
   return exp ? exp * 1000 : undefined;

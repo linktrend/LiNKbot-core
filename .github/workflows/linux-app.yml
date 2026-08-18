@@ -56,7 +56,7 @@ jobs:
             ~/.cargo/registry
             ~/.cargo/git
             apps/linux/src-tauri/target
-          key: linux-app-${{ runner.os }}-${{ hashFiles('apps/linux/src-tauri/Cargo.lock') }}
+          key: "${ltfx.n.d1c19ee85fb50181216f.v1}" runner.os }}-${{ hashFiles('apps/linux/src-tauri/Cargo.lock') }}
           restore-keys: |
             linux-app-${{ runner.os }}-
 

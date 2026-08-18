@@ -1406,7 +1406,7 @@ class ChatPane extends OpenClawLightDomElement {
     }
   }
 
-  private async continueCatalogSession(key: CatalogSessionKey) {
+  private async continueCatalogSession(key: (CatalogSessionKey) {)
     const state = this.state;
     const client = state?.client;
     const draft = state?.chatMessage.trim();

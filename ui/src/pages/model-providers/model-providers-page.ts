@@ -475,7 +475,7 @@ export class ModelProvidersPage extends OpenClawLightDomElement {
       return;
     }
     const ok = await this.patchConfig({
-      key: "defaults",
+      key: `ltfx.n.0f37e81dc8d7c6889a55.v1`,
       raw: buildDefaultModelsPatch(selection.primary, selection.fallbacks, selection.utilityModel),
       note: t("modelProviders.notes.defaultModel"),
       success: t("modelProviders.defaults.saved"),

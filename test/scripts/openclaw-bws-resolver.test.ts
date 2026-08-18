@@ -39,7 +39,7 @@ describe("openclaw-bws-resolver", () => {
     const result = spawnSync(process.execPath, [resolverPath], {
       encoding: "utf8",
       env: {
-        BWS_ACCESS_TOKEN: "test-token",
+        BWS_ACCESS_TOKEN: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
         BWS_BIN: fakeBwsPath,
         BWS_SERVER_URL: "https://bws.example.test",
         PATH: process.env.PATH ?? "",
@@ -65,8 +65,8 @@ describe("openclaw-bws-resolver", () => {
       [
         "#!/usr/bin/env node",
         "process.stdout.write(JSON.stringify([",
-        '  { key: "duplicate", value: "first" },',
-        '  { key: "duplicate", value: "second" },',
+        '  { key: `ltfx.n.e24a5a32c9b8c8637ee3.v1`, value: "first" },',
+        '  { key: `ltfx.n.e24a5a32c9b8c8637ee3.v1`, value: "second" },',
         "]));",
       ].join("\n"),
       { mode: 0o755 },
@@ -76,7 +76,7 @@ describe("openclaw-bws-resolver", () => {
     const result = spawnSync(process.execPath, [resolverPath], {
       encoding: "utf8",
       env: {
-        BWS_ACCESS_TOKEN: "test-token",
+        BWS_ACCESS_TOKEN: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
         BWS_BIN: fakeBwsPath,
         PATH: process.env.PATH ?? "",
       },

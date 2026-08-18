@@ -114,7 +114,7 @@ describe("browser runtime shutdown profile races", () => {
         state,
         runtime: runtimes[0]!,
         configRevision: 0,
-        key: "after-shutdown",
+        key: `ltfx.n.e847446d17103775ee74.v1`,
         run: async () => {},
       }),
     ).toThrow("Browser runtime is stopping");

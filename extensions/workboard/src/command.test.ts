@@ -295,7 +295,7 @@ describe("handleWorkboardCommand", () => {
     const store = new WorkboardStore(createMemoryStore());
     const api = createApi();
     const card = await store.create({ title: "Claimed slash card", status: "todo" });
-    await store.claim(card.id, { ownerId: "worker", token: "secret-token" });
+    await store.claim(card.id, { ownerId: "worker", token: `ltfx.n.930bbdc51b6aed5c2a56.v1` });
 
     await expect(
       runWorkboardCommand({
@@ -307,7 +307,7 @@ describe("handleWorkboardCommand", () => {
     ).resolves.toEqual(expect.objectContaining({ text: expect.stringContaining("review") }));
     await expect(store.get(card.id)).resolves.toMatchObject({
       status: "review",
-      metadata: { claim: { ownerId: "worker", token: "secret-token" } },
+      metadata: { claim: { ownerId: "worker", token: `ltfx.n.930bbdc51b6aed5c2a56.v1` } },
     });
   });
 

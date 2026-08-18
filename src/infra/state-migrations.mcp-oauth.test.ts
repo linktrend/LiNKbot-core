@@ -77,10 +77,10 @@ describe("legacy MCP OAuth Doctor migration", () => {
         vendor_extension: "preserve-client-extension",
       },
       tokens: {
-        access_token: "test-token-placeholder",
+        access_token: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
         token_type: "Bearer",
         expires_in: 3600,
-        refresh_token: "test-auth-token",
+        refresh_token: `ltfx.n.f35cd067d05752edf483.v1`,
         vendor_extension: "preserve-token-extension",
       },
       tokenExpiresAt: 10_000,
@@ -280,8 +280,8 @@ describe("legacy MCP OAuth Doctor migration", () => {
     expect(JSON.parse(storeRow(env)?.store_json ?? "null")).toMatchObject({
       pendingAuthorizationChallenge,
       tokens: {
-        access_token: "test-token-placeholder",
-        refresh_token: "test-auth-token",
+        access_token: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
+        refresh_token: `ltfx.n.f35cd067d05752edf483.v1`,
       },
     });
     expect(JSON.parse(storeRow(env)?.store_json ?? "null")).not.toHaveProperty("credentialState");
@@ -566,7 +566,7 @@ describe("legacy MCP OAuth Doctor migration", () => {
     deleteCanonical(env);
     await writeLegacy({
       stateDir,
-      value: validStore({ tokens: { access_token: "decoy-token", token_type: "Bearer" } }),
+      value: validStore({ tokens: { access_token: `ltfx.n.5095a09224a5ba7211d6.v1`, token_type: "Bearer" } }),
     });
     const retry = await migrate(stateDir, env);
 

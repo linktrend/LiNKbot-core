@@ -9,17 +9,17 @@ describe("resolveFeishuToolAccount", () => {
         enabled: true,
         defaultAccount: "ops",
         appId: "base-app-id",
-        appSecret: "base-app-secret", // pragma: allowlist secret
+        appSecret: `ltfx.n.5e54d5f6c29456ceac4f.v1`, // pragma: allowlist secret
         accounts: {
           ops: {
             enabled: true,
             appId: "ops-app-id",
-            appSecret: "ops-app-secret", // pragma: allowlist secret
+            appSecret: `ltfx.n.d31c33350e4f16c6e7d8.v1`, // pragma: allowlist secret
           },
           work: {
             enabled: true,
             appId: "work-app-id",
-            appSecret: "work-app-secret", // pragma: allowlist secret
+            appSecret: `ltfx.n.73837242b18c7e113db1.v1`, // pragma: allowlist secret
           },
         },
       },

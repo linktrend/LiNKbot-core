@@ -54,7 +54,7 @@ vi.mock("@twurple/auth", () => ({
 describe("probeTwitch", () => {
   const mockAccount: TwitchAccountConfig = {
     username: "testbot",
-    accessToken: "oauth:test123456789",
+    accessToken: `ltfx.n.5b493564e9bb9208be0d.v1`,
     clientId: "test-client-id",
     channel: "testchannel",
   };
@@ -85,7 +85,7 @@ describe("probeTwitch", () => {
   it("attempts connection regardless of token prefix", async () => {
     // Note: probeTwitch doesn't validate token format - it tries to connect with whatever token is provided
     // The actual connection would fail in production with an invalid token
-    const account = { ...mockAccount, accessToken: "raw_token_no_prefix" };
+    const account = { ...mockAccount, accessToken: `ltfx.n.0c09f0829a6b73cd4eb2.v1` };
     const result = await probeTwitch(account, 5000);
 
     // With mock, connection succeeds even without oauth: prefix
@@ -169,7 +169,7 @@ describe("probeTwitch", () => {
   it("trims token before validation", async () => {
     const account: TwitchAccountConfig = {
       ...mockAccount,
-      accessToken: "  oauth:test123456789  ",
+      accessToken: `ltfx.n.bb68f54e5d4a0cfee42f.v1`,
     };
 
     const result = await probeTwitch(account, 5000);

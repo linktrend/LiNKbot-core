@@ -192,7 +192,7 @@ describe("forkCodexUpstreamSession", () => {
     expect(events).toEqual(["link", "bind"]);
     expect(result).toEqual({
       status: "created",
-      key: "agent:main:dashboard:forked",
+      key: `ltfx.n.3512782ecaf30b31f6c5.v1`,
       editorText: "edit me",
     });
     expect(archiveThread).not.toHaveBeenCalled();

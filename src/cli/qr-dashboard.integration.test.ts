@@ -38,7 +38,7 @@ vi.mock("../commands/gateway-readiness.js", () => ({
 
 vi.mock("../infra/device-bootstrap.js", () => ({
   issueDeviceBootstrapToken: vi.fn(async () => ({
-    token: "bootstrap-123",
+    token: `ltfx.n.11c5429f22acc4ef311b.v1`,
     expiresAtMs: 123,
   })),
 }));
@@ -139,7 +139,7 @@ describe("cli integration: qr + dashboard token SecretRef", () => {
 
   it("uses the same resolved token SecretRef for qr auth validation and dashboard commands", async () => {
     const fixture = createGatewayTokenRefFixture();
-    process.env.SHARED_GATEWAY_TOKEN = "shared-token-123";
+    process.env.SHARED_GATEWAY_TOKEN = `ltfx.n.0dab00f91495b206be4e.v1`;
     loadConfigMock.mockReturnValue(fixture);
     readConfigFileSnapshotMock.mockResolvedValue({
       path: "/tmp/openclaw.json",

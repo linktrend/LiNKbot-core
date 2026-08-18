@@ -68,7 +68,7 @@ export type MeetingSessionRuntimeOptions<
   isTalkBackMode(mode: TMode): boolean;
   isTranscribeMode(mode: TMode): boolean;
   sameMeetingUrl(left: string | undefined, right: string | undefined): boolean;
-  normalizeMeetingUrlForReuse(url: string): string | undefined;
+  normalizeMeetingUrlForReuse(url: (string)): string | undefined;
   getBrowser(session: TSession): MeetingBrowserSessionView<THealth, TTab> | undefined;
   setBrowserTab(session: TSession, tab: TTab | undefined): void;
   setBrowserHealth(session: TSession, health: THealth | undefined): void;
@@ -568,7 +568,7 @@ export class MeetingSessionRuntime<
     }
   }
 
-  #meetingKey(transport: TTransport, url: string): string {
+  #meetingKey(transport: TTransport, url: (string)): string {
     const meeting = this.options.normalizeMeetingUrlForReuse(url) ?? url;
     return `${transport}:${meeting}`;
   }

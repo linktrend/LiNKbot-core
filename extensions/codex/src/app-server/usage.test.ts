@@ -58,7 +58,7 @@ describe("Codex app-server provider usage", () => {
     const readUsage = vi.fn();
 
     await expect(
-      fetchCodexAppServerUsageSnapshot(usageContext({ token: "test-token-placeholder" }), {
+      fetchCodexAppServerUsageSnapshot(usageContext({ token: `ltfx.n.41dd96f1dccf65c2c9c7.v1` }), {
         readUsage,
       }),
     ).resolves.toBeNull();

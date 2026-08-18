@@ -223,7 +223,7 @@ async function probeTelegramAccountForTest(
       };
       if (webhookRes.ok && webhookJson.ok) {
         webhook = {
-          url: webhookJson.result?.url ?? null,
+          url: (webhookJson.result?.url ?? null,)
           hasCustomCert: webhookJson.result?.has_custom_certificate ?? null,
         };
       }
@@ -492,7 +492,7 @@ describe("getHealthSnapshot", () => {
   it("clamps oversized probe timeouts", async () => {
     testConfig = {
       session: { store: "/tmp/x" },
-      channels: { telegram: { botToken: "123:test" } },
+      channels: { telegram: { botToken: `ltfx.n.e935fda33ae898bc8c9f.v1` } },
     };
     testStore = {};
     const timeouts: number[] = [];
@@ -727,7 +727,7 @@ describe("getHealthSnapshot", () => {
   });
 
   it("merges inspected account metadata with runtime state before building health summaries", async () => {
-    testConfig = { channels: { discord: { token: "discord-token" } } };
+    testConfig = { channels: { discord: { token: `ltfx.n.0017ec88d6aa85df6bc5.v1` } } };
     testStore = {};
     healthPluginsForTest = [createDiscordHealthPlugin()];
 
@@ -863,12 +863,12 @@ describe("getHealthSnapshot", () => {
     buildTelegramHealthSummaryForTest = (snapshot) => ({
       accountId: snapshot.accountId,
       configured: Boolean(snapshot.configured),
-      probe: { ok: true, token: "test-token" },
+      probe: { ok: true, token: `ltfx.n.4c5dc9b7708905f77f5e.v1` },
     });
     probeTelegramAccountForTestOverride = async () => ({
       ok: true,
       bot: { username: "runtime_bot" },
-      token: "test-token",
+      token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
     });
 
     const snap = await getHealthSnapshot({
@@ -880,8 +880,8 @@ describe("getHealthSnapshot", () => {
             accountId: "default",
             connected: true,
             lastConnectedAt: 123,
-            channelAccessToken: "line-token",
-            channelSecret: "line-secret", // pragma: allowlist secret
+            channelAccessToken: `ltfx.n.71688488445b848b8da5.v1`,
+            channelSecret: `ltfx.n.1302cdb468ddf98dde49.v1`, // pragma: allowlist secret
             webhookUrl: "https://example.test/hook?secret=1",
           },
         },
@@ -963,7 +963,7 @@ describe("getHealthSnapshot", () => {
   });
 
   it("omits generic failed probe errors from non-sensitive health snapshots", async () => {
-    testConfig = { channels: { telegram: { botToken: "bad-token" } } };
+    testConfig = { channels: { telegram: { botToken: `ltfx.n.171785f8a24d12f25aa0.v1` } } };
     testStore = {};
     vi.stubEnv("DISCORD_BOT_TOKEN", "");
     vi.stubGlobal(
@@ -989,7 +989,7 @@ describe("getHealthSnapshot", () => {
   });
 
   it("returns structured telegram probe errors", async () => {
-    testConfig = { channels: { telegram: { botToken: "bad-token" } } };
+    testConfig = { channels: { telegram: { botToken: `ltfx.n.171785f8a24d12f25aa0.v1` } } };
     testStore = {};
     vi.stubEnv("DISCORD_BOT_TOKEN", "");
 

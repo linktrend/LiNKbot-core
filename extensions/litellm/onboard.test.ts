@@ -14,7 +14,7 @@ describe("litellm onboard", () => {
       legacyModelId: "custom-model",
       legacyModelName: "Custom",
       legacyBaseUrl: "https://litellm.example/v1",
-      legacyApiKey: "  old-key  ",
+      legacyApiKey: `ltfx.n.5a3cd427fa59e68ba45b.v1`,
     });
 
     expect(provider?.models.map((m) => m.id)).toEqual(["custom-model", "claude-opus-4-6"]);

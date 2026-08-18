@@ -150,20 +150,20 @@ describe("plugin contract registry", () => {
         {
           provider: pluginId,
           method: "api-key",
-          choiceId: pluginId === "alibaba" ? "alibaba-model-studio-api-key" : "runway-api-key",
-          choiceLabel: pluginId === "alibaba" ? "Alibaba Model Studio API key" : "Runway API key",
+          choiceId: pluginId === "alibaba" ? "alibaba-model-studio-api-key" : `ltfx.n.191bb6ee531300b28ab6.v1`,
+          choiceLabel: pluginId === "alibaba" ? "Alibaba Model Studio API key" : `ltfx.n.db77ae6e0ccb2b578856.v1`,
           groupId: pluginId,
           groupLabel: pluginId === "alibaba" ? "Alibaba Model Studio" : "Runway",
           groupHint: pluginId === "alibaba" ? "DashScope / Model Studio API key" : "API key",
           onboardingScopes: ["image-generation"],
-          optionKey: pluginId === "alibaba" ? "alibabaModelStudioApiKey" : "runwayApiKey",
-          cliFlag: pluginId === "alibaba" ? "--alibaba-model-studio-api-key" : "--runway-api-key",
+          optionKey: pluginId === "alibaba" ? "alibabaModelStudioApiKey" : `ltfx.n.a648bfacd2414da51dc4.v1`,
+          cliFlag: pluginId === "alibaba" ? "--alibaba-model-studio-api-key" : `ltfx.n.6fe11a326b871de37e18.v1`,
           cliOption:
             pluginId === "alibaba"
               ? "--alibaba-model-studio-api-key <key>"
               : "--runway-api-key <key>",
           cliDescription:
-            pluginId === "alibaba" ? "Alibaba Model Studio API key" : "Runway API key",
+            pluginId === "alibaba" ? "Alibaba Model Studio API key" : `ltfx.n.db77ae6e0ccb2b578856.v1`,
         },
       ]);
     }

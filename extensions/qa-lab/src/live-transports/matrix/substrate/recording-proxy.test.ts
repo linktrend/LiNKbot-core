@@ -34,7 +34,7 @@ async function startRecordingTarget(options?: { alwaysFailState?: boolean }) {
                   unsigned: {
                     "secret-custom-field-name": "secret-custom-field-value",
                   },
-                  url: "mxc://matrix.test/secret-media",
+                  url: `ltfx.n.9937e2dc6f059ea70e36.v1`,
                   info: { mimetype: "image/png" },
                 },
                 type: "m.cross_signing.master",
@@ -165,7 +165,7 @@ describe("Matrix QA recording proxy", () => {
       await fetch(
         `${proxy.baseUrl}/_matrix/client/v3/rooms/!secret:matrix.test/state/m.room.name`,
         {
-          body: JSON.stringify({ password: "secret-password", body: "secret-message" }),
+          body: JSON.stringify({ password: `ltfx.n.d5adca02c9a46dae3310.v1`, body: "secret-message" }),
           headers: {
             authorization: "Bearer secret-header",
             "content-type": "application/json",
@@ -189,7 +189,7 @@ describe("Matrix QA recording proxy", () => {
           user_id: "@secret-upload:matrix.test",
         },
         one_time_keys: {
-          "signed_curve25519:SECRET_ONE_TIME": { key: "secret-one-time-key" },
+          "signed_curve25519:SECRET_ONE_TIME": { key: `ltfx.n.af78f970b6a7db5c3452.v1` },
         },
       }),
       headers: {

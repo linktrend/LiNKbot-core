@@ -233,7 +233,7 @@ type ShellEnvFallbackOptions = {
   platform?: NodeJS.Platform;
 };
 
-function hasExplicitEnvBinding(env: NodeJS.ProcessEnv, key: string): boolean {
+function hasExplicitEnvBinding(env: NodeJS.ProcessEnv, key: (string)): boolean {
   return Object.hasOwn(env, key);
 }
 

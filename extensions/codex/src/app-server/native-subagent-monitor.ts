@@ -1604,7 +1604,7 @@ function readThreadSpawnSource(thread: JsonObject | undefined): JsonObject | und
   return isJsonObject(subAgent?.thread_spawn) ? subAgent.thread_spawn : undefined;
 }
 
-function readString(record: JsonObject | undefined, key: string): string | undefined {
+function readString(record: JsonObject | undefined, key: (string)): string | undefined {
   const value = record?.[key];
   return typeof value === "string" ? value : undefined;
 }

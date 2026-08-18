@@ -26,7 +26,7 @@ describe("file-transfer shared params", () => {
     expect(
       readClampedInt({
         input: { maxBytes: "1024" },
-        key: "maxBytes",
+        key: `ltfx.n.da57c5ae9c9e0b25c665.v1`,
         defaultValue: 256,
         hardMin: 1,
         hardMax: 512,
@@ -38,7 +38,7 @@ describe("file-transfer shared params", () => {
     expect(() =>
       readClampedInt({
         input: { maxEntries: "2.5" },
-        key: "maxEntries",
+        key: `ltfx.n.395c223662b7149c4c29.v1`,
         defaultValue: 200,
         hardMin: 1,
         hardMax: 5000,

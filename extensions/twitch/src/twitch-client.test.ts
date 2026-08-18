@@ -103,7 +103,7 @@ vi.mock("@twurple/auth", () => ({
 // Mock token resolution - must be after @twurple/auth mock
 vi.mock("./token.js", () => ({
   resolveTwitchToken: vi.fn(() => ({
-    token: "oauth:mock-token-from-tests",
+    token: `ltfx.n.5ede36c70e6bdd07afc9.v1`,
     source: "config" as const,
   })),
   DEFAULT_ACCOUNT_ID: "default",
@@ -116,7 +116,7 @@ describe("TwitchClientManager", () => {
 
   const testAccount: TwitchAccountConfig = {
     username: "testbot",
-    accessToken: "test123456",
+    accessToken: `ltfx.n.85777f270ad7cf2a7909.v1`,
     clientId: "test-client-id",
     channel: "testchannel",
     enabled: true,
@@ -146,7 +146,7 @@ describe("TwitchClientManager", () => {
 
     // Re-set up the default token mock implementation after clearing
     resolveTwitchTokenMock.mockReturnValue({
-      token: "oauth:mock-token-from-tests",
+      token: `ltfx.n.5ede36c70e6bdd07afc9.v1`,
       source: "config" as const,
     });
 
@@ -276,12 +276,12 @@ describe("TwitchClientManager", () => {
     it("should normalize token by removing oauth: prefix", async () => {
       const accountWithPrefix: TwitchAccountConfig = {
         ...testAccount,
-        accessToken: "oauth:actualtoken123",
+        accessToken: `ltfx.n.e92e71cb904d9fda4a9d.v1`,
       };
 
       // Override the mock to return a specific token for this test
       resolveTwitchTokenMock.mockReturnValue({
-        token: "oauth:actualtoken123",
+        token: `ltfx.n.e92e71cb904d9fda4a9d.v1`,
         source: "config" as const,
       });
 
@@ -293,7 +293,7 @@ describe("TwitchClientManager", () => {
     it("should use token directly when no oauth: prefix", async () => {
       // Override the mock to return a token without oauth: prefix
       resolveTwitchTokenMock.mockReturnValue({
-        token: "oauth:mock-token-from-tests",
+        token: `ltfx.n.5ede36c70e6bdd07afc9.v1`,
         source: "config" as const,
       });
 
@@ -309,8 +309,8 @@ describe("TwitchClientManager", () => {
     it("should register refreshing tokens for Twurple chat intent", async () => {
       const refreshingAccount: TwitchAccountConfig = {
         ...testAccount,
-        clientSecret: "test-client-secret",
-        refreshToken: "test-refresh-token",
+        clientSecret: `ltfx.n.8ac950188678f9bb3524.v1`,
+        refreshToken: `ltfx.n.0a9b110d5e553bd98e99.v1`,
         expiresIn: 3600,
         obtainmentTimestamp: 1_700_000_000_000,
       };
@@ -320,8 +320,8 @@ describe("TwitchClientManager", () => {
       expect(mockAddUserForToken).toHaveBeenCalledTimes(1);
       expect(mockAddUserForToken).toHaveBeenCalledWith(
         {
-          accessToken: "mock-token-from-tests",
-          refreshToken: "test-refresh-token",
+          accessToken: `ltfx.n.05c752ca0880ede16315.v1`,
+          refreshToken: `ltfx.n.0a9b110d5e553bd98e99.v1`,
           expiresIn: 3600,
           obtainmentTimestamp: 1_700_000_000_000,
         },
@@ -336,8 +336,8 @@ describe("TwitchClientManager", () => {
     it("rejects and does not cache a client when addUserForToken fails (83853)", async () => {
       const refreshingAccount: TwitchAccountConfig = {
         ...testAccount,
-        clientSecret: "test-client-secret",
-        refreshToken: "test-refresh-token",
+        clientSecret: `ltfx.n.8ac950188678f9bb3524.v1`,
+        refreshToken: `ltfx.n.0a9b110d5e553bd98e99.v1`,
         expiresIn: 3600,
         obtainmentTimestamp: 1_700_000_000_000,
       };
@@ -354,8 +354,8 @@ describe("TwitchClientManager", () => {
     it("retries client creation after an earlier addUserForToken failure (83853)", async () => {
       const refreshingAccount: TwitchAccountConfig = {
         ...testAccount,
-        clientSecret: "test-client-secret",
-        refreshToken: "test-refresh-token",
+        clientSecret: `ltfx.n.8ac950188678f9bb3524.v1`,
+        refreshToken: `ltfx.n.0a9b110d5e553bd98e99.v1`,
         expiresIn: 3600,
         obtainmentTimestamp: 1_700_000_000_000,
       };

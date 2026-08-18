@@ -326,7 +326,7 @@ function setupGatewayTokenRepairScenario() {
   mocks.readCommand.mockResolvedValue({
     programArguments: gatewayProgramArguments,
     environment: {
-      OPENCLAW_GATEWAY_TOKEN: "stale-token",
+      OPENCLAW_GATEWAY_TOKEN: `ltfx.n.7d19b716b1e5083012f0.v1`,
     },
   });
   mocks.auditGatewayServiceConfig.mockResolvedValue({
@@ -424,7 +424,7 @@ describe("maybeRepairGatewayServiceConfig", () => {
       gateway: {
         auth: {
           mode: "token",
-          token: "config-token",
+          token: `ltfx.n.a98cc81fe778386f6195.v1`,
         },
       },
     };
@@ -513,7 +513,7 @@ describe("maybeRepairGatewayServiceConfig", () => {
     mocks.readCommand.mockResolvedValue({
       programArguments: gatewayProgramArguments,
       environment: {
-        TAVILY_API_KEY: "old-inline-value",
+        TAVILY_API_KEY: `ltfx.n.ce199d061f9b94df489e.v1`,
       },
     });
     mocks.buildGatewayInstallPlan.mockResolvedValue({
@@ -617,7 +617,7 @@ describe("maybeRepairGatewayServiceConfig", () => {
   });
 
   it("uses OPENCLAW_GATEWAY_TOKEN when config token is missing", async () => {
-    await withEnvAsync({ OPENCLAW_GATEWAY_TOKEN: "env-token" }, async () => {
+    await withEnvAsync({ OPENCLAW_GATEWAY_TOKEN: `ltfx.n.25d37ba7752ae1d95b57.v1` }, async () => {
       setupGatewayTokenRepairScenario();
 
       const cfg: OpenClawConfig = {
@@ -909,7 +909,7 @@ describe("maybeRepairGatewayServiceConfig", () => {
     mocks.readCommand.mockResolvedValue({
       programArguments: gatewayProgramArguments,
       environment: {
-        OPENCLAW_GATEWAY_TOKEN: "stale-token",
+        OPENCLAW_GATEWAY_TOKEN: `ltfx.n.7d19b716b1e5083012f0.v1`,
       },
     });
     mocks.auditGatewayServiceConfig.mockResolvedValue({
@@ -1114,7 +1114,7 @@ describe("maybeRepairGatewayServiceConfig", () => {
     mocks.readCommand.mockResolvedValue({
       programArguments: gatewayProgramArguments,
       environment: {
-        OPENCLAW_GATEWAY_TOKEN: "stale-token",
+        OPENCLAW_GATEWAY_TOKEN: `ltfx.n.7d19b716b1e5083012f0.v1`,
         OPENCLAW_SERVICE_VERSION: "2026.5.25",
       },
     });
@@ -1221,7 +1221,7 @@ describe("maybeRepairGatewayServiceConfig", () => {
         mocks.readCommand.mockResolvedValue({
           programArguments: gatewayProgramArguments,
           environment: {
-            OPENCLAW_GATEWAY_TOKEN: "stale-token",
+            OPENCLAW_GATEWAY_TOKEN: `ltfx.n.7d19b716b1e5083012f0.v1`,
             OPENCLAW_SERVICE_VERSION: "2026.5.25",
           },
         });
@@ -1320,7 +1320,7 @@ describe("maybeRepairGatewayServiceConfig", () => {
         mocks.readCommand.mockResolvedValue({
           programArguments: gatewayProgramArguments,
           environment: {
-            OPENCLAW_GATEWAY_TOKEN: "stale-token",
+            OPENCLAW_GATEWAY_TOKEN: `ltfx.n.7d19b716b1e5083012f0.v1`,
             OPENCLAW_SERVICE_VERSION: "2026.5.25",
           },
         });
@@ -1405,7 +1405,7 @@ describe("maybeRepairGatewayServiceConfig", () => {
         mocks.readCommand.mockResolvedValue({
           programArguments: gatewayProgramArguments,
           environment: {
-            OPENCLAW_GATEWAY_TOKEN: "env-file-token",
+            OPENCLAW_GATEWAY_TOKEN: `ltfx.n.83f381bb9adc3b1d0c4e.v1`,
           },
           environmentValueSources: {
             OPENCLAW_GATEWAY_TOKEN: "file",

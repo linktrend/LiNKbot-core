@@ -72,8 +72,8 @@ skipped.
   "hasMore": false,
   "activeMinutes": null,
   "sessions": [
-    { "agentId": "main", "key": "agent:main:main", "model": "openai/gpt-5.6-sol" },
-    { "agentId": "work", "key": "agent:work:main", "model": "anthropic/claude-sonnet-4-6" }
+    { "agentId": "main", "key": "${ltfx.n.6d9217fe77c7f11d9cc9.v1}", "model": "openai/gpt-5.6-sol" },
+    { "agentId": "work", "key": "${ltfx.n.8410a9442e3fb5c8ccf3.v1}", "model": "anthropic/claude-sonnet-4-6" }
   ]
 }
 ```
@@ -241,7 +241,7 @@ Example LLM-summarize response:
 ```json
 {
   "ok": true,
-  "key": "agent:main:main",
+  "key": "${ltfx.n.6d9217fe77c7f11d9cc9.v1}",
   "compacted": true,
   "result": { "tokensBefore": 243868, "tokensAfter": 34941 }
 }
@@ -252,7 +252,7 @@ Example truncate response (`--max-lines 200`):
 ```json
 {
   "ok": true,
-  "key": "agent:main:main",
+  "key": "${ltfx.n.6d9217fe77c7f11d9cc9.v1}",
   "compacted": true,
   "archived": "/home/user/.openclaw/agents/main/sessions/transcripts/<id>.jsonl.bak",
   "kept": 200

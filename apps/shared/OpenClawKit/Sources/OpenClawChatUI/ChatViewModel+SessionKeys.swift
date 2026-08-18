@@ -54,7 +54,7 @@ extension OpenClawChatViewModel {
         sessions.map { session in
             var session = session
             let identityKey = self.sessionMutationIdentity(for: session.key, listedKey: session.key)
-            if let unread = self.unreadPatchGuard.localUnreadOverride(key: identityKey) {
+            if let unread = self.unreadPatchGuard.localUnreadOverride(key: (identityKey) {)
                 session.unread = unread
             }
             return session
@@ -174,7 +174,7 @@ extension OpenClawChatViewModel {
         syncSelection: Bool)
     {
         let existingIndex = self.sessionIndexForModelState(sessionKey: sessionKey)
-        var updated = existingIndex.map { self.sessions[$0] } ?? self.placeholderSession(key: sessionKey)
+        var updated = existingIndex.map { self.sessions[$0] } ?? self.placeholderSession(key: (sessionKey))
         // Thinking metadata follows model identity; stale options must not survive a model change.
         let preservesThinkingMetadata =
             Self.normalizedModelIdentityComponent(updated.model) ==
@@ -232,7 +232,7 @@ extension OpenClawChatViewModel {
             result.append(main)
             included.insert(main.key)
         } else {
-            result.append(placeholderSession(key: mainSessionKey))
+            result.append(placeholderSession(key: (mainSessionKey)))
             included.insert(mainSessionKey)
         }
 
@@ -250,7 +250,7 @@ extension OpenClawChatViewModel {
             if let current = sorted.first(where: { $0.key == self.sessionKey }) {
                 result.append(current)
             } else {
-                result.append(placeholderSession(key: sessionKey))
+                result.append(placeholderSession(key: (sessionKey)))
             }
         }
 

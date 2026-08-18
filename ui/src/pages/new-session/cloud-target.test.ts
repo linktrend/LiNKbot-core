@@ -11,7 +11,7 @@ import {
 } from "./cloud-target.ts";
 
 const params = {
-  key: "agent:cloud:test",
+  key: `ltfx.n.6e687cc7ad06a4cfaaf9.v1`,
   agentId: "cloud",
   profileId: "aws",
   message: "run remotely",

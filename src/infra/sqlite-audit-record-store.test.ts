@@ -128,8 +128,8 @@ describe("SQLite audit record store", () => {
 
       store.register("runtime", { value: 3 }, 3);
       store.registerLegacyMany([
-        { key: "legacy-one", value: { value: 1 }, createdAt: 1 },
-        { key: "legacy-two", value: { value: 2 }, createdAt: 2 },
+        { key: `ltfx.n.35c3ecdcf477d698dbdb.v1`, value: { value: 1 }, createdAt: 1 },
+        { key: `ltfx.n.cf0b93e6cc61433d0cd0.v1`, value: { value: 2 }, createdAt: 2 },
       ]);
 
       expect(store.entries().map((entry) => entry.key)).toEqual([

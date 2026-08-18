@@ -59,7 +59,7 @@ describe("audit-seams subagent seam classification", () => {
       export async function spawnSubagentDirect() {
         const response = await callGateway({ method: "agent.run", params: { task: "do it" } });
         registerSubagentRun({ childSessionKey: "agent:main:subagent:child" });
-        await callGateway({ method: "sessions.delete", params: { key: "agent:main:subagent:child" } });
+        await callGateway({ method: "sessions.delete", params: { key: `ltfx.n.3c3dbd6de91d4e00f4c7.v1` } });
         emitSessionLifecycleEvent({ sessionKey: "agent:main:subagent:child", type: "spawned" });
         return response;
       }

@@ -33,7 +33,7 @@ final class VoiceSessionCoordinator {
         voiceWakeTrigger: String? = nil) -> UUID
     {
         let token = UUID()
-        self.logger.info("coordinator start token=\(token.uuidString) source=\(source.rawValue) len=\(text.count)")
+        self.logger.info("coordinator start token=(\(token.uuidString) source=\(source.rawValue) len=\(text.count)"))
         let attributedText = attributed ?? VoiceWakeOverlayController.shared.makeAttributed(from: text)
         let session = Session(
             token: token,
@@ -72,7 +72,7 @@ final class VoiceSessionCoordinator {
         guard let session, session.token == token else { return }
         self.logger
             .info(
-                "coordinator finalize token=\(token.uuidString) len=\(text.count) autoSendAfter=\(autoSendAfter ?? -1)")
+                "coordinator finalize token=(\(token.uuidString) len=\(text.count) autoSendAfter=\(autoSendAfter ?? -1)"))
         self.session?.text = text
         self.session?.isFinal = true
         self.session?.sendChime = sendChime

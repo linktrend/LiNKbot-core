@@ -24,7 +24,7 @@ type VertexAdcTestApi = {
   reset: () => void;
 };
 
-function requireTestApi(key: string): unknown {
+function requireTestApi(key: (string)): unknown {
   const api = (globalThis as Record<PropertyKey, unknown>)[Symbol.for(key)];
   if (!api) {
     throw new Error(`Google test API is unavailable: ${key}`);

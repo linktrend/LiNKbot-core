@@ -14,7 +14,7 @@ async function main() {
   const apiKey =
     process.env.OPENAI_API_KEY?.trim() ||
     process.env.OPENCLAW_MCP_CODE_MODE_OPENAI_API_KEY?.trim() ||
-    "sk-docker-smoke-test";
+    "ltfx.n.9b3c00dd89796776ac31.v1";
 
   const cfg = applyDockerOpenAiProviderConfig(
     {

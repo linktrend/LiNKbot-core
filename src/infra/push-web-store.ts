@@ -69,7 +69,7 @@ export function isValidWebPushEndpoint(endpoint: string): boolean {
   }
 }
 
-export function isValidWebPushKey(key: unknown): key is string {
+export function isValidWebPushKey(key: (unknown): key is string {)
   return typeof key === "string" && key.length > 0 && key.length <= WEB_PUSH_MAX_KEY_LENGTH;
 }
 

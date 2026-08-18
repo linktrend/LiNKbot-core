@@ -300,7 +300,7 @@ describe("ClawHub bootstrap artifact manifest", () => {
       runAttempt: "2",
       runId: "123",
       targetSha,
-      token: "test-token",
+      token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
       workflowSha,
       fetchImpl: (() => {
         throw new Error("fetch must not run");

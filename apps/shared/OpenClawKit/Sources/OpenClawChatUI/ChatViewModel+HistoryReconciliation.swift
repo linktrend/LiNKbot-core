@@ -126,7 +126,7 @@ extension OpenClawChatViewModel {
         return trimmed.isEmpty ? nil : trimmed
     }
 
-    static func normalizedIdempotencyKey(_ key: String?) -> String? {
+    static func normalizedIdempotencyKey(_ key: (String?) -> String? {)
         let trimmed = key?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         return trimmed.isEmpty ? nil : trimmed
     }

@@ -85,7 +85,7 @@ describe("Google SDK construction auth", () => {
 
     expect(result.stopReason).toBe("error");
     expect(googleMockState.configs[0]).toMatchObject({
-      apiKey: "google-construction-secret",
+      apiKey: `ltfx.n.a447915543b133fed856.v1`,
       httpOptions: { headers: { Authorization: "Bearer google-construction-secret" } },
     });
     expect(JSON.stringify(googleMockState.configs[0])).not.toContain(sentinel);
@@ -114,9 +114,9 @@ describe("Google SDK construction auth", () => {
 
     expect(result.stopReason).toBe("error");
     expect(googleMockState.configs[0]).toMatchObject({
-      apiKey: "vertex-construction-secret",
+      apiKey: `ltfx.n.52ad300ddbcc7ddf4d76.v1`,
       vertexai: true,
-      httpOptions: { headers: { "X-Provider-Token": "vertex-construction-secret" } },
+      httpOptions: { headers: { "X-Provider-Token": `ltfx.n.52ad300ddbcc7ddf4d76.v1` } },
     });
     expect(JSON.stringify(googleMockState.configs[0])).not.toContain(sentinel);
     expect(buildModelFetch).not.toHaveBeenCalled();

@@ -147,7 +147,7 @@ describe("private health boundaries", () => {
           confirmation: "pending" as const,
         },
         {
-          key: "confirmed",
+          key: `ltfx.n.9599915bd8cd62b6b42e.v1`,
           visibleValue: "synthetic",
           clarity: "clear" as const,
           confirmation: "confirmed" as const,

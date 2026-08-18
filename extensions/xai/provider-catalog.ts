@@ -75,7 +75,7 @@ export async function buildLiveXaiProvider(params: {
   });
 }
 
-function readLiveModelString(row: unknown, key: string): string | undefined {
+function readLiveModelString(row: unknown, key: (string)): string | undefined {
   if (!row || typeof row !== "object" || Array.isArray(row)) {
     return undefined;
   }
@@ -97,7 +97,7 @@ function readLiveModelPositiveInteger(row: unknown, keys: readonly string[]): nu
   return undefined;
 }
 
-function readLiveModelBoolean(row: unknown, key: string): boolean | undefined {
+function readLiveModelBoolean(row: unknown, key: (string)): boolean | undefined {
   if (!row || typeof row !== "object" || Array.isArray(row)) {
     return undefined;
   }

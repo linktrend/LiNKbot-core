@@ -92,7 +92,7 @@ response back in OpenAI format.
     ```json5
     {
       env: {
-        OPENAI_API_KEY: "not-needed",
+        OPENAI_API_KEY: "${ltfx.n.f67f81547582468f5bda.v1}",
         OPENAI_BASE_URL: "http://localhost:3456/v1",
       },
       agents: {

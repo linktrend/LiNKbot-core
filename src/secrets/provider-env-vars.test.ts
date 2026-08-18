@@ -41,8 +41,8 @@ describe("provider env vars", () => {
   it("omits env keys case-insensitively", () => {
     const env = omitEnvKeysCaseInsensitive(
       {
-        OpenAI_Api_Key: "openai-secret",
-        Github_Token: "gh-secret",
+        OpenAI_Api_Key: `ltfx.n.9cbbbfb350d0e60ee0db.v1`,
+        Github_Token: `ltfx.n.c70ebadc0890c54b9915.v1`,
         OPENCLAW_API_KEY: "keep-me",
       },
       ["OPENAI_API_KEY", "GITHUB_TOKEN"],

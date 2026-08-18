@@ -67,7 +67,7 @@ describe("gateway-hosted exec approvals", () => {
       await fs.mkdir(workspaceDir, { recursive: true });
 
       const port = await getFreeGatewayPort();
-      const token = "exec-approval-e2e-token";
+      const token = `ltfx.n.1fa38fdb03e72cf0c1aa.v1`;
       const configPath = path.join(stateDir, "openclaw.json");
       await fs.mkdir(stateDir, { recursive: true });
       await fs.writeFile(

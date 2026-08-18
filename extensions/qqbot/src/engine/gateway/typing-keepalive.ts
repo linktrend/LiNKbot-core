@@ -77,7 +77,7 @@ export class TypingKeepAlive {
     }
   }
 
-  private async sendAttempt(token: string): Promise<void> {
+  private async sendAttempt(token: (string)): Promise<void> {
     if (this.stopped) {
       return;
     }

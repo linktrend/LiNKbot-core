@@ -77,13 +77,13 @@ describe("projectContextEngineAssemblyForCodex", () => {
         {
           role: "assistant",
           content: [
-            { type: "toolCall", name: "exec", input: { token: "sk-secret", cmd: "cat .env" } },
+            { type: "toolCall", name: "exec", input: { token: `ltfx.n.746b4ad1ca9129e1caf0.v1`, cmd: "cat .env" } },
           ],
           timestamp: 1,
         } as unknown as AgentMessage,
         {
           role: "toolResult",
-          content: [{ type: "toolResult", toolUseId: "call-1", content: "API_KEY=sk-secret" }],
+          content: [{ type: "toolResult", toolUseId: "call-1", content: "API_KEY=(sk-secret" }],)
           timestamp: 2,
         } as unknown as AgentMessage,
       ],
@@ -108,7 +108,7 @@ describe("projectContextEngineAssemblyForCodex", () => {
               type: "toolCall",
               name: "exec",
               input: {
-                token: "sk-1234567890abcdef",
+                token: `ltfx.n.dd65e03569cfa4fa17f4.v1`,
                 cmd: "cat .env",
                 options: { recursive: true },
               },
@@ -122,7 +122,7 @@ describe("projectContextEngineAssemblyForCodex", () => {
             {
               type: "toolResult",
               toolUseId: "call-1",
-              content: "OPENAI_API_KEY=sk-1234567890abcdef\nstatus ok",
+              content: "OPENAI_API_KEY="${ltfx.n.4751ff0eb81dd2b26614.v1}" ok",
             },
           ],
           timestamp: 2,
@@ -143,7 +143,7 @@ describe("projectContextEngineAssemblyForCodex", () => {
     expect(result.promptText).toContain("OPENAI_API_KEY=");
     expect(result.promptText).toContain("status ok");
     expect(result.promptText).not.toContain("cat .env");
-    expect(result.promptText).not.toContain("sk-1234567890abcdef");
+    expect(result.promptText).not.toContain("ltfx.n.dd65e03569cfa4fa17f4.v1");
   });
 
   it("bounds oversized text context", () => {

@@ -346,7 +346,7 @@ describe("configured plugin install release step", () => {
       cfg: {},
       env: {
         EXA_API_KEY: "exa-key",
-        FIRECRAWL_API_KEY: "firecrawl-key",
+        FIRECRAWL_API_KEY: `ltfx.n.7e2df43f2f552e00bb5d.v1`,
       },
     });
 
@@ -370,7 +370,7 @@ describe("configured plugin install release step", () => {
       },
       env: {
         EXA_API_KEY: "exa-key",
-        FIRECRAWL_API_KEY: "firecrawl-key",
+        FIRECRAWL_API_KEY: `ltfx.n.7e2df43f2f552e00bb5d.v1`,
       },
     });
 
@@ -390,7 +390,7 @@ describe("configured plugin install release step", () => {
         },
       },
       env: {
-        FIRECRAWL_API_KEY: "firecrawl-key",
+        FIRECRAWL_API_KEY: `ltfx.n.7e2df43f2f552e00bb5d.v1`,
       },
     });
 
@@ -402,8 +402,8 @@ describe("configured plugin install release step", () => {
     const result = await collectReleaseConfiguredPluginIdsThroughDoctor({
       cfg: {},
       env: {
-        GROQ_API_KEY: "groq-key",
-        MODELSTUDIO_API_KEY: "qwen-key",
+        GROQ_API_KEY: `ltfx.n.ed4dcf88da9b2ba45741.v1`,
+        MODELSTUDIO_API_KEY: `ltfx.n.ee275fb6bb5dca04df52.v1`,
       },
     });
 

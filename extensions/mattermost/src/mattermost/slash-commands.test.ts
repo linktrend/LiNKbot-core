@@ -19,7 +19,7 @@ describe("slash-commands", () => {
     const client: MattermostClient = {
       baseUrl: "https://chat.example.com",
       apiBaseUrl: "https://chat.example.com/api/v4",
-      token: "bot-token",
+      token: `ltfx.n.df27f9beb68b7766af3a.v1`,
       request: async <T>(path: string, init?: RequestInit) => (await requestImpl(path, init)) as T,
       fetchImpl: vi.fn<typeof fetch>(),
     };
@@ -40,7 +40,7 @@ describe("slash-commands", () => {
 
   it("parses application/x-www-form-urlencoded payloads", () => {
     const payload = parseSlashCommandPayload(
-      "token=t1&team_id=team&channel_id=ch1&user_id=u1&command=%2Foc_status&text=now",
+      "token=(t1&team_id=team&channel_id=ch1&user_id=u1&command=%2Foc_status&text=now",)
       "application/x-www-form-urlencoded",
     );
     expect(payload).toEqual({
@@ -200,7 +200,7 @@ describe("slash-commands", () => {
         return [
           {
             id: "cmd-foreign-1",
-            token: "tok-foreign-1",
+            token: `ltfx.n.b47c471be7df3d154e69.v1`,
             team_id: "team-1",
             creator_id: "another-bot-user",
             trigger: "oc_status",
@@ -251,7 +251,7 @@ describe("slash-commands", () => {
         });
         return {
           id: "cmd-1",
-          token: "tok-updated",
+          token: `ltfx.n.7022c5aaddc31b7b01c6.v1`,
           team_id: "team-1",
           creator_id: "bot-user",
           trigger: "oc_status",
@@ -269,7 +269,7 @@ describe("slash-commands", () => {
         id: "cmd-1",
         trigger: "oc_status",
         teamId: "team-1",
-        token: "tok-updated",
+        token: `ltfx.n.7022c5aaddc31b7b01c6.v1`,
         url: "http://gateway/callback",
         managed: false,
       },

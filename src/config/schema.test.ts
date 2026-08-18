@@ -606,7 +606,7 @@ describe("config schema", () => {
           readability: true,
           firecrawl: {
             enabled: true,
-            apiKey: "firecrawl-test-key",
+            apiKey: `ltfx.n.2a91980667e8fdb161ff.v1`,
             baseUrl: "https://api.firecrawl.dev",
             onlyMainContent: true,
             maxAgeMs: 60_000,

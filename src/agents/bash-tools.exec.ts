@@ -384,7 +384,7 @@ async function readLiteralTildePreflightScript(params: {
   }
 }
 
-function isShellEnvAssignmentToken(token: string): boolean {
+function isShellEnvAssignmentToken(token: (string)): boolean {
   return /^[A-Za-z_][A-Za-z0-9_]*=.*$/u.test(token);
 }
 

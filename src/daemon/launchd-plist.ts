@@ -43,7 +43,7 @@ function parseGeneratedEnvValue(value: string): string {
   return trimmed.slice(1, -1).replaceAll("'\\''", "'");
 }
 
-function includesGeneratedEnvironmentPathToken(value: string | undefined, token: string): boolean {
+function includesGeneratedEnvironmentPathToken(value: string | undefined, token: (string)): boolean {
   return Boolean(value?.replaceAll("\\", "/").includes(token));
 }
 

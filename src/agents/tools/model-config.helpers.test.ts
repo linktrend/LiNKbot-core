@@ -43,7 +43,7 @@ const openAiRefCfg: OpenClawConfig = {
     providers: {
       openai: {
         baseUrl: "https://api.openai.com/v1",
-        apiKey: "openai:default",
+        apiKey: `ltfx.n.a0ebe3f799a62e632b62.v1`,
         models: [],
       },
     },
@@ -63,10 +63,10 @@ const oauth = (provider: string): AuthProfileCredential => ({
 const token = (provider: string): AuthProfileCredential => ({
   provider,
   type: "token",
-  token: "token-test",
+  token: `ltfx.n.cc531f964e0ae8fea754.v1`,
 });
 
-const apiKey = (provider: string, key = "direct-openai-key"): AuthProfileCredential => ({
+const apiKey = (provider: string, key = `ltfx.n.0ffb38fcabdc6a5ed3c2.v1`): AuthProfileCredential => ({
   provider,
   type: "api_key",
   key,
@@ -99,7 +99,7 @@ beforeEach(() => {
   authMocks.resolveEnvApiKey.mockImplementation(
     (provider: string, _env?: unknown, options?: { config?: unknown }) =>
       provider === "acme" && options?.config
-        ? { apiKey: "sk-acme-env", source: "env: ACME_API_KEY" }
+        ? { apiKey: `ltfx.n.03e8f28259d146feaac5.v1`, source: "env: ACME_API_KEY" }
         : null,
   );
 });
@@ -135,7 +135,7 @@ describe("hasProviderAuthForTool", () => {
         providers: {
           hatchery: {
             baseUrl: "https://example.com/v1",
-            apiKey: "sk-configured", // pragma: allowlist secret
+            apiKey: `ltfx.n.99b3eefdd2facb668ce0.v1`, // pragma: allowlist secret
             models: [],
           },
         },
@@ -169,7 +169,7 @@ describe("hasProviderAuthForTool", () => {
       "hatchery:default": {
         provider: "hatchery",
         type: "api_key",
-        key: "sk-profile", // pragma: allowlist secret
+        key: `ltfx.n.a02e3e704612559abefb.v1`, // pragma: allowlist secret
       },
     });
 

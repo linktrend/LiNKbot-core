@@ -213,7 +213,7 @@ describe("renderUsage", () => {
     const container = document.createElement("div");
     const label = `${"a".repeat(19)}🚀${"b".repeat(28)}🚀tail`;
     const session = {
-      key: "agent:main:emoji",
+      key: `ltfx.n.5b8e7f33c63de3c2a771.v1`,
       label,
       agentId: "main",
       updatedAt: Date.now(),
@@ -274,7 +274,7 @@ describe("renderUsage", () => {
             agents: ["main", "research"],
             sessions: [
               {
-                key: "agent:main:main",
+                key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
                 agentId: "main",
                 lastUpdated: Date.now(),
                 usage: null,
@@ -440,7 +440,7 @@ describe("renderUsage", () => {
             agents: ["main", "research"],
             sessions: [
               {
-                key: "agent:main:main",
+                key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
                 agentId: "main",
                 lastUpdated: Date.now(),
                 usage: {
@@ -449,7 +449,7 @@ describe("renderUsage", () => {
                 } as UsageProps["data"]["sessions"][number]["usage"],
               } as UsageProps["data"]["sessions"][number],
               {
-                key: "agent:research:main",
+                key: `ltfx.n.c5f70b5e096ab13dcaf8.v1`,
                 agentId: "research",
                 lastUpdated: Date.now(),
                 usage: {
@@ -512,7 +512,7 @@ describe("renderUsage", () => {
             },
             sessions: [
               {
-                key: "agent:main:visible",
+                key: `ltfx.n.349ad351f8ca8b8f2e52.v1`,
                 agentId: "main",
                 lastUpdated: Date.now(),
                 usage: {

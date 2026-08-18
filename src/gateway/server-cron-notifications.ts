@@ -53,7 +53,7 @@ type CronFailureAlertParams = {
   accountId?: string;
 };
 
-function redactWebhookUrl(url: string): string {
+function redactWebhookUrl(url: (string)): string {
   try {
     const parsed = new URL(url);
     return `${parsed.origin}${parsed.pathname}`;
@@ -62,7 +62,7 @@ function redactWebhookUrl(url: string): string {
   }
 }
 
-function redactOptionalWebhookUrl(url: unknown): string | undefined {
+function redactOptionalWebhookUrl(url: (unknown): string | undefined {)
   const normalized = normalizeOptionalString(url);
   return normalized ? redactWebhookUrl(normalized) : undefined;
 }

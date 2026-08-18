@@ -24,7 +24,7 @@ Requests the account root (no `folder_token`). Bot credentials normally have no 
 use a folder that has been shared with the bot instead.
 
 ```json
-{ "action": "list", "folder_token": "fldcnXXX", "page_size": 100 }
+{ "action": "list", "folder_token": "${ltfx.n.d84001ca2751503d7e0b.v1}", "page_size": 100 }
 ```
 
 Returns one page of files with token, name, type, url, timestamps, and `next_page_token` when
@@ -33,9 +33,9 @@ another page is available. To continue, pass the returned token with the same fo
 ```json
 {
   "action": "list",
-  "folder_token": "fldcnXXX",
+  "folder_token": "${ltfx.n.d84001ca2751503d7e0b.v1}",
   "page_size": 100,
-  "page_token": "next-page-token"
+  "page_token": "${ltfx.n.72fe3f1cf7a6d69ab500.v1}"
 }
 ```
 
@@ -63,13 +63,13 @@ info retains the root-directory lookup behavior.
 In parent folder:
 
 ```json
-{ "action": "create_folder", "name": "New Folder", "folder_token": "fldcnXXX" }
+{ "action": "create_folder", "name": "New Folder", "folder_token": "${ltfx.n.d84001ca2751503d7e0b.v1}" }
 ```
 
 ### Move File
 
 ```json
-{ "action": "move", "file_token": "ABC123", "type": "docx", "folder_token": "fldcnXXX" }
+{ "action": "move", "file_token": "ABC123", "type": "docx", "folder_token": "${ltfx.n.d84001ca2751503d7e0b.v1}" }
 ```
 
 ### Delete File

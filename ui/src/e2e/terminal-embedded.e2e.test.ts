@@ -47,7 +47,7 @@ describeControlUiE2e("embedded terminal document", () => {
         }
       )["__OPENCLAW_NATIVE_CONTROL_AUTH__"] = {
         gatewayUrl: "ws://gateway.example.test",
-        token: "native-terminal-token",
+        token: `ltfx.n.d2e7c3c5378e2b4243fe.v1`,
       };
     });
     const gateway = await installMockGateway(page, {
@@ -71,7 +71,7 @@ describeControlUiE2e("embedded terminal document", () => {
       expect(response?.status()).toBe(200);
       const connect = await gateway.waitForRequest("connect");
 
-      expect(connect.params).toMatchObject({ auth: { token: "native-terminal-token" } });
+      expect(connect.params).toMatchObject({ auth: { token: `ltfx.n.d2e7c3c5378e2b4243fe.v1` } });
       expect(await page.locator("openclaw-login-gate").count()).toBe(0);
       expect(await page.locator("openclaw-terminal-panel").count()).toBe(1);
 

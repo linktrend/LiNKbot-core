@@ -60,7 +60,7 @@ describe("describeMoonshotVideo", () => {
     const result = await describeVideo({
       buffer: Buffer.from("video-bytes"),
       fileName: "clip.mp4",
-      apiKey: "moonshot-test",
+      apiKey: `ltfx.n.f4d1af806e47a3668609.v1`,
       timeoutMs: 1500,
       baseUrl: "https://api.moonshot.ai/v1/",
       model: "kimi-k2.6",
@@ -125,7 +125,7 @@ describe("describeMoonshotVideo", () => {
     const result = await describeVideo({
       buffer: Buffer.from("video"),
       fileName: "clip.mp4",
-      apiKey: "moonshot-test",
+      apiKey: `ltfx.n.f4d1af806e47a3668609.v1`,
       timeoutMs: 1000,
       fetchFn,
     });
@@ -142,7 +142,7 @@ describe("describeMoonshotVideo", () => {
         buffer: Buffer.from("video-bytes"),
         fileName: "clip.mp4",
         mime: "video/mp4",
-        apiKey: "test-key",
+        apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
         timeoutMs: 1500,
         baseUrl: "https://example.com/v1",
         fetchFn: async () => streamed.response,
@@ -164,7 +164,7 @@ describe("describeMoonshotVideo", () => {
         buffer: Buffer.from("video-bytes"),
         fileName: "clip.mp4",
         mime: "video/mp4",
-        apiKey: "test-key",
+        apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
         timeoutMs: 1500,
         baseUrl: "https://example.com/v1",
         fetchFn: async () => response,

@@ -785,14 +785,14 @@ describe("buildNodeServiceEnvironment", () => {
 
   it("passes through OPENCLAW_GATEWAY_TOKEN for node services", () => {
     const env = buildNodeServiceEnvironment({
-      env: { HOME: "/home/user", OPENCLAW_GATEWAY_TOKEN: " node-token " },
+      env: { HOME: "/home/user", OPENCLAW_GATEWAY_TOKEN: `ltfx.n.a126a71ac05cb848625c.v1` },
     });
     expect(env.OPENCLAW_GATEWAY_TOKEN).toBe("node-token");
   });
 
   it("passes through OPENCLAW_GATEWAY_PASSWORD for node services", () => {
     const env = buildNodeServiceEnvironment({
-      env: { HOME: "/home/user", OPENCLAW_GATEWAY_PASSWORD: " node-password " },
+      env: { HOME: "/home/user", OPENCLAW_GATEWAY_PASSWORD: `ltfx.n.511b06dd5a598cdf1fff.v1` },
     });
     expect(env.OPENCLAW_GATEWAY_PASSWORD).toBe("node-password");
   });

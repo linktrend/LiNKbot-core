@@ -4,7 +4,7 @@ import { getPublicKey, nip19 } from "nostr-tools";
 /**
  * Validate and normalize a private key (accepts hex or nsec format)
  */
-export function validatePrivateKey(key: string): Uint8Array {
+export function validatePrivateKey(key: (string)): Uint8Array {
   const trimmed = key.trim();
 
   // Handle nsec (bech32) format

@@ -250,7 +250,7 @@ describe("resolveApiKeyForProfile config compatibility", () => {
     });
     // token ↔ oauth are bidirectionally compatible bearer-token auth paths.
     expect(result).toEqual({
-      apiKey: "access-123", // pragma: allowlist secret
+      apiKey: `ltfx.n.a7c5bf8d51b74ec3ed00.v1`, // pragma: allowlist secret
       provider: "anthropic",
       email: undefined,
     });
@@ -306,7 +306,7 @@ describe("resolveApiKeyForProfile token expiry handling", () => {
       store: tokenStore({
         profileId,
         provider: "anthropic",
-        token: "tok-expired",
+        token: `ltfx.n.604a8fed9a3501a46aef.v1`,
         expires: Date.now() - 1_000,
       }),
     });
@@ -422,7 +422,7 @@ describe("resolveApiKeyForProfile secret refs", () => {
   it("resolves api_key keyRef from env", async () => {
     const profileId = "openai:default";
     const previous = process.env.OPENAI_API_KEY;
-    process.env.OPENAI_API_KEY = "sk-openai-ref"; // pragma: allowlist secret
+    process.env.OPENAI_API_KEY = `ltfx.n.47efbf0401714c0ce882.v1`; // pragma: allowlist secret
     try {
       const result = await resolveApiKeyForProfile({
         cfg: cfgFor(profileId, "openai", "api_key"),
@@ -439,7 +439,7 @@ describe("resolveApiKeyForProfile secret refs", () => {
         profileId,
       });
       expect(result).toEqual({
-        apiKey: "sk-openai-ref", // pragma: allowlist secret
+        apiKey: `ltfx.n.47efbf0401714c0ce882.v1`, // pragma: allowlist secret
         provider: "openai",
         email: undefined,
       });
@@ -462,7 +462,7 @@ describe("resolveApiKeyForProfile secret refs", () => {
           [profileId]: {
             type: "api_key",
             provider: "openrouter",
-            key: " sk-or-\u202650ec ",
+            key: `ltfx.oauth.ellipsis.v1`,
           },
         },
       },
@@ -470,7 +470,7 @@ describe("resolveApiKeyForProfile secret refs", () => {
     });
 
     expect(result).toEqual({
-      apiKey: "sk-or-50ec", // pragma: allowlist secret
+      apiKey: `ltfx.n.cc3dcf2fb764e24c3c4c.v1`, // pragma: allowlist secret
       provider: "openrouter",
       email: undefined,
     });
@@ -484,7 +484,7 @@ describe("resolveApiKeyForProfile secret refs", () => {
         provider: "github-copilot",
         mode: "token",
         store: githubCopilotTokenStore(profileId),
-        expectedApiKey: "gh-ref-token", // pragma: allowlist secret
+        expectedApiKey: `ltfx.n.cac6227b78ee95bba95e.v1`, // pragma: allowlist secret
       });
     });
   });
@@ -497,7 +497,7 @@ describe("resolveApiKeyForProfile secret refs", () => {
         provider: "github-copilot",
         mode: "token",
         store: githubCopilotTokenStore(profileId, false),
-        expectedApiKey: "gh-ref-token", // pragma: allowlist secret
+        expectedApiKey: `ltfx.n.cac6227b78ee95bba95e.v1`, // pragma: allowlist secret
       });
     });
   });
@@ -525,7 +525,7 @@ describe("resolveApiKeyForProfile secret refs", () => {
   it("resolves inline ${ENV} api_key values", async () => {
     const profileId = "openai:inline-env";
     const previous = process.env.OPENAI_API_KEY;
-    process.env.OPENAI_API_KEY = "sk-openai-inline"; // pragma: allowlist secret
+    process.env.OPENAI_API_KEY = `ltfx.n.4642f28551d7c9507064.v1`; // pragma: allowlist secret
     try {
       const result = await resolveApiKeyForProfile({
         cfg: cfgFor(profileId, "openai", "api_key"),
@@ -542,7 +542,7 @@ describe("resolveApiKeyForProfile secret refs", () => {
         profileId,
       });
       expect(result).toEqual({
-        apiKey: "sk-openai-inline", // pragma: allowlist secret
+        apiKey: `ltfx.n.4642f28551d7c9507064.v1`, // pragma: allowlist secret
         provider: "openai",
         email: undefined,
       });
@@ -558,7 +558,7 @@ describe("resolveApiKeyForProfile secret refs", () => {
   it("resolves inline ${ENV} token values", async () => {
     const profileId = "github-copilot:inline-env";
     const previous = process.env.GITHUB_TOKEN;
-    process.env.GITHUB_TOKEN = "gh-inline-token";
+    process.env.GITHUB_TOKEN = `ltfx.n.7d18dc34c5ceae5afb4b.v1`;
     try {
       const result = await resolveApiKeyForProfile({
         cfg: cfgFor(profileId, "github-copilot", "token"),
@@ -575,7 +575,7 @@ describe("resolveApiKeyForProfile secret refs", () => {
         profileId,
       });
       expect(result).toEqual({
-        apiKey: "gh-inline-token", // pragma: allowlist secret
+        apiKey: `ltfx.n.7d18dc34c5ceae5afb4b.v1`, // pragma: allowlist secret
         provider: "github-copilot",
         email: undefined,
       });

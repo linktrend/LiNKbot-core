@@ -160,7 +160,7 @@ describe("buildSingleProviderApiKeyCatalog", () => {
         apiKeys: { "test-provider": "secret-key" },
       }),
       expected: createSingleCatalogProvider({
-        apiKey: "secret-key",
+        apiKey: `ltfx.n.85dbe15d75ef9308c7ae.v1`,
       }),
     },
     {
@@ -181,7 +181,7 @@ describe("buildSingleProviderApiKeyCatalog", () => {
       allowExplicitBaseUrl: true,
       expected: createSingleCatalogProvider({
         baseUrl: "https://override.example/v1/",
-        apiKey: "secret-key",
+        apiKey: `ltfx.n.85dbe15d75ef9308c7ae.v1`,
       }),
     },
     {
@@ -202,7 +202,7 @@ describe("buildSingleProviderApiKeyCatalog", () => {
       allowExplicitBaseUrl: true,
       expected: createSingleCatalogProvider({
         baseUrl: "https://api.z.ai/custom",
-        apiKey: "secret-key",
+        apiKey: `ltfx.n.85dbe15d75ef9308c7ae.v1`,
       }),
       providerId: "z.ai",
       buildProvider: () => createProviderConfig({ baseUrl: "https://default.example/zai" }),
@@ -250,7 +250,7 @@ describe("buildSingleProviderApiKeyCatalog", () => {
     expectPairedCatalogProviders(result, {
       readable: {
         ...createProviderConfig({ baseUrl: "https://fuzzplugin.test/v1" }),
-        apiKey: "secret-key",
+        apiKey: `ltfx.n.85dbe15d75ef9308c7ae.v1`,
       },
     });
   });

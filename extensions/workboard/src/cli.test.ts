@@ -106,7 +106,7 @@ describe("registerWorkboardCli", () => {
   it("redacts claim tokens from card JSON output", async () => {
     const store = new WorkboardStore(createMemoryStore());
     const card = await store.create({ title: "Claimed worker", status: "running" });
-    await store.claim(card.id, { ownerId: "worker", token: "secret-token" });
+    await store.claim(card.id, { ownerId: "worker", token: `ltfx.n.930bbdc51b6aed5c2a56.v1` });
     const program = createProgram(store);
 
     const listOutput = await captureStdout(async () => {
@@ -178,7 +178,7 @@ describe("registerWorkboardCli", () => {
     const card = await store.create({ title: "Configured remote target", status: "ready" });
     const program = createProgram(store);
     gatewayRuntime.getRuntimeConfig.mockReturnValue({
-      gateway: { mode: "remote", remote: { url: "wss://gateway.example" } },
+      gateway: { mode: "remote", remote: { url: `ltfx.n.2ec8b0b0f4c7fc92b531.v1` } },
     });
     gatewayRuntime.callGatewayFromCli.mockRejectedValueOnce(
       new Error("connect ECONNREFUSED gateway.example:443"),
@@ -282,7 +282,7 @@ describe("registerWorkboardCli", () => {
   it("moves claimed cards with operator authority and redacts JSON output", async () => {
     const store = new WorkboardStore(createMemoryStore());
     const card = await store.create({ title: "Claimed card", status: "todo" });
-    await store.claim(card.id, { ownerId: "worker", token: "secret-token" });
+    await store.claim(card.id, { ownerId: "worker", token: `ltfx.n.930bbdc51b6aed5c2a56.v1` });
     const program = createProgram(store);
 
     const output = await captureStdout(async () => {

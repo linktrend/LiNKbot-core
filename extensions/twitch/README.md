@@ -28,7 +28,7 @@ Minimal config (simplified single-account):
     twitch: {
       enabled: true,
       username: "openclaw",
-      accessToken: "oauth:abc123...", // OAuth Access Token (add oauth: prefix)
+      accessToken: "${ltfx.n.428277537ecf5f23d762.v1}", // OAuth Access Token (add oauth: prefix)
       clientId: "xyz789...", // Client ID from Token Generator
       channel: "vevisk", // Channel to join (required)
       allowFrom: ["123456789"], // (recommended) Your Twitch user ID only (Convert your twitch username to ID at https://www.streamweasels.com/tools/convert-twitch-username-to-user-id/)
@@ -53,13 +53,13 @@ Multi-account config (advanced):
       accounts: {
         default: {
           username: "openclaw",
-          accessToken: "oauth:abc123...",
+          accessToken: "${ltfx.n.428277537ecf5f23d762.v1}",
           clientId: "xyz789...",
           channel: "vevisk",
         },
         channel2: {
           username: "openclaw",
-          accessToken: "oauth:def456...",
+          accessToken: "${ltfx.n.69d0818028100ac5c999.v1}",
           clientId: "uvw012...",
           channel: "secondchannel",
         },

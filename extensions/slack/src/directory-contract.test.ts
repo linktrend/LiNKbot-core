@@ -54,8 +54,8 @@ describe("Slack directory contract", () => {
     const cfg = {
       channels: {
         slack: {
-          botToken: "xoxb-test",
-          appToken: "xapp-test",
+          botToken: `ltfx.n.87894fe048938b686cfb.v1`,
+          appToken: `ltfx.n.424766b94c5b9f0f5861.v1`,
           allowFrom: ["U123", "user:U999"],
           dms: { U234: {} },
           channels: { C111: { users: ["U777"] } },
@@ -97,8 +97,8 @@ describe("Slack directory contract", () => {
     const cfg = {
       channels: {
         slack: {
-          botToken: "xoxb-test",
-          appToken: "xapp-test",
+          botToken: `ltfx.n.87894fe048938b686cfb.v1`,
+          appToken: `ltfx.n.424766b94c5b9f0f5861.v1`,
           allowFrom: ["U100", "U200"],
           dms: { U300: {} },
         },
@@ -136,7 +136,7 @@ describe("Slack directory contract", () => {
     const cfg = {
       channels: {
         slack: {
-          userToken: "xoxp-test",
+          userToken: `ltfx.n.9da0c69dbadc80a8bb8a.v1`,
         },
       },
     } as unknown as OpenClawConfig;
@@ -163,7 +163,7 @@ describe("Slack directory contract", () => {
     const cfg = {
       channels: {
         slack: {
-          userToken: "xoxp-test",
+          userToken: `ltfx.n.9da0c69dbadc80a8bb8a.v1`,
         },
       },
     } as unknown as OpenClawConfig;

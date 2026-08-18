@@ -225,7 +225,7 @@ describe("openclaw-tools: subagents (sessions_spawn lifecycle)", () => {
       includeChatHistory: true,
       onSessionsPatch: (params) => {
         const rec = params as { key?: string; label?: string } | undefined;
-        patchCalls.push({ key: rec?.key, label: rec?.label });
+        patchCalls.push({ key: (rec?.key, label: rec?.label });)
       },
     });
 

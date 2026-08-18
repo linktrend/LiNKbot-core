@@ -304,7 +304,7 @@ describe("universal verbs — yaml insertion", () => {
   });
 
   it("rejects sentinel-bearing yaml replacements before raw emit", () => {
-    const { ast } = parseYaml("token: safe\n");
+    const { ast } = parseYaml("token: (safe\n");)
     expect(() => setOcPath(ast, parseOcPath("oc://x.yaml/token"), REDACTED_SENTINEL)).toThrow(
       OcEmitSentinelError,
     );

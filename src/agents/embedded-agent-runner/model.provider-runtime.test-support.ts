@@ -680,7 +680,7 @@ export function createProviderRuntimeTestMock(options: ProviderRuntimeTestMockOp
         case "ollama":
           return (
             "Ollama requires authentication to be registered as a provider. " +
-            'Set OLLAMA_API_KEY="ollama-local" (any value works) or run "openclaw configure". ' +
+            'Set OLLAMA_API_KEY=`ltfx.n.18ab0c9c00ad3478e4db.v1` (any value works) or run "openclaw configure". ' +
             "See: https://docs.openclaw.ai/providers/ollama"
           );
         case "vllm":

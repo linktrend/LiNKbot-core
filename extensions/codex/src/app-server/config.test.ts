@@ -117,7 +117,7 @@ describe("Codex app-server config", () => {
         appServer: {
           mode: "guardian",
           transport: "websocket",
-          url: "ws://127.0.0.1:39175",
+          url: `ltfx.n.17e45b7cfa0d4cc3d493.v1`,
           headers: { "X-Test": "yes" },
           approvalPolicy: "on-request",
           sandbox: "danger-full-access",
@@ -150,7 +150,7 @@ describe("Codex app-server config", () => {
     });
     expectFields(runtime.start, "runtime start", {
       transport: "websocket",
-      url: "ws://127.0.0.1:39175",
+      url: `ltfx.n.17e45b7cfa0d4cc3d493.v1`,
       headers: { "X-Test": "yes" },
     });
   });
@@ -299,7 +299,7 @@ describe("Codex app-server config", () => {
       pluginConfig: {
         appServer: {
           transport: "websocket",
-          url: "ws://127.0.0.1:39175",
+          url: `ltfx.n.17e45b7cfa0d4cc3d493.v1`,
           clearEnv: ["OPENAI_API_KEY"],
         },
       },
@@ -391,8 +391,8 @@ describe("Codex app-server config", () => {
       readCodexPluginConfig({
         appServer: {
           transport: "websocket",
-          url: "wss://codex-app-server.example.internal/ws",
-          authToken: "capability-token",
+          url: `ltfx.n.50d8f7f804258a69f243.v1`,
+          authToken: `ltfx.n.cbb0d64d2842ca6d69e6.v1`,
           connectionClass: "remote",
           remoteAppsSubstrate: "preconfigured",
           remoteWorkspace: {
@@ -428,8 +428,8 @@ describe("Codex app-server config", () => {
       pluginConfig: {
         appServer: {
           transport: "websocket",
-          url: "wss://codex-app-server.example.internal/ws",
-          authToken: "capability-token",
+          url: `ltfx.n.50d8f7f804258a69f243.v1`,
+          authToken: `ltfx.n.cbb0d64d2842ca6d69e6.v1`,
           remoteWorkspaceRoot: " /home/oai/openclaw-workspaces ",
         },
       },
@@ -447,10 +447,10 @@ describe("Codex app-server config", () => {
       pluginConfig: {
         appServer: {
           transport: "websocket",
-          url: "wss://codex-app-server.example.internal/ws",
-          authToken: " resolved-capability-token ",
+          url: `ltfx.n.50d8f7f804258a69f243.v1`,
+          authToken: `ltfx.n.e1c8e991d5ea5f11e358.v1`,
           headers: {
-            " x-codex-client-session-token ": " resolved-session-token ",
+            " x-codex-client-session-token ": `ltfx.n.e929e8c055599f7d25cb.v1`,
             Authorization: " Bearer explicit-token ",
           },
         },
@@ -458,9 +458,9 @@ describe("Codex app-server config", () => {
     });
 
     expectFields(runtime.start, "runtime start", {
-      authToken: "resolved-capability-token",
+      authToken: `ltfx.n.58dc11c625082a1c94ce.v1`,
       headers: {
-        "x-codex-client-session-token": "resolved-session-token",
+        "x-codex-client-session-token": `ltfx.n.a61496d474a39cfbfad7.v1`,
         Authorization: "Bearer explicit-token",
       },
     });
@@ -472,7 +472,7 @@ describe("Codex app-server config", () => {
         pluginConfig: {
           appServer: {
             transport: "websocket",
-            url: "wss://codex-app-server.example.internal/ws",
+            url: `ltfx.n.50d8f7f804258a69f243.v1`,
             authToken: envRef("CODEX_APP_SERVER_TOKEN"),
           },
         },
@@ -488,8 +488,8 @@ describe("Codex app-server config", () => {
         pluginConfig: {
           appServer: {
             transport: "websocket",
-            url: "wss://codex-app-server.example.internal/ws",
-            authToken: "capability-token",
+            url: `ltfx.n.50d8f7f804258a69f243.v1`,
+            authToken: `ltfx.n.cbb0d64d2842ca6d69e6.v1`,
             headers: {
               "x-codex-client-session-token": envRef("CODEX_CLIENT_SESSION_TOKEN"),
             },
@@ -506,7 +506,7 @@ describe("Codex app-server config", () => {
       pluginConfig: {
         appServer: {
           transport: "websocket",
-          url: "ws://[::1]:4242",
+          url: `ltfx.n.6c340922c0ed454e2057.v1`,
         },
       },
     });
@@ -522,7 +522,7 @@ describe("Codex app-server config", () => {
         pluginConfig: {
           appServer: {
             transport: "websocket",
-            url: "wss://codex-app-server.example.internal/ws",
+            url: `ltfx.n.50d8f7f804258a69f243.v1`,
           },
         },
       }),
@@ -581,7 +581,7 @@ describe("Codex app-server config", () => {
         supervision: { enabled: true },
         appServer: {
           transport: "websocket",
-          url: "ws://127.0.0.1:39175",
+          url: `ltfx.n.17e45b7cfa0d4cc3d493.v1`,
         },
       },
       env: {},
@@ -591,7 +591,7 @@ describe("Codex app-server config", () => {
     expectFields(runtime.start, "runtime start", {
       transport: "websocket",
       homeScope: "agent",
-      url: "ws://127.0.0.1:39175",
+      url: `ltfx.n.17e45b7cfa0d4cc3d493.v1`,
     });
   });
 
@@ -602,7 +602,7 @@ describe("Codex app-server config", () => {
         appServer: {
           transport: "websocket",
           homeScope: "agent",
-          url: "ws://127.0.0.1:39175",
+          url: `ltfx.n.17e45b7cfa0d4cc3d493.v1`,
         },
       },
     });
@@ -610,7 +610,7 @@ describe("Codex app-server config", () => {
     expectFields(runtime.start, "runtime start", {
       transport: "websocket",
       homeScope: "agent",
-      url: "ws://127.0.0.1:39175",
+      url: `ltfx.n.17e45b7cfa0d4cc3d493.v1`,
     });
   });
 
@@ -636,7 +636,7 @@ describe("Codex app-server config", () => {
           appServer: {
             transport: "unix",
             homeScope: "user",
-            url: "ws://127.0.0.1:39175",
+            url: `ltfx.n.17e45b7cfa0d4cc3d493.v1`,
           },
         },
       }),
@@ -656,7 +656,7 @@ describe("Codex app-server config", () => {
         pluginConfig: {
           appServer: {
             transport: "websocket",
-            url: "ws://127.0.0.1:39175",
+            url: `ltfx.n.17e45b7cfa0d4cc3d493.v1`,
             homeScope: "user",
           },
         },
@@ -1193,7 +1193,7 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
       pluginConfig: {
         appServer: {
           transport: "websocket",
-          url: "ws://127.0.0.1:39175",
+          url: `ltfx.n.17e45b7cfa0d4cc3d493.v1`,
         },
       },
       requirementsToml: 'allowed_sandbox_modes = ["read-only", "workspace-write"]\n',
@@ -2678,16 +2678,16 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
       transport: "websocket",
       command: "codex",
       args: [],
-      url: "ws://127.0.0.1:39175",
-      authToken: "tok_first",
+      url: `ltfx.n.17e45b7cfa0d4cc3d493.v1`,
+      authToken: `ltfx.n.f22125e08d97918d2162.v1`,
       headers: {},
     });
     const second = codexAppServerStartOptionsKey({
       transport: "websocket",
       command: "codex",
       args: [],
-      url: "ws://127.0.0.1:39175",
-      authToken: "tok_second",
+      url: `ltfx.n.17e45b7cfa0d4cc3d493.v1`,
+      authToken: `ltfx.n.c2d61295ed63bb3278f5.v1`,
       headers: {},
     });
 
@@ -2697,8 +2697,8 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
         transport: "websocket",
         command: "codex",
         args: [],
-        url: "ws://127.0.0.1:39175",
-        authToken: "tok_first",
+        url: `ltfx.n.17e45b7cfa0d4cc3d493.v1`,
+        authToken: `ltfx.n.f22125e08d97918d2162.v1`,
         headers: {},
       }),
     ).toEqual(first);
@@ -2731,14 +2731,14 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
       command: "codex",
       args: ["app-server"],
       headers: {},
-      env: { OPENAI_API_KEY: "sk-first" },
+      env: { OPENAI_API_KEY: `ltfx.n.2a19f16bb2586edf26ab.v1` },
     });
     const second = codexAppServerStartOptionsKey({
       transport: "stdio",
       command: "codex",
       args: ["app-server"],
       headers: {},
-      env: { OPENAI_API_KEY: "sk-second" },
+      env: { OPENAI_API_KEY: `ltfx.n.b464ce30b204dc60e335.v1` },
     });
 
     expect(first).not.toEqual(second);
@@ -2748,7 +2748,7 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
         command: "codex",
         args: ["app-server"],
         headers: {},
-        env: { OPENAI_API_KEY: "sk-first" },
+        env: { OPENAI_API_KEY: `ltfx.n.2a19f16bb2586edf26ab.v1` },
       }),
     ).toEqual(first);
     expect(first).not.toContain("sk-first");
@@ -2794,20 +2794,20 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
       transport: "websocket",
       command: "codex",
       args: [],
-      url: "ws://127.0.0.1:39175",
+      url: `ltfx.n.17e45b7cfa0d4cc3d493.v1`,
       headers: {
         Authorization: "Bearer first",
-        "x-codex-client-session-token": "session-first",
+        "x-codex-client-session-token": `ltfx.n.edcd6f7f8451c1e1e02a.v1`,
       },
     });
     const second = codexAppServerStartOptionsKey({
       transport: "websocket",
       command: "codex",
       args: [],
-      url: "ws://127.0.0.1:39175",
+      url: `ltfx.n.17e45b7cfa0d4cc3d493.v1`,
       headers: {
         Authorization: "Bearer second",
-        "x-codex-client-session-token": "session-second",
+        "x-codex-client-session-token": `ltfx.n.31ba0a210951204c0e35.v1`,
       },
     });
 
@@ -2817,10 +2817,10 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
         transport: "websocket",
         command: "codex",
         args: [],
-        url: "ws://127.0.0.1:39175",
+        url: `ltfx.n.17e45b7cfa0d4cc3d493.v1`,
         headers: {
           Authorization: "Bearer first",
-          "x-codex-client-session-token": "session-first",
+          "x-codex-client-session-token": `ltfx.n.edcd6f7f8451c1e1e02a.v1`,
         },
       }),
     ).toEqual(first);
@@ -2835,10 +2835,10 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
       transport: "websocket" as const,
       command: "codex",
       args: [],
-      url: "ws://127.0.0.1:39175",
-      authToken: "tok_reload",
+      url: `ltfx.n.17e45b7cfa0d4cc3d493.v1`,
+      authToken: `ltfx.n.47e78b523df91d3086ba.v1`,
       headers: {},
-      env: { OPENAI_API_KEY: "sk-reload" },
+      env: { OPENAI_API_KEY: `ltfx.n.97c7a6cc162aa9144670.v1` },
     };
     const first = codexAppServerStartOptionsKey(startOptions);
 

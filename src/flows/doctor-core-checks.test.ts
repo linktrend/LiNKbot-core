@@ -540,7 +540,7 @@ describe("CORE_HEALTH_CHECKS", () => {
 
   it("skips gateway auth warning when SecretRef-managed token resolves in lint checks", async () => {
     const check = CORE_HEALTH_CHECKS.find((entry) => entry.id === "core/doctor/gateway-auth");
-    await withEnvAsync({ OPENCLAW_TEST_GATEWAY_TOKEN: "resolved-test-token" }, async () => {
+    await withEnvAsync({ OPENCLAW_TEST_GATEWAY_TOKEN: `ltfx.n.fd09572d5ac07abd2555.v1` }, async () => {
       const findings = await check?.detect({
         mode: "lint",
         runtime: { log() {}, error() {}, exit() {} },
@@ -573,7 +573,7 @@ describe("CORE_HEALTH_CHECKS", () => {
     const check = CORE_HEALTH_CHECKS.find((entry) => entry.id === "core/doctor/gateway-auth");
     await withEnvAsync(
       {
-        OPENCLAW_GATEWAY_TOKEN: "fallback-token",
+        OPENCLAW_GATEWAY_TOKEN: `ltfx.n.a9ece14f7f3c7ebb6ff1.v1`,
         OPENCLAW_MISSING_GATEWAY_REF_TOKEN: undefined,
       },
       async () => {
@@ -714,7 +714,7 @@ describe("CORE_HEALTH_CHECKS", () => {
     );
     const check = CORE_HEALTH_CHECKS.find((entry) => entry.id === "core/doctor/gateway-auth");
 
-    const findings = await withEnvAsync({ OPENCLAW_GATEWAY_TOKEN: "fallback-token" }, async () => {
+    const findings = await withEnvAsync({ OPENCLAW_GATEWAY_TOKEN: `ltfx.n.a9ece14f7f3c7ebb6ff1.v1` }, async () => {
       return await check?.detect({
         mode: "lint",
         runtime: { log() {}, error() {}, exit() {} },

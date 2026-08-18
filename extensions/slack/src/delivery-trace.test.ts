@@ -446,7 +446,7 @@ function createPreparedTraceMessage(scenario: SlackTraceScenarioName): PreparedS
     ctx: {
       cfg,
       runtime: { log: () => {}, error: () => {} },
-      botToken: "xoxb-trace",
+      botToken: `ltfx.n.07f3641d09af6e6be306.v1`,
       app: { client },
       teamId: TEAM_ID,
       botUserId: "UBOT",

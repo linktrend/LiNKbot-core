@@ -127,7 +127,7 @@ describe("Nextcloud Talk durable ingress", () => {
     await withQueue(async (queue) => {
       const seenAt = Date.now();
       const store = {
-        entries: vi.fn(async () => [{ value: { key: "test-room:msg-legacy", seenAt } }]),
+        entries: vi.fn(async () => [{ value: { key: `ltfx.n.afa98e8fb2383498979c.v1`, seenAt } }]),
         clear: vi.fn(async () => {}),
       };
 
@@ -208,7 +208,7 @@ describe("Nextcloud Talk durable ingress", () => {
         await lifecycle.onAdopted();
       });
       try {
-        const replay = createRawEvent({ messageId: "msg-guard", roomToken: "test-room-token" });
+        const replay = createRawEvent({ messageId: "msg-guard", roomToken: `ltfx.n.07ddf6dd252647512b3f.v1` });
         await spool.receive(replay);
         await spool.waitForIdle();
         await spool.receive(replay);
@@ -222,7 +222,7 @@ describe("Nextcloud Talk durable ingress", () => {
 
   it("stores the exact raw envelope in the room lane", async () => {
     await withQueue(async (queue) => {
-      const rawEvent = createRawEvent({ messageId: "msg-raw", roomToken: "test-room-token" });
+      const rawEvent = createRawEvent({ messageId: "msg-raw", roomToken: `ltfx.n.07ddf6dd252647512b3f.v1` });
       const spool = startSpool(queue, async (_message, lifecycle) => {
         lifecycle.onDeferred();
       });

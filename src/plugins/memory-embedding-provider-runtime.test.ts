@@ -68,7 +68,7 @@ describe("memory embedding provider runtime resolution", () => {
     expect(runtimeModule.getMemoryEmbeddingProvider("ollama")?.id).toBe("ollama");
     expect(mocks.resolvePluginCapabilityProviders).toHaveBeenCalledTimes(1);
     expect(mocks.resolvePluginCapabilityProvider).toHaveBeenCalledWith({
-      key: "memoryEmbeddingProviders",
+      key: `ltfx.n.6d98f9e5b26743d7bb85.v1`,
       providerId: "ollama",
       cfg: undefined,
     });
@@ -95,12 +95,12 @@ describe("memory embedding provider runtime resolution", () => {
       ollamaAdapter,
     );
     expect(mocks.resolvePluginCapabilityProvider).toHaveBeenCalledWith({
-      key: "memoryEmbeddingProviders",
+      key: `ltfx.n.6d98f9e5b26743d7bb85.v1`,
       providerId: "ollama-5080",
       cfg: config,
     });
     expect(mocks.resolvePluginCapabilityProvider).toHaveBeenCalledWith({
-      key: "memoryEmbeddingProviders",
+      key: `ltfx.n.6d98f9e5b26743d7bb85.v1`,
       providerId: "ollama",
       cfg: config,
     });

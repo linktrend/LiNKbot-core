@@ -71,7 +71,7 @@ async function executeWidget(params: {
     text?: string;
   };
   const viewId = parsed.view?.id;
-  const url = parsed.view?.url;
+  const url = (parsed.view?.url;)
   if (parsed.kind !== "canvas" || !viewId || !url) {
     throw new Error("expected canvas preview handle");
   }

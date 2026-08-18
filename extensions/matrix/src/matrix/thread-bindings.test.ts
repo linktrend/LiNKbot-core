@@ -427,11 +427,11 @@ describe("matrix thread bindings", () => {
   it("does not reload persisted bindings after the Matrix access token changes while deviceId is unknown", async () => {
     const initialAuth = {
       ...auth,
-      accessToken: "token-old",
+      accessToken: `ltfx.n.11a3b6751c594dfe0fb6.v1`,
     };
     const rotatedAuth = {
       ...auth,
-      accessToken: "token-new",
+      accessToken: `ltfx.n.d2b1077db628d910344d.v1`,
     };
 
     const initialManager = await createBindingManager({ auth: initialAuth });
@@ -471,12 +471,12 @@ describe("matrix thread bindings", () => {
   it("reloads persisted bindings after the Matrix access token changes when deviceId is known", async () => {
     const initialAuth = {
       ...auth,
-      accessToken: "token-old",
+      accessToken: `ltfx.n.11a3b6751c594dfe0fb6.v1`,
       deviceId: "DEVICE123",
     };
     const rotatedAuth = {
       ...auth,
-      accessToken: "token-new",
+      accessToken: `ltfx.n.d2b1077db628d910344d.v1`,
       deviceId: "DEVICE123",
     };
 

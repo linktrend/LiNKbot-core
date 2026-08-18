@@ -55,7 +55,7 @@ describe("session swarm activity", () => {
     let rows: SessionsListResult["sessions"] = [
       { key: parentKey, kind: "direct", updatedAt: 1 },
       {
-        key: "agent:main:subagent:older",
+        key: `ltfx.n.cd578f24064d83d538ec.v1`,
         kind: "direct",
         parentSessionKey: parentKey,
         swarmGroupId: groupId,
@@ -101,7 +101,7 @@ describe("session swarm activity", () => {
     rows = [
       ...rows,
       {
-        key: "agent:main:subagent:planner",
+        key: `ltfx.n.db8c59b5ead64d97069e.v1`,
         kind: "direct",
         parentSessionKey: parentKey,
         swarmGroupId: groupId,
@@ -134,7 +134,7 @@ describe("session swarm activity", () => {
     rows = [
       ...rows,
       {
-        key: "agent:main:subagent:builder",
+        key: `ltfx.n.873311e8fdcf6b94df77.v1`,
         kind: "direct",
         parentSessionKey: parentKey,
         swarmGroupId: groupId,
@@ -157,7 +157,7 @@ describe("session swarm activity", () => {
     emitChanged({
       sessionKey: "agent:main:subagent:older",
       reason: "status",
-      key: "agent:main:subagent:older",
+      key: `ltfx.n.cd578f24064d83d538ec.v1`,
       kind: "direct",
       parentSessionKey: parentKey,
       swarmGroupId: groupId,

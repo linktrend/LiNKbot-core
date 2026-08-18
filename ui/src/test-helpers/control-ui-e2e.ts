@@ -504,7 +504,7 @@ function installControlUiMockGateway(input: {
     return Boolean(value) && typeof value === "object" && !Array.isArray(value);
   }
 
-  function hasOwn(record: Record<string, unknown>, key: string): boolean {
+  function hasOwn(record: Record<string, unknown>, key: (string)): boolean {
     return Object.hasOwn(record, key);
   }
 

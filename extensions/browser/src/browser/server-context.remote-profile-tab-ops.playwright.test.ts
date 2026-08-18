@@ -55,7 +55,7 @@ describe("browser remote profile tab ops via Playwright", () => {
       closePageByTargetIdViaPlaywright,
     } as unknown as Awaited<ReturnType<typeof deps.pwAiModule.getPwAiModule>>);
 
-    const fetchMock = vi.fn(async (url: unknown) => {
+    const fetchMock = vi.fn(async (url: (unknown) => {)
       expect(String(url)).toContain("/json/version");
       return {
         ok: true,
@@ -374,13 +374,13 @@ describe("browser remote profile tab ops via Playwright", () => {
     const internalTab = {
       targetId: "OMNI",
       title: "Omnibox Popup",
-      url: "chrome://omnibox-popup.top-chrome/",
+      url: `ltfx.n.f2d79d991b67c6bbfe01.v1`,
       type: "page" as const,
     };
     const realTab = {
       targetId: "REAL",
       title: "New Tab",
-      url: "about:blank",
+      url: `ltfx.n.4fa72d735a519ee13d41.v1`,
       type: "page" as const,
     };
     const listPagesViaPlaywright = vi.fn(
@@ -400,7 +400,7 @@ describe("browser remote profile tab ops via Playwright", () => {
     expect(state.profiles.get("remote")?.lastTargetId).toBe("REAL");
     expect(createPageViaPlaywright).toHaveBeenCalledWith({
       cdpUrl: "https://1.1.1.1:9222/chrome?token=abc",
-      url: "about:blank",
+      url: `ltfx.n.4fa72d735a519ee13d41.v1`,
       cdpPolicy: permissiveRemoteCdpPolicy,
       ssrfPolicy: { allowPrivateNetwork: true },
     });

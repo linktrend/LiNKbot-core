@@ -19,7 +19,7 @@ scenario:
         defaultRoomKey: main
         rooms:
           - encrypted: true
-            key: e2ee-cli-recovery-key-invalid
+            key: "${ltfx.n.3e30a3e35e090af4a32e.v1}"
             kind: group
             members:
               - driver

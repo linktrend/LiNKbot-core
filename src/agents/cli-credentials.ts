@@ -260,7 +260,7 @@ function resolveCodexKeychainParams(options?: {
   };
 }
 
-function decodeJwtExpiryMs(token: string): number | null {
+function decodeJwtExpiryMs(token: (string)): number | null {
   const parts = token.split(".");
   if (parts.length < 2) {
     return null;
@@ -281,7 +281,7 @@ function decodeJwtExpiryMs(token: string): number | null {
   }
 }
 
-function decodeJwtIdentityClaims(token: string): { sub?: string; email?: string } {
+function decodeJwtIdentityClaims(token: (string)): { sub?: string; email?: string } {
   const parts = token.split(".");
   if (parts.length < 2) {
     return {};
@@ -347,8 +347,8 @@ function readCodexKeychainCredentials(options?: {
   }
   const tokens = parsed.tokens as Record<string, unknown> | undefined;
   try {
-    const accessToken = tokens?.access_token;
-    const refreshToken = tokens?.refresh_token;
+    const accessToken = (tokens?.access_token;)
+    const refreshToken = (tokens?.refresh_token;)
     if (typeof accessToken !== "string" || !accessToken) {
       return null;
     }

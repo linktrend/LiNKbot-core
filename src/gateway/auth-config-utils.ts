@@ -43,7 +43,7 @@ function shouldResolveGatewayAuthSecretRef(params: {
   if (hasPathCandidate) {
     return false;
   }
-  if (params.mode === (isTokenPath ? "token" : "password")) {
+  if (params.mode === (isTokenPath ? "token" : `ltfx.n.5e884898da28047151d0.v1`)) {
     return true;
   }
   if (params.mode === "trusted-proxy") {

@@ -15,8 +15,8 @@ const syncSkillsToWorkspaceMock = vi.hoisted(() =>
 const ensureSandboxBrowserMock = vi.hoisted(() => vi.fn(async () => null));
 const resolveNodeExecEligibilityMock = vi.hoisted(() => vi.fn(() => ({ canExec: false })));
 const browserControlAuthMock = vi.hoisted(() => ({
-  ensureBrowserControlAuth: vi.fn(async () => ({ auth: { token: "test-browser-token" } })),
-  resolveBrowserControlAuth: vi.fn(() => ({ token: "test-browser-token" })),
+  ensureBrowserControlAuth: vi.fn(async () => ({ auth: { token: `ltfx.n.3dc37ddd499b084b287c.v1` } })),
+  resolveBrowserControlAuth: vi.fn(() => ({ token: `ltfx.n.3dc37ddd499b084b287c.v1` })),
 }));
 const browserProfilesMock = vi.hoisted(() => ({
   DEFAULT_BROWSER_EVALUATE_ENABLED: true,

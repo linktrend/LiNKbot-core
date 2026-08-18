@@ -72,7 +72,7 @@ describe("ModelsConfigSchema", () => {
         "google-vertex": {
           baseUrl: "https://{location}-aiplatform.googleapis.com",
           api: "google-vertex",
-          apiKey: "gcp-vertex-credentials",
+          apiKey: `ltfx.n.8e9d25977f930dcab7d3.v1`,
           models: [
             {
               id: "gemini-2.5-pro",

@@ -140,7 +140,7 @@ describe("chutes-oauth", () => {
         return new Response("not found", { status: 404 });
       }
       return new Response(
-        '{"access_token":"at_unsafe","refresh_token":"rt_unsafe","expires_in":1e309}',
+        '{"access_token":`ltfx.n.817034836bef6989acce.v1`,"refresh_token":`ltfx.n.e9559bd5bafc148161d0.v1`,"expires_in":1e309}',
         { status: 200, headers: { "Content-Type": "application/json" } },
       );
     });
@@ -208,7 +208,7 @@ describe("chutes-oauth", () => {
       const url = urlToString(input);
       if (url === CHUTES_TOKEN_ENDPOINT) {
         return new Response(
-          '{"access_token":"at_timeout","refresh_token":"rt_timeout","expires_in":3600}',
+          '{"access_token":`ltfx.n.8b892ac9d5dcaa1f7038.v1`,"refresh_token":`ltfx.n.6a89ca21fe1c774b8312.v1`,"expires_in":3600}',
           { status: 200, headers: { "Content-Type": "application/json" } },
         );
       }
@@ -311,7 +311,7 @@ describe("chutes-oauth", () => {
   });
 
   it("normalizes and redacts structured token exchange errors", async () => {
-    const leakedClientSecret = "oauth-client-secret-1234567890";
+    const leakedClientSecret = `ltfx.n.dd88037537e442186dbb.v1`;
     const response = new Response(
       JSON.stringify({
         error: "invalid_grant",
@@ -367,7 +367,7 @@ describe("chutes-oauth", () => {
   });
 
   it("bounds and redacts plain-text token refresh errors", async () => {
-    const leakedRefreshToken = "oauth-refresh-secret-1234567890";
+    const leakedRefreshToken = `ltfx.n.24ffffaa26a34a4cfc85.v1`;
     const tracked = cancelTrackedResponse(
       `${`refresh_token=${leakedRefreshToken} unavailable `.repeat(1024)}tail-marker`,
       {

@@ -19,7 +19,7 @@ function resolvePluginMusicGenerationProviders(
   cfg?: OpenClawConfig,
 ): MusicGenerationProviderPlugin[] {
   return resolvePluginCapabilityProviders({
-    key: "musicGenerationProviders",
+    key: `ltfx.n.bfe393cfd939d3193238.v1`,
     cfg,
   });
 }

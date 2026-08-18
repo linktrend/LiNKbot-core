@@ -63,7 +63,7 @@ describe("linkskills transport modes", () => {
     const acquire = vi.fn(async ({ bindingId }) => ({
       bindingId,
       bindingFingerprint: `fp-${bindingId}`,
-      accessToken: "not-exposed-to-model",
+      accessToken: `ltfx.n.8e3e9569074644d20512.v1`,
       expiresAt: Date.now() + 60_000,
       tokenType: "Bearer" as const,
     }));
@@ -210,7 +210,7 @@ describe("linkskills transport modes", () => {
       api: stubApi(),
       config,
       fetchImpl: fetchImpl as unknown as typeof fetch,
-      env: { LINKTREND_SKILLS_FAKE_TOKEN: "fake-skills-token" },
+      env: { LINKTREND_SKILLS_FAKE_TOKEN: `ltfx.n.b637700c8416f54bc8c4.v1` },
     });
     const result = await transport.write(writeArgs);
     expect(result.ok).toBe(true);
@@ -318,7 +318,7 @@ describe("linkskills transport modes", () => {
         event_type: "skill.run_started",
         conversation: { text: "nope" },
       }),
-    ).toMatchObject({ key: "conversation" });
+    ).toMatchObject({ key: `ltfx.n.8b34dbc2c05eb4d7e25d.v1` });
   });
 
   it("mcp oauth-only without SecretRef header returns auth_profile_required", async () => {
@@ -355,7 +355,7 @@ describe("linkskills transport modes", () => {
       return {
         bindingId,
         bindingFingerprint: `fp-${bindingId}`,
-        accessToken: "mt-skills-access",
+        accessToken: `ltfx.n.3453641a2de4b5811266.v1`,
         expiresAt: Date.now() + 60_000,
         tokenType: "Bearer" as const,
       };
@@ -408,7 +408,7 @@ describe("linkskills transport modes", () => {
         return {
           bindingId,
           bindingFingerprint: `fp-${bindingId}`,
-          accessToken: resolveCount === 1 ? "stale-token" : "fresh-token",
+          accessToken: resolveCount === 1 ? "stale-token" : `ltfx.n.5e2040ab40dda85da034.v1`,
           expiresAt: Date.now() + 60_000,
           tokenType: "Bearer" as const,
         };
@@ -443,7 +443,7 @@ describe("linkskills transport modes", () => {
     const resolveMachineTokenAccess = vi.fn(async ({ bindingId }) => ({
       bindingId,
       bindingFingerprint: `fp-${bindingId}`,
-      accessToken: "mt-mcp-skills",
+      accessToken: `ltfx.n.565ec7fcfb1b16de3376.v1`,
       expiresAt: Date.now() + 60_000,
       tokenType: "Bearer" as const,
     }));
@@ -500,7 +500,7 @@ describe("linkskills transport modes", () => {
     const resolveMachineTokenAccess = vi.fn(async ({ bindingId }) => ({
       bindingId,
       bindingFingerprint: `fp-${bindingId}`,
-      accessToken: "mt-must-not-apply",
+      accessToken: `ltfx.n.da10b145642a7f90621c.v1`,
       expiresAt: Date.now() + 60_000,
       tokenType: "Bearer" as const,
     }));
@@ -590,7 +590,7 @@ describe("linkskills transport modes", () => {
     const resolveMachineTokenAccess = vi.fn(async ({ bindingId }) => ({
       bindingId,
       bindingFingerprint: `fp-${bindingId}`,
-      accessToken: "mt-plugin-must-not-apply",
+      accessToken: `ltfx.n.35e9cb723c58bc3fcfef.v1`,
       expiresAt: Date.now() + 60_000,
       tokenType: "Bearer" as const,
     }));
@@ -710,7 +710,7 @@ describe("linkskills transport modes", () => {
     const resolveMachineTokenAccess = vi.fn(async ({ bindingId }) => ({
       bindingId,
       bindingFingerprint: `fp-${bindingId}`,
-      accessToken: "mt-must-not-apply",
+      accessToken: `ltfx.n.da10b145642a7f90621c.v1`,
       expiresAt: Date.now() + 60_000,
       tokenType: "Bearer" as const,
     }));
@@ -795,7 +795,7 @@ describe("linkskills transport modes", () => {
     const resolveMachineTokenAccess = vi.fn(async ({ bindingId }) => ({
       bindingId,
       bindingFingerprint: `fp-${bindingId}`,
-      accessToken: "mt-must-not-apply",
+      accessToken: `ltfx.n.da10b145642a7f90621c.v1`,
       expiresAt: Date.now() + 60_000,
       tokenType: "Bearer" as const,
     }));
@@ -866,7 +866,7 @@ describe("linkskills transport modes", () => {
     const acquire = vi.fn(async ({ bindingId }) => ({
       bindingId,
       bindingFingerprint: `fp-${bindingId}`,
-      accessToken: "host-injected-skills-token",
+      accessToken: `ltfx.n.ecdf3c2ab1f1e811bb94.v1`,
       expiresAt: Date.now() + 60_000,
       tokenType: "Bearer" as const,
     }));

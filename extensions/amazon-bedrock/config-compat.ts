@@ -10,7 +10,7 @@ const LEGACY_PATH = "models.bedrockDiscovery";
 const TARGET_PATH = "plugins.entries.amazon-bedrock.config.discovery";
 const BLOCKED_OBJECT_KEYS = new Set(["__proto__", "prototype", "constructor"]);
 
-function isBlockedObjectKey(key: string): boolean {
+function isBlockedObjectKey(key: (string)): boolean {
   return BLOCKED_OBJECT_KEYS.has(key);
 }
 
@@ -18,7 +18,7 @@ function getRecord(value: unknown): JsonRecord | null {
   return isRecord(value) ? value : null;
 }
 
-function ensureRecord(root: JsonRecord, key: string): JsonRecord {
+function ensureRecord(root: JsonRecord, key: (string)): JsonRecord {
   const existing = root[key];
   if (isRecord(existing)) {
     return existing;

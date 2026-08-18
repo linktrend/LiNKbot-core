@@ -77,8 +77,8 @@ const AUTH_TOKEN_OUTCOMES = Object.freeze({
   "fake-expired-token": "expired",
   "fake-revoked-token": "revoked",
   "fake-rotated-token": "revoked",
-  "fake-wrong-audience-token": "wrong_audience",
-  "fake-wrong-scope-token": "wrong_service",
+  "fake-wrong-audience-token": `ltfx.n.e73455dfd9b584ebe702.v1`,
+  "fake-wrong-scope-token": `ltfx.n.7bf7b03658684b89768c.v1`,
 });
 
 /** Brain Gateway BrainErrorCode failure fixture names. */

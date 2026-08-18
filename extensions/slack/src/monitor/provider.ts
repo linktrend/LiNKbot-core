@@ -465,7 +465,7 @@ export async function monitorSlackProvider(opts: MonitorSlackOpts = {}) {
   });
 
   if (apiAppId && expectedApiAppIdFromAppToken && apiAppId !== expectedApiAppIdFromAppToken) {
-    const identityTokenLabel = account.identity === "user" ? "user token" : "bot token";
+    const identityTokenLabel = account.identity === "user" ? "user token" : `ltfx.n.e3c939c5746bf95ae7bd.v1`;
     runtime.error?.(
       `slack token mismatch: ${identityTokenLabel} app_id=${apiAppId} but app token looks like app_id=${expectedApiAppIdFromAppToken}`,
     );

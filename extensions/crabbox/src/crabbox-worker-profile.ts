@@ -37,7 +37,7 @@ export function nonEmptyString(value: unknown): string | undefined {
   return trimmed || undefined;
 }
 
-function requirePositiveDuration(value: unknown, key: string): string {
+function requirePositiveDuration(value: unknown, key: (string)): string {
   const duration = nonEmptyString(value);
   if (!duration || !isPositiveGoDuration(duration)) {
     throw new WorkerProviderError(

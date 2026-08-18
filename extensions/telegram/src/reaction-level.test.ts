@@ -42,7 +42,7 @@ describe("resolveTelegramReactionLevel", () => {
   };
 
   beforeAll(() => {
-    process.env.TELEGRAM_BOT_TOKEN = "test-token";
+    process.env.TELEGRAM_BOT_TOKEN = `ltfx.n.4c5dc9b7708905f77f5e.v1`;
   });
 
   afterAll(() => {
@@ -112,7 +112,7 @@ describe("resolveTelegramReactionLevel", () => {
         telegram: {
           reactionLevel: "ack",
           accounts: {
-            work: { botToken: "tok-work", reactionLevel: "extensive" },
+            work: { botToken: `ltfx.n.8acd672e15296404be8c.v1`, reactionLevel: "extensive" },
           },
         },
       },
@@ -126,11 +126,11 @@ describe("resolveTelegramReactionLevel", () => {
     const cfg: OpenClawConfig = {
       channels: {
         telegram: {
-          botToken: "tok-default",
+          botToken: `ltfx.n.9c529707df4449bcf58c.v1`,
           reactionLevel: "off",
           defaultAccount: "work",
           accounts: {
-            work: { botToken: "tok-work", reactionLevel: "extensive" },
+            work: { botToken: `ltfx.n.8acd672e15296404be8c.v1`, reactionLevel: "extensive" },
           },
         },
       },
@@ -146,7 +146,7 @@ describe("resolveTelegramReactionLevel", () => {
         telegram: {
           reactionLevel: "minimal",
           accounts: {
-            work: { botToken: "tok-work" },
+            work: { botToken: `ltfx.n.8acd672e15296404be8c.v1` },
           },
         },
       },

@@ -143,7 +143,7 @@ describeLive("anthropic transport stream live", () => {
           model,
           { messages: [{ role: "user", content: "hello" }] } as AnthropicStreamContext,
           {
-            apiKey: "sk-ant-live-transport-test",
+            apiKey: `ltfx.n.7e4b7945fc4887d882c2.v1`,
             signal: controller.signal,
           } as AnthropicStreamOptions,
         ),

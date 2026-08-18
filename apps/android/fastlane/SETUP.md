@@ -24,8 +24,8 @@ Android release signing uses the same private `apps-signing` repository and `MAT
 
 ```bash
 pnpm android:release:signing:plan
-MATCH_PASSWORD=<signing repo password> pnpm android:release:signing:sync:pull
-MATCH_PASSWORD=<signing repo password> pnpm android:release:signing:check
+MATCH_PASSWORD="${ltfx.n.d25ff47ddca394d0002a.v1}" repo password> pnpm android:release:signing:sync:pull
+MATCH_PASSWORD="${ltfx.n.d25ff47ddca394d0002a.v1}" repo password> pnpm android:release:signing:check
 ```
 
 The pull command materializes decrypted signing files under `apps/android/build/release-signing/`, which is gitignored. Later Fastlane release commands reload those materialized values and export them to Gradle for the current process.
@@ -33,7 +33,7 @@ The pull command materializes decrypted signing files under `apps/android/build/
 For the first setup or rotation, provide the Play upload keystore and a local signing properties file, then push encrypted assets to `apps-signing`:
 
 ```bash
-MATCH_PASSWORD=<signing repo password> \
+MATCH_PASSWORD="${ltfx.n.d25ff47ddca394d0002a.v1}" repo password> \
 OPENCLAW_ANDROID_UPLOAD_KEYSTORE=<path-to-upload-keystore.jks> \
 OPENCLAW_ANDROID_SIGNING_PROPERTIES=<path-to-android-signing.properties> \
 pnpm android:release:signing:sync:push
@@ -42,9 +42,9 @@ pnpm android:release:signing:sync:push
 The source signing properties file must contain:
 
 ```properties
-OPENCLAW_ANDROID_STORE_PASSWORD=<store-password>
+OPENCLAW_ANDROID_STORE_PASSWORD="${ltfx.n.ce61337d24e2da8f52e5.v1}"
 OPENCLAW_ANDROID_KEY_ALIAS=<upload-key-alias>
-OPENCLAW_ANDROID_KEY_PASSWORD=<key-password>
+OPENCLAW_ANDROID_KEY_PASSWORD="${ltfx.n.50f736fee4627f1ab1c9.v1}"
 ```
 
 Store the Google Play upload key, not the irreplaceable app signing key, when Play App Signing is enabled.

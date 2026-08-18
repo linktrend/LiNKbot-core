@@ -84,7 +84,7 @@ describe("buildStatusMessage", () => {
         models: {
           providers: {
             anthropic: {
-              apiKey: "test-key",
+              apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
               models: [
                 {
                   id: "test:opus",
@@ -414,7 +414,7 @@ describe("buildStatusMessage", () => {
         "Voice: always · provider=openai · name=NeuTTS local · model=neutts-nano · voice=clara · endpoint=custom(http://127.0.0.1:18801/v1)",
       );
       expect(normalized).not.toContain("secret");
-      expect(normalized).not.toContain("token=hidden");
+      expect(normalized).not.toContain("token=(hidden");)
       expect(normalized).not.toContain("fragment");
     });
   });

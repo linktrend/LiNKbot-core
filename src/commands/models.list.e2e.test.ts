@@ -522,7 +522,7 @@ describe("models list/status", () => {
 
     const payload = parseJsonLog(runtime);
     expect(payload.models[0]).toMatchObject({
-      key: "anthropic/claude-sonnet-4-5",
+      key: `ltfx.n.a2c3875497ad15941e95.v1`,
       input: "text+image",
     });
     expect(normalizeProviderResolvedModelWithPlugin).toHaveBeenCalledWith(
@@ -721,7 +721,7 @@ describe("models list/status", () => {
     modelRegistryState.models = [OPENAI_MODEL];
     modelRegistryState.available = [OPENAI_MODEL];
     const resolvedConfig = {
-      models: { providers: { openai: { apiKey: "sk-resolved-runtime-value" } } }, // pragma: allowlist secret
+      models: { providers: { openai: { apiKey: `ltfx.n.35a8db6f40655ec6b61a.v1` } } }, // pragma: allowlist secret
     };
 
     const loaded = await loadModelRegistry(resolvedConfig as never);
@@ -763,7 +763,7 @@ describe("models list/status", () => {
           "custom-proxy": {
             api: "openai-responses",
             baseUrl: "https://custom.example/v1",
-            apiKey: "$CUSTOM_PROXY_API_KEY",
+            apiKey: `ltfx.n.a400aeebbe704cff437e.v1`,
             models: [
               {
                 id: "custom-model",
@@ -782,7 +782,7 @@ describe("models list/status", () => {
           "custom-proxy": {
             api: "openai-responses",
             baseUrl: "https://custom.example/v1",
-            apiKey: "sk-resolved-runtime-value", // pragma: allowlist secret
+            apiKey: `ltfx.n.35a8db6f40655ec6b61a.v1`, // pragma: allowlist secret
             models: [
               {
                 id: "custom-model",
@@ -818,7 +818,7 @@ describe("models list/status", () => {
         "claude-opus-4-6-thinking",
         "Claude Opus 4.6 Thinking",
       ) as never,
-      key: "google-antigravity/claude-opus-4-6-thinking",
+      key: `ltfx.n.6ced063b80ebfc315f18.v1`,
       tags: [],
       availableKeys: undefined,
       authAvailability: undefined,

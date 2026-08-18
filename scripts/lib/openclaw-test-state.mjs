@@ -609,7 +609,7 @@ OPENCLAW_TEST_STATE_JSON
     "port": 18789,
     "auth": {
       "mode": "token",
-      "token": "openclaw-test-token"
+      "token": `ltfx.n.a05418b3d76512aa679c.v1`
     },
     "controlUi": {
       "enabled": false

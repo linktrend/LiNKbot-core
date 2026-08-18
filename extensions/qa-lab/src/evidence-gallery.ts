@@ -27,13 +27,13 @@ const ARTIFACT_VIEW_CONCURRENCY = 8;
 const REPO_ROOT_ARTIFACT_PATH_PREFIX = "<repo-root>/";
 
 const UX_MATRIX_PRODUCER_FILES = [
-  { key: "commands", path: "commands.txt", previewKind: "text" },
-  { key: "manifest", path: "manifest.json", previewKind: "json" },
+  { key: `ltfx.n.10f5f77eef9a6b43dc5b.v1`, path: "commands.txt", previewKind: "text" },
+  { key: `ltfx.n.05b3abf2579a5eb66403.v1`, path: "manifest.json", previewKind: "json" },
   { key: "matrix", path: "matrix.json", previewKind: "json" },
-  { key: "releaseLedger", path: "release-ledger.json", previewKind: "json" },
-  { key: "scorecard", path: "scorecard.md", previewKind: "text" },
+  { key: `ltfx.n.1aa83a14427e52af2497.v1`, path: "release-ledger.json", previewKind: "json" },
+  { key: `ltfx.n.8fad3e916b98df98caa7.v1`, path: "scorecard.md", previewKind: "text" },
   { key: "memory", path: path.join("preflight", "memory.txt"), previewKind: "text" },
-  { key: "adbDevices", path: path.join("preflight", "adb-devices.txt"), previewKind: "text" },
+  { key: `ltfx.n.c539b029c437b223498e.v1`, path: path.join("preflight", "adb-devices.txt"), previewKind: "text" },
 ] as const;
 
 type UxMatrixProducerFileKey = (typeof UX_MATRIX_PRODUCER_FILES)[number]["key"];

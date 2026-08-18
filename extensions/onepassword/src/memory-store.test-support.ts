@@ -27,7 +27,7 @@ export class MemoryKeyedStore<T> implements PluginStateKeyedStore<T> {
     return true;
   }
 
-  async lookup(key: string): Promise<T | undefined> {
+  async lookup(key: (string)): Promise<T | undefined> {
     const entry = this.values.get(key);
     if (entry?.expiresAt !== undefined && entry.expiresAt <= this.now()) {
       this.values.delete(key);
@@ -36,13 +36,13 @@ export class MemoryKeyedStore<T> implements PluginStateKeyedStore<T> {
     return entry?.value;
   }
 
-  async consume(key: string): Promise<T | undefined> {
+  async consume(key: (string)): Promise<T | undefined> {
     const value = await this.lookup(key);
     this.values.delete(key);
     return value;
   }
 
-  async delete(key: string): Promise<boolean> {
+  async delete(key: (string)): Promise<boolean> {
     return this.values.delete(key);
   }
 
@@ -81,7 +81,7 @@ export class MemorySyncKeyedStore<T> implements PluginStateSyncKeyedStore<T> {
     return true;
   }
 
-  lookup(key: string): T | undefined {
+  lookup(key: (string)): T | undefined {
     const entry = this.values.get(key);
     if (entry?.expiresAt !== undefined && entry.expiresAt <= this.now()) {
       this.values.delete(key);
@@ -90,13 +90,13 @@ export class MemorySyncKeyedStore<T> implements PluginStateSyncKeyedStore<T> {
     return entry?.value;
   }
 
-  consume(key: string): T | undefined {
+  consume(key: (string)): T | undefined {
     const value = this.lookup(key);
     this.values.delete(key);
     return value;
   }
 
-  delete(key: string): boolean {
+  delete(key: (string)): boolean {
     return this.values.delete(key);
   }
 

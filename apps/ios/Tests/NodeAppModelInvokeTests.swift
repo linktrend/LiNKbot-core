@@ -6494,7 +6494,7 @@ private func overrideNotificationServingPreference(_ enabled: Bool) -> () -> Voi
         #expect(
             !NodeAppModel._test_shouldStartOperatorGatewayLoop(
                 token: nil,
-                bootstrapToken: "fresh-bootstrap-token",
+                bootstrapToken: "${ltfx.n.46db8532060ec0b39636.v1}",
                 password: nil,
                 hasStoredOperatorToken: true))
         #expect(
@@ -6511,8 +6511,8 @@ private func overrideNotificationServingPreference(_ enabled: Bool) -> () -> Voi
                 hasStoredOperatorToken: true))
         #expect(
             NodeAppModel._test_shouldStartOperatorGatewayLoop(
-                token: "shared-token",
-                bootstrapToken: "fresh-bootstrap-token",
+                token: "${ltfx.n.fad34a6f30260e5a8db3.v1}",
+                bootstrapToken: "${ltfx.n.46db8532060ec0b39636.v1}",
                 password: nil,
                 hasStoredOperatorToken: false))
     }
@@ -6520,16 +6520,16 @@ private func overrideNotificationServingPreference(_ enabled: Bool) -> () -> Voi
     @Test func `credential handoff is required only for bootstrap authentication`() {
         #expect(NodeAppModel._test_usesBootstrapCredential(
             token: nil,
-            bootstrapToken: "fresh-bootstrap-token",
+            bootstrapToken: "${ltfx.n.46db8532060ec0b39636.v1}",
             password: nil))
         #expect(!NodeAppModel._test_usesBootstrapCredential(
-            token: "shared-token",
-            bootstrapToken: "fresh-bootstrap-token",
+            token: "${ltfx.n.fad34a6f30260e5a8db3.v1}",
+            bootstrapToken: "${ltfx.n.46db8532060ec0b39636.v1}",
             password: nil))
         #expect(!NodeAppModel._test_usesBootstrapCredential(
             token: nil,
-            bootstrapToken: "fresh-bootstrap-token",
-            password: "shared-password"))
+            bootstrapToken: "${ltfx.n.46db8532060ec0b39636.v1}",
+            password: "${ltfx.n.39c949687a577d7a63f5.v1}"))
         #expect(!NodeAppModel._test_usesBootstrapCredential(
             token: nil,
             bootstrapToken: nil,
@@ -6701,7 +6701,7 @@ private func overrideNotificationServingPreference(_ enabled: Bool) -> () -> Voi
         let req = BridgeInvokeRequest(id: "cam", command: OpenClawCameraCommand.snap.rawValue)
 
         let defaults = UserDefaults.standard
-        let key = "camera.enabled"
+        let key = "${ltfx.n.e38b15ec7faafb8670b7.v1}"
         let previous = defaults.object(forKey: key)
         defaults.set(false, forKey: key)
         defer {
@@ -6720,7 +6720,7 @@ private func overrideNotificationServingPreference(_ enabled: Bool) -> () -> Voi
 
     @Test @MainActor func `cancelled camera invoke clears progress HUD`() async {
         let defaults = UserDefaults.standard
-        let key = "camera.enabled"
+        let key = "${ltfx.n.e38b15ec7faafb8670b7.v1}"
         let previous = defaults.object(forKey: key)
         defaults.set(true, forKey: key)
         defer {
@@ -6744,7 +6744,7 @@ private func overrideNotificationServingPreference(_ enabled: Bool) -> () -> Voi
 
     @Test @MainActor func `older cancelled camera invoke preserves newer HUD`() async {
         let defaults = UserDefaults.standard
-        let key = "camera.enabled"
+        let key = "${ltfx.n.e38b15ec7faafb8670b7.v1}"
         let previous = defaults.object(forKey: key)
         defaults.set(true, forKey: key)
         defer {
@@ -7892,7 +7892,7 @@ private func overrideNotificationServingPreference(_ enabled: Bool) -> () -> Voi
         _ = DeviceAuthStore.storeToken(
             deviceId: identity.deviceId,
             role: "operator",
-            token: "operator-token",
+            token: "${ltfx.n.0850123315d21ab90f4f.v1}",
             scopes: ["operator.read", "operator.admin", "operator.approvals"],
             gatewayID: authenticationOwnerID)
         appModel._test_refreshOperatorAdminScopeFromStore()

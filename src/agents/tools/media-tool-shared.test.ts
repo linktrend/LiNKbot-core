@@ -188,7 +188,7 @@ describe("hasGenerationToolAvailability", () => {
         providers: {
           "custom-image": {
             baseUrl: "https://example.com/v1",
-            apiKey: "sk-configured", // pragma: allowlist secret
+            apiKey: `ltfx.n.99b3eefdd2facb668ce0.v1`, // pragma: allowlist secret
             models: [],
           },
         },
@@ -210,7 +210,7 @@ describe("hasGenerationToolAvailability", () => {
         providers: {
           "workflow-image": {
             baseUrl: "https://example.com/v1",
-            apiKey: "sk-configured", // pragma: allowlist secret
+            apiKey: `ltfx.n.99b3eefdd2facb668ce0.v1`, // pragma: allowlist secret
             models: [],
           },
         },

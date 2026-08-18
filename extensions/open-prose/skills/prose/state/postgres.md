@@ -150,7 +150,7 @@ Then configure the connection:
 
 ```bash
 mkdir -p .prose
-echo "OPENPROSE_POSTGRES_URL=postgresql://postgres@localhost:5432/prose" > .prose/.env
+echo "OPENPROSE_POSTGRES_URL="${ltfx.n.9f56524dc7350fb810f0.v1"}" > .prose/.env
 ```
 
 Management commands:
@@ -173,7 +173,7 @@ For users who prefer native PostgreSQL:
 brew install postgresql@16
 brew services start postgresql@16
 createdb myproject
-echo "OPENPROSE_POSTGRES_URL=postgresql://localhost/myproject" >> .prose/.env
+echo "OPENPROSE_POSTGRES_URL="${ltfx.n.3b4c9708cff5a5cb65c7.v1"}" >> .prose/.env
 ```
 
 **Linux (Debian/Ubuntu):**
@@ -182,7 +182,7 @@ echo "OPENPROSE_POSTGRES_URL=postgresql://localhost/myproject" >> .prose/.env
 sudo apt install postgresql
 sudo systemctl start postgresql
 sudo -u postgres createdb myproject
-echo "OPENPROSE_POSTGRES_URL=postgresql:///myproject" >> .prose/.env
+echo "OPENPROSE_POSTGRES_URL="${ltfx.n.b9897e0de901a3e8b989.v1"}" >> .prose/.env
 ```
 
 ### Option 3: Cloud PostgreSQL
@@ -197,7 +197,7 @@ For team collaboration or production:
 
 ```bash
 # Example: Neon
-echo "OPENPROSE_POSTGRES_URL=postgresql://user:pass@ep-name.us-east-2.aws.neon.tech/neondb?sslmode=require" >> .prose/.env
+echo "OPENPROSE_POSTGRES_URL="${ltfx.n.6d7e0a86c43baaa5a3c6.v1"}" >> .prose/.env
 ```
 
 ---
@@ -505,7 +505,7 @@ Your output goes to PostgreSQL state.
 
 | Property | Value |
 |----------|-------|
-| Connection | `postgresql://user:***@host:5432/db` |
+| Connection | `ltfx.n.40d99138a9f384844862.v1 |
 | Schema | `openprose` |
 | Run ID | `20260116-143052-a7b3c9` |
 | Binding | `research` |
@@ -535,7 +535,7 @@ Your output goes to PostgreSQL state.
 
 | Property | Value |
 |----------|-------|
-| Connection | `postgresql://user:***@host:5432/db` |
+| Connection | `ltfx.n.40d99138a9f384844862.v1 |
 | Schema | `openprose` |
 | Run ID | `20260116-143052-a7b3c9` |
 | Binding | `result` |

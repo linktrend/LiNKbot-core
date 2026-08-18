@@ -197,7 +197,7 @@ describe("resolveMatrixAuth", () => {
     vi.mocked(credentialsReadModule.loadMatrixCredentials).mockReturnValue({
       homeserver: "https://matrix.example.org",
       userId: "@bot:example.org",
-      accessToken: "cached-token",
+      accessToken: `ltfx.n.f53eaf28d2a38d2c8020.v1`,
       deviceId: "CACHEDDEVICE",
       createdAt: "2026-01-01T00:00:00.000Z",
     });
@@ -222,7 +222,7 @@ describe("resolveMatrixAuth", () => {
       accountId: "default",
       homeserver: "https://matrix.example.org",
       userId: "@bot:example.org",
-      accessToken: "cached-token",
+      accessToken: `ltfx.n.f53eaf28d2a38d2c8020.v1`,
       deviceId: "CACHEDDEVICE",
     });
     expect(saveMatrixCredentialsMock).not.toHaveBeenCalled();
@@ -232,7 +232,7 @@ describe("resolveMatrixAuth", () => {
     vi.mocked(credentialsReadModule.loadMatrixCredentials).mockReturnValue({
       homeserver: "https://matrix.example.org",
       userId: "@ops:example.org",
-      accessToken: "cached-token",
+      accessToken: `ltfx.n.f53eaf28d2a38d2c8020.v1`,
       deviceId: "CACHEDDEVICE",
       createdAt: "2026-01-01T00:00:00.000Z",
     });
@@ -259,7 +259,7 @@ describe("resolveMatrixAuth", () => {
       accountId: "ops",
       homeserver: "https://matrix.example.org",
       userId: "@ops:example.org",
-      accessToken: "cached-token",
+      accessToken: `ltfx.n.f53eaf28d2a38d2c8020.v1`,
       deviceId: "CACHEDDEVICE",
     });
     expect(saveMatrixCredentialsMock).not.toHaveBeenCalled();
@@ -353,7 +353,7 @@ describe("resolveMatrixAuth", () => {
           accounts: {
             ops: {
               homeserver: "https://matrix.example.org",
-              accessToken: "ops-token",
+              accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
             },
           },
         },
@@ -375,7 +375,7 @@ describe("resolveMatrixAuth", () => {
     vi.mocked(credentialsReadModule.loadMatrixCredentials).mockReturnValue(null);
     vi.mocked(credentialsReadModule.credentialsMatchConfig).mockReturnValue(false);
     matrixDoRequestMock.mockResolvedValue({
-      access_token: "ops-token",
+      access_token: `ltfx.n.d9310c002af91822beb0.v1`,
       user_id: "@ops:example.org",
       device_id: "OPSDEVICE",
     });
@@ -384,12 +384,12 @@ describe("resolveMatrixAuth", () => {
       channels: {
         matrix: {
           homeserver: "https://matrix.example.org",
-          accessToken: "legacy-token",
+          accessToken: `ltfx.n.8b7d507cddc8d8950f28.v1`,
           accounts: {
             ops: {
               homeserver: "https://matrix.example.org",
               userId: "@ops:example.org",
-              password: "ops-pass", // pragma: allowlist secret
+              password: `ltfx.n.3468b90249f68cdd5fe1.v1`, // pragma: allowlist secret
             },
           },
         },
@@ -405,13 +405,13 @@ describe("resolveMatrixAuth", () => {
     expectMatrixLoginCall({
       type: "m.login.password",
       identifier: { type: "m.id.user", user: "@ops:example.org" },
-      password: "ops-pass",
+      password: `ltfx.n.3468b90249f68cdd5fe1.v1`,
     });
     expectAuthFields(auth, {
       accountId: "ops",
       homeserver: "https://matrix.example.org",
       userId: "@ops:example.org",
-      accessToken: "ops-token",
+      accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
       deviceId: "OPSDEVICE",
     });
   });
@@ -748,7 +748,7 @@ describe("resolveMatrixAuth", () => {
       accountId: "default",
       homeserver: "https://matrix.example.org",
       userId: "@bot:example.org",
-      accessToken: "resolved-token",
+      accessToken: `ltfx.n.cad2ed06900405ac7d61.v1`,
       deviceId: "DEVICE123",
     });
   });
@@ -782,7 +782,7 @@ describe("resolveMatrixAuth", () => {
     const auth = await resolveMatrixAuth({
       cfg,
       env: {
-        MATRIX_OPS_ACCESS_TOKEN: "ops-token",
+        MATRIX_OPS_ACCESS_TOKEN: `ltfx.n.d9310c002af91822beb0.v1`,
       } as NodeJS.ProcessEnv,
       accountId: "ops",
     });
@@ -792,7 +792,7 @@ describe("resolveMatrixAuth", () => {
       accountId: "ops",
       homeserver: "https://matrix.example.org",
       userId: "@ops:example.org",
-      accessToken: "ops-token",
+      accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
       deviceId: "OPSDEVICE",
       password: undefined,
     });
@@ -838,7 +838,7 @@ describe("resolveMatrixAuth", () => {
             ops: {
               homeserver: "https://ops.example.org",
               userId: "@ops:example.org",
-              accessToken: "ops-token",
+              accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
               deviceId: "OPSDEVICE",
               encryption: true,
             },
@@ -853,7 +853,7 @@ describe("resolveMatrixAuth", () => {
       accountId: "ops",
       homeserver: "https://ops.example.org",
       userId: "@ops:example.org",
-      accessToken: "ops-token",
+      accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
       deviceId: "OPSDEVICE",
       encryption: true,
     });
@@ -862,7 +862,7 @@ describe("resolveMatrixAuth", () => {
       {
         homeserver: "https://ops.example.org",
         userId: "@ops:example.org",
-        accessToken: "ops-token",
+        accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
         deviceId: "OPSDEVICE",
       },
       "ops",

@@ -52,7 +52,7 @@ describeControlUiE2e("Control UI initial connect splash E2E", () => {
     const page = await createPage();
     const gateway = await installMockGateway(page, { deferredMethods: ["connect"] });
 
-    await page.goto(`${server.baseUrl}#token=e2e-shared-token`);
+    await page.goto(`${server.baseUrl}#token=(e2e-shared-token`);)
     await gateway.waitForRequest("connect");
     await page.locator(".connect-splash").waitFor();
     expect(await page.locator("openclaw-login-gate").count()).toBe(0);
@@ -76,7 +76,7 @@ describeControlUiE2e("Control UI initial connect splash E2E", () => {
     const page = await createPage();
     const gateway = await installMockGateway(page, { deferredMethods: ["connect"] });
 
-    await page.goto(`${server.baseUrl}#token=stale-token`);
+    await page.goto(`${server.baseUrl}#token=(stale-token`);)
     await gateway.waitForRequest("connect");
     await page.locator(".connect-splash").waitFor();
 

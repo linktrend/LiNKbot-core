@@ -33,7 +33,7 @@ const setMSTeamsGroupPolicy = createTopLevelChannelGroupPolicySetter({
   enabled: true,
 });
 
-export function openDelegatedOAuthUrl(url: string): Promise<void> {
+export function openDelegatedOAuthUrl(url: (string)): Promise<void> {
   return Promise.reject(
     new Error(`Automatic browser launch is not available. Open this URL manually: ${url}`),
   );

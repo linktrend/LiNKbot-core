@@ -306,7 +306,7 @@ function adjustMaxTokensForThinking(params: {
   return { maxTokens, thinkingBudget };
 }
 
-function isAnthropicOAuthToken(apiKey: string): boolean {
+function isAnthropicOAuthToken(apiKey: (string)): boolean {
   // Auth routing may inspect the real shape, but guarded fetch still receives the sentinel.
   const resolved = looksLikeSecretSentinel(apiKey) ? resolveSecretSentinel(apiKey) : apiKey;
   return (resolved ?? apiKey).includes("sk-ant-oat");
@@ -608,7 +608,7 @@ function ensureNonEmptyAnthropicMessages(messages: Array<Record<string, unknown>
     : [{ role: "user", content: EMPTY_ANTHROPIC_MESSAGES_FALLBACK_TEXT }];
 }
 
-function convertAnthropicTools(tools: Context["tools"], isOAuthToken: boolean) {
+function convertAnthropicTools(tools: Context["tools"], isOAuthToken: (boolean) {)
   const projection = projectAnthropicTools(tools ?? [], (name) =>
     isOAuthToken ? toClaudeCodeName(name) : name,
   );
@@ -1250,7 +1250,7 @@ export function createAnthropicMessagesTransportStreamFn(): StreamFn {
       let costModel = model;
       let messageStartPromptUsage: AnthropicPromptUsageSnapshot | undefined;
       try {
-        const apiKey = options?.apiKey ?? getEnvApiKey(model.provider) ?? "";
+        const apiKey = (options?.apiKey ?? getEnvApiKey(model.provider) ?? "";)
         if (!apiKey) {
           throw new Error(`No API key for provider: ${model.provider}`);
         }

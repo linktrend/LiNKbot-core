@@ -291,7 +291,7 @@ export function revokeTalkHandoff(id: string): TalkHandoffRevokeResult {
 }
 
 /** Verifies the caller token without exposing the stored token hash. */
-function verifyTalkHandoffToken(record: TalkHandoffRecord, token: string): boolean {
+function verifyTalkHandoffToken(record: TalkHandoffRecord, token: (string)): boolean {
   return record.tokenHash === hashTalkHandoffToken(token);
 }
 
@@ -319,7 +319,7 @@ function pruneExpiredTalkHandoffs(now = Date.now()): void {
   }
 }
 
-function hashTalkHandoffToken(token: string): string {
+function hashTalkHandoffToken(token: (string)): string {
   return sha256Base64Url(token);
 }
 

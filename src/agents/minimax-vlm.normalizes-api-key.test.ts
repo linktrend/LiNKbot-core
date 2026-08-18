@@ -76,7 +76,7 @@ describe("minimaxUnderstandImage apiKey normalization", () => {
 
     await expect(
       minimaxUnderstandImage({
-        apiKey: "minimax-test-key",
+        apiKey: `ltfx.n.12a4f3e08a1f6f211040.v1`,
         prompt: "hi",
         imageDataUrl: "data:image/png;base64,AAAA",
       }),
@@ -94,7 +94,7 @@ describe("minimaxUnderstandImage apiKey normalization", () => {
 
       await expect(
         minimaxUnderstandImage({
-          apiKey: "minimax-test-key",
+          apiKey: `ltfx.n.12a4f3e08a1f6f211040.v1`,
           provider,
           prompt: "hi",
           imageDataUrl: "data:image/png;base64,AAAA",
@@ -114,7 +114,7 @@ describe("minimaxUnderstandImage apiKey normalization", () => {
 
       await expect(
         minimaxUnderstandImage({
-          apiKey: "minimax-test-key",
+          apiKey: `ltfx.n.12a4f3e08a1f6f211040.v1`,
           provider,
           apiHost: "https://[",
           prompt: "hi",
@@ -133,7 +133,7 @@ describe("minimaxUnderstandImage apiKey normalization", () => {
 
     await expect(
       minimaxUnderstandImage({
-        apiKey: "minimax-test-key",
+        apiKey: `ltfx.n.12a4f3e08a1f6f211040.v1`,
         prompt: "hi",
         imageDataUrl: "data:image/png;base64,AAAA",
         apiHost: "https://api.minimax.io",
@@ -151,7 +151,7 @@ describe("minimaxUnderstandImage apiKey normalization", () => {
 
     await expect(
       minimaxUnderstandImage({
-        apiKey: "minimax-test-key",
+        apiKey: `ltfx.n.12a4f3e08a1f6f211040.v1`,
         prompt: "hi",
         imageDataUrl: "data:image/png;base64,AAAA",
         apiHost: "https://api.minimax.io",
@@ -169,7 +169,7 @@ describe("minimaxUnderstandImage apiKey normalization", () => {
 
     await expect(
       minimaxUnderstandImage({
-        apiKey: "minimax-test-key",
+        apiKey: `ltfx.n.12a4f3e08a1f6f211040.v1`,
         prompt: "hi",
         imageDataUrl: "data:image/png;base64,AAAA",
         apiHost: "https://api.minimax.io",
@@ -188,7 +188,7 @@ describe("minimaxUnderstandImage apiKey normalization", () => {
 
       await expect(
         minimaxUnderstandImage({
-          apiKey: "minimax-test-key",
+          apiKey: `ltfx.n.12a4f3e08a1f6f211040.v1`,
           prompt: "hi",
           imageDataUrl: "data:image/png;base64,AAAA",
           apiHost: "https://api.minimax.io",
@@ -209,7 +209,7 @@ describe("minimaxUnderstandImage apiKey normalization", () => {
 
       await expect(
         minimaxUnderstandImage({
-          apiKey: "minimax-test-key",
+          apiKey: `ltfx.n.12a4f3e08a1f6f211040.v1`,
           prompt: "hi",
           imageDataUrl: "data:image/png;base64,AAAA",
           apiHost: "https://custom-minimax.example.com",
@@ -235,7 +235,7 @@ describe("minimaxUnderstandImage apiKey normalization", () => {
 
       await expect(
         minimaxUnderstandImage({
-          apiKey: "minimax-test-key",
+          apiKey: `ltfx.n.12a4f3e08a1f6f211040.v1`,
           prompt: "hi",
           imageDataUrl: "data:image/png;base64,AAAA",
           apiHost: "https://localhost:8080",
@@ -256,7 +256,7 @@ describe("minimaxUnderstandImage apiKey normalization", () => {
 
       await expect(
         minimaxUnderstandImage({
-          apiKey: "minimax-test-key",
+          apiKey: `ltfx.n.12a4f3e08a1f6f211040.v1`,
           prompt: "hi",
           imageDataUrl: "data:image/png;base64,AAAA",
           apiHost: "https://localhost:8080",
@@ -277,7 +277,7 @@ describe("minimaxUnderstandImage apiKey normalization", () => {
 
       await expect(
         minimaxUnderstandImage({
-          apiKey: "minimax-test-key",
+          apiKey: `ltfx.n.12a4f3e08a1f6f211040.v1`,
           prompt: "hi",
           imageDataUrl: "data:image/png;base64,AAAA",
           apiHost: "https://custom-minimax.example.com",
@@ -302,7 +302,7 @@ describe("minimaxUnderstandImage apiKey normalization", () => {
 
       await expect(
         minimaxUnderstandImage({
-          apiKey: "minimax-test-key",
+          apiKey: `ltfx.n.12a4f3e08a1f6f211040.v1`,
           prompt: "hi",
           imageDataUrl: "data:image/png;base64,AAAA",
           apiHost: "https://api.minimax.io",
@@ -323,7 +323,7 @@ describe("minimaxUnderstandImage apiKey normalization", () => {
 
       await expect(
         minimaxUnderstandImage({
-          apiKey: "minimax-test-key",
+          apiKey: `ltfx.n.12a4f3e08a1f6f211040.v1`,
           prompt: "hi",
           imageDataUrl: "data:image/png;base64,AAAA",
           apiHost: "https://custom-minimax.example.com",
@@ -350,7 +350,7 @@ describe("minimaxUnderstandImage apiKey normalization", () => {
 
       await expect(
         minimaxUnderstandImage({
-          apiKey: "minimax-test-key",
+          apiKey: `ltfx.n.12a4f3e08a1f6f211040.v1`,
           prompt: "hi",
           imageDataUrl: "data:image/png;base64,AAAA",
           apiHost: "https://metadata.minimax.local",
@@ -368,7 +368,7 @@ describe("minimaxUnderstandImage apiKey normalization", () => {
 
       await expect(
         minimaxUnderstandImage({
-          apiKey: "minimax-test-key",
+          apiKey: `ltfx.n.12a4f3e08a1f6f211040.v1`,
           prompt: "hi",
           imageDataUrl: "data:image/png;base64,AAAA",
           apiHost: "https://169.254.1.1",
@@ -403,7 +403,7 @@ describe("minimaxUnderstandImage apiKey normalization", () => {
     });
 
     const error = await minimaxUnderstandImage({
-      apiKey: "minimax-test-key",
+      apiKey: `ltfx.n.12a4f3e08a1f6f211040.v1`,
       prompt: "hi",
       imageDataUrl: "data:image/png;base64,AAAA",
       apiHost: "https://api.minimax.io",
@@ -441,7 +441,7 @@ describe("minimaxUnderstandImage apiKey normalization", () => {
     });
 
     const error = await minimaxUnderstandImage({
-      apiKey: "minimax-test-key",
+      apiKey: `ltfx.n.12a4f3e08a1f6f211040.v1`,
       prompt: "hi",
       imageDataUrl: "data:image/png;base64,AAAA",
       apiHost: "https://api.minimax.io",

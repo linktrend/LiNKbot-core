@@ -325,7 +325,7 @@ describe("promptRemoteGatewayConfig", () => {
   });
 
   it("supports storing remote auth as an external env secret ref", async () => {
-    process.env.OPENCLAW_GATEWAY_TOKEN = "remote-token-value";
+    process.env.OPENCLAW_GATEWAY_TOKEN = `ltfx.n.477217ddcff1472f988e.v1`;
     const text: WizardPrompter["text"] = vi.fn(async (params) => {
       if (params.message === "Gateway WebSocket URL") {
         return "wss://remote.example.com:18789";
@@ -393,7 +393,7 @@ describe("promptRemoteGatewayConfig", () => {
     });
 
     const cfg = {
-      gateway: { remote: { token: "preexisting-remote-token" } },
+      gateway: { remote: { token: `ltfx.n.353294ee41ff57c50a2e.v1` } },
     } as OpenClawConfig;
     const prompter = createPrompter({ confirm, select, text });
 
@@ -431,7 +431,7 @@ describe("promptRemoteGatewayConfig", () => {
     });
 
     const cfg = {
-      gateway: { remote: { password: "preexisting-remote-password" } },
+      gateway: { remote: { password: `ltfx.n.2664487c8e3be8f647b8.v1` } },
     } as OpenClawConfig;
     const prompter = createPrompter({ confirm, select, text });
 

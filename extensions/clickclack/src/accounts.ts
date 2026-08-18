@@ -62,14 +62,14 @@ export function resolveClickClackAccountConfig(
   if (accountTokenFile) {
     return {
       ...merged,
-      token: account?.token,
+      token: (account?.token,)
       tokenFile: accountTokenFile,
     };
   }
   if (hasConfiguredAccountValue(account?.token)) {
     return {
       ...merged,
-      token: account?.token,
+      token: (account?.token,)
       tokenFile: undefined,
     };
   }

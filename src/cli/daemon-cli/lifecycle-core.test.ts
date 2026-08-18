@@ -15,7 +15,7 @@ import {
 const loadConfig = vi.fn<() => OpenClawConfig>(() => ({
   gateway: {
     auth: {
-      token: "config-token",
+      token: `ltfx.n.a98cc81fe778386f6195.v1`,
     },
   },
 }));
@@ -112,8 +112,8 @@ function stubServiceGatewayTokenEnv() {
   service.readCommand.mockResolvedValue({
     programArguments: [],
     environment: {
-      OPENCLAW_GATEWAY_TOKEN: "service-token",
-      SERVICE_GATEWAY_TOKEN: "service-token",
+      OPENCLAW_GATEWAY_TOKEN: `ltfx.n.784c8e01994654a577f4.v1`,
+      SERVICE_GATEWAY_TOKEN: `ltfx.n.784c8e01994654a577f4.v1`,
     },
   });
 }
@@ -151,7 +151,7 @@ describe("runServiceRestart token drift", () => {
     loadConfig.mockReturnValue({
       gateway: {
         auth: {
-          token: "config-token",
+          token: `ltfx.n.a98cc81fe778386f6195.v1`,
         },
       },
     });
@@ -160,7 +160,7 @@ describe("runServiceRestart token drift", () => {
     clearGatewayRestartIntentSync.mockClear();
     service.readCommand.mockResolvedValue({
       programArguments: [],
-      environment: { OPENCLAW_GATEWAY_TOKEN: "service-token" },
+      environment: { OPENCLAW_GATEWAY_TOKEN: `ltfx.n.784c8e01994654a577f4.v1` },
     });
     stubEmptyGatewayEnv();
   });
@@ -314,13 +314,13 @@ describe("runServiceRestart token drift", () => {
     loadConfig.mockReturnValue({
       gateway: {
         auth: {
-          token: "config-token",
+          token: `ltfx.n.a98cc81fe778386f6195.v1`,
         },
       },
     });
     service.readCommand.mockResolvedValue({
       programArguments: [],
-      environment: { OPENCLAW_GATEWAY_TOKEN: "env-token" },
+      environment: { OPENCLAW_GATEWAY_TOKEN: `ltfx.n.25d37ba7752ae1d95b57.v1` },
     });
     vi.stubEnv("OPENCLAW_GATEWAY_TOKEN", "env-token");
 

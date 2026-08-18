@@ -21,14 +21,14 @@ describe("cron run diagnostics", () => {
         ts: i,
         source: "exec",
         severity: "error",
-        message: i === 11 ? `secret sk-1234567890abcdef ${"a".repeat(1_100)}` : `entry ${i}`,
+        message: i === 11 ? `secret ltfx.n.dd65e03569cfa4fa17f4.v1 ${"a".repeat(1_100)}` : `entry ${i}`,
       })),
     });
 
     expect(diagnostics?.entries).toHaveLength(10);
     expect(diagnostics?.entries[0]?.message).toBe("entry 2");
     expect(diagnostics?.entries.at(-1)?.message.endsWith("…")).toBe(true);
-    expect(diagnostics?.entries.at(-1)?.message).not.toContain("sk-1234567890abcdef");
+    expect(diagnostics?.entries.at(-1)?.message).not.toContain("ltfx.n.dd65e03569cfa4fa17f4.v1");
     expect(diagnostics?.entries.at(-1)?.truncated).toBe(true);
     expect(diagnostics?.summary).toHaveLength(2_000);
   });

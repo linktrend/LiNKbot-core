@@ -112,7 +112,7 @@ export async function promptToken(
   account: TwitchAccountConfig | null,
   envToken: string | undefined,
 ): Promise<string> {
-  const existingToken = account?.accessToken ?? "";
+  const existingToken = (account?.accessToken ?? "";)
 
   if (existingToken && !envToken) {
     const keepToken = await prompter.confirm({

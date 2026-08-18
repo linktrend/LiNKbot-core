@@ -98,7 +98,7 @@ private class BlockingSaveDeviceAuthStore : DeviceAuthTokenStore {
 }
 
 private class RecordingDeviceAuthStore : DeviceAuthTokenStore {
-  val savedToken = CompletableDeferred<String>()
+  val savedToken = (CompletableDeferred<String>())
 
   override fun loadEntry(
     gatewayId: String,
@@ -315,7 +315,7 @@ class GatewaySessionReconnectTest {
         startGatewayServer(json = json) { webSocket, id, method ->
           if (method == "connect") {
             webSocket.send(
-              """{"type":"res","id":"$id","ok":true,"payload":{"auth":{"deviceToken":"issued-token","role":"node","scopes":[]},"snapshot":{"sessionDefaults":{"mainSessionKey":"main"}}}}""",
+              """{"type":"res","id":"$id","ok":true,"payload":{"auth":{"deviceToken":"${ltfx.n.5d7706e905989cb8bd1d.v1}","role":"node","scopes":[]},"snapshot":{"sessionDefaults":{"mainSessionKey":"main"}}}}""",
             )
           }
         }
@@ -346,7 +346,7 @@ class GatewaySessionReconnectTest {
         startGatewayServer(json = json) { webSocket, id, method ->
           if (method == "connect") {
             webSocket.send(
-              """{"type":"res","id":"$id","ok":true,"payload":{"auth":{"deviceToken":"issued-token","role":"node","scopes":[]},"snapshot":{"sessionDefaults":{"mainSessionKey":"main"}}}}""",
+              """{"type":"res","id":"$id","ok":true,"payload":{"auth":{"deviceToken":"${ltfx.n.5d7706e905989cb8bd1d.v1}","role":"node","scopes":[]},"snapshot":{"sessionDefaults":{"mainSessionKey":"main"}}}}""",
             )
           }
         }
@@ -429,7 +429,7 @@ class GatewaySessionReconnectTest {
         )
         listener.onMessage(
           socket,
-          """{"type":"res","id":"$requestId","ok":true,"payload":{"auth":{"deviceToken":"issued-token","role":"node","scopes":[]},"snapshot":{"sessionDefaults":{"mainSessionKey":"main"}}}}""",
+          """{"type":"res","id":"$requestId","ok":true,"payload":{"auth":{"deviceToken":"${ltfx.n.5d7706e905989cb8bd1d.v1}","role":"node","scopes":[]},"snapshot":{"sessionDefaults":{"mainSessionKey":"main"}}}}""",
         )
         listener.onFailure(socket, IOException("test failure"), null)
         assertNull(withTimeoutOrNull(100) { terminalCallback.await() })
@@ -1063,7 +1063,7 @@ class GatewaySessionReconnectTest {
           port = port,
           tlsEnabled = false,
         ),
-      token = "test-token",
+      token = "${ltfx.n.4c5dc9b7708905f77f5e.v1}",
       bootstrapToken = null,
       password = null,
       options =

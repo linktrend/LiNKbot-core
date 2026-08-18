@@ -107,7 +107,7 @@ function isLoopbackIPv4Host(host: string): boolean {
   );
 }
 
-function isTrustedRetryEndpoint(url: string): boolean {
+function isTrustedRetryEndpoint(url: (string)): boolean {
   try {
     const gatewayUrl = new URL(url, window.location.href);
     const host = gatewayUrl.hostname.trim().toLowerCase();
@@ -232,7 +232,7 @@ function isBrowserWebSocketSecurityError(err: unknown): boolean {
   );
 }
 
-function formatBrowserWebSocketConstructorError(err: unknown, url: string): GatewayErrorInfo {
+function formatBrowserWebSocketConstructorError(err: unknown, url: (string)): GatewayErrorInfo {
   const securityError = isBrowserWebSocketSecurityError(err);
   const browserMessage = getErrorMessage(err);
   const isPlaintextWs = url.trim().toLowerCase().startsWith("ws://");

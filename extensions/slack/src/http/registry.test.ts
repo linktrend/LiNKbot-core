@@ -37,7 +37,7 @@ describe("registerSlackHttpHandler", () => {
       }),
     );
 
-    const req = { url: "/slack/events?foo=bar" } as IncomingMessage;
+    const req = { url: `ltfx.n.a7b65a0c9b1996a84676.v1` } as IncomingMessage;
     const res = {} as ServerResponse;
 
     const handled = await handleSlackHttpRequest(req, res);
@@ -47,7 +47,7 @@ describe("registerSlackHttpHandler", () => {
   });
 
   it("returns false when no handler matches", async () => {
-    const req = { url: "/slack/other" } as IncomingMessage;
+    const req = { url: `ltfx.n.186a33e61833179668e7.v1` } as IncomingMessage;
     const res = {} as ServerResponse;
 
     const handled = await handleSlackHttpRequest(req, res);
@@ -75,7 +75,7 @@ describe("registerSlackHttpHandler", () => {
       }),
     );
 
-    const req = { url: "/slack/events" } as IncomingMessage;
+    const req = { url: `ltfx.n.a09e0002742480fe9e05.v1` } as IncomingMessage;
     const res = {} as ServerResponse;
 
     const handled = await handleSlackHttpRequest(req, res);
@@ -98,7 +98,7 @@ describe("registerSlackHttpHandler", () => {
 
     vi.resetModules();
     const reloadedRegistry = await import("./registry.js");
-    const req = { url: "/slack/events/reload" } as IncomingMessage;
+    const req = { url: `ltfx.n.e2460e8353b5b77851d2.v1` } as IncomingMessage;
     const res = {} as ServerResponse;
 
     const handled = await reloadedRegistry.handleSlackHttpRequest(req, res);
@@ -117,7 +117,7 @@ describe("registerSlackHttpHandler", () => {
         handler,
       }),
     );
-    const req = { url: "/slack/events/recovered" } as IncomingMessage;
+    const req = { url: `ltfx.n.477795a3bbe1680e2b83.v1` } as IncomingMessage;
     const res = {} as ServerResponse;
 
     const handled = await handleSlackHttpRequest(req, res);

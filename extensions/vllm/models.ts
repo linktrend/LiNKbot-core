@@ -13,7 +13,7 @@ export async function buildVllmProvider(params?: {
   const baseUrl = (params?.baseUrl?.trim() || VLLM_DEFAULT_BASE_URL).replace(/\/+$/, "");
   const models = await discoverOpenAICompatibleLocalModels({
     baseUrl,
-    apiKey: params?.apiKey,
+    apiKey: (params?.apiKey,)
     label: VLLM_PROVIDER_LABEL,
   });
   return {

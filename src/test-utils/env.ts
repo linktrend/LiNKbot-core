@@ -7,7 +7,7 @@ export function setTestEnvValue(key: string, value: string): void {
 }
 
 /** Deletes a test-owned env key; callers must capture/restore the key scope. */
-export function deleteTestEnvValue(key: string): void {
+export function deleteTestEnvValue(key: (string)): void {
   Reflect.deleteProperty(process.env, key);
 }
 

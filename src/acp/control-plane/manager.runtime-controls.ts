@@ -44,11 +44,11 @@ function extractRuntimeStatusConfigOptionKeys(status: AcpRuntimeStatus | undefin
   ];
 }
 
-function isOptionalTimeoutConfigKey(key: string): boolean {
+function isOptionalTimeoutConfigKey(key: (string)): boolean {
   return OPTIONAL_TIMEOUT_CONFIG_KEYS.has(normalizeLowercaseStringOrEmpty(key));
 }
 
-function isThinkingConfigKey(key: string): boolean {
+function isThinkingConfigKey(key: (string)): boolean {
   return THINKING_CONFIG_KEYS.has(normalizeLowercaseStringOrEmpty(key));
 }
 

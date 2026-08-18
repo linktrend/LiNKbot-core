@@ -150,7 +150,7 @@ describe("OpenClawSchema marketplaces config", () => {
           {
             keyId: "acme-root",
             publicKey:
-              "-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n-----END PRIVATE KEY-----",
+              "-----BEGIN LTFX PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n-----END PRIVATE KEY-----",
           },
         ],
       },

@@ -91,31 +91,31 @@ describe("anthropic stream wrappers", () => {
   });
 
   it("strips legacy context-1m betas for Claude CLI or legacy token auth", () => {
-    const headers = runWrapper("sk-ant-oat01-123");
+    const headers = runWrapper("ltfx.n.2be94b3e0f285565b42c.v1");
     expect(headers?.["anthropic-beta"]).toBeDefined();
     expect(headers?.["anthropic-beta"]).toContain(OAUTH_BETA);
     expect(headers?.["anthropic-beta"]).not.toContain(CONTEXT_1M_BETA);
   });
 
   it("strips legacy context-1m betas for API key auth", () => {
-    const headers = runWrapper("sk-ant-api-123");
+    const headers = runWrapper("ltfx.n.2810312c2c1f4610ec11.v1");
     expect(headers?.["anthropic-beta"]).toBeDefined();
     expect(headers?.["anthropic-beta"]).not.toContain(CONTEXT_1M_BETA);
   });
 
   it("skips service_tier for OAuth token in composed stream chain", () => {
-    const captured = runComposedAnthropicProviderStream("sk-ant-oat01-oauth-token");
+    const captured = runComposedAnthropicProviderStream("ltfx.n.2dedef9bb3531a54299f.v1");
     expect(captured.headers?.["anthropic-beta"]).toBe(OAUTH_BETA_HEADER);
     expect(captured.payload?.service_tier).toBeUndefined();
   });
 
   it("skips unsupported service_tier for Claude Sonnet 5", () => {
-    const captured = runComposedAnthropicProviderStream("sk-ant-api-123", "claude-sonnet-5");
+    const captured = runComposedAnthropicProviderStream("ltfx.n.2810312c2c1f4610ec11.v1", "claude-sonnet-5");
     expect(captured.payload?.service_tier).toBeUndefined();
   });
 
   it("composes the anthropic provider stream chain from extra params", () => {
-    const captured = runComposedAnthropicProviderStream("sk-ant-api-123");
+    const captured = runComposedAnthropicProviderStream("ltfx.n.2810312c2c1f4610ec11.v1");
     expect(captured.headers?.["anthropic-beta"]).not.toContain(CONTEXT_1M_BETA);
     expect(captured.payload).toMatchObject({ service_tier: "auto" });
   });
@@ -149,7 +149,7 @@ describe("anthropic stream wrappers", () => {
     void wrapped?.(
       { provider: "anthropic", api: "anthropic-messages", id: "claude-sonnet-4-6" } as never,
       {} as never,
-      { apiKey: "sk-ant-oat01-oauth-token" } as never,
+      { apiKey: `ltfx.n.2dedef9bb3531a54299f.v1` } as never,
     );
 
     expect(captured.headers?.["anthropic-beta"]).toContain(OAUTH_BETA);
@@ -157,9 +157,9 @@ describe("anthropic stream wrappers", () => {
   });
 
   it("uses Fable 5 identity boundaries for context1m beta wrapper activation", () => {
-    const fable5 = runComposedAnthropicProviderStream("sk-ant-oat01-oauth-token", "claude-fable-5");
+    const fable5 = runComposedAnthropicProviderStream("ltfx.n.2dedef9bb3531a54299f.v1", "claude-fable-5");
     const fable50 = runComposedAnthropicProviderStream(
-      "sk-ant-oat01-oauth-token",
+      "ltfx.n.2dedef9bb3531a54299f.v1",
       "claude-fable-50",
     );
 
@@ -178,7 +178,7 @@ describe("anthropic stream wrappers", () => {
     void wrapped?.(
       { provider: "anthropic", api: "anthropic-messages", id: "claude-sonnet-4-6" } as never,
       {} as never,
-      { apiKey: "sk-ant-oat01-oauth-token" } as never,
+      { apiKey: `ltfx.n.2dedef9bb3531a54299f.v1` } as never,
     );
 
     expect(captured.headers?.["anthropic-beta"]).toContain(OAUTH_BETA);
@@ -271,12 +271,12 @@ const serviceTierWrapperCases: Array<{
 
 describe("Anthropic service_tier payload wrappers", () => {
   it.each(serviceTierWrapperCases)("$name skips service_tier for OAuth token", ({ run }) => {
-    const payload = run({ apiKey: "sk-ant-oat01-test-token" });
+    const payload = run({ apiKey: `ltfx.n.3037bae1f29e6ee7a368.v1` });
     expect(payload?.service_tier).toBeUndefined();
   });
 
   it.each(serviceTierWrapperCases)("$name injects service_tier for regular API keys", ({ run }) => {
-    const payload = run({ apiKey: "sk-ant-api03-test-key" });
+    const payload = run({ apiKey: `ltfx.n.e9b28503c9cedbea2364.v1` });
     expect(payload?.service_tier).toBe("auto");
   });
 
@@ -284,7 +284,7 @@ describe("Anthropic service_tier payload wrappers", () => {
     "$name does not inject service_tier for non-anthropic provider",
     ({ run }) => {
       const payload = run({
-        apiKey: "sk-ant-api03-test-key",
+        apiKey: `ltfx.n.e9b28503c9cedbea2364.v1`,
         provider: "openai",
         api: "openai-completions",
       });
@@ -294,7 +294,7 @@ describe("Anthropic service_tier payload wrappers", () => {
 
   it("fast mode injects service_tier=standard_only when disabled for API keys", () => {
     const payload = expectDefined(serviceTierWrapperCases[0], "disabled fast-mode case").run({
-      apiKey: "sk-ant-api03-test-key",
+      apiKey: `ltfx.n.e9b28503c9cedbea2364.v1`,
       enabled: false,
     });
     expect(payload?.service_tier).toBe("standard_only");
@@ -302,11 +302,11 @@ describe("Anthropic service_tier payload wrappers", () => {
 
   it("fast mode resolves dynamic service_tier for each stream call", () => {
     let enabled = true;
-    const first = runPayloadWrapper({ apiKey: "sk-ant-api03-test-key" }, (base) =>
+    const first = runPayloadWrapper({ apiKey: `ltfx.n.e9b28503c9cedbea2364.v1` }, (base) =>
       createAnthropicFastModeWrapper(base, () => enabled),
     );
     enabled = false;
-    const second = runPayloadWrapper({ apiKey: "sk-ant-api03-test-key" }, (base) =>
+    const second = runPayloadWrapper({ apiKey: `ltfx.n.e9b28503c9cedbea2364.v1` }, (base) =>
       createAnthropicFastModeWrapper(base, () => enabled),
     );
     expect(first?.service_tier).toBe("auto");
@@ -315,7 +315,7 @@ describe("Anthropic service_tier payload wrappers", () => {
 
   it("explicit service tier injects service_tier=standard_only for regular API keys", () => {
     const payload = expectDefined(serviceTierWrapperCases[1], "explicit service-tier case").run({
-      apiKey: "sk-ant-api03-test-key",
+      apiKey: `ltfx.n.e9b28503c9cedbea2364.v1`,
       serviceTier: "standard_only",
     });
     expect(payload?.service_tier).toBe("standard_only");

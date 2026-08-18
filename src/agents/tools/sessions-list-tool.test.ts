@@ -80,8 +80,8 @@ describe("sessions-list-tool", () => {
     mocks.gatewayCall.mockResolvedValue({
       path: "/tmp/sessions.json",
       sessions: [
-        { key: "agent:main:main", kind: "main", sessionId: "main-1" },
-        { key: "agent:main:subagent:child", kind: "other", sessionId: "child-1" },
+        { key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`, kind: "main", sessionId: "main-1" },
+        { key: `ltfx.n.3c3dbd6de91d4e00f4c7.v1`, kind: "other", sessionId: "child-1" },
       ],
     });
     mocks.getSessionStateVersions.mockReturnValue({
@@ -103,7 +103,7 @@ describe("sessions-list-tool", () => {
       path: "/tmp/sessions.json",
       sessions: [
         {
-          key: "agent:main:subagent:child",
+          key: `ltfx.n.3c3dbd6de91d4e00f4c7.v1`,
           agentId: "main",
           kind: "other",
           channel: "discord",
@@ -139,7 +139,7 @@ describe("sessions-list-tool", () => {
       count: 1,
       sessions: [
         {
-          key: "agent:main:subagent:child",
+          key: `ltfx.n.3c3dbd6de91d4e00f4c7.v1`,
           agentId: "main",
           kind: "other",
           channel: "discord",
@@ -171,7 +171,7 @@ describe("sessions-list-tool", () => {
           path: "/tmp/sessions.json",
           sessions: [
             {
-              key: "agent:main:dashboard:child",
+              key: `ltfx.n.cd3246c18cbc743c3b98.v1`,
               kind: "direct",
               sessionId: "sess-dashboard-child",
               deliveryContext: {
@@ -182,7 +182,7 @@ describe("sessions-list-tool", () => {
               },
             },
             {
-              key: "agent:main:telegram:topic",
+              key: `ltfx.n.acbf4871fcd7400886cc.v1`,
               kind: "direct",
               sessionId: "sess-telegram-topic",
               deliveryContext: {
@@ -213,7 +213,7 @@ describe("sessions-list-tool", () => {
       path: "/tmp/sessions.json",
       sessions: [
         {
-          key: "agent:main:subagent:child",
+          key: `ltfx.n.3c3dbd6de91d4e00f4c7.v1`,
           kind: "other",
           parentSessionKey: "agent:main:subagent:parent",
           spawnedBy: "agent:main:main",
@@ -236,27 +236,27 @@ describe("sessions-list-tool", () => {
           path: "/tmp/sessions.json",
           sessions: [
             {
-              key: "agent:main:slack:channel:C123:thread:1710000000.000100",
+              key: `ltfx.n.17e4a7578d51d78e201f.v1`,
               kind: "group",
               sessionId: "sess-slack-thread",
             },
             {
-              key: "discord:group:ops",
+              key: `ltfx.n.9bbab5fdb4f38fdfcc9d.v1`,
               kind: "group",
               sessionId: "sess-discord-group",
             },
             {
-              key: "agent:main:matrix:channel:!room:[2001:db8::1]",
+              key: `ltfx.n.f10721cc55ad95b27081.v1`,
               kind: "group",
               sessionId: "sess-matrix-room",
             },
             {
-              key: "agent:main:agent:plugin:slack:channel:C123",
+              key: `ltfx.n.60af86349c54e9ccec49.v1`,
               kind: "group",
               sessionId: "sess-nested-agent",
             },
             {
-              key: "agent::slack:channel:C123",
+              key: `ltfx.n.a07ab2a04ddcb600a3af.v1`,
               kind: "group",
               sessionId: "sess-malformed-agent",
             },
@@ -326,7 +326,7 @@ describe("sessions-list-tool", () => {
       path: "/tmp/sessions.json",
       sessions: [
         {
-          key: "agent:main:dashboard:archived",
+          key: `ltfx.n.17cc14040ed7230607b8.v1`,
           kind: "direct",
           archived: true,
           archivedAt: 20,

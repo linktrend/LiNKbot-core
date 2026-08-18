@@ -35,7 +35,7 @@ describe("createNodeProxyAgent", () => {
           keepAlive: true,
           ca: "collector-ca",
           cert: "collector-cert",
-          key: "collector-key",
+          key: `ltfx.n.c52184783242de8975ac.v1`,
         },
       });
 
@@ -54,7 +54,7 @@ describe("createNodeProxyAgent", () => {
         keepAlive: true,
         ca: "collector-ca",
         cert: "collector-cert",
-        key: "collector-key",
+        key: `ltfx.n.c52184783242de8975ac.v1`,
       });
       expect(agentState?.keepAlive).toBe(true);
     });

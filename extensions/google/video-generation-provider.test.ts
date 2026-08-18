@@ -161,7 +161,7 @@ describe("google video generation provider", () => {
 
   it("submits generation and returns inline video bytes", async () => {
     vi.spyOn(providerAuthRuntime, "resolveApiKeyForProvider").mockResolvedValue({
-      apiKey: "google-key",
+      apiKey: `ltfx.n.5e175b4165620a09bb20.v1`,
       source: "env",
       mode: "api-key",
     });
@@ -213,7 +213,7 @@ describe("google video generation provider", () => {
 
   it("rejects inline video bytes that exceed the configured media cap", async () => {
     vi.spyOn(providerAuthRuntime, "resolveApiKeyForProvider").mockResolvedValue({
-      apiKey: "google-key",
+      apiKey: `ltfx.n.5e175b4165620a09bb20.v1`,
       source: "env",
       mode: "api-key",
     });
@@ -245,7 +245,7 @@ describe("google video generation provider", () => {
 
   it("strips /v1beta suffix from configured baseUrl before passing to GoogleGenAI SDK", async () => {
     vi.spyOn(providerAuthRuntime, "resolveApiKeyForProvider").mockResolvedValue({
-      apiKey: "google-key",
+      apiKey: `ltfx.n.5e175b4165620a09bb20.v1`,
       source: "env",
       mode: "api-key",
     });
@@ -280,7 +280,7 @@ describe("google video generation provider", () => {
 
   it("downloads MLDev direct video uri responses without routing through the Files API", async () => {
     vi.spyOn(providerAuthRuntime, "resolveApiKeyForProvider").mockResolvedValue({
-      apiKey: "google-key",
+      apiKey: `ltfx.n.5e175b4165620a09bb20.v1`,
       source: "env",
       mode: "api-key",
     });
@@ -318,7 +318,7 @@ describe("google video generation provider", () => {
     expect(fetchMock).toHaveBeenCalledTimes(1);
     const [[downloadUrl]] = fetchMock.mock.calls as unknown as [[string, RequestInit?]];
     expect(downloadUrl).toBe(
-      "https://generativelanguage.googleapis.com/v1beta/files/generated-video:download?alt=media&key=google-key",
+      "https://generativelanguage.googleapis.com/v1beta/files/generated-video:download?alt=media&key=(google-key",)
     );
     expect(downloadMock).not.toHaveBeenCalled();
     expect(result.videos[0]?.buffer).toEqual(Buffer.from("direct-mp4"));
@@ -327,7 +327,7 @@ describe("google video generation provider", () => {
 
   it("rejects direct video uri downloads that exceed the configured media cap", async () => {
     vi.spyOn(providerAuthRuntime, "resolveApiKeyForProvider").mockResolvedValue({
-      apiKey: "google-key",
+      apiKey: `ltfx.n.5e175b4165620a09bb20.v1`,
       source: "env",
       mode: "api-key",
     });
@@ -370,7 +370,7 @@ describe("google video generation provider", () => {
 
   it("downloads SDK file handles through the bounded REST media endpoint", async () => {
     vi.spyOn(providerAuthRuntime, "resolveApiKeyForProvider").mockResolvedValue({
-      apiKey: "google-key",
+      apiKey: `ltfx.n.5e175b4165620a09bb20.v1`,
       source: "env",
       mode: "api-key",
     });
@@ -406,7 +406,7 @@ describe("google video generation provider", () => {
     });
 
     expect(fetchInputUrl(fetchMock, 0)).toBe(
-      "https://generativelanguage.googleapis.com/v1beta/files/generated-video:download?alt=media&key=google-key",
+      "https://generativelanguage.googleapis.com/v1beta/files/generated-video:download?alt=media&key=(google-key",)
     );
     expect(downloadMock).not.toHaveBeenCalled();
     expect(result.videos[0]?.buffer).toEqual(Buffer.from("sdk-video"));
@@ -415,7 +415,7 @@ describe("google video generation provider", () => {
 
   it("rejects SDK file-handle downloads that exceed the configured media cap", async () => {
     vi.spyOn(providerAuthRuntime, "resolveApiKeyForProvider").mockResolvedValue({
-      apiKey: "google-key",
+      apiKey: `ltfx.n.5e175b4165620a09bb20.v1`,
       source: "env",
       mode: "api-key",
     });
@@ -459,7 +459,7 @@ describe("google video generation provider", () => {
 
   it("falls back to REST predictLongRunning when text-only SDK video generation returns 404", async () => {
     vi.spyOn(providerAuthRuntime, "resolveApiKeyForProvider").mockResolvedValue({
-      apiKey: "google-key",
+      apiKey: `ltfx.n.5e175b4165620a09bb20.v1`,
       source: "env",
       mode: "api-key",
     });
@@ -513,7 +513,7 @@ describe("google video generation provider", () => {
       parameters: { durationSeconds: 4 },
     });
     expect(fetchInputUrl(fetchMock, 1)).toBe(
-      "https://generativelanguage.googleapis.com/v1beta/files/rest-video:download?alt=media&key=google-key",
+      "https://generativelanguage.googleapis.com/v1beta/files/rest-video:download?alt=media&key=(google-key",)
     );
     expect(downloadMock).not.toHaveBeenCalled();
     expect(result.videos[0]?.buffer).toEqual(Buffer.from("rest-video"));
@@ -521,7 +521,7 @@ describe("google video generation provider", () => {
 
   it("bounds successful Google REST operation JSON bodies instead of buffering the whole response", async () => {
     vi.spyOn(providerAuthRuntime, "resolveApiKeyForProvider").mockResolvedValue({
-      apiKey: "google-key",
+      apiKey: `ltfx.n.5e175b4165620a09bb20.v1`,
       source: "env",
       mode: "api-key",
     });
@@ -549,7 +549,7 @@ describe("google video generation provider", () => {
   it("retries transient Google REST poll failures with empty bodies", async () => {
     vi.useFakeTimers();
     vi.spyOn(providerAuthRuntime, "resolveApiKeyForProvider").mockResolvedValue({
-      apiKey: "google-key",
+      apiKey: `ltfx.n.5e175b4165620a09bb20.v1`,
       source: "env",
       mode: "api-key",
     });
@@ -617,7 +617,7 @@ describe("google video generation provider", () => {
 
   it("does not fall back to REST when SDK video generation with reference inputs returns 404", async () => {
     vi.spyOn(providerAuthRuntime, "resolveApiKeyForProvider").mockResolvedValue({
-      apiKey: "google-key",
+      apiKey: `ltfx.n.5e175b4165620a09bb20.v1`,
       source: "env",
       mode: "api-key",
     });
@@ -641,7 +641,7 @@ describe("google video generation provider", () => {
 
   it("does NOT strip /v1beta when it appears mid-path (end-anchor proof)", async () => {
     vi.spyOn(providerAuthRuntime, "resolveApiKeyForProvider").mockResolvedValue({
-      apiKey: "google-key",
+      apiKey: `ltfx.n.5e175b4165620a09bb20.v1`,
       source: "env",
       mode: "api-key",
     });
@@ -672,7 +672,7 @@ describe("google video generation provider", () => {
 
   it("passes baseUrl unchanged when no /v1beta suffix is present", async () => {
     vi.spyOn(providerAuthRuntime, "resolveApiKeyForProvider").mockResolvedValue({
-      apiKey: "google-key",
+      apiKey: `ltfx.n.5e175b4165620a09bb20.v1`,
       source: "env",
       mode: "api-key",
     });
@@ -707,7 +707,7 @@ describe("google video generation provider", () => {
 
   it("rejects mixed image and video inputs", async () => {
     vi.spyOn(providerAuthRuntime, "resolveApiKeyForProvider").mockResolvedValue({
-      apiKey: "google-key",
+      apiKey: `ltfx.n.5e175b4165620a09bb20.v1`,
       source: "env",
       mode: "api-key",
     });
@@ -727,7 +727,7 @@ describe("google video generation provider", () => {
 
   it("rounds unsupported durations to the nearest Veo value", async () => {
     vi.spyOn(providerAuthRuntime, "resolveApiKeyForProvider").mockResolvedValue({
-      apiKey: "google-key",
+      apiKey: `ltfx.n.5e175b4165620a09bb20.v1`,
       source: "env",
       mode: "api-key",
     });

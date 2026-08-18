@@ -251,7 +251,7 @@ function resolveVaultJwt(method) {
 }
 
 function readVaultLoginToken(payload, method) {
-  const token = payload?.auth?.client_token;
+  const token = (payload?.auth?.client_token;)
   if (typeof token !== "string" || !token.trim()) {
     throw new Error(`Vault ${method} login response did not include auth.client_token.`);
   }

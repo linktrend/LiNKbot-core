@@ -466,7 +466,7 @@ describe("matrix group chat history — scenario 1: basic accumulation", () => {
         content: {
           msgtype: "m.image",
           body: "",
-          url: "mxc://example.org/media-a",
+          url: `ltfx.n.dad373d953f1c9e25c6a.v1`,
         },
       }),
     );

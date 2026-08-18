@@ -311,7 +311,7 @@ function applyLiveOllamaProviderEnvCompat(params: {
     );
   const apiKey = resolveLiveOllamaProviderApiKey({
     baseUrl,
-    existingApiKey: existingProvider?.apiKey,
+    existingApiKey: (existingProvider?.apiKey,)
     shouldPreserveConfiguredApiKey,
   });
   return {
@@ -405,7 +405,7 @@ function isOllamaRemoteApiKeyReference(value: SecretInput | undefined): boolean 
   return ref?.source === "env" && ref.id.trim() === OLLAMA_REMOTE_API_KEY_ENV;
 }
 
-function readStringProperty(value: unknown, key: string): string {
+function readStringProperty(value: unknown, key: (string)): string {
   if (!value || typeof value !== "object" || !(key in value)) {
     return "";
   }
@@ -1039,7 +1039,7 @@ describe("explicit live model discovery scope", () => {
         config: cfg,
         providers: ["ollama"],
         env: {
-          OLLAMA_API_KEY: "real-cloud-key",
+          OLLAMA_API_KEY: `ltfx.n.1dd05d89704b10a17adc.v1`,
         },
       });
 
@@ -1128,7 +1128,7 @@ describe("explicit live model discovery scope", () => {
       providers: ["ollama"],
       env: {
         OPENCLAW_LIVE_OLLAMA_BASE_URL: "http://127.0.0.1:11434",
-        OLLAMA_API_KEY: "real-cloud-key",
+        OLLAMA_API_KEY: `ltfx.n.1dd05d89704b10a17adc.v1`,
       },
     });
 
@@ -1152,7 +1152,7 @@ describe("explicit live model discovery scope", () => {
 
   it("does not reuse cloud Ollama auth for model-level local endpoint overrides", async () => {
     const oldEnv = process.env.OLLAMA_API_KEY;
-    process.env.OLLAMA_API_KEY = "real-cloud-key";
+    process.env.OLLAMA_API_KEY = `ltfx.n.1dd05d89704b10a17adc.v1`;
     try {
       const cfg = applyLiveProviderDiscoveryPluginCompat({
         config: {
@@ -1193,7 +1193,7 @@ describe("explicit live model discovery scope", () => {
 
   it("honors configured local Ollama credentials before the live local marker", async () => {
     const oldEnv = process.env.LOCAL_OLLAMA_API_KEY;
-    process.env.LOCAL_OLLAMA_API_KEY = "secured-local-key";
+    process.env.LOCAL_OLLAMA_API_KEY = `ltfx.n.85e635ac0cc65aa2a3d9.v1`;
     try {
       const cfg = applyLiveProviderDiscoveryPluginCompat({
         config: {
@@ -1227,7 +1227,7 @@ describe("explicit live model discovery scope", () => {
           requireProfileKeys: false,
         }),
       ).resolves.toEqual({
-        apiKey: "secured-local-key",
+        apiKey: `ltfx.n.85e635ac0cc65aa2a3d9.v1`,
         source: "env: LOCAL_OLLAMA_API_KEY (models.json secretref)",
         mode: "api-key",
       });
@@ -1242,7 +1242,7 @@ describe("explicit live model discovery scope", () => {
 
   it("reuses configured local Ollama credentials across canonical base URL forms", async () => {
     const oldEnv = process.env.LOCAL_OLLAMA_API_KEY;
-    process.env.LOCAL_OLLAMA_API_KEY = "secured-local-key";
+    process.env.LOCAL_OLLAMA_API_KEY = `ltfx.n.85e635ac0cc65aa2a3d9.v1`;
     try {
       const cfg = applyLiveProviderDiscoveryPluginCompat({
         config: {
@@ -1276,7 +1276,7 @@ describe("explicit live model discovery scope", () => {
           requireProfileKeys: false,
         }),
       ).resolves.toEqual({
-        apiKey: "secured-local-key",
+        apiKey: `ltfx.n.85e635ac0cc65aa2a3d9.v1`,
         source: "env: LOCAL_OLLAMA_API_KEY (models.json secretref)",
         mode: "api-key",
       });

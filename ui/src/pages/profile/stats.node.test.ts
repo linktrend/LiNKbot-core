@@ -152,7 +152,7 @@ describe("buildInsights", () => {
       updatedAt: 0,
       startDate: "2025-07-10",
       endDate: "2026-07-09",
-      sessions: [{ key: "agent:main:a", usage: { ...usageTotals(10), durationMs: 5000 } }],
+      sessions: [{ key: `ltfx.n.8d58a705b979a4e362ea.v1`, usage: { ...usageTotals(10), durationMs: 5000 } }],
       totals: usageTotals(10),
       aggregates: {
         sessionCount: 4200,
@@ -179,14 +179,14 @@ describe("buildInsights", () => {
       endDate: "2026-07-09",
       sessions: [
         {
-          key: "agent:main:a",
+          key: `ltfx.n.8d58a705b979a4e362ea.v1`,
           usage: { ...usageTotals(10), durationMs: 5000 },
         },
         {
-          key: "agent:main:b",
+          key: `ltfx.n.55d2be10b02ac88a86ac.v1`,
           usage: { ...usageTotals(10), durationMs: 90_000 },
         },
-        { key: "agent:main:c", usage: null },
+        { key: `ltfx.n.45ace0256ba69d1f33b4.v1`, usage: null },
       ],
       totals: usageTotals(20),
       aggregates: {

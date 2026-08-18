@@ -54,7 +54,7 @@ describe("Ollama provider", () => {
   };
 
   async function withOllamaApiKey<T>(run: () => Promise<T>): Promise<T> {
-    process.env.OLLAMA_API_KEY = "test-key"; // pragma: allowlist secret
+    process.env.OLLAMA_API_KEY = `ltfx.n.62af8704764faf8ea82f.v1`; // pragma: allowlist secret
     try {
       return await run();
     } finally {
@@ -170,7 +170,7 @@ describe("Ollama provider", () => {
             },
           },
         },
-        env: { OLLAMA_API_KEY: "test-key" },
+        env: { OLLAMA_API_KEY: `ltfx.n.62af8704764faf8ea82f.v1` },
       });
 
       expect(countFetchCallUrls(fetchMock, "/api/tags")).toBe(1);
@@ -196,7 +196,7 @@ describe("Ollama provider", () => {
             },
           },
         },
-        env: { OLLAMA_API_KEY: "test-key" },
+        env: { OLLAMA_API_KEY: `ltfx.n.62af8704764faf8ea82f.v1` },
       });
 
       expect(countFetchCallUrls(fetchMock, "/api/tags")).toBe(1);
@@ -228,7 +228,7 @@ describe("Ollama provider", () => {
     stubOllamaFetch(fetchMock);
 
     const provider = await runOllamaCatalog({
-      env: { OLLAMA_API_KEY: "test-key", VITEST: "", NODE_ENV: "development" },
+      env: { OLLAMA_API_KEY: `ltfx.n.62af8704764faf8ea82f.v1`, VITEST: "", NODE_ENV: "development" },
     });
     const models = provider?.models ?? [];
     const qwen = models.find((model) => model.id === "qwen3:32b");
@@ -333,7 +333,7 @@ describe("Ollama provider", () => {
     stubOllamaFetch(fetchMock);
 
     const provider = await runOllamaCatalog({
-      env: { OLLAMA_API_KEY: "test-key", VITEST: "", NODE_ENV: "development" },
+      env: { OLLAMA_API_KEY: `ltfx.n.62af8704764faf8ea82f.v1`, VITEST: "", NODE_ENV: "development" },
     });
     const model = provider?.models?.find((entry) => entry.id === "qwen3:32b");
     expect(model?.contextWindow).toBe(128000);
@@ -358,7 +358,7 @@ describe("Ollama provider", () => {
     stubOllamaFetch(fetchMock);
 
     const provider = await runOllamaCatalog({
-      env: { OLLAMA_API_KEY: "test-key", VITEST: "", NODE_ENV: "development" },
+      env: { OLLAMA_API_KEY: `ltfx.n.62af8704764faf8ea82f.v1`, VITEST: "", NODE_ENV: "development" },
     });
     const models = provider?.models ?? [];
     // 1 call for /api/tags + 200 capped /api/show calls.
@@ -404,7 +404,7 @@ describe("Ollama provider", () => {
               ollama: {
                 baseUrl: "http://remote-ollama:11434/v1",
                 models: explicitModels,
-                apiKey: "config-ollama-key", // pragma: allowlist secret
+                apiKey: `ltfx.n.05cd50a753a16fc75fa6.v1`, // pragma: allowlist secret
               },
             },
           },
@@ -525,10 +525,10 @@ describe("Ollama provider", () => {
             },
           },
         },
-        env: { OLLAMA_API_KEY: "real-secret", VITEST: "", NODE_ENV: "development" },
+        env: { OLLAMA_API_KEY: `ltfx.n.d2fb68516a97ee22fa0b.v1`, VITEST: "", NODE_ENV: "development" },
         resolveProviderApiKey: () => ({
           apiKey: "OLLAMA_API_KEY",
-          discoveryApiKey: "real-secret",
+          discoveryApiKey: `ltfx.n.d2fb68516a97ee22fa0b.v1`,
         }),
       });
 
@@ -566,10 +566,10 @@ describe("Ollama provider", () => {
             },
           },
         },
-        env: { OLLAMA_API_KEY: "real-secret", VITEST: "", NODE_ENV: "development" },
+        env: { OLLAMA_API_KEY: `ltfx.n.d2fb68516a97ee22fa0b.v1`, VITEST: "", NODE_ENV: "development" },
         resolveProviderApiKey: () => ({
           apiKey: "OLLAMA_API_KEY",
-          discoveryApiKey: "real-secret",
+          discoveryApiKey: `ltfx.n.d2fb68516a97ee22fa0b.v1`,
         }),
       });
 
@@ -608,10 +608,10 @@ describe("Ollama provider", () => {
             },
           },
         },
-        env: { OLLAMA_API_KEY: "real-secret", VITEST: "", NODE_ENV: "development" },
+        env: { OLLAMA_API_KEY: `ltfx.n.d2fb68516a97ee22fa0b.v1`, VITEST: "", NODE_ENV: "development" },
         resolveProviderApiKey: () => ({
           apiKey: "OLLAMA_API_KEY",
-          discoveryApiKey: "real-secret",
+          discoveryApiKey: `ltfx.n.d2fb68516a97ee22fa0b.v1`,
         }),
       });
 
@@ -652,7 +652,7 @@ describe("Ollama provider", () => {
                     maxTokens: 8192,
                   },
                 ],
-                apiKey: "config-ollama-key", // pragma: allowlist secret
+                apiKey: `ltfx.n.05cd50a753a16fc75fa6.v1`, // pragma: allowlist secret
               },
             },
           },

@@ -121,7 +121,7 @@ describe("buildOnboardingWelcome", () => {
   });
 
   it("honors an explicit workspace override on an authored setup", async () => {
-    mocks.sourceConfig.gateway = { auth: { mode: "token", token: "existing-token" } };
+    mocks.sourceConfig.gateway = { auth: { mode: "token", token: `ltfx.n.70dd5803fa4e35799166.v1` } };
     const propose = vi.fn();
     const { text: welcome } = await buildOnboardingWelcome({
       workspace: "/requested/workspace",
@@ -196,7 +196,7 @@ describe("buildOnboardingWelcome", () => {
             hash: "hash",
           },
           defaultModel: "openai/gpt-5.5",
-          gateway: { reachable: true, url: "ws://127.0.0.1:18789" },
+          gateway: { reachable: true, url: `ltfx.n.0edbee82f0824a1ed09b.v1` },
         })),
         propose,
         noteAssistantMessage: vi.fn(),

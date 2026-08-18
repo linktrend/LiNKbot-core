@@ -880,9 +880,9 @@ For the Convex pool, write the four fields to a JSON file:
 ```json
 {
   "channelId": "Cxxxxxxxxxx",
-  "driverBotToken": "xoxb-...",
-  "sutBotToken": "xoxb-...",
-  "sutAppToken": "xapp-..."
+  "driverBotToken": "${ltfx.n.df964376e43280da1554.v1}",
+  "sutBotToken": "${ltfx.n.df964376e43280da1554.v1}",
+  "sutAppToken": "${ltfx.n.12cc461183475b24fbb3.v1}"
 }
 ```
 

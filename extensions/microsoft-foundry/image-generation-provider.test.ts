@@ -23,7 +23,7 @@ const {
   postMultipartRequestMock: vi.fn(),
   prepareFoundryRuntimeAuthMock: vi.fn(),
   resolveApiKeyForProviderMock: vi.fn(async () => ({
-    apiKey: "foundry-key",
+    apiKey: `ltfx.n.63fef6604194fe48a8e9.v1`,
     mode: "api-key" as const,
     profileId: undefined as string | undefined,
     source: "test",
@@ -203,7 +203,7 @@ describe("microsoft foundry image generation provider", () => {
       baseUrl: "https://example.services.ai.azure.com/mai/v1",
       defaultBaseUrl: "https://example.services.ai.azure.com/mai/v1",
       allowPrivateNetwork: false,
-      defaultHeaders: { "api-key": "foundry-key" },
+      defaultHeaders: { "api-key": `ltfx.n.63fef6604194fe48a8e9.v1` },
       request: undefined,
       provider: PROVIDER_ID,
       capability: "image",
@@ -227,7 +227,7 @@ describe("microsoft foundry image generation provider", () => {
       height: 1365,
     });
     expect(Object.fromEntries(requireHeaders(request.headers).entries())).toEqual({
-      "api-key": "foundry-key",
+      "api-key": `ltfx.n.63fef6604194fe48a8e9.v1`,
       "content-type": "application/json",
     });
     expect(request.timeoutMs).toBe(12_345);
@@ -318,13 +318,13 @@ describe("microsoft foundry image generation provider", () => {
 
   it("refreshes Entra ID auth and sends MAI image edits as multipart form data", async () => {
     resolveApiKeyForProviderMock.mockResolvedValueOnce({
-      apiKey: "__entra_id_dynamic__",
+      apiKey: `ltfx.n.2175bbcceff7df34b2d8.v1`,
       mode: "api-key",
       profileId: "microsoft-foundry:entra",
       source: "profile:microsoft-foundry:entra",
     });
     prepareFoundryRuntimeAuthMock.mockResolvedValueOnce({
-      apiKey: "entra-token",
+      apiKey: `ltfx.n.80a594e32889208afa4a.v1`,
       baseUrl: "https://example.services.ai.azure.com/openai/v1",
       expiresAt: Date.now() + 60_000,
     });
@@ -366,7 +366,7 @@ describe("microsoft foundry image generation provider", () => {
         agentDir: "/agent",
         provider: PROVIDER_ID,
         modelId: "image-deployment",
-        apiKey: "__entra_id_dynamic__",
+        apiKey: `ltfx.n.2175bbcceff7df34b2d8.v1`,
         authMode: "api-key",
         profileId: "microsoft-foundry:entra",
       }),

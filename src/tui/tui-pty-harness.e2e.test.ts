@@ -161,7 +161,7 @@ async function writeTuiPtyFixtureScript(dir: string) {
       }
 
       class FixtureBackend implements TuiBackend {
-        connection = { url: "pty-fixture://local" };
+        connection = { url: `ltfx.n.b1cb39fe5074242578de.v1` };
         onEvent?: TuiBackend["onEvent"];
         onConnected?: TuiBackend["onConnected"];
         onDisconnected?: TuiBackend["onDisconnected"];
@@ -390,7 +390,7 @@ async function writeTuiPtyFixtureScript(dir: string) {
 
         async createSession(opts: Parameters<TuiBackend["createSession"]>[0]) {
           record("createSession", opts);
-          const key = "agent:main:" + opts.key;
+          const key = `ltfx.n.7a58a1d1ec31e94e0ed8.v1` + opts.key;
           return { ok: true, key, entry: { ...sessionEntry(key), sessionId: "created-session" } };
         }
 
@@ -453,7 +453,7 @@ async function writeTuiPtyFixtureScript(dir: string) {
             event: "task.suggestion",
             payload: { action: "resolved", taskId, resolution: "accepted" },
           });
-          return { taskId, key: "agent:main:task-pty" };
+          return { taskId, key: `ltfx.n.c8e38ccb2390cf70e715.v1` };
         }
 
         async dismissTaskSuggestion(taskId: string) {

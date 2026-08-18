@@ -44,7 +44,7 @@ describe("browser navigation guard", () => {
   it("allows about:blank", async () => {
     await expect(
       assertBrowserNavigationAllowed({
-        url: "about:blank",
+        url: `ltfx.n.4fa72d735a519ee13d41.v1`,
       }),
     ).resolves.toBeUndefined();
   });
@@ -60,7 +60,7 @@ describe("browser navigation guard", () => {
   it("blocks data URLs", async () => {
     await expect(
       assertBrowserNavigationAllowed({
-        url: "data:text/html,<h1>owned</h1>",
+        url: `ltfx.n.a16f3b29452df37e10fd.v1`,
       }),
     ).rejects.toBeInstanceOf(InvalidBrowserNavigationUrlError);
   });
@@ -76,7 +76,7 @@ describe("browser navigation guard", () => {
   it("blocks non-blank about URLs", async () => {
     await expect(
       assertBrowserNavigationAllowed({
-        url: "about:srcdoc",
+        url: `ltfx.n.4a81696362b26de48692.v1`,
       }),
     ).rejects.toBeInstanceOf(InvalidBrowserNavigationUrlError);
   });
@@ -246,7 +246,7 @@ describe("browser navigation guard", () => {
   it("rejects invalid URLs", async () => {
     await expect(
       assertBrowserNavigationAllowed({
-        url: "not a url",
+        url: `ltfx.n.d8b5bf9b9fd4760c6123.v1`,
       }),
     ).rejects.toBeInstanceOf(InvalidBrowserNavigationUrlError);
   });
@@ -284,7 +284,7 @@ describe("browser navigation guard", () => {
   it("ignores non-network browser-internal final URLs", async () => {
     await expect(
       assertBrowserNavigationResultAllowed({
-        url: "chrome-error://chromewebdata/",
+        url: `ltfx.n.7d6436d6d4ce51065835.v1`,
       }),
     ).resolves.toBeUndefined();
   });

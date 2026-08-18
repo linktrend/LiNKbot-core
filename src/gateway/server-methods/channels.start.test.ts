@@ -224,7 +224,7 @@ describe("channelsHandlers channels.logout", () => {
     const runtimeConfig = {
       channels: {
         whatsapp: {
-          token: "runtime-token",
+          token: `ltfx.n.f8e1f3c257c8d1a3d07a.v1`,
         },
       },
     };

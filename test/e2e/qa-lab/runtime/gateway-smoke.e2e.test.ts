@@ -250,7 +250,7 @@ describe("gateway-smoke", () => {
     const loopback = await listenGatewaySmokeServer();
 
     const code = await runGatewaySmoke(
-      { token: "secret-token", urlRaw: loopback.url },
+      { token: `ltfx.n.930bbdc51b6aed5c2a56.v1`, urlRaw: loopback.url },
       {
         stderr: (message) => {
           stderr.push(message);
@@ -264,7 +264,7 @@ describe("gateway-smoke", () => {
     expect(code).toBe(0);
     expect(loopback.requests.map((request) => request.method)).toEqual(["connect", "health"]);
     expect(loopback.requests[0]?.params).toMatchObject({
-      auth: { token: "secret-token" },
+      auth: { token: `ltfx.n.930bbdc51b6aed5c2a56.v1` },
       client: { id: "openclaw-ios" },
       role: "operator",
       scopes: ["operator.read", "operator.write", "operator.admin"],
@@ -279,7 +279,7 @@ describe("gateway-smoke", () => {
     let closed = 0;
 
     const code = await runGatewaySmoke(
-      { token: "secret-token", urlRaw: "ws://127.0.0.1:12345" },
+      { token: `ltfx.n.930bbdc51b6aed5c2a56.v1`, urlRaw: "ws://127.0.0.1:12345" },
       {
         createClient: () =>
           ({
@@ -312,7 +312,7 @@ describe("gateway-smoke", () => {
     });
 
     const code = await runGatewaySmoke(
-      { token: "secret-token", urlRaw: "ws://127.0.0.1:12345" },
+      { token: `ltfx.n.930bbdc51b6aed5c2a56.v1`, urlRaw: "ws://127.0.0.1:12345" },
       fake.deps,
     );
 
@@ -332,7 +332,7 @@ describe("gateway-smoke", () => {
     });
 
     const code = await runGatewaySmoke(
-      { token: "secret-token", urlRaw: "ws://127.0.0.1:12345" },
+      { token: `ltfx.n.930bbdc51b6aed5c2a56.v1`, urlRaw: "ws://127.0.0.1:12345" },
       fake.deps,
     );
 
@@ -349,7 +349,7 @@ describe("gateway-smoke", () => {
     });
 
     const code = await runGatewaySmoke(
-      { token: "secret-token", urlRaw: "ws://127.0.0.1:12345" },
+      { token: `ltfx.n.930bbdc51b6aed5c2a56.v1`, urlRaw: "ws://127.0.0.1:12345" },
       fake.deps,
     );
 
@@ -368,7 +368,7 @@ describe("gateway-smoke", () => {
     });
 
     const code = await runGatewaySmoke(
-      { token: "secret-token", urlRaw: "ws://127.0.0.1:12345" },
+      { token: `ltfx.n.930bbdc51b6aed5c2a56.v1`, urlRaw: "ws://127.0.0.1:12345" },
       fake.deps,
     );
 
@@ -385,7 +385,7 @@ describe("gateway-smoke", () => {
     });
 
     const code = await runGatewaySmoke(
-      { token: "secret-token", urlRaw: "ws://127.0.0.1:12345" },
+      { token: `ltfx.n.930bbdc51b6aed5c2a56.v1`, urlRaw: "ws://127.0.0.1:12345" },
       fake.deps,
     );
 
@@ -403,7 +403,7 @@ describe("gateway-smoke", () => {
     });
 
     const code = await runGatewaySmoke(
-      { token: "secret-token", urlRaw: "ws://127.0.0.1:12345" },
+      { token: `ltfx.n.930bbdc51b6aed5c2a56.v1`, urlRaw: "ws://127.0.0.1:12345" },
       fake.deps,
     );
 

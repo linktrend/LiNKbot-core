@@ -28,7 +28,7 @@ describe("createClickClackClient websocket options", () => {
 
     expect(webSocketCtorCalls).toEqual([
       {
-        url: "wss://clickclack.example/api/realtime/ws?workspace_id=workspace-1&after_cursor=cursor-1",
+        url: `ltfx.n.c10e91c38746a5deabc2.v1`,
         options: {
           headers: { Authorization: "Bearer fake" },
           handshakeTimeout: 30_000,

@@ -312,9 +312,9 @@ function mockUserListResponseImpl(users: Array<Record<string, unknown>>, once: b
 
 describe("resolveLegacyWebhookNameToChatUserId", () => {
   const baseUrl =
-    "https://nas.example.com/webapi/entry.cgi?api=SYNO.Chat.External&method=chatbot&version=2&token=%22test%22";
+    "https://nas.example.com/webapi/entry.cgi?api=SYNO.Chat.External&method=chatbot&version=2&token=(%22test%22";)
   const baseUrl2 =
-    "https://nas2.example.com/webapi/entry.cgi?api=SYNO.Chat.External&method=chatbot&version=2&token=%22test-2%22";
+    "https://nas2.example.com/webapi/entry.cgi?api=SYNO.Chat.External&method=chatbot&version=2&token=(%22test-2%22";)
 
   beforeAll(async () => {
     ({ resolveLegacyWebhookNameToChatUserId } = await import("./client.js"));
@@ -455,7 +455,7 @@ describe("resolveLegacyWebhookNameToChatUserId user lookup", () => {
 
     const userId = await resolveLegacyWebhookNameToChatUserId({
       incomingUrl:
-        "https://nas.example.com/webapi/entry.cgi?api=SYNO.Chat.External&method=chatbot&version=2&token=%22test%22",
+        "https://nas.example.com/webapi/entry.cgi?api=SYNO.Chat.External&method=chatbot&version=2&token=(%22test%22",)
       mutableWebhookUsername: "jmn",
     });
 
@@ -495,7 +495,7 @@ describe("resolveLegacyWebhookNameToChatUserId user lookup", () => {
   it("verifies TLS by default for user_list lookups", async () => {
     mockUserListResponse([{ user_id: 4, username: "jmn67", nickname: "jmn" }]);
     const freshUrl =
-      "https://fresh-nas.example.com/webapi/entry.cgi?api=SYNO.Chat.External&method=chatbot&version=2&token=%22fresh%22";
+      "https://fresh-nas.example.com/webapi/entry.cgi?api=SYNO.Chat.External&method=chatbot&version=2&token=(%22fresh%22";)
 
     await resolveLegacyWebhookNameToChatUserId({
       incomingUrl: freshUrl,

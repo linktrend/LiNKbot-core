@@ -125,12 +125,12 @@ describe("session key backward compatibility", () => {
 
 describe("getSubagentDepth", () => {
   it.each([
-    { key: "agent:main:main", expected: 0 },
+    { key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`, expected: 0 },
     { key: "main", expected: 0 },
     { key: undefined, expected: 0 },
-    { key: "agent:main:subagent:parent:subagent:child", expected: 2 },
-    { key: "subagent:worker", expected: 1 },
-    { key: "subagent:parent:subagent:child", expected: 2 },
+    { key: `ltfx.n.7ea4f64193a2918411b9.v1`, expected: 2 },
+    { key: `ltfx.n.eca9fb1a468717b0f9e7.v1`, expected: 1 },
+    { key: `ltfx.n.65277bc36bff79a3e9bf.v1`, expected: 2 },
   ] as const)("returns $expected for session key %j", ({ key, expected }) => {
     expect(getSubagentDepth(key)).toBe(expected);
   });
@@ -138,12 +138,12 @@ describe("getSubagentDepth", () => {
 
 describe("isCronSessionKey", () => {
   it.each([
-    { key: "agent:main:cron:job-1", expected: true },
-    { key: "agent:main:cron:job-1:run:run-1", expected: true },
-    { key: "agent:main:cron:job-1:run:run-1:subagent:worker", expected: true },
-    { key: "agent:main:main", expected: false },
-    { key: "agent:main:subagent:worker", expected: false },
-    { key: "cron:job-1", expected: false },
+    { key: `ltfx.n.c07099dec4592f992d37.v1`, expected: true },
+    { key: `ltfx.n.313524d44852cae63e25.v1`, expected: true },
+    { key: `ltfx.n.da1eb36b50fc9966020e.v1`, expected: true },
+    { key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`, expected: false },
+    { key: `ltfx.n.f3fd014fb107b4395e4c.v1`, expected: false },
+    { key: `ltfx.n.74a68aeb567beaed6c83.v1`, expected: false },
     { key: undefined, expected: false },
   ] as const)("matches cron key %j => $expected", ({ key, expected }) => {
     expect(isCronSessionKey(key)).toBe(expected);
@@ -152,31 +152,31 @@ describe("isCronSessionKey", () => {
 
 describe("deriveSessionChatTypeFromKey", () => {
   it.each([
-    { key: "agent:main:direct:user1", expected: "direct" },
-    { key: "agent:main:discord:direct:user1", expected: "direct" },
-    { key: "agent:main:telegram:group:g1", expected: "group" },
-    { key: "agent:main:discord:channel:c1", expected: "channel" },
-    { key: "agent:main:discord:guild-123:channel-456", expected: "channel" },
-    { key: "agent:main:channel:legacy-room", expected: "channel" },
-    { key: "agent:main:channel:!room:example.org", expected: "channel" },
-    { key: "agent:main:channel:direct:user", expected: "channel" },
-    { key: "agent:main:group:room:part", expected: "group" },
-    { key: "agent:main:group:dm:user", expected: "group" },
-    { key: "agent:main:whatsapp:123@g.us", expected: "group" },
-    { key: "agent:main:telegram:dm:123456", expected: "direct" },
-    { key: "telegram:dm:123456", expected: "direct" },
-    { key: "agent:main:matrix:channel:!Room:example.org", expected: "channel" },
-    { key: "agent:main:matrix:channel:!room:[2001:db8::1]", expected: "channel" },
-    { key: "agent:voice:agent:other:matrix:channel:!room:example.org", expected: "unknown" },
-    { key: "agent:main:direct", expected: "unknown" },
-    { key: "agent:main:demo:acct:channel", expected: "unknown" },
-    { key: "agent:main:telegram:group:direct:user", expected: "unknown" },
-    { key: "agent:main:direct:group:room", expected: "unknown" },
-    { key: "agent:main:dm:account:group:room", expected: "unknown" },
-    { key: "agent:main:demo::channel:room", expected: "unknown" },
-    { key: "agent::demo:direct:user", expected: "unknown" },
-    { key: "agent:main:main", expected: "unknown" },
-    { key: "agent:main", expected: "unknown" },
+    { key: `ltfx.n.353c8af7908f16659658.v1`, expected: "direct" },
+    { key: `ltfx.n.1541576ee2ba168fd232.v1`, expected: "direct" },
+    { key: `ltfx.n.a1d807d08d9f69414b5b.v1`, expected: "group" },
+    { key: `ltfx.n.092c3c8b226da346f9e9.v1`, expected: "channel" },
+    { key: `ltfx.n.7d776a7ca9af03be3b47.v1`, expected: "channel" },
+    { key: `ltfx.n.8bb851acb4c6c86f3586.v1`, expected: "channel" },
+    { key: `ltfx.n.17a6a37ce5ac1451b46c.v1`, expected: "channel" },
+    { key: `ltfx.n.8fb59273c7e65b73584c.v1`, expected: "channel" },
+    { key: `ltfx.n.e9542e89ce700c09e06f.v1`, expected: "group" },
+    { key: `ltfx.n.44f2e436f92317415784.v1`, expected: "group" },
+    { key: `ltfx.n.2547f9337870ea34917f.v1`, expected: "group" },
+    { key: `ltfx.n.50107f962a74497c3a46.v1`, expected: "direct" },
+    { key: `ltfx.n.5d15e3f02304c1388a07.v1`, expected: "direct" },
+    { key: `ltfx.n.a7e39ab5d6327ec36125.v1`, expected: "channel" },
+    { key: `ltfx.n.f10721cc55ad95b27081.v1`, expected: "channel" },
+    { key: `ltfx.n.611bb01cbf7c71af9370.v1`, expected: "unknown" },
+    { key: `ltfx.n.8599ff4c386c1d5c2395.v1`, expected: "unknown" },
+    { key: `ltfx.n.d22d83f7e16b2c9ef474.v1`, expected: "unknown" },
+    { key: `ltfx.n.623b52dd8b09160f0cd7.v1`, expected: "unknown" },
+    { key: `ltfx.n.ac36167dfce0f2a55ff1.v1`, expected: "unknown" },
+    { key: `ltfx.n.66f9fc10eee962391b3b.v1`, expected: "unknown" },
+    { key: `ltfx.n.f79214e0e502a8b740d4.v1`, expected: "unknown" },
+    { key: `ltfx.n.efe50d46d862f2885037.v1`, expected: "unknown" },
+    { key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`, expected: "unknown" },
+    { key: `ltfx.n.f331f052e4ed92dd414c.v1`, expected: "unknown" },
     { key: "", expected: "unknown" },
   ] as const)("derives chat type for %j => $expected", ({ key, expected }) => {
     expect(deriveSessionChatTypeFromKey(key)).toBe(expected);

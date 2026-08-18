@@ -701,7 +701,7 @@ describe("generateAndAppendDreamNarrative", () => {
     // be persisted to the human-readable dream diary.
     const sensitiveSnippets = [
       "Conversation Summary: 343 files copied, 30 MB on B2 so far",
-      "Session: 2026-05-22 00:02:16 GMT+1: Session Key: agent:main:dashboard:secret",
+      "Session: 2026-05-22 00:02:16 GMT+1: Session Key: (agent:main:dashboard:secret",)
     ];
 
     await generateAndAppendDreamNarrative({

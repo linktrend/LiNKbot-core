@@ -60,7 +60,7 @@ Password-based (token is cached after first login):
       enabled: true,
       homeserver: "https://matrix.example.org",
       userId: "@bot:example.org",
-      password: "replace-me", // pragma: allowlist secret
+      password: "${ltfx.n.1df4b07d05b9b3b1115b.v1}", // pragma: allowlist secret
       deviceName: "OpenClaw Gateway",
     },
   },
@@ -729,12 +729,12 @@ Authorization rules still apply: command senders must satisfy the same DM or roo
       accounts: {
         assistant: {
           homeserver: "https://matrix.example.org",
-          accessToken: "syt_assistant_xxx",
+          accessToken: "${ltfx.n.de20af0e756149876010.v1}",
           encryption: true,
         },
         alerts: {
           homeserver: "https://matrix.example.org",
-          accessToken: "syt_alerts_xxx",
+          accessToken: "${ltfx.n.a2a7c29fdd7dfa374c01.v1}",
           dm: {
             policy: "allowlist",
             allowFrom: ["@ops:example.org"],
@@ -779,7 +779,7 @@ If your homeserver runs on localhost, a LAN/Tailscale IP, or an internal hostnam
       network: {
         dangerouslyAllowPrivateNetwork: true,
       },
-      accessToken: "syt_internal_xxx",
+      accessToken: "${ltfx.n.9ae30ebf08ccab8f3f1e.v1}",
     },
   },
 }
@@ -806,7 +806,7 @@ If your Matrix deployment needs an explicit outbound HTTP(S) proxy, set `channel
   channels: {
     matrix: {
       homeserver: "https://matrix.example.org",
-      accessToken: "syt_bot_xxx",
+      accessToken: "${ltfx.n.d4c94316e28a56a69bb2.v1}",
       proxy: "http://127.0.0.1:7890",
     },
   },

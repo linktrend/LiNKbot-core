@@ -634,7 +634,7 @@ describe("xai tts", () => {
       await expect(
         xaiTTS({
           text: "hello",
-          apiKey: "test-key",
+          apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
           baseUrl: XAI_BASE_URL,
           voiceId: "eve",
           language: "en",

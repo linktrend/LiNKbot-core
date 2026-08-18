@@ -121,7 +121,7 @@ function writeExistingCopilotTokenProfile(agentDir: string) {
         "github-copilot:github": {
           type: "token",
           provider: "github-copilot",
-          token: "existing-token",
+          token: `ltfx.n.70dd5803fa4e35799166.v1`,
         },
       },
     },
@@ -282,8 +282,8 @@ describe("github-copilot plugin", () => {
         },
       },
       agentDir: "/tmp/agent",
-      env: { GH_TOKEN: "gh_test_token" },
-      resolveProviderApiKey: () => ({ apiKey: "gh_test_token" }),
+      env: { GH_TOKEN: `ltfx.n.90572075e8d369f0375c.v1` },
+      resolveProviderApiKey: () => ({ apiKey: `ltfx.n.90572075e8d369f0375c.v1` }),
     } as never);
 
     expect(result).toBeNull();
@@ -359,7 +359,7 @@ describe("github-copilot plugin", () => {
 
   it("uses live plugin config to re-enable discovery after startup disable", async () => {
     mocks.resolveCopilotApiToken.mockResolvedValueOnce({
-      token: "copilot_api_token",
+      token: `ltfx.n.31731fbf04f1a4c89a68.v1`,
       baseUrl: "https://api.githubcopilot.live",
     });
     const provider = registerProviderWithPluginConfig({ discovery: { enabled: false } });
@@ -377,13 +377,13 @@ describe("github-copilot plugin", () => {
         },
       },
       agentDir: "/tmp/agent",
-      env: { GH_TOKEN: "gh_test_token" },
-      resolveProviderApiKey: () => ({ apiKey: "gh_test_token" }),
+      env: { GH_TOKEN: `ltfx.n.90572075e8d369f0375c.v1` },
+      resolveProviderApiKey: () => ({ apiKey: `ltfx.n.90572075e8d369f0375c.v1` }),
     } as never);
 
     expect(mocks.resolveCopilotApiToken).toHaveBeenCalledWith({
-      githubToken: "gh_test_token",
-      env: { GH_TOKEN: "gh_test_token" },
+      githubToken: `ltfx.n.90572075e8d369f0375c.v1`,
+      env: { GH_TOKEN: `ltfx.n.90572075e8d369f0375c.v1` },
       githubDomain: "github.com",
     });
     expect(result).toEqual({
@@ -396,7 +396,7 @@ describe("github-copilot plugin", () => {
 
   it("dual-publishes unified live catalog rows with existing discovery semantics", async () => {
     mocks.resolveCopilotApiToken.mockResolvedValueOnce({
-      token: "copilot_api_token",
+      token: `ltfx.n.31731fbf04f1a4c89a68.v1`,
       baseUrl: "https://api.githubcopilot.live",
     });
     const { modelCatalogProvider } = registerProviderAndCatalogWithPluginConfig({
@@ -416,18 +416,18 @@ describe("github-copilot plugin", () => {
         },
       },
       agentDir: "/tmp/agent",
-      env: { GH_TOKEN: "gh_test_token" },
-      resolveProviderApiKey: () => ({ apiKey: "gh_test_token" }),
+      env: { GH_TOKEN: `ltfx.n.90572075e8d369f0375c.v1` },
+      resolveProviderApiKey: () => ({ apiKey: `ltfx.n.90572075e8d369f0375c.v1` }),
       resolveProviderAuth: () => ({
-        apiKey: "gh_test_token",
+        apiKey: `ltfx.n.90572075e8d369f0375c.v1`,
         mode: "token",
         source: "env",
       }),
     } as never);
 
     expect(mocks.resolveCopilotApiToken).toHaveBeenCalledWith({
-      githubToken: "gh_test_token",
-      env: { GH_TOKEN: "gh_test_token" },
+      githubToken: `ltfx.n.90572075e8d369f0375c.v1`,
+      env: { GH_TOKEN: `ltfx.n.90572075e8d369f0375c.v1` },
       githubDomain: "github.com",
     });
     expect(result).toEqual([]);
@@ -470,7 +470,7 @@ describe("github-copilot plugin", () => {
           credential: {
             type: "token",
             provider: "github-copilot",
-            token: "existing-token",
+            token: `ltfx.n.70dd5803fa4e35799166.v1`,
           },
         },
       ],
@@ -598,7 +598,7 @@ describe("github-copilot plugin", () => {
             "github-copilot:first": {
               type: "token",
               provider: "github-copilot",
-              token: "test-auth-token",
+              token: `ltfx.n.f35cd067d05752edf483.v1`,
             },
           },
         },
@@ -607,11 +607,11 @@ describe("github-copilot plugin", () => {
       );
       mocks.resolveCopilotApiToken
         .mockResolvedValueOnce({
-          token: "test-auth-token",
+          token: `ltfx.n.f35cd067d05752edf483.v1`,
           baseUrl: "https://api.githubcopilot.profile",
         })
         .mockResolvedValueOnce({
-          token: "test-token-placeholder",
+          token: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
           baseUrl: "https://api.githubcopilot.direct",
         });
       const catalogResponse = (contextWindow: number, promptTokens: number) =>
@@ -649,7 +649,7 @@ describe("github-copilot plugin", () => {
         models: {
           providers: {
             "github-copilot": {
-              apiKey: "test-token-placeholder",
+              apiKey: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
               baseUrl: "https://api.githubcopilot.test",
               models: [],
             },
@@ -676,12 +676,12 @@ describe("github-copilot plugin", () => {
       await provider.prepareDynamicModel(directContext);
 
       expect(mocks.resolveCopilotApiToken).toHaveBeenNthCalledWith(1, {
-        githubToken: "test-auth-token",
+        githubToken: `ltfx.n.f35cd067d05752edf483.v1`,
         env: process.env,
         githubDomain: "github.com",
       });
       expect(mocks.resolveCopilotApiToken).toHaveBeenNthCalledWith(2, {
-        githubToken: "test-token-placeholder",
+        githubToken: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
         env: process.env,
         githubDomain: "github.com",
       });
@@ -726,7 +726,7 @@ describe("github-copilot plugin", () => {
       }
       if (target === "https://github.com/login/oauth/access_token") {
         return new Response(
-          JSON.stringify({ access_token: "refreshed-token", token_type: "bearer" }),
+          JSON.stringify({ access_token: `ltfx.n.d34e33e7b3e0269fa932.v1`, token_type: "bearer" }),
           { status: 200, headers: { "Content-Type": "application/json" } },
         );
       }
@@ -775,7 +775,7 @@ describe("github-copilot plugin", () => {
       expect(result.profiles[0]?.credential).toEqual({
         type: "token",
         provider: "github-copilot",
-        token: "refreshed-token",
+        token: `ltfx.n.d34e33e7b3e0269fa932.v1`,
       });
     } finally {
       vi.unstubAllGlobals();
@@ -883,7 +883,7 @@ describe("github-copilot plugin", () => {
     expect(result.profiles[0]?.credential).toEqual({
       type: "token",
       provider: "github-copilot",
-      token: "public-fresh-token",
+      token: `ltfx.n.d8ddaea3905e1edd4726.v1`,
     });
     const params = (
       result.configPatch as {
@@ -938,7 +938,7 @@ describe("github-copilot plugin", () => {
     expect(result.profiles[0]?.credential).toEqual({
       type: "token",
       provider: "github-copilot",
-      token: "tenant-fresh-token",
+      token: `ltfx.n.a2f5883ff3752d686d55.v1`,
     });
     const params = (
       result.configPatch as {
@@ -998,7 +998,7 @@ describe("github-copilot plugin", () => {
     expect(result.profiles[0]?.credential).toEqual({
       type: "token",
       provider: "github-copilot",
-      token: "tenant-fresh-token",
+      token: `ltfx.n.a2f5883ff3752d686d55.v1`,
     });
     const params = (
       result.configPatch as {
@@ -1047,7 +1047,7 @@ describe("github-copilot plugin", () => {
     expect(result.profiles[0]?.credential).toEqual({
       type: "token",
       provider: "github-copilot",
-      token: "existing-token",
+      token: `ltfx.n.70dd5803fa4e35799166.v1`,
     });
     const params = (
       result.configPatch as {
@@ -1103,7 +1103,7 @@ describe("github-copilot plugin", () => {
     expect(result.profiles[0]?.credential).toEqual({
       type: "token",
       provider: "github-copilot",
-      token: "env-tenant-token",
+      token: `ltfx.n.cd20eab66743e6f1113b.v1`,
     });
     const params = (
       result.configPatch as {
@@ -1176,7 +1176,7 @@ describe("github-copilot plugin", () => {
         accessTokenPolls += 1;
         return {
           response: new Response(
-            JSON.stringify({ access_token: "refreshed-token", token_type: "bearer" }),
+            JSON.stringify({ access_token: `ltfx.n.d34e33e7b3e0269fa932.v1`, token_type: "bearer" }),
             { status: 200, headers: { "Content-Type": "application/json" } },
           ),
           finalUrl: params.url,
@@ -1194,7 +1194,7 @@ describe("github-copilot plugin", () => {
       await vi.advanceTimersByTimeAsync(3_000_000_000 - MAX_TIMER_TIMEOUT_MS);
       await expect(flow).resolves.toEqual({
         status: "authorized",
-        accessToken: "refreshed-token",
+        accessToken: `ltfx.n.d34e33e7b3e0269fa932.v1`,
       });
       expect(accessTokenPolls).toBe(1);
     } finally {
@@ -1212,11 +1212,11 @@ describe("github-copilot plugin", () => {
       authChoice: "github-copilot",
       config: {},
       baseConfig: {},
-      opts: { githubCopilotToken: "ghu_test\r\n123" },
+      opts: { githubCopilotToken: `ltfx.n.e74d288b6fb0dec216ab.v1` },
       runtime,
       agentDir,
       resolveApiKey: vi.fn(async () => ({
-        key: "ghu_test123",
+        key: `ltfx.n.e1e935183bc01a1c4479.v1`,
         source: "flag" as const,
       })),
       toApiKeyCredential: vi.fn(),
@@ -1236,7 +1236,7 @@ describe("github-copilot plugin", () => {
     expect(profile).toEqual({
       type: "token",
       provider: "github-copilot",
-      token: "ghu_test123",
+      token: `ltfx.n.e1e935183bc01a1c4479.v1`,
     });
   });
 
@@ -1251,11 +1251,11 @@ describe("github-copilot plugin", () => {
       authChoice: "github-copilot",
       config: {},
       baseConfig: {},
-      opts: { githubCopilotToken: "ghu_test123" },
+      opts: { githubCopilotToken: `ltfx.n.e1e935183bc01a1c4479.v1` },
       runtime,
       agentDir,
       resolveApiKey: vi.fn(async () => ({
-        key: "ghu_test123",
+        key: `ltfx.n.e1e935183bc01a1c4479.v1`,
         source: "flag" as const,
       })),
       toApiKeyCredential: vi.fn(),
@@ -1274,7 +1274,7 @@ describe("github-copilot plugin", () => {
     expect(profile).toEqual({
       type: "token",
       provider: "github-copilot",
-      token: "ghu_test123",
+      token: `ltfx.n.e1e935183bc01a1c4479.v1`,
     });
   });
 
@@ -1291,11 +1291,11 @@ describe("github-copilot plugin", () => {
         models: { providers: { "github-copilot": { params: { githubDomain: "acme.ghe.com" } } } },
       },
       baseConfig: {},
-      opts: { githubCopilotToken: "ghu_public" },
+      opts: { githubCopilotToken: `ltfx.n.8e0fc2635f162d189e3a.v1` },
       runtime,
       agentDir,
       resolveApiKey: vi.fn(async () => ({
-        key: "ghu_public",
+        key: `ltfx.n.8e0fc2635f162d189e3a.v1`,
         source: "flag" as const,
       })),
       toApiKeyCredential: vi.fn(),
@@ -1319,7 +1319,7 @@ describe("github-copilot plugin", () => {
       runtime,
       agentDir,
       resolveApiKey: vi.fn(async () => ({
-        key: "ghu_from_env",
+        key: `ltfx.n.2193f7b1538b22b79907.v1`,
         source: "env" as const,
         envVarName: "COPILOT_GITHUB_TOKEN",
       })),
@@ -1352,7 +1352,7 @@ describe("github-copilot plugin", () => {
     const resolveApiKey = vi.fn(async ({ envVar }: { envVar?: string }) =>
       envVar === "GH_TOKEN"
         ? {
-            key: "ghu_from_gh_token",
+            key: `ltfx.n.fad712027a57873d6b76.v1`,
             source: "env" as const,
             envVarName: "GH_TOKEN",
           }
@@ -1399,7 +1399,7 @@ describe("github-copilot plugin", () => {
     expect(profile).toEqual({
       type: "token",
       provider: "github-copilot",
-      token: "ghu_from_gh_token",
+      token: `ltfx.n.fad712027a57873d6b76.v1`,
     });
   });
 
@@ -1425,11 +1425,11 @@ describe("github-copilot plugin", () => {
         },
       },
       baseConfig: {},
-      opts: { githubCopilotToken: "ghu_test" },
+      opts: { githubCopilotToken: `ltfx.n.e3703a33d45b99a7faa5.v1` },
       runtime,
       agentDir,
       resolveApiKey: vi.fn(async () => ({
-        key: "ghu_test",
+        key: `ltfx.n.e3703a33d45b99a7faa5.v1`,
         source: "flag" as const,
       })),
       toApiKeyCredential: vi.fn(),
@@ -1481,7 +1481,7 @@ describe("github-copilot plugin", () => {
       config: {},
       baseConfig: {},
       opts: {
-        githubCopilotToken: "ghu_secret",
+        githubCopilotToken: `ltfx.n.f56c7b472afe56d54db3.v1`,
         secretInputMode: "ref",
       },
       runtime,

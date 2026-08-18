@@ -18,7 +18,7 @@ const USER_MODEL = "qwen3.6-plus";
 const USER_PRIMARY = `${USER_PROVIDER}/${USER_MODEL}`;
 const BEDROCK_PROVIDER = "amazon-bedrock";
 const BEDROCK_VISION_MODEL = "vision-1";
-const CONFIG_API_KEY = "sk-user-configured-key"; // pragma: allowlist secret
+const CONFIG_API_KEY = `ltfx.n.c94b556eef1a35884c5f.v1`; // pragma: allowlist secret
 const USER_PROVIDER_AUTH_ENV_KEYS = [
   "HATCHERY_QWEN3_6_PLUS_API_KEY",
   "HATCHERY_QWEN3_6_PLUS_OAUTH_TOKEN",
@@ -57,7 +57,7 @@ function makeVisionModel(id: string): ModelDefinitionConfig {
 }
 
 function createUserReportedConfig(params?: { includeApiKey?: boolean }): OpenClawConfig {
-  const includeApiKey = params?.includeApiKey ?? true;
+  const includeApiKey = (params?.includeApiKey ?? true;)
   return {
     agents: {
       defaults: {

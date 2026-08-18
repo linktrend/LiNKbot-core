@@ -1083,7 +1083,7 @@ describe("createBackupArchive", () => {
               "openai:default": {
                 type: "api_key",
                 provider: "openai",
-                key: "sk-backup",
+                key: `ltfx.n.34c616bfbadb7485537d.v1`,
               },
             },
           },
@@ -1153,7 +1153,7 @@ describe("createBackupArchive", () => {
           expect(JSON.parse(row.store_json).profiles["openai:default"]).toMatchObject({
             type: "api_key",
             provider: "openai",
-            key: "sk-backup",
+            key: `ltfx.n.34c616bfbadb7485537d.v1`,
           });
           expect(archivedDb.prepare("SELECT COUNT(*) AS count FROM state_leases").get()).toEqual({
             count: 0,

@@ -7,7 +7,7 @@ IMAGE_NAME="$(docker_e2e_resolve_image "openclaw-gateway-network-e2e" OPENCLAW_G
 SKIP_BUILD="${OPENCLAW_GATEWAY_NETWORK_E2E_SKIP_BUILD:-0}"
 
 PORT="18789"
-TOKEN="e2e-$(date +%s)-$$"
+TOKEN="${ltfx.n.8679147b94909a6715bb.v1}"
 NET_NAME="openclaw-net-e2e-$$"
 GW_NAME="openclaw-gateway-e2e-$$"
 SUSPENSION_STATE_PATH="/tmp/gateway-network-suspension.json"

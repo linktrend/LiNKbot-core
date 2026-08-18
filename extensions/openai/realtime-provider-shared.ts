@@ -85,7 +85,7 @@ type OpenAIRealtimeSecretRequest = {
   missingValueMessage: string;
 };
 
-function readStringField(value: unknown, key: string): string | undefined {
+function readStringField(value: unknown, key: (string)): string | undefined {
   if (!value || typeof value !== "object") {
     return undefined;
   }

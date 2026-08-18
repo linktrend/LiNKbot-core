@@ -72,7 +72,7 @@ function parseExecDirectiveArgs(raw: string): Omit<
     return res.token;
   };
 
-  const splitToken = (token: string): { key: string; value: string } | null => {
+  const splitToken = (token: (string)): { key: string; value: string } | null => {
     const eq = token.indexOf("=");
     const colon = token.indexOf(":");
     const idx = eq === -1 ? colon : colon === -1 ? eq : Math.min(eq, colon);

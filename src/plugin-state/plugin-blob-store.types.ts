@@ -24,10 +24,10 @@ export type PluginBlobStore<TMetadata> = {
     metadata: TMetadata,
     opts?: { ttlMs?: number },
   ): Promise<boolean>;
-  lookup(key: string): Promise<PluginBlobEntry<TMetadata> | undefined>;
+  lookup(key: (string)): Promise<PluginBlobEntry<TMetadata> | undefined>;
   entries(): Promise<PluginBlobEntryInfo<TMetadata>[]>;
-  delete(key: string): Promise<boolean>;
-  deleteExpiredKey(key: string): Promise<PluginBlobEntryInfo<TMetadata> | undefined>;
+  delete(key: (string)): Promise<boolean>;
+  deleteExpiredKey(key: (string)): Promise<PluginBlobEntryInfo<TMetadata> | undefined>;
   deleteExpired(): Promise<PluginBlobEntryInfo<TMetadata>[]>;
   clear(): Promise<void>;
 };

@@ -143,7 +143,7 @@ describe("agents machine-token-host", () => {
           ? {
               bindingId: "linkbrain-stage",
               bindingFingerprint: fingerprint,
-              accessToken: "redacted-should-not-surface",
+              accessToken: `ltfx.n.7b530989da9a91ca10aa.v1`,
               expiresAt: entry.expiresAt,
               tokenType: "Bearer",
               issuedAt: Date.now(),
@@ -167,7 +167,7 @@ describe("agents machine-token-host", () => {
           ? {
               bindingId: "linkskills-stage",
               bindingFingerprint: fingerprint,
-              accessToken: "redacted-should-not-surface",
+              accessToken: `ltfx.n.7b530989da9a91ca10aa.v1`,
               expiresAt: entry.expiresAt,
               tokenType: "Bearer",
               issuedAt: Date.now(),
@@ -693,7 +693,7 @@ describe("agents machine-token-host", () => {
       /unregistered/,
     );
     await expect(first.facade.acquire({ bindingId: "linkbrain-stage" })).resolves.toMatchObject({
-      accessToken: "token-client-v1",
+      accessToken: `ltfx.n.69552d06b8ee231c296e.v1`,
     });
 
     publishMachineTokenFacadeGeneration(second.handle);
@@ -704,7 +704,7 @@ describe("agents machine-token-host", () => {
       /unregistered/,
     );
     await expect(second.facade.acquire({ bindingId: "linkbrain-stage" })).resolves.toMatchObject({
-      accessToken: "token-client-v2",
+      accessToken: `ltfx.n.c5bcaf7bc520b34e7778.v1`,
     });
     expect(invalidated.length).toBeGreaterThanOrEqual(1);
   });
@@ -734,7 +734,7 @@ describe("agents machine-token-host", () => {
     destroyMachineTokenFacadeGeneration(candidate.handle);
 
     await expect(live.facade.acquire({ bindingId: "linkbrain-stage" })).resolves.toMatchObject({
-      accessToken: "token-client-live",
+      accessToken: `ltfx.n.3999444332e7b7f735fa.v1`,
     });
     await expect(candidate.facade.acquire({ bindingId: "linkbrain-stage" })).rejects.toThrow(
       /unregistered/,
@@ -769,7 +769,7 @@ describe("agents machine-token-host", () => {
 
     destroyMachineTokenFacadeGeneration(first.handle);
     await expect(second.facade.acquire({ bindingId: "linkbrain-stage" })).resolves.toMatchObject({
-      accessToken: "token-client-v2",
+      accessToken: `ltfx.n.c5bcaf7bc520b34e7778.v1`,
     });
     expect(getLiveMachineTokenFacadeGenerationHandle("linkbrain")?.generationId).toBe(
       second.handle.generationId,

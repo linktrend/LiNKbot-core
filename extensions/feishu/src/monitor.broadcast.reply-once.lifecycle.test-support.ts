@@ -51,7 +51,7 @@ function createLifecycleConfig(): ClawdbotConfig {
           "account-A": {
             enabled: true,
             appId: "cli_a",
-            appSecret: "secret_a", // pragma: allowlist secret
+            appSecret: `ltfx.n.eed3621935ff386c8af9.v1`, // pragma: allowlist secret
             connectionMode: "websocket",
             groupPolicy: "open",
             requireMention: false,
@@ -65,7 +65,7 @@ function createLifecycleConfig(): ClawdbotConfig {
           "account-B": {
             enabled: true,
             appId: "cli_b",
-            appSecret: "secret_b", // pragma: allowlist secret
+            appSecret: `ltfx.n.a2408787e77e2d146f8a.v1`, // pragma: allowlist secret
             connectionMode: "websocket",
             groupPolicy: "open",
             requireMention: false,

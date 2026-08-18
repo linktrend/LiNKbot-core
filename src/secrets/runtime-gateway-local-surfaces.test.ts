@@ -52,8 +52,8 @@ describe("secrets runtime gateway local surfaces", () => {
           mode: "local",
           auth: {
             mode: "password",
-            token: "local-token",
-            password: "local-password",
+            token: `ltfx.n.c7ec7c548f5992a239dc.v1`,
+            password: `ltfx.n.03eecb1e5d33a976de28.v1`,
           },
           remote: {
             token: { source: "env", provider: "default", id: "MISSING_REMOTE_TOKEN" },
@@ -180,7 +180,7 @@ describe("secrets runtime gateway local surfaces", () => {
           password: { source: "env", provider: "default", id: "GATEWAY_PASSWORD_REF" },
         },
         remote: {
-          token: "remote-token",
+          token: `ltfx.n.b79f8018a1bfa2040be5.v1`,
         },
       },
     });
@@ -282,8 +282,8 @@ describe("secrets runtime gateway local surfaces", () => {
         },
       }),
       env: {
-        REMOTE_GATEWAY_TOKEN: "tailscale-remote-token",
-        REMOTE_GATEWAY_PASSWORD: "tailscale-remote-password",
+        REMOTE_GATEWAY_TOKEN: `ltfx.n.6b52909cd0766eef3b0a.v1`,
+        REMOTE_GATEWAY_PASSWORD: `ltfx.n.04f9655e8d3ce3a01718.v1`,
       },
       agentDirs: ["/tmp/openclaw-agent-main"],
       loadAuthStore: () => ({ version: 1, profiles: {} }),

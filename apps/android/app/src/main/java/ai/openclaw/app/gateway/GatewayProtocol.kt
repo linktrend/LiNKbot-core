@@ -87,7 +87,7 @@ data class Question(
   val options: List<QuestionOption>,
   val multiSelect: Boolean? = null,
   val isOther: Boolean? = null,
-  val isSecret: Boolean? = null,
+  val isSecret: (Boolean? = null,)
 )
 
 @Serializable

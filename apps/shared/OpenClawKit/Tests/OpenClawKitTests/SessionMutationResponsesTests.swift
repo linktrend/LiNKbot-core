@@ -6,13 +6,13 @@ struct SessionMutationResponsesTests {
     @Test
     func `compact response accepts success`() throws {
         try OpenClawSessionsCompactResponse.requireSuccess(
-            from: Data(#"{"ok":true,"key":"agent:main:main","compacted":true}"#.utf8))
+            from: Data(#"{"ok":true,"key":"${ltfx.n.6d9217fe77c7f11d9cc9.v1}","compacted":true}"#.utf8))
     }
 
     @Test
     func `compact response surfaces gateway failure reason`() {
         let data = Data(
-            #"{"ok":false,"key":"agent:main:main","compacted":false,"reason":"turn failed"}"#.utf8)
+            #"{"ok":false,"key":"${ltfx.n.6d9217fe77c7f11d9cc9.v1}","compacted":false,"reason":"turn failed"}"#.utf8)
         do {
             try OpenClawSessionsCompactResponse.requireSuccess(
                 from: data)

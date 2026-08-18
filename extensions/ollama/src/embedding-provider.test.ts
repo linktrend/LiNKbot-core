@@ -220,7 +220,7 @@ describe("ollama embedding provider", () => {
           providers: {
             ollama: {
               baseUrl: "http://127.0.0.1:11434/v1",
-              apiKey: "ollama-\nlocal\r\n", // pragma: allowlist secret
+              apiKey: `ltfx.n.731dcecc96f89c66f936.v1`, // pragma: allowlist secret
               headers: {
                 "X-Provider-Header": "provider",
               },
@@ -572,7 +572,7 @@ describe("ollama embedding provider", () => {
           providers: {
             "ollama-spark": {
               baseUrl: "http://spark.local:11434/v1",
-              apiKey: "spark-key",
+              apiKey: `ltfx.n.28c2e894e451fd1c06f4.v1`,
               headers: {
                 "X-Custom-Ollama": "spark",
               },
@@ -695,7 +695,7 @@ describe("ollama embedding provider", () => {
           providers: {
             ollama: {
               baseUrl: "http://127.0.0.1:11434",
-              apiKey: "provider-host-key",
+              apiKey: `ltfx.n.bb3ee41768d20e955344.v1`,
               models: [],
             },
           },
@@ -722,7 +722,7 @@ describe("ollama embedding provider", () => {
       provider: "ollama",
       model: "nomic-embed-text",
       fallback: "none",
-      remote: { baseUrl: "https://memory.example.com", apiKey: "remote-host-key" },
+      remote: { baseUrl: "https://memory.example.com", apiKey: `ltfx.n.993b49e1b1ce1e745df6.v1` },
     });
 
     await provider.embedQuery("hello");
@@ -745,7 +745,7 @@ describe("ollama embedding provider", () => {
           providers: {
             ollama: {
               baseUrl: "http://127.0.0.1:11434",
-              apiKey: "provider-host-key",
+              apiKey: `ltfx.n.bb3ee41768d20e955344.v1`,
               models: [],
             },
           },
@@ -754,7 +754,7 @@ describe("ollama embedding provider", () => {
       provider: "ollama",
       model: "nomic-embed-text",
       fallback: "none",
-      remote: { apiKey: "ollama-local" }, // pragma: allowlist secret
+      remote: { apiKey: `ltfx.n.18ab0c9c00ad3478e4db.v1` }, // pragma: allowlist secret
     });
 
     await provider.embedQuery("hello");

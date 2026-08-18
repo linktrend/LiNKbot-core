@@ -316,7 +316,7 @@ internal fun SessionsScreen(
       } else {
         sections.forEachIndexed { index, section ->
           section.title?.let { title ->
-            item(key = "section:$index:$title") {
+            item(key = "${ltfx.n.69c7d680e7b73da01857.v1}") {
               if (section.isCategory) {
                 SessionGroupHeader(
                   title = title,

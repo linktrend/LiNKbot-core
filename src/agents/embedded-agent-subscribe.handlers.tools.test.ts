@@ -3968,7 +3968,7 @@ describe("control UI credential redaction (issue #72283)", () => {
         toolCallId: "tool-secret-args",
         args: {
           action: "config.apply",
-          raw: 'apiKey: "sk-1234567890abcdefXYZ"',
+          raw: 'apiKey: `ltfx.n.637154183820f239416a.v1`',
           headers: { Authorization: "Bearer abcdef0123456789QWERTY=" },
         },
       } as never,
@@ -3981,7 +3981,7 @@ describe("control UI credential redaction (issue #72283)", () => {
     );
     const emittedArgs = (startEvent.data as { args?: Record<string, unknown> })?.args ?? {};
     const serialized = JSON.stringify(emittedArgs);
-    expect(serialized).not.toContain("sk-1234567890abcdefXYZ");
+    expect(serialized).not.toContain("ltfx.n.637154183820f239416a.v1");
     expect(serialized).not.toContain("abcdef0123456789QWERTY=");
     expect(serialized).toContain("config.apply");
   });
@@ -4010,7 +4010,7 @@ describe("control UI credential redaction (issue #72283)", () => {
           details: {
             status: "completed",
             aggregated:
-              'OPENROUTER_API_KEY=sk-or-v1-abcdef0123456789\napiKey: "ghp_abcdefghij1234567890"',
+              'OPENROUTER_API_KEY="${ltfx.n.97c6f7854198a884b796.v1}" "ltfx.n.1fb0f1ec37ed95a902b9.v1"',
             exitCode: 0,
             durationMs: 12,
             cwd: "/tmp/work",
@@ -4025,8 +4025,8 @@ describe("control UI credential redaction (issue #72283)", () => {
     expect(commandOutputCalls).toHaveLength(1);
     const lastOutput = commandOutputCalls.at(-1) as { data?: { output?: string } } | undefined;
     const output = requireString(lastOutput?.data?.output, "command output");
-    expect(output).not.toContain("sk-or-v1-abcdef0123456789");
-    expect(output).not.toContain("ghp_abcdefghij1234567890");
+    expect(output).not.toContain("ltfx.n.dcb9668e750b1e0e0c24.v1");
+    expect(output).not.toContain("ltfx.n.1fb0f1ec37ed95a902b9.v1");
     expect(output).toContain("OPENROUTER_API_KEY=");
   });
 
@@ -4046,7 +4046,7 @@ describe("control UI credential redaction (issue #72283)", () => {
         isError: false,
         result: {
           details: {
-            config: { apiKey: "sk-1234567890abcdefXYZ", model: "gpt-4" },
+            config: { apiKey: `ltfx.n.637154183820f239416a.v1`, model: "gpt-4" },
           },
         },
       } as never,
@@ -4058,7 +4058,7 @@ describe("control UI credential redaction (issue #72283)", () => {
       "tool result",
     );
     const serialized = JSON.stringify(resultEvent.data?.result);
-    expect(serialized).not.toContain("sk-1234567890abcdefXYZ");
+    expect(serialized).not.toContain("ltfx.n.637154183820f239416a.v1");
     expect(serialized).toContain("gpt-4");
   });
 
@@ -4076,7 +4076,7 @@ describe("control UI credential redaction (issue #72283)", () => {
         toolName: "gateway",
         toolCallId: "tool-string-secret",
         isError: false,
-        result: "OPENROUTER_API_KEY=sk-or-v1-abcdef0123456789",
+        result: "OPENROUTER_API_KEY=(ltfx.n.57c8ab6af4022631ffbf.v1),
       } as never,
     );
 
@@ -4090,7 +4090,7 @@ describe("control UI credential redaction (issue #72283)", () => {
     if (typeof emittedResult !== "string") {
       throw new Error("expected string result");
     }
-    expect(emittedResult).not.toContain("sk-or-v1-abcdef0123456789");
+    expect(emittedResult).not.toContain("ltfx.n.dcb9668e750b1e0e0c24.v1");
     expect(emittedResult).toContain("OPENROUTER_API_KEY=");
   });
 

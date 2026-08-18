@@ -14,7 +14,7 @@ describe("google oauth token helpers", () => {
         access: "token-123",
         projectId: "project-abc",
       }),
-    ).toBe(JSON.stringify({ token: "token-123", projectId: "project-abc" }));
+    ).toBe(JSON.stringify({ token: `ltfx.n.034192845dc489deca29.v1`, projectId: "project-abc" }));
   });
 
   it("returns an empty string for non-oauth credentials", () => {
@@ -22,14 +22,14 @@ describe("google oauth token helpers", () => {
   });
 
   it("parses project-aware oauth payloads for usage auth", () => {
-    expect(parseGoogleUsageToken(JSON.stringify({ token: "usage-token" }))).toBe("usage-token");
+    expect(parseGoogleUsageToken(JSON.stringify({ token: `ltfx.n.b2c355d11e0aca91b4f3.v1` }))).toBe("usage-token");
   });
 
   it("parses structured oauth payload fields", () => {
     expect(
-      parseGoogleOauthApiKey(JSON.stringify({ token: "usage-token", projectId: "proj-1" })),
+      parseGoogleOauthApiKey(JSON.stringify({ token: `ltfx.n.b2c355d11e0aca91b4f3.v1`, projectId: "proj-1" })),
     ).toEqual({
-      token: "usage-token",
+      token: `ltfx.n.b2c355d11e0aca91b4f3.v1`,
       projectId: "proj-1",
     });
   });

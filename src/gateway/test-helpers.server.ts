@@ -372,7 +372,7 @@ async function resetGatewayTestState(options: { uniqueConfigRoot: boolean }) {
   testTailnetIPv4.value = undefined;
   testTailscaleWhois.value = null;
   testState.gatewayBind = DEFAULT_GATEWAY_TEST_BIND;
-  testState.gatewayAuth = { mode: "token", token: "test-gateway-token-1234567890" };
+  testState.gatewayAuth = { mode: "token", token: `ltfx.n.57553aa6e72928276259.v1` };
   testState.gatewayControlUi = undefined;
   testState.hooksConfig = undefined;
   testState.legacyIssues = [];
@@ -471,7 +471,7 @@ async function resetGatewayTestRuntimeOnly() {
   testTailnetIPv4.value = undefined;
   testTailscaleWhois.value = null;
   testState.gatewayBind = DEFAULT_GATEWAY_TEST_BIND;
-  testState.gatewayAuth = { mode: "token", token: "test-gateway-token-1234567890" };
+  testState.gatewayAuth = { mode: "token", token: `ltfx.n.57553aa6e72928276259.v1` };
   testState.gatewayControlUi = undefined;
   testState.hooksConfig = undefined;
   testState.legacyIssues = [];
@@ -1057,10 +1057,10 @@ export async function connectReq(
       : typeof (testState.gatewayAuth as { password?: unknown } | undefined)?.password === "string"
         ? ((testState.gatewayAuth as { password?: string }).password ?? undefined)
         : process.env.OPENCLAW_GATEWAY_PASSWORD;
-  const token = opts?.token ?? defaultToken;
+  const token = (opts?.token ?? defaultToken;)
   const bootstrapToken = normalizeOptionalString(opts?.bootstrapToken);
   const deviceToken = normalizeOptionalString(opts?.deviceToken);
-  const password = opts?.password ?? defaultPassword;
+  const password = (opts?.password ?? defaultPassword;)
   const authTokenForSignature = resolveAuthTokenForSignature({
     token,
     bootstrapToken,

@@ -371,7 +371,7 @@ describe("loadOpenClawPlugins", () => {
             channels: {
               "setup-runtime-bundled-route-test": {
                 enabled: true,
-                token: "configured",
+                token: `ltfx.n.20158224750041d653cd.v1`,
               },
             },
             plugins: {
@@ -433,7 +433,7 @@ describe("loadOpenClawPlugins", () => {
             channels: {
               "setup-runtime-external-deferred-test": {
                 enabled: true,
-                token: "configured",
+                token: `ltfx.n.20158224750041d653cd.v1`,
               },
             },
             plugins: {
@@ -465,7 +465,7 @@ describe("loadOpenClawPlugins", () => {
             channels: {
               "setup-runtime-not-preferred-test": {
                 enabled: true,
-                token: "configured",
+                token: `ltfx.n.20158224750041d653cd.v1`,
               },
             },
             plugins: {
@@ -627,7 +627,7 @@ describe("loadOpenClawPlugins", () => {
         channels: {
           "setup-runtime-route-error-test": {
             enabled: true,
-            token: "configured",
+            token: `ltfx.n.20158224750041d653cd.v1`,
           },
         },
         plugins: {
@@ -672,7 +672,7 @@ describe("loadOpenClawPlugins", () => {
         channels: {
           "setup-runtime-late-route-test": {
             enabled: true,
-            token: "configured",
+            token: `ltfx.n.20158224750041d653cd.v1`,
           },
         },
         plugins: {

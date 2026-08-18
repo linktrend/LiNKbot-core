@@ -17,7 +17,7 @@ const mocks = vi.hoisted(() => ({
   })),
   renderTerminal: vi.fn(async () => "ASCII-QR"),
   issueDeviceBootstrapToken: vi.fn(async () => ({
-    token: "bootstrap-123",
+    token: `ltfx.n.11c5429f22acc4ef311b.v1`,
     expiresAtMs: 123,
   })),
 }));
@@ -58,8 +58,8 @@ function createRemoteQrConfig(params?: { withTailscale?: boolean }) {
   return {
     gateway: {
       ...(params?.withTailscale ? { tailscale: { mode: "serve" } } : {}),
-      remote: { url: "wss://remote.example.com:444", token: "remote-tok" },
-      auth: { mode: "token", token: "local-tok" },
+      remote: { url: `ltfx.n.53cfc6475bc867c292a1.v1`, token: `ltfx.n.e6b4f51be657e3fb2644.v1` },
+      auth: { mode: "token", token: `ltfx.n.e4fbe42fc0751fa3804d.v1` },
     },
     plugins: {
       entries: {
@@ -157,7 +157,7 @@ describe("registerQrCli", () => {
   function expectLoggedSetupCode(url: string) {
     const expected = encodePairingSetupCode({
       url,
-      bootstrapToken: "bootstrap-123",
+      bootstrapToken: `ltfx.n.11c5429f22acc4ef311b.v1`,
     });
     expect(runtime.log).toHaveBeenCalledWith(expected);
   }
@@ -206,8 +206,8 @@ describe("registerQrCli", () => {
     await runQr(["--setup-code-only"]);
 
     const expected = encodePairingSetupCode({
-      url: "ws://127.0.0.1:18789",
-      bootstrapToken: "bootstrap-123",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      bootstrapToken: `ltfx.n.11c5429f22acc4ef311b.v1`,
     });
     expect(runtime.log).toHaveBeenCalledWith(expected);
     expect(renderTerminal).not.toHaveBeenCalled();
@@ -389,7 +389,7 @@ describe("registerQrCli", () => {
     loadConfig.mockReturnValue(
       createLocalGatewayConfigWithAuth({
         mode: "token",
-        token: "token-123",
+        token: `ltfx.n.034192845dc489deca29.v1`,
         ...createLocalGatewayEnvPasswordRefAuth("MISSING_LOCAL_GATEWAY_PASSWORD"),
       }),
     );
@@ -457,8 +457,8 @@ describe("registerQrCli", () => {
     await runQr(["--setup-code-only", "--remote"]);
 
     const expected = encodePairingSetupCode({
-      url: "wss://remote.example.com:444",
-      bootstrapToken: "bootstrap-123",
+      url: `ltfx.n.53cfc6475bc867c292a1.v1`,
+      bootstrapToken: `ltfx.n.11c5429f22acc4ef311b.v1`,
     });
     expect(runtime.log).toHaveBeenCalledWith(expected);
     const request = resolveCommandSecretRefsViaGateway.mock.calls[0]?.[0] as
@@ -476,8 +476,8 @@ describe("registerQrCli", () => {
       gateway: {
         bind: "custom",
         customBindHost: "127.0.0.1",
-        remote: { url: "http://localhost:notaport", token: "remote-tok" },
-        auth: { mode: "token", token: "local-tok" },
+        remote: { url: "http://localhost:notaport", token: `ltfx.n.e6b4f51be657e3fb2644.v1` },
+        auth: { mode: "token", token: `ltfx.n.e4fbe42fc0751fa3804d.v1` },
       },
     });
 
@@ -519,8 +519,8 @@ describe("registerQrCli", () => {
       ),
     ).toBe(true);
     const expected = encodePairingSetupCode({
-      url: "wss://remote.example.com:444",
-      bootstrapToken: "bootstrap-123",
+      url: `ltfx.n.53cfc6475bc867c292a1.v1`,
+      bootstrapToken: `ltfx.n.11c5429f22acc4ef311b.v1`,
     });
     expect(runtime.log).toHaveBeenCalledWith(expected);
   });
@@ -584,7 +584,7 @@ describe("registerQrCli", () => {
         gateway: {
           tailscale: { mode: "serve" },
           remote: {
-            token: "tailscale-remote-token",
+            token: `ltfx.n.6b52909cd0766eef3b0a.v1`,
           },
           auth: {},
         },

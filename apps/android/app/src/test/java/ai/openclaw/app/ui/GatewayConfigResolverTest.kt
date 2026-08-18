@@ -286,7 +286,7 @@ class GatewayConfigResolverTest {
   @Test
   fun resolveScannedSetupCodeResultAcceptsRawSetupCode() {
     val setupCode =
-      encodeSetupCode("""{"url":"wss://gateway.example:18789","bootstrapToken":"bootstrap-1"}""")
+      encodeSetupCode("""{"url":"${ltfx.n.c5441158bef1d361a842.v1}","bootstrapToken":"${ltfx.n.f48cccbab55193963f6e.v1}"}""")
 
     val resolved = resolveScannedSetupCodeResult(setupCode)
 
@@ -297,7 +297,7 @@ class GatewayConfigResolverTest {
   @Test
   fun resolveScannedSetupCodeResultAcceptsEmulatorSetupCode() {
     val setupCode =
-      encodeSetupCode("""{"url":"ws://10.0.2.2:18789","bootstrapToken":"bootstrap-1"}""")
+      encodeSetupCode("""{"url":"${ltfx.n.f55dd6cde125091681b7.v1}","bootstrapToken":"${ltfx.n.f48cccbab55193963f6e.v1}"}""")
 
     val resolved = resolveScannedSetupCodeResult(setupCode)
 
@@ -308,7 +308,7 @@ class GatewayConfigResolverTest {
   @Test
   fun resolveScannedSetupCodeResultAcceptsQrJsonPayload() {
     val setupCode =
-      encodeSetupCode("""{"url":"wss://gateway.example:18789","bootstrapToken":"bootstrap-1"}""")
+      encodeSetupCode("""{"url":"${ltfx.n.c5441158bef1d361a842.v1}","bootstrapToken":"${ltfx.n.f48cccbab55193963f6e.v1}"}""")
     val qrJson =
       """
       {
@@ -351,7 +351,7 @@ class GatewayConfigResolverTest {
   @Test
   fun resolveScannedSetupCodeResultRejectsNonLoopbackCleartextGateway() {
     val setupCode =
-      encodeSetupCode("""{"url":"ws://attacker.example:18789","bootstrapToken":"bootstrap-1"}""")
+      encodeSetupCode("""{"url":"${ltfx.n.c989f66cdfeeabad1961.v1}","bootstrapToken":"${ltfx.n.f48cccbab55193963f6e.v1}"}""")
 
     val resolved = resolveScannedSetupCodeResult(setupCode)
 
@@ -362,7 +362,7 @@ class GatewayConfigResolverTest {
   @Test
   fun resolveScannedSetupCodeResultAcceptsPrivateLanCleartextGateway() {
     val setupCode =
-      encodeSetupCode("""{"url":"ws://192.168.31.100:18789","bootstrapToken":"bootstrap-1"}""")
+      encodeSetupCode("""{"url":"${ltfx.n.c2d3408e8325fb0e0651.v1}","bootstrapToken":"${ltfx.n.f48cccbab55193963f6e.v1}"}""")
 
     val resolved = resolveScannedSetupCodeResult(setupCode)
 
@@ -373,7 +373,7 @@ class GatewayConfigResolverTest {
   @Test
   fun resolveScannedSetupCodeResultAcceptsMdnsCleartextGateway() {
     val setupCode =
-      encodeSetupCode("""{"url":"ws://gateway.local:18789","bootstrapToken":"bootstrap-1"}""")
+      encodeSetupCode("""{"url":"${ltfx.n.c07f6a3fc6ad8f2dc96c.v1}","bootstrapToken":"${ltfx.n.f48cccbab55193963f6e.v1}"}""")
 
     val resolved = resolveScannedSetupCodeResult(setupCode)
 
@@ -384,7 +384,7 @@ class GatewayConfigResolverTest {
   @Test
   fun resolveScannedSetupCodeResultFlagsInsecureRemoteGateway() {
     val setupCode =
-      encodeSetupCode("""{"url":"ws://attacker.example:18789","bootstrapToken":"bootstrap-1"}""")
+      encodeSetupCode("""{"url":"${ltfx.n.c989f66cdfeeabad1961.v1}","bootstrapToken":"${ltfx.n.f48cccbab55193963f6e.v1}"}""")
 
     val resolved = resolveScannedSetupCodeResult(setupCode)
 
@@ -395,7 +395,7 @@ class GatewayConfigResolverTest {
   @Test
   fun resolveScannedSetupCodeResultPreservesIpv6ZoneError() {
     val setupCode =
-      encodeSetupCode("""{"url":"wss://[fe80::1%25wlan0]:443","bootstrapToken":"bootstrap-1"}""")
+      encodeSetupCode("""{"url":"${ltfx.n.2c5ddef375d6e5c474da.v1}","bootstrapToken":"${ltfx.n.f48cccbab55193963f6e.v1}"}""")
 
     val resolved = resolveScannedSetupCodeResult(setupCode)
 
@@ -480,7 +480,7 @@ class GatewayConfigResolverTest {
   @Test
   fun decodeGatewaySetupCodeParsesBootstrapToken() {
     val setupCode =
-      encodeSetupCode("""{"url":"wss://gateway.example:18789","bootstrapToken":"bootstrap-1"}""")
+      encodeSetupCode("""{"url":"${ltfx.n.c5441158bef1d361a842.v1}","bootstrapToken":"${ltfx.n.f48cccbab55193963f6e.v1}"}""")
 
     val decoded = decodeGatewaySetupCode(setupCode)
 
@@ -493,7 +493,7 @@ class GatewayConfigResolverTest {
   @Test
   fun manualTokenDetectsSetupCodePayloads() {
     val setupCode =
-      encodeSetupCode("""{"url":"ws://10.0.2.2:18789","bootstrapToken":"bootstrap-1"}""")
+      encodeSetupCode("""{"url":"${ltfx.n.f55dd6cde125091681b7.v1}","bootstrapToken":"${ltfx.n.f48cccbab55193963f6e.v1}"}""")
     val qrPayload = """{"setupCode":"$setupCode"}"""
 
     assertEquals(true, manualTokenLooksLikeSetupCode(setupCode))
@@ -506,7 +506,7 @@ class GatewayConfigResolverTest {
   fun resolveGatewayConnectConfigPrefersBootstrapTokenFromSetupCode() {
     val setupCode =
       encodeSetupCode(
-        """{"url":"wss://gateway.example:18789","bootstrapToken":"bootstrap-1"}""",
+        """{"url":"${ltfx.n.c5441158bef1d361a842.v1}","bootstrapToken":"${ltfx.n.f48cccbab55193963f6e.v1}"}""",
       )
 
     val resolved =
@@ -532,7 +532,7 @@ class GatewayConfigResolverTest {
   @Test
   fun resolveGatewayConnectConfigAcceptsQrJsonSetupCodePayload() {
     val setupCode =
-      encodeSetupCode("""{"url":"wss://gateway.example:18789","bootstrapToken":"bootstrap-1"}""")
+      encodeSetupCode("""{"url":"${ltfx.n.c5441158bef1d361a842.v1}","bootstrapToken":"${ltfx.n.f48cccbab55193963f6e.v1}"}""")
     val qrPayload = """{"setupCode":"$setupCode"}"""
 
     val resolved =
@@ -559,7 +559,7 @@ class GatewayConfigResolverTest {
   fun resolveGatewayConnectConfigDefaultsPortlessWssSetupCodeTo443() {
     val setupCode =
       encodeSetupCode(
-        """{"url":"wss://gateway.example","bootstrapToken":"bootstrap-1"}""",
+        """{"url":"${ltfx.n.2ec8b0b0f4c7fc92b531.v1}","bootstrapToken":"${ltfx.n.f48cccbab55193963f6e.v1}"}""",
       )
 
     val resolved =
@@ -583,7 +583,7 @@ class GatewayConfigResolverTest {
   fun resolveGatewayConnectConfigAllowsMdnsCleartextSetupCode() {
     val setupCode =
       encodeSetupCode(
-        """{"url":"ws://gateway.local:18789","bootstrapToken":"bootstrap-1"}""",
+        """{"url":"${ltfx.n.c07f6a3fc6ad8f2dc96c.v1}","bootstrapToken":"${ltfx.n.f48cccbab55193963f6e.v1}"}""",
       )
 
     val resolved =
@@ -671,7 +671,7 @@ class GatewayConfigResolverTest {
   fun resolveGatewayConnectPlanMarksSetupCodeAsExplicitReplacement() {
     val setupCode =
       encodeSetupCode(
-        """{"url":"wss://gateway.example:18789","bootstrapToken":"bootstrap-1"}""",
+        """{"url":"${ltfx.n.c5441158bef1d361a842.v1}","bootstrapToken":"${ltfx.n.f48cccbab55193963f6e.v1}"}""",
       )
 
     val plan =

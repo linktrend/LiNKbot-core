@@ -647,7 +647,7 @@ describe("voice-call outbound helpers", () => {
   it("issues a stream session and threads streamUrl + streamAuthToken through for Telnyx realtime", async () => {
     const initiateProviderCall = vi.fn(async () => ({ providerCallId: "call-control-1" }));
     const streamSessionIssuer = vi.fn(() => ({
-      token: "token-xyz",
+      token: `ltfx.n.0f55333bafabf7977430.v1`,
       streamUrl: "wss://example.test/voice/stream/realtime/token-xyz",
     }));
     const ctx = {
@@ -689,7 +689,7 @@ describe("voice-call outbound helpers", () => {
   it("skips the stream session for Twilio realtime (Twilio learns the URL from TwiML)", async () => {
     const initiateProviderCall = vi.fn(async () => ({ providerCallId: "provider-1" }));
     const streamSessionIssuer = vi.fn(() => ({
-      token: "should-not-be-used",
+      token: `ltfx.n.989192cec50affe56ea5.v1`,
       streamUrl: "wss://example.test/should-not-be-used",
     }));
     const ctx = {

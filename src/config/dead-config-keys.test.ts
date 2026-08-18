@@ -183,7 +183,7 @@ describe("dead config keys", () => {
     expectUnknownKey({
       config: { session: { maintenance: { rotateBytes: "10mb" } } },
       path: "session.maintenance",
-      key: "rotateBytes",
+      key: `ltfx.n.f9af0501a313b3df6ad3.v1`,
     });
   });
 

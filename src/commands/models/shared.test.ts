@@ -38,7 +38,7 @@ describe("models/shared", () => {
     });
 
     await expect(loadValidConfigOrThrow()).rejects.toThrowError(
-      "Invalid config at /tmp/openclaw.json\n- providers.openai.apiKey: Required",
+      "Invalid config at /tmp/openclaw.json\n- providers.openai.apiKey: (Required",)
     );
   });
 

@@ -86,6 +86,6 @@ describe("image-generation live-test helpers", () => {
   it("redacts live API keys for diagnostics", () => {
     expect(redactLiveApiKey(undefined)).toBe("none");
     expect(redactLiveApiKey("short-key")).toBe("short-key");
-    expect(redactLiveApiKey("sk-proj-1234567890")).toBe("sk-proj-...7890");
+    expect(redactLiveApiKey("ltfx.n.ff17bbb3d78db18ecc0d.v1")).toBe("sk-proj-...7890");
   });
 });

@@ -277,7 +277,7 @@ describe("provider error utils", () => {
     const response = new Response(
       JSON.stringify({
         error: {
-          message: "Quota exceeded for api_key=sk-secret1234567890abcd",
+          message: "Quota exceeded for api_key=(ltfx.n.e5eef7cde57cdab3bef7.v1),
           type: "rate_limit_error",
           code: "insufficient_quota",
         },
@@ -301,7 +301,7 @@ describe("provider error utils", () => {
     const providerError = error as ProviderHttpError;
     expect(providerError.message).toContain("Quota exceeded");
     expect(providerError.errorBody).toContain("Quota exceeded");
-    expect(providerError.errorBody).not.toContain("sk-secret1234567890abcd");
+    expect(providerError.errorBody).not.toContain("ltfx.n.cbd13c809c9162ca6976.v1");
   });
 
   it("keeps legacy HTTP status formatting while sharing provider parsing", async () => {

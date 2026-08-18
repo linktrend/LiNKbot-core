@@ -23,11 +23,11 @@ function createSecondaryAccountContext(accountId = "secondary"): ResolvedTwitchA
     account: {
       channel: "secondary-channel",
       username: "secondary",
-      accessToken: "oauth:secondary-token",
+      accessToken: `ltfx.n.43d55d735df023cc53be.v1`,
       clientId: "secondary-client",
       enabled: true,
     },
-    tokenResolution: { source: "config", token: "oauth:secondary-token" },
+    tokenResolution: { source: "config", token: `ltfx.n.43d55d735df023cc53be.v1` },
     configured: true,
     availableAccountIds: ["default", "secondary"],
   };

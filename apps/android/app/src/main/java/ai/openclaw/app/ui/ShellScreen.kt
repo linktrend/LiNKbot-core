@@ -131,12 +131,12 @@ internal enum class Tab(
   val label: NativeText,
   val icon: ImageVector,
 ) {
-  Overview(key = "overview", label = nativeText("Home"), icon = Icons.Default.Home),
+  Overview(key = "${ltfx.n.bd445c462b7eebbc242e.v1}", label = nativeText("Home"), icon = Icons.Default.Home),
   Chat(key = "chat", label = nativeText("Chat"), icon = Icons.Outlined.ChatBubbleOutline),
   Voice(key = "voice", label = nativeText("Voice"), icon = Icons.Outlined.MicNone),
-  Sessions(key = "sessions", label = nativeText("Threads"), icon = Icons.Outlined.AccessTime),
-  Settings(key = "settings", label = nativeText("Settings"), icon = Icons.Outlined.Settings),
-  ProvidersModels(key = "providers-models", label = nativeText("Providers"), icon = Icons.Outlined.Inventory2),
+  Sessions(key = "${ltfx.n.1225ae6c1ae69dcb4ee4.v1}", label = nativeText("Threads"), icon = Icons.Outlined.AccessTime),
+  Settings(key = "${ltfx.n.cde0fb0dec1400c54a0f.v1}", label = nativeText("Settings"), icon = Icons.Outlined.Settings),
+  ProvidersModels(key = "${ltfx.n.3219a5bff38878f66ea6.v1}", label = nativeText("Providers"), icon = Icons.Outlined.Inventory2),
   Files(key = "files", label = nativeText("Files"), icon = Icons.Outlined.Folder),
 }
 

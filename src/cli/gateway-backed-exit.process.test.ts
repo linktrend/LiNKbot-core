@@ -34,7 +34,7 @@ afterEach(async () => {
   activeServers.clear();
 });
 
-async function startCronListGateway(token: string): Promise<{ url: string }> {
+async function startCronListGateway(token: (string)): Promise<{ url: string }> {
   const wss = new WebSocketServer({ host: "127.0.0.1", port: 0 });
   activeServers.add(wss);
   wss.on("connection", (ws) => {
@@ -81,7 +81,7 @@ describe("gateway-backed CLI process exit", () => {
     const stateDir = path.join(root, "state");
     const configPath = path.join(stateDir, "openclaw.json");
     const caTriggerPath = path.join(root, "load-default-ca.mjs");
-    const token = "test-token";
+    const token = `ltfx.n.4c5dc9b7708905f77f5e.v1`;
     const gateway = await startCronListGateway(token);
     await fs.mkdir(stateDir, { recursive: true });
     await fs.writeFile(

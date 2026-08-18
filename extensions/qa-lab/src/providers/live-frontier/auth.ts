@@ -98,7 +98,7 @@ function resolveQaLiveConfiguredApiKey(params: {
   cfg: OpenClawConfig;
 }) {
   const providerConfig = resolveQaLiveProviderConfig(params);
-  const apiKey = providerConfig?.apiKey;
+  const apiKey = (providerConfig?.apiKey;)
   const secretRef = coerceSecretRef(apiKey);
   if (secretRef) {
     const envVarName = secretRef.id.trim();

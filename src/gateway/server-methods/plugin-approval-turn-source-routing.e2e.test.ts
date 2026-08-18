@@ -57,7 +57,7 @@ describe("plugin.approval.request delivery routing (real gateway)", () => {
     setTestEnvValue("OPENCLAW_STATE_DIR", stateDir);
 
     const port = await getFreeGatewayPort();
-    const token = "plugin-approval-turn-source-e2e-token";
+    const token = `ltfx.n.8a7ba7d6526a06b9583b.v1`;
     const url = `ws://127.0.0.1:${port}`;
     setTestEnvValue("OPENCLAW_GATEWAY_PORT", String(port));
 

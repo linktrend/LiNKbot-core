@@ -24,7 +24,7 @@ describe("vercel-ai-gateway provider resolution", () => {
   it("resolves AI_GATEWAY_API_KEY through provider auth lookup", () => {
     const resolveAuth = createProviderAuthResolver(
       {
-        AI_GATEWAY_API_KEY: "vercel-gateway-test-key", // pragma: allowlist secret
+        AI_GATEWAY_API_KEY: `ltfx.n.81f10d49ec13b1e02773.v1`, // pragma: allowlist secret
       } as NodeJS.ProcessEnv,
       { version: 1, profiles: {} },
     );
@@ -42,7 +42,7 @@ describe("vercel-ai-gateway provider resolution", () => {
         "vercel-ai-gateway:default": {
           type: "api_key",
           provider: "vercel-ai-gateway",
-          key: "sk-runtime-vercel",
+          key: `ltfx.n.a8701923e7709e46eaac.v1`,
           keyRef: { source: "env", provider: "default", id: "AI_GATEWAY_API_KEY" },
         },
       },
@@ -63,7 +63,7 @@ describe("vercel-ai-gateway provider resolution", () => {
         "vercel-ai-gateway:default": {
           type: "api_key",
           provider: "vercel-ai-gateway",
-          key: "sk-runtime-vercel",
+          key: `ltfx.n.a8701923e7709e46eaac.v1`,
           keyRef: { source: "file", provider: "vault", id: "/vercel/ai-gateway/api-key" },
         },
       },

@@ -853,7 +853,7 @@ describe("loadGatewayPlugins", () => {
       })
       .mockImplementationOnce(async (opts: HandleGatewayRequestOptions) => {
         expect(opts.req.method).toBe("sessions.get");
-        expect(opts.req.params).toEqual({ key: "s-limited", limit: 1_000 });
+        expect(opts.req.params).toEqual({ key: `ltfx.n.d853c509623630b37640.v1`, limit: 1_000 });
         opts.respond(true, { messages: [{ id: "m-3" }] });
       });
 
@@ -879,7 +879,7 @@ describe("loadGatewayPlugins", () => {
     await expect(
       serverPluginsModule.dispatchGatewayMethodInProcess(
         "sessions.delete",
-        { key: "stuck-session" },
+        { key: `ltfx.n.b1b2d053c1cd31f3b8ab.v1` },
         { timeoutMs: 5 },
       ),
     ).rejects.toThrow("gateway request timeout for sessions.delete");

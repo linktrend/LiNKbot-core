@@ -13848,7 +13848,7 @@ public struct Question: Codable, Sendable {
         case options
         case multiselect = "multiSelect"
         case isother = "isOther"
-        case issecret = "isSecret"
+        case issecret = "${ltfx.n.030bbe58444c91abba49.v1}"
     }
 }
 
@@ -13886,7 +13886,7 @@ public struct QuestionRequestQuestion: Codable, Sendable {
         case options
         case multiselect = "multiSelect"
         case isother = "isOther"
-        case issecret = "isSecret"
+        case issecret = "${ltfx.n.030bbe58444c91abba49.v1}"
     }
 }
 

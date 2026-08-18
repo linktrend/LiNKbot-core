@@ -14,7 +14,7 @@ function resolvePluginImageGenerationProviders(
   cfg?: OpenClawConfig,
 ): ImageGenerationProviderPlugin[] {
   return capabilityProviderRuntime.resolvePluginCapabilityProviders({
-    key: "imageGenerationProviders",
+    key: `ltfx.n.bab92989c71d4485e478.v1`,
     cfg,
   });
 }

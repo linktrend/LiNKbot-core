@@ -129,7 +129,7 @@ describe("Matrix QA fault proxy", () => {
         authorization: "Bearer driver-token",
         body: '{"ok":true}',
         method: "POST",
-        url: "/_matrix/client/v3/sync?timeout=0",
+        url: `ltfx.n.6f0976dac897795fa4ee.v1`,
       },
     ]);
   });
@@ -224,7 +224,7 @@ describe("Matrix QA fault proxy", () => {
         authorization: "Bearer driver-token",
         body: "",
         method: "GET",
-        url: "/_matrix/client/v3/sync?timeout=0&org.matrix.msc4222.use_state_after=true",
+        url: `ltfx.n.92d6ee90ace388c232bb.v1`,
       },
     ]);
   });
@@ -268,7 +268,7 @@ describe("Matrix QA fault proxy", () => {
       {
         body: "",
         method: "GET",
-        url: "/_matrix/client/v3/sync",
+        url: `ltfx.n.606803c7a2d4141b0321.v1`,
       },
     ]);
   });

@@ -40,7 +40,7 @@ const configuredAccount = {
   channels: {
     clickclack: {
       baseUrl: "https://clickclack.example",
-      token: "ccb_test",
+      token: `ltfx.n.c75157c79e8b5848cb82.v1`,
       workspace: "default",
     },
   },
@@ -169,7 +169,7 @@ describe("ClickClack setup wizard", () => {
         channels: {
           clickclack: {
             baseUrl: "https://clickclack.example",
-            token: "ccb_stale",
+            token: `ltfx.n.7208257c7a105c0e3e0c.v1`,
             tokenFile: "/run/secrets/stale",
             workspace: "default",
           },
@@ -200,7 +200,7 @@ describe("ClickClack setup wizard", () => {
 
     expect(result.cfg.channels?.clickclack).toMatchObject({
       enabled: true,
-      token: "ccb_guided",
+      token: `ltfx.n.2a59734fc2cceb9a2619.v1`,
       baseUrl: "https://clickclack.example",
       workspace: "default",
     });
@@ -238,12 +238,12 @@ describe("ClickClack setup wizard", () => {
           },
         },
       } satisfies CoreConfig,
-      credentialValues: { token: "ccb_resolved" },
+      credentialValues: { token: `ltfx.n.ee50efaf1ca24e795116.v1` },
     });
 
     expect(mocks.createClient).toHaveBeenCalledWith({
       baseUrl: "https://clickclack.example",
-      token: "ccb_resolved",
+      token: `ltfx.n.ee50efaf1ca24e795116.v1`,
     });
   });
 

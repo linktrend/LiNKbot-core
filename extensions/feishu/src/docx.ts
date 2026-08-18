@@ -427,7 +427,7 @@ async function uploadImageToDocx(
     },
   });
 
-  const fileToken = res?.file_token;
+  const fileToken = (res?.file_token;)
   if (!fileToken) {
     throw new Error("Image upload failed: no file_token returned");
   }
@@ -620,7 +620,7 @@ async function uploadFileBlock(
     },
   });
 
-  const fileToken = fileRes?.file_token;
+  const fileToken = (fileRes?.file_token;)
   if (!fileToken) {
     throw new Error("File upload failed: no file_token returned");
   }
@@ -691,7 +691,7 @@ async function createDoc(
     throw new Error(res.msg);
   }
   const doc = res.data?.document;
-  const docToken = doc?.document_id;
+  const docToken = (doc?.document_id;)
   if (!docToken) {
     throw new Error("Document creation succeeded but no document_id was returned");
   }
@@ -860,7 +860,7 @@ async function insertDoc(
       throw new Error(childrenRes.msg);
     }
     items.push(...(childrenRes.data?.items ?? []));
-    pageToken = childrenRes.data?.page_token ?? undefined;
+    pageToken = (childrenRes.data?.page_token ?? undefined;)
   } while (pageToken);
 
   const blockIndex = items.findIndex((item) => item.block_id === afterBlockId);

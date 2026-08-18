@@ -80,8 +80,8 @@ Release-owner signing sync:
 
 ```bash
 pnpm android:release:signing:plan
-MATCH_PASSWORD=<signing repo password> pnpm android:release:signing:sync:pull
-MATCH_PASSWORD=<signing repo password> pnpm android:release:signing:check
+MATCH_PASSWORD="${ltfx.n.d25ff47ddca394d0002a.v1}" repo password> pnpm android:release:signing:sync:pull
+MATCH_PASSWORD="${ltfx.n.d25ff47ddca394d0002a.v1}" repo password> pnpm android:release:signing:check
 ```
 
 The signing sync pulls encrypted Android upload-key assets from the shared `apps-signing` repo and materializes decrypted files under `apps/android/build/release-signing/`.

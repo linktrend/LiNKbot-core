@@ -317,7 +317,7 @@ describe("secrets runtime snapshot", () => {
           },
         },
       }),
-      env: { HEALTHY_WEBHOOK_SECRET: "healthy-secret" },
+      env: { HEALTHY_WEBHOOK_SECRET: `ltfx.n.c1bc0b396c8921932686.v1` },
       includeAuthStoreRefs: false,
       allowUnavailableSecretOwners: true,
       loadablePluginOrigins: BUNDLED_WEBHOOKS_PLUGIN_ORIGINS,
@@ -353,7 +353,7 @@ describe("secrets runtime snapshot", () => {
   });
 
   it("registers every resolved value for exact redaction", async () => {
-    const secret = "runtime-registration-secret";
+    const secret = `ltfx.n.90f29fcc099514ac0162.v1`;
     await prepareSecretsRuntimeSnapshot({
       config: asConfig({
         talk: {
@@ -369,7 +369,7 @@ describe("secrets runtime snapshot", () => {
   });
 
   it("registers resolved TTS values for exact redaction", async () => {
-    const secret = "test-secret";
+    const secret = `ltfx.n.9caf06bb4436cdbfa20a.v1`;
     await prepareSecretsRuntimeSnapshot({
       config: asConfig({
         messages: {
@@ -615,7 +615,7 @@ describe("secrets runtime snapshot", () => {
               config: {
                 appServer: {
                   transport: "websocket",
-                  url: "wss://codex-app-server.example.internal/ws",
+                  url: `ltfx.n.50d8f7f804258a69f243.v1`,
                   authToken: CODEX_APP_SERVER_TOKEN_REF,
                   headers: {
                     Authorization: "Bearer literal-token",
@@ -628,8 +628,8 @@ describe("secrets runtime snapshot", () => {
         },
       }),
       env: {
-        CODEX_APP_SERVER_TOKEN: "resolved-app-server-token",
-        CODEX_CLIENT_SESSION_TOKEN: "resolved-session-token",
+        CODEX_APP_SERVER_TOKEN: `ltfx.n.766717a563ac8473fffc.v1`,
+        CODEX_CLIENT_SESSION_TOKEN: `ltfx.n.a61496d474a39cfbfad7.v1`,
       },
       includeAuthStoreRefs: false,
       loadablePluginOrigins: BUNDLED_CODEX_PLUGIN_ORIGINS,
@@ -637,10 +637,10 @@ describe("secrets runtime snapshot", () => {
 
     expect(snapshot.config.plugins?.entries?.codex?.config).toMatchObject({
       appServer: {
-        authToken: "resolved-app-server-token",
+        authToken: `ltfx.n.766717a563ac8473fffc.v1`,
         headers: {
           Authorization: "Bearer literal-token",
-          "x-codex-client-session-token": "resolved-session-token",
+          "x-codex-client-session-token": `ltfx.n.a61496d474a39cfbfad7.v1`,
         },
       },
     });
@@ -657,7 +657,7 @@ describe("secrets runtime snapshot", () => {
                 config: {
                   appServer: {
                     transport: "websocket",
-                    url: "wss://codex-app-server.example.internal/ws",
+                    url: `ltfx.n.50d8f7f804258a69f243.v1`,
                     authToken: CODEX_APP_SERVER_TOKEN_REF,
                     headers: {
                       "x-codex-client-session-token": "${CODEX_CLIENT_SESSION_TOKEN}",
@@ -669,7 +669,7 @@ describe("secrets runtime snapshot", () => {
           },
         }),
         env: {
-          CODEX_CLIENT_SESSION_TOKEN: "resolved-session-token",
+          CODEX_CLIENT_SESSION_TOKEN: `ltfx.n.a61496d474a39cfbfad7.v1`,
         },
         includeAuthStoreRefs: false,
         loadablePluginOrigins: BUNDLED_CODEX_PLUGIN_ORIGINS,
@@ -788,7 +788,7 @@ describe("secrets runtime snapshot", () => {
           },
         }),
         env: {
-          ELEVENLABS_API_KEY: "test-elevenlabs-api-key",
+          ELEVENLABS_API_KEY: `ltfx.n.4af866106e4116879bb7.v1`,
         },
         includeAuthStoreRefs: false,
         allowUnavailableSecretOwners: true,
@@ -812,7 +812,7 @@ describe("secrets runtime snapshot", () => {
           },
         }),
         env: {
-          elevenlabs_api_key: "test-elevenlabs-api-key",
+          elevenlabs_api_key: `ltfx.n.4af866106e4116879bb7.v1`,
         },
         includeAuthStoreRefs: false,
         allowUnavailableSecretOwners: true,
@@ -857,7 +857,7 @@ describe("secrets runtime snapshot", () => {
           },
         },
       }),
-      env: { EXAMPLE_API_KEY: "placeholder" },
+      env: { EXAMPLE_API_KEY: `ltfx.n.4097889236a2af26c293.v1` },
       includeAuthStoreRefs: false,
       allowUnavailableSecretOwners: true,
       loadablePluginOrigins: EMPTY_LOADABLE_PLUGIN_ORIGINS,

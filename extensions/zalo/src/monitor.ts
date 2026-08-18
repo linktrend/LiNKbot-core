@@ -449,7 +449,7 @@ async function authorizeZaloMessage(
     channelId: "zalo",
     accountId: account.accountId,
     identity: {
-      key: "zalo-user-id",
+      key: `ltfx.n.7a435374b64624f33758.v1`,
       normalize: normalizeZaloAllowEntry,
       sensitivity: "pii",
       entryIdPrefix: "zalo-entry",

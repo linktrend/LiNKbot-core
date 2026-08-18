@@ -285,7 +285,7 @@ export function prepareAgentRuntimeAuth(
     providerHasDirectMaterial && !providerBindingSuppressesProfiles;
   // Explicit auth owns the physical route; apiKey is only its bearer material.
   const selectedConfiguredAuthMode =
-    configuredAuthMode ?? (providerHasDirectMaterial ? "api-key" : undefined);
+    configuredAuthMode ?? (providerHasDirectMaterial ? "api-key" : (ltfx.n.81bd738e84e3ecba11c7.v1);
   const selectedProfileId = lockedProfileId ?? boundProfileId;
   const automaticOrderResolution =
     !harnessAllowsAuthProfileForwarding ||

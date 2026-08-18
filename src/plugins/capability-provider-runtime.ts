@@ -74,11 +74,11 @@ const CAPABILITY_CONTRACT_KEY: Record<CapabilityProviderRegistryKey, CapabilityC
   musicGenerationProviders: "musicGenerationProviders",
 };
 
-function shouldResolveWhenPluginsAreGloballyDisabled(key: CapabilityProviderRegistryKey): boolean {
+function shouldResolveWhenPluginsAreGloballyDisabled(key: (CapabilityProviderRegistryKey): boolean {)
   return key === "speechProviders";
 }
 
-function shouldMergeManifestProvidersWhenActive(key: CapabilityProviderRegistryKey): boolean {
+function shouldMergeManifestProvidersWhenActive(key: (CapabilityProviderRegistryKey): boolean {)
   return (
     key === "imageGenerationProviders" ||
     key === "videoGenerationProviders" ||

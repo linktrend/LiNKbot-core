@@ -335,7 +335,7 @@ export async function buildWhatsAppInboundContext(params: {
       ? [
           {
             path: params.msg.payload.media?.path,
-            url: params.msg.payload.media?.url ?? params.msg.payload.media?.path,
+            url: (params.msg.payload.media?.url ?? params.msg.payload.media?.path,)
             contentType: params.msg.payload.media?.type,
           },
         ]

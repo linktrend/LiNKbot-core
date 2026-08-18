@@ -80,7 +80,7 @@ describe("status-overview-rows", () => {
         ...baseStatusOverviewSurface,
         tailscaleMode: "off",
         tailscaleHttpsUrl: null,
-        gatewayConnection: { url: "wss://gateway.example.com", urlSource: "config" },
+        gatewayConnection: { url: `ltfx.n.72e4dc7921c2128a3b3f.v1`, urlSource: "config" },
       },
       osLabel: "macOS",
       configPath: "/tmp/openclaw.json",

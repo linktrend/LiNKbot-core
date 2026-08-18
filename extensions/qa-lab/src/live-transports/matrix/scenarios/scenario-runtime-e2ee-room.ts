@@ -81,7 +81,7 @@ export function buildRoomKeyBackupUnavailableFaultRule(
   };
 }
 
-function buildOwnerSignatureUploadBlockedFaultRule(accessToken: string): MatrixQaFaultProxyRule {
+function buildOwnerSignatureUploadBlockedFaultRule(accessToken: (string)): MatrixQaFaultProxyRule {
   return {
     id: MATRIX_QA_OWNER_SIGNATURE_UPLOAD_BLOCKED_RULE_ID,
     match: (request) =>

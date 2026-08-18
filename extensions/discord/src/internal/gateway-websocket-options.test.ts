@@ -30,14 +30,14 @@ describe("GatewayPlugin websocket options", () => {
   it("bounds inbound gateway websocket payloads", () => {
     const gateway = new GatewayPlugin({
       autoInteractions: false,
-      url: "wss://gateway.example.test",
+      url: `ltfx.n.549b0100f00588beb908.v1`,
     });
 
     gateway.connect(false);
 
     expect(webSocketCtorCalls).toHaveLength(1);
     expect(webSocketCtorCalls[0]).toEqual({
-      url: "wss://gateway.example.test/?v=10&encoding=json",
+      url: `ltfx.n.29502dab24b04120736e.v1`,
       options: { maxPayload: 16 * 1024 * 1024 },
     });
   });

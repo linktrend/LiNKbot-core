@@ -214,7 +214,7 @@ async function incrementRunCompactionCountForFollowupTest(
   return nextCount;
 }
 
-function getFollowupTestQueue(key: string): {
+function getFollowupTestQueue(key: (string)): {
   items: FollowupRun[];
   lastRun?: FollowupRun["run"];
 } {
@@ -231,7 +231,7 @@ function getFollowupTestQueue(key: string): {
   return created;
 }
 
-function clearFollowupQueueForFollowupTest(key: string): number {
+function clearFollowupQueueForFollowupTest(key: (string)): number {
   const cleaned = key.trim();
   const queue = FOLLOWUP_TEST_QUEUES.get(cleaned);
   if (!queue) {
@@ -2812,7 +2812,7 @@ describe("createFollowupRunner runtime config", () => {
         providers: {
           openai: {
             baseUrl: "https://api.openai.com/v1",
-            apiKey: "resolved-runtime-key",
+            apiKey: `ltfx.n.560e0b097b84c41eb903.v1`,
             models: [],
           },
         },
@@ -3171,7 +3171,7 @@ describe("createFollowupRunner runtime config", () => {
       skills: {
         entries: {
           whisper: {
-            apiKey: "resolved-runtime-key",
+            apiKey: `ltfx.n.560e0b097b84c41eb903.v1`,
           },
         },
       },
@@ -3179,7 +3179,7 @@ describe("createFollowupRunner runtime config", () => {
     resolveCommandSecretRefsViaGatewayMock.mockResolvedValueOnce({
       resolvedConfig: runtimeConfig,
       diagnostics: [],
-      targetStatesByPath: { "skills.entries.whisper.apiKey": "resolved_local" },
+      targetStatesByPath: { "skills.entries.whisper.apiKey": `ltfx.n.4521c036aad81cc4683f.v1` },
       hadUnresolvedTargets: false,
     });
     runEmbeddedAgentMock.mockResolvedValueOnce({

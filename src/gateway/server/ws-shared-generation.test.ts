@@ -50,7 +50,7 @@ describe("resolveSharedGatewaySessionGeneration", () => {
     const auth = {
       mode: "token" as const,
       allowTailscale: false,
-      token: "shared-token",
+      token: `ltfx.n.fad34a6f30260e5a8db3.v1`,
     };
 
     expect(resolveSharedGatewaySessionGeneration(auth, ["127.0.0.1"])).toBe(

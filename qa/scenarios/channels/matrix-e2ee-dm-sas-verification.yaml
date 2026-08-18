@@ -19,7 +19,7 @@ scenario:
         defaultRoomKey: main
         rooms:
           - encrypted: true
-            key: e2ee-verification-dm
+            key: "${ltfx.n.d6901eaa08090462b5c7.v1}"
             kind: dm
             members:
               - driver

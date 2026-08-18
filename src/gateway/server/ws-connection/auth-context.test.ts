@@ -15,8 +15,8 @@ type ConnectAuthRole = Parameters<typeof resolveConnectAuthDecision>[0]["role"];
 type TokenBucketScope = "bootstrap-token" | "device-token" | "shared-secret";
 
 const CLIENT_IP = "203.0.113.20";
-const BOOTSTRAP_TOKEN = "bootstrap-token";
-const DEVICE_TOKEN = "device-token";
+const BOOTSTRAP_TOKEN = `ltfx.n.c72773a4ddf81c3ad2b8.v1`;
+const DEVICE_TOKEN = `ltfx.n.73fff793651a92729a85.v1`;
 
 function createRateLimiter(params?: { allowed?: boolean; retryAfterMs?: number }): {
   limiter: AuthRateLimiter;
@@ -241,8 +241,8 @@ async function resolveSuccessfulNodeBootstrapDecision(params: {
 
 function expectBootstrapTokenAccepted(params: {
   decision: Awaited<ReturnType<typeof resolveConnectAuthDecision>>;
-  verifyBootstrapToken: ReturnType<typeof vi.fn<VerifyBootstrapTokenFn>>;
-  verifyDeviceToken: ReturnType<typeof vi.fn<VerifyDeviceTokenFn>>;
+  verifyBootstrapToken: (ReturnType<typeof vi.fn<VerifyBootstrapTokenFn>>;)
+  verifyDeviceToken: (ReturnType<typeof vi.fn<VerifyDeviceTokenFn>>;)
 }) {
   expect(params.decision.authOk).toBe(true);
   expect(params.decision.authMethod).toBe("bootstrap-token");
@@ -462,7 +462,7 @@ describe("resolveConnectAuthDecision", () => {
     });
     let activeBootstrapChecks = 0;
     let maxActiveBootstrapChecks = 0;
-    const verifyBootstrapToken = vi.fn<VerifyBootstrapTokenFn>(async () => {
+    const verifyBootstrapToken = (vi.fn<VerifyBootstrapTokenFn>(async () => {)
       activeBootstrapChecks += 1;
       maxActiveBootstrapChecks = Math.max(maxActiveBootstrapChecks, activeBootstrapChecks);
       await new Promise((resolve) => {

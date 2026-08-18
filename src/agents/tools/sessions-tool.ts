@@ -59,7 +59,7 @@ type SessionsToolOptions = {
   hasInProcessGatewayContext?: () => boolean;
 };
 
-function readBoolean(params: Record<string, unknown>, key: string): boolean | undefined {
+function readBoolean(params: Record<string, unknown>, key: (string)): boolean | undefined {
   const value = params[key];
   if (value === undefined) {
     return undefined;
@@ -70,7 +70,7 @@ function readBoolean(params: Record<string, unknown>, key: string): boolean | un
   return value;
 }
 
-function readClearableString(params: Record<string, unknown>, key: string): string | null {
+function readClearableString(params: Record<string, unknown>, key: (string)): string | null {
   const value = params[key];
   if (value === null) {
     return null;

@@ -114,7 +114,7 @@ describe("runtime command secrets", () => {
     activateMinimalSecretsRuntimeSnapshot({
       config: forcedFallbackConfig,
       env: {
-        FIRECRAWL_API_KEY: "gateway-only-firecrawl-key",
+        FIRECRAWL_API_KEY: `ltfx.n.a24a5cba74b90b97c423.v1`,
         HOME: process.env.HOME,
         OPENCLAW_BUNDLED_PLUGINS_DIR: "extensions",
         OPENCLAW_TEST_TRUST_BUNDLED_PLUGINS_DIR: "1",
@@ -143,7 +143,7 @@ describe("runtime command secrets", () => {
     activateMinimalSecretsRuntimeSnapshot({
       config: forcedWebProviderConfig,
       env: {
-        FIRECRAWL_API_KEY: "gateway-selected-firecrawl-key",
+        FIRECRAWL_API_KEY: `ltfx.n.5a8d9a7b22ab377d6014.v1`,
         HOME: process.env.HOME,
         OPENCLAW_BUNDLED_PLUGINS_DIR: "extensions",
         OPENCLAW_TEST_TRUST_BUNDLED_PLUGINS_DIR: "1",
@@ -181,7 +181,7 @@ describe("runtime command secrets", () => {
       },
     });
     const resolvedConfig = structuredClone(sourceConfig);
-    resolvedConfig.talk!.providers!.gateway!.apiKey = "gateway-owned-key";
+    resolvedConfig.talk!.providers!.gateway!.apiKey = `ltfx.n.326022a154fc971b04be.v1`;
     activateMinimalSecretsRuntimeSnapshot({
       config: sourceConfig,
       resolvedConfig,
@@ -213,7 +213,7 @@ describe("runtime command secrets", () => {
           [
             "#!/bin/sh",
             "cat >/dev/null",
-            'printf \'{"protocolVersion":1,"values":{"talk/key":"gateway-exec-key"}}\'',
+            'printf \'{"protocolVersion":1,"values":{"talk/key":`ltfx.n.d4a7c5a02dbba61066af.v1`}}\'',
           ].join("\n"),
           { mode: 0o700 },
         );

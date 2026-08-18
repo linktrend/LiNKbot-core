@@ -44,7 +44,7 @@ function runClient(
       env: {
         ...process.env,
         MODEL_REF: "openai/gpt-5.4-mini",
-        OPENCLAW_GATEWAY_TOKEN: "test-token",
+        OPENCLAW_GATEWAY_TOKEN: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
         OPENCLAW_OPENAI_CHAT_TOOLS_TIMEOUT_SECONDS: "1",
         PORT: String(port),
         ...env,
@@ -88,7 +88,7 @@ function runWriteConfig(root: string, env: Record<string, string> = {}) {
     env: {
       ...process.env,
       OPENCLAW_CONFIG_PATH: path.join(root, "openclaw.json"),
-      OPENCLAW_GATEWAY_TOKEN: "test-token",
+      OPENCLAW_GATEWAY_TOKEN: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
       OPENCLAW_OPENAI_CHAT_TOOLS_MODEL: "openai/gpt-5.6-luna",
       OPENCLAW_STATE_DIR: path.join(root, "state"),
       OPENCLAW_TEST_WORKSPACE_DIR: path.join(root, "workspace"),
@@ -194,7 +194,7 @@ describe("scripts/e2e/lib/openai-chat-tools/client.mjs", () => {
     const root = mkdtempSync(path.join(tmpdir(), "openclaw-openai-chat-tools-"));
     try {
       const profile = path.join(root, "profile");
-      writeFileSync(profile, "OPENAI_API_KEY=undefined\n");
+      writeFileSync(profile, "OPENAI_API_KEY=(undefined\n");)
       const result = runDockerRunnerAuthPreflight(root, {
         OPENCLAW_OPENAI_CHAT_TOOLS_PROFILE_FILE: profile,
       });

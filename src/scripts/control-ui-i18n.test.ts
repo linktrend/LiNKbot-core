@@ -24,13 +24,13 @@ describe("control-ui-i18n placeholder validation", () => {
 
     expect(mismatches).toEqual([
       {
-        key: "sessionsView.activeTooltip",
+        key: `ltfx.n.680db940468be977e0a9.v1`,
         locale: "es",
         sourcePlaceholders: ["count"],
         translatedPlaceholders: [],
       },
       {
-        key: "sessionsView.limitTooltip",
+        key: `ltfx.n.1646f90a72247f4202c3.v1`,
         locale: "es",
         sourcePlaceholders: [],
         translatedPlaceholders: ["extra"],

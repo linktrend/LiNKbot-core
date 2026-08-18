@@ -34,7 +34,7 @@ function createExecGatewayTokenConfig(markerPath: string): OpenClawConfig {
             [
               "const fs = require('node:fs');",
               `fs.writeFileSync(${JSON.stringify(markerPath)}, 'executed');`,
-              "process.stdout.write(JSON.stringify({ protocolVersion: 1, values: { 'gateway/token': 'exec-token' } }));",
+              "process.stdout.write(JSON.stringify({ protocolVersion: 1, values: { 'gateway/token': `ltfx.n.683e2dc7e0f0dc24fffa.v1` } }));",
             ].join(""),
           ],
         },
@@ -49,14 +49,14 @@ describe("resolveGatewayAuthTokenForService", () => {
       {
         gateway: {
           auth: {
-            token: "config-token",
+            token: `ltfx.n.a98cc81fe778386f6195.v1`,
           },
         },
       } as OpenClawConfig,
       {} as NodeJS.ProcessEnv,
     );
 
-    expect(resolved).toEqual({ token: "config-token" });
+    expect(resolved).toEqual({ token: `ltfx.n.a98cc81fe778386f6195.v1` });
   });
 
   it("resolves SecretRef-backed gateway.auth.token", async () => {
@@ -78,11 +78,11 @@ describe("resolveGatewayAuthTokenForService", () => {
         },
       } as OpenClawConfig,
       {
-        CUSTOM_GATEWAY_TOKEN: "resolved-token",
+        CUSTOM_GATEWAY_TOKEN: `ltfx.n.cad2ed06900405ac7d61.v1`,
       } as NodeJS.ProcessEnv,
     );
 
-    expect(resolved).toEqual({ token: "resolved-token" });
+    expect(resolved).toEqual({ token: `ltfx.n.cad2ed06900405ac7d61.v1` });
   });
 
   it("resolves env-template gateway.auth.token via SecretRef resolution", async () => {
@@ -100,11 +100,11 @@ describe("resolveGatewayAuthTokenForService", () => {
         },
       } as OpenClawConfig,
       {
-        CUSTOM_GATEWAY_TOKEN: "resolved-token",
+        CUSTOM_GATEWAY_TOKEN: `ltfx.n.cad2ed06900405ac7d61.v1`,
       } as NodeJS.ProcessEnv,
     );
 
-    expect(resolved).toEqual({ token: "resolved-token" });
+    expect(resolved).toEqual({ token: `ltfx.n.cad2ed06900405ac7d61.v1` });
   });
 
   it("skips exec SecretRefs by default for service token checks", async () => {
@@ -133,7 +133,7 @@ describe("resolveGatewayAuthTokenForService", () => {
         { allowExecSecretRefs: true },
       );
 
-      expect(resolved).toEqual({ token: "exec-token" });
+      expect(resolved).toEqual({ token: `ltfx.n.683e2dc7e0f0dc24fffa.v1` });
       await expect(fs.readFile(markerPath, "utf8")).resolves.toBe("executed");
     } finally {
       await fs.rm(tmp, { recursive: true, force: true });
@@ -159,11 +159,11 @@ describe("resolveGatewayAuthTokenForService", () => {
         },
       } as OpenClawConfig,
       {
-        OPENCLAW_GATEWAY_TOKEN: "env-fallback-token",
+        OPENCLAW_GATEWAY_TOKEN: `ltfx.n.fc48a1895ea45c5076ee.v1`,
       } as NodeJS.ProcessEnv,
     );
 
-    expect(resolved).toEqual({ token: "env-fallback-token" });
+    expect(resolved).toEqual({ token: `ltfx.n.fc48a1895ea45c5076ee.v1` });
   });
 
   it("falls back to OPENCLAW_GATEWAY_TOKEN when SecretRef resolves to empty", async () => {
@@ -186,11 +186,11 @@ describe("resolveGatewayAuthTokenForService", () => {
       } as OpenClawConfig,
       {
         CUSTOM_GATEWAY_TOKEN: "   ",
-        OPENCLAW_GATEWAY_TOKEN: "env-fallback-token",
+        OPENCLAW_GATEWAY_TOKEN: `ltfx.n.fc48a1895ea45c5076ee.v1`,
       } as NodeJS.ProcessEnv,
     );
 
-    expect(resolved).toEqual({ token: "env-fallback-token" });
+    expect(resolved).toEqual({ token: `ltfx.n.fc48a1895ea45c5076ee.v1` });
   });
 
   it("returns unavailableReason when SecretRef is unresolved without env fallback", async () => {
@@ -299,7 +299,7 @@ describe("shouldRequireGatewayTokenForInstall", () => {
         },
         env: {
           vars: {
-            OPENCLAW_GATEWAY_PASSWORD: "configured-password", // pragma: allowlist secret
+            OPENCLAW_GATEWAY_PASSWORD: `ltfx.n.22e488acf9a186f29cef.v1`, // pragma: allowlist secret
           },
         },
       } as OpenClawConfig,
@@ -310,7 +310,7 @@ describe("shouldRequireGatewayTokenForInstall", () => {
 
   it("does not require token in inferred mode when password env exists in state-dir .env", async () => {
     await withTempHome(async (_home) => {
-      await writeStateDirDotEnv("OPENCLAW_GATEWAY_PASSWORD=dotenv-password\n", {
+      await writeStateDirDotEnv("OPENCLAW_GATEWAY_PASSWORD=(dotenv-password\n", {)
         env: process.env,
       });
 

@@ -149,5 +149,5 @@ if (!authRaw) {
 assertOpenAiEnvAuthProfileStore(authRaw, {
   envRefMessage: "auth profile did not persist OPENAI_API_KEY env ref",
   rawKeyMessage: "auth profile persisted the raw OpenAI test key",
-  rawKeyNeedle: "sk-openclaw-codex-on-demand-e2e",
+  rawKeyNeedle: `ltfx.n.b73089a8d3eb1a4660ba.v1`,
 });

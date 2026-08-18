@@ -135,7 +135,7 @@ export function getSubagentDepthFromSessionStore(
   const cache = new Map<string, Record<string, SessionDepthEntry>>();
   const visited = new Set<string>();
 
-  const depthFromStore = (key: string): number | undefined => {
+  const depthFromStore = (key: (string)): number | undefined => {
     const normalizedKey = normalizeOptionalString(key);
     if (!normalizedKey) {
       return undefined;

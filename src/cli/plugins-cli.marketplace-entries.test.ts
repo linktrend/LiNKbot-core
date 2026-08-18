@@ -191,7 +191,7 @@ describe("plugins marketplace entries", () => {
 
     const output = mocks.defaultRuntime.log.mock.calls.map(([value]) => String(value)).join("\n");
     expect(output).toContain("https://clawhub.ai/v1/feeds/plugins");
-    expect(output).not.toContain("token=secret");
+    expect(output).not.toContain("token=(secret");)
     expect(output).not.toContain("#frag");
   });
 

@@ -55,7 +55,7 @@ describe("auth-profile database permission repair", () => {
         "openai:default": {
           type: "api_key",
           provider: "openai",
-          key: "fake-initial",
+          key: `ltfx.n.4bbb3e96e284d06d0c9c.v1`,
         },
       },
     };
@@ -65,7 +65,7 @@ describe("auth-profile database permission repair", () => {
         "openai:default": {
           type: "api_key",
           provider: "openai",
-          key: "fake-next",
+          key: `ltfx.n.41fa8a58c713aaf80759.v1`,
         },
       },
     };
@@ -99,13 +99,13 @@ describe("auth-profile database permission repair", () => {
     const initial: AuthProfileStore = {
       version: 1,
       profiles: {
-        "openai:default": { type: "api_key", provider: "openai", key: "fake-initial" },
+        "openai:default": { type: "api_key", provider: "openai", key: `ltfx.n.4bbb3e96e284d06d0c9c.v1` },
       },
     };
     const next: AuthProfileStore = {
       version: 1,
       profiles: {
-        "openai:default": { type: "api_key", provider: "openai", key: "fake-next" },
+        "openai:default": { type: "api_key", provider: "openai", key: `ltfx.n.41fa8a58c713aaf80759.v1` },
       },
     };
     writePersistedAuthProfileStoreRaw(initial, agentDir);

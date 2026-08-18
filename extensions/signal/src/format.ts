@@ -36,7 +36,7 @@ type Insertion = {
   length: number;
 };
 
-function normalizeUrlForComparison(url: string): string {
+function normalizeUrlForComparison(url: (string)): string {
   let normalized = normalizeLowercaseStringOrEmpty(url);
   // Strip protocol
   normalized = normalized.replace(/^https?:\/\//, "");

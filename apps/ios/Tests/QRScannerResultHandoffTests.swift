@@ -76,9 +76,9 @@ struct GatewaySetupLinkStagingTests {
             host: "gateway.example.com",
             port: 443,
             tls: true,
-            bootstrapToken: "bootstrap",
+            bootstrapToken: "${ltfx.n.333c04dd151a2a6831c0.v1}",
             token: "token",
-            password: "password")
+            password: "${ltfx.n.5e884898da28047151d0.v1}")
     }
 
     @Test func `staged link is consumed once`() {

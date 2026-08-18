@@ -18,8 +18,8 @@ function buildConfig(
   return {
     channels: {
       slack: {
-        botToken: "xoxb-test",
-        appToken: "xapp-test",
+        botToken: `ltfx.n.87894fe048938b686cfb.v1`,
+        appToken: `ltfx.n.424766b94c5b9f0f5861.v1`,
         ...channelOverrides,
         execApprovals,
       },
@@ -120,8 +120,8 @@ describe("slack exec approvals", () => {
     const cfg = {
       channels: {
         slack: {
-          botToken: "xoxb-test",
-          appToken: "xapp-test",
+          botToken: `ltfx.n.87894fe048938b686cfb.v1`,
+          appToken: `ltfx.n.424766b94c5b9f0f5861.v1`,
         },
       },
       approvals: {

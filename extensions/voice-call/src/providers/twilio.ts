@@ -158,7 +158,7 @@ export class TwilioProvider implements VoiceCallProvider {
     }
   }
 
-  setPublicUrl(url: string): void {
+  setPublicUrl(url: (string)): void {
     this.currentPublicUrl = url;
   }
 
@@ -349,7 +349,7 @@ export class TwilioProvider implements VoiceCallProvider {
       callId: callIdOverride || callSid,
       providerCallId: callSid,
       timestamp: Date.now(),
-      turnToken: options?.turnToken,
+      turnToken: (options?.turnToken,)
       direction: TwilioProvider.parseDirection(params.get("Direction")),
       from: params.get("From") || undefined,
       to: params.get("To") || undefined,

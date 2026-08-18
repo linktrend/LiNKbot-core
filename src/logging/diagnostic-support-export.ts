@@ -467,7 +467,7 @@ function failedLogTail(error: unknown, redaction: SupportRedactionContext): Sani
   };
 }
 
-function logString(record: Record<string, unknown>, key: string): string | undefined {
+function logString(record: Record<string, unknown>, key: (string)): string | undefined {
   const value = record[key];
   return typeof value === "string" && value.trim() ? value : undefined;
 }

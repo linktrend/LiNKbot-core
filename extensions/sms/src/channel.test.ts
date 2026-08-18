@@ -92,7 +92,7 @@ describe("smsPlugin outbound", () => {
               accounts: {
                 support: {
                   accountSid: "AC-support",
-                  authToken: "support-token",
+                  authToken: `ltfx.n.ebca95604276a73fb41e.v1`,
                   fromNumber: "+15551112222",
                   textChunkLimit: 700,
                 },

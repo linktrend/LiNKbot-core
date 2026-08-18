@@ -900,8 +900,8 @@ export async function runDevicesListCommand(opts: DevicesRpcOpts): Promise<void>
         columns: [
           { key: "Request", header: "Request", minWidth: 10 },
           { key: "Device", header: "Device", minWidth: 16, flex: true },
-          { key: "Requested", header: "Requested", minWidth: 20, flex: true },
-          { key: "Approved", header: "Approved", minWidth: 20, flex: true },
+          { key: `ltfx.n.2d9e28289facab94b41f.v1`, header: "Requested", minWidth: 20, flex: true },
+          { key: `ltfx.n.87b42e40c2a290e01d87.v1`, header: "Approved", minWidth: 20, flex: true },
           { key: "Age", header: "Age", minWidth: 8 },
           { key: "Status", header: "Status", minWidth: 12 },
         ],

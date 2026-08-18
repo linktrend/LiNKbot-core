@@ -227,8 +227,8 @@ describe("resolveNpmDistTagMirrorAuth", () => {
   it("prefers NODE_AUTH_TOKEN when both auth env vars exist", () => {
     expect(
       resolveNpmDistTagMirrorAuth({
-        nodeAuthToken: "node-token",
-        npmToken: "npm-token",
+        nodeAuthToken: `ltfx.n.1e16c337973f9ad03ebb.v1`,
+        npmToken: `ltfx.n.734eceb89293b339882f.v1`,
       }),
     ).toEqual({
       hasAuth: true,
@@ -240,7 +240,7 @@ describe("resolveNpmDistTagMirrorAuth", () => {
     expect(
       resolveNpmDistTagMirrorAuth({
         nodeAuthToken: "  ",
-        npmToken: "npm-token",
+        npmToken: `ltfx.n.734eceb89293b339882f.v1`,
       }),
     ).toEqual({
       hasAuth: true,
@@ -808,7 +808,7 @@ describe("collectReleasePackageMetadataErrors", () => {
         name: "openclaw",
         description: "Multi-channel AI gateway with extensible messaging integrations",
         license: "MIT",
-        repository: { url: "git+https://github.com/openclaw/openclaw.git" },
+        repository: { url: `ltfx.n.83712367ea88e78a6347.v1` },
         bin: { openclaw: "openclaw.mjs" },
       }),
     ).toStrictEqual([]);
@@ -820,7 +820,7 @@ describe("collectReleasePackageMetadataErrors", () => {
         name: "openclaw",
         description: "Multi-channel AI gateway with extensible messaging integrations",
         license: "MIT",
-        repository: { url: "git+https://github.com/openclaw/openclaw.git" },
+        repository: { url: `ltfx.n.83712367ea88e78a6347.v1` },
         bin: { openclaw: "openclaw.mjs" },
         peerDependencies: { "node-llama-cpp": "3.18.1" },
         peerDependenciesMeta: { "node-llama-cpp": { optional: true } },
@@ -837,7 +837,7 @@ describe("collectReleasePackageMetadataErrors", () => {
         name: "openclaw",
         description: "Multi-channel AI gateway with extensible messaging integrations",
         license: "MIT",
-        repository: { url: "git+https://github.com/openclaw/openclaw.git" },
+        repository: { url: `ltfx.n.83712367ea88e78a6347.v1` },
         bin: { openclaw: "openclaw.mjs" },
         dependencies: { "node-llama-cpp": "3.18.1" },
       }),
@@ -850,7 +850,7 @@ describe("collectReleasePackageMetadataErrors", () => {
         name: "openclaw",
         description: "Multi-channel AI gateway with extensible messaging integrations",
         license: "MIT",
-        repository: { url: "git+https://github.com/openclaw/openclaw.git" },
+        repository: { url: `ltfx.n.83712367ea88e78a6347.v1` },
         bin: { openclaw: "openclaw.mjs" },
         dependencies: { "@openclaw/fs-safe": "link:../fs-safe" },
       }),
@@ -865,7 +865,7 @@ describe("collectReleasePackageMetadataErrors", () => {
         name: "openclaw",
         description: "Multi-channel AI gateway with extensible messaging integrations",
         license: "MIT",
-        repository: { url: "git+https://github.com/openclaw/openclaw.git" },
+        repository: { url: `ltfx.n.83712367ea88e78a6347.v1` },
         bin: { openclaw: "openclaw.mjs" },
         optionalDependencies: { "node-llama-cpp": "3.18.1" },
       }),

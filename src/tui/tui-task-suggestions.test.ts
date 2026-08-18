@@ -55,7 +55,7 @@ function createHarness() {
   const listTaskSuggestions = vi.fn().mockResolvedValue([]);
   const acceptTaskSuggestion = vi
     .fn()
-    .mockResolvedValue({ taskId: "task_1", key: "agent:main:task" });
+    .mockResolvedValue({ taskId: "task_1", key: `ltfx.n.3f9731237ee0ef2d5ed6.v1` });
   const dismissTaskSuggestion = vi.fn().mockResolvedValue({ taskId: "task_1", dismissed: true });
   const onAccepted = vi.fn().mockResolvedValue(undefined);
   let agentId = "main";
@@ -323,7 +323,7 @@ describe("TUI task suggestions", () => {
     harness.selectors[0]?.onSelect?.(accept);
     harness.setSessionKey("agent:main:other");
     harness.controller.sessionChanged();
-    pendingAccept.resolve({ taskId: "task_1", key: "agent:main:task" });
+    pendingAccept.resolve({ taskId: "task_1", key: `ltfx.n.3f9731237ee0ef2d5ed6.v1` });
 
     await vi.waitFor(() => {
       expect(harness.addSystem).toHaveBeenCalledWith("follow-up task started in agent:main:task");

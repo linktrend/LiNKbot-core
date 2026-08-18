@@ -217,7 +217,7 @@ describe("maybeCompactCodexAppServerSession", () => {
           trigger: "manual",
           provider: "openai",
           model: "gpt-5.5",
-          resolvedApiKey: "prepared-platform-key",
+          resolvedApiKey: `ltfx.n.34ddaf60896be843d9bb.v1`,
           runtimeAuthPlan: {
             providerForAuth: "openai",
             authProfileProviderForAuth: "openai",
@@ -240,7 +240,7 @@ describe("maybeCompactCodexAppServerSession", () => {
     expect(result.ok).toBe(true);
     expect(factory).toHaveBeenCalledWith(
       expect.objectContaining({
-        preparedAuth: { kind: "api-key", apiKey: "prepared-platform-key" },
+        preparedAuth: { kind: "api-key", apiKey: `ltfx.n.34ddaf60896be843d9bb.v1` },
       }),
     );
     expect(factory.mock.calls[0]?.[0]).not.toHaveProperty("authProfileId");
@@ -1124,7 +1124,7 @@ describe("maybeCompactCodexAppServerSession", () => {
       {
         clientFactory: async () => fake.client,
         pluginConfig: {
-          appServer: { transport: "websocket", url: "ws://127.0.0.1:45001" },
+          appServer: { transport: "websocket", url: `ltfx.n.2ff204bdc425ac64237c.v1` },
         },
         nativeCompletionTimeoutMs: 250,
         nativeInterruptGraceMs: 10,
@@ -1151,7 +1151,7 @@ describe("maybeCompactCodexAppServerSession", () => {
     fake.closeAndWait.mockResolvedValueOnce(false);
     const pluginConfig = {
       supervision: { enabled: true },
-      appServer: { transport: "websocket" as const, url: "ws://127.0.0.1:45001" },
+      appServer: { transport: "websocket" as const, url: `ltfx.n.2ff204bdc425ac64237c.v1` },
     };
     const sessionFile = await writeSupervisedTestBinding({
       threadId: "thread-stuck-supervision",
@@ -1497,7 +1497,7 @@ describe("maybeCompactCodexAppServerSession", () => {
           allowNonManualNativeRequest: true,
           clientFactory: async () => fake.client,
           pluginConfig: {
-            appServer: { transport: "websocket", url: "ws://127.0.0.1:45001" },
+            appServer: { transport: "websocket", url: `ltfx.n.2ff204bdc425ac64237c.v1` },
           },
         },
       ),

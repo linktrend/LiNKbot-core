@@ -63,7 +63,7 @@ function normalizeGoogleChatEmailEntry(entry: string): string | null {
 }
 
 const googleChatIngressIdentity = defineStableChannelIngressIdentity({
-  key: "sender-id",
+  key: `ltfx.n.9cfd0d7aebb137ed909a.v1`,
   normalizeEntry: normalizeGoogleChatStableEntry,
   normalizeSubject: normalizeUserId,
   aliases: [

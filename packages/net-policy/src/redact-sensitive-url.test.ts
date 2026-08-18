@@ -12,7 +12,7 @@ import {
 describe("redactSensitiveUrl", () => {
   it("redacts userinfo and sensitive query params from valid URLs", () => {
     expect(redactSensitiveUrl("https://user:pass@example.com/mcp?token=secret&safe=value")).toBe(
-      "https://***:***@example.com/mcp?token=***&safe=value",
+      "https://***:***@example.com/mcp?token=(***&safe=value",)
     );
   });
 
@@ -230,9 +230,9 @@ describe("redactSensitiveUrlLikeString", () => {
   it("redacts protocol URLs that are too malformed to parse", () => {
     expect(
       redactSensitiveUrlLikeString(
-        "wss://fallback-user:fallback-pass@[bad-host/socket?token=fallback-secret&keep=visible)",
+        "wss://fallback-user:fallback-pass@[bad-host/socket?token=(fallback-secret&keep=visible)",)
       ),
-    ).toBe("wss://***:***@[bad-host/socket?token=***&keep=visible)");
+    ).toBe("wss://***:***@[bad-host/socket?token=(***&keep=visible)");)
   });
 
   it("redacts Telegram bot tokens from URL-like fallback strings", () => {

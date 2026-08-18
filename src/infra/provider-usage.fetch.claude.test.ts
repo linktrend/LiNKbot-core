@@ -257,7 +257,7 @@ describe("fetchClaudeUsage", () => {
   });
 
   it("falls back to claude web usage when oauth scope is missing", async () => {
-    vi.stubEnv("CLAUDE_AI_SESSION_KEY", "sk-ant-session-key");
+    vi.stubEnv("CLAUDE_AI_SESSION_KEY", "ltfx.n.2d069c4b11dfb678d45d.v1");
 
     const mockFetch = createProviderUsageFetch(async (url, init) => {
       if (url.includes("/api/oauth/usage")) {
@@ -265,7 +265,7 @@ describe("fetchClaudeUsage", () => {
       }
 
       const headers = (init?.headers as Record<string, string> | undefined) ?? {};
-      expect(headers.Cookie).toBe("sessionKey=sk-ant-session-key");
+      expect(headers.Cookie).toBe("sessionKey=(ltfx.n.2d069c4b11dfb678d45d.v1"));
 
       if (url.endsWith("/api/organizations")) {
         return makeResponse(200, [{ uuid: "org-123" }]);
@@ -287,7 +287,7 @@ describe("fetchClaudeUsage", () => {
   });
 
   it("parses sessionKey from Cookie-prefixed CLAUDE_WEB_COOKIE headers", async () => {
-    vi.stubEnv("CLAUDE_WEB_COOKIE", "Cookie: foo=bar; sessionKey=sk-ant-cookie-header");
+    vi.stubEnv("CLAUDE_WEB_COOKIE", "Cookie: foo=bar; sessionKey=(ltfx.n.47be9857916a32b4a08f.v1"));
 
     const mockFetch = createScopeFallbackFetch(async (url) => {
       if (url.endsWith("/api/organizations")) {
@@ -306,7 +306,7 @@ describe("fetchClaudeUsage", () => {
   });
 
   it("parses sessionKey from CLAUDE_WEB_COOKIE for web fallback", async () => {
-    vi.stubEnv("CLAUDE_WEB_COOKIE", "sessionKey=sk-ant-cookie-session");
+    vi.stubEnv("CLAUDE_WEB_COOKIE", "sessionKey=(ltfx.n.4b0fee9e25658c07a5e2.v1"));
 
     const mockFetch = createScopeFallbackFetch(async (url) => {
       if (url.endsWith("/api/organizations")) {
@@ -359,7 +359,7 @@ describe("fetchClaudeUsage", () => {
   ])(
     "returns oauth error when web fallback is unavailable: $name",
     async ({ orgResponse, usageResponse }) => {
-      vi.stubEnv("CLAUDE_AI_SESSION_KEY", "sk-ant-fallback");
+      vi.stubEnv("CLAUDE_AI_SESSION_KEY", "ltfx.n.0d2c2d6eba312a7d9c01.v1");
 
       const mockFetch = createScopeFallbackFetch(async (url) => {
         if (url.endsWith("/api/organizations")) {

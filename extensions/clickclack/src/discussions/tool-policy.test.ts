@@ -43,7 +43,7 @@ function setup() {
       clickclack: {
         enabled: true,
         baseUrl: "https://clickclack.example",
-        token: "test-token",
+        token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
         workspace: "team",
         discussions: { enabled: true, workspace: "team" },
       },
@@ -199,13 +199,13 @@ describe("ClickClack discussion session tool policy", () => {
       accounts: {
         first: {
           baseUrl: "https://clickclack.example",
-          token: "test-token",
+          token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
           workspace: "team",
           discussions: { enabled: true },
         },
         second: {
           baseUrl: "https://clickclack-two.example",
-          token: "test-token",
+          token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
           workspace: "team",
           discussions: { enabled: true },
         },

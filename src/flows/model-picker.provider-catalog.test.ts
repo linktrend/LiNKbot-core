@@ -30,14 +30,14 @@ describe("loadPreferredProviderPickerCatalog", () => {
         preferredProvider: "NVIDIA",
         agentDir: "/tmp/agent",
         workspaceDir: "/tmp/workspace",
-        env: { NVIDIA_API_KEY: "test-nvidia-api-key" },
+        env: { NVIDIA_API_KEY: `ltfx.n.ac9bb1cc1b3ebde46a89.v1` },
       }),
     ).resolves.toEqual([{ provider: "nvidia", id: "nvidia/nemotron", name: "Nemotron" }]);
     expect(mocks.loadPreparedModelCatalogOwnerSnapshot).toHaveBeenCalledWith({
       config: {},
       agentDir: "/tmp/agent",
       workspaceDir: "/tmp/workspace",
-      env: { NVIDIA_API_KEY: "test-nvidia-api-key" },
+      env: { NVIDIA_API_KEY: `ltfx.n.ac9bb1cc1b3ebde46a89.v1` },
     });
   });
 

@@ -70,7 +70,7 @@ Basic setup, open DM policy:
   channels: {
     yuanbao: {
       appKey: "your_app_key",
-      appSecret: "your_app_secret",
+      appSecret: "${ltfx.n.82c79d360ce604fe21d6.v1}",
       dm: {
         policy: "open",
       },
@@ -86,7 +86,7 @@ Restrict DMs to specific users:
   channels: {
     yuanbao: {
       appKey: "your_app_key",
-      appSecret: "your_app_secret",
+      appSecret: "${ltfx.n.82c79d360ce604fe21d6.v1}",
       dm: {
         policy: "allowlist",
         allowFrom: ["user_id_1", "user_id_2"],
@@ -177,12 +177,12 @@ Yuanbao supports native slash-command menus; commands sync to the platform autom
       accounts: {
         main: {
           appKey: "key_xxx",
-          appSecret: "secret_xxx",
+          appSecret: "${ltfx.n.95564fc9cebe415e56a8.v1}",
           name: "Primary bot",
         },
         backup: {
           appKey: "key_yyy",
-          appSecret: "secret_yyy",
+          appSecret: "${ltfx.n.3965f3a569cff600f36c.v1}",
           name: "Backup bot",
           enabled: false,
         },

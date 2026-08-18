@@ -34,7 +34,7 @@ type MigrationDatabase = Pick<
 const CREATED_AT_MS = 1_700_000_000_000;
 const SWIFT_RAW_DEVICE_ID = "56475aa75463474c0285df5dbf2bcab73da651358839e9b77481b2eab107708c";
 const SWIFT_RAW_PUBLIC_KEY = "A6EHv/POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbg=";
-const SWIFT_RAW_PRIVATE_KEY = "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8="; // pragma: allowlist secret
+const SWIFT_RAW_PRIVATE_KEY = `ltfx.n.905f28def18eaac05ae6.v1`; // pragma: allowlist secret
 
 describe("legacy device identity Doctor migration", () => {
   const tempDirs = useAutoCleanupTempDirTracker((cleanup) => {

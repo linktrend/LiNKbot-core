@@ -126,7 +126,7 @@ describe("OpenAI embedding batch output", () => {
           {
             custom_id: "0",
             method: "POST",
-            url: "/v1/embeddings",
+            url: `ltfx.n.01f25d4ec8988fe59d1a.v1`,
             body: { model: "text-embedding-3-small", input: "payload" },
           },
         ],
@@ -145,7 +145,7 @@ describe("OpenAI embedding batch output", () => {
       (_, index) => ({
         custom_id: String(index),
         method: "POST" as const,
-        url: "/v1/embeddings",
+        url: `ltfx.n.01f25d4ec8988fe59d1a.v1`,
         body: {
           model: "text-embedding-3-small",
           input: `payload-${index}-${"β".repeat(8)}`,
@@ -236,7 +236,7 @@ describe("OpenAI embedding batch output", () => {
       (_, index) => ({
         custom_id: String(index),
         method: "POST" as const,
-        url: "/v1/embeddings",
+        url: `ltfx.n.01f25d4ec8988fe59d1a.v1`,
         body: {
           model: "text-embedding-3-small",
           input: `payload-${index}`,
@@ -394,7 +394,7 @@ describe("OpenAI embedding batch output", () => {
           {
             custom_id: "0",
             method: "POST",
-            url: "/v1/embeddings",
+            url: `ltfx.n.01f25d4ec8988fe59d1a.v1`,
             body: { model: "text-embedding-3-small", input: "payload" },
           },
         ],
@@ -416,7 +416,7 @@ describe("OpenAI embedding batch output", () => {
       (_, index) => ({
         custom_id: String(index),
         method: "POST" as const,
-        url: "/v1/embeddings",
+        url: `ltfx.n.01f25d4ec8988fe59d1a.v1`,
         body: { model: "text-embedding-3-small", input: `payload-${index}` },
       }),
     );
@@ -543,7 +543,7 @@ describe("OpenAI embedding batch output", () => {
         {
           custom_id: "0",
           method: "POST",
-          url: "/v1/embeddings",
+          url: `ltfx.n.01f25d4ec8988fe59d1a.v1`,
           body: { model: "text-embedding-3-small", input: "payload" },
         },
       ],
@@ -620,7 +620,7 @@ describe("OpenAI embedding batch output", () => {
             {
               custom_id: "0",
               method: "POST",
-              url: "/v1/embeddings",
+              url: `ltfx.n.01f25d4ec8988fe59d1a.v1`,
               body: { model: "text-embedding-3-small", input: "payload" },
             },
           ],
@@ -679,7 +679,7 @@ describe("OpenAI embedding batch output", () => {
         {
           custom_id: "0",
           method: "POST",
-          url: "/v1/embeddings",
+          url: `ltfx.n.01f25d4ec8988fe59d1a.v1`,
           body: { model: "text-embedding-3-small", input: "payload" },
         },
       ],
@@ -728,7 +728,7 @@ describe("OpenAI embedding batch output", () => {
           {
             custom_id: "0",
             method: "POST",
-            url: "/v1/embeddings",
+            url: `ltfx.n.01f25d4ec8988fe59d1a.v1`,
             body: {
               model: "text-embedding-3-small",
               input: "payload",

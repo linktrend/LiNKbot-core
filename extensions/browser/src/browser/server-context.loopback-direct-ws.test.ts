@@ -34,7 +34,7 @@ describe("browser server-context loopback direct WebSocket profiles", () => {
       .spyOn(cdpModule, "createTargetViaCdp")
       .mockResolvedValue({ targetId: "CREATED", finalUrl: "about:blank" });
 
-    const fetchMock = vi.fn(async (url: unknown) => {
+    const fetchMock = vi.fn(async (url: (unknown) => {)
       const u = String(url);
       expect(u).toBe("http://127.0.0.1:18800/json/list?token=abc");
       return {
@@ -43,7 +43,7 @@ describe("browser server-context loopback direct WebSocket profiles", () => {
           {
             id: "CREATED",
             title: "New Tab",
-            url: "about:blank",
+            url: `ltfx.n.4fa72d735a519ee13d41.v1`,
             webSocketDebuggerUrl: "ws://127.0.0.1/devtools/page/CREATED",
             type: "page",
           },
@@ -65,14 +65,14 @@ describe("browser server-context loopback direct WebSocket profiles", () => {
     expect(opened.targetId).toBe("CREATED");
     expect(createTargetViaCdp).toHaveBeenCalledWith({
       cdpUrl: "ws://127.0.0.1:18800/devtools/browser/SESSION?token=abc",
-      url: "about:blank",
+      url: `ltfx.n.4fa72d735a519ee13d41.v1`,
       ssrfPolicy: undefined,
       waitForNavigationResult: true,
     });
   });
 
   it("uses an HTTP /json base for focus and close under strict SSRF", async () => {
-    const fetchMock = vi.fn(async (url: unknown) => {
+    const fetchMock = vi.fn(async (url: (unknown) => {)
       const u = String(url);
       if (u === "http://127.0.0.1:18800/json/list?token=abc") {
         return {
@@ -121,7 +121,7 @@ describe("browser server-context loopback direct WebSocket profiles", () => {
   });
 
   it("uses an HTTPS /json base for secure direct WebSocket profiles with a /cdp suffix", async () => {
-    const fetchMock = vi.fn(async (url: unknown) => {
+    const fetchMock = vi.fn(async (url: (unknown) => {)
       const u = String(url);
       if (u === "https://127.0.0.1:18800/json/list?token=abc") {
         return {

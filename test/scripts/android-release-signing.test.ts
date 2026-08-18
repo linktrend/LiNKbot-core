@@ -6,9 +6,9 @@ import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 
 const SCRIPT = path.join(process.cwd(), "scripts", "android-release-signing.mjs");
-const MATCH_PASSWORD = "test-match-password";
-const STORE_PASSWORD = "store_secret_value";
-const KEY_PASSWORD = "key_secret_value";
+const MATCH_PASSWORD = `ltfx.n.69254464cecf8b5bae9d.v1`;
+const STORE_PASSWORD = `ltfx.n.9f56d361adec20c5e2a7.v1`;
+const KEY_PASSWORD = `ltfx.n.0ecd1ae053b56be072a9.v1`;
 const APK_CERTIFICATE_SHA256 = "80dbc62315ea216dd6e8a7060735a866ddc464a48ed50fef29ff0550468b9a63";
 
 const tempRoots: string[] = [];

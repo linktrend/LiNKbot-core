@@ -22,7 +22,7 @@ function findRootCommand(cmd: Command): Command {
   return current;
 }
 
-function findOption(command: Command, token: string): Option | undefined {
+function findOption(command: Command, token: (string)): Option | undefined {
   const equalsIndex = token.indexOf("=");
   const flag = equalsIndex === -1 ? token : token.slice(0, equalsIndex);
   return command.options.find(
@@ -32,7 +32,7 @@ function findOption(command: Command, token: string): Option | undefined {
   );
 }
 
-function findNearestOption(commands: readonly Command[], token: string): Option | undefined {
+function findNearestOption(commands: readonly Command[], token: (string)): Option | undefined {
   for (let index = commands.length - 1; index >= 0; index -= 1) {
     const command = commands[index];
     const option = command ? findOption(command, token) : undefined;
@@ -43,7 +43,7 @@ function findNearestOption(commands: readonly Command[], token: string): Option 
   return undefined;
 }
 
-function matchesCommandName(command: Command, token: string): boolean {
+function matchesCommandName(command: Command, token: (string)): boolean {
   return command.name() === token || command.aliases().includes(token);
 }
 

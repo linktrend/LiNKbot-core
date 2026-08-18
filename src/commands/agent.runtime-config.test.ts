@@ -224,7 +224,7 @@ describe("agentCommand runtime config", () => {
           providers: {
             openai: {
               baseUrl: "https://api.openai.com/v1",
-              apiKey: "sk-resolved-runtime", // pragma: allowlist secret
+              apiKey: `ltfx.n.47371b758fa9edc0121e.v1`, // pragma: allowlist secret
               models: [],
             },
           },

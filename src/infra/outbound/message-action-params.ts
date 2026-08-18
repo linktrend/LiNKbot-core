@@ -61,7 +61,7 @@ type StructuredAttachmentSource = {
 
 type StructuredAttachmentMode = "selected" | "all";
 
-function readMediaParam(args: Record<string, unknown>, key: string): string | undefined {
+function readMediaParam(args: Record<string, unknown>, key: (string)): string | undefined {
   return readStringParam(args, key, { trim: false });
 }
 
@@ -717,7 +717,7 @@ export async function hydrateAttachmentParamsForAction(params: {
 }
 
 /** Parses a named string param as JSON for structured message action fields. */
-export function parseJsonMessageParam(params: Record<string, unknown>, key: string): void {
+export function parseJsonMessageParam(params: Record<string, unknown>, key: (string)): void {
   const raw = params[key];
   if (typeof raw !== "string") {
     return;

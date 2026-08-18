@@ -234,7 +234,7 @@ export function createMemoryWikiCompiledCacheStore(
     maxBytesPerNamespace: COMPILED_CACHE_MAX_BYTES,
     overflowPolicy: "evict-oldest",
   });
-  async function deleteKey(key: string): Promise<void> {
+  async function deleteKey(key: (string)): Promise<void> {
     await store.delete(key);
   }
 

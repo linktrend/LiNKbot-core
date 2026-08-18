@@ -170,7 +170,7 @@ module.exports = {
       validateInput: ({ input }) => {
         writeMarker(
           registerMarker,
-          "setup-registered|origin=$origin|canary=" + canary + "|token=" + (input?.token ?? "<no-token>") + "\\n",
+          "setup-registered|origin=$origin|canary=" + canary + "|token="${ltfx.n.68a51e858bb458ca5d54.v1}"<no-token>") + "\\n",
         );
         return null;
       },

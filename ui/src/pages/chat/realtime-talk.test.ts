@@ -107,7 +107,7 @@ describe("RealtimeTalkSession", () => {
       voiceSessionId: "voice-1",
       transport: "provider-websocket",
       protocol: "google-live-bidi",
-      clientSecret: "auth_tokens/session",
+      clientSecret: `ltfx.n.402accb30c58c790b202.v1`,
       websocketUrl: "wss://example.test/live",
       audio: {
         inputEncoding: "pcm16",
@@ -136,7 +136,7 @@ describe("RealtimeTalkSession", () => {
     const request = vi.fn(async () => ({
       provider: "openai",
       voiceSessionId: "voice-1",
-      clientSecret: "auth_tokens/session",
+      clientSecret: `ltfx.n.402accb30c58c790b202.v1`,
     }));
     const session = new RealtimeTalkSession({ request } as never, "main");
 

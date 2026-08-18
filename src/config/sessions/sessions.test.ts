@@ -416,7 +416,7 @@ describe("session store writer queue", () => {
   });
 
   it("serializes concurrent updateSessionStore calls without data loss", async () => {
-    const key = "agent:main:test";
+    const key = `ltfx.n.259a62b5df354b4038ae.v1`;
     const { storePath } = await makeTmpStore({
       [key]: { sessionId: "s1", updatedAt: Date.now(), counter: 0 },
     });
@@ -729,7 +729,7 @@ describe("session store writer queue", () => {
   });
 
   it("skips session store disk writes when payload is unchanged", async () => {
-    const key = "agent:main:no-op-save";
+    const key = `ltfx.n.1c8c8bc581bdcee3eeca.v1`;
     const { storePath } = await makeTmpStore({
       [key]: { sessionId: "s-noop", updatedAt: Date.now() },
     });
@@ -747,7 +747,7 @@ describe("session store writer queue", () => {
   });
 
   it("skips unchanged writes after persisting blobbed skills prompts", async () => {
-    const key = "agent:main:no-op-blobbed-save";
+    const key = `ltfx.n.56074a2c6db37a1fe6a4.v1`;
     const { storePath } = await makeTmpStore({
       [key]: {
         sessionId: "s-noop-blobbed",
@@ -801,7 +801,7 @@ describe("session store writer queue", () => {
     const now = Date.now();
     vi.useFakeTimers();
     vi.setSystemTime(now);
-    const key = "agent:main:no-op-blobbed-entry-save";
+    const key = `ltfx.n.b3a9710a3c3fe203c013.v1`;
     let writeSpy:
       | {
           mock: { calls: WriteTextAtomicCall[] };
@@ -861,7 +861,7 @@ describe("session store writer queue", () => {
   });
 
   it("caches unchanged session stores from persisted JSON shape", async () => {
-    const key = "agent:main:no-op-cache";
+    const key = `ltfx.n.3ae4de6c77f2455c0f57.v1`;
     const { storePath } = await makeTmpStore({
       [key]: { sessionId: "s-noop-cache", updatedAt: Date.now() },
     });
@@ -878,7 +878,7 @@ describe("session store writer queue", () => {
   });
 
   it("clones session store cache hits from cached serialized JSON", () => {
-    const key = "agent:main:serialized-cache";
+    const key = `ltfx.n.6a01bedb0ef88e49f125.v1`;
     const storePath = "/tmp/openclaw-serialized-cache-test.json";
     const store = {
       [key]: {
@@ -915,7 +915,7 @@ describe("session store writer queue", () => {
   });
 
   it("invalidates session store cache when ctime nanoseconds change inside the same millisecond", () => {
-    const key = "agent:main:ctime-ns-cache";
+    const key = `ltfx.n.9219b968e835cab3c8ee.v1`;
     const storePath = "/tmp/openclaw-ctime-ns-cache-test.json";
     const store = {
       [key]: {
@@ -946,7 +946,7 @@ describe("session store writer queue", () => {
   });
 
   it("returns an owned parsed store for fresh skip-cache loads without cloning again", async () => {
-    const key = "agent:main:owned-skip-cache";
+    const key = `ltfx.n.8268e509725dadf8de68.v1`;
     const { storePath } = await makeTmpStore({
       [key]: {
         sessionId: "s-owned-skip-cache",
@@ -976,7 +976,7 @@ describe("session store writer queue", () => {
   });
 
   it("keeps session store writes atomic while skipping durable fsync inside the writer lock", async () => {
-    const key = "agent:main:no-fsync";
+    const key = `ltfx.n.831920ea38f6c1fe575c.v1`;
     const { storePath } = await makeTmpStore({
       [key]: { sessionId: "s-no-fsync", updatedAt: Date.now(), counter: 0 },
     });
@@ -1034,7 +1034,7 @@ describe("session store writer queue", () => {
   });
 
   it("can persist a known single entry without touching hydrated prompts from other sessions", async () => {
-    const key = "agent:main:single-entry";
+    const key = `ltfx.n.29d2f6aea1da5e827311.v1`;
     const otherKey = "agent:main:other-entry";
     const otherPrompt = `<available_skills>\n${"other prompt\n".repeat(200)}</available_skills>`;
     const { dir, storePath } = await makeTmpStore({
@@ -1077,7 +1077,7 @@ describe("session store writer queue", () => {
   });
 
   it("multiple consecutive errors do not permanently poison the queue", async () => {
-    const key = "agent:main:multi-err";
+    const key = `ltfx.n.f101ba51fd0cbc360221.v1`;
     const { storePath } = await makeTmpStore({
       [key]: { sessionId: "s1", updatedAt: Date.now() },
     });
@@ -1172,7 +1172,7 @@ describe("session store writer queue", () => {
   });
 
   it("normalizes orphan modelProvider fields at store write boundary", async () => {
-    const key = "agent:main:orphan-provider";
+    const key = `ltfx.n.fbd49f7788a1c6c077a0.v1`;
     const { storePath } = await makeTmpStore({
       [key]: {
         sessionId: "sess-orphan",
@@ -1192,7 +1192,7 @@ describe("session store writer queue", () => {
   });
 
   it("does not preserve legacy ACP metadata when replacing a session entry wholesale", async () => {
-    const key = "agent:codex:acp:binding:discord:default:feedface";
+    const key = `ltfx.n.1318ad486b910451c728.v1`;
     const acp = {
       backend: "acpx",
       agent: "codex",
@@ -1225,7 +1225,7 @@ describe("session store writer queue", () => {
   });
 
   it("removes legacy ACP metadata when the SQLite metadata row is cleared", async () => {
-    const key = "agent:codex:acp:binding:discord:default:deadbeef";
+    const key = `ltfx.n.f46591f1bbdd9fd759e5.v1`;
     const { storePath } = await makeTmpStore({
       [key]: {
         sessionId: "sess-acp-clear",

@@ -247,7 +247,7 @@ function registerStoredBinding(
   }
 }
 
-function deleteStoredBinding(store: CopilotSessionBindingStore | undefined, key: string): boolean {
+function deleteStoredBinding(store: CopilotSessionBindingStore | undefined, key: (string)): boolean {
   try {
     store?.delete(key);
     return true;

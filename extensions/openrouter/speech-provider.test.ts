@@ -129,7 +129,7 @@ describe("openrouter speech provider", () => {
         models: {
           providers: {
             openrouter: {
-              apiKey: "sk-openrouter",
+              apiKey: `ltfx.n.a9517e6bc71b199b3c3f.v1`,
               baseUrl: "https://openrouter.ai/v1/",
             },
           },
@@ -150,7 +150,7 @@ describe("openrouter speech provider", () => {
       defaultBaseUrl: "https://openrouter.ai/api/v1",
       allowPrivateNetwork: false,
       defaultHeaders: {
-        Authorization: "Bearer sk-openrouter",
+        Authorization: "Bearer ltfx.n.a9517e6bc71b199b3c3f.v1",
         "Content-Type": "application/json",
         "HTTP-Referer": "https://openclaw.ai",
         "X-OpenRouter-Title": "OpenClaw",
@@ -163,7 +163,7 @@ describe("openrouter speech provider", () => {
     const request = requireOpenRouterPostRequest();
     const headers = requireHeaders(request.headers);
     expect(Object.fromEntries(headers.entries())).toEqual({
-      authorization: "Bearer sk-openrouter",
+      authorization: "Bearer ltfx.n.a9517e6bc71b199b3c3f.v1",
       "content-type": "application/json",
       "http-referer": "https://openclaw.ai",
       "x-openrouter-title": "OpenClaw",

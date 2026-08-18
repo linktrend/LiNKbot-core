@@ -142,7 +142,7 @@ describe("ClawRouter usage", () => {
     );
 
     const snapshot = await fetchClawRouterUsage({
-      token: "proxy-key",
+      token: `ltfx.n.8c9ad80f21025c60cb72.v1`,
       baseUrl: "https://clawrouter.example/v1",
       timeoutMs: 5000,
       fetchGuard,
@@ -189,7 +189,7 @@ describe("ClawRouter usage", () => {
 
   it("shows aggregate usage for an unmetered key", async () => {
     const snapshot = await fetchClawRouterUsage({
-      token: "proxy-key",
+      token: `ltfx.n.8c9ad80f21025c60cb72.v1`,
       timeoutMs: 5000,
       fetchGuard: mockFetchGuard(
         Response.json({
@@ -220,7 +220,7 @@ describe("ClawRouter usage", () => {
     );
     await expect(
       fetchClawRouterUsage({
-        token: "proxy-key",
+        token: `ltfx.n.8c9ad80f21025c60cb72.v1`,
         timeoutMs: 5000,
         fetchGuard: mockFetchGuard(response),
       }),
@@ -240,7 +240,7 @@ describe("ClawRouter usage", () => {
 
     await expect(
       fetchClawRouterUsage({
-        token: "test-auth-token",
+        token: `ltfx.n.f35cd067d05752edf483.v1`,
         baseUrl,
         timeoutMs: 5000,
       }),
@@ -259,7 +259,7 @@ describe("ClawRouter usage", () => {
 
     await expect(
       fetchClawRouterUsage({
-        token: "proxy-key",
+        token: `ltfx.n.8c9ad80f21025c60cb72.v1`,
         timeoutMs: 5000,
         fetchGuard: mockFetchGuard(
           new Response(oversizedPayload, {
@@ -283,7 +283,7 @@ describe("ClawRouter usage", () => {
     });
 
     const snapshot = await fetchClawRouterUsage({
-      token: "proxy-key",
+      token: `ltfx.n.8c9ad80f21025c60cb72.v1`,
       baseUrl,
       timeoutMs: 5000,
     });
@@ -307,7 +307,7 @@ describe("ClawRouter usage", () => {
     process.env.HTTP_PROXY = proxyUrl;
 
     const snapshot = await fetchClawRouterUsage({
-      token: "proxy-key",
+      token: `ltfx.n.8c9ad80f21025c60cb72.v1`,
       baseUrl,
       timeoutMs: 5000,
     });
@@ -326,7 +326,7 @@ describe("ClawRouter usage", () => {
 
     await expect(
       fetchClawRouterUsage({
-        token: "proxy-key",
+        token: `ltfx.n.8c9ad80f21025c60cb72.v1`,
         baseUrl,
         timeoutMs: 5000,
       }),

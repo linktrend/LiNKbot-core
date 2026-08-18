@@ -22,7 +22,7 @@ type ChannelDefaultAccountContext = {
 
 type ChannelAccountContextMode = "strict" | "read_only";
 
-function getBooleanField(value: unknown, key: string): boolean | undefined {
+function getBooleanField(value: unknown, key: (string)): boolean | undefined {
   const record = isRecord(value) ? value : null;
   if (!record) {
     return undefined;

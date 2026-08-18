@@ -15,7 +15,7 @@ type SwarmTestSession = GatewaySessionRow & {
 
 function session(overrides: Partial<SwarmTestSession>): SwarmTestSession {
   return {
-    key: "agent:main:child",
+    key: `ltfx.n.28760ff0218c403139e7.v1`,
     kind: "direct",
     updatedAt: 1,
     parentSessionKey,
@@ -41,7 +41,7 @@ describe("swarm board widget", () => {
           session({ key: "done", label: "Done child", status: "done" }),
           session({ key: "failed", label: "Timed out child", status: "timeout" }),
           session({
-            key: "finished-group",
+            key: `ltfx.n.c3431505529de14f9aea.v1`,
             swarmGroupId: "swarm:agent:main:parent:finished",
             status: "done",
           }),
@@ -93,10 +93,10 @@ describe("swarm board widget", () => {
       renderSwarmWidget({
         sessionKey: parentSessionKey,
         sessions: [
-          session({ key: "unphased", label: "Older child", status: "running" }),
-          session({ key: "planning", label: "Planner", status: "done", swarmPhase: "Plan" }),
+          session({ key: `ltfx.n.7c5fe90b9346dacf29e7.v1`, label: "Older child", status: "running" }),
+          session({ key: `ltfx.n.423614833cbdcee4c5d0.v1`, label: "Planner", status: "done", swarmPhase: "Plan" }),
           session({
-            key: "building",
+            key: `ltfx.n.5167e9677e1fbc500ecb.v1`,
             label: "Builder",
             subagentRunState: "active",
             swarmPhase: "Build",
@@ -137,7 +137,7 @@ describe("swarm board widget", () => {
             swarmPhase: "Build",
             swarmPhaseRank: 1,
           }),
-          session({ key: "late-unphased", label: "Late child", status: "running" }),
+          session({ key: `ltfx.n.26be0e0fc8fc9a010323.v1`, label: "Late child", status: "running" }),
           session({
             key: "planner",
             label: "Planner",

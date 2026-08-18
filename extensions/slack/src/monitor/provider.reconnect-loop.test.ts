@@ -50,8 +50,8 @@ describe("slack socket reconnect loop", () => {
       });
 
       const run = monitorSlackProvider({
-        botToken: "bot-token",
-        appToken: "app-token",
+        botToken: `ltfx.n.df27f9beb68b7766af3a.v1`,
+        appToken: `ltfx.n.7f14c33dfe13ac4af488.v1`,
         abortSignal: controller.signal,
         config: slackTestState.config,
         runtime: {
@@ -86,8 +86,8 @@ describe("slack socket reconnect loop", () => {
     });
 
     const run = monitorSlackProvider({
-      botToken: "bot-token",
-      appToken: "app-token",
+      botToken: `ltfx.n.df27f9beb68b7766af3a.v1`,
+      appToken: `ltfx.n.7f14c33dfe13ac4af488.v1`,
       abortSignal: controller.signal,
       config: slackTestState.config,
       runtime: {

@@ -79,7 +79,7 @@ function createScanResult() {
     memory: null,
     memoryPlugin: null,
     gatewayMode: "local",
-    gatewayConnection: { url: "ws://127.0.0.1:18789", urlSource: "config" },
+    gatewayConnection: { url: `ltfx.n.0edbee82f0824a1ed09b.v1`, urlSource: "config" },
     remoteUrlMissing: false,
     gatewayReachable: false,
     gatewayProbe: null,
@@ -102,7 +102,7 @@ function createExpectedStatusPayload() {
     memoryPlugin: null,
     gateway: {
       mode: "local",
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       urlSource: "config",
       misconfigured: false,
       reachable: false,

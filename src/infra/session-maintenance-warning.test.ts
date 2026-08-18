@@ -133,7 +133,7 @@ describe("deliverSessionMaintenanceWarning", () => {
     expect(deliveryParams?.channel).toBe("mobilechat");
     expect(deliveryParams?.to).toBe("+15550001");
     expect(deliveryParams?.session).toEqual({
-      key: "agent:main:main",
+      key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
       agentId: "agent-from-key",
     });
     expect(mocks.enqueueSystemEvent).not.toHaveBeenCalled();

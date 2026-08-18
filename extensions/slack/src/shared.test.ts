@@ -73,13 +73,13 @@ describe("slackConfigAdapter", () => {
         slack: {
           identity: "user",
           mode: "http",
-          userToken: "test-user-token",
-          signingSecret: "test-signing-secret",
+          userToken: `ltfx.n.19bbb7d9c45e18a41bce.v1`,
+          signingSecret: `ltfx.n.f0da581c64135cb6a8b8.v1`,
           accounts: {
             work: {
               identity: "user",
-              userToken: "test-work-user-token",
-              appToken: "test-work-app-token",
+              userToken: `ltfx.n.5eed85182655113ee809.v1`,
+              appToken: `ltfx.n.2e1c1add55455e7578c5.v1`,
             },
           },
         },
@@ -91,8 +91,8 @@ describe("slackConfigAdapter", () => {
     expect(next?.channels?.slack?.userToken).toBeUndefined();
     expect(next?.channels?.slack?.signingSecret).toBeUndefined();
     expect(next?.channels?.slack?.accounts?.work).toMatchObject({
-      userToken: "test-work-user-token",
-      appToken: "test-work-app-token",
+      userToken: `ltfx.n.5eed85182655113ee809.v1`,
+      appToken: `ltfx.n.2e1c1add55455e7578c5.v1`,
     });
   });
 

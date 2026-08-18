@@ -117,7 +117,7 @@ describe("configureGatewayForSetup", () => {
 
   it("prefers OPENCLAW_GATEWAY_TOKEN during quickstart token setup", async () => {
     const prevToken = process.env.OPENCLAW_GATEWAY_TOKEN;
-    process.env.OPENCLAW_GATEWAY_TOKEN = "token-from-env";
+    process.env.OPENCLAW_GATEWAY_TOKEN = `ltfx.n.62bee5457ffee6207e50.v1`;
     mocks.randomToken.mockReturnValue("generated-token");
     mocks.randomToken.mockClear();
 
@@ -139,7 +139,7 @@ describe("configureGatewayForSetup", () => {
 
   it("keeps OPENCLAW_GATEWAY_TOKEN in advanced flow when user confirms keeping existing", async () => {
     const prevToken = process.env.OPENCLAW_GATEWAY_TOKEN;
-    process.env.OPENCLAW_GATEWAY_TOKEN = "advanced-env-token";
+    process.env.OPENCLAW_GATEWAY_TOKEN = `ltfx.n.bec45c0d945ed555411e.v1`;
     mocks.randomToken.mockReturnValue("should-not-be-used");
     mocks.randomToken.mockClear();
 
@@ -271,7 +271,7 @@ describe("configureGatewayForSetup", () => {
 
   it("honors secretInputMode=ref for gateway password prompts", async () => {
     const previous = process.env.OPENCLAW_GATEWAY_PASSWORD;
-    process.env.OPENCLAW_GATEWAY_PASSWORD = "gateway-secret"; // pragma: allowlist secret
+    process.env.OPENCLAW_GATEWAY_PASSWORD = `ltfx.n.1e0baae50a6e2006d894.v1`; // pragma: allowlist secret
     try {
       const prompter = createPrompter({
         selectQueue: ["loopback", "password", "off", "env"],
@@ -307,7 +307,7 @@ describe("configureGatewayForSetup", () => {
 
   it("stores gateway token as SecretRef when secretInputMode=ref", async () => {
     const previous = process.env.OPENCLAW_GATEWAY_TOKEN;
-    process.env.OPENCLAW_GATEWAY_TOKEN = "token-from-env";
+    process.env.OPENCLAW_GATEWAY_TOKEN = `ltfx.n.62bee5457ffee6207e50.v1`;
     try {
       const prompter = createPrompter({
         selectQueue: ["loopback", "token", "off", "env"],

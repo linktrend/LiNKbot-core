@@ -150,7 +150,7 @@ Preamble.
       "## h\n```sql\nSELECT 1\n```\n",
       "## h\n\n- url: http://x.example.com:80/p?q=1\n",
       "## h\n\n- key: value with: colons\n",
-      '## h\n\n- key: "quoted: value"\n',
+      '## h\n\n- key: `ltfx.n.03de2f782f966c593bd5.v1`\n',
       "## h\n\n- a-b: c-d\n",
       "## h with `inline code`\n",
       "no blocks\nat all\n",

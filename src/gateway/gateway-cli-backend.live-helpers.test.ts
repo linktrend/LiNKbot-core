@@ -51,7 +51,7 @@ describe("gateway cli backend live helpers", () => {
     process.env.OPENCLAW_SKIP_BROWSER_CONTROL_SERVER = "old-browser";
     process.env.OPENCLAW_BUNDLED_PLUGINS_DIR = "old-bundled";
     process.env.OPENCLAW_TEST_MINIMAL_GATEWAY = "old-minimal";
-    process.env.ANTHROPIC_API_KEY = "old-anthropic";
+    process.env.ANTHROPIC_API_KEY = `ltfx.n.8d2371eddd3c3750a5c8.v1`;
     process.env.ANTHROPIC_API_KEY_OLD = "old-anthropic-old";
 
     const snapshot = snapshotCliBackendLiveEnv();
@@ -200,7 +200,7 @@ describe("gateway cli backend live helpers", () => {
 
   it("builds Claude continuity prompts without revealing the hidden token", () => {
     const { buildClaudeCliResumeContinuityProbe } = liveHelpers;
-    const memoryToken = "test-memory-token";
+    const memoryToken = `ltfx.n.0db4b9d0d6bf71cb45ff.v1`;
 
     const probe = buildClaudeCliResumeContinuityProbe({
       firstTurnNonce: "112233",

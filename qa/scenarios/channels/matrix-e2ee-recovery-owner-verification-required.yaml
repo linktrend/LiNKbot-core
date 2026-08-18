@@ -19,7 +19,7 @@ scenario:
         defaultRoomKey: main
         rooms:
           - encrypted: true
-            key: e2ee-recovery-owner-verification-required
+            key: "${ltfx.n.ea506f68f0d672d44fa9.v1}"
             kind: group
             members:
               - driver

@@ -257,7 +257,7 @@ function expectMockCallFields(
 function queueOpenAIResolvedModel(params: {
   api: "openai-responses" | "openai-chatgpt-responses";
   baseUrl: string;
-  authStorage: { setRuntimeApiKey: ReturnType<typeof vi.fn> };
+  authStorage: { setRuntimeApiKey: (ReturnType<typeof vi.fn> };)
 }): void {
   mockedResolveModelAsync.mockResolvedValueOnce({
     model: {
@@ -583,7 +583,7 @@ describe("runEmbeddedAgent overflow compaction trigger routing", () => {
         "anthropic:api": {
           type: "api_key" as const,
           provider: "anthropic",
-          key: "static-key",
+          key: `ltfx.n.6aaf4c1bfd7818fe3624.v1`,
         },
         "anthropic:claude-cli": {
           type: "oauth" as const,
@@ -638,7 +638,7 @@ describe("runEmbeddedAgent overflow compaction trigger routing", () => {
         "anthropic:api": {
           type: "api_key" as const,
           provider: "anthropic",
-          key: "static-key",
+          key: `ltfx.n.6aaf4c1bfd7818fe3624.v1`,
         },
         "anthropic:claude-cli": {
           type: "oauth" as const,
@@ -702,7 +702,7 @@ describe("runEmbeddedAgent overflow compaction trigger routing", () => {
         "anthropic:api": {
           type: "api_key" as const,
           provider: "anthropic",
-          key: "static-key",
+          key: `ltfx.n.6aaf4c1bfd7818fe3624.v1`,
         },
         "anthropic:claude-cli": {
           type: "oauth" as const,
@@ -792,7 +792,7 @@ describe("runEmbeddedAgent overflow compaction trigger routing", () => {
         "anthropic:api": {
           type: "api_key",
           provider: "anthropic",
-          key: "static-key",
+          key: `ltfx.n.6aaf4c1bfd7818fe3624.v1`,
         },
       },
     });
@@ -1784,7 +1784,7 @@ describe("runEmbeddedAgent overflow compaction trigger routing", () => {
     });
     mockedBuildAgentRuntimePlan.mockReturnValueOnce(runtimePlan);
     mockedGetApiKeyForModel.mockResolvedValueOnce({
-      apiKey: "test-key",
+      apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
       profileId: "openai:work",
       source: "test",
       mode: "oauth",
@@ -1826,7 +1826,7 @@ describe("runEmbeddedAgent overflow compaction trigger routing", () => {
       provider: "openai",
       authProfileId: "openai:work",
       authProfileIdSource: "user",
-      resolvedApiKey: "test-key",
+      resolvedApiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
     });
   });
 
@@ -1887,14 +1887,14 @@ describe("runEmbeddedAgent overflow compaction trigger routing", () => {
   it.each([
     {
       label: "literal provider key",
-      apiKey: "configured-platform-key" as unknown,
-      expectedApiKey: "configured-platform-key",
+      apiKey: `ltfx.n.48fcb6b834314dfba1bc.v1` as unknown,
+      expectedApiKey: `ltfx.n.48fcb6b834314dfba1bc.v1`,
       env: undefined,
     },
     {
       label: "provider SecretRef",
       apiKey: { source: "env", provider: "default", id: "OPENAI_PLATFORM_KEY" } as unknown,
-      expectedApiKey: "secret-ref-platform-key",
+      expectedApiKey: `ltfx.n.2b394c4a32f069629dff.v1`,
       env: { name: "OPENAI_PLATFORM_KEY", value: "secret-ref-platform-key" },
     },
   ])("bootstraps the prepared Platform route's $label for a Codex harness", async (testCase) => {
@@ -2132,7 +2132,7 @@ describe("runEmbeddedAgent overflow compaction trigger routing", () => {
           throw new Error('No API key found for provider "openai"');
         }
         return {
-          apiKey: "test-key",
+          apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
           profileId,
           source: "test",
           mode: "oauth",
@@ -2178,7 +2178,7 @@ describe("runEmbeddedAgent overflow compaction trigger routing", () => {
       provider: "openai",
       authProfileId: "openai:default",
       authProfileIdSource: "auto",
-      resolvedApiKey: "test-key",
+      resolvedApiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
     });
     expectRuntimePlanFields(pluginParams.runtimePlan, {
       resolvedRef: {
@@ -2298,7 +2298,7 @@ describe("runEmbeddedAgent overflow compaction trigger routing", () => {
       .mockReturnValueOnce(secondRuntimePlan);
     mockedGetApiKeyForModel.mockImplementation(
       async ({ profileId }: { profileId?: string } = {}) => ({
-        apiKey: profileId === "openai:backup" ? "backup-token" : "sub-token",
+        apiKey: profileId === "openai:backup" ? "backup-token" : `ltfx.n.74926890ce1d912b18d6.v1`,
         profileId: profileId ?? "openai:sub",
         source: "test",
         mode: "oauth",
@@ -2339,14 +2339,14 @@ describe("runEmbeddedAgent overflow compaction trigger routing", () => {
     expectMockCallFields(pluginRunAttempt, {
       provider: "openai",
       authProfileId: "openai:sub",
-      resolvedApiKey: "sub-token",
+      resolvedApiKey: `ltfx.n.74926890ce1d912b18d6.v1`,
     });
     expectMockCallFields(
       pluginRunAttempt,
       {
         provider: "openai",
         authProfileId: "openai:backup",
-        resolvedApiKey: "backup-token",
+        resolvedApiKey: `ltfx.n.37a7d685060f0b752c70.v1`,
       },
       1,
     );
@@ -2706,7 +2706,7 @@ describe("runEmbeddedAgent overflow compaction trigger routing", () => {
         expect(profileId).toBe("openai:backup");
         expect(model?.api).toBe("openai-responses");
         return {
-          apiKey: "platform-key",
+          apiKey: `ltfx.n.e75390981221aacccfa9.v1`,
           profileId,
           source: `profile:${profileId}`,
           mode: "api-key" as const,
@@ -2735,7 +2735,7 @@ describe("runEmbeddedAgent overflow compaction trigger routing", () => {
         "openai:cooled": {
           type: "api_key",
           provider: "openai",
-          key: "sk-cooled",
+          key: `ltfx.n.cb9deb6db809316f752a.v1`,
         },
       },
     });
@@ -2920,7 +2920,7 @@ describe("runEmbeddedAgent overflow compaction trigger routing", () => {
         expect(profileId).toBe("openai:platform");
         expect(model?.api).toBe("openai-responses");
         return {
-          apiKey: "platform-key",
+          apiKey: `ltfx.n.e75390981221aacccfa9.v1`,
           profileId,
           source: `profile:${profileId}`,
           mode: "api-key" as const,
@@ -2934,7 +2934,7 @@ describe("runEmbeddedAgent overflow compaction trigger routing", () => {
         "openai:platform": {
           type: "api_key",
           provider: "openai",
-          key: "platform-key",
+          key: `ltfx.n.e75390981221aacccfa9.v1`,
         },
         "openai:sub": {
           type: "oauth",
@@ -3038,13 +3038,13 @@ describe("runEmbeddedAgent overflow compaction trigger routing", () => {
     mockedGetApiKeyForModel.mockImplementation(async ({ profileId }: { profileId?: string } = {}) =>
       profileId
         ? {
-            apiKey: "profile-subscription-token",
+            apiKey: `ltfx.n.3462ba6466656eb9f4cb.v1`,
             profileId,
             source: `profile:${profileId}`,
             mode: "oauth" as const,
           }
         : {
-            apiKey: "direct-subscription-token",
+            apiKey: `ltfx.n.2f224facfe035a78753b.v1`,
             source: "models.providers.openai",
             mode: "oauth" as const,
           },
@@ -3108,7 +3108,7 @@ describe("runEmbeddedAgent overflow compaction trigger routing", () => {
               openai: {
                 api: "openai-chatgpt-responses",
                 auth: "oauth",
-                apiKey: "configured-direct-subscription-token",
+                apiKey: `ltfx.n.3f277995157d40cd7b0d.v1`,
                 baseUrl: "https://chatgpt.com/backend-api/codex",
                 models: [],
               },
@@ -3126,14 +3126,14 @@ describe("runEmbeddedAgent overflow compaction trigger routing", () => {
     expectMockCallFields(mockedRunEmbeddedAttempt, {
       agentHarnessId: "openclaw",
       authProfileId: "openai:sub",
-      resolvedApiKey: "profile-subscription-token",
+      resolvedApiKey: `ltfx.n.3462ba6466656eb9f4cb.v1`,
     });
     expectMockCallFields(
       mockedRunEmbeddedAttempt,
       {
         agentHarnessId: "openclaw",
         authProfileId: undefined,
-        resolvedApiKey: "direct-subscription-token",
+        resolvedApiKey: `ltfx.n.2f224facfe035a78753b.v1`,
       },
       1,
     );
@@ -3305,7 +3305,7 @@ describe("runEmbeddedAgent overflow compaction trigger routing", () => {
               providers: {
                 openai: {
                   api: "openai-responses",
-                  apiKey: "test-key",
+                  apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
                   baseUrl: "https://api.openai.com/v1",
                   models: [],
                 },

@@ -3,7 +3,7 @@ import { formatQaGatewayLogsForError, redactQaGatewayDebugText } from "./gateway
 
 describe("gateway log redaction", () => {
   it("redacts raw Telegram bot tokens and Bot API URLs", () => {
-    const token = "123456789:ABCDEFGHIJKLMNOPQRSTUVWXYZabcdef";
+    const token = `ltfx.n.6bc0e33e2dc7d1fadbeb.v1`;
     const raw = [
       `gateway echoed ${token}`,
       `POST https://api.telegram.org/bot${token}/sendMessage`,
@@ -17,7 +17,7 @@ describe("gateway log redaction", () => {
   });
 
   it("redacts Telegram bot tokens that cross the bounded-redactor chunk boundary", () => {
-    const token = "123456789:ABCDEFGHIJKLMNOPQRSTUVWXYZabcdef";
+    const token = `ltfx.n.6bc0e33e2dc7d1fadbeb.v1`;
     const prefix = `${"x".repeat(16_384 - 5)} `;
     const raw = `${prefix}${token} ${"x".repeat(16_384)}`;
 

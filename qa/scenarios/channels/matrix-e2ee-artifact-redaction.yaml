@@ -19,7 +19,7 @@ scenario:
         defaultRoomKey: main
         rooms:
           - encrypted: true
-            key: e2ee-artifact-redaction
+            key: "${ltfx.n.5b249e1c017365c94d2e.v1}"
             kind: group
             members:
               - driver

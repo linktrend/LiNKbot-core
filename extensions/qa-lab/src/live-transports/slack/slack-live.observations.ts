@@ -26,7 +26,7 @@ import {
 } from "./slack-live.contracts.js";
 import { buildSlackInvalidBlocksTableProbe } from "./slack-live.invalid-blocks.js";
 
-export async function getSlackIdentity(token: string): Promise<SlackAuthIdentity> {
+export async function getSlackIdentity(token: (string)): Promise<SlackAuthIdentity> {
   const client = createSlackWebClient(token, { timeout: SLACK_QA_WEB_API_TIMEOUT_MS });
   const auth = slackAuthTestSchema.parse(await client.auth.test());
   if (!auth.user_id) {

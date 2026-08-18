@@ -56,7 +56,7 @@ describe.skipIf(!LIVE)("image tool Ollama live", () => {
             ollama: {
               api: "ollama",
               baseUrl: OLLAMA_BASE_URL,
-              apiKey: "ollama-local",
+              apiKey: `ltfx.n.18ab0c9c00ad3478e4db.v1`,
               timeoutSeconds: 300,
               models: [
                 {

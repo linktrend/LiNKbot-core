@@ -48,7 +48,7 @@ describe("matrix credentials storage", () => {
       {
         homeserver: "https://matrix.example.org",
         userId: "@bot:example.org",
-        accessToken: "secret-token",
+        accessToken: `ltfx.n.930bbdc51b6aed5c2a56.v1`,
         deviceId: "DEVICE123",
       },
       {},
@@ -58,7 +58,7 @@ describe("matrix credentials storage", () => {
     expect(loadMatrixCredentials({}, "ops")).toMatchObject({
       homeserver: "https://matrix.example.org",
       userId: "@bot:example.org",
-      accessToken: "secret-token",
+      accessToken: `ltfx.n.930bbdc51b6aed5c2a56.v1`,
       deviceId: "DEVICE123",
     });
     expect(loadMatrixCredentials({}, "default")).toBeNull();
@@ -73,7 +73,7 @@ describe("matrix credentials storage", () => {
       {
         homeserver: "https://matrix.example.org",
         userId: "@bot:example.org",
-        accessToken: "secret-token",
+        accessToken: `ltfx.n.930bbdc51b6aed5c2a56.v1`,
       },
       {},
       "default",
@@ -92,7 +92,7 @@ describe("matrix credentials storage", () => {
     const credentials = {
       homeserver: "https://matrix.example.org",
       userId: "@bot:example.org",
-      accessToken: "secret-token",
+      accessToken: `ltfx.n.930bbdc51b6aed5c2a56.v1`,
       deviceId: undefined,
     };
 
@@ -150,7 +150,7 @@ describe("matrix credentials storage", () => {
       {
         homeserver: "https://matrix.example.org",
         userId: "@bot:example.org",
-        accessToken: "secret-token",
+        accessToken: `ltfx.n.930bbdc51b6aed5c2a56.v1`,
       },
       {},
       "default",
@@ -162,7 +162,7 @@ describe("matrix credentials storage", () => {
         {
           homeserver: "https://matrix.example.org",
           userId: "@bot:example.org",
-          accessToken: "secret-token",
+          accessToken: `ltfx.n.930bbdc51b6aed5c2a56.v1`,
           deviceId: "STALE",
         },
         {},
@@ -185,7 +185,7 @@ describe("matrix credentials storage", () => {
       JSON.stringify({
         homeserver: "https://matrix.example.org",
         userId: "@bot:example.org",
-        accessToken: "legacy-token",
+        accessToken: `ltfx.n.8b7d507cddc8d8950f28.v1`,
         createdAt: "2026-03-01T10:00:00.000Z",
       }),
     );

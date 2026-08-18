@@ -51,8 +51,8 @@ describe("loginChutes", () => {
     const redirectUri = `http://127.0.0.1:${port}/oauth-callback`;
 
     const fetchFn = createOAuthFetchFn({
-      accessToken: "at_local",
-      refreshToken: "rt_local",
+      accessToken: `ltfx.n.42df52a03b07bd84e060.v1`,
+      refreshToken: `ltfx.n.c7a7a50b0df061e2682b.v1`,
       username: "local-user",
       passthrough: true,
     });
@@ -83,8 +83,8 @@ describe("loginChutes", () => {
 
   it("supports manual flow with pasted redirect URL", async () => {
     const fetchFn = createOAuthFetchFn({
-      accessToken: "at_manual",
-      refreshToken: "rt_manual",
+      accessToken: `ltfx.n.f82e44e7a5b41dddf2cc.v1`,
+      refreshToken: `ltfx.n.676eee6b1be8096d74af.v1`,
       username: "manual-user",
     });
 
@@ -115,8 +115,8 @@ describe("loginChutes", () => {
 
   it("does not reuse code_verifier as state", async () => {
     const fetchFn = createOAuthFetchFn({
-      accessToken: "at_manual",
-      refreshToken: "rt_manual",
+      accessToken: `ltfx.n.f82e44e7a5b41dddf2cc.v1`,
+      refreshToken: `ltfx.n.676eee6b1be8096d74af.v1`,
       username: "manual-user",
     });
 

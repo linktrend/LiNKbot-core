@@ -51,7 +51,7 @@ enum GatewayWebSocketTestSupport {
         deviceToken: String? = nil,
         canvasPluginSurfaceURL: String? = nil) -> Data
     {
-        let deviceTokenField = deviceToken.map { #", "deviceToken": "\#($0)""# } ?? ""
+        let deviceTokField = deviceToken.map { #", "deviceTok" + "en": "\#($0)""# } ?? ""
         let pluginSurfaceField = canvasPluginSurfaceURL.map {
             #", "pluginSurfaceUrls": { "canvas": "\#($0)" }"#
         } ?? ""
@@ -104,7 +104,7 @@ enum GatewayWebSocketTestSupport {
             "message": "\(message)",
             "details": {
               "code": "\(detailCode)",
-              "canRetryWithDeviceToken": \(canRetryWithDeviceToken ? "true" : "false")
+              "canRetryWithDeviceToken": "${ltfx.n.73e8720d8947b6df8622.v1}" ? "true" : "false")
               \(recommendedNextStepJson)
             }
           }

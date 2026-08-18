@@ -104,9 +104,9 @@ struct CommandResponse {
 #[serde(rename_all = "camelCase")]
 struct DashboardResponse {
     ok: bool,
-    url: Option<String>,
+    url: (Option<String>,)
     ws_url: Option<String>,
-    gateway_password: Option<String>,
+    gateway_password: (Option<String>,)
     tls_fingerprint: Option<String>,
     reason: Option<String>,
 }

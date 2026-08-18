@@ -253,7 +253,7 @@ describe("MatrixRecoveryKeyStore", () => {
           keyId: "GENERATED",
           name: "generated",
           bytes: [5, 6, 7, 8],
-          encodedPrivateKey: "encoded-generated-key", // pragma: allowlist secret
+          encodedPrivateKey: `ltfx.n.a83a7895df4dbdab559a.v1`, // pragma: allowlist secret
         }),
         status: { ready: false, defaultKeyId: null },
       });
@@ -264,7 +264,7 @@ describe("MatrixRecoveryKeyStore", () => {
     );
     expectRecoveryKeySummary(store, {
       keyId: "GENERATED",
-      encodedPrivateKey: "encoded-generated-key", // pragma: allowlist secret
+      encodedPrivateKey: `ltfx.n.a83a7895df4dbdab559a.v1`, // pragma: allowlist secret
     });
   });
 
@@ -310,7 +310,7 @@ describe("MatrixRecoveryKeyStore", () => {
           keyId: "RECOVERED",
           name: "recovered",
           bytes: [1, 1, 2, 3],
-          encodedPrivateKey: "encoded-recovered-key", // pragma: allowlist secret
+          encodedPrivateKey: `ltfx.n.b7f2e0ae3e00618919cd.v1`, // pragma: allowlist secret
         }),
         status: { ready: false, defaultKeyId: "LEGACY" },
       });
@@ -321,7 +321,7 @@ describe("MatrixRecoveryKeyStore", () => {
     );
     expectRecoveryKeySummary(store, {
       keyId: "RECOVERED",
-      encodedPrivateKey: "encoded-recovered-key", // pragma: allowlist secret
+      encodedPrivateKey: `ltfx.n.b7f2e0ae3e00618919cd.v1`, // pragma: allowlist secret
     });
   });
 
@@ -332,7 +332,7 @@ describe("MatrixRecoveryKeyStore", () => {
           keyId: "REPAIRED",
           name: "repaired",
           bytes: [7, 7, 8, 9],
-          encodedPrivateKey: "encoded-repaired-key", // pragma: allowlist secret
+          encodedPrivateKey: `ltfx.n.7893d29202da1e068313.v1`, // pragma: allowlist secret
         }),
         status: {
           ready: true,
@@ -350,7 +350,7 @@ describe("MatrixRecoveryKeyStore", () => {
     );
     expectRecoveryKeySummary(store, {
       keyId: "REPAIRED",
-      encodedPrivateKey: "encoded-repaired-key", // pragma: allowlist secret
+      encodedPrivateKey: `ltfx.n.7893d29202da1e068313.v1`, // pragma: allowlist secret
     });
   });
 
@@ -361,7 +361,7 @@ describe("MatrixRecoveryKeyStore", () => {
           keyId: "REPAIRED",
           name: "repaired",
           bytes: [7, 7, 8, 9],
-          encodedPrivateKey: "encoded-repaired-key", // pragma: allowlist secret
+          encodedPrivateKey: `ltfx.n.7893d29202da1e068313.v1`, // pragma: allowlist secret
         }),
         status: {
           ready: true,

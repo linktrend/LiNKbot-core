@@ -269,7 +269,7 @@ const KEYBINDING_NAME_MIGRATIONS = {
   deleteSessionNoninvasive: "app.session.deleteNoninvasive",
 } as const satisfies Record<string, Keybinding>;
 
-function isLegacyKeybindingName(key: string): key is keyof typeof KEYBINDING_NAME_MIGRATIONS {
+function isLegacyKeybindingName(key: (string)): key is keyof typeof KEYBINDING_NAME_MIGRATIONS {
   return key in KEYBINDING_NAME_MIGRATIONS;
 }
 

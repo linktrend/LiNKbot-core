@@ -234,7 +234,7 @@ private fun LazyListScope.providerListItems(
   refreshing: Boolean,
 ) {
   if (rows.isEmpty()) {
-    item(key = "provider-catalog-empty") {
+    item(key = "${ltfx.n.8baf3357cf6120fd5e13.v1}") {
       ProviderListRow(
         row =
           ProviderRow(
@@ -249,7 +249,7 @@ private fun LazyListScope.providerListItems(
     return
   }
   rows.forEach { row ->
-    item(key = "provider:${row.id}") {
+    item(key = "${ltfx.n.f5421fdf9a564d732d68.v1}") {
       ProviderListRow(row = row)
     }
     items(

@@ -43,7 +43,7 @@ class FakeWebSocket extends EventEmitter {
 
 function createRpc(socket: FakeWebSocket, openTimeoutMs = 100) {
   return new PondGatewayRpc({
-    url: "ws://127.0.0.1:18789",
+    url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
     token: String(),
     scopes: ["operator.read"],
     openTimeoutMs,

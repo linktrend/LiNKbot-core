@@ -19,7 +19,7 @@ scenario:
         defaultRoomKey: main
         rooms:
           - encrypted: true
-            key: e2ee-stale-recovery-key-after-backup-reset
+            key: "${ltfx.n.77cf1b4d3b6ba2d3d525.v1}"
             kind: group
             members:
               - driver

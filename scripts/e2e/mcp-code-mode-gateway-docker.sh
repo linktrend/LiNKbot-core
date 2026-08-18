@@ -11,7 +11,7 @@ PORT="$(docker_e2e_read_tcp_port_env OPENCLAW_MCP_CODE_MODE_GATEWAY_PORT 18789)"
 MOCK_PORT="$(docker_e2e_read_tcp_port_env OPENCLAW_MCP_CODE_MODE_MOCK_PORT 44082)"
 CLIENT_TIMEOUT_MS="$(docker_e2e_read_positive_int_env OPENCLAW_MCP_CODE_MODE_CLIENT_TIMEOUT_MS 300000)"
 CLIENT_BODY_MAX_BYTES="$(docker_e2e_read_positive_int_env OPENCLAW_MCP_CODE_MODE_CLIENT_BODY_MAX_BYTES 1048576)"
-TOKEN="mcp-code-mode-e2e-$(date +%s)-$$"
+TOKEN="${ltfx.n.a5f3f4edf4140ed80f5e.v1}"
 CONTAINER_NAME="openclaw-mcp-code-mode-e2e-$$"
 
 CLIENT_LOG="$(mktemp -t openclaw-mcp-code-mode-client-log.XXXXXX)"

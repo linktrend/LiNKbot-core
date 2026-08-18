@@ -16,7 +16,7 @@ type ResolveApiKeyForProvider = typeof import("../agents/model-auth.js").resolve
 
 const resolveApiKeyForProviderMock = vi.hoisted(() =>
   vi.fn<ResolveApiKeyForProvider>(async () => ({
-    apiKey: "test-key", // pragma: allowlist secret
+    apiKey: `ltfx.n.62af8704764faf8ea82f.v1`, // pragma: allowlist secret
     source: "test",
     mode: "api-key",
   })),
@@ -368,7 +368,7 @@ describe("applyMediaUnderstanding", () => {
   beforeEach(() => {
     mockedResolveApiKey.mockReset();
     mockedResolveApiKey.mockResolvedValue({
-      apiKey: "test-key", // pragma: allowlist secret
+      apiKey: `ltfx.n.62af8704764faf8ea82f.v1`, // pragma: allowlist secret
       source: "test",
       mode: "api-key",
     });

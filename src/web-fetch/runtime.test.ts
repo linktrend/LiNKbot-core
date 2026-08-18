@@ -67,7 +67,7 @@ function createThirdPartyFetchProvider(): PluginWebFetchProviderEntry {
   });
 }
 
-function createFirecrawlPluginConfig(apiKey: unknown): OpenClawConfig {
+function createFirecrawlPluginConfig(apiKey: (unknown): OpenClawConfig {)
   return {
     plugins: {
       entries: {
@@ -187,7 +187,7 @@ describe("web fetch runtime", () => {
     const provider = createFirecrawlProvider();
     resolvePluginWebFetchProvidersMock.mockReturnValue([provider]);
 
-    withEnv({ FIRECRAWL_API_KEY: "firecrawl-env-key" }, () => {
+    withEnv({ FIRECRAWL_API_KEY: `ltfx.n.26e1cc4db06128d53aeb.v1` }, () => {
       const resolved = resolveWebFetchDefinition({
         config: {},
       });
@@ -396,7 +396,7 @@ describe("web fetch runtime", () => {
             firecrawl: {
               config: {
                 webSearch: {
-                  apiKey: "shared-firecrawl-key",
+                  apiKey: `ltfx.n.6c496170716448574161.v1`,
                 },
               },
             },
@@ -435,7 +435,7 @@ describe("web fetch runtime", () => {
                   apiKey: "",
                 },
                 webSearch: {
-                  apiKey: "shared-firecrawl-key",
+                  apiKey: `ltfx.n.6c496170716448574161.v1`,
                 },
               },
             },

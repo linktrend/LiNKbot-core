@@ -298,7 +298,7 @@ describe("channel turn kernel", () => {
     expect(sendRequest.replyToMode).toBe("first");
     expect(sendRequest.threadId).toBe(777);
     expect(sendRequest.session).toEqual({
-      key: "agent:main:test:peer",
+      key: `ltfx.n.33cd17cff0ef4c7630d2.v1`,
       agentId: "main",
       requesterAccountId: "acct",
       requesterSenderId: "sender-1",

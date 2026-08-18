@@ -51,7 +51,7 @@ export function bindDeliveryColumns(
 
 function bindFailureDestinationField(
   failureDestination: CronDelivery["failureDestination"],
-  key: "accountId" | "channel" | "mode" | "to",
+  key: `ltfx.n.e05f5218c40212bceb94.v1` | "channel" | "mode" | "to",
 ): string | null {
   if (!failureDestination || !Object.hasOwn(failureDestination, key)) {
     return null;

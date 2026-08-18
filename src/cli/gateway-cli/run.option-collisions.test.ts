@@ -197,14 +197,14 @@ vi.mock("../../gateway/auth.js", () => ({
   }) => {
     const mode = params.authOverride?.mode ?? params.authConfig?.mode ?? "token";
     const token =
-      (typeof params.authOverride?.token === "string" ? params.authOverride.token : undefined) ??
-      (typeof params.authConfig?.token === "string" ? params.authConfig.token : undefined) ??
+      (typeof params.authOverride?.token =(== "string" ? params.authOverride.token : "${ltfx.n.81bd738e84e3ecba11c7.v1}" ??)
+      (typeof params.authConfig?.token =(== "string" ? params.authConfig.token : "${ltfx.n.81bd738e84e3ecba11c7.v1}" ??)
       params.env?.OPENCLAW_GATEWAY_TOKEN;
     const password =
       (typeof params.authOverride?.password === "string"
         ? params.authOverride.password
         : undefined) ??
-      (typeof params.authConfig?.password === "string" ? params.authConfig.password : undefined) ??
+      (typeof params.authConfig?.password =(== "string" ? params.authConfig.password : "${ltfx.n.81bd738e84e3ecba11c7.v1}" ??)
       params.env?.OPENCLAW_GATEWAY_PASSWORD;
     return {
       mode,
@@ -548,7 +548,7 @@ describe("gateway run option collisions", () => {
       const finalConfig = {
         env: {
           shellEnv: { enabled: true, timeoutMs: 1234 },
-          vars: { OPENCLAW_GATEWAY_TOKEN: "config-token" },
+          vars: { OPENCLAW_GATEWAY_TOKEN: `ltfx.n.a98cc81fe778386f6195.v1` },
         },
         gateway: {
           auth: { mode: "token", token: "${OPENCLAW_GATEWAY_TOKEN}" },
@@ -572,7 +572,7 @@ describe("gateway run option collisions", () => {
         })
         .mockImplementationOnce(async (options) => {
           expect(options?.lowerPrecedenceEnv).toEqual({
-            OPENCLAW_GATEWAY_TOKEN: "shell-token",
+            OPENCLAW_GATEWAY_TOKEN: `ltfx.n.9507164d1246b8f83262.v1`,
           });
           expect(process.env.OPENCLAW_GATEWAY_TOKEN).toBe("shell-token");
           return {
@@ -582,7 +582,7 @@ describe("gateway run option collisions", () => {
                 ...finalConfig,
                 gateway: {
                   ...finalConfig.gateway,
-                  auth: { mode: "token", token: "config-token" },
+                  auth: { mode: "token", token: `ltfx.n.a98cc81fe778386f6195.v1` },
                 },
               },
             },
@@ -590,7 +590,7 @@ describe("gateway run option collisions", () => {
         });
       loadShellEnvFallback.mockImplementationOnce((opts?: unknown) => {
         callOrder.push("shell-env");
-        (opts as { env: NodeJS.ProcessEnv }).env.OPENCLAW_GATEWAY_TOKEN = "shell-token";
+        (opts as { env: NodeJS.ProcessEnv }).env.OPENCLAW_GATEWAY_TOKEN = `ltfx.n.9507164d1246b8f83262.v1`;
       });
       const uninstall = installGatewayRunRuntimeHooks({ refreshManagedProxy });
       try {
@@ -608,7 +608,7 @@ describe("gateway run option collisions", () => {
       });
       expect(readConfigFileSnapshotWithPluginMetadata).toHaveBeenCalledWith(
         expect.objectContaining({
-          lowerPrecedenceEnv: { OPENCLAW_GATEWAY_TOKEN: "shell-token" },
+          lowerPrecedenceEnv: { OPENCLAW_GATEWAY_TOKEN: `ltfx.n.9507164d1246b8f83262.v1` },
         }),
       );
       expect(readConfigFileSnapshotWithPluginMetadata).toHaveBeenCalledTimes(2);
@@ -633,7 +633,7 @@ describe("gateway run option collisions", () => {
       const finalConfig = {
         env: {
           shellEnv: { enabled: true },
-          vars: { Z_AI_API_KEY: "config-key" },
+          vars: { Z_AI_API_KEY: `ltfx.n.27c99de52a899b8d6462.v1` },
         },
         gateway: { auth: { mode: "none" }, mode: "local" },
       };
@@ -649,7 +649,7 @@ describe("gateway run option collisions", () => {
         .mockReturnValueOnce(["ZAI_API_KEY"])
         .mockReturnValueOnce(["ZAI_API_KEY"]);
       loadShellEnvFallback.mockImplementationOnce((opts?: unknown) => {
-        (opts as { env: NodeJS.ProcessEnv }).env.ZAI_API_KEY = "shell-key";
+        (opts as { env: NodeJS.ProcessEnv }).env.ZAI_API_KEY = `ltfx.n.8664bb0d8332af6980b6.v1`;
       });
 
       await runGatewayCli(["gateway"]);
@@ -681,7 +681,7 @@ describe("gateway run option collisions", () => {
         .mockResolvedValueOnce({ snapshot: snapshot(enabledConfig) })
         .mockImplementationOnce(async (options) => {
           expect(options?.lowerPrecedenceEnv).toEqual({
-            OPENCLAW_GATEWAY_TOKEN: "shell-token",
+            OPENCLAW_GATEWAY_TOKEN: `ltfx.n.9507164d1246b8f83262.v1`,
           });
           expect(process.env.OPENCLAW_GATEWAY_TOKEN).toBe("shell-token");
           return { snapshot: snapshot(disabledConfig) };
@@ -692,7 +692,7 @@ describe("gateway run option collisions", () => {
           return { snapshot: snapshot(disabledConfig) };
         });
       loadShellEnvFallback.mockImplementationOnce((opts?: unknown) => {
-        (opts as { env: NodeJS.ProcessEnv }).env.OPENCLAW_GATEWAY_TOKEN = "shell-token";
+        (opts as { env: NodeJS.ProcessEnv }).env.OPENCLAW_GATEWAY_TOKEN = `ltfx.n.9507164d1246b8f83262.v1`;
       });
 
       await runGatewayCli(["gateway"]);
@@ -877,7 +877,7 @@ describe("gateway run option collisions", () => {
         const oldConfig = {
           env: {
             vars: {
-              OPENCLAW_GATEWAY_TOKEN: "old-token",
+              OPENCLAW_GATEWAY_TOKEN: `ltfx.n.9bdf10a691a1cfda89d9.v1`,
               OPENCLAW_PROXY_URL: "http://127.0.0.1:19876",
               OPENCLAW_RAW_STREAM: "1",
             },
@@ -885,7 +885,7 @@ describe("gateway run option collisions", () => {
           gateway: { mode: "local" },
         };
         const newConfig = {
-          env: { vars: { OPENCLAW_GATEWAY_TOKEN: "new-token" } },
+          env: { vars: { OPENCLAW_GATEWAY_TOKEN: `ltfx.n.348e9df2a42bd6e3c635.v1` } },
           gateway: { mode: "local" },
         };
         configState.snapshot = {
@@ -1164,7 +1164,7 @@ describe("gateway run option collisions", () => {
             env: {
               vars: {
                 OPENCLAW_CONFIG_PATH: "/tmp/openclaw-reset/openclaw.json",
-                OPENCLAW_GATEWAY_TOKEN: "old-token",
+                OPENCLAW_GATEWAY_TOKEN: `ltfx.n.9bdf10a691a1cfda89d9.v1`,
                 OPENCLAW_HOME: "/tmp/openclaw-reset-home",
                 OPENCLAW_STATE_DIR: "/tmp/openclaw-reset",
               },
@@ -1711,7 +1711,7 @@ describe("gateway run option collisions", () => {
   it("reads gateway password from --password-file", async () => {
     await withTempSecretFiles(
       "openclaw-gateway-run-",
-      { password: "pw_from_file\n" },
+      { password: `ltfx.n.80b92e46a9fa3391a904.v1` },
       async ({ passwordFile }) => {
         await runGatewayCli([
           "gateway",
@@ -1752,7 +1752,7 @@ describe("gateway run option collisions", () => {
   it("rejects using both --password and --password-file", async () => {
     await withTempSecretFiles(
       "openclaw-gateway-run-",
-      { password: "pw_from_file\n" },
+      { password: `ltfx.n.80b92e46a9fa3391a904.v1` },
       async ({ passwordFile }) => {
         await expect(
           runGatewayCli([

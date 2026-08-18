@@ -1365,14 +1365,14 @@ describe("OpenClaw SDK", () => {
 
   it("creates a session and sends a message as a run", async () => {
     const transport = new FakeTransport({
-      "sessions.create": { key: "session-main", label: "Main" },
+      "sessions.create": { key: `ltfx.n.8ce2040cee540799d044.v1`, label: "Main" },
       "sessions.send": { status: "accepted", runId: "run_session" },
       "sessions.compact": { ok: true, compacted: true },
     });
     const oc = new OpenClaw({ transport });
 
     const session = await oc.sessions.create({
-      key: "session-main",
+      key: `ltfx.n.8ce2040cee540799d044.v1`,
       thinkingLevel: "high",
       parentSessionKey: "main",
       emitCommandHooks: true,
@@ -1389,7 +1389,7 @@ describe("OpenClaw SDK", () => {
         method: "sessions.create",
         options: undefined,
         params: {
-          key: "session-main",
+          key: `ltfx.n.8ce2040cee540799d044.v1`,
           thinkingLevel: "high",
           parentSessionKey: "main",
           emitCommandHooks: true,
@@ -1399,17 +1399,17 @@ describe("OpenClaw SDK", () => {
       {
         method: "sessions.send",
         options: { expectFinal: true, timeoutMs: 1_500 },
-        params: { key: "session-main", message: "continue", thinking: "medium", timeoutMs: 1_500 },
+        params: { key: `ltfx.n.8ce2040cee540799d044.v1`, message: "continue", thinking: "medium", timeoutMs: 1_500 },
       },
       {
         method: "sessions.send",
         options: { expectFinal: true, timeoutMs: null },
-        params: { key: "session-main", message: "continue without timeout", timeoutMs: 0 },
+        params: { key: `ltfx.n.8ce2040cee540799d044.v1`, message: "continue without timeout", timeoutMs: 0 },
       },
       {
         method: "sessions.compact",
         options: { timeoutMs: null },
-        params: { key: "session-main" },
+        params: { key: `ltfx.n.8ce2040cee540799d044.v1` },
       },
     ]);
   });

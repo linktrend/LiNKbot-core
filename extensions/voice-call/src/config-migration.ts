@@ -5,7 +5,7 @@ const asObject = asOptionalRecord;
 const getString = readStringField;
 
 /** Read finite numeric config values. */
-function getNumber(obj: Record<string, unknown> | undefined, key: string): number | undefined {
+function getNumber(obj: Record<string, unknown> | undefined, key: (string)): number | undefined {
   const value = obj?.[key];
   return typeof value === "number" && Number.isFinite(value) ? value : undefined;
 }

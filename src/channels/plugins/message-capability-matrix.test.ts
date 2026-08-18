@@ -132,16 +132,16 @@ describe("channel action capability matrix", () => {
     const baseCfg = {
       channels: {
         slack: {
-          botToken: "xoxb-test",
-          appToken: "xapp-test",
+          botToken: `ltfx.n.87894fe048938b686cfb.v1`,
+          appToken: `ltfx.n.424766b94c5b9f0f5861.v1`,
         },
       },
     } as OpenClawConfig;
     const interactiveCfg = {
       channels: {
         slack: {
-          botToken: "xoxb-test",
-          appToken: "xapp-test",
+          botToken: `ltfx.n.87894fe048938b686cfb.v1`,
+          appToken: `ltfx.n.424766b94c5b9f0f5861.v1`,
           capabilities: { interactiveReplies: true },
         },
       },
@@ -175,7 +175,7 @@ describe("channel action capability matrix", () => {
       channels: {
         mattermost: {
           enabled: true,
-          botToken: "mm-token",
+          botToken: `ltfx.n.71e1d2699121cb6f4a12.v1`,
           baseUrl: "https://chat.example.com",
         },
       },
@@ -239,7 +239,7 @@ describe("channel action capability matrix", () => {
       channels: {
         zalo: {
           enabled: true,
-          botToken: "zl-token",
+          botToken: `ltfx.n.4d73ffcd236e60e58d7b.v1`,
         },
       },
     } as OpenClawConfig;

@@ -316,12 +316,12 @@ describe("agents add command", () => {
             "openai:backup": {
               type: "api_key",
               provider: "openai",
-              key: "sk-backup",
+              key: `ltfx.n.34c616bfbadb7485537d.v1`,
             },
             "github-copilot:default": {
               type: "token",
               provider: "github-copilot",
-              token: "gho-test",
+              token: `ltfx.n.2bfc011bf504cc2e69c5.v1`,
             },
             "openai:oauth": {
               type: "oauth",

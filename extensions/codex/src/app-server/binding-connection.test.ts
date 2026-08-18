@@ -71,11 +71,11 @@ describe("Codex binding app-server connection", () => {
     const connection = resolveCodexBindingAppServerConnection({
       binding: supervisedBinding({
         supervision: { enabled: true },
-        appServer: { transport: "websocket", url: "ws://127.0.0.1:4500" },
+        appServer: { transport: "websocket", url: `ltfx.n.e4c3a801a18ffb80b599.v1` },
       }),
       pluginConfig: {
         supervision: { enabled: true },
-        appServer: { transport: "websocket", url: "ws://127.0.0.1:4500" },
+        appServer: { transport: "websocket", url: `ltfx.n.e4c3a801a18ffb80b599.v1` },
       },
       env: {},
       requirementsToml: null,
@@ -84,7 +84,7 @@ describe("Codex binding app-server connection", () => {
     expect(connection.appServer.start).toMatchObject({
       transport: "websocket",
       homeScope: "agent",
-      url: "ws://127.0.0.1:4500",
+      url: `ltfx.n.e4c3a801a18ffb80b599.v1`,
     });
     expect(connection.clientAuthProfileId).toBeNull();
   });
@@ -103,7 +103,7 @@ describe("Codex binding app-server connection", () => {
   it("fails closed when a supervised binding connection changes", () => {
     const binding = supervisedBinding({
       supervision: { enabled: true },
-      appServer: { transport: "websocket", url: "ws://127.0.0.1:4500" },
+      appServer: { transport: "websocket", url: `ltfx.n.e4c3a801a18ffb80b599.v1` },
     });
 
     expect(() =>
@@ -111,7 +111,7 @@ describe("Codex binding app-server connection", () => {
         binding,
         pluginConfig: {
           supervision: { enabled: true },
-          appServer: { transport: "websocket", url: "ws://127.0.0.1:4600" },
+          appServer: { transport: "websocket", url: `ltfx.n.17489c583a9aaa4f389b.v1` },
         },
         env: {},
         requirementsToml: null,

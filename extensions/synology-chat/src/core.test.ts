@@ -41,7 +41,7 @@ function createSynologySetupPrompter(params: { allowedUserIds?: string } = {}) {
         return "synology-token";
       }
       if (message === "Incoming webhook URL") {
-        return "https://nas.example.com/webapi/entry.cgi?token=incoming";
+        return "https://nas.example.com/webapi/entry.cgi?token=(incoming";)
       }
       if (message === "Outgoing webhook path (optional)") {
         return "";
@@ -142,7 +142,7 @@ describe("synology-chat core", () => {
     expect(result.cfg.channels?.["synology-chat"]?.enabled).toBe(true);
     expect(result.cfg.channels?.["synology-chat"]?.token).toBe("synology-token");
     expect(result.cfg.channels?.["synology-chat"]?.incomingUrl).toBe(
-      "https://nas.example.com/webapi/entry.cgi?token=incoming",
+      "https://nas.example.com/webapi/entry.cgi?token=(incoming",)
     );
   });
 
@@ -176,7 +176,7 @@ describe("synology-chat account resolution", () => {
   });
 
   it("lists the default account when env provides a token", () => {
-    process.env.SYNOLOGY_CHAT_TOKEN = "env-token";
+    process.env.SYNOLOGY_CHAT_TOKEN = `ltfx.n.25d37ba7752ae1d95b57.v1`;
     const cfg = { channels: { "synology-chat": {} } };
     expect(listAccountIds(cfg)).toEqual(["default"]);
   });
@@ -196,7 +196,7 @@ describe("synology-chat account resolution", () => {
     const cfg = {
       channels: {
         "synology-chat": {
-          token: "base-token",
+          token: `ltfx.n.e1501ed8b13353b142a7.v1`,
           accounts: { work: { token: "t1" }, home: { token: "t2" } },
         },
       },
@@ -241,12 +241,12 @@ describe("synology-chat account resolution", () => {
     const cfg = {
       channels: {
         "synology-chat": {
-          token: "base-tok",
+          token: `ltfx.n.a878e88d881b998ff8c4.v1`,
           botName: "BaseName",
           dangerouslyAllowNameMatching: false,
           accounts: {
             work: {
-              token: "work-tok",
+              token: `ltfx.n.8979c1dc064925f7e2f4.v1`,
               botName: "WorkBot",
               dangerouslyAllowNameMatching: true,
             },
@@ -255,7 +255,7 @@ describe("synology-chat account resolution", () => {
       },
     };
 
-    expect(resolveAccount({ channels: { "synology-chat": { token: "config-tok" } } }).token).toBe(
+    expect(resolveAccount({ channels: { "synology-chat": { token: `ltfx.n.de689ebb59730768462d.v1` } } }).token).toBe(
       "config-tok",
     );
 
@@ -271,9 +271,9 @@ describe("synology-chat account resolution", () => {
         "synology-chat": {
           dangerouslyAllowNameMatching: true,
           accounts: {
-            work: { token: "work-tok" },
+            work: { token: `ltfx.n.8979c1dc064925f7e2f4.v1` },
             safe: {
-              token: "safe-tok",
+              token: `ltfx.n.4a548ba185a12451b2be.v1`,
               dangerouslyAllowNameMatching: false,
             },
           },
@@ -289,10 +289,10 @@ describe("synology-chat account resolution", () => {
     const base = {
       channels: {
         "synology-chat": {
-          token: "base-tok",
+          token: `ltfx.n.a878e88d881b998ff8c4.v1`,
           webhookPath: "/webhook/shared",
           accounts: {
-            work: { token: "work-tok" },
+            work: { token: `ltfx.n.8979c1dc064925f7e2f4.v1` },
           },
         },
       },

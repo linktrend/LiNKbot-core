@@ -241,7 +241,7 @@ describe("getReplyFromConfig fast test bootstrap", () => {
     vi.mocked(loadConfigMock).mockReturnValue({
       channels: {
         telegram: {
-          botToken: "resolved-telegram-token",
+          botToken: `ltfx.n.560610b177dd2e1590d9.v1`,
         },
       },
     } satisfies OpenClawConfig);

@@ -177,7 +177,7 @@ describe("maybeHandleGoogleChatApprovalCardClick", () => {
 
   it("accepts add-on clicks that only carry approval token parameters", async () => {
     registerGoogleChatApprovalCardBinding({
-      token: "token-addon",
+      token: `ltfx.n.46a64cd46727bedf4915.v1`,
       accountId: "default",
       approvalId: "approval-addon",
       approvalKind: "exec",
@@ -198,7 +198,7 @@ describe("maybeHandleGoogleChatApprovalCardClick", () => {
           commonEventObject: {
             parameters: {
               openclaw_action: "approval",
-              token: "token-addon",
+              token: `ltfx.n.46a64cd46727bedf4915.v1`,
             },
           },
         },
@@ -216,7 +216,7 @@ describe("maybeHandleGoogleChatApprovalCardClick", () => {
 
   it("accepts standard cardsV2 clicks with common parameters", async () => {
     registerGoogleChatApprovalCardBinding({
-      token: "token-common",
+      token: `ltfx.n.0135510cb69782eb4940.v1`,
       accountId: "default",
       approvalId: "approval-common",
       approvalKind: "plugin",
@@ -238,7 +238,7 @@ describe("maybeHandleGoogleChatApprovalCardClick", () => {
             invokedFunction: "openclaw.approval",
             parameters: {
               openclaw_action: "approval",
-              token: "token-common",
+              token: `ltfx.n.0135510cb69782eb4940.v1`,
             },
           },
         },
@@ -257,7 +257,7 @@ describe("maybeHandleGoogleChatApprovalCardClick", () => {
 
   it("accepts endpoint URL invoked functions for app-url card actions", async () => {
     registerGoogleChatApprovalCardBinding({
-      token: "token-url",
+      token: `ltfx.n.e58097174f59b6395834.v1`,
       accountId: "default",
       approvalId: "approval-url",
       approvalKind: "exec",
@@ -279,7 +279,7 @@ describe("maybeHandleGoogleChatApprovalCardClick", () => {
             invokedFunction: "https://chat-app.example.test/googlechat",
             parameters: {
               openclaw_action: "approval",
-              token: "token-url",
+              token: `ltfx.n.e58097174f59b6395834.v1`,
             },
           },
         },
@@ -335,7 +335,7 @@ describe("maybeHandleGoogleChatApprovalCardClick", () => {
 
   it("keeps the token retryable when gateway resolution fails", async () => {
     registerGoogleChatApprovalCardBinding({
-      token: "token-retry",
+      token: `ltfx.n.b66a6d9fe70749866027.v1`,
       accountId: "default",
       approvalId: "approval-retry",
       approvalKind: "exec",
@@ -374,7 +374,7 @@ describe("maybeHandleGoogleChatApprovalCardClick", () => {
 
   it("reports the canonical winner when another surface resolves first", async () => {
     registerGoogleChatApprovalCardBinding({
-      token: "token-loser",
+      token: `ltfx.n.b57032a7b938552f01dd.v1`,
       accountId: "default",
       approvalId: "approval-loser",
       approvalKind: "exec",
@@ -415,7 +415,7 @@ describe("maybeHandleGoogleChatApprovalCardClick", () => {
 
   it("keeps the token retryable when the canonical card update fails", async () => {
     registerGoogleChatApprovalCardBinding({
-      token: "token-update-retry",
+      token: `ltfx.n.78bfc28224766660e02f.v1`,
       accountId: "default",
       approvalId: "approval-update-retry",
       approvalKind: "exec",

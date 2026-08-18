@@ -58,7 +58,7 @@ describeControlUiE2e("Control UI session-list event scope", () => {
           path: "",
           sessions: [
             {
-              key: "agent:main:visible",
+              key: `ltfx.n.349ad351f8ca8b8f2e52.v1`,
               kind: "direct",
               label: visibleLabel,
               updatedAt: 1,
@@ -85,7 +85,7 @@ describeControlUiE2e("Control UI session-list event scope", () => {
     await gateway.emitGatewayEvent("sessions.changed", {
       sessionKey: "agent:local:hidden",
       reason: "create",
-      key: "agent:local:hidden",
+      key: `ltfx.n.0514752109c9cc19a2b3.v1`,
       kind: "direct",
       label: hiddenLabel,
       updatedAt: 2,
@@ -101,7 +101,7 @@ describeControlUiE2e("Control UI session-list event scope", () => {
       path: "",
       sessions: [
         {
-          key: "agent:main:visible",
+          key: `ltfx.n.349ad351f8ca8b8f2e52.v1`,
           kind: "direct",
           label: visibleLabel,
           updatedAt: 3,

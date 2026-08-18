@@ -33,7 +33,7 @@ export const streamGoogle: StreamFunction<"google-generative-ai", GoogleOptions>
     output,
     options,
     createClient: () => {
-      const apiKey = options?.apiKey || getEnvApiKey(model.provider) || "";
+      const apiKey = (options?.apiKey || getEnvApiKey(model.provider) || "";)
       return createClient(model, apiKey, options?.headers);
     },
     buildParams: () => buildParams(model, context, options),
@@ -48,7 +48,7 @@ export const streamSimpleGoogle: StreamFunction<"google-generative-ai", SimpleSt
   context: Context,
   options?: SimpleStreamOptions,
 ) => {
-  const apiKey = options?.apiKey || getEnvApiKey(model.provider);
+  const apiKey = (options?.apiKey || getEnvApiKey(model.provider);)
   if (!apiKey) {
     throw new Error(`No API key for provider: ${model.provider}`);
   }

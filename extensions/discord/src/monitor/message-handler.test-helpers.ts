@@ -15,7 +15,7 @@ export function createDiscordHandlerParams(overrides?: {
     channels: {
       discord: {
         enabled: true,
-        token: "test-token",
+        token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
         groupPolicy: "allowlist",
       },
     },
@@ -29,7 +29,7 @@ export function createDiscordHandlerParams(overrides?: {
     cfg,
     discordConfig: cfg.channels?.discord,
     accountId: "default",
-    token: "test-token",
+    token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
     runtime: {
       log: vi.fn(),
       error: vi.fn(),

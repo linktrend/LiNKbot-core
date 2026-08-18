@@ -18,7 +18,7 @@ type ResolveApiKeyForProvider = typeof import("../agents/model-auth.js").resolve
 
 const resolveApiKeyForProviderMock = vi.hoisted(() =>
   vi.fn<ResolveApiKeyForProvider>(async () => ({
-    apiKey: "test-key", // pragma: allowlist secret
+    apiKey: `ltfx.n.62af8704764faf8ea82f.v1`, // pragma: allowlist secret
     source: "test",
     mode: "api-key",
   })),
@@ -30,7 +30,7 @@ const hasAvailableAuthForProviderMock = vi.hoisted(() =>
   }),
 );
 const getApiKeyForModelMock = vi.hoisted(() =>
-  vi.fn(async () => ({ apiKey: "test-key", source: "test", mode: "api-key" })),
+  vi.fn(async () => ({ apiKey: `ltfx.n.62af8704764faf8ea82f.v1`, source: "test", mode: "api-key" })),
 );
 const readRemoteMediaBufferMock = vi.hoisted(() => vi.fn());
 const runExecMock = vi.hoisted(() => vi.fn());

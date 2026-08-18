@@ -28,7 +28,7 @@ function createRuntimeConfig(): OpenClawConfig {
       providers: {
         openai: {
           baseUrl: "https://api.openai.com/v1",
-          apiKey: "sk-runtime-resolved", // pragma: allowlist secret
+          apiKey: `ltfx.n.6ea73a34da270c875bba.v1`, // pragma: allowlist secret
           models: [],
         },
       },
@@ -72,7 +72,7 @@ describe("runtime config snapshot writes", () => {
         providers: {
           openai: {
             baseUrl: "https://api.openai.com/v1",
-            apiKey: "sk-independent-config", // pragma: allowlist secret
+            apiKey: `ltfx.n.46f8877661248fe8b56f.v1`, // pragma: allowlist secret
             models: [],
           },
         },

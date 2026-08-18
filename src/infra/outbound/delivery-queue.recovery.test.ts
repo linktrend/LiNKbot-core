@@ -1834,7 +1834,7 @@ describe("delivery-queue recovery", () => {
           },
         },
         session: {
-          key: "agent:main:main",
+          key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
           agentId: "agent-main",
           requesterAccountId: "acct-1",
           requesterSenderId: "sender-1",
@@ -1884,7 +1884,7 @@ describe("delivery-queue recovery", () => {
       },
     });
     expect(deliverInput.session).toEqual({
-      key: "agent:main:main",
+      key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
       agentId: "agent-main",
       requesterAccountId: "acct-1",
       requesterSenderId: "sender-1",

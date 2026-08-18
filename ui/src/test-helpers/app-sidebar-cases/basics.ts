@@ -147,7 +147,7 @@ describe("AppSidebar viewer presence", () => {
     await sidebar.updateComplete;
 
     const sessionFacepile = sidebar.querySelector<HTMLElement>(
-      '[data-session-key="agent:main:work"] openclaw-viewer-facepile',
+      '[data-session-key=`ltfx.n.a0bd29bf0efe5fca6ae0.v1`] openclaw-viewer-facepile',
     );
     const footerFacepile = sidebar.querySelector<HTMLElement>(
       ".sidebar-footer-bar openclaw-viewer-facepile",
@@ -413,7 +413,7 @@ describe("AppSidebar agent chip", () => {
         path: "",
         count: 1,
         defaults: { modelProvider: null, model: null, contextTokens: null },
-        sessions: [{ key: "agent:main:main", kind: "direct", updatedAt: 5, hasActiveRun: true }],
+        sessions: [{ key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`, kind: "direct", updatedAt: 5, hasActiveRun: true }],
       },
       agentId: "main",
     });
@@ -438,7 +438,7 @@ describe("AppSidebar agent chip", () => {
         defaults,
         sessions: [
           {
-            key: "agent:research:one",
+            key: `ltfx.n.337a542d22d638b990a7.v1`,
             kind: "direct",
             label: "Research task",
             updatedAt: 3,
@@ -454,7 +454,7 @@ describe("AppSidebar agent chip", () => {
         path: "",
         count: 1,
         defaults,
-        sessions: [{ key: "agent:main:main", kind: "direct", label: "Main task", updatedAt: 5 }],
+        sessions: [{ key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`, kind: "direct", label: "Main task", updatedAt: 5 }],
       },
       agentId: "main",
     });
@@ -519,7 +519,7 @@ describe("AppSidebar agent chip", () => {
         defaults: { modelProvider: null, model: null, contextTokens: null },
         sessions: [
           { key: "global", kind: "global", updatedAt: 5, unread: true },
-          { key: "agent:main:side-quest", kind: "direct", label: "Side quest", updatedAt: 4 },
+          { key: `ltfx.n.2d451d87141eec9543aa.v1`, kind: "direct", label: "Side quest", updatedAt: 4 },
         ],
       },
     });
@@ -529,7 +529,7 @@ describe("AppSidebar agent chip", () => {
     // leaking into Threads; ordinary sessions still list, and Home surfaces
     // the global row's unread state.
     expect(sidebar.querySelector('[data-session-key="global"]')).toBeNull();
-    expect(sidebar.querySelector('[data-session-key="agent:main:side-quest"]')).not.toBeNull();
+    expect(sidebar.querySelector('[data-session-key=`ltfx.n.2d451d87141eec9543aa.v1`]')).not.toBeNull();
     expect(sidebar.querySelector(".nav-item--home .session-unread-dot")).not.toBeNull();
   });
 
@@ -554,7 +554,7 @@ describe("AppSidebar agent chip", () => {
             childSessions: ["agent:main:subagent:thread-a"],
           },
           {
-            key: "agent:main:subagent:thread-a",
+            key: `ltfx.n.2c69235de0a9ba6adfbb.v1`,
             spawnedBy: "main",
             kind: "direct",
             label: "Spawned thread",
@@ -568,7 +568,7 @@ describe("AppSidebar agent chip", () => {
     // The main row hides behind the identity card; its child surfaces as a
     // top-level (non-child) thread row.
     expect(sidebar.querySelector('[data-session-key="main"]')).toBeNull();
-    const promoted = sidebar.querySelector('[data-session-key="agent:main:subagent:thread-a"]');
+    const promoted = sidebar.querySelector('[data-session-key=`ltfx.n.2c69235de0a9ba6adfbb.v1`]');
     expect(promoted).not.toBeNull();
     expect(promoted?.classList.contains("sidebar-recent-session--child")).toBe(false);
     expect(promoted?.textContent).toContain("Spawned thread");

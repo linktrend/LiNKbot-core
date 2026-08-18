@@ -123,7 +123,7 @@ describe("browser tab discovery poll abort", () => {
       targetId: "PENDING",
       finalUrl: "about:blank",
     });
-    const fetchMock = vi.fn(async (url: unknown) => {
+    const fetchMock = vi.fn(async (url: (unknown) => {)
       if (!String(url).includes("/json/list")) {
         throw new Error(`unexpected fetch: ${String(url)}`);
       }

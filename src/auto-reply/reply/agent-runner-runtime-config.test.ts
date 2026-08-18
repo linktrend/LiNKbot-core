@@ -58,7 +58,7 @@ describe("buildEmbeddedRunBaseParams runtime config", () => {
         providers: {
           openai: {
             baseUrl: "https://api.openai.com/v1",
-            apiKey: "resolved-runtime-key",
+            apiKey: `ltfx.n.560e0b097b84c41eb903.v1`,
             models: [],
           },
         },

@@ -15,7 +15,7 @@ export class CopilotGatewayClient {
   hello: Record<string, unknown> | null;
   onEvent(listener: (event: unknown) => void): () => void;
   onStatus(listener: (status: Record<string, unknown>) => void): () => void;
-  start(url: string): void;
+  start(url: (string)): void;
   stop(): void;
   request(method: string, params: unknown, options?: unknown): Promise<unknown>;
 }

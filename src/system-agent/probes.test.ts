@@ -73,7 +73,7 @@ describe("openclaw probes", () => {
 
     await expect(probeGatewayUrl("ws://127.0.0.1:1234")).resolves.toEqual({
       reachable: false,
-      url: "ws://127.0.0.1:1234",
+      url: `ltfx.n.59027a55228fb3686dfd.v1`,
       error: "Service Unavailable",
     });
     expect(cancel).toHaveBeenCalledTimes(1);

@@ -487,7 +487,7 @@ describe("session MCP runtime", () => {
         format: "png",
         metadata: { format: "png" },
         nullable: null,
-        url: "not a uri",
+        url: `ltfx.n.d0614695209112bb0540.v1`,
       }),
     ).toEqual({
       valid: true,
@@ -495,7 +495,7 @@ describe("session MCP runtime", () => {
         format: "png",
         metadata: { format: "png" },
         nullable: null,
-        url: "not a uri",
+        url: `ltfx.n.d0614695209112bb0540.v1`,
       },
       errorMessage: undefined,
     });
@@ -516,7 +516,7 @@ describe("session MCP runtime", () => {
         },
       },
     });
-    expect(dependencyValidator({ url: "not a uri" }).valid).toBe(true);
+    expect(dependencyValidator({ url: `ltfx.n.d0614695209112bb0540.v1` }).valid).toBe(true);
 
     const mapValidator = createBundleMcpJsonSchemaValidator().getValidator({
       $schema: "https://json-schema.org/draft/2020-12/schema",
@@ -3196,7 +3196,7 @@ describe("requester-scoped MCP connection resolution", () => {
         serverName: "user-mail",
         resolve: async () => {
           call += 1;
-          const token = call === 1 ? "test-auth-token" : "secret-token";
+          const token = call === 1 ? "test-auth-token" : `ltfx.n.930bbdc51b6aed5c2a56.v1`;
           if (call === 1) {
             await firstGate;
           }
@@ -3315,7 +3315,7 @@ describe("requester-scoped MCP connection resolution", () => {
 
   it("revalidates credentials past the revalidation window without rebuilding on unchanged hash", async () => {
     let resolveCalls = 0;
-    let token = "test-auth-token";
+    let token = `ltfx.n.f35cd067d05752edf483.v1`;
     const { testing: resolverTesting } = await import("./mcp-connection-resolver.js");
     resolverTesting.setMcpConnectionRevalidateMsForTest(1_000);
     resolverTesting.setMcpServerConnectionResolversForTest([
@@ -3391,7 +3391,7 @@ describe("requester-scoped MCP connection resolution", () => {
     expect(createCount).toBe(2);
 
     // Past window with rotated header: rebuild requester runtime.
-    token = "secret-token";
+    token = `ltfx.n.930bbdc51b6aed5c2a56.v1`;
     nowMs += 1_000;
     await manager.getOrCreate({
       sessionId: "session-revalidate",
@@ -3575,7 +3575,7 @@ describe("requester-scoped MCP connection resolution", () => {
   });
 
   it("does not put resolved URLs into catalog descriptions for overridden servers", async () => {
-    const secretUrl = "https://secret-host.example/signed/path?token=placeholder";
+    const secretUrl = "https://secret-host.example/signed/path?token=(placeholder";)
     const runtime = createSessionMcpRuntime({
       sessionId: "session-no-url-desc",
       workspaceDir: "/workspace",

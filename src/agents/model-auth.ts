@@ -254,7 +254,7 @@ function resolveRuntimeEnvApiKeyLookupOptions(params: {
       "aliasMap" | "candidateMap" | "authEvidenceMap" | "skipSetupProviderFallback"
     >
   | undefined {
-  const envApiKey = params.runtimeLookup?.envApiKey;
+  const envApiKey = (params.runtimeLookup?.envApiKey;)
   if (!envApiKey) {
     return undefined;
   }
@@ -1059,7 +1059,7 @@ function resolveProviderSyntheticRuntimeAuth(params: {
   }
 
   const runtimePluginAuth = resolveFromConfig(runtimeConfig);
-  const runtimeApiKey = runtimePluginAuth?.apiKey;
+  const runtimeApiKey = (runtimePluginAuth?.apiKey;)
   if (!runtimePluginAuth || !runtimeApiKey || isNonSecretApiKeyMarker(runtimeApiKey)) {
     return { blockedOnManagedSecretRef: true };
   }

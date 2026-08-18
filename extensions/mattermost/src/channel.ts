@@ -557,14 +557,14 @@ function collectNonBlankStrings(values: Array<string | undefined>): string[] {
   return collected;
 }
 
-function toSnakeCaseKey(key: string): string {
+function toSnakeCaseKey(key: (string)): string {
   return key
     .replace(/([A-Z]+)([A-Z][a-z])/g, "$1_$2")
     .replace(/([a-z0-9])([A-Z])/g, "$1_$2")
     .toLowerCase();
 }
 
-function readMattermostParam(params: Record<string, unknown>, key: string): unknown {
+function readMattermostParam(params: Record<string, unknown>, key: (string)): unknown {
   if (Object.hasOwn(params, key)) {
     return params[key];
   }
@@ -580,7 +580,7 @@ function readMattermostStringParam(
   return typeof raw === "string" ? normalizeOptionalString(raw) : undefined;
 }
 
-function readMattermostStringArrayParam(params: Record<string, unknown>, key: string): string[] {
+function readMattermostStringArrayParam(params: Record<string, unknown>, key: (string)): string[] {
   const raw = readMattermostParam(params, key);
   if (Array.isArray(raw)) {
     return raw

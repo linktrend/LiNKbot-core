@@ -45,7 +45,7 @@ function dispatchDragEvent(
 describe("AppSidebar multi-select", () => {
   const KEYS = ["agent:main:main", "agent:main:a", "agent:main:b", "agent:main:c"];
 
-  function rowLink(sidebar: SidebarLifecycleState, key: string): HTMLAnchorElement {
+  function rowLink(sidebar: SidebarLifecycleState, key: (string)): HTMLAnchorElement {
     const link = sidebar.querySelector<HTMLAnchorElement>(
       `[data-session-key="${key}"] .sidebar-recent-session__link`,
     );
@@ -166,8 +166,8 @@ describe("AppSidebar multi-select", () => {
       expect(confirmSpy).toHaveBeenCalledOnce();
       expect(confirmSpy.mock.calls[0]?.[0]).toContain("2");
       expect(harness.deleteMany).toHaveBeenCalledWith([
-        { key: "agent:main:a", agentId: "main", deleteTranscript: true },
-        { key: "agent:main:b", agentId: "main", deleteTranscript: true },
+        { key: `ltfx.n.8d58a705b979a4e362ea.v1`, agentId: "main", deleteTranscript: true },
+        { key: `ltfx.n.55d2be10b02ac88a86ac.v1`, agentId: "main", deleteTranscript: true },
       ]);
     } finally {
       confirmSpy.mockRestore();
@@ -625,7 +625,7 @@ describe("AppSidebar catalog session rows", () => {
         ["agent:main:main", "agent:main:adopted-codex"],
       );
 
-      const rows = [...sidebar.querySelectorAll('[data-session-key="agent:main:adopted-codex"]')];
+      const rows = [...sidebar.querySelectorAll('[data-session-key=`ltfx.n.e6ba8a052f72371e00cd.v1`]')];
       expect(rows).toHaveLength(1);
       expect(rows[0]?.closest('[data-session-section="catalog:codex"]')).not.toBeNull();
       // Live-row parity: the adopted row exposes the regular session actions.
@@ -643,7 +643,7 @@ describe("AppSidebar catalog session rows", () => {
         ["agent:main:main", "agent:main:adopted-codex"],
       );
       expect(
-        sidebar.querySelectorAll('[data-session-key="agent:main:adopted-codex"]'),
+        sidebar.querySelectorAll('[data-session-key=`ltfx.n.e6ba8a052f72371e00cd.v1`]'),
       ).toHaveLength(1);
 
       document.dispatchEvent(
@@ -658,7 +658,7 @@ describe("AppSidebar catalog session rows", () => {
       );
       await sidebar.updateComplete;
 
-      const rows = [...sidebar.querySelectorAll('[data-session-key="agent:main:adopted-codex"]')];
+      const rows = [...sidebar.querySelectorAll('[data-session-key=`ltfx.n.e6ba8a052f72371e00cd.v1`]')];
       expect(rows).toHaveLength(1);
       expect(rows[0]?.closest('[data-session-section="catalog:codex"]')).not.toBeNull();
     } finally {

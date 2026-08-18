@@ -13,7 +13,7 @@ describe("discord actions contract", () => {
         cfg: {
           channels: {
             discord: {
-              token: "Bot token-main",
+              token: `ltfx.n.2031ff89f539bcf26f58.v1`,
               actions: {
                 polls: true,
                 reactions: true,

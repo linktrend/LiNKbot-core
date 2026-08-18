@@ -544,7 +544,7 @@ Behavior notes:
             provider: "elevenlabs",
             providers: {
               elevenlabs: {
-                apiKey: "elevenlabs_key",
+                apiKey: "${ltfx.n.296866c31bb10d1128cc.v1}",
                 speakerVoiceId: "pMsXgVXv3BLzUgSXRplE",
                 modelId: "eleven_multilingual_v2",
               },

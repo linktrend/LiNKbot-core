@@ -214,7 +214,7 @@ describe("minimax provider hooks", () => {
       env: {},
       config: {},
       resolveProviderApiKey: (providerId?: string) => ({
-        apiKey: providerId === "minimax" ? "sk-minimax-test" : undefined,
+        apiKey: providerId === "minimax" ? "ltfx.n.d1cc8cd5e791091ae2c2.v1" : undefined,
       }),
     } as never);
 
@@ -385,7 +385,7 @@ describe("minimax provider hooks", () => {
     });
     const apiProvider = requireRegisteredProvider(providers, "minimax");
     const resolveOAuthToken = vi.fn(async (params?: { provider?: string }) =>
-      params?.provider === "minimax-portal" ? { token: "portal-oauth-token" } : null,
+      params?.provider === "minimax-portal" ? { token: `ltfx.n.fbcfb932b73c7fa1adf7.v1` } : null,
     );
     const resolveApiKeyFromConfigAndStore = vi.fn(() => undefined);
 
@@ -397,7 +397,7 @@ describe("minimax provider hooks", () => {
         resolveOAuthToken,
         resolveApiKeyFromConfigAndStore,
       } as never),
-    ).resolves.toEqual({ token: "portal-oauth-token" });
+    ).resolves.toEqual({ token: `ltfx.n.fbcfb932b73c7fa1adf7.v1` });
 
     expect(resolveOAuthToken).toHaveBeenCalledWith({ provider: "minimax-portal" });
     expect(resolveApiKeyFromConfigAndStore).not.toHaveBeenCalled();

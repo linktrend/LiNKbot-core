@@ -12,7 +12,7 @@ describe("legacy web fetch config", () => {
             provider: "firecrawl",
             timeoutSeconds: 15,
             firecrawl: {
-              apiKey: "firecrawl-key",
+              apiKey: `ltfx.n.7e2df43f2f552e00bb5d.v1`,
               baseUrl: "https://api.firecrawl.dev",
               onlyMainContent: false,
             },
@@ -29,7 +29,7 @@ describe("legacy web fetch config", () => {
       enabled: true,
       config: {
         webFetch: {
-          apiKey: "firecrawl-key",
+          apiKey: `ltfx.n.7e2df43f2f552e00bb5d.v1`,
           baseUrl: "https://api.firecrawl.dev",
           onlyMainContent: false,
         },
@@ -48,7 +48,7 @@ describe("legacy web fetch config", () => {
             provider: "firecrawl",
             firecrawl: {
               enabled: false,
-              apiKey: "firecrawl-key",
+              apiKey: `ltfx.n.7e2df43f2f552e00bb5d.v1`,
             },
           },
         },
@@ -59,7 +59,7 @@ describe("legacy web fetch config", () => {
       enabled: true,
       config: {
         webFetch: {
-          apiKey: "firecrawl-key",
+          apiKey: `ltfx.n.7e2df43f2f552e00bb5d.v1`,
         },
       },
     });

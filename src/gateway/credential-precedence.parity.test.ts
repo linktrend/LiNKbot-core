@@ -23,8 +23,8 @@ type TestCase = {
 };
 
 const gatewayEnv = {
-  OPENCLAW_GATEWAY_TOKEN: "env-token", // pragma: allowlist secret
-  OPENCLAW_GATEWAY_PASSWORD: "env-password", // pragma: allowlist secret
+  OPENCLAW_GATEWAY_TOKEN: `ltfx.n.25d37ba7752ae1d95b57.v1`, // pragma: allowlist secret
+  OPENCLAW_GATEWAY_PASSWORD: `ltfx.n.b7c8db593f965dc9a2cd.v1`, // pragma: allowlist secret
 } as NodeJS.ProcessEnv;
 
 function makeRemoteGatewayConfig(remote: { token?: string; password?: string }): OpenClawConfig {
@@ -33,8 +33,8 @@ function makeRemoteGatewayConfig(remote: { token?: string; password?: string }):
       mode: "remote",
       remote,
       auth: {
-        token: "local-token",
-        password: "local-password", // pragma: allowlist secret
+        token: `ltfx.n.c7ec7c548f5992a239dc.v1`,
+        password: `ltfx.n.03eecb1e5d33a976de28.v1`, // pragma: allowlist secret
       },
     },
   } as OpenClawConfig;
@@ -59,47 +59,47 @@ describe("gateway credential precedence coverage", () => {
         gateway: {
           mode: "local",
           auth: {
-            token: "config-token",
-            password: "config-password", // pragma: allowlist secret
+            token: `ltfx.n.a98cc81fe778386f6195.v1`,
+            password: `ltfx.n.247ccb8a17c771073cb2.v1`, // pragma: allowlist secret
           },
         },
       } as OpenClawConfig,
       env: {
-        OPENCLAW_GATEWAY_TOKEN: "env-token", // pragma: allowlist secret
-        OPENCLAW_GATEWAY_PASSWORD: "env-password", // pragma: allowlist secret
+        OPENCLAW_GATEWAY_TOKEN: `ltfx.n.25d37ba7752ae1d95b57.v1`, // pragma: allowlist secret
+        OPENCLAW_GATEWAY_PASSWORD: `ltfx.n.b7c8db593f965dc9a2cd.v1`, // pragma: allowlist secret
       } as NodeJS.ProcessEnv,
       expected: {
-        call: { token: "env-token", password: "env-password" }, // pragma: allowlist secret
-        probe: { token: "env-token", password: "env-password" }, // pragma: allowlist secret
-        status: { token: "config-token", password: "config-password" }, // pragma: allowlist secret
-        auth: { token: "config-token", password: "config-password" }, // pragma: allowlist secret
+        call: { token: `ltfx.n.25d37ba7752ae1d95b57.v1`, password: `ltfx.n.b7c8db593f965dc9a2cd.v1` }, // pragma: allowlist secret
+        probe: { token: `ltfx.n.25d37ba7752ae1d95b57.v1`, password: `ltfx.n.b7c8db593f965dc9a2cd.v1` }, // pragma: allowlist secret
+        status: { token: `ltfx.n.a98cc81fe778386f6195.v1`, password: `ltfx.n.247ccb8a17c771073cb2.v1` }, // pragma: allowlist secret
+        auth: { token: `ltfx.n.a98cc81fe778386f6195.v1`, password: `ltfx.n.247ccb8a17c771073cb2.v1` }, // pragma: allowlist secret
       },
     },
     {
       name: "remote mode with remote token configured",
       cfg: makeRemoteGatewayConfig({
-        token: "remote-token",
-        password: "remote-password", // pragma: allowlist secret
+        token: `ltfx.n.b79f8018a1bfa2040be5.v1`,
+        password: `ltfx.n.de3ebec174fd3a1387de.v1`, // pragma: allowlist secret
       }),
       env: gatewayEnv,
       expected: {
-        call: { token: "remote-token", password: "env-password" }, // pragma: allowlist secret
-        probe: { token: "remote-token", password: "env-password" }, // pragma: allowlist secret
-        status: { token: "local-token", password: "local-password" }, // pragma: allowlist secret
-        auth: { token: "local-token", password: "local-password" }, // pragma: allowlist secret
+        call: { token: `ltfx.n.b79f8018a1bfa2040be5.v1`, password: `ltfx.n.b7c8db593f965dc9a2cd.v1` }, // pragma: allowlist secret
+        probe: { token: `ltfx.n.b79f8018a1bfa2040be5.v1`, password: `ltfx.n.b7c8db593f965dc9a2cd.v1` }, // pragma: allowlist secret
+        status: { token: `ltfx.n.c7ec7c548f5992a239dc.v1`, password: `ltfx.n.03eecb1e5d33a976de28.v1` }, // pragma: allowlist secret
+        auth: { token: `ltfx.n.c7ec7c548f5992a239dc.v1`, password: `ltfx.n.03eecb1e5d33a976de28.v1` }, // pragma: allowlist secret
       },
     },
     {
       name: "remote mode without remote token keeps remote probe/status strict",
       cfg: makeRemoteGatewayConfig({
-        password: "remote-password", // pragma: allowlist secret
+        password: `ltfx.n.de3ebec174fd3a1387de.v1`, // pragma: allowlist secret
       }),
       env: gatewayEnv,
       expected: {
-        call: { token: "env-token", password: "env-password" }, // pragma: allowlist secret
-        probe: { token: undefined, password: "env-password" }, // pragma: allowlist secret
-        status: { token: "local-token", password: "local-password" }, // pragma: allowlist secret
-        auth: { token: "local-token", password: "local-password" }, // pragma: allowlist secret
+        call: { token: `ltfx.n.25d37ba7752ae1d95b57.v1`, password: `ltfx.n.b7c8db593f965dc9a2cd.v1` }, // pragma: allowlist secret
+        probe: { token: undefined, password: `ltfx.n.b7c8db593f965dc9a2cd.v1` }, // pragma: allowlist secret
+        status: { token: `ltfx.n.c7ec7c548f5992a239dc.v1`, password: `ltfx.n.03eecb1e5d33a976de28.v1` }, // pragma: allowlist secret
+        auth: { token: `ltfx.n.c7ec7c548f5992a239dc.v1`, password: `ltfx.n.03eecb1e5d33a976de28.v1` }, // pragma: allowlist secret
       },
     },
     {
@@ -108,21 +108,21 @@ describe("gateway credential precedence coverage", () => {
         gateway: {
           mode: "local",
           auth: {
-            token: "config-token",
-            password: "config-password", // pragma: allowlist secret
+            token: `ltfx.n.a98cc81fe778386f6195.v1`,
+            password: `ltfx.n.247ccb8a17c771073cb2.v1`, // pragma: allowlist secret
           },
         },
       } as OpenClawConfig,
       env: {
-        OPENCLAW_GATEWAY_TOKEN: "env-token",
-        OPENCLAW_GATEWAY_PASSWORD: "env-password", // pragma: allowlist secret
+        OPENCLAW_GATEWAY_TOKEN: `ltfx.n.25d37ba7752ae1d95b57.v1`,
+        OPENCLAW_GATEWAY_PASSWORD: `ltfx.n.b7c8db593f965dc9a2cd.v1`, // pragma: allowlist secret
         OPENCLAW_SERVICE_KIND: "gateway",
       } as NodeJS.ProcessEnv,
       expected: {
-        call: { token: "config-token", password: "env-password" }, // pragma: allowlist secret
-        probe: { token: "config-token", password: "env-password" }, // pragma: allowlist secret
-        status: { token: "config-token", password: "config-password" }, // pragma: allowlist secret
-        auth: { token: "config-token", password: "config-password" }, // pragma: allowlist secret
+        call: { token: `ltfx.n.a98cc81fe778386f6195.v1`, password: `ltfx.n.b7c8db593f965dc9a2cd.v1` }, // pragma: allowlist secret
+        probe: { token: `ltfx.n.a98cc81fe778386f6195.v1`, password: `ltfx.n.b7c8db593f965dc9a2cd.v1` }, // pragma: allowlist secret
+        status: { token: `ltfx.n.a98cc81fe778386f6195.v1`, password: `ltfx.n.247ccb8a17c771073cb2.v1` }, // pragma: allowlist secret
+        auth: { token: `ltfx.n.a98cc81fe778386f6195.v1`, password: `ltfx.n.247ccb8a17c771073cb2.v1` }, // pragma: allowlist secret
       },
     },
   ];

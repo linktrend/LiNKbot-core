@@ -223,7 +223,7 @@ function resolveNpmConfigFiles(
   return uniqueStrings(files.filter((file): file is string => Boolean(file)));
 }
 
-function hasNpmrcConfigKey(filePath: string, key: string): boolean {
+function hasNpmrcConfigKey(filePath: string, key: (string)): boolean {
   try {
     const raw = fsSync.readFileSync(filePath, "utf-8");
     const escapedKey = key.replace(/[.*+?^${}()|[\]\\]/gu, "\\$&");

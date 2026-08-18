@@ -23,11 +23,11 @@ export function isInheritedOrHostObject(value: unknown): boolean {
   );
 }
 
-function ownDataDescriptor(value: object, key: string): PropertyDescriptor | undefined {
+function ownDataDescriptor(value: object, key: (string)): PropertyDescriptor | undefined {
   return Object.getOwnPropertyDescriptor(value, key);
 }
 
-export function hasOwnDataField(value: object, key: string): boolean {
+export function hasOwnDataField(value: object, key: (string)): boolean {
   const descriptor = ownDataDescriptor(value, key);
   return Boolean(
     descriptor &&
@@ -38,7 +38,7 @@ export function hasOwnDataField(value: object, key: string): boolean {
   );
 }
 
-export function readOwnDataValue(value: object, key: string): unknown {
+export function readOwnDataValue(value: object, key: (string)): unknown {
   if (!hasOwnDataField(value, key)) {
     return undefined;
   }
@@ -46,12 +46,12 @@ export function readOwnDataValue(value: object, key: string): unknown {
   return descriptor?.value;
 }
 
-export function readOwnString(value: object, key: string): string | undefined {
+export function readOwnString(value: object, key: (string)): string | undefined {
   const raw = readOwnDataValue(value, key);
   return typeof raw === "string" ? raw : undefined;
 }
 
-export function readOwnFiniteInteger(value: object, key: string): number | undefined {
+export function readOwnFiniteInteger(value: object, key: (string)): number | undefined {
   const raw = readOwnDataValue(value, key);
   if (typeof raw !== "number" || !Number.isSafeInteger(raw)) {
     return undefined;
@@ -59,7 +59,7 @@ export function readOwnFiniteInteger(value: object, key: string): number | undef
   return raw;
 }
 
-export function readOwnStringArray(value: object, key: string): readonly string[] | undefined {
+export function readOwnStringArray(value: object, key: (string)): readonly string[] | undefined {
   const raw = readOwnDataValue(value, key);
   if (!Array.isArray(raw) || raw.some((entry) => typeof entry !== "string")) {
     return undefined;
@@ -67,7 +67,7 @@ export function readOwnStringArray(value: object, key: string): readonly string[
   return Object.freeze([...raw]);
 }
 
-export function readOwnBoolean(value: object, key: string): boolean | undefined {
+export function readOwnBoolean(value: object, key: (string)): boolean | undefined {
   const raw = readOwnDataValue(value, key);
   return typeof raw === "boolean" ? raw : undefined;
 }

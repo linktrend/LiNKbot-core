@@ -164,7 +164,7 @@ describe("matrix setup post-write bootstrap", () => {
     const input = {
       homeserver: "https://matrix.example.org",
       userId: "@flurry:example.org",
-      accessToken: "new-token",
+      accessToken: `ltfx.n.348e9df2a42bd6e3c635.v1`,
     };
     const { nextCfg, accountId } = applyAccountConfig({
       previousCfg,
@@ -235,7 +235,7 @@ describe("matrix setup post-write bootstrap", () => {
     await withSavedEnv(
       {
         MATRIX_HOMESERVER: "https://matrix.example.org",
-        MATRIX_ACCESS_TOKEN: "env-token",
+        MATRIX_ACCESS_TOKEN: `ltfx.n.25d37ba7752ae1d95b57.v1`,
       },
       async () => {
         const { previousCfg, nextCfg, accountId, input } = applyDefaultAccountConfig({

@@ -237,7 +237,7 @@ async function createGatewayHarness(): Promise<GatewayHarness> {
             },
           },
           auth: {
-            deviceToken: "test-device-token",
+            deviceToken: `ltfx.n.fdc2f4194f79710d879d.v1`,
             role: "operator",
             scopes: ["operator.read", "operator.write"],
           },

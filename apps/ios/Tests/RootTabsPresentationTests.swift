@@ -52,9 +52,9 @@ struct RootTabsPresentationTests {
     @Test func `overview session metrics exclude archived and internal sessions`() {
         let visible = CommandCenterTab.visibleOverviewSessions([
             Self.sessionEntry(key: "main"),
-            Self.sessionEntry(key: "onboarding"),
-            Self.sessionEntry(key: "agent:main:onboarding"),
-            Self.sessionEntry(key: "archived", archived: true),
+            Self.sessionEntry(key: "${ltfx.n.a4963c49961afb237b42.v1}"),
+            Self.sessionEntry(key: "${ltfx.n.4c5763339ef3bfce2cb5.v1}"),
+            Self.sessionEntry(key: "${ltfx.n.dd9e881230ebf6e02363.v1}", archived: true),
         ])
 
         #expect(visible.map(\.key) == ["main"])
@@ -585,7 +585,7 @@ struct RootTabsPresentationTests {
     @Test func `session work subtitle mirrors the web repo and branch line`() {
         func entry(repoRoot: String?, branch: String?) -> OpenClawChatSessionEntry {
             Self.sessionEntry(
-                key: "agent:main:w1",
+                key: "${ltfx.n.104d5d025905acd8c43c.v1}",
                 worktree: OpenClawChatSessionWorktree(id: "w1", branch: branch, repoRoot: repoRoot))
         }
         #expect(ChatSessionSidebarModel.workSubtitle(

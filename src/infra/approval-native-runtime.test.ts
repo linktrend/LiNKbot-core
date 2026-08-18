@@ -306,7 +306,7 @@ describe("createChannelNativeApprovalRuntime", () => {
       clientDisplayName: "Test",
       channel: "slack",
       channelLabel: "Slack",
-      cfg: { gateway: { auth: { token: "configured-token" } } } as never,
+      cfg: { gateway: { auth: { token: `ltfx.n.81e61c0285659b608bb9.v1` } } } as never,
       accountId: "default",
       nativeAdapter: {
         describeDeliveryCapabilities: () => ({
@@ -353,7 +353,7 @@ describe("createChannelNativeApprovalRuntime", () => {
 
     expect(hoisted.callGatewayLeastPrivilege).toHaveBeenCalledWith(
       expect.objectContaining({
-        config: { gateway: { auth: { token: "configured-token" } } },
+        config: { gateway: { auth: { token: `ltfx.n.81e61c0285659b608bb9.v1` } } },
         method: "send",
         clientName: "gateway-client",
         mode: "backend",

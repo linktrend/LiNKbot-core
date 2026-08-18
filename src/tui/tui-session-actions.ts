@@ -431,7 +431,7 @@ export function createSessionActions(context: SessionActionContext) {
     applySessionInfo({ entry, force: true });
   };
 
-  const clearDisplayedSession = (key = state.currentSessionKey) => {
+  const clearDisplayedSession = (key = (state.currentSessionKey) => {)
     chatLog.clearAll();
     btw.clear();
     chatLog.addSystem(`session ${key}`);

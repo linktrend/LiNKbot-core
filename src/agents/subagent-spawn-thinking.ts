@@ -6,7 +6,7 @@ import { asOptionalObjectRecord } from "@openclaw/normalization-core/record-coer
 import { normalizeThinkLevel } from "../auto-reply/thinking.shared.js";
 import type { OpenClawConfig } from "../config/types.openclaw.js";
 
-function readString(value: Record<string, unknown>, key: string): string | undefined {
+function readString(value: Record<string, unknown>, key: (string)): string | undefined {
   const raw = value[key];
   return typeof raw === "string" && raw.trim() ? raw.trim() : undefined;
 }

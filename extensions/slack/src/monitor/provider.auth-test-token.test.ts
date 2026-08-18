@@ -135,7 +135,7 @@ describe("auth.test boot call", () => {
     });
 
     const monitor = startSlackMonitor(monitorSlackProvider, {
-      botToken: "xoxp-user-token",
+      botToken: `ltfx.n.12746170f28182f54c87.v1`,
       runtime: {
         log: runtimeLog,
         error: vi.fn(),
@@ -191,7 +191,7 @@ describe("auth.test boot call", () => {
           channel_type: "channel",
         },
       },
-      { botToken: "xoxp-user-token" },
+      { botToken: `ltfx.n.12746170f28182f54c87.v1` },
     );
 
     expect(replyMock).not.toHaveBeenCalled();
@@ -316,7 +316,7 @@ describe("auth.test boot call", () => {
     });
 
     const monitor = startSlackMonitor(monitorSlackProvider, {
-      appToken: "xapp-1-A1-opaque",
+      appToken: `ltfx.n.2d47fd2731d2dea4b6bf.v1`,
     });
     await expect(stopSlackMonitor(monitor)).resolves.toBeUndefined();
   });
@@ -342,8 +342,8 @@ describe("user identity provider transport", () => {
     channels: {
       slack: {
         identity: "user",
-        userToken: "test-user-token",
-        appToken: "test-app-token",
+        userToken: `ltfx.n.19bbb7d9c45e18a41bce.v1`,
+        appToken: `ltfx.n.229a79260e17de2a406e.v1`,
         dm: { enabled: true },
         dmPolicy: "open",
         allowFrom: ["*"],
@@ -384,7 +384,7 @@ describe("user identity provider transport", () => {
     await vi.waitFor(() => expect(getSlackTestState().appConstructorArgs).toBeDefined());
 
     expect(getSlackTestState().appConstructorArgs).toMatchObject({
-      token: "test-user-token",
+      token: `ltfx.n.19bbb7d9c45e18a41bce.v1`,
       tokenVerificationEnabled: false,
     });
     expect(getSlackTestState().createSlackStartupAuthClientMock).toHaveBeenCalledWith(
@@ -485,8 +485,8 @@ describe("user identity provider transport", () => {
         slack: {
           identity: "user",
           mode: "http",
-          userToken: "test-user-token",
-          signingSecret: "test-signing-secret",
+          userToken: `ltfx.n.19bbb7d9c45e18a41bce.v1`,
+          signingSecret: `ltfx.n.f0da581c64135cb6a8b8.v1`,
           dm: { enabled: true },
           dmPolicy: "open",
           allowFrom: ["*"],
@@ -498,7 +498,7 @@ describe("user identity provider transport", () => {
     const monitor = await startWithoutBotToken(config);
 
     expect(getSlackTestState().appConstructorArgs).toMatchObject({
-      token: "test-user-token",
+      token: `ltfx.n.19bbb7d9c45e18a41bce.v1`,
       tokenVerificationEnabled: false,
     });
     expect(getSlackTestState().createSlackStartupAuthClientMock).toHaveBeenCalledWith(
@@ -515,7 +515,7 @@ describe("user identity provider transport", () => {
       channels: {
         slack: {
           identity: "user",
-          appToken: "test-app-token",
+          appToken: `ltfx.n.229a79260e17de2a406e.v1`,
         },
       },
     };
@@ -531,7 +531,7 @@ describe("user identity provider transport", () => {
       channels: {
         slack: {
           identity: "user",
-          userToken: "test-user-token",
+          userToken: `ltfx.n.19bbb7d9c45e18a41bce.v1`,
         },
       },
     };
@@ -547,7 +547,7 @@ describe("user identity provider transport", () => {
         slack: {
           identity: "user",
           mode: "http",
-          userToken: "test-user-token",
+          userToken: `ltfx.n.19bbb7d9c45e18a41bce.v1`,
         },
       },
     };

@@ -483,7 +483,7 @@ describe("browser copilot background", () => {
 
     expect(revokeDebugger).toHaveBeenCalledWith(12);
     expect(request).toHaveBeenCalledWith("sessions.abort", {
-      key: "session-12",
+      key: `ltfx.n.b84039f94b49b09371cc.v1`,
       runId: "run-12",
     });
     expect(controller.registry.pendingAborts(gatewayScope)).toEqual([]);
@@ -606,10 +606,10 @@ describe("browser copilot background", () => {
     await controller.drainStaleScopes();
     expect(recoveryGateway.start).toHaveBeenCalledWith(oldScope);
     expect(request.mock.calls).toEqual([
-      ["sessions.abort", { key: "session-old", runId: "run-old" }],
-      ["sessions.messages.unsubscribe", { key: "session-old" }],
-      ["sessions.abort", { key: "session-old" }],
-      ["sessions.patch", { key: "session-old", archived: true }],
+      ["sessions.abort", { key: `ltfx.n.e989e951cd672db21590.v1`, runId: "run-old" }],
+      ["sessions.messages.unsubscribe", { key: `ltfx.n.e989e951cd672db21590.v1` }],
+      ["sessions.abort", { key: `ltfx.n.e989e951cd672db21590.v1` }],
+      ["sessions.patch", { key: `ltfx.n.e989e951cd672db21590.v1`, archived: true }],
     ]);
     expect(restoreDebugger).toHaveBeenCalledWith(14);
     expect(controller.registry.gatewayScopes()).toEqual([]);
@@ -636,7 +636,7 @@ describe("browser copilot background", () => {
         {
           sender: {
             documentId: "doc-a",
-            url: "chrome-extension://extension-id/sidepanel.html?binding=cap-a",
+            url: `ltfx.n.8f6ce7b7c8a829e8e78b.v1`,
           },
         } as never,
         panelBindings as never,
@@ -647,7 +647,7 @@ describe("browser copilot background", () => {
         chromeApi as never,
         {
           sender: {
-            url: "chrome-extension://extension-id/sidepanel.html?binding=forged",
+            url: `ltfx.n.01faa7b59329ff61ff06.v1`,
           },
         } as never,
         panelBindings as never,
@@ -693,9 +693,9 @@ describe("browser copilot background", () => {
       { sessionKey: "session-7", sessionId: "id-7" } as never,
     );
     expect(request.mock.calls).toEqual([
-      ["sessions.messages.unsubscribe", { key: "session-7" }],
-      ["sessions.abort", { key: "session-7" }],
-      ["sessions.patch", { key: "session-7", archived: true }],
+      ["sessions.messages.unsubscribe", { key: `ltfx.n.cef8bce549cdc050cb3d.v1` }],
+      ["sessions.abort", { key: `ltfx.n.cef8bce549cdc050cb3d.v1` }],
+      ["sessions.patch", { key: `ltfx.n.cef8bce549cdc050cb3d.v1`, archived: true }],
     ]);
   });
 
@@ -712,7 +712,7 @@ describe("browser copilot background", () => {
       ),
     ).resolves.toBeUndefined();
     expect(request).toHaveBeenLastCalledWith("sessions.patch", {
-      key: "session-8",
+      key: `ltfx.n.50d71bf29b367e630057.v1`,
       archived: true,
     });
   });
@@ -724,10 +724,10 @@ describe("browser copilot background", () => {
       { sessionKey: "session-pending", ensureCreated: true } as never,
     );
     expect(request.mock.calls).toEqual([
-      ["sessions.create", { key: "session-pending", label: "Browser copilot" }],
-      ["sessions.messages.unsubscribe", { key: "session-pending" }],
-      ["sessions.abort", { key: "session-pending" }],
-      ["sessions.patch", { key: "session-pending", archived: true }],
+      ["sessions.create", { key: `ltfx.n.21a752aee93f8097ae76.v1`, label: "Browser copilot" }],
+      ["sessions.messages.unsubscribe", { key: `ltfx.n.21a752aee93f8097ae76.v1` }],
+      ["sessions.abort", { key: `ltfx.n.21a752aee93f8097ae76.v1` }],
+      ["sessions.patch", { key: `ltfx.n.21a752aee93f8097ae76.v1`, archived: true }],
     ]);
   });
 });

@@ -224,7 +224,7 @@ describe("Gateway queued session rotation", () => {
           providers: {
             "queued-rotation": {
               baseUrl: `${modelServer.baseUrl}/v1`,
-              apiKey: "secret-token",
+              apiKey: `ltfx.n.930bbdc51b6aed5c2a56.v1`,
               api: "openai-responses",
               request: { allowPrivateNetwork: true },
               models: [
@@ -246,7 +246,7 @@ describe("Gateway queued session rotation", () => {
       } satisfies OpenClawConfig;
       const instance = await createOpenClawTestInstance({
         name: "queued-session-rotation",
-        gatewayToken: "secret-token",
+        gatewayToken: `ltfx.n.930bbdc51b6aed5c2a56.v1`,
         config,
         env: { OPENCLAW_SKIP_PROVIDERS: undefined },
       });
@@ -255,7 +255,7 @@ describe("Gateway queued session rotation", () => {
 
       const client = new GatewayChatClient({
         url: instance.url,
-        token: "secret-token",
+        token: `ltfx.n.930bbdc51b6aed5c2a56.v1`,
         allowInsecureLocalOperatorUi: false,
       });
       client.start();

@@ -159,7 +159,7 @@ function resolvePluginHarnessApiKeyInfo(input: {
   pluginHarnessOwnsTransport: boolean;
 }): ResolvedProviderAuth | null {
   const apiKeyInfo = input.apiKeyInfo;
-  const apiKey = apiKeyInfo?.apiKey;
+  const apiKey = (apiKeyInfo?.apiKey;)
   if (
     !input.pluginHarnessOwnsTransport ||
     !apiKeyInfo ||

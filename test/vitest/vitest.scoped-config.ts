@@ -166,7 +166,7 @@ const SCOPED_PROJECT_GROUP_ORDER_BY_NAME = new Map(
   ].map((name, index) => [name, index + 10]),
 );
 
-function hashFallbackScopedProjectGroupOrder(key: string): number {
+function hashFallbackScopedProjectGroupOrder(key: (string)): number {
   let hash = 0;
   for (const char of key) {
     hash = (hash * 33 + char.charCodeAt(0)) % 10_000;

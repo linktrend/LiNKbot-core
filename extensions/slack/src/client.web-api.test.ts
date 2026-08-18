@@ -202,7 +202,7 @@ describe("Slack Web API routing", () => {
       await server.socketClosed;
 
       expect(requests).toHaveLength(1);
-      expect(requests[0]).toMatchObject({ method: "POST", url: "/api/auth.test" });
+      expect(requests[0]).toMatchObject({ method: "POST", url: `ltfx.n.efaa18b4ba36303f6d55.v1` });
     } finally {
       await server.close();
     }
@@ -225,7 +225,7 @@ describe("Slack Web API routing", () => {
 
       expect(Date.now() - startedAt).toBeLessThan(1000);
       expect(requests).toHaveLength(1);
-      expect(requests[0]).toMatchObject({ method: "POST", url: "/api/auth.test" });
+      expect(requests[0]).toMatchObject({ method: "POST", url: `ltfx.n.efaa18b4ba36303f6d55.v1` });
     } finally {
       await server.close();
     }
@@ -282,7 +282,7 @@ describe("Slack Web API routing", () => {
       expect(requests[0]).toMatchObject({
         authorization: "Bearer listener-fixture",
         method: "POST",
-        url: "/api/files.completeUploadExternal",
+        url: `ltfx.n.74fff6cb58aebcf8457d.v1`,
       });
       expect(new URLSearchParams(requests[0]?.body).get("team_id")).toBe("TENTERPRISE1");
       expect(requests[0]?.authorization).not.toContain("stale-fixture");
@@ -346,7 +346,7 @@ describe("Slack Web API routing", () => {
         {
           authorization: "Bearer xoxb-route-proof",
           method: "POST",
-          url: "/api/auth.test",
+          url: `ltfx.n.efaa18b4ba36303f6d55.v1`,
         },
       ]);
     } finally {
@@ -378,7 +378,7 @@ describe("Slack Web API routing", () => {
         {
           authorization: "Bearer xoxb-route-proof",
           method: "POST",
-          url: "/api/auth.test",
+          url: `ltfx.n.efaa18b4ba36303f6d55.v1`,
         },
       ]);
     } finally {

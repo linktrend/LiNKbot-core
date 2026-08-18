@@ -117,7 +117,7 @@ describe("registerCodexSessionCli", () => {
       expect(gatewayRuntime.callGatewayFromCli).toHaveBeenCalledWith(
         "sessions.catalog.list",
         {
-          url: "ws://gateway.test",
+          url: `ltfx.n.ab53ff5277ecadf891c1.v1`,
           token: "secret",
           timeout: "1234",
           json: true,
@@ -284,7 +284,7 @@ describe("registerCodexSessionCli", () => {
       expect(gatewayRuntime.callGatewayFromCli).toHaveBeenCalledWith(
         "sessions.catalog.continue",
         {
-          url: "ws://gateway.test",
+          url: `ltfx.n.ab53ff5277ecadf891c1.v1`,
           token: "secret",
           timeout: "4321",
           json: false,
@@ -362,7 +362,7 @@ describe("registerCodexSessionCli", () => {
 
       expect(gatewayRuntime.callGatewayFromCli).toHaveBeenCalledWith(
         "sessions.catalog.archive",
-        { url: "ws://gateway.test", timeout: "30000", json: true },
+        { url: `ltfx.n.ab53ff5277ecadf891c1.v1`, timeout: "30000", json: true },
         {
           catalogId: "codex",
           hostId: "gateway:local",

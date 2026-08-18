@@ -54,8 +54,8 @@ describe("slack config schema", () => {
   it('accepts identity="user" with a user token and socket companion app', () => {
     expectSlackConfigValid({
       identity: "user",
-      userToken: "test-user-token",
-      appToken: "test-app-token",
+      userToken: `ltfx.n.19bbb7d9c45e18a41bce.v1`,
+      appToken: `ltfx.n.229a79260e17de2a406e.v1`,
     });
   });
 
@@ -63,8 +63,8 @@ describe("slack config schema", () => {
     expectSlackConfigValid({
       identity: "user",
       mode: "http",
-      userToken: "test-user-token",
-      signingSecret: "test-signing-secret",
+      userToken: `ltfx.n.19bbb7d9c45e18a41bce.v1`,
+      signingSecret: `ltfx.n.f0da581c64135cb6a8b8.v1`,
     });
   });
 
@@ -73,8 +73,8 @@ describe("slack config schema", () => {
       channels: {
         slack: {
           identity: "user" as const,
-          userToken: "test-user-token",
-          appToken: "test-app-token",
+          userToken: `ltfx.n.19bbb7d9c45e18a41bce.v1`,
+          appToken: `ltfx.n.229a79260e17de2a406e.v1`,
           accounts: { work: {} },
         },
       },
@@ -89,8 +89,8 @@ describe("slack config schema", () => {
       channels: {
         slack: {
           identity: "user" as const,
-          userToken: "test-user-token",
-          appToken: "test-app-token",
+          userToken: `ltfx.n.19bbb7d9c45e18a41bce.v1`,
+          appToken: `ltfx.n.229a79260e17de2a406e.v1`,
         },
       },
     } satisfies OpenClawConfig;
@@ -107,8 +107,8 @@ describe("slack config schema", () => {
   it("accepts inherited and relay companion-app transports for user identity", () => {
     expectSlackConfigValid({
       identity: "user",
-      userToken: "test-user-token",
-      appToken: "test-app-token",
+      userToken: `ltfx.n.19bbb7d9c45e18a41bce.v1`,
+      appToken: `ltfx.n.229a79260e17de2a406e.v1`,
       accounts: {
         work: {},
       },
@@ -116,10 +116,10 @@ describe("slack config schema", () => {
     expectSlackConfigValid({
       identity: "user",
       mode: "relay",
-      userToken: "test-user-token",
+      userToken: `ltfx.n.19bbb7d9c45e18a41bce.v1`,
       relay: {
-        url: "test-relay-url",
-        authToken: "test-relay-auth-token",
+        url: `ltfx.n.da031fb604100716563f.v1`,
+        authToken: `ltfx.n.097b98302e2a7ef63915.v1`,
         gatewayId: "test-gateway-id",
       },
     });
@@ -217,9 +217,9 @@ describe("slack config schema", () => {
 
   it("accepts user token config fields", () => {
     expectSlackConfigValid({
-      botToken: "test-bot-token",
-      appToken: "test-app-token",
-      userToken: "test-user-token",
+      botToken: `ltfx.n.19434281d9f1460bdb2b.v1`,
+      appToken: `ltfx.n.229a79260e17de2a406e.v1`,
+      userToken: `ltfx.n.19bbb7d9c45e18a41bce.v1`,
       userTokenReadOnly: false,
     });
   });
@@ -245,9 +245,9 @@ describe("slack config schema", () => {
   it("accepts relay mode with a SecretInput auth token", () => {
     expectSlackConfigValid({
       mode: "relay",
-      botToken: "test-bot-token",
+      botToken: `ltfx.n.19434281d9f1460bdb2b.v1`,
       relay: {
-        url: "wss://router.example.com/gateway/ws",
+        url: `ltfx.n.82d39021b8342771f56c.v1`,
         authToken: { source: "env", provider: "default", id: "SLACK_RELAY_AUTH_TOKEN" },
         gatewayId: "team-gateway",
       },
@@ -257,15 +257,15 @@ describe("slack config schema", () => {
   it("requires every relay connection field", () => {
     expectSlackConfigIssue({ mode: "relay" }, "relay.url");
     expectSlackConfigIssue(
-      { mode: "relay", relay: { url: "wss://router.example.com/gateway/ws" } },
+      { mode: "relay", relay: { url: `ltfx.n.82d39021b8342771f56c.v1` } },
       "relay.authToken",
     );
     expectSlackConfigIssue(
       {
         mode: "relay",
         relay: {
-          url: "wss://router.example.com/gateway/ws",
-          authToken: "test-relay-auth-token",
+          url: `ltfx.n.82d39021b8342771f56c.v1`,
+          authToken: `ltfx.n.097b98302e2a7ef63915.v1`,
         },
       },
       "relay.gatewayId",
@@ -306,9 +306,9 @@ describe("slack config schema", () => {
     expectSlackConfigValid({
       accounts: {
         work: {
-          botToken: "test-bot-token",
-          appToken: "test-app-token",
-          userToken: "test-user-token",
+          botToken: `ltfx.n.19434281d9f1460bdb2b.v1`,
+          appToken: `ltfx.n.229a79260e17de2a406e.v1`,
+          userToken: `ltfx.n.19bbb7d9c45e18a41bce.v1`,
           userTokenReadOnly: true,
         },
       },
@@ -318,9 +318,9 @@ describe("slack config schema", () => {
   it("rejects invalid userTokenReadOnly types", () => {
     expectSlackConfigIssue(
       {
-        botToken: "test-bot-token",
-        appToken: "test-app-token",
-        userToken: "test-user-token",
+        botToken: `ltfx.n.19434281d9f1460bdb2b.v1`,
+        appToken: `ltfx.n.229a79260e17de2a406e.v1`,
+        userToken: `ltfx.n.19bbb7d9c45e18a41bce.v1`,
         userTokenReadOnly: "no",
       },
       "userTokenReadOnly",
@@ -330,8 +330,8 @@ describe("slack config schema", () => {
   it("rejects invalid userToken types", () => {
     expectSlackConfigIssue(
       {
-        botToken: "test-bot-token",
-        appToken: "test-app-token",
+        botToken: `ltfx.n.19434281d9f1460bdb2b.v1`,
+        appToken: `ltfx.n.229a79260e17de2a406e.v1`,
         userToken: 123,
       },
       "userToken",
@@ -341,7 +341,7 @@ describe("slack config schema", () => {
   it("accepts HTTP mode when signing secret is configured", () => {
     expectSlackConfigValid({
       mode: "http",
-      signingSecret: "test-signing-secret",
+      signingSecret: `ltfx.n.f0da581c64135cb6a8b8.v1`,
     });
   });
 
@@ -358,7 +358,7 @@ describe("slack config schema", () => {
 
   it("accepts account HTTP mode when base signing secret is set", () => {
     expectSlackConfigValid({
-      signingSecret: "test-signing-secret",
+      signingSecret: `ltfx.n.f0da581c64135cb6a8b8.v1`,
       accounts: {
         ops: {
           mode: "http",

@@ -82,7 +82,7 @@ Use this shape as the starting point for exposed deployments:
     bind: "loopback",
     auth: {
       mode: "token",
-      token: "replace-with-a-long-random-token",
+      token: "${ltfx.n.9dcd971cea69d952e9d2.v1}",
     },
   },
   session: {

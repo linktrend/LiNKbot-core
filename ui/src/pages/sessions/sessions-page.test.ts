@@ -246,7 +246,7 @@ describe("sessions page lifecycle", () => {
         count: 2,
         sessions: [
           { key: archivedKeys[0], archived: true },
-          { key: "agent:main:active", archived: false },
+          { key: `ltfx.n.74e68db8ce1ca0729443.v1`, archived: false },
         ],
       } as SessionsListResult,
       true,
@@ -287,7 +287,7 @@ describe("sessions page lifecycle", () => {
       createContext(gateway, sessions),
       {
         count: 1,
-        sessions: [{ key: "agent:main:old-1", archived: true }],
+        sessions: [{ key: `ltfx.n.e4659229bde91aa12d46.v1`, archived: true }],
       } as SessionsListResult,
       true,
     );
@@ -353,7 +353,7 @@ describe("sessions page lifecycle", () => {
   });
 
   it("offers undo after archiving from the Sessions page", async () => {
-    const key = "agent:main:pinned";
+    const key = `ltfx.n.3d3b1fca9c5da2bdca70.v1`;
     const patch = vi.fn(async () => ({
       ok: true as const,
       path: "",
@@ -393,7 +393,7 @@ describe("sessions page lifecycle", () => {
     const page = await createPage(createContext(mutableGateway.gateway, createSessions()));
     page.result = {
       count: 1,
-      sessions: [{ key: "agent:main:launch" }],
+      sessions: [{ key: `ltfx.n.86fb4a046f4e4a5af91a.v1` }],
     } as SessionsListResult;
 
     page.updateTranscriptSearchQuery("  launch code  ");
@@ -457,7 +457,7 @@ describe("sessions page lifecycle", () => {
     const page = await createPage(context);
     page.result = {
       count: 2,
-      sessions: [{ key: "agent:main:one" }, { key: "agent:writer:one" }],
+      sessions: [{ key: `ltfx.n.d7913ea39ddb32d5d412.v1` }, { key: `ltfx.n.7b6170e04d111d513732.v1` }],
     } as SessionsListResult;
 
     page.updateTranscriptSearchQuery("needle");
@@ -509,7 +509,7 @@ describe("sessions page lifecycle", () => {
     const page = await createPage(createContext(mutableGateway.gateway, createSessions()));
     page.result = {
       count: 1,
-      sessions: [{ key: "agent:main:stale" }],
+      sessions: [{ key: `ltfx.n.93ac2a693bdf688f29a3.v1` }],
     } as SessionsListResult;
 
     page.updateTranscriptSearchQuery("old query");
@@ -552,7 +552,7 @@ describe("sessions page lifecycle", () => {
     const page = await createPage(context);
     page.result = {
       count: 1,
-      sessions: [{ key: "agent:main:stale" }],
+      sessions: [{ key: `ltfx.n.93ac2a693bdf688f29a3.v1` }],
     } as SessionsListResult;
 
     page.updateTranscriptSearchQuery("needle");
@@ -583,7 +583,7 @@ describe("sessions page lifecycle", () => {
 
   it("disables Fork session for model-selection-locked rows", async () => {
     const row = {
-      key: "agent:main:locked",
+      key: `ltfx.n.1bf35d4e26b6cbe86d9d.v1`,
       kind: "direct",
       modelSelectionLocked: true,
     } as GatewaySessionRow;
@@ -707,7 +707,7 @@ describe("sessions page lifecycle", () => {
     const page = await createPage(createContext(mutableGateway.gateway, sessions));
     const trigger = document.createElement("button");
     page.openSessionMenu(
-      { key: "agent:main:work" } as GatewaySessionRow,
+      { key: `ltfx.n.a0bd29bf0efe5fca6ae0.v1` } as GatewaySessionRow,
       { x: 10, y: 20 },
       trigger,
     );
@@ -719,7 +719,7 @@ describe("sessions page lifecycle", () => {
   });
 
   it("retargets the Gateway after deleting the current session", async () => {
-    const key = "agent:writer:work";
+    const key = `ltfx.n.dc34c5b6be43fbe61c1c.v1`;
     const sessions = createSessions({
       deleteMany: vi.fn(async () => ({ deleted: [key], errors: [], preservedWorktrees: [] })),
     });
@@ -739,7 +739,7 @@ describe("sessions page lifecycle", () => {
   });
 
   it("routes a confirmed row-menu deletion through the scoped bulk owner", async () => {
-    const key = "agent:main:work";
+    const key = `ltfx.n.a0bd29bf0efe5fca6ae0.v1`;
     const sessions = createSessions({
       deleteMany: vi.fn(async () => ({ deleted: [key], errors: [], preservedWorktrees: [] })),
     });
@@ -763,7 +763,7 @@ describe("sessions page lifecycle", () => {
     const { gateway } = createGateway({ request } as unknown as GatewayBrowserClient);
     const page = await createPage(createContext(gateway, sessions));
     const row = {
-      key: "agent:main:cloud",
+      key: `ltfx.n.210c0bf223862d07ed18.v1`,
       label: "Cloud task",
       placement: {
         state: "active",
@@ -785,7 +785,7 @@ describe("sessions page lifecycle", () => {
     expect(confirm).toHaveBeenCalledWith('Stop the cloud worker for "Cloud task"?');
     expect(request).toHaveBeenCalledWith(
       "sessions.reclaim",
-      { key: "agent:main:cloud", agentId: "main" },
+      { key: `ltfx.n.210c0bf223862d07ed18.v1`, agentId: "main" },
       { timeoutMs: 10 * 60_000 },
     );
     expect(list).toHaveBeenCalledOnce();
@@ -862,7 +862,7 @@ describe("sessions page lifecycle", () => {
     deleted.resolve({ deleted: ["main"], errors: ["stale delete error"], preservedWorktrees: [] });
     patched.resolve({ ok: true });
     forked.resolve("forked");
-    branched.resolve({ key: "branched" });
+    branched.resolve({ key: `ltfx.n.fcd4f4a11eb3e9c678e5.v1` });
     restored.reject(new Error("stale restore error"));
     captured.reject(new Error("stale capture error"));
     groupsPut.reject(new Error("stale group error"));

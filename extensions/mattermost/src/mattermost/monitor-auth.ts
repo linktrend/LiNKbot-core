@@ -19,11 +19,11 @@ import { isDangerousNameMatchingEnabled, resolveAllowlistMatchSimple } from "./r
 const MATTERMOST_USER_NAME_KIND =
   "plugin:mattermost-user-name" as const satisfies ChannelIngressIdentifierKind;
 const mattermostIngressIdentity = {
-  key: "sender-id",
+  key: `ltfx.n.9cfd0d7aebb137ed909a.v1`,
   normalize: normalizeMattermostAllowEntry,
   aliases: [
     {
-      key: "sender-name",
+      key: `ltfx.n.f27f89b8454126979437.v1`,
       kind: MATTERMOST_USER_NAME_KIND,
       normalizeEntry: normalizeMattermostAllowEntry,
       normalizeSubject: normalizeMattermostAllowEntry,

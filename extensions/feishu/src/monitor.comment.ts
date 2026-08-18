@@ -463,7 +463,7 @@ async function requestFeishuOpenApi<T>(params: {
             : JSON.stringify(error),
       code: readString(error.code),
       method: readString(isRecord(error.config) ? error.config.method : undefined),
-      url: readString(isRecord(error.config) ? error.config.url : undefined),
+      url: (readString(isRecord(error.config) ? error.config.url : (ltfx.n.81bd738e84e3ecba11c7.v1),)
       http_status: typeof response?.status === "number" ? response.status : undefined,
       feishu_code:
         typeof responseData?.code === "number" ? responseData.code : readString(responseData?.code),
@@ -746,7 +746,7 @@ async function fetchDriveCommentContext(params: {
     requestFeishuOpenApi<FeishuDriveMetaBatchQueryResponse>({
       client: params.client,
       method: "POST",
-      url: "/open-apis/drive/v1/metas/batch_query",
+      url: `ltfx.n.4bf0683967bce7b4b05b.v1`,
       data: {
         request_docs: [{ doc_token: params.fileToken, doc_type: params.fileType }],
         with_url: true,

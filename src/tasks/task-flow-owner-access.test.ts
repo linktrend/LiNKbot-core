@@ -69,7 +69,7 @@ describe("task flow owner access", () => {
     ).toBe(latest.flowId);
     expect(
       resolveTaskFlowForLookupTokenForOwner({
-        token: "agent:main:main",
+        token: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
         callerOwnerKey: "agent:main:main",
       })?.flowId,
     ).toBe(latest.flowId);
@@ -101,7 +101,7 @@ describe("task flow owner access", () => {
     ).toBeUndefined();
     expect(
       resolveTaskFlowForLookupTokenForOwner({
-        token: "agent:main:main",
+        token: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
         callerOwnerKey: "agent:main:other",
       }),
     ).toBeUndefined();

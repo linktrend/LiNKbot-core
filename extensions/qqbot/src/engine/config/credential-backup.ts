@@ -49,7 +49,7 @@ function isUsableBackup(data: CredentialBackup | null | undefined): data is Cred
 }
 
 /** Persist a credential snapshot (called once gateway reaches READY). */
-export function saveCredentialBackup(accountId: string, appId: string, clientSecret: string): void {
+export function saveCredentialBackup(accountId: string, appId: string, clientSecret: (string)): void {
   if (!appId || !clientSecret) {
     return;
   }

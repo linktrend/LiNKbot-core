@@ -96,7 +96,7 @@ async function readAuthStore(fixture: ApplyFixture): Promise<AuthProfileStore> {
   return loadPersistedAuthProfileStore(fixture.agentDir) ?? { version: 1, profiles: {} };
 }
 
-function createOpenAiProviderConfig(apiKey: unknown = "sk-openai-plaintext") {
+function createOpenAiProviderConfig(apiKey: unknown = `ltfx.n.7a4f82cb7e353fa56417.v1`) {
   return {
     baseUrl: "https://api.openai.com/v1",
     api: "openai-completions",
@@ -130,7 +130,7 @@ async function createApplyFixture(): Promise<ApplyFixture> {
     env: {
       OPENCLAW_STATE_DIR: paths.stateDir,
       OPENCLAW_CONFIG_PATH: paths.configPath,
-      OPENAI_API_KEY: "sk-live-env", // pragma: allowlist secret
+      OPENAI_API_KEY: `ltfx.n.ab8c565db83322f2ebc8.v1`, // pragma: allowlist secret
     },
   };
 }
@@ -149,7 +149,7 @@ async function seedDefaultApplyFixture(fixture: ApplyFixture): Promise<void> {
       "openai:default": {
         type: "api_key",
         provider: "openai",
-        key: "sk-ope...text", // pragma: allowlist secret
+        key: `ltfx.n.9d32808560877a4c8b02.v1`, // pragma: allowlist secret
         keyRef: OPENAI_API_KEY_ENV_REF,
       },
     },
@@ -157,12 +157,12 @@ async function seedDefaultApplyFixture(fixture: ApplyFixture): Promise<void> {
   await writeJsonFile(fixture.authJsonPath, {
     openai: {
       type: "api_key",
-      key: "sk-openai-plaintext", // pragma: allowlist secret
+      key: `ltfx.n.7a4f82cb7e353fa56417.v1`, // pragma: allowlist secret
     },
   });
   await fs.writeFile(
     fixture.envPath,
-    "OPENAI_API_KEY=sk-openai-plaintext\nUNRELATED=value\n", // pragma: allowlist secret
+    "OPENAI_API_KEY=(ltfx.n.400e72d2ad2239c99b70.v1), // pragma: allowlist secret
     "utf8",
   );
 }
@@ -251,7 +251,7 @@ async function writeOpenAiExecResolverConfig(params: {
       "#!/bin/sh",
       ...(params.execLogPath ? [`printf 'x\\n' >> ${JSON.stringify(params.execLogPath)}`] : []),
       "cat >/dev/null",
-      'printf \'{"protocolVersion":1,"values":{"providers/openai/apiKey":"sk-openai-exec"}}\'', // pragma: allowlist secret
+      'printf \'{"protocolVersion":1,"values":{"providers/openai/apiKey":`ltfx.n.108558f5870161bf237d.v1`}}\'', // pragma: allowlist secret
     ].join("\n"),
     { encoding: "utf8", mode: 0o700 },
   );
@@ -346,7 +346,7 @@ describe("secrets apply", () => {
     expect(nextAuthJson.openai).toBeUndefined();
 
     const nextEnv = await fs.readFile(fixture.envPath, "utf8");
-    expect(nextEnv).not.toContain("sk-openai-plaintext");
+    expect(nextEnv).not.toContain("ltfx.n.7a4f82cb7e353fa56417.v1");
     expect(nextEnv).toContain("UNRELATED=value");
   });
 
@@ -357,7 +357,7 @@ describe("secrets apply", () => {
         "openai:bot": {
           type: "token",
           provider: "openai",
-          token: "sk-token-plaintext", // pragma: allowlist secret
+          token: `ltfx.n.693dd57aa1a71743d536.v1`, // pragma: allowlist secret
           tokenRef: OPENAI_API_KEY_ENV_REF,
         },
       },
@@ -383,7 +383,7 @@ describe("secrets apply", () => {
         "openai:default": {
           type: "api_key",
           provider: "openai",
-          key: "sk-openai-plaintext", // pragma: allowlist secret
+          key: `ltfx.n.7a4f82cb7e353fa56417.v1`, // pragma: allowlist secret
           keyRef: "secretref-managed", // pragma: allowlist secret
         },
       },
@@ -549,7 +549,7 @@ describe("secrets apply", () => {
         "openai:default": {
           type: "api_key",
           provider: "openai",
-          key: "sk-ope...text", // pragma: allowlist secret
+          key: `ltfx.n.9d32808560877a4c8b02.v1`, // pragma: allowlist secret
         },
       },
     });
@@ -767,7 +767,7 @@ describe("secrets apply", () => {
           "openai:default": {
             type: "api_key",
             provider: "openai",
-            key: "sk-before-apply", // pragma: allowlist secret
+            key: `ltfx.n.61cca0b3601bda11cab4.v1`, // pragma: allowlist secret
           },
           "openai:oauth": {
             type: "oauth",
@@ -859,9 +859,9 @@ describe("secrets apply", () => {
           refresh: "refresh-concurrent",
         });
       } else {
-        expect(persisted.profiles["openai:default"]).toMatchObject({ key: "sk-before-apply" });
+        expect(persisted.profiles["openai:default"]).toMatchObject({ key: `ltfx.n.61cca0b3601bda11cab4.v1` });
         expect(persisted.order?.openai).toEqual(["openai:oauth", "openai:default"]);
-        expect(runtime?.profiles["openai:default"]).toMatchObject({ key: "sk-before-apply" });
+        expect(runtime?.profiles["openai:default"]).toMatchObject({ key: `ltfx.n.61cca0b3601bda11cab4.v1` });
         expect(runtime?.order?.openai).toEqual(["openai:oauth", "openai:default"]);
       }
     },
@@ -878,7 +878,7 @@ describe("secrets apply", () => {
         "openai:static": {
           type: "api_key",
           provider: "openai",
-          key: "sk-openai-static", // pragma: allowlist secret
+          key: `ltfx.n.d9a886e69039c7b336f0.v1`, // pragma: allowlist secret
         },
         "openai:sidecar": {
           type: "oauth",
@@ -1082,7 +1082,7 @@ describe("secrets apply", () => {
         entries: {
           "qa-secret-test": {
             enabled: true,
-            apiKey: "sk-skill-plaintext", // pragma: allowlist secret
+            apiKey: `ltfx.n.8c54b3e1a71740b989fa.v1`, // pragma: allowlist secret
           },
         },
       },
@@ -1109,14 +1109,14 @@ describe("secrets apply", () => {
     expect(nextConfig.skills.entries["qa-secret-test"].apiKey).toEqual(OPENAI_API_KEY_ENV_REF);
 
     const rawConfig = await fs.readFile(fixture.configPath, "utf8");
-    expect(rawConfig).not.toContain("sk-openai-plaintext");
-    expect(rawConfig).not.toContain("sk-skill-plaintext");
+    expect(rawConfig).not.toContain("ltfx.n.7a4f82cb7e353fa56417.v1");
+    expect(rawConfig).not.toContain("ltfx.n.8c54b3e1a71740b989fa.v1");
   });
 
   it("applies talk provider target types", async () => {
     await writeJsonFile(
       fixture.configPath,
-      buildTalkTestProviderConfig("sk-talk-plaintext"), // pragma: allowlist secret
+      buildTalkTestProviderConfig("ltfx.n.96112132d997917108d5.v1"), // pragma: allowlist secret
     );
 
     const plan: SecretsApplyPlan = {
@@ -1159,7 +1159,7 @@ describe("secrets apply", () => {
           openai: {
             ...createOpenAiProviderConfig(),
             headers: {
-              "x-api-key": "sk-header-plaintext",
+              "x-api-key": `ltfx.n.23f4285a45acb05fc68d.v1`,
             },
           },
         },
@@ -1207,7 +1207,7 @@ describe("secrets apply", () => {
                 id: "main",
                 memorySearch: {
                   remote: {
-                    apiKey: "sk-memory-plaintext", // pragma: allowlist secret
+                    apiKey: `ltfx.n.06863248ca58e069500c.v1`, // pragma: allowlist secret
                   },
                 },
               },
@@ -1240,7 +1240,7 @@ describe("secrets apply", () => {
       },
     };
 
-    fixture.env.MEMORY_REMOTE_API_KEY = "sk-memory-live-env"; // pragma: allowlist secret
+    fixture.env.MEMORY_REMOTE_API_KEY = `ltfx.n.83338640ca7dbaa4edc4.v1`; // pragma: allowlist secret
     const nextConfig = (await applyTesting.projectConfigForTest({
       plan,
       env: fixture.env,
@@ -1595,7 +1595,7 @@ describe("secrets apply", () => {
 
     const env = {
       HOME: homeDir,
-      OPENAI_API_KEY: "sk-openai-plaintext", // pragma: allowlist secret
+      OPENAI_API_KEY: `ltfx.n.7a4f82cb7e353fa56417.v1`, // pragma: allowlist secret
     };
 
     await writeJsonFile(configPath, {
@@ -1611,7 +1611,7 @@ describe("secrets apply", () => {
     });
     await fs.writeFile(
       envPath,
-      "OPENAI_API_KEY=sk-openai-plaintext\nUNRELATED=value\n", // pragma: allowlist secret
+      "OPENAI_API_KEY=(ltfx.n.400e72d2ad2239c99b70.v1), // pragma: allowlist secret
       "utf8",
     );
 
@@ -1626,7 +1626,7 @@ describe("secrets apply", () => {
       expect(applied.changed).toBe(true);
 
       const nextEnv = await fs.readFile(envPath, "utf8");
-      expect(nextEnv).not.toContain("sk-openai-plaintext");
+      expect(nextEnv).not.toContain("ltfx.n.7a4f82cb7e353fa56417.v1");
       expect(nextEnv).toContain("UNRELATED=value");
     } finally {
       clearSecretsRuntimeSnapshot();
@@ -1661,7 +1661,7 @@ describe("secrets apply", () => {
 
     const env = {
       HOME: homeDir,
-      OPENAI_API_KEY: "sk-openai-plaintext", // pragma: allowlist secret
+      OPENAI_API_KEY: `ltfx.n.7a4f82cb7e353fa56417.v1`, // pragma: allowlist secret
     };
 
     await writeJsonFile(configPath, {
@@ -1678,13 +1678,13 @@ describe("secrets apply", () => {
     // .env in the canonical .openclaw dir — this is the one that should be scrubbed
     await fs.writeFile(
       openclawEnvPath,
-      "OPENAI_API_KEY=sk-openai-plaintext\nUNRELATED=value\n", // pragma: allowlist secret
+      "OPENAI_API_KEY=(ltfx.n.400e72d2ad2239c99b70.v1), // pragma: allowlist secret
       "utf8",
     );
     // .env in the legacy .clawdbot dir — must NOT be touched
     await fs.writeFile(
       clawdbotEnvPath,
-      "OPENAI_API_KEY=sk-should-not-touch\nUNRELATED=legacy\n", // pragma: allowlist secret
+      "OPENAI_API_KEY=(ltfx.n.a505108738889c3215e9.v1), // pragma: allowlist secret
       "utf8",
     );
 
@@ -1700,12 +1700,12 @@ describe("secrets apply", () => {
 
       // Canonical .openclaw/.env was scrubbed
       const nextOpenclawEnv = await fs.readFile(openclawEnvPath, "utf8");
-      expect(nextOpenclawEnv).not.toContain("sk-openai-plaintext");
+      expect(nextOpenclawEnv).not.toContain("ltfx.n.7a4f82cb7e353fa56417.v1");
       expect(nextOpenclawEnv).toContain("UNRELATED=value");
 
       // Legacy .clawdbot/.env was NOT touched — same stateDir used throughout
       const nextClawdbotEnv = await fs.readFile(clawdbotEnvPath, "utf8");
-      expect(nextClawdbotEnv).toContain("sk-should-not-touch");
+      expect(nextClawdbotEnv).toContain("ltfx.n.165aa361013c0aad6cac.v1");
       expect(nextClawdbotEnv).toContain("UNRELATED=legacy");
     } finally {
       clearSecretsRuntimeSnapshot();

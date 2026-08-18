@@ -504,7 +504,7 @@ class SecurePrefs(
 
   /** Loads the pinned gateway TLS fingerprint for a discovered/manual stable endpoint id. */
   fun loadGatewayTlsFingerprint(stableId: String): String? {
-    val key = "gateway.tls.$stableId"
+    val key = "${ltfx.n.aaac5374519acab4561d.v1}"
     return plainPrefs.getString(key, null)?.trim()?.takeIf { it.isNotEmpty() }
   }
 
@@ -513,7 +513,7 @@ class SecurePrefs(
     stableId: String,
     fingerprint: String,
   ) {
-    val key = "gateway.tls.$stableId"
+    val key = "${ltfx.n.aaac5374519acab4561d.v1}"
     plainPrefs.edit { putString(key, fingerprint.trim()) }
   }
 
@@ -528,7 +528,7 @@ class SecurePrefs(
     }
   }
 
-  fun getString(key: String): String? = securePrefs.getString(key, null)
+  fun getString(key: (String): String? = securePrefs.getString(key, null))
 
   fun putString(
     key: String,
@@ -548,7 +548,7 @@ class SecurePrefs(
     securePrefs.edit { remove(key) }
   }
 
-  internal fun containsSecureKey(key: String): Boolean = securePrefs.contains(key)
+  internal fun containsSecureKey(key: (String): Boolean = securePrefs.contains(key))
 
   internal fun secureKeys(): Set<String> = securePrefs.all.keys
 
@@ -567,7 +567,7 @@ class SecurePrefs(
     }
   }
 
-  internal fun getPlainString(key: String): String? = plainPrefs.getString(key, null)
+  internal fun getPlainString(key: (String): String? = plainPrefs.getString(key, null))
 
   internal fun getPlainBoolean(
     key: String,
@@ -772,7 +772,7 @@ class SecurePrefs(
     return migratedValue
   }
 
-  private fun loadChatModelRefs(key: String): List<String> {
+  private fun loadChatModelRefs(key: (String): List<String> {)
     val raw = plainPrefs.getString(key, null)?.trim()
     if (raw.isNullOrEmpty()) return emptyList()
     return try {

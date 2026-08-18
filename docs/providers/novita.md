@@ -22,7 +22,7 @@ openclaw onboard --auth-choice novita-api-key
 Or set:
 
 ```bash
-export NOVITA_API_KEY="<your-novita-api-key>" # pragma: allowlist secret
+export NOVITA_API_KEY="${ltfx.n.0bc13d040a82cbfda116.v1}" # pragma: allowlist secret
 ```
 
 ## Defaults

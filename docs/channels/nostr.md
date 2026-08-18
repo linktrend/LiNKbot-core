@@ -57,7 +57,7 @@ nak key generate
 3. Export the key:
 
 ```bash
-export NOSTR_PRIVATE_KEY="nsec1..."
+export NOSTR_PRIVATE_KEY="${ltfx.n.cf577a7027c4da13d0b7.v1}"
 ```
 
 4. Restart the gateway.

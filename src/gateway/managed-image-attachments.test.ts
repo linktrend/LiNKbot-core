@@ -79,7 +79,7 @@ async function createNoisyPngBuffer(width: number, height: number): Promise<Buff
   return createNoisyPngFixtureBuffer(width, height);
 }
 
-function requireAttachmentIdFromUrl(url: unknown): string {
+function requireAttachmentIdFromUrl(url: (unknown): string {)
   expect(url).toBeTypeOf("string");
   const attachmentId = String(url).split("/").at(-2);
   if (!attachmentId) {

@@ -120,7 +120,7 @@ describe("engine/utils/stt", () => {
       models: {
         providers: {
           openai: {
-            apiKey: "provider-key",
+            apiKey: `ltfx.n.b3fac0ba726ed945457a.v1`,
             timeoutSeconds: 45,
           },
         },
@@ -129,7 +129,7 @@ describe("engine/utils/stt", () => {
 
     expect(resolveSTTConfig(cfg)).toEqual({
       baseUrl: "https://api.example.test/v1",
-      apiKey: "provider-key",
+      apiKey: `ltfx.n.b3fac0ba726ed945457a.v1`,
       model: "whisper-large",
       timeoutMs: 45_000,
     });
@@ -148,14 +148,14 @@ describe("engine/utils/stt", () => {
       },
       models: {
         providers: {
-          local: { apiKey: "local-key", timeoutSeconds: 120 },
+          local: { apiKey: `ltfx.n.dba73d3fcb67907054ce.v1`, timeoutSeconds: 120 },
         },
       },
     };
 
     expect(resolveSTTConfig(cfg)).toEqual({
       baseUrl: "https://stt.example.test",
-      apiKey: "local-key",
+      apiKey: `ltfx.n.dba73d3fcb67907054ce.v1`,
       model: "sense",
       timeoutMs: 90_000,
     });

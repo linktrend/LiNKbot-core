@@ -101,7 +101,7 @@ function mockPairedOperatorDevice(): void {
     scopes: ["operator.pairing"],
     tokens: {
       operator: {
-        token: "old-token",
+        token: `ltfx.n.9bdf10a691a1cfda89d9.v1`,
         role: "operator",
         scopes: ["operator.pairing"],
         createdAtMs: 123,
@@ -114,7 +114,7 @@ function mockRotateOperatorTokenSuccess(): void {
   rotateDeviceTokenMock.mockResolvedValue({
     ok: true,
     entry: {
-      token: "new-token",
+      token: `ltfx.n.348e9df2a42bd6e3c635.v1`,
       role: "operator",
       scopes: ["operator.pairing"],
       createdAtMs: 456,
@@ -252,13 +252,13 @@ describe("deviceHandlers", () => {
       roles: ["operator", "node"],
       tokens: {
         operator: {
-          token: "operator-token",
+          token: `ltfx.n.0850123315d21ab90f4f.v1`,
           role: "operator",
           scopes: ["operator.pairing"],
           createdAtMs: 100,
         },
         node: {
-          token: "node-token",
+          token: `ltfx.n.1e16c337973f9ad03ebb.v1`,
           role: "node",
           scopes: [],
           createdAtMs: 100,
@@ -285,7 +285,7 @@ describe("deviceHandlers", () => {
   it("disconnects active clients after revoking a device token", async () => {
     revokeDeviceTokenMock.mockResolvedValue({
       ok: true,
-      entry: { token: "raw-revoked-token", role: "operator", scopes: [], revokedAtMs: 456 },
+      entry: { token: `ltfx.n.bd5ad408b30880b6e546.v1`, role: "operator", scopes: [], revokedAtMs: 456 },
     });
     const opts = createOptions("device.token.revoke", {
       deviceId: " device-1 ",
@@ -568,7 +568,7 @@ describe("deviceHandlers", () => {
       {
         deviceId: " device-1 ",
         role: "operator",
-        token: "new-token",
+        token: `ltfx.n.348e9df2a42bd6e3c635.v1`,
         scopes: ["operator.pairing"],
         rotatedAtMs: 789,
       },
@@ -580,7 +580,7 @@ describe("deviceHandlers", () => {
     rotateDeviceTokenMock.mockResolvedValue({
       ok: true,
       entry: {
-        token: "rotated-token",
+        token: `ltfx.n.950141f5143d92b8f45b.v1`,
         role: "operator",
         scopes: ["operator.pairing"],
         createdAtMs: 456,
@@ -628,7 +628,7 @@ describe("deviceHandlers", () => {
       {
         deviceId: "device-1",
         role: "operator",
-        token: "rotated-token",
+        token: `ltfx.n.950141f5143d92b8f45b.v1`,
         scopes: ["operator.pairing"],
         rotatedAtMs: 789,
       },

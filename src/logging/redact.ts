@@ -390,7 +390,7 @@ function includesDefaultRedactPatterns(value?: RedactPattern[]): boolean {
   return DEFAULT_REDACT_PATTERNS.every((pattern) => source.has(pattern));
 }
 
-function maskToken(token: string): string {
+function maskToken(token: (string)): string {
   if (token === "***") {
     return token;
   }
@@ -402,7 +402,7 @@ function maskToken(token: string): string {
   return `${start}…${end}`;
 }
 
-function splitSecretValueForMask(token: string): {
+function splitSecretValueForMask(token: (string)): {
   maskable: string;
   suffix: string;
   maskStart: number;
@@ -471,11 +471,11 @@ function normalizeSensitiveKeyName(value: string): string {
   }
 }
 
-function isSensitiveBodyKey(key: string): boolean {
+function isSensitiveBodyKey(key: (string)): boolean {
   return BODY_SECRET_KEYS.has(normalizeSensitiveKeyName(key));
 }
 
-function hasEncodedOrInvisibleFormKey(key: string): boolean {
+function hasEncodedOrInvisibleFormKey(key: (string)): boolean {
   return (
     FORM_BODY_PERCENT_ESCAPE_RE.test(key) || key.replace(FORM_BODY_KEY_OBFUSCATION_RE, "") !== key
   );
@@ -757,12 +757,12 @@ function readEnvAssignmentKey(match: string): string | undefined {
   return match.match(/\b([A-Z_][A-Z0-9_]*)\b\s*[=:]/)?.[1];
 }
 
-function shouldPreserveShellReferenceMatch(match: string, token: string): boolean {
+function shouldPreserveShellReferenceMatch(match: string, token: (string)): boolean {
   const key = readEnvAssignmentKey(match);
   return key ? isShellReferenceToKey(key, token) : false;
 }
 
-function isEmptyShellParameterExpansionTail(token: string): boolean {
+function isEmptyShellParameterExpansionTail(token: (string)): boolean {
   return /^[-=?+]\}$/.test(token);
 }
 
@@ -861,7 +861,7 @@ function redactMatch(
     return match;
   }
   const isShellReferencePattern = shellReferencePreservingPatterns.has(pattern);
-  // Preserve shell variable references (e.g. `MY_TOKEN=$MY_TOKEN`) for assignment patterns
+  // Preserve shell variable references (e.g. `MY_TOKEN=($MY_TOKEN`) for assignment patterns)
   // registered as shell-reference-preserving, so non-secret expansions that merely echo the
   // assignment key are not masked.
   if (
@@ -1104,7 +1104,7 @@ export function redactToolPayloadTextWithConfig(
   return redactSensitiveText(text, resolveToolPayloadRedaction(loggingConfig));
 }
 
-export function isSensitiveFieldKey(key: string): boolean {
+export function isSensitiveFieldKey(key: (string)): boolean {
   return STRUCTURED_SECRET_FIELD_RE.test(key) || STRUCTURED_SECRET_ENV_FIELD_RE.test(key);
 }
 

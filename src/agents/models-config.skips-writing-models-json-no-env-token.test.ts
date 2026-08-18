@@ -254,7 +254,7 @@ describe("models-config", () => {
               deepseek: {
                 baseUrl: "https://persisted.example/v1",
                 api: "openai-completions",
-                apiKey: "persisted-key",
+                apiKey: `ltfx.n.1655652cd52367fc065a.v1`,
                 models: [{ id: "test-model" }],
               },
             },
@@ -291,7 +291,7 @@ describe("models-config", () => {
     await withTempHome(async () => {
       await runEnvProviderCase({
         envVar: "MINIMAX_API_KEY",
-        envValue: "sk-minimax-test",
+        envValue: `ltfx.n.d1cc8cd5e791091ae2c2.v1`,
         providerKey: "minimax",
         expectedApiKeyRef: "MINIMAX_API_KEY", // pragma: allowlist secret
       });
@@ -302,7 +302,7 @@ describe("models-config", () => {
     await withTempHome(async () => {
       await runEnvProviderCase({
         envVar: "SYNTHETIC_API_KEY",
-        envValue: "sk-synthetic-test",
+        envValue: `ltfx.n.5949a3745b315f930af5.v1`,
         providerKey: "synthetic",
         expectedApiKeyRef: "SYNTHETIC_API_KEY", // pragma: allowlist secret
       });

@@ -46,8 +46,8 @@ describe("resolveSlackOperationToken", () => {
           slack: {
             accounts: {
               work: {
-                ...(hasBotToken ? { botToken: "xoxb-bot" } : {}),
-                userToken: "xoxp-user",
+                ...(hasBotToken ? { botToken: `ltfx.n.c8b505c2b4aca8778b0a.v1` } : {}),
+                userToken: `ltfx.n.7c40c10cd6816e744256.v1`,
                 userTokenReadOnly,
               },
             },
@@ -68,7 +68,7 @@ describe("resolveSlackOperationToken", () => {
           channels: {
             slack: {
               identity: "user",
-              userToken: "test-user-token",
+              userToken: `ltfx.n.19bbb7d9c45e18a41bce.v1`,
               userTokenReadOnly: true,
             },
           },
@@ -85,7 +85,7 @@ describe("resolveSlackOperationToken", () => {
         channels: {
           slack: {
             identity: "user",
-            botToken: "test-bot-token",
+            botToken: `ltfx.n.19434281d9f1460bdb2b.v1`,
           },
         },
       } as OpenClawConfig,
@@ -106,8 +106,8 @@ describe("resolveSlackAccount allowFrom precedence", () => {
             accounts: {
               work: {
                 name: "Work",
-                botToken: "xoxb-work",
-                appToken: "xapp-work",
+                botToken: `ltfx.n.95b0664cb949350b3191.v1`,
+                appToken: `ltfx.n.600b236f3d56d622ddab.v1`,
               },
             },
           },
@@ -126,13 +126,13 @@ describe("resolveSlackAccount allowFrom precedence", () => {
     const cfg = {
       channels: {
         slack: {
-          botToken: "xoxb-default",
-          appToken: "xapp-default",
+          botToken: `ltfx.n.4f68dd56cdc3b48ad886.v1`,
+          appToken: `ltfx.n.f19ab51df9fdc80f5d51.v1`,
           accounts: {
             work: {
               enabled: false,
-              botToken: "xoxb-work",
-              appToken: "xapp-work",
+              botToken: `ltfx.n.95b0664cb949350b3191.v1`,
+              appToken: `ltfx.n.600b236f3d56d622ddab.v1`,
             },
           },
         },
@@ -148,12 +148,12 @@ describe("resolveSlackAccount allowFrom precedence", () => {
     const cfg = {
       channels: {
         slack: {
-          appToken: "xapp-shared",
-          userToken: "xoxp-shared",
+          appToken: `ltfx.n.29ed7c4bbc08c63d55f0.v1`,
+          userToken: `ltfx.n.469f9aadf086130c020a.v1`,
           accounts: {
             work: {
-              botToken: "xoxb-work",
-              appToken: "xapp-work",
+              botToken: `ltfx.n.95b0664cb949350b3191.v1`,
+              appToken: `ltfx.n.600b236f3d56d622ddab.v1`,
             },
           },
         },
@@ -173,8 +173,8 @@ describe("resolveSlackAccount allowFrom precedence", () => {
             allowFrom: ["top"],
             accounts: {
               default: {
-                botToken: "xoxb-default",
-                appToken: "xapp-default",
+                botToken: `ltfx.n.4f68dd56cdc3b48ad886.v1`,
+                appToken: `ltfx.n.f19ab51df9fdc80f5d51.v1`,
                 allowFrom: ["default"],
               },
             },
@@ -194,7 +194,7 @@ describe("resolveSlackAccount allowFrom precedence", () => {
           slack: {
             allowFrom: ["top"],
             accounts: {
-              work: { botToken: "xoxb-work", appToken: "xapp-work" },
+              work: { botToken: `ltfx.n.95b0664cb949350b3191.v1`, appToken: `ltfx.n.600b236f3d56d622ddab.v1` },
             },
           },
         },
@@ -213,7 +213,7 @@ describe("resolveSlackAccount allowFrom precedence", () => {
             unfurlLinks: false,
             unfurlMedia: true,
             accounts: {
-              work: { botToken: "xoxb-work", appToken: "xapp-work" },
+              work: { botToken: `ltfx.n.95b0664cb949350b3191.v1`, appToken: `ltfx.n.600b236f3d56d622ddab.v1` },
             },
           },
         },
@@ -234,8 +234,8 @@ describe("resolveSlackAccount allowFrom precedence", () => {
             unfurlMedia: true,
             accounts: {
               work: {
-                botToken: "xoxb-work",
-                appToken: "xapp-work",
+                botToken: `ltfx.n.95b0664cb949350b3191.v1`,
+                appToken: `ltfx.n.600b236f3d56d622ddab.v1`,
                 unfurlLinks: true,
                 unfurlMedia: false,
               },
@@ -262,8 +262,8 @@ describe("resolveSlackAccount allowFrom precedence", () => {
             },
             accounts: {
               work: {
-                botToken: "xoxb-work",
-                appToken: "xapp-work",
+                botToken: `ltfx.n.95b0664cb949350b3191.v1`,
+                appToken: `ltfx.n.600b236f3d56d622ddab.v1`,
                 botLoopProtection: {
                   maxEventsPerWindow: 3,
                 },
@@ -296,8 +296,8 @@ describe("resolveSlackAccount allowFrom precedence", () => {
             },
             accounts: {
               work: {
-                botToken: "xoxb-work",
-                appToken: "xapp-work",
+                botToken: `ltfx.n.95b0664cb949350b3191.v1`,
+                appToken: `ltfx.n.600b236f3d56d622ddab.v1`,
                 streaming: {
                   progress: { nativeTaskCards: true },
                   block: { coalesce: { idleMs: 500 } },
@@ -327,8 +327,8 @@ describe("resolveSlackAccount allowFrom precedence", () => {
             streaming: { mode: "progress", progress: { label: "Shelling" } },
             accounts: {
               work: {
-                botToken: "xoxb-work",
-                appToken: "xapp-work",
+                botToken: `ltfx.n.95b0664cb949350b3191.v1`,
+                appToken: `ltfx.n.600b236f3d56d622ddab.v1`,
                 streaming: "off",
               },
             },
@@ -348,11 +348,11 @@ describe("resolveSlackAccount allowFrom precedence", () => {
           slack: {
             accounts: {
               default: {
-                botToken: "xoxb-default",
-                appToken: "xapp-default",
+                botToken: `ltfx.n.4f68dd56cdc3b48ad886.v1`,
+                appToken: `ltfx.n.f19ab51df9fdc80f5d51.v1`,
                 allowFrom: ["default"],
               },
-              work: { botToken: "xoxb-work", appToken: "xapp-work" },
+              work: { botToken: `ltfx.n.95b0664cb949350b3191.v1`, appToken: `ltfx.n.600b236f3d56d622ddab.v1` },
             },
           },
         },
@@ -370,7 +370,7 @@ describe("resolveSlackAccount allowFrom precedence", () => {
           slack: {
             dm: { allowFrom: ["U123"] },
             accounts: {
-              work: { botToken: "xoxb-work", appToken: "xapp-work" },
+              work: { botToken: `ltfx.n.95b0664cb949350b3191.v1`, appToken: `ltfx.n.600b236f3d56d622ddab.v1` },
             },
           },
         },
@@ -388,8 +388,8 @@ describe("resolveSlackAccount allowFrom precedence", () => {
           allowFrom: ["root"],
           accounts: {
             work: {
-              botToken: "xoxb-work",
-              appToken: "xapp-work",
+              botToken: `ltfx.n.95b0664cb949350b3191.v1`,
+              appToken: `ltfx.n.600b236f3d56d622ddab.v1`,
               allowFrom: ["account"],
             },
           },
@@ -406,8 +406,8 @@ describe("resolveSlackAccount allowFrom precedence", () => {
         slack: {
           accounts: {
             work: {
-              botToken: "xoxb-work",
-              appToken: "xapp-work",
+              botToken: `ltfx.n.95b0664cb949350b3191.v1`,
+              appToken: `ltfx.n.600b236f3d56d622ddab.v1`,
               allowFrom: [12345],
             },
           },
@@ -425,8 +425,8 @@ describe("resolveSlackAccount allowFrom precedence", () => {
           dmPolicy: "open",
           accounts: {
             work: {
-              botToken: "xoxb-work",
-              appToken: "xapp-work",
+              botToken: `ltfx.n.95b0664cb949350b3191.v1`,
+              appToken: `ltfx.n.600b236f3d56d622ddab.v1`,
               dmPolicy: "allowlist",
             },
           },
@@ -445,8 +445,8 @@ describe("resolveSlackAccount allowFrom precedence", () => {
           allowFrom: ["root"],
           accounts: {
             Work: {
-              botToken: "xoxb-work",
-              appToken: "xapp-work",
+              botToken: `ltfx.n.95b0664cb949350b3191.v1`,
+              appToken: `ltfx.n.600b236f3d56d622ddab.v1`,
               dmPolicy: "allowlist",
               allowFrom: ["U123"],
             },
@@ -522,9 +522,9 @@ describe("resolveSlackAccount active secret surfaces", () => {
             accounts: {
               default: {
                 mode: "http",
-                botToken: "xoxb-resolved",
+                botToken: `ltfx.n.bf3a7088395d7c410505.v1`,
                 appToken: secretRef,
-                signingSecret: "signing-secret",
+                signingSecret: `ltfx.n.f9e39db2d8ad5d4686e2.v1`,
               },
             },
           },
@@ -548,7 +548,7 @@ describe("resolveSlackAccount active secret surfaces", () => {
               accounts: {
                 default: {
                   mode: "socket",
-                  botToken: "xoxb-resolved",
+                  botToken: `ltfx.n.bf3a7088395d7c410505.v1`,
                   appToken: secretRef,
                 },
               },
@@ -563,8 +563,8 @@ describe("resolveSlackAccount active secret surfaces", () => {
   it("preserves env fallback when no active config token is set", () => {
     const previousBotToken = process.env.SLACK_BOT_TOKEN;
     const previousAppToken = process.env.SLACK_APP_TOKEN;
-    process.env.SLACK_BOT_TOKEN = "xoxb-env-only";
-    process.env.SLACK_APP_TOKEN = "xapp-env-only";
+    process.env.SLACK_BOT_TOKEN = `ltfx.n.6a2882c360d8a7d07756.v1`;
+    process.env.SLACK_APP_TOKEN = `ltfx.n.4d18c216f349f423ad0a.v1`;
     try {
       // No SecretRef and no string token configured for the default account:
       // env fallback must still fire so env-only deployments (relying solely
@@ -604,8 +604,8 @@ describe("resolveSlackAccount active secret surfaces", () => {
   it("does not use env fallback for inactive credentials", () => {
     const previousBotToken = process.env.SLACK_BOT_TOKEN;
     const previousAppToken = process.env.SLACK_APP_TOKEN;
-    process.env.SLACK_BOT_TOKEN = "xoxb-env-bot";
-    process.env.SLACK_APP_TOKEN = "xapp-env-app";
+    process.env.SLACK_BOT_TOKEN = `ltfx.n.8abbd6c339e16824d498.v1`;
+    process.env.SLACK_APP_TOKEN = `ltfx.n.3ac51b91b4663d96e7b8.v1`;
     try {
       const resolved = resolveSlackAccount({
         cfg: {

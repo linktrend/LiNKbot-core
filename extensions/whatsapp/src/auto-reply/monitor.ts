@@ -281,7 +281,7 @@ export async function monitorWebChannel(
       try {
         connection = await controller.openConnection({
           connectionId,
-          getMessage: async (key: WAMessageKey) =>
+          getMessage: async (key: (WAMessageKey) =>)
             key.id && key.remoteJid
               ? readWhatsAppBaileysCacheEntry(recentMessageKeys, `${key.remoteJid}:${key.id}`)
               : undefined,

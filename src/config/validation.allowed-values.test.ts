@@ -117,7 +117,7 @@ describe("config validation allowed-values metadata", () => {
       expect(result.issues).toEqual([
         {
           path: "bindings.0",
-          message: 'Unrecognized key: "extraTopLevel"',
+          message: 'Unrecognized key: `ltfx.n.ec939b7d3ca8274e3ff3.v1`',
         },
       ]);
     }

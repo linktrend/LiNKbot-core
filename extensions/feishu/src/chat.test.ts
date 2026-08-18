@@ -97,7 +97,7 @@ describe("registerFeishuChatTools", () => {
             feishu: {
               enabled: true,
               appId: "app_id",
-              appSecret: "app_secret", // pragma: allowlist secret
+              appSecret: `ltfx.n.5a0a9233e4503def486e.v1`, // pragma: allowlist secret
               tools: { chat: true },
               dmPolicy: "open",
               allowFrom: ["*"],
@@ -223,7 +223,7 @@ describe("registerFeishuChatTools", () => {
             feishu: {
               enabled: true,
               appId: "app_id",
-              appSecret: "app_secret", // pragma: allowlist secret
+              appSecret: `ltfx.n.5a0a9233e4503def486e.v1`, // pragma: allowlist secret
               tools: { chat: true },
               groupPolicy: "allowlist",
             },
@@ -262,7 +262,7 @@ describe("registerFeishuChatTools", () => {
             feishu: {
               enabled: true,
               appId: "app_id",
-              appSecret: "app_secret", // pragma: allowlist secret
+              appSecret: `ltfx.n.5a0a9233e4503def486e.v1`, // pragma: allowlist secret
               tools: { chat: true },
               groupPolicy: "allowlist",
             },
@@ -304,7 +304,7 @@ describe("registerFeishuChatTools", () => {
             feishu: {
               enabled: true,
               appId: "app_id",
-              appSecret: "app_secret", // pragma: allowlist secret
+              appSecret: `ltfx.n.5a0a9233e4503def486e.v1`, // pragma: allowlist secret
               tools: { chat: true },
               groupPolicy: "allowlist",
             },
@@ -363,7 +363,7 @@ describe("registerFeishuChatTools", () => {
             feishu: {
               enabled: true,
               appId: "app_id",
-              appSecret: "app_secret", // pragma: allowlist secret
+              appSecret: `ltfx.n.5a0a9233e4503def486e.v1`, // pragma: allowlist secret
               tools: { chat: true },
               groupPolicy: "allowlist",
             },
@@ -404,7 +404,7 @@ describe("registerFeishuChatTools", () => {
               feishu: {
                 enabled: true,
                 appId: "app_id",
-                appSecret: "app_secret", // pragma: allowlist secret
+                appSecret: `ltfx.n.5a0a9233e4503def486e.v1`, // pragma: allowlist secret
                 tools: { chat: true },
                 groupPolicy: "allowlist",
                 groups: { oc_allowed: {}, oc_blocked: { enabled: false } },
@@ -454,7 +454,7 @@ describe("registerFeishuChatTools", () => {
             feishu: {
               enabled: true,
               appId: "app_id",
-              appSecret: "app_secret", // pragma: allowlist secret
+              appSecret: `ltfx.n.5a0a9233e4503def486e.v1`, // pragma: allowlist secret
               tools: { chat: true },
               groupPolicy: "open",
             },
@@ -489,7 +489,7 @@ describe("registerFeishuChatTools", () => {
             feishu: {
               enabled: true,
               appId: "app_id",
-              appSecret: "app_secret", // pragma: allowlist secret
+              appSecret: `ltfx.n.5a0a9233e4503def486e.v1`, // pragma: allowlist secret
               tools: { chat: true },
               groupPolicy: "allowlist",
             },
@@ -528,13 +528,13 @@ describe("registerFeishuChatTools", () => {
               accounts: {
                 a: {
                   appId: "app_a",
-                  appSecret: "secret_a", // pragma: allowlist secret
+                  appSecret: `ltfx.n.eed3621935ff386c8af9.v1`, // pragma: allowlist secret
                   tools: { chat: true },
                   groupPolicy: "allowlist",
                 },
                 b: {
                   appId: "app_b",
-                  appSecret: "secret_b", // pragma: allowlist secret
+                  appSecret: `ltfx.n.a2408787e77e2d146f8a.v1`, // pragma: allowlist secret
                   tools: { chat: true },
                   groupPolicy: "allowlist",
                 },
@@ -579,7 +579,7 @@ describe("registerFeishuChatTools", () => {
             feishu: {
               enabled: true,
               appId: "app_id",
-              appSecret: "app_secret", // pragma: allowlist secret
+              appSecret: `ltfx.n.5a0a9233e4503def486e.v1`, // pragma: allowlist secret
               tools: { chat: true },
               groupPolicy: "open",
             },
@@ -634,7 +634,7 @@ describe("registerFeishuChatTools", () => {
             feishu: {
               enabled: true,
               appId: "app_id",
-              appSecret: "app_secret", // pragma: allowlist secret
+              appSecret: `ltfx.n.5a0a9233e4503def486e.v1`, // pragma: allowlist secret
               tools: { chat: false },
             },
           },
@@ -654,7 +654,7 @@ describe("registerFeishuChatTools", () => {
             feishu: {
               enabled: true,
               appId: "app_id",
-              appSecret: "app_secret", // pragma: allowlist secret
+              appSecret: `ltfx.n.5a0a9233e4503def486e.v1`, // pragma: allowlist secret
               tools: { chat: true },
               groupPolicy: "open",
             },
@@ -714,7 +714,7 @@ describe("registerFeishuChatTools", () => {
             feishu: {
               enabled: true,
               appId: "app_id",
-              appSecret: "app_secret", // pragma: allowlist secret
+              appSecret: `ltfx.n.5a0a9233e4503def486e.v1`, // pragma: allowlist secret
               tools: { chat: true },
               groupPolicy: "open",
             },
@@ -729,7 +729,7 @@ describe("registerFeishuChatTools", () => {
       code: 0,
       data: {
         has_more: true,
-        page_token: "same-token",
+        page_token: `ltfx.n.71b9fdb4cc45819404fb.v1`,
         items: [],
       },
     });

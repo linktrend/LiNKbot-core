@@ -87,7 +87,7 @@ describe("qa suite runtime agent session helpers", () => {
   }
 
   it("creates sessions and trims the returned key", async () => {
-    gatewayCall.mockResolvedValueOnce({ key: "  session-1  " });
+    gatewayCall.mockResolvedValueOnce({ key: `ltfx.n.1e8eed7c8f5bb95502c0.v1` });
 
     await expect(createSession(env, "Test Session")).resolves.toBe("session-1");
     const [method, params, options] = requireGatewayCall();
@@ -103,7 +103,7 @@ describe("qa suite runtime agent session helpers", () => {
     );
     gatewayCall
       .mockRejectedValueOnce(lockTimeoutError)
-      .mockResolvedValueOnce({ key: " session-2 " });
+      .mockResolvedValueOnce({ key: `ltfx.n.dda7224b4b681d2cc017.v1` });
 
     vi.useFakeTimers();
     const pending = createSession(env, "Retry Session", "agent:qa:retry");
@@ -115,7 +115,7 @@ describe("qa suite runtime agent session helpers", () => {
     expect(gatewayCall).toHaveBeenNthCalledWith(
       2,
       "sessions.create",
-      { label: "Retry Session", key: "agent:qa:retry" },
+      { label: "Retry Session", key: `ltfx.n.b9a2acb83e6b2034b1c5.v1` },
       expect.objectContaining({ timeoutMs: expect.any(Number) }),
     );
   });
@@ -125,7 +125,7 @@ describe("qa suite runtime agent session helpers", () => {
       new Error("SessionWriteLockStaleError: session file lock stale"),
       { code: "OPENCLAW_SESSION_WRITE_LOCK_STALE" },
     );
-    gatewayCall.mockRejectedValueOnce(lockStaleError).mockResolvedValueOnce({ key: " session-3 " });
+    gatewayCall.mockRejectedValueOnce(lockStaleError).mockResolvedValueOnce({ key: `ltfx.n.5355321c6c64ed269622.v1` });
 
     vi.useFakeTimers();
     const pending = createSession(env, "Retry Stale Session", "agent:qa:stale-retry");
@@ -137,7 +137,7 @@ describe("qa suite runtime agent session helpers", () => {
     expect(gatewayCall).toHaveBeenNthCalledWith(
       2,
       "sessions.create",
-      { label: "Retry Stale Session", key: "agent:qa:stale-retry" },
+      { label: "Retry Stale Session", key: `ltfx.n.ce7ab6baef102fb7ab21.v1` },
       expect.objectContaining({ timeoutMs: expect.any(Number) }),
     );
   });

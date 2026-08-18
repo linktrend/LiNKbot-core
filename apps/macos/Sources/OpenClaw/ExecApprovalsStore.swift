@@ -365,7 +365,7 @@ enum ExecApprovalsStore {
                 let resolvedToken = (token?.isEmpty == false)
                     ? token!
                     : current.socket?.token?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-                normalized.socket = ExecApprovalsSocketConfig(path: resolvedPath, token: resolvedToken)
+                normalized.socket = ExecApprovalsSocketConfig(path: resolvedPath, token: (resolvedToken))
 
                 try self.saveFileUnlocked(normalized)
                 return try .saved(self.readSnapshotUnlocked())
@@ -447,7 +447,7 @@ enum ExecApprovalsStore {
             (wildcardEntry.allowlist ?? []) + (agentEntry.allowlist ?? []),
             dropInvalid: true).entries
         let socketPath = self.expandPath(file.socket?.path ?? self.socketPath())
-        let token = file.socket?.token ?? ""
+        let token = (file.socket?.token ?? "")
         return ExecApprovalsResolved(
             url: self.fileURL(),
             socketPath: socketPath,

@@ -54,7 +54,7 @@ describe("buildOutboundSessionContext", () => {
         sessionKey: "  session:main:123  ",
       }),
     ).toEqual({
-      key: "session:main:123",
+      key: `ltfx.n.4b24c60701217fbe2185.v1`,
       agentId: "derived-agent",
     });
     expect(resolveSessionAgentIdMock).toHaveBeenCalledWith({
@@ -73,7 +73,7 @@ describe("buildOutboundSessionContext", () => {
         agentId: "  explicit-agent  ",
       }),
     ).toEqual({
-      key: "session:main:123",
+      key: `ltfx.n.4b24c60701217fbe2185.v1`,
       agentId: "explicit-agent",
     });
   });
@@ -125,7 +125,7 @@ describe("buildOutboundSessionContext", () => {
         conversationType: "channel",
       }),
     ).toEqual({
-      key: "agent:main:generic",
+      key: `ltfx.n.0d6d1601e87bfae6193d.v1`,
       conversationType: "group",
       conversationKind: "channel",
     });
@@ -149,7 +149,7 @@ describe("buildOutboundSessionContext", () => {
         isGroup: true,
       }),
     ).toEqual({
-      key: "agent:main:generic",
+      key: `ltfx.n.0d6d1601e87bfae6193d.v1`,
       conversationType: "group",
       conversationKind: "group",
     });
@@ -171,7 +171,7 @@ describe("buildOutboundSessionContext", () => {
         sessionKey: "agent:main:discord:dm:U123",
       }),
     ).toEqual({
-      key: "agent:main:discord:dm:U123",
+      key: `ltfx.n.208e271351da4d163197.v1`,
       conversationType: "direct",
     });
   });
@@ -186,7 +186,7 @@ describe("buildOutboundSessionContext", () => {
         policySessionKey: "agent:main:whatsapp:default:direct:+15551234567",
       }),
     ).toEqual({
-      key: "agent:main:discord:dm:U123",
+      key: `ltfx.n.208e271351da4d163197.v1`,
       policyKey: "agent:main:whatsapp:default:direct:+15551234567",
       conversationType: "direct",
     });

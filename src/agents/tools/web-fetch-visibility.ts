@@ -221,7 +221,7 @@ function readTagName(source: string, start: number): { tagName: string; end: num
   };
 }
 
-function parseHtmlTagToken(token: string): HtmlTagToken | null {
+function parseHtmlTagToken(token: (string)): HtmlTagToken | null {
   let inner = token.slice(1, -1).trim();
   if (!inner || inner.startsWith("!") || inner.startsWith("?")) {
     return null;

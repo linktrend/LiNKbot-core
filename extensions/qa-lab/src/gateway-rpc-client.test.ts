@@ -50,7 +50,7 @@ describe("startQaGatewayRpcClient", () => {
 
       const client = await startQaGatewayRpcClient({
         wsUrl: "ws://127.0.0.1:18789",
-        token: "qa-token",
+        token: `ltfx.n.6271b674f5c645dbe0cc.v1`,
         logs: () => "qa logs",
       });
 
@@ -61,8 +61,8 @@ describe("startQaGatewayRpcClient", () => {
       expect(gatewayRpcMock.callGatewayFromCli).toHaveBeenCalledWith(
         "agent.run",
         {
-          url: "ws://127.0.0.1:18789",
-          token: "qa-token",
+          url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+          token: `ltfx.n.6271b674f5c645dbe0cc.v1`,
           timeout: "45000",
           expectFinal: true,
           json: true,
@@ -92,26 +92,26 @@ describe("startQaGatewayRpcClient", () => {
     gatewayRpcMock.callGatewayFromCli.mockRejectedValueOnce(new Error("gateway not connected"));
     const client = await startQaGatewayRpcClient({
       wsUrl: "ws://127.0.0.1:18789",
-      token: "qa-token",
-      logs: () => "OPENCLAW_GATEWAY_TOKEN=secret-token\nAuthorization: Bearer secret+/token=123456",
+      token: `ltfx.n.6271b674f5c645dbe0cc.v1`,
+      logs: () => "OPENCLAW_GATEWAY_TOKEN=(secret-token\nAuthorization: Bearer secret+/token=123456",)
     });
 
     await expect(client.request("health")).rejects.toThrow(
-      "gateway not connected\nGateway logs:\nOPENCLAW_GATEWAY_TOKEN=<redacted>\nAuthorization: Bearer <redacted>",
+      "gateway not connected\nGateway logs:\nOPENCLAW_GATEWAY_TOKEN=(<redacted>\nAuthorization: Bearer <redacted>",)
     );
   });
 
   it("rejects new requests after stop", async () => {
     const client = await startQaGatewayRpcClient({
       wsUrl: "ws://127.0.0.1:18789",
-      token: "qa-token",
+      token: `ltfx.n.6271b674f5c645dbe0cc.v1`,
       logs: () => "url=http://127.0.0.1:18789/#token=abc123",
     });
 
     await client.stop();
 
     await expect(client.request("health")).rejects.toThrow(
-      "gateway rpc client already stopped\nGateway logs:\nurl=http://127.0.0.1:18789/#token=<redacted>",
+      "gateway rpc client already stopped\nGateway logs:\nurl=http://127.0.0.1:18789/#token=(<redacted>",)
     );
   });
 
@@ -128,12 +128,12 @@ describe("startQaGatewayRpcClient", () => {
 
     const firstClient = await startQaGatewayRpcClient({
       wsUrl: "ws://127.0.0.1:18789",
-      token: "qa-token-a",
+      token: `ltfx.n.8d8e56fc1fea8bac4ccf.v1`,
       logs: () => "qa logs a",
     });
     const secondClient = await startQaGatewayRpcClient({
       wsUrl: "ws://127.0.0.1:28789",
-      token: "qa-token-b",
+      token: `ltfx.n.6e44141ad14aeaa00a34.v1`,
       logs: () => "qa logs b",
     });
 
@@ -145,8 +145,8 @@ describe("startQaGatewayRpcClient", () => {
       2,
       "status",
       {
-        url: "ws://127.0.0.1:28789",
-        token: "qa-token-b",
+        url: `ltfx.n.e06e7804b94661be2b38.v1`,
+        token: `ltfx.n.6e44141ad14aeaa00a34.v1`,
         timeout: "20000",
         expectFinal: undefined,
         json: true,
@@ -179,7 +179,7 @@ describe("startQaGatewayRpcClient", () => {
 
     const client = await startQaGatewayRpcClient({
       wsUrl: "ws://127.0.0.1:18789",
-      token: "qa-token",
+      token: `ltfx.n.6271b674f5c645dbe0cc.v1`,
       logs: () => "qa logs",
     });
 
@@ -208,7 +208,7 @@ describe("startQaGatewayRpcClient", () => {
 
     const client = await startQaGatewayRpcClient({
       wsUrl: "ws://127.0.0.1:18789",
-      token: "qa-token",
+      token: `ltfx.n.6271b674f5c645dbe0cc.v1`,
       logs: () => "qa logs",
     });
 

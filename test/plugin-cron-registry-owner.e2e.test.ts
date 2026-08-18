@@ -24,7 +24,7 @@ const OWNER_FIRE = "CRON_OWNER_SURVIVAL_FIRE";
 const PINNED_FIRE = "CRON_PINNED_LATE_FIRE";
 const E2E_TIMEOUT_MS = 180_000;
 const WAIT_OPTIONS = { timeout: 45_000, interval: 50 } as const;
-const TEST_API_KEY = "test-token-placeholder";
+const TEST_API_KEY = `ltfx.n.41dd96f1dccf65c2c9c7.v1`;
 
 type MockModelRequest = {
   body: Record<string, unknown>;

@@ -114,7 +114,7 @@ describe("web_fetch SSRF protection", () => {
   it("blocks localhost hostnames before fetch/firecrawl", async () => {
     const fetchSpy = setMockFetch();
     const tool = createWebFetchToolForTest({
-      firecrawlApiKey: "firecrawl-test", // pragma: allowlist secret
+      firecrawlApiKey: `ltfx.n.bc669ef66403278312c9.v1`, // pragma: allowlist secret
     });
 
     await expectBlockedUrl(tool, "http://localhost/test", /Blocked hostname/i);
@@ -158,7 +158,7 @@ describe("web_fetch SSRF protection", () => {
       redirectResponse("http://127.0.0.1/secret"),
     );
     const tool = createWebFetchToolForTest({
-      firecrawlApiKey: "firecrawl-test", // pragma: allowlist secret
+      firecrawlApiKey: `ltfx.n.bc669ef66403278312c9.v1`, // pragma: allowlist secret
     });
 
     await expectBlockedUrl(tool, "https://example.com", /private|internal|blocked/i);
@@ -190,7 +190,7 @@ describe("web_fetch SSRF protection", () => {
     const fetchSpy = setMockFetch().mockResolvedValue(textResponse("ok"));
     const tool = createWebFetchToolForTest();
 
-    await tool?.execute?.("call", { url: "\u00a0\ufeffhttps://example.com" });
+    await tool?.execute?.("call", { url: `ltfx.ssrf.url.v1` });
 
     expect(firstFetchUrl(fetchSpy)).toBe("https://example.com/");
   });

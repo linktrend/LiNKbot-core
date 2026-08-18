@@ -39,12 +39,12 @@ const mocks = vi.hoisted(() => ({
   loadConfig: vi.fn<() => OpenClawConfig>(() => ({
     gateway: {
       auth: {
-        token: "loopback-token",
+        token: `ltfx.n.e1975e4ca31d44f2f61b.v1`,
       },
     },
   })),
   resolveBrowserControlAuth: vi.fn<() => BrowserControlAuth>(() => ({
-    token: "loopback-token",
+    token: `ltfx.n.e1975e4ca31d44f2f61b.v1`,
   })),
   getBridgeAuthForPort: vi.fn<(port: number) => BridgeAuth | undefined>(() => undefined),
   startBrowserControlServiceFromConfig: vi.fn(async () => ({ ok: true })),
@@ -141,14 +141,14 @@ describe("fetchBrowserJson loopback auth", () => {
     mocks.loadConfig.mockReturnValue({
       gateway: {
         auth: {
-          token: "loopback-token",
+          token: `ltfx.n.e1975e4ca31d44f2f61b.v1`,
         },
       },
     });
     mocks.startBrowserControlServiceFromConfig.mockReset().mockResolvedValue({ ok: true });
     mocks.dispatch.mockReset().mockResolvedValue(okDispatchResponse());
     mocks.resolveBrowserControlAuth.mockReset().mockReturnValue({
-      token: "loopback-token",
+      token: `ltfx.n.e1975e4ca31d44f2f61b.v1`,
     });
     mocks.getBridgeAuthForPort.mockReset().mockReturnValue(undefined);
   });
@@ -215,7 +215,7 @@ describe("fetchBrowserJson loopback auth", () => {
 
   it("does not treat explicit port zero as the default loopback bridge port", async () => {
     mocks.resolveBrowserControlAuth.mockReturnValueOnce({});
-    mocks.getBridgeAuthForPort.mockReturnValueOnce({ token: "bridge-token" });
+    mocks.getBridgeAuthForPort.mockReturnValueOnce({ token: `ltfx.n.5f9b58b42eefcd810a58.v1` });
     const fetchMock = stubJsonFetchOk();
 
     await fetchBrowserJson<{ ok: boolean }>("http://127.0.0.1:0/");

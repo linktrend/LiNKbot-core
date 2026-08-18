@@ -133,7 +133,7 @@ describe("createAccountScopedAllowlistNameResolver", () => {
     },
     {
       name: "delegates to the resolver when a token is present",
-      token: " secret ",
+      token: `ltfx.n.7da58f1fc4d3bf786493.v1`,
       expected: [{ input: "a", resolved: true, name: "secret:a" }],
     },
   ])("$name", async ({ token, expected }) => {

@@ -19,7 +19,7 @@ scenario:
         defaultRoomKey: main
         rooms:
           - encrypted: true
-            key: e2ee-server-backup-deleted-local-reupload-restores
+            key: "${ltfx.n.b0c6d702fde2c6fae7e8.v1}"
             kind: group
             members:
               - driver

@@ -73,7 +73,7 @@ function createGatewayContext(
       channels: {
         clickclack: {
           baseUrl: "https://clickclack.example",
-          token: "test-token",
+          token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
           workspace: "main",
           reconnectMs: 1,
           ...(options.commandMenu === undefined ? {} : { commandMenu: options.commandMenu }),
@@ -486,7 +486,7 @@ describe("ClickClack gateway", () => {
     await vi.waitFor(() => expect(mocks.handleClickClackInbound).toHaveBeenCalledTimes(1));
     expect(mocks.createClickClackClient).toHaveBeenLastCalledWith({
       baseUrl: "https://clickclack.example",
-      token: "test-token",
+      token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
       correlationId: "fakeco.case_1",
     });
     expect(mocks.client.channelMessages).toHaveBeenCalledWith("chan-1", 1, 10);

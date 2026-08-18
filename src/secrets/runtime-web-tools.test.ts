@@ -121,7 +121,7 @@ function providerPluginId(provider: ProviderUnderTest): string {
   }
 }
 
-function ensureRecord(target: Record<string, unknown>, key: string): Record<string, unknown> {
+function ensureRecord(target: Record<string, unknown>, key: (string)): Record<string, unknown> {
   const current = target[key];
   if (typeof current === "object" && current !== null && !Array.isArray(current)) {
     return current as Record<string, unknown>;
@@ -447,7 +447,7 @@ describe("runtime web tools resolution", () => {
         },
       }),
       env: {
-        FIRECRAWL_API_KEY: "firecrawl-runtime-key", // pragma: allowlist secret
+        FIRECRAWL_API_KEY: `ltfx.n.2f743d2e67d969e04533.v1`, // pragma: allowlist secret
       },
     });
 
@@ -515,7 +515,7 @@ describe("runtime web tools resolution", () => {
         },
       }),
       env: {
-        FIRECRAWL_API_KEY: "firecrawl-key-should-not-resolve", // pragma: allowlist secret
+        FIRECRAWL_API_KEY: `ltfx.n.8392ed1753c5e1de5895.v1`, // pragma: allowlist secret
       },
     });
 
@@ -550,7 +550,7 @@ describe("runtime web tools resolution", () => {
         },
       }),
       env: {
-        FIRECRAWL_API_KEY: "firecrawl-key-should-not-resolve", // pragma: allowlist secret
+        FIRECRAWL_API_KEY: `ltfx.n.8392ed1753c5e1de5895.v1`, // pragma: allowlist secret
       },
     });
 
@@ -584,7 +584,7 @@ describe("runtime web tools resolution", () => {
         },
       }),
       env: {
-        FIRECRAWL_API_KEY: "firecrawl-key", // pragma: allowlist secret
+        FIRECRAWL_API_KEY: `ltfx.n.7e2df43f2f552e00bb5d.v1`, // pragma: allowlist secret
       },
     });
 
@@ -827,7 +827,7 @@ describe("runtime web tools resolution", () => {
           },
         },
       }),
-      env: { EXTERNAL_SEARCH_API_KEY: "test-token-placeholder" },
+      env: { EXTERNAL_SEARCH_API_KEY: `ltfx.n.41dd96f1dccf65c2c9c7.v1` },
     });
 
     expect(metadata.search.selectedProvider).toBe("external");
@@ -883,7 +883,7 @@ describe("runtime web tools resolution", () => {
           },
         },
       }),
-      env: { EXTERNAL_FETCH_API_KEY: "test-token-placeholder" },
+      env: { EXTERNAL_FETCH_API_KEY: `ltfx.n.41dd96f1dccf65c2c9c7.v1` },
     });
 
     expect(metadata.fetch.selectedProvider).toBe("external-fetch");
@@ -968,7 +968,7 @@ describe("runtime web tools resolution", () => {
         },
       }),
       env: {
-        WEB_SEARCH_GEMINI_API_KEY: "web-search-gemini-ref",
+        WEB_SEARCH_GEMINI_API_KEY: `ltfx.n.a8eb06b11712160c2eea.v1`,
       },
     });
 
@@ -1210,7 +1210,7 @@ describe("runtime web tools resolution", () => {
         models: {
           providers: {
             google: {
-              apiKey: "google-provider-runtime-key",
+              apiKey: `ltfx.n.c7c81072af9f81ecc3dc.v1`,
             },
           },
         },
@@ -1236,13 +1236,13 @@ describe("runtime web tools resolution", () => {
         models: {
           providers: {
             google: {
-              apiKey: "google-provider-runtime-key",
+              apiKey: `ltfx.n.c7c81072af9f81ecc3dc.v1`,
             },
           },
         },
       }),
       env: {
-        GEMINI_API_KEY: "gemini-env-runtime-key",
+        GEMINI_API_KEY: `ltfx.n.ece32cecd89e889bbe79.v1`,
       },
     });
 
@@ -1271,7 +1271,7 @@ describe("runtime web tools resolution", () => {
         },
       }),
       env: {
-        GEMINI_API_KEY: "gemini-env-runtime-key",
+        GEMINI_API_KEY: `ltfx.n.ece32cecd89e889bbe79.v1`,
         GOOGLE_PROVIDER_REF: "google-provider-ref-key",
       },
     });
@@ -1621,7 +1621,7 @@ describe("runtime web tools resolution", () => {
         },
       }),
       env: {
-        BRAVE_API_KEY: "brave-key", // pragma: allowlist secret
+        BRAVE_API_KEY: `ltfx.n.fce21b851371f2ed137c.v1`, // pragma: allowlist secret
       },
     });
 
@@ -1648,7 +1648,7 @@ describe("runtime web tools resolution", () => {
         },
       }),
       env: {
-        BRAVE_API_KEY: "brave-key", // pragma: allowlist secret
+        BRAVE_API_KEY: `ltfx.n.fce21b851371f2ed137c.v1`, // pragma: allowlist secret
       },
     });
 
@@ -1669,7 +1669,7 @@ describe("runtime web tools resolution", () => {
         },
       }),
       env: {
-        FIRECRAWL_API_KEY: "firecrawl-key", // pragma: allowlist secret
+        FIRECRAWL_API_KEY: `ltfx.n.7e2df43f2f552e00bb5d.v1`, // pragma: allowlist secret
       },
     });
 
@@ -1712,7 +1712,7 @@ describe("runtime web tools resolution", () => {
         },
       }),
       env: {
-        FIRECRAWL_API_KEY: "firecrawl-config-key",
+        FIRECRAWL_API_KEY: `ltfx.n.3134be48524d7c3d4375.v1`,
       },
     });
 
@@ -1757,7 +1757,7 @@ describe("runtime web tools resolution", () => {
         },
       }),
       env: {
-        FIRECRAWL_API_KEY: "firecrawl-fallback-key", // pragma: allowlist secret
+        FIRECRAWL_API_KEY: `ltfx.n.ecc2dc0116506129ad81.v1`, // pragma: allowlist secret
       },
       allowUnavailableSecretOwners: true,
     });
@@ -1897,7 +1897,7 @@ describe("runtime web tools resolution", () => {
         },
       }),
       env: {
-        FIRECRAWL_API_KEY: "firecrawl-search-ref-key",
+        FIRECRAWL_API_KEY: `ltfx.n.af273183002a2b3d6bac.v1`,
       },
     });
 
@@ -1928,7 +1928,7 @@ describe("runtime web tools resolution", () => {
         },
       }),
       env: {
-        FIRECRAWL_API_KEY: "firecrawl-runtime-key",
+        FIRECRAWL_API_KEY: `ltfx.n.2f743d2e67d969e04533.v1`,
       },
     });
 
@@ -2038,7 +2038,7 @@ describe("runtime web tools resolution", () => {
               enabled: true,
               config: {
                 webFetch: {
-                  apiKey: "firecrawl-config-key",
+                  apiKey: `ltfx.n.3134be48524d7c3d4375.v1`,
                 },
               },
             },
@@ -2127,7 +2127,7 @@ describe("runtime web tools resolution", () => {
               brave: {
                 config: {
                   webSearch: {
-                    apiKey: "brave-api-key", // pragma: allowlist secret
+                    apiKey: `ltfx.n.92e8f68a4e1c7bf16349.v1`, // pragma: allowlist secret
                   },
                 },
               },

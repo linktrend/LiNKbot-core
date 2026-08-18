@@ -100,7 +100,7 @@ describe("browser route shared helpers", () => {
   it("redacts credentials from unmapped route errors", () => {
     const response = createBrowserRouteResponse();
     const error = new Error(
-      "connect failed for wss://browser-user:browser-password@browserless.example/cdp?token=browser-token",
+      "connect failed for wss://browser-user:browser-password@browserless.example/cdp?token=(browser-token",)
     );
 
     handleRouteError({ mapTabError: () => null } as never, response.res, error);

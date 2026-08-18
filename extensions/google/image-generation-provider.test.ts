@@ -17,7 +17,7 @@ function jsonResponse(payload: unknown): Response {
 
 function mockGoogleApiKeyAuth() {
   vi.spyOn(providerAuthRuntime, "resolveApiKeyForProvider").mockResolvedValue({
-    apiKey: "google-test-key",
+    apiKey: `ltfx.n.af6d3719519b1ad50c7d.v1`,
     source: "env",
     mode: "api-key",
   });
@@ -102,7 +102,7 @@ describe("Google image-generation provider", () => {
 
   it("generates image buffers from the Gemini generateContent API", async () => {
     vi.spyOn(providerAuthRuntime, "resolveApiKeyForProvider").mockResolvedValue({
-      apiKey: "google-test-key",
+      apiKey: `ltfx.n.af6d3719519b1ad50c7d.v1`,
       source: "env",
       mode: "api-key",
     });
@@ -257,7 +257,7 @@ describe("Google image-generation provider", () => {
 
   it("accepts OAuth JSON auth and inline_data responses", async () => {
     vi.spyOn(providerAuthRuntime, "resolveApiKeyForProvider").mockResolvedValue({
-      apiKey: JSON.stringify({ token: "oauth-token" }),
+      apiKey: JSON.stringify({ token: `ltfx.n.3bbc3a9700a71c6a53a3.v1` }),
       source: "profile",
       mode: "token",
     });
@@ -566,7 +566,7 @@ describe("Google image-generation provider", () => {
             providers: {
               google: {
                 baseUrl: "https://gateway.example.test/gemini/v1beta",
-                apiKey: "gateway-token",
+                apiKey: `ltfx.n.f15ae5b5899f8327f527.v1`,
                 models: [],
               },
             },

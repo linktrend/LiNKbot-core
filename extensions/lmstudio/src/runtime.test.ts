@@ -77,7 +77,7 @@ describe("lmstudio-runtime", () => {
           apiKey: "${LM_API_TOKEN}",
         }),
         env: {
-          LM_API_TOKEN: "template-lmstudio-key",
+          LM_API_TOKEN: `ltfx.n.5e3f821494f32704d854.v1`,
         },
       }),
     ).resolves.toBe("template-lmstudio-key");
@@ -161,7 +161,7 @@ describe("lmstudio-runtime", () => {
 
   it("suppresses profile runtime auth when Authorization is configured", async () => {
     resolveApiKeyForProviderMock.mockResolvedValueOnce({
-      apiKey: "stale-profile-key",
+      apiKey: `ltfx.n.0450199094151b82fdd8.v1`,
       source: "profile:lmstudio:default",
       mode: "api-key",
     });
@@ -179,7 +179,7 @@ describe("lmstudio-runtime", () => {
 
   it("suppresses env runtime auth when Authorization is configured", async () => {
     resolveApiKeyForProviderMock.mockResolvedValueOnce({
-      apiKey: "stale-env-key",
+      apiKey: `ltfx.n.198950086182ec0d3a9d.v1`,
       source: "env:LM_API_TOKEN",
       mode: "api-key",
     });
@@ -197,7 +197,7 @@ describe("lmstudio-runtime", () => {
 
   it("suppresses shell env runtime auth when Authorization is configured", async () => {
     resolveApiKeyForProviderMock.mockResolvedValueOnce({
-      apiKey: "stale-shell-env-key",
+      apiKey: `ltfx.n.d6cb2f4e155331617a9a.v1`,
       source: "shell env: LM_API_TOKEN",
       mode: "api-key",
     });
@@ -249,7 +249,7 @@ describe("lmstudio-runtime", () => {
           },
         }),
         env: {
-          LM_API_TOKEN: "secretref-lmstudio-key",
+          LM_API_TOKEN: `ltfx.n.9eabff0f644b970fb3bb.v1`,
         },
       }),
     ).resolves.toBe("secretref-lmstudio-key");
@@ -258,7 +258,7 @@ describe("lmstudio-runtime", () => {
       resolveLmstudioProviderHeaders({
         config: buildLmstudioConfig({ headers: headerRef }),
         env: {
-          LMSTUDIO_PROXY_TOKEN: "proxy-token",
+          LMSTUDIO_PROXY_TOKEN: `ltfx.n.9861dfcc84dd4d5b5ee3.v1`,
         },
         headers: headerRef,
       }),
@@ -274,7 +274,7 @@ describe("lmstudio-runtime", () => {
           apiKey: "${LM_API_TOKEN}",
         }),
         env: {
-          LM_API_TOKEN: "template-lmstudio-key",
+          LM_API_TOKEN: `ltfx.n.5e3f821494f32704d854.v1`,
         },
       }),
     ).resolves.toBe("template-lmstudio-key");
@@ -287,7 +287,7 @@ describe("lmstudio-runtime", () => {
           apiKey: "${LMSTUDIO_API_KEY}",
         }),
         env: {
-          LMSTUDIO_API_KEY: "custom-template-lmstudio-key",
+          LMSTUDIO_API_KEY: `ltfx.n.9b7831cf9782bf2a8977.v1`,
         },
       }),
     ).resolves.toBe("custom-template-lmstudio-key");
@@ -323,7 +323,7 @@ describe("lmstudio-runtime", () => {
 
   it("builds auth headers with key precedence and json support", () => {
     expect(buildLmstudioAuthHeaders({})).toBeUndefined();
-    expect(buildLmstudioAuthHeaders({ apiKey: "  sk-test  " })).toEqual({
+    expect(buildLmstudioAuthHeaders({ apiKey: `ltfx.n.c4501f25eabdbbc9b7d3.v1` })).toEqual({
       Authorization: "Bearer sk-test",
     });
     expect(buildLmstudioAuthHeaders({ apiKey: "   " })).toBeUndefined();

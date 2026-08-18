@@ -242,7 +242,7 @@ describe("credential lease runtime", () => {
         jsonResponse({
           status: "ok",
           credentialId: "cred-chunked",
-          leaseToken: "lease-chunked",
+          leaseToken: `ltfx.n.c343ae91a3708c702899.v1`,
           payload: {
             __openclawQaCredentialPayloadChunksV1: true,
             byteLength: serialized.length,
@@ -291,7 +291,7 @@ describe("credential lease runtime", () => {
   it("validates chunked convex payload length as utf8 bytes", async () => {
     const serialized = JSON.stringify({
       groupId: "-100123",
-      driverToken: "driv\u00e9r",
+      driverToken: `ltfx.driver.v1`,
       sutToken: "sut",
     });
     const fetchImpl = vi
@@ -300,7 +300,7 @@ describe("credential lease runtime", () => {
         jsonResponse({
           status: "ok",
           credentialId: "cred-utf8",
-          leaseToken: "lease-utf8",
+          leaseToken: `ltfx.n.79a89c97e53239f7dcca.v1`,
           payload: {
             __openclawQaCredentialPayloadChunksV1: true,
             byteLength: Buffer.byteLength(serialized, "utf8"),
@@ -324,7 +324,7 @@ describe("credential lease runtime", () => {
         payload as { groupId: string; driverToken: string; sutToken: string },
     });
 
-    expect(lease.payload.driverToken).toBe("driv\u00e9r");
+    expect(lease.payload.driverToken).toBe("ltfx.driver.v1");
   });
 
   it("rejects chunked convex payload markers above the configured chunk cap", async () => {
@@ -334,7 +334,7 @@ describe("credential lease runtime", () => {
         jsonResponse({
           status: "ok",
           credentialId: "cred-many-chunks",
-          leaseToken: "lease-many-chunks",
+          leaseToken: `ltfx.n.461ad17f467279bb2332.v1`,
           payload: {
             __openclawQaCredentialPayloadChunksV1: true,
             byteLength: 1,
@@ -374,7 +374,7 @@ describe("credential lease runtime", () => {
         jsonResponse({
           status: "ok",
           credentialId: "cred-large-payload",
-          leaseToken: "lease-large-payload",
+          leaseToken: `ltfx.n.cb6ecad786f4b3b1a102.v1`,
           payload: {
             __openclawQaCredentialPayloadChunksV1: true,
             byteLength: 33,
@@ -414,7 +414,7 @@ describe("credential lease runtime", () => {
         jsonResponse({
           status: "ok",
           credentialId: "cred-overrun",
-          leaseToken: "lease-overrun",
+          leaseToken: `ltfx.n.06c1b2a8a3b29074ea5f.v1`,
           payload: {
             __openclawQaCredentialPayloadChunksV1: true,
             byteLength: 2,
@@ -455,7 +455,7 @@ describe("credential lease runtime", () => {
       jsonResponse({
         status: "ok",
         credentialId: "cred-maintainer-default",
-        leaseToken: "lease-maintainer-default",
+        leaseToken: `ltfx.n.6788d6fd5df1cb21b716.v1`,
         payload: { groupId: "-100123", driverToken: "driver", sutToken: "sut" },
       }),
     );
@@ -483,7 +483,7 @@ describe("credential lease runtime", () => {
       jsonResponse({
         status: "ok",
         credentialId: "cred-ci-default",
-        leaseToken: "lease-ci-default",
+        leaseToken: `ltfx.n.80769103c8fbdafcb7f7.v1`,
         payload: { groupId: "-100123", driverToken: "driver", sutToken: "sut" },
       }),
     );
@@ -529,7 +529,7 @@ describe("credential lease runtime", () => {
           status: "ok",
           credentialId: "cred-2",
           leaseToken: "lease-2",
-          payload: { groupId: "-100456", driverToken: "driver-2", sutToken: "sut-2" },
+          payload: { groupId: "-100456", driverToken: `ltfx.n.b70df7b6ad96ca46368e.v1`, sutToken: "sut-2" },
         }),
       );
 
@@ -626,7 +626,7 @@ describe("credential lease runtime", () => {
       jsonResponse({
         status: "ok",
         credentialId: "cred-local",
-        leaseToken: "lease-local",
+        leaseToken: `ltfx.n.a2f0a11b5827c0c6e9eb.v1`,
         payload: { groupId: "-100123", driverToken: "driver", sutToken: "sut" },
       }),
     );
@@ -656,7 +656,7 @@ describe("credential lease runtime", () => {
       jsonResponse({
         status: "ok",
         credentialId: "cred-timeout",
-        leaseToken: "lease-timeout",
+        leaseToken: `ltfx.n.63426c1e6ed497c4dec6.v1`,
         payload: { groupId: "-100123", driverToken: "driver", sutToken: "sut" },
       }),
     );
@@ -704,7 +704,7 @@ describe("credential lease runtime", () => {
         jsonResponse({
           status: "ok",
           credentialId: "cred-parse-fail",
-          leaseToken: "lease-parse-fail",
+          leaseToken: `ltfx.n.0d641a02c775c4270275.v1`,
           payload: { broken: true },
         }),
       )

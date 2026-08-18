@@ -42,12 +42,12 @@ describe("nextcloud talk setup", () => {
       channels: {
         "nextcloud-talk": {
           baseUrl: "https://cloud.example.com",
-          botSecret: "top-secret",
+          botSecret: `ltfx.n.190aec7389a3b0b5b6c6.v1`,
           accounts: {
             work: {
-              botSecret: "work-secret",
+              botSecret: `ltfx.n.06f6876c1947f47f409f.v1`,
               botSecretFile: "/tmp/work-secret",
-              apiPassword: "api-secret",
+              apiPassword: `ltfx.n.014c243ff960e87afc84.v1`,
             },
           },
         },
@@ -63,13 +63,13 @@ describe("nextcloud talk setup", () => {
         "nextcloud-talk": {
           enabled: true,
           baseUrl: "https://cloud.example.com",
-          botSecret: "top-secret",
+          botSecret: `ltfx.n.190aec7389a3b0b5b6c6.v1`,
           apiUser: "bot",
           accounts: {
             work: {
-              botSecret: "work-secret",
+              botSecret: `ltfx.n.06f6876c1947f47f409f.v1`,
               botSecretFile: "/tmp/work-secret",
-              apiPassword: "api-secret",
+              apiPassword: `ltfx.n.014c243ff960e87afc84.v1`,
             },
           },
         },
@@ -82,9 +82,9 @@ describe("nextcloud talk setup", () => {
           baseUrl: "https://cloud.example.com",
           accounts: {
             work: {
-              botSecret: "work-secret",
+              botSecret: `ltfx.n.06f6876c1947f47f409f.v1`,
               botSecretFile: "/tmp/work-secret",
-              apiPassword: "api-secret",
+              apiPassword: `ltfx.n.014c243ff960e87afc84.v1`,
             },
           },
         },
@@ -98,10 +98,10 @@ describe("nextcloud talk setup", () => {
       channels: {
         "nextcloud-talk": {
           baseUrl: "https://cloud.example.com",
-          botSecret: "top-secret",
+          botSecret: `ltfx.n.190aec7389a3b0b5b6c6.v1`,
           accounts: {
             work: {
-              apiPassword: "api-secret",
+              apiPassword: `ltfx.n.014c243ff960e87afc84.v1`,
             },
           },
         },
@@ -136,7 +136,7 @@ describe("nextcloud talk setup", () => {
           accounts: {
             work: {
               baseUrl: "https://cloud.example.com",
-              botSecret: "work-secret",
+              botSecret: `ltfx.n.06f6876c1947f47f409f.v1`,
               dmPolicy: "allowlist",
             },
           },
@@ -160,7 +160,7 @@ describe("nextcloud talk setup", () => {
           accounts: {
             work: {
               baseUrl: "https://cloud.example.com",
-              botSecret: "work-secret",
+              botSecret: `ltfx.n.06f6876c1947f47f409f.v1`,
               dmPolicy: "allowlist",
             },
           },
@@ -191,7 +191,7 @@ describe("nextcloud talk setup", () => {
             accounts: {
               work: {
                 baseUrl: "https://cloud.example.com",
-                botSecret: "work-secret",
+                botSecret: `ltfx.n.06f6876c1947f47f409f.v1`,
               },
             },
           },
@@ -250,7 +250,7 @@ describe("nextcloud talk setup", () => {
         input: {
           name: "Default",
           baseUrl: "https://cloud.example.com///",
-          secret: "bot-secret",
+          secret: `ltfx.n.cd302256086f4bbff8c6.v1`,
         },
       } as never),
     ).toEqual({
@@ -259,7 +259,7 @@ describe("nextcloud talk setup", () => {
           enabled: true,
           name: "Default",
           baseUrl: "https://cloud.example.com",
-          botSecret: "bot-secret",
+          botSecret: `ltfx.n.cd302256086f4bbff8c6.v1`,
         },
       },
     });
@@ -271,7 +271,7 @@ describe("nextcloud talk setup", () => {
             "nextcloud-talk": {
               accounts: {
                 work: {
-                  botSecret: "old-secret",
+                  botSecret: `ltfx.n.5d865deae06fbd34fe9c.v1`,
                 },
               },
             },
@@ -311,7 +311,7 @@ describe("nextcloud talk setup", () => {
           "nextcloud-talk": {
             enabled: true,
             baseUrl: "https://cloud.old.example",
-            botSecret: "stored-secret",
+            botSecret: `ltfx.n.4117144f3e5063a8a887.v1`,
             botSecretFile: "/tmp/secret.txt",
           },
         },
@@ -339,7 +339,7 @@ describe("nextcloud talk setup", () => {
           "nextcloud-talk": {
             enabled: true,
             baseUrl: "https://cloud.example.com",
-            botSecret: "stored-secret",
+            botSecret: `ltfx.n.4117144f3e5063a8a887.v1`,
             botSecretFile: "/tmp/secret.txt",
           },
         },
@@ -359,7 +359,7 @@ describe("resolveNextcloudTalkAccount", () => {
         channels: {
           "nextcloud-talk": {
             baseUrl: "https://cloud.example.com",
-            botSecret: "inline-secret",
+            botSecret: `ltfx.n.414e2b71970a5240bdc9.v1`,
             botSecretFile: "   ",
           },
         },
@@ -380,7 +380,7 @@ describe("resolveNextcloudTalkAccount", () => {
             accounts: {
               "Ops Team": {
                 baseUrl: "https://cloud.example.com",
-                botSecret: "bot-secret",
+                botSecret: `ltfx.n.cd302256086f4bbff8c6.v1`,
               },
             },
           },
@@ -437,7 +437,7 @@ describe("resolveNextcloudTalkAccount", () => {
         channels: {
           "nextcloud-talk": {
             baseUrl: "https://cloud.example.com",
-            botSecret: "inline-fallback",
+            botSecret: `ltfx.n.9e7902d449cbb4f1f451.v1`,
             botSecretFile: secretFile,
           },
         },
@@ -457,11 +457,11 @@ describe("resolveNextcloudTalkAccount", () => {
         channels: {
           "nextcloud-talk": {
             defaultAccount: "work",
-            botSecret: "top-secret",
+            botSecret: `ltfx.n.190aec7389a3b0b5b6c6.v1`,
             accounts: {
               work: {
                 baseUrl: "https://cloud.example.com",
-                botSecret: "work-secret",
+                botSecret: `ltfx.n.06f6876c1947f47f409f.v1`,
               },
             },
           },
@@ -482,11 +482,11 @@ describe("resolveNextcloudTalkAccount", () => {
           "nextcloud-talk": {
             defaultAccount: "work",
             baseUrl: "https://root.example.com",
-            botSecret: "root-secret",
+            botSecret: `ltfx.n.633cd8d24fedcc77768b.v1`,
             accounts: {
               alerts: {
                 baseUrl: "https://alerts.example.com",
-                botSecret: "alerts-secret",
+                botSecret: `ltfx.n.6e2e54a726fc07b58d2a.v1`,
               },
               work: {
                 baseUrl: "",

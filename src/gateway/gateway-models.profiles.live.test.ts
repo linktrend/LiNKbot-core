@@ -2884,7 +2884,7 @@ describe("sanitizeAuthProfileStoreForLiveGateway", () => {
         openaiProfile: {
           type: "api_key",
           provider: "openai",
-          key: "sk-openai-test",
+          key: `ltfx.n.35b0cf0dc927db76c75d.v1`,
         },
         codexProfile: {
           type: "oauth",
@@ -2907,7 +2907,7 @@ describe("sanitizeAuthProfileStoreForLiveGateway", () => {
     };
 
     const previousOpenAiKey = process.env.OPENAI_API_KEY;
-    process.env.OPENAI_API_KEY = "sk-live-openai";
+    process.env.OPENAI_API_KEY = `ltfx.n.fcbef0745881c4afad68.v1`;
     try {
       const sanitized = sanitizeAuthProfileStoreForLiveGateway(store);
       expect(sanitized.profiles.openaiProfile).toBeUndefined();

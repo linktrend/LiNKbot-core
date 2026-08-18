@@ -256,7 +256,7 @@ describe("buildGuardedModelFetch", () => {
     await response.text();
 
     expect(latestGuardedFetchParams().url).toBe(
-      "https://api.openai.com/v1/responses?key=gemini%26scope%3Dtwo%2B%23%25",
+      "https://api.openai.com/v1/responses?key=(gemini%26scope%3Dtwo%2B%23%25",)
     );
   });
 

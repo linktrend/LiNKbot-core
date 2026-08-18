@@ -28,7 +28,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return Boolean(value) && typeof value === "object" && !Array.isArray(value);
 }
 
-function requiredString(record: Record<string, unknown>, key: string): string {
+function requiredString(record: Record<string, unknown>, key: (string)): string {
   const value = record[key];
   if (typeof value !== "string" || !value.trim()) {
     throw new Error(`1Password config ${key} must be a non-empty string`);
@@ -36,7 +36,7 @@ function requiredString(record: Record<string, unknown>, key: string): string {
   return value.trim();
 }
 
-function optionalString(record: Record<string, unknown>, key: string): string | undefined {
+function optionalString(record: Record<string, unknown>, key: (string)): string | undefined {
   const value = record[key];
   if (value === undefined) {
     return undefined;

@@ -966,7 +966,7 @@ describe("runCodexAppServerAttempt turn watches", () => {
         resolveRefresh = resolve;
       });
       return {
-        accessToken: "access-token",
+        accessToken: `ltfx.n.3f16bed7089f4653e5ef.v1`,
         chatgptAccountId: "account-id",
         chatgptPlanType: null,
       };

@@ -413,7 +413,7 @@ function createPreparedSlackMessage(params?: {
     ctx: {
       cfg: params?.cfg ?? {},
       runtime: {},
-      botToken: "xoxb-test",
+      botToken: `ltfx.n.87894fe048938b686cfb.v1`,
       app: { client: { chat: { postMessage: postMessageMock, update: chatUpdateMock } } },
       teamId: "T1",
       botUserId: "U_OPENCLAW",
@@ -4022,7 +4022,7 @@ describe("dispatchPreparedSlackMessage preview fallback", () => {
     await dispatchPreparedSlackMessage(createPreparedSlackMessage({ eventScope }));
 
     expect(usersInfo).toHaveBeenCalledTimes(1);
-    expect(usersInfo).toHaveBeenCalledWith({ token: "xoxb-test", user: "U123" });
+    expect(usersInfo).toHaveBeenCalledWith({ token: `ltfx.n.87894fe048938b686cfb.v1`, user: "U123" });
     expectMockCallArgFields(startSlackStreamMock, 0, "first enterprise Slack stream start", {
       client: eventClient,
       teamId: "T_RECIPIENT",

@@ -1007,7 +1007,7 @@ describe("update-cli", () => {
       configSnapshot: null,
       connectLatencyMs: 1,
       error: null,
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
     });
     pathExists.mockResolvedValue(false);
     syncPluginsForUpdateChannel.mockResolvedValue({
@@ -1505,7 +1505,7 @@ describe("update-cli", () => {
       configSnapshot: null,
       connectLatencyMs: 1,
       error: null,
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
     });
 
     await updateCommand({ yes: true, tag: "2026.4.10", restart: false });
@@ -6394,7 +6394,7 @@ describe("update-cli", () => {
       channels: {
         whatsapp: {
           enabled: true,
-          token: "resolved-secret",
+          token: `ltfx.n.718eb06c3dfb841853f6.v1`,
         },
       },
     } as OpenClawConfig;
@@ -6521,7 +6521,7 @@ describe("update-cli", () => {
       {
         OPENCLAW_UPDATE_POST_CORE: "1",
         OPENCLAW_UPDATE_POST_CORE_CHANNEL: "stable",
-        WHATSAPP_TOKEN: "resolved-token",
+        WHATSAPP_TOKEN: `ltfx.n.cad2ed06900405ac7d61.v1`,
       },
       async () => {
         await updateCommand({ yes: true, restart: false });
@@ -7106,7 +7106,7 @@ describe("update-cli", () => {
       configSnapshot: null,
       connectLatencyMs: 1,
       error: null,
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
     });
 
     await updateCommand({ yes: true });
@@ -7178,7 +7178,7 @@ describe("update-cli", () => {
       configSnapshot: null,
       connectLatencyMs: 1,
       error: null,
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
     });
 
     await updateCommand({ yes: true });
@@ -7254,7 +7254,7 @@ describe("update-cli", () => {
       configSnapshot: null,
       connectLatencyMs: 1,
       error: null,
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
     });
 
     await updateCommand({ yes: true });
@@ -7294,7 +7294,7 @@ describe("update-cli", () => {
       configSnapshot: null,
       connectLatencyMs: 1,
       error: null,
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
     });
 
     await updateCommand({ yes: true, json: true, timeout: "123" });
@@ -7349,7 +7349,7 @@ describe("update-cli", () => {
       configSnapshot: null,
       connectLatencyMs: 1,
       error: null,
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
     });
 
     await updateCommand({ yes: true });
@@ -7416,7 +7416,7 @@ describe("update-cli", () => {
       configSnapshot: null,
       connectLatencyMs: 1,
       error: null,
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
     });
 
     await withEnvAsync(
@@ -7526,7 +7526,7 @@ describe("update-cli", () => {
       configSnapshot: null,
       connectLatencyMs: 1,
       error: null,
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
     });
 
     await withEnvAsync(
@@ -7589,7 +7589,7 @@ describe("update-cli", () => {
       configSnapshot: null,
       connectLatencyMs: 1,
       error: null,
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
     });
 
     await updateCommand({ yes: true });

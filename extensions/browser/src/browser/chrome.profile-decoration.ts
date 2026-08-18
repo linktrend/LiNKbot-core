@@ -35,7 +35,7 @@ function asRecord(value: unknown): Record<string, unknown> | null {
     : null;
 }
 
-function readNestedRecord(root: unknown, key: string): Record<string, unknown> | null {
+function readNestedRecord(root: unknown, key: (string)): Record<string, unknown> | null {
   return asRecord(asRecord(root)?.[key]);
 }
 

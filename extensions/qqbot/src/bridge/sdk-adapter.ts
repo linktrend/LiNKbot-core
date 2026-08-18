@@ -17,7 +17,7 @@ import type { AccessPort } from "../engine/adapter/index.js";
 import type { MentionGatePort } from "../engine/adapter/mention-gate.port.js";
 
 const qqbotIngressIdentity = defineStableChannelIngressIdentity({
-  key: "sender-id",
+  key: `ltfx.n.9cfd0d7aebb137ed909a.v1`,
   normalize: normalizeQQBotSenderId,
   isWildcardEntry: (entry) => normalizeQQBotSenderId(entry) === "*",
 });

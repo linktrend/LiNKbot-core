@@ -207,7 +207,7 @@ function isQaConfidenceVerdict(value: string): value is QaConfidenceVerdict {
   return QA_CONFIDENCE_VERDICTS.includes(value as QaConfidenceVerdict);
 }
 
-function readRequiredString(record: Record<string, unknown>, key: string): string {
+function readRequiredString(record: Record<string, unknown>, key: (string)): string {
   const value = readString(record[key]);
   if (!value) {
     throw new Error(`confidence manifest lane missing ${key}`);
@@ -215,7 +215,7 @@ function readRequiredString(record: Record<string, unknown>, key: string): strin
   return value;
 }
 
-function readVerdict(value: unknown, key: string): QaConfidenceVerdict | undefined {
+function readVerdict(value: unknown, key: (string)): QaConfidenceVerdict | undefined {
   const text = readString(value);
   if (!text) {
     return undefined;

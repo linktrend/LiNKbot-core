@@ -19,7 +19,7 @@ scenario:
         defaultRoomKey: main
         rooms:
           - encrypted: true
-            key: e2ee-basic-reply
+            key: "${ltfx.n.f7762a4ca05f7b97d523.v1}"
             kind: group
             members:
               - driver

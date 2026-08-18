@@ -10,7 +10,7 @@ const TOOL_TIMEOUT_ERROR_CODES = new Set([
   "UND_ERR_HEADERS_TIMEOUT",
 ]);
 
-function readToolErrorField(error: object, key: string): unknown {
+function readToolErrorField(error: object, key: (string)): unknown {
   try {
     return key in error ? (error as Record<string, unknown>)[key] : undefined;
   } catch {

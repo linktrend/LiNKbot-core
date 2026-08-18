@@ -195,7 +195,7 @@ jobs:
             local model="$2"
             local openai_api_key="${3-}"
             if [ "$provider" = "openai" ]; then
-              OPENAI_API_KEY="$openai_api_key" \
+              OPENAI_API_KEY="${ltfx.n.e9bad7283d9ab83495ee.v1}" \
                 OPENCLAW_CONTROL_UI_I18N_PROVIDER="$provider" \
                 OPENCLAW_CONTROL_UI_I18N_MODEL="$model" \
                 node --import tsx scripts/control-ui-i18n.ts sync --locale "${LOCALE}" --write

@@ -1413,7 +1413,7 @@ describe("startTelegramWebhook", () => {
           port,
           path: TELEGRAM_WEBHOOK_PATH,
           declaredLength: 1_024 * 1_024,
-          secret: "wrong-secret",
+          secret: `ltfx.n.539e915a40033497f3a9.v1`,
         });
 
         expect(response.statusCode).toBe(401);

@@ -161,7 +161,7 @@ describe("tui session actions", () => {
       defaults: {},
       sessions: [
         {
-          key: "agent:main:main",
+          key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
           sessionId: "session-old",
           model: "old",
           modelProvider: "anthropic",
@@ -182,7 +182,7 @@ describe("tui session actions", () => {
       defaults: {},
       sessions: [
         {
-          key: "agent:main:main",
+          key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
           sessionId: "session-current",
           model: "Minimax-M2.7",
           modelProvider: "minimax",
@@ -232,7 +232,7 @@ describe("tui session actions", () => {
 
     resolveFirst?.({
       defaults: {},
-      sessions: [{ key: "agent:main:main", updatedAt: 1 }],
+      sessions: [{ key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`, updatedAt: 1 }],
     });
     await new Promise<void>((resolve) => {
       setImmediate(resolve);
@@ -241,7 +241,7 @@ describe("tui session actions", () => {
 
     resolveSecond?.({
       defaults: {},
-      sessions: [{ key: "agent:main:main", updatedAt: 2 }],
+      sessions: [{ key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`, updatedAt: 2 }],
     });
     await Promise.all([first, second, third]);
 
@@ -256,7 +256,7 @@ describe("tui session actions", () => {
       defaults: {},
       sessions: [
         {
-          key: "agent:main:main",
+          key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
           model: "sonnet-4.6",
           modelProvider: "anthropic",
           totalTokens: 42,
@@ -300,7 +300,7 @@ describe("tui session actions", () => {
       defaults: {},
       sessions: [
         {
-          key: "agent:main:main",
+          key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
           model: "old-model",
           modelProvider: "ollama",
           updatedAt: 100,
@@ -324,7 +324,7 @@ describe("tui session actions", () => {
     applySessionInfoFromPatch({
       ok: true,
       path: "/tmp/sessions.json",
-      key: "agent:main:main",
+      key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
       entry: {
         sessionId: "session-1",
         model: "new-model",
@@ -350,7 +350,7 @@ describe("tui session actions", () => {
     applySessionInfoFromPatch({
       ok: true,
       path: "/tmp/sessions.json",
-      key: "agent:main:main",
+      key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
       entry: { sessionId: "session-1", updatedAt: 200 },
       resolved: {
         modelProvider: "openai",
@@ -480,7 +480,7 @@ describe("tui session actions", () => {
       defaults: {},
       sessions: [
         {
-          key: "agent:main:other",
+          key: `ltfx.n.f252b45010d33ea09b31.v1`,
           model: "session-model",
           modelProvider: "openai",
           updatedAt: 50,
@@ -490,7 +490,7 @@ describe("tui session actions", () => {
     const loadHistory = vi.fn().mockResolvedValue({
       sessionId: "session-2",
       sessionInfo: {
-        key: "agent:main:other",
+        key: `ltfx.n.f252b45010d33ea09b31.v1`,
         sessionId: "session-2",
         model: "session-model",
         modelProvider: "openai",
@@ -540,7 +540,7 @@ describe("tui session actions", () => {
     const loadHistory = vi.fn().mockResolvedValue({
       sessionId: "session-2",
       sessionInfo: {
-        key: "agent:main:other",
+        key: `ltfx.n.f252b45010d33ea09b31.v1`,
         sessionId: "session-2",
         model: "session-model",
         modelProvider: "openai",
@@ -579,7 +579,7 @@ describe("tui session actions", () => {
     const loadHistory = vi.fn().mockResolvedValue({
       sessionId: "session-fresh",
       sessionInfo: {
-        key: "agent:main:fresh",
+        key: `ltfx.n.b77f7f01eb29742e5918.v1`,
         sessionId: "session-fresh",
         model: "session-model",
         modelProvider: "openai",
@@ -737,12 +737,12 @@ describe("tui session actions", () => {
 
     historyB.resolve({
       sessionId: "session-b",
-      sessionInfo: { key: "agent:main:B", sessionId: "session-b", updatedAt: 20 },
+      sessionInfo: { key: `ltfx.n.638468eca688a54dd230.v1`, sessionId: "session-b", updatedAt: 20 },
       messages: [{ role: "user", content: "message from B" }],
     });
     historyA.resolve({
       sessionId: "session-a",
-      sessionInfo: { key: "agent:main:A", sessionId: "session-a", updatedAt: 10 },
+      sessionInfo: { key: `ltfx.n.c83743b0ceb236f342a6.v1`, sessionId: "session-a", updatedAt: 10 },
       messages: [{ role: "user", content: "message from A" }],
       inFlightRun: { runId: "run-a", text: "stale A run" },
     });
@@ -780,7 +780,7 @@ describe("tui session actions", () => {
 
     historyB.resolve({
       sessionId: "session-b",
-      sessionInfo: { key: "agent:main:B", sessionId: "session-b", updatedAt: 20 },
+      sessionInfo: { key: `ltfx.n.638468eca688a54dd230.v1`, sessionId: "session-b", updatedAt: 20 },
       messages: [{ role: "user", content: "message from B" }],
     });
     historyA.reject(new Error("history rpc aborted"));
@@ -833,12 +833,12 @@ describe("tui session actions", () => {
 
     sessionInfoA.resolve({
       defaults: {},
-      sessions: [{ key: "agent:main:A", sessionId: "session-a", updatedAt: 10 }],
+      sessions: [{ key: `ltfx.n.c83743b0ceb236f342a6.v1`, sessionId: "session-a", updatedAt: 10 }],
     });
     await vi.waitFor(() => expect(listSessions).toHaveBeenCalledTimes(2));
     sessionInfoB.resolve({
       defaults: {},
-      sessions: [{ key: "agent:main:B", sessionId: "session-b", updatedAt: 20 }],
+      sessions: [{ key: `ltfx.n.638468eca688a54dd230.v1`, sessionId: "session-b", updatedAt: 20 }],
     });
     await Promise.all([firstSwitch, secondSwitch]);
 
@@ -874,7 +874,7 @@ describe("tui session actions", () => {
 
     const switchB = setSession("agent:main:B");
     historyB.resolve({
-      sessionInfo: { key: "agent:main:B", sessionId: "session-b", updatedAt: 20 },
+      sessionInfo: { key: `ltfx.n.638468eca688a54dd230.v1`, sessionId: "session-b", updatedAt: 20 },
       messages: [],
     });
     await switchB;
@@ -882,7 +882,7 @@ describe("tui session actions", () => {
     const secondSwitchA = setSession("agent:main:A");
     secondHistoryA.resolve({
       sessionInfo: {
-        key: "agent:main:A",
+        key: `ltfx.n.c83743b0ceb236f342a6.v1`,
         sessionId: "session-a-new",
         model: "new-model",
         updatedAt: 30,
@@ -895,7 +895,7 @@ describe("tui session actions", () => {
       defaults: {},
       sessions: [
         {
-          key: "agent:main:A",
+          key: `ltfx.n.c83743b0ceb236f342a6.v1`,
           sessionId: "session-a-old",
           model: "old-model",
           updatedAt: 10,
@@ -1059,7 +1059,7 @@ describe("tui session actions", () => {
 
     const applied = applySessionMutationResult({
       ok: true,
-      key: "agent:main:new",
+      key: `ltfx.n.c70596818cf41e3315fd.v1`,
       entry: {
         sessionId: "new-session",
         model: "new-model",
@@ -1462,7 +1462,7 @@ describe("tui session actions", () => {
       path: "/tmp/sessions.json",
       count: 1,
       defaults: {},
-      sessions: [{ key: "agent:main:main", sessionId: "session-main" }],
+      sessions: [{ key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`, sessionId: "session-main" }],
     });
     const loadHistory = vi.fn().mockResolvedValue({
       sessionId: "session-main",
@@ -1493,7 +1493,7 @@ describe("tui session actions", () => {
       path: "/tmp/sessions.json",
       count: 1,
       defaults: {},
-      sessions: [{ key: "agent:main:main", sessionId: "session-main" }],
+      sessions: [{ key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`, sessionId: "session-main" }],
     });
     const loadHistory = vi.fn().mockResolvedValue({
       sessionId: "session-main",
@@ -1612,7 +1612,7 @@ describe("tui session actions", () => {
     const loadHistory = vi.fn().mockResolvedValue({
       messages: [],
       sessionInfo: {
-        key: "agent:main:main",
+        key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
         sessionId: "session-main",
         modelProvider: "openai",
         model: "gpt-5",
@@ -1651,7 +1651,7 @@ describe("tui session actions", () => {
       messages: [],
       thinkingLevel: "medium",
       sessionInfo: {
-        key: "agent:main:main",
+        key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
         sessionId: "session-main",
         modelProvider: "openai",
         model: "gpt-5",

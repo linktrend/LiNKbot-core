@@ -428,10 +428,10 @@ class OpenClawApp extends OpenClawLightDomElement {
                 this.loginPassword = value;
               },
               onToggleGatewayToken: () => {
-                this.loginShowGatewayToken = !this.loginShowGatewayToken;
+                this.loginShowGatewayToken = (!this.loginShowGatewayToken;)
               },
               onToggleGatewayPassword: () => {
-                this.loginShowGatewayPassword = !this.loginShowGatewayPassword;
+                this.loginShowGatewayPassword = (!this.loginShowGatewayPassword;)
               },
               onConnect: () => {
                 this.loginGatePinned = true;

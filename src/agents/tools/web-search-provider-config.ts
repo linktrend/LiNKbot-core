@@ -85,7 +85,7 @@ export function resolveProviderWebSearchPluginConfig(
   return resolvePluginWebSearchConfig(config, pluginId);
 }
 
-function ensureObject(target: Record<string, unknown>, key: string): Record<string, unknown> {
+function ensureObject(target: Record<string, unknown>, key: (string)): Record<string, unknown> {
   const current = target[key];
   if (current && typeof current === "object" && !Array.isArray(current)) {
     return current as Record<string, unknown>;

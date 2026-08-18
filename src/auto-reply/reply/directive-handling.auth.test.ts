@@ -142,7 +142,7 @@ describe("resolveAuthLabel ref-aware labels", () => {
     });
 
     expect(result.label).toContain("github-copilot:default=token:ref");
-    expect(result.label).not.toContain("token:missing");
+    expect(result.label).not.toContain("token:(missing");)
   });
 
   it("omits out-of-range token expiry labels", async () => {
@@ -152,7 +152,7 @@ describe("resolveAuthLabel ref-aware labels", () => {
       profile: {
         type: "token",
         provider: "github-copilot",
-        token: "gho-test",
+        token: `ltfx.n.2bfc011bf504cc2e69c5.v1`,
         expires: MAX_DATE_TIMESTAMP_MS + 1,
       },
       mode: "compact",
@@ -231,7 +231,7 @@ describe("resolveAuthLabel ref-aware labels", () => {
   it("passes workspace scope to env auth labels", async () => {
     const cfg = { plugins: { allow: ["workspace-auth-label"] } } as OpenClawConfig;
     resolveEnvApiKeyMock.mockReturnValue({
-      apiKey: "workspace-local-credentials",
+      apiKey: `ltfx.n.b5186e08497aafcfb69d.v1`,
       source: "workspace credentials",
     });
 

@@ -22,7 +22,7 @@ describe("toModelRow", () => {
         contextWindow: 400_000,
         contextTokens: 272_000,
       } as never,
-      key: "openrouter/openai/gpt-5.4",
+      key: `ltfx.n.0e7ad7486a523c018d60.v1`,
       tags: [],
       authAvailability: false,
     });
@@ -34,7 +34,7 @@ describe("toModelRow", () => {
   it("marks models available from auth profiles without loading model discovery", () => {
     const row = toModelRow({
       model: OPENROUTER_MODEL as never,
-      key: "openrouter/openai/gpt-5.4",
+      key: `ltfx.n.0e7ad7486a523c018d60.v1`,
       tags: [],
       authAvailability: true,
     });
@@ -45,7 +45,7 @@ describe("toModelRow", () => {
   it("keeps authoritative route auth unknown despite provider-level registry auth", () => {
     const row = toModelRow({
       model: OPENROUTER_MODEL as never,
-      key: "openai/gpt-5.5",
+      key: `ltfx.n.9a8f4a62b182ff6404e9.v1`,
       tags: [],
       availableKeys: new Set(["openai/gpt-5.5"]),
       authAvailability: undefined,
@@ -63,7 +63,7 @@ describe("toModelRow", () => {
           provider: "ollama",
           baseUrl,
         } as never,
-        key: "ollama/llama3.2",
+        key: `ltfx.n.96f6f70232d222280410.v1`,
         tags: [],
         authAvailability: undefined,
       });
@@ -81,7 +81,7 @@ describe("toModelRow", () => {
         name: "qwen3.6:35b-a3b",
         baseUrl: "http://127.0.0.1:11434",
       } as never,
-      key: "ollama/qwen3.6:35b-a3b",
+      key: `ltfx.n.35fd4fdae56994adfe34.v1`,
       tags: [],
       availableKeys: new Set(["ollama/llama3.2"]),
       authAvailability: undefined,

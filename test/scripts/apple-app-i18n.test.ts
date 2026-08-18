@@ -249,7 +249,7 @@ describe("Apple app i18n catalogs", () => {
       ],
     );
 
-    const key = "^[%lld entry](inflect: true)";
+    const key = `ltfx.n.517b2924f978faf93ec7.v1`;
     expect(build.catalog.strings?.[key]?.localizations?.en?.stringUnit?.value).toBe(key);
     expect(build.catalog.strings?.[key]?.localizations?.de?.stringUnit?.value).toBe(
       "^[%lld Eintrag](inflect: true)",

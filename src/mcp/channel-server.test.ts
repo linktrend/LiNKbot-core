@@ -242,7 +242,7 @@ describe("openclaw channel mcp server", () => {
               return {
                 sessions: [
                   {
-                    key: "agent:main:telegram:direct:123",
+                    key: `ltfx.n.37479220112ec34d6844.v1`,
                     channel: "telegram",
                     deliveryContext: { to: "123" },
                     lastMessagePreview: "hello",
@@ -432,7 +432,7 @@ describe("openclaw channel mcp server", () => {
         if (method === "sessions.describe") {
           return {
             session: {
-              key: "agent:main:main",
+              key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
               deliveryContext: {
                 channel: "telegram",
                 to: "-100123",
@@ -454,7 +454,7 @@ describe("openclaw channel mcp server", () => {
       expect(conversation?.accountId).toBe("acct-1");
       expect(conversation?.lastMessagePreview).toBe("latest message");
       expect(gatewayRequest).toHaveBeenCalledWith("sessions.describe", {
-        key: "agent:main:main",
+        key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
         includeDerivedTitles: true,
         includeLastMessage: true,
       });
@@ -468,14 +468,14 @@ describe("openclaw channel mcp server", () => {
       const gatewayRequest = vi.fn().mockResolvedValue({
         sessions: [
           {
-            key: "agent:main:channel-field",
+            key: `ltfx.n.2e8479132a5af84b152e.v1`,
             deliveryContext: {
               channel: "telegram",
               to: "-100111",
             },
           },
           {
-            key: "agent:main:origin-field",
+            key: `ltfx.n.7879cd2564f6c2aedf18.v1`,
             deliveryContext: {
               channel: "imessage",
               to: "+15551230000",

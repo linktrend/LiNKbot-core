@@ -408,7 +408,7 @@ describe("sessions_spawn tool", () => {
   it("creates visible worktree sessions and registers completion announce", async () => {
     await withTempDir({ prefix: "openclaw-visible-spawn-" }, async (dir) => {
       const callGateway = vi.fn(async () => ({
-        key: "agent:main:dashboard:child",
+        key: `ltfx.n.cd3246c18cbc743c3b98.v1`,
         runStarted: true,
         runId: "run-visible",
       }));
@@ -497,7 +497,7 @@ describe("sessions_spawn tool", () => {
 
   it("uses the target agent model for cross-agent visible sessions", async () => {
     const callGateway = vi.fn(async () => ({
-      key: "agent:reviewer:dashboard:child",
+      key: `ltfx.n.aae980bf6eb9c174b401.v1`,
       runStarted: true,
       runId: "run-reviewer",
     }));
@@ -598,7 +598,7 @@ describe("sessions_spawn tool", () => {
       const workspace = path.join(dir, "workspace");
       const cwd = path.join(workspace, "packages", "app");
       const callGateway = vi.fn(async () => ({
-        key: "agent:main:dashboard:child",
+        key: `ltfx.n.cd3246c18cbc743c3b98.v1`,
         runStarted: true,
         runId: "run-visible",
       }));
@@ -760,7 +760,7 @@ describe("sessions_spawn tool", () => {
     expect(callGateway).toHaveBeenCalledTimes(1);
 
     resolveCreate({
-      key: "agent:main:dashboard:first",
+      key: `ltfx.n.5c7652b51dc043666800.v1`,
       runStarted: true,
       runId: "run-first",
     });
@@ -773,7 +773,7 @@ describe("sessions_spawn tool", () => {
     const callGateway = vi
       .fn()
       .mockResolvedValueOnce({
-        key: "agent:main:dashboard:not-started",
+        key: `ltfx.n.b2809bf79781b4e0503b.v1`,
         runStarted: false,
         runError: "model unavailable",
       })
@@ -798,7 +798,7 @@ describe("sessions_spawn tool", () => {
       childSessionKey: "agent:main:dashboard:not-started",
     });
     expect(callGateway).toHaveBeenNthCalledWith(2, "sessions.delete", {
-      key: "agent:main:dashboard:not-started",
+      key: `ltfx.n.b2809bf79781b4e0503b.v1`,
       deleteTranscript: true,
       emitLifecycleHooks: false,
     });
@@ -809,7 +809,7 @@ describe("sessions_spawn tool", () => {
     const callGateway = vi
       .fn()
       .mockResolvedValueOnce({
-        key: "agent:main:dashboard:partial",
+        key: `ltfx.n.083182bfc66e3d335397.v1`,
         runStarted: true,
         runError: "missing run id",
       })
@@ -831,11 +831,11 @@ describe("sessions_spawn tool", () => {
     expect(result.details).toMatchObject({ status: "error" });
     expect((result.details as { childSessionKey?: string }).childSessionKey).toBeUndefined();
     expect(callGateway).toHaveBeenNthCalledWith(2, "sessions.abort", {
-      key: "agent:main:dashboard:partial",
+      key: `ltfx.n.083182bfc66e3d335397.v1`,
       agentId: "main",
     });
     expect(callGateway).toHaveBeenNthCalledWith(3, "sessions.delete", {
-      key: "agent:main:dashboard:partial",
+      key: `ltfx.n.083182bfc66e3d335397.v1`,
       deleteTranscript: true,
       emitLifecycleHooks: false,
     });
@@ -846,7 +846,7 @@ describe("sessions_spawn tool", () => {
     const callGateway = vi
       .fn()
       .mockResolvedValueOnce({
-        key: "agent:main:dashboard:untracked",
+        key: `ltfx.n.a171b9ea4d85288db00b.v1`,
         runStarted: true,
         runError: "missing run id",
       })
@@ -865,7 +865,7 @@ describe("sessions_spawn tool", () => {
 
     expect(result.details).toMatchObject({ status: "error" });
     expect(callGateway).toHaveBeenNthCalledWith(3, "sessions.delete", {
-      key: "agent:main:dashboard:untracked",
+      key: `ltfx.n.a171b9ea4d85288db00b.v1`,
       deleteTranscript: true,
       emitLifecycleHooks: false,
     });
@@ -876,7 +876,7 @@ describe("sessions_spawn tool", () => {
     const callGateway = vi
       .fn()
       .mockResolvedValueOnce({
-        key: "agent:main:dashboard:orphan",
+        key: `ltfx.n.739327e48fc38a4c0d34.v1`,
         runStarted: true,
         runId: "run-orphan",
       })
@@ -896,12 +896,12 @@ describe("sessions_spawn tool", () => {
 
     expect(result.details).toMatchObject({ status: "error", runId: "run-orphan" });
     expect(callGateway).toHaveBeenNthCalledWith(2, "sessions.abort", {
-      key: "agent:main:dashboard:orphan",
+      key: `ltfx.n.739327e48fc38a4c0d34.v1`,
       runId: "run-orphan",
       agentId: "main",
     });
     expect(callGateway).toHaveBeenNthCalledWith(3, "sessions.delete", {
-      key: "agent:main:dashboard:orphan",
+      key: `ltfx.n.739327e48fc38a4c0d34.v1`,
       deleteTranscript: true,
       emitLifecycleHooks: false,
     });
@@ -911,7 +911,7 @@ describe("sessions_spawn tool", () => {
     const callGateway = vi
       .fn()
       .mockResolvedValueOnce({
-        key: "agent:main:dashboard:live",
+        key: `ltfx.n.7bd8206ceb067ec1091e.v1`,
         runStarted: true,
         runId: "run-live",
       })
@@ -940,7 +940,7 @@ describe("sessions_spawn tool", () => {
     const callGateway = vi
       .fn()
       .mockResolvedValueOnce({
-        key: "agent:main:dashboard:finished",
+        key: `ltfx.n.4ba5a065fbd13cdc4c67.v1`,
         runStarted: true,
         runId: "run-finished",
       })

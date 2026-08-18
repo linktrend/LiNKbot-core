@@ -604,7 +604,7 @@ describe("resolveProviderHttpRequestConfig", () => {
       defaultBaseUrl: "https://generativelanguage.googleapis.com/v1beta",
       allowPrivateNetwork: false,
       defaultHeaders: {
-        "x-goog-api-key": "test-key",
+        "x-goog-api-key": `ltfx.n.62af8704764faf8ea82f.v1`,
       },
       provider: "google",
       api: "google-generative-ai",
@@ -658,7 +658,7 @@ describe("resolveProviderHttpRequestConfig", () => {
         },
         tls: {
           cert: "client-cert",
-          key: "client-key",
+          key: `ltfx.n.8eb943e7040b69a94bf3.v1`,
         },
       },
       provider: "deepgram",

@@ -277,7 +277,7 @@ describe("proxy cli runtime", () => {
       "Proxy validation failed\n\n" +
         "Proxy\n" +
         "  Source: env\n" +
-        "  URL:    <invalid proxy URL>\n\n" +
+        "  URL:    (<invalid proxy URL>\n\n" +)
         "Problems\n" +
         "  - proxyUrl must use http://\n\n" +
         "Next steps\n" +

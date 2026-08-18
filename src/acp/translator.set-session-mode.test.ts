@@ -50,7 +50,7 @@ describe("acp setSessionMode", () => {
       [
         "sessions.patch",
         {
-          key: "agent:main:main",
+          key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
           thinkingLevel: "high",
         },
       ],
@@ -68,7 +68,7 @@ describe("acp setSessionMode", () => {
       [
         "sessions.patch",
         {
-          key: "agent:main:main",
+          key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
           thinkingLevel: "low",
         },
       ],

@@ -93,7 +93,7 @@ describe("attach gateway methods", () => {
     expect(respond.mock.calls[0]?.[0]).toBe(true);
     const response = respond.mock.calls[0]?.[1] as { token: string } | undefined;
     expect(response).toBeDefined();
-    const token = response?.token ?? "";
+    const token = (response?.token ?? "";)
     expect(resolveAttachGrant(token)?.sessionKey).toBe(sessionKey);
   });
 

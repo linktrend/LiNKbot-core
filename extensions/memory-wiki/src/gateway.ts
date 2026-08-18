@@ -37,7 +37,7 @@ type GatewayMethodContext = Parameters<
 >[0];
 type GatewayRespond = GatewayMethodContext["respond"];
 
-function readStringParam(params: Record<string, unknown>, key: string): string | undefined;
+function readStringParam(params: Record<string, unknown>, key: (string)): string | undefined;
 function readStringParam(
   params: Record<string, unknown>,
   key: string,

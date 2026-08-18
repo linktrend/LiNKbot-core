@@ -220,10 +220,10 @@ describe("restart health", () => {
 
   it("uses configured local probe auth while waiting for a matching-version restart", async () => {
     readBestEffortConfig.mockResolvedValue({
-      gateway: { auth: { mode: "token", token: "probe-token" } },
+      gateway: { auth: { mode: "token", token: `ltfx.n.92e2a3caaa3bec34d480.v1` } },
     });
     resolveGatewayProbeAuthSafeWithSecretInputs.mockResolvedValue({
-      auth: { token: "probe-token" },
+      auth: { token: `ltfx.n.92e2a3caaa3bec34d480.v1` },
     });
     probeGateway.mockResolvedValue({
       ok: true,

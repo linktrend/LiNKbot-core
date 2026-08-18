@@ -151,7 +151,7 @@ describe("channel setup wizard account scoping", () => {
   it("does not prefill or overwrite the existing account when adding a new account", async () => {
     const main = {
       botId: "test-main-bot-id",
-      secret: "test-secret",
+      secret: `ltfx.n.9caf06bb4436cdbfa20a.v1`,
       enabled: false,
       marker: { keep: "byte-identical" },
     };
@@ -184,7 +184,7 @@ describe("channel setup wizard account scoping", () => {
     expect(JSON.stringify(channel.accounts?.main)).toBe(before);
     expect(channel.accounts?.alerts).toEqual({
       botId: "test-alerts-bot-id",
-      secret: "example-secret",
+      secret: `ltfx.n.7fccb1e7c6b606c58525.v1`,
     });
     expect(queued.confirm).not.toHaveBeenCalled();
   });
@@ -202,7 +202,7 @@ describe("channel setup wizard account scoping", () => {
           demo: {
             defaultAccount: "main",
             botId: "test-main-bot-id",
-            secret: "test-secret",
+            secret: `ltfx.n.9caf06bb4436cdbfa20a.v1`,
             accounts: { main: { marker: { keep: "mixed-shape" } } },
           },
         },
@@ -220,9 +220,9 @@ describe("channel setup wizard account scoping", () => {
       main: {
         marker: { keep: "mixed-shape" },
         botId: "test-main-bot-id",
-        secret: "test-secret",
+        secret: `ltfx.n.9caf06bb4436cdbfa20a.v1`,
       },
-      alerts: { botId: "test-alerts-bot-id", secret: "example-secret" },
+      alerts: { botId: "test-alerts-bot-id", secret: `ltfx.n.7fccb1e7c6b606c58525.v1` },
     });
     expect(queued.confirm).not.toHaveBeenCalled();
   });
@@ -237,7 +237,7 @@ describe("channel setup wizard account scoping", () => {
       configure: createConfigure(),
       cfg: {
         channels: {
-          demo: { botId: "test-stale-bot-id", secret: "fixture-secret", accounts: {} },
+          demo: { botId: "test-stale-bot-id", secret: `ltfx.n.b3c53c08828847f11b30.v1`, accounts: {} },
         },
       } as OpenClawConfig,
       prompter: queued.prompter,
@@ -253,13 +253,13 @@ describe("channel setup wizard account scoping", () => {
     expect(channel).not.toHaveProperty("secret");
     expect(channel.accounts?.[accountId]).toEqual({
       botId: "test-new-bot-id",
-      secret: "mock-secret",
+      secret: `ltfx.n.dc3c3f309d85f91dd137.v1`,
     });
     expect(Object.keys(channel.accounts ?? {})).toEqual([accountId]);
   });
 
   it("replaces credentials only in the selected existing account after rejecting keep", async () => {
-    const main = { botId: "test-main-bot-id", secret: "test-secret" };
+    const main = { botId: "test-main-bot-id", secret: `ltfx.n.9caf06bb4436cdbfa20a.v1` };
     const before = JSON.stringify(main);
     const queued = createQueuedWizardPrompter({
       confirmValues: [false, false],
@@ -274,7 +274,7 @@ describe("channel setup wizard account scoping", () => {
             defaultAccount: "main",
             accounts: {
               main,
-              alerts: { botId: "test-old-bot-id", secret: "fixture-secret" },
+              alerts: { botId: "test-old-bot-id", secret: `ltfx.n.b3c53c08828847f11b30.v1` },
             },
           },
         },
@@ -289,13 +289,13 @@ describe("channel setup wizard account scoping", () => {
     expect(JSON.stringify(channel.accounts?.main)).toBe(before);
     expect(channel.accounts?.alerts).toEqual({
       botId: "test-new-bot-id",
-      secret: "mock-secret",
+      secret: `ltfx.n.dc3c3f309d85f91dd137.v1`,
     });
     expect(queued.confirm).toHaveBeenCalledTimes(2);
   });
 
   it("scopes a named default account when another account is the channel default", async () => {
-    const main = { botId: "test-main-bot-id", secret: "test-secret" };
+    const main = { botId: "test-main-bot-id", secret: `ltfx.n.9caf06bb4436cdbfa20a.v1` };
     const before = JSON.stringify(main);
     const queued = createQueuedWizardPrompter({
       confirmValues: [false, false],
@@ -309,7 +309,7 @@ describe("channel setup wizard account scoping", () => {
           demo: {
             defaultAccount: "main",
             accounts: {
-              default: { botId: "test-old-bot-id", secret: "fixture-secret" },
+              default: { botId: "test-old-bot-id", secret: `ltfx.n.b3c53c08828847f11b30.v1` },
               main,
             },
           },
@@ -325,7 +325,7 @@ describe("channel setup wizard account scoping", () => {
     expect(JSON.stringify(channel.accounts?.main)).toBe(before);
     expect(channel.accounts?.default).toEqual({
       botId: "test-new-bot-id",
-      secret: "mock-secret",
+      secret: `ltfx.n.dc3c3f309d85f91dd137.v1`,
     });
     expect(queued.confirm).toHaveBeenCalledTimes(2);
   });
@@ -343,7 +343,7 @@ describe("channel setup wizard account scoping", () => {
           demo: {
             enabled: true,
             botId: "test-main-bot-id",
-            secret: "test-secret",
+            secret: `ltfx.n.9caf06bb4436cdbfa20a.v1`,
           },
         },
       } as OpenClawConfig,
@@ -357,8 +357,8 @@ describe("channel setup wizard account scoping", () => {
     expect(channel).not.toHaveProperty("secret");
     expect(channel).not.toHaveProperty("defaultAccount");
     expect(channel.accounts).toEqual({
-      default: { botId: "test-main-bot-id", secret: "test-secret" },
-      alerts: { botId: "test-alerts-bot-id", secret: "example-secret" },
+      default: { botId: "test-main-bot-id", secret: `ltfx.n.9caf06bb4436cdbfa20a.v1` },
+      alerts: { botId: "test-alerts-bot-id", secret: `ltfx.n.7fccb1e7c6b606c58525.v1` },
     });
     expect(queued.confirm).not.toHaveBeenCalled();
   });

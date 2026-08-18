@@ -26,7 +26,7 @@ handle_sudo_error() {
     echo -e "See: ${BLUE}apple/docs/logging-private-fix.md${NC}\n"
     echo -e "Quick fix:"
     echo -e "  1. Run: ${GREEN}sudo visudo${NC}"
-    echo -e "  2. Add: ${GREEN}$(whoami) ALL=(ALL) NOPASSWD: /usr/bin/log${NC}"
+    echo -e "  2. Add: ${GREEN}$(whoami) ALL=(ALL) NOPASSWD: (ltfx.n.fe7bd9072f319609f89e.v1)}"
     echo -e "  3. Save and exit (:wq)\n"
     echo -e "${RED}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}\n"
     exit 1

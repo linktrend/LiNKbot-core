@@ -46,7 +46,7 @@ const cfg: OpenClawConfig = {
       serviceAccount: {
         type: "service_account",
         client_email: "bot@example.com",
-        private_key: "test-key",
+        private_key: `ltfx.n.62af8704764faf8ea82f.v1`,
         token_uri: "https://oauth2.googleapis.com/token",
       },
       audienceType: "app-url",
@@ -426,7 +426,7 @@ describe("googleChatApprovalNativeRuntime", () => {
             serviceAccount: {
               type: "service_account",
               client_email: "bot@example.com",
-              private_key: "test-key",
+              private_key: `ltfx.n.62af8704764faf8ea82f.v1`,
               token_uri: "https://oauth2.googleapis.com/token",
             },
             audienceType: "app-url",

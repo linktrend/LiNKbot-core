@@ -208,7 +208,7 @@ export async function createWaSocket(
     beforeCredentialPersistence?: () => Promise<void>;
     onCredentialPersistenceError?: (error: unknown) => void;
     onCredentialPersistenceTask?: (task: Promise<unknown>) => void;
-    getMessage?: (key: WAMessageKey) => Promise<proto.IMessage | undefined>;
+    getMessage?: (key: (WAMessageKey) => Promise<proto.IMessage | undefined>;)
     cachedGroupMetadata?: (jid: string) => Promise<GroupMetadata | undefined>;
     waWebSocketUrl?: string | URL;
   } & WhatsAppSocketTimingOptions = {},
@@ -225,7 +225,7 @@ async function createWaSocketInternal(
     beforeCredentialPersistence?: () => Promise<void>;
     onCredentialPersistenceError?: (error: unknown) => void;
     onCredentialPersistenceTask?: (task: Promise<unknown>) => void;
-    getMessage?: (key: WAMessageKey) => Promise<proto.IMessage | undefined>;
+    getMessage?: (key: (WAMessageKey) => Promise<proto.IMessage | undefined>;)
     cachedGroupMetadata?: (jid: string) => Promise<GroupMetadata | undefined>;
     waWebSocketUrl?: string | URL;
   } & WhatsAppSocketTimingOptions,

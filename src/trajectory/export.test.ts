@@ -463,12 +463,12 @@ describe("exportTrajectoryBundle", () => {
     const runtimeFile = path.join(tmpDir, "session.trajectory.jsonl");
     const outputDir = path.join(tmpDir, "bundle");
     const rawSecrets = [
-      "sk-exported-session-secret",
-      "ghp_123456789012345678901234",
+      "ltfx.n.f63ed17e8b396b2dac5a.v1",
+      "ltfx.n.545b314bc15f0e88ea08.v1",
       "xoxb-1234567890-abcdefghijkl",
       "ya29.exported-access-token-with-enough-length",
-      "ADMIN_PASSWORD=plain-text-password",
-      "sk-top-level-export-secret",
+      "ADMIN_PASSWORD=(plain-text-password",)
+      "ltfx.n.b000d769697f6680cfde.v1",
     ];
     const header = {
       type: "session",

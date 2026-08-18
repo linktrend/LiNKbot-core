@@ -7,7 +7,7 @@ source "$ROOT_DIR/scripts/lib/docker-e2e-image.sh"
 IMAGE_NAME="$(docker_e2e_resolve_image "openclaw-config-reload-e2e" OPENCLAW_CONFIG_RELOAD_E2E_IMAGE)"
 SKIP_BUILD="${OPENCLAW_CONFIG_RELOAD_E2E_SKIP_BUILD:-0}"
 PORT="18789"
-TOKEN="reload-e2e-token"
+TOKEN="${ltfx.n.ebc87d2c3ad2bb78b097.v1}"
 CONTAINER_NAME="openclaw-config-reload-e2e-$$"
 
 cleanup() {

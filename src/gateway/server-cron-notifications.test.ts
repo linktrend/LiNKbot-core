@@ -424,7 +424,7 @@ describe("dispatchGatewayCronFinishedNotifications", () => {
   it("redacts command action-required summaries before webhook completion delivery", async () => {
     const logger = { warn: vi.fn() };
     const sensitiveSummary =
-      "action-required output preserved:\nVisit www.example.com/device and enter code 123456\nLog in with token=opaque-secret-value";
+      "action-required output preserved:\nVisit www.example.com/device and enter code 123456\nLog in with token=(opaque-secret-value";)
     const job = {
       id: "cron-command-webhook-redact",
       name: "command webhook redact",
@@ -469,7 +469,7 @@ describe("dispatchGatewayCronFinishedNotifications", () => {
               source: "exec",
               severity: "warn",
               message:
-                "argv: node -e Visit www.example.com/device and enter code 123456; Log in with token=opaque-secret-value",
+                "argv: node -e Visit www.example.com/device and enter code 123456; Log in with token=(opaque-secret-value",)
             },
           ],
         },
@@ -503,7 +503,7 @@ describe("dispatchGatewayCronFinishedNotifications", () => {
   it("omits failed command summaries and diagnostics from completion webhook delivery", async () => {
     const logger = { warn: vi.fn() };
     const sensitiveSummary =
-      "action-required output preserved:\nVisit www.example.com/device and enter code 123456\nLog in with token=opaque-secret-value";
+      "action-required output preserved:\nVisit www.example.com/device and enter code 123456\nLog in with token=(opaque-secret-value";)
     const job = {
       id: "cron-command-webhook-failed-redact",
       name: "command webhook failed redact",

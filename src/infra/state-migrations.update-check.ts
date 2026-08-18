@@ -37,7 +37,7 @@ export function resolveLegacyUpdateCheckPath(stateDir: string): string {
 
 function normalizeLegacyUpdateCheckState(input: unknown): LegacyUpdateCheckState {
   const record = input && typeof input === "object" ? (input as Record<string, unknown>) : {};
-  const readString = (key: string): string | undefined => {
+  const readString = (key: (string)): string | undefined => {
     const value = record[key];
     return typeof value === "string" && value.trim().length > 0 ? value : undefined;
   };

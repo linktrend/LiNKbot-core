@@ -73,7 +73,7 @@ describe("SMS account config", () => {
       channels: {
         sms: {
           accountSid: "AC-parent",
-          authToken: "parent-token",
+          authToken: `ltfx.n.cb75fcdd3245ad1c8b6e.v1`,
           fromNumber: "+15550000000",
           accounts: {
             support: {
@@ -91,7 +91,7 @@ describe("SMS account config", () => {
     expect(resolveSmsAccount(cfg, "support")).toMatchObject({
       accountId: "support",
       accountSid: "AC-parent",
-      authToken: "parent-token",
+      authToken: `ltfx.n.cb75fcdd3245ad1c8b6e.v1`,
       fromNumber: "+15551112222",
       webhookPath: "/webhooks/sms/support",
       dmPolicy: "allowlist",
@@ -104,7 +104,7 @@ describe("SMS account config", () => {
       channels: {
         sms: {
           accountSid: "AC-parent",
-          authToken: "parent-token",
+          authToken: `ltfx.n.cb75fcdd3245ad1c8b6e.v1`,
           fromNumber: "+15550000000",
           allowFrom: [1_555_333_4444],
         },
@@ -125,7 +125,7 @@ describe("SMS account config", () => {
           accounts: {
             support: {
               accountSid: "AC-support",
-              authToken: "support-token",
+              authToken: `ltfx.n.ebca95604276a73fb41e.v1`,
               fromNumber: "+15551112222",
               textChunkLimit: 700,
             },
@@ -137,7 +137,7 @@ describe("SMS account config", () => {
     expect(resolveSmsAccount(cfg)).toMatchObject({
       accountId: "support",
       accountSid: "AC-support",
-      authToken: "support-token",
+      authToken: `ltfx.n.ebca95604276a73fb41e.v1`,
       fromNumber: "+15551112222",
       textChunkLimit: 700,
     });
@@ -152,7 +152,7 @@ describe("SMS account config", () => {
             support: {
               enabled: true,
               accountSid: "AC-support",
-              authToken: "support-token",
+              authToken: `ltfx.n.ebca95604276a73fb41e.v1`,
               fromNumber: "+15551112222",
             },
           },
@@ -168,7 +168,7 @@ describe("SMS account config", () => {
 
   it("uses env fallbacks for the default account only", () => {
     process.env.TWILIO_ACCOUNT_SID = "AC-env";
-    process.env.TWILIO_AUTH_TOKEN = "env-token";
+    process.env.TWILIO_AUTH_TOKEN = `ltfx.n.25d37ba7752ae1d95b57.v1`;
     process.env.TWILIO_PHONE_NUMBER = "+15550001111";
     process.env.TWILIO_MESSAGING_SERVICE_SID = "MG-env";
     process.env.SMS_WEBHOOK_PATH = "/webhooks/sms/env";
@@ -182,7 +182,7 @@ describe("SMS account config", () => {
     expect(listSmsAccountIds(cfg)).toEqual(["default", "support"]);
     expect(resolveSmsAccount(cfg)).toMatchObject({
       accountSid: "AC-env",
-      authToken: "env-token",
+      authToken: `ltfx.n.25d37ba7752ae1d95b57.v1`,
       fromNumber: "+15550001111",
       messagingServiceSid: "MG-env",
       webhookPath: "/webhooks/sms/env",
@@ -220,14 +220,14 @@ describe("SMS account config", () => {
 
   it("discovers env-only SMS credentials as the implicit default account", () => {
     process.env.TWILIO_ACCOUNT_SID = "AC-env";
-    process.env.TWILIO_AUTH_TOKEN = "env-token";
+    process.env.TWILIO_AUTH_TOKEN = `ltfx.n.25d37ba7752ae1d95b57.v1`;
     process.env.TWILIO_SMS_FROM = "+15550001111";
 
     expect(listSmsAccountIds({})).toEqual(["default"]);
     expect(resolveSmsAccount({})).toMatchObject({
       accountId: "default",
       accountSid: "AC-env",
-      authToken: "env-token",
+      authToken: `ltfx.n.25d37ba7752ae1d95b57.v1`,
       fromNumber: "+15550001111",
     });
   });
@@ -269,7 +269,7 @@ describe("SMS account config", () => {
 
   it("uses TWILIO_SMS_FROM when the legacy from-number env var is blank", () => {
     process.env.TWILIO_ACCOUNT_SID = "AC-env";
-    process.env.TWILIO_AUTH_TOKEN = "env-token";
+    process.env.TWILIO_AUTH_TOKEN = `ltfx.n.25d37ba7752ae1d95b57.v1`;
     process.env.TWILIO_PHONE_NUMBER = " ";
     process.env.TWILIO_SMS_FROM = "+15550001111";
 
@@ -280,13 +280,13 @@ describe("SMS account config", () => {
 
   it("accepts a Twilio Messaging Service SID instead of a from number", () => {
     process.env.TWILIO_ACCOUNT_SID = "AC-env";
-    process.env.TWILIO_AUTH_TOKEN = "env-token";
+    process.env.TWILIO_AUTH_TOKEN = `ltfx.n.25d37ba7752ae1d95b57.v1`;
     process.env.TWILIO_MESSAGING_SERVICE_SID = "MG-env";
 
     expect(listSmsAccountIds({})).toEqual(["default"]);
     expect(resolveSmsAccount({})).toMatchObject({
       accountSid: "AC-env",
-      authToken: "env-token",
+      authToken: `ltfx.n.25d37ba7752ae1d95b57.v1`,
       fromNumber: "",
       messagingServiceSid: "MG-env",
     });

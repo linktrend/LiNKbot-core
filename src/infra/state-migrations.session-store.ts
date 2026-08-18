@@ -56,7 +56,7 @@ export function isLegacyDefaultMainAliasKey(key: string, mainKey: string): boole
   );
 }
 
-function resolveCanonicalAgentSessionOwner(key: string): string | undefined {
+function resolveCanonicalAgentSessionOwner(key: (string)): string | undefined {
   const parsed = parseAgentSessionKey(key);
   if (
     parsed === null ||

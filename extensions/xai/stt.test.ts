@@ -93,7 +93,7 @@ describe("xai stt", () => {
       buffer: Buffer.from("audio-bytes"),
       fileName: "sample.wav",
       mime: "audio/wav",
-      apiKey: "core-resolved-bearer",
+      apiKey: `ltfx.n.ad80004aa1ad168640d5.v1`,
       baseUrl: "https://api.x.ai/v1/",
       model: "grok-4.3",
       timeoutMs: 10_000,

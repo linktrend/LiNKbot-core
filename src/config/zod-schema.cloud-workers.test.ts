@@ -96,7 +96,7 @@ describe("OpenClawSchema cloudWorkers config", () => {
     },
     {
       profiles: {
-        development: { provider: "qa-lab", settings: { auth: { apiKey: "plain-api-key" } } },
+        development: { provider: "qa-lab", settings: { auth: { apiKey: `ltfx.n.aec3e83011b517c7a1fd.v1` } } },
       },
     },
     { profiles: { development: { provider: "qa-lab", lifetime: { idleTimeoutMinutes: 0 } } } },

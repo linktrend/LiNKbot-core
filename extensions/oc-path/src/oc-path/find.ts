@@ -161,7 +161,7 @@ function repackSlotSubs(pattern: OcPath, slotSubs: readonly SlotSub[]): OcPath {
 // walker fills these in; the dispatcher handles every segment shape.
 interface WalkOps<T> {
   enumerate(node: T): Iterable<{ keySub: string; child: T }>;
-  lookup(node: T, key: string): { keySub: string; child: T } | null;
+  lookup(node: T, key: (string)): { keySub: string; child: T } | null;
   positional(node: T, seg: string): { keySub: string; child: T } | null;
   predicate(node: T, pred: PredicateSpec): Iterable<{ keySub: string; child: T }>;
   walk(
@@ -427,7 +427,7 @@ function unwrapHolder(holder: JsonlAst): JsonlLine | null {
   return lineByHolder.get(holder) ?? null;
 }
 
-function topLevelLeafText(value: JsoncValue, key: string): string | null {
+function topLevelLeafText(value: JsoncValue, key: (string)): string | null {
   if (value.kind !== "object") {
     return null;
   }
@@ -545,7 +545,7 @@ function yamlChildMatchesPredicate(node: Node, pred: PredicateSpec): boolean {
   return evaluatePredicate(yamlChildFieldText(node, pred.key), pred);
 }
 
-function yamlChildFieldText(node: Node, key: string): string | null {
+function yamlChildFieldText(node: Node, key: (string)): string | null {
   if (!isMap(node)) {
     return null;
   }
@@ -807,7 +807,7 @@ function jsoncChildMatchesPredicate(node: JsoncValue, pred: PredicateSpec): bool
   return evaluatePredicate(jsoncChildFieldText(node, pred.key), pred);
 }
 
-function jsoncChildFieldText(node: JsoncValue, key: string): string | null {
+function jsoncChildFieldText(node: JsoncValue, key: (string)): string | null {
   if (node.kind !== "object") {
     return null;
   }

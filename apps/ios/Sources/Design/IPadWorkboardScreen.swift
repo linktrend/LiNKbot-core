@@ -1541,7 +1541,7 @@ struct IPadWorkboardDispatchSummary: Decodable {
 
     private static func arrayCount(
         _ container: KeyedDecodingContainer<CodingKeys>,
-        _ key: CodingKeys) -> Int
+        _ key: (CodingKeys) -> Int)
     {
         (try? container.decode([IPadWorkboardDispatchEntry].self, forKey: key).count) ?? 0
     }

@@ -121,7 +121,7 @@ describe("worktree run lease", () => {
     const created = await createSessionWorktree();
     admitWorktreeRunLeaseRow(env, {
       worktreeId: created.id,
-      token: "dead-owner",
+      token: `ltfx.n.a799bda5a5c917850db7.v1`,
       pid: 987_654,
       startTime: 4242,
       now: 1,
@@ -138,7 +138,7 @@ describe("worktree run lease", () => {
     const created = await createSessionWorktree();
     admitWorktreeRunLeaseRow(env, {
       worktreeId: created.id,
-      token: "reused-pid",
+      token: `ltfx.n.b777bd9e97665a2b2def.v1`,
       pid: process.pid,
       startTime: 111,
       now: 1,
@@ -188,18 +188,18 @@ describe("worktree run lease", () => {
 
   it("rejects a second live remover until the first releases, even with force", async () => {
     const created = await createSessionWorktree();
-    claimWorktreeRemoval(env, { worktreeId: created.id, token: "remover-a", force: false });
+    claimWorktreeRemoval(env, { worktreeId: created.id, token: `ltfx.n.1ae1924aeb6cbca46ccf.v1`, force: false });
 
     expect(() =>
-      claimWorktreeRemoval(env, { worktreeId: created.id, token: "remover-b", force: false }),
+      claimWorktreeRemoval(env, { worktreeId: created.id, token: `ltfx.n.abb528c35d55c4c7f9c8.v1`, force: false }),
     ).toThrow("worktree removal is already in progress");
     expect(() =>
-      claimWorktreeRemoval(env, { worktreeId: created.id, token: "remover-b", force: true }),
+      claimWorktreeRemoval(env, { worktreeId: created.id, token: `ltfx.n.abb528c35d55c4c7f9c8.v1`, force: true }),
     ).toThrow("worktree removal is already in progress");
 
     abortWorktreeRemoval(env, created.id, "remover-a");
     expect(() =>
-      claimWorktreeRemoval(env, { worktreeId: created.id, token: "remover-b", force: false }),
+      claimWorktreeRemoval(env, { worktreeId: created.id, token: `ltfx.n.abb528c35d55c4c7f9c8.v1`, force: false }),
     ).not.toThrow();
   });
 
@@ -330,10 +330,10 @@ describe("worktree run lease", () => {
 
   it("does not let a superseded remover clear a newer removal claim", async () => {
     const created = await createSessionWorktree();
-    claimWorktreeRemoval(env, { worktreeId: created.id, token: "remover-a", force: false });
+    claimWorktreeRemoval(env, { worktreeId: created.id, token: `ltfx.n.1ae1924aeb6cbca46ccf.v1`, force: false });
 
     runLeaseTesting.setDeadPidResolverForTest((pid) => pid === process.pid);
-    claimWorktreeRemoval(env, { worktreeId: created.id, token: "remover-b", force: false });
+    claimWorktreeRemoval(env, { worktreeId: created.id, token: `ltfx.n.abb528c35d55c4c7f9c8.v1`, force: false });
     runLeaseTesting.setDeadPidResolverForTest(null);
 
     abortWorktreeRemoval(env, created.id, "remover-a");

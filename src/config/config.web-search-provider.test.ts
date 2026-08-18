@@ -269,7 +269,7 @@ describe("web search provider config", () => {
           brave: {
             config: {
               webSearch: {
-                apiKey: "test-brave-key", // pragma: allowlist secret
+                apiKey: `ltfx.n.435c83603ee0b6469989.v1`, // pragma: allowlist secret
               },
             },
           },
@@ -304,7 +304,7 @@ describe("web search provider config", () => {
         enabled: true,
         provider: "perplexity",
         providerConfig: {
-          apiKey: "test-key", // pragma: allowlist secret
+          apiKey: `ltfx.n.62af8704764faf8ea82f.v1`, // pragma: allowlist secret
           baseUrl: "https://openrouter.ai/api/v1",
           model: "perplexity/sonar-pro",
         },
@@ -320,7 +320,7 @@ describe("web search provider config", () => {
         enabled: true,
         provider: "gemini",
         providerConfig: {
-          apiKey: "test-key", // pragma: allowlist secret
+          apiKey: `ltfx.n.62af8704764faf8ea82f.v1`, // pragma: allowlist secret
           model: "gemini-2.5-flash",
         },
       }),
@@ -335,7 +335,7 @@ describe("web search provider config", () => {
         enabled: true,
         provider: "firecrawl",
         providerConfig: {
-          apiKey: "fc-test-key", // pragma: allowlist secret
+          apiKey: `ltfx.n.3b2bfc9a9b725f83e24c.v1`, // pragma: allowlist secret
           baseUrl: "https://api.firecrawl.dev",
         },
       }),
@@ -406,7 +406,7 @@ describe("web search provider config", () => {
           search: {
             provider: "tavily",
             tavily: {
-              apiKey: "tvly-test-key",
+              apiKey: `ltfx.n.460fdedb858b0bf39a78.v1`,
             },
           },
         },
@@ -423,7 +423,7 @@ describe("web search provider config", () => {
           search: {
             provider: "gemini",
             gemini: {
-              apiKey: "legacy-key",
+              apiKey: `ltfx.n.94eeb7bbe979dd0d2f0b.v1`,
             },
           },
         },
@@ -595,27 +595,27 @@ describe("web search provider auto-detection", () => {
   });
 
   it("auto-detects brave when only BRAVE_API_KEY is set", () => {
-    process.env.BRAVE_API_KEY = "test-brave-key"; // pragma: allowlist secret
+    process.env.BRAVE_API_KEY = `ltfx.n.435c83603ee0b6469989.v1`; // pragma: allowlist secret
     expect(resolveSearchProvider({})).toBe("brave");
   });
 
   it("auto-detects gemini when only GEMINI_API_KEY is set", () => {
-    process.env.GEMINI_API_KEY = "test-gemini-key"; // pragma: allowlist secret
+    process.env.GEMINI_API_KEY = `ltfx.n.47b051e1365c49c09749.v1`; // pragma: allowlist secret
     expect(resolveSearchProvider({})).toBe("gemini");
   });
 
   it("auto-detects tavily when only TAVILY_API_KEY is set", () => {
-    process.env.TAVILY_API_KEY = "tvly-test-key"; // pragma: allowlist secret
+    process.env.TAVILY_API_KEY = `ltfx.n.460fdedb858b0bf39a78.v1`; // pragma: allowlist secret
     expect(resolveSearchProvider({})).toBe("tavily");
   });
 
   it("auto-detects minimax when only MINIMAX_API_KEY is set", () => {
-    process.env.MINIMAX_API_KEY = "test-minimax-key"; // pragma: allowlist secret
+    process.env.MINIMAX_API_KEY = `ltfx.n.87729c62fc325f1392e4.v1`; // pragma: allowlist secret
     expect(resolveSearchProvider({})).toBe("minimax");
   });
 
   it("auto-detects firecrawl when only FIRECRAWL_API_KEY is set", () => {
-    process.env.FIRECRAWL_API_KEY = "fc-test-key"; // pragma: allowlist secret
+    process.env.FIRECRAWL_API_KEY = `ltfx.n.3b2bfc9a9b725f83e24c.v1`; // pragma: allowlist secret
     expect(resolveSearchProvider({})).toBe("firecrawl");
   });
 
@@ -625,7 +625,7 @@ describe("web search provider auto-detection", () => {
   });
 
   it("auto-detects kimi when only KIMI_API_KEY is set", () => {
-    process.env.KIMI_API_KEY = "test-kimi-key"; // pragma: allowlist secret
+    process.env.KIMI_API_KEY = `ltfx.n.fb586587d2f3708a0c43.v1`; // pragma: allowlist secret
     expect(resolveSearchProvider({})).toBe("kimi");
   });
 
@@ -635,54 +635,54 @@ describe("web search provider auto-detection", () => {
   });
 
   it("auto-detects minimax when only MINIMAX_OAUTH_TOKEN is set", () => {
-    process.env.MINIMAX_OAUTH_TOKEN = "oauth-test-token"; // pragma: allowlist secret
+    process.env.MINIMAX_OAUTH_TOKEN = `ltfx.n.acaa81ab202f32561d65.v1`; // pragma: allowlist secret
     expect(resolveSearchProvider({})).toBe("minimax");
   });
 
   it("auto-detects perplexity when only PERPLEXITY_API_KEY is set", () => {
-    process.env.PERPLEXITY_API_KEY = "test-perplexity-key"; // pragma: allowlist secret
+    process.env.PERPLEXITY_API_KEY = `ltfx.n.167618bebbbd86f30f59.v1`; // pragma: allowlist secret
     expect(resolveSearchProvider({})).toBe("perplexity");
   });
 
   it("auto-detects perplexity when only OPENROUTER_API_KEY is set", () => {
-    process.env.OPENROUTER_API_KEY = "sk-or-v1-test"; // pragma: allowlist secret
+    process.env.OPENROUTER_API_KEY = `ltfx.n.ea3c6d86042520298bfb.v1`; // pragma: allowlist secret
     expect(resolveSearchProvider({})).toBe("perplexity");
   });
 
   it("auto-detects grok when only XAI_API_KEY is set", () => {
-    process.env.XAI_API_KEY = "test-xai-key"; // pragma: allowlist secret
+    process.env.XAI_API_KEY = `ltfx.n.b30fc0b149b7fcbd09ea.v1`; // pragma: allowlist secret
     expect(resolveSearchProvider({})).toBe("grok");
   });
 
   it("auto-detects kimi when only MOONSHOT_API_KEY is set", () => {
-    process.env.MOONSHOT_API_KEY = "test-moonshot-key"; // pragma: allowlist secret
+    process.env.MOONSHOT_API_KEY = `ltfx.n.c941dc47d2ba4ceff8f1.v1`; // pragma: allowlist secret
     expect(resolveSearchProvider({})).toBe("kimi");
   });
 
   it("follows alphabetical order — brave wins when multiple keys available", () => {
-    process.env.BRAVE_API_KEY = "test-brave-key"; // pragma: allowlist secret
-    process.env.GEMINI_API_KEY = "test-gemini-key"; // pragma: allowlist secret
-    process.env.PERPLEXITY_API_KEY = "test-perplexity-key"; // pragma: allowlist secret
-    process.env.XAI_API_KEY = "test-xai-key"; // pragma: allowlist secret
+    process.env.BRAVE_API_KEY = `ltfx.n.435c83603ee0b6469989.v1`; // pragma: allowlist secret
+    process.env.GEMINI_API_KEY = `ltfx.n.47b051e1365c49c09749.v1`; // pragma: allowlist secret
+    process.env.PERPLEXITY_API_KEY = `ltfx.n.167618bebbbd86f30f59.v1`; // pragma: allowlist secret
+    process.env.XAI_API_KEY = `ltfx.n.b30fc0b149b7fcbd09ea.v1`; // pragma: allowlist secret
     expect(resolveSearchProvider({})).toBe("brave");
   });
 
   it("gemini wins over grok, kimi, and perplexity when brave unavailable", () => {
-    process.env.GEMINI_API_KEY = "test-gemini-key"; // pragma: allowlist secret
-    process.env.PERPLEXITY_API_KEY = "test-perplexity-key"; // pragma: allowlist secret
-    process.env.XAI_API_KEY = "test-xai-key"; // pragma: allowlist secret
+    process.env.GEMINI_API_KEY = `ltfx.n.47b051e1365c49c09749.v1`; // pragma: allowlist secret
+    process.env.PERPLEXITY_API_KEY = `ltfx.n.167618bebbbd86f30f59.v1`; // pragma: allowlist secret
+    process.env.XAI_API_KEY = `ltfx.n.b30fc0b149b7fcbd09ea.v1`; // pragma: allowlist secret
     expect(resolveSearchProvider({})).toBe("gemini");
   });
 
   it("grok wins over kimi and perplexity when brave and gemini unavailable", () => {
-    process.env.XAI_API_KEY = "test-xai-key"; // pragma: allowlist secret
-    process.env.KIMI_API_KEY = "test-kimi-key"; // pragma: allowlist secret
-    process.env.PERPLEXITY_API_KEY = "test-perplexity-key"; // pragma: allowlist secret
+    process.env.XAI_API_KEY = `ltfx.n.b30fc0b149b7fcbd09ea.v1`; // pragma: allowlist secret
+    process.env.KIMI_API_KEY = `ltfx.n.fb586587d2f3708a0c43.v1`; // pragma: allowlist secret
+    process.env.PERPLEXITY_API_KEY = `ltfx.n.167618bebbbd86f30f59.v1`; // pragma: allowlist secret
     expect(resolveSearchProvider({})).toBe("grok");
   });
 
   it("explicit provider always wins regardless of keys", () => {
-    process.env.BRAVE_API_KEY = "test-brave-key"; // pragma: allowlist secret
+    process.env.BRAVE_API_KEY = `ltfx.n.435c83603ee0b6469989.v1`; // pragma: allowlist secret
     expect(
       resolveSearchProvider({ provider: "gemini" } as unknown as Parameters<
         typeof resolveSearchProvider

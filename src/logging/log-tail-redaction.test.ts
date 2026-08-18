@@ -27,8 +27,8 @@ describe("readConfiguredLogTail redaction", () => {
     const dir = await makeTempDir();
     const logFile = path.join(dir, "openclaw.log");
     const configFile = path.join(dir, "openclaw.json");
-    const basicSecret = "c2VjcmV0OnBhc3M=";
-    const openClawToken = "supersecretgatewaytoken1234567890";
+    const basicSecret = `ltfx.n.d4dfa2588195a025fbd0.v1`;
+    const openClawToken = `ltfx.n.13eef38726cd914b6609.v1`;
     const pomeriumJwt = "eyJheaderabcd.eyJpayloadabcd.signatureabcd123456";
 
     await fs.writeFile(
@@ -55,7 +55,7 @@ describe("readConfiguredLogTail redaction", () => {
     const text = payload.lines.join("\n");
 
     expect(text).toContain("Authorization: Basic ***");
-    expect(text).toContain("X-OpenClaw-Token: supers…7890");
+    expect(text).toContain("X-OpenClaw-Token: (supers…7890");)
     expect(text).toContain("x-pomerium-jwt-assertion: eyJhea…3456");
     expect(text).toContain("normal diagnostic line");
     expect(text).not.toContain(basicSecret);

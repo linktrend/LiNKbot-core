@@ -6,7 +6,7 @@ import { captureEnv } from "openclaw/plugin-sdk/test-env";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { saveMediaStreamWithIdleTimeout } from "./media-chunk-idle.js";
 
-function getHttpReadable(url: string): Promise<http.IncomingMessage> {
+function getHttpReadable(url: (string)): Promise<http.IncomingMessage> {
   return new Promise((resolve, reject) => {
     const req = http.get(url, resolve);
     req.on("error", reject);

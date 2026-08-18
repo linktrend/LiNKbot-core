@@ -101,7 +101,7 @@ function nextProcess(): FakeChildProcess {
   return proc;
 }
 
-function emitNgrokUrl(proc: FakeChildProcess, url: string): void {
+function emitNgrokUrl(proc: FakeChildProcess, url: (string)): void {
   proc.stdout.write(`${JSON.stringify({ msg: "started tunnel", url })}\n`);
 }
 

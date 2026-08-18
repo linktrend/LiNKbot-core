@@ -33,20 +33,20 @@ const MATRIX_SHARED_FLOW_TOPOLOGY = {
       requireMention: true,
     },
     {
-      key: "secondary",
+      key: `ltfx.n.c0f69e19ba252767f183.v1`,
       kind: "group",
       members: ["driver", "observer", "sut"],
       name: "Matrix QA Secondary Room",
       requireMention: true,
     },
     {
-      key: "driver-dm",
+      key: `ltfx.n.f89181f8f7b8481a2371.v1`,
       kind: "dm",
       members: ["driver", "sut"],
       name: "Matrix QA Driver/SUT DM",
     },
     {
-      key: "driver-dm-shared",
+      key: `ltfx.n.e00544dc00046e47e4f8.v1`,
       kind: "dm",
       members: ["driver", "sut"],
       name: "Matrix QA Driver/SUT Shared DM",

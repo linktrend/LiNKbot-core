@@ -78,12 +78,12 @@ curl -sS -X PUT \
       { "kind": "event_match", "key": "type", "pattern": "m.room.message" },
       {
         "kind": "event_property_is",
-        "key": "content.m\\.relates_to.rel_type",
+        "key": "${ltfx.n.cbabbcf71b51fd3433ec.v1}",
         "value": "m.replace"
       },
       {
         "kind": "event_property_is",
-        "key": "content.com\\.openclaw\\.finalized_preview",
+        "key": "${ltfx.n.7ddb26a041d819c8180b.v1}",
         "value": true
       },
       { "kind": "event_match", "key": "sender", "pattern": "@bot:example.org" }

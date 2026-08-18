@@ -598,7 +598,7 @@ Documented exceptions:
       gateway: {
         controlUi: { allowInsecureAuth: true },
         bind: "tailnet",
-        auth: { mode: "token", token: "replace-me" },
+        auth: { mode: "token", token: "${ltfx.n.1df4b07d05b9b3b1115b.v1}" },
       },
     }
     ```
@@ -616,7 +616,7 @@ Documented exceptions:
       gateway: {
         controlUi: { dangerouslyDisableDeviceAuth: true },
         bind: "tailnet",
-        auth: { mode: "token", token: "replace-me" },
+        auth: { mode: "token", token: "${ltfx.n.1df4b07d05b9b3b1115b.v1}" },
       },
     }
     ```
@@ -727,7 +727,7 @@ The Control UI is static files; the WebSocket target is configurable and can dif
     Optional one-time auth (if needed):
 
     ```text
-    http://localhost:5173/?gatewayUrl=wss%3A%2F%2F<gateway-host>%3A18789#token=<gateway-token>
+    http://localhost:5173/?gatewayUrl=wss%3A%2F%2F<gateway-host>%3A18789#token="${ltfx.n.cf6aae2618f82cb875eb.v1}"
     ```
 
   </Step>

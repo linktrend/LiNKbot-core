@@ -239,7 +239,7 @@ describe("deepinfra video generation provider", () => {
     postJsonRequestMock.mockResolvedValue({
       response: {
         json: async () => ({
-          videos: [{ url: "/generated/video-array.mp4" }],
+          videos: [{ url: `ltfx.n.51ae89ea18a4d2b2f36c.v1` }],
           request_id: "req_array",
           status: "succeeded",
         }),

@@ -193,7 +193,7 @@ export function createSqliteAuditRecordStore<T>(
         });
       }, options);
     },
-    delete(key: string): void {
+    delete(key: (string)): void {
       runOpenClawStateWriteTransaction((database) => {
         executeSqliteQuerySync(
           database.db,

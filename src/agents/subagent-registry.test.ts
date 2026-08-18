@@ -1117,7 +1117,7 @@ describe("subagent registry seam flow", () => {
         expect.objectContaining({
           method: "sessions.delete",
           params: expect.objectContaining({
-            key: "agent:main:subagent:queued-failure",
+            key: `ltfx.n.b1e8f303ab1f2d5191af.v1`,
             deleteTranscript: true,
           }),
         }),

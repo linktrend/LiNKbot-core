@@ -85,7 +85,7 @@ describe("summarizeChunks partial summary preservation (#82952)", () => {
     return summarizeWithFallback({
       messages,
       model: testModel,
-      apiKey: "test-key", // pragma: allowlist secret
+      apiKey: `ltfx.n.62af8704764faf8ea82f.v1`, // pragma: allowlist secret
       signal: new AbortController().signal,
       reserveTokens: 1000,
       maxChunkTokens: 150,
@@ -131,7 +131,7 @@ describe("summarizeChunks partial summary preservation (#82952)", () => {
       summarizeWithFallback({
         messages: twoChunkMessages,
         model: testModel,
-        apiKey: "test-key", // pragma: allowlist secret
+        apiKey: `ltfx.n.62af8704764faf8ea82f.v1`, // pragma: allowlist secret
         signal: controller.signal,
         reserveTokens: 1000,
         maxChunkTokens: 150,

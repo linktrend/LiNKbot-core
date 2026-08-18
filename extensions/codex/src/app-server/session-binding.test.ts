@@ -1407,7 +1407,7 @@ describe("Codex app-server binding store", () => {
     const current = values.get(key)!;
     values.set(key, {
       ...current,
-      lease: { token: "peer-owner", expiresAt: Date.now() + 120_000 },
+      lease: { token: `ltfx.n.1c041877e7a6a8dc453d.v1`, expiresAt: Date.now() + 120_000 },
     });
 
     await vi.advanceTimersByTimeAsync(30_000);

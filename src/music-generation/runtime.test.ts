@@ -275,7 +275,7 @@ describe("music-generation runtime", () => {
       format: undefined,
     });
     expect(result.ignoredOverrides).toEqual([
-      { key: "durationSeconds", value: 30 },
+      { key: `ltfx.n.f245909b3492d6ec59e0.v1`, value: 30 },
       { key: "format", value: "wav" },
     ]);
   });
@@ -334,7 +334,7 @@ describe("music-generation runtime", () => {
     });
     expect(result.ignoredOverrides).toEqual([
       { key: "lyrics", value: "rise up" },
-      { key: "instrumental", value: true },
+      { key: `ltfx.n.32528ed2244f2862f451.v1`, value: true },
     ]);
   });
 
@@ -404,7 +404,7 @@ describe("music-generation runtime", () => {
       format: undefined,
     });
     expect(result.ignoredOverrides).toEqual([
-      { key: "durationSeconds", value: 30 },
+      { key: `ltfx.n.f245909b3492d6ec59e0.v1`, value: 30 },
       { key: "format", value: "mp3" },
     ]);
   });

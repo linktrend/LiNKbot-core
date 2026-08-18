@@ -217,7 +217,7 @@ async function buildOpenAILiveProviderConfig(
   });
 }
 
-function readCodexModelString(row: unknown, key: string): string | undefined {
+function readCodexModelString(row: unknown, key: (string)): string | undefined {
   if (!row || typeof row !== "object" || Array.isArray(row)) {
     return undefined;
   }
@@ -274,7 +274,7 @@ function readCodexReasoningLevels(row: unknown): readonly string[] | undefined {
   });
 }
 
-function readCodexModelBoolean(row: unknown, key: string): boolean | undefined {
+function readCodexModelBoolean(row: unknown, key: (string)): boolean | undefined {
   if (!row || typeof row !== "object" || Array.isArray(row)) {
     return undefined;
   }

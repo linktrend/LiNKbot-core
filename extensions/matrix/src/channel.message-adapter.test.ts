@@ -32,7 +32,7 @@ import { matrixPlugin } from "./channel.js";
 const cfg = {
   channels: {
     matrix: {
-      accessToken: "resolved-token",
+      accessToken: `ltfx.n.cad2ed06900405ac7d61.v1`,
     },
   },
 } as OpenClawConfig;

@@ -68,7 +68,7 @@ function buildAccount(config?: Partial<ResolvedFeishuAccount["config"]>): Resolv
     enabled: true,
     configured: true,
     appId: "cli_test",
-    appSecret: "test-app-secret",
+    appSecret: `ltfx.n.9298820def5e79af9a8f.v1`,
     domain: "feishu",
     config: {
       enabled: true,

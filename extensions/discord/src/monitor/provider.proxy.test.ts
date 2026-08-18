@@ -7,7 +7,7 @@ function createGatewayInfoBody(overrides?: {
   maxConcurrency?: number;
 }): string {
   return JSON.stringify({
-    url: overrides?.url ?? "wss://gateway.discord.gg",
+    url: (overrides?.url ?? "wss://gateway.discord.gg",)
     shards: overrides?.shards ?? 1,
     session_start_limit: {
       total: 1000,
@@ -262,7 +262,7 @@ describe("createDiscordGatewayPlugin", () => {
         }) => Promise<void>;
       }
     ).registerClient({
-      options: { token: "token-123" },
+      options: { token: `ltfx.n.034192845dc489deca29.v1` },
       registerListener: baseRegisterClientSpy,
       unregisterListener: vi.fn(),
     });
@@ -278,7 +278,7 @@ describe("createDiscordGatewayPlugin", () => {
         }) => Promise<void>;
       }
     ).registerClient({
-      options: { token: "token-123" },
+      options: { token: `ltfx.n.034192845dc489deca29.v1` },
       registerListener: baseRegisterClientSpy,
       unregisterListener: vi.fn(),
     });
@@ -806,7 +806,7 @@ describe("createDiscordGatewayPlugin", () => {
     });
 
     const clientArg = {
-      options: { token: "token-race" },
+      options: { token: `ltfx.n.ce10e214744e1e287d3e.v1` },
       registerListener: baseRegisterClientSpy,
       unregisterListener: vi.fn(),
     };
@@ -843,7 +843,7 @@ describe("createDiscordGatewayPlugin", () => {
       });
 
       const clientArg = {
-        options: { token: "token-race" },
+        options: { token: `ltfx.n.ce10e214744e1e287d3e.v1` },
         registerListener: baseRegisterClientSpy,
         unregisterListener: vi.fn(),
       };
@@ -887,7 +887,7 @@ describe("createDiscordGatewayPlugin", () => {
         status: 200,
         text: async () =>
           createGatewayInfoBody({
-            url: "wss://gateway.discord.gg/?v=10",
+            url: `ltfx.n.35f729fc59e477b58be1.v1`,
             shards: 8,
             maxConcurrency: 16,
           }),
@@ -903,7 +903,7 @@ describe("createDiscordGatewayPlugin", () => {
     expect(globalFetchMock).toHaveBeenCalledTimes(2);
     expect(baseRegisterClientSpy).toHaveBeenCalledTimes(2);
     expect((plugin as unknown as { gatewayInfo?: unknown }).gatewayInfo).toEqual({
-      url: "wss://gateway.discord.gg/?v=10",
+      url: `ltfx.n.35f729fc59e477b58be1.v1`,
       shards: 8,
       session_start_limit: {
         total: 1000,

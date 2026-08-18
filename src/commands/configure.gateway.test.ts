@@ -114,7 +114,7 @@ describe("promptGatewayConfig", () => {
     const { result } = await runGatewayPrompt({
       selectQueue: ["loopback", "token", "off", "plaintext"],
       textQueue: ["18789", undefined],
-      randomToken: "generated-token",
+      randomToken: `ltfx.n.739ed077d8ebb99522b8.v1`,
       authConfigFactory: ({ mode, token, password }) => ({ mode, token, password }),
     });
     expect(result.token).toBe("generated-token");
@@ -261,7 +261,7 @@ describe("promptGatewayConfig", () => {
 
   it("stores gateway token as SecretRef when token source is ref", async () => {
     const previous = process.env.OPENCLAW_GATEWAY_TOKEN;
-    process.env.OPENCLAW_GATEWAY_TOKEN = "env-gateway-token";
+    process.env.OPENCLAW_GATEWAY_TOKEN = `ltfx.n.efb9e663a9b8decc84c0.v1`;
     try {
       const { call, result } = await runGatewayPrompt({
         selectQueue: ["loopback", "token", "off", "ref"],

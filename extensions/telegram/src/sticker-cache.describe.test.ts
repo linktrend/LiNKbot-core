@@ -21,7 +21,7 @@ const mocks = vi.hoisted(() => {
     modelSupportsVision: vi.fn((entry: { input?: string[] } | undefined) =>
       Boolean(entry?.input?.includes("image")),
     ),
-    resolveApiKeyForProvider: vi.fn(async () => ({ apiKey: "minimax-test" })),
+    resolveApiKeyForProvider: vi.fn(async () => ({ apiKey: `ltfx.n.7604f56cf6682661c613.v1` })),
     resolveAutoImageModel: vi.fn(async () => ({
       provider: "minimax-cn",
       model: "MiniMax-VL-01",

@@ -28,10 +28,10 @@ struct ConnectCommandTests {
     @Test func `explicit URL never inherits config credentials`() throws {
         var config = GatewayConfig()
         config.mode = "remote"
-        config.token = "local-config-token" // pragma: allowlist secret
-        config.password = "local-config-password" // pragma: allowlist secret
-        config.remoteToken = "remote-config-token" // pragma: allowlist secret
-        config.remotePassword = "remote-config-password" // pragma: allowlist secret
+        config.token = "${ltfx.n.c6665ec6a55f7e9edde2.v1}" // pragma: allowlist secret
+        config.password = "${ltfx.n.317bbd231bb109af0534.v1}" // pragma: allowlist secret
+        config.remoteToken = "${ltfx.n.0055a4c341da8240787f.v1}" // pragma: allowlist secret
+        config.remotePassword = "${ltfx.n.c14191ff07f6c1eb4cc3.v1}" // pragma: allowlist secret
 
         let endpoint = try resolveGatewayEndpoint(
             opts: ConnectOptions.parse(["--url", "wss://gateway-b.example.test"]),
@@ -44,8 +44,8 @@ struct ConnectCommandTests {
     @Test func `explicit URL accepts only explicit credentials`() throws {
         var config = GatewayConfig()
         config.mode = "remote"
-        config.remoteToken = "wrong-config-token" // pragma: allowlist secret
-        config.remotePassword = "wrong-config-password" // pragma: allowlist secret
+        config.remoteToken = "${ltfx.n.f7716b981e77dae61c0c.v1}" // pragma: allowlist secret
+        config.remotePassword = "${ltfx.n.0b32842f7535fe1157da.v1}" // pragma: allowlist secret
 
         let endpoint = try resolveGatewayEndpoint(
             opts: ConnectOptions.parse([
@@ -61,11 +61,11 @@ struct ConnectCommandTests {
 
     @Test func `explicit URL owner ignores embedded credentials`() throws {
         let first = try #require(URL(
-            string: "wss://alice:first-pass@gateway.example.test/socket?tenant=alpha&token=first-token#first"))
+            string: "wss://alice:first-pass@gateway.example.test/socket?tenant=alpha&token=(first-token#first")))
         let rotated = try #require(URL(
-            string: "wss://alice:second-pass@gateway.example.test/socket?tenant=alpha&token=second-token#second"))
+            string: "wss://alice:second-pass@gateway.example.test/socket?tenant=alpha&token=(second-token#second")))
         let otherRoute = try #require(URL(
-            string: "wss://gateway.example.test/socket?tenant=beta&token=second-token"))
+            string: "wss://gateway.example.test/socket?tenant=beta&token=(second-token")))
 
         let firstOwner = gatewayURLDeviceAuthOwner(first, mode: "remote")
         let rotatedOwner = gatewayURLDeviceAuthOwner(rotated, mode: "remote")
@@ -86,7 +86,7 @@ struct ConnectCommandTests {
         try await DeviceIdentityStore.withStateDirectory(tempDir) {
             var config = GatewayConfig()
             config.mode = "remote"
-            config.remoteToken = "gateway-a-config-token" // pragma: allowlist secret
+            config.remoteToken = "${ltfx.n.34afc5a8401af61aba81.v1}" // pragma: allowlist secret
             let opts = ConnectOptions.parse(["--url", "wss://gateway-b.example.test"])
             let endpoint = try resolveGatewayEndpoint(opts: opts, config: config)
             let connectOptions = makeGatewayConnectOptions(
@@ -98,11 +98,11 @@ struct ConnectCommandTests {
             _ = DeviceAuthStore.storeToken(
                 deviceId: identity.deviceId,
                 role: "operator",
-                token: "legacy-device-token") // pragma: allowlist secret
+                token: "${ltfx.n.eb1304b4c6de60a4ed0a.v1}") // pragma: allowlist secret
             _ = DeviceAuthStore.storeToken(
                 deviceId: identity.deviceId,
                 role: "operator",
-                token: "same-route-device-token", // pragma: allowlist secret
+                token: "${ltfx.n.6d332808446d2abf39b9.v1}", // pragma: allowlist secret
                 gatewayID: owner)
 
             let recorder = CLIConnectAuthRecorder()
@@ -162,11 +162,11 @@ struct ConnectCommandTests {
             _ = DeviceAuthStore.storeToken(
                 deviceId: identity.deviceId,
                 role: "operator",
-                token: "legacy-device-token") // pragma: allowlist secret
+                token: "${ltfx.n.eb1304b4c6de60a4ed0a.v1}") // pragma: allowlist secret
             _ = DeviceAuthStore.storeToken(
                 deviceId: identity.deviceId,
                 role: "operator",
-                token: "route-a-device-token", // pragma: allowlist secret
+                token: "${ltfx.n.ceeb1309afff5c1b800a.v1}", // pragma: allowlist secret
                 gatewayID: ownerA)
 
             let recorder = CLIConnectAuthRecorder()

@@ -1025,7 +1025,7 @@ function renderDiaryImportsSection(props: DreamingProps) {
       )}
     </div>
 
-    <article class="dreams-diary__entry" key="imports-${cluster.key}">
+    <article class="dreams-diary__entry" key=`ltfx.n.9a7a5565a5e732377b1d.v1`>
       <div class="dreams-diary__accent"></div>
       <div class="dreams-diary__date">
         ${cluster.label} · ${cluster.itemCount} chats
@@ -1226,7 +1226,7 @@ function renderMemoryPalaceSection(props: DreamingProps) {
       )}
     </div>
 
-    <article class="dreams-diary__entry" key="palace-${cluster.key}">
+    <article class="dreams-diary__entry" key=`ltfx.n.fa2b0bce6ef5820e4831.v1`>
       <div class="dreams-diary__accent"></div>
       <div class="dreams-diary__date">
         Vault · ${formatCount(totalPages, "page")}

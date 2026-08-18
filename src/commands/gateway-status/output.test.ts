@@ -54,7 +54,7 @@ function createProbe(
 ): GatewayProbeResult {
   return {
     ok: params.ok,
-    url: "ws://127.0.0.1:18789",
+    url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
     connectLatencyMs: params.connectLatencyMs,
     error: params.error ?? null,
     close: null,
@@ -195,7 +195,7 @@ describe("gateway status output", () => {
       probed: [
         createReachableTarget("sshTunnel", GATEWAY_SELF, {
           kind: "sshTunnel",
-          url: "ws://127.0.0.1:18789",
+          url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
           tunnel: {
             kind: "ssh",
             target: "user@gateway-host",
@@ -210,7 +210,7 @@ describe("gateway status output", () => {
             ...GATEWAY_SELF,
             host: GATEWAY_SELF.host.toUpperCase(),
           },
-          { kind: "configRemote", url: "ws://gateway-host:18789" },
+          { kind: "configRemote", url: `ltfx.n.dc561a7abe65607ecefa.v1` },
         ),
       ],
       sshTarget: "user@gateway-host",
@@ -221,11 +221,11 @@ describe("gateway status output", () => {
       probed: [
         createReachableTarget("localLoopback", GATEWAY_SELF, {
           kind: "localLoopback",
-          url: "ws://127.0.0.1:18789",
+          url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
         }),
         createReachableTarget("explicit", GATEWAY_SELF, {
           kind: "explicit",
-          url: "ws://gateway-host:28789",
+          url: `ltfx.n.da46f0373080faef8b54.v1`,
         }),
       ],
       sshTarget: null,
@@ -236,11 +236,11 @@ describe("gateway status output", () => {
       probed: [
         createReachableTarget("localLoopback", GATEWAY_SELF_NO_PROCESS_ID, {
           kind: "localLoopback",
-          url: "ws://127.0.0.1:18789",
+          url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
         }),
         createReachableTarget("explicit", GATEWAY_SELF_NO_PROCESS_ID, {
           kind: "explicit",
-          url: "ws://gateway-host:28789",
+          url: `ltfx.n.da46f0373080faef8b54.v1`,
         }),
       ],
       sshTarget: null,
@@ -433,7 +433,7 @@ describe("gateway status output", () => {
         {
           id: "detail-timeout",
           kind: "explicit",
-          url: "ws://127.0.0.1:18789",
+          url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
           active: true,
           tunnel: null,
           connect: {

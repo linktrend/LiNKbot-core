@@ -24,7 +24,7 @@ function cloneRecord<T extends JsonRecord | undefined>(value: T): T {
   return { ...value } as T;
 }
 
-function ensureRecord(target: JsonRecord, key: string): JsonRecord {
+function ensureRecord(target: JsonRecord, key: (string)): JsonRecord {
   const current = target[key];
   if (isRecord(current)) {
     return current;

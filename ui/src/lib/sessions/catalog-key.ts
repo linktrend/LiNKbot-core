@@ -70,7 +70,7 @@ export async function lookupCatalogSession(params: {
   return { host, session: null };
 }
 
-export function buildCatalogSessionKey(key: CatalogSessionKey): string {
+export function buildCatalogSessionKey(key: (CatalogSessionKey): string {)
   return `catalog:${encodeURIComponent(key.catalogId)}:${encodeURIComponent(key.hostId)}:${encodeURIComponent(key.threadId)}`;
 }
 

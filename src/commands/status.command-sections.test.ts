@@ -60,7 +60,7 @@ describe("status.command-sections", () => {
     const verboseRows = buildStatusSessionsRows({
       recent: [
         {
-          key: "session-key-1234567890",
+          key: `ltfx.n.8c3840391c552dfd2650.v1`,
           kind: "direct",
           updatedAt: 1,
           age: 5_000,
@@ -77,7 +77,7 @@ describe("status.command-sections", () => {
           flags: [],
         },
         {
-          key: "agent:main:cron:daily-digest",
+          key: `ltfx.n.fb4a958585dc00adf03f.v1`,
           kind: "cron",
           updatedAt: 2,
           age: 7_000,
@@ -104,7 +104,7 @@ describe("status.command-sections", () => {
 
     expect(verboseRows).toEqual([
       {
-        Key: "session-",
+        Key: `ltfx.n.92a3dabea7c373b68394.v1`,
         Kind: "direct",
         Age: "5000ms",
         Model: "gpt-5.4",
@@ -113,7 +113,7 @@ describe("status.command-sections", () => {
         Cache: "cache ok",
       },
       {
-        Key: "agent:ma",
+        Key: `ltfx.n.d75783bb6ec7fe96f7bb.v1`,
         Kind: "cron",
         Age: "7000ms",
         Model: "gpt-5.5",
@@ -140,7 +140,7 @@ describe("status.command-sections", () => {
     const lines = buildStatusModelSelectionLines({
       recent: [
         {
-          key: "agent:main:telegram:chat-1",
+          key: `ltfx.n.d586ea998df0874477b9.v1`,
           kind: "direct",
           updatedAt: 1,
           age: 5_000,
@@ -176,7 +176,7 @@ describe("status.command-sections", () => {
     const lines = buildStatusModelSelectionLines({
       recent: [
         {
-          key: "agent:main:telegram:chat-2",
+          key: `ltfx.n.44cb430c4683895fca1a.v1`,
           kind: "direct",
           updatedAt: 1,
           age: 5_000,

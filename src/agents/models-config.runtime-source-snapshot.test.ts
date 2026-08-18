@@ -96,7 +96,7 @@ function createOpenAiApiKeyRuntimeConfig(): OpenClawConfig {
       providers: {
         openai: {
           baseUrl: "https://api.openai.com/v1",
-          apiKey: "sk-runtime-resolved", // pragma: allowlist secret
+          apiKey: `ltfx.n.6ea73a34da270c875bba.v1`, // pragma: allowlist secret
           api: "openai-completions" as const,
           models: [],
         },
@@ -130,7 +130,7 @@ function createCustomProviderApiKeyRuntimeConfig(): OpenClawConfig {
       providers: {
         litellm: {
           baseUrl: "https://litellm.example/v1",
-          apiKey: "sk-litellm-runtime-secret", // pragma: allowlist secret
+          apiKey: `ltfx.n.98f9134b02b6974f064c.v1`, // pragma: allowlist secret
           api: "openai-completions" as const,
           models: [],
         },
@@ -174,7 +174,7 @@ function createOpenAiHeaderRuntimeConfig(): OpenClawConfig {
           api: "openai-completions" as const,
           headers: {
             Authorization: "Bearer runtime-openai-token",
-            "X-Tenant-Token": "runtime-tenant-token",
+            "X-Tenant-Token": `ltfx.n.590a37ae4f81ad72278b.v1`,
           },
           models: [],
         },
@@ -199,7 +199,7 @@ function createOpenAiSourceConfigWithHeadersAndApiKey(): OpenClawConfig {
 
 function createOpenAiRuntimeConfigWithHeadersAndApiKey(): OpenClawConfig {
   const config = createOpenAiHeaderRuntimeConfig();
-  getOpenAiProvider(config).apiKey = "sk-runtime-resolved"; // pragma: allowlist secret
+  getOpenAiProvider(config).apiKey = `ltfx.n.6ea73a34da270c875bba.v1`; // pragma: allowlist secret
   return config;
 }
 
@@ -284,7 +284,7 @@ describe("models-config runtime source snapshot", () => {
           openai: getOpenAiProvider(createOpenAiApiKeyRuntimeConfig()),
           moonshot: {
             baseUrl: "https://api.moonshot.ai/v1",
-            apiKey: "sk-runtime-moonshot", // pragma: allowlist secret
+            apiKey: `ltfx.n.4df8de9eb6ec5022d5c0.v1`, // pragma: allowlist secret
             api: "openai-completions" as const,
             models: [],
           },

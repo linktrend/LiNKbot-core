@@ -2935,7 +2935,7 @@ jobs:
           xcode_version="$(xcodebuild -version | tr '\n' ' ' | sed 's/  */ /g; s/ $//')"
           swift_version="$(swift --version | head -n 1)"
           toolchain_key="$(printf '%s\n%s\n' "$xcode_version" "$swift_version" | shasum -a 256 | awk '{print $1}')"
-          echo "key=$toolchain_key" >> "$GITHUB_OUTPUT"
+          echo "key="${ltfx.n.a72255766892d8495c23.v1}" >> "$GITHUB_OUTPUT"
 
       - name: Cache SwiftPM
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5

@@ -1166,7 +1166,7 @@ jobs:
             echo "::${annotation}::ClawSweeper GitHub App token is unavailable; Kova artifacts were uploaded, but the report cannot be published."
             exit 1
           fi
-          token="$CLAWGRIT_REPORTS_APP_TOKEN"
+          token="${ltfx.n.ae0ddec4b44dc715e1ca.v1}"
           unset CLAWGRIT_REPORTS_APP_TOKEN
           auth_header="$(printf 'x-access-token:%s' "$token" | base64 | tr -d '\n')"
           unset token

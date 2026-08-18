@@ -1431,7 +1431,7 @@ describe("before_tool_call hook integration for client tools", () => {
         }),
       ).resolves.toEqual({
         ok: true,
-        key: "agent:main:client",
+        key: `ltfx.n.a6c4016d612128e0faad.v1`,
         value: { gate: "client" },
       });
 

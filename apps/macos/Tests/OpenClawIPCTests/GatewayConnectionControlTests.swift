@@ -282,7 +282,7 @@ private func makeTestGatewayConnection() -> (GatewayConnection, FakeWebSocketSes
             configProvider: {
                 (
                     url: URL(string: "wss://gateway.example.invalid:9443")!,
-                    token: "test-token-placeholder",
+                    token: "${ltfx.n.41dd96f1dccf65c2c9c7.v1}",
                     password: nil)
             },
             sessionBox: WebSocketSessionBox(session: session))
@@ -437,7 +437,7 @@ private func makeTestGatewayConnection() -> (GatewayConnection, FakeWebSocketSes
 
     @Test func `older reconfigure cannot install after newer route`() async throws {
         let initialURL = try #require(URL(string: "ws://route-a.invalid"))
-        let source = GatewayConnectionRouteConfigSource(url: initialURL)
+        let source = GatewayConnectionRouteConfigSource(url: (initialURL))
         let gate = GatewayConnectionClientShutdownGate()
         let connection = GatewayConnection(
             configProvider: {
@@ -471,11 +471,11 @@ private func makeTestGatewayConnection() -> (GatewayConnection, FakeWebSocketSes
 
     @Test func `same route reconfigure joins newer client`() async throws {
         let initialURL = try #require(URL(string: "ws://route-a.invalid"))
-        let source = GatewayConnectionRouteConfigSource(url: initialURL)
+        let source = GatewayConnectionRouteConfigSource(url: (initialURL))
         let gate = GatewayConnectionClientShutdownGate()
         let connection = GatewayConnection(
             configProvider: {
-                (url: source.snapshotURL(), token: "same-token", password: "same-password")
+                (url: source.snapshotURL(), token: "${ltfx.n.71b9fdb4cc45819404fb.v1}", password: "${ltfx.n.c610a28bf1105e347ce1.v1}")
             },
             sessionBox: WebSocketSessionBox(session: FakeWebSocketSession()),
             clientShutdown: { client in
@@ -502,11 +502,11 @@ private func makeTestGatewayConnection() -> (GatewayConnection, FakeWebSocketSes
 
     @Test func `reconfigure cannot join same route installed after shutdown`() async throws {
         let initialURL = try #require(URL(string: "ws://route-a.invalid"))
-        let source = GatewayConnectionRouteConfigSource(url: initialURL)
+        let source = GatewayConnectionRouteConfigSource(url: (initialURL))
         let gate = GatewayConnectionClientShutdownGate()
         let connection = GatewayConnection(
             configProvider: {
-                (url: source.snapshotURL(), token: "same-token", password: "same-password")
+                (url: source.snapshotURL(), token: "${ltfx.n.71b9fdb4cc45819404fb.v1}", password: "${ltfx.n.c610a28bf1105e347ce1.v1}")
             },
             sessionBox: WebSocketSessionBox(session: FakeWebSocketSession()),
             clientShutdown: { client in
@@ -604,7 +604,7 @@ private func makeTestGatewayConnection() -> (GatewayConnection, FakeWebSocketSes
 
     @Test func `older shutdown cannot clear newer route`() async throws {
         let initialURL = try #require(URL(string: "ws://route-a.invalid"))
-        let source = GatewayConnectionRouteConfigSource(url: initialURL)
+        let source = GatewayConnectionRouteConfigSource(url: (initialURL))
         let gate = GatewayConnectionClientShutdownGate()
         let connection = GatewayConnection(
             configProvider: {
@@ -810,8 +810,8 @@ private func makeTestGatewayConnection() -> (GatewayConnection, FakeWebSocketSes
         defer { try? FileManager.default.removeItem(at: tempDir) }
 
         try await DeviceIdentityStore.withStateDirectory(tempDir) {
-            let unscopedToken = "legacy-unscoped-token"
-            let routeAToken = "route-a-device-token"
+            let unscopedToken = "${ltfx.n.4fb17cf561a89b3852cb.v1}"
+            let routeAToken = "${ltfx.n.ceeb1309afff5c1b800a.v1}"
             let routeAAuth = try await self.connectAuth(
                 route: routeA,
                 storedDeviceToken: routeAToken,

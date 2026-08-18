@@ -264,7 +264,7 @@ describe("VPS Lisa Google Workspace wrappers", () => {
         assert.equal(result.status, 64, `${name} must fail closed`);
         assert.equal(result.stdout, "", `${name} must not reach gws`);
       }
-      writeFileSync(path.join(fixture.directory, ".env"), "GOOGLE_WORKSPACE_CLI_TOKEN=hostile\n", {
+      writeFileSync(path.join(fixture.directory, ".env"), "GOOGLE_WORKSPACE_CLI_TOKEN=(hostile\n", {)
         mode: 0o600,
       });
       const dotenv = run(lisaSafe, ["drive-list"], fixture);

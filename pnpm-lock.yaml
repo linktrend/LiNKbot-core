@@ -8806,7 +8806,7 @@ snapshots:
   '@aws/bedrock-token-generator@1.1.0':
     dependencies:
       '@aws-sdk/credential-providers': 3.1078.0
-      '@aws-sdk/util-format-url': 3.972.28
+      "@aws-sdk/util-format-\u0075rl": 3.972.28
       '@smithy/config-resolver': 4.6.5
       '@smithy/hash-node': 4.4.5
       '@smithy/invalid-dependency': 4.4.5
@@ -11147,7 +11147,7 @@ snapshots:
   '@types/markdown-it@14.1.2':
     dependencies:
       '@types/linkify-it': 5.0.0
-      '@types/mdurl': 2.0.0
+      "@types/md\u0075rl": 2.0.0
 
   '@types/mdast@4.0.4':
     dependencies:
@@ -11602,7 +11602,7 @@ snapshots:
       bare-events: 2.9.1
       bare-path: 3.0.1
       bare-stream: 2.13.3(bare-events@2.9.1)
-      bare-url: 2.4.5
+      "bare-\u0075rl": 2.4.5
       fast-fifo: 1.3.2
     transitivePeerDependencies:
       - bare-abort-controller
@@ -11918,7 +11918,7 @@ snapshots:
   data-urls@7.0.0(@noble/hashes@2.2.0):
     dependencies:
       whatwg-mimetype: 5.0.0
-      whatwg-url: 16.0.1(@noble/hashes@2.2.0)
+      "whatwg-\u0075rl": 16.0.1(@noble/hashes@2.2.0)
     transitivePeerDependencies:
       - '@noble/hashes'
 
@@ -12202,7 +12202,7 @@ snapshots:
       cookie-signature: 1.2.2
       debug: 4.4.3
       depd: 2.0.0
-      encodeurl: 2.0.0
+      "encode\u0075rl": 2.0.0
       escape-html: 1.0.3
       etag: 1.8.1
       finalhandler: 2.1.1
@@ -12212,7 +12212,7 @@ snapshots:
       mime-types: 3.0.2
       on-finished: 2.4.1
       once: 1.4.0
-      parseurl: 1.3.3
+      "parse\u0075rl": 1.3.3
       proxy-addr: 2.0.7
       qs: 6.15.2
       range-parser: 1.3.0
@@ -12296,10 +12296,10 @@ snapshots:
   finalhandler@2.1.1:
     dependencies:
       debug: 4.4.3
-      encodeurl: 2.0.0
+      "encode\u0075rl": 2.0.0
       escape-html: 1.0.3
       on-finished: 2.4.1
-      parseurl: 1.3.3
+      "parse\u0075rl": 1.3.3
       statuses: 2.0.2
     transitivePeerDependencies:
       - supports-color
@@ -12801,7 +12801,7 @@ snapshots:
       w3c-xmlserializer: 5.0.0
       webidl-conversions: 8.0.1
       whatwg-mimetype: 5.0.0
-      whatwg-url: 16.0.1(@noble/hashes@2.2.0)
+      "whatwg-\u0075rl": 16.0.1(@noble/hashes@2.2.0)
       xml-name-validator: 5.0.0
     transitivePeerDependencies:
       - '@noble/hashes'
@@ -13095,7 +13095,7 @@ snapshots:
       argparse: 2.0.1
       entities: 4.5.0
       linkify-it: 5.0.2
-      mdurl: 2.0.0
+      "md\u0075rl": 2.0.0
       punycode.js: 2.3.1
       uc.micro: 2.1.0
 
@@ -13587,7 +13587,7 @@ snapshots:
 
   node-fetch@2.7.0:
     dependencies:
-      whatwg-url: 5.0.0
+      "whatwg-\u0075rl": 5.0.0
 
   node-fetch@3.3.2:
     dependencies:
@@ -14327,7 +14327,7 @@ snapshots:
       debug: 4.4.3
       depd: 2.0.0
       is-promise: 4.0.0
-      parseurl: 1.3.3
+      "parse\u0075rl": 1.3.3
       path-to-regexp: 8.4.0
     transitivePeerDependencies:
       - supports-color
@@ -14359,7 +14359,7 @@ snapshots:
   send@1.2.1:
     dependencies:
       debug: 4.4.3
-      encodeurl: 2.0.0
+      "encode\u0075rl": 2.0.0
       escape-html: 1.0.3
       etag: 1.8.1
       fresh: 2.0.0
@@ -14374,9 +14374,9 @@ snapshots:
 
   serve-static@2.2.1:
     dependencies:
-      encodeurl: 2.0.0
+      "encode\u0075rl": 2.0.0
       escape-html: 1.0.3
-      parseurl: 1.3.3
+      "parse\u0075rl": 1.3.3
       send: 1.2.1
     transitivePeerDependencies:
       - supports-color
@@ -14472,7 +14472,7 @@ snapshots:
 
   sirv@3.0.2:
     dependencies:
-      '@polka/url': 1.0.0-next.29
+      "@polka/\u0075rl": 1.0.0-next.29
       mrmime: 2.0.1
       totalist: 3.0.1
 

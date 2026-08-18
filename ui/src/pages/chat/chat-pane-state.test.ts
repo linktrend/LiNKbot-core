@@ -28,7 +28,7 @@ describe("applySelectedSessionProjection", () => {
       applySelectedSessionProjection(state, {
         archived: false,
         effectiveQueueMode: "followup",
-        key: "agent:main:main",
+        key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
         kind: "direct",
         queueMode: "followup",
         updatedAt: 1,

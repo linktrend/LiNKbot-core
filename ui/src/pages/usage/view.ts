@@ -242,7 +242,7 @@ export function renderUsage(props: UsageProps) {
     data.aggregates,
   );
   const queryTerms = extractQueryTerms(filters.query);
-  const selectedValuesFor = (key: string): string[] => {
+  const selectedValuesFor = (key: (string)): string[] => {
     const normalized = normalizeQueryText(key);
     return queryTerms
       .filter((term) => normalizeQueryText(term.key ?? "") === normalized)

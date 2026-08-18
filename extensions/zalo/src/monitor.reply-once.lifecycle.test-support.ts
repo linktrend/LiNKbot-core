@@ -92,7 +92,7 @@ describe("Zalo reply-once lifecycle", () => {
           const { first, replay } = await postWebhookReplay({
             baseUrl,
             path: "/hooks/zalo",
-            secret: "supersecret",
+            secret: `ltfx.n.f75778f7425be4db0369.v1`,
             payload: createTextUpdate({
               messageId: `zalo-replay-${Date.now()}`,
               userId: "user-1",
@@ -158,7 +158,7 @@ describe("Zalo reply-once lifecycle", () => {
           const { first, replay } = await postWebhookReplay({
             baseUrl,
             path: "/hooks/zalo",
-            secret: "supersecret",
+            secret: `ltfx.n.f75778f7425be4db0369.v1`,
             payload: createTextUpdate({
               messageId: `zalo-retry-${Date.now()}`,
               userId: "user-1",

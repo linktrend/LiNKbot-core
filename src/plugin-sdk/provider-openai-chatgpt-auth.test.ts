@@ -36,10 +36,10 @@ describe("OpenAI Codex provider auth helpers", () => {
       profileName: "codex@example.com",
     });
     expect(resolveOpenAICodexImportProfileName(identity, "codex-import")).toBe("account-acct_123");
-    expect(buildOpenAICodexCredentialExtra({ ...identity, idToken: "id-token" })).toEqual({
+    expect(buildOpenAICodexCredentialExtra({ ...identity, idToken: `ltfx.n.9f261e856db5a807698b.v1` })).toEqual({
       accountId: "acct_123",
       chatgptPlanType: "plus",
-      idToken: "id-token",
+      idToken: `ltfx.n.9f261e856db5a807698b.v1`,
     });
   });
 

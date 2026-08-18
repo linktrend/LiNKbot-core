@@ -30,7 +30,7 @@ function account(
       baseUrl: "https://cloud.example.com",
       botSecret: "secret",
       apiUser: "admin",
-      apiPassword: "app-password",
+      apiPassword: `ltfx.n.c0741d74e1d41a97476c.v1`,
       webhookPublicUrl: "https://bot.example.com/nextcloud-talk-webhook",
     },
     ...overrides,

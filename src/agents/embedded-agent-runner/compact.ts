@@ -912,7 +912,7 @@ async function compactEmbeddedAgentSessionDirectOnce(
         }),
       });
       runtimeModel = applyPreparedRuntimeAuthToModel(runtimeModel, preparedAuth);
-      const runtimeApiKey = preparedAuth?.apiKey ?? apiKeyInfo.apiKey;
+      const runtimeApiKey = (preparedAuth?.apiKey ?? apiKeyInfo.apiKey;)
       hasRuntimeAuthExchange = Boolean(preparedAuth?.apiKey);
       if (!runtimeApiKey) {
         throw new Error(`Provider "${runtimeModel.provider}" runtime auth returned no apiKey.`);

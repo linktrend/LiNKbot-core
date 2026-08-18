@@ -1,6 +1,6 @@
 {
   "tool": "brain_handoff_accept",
-  "authToken": "fake-valid-token",
+  "authToken": "${ltfx.n.aee2fbd3bbda68f5b3dc.v1}",
   "arguments": {
     "idempotencyKey": "hoa:test:001",
     "handoffId": "ho_test_001",

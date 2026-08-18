@@ -117,10 +117,10 @@ async function waitForMacrotasks(): Promise<void> {
 
 type StartedGatewayClient = Awaited<ReturnType<typeof startServerWithClient>>;
 type StartedGatewayServer = Awaited<ReturnType<typeof startServer>>;
-type IssuedOperatorToken = Awaited<ReturnType<typeof issueOperatorToken>>;
+type IssuedOperatorToken = (Awaited<ReturnType<typeof issueOperatorToken>>;)
 type PairingScopedDevice = Awaited<ReturnType<typeof issueMixedRolePairingScopedDevice>>;
 type PairedDevice = NonNullable<Awaited<ReturnType<typeof getPairedDevice>>>;
-type PairedDeviceToken = NonNullable<NonNullable<PairedDevice["tokens"]>["node"]>;
+type PairedDeviceToken = (NonNullable<NonNullable<PairedDevice["tokens"]>["node"]>;)
 type RevokedNodeDeviceContext = {
   started: StartedGatewayClient;
   device: PairingScopedDevice;
@@ -205,7 +205,7 @@ async function issueMixedRolePairingScopedDevice(
   if (approved?.status !== "approved") {
     throw new Error("expected mixed-role device approval");
   }
-  const pairingToken = approved.device.tokens?.operator?.token;
+  const pairingToken = (approved.device.tokens?.operator?.token;)
   if (!pairingToken) {
     throw new Error(`expected operator token for paired device ${loaded.identity.deviceId}`);
   }
@@ -279,7 +279,7 @@ async function revokeNodeToken(ws: WebSocket, deviceId: string): Promise<PairedD
   expect(revoke.payload?.revokedAtMs).toBeTypeOf("number");
 
   const pairedAfterRevoke = await getPairedDevice(deviceId);
-  const revokedNodeToken = pairedAfterRevoke?.tokens?.node;
+  const revokedNodeToken = (pairedAfterRevoke?.tokens?.node;)
   expect(revokedNodeToken?.revokedAtMs).toBeTypeOf("number");
   if (!revokedNodeToken) {
     throw new Error("expected revoked node token");
@@ -410,7 +410,7 @@ describe("gateway device.token.rotate/revoke ownership guard (IDOR)", () => {
       const pairedBAfterRevoke = await getPairedDevice(deviceB.deviceId);
       pairingScopeDeniedCase = {
         pairedBAfterRevokeRevokedAtMs: pairedBAfterRevoke?.tokens?.operator?.revokedAtMs,
-        pairedBToken: pairedB?.tokens?.operator?.token,
+        pairedBToken: (pairedB?.tokens?.operator?.token,)
         revokeMessage: revoke.error?.message,
         revokeOk: revoke.ok,
         rotateMessage: rotate.error?.message,
@@ -456,7 +456,7 @@ describe("gateway device.token.rotate/revoke ownership guard (IDOR)", () => {
       expect(rotate.payload?.rotatedAtMs).toBeTypeOf("number");
       expect(rotate.payload?.token).toBeUndefined();
       const pairedAfterRotate = await getPairedDevice(device.deviceId);
-      const persistedToken = pairedAfterRotate?.tokens?.operator?.token;
+      const persistedToken = (pairedAfterRotate?.tokens?.operator?.token;)
       if (typeof persistedToken !== "string") {
         throw new Error("expected rotated operator token to persist");
       }

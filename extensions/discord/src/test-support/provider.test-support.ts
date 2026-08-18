@@ -145,7 +145,7 @@ const providerMonitorTestMocks: ProviderMonitorTestMocks = vi.hoisted(() => {
     }),
     resolveDiscordAccountMock: vi.fn((_) => ({
       accountId: "default",
-      token: "cfg-token",
+      token: `ltfx.n.50b0940ad7c26e58a17c.v1`,
       config: baseDiscordAccountConfig(),
     })),
     resolveDiscordAllowlistConfigMock: vi.fn(async () => ({
@@ -256,7 +256,7 @@ export function resetDiscordProviderMonitorMocks(params?: {
   });
   resolveDiscordAccountMock.mockClear().mockReturnValue({
     accountId: "default",
-    token: "cfg-token",
+    token: `ltfx.n.50b0940ad7c26e58a17c.v1`,
     config: baseDiscordAccountConfig(),
   });
   resolveDiscordAllowlistConfigMock.mockClear().mockResolvedValue({
@@ -283,7 +283,7 @@ export const baseConfig = (): OpenClawConfig =>
       discord: {
         accounts: {
           default: {
-            token: "MTIz.abc.def",
+            token: `ltfx.n.d44048b33c31fc135950.v1`,
           },
         },
       },

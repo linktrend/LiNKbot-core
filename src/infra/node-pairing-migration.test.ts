@@ -49,7 +49,7 @@ describe("migrateLegacyNodePairingStore", () => {
     await writeJson(pairedPath, {
       "node-kept": {
         nodeId: "node-kept",
-        token: "retired-token",
+        token: `ltfx.n.03484c36bf1567295697.v1`,
         displayName: "Living Room iPad",
         caps: ["canvas", "screen"],
         commands: ["screen.snapshot", "system.run"],
@@ -58,7 +58,7 @@ describe("migrateLegacyNodePairingStore", () => {
       },
       "node-orphaned": {
         nodeId: "node-orphaned",
-        token: "orphaned-token",
+        token: `ltfx.n.6c05171c39bab087ab5c.v1`,
         createdAtMs: 1_000,
         approvedAtMs: 2_000,
       },

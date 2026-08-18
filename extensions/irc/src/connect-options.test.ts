@@ -11,12 +11,12 @@ describe("buildIrcConnectOptions", () => {
       nick: "openclaw",
       username: "openclaw",
       realname: "OpenClaw Bot",
-      password: "server-pass",
+      password: `ltfx.n.7b1bf1e4f9535de96009.v1`,
       config: {
         nickserv: {
           enabled: true,
           service: "NickServ",
-          password: "nickserv-pass",
+          password: `ltfx.n.72293150ba8e989c0685.v1`,
           register: true,
           registerEmail: "bot@example.com",
         },
@@ -34,11 +34,11 @@ describe("buildIrcConnectOptions", () => {
       nick: "openclaw",
       username: "openclaw",
       realname: "OpenClaw Bot",
-      password: "server-pass",
+      password: `ltfx.n.7b1bf1e4f9535de96009.v1`,
       nickserv: {
         enabled: true,
         service: "NickServ",
-        password: "nickserv-pass",
+        password: `ltfx.n.72293150ba8e989c0685.v1`,
         register: true,
         registerEmail: "bot@example.com",
       },

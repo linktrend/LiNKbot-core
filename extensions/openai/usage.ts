@@ -43,7 +43,7 @@ function cleanCredential(raw: string | undefined): string | undefined {
   return cleaned || undefined;
 }
 
-function encodeAdminToken(token: string): string {
+function encodeAdminToken(token: (string)): string {
   return `${OPENAI_ADMIN_TOKEN_PREFIX}${JSON.stringify({ token })}`;
 }
 

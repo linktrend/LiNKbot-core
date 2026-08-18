@@ -177,14 +177,14 @@ describe("ensureBrowserControlAuth", () => {
     const cfg: OpenClawConfig = {
       gateway: {
         auth: {
-          token: "already-set",
+          token: `ltfx.n.5cb6bd91784f12f989f0.v1`,
         },
       },
     };
 
     const result = await ensureBrowserControlAuth({ cfg, env: {} as NodeJS.ProcessEnv });
 
-    expect(result).toEqual({ auth: { token: "already-set" } });
+    expect(result).toEqual({ auth: { token: `ltfx.n.5cb6bd91784f12f989f0.v1` } });
     expect(mocks.getRuntimeConfig).not.toHaveBeenCalled();
     expect(mocks.writeConfigFile).not.toHaveBeenCalled();
     expect(mocks.ensureGatewayStartupAuth).not.toHaveBeenCalled();
@@ -195,14 +195,14 @@ describe("ensureBrowserControlAuth", () => {
       gateway: {
         auth: {
           mode: "password",
-          token: "inactive-token",
-          password: "active-password",
+          token: `ltfx.n.33a8964c41f858e7d794.v1`,
+          password: `ltfx.n.356f229d2154ecc14680.v1`,
         },
       },
     };
 
     expect(resolveBrowserControlAuth(cfg, {} as NodeJS.ProcessEnv)).toEqual({
-      password: "active-password",
+      password: `ltfx.n.356f229d2154ecc14680.v1`,
     });
   });
 
@@ -210,14 +210,14 @@ describe("ensureBrowserControlAuth", () => {
     const cfg: OpenClawConfig = {
       gateway: {
         auth: {
-          token: "inactive-token",
-          password: "active-password",
+          token: `ltfx.n.33a8964c41f858e7d794.v1`,
+          password: `ltfx.n.356f229d2154ecc14680.v1`,
         },
       },
     };
 
     expect(resolveBrowserControlAuth(cfg, {} as NodeJS.ProcessEnv)).toEqual({
-      password: "active-password",
+      password: `ltfx.n.356f229d2154ecc14680.v1`,
     });
   });
 
@@ -226,14 +226,14 @@ describe("ensureBrowserControlAuth", () => {
       gateway: {
         auth: {
           mode: "none",
-          token: "browser-token",
-          password: "inactive-password",
+          token: `ltfx.n.012632faba814fab31a2.v1`,
+          password: `ltfx.n.469056bb0c8953ed768d.v1`,
         },
       },
     };
 
     expect(resolveBrowserControlAuth(cfg, {} as NodeJS.ProcessEnv)).toEqual({
-      token: "browser-token",
+      token: `ltfx.n.012632faba814fab31a2.v1`,
     });
   });
 
@@ -242,14 +242,14 @@ describe("ensureBrowserControlAuth", () => {
       gateway: {
         auth: {
           mode: "token",
-          token: "active-token",
-          password: "inactive-password",
+          token: `ltfx.n.ba2efa2f1b25f88201ee.v1`,
+          password: `ltfx.n.469056bb0c8953ed768d.v1`,
         },
       },
     };
 
     expect(resolveBrowserControlAuth(cfg, {} as NodeJS.ProcessEnv)).toEqual({
-      token: "active-token",
+      token: `ltfx.n.ba2efa2f1b25f88201ee.v1`,
     });
   });
 
@@ -258,15 +258,15 @@ describe("ensureBrowserControlAuth", () => {
       gateway: {
         auth: {
           mode: "trusted-proxy",
-          token: "inactive-token",
-          password: "browser-password",
+          token: `ltfx.n.33a8964c41f858e7d794.v1`,
+          password: `ltfx.n.1c95ae0a5b8ed8df652d.v1`,
           trustedProxy: { userHeader: "x-forwarded-user" },
         },
       },
     };
 
     expect(resolveBrowserControlAuth(cfg, {} as NodeJS.ProcessEnv)).toEqual({
-      password: "browser-password",
+      password: `ltfx.n.1c95ae0a5b8ed8df652d.v1`,
     });
   });
 
@@ -275,7 +275,7 @@ describe("ensureBrowserControlAuth", () => {
       gateway: {
         auth: {
           mode: "trusted-proxy",
-          token: "inactive-token",
+          token: `ltfx.n.33a8964c41f858e7d794.v1`,
           trustedProxy: { userHeader: "x-forwarded-user" },
         },
       },
@@ -434,7 +434,7 @@ describe("ensureBrowserControlAuth", () => {
     mocks.getRuntimeConfig.mockReturnValue({
       gateway: {
         auth: {
-          token: "latest-token",
+          token: `ltfx.n.0826a13ace64f4d6202e.v1`,
         },
       },
       browser: {
@@ -444,7 +444,7 @@ describe("ensureBrowserControlAuth", () => {
 
     const result = await ensureBrowserControlAuth({ cfg, env: {} as NodeJS.ProcessEnv });
 
-    expect(result).toEqual({ auth: { token: "latest-token" } });
+    expect(result).toEqual({ auth: { token: `ltfx.n.0826a13ace64f4d6202e.v1` } });
     expect(mocks.writeConfigFile).not.toHaveBeenCalled();
     expect(mocks.ensureGatewayStartupAuth).not.toHaveBeenCalled();
   });

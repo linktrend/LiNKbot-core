@@ -136,7 +136,7 @@ const baseAccount: ResolvedFeishuAccount = {
   enabled: true,
   configured: true,
   appId: "app_123",
-  appSecret: "secret_123", // pragma: allowlist secret
+  appSecret: `ltfx.n.bccfe0b37c0a147f5335.v1`, // pragma: allowlist secret
   domain: "feishu",
   config: FeishuConfigSchema.parse({}),
 };
@@ -288,7 +288,7 @@ describe("createFeishuClient HTTP timeout", () => {
   };
 
   it("passes a custom httpInstance with default timeout to Lark.Client", () => {
-    createFeishuClient({ appId: "app_1", appSecret: "secret_1", accountId: "timeout-test" }); // pragma: allowlist secret
+    createFeishuClient({ appId: "app_1", appSecret: `ltfx.n.a0034865b803397943cc.v1`, accountId: "timeout-test" }); // pragma: allowlist secret
 
     const httpInstance = readLastClientHttpInstance();
     expect(typeof httpInstance.get).toBe("function");
@@ -296,7 +296,7 @@ describe("createFeishuClient HTTP timeout", () => {
   });
 
   it("injects default timeout into HTTP request options", async () => {
-    createFeishuClient({ appId: "app_2", appSecret: "secret_2", accountId: "timeout-inject" }); // pragma: allowlist secret
+    createFeishuClient({ appId: "app_2", appSecret: `ltfx.n.391b6ebdcac1048e2893.v1`, accountId: "timeout-inject" }); // pragma: allowlist secret
 
     const httpInstance = readLastClientHttpInstance();
 
@@ -314,7 +314,7 @@ describe("createFeishuClient HTTP timeout", () => {
   });
 
   it("allows explicit timeout override per-request", async () => {
-    createFeishuClient({ appId: "app_3", appSecret: "secret_3", accountId: "timeout-override" }); // pragma: allowlist secret
+    createFeishuClient({ appId: "app_3", appSecret: `ltfx.n.8acc7007789521822180.v1`, accountId: "timeout-override" }); // pragma: allowlist secret
 
     const httpInstance = readLastClientHttpInstance();
 
@@ -328,7 +328,7 @@ describe("createFeishuClient HTTP timeout", () => {
   it("uses config-configured default timeout when provided", async () => {
     createFeishuClient({
       appId: "app_4",
-      appSecret: "secret_4", // pragma: allowlist secret
+      appSecret: `ltfx.n.bcbdea3770cd7c2b6147.v1`, // pragma: allowlist secret
       accountId: "timeout-config",
       config: { httpTimeoutMs: 45_000 },
     });
@@ -339,7 +339,7 @@ describe("createFeishuClient HTTP timeout", () => {
   it("falls back to default timeout when configured timeout is invalid", async () => {
     createFeishuClient({
       appId: "app_5",
-      appSecret: "secret_5", // pragma: allowlist secret
+      appSecret: `ltfx.n.8487bd5af42c889e4d2f.v1`, // pragma: allowlist secret
       accountId: "timeout-config-invalid",
       config: { httpTimeoutMs: -1 },
     });
@@ -352,7 +352,7 @@ describe("createFeishuClient HTTP timeout", () => {
 
     createFeishuClient({
       appId: "app_8",
-      appSecret: "secret_8", // pragma: allowlist secret
+      appSecret: `ltfx.n.3ba90876f797089e2749.v1`, // pragma: allowlist secret
       accountId: "timeout-env-override",
       config: { httpTimeoutMs: 45_000 },
     });
@@ -366,7 +366,7 @@ describe("createFeishuClient HTTP timeout", () => {
 
       createFeishuClient({
         appId: `app-${value}`,
-        appSecret: "secret-env-timeout", // pragma: allowlist secret
+        appSecret: `ltfx.n.3127f71ddec8ea497c0b.v1`, // pragma: allowlist secret
         accountId: `timeout-env-invalid-${value}`,
       });
 
@@ -380,7 +380,7 @@ describe("createFeishuClient HTTP timeout", () => {
 
     createFeishuClient({
       appId: "app_10",
-      appSecret: "secret_10", // pragma: allowlist secret
+      appSecret: `ltfx.n.27334ad732f43a4ef675.v1`, // pragma: allowlist secret
       accountId: "timeout-direct-override",
       httpTimeoutMs: 120_000,
       config: { httpTimeoutMs: 45_000 },
@@ -397,7 +397,7 @@ describe("createFeishuClient HTTP timeout", () => {
 
     createFeishuClient({
       appId: "app_9",
-      appSecret: "secret_9", // pragma: allowlist secret
+      appSecret: `ltfx.n.3e2d71d00ef722496b59.v1`, // pragma: allowlist secret
       accountId: "timeout-env-clamp",
     });
 
@@ -407,13 +407,13 @@ describe("createFeishuClient HTTP timeout", () => {
   it("recreates cached client when configured timeout changes", async () => {
     createFeishuClient({
       appId: "app_6",
-      appSecret: "secret_6", // pragma: allowlist secret
+      appSecret: `ltfx.n.f96d28b537f94afcd70c.v1`, // pragma: allowlist secret
       accountId: "timeout-cache-change",
       config: { httpTimeoutMs: 30_000 },
     });
     createFeishuClient({
       appId: "app_6",
-      appSecret: "secret_6", // pragma: allowlist secret
+      appSecret: `ltfx.n.f96d28b537f94afcd70c.v1`, // pragma: allowlist secret
       accountId: "timeout-cache-change",
       config: { httpTimeoutMs: 45_000 },
     });
@@ -432,7 +432,7 @@ describe("createFeishuClient HTTP timeout", () => {
 
     createFeishuClient({
       appId: "app_11",
-      appSecret: "secret_11", // pragma: allowlist secret
+      appSecret: `ltfx.n.fad546c3f0e58a4a3186.v1`, // pragma: allowlist secret
       accountId: "http-proxy-agent",
     });
 
@@ -466,7 +466,7 @@ describe("createFeishuClient HTTP timeout", () => {
 
     createFeishuClient({
       appId: "app_12",
-      appSecret: "secret_12", // pragma: allowlist secret
+      appSecret: `ltfx.n.25d691bef31c6e9932e0.v1`, // pragma: allowlist secret
       accountId: "http-proxy-preserve-agent",
     });
 
@@ -495,7 +495,7 @@ describe("createFeishuClient HTTP timeout", () => {
 
     createFeishuClient({
       appId: "app_13",
-      appSecret: "secret_13", // pragma: allowlist secret
+      appSecret: `ltfx.n.0a189cecc1bcd44b088e.v1`, // pragma: allowlist secret
       accountId: "http-proxy-managed-agent",
     });
 

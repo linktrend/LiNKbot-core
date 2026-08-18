@@ -82,8 +82,8 @@ actor GatewayEndpointStore {
     }
 
     struct Deps {
-        let token: @Sendable () -> String?
-        let password: @Sendable () -> String?
+        let token: (@Sendable () -> String?)
+        let password: (@Sendable () -> String?)
         let localPort: @Sendable () -> Int
         let remoteRouteIfRunning: @Sendable () async -> RemoteTunnelManager.Route?
         let remoteRouteIsCurrent: @Sendable (RemoteTunnelManager.Route) async -> Bool
@@ -150,7 +150,7 @@ actor GatewayEndpointStore {
                 self.warnEnvOverrideOnce(
                     kind: .password,
                     envVar: "OPENCLAW_GATEWAY_PASSWORD",
-                    configKey: isRemote ? "gateway.remote.password" : "gateway.auth.password")
+                    configKey: isRemote ? "gateway.remote.password" : "${ltfx.n.8e8c6201961cd714efa3.v1}")
             }
             return trimmed
         }
@@ -232,7 +232,7 @@ actor GatewayEndpointStore {
                 self.warnEnvOverrideOnce(
                     kind: .token,
                     envVar: "OPENCLAW_GATEWAY_TOKEN",
-                    configKey: isRemote ? "gateway.remote.token" : "gateway.auth.token")
+                    configKey: isRemote ? "gateway.remote.token" : "${ltfx.n.caa0e6f294f88346931f.v1}")
             }
             return trimmed
         }
@@ -795,7 +795,7 @@ actor GatewayEndpointStore {
             let urlDesc = url.absoluteString
             self.logger
                 .debug(
-                    "resolved endpoint mode=\(modeDesc, privacy: .public) url=\(urlDesc, privacy: .public)")
+                    "resolved endpoint mode=\(modeDesc, privacy: .public) url=(\(urlDesc, privacy: .public)"))
         case let .connecting(mode, detail):
             let modeDesc = String(describing: mode)
             self.logger
@@ -1144,7 +1144,7 @@ extension GatewayEndpointStore {
         return (
             url: URL(string: "\(scheme)://\(host):\(port)")!,
             token: token,
-            password: password)
+            password: (password))
     }
 
     private static func normalizeDashboardPath(_ rawPath: String?) -> String {

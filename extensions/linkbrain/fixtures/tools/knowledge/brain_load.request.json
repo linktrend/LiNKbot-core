@@ -1,6 +1,6 @@
 {
   "tool": "brain_load",
-  "authToken": "fake-valid-token",
+  "authToken": "${ltfx.n.aee2fbd3bbda68f5b3dc.v1}",
   "arguments": {
     "id": "know_test_001",
     "section": "summary"

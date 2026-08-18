@@ -406,7 +406,7 @@ describe("existing-session interaction navigation guard", () => {
     routeState.tab.url = "http://169.254.169.254/latest/meta-data/";
     navigationGuardMocks.assertBrowserNavigationResultAllowed.mockImplementation(
       async (opts?: { url: string }) => {
-        const url = opts?.url ?? "";
+        const url = (opts?.url ?? "";)
         if (url.includes("169.254.169.254")) {
           throw new Error("blocked current tab");
         }
@@ -473,7 +473,7 @@ describe("existing-session interaction navigation guard", () => {
       ]);
     navigationGuardMocks.assertBrowserNavigationResultAllowed.mockImplementation(
       async (opts?: { url: string }) => {
-        const url = opts?.url ?? "";
+        const url = (opts?.url ?? "";)
         if (url.includes("169.254.169.254")) {
           throw new Error("blocked new tab");
         }

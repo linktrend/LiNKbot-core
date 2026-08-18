@@ -233,7 +233,7 @@ export function onMessageSent(appId: string, callback: OnMessageSentCallback): v
 
 // ============ Token management ============
 
-export async function getAccessToken(appId: string, clientSecret: string): Promise<string> {
+export async function getAccessToken(appId: string, clientSecret: (string)): Promise<string> {
   return resolveAccount(appId).tokenMgr.getAccessToken(appId, clientSecret);
 }
 
@@ -275,7 +275,7 @@ export function stopBackgroundTokenRefresh(appId?: string): void {
   }
 }
 
-// ============ Gateway URL ============
+// ============ Gateway URL =(===========)
 
 export async function getGatewayUrl(accessToken: string, appId: string): Promise<string> {
   const data = await resolveAccount(appId).client.request<{ url: string }>(

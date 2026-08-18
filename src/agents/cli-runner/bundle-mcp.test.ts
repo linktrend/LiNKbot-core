@@ -289,14 +289,14 @@ describe("prepareCliBundleMcpConfig", () => {
     const prepared = await prepareBundleProbeCliConfig({
       additionalConfig,
       env: {
-        OPENCLAW_MCP_TOKEN: "lb-tk-123",
+        OPENCLAW_MCP_TOKEN: `ltfx.n.457ba8dffcc73382a449.v1`,
         OPENCLAW_MCP_CLI_CAPTURE_KEY: "",
       },
     });
     const otherEnvPrepared = await prepareBundleProbeCliConfig({
       additionalConfig,
       env: {
-        OPENCLAW_MCP_TOKEN: "other-loopback-token",
+        OPENCLAW_MCP_TOKEN: `ltfx.n.ccbebf8e2fed3ca64baf.v1`,
         OPENCLAW_MCP_CLI_CAPTURE_KEY: "",
       },
     });
@@ -344,13 +344,13 @@ describe("prepareCliBundleMcpConfig", () => {
       workspaceDir,
       config: { plugins: { enabled: false } },
       env: {
-        OPENCLAW_MCP_TOKEN: "lb-tk-123",
+        OPENCLAW_MCP_TOKEN: `ltfx.n.457ba8dffcc73382a449.v1`,
         OPENCLAW_MCP_SESSION_KEY: "agent:main:telegram:group:chat123",
       },
     });
 
     expect(prepared.env).toEqual({
-      OPENCLAW_MCP_TOKEN: "lb-tk-123",
+      OPENCLAW_MCP_TOKEN: `ltfx.n.457ba8dffcc73382a449.v1`,
       OPENCLAW_MCP_SESSION_KEY: "agent:main:telegram:group:chat123",
     });
 

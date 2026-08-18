@@ -98,7 +98,7 @@ Both catalogs are static (no `/models` discovery call) and support OpenAI-compat
 Volcengine TTS uses the BytePlus Seed Speech HTTP API (`voice.ap-southeast-1.bytepluses.com`) and is configured separately from the OpenAI-compatible Doubao model API key. In the BytePlus console, open Seed Speech > Settings > API Keys, copy the API key, then set:
 
 ```bash
-export VOLCENGINE_TTS_API_KEY="byteplus_seed_speech_api_key"
+export VOLCENGINE_TTS_API_KEY="${ltfx.n.0ec1b976c93c6c651a7e.v1}"
 export VOLCENGINE_TTS_RESOURCE_ID="seed-tts-1.0"
 ```
 
@@ -112,7 +112,7 @@ Then enable it in `openclaw.json`:
       provider: "volcengine",
       providers: {
         volcengine: {
-          apiKey: "byteplus_seed_speech_api_key",
+          apiKey: "${ltfx.n.0ec1b976c93c6c651a7e.v1}",
           voice: "en_female_anna_mars_bigtts",
           speedRatio: 1.0,
         },
@@ -136,7 +136,7 @@ Legacy AppID/token auth remains supported for older Speech Console applications:
 
 ```bash
 export VOLCENGINE_TTS_APPID="speech_app_id"
-export VOLCENGINE_TTS_TOKEN="speech_access_token"
+export VOLCENGINE_TTS_TOKEN="${ltfx.n.0522700ee2eb0bd44ec5.v1}"
 export VOLCENGINE_TTS_CLUSTER="volcano_tts"
 ```
 

@@ -37,7 +37,7 @@ function deviceCodeResponse(overrides: Record<string, unknown> = {}): Response {
 }
 
 function deviceTokenResponse(): Response {
-  return new Response(JSON.stringify({ access_token: "github-access-token" }), {
+  return new Response(JSON.stringify({ access_token: `ltfx.n.3f89ef1ca8d1054ae387.v1` }), {
     status: 200,
     headers: { "Content-Type": "application/json" },
   });
@@ -46,7 +46,7 @@ function deviceTokenResponse(): Response {
 function copilotTokenResponse(): Response {
   return new Response(
     JSON.stringify({
-      token: "copilot-token",
+      token: `ltfx.n.be36160a0bfcf3f715db.v1`,
       expires_at: Math.floor(Date.now() / 1000) + 3600,
     }),
     { status: 200, headers: { "Content-Type": "application/json" } },
@@ -197,7 +197,7 @@ describe("GitHub Copilot OAuth model policy", () => {
       "fetch",
       vi.fn(
         async () =>
-          new Response('{"token":"copilot-token","expires_at":1e309}', {
+          new Response('{"token":`ltfx.n.be36160a0bfcf3f715db.v1`,"expires_at":1e309}', {
             status: 200,
             headers: { "Content-Type": "application/json" },
           }),
@@ -383,7 +383,7 @@ describe("GitHub Copilot OAuth bounded reads", () => {
         async () =>
           new Response(
             JSON.stringify({
-              token: "copilot-token",
+              token: `ltfx.n.be36160a0bfcf3f715db.v1`,
               expires_at: Math.floor(Date.now() / 1000) + 3600,
             }),
             { status: 200, headers: { "Content-Type": "application/json" } },

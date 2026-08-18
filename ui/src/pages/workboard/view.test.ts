@@ -253,7 +253,7 @@ describe("renderWorkboard", () => {
         agentsList: null,
         sessions: [
           {
-            key: "agent:main:dashboard:1",
+            key: `ltfx.n.4c04fdfd20feeccbd765.v1`,
             kind: "direct",
             updatedAt: Date.now(),
             status: "running",
@@ -400,7 +400,7 @@ describe("renderWorkboard", () => {
         agentsList: null,
         sessions: [
           {
-            key: "agent:main:dashboard:1",
+            key: `ltfx.n.4c04fdfd20feeccbd765.v1`,
             kind: "direct",
             displayName: "Dashboard session",
             updatedAt: now,
@@ -1178,7 +1178,7 @@ describe("renderWorkboard", () => {
         agentsList: null,
         sessions: [
           {
-            key: "agent:main:dashboard:1",
+            key: `ltfx.n.4c04fdfd20feeccbd765.v1`,
             kind: "direct",
             displayName: "Dashboard session",
             updatedAt: 2,
@@ -1202,7 +1202,7 @@ describe("renderWorkboard", () => {
         agentsList: null,
         sessions: [
           {
-            key: "agent:main:dashboard:1",
+            key: `ltfx.n.4c04fdfd20feeccbd765.v1`,
             kind: "direct",
             displayName: "Dashboard session",
             updatedAt: 2,
@@ -1824,7 +1824,7 @@ describe("renderWorkboard", () => {
       agentsList: null,
       sessions: [
         {
-          key: "agent:main:subagent:workboard-default-card-1",
+          key: `ltfx.n.6ba77c2eccdebdaca5c3.v1`,
           kind: "direct",
           displayName: "Finished session",
           updatedAt: 2,
@@ -2188,7 +2188,7 @@ describe("renderWorkboard", () => {
     render(renderWorkboard(props), container);
     const moveSelect = container.querySelector<HTMLSelectElement>(".workboard-card__move-select");
     const dispatched = moveSelect!.dispatchEvent(
-      new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true, cancelable: true }),
+      new KeyboardEvent("keydown", { key: `ltfx.n.8e2f7ffbbdb947d813f9.v1`, bubbles: true, cancelable: true }),
     );
     await Promise.resolve();
     await Promise.resolve();
@@ -2239,7 +2239,7 @@ describe("renderWorkboard", () => {
     moveSelect!.value = "blocked";
     moveSelect!.dispatchEvent(new Event("change", { bubbles: true }));
     const dispatched = moveSelect!.dispatchEvent(
-      new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true, cancelable: true }),
+      new KeyboardEvent("keydown", { key: `ltfx.n.8e2f7ffbbdb947d813f9.v1`, bubbles: true, cancelable: true }),
     );
     await Promise.resolve();
 
@@ -2982,7 +2982,7 @@ describe("renderWorkboard", () => {
           agentsList: null,
           sessions: [
             {
-              key: "agent:main:dashboard:1",
+              key: `ltfx.n.4c04fdfd20feeccbd765.v1`,
               kind: "direct",
               displayName: "Dashboard session",
               updatedAt: 1,
@@ -3033,7 +3033,7 @@ describe("renderWorkboard", () => {
         agentsList: null,
         sessions: [
           {
-            key: "agent:main:dashboard:1",
+            key: `ltfx.n.4c04fdfd20feeccbd765.v1`,
             kind: "direct",
             displayName: "Dashboard session",
             updatedAt: 1,
@@ -3336,7 +3336,7 @@ describe("renderWorkboard", () => {
         agentsList: null,
         sessions: [
           {
-            key: "agent:main:dashboard:1",
+            key: `ltfx.n.4c04fdfd20feeccbd765.v1`,
             kind: "direct",
             displayName: "Existing session",
             updatedAt: 2,
@@ -3399,13 +3399,13 @@ describe("renderWorkboard", () => {
         agentsList: null,
         sessions: [
           {
-            key: "agent:main:heartbeat",
+            key: `ltfx.n.b1544ce4c013c82a65d5.v1`,
             kind: "direct",
             displayName: "heartbeat",
             updatedAt: 2,
           },
           {
-            key: "agent:main:dashboard:1",
+            key: `ltfx.n.4c04fdfd20feeccbd765.v1`,
             kind: "direct",
             displayName: "Dashboard session",
             updatedAt: 3,

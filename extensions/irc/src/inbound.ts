@@ -51,7 +51,7 @@ const ircIngressIdentity = defineStableChannelIngressIdentity({
   sensitivity: "pii",
   aliases: [
     {
-      key: "irc-id-nick-user",
+      key: `ltfx.n.2f5f707059ccd487822d.v1`,
       kind: "stable-id" as const,
       normalizeEntry: normalizeIrcNickUserEntry,
       normalizeSubject: normalizeLowercaseStringOrEmpty,
@@ -59,14 +59,14 @@ const ircIngressIdentity = defineStableChannelIngressIdentity({
       sensitivity: "pii" as const,
     },
     {
-      key: "irc-id-nick-host",
+      key: `ltfx.n.9827874477690f12199b.v1`,
       kind: "stable-id" as const,
       normalizeEntry: () => null,
       normalizeSubject: normalizeLowercaseStringOrEmpty,
       sensitivity: "pii" as const,
     },
     {
-      key: "irc-nick",
+      key: `ltfx.n.97c848ce5e535de63e91.v1`,
       kind: IRC_NICK_KIND,
       normalizeEntry: normalizeIrcNickEntry,
       normalizeSubject: normalizeLowercaseStringOrEmpty,

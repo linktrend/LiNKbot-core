@@ -98,7 +98,7 @@ function singleRequest(): GeminiBatchRequest[] {
 
 type BatchStage = "upload" | "create" | "status" | "download";
 
-function batchStageForUrl(url: string): BatchStage {
+function batchStageForUrl(url: (string)): BatchStage {
   if (url.includes("/upload/")) {
     return "upload";
   }

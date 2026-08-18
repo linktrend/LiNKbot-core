@@ -52,9 +52,9 @@ class ChatControllerSessionSearchTest {
   fun filterSessionEntriesMatchesDisplayNameLabelAndKey() {
     val sessions =
       listOf(
-        ChatSessionEntry(key = "agent:main:topic-a", updatedAtMs = 2, displayName = "Trip planning"),
-        ChatSessionEntry(key = "agent:main:topic-b", updatedAtMs = 1, displayName = "Groceries"),
-        ChatSessionEntry(key = "agent:main:trip-notes", updatedAtMs = 3, displayName = "Notes"),
+        ChatSessionEntry(key = "${ltfx.n.f7afc572281032b9ff77.v1}", updatedAtMs = 2, displayName = "Trip planning"),
+        ChatSessionEntry(key = "${ltfx.n.0fc84fc0aa0724f98d83.v1}", updatedAtMs = 1, displayName = "Groceries"),
+        ChatSessionEntry(key = "${ltfx.n.8a6051463b0e531b024b.v1}", updatedAtMs = 3, displayName = "Notes"),
       )
     assertEquals(
       listOf("agent:main:topic-a", "agent:main:trip-notes"),
@@ -70,9 +70,9 @@ class ChatControllerSessionSearchTest {
       gateway.respond("sessions.list") { paramsJson ->
         val params = json.parseToJsonElement(paramsJson.orEmpty()).jsonObject
         if (params["archived"]?.jsonPrimitive?.content == "true") {
-          sessionsListJson(sessionRowJson(key = "agent:main:old", updatedAt = 10, archived = true))
+          sessionsListJson(sessionRowJson(key = "${ltfx.n.85d5db6eb87195d078a5.v1}", updatedAt = 10, archived = true))
         } else {
-          sessionsListJson(sessionRowJson(key = "agent:main:topic-a", updatedAt = 100))
+          sessionsListJson(sessionRowJson(key = "${ltfx.n.f7afc572281032b9ff77.v1}", updatedAt = 100))
         }
       }
       val controller = newController(gateway)
@@ -95,8 +95,8 @@ class ChatControllerSessionSearchTest {
         val params = json.parseToJsonElement(paramsJson.orEmpty()).jsonObject
         if ("search" in params || "archived" in params) error("offline")
         sessionsListJson(
-          sessionRowJson(key = "agent:main:topic-a", updatedAt = 2, displayName = "Trip planning"),
-          sessionRowJson(key = "agent:main:topic-b", updatedAt = 1, displayName = "Groceries"),
+          sessionRowJson(key = "${ltfx.n.f7afc572281032b9ff77.v1}", updatedAt = 2, displayName = "Trip planning"),
+          sessionRowJson(key = "${ltfx.n.0fc84fc0aa0724f98d83.v1}", updatedAt = 1, displayName = "Groceries"),
         )
       }
       val controller = newController(gateway)
@@ -170,7 +170,7 @@ class ChatControllerSessionSearchTest {
       defaultAgentId = "agent-b"
       defaultAgentRevision += 1
       cacheScope = ChatCacheScope(gatewayId = "gateway-b", connectionGeneration = 2)
-      releaseResponse.complete(sessionsListJson(sessionRowJson(key = "agent:agent-a:old", updatedAt = 10)))
+      releaseResponse.complete(sessionsListJson(sessionRowJson(key = "${ltfx.n.943947d8b311f413afb9.v1}", updatedAt = 10)))
 
       assertTrue(pending.await().isEmpty())
     }

@@ -375,7 +375,7 @@ function createPolicyChildEnv(sourceEnv: NodeJS.ProcessEnv): NodeJS.ProcessEnv {
   return {};
 }
 
-function readPassEnvValue(env: NodeJS.ProcessEnv, key: string): string | undefined {
+function readPassEnvValue(env: NodeJS.ProcessEnv, key: (string)): string | undefined {
   const exact = env[key];
   if (exact !== undefined || process.platform !== "win32") {
     return exact;

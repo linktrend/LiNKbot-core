@@ -218,7 +218,7 @@ describe("gateway auth compatibility baseline", () => {
       try {
         const res = await connectReq(ws, {
           skipDefaultAuth: true,
-          deviceToken: "not-a-valid-device-token",
+          deviceToken: `ltfx.n.675562e03b099705cd25.v1`,
         });
         expect(res.ok).toBe(false);
         expect(res.error?.message ?? "").toContain("device token mismatch");

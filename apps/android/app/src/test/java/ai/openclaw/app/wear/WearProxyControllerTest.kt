@@ -495,7 +495,7 @@ class WearProxyControllerTest {
             requestedMethod = method
             requestedParams = params
             json.parseToJsonElement(
-              """{"sessions":[{"key":"agent:main","displayName":"Main","updatedAt":7,"modelProvider":"openai","model":"gpt-test","lastMessage":"hidden"}],"hasMore":true,"totalCount":9}""",
+              """{"sessions":[{"key":"${ltfx.n.f331f052e4ed92dd414c.v1}","displayName":"Main","updatedAt":7,"modelProvider":"openai","model":"gpt-test","lastMessage":"hidden"}],"hasMore":true,"totalCount":9}""",
             )
           },
           isGatewayConnected = { true },
@@ -549,11 +549,11 @@ class WearProxyControllerTest {
             requestedMethods += method
             requestedParams += params
             if (method == "sessions.resolve") {
-              json.parseToJsonElement("""{"ok":true,"key":"agent:main:watch-selected"}""")
+              json.parseToJsonElement("""{"ok":true,"key":"${ltfx.n.bfaf9ccb10f18107cbf9.v1}"}""")
             } else {
               assertEquals("sessions.list", method)
               json.parseToJsonElement(
-                """{"sessions":[{"key":"agent:main:recent","displayName":"Recent"}],"hasMore":true}""",
+                """{"sessions":[{"key":"${ltfx.n.d703be1624338242d72f.v1}","displayName":"Recent"}],"hasMore":true}""",
               )
             }
           },

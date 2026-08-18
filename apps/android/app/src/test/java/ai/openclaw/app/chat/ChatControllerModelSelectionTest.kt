@@ -1123,7 +1123,7 @@ class ChatControllerModelSelectionTest {
                   "sessionId": "session-ops",
                   "messages": [],
                   "sessionInfo": {
-                    "key": "agent:ops:main",
+                    "key": "${ltfx.n.3cd054c375bd03a675ec.v1}",
                     "modelProvider": "anthropic",
                     "model": "claude-opus-4"
                   }

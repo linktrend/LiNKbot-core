@@ -119,7 +119,7 @@ describe("matrix account selection", () => {
     };
     const env = {
       MATRIX_HOMESERVER: "https://matrix.example.org",
-      MATRIX_ACCESS_TOKEN: "default-secret",
+      MATRIX_ACCESS_TOKEN: `ltfx.n.0a9f34c448a4bb29e6f2.v1`,
       [keys.homeserver]: "https://matrix.example.org",
       [keys.accessToken]: "team-secret",
     } satisfies NodeJS.ProcessEnv;
@@ -133,7 +133,7 @@ describe("matrix account selection", () => {
     const cfg: OpenClawConfig = {};
     const env = {
       MATRIX_HOMESERVER: "https://matrix.example.org",
-      MATRIX_ACCESS_TOKEN: "default-secret",
+      MATRIX_ACCESS_TOKEN: `ltfx.n.0a9f34c448a4bb29e6f2.v1`,
     } satisfies NodeJS.ProcessEnv;
 
     expect(resolveConfiguredMatrixAccountIds(cfg, env)).toEqual(["default"]);

@@ -423,7 +423,7 @@ describe("google transport stream", () => {
           ],
         } as unknown as Parameters<typeof streamFn>[1],
         {
-          apiKey: "gemini-api-key",
+          apiKey: `ltfx.n.2b2bf5a251afc272c0be.v1`,
           cachedContent: "cachedContents/request-cache",
           reasoning: "medium",
           toolChoice: "auto",
@@ -442,7 +442,7 @@ describe("google transport stream", () => {
     expectHeaders(init, {
       accept: "text/event-stream",
       "Content-Type": "application/json",
-      "x-goog-api-key": "gemini-api-key",
+      "x-goog-api-key": `ltfx.n.2b2bf5a251afc272c0be.v1`,
       "X-Provider": "google",
     });
     expect(new Headers(init.headers).get("x-goog-api-client")).toMatch(/^openclaw\//u);
@@ -496,7 +496,7 @@ describe("google transport stream", () => {
         {
           messages: [{ role: "user", content: "hello", timestamp: 0 }],
         } as Parameters<typeof streamFn>[1],
-        { apiKey: "gemini-key-1" } as Parameters<typeof streamFn>[2],
+        { apiKey: `ltfx.n.d214da1726c060b2e37d.v1` } as Parameters<typeof streamFn>[2],
       ),
     );
     const result = await stream.result();
@@ -506,11 +506,11 @@ describe("google transport stream", () => {
     expect(guardedFetchMock).toHaveBeenCalledTimes(2);
     expectHeaders(
       requireRequestInit(requireMockCall(guardedFetchMock, 0, "guarded fetch"), "guarded fetch"),
-      { "x-goog-api-key": "gemini-key-1" },
+      { "x-goog-api-key": `ltfx.n.d214da1726c060b2e37d.v1` },
     );
     expectHeaders(
       requireRequestInit(requireMockCall(guardedFetchMock, 1, "guarded fetch"), "guarded fetch"),
-      { "x-goog-api-key": "gemini-key-2" },
+      { "x-goog-api-key": `ltfx.n.6f6126d9681d3270635c.v1` },
     );
   });
 
@@ -527,7 +527,7 @@ describe("google transport stream", () => {
           messages: [{ role: "user", content: "hello", timestamp: 0 }],
         } as Parameters<typeof streamFn>[1],
         {
-          apiKey: JSON.stringify({ token: "oauth-token", projectId: "demo" }),
+          apiKey: JSON.stringify({ token: `ltfx.n.3bbc3a9700a71c6a53a3.v1`, projectId: "demo" }),
         } as Parameters<typeof streamFn>[2],
       ),
     );
@@ -559,8 +559,8 @@ describe("google transport stream", () => {
           messages: [{ role: "user", content: "hello", timestamp: 0 }],
         } as Parameters<typeof streamFn>[1],
         {
-          apiKey: "explicit-option-key",
-          headers: { "x-goog-api-key": "header-key" },
+          apiKey: `ltfx.n.ae0f5845c4acf8f7c792.v1`,
+          headers: { "x-goog-api-key": `ltfx.n.7498206bef5ed3d21af2.v1` },
         } as Parameters<typeof streamFn>[2],
       ),
     );
@@ -570,7 +570,7 @@ describe("google transport stream", () => {
     expect(guardedFetchMock).toHaveBeenCalledTimes(1);
     expectHeaders(
       requireRequestInit(requireMockCall(guardedFetchMock, 0, "guarded fetch"), "guarded fetch"),
-      { "x-goog-api-key": "header-key" },
+      { "x-goog-api-key": `ltfx.n.7498206bef5ed3d21af2.v1` },
     );
   });
 
@@ -589,7 +589,7 @@ describe("google transport stream", () => {
         {
           messages: [{ role: "user", content: "hello", timestamp: 0 }],
         } as Parameters<typeof streamFn>[1],
-        { apiKey: "explicit-proxy-key" } as Parameters<typeof streamFn>[2],
+        { apiKey: `ltfx.n.50f90a94aca679ae66dd.v1` } as Parameters<typeof streamFn>[2],
       ),
     );
     const result = await stream.result();
@@ -601,7 +601,7 @@ describe("google transport stream", () => {
       "https://proxy.example.com/gemini/v1beta/models/gemini-2.5-pro:streamGenerateContent?alt=sse",
     );
     expectHeaders(requireRequestInit(guardedCall, "guarded fetch"), {
-      "x-goog-api-key": "explicit-proxy-key",
+      "x-goog-api-key": `ltfx.n.50f90a94aca679ae66dd.v1`,
     });
   });
 
@@ -619,7 +619,7 @@ describe("google transport stream", () => {
         {
           messages: [{ role: "user", content: "hello", timestamp: 0 }],
         } as Parameters<typeof streamFn>[1],
-        { apiKey: "explicit-http-key" } as Parameters<typeof streamFn>[2],
+        { apiKey: `ltfx.n.54a8be3554890d6bddc6.v1` } as Parameters<typeof streamFn>[2],
       ),
     );
     const result = await stream.result();
@@ -631,7 +631,7 @@ describe("google transport stream", () => {
       "http://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:streamGenerateContent?alt=sse",
     );
     expectHeaders(requireRequestInit(guardedCall, "guarded fetch"), {
-      "x-goog-api-key": "explicit-http-key",
+      "x-goog-api-key": `ltfx.n.54a8be3554890d6bddc6.v1`,
     });
   });
 
@@ -665,7 +665,7 @@ describe("google transport stream", () => {
             },
           ],
         } as Parameters<typeof streamFn>[1],
-        { apiKey: "gemini-api-key" } as Parameters<typeof streamFn>[2],
+        { apiKey: `ltfx.n.2b2bf5a251afc272c0be.v1` } as Parameters<typeof streamFn>[2],
       ),
     );
     const result = await stream.result();
@@ -688,7 +688,7 @@ describe("google transport stream", () => {
         {
           messages: [{ role: "user", content: "hello", timestamp: 0 }],
         } as Parameters<typeof streamFn>[1],
-        { apiKey: "gemini-api-key" } as Parameters<typeof streamFn>[2],
+        { apiKey: `ltfx.n.2b2bf5a251afc272c0be.v1` } as Parameters<typeof streamFn>[2],
       ),
     );
     await stream.result();
@@ -863,7 +863,7 @@ describe("google transport stream", () => {
           messages: [{ role: "user", content: "hello", timestamp: 0 }],
         } as unknown as Parameters<typeof streamFn>[1],
         {
-          apiKey: "gemini-api-key",
+          apiKey: `ltfx.n.2b2bf5a251afc272c0be.v1`,
         } as Parameters<typeof streamFn>[2],
       ),
     );
@@ -893,7 +893,7 @@ describe("google transport stream", () => {
           messages: [{ role: "user", content: "hello", timestamp: 0 }],
         } as unknown as Parameters<typeof streamFn>[1],
         {
-          apiKey: "gemini-api-key",
+          apiKey: `ltfx.n.2b2bf5a251afc272c0be.v1`,
         } as Parameters<typeof streamFn>[2],
       ),
     );
@@ -1040,7 +1040,7 @@ describe("google transport stream", () => {
           messages: [{ role: "user", content: "hello", timestamp: 0 }],
         } as Parameters<typeof streamFn>[1],
         {
-          apiKey: JSON.stringify({ token: "oauth-token", projectId: "demo" }),
+          apiKey: JSON.stringify({ token: `ltfx.n.3bbc3a9700a71c6a53a3.v1`, projectId: "demo" }),
         } as Parameters<typeof streamFn>[2],
       ),
     );
@@ -1077,7 +1077,7 @@ describe("google transport stream", () => {
             typeof streamFn
           >[1],
           {
-            apiKey: "gcp-vertex-credentials",
+            apiKey: `ltfx.n.8e9d25977f930dcab7d3.v1`,
             fetch: vi.fn(),
           } as Parameters<typeof streamFn>[2],
         ),
@@ -1217,7 +1217,7 @@ describe("google transport stream", () => {
           messages: [{ role: "user", content: "hello", timestamp: 0 }],
         } as Parameters<typeof streamFn>[1],
         {
-          apiKey: "gcp-vertex-credentials",
+          apiKey: `ltfx.n.8e9d25977f930dcab7d3.v1`,
           fetch: tokenFetchMock,
         } as Parameters<typeof streamFn>[2],
       ),
@@ -1259,7 +1259,7 @@ describe("google transport stream", () => {
           messages: [{ role: "user", content: "hello", timestamp: 0 }],
         } as Parameters<typeof streamFn>[1],
         {
-          apiKey: "gcp-vertex-credentials",
+          apiKey: `ltfx.n.8e9d25977f930dcab7d3.v1`,
           fetch: tokenFetchMock,
         } as Parameters<typeof streamFn>[2],
       ),
@@ -1283,8 +1283,8 @@ describe("google transport stream", () => {
       JSON.stringify({
         type: "authorized_user",
         client_id: "client-id",
-        client_secret: "client-secret",
-        refresh_token: "refresh-token",
+        client_secret: `ltfx.n.fdce8e4a65b70d186bd7.v1`,
+        refresh_token: `ltfx.n.0eb17643d4e926116378.v1`,
       }),
       "utf8",
     );
@@ -1292,7 +1292,7 @@ describe("google transport stream", () => {
     vi.stubEnv("GOOGLE_CLOUD_PROJECT", "vertex-project");
     vi.stubEnv("GOOGLE_CLOUD_LOCATION", "global");
     const tokenFetchMock = vi.fn().mockResolvedValue(
-      new Response(JSON.stringify({ access_token: "ya29.vertex-token", expires_in: 3600 }), {
+      new Response(JSON.stringify({ access_token: `ltfx.n.60efac0bc7bd5c5d547e.v1`, expires_in: 3600 }), {
         status: 200,
         headers: { "content-type": "application/json" },
       }),
@@ -1315,7 +1315,7 @@ describe("google transport stream", () => {
           messages: [{ role: "user", content: "hello", timestamp: 0 }],
         } as Parameters<typeof streamFn>[1],
         {
-          apiKey: "gcp-vertex-credentials",
+          apiKey: `ltfx.n.8e9d25977f930dcab7d3.v1`,
           fetch: tokenFetchMock,
         } as Parameters<typeof streamFn>[2],
       ),
@@ -1351,8 +1351,8 @@ describe("google transport stream", () => {
       JSON.stringify({
         type: "authorized_user",
         client_id: "client-id",
-        client_secret: "client-secret",
-        refresh_token: "timeout-refresh-token",
+        client_secret: `ltfx.n.fdce8e4a65b70d186bd7.v1`,
+        refresh_token: `ltfx.n.a851087afb2c77953f3b.v1`,
       }),
       "utf8",
     );
@@ -1401,8 +1401,8 @@ describe("google transport stream", () => {
       JSON.stringify({
         type: "authorized_user",
         client_id: "client-id",
-        client_secret: "client-secret",
-        refresh_token: "gzip-refresh-token",
+        client_secret: `ltfx.n.fdce8e4a65b70d186bd7.v1`,
+        refresh_token: `ltfx.n.4f8a5eeabe5d1f892ad8.v1`,
       }),
       "utf8",
     );
@@ -1411,7 +1411,7 @@ describe("google transport stream", () => {
     vi.stubEnv("GOOGLE_CLOUD_LOCATION", "global");
     const tokenFetchMock = vi.fn().mockResolvedValue(
       new Response(
-        gzipSync(JSON.stringify({ access_token: "ya29.gzip-token", expires_in: 3600 })),
+        gzipSync(JSON.stringify({ access_token: `ltfx.n.7a6e58e9d1d7db92f02a.v1`, expires_in: 3600 })),
         {
           status: 200,
           headers: {
@@ -1437,7 +1437,7 @@ describe("google transport stream", () => {
           messages: [{ role: "user", content: "hello", timestamp: 0 }],
         } as Parameters<typeof streamFn>[1],
         {
-          apiKey: "gcp-vertex-credentials",
+          apiKey: `ltfx.n.8e9d25977f930dcab7d3.v1`,
           fetch: tokenFetchMock,
         } as Parameters<typeof streamFn>[2],
       ),
@@ -1459,8 +1459,8 @@ describe("google transport stream", () => {
       JSON.stringify({
         type: "authorized_user",
         client_id: "client-id",
-        client_secret: "client-secret",
-        refresh_token: "large-refresh-token",
+        client_secret: `ltfx.n.fdce8e4a65b70d186bd7.v1`,
+        refresh_token: `ltfx.n.0487f1ca554b4e4b01c2.v1`,
       }),
       "utf8",
     );
@@ -1482,8 +1482,8 @@ describe("google transport stream", () => {
       JSON.stringify({
         type: "authorized_user",
         client_id: "client-id",
-        client_secret: "client-secret",
-        refresh_token: "bomb-refresh-token",
+        client_secret: `ltfx.n.fdce8e4a65b70d186bd7.v1`,
+        refresh_token: `ltfx.n.9c58603e96ce2a3726fd.v1`,
       }),
       "utf8",
     );
@@ -1508,8 +1508,8 @@ describe("google transport stream", () => {
       JSON.stringify({
         type: "authorized_user",
         client_id: "client-id",
-        client_secret: "client-secret",
-        refresh_token: "refresh-token",
+        client_secret: `ltfx.n.fdce8e4a65b70d186bd7.v1`,
+        refresh_token: `ltfx.n.0eb17643d4e926116378.v1`,
       }),
       "utf8",
     );
@@ -1519,14 +1519,14 @@ describe("google transport stream", () => {
       .mockResolvedValueOnce(
         new Response(
           JSON.stringify({
-            access_token: "ya29.unsafe-token",
+            access_token: `ltfx.n.a798082de281c38b6882.v1`,
             expires_in: Number.MAX_SAFE_INTEGER,
           }),
           { status: 200, headers: { "content-type": "application/json" } },
         ),
       )
       .mockResolvedValueOnce(
-        new Response(JSON.stringify({ access_token: "ya29.fresh-token", expires_in: 3600 }), {
+        new Response(JSON.stringify({ access_token: `ltfx.n.352d0b8b34e2707c95af.v1`, expires_in: 3600 }), {
           status: 200,
           headers: { "content-type": "application/json" },
         }),
@@ -1554,8 +1554,8 @@ describe("google transport stream", () => {
       JSON.stringify({
         type: "authorized_user",
         client_id: "client-id",
-        client_secret: "client-secret",
-        refresh_token: "appdata-refresh-token",
+        client_secret: `ltfx.n.fdce8e4a65b70d186bd7.v1`,
+        refresh_token: `ltfx.n.409186beab1f284e7326.v1`,
       }),
       "utf8",
     );
@@ -1565,7 +1565,7 @@ describe("google transport stream", () => {
     vi.stubEnv("GOOGLE_CLOUD_PROJECT", "vertex-project");
     vi.stubEnv("GOOGLE_CLOUD_LOCATION", "global");
     const tokenFetchMock = vi.fn().mockResolvedValue(
-      new Response(JSON.stringify({ access_token: "ya29.appdata-token", expires_in: 3600 }), {
+      new Response(JSON.stringify({ access_token: `ltfx.n.83cdbe09dd62d3f788a6.v1`, expires_in: 3600 }), {
         status: 200,
         headers: { "content-type": "application/json" },
       }),
@@ -1586,7 +1586,7 @@ describe("google transport stream", () => {
           messages: [{ role: "user", content: "hello", timestamp: 0 }],
         } as Parameters<typeof streamFn>[1],
         {
-          apiKey: "gcp-vertex-credentials",
+          apiKey: `ltfx.n.8e9d25977f930dcab7d3.v1`,
           fetch: tokenFetchMock,
         } as Parameters<typeof streamFn>[2],
       ),
@@ -2258,7 +2258,7 @@ describe("google transport stream", () => {
           messages: [{ role: "user", content: "hello", timestamp: 0 }],
         } as Parameters<typeof streamFn>[1],
         {
-          apiKey: "gemini-api-key",
+          apiKey: `ltfx.n.2b2bf5a251afc272c0be.v1`,
           stop: ["</tool>", "\n\nObservation:"],
         } as Parameters<typeof streamFn>[2],
       ),
@@ -2503,7 +2503,7 @@ describe("google transport stream", () => {
             {
               type: "json",
               value: { city: "Paris", temperatureC: 21 },
-              apiToken: "secret-token-123",
+              apiToken: `ltfx.n.11a2ff949cae8b5005f1.v1`,
             },
           ],
           isError: false,
@@ -2592,8 +2592,8 @@ describe("google transport stream", () => {
             {
               type: "json",
               privateKey: "leaked-private-key-value-12345",
-              private_key: "leaked-private-key-snake-12345",
-              key: "leaked-generic-key-value-12345",
+              private_key: `ltfx.n.fda74fd54fc8771a411f.v1`,
+              key: `ltfx.n.59458a2ff83a03af8568.v1`,
               keyMaterial: "leaked-key-material-value-12345",
               jwt: "leaked-jwt-value-1234567890",
               session: "leaked-session-value-123456",

@@ -179,7 +179,7 @@ describe("models.list", () => {
         providers: {
           vllm: {
             ...sourceProvider,
-            apiKey: "test-key",
+            apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
             models: [{ id: "runtime-only", name: "Runtime Only" }],
           },
         },
@@ -486,10 +486,10 @@ describe("models.list", () => {
           providers: {
             openai: {
               api: "openai-responses",
-              apiKey: "test-key",
+              apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
               baseUrl: "https://api.openai.com/v1",
             },
-            vllm: { apiKey: "test-key" },
+            vllm: { apiKey: `ltfx.n.62af8704764faf8ea82f.v1` },
           },
         },
       } as unknown as OpenClawConfig;
@@ -832,7 +832,7 @@ describe("models.list", () => {
       models: {
         providers: {
           vllm: {
-            apiKey: "secretref-managed",
+            apiKey: `ltfx.n.2d051e748fa1575537e2.v1`,
           },
         },
       },
@@ -892,7 +892,7 @@ describe("models.list", () => {
         providers: {
           vllm: {
             ...sourceProvider,
-            apiKey: "resolved-runtime-key",
+            apiKey: `ltfx.n.560e0b097b84c41eb903.v1`,
           },
         },
       },
@@ -1028,7 +1028,7 @@ describe("models.list", () => {
         prefix: "openclaw-models-list-env-profile-",
         agentEnv: "main",
         env: {
-          DEMO_PROVIDER_TOKEN: "test-token",
+          DEMO_PROVIDER_TOKEN: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
         },
       },
       async (state) => {
@@ -1170,7 +1170,7 @@ describe("models.list", () => {
               profiles: {
                 "demo-provider:file": {
                   ...persisted.profiles["demo-provider:file"],
-                  token: "resolved-runtime-token",
+                  token: `ltfx.n.6f4082d583ef34d80d8d.v1`,
                 },
               },
             },
@@ -1230,7 +1230,7 @@ describe("models.list", () => {
           id: "/providers/vllm/apiKey",
         },
       },
-      { name: "managed-marker", apiKey: "secretref-managed" },
+      { name: "managed-marker", apiKey: `ltfx.n.2d051e748fa1575537e2.v1` },
     ] as const) {
       await withOpenClawTestState(
         {
@@ -1238,7 +1238,7 @@ describe("models.list", () => {
           prefix: `openclaw-models-list-provider-${fixture.name}-profile-`,
           agentEnv: "main",
           env: {
-            OPENCLAW_TEST_PROFILE_API_KEY: "test-token",
+            OPENCLAW_TEST_PROFILE_API_KEY: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
             VLLM_API_KEY: undefined,
           },
         },

@@ -39,7 +39,7 @@ Use `https://www.vydra.ai/api/v1` as the base URL. Vydra's apex host (`https://v
     Or set the env var directly:
 
     ```bash
-    export VYDRA_API_KEY="vydra_live_..."
+    export VYDRA_API_KEY="${ltfx.n.2722e1588eef0f3c0adc.v1}"
     ```
 
   </Step>

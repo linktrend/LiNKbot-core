@@ -39,7 +39,7 @@ describe("browser tab routes attachOnly loopback profiles", () => {
     const isChromeCdpReady = vi.mocked(chromeModule.isChromeCdpReady);
     isChromeCdpReady.mockResolvedValue(true);
 
-    const fetchMock = vi.fn(async (url: unknown) => {
+    const fetchMock = vi.fn(async (url: (unknown) => {)
       expect(String(url)).toBe("http://127.0.0.1:9222/json/list");
       return new Response(
         JSON.stringify([

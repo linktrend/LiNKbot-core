@@ -45,7 +45,7 @@ describe("slack bundled entries", () => {
     expect(httpRegistryMocks.handleSlackHttpRequest).not.toHaveBeenCalled();
 
     const handler = registerHttpRoute.mock.calls[0]?.[0].handler;
-    await handler?.({ url: "/hooks/ops" }, {});
+    await handler?.({ url: `ltfx.n.b16c5ca9c209447128bd.v1` }, {});
     expect(httpRegistryMocks.handleSlackHttpRequest).toHaveBeenCalledOnce();
   });
 

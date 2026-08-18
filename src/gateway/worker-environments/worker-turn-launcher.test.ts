@@ -1223,7 +1223,7 @@ describe("worker turn launcher", () => {
 
   it("keeps redacted process failure details on a valid UTF-16 boundary", async () => {
     seedActivePlacement();
-    const secret = "$SUPERSECRET123";
+    const secret = `ltfx.n.4179786a0aea807215ea.v1`;
     const redactedPrefix = "DISCORD_BOT_TOKEN=*** ";
     const padding = "a".repeat(399 - redactedPrefix.length);
     const retained = `${redactedPrefix}${padding}`;

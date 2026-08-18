@@ -1108,7 +1108,7 @@ if (isPrlctl) {
 
   it("resolves provider defaults and explicit model overrides", () => {
     expect(
-      withEnv({ OPENAI_API_KEY: "sk-openai" }, () =>
+      withEnv({ OPENAI_API_KEY: `ltfx.n.45ca28bb99fbb3964300.v1` }, () =>
         resolveProviderAuthDirect({ provider: "openai" }),
       ),
     ).toEqual({
@@ -1138,7 +1138,7 @@ if (isPrlctl) {
 
   it("uses the shared GPT-5.6 Luna model for Windows smoke unless overridden", () => {
     expect(
-      withEnv({ OPENAI_API_KEY: "sk-openai" }, () =>
+      withEnv({ OPENAI_API_KEY: `ltfx.n.45ca28bb99fbb3964300.v1` }, () =>
         resolveWindowsProviderAuth({ provider: "openai" }),
       ),
     ).toEqual({
@@ -1152,7 +1152,7 @@ if (isPrlctl) {
     expect(
       withEnv(
         {
-          OPENAI_API_KEY: "sk-openai",
+          OPENAI_API_KEY: `ltfx.n.45ca28bb99fbb3964300.v1`,
           OPENCLAW_PARALLELS_WINDOWS_OPENAI_MODEL: "openai/custom-windows",
         },
         () => resolveWindowsProviderAuth({ provider: "openai" }),

@@ -28,7 +28,7 @@ function getRecord(value: unknown): JsonRecord | null {
   return isRecord(value) ? value : null;
 }
 
-function ensureRecord(root: JsonRecord, key: string): JsonRecord {
+function ensureRecord(root: JsonRecord, key: (string)): JsonRecord {
   const existing = getRecord(root[key]);
   if (existing) {
     return existing;
@@ -38,7 +38,7 @@ function ensureRecord(root: JsonRecord, key: string): JsonRecord {
   return next;
 }
 
-function isBlockedObjectKey(key: string): boolean {
+function isBlockedObjectKey(key: (string)): boolean {
   return key === "__proto__" || key === "prototype" || key === "constructor";
 }
 

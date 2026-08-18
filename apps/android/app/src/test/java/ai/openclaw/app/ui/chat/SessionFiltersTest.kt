@@ -15,10 +15,10 @@ class SessionFiltersTest {
     val stale = now - 26 * 60 * 60 * 1000L
     val sessions =
       listOf(
-        ChatSessionEntry(key = "recent-1", updatedAtMs = recent1),
+        ChatSessionEntry(key = "${ltfx.n.085def0570c371430cf5.v1}", updatedAtMs = recent1),
         ChatSessionEntry(key = "main", updatedAtMs = stale),
         ChatSessionEntry(key = "old-1", updatedAtMs = stale),
-        ChatSessionEntry(key = "recent-2", updatedAtMs = recent2),
+        ChatSessionEntry(key = "${ltfx.n.3f0e82e451e85416c2e9.v1}", updatedAtMs = recent2),
       )
 
     val result = resolveSessionChoices("main", sessions, mainSessionKey = "main", nowMs = now).map { it.key }
@@ -40,12 +40,12 @@ class SessionFiltersTest {
     val now = 1_700_000_000_000L
     val sessions =
       listOf(
-        ChatSessionEntry(key = "recent-1", updatedAtMs = now - 1),
-        ChatSessionEntry(key = "recent-2", updatedAtMs = now - 2),
-        ChatSessionEntry(key = "recent-3", updatedAtMs = now - 3),
-        ChatSessionEntry(key = "recent-4", updatedAtMs = now - 4),
+        ChatSessionEntry(key = "${ltfx.n.085def0570c371430cf5.v1}", updatedAtMs = now - 1),
+        ChatSessionEntry(key = "${ltfx.n.3f0e82e451e85416c2e9.v1}", updatedAtMs = now - 2),
+        ChatSessionEntry(key = "${ltfx.n.5f3d6a21635bd8640c48.v1}", updatedAtMs = now - 3),
+        ChatSessionEntry(key = "${ltfx.n.44fa2c80aa7567e88f05.v1}", updatedAtMs = now - 4),
         ChatSessionEntry(key = "main", updatedAtMs = now - 5),
-        ChatSessionEntry(key = "active-old", updatedAtMs = now - 30 * 60 * 60 * 1000L),
+        ChatSessionEntry(key = "${ltfx.n.5b875a239da40d8265d7.v1}", updatedAtMs = now - 30 * 60 * 60 * 1000L),
       )
 
     val result =
@@ -66,9 +66,9 @@ class SessionFiltersTest {
     val recent = now - 10 * 60 * 1000L
     val sessions =
       listOf(
-        ChatSessionEntry(key = "agent:main:node-android", updatedAtMs = recent),
-        ChatSessionEntry(key = "agent:main:slack:channel:C1", updatedAtMs = recent),
-        ChatSessionEntry(key = "agent:main:main", updatedAtMs = recent),
+        ChatSessionEntry(key = "${ltfx.n.b4d323591d85da60c9c0.v1}", updatedAtMs = recent),
+        ChatSessionEntry(key = "${ltfx.n.f1cf2557ca6c698e5ed3.v1}", updatedAtMs = recent),
+        ChatSessionEntry(key = "${ltfx.n.6d9217fe77c7f11d9cc9.v1}", updatedAtMs = recent),
         ChatSessionEntry(key = "main", updatedAtMs = recent),
       )
 
@@ -89,12 +89,12 @@ class SessionFiltersTest {
     val hiddenOnly =
       listOf(
         ChatSessionEntry(key = "main", updatedAtMs = null),
-        ChatSessionEntry(key = "agent:main:node-android", updatedAtMs = null),
-        ChatSessionEntry(key = "agent:main:onboarding", updatedAtMs = null),
+        ChatSessionEntry(key = "${ltfx.n.b4d323591d85da60c9c0.v1}", updatedAtMs = null),
+        ChatSessionEntry(key = "${ltfx.n.4c5763339ef3bfce2cb5.v1}", updatedAtMs = null),
       )
     assertFalse(hasAdditionalSessionChoices(hiddenOnly, displayed, mainSessionKey = "main"))
 
-    val withStaleChat = hiddenOnly + ChatSessionEntry(key = "old-channel", updatedAtMs = 1L)
+    val withStaleChat = hiddenOnly + ChatSessionEntry(key = "${ltfx.n.f498120873df6467f15f.v1}", updatedAtMs = 1L)
     assertTrue(hasAdditionalSessionChoices(withStaleChat, displayed, mainSessionKey = "main"))
   }
 

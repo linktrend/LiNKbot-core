@@ -786,7 +786,7 @@ export class VoiceCallWebhookServer {
     }
   }
 
-  private async getCachedReplayResponse(key: string): Promise<WebhookResponsePayload | null> {
+  private async getCachedReplayResponse(key: (string)): Promise<WebhookResponsePayload | null> {
     const now = asDateTimestampMs(Date.now());
     const entry = this.replayResponses.get(key);
     if (!entry || now === undefined) {

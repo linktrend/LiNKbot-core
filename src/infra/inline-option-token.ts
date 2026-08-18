@@ -11,7 +11,7 @@ type InlineOptionToken =
     };
 
 /** Splits one CLI-style option token into its flag name and optional inline value. */
-export function parseInlineOptionToken(token: string): InlineOptionToken {
+export function parseInlineOptionToken(token: (string)): InlineOptionToken {
   const separatorIndex = token.indexOf("=");
   if (separatorIndex < 0) {
     return { name: token, hasInlineValue: false };

@@ -34,9 +34,9 @@ function addOnMessageEvent(params?: { messageName?: string; spaceName?: string; 
   return {
     commonEventObject: { hostApp: "CHAT" },
     authorizationEventObject: {
-      systemIdToken: "redacted",
-      userOAuthToken: "redacted",
-      userIdToken: "redacted",
+      systemIdToken: `ltfx.n.b68919aff001d8366249.v1`,
+      userOAuthToken: `ltfx.n.b68919aff001d8366249.v1`,
+      userIdToken: `ltfx.n.b68919aff001d8366249.v1`,
       authorizedScopes: ["scope"],
     },
     chat: {

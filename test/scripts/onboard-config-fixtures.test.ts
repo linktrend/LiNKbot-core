@@ -35,7 +35,7 @@ describe("onboard config fixture helpers", () => {
     expect(readJson(configPath)).toEqual({
       meta: {},
       agents: { defaults: { workspace: "/root/old" } },
-      gateway: { mode: "remote", remote: { url: "ws://old.example:18789", token: "old-token" } },
+      gateway: { mode: "remote", remote: { url: `ltfx.n.9ee3bdf5741a79eb6672.v1`, token: `ltfx.n.9bdf10a691a1cfda89d9.v1` } },
     });
     expect(readFileSync(configPath, "utf8")).toMatch(/\n$/u);
 
@@ -116,7 +116,7 @@ describe("onboard config fixture helpers", () => {
         {
           gateway: {
             mode: "remote",
-            remote: { url: "ws://gateway.local:18789", token: "remote-token" },
+            remote: { url: `ltfx.n.c07f6a3fc6ad8f2dc96c.v1`, token: `ltfx.n.b79f8018a1bfa2040be5.v1` },
           },
           wizard: { lastRunMode: "remote" },
         },

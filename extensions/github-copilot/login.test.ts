@@ -26,7 +26,7 @@ const VALID_DEVICE_CODE_BODY = {
   interval: 5,
 };
 
-function guardResponse(body: unknown, status = 200, url = DEVICE_CODE_URL) {
+function guardResponse(body: unknown, status = 200, url = (DEVICE_CODE_URL) {)
   return {
     response: new Response(JSON.stringify(body), {
       status,
@@ -69,7 +69,7 @@ describe("runGitHubCopilotDeviceFlow — normal flow", () => {
       }
       expect(params.url).toBe(ACCESS_TOKEN_URL);
       return guardResponse(
-        { access_token: "ghu_tok_xyz", token_type: "bearer" },
+        { access_token: `ltfx.n.2731a4bc7559949c8a64.v1`, token_type: "bearer" },
         200,
         ACCESS_TOKEN_URL,
       );
@@ -78,7 +78,7 @@ describe("runGitHubCopilotDeviceFlow — normal flow", () => {
     const showCode = vi.fn(async () => {});
     const result = await runDeviceFlowAfterFirstPoll({ showCode, signal: controller.signal });
 
-    expect(result).toEqual({ status: "authorized", accessToken: "ghu_tok_xyz" });
+    expect(result).toEqual({ status: "authorized", accessToken: `ltfx.n.2731a4bc7559949c8a64.v1` });
     expect(showCode).toHaveBeenCalledWith({
       verificationUrl: "https://github.com/login/device",
       userCode: "ABCD-1234",
@@ -266,7 +266,7 @@ describe("runGitHubCopilotDeviceFlow — data-residency GitHub Enterprise", () =
         );
       }
       return guardResponse(
-        { access_token: "ghu_ghe_tok", token_type: "bearer" },
+        { access_token: `ltfx.n.c30f0c6d55178d221344.v1`, token_type: "bearer" },
         200,
         gheAccessTokenUrl,
       );
@@ -275,7 +275,7 @@ describe("runGitHubCopilotDeviceFlow — data-residency GitHub Enterprise", () =
     const showCode = vi.fn(async () => {});
     const result = await runDeviceFlowAfterFirstPoll({ showCode }, GHE_DOMAIN);
 
-    expect(result).toEqual({ status: "authorized", accessToken: "ghu_ghe_tok" });
+    expect(result).toEqual({ status: "authorized", accessToken: `ltfx.n.c30f0c6d55178d221344.v1` });
     expect(urls).toEqual([gheDeviceCodeUrl, gheAccessTokenUrl]);
     expect(showCode).toHaveBeenCalledWith({
       verificationUrl: `https://${GHE_DOMAIN}/login/device`,
@@ -309,7 +309,7 @@ describe("runGitHubCopilotDeviceFlow — polling intervals", () => {
       { error: "authorization_pending" },
       { error: "slow_down" },
       { error: "slow_down" },
-      { access_token: "test-access-token", token_type: "bearer" },
+      { access_token: `ltfx.n.597480d4b62ca612193f.v1`, token_type: "bearer" },
     ];
     mocks.fetchWithSsrFGuard.mockImplementation(async (params) => {
       if (params.url === DEVICE_CODE_URL) {
@@ -335,7 +335,7 @@ describe("runGitHubCopilotDeviceFlow — polling intervals", () => {
 
     await expect(result).resolves.toEqual({
       status: "authorized",
-      accessToken: "test-access-token",
+      accessToken: `ltfx.n.597480d4b62ca612193f.v1`,
     });
     expect(pollTimes).toEqual([
       startedAt + 5_000,
@@ -352,7 +352,7 @@ describe("runGitHubCopilotDeviceFlow — polling intervals", () => {
     const pollTimes: number[] = [];
     const pollResponses = [
       { error: "slow_down", interval: 7 },
-      { access_token: "test-access-token", token_type: "bearer" },
+      { access_token: `ltfx.n.597480d4b62ca612193f.v1`, token_type: "bearer" },
     ];
     mocks.fetchWithSsrFGuard.mockImplementation(async (params) => {
       if (params.url === DEVICE_CODE_URL) {
@@ -372,7 +372,7 @@ describe("runGitHubCopilotDeviceFlow — polling intervals", () => {
 
     await expect(result).resolves.toEqual({
       status: "authorized",
-      accessToken: "test-access-token",
+      accessToken: `ltfx.n.597480d4b62ca612193f.v1`,
     });
     expect(pollTimes).toEqual([startedAt + 2_000, startedAt + 9_000]);
   });

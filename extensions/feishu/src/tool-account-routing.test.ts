@@ -278,7 +278,7 @@ describe("feishu tool account routing", () => {
     registerFeishuBitableTools(api);
 
     const tool = resolveTool("feishu_bitable_get_meta", { agentAccountId: "b" });
-    await tool.execute("call", { url: "invalid-url" });
+    await tool.execute("call", { url: `ltfx.n.9923398554c8e51c650d.v1` });
 
     expect(createFeishuClientMock.mock.calls.at(-1)?.[0]?.appId).toBe("app-b");
   });
@@ -293,7 +293,7 @@ describe("feishu tool account routing", () => {
     registerFeishuBitableTools(api);
 
     const tool = resolveTool("feishu_bitable_get_meta", { agentAccountId: "a" });
-    const result = await tool.execute("call", { url: "invalid-url" });
+    const result = await tool.execute("call", { url: `ltfx.n.9923398554c8e51c650d.v1` });
 
     expect(createFeishuClientMock).not.toHaveBeenCalled();
     expect(result.details.error).toBe('Feishu Bitable tools are disabled for account "a"');
@@ -309,7 +309,7 @@ describe("feishu tool account routing", () => {
     registerFeishuBitableTools(api);
 
     const tool = resolveTool("feishu_bitable_get_meta", { agentAccountId: "b" });
-    const result = await tool.execute("call", { url: "invalid-url", accountId: "a" });
+    const result = await tool.execute("call", { url: `ltfx.n.9923398554c8e51c650d.v1`, accountId: "a" });
 
     expect(createFeishuClientMock).not.toHaveBeenCalled();
     expect(result.details.error).toBe('Feishu Bitable tools are disabled for account "a"');
@@ -320,8 +320,8 @@ describe("feishu tool account routing", () => {
     registerFeishuBitableTools(api);
 
     const tool = resolveTool("feishu_bitable_get_meta", { agentAccountId: "b" });
-    await tool.execute("call-ctx", { url: "invalid-url" });
-    await tool.execute("call-override", { url: "invalid-url", accountId: "a" });
+    await tool.execute("call-ctx", { url: `ltfx.n.9923398554c8e51c650d.v1` });
+    await tool.execute("call-override", { url: `ltfx.n.9923398554c8e51c650d.v1`, accountId: "a" });
 
     expect(clientAppIdAt(0)).toBe("app-b");
     expect(clientAppIdAt(1)).toBe("app-a");
@@ -382,7 +382,7 @@ describe("feishu tool account routing", () => {
     registerFeishuBitableTools(api);
 
     const tool = resolveTool("feishu_bitable_get_meta", { agentAccountId: "a" });
-    await tool.execute("call", { url: "invalid-url" });
+    await tool.execute("call", { url: `ltfx.n.9923398554c8e51c650d.v1` });
 
     expect(createFeishuClientMock.mock.calls.at(-1)?.[0]?.appId).toBe("app-a");
   });
@@ -398,7 +398,7 @@ describe("feishu tool account routing", () => {
     registerFeishuBitableTools(api);
 
     const tool = resolveTool("feishu_bitable_get_meta", { agentAccountId: "a" });
-    const result = await tool.execute("call", { url: "invalid-url" });
+    const result = await tool.execute("call", { url: `ltfx.n.9923398554c8e51c650d.v1` });
 
     expect(createFeishuClientMock).not.toHaveBeenCalled();
     expect(result.details.error).toBe('Feishu Bitable tools are disabled for account "a"');

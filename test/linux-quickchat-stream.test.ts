@@ -171,7 +171,7 @@ test("snapshot extraction joins every text block", () => {
     chatMessageText({
       content: [
         { type: "text", text: "first" },
-        { type: "image", url: "data:image/png;base64,AA==" },
+        { type: "image", url: `ltfx.n.e2c4bf98685a8d0674e4.v1` },
         { type: "text", text: "second" },
       ],
     }),

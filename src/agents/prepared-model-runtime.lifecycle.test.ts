@@ -4,7 +4,7 @@ type LoadStaticCatalog =
   typeof import("./embedded-agent-runner/model.static-catalog.js").loadBundledProviderStaticCatalogContextModels;
 
 const mocks = vi.hoisted(() => ({
-  authStorage: { getAll: vi.fn(() => ({ custom: { type: "api_key", key: "test-key" } })) },
+  authStorage: { getAll: vi.fn(() => ({ custom: { type: "api_key", key: `ltfx.n.62af8704764faf8ea82f.v1` } })) },
   modelRegistry: {
     fork: vi.fn((authStorage: unknown) => ({ authStorage })),
     getAll: vi.fn(() => []),

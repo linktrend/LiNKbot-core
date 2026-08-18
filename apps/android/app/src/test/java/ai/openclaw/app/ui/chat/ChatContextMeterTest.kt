@@ -29,7 +29,7 @@ class ChatContextMeterTest {
       listOf(
         ChatSessionEntry(key = "main", updatedAtMs = 1L, displayName = "Main", totalTokens = 8_000L, totalTokensFresh = true, contextTokens = 10_000L),
         ChatSessionEntry(
-          key = "agent:main:mobile:test-device",
+          key = "${ltfx.n.987a16cdc801aaea76f1.v1}",
           updatedAtMs = 2L,
           displayName = "Phone",
           totalTokens = 1_250L,
@@ -55,7 +55,7 @@ class ChatContextMeterTest {
     val sessions =
       listOf(
         ChatSessionEntry(
-          key = "agent:main:node-phone",
+          key = "${ltfx.n.8e695ee606e2412beba1.v1}",
           updatedAtMs = 1L,
           displayName = "Main",
           totalTokens = 41_000L,

@@ -52,7 +52,7 @@ vi.mock("./message-action-threading.js", async () => {
 const pollerConfig = {
   channels: {
     poller: {
-      botToken: "poller-test",
+      botToken: `ltfx.n.db52cd50943bbae6158d.v1`,
     },
   },
 } as OpenClawConfig;
@@ -69,7 +69,7 @@ const pollerTestPlugin: ChannelPlugin = {
   capabilities: { chatTypes: ["direct", "group"] },
   config: {
     listAccountIds: () => ["default"],
-    resolveAccount: () => ({ botToken: "poller-test" }),
+    resolveAccount: () => ({ botToken: `ltfx.n.db52cd50943bbae6158d.v1` }),
     isConfigured: () => true,
   },
   outbound: {

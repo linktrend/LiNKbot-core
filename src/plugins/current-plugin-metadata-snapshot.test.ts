@@ -178,7 +178,7 @@ describe("current plugin metadata snapshot", () => {
   it("requires exact plugin scope when the caller derives scope from the current index", () => {
     const config = { plugins: { allow: ["demo", "other"] } };
     const pluginIdScope = {
-      key: "test-scope",
+      key: `ltfx.n.337970215e7c494a2b65.v1`,
       resolve: () => ["demo", "other"],
     };
     const unscoped = createSnapshot({ config });

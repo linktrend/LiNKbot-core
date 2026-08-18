@@ -271,7 +271,7 @@ describe("tool search gateway e2e lane result", () => {
             tempRoot,
           });
         },
-        runtimeEnv: { OPENCLAW_GATEWAY_TOKEN: "test-token" },
+        runtimeEnv: { OPENCLAW_GATEWAY_TOKEN: `ltfx.n.4c5dc9b7708905f77f5e.v1` },
         tempRoot,
         workspaceDir: tempRoot,
       },

@@ -37,7 +37,7 @@ describe("createCopilotByokProxy", () => {
         id: "proxy-model",
         baseUrl: "https://proxy.example/v1?routing=blue",
       },
-      resolvedApiKey: "secret-key",
+      resolvedApiKey: `ltfx.n.85dbe15d75ef9308c7ae.v1`,
     });
 
     const proxy = await createCopilotByokProxy(resolvedProvider);
@@ -95,7 +95,7 @@ describe("createCopilotByokProxy", () => {
         baseUrl: "https://tokenplan.example/v1",
         authHeader: true,
       },
-      resolvedApiKey: "tokenplan-secret",
+      resolvedApiKey: `ltfx.n.462defc77a33705f2d96.v1`,
     });
 
     const proxy = await createCopilotByokProxy(resolvedProvider);
@@ -174,7 +174,7 @@ describe("createCopilotByokProxy", () => {
         id: "deployment-gpt",
         baseUrl: "https://example.openai.azure.com/openai/v1",
       },
-      resolvedApiKey: "azure-key",
+      resolvedApiKey: `ltfx.n.d832c76cffcd05970d49.v1`,
     });
 
     const proxy = await createCopilotByokProxy(resolvedProvider);
@@ -185,7 +185,7 @@ describe("createCopilotByokProxy", () => {
         `${proxy?.provider.provider?.baseUrl}/openai/v1/responses?trace=request`,
         {
           method: "POST",
-          headers: { "api-key": "azure-key" },
+          headers: { "api-key": `ltfx.n.d832c76cffcd05970d49.v1` },
           body: JSON.stringify({ model: "deployment-gpt" }),
         },
       );
@@ -199,7 +199,7 @@ describe("createCopilotByokProxy", () => {
           init: expect.objectContaining({
             headers: expect.objectContaining({
               "accept-encoding": "identity",
-              "api-key": "azure-key",
+              "api-key": `ltfx.n.d832c76cffcd05970d49.v1`,
             }),
           }),
         }),
@@ -222,7 +222,7 @@ describe("createCopilotByokProxy", () => {
         baseUrl: "https://example.openai.azure.com/openai/v1",
         authHeader: true,
       },
-      resolvedApiKey: "azure-bearer",
+      resolvedApiKey: `ltfx.n.421403df0756803301ef.v1`,
     });
 
     const proxy = await createCopilotByokProxy(resolvedProvider);

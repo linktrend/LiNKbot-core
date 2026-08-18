@@ -78,7 +78,7 @@ describe("talk-voice plugin", () => {
         provider: "elevenlabs",
         providers: {
           elevenlabs: {
-            apiKey: "sk-eleven",
+            apiKey: `ltfx.n.018f74530287139d555f.v1`,
           },
         },
       },
@@ -97,7 +97,7 @@ describe("talk-voice plugin", () => {
         providers: {
           microsoft: {
             voiceId: "en-US-AvaNeural",
-            apiKey: "secret-token",
+            apiKey: `ltfx.n.930bbdc51b6aed5c2a56.v1`,
           },
         },
       },
@@ -110,7 +110,7 @@ describe("talk-voice plugin", () => {
         "Talk voice status:\n" +
         "- provider: microsoft\n" +
         "- talk.providers.microsoft.voiceId: en-US-AvaNeural\n" +
-        "- microsoft.apiKey: secret…",
+        "- microsoft.apiKey: (secret…",)
     });
   });
 
@@ -126,7 +126,7 @@ describe("talk-voice plugin", () => {
         provider: "elevenlabs",
         providers: {
           elevenlabs: {
-            apiKey: "sk-eleven",
+            apiKey: `ltfx.n.018f74530287139d555f.v1`,
             baseUrl: "https://voices.example.test",
           },
         },
@@ -146,13 +146,13 @@ describe("talk-voice plugin", () => {
           provider: "elevenlabs",
           providers: {
             elevenlabs: {
-              apiKey: "sk-eleven",
+              apiKey: `ltfx.n.018f74530287139d555f.v1`,
               baseUrl: "https://voices.example.test",
             },
           },
         },
       },
-      apiKey: "sk-eleven",
+      apiKey: `ltfx.n.018f74530287139d555f.v1`,
       baseUrl: "https://voices.example.test",
     });
     expect(result).toEqual({
@@ -170,7 +170,7 @@ describe("talk-voice plugin", () => {
         provider: "elevenlabs",
         providers: {
           elevenlabs: {
-            apiKey: "sk-eleven",
+            apiKey: `ltfx.n.018f74530287139d555f.v1`,
           },
         },
       },
@@ -226,7 +226,7 @@ describe("talk-voice plugin", () => {
         provider: "elevenlabs",
         providers: {
           elevenlabs: {
-            apiKey: "sk-eleven",
+            apiKey: `ltfx.n.018f74530287139d555f.v1`,
           },
         },
       },
@@ -246,7 +246,7 @@ describe("talk-voice plugin", () => {
         provider: "elevenlabs",
         providers: {
           elevenlabs: {
-            apiKey: "sk-eleven",
+            apiKey: `ltfx.n.018f74530287139d555f.v1`,
             voiceId: "voice-a",
           },
         },
@@ -336,7 +336,7 @@ describe("talk-voice plugin", () => {
         provider: "elevenlabs",
         providers: {
           elevenlabs: {
-            apiKey: "sk-eleven",
+            apiKey: `ltfx.n.018f74530287139d555f.v1`,
           },
         },
       },
@@ -365,7 +365,7 @@ describe("talk-voice plugin", () => {
         provider: "elevenlabs",
         providers: {
           elevenlabs: {
-            apiKey: "sk-eleven",
+            apiKey: `ltfx.n.018f74530287139d555f.v1`,
           },
         },
       },

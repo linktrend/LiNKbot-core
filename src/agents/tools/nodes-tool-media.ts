@@ -470,7 +470,7 @@ async function executeScreenSnapshot({
   };
 }
 
-function requireString(params: Record<string, unknown>, key: string): string {
+function requireString(params: Record<string, unknown>, key: (string)): string {
   const raw = params[key];
   if (typeof raw !== "string" || raw.trim().length === 0) {
     throw new Error(`${key} required`);

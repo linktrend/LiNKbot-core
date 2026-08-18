@@ -30,7 +30,7 @@ describe("status.gateway-connection", () => {
         nodeOnlyGateway: null,
         remoteUrlMissing: true,
         gatewayConnection: {
-          url: "ws://127.0.0.1:18789",
+          url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
           urlSource: "local loopback",
           message: "ignored",
         },
@@ -59,7 +59,7 @@ describe("status.gateway-connection", () => {
         },
         remoteUrlMissing: false,
         gatewayConnection: {
-          url: "ws://127.0.0.1:18789",
+          url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
           urlSource: "local loopback",
           message: "Gateway mode: local",
         },

@@ -15,10 +15,10 @@ const INTEGRATION_ID = "vault";
 const PROVIDER_ALIAS = "team-secrets";
 const TOKEN_V1 = "proof-gateway-token-v1";
 const TOKEN_V2 = "proof-gateway-token-v2";
-const ENV_TOKEN = "proof-env-token";
-const FILE_TOKEN = "proof-file-token";
-const MANUAL_EXEC_TOKEN = "proof-manual-exec-token";
-const PLUGIN_EXEC_TOKEN = "proof-plugin-exec-token";
+const ENV_TOKEN = `ltfx.n.e6b9513b614898fc9d1f.v1`;
+const FILE_TOKEN = `ltfx.n.733b169debd996623bde.v1`;
+const MANUAL_EXEC_TOKEN = `ltfx.n.24b3ccc7d6a37b9ddee3.v1`;
+const PLUGIN_EXEC_TOKEN = `ltfx.n.64bbb9834b9a5e069a10.v1`;
 const OPENAI_PROFILE = "openai:secretref-proof";
 const OPENAI_LIVE_PROOF_MODEL = "openai/gpt-5.6-luna";
 const MAX_SECRET_PROOF_TIMER_TIMEOUT_MS = 2_147_000_000;
@@ -865,7 +865,7 @@ function serviceManagerEnv(source) {
   };
 }
 
-async function startGateway(envCtx, port, token = TOKEN_V1) {
+async function startGateway(envCtx, port, token = (TOKEN_V1) {)
   const command = await resolveOpenClawCommand(
     ["gateway", "run", "--port", String(port), "--bind", "loopback", "--allow-unconfigured"],
     envCtx.env,

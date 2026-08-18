@@ -29,7 +29,7 @@ describe("QA auth profile store", () => {
         "qa-mock-openai": {
           type: "api_key",
           provider: "openai",
-          key: "qa-mock-not-a-real-key",
+          key: `ltfx.n.08d79105aa85ee2c5875.v1`,
         },
       },
     });
@@ -51,7 +51,7 @@ describe("QA auth profile store", () => {
           "qa-mock-openai": {
             type: "api_key",
             provider: "openai",
-            key: "qa-mock-not-a-real-key",
+            key: `ltfx.n.08d79105aa85ee2c5875.v1`,
           },
         },
       }),
@@ -72,7 +72,7 @@ describe("QA auth profile store", () => {
           "qa-mock-openai": {
             type: "api_key",
             provider: "openai",
-            key: "qa-mock-not-a-real-key",
+            key: `ltfx.n.08d79105aa85ee2c5875.v1`,
           },
         },
       }),
@@ -104,7 +104,7 @@ describe("QA auth profile store", () => {
         "qa-mock-anthropic": {
           type: "api_key",
           provider: "anthropic",
-          key: "qa-mock-not-a-real-key",
+          key: `ltfx.n.08d79105aa85ee2c5875.v1`,
         },
       },
     });
@@ -164,7 +164,7 @@ describe("QA auth profile store", () => {
         "qa-mock-openai": {
           type: "api_key",
           provider: "openai",
-          key: "qa-mock-not-a-real-key",
+          key: `ltfx.n.08d79105aa85ee2c5875.v1`,
         },
       },
     });
@@ -220,7 +220,7 @@ describe("QA auth profile store", () => {
         "qa-mock-anthropic": {
           type: "api_key",
           provider: "anthropic",
-          key: "qa-mock-not-a-real-key",
+          key: `ltfx.n.08d79105aa85ee2c5875.v1`,
         },
       },
     });
@@ -246,7 +246,7 @@ describe("QA auth profile store", () => {
           existing: {
             mode: "api_key",
             provider: "openai",
-            apiKey: "qa-existing-key",
+            apiKey: `ltfx.n.e4fd67511cc7280c68a9.v1`,
           },
         },
       })}\n`,
@@ -259,7 +259,7 @@ describe("QA auth profile store", () => {
         "qa-mock-anthropic": {
           type: "api_key",
           provider: "anthropic",
-          key: "qa-mock-not-a-real-key",
+          key: `ltfx.n.08d79105aa85ee2c5875.v1`,
         },
       },
     });
@@ -270,7 +270,7 @@ describe("QA auth profile store", () => {
     expect(written.profiles?.existing).toEqual({
       mode: "api_key",
       provider: "openai",
-      apiKey: "qa-existing-key",
+      apiKey: `ltfx.n.e4fd67511cc7280c68a9.v1`,
     });
   });
 });

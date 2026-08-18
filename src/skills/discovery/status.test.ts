@@ -440,7 +440,7 @@ describe("buildWorkspaceSkillStatus", () => {
   });
 
   it("does not expose raw config values in config checks", () => {
-    const secret = "discord-token-secret-abc"; // pragma: allowlist secret
+    const secret = `ltfx.n.28867c9ed1e3ef9a350b.v1`; // pragma: allowlist secret
     const entry: SkillEntry = {
       skill: createCanonicalFixtureSkill({
         name: "discord",

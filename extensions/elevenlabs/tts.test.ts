@@ -11,7 +11,7 @@ describe("elevenlabs tts diagnostics", () => {
   function createDefaultTtsRequest() {
     return {
       text: "hello",
-      apiKey: "test-key",
+      apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
       baseUrl: "https://api.elevenlabs.io",
       voiceId: "pMsXgVXv3BLzUgSXRplE",
       modelId: "eleven_multilingual_v2",

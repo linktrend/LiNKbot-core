@@ -865,7 +865,7 @@ describe("activateSetupInference", () => {
                 credential: {
                   type: "api_key" as const,
                   provider: "groq",
-                  key: ctx.opts?.token,
+                  key: (ctx.opts?.token,)
                 },
               },
             ],
@@ -1131,7 +1131,7 @@ describe("activateSetupInference", () => {
     const result = await activateSetupInference({
       kind: "api-key",
       authChoice: "groq-api-key",
-      apiKey: "temporary-plaintext-key",
+      apiKey: `ltfx.n.12918700163956a7a3db.v1`,
       surface: "gateway",
       runtime,
       deps: {
@@ -1677,7 +1677,7 @@ describe("activateSetupInference", () => {
 
   it("rejects ambient credential drift before persisting a model", async () => {
     const initialAuthFingerprint = fingerprintResolvedProviderAuth({
-      apiKey: "initial-env-key",
+      apiKey: `ltfx.n.72f18c8d1c6ce29eb055.v1`,
       source: "env:ANTHROPIC_API_KEY",
       mode: "api-key",
     });
@@ -1701,7 +1701,7 @@ describe("activateSetupInference", () => {
         deps: {
           runEmbeddedAgent: runEmbeddedAgent as never,
           resolveApiKeyForProvider: vi.fn(async () => ({
-            apiKey: "rotated-env-key",
+            apiKey: `ltfx.n.b4ea87aa3344fc892db5.v1`,
             source: "env:ANTHROPIC_API_KEY",
             mode: "api-key",
           })) as never,
@@ -1809,7 +1809,7 @@ describe("activateSetupInference", () => {
   });
 
   it("does not touch config when the live test fails", async () => {
-    const providerSecret = "gsk_abcdefghijklmnop";
+    const providerSecret = `ltfx.n.83a54b5133824ecb884c.v1`;
     const transformConfig = vi.fn();
     const runCliAgent = vi.fn(async () => {
       throw new Error(`401 invalid_api_key ${providerSecret}`);
@@ -2202,8 +2202,8 @@ describe("activateSetupInference", () => {
         profileId: "groq:legacy",
         credential:
           credentialType === "api_key"
-            ? { type: "api_key", provider: "groq", key: "legacy-key" }
-            : { type: "token", provider: "groq", token: "legacy-key" },
+            ? { type: "api_key", provider: "groq", key: `ltfx.n.94eeb7bbe979dd0d2f0b.v1` }
+            : { type: "token", provider: "groq", token: `ltfx.n.94eeb7bbe979dd0d2f0b.v1` },
         agentDir,
       });
       await updateAuthProfileStoreWithLock({
@@ -2219,8 +2219,8 @@ describe("activateSetupInference", () => {
             profileId: "groq:default",
             credential:
               credentialType === "api_key"
-                ? { type: "api_key" as const, provider: "groq", key: ctx.opts?.token }
-                : { type: "token" as const, provider: "groq", token: ctx.opts?.token ?? "" },
+                ? { type: "api_key" as const, provider: "groq", key: (ctx.opts?.token })
+                : { type: "token" as const, provider: "groq", token: (ctx.opts?.token ?? "" },)
           },
         ],
         defaultModel: "groq/llama-3.3-70b-versatile",
@@ -2258,7 +2258,7 @@ describe("activateSetupInference", () => {
         const result = await activateSetupInference({
           kind: "api-key",
           authChoice: "groq-api-key",
-          apiKey: "test-groq-key",
+          apiKey: `ltfx.n.55039dbaffd69d48d892.v1`,
           workspace: "/tmp/openclaw-workspace",
           surface: "gateway",
           runtime,
@@ -2299,7 +2299,7 @@ describe("activateSetupInference", () => {
         );
         expect(runAuth).toHaveBeenCalledWith(
           expect.objectContaining({
-            opts: expect.objectContaining({ token: "test-groq-key", tokenProvider: "groq" }),
+            opts: expect.objectContaining({ token: `ltfx.n.55039dbaffd69d48d892.v1`, tokenProvider: "groq" }),
             allowSecretRefPrompt: false,
             secretInputMode: "plaintext",
           }),
@@ -2334,8 +2334,8 @@ describe("activateSetupInference", () => {
         });
         expect(readAuthProfileStoreForTest(agentDir).profiles[activatedProfileId]).toMatchObject(
           credentialType === "api_key"
-            ? { type: "api_key", provider: "groq", key: "test-groq-key" }
-            : { type: "token", provider: "groq", token: "test-groq-key" },
+            ? { type: "api_key", provider: "groq", key: `ltfx.n.55039dbaffd69d48d892.v1` }
+            : { type: "token", provider: "groq", token: `ltfx.n.55039dbaffd69d48d892.v1` },
         );
         expect(readAuthProfileStoreForTest(agentDir).order?.groq).toEqual(["groq:legacy"]);
         expect(
@@ -2371,7 +2371,7 @@ describe("activateSetupInference", () => {
       const result = await activateSetupInference({
         kind: "api-key",
         authChoice: "groq-api-key",
-        apiKey: "candidate-key",
+        apiKey: `ltfx.n.73a71316531381f9e226.v1`,
         surface: "gateway",
         runtime,
         deps: {
@@ -2447,7 +2447,7 @@ describe("activateSetupInference", () => {
                 credential: {
                   type: "api_key" as const,
                   provider: "groq",
-                  key: ctx.opts?.token,
+                  key: (ctx.opts?.token,)
                 },
               },
               {
@@ -2455,14 +2455,14 @@ describe("activateSetupInference", () => {
                 credential: {
                   type: "api_key" as const,
                   provider: "other",
-                  key: "must-not-persist",
+                  key: `ltfx.n.e09701a507adb0c20a64.v1`,
                 },
               },
             ],
             defaultModel: "groq/llama-3.3-70b-versatile",
             configPatch: {
               gateway: { port: 99_999 },
-              channels: { discord: { enabled: true, token: "must-not-persist" } },
+              channels: { discord: { enabled: true, token: `ltfx.n.e09701a507adb0c20a64.v1` } },
               agents: {
                 defaults: {
                   workspace: "/provider/workspace",
@@ -2516,7 +2516,7 @@ describe("activateSetupInference", () => {
       const result = await activateSetupInference({
         kind: "api-key",
         authChoice: "groq-api-key",
-        apiKey: "selected-key",
+        apiKey: `ltfx.n.4af900489429183b065f.v1`,
         surface: "gateway",
         runtime,
         deps: {
@@ -2608,7 +2608,7 @@ describe("activateSetupInference", () => {
           throw new Error("expected setup profile");
         }
         const authFingerprint = fingerprintResolvedProviderAuth({
-          apiKey: "submitted-key",
+          apiKey: `ltfx.n.972a4e23f539c1109024.v1`,
           profileId,
           source: `profile:${profileId}`,
           mode: "api-key",
@@ -2630,7 +2630,7 @@ describe("activateSetupInference", () => {
         activateSetupInference({
           kind: "api-key",
           authChoice: "groq-api-key",
-          apiKey: "submitted-key",
+          apiKey: `ltfx.n.972a4e23f539c1109024.v1`,
           surface: "gateway",
           runtime,
           deps: {
@@ -2644,7 +2644,7 @@ describe("activateSetupInference", () => {
             resolveManifestProviderAuthChoice: groqSetupChoice,
             runEmbeddedAgent: runEmbeddedAgent as never,
             resolveApiKeyForProvider: vi.fn(async (params: { profileId?: string }) => ({
-              apiKey: "different-real-store-key",
+              apiKey: `ltfx.n.2e7bce381c08c0f04292.v1`,
               profileId: params.profileId,
               source: `profile:${params.profileId}`,
               mode: "api-key",
@@ -2692,7 +2692,7 @@ describe("activateSetupInference", () => {
                 credential: {
                   type: "api_key" as const,
                   provider: "groq",
-                  key: ctx.opts?.token,
+                  key: (ctx.opts?.token,)
                 },
               },
             ],
@@ -2703,7 +2703,7 @@ describe("activateSetupInference", () => {
     };
     await upsertAuthProfileWithLock({
       profileId: "groq:default",
-      credential: { type: "api_key", provider: "groq", key: "existing-key" },
+      credential: { type: "api_key", provider: "groq", key: `ltfx.n.711b566d4a1c301fd20c.v1` },
       agentDir,
     });
     const transformConfig = vi.fn(async (params: { transform: Function }) => {
@@ -2720,7 +2720,7 @@ describe("activateSetupInference", () => {
         activateSetupInference({
           kind: "api-key",
           authChoice: "groq-api-key",
-          apiKey: "replacement-key",
+          apiKey: `ltfx.n.2eab5c9342365eb3d045.v1`,
           surface: "gateway",
           runtime,
           deps: {
@@ -2747,7 +2747,7 @@ describe("activateSetupInference", () => {
       ).rejects.toThrow("simulated config commit failure");
 
       const store = readAuthProfileStoreForTest(agentDir);
-      expect(store.profiles["groq:default"]).toMatchObject({ key: "existing-key" });
+      expect(store.profiles["groq:default"]).toMatchObject({ key: `ltfx.n.711b566d4a1c301fd20c.v1` });
       expect(Object.keys(store.profiles).filter((id) => id.startsWith("groq:setup-"))).toEqual([]);
     } finally {
       await removeOAuthTestTempRoot(stateDir);
@@ -2764,7 +2764,7 @@ describe("activateSetupInference", () => {
     const credential = {
       type: "api_key" as const,
       provider: "groq",
-      key: "submitted-key",
+      key: `ltfx.n.972a4e23f539c1109024.v1`,
     };
     let existingProfileId: string | undefined;
     let preexistingCredentialDeleted = false;
@@ -2807,7 +2807,7 @@ describe("activateSetupInference", () => {
         activateSetupInference({
           kind: "api-key",
           authChoice: "groq-api-key",
-          apiKey: "submitted-key",
+          apiKey: `ltfx.n.972a4e23f539c1109024.v1`,
           surface: "gateway",
           runtime,
           deps: {
@@ -2883,7 +2883,7 @@ describe("activateSetupInference", () => {
         activateSetupInference({
           kind: "api-key",
           authChoice: "groq-api-key",
-          apiKey: "candidate-key",
+          apiKey: `ltfx.n.73a71316531381f9e226.v1`,
           workspace: "/tmp/openclaw-workspace",
           surface: "gateway",
           runtime,
@@ -2952,7 +2952,7 @@ describe("activateSetupInference", () => {
         activateSetupInference({
           kind: "api-key",
           authChoice: "groq-api-key",
-          apiKey: "candidate-key",
+          apiKey: `ltfx.n.73a71316531381f9e226.v1`,
           surface: "gateway",
           runtime,
           deps: {
@@ -2998,7 +2998,7 @@ describe("activateSetupInference", () => {
         activateSetupInference({
           kind: "api-key",
           authChoice: "groq-api-key",
-          apiKey: "replacement-key",
+          apiKey: `ltfx.n.2eab5c9342365eb3d045.v1`,
           surface: "gateway",
           runtime,
           deps: {
@@ -3077,7 +3077,7 @@ describe("activateSetupInference", () => {
       const error = await activateSetupInference({
         kind: "api-key",
         authChoice: "groq-api-key",
-        apiKey: "candidate-key",
+        apiKey: `ltfx.n.73a71316531381f9e226.v1`,
         workspace: "/tmp/openclaw-workspace",
         surface: "gateway",
         runtime,
@@ -3138,7 +3138,7 @@ describe("activateSetupInference", () => {
         activateSetupInference({
           kind: "api-key",
           authChoice: "groq-api-key",
-          apiKey: "candidate-key",
+          apiKey: `ltfx.n.73a71316531381f9e226.v1`,
           workspace: "/tmp/openclaw-workspace",
           surface: "gateway",
           runtime,
@@ -3189,7 +3189,7 @@ describe("activateSetupInference", () => {
     const agentDir = path.join(stateDir, "agent");
     const auxProvider = {
       baseUrl: "https://aux.example.test/v1",
-      apiKey: "base-key",
+      apiKey: `ltfx.n.75109f8c2467d9664da3.v1`,
       models: [],
     };
     const initialConfig = {
@@ -3200,7 +3200,7 @@ describe("activateSetupInference", () => {
       ...initialConfig,
       models: {
         providers: {
-          aux: { ...auxProvider, apiKey: "operator-key" },
+          aux: { ...auxProvider, apiKey: `ltfx.n.c9736463f555cdb7d2a7.v1` },
         },
       },
     };
@@ -3223,7 +3223,7 @@ describe("activateSetupInference", () => {
         activateSetupInference({
           kind: "api-key",
           authChoice: "groq-api-key",
-          apiKey: "candidate-key",
+          apiKey: `ltfx.n.73a71316531381f9e226.v1`,
           surface: "gateway",
           runtime,
           deps: {
@@ -3292,7 +3292,7 @@ describe("activateSetupInference", () => {
         activateSetupInference({
           kind: "api-key",
           authChoice: "groq-api-key",
-          apiKey: "candidate-key",
+          apiKey: `ltfx.n.73a71316531381f9e226.v1`,
           surface: "gateway",
           runtime,
           deps: deps as never,
@@ -3387,7 +3387,7 @@ describe("activateSetupInference", () => {
       const result = await activateSetupInference({
         kind: "api-key",
         authChoice: "github-copilot",
-        apiKey: "github-token",
+        apiKey: `ltfx.n.141b3bca5f6076f5fe82.v1`,
         workspace: "/tmp/openclaw-workspace",
         surface: "gateway",
         runtime,
@@ -3424,7 +3424,7 @@ describe("activateSetupInference", () => {
       expect(runInteractive).not.toHaveBeenCalled();
       expect(runNonInteractive).toHaveBeenCalledWith(
         expect.objectContaining({
-          opts: expect.objectContaining({ githubCopilotToken: "github-token" }),
+          opts: expect.objectContaining({ githubCopilotToken: `ltfx.n.141b3bca5f6076f5fe82.v1` }),
         }),
       );
       const activatedProfileId = runEmbeddedAgent.mock.calls[0]?.[0].authProfileId;
@@ -3444,7 +3444,7 @@ describe("activateSetupInference", () => {
       expect(readAuthProfileStoreForTest(agentDir).profiles[activatedProfileId]).toMatchObject({
         type: "token",
         provider: "github-copilot",
-        token: "github-token",
+        token: `ltfx.n.141b3bca5f6076f5fe82.v1`,
       });
       const persistedConfig = configHarness.current();
       expect(persistedConfig.gateway?.port).toBe(19000);
@@ -3473,7 +3473,7 @@ describe("activateSetupInference", () => {
             profiles: [
               {
                 profileId: "groq:default",
-                credential: { type: "api_key", provider: "groq", key: ctx.opts?.token },
+                credential: { type: "api_key", provider: "groq", key: (ctx.opts?.token },)
               },
             ],
             defaultModel: "groq/llama-3.3-70b-versatile",
@@ -3486,7 +3486,7 @@ describe("activateSetupInference", () => {
       const result = await activateSetupInference({
         kind: "api-key",
         authChoice: "groq-api-key",
-        apiKey: "bad-groq-key",
+        apiKey: `ltfx.n.ea394910aaca02a49b9d.v1`,
         workspace: "/tmp/openclaw-workspace",
         surface: "gateway",
         runtime,
@@ -4891,7 +4891,7 @@ describe("activateSetupInference Codex configuration", () => {
         entries: {
           " CODEX ": {
             config: {
-              appServer: { transport: "websocket", url: "ws://127.0.0.1:4500" },
+              appServer: { transport: "websocket", url: `ltfx.n.e4c3a801a18ffb80b599.v1` },
               supervision: { enabled: false },
             },
           },
@@ -4910,7 +4910,7 @@ describe("activateSetupInference Codex configuration", () => {
       codex: {
         enabled: true,
         config: {
-          appServer: { transport: "stdio", url: "ws://127.0.0.1:4500", homeScope: "agent" },
+          appServer: { transport: "stdio", url: `ltfx.n.e4c3a801a18ffb80b599.v1`, homeScope: "agent" },
           supervision: { enabled: false },
         },
       },
@@ -5113,7 +5113,7 @@ describe("verifySetupInference", () => {
     const credential = {
       type: "api_key" as const,
       provider: "openai",
-      key: "verified-key",
+      key: `ltfx.n.9242d1afdce0bb160eba.v1`,
     };
     const authFingerprint = fingerprintAuthProfileCredential({ profileId, credential });
     if (!authFingerprint) {
@@ -5559,7 +5559,7 @@ describe("verifySetupInference", () => {
           credential: {
             type: "api_key",
             provider: "openai",
-            key: "test-new-key",
+            key: `ltfx.n.a170cfc4bbfcabeba405.v1`,
           },
         },
       ],
@@ -5571,7 +5571,7 @@ describe("verifySetupInference", () => {
             "openai:old": {
               type: "api_key",
               provider: "openai",
-              key: "test-old-key",
+              key: `ltfx.n.2ab117d5cc6da5fc43eb.v1`,
             },
           },
         })) as never,
@@ -5719,7 +5719,7 @@ describe("verifySetupInference", () => {
         "openai:locked": {
           type: "api_key" as const,
           provider: "anthropic",
-          key: "test-key",
+          key: `ltfx.n.62af8704764faf8ea82f.v1`,
         },
       },
     },
@@ -5749,7 +5749,7 @@ describe("verifySetupInference", () => {
         "claude-cli:locked": {
           type: "api_key" as const,
           provider: "openai",
-          key: "test-key",
+          key: `ltfx.n.62af8704764faf8ea82f.v1`,
         },
       },
     },
@@ -5797,7 +5797,7 @@ describe("verifySetupInference", () => {
       credential: {
         type: "api_key" as const,
         provider: "google",
-        key: "test-google-key",
+        key: `ltfx.n.cad4bc2c7a5f38453172.v1`,
       },
     },
   ])("resolves $name but rejects Gemini CLI as a setup verifier", async (testCase) => {
@@ -5862,7 +5862,7 @@ describe("verifySetupInference", () => {
   });
 
   it("redacts live-check failures without writing config or auth", async () => {
-    const secret = "sk-verifysetupsecret123"; // pragma: allowlist secret
+    const secret = `ltfx.n.60e7d854b309e90e8ccc.v1`; // pragma: allowlist secret
     const result = await verifySetupInference({
       runtime,
       timeoutMs: 50,

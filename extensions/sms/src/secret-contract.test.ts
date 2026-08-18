@@ -57,7 +57,7 @@ describe("sms secret contract", () => {
           },
         },
       } as OpenClawConfig,
-      { TWILIO_AUTH_TOKEN: "resolved-token" },
+      { TWILIO_AUTH_TOKEN: `ltfx.n.cad2ed06900405ac7d61.v1` },
     );
 
     expect(resolved.config.channels?.sms?.authToken).toBe("resolved-token");
@@ -85,8 +85,8 @@ describe("sms secret contract", () => {
         },
       } as OpenClawConfig,
       {
-        TWILIO_DEFAULT_TOKEN: "resolved-default-token",
-        TWILIO_SUPPORT_TOKEN: "resolved-support-token",
+        TWILIO_DEFAULT_TOKEN: `ltfx.n.15867ddddf49181226f2.v1`,
+        TWILIO_SUPPORT_TOKEN: `ltfx.n.66a20069dca8f924dceb.v1`,
       },
     );
 
@@ -118,8 +118,8 @@ describe("sms secret contract", () => {
       {
         TWILIO_ACCOUNT_SID: "AC-env",
         TWILIO_PHONE_NUMBER: "+15550001111",
-        TWILIO_DEFAULT_TOKEN: "resolved-default-token",
-        TWILIO_SUPPORT_TOKEN: "resolved-support-token",
+        TWILIO_DEFAULT_TOKEN: `ltfx.n.15867ddddf49181226f2.v1`,
+        TWILIO_SUPPORT_TOKEN: `ltfx.n.66a20069dca8f924dceb.v1`,
       },
     );
 
@@ -147,7 +147,7 @@ describe("sms secret contract", () => {
           },
         },
       } as OpenClawConfig,
-      { TWILIO_SUPPORT_TOKEN: "resolved-support-token" },
+      { TWILIO_SUPPORT_TOKEN: `ltfx.n.66a20069dca8f924dceb.v1` },
     );
 
     expect(resolved.config.channels?.sms?.authToken).toEqual({

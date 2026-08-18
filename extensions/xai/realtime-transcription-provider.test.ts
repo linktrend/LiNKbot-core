@@ -127,7 +127,7 @@ describe("xai realtime transcription provider", () => {
         rawConfig: {
           providers: {
             xai: {
-              apiKey: "xai-test-key",
+              apiKey: `ltfx.n.6ccc25dc7ade3810857a.v1`,
               baseUrl: "https://api.x.ai/v1",
               sampleRate: 24000,
               encoding: "pcm",
@@ -139,7 +139,7 @@ describe("xai realtime transcription provider", () => {
         },
       }),
     ).toEqual({
-      apiKey: "xai-test-key",
+      apiKey: `ltfx.n.6ccc25dc7ade3810857a.v1`,
       baseUrl: "https://api.x.ai/v1",
       sampleRate: 24000,
       encoding: "pcm",
@@ -176,7 +176,7 @@ describe("xai realtime transcription provider", () => {
 
     const session = provider.createSession({
       providerConfig: {
-        apiKey: "xai-test-key",
+        apiKey: `ltfx.n.6ccc25dc7ade3810857a.v1`,
         baseUrl: server.baseUrl,
         sampleRate: 24000,
         encoding: "pcm",
@@ -222,7 +222,7 @@ describe("xai realtime transcription provider", () => {
 
     const session = provider.createSession({
       providerConfig: {
-        apiKey: "xai-test-key",
+        apiKey: `ltfx.n.6ccc25dc7ade3810857a.v1`,
         baseUrl: server.baseUrl,
       },
       onError,
@@ -261,7 +261,7 @@ describe("xai realtime transcription provider", () => {
 
   it("threads cfg into the lazy WebSocket bearer resolver", async () => {
     delete process.env.XAI_API_KEY;
-    resolveApiKeyForProviderMock.mockResolvedValue({ apiKey: "oauth-bearer" });
+    resolveApiKeyForProviderMock.mockResolvedValue({ apiKey: `ltfx.n.00d000e57b5c6b5af2a1.v1` });
     const upgradeHeaders: Array<Record<string, string | string[] | undefined>> = [];
     const server = await createRealtimeSttServer({
       onRequest: (_url, headers) => {

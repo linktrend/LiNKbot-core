@@ -37,7 +37,7 @@ spend limits, and backend failover without changing OpenClaw config.
       </Step>
       <Step title="Point OpenClaw to LiteLLM">
         ```bash
-        export LITELLM_API_KEY="your-litellm-key"
+        export LITELLM_API_KEY="${ltfx.n.bdb520f4aef22578567f.v1}"
         openclaw
         ```
       </Step>
@@ -146,12 +146,12 @@ without a global private-network override. For a LAN-hosted proxy, set
       - model_name: claude-opus-4-6
         litellm_params:
           model: claude-opus-4-6
-          api_key: os.environ/ANTHROPIC_API_KEY
+          api_key: "${ltfx.n.c9f7f909ba679218f4d6.v1}"
 
       - model_name: gpt-4o
         litellm_params:
           model: gpt-4o
-          api_key: os.environ/OPENAI_API_KEY
+          api_key: "${ltfx.n.f3b4a829f2f5d91fc7d9.v1}"
     ```
 
     OpenClaw keeps requesting `claude-opus-4-6`; LiteLLM handles the routing.
@@ -162,7 +162,7 @@ without a global private-network override. For a LAN-hosted proxy, set
     ```bash
     # Key info
     curl "http://localhost:4000/key/info" \
-      -H "Authorization: Bearer sk-litellm-key"
+      -H "Authorization: Bearer ltfx.n.b38a1ada71473daf20b6.v1"
 
     # Spend logs
     curl "http://localhost:4000/spend/logs" \

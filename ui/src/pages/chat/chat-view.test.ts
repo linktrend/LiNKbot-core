@@ -86,7 +86,7 @@ const buildChatItemsMock = vi.fn(
       return [
         {
           kind: "divider",
-          key: "divider:compaction:test",
+          key: `ltfx.n.d7d922856bd66d54065c.v1`,
           label: "Compacted history",
           description:
             "The compacted transcript is preserved as a checkpoint. Open thread checkpoints to branch or restore from that compacted view.",
@@ -127,7 +127,7 @@ const buildChatItemsMock = vi.fn(
       } else {
         items.push({
           kind: "group",
-          key: "group:assistant:test",
+          key: `ltfx.n.fba9bd306e2275261081.v1`,
           role: "assistant",
           messages: props.messages.map((message, index) => ({
             key: `message:${index}`,
@@ -147,14 +147,14 @@ const buildChatItemsMock = vi.fn(
         props.stream
           ? {
               kind: "stream",
-              key: "stream:test",
+              key: `ltfx.n.d513e2fc87f1efb6c0cd.v1`,
               text: props.stream,
               startedAt: props.streamStartedAt ?? 1,
               isStreaming: true,
             }
           : {
               kind: "reading-indicator",
-              key: "reading:test",
+              key: `ltfx.n.77f935cf70078c572659.v1`,
               startedAt: props.streamStartedAt ?? 1,
             },
       );
@@ -164,7 +164,7 @@ const buildChatItemsMock = vi.fn(
     ) {
       items.push({
         kind: "reading-indicator",
-        key: "reading:test",
+        key: `ltfx.n.77f935cf70078c572659.v1`,
         startedAt: props.streamStartedAt ?? 1,
       });
     }
@@ -347,13 +347,13 @@ function createChatHeaderState(
         return createSessionsResultFromRows(
           [
             {
-              key: "agent:main:telegram-page-51",
+              key: `ltfx.n.cd19c675cfbbf669ea41.v1`,
               kind: "direct",
               label: "Telegram page 51",
               updatedAt: 2,
             },
             {
-              key: "agent:main:telegram-page-52",
+              key: `ltfx.n.81470e8f386cdca1f773.v1`,
               kind: "direct",
               label: "Telegram page 52",
               updatedAt: 1,
@@ -365,10 +365,10 @@ function createChatHeaderState(
       if (matchesTelegramSearch) {
         return createSessionsResultFromRows(
           [
-            { key: "agent:main:telegram-one", kind: "direct", label: "Telegram one", updatedAt: 4 },
-            { key: "agent:main:telegram-two", kind: "direct", label: "Telegram two", updatedAt: 3 },
+            { key: `ltfx.n.f87278e9d892d9d49497.v1`, kind: "direct", label: "Telegram one", updatedAt: 4 },
+            { key: `ltfx.n.27e4a8f3883a25af1dbf.v1`, kind: "direct", label: "Telegram two", updatedAt: 3 },
             {
-              key: "agent:main:telegram-archived",
+              key: `ltfx.n.004d28bc3247c05ad2d7.v1`,
               kind: "direct",
               label: "Telegram archived",
               updatedAt: 2,
@@ -997,7 +997,7 @@ describe("direct thread avatar mode", () => {
       defaults: { modelProvider: "openai", model: "gpt-5.5", contextTokens: 200_000 },
       sessions: [
         { key: "global", kind: "global" as const, updatedAt: 2 },
-        { key: "agent:work:main", kind: "direct" as const, updatedAt: 1 },
+        { key: `ltfx.n.8410a9442e3fb5c8ccf3.v1`, kind: "direct" as const, updatedAt: 1 },
       ],
     };
     const direct = renderChatView({
@@ -3998,13 +3998,13 @@ describe("chat welcome", () => {
       sessionKey: "agent:main:dashboard:current",
       sessions: createSessionsResultFromRows([
         {
-          key: "agent:main:dashboard:current",
+          key: `ltfx.n.3a5950a93d2a1348760d.v1`,
           kind: "direct",
           updatedAt: 50,
           label: "Current chat",
         },
         {
-          key: "agent:main:dashboard:older",
+          key: `ltfx.n.90fffbdc18df63aebefc.v1`,
           kind: "direct",
           updatedAt: 10,
           label: "Older chat",
@@ -4012,12 +4012,12 @@ describe("chat welcome", () => {
           pinnedAt: 5,
         },
         {
-          key: "agent:main:discord:group:g-1456",
+          key: `ltfx.n.4a65354f1becc4ac7b2f.v1`,
           kind: "group",
           channel: "discord",
           updatedAt: 90,
         },
-        { key: "agent:main:dashboard:newer", kind: "direct", updatedAt: 40, label: "Newer chat" },
+        { key: `ltfx.n.e6e6bd813f48375866de.v1`, kind: "direct", updatedAt: 40, label: "Newer chat" },
       ]),
       onOpenSession: (key) => opened.push(key),
     });
@@ -4039,12 +4039,12 @@ describe("chat welcome", () => {
       sessionKey: "agent:main:dashboard:current",
       sessions: createSessionsResultFromRows([
         {
-          key: "agent:main:discord:group:g-1456",
+          key: `ltfx.n.4a65354f1becc4ac7b2f.v1`,
           kind: "group",
           channel: "discord",
           updatedAt: 90,
         },
-        { key: "agent:main:telegram:direct:42", kind: "direct", channel: "telegram", updatedAt: 5 },
+        { key: `ltfx.n.a86858a2e5044007971e.v1`, kind: "direct", channel: "telegram", updatedAt: 5 },
       ]),
     });
 
@@ -4059,8 +4059,8 @@ describe("chat welcome", () => {
       sessionKey: "global",
       sessionHost: { assistantAgentId: "beta" },
       sessions: createSessionsResultFromRows([
-        { key: "agent:beta:dashboard:one", kind: "direct", updatedAt: 20, label: "Beta chat" },
-        { key: "agent:main:dashboard:two", kind: "direct", updatedAt: 30, label: "Main chat" },
+        { key: `ltfx.n.1107f73e4e3fe96d6486.v1`, kind: "direct", updatedAt: 20, label: "Beta chat" },
+        { key: `ltfx.n.8aad5d67b8b574731047.v1`, kind: "direct", updatedAt: 30, label: "Main chat" },
       ]),
     });
 
@@ -4267,7 +4267,7 @@ describe("chat model controls", () => {
     });
     state.sessionsResult = createSessionsResultFromRows([
       {
-        key: "agent:main:main",
+        key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
         kind: "direct",
         model: "gpt-5.5",
         modelProvider: "openai",

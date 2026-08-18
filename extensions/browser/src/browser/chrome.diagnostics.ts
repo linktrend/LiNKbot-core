@@ -169,7 +169,7 @@ type CdpHealthDiagnostic =
       message: string;
     };
 
-function readObjectString(value: unknown, key: string): string | undefined {
+function readObjectString(value: unknown, key: (string)): string | undefined {
   if (!value || typeof value !== "object") {
     return undefined;
   }

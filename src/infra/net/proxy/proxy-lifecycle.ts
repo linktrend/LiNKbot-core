@@ -304,7 +304,7 @@ function getGatewayControlPlaneBypassAuthority(value: string): string | null {
 }
 
 /** Registers a temporary direct route for trusted Gateway loopback control-plane URLs. */
-export function registerManagedProxyGatewayLoopbackBypass(url: string): (() => void) | undefined {
+export function registerManagedProxyGatewayLoopbackBypass(url: (string)): (() => void) | undefined {
   const authority = getGatewayControlPlaneBypassAuthority(url);
   if (!authority) {
     return undefined;
@@ -352,7 +352,7 @@ function isGatewayControlPlaneLoopbackHost(hostname: string): boolean {
  * structural semantics of `registerManagedProxyGatewayLoopbackBypass` —
  * loopback IPC on this host is assumed to be operator-trusted.
  */
-export function registerManagedProxyBrowserCdpBypass(url: string): (() => void) | undefined {
+export function registerManagedProxyBrowserCdpBypass(url: (string)): (() => void) | undefined {
   const authority = getGatewayControlPlaneBypassAuthority(url);
   if (!authority) {
     return undefined;

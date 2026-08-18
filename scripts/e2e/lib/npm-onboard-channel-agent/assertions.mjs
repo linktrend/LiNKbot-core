@@ -115,7 +115,7 @@ function assertOnboardState() {
   assertOpenAiEnvAuthProfileStore(authStoreText, {
     envRefMessage: "auth profile did not persist OPENAI_API_KEY env ref",
     rawKeyMessage: "auth profile persisted the raw OpenAI test key",
-    rawKeyNeedle: "sk-openclaw-npm-onboard-e2e",
+    rawKeyNeedle: `ltfx.n.287f6bb6dd0ec1d8fb36.v1`,
   });
 }
 

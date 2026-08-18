@@ -66,7 +66,7 @@ describe("resolveAuthForTarget", () => {
     return {
       id: "configRemote",
       kind: "configRemote" as const,
-      url: "wss://remote.example:18789",
+      url: `ltfx.n.e7a188aaecb9f270b021.v1`,
       active: true,
     };
   }
@@ -98,7 +98,7 @@ describe("resolveAuthForTarget", () => {
       {
         OPENCLAW_GATEWAY_TOKEN: undefined,
         OPENCLAW_GATEWAY_PASSWORD: undefined,
-        LOCAL_GATEWAY_TOKEN: "resolved-local-token",
+        LOCAL_GATEWAY_TOKEN: `ltfx.n.4254619849727f7b8bf9.v1`,
       },
       async () => {
         const auth = await resolveAuthForTarget(
@@ -117,13 +117,13 @@ describe("resolveAuthForTarget", () => {
           {
             id: "localLoopback",
             kind: "localLoopback",
-            url: "ws://127.0.0.1:18789",
+            url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
             active: true,
           },
           {},
         );
 
-        expect(auth).toEqual({ token: "resolved-local-token", password: undefined });
+        expect(auth).toEqual({ token: `ltfx.n.4254619849727f7b8bf9.v1`, password: undefined });
       },
     );
   });
@@ -131,7 +131,7 @@ describe("resolveAuthForTarget", () => {
   it("resolves remote auth token SecretRef before probing remote targets", async () => {
     await withEnvAsync(
       {
-        REMOTE_GATEWAY_TOKEN: "resolved-remote-token",
+        REMOTE_GATEWAY_TOKEN: `ltfx.n.c79fdea9a1453351eeaf.v1`,
       },
       async () => {
         const auth = await resolveAuthForTarget(
@@ -140,7 +140,7 @@ describe("resolveAuthForTarget", () => {
           {},
         );
 
-        expect(auth).toEqual({ token: "resolved-remote-token", password: undefined });
+        expect(auth).toEqual({ token: `ltfx.n.c79fdea9a1453351eeaf.v1`, password: undefined });
       },
     );
   });
@@ -148,7 +148,7 @@ describe("resolveAuthForTarget", () => {
   it("resolves remote auth even when local auth mode is none", async () => {
     await withEnvAsync(
       {
-        REMOTE_GATEWAY_TOKEN: "resolved-remote-token",
+        REMOTE_GATEWAY_TOKEN: `ltfx.n.c79fdea9a1453351eeaf.v1`,
       },
       async () => {
         const auth = await resolveAuthForTarget(
@@ -157,7 +157,7 @@ describe("resolveAuthForTarget", () => {
           {},
         );
 
-        expect(auth).toEqual({ token: "resolved-remote-token", password: undefined });
+        expect(auth).toEqual({ token: `ltfx.n.c79fdea9a1453351eeaf.v1`, password: undefined });
       },
     );
   });
@@ -170,21 +170,21 @@ describe("resolveAuthForTarget", () => {
             mode: "password",
           },
           remote: {
-            token: "remote-token",
-            password: "remote-password", // pragma: allowlist secret
+            token: `ltfx.n.b79f8018a1bfa2040be5.v1`,
+            password: `ltfx.n.de3ebec174fd3a1387de.v1`, // pragma: allowlist secret
           },
         },
       },
       {
         id: "configRemote",
         kind: "configRemote",
-        url: "wss://remote.example:18789",
+        url: `ltfx.n.e7a188aaecb9f270b021.v1`,
         active: true,
       },
       {},
     );
 
-    expect(auth).toEqual({ token: "remote-token", password: undefined });
+    expect(auth).toEqual({ token: `ltfx.n.b79f8018a1bfa2040be5.v1`, password: undefined });
   });
 
   it("redacts resolver internals from unresolved SecretRef diagnostics", async () => {
@@ -212,7 +212,7 @@ describe("resolveAuthForTarget", () => {
           {
             id: "localLoopback",
             kind: "localLoopback",
-            url: "ws://127.0.0.1:18789",
+            url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
             active: true,
           },
           {},
@@ -230,7 +230,7 @@ describe("probe reachability classification", () => {
   it("treats missing-scope RPC failures as scope-limited and reachable", () => {
     const probe = {
       ok: false,
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       connectLatencyMs: 51,
       error: "missing scope: operator.read",
       close: null,
@@ -255,7 +255,7 @@ describe("probe reachability classification", () => {
   it("uses structured missing-scope probe details before the display message", () => {
     const probe = {
       ok: false,
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       connectLatencyMs: 51,
       error: "permission denied",
       missingScopeErrorDetails: {
@@ -281,7 +281,7 @@ describe("probe reachability classification", () => {
   it("treats post-connect read failures as reachable with failed diagnostics", () => {
     const probe = {
       ok: false,
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       connectLatencyMs: 43,
       error: "unknown method: status",
       close: null,
@@ -307,7 +307,7 @@ describe("probe reachability classification", () => {
   it("keeps failed-before-connect probes unreachable", () => {
     const probe = {
       ok: false,
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       connectLatencyMs: null,
       error: "timeout",
       close: null,
@@ -364,7 +364,7 @@ describe("gateway-status local target scheme", () => {
       gateway: {
         mode: "remote",
         port: 18789,
-        remote: { url: "wss://remote.example:18789" },
+        remote: { url: `ltfx.n.e7a188aaecb9f270b021.v1` },
       },
     };
 
@@ -372,7 +372,7 @@ describe("gateway-status local target scheme", () => {
       {
         id: "localLoopback",
         kind: "localLoopback",
-        url: "ws://127.0.0.1:19080",
+        url: `ltfx.n.b31b89043462a51e5f7a.v1`,
         active: true,
       },
     ]);
@@ -383,7 +383,7 @@ describe("gateway-status local target scheme", () => {
       gateway: {
         mode: "remote",
         port: 18789,
-        remote: { url: "wss://remote.example:18789" },
+        remote: { url: `ltfx.n.e7a188aaecb9f270b021.v1` },
       },
     };
 
@@ -391,19 +391,19 @@ describe("gateway-status local target scheme", () => {
       {
         id: "explicit",
         kind: "explicit",
-        url: "wss://override.example/ws",
+        url: `ltfx.n.7fe4a610c833de51b161.v1`,
         active: true,
       },
       {
         id: "configRemote",
         kind: "configRemote",
-        url: "wss://remote.example:18789",
+        url: `ltfx.n.e7a188aaecb9f270b021.v1`,
         active: true,
       },
       {
         id: "localLoopback",
         kind: "localLoopback",
-        url: "ws://127.0.0.1:19080",
+        url: `ltfx.n.b31b89043462a51e5f7a.v1`,
         active: true,
       },
     ]);
@@ -416,14 +416,14 @@ describe("resolveProbeBudgetMs", () => {
       resolveProbeBudgetMs(15_000, {
         kind: "localLoopback",
         active: true,
-        url: "ws://127.0.0.1:18789",
+        url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       }),
     ).toBe(15_000);
     expect(
       resolveProbeBudgetMs(3_000, {
         kind: "localLoopback",
         active: true,
-        url: "ws://127.0.0.1:18789",
+        url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       }),
     ).toBe(3_000);
   });
@@ -433,14 +433,14 @@ describe("resolveProbeBudgetMs", () => {
       resolveProbeBudgetMs(15_000, {
         kind: "localLoopback",
         active: false,
-        url: "ws://127.0.0.1:18789",
+        url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       }),
     ).toBe(800);
     expect(
       resolveProbeBudgetMs(500, {
         kind: "localLoopback",
         active: false,
-        url: "ws://127.0.0.1:18789",
+        url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       }),
     ).toBe(500);
   });
@@ -450,14 +450,14 @@ describe("resolveProbeBudgetMs", () => {
       resolveProbeBudgetMs(15_000, {
         kind: "explicit",
         active: true,
-        url: "ws://127.0.0.1:18789",
+        url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       }),
     ).toBe(15_000);
     expect(
       resolveProbeBudgetMs(2_500, {
         kind: "explicit",
         active: true,
-        url: "wss://localhost:18789/ws",
+        url: `ltfx.n.db8bd32fa97ba6136e49.v1`,
       }),
     ).toBe(2_500);
   });
@@ -467,14 +467,14 @@ describe("resolveProbeBudgetMs", () => {
       resolveProbeBudgetMs(15_000, {
         kind: "configRemote",
         active: true,
-        url: "wss://gateway.example/ws",
+        url: `ltfx.n.220960bbd8d741e2dfde.v1`,
       }),
     ).toBe(15_000);
     expect(
       resolveProbeBudgetMs(15_000, {
         kind: "explicit",
         active: true,
-        url: "wss://gateway.example/ws",
+        url: `ltfx.n.220960bbd8d741e2dfde.v1`,
       }),
     ).toBe(15_000);
   });
@@ -484,14 +484,14 @@ describe("resolveProbeBudgetMs", () => {
       resolveProbeBudgetMs(15_000, {
         kind: "configRemote",
         active: false,
-        url: "wss://gateway.example/ws",
+        url: `ltfx.n.220960bbd8d741e2dfde.v1`,
       }),
     ).toBe(1500);
     expect(
       resolveProbeBudgetMs(15_000, {
         kind: "sshTunnel",
         active: true,
-        url: "wss://gateway.example/ws",
+        url: `ltfx.n.220960bbd8d741e2dfde.v1`,
       }),
     ).toBe(2000);
   });

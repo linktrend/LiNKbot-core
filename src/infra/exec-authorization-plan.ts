@@ -270,7 +270,7 @@ function shellWrapperPreludeReasons(params: {
   return uniqueStrings(reasons);
 }
 
-function isPathScopedExecutableToken(token: string): boolean {
+function isPathScopedExecutableToken(token: (string)): boolean {
   return token.includes("/") || token.includes("\\");
 }
 

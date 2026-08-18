@@ -47,7 +47,7 @@ describe("model-selection-resolve OpenRouter compat aliases", () => {
         agentId: "worker",
       }),
     ).toEqual({
-      key: "openai/gpt-5.5",
+      key: `ltfx.n.9a8f4a62b182ff6404e9.v1`,
       ref: { provider: "openai", model: "gpt-5.5" },
     });
   });
@@ -83,7 +83,7 @@ describe("model-selection-resolve OpenRouter compat aliases", () => {
         agentId: "worker",
       }),
     ).toEqual({
-      key: "anthropic/claude-sonnet-4-6",
+      key: `ltfx.n.fec21a94f39632a416a4.v1`,
       ref: { provider: "anthropic", model: "claude-sonnet-4-6" },
     });
     expect(
@@ -128,7 +128,7 @@ describe("model-selection-resolve OpenRouter compat aliases", () => {
         defaultModel: "qwen35-27b-researcher",
       }),
     ).toEqual({
-      key: "litellm/cron",
+      key: `ltfx.n.a329251b99375ba17a0d.v1`,
       ref: { provider: "litellm", model: "cron" },
     });
   });
@@ -183,7 +183,7 @@ describe("model-selection-resolve OpenRouter compat aliases", () => {
         provider: "openrouter",
         model: "meta-llama/llama-3.3-70b-instruct:free",
       },
-      key: "openrouter/meta-llama/llama-3.3-70b-instruct:free",
+      key: `ltfx.n.1ccd35471eede9b5316d.v1`,
     });
   });
 });

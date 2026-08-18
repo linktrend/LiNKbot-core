@@ -86,7 +86,7 @@ async function resolveAccess(
     channelId: "zalo",
     accountId: "default",
     identity: {
-      key: "zalo-user-id",
+      key: `ltfx.n.7a435374b64624f33758.v1`,
       normalize: normalizeZaloAllowEntry,
       sensitivity: "pii",
       entryIdPrefix: "zalo-entry",

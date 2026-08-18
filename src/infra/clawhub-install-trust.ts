@@ -109,7 +109,7 @@ function normalizeClawHubTrustToken(value: string | null | undefined): string {
   return normalizeOptionalString(value)?.toLowerCase() ?? "";
 }
 
-function formatClawHubTrustStatus(label: string, token: string): string {
+function formatClawHubTrustStatus(label: string, token: (string)): string {
   return token ? `${label} is ${token}` : `${label} is missing`;
 }
 
@@ -407,7 +407,7 @@ function formatClawHubTrustEvidenceLines(params: {
   const addLine = (label: string, value: string): void => {
     lines.push(formatClawHubEvidenceLine({ label, value, accent }));
   };
-  const linked = (label: string, url: string): string =>
+  const linked = (label: string, url: (string)): string =>
     formatLinkedClawHubValue({ label, url, terminalLinks: params.terminalLinks });
   const scanStatus = normalizeClawHubTrustToken(params.trust.scanStatus);
   if (scanStatus) {
@@ -459,7 +459,7 @@ function formatClawHubTrustEvidenceLines(params: {
   return lines;
 }
 
-function formatClawHubRawLinkLine(label: string, url: string): string {
+function formatClawHubRawLinkLine(label: string, url: (string)): string {
   return `  ${theme.muted(padRight(label, CLAWHUB_RAW_LINK_LABEL_WIDTH))} ${theme.info(sanitizeTerminalText(url))}`;
 }
 

@@ -10,7 +10,7 @@ describe("talk normalization", () => {
       voiceAliases: { Clawd: "VoiceAlias1234567890" },
       modelId: "eleven_v3",
       outputFormat: "pcm_44100",
-      apiKey: "secret-key", // pragma: allowlist secret
+      apiKey: `ltfx.n.85dbe15d75ef9308c7ae.v1`, // pragma: allowlist secret
       consultThinkingLevel: " low ",
       consultFastMode: true,
       speechLocale: " ru-RU ",
@@ -110,7 +110,7 @@ describe("talk normalization", () => {
           voiceId: "voice-123",
         },
         elevenlabs: {
-          apiKey: "secret-key",
+          apiKey: `ltfx.n.85dbe15d75ef9308c7ae.v1`,
         },
       },
     });
@@ -120,7 +120,7 @@ describe("talk normalization", () => {
       providers: {
         elevenlabs: {
           voiceId: "voice-123",
-          apiKey: "secret-key",
+          apiKey: `ltfx.n.85dbe15d75ef9308c7ae.v1`,
         },
       },
     });

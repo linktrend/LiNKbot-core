@@ -141,7 +141,7 @@ describe("Slack message tools", () => {
       cfg: {
         channels: {
           slack: {
-            botToken: "xoxb-test",
+            botToken: `ltfx.n.87894fe048938b686cfb.v1`,
           },
         },
       },
@@ -173,10 +173,10 @@ describe("Slack message tools", () => {
         cfg: {
           channels: {
             slack: {
-              botToken: "xoxb-default",
+              botToken: `ltfx.n.4f68dd56cdc3b48ad886.v1`,
               accounts: {
                 ops: {
-                  botToken: "xoxb-ops",
+                  botToken: `ltfx.n.6820ddfeb0949b2db7ea.v1`,
                   actions: {
                     messages: false,
                   },
@@ -194,7 +194,7 @@ describe("Slack message tools", () => {
     const cfg = {
       channels: {
         slack: {
-          botToken: "xoxb-test",
+          botToken: `ltfx.n.87894fe048938b686cfb.v1`,
           actions: {
             messages: true,
           },
@@ -224,8 +224,8 @@ describe("Slack message tools", () => {
       channels: {
         slack: {
           identity: "user",
-          userToken: "test-user-token",
-          appToken: "test-app-token",
+          userToken: `ltfx.n.19bbb7d9c45e18a41bce.v1`,
+          appToken: `ltfx.n.229a79260e17de2a406e.v1`,
         },
       },
     } as OpenClawConfig;
@@ -251,7 +251,7 @@ describe("Slack message tools", () => {
     const cfg = {
       channels: {
         slack: {
-          botToken: "xoxb-root",
+          botToken: `ltfx.n.a1fde847c8ff0e78f11b.v1`,
           actions: {
             reactions: false,
             messages: false,
@@ -261,7 +261,7 @@ describe("Slack message tools", () => {
           },
           accounts: {
             default: {
-              botToken: "xoxb-default",
+              botToken: `ltfx.n.4f68dd56cdc3b48ad886.v1`,
               actions: {
                 reactions: false,
                 messages: false,
@@ -271,7 +271,7 @@ describe("Slack message tools", () => {
               },
             },
             work: {
-              botToken: "xoxb-work",
+              botToken: `ltfx.n.95b0664cb949350b3191.v1`,
               actions: {
                 reactions: true,
                 messages: true,
@@ -303,7 +303,7 @@ describe("Slack message tools", () => {
       cfg: {
         channels: {
           slack: {
-            botToken: "xoxb-test",
+            botToken: `ltfx.n.87894fe048938b686cfb.v1`,
           },
         },
       },
@@ -323,7 +323,7 @@ describe("Slack message tools", () => {
       cfg: {
         channels: {
           slack: {
-            botToken: "xoxb-test",
+            botToken: `ltfx.n.87894fe048938b686cfb.v1`,
           },
         },
       },
@@ -345,7 +345,7 @@ describe("Slack message tools", () => {
       cfg: {
         channels: {
           slack: {
-            botToken: "xoxb-test",
+            botToken: `ltfx.n.87894fe048938b686cfb.v1`,
           },
         },
       },
@@ -363,7 +363,7 @@ describe("Slack message tools", () => {
       cfg: {
         channels: {
           slack: {
-            botToken: "xoxb-test",
+            botToken: `ltfx.n.87894fe048938b686cfb.v1`,
             actions: {
               reactions: false,
             },
@@ -386,7 +386,7 @@ describe("Slack message tools", () => {
       cfg: {
         channels: {
           slack: {
-            botToken: "xoxb-test",
+            botToken: `ltfx.n.87894fe048938b686cfb.v1`,
           },
         },
       },
@@ -405,7 +405,7 @@ describe("Slack message tools", () => {
       cfg: {
         channels: {
           slack: {
-            botToken: "xoxb-test",
+            botToken: `ltfx.n.87894fe048938b686cfb.v1`,
           },
         },
       },
@@ -424,7 +424,7 @@ describe("Slack message tools", () => {
       cfg: {
         channels: {
           slack: {
-            botToken: "xoxb-test",
+            botToken: `ltfx.n.87894fe048938b686cfb.v1`,
             actions: {
               reactions: false,
               messages: false,

@@ -98,7 +98,7 @@ function safeName(name: string) {
 
 // Canonical initializer labels must match stored properties; compatibility initializers
 // declare legacy labels separately.
-function swiftStoredPropertyName(structName: string, key: string): string {
+function swiftStoredPropertyName(structName: string, key: (string)): string {
   if (structName === "ChatSendParams" && key === "fastMode") {
     return "fastmodevalue";
   }
@@ -111,7 +111,7 @@ function swiftStoredPropertyName(structName: string, key: string): string {
   return safeName(key);
 }
 
-function swiftCompatibilityPropertyLines(structName: string, key: string): string[] {
+function swiftCompatibilityPropertyLines(structName: string, key: (string)): string[] {
   if (structName === "ChatSendParams" && key === "fastMode") {
     return ["    public var fastmode: Bool? { fastmodevalue?.value as? Bool }"];
   }

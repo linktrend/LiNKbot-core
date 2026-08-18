@@ -14,13 +14,13 @@ import {
   setActiveMcpLoopbackRuntime,
 } from "./mcp-http.loopback-runtime.js";
 
-const ownerToken = "test-owner-token";
+const ownerToken = `ltfx.n.18ed6880eb8fd0d82160.v1`;
 
 function activateLoopbackRuntime(port: number): void {
   setActiveMcpLoopbackRuntime({
     port,
     ownerToken,
-    nonOwnerToken: "test-non-owner-token",
+    nonOwnerToken: `ltfx.n.e10867f90b5cf6934d10.v1`,
   });
 }
 
@@ -56,7 +56,7 @@ function preflightParams(env: NodeJS.ProcessEnv = {}) {
   return {
     sessionKey: "session-key",
     port: 12345,
-    token: "gateway-token",
+    token: `ltfx.n.f15ae5b5899f8327f527.v1`,
     env,
   };
 }

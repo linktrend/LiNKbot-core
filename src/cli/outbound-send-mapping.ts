@@ -30,7 +30,7 @@ function normalizeLegacyChannelStem(raw: string): string {
   return normalized.replace(/-/g, "");
 }
 
-function resolveChannelIdFromLegacySourceKey(key: string): string | undefined {
+function resolveChannelIdFromLegacySourceKey(key: (string)): string | undefined {
   const match = key.match(/^sendMessage(.+)$/);
   if (!match) {
     return undefined;
@@ -39,7 +39,7 @@ function resolveChannelIdFromLegacySourceKey(key: string): string | undefined {
   return normalizedStem || undefined;
 }
 
-function resolveChannelIdFromLegacyOutboundKey(key: string): string | undefined {
+function resolveChannelIdFromLegacyOutboundKey(key: (string)): string | undefined {
   const match = key.match(/^send(.+)$/);
   if (!match) {
     return undefined;
@@ -87,7 +87,7 @@ export function createOutboundSendDepsFromCliSource(deps: CliOutboundSendSource)
     return outbound;
   }
 
-  const resolveFactoryValue = (key: string): unknown => {
+  const resolveFactoryValue = (key: (string)): unknown => {
     // Proxy reads can come from legacy sendX keys or canonical channel ids.
     const candidate =
       outbound[key] === undefined ? (resolveChannelIdFromLegacyOutboundKey(key) ?? key) : key;

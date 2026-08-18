@@ -1966,7 +1966,7 @@ describe("handleFeishuMessage command authorization", () => {
         chat_type: "group",
         message_type: "text",
         content: JSON.stringify({ text: "@_user_1/model" }),
-        mentions: [{ key: "@_user_1", id: { open_id: "ou-bot" }, name: "Bot", tenant_key: "" }],
+        mentions: [{ key: `ltfx.n.3eb605b0a653477ad302.v1`, id: { open_id: "ou-bot" }, name: "Bot", tenant_key: "" }],
       },
     };
 
@@ -2085,7 +2085,7 @@ describe("handleFeishuMessage command authorization", () => {
         mentions: mentionedOpenId
           ? [
               {
-                key: "@_openclaw",
+                key: `ltfx.n.7efa55a218087a33734b.v1`,
                 id: { open_id: mentionedOpenId },
                 name: "OpenClaw",
               },
@@ -2111,7 +2111,7 @@ describe("handleFeishuMessage command authorization", () => {
                 path.message_id === "msg-bot-mentioned"
                   ? [
                       {
-                        key: "@_openclaw",
+                        key: `ltfx.n.7efa55a218087a33734b.v1`,
                         id: "ou-openclaw",
                         id_type: "open_id",
                         name: "OpenClaw",
@@ -2234,7 +2234,7 @@ describe("handleFeishuMessage command authorization", () => {
         content: JSON.stringify({ text: "@_openclaw ping" }),
         mentions: [
           {
-            key: "@_openclaw",
+            key: `ltfx.n.7efa55a218087a33734b.v1`,
             id: { open_id: "ou-loop-self" },
             name: "OpenClaw",
           },
@@ -3346,7 +3346,7 @@ describe("handleFeishuMessage command authorization", () => {
       channels: {
         feishu: {
           appId: "cli_test",
-          appSecret: "sec_test", // pragma: allowlist secret
+          appSecret: `ltfx.n.7aca0cdc335b50bc3d9f.v1`, // pragma: allowlist secret
           groups: {
             "oc-group": {
               requireMention: false,
@@ -3402,7 +3402,7 @@ describe("handleFeishuMessage command authorization", () => {
       channels: {
         feishu: {
           appId: "cli_scope_bug",
-          appSecret: "sec_scope_bug", // pragma: allowlist secret
+          appSecret: `ltfx.n.db452ee757b13fc8ee7e.v1`, // pragma: allowlist secret
           groups: {
             "oc-group": {
               requireMention: false,

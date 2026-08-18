@@ -1178,7 +1178,7 @@ describe("memory index", () => {
         nextManager as unknown as {
           db: { exec: (sql: string) => void };
         }
-      ).db.exec(`DELETE FROM memory_index_meta WHERE key = 'memory_index_meta_v1'`);
+      ).db.exec(`DELETE FROM memory_index_meta WHERE key = `ltfx.n.81d248eb6c1f5ecdf256.v1``);
       expect(nextManager.status().custom?.indexIdentity).toEqual({
         status: "missing",
         reason: "index metadata is missing",
@@ -1241,7 +1241,7 @@ describe("memory index", () => {
           };
         }
       ).db;
-      db.exec(`DELETE FROM memory_index_meta WHERE key = 'memory_index_meta_v1'`);
+      db.exec(`DELETE FROM memory_index_meta WHERE key = `ltfx.n.81d248eb6c1f5ecdf256.v1``);
 
       await nextManager.sync({ reason: "test" });
 
@@ -1330,7 +1330,7 @@ describe("memory index", () => {
           nextManager as unknown as {
             db: { exec: (sql: string) => void };
           }
-        ).db.exec(`DELETE FROM memory_index_meta WHERE key = 'memory_index_meta_v1'`);
+        ).db.exec(`DELETE FROM memory_index_meta WHERE key = `ltfx.n.81d248eb6c1f5ecdf256.v1``);
 
         const status = nextManager.status();
 

@@ -78,7 +78,7 @@ describe("createMattermostDirectChannelWithRetry", () => {
   function createMockClient() {
     return createMattermostClient({
       baseUrl: "https://mattermost.example.com",
-      botToken: "test-token",
+      botToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
       fetchImpl: mockFetch,
     });
   }

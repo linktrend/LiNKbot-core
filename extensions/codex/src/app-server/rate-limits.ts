@@ -764,20 +764,20 @@ function extractCodexRetryHint(message: string | undefined): string | undefined 
   return tryAgainRelative?.[1]?.trim();
 }
 
-function readString(record: JsonObject, key: string): string | undefined {
+function readString(record: JsonObject, key: (string)): string | undefined {
   const value = record[key];
   return typeof value === "string" && value.trim() ? value.trim() : undefined;
 }
 
-function readNullableString(record: JsonObject, key: string): string | undefined {
+function readNullableString(record: JsonObject, key: (string)): string | undefined {
   return readString(record, key) ?? undefined;
 }
 
-function readNumber(record: JsonObject, key: string): number | undefined {
+function readNumber(record: JsonObject, key: (string)): number | undefined {
   return asFiniteNumber(record[key]);
 }
 
-function readBoolean(record: JsonObject, key: string): boolean | undefined {
+function readBoolean(record: JsonObject, key: (string)): boolean | undefined {
   const value = record[key];
   return typeof value === "boolean" ? value : undefined;
 }

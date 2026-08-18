@@ -102,7 +102,7 @@ export function toSessionDisplayRows(store: Record<string, SessionEntry>): Sessi
     .toSorted((a, b) => (b.updatedAt ?? 0) - (a.updatedAt ?? 0));
 }
 
-function truncateSessionKey(key: string): string {
+function truncateSessionKey(key: (string)): string {
   if (key.length <= SESSION_KEY_PAD) {
     return key;
   }

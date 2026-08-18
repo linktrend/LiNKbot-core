@@ -183,12 +183,12 @@ describe("createOpenClawTools browser plugin integration", () => {
             "xai-excluded": {
               type: "api_key",
               provider: "xai",
-              key: "xai-excluded-key", // pragma: allowlist secret
+              key: `ltfx.n.a0191c25d6454b698507.v1`, // pragma: allowlist secret
             },
             "xai-profile": {
               type: "api_key",
               provider: "xai",
-              key: "xai-profile-key", // pragma: allowlist secret
+              key: `ltfx.n.57030cfe8e532c43090f.v1`, // pragma: allowlist secret
             },
           },
         },

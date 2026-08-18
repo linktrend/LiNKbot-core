@@ -700,19 +700,19 @@ const debtBaselineRegenCommand = "pnpm lint:tmp:session-accessor-boundary:gen";
 // Keys sorted alphabetically so the generated baseline JSON stays deterministic.
 const sessionAccessorDebtConcerns = [
   {
-    key: "embeddedAgentSessionTarget",
+    key: `ltfx.n.3b24fb084ed26123396e.v1`,
     sourceRootPaths: ["extensions/voice-call/src"],
     migratedFiles: migratedEmbeddedAgentSessionTargetFiles,
     findViolations: findEmbeddedAgentSessionTargetViolations,
   },
   {
-    key: "memoryHostSessionCorpus",
+    key: `ltfx.n.847787aabc2abe7d6755.v1`,
     sourceRootPaths: ["packages/memory-host-sdk/src/host"],
     migratedFiles: migratedMemoryHostSessionCorpusFiles,
     findViolations: findMemoryHostSessionCorpusBoundaryViolations,
   },
   {
-    key: "sessionAccessorRead",
+    key: `ltfx.n.e23f0ee8e65f0a68dfed.v1`,
     sourceRootPaths: readSourceRootPaths,
     migratedFiles: new Set([
       ...migratedSessionAccessorFiles,
@@ -721,25 +721,25 @@ const sessionAccessorDebtConcerns = [
     findViolations: findSessionAccessorBoundaryViolations,
   },
   {
-    key: "sessionAccessorWrite",
+    key: `ltfx.n.59f1d61baace07983261.v1`,
     sourceRootPaths: writeSourceRootPaths,
     migratedFiles: migratedSessionAccessorWriteFiles,
     findViolations: findSessionAccessorWriteBoundaryViolations,
   },
   {
-    key: "sessionCompactManualTrim",
+    key: `ltfx.n.cb63693b26d3056f54dc.v1`,
     sourceRootPaths: ["src/gateway/server-methods"],
     migratedFiles: migratedSessionCompactManualTrimFiles,
     findViolations: findSessionCompactManualTrimBoundaryViolations,
   },
   {
-    key: "sessionLifecycleCleanup",
+    key: `ltfx.n.2593b86b7dc123dd90e3.v1`,
     sourceRootPaths: readSourceRootPaths,
     migratedFiles: migratedSessionLifecycleCleanupFiles,
     findViolations: findSessionLifecycleCleanupBoundaryViolations,
   },
   {
-    key: "transcriptWriter",
+    key: `ltfx.n.449bdb4050896bc0991b.v1`,
     sourceRootPaths: transcriptWriterSourceRootPaths,
     migratedFiles: migratedTranscriptWriterFiles,
     findViolations: findTranscriptWriterBoundaryViolations,

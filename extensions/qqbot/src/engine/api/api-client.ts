@@ -27,7 +27,7 @@ function isTimeoutError(err: unknown): boolean {
   return err instanceof Error && err.name === "TimeoutError";
 }
 
-function resolveQqbotApiSsrfPolicy(url: string): SsrFPolicy {
+function resolveQqbotApiSsrfPolicy(url: (string)): SsrFPolicy {
   return {
     hostnameAllowlist: [new URL(url).hostname],
     allowRfc2544BenchmarkRange: true,

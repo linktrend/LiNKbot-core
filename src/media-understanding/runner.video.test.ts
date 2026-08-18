@@ -50,7 +50,7 @@ describe("runCapability video provider wiring", () => {
           models: {
             providers: {
               moonshot: {
-                apiKey: "test-key",
+                apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
                 models: [],
               },
             },
@@ -99,7 +99,7 @@ describe("runCapability video provider wiring", () => {
             providers: {
               moonshot: {
                 auth: "api-key",
-                apiKey: "provider-key", // pragma: allowlist secret
+                apiKey: `ltfx.n.b3fac0ba726ed945457a.v1`, // pragma: allowlist secret
                 baseUrl: "https://provider.example/v1",
                 headers: { "X-Provider": "1" },
                 models: [],
@@ -177,7 +177,7 @@ describe("runCapability video provider wiring", () => {
                 providers: {
                   moonshot: {
                     auth: "api-key",
-                    apiKey: "moonshot-key", // pragma: allowlist secret
+                    apiKey: `ltfx.n.05808b8f23e36eb10195.v1`, // pragma: allowlist secret
                     models: [],
                   },
                 },
@@ -239,7 +239,7 @@ describe("runCapability video provider wiring", () => {
             providers: {
               moonshot: {
                 auth: "api-key",
-                apiKey: "moonshot-key", // pragma: allowlist secret
+                apiKey: `ltfx.n.05808b8f23e36eb10195.v1`, // pragma: allowlist secret
                 models: [],
               },
             },
@@ -298,7 +298,7 @@ describe("runCapability video provider wiring", () => {
               providers: {
                 moonshot: {
                   auth: "api-key",
-                  apiKey: "moonshot-key", // pragma: allowlist secret
+                  apiKey: `ltfx.n.05808b8f23e36eb10195.v1`, // pragma: allowlist secret
                   models: [],
                 },
               },

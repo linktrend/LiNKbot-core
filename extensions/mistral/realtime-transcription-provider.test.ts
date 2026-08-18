@@ -58,7 +58,7 @@ describe("buildMistralRealtimeTranscriptionProvider", () => {
       rawConfig: {
         providers: {
           mistral: {
-            apiKey: "mistral-key",
+            apiKey: `ltfx.n.aae438252f837ba01d6a.v1`,
             model: "voxtral-mini-transcribe-realtime-2602",
             encoding: "g711_ulaw",
             sample_rate: "8000",
@@ -69,7 +69,7 @@ describe("buildMistralRealtimeTranscriptionProvider", () => {
     });
 
     expect(resolved).toEqual({
-      apiKey: "mistral-key",
+      apiKey: `ltfx.n.aae438252f837ba01d6a.v1`,
       baseUrl: undefined,
       model: "voxtral-mini-transcribe-realtime-2602",
       encoding: "pcm_mulaw",
@@ -85,7 +85,7 @@ describe("buildMistralRealtimeTranscriptionProvider", () => {
       rawConfig: {
         providers: {
           mistral: {
-            apiKey: "  sk-\r\nmistral│  ",
+            apiKey: `ltfx.n.34588559410a9bf420d7.v1`,
           },
         },
       },
@@ -105,7 +105,7 @@ describe("buildMistralRealtimeTranscriptionProvider", () => {
     const baseUrl = await createRealtimeServer((url) => requests.push(url));
     const session = buildMistralRealtimeTranscriptionProvider().createSession({
       providerConfig: {
-        apiKey: "fixture-value",
+        apiKey: `ltfx.n.0248f56577e62962fd6a.v1`,
         baseUrl,
         model: "voxtral-mini-transcribe-realtime-2602",
         sampleRate: 8000,

@@ -180,7 +180,7 @@ describe("resolveMatrixAccount", () => {
       channels: {
         matrix: {
           homeserver: "https://matrix.example.org",
-          accessToken: "tok-access",
+          accessToken: `ltfx.n.a00544d486eef682f050.v1`,
         },
       },
     };
@@ -299,7 +299,7 @@ describe("resolveMatrixAccount", () => {
         matrix: {
           homeserver: "https://matrix.example.org",
           userId: "@bot:example.org",
-          accessToken: "top-token",
+          accessToken: `ltfx.n.0117c106925f58043768.v1`,
           botLoopProtection: {
             maxEventsPerWindow: 8,
             windowSeconds: 120,
@@ -307,7 +307,7 @@ describe("resolveMatrixAccount", () => {
           },
           accounts: {
             ops: {
-              accessToken: "ops-token",
+              accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
               botLoopProtection: {
                 maxEventsPerWindow: 3,
               },
@@ -333,15 +333,15 @@ describe("resolveMatrixAccount", () => {
           accounts: {
             "Main Bot": {
               homeserver: "https://matrix.example.org",
-              accessToken: "main-token",
+              accessToken: `ltfx.n.c8f53003835808bf8175.v1`,
             },
             "main-bot": {
               homeserver: "https://matrix.example.org",
-              accessToken: "duplicate-token",
+              accessToken: `ltfx.n.8d9f265529f3b253c44f.v1`,
             },
             OPS: {
               homeserver: "https://matrix.example.org",
-              accessToken: "ops-token",
+              accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
             },
           },
         },
@@ -359,7 +359,7 @@ describe("resolveMatrixAccount", () => {
           accounts: {
             ops: {
               homeserver: "https://matrix.example.org",
-              accessToken: "ops-token",
+              accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
             },
           },
         },
@@ -375,11 +375,11 @@ describe("resolveMatrixAccount", () => {
         matrix: {
           defaultAccount: "ops",
           homeserver: "https://matrix.example.org",
-          accessToken: "default-token",
+          accessToken: `ltfx.n.10851c1922ff849d81d7.v1`,
           accounts: {
             ops: {
               homeserver: "https://ops.example.org",
-              accessToken: "ops-token",
+              accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
             },
           },
         },
@@ -409,7 +409,7 @@ describe("resolveMatrixAccount", () => {
 
   it("includes default accounts backed only by global env vars in plugin account enumeration", () => {
     process.env.MATRIX_HOMESERVER = "https://matrix.example.org";
-    process.env.MATRIX_ACCESS_TOKEN = "default-token";
+    process.env.MATRIX_ACCESS_TOKEN = `ltfx.n.10851c1922ff849d81d7.v1`;
 
     const cfg: CoreConfig = {};
 
@@ -420,7 +420,7 @@ describe("resolveMatrixAccount", () => {
   it("treats mixed default and named env-backed accounts as multi-account", () => {
     const keys = getMatrixScopedEnvVarNames("team-ops");
     process.env.MATRIX_HOMESERVER = "https://matrix.example.org";
-    process.env.MATRIX_ACCESS_TOKEN = "default-token";
+    process.env.MATRIX_ACCESS_TOKEN = `ltfx.n.10851c1922ff849d81d7.v1`;
     process.env[keys.homeserver] = "https://matrix.example.org";
     process.env[keys.accessToken] = "ops-token";
 
@@ -439,11 +439,11 @@ describe("resolveMatrixAccount", () => {
       channels: {
         matrix: {
           homeserver: "https://matrix.example.org",
-          accessToken: "default-token",
+          accessToken: `ltfx.n.10851c1922ff849d81d7.v1`,
           accounts: {
             ops: {
               homeserver: "https://matrix.example.org",
-              accessToken: "ops-token",
+              accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
             },
           },
         },
@@ -463,7 +463,7 @@ describe("resolveMatrixAccount", () => {
           accounts: {
             ops: {
               homeserver: "https://matrix.example.org",
-              accessToken: "ops-token",
+              accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
             },
           },
         },
@@ -481,11 +481,11 @@ describe("resolveMatrixAccount", () => {
           accounts: {
             alpha: {
               homeserver: "https://matrix.example.org",
-              accessToken: "alpha-token",
+              accessToken: `ltfx.n.a336d9b1d8b864787523.v1`,
             },
             beta: {
               homeserver: "https://matrix.example.org",
-              accessToken: "beta-token",
+              accessToken: `ltfx.n.863d63c0bd3a94bfca84.v1`,
             },
           },
         },
@@ -501,17 +501,17 @@ describe("resolveMatrixAccount", () => {
         matrix: {
           userId: "@main:example.org",
           homeserver: "https://matrix.example.org",
-          accessToken: "main-token",
+          accessToken: `ltfx.n.c8f53003835808bf8175.v1`,
           accounts: {
             ops: {
               homeserver: "https://matrix.example.org",
               userId: "@ops:example.org",
-              accessToken: "ops-token",
+              accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
             },
             alerts: {
               homeserver: "https://matrix.example.org",
               userId: "@alerts:example.org",
-              accessToken: "alerts-token",
+              accessToken: `ltfx.n.f86de021b56c190634de.v1`,
             },
           },
         },
@@ -527,10 +527,10 @@ describe("resolveMatrixAccount", () => {
     const env = {
       MATRIX_HOMESERVER: "https://matrix.example.org",
       MATRIX_USER_ID: "@main:example.org",
-      MATRIX_ACCESS_TOKEN: "main-token",
+      MATRIX_ACCESS_TOKEN: `ltfx.n.c8f53003835808bf8175.v1`,
       MATRIX_ALERTS_HOMESERVER: "https://matrix.example.org",
       MATRIX_ALERTS_USER_ID: "@alerts:example.org",
-      MATRIX_ALERTS_ACCESS_TOKEN: "alerts-token",
+      MATRIX_ALERTS_ACCESS_TOKEN: `ltfx.n.f86de021b56c190634de.v1`,
     } as NodeJS.ProcessEnv;
 
     const cfg: CoreConfig = {
@@ -551,7 +551,7 @@ describe("resolveMatrixAccount", () => {
           ? {
               homeserver: "https://matrix.example.org",
               userId: "@ops:example.org",
-              accessToken: "ops-token",
+              accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
               createdAt: "2026-03-19T00:00:00.000Z",
             }
           : null,
@@ -562,11 +562,11 @@ describe("resolveMatrixAccount", () => {
         matrix: {
           userId: "@main:example.org",
           homeserver: "https://matrix.example.org",
-          accessToken: "main-token",
+          accessToken: `ltfx.n.c8f53003835808bf8175.v1`,
           accounts: {
             ops: {
               homeserver: "https://matrix.example.org",
-              accessToken: "ops-token",
+              accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
             },
           },
         },
@@ -584,7 +584,7 @@ describe("resolveMatrixAccount", () => {
         channels: {
           matrix: {
             homeserver: "https://matrix.example.org",
-            accessToken: "main-token",
+            accessToken: `ltfx.n.c8f53003835808bf8175.v1`,
             dm: {
               enabled: true,
               policy: "pairing",
@@ -595,7 +595,7 @@ describe("resolveMatrixAccount", () => {
             },
             accounts: {
               ops: {
-                accessToken: "ops-token",
+                accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
                 dm: {
                   allowFrom: ["@ops:example.org"],
                 },
@@ -646,9 +646,9 @@ describe("resolveMatrixAccount", () => {
   it("honors injected env when scoping room entries in multi-account setups", () => {
     const env = {
       MATRIX_HOMESERVER: "https://matrix.example.org",
-      MATRIX_ACCESS_TOKEN: "default-token",
+      MATRIX_ACCESS_TOKEN: `ltfx.n.10851c1922ff849d81d7.v1`,
       MATRIX_OPS_HOMESERVER: "https://matrix.example.org",
-      MATRIX_OPS_ACCESS_TOKEN: "ops-token",
+      MATRIX_OPS_ACCESS_TOKEN: `ltfx.n.d9310c002af91822beb0.v1`,
     } as NodeJS.ProcessEnv;
 
     const cfg = {
@@ -698,7 +698,7 @@ describe("resolveMatrixAccount", () => {
           accounts: {
             ops: {
               homeserver: "https://matrix.example.org",
-              accessToken: "ops-token",
+              accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
             },
           },
         },
@@ -728,7 +728,7 @@ describe("resolveMatrixAccount", () => {
           accounts: {
             ops: {
               homeserver: "https://matrix.example.org",
-              accessToken: "ops-token",
+              accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
             },
           },
         },
@@ -754,7 +754,7 @@ describe("resolveMatrixAccount", () => {
           accounts: {
             ops: {
               homeserver: "https://matrix.example.org",
-              accessToken: "ops-token",
+              accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
               groups: {},
             },
           },
@@ -777,7 +777,7 @@ describe("resolveMatrixAccount", () => {
           accounts: {
             ops: {
               homeserver: "https://matrix.example.org",
-              accessToken: "ops-token",
+              accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
               rooms: {},
             },
           },

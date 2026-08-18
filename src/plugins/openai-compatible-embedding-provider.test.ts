@@ -407,9 +407,9 @@ describe("openai-compatible generic embedding provider", () => {
         model: "tenant-embedder",
         remote: {
           baseUrl: server.baseUrl,
-          apiKey: "secret-api-key",
+          apiKey: `ltfx.n.61372661cf51fbc34692.v1`,
           headers: {
-            "x-api-key": "also-secret",
+            "x-api-key": `ltfx.n.a5bd28e4deabbc0be54b.v1`,
             "x-deployment": "tenant-a",
           },
         },
@@ -430,7 +430,7 @@ describe("openai-compatible generic embedding provider", () => {
   });
 
   it("posts OpenAI-compatible embedding requests without warming up during create", async () => {
-    const token = "local-test-token";
+    const token = `ltfx.n.c4570f4c7f05b36da265.v1`;
     const server = await startEmbeddingServer({
       token,
       respond: ({ body }) => {
@@ -479,7 +479,7 @@ describe("openai-compatible generic embedding provider", () => {
     expect(server.requests).toHaveLength(2);
     expect(server.requests[0]).toMatchObject({
       method: "POST",
-      url: "/v1/embeddings",
+      url: `ltfx.n.01f25d4ec8988fe59d1a.v1`,
       body: {
         model: "text-embedding-bge-m3",
         input: ["hello"],
@@ -617,7 +617,7 @@ describe("openai-compatible generic embedding provider", () => {
   });
 
   it("reads connection settings from configured explicit OpenAI-compatible providers", async () => {
-    const token = "alias-token";
+    const token = `ltfx.n.612aff001fcf46889b64.v1`;
     const server = await startEmbeddingServer({ token });
     const { provider, client } = await createOpenAICompatibleEmbeddingProvider(
       createOptions({
@@ -647,7 +647,7 @@ describe("openai-compatible generic embedding provider", () => {
   });
 
   it("reads connection settings from configured OpenAI chat-compatible provider ids", async () => {
-    const token = "alias-token";
+    const token = `ltfx.n.612aff001fcf46889b64.v1`;
     const server = await startEmbeddingServer({ token });
     const { provider, client } = await createOpenAICompatibleEmbeddingProvider(
       createOptions({
@@ -675,7 +675,7 @@ describe("openai-compatible generic embedding provider", () => {
   });
 
   it("treats blank remote overrides as unset for configured explicit providers", async () => {
-    const token = "alias-token";
+    const token = `ltfx.n.612aff001fcf46889b64.v1`;
     const server = await startEmbeddingServer({ token });
     const { provider, client } = await createOpenAICompatibleEmbeddingProvider(
       createOptions({

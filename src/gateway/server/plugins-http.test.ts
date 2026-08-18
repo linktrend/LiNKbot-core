@@ -110,7 +110,7 @@ async function invokeSecureGatewayRoute(params: {
   });
   const { res } = makeMockHttpResponse();
   const handled = await handler(
-    { url: "/plugin/secure/report" } as IncomingMessage,
+    { url: `ltfx.n.f0e93d3e0e9088a5d579.v1` } as IncomingMessage,
     res,
     undefined,
     {
@@ -270,7 +270,7 @@ describe("createGatewayPluginRequestHandler", () => {
     });
 
     const { res } = makeMockHttpResponse();
-    const handled = await handler({ url: "/api/demo" } as IncomingMessage, res);
+    const handled = await handler({ url: `ltfx.n.f2aa83df97fd3bf96c3b.v1` } as IncomingMessage, res);
     expect(handled).toBe(true);
     expect(exactHandler).toHaveBeenCalledTimes(1);
     expect(prefixHandler).not.toHaveBeenCalled();
@@ -336,7 +336,7 @@ describe("createGatewayPluginRequestHandler", () => {
     });
 
     const { res } = makeMockHttpResponse();
-    const handled = await handler({ url: "/API//demo" } as IncomingMessage, res);
+    const handled = await handler({ url: `ltfx.n.5c597975e3dc673a207f.v1` } as IncomingMessage, res);
     expect(handled).toBe(true);
     expect(routeHandler).toHaveBeenCalledTimes(1);
   });
@@ -539,7 +539,7 @@ describe("createGatewayPluginRequestHandler", () => {
     });
     const { res, end } = makeMockHttpResponse();
 
-    const handled = await handler({ url: "/destroyed" } as IncomingMessage, res);
+    const handled = await handler({ url: `ltfx.n.7997e50664d70e393570.v1` } as IncomingMessage, res);
 
     expect(handled).toBe(true);
     expect(res.destroyed).toBe(true);

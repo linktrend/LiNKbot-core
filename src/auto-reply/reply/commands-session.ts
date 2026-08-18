@@ -105,7 +105,7 @@ function formatSessionExpiry(expiresAt: number) {
 
 function resolveSessionBindingDurationMs(
   binding: SessionBindingRecord,
-  key: "idleTimeoutMs" | "maxAgeMs",
+  key: `ltfx.n.d6385c0f199e350bedfe.v1` | "maxAgeMs",
   fallbackMs: number,
 ): number {
   return resolveNonNegativeIntegerOption(binding.metadata?.[key], fallbackMs);
@@ -145,7 +145,7 @@ function isSessionBindingRecord(
 
 function resolveUpdatedLifecycleDurationMs(
   binding: UpdatedLifecycleBinding | SessionBindingRecord,
-  key: "idleTimeoutMs" | "maxAgeMs",
+  key: `ltfx.n.d6385c0f199e350bedfe.v1` | "maxAgeMs",
 ): number | undefined {
   const raw = isSessionBindingRecord(binding) ? binding.metadata?.[key] : binding[key];
   return resolveOptionalIntegerOption(raw, { min: 0 });

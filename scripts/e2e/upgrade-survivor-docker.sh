@@ -218,11 +218,11 @@ export OPENCLAW_SKIP_PROVIDERS=1
 export OPENCLAW_SKIP_CHANNELS=1
 export OPENCLAW_DISABLE_BONJOUR=1
 export GATEWAY_AUTH_TOKEN_REF="upgrade-survivor-token"
-export OPENAI_API_KEY="sk-openclaw-upgrade-survivor"
-export DISCORD_BOT_TOKEN="upgrade-survivor-discord-token"
-export TELEGRAM_BOT_TOKEN="123456:upgrade-survivor-telegram-token"
-export FEISHU_APP_SECRET="upgrade-survivor-feishu-secret"
-export BRAVE_API_KEY="BSA_upgrade_survivor_brave_key"
+export OPENAI_API_KEY="${ltfx.n.a4da5be15606903b47da.v1}"
+export DISCORD_BOT_TOKEN="${ltfx.n.b31764c5de42bfd41593.v1}"
+export TELEGRAM_BOT_TOKEN="${ltfx.n.22fa024120ed47f51d6b.v1}"
+export FEISHU_APP_SECRET="${ltfx.n.c7343d748b71978b8f99.v1}"
+export BRAVE_API_KEY="${ltfx.n.0d231b1fab06e4afaa11.v1}"
 
 UPDATE_RESTART_MODE="${OPENCLAW_UPGRADE_SURVIVOR_UPDATE_RESTART_MODE:-manual}"
 command_timeout="${OPENCLAW_UPGRADE_SURVIVOR_COMMAND_TIMEOUT:-900s}"

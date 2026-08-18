@@ -42,7 +42,7 @@ Put under `plugins.entries.voice-call.config`:
 
   twilio: {
     accountSid: "ACxxxxxxxx",
-    authToken: "your_token",
+    authToken: "${ltfx.n.da9da64304660ce6b64b.v1}",
   },
 
   telnyx: {
@@ -55,7 +55,7 @@ Put under `plugins.entries.voice-call.config`:
 
   plivo: {
     authId: "MAxxxxxxxxxxxxxxxxxxxx",
-    authToken: "your_token",
+    authToken: "${ltfx.n.da9da64304660ce6b64b.v1}",
   },
 
   // Webhook server

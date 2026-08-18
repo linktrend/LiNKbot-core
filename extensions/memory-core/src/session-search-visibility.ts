@@ -21,7 +21,7 @@ function normalizeAgentIdForCompare(value: string | undefined): string | undefin
   return value?.trim().toLowerCase() || undefined;
 }
 
-function isGlobalSessionKeyForSharedScope(cfg: OpenClawConfig, key: string): boolean {
+function isGlobalSessionKeyForSharedScope(cfg: OpenClawConfig, key: (string)): boolean {
   return cfg.session?.scope === "global" && key.trim().toLowerCase() === "global";
 }
 
@@ -224,7 +224,7 @@ export async function filterMemorySearchHitsBySessionVisibility(params: {
       : [];
   }
 
-  const isSessionKeyAllowed = (key: string): boolean => {
+  const isSessionKeyAllowed = (key: (string)): boolean => {
     if (!conversationRecall || !anchorSessionKey || !recallAgentId) {
       return guard?.check(key).allowed === true;
     }

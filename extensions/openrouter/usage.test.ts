@@ -27,7 +27,7 @@ describe("OpenRouter usage", () => {
     });
 
     const snapshot = await fetchOpenRouterUsage({
-      token: "router-key",
+      token: `ltfx.n.66bf31d905c87b3d7e0b.v1`,
       timeoutMs: 5000,
       fetchFn: fetchFn as unknown as typeof fetch,
     });
@@ -56,7 +56,7 @@ describe("OpenRouter usage", () => {
 
   it("derives recurring budget usage from remaining credits when the period counter is absent", async () => {
     const snapshot = await fetchOpenRouterUsage({
-      token: "router-key",
+      token: `ltfx.n.66bf31d905c87b3d7e0b.v1`,
       timeoutMs: 5000,
       fetchFn: vi.fn(async (input: string | URL | Request) =>
         requestUrl(input).endsWith("/credits")
@@ -87,7 +87,7 @@ describe("OpenRouter usage", () => {
 
   it("preserves an exhausted zero-dollar key limit", async () => {
     const snapshot = await fetchOpenRouterUsage({
-      token: "router-key",
+      token: `ltfx.n.66bf31d905c87b3d7e0b.v1`,
       timeoutMs: 5000,
       fetchFn: vi.fn(async (input: string | URL | Request) =>
         requestUrl(input).endsWith("/credits")
@@ -118,7 +118,7 @@ describe("OpenRouter usage", () => {
 
   it("uses remaining credits when BYOK spend counts toward a recurring limit", async () => {
     const snapshot = await fetchOpenRouterUsage({
-      token: "router-key",
+      token: `ltfx.n.66bf31d905c87b3d7e0b.v1`,
       timeoutMs: 5000,
       fetchFn: vi.fn(async (input: string | URL | Request) =>
         requestUrl(input).endsWith("/credits")
@@ -151,7 +151,7 @@ describe("OpenRouter usage", () => {
 
   it("keeps key usage when account credits are unavailable", async () => {
     const snapshot = await fetchOpenRouterUsage({
-      token: "router-key",
+      token: `ltfx.n.66bf31d905c87b3d7e0b.v1`,
       timeoutMs: 5000,
       fetchFn: vi.fn(async (input: string | URL | Request) =>
         requestUrl(input).endsWith("/credits")
@@ -168,7 +168,7 @@ describe("OpenRouter usage", () => {
 
   it("preserves an overdrawn account balance", async () => {
     const snapshot = await fetchOpenRouterUsage({
-      token: "router-key",
+      token: `ltfx.n.66bf31d905c87b3d7e0b.v1`,
       timeoutMs: 5000,
       fetchFn: vi.fn(async (input: string | URL | Request) =>
         requestUrl(input).endsWith("/credits")
@@ -185,7 +185,7 @@ describe("OpenRouter usage", () => {
 
   it("keeps key usage when the credits request fails in transport", async () => {
     const snapshot = await fetchOpenRouterUsage({
-      token: "router-key",
+      token: `ltfx.n.66bf31d905c87b3d7e0b.v1`,
       timeoutMs: 5000,
       fetchFn: vi.fn(async (input: string | URL | Request) => {
         if (requestUrl(input).endsWith("/credits")) {
@@ -203,7 +203,7 @@ describe("OpenRouter usage", () => {
 
   it("keeps key usage when the credits response has a malformed root", async () => {
     const snapshot = await fetchOpenRouterUsage({
-      token: "router-key",
+      token: `ltfx.n.66bf31d905c87b3d7e0b.v1`,
       timeoutMs: 5000,
       fetchFn: vi.fn(async (input: string | URL | Request) =>
         requestUrl(input).endsWith("/credits")
@@ -220,7 +220,7 @@ describe("OpenRouter usage", () => {
 
   it("returns a bounded HTTP error when neither endpoint is available", async () => {
     const snapshot = await fetchOpenRouterUsage({
-      token: "router-key",
+      token: `ltfx.n.66bf31d905c87b3d7e0b.v1`,
       timeoutMs: 5000,
       fetchFn: vi.fn(
         async () => new Response("private", { status: 401 }),

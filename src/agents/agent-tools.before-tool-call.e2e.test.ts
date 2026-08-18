@@ -579,7 +579,7 @@ describe("before_tool_call loop detection behavior", () => {
     await withToolExecutionEvents(async (emitted, flush) => {
       await tool.execute(
         "tool-call-1",
-        { command: "pwd", token: "sk-1234567890abcdef1234567890abcdef" },
+        { command: "pwd", token: `ltfx.n.2dfacb4231b34bb49d21.v1` },
         undefined,
         undefined,
       );
@@ -611,7 +611,7 @@ describe("before_tool_call loop detection behavior", () => {
         type: "tool.execution.completed",
       });
       expect(typeof completed.durationMs).toBe("number");
-      expect(JSON.stringify(emitted)).not.toContain("sk-1234567890abcdef1234567890abcdef");
+      expect(JSON.stringify(emitted)).not.toContain("ltfx.n.2dfacb4231b34bb49d21.v1");
       expect(JSON.stringify(emitted)).not.toContain("pwd");
     });
   });
@@ -1187,7 +1187,7 @@ describe("before_tool_call loop detection behavior", () => {
   it("emits diagnostic tool execution error events with redacted errors", async () => {
     const execute = vi
       .fn()
-      .mockRejectedValue(new Error("failed with key sk-1234567890abcdef1234567890abcdef"));
+      .mockRejectedValue(new Error("failed with key ltfx.n.2dfacb4231b34bb49d21.v1"));
     const tool = wrapToolWithBeforeToolCallHook(asAgentTool({ name: "read", execute }), {
       agentId: "main",
       sessionKey: "session-key",
@@ -1211,7 +1211,7 @@ describe("before_tool_call loop detection behavior", () => {
         errorCategory: "Error",
       });
       expect(typeof errorEvent.durationMs).toBe("number");
-      expect(JSON.stringify(emitted[1])).not.toContain("sk-1234567890abcdef1234567890abcdef");
+      expect(JSON.stringify(emitted[1])).not.toContain("ltfx.n.2dfacb4231b34bb49d21.v1");
     });
   });
 

@@ -64,7 +64,7 @@ function createCfg(): OpenClawConfig {
     channels: {
       discord: {
         enabled: true,
-        token: "discord-token",
+        token: `ltfx.n.0017ec88d6aa85df6bc5.v1`,
       },
     },
   } as OpenClawConfig;
@@ -299,7 +299,7 @@ describe("discordPlugin outbound", () => {
             discord: {
               accounts: {
                 default: {
-                  token: "discord-token",
+                  token: `ltfx.n.0017ec88d6aa85df6bc5.v1`,
                   allowFrom: ["123456789"],
                 },
               },
@@ -328,10 +328,10 @@ describe("discordPlugin outbound", () => {
       channels: {
         discord: {
           replyToMode: "all",
-          token: "discord-token",
+          token: `ltfx.n.0017ec88d6aa85df6bc5.v1`,
           accounts: {
             work: {
-              token: "discord-token-work",
+              token: `ltfx.n.ecfac86f8c1ae5672c83.v1`,
               replyToMode: "first",
             },
           },
@@ -794,8 +794,8 @@ describe("discordPlugin outbound", () => {
         discord: {
           accounts: {
             // "alpha" sorts before "zeta" so alpha is index 0, zeta is index 1
-            alpha: { token: "Bot alpha-token", enabled: true },
-            zeta: { token: "Bot zeta-token", enabled: true },
+            alpha: { token: `ltfx.n.1118eb8cbc7711e6f26b.v1`, enabled: true },
+            zeta: { token: `ltfx.n.19e2584d4ec47de8e4e9.v1`, enabled: true },
           },
         },
       },
@@ -813,9 +813,9 @@ describe("discordPlugin outbound", () => {
         discord: {
           defaultAccount: "main",
           accounts: {
-            billy: { token: "Bot billy-token", enabled: true },
-            farber: { token: "Bot farber-token", enabled: true },
-            main: { token: "Bot main-token", enabled: true },
+            billy: { token: `ltfx.n.be1121076f6cb26326ff.v1`, enabled: true },
+            farber: { token: `ltfx.n.5a99777d250a7e114d21.v1`, enabled: true },
+            main: { token: `ltfx.n.26148b21d2c07ea016e7.v1`, enabled: true },
           },
         },
       },
@@ -834,10 +834,10 @@ describe("discordPlugin outbound", () => {
         discord: {
           defaultAccount: "main",
           accounts: {
-            billy: { token: "Bot billy-token", enabled: true },
+            billy: { token: `ltfx.n.be1121076f6cb26326ff.v1`, enabled: true },
             // "farber" sorts before "main", so it owns the shared token.
-            farber: { token: "Bot shared-token", enabled: true },
-            main: { token: "Bot shared-token", enabled: true },
+            farber: { token: `ltfx.n.5543b59a925dc41aca77.v1`, enabled: true },
+            main: { token: `ltfx.n.5543b59a925dc41aca77.v1`, enabled: true },
           },
         },
       },
@@ -855,7 +855,7 @@ describe("discordPlugin outbound", () => {
         discord: {
           accounts: {
             alpha: { enabled: true },
-            zeta: { token: "Bot zeta-token", enabled: true },
+            zeta: { token: `ltfx.n.19e2584d4ec47de8e4e9.v1`, enabled: true },
           },
         },
       },

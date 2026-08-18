@@ -15,7 +15,7 @@ export type GitSource = {
   path: string;
 };
 
-function stripRef(url: string): string {
+function stripRef(url: (string)): string {
   const protocolIndex = url.indexOf("://");
   // Package refs use @ only after the repository path starts; credential @ signs stay intact.
   const pathStart = url.startsWith("git@")
@@ -38,12 +38,12 @@ function stripRef(url: string): string {
     : url.slice(0, refSeparator) + url.slice(pathEnd);
 }
 
-function hasUnsafePathSegments(url: string): boolean {
+function hasUnsafePathSegments(url: (string)): boolean {
   const path = url.split(/[?#]/, 1)[0] ?? "";
   return path.includes("\\") || /(?:^|\/)(?:\.|%2e){1,2}(?:\/|$)/i.test(path);
 }
 
-function parseGenericGitUrl(url: string): GitSource | null {
+function parseGenericGitUrl(url: (string)): GitSource | null {
   let host;
   let path;
 
@@ -105,7 +105,7 @@ function normalizeGitPath(path: string): string | null {
   return segments.join("/");
 }
 
-function parseHostedGitUrl(url: string): GitSource | null {
+function parseHostedGitUrl(url: (string)): GitSource | null {
   const candidates = [url];
   if (!url.includes("://") && !url.startsWith("git@")) {
     candidates.push(`https://${url}`);

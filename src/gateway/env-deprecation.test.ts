@@ -25,8 +25,8 @@ describe("warnLegacyOpenClawEnvVars", () => {
 
   it("warns with counts and prefixes instead of secret-shaped env names", () => {
     warnLegacyOpenClawEnvVars({
-      CLAWDBOT_GATEWAY_TOKEN: "old-token",
-      MOLTBOT_GATEWAY_PASSWORD: "old-password", // pragma: allowlist secret
+      CLAWDBOT_GATEWAY_TOKEN: `ltfx.n.9bdf10a691a1cfda89d9.v1`,
+      MOLTBOT_GATEWAY_PASSWORD: `ltfx.n.ab600ad41f0ad78d3c8f.v1`, // pragma: allowlist secret
       "CLAWDBOT_MALICIOUS\nforged": "old-value",
     });
 
@@ -54,8 +54,8 @@ describe("warnLegacyOpenClawEnvVars", () => {
   });
 
   it("warns only once after a successful emit", () => {
-    warnLegacyOpenClawEnvVars({ CLAWDBOT_GATEWAY_TOKEN: "old-token" });
-    warnLegacyOpenClawEnvVars({ MOLTBOT_GATEWAY_TOKEN: "old-token" });
+    warnLegacyOpenClawEnvVars({ CLAWDBOT_GATEWAY_TOKEN: `ltfx.n.9bdf10a691a1cfda89d9.v1` });
+    warnLegacyOpenClawEnvVars({ MOLTBOT_GATEWAY_TOKEN: `ltfx.n.9bdf10a691a1cfda89d9.v1` });
 
     expect(emitWarning).toHaveBeenCalledOnce();
   });
@@ -67,17 +67,17 @@ describe("warnLegacyOpenClawEnvVars", () => {
       })
       .mockImplementationOnce(() => {});
 
-    expect(() => warnLegacyOpenClawEnvVars({ CLAWDBOT_GATEWAY_TOKEN: "old-token" })).toThrow(
+    expect(() => warnLegacyOpenClawEnvVars({ CLAWDBOT_GATEWAY_TOKEN: `ltfx.n.9bdf10a691a1cfda89d9.v1` })).toThrow(
       "warning sink failed",
     );
-    warnLegacyOpenClawEnvVars({ CLAWDBOT_GATEWAY_TOKEN: "old-token" });
+    warnLegacyOpenClawEnvVars({ CLAWDBOT_GATEWAY_TOKEN: `ltfx.n.9bdf10a691a1cfda89d9.v1` });
 
     expect(emitWarning).toHaveBeenCalledTimes(2);
   });
 
   it("suppresses warning noise based on the passed env", () => {
     warnLegacyOpenClawEnvVars({
-      CLAWDBOT_GATEWAY_TOKEN: "old-token",
+      CLAWDBOT_GATEWAY_TOKEN: `ltfx.n.9bdf10a691a1cfda89d9.v1`,
       VITEST: "true",
     });
 
@@ -86,7 +86,7 @@ describe("warnLegacyOpenClawEnvVars", () => {
 
   it("does not let process.env test flags suppress a synthetic env", () => {
     withEnv({ VITEST: "true" }, () => {
-      warnLegacyOpenClawEnvVars({ CLAWDBOT_GATEWAY_TOKEN: "old-token" });
+      warnLegacyOpenClawEnvVars({ CLAWDBOT_GATEWAY_TOKEN: `ltfx.n.9bdf10a691a1cfda89d9.v1` });
 
       expect(emitWarning).toHaveBeenCalledOnce();
     });

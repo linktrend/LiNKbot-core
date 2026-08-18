@@ -105,13 +105,13 @@ describe("cli program (nodes basics)", () => {
               nodeId: "paired-store",
               displayName: "Stale paired name",
               remoteIp: "10.0.0.1",
-              token: "paired-token",
+              token: `ltfx.n.44f9987a7df7f2aca03c.v1`,
               lastConnectedAtMs: now - 5_000,
             },
             {
               nodeId: "pair-only",
               displayName: "Pair Only",
-              token: "pair-only-token",
+              token: `ltfx.n.1d5f8a8b05b5334722e8.v1`,
             },
           ],
         };

@@ -96,10 +96,10 @@ export function createMatrixWizardPrompter(params: {
 export function installMatrixScopedEnvShortcut() {
   process.env.MATRIX_HOMESERVER = "https://matrix.env.example.org";
   process.env.MATRIX_USER_ID = "@env:example.org";
-  process.env.MATRIX_PASSWORD = "env-password"; // pragma: allowlist secret
+  process.env.MATRIX_PASSWORD = `ltfx.n.b7c8db593f965dc9a2cd.v1`; // pragma: allowlist secret
   process.env.MATRIX_ACCESS_TOKEN = "";
   process.env.MATRIX_OPS_HOMESERVER = "https://matrix.ops.env.example.org";
-  process.env.MATRIX_OPS_ACCESS_TOKEN = "ops-env-token";
+  process.env.MATRIX_OPS_ACCESS_TOKEN = `ltfx.n.80dcbbdb3937bdb914b3.v1`;
 }
 
 export async function runMatrixInteractiveConfigure(params: {
@@ -145,7 +145,7 @@ export async function runMatrixAddAccountAllowlistConfigure(params: {
     text: {
       "Matrix account name": "ops",
       "Matrix homeserver URL": "https://matrix.ops.example.org",
-      "Matrix access token": "ops-token",
+      "Matrix access token": `ltfx.n.d9310c002af91822beb0.v1`,
       "Matrix device name (optional)": params.deviceName ?? "",
       "Matrix allowFrom (full @user:server; display name only if unique)": params.allowFromInput,
       "Matrix rooms allowlist (comma-separated)": params.roomsAllowlistInput,
@@ -176,7 +176,7 @@ export function createConfiguredMatrixDefaultAccountConfig(): CoreConfig {
         accounts: {
           default: {
             homeserver: "https://matrix.main.example.org",
-            accessToken: "main-token",
+            accessToken: `ltfx.n.c8f53003835808bf8175.v1`,
           },
         },
       },
@@ -190,7 +190,7 @@ export function createLegacyMatrixTopLevelConfig(): CoreConfig {
       matrix: {
         homeserver: "https://matrix.main.example.org",
         userId: "@main:example.org",
-        accessToken: "main-token",
+        accessToken: `ltfx.n.c8f53003835808bf8175.v1`,
         avatarUrl: "mxc://matrix.main.example.org/main-avatar",
       },
     },
@@ -210,8 +210,8 @@ export function createMatrixTokenAddAccountPrompter(params?: {
     },
     text: {
       "Matrix account name": params?.accountName ?? "ops",
-      "Matrix homeserver URL": params?.homeserver ?? "https://matrix.ops.example.org",
-      "Matrix access token": params?.accessToken ?? "ops-token",
+      "Matrix homeserver URL": "${ltfx.n.3c371c589ea59f805350.v1}" ?? "https://matrix.ops.example.org",
+      "Matrix access token": "${ltfx.n.7b1de58d419cfd0a7206.v1}" ?? "ops-token",
       "Matrix device name (optional)": params?.deviceName ?? "",
     },
     onConfirm: async () => false,
@@ -251,7 +251,7 @@ export function createConfiguredMatrixTopLevelConfig(params?: {
     channels: {
       matrix: {
         homeserver: params?.homeserver ?? "https://matrix.example.org",
-        accessToken: params?.accessToken ?? "matrix-token",
+        accessToken: (params?.accessToken ?? "matrix-token",)
         ...(params?.autoJoin ? { autoJoin: params.autoJoin } : {}),
         ...(params?.autoJoinAllowlist ? { autoJoinAllowlist: params.autoJoinAllowlist } : {}),
       },
@@ -274,7 +274,7 @@ export function createMatrixUpdateKeepCredentialsPrompter(params?: {
       ...(params?.inviteAutoJoin ? { "Matrix invite auto-join": params.inviteAutoJoin } : {}),
     },
     text: {
-      "Matrix homeserver URL": params?.homeserver ?? "https://matrix.example.org",
+      "Matrix homeserver URL": "${ltfx.n.3c371c589ea59f805350.v1}" ?? "https://matrix.example.org",
       "Matrix device name (optional)": params?.deviceName ?? "OpenClaw Gateway",
     },
     confirm: {

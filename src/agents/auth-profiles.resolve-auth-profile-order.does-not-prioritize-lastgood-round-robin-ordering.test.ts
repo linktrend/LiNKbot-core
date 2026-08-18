@@ -45,7 +45,7 @@ const ANTHROPIC_STORE = {
     "anthropic:default": {
       type: "api_key",
       provider: "anthropic",
-      key: "sk-default",
+      key: `ltfx.n.0e71d773ad6ad787493a.v1`,
     },
     "anthropic:work": {
       type: "api_key",
@@ -248,7 +248,7 @@ describe("resolveAuthProfileOrder", () => {
         "anthropic:default": {
           type: "api_key",
           provider: "anthropic",
-          key: "sk-default",
+          key: `ltfx.n.0e71d773ad6ad787493a.v1`,
         },
         "anthropic:oauth": {
           type: "oauth",
@@ -378,7 +378,7 @@ describe("resolveAuthProfileOrder", () => {
           "openai:default": {
             type: "token",
             provider: "openai",
-            token: "expired-token",
+            token: `ltfx.n.b52b3ef2233858ce1156.v1`,
             expires: Date.now() - 1_000,
           },
           "openai:user@example.com": {
@@ -409,7 +409,7 @@ describe("resolveAuthProfileOrder", () => {
           "openai:default": {
             type: "api_key",
             provider: "openai",
-            key: "sk-openai",
+            key: `ltfx.n.45ca28bb99fbb3964300.v1`,
           },
           "minimax:prod": {
             type: "api_key",
@@ -464,7 +464,7 @@ describe("resolveAuthProfileOrder", () => {
           "anthropic:ready": {
             type: "api_key",
             provider: "anthropic",
-            key: "sk-ready",
+            key: `ltfx.n.a7951b67e314cb3033ea.v1`,
           },
           "anthropic:cool1": {
             type: "oauth",
@@ -596,12 +596,12 @@ describe("resolveAuthProfileOrder", () => {
             "openrouter:default": {
               type: "api_key",
               provider: "openrouter",
-              key: "sk-or-default",
+              key: `ltfx.n.011b6f50dea6a6e512bd.v1`,
             },
             "openrouter:work": {
               type: "api_key",
               provider: "openrouter",
-              key: "sk-or-work",
+              key: `ltfx.n.7bae55ce8df3a799f207.v1`,
             },
           },
           usageStats: {
@@ -634,7 +634,7 @@ describe("resolveAuthProfileOrder", () => {
         "anthropic:token-cred": {
           type: "token",
           provider: "anthropic",
-          token: "just-a-token",
+          token: `ltfx.n.445be8cc90bac9d963bc.v1`,
           expires: now + 60_000,
         },
       },
@@ -709,7 +709,7 @@ describe("resolveAuthProfileOrder", () => {
       profile: {
         type: "token" as const,
         provider: "minimax" as const,
-        token: "sk-minimax",
+        token: `ltfx.n.038c419c9cae8f8e4283.v1`,
         expires: Date.now() - 1000,
       },
     },
@@ -718,7 +718,7 @@ describe("resolveAuthProfileOrder", () => {
       profile: {
         type: "token" as const,
         provider: "minimax" as const,
-        token: "sk-minimax",
+        token: `ltfx.n.038c419c9cae8f8e4283.v1`,
         expires: 0,
       },
     },
@@ -782,7 +782,7 @@ describe("resolveAuthProfileOrder", () => {
     const order = resolveMinimaxOrderWithProfile({
       type: "token",
       provider: "minimax",
-      token: "sk-minimax",
+      token: `ltfx.n.038c419c9cae8f8e4283.v1`,
     });
     expect(order).toEqual(["minimax:default"]);
   });

@@ -61,7 +61,7 @@ describe("secrets runtime external channel origin discovery", () => {
           }>;
         };
       }) => {
-        const token = params.config.channels?.discord?.token;
+        const token = (params.config.channels?.discord?.token;)
         if (!token || typeof token !== "object" || Array.isArray(token)) {
           return;
         }
@@ -87,7 +87,7 @@ describe("secrets runtime external channel origin discovery", () => {
         },
       }),
       env: {
-        DISCORD_BOT_TOKEN: "resolved-discord-token",
+        DISCORD_BOT_TOKEN: `ltfx.n.f5ecfcacbcab10a3cd26.v1`,
       },
       includeAuthStoreRefs: false,
     });

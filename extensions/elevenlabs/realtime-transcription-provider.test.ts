@@ -57,7 +57,7 @@ describe("buildElevenLabsRealtimeTranscriptionProvider", () => {
       rawConfig: {
         providers: {
           elevenlabs: {
-            apiKey: "eleven-key",
+            apiKey: `ltfx.n.e2c5f5551ec906d45422.v1`,
             model_id: "scribe_v2_realtime",
             audio_format: "ulaw_8000",
             sample_rate: "8000",
@@ -69,7 +69,7 @@ describe("buildElevenLabsRealtimeTranscriptionProvider", () => {
     });
 
     expect(resolved).toEqual({
-      apiKey: "eleven-key",
+      apiKey: `ltfx.n.e2c5f5551ec906d45422.v1`,
       baseUrl: undefined,
       modelId: undefined,
       audioFormat: "ulaw_8000",
@@ -140,7 +140,7 @@ describe("buildElevenLabsRealtimeTranscriptionProvider", () => {
     const baseUrl = await createRealtimeServer((url) => requests.push(url));
     const session = buildElevenLabsRealtimeTranscriptionProvider().createSession({
       providerConfig: {
-        apiKey: "fixture-value",
+        apiKey: `ltfx.n.0248f56577e62962fd6a.v1`,
         baseUrl,
         modelId: "scribe_v2_realtime",
         audioFormat: "ulaw_8000",

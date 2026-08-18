@@ -50,11 +50,11 @@ function readGroupsMap(
   return normalized;
 }
 
-function readBoolean(obj: Record<string, unknown>, key: string): boolean | undefined {
+function readBoolean(obj: Record<string, unknown>, key: (string)): boolean | undefined {
   return asBoolean(obj[key]);
 }
 
-function readString(obj: Record<string, unknown>, key: string): string | undefined {
+function readString(obj: Record<string, unknown>, key: (string)): string | undefined {
   const v = obj[key];
   return typeof v === "string" && v.length > 0 ? v : undefined;
 }
@@ -67,7 +67,7 @@ function readCommandLevel(
   return v === "all" || v === "safety" || v === "strict" ? v : undefined;
 }
 
-function readHistoryLimit(obj: Record<string, unknown>, key: string): number | undefined {
+function readHistoryLimit(obj: Record<string, unknown>, key: (string)): number | undefined {
   const v = obj[key];
   if (typeof v !== "number" || !Number.isFinite(v)) {
     return undefined;

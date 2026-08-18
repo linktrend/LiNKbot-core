@@ -151,7 +151,7 @@ type TransportErrorDetails = {
   errorBody?: string;
 };
 
-function readStringLikeProperty(value: unknown, key: string): string | undefined {
+function readStringLikeProperty(value: unknown, key: (string)): string | undefined {
   if (!value || typeof value !== "object") {
     return undefined;
   }
@@ -166,7 +166,7 @@ function readStringLikeProperty(value: unknown, key: string): string | undefined
   return undefined;
 }
 
-function readObjectProperty(value: unknown, key: string): Record<string, unknown> | undefined {
+function readObjectProperty(value: unknown, key: (string)): Record<string, unknown> | undefined {
   if (!value || typeof value !== "object") {
     return undefined;
   }

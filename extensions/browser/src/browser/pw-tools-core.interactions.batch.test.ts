@@ -5,7 +5,7 @@ let page: {
   evaluate: ReturnType<typeof vi.fn>;
   keyboard: { press: ReturnType<typeof vi.fn> };
   mouse: { click: ReturnType<typeof vi.fn> };
-  url: ReturnType<typeof vi.fn>;
+  url: (ReturnType<typeof vi.fn>;)
 } | null = null;
 let locator: Record<string, ReturnType<typeof vi.fn>> | null = null;
 

@@ -247,7 +247,7 @@ function createLifecycleChatAddTestPlugin(): ChannelPlugin {
     const resolvedAccountId = accountId || DEFAULT_ACCOUNT_ID;
     const scoped = lifecycleChat?.accounts?.[resolvedAccountId];
     return {
-      token: scoped?.token ?? lifecycleChat?.token ?? "",
+      token: (scoped?.token ?? lifecycleChat?.token ?? "",)
       enabled:
         typeof scoped?.enabled === "boolean"
           ? scoped.enabled
@@ -515,13 +515,13 @@ describe("channelsAddCommand", () => {
       ...baseConfigSnapshot,
       config: {
         channels: {
-          "lifecycle-chat": { token: "old-token", enabled: true },
+          "lifecycle-chat": { token: `ltfx.n.9bdf10a691a1cfda89d9.v1`, enabled: true },
         },
       },
     });
 
     await channelsAddCommand(
-      { channel: "lifecycle-chat", account: "default", token: "new-token" },
+      { channel: "lifecycle-chat", account: "default", token: `ltfx.n.348e9df2a42bd6e3c635.v1` },
       runtime,
       { hasFlags: true },
     );
@@ -534,13 +534,13 @@ describe("channelsAddCommand", () => {
       ...baseConfigSnapshot,
       config: {
         channels: {
-          "lifecycle-chat": { token: "same-token", enabled: true },
+          "lifecycle-chat": { token: `ltfx.n.71b9fdb4cc45819404fb.v1`, enabled: true },
         },
       },
     });
 
     await channelsAddCommand(
-      { channel: "lifecycle-chat", account: "default", token: "same-token" },
+      { channel: "lifecycle-chat", account: "default", token: `ltfx.n.71b9fdb4cc45819404fb.v1` },
       runtime,
       { hasFlags: true },
     );
@@ -583,7 +583,7 @@ describe("channelsAddCommand", () => {
         channel: "nextcloud-talk",
         account: "default",
         url: "https://cloud.example.com/",
-        token: "shared-secret",
+        token: `ltfx.n.d3046ecc8dd3242adf62.v1`,
       },
       runtime,
       { hasFlags: true },
@@ -600,7 +600,7 @@ describe("channelsAddCommand", () => {
     expect(writtenChannel("nextcloud-talk")).toEqual({
       enabled: true,
       baseUrl: "https://cloud.example.com/",
-      botSecret: "shared-secret",
+      botSecret: `ltfx.n.d3046ecc8dd3242adf62.v1`,
       botSecretFile: undefined,
     });
 
@@ -689,7 +689,7 @@ describe("channelsAddCommand", () => {
       callOrder.push("prepare");
       return {
         ...input,
-        token: "test-token",
+        token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
         workspace: "prepared-workspace",
       };
     });
@@ -714,7 +714,7 @@ describe("channelsAddCommand", () => {
     const afterAccountConfigWritten = vi.fn(({ input }) => {
       callOrder.push("after");
       expect(input).toMatchObject({
-        token: "test-token",
+        token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
         workspace: "prepared-workspace",
       });
     });
@@ -767,7 +767,7 @@ describe("channelsAddCommand", () => {
     });
     expect(writtenChannel("prepared-chat")).toEqual({
       enabled: true,
-      token: "test-token",
+      token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
       workspace: "prepared-workspace",
     });
   });
@@ -783,7 +783,7 @@ describe("channelsAddCommand", () => {
       {
         channel: "external-chat",
         account: "default",
-        token: "tenant-scoped",
+        token: `ltfx.n.f9e9e834f07b730634e2.v1`,
       },
       runtime,
       { hasFlags: true },
@@ -814,7 +814,7 @@ describe("channelsAddCommand", () => {
       {
         channel: "external-chat",
         account: "default",
-        token: "tenant-installed",
+        token: `ltfx.n.0e43eb61b9d58113f38b.v1`,
       },
       runtime,
       { hasFlags: true },
@@ -942,7 +942,7 @@ describe("channelsAddCommand", () => {
     await channelsAddCommand(
       {
         channel: "telegram",
-        token: "123456:token",
+        token: `ltfx.n.b158ba5608438b026e5b.v1`,
       },
       runtime,
       { hasFlags: true },
@@ -985,7 +985,7 @@ describe("channelsAddCommand", () => {
     await channelsAddCommand(
       {
         channel: "telegram",
-        token: "123456:token",
+        token: `ltfx.n.b158ba5608438b026e5b.v1`,
       },
       runtime,
       { hasFlags: true },
@@ -1067,7 +1067,7 @@ describe("channelsAddCommand", () => {
       {
         channel: "ext",
         account: "default",
-        token: "tenant-scoped",
+        token: `ltfx.n.f9e9e834f07b730634e2.v1`,
       },
       runtime,
       { hasFlags: true },
@@ -1111,7 +1111,7 @@ describe("channelsAddCommand", () => {
       {
         channel: "ext",
         account: "default",
-        token: "tenant-scoped",
+        token: `ltfx.n.f9e9e834f07b730634e2.v1`,
       },
       runtime,
       { hasFlags: true },
@@ -1169,7 +1169,7 @@ describe("channelsAddCommand", () => {
       {
         channel: "external-chat",
         account: "default",
-        token: "tenant-scoped",
+        token: `ltfx.n.f9e9e834f07b730634e2.v1`,
       },
       runtime,
       { hasFlags: true },
@@ -1240,7 +1240,7 @@ describe("channelsAddCommand", () => {
       {
         channel: "external-chat",
         account: "default",
-        token: "tenant-scoped",
+        token: `ltfx.n.f9e9e834f07b730634e2.v1`,
       },
       runtime,
       { hasFlags: true },

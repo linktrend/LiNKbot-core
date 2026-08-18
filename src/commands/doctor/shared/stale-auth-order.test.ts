@@ -260,7 +260,7 @@ describe("repairStaleConfiguredAuthOrders", () => {
         "claude-cli:setup-token": {
           type: "token",
           provider: "claude-cli",
-          token: "setup-token",
+          token: `ltfx.n.8997ec9a3da1e44792b9.v1`,
         },
       },
       order: { anthropic: ["anthropic:expired"] },
@@ -296,7 +296,7 @@ describe("repairStaleConfiguredAuthOrders", () => {
         "claude-cli:token": {
           type: "token",
           provider: "claude-cli",
-          token: "setup-token",
+          token: `ltfx.n.8997ec9a3da1e44792b9.v1`,
         },
       },
     };
@@ -1387,7 +1387,7 @@ describe("repairStaleConfiguredAuthOrders", () => {
             "claude-cli:setup-token": {
               type: "token",
               provider: "claude-cli",
-              token: "setup-token",
+              token: `ltfx.n.8997ec9a3da1e44792b9.v1`,
             },
           },
         },

@@ -136,7 +136,7 @@ describe("resolveProviderAuths plugin boundary", () => {
 
   it("prefers plugin-owned usage auth when available", async () => {
     resolveProviderUsageAuthWithPluginMock.mockResolvedValueOnce({
-      token: "plugin-zai-token",
+      token: `ltfx.n.97eee8f3e3cdc462765c.v1`,
     });
 
     await expect(
@@ -146,7 +146,7 @@ describe("resolveProviderAuths plugin boundary", () => {
     ).resolves.toEqual([
       {
         provider: "zai",
-        token: "plugin-zai-token",
+        token: `ltfx.n.97eee8f3e3cdc462765c.v1`,
       },
     ]);
     expect(ensureAuthProfileStoreMock).not.toHaveBeenCalled();
@@ -165,7 +165,7 @@ describe("resolveProviderAuths plugin boundary", () => {
     ensureAuthProfileStoreMock.mockReturnValue(store as never);
     resolveAuthProfileOrderMock.mockReturnValue(["anthropic:admin"]);
     resolveApiKeyForProfileMock.mockResolvedValue({
-      apiKey: "sk-ant-admin-secretref",
+      apiKey: `ltfx.n.0ce9e7b91744e89c2407.v1`,
       provider: "anthropic",
     });
     resolveProviderUsageAuthWithPluginMock.mockImplementationOnce(async (rawParams) => {
@@ -180,7 +180,7 @@ describe("resolveProviderAuths plugin boundary", () => {
         (await params.context.resolveApiKeyCandidatesFromConfigAndStore?.({
           providerIds: ["anthropic"],
         })) ?? [];
-      expect(candidates).toEqual(["sk-ant-admin-secretref"]);
+      expect(candidates).toEqual(["ltfx.n.0ce9e7b91744e89c2407.v1"]);
       return candidates[0] ? { token: candidates[0] } : null;
     });
 
@@ -199,7 +199,7 @@ describe("resolveProviderAuths plugin boundary", () => {
     expect(result).toEqual([
       {
         provider: "anthropic",
-        token: "sk-ant-admin-secretref",
+        token: `ltfx.n.0ce9e7b91744e89c2407.v1`,
       },
     ]);
   });
@@ -247,7 +247,7 @@ describe("resolveProviderAuths plugin boundary", () => {
       return provider === "anthropic" ? ["anthropic:default"] : [];
     });
     resolveProviderUsageAuthWithPluginMock.mockResolvedValueOnce({
-      token: "plugin-anthropic-token",
+      token: `ltfx.n.6950b378905abb35e037.v1`,
     });
 
     await withTempHome(async (homeDir) => {
@@ -260,7 +260,7 @@ describe("resolveProviderAuths plugin boundary", () => {
       ).resolves.toEqual([
         {
           provider: "anthropic",
-          token: "plugin-anthropic-token",
+          token: `ltfx.n.6950b378905abb35e037.v1`,
         },
       ]);
     });
@@ -277,7 +277,7 @@ describe("resolveProviderAuths plugin boundary", () => {
         "minimax-portal:default": {
           type: "oauth",
           provider: "minimax-portal",
-          accessToken: "portal-oauth-token",
+          accessToken: `ltfx.n.fbcfb932b73c7fa1adf7.v1`,
         },
       },
     });
@@ -289,7 +289,7 @@ describe("resolveProviderAuths plugin boundary", () => {
       return provider === "minimax-portal" ? ["minimax-portal:default"] : [];
     });
     resolveProviderUsageAuthWithPluginMock.mockResolvedValueOnce({
-      token: "plugin-minimax-token",
+      token: `ltfx.n.970c2c14a1478a2c44ea.v1`,
     });
 
     await withTempHome(async (homeDir) => {
@@ -302,7 +302,7 @@ describe("resolveProviderAuths plugin boundary", () => {
       ).resolves.toEqual([
         {
           provider: "minimax",
-          token: "plugin-minimax-token",
+          token: `ltfx.n.970c2c14a1478a2c44ea.v1`,
         },
       ]);
     });
@@ -314,7 +314,7 @@ describe("resolveProviderAuths plugin boundary", () => {
 
   it("keeps plugin usage auth when provider-owned usage env credentials exist", async () => {
     resolveProviderUsageAuthWithPluginMock.mockResolvedValueOnce({
-      token: "plugin-minimax-token",
+      token: `ltfx.n.970c2c14a1478a2c44ea.v1`,
     });
 
     await withTempHome(async (homeDir) => {
@@ -330,7 +330,7 @@ describe("resolveProviderAuths plugin boundary", () => {
       ).resolves.toEqual([
         {
           provider: "minimax",
-          token: "plugin-minimax-token",
+          token: `ltfx.n.970c2c14a1478a2c44ea.v1`,
         },
       ]);
     });
@@ -341,7 +341,7 @@ describe("resolveProviderAuths plugin boundary", () => {
 
   it("lets an OAuth-default provider route an API key through its billing hook", async () => {
     resolveProviderUsageAuthWithPluginMock.mockResolvedValueOnce({
-      token: "encoded-openai-admin-token",
+      token: `ltfx.n.88587e0f7a809e2303d1.v1`,
     });
 
     await withTempHome(async (homeDir) => {
@@ -351,13 +351,13 @@ describe("resolveProviderAuths plugin boundary", () => {
           skipPluginAuthWithoutCredentialSource: true,
           env: {
             HOME: homeDir,
-            OPENAI_API_KEY: "sk-admin-test",
+            OPENAI_API_KEY: `ltfx.n.d091874f1da5363b8d73.v1`,
           },
         }),
       ).resolves.toEqual([
         {
           provider: "openai",
-          token: "encoded-openai-admin-token",
+          token: `ltfx.n.88587e0f7a809e2303d1.v1`,
         },
       ]);
     });
@@ -367,7 +367,7 @@ describe("resolveProviderAuths plugin boundary", () => {
 
   it("detects provider-owned usage credentials without routing them into inference auth", async () => {
     resolveProviderUsageAuthWithPluginMock.mockResolvedValueOnce({
-      token: "encoded-openai-admin-token",
+      token: `ltfx.n.88587e0f7a809e2303d1.v1`,
     });
 
     await withTempHome(async (homeDir) => {
@@ -377,13 +377,13 @@ describe("resolveProviderAuths plugin boundary", () => {
           skipPluginAuthWithoutCredentialSource: true,
           env: {
             HOME: homeDir,
-            OPENAI_ADMIN_KEY: "sk-admin-test",
+            OPENAI_ADMIN_KEY: `ltfx.n.d091874f1da5363b8d73.v1`,
           },
         }),
       ).resolves.toEqual([
         {
           provider: "openai",
-          token: "encoded-openai-admin-token",
+          token: `ltfx.n.88587e0f7a809e2303d1.v1`,
         },
       ]);
     });
@@ -418,7 +418,7 @@ describe("resolveProviderAuths plugin boundary", () => {
           skipPluginAuthWithoutCredentialSource: true,
           env: {
             HOME: homeDir,
-            ANTHROPIC_API_KEY: "sk-ant-api03-status-key", // pragma: allowlist secret
+            ANTHROPIC_API_KEY: `ltfx.n.d24b5d943bc53d04c374.v1`, // pragma: allowlist secret
           },
         }),
       ).resolves.toEqual([]);

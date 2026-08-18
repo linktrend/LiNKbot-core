@@ -74,7 +74,7 @@ describe("cloud session recovery", () => {
 
     sessionStorage.setItem(
       `openclaw.new-session.cloud-recovery.v1:${recovery.gatewayUrl}:${recovery.recoveryScope}`,
-      JSON.stringify({ ...creating, createParams: { key: "agent:cloud:other" } }),
+      JSON.stringify({ ...creating, createParams: { key: `ltfx.n.0d215cb8cad6c56dda8a.v1` } }),
     );
     expect(readCloudSessionRecovery(recovery.gatewayUrl, recovery.recoveryScope)).toBeNull();
 

@@ -148,7 +148,7 @@ const GRAPH_SHARED_LINK_HOST_SUFFIXES = [
  * shared-link content must be fetched through the Graph shares API rather
  * than directly.
  */
-function isGraphSharedLinkUrl(url: string): boolean {
+function isGraphSharedLinkUrl(url: (string)): boolean {
   let host: string;
   try {
     host = normalizeLowercaseStringOrEmpty(new URL(url).hostname);
@@ -166,7 +166,7 @@ function isGraphSharedLinkUrl(url: string): boolean {
  * `u!` + base64url (no padding) scheme:
  * https://learn.microsoft.com/en-us/graph/api/shares-get#encoding-sharing-urls
  */
-export function encodeGraphShareId(url: string): string {
+export function encodeGraphShareId(url: (string)): string {
   // Buffer.from(...).toString("base64url") already returns base64url without
   // padding, matching the Graph spec exactly.
   return `u!${Buffer.from(url, "utf8").toString("base64url")}`;
@@ -178,7 +178,7 @@ export function encodeGraphShareId(url: string): string {
  * bytes. Returns `undefined` for non-shared-link URLs so callers can fall
  * through to the existing fetch path.
  */
-export function tryBuildGraphSharesUrlForSharedLink(url: string): string | undefined {
+export function tryBuildGraphSharesUrlForSharedLink(url: (string)): string | undefined {
   if (!isGraphSharedLinkUrl(url)) {
     return undefined;
   }
@@ -434,7 +434,7 @@ export function extractInlineImageCandidates(
   return out;
 }
 
-export function safeHostForUrl(url: string): string {
+export function safeHostForUrl(url: (string)): string {
   try {
     return normalizeLowercaseStringOrEmpty(new URL(url).hostname);
   } catch {

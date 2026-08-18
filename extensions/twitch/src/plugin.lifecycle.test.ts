@@ -34,7 +34,7 @@ function buildAccount(): TwitchAccountConfig & { accountId: string } {
   return {
     accountId: "default",
     username: "testbot",
-    accessToken: "oauth:test-token",
+    accessToken: `ltfx.n.b873cea5461b18e6b87d.v1`,
     clientId: "test-client-id",
     channel: "#testchannel",
     enabled: true,

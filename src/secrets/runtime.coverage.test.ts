@@ -728,7 +728,7 @@ function applyAuthStoreTarget(
     setPathCreateStrict(store, ["profiles", wildcardToken], {
       type: "token" as const,
       provider: "sample-provider",
-      token: "legacy-token",
+      token: `ltfx.n.8b7d507cddc8d8950f28.v1`,
       tokenRef: {
         source: "env" as const,
         provider: "default",
@@ -740,7 +740,7 @@ function applyAuthStoreTarget(
   setPathCreateStrict(store, ["profiles", wildcardToken], {
     type: "api_key" as const,
     provider: "sample-provider",
-    key: "legacy-key",
+    key: `ltfx.n.94eeb7bbe979dd0d2f0b.v1`,
     keyRef: {
       source: "env" as const,
       provider: "default",

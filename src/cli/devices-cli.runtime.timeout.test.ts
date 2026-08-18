@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 const callGatewayMock = vi.fn(async () => ({ pending: [], paired: [] }));
 vi.mock("../gateway/call.js", () => ({
   buildGatewayConnectionDetails: () => ({
-    url: "ws://127.0.0.1:18789",
+    url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
     urlSource: "local loopback",
   }),
   callGateway: callGatewayMock,

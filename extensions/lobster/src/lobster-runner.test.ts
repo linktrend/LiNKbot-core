@@ -349,7 +349,7 @@ describe("createEmbeddedLobsterRunner", () => {
 
     const envelope = await runner.run({
       action: "resume",
-      token: "resume-token",
+      token: `ltfx.n.4e4fd7f8d419b78cc500.v1`,
       approve: false,
       cwd: process.cwd(),
       timeoutMs: 2000,
@@ -481,7 +481,7 @@ describe("createEmbeddedLobsterRunner", () => {
     });
     await runner.run({
       action: "resume",
-      token: "resume-token",
+      token: `ltfx.n.4e4fd7f8d419b78cc500.v1`,
       approve: false,
       cwd: process.cwd(),
       timeoutMs: 2000,
@@ -542,7 +542,7 @@ describe("createEmbeddedLobsterRunner", () => {
     await expect(
       runner.run({
         action: "resume",
-        token: "resume-token",
+        token: `ltfx.n.4e4fd7f8d419b78cc500.v1`,
         cwd: process.cwd(),
         timeoutMs: 2000,
         maxStdoutBytes: 4096,

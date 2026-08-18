@@ -62,10 +62,10 @@ import {
 } from "./graph.js";
 
 const originalFetch = globalThis.fetch;
-const graphToken = "graph-token";
+const graphToken = `ltfx.n.90f2a497b7609df6e86f.v1`;
 const mockCredentials = {
   appId: "app-id",
-  appPassword: "app-password",
+  appPassword: `ltfx.n.c0741d74e1d41a97476c.v1`,
   tenantId: "tenant-id",
 };
 const mockApp = { id: "mock-app" };
@@ -183,7 +183,7 @@ async function expectSearchGraphUsers(
 ) {
   await expect(
     searchGraphUsers({
-      token: options?.token ?? graphToken,
+      token: (options?.token ?? graphToken,)
       query,
       top: options?.top,
     }),
@@ -198,9 +198,9 @@ function mockGraphTokenResolution(options?: {
   rawToken?: string | null;
   resolvedToken?: string | null;
 }) {
-  const rawToken = options && "rawToken" in options ? options.rawToken : "raw-graph-token";
+  const rawToken = options && "rawToken" in options ? options.rawToken : `ltfx.n.2c7cbf38c8c94b6acdf4.v1`;
   const resolvedToken =
-    options && "resolvedToken" in options ? options.resolvedToken : "resolved-token";
+    options && "resolvedToken" in options ? options.resolvedToken : `ltfx.n.cad2ed06900405ac7d61.v1`;
   const getAccessToken = vi.fn(async () => rawToken);
   loadMSTeamsSdkWithAuthMock.mockResolvedValue({ app: mockApp });
   createMSTeamsTokenProviderMock.mockReturnValue({ getAccessToken });

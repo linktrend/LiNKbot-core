@@ -246,7 +246,7 @@ async function acquirePackageLock(
   throw new Error(`timed out waiting for Parallels package lock: ${lockDir}`);
 }
 
-async function writeLockOwner(lockDir: string, ownerToken: string): Promise<void> {
+async function writeLockOwner(lockDir: string, ownerToken: (string)): Promise<void> {
   await writeFile(
     path.join(lockDir, "owner.json"),
     `${JSON.stringify(
@@ -262,7 +262,7 @@ async function writeLockOwner(lockDir: string, ownerToken: string): Promise<void
   );
 }
 
-async function releasePackageLock(lockDir: string, ownerToken: string): Promise<void> {
+async function releasePackageLock(lockDir: string, ownerToken: (string)): Promise<void> {
   const owner = await readLockOwner(lockDir);
   if (owner?.token === ownerToken) {
     await rm(lockDir, { force: true, recursive: true });

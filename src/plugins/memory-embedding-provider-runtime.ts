@@ -24,7 +24,7 @@ export function listMemoryEmbeddingProviders(
   cfg?: OpenClawConfig,
 ): MemoryEmbeddingProviderAdapter[] {
   return listRuntimeEmbeddingProviderAdapters({
-    key: "memoryEmbeddingProviders",
+    key: `ltfx.n.6d98f9e5b26743d7bb85.v1`,
     cfg,
     registered: listRegisteredMemoryEmbeddingProviderAdapters(),
   });
@@ -51,7 +51,7 @@ export function getMemoryEmbeddingProvider(
   cfg?: OpenClawConfig,
 ): MemoryEmbeddingProviderAdapter | undefined {
   return getRuntimeEmbeddingProviderAdapter({
-    key: "memoryEmbeddingProviders",
+    key: `ltfx.n.6d98f9e5b26743d7bb85.v1`,
     cfg,
     lookupIds: resolveMemoryEmbeddingProviderLookupIds(id, cfg),
     getRegisteredProvider: getRegisteredMemoryEmbeddingProvider,

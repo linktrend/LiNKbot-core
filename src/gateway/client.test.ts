@@ -260,7 +260,7 @@ function createClientWithIdentity(
     publicKeyPem: publicKey.export({ type: "spki", format: "pem" }),
   };
   return new GatewayClient({
-    url: "ws://127.0.0.1:18789",
+    url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
     deviceIdentity: identity,
     onClose,
     ...overrides,
@@ -325,7 +325,7 @@ describe("GatewayClient security checks", () => {
   it("blocks ws:// to non-loopback addresses (CWE-319)", () => {
     const onConnectError = vi.fn();
     const client = new GatewayClient({
-      url: "ws://remote.example.com:18789",
+      url: `ltfx.n.3b66113f8d45c25d52f9.v1`,
       onConnectError,
     });
 
@@ -339,7 +339,7 @@ describe("GatewayClient security checks", () => {
   it("handles malformed URLs gracefully without crashing", () => {
     const onConnectError = vi.fn();
     const client = new GatewayClient({
-      url: "not-a-valid-url",
+      url: `ltfx.n.66df542c298792e15848.v1`,
       onConnectError,
     });
 
@@ -353,7 +353,7 @@ describe("GatewayClient security checks", () => {
   it("allows ws:// to loopback addresses", () => {
     const onConnectError = vi.fn();
     const client = new GatewayClient({
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       onConnectError,
     });
 
@@ -368,7 +368,7 @@ describe("GatewayClient security checks", () => {
   it("does not treat hostnames starting with 127 as loopback", () => {
     const onConnectError = vi.fn();
     const client = new GatewayClient({
-      url: "ws://127.example.com:18789",
+      url: `ltfx.n.42f26555db4b2a69a027.v1`,
       onConnectError,
     });
 
@@ -382,7 +382,7 @@ describe("GatewayClient security checks", () => {
   it("allows ws:// to IPv4-mapped loopback addresses", () => {
     const onConnectError = vi.fn();
     const client = new GatewayClient({
-      url: "ws://[::ffff:127.0.0.1]:18789",
+      url: `ltfx.n.f825c5dfb5352de86fdb.v1`,
       onConnectError,
     });
 
@@ -399,7 +399,7 @@ describe("GatewayClient security checks", () => {
     process.env.HTTP_PROXY = "http://127.0.0.1:3128";
     const onConnectError = vi.fn();
     const client = new GatewayClient({
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       onConnectError,
     });
 
@@ -432,13 +432,13 @@ describe("GatewayClient security checks", () => {
       );
     });
     const client = new GatewayClient({
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       onConnectError,
     });
 
     client.start();
 
-    expect(proxylineRegisterBypassMock).toHaveBeenCalledWith({ url: "ws://127.0.0.1:18789" });
+    expect(proxylineRegisterBypassMock).toHaveBeenCalledWith({ url: `ltfx.n.0edbee82f0824a1ed09b.v1` });
     expect(bypassActiveDuringConstruction).toEqual([true]);
     expect(proxylineUnregisterBypassMock).toHaveBeenCalledOnce();
     const ws = getLatestWs();
@@ -456,13 +456,13 @@ describe("GatewayClient security checks", () => {
     process.env.HTTP_PROXY = "http://127.0.0.1:3128";
     const onConnectError = vi.fn();
     const client = new GatewayClient({
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       onConnectError,
     });
 
     client.start();
 
-    expect(proxylineRegisterBypassMock).toHaveBeenCalledWith({ url: "ws://127.0.0.1:18789" });
+    expect(proxylineRegisterBypassMock).toHaveBeenCalledWith({ url: `ltfx.n.0edbee82f0824a1ed09b.v1` });
     expect(proxylineUnregisterBypassMock).toHaveBeenCalledOnce();
     const ws = getLatestWs();
 
@@ -484,7 +484,7 @@ describe("GatewayClient security checks", () => {
     });
     const onConnectError = vi.fn();
     const client = new GatewayClient({
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       onConnectError,
     });
 
@@ -509,7 +509,7 @@ describe("GatewayClient security checks", () => {
     });
     const onConnectError = vi.fn();
     const client = new GatewayClient({
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       onConnectError,
     });
 
@@ -525,7 +525,7 @@ describe("GatewayClient security checks", () => {
   it("allows wss:// to any address", () => {
     const onConnectError = vi.fn();
     const client = new GatewayClient({
-      url: "wss://remote.example.com:18789",
+      url: `ltfx.n.381ad3a3d616596dd5f8.v1`,
       onConnectError,
     });
 
@@ -539,7 +539,7 @@ describe("GatewayClient security checks", () => {
   it("allows ws:// to private addresses for trusted LAN and Tailnet configs", () => {
     const onConnectError = vi.fn();
     const client = new GatewayClient({
-      url: "ws://192.168.1.100:18789",
+      url: `ltfx.n.6b34e47622f3aa9c7c2a.v1`,
       onConnectError,
     });
 
@@ -553,7 +553,7 @@ describe("GatewayClient security checks", () => {
   it("allows ws:// to IPv6 link-local addresses across fe80::/10", () => {
     const onConnectError = vi.fn();
     const client = new GatewayClient({
-      url: "ws://[fe90::1]:18789",
+      url: `ltfx.n.88b01cbc3e768d4e1e62.v1`,
       onConnectError,
     });
 
@@ -568,7 +568,7 @@ describe("GatewayClient security checks", () => {
     process.env.OPENCLAW_ALLOW_INSECURE_PRIVATE_WS = "1";
     const onConnectError = vi.fn();
     const client = new GatewayClient({
-      url: "ws://openclaw-gateway.ai:18789",
+      url: `ltfx.n.09e65ee60c2266931140.v1`,
       onConnectError,
     });
 
@@ -646,7 +646,7 @@ describe("GatewayClient request errors", () => {
     const onClose = vi.fn();
     const onConnectError = vi.fn();
     const client = new GatewayClient({
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       deviceIdentity: null,
       onClose,
       onConnectError,
@@ -787,7 +787,7 @@ describe("GatewayClient close handling", () => {
     const onClose = vi.fn();
     const onConnectError = vi.fn();
     const client = new GatewayClient({
-      url: "wss://127.0.0.1:18789",
+      url: `ltfx.n.c7184bff3e2a8226ab2e.v1`,
       tlsFingerprint: "expected",
       onClose,
       onConnectError,
@@ -834,7 +834,7 @@ describe("GatewayClient close handling", () => {
   it("keeps a managed reconnect timer after gateway restart closes", async () => {
     vi.useFakeTimers();
     const client = new GatewayClient({
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
     });
 
     client.start();
@@ -856,9 +856,9 @@ describe("GatewayClient close handling", () => {
     const onConnectError = vi.fn();
     const onHelloOk = vi.fn();
     const client = new GatewayClient({
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       deviceIdentity: null,
-      token: "shared-token",
+      token: `ltfx.n.fad34a6f30260e5a8db3.v1`,
       onClose,
       onConnectError,
       onHelloOk,
@@ -930,9 +930,9 @@ describe("GatewayClient close handling", () => {
     const onClose = vi.fn();
     const onConnectError = vi.fn();
     const client = new GatewayClient({
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       deviceIdentity: null,
-      token: "shared-token",
+      token: `ltfx.n.fad34a6f30260e5a8db3.v1`,
       onClose,
       onConnectError,
     });
@@ -995,7 +995,7 @@ describe("GatewayClient close handling", () => {
   it("clears pending reconnect timers on stop", async () => {
     vi.useFakeTimers();
     const client = new GatewayClient({
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
     });
 
     client.start();
@@ -1010,7 +1010,7 @@ describe("GatewayClient close handling", () => {
   it("force-terminates a lingering socket after stop", async () => {
     vi.useFakeTimers();
     const client = new GatewayClient({
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
     });
 
     client.start();
@@ -1031,7 +1031,7 @@ describe("GatewayClient close handling", () => {
     vi.useFakeTimers();
     const onClose = vi.fn();
     const client = new GatewayClient({
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       onClose,
     });
 
@@ -1050,7 +1050,7 @@ describe("GatewayClient close handling", () => {
   it("waits for a lingering socket to terminate in stopAndWait", async () => {
     vi.useFakeTimers();
     const client = new GatewayClient({
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
     });
 
     client.start();
@@ -1084,9 +1084,9 @@ describe("GatewayClient close handling", () => {
       publicKeyPem: "public-key",
     };
     const client = new GatewayClient({
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       deviceIdentity: identity,
-      token: "shared-token",
+      token: `ltfx.n.fad34a6f30260e5a8db3.v1`,
       onClose,
     });
 
@@ -1115,7 +1115,7 @@ describe("GatewayClient message dispatch", () => {
       throw new Error("event callback failed");
     });
     const client = new GatewayClient({
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       deviceIdentity: null,
       onEvent,
     });
@@ -1195,7 +1195,7 @@ describe("GatewayClient connect auth payload", () => {
 
   it("advertises the default protocol compatibility range", () => {
     const client = new GatewayClient({
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       deviceIdentity: null,
     });
 
@@ -1208,7 +1208,7 @@ describe("GatewayClient connect auth payload", () => {
 
   it("does not advertise node plugin tools in the initial connect frame", () => {
     const client = new GatewayClient({
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       deviceIdentity: null,
     });
 
@@ -1254,8 +1254,8 @@ describe("GatewayClient connect auth payload", () => {
       const onClose = vi.fn();
       const onConnectError = vi.fn();
       client = new GatewayClient({
-        url: "ws://127.0.0.1:18789",
-        token: "shared-token",
+        url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+        token: `ltfx.n.fad34a6f30260e5a8db3.v1`,
         deviceIdentity: {
           deviceId: "bad-device",
           privateKeyPem: "not a pem",
@@ -1293,7 +1293,7 @@ describe("GatewayClient connect auth payload", () => {
       throw new Error("connect callback failed");
     });
     const client = new GatewayClient({
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       deviceIdentity: null,
       onConnectError,
     });
@@ -1323,7 +1323,7 @@ describe("GatewayClient connect auth payload", () => {
     });
     const onConnectError = vi.fn();
     const client = new GatewayClient({
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       deviceIdentity: null,
       onHelloOk,
       onConnectError,
@@ -1425,10 +1425,10 @@ describe("GatewayClient connect auth payload", () => {
   }
 
   it("uses explicit shared token and does not inject stored device token", () => {
-    loadDeviceAuthTokenMock.mockReturnValue({ token: "stored-device-token" });
+    loadDeviceAuthTokenMock.mockReturnValue({ token: `ltfx.n.c3f79732393a0ff6e042.v1` });
     const client = new GatewayClient({
-      url: "ws://127.0.0.1:18789",
-      token: "shared-token",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      token: `ltfx.n.fad34a6f30260e5a8db3.v1`,
     });
 
     client.start();
@@ -1437,7 +1437,7 @@ describe("GatewayClient connect auth payload", () => {
     emitConnectChallenge(ws);
 
     expect(connectFrameFrom(ws)).toMatchObject({
-      token: "shared-token",
+      token: `ltfx.n.fad34a6f30260e5a8db3.v1`,
     });
     expect(connectFrameFrom(ws).deviceToken).toBeUndefined();
     client.stop();
@@ -1445,9 +1445,9 @@ describe("GatewayClient connect auth payload", () => {
 
   it("retries without approval runtime token when a gateway rejects the auth field", async () => {
     const client = new GatewayClient({
-      url: "ws://127.0.0.1:18789",
-      token: "shared-token",
-      approvalRuntimeToken: "runtime-token",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      token: `ltfx.n.fad34a6f30260e5a8db3.v1`,
+      approvalRuntimeToken: `ltfx.n.f8e1f3c257c8d1a3d07a.v1`,
       deviceIdentity: null,
     });
 
@@ -1455,8 +1455,8 @@ describe("GatewayClient connect auth payload", () => {
     expectRecordFields(
       firstConnect.params?.auth ?? {},
       {
-        token: "shared-token",
-        approvalRuntimeToken: "runtime-token",
+        token: `ltfx.n.fad34a6f30260e5a8db3.v1`,
+        approvalRuntimeToken: `ltfx.n.f8e1f3c257c8d1a3d07a.v1`,
       },
       "initial connect auth",
     );
@@ -1471,7 +1471,7 @@ describe("GatewayClient connect auth payload", () => {
     expectRecordFields(
       retriedAuth,
       {
-        token: "shared-token",
+        token: `ltfx.n.fad34a6f30260e5a8db3.v1`,
       },
       "retried connect auth",
     );
@@ -1482,9 +1482,9 @@ describe("GatewayClient connect auth payload", () => {
   it("fails closed when a gateway rejects the required agent runtime identity auth field", async () => {
     const onConnectError = vi.fn();
     const client = new GatewayClient({
-      url: "ws://127.0.0.1:18789",
-      token: "shared-token",
-      agentRuntimeIdentityToken: "identity-token",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      token: `ltfx.n.fad34a6f30260e5a8db3.v1`,
+      agentRuntimeIdentityToken: `ltfx.n.39cc331e11201cedff20.v1`,
       deviceIdentity: null,
       onConnectError,
     });
@@ -1493,8 +1493,8 @@ describe("GatewayClient connect auth payload", () => {
     expectRecordFields(
       connect.params?.auth ?? {},
       {
-        token: "shared-token",
-        agentRuntimeIdentityToken: "identity-token",
+        token: `ltfx.n.fad34a6f30260e5a8db3.v1`,
+        agentRuntimeIdentityToken: `ltfx.n.39cc331e11201cedff20.v1`,
       },
       "initial connect auth",
     );
@@ -1519,14 +1519,14 @@ describe("GatewayClient connect auth payload", () => {
 
   it("waits for socket open before sending connect after an early challenge", () => {
     const client = new GatewayClient({
-      url: "ws://127.0.0.1:18789",
-      token: "shared-token",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      token: `ltfx.n.fad34a6f30260e5a8db3.v1`,
     });
 
     const { ws, connect } = startClientWithEarlyChallenge({ client });
 
     expect(connectFrameFrom(ws)).toMatchObject({
-      token: "shared-token",
+      token: `ltfx.n.fad34a6f30260e5a8db3.v1`,
     });
     emitHelloOk(ws, connect.id);
     client.stop();
@@ -1535,8 +1535,8 @@ describe("GatewayClient connect auth payload", () => {
   it("reports a transport close while the connect request is pending", () => {
     const onConnectError = vi.fn();
     const client = new GatewayClient({
-      url: "ws://127.0.0.1:18789",
-      token: "shared-token",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      token: `ltfx.n.fad34a6f30260e5a8db3.v1`,
       onConnectError,
     });
 
@@ -1552,8 +1552,8 @@ describe("GatewayClient connect auth payload", () => {
   it("logs stopped connect handshakes at debug level during teardown", async () => {
     const onConnectError = vi.fn();
     const client = new GatewayClient({
-      url: "ws://127.0.0.1:18789",
-      token: "shared-token",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      token: `ltfx.n.fad34a6f30260e5a8db3.v1`,
       onConnectError,
     });
 
@@ -1576,8 +1576,8 @@ describe("GatewayClient connect auth payload", () => {
 
   it("redacts secret-bearing connect failure logs", async () => {
     const client = new GatewayClient({
-      url: "ws://127.0.0.1:18789",
-      token: "shared-token",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      token: `ltfx.n.fad34a6f30260e5a8db3.v1`,
       deviceIdentity: null,
     });
 
@@ -1586,7 +1586,7 @@ describe("GatewayClient connect auth payload", () => {
       ws,
       connect.id,
       { code: "AUTH_UNAUTHORIZED" },
-      "Authorization: Bearer sk-testsecret1234567890abcd wss://user:pass@gateway.example/ws?token=secret-token", // pragma: allowlist secret
+      "Authorization: Bearer ltfx.n.398db6d1a7d6cc253b73.v1 wss://user:pass@gateway.example/ws?token=(secret-token", // pragma: allowlist secret)
     );
 
     await waitForFast(() => {
@@ -1594,7 +1594,7 @@ describe("GatewayClient connect auth payload", () => {
     });
     const logged = String(logErrorMock.mock.calls.at(-1)?.[0] ?? "");
     expect(logged).toContain("Authorization: Bearer");
-    expect(logged).not.toContain("sk-testsecret1234567890abcd");
+    expect(logged).not.toContain("ltfx.n.398db6d1a7d6cc253b73.v1");
     expect(logged).not.toContain("user:pass");
     expect(logged).not.toContain("secret-token");
     client.stop();
@@ -1602,8 +1602,8 @@ describe("GatewayClient connect auth payload", () => {
 
   it("preserves trailing diagnostics after redacted connect failure URL query params", async () => {
     const client = new GatewayClient({
-      url: "ws://127.0.0.1:18789",
-      token: "shared-token",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      token: `ltfx.n.fad34a6f30260e5a8db3.v1`,
       deviceIdentity: null,
     });
 
@@ -1612,7 +1612,7 @@ describe("GatewayClient connect auth payload", () => {
       ws,
       connect.id,
       { code: "AUTH_UNAUTHORIZED" },
-      "wss://gateway.example/ws?token=secret-token failed with 401 from remote gateway", // pragma: allowlist secret
+      "wss://gateway.example/ws?token=(secret-token failed with 401 from remote gateway", // pragma: allowlist secret)
     );
 
     await waitForFast(() => {
@@ -1628,8 +1628,8 @@ describe("GatewayClient connect auth payload", () => {
   it("forces secret redaction for connect failure logs when general log redaction is off", async () => {
     readLoggingConfigMock.mockReturnValue({ redactSensitive: "off" });
     const client = new GatewayClient({
-      url: "ws://127.0.0.1:18789",
-      token: "shared-token",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      token: `ltfx.n.fad34a6f30260e5a8db3.v1`,
       deviceIdentity: null,
     });
 
@@ -1638,7 +1638,7 @@ describe("GatewayClient connect auth payload", () => {
       ws,
       connect.id,
       { code: "AUTH_UNAUTHORIZED" },
-      "Authorization: Bearer sk-disabledredaction1234567890abcd", // pragma: allowlist secret
+      "Authorization: Bearer ltfx.n.cbb8ecd5eb1f34038708.v1", // pragma: allowlist secret
     );
 
     await waitForFast(() => {
@@ -1646,15 +1646,15 @@ describe("GatewayClient connect auth payload", () => {
     });
     const logged = String(logErrorMock.mock.calls.at(-1)?.[0] ?? "");
     expect(logged).toContain("Authorization: Bearer");
-    expect(logged).not.toContain("sk-disabledredaction1234567890abcd");
+    expect(logged).not.toContain("ltfx.n.cbb8ecd5eb1f34038708.v1");
     client.stop();
   });
 
   it("uses explicit shared password and does not inject stored device token", () => {
-    loadDeviceAuthTokenMock.mockReturnValue({ token: "stored-device-token" });
+    loadDeviceAuthTokenMock.mockReturnValue({ token: `ltfx.n.c3f79732393a0ff6e042.v1` });
     const client = new GatewayClient({
-      url: "ws://127.0.0.1:18789",
-      password: "shared-password", // pragma: allowlist secret
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      password: `ltfx.n.39c949687a577d7a63f5.v1`, // pragma: allowlist secret
     });
 
     client.start();
@@ -1663,7 +1663,7 @@ describe("GatewayClient connect auth payload", () => {
     emitConnectChallenge(ws);
 
     expect(connectFrameFrom(ws)).toMatchObject({
-      password: "shared-password", // pragma: allowlist secret
+      password: `ltfx.n.39c949687a577d7a63f5.v1`, // pragma: allowlist secret
     });
     expect(connectFrameFrom(ws).token).toBeUndefined();
     expect(connectFrameFrom(ws).deviceToken).toBeUndefined();
@@ -1672,9 +1672,9 @@ describe("GatewayClient connect auth payload", () => {
 
   it("prefers explicit shared password over bootstrap token", () => {
     const client = new GatewayClient({
-      url: "ws://127.0.0.1:18789",
-      bootstrapToken: "stale-bootstrap-token",
-      password: "shared-password", // pragma: allowlist secret
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      bootstrapToken: `ltfx.n.3e355cac6ea6b489b79c.v1`,
+      password: `ltfx.n.39c949687a577d7a63f5.v1`, // pragma: allowlist secret
     });
 
     client.start();
@@ -1683,7 +1683,7 @@ describe("GatewayClient connect auth payload", () => {
     emitConnectChallenge(ws);
 
     expect(connectFrameFrom(ws)).toMatchObject({
-      password: "shared-password", // pragma: allowlist secret
+      password: `ltfx.n.39c949687a577d7a63f5.v1`, // pragma: allowlist secret
     });
     expect(connectFrameFrom(ws).bootstrapToken).toBeUndefined();
     expect(connectFrameFrom(ws).token).toBeUndefined();
@@ -1692,11 +1692,11 @@ describe("GatewayClient connect auth payload", () => {
 
   it("uses stored device token scopes when shared token is not provided", () => {
     loadDeviceAuthTokenMock.mockReturnValue({
-      token: "stored-device-token",
+      token: `ltfx.n.c3f79732393a0ff6e042.v1`,
       scopes: ["operator.read", "operator.write"],
     });
     const client = new GatewayClient({
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
     });
 
     client.start();
@@ -1705,8 +1705,8 @@ describe("GatewayClient connect auth payload", () => {
     emitConnectChallenge(ws);
 
     expect(connectFrameFrom(ws)).toMatchObject({
-      token: "stored-device-token",
-      deviceToken: "stored-device-token",
+      token: `ltfx.n.c3f79732393a0ff6e042.v1`,
+      deviceToken: `ltfx.n.c3f79732393a0ff6e042.v1`,
     });
     expect(connectScopesFrom(ws)).toEqual(["operator.read", "operator.write"]);
     client.stop();
@@ -1714,11 +1714,11 @@ describe("GatewayClient connect auth payload", () => {
 
   it("keeps requested scopes when reusing a stored device token", () => {
     loadDeviceAuthTokenMock.mockReturnValue({
-      token: "stored-device-token",
+      token: `ltfx.n.c3f79732393a0ff6e042.v1`,
       scopes: ["operator.write"],
     });
     const client = new GatewayClient({
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       scopes: ["operator.admin"],
     });
 
@@ -1728,8 +1728,8 @@ describe("GatewayClient connect auth payload", () => {
     emitConnectChallenge(ws);
 
     expect(connectFrameFrom(ws)).toMatchObject({
-      token: "stored-device-token",
-      deviceToken: "stored-device-token",
+      token: `ltfx.n.c3f79732393a0ff6e042.v1`,
+      deviceToken: `ltfx.n.c3f79732393a0ff6e042.v1`,
     });
     expect(connectScopesFrom(ws)).toEqual(["operator.admin"]);
     client.stop();
@@ -1737,7 +1737,7 @@ describe("GatewayClient connect auth payload", () => {
 
   it("loads stored device auth from the provided env", () => {
     loadDeviceAuthTokenMock.mockReturnValue({
-      token: "stored-device-token",
+      token: `ltfx.n.c3f79732393a0ff6e042.v1`,
       scopes: ["operator.read"],
     });
     const env = {
@@ -1745,7 +1745,7 @@ describe("GatewayClient connect auth payload", () => {
       OPENCLAW_STATE_DIR: "/tmp/openclaw-client-service-state",
     } as NodeJS.ProcessEnv;
     const client = new GatewayClient({
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       env,
     });
 
@@ -1764,8 +1764,8 @@ describe("GatewayClient connect auth payload", () => {
     );
     expect(loadTokenParams.deviceId).toBeTypeOf("string");
     expect(connectFrameFrom(ws)).toMatchObject({
-      token: "stored-device-token",
-      deviceToken: "stored-device-token",
+      token: `ltfx.n.c3f79732393a0ff6e042.v1`,
+      deviceToken: `ltfx.n.c3f79732393a0ff6e042.v1`,
     });
     client.stop();
   });
@@ -1773,8 +1773,8 @@ describe("GatewayClient connect auth payload", () => {
   it("uses bootstrap token when no shared or device token is available", () => {
     loadDeviceAuthTokenMock.mockReturnValue(undefined);
     const client = new GatewayClient({
-      url: "ws://127.0.0.1:18789",
-      bootstrapToken: "bootstrap-token",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      bootstrapToken: `ltfx.n.c72773a4ddf81c3ad2b8.v1`,
     });
 
     client.start();
@@ -1783,7 +1783,7 @@ describe("GatewayClient connect auth payload", () => {
     emitConnectChallenge(ws);
 
     expect(connectFrameFrom(ws)).toMatchObject({
-      bootstrapToken: "bootstrap-token",
+      bootstrapToken: `ltfx.n.c72773a4ddf81c3ad2b8.v1`,
     });
     expect(connectFrameFrom(ws).token).toBeUndefined();
     expect(connectFrameFrom(ws).deviceToken).toBeUndefined();
@@ -1792,12 +1792,12 @@ describe("GatewayClient connect auth payload", () => {
 
   it("prefers explicit deviceToken over stored device token", () => {
     loadDeviceAuthTokenMock.mockReturnValue({
-      token: "stored-device-token",
+      token: `ltfx.n.c3f79732393a0ff6e042.v1`,
       scopes: ["operator.admin", "operator.read"],
     });
     const client = new GatewayClient({
-      url: "ws://127.0.0.1:18789",
-      deviceToken: "explicit-device-token",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      deviceToken: `ltfx.n.790cb3098f4a1707df43.v1`,
       scopes: ["operator.pairing"],
     });
 
@@ -1807,8 +1807,8 @@ describe("GatewayClient connect auth payload", () => {
     emitConnectChallenge(ws);
 
     expect(connectFrameFrom(ws)).toMatchObject({
-      token: "explicit-device-token",
-      deviceToken: "explicit-device-token",
+      token: `ltfx.n.790cb3098f4a1707df43.v1`,
+      deviceToken: `ltfx.n.790cb3098f4a1707df43.v1`,
     });
     expect(connectScopesFrom(ws)).toEqual(["operator.pairing"]);
     client.stop();
@@ -1816,11 +1816,11 @@ describe("GatewayClient connect auth payload", () => {
 
   it("falls back to requested scopes when stored device token has no cached scopes", () => {
     loadDeviceAuthTokenMock.mockReturnValue({
-      token: "stored-device-token",
+      token: `ltfx.n.c3f79732393a0ff6e042.v1`,
       scopes: [],
     });
     const client = new GatewayClient({
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       scopes: ["operator.approvals"],
     });
 
@@ -1830,8 +1830,8 @@ describe("GatewayClient connect auth payload", () => {
     emitConnectChallenge(ws);
 
     expect(connectFrameFrom(ws)).toMatchObject({
-      token: "stored-device-token",
-      deviceToken: "stored-device-token",
+      token: `ltfx.n.c3f79732393a0ff6e042.v1`,
+      deviceToken: `ltfx.n.c3f79732393a0ff6e042.v1`,
     });
     expect(connectScopesFrom(ws)).toEqual(["operator.approvals"]);
     client.stop();
@@ -1839,12 +1839,12 @@ describe("GatewayClient connect auth payload", () => {
 
   it("retries with stored device token after shared-token mismatch on trusted endpoints", async () => {
     loadDeviceAuthTokenMock.mockReturnValue({
-      token: "stored-device-token",
+      token: `ltfx.n.c3f79732393a0ff6e042.v1`,
       scopes: ["operator.read"],
     });
     const client = new GatewayClient({
-      url: "ws://127.0.0.1:18789",
-      token: "shared-token",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      token: `ltfx.n.fad34a6f30260e5a8db3.v1`,
     });
 
     const { ws: ws1, connect: firstConnect } = startClientAndConnect({ client });
@@ -1857,8 +1857,8 @@ describe("GatewayClient connect auth payload", () => {
       failureDetails: { code: "AUTH_TOKEN_MISMATCH", canRetryWithDeviceToken: true },
     });
     expect(retriedAuth).toMatchObject({
-      token: "shared-token",
-      deviceToken: "stored-device-token",
+      token: `ltfx.n.fad34a6f30260e5a8db3.v1`,
+      deviceToken: `ltfx.n.c3f79732393a0ff6e042.v1`,
     });
     const ws = getLatestWs();
     expect(connectScopesFrom(ws)).toEqual(["operator.read"]);
@@ -1866,10 +1866,10 @@ describe("GatewayClient connect auth payload", () => {
   });
 
   it("retries with stored device token when server recommends retry_with_device_token", async () => {
-    loadDeviceAuthTokenMock.mockReturnValue({ token: "stored-device-token" });
+    loadDeviceAuthTokenMock.mockReturnValue({ token: `ltfx.n.c3f79732393a0ff6e042.v1` });
     const client = new GatewayClient({
-      url: "ws://127.0.0.1:18789",
-      token: "shared-token",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      token: `ltfx.n.fad34a6f30260e5a8db3.v1`,
     });
 
     const { ws: ws1, connect: firstConnect } = startClientAndConnect({ client });
@@ -1879,8 +1879,8 @@ describe("GatewayClient connect auth payload", () => {
       failureDetails: { code: "AUTH_UNAUTHORIZED", recommendedNextStep: "retry_with_device_token" },
     });
     expect(retriedAuth).toMatchObject({
-      token: "shared-token",
-      deviceToken: "stored-device-token",
+      token: `ltfx.n.fad34a6f30260e5a8db3.v1`,
+      deviceToken: `ltfx.n.c3f79732393a0ff6e042.v1`,
     });
     client.stop();
   });
@@ -1888,8 +1888,8 @@ describe("GatewayClient connect auth payload", () => {
   it("does not auto-reconnect on AUTH_TOKEN_MISSING connect failures", async () => {
     const onReconnectPaused = vi.fn();
     const client = new GatewayClient({
-      url: "ws://127.0.0.1:18789",
-      token: "shared-token",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      token: `ltfx.n.fad34a6f30260e5a8db3.v1`,
       onReconnectPaused,
     });
 
@@ -1913,8 +1913,8 @@ describe("GatewayClient connect auth payload", () => {
     });
     const onClose = vi.fn();
     const client = new GatewayClient({
-      url: "ws://127.0.0.1:18789",
-      token: "shared-token",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      token: `ltfx.n.fad34a6f30260e5a8db3.v1`,
       onReconnectPaused,
       onClose,
     });
@@ -1946,7 +1946,7 @@ describe("GatewayClient connect auth payload", () => {
   it("does not auto-reconnect on CLIENT_VERSION_MISMATCH connect failures", async () => {
     const onReconnectPaused = vi.fn();
     const client = new GatewayClient({
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       role: "node",
       scopes: [],
       onReconnectPaused,
@@ -1975,8 +1975,8 @@ describe("GatewayClient connect auth payload", () => {
     loadDeviceAuthTokenMock.mockReturnValue(null);
     const onReconnectPaused = vi.fn();
     const client = new GatewayClient({
-      url: "ws://127.0.0.1:18789",
-      token: "shared-token",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      token: `ltfx.n.fad34a6f30260e5a8db3.v1`,
       onReconnectPaused,
     });
 
@@ -1998,8 +1998,8 @@ describe("GatewayClient connect auth payload", () => {
     vi.useFakeTimers();
     const onReconnectPaused = vi.fn();
     const client = new GatewayClient({
-      url: "ws://127.0.0.1:18789",
-      bootstrapToken: "setup-bootstrap-token",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      bootstrapToken: `ltfx.n.9994ccb2baa2e1c749ac.v1`,
       role: "node",
       scopes: [],
       onReconnectPaused,
@@ -2027,12 +2027,12 @@ describe("GatewayClient connect auth payload", () => {
 
   it("clears stale stored device tokens and does not reconnect on AUTH_DEVICE_TOKEN_MISMATCH", async () => {
     loadDeviceAuthTokenMock.mockReturnValue({
-      token: "stored-device-token",
+      token: `ltfx.n.c3f79732393a0ff6e042.v1`,
       scopes: ["operator.read"],
     });
     const onReconnectPaused = vi.fn();
     const client = new GatewayClient({
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       onReconnectPaused,
     });
 
@@ -2059,12 +2059,12 @@ describe("GatewayClient connect auth payload", () => {
 
   it("clears stale stored device tokens from the configured environment store", async () => {
     loadDeviceAuthTokenMock.mockReturnValue({
-      token: "stored-device-token",
+      token: `ltfx.n.c3f79732393a0ff6e042.v1`,
       scopes: ["operator.read"],
     });
     const env = { OPENCLAW_HOME: "/tmp/custom-openclaw-home" };
     const client = new GatewayClient({
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       env,
     });
 
@@ -2091,12 +2091,12 @@ describe("GatewayClient connect auth payload", () => {
 
   it("does not clear stored device tokens or reconnect on AUTH_SCOPE_MISMATCH", async () => {
     loadDeviceAuthTokenMock.mockReturnValue({
-      token: "stored-device-token",
+      token: `ltfx.n.c3f79732393a0ff6e042.v1`,
       scopes: ["operator.read"],
     });
     const onReconnectPaused = vi.fn();
     const client = new GatewayClient({
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       onReconnectPaused,
     });
 
@@ -2117,10 +2117,10 @@ describe("GatewayClient connect auth payload", () => {
   });
 
   it("does not auto-reconnect on token mismatch when retry is not trusted", async () => {
-    loadDeviceAuthTokenMock.mockReturnValue({ token: "stored-device-token" });
+    loadDeviceAuthTokenMock.mockReturnValue({ token: `ltfx.n.c3f79732393a0ff6e042.v1` });
     const client = new GatewayClient({
-      url: "wss://gateway.example.com:18789",
-      token: "shared-token",
+      url: `ltfx.n.f5e15cc7530f3463a0a2.v1`,
+      token: `ltfx.n.fad34a6f30260e5a8db3.v1`,
     });
 
     const { ws: ws1, connect: firstConnect } = startClientAndConnect({ client });

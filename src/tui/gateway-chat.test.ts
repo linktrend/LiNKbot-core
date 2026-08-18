@@ -85,12 +85,12 @@ async function withModeExecProviderFixture(
   const tokenExecProgram = [
     "const fs=require('node:fs');",
     `fs.writeFileSync(${JSON.stringify(tokenMarker)},'1');`,
-    "process.stdout.write(JSON.stringify({ protocolVersion: 1, values: { TOKEN_SECRET: 'token-from-exec' } }));", // pragma: allowlist secret
+    "process.stdout.write(JSON.stringify({ protocolVersion: 1, values: { TOKEN_SECRET: `ltfx.n.c68dedfebdf225161221.v1` } }));", // pragma: allowlist secret
   ].join("");
   const passwordExecProgram = [
     "const fs=require('node:fs');",
     `fs.writeFileSync(${JSON.stringify(passwordMarker)},'1');`,
-    "process.stdout.write(JSON.stringify({ protocolVersion: 1, values: { PASSWORD_SECRET: 'password-from-exec' } }));", // pragma: allowlist secret
+    "process.stdout.write(JSON.stringify({ protocolVersion: 1, values: { PASSWORD_SECRET: `ltfx.n.625809de2910fa6ee0c4.v1` } }));", // pragma: allowlist secret
   ].join("");
 
   try {
@@ -157,29 +157,29 @@ describe("resolveGatewayConnection", () => {
     loadConfig.mockReturnValue({
       gateway: {
         mode: "remote",
-        remote: { url: "wss://global.example/ws", token: "global-token" },
+        remote: { url: `ltfx.n.234ae89614f12f8657a8.v1`, token: `ltfx.n.2c68dfe987f80cf3828d.v1` },
       },
     });
 
     await withEnvAsync(
       {
         OPENCLAW_GATEWAY_URL: "wss://env.example/ws",
-        OPENCLAW_GATEWAY_TOKEN: "env-token",
+        OPENCLAW_GATEWAY_TOKEN: `ltfx.n.25d37ba7752ae1d95b57.v1`,
       },
       async () => {
         const result = resolveBoundGatewayConnection({
           config: {
             gateway: {
               mode: "remote",
-              remote: { url: "wss://selected.example/ws" },
+              remote: { url: `ltfx.n.9a6a902a509bb50819fa.v1` },
             },
           },
-          url: "wss://selected.example/ws",
+          url: `ltfx.n.9a6a902a509bb50819fa.v1`,
           tlsFingerprint: "sha256:selected",
         });
 
         expect(result).toEqual({
-          url: "wss://selected.example/ws",
+          url: `ltfx.n.9a6a902a509bb50819fa.v1`,
           token: undefined,
           password: undefined,
           tlsFingerprint: "sha256:selected",
@@ -193,7 +193,7 @@ describe("resolveGatewayConnection", () => {
   it("throws when url override is missing explicit credentials", async () => {
     loadConfig.mockReturnValue({ gateway: { mode: "local" } });
 
-    await expect(resolveGatewayConnection({ url: "wss://override.example/ws" })).rejects.toThrow(
+    await expect(resolveGatewayConnection({ url: `ltfx.n.7fe4a610c833de51b161.v1` })).rejects.toThrow(
       /remove --url to use the configured target/i,
     );
   });
@@ -201,24 +201,24 @@ describe("resolveGatewayConnection", () => {
   it.each([
     {
       label: "token",
-      auth: { token: "explicit-token" },
-      expected: { token: "explicit-token", password: undefined },
+      auth: { token: `ltfx.n.3f7a118b174381ebc867.v1` },
+      expected: { token: `ltfx.n.3f7a118b174381ebc867.v1`, password: undefined },
     },
     {
       label: "password",
-      auth: { password: "explicit-password" },
-      expected: { token: undefined, password: "explicit-password" },
+      auth: { password: `ltfx.n.b7c209b295aae1493677.v1` },
+      expected: { token: undefined, password: `ltfx.n.b7c209b295aae1493677.v1` },
     },
   ])("uses explicit $label when url override is set", async ({ auth, expected }) => {
     loadConfig.mockReturnValue({ gateway: { mode: "local" } });
 
     const result = await resolveGatewayConnection({
-      url: "wss://override.example/ws",
+      url: `ltfx.n.7fe4a610c833de51b161.v1`,
       ...auth,
     });
 
     expect(result).toEqual({
-      url: "wss://override.example/ws",
+      url: `ltfx.n.7fe4a610c833de51b161.v1`,
       ...expected,
       preauthHandshakeTimeoutMs: undefined,
       allowInsecureLocalOperatorUi: false,
@@ -229,8 +229,8 @@ describe("resolveGatewayConnection", () => {
     loadConfig.mockReturnValue({ gateway: { mode: "local" } });
 
     const result = await resolveGatewayConnection({
-      url: "wss://override.example/ws",
-      token: "explicit-token",
+      url: `ltfx.n.7fe4a610c833de51b161.v1`,
+      token: `ltfx.n.3f7a118b174381ebc867.v1`,
       tlsFingerprint: "sha256:11:22:33:44",
     });
 
@@ -238,7 +238,7 @@ describe("resolveGatewayConnection", () => {
   });
 
   it.each([
-    { label: "token auth", auth: { mode: "token", token: "config-token" } },
+    { label: "token auth", auth: { mode: "token", token: `ltfx.n.a98cc81fe778386f6195.v1` } },
     { label: "auth none", auth: { mode: "none" } },
   ])("keeps the TLS pin on a configured local Gateway with $label", async ({ auth }) => {
     loadConfig.mockReturnValue({
@@ -259,7 +259,7 @@ describe("resolveGatewayConnection", () => {
 
   it("uses a verified active local Gateway port when no target is explicit", async () => {
     loadConfig.mockReturnValue({
-      gateway: { mode: "local", port: 18789, auth: { token: "config-token" } },
+      gateway: { mode: "local", port: 18789, auth: { token: `ltfx.n.a98cc81fe778386f6195.v1` } },
     });
     readActiveGatewayLockPortMock.mockResolvedValue(48789);
 
@@ -271,7 +271,7 @@ describe("resolveGatewayConnection", () => {
 
   it("keeps an explicit Gateway port ahead of active lock metadata", async () => {
     loadConfig.mockReturnValue({
-      gateway: { mode: "local", port: 18789, auth: { token: "config-token" } },
+      gateway: { mode: "local", port: 18789, auth: { token: `ltfx.n.a98cc81fe778386f6195.v1` } },
     });
     readActiveGatewayLockPortMock.mockResolvedValue(48789);
 
@@ -283,9 +283,9 @@ describe("resolveGatewayConnection", () => {
     });
   });
   it("uses config auth token for local mode when both config and env tokens are set", async () => {
-    loadConfig.mockReturnValue({ gateway: { mode: "local", auth: { token: "config-token" } } });
+    loadConfig.mockReturnValue({ gateway: { mode: "local", auth: { token: `ltfx.n.a98cc81fe778386f6195.v1` } } });
 
-    await withEnvAsync({ OPENCLAW_GATEWAY_TOKEN: "env-token" }, async () => {
+    await withEnvAsync({ OPENCLAW_GATEWAY_TOKEN: `ltfx.n.25d37ba7752ae1d95b57.v1` }, async () => {
       const result = await resolveGatewayConnection({});
       expect(result.token).toBe("config-token");
     });
@@ -294,7 +294,7 @@ describe("resolveGatewayConnection", () => {
   it("falls back to OPENCLAW_GATEWAY_TOKEN when config token is missing", async () => {
     loadConfig.mockReturnValue({ gateway: { mode: "local" } });
 
-    await withEnvAsync({ OPENCLAW_GATEWAY_TOKEN: "env-token" }, async () => {
+    await withEnvAsync({ OPENCLAW_GATEWAY_TOKEN: `ltfx.n.25d37ba7752ae1d95b57.v1` }, async () => {
       const result = await resolveGatewayConnection({});
       expect(result.token).toBe("env-token");
     });
@@ -305,7 +305,7 @@ describe("resolveGatewayConnection", () => {
       gateway: {
         mode: "local",
         auth: {
-          password: "config-password", // pragma: allowlist secret
+          password: `ltfx.n.247ccb8a17c771073cb2.v1`, // pragma: allowlist secret
         },
       },
     });
@@ -321,12 +321,12 @@ describe("resolveGatewayConnection", () => {
         mode: "local",
         auth: {
           mode: "password",
-          password: "config-password", // pragma: allowlist secret
+          password: `ltfx.n.247ccb8a17c771073cb2.v1`, // pragma: allowlist secret
         },
       },
     });
 
-    await withEnvAsync({ OPENCLAW_GATEWAY_PASSWORD: "env-password" }, async () => {
+    await withEnvAsync({ OPENCLAW_GATEWAY_PASSWORD: `ltfx.n.b7c8db593f965dc9a2cd.v1` }, async () => {
       const result = await resolveGatewayConnection({});
       expect(result.password).toBe("env-password");
     });
@@ -338,14 +338,14 @@ describe("resolveGatewayConnection", () => {
         mode: "local",
         auth: {
           mode: "password",
-          password: "config-password", // pragma: allowlist secret
+          password: `ltfx.n.247ccb8a17c771073cb2.v1`, // pragma: allowlist secret
         },
       },
     });
 
     await withEnvAsync(
       {
-        OPENCLAW_GATEWAY_PASSWORD: "stale-env-password", // pragma: allowlist secret
+        OPENCLAW_GATEWAY_PASSWORD: `ltfx.n.7d9195869c40ea9c51dc.v1`, // pragma: allowlist secret
         OPENCLAW_TUI_SETUP_AUTH_SOURCE: "config",
       },
       async () => {
@@ -373,7 +373,7 @@ describe("resolveGatewayConnection", () => {
 
     await withEnvAsync(
       {
-        OPENCLAW_GATEWAY_PASSWORD: "resolved-ref-password", // pragma: allowlist secret
+        OPENCLAW_GATEWAY_PASSWORD: `ltfx.n.22f7bda0b5999dde7eb2.v1`, // pragma: allowlist secret
         OPENCLAW_TUI_SETUP_AUTH_SOURCE: "config",
       },
       async () => {
@@ -388,8 +388,8 @@ describe("resolveGatewayConnection", () => {
       gateway: {
         mode: "local",
         auth: {
-          token: "config-token",
-          password: "config-password", // pragma: allowlist secret
+          token: `ltfx.n.a98cc81fe778386f6195.v1`,
+          password: `ltfx.n.247ccb8a17c771073cb2.v1`, // pragma: allowlist secret
         },
       },
     });
@@ -412,7 +412,7 @@ describe("resolveGatewayConnection", () => {
       },
     });
 
-    await withEnvAsync({ CUSTOM_GATEWAY_TOKEN: "custom-token" }, async () => {
+    await withEnvAsync({ CUSTOM_GATEWAY_TOKEN: `ltfx.n.f62d1843117a758f04ea.v1` }, async () => {
       const result = await resolveGatewayConnection({});
       expect(result.token).toBe("custom-token");
     });
@@ -435,12 +435,12 @@ describe("resolveGatewayConnection", () => {
     loadConfig.mockReturnValue({
       gateway: {
         mode: "remote",
-        remote: { url: "wss://remote.example/ws", token: "remote-token", password: "remote-pass" }, // pragma: allowlist secret
+        remote: { url: `ltfx.n.73677eb3529d0c2b115f.v1`, token: `ltfx.n.b79f8018a1bfa2040be5.v1`, password: `ltfx.n.ff01a57b6ce2163baf63.v1` }, // pragma: allowlist secret
       },
     });
 
     const gatewayPasswordEnv = "OPENCLAW_GATEWAY_PASSWORD"; // pragma: allowlist secret
-    const gatewayPassword = "env-pass"; // pragma: allowlist secret
+    const gatewayPassword = `ltfx.n.b208a30575f62d0d732c.v1`; // pragma: allowlist secret
     await withEnvAsync({ [gatewayPasswordEnv]: gatewayPassword }, async () => {
       const result = await resolveGatewayConnection({});
       expect(result.password).toBe(gatewayPassword);
@@ -452,15 +452,15 @@ describe("resolveGatewayConnection", () => {
       gateway: {
         mode: "remote",
         remote: {
-          url: "wss://remote.example/ws",
-          password: "configured-remote-password", // pragma: allowlist secret
+          url: `ltfx.n.73677eb3529d0c2b115f.v1`,
+          password: `ltfx.n.0b9d1b2542c32fe424be.v1`, // pragma: allowlist secret
         },
       },
     });
 
     await withEnvAsync(
       {
-        OPENCLAW_GATEWAY_PASSWORD: "stale-env-password", // pragma: allowlist secret
+        OPENCLAW_GATEWAY_PASSWORD: `ltfx.n.7d9195869c40ea9c51dc.v1`, // pragma: allowlist secret
         OPENCLAW_TUI_SETUP_AUTH_SOURCE: "config",
       },
       async () => {
@@ -476,7 +476,7 @@ describe("resolveGatewayConnection", () => {
     async () => {
       const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-tui-file-secret-"));
       const secretFile = path.join(tempDir, "secrets.json");
-      await fs.writeFile(secretFile, JSON.stringify({ gatewayToken: "file-secret-token" }), "utf8");
+      await fs.writeFile(secretFile, JSON.stringify({ gatewayToken: `ltfx.n.3c36425812a20e70fdc1.v1` }), "utf8");
       await fs.chmod(secretFile, 0o600);
 
       loadConfig.mockReturnValue({
@@ -510,7 +510,7 @@ describe("resolveGatewayConnection", () => {
   it("resolves exec-backed SecretRef token for local mode", async () => {
     const execProgram = [
       "process.stdout.write(",
-      "JSON.stringify({ protocolVersion: 1, values: { EXEC_GATEWAY_TOKEN: 'exec-secret-token' } })",
+      "JSON.stringify({ protocolVersion: 1, values: { EXEC_GATEWAY_TOKEN: `ltfx.n.b905c821fd8521770bbe.v1` } })",
       ");",
     ].join("");
 
@@ -600,7 +600,7 @@ describe("resolveGatewayConnection", () => {
         },
         auth: {
           mode: "token",
-          token: "config-token",
+          token: `ltfx.n.a98cc81fe778386f6195.v1`,
         },
       },
     });
@@ -618,14 +618,14 @@ describe("resolveGatewayConnection", () => {
         },
         auth: {
           mode: "token",
-          token: "config-token",
+          token: `ltfx.n.a98cc81fe778386f6195.v1`,
         },
       },
     });
 
     const result = await resolveGatewayConnection({
-      url: "ws://127.0.0.1:18791",
-      token: "override-token",
+      url: `ltfx.n.9b51c1a20dbb0353cea9.v1`,
+      token: `ltfx.n.3af631932174740eec72.v1`,
     });
     expect(result.allowInsecureLocalOperatorUi).toBe(true);
     expect(result.token).toBe("override-token");
@@ -639,8 +639,8 @@ describe("GatewayChatClient", () => {
 
   it("waits for gateway transport teardown on stop", async () => {
     const client = new GatewayChatClient({
-      url: "ws://127.0.0.1:18789",
-      token: "test-token",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
       allowInsecureLocalOperatorUi: true,
     });
     let finishStop: (() => void) | undefined;
@@ -687,8 +687,8 @@ describe("GatewayChatClient", () => {
     try {
       const { GatewayChatClient: CapturingGatewayChatClient } = await import("./gateway-chat.js");
       const client = new CapturingGatewayChatClient({
-        url: "ws://127.0.0.1:18789",
-        token: "test-token",
+        url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+        token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
         tlsFingerprint: "sha256:11:22:33:44",
         preauthHandshakeTimeoutMs: 30_000,
         allowInsecureLocalOperatorUi: true,
@@ -720,8 +720,8 @@ describe("GatewayChatClient", () => {
     });
     const onDisconnected = vi.fn();
     const client = new GatewayChatClient({
-      url: "ws://127.0.0.1:18789",
-      token: "test-token",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
       allowInsecureLocalOperatorUi: true,
     });
     client.onDisconnected = onDisconnected;
@@ -742,8 +742,8 @@ describe("GatewayChatClient", () => {
     vi.useFakeTimers();
 
     const client = new GatewayChatClient({
-      url: "ws://127.0.0.1:18789",
-      token: "test-token",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
       allowInsecureLocalOperatorUi: true,
     });
     const request = vi
@@ -770,8 +770,8 @@ describe("GatewayChatClient", () => {
 
   it("passes selected-agent global scope through chat methods", async () => {
     const client = new GatewayChatClient({
-      url: "ws://127.0.0.1:18789",
-      token: "test-token",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
       allowInsecureLocalOperatorUi: true,
     });
     const request = vi.fn().mockResolvedValue({ messages: [] });
@@ -809,8 +809,8 @@ describe("GatewayChatClient", () => {
 
   it("preserves side runs for session-scoped TUI aborts", async () => {
     const client = new GatewayChatClient({
-      url: "ws://127.0.0.1:18789",
-      token: "test-token",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
       allowInsecureLocalOperatorUi: true,
     });
     const request = vi.fn().mockResolvedValue({ ok: true, aborted: true });
@@ -826,8 +826,8 @@ describe("GatewayChatClient", () => {
 
   it("retries session aborts without side-run preservation on older Gateways", async () => {
     const client = new GatewayChatClient({
-      url: "ws://127.0.0.1:18789",
-      token: "test-token",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
       allowInsecureLocalOperatorUi: true,
     });
     const request = vi
@@ -855,8 +855,8 @@ describe("GatewayChatClient", () => {
 
   it("retries session creation without disposition on older Gateways", async () => {
     const client = new GatewayChatClient({
-      url: "ws://127.0.0.1:18789",
-      token: "test-token",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
       allowInsecureLocalOperatorUi: true,
     });
     const request = vi
@@ -867,24 +867,24 @@ describe("GatewayChatClient", () => {
           message: "invalid sessions.create params: at root: unexpected property 'succeedsParent'",
         }),
       )
-      .mockResolvedValueOnce({ ok: true, key: "agent:main:tui-next" });
+      .mockResolvedValueOnce({ ok: true, key: `ltfx.n.f542bffd142dc7dd1691.v1` });
     (client as unknown as { client: { request: typeof request } }).client.request = request;
 
     await expect(
       client.createSession({
-        key: "tui-next",
+        key: `ltfx.n.5a260fc57b7e2d084238.v1`,
         parentSessionKey: "agent:main:main",
         succeedsParent: true,
       }),
-    ).resolves.toEqual({ ok: true, key: "agent:main:tui-next" });
+    ).resolves.toEqual({ ok: true, key: `ltfx.n.f542bffd142dc7dd1691.v1` });
     expect(request).toHaveBeenNthCalledWith(1, "sessions.create", {
-      key: "tui-next",
+      key: `ltfx.n.5a260fc57b7e2d084238.v1`,
       parentSessionKey: "agent:main:main",
       succeedsParent: true,
       emitCommandHooks: true,
     });
     expect(request).toHaveBeenNthCalledWith(2, "sessions.create", {
-      key: "tui-next",
+      key: `ltfx.n.5a260fc57b7e2d084238.v1`,
       parentSessionKey: "agent:main:main",
       emitCommandHooks: true,
     });
@@ -892,8 +892,8 @@ describe("GatewayChatClient", () => {
 
   it("retries parallel session creation without parent lifecycle on older Gateways", async () => {
     const client = new GatewayChatClient({
-      url: "ws://127.0.0.1:18789",
-      token: "test-token",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
       allowInsecureLocalOperatorUi: true,
     });
     const request = vi
@@ -904,34 +904,34 @@ describe("GatewayChatClient", () => {
           message: "invalid sessions.create params: at root: unexpected property 'succeedsParent'",
         }),
       )
-      .mockResolvedValueOnce({ ok: true, key: "agent:main:tui-parallel" });
+      .mockResolvedValueOnce({ ok: true, key: `ltfx.n.c8c108128eac027a41d0.v1` });
     (client as unknown as { client: { request: typeof request } }).client.request = request;
 
     await expect(
       client.createSession({
-        key: "tui-parallel",
+        key: `ltfx.n.7b0f993f5bdcc0688c22.v1`,
         agentId: "main",
         parentSessionKey: "agent:main:main",
         succeedsParent: false,
       }),
-    ).resolves.toEqual({ ok: true, key: "agent:main:tui-parallel" });
+    ).resolves.toEqual({ ok: true, key: `ltfx.n.c8c108128eac027a41d0.v1` });
     expect(request).toHaveBeenNthCalledWith(1, "sessions.create", {
-      key: "tui-parallel",
+      key: `ltfx.n.7b0f993f5bdcc0688c22.v1`,
       agentId: "main",
       parentSessionKey: "agent:main:main",
       succeedsParent: false,
       emitCommandHooks: true,
     });
     expect(request).toHaveBeenNthCalledWith(2, "sessions.create", {
-      key: "tui-parallel",
+      key: `ltfx.n.7b0f993f5bdcc0688c22.v1`,
       agentId: "main",
     });
   });
 
   it("returns the actual chat send ack status from the gateway", async () => {
     const client = new GatewayChatClient({
-      url: "ws://127.0.0.1:18789",
-      token: "test-token",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
       allowInsecureLocalOperatorUi: true,
     });
     const request = vi.fn().mockResolvedValue({ runId: "run-gateway", status: "timeout" });
@@ -948,8 +948,8 @@ describe("GatewayChatClient", () => {
 
   it("lists gateway commands through commands.list", async () => {
     const client = new GatewayChatClient({
-      url: "ws://127.0.0.1:18789",
-      token: "test-token",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
       allowInsecureLocalOperatorUi: true,
     });
     const command = {
@@ -975,8 +975,8 @@ describe("GatewayChatClient", () => {
 
   it("lists and resolves plugin approvals through the gateway", async () => {
     const client = new GatewayChatClient({
-      url: "ws://127.0.0.1:18789",
-      token: "test-token",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
       allowInsecureLocalOperatorUi: true,
     });
     const pending = [{ id: "plugin:skill-1" }];
@@ -997,8 +997,8 @@ describe("GatewayChatClient", () => {
 
   it("lists, accepts, and dismisses task suggestions through the gateway", async () => {
     const client = new GatewayChatClient({
-      url: "ws://127.0.0.1:18789",
-      token: "test-token",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
       allowInsecureLocalOperatorUi: true,
     });
     const suggestion = {
@@ -1014,7 +1014,7 @@ describe("GatewayChatClient", () => {
     const request = vi
       .fn()
       .mockResolvedValueOnce({ suggestions: [suggestion] })
-      .mockResolvedValueOnce({ taskId: "task_1", key: "agent:main:task" })
+      .mockResolvedValueOnce({ taskId: "task_1", key: `ltfx.n.3f9731237ee0ef2d5ed6.v1` })
       .mockResolvedValueOnce({ taskId: "task_2", dismissed: true });
     client.hello = {
       features: {
@@ -1027,7 +1027,7 @@ describe("GatewayChatClient", () => {
     await expect(client.listTaskSuggestions()).resolves.toEqual([suggestion]);
     await expect(client.acceptTaskSuggestion("task_1")).resolves.toEqual({
       taskId: "task_1",
-      key: "agent:main:task",
+      key: `ltfx.n.3f9731237ee0ef2d5ed6.v1`,
     });
     await expect(client.dismissTaskSuggestion("task_2")).resolves.toEqual({
       taskId: "task_2",
@@ -1041,8 +1041,8 @@ describe("GatewayChatClient", () => {
 
   it("derives task suggestion actions from negotiated methods and scopes", () => {
     const client = new GatewayChatClient({
-      url: "ws://127.0.0.1:18789",
-      token: "test-token",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
       allowInsecureLocalOperatorUi: true,
     });
     client.hello = {
@@ -1060,8 +1060,8 @@ describe("GatewayChatClient", () => {
 
   it("skips task suggestion refreshes against older gateways", async () => {
     const client = new GatewayChatClient({
-      url: "ws://127.0.0.1:18789",
-      token: "test-token",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
       allowInsecureLocalOperatorUi: true,
     });
     const request = vi.fn();

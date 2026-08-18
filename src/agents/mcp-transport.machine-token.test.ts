@@ -88,7 +88,7 @@ describe("mcp transport machine-token wiring", () => {
     resolveConfiguredSecretInputStringMock.mockReset();
     streamableTransportConstructorMock.mockClear();
     resolveConfiguredSecretInputStringMock.mockResolvedValue({
-      value: "-----BEGIN PRIVATE KEY-----\nstub\n-----END PRIVATE KEY-----",
+      value: "-----BEGIN LTFX PRIVATE KEY-----\nstub\n-----END PRIVATE KEY-----",
     });
   });
 
@@ -327,7 +327,7 @@ describe("mcp machineToken schema auth refine", () => {
             bindingId: "binding-skills",
             issuerUrl: "https://paci.example",
             clientId: "skills-client",
-            clientAssertionKeyRef: "-----BEGIN PRIVATE KEY-----\nstub\n-----END PRIVATE KEY-----",
+            clientAssertionKeyRef: "-----BEGIN LTFX PRIVATE KEY-----\nstub\n-----END PRIVATE KEY-----",
           },
         },
       },

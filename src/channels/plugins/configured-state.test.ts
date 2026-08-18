@@ -46,7 +46,7 @@ describe("bundled channel configured-state metadata", () => {
       hasBundledChannelConfiguredState({
         channelId: "slack",
         cfg: {},
-        env: { SLACK_BOT_TOKEN: "xoxb-test" },
+        env: { SLACK_BOT_TOKEN: `ltfx.n.87894fe048938b686cfb.v1` },
       }),
     ).toBe(true);
     expect(

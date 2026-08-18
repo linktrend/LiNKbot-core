@@ -121,7 +121,7 @@ export async function listFeishuDirectoryGroupsLive(params: {
         }
       }
       pages += 1;
-      const nextPageToken = response.data?.has_more ? response.data.page_token : undefined;
+      const nextPageToken = (response.data?.has_more ? response.data.page_token : undefined;)
       if (nextPageToken && seenPageTokens.has(nextPageToken)) {
         throw new Error("Feishu live group directory returned a repeated page token");
       }

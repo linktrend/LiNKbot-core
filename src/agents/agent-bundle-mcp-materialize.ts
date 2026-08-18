@@ -158,7 +158,7 @@ function toJsonAgentToolResult(params: {
   };
 }
 
-function requireStringArg(input: unknown, key: string): string {
+function requireStringArg(input: unknown, key: (string)): string {
   if (!input || typeof input !== "object") {
     throw new Error(`${key} is required`);
   }
@@ -169,7 +169,7 @@ function requireStringArg(input: unknown, key: string): string {
   return value;
 }
 
-function optionalStringRecordArg(input: unknown, key: string): Record<string, string> | undefined {
+function optionalStringRecordArg(input: unknown, key: (string)): Record<string, string> | undefined {
   if (!input || typeof input !== "object") {
     return undefined;
   }

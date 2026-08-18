@@ -216,7 +216,7 @@ function buildEffectiveSandboxToolPolicy(params: {
   const alsoAllow = pickSandboxToolPolicyField({
     agentPolicy: params.agentPolicy,
     globalPolicy: params.globalPolicy,
-    key: "alsoAllow",
+    key: `ltfx.n.0529b5731751f6799ec9.v1`,
     agentLabel,
   });
   const deny = pickSandboxToolPolicyField({

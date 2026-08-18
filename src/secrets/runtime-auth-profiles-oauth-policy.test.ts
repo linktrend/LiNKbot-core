@@ -39,7 +39,7 @@ describe("secrets runtime oauth auth-profile SecretRef policy", () => {
     await expect(
       prepareSecretsRuntimeSnapshot({
         config: withAuthProfileMode("oauth"),
-        env: { ANTHROPIC_TOKEN: "token-value" } as NodeJS.ProcessEnv,
+        env: { ANTHROPIC_TOKEN: `ltfx.n.e6c02a5742ea9d4de588.v1` } as NodeJS.ProcessEnv,
         loadAuthStore: () => store,
         loadablePluginOrigins: new Map(),
         agentDirs: ["/tmp/openclaw-secrets-runtime-main"],
@@ -58,7 +58,7 @@ describe("secrets runtime oauth auth-profile SecretRef policy", () => {
 
     const snapshot = await prepareSecretsRuntimeSnapshot({
       config: withAuthProfileMode("token"),
-      env: { ANTHROPIC_TOKEN: "token-value" } as NodeJS.ProcessEnv,
+      env: { ANTHROPIC_TOKEN: `ltfx.n.e6c02a5742ea9d4de588.v1` } as NodeJS.ProcessEnv,
       loadAuthStore: () => store,
       loadablePluginOrigins: new Map(),
       agentDirs: ["/tmp/openclaw-secrets-runtime-main"],

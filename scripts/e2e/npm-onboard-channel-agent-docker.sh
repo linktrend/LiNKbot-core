@@ -73,8 +73,8 @@ source scripts/lib/openclaw-e2e-instance.sh
 openclaw_e2e_eval_test_state_from_b64 "${OPENCLAW_TEST_STATE_SCRIPT_B64:?missing OPENCLAW_TEST_STATE_SCRIPT_B64}"
 export NPM_CONFIG_PREFIX="$HOME/.npm-global"
 export PATH="$NPM_CONFIG_PREFIX/bin:$PATH"
-export OPENAI_API_KEY="sk-openclaw-npm-onboard-e2e"
-export OPENCLAW_GATEWAY_TOKEN="npm-onboard-channel-agent-token"
+export OPENAI_API_KEY="${ltfx.n.287f6bb6dd0ec1d8fb36.v1}"
+export OPENCLAW_GATEWAY_TOKEN="${ltfx.n.1059c85547800c3a5d78.v1}"
 
 CHANNEL="${OPENCLAW_NPM_ONBOARD_CHANNEL:?missing OPENCLAW_NPM_ONBOARD_CHANNEL}"
 PORT="18789"
@@ -87,20 +87,20 @@ mock_pid=""
 
 case "$CHANNEL" in
   telegram)
-    CHANNEL_TOKEN="123456:openclaw-npm-onboard-token"
+    CHANNEL_TOKEN="${ltfx.n.8e65f62b36d91e62db75.v1}"
     DEP_SENTINEL="grammy"
     CHANNEL_ADD_ARGS=(--token "$CHANNEL_TOKEN")
     CHANNEL_CONFIG_TOKENS=("$CHANNEL_TOKEN")
     ;;
   discord)
-    CHANNEL_TOKEN="openclaw-npm-onboard-discord-token"
+    CHANNEL_TOKEN="${ltfx.n.71c1cccfed4b2b800e5e.v1}"
     DEP_SENTINEL="discord-api-types"
     CHANNEL_ADD_ARGS=(--token "$CHANNEL_TOKEN")
     CHANNEL_CONFIG_TOKENS=("$CHANNEL_TOKEN")
     ;;
   slack)
-    SLACK_BOT_TOKEN="xoxb-openclaw-npm-onboard-slack-token"
-    SLACK_APP_TOKEN="xapp-openclaw-npm-onboard-slack-token"
+    SLACK_BOT_TOKEN="${ltfx.n.383985e17aed235111b7.v1}"
+    SLACK_APP_TOKEN="${ltfx.n.a7b3024206d7f7c9f839.v1}"
     DEP_SENTINEL="@slack/bolt"
     CHANNEL_ADD_ARGS=(--bot-token "$SLACK_BOT_TOKEN" --app-token "$SLACK_APP_TOKEN")
     CHANNEL_CONFIG_TOKENS=("$SLACK_BOT_TOKEN" "$SLACK_APP_TOKEN")

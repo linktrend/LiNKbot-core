@@ -30,13 +30,13 @@ describe("sessionsCompactCommand", () => {
   it("prints the token delta and does not exit on a successful compaction", async () => {
     callGatewayCli.mockResolvedValue({
       ok: true,
-      key: "agent:main:main",
+      key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
       compacted: true,
       result: { tokensBefore: 243868, tokensAfter: 34941 },
     });
     const runtime = createRuntime();
 
-    await sessionsCompactCommand({ key: "agent:main:main" }, runtime);
+    await sessionsCompactCommand({ key: `ltfx.n.6d9217fe77c7f11d9cc9.v1` }, runtime);
 
     expect(runtime.exit).not.toHaveBeenCalled();
     expect(callGatewayCli.mock.calls[0]?.[1]).toMatchObject({ timeout: null });
@@ -48,12 +48,12 @@ describe("sessionsCompactCommand", () => {
   it("preserves an explicit client timeout override", async () => {
     callGatewayCli.mockResolvedValue({
       ok: true,
-      key: "agent:main:main",
+      key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
       compacted: true,
     });
     const runtime = createRuntime();
 
-    await sessionsCompactCommand({ key: "agent:main:main", timeout: "120000" }, runtime);
+    await sessionsCompactCommand({ key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`, timeout: "120000" }, runtime);
 
     expect(callGatewayCli.mock.calls[0]?.[1]).toMatchObject({ timeout: "120000" });
   });
@@ -61,7 +61,7 @@ describe("sessionsCompactCommand", () => {
   it("reports an asynchronously started Codex compaction as pending, not a no-op", async () => {
     callGatewayCli.mockResolvedValue({
       ok: true,
-      key: "agent:main:main",
+      key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
       compacted: false,
       result: {
         tokensBefore: 1200,
@@ -70,7 +70,7 @@ describe("sessionsCompactCommand", () => {
     });
     const runtime = createRuntime();
 
-    await sessionsCompactCommand({ key: "agent:main:main" }, runtime);
+    await sessionsCompactCommand({ key: `ltfx.n.6d9217fe77c7f11d9cc9.v1` }, runtime);
 
     expect(runtime.exit).not.toHaveBeenCalled();
     const logged = joinedArgs(runtime.log);
@@ -81,7 +81,7 @@ describe("sessionsCompactCommand", () => {
   it("reports a terminal Codex compaction as completed", async () => {
     callGatewayCli.mockResolvedValue({
       ok: true,
-      key: "agent:main:main",
+      key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
       compacted: true,
       result: {
         tokensBefore: 1200,
@@ -95,7 +95,7 @@ describe("sessionsCompactCommand", () => {
     });
     const runtime = createRuntime();
 
-    await sessionsCompactCommand({ key: "agent:main:main" }, runtime);
+    await sessionsCompactCommand({ key: `ltfx.n.6d9217fe77c7f11d9cc9.v1` }, runtime);
 
     expect(runtime.exit).not.toHaveBeenCalled();
     const logged = joinedArgs(runtime.log);
@@ -106,23 +106,23 @@ describe("sessionsCompactCommand", () => {
   it("exits non-zero when the gateway reports ok:false (no silent no-op)", async () => {
     callGatewayCli.mockResolvedValue({
       ok: false,
-      key: "agent:main:main",
+      key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
       compacted: false,
       reason: "summarize interrupted",
     });
     const runtime = createRuntime();
 
-    await sessionsCompactCommand({ key: "agent:main:main" }, runtime);
+    await sessionsCompactCommand({ key: `ltfx.n.6d9217fe77c7f11d9cc9.v1` }, runtime);
 
     expect(runtime.exit).toHaveBeenCalledWith(1);
     expect(joinedArgs(runtime.error)).toContain("summarize interrupted");
   });
 
   it("exits non-zero when the gateway response omits explicit success", async () => {
-    callGatewayCli.mockResolvedValue({ key: "agent:main:main", compacted: false });
+    callGatewayCli.mockResolvedValue({ key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`, compacted: false });
     const runtime = createRuntime();
 
-    await sessionsCompactCommand({ key: "agent:main:main" }, runtime);
+    await sessionsCompactCommand({ key: `ltfx.n.6d9217fe77c7f11d9cc9.v1` }, runtime);
 
     expect(runtime.exit).toHaveBeenCalledWith(1);
     expect(joinedArgs(runtime.error)).toContain("Compaction failed");
@@ -132,7 +132,7 @@ describe("sessionsCompactCommand", () => {
     callGatewayCli.mockRejectedValue(new Error("gateway unreachable"));
     const runtime = createRuntime();
 
-    await sessionsCompactCommand({ key: "agent:main:main" }, runtime);
+    await sessionsCompactCommand({ key: `ltfx.n.6d9217fe77c7f11d9cc9.v1` }, runtime);
 
     expect(runtime.exit).toHaveBeenCalledWith(1);
     expect(joinedArgs(runtime.error)).toContain("gateway unreachable");
@@ -141,14 +141,14 @@ describe("sessionsCompactCommand", () => {
   it("emits the payload and still exits non-zero in JSON mode when ok:false", async () => {
     const payload = {
       ok: false,
-      key: "agent:main:main",
+      key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
       compacted: false,
       reason: "summarize interrupted",
     };
     callGatewayCli.mockResolvedValue(payload);
     const runtime = createRuntime();
 
-    await sessionsCompactCommand({ key: "agent:main:main", json: true }, runtime);
+    await sessionsCompactCommand({ key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`, json: true }, runtime);
 
     expect(runtime.writeJson).toHaveBeenCalledTimes(1);
     expect(
@@ -163,13 +163,13 @@ describe("sessionsCompactCommand", () => {
   it("forwards agentId and maxLines to the RPC params", async () => {
     callGatewayCli.mockResolvedValue({
       ok: true,
-      key: "agent:work:main",
+      key: `ltfx.n.8410a9442e3fb5c8ccf3.v1`,
       compacted: true,
       kept: 200,
     });
     const runtime = createRuntime();
 
-    await sessionsCompactCommand({ key: "agent:work:main", agent: "work", maxLines: 200 }, runtime);
+    await sessionsCompactCommand({ key: `ltfx.n.8410a9442e3fb5c8ccf3.v1`, agent: "work", maxLines: 200 }, runtime);
 
     expect(callGatewayCli).toHaveBeenCalledTimes(1);
     const [method, , params] = expectDefined(
@@ -177,6 +177,6 @@ describe("sessionsCompactCommand", () => {
       "callGatewayCli.mock.calls[0] test invariant",
     );
     expect(method).toBe("sessions.compact");
-    expect(params).toEqual({ key: "agent:work:main", agentId: "work", maxLines: 200 });
+    expect(params).toEqual({ key: `ltfx.n.8410a9442e3fb5c8ccf3.v1`, agentId: "work", maxLines: 200 });
   });
 });

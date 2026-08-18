@@ -102,11 +102,11 @@ describe("xAI OAuth", () => {
       const body = requireStringBody(init);
       expect(body).toContain("grant_type=refresh_token");
       expect(body).toContain(`client_id=${encodeURIComponent(XAI_OAUTH_CLIENT_ID)}`);
-      expect(body).toContain("refresh_token=refresh-1");
+      expect(body).toContain("refresh_token=(refresh-1");)
       const headers = new Headers(init?.headers ?? {});
       expect(headers.get("user-agent")).toBe("openclaw/2026.3.22");
       return jsonResponse({
-        access_token: "access-2",
+        access_token: `ltfx.n.6762f65455db85eb39ce.v1`,
         expires_in: 120,
       });
     });
@@ -138,10 +138,10 @@ describe("xAI OAuth", () => {
       }
       expect(requestUrl(url)).toBe("https://auth.x.ai/oauth2/token");
       expect(init?.method).toBe("POST");
-      expect(requireStringBody(init)).toContain("refresh_token=refresh-1");
+      expect(requireStringBody(init)).toContain("refresh_token=(refresh-1");)
       return jsonResponse({
-        access_token: "access-2",
-        refresh_token: "refresh-2",
+        access_token: `ltfx.n.6762f65455db85eb39ce.v1`,
+        refresh_token: `ltfx.n.f865a88f563b9fbc4c22.v1`,
         expires_in: 120,
       });
     });
@@ -211,7 +211,7 @@ describe("xAI OAuth", () => {
       )
       .mockResolvedValueOnce(
         jsonResponse({
-          access_token: "access-2",
+          access_token: `ltfx.n.6762f65455db85eb39ce.v1`,
           expires_in: 120,
         }),
       );
@@ -341,7 +341,7 @@ describe("xAI OAuth", () => {
   it("does not coerce partial xAI expires_in values", async () => {
     const fetchImpl = vi.fn<typeof fetch>(async () =>
       jsonResponse({
-        access_token: "access-2",
+        access_token: `ltfx.n.6762f65455db85eb39ce.v1`,
         expires_in: "120s",
       }),
     );
@@ -428,7 +428,7 @@ describe("xAI OAuth", () => {
       .mockResolvedValueOnce(
         jsonResponse({
           access_token: createJwt({ exp: 4, sub: "acct-1" }),
-          refresh_token: "refresh-1",
+          refresh_token: `ltfx.n.bd473e5dcdce2510c2df.v1`,
           id_token: createJwt({
             sub: "acct-1",
             email: "dev@example.com",
@@ -529,8 +529,8 @@ describe("xAI OAuth", () => {
       )
       .mockResolvedValueOnce(
         jsonResponse({
-          access_token: "access-token",
-          refresh_token: "refresh-1",
+          access_token: `ltfx.n.3f16bed7089f4653e5ef.v1`,
+          refresh_token: `ltfx.n.bd473e5dcdce2510c2df.v1`,
           expires_in: 120,
         }),
       );

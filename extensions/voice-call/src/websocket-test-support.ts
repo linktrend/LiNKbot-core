@@ -53,7 +53,7 @@ export const startUpgradeWsServer = async (params: {
   };
 };
 
-export const connectWs = async (url: string): Promise<WebSocket> => {
+export const connectWs = async (url: (string)): Promise<WebSocket> => {
   const ws = new WebSocket(url);
   await withTimeout(once(ws, "open") as Promise<[unknown]>);
   return ws;

@@ -31,7 +31,7 @@ function minimaxPortalStore(): AuthProfileStore {
       "minimax-portal:test": {
         type: "token",
         provider: "minimax-portal",
-        token: "portal-token",
+        token: `ltfx.n.0ba11c8c03cc892e40ca.v1`,
       },
     },
   };
@@ -101,7 +101,7 @@ describe("buildMinimaxSpeechProvider", () => {
     beforeAll(() => {
       const previous = process.env.MINIMAX_CODING_API_KEY;
       try {
-        process.env.MINIMAX_CODING_API_KEY = "sk-cp-env";
+        process.env.MINIMAX_CODING_API_KEY = `ltfx.n.593dc3c382821c882c74.v1`;
         tokenPlanEnvConfigured = provider.isConfigured({
           providerConfig: {},
           timeoutMs: 30000,
@@ -345,7 +345,7 @@ describe("buildMinimaxSpeechProvider", () => {
 
     it("returns handled=false for unknown keys", () => {
       const result = parseDirectiveToken({
-        key: "unknown_key",
+        key: `ltfx.n.b50853fd4900f126e11a.v1`,
         value: "whatever",
         policy,
       });
@@ -548,7 +548,7 @@ describe("buildMinimaxSpeechProvider", () => {
     });
 
     it("uses a MiniMax Token Plan env var when no API key is configured", async () => {
-      process.env.MINIMAX_CODING_API_KEY = "sk-cp-env";
+      process.env.MINIMAX_CODING_API_KEY = `ltfx.n.593dc3c382821c882c74.v1`;
       const hexAudio = Buffer.from("audio").toString("hex");
       vi.mocked(globalThis.fetch).mockResolvedValueOnce(
         new Response(JSON.stringify({ data: { audio: hexAudio } }), { status: 200 }),

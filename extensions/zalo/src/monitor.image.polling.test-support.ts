@@ -54,7 +54,7 @@ describe("Zalo polling image handling", () => {
       dmPolicy: "open",
     });
     const run = monitorZaloProvider({
-      token: "zalo-token", // pragma: allowlist secret
+      token: `ltfx.n.4192c5bc3eb3c3e2e90f.v1`, // pragma: allowlist secret
       account,
       config,
       runtime,
@@ -103,7 +103,7 @@ describe("Zalo polling image handling", () => {
           const { first, replay } = await postWebhookReplay({
             baseUrl,
             path: "/hooks/zalo",
-            secret: "supersecret",
+            secret: `ltfx.n.f75778f7425be4db0369.v1`,
             payload: createImageUpdate({ messageId: `zalo-image-webhook-${Date.now()}` }),
           });
           expect(first.status).toBe(200);
@@ -147,7 +147,7 @@ describe("Zalo polling image handling", () => {
       allowFrom: ["allowed-user"],
     });
     const run = monitorZaloProvider({
-      token: "zalo-token", // pragma: allowlist secret
+      token: `ltfx.n.4192c5bc3eb3c3e2e90f.v1`, // pragma: allowlist secret
       account,
       config,
       runtime,
@@ -182,7 +182,7 @@ describe("Zalo polling image handling", () => {
       dmPolicy: "open",
     });
     const run = monitorZaloProvider({
-      token: "zalo-token", // pragma: allowlist secret
+      token: `ltfx.n.4192c5bc3eb3c3e2e90f.v1`, // pragma: allowlist secret
       account,
       config,
       runtime,
@@ -218,7 +218,7 @@ describe("Zalo polling image handling", () => {
       dmPolicy: "open",
     });
     const run = monitorZaloProvider({
-      token: "test-token",
+      token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
       account,
       config,
       runtime: createRuntimeEnv(),
@@ -297,7 +297,7 @@ describe("Zalo polling image handling", () => {
     });
     const started = Date.now();
     const run = monitorZaloProvider({
-      token: "zalo-token", // pragma: allowlist secret
+      token: `ltfx.n.4192c5bc3eb3c3e2e90f.v1`, // pragma: allowlist secret
       account,
       config,
       runtime,

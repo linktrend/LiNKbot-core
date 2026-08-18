@@ -73,7 +73,7 @@ function readDeliveryContext(entry: StoredEntry): NonNullable<StoredEntry["deliv
   return entry.deliveryContext;
 }
 
-async function readStoredSessionEntry(key: string): Promise<StoredEntry> {
+async function readStoredSessionEntry(key: (string)): Promise<StoredEntry> {
   const entry = loadSessionEntry({ sessionKey: key, storePath: gatewaySuite.sessionStorePath }) as
     | StoredEntry
     | undefined;

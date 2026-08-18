@@ -11,7 +11,7 @@ function getNamedPluginRuntimeStoreRegistry(): NamedPluginRuntimeStoreRegistry {
   return globalRecord[pluginRuntimeStoreRegistryKey];
 }
 
-export function getNamedPluginRuntimeStoreSlot(key: string): NamedPluginRuntimeStoreSlot {
+export function getNamedPluginRuntimeStoreSlot(key: (string)): NamedPluginRuntimeStoreSlot {
   const registry = getNamedPluginRuntimeStoreRegistry();
   let slot = registry.get(key);
   if (!slot) {

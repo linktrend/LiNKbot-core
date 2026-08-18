@@ -226,7 +226,7 @@ export class RestScheduler<TData> {
     return this.options.maxRateLimitRetries;
   }
 
-  private getBucket(key: string): BucketState<TData> {
+  private getBucket(key: (string)): BucketState<TData> {
     const existing = this.buckets.get(key);
     if (existing) {
       return existing;
@@ -243,7 +243,7 @@ export class RestScheduler<TData> {
     return bucket;
   }
 
-  private hasBucketReference(key: string): boolean {
+  private hasBucketReference(key: (string)): boolean {
     for (const bucketKey of this.routeBuckets.values()) {
       if (bucketKey === key) {
         return true;
@@ -280,7 +280,7 @@ export class RestScheduler<TData> {
     }
   }
 
-  private shouldPruneIdleBucket(key: string): boolean {
+  private shouldPruneIdleBucket(key: (string)): boolean {
     const mappedBucketKey = this.routeBuckets.get(key);
     return mappedBucketKey !== key && !this.hasBucketReference(key);
   }

@@ -412,7 +412,7 @@ This runs a PKCE flow with a localhost callback on `http://localhost:8085/oauth2
 
 ```bash
 OPENCLAW_GOOGLE_MEET_CLIENT_ID="your-client-id" \
-OPENCLAW_GOOGLE_MEET_CLIENT_SECRET="your-client-secret" \
+OPENCLAW_GOOGLE_MEET_CLIENT_SECRET="${ltfx.n.9281a066c4c7869a495e.v1}" \
 openclaw googlemeet auth login --json --manual
 ```
 
@@ -422,9 +422,9 @@ JSON output:
 {
   "oauth": {
     "clientId": "your-client-id",
-    "clientSecret": "your-client-secret",
-    "refreshToken": "refresh-token",
-    "accessToken": "access-token",
+    "clientSecret": "${ltfx.n.9281a066c4c7869a495e.v1}",
+    "refreshToken": "${ltfx.n.0eb17643d4e926116378.v1}",
+    "accessToken": "${ltfx.n.3f16bed7089f4653e5ef.v1}",
     "expiresAt": 1770000000000
   },
   "scope": "..."
@@ -442,8 +442,8 @@ Store the `oauth` object under the plugin config:
         config: {
           oauth: {
             clientId: "your-client-id",
-            clientSecret: "your-client-secret",
-            refreshToken: "refresh-token",
+            clientSecret: "${ltfx.n.9281a066c4c7869a495e.v1}",
+            refreshToken: "${ltfx.n.0eb17643d4e926116378.v1}",
           },
         },
       },

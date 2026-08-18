@@ -19,7 +19,7 @@ scenario:
         defaultRoomKey: main
         rooms:
           - encrypted: true
-            key: e2ee-corrupt-crypto-idb-snapshot
+            key: "${ltfx.n.384a97a30451ee6b58d0.v1}"
             kind: group
             members:
               - driver

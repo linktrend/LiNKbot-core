@@ -213,7 +213,7 @@ describe("normalizeProviders", () => {
     const agentDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-agent-"));
     const env = {
       ...process.env,
-      OPENAI_API_KEY: "sk-test-secret-value-12345", // pragma: allowlist secret
+      OPENAI_API_KEY: `ltfx.n.a52857c86b18c889e87e.v1`, // pragma: allowlist secret
       OPENCLAW_BUNDLED_PLUGINS_DIR: undefined,
       OPENCLAW_DISABLE_BUNDLED_PLUGINS: undefined,
       OPENCLAW_SKIP_PROVIDERS: undefined,
@@ -224,7 +224,7 @@ describe("normalizeProviders", () => {
       const providers: NonNullable<NonNullable<OpenClawConfig["models"]>["providers"]> = {
         openai: {
           baseUrl: "https://api.openai.com/v1",
-          apiKey: "sk-test-secret-value-12345", // pragma: allowlist secret; simulates resolved ${OPENAI_API_KEY}
+          apiKey: `ltfx.n.a52857c86b18c889e87e.v1`, // pragma: allowlist secret; simulates resolved ${OPENAI_API_KEY}
           api: "openai-completions",
           models: [
             {
@@ -355,7 +355,7 @@ describe("normalizeProviders", () => {
       moonshot: {
         baseUrl: "https://api.moonshot.ai/v1",
         api: "openai-completions",
-        apiKey: "sk-runtime-moonshot", // pragma: allowlist secret
+        apiKey: `ltfx.n.4df8de9eb6ec5022d5c0.v1`, // pragma: allowlist secret
         models: [],
       },
     } as unknown as NonNullable<NonNullable<OpenClawConfig["models"]>["providers"]>;

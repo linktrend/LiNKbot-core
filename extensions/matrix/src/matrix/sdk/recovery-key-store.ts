@@ -113,7 +113,7 @@ export class MatrixRecoveryKeyStore {
           keyId,
           keyInfo: normalizedKeyInfo,
           privateKey,
-          encodedPrivateKey: stored?.encodedPrivateKey,
+          encodedPrivateKey: (stored?.encodedPrivateKey,)
         });
       },
     };

@@ -55,8 +55,8 @@ describe("probeGatewayStatus", () => {
     });
 
     const result = await probeGatewayStatus({
-      url: "ws://127.0.0.1:19191",
-      token: "temp-token",
+      url: `ltfx.n.ad4fd19bd2682d27ba09.v1`,
+      token: `ltfx.n.1436bc153406a582595c.v1`,
       tlsFingerprint: "abc123",
       timeoutMs: 5_000,
       json: true,
@@ -74,9 +74,9 @@ describe("probeGatewayStatus", () => {
     });
     expect(callGatewayMock).not.toHaveBeenCalled();
     expect(probeGatewayMock).toHaveBeenCalledWith({
-      url: "ws://127.0.0.1:19191",
+      url: `ltfx.n.ad4fd19bd2682d27ba09.v1`,
       auth: {
-        token: "temp-token",
+        token: `ltfx.n.1436bc153406a582595c.v1`,
         password: undefined,
       },
       tlsFingerprint: "abc123",
@@ -99,8 +99,8 @@ describe("probeGatewayStatus", () => {
     });
 
     const result = await probeGatewayStatus({
-      url: "ws://127.0.0.1:19191",
-      token: "temp-token",
+      url: `ltfx.n.ad4fd19bd2682d27ba09.v1`,
+      token: `ltfx.n.1436bc153406a582595c.v1`,
       timeoutMs: 5_000,
       json: true,
     });
@@ -128,8 +128,8 @@ describe("probeGatewayStatus", () => {
     });
 
     const result = await probeGatewayStatus({
-      url: "ws://127.0.0.1:19191",
-      token: "temp-token",
+      url: `ltfx.n.ad4fd19bd2682d27ba09.v1`,
+      token: `ltfx.n.1436bc153406a582595c.v1`,
       tlsFingerprint: "abc123",
       timeoutMs: 5_000,
       json: true,
@@ -148,9 +148,9 @@ describe("probeGatewayStatus", () => {
       },
     });
     expect(probeGatewayMock).toHaveBeenCalledWith({
-      url: "ws://127.0.0.1:19191",
+      url: `ltfx.n.ad4fd19bd2682d27ba09.v1`,
       auth: {
-        token: "temp-token",
+        token: `ltfx.n.1436bc153406a582595c.v1`,
         password: undefined,
       },
       tlsFingerprint: "abc123",
@@ -158,8 +158,8 @@ describe("probeGatewayStatus", () => {
       includeDetails: false,
     });
     expect(callGatewayMock).toHaveBeenCalledWith({
-      url: "ws://127.0.0.1:19191",
-      token: "temp-token",
+      url: `ltfx.n.ad4fd19bd2682d27ba09.v1`,
+      token: `ltfx.n.1436bc153406a582595c.v1`,
       password: undefined,
       tlsFingerprint: "abc123",
       method: "status",
@@ -183,8 +183,8 @@ describe("probeGatewayStatus", () => {
     const config = {};
 
     await probeGatewayStatus({
-      url: "ws://127.0.0.1:19191",
-      token: "temp-token",
+      url: `ltfx.n.ad4fd19bd2682d27ba09.v1`,
+      token: `ltfx.n.1436bc153406a582595c.v1`,
       config,
       preauthHandshakeTimeoutMs: 30_000,
       timeoutMs: 30_000,
@@ -192,9 +192,9 @@ describe("probeGatewayStatus", () => {
     });
 
     expect(probeGatewayMock).toHaveBeenCalledWith({
-      url: "ws://127.0.0.1:19191",
+      url: `ltfx.n.ad4fd19bd2682d27ba09.v1`,
       auth: {
-        token: "temp-token",
+        token: `ltfx.n.1436bc153406a582595c.v1`,
         password: undefined,
       },
       tlsFingerprint: undefined,
@@ -203,8 +203,8 @@ describe("probeGatewayStatus", () => {
       includeDetails: false,
     });
     expect(callGatewayMock).toHaveBeenCalledWith({
-      url: "ws://127.0.0.1:19191",
-      token: "temp-token",
+      url: `ltfx.n.ad4fd19bd2682d27ba09.v1`,
+      token: `ltfx.n.1436bc153406a582595c.v1`,
       password: undefined,
       tlsFingerprint: undefined,
       config,
@@ -240,8 +240,8 @@ describe("probeGatewayStatus", () => {
     } as const;
 
     await probeGatewayStatus({
-      url: "ws://127.0.0.1:19191",
-      token: "temp-token",
+      url: `ltfx.n.ad4fd19bd2682d27ba09.v1`,
+      token: `ltfx.n.1436bc153406a582595c.v1`,
       config,
       timeoutMs: 5_000,
       requireRpc: true,
@@ -249,8 +249,8 @@ describe("probeGatewayStatus", () => {
     });
 
     expect(callGatewayMock).toHaveBeenCalledWith({
-      url: "ws://127.0.0.1:19191",
-      token: "temp-token",
+      url: `ltfx.n.ad4fd19bd2682d27ba09.v1`,
+      token: `ltfx.n.1436bc153406a582595c.v1`,
       password: undefined,
       tlsFingerprint: undefined,
       method: "status",
@@ -263,7 +263,7 @@ describe("probeGatewayStatus", () => {
     probeGatewayMock.mockReset();
 
     const result = await probeGatewayStatus({
-      url: "ws://127.0.0.1:19191",
+      url: `ltfx.n.ad4fd19bd2682d27ba09.v1`,
       config: {
         gateway: {
           auth: {
@@ -306,8 +306,8 @@ describe("probeGatewayStatus", () => {
     });
 
     const result = await probeGatewayStatus({
-      url: "ws://127.0.0.1:19191",
-      token: "temp-token",
+      url: `ltfx.n.ad4fd19bd2682d27ba09.v1`,
+      token: `ltfx.n.1436bc153406a582595c.v1`,
       timeoutMs: 5_000,
       requireRpc: true,
     });
@@ -331,8 +331,8 @@ describe("probeGatewayStatus", () => {
     probeGatewayMock.mockRejectedValueOnce(new Error("probe timed out after status"));
 
     const result = await probeGatewayStatus({
-      url: "ws://127.0.0.1:19191",
-      token: "temp-token",
+      url: `ltfx.n.ad4fd19bd2682d27ba09.v1`,
+      token: `ltfx.n.1436bc153406a582595c.v1`,
       timeoutMs: 5_000,
       requireRpc: true,
     });
@@ -364,8 +364,8 @@ describe("probeGatewayStatus", () => {
     });
 
     const result = await probeGatewayStatus({
-      url: "ws://127.0.0.1:19191",
-      token: "temp-token",
+      url: `ltfx.n.ad4fd19bd2682d27ba09.v1`,
+      token: `ltfx.n.1436bc153406a582595c.v1`,
       timeoutMs: 5_000,
       requireRpc: true,
     });
@@ -393,7 +393,7 @@ describe("probeGatewayStatus", () => {
     mockPairingPendingCloseProbe(null);
 
     const result = await probeGatewayStatus({
-      url: "ws://127.0.0.1:19191",
+      url: `ltfx.n.ad4fd19bd2682d27ba09.v1`,
       timeoutMs: 5_000,
     });
 
@@ -406,7 +406,7 @@ describe("probeGatewayStatus", () => {
     mockPairingPendingCloseProbe("timeout");
 
     const result = await probeGatewayStatus({
-      url: "ws://127.0.0.1:19191",
+      url: `ltfx.n.ad4fd19bd2682d27ba09.v1`,
       timeoutMs: 5_000,
     });
 
@@ -423,7 +423,7 @@ describe("probeGatewayStatus", () => {
     });
 
     const result = await probeGatewayStatus({
-      url: "ws://127.0.0.1:19191",
+      url: `ltfx.n.ad4fd19bd2682d27ba09.v1`,
       timeoutMs: 5_000,
     });
 
@@ -438,8 +438,8 @@ describe("probeGatewayStatus", () => {
     callGatewayMock.mockRejectedValueOnce(new Error("missing scope: operator.admin"));
 
     const result = await probeGatewayStatus({
-      url: "ws://127.0.0.1:19191",
-      token: "temp-token",
+      url: `ltfx.n.ad4fd19bd2682d27ba09.v1`,
+      token: `ltfx.n.1436bc153406a582595c.v1`,
       timeoutMs: 5_000,
       requireRpc: true,
     });

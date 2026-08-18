@@ -449,7 +449,7 @@ test("sessions.reset infers selected global agent from agent-prefixed aliases", 
     const { resolveGatewaySessionStoreTarget } = await import("./session-utils.js");
     const { performGatewaySessionReset } = await import("./session-reset-service.js");
     const reset = await performGatewaySessionReset({
-      key: "agent:work:main",
+      key: `ltfx.n.8410a9442e3fb5c8ccf3.v1`,
       reason: "reset",
       commandSource: "gateway:sessions.reset",
     });
@@ -461,7 +461,7 @@ test("sessions.reset infers selected global agent from agent-prefixed aliases", 
     expect(reset.key).toBe("global");
     const resetTarget = resolveGatewaySessionStoreTarget({
       cfg: getRuntimeConfig(),
-      key: "agent:work:main",
+      key: `ltfx.n.8410a9442e3fb5c8ccf3.v1`,
       agentId: "work",
     });
     expect(resetTarget.storePath).toBe(globalConfig.workStorePath);
@@ -485,7 +485,7 @@ test("sessions.reset rejects selected global agentId conflicts", async () => {
   const { dir } = await createSessionStoreDir();
   await withGlobalAgentSessionStore(dir, async () => {
     const reset = await performSessionReset({
-      key: "agent:main:main",
+      key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
       agentId: "work",
       reason: "reset",
       commandSource: "gateway:sessions.reset",
@@ -499,7 +499,7 @@ test("sessions.reset rejects unknown selected global agents", async () => {
   const { dir } = await createSessionStoreDir();
   await withGlobalAgentSessionStore(dir, async () => {
     const reset = await performSessionReset({
-      key: "agent:typo:main",
+      key: `ltfx.n.bdf4b1ed0c203decd7b3.v1`,
       reason: "reset",
       commandSource: "gateway:sessions.reset",
     });
@@ -515,7 +515,7 @@ test("sessions.reset emits inferred selected global agent scope", async () => {
     const broadcast = vi.fn();
     const reset = await directSessionReq<{ ok: true; key: string }>(
       "sessions.reset",
-      { key: "agent:work:main", reason: "reset" },
+      { key: `ltfx.n.8410a9442e3fb5c8ccf3.v1`, reason: "reset" },
       {
         context: {
           broadcastToConnIds: broadcast,
@@ -713,7 +713,7 @@ test("sessions.create waits for the parent run lifecycle before firing hooks", a
   embeddedRunMock.activeIds.add("sess-active-parent");
 
   const result = await directSessionReq("sessions.create", {
-    key: "tui-next",
+    key: `ltfx.n.5a260fc57b7e2d084238.v1`,
     parentSessionKey: "main",
     emitCommandHooks: true,
   });
@@ -737,7 +737,7 @@ test("sessions.create waits for the parent work admission to release", async () 
   });
   try {
     const result = await directSessionReq("sessions.create", {
-      key: "tui-next",
+      key: `ltfx.n.5a260fc57b7e2d084238.v1`,
       parentSessionKey: "main",
       emitCommandHooks: true,
     });
@@ -763,7 +763,7 @@ test("sessions.create fences new parent work while rollover hooks run", async ()
   );
 
   const creating = directSessionReq("sessions.create", {
-    key: "tui-next",
+    key: `ltfx.n.5a260fc57b7e2d084238.v1`,
     parentSessionKey: "main",
     emitCommandHooks: true,
   });
@@ -863,7 +863,7 @@ test("sessions.create keeps an explicit TUI child key when session.dmScope is 'm
     });
 
     const result = await directSessionReq<{ key: string; sessionId: string }>("sessions.create", {
-      key: "tui-explicit",
+      key: `ltfx.n.409e0ae9d622a8c1f345.v1`,
       agentId: "main",
       parentSessionKey: "main",
       emitCommandHooks: true,

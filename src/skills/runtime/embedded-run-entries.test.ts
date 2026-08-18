@@ -107,7 +107,7 @@ describe("resolveEmbeddedRunSkillEntries", () => {
       skills: {
         entries: {
           diffs: {
-            apiKey: "resolved-key",
+            apiKey: `ltfx.n.b695c853fc672113967a.v1`,
           },
         },
       },
@@ -147,7 +147,7 @@ describe("resolveEmbeddedRunSkillEntries", () => {
       skills: {
         entries: {
           diffs: {
-            apiKey: "resolved-key",
+            apiKey: `ltfx.n.b695c853fc672113967a.v1`,
           },
         },
       },

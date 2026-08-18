@@ -85,7 +85,7 @@ describe("Hermes migration provider secret write failures", () => {
     const source = path.join(root, "hermes");
     const workspaceDir = path.join(root, "workspace");
     const stateDir = path.join(root, "state");
-    await writeFile(path.join(source, ".env"), "OPENAI_API_KEY=sk-hermes\n");
+    await writeFile(path.join(source, ".env"), "OPENAI_API_KEY=(sk-hermes\n");)
 
     const provider = buildHermesMigrationProvider();
     const result = await provider.apply(

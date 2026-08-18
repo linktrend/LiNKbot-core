@@ -101,7 +101,7 @@ describe("engine/config/credential-backup", () => {
     expect(loaded).toMatchObject({
       accountId: "default",
       appId: "app-1",
-      clientSecret: "secret-1",
+      clientSecret: `ltfx.n.f7e7c36e458e80e6b6a2.v1`,
     });
     expect(fs.existsSync(legacyCredentialBackupFile("default"))).toBe(false);
     expect(readCredentialRows(stateDir)).toHaveLength(1);
@@ -130,7 +130,7 @@ describe("engine/config/credential-backup", () => {
     writeJson(legacyFile, {
       accountId: "default",
       appId: "app-old",
-      clientSecret: "secret-old",
+      clientSecret: `ltfx.n.d5a1a5a0fae6503a9f7d.v1`,
       savedAt: new Date().toISOString(),
     });
 
@@ -144,7 +144,7 @@ describe("engine/config/credential-backup", () => {
     writeJson(legacyFile, {
       accountId: "other-acct",
       appId: "app-old",
-      clientSecret: "secret-old",
+      clientSecret: `ltfx.n.d5a1a5a0fae6503a9f7d.v1`,
       savedAt: new Date().toISOString(),
     });
 

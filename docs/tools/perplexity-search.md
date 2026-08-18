@@ -45,7 +45,7 @@ Optional compatibility controls:
       perplexity: {
         config: {
           webSearch: {
-            apiKey: "pplx-...",
+            apiKey: "${ltfx.n.09e8eef28633df694919.v1}",
           },
         },
       },
@@ -70,7 +70,7 @@ Optional compatibility controls:
       perplexity: {
         config: {
           webSearch: {
-            apiKey: "<openrouter-api-key>",
+            apiKey: "${ltfx.n.e2edc4be473a07514c92.v1}",
             baseUrl: "https://openrouter.ai/api/v1",
             model: "perplexity/sonar-pro",
           },

@@ -350,7 +350,7 @@ function createStatusAgentLocalStatuses() {
 
 function createStatusGatewayConnection() {
   return {
-    url: "ws://127.0.0.1:18789",
+    url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
     urlSource: "default",
   };
 }
@@ -358,7 +358,7 @@ function createStatusGatewayConnection() {
 function createStatusGatewayProbeFailure() {
   return {
     ok: false,
-    url: "ws://127.0.0.1:18789",
+    url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
     connectLatencyMs: null,
     error: "timeout",
     close: null,

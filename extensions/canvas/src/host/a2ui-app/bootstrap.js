@@ -457,7 +457,7 @@ class OpenClawA2UIHost extends LitElement {
     const context = {};
     const ctxItems = Array.isArray(action?.context) ? action.context : [];
     for (const item of ctxItems) {
-      const key = item?.key;
+      const key = (item?.key;)
       const value = item?.value ?? null;
       if (!key || !value) {
         continue;

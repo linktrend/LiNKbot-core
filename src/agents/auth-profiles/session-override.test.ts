@@ -290,7 +290,7 @@ describe("resolveSessionAuthProfileOverride", () => {
           "amazon-bedrock:default": {
             type: "api_key",
             provider: "openrouter",
-            key: "sk-drifted",
+            key: `ltfx.n.d622ec1b85a9f0433712.v1`,
           },
         },
       });
@@ -354,7 +354,7 @@ describe("resolveSessionAuthProfileOverride", () => {
           [TEST_SECONDARY_PROFILE_ID]: {
             type: "api_key",
             provider: "openai",
-            key: "sk-claude",
+            key: `ltfx.n.f4e9c42044d5e68b11f6.v1`,
           },
         },
         order: {
@@ -397,7 +397,7 @@ describe("resolveSessionAuthProfileOverride", () => {
           [TEST_PRIMARY_PROFILE_ID]: {
             type: "api_key",
             provider: "openai",
-            key: "sk-codex",
+            key: `ltfx.n.b9cee79a84c0fdebf954.v1`,
           },
         },
         order: {
@@ -439,7 +439,7 @@ describe("resolveSessionAuthProfileOverride", () => {
           [TEST_PRIMARY_PROFILE_ID]: {
             type: "api_key",
             provider: "openai",
-            key: "sk-codex",
+            key: `ltfx.n.b9cee79a84c0fdebf954.v1`,
           },
         },
         order: {
@@ -482,12 +482,12 @@ describe("resolveSessionAuthProfileOverride", () => {
           "openai:api-key-backup": {
             type: "api_key",
             provider: "openai",
-            key: "sk-openai",
+            key: `ltfx.n.45ca28bb99fbb3964300.v1`,
           },
           [TEST_PRIMARY_PROFILE_ID]: {
             type: "api_key",
             provider: "openai",
-            key: "sk-codex",
+            key: `ltfx.n.b9cee79a84c0fdebf954.v1`,
           },
         },
         order: {
@@ -531,12 +531,12 @@ describe("resolveSessionAuthProfileOverride", () => {
           [TEST_PRIMARY_PROFILE_ID]: {
             type: "api_key",
             provider: "openai",
-            key: "sk-stale",
+            key: `ltfx.n.05d4bcd73d1f1b3d0030.v1`,
           },
           [TEST_SECONDARY_PROFILE_ID]: {
             type: "api_key",
             provider: "openai",
-            key: "sk-healthy",
+            key: `ltfx.n.ad217a4373858e701de7.v1`,
           },
         },
         order: {
@@ -616,12 +616,12 @@ describe("resolveSessionAuthProfileOverride", () => {
           [TEST_PRIMARY_PROFILE_ID]: {
             type: "api_key",
             provider: "openai",
-            key: "sk-primary",
+            key: `ltfx.n.015334033ea62daa3113.v1`,
           },
           [TEST_SECONDARY_PROFILE_ID]: {
             type: "api_key",
             provider: "openai",
-            key: "sk-secondary",
+            key: `ltfx.n.c297558a11190c1b095b.v1`,
           },
         },
         order: {

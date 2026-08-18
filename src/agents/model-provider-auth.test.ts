@@ -634,7 +634,7 @@ describe("prepared provider auth state", () => {
         runtime: {
           type: "api_key" as const,
           provider: "openai",
-          key: "test-key",
+          key: `ltfx.n.62af8704764faf8ea82f.v1`,
         },
       },
     };

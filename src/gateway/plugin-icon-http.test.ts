@@ -57,7 +57,7 @@ let configForRequest = () => testConfig;
 beforeAll(async () => {
   server = createServer((req, res) => {
     void handlePluginIconHttpRequest(req, res, {
-      auth: { mode: "token", token: "test-token", allowTailscale: false },
+      auth: { mode: "token", token: `ltfx.n.4c5dc9b7708905f77f5e.v1`, allowTailscale: false },
       config: configForRequest(),
     }).then((handled) => {
       if (!handled) {
@@ -129,7 +129,7 @@ describe("GET /__openclaw__/plugin-icon/:pluginId", () => {
 
   it("resolves by plugin identity and ignores arbitrary remote URL parameters", async () => {
     const response = await request(
-      "/__openclaw__/plugin-icon/firecrawl?url=http%3A%2F%2F127.0.0.1%2Fsecret",
+      "/__openclaw__/plugin-icon/firecrawl?url=(http%3A%2F%2F127.0.0.1%2Fsecret",)
     );
 
     expect(response.status).toBe(200);
@@ -290,7 +290,7 @@ describe("GET /__openclaw__/plugin-icon/:pluginId", () => {
   it("matches the configured Control UI base path", async () => {
     const handledServer = createServer((req, res) => {
       void handlePluginIconHttpRequest(req, res, {
-        auth: { mode: "token", token: "test-token", allowTailscale: false },
+        auth: { mode: "token", token: `ltfx.n.4c5dc9b7708905f77f5e.v1`, allowTailscale: false },
         config: {},
         basePath: "/openclaw",
       }).then((handled) => {

@@ -58,7 +58,7 @@ function createContext(): { context: ApplicationContext; client: GatewayBrowserC
     snapshot,
     connection: {
       gatewayUrl: window.location.origin.replace(/^http/u, "ws"),
-      token: "test-token",
+      token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
       password: "",
       bootstrapToken: "",
     },

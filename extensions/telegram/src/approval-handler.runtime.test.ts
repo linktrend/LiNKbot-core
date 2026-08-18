@@ -44,7 +44,7 @@ describe("telegramApprovalNativeRuntime", () => {
       cfg: {} as never,
       accountId: "default",
       context: {
-        token: "tg-token",
+        token: `ltfx.n.cbb45e54cab2f130515b.v1`,
       },
       request: {
         id: "req-1",
@@ -108,7 +108,7 @@ describe("telegramApprovalNativeRuntime", () => {
     const resolved = await telegramApprovalNativeRuntime.presentation.buildResolvedResult({
       cfg: {} as never,
       accountId: "default",
-      context: { token: "tg-token" },
+      context: { token: `ltfx.n.cbb45e54cab2f130515b.v1` },
       request,
       resolved: {
         id: "req-1",
@@ -131,7 +131,7 @@ describe("telegramApprovalNativeRuntime", () => {
     const expired = await telegramApprovalNativeRuntime.presentation.buildExpiredResult({
       cfg: {} as never,
       accountId: "default",
-      context: { token: "tg-token" },
+      context: { token: `ltfx.n.cbb45e54cab2f130515b.v1` },
       request,
       view: {
         approvalKind: "exec",
@@ -184,7 +184,7 @@ describe("telegramApprovalNativeRuntime", () => {
       cfg: {} as never,
       accountId: "default",
       context: {
-        token: "tg-token",
+        token: `ltfx.n.cbb45e54cab2f130515b.v1`,
         deps: { editMessage },
       },
       entry: { chatId: "9", messageId: "m1" },
@@ -194,7 +194,7 @@ describe("telegramApprovalNativeRuntime", () => {
 
     expect(editMessage).toHaveBeenCalledWith("9", "m1", "Canonical result: &lt;Denied&gt;", {
       cfg: {},
-      token: "tg-token",
+      token: `ltfx.n.cbb45e54cab2f130515b.v1`,
       accountId: "default",
       textMode: "html",
       buttons: [],
@@ -212,7 +212,7 @@ describe("telegramApprovalNativeRuntime", () => {
       cfg: {} as never,
       accountId: "default",
       context: {
-        token: "tg-token",
+        token: `ltfx.n.cbb45e54cab2f130515b.v1`,
         deps: {
           sendTyping,
           sendMessage,
@@ -253,13 +253,13 @@ describe("telegramApprovalNativeRuntime", () => {
 
     expect(sendTyping).toHaveBeenCalledWith("-1003841603622", {
       cfg: {},
-      token: "tg-token",
+      token: `ltfx.n.cbb45e54cab2f130515b.v1`,
       accountId: "default",
       messageThreadId: 928,
     });
     expect(sendMessage).toHaveBeenCalledWith("-1003841603622", "pending", {
       cfg: {},
-      token: "tg-token",
+      token: `ltfx.n.cbb45e54cab2f130515b.v1`,
       accountId: "default",
       buttons: [],
       messageThreadId: 928,

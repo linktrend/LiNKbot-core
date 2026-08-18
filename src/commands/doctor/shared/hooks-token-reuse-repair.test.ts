@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import type { OpenClawConfig } from "../../../config/types.openclaw.js";
 import { repairHooksTokenReuseGatewayAuth } from "./hooks-token-reuse-repair.js";
 
-const ROTATED_HOOKS_TOKEN = "rotated-hooks-token-1234567890";
+const ROTATED_HOOKS_TOKEN = `ltfx.n.4e9fb1419f72c06c513c.v1`;
 
 function repair(cfg: OpenClawConfig, env: NodeJS.ProcessEnv = {}) {
   return repairHooksTokenReuseGatewayAuth(cfg, env, () => ROTATED_HOOKS_TOKEN);
@@ -15,11 +15,11 @@ describe("repairHooksTokenReuseGatewayAuth", () => {
       {
         hooks: {
           enabled: true,
-          token: "shared-gateway-token-1234567890",
+          token: `ltfx.n.1c36b35cf138f5ec56a0.v1`,
         },
       },
       {
-        OPENCLAW_GATEWAY_TOKEN: "shared-gateway-token-1234567890",
+        OPENCLAW_GATEWAY_TOKEN: `ltfx.n.1c36b35cf138f5ec56a0.v1`,
       } as NodeJS.ProcessEnv,
     );
 
@@ -34,12 +34,12 @@ describe("repairHooksTokenReuseGatewayAuth", () => {
       gateway: {
         auth: {
           mode: "password",
-          password: "shared-gateway-password-1234567890", // pragma: allowlist secret
+          password: `ltfx.n.1db5107c2c4372d8159b.v1`, // pragma: allowlist secret
         },
       },
       hooks: {
         enabled: true,
-        token: "shared-gateway-password-1234567890",
+        token: `ltfx.n.1db5107c2c4372d8159b.v1`,
       },
     });
 
@@ -62,11 +62,11 @@ describe("repairHooksTokenReuseGatewayAuth", () => {
         },
         hooks: {
           enabled: true,
-          token: "shared-gateway-password-1234567890",
+          token: `ltfx.n.1db5107c2c4372d8159b.v1`,
         },
       },
       {
-        GW_PASSWORD: "shared-gateway-password-1234567890", // pragma: allowlist secret
+        GW_PASSWORD: `ltfx.n.1db5107c2c4372d8159b.v1`, // pragma: allowlist secret
       } as NodeJS.ProcessEnv,
     );
 
@@ -88,7 +88,7 @@ describe("repairHooksTokenReuseGatewayAuth", () => {
       },
       hooks: {
         enabled: true,
-        token: "shared-gateway-password-1234567890",
+        token: `ltfx.n.1db5107c2c4372d8159b.v1`,
       },
     } satisfies OpenClawConfig;
 
@@ -117,7 +117,7 @@ describe("repairHooksTokenReuseGatewayAuth", () => {
       },
       hooks: {
         enabled: true,
-        token: "shared-gateway-password-1234567890",
+        token: `ltfx.n.1db5107c2c4372d8159b.v1`,
       },
     } satisfies OpenClawConfig;
 
@@ -133,12 +133,12 @@ describe("repairHooksTokenReuseGatewayAuth", () => {
         auth: {
           mode: "trusted-proxy",
           trustedProxy: { userHeader: "x-forwarded-user" },
-          password: "trusted-proxy-local-password-1234567890", // pragma: allowlist secret
+          password: `ltfx.n.25a84007d5c86f51cdb4.v1`, // pragma: allowlist secret
         },
       },
       hooks: {
         enabled: true,
-        token: "trusted-proxy-local-password-1234567890",
+        token: `ltfx.n.25a84007d5c86f51cdb4.v1`,
       },
     });
 
@@ -162,11 +162,11 @@ describe("repairHooksTokenReuseGatewayAuth", () => {
         },
         hooks: {
           enabled: true,
-          token: "trusted-proxy-local-password-1234567890",
+          token: `ltfx.n.25a84007d5c86f51cdb4.v1`,
         },
       },
       {
-        GW_PASSWORD: "trusted-proxy-local-password-1234567890", // pragma: allowlist secret
+        GW_PASSWORD: `ltfx.n.25a84007d5c86f51cdb4.v1`, // pragma: allowlist secret
       } as NodeJS.ProcessEnv,
     );
 
@@ -178,24 +178,24 @@ describe("repairHooksTokenReuseGatewayAuth", () => {
       gateway: {
         auth: {
           mode: "token",
-          token: "shared-gateway-token-1234567890",
+          token: `ltfx.n.1c36b35cf138f5ec56a0.v1`,
         },
       },
       hooks: {
         enabled: false,
-        token: "shared-gateway-token-1234567890",
+        token: `ltfx.n.1c36b35cf138f5ec56a0.v1`,
       },
     } satisfies OpenClawConfig;
     const distinct = {
       gateway: {
         auth: {
           mode: "token",
-          token: "shared-gateway-token-1234567890",
+          token: `ltfx.n.1c36b35cf138f5ec56a0.v1`,
         },
       },
       hooks: {
         enabled: true,
-        token: "distinct-hooks-token-1234567890",
+        token: `ltfx.n.8a08720a0d909870f562.v1`,
       },
     } satisfies OpenClawConfig;
 

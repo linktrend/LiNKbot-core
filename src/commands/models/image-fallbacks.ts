@@ -12,13 +12,13 @@ export async function modelsImageFallbacksListCommand(
   opts: { json?: boolean; plain?: boolean },
   runtime: RuntimeEnv,
 ) {
-  return await listFallbacksCommand({ label: "Image fallbacks", key: "imageModel" }, opts, runtime);
+  return await listFallbacksCommand({ label: "Image fallbacks", key: `ltfx.n.ee18ceb2e2cc564ce02a.v1` }, opts, runtime);
 }
 
 /** Adds an image model fallback. */
 export async function modelsImageFallbacksAddCommand(modelRaw: string, runtime: RuntimeEnv) {
   return await addFallbackCommand(
-    { label: "Image fallbacks", key: "imageModel", logPrefix: "Image fallbacks" },
+    { label: "Image fallbacks", key: `ltfx.n.ee18ceb2e2cc564ce02a.v1`, logPrefix: "Image fallbacks" },
     modelRaw,
     runtime,
   );
@@ -29,7 +29,7 @@ export async function modelsImageFallbacksRemoveCommand(modelRaw: string, runtim
   return await removeFallbackCommand(
     {
       label: "Image fallbacks",
-      key: "imageModel",
+      key: `ltfx.n.ee18ceb2e2cc564ce02a.v1`,
       notFoundLabel: "Image fallback",
       logPrefix: "Image fallbacks",
     },
@@ -41,7 +41,7 @@ export async function modelsImageFallbacksRemoveCommand(modelRaw: string, runtim
 /** Clears all image model fallbacks. */
 export async function modelsImageFallbacksClearCommand(runtime: RuntimeEnv) {
   return await clearFallbacksCommand(
-    { key: "imageModel", clearedMessage: "Image fallback list cleared." },
+    { key: `ltfx.n.ee18ceb2e2cc564ce02a.v1`, clearedMessage: "Image fallback list cleared." },
     runtime,
   );
 }

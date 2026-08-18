@@ -159,7 +159,7 @@ describe("execution auth binding fingerprints", () => {
         mode: "api-key",
       });
 
-    const secret = "raw-secret-marker-with-non-hex";
+    const secret = `ltfx.n.f38fff9aba9fe9b4f819.v1`;
     const first = fingerprint(secret);
 
     expect(first).toBe(fingerprint(secret));
@@ -223,13 +223,13 @@ describe("execution auth binding fingerprints", () => {
       fingerprint({
         AWS_ACCESS_KEY_ID: "AKIA1",
         AWS_SECRET_ACCESS_KEY: "secret-a",
-        AWS_SESSION_TOKEN: "session-a",
+        AWS_SESSION_TOKEN: `ltfx.n.fa57a52dbf0819021852.v1`,
       }),
     ).not.toBe(
       fingerprint({
         AWS_ACCESS_KEY_ID: "AKIA1",
         AWS_SECRET_ACCESS_KEY: "secret-a",
-        AWS_SESSION_TOKEN: "session-b",
+        AWS_SESSION_TOKEN: `ltfx.n.e8de016fbd70182f6d23.v1`,
       }),
     );
   });

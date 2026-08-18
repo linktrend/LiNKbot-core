@@ -10,7 +10,7 @@ const config = {
   reset: {
     meta: {},
     agents: { defaults: { workspace: "/root/old" } },
-    gateway: { mode: "remote", remote: { url: "ws://old.example:18789", token: "old-token" } },
+    gateway: { mode: "remote", remote: { url: `ltfx.n.9ee3bdf5741a79eb6672.v1`, token: `ltfx.n.9bdf10a691a1cfda89d9.v1` } },
   },
   skills: { meta: {}, skills: { allowBundled: ["__none__"], install: { nodeManager: "bun" } } },
 }[scenario];

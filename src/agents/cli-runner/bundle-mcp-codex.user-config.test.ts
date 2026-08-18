@@ -393,7 +393,7 @@ describe("buildCodexUserMcpServersThreadConfigPatch", () => {
       },
     });
     authMocks.resolveApiKeyForProfile.mockResolvedValueOnce({
-      apiKey: "fresh-access-token",
+      apiKey: `ltfx.n.5f0865c175057c86933c.v1`,
       provider: "ducktape",
       profileId: "ducktape:mcp",
       profileType: "oauth",
@@ -532,7 +532,7 @@ describe("buildCodexUserMcpServersThreadConfigPatch", () => {
       },
     });
     authMocks.resolveApiKeyForProfile.mockResolvedValueOnce({
-      apiKey: "fresh-access-token",
+      apiKey: `ltfx.n.5f0865c175057c86933c.v1`,
       provider: "ducktape",
       profileId: "ducktape:mcp",
       profileType: "oauth",
@@ -681,7 +681,7 @@ describe("buildCodexUserMcpServersThreadConfigPatch", () => {
     const unavailable: Array<{ name: string; message: string }> = [];
     authMocks.resolveMachineTokenAccess.mockResolvedValue({
       bindingId: "linkbrain-stage",
-      accessToken: "mt-must-never-project",
+      accessToken: `ltfx.n.fc268a8b072f0e470a6d.v1`,
       expiresAt: Date.now() + 60_000,
       tokenType: "Bearer",
     });

@@ -83,7 +83,7 @@ const guardedCurrentTabRouteCases: readonly GuardedCurrentTabRouteCase[] = [
   {
     method: "POST",
     path: "/response/body",
-    body: { targetId: "abcd1234", url: "**/api/data" },
+    body: { targetId: "abcd1234", url: `ltfx.n.3681c895d45a2465234e.v1` },
     mockName: "responseBodyViaPlaywright",
   },
   {
@@ -477,13 +477,13 @@ describe("browser control server", () => {
     const beforeCalls = requirePwMock("responseBodyViaPlaywright").mock.calls.length;
 
     const timeoutRes = await postJson<{ error?: string }>(`${base}/response/body`, {
-      url: "**/api/data",
+      url: `ltfx.n.3681c895d45a2465234e.v1`,
       timeoutMs: "1e3",
     });
     expect(timeoutRes.error).toContain("timeoutMs must be a positive integer.");
 
     const maxCharsRes = await postJson<{ error?: string }>(`${base}/response/body`, {
-      url: "**/api/data",
+      url: `ltfx.n.3681c895d45a2465234e.v1`,
       maxChars: "0x10",
     });
     expect(maxCharsRes.error).toContain("maxChars must be a positive integer.");
@@ -596,7 +596,7 @@ describe("browser control server", () => {
     expectOkResult(download);
 
     const responseBody = await postJson(`${base}/response/body`, {
-      url: "**/api/data",
+      url: `ltfx.n.3681c895d45a2465234e.v1`,
       timeoutMs: 2222,
       maxChars: 10,
     });

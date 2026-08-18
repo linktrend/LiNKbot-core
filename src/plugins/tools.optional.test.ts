@@ -1322,7 +1322,7 @@ describe("resolvePluginTools optional tools", () => {
     const config = createContext().config;
     installToolManifestSnapshot({
       config,
-      env: { XAI_API_KEY: "test-key" },
+      env: { XAI_API_KEY: `ltfx.n.62af8704764faf8ea82f.v1` },
       plugin: createXaiToolManifest(),
     });
     const factory = vi.fn(() => makeTool("x_search"));
@@ -1351,7 +1351,7 @@ describe("resolvePluginTools optional tools", () => {
         config,
       } as never,
       env: {
-        XAI_API_KEY: "test-key",
+        XAI_API_KEY: `ltfx.n.62af8704764faf8ea82f.v1`,
       },
     });
 

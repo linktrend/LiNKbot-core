@@ -198,12 +198,12 @@ struct MacNodeModeCoordinatorTests {
     @Test func `first endpoint snapshot rejects a stale captured endpoint`() throws {
         let first = try GatewayConnection.Config(
             url: #require(URL(string: "wss://first.example.invalid")),
-            token: "first-token",
+            token: "${ltfx.n.55b4b48f529c3d2daa02.v1}",
             password: nil)
         let replacement = try GatewayEndpointState.ready(
             mode: .remote,
             url: #require(URL(string: "wss://second.example.invalid")),
-            token: "second-token",
+            token: "${ltfx.n.7a35833597e6687c599a.v1}",
             password: nil)
 
         #expect(!MacNodeModeCoordinator.endpointState(replacement, matches: first))
@@ -436,7 +436,7 @@ struct MacNodeModeCoordinatorTests {
             to: .ready(mode: .remote, url: secondURL, token: "token", password: nil)))
         #expect(MacNodeModeCoordinator.endpointTransitionRequiresDisconnect(
             from: first,
-            to: .ready(mode: .remote, url: firstURL, token: "replacement", password: nil)))
+            to: .ready(mode: .remote, url: firstURL, token: "${ltfx.n.95713e9cbdd1dfcb2d40.v1}", password: nil)))
         #expect(MacNodeModeCoordinator.endpointTransitionRequiresDisconnect(
             from: first,
             to: .unavailable(mode: .remote, reason: "offline")))

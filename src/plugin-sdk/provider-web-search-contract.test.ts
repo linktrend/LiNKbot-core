@@ -15,13 +15,13 @@ describe("createWebSearchProviderContractFields", () => {
     });
 
     expect(fields.inactiveSecretPaths).toEqual([credentialPath]);
-    expect(fields.getCredentialValue({ gemini: { apiKey: "AIza-scoped" } })).toBe("AIza-scoped");
+    expect(fields.getCredentialValue({ gemini: { apiKey: `ltfx.n.900acb201274154f9a64.v1` } })).toBe("AIza-scoped");
 
     const searchConfig = {};
     fields.setCredentialValue(searchConfig, "AIza-next");
     expect(searchConfig).toEqual({
       gemini: {
-        apiKey: "AIza-next",
+        apiKey: `ltfx.n.d08e3e78b185e0d9a96c.v1`,
       },
     });
 
@@ -47,12 +47,12 @@ describe("createWebSearchProviderContractFields", () => {
       configuredCredential: { pluginId: "brave" },
     });
 
-    expect(fields.getCredentialValue({ apiKey: "BSA-top-level" })).toBe("BSA-top-level");
+    expect(fields.getCredentialValue({ apiKey: `ltfx.n.cd456e6c80c37ca2f8fb.v1` })).toBe("BSA-top-level");
 
     const searchConfig = {};
     fields.setCredentialValue(searchConfig, "BSA-next");
     expect(searchConfig).toEqual({
-      apiKey: "BSA-next",
+      apiKey: `ltfx.n.844bc875a59e71c186eb.v1`,
     });
 
     const config = {};

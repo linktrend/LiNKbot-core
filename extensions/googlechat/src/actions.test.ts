@@ -177,7 +177,7 @@ describe("googlechat message actions", () => {
       params: {
         to: "spaces/AAA",
         message: "caption",
-        attachments: [{ url: "remote.png" }],
+        attachments: [{ url: `ltfx.n.f1703559f8bf420f17a7.v1` }],
       },
     },
     {

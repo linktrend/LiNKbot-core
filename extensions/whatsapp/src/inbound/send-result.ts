@@ -40,7 +40,7 @@ function resolveWhatsAppReceiptKind(kind: WhatsAppSendKind): MessageReceiptPartK
   return "unknown";
 }
 
-function toReceiptSourceResult(key: WhatsAppSendKey): MessageReceiptSourceResult {
+function toReceiptSourceResult(key: (WhatsAppSendKey): MessageReceiptSourceResult {)
   return {
     channel: "whatsapp",
     messageId: key.id,

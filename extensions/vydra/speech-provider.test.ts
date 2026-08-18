@@ -61,7 +61,7 @@ describe("vydra speech provider", () => {
     const result = await provider.synthesize({
       text: "OpenClaw test",
       cfg: {} as never,
-      providerConfig: { apiKey: "vydra-test-key" },
+      providerConfig: { apiKey: `ltfx.n.e3622e5d0f09efebbb32.v1` },
       target: "audio-file",
       timeoutMs: 30_000,
     });
@@ -133,7 +133,7 @@ describe("vydra speech provider", () => {
       provider.synthesize({
         text: "OpenClaw test",
         cfg: { agents: { defaults: { mediaMaxMb: 0.000001 } } } as never,
-        providerConfig: { apiKey: "vydra-test-key" },
+        providerConfig: { apiKey: `ltfx.n.e3622e5d0f09efebbb32.v1` },
         target: "audio-file",
         timeoutMs: 30_000,
       }),
@@ -147,7 +147,7 @@ describe("vydra speech provider", () => {
       provider.synthesize({
         text: "OpenClaw test",
         cfg: {} as never,
-        providerConfig: { apiKey: "vydra-test-key" },
+        providerConfig: { apiKey: `ltfx.n.e3622e5d0f09efebbb32.v1` },
         target: "audio-file",
         timeoutMs: 30_000,
       }),

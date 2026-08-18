@@ -502,7 +502,7 @@ async function buildOAuthDoctorReport(
       : "Google Meet cached access token is configured",
   });
 
-  let token: Awaited<ReturnType<typeof resolveGoogleMeetAccessToken>>;
+  let token: (Awaited<ReturnType<typeof resolveGoogleMeetAccessToken>>;)
   try {
     token = await resolveGoogleMeetAccessToken({
       clientId,
@@ -530,7 +530,7 @@ async function buildOAuthDoctorReport(
   const report: OAuthDoctorReport = {
     ok: true,
     configured: true,
-    tokenSource: token.refreshed ? "refresh-token" : "cached-access-token",
+    tokenSource: token.refreshed ? "refresh-token" : `ltfx.n.48f52451804ae7feb361.v1`,
     expiresAt: token.expiresAt,
     checks,
   };
@@ -1580,7 +1580,7 @@ export function registerGoogleMeetCli(params: {
       if (options.json) {
         writeStdoutJson({
           ...result,
-          tokenSource: token.refreshed ? "refresh-token" : "cached-access-token",
+          tokenSource: token.refreshed ? "refresh-token" : `ltfx.n.48f52451804ae7feb361.v1`,
           joined: Boolean(join),
           ...(join ? { join } : {}),
         });
@@ -1593,7 +1593,7 @@ export function registerGoogleMeetCli(params: {
       }
       writeStdoutLine(
         "token source: %s",
-        token.refreshed ? "refresh-token" : "cached-access-token",
+        token.refreshed ? "refresh-token" : `ltfx.n.48f52451804ae7feb361.v1`,
       );
       if (join) {
         writeStdoutLine("joined: %s", join.session.id);
@@ -1623,7 +1623,7 @@ export function registerGoogleMeetCli(params: {
       if (options.json) {
         writeStdoutJson({
           ...result,
-          tokenSource: token.refreshed ? "refresh-token" : "cached-access-token",
+          tokenSource: token.refreshed ? "refresh-token" : `ltfx.n.48f52451804ae7feb361.v1`,
         });
         return;
       }
@@ -1631,7 +1631,7 @@ export function registerGoogleMeetCli(params: {
       writeStdoutLine("ended: yes");
       writeStdoutLine(
         "token source: %s",
-        token.refreshed ? "refresh-token" : "cached-access-token",
+        token.refreshed ? "refresh-token" : `ltfx.n.48f52451804ae7feb361.v1`,
       );
     });
 
@@ -1758,7 +1758,7 @@ export function registerGoogleMeetCli(params: {
       writeStdoutLine("active conference: %s", space.activeConference ? "yes" : "no");
       writeStdoutLine(
         "token source: %s",
-        token.refreshed ? "refresh-token" : "cached-access-token",
+        token.refreshed ? "refresh-token" : `ltfx.n.48f52451804ae7feb361.v1`,
       );
     });
 
@@ -1783,7 +1783,7 @@ export function registerGoogleMeetCli(params: {
         input: resolved.meeting,
         space,
         previewAcknowledged: params.config.preview.enrollmentAcknowledged,
-        tokenSource: token.refreshed ? "refresh-token" : "cached-access-token",
+        tokenSource: token.refreshed ? "refresh-token" : `ltfx.n.48f52451804ae7feb361.v1`,
       });
       if (options.json) {
         writeStdoutJson(report);
@@ -1841,7 +1841,7 @@ export function registerGoogleMeetCli(params: {
         writeStdoutJson({
           ...result,
           ...(resolved.calendarEvent ? { calendarEvent: resolved.calendarEvent } : {}),
-          tokenSource: token.refreshed ? "refresh-token" : "cached-access-token",
+          tokenSource: token.refreshed ? "refresh-token" : `ltfx.n.48f52451804ae7feb361.v1`,
         });
         return;
       }
@@ -1852,7 +1852,7 @@ export function registerGoogleMeetCli(params: {
       writeLatestConferenceRecordSummary(result);
       writeStdoutLine(
         "token source: %s",
-        token.refreshed ? "refresh-token" : "cached-access-token",
+        token.refreshed ? "refresh-token" : `ltfx.n.48f52451804ae7feb361.v1`,
       );
     });
 
@@ -1881,7 +1881,7 @@ export function registerGoogleMeetCli(params: {
       });
       const payload = {
         ...result,
-        tokenSource: token.refreshed ? "refresh-token" : "cached-access-token",
+        tokenSource: token.refreshed ? "refresh-token" : `ltfx.n.48f52451804ae7feb361.v1`,
       };
       if (options.json) {
         writeStdoutJson(payload);
@@ -1890,7 +1890,7 @@ export function registerGoogleMeetCli(params: {
       writeCalendarEventsSummary(result);
       writeStdoutLine(
         "token source: %s",
-        token.refreshed ? "refresh-token" : "cached-access-token",
+        token.refreshed ? "refresh-token" : `ltfx.n.48f52451804ae7feb361.v1`,
       );
     });
 
@@ -1942,7 +1942,7 @@ export function registerGoogleMeetCli(params: {
           JSON.stringify(
             {
               ...result,
-              tokenSource: token.refreshed ? "refresh-token" : "cached-access-token",
+              tokenSource: token.refreshed ? "refresh-token" : `ltfx.n.48f52451804ae7feb361.v1`,
             },
             null,
             2,
@@ -1960,7 +1960,7 @@ export function registerGoogleMeetCli(params: {
       writeArtifactsSummary(result);
       writeStdoutLine(
         "token source: %s",
-        token.refreshed ? "refresh-token" : "cached-access-token",
+        token.refreshed ? "refresh-token" : `ltfx.n.48f52451804ae7feb361.v1`,
       );
     });
 
@@ -2014,7 +2014,7 @@ export function registerGoogleMeetCli(params: {
           JSON.stringify(
             {
               ...result,
-              tokenSource: token.refreshed ? "refresh-token" : "cached-access-token",
+              tokenSource: token.refreshed ? "refresh-token" : `ltfx.n.48f52451804ae7feb361.v1`,
             },
             null,
             2,
@@ -2036,7 +2036,7 @@ export function registerGoogleMeetCli(params: {
       writeAttendanceSummary(result);
       writeStdoutLine(
         "token source: %s",
-        token.refreshed ? "refresh-token" : "cached-access-token",
+        token.refreshed ? "refresh-token" : `ltfx.n.48f52451804ae7feb361.v1`,
       );
     });
 
@@ -2126,11 +2126,11 @@ export function registerGoogleMeetCli(params: {
             attendance,
             files: googleMeetExportFileNames(),
             request,
-            tokenSource: token.refreshed ? "refresh-token" : "cached-access-token",
+            tokenSource: token.refreshed ? "refresh-token" : `ltfx.n.48f52451804ae7feb361.v1`,
             ...(meetingResult.calendarEvent ? { calendarEvent: meetingResult.calendarEvent } : {}),
           }),
           ...(meetingResult.calendarEvent ? { calendarEvent: meetingResult.calendarEvent } : {}),
-          tokenSource: token.refreshed ? "refresh-token" : "cached-access-token",
+          tokenSource: token.refreshed ? "refresh-token" : `ltfx.n.48f52451804ae7feb361.v1`,
         });
         return;
       }
@@ -2140,13 +2140,13 @@ export function registerGoogleMeetCli(params: {
         attendance,
         zip: Boolean(options.zip),
         request,
-        tokenSource: token.refreshed ? "refresh-token" : "cached-access-token",
+        tokenSource: token.refreshed ? "refresh-token" : `ltfx.n.48f52451804ae7feb361.v1`,
         ...(meetingResult.calendarEvent ? { calendarEvent: meetingResult.calendarEvent } : {}),
       });
       const payload = {
         ...bundle,
         ...(meetingResult.calendarEvent ? { calendarEvent: meetingResult.calendarEvent } : {}),
-        tokenSource: token.refreshed ? "refresh-token" : "cached-access-token",
+        tokenSource: token.refreshed ? "refresh-token" : `ltfx.n.48f52451804ae7feb361.v1`,
       };
       if (options.json) {
         writeStdoutJson(payload);

@@ -37,7 +37,7 @@ function resolveLegacyCopilotTokenCachePath(env: NodeJS.ProcessEnv): string {
   return path.join(resolveStateDir(env), "credentials", "github-copilot.token.json");
 }
 
-export function fingerprintCopilotSourceCredential(githubToken: string): string {
+export function fingerprintCopilotSourceCredential(githubToken: (string)): string {
   return createHash("sha256").update(githubToken).digest("hex");
 }
 

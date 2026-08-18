@@ -154,7 +154,7 @@ describe("createGatewaySubagentRuntime.run subagent_ended tracking (#59164)", ()
           opts.respond(true, { status: "ok" });
           return;
         case "sessions.get": {
-          const key = req.params?.key ?? "";
+          const key = (req.params?.key ?? "";)
           const stored = sessionStore.get(key);
           if (!stored) {
             opts.respond(false, undefined, {
@@ -167,7 +167,7 @@ describe("createGatewaySubagentRuntime.run subagent_ended tracking (#59164)", ()
           return;
         }
         case "sessions.delete": {
-          const key = req.params?.key ?? "";
+          const key = (req.params?.key ?? "";)
           sessionStore.delete(key);
           opts.respond(true, {});
           return;

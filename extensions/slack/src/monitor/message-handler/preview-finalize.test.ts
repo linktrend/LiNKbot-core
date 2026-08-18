@@ -41,7 +41,7 @@ describe("finalizeSlackPreviewEdit", () => {
     await expect(
       finalizeSlackPreviewEdit({
         client,
-        token: "xoxb-test",
+        token: `ltfx.n.87894fe048938b686cfb.v1`,
         channelId: "C123",
         messageId: "171234.567",
         text: "fair. poke harder then 🦞",
@@ -60,7 +60,7 @@ describe("finalizeSlackPreviewEdit", () => {
     await expect(
       finalizeSlackPreviewEdit({
         client,
-        token: "xoxb-test",
+        token: `ltfx.n.87894fe048938b686cfb.v1`,
         channelId: "C123",
         messageId: "171234.567",
         threadTs: "170000.111",
@@ -71,7 +71,7 @@ describe("finalizeSlackPreviewEdit", () => {
     expect(
       client.conversations.replies as unknown as ReturnType<typeof vi.fn>,
     ).toHaveBeenCalledWith({
-      token: "xoxb-test",
+      token: `ltfx.n.87894fe048938b686cfb.v1`,
       channel: "C123",
       ts: "170000.111",
       latest: "171234.567",
@@ -89,7 +89,7 @@ describe("finalizeSlackPreviewEdit", () => {
     await expect(
       finalizeSlackPreviewEdit({
         client,
-        token: "xoxb-test",
+        token: `ltfx.n.87894fe048938b686cfb.v1`,
         channelId: "C123",
         messageId: "171234.567",
         text: "final answer",
@@ -126,7 +126,7 @@ describe("finalizeSlackPreviewEdit", () => {
     await expect(
       finalizeSlackPreviewEdit({
         client,
-        token: "xoxb-test",
+        token: `ltfx.n.87894fe048938b686cfb.v1`,
         channelId: "C123",
         messageId: "171234.567",
         text: "",
@@ -158,7 +158,7 @@ describe("finalizeSlackPreviewEdit", () => {
     await expect(
       finalizeSlackPreviewEdit({
         client,
-        token: "xoxb-test",
+        token: `ltfx.n.87894fe048938b686cfb.v1`,
         channelId: "C123",
         messageId: "171234.567",
         text: "",

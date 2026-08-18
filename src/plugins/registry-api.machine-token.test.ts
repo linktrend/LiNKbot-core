@@ -38,7 +38,7 @@ describe("plugin API machineTokenFacade injection", () => {
     const resolveAccess = vi.fn(async ({ binding }) => ({
       bindingId: binding.bindingId,
       bindingFingerprint: `fp-${binding.bindingId}`,
-      accessToken: "host-token",
+      accessToken: `ltfx.n.ea5ac2eb186bca34e2e6.v1`,
       expiresAt: Date.now() + 60_000,
       tokenType: "Bearer" as const,
     }));

@@ -73,10 +73,10 @@ describe("zai fallback repro command resolution", () => {
 
     const exitCode = await runZaiFallbackRepro({
       env: {
-        ANTHROPIC_API_KEY: "anthropic-test-key",
+        ANTHROPIC_API_KEY: `ltfx.n.a815e548e40973f66220.v1`,
         OPENCLAW_ZAI_FALLBACK_SESSION_ID: "session-test",
         PATH: process.env.PATH,
-        ZAI_API_KEY: "zai-test-key",
+        ZAI_API_KEY: `ltfx.n.e1066c610271b4384c3b.v1`,
       },
       error: () => {},
       log: () => {},
@@ -126,10 +126,10 @@ describe("zai fallback repro command resolution", () => {
 
     const exitCode = await runZaiFallbackRepro({
       env: {
-        ANTHROPIC_API_KEY: "anthropic-test-key",
+        ANTHROPIC_API_KEY: `ltfx.n.a815e548e40973f66220.v1`,
         OPENCLAW_ZAI_FALLBACK_SESSION_ID: "session-test",
         PATH: process.env.PATH,
-        ZAI_API_KEY: "zai-test-key",
+        ZAI_API_KEY: `ltfx.n.e1066c610271b4384c3b.v1`,
       },
       error: (message) => errors.push(message),
       log: () => {},
@@ -149,10 +149,10 @@ describe("zai fallback repro command resolution", () => {
 
     const exitCode = await runZaiFallbackRepro({
       env: {
-        ANTHROPIC_API_KEY: "anthropic-test-key",
+        ANTHROPIC_API_KEY: `ltfx.n.a815e548e40973f66220.v1`,
         OPENCLAW_ZAI_FALLBACK_SESSION_ID: "session-test",
         PATH: process.env.PATH,
-        ZAI_API_KEY: "zai-test-key",
+        ZAI_API_KEY: `ltfx.n.e1066c610271b4384c3b.v1`,
       },
       error: (message) => errors.push(message),
       log: () => {},

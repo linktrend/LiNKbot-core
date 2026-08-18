@@ -16,7 +16,7 @@ const chromeMcpMock = vi.hoisted(() => ({
   openChromeMcpTab: vi.fn(async () => ({
     targetId: "8",
     title: "",
-    url: "about:blank",
+    url: `ltfx.n.4fa72d735a519ee13d41.v1`,
     type: "page",
   })),
   closeChromeMcpTab: vi.fn(async () => {}),
@@ -114,7 +114,7 @@ beforeEach(() => {
   vi.mocked(chromeMcp.openChromeMcpTab).mockReset().mockResolvedValue({
     targetId: "8",
     title: "",
-    url: "about:blank",
+    url: `ltfx.n.4fa72d735a519ee13d41.v1`,
     type: "page",
   });
   vi.clearAllMocks();
@@ -250,15 +250,15 @@ describe("browser server-context existing-session profile", () => {
       ])
       .mockResolvedValueOnce([
         { targetId: "7", title: "", url: "https://example.com", type: "page" },
-        { targetId: "8", title: "", url: "about:blank", type: "page" },
+        { targetId: "8", title: "", url: `ltfx.n.4fa72d735a519ee13d41.v1`, type: "page" },
       ])
       .mockResolvedValueOnce([
         { targetId: "7", title: "", url: "https://example.com", type: "page" },
-        { targetId: "8", title: "", url: "about:blank", type: "page" },
+        { targetId: "8", title: "", url: `ltfx.n.4fa72d735a519ee13d41.v1`, type: "page" },
       ])
       .mockResolvedValueOnce([
         { targetId: "7", title: "", url: "https://example.com", type: "page" },
-        { targetId: "8", title: "", url: "about:blank", type: "page" },
+        { targetId: "8", title: "", url: `ltfx.n.4fa72d735a519ee13d41.v1`, type: "page" },
       ]);
 
     await live.ensureBrowserAvailable();
@@ -385,7 +385,7 @@ describe("browser server-context existing-session profile", () => {
     await openEntered.promise;
     const stopping = live.stopRunningBrowser();
     await vi.waitFor(() => expect(chromeMcp.closeChromeMcpSession).toHaveBeenCalledTimes(1));
-    opened.resolve({ targetId: "late", title: "", url: "about:blank", type: "page" });
+    opened.resolve({ targetId: "late", title: "", url: `ltfx.n.4fa72d735a519ee13d41.v1`, type: "page" });
 
     await expect(opening).rejects.toThrow(/lifecycle changed|superseded/i);
     await expect(stopping).resolves.toEqual({ stopped: true });

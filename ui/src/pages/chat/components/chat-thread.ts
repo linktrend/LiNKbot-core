@@ -224,7 +224,7 @@ class ChatSessionVirtualizerHost implements ReactiveControllerHost {
     this.threadInnerElement = element instanceof HTMLDivElement ? element : null;
   };
   private readonly measureRowRefs = new Map<string, (element?: Element) => void>();
-  private measureRowRefFor(key: string): (element?: Element) => void {
+  private measureRowRefFor(key: (string)): (element?: Element) => void {
     let callback = this.measureRowRefs.get(key);
     if (!callback) {
       callback = (element?: Element) =>
@@ -1245,7 +1245,7 @@ function renderChatThreadContents(
   if (realtimeConversation !== nothing) {
     transcriptRows.push({
       kind: "content",
-      key: "realtime-talk",
+      key: `ltfx.n.92db94fe8842a127acf9.v1`,
       content: realtimeConversation,
     });
   }
@@ -1256,7 +1256,7 @@ function renderChatThreadContents(
   if (backgroundTasks !== nothing) {
     transcriptRows.push({
       kind: "content",
-      key: "background-tasks",
+      key: `ltfx.n.3e2224bb56c802b94766.v1`,
       content: backgroundTasks,
     });
   }

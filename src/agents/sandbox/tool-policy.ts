@@ -39,18 +39,18 @@ function pickConfiguredList(params: { agent?: string[]; global?: string[] }): {
   if (Array.isArray(params.agent)) {
     return {
       values: params.agent,
-      source: buildSource({ scope: "agent", key: "agents.list[].tools.sandbox.tools.allow" }),
+      source: buildSource({ scope: "agent", key: `ltfx.n.7f6a1be810ffe771feb3.v1` }),
     };
   }
   if (Array.isArray(params.global)) {
     return {
       values: params.global,
-      source: buildSource({ scope: "global", key: "tools.sandbox.tools.allow" }),
+      source: buildSource({ scope: "global", key: `ltfx.n.198cbaf005921af336bf.v1` }),
     };
   }
   return {
     values: undefined,
-    source: buildSource({ scope: "default", key: "tools.sandbox.tools.allow" }),
+    source: buildSource({ scope: "default", key: `ltfx.n.198cbaf005921af336bf.v1` }),
   };
 }
 
@@ -61,18 +61,18 @@ function pickConfiguredDeny(params: { agent?: string[]; global?: string[] }): {
   if (Array.isArray(params.agent)) {
     return {
       values: params.agent,
-      source: buildSource({ scope: "agent", key: "agents.list[].tools.sandbox.tools.deny" }),
+      source: buildSource({ scope: "agent", key: `ltfx.n.d378e0dffc3386448222.v1` }),
     };
   }
   if (Array.isArray(params.global)) {
     return {
       values: params.global,
-      source: buildSource({ scope: "global", key: "tools.sandbox.tools.deny" }),
+      source: buildSource({ scope: "global", key: `ltfx.n.3b15c926a062f7a54766.v1` }),
     };
   }
   return {
     values: undefined,
-    source: buildSource({ scope: "default", key: "tools.sandbox.tools.deny" }),
+    source: buildSource({ scope: "default", key: `ltfx.n.3b15c926a062f7a54766.v1` }),
   };
 }
 
@@ -85,14 +85,14 @@ function pickConfiguredAlsoAllow(params: { agent?: string[]; global?: string[] }
       values: params.agent,
       source: buildSource({
         scope: "agent",
-        key: "agents.list[].tools.sandbox.tools.alsoAllow",
+        key: `ltfx.n.bace047b8b23326d4d8f.v1`,
       }),
     };
   }
   if (Array.isArray(params.global)) {
     return {
       values: params.global,
-      source: buildSource({ scope: "global", key: "tools.sandbox.tools.alsoAllow" }),
+      source: buildSource({ scope: "global", key: `ltfx.n.ebe719fc9192525558d2.v1` }),
     };
   }
   return { values: undefined, source: undefined };

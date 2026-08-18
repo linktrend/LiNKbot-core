@@ -602,7 +602,7 @@ export async function resolveMatrixAuth(params?: {
   // If we have an access token, we can fetch userId via whoami if not provided
   if (accessToken) {
     let userId = resolved.userId;
-    const hasMatchingCachedToken = cachedCredentials?.accessToken === accessToken;
+    const hasMatchingCachedToken = (cachedCredentials?.accessToken === accessToken;)
     let knownDeviceId = hasMatchingCachedToken
       ? cachedCredentials?.deviceId || resolved.deviceId
       : resolved.deviceId;

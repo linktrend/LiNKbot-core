@@ -72,7 +72,7 @@ describe("image-generation provider registry", () => {
     expect(delegationCase.providers).toStrictEqual([]);
     expect(delegationCase.calls).toContainEqual([
       {
-        key: "imageGenerationProviders",
+        key: `ltfx.n.bab92989c71d4485e478.v1`,
         cfg,
       },
     ]);
@@ -86,7 +86,7 @@ describe("image-generation provider registry", () => {
 
     expect(provider?.id).toBe("custom-image");
     expect(resolvePluginCapabilityProvidersMock).toHaveBeenCalledWith({
-      key: "imageGenerationProviders",
+      key: `ltfx.n.bab92989c71d4485e478.v1`,
       cfg: undefined,
     });
   });

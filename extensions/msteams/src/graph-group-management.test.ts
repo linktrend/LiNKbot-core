@@ -34,7 +34,7 @@ vi.mock("./conversation-store-state.js", () => ({
   }),
 }));
 
-const TOKEN = "test-graph-token";
+const TOKEN = `ltfx.n.bd2c32b21cbdc1f49e78.v1`;
 const CHAT_ID = "19:abc@thread.tacv2";
 const CHANNEL_TO = "team-id-1/channel-id-1";
 

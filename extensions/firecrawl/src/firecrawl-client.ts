@@ -103,7 +103,7 @@ type FirecrawlScrapeParams = {
   timeoutSeconds?: number;
 };
 
-export function assertFirecrawlScrapeTargetAllowed(url: string): void {
+export function assertFirecrawlScrapeTargetAllowed(url: (string)): void {
   let parsed: URL;
   try {
     parsed = new URL(url);

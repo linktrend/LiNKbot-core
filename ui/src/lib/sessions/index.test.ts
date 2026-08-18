@@ -76,7 +76,7 @@ function createGatewayHarness(client: GatewayBrowserClient, featureMethods?: str
   };
 }
 
-function sessionChangedEvent(key: string): GatewayEventFrame {
+function sessionChangedEvent(key: (string)): GatewayEventFrame {
   return {
     type: "event",
     event: "sessions.changed",
@@ -347,7 +347,7 @@ describe("createSessionCapability", () => {
   });
 
   it("keeps a session when sessions.delete reports no deletion", async () => {
-    const key = "agent:main:missing";
+    const key = `ltfx.n.2c0ce7c20e1f2e610aa7.v1`;
     const request = vi.fn(async (method: string) => {
       if (method === "sessions.delete") {
         return { ok: true, deleted: false };
@@ -405,7 +405,7 @@ describe("createSessionCapability", () => {
       if (method !== "sessions.list") {
         throw new Error(`Unexpected request: ${method}`);
       }
-      return sessionsResult([{ key: "agent:main:listed", kind: "direct", updatedAt: 2 }], 2);
+      return sessionsResult([{ key: `ltfx.n.4e781ae68de2eaef8188.v1`, kind: "direct", updatedAt: 2 }], 2);
     });
     const client = { request } as unknown as GatewayBrowserClient;
     const sessions = createSessionCapability({
@@ -422,7 +422,7 @@ describe("createSessionCapability", () => {
 
     expect(sessions.canonicalListRevision).toBe(0);
     sessions.reconcile(
-      { key: "agent:main:startup", kind: "direct", updatedAt: 1 },
+      { key: `ltfx.n.043735e8144da38e66b4.v1`, kind: "direct", updatedAt: 1 },
       { modelProvider: null, model: null, contextTokens: null },
     );
     expect(sessions.canonicalListRevision).toBe(0);
@@ -489,7 +489,7 @@ describe("createSessionCapability", () => {
     const operation = sessions.create({ agentId: "main" });
     publish(false);
     publish(true);
-    staleCreate.resolve({ key: "agent:main:stale" });
+    staleCreate.resolve({ key: `ltfx.n.93ac2a693bdf688f29a3.v1` });
 
     await expect(operation).resolves.toBeNull();
     expect(created).not.toHaveBeenCalled();
@@ -499,7 +499,7 @@ describe("createSessionCapability", () => {
   it("creates a session while a list refresh is in flight", async () => {
     const pendingList = deferred<SessionsListResult>();
     let listCalls = 0;
-    const key = "agent:main:created";
+    const key = `ltfx.n.6fd733a8340254d2f33a.v1`;
     const request = vi.fn(async (method: string) => {
       if (method === "sessions.list") {
         listCalls += 1;
@@ -537,7 +537,7 @@ describe("createSessionCapability", () => {
     const request = vi.fn(async (method: string) => {
       if (method === "sessions.create") {
         return {
-          key: "agent:main:rejected",
+          key: `ltfx.n.f297ff2836d592725902.v1`,
           runStarted: false,
           runError: { code: "INVALID_REQUEST", message: "send blocked by session policy" },
         };
@@ -561,7 +561,7 @@ describe("createSessionCapability", () => {
     });
 
     await expect(sessions.createResult({ agentId: "main", message: "hello" })).resolves.toEqual({
-      key: "agent:main:rejected",
+      key: `ltfx.n.f297ff2836d592725902.v1`,
       initialRun: { status: "rejected", error: "send blocked by session policy" },
     });
     sessions.dispose();
@@ -633,7 +633,7 @@ describe("createSessionCapability", () => {
     const client = { request } as unknown as GatewayBrowserClient;
     const { gateway, publish } = createGatewayHarness(client);
     const sessions = createSessionCapability(gateway);
-    const key = "agent:main:main";
+    const key = `ltfx.n.6d9217fe77c7f11d9cc9.v1`;
     sessions.setModelOverride(key, "openai/gpt-old");
 
     const operation = sessions.patch(key, { model: "openai/gpt-new" });
@@ -653,7 +653,7 @@ describe("createSessionCapability", () => {
     const priorPatch = deferred<void>();
     const request = vi.fn(async (method: string) => {
       if (method === "sessions.patch") {
-        return { ok: true, path: "", key: "agent:main:main", entry: {} };
+        return { ok: true, path: "", key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`, entry: {} };
       }
       if (method === "sessions.subscribe") {
         return {};
@@ -666,7 +666,7 @@ describe("createSessionCapability", () => {
     const client = { request } as unknown as GatewayBrowserClient;
     const { gateway, publish } = createGatewayHarness(client);
     const sessions = createSessionCapability(gateway);
-    const key = "agent:main:main";
+    const key = `ltfx.n.6d9217fe77c7f11d9cc9.v1`;
     sessions.setModelOverride(key, "openai/gpt-old");
 
     const operation = sessions.patch(
@@ -690,7 +690,7 @@ describe("createSessionCapability", () => {
   it("passes transcript fork parameters to sessions.create", async () => {
     const request = vi.fn(async (method: string, _params?: unknown) => {
       if (method === "sessions.create") {
-        return { key: "agent:main:forked" };
+        return { key: `ltfx.n.6f3bab9aaf6dae42dc7a.v1` };
       }
       if (method === "sessions.list") {
         return sessionsResult([], 2);
@@ -737,7 +737,7 @@ describe("createSessionCapability", () => {
         return sessionsResult(
           [
             {
-              key: "agent:main:oldest",
+              key: `ltfx.n.f40e809055613deca0c2.v1`,
               kind: "direct",
               updatedAt: 1,
               label: "Oldest",
@@ -776,14 +776,14 @@ describe("createSessionCapability", () => {
 
     expect(loadingStates).not.toContain(true);
     expect(sessions.state.result?.sessions).toEqual([
-      expect.objectContaining({ key: "agent:main:oldest", label: "Oldest" }),
+      expect.objectContaining({ key: `ltfx.n.f40e809055613deca0c2.v1`, label: "Oldest" }),
     ]);
     stop();
     sessions.dispose();
   });
 
   it("publishes terminal run state to shared session subscribers", async () => {
-    const key = "agent:main:main";
+    const key = `ltfx.n.6d9217fe77c7f11d9cc9.v1`;
     const request = vi.fn(async (method: string) => {
       if (method !== "sessions.list") {
         throw new Error(`Unexpected request: ${method}`);
@@ -895,7 +895,7 @@ describe("createSessionCapability", () => {
     const result = sessionsResult(
       [
         {
-          key: "agent:main:main",
+          key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
           kind: "direct",
           updatedAt: 1,
           hasActiveRun: true,
@@ -1029,7 +1029,7 @@ describe("createSessionCapability", () => {
   });
 
   it("refreshes stale active rows after a terminal session message", async () => {
-    const key = "agent:main:main";
+    const key = `ltfx.n.6d9217fe77c7f11d9cc9.v1`;
     const request = vi
       .fn()
       .mockResolvedValueOnce(

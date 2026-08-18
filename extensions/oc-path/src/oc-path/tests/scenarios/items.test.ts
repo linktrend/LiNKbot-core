@@ -42,7 +42,7 @@ describe("items", () => {
   });
 
   it("colon with no space after is still kv", () => {
-    const { ast } = parseMd("## H\n- key:value\n");
+    const { ast } = parseMd("## H\n- key:(value\n");)
     expect(ast.blocks[0]?.items[0]?.kv).toEqual({ key: "key", value: "value" });
   });
 
@@ -107,7 +107,7 @@ describe("items", () => {
   });
 
   it("item with only-symbol kv key still parses", () => {
-    const { ast } = parseMd("## H\n- API_KEY: secret-value\n");
+    const { ast } = parseMd("## H\n- API_KEY: (secret-value\n");)
     expect(ast.blocks[0]?.items[0]?.kv).toEqual({
       key: "API_KEY",
       value: "secret-value",

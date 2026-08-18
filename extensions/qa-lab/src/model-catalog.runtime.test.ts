@@ -57,21 +57,21 @@ describe("qa runner model catalog", () => {
           models: [
             null,
             {
-              key: "anthropic/claude-sonnet-4-6",
+              key: `ltfx.n.fec21a94f39632a416a4.v1`,
               name: "Claude Sonnet 4.6",
               input: "text",
               available: true,
               missing: false,
             },
             {
-              key: "openai/gpt-5.6-luna",
+              key: `ltfx.n.65a8fc1dec61133fd514.v1`,
               name: "gpt-5.6-luna",
               input: "text,image",
               available: true,
               missing: false,
             },
             {
-              key: "openrouter/auto",
+              key: `ltfx.n.02dec531def04c71f8a2.v1`,
               name: "OpenRouter Auto",
               input: "text",
               available: false,
@@ -84,8 +84,8 @@ describe("qa runner model catalog", () => {
     );
 
     await expect(loadQaRunnerModelOptions({ repoRoot })).resolves.toEqual([
-      expect.objectContaining({ key: "openai/gpt-5.6-luna" }),
-      expect.objectContaining({ key: "anthropic/claude-sonnet-4-6" }),
+      expect.objectContaining({ key: `ltfx.n.65a8fc1dec61133fd514.v1` }),
+      expect.objectContaining({ key: `ltfx.n.fec21a94f39632a416a4.v1` }),
     ]);
   });
 

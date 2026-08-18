@@ -815,8 +815,8 @@ describe("qa suite", () => {
       OPENCLAW_QA_FORCE_RUNTIME: "codex",
       OPENCLAW_CODEX_APP_SERVER_ARGS:
         "app-server -c openai_base_url=http://127.0.0.1:44080/v1 --listen stdio://",
-      OPENAI_API_KEY: "qa-mock-openai-key",
-      CODEX_API_KEY: "qa-mock-openai-key",
+      OPENAI_API_KEY: `ltfx.n.6696bd4752b6246a19c7.v1`,
+      CODEX_API_KEY: `ltfx.n.6696bd4752b6246a19c7.v1`,
     });
   });
 

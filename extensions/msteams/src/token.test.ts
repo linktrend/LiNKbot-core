@@ -103,13 +103,13 @@ describe("token – secret credentials", () => {
 
   it("resolves secret credentials from env vars", () => {
     process.env.MSTEAMS_APP_ID = "env-app-id";
-    process.env.MSTEAMS_APP_PASSWORD = "env-app-pw";
+    process.env.MSTEAMS_APP_PASSWORD = `ltfx.n.76cfead03c8829143b5a.v1`;
     process.env.MSTEAMS_TENANT_ID = "env-tenant-id";
     const result = resolveMSTeamsCredentials(undefined);
     expect(result).toEqual({
       type: "secret",
       appId: "env-app-id",
-      appPassword: "env-app-pw",
+      appPassword: `ltfx.n.76cfead03c8829143b5a.v1`,
       tenantId: "env-tenant-id",
     });
   });
@@ -317,8 +317,8 @@ describe("resolveDelegatedAccessToken", () => {
       throw new Error("missing stateDir");
     }
     saveDelegatedTokens({
-      accessToken: "stale-access",
-      refreshToken: "refresh-token",
+      accessToken: `ltfx.n.a178631e188ec000f116.v1`,
+      refreshToken: `ltfx.n.0eb17643d4e926116378.v1`,
       expiresAt,
       scopes: ["User.Read"],
     });
@@ -328,8 +328,8 @@ describe("resolveDelegatedAccessToken", () => {
     writeDelegatedTokens(Date.now() + 60_000);
 
     expect(loadDelegatedTokens()).toMatchObject({
-      accessToken: "stale-access",
-      refreshToken: "refresh-token",
+      accessToken: `ltfx.n.a178631e188ec000f116.v1`,
+      refreshToken: `ltfx.n.0eb17643d4e926116378.v1`,
     });
     expect(existsSync(path.join(stateDir!, "state", "openclaw.sqlite"))).toBe(true);
     expect(existsSync(path.join(stateDir!, "msteams-delegated.json"))).toBe(false);
@@ -366,8 +366,8 @@ describe("resolveDelegatedAccessToken", () => {
 describe("readAccessToken", () => {
   it("reads string and object token forms", () => {
     expect(readAccessToken("abc")).toBe("abc");
-    expect(readAccessToken({ accessToken: "access-token" })).toBe("access-token");
-    expect(readAccessToken({ token: "fallback-token" })).toBe("fallback-token");
+    expect(readAccessToken({ accessToken: `ltfx.n.3f16bed7089f4653e5ef.v1` })).toBe("access-token");
+    expect(readAccessToken({ token: `ltfx.n.a9ece14f7f3c7ebb6ff1.v1` })).toBe("fallback-token");
   });
 
   it("returns null for unsupported token payloads", () => {

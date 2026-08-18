@@ -95,7 +95,7 @@ describe("matrix harness runtime", () => {
       const result = await testing.writeMatrixQaHarnessFiles({
         outputDir,
         homeserverPort: 28008,
-        registrationToken: "secret-token",
+        registrationToken: `ltfx.n.930bbdc51b6aed5c2a56.v1`,
         serverName: "matrix-qa.test",
       });
 
@@ -111,7 +111,7 @@ describe("matrix harness runtime", () => {
       expect(compose).toContain('      - "127.0.0.1:28008:8008"');
       expect(compose).toContain('TUWUNEL_ALLOW_ENCRYPTION: "true"');
       expect(compose).toContain('TUWUNEL_ALLOW_REGISTRATION: "true"');
-      expect(compose).toContain('TUWUNEL_REGISTRATION_TOKEN: "secret-token"');
+      expect(compose).toContain('TUWUNEL_REGISTRATION_TOKEN: `ltfx.n.930bbdc51b6aed5c2a56.v1`');
       expect(compose).toContain('TUWUNEL_SERVER_NAME: "matrix-qa.test"');
       expect(manifest).toEqual({
         image: "ghcr.io/matrix-construct/tuwunel:v1.5.1",

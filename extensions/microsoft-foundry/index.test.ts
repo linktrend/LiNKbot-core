@@ -246,7 +246,7 @@ function buildFoundryRuntimeAuthContext(
     provider: defaultFoundryProviderId,
     modelId,
     model: buildFoundryModel({ id: modelId, ...("model" in overrides ? overrides.model : {}) }),
-    apiKey: "__entra_id_dynamic__",
+    apiKey: `ltfx.n.2175bbcceff7df34b2d8.v1`,
     authMode: "api_key" as const,
     profileId: defaultFoundryProfileId,
     env: process.env,
@@ -376,7 +376,7 @@ describe("microsoft-foundry plugin", () => {
   });
 
   it("requests scoped Azure CLI tokens for Foundry Anthropic probes", async () => {
-    mockAzureCliTokenRaw(JSON.stringify({ accessToken: "scoped-token" }));
+    mockAzureCliTokenRaw(JSON.stringify({ accessToken: `ltfx.n.16d56c41fff8b01dace6.v1` }));
 
     await getAccessTokenResultAsync({ scope: FOUNDRY_ANTHROPIC_SCOPE });
 
@@ -438,7 +438,7 @@ describe("microsoft-foundry plugin", () => {
   it("preserves the model-derived base URL for Entra runtime auth refresh", async () => {
     const provider = registerProvider();
     const prepareRuntimeAuth = requirePrepareRuntimeAuth(provider);
-    mockAzureCliToken({ accessToken: "test-token-placeholder", expiresInMs: 60_000 });
+    mockAzureCliToken({ accessToken: `ltfx.n.41dd96f1dccf65c2c9c7.v1`, expiresInMs: 60_000 });
     ensureAuthProfileStoreMock.mockReturnValueOnce(buildEntraProfileStore());
 
     const prepared = requireRuntimeAuthResult(
@@ -448,7 +448,7 @@ describe("microsoft-foundry plugin", () => {
     expect(prepared.baseUrl).toBe("https://example.services.ai.azure.com/openai/v1");
     expect(prepared.request?.auth).toEqual({
       mode: "authorization-bearer",
-      token: "test-token-placeholder",
+      token: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
     });
     expect(execFileMock.mock.calls[0]?.[1]).toEqual(
       expect.arrayContaining(["--resource", COGNITIVE_SERVICES_RESOURCE]),
@@ -458,7 +458,7 @@ describe("microsoft-foundry plugin", () => {
   it("falls back to Entra metadata when a configured Foundry endpoint is malformed", async () => {
     const provider = registerProvider();
     const prepareRuntimeAuth = requirePrepareRuntimeAuth(provider);
-    mockAzureCliToken({ accessToken: "test-token-placeholder", expiresInMs: 60_000 });
+    mockAzureCliToken({ accessToken: `ltfx.n.41dd96f1dccf65c2c9c7.v1`, expiresInMs: 60_000 });
     ensureAuthProfileStoreMock.mockReturnValueOnce(buildEntraProfileStore());
 
     const prepared = requireRuntimeAuthResult(
@@ -473,7 +473,7 @@ describe("microsoft-foundry plugin", () => {
     expect(prepared.baseUrl).toBe("https://example.services.ai.azure.com/openai/v1");
     expect(prepared.request?.auth).toEqual({
       mode: "authorization-bearer",
-      token: "test-token-placeholder",
+      token: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
     });
   });
 
@@ -487,7 +487,7 @@ describe("microsoft-foundry plugin", () => {
     const prepared = requireRuntimeAuthResult(
       await prepareRuntimeAuth(
         buildFoundryRuntimeAuthContext({
-          apiKey: "profile-api-key",
+          apiKey: `ltfx.n.9cc45ec37bb024edd18a.v1`,
           profileId: "microsoft-foundry:default",
           model: buildFoundryModel({ api }),
         }),
@@ -495,7 +495,7 @@ describe("microsoft-foundry plugin", () => {
     );
 
     expect(prepared).toEqual({
-      apiKey: "profile-api-key",
+      apiKey: `ltfx.n.9cc45ec37bb024edd18a.v1`,
       request: {
         auth: { mode: "header", headerName, value: "profile-api-key" },
       },
@@ -506,7 +506,7 @@ describe("microsoft-foundry plugin", () => {
   it("uses active model routing when Entra metadata points at another deployment", async () => {
     const provider = registerProvider();
     const prepareRuntimeAuth = requirePrepareRuntimeAuth(provider);
-    mockAzureCliToken({ accessToken: "test-token-placeholder", expiresInMs: 60_000 });
+    mockAzureCliToken({ accessToken: `ltfx.n.41dd96f1dccf65c2c9c7.v1`, expiresInMs: 60_000 });
     ensureAuthProfileStoreMock.mockReturnValueOnce(
       buildEntraProfileStore({
         endpoint: "https://example.services.ai.azure.com",
@@ -539,8 +539,8 @@ describe("microsoft-foundry plugin", () => {
   it("does not reuse OpenAI Entra tokens for Anthropic Foundry deployments", async () => {
     const provider = registerProvider();
     const prepareRuntimeAuth = requirePrepareRuntimeAuth(provider);
-    mockAzureCliToken({ accessToken: "gpt-token", expiresInMs: 60_000 });
-    mockAzureCliToken({ accessToken: "claude-token", expiresInMs: 60_000 });
+    mockAzureCliToken({ accessToken: `ltfx.n.e27137557a50f347e888.v1`, expiresInMs: 60_000 });
+    mockAzureCliToken({ accessToken: `ltfx.n.a24af9da15f5b598fef0.v1`, expiresInMs: 60_000 });
     ensureAuthProfileStoreMock.mockReturnValue(
       buildEntraProfileStore({
         endpoint: "https://example.services.ai.azure.com",
@@ -592,7 +592,7 @@ describe("microsoft-foundry plugin", () => {
     const provider = registerProvider();
     const prepareRuntimeAuth = requirePrepareRuntimeAuth(provider);
     mockAzureCliLoginFailure();
-    mockAzureCliToken({ accessToken: "retry-token", expiresInMs: 10 * 60_000 });
+    mockAzureCliToken({ accessToken: `ltfx.n.2e4a72e6212a382961b0.v1`, expiresInMs: 10 * 60_000 });
     ensureAuthProfileStoreMock.mockReturnValue(buildEntraProfileStore());
 
     const runtimeContext = buildFoundryRuntimeAuthContext();
@@ -607,7 +607,7 @@ describe("microsoft-foundry plugin", () => {
   it("dedupes concurrent Entra token refreshes for the same profile", async () => {
     const provider = registerProvider();
     const prepareRuntimeAuth = requirePrepareRuntimeAuth(provider);
-    mockAzureCliToken({ accessToken: "deduped-token", expiresInMs: 60_000, delayMs: 10 });
+    mockAzureCliToken({ accessToken: `ltfx.n.65438b155ca53d552227.v1`, expiresInMs: 60_000, delayMs: 10 });
     ensureAuthProfileStoreMock.mockReturnValue(buildEntraProfileStore());
 
     const runtimeContext = buildFoundryRuntimeAuthContext();
@@ -626,7 +626,7 @@ describe("microsoft-foundry plugin", () => {
     const provider = registerProvider();
     const prepareRuntimeAuth = requirePrepareRuntimeAuth(provider);
     mockAzureCliLoginFailure(10);
-    mockAzureCliToken({ accessToken: "recovered-token", expiresInMs: 10 * 60_000, delayMs: 10 });
+    mockAzureCliToken({ accessToken: `ltfx.n.857616fea76d4919d9cb.v1`, expiresInMs: 10 * 60_000, delayMs: 10 });
     ensureAuthProfileStoreMock.mockReturnValue(buildEntraProfileStore());
 
     const runtimeContext = buildFoundryRuntimeAuthContext();
@@ -649,8 +649,8 @@ describe("microsoft-foundry plugin", () => {
 
   it("refreshes again when a cached token is too close to expiry", async () => {
     const provider = registerProvider();
-    mockAzureCliToken({ accessToken: "soon-expiring-token", expiresInMs: 60_000 });
-    mockAzureCliToken({ accessToken: "fresh-token", expiresInMs: 10 * 60_000 });
+    mockAzureCliToken({ accessToken: `ltfx.n.12615585251602b8466e.v1`, expiresInMs: 60_000 });
+    mockAzureCliToken({ accessToken: `ltfx.n.5e2040ab40dda85da034.v1`, expiresInMs: 10 * 60_000 });
     ensureAuthProfileStoreMock.mockReturnValue(buildEntraProfileStore());
 
     const runtimeContext = buildFoundryRuntimeAuthContext();
@@ -665,7 +665,7 @@ describe("microsoft-foundry plugin", () => {
   it("bounds Entra token fallback expiry when the process clock is invalid", async () => {
     const provider = registerProvider();
     vi.spyOn(Date, "now").mockReturnValue(8_640_000_000_000_001);
-    mockAzureCliTokenRaw(JSON.stringify({ accessToken: "fallback-token" }));
+    mockAzureCliTokenRaw(JSON.stringify({ accessToken: `ltfx.n.a9ece14f7f3c7ebb6ff1.v1` }));
     ensureAuthProfileStoreMock.mockReturnValue(buildEntraProfileStore());
 
     const prepared = requireRuntimeAuthResult(
@@ -678,7 +678,7 @@ describe("microsoft-foundry plugin", () => {
 
   it("treats an invalid process clock as an Entra token cache miss", async () => {
     const provider = registerProvider();
-    mockAzureCliToken({ accessToken: "cached-token", expiresInMs: 10 * 60_000 });
+    mockAzureCliToken({ accessToken: `ltfx.n.f53eaf28d2a38d2c8020.v1`, expiresInMs: 10 * 60_000 });
     ensureAuthProfileStoreMock.mockReturnValue(buildEntraProfileStore());
     const runtimeContext = buildFoundryRuntimeAuthContext();
 
@@ -688,7 +688,7 @@ describe("microsoft-foundry plugin", () => {
     vi.spyOn(Date, "now").mockReturnValue(8_640_000_000_000_001);
     mockAzureCliTokenRaw(
       JSON.stringify({
-        accessToken: "refreshed-token",
+        accessToken: `ltfx.n.d34e33e7b3e0269fa932.v1`,
         expiresOn: "2026-05-29T12:10:00.000Z",
       }),
     );
@@ -899,7 +899,7 @@ describe("microsoft-foundry plugin", () => {
   it("records MAI chat deployments with reasoning-content token limits", () => {
     const result = buildFoundryAuthResult({
       profileId: "microsoft-foundry:entra",
-      apiKey: "__entra_id_dynamic__",
+      apiKey: `ltfx.n.2175bbcceff7df34b2d8.v1`,
       endpoint: "https://example.services.ai.azure.com",
       modelId: "mai-r1-prod",
       modelNameHint: "MAI-DS-R1",
@@ -920,7 +920,7 @@ describe("microsoft-foundry plugin", () => {
   it("configures the image default for MAI image deployments", () => {
     const result = buildFoundryAuthResult({
       profileId: "microsoft-foundry:entra",
-      apiKey: "__entra_id_dynamic__",
+      apiKey: `ltfx.n.2175bbcceff7df34b2d8.v1`,
       endpoint: "https://example.services.ai.azure.com",
       modelId: "mai-image-prod",
       modelNameHint: "MAI-Image-2.5",
@@ -968,7 +968,7 @@ describe("microsoft-foundry plugin", () => {
 
     const result = buildFoundryAuthResult({
       profileId: "microsoft-foundry:default",
-      apiKey: "test-api-key",
+      apiKey: `ltfx.n.4c806362b613f7496abf.v1`,
       endpoint: selection.endpoint,
       modelId: selection.modelId,
       modelNameHint: selection.modelNameHint,
@@ -1047,7 +1047,7 @@ describe("microsoft-foundry plugin", () => {
 
     const result = await apiKeyAuth?.run({
       config: {},
-      opts: { azureOpenaiApiKey: "test-api-key" },
+      opts: { azureOpenaiApiKey: `ltfx.n.4c806362b613f7496abf.v1` },
       prompter: { text, select },
       agentDir: defaultFoundryAgentDir,
       secretInputMode: "plaintext",
@@ -1135,7 +1135,7 @@ describe("microsoft-foundry plugin", () => {
   it("uses discovered deployment metadata for MAI image defaults", () => {
     const result = buildFoundryAuthResult({
       profileId: "microsoft-foundry:entra",
-      apiKey: "__entra_id_dynamic__",
+      apiKey: `ltfx.n.2175bbcceff7df34b2d8.v1`,
       endpoint: "https://example.services.ai.azure.com",
       modelId: "custom-image-prod",
       api: "openai-completions",
@@ -1155,7 +1155,7 @@ describe("microsoft-foundry plugin", () => {
   it("records GPT-family Foundry deployments as image-capable during auth setup", () => {
     const result = buildFoundryAuthResult({
       profileId: "microsoft-foundry:entra",
-      apiKey: "__entra_id_dynamic__",
+      apiKey: `ltfx.n.2175bbcceff7df34b2d8.v1`,
       endpoint: "https://example.services.ai.azure.com",
       modelId: "deployment-gpt5",
       modelNameHint: "gpt-5.4",
@@ -1252,7 +1252,7 @@ describe("microsoft-foundry plugin", () => {
   it("deletes legacy provider-level credentials for API-key profiles", () => {
     const result = buildFoundryAuthResult({
       profileId: "microsoft-foundry:default",
-      apiKey: "test-api-key",
+      apiKey: `ltfx.n.4c806362b613f7496abf.v1`,
       endpoint: "https://example.services.ai.azure.com",
       modelId: "gpt-4o",
       api: "openai-responses",
@@ -1284,7 +1284,7 @@ describe("microsoft-foundry plugin", () => {
   it("marks Foundry responses models to omit explicit store=false payloads", () => {
     const result = buildFoundryAuthResult({
       profileId: "microsoft-foundry:entra",
-      apiKey: "__entra_id_dynamic__",
+      apiKey: `ltfx.n.2175bbcceff7df34b2d8.v1`,
       endpoint: "https://example.services.ai.azure.com",
       modelId: "gpt-5.2-codex",
       modelNameHint: "gpt-5.2-codex",
@@ -1354,7 +1354,7 @@ describe("microsoft-foundry plugin", () => {
   it("marks Foundry chat models as not supporting reasoning_effort", () => {
     const result = buildFoundryAuthResult({
       profileId: "microsoft-foundry:default",
-      apiKey: "test-api-key",
+      apiKey: `ltfx.n.4c806362b613f7496abf.v1`,
       endpoint: "https://example.services.ai.azure.com",
       modelId: "gpt-4o-mini",
       modelNameHint: "gpt-4o-mini",
@@ -1371,7 +1371,7 @@ describe("microsoft-foundry plugin", () => {
   it("routes Claude deployments through Foundry Anthropic Messages", () => {
     const result = buildFoundryAuthResult({
       profileId: "microsoft-foundry:entra",
-      apiKey: "__entra_id_dynamic__",
+      apiKey: `ltfx.n.2175bbcceff7df34b2d8.v1`,
       endpoint: "https://example.services.ai.azure.com/openai/v1",
       modelId: "prod-fable",
       modelNameHint: "claude-fable-5",
@@ -1399,7 +1399,7 @@ describe("microsoft-foundry plugin", () => {
   it("deletes legacy provider-level credentials for Entra profiles", () => {
     const result = buildFoundryAuthResult({
       profileId: "microsoft-foundry:entra",
-      apiKey: "__entra_id_dynamic__",
+      apiKey: `ltfx.n.2175bbcceff7df34b2d8.v1`,
       endpoint: "https://example.services.ai.azure.com/openai/v1",
       modelId: "prod-fable",
       modelNameHint: "claude-fable-5",
@@ -1432,7 +1432,7 @@ describe("microsoft-foundry plugin", () => {
   ] as const)("preserves Foundry Claude token limits for %s", (modelNameHint, maxTokens) => {
     const result = buildFoundryAuthResult({
       profileId: "microsoft-foundry:entra",
-      apiKey: "__entra_id_dynamic__",
+      apiKey: `ltfx.n.2175bbcceff7df34b2d8.v1`,
       endpoint: "https://example.services.ai.azure.com",
       modelId: `prod-${modelNameHint.replaceAll(".", "-")}`,
       modelNameHint,
@@ -1451,7 +1451,7 @@ describe("microsoft-foundry plugin", () => {
   it("keeps older Foundry Claude deployments out of Fable-class thinking limits", () => {
     const result = buildFoundryAuthResult({
       profileId: "microsoft-foundry:entra",
-      apiKey: "__entra_id_dynamic__",
+      apiKey: `ltfx.n.2175bbcceff7df34b2d8.v1`,
       endpoint: "https://example.services.ai.azure.com",
       modelId: "prod-claude-35",
       modelNameHint: "claude-3.5-sonnet",
@@ -1558,7 +1558,7 @@ describe("microsoft-foundry plugin", () => {
   it("does not record native max thinking maps for Foundry Mythos Preview deployments", () => {
     const result = buildFoundryAuthResult({
       profileId: "microsoft-foundry:entra",
-      apiKey: "__entra_id_dynamic__",
+      apiKey: `ltfx.n.2175bbcceff7df34b2d8.v1`,
       endpoint: "https://example.services.ai.azure.com",
       modelId: "prod-mythos-preview",
       modelNameHint: "claude-mythos-preview",
@@ -1574,7 +1574,7 @@ describe("microsoft-foundry plugin", () => {
   it("keeps Foundry chat reasoning_effort enabled for GPT-5 reasoning deployments", () => {
     const result = buildFoundryAuthResult({
       profileId: "microsoft-foundry:default",
-      apiKey: "test-api-key",
+      apiKey: `ltfx.n.4c806362b613f7496abf.v1`,
       endpoint: "https://example.services.ai.azure.com",
       modelId: "gpt-5.1-chat",
       modelNameHint: "gpt-5.1-chat",
@@ -1611,7 +1611,7 @@ describe("microsoft-foundry plugin", () => {
 
     const result = buildFoundryAuthResult({
       profileId: "microsoft-foundry:entra",
-      apiKey: "__entra_id_dynamic__",
+      apiKey: `ltfx.n.2175bbcceff7df34b2d8.v1`,
       endpoint: "https://example.services.ai.azure.com",
       modelId: "gpt-5.1-chat",
       modelNameHint: "gpt-5.1-chat",
@@ -1631,7 +1631,7 @@ describe("microsoft-foundry plugin", () => {
   it("records model-name reasoning effort limits for Foundry deployment aliases", () => {
     const result = buildFoundryAuthResult({
       profileId: "microsoft-foundry:default",
-      apiKey: "test-api-key",
+      apiKey: `ltfx.n.4c806362b613f7496abf.v1`,
       endpoint: "https://example.services.ai.azure.com",
       modelId: "deployment-codex-mini",
       modelNameHint: "gpt-5.1-codex-mini",
@@ -1653,7 +1653,7 @@ describe("microsoft-foundry plugin", () => {
   it("omits minimal from newer Foundry GPT-5.x reasoning effort metadata", () => {
     const result = buildFoundryAuthResult({
       profileId: "microsoft-foundry:default",
-      apiKey: "test-api-key",
+      apiKey: `ltfx.n.4c806362b613f7496abf.v1`,
       endpoint: "https://example.services.ai.azure.com",
       modelId: "gpt-5.2",
       modelNameHint: "gpt-5.2",
@@ -1674,7 +1674,7 @@ describe("microsoft-foundry plugin", () => {
   it("omits minimal from Foundry GPT-5 Codex reasoning effort metadata", () => {
     const result = buildFoundryAuthResult({
       profileId: "microsoft-foundry:default",
-      apiKey: "test-api-key",
+      apiKey: `ltfx.n.4c806362b613f7496abf.v1`,
       endpoint: "https://example.services.ai.azure.com",
       modelId: "gpt-5-codex",
       modelNameHint: "gpt-5-codex",
@@ -1694,7 +1694,7 @@ describe("microsoft-foundry plugin", () => {
   it("keeps Foundry gpt-5-chat deployments non-reasoning while using max_completion_tokens", () => {
     const result = buildFoundryAuthResult({
       profileId: "microsoft-foundry:default",
-      apiKey: "test-api-key",
+      apiKey: `ltfx.n.4c806362b613f7496abf.v1`,
       endpoint: "https://example.services.ai.azure.com",
       modelId: "gpt-5-chat",
       modelNameHint: "gpt-5-chat",
@@ -1769,7 +1769,7 @@ describe("microsoft-foundry plugin", () => {
 
   it("preserves project-scoped endpoint prefixes when extracting the Foundry endpoint", async () => {
     const provider = registerProvider();
-    mockAzureCliToken({ accessToken: "test-token-placeholder", expiresInMs: 60_000 });
+    mockAzureCliToken({ accessToken: `ltfx.n.41dd96f1dccf65c2c9c7.v1`, expiresInMs: 60_000 });
     ensureAuthProfileStoreMock.mockReturnValueOnce({ profiles: {} });
 
     const prepared = await provider.prepareRuntimeAuth?.(
@@ -1869,7 +1869,7 @@ describe("microsoft-foundry plugin", () => {
   it("moves the selected Foundry auth profile to the front of auth.order", () => {
     const result = buildFoundryAuthResult({
       profileId: "microsoft-foundry:entra",
-      apiKey: "__entra_id_dynamic__",
+      apiKey: `ltfx.n.2175bbcceff7df34b2d8.v1`,
       endpoint: "https://example.services.ai.azure.com",
       modelId: "gpt-5.4",
       api: "openai-responses",
@@ -1920,7 +1920,7 @@ describe("microsoft-foundry plugin", () => {
   it("persists discovered deployments alongside the selected default model", () => {
     const result = buildFoundryAuthResult({
       profileId: "microsoft-foundry:entra",
-      apiKey: "__entra_id_dynamic__",
+      apiKey: `ltfx.n.2175bbcceff7df34b2d8.v1`,
       endpoint: "https://example.services.ai.azure.com",
       modelId: "deployment-gpt5",
       modelNameHint: "gpt-5.4",

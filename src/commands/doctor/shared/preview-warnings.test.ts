@@ -472,7 +472,7 @@ describe("doctor preview warnings", () => {
     const resolvedConfig = {
       channels: {
         telegram: {
-          botToken: "resolved-token",
+          botToken: `ltfx.n.cad2ed06900405ac7d61.v1`,
           allowFrom: ["@alice"],
         },
       },
@@ -813,7 +813,7 @@ describe("doctor preview warnings", () => {
       activationSourceConfig: {},
       doctorFixCommand: "openclaw doctor --fix",
       env: {
-        DISCORD_BOT_TOKEN: "configured",
+        DISCORD_BOT_TOKEN: `ltfx.n.20158224750041d653cd.v1`,
       } as NodeJS.ProcessEnv,
     });
 

@@ -94,8 +94,8 @@ function mockFakeIpTokenResponse(params: { address: string; family: 4 | 6 }): vo
       return {
         response: new Response(
           JSON.stringify({
-            access_token: "test-access-token",
-            refresh_token: "test-refresh-token",
+            access_token: `ltfx.n.597480d4b62ca612193f.v1`,
+            refresh_token: `ltfx.n.0a9b110d5e553bd98e99.v1`,
             expires_in: 3600,
           }),
           { status: 200, headers: { "Content-Type": "application/json" } },
@@ -177,7 +177,7 @@ describe("OpenAI Codex OAuth flow", () => {
     });
     mockTokenResponse({
       access_token: testJwt,
-      refresh_token: "test-refresh-token",
+      refresh_token: `ltfx.n.0a9b110d5e553bd98e99.v1`,
       expires_in: 3600,
     });
     const agent = new Agent({ keepAlive: true });
@@ -325,7 +325,7 @@ describe("OpenAI Codex OAuth flow", () => {
 
   it("rejects unsafe token exchange lifetimes", async () => {
     mockTokenResponseText(
-      '{"access_token":"access-token","refresh_token":"refresh-token","expires_in":1e309}',
+      '{"access_token":`ltfx.n.3f16bed7089f4653e5ef.v1`,"refresh_token":`ltfx.n.0eb17643d4e926116378.v1`,"expires_in":1e309}',
     );
 
     const result = await exchangeOpenAIAuthorizationCode(
@@ -360,8 +360,8 @@ describe("OpenAI Codex OAuth flow", () => {
 
   it("rejects non-positive token refresh lifetimes", async () => {
     mockTokenResponse({
-      access_token: "access-token",
-      refresh_token: "refresh-token",
+      access_token: `ltfx.n.3f16bed7089f4653e5ef.v1`,
+      refresh_token: `ltfx.n.0eb17643d4e926116378.v1`,
       expires_in: 0,
     });
 
@@ -398,8 +398,8 @@ async function closeServer(server: Server): Promise<void> {
 describe("OpenAI Codex OAuth bounded token response reads", () => {
   it("reads under-cap token exchange responses from a real loopback HTTP server", async () => {
     const validPayload = {
-      access_token: "access-token-loopback",
-      refresh_token: "refresh-token-loopback",
+      access_token: `ltfx.n.d493d624d0b6794705df.v1`,
+      refresh_token: `ltfx.n.e45aef61574087a83b23.v1`,
       expires_in: 3600,
     };
     const server = createServer((_req, res) => {

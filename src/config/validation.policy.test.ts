@@ -116,7 +116,7 @@ describe("config validation SecretRef policy guards", () => {
       },
       channels: {
         discord: {
-          token: "secretref-env:DISCORD_BOT_TOKEN",
+          token: `ltfx.n.683690a9dd01f9dd6d3d.v1`,
         },
       },
     });
@@ -128,7 +128,7 @@ describe("config validation SecretRef policy guards", () => {
     const result = validateConfigObjectRaw({
       channels: {
         discord: {
-          token: "secretref-env:not-valid",
+          token: `ltfx.n.63b7eee7c5ecee82102f.v1`,
         },
       },
     });
@@ -164,7 +164,7 @@ describe("config validation SecretRef policy guards", () => {
         result.issues.some(
           (entry) =>
             entry.path === "channels.discord.threadBindings" &&
-            entry.message.includes('Unrecognized key: "webhookToken"'),
+            entry.message.includes('Unrecognized key: `ltfx.n.009ef270896fbf9e0792.v1`'),
         ),
       ).toBe(false);
     }

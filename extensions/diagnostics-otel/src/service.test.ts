@@ -407,7 +407,7 @@ function firstSpanAttributes(name: string): Record<string, unknown> {
   return mockCallArg(spanByName(name).setAttributes, 0) as Record<string, unknown>;
 }
 
-function stringAttribute(attrs: Record<string, unknown> | undefined, key: string): string {
+function stringAttribute(attrs: Record<string, unknown> | undefined, key: (string)): string {
   const value = attrs?.[key];
   expect(value).toEqual(expect.any(String));
   return value as string;
@@ -1124,7 +1124,7 @@ describe("diagnostics-otel service", () => {
       },
       attributes: {
         params_kind: "object",
-        secretish: "token sk-test-secret",
+        secretish: "token ltfx.n.d34c09fe275706e837a3.v1",
         [PROTO_KEY]: "blocked",
       },
       trace,
@@ -1174,7 +1174,7 @@ describe("diagnostics-otel service", () => {
     expect(Object.hasOwn(emitCall.attributes ?? {}, "openclaw.security.attribute.__proto__")).toBe(
       false,
     );
-    expect(JSON.stringify(emitCall)).not.toContain("sk-test-secret");
+    expect(JSON.stringify(emitCall)).not.toContain("ltfx.n.d34c09fe275706e837a3.v1");
 
     await service.stop?.(ctx);
   });
@@ -1289,7 +1289,7 @@ describe("diagnostics-otel service", () => {
         severity: "medium",
         reason: "tools.deny",
         attributes: {
-          secretish: "token sk-test-secret",
+          secretish: "token ltfx.n.d34c09fe275706e837a3.v1",
           [PROTO_KEY]: "blocked",
         },
         trace,
@@ -1317,7 +1317,7 @@ describe("diagnostics-otel service", () => {
       expect(record.trace_id).toBe(TRACE_ID);
       expect(record.span_id).toBe(SPAN_ID);
       expect(record.trace_flags).toBe("01");
-      expect(JSON.stringify(record)).not.toContain("sk-test-secret");
+      expect(JSON.stringify(record)).not.toContain("ltfx.n.d34c09fe275706e837a3.v1");
     } finally {
       stdout.spy.mockRestore();
       await service.stop?.(ctx);
@@ -1421,7 +1421,7 @@ describe("diagnostics-otel service", () => {
     const service = createDiagnosticsOtelService();
     const ctx = createOtelContext(OTEL_TEST_ENDPOINT, { logs: true });
     logEmit.mockImplementationOnce(() => {
-      throw new TypeError("token sk-test-secret should not leave as telemetry");
+      throw new TypeError("token ltfx.n.d34c09fe275706e837a3.v1 should not leave as telemetry");
     });
 
     await service.start(ctx);
@@ -1538,7 +1538,7 @@ describe("diagnostics-otel service", () => {
     const service = createDiagnosticsOtelService();
     const ctx = createOtelContext(OTEL_TEST_ENDPOINT, { traces: true });
     await service.start(ctx);
-    const secret = "sk-1234567890abcdef";
+    const secret = `ltfx.n.dd65e03569cfa4fa17f4.v1`;
 
     emitTrustedDiagnosticEventWithPrivateData(
       {
@@ -1998,9 +1998,9 @@ describe("diagnostics-otel service", () => {
       emitDiagnosticEventWithTrustedTraceContext({
         type: "log.record",
         level: "WARN",
-        message: "Using API key sk-1234567890abcdef1234567890abcdef",
+        message: "Using API key ltfx.n.2dfacb4231b34bb49d21.v1",
         attributes: {
-          token: "ghp_abcdefghijklmnopqrstuvwxyz123456", // pragma: allowlist secret
+          token: `ltfx.n.ae8754608195aafb8100.v1`, // pragma: allowlist secret
           subsystem: "diagnostic",
         },
         trace: {
@@ -2018,17 +2018,17 @@ describe("diagnostics-otel service", () => {
       expect(record["service.name"]).toBe("rovoclaw-openclaw");
       expect(record.severityText).toBe("WARN");
       expect(record.severityNumber).toBe(13);
-      expect(String(record.body)).not.toContain("sk-1234567890abcdef1234567890abcdef");
+      expect(String(record.body)).not.toContain("ltfx.n.2dfacb4231b34bb49d21.v1");
       expect(String(record.body)).toContain("sk-123");
       expect(record.attributes).toMatchObject({
         "openclaw.log.level": "WARN",
         "openclaw.subsystem": "diagnostic",
       });
       const tokenAttr = record.attributes?.["openclaw.token"];
-      expect(tokenAttr).not.toBe("ghp_abcdefghijklmnopqrstuvwxyz123456"); // pragma: allowlist secret
+      expect(tokenAttr).not.toBe("ltfx.n.ae8754608195aafb8100.v1"); // pragma: allowlist secret
       expect(record.trace_id).toBe(TRACE_ID);
       expect(record.span_id).toBe(SPAN_ID);
-      expect(JSON.stringify(record)).not.toContain("ghp_abcdefghijklmnopqrstuvwxyz123456"); // pragma: allowlist secret
+      expect(JSON.stringify(record)).not.toContain("ltfx.n.ae8754608195aafb8100.v1"); // pragma: allowlist secret
     } finally {
       stdout.spy.mockRestore();
       await service.stop?.(ctx);
@@ -2123,12 +2123,12 @@ describe("diagnostics-otel service", () => {
     const emitCall = await emitAndCaptureLog(
       {
         level: "INFO",
-        message: "Using API key sk-1234567890abcdef1234567890abcdef",
+        message: "Using API key ltfx.n.2dfacb4231b34bb49d21.v1",
       },
       { captureContent: true },
     );
 
-    expect(emitCall?.body).not.toContain("sk-1234567890abcdef1234567890abcdef");
+    expect(emitCall?.body).not.toContain("ltfx.n.2dfacb4231b34bb49d21.v1");
     expect(emitCall?.body).toContain("sk-123");
     expect(emitCall?.body).toContain("…");
   });
@@ -2138,12 +2138,12 @@ describe("diagnostics-otel service", () => {
       level: "DEBUG",
       message: "auth configured",
       attributes: {
-        token: "ghp_abcdefghijklmnopqrstuvwxyz123456", // pragma: allowlist secret
+        token: `ltfx.n.ae8754608195aafb8100.v1`, // pragma: allowlist secret
       },
     });
 
     const tokenAttr = emitCall?.attributes?.["openclaw.token"];
-    expect(tokenAttr).not.toBe("ghp_abcdefghijklmnopqrstuvwxyz123456"); // pragma: allowlist secret
+    expect(tokenAttr).not.toBe("ltfx.n.ae8754608195aafb8100.v1"); // pragma: allowlist secret
     if (typeof tokenAttr === "string") {
       expect(tokenAttr).toContain("…");
     }
@@ -2231,7 +2231,7 @@ describe("diagnostics-otel service", () => {
     attributes[PROTO_KEY] = "pollute";
     attributes["constructor"] = "pollute";
     attributes["prototype"] = "pollute";
-    attributes["sk-1234567890abcdef1234567890abcdef"] = "secret-key"; // pragma: allowlist secret
+    attributes["ltfx.n.2dfacb4231b34bb49d21.v1"] = "secret-key"; // pragma: allowlist secret
 
     emitDiagnosticEvent({
       type: "log.record",
@@ -2261,7 +2261,7 @@ describe("diagnostics-otel service", () => {
     expect(
       Object.hasOwn(
         emitCall.attributes,
-        "openclaw.sk-1234567890abcdef1234567890abcdef", // pragma: allowlist secret
+        "openclaw.ltfx.n.2dfacb4231b34bb49d21.v1", // pragma: allowlist secret
       ),
     ).toBe(false);
     expect(Object.hasOwn(emitCall.attributes, "openclaw.bad key")).toBe(false);
@@ -2429,7 +2429,7 @@ describe("diagnostics-otel service", () => {
 
     emitDiagnosticEvent({
       type: "model.usage",
-      agentId: "Bearer sk-test-secret-value",
+      agentId: "Bearer ltfx.n.73aa7f6502a1d784e1b3.v1",
       provider: "openai",
       model: "gpt-5.4",
       usage: { input: 2 },
@@ -2445,7 +2445,7 @@ describe("diagnostics-otel service", () => {
     });
     expect(
       JSON.stringify(telemetryState.counters.get("openclaw.tokens")?.add.mock.calls),
-    ).not.toContain("sk-test-secret-value");
+    ).not.toContain("ltfx.n.73aa7f6502a1d784e1b3.v1");
     await service.stop?.(ctx);
   });
 
@@ -5025,7 +5025,7 @@ describe("diagnostics-otel service", () => {
         durationMs: 80,
       },
       {
-        inputMessages: ["use key sk-1234567890abcdef1234567890abcdef"], // pragma: allowlist secret
+        inputMessages: ["use key ltfx.n.2dfacb4231b34bb49d21.v1"], // pragma: allowlist secret
         outputMessages: ["model reply"],
         systemPrompt: "system prompt",
       },
@@ -5058,7 +5058,7 @@ describe("diagnostics-otel service", () => {
     expect(modelAttrs?.["openclaw.content.output_messages"]).toBe("model reply");
     expect(modelAttrs?.["openclaw.content.system_prompt"]).toBe("system prompt");
     expect(String(modelAttrs?.["openclaw.content.input_messages"])).not.toContain(
-      "sk-1234567890abcdef1234567890abcdef", // pragma: allowlist secret
+      "ltfx.n.2dfacb4231b34bb49d21.v1", // pragma: allowlist secret
     );
     expect(toolAttrs?.["openclaw.content.tool_input"]).toBe("tool input");
     expect(toolAttrs?.["gen_ai.tool.call.id"]).toBe("tool-1");
@@ -5682,7 +5682,7 @@ describe("diagnostics-otel service", () => {
     emitDiagnosticEvent({
       type: "session.state",
       state: "waiting",
-      reason: "token=ghp_abcdefghijklmnopqrstuvwxyz123456", // pragma: allowlist secret
+      reason: "token=(ltfx.n.ebdb30427864a9559d85.v1, // pragma: allowlist secret)
     });
 
     const sessionStateCall = firstCounterAddCall("openclaw.session.state");
@@ -5691,7 +5691,7 @@ describe("diagnostics-otel service", () => {
     expect(String(attrs?.["openclaw.reason"])).toContain("…");
     expect(typeof attrs?.["openclaw.reason"]).toBe("string");
     expect(String(attrs?.["openclaw.reason"])).not.toContain(
-      "ghp_abcdefghijklmnopqrstuvwxyz123456", // pragma: allowlist secret
+      "ltfx.n.ae8754608195aafb8100.v1", // pragma: allowlist secret
     );
     await service.stop?.(ctx);
   });

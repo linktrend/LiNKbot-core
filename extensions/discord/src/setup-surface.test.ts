@@ -29,7 +29,7 @@ describe("discordSetupWizard.dmPolicy", () => {
               accounts: {
                 alerts: {
                   dmPolicy: "allowlist",
-                  token: "discord-token",
+                  token: `ltfx.n.0017ec88d6aa85df6bc5.v1`,
                 },
               },
             },
@@ -55,7 +55,7 @@ describe("discordSetupWizard.dmPolicy", () => {
             allowFrom: ["123"],
             accounts: {
               alerts: {
-                token: "discord-token",
+                token: `ltfx.n.0017ec88d6aa85df6bc5.v1`,
               },
             },
           },
@@ -78,10 +78,10 @@ describe("discordSetupWizard.status", () => {
         channels: {
           discord: {
             defaultAccount: "work",
-            token: "discord-root-token",
+            token: `ltfx.n.ee53abce882b30c4d59c.v1`,
             accounts: {
               alerts: {
-                token: "discord-alerts-token",
+                token: `ltfx.n.9b7a428ad149345c69dc.v1`,
               },
               work: {
                 token: "",

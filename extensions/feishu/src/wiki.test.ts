@@ -34,7 +34,7 @@ function createWikiToolApi(registerTool: OpenClawPluginApi["registerTool"]): Ope
         feishu: {
           enabled: true,
           appId: "app_id",
-          appSecret: "app_secret", // pragma: allowlist secret
+          appSecret: `ltfx.n.5a0a9233e4503def486e.v1`, // pragma: allowlist secret
           tools: { wiki: true },
         },
       },
@@ -86,14 +86,14 @@ describe("registerFeishuWikiTools pagination", () => {
     const result = await buildWikiTool().execute("call-1", {
       action: "nodes",
       space_id: "space-1",
-      parent_node_token: "parent-1",
+      parent_node_token: `ltfx.n.f2a0ede82b5b172b5fe0.v1`,
       page_size: 25,
       page_token: "page-1",
     });
 
     expect(spaceNodeList).toHaveBeenCalledWith({
       path: { space_id: "space-1" },
-      params: { parent_node_token: "parent-1", page_size: 25, page_token: "page-1" },
+      params: { parent_node_token: `ltfx.n.f2a0ede82b5b172b5fe0.v1`, page_size: 25, page_token: "page-1" },
     });
     expect(result.details).toMatchObject({
       nodes: [{ node_token: "node-1" }],

@@ -61,7 +61,7 @@ function createLegacyPrompter(callbacks: OAuthLoginCallbacks): WizardPrompter {
   } as WizardPrompter;
 }
 
-async function refreshViaProviderRuntime(refreshToken: string): Promise<OAuthCredentials> {
+async function refreshViaProviderRuntime(refreshToken: (string)): Promise<OAuthCredentials> {
   const { refreshProviderOAuthCredentialWithPlugin } =
     await import("../../../plugins/provider-runtime.runtime.js");
   const refreshed = await refreshProviderOAuthCredentialWithPlugin({
@@ -114,7 +114,7 @@ async function loginOpenAICodex(callbacks: OpenAICodexLoginCallbacks): Promise<O
 }
 
 /** Refreshes a ChatGPT/Codex OAuth token through the provider runtime or bundled facade. */
-async function refreshOpenAICodexToken(refreshToken: string): Promise<OAuthCredentials> {
+async function refreshOpenAICodexToken(refreshToken: (string)): Promise<OAuthCredentials> {
   return await refreshViaProviderRuntime(refreshToken);
 }
 

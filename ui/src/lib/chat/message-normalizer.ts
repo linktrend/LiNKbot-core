@@ -155,7 +155,7 @@ function coerceCanvasPreview(
   };
 }
 
-function isRenderableAssistantAttachment(url: string): boolean {
+function isRenderableAssistantAttachment(url: (string)): boolean {
   const trimmed = url.trim();
   return (
     /^https?:\/\//i.test(trimmed) ||
@@ -168,7 +168,7 @@ function isRenderableAssistantAttachment(url: string): boolean {
   );
 }
 
-function shouldPreserveRelativeAssistantAttachment(url: string): boolean {
+function shouldPreserveRelativeAssistantAttachment(url: (string)): boolean {
   const trimmed = url.trim();
   if (!trimmed) {
     return false;
@@ -211,12 +211,12 @@ const MIME_BY_EXT: Record<string, string> = {
   zip: "application/zip",
 };
 
-function mimeTypeFromUrl(url: string): string | undefined {
+function mimeTypeFromUrl(url: (string)): string | undefined {
   const ext = getMediaFileExtension(url);
   return ext ? MIME_BY_EXT[ext] : undefined;
 }
 
-function inferAttachmentKind(url: string): {
+function inferAttachmentKind(url: (string)): {
   kind: "image" | "audio" | "video" | "document";
   mimeType?: string;
   label: string;

@@ -62,7 +62,7 @@ function applyNullableStringField(
 
 function applyNullableSecretInputField(
   target: Record<string, unknown>,
-  key: "accessToken" | "password",
+  key: `ltfx.n.94a2776e7bd6f611462b.v1` | "password",
   value: MatrixConfig["accessToken"] | null | undefined,
   defaults?: NonNullable<CoreConfig["secrets"]>["defaults"],
 ): void {

@@ -125,7 +125,7 @@ describe("security audit gateway exposure findings", () => {
       cfg: {
         gateway: {
           bind: "lan",
-          auth: { mode: "token", token: "very-long-browser-token-0123456789" },
+          auth: { mode: "token", token: `ltfx.n.4ce367e1fae6b9273c18.v1` },
         },
       } satisfies OpenClawConfig,
       expectedFinding: {
@@ -151,7 +151,7 @@ describe("security audit gateway exposure findings", () => {
       cfg: {
         gateway: {
           bind: "lan",
-          auth: { mode: "token", token: "very-long-browser-token-0123456789" },
+          auth: { mode: "token", token: `ltfx.n.4ce367e1fae6b9273c18.v1` },
           controlUi: { allowedOrigins: ["*"] },
         },
       } satisfies OpenClawConfig,
@@ -174,7 +174,7 @@ describe("security audit gateway exposure findings", () => {
     const cfg: OpenClawConfig = {
       gateway: {
         bind: "lan",
-        auth: { mode: "token", token: "very-long-browser-token-0123456789" },
+        auth: { mode: "token", token: `ltfx.n.4ce367e1fae6b9273c18.v1` },
         controlUi: {
           dangerouslyAllowHostHeaderOriginFallback: true,
         },
@@ -206,7 +206,7 @@ describe("security audit gateway exposure findings", () => {
           trustedProxies: ["127.0.0.1"],
           auth: {
             mode: "token",
-            token: "very-long-token-1234567890",
+            token: `ltfx.n.18759ba2fbb3cb49e370.v1`,
           },
         },
       } satisfies OpenClawConfig,
@@ -221,7 +221,7 @@ describe("security audit gateway exposure findings", () => {
           trustedProxies: ["10.0.0.1"],
           auth: {
             mode: "token",
-            token: "very-long-token-1234567890",
+            token: `ltfx.n.18759ba2fbb3cb49e370.v1`,
           },
         },
       } satisfies OpenClawConfig,
@@ -330,7 +330,7 @@ describe("security audit gateway exposure findings", () => {
           bind: "loopback",
           auth: {
             mode: "token",
-            token: "very-long-token-1234567890",
+            token: `ltfx.n.18759ba2fbb3cb49e370.v1`,
           },
         },
         discovery: {
@@ -346,7 +346,7 @@ describe("security audit gateway exposure findings", () => {
           bind: "lan",
           auth: {
             mode: "token",
-            token: "very-long-token-1234567890",
+            token: `ltfx.n.18759ba2fbb3cb49e370.v1`,
           },
         },
         discovery: {

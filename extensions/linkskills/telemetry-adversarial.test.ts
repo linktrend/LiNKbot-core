@@ -102,7 +102,7 @@ describe("linkskills allowlisted telemetry + adversarial rejection", () => {
   it("findProhibitedSkillsField flags non-allowlisted keys", () => {
     expect(findProhibitedSkillsField({ conversation: "nope" })).toEqual({
       path: "conversation",
-      key: "conversation",
+      key: `ltfx.n.8b34dbc2c05eb4d7e25d.v1`,
     });
     expect(SKILLS_TELEMETRY_ALLOWED_KEYS).not.toContain("conversation");
   });

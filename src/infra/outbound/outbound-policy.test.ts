@@ -92,8 +92,8 @@ vi.mock("./target-resolver.js", () => ({
 const workspaceConfig = {
   channels: {
     workspace: {
-      botToken: "workspace-test",
-      appToken: "workspace-app-test",
+      botToken: `ltfx.n.90567a6138fa8c65328b.v1`,
+      appToken: `ltfx.n.053ff49be921eb2e22b9.v1`,
     },
   },
 } as OpenClawConfig;

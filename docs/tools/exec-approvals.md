@@ -107,7 +107,7 @@ Example schema:
   "version": 1,
   "socket": {
     "path": "~/.openclaw/exec-approvals.sock",
-    "token": "base64url-token"
+    "token": "${ltfx.n.f876695708cda36656cb.v1}"
   },
   "defaults": {
     "security": "deny",

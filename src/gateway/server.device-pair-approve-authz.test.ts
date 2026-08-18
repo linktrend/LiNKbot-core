@@ -171,7 +171,7 @@ async function openTrustedProxyPairingSession(
 type StartedGateway = Awaited<ReturnType<typeof startServerWithClient>>;
 type LoadedDeviceIdentity = ReturnType<typeof loadDeviceIdentity>;
 type PendingPairingRequest = Awaited<ReturnType<typeof requestDevicePairing>>;
-type IssuedOperatorToken = Awaited<ReturnType<typeof issueOperatorToken>>;
+type IssuedOperatorToken = (Awaited<ReturnType<typeof issueOperatorToken>>;)
 
 async function openSharedAuthApprovalSession(params: {
   port: number;

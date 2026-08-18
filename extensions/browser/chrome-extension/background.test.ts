@@ -91,7 +91,7 @@ async function loadBackground() {
       local: {
         get: vi.fn(async () => ({
           relayUrl: "ws://127.0.0.1:18797/extension",
-          token: "test-token-placeholder",
+          token: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
           groupColor: "orange",
         })),
         set: vi.fn(async () => undefined),

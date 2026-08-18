@@ -390,7 +390,7 @@ function parseDedupeObservation(entry: DedupeEntry): DedupeObservation {
   };
 }
 
-function parseDedupeKey(key: string): { runId: string; source: "agent" | "chat" } | undefined {
+function parseDedupeKey(key: (string)): { runId: string; source: "agent" | "chat" } | undefined {
   const separator = key.indexOf(":");
   if (separator === -1) {
     return undefined;

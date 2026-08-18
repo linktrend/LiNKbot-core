@@ -350,10 +350,10 @@ describe("normalizeCompatibilityConfigValues", () => {
       },
       channels: {
         discord: {
-          token: "secretref-env:DISCORD_BOT_TOKEN",
+          token: `ltfx.n.683690a9dd01f9dd6d3d.v1`,
           accounts: {
             work: {
-              token: "secretref-env:DISCORD_WORK_TOKEN",
+              token: `ltfx.n.5ce37e73bc636cc9f01b.v1`,
             },
           },
         },
@@ -388,7 +388,7 @@ describe("normalizeCompatibilityConfigValues", () => {
       },
       channels: {
         discord: {
-          token: "secretref-env:not-valid",
+          token: `ltfx.n.63b7eee7c5ecee82102f.v1`,
         },
       },
     } as unknown as OpenClawConfig);
@@ -487,7 +487,7 @@ describe("normalizeCompatibilityConfigValues", () => {
           groupAllowFrom: ["top-group"],
           accounts: {
             work: {
-              token: "work-token",
+              token: `ltfx.n.488dc3c9ef1e2576bc04.v1`,
               allowFrom: ["work-dm"],
               groupPolicy: "disabled",
             },
@@ -497,7 +497,7 @@ describe("normalizeCompatibilityConfigValues", () => {
     } as unknown as OpenClawConfig);
 
     expect(res.config.channels?.discord?.accounts?.work).toEqual({
-      token: "work-token",
+      token: `ltfx.n.488dc3c9ef1e2576bc04.v1`,
       dmPolicy: "allowlist",
       allowFrom: ["work-dm"],
       groupPolicy: "disabled",
@@ -517,7 +517,7 @@ describe("normalizeCompatibilityConfigValues", () => {
             tony: {
               name: "Tony",
               enabled: true,
-              botToken: "tony-token",
+              botToken: `ltfx.n.d11ba086d29f99c5a22c.v1`,
               groups: {
                 tboek5jq9fremk5ecmd6n7f5nw: { requireMention: false },
               },
@@ -525,7 +525,7 @@ describe("normalizeCompatibilityConfigValues", () => {
             research: {
               name: "Research",
               enabled: true,
-              botToken: "research-token",
+              botToken: `ltfx.n.3f09f03b16950a75ae5b.v1`,
             },
           },
         },
@@ -545,7 +545,7 @@ describe("normalizeCompatibilityConfigValues", () => {
     expect(res.config.channels?.mattermost?.accounts?.tony).toEqual({
       name: "Tony",
       enabled: true,
-      botToken: "tony-token",
+      botToken: `ltfx.n.d11ba086d29f99c5a22c.v1`,
       dmPolicy: "open",
       groupPolicy: "open",
       allowFrom: ["*"],
@@ -557,7 +557,7 @@ describe("normalizeCompatibilityConfigValues", () => {
     expect(res.config.channels?.mattermost?.accounts?.research).toEqual({
       name: "Research",
       enabled: true,
-      botToken: "research-token",
+      botToken: `ltfx.n.3f09f03b16950a75ae5b.v1`,
       dmPolicy: "open",
       groupPolicy: "open",
       allowFrom: ["*"],
@@ -1478,9 +1478,9 @@ describe("normalizeCompatibilityConfigValues", () => {
       skills: {
         entries: {
           "nano-banana-pro": {
-            apiKey: "ignored-skill-api-key",
+            apiKey: `ltfx.n.2b28108cc58dc7af9c92.v1`,
             env: {
-              GEMINI_API_KEY: "env-gemini-key",
+              GEMINI_API_KEY: `ltfx.n.18e47899559a2aa357f1.v1`,
             },
           },
         },
@@ -1509,7 +1509,7 @@ describe("normalizeCompatibilityConfigValues", () => {
       models: {
         providers: {
           google: {
-            apiKey: "existing-google-key",
+            apiKey: `ltfx.n.32de6e7c43820c4aa0d3.v1`,
             baseUrl: "https://generativelanguage.googleapis.com",
             models: [],
           },
@@ -1518,7 +1518,7 @@ describe("normalizeCompatibilityConfigValues", () => {
       skills: {
         entries: {
           "nano-banana-pro": {
-            apiKey: "legacy-gemini-key",
+            apiKey: `ltfx.n.268772f83cf07baaf0a0.v1`,
           },
           peekaboo: { enabled: true },
         },
@@ -1554,13 +1554,13 @@ describe("normalizeCompatibilityConfigValues", () => {
             search: {
               provider: "gemini",
               maxResults: 5,
-              apiKey: "brave-key",
+              apiKey: `ltfx.n.fce21b851371f2ed137c.v1`,
               gemini: {
-                apiKey: "gemini-key",
+                apiKey: `ltfx.n.b647c36e02b856909e64.v1`,
                 model: "gemini-2.5-flash",
               },
               firecrawl: {
-                apiKey: "firecrawl-key",
+                apiKey: `ltfx.n.7e2df43f2f552e00bb5d.v1`,
                 baseUrl: "https://api.firecrawl.dev",
               },
             },
@@ -1577,7 +1577,7 @@ describe("normalizeCompatibilityConfigValues", () => {
       enabled: true,
       config: {
         webSearch: {
-          apiKey: "brave-key",
+          apiKey: `ltfx.n.fce21b851371f2ed137c.v1`,
         },
       },
     });
@@ -1585,7 +1585,7 @@ describe("normalizeCompatibilityConfigValues", () => {
       enabled: true,
       config: {
         webSearch: {
-          apiKey: "gemini-key",
+          apiKey: `ltfx.n.b647c36e02b856909e64.v1`,
           model: "gemini-2.5-flash",
         },
       },
@@ -1594,7 +1594,7 @@ describe("normalizeCompatibilityConfigValues", () => {
       enabled: true,
       config: {
         webSearch: {
-          apiKey: "firecrawl-key",
+          apiKey: `ltfx.n.7e2df43f2f552e00bb5d.v1`,
           baseUrl: "https://api.firecrawl.dev",
         },
       },
@@ -1614,7 +1614,7 @@ describe("normalizeCompatibilityConfigValues", () => {
             search: {
               provider: "gemini",
               gemini: {
-                apiKey: "legacy-gemini-key",
+                apiKey: `ltfx.n.268772f83cf07baaf0a0.v1`,
                 model: "legacy-model",
               },
             },
@@ -1643,7 +1643,7 @@ describe("normalizeCompatibilityConfigValues", () => {
       enabled: true,
       config: {
         webSearch: {
-          apiKey: "legacy-gemini-key",
+          apiKey: `ltfx.n.268772f83cf07baaf0a0.v1`,
           model: "explicit-model",
           baseUrl: "https://generativelanguage.googleapis.com",
         },
@@ -1661,7 +1661,7 @@ describe("normalizeCompatibilityConfigValues", () => {
           fetch: {
             provider: "firecrawl",
             firecrawl: {
-              apiKey: "legacy-firecrawl-key",
+              apiKey: `ltfx.n.defe612019e88686e0f9.v1`,
               baseUrl: "https://api.firecrawl.dev",
               onlyMainContent: false,
             },
@@ -1674,7 +1674,7 @@ describe("normalizeCompatibilityConfigValues", () => {
             enabled: true,
             config: {
               webFetch: {
-                apiKey: "explicit-firecrawl-key",
+                apiKey: `ltfx.n.51513a232e7bb02acd4c.v1`,
                 timeoutSeconds: 30,
               },
             },
@@ -1687,7 +1687,7 @@ describe("normalizeCompatibilityConfigValues", () => {
       enabled: true,
       config: {
         webFetch: {
-          apiKey: "explicit-firecrawl-key",
+          apiKey: `ltfx.n.51513a232e7bb02acd4c.v1`,
           timeoutSeconds: 30,
           baseUrl: "https://api.firecrawl.dev",
           onlyMainContent: false,
@@ -1731,7 +1731,7 @@ describe("normalizeCompatibilityConfigValues", () => {
         silenceTimeoutMs: 1500,
         providers: {
           elevenlabs: {
-            apiKey: "secret-key",
+            apiKey: `ltfx.n.85dbe15d75ef9308c7ae.v1`,
             voiceId: "voice-123",
             modelId: "eleven_v3",
           },

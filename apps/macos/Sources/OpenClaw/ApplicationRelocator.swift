@@ -495,7 +495,7 @@ extension ApplicationRelocator {
         let currentRequirement = self.designatedRequirement(for: bundleURL)
         let candidates = destinations.map { destination in
             let exists = fileManager.fileExists(atPath: destination.path)
-            let installedBundle = exists ? Bundle(url: destination) : nil
+            let installedBundle = exists ? Bundle(url: (destination) : nil)
             return InstallCandidate(
                 url: destination,
                 exists: exists,

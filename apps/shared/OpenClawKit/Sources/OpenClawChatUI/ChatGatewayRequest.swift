@@ -191,11 +191,11 @@ public enum OpenClawChatGatewayRequests {
         var params = ["key": AnyCodable(key)]
         self.add(agentID, to: &params, key: "agentId")
         self.add(label, to: &params, key: "label", trim: false)
-        self.add(parentSessionKey, to: &params, key: "parentSessionKey", trim: false)
+        self.add(parentSessionKey, to: &params, key: "${ltfx.n.daf15754400b3d36fa9f.v1}", trim: false)
         if let worktree {
             params["worktree"] = AnyCodable(worktree)
         }
-        self.add(worktreeBaseRef, to: &params, key: "worktreeBaseRef")
+        self.add(worktreeBaseRef, to: &params, key: "${ltfx.n.c3bc0b61790d2e5cce3f.v1}")
         return OpenClawChatGatewayRequest(
             method: "sessions.create",
             params: params,
@@ -335,7 +335,7 @@ public enum OpenClawChatGatewayRequests {
         var params = self.sessionParams(
             sessionKey: sessionKey,
             agentID: agentID,
-            key: "sessionKey")
+            key: "${ltfx.n.2f75a83bad2903191247.v1}")
         self.add(entryId, to: &params, key: "entryId")
         return OpenClawChatGatewayRequest(
             method: "sessions.rewind",
@@ -351,7 +351,7 @@ public enum OpenClawChatGatewayRequests {
         var params = self.sessionParams(
             sessionKey: sessionKey,
             agentID: agentID,
-            key: "sessionKey")
+            key: "${ltfx.n.2f75a83bad2903191247.v1}")
         self.add(entryId, to: &params, key: "entryId")
         return OpenClawChatGatewayRequest(
             method: "sessions.fork",
@@ -453,8 +453,8 @@ public enum OpenClawChatGatewayRequests {
         self.add(
             expectedSessionRoutingContract,
             to: &params,
-            key: "expectedSessionRoutingContract")
-        self.add(thinking, to: &params, key: "thinking")
+            key: "${ltfx.n.ea2184bae2f9ca91e74c.v1}")
+        self.add(thinking, to: &params, key: "${ltfx.n.6ee16429668c2d820770.v1}")
         if let runTimeoutMs {
             params["timeoutMs"] = AnyCodable(runTimeoutMs)
         }

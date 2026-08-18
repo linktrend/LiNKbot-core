@@ -41,14 +41,14 @@ describe("resolveCodexAppServerSpawnEnv", () => {
       ...resolveCodexAppServerSpawnEnv(
         {
           env: {
-            OPENAI_API_KEY: "configured-openai-key",
+            OPENAI_API_KEY: `ltfx.n.23fa383900a973e587dc.v1`,
             KEEP: "override",
           },
           clearEnv: ["OPENAI_API_KEY", "CODEX_API_KEY", "MISSING"],
         },
         {
-          OPENAI_API_KEY: "parent-openai-key",
-          CODEX_API_KEY: "parent-codex-key",
+          OPENAI_API_KEY: `ltfx.n.493f23b4749f111e708f.v1`,
+          CODEX_API_KEY: `ltfx.n.6742311fbed3222c7a3a.v1`,
           KEEP: "parent",
         },
       ),
@@ -62,13 +62,13 @@ describe("resolveCodexAppServerSpawnEnv", () => {
       ...resolveCodexAppServerSpawnEnv(
         {
           env: {
-            OpenAI_Api_Key: "configured-openai-key",
+            OpenAI_Api_Key: `ltfx.n.23fa383900a973e587dc.v1`,
             Other: "configured",
           },
           clearEnv: ["OPENAI_API_KEY", " CODEX_API_KEY ", ""],
         },
         {
-          Codex_Api_Key: "parent-codex-key",
+          Codex_Api_Key: `ltfx.n.6742311fbed3222c7a3a.v1`,
           KEEP: "parent",
         },
         "win32",

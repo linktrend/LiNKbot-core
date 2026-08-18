@@ -9,7 +9,7 @@ const { postJsonRequestMock, fetchWithTimeoutMock, resolveApiKeyForProviderMock 
   () => ({
     postJsonRequestMock: vi.fn(),
     fetchWithTimeoutMock: vi.fn(),
-    resolveApiKeyForProviderMock: vi.fn(async () => ({ apiKey: "provider-key" })),
+    resolveApiKeyForProviderMock: vi.fn(async () => ({ apiKey: `ltfx.n.b3fac0ba726ed945457a.v1` })),
   }),
 );
 

@@ -134,7 +134,7 @@ describe("resolveTelegramInlineButtonsScope (#75433 SecretRef tolerance)", () =>
           capabilities: { inlineButtons: "off" },
           accounts: {
             ops: {
-              botToken: "123:telegram-ops-token",
+              botToken: `ltfx.n.b47fc1b390056abbbcc9.v1`,
               capabilities: [],
             },
           },

@@ -811,7 +811,7 @@ export async function finalizeSetupWizard(
             `  ${formatCliCommand("openclaw configure --section web")}`,
             "",
             t("wizard.finalize.webSearchGetKey", {
-              url: entry?.signupUrl ?? "https://docs.openclaw.ai/tools/web",
+              url: (entry?.signupUrl ?? "https://docs.openclaw.ai/tools/web",)
             }),
             t("wizard.finalize.webDocs"),
           ].join("\n"),

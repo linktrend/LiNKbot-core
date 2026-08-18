@@ -816,12 +816,12 @@ describe("executeSlashCommand directives", () => {
     expect(xhigh.content).toBe("Thinking level set to **xhigh**.");
     expect(request).toHaveBeenNthCalledWith(1, "sessions.list", { agentId: "main" });
     expect(request).toHaveBeenNthCalledWith(2, "sessions.patch", {
-      key: "agent:main:main",
+      key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
       thinkingLevel: "minimal",
     });
     expect(request).toHaveBeenNthCalledWith(3, "sessions.list", { agentId: "main" });
     expect(request).toHaveBeenNthCalledWith(4, "sessions.patch", {
-      key: "agent:main:main",
+      key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
       thinkingLevel: "xhigh",
     });
   });
@@ -844,7 +844,7 @@ describe("executeSlashCommand directives", () => {
     expect(result.content).toBe("Thinking level reset to default.");
     expect(result.action).toBe("refresh");
     expect(request).toHaveBeenCalledWith("sessions.patch", {
-      key: "agent:main:main",
+      key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
       thinkingLevel: null,
     });
   });
@@ -931,15 +931,15 @@ describe("executeSlashCommand directives", () => {
     expect(setMaximum.content).toBe("Thinking level set to **max**.");
     expect(setAdaptive.content).toBe("Thinking level set to **adaptive**.");
     expect(request).toHaveBeenCalledWith("sessions.patch", {
-      key: "agent:main:main",
+      key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
       thinkingLevel: "xhigh",
     });
     expect(request).toHaveBeenCalledWith("sessions.patch", {
-      key: "agent:main:main",
+      key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
       thinkingLevel: "max",
     });
     expect(request).toHaveBeenCalledWith("sessions.patch", {
-      key: "agent:main:main",
+      key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
       thinkingLevel: "adaptive",
     });
   });
@@ -1202,7 +1202,7 @@ describe("executeSlashCommand directives", () => {
 
     expect(result.content).toBe("Fast mode enabled.");
     expect(request).toHaveBeenCalledWith("sessions.patch", {
-      key: "agent:main:main",
+      key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
       fastMode: true,
     });
   });
@@ -1219,7 +1219,7 @@ describe("executeSlashCommand directives", () => {
 
     expect(result.content).toBe("Fast mode set to auto.");
     expect(request).toHaveBeenCalledWith("sessions.patch", {
-      key: "agent:main:main",
+      key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
       fastMode: "auto",
     });
   });
@@ -1242,7 +1242,7 @@ describe("executeSlashCommand directives", () => {
     expect(result.content).toBe("Fast mode reset to default.");
     expect(result.action).toBe("refresh");
     expect(request).toHaveBeenCalledWith("sessions.patch", {
-      key: "agent:main:main",
+      key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
       fastMode: null,
     });
   });
@@ -1615,7 +1615,7 @@ describe("executeSlashCommand /redirect (hard kill-and-restart)", () => {
     expect(result.content).toBe("Redirected.");
     expect(result.trackRunId).toBe("run-1");
     expect(request).toHaveBeenCalledWith("sessions.steer", {
-      key: "agent:main:main",
+      key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
       message: "start over with a new plan",
     });
   });
@@ -1704,7 +1704,7 @@ describe("executeSlashCommand /redirect (hard kill-and-restart)", () => {
     expect(result.content).toBe("Redirected.");
     expect(result.trackRunId).toBe("run-3");
     expect(request).toHaveBeenCalledWith("sessions.steer", {
-      key: "agent:main:main",
+      key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
       message: "researcher start over completely",
     });
   });

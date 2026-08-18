@@ -885,7 +885,7 @@ function buildSideRunAttemptParams(
     authProfileStore: params.preparedRuntimeAuth.authProfileStore,
     modelRegistry: params.preparedRuntimeAuth.modelRegistry,
     ...(params.preparedRuntimeAuth.resolvedApiKey
-      ? { resolvedApiKey: params.preparedRuntimeAuth.resolvedApiKey }
+      ? { resolvedApiKey: (params.preparedRuntimeAuth.resolvedApiKey })
       : {}),
     runId: options.runId,
     abortSignal: params.opts?.abortSignal,
@@ -1316,7 +1316,7 @@ function readNotificationTurnId(record: JsonObject): string | undefined {
   return readCodexNotificationTurnId(record);
 }
 
-function readString(record: JsonObject, key: string): string | undefined {
+function readString(record: JsonObject, key: (string)): string | undefined {
   const value = record[key];
   return typeof value === "string" ? value : undefined;
 }

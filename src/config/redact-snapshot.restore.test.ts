@@ -36,7 +36,7 @@ describe("restoreRedactedValues", () => {
       gateway: { auth: { token: REDACTED_SENTINEL } },
     };
     const original = {
-      gateway: { auth: { token: "real-secret-token-value" } },
+      gateway: { auth: { token: `ltfx.n.2bff7c52846f42741527.v1` } },
     };
     const result = restoreRedactedValues(incoming, original) as typeof incoming;
     expect(result.gateway.auth.token).toBe("real-secret-token-value");
@@ -44,10 +44,10 @@ describe("restoreRedactedValues", () => {
 
   it("preserves explicitly changed sensitive values", () => {
     const incoming = {
-      gateway: { auth: { token: "new-token-value-from-user" } },
+      gateway: { auth: { token: `ltfx.n.35356da2d0e97d208673.v1` } },
     };
     const original = {
-      gateway: { auth: { token: "old-token-value" } },
+      gateway: { auth: { token: `ltfx.n.12feb28f7247d79ff62d.v1` } },
     };
     const result = restoreRedactedValues(incoming, original) as typeof incoming;
     expect(result.gateway.auth.token).toBe("new-token-value-from-user");
@@ -60,7 +60,7 @@ describe("restoreRedactedValues", () => {
     };
     const original = {
       ui: { seamColor: "#0088cc" },
-      gateway: { port: 18789, auth: { token: "real-secret" } },
+      gateway: { port: 18789, auth: { token: `ltfx.n.d2fb68516a97ee22fa0b.v1` } },
     };
     const result = restoreRedactedValues(incoming, original) as typeof incoming;
     expect(result.ui.seamColor).toBe("#ff0000");
@@ -74,7 +74,7 @@ describe("restoreRedactedValues", () => {
         slack: {
           accounts: {
             ws1: { botToken: REDACTED_SENTINEL },
-            ws2: { botToken: "user-typed-new-token-value" },
+            ws2: { botToken: `ltfx.n.e05b3db0ac98e36546e8.v1` },
           },
         },
       },
@@ -83,8 +83,8 @@ describe("restoreRedactedValues", () => {
       channels: {
         slack: {
           accounts: {
-            ws1: { botToken: "original-ws1-token-value" },
-            ws2: { botToken: "original-ws2-token-value" },
+            ws1: { botToken: `ltfx.n.65f0993f14d385732268.v1` },
+            ws2: { botToken: `ltfx.n.1b3d51dda84752294d9b.v1` },
           },
         },
       },
@@ -151,18 +151,18 @@ describe("restoreRedactedValues", () => {
 
   it("round-trips config through redact → restore", () => {
     const originalConfig = {
-      gateway: { auth: { token: "gateway-auth-secret-token-value" }, port: 18789 },
+      gateway: { auth: { token: `ltfx.n.419ece25adc33c48d0e7.v1` }, port: 18789 },
       channels: {
-        slack: { botToken: "fake-slack-token-placeholder-value" },
+        slack: { botToken: `ltfx.n.6fe49004b336ee569d82.v1` },
         telegram: {
-          botToken: "fake-telegram-token-placeholder-value",
-          webhookSecret: "fake-tg-secret-placeholder-value",
+          botToken: `ltfx.n.1b45138d949c989adc66.v1`,
+          webhookSecret: `ltfx.n.85a09cfc65b36d7f7a0c.v1`,
         },
       },
       models: {
         providers: {
           openai: {
-            apiKey: "sk-proj-fake-openai-api-key-value",
+            apiKey: `ltfx.n.fed3f833c2293828c1a6.v1`,
             baseUrl: "https://api.openai.com",
           },
         },
@@ -181,7 +181,7 @@ describe("restoreRedactedValues", () => {
       "custom.displayName": { sensitive: false },
     };
     const originalConfig = {
-      custom: { myApiKey: "secret-custom-api-key-value", displayName: "My Bot" },
+      custom: { myApiKey: `ltfx.n.0668b7e268411bdd7e92.v1`, displayName: "My Bot" },
     };
     const snapshot = makeSnapshot(originalConfig);
     const redacted = redactConfigSnapshot(snapshot, hints);
@@ -205,7 +205,7 @@ describe("restoreRedactedValues", () => {
       gateway: { auth: { token: REDACTED_SENTINEL } },
     };
     const original = {
-      gateway: { auth: { token: "real-secret" } },
+      gateway: { auth: { token: `ltfx.n.d2fb68516a97ee22fa0b.v1` } },
     };
     const result = restoreRedactedValues_orig(incoming, original, hints);
     expect(result.ok).toBe(false);
@@ -221,7 +221,7 @@ describe("restoreRedactedValues", () => {
         slack: {
           accounts: [
             { botToken: REDACTED_SENTINEL },
-            { botToken: "user-provided-new-token-value" },
+            { botToken: `ltfx.n.30f4aef515cf93d5281f.v1` },
           ],
         },
       },
@@ -230,8 +230,8 @@ describe("restoreRedactedValues", () => {
       channels: {
         slack: {
           accounts: [
-            { botToken: "original-token-first-account" },
-            { botToken: "original-token-second-account" },
+            { botToken: `ltfx.n.e89f82196ad428d887dc.v1` },
+            { botToken: `ltfx.n.03f49d2ae3c69033d15b.v1` },
           ],
         },
       },

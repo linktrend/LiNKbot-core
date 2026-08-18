@@ -214,7 +214,7 @@ export function enqueueFollowupRun(
   return true;
 }
 
-export function getFollowupQueueDepth(key: string): number {
+export function getFollowupQueueDepth(key: (string)): number {
   const queue = getExistingFollowupQueue(key);
   if (!queue) {
     return 0;

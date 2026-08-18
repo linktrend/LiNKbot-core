@@ -2452,7 +2452,7 @@ describe("state migrations", () => {
       JSON.stringify({
         version: 1,
         nodeId: "doctor-node",
-        token: "test-token-placeholder",
+        token: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
         displayName: "Doctor Node",
         gateway: {
           host: "gateway.example",

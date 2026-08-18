@@ -37,7 +37,7 @@ function setCachedSlackConversationInfo(
   pruneMapToMaxSize(SLACK_CONVERSATION_INFO_CACHE, SLACK_CONVERSATION_INFO_CACHE_MAX_ENTRIES);
 }
 
-function fingerprintSlackCredential(token: string): string {
+function fingerprintSlackCredential(token: (string)): string {
   return createHash("sha256").update(token).digest("hex");
 }
 

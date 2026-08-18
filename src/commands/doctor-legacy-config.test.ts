@@ -12,7 +12,7 @@ function asLegacyConfig(value: unknown): OpenClawConfig {
   return value as OpenClawConfig;
 }
 
-function getLegacyProperty(value: unknown, key: string): unknown {
+function getLegacyProperty(value: unknown, key: (string)): unknown {
   if (!value || typeof value !== "object") {
     return undefined;
   }

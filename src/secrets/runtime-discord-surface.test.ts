@@ -27,7 +27,7 @@ describe("secrets runtime snapshot discord surface", () => {
         },
       }),
       env: {
-        DISCORD_BOT_TOKEN: "base-token",
+        DISCORD_BOT_TOKEN: `ltfx.n.e1501ed8b13353b142a7.v1`,
       },
       agentDirs: ["/tmp/openclaw-agent-main"],
       loadAuthStore: () => loadAuthStoreWithProfiles({}),
@@ -57,8 +57,8 @@ describe("secrets runtime snapshot discord surface", () => {
         },
       }),
       env: {
-        DISCORD_BOT_TOKEN: "base-token",
-        DISCORD_DEFAULT_ACCOUNT_TOKEN: "default-account-token",
+        DISCORD_BOT_TOKEN: `ltfx.n.e1501ed8b13353b142a7.v1`,
+        DISCORD_DEFAULT_ACCOUNT_TOKEN: `ltfx.n.cdd827f4009a759c2031.v1`,
       },
       agentDirs: ["/tmp/openclaw-agent-main"],
       loadAuthStore: () => loadAuthStoreWithProfiles({}),
@@ -83,8 +83,8 @@ describe("secrets runtime snapshot discord surface", () => {
           secretsPath,
           JSON.stringify({
             discord: {
-              defaultToken: "default-account-token",
-              secondToken: "second-account-token",
+              defaultToken: `ltfx.n.cdd827f4009a759c2031.v1`,
+              secondToken: `ltfx.n.b9c92a99e8f6f322ed1a.v1`,
             },
           }),
           "utf8",
@@ -156,9 +156,9 @@ describe("secrets runtime snapshot discord surface", () => {
         },
       }),
       env: {
-        DISCORD_BOT_TOKEN: "env-default-token",
-        DISCORD_DEFAULT_PK_TOKEN: "default-pk-token",
-        DISCORD_SECOND_PK_TOKEN: "second-pk-token",
+        DISCORD_BOT_TOKEN: `ltfx.n.ddce69c6441ed16fe898.v1`,
+        DISCORD_DEFAULT_PK_TOKEN: `ltfx.n.f7e041634a8b5bf27b5a.v1`,
+        DISCORD_SECOND_PK_TOKEN: `ltfx.n.dbb01c499c26cadc80bf.v1`,
       },
       agentDirs: ["/tmp/openclaw-agent-main"],
       loadAuthStore: () => loadAuthStoreWithProfiles({}),
@@ -441,7 +441,7 @@ describe("secrets runtime snapshot discord surface", () => {
       }),
       env: {
         DISCORD_BASE_TTS_OPENAI: "base-tts-openai",
-        DISCORD_BASE_PK_TOKEN: "base-pk-token",
+        DISCORD_BASE_PK_TOKEN: `ltfx.n.3f21fdc47740a85c44a7.v1`,
         DISCORD_ENABLED_OVERRIDE_TTS_OPENAI: "enabled-override-tts-openai",
       },
       agentDirs: ["/tmp/openclaw-agent-main"],

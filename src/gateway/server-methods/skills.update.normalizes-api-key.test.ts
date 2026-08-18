@@ -85,7 +85,7 @@ describe("skills.update", () => {
     )({
       params: {
         skillKey: "brave-search",
-        apiKey: "abc\r\ndef",
+        apiKey: `ltfx.n.d944691f910b45cafdf3.v1`,
       },
       req: {} as never,
       client: null as never,
@@ -119,9 +119,9 @@ describe("skills.update", () => {
     )({
       params: {
         skillKey: "demo-skill",
-        apiKey: "secret-api-key-123",
+        apiKey: `ltfx.n.58bcbf00206b7f71703c.v1`,
         env: {
-          GEMINI_API_KEY: "secret-env-key-456",
+          GEMINI_API_KEY: `ltfx.n.89ef4fd4908f9943f632.v1`,
           BRAVE_REGION: "us",
         },
       },
@@ -136,9 +136,9 @@ describe("skills.update", () => {
 
     // Full values must be persisted to config
     expectWrittenSkillEntry("demo-skill", {
-      apiKey: "secret-api-key-123",
+      apiKey: `ltfx.n.58bcbf00206b7f71703c.v1`,
       env: {
-        GEMINI_API_KEY: "secret-env-key-456",
+        GEMINI_API_KEY: `ltfx.n.89ef4fd4908f9943f632.v1`,
         BRAVE_REGION: "us",
       },
     });
@@ -158,9 +158,9 @@ describe("skills.update", () => {
       skills: {
         entries: {
           "demo-skill": {
-            apiKey: "secret-api-key-123",
+            apiKey: `ltfx.n.58bcbf00206b7f71703c.v1`,
             env: {
-              GEMINI_API_KEY: "secret-env-key-456",
+              GEMINI_API_KEY: `ltfx.n.89ef4fd4908f9943f632.v1`,
               BRAVE_REGION: "us",
             },
           },
@@ -188,9 +188,9 @@ describe("skills.update", () => {
     });
 
     expectWrittenSkillEntry("demo-skill", {
-      apiKey: "secret-api-key-123",
+      apiKey: `ltfx.n.58bcbf00206b7f71703c.v1`,
       env: {
-        GEMINI_API_KEY: "secret-env-key-456",
+        GEMINI_API_KEY: `ltfx.n.89ef4fd4908f9943f632.v1`,
         BRAVE_REGION: "eu",
       },
     });

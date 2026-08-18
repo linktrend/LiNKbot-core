@@ -24,7 +24,7 @@ function titleCaseLabelSegment(segment: string): string {
     .join(" ");
 }
 
-function createFieldLabelStub(key: string): string {
+function createFieldLabelStub(key: (string)): string {
   const segments = key.split(".").filter((segment) => segment !== "*");
   const leaf = segments.at(-1) ?? key;
   return titleCaseLabelSegment(leaf) || key;
@@ -55,7 +55,7 @@ function formatMissingLabelFailure(missingKeys: readonly string[]): string {
 }
 
 describe("config help copy quality", () => {
-  function requireHelp(key: string): string {
+  function requireHelp(key: (string)): string {
     const help = FIELD_HELP[key];
     if (typeof help !== "string") {
       throw new Error(`missing help for ${key}`);
@@ -63,7 +63,7 @@ describe("config help copy quality", () => {
     return help;
   }
 
-  function requireLabel(key: string): string {
+  function requireLabel(key: (string)): string {
     const label = FIELD_LABELS[key];
     if (typeof label !== "string") {
       throw new Error(`missing label for ${key}`);

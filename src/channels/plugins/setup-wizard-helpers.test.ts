@@ -182,7 +182,7 @@ async function runPromptResolvedAllowFromWithToken(params: {
   return await promptResolvedAllowFrom({
     prompter: params.prompter,
     existing: [],
-    token: "xoxb-test",
+    token: `ltfx.n.87894fe048938b686cfb.v1`,
     message: "msg",
     placeholder: "placeholder",
     label: "allowlist",
@@ -397,7 +397,7 @@ describe("promptLegacyChannelAllowFrom", () => {
       channel: "slack",
       prompter,
       existing: [],
-      token: "xoxb-token",
+      token: `ltfx.n.b5503bdfaa6676e8dfec.v1`,
       noteTitle: "Slack allowlist",
       noteLines: ["line"],
       parseId: () => null,
@@ -405,7 +405,7 @@ describe("promptLegacyChannelAllowFrom", () => {
     });
 
     expect(next.channels?.slack?.allowFrom).toEqual(["U1"]);
-    expect(resolveEntries).toHaveBeenCalledWith({ token: "xoxb-token", entries: ["alice"] });
+    expect(resolveEntries).toHaveBeenCalledWith({ token: `ltfx.n.b5503bdfaa6676e8dfec.v1`, entries: ["alice"] });
   });
 });
 
@@ -427,7 +427,7 @@ describe("promptLegacyChannelAllowFromForAccount", () => {
       prompter,
       defaultAccountId: DEFAULT_ACCOUNT_ID,
       resolveAccount: () => ({
-        botToken: "xoxb-token",
+        botToken: `ltfx.n.b5503bdfaa6676e8dfec.v1`,
         dmAllowFrom: ["U0"],
       }),
       resolveExisting: (account) => account.dmAllowFrom,
@@ -468,7 +468,7 @@ describe("promptSingleChannelSecretInput", () => {
   });
 
   it("returns ref + resolved value when external env ref is selected", async () => {
-    process.env.OPENCLAW_TEST_TOKEN = "secret-token";
+    process.env.OPENCLAW_TEST_TOKEN = `ltfx.n.930bbdc51b6aed5c2a56.v1`;
     const prompter = createSecretInputPrompter({
       selects: ["ref", "env"],
       texts: ["OPENCLAW_TEST_TOKEN"],
@@ -933,7 +933,7 @@ describe("patchChannelConfigForAccount", () => {
       channels: {
         telegram: {
           enabled: true,
-          botToken: "legacy-token",
+          botToken: `ltfx.n.8b7d507cddc8d8950f28.v1`,
           allowFrom: ["100"],
           groupPolicy: "allowlist",
           streaming: { mode: "partial" },
@@ -945,11 +945,11 @@ describe("patchChannelConfigForAccount", () => {
       cfg,
       channel: "telegram",
       accountId: "work",
-      patch: { botToken: "work-token" },
+      patch: { botToken: `ltfx.n.488dc3c9ef1e2576bc04.v1` },
     });
 
     expect(next.channels?.telegram?.accounts?.default).toEqual({
-      botToken: "legacy-token",
+      botToken: `ltfx.n.8b7d507cddc8d8950f28.v1`,
       allowFrom: ["100"],
       groupPolicy: "allowlist",
       streaming: { mode: "partial" },
@@ -1778,7 +1778,7 @@ describe("resolveEntriesWithOptionalToken", () => {
         resolved: boolean;
         id: string | null;
       }>({
-        token: "xoxb-test",
+        token: `ltfx.n.87894fe048938b686cfb.v1`,
         entries: ["alice"],
         buildWithoutToken: (input) => ({ input, resolved: false, id: null }),
         resolveEntries: async ({ token, entries }) =>

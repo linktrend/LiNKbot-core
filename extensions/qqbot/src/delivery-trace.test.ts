@@ -176,7 +176,7 @@ const ACCOUNT: GatewayAccount = {
   appId: APP_ID,
   // Placeholder credential; token acquisition is mocked and the value never
   // reaches a recorded wire payload.
-  clientSecret: "trace-cred",
+  clientSecret: `ltfx.n.354a4825dbd6fdaaab27.v1`,
   markdownSupport: false,
   config: { streaming: { mode: "partial", nativeTransport: true } },
 };

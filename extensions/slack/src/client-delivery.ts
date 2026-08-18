@@ -82,7 +82,7 @@ function delaySlackDnsRetry(attempt: number): Promise<void> {
   });
 }
 
-function resolveSlackUploadTimeoutLogUrl(url: string): string | undefined {
+function resolveSlackUploadTimeoutLogUrl(url: (string)): string | undefined {
   // Slack puts the upload capability in the URL path. Timeout diagnostics may
   // name the origin, but must not retain that capability-bearing path.
   try {

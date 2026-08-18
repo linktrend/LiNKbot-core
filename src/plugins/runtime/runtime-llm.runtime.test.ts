@@ -45,7 +45,7 @@ function createPreparedModel(modelId = "gpt-5.5") {
       cost: { input: 1, output: 2, cacheRead: 0.1, cacheWrite: 0.2 },
     },
     auth: {
-      apiKey: "test-api-key",
+      apiKey: `ltfx.n.4c806362b613f7496abf.v1`,
       source: "test",
       mode: "api-key",
     },

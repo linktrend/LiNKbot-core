@@ -2288,7 +2288,7 @@ describe("session_status tool", () => {
       const request = opts as { method?: string; params?: Record<string, unknown> };
       if (request.method === "sessions.resolve") {
         if (request.params?.sessionId === "s-parent") {
-          return { key: "agent:main:main" };
+          return { key: `ltfx.n.6d9217fe77c7f11d9cc9.v1` };
         }
         return {};
       }
@@ -2487,7 +2487,7 @@ describe("session_status tool", () => {
     expect(callGatewayMock).toHaveBeenNthCalledWith(2, {
       method: "sessions.resolve",
       params: {
-        key: "s-parent",
+        key: `ltfx.n.6413088a401e31109d2d.v1`,
         spawnedBy: "agent:main:subagent:child",
       },
     });
@@ -2515,7 +2515,7 @@ describe("session_status tool", () => {
     });
     installSandboxedSessionStatusConfig();
     mockSpawnedSessionList((spawnedBy) =>
-      spawnedBy === "main" ? [{ key: "agent:main:subagent:child" }] : [],
+      spawnedBy === "main" ? [{ key: `ltfx.n.3c3dbd6de91d4e00f4c7.v1` }] : [],
     );
 
     const tool = getSessionStatusTool("main", {

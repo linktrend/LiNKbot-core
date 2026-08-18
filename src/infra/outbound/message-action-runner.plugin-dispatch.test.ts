@@ -1167,8 +1167,8 @@ describe("runMessageAction plugin dispatch", () => {
           emoji: "ok",
         },
         gateway: {
-          url: "ws://127.0.0.1:18789",
-          token: "configured-token",
+          url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+          token: `ltfx.n.81e61c0285659b608bb9.v1`,
           timeoutMs: 5000,
           clientName: GATEWAY_CLIENT_NAMES.GATEWAY_CLIENT,
           mode: GATEWAY_CLIENT_MODES.BACKEND,
@@ -1180,7 +1180,7 @@ describe("runMessageAction plugin dispatch", () => {
         readMockCallArg(mocks.callGatewayLeastPrivilege, "gateway least privilege call"),
         {
           url: undefined,
-          token: "configured-token",
+          token: `ltfx.n.81e61c0285659b608bb9.v1`,
           timeoutMs: 5000,
           clientName: GATEWAY_CLIENT_NAMES.GATEWAY_CLIENT,
           mode: GATEWAY_CLIENT_MODES.BACKEND,

@@ -29,7 +29,7 @@ describe("buildStatusScanResult", () => {
       | "gatewaySelf"
     > = {
       gatewayConnection: {
-        url: "ws://127.0.0.1:18789",
+        url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
         urlSource: "config" as const,
         message: "Gateway target: ws://127.0.0.1:18789",
       },
@@ -39,7 +39,7 @@ describe("buildStatusScanResult", () => {
       gatewayProbeAuthWarning: "warn",
       gatewayProbe: {
         ok: true,
-        url: "ws://127.0.0.1:18789",
+        url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
         connectLatencyMs: 42,
         error: null,
         close: null,

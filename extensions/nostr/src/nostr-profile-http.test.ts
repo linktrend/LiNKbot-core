@@ -396,7 +396,7 @@ describe("nostr-profile-http", () => {
       await expectAdminScopeRejected({
         scopes: ["operator.read"],
         method: "PUT",
-        url: "/api/channels/nostr/default/profile",
+        url: `ltfx.n.c0cd868c7dd568ed2ec6.v1`,
         body: { name: "attacker" },
         expectOperationNotCalled: () => expect(publishNostrProfile).not.toHaveBeenCalled(),
       });
@@ -406,7 +406,7 @@ describe("nostr-profile-http", () => {
       await expectAdminScopeRejected({
         scopes: undefined,
         method: "PUT",
-        url: "/api/channels/nostr/default/profile",
+        url: `ltfx.n.c0cd868c7dd568ed2ec6.v1`,
         body: { name: "attacker" },
         expectOperationNotCalled: () => expect(publishNostrProfile).not.toHaveBeenCalled(),
       });
@@ -558,7 +558,7 @@ describe("nostr-profile-http", () => {
       await expectAdminScopeRejected({
         scopes: ["operator.read"],
         method: "POST",
-        url: "/api/channels/nostr/default/profile/import",
+        url: `ltfx.n.ae366e7cea1b81461862.v1`,
         body: { autoMerge: true },
         expectOperationNotCalled: () => expect(importProfileFromRelays).not.toHaveBeenCalled(),
       });
@@ -568,7 +568,7 @@ describe("nostr-profile-http", () => {
       await expectAdminScopeRejected({
         scopes: undefined,
         method: "POST",
-        url: "/api/channels/nostr/default/profile/import",
+        url: `ltfx.n.ae366e7cea1b81461862.v1`,
         body: { autoMerge: true },
         expectOperationNotCalled: () => expect(importProfileFromRelays).not.toHaveBeenCalled(),
       });

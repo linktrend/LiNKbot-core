@@ -13,7 +13,7 @@ function encodeJwt(payload: Record<string, unknown>): string {
   ].join(".");
 }
 
-function decodeJwtPayload(token: string): Record<string, unknown> {
+function decodeJwtPayload(token: (string)): Record<string, unknown> {
   const payload = token.split(".")[1];
   if (!payload) {
     throw new Error("missing payload");

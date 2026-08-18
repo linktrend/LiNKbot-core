@@ -13,10 +13,10 @@ describe("inspectDiscordAccount", () => {
       cfg: asConfig({
         channels: {
           discord: {
-            token: "Bot channel-token",
+            token: `ltfx.n.206a1871a3dd5cf80169.v1`,
             accounts: {
               work: {
-                token: "Bot account-token",
+                token: `ltfx.n.4f701c2c58885ec7ecf7.v1`,
               },
             },
           },
@@ -58,7 +58,7 @@ describe("inspectDiscordAccount", () => {
       cfg: asConfig({
         channels: {
           discord: {
-            token: "Bot channel-token",
+            token: `ltfx.n.206a1871a3dd5cf80169.v1`,
             accounts: {
               work: {
                 token: "",
@@ -81,7 +81,7 @@ describe("inspectDiscordAccount", () => {
       cfg: asConfig({
         channels: {
           discord: {
-            token: "Bot channel-token",
+            token: `ltfx.n.206a1871a3dd5cf80169.v1`,
             accounts: {
               work: {},
             },
@@ -101,7 +101,7 @@ describe("inspectDiscordAccount", () => {
     const defaultInspected = inspectDiscordAccount({
       cfg: asConfig({}),
       accountId: "default",
-      envToken: "Bot env-default",
+      envToken: `ltfx.n.f2b4759117aed4f62209.v1`,
     });
     const namedInspected = inspectDiscordAccount({
       cfg: asConfig({
@@ -114,7 +114,7 @@ describe("inspectDiscordAccount", () => {
         },
       }),
       accountId: "work",
-      envToken: "Bot env-work",
+      envToken: `ltfx.n.4a2028ec76318e20b217.v1`,
     });
 
     expect(defaultInspected.token).toBe("env-default");

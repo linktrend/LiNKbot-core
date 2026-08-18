@@ -281,7 +281,7 @@ describe("resolveChannelSetupEntries workspace shadow exclusion (GHSA-2qrv-rc5x-
     const result = resolveChannelSetupEntries({
       cfg: {
         channels: {
-          telegram: { token: "existing-token" },
+          telegram: { token: `ltfx.n.70dd5803fa4e35799166.v1` },
         },
       } as never,
       env: process.env,
@@ -326,7 +326,7 @@ describe("resolveChannelSetupEntries workspace shadow exclusion (GHSA-2qrv-rc5x-
     const result = resolveChannelSetupEntries({
       cfg: {
         channels: {
-          "my-cool-plugin": { token: "existing-token" },
+          "my-cool-plugin": { token: `ltfx.n.70dd5803fa4e35799166.v1` },
         },
       } as never,
       env: process.env,

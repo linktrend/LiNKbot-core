@@ -57,14 +57,14 @@ describe("resolveGatewayProbeAuthSafe", () => {
     const result = resolveSafeProbeAuth({
       gateway: {
         auth: {
-          token: "token-value",
+          token: `ltfx.n.e6c02a5742ea9d4de588.v1`,
         },
       },
     } as OpenClawConfig);
 
     expect(result).toEqual({
       auth: {
-        token: "token-value",
+        token: `ltfx.n.e6c02a5742ea9d4de588.v1`,
         password: undefined,
       },
     });
@@ -84,7 +84,7 @@ describe("resolveGatewayProbeAuthSafe", () => {
         mode: "local",
         auth: tokenAuthConfig("MISSING_GATEWAY_TOKEN"),
         remote: {
-          token: "remote-token",
+          token: `ltfx.n.b79f8018a1bfa2040be5.v1`,
         },
       }),
     );
@@ -95,9 +95,9 @@ describe("resolveGatewayProbeAuthSafe", () => {
       gateway: {
         mode: "local",
         remote: {
-          url: "wss://gateway.example",
-          token: "remote-token",
-          password: "remote-password", // pragma: allowlist secret
+          url: `ltfx.n.2ec8b0b0f4c7fc92b531.v1`,
+          token: `ltfx.n.b79f8018a1bfa2040be5.v1`,
+          password: `ltfx.n.de3ebec174fd3a1387de.v1`, // pragma: allowlist secret
         },
       },
     } as OpenClawConfig);
@@ -112,7 +112,7 @@ describe("resolveGatewayProbeAuthSafe", () => {
       configWithDefaultEnvProvider({
         mode: "remote",
         remote: {
-          url: "wss://gateway.example",
+          url: `ltfx.n.2ec8b0b0f4c7fc92b531.v1`,
         },
         auth: tokenAuthConfig("MISSING_LOCAL_TOKEN"),
       }),
@@ -146,7 +146,7 @@ describe("resolveGatewayProbeTarget", () => {
         gateway: {
           mode: "remote",
           remote: {
-            url: "wss://gateway.example",
+            url: `ltfx.n.2ec8b0b0f4c7fc92b531.v1`,
           },
         },
       } as OpenClawConfig),
@@ -166,13 +166,13 @@ describe("resolveGatewayProbeAuthSafeWithSecretInputs", () => {
       }),
       mode: "local",
       env: {
-        OPENCLAW_GATEWAY_TOKEN: "test-token-from-env",
+        OPENCLAW_GATEWAY_TOKEN: `ltfx.n.094c84a8c26dc35bb20c.v1`,
       } as NodeJS.ProcessEnv,
     });
 
     expect(result.warning).toBeUndefined();
     expect(result.auth).toEqual({
-      token: "test-token-from-env",
+      token: `ltfx.n.094c84a8c26dc35bb20c.v1`,
       password: undefined,
     });
   });
@@ -182,13 +182,13 @@ describe("resolveGatewayProbeAuthSafeWithSecretInputs", () => {
       cfg: configWithDefaultEnvProvider({
         mode: "local",
         remote: {
-          url: "wss://gateway.example",
+          url: `ltfx.n.2ec8b0b0f4c7fc92b531.v1`,
           token: envSecretRef("REMOTE_GATEWAY_TOKEN"),
         },
       }),
       mode: "local",
       env: {
-        REMOTE_GATEWAY_TOKEN: "remote-token",
+        REMOTE_GATEWAY_TOKEN: `ltfx.n.b79f8018a1bfa2040be5.v1`,
       } as NodeJS.ProcessEnv,
     });
 
@@ -221,12 +221,12 @@ describe("resolveGatewayProbeAuthWithSecretInputs", () => {
       }),
       mode: "local",
       env: {
-        DAEMON_GATEWAY_TOKEN: "resolved-daemon-token",
+        DAEMON_GATEWAY_TOKEN: `ltfx.n.61306217baaba12ed554.v1`,
       } as NodeJS.ProcessEnv,
     });
 
     expect(auth).toEqual({
-      token: "resolved-daemon-token",
+      token: `ltfx.n.61306217baaba12ed554.v1`,
       password: undefined,
     });
   });

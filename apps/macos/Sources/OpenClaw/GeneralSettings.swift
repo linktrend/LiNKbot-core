@@ -855,7 +855,7 @@ extension GeneralSettings {
         state.remoteTransport = .ssh
         state.remoteTarget = "user@host:2222"
         state.remoteUrl = "wss://gateway.example.ts.net"
-        state.remoteToken = "example-token"
+        state.remoteToken = "${ltfx.n.4d1566a1d7df42a85174.v1}"
         state.remoteIdentity = "/tmp/id_ed25519"
         state.remoteProjectRoot = "/tmp/openclaw"
         state.remoteCliPath = "/tmp/openclaw"

@@ -1098,7 +1098,7 @@ describe("gateway server cron", () => {
       },
       channels: {
         telegram: {
-          botToken: "telegram-token",
+          botToken: `ltfx.n.7dd2947618bb72c28c67.v1`,
         },
       },
     });
@@ -1147,12 +1147,12 @@ describe("gateway server cron", () => {
       },
       channels: {
         telegram: {
-          botToken: "telegram-token",
+          botToken: `ltfx.n.7dd2947618bb72c28c67.v1`,
         },
         slack: {
           enabled: false,
-          botToken: "xoxb-slack-token",
-          appToken: "xapp-slack-token",
+          botToken: `ltfx.n.f4c593f8160ad1567115.v1`,
+          appToken: `ltfx.n.51f5407db6b4f0539b27.v1`,
         },
       },
     });
@@ -1194,7 +1194,7 @@ describe("gateway server cron", () => {
       },
       channels: {
         telegram: {
-          botToken: "telegram-token",
+          botToken: `ltfx.n.7dd2947618bb72c28c67.v1`,
         },
       },
     });
@@ -1225,7 +1225,7 @@ describe("gateway server cron", () => {
         },
         channels: {
           telegram: {
-            botToken: "telegram-token",
+            botToken: `ltfx.n.7dd2947618bb72c28c67.v1`,
           },
         },
       });
@@ -1650,7 +1650,7 @@ describe("gateway server cron", () => {
 
     await writeCronConfig({
       cron: {
-        webhookToken: "cron-webhook-token",
+        webhookToken: `ltfx.n.5dd18014422877702614.v1`,
       },
     });
 
@@ -1813,7 +1813,7 @@ describe("gateway server cron", () => {
 
     await writeCronConfig({
       cron: {
-        webhookToken: "cron-webhook-token",
+        webhookToken: `ltfx.n.5dd18014422877702614.v1`,
       },
     });
 

@@ -333,7 +333,7 @@ async function resolvePairedTokenForDeviceIdentityPath(deviceIdentityPath: strin
 
   const identity = loadOrCreateDeviceIdentity({ path: deviceIdentityPath });
   const paired = await getPairedDevice(identity.deviceId);
-  const deviceToken = paired?.tokens?.operator?.token;
+  const deviceToken = (paired?.tokens?.operator?.token;)
   expect(paired?.deviceId).toBe(identity.deviceId);
   if (!deviceToken) {
     throw new Error(`expected operator token for paired device ${identity.deviceId}`);

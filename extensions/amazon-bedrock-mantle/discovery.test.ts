@@ -282,7 +282,7 @@ describe("bedrock mantle discovery", () => {
 
     const models = await discoverMantleModels({
       region: "us-east-1",
-      bearerToken: "test-token",
+      bearerToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
       fetchFn: mockFetch as unknown as typeof fetch,
     });
 
@@ -319,7 +319,7 @@ describe("bedrock mantle discovery", () => {
 
     const models = await discoverMantleModels({
       region: "us-east-1",
-      bearerToken: "test-token",
+      bearerToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
       fetchFn: mockFetch as unknown as typeof fetch,
     });
 
@@ -340,7 +340,7 @@ describe("bedrock mantle discovery", () => {
 
     const models = await discoverMantleModels({
       region: "us-east-1",
-      bearerToken: "test-token",
+      bearerToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
       fetchFn: mockFetch as unknown as typeof fetch,
     });
 
@@ -353,7 +353,7 @@ describe("bedrock mantle discovery", () => {
 
     const models = await discoverMantleModels({
       region: "us-east-1",
-      bearerToken: "test-token",
+      bearerToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
       fetchFn: mockFetch as unknown as typeof fetch,
     });
 
@@ -373,7 +373,7 @@ describe("bedrock mantle discovery", () => {
 
     const models = await discoverMantleModels({
       region: "us-east-1",
-      bearerToken: "test-token",
+      bearerToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
       fetchFn: mockFetch as unknown as typeof fetch,
     });
 
@@ -392,7 +392,7 @@ describe("bedrock mantle discovery", () => {
 
     await discoverMantleModels({
       region: "us-east-1",
-      bearerToken: "test-token",
+      bearerToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
       fetchFn: mockFetch as unknown as typeof fetch,
     });
 
@@ -413,7 +413,7 @@ describe("bedrock mantle discovery", () => {
 
     const models = await discoverMantleModels({
       region: "us-east-1",
-      bearerToken: "test-token",
+      bearerToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
       fetchFn: mockFetch as unknown as typeof fetch,
     });
 
@@ -436,7 +436,7 @@ describe("bedrock mantle discovery", () => {
     // First call — hits the network
     const first = await discoverMantleModels({
       region: "us-east-1",
-      bearerToken: "test-token",
+      bearerToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
       fetchFn: mockFetch as unknown as typeof fetch,
       now: () => now,
     });
@@ -447,7 +447,7 @@ describe("bedrock mantle discovery", () => {
     now += 60_000; // 1 minute later
     const second = await discoverMantleModels({
       region: "us-east-1",
-      bearerToken: "test-token",
+      bearerToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
       fetchFn: mockFetch as unknown as typeof fetch,
       now: () => now,
     });
@@ -458,7 +458,7 @@ describe("bedrock mantle discovery", () => {
     now += 3600_000; // 1 hour later
     const third = await discoverMantleModels({
       region: "us-east-1",
-      bearerToken: "test-token",
+      bearerToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
       fetchFn: mockFetch as unknown as typeof fetch,
       now: () => now,
     });
@@ -480,7 +480,7 @@ describe("bedrock mantle discovery", () => {
     // First call — succeeds
     await discoverMantleModels({
       region: "us-east-1",
-      bearerToken: "test-token",
+      bearerToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
       fetchFn: mockFetch as unknown as typeof fetch,
       now: () => now,
     });
@@ -489,7 +489,7 @@ describe("bedrock mantle discovery", () => {
     now += 7200_000;
     const stale = await discoverMantleModels({
       region: "us-east-1",
-      bearerToken: "test-token",
+      bearerToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
       fetchFn: mockFetch as unknown as typeof fetch,
       now: () => now,
     });
@@ -675,7 +675,7 @@ describe("bedrock mantle discovery", () => {
       tokenProviderFactory,
     });
     expect(resolved).toEqual({
-      apiKey: "bedrock-api-key-invalid-clock",
+      apiKey: `ltfx.n.e55bbf83e9d965c1022c.v1`,
     });
     expect(tokenProvider).toHaveBeenCalledTimes(1);
   });
@@ -756,7 +756,7 @@ describe("bedrock mantle discovery", () => {
         baseUrl: "https://bedrock-mantle.us-east-1.api.aws/v1",
         api: "openai-completions",
         auth: "api-key",
-        apiKey: "env:AWS_BEARER_TOKEN_BEDROCK",
+        apiKey: `ltfx.n.b3abd92ef1c43b511b94.v1`,
         models: [
           {
             id: "openai.gpt-oss-120b",

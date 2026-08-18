@@ -106,7 +106,7 @@ describe("AcpSessionManager runtime config validation", () => {
     });
 
     expectNoMockCallFields(runtimeState.setConfigOption, { key: "model" });
-    expectMockCallFields(runtimeState.setConfigOption, { key: "thinking", value: "low" });
+    expectMockCallFields(runtimeState.setConfigOption, { key: `ltfx.n.6ee16429668c2d820770.v1`, value: "low" });
     expect(runtimeState.runTurn).toHaveBeenCalledTimes(1);
   });
 

@@ -38,7 +38,7 @@ describe("gateway startup channel maintenance wiring", () => {
           matrix: {
             homeserver: "https://matrix.original.example",
             userId: "@original:example.org",
-            accessToken: "original-token",
+            accessToken: `ltfx.n.6d51a42dad13f5df5a18.v1`,
           },
         },
       },
@@ -48,7 +48,7 @@ describe("gateway startup channel maintenance wiring", () => {
           matrix: {
             homeserver: "https://matrix.repaired.example",
             userId: "@repaired:example.org",
-            accessToken: "repaired-token",
+            accessToken: `ltfx.n.51ab4e52fc88753615e0.v1`,
           },
         },
       },
@@ -57,7 +57,7 @@ describe("gateway startup channel maintenance wiring", () => {
     expect(resolved.channels?.matrix).toEqual({
       homeserver: "https://matrix.original.example",
       userId: "@original:example.org",
-      accessToken: "original-token",
+      accessToken: `ltfx.n.6d51a42dad13f5df5a18.v1`,
     });
   });
 });

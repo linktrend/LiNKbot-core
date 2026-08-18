@@ -57,7 +57,7 @@ function normalizeDiscordNameSubject(value: string): string | null {
 }
 
 const discordIngressIdentity = defineStableChannelIngressIdentity({
-  key: "discordUserId",
+  key: `ltfx.n.822da1c64c492c35ab24.v1`,
   kind: DISCORD_USER_ID_KIND,
   normalizeEntry: normalizeDiscordIdEntry,
   normalizeSubject: (value) => value.trim() || null,

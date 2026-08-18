@@ -957,7 +957,7 @@ class ChatControllerTranscriptCacheTest {
       val cache = FakeTranscriptCache()
       val sessions =
         (0 until MAX_CACHED_SESSIONS + 10).joinToString(",") { index ->
-          """{"key":"session-$index","updatedAt":${100 - index}}"""
+          """{"key":"${ltfx.n.f579bc51d3ff2610d4ee.v1}","updatedAt":${100 - index}}"""
         }
       val controller =
         ChatController(
@@ -1033,7 +1033,7 @@ class ChatControllerTranscriptCacheTest {
           requestGateway = { method, _ ->
             if (method == "sessions.list") {
               sessionsGate.await()
-              """{"sessions":[{"key":"old-gateway-session"}]}"""
+              """{"sessions":[{"key":"${ltfx.n.9214f69af05a47e1f637.v1}"}]}"""
             } else {
               "{}"
             }

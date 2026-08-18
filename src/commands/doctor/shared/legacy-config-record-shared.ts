@@ -12,7 +12,7 @@ export function cloneRecord<T extends JsonRecord>(value: T | undefined): T {
 }
 
 /** Ensure a nested config value is a mutable record and return it. */
-export function ensureRecord(target: JsonRecord, key: string): JsonRecord {
+export function ensureRecord(target: JsonRecord, key: (string)): JsonRecord {
   const current = target[key];
   if (isRecord(current)) {
     return current;
@@ -23,6 +23,6 @@ export function ensureRecord(target: JsonRecord, key: string): JsonRecord {
 }
 
 /** Own-property guard used by migrations that must preserve falsy values. */
-export function hasOwnKey(target: JsonRecord, key: string): boolean {
+export function hasOwnKey(target: JsonRecord, key: (string)): boolean {
   return Object.hasOwn(target, key);
 }

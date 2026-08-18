@@ -384,7 +384,7 @@ describe("probeGatewayReachable", () => {
   it("uses a hello-only probe for onboarding reachability", async () => {
     mocks.probeGateway.mockResolvedValueOnce({
       ok: true,
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       connectLatencyMs: 42,
       error: null,
       close: null,
@@ -395,17 +395,17 @@ describe("probeGatewayReachable", () => {
     });
 
     const result = await probeGatewayReachable({
-      url: "ws://127.0.0.1:18789",
-      token: "tok_test",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      token: `ltfx.n.1fb6f1dcedc434e73714.v1`,
       timeoutMs: 2500,
     });
 
     expect(result).toEqual({ ok: true });
     expect(mocks.probeGateway).toHaveBeenCalledWith({
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       timeoutMs: 2500,
       auth: {
-        token: "tok_test",
+        token: `ltfx.n.1fb6f1dcedc434e73714.v1`,
         password: undefined,
       },
       detailLevel: "none",
@@ -415,7 +415,7 @@ describe("probeGatewayReachable", () => {
   it("returns the probe error detail on failure", async () => {
     mocks.probeGateway.mockResolvedValueOnce({
       ok: false,
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       connectLatencyMs: null,
       error: "connect failed: timeout",
       close: null,
@@ -426,7 +426,7 @@ describe("probeGatewayReachable", () => {
     });
 
     const result = await probeGatewayReachable({
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
     });
 
     expect(result).toEqual({
@@ -443,13 +443,13 @@ describe("probeGatewayReachable", () => {
 
     await expect(
       probeGatewayReachable({
-        url: "wss://gateway.example.com:18789",
+        url: `ltfx.n.f5e15cc7530f3463a0a2.v1`,
         tlsFingerprint: "sha256:11:22:33:44",
       }),
     ).resolves.toEqual({ ok: true });
 
     expect(mocks.probeGateway).toHaveBeenCalledWith({
-      url: "wss://gateway.example.com:18789",
+      url: `ltfx.n.f5e15cc7530f3463a0a2.v1`,
       timeoutMs: 1500,
       auth: {
         token: undefined,
@@ -468,13 +468,13 @@ describe("probeGatewayReachable", () => {
 
     await expect(
       probeGatewayReachable({
-        url: "wss://gateway.example.com:18789",
+        url: `ltfx.n.f5e15cc7530f3463a0a2.v1`,
         preauthHandshakeTimeoutMs: 30_000,
       }),
     ).resolves.toEqual({ ok: true });
 
     expect(mocks.probeGateway).toHaveBeenCalledWith({
-      url: "wss://gateway.example.com:18789",
+      url: `ltfx.n.f5e15cc7530f3463a0a2.v1`,
       timeoutMs: 30_000,
       auth: {
         token: undefined,
@@ -503,12 +503,12 @@ describe("probeGatewayReachable", () => {
 
     await expect(
       probeGatewayConfiguredModel({
-        url: "ws://127.0.0.1:18789",
+        url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       }),
     ).resolves.toEqual({ kind: "configured" });
     await expect(
       probeGatewayConfiguredModel({
-        url: "ws://127.0.0.1:18789",
+        url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       }),
     ).resolves.toEqual({
       kind: "missing-configured-model",
@@ -528,7 +528,7 @@ describe("probeGatewayReachable", () => {
       server: { version: "2026.7.2", connId: "conn-1" },
     });
 
-    await expect(probeGatewayConfiguredModel({ url: "ws://127.0.0.1:18789" })).resolves.toEqual({
+    await expect(probeGatewayConfiguredModel({ url: `ltfx.n.0edbee82f0824a1ed09b.v1` })).resolves.toEqual({
       kind: "reachable-unverified",
       detail: "config.get: unauthorized",
     });
@@ -544,7 +544,7 @@ describe("probeGatewayReachable", () => {
       server: { version: null, connId: null },
     });
 
-    await expect(probeGatewayConfiguredModel({ url: "ws://127.0.0.1:18789" })).resolves.toEqual({
+    await expect(probeGatewayConfiguredModel({ url: `ltfx.n.0edbee82f0824a1ed09b.v1` })).resolves.toEqual({
       kind: "reachable-unverified",
       detail: "device pairing required",
     });
@@ -559,7 +559,7 @@ describe("probeGatewayReachable", () => {
       server: { version: null, connId: null },
     });
 
-    await expect(probeGatewayConfiguredModel({ url: "ws://127.0.0.1:18789" })).resolves.toEqual({
+    await expect(probeGatewayConfiguredModel({ url: `ltfx.n.0edbee82f0824a1ed09b.v1` })).resolves.toEqual({
       kind: "unreachable",
       detail: "websocket closed",
     });
@@ -575,7 +575,7 @@ describe("probeGatewayReachable", () => {
       server: { version: null, connId: null },
     });
 
-    await expect(probeGatewayConfiguredModel({ url: "ws://127.0.0.1:18789" })).resolves.toEqual({
+    await expect(probeGatewayConfiguredModel({ url: `ltfx.n.0edbee82f0824a1ed09b.v1` })).resolves.toEqual({
       kind: "unreachable",
       detail: "foreign protocol error",
     });
@@ -594,7 +594,7 @@ describe("probeGatewayReachable", () => {
       },
     });
 
-    await expect(probeGatewayConfiguredModel({ url: "ws://127.0.0.1:18789" })).resolves.toEqual({
+    await expect(probeGatewayConfiguredModel({ url: `ltfx.n.0edbee82f0824a1ed09b.v1` })).resolves.toEqual({
       kind: "unreachable",
     });
   });
@@ -608,7 +608,7 @@ describe("probeGatewayReachable", () => {
       server: { version: "2026.7.2", connId: "conn-1" },
     });
 
-    await expect(probeGatewayConfiguredModel({ url: "ws://127.0.0.1:18789" })).resolves.toEqual({
+    await expect(probeGatewayConfiguredModel({ url: `ltfx.n.0edbee82f0824a1ed09b.v1` })).resolves.toEqual({
       kind: "reachable-unverified",
       detail: "missing scope: operator.read",
     });
@@ -623,7 +623,7 @@ describe("probeGatewayReachable", () => {
       configSnapshot: { valid: false },
     });
 
-    await expect(probeGatewayConfiguredModel({ url: "ws://127.0.0.1:18789" })).resolves.toEqual({
+    await expect(probeGatewayConfiguredModel({ url: `ltfx.n.0edbee82f0824a1ed09b.v1` })).resolves.toEqual({
       kind: "reachable-unverified",
       detail: "Gateway returned an invalid config snapshot",
     });
@@ -638,7 +638,7 @@ describe("probeGatewayReachable", () => {
       server: { version: null, connId: null },
     });
 
-    await expect(probeGatewayConfiguredModel({ url: "ws://127.0.0.1:18789" })).resolves.toEqual({
+    await expect(probeGatewayConfiguredModel({ url: `ltfx.n.0edbee82f0824a1ed09b.v1` })).resolves.toEqual({
       kind: "unreachable",
       detail: "connect failed: timeout",
     });
@@ -649,7 +649,7 @@ describe("waitForGatewayReachable", () => {
   it("keeps oversized poll intervals within the overall deadline", async () => {
     mocks.probeGateway.mockResolvedValue({
       ok: false,
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       connectLatencyMs: null,
       error: "connect failed: timeout",
       close: null,
@@ -660,7 +660,7 @@ describe("waitForGatewayReachable", () => {
     });
 
     const result = await waitForGatewayReachable({
-      url: "ws://127.0.0.1:18789",
+      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
       deadlineMs: 5,
       pollMs: Number.MAX_SAFE_INTEGER,
       probeTimeoutMs: 1,
@@ -679,7 +679,7 @@ describe("summarizeExistingConfig", () => {
           mode: "remote",
           port: 18789,
           bind: "lan",
-          remote: { url: "ws://192.168.0.202:18789" },
+          remote: { url: `ltfx.n.246f3024bcc80f211320.v1` },
         },
       }),
     ).toBe("Model: openai/gpt-5.4\nGateway: remote via LAN at ws://192.168.0.202:18789");
@@ -704,7 +704,7 @@ describe("summarizeExistingConfig", () => {
           mode: "local",
           port: 18789,
           bind: "loopback",
-          remote: { url: "ws://192.168.0.202:18789" },
+          remote: { url: `ltfx.n.246f3024bcc80f211320.v1` },
         },
       }),
     ).toBe("Gateway: local via loopback on :18789");

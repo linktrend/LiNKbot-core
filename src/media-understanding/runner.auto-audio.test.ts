@@ -47,7 +47,7 @@ function createOpenAiAudioCfg(extra?: Partial<OpenClawConfig>): OpenClawConfig {
     models: {
       providers: {
         openai: {
-          apiKey: "test-key",
+          apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
           models: [],
         },
       },
@@ -192,7 +192,7 @@ describe("runCapability auto audio entries", () => {
       hasAvailableAuthForProvider.mockResolvedValue(true);
       resolveApiKeyForProvider.mockReset();
       resolveApiKeyForProvider.mockResolvedValue({
-        apiKey: "test-key",
+        apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
         source: "test",
         mode: "api-key",
       });
@@ -260,7 +260,7 @@ describe("runCapability auto audio entries", () => {
         models: {
           providers: {
             openai: {
-              apiKey: "codex-test-key", // pragma: allowlist secret
+              apiKey: `ltfx.n.e2c3340893ea7fbedbd1.v1`, // pragma: allowlist secret
               models: [],
             },
           },
@@ -310,7 +310,7 @@ describe("runCapability auto audio entries", () => {
         models: {
           providers: {
             xai: {
-              apiKey: "xai-test-key", // pragma: allowlist secret
+              apiKey: `ltfx.n.6ccc25dc7ade3810857a.v1`, // pragma: allowlist secret
               models: [],
             },
           },
@@ -534,7 +534,7 @@ describe("runCapability auto audio entries", () => {
           DEEPGRAM_API_KEY: undefined,
           GEMINI_API_KEY: undefined,
           GOOGLE_API_KEY: undefined,
-          MISTRAL_API_KEY: "mistral-test-key", // pragma: allowlist secret
+          MISTRAL_API_KEY: `ltfx.n.8199eaf374944742f773.v1`, // pragma: allowlist secret
           OPENCLAW_AGENT_DIR: isolatedAgentDir,
         },
         async () => {
@@ -561,7 +561,7 @@ describe("runCapability auto audio entries", () => {
               models: {
                 providers: {
                   mistral: {
-                    apiKey: "mistral-test-key", // pragma: allowlist secret
+                    apiKey: `ltfx.n.8199eaf374944742f773.v1`, // pragma: allowlist secret
                     models: [],
                   },
                 },

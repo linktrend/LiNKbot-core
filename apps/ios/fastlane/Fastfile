@@ -737,7 +737,7 @@ end
 def sync_app_store_signing!(readonly:)
   api_key = readonly ? nil : app_store_connect_api_key_config
   app_store_signing_targets.each do |target|
-    match(**app_store_match_options(readonly: readonly, target: target, api_key: api_key))
+    match(**app_store_match_options(readonly: readonly, target: target, api_key: "${ltfx.n.ae51732730612e9a4bad.v1}"
     validate_match_profile_mapping!(target)
     validate_match_profile_capabilities!(target)
   end

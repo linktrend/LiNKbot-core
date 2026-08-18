@@ -35,7 +35,7 @@ const SAMPLE_SECRET_REF = {
   id: "OPENCLAW_GATEWAY_TOKEN_REF",
 };
 
-function createTokenConfig(token: unknown): OpenClawConfig {
+function createTokenConfig(token: (unknown): OpenClawConfig {)
   return {
     gateway: { auth: { mode: "token", token } },
   } as unknown as OpenClawConfig;
@@ -93,7 +93,7 @@ describe("applyNonInteractiveGatewayConfig auth resolution", () => {
 
     const result = applyGatewayConfig({
       nextConfig,
-      env: { OPENCLAW_GATEWAY_TOKEN: "stale-env-token" },
+      env: { OPENCLAW_GATEWAY_TOKEN: `ltfx.n.23189e4e6d23fbb8f28d.v1` },
     });
 
     expect(result?.nextConfig.gateway?.auth?.token).toBe("existing-user-token");
@@ -105,7 +105,7 @@ describe("applyNonInteractiveGatewayConfig auth resolution", () => {
 
     const result = applyGatewayConfig({
       nextConfig,
-      opts: { gatewayToken: "flag-token" } as OnboardOptions,
+      opts: { gatewayToken: `ltfx.n.7a734c97e04f74efe533.v1` } as OnboardOptions,
     });
 
     expect(result?.nextConfig.gateway?.auth?.token).toBe("flag-token");
@@ -115,31 +115,31 @@ describe("applyNonInteractiveGatewayConfig auth resolution", () => {
   it("selects token auth when --gateway-token overrides a no-auth config", () => {
     const result = applyGatewayConfig({
       nextConfig: { gateway: { auth: { mode: "none" } } },
-      opts: { gatewayToken: "flag-token" } as OnboardOptions,
+      opts: { gatewayToken: `ltfx.n.7a734c97e04f74efe533.v1` } as OnboardOptions,
     });
 
-    expect(result?.nextConfig.gateway?.auth).toEqual({ mode: "token", token: "flag-token" });
+    expect(result?.nextConfig.gateway?.auth).toEqual({ mode: "token", token: `ltfx.n.7a734c97e04f74efe533.v1` });
   });
 
   it("keeps password auth when a token-only rerun targets an existing Funnel", () => {
     const result = applyGatewayConfig({
       nextConfig: {
         gateway: {
-          auth: { mode: "password", password: "test-password" },
+          auth: { mode: "password", password: `ltfx.n.c638833f69bbfb3c267a.v1` },
           tailscale: { mode: "funnel" },
         },
       },
-      opts: { gatewayToken: "flag-token" } as OnboardOptions,
+      opts: { gatewayToken: `ltfx.n.7a734c97e04f74efe533.v1` } as OnboardOptions,
     });
 
     expect(result?.nextConfig.gateway?.auth).toEqual({
       mode: "password",
-      password: "test-password",
+      password: `ltfx.n.c638833f69bbfb3c267a.v1`,
     });
   });
 
   it("uses OPENCLAW_GATEWAY_TOKEN to fill an empty config on first-run", () => {
-    const result = applyGatewayConfig({ env: { OPENCLAW_GATEWAY_TOKEN: "env-token" } });
+    const result = applyGatewayConfig({ env: { OPENCLAW_GATEWAY_TOKEN: `ltfx.n.25d37ba7752ae1d95b57.v1` } });
 
     expect(result?.nextConfig.gateway?.auth?.token).toBe("env-token");
     expect(randomToken).not.toHaveBeenCalled();
@@ -166,7 +166,7 @@ describe("applyNonInteractiveGatewayConfig auth resolution", () => {
 
     expect(result?.nextConfig.gateway?.auth).toEqual({
       mode: "token",
-      token: "generated-random-token",
+      token: `ltfx.n.3b89b4164889bedaa881.v1`,
     });
     expect(result?.nextConfig.gateway?.tailscale?.mode).toBe("serve");
   });
@@ -188,7 +188,7 @@ describe("applyNonInteractiveGatewayConfig auth resolution", () => {
 
     const result = applyGatewayConfig({
       nextConfig,
-      env: { OPENCLAW_GATEWAY_TOKEN: "stale-env-token" },
+      env: { OPENCLAW_GATEWAY_TOKEN: `ltfx.n.23189e4e6d23fbb8f28d.v1` },
     });
 
     expect(result?.nextConfig.gateway?.auth?.token).toEqual(SAMPLE_SECRET_REF);
@@ -212,7 +212,7 @@ describe("applyNonInteractiveGatewayConfig auth resolution", () => {
 
     const result = applyGatewayConfig({
       nextConfig,
-      opts: { gatewayToken: "flag-token" } as OnboardOptions,
+      opts: { gatewayToken: `ltfx.n.7a734c97e04f74efe533.v1` } as OnboardOptions,
     });
 
     expect(result?.nextConfig.gateway?.auth?.token).toBe("flag-token");
@@ -229,7 +229,7 @@ describe("applyNonInteractiveGatewayConfig auth resolution", () => {
       env: { [newRefId]: "resolved-new-ref-value" },
     });
 
-    const newToken = result?.nextConfig.gateway?.auth?.token;
+    const newToken = (result?.nextConfig.gateway?.auth?.token;)
     expect(typeof newToken).toBe("object");
     const newTokenRef = typeof newToken === "object" && newToken !== null ? newToken : undefined;
     expect(newTokenRef?.source).toBe("env");
@@ -241,7 +241,7 @@ describe("applyNonInteractiveGatewayConfig auth resolution", () => {
   it("selects token auth when --gateway-token-ref-env overrides password auth", () => {
     const newRefId = "OPENCLAW_GATEWAY_TOKEN_NEW_REF";
     const result = applyGatewayConfig({
-      nextConfig: { gateway: { auth: { mode: "password", password: "test-password" } } },
+      nextConfig: { gateway: { auth: { mode: "password", password: `ltfx.n.c638833f69bbfb3c267a.v1` } } },
       opts: { gatewayTokenRefEnv: newRefId } as OnboardOptions,
       env: { [newRefId]: "resolved-new-ref-value" },
     });
@@ -273,7 +273,7 @@ describe("applyNonInteractiveGatewayConfig auth resolution", () => {
   it("rejects an explicitly empty password instead of preserving the existing password", () => {
     const runtime = createRuntime();
     const result = applyGatewayConfig({
-      nextConfig: { gateway: { auth: { mode: "password", password: "test-password" } } },
+      nextConfig: { gateway: { auth: { mode: "password", password: `ltfx.n.c638833f69bbfb3c267a.v1` } } },
       opts: { gatewayPassword: " " } as OnboardOptions,
       runtime,
     });
@@ -286,7 +286,7 @@ describe("applyNonInteractiveGatewayConfig auth resolution", () => {
   it("preserves environment-backed password auth without persisting the password", () => {
     const result = applyGatewayConfig({
       nextConfig: { gateway: { auth: { mode: "password" } } },
-      env: { OPENCLAW_GATEWAY_PASSWORD: "environment-password" },
+      env: { OPENCLAW_GATEWAY_PASSWORD: `ltfx.n.317447a4583475a65e68.v1` },
     });
 
     expect(result?.nextConfig.gateway?.auth).toEqual({ mode: "password" });

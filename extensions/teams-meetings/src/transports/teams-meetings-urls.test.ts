@@ -16,7 +16,7 @@ describe("Microsoft Teams meeting URL normalization", () => {
     [WORK_URL, "teams-work:19:meeting_NzQ1ZDBjYzItZDAxNS00N2YxLTg4Y2EtYjQ1N2I4NDg2Njli@thread.v2"],
     ["https://teams.live.com/meet/9326458712345?p=abc", "teams-consumer:9326458712345:p:abc"],
     [
-      "https://teams.live.com/dl/launcher/launcher.html?url=%2F_%23%2Fmeet%2F9326458712345%3Fp%3Dabc",
+      "https://teams.live.com/dl/launcher/launcher.html?url=(%2F_%23%2Fmeet%2F9326458712345%3Fp%3Dabc",)
       "teams-consumer:9326458712345:p:abc",
     ],
     [
@@ -63,8 +63,8 @@ describe("Microsoft Teams meeting URL normalization", () => {
     "https://teams.microsoft.com/v2/",
     "https://teams.microsoft.com/l/channel/19%3Achannel%40thread.tacv2",
     "https://teams.live.com/",
-    "https://teams.live.com/dl/launcher/launcher.html?url=https%3A%2F%2Fevil.example%2Fmeet%2Fabc",
-    "https://teams.live.com/dl/launcher/launcher.html?url=%2F_%23%2Fmeet%2Fabc%2Fextra",
+    "https://teams.live.com/dl/launcher/launcher.html?url=(https%3A%2F%2Fevil.example%2Fmeet%2Fabc",)
+    "https://teams.live.com/dl/launcher/launcher.html?url=(%2F_%23%2Fmeet%2Fabc%2Fextra",)
     "https://teams.live.com/light-meetings/launch?coords=not-json",
     "http://teams.live.com/meet/abc",
     "https://example.com/l/meetup-join/19%3ameeting_x%40thread.v2/0",

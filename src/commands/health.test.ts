@@ -314,8 +314,8 @@ describe("healthCommand", () => {
         json: true,
         timeoutMs: 5000,
         config: {},
-        token: "setup-token",
-        password: "setup-password",
+        token: `ltfx.n.8997ec9a3da1e44792b9.v1`,
+        password: `ltfx.n.c160812a0c6bb61e630e.v1`,
       },
       runtime as never,
     );

@@ -15,11 +15,11 @@ type ResolveFromConfigInput = Parameters<typeof resolveGatewayCredentialsFromCon
 type GatewayConfig = NonNullable<OpenClawConfig["gateway"]>;
 type ResolveFromConfigOverrides = Partial<Omit<ResolveFromConfigInput, "cfg" | "env">>;
 
-const DEFAULT_GATEWAY_AUTH = { token: "config-token", password: "config-password" }; // pragma: allowlist secret
-const DEFAULT_REMOTE_AUTH = { token: "remote-token", password: "remote-password" }; // pragma: allowlist secret
+const DEFAULT_GATEWAY_AUTH = { token: `ltfx.n.a98cc81fe778386f6195.v1`, password: `ltfx.n.247ccb8a17c771073cb2.v1` }; // pragma: allowlist secret
+const DEFAULT_REMOTE_AUTH = { token: `ltfx.n.b79f8018a1bfa2040be5.v1`, password: `ltfx.n.de3ebec174fd3a1387de.v1` }; // pragma: allowlist secret
 const DEFAULT_GATEWAY_ENV = {
-  OPENCLAW_GATEWAY_TOKEN: "env-token",
-  OPENCLAW_GATEWAY_PASSWORD: "env-password", // pragma: allowlist secret
+  OPENCLAW_GATEWAY_TOKEN: `ltfx.n.25d37ba7752ae1d95b57.v1`,
+  OPENCLAW_GATEWAY_PASSWORD: `ltfx.n.b7c8db593f965dc9a2cd.v1`, // pragma: allowlist secret
 } as NodeJS.ProcessEnv;
 const EMPTY_GATEWAY_ENV = {} as NodeJS.ProcessEnv;
 
@@ -66,8 +66,8 @@ function resolveLocalGatewayCredentials(gateway: GatewayConfig) {
 
 function expectEnvGatewayCredentials(resolved: { token?: string; password?: string }) {
   expect(resolved).toEqual({
-    token: "env-token",
-    password: "env-password", // pragma: allowlist secret
+    token: `ltfx.n.25d37ba7752ae1d95b57.v1`,
+    password: `ltfx.n.b7c8db593f965dc9a2cd.v1`, // pragma: allowlist secret
   });
 }
 
@@ -80,8 +80,8 @@ function expectNoGatewayCredentials(resolved: { token?: string; password?: strin
 
 function expectRemoteGatewayCredentials(resolved: { token?: string; password?: string }) {
   expect(resolved).toEqual({
-    token: "remote-token",
-    password: "remote-password", // pragma: allowlist secret
+    token: `ltfx.n.b79f8018a1bfa2040be5.v1`,
+    password: `ltfx.n.de3ebec174fd3a1387de.v1`, // pragma: allowlist secret
   });
 }
 
@@ -89,8 +89,8 @@ function resolveGatewayCredentialsFromDefaultValues(
   overrides: Partial<Parameters<typeof resolveGatewayCredentialsFromValues>[0]> = {},
 ) {
   return resolveGatewayCredentialsFromValues({
-    configToken: "config-token",
-    configPassword: "config-password", // pragma: allowlist secret
+    configToken: `ltfx.n.a98cc81fe778386f6195.v1`,
+    configPassword: `ltfx.n.247ccb8a17c771073cb2.v1`, // pragma: allowlist secret
     env: DEFAULT_GATEWAY_ENV,
     ...overrides,
   });
@@ -154,12 +154,12 @@ describe("resolveGatewayCredentialsFromConfig", () => {
         auth: DEFAULT_GATEWAY_AUTH,
       },
       {
-        explicitAuth: { token: "explicit-token", password: "explicit-password" }, // pragma: allowlist secret
+        explicitAuth: { token: `ltfx.n.3f7a118b174381ebc867.v1`, password: `ltfx.n.b7c209b295aae1493677.v1` }, // pragma: allowlist secret
       },
     );
     expect(resolved).toEqual({
-      token: "explicit-token",
-      password: "explicit-password", // pragma: allowlist secret
+      token: `ltfx.n.3f7a118b174381ebc867.v1`,
+      password: `ltfx.n.b7c209b295aae1493677.v1`, // pragma: allowlist secret
     });
   });
 
@@ -201,18 +201,18 @@ describe("resolveGatewayCredentialsFromConfig", () => {
       cfg: cfg({
         gateway: {
           mode: "local",
-          auth: { token: "config-token", password: "config-password" }, // pragma: allowlist secret
+          auth: { token: `ltfx.n.a98cc81fe778386f6195.v1`, password: `ltfx.n.247ccb8a17c771073cb2.v1` }, // pragma: allowlist secret
         },
       }),
       env: {
-        OPENCLAW_GATEWAY_TOKEN: "env-token",
-        OPENCLAW_GATEWAY_PASSWORD: "env-password", // pragma: allowlist secret
+        OPENCLAW_GATEWAY_TOKEN: `ltfx.n.25d37ba7752ae1d95b57.v1`,
+        OPENCLAW_GATEWAY_PASSWORD: `ltfx.n.b7c8db593f965dc9a2cd.v1`, // pragma: allowlist secret
         OPENCLAW_SERVICE_KIND: "gateway",
       } as NodeJS.ProcessEnv,
     });
     expect(resolved).toEqual({
-      token: "config-token",
-      password: "env-password", // pragma: allowlist secret
+      token: `ltfx.n.a98cc81fe778386f6195.v1`,
+      password: `ltfx.n.b7c8db593f965dc9a2cd.v1`, // pragma: allowlist secret
     });
   });
 
@@ -229,7 +229,7 @@ describe("resolveGatewayCredentialsFromConfig", () => {
       authMode: "token",
       secretId: "MISSING_LOCAL_TOKEN",
       errorPath: "gateway.auth.token",
-      remote: { token: "remote-token" },
+      remote: { token: `ltfx.n.b79f8018a1bfa2040be5.v1` },
     });
   });
 
@@ -238,7 +238,7 @@ describe("resolveGatewayCredentialsFromConfig", () => {
       authMode: "password",
       secretId: "MISSING_LOCAL_PASSWORD",
       errorPath: "gateway.auth.password",
-      remote: { password: "remote-password" }, // pragma: allowlist secret
+      remote: { password: `ltfx.n.de3ebec174fd3a1387de.v1` }, // pragma: allowlist secret
     });
   });
 
@@ -262,12 +262,12 @@ describe("resolveGatewayCredentialsFromConfig", () => {
         },
       }),
       env: {
-        OPENCLAW_GATEWAY_TOKEN: "env-token",
+        OPENCLAW_GATEWAY_TOKEN: `ltfx.n.25d37ba7752ae1d95b57.v1`,
       } as NodeJS.ProcessEnv,
     });
 
     expect(resolved).toEqual({
-      token: "env-token",
+      token: `ltfx.n.25d37ba7752ae1d95b57.v1`,
       password: undefined,
     });
   });
@@ -304,13 +304,13 @@ describe("resolveGatewayCredentialsFromConfig", () => {
     const resolved = resolveLocalGatewayCredentials({
       auth: {
         mode: "trusted-proxy",
-        password: "local-trusted-proxy-password", // pragma: allowlist secret
+        password: `ltfx.n.c53977f0b9f28911d93e.v1`, // pragma: allowlist secret
       },
     });
 
     expect(resolved).toEqual({
       token: undefined,
-      password: "local-trusted-proxy-password", // pragma: allowlist secret
+      password: `ltfx.n.c53977f0b9f28911d93e.v1`, // pragma: allowlist secret
     });
   });
 
@@ -320,7 +320,7 @@ describe("resolveGatewayCredentialsFromConfig", () => {
         mode: "trusted-proxy",
       },
       remote: {
-        password: "remote-password", // pragma: allowlist secret
+        password: `ltfx.n.de3ebec174fd3a1387de.v1`, // pragma: allowlist secret
       },
     });
 
@@ -330,19 +330,19 @@ describe("resolveGatewayCredentialsFromConfig", () => {
   it("keeps local credentials ahead of remote fallback in local mode", () => {
     const resolved = resolveLocalGatewayCredentials({
       remote: DEFAULT_REMOTE_AUTH,
-      auth: { token: "local-token", password: "local-password" }, // pragma: allowlist secret
+      auth: { token: `ltfx.n.c7ec7c548f5992a239dc.v1`, password: `ltfx.n.03eecb1e5d33a976de28.v1` }, // pragma: allowlist secret
     });
     expect(resolved).toEqual({
-      token: "local-token",
-      password: "local-password", // pragma: allowlist secret
+      token: `ltfx.n.c7ec7c548f5992a239dc.v1`,
+      password: `ltfx.n.03eecb1e5d33a976de28.v1`, // pragma: allowlist secret
     });
   });
 
   it("uses remote-mode remote credentials before env and local config", () => {
     const resolved = resolveRemoteModeWithRemoteCredentials();
     expect(resolved).toEqual({
-      token: "remote-token",
-      password: "env-password", // pragma: allowlist secret
+      token: `ltfx.n.b79f8018a1bfa2040be5.v1`,
+      password: `ltfx.n.b7c8db593f965dc9a2cd.v1`, // pragma: allowlist secret
     });
   });
 
@@ -360,8 +360,8 @@ describe("resolveGatewayCredentialsFromConfig", () => {
       remotePasswordPrecedence: "env-first", // pragma: allowlist secret
     });
     expect(resolved).toEqual({
-      token: "remote-token",
-      password: "env-password", // pragma: allowlist secret
+      token: `ltfx.n.b79f8018a1bfa2040be5.v1`,
+      password: `ltfx.n.b7c8db593f965dc9a2cd.v1`, // pragma: allowlist secret
     });
   });
 
@@ -371,8 +371,8 @@ describe("resolveGatewayCredentialsFromConfig", () => {
       remotePasswordPrecedence: "remote-first", // pragma: allowlist secret
     });
     expect(resolved).toEqual({
-      token: "env-token",
-      password: "remote-password", // pragma: allowlist secret
+      token: `ltfx.n.25d37ba7752ae1d95b57.v1`,
+      password: `ltfx.n.de3ebec174fd3a1387de.v1`, // pragma: allowlist secret
     });
   });
 
@@ -380,7 +380,7 @@ describe("resolveGatewayCredentialsFromConfig", () => {
     const resolved = resolveGatewayCredentialsFor(
       {
         mode: "remote",
-        remote: { token: "remote-token" },
+        remote: { token: `ltfx.n.b79f8018a1bfa2040be5.v1` },
         auth: DEFAULT_GATEWAY_AUTH,
       },
       {
@@ -388,7 +388,7 @@ describe("resolveGatewayCredentialsFromConfig", () => {
       },
     );
     expect(resolved).toEqual({
-      token: "remote-token",
+      token: `ltfx.n.b79f8018a1bfa2040be5.v1`,
       password: undefined,
     });
   });
@@ -398,12 +398,12 @@ describe("resolveGatewayCredentialsFromConfig", () => {
       cfg: cfg({
         gateway: {
           mode: "remote",
-          remote: { url: "wss://gateway.example" },
-          auth: { token: "local-token" },
+          remote: { url: `ltfx.n.2ec8b0b0f4c7fc92b531.v1` },
+          auth: { token: `ltfx.n.c7ec7c548f5992a239dc.v1` },
         },
       }),
       env: {
-        OPENCLAW_GATEWAY_TOKEN: "env-token",
+        OPENCLAW_GATEWAY_TOKEN: `ltfx.n.25d37ba7752ae1d95b57.v1`,
       } as NodeJS.ProcessEnv,
       remoteTokenFallback: "remote-only",
     });
@@ -416,7 +416,7 @@ describe("resolveGatewayCredentialsFromConfig", () => {
         cfgWithDefaultEnvSecretProvider({
           mode: "remote",
           remote: {
-            url: "wss://gateway.example",
+            url: `ltfx.n.2ec8b0b0f4c7fc92b531.v1`,
             token: envSecretRef("MISSING_REMOTE_TOKEN"),
           },
           auth: {},
@@ -431,7 +431,7 @@ describe("resolveGatewayCredentialsFromConfig", () => {
       gateway: {
         mode: "remote",
         remote: {
-          url: "wss://gateway.example",
+          url: `ltfx.n.2ec8b0b0f4c7fc92b531.v1`,
         },
         auth: {
           mode: "token",
@@ -474,16 +474,16 @@ describe("resolveGatewayCredentialsFromConfig", () => {
       cfgWithDefaultEnvSecretProvider({
         mode: "remote",
         remote: {
-          url: "wss://gateway.example",
+          url: `ltfx.n.2ec8b0b0f4c7fc92b531.v1`,
           token: envSecretRef("MISSING_REMOTE_TOKEN"),
-          password: "remote-password", // pragma: allowlist secret
+          password: `ltfx.n.de3ebec174fd3a1387de.v1`, // pragma: allowlist secret
         },
         auth: {},
       }),
     );
     expect(resolved).toEqual({
       token: undefined,
-      password: "remote-password", // pragma: allowlist secret
+      password: `ltfx.n.de3ebec174fd3a1387de.v1`, // pragma: allowlist secret
     });
   });
 
@@ -493,7 +493,7 @@ describe("resolveGatewayCredentialsFromConfig", () => {
         cfgWithDefaultEnvSecretProvider({
           mode: "remote",
           remote: {
-            url: "wss://gateway.example",
+            url: `ltfx.n.2ec8b0b0f4c7fc92b531.v1`,
             password: envSecretRef("MISSING_REMOTE_PASSWORD"),
           },
           auth: {},
@@ -511,8 +511,8 @@ describe("resolveGatewayCredentialsFromValues", () => {
       passwordPrecedence: "config-first", // pragma: allowlist secret
     });
     expect(resolved).toEqual({
-      token: "config-token",
-      password: "config-password", // pragma: allowlist secret
+      token: `ltfx.n.a98cc81fe778386f6195.v1`,
+      password: `ltfx.n.247ccb8a17c771073cb2.v1`, // pragma: allowlist secret
     });
   });
 
@@ -534,12 +534,12 @@ describe("resolveGatewayCredentialsFromValues", () => {
 
   it("accepts config credentials that do not contain env var references", () => {
     const resolved = resolveGatewayCredentialsFromValues({
-      configToken: "real-token-value",
-      configPassword: "real-password", // pragma: allowlist secret
+      configToken: `ltfx.n.c82c6062dfd0c5766f1b.v1`,
+      configPassword: `ltfx.n.0aa876212491be414925.v1`, // pragma: allowlist secret
       env: {} as NodeJS.ProcessEnv,
       tokenPrecedence: "config-first",
       passwordPrecedence: "config-first", // pragma: allowlist secret
     });
-    expect(resolved).toEqual({ token: "real-token-value", password: "real-password" }); // pragma: allowlist secret
+    expect(resolved).toEqual({ token: `ltfx.n.c82c6062dfd0c5766f1b.v1`, password: `ltfx.n.0aa876212491be414925.v1` }); // pragma: allowlist secret
   });
 });

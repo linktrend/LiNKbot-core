@@ -189,7 +189,7 @@ describe("memory manager self-heal missing identity with FTS-only chunks", () =>
       liveManager as unknown as {
         db: { exec: (sql: string) => void };
       }
-    ).db.exec(`DELETE FROM memory_index_meta WHERE key = 'memory_index_meta_v1'`);
+    ).db.exec(`DELETE FROM memory_index_meta WHERE key = `ltfx.n.81d248eb6c1f5ecdf256.v1``);
     expect(indexIdentityStatus(liveManager)).toBe("missing");
 
     await fs.writeFile(

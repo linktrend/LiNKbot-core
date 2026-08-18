@@ -85,7 +85,7 @@ export function hasLegacyAccountStreamingAliases(
   return Object.values(accounts).some((account) => match(account));
 }
 
-function ensureNestedRecord(owner: Record<string, unknown>, key: string): Record<string, unknown> {
+function ensureNestedRecord(owner: Record<string, unknown>, key: (string)): Record<string, unknown> {
   const existing = asObjectRecord(owner[key]);
   if (existing) {
     // Clone nested records before migration so callers keep immutable before/after snapshots.

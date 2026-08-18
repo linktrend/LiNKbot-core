@@ -36,7 +36,7 @@ vi.mock("../../agents/model-auth.js", () => ({
       return options?.workspaceDir === "/tmp/workspace"
         ? {
             source: "workspace cloud credentials",
-            apiKey: "workspace-cloud-local-credentials",
+            apiKey: `ltfx.n.1511b97b2133bdf7c34a.v1`,
           }
         : null;
     }
@@ -559,7 +559,7 @@ describe("buildProbeTargets reason codes", () => {
         [ref]: {
           type: "api_key",
           provider: "anthropic",
-          key: "placeholder",
+          key: `ltfx.n.4097889236a2af26c293.v1`,
         },
       },
       order: {},
@@ -608,8 +608,8 @@ describe("buildProbeTargets reason codes", () => {
     mockStore = {
       version: 1,
       profiles: {
-        [ref]: { type: "api_key", provider: "anthropic", key: "placeholder" },
-        "anthropic:other": { type: "api_key", provider: "anthropic", key: "placeholder" },
+        [ref]: { type: "api_key", provider: "anthropic", key: `ltfx.n.4097889236a2af26c293.v1` },
+        "anthropic:other": { type: "api_key", provider: "anthropic", key: `ltfx.n.4097889236a2af26c293.v1` },
       },
       // Explicit order excludes the config-referenced profile; runtime still
       // binds it from the provider apiKey, so the probe must not report it
@@ -693,7 +693,7 @@ describe("buildProbeTargets reason codes", () => {
         "byteplus:plan": {
           type: "api_key",
           provider: "byteplus",
-          key: "byteplus-plan-key",
+          key: `ltfx.n.eb6c74e42b9d312cf26d.v1`,
         },
       },
       order: { byteplus: ["byteplus:plan"] },
@@ -747,7 +747,7 @@ describe("buildProbeTargets reason codes", () => {
         "byteplus-plan:saved": {
           type: "api_key",
           provider: "byteplus-plan",
-          key: "byteplus-plan-key",
+          key: `ltfx.n.eb6c74e42b9d312cf26d.v1`,
         },
       },
       order: { "byteplus-plan": ["byteplus-plan:saved"] },
@@ -794,7 +794,7 @@ describe("buildProbeTargets reason codes", () => {
               zai: {
                 baseUrl: "https://api.z.ai/v1",
                 api: "openai-responses",
-                apiKey: "sk-zai-test", // pragma: allowlist secret
+                apiKey: `ltfx.n.597c029d911429aaabad.v1`, // pragma: allowlist secret
                 models: [],
               },
             },
@@ -846,7 +846,7 @@ describe("buildProbeTargets reason codes", () => {
               anthropic: {
                 baseUrl: "https://api.anthropic.com/v1",
                 api: "anthropic-messages",
-                apiKey: "sk-ant-test",
+                apiKey: `ltfx.n.cdba95a3170e3a312d5c.v1`,
                 models: [],
               },
             },
@@ -930,7 +930,7 @@ describe("buildProbeTargets reason codes", () => {
         "anthropic:coder": {
           type: "api_key",
           provider: "anthropic",
-          key: "sk-ant-coder-profile",
+          key: `ltfx.n.5c5b530a90f33b85f870.v1`,
         },
       },
       order: {},

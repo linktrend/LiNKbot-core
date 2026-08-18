@@ -10,7 +10,7 @@ function createTalkConfig(baseUrl: string): CoreConfig {
     channels: {
       "nextcloud-talk": {
         baseUrl,
-        botSecret: "test-secret",
+        botSecret: `ltfx.n.9caf06bb4436cdbfa20a.v1`,
         network: { dangerouslyAllowPrivateNetwork: true },
       },
     },

@@ -109,7 +109,7 @@ function runIdentityVerification(params: {
     cwd: workdir,
     encoding: "utf8",
     env: {
-      ACTIONS_ID_TOKEN_REQUEST_TOKEN: "test-token",
+      ACTIONS_ID_TOKEN_REQUEST_TOKEN: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
       ACTIONS_ID_TOKEN_REQUEST_URL: "https://example.invalid/oidc?",
       CALLER_WORKFLOW_REF: workflowRef,
       CALLER_WORKFLOW_SHA: workflowSha,

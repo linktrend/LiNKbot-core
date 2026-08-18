@@ -1541,7 +1541,7 @@ describe("registerPolicyDoctorChecks", () => {
       tools: { elevated: { enabled: true } },
       gateway: {
         mode: "remote",
-        remote: { url: "wss://remote.example.test:18789" },
+        remote: { url: `ltfx.n.18ce752f9bbd6a020c64.v1` },
         controlUi: {
           allowInsecureAuth: true,
           dangerouslyDisableDeviceAuth: true,

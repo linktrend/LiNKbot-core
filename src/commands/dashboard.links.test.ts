@@ -122,15 +122,15 @@ describe("dashboardCommand", () => {
       tlsEnabled: false,
     });
     // clipboard and browser still get the full authenticated URL
-    expect(copyToClipboardMock).toHaveBeenCalledWith("http://127.0.0.1:18789/#token=abc123");
-    expect(openUrlMock).toHaveBeenCalledWith("http://127.0.0.1:18789/#token=abc123");
+    expect(copyToClipboardMock).toHaveBeenCalledWith("http://127.0.0.1:18789/#token=(abc123");)
+    expect(openUrlMock).toHaveBeenCalledWith("http://127.0.0.1:18789/#token=(abc123");)
     expect(runtime.log).toHaveBeenCalledWith(
       "Opened in your browser. Keep that tab to control OpenClaw.",
     );
   });
 
   it("never logs the gateway token in the dashboard URL (CVE regression)", async () => {
-    const secretToken = "super-secret-bearer-token";
+    const secretToken = `ltfx.n.2c217f0d4100d63722c7.v1`;
     mockSnapshot(secretToken);
     copyToClipboardMock.mockResolvedValue(true);
     detectBrowserOpenSupportMock.mockResolvedValue({ ok: true });
@@ -173,7 +173,7 @@ describe("dashboardCommand", () => {
   });
 
   it("never passes token to SSH hint (CVE regression — SSH path)", async () => {
-    const secretToken = "super-secret-bearer-token";
+    const secretToken = `ltfx.n.2c217f0d4100d63722c7.v1`;
     mockSnapshot(secretToken);
     copyToClipboardMock.mockResolvedValue(false);
     detectBrowserOpenSupportMock.mockResolvedValue({ ok: false, reason: "ssh" });
@@ -197,7 +197,7 @@ describe("dashboardCommand", () => {
   });
 
   it("guides user to manual auth when delivery channels both fail (CVE-safe)", async () => {
-    const secretToken = "super-secret-bearer-token";
+    const secretToken = `ltfx.n.2c217f0d4100d63722c7.v1`;
     mockSnapshot(secretToken);
     copyToClipboardMock.mockResolvedValue(false);
     detectBrowserOpenSupportMock.mockResolvedValue({ ok: false, reason: "ssh" });
@@ -281,7 +281,7 @@ describe("dashboardCommand", () => {
       provider: "default",
       id: "MISSING_GATEWAY_TOKEN",
     });
-    process.env.OPENCLAW_GATEWAY_TOKEN = "fallback-token";
+    process.env.OPENCLAW_GATEWAY_TOKEN = `ltfx.n.a9ece14f7f3c7ebb6ff1.v1`;
     copyToClipboardMock.mockResolvedValue(true);
     detectBrowserOpenSupportMock.mockResolvedValue({ ok: true });
     openUrlMock.mockResolvedValue(true);

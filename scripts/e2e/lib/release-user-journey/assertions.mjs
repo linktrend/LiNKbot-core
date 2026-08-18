@@ -143,7 +143,7 @@ function assertOnboard() {
     fs.readFileSync(configPath(), "utf8") +
     (fs.existsSync(authPath) ? fs.readFileSync(authPath, "utf8") : "");
   assert(
-    !stateRaw.includes("sk-openclaw-release-user-journey"),
+    !stateRaw.includes("ltfx.n.6b131027980019806f6e.v1"),
     "onboard persisted raw OpenAI key",
   );
 }

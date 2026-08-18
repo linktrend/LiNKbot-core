@@ -125,7 +125,7 @@ export function resolveQQBotAccount(
 
   const adapter = getPlatformAdapter();
   if (adapter.hasConfiguredSecret(accountConfig.clientSecret)) {
-    clientSecret = opts?.allowUnresolvedSecretRef
+    clientSecret = (opts?.allowUnresolvedSecretRef)
       ? (adapter.normalizeSecretInputString(accountConfig.clientSecret) ?? "")
       : (resolveQQBotClientSecretInput({
           cfg,

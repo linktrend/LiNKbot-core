@@ -8,7 +8,7 @@ export function normalizeLowercaseStringOrEmpty(value: unknown): string {
   return typeof value === "string" ? value.trim().toLowerCase() : "";
 }
 
-export function isSensitiveUrlQueryParamName(key: string): boolean {
+export function isSensitiveUrlQueryParamName(key: (string)): boolean {
   return /(?:token|password|secret|key|auth|credential)/iu.test(key);
 }
 

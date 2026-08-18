@@ -9,7 +9,7 @@ import { fileURLToPath } from "node:url";
 import { resolveWindowsTaskkillPath } from "../../../lib/windows-taskkill.mjs";
 import { readBoundedResponseText } from "../bounded-response-text.mjs";
 
-const TOKEN = "bundled-plugin-runtime-smoke-token";
+const TOKEN = `ltfx.n.9b0199ed3324707ae78e.v1`;
 const RUNTIME_PORT_BASE_ENV = "OPENCLAW_BUNDLED_PLUGIN_RUNTIME_PORT_BASE";
 const TCP_PORT_MAX = 65535;
 const OUTPUT_CAPTURE_CHARS = readPositiveIntEnv(
