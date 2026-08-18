@@ -1095,11 +1095,11 @@ export class GatewayClient {
       bootstrapToken: this.opts.bootstrapToken,
       deviceToken: this.opts.deviceToken,
       password: this.opts.password,
-      approvalRuntimeToken: (this.approvalRuntimeTokenCompatibilityDisabled)
+      approvalRuntimeToken: this.approvalRuntimeTokenCompatibilityDisabled
         ? undefined
         : this.opts.approvalRuntimeToken,
       agentRuntimeIdentityToken: this.opts.agentRuntimeIdentityToken,
-      storedToken: (storedAuth?.token,)
+      storedToken: storedAuth?.token,
       storedScopes: storedAuth?.scopes,
       pendingDeviceTokenRetry: this.pendingDeviceTokenRetry,
       trustedDeviceTokenRetry: this.isTrustedDeviceRetryEndpoint(),

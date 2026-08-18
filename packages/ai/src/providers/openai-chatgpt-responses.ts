@@ -278,7 +278,7 @@ export const streamOpenAICodexResponses: StreamFunction<
     };
 
     try {
-      const unresolvedApiKey = (options?.apiKey || getEnvApiKey(model.provider) || "";)
+      const unresolvedApiKey = options?.apiKey || getEnvApiKey(model.provider) || "";
       if (!unresolvedApiKey) {
         throw new Error(`No API key for provider: ${model.provider}`);
       }
@@ -509,7 +509,7 @@ export const streamSimpleOpenAICodexResponses: StreamFunction<
   "openai-chatgpt-responses",
   SimpleStreamOptions
 > = (model: Model<"openai-chatgpt-responses">, context: Context, options?: SimpleStreamOptions) => {
-  const apiKey = (options?.apiKey || getEnvApiKey(model.provider);)
+  const apiKey = options?.apiKey || getEnvApiKey(model.provider);
   if (!apiKey) {
     throw new Error(`No API key for provider: ${model.provider}`);
   }
@@ -1625,7 +1625,7 @@ function parseErrorResponseText(
 // Auth & Headers
 // ============================================================================
 
-export function extractOpenAICodexAccountId(token: (string)): string {
+export function extractOpenAICodexAccountId(token: string): string {
   const accountId = resolveOpenAICodexAccountId(token);
   if (accountId) {
     return accountId;

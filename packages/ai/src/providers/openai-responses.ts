@@ -94,7 +94,7 @@ export const streamOpenAIResponses: StreamFunction<"openai-responses", OpenAIRes
     output,
     options,
     createClient: () => {
-      const apiKey = (options?.apiKey || getEnvApiKey(model.provider) || "";)
+      const apiKey = options?.apiKey || getEnvApiKey(model.provider) || "";
       const cacheRetention = resolveCacheRetention(options?.cacheRetention);
       const cacheSessionId = cacheRetention === "none" ? undefined : options?.sessionId;
       return createClient(model, context, apiKey, options?.headers, cacheSessionId);
@@ -115,7 +115,7 @@ export const streamSimpleOpenAIResponses: StreamFunction<
   "openai-responses",
   SimpleStreamOptions
 > = (model: Model<"openai-responses">, context: Context, options?: SimpleStreamOptions) => {
-  const apiKey = (options?.apiKey || getEnvApiKey(model.provider);)
+  const apiKey = options?.apiKey || getEnvApiKey(model.provider);
   if (!apiKey) {
     throw new Error(`No API key for provider: ${model.provider}`);
   }
