@@ -87,7 +87,7 @@ const bundle: ExactRevision2Bundle = {
   },
 };
 const authenticatedCatalogueEvidence = (
-  value: ExactRevision2Bundle = bundle,
+  value: ExactRevision2Bundle | AdversarialRevision2Bundle = bundle,
 ): AuthenticatedRevision2CatalogueEvidence => ({
   source: { commit: LIBRARIES_COMMIT, tree: LIBRARIES_TREE },
   catalogueSha256: LIBRARIES_CATALOGUE_SHA256,
@@ -103,8 +103,94 @@ const authenticatedCatalogueEvidence = (
   },
   verified: true,
 });
+
+/** Mutable adversarial fixtures for fail-closed mutation tests (no `as any`). */
+type WithExtra<T> = T & { extra?: unknown };
+type AdversarialRevision2Record = WithExtra<
+  {
+    -readonly [K in keyof Revision2Record]: Revision2Record[K];
+  } & {
+    releaseManifestSha256: string;
+    inventorySha256: string;
+  }
+>;
+type AdversarialRevision2Bundle = {
+  source: WithExtra<{ commit: string; tree: string }>;
+  catalogue: WithExtra<{
+    schemaVersion: number;
+    schemaRevision: number;
+    catalogueType: string;
+    catalogueSha256: string;
+    recordsSha256: string;
+    records: Array<AdversarialRevision2Record | undefined>;
+  }>;
+  record: AdversarialRevision2Record;
+  manifest: WithExtra<{
+    releaseId: string;
+    entryId: string;
+    version: string;
+    releaseSource: Revision2Record["releaseSource"];
+    artifactTreeSha1: string;
+    payloadSha256: string;
+    inventorySha256: string;
+    dependencyLockSha256: string;
+  }>;
+  inventorySha256: string;
+  dependencyLockSha256: string;
+  verifiedCache: WithExtra<{
+    sourceEvidence: WithExtra<{
+      selectedRepositoryCommitSha: string;
+      selectedRepositoryTreeSha1: string;
+      immutable: boolean;
+    }>;
+    releaseSource: Revision2Record["releaseSource"];
+    catalogueSha256: string;
+    catalogueRecordsSha256: string;
+    entryId: string;
+    version: string;
+    releaseManifestSha256: string;
+    inventorySha256: string;
+    payloadSha256: string;
+    artifactTreeSha1: string;
+  }>;
+  consumption: WithExtra<{
+    receiptType: string;
+    result: string;
+    entryId: string;
+    version: string;
+    releaseManifestSha256: string;
+    releaseSourceCommitSha: string;
+    releaseSourceRepositoryTreeSha1: string;
+    artifactTreeSha1: string;
+    consumerMaterializedTreeSha1: string;
+  }>;
+  extra?: unknown;
+};
+type AdversarialCatalogueEvidence = {
+  source: { commit: string; tree: string };
+  catalogueSha256: string;
+  recordsSha256: string;
+  selectedRecord: {
+    entryId: string;
+    version: string;
+    releaseManifestSha256: string | null;
+    releaseSourceCommitSha: string;
+    releaseSourceRepositoryTreeSha1: string;
+    artifactTreeSha1: string;
+    inventorySha256: string | null;
+  };
+  verified: true;
+};
+
+const cloneAdversarialBundle = (value: ExactRevision2Bundle = bundle): AdversarialRevision2Bundle =>
+  structuredClone(value) as AdversarialRevision2Bundle;
+
+const cloneAdversarialCatalogueEvidence = (
+  value: AuthenticatedRevision2CatalogueEvidence = authenticatedCatalogueEvidence(),
+): AdversarialCatalogueEvidence => structuredClone(value) as AdversarialCatalogueEvidence;
+
 const materializationEvidence = (
-  value: ExactRevision2Bundle = bundle,
+  value: ExactRevision2Bundle | AdversarialRevision2Bundle = bundle,
 ): VerifiedConsumerMaterializationEvidence => ({
   entryId: value.record.entryId,
   version: value.record.version,
@@ -119,9 +205,12 @@ const materializationEvidence = (
 });
 const validate = (
   value: unknown,
-  evidence: AuthenticatedRevision2CatalogueEvidence = authenticatedCatalogueEvidence(),
+  evidence:
+    | AuthenticatedRevision2CatalogueEvidence
+    | AdversarialCatalogueEvidence = authenticatedCatalogueEvidence(),
   materialized: VerifiedConsumerMaterializationEvidence = materializationEvidence(),
-) => validateExactRevision2(value, evidence, materialized);
+) =>
+  validateExactRevision2(value, evidence as AuthenticatedRevision2CatalogueEvidence, materialized);
 const pageEvidence = (
   records: readonly Revision2Record[] = [record],
   snapshot = "catalogue-v2",
@@ -224,11 +313,16 @@ describe("LiNKlibraries Revision 2 consumer", () => {
   });
   it("rejects accessor-backed paging input without invoking getters", () => {
     let getterCalls = 0;
-    const input = {
+    const input: {
+      commit: string;
+      tree: string;
+      snapshot: string;
+      limit?: number;
+    } = {
       commit: LIBRARIES_COMMIT,
       tree: LIBRARIES_TREE,
       snapshot: "catalogue-v2",
-    } as Record<string, unknown>;
+    };
     Object.defineProperty(input, "limit", {
       enumerable: true,
       get() {
@@ -258,8 +352,12 @@ describe("LiNKlibraries Revision 2 consumer", () => {
     expect(validate({ ...bundle, record: { ...record, bundlePath: "" } }).ok).toBe(false);
   });
   it("binds the selected record to the canonical catalogue records digest", () => {
-    const tamperedCatalogue = structuredClone(bundle) as Record<string, unknown>;
-    tamperedCatalogue.catalogue.records[0].version = "2.0.0";
+    const tamperedCatalogue = cloneAdversarialBundle();
+    const firstRecord = tamperedCatalogue.catalogue.records[0];
+    if (!firstRecord) {
+      throw new Error("expected catalogue record");
+    }
+    firstRecord.version = "2.0.0";
     expect(validate(tamperedCatalogue).ok).toBe(false);
 
     const substitutedRecord = {
@@ -272,7 +370,7 @@ describe("LiNKlibraries Revision 2 consumer", () => {
       releaseId: "substituted-component@1.0.0",
       entryId: "substituted-component",
     };
-    const substitutedBundle = structuredClone(bundle) as Record<string, unknown>;
+    const substitutedBundle = cloneAdversarialBundle();
     substitutedBundle.record = {
       ...substitutedRecord,
       releaseManifestSha256: canonicalDigest(substitutedManifest),
@@ -281,7 +379,7 @@ describe("LiNKlibraries Revision 2 consumer", () => {
     expect(validate(substitutedBundle).ok).toBe(false);
   });
   it("rejects a self-consistent catalogue digest that is not the pinned provider digest", () => {
-    const value = structuredClone(bundle) as Record<string, unknown>;
+    const value = cloneAdversarialBundle();
     value.catalogue.catalogueSha256 = d("d");
     value.verifiedCache.catalogueSha256 = d("d");
     expect(validate(value)).toMatchObject({
@@ -290,10 +388,14 @@ describe("LiNKlibraries Revision 2 consumer", () => {
     });
   });
   it("accepts the contract-supported raw manifest digest representation", () => {
-    const value = structuredClone(bundle) as Record<string, unknown>;
+    const value = cloneAdversarialBundle();
     const rawManifestDigest = record.releaseManifestSha256.slice("sha256:".length);
     value.record.releaseManifestSha256 = rawManifestDigest;
-    value.catalogue.records[0].releaseManifestSha256 = rawManifestDigest;
+    const firstRecord = value.catalogue.records[0];
+    if (!firstRecord) {
+      throw new Error("expected catalogue record");
+    }
+    firstRecord.releaseManifestSha256 = rawManifestDigest;
     value.catalogue.recordsSha256 = canonicalDigest(value.catalogue.records);
     value.verifiedCache.catalogueRecordsSha256 = value.catalogue.recordsSha256;
     value.verifiedCache.releaseManifestSha256 = rawManifestDigest;
@@ -303,7 +405,7 @@ describe("LiNKlibraries Revision 2 consumer", () => {
     ).toBe(true);
   });
   it("normalizes mixed raw and prefixed digest evidence", () => {
-    const value = structuredClone(bundle) as Record<string, unknown>;
+    const value = cloneAdversarialBundle();
     value.inventorySha256 = value.inventorySha256.slice("sha256:".length);
     value.dependencyLockSha256 = value.dependencyLockSha256.slice("sha256:".length);
     value.verifiedCache.catalogueRecordsSha256 = value.verifiedCache.catalogueRecordsSha256.slice(
@@ -345,31 +447,31 @@ describe("LiNKlibraries Revision 2 consumer", () => {
     ).toBe(true);
   });
   it.each([
-    ["bundle", (value: Record<string, unknown>): void => void (value.extra = true)],
-    ["source", (value: Record<string, unknown>): void => void (value.source.extra = true)],
-    ["catalogue", (value: Record<string, unknown>): void => void (value.catalogue.extra = true)],
-    ["manifest", (value: Record<string, unknown>): void => void (value.manifest.extra = true)],
+    ["bundle", (value: AdversarialRevision2Bundle): void => void (value.extra = true)],
+    ["source", (value: AdversarialRevision2Bundle): void => void (value.source.extra = true)],
+    ["catalogue", (value: AdversarialRevision2Bundle): void => void (value.catalogue.extra = true)],
+    ["manifest", (value: AdversarialRevision2Bundle): void => void (value.manifest.extra = true)],
     [
       "verified cache",
-      (value: Record<string, unknown>): void => void (value.verifiedCache.extra = true),
+      (value: AdversarialRevision2Bundle): void => void (value.verifiedCache.extra = true),
     ],
     [
       "cache source evidence",
-      (value: Record<string, unknown>): void =>
+      (value: AdversarialRevision2Bundle): void =>
         void (value.verifiedCache.sourceEvidence.extra = true),
     ],
     [
       "consumption receipt",
-      (value: Record<string, unknown>): void => void (value.consumption.extra = true),
+      (value: AdversarialRevision2Bundle): void => void (value.consumption.extra = true),
     ],
   ] as const)("rejects unknown fields in the exact %s envelope", (_name, mutate) => {
-    const value = structuredClone(bundle) as Record<string, unknown>;
+    const value = cloneAdversarialBundle();
     mutate(value);
     expect(validate(value).ok).toBe(false);
   });
   it("rejects inherited and accessor-backed catalogue records without invoking getters", () => {
     let getterCalls = 0;
-    const accessorRecord = { ...record } as Record<string, unknown>;
+    const accessorRecord: AdversarialRevision2Record = { ...record };
     Object.defineProperty(accessorRecord, "entryId", {
       enumerable: true,
       get() {
@@ -419,7 +521,7 @@ describe("LiNKlibraries Revision 2 consumer", () => {
   it.each(["wrong source", "wrong manifest", "stale cache", "failed consumption"] as const)(
     "rejects %s",
     (failure) => {
-      const value = structuredClone(bundle) as Record<string, unknown>;
+      const value = cloneAdversarialBundle();
       if (failure === "wrong source") {
         value.source.commit = "other";
       }
@@ -436,13 +538,13 @@ describe("LiNKlibraries Revision 2 consumer", () => {
     },
   );
   it("rejects an unrelated consumption receipt", () => {
-    const value = structuredClone(bundle) as Record<string, unknown>;
+    const value = cloneAdversarialBundle();
     value.consumption.entryId = "other-entry";
     expect(validate(value).ok).toBe(false);
   });
 
   it("rejects a forged pass receipt that does not match independent materialization evidence", () => {
-    const value = structuredClone(bundle) as Record<string, unknown>;
+    const value = cloneAdversarialBundle();
     value.consumption.consumerMaterializedTreeSha1 = "ffeeddccbbaa0099887766554433221100ffeedd";
     expect(validate(value)).toMatchObject({
       ok: false,
@@ -457,7 +559,7 @@ describe("LiNKlibraries Revision 2 consumer", () => {
   });
 
   it("fails closed for malformed catalogue entries without throwing", () => {
-    const value = structuredClone(bundle) as Record<string, unknown>;
+    const value = cloneAdversarialBundle();
     value.catalogue.records = [undefined];
     value.catalogue.recordsSha256 = canonicalDigest(value.catalogue.records);
     expect(() => validate(value)).not.toThrow();
@@ -481,7 +583,7 @@ describe("LiNKlibraries Revision 2 consumer", () => {
 
   it("fails closed without throwing for malformed authenticated selected-record digests", () => {
     for (const field of ["releaseManifestSha256", "inventorySha256"] as const) {
-      const evidence = structuredClone(authenticatedCatalogueEvidence()) as Record<string, unknown>;
+      const evidence = cloneAdversarialCatalogueEvidence();
       evidence.selectedRecord[field] = null;
       expect(() => validate(bundle, evidence)).not.toThrow();
       expect(validate(bundle, evidence)).toMatchObject({

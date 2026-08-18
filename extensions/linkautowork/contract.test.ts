@@ -71,8 +71,8 @@ const authenticatedReceiptEvidence = (
   | {
       providerCandidate: { commit: typeof AUTOWORK_COMMIT; tree: typeof AUTOWORK_TREE };
       contractVersion: typeof AUTOWORK_CONTRACT_VERSION;
-      requestId: unknown;
-      receiptId: unknown;
+      requestId: string;
+      receiptId: string;
       receiptDigest: string;
       verified: true;
     }
@@ -85,12 +85,17 @@ const authenticatedReceiptEvidence = (
   if (!requestId || !("value" in requestId) || !receiptId || !("value" in receiptId)) {
     return undefined;
   }
+  const requestIdValue = requestId.value;
+  const receiptIdValue = receiptId.value;
+  if (typeof requestIdValue !== "string" || typeof receiptIdValue !== "string") {
+    return undefined;
+  }
   try {
     return {
       providerCandidate: { commit: AUTOWORK_COMMIT, tree: AUTOWORK_TREE },
       contractVersion: AUTOWORK_CONTRACT_VERSION,
-      requestId: requestId.value,
-      receiptId: receiptId.value,
+      requestId: requestIdValue,
+      receiptId: receiptIdValue,
       receiptDigest: autoworkReceiptDigest(value),
       verified: true as const,
     };

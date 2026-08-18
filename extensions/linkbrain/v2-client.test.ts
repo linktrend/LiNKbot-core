@@ -3,7 +3,12 @@ import {
   assertBrainV2PlatformIdentity,
   createBrainV2Client as createBrainV2ClientRaw,
 } from "./src/v2.js";
-import type { BrainV2PlatformIdentity, BrainV2TransportRequest } from "./src/v2.js";
+import type {
+  BrainV2AuthenticatedProviderEvidence,
+  BrainV2PlatformIdentity,
+  BrainV2PlatformRevocationDecision,
+  BrainV2TransportRequest,
+} from "./src/v2.js";
 import {
   NOW,
   activeRevocationDecision,
@@ -15,6 +20,8 @@ import {
   negotiation,
   page,
 } from "./v2-test-fixtures.js";
+
+type BrainV2ClientInput = Parameters<typeof createBrainV2ClientRaw>[0];
 
 describe("LiNKbrain v2 client boundary", () => {
   it("requires negotiation before calls and never sends the credential reference", async () => {

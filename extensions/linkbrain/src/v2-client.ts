@@ -30,32 +30,6 @@ import {
   type BrainV2Transport,
 } from "./v2-pins.js";
 
-/** Throw only Error values; preserve own data fields that safeFailure reads. */
-const throwAsError = (error: unknown, fallbackMessage: string): never => {
-  if (error instanceof Error) {
-    throw error;
-  }
-  const thrown = new Error(fallbackMessage);
-  if (error !== null && typeof error === "object") {
-    for (const key of Reflect.ownKeys(error)) {
-      if (typeof key !== "string") {
-        continue;
-      }
-      const descriptor = Object.getOwnPropertyDescriptor(error, key);
-      if (!descriptor || !("value" in descriptor)) {
-        continue;
-      }
-      Object.defineProperty(thrown, key, {
-        value: descriptor.value,
-        enumerable: true,
-        configurable: true,
-        writable: true,
-      });
-    }
-  }
-  throw thrown;
-};
-
 export type BrainV2PrivateCapture = Readonly<{
   namespace: "private";
   captureRef: string;
@@ -266,20 +240,21 @@ export function createBrainV2Client(input: {
     transportConstructionError = error;
   }
   const requireTrustedIdentity = async (): Promise<BrainV2PlatformIdentity> => {
-    if (!trustedIdentity || !revocationResolver) {
-      throwAsError(identityConstructionError, "brain_v2_identity_snapshot_invalid");
+    const identity = trustedIdentity;
+    const resolver = revocationResolver;
+    if (!identity || !resolver) {
+      if (identityConstructionError instanceof Error) {
+        throw identityConstructionError;
+      }
+      throw new Error("brain_v2_identity_snapshot_invalid");
     }
     const expectation = currentIdentityExpectation();
-    assertBrainV2PlatformIdentity(trustedIdentity, expectation);
-    const decision = await revocationResolver();
+    assertBrainV2PlatformIdentity(identity, expectation);
+    const decision = await resolver();
     const completionExpectation = currentIdentityExpectation();
-    assertBrainV2PlatformIdentity(trustedIdentity, completionExpectation);
-    assertFreshRevocationDecision(
-      decision,
-      trustedIdentity,
-      completionExpectation.now ?? new Date(),
-    );
-    return trustedIdentity;
+    assertBrainV2PlatformIdentity(identity, completionExpectation);
+    assertFreshRevocationDecision(decision, identity, completionExpectation.now ?? new Date());
+    return identity;
   };
   const safeFailure = (error: unknown): BrainV2SafeResult<never> => {
     const providerStatus = ownDataString(error, "status");
@@ -331,10 +306,14 @@ export function createBrainV2Client(input: {
       }
       assertBrainV2OperationAuthorized(identity, operation);
       const safeParams = assertBrainV2SafePayload(params);
-      if (!transportRequest) {
-        throwAsError(transportConstructionError, "brain_v2_transport_invalid");
+      const request = transportRequest;
+      if (!request) {
+        if (transportConstructionError instanceof Error) {
+          throw transportConstructionError;
+        }
+        throw new Error("brain_v2_transport_invalid");
       }
-      const response = await transportRequest({
+      const response = await request({
         protocolVersion: LINKBRAIN_V2_MCP_PROTOCOL,
         method: "tools/call",
         actorBindingRef: identity.runtimeBindingRef,
@@ -365,13 +344,20 @@ export function createBrainV2Client(input: {
     async negotiate() {
       try {
         if (providerEvidenceError) {
-          throwAsError(providerEvidenceError, "brain_v2_provider_evidence_invalid");
+          if (providerEvidenceError instanceof Error) {
+            throw providerEvidenceError;
+          }
+          throw new Error("brain_v2_provider_evidence_invalid");
         }
         const identity = await requireTrustedIdentity();
-        if (!transportRequest) {
-          throwAsError(transportConstructionError, "brain_v2_transport_invalid");
+        const request = transportRequest;
+        if (!request) {
+          if (transportConstructionError instanceof Error) {
+            throw transportConstructionError;
+          }
+          throw new Error("brain_v2_transport_invalid");
         }
-        const response = await transportRequest({
+        const response = await request({
           protocolVersion: LINKBRAIN_V2_MCP_PROTOCOL,
           method: "discover",
           actorBindingRef: identity.runtimeBindingRef,
