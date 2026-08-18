@@ -10459,6 +10459,15 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Troubleshooting
   - H2: Related
 
+## link-integrations/ocp-01/platform-foundation.md
+
+- Route: /link-integrations/ocp-01/platform-foundation
+- Headings:
+  - H1: OCP-01 Platform foundation
+  - H2: Immutable source
+  - H2: Relationship to the retired root
+  - H2: Ownership boundary
+
 ## logging.md
 
 - Route: /logging

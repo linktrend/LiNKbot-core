@@ -1,0 +1,70 @@
+{
+  "profile": "ocp-01",
+  "providers": {
+    "platform": {
+      "repository": "LiNKplatform",
+      "commit": "5452f90a35ed690698a9161117a9d92c69985582",
+      "tree": "90b51726f7a77e4620151a463a10cfc3d2007c88",
+      "contractVersions": ["platform.auth-claims/1.1.0", "platform.provider-trust/1.0.0"],
+      "schemaVersions": ["2026.07.28-w4"],
+      "mcpProtocol": null,
+      "artifacts": {
+        "packages/contracts/src/provider-trust.ts": "sha256:b80a73d29cb4fdfac59590d949ad8342ab695ef32e6b5daee37c33800870faa7",
+        "packages/paci/src/provider-trust.ts": "sha256:fc8ef4ac615cc3d39df845f3333fabf91d6d36793c7b6b85ee35cd862527884f",
+        "packages/contracts/schemas/platform-auth-claims.v1.1.0.json": "sha256:c2e8bc68b3feb9a3dacc497f5a5d497b466c400804fb4f9e41734c10772ddfa1"
+      }
+    },
+    "brain": {
+      "repository": "LiNKbrain",
+      "commit": "8ce1d737f8870a479f07b1741c58d6681cd07aa1",
+      "tree": "0cae42d612342f5e52c7e2e0e76cb6fc2f6d81f3",
+      "contractVersions": ["brain.v2/2.0.0"],
+      "schemaVersions": ["2.0.0"],
+      "mcpProtocol": "2026-07-28",
+      "artifacts": {
+        "packages/contracts/src/v2/schemas.ts": "sha256:ff02970e0327fc578295637f26e99904d736af8c412a1523586744756881682b",
+        "packages/mcp-server/src/v2/sessionless.ts": "sha256:f88ba9474d23f5a8c46fd39fee6cd1bf4b50b87c40c7c68cefba2023d566eaea"
+      }
+    },
+    "skills": {
+      "repository": "LiNKskills",
+      "commit": "6269cb173a7c9e0170b29f35c539343c29eab795",
+      "tree": "6c36e6c98f90e55d957fba781327b1b0ef90860a",
+      "contractVersions": ["skills.api.v0.2", "skills-release/0.2"],
+      "schemaVersions": ["0.2"],
+      "mcpProtocol": "2026-07-28",
+      "artifacts": {
+        "packages/contracts/docs/provider-v0.2-contract.md": "sha256:b0cd7615f806dd8b3af530842b11f44fb2eb77f466a48f575bdbc50652d7405e",
+        "packages/mcp_server/linkskills_mcp/v2_provider.py": "sha256:8490151561e6b55e52557679591b85a8a721649c24219fc56e5eea71d062a941",
+        "packages/contracts/schemas/mcp-policy-v0.2.json": "sha256:139ad7a125adc7d2780d84df671cbc7c762c3a05c0fc1588928f16846127df48"
+      }
+    },
+    "libraries": {
+      "repository": "LiNKlibraries",
+      "commit": "0efa68b19686e976ecee93c6a962e81d2a0265f5",
+      "tree": "c42d20b3119ca4bfdd24d4c6b06d6bc7a7f50d4a",
+      "contractVersions": ["libraries.v2/revision-2"],
+      "schemaVersions": ["2.2"],
+      "mcpProtocol": null,
+      "artifacts": {
+        "schemas/v2/catalogue-record.schema.json": "sha256:162acc0ebecaf52c173dc347175b17cea06dbc4fe4237a9b41f004a1328ba409",
+        "schemas/v2/release-manifest.schema.json": "sha256:acdab0f2a874a54d8eca534bdfd07f83c8e82cc3230c322f6ea41ac2941ff164",
+        "schemas/v2/consumption-receipt.schema.json": "sha256:74f265dd5ef1592f15b1ac4c9777b707514e24d4654e35206a52dc973f2670de",
+        "schemas/v2/verified-cache-receipt.schema.json": "sha256:58ecea43b6104e76bd1c39ff7891481e2adbb92f6e2e973b8b9774324fbb0736",
+        "schemas/v2/contribution-intake.schema.json": "sha256:8545990eb177471adc6ce6b357c573a3476aaf3e6a110dc0129cecb0e86e4c91"
+      }
+    },
+    "autowork": {
+      "repository": "LiNKautowork",
+      "commit": "4eb29203766b1ccf200a2dc10b39cc58d175c90c",
+      "tree": "5f306d674780a5a26048017f916da6048d71e7a5",
+      "contractVersions": ["2026-08-13.v1"],
+      "schemaVersions": ["provider-contract-v1"],
+      "mcpProtocol": null,
+      "artifacts": {
+        "packages/automation-contracts/src/provider-contract.ts": "sha256:253835c87a6d51fe4915770396d45f64edf6d7ce08f7900c5b54d61918fadc80",
+        "gateway/src/contracts/execution-callback.ts": "sha256:56ca04bb7e92a1900cbdcbd5cb7b52f786ac2508172cf577e7e024291a3646fc"
+      }
+    }
+  }
+}
