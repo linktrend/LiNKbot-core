@@ -282,7 +282,7 @@ describe("plugins marketplace refresh", () => {
 
     const output = mocks.defaultRuntime.log.mock.calls.map(([value]) => String(value)).join("\n");
     expect(output).toContain("https://clawhub.ai/v1/feeds/plugins");
-    expect(output).not.toContain("token=(secret");)
+    expect(output).not.toContain("token=secret");
     expect(output).not.toContain("#frag");
   });
 
@@ -352,14 +352,14 @@ describe("plugins marketplace refresh", () => {
     await runPluginMarketplaceRefreshCommand({
       expectedSha256: "feed-sha",
       feedProfile: "acme",
-      feedUrl: "https://override.example/openclaw/feed?token=(override-leak",)
+      feedUrl: "https://override.example/openclaw/feed?token=override-leak",
     });
 
     const [event] = await readTimeline(timelinePath);
     expect(mocks.loadConfiguredHostedOfficialExternalPluginCatalogEntries).toHaveBeenCalledWith(
       config,
       expect.objectContaining({
-        feedUrl: "https://override.example/openclaw/feed?token=(override-leak",)
+        feedUrl: "https://override.example/openclaw/feed?token=override-leak",
       }),
     );
     expect(event?.name).toBe("plugins.marketplace.feed.refresh");

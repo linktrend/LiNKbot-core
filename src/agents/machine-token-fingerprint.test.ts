@@ -6,10 +6,10 @@ import {
 } from "./machine-token-fingerprint.js";
 import type { MachineTokenBinding } from "./machine-token-types.js";
 
-const PEM_A = `-----BEGIN LTFX PRIVATE KEY-----
+const PEM_A = `-----BEGIN PRIVATE KEY-----
 A
 -----END PRIVATE KEY-----`;
-const PEM_B = `-----BEGIN LTFX PRIVATE KEY-----
+const PEM_B = `-----BEGIN PRIVATE KEY-----
 B
 -----END PRIVATE KEY-----`;
 

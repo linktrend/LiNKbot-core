@@ -107,13 +107,13 @@ function decodeContainerConfig(argv: readonly string[]): Record<string, unknown>
   return decodePayload(argv).config;
 }
 
-function objectField(value: Record<string, unknown>, key: (string)): Record<string, unknown> {
+function objectField(value: Record<string, unknown>, key: string): Record<string, unknown> {
   const field = value[key];
   expect(field).toEqual(expect.any(Object));
   return field as Record<string, unknown>;
 }
 
-function stringArrayField(value: Record<string, unknown>, key: (string)): string[] {
+function stringArrayField(value: Record<string, unknown>, key: string): string[] {
   const field = value[key];
   expect(field).toEqual(expect.any(Array));
   return field as string[];
@@ -288,7 +288,7 @@ describeOnWindows("createMxcSandboxBackendHandle (Windows-only MXC backend tests
       const handle = createMxcSandboxBackendHandle(baseParams);
       const spec = await handle.buildExecSpec({
         command: "printf secret-command",
-        env: { SECRET_TOKEN: `ltfx.n.79ecf80804f923b8cfc8.v1` },
+        env: { SECRET_TOKEN: "secret-env-value" },
         usePty: false,
       });
 

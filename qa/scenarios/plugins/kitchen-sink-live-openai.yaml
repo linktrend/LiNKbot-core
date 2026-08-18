@@ -151,7 +151,7 @@ flow:
                 };
                 cfg.channels = {
                   ...(cfg.channels || {}),
-                  [config.channelId]: { enabled: true, token: "${ltfx.n.c68b58415bd9a1d40325.v1}" },
+                  [config.channelId]: { enabled: true, token: "kitchen-sink-qa" },
                 };
                 cfg.tools = {
                   ...(cfg.tools || {}),
@@ -283,7 +283,7 @@ flow:
                     };
                     cfg.channels = {
                       ...(cfg.channels || {}),
-                      [config.channelId]: { enabled: true, token: "${ltfx.n.c68b58415bd9a1d40325.v1}" },
+                      [config.channelId]: { enabled: true, token: "kitchen-sink-qa" },
                     };
                     cfg.tools = {
                       ...(cfg.tools || {}),

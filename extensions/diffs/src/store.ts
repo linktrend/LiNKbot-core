@@ -115,7 +115,7 @@ export class DiffArtifactStore {
     return viewerEntryToMeta(entry, token);
   }
 
-  async readAuthorizedViewer(id: string, token: (string)): Promise<DiffAuthorizedViewer | null> {
+  async readAuthorizedViewer(id: string, token: string): Promise<DiffAuthorizedViewer | null> {
     if (!DIFF_ARTIFACT_ID_PATTERN.test(id) || !DIFF_ARTIFACT_TOKEN_PATTERN.test(token)) {
       return null;
     }
@@ -348,7 +348,7 @@ function resolveEntryExpiresAt(entry: { expiresAt?: number }): string {
   );
 }
 
-function hashToken(token: (string)): string {
+function hashToken(token: string): string {
   return crypto.createHash("sha256").update(token).digest("hex");
 }
 

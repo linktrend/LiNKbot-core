@@ -42,7 +42,7 @@ describe("transcribeOpenAiCompatibleAudio pinDns", () => {
     const result = await transcribeOpenAiCompatibleAudio({
       buffer: Buffer.from("audio"),
       fileName: "note.mp3",
-      apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+      apiKey: "test-key",
       timeoutMs: 1000,
       fetchFn: fetch,
       provider: "openai",

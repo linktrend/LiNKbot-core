@@ -213,7 +213,7 @@ describe("loginOpenAICodexDeviceCode", () => {
                 email: "codex@example.com",
               },
             }),
-            refresh_token: `ltfx.n.4fb14bbebefdda0a37e7.v1`,
+            refresh_token: "refresh-token-123",
             id_token: createJwt({
               "https://api.openai.com/auth": {
                 chatgpt_account_id: "acct_123",
@@ -316,7 +316,7 @@ describe("loginOpenAICodexDeviceCode", () => {
       if (url.endsWith("/oauth/token")) {
         return createJsonResponse({
           access_token: accessToken,
-          refresh_token: `ltfx.n.4fb14bbebefdda0a37e7.v1`,
+          refresh_token: "refresh-token-123",
           expires_in: 600,
         });
       }
@@ -395,7 +395,7 @@ describe("loginOpenAICodexDeviceCode", () => {
       .mockResolvedValueOnce(
         createJsonResponse({
           access_token: accessToken,
-          refresh_token: `ltfx.n.4fb14bbebefdda0a37e7.v1`,
+          refresh_token: "refresh-token-123",
         }),
       );
 
@@ -435,7 +435,7 @@ describe("loginOpenAICodexDeviceCode", () => {
       .mockResolvedValueOnce(
         createJsonResponse({
           access_token: accessToken,
-          refresh_token: `ltfx.n.4fb14bbebefdda0a37e7.v1`,
+          refresh_token: "refresh-token-123",
           id_token: "x".repeat(10_000),
         }),
       );
@@ -477,7 +477,7 @@ describe("loginOpenAICodexDeviceCode", () => {
         .mockResolvedValueOnce(
           createJsonResponse({
             access_token: accessToken,
-            refresh_token: `ltfx.n.4fb14bbebefdda0a37e7.v1`,
+            refresh_token: "refresh-token-123",
             expires_in: Number.MAX_SAFE_INTEGER,
           }),
         );

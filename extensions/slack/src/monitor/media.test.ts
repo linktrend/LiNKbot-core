@@ -235,7 +235,7 @@ async function expectPrivateDownloadRedirect(params: {
 
   const result = await resolveSlackMedia({
     files: [{ url_private_download: "https://files.slack.com/download.jpg", name: "test.jpg" }],
-    token: `ltfx.n.717f1f393204cfc6621c.v1`,
+    token: "xoxb-test-token",
     maxBytes: 1024 * 1024,
   });
 
@@ -275,7 +275,7 @@ describe("resolveSlackMedia", () => {
           name: "test.jpg",
         },
       ],
-      token: `ltfx.n.717f1f393204cfc6621c.v1`,
+      token: "xoxb-test-token",
       maxBytes: 1024 * 1024,
     });
 
@@ -304,7 +304,7 @@ describe("resolveSlackMedia", () => {
 
     const result = await resolveSlackMedia({
       files: [{ url_private: "https://files.slack.com/test.jpg", name: "test.jpg" }],
-      token: `ltfx.n.717f1f393204cfc6621c.v1`,
+      token: "xoxb-test-token",
       maxBytes: 1024 * 1024,
     });
 
@@ -322,7 +322,7 @@ describe("resolveSlackMedia", () => {
 
     const result = await resolveSlackMedia({
       files: [{ url_private: "https://files.slack.com/test.jpg", name: "test.jpg" }],
-      token: `ltfx.n.717f1f393204cfc6621c.v1`,
+      token: "xoxb-test-token",
       maxBytes: 1024 * 1024,
     });
 
@@ -358,7 +358,7 @@ describe("resolveSlackMedia", () => {
 
       const resultPromise = resolveSlackMedia({
         files: [{ url_private: "https://files.slack.com/slow.jpg", name: "slow.jpg" }],
-        token: `ltfx.n.717f1f393204cfc6621c.v1`,
+        token: "xoxb-test-token",
         maxBytes: 1024 * 1024,
         totalTimeoutMs: 25,
       });
@@ -374,7 +374,7 @@ describe("resolveSlackMedia", () => {
   it("returns null when no files are provided", async () => {
     const result = await resolveSlackMedia({
       files: [],
-      token: `ltfx.n.717f1f393204cfc6621c.v1`,
+      token: "xoxb-test-token",
       maxBytes: 1024 * 1024,
     });
 
@@ -384,7 +384,7 @@ describe("resolveSlackMedia", () => {
   it("skips files without url_private", async () => {
     const result = await resolveSlackMedia({
       files: [{ name: "test.jpg" }], // No url_private
-      token: `ltfx.n.717f1f393204cfc6621c.v1`,
+      token: "xoxb-test-token",
       maxBytes: 1024 * 1024,
     });
 
@@ -413,7 +413,7 @@ describe("resolveSlackMedia", () => {
     const result = await resolveSlackMedia({
       files: [{ id: "F123", name: "test.jpg" }],
       client: mockClient,
-      token: `ltfx.n.717f1f393204cfc6621c.v1`,
+      token: "xoxb-test-token",
       maxBytes: 1024 * 1024,
     });
 
@@ -433,7 +433,7 @@ describe("resolveSlackMedia", () => {
     const result = await resolveSlackMedia({
       files: [{ id: "F123", name: "test.jpg" }],
       client: mockClient,
-      token: `ltfx.n.717f1f393204cfc6621c.v1`,
+      token: "xoxb-test-token",
       maxBytes: 1024 * 1024,
     });
 
@@ -452,7 +452,7 @@ describe("resolveSlackMedia", () => {
     const result = await resolveSlackMedia({
       files: [{ id: "F123", name: "test.jpg" }],
       client: mockClient,
-      token: `ltfx.n.717f1f393204cfc6621c.v1`,
+      token: "xoxb-test-token",
       maxBytes: 1024 * 1024,
     });
 
@@ -488,7 +488,7 @@ describe("resolveSlackMedia", () => {
         },
       ],
       client: mockClient,
-      token: `ltfx.n.717f1f393204cfc6621c.v1`,
+      token: "xoxb-test-token",
       maxBytes: 1024 * 1024,
     });
 
@@ -511,7 +511,7 @@ describe("resolveSlackMedia", () => {
 
     const result = await resolveSlackMedia({
       files: [{ url_private: "https://files.slack.com/test.jpg", name: "test.jpg" }],
-      token: `ltfx.n.717f1f393204cfc6621c.v1`,
+      token: "xoxb-test-token",
       maxBytes: 1024 * 1024,
     });
 
@@ -536,7 +536,7 @@ describe("resolveSlackMedia", () => {
           mimetype: "text/html",
         },
       ],
-      token: `ltfx.n.717f1f393204cfc6621c.v1`,
+      token: "xoxb-test-token",
       maxBytes: 1024 * 1024,
     });
 
@@ -571,7 +571,7 @@ describe("resolveSlackMedia", () => {
           subtype: "slack_audio",
         },
       ],
-      token: `ltfx.n.717f1f393204cfc6621c.v1`,
+      token: "xoxb-test-token",
       maxBytes: 16 * 1024 * 1024,
     });
 
@@ -604,7 +604,7 @@ describe("resolveSlackMedia", () => {
           mimetype: "video/mp4",
         },
       ],
-      token: `ltfx.n.717f1f393204cfc6621c.v1`,
+      token: "xoxb-test-token",
       maxBytes: 16 * 1024 * 1024,
     });
 
@@ -632,7 +632,7 @@ describe("resolveSlackMedia", () => {
         { url_private: "https://files.slack.com/first.jpg", name: "first.jpg" },
         { url_private: "https://files.slack.com/second.jpg", name: "second.jpg" },
       ],
-      token: `ltfx.n.717f1f393204cfc6621c.v1`,
+      token: "xoxb-test-token",
       maxBytes: 1024 * 1024,
     });
 
@@ -676,7 +676,7 @@ describe("resolveSlackMedia", () => {
         { id: "FA", url_private: "https://files.slack.com/a.jpg", name: "a.jpg" },
         { id: "FB", url_private: "https://files.slack.com/b.png", name: "b.png" },
       ],
-      token: `ltfx.n.717f1f393204cfc6621c.v1`,
+      token: "xoxb-test-token",
       maxBytes: 1024 * 1024,
     });
 
@@ -708,7 +708,7 @@ describe("resolveSlackMedia", () => {
 
     const result = await resolveSlackMedia({
       files,
-      token: `ltfx.n.717f1f393204cfc6621c.v1`,
+      token: "xoxb-test-token",
       maxBytes: 1024 * 1024,
     });
 
@@ -732,7 +732,7 @@ describe("resolveSlackMedia", () => {
 
     const result = await resolveSlackMedia({
       files: [{ url_private: "https://files.slack.com/test.jpg", name: "test.jpg" }],
-      token: `ltfx.n.717f1f393204cfc6621c.v1`,
+      token: "xoxb-test-token",
       maxBytes: 1024 * 1024,
     });
 
@@ -771,7 +771,7 @@ describe("Slack media SSRF policy", () => {
 
     await resolveSlackMedia({
       files: [{ url_private: "https://files.slack.com/test.jpg", name: "test.jpg" }],
-      token: `ltfx.n.717f1f393204cfc6621c.v1`,
+      token: "xoxb-test-token",
       maxBytes: 1024,
     });
 
@@ -797,7 +797,7 @@ describe("Slack media SSRF policy", () => {
 
     await resolveSlackAttachmentContent({
       attachments: [{ is_share: true, image_url: "https://files.slack.com/forwarded.jpg" }],
-      token: `ltfx.n.717f1f393204cfc6621c.v1`,
+      token: "xoxb-test-token",
       maxBytes: 1024,
     });
 
@@ -832,7 +832,7 @@ describe("resolveSlackAttachmentContent", () => {
           image_url: "https://example.com/unfurl.jpg",
         },
       ],
-      token: `ltfx.n.717f1f393204cfc6621c.v1`,
+      token: "xoxb-test-token",
       maxBytes: 1024 * 1024,
     });
 
@@ -849,7 +849,7 @@ describe("resolveSlackAttachmentContent", () => {
           text: "Please review this",
         },
       ],
-      token: `ltfx.n.717f1f393204cfc6621c.v1`,
+      token: "xoxb-test-token",
       maxBytes: 1024 * 1024,
     });
 
@@ -863,7 +863,7 @@ describe("resolveSlackAttachmentContent", () => {
   it("skips forwarded image URLs on non-Slack hosts", async () => {
     const result = await resolveSlackAttachmentContent({
       attachments: [{ is_share: true, image_url: "https://example.com/forwarded.jpg" }],
-      token: `ltfx.n.717f1f393204cfc6621c.v1`,
+      token: "xoxb-test-token",
       maxBytes: 1024 * 1024,
     });
 
@@ -884,7 +884,7 @@ describe("resolveSlackAttachmentContent", () => {
 
     const result = await resolveSlackAttachmentContent({
       attachments: [{ is_share: true, image_url: "https://files.slack.com/forwarded.jpg" }],
-      token: `ltfx.n.717f1f393204cfc6621c.v1`,
+      token: "xoxb-test-token",
       maxBytes: 1024 * 1024,
     });
 

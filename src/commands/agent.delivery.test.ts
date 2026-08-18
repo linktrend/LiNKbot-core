@@ -300,7 +300,7 @@ describe("deliverAgentCommandResult", () => {
         to: "+15551234567",
       },
       outboundSession: {
-        key: `ltfx.n.383c24b81c13206491a5.v1`,
+        key: "agent:exec:hook:gmail:thread-1",
         agentId: "exec",
       },
     });

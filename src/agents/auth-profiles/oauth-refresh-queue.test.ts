@@ -110,7 +110,7 @@ describe("OAuth refresh in-process queue", () => {
     // Second caller was not blocked forever \u2014 it either got the fresh token
     // (if the queue let it run) or adopted from main. Either way, it resolved.
     expect(second).toEqual({
-      apiKey: `ltfx.n.d94bd67fc7bafe4be2c4.v1`,
+      apiKey: "second-try-access",
       email: undefined,
       provider: "openai",
     });

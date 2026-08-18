@@ -49,7 +49,7 @@ openclaw onboard --non-interactive \
 Or expose the key to the Gateway process:
 
 ```bash
-export FEATHERLESS_API_KEY="${ltfx.n.1dc629f927dcd319eef0.v1}" # pragma: allowlist secret
+export FEATHERLESS_API_KEY="<your-featherless-api-key>" # pragma: allowlist secret
 ```
 
 Verify the provider:

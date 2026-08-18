@@ -20,7 +20,7 @@ describe("plugin-sdk browser subpaths", () => {
     expect(parsed.port).toBe(9222);
     expect(redactCdpUrl(parsed.normalized)).toBe("http://127.0.0.1:9222");
     expect(redactCdpUrl("wss://browser.example/cdp?token=browser-token&view=full")).toBe(
-      "wss://browser.example/cdp?token=(***&view=full",)
+      "wss://browser.example/cdp?token=***&view=full",
     );
   });
 

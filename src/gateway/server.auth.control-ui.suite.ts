@@ -809,7 +809,7 @@ export function registerControlUiAndPairingSuite(): void {
         name: "reports device token mismatch when explicit auth.deviceToken is wrong",
         opts: {
           skipDefaultAuth: true,
-          deviceToken: `ltfx.n.675562e03b099705cd25.v1`,
+          deviceToken: "not-a-valid-device-token",
         },
         assert: (res) => {
           expect(res.ok).toBe(false);
@@ -1186,7 +1186,7 @@ export function registerControlUiAndPairingSuite(): void {
           }
         | undefined;
       expect(approvedPayload?.type).toBe("hello-ok");
-      const issuedDeviceToken = (approvedPayload?.auth?.deviceToken;)
+      const issuedDeviceToken = approvedPayload?.auth?.deviceToken;
       if (!issuedDeviceToken) {
         throw new Error("expected issued device token");
       }
@@ -1195,7 +1195,7 @@ export function registerControlUiAndPairingSuite(): void {
       const operatorHandoff = approvedPayload?.auth?.deviceTokens?.find(
         (entry) => entry.role === "operator",
       );
-      const issuedOperatorToken = (operatorHandoff?.deviceToken;)
+      const issuedOperatorToken = operatorHandoff?.deviceToken;
       if (!issuedOperatorToken) {
         throw new Error("expected handed-off operator device token");
       }
@@ -1422,7 +1422,7 @@ export function registerControlUiAndPairingSuite(): void {
         }
       | undefined;
     const operatorHandoff = payload?.auth?.deviceTokens?.find((entry) => entry.role === "operator");
-    const operatorToken = (operatorHandoff?.deviceToken;)
+    const operatorToken = operatorHandoff?.deviceToken;
     if (!operatorToken) {
       throw new Error("expected handed-off limited operator device token");
     }
@@ -1978,7 +1978,7 @@ export function registerControlUiAndPairingSuite(): void {
       expect(payload?.type).toBe("hello-ok");
       expect(payload?.auth?.role).toBe("operator");
       expect(payload?.auth?.scopes).toEqual([...BOOTSTRAP_HANDOFF_OPERATOR_SCOPES]);
-      const deviceToken = (payload?.auth?.deviceToken;)
+      const deviceToken = payload?.auth?.deviceToken;
       if (!deviceToken) {
         throw new Error("expected control ui operator device token");
       }

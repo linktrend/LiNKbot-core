@@ -88,7 +88,7 @@ later ones.
 ## Request format
 
 Send `POST` requests with `Content-Type: application/json` and either
-`Authorization: Bearer <secret>` or `x-openclaw-webhook-secret: "${ltfx.n.5c43666456d483d53553.v1}"
+`Authorization: Bearer <secret>` or `x-openclaw-webhook-secret: <secret>`:
 
 ```bash
 curl -X POST https://gateway.example.com/plugins/webhooks/zapier \

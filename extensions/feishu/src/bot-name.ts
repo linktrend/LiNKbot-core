@@ -33,7 +33,7 @@ function resolveCacheKey(accountId: string, openId: string): string {
   return `${accountId}::${openId}`;
 }
 
-function readCache(key: (string)): CacheEntry | undefined {
+function readCache(key: string): CacheEntry | undefined {
   const entry = cache.get(key);
   if (!entry) {
     return undefined;

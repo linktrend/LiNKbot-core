@@ -20,7 +20,7 @@ afterEach(() => {
 describe("createGoogleGenAI", () => {
   it("adds the documented Gemini API partner client header", () => {
     createGoogleGenAI({
-      apiKey: `ltfx.n.5e175b4165620a09bb20.v1`,
+      apiKey: "google-key",
       httpOptions: {
         headers: {
           "X-Test": "value",

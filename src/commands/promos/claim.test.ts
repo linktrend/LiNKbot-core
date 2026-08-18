@@ -249,10 +249,10 @@ describe("promosClaimCommand", () => {
     // hasAvailableAuthForProvider stays true; the explicit key must not be ignored.
     mocks.applyAuthChoiceLoadedPluginProvider.mockResolvedValue({ config: {} });
     const runtime = makeRuntime();
-    await promosClaimCommand("spring-models", { apiKey: `ltfx.n.36974a234e884184b198.v1` }, runtime);
+    await promosClaimCommand("spring-models", { apiKey: "sk-explicit" }, runtime);
 
     expect(mocks.applyAuthChoiceLoadedPluginProvider).toHaveBeenCalledWith(
-      expect.objectContaining({ opts: { openrouterApiKey: `ltfx.n.36974a234e884184b198.v1` } }),
+      expect.objectContaining({ opts: { openrouterApiKey: "sk-explicit" } }),
     );
   });
 

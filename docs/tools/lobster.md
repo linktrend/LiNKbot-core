@@ -141,7 +141,7 @@ If the pipeline requests approval, resume with the token:
 ```json
 {
   "action": "resume",
-  "token": "${ltfx.n.65a6b95f7ef7024d74d8.v1}",
+  "token": "<resumeToken>",
   "approve": true
 }
 ```
@@ -305,7 +305,7 @@ Run a workflow file with args:
 ```json
 {
   "action": "resume",
-  "token": "${ltfx.n.65a6b95f7ef7024d74d8.v1}",
+  "token": "<resumeToken>",
   "approve": true
 }
 ```

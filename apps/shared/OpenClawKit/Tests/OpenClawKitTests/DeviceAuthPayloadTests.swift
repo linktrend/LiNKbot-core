@@ -60,7 +60,7 @@ struct DeviceAuthPayloadTests {
                 role: "node",
                 scopes: [],
                 signedAtMs: signedAtMs,
-                token: "${ltfx.n.73fff793651a92729a85.v1}",
+                token: "device-token",
                 nonce: "nonce-abc"),
             platform: "watchOS",
             deviceFamily: "Apple Watch")

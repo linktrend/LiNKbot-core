@@ -255,7 +255,7 @@ describe("mock gateway stateful sessions", () => {
           count: 1,
           defaults: {},
           path: "",
-          sessions: [{ key: `ltfx.n.1c3cf2ca795da96c63e1.v1`, archived: false }],
+          sessions: [{ key: "agent:main:research", archived: false }],
           ts: 0,
         },
         "sessions.patch": { ok: true },
@@ -277,7 +277,7 @@ describe("mock gateway stateful sessions", () => {
         type: "req",
         id: "patch-1",
         method: "sessions.patch",
-        params: { key: `ltfx.n.1c3cf2ca795da96c63e1.v1`, archived: true },
+        params: { key: "agent:main:research", archived: true },
       }),
     );
     await flushMockTimers();
@@ -286,7 +286,7 @@ describe("mock gateway stateful sessions", () => {
 
     expect(frames.find((frame) => frame.id === "list-1")?.payload).toMatchObject({
       count: 1,
-      sessions: [{ key: `ltfx.n.1c3cf2ca795da96c63e1.v1`, archived: false }],
+      sessions: [{ key: "agent:main:research", archived: false }],
     });
     socket.close();
   });
@@ -299,8 +299,8 @@ describe("mock gateway stateful sessions", () => {
           defaults: {},
           path: "",
           sessions: [
-            { key: `ltfx.n.1c3cf2ca795da96c63e1.v1`, archived: false },
-            { key: `ltfx.n.c291c7e5303d41231b2b.v1`, archived: true },
+            { key: "agent:main:research", archived: false },
+            { key: "agent:main:launch-notes", archived: true },
           ],
           ts: 0,
         },
@@ -337,7 +337,7 @@ describe("mock gateway stateful sessions", () => {
     ]);
     expect(
       await request("patch-3", "sessions.patch", {
-        key: `ltfx.n.1c3cf2ca795da96c63e1.v1`,
+        key: "agent:main:research",
         archived: true,
       }),
     ).toEqual({ ok: true });
@@ -348,7 +348,7 @@ describe("mock gateway stateful sessions", () => {
     ]);
 
     await request("patch-6", "sessions.patch", {
-      key: `ltfx.n.c291c7e5303d41231b2b.v1`,
+      key: "agent:main:launch-notes",
       archived: false,
     });
     expect(keys(await request("list-7", "sessions.list", {}))).toEqual(["agent:main:launch-notes"]);

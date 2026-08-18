@@ -31,14 +31,14 @@ openclaw onboard --deepinfra-api-key <key>
 Or set the environment variable:
 
 ```bash
-export DEEPINFRA_API_KEY="${ltfx.n.f1d0bd2cc8411afee7f1.v1}" # pragma: allowlist secret
+export DEEPINFRA_API_KEY="<your-deepinfra-api-key>" # pragma: allowlist secret
 ```
 
 ## Config snippet
 
 ```json5
 {
-  env: { DEEPINFRA_API_KEY: "${ltfx.n.f1d0bd2cc8411afee7f1.v1}" }, // pragma: allowlist secret
+  env: { DEEPINFRA_API_KEY: "<your-deepinfra-api-key>" }, // pragma: allowlist secret
   agents: {
     defaults: {
       model: { primary: "deepinfra/deepseek-ai/DeepSeek-V4-Flash" },

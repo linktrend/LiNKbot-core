@@ -80,28 +80,28 @@ describe("redactConfigSnapshot", () => {
     const snapshot = makeSnapshot({
       gateway: {
         auth: {
-          token: `ltfx.n.665d1e5e0463cfcc5777.v1`,
-          password: `ltfx.n.90f7ab24f8796454e6ca.v1`,
+          token: "my-super-secret-gateway-token-value",
+          password: "super-secret-password-value-here",
         },
       },
       channels: {
         telegram: {
-          botToken: `ltfx.n.e1fc430fd4eb79b84b1b.v1`,
-          webhookSecret: `ltfx.n.f7c4b5a49eff82ab7c2d.v1`,
+          botToken: "123456:ABCDEFGHIJKLMNOPQRSTUVWXYZabcdef",
+          webhookSecret: "telegram-webhook-secret-value-1234",
         },
         slack: {
-          botToken: `ltfx.n.391ef47e48c02074a7a7.v1`,
-          signingSecret: `ltfx.n.2b566c53eaca68af5e0e.v1`,
-          token: `ltfx.n.7abd66f4219d037d14ee.v1`,
+          botToken: "fake-slack-bot-token-placeholder-value",
+          signingSecret: "slack-signing-secret-value-1234",
+          token: "secret-slack-token-value-here",
         },
         feishu: {
-          appSecret: `ltfx.n.90064a4ddff68afafec9.v1`,
+          appSecret: "feishu-app-secret-value-here-1234",
           encryptKey: "feishu-encrypt-key-value-here-1234",
         },
       },
       models: {
         providers: {
-          openai: { apiKey: `ltfx.n.928ba193f2a8c48983a1.v1`, baseUrl: "https://api.openai.com" },
+          openai: { apiKey: "sk-proj-abcdef1234567890ghij", baseUrl: "https://api.openai.com" },
         },
       },
       shortSecret: { token: "short" },
@@ -130,7 +130,7 @@ describe("redactConfigSnapshot", () => {
           serviceAccount: {
             type: "service_account",
             client_email: "bot@example.iam.gserviceaccount.com",
-            private_key: "-----BEGIN LTFX LTFX PRIVATE KEY-----secret-----END PRIVATE KEY-----", // pragma: allowlist secret
+            private_key: "-----BEGIN PRIVATE KEY-----secret-----END PRIVATE KEY-----", // pragma: allowlist secret
           },
         },
       },
@@ -257,7 +257,7 @@ describe("redactConfigSnapshot", () => {
   mcp: {
     servers: {
       remote: {
-        url: "https://user:pass@example.com/mcp?token=(secret123&safe=value",)
+        url: "https://user:pass@example.com/mcp?token=secret123&safe=value",
       },
     },
   },
@@ -267,7 +267,7 @@ describe("redactConfigSnapshot", () => {
         mcp: {
           servers: {
             remote: {
-              url: "https://user:pass@example.com/mcp?token=(secret123&safe=value",)
+              url: "https://user:pass@example.com/mcp?token=secret123&safe=value",
             },
           },
         },
@@ -284,7 +284,7 @@ describe("redactConfigSnapshot", () => {
 
     const restored = restoreRedactedValues(result.config, snapshot.config, hints);
     expect(restored.mcp.servers.remote.url).toBe(
-      "https://user:pass@example.com/mcp?token=(secret123&safe=value",)
+      "https://user:pass@example.com/mcp?token=secret123&safe=value",
     );
   });
 
@@ -297,7 +297,7 @@ describe("redactConfigSnapshot", () => {
         request: {
           auth: {
             mode: "authorization-bearer",
-            token: `ltfx.n.7107b79637506f15ba29.v1`,
+            token: "media-audio-secret-token",
           },
           proxy: {
             mode: "explicit-proxy",
@@ -316,7 +316,7 @@ describe("redactConfigSnapshot", () => {
               request: {
                 auth: {
                   mode: "authorization-bearer",
-                  token: `ltfx.n.7107b79637506f15ba29.v1`,
+                  token: "media-audio-secret-token",
                 },
                 proxy: {
                   mode: "explicit-proxy",
@@ -356,7 +356,7 @@ describe("redactConfigSnapshot", () => {
         request: {
           auth: {
             mode: "authorization-bearer",
-            token: `ltfx.n.f2939678ac70cc3c6223.v1`,
+            token: "provider-secret-token",
           },
         },
       },
@@ -373,7 +373,7 @@ describe("redactConfigSnapshot", () => {
               request: {
                 auth: {
                   mode: "authorization-bearer",
-                  token: `ltfx.n.f2939678ac70cc3c6223.v1`,
+                  token: "provider-secret-token",
                 },
               },
             },
@@ -457,7 +457,7 @@ describe("redactConfigSnapshot", () => {
         source: "exec",
         command: "/usr/local/bin/openclaw-install-policy",
         env: {
-          POLICY_TOKEN: `ltfx.n.702e90d4c231eb5ddc18.v1`,
+          POLICY_TOKEN: "operator-policy-secret-token",
           AUDIT_ENDPOINT: "operator-policy-secret-endpoint",
         },
       },
@@ -473,7 +473,7 @@ describe("redactConfigSnapshot", () => {
               source: "exec",
               command: "/usr/local/bin/openclaw-install-policy",
               env: {
-                POLICY_TOKEN: `ltfx.n.702e90d4c231eb5ddc18.v1`,
+                POLICY_TOKEN: "operator-policy-secret-token",
                 AUDIT_ENDPOINT: "operator-policy-secret-endpoint",
               },
             },
@@ -561,8 +561,8 @@ describe("redactConfigSnapshot", () => {
                 maxTokensField: "max_completion_tokens",
               },
             ],
-            apiKey: `ltfx.n.928ba193f2a8c48983a1.v1`,
-            accessToken: `ltfx.n.9282aa6fc2d1ebd2da46.v1`,
+            apiKey: "sk-proj-abcdef1234567890ghij",
+            accessToken: "access-token-value-1234567890",
             maxTokens: 8192,
             maxOutputTokens: 4096,
             maxCompletionTokens: 2048,
@@ -573,7 +573,7 @@ describe("redactConfigSnapshot", () => {
           },
         },
       },
-      gateway: { auth: { token: `ltfx.n.e43c796079a4b49d39d6.v1` } },
+      gateway: { auth: { token: "secret-gateway-token-value" } },
     });
 
     const result = redactConfigSnapshot(snapshot);
@@ -622,7 +622,7 @@ describe("redactConfigSnapshot", () => {
           passwordFile: "/etc/openclaw/irc-password.txt",
           nickserv: {
             passwordFile: "/etc/openclaw/nickserv-password.txt",
-            password: `ltfx.n.46d119f6365709f17f2a.v1`,
+            password: "super-secret-nickserv-password",
           },
         },
       },
@@ -639,14 +639,14 @@ describe("redactConfigSnapshot", () => {
   });
 
   it("preserves hash unchanged", () => {
-    const snapshot = makeSnapshot({ gateway: { auth: { token: `ltfx.n.00afb16c27d4f41ffad4.v1` } } });
+    const snapshot = makeSnapshot({ gateway: { auth: { token: "secret-token-value-here" } } });
     const result = redactConfigSnapshot(snapshot);
     expect(result.hash).toBe("abc123");
   });
 
   it("redacts secrets in raw field via text-based redaction", () => {
-    const config = { token: `ltfx.n.c447945df754c3f3fe2a.v1` };
-    const raw = '{ "token": `ltfx.n.c447945df754c3f3fe2a.v1` }';
+    const config = { token: "abcdef1234567890ghij" };
+    const raw = '{ "token": "abcdef1234567890ghij" }';
     const snapshot = makeSnapshot(config, raw);
     const result = redactConfigSnapshot(snapshot);
     expect(result.raw).not.toContain("abcdef1234567890ghij");
@@ -762,8 +762,8 @@ describe("redactConfigSnapshot", () => {
 
   it("redacts parsed and resolved objects", () => {
     const snapshot = makeSnapshot({
-      channels: { discord: { token: `ltfx.n.1962490a75922384827b.v1` } },
-      gateway: { auth: { token: `ltfx.n.0ab02f74fe5af5cdc5b3.v1` } },
+      channels: { discord: { token: "MTIzNDU2Nzg5MDEyMzQ1Njc4.GaBcDe.FgH" } },
+      gateway: { auth: { token: "supersecrettoken123456" } },
     });
     const result = redactConfigSnapshot(snapshot);
     const parsed = result.parsed as Record<string, Record<string, Record<string, string>>>;
@@ -816,12 +816,12 @@ describe("redactConfigSnapshot", () => {
     const snapshot: ConfigFileSnapshot = {
       path: "/test",
       exists: true,
-      raw: '{ "gateway": { "auth": { "token": `ltfx.n.791bc6582571c7a061e0.v1` } } }',
-      parsed: { gateway: { auth: { token: `ltfx.n.791bc6582571c7a061e0.v1` } } },
+      raw: '{ "gateway": { "auth": { "token": "leaky-secret" } } }',
+      parsed: { gateway: { auth: { token: "leaky-secret" } } },
       sourceConfig: {
-        gateway: { auth: { token: `ltfx.n.791bc6582571c7a061e0.v1` } },
+        gateway: { auth: { token: "leaky-secret" } },
       } as ConfigFileSnapshot["sourceConfig"],
-      resolved: { gateway: { auth: { token: `ltfx.n.791bc6582571c7a061e0.v1` } } } as ConfigFileSnapshot["resolved"],
+      resolved: { gateway: { auth: { token: "leaky-secret" } } } as ConfigFileSnapshot["resolved"],
       valid: false,
       runtimeConfig: {} as ConfigFileSnapshot["runtimeConfig"],
       config: {} as ConfigFileSnapshot["config"],
@@ -844,8 +844,8 @@ describe("redactConfigSnapshot", () => {
       channels: {
         slack: {
           accounts: {
-            workspace1: { botToken: `ltfx.n.c3552889b8a985ce198a.v1` },
-            workspace2: { appToken: `ltfx.n.e43461489ca7f0271165.v1` },
+            workspace1: { botToken: "fake-workspace1-token-abcdefghij" },
+            workspace2: { appToken: "fake-workspace2-token-abcdefghij" },
           },
         },
       },
@@ -867,7 +867,7 @@ describe("redactConfigSnapshot", () => {
     const snapshot = makeSnapshot({
       env: {
         vars: {
-          OPENAI_API_KEY: `ltfx.n.d9605d446b9e767cf3cf.v1`,
+          OPENAI_API_KEY: "sk-proj-1234567890abcdefghij",
           NODE_ENV: "production",
         },
       },
@@ -906,7 +906,7 @@ describe("redactConfigSnapshot", () => {
     {
       name: "still redacts singular token field",
       snapshot: makeSnapshot({
-        channels: { slack: { token: `ltfx.n.7abd66f4219d037d14ee.v1` } },
+        channels: { slack: { token: "secret-slack-token-value-here" } },
       }),
       assert: (config: Record<string, unknown>) => {
         const channels = config.channels as Record<string, Record<string, string>>;
@@ -925,7 +925,7 @@ describe("redactConfigSnapshot", () => {
       "custom.mySecret": { sensitive: true },
     };
     const snapshot = makeSnapshot({
-      custom: { mySecret: `ltfx.n.523b729f7725657ff681.v1` },
+      custom: { mySecret: "this-is-a-custom-secret-value" },
     });
     const result = redactConfigSnapshot(snapshot, hints);
     const config = result.config as typeof snapshot.config;
@@ -947,7 +947,7 @@ describe("redactConfigSnapshot", () => {
         entries: {
           "voice-call": {
             config: {
-              apiToken: `ltfx.n.f33b02725dacb9730471.v1`,
+              apiToken: "voice-call-secret-token",
               displayName: "Voice call extension",
             },
           },
@@ -955,7 +955,7 @@ describe("redactConfigSnapshot", () => {
       },
       channels: {
         "my-channel": {
-          accessToken: `ltfx.n.e377e58eb3f106977030.v1`,
+          accessToken: "my-channel-secret-token",
           room: "general",
         },
       },
@@ -982,7 +982,7 @@ describe("redactConfigSnapshot", () => {
         entries: {
           "voice-call": {
             config: {
-              apiToken: `ltfx.n.4948cc74a016da2f2761.v1`,
+              apiToken: "not-secret-on-purpose",
             },
           },
         },
@@ -1054,8 +1054,8 @@ describe("redactConfigSnapshot", () => {
         name: "directly sensitive records and arrays",
         snapshot: makeSnapshot({
           custom: {
-            token: `ltfx.n.523b729f7725657ff681.v1`,
-            mySecret: `ltfx.n.523b729f7725657ff681.v1`,
+            token: "this-is-a-custom-secret-value",
+            mySecret: "this-is-a-custom-secret-value",
           },
           token: ["this-is-a-custom-secret-value", "this-is-a-custom-secret-value"],
         }),
@@ -1084,7 +1084,7 @@ describe("redactConfigSnapshot", () => {
         snapshot: makeSnapshot({
           custom: {
             anykey: "this-is-a-custom-secret-value",
-            mySecret: `ltfx.n.523b729f7725657ff681.v1`,
+            mySecret: "this-is-a-custom-secret-value",
           },
           customArray: ["this-is-a-custom-secret-value", "this-is-a-custom-secret-value"],
         }),
@@ -1235,7 +1235,7 @@ describe("redactConfigSnapshot", () => {
       "gateway.auth.token": { sensitive: false },
     };
     const snapshot = makeSnapshot({
-      gateway: { auth: { token: `ltfx.n.aabf31864fa34a9f3f7a.v1` } },
+      gateway: { auth: { token: "not-actually-secret-value" } },
     });
     const result = redactConfigSnapshot(snapshot, hints);
     expectGatewayAuthFieldValue(result, "token", "not-actually-secret-value");
@@ -1246,7 +1246,7 @@ describe("redactConfigSnapshot", () => {
       "some.other.path": { sensitive: true },
     };
     const snapshot = makeSnapshot({
-      gateway: { auth: { password: `ltfx.n.aa24dffb4766aca754b3.v1` } },
+      gateway: { auth: { password: "not-in-hints-value" } },
     });
     const result = redactConfigSnapshot(snapshot, hints);
     expectGatewayAuthFieldValue(result, "password", REDACTED_SENTINEL);
@@ -1286,7 +1286,7 @@ describe("redactConfigSnapshot", () => {
     };
     const snapshot = makeSnapshot({
       env: {
-        GROQ_API_KEY: `ltfx.n.f0bd302edc115e3a81ea.v1`, // pragma: allowlist secret
+        GROQ_API_KEY: "gsk-secret-123", // pragma: allowlist secret
         NODE_ENV: "production",
       },
     });
@@ -1309,7 +1309,7 @@ describe("redactConfigSnapshot", () => {
         entries: {
           web_search: {
             env: {
-              GEMINI_API_KEY: `ltfx.n.7bc89cdf192c424500f9.v1`, // pragma: allowlist secret
+              GEMINI_API_KEY: "gemini-secret-456", // pragma: allowlist secret
               BRAVE_REGION: "us",
             },
           },
@@ -1337,14 +1337,14 @@ describe("redactConfigSnapshot", () => {
     const hints = mainSchemaHints;
     const snapshot = makeSnapshot({
       env: {
-        GROQ_API_KEY: `ltfx.n.1e18f952ae555a0daf6f.v1`, // pragma: allowlist secret
+        GROQ_API_KEY: "gsk-contract-123", // pragma: allowlist secret
         NODE_ENV: "production",
       },
       skills: {
         entries: {
           web_search: {
             env: {
-              GEMINI_API_KEY: `ltfx.n.79f51fbddd32948e860a.v1`, // pragma: allowlist secret
+              GEMINI_API_KEY: "gemini-contract-456", // pragma: allowlist secret
               BRAVE_REGION: "us",
             },
           },
@@ -1392,8 +1392,8 @@ describe("redactConfigSnapshot", () => {
       channels: {
         slack: {
           accounts: [
-            { botToken: `ltfx.n.4f4931a424d12f00accf.v1` },
-            { botToken: `ltfx.n.6966172aa7bd87d5962a.v1` },
+            { botToken: "first-account-token-value-here" },
+            { botToken: "second-account-token-value-here" },
           ],
         },
       },
@@ -1417,10 +1417,10 @@ describe("redactConfigSnapshot", () => {
     const hints = buildConfigSchema().uiHints;
     const raw = `{
   browser: {
-    cdpUrl: "https://user:pass@chrome.browserless.io?token=(supersecret123",)
+    cdpUrl: "https://user:pass@chrome.browserless.io?token=supersecret123",
     profiles: {
       remote: {
-        cdpUrl: "https://chrome.staging.example.com?token=(staging-secret",)
+        cdpUrl: "https://chrome.staging.example.com?token=staging-secret",
       },
       prod: {
         cdpUrl: "https://alice:secret@chrome.prod.example.com",
@@ -1434,10 +1434,10 @@ describe("redactConfigSnapshot", () => {
     const snapshot = makeSnapshot(
       {
         browser: {
-          cdpUrl: "https://user:pass@chrome.browserless.io?token=(supersecret123",)
+          cdpUrl: "https://user:pass@chrome.browserless.io?token=supersecret123",
           profiles: {
             remote: {
-              cdpUrl: "https://chrome.staging.example.com?token=(staging-secret",)
+              cdpUrl: "https://chrome.staging.example.com?token=staging-secret",
             },
             prod: {
               cdpUrl: "https://alice:secret@chrome.prod.example.com",
@@ -1465,10 +1465,10 @@ describe("redactConfigSnapshot", () => {
 
     const restored = restoreRedactedValues(result.config, snapshot.config, hints);
     expect(restored.browser.cdpUrl).toBe(
-      "https://user:pass@chrome.browserless.io?token=(supersecret123",)
+      "https://user:pass@chrome.browserless.io?token=supersecret123",
     );
     expect(restored.browser.profiles.remote.cdpUrl).toBe(
-      "https://chrome.staging.example.com?token=(staging-secret",)
+      "https://chrome.staging.example.com?token=staging-secret",
     );
     expect(restored.browser.profiles.prod.cdpUrl).toBe(
       "https://alice:secret@chrome.prod.example.com",

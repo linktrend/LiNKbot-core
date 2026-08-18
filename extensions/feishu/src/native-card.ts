@@ -47,7 +47,7 @@ function escapeFeishuCardPlainText(text: string): string {
   return escapeFeishuCardMarkdownText(text).replace(/([\\`*_{}[\]()#+\-!|>~])/g, "\\$1");
 }
 
-function resolveSafeFeishuButtonUrl(url: (unknown): string | undefined {)
+function resolveSafeFeishuButtonUrl(url: unknown): string | undefined {
   const trimmed = typeof url === "string" ? url.trim() : "";
   if (!trimmed) {
     return undefined;

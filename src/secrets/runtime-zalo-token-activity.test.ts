@@ -29,7 +29,7 @@ describe("secrets runtime snapshot zalo token activity", () => {
         },
       }),
       env: {
-        ZALO_BOT_TOKEN: `ltfx.n.c483e415f5cb1cf695d5.v1`,
+        ZALO_BOT_TOKEN: "resolved-zalo-token",
       },
       agentDirs: ["/tmp/openclaw-agent-main"],
       loadAuthStore: () => loadAuthStoreWithProfiles({}),
@@ -56,7 +56,7 @@ describe("secrets runtime snapshot zalo token activity", () => {
         },
       }),
       env: {
-        ZALO_WORK_BOT_TOKEN: `ltfx.n.f316c4e66b0badab4096.v1`,
+        ZALO_WORK_BOT_TOKEN: "resolved-zalo-work-token",
       },
       agentDirs: ["/tmp/openclaw-agent-main"],
       loadAuthStore: () => loadAuthStoreWithProfiles({}),
@@ -86,7 +86,7 @@ describe("secrets runtime snapshot zalo token activity", () => {
         },
       }),
       env: {
-        ZALO_TOP_LEVEL_TOKEN: `ltfx.n.4cbd82f61aee994e6605.v1`,
+        ZALO_TOP_LEVEL_TOKEN: "resolved-zalo-top-level-token",
       },
       agentDirs: ["/tmp/openclaw-agent-main"],
       loadAuthStore: () => loadAuthStoreWithProfiles({}),
@@ -113,7 +113,7 @@ describe("secrets runtime snapshot zalo token activity", () => {
         },
       }),
       env: {
-        ZALO_DEFAULT_TOKEN: `ltfx.n.2943bce0fefe9911b094.v1`,
+        ZALO_DEFAULT_TOKEN: "resolved-zalo-default-token",
       },
       agentDirs: ["/tmp/openclaw-agent-main"],
       loadAuthStore: () => loadAuthStoreWithProfiles({}),

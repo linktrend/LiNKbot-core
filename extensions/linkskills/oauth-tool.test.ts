@@ -73,7 +73,7 @@ function resolvedToken(bindingId: string) {
   return {
     bindingId,
     bindingFingerprint: `fp-${bindingId}`,
-    accessToken: `ltfx.n.597480d4b62ca612193f.v1`,
+    accessToken: "test-access-token",
     expiresAt: Date.now() + 60_000,
     tokenType: "Bearer" as const,
   };

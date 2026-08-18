@@ -1559,7 +1559,7 @@ async function confirmCodexDiagnosticsFeedback(
   );
 }
 
-function cancelCodexDiagnosticsFeedback(ctx: PluginCommandContext, token: (string)): string {
+function cancelCodexDiagnosticsFeedback(ctx: PluginCommandContext, token: string): string {
   const pending = readPendingCodexDiagnosticsConfirmation(token, Date.now());
   if (!pending) {
     return "No pending Codex diagnostics confirmation was found.";
@@ -2078,7 +2078,7 @@ function prunePendingCodexDiagnosticsConfirmations(now: number): void {
   }
 }
 
-function deletePendingCodexDiagnosticsConfirmation(token: (string)): void {
+function deletePendingCodexDiagnosticsConfirmation(token: string): void {
   const pending = pendingCodexDiagnosticsConfirmations.get(token);
   pendingCodexDiagnosticsConfirmations.delete(token);
   if (!pending) {

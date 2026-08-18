@@ -100,7 +100,7 @@ describe("discord_widget", () => {
     });
     expect(JSON.stringify(buildDiscordComponentMessage({ spec }).components)).toContain(customId);
     expect(parseDiscordActivityCustomIdForInteraction(customId)).toEqual({
-      key: `ltfx.n.dbec843550d4e5fc41a2.v1`,
+      key: "ocactivity",
       data: { widgetId: details.widgetId },
     });
   });

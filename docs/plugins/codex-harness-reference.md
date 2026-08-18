@@ -174,7 +174,7 @@ transport is available:
         config: {
           appServer: {
             transport: "websocket",
-            url: "${ltfx.n.ed0b3fad92abd5ce5388.v1}",
+            url: "ws://gateway-host:39175",
             authToken: "${CODEX_APP_SERVER_TOKEN}",
             requestTimeoutMs: 60000,
           },

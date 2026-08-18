@@ -126,7 +126,7 @@ type ListedItem = {
 const APPROVAL_TIMEOUT_MS = 600_000;
 const PENDING_AUTHORIZATION_TTL_MS = APPROVAL_TIMEOUT_MS;
 
-function textParam(params: Record<string, unknown>, key: (string)): string | undefined {
+function textParam(params: Record<string, unknown>, key: string): string | undefined {
   const value = params[key];
   return typeof value === "string" ? value.trim() : undefined;
 }

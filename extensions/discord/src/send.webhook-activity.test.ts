@@ -67,7 +67,7 @@ describe("sendWebhookMessageDiscord activity", () => {
     const cfg = {
       channels: {
         discord: {
-          token: `ltfx.n.cad2ed06900405ac7d61.v1`,
+          token: "resolved-token",
         },
       },
     };
@@ -129,7 +129,7 @@ describe("sendWebhookMessageDiscord activity", () => {
     const cfg = {
       channels: {
         discord: {
-          token: `ltfx.n.cad2ed06900405ac7d61.v1`,
+          token: "resolved-token",
           mentionAliases: {
             opslead: "123456789012345678",
           },

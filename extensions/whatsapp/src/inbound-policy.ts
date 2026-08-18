@@ -144,7 +144,7 @@ export async function resolveWhatsAppIngressAccess(params: {
     channelId: "whatsapp",
     accountId: params.policy.account.accountId,
     identity: {
-      key: `ltfx.n.306a052d8b36c196a7ad.v1`,
+      key: "whatsapp-sender-phone",
       kind: "phone",
       normalize: normalizeWhatsAppIngressPhone,
       sensitivity: "pii",

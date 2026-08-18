@@ -69,7 +69,7 @@ const configureGatewayForSetup = vi.hoisted(() =>
       port: args.localPort ?? 18789,
       bind: "loopback",
       authMode: "token",
-      gatewayToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+      gatewayToken: "test-token",
       tailscaleMode: "off",
       tailscaleResetOnExit: false,
     },
@@ -204,7 +204,7 @@ function getWizardNoteCalls(note: WizardPrompter["note"]) {
   return (note as unknown as { mock: { calls: unknown[][] } }).mock.calls;
 }
 
-function modelConfigWithApiKey(apiKey: (string)): OpenClawConfig {
+function modelConfigWithApiKey(apiKey: string): OpenClawConfig {
   return {
     agents: { defaults: { model: { primary: "openai/gpt-5.5" } } },
     auth: {
@@ -236,7 +236,7 @@ function prepareMockAuthProfilesIn(
   const persistCalls: Array<ProviderAuthResult["profiles"] | undefined> = [];
   prepareAuthChoice.mockImplementation(async (args) => {
     const result = await applyAuthChoice(args);
-    const apiKey = (result.config.models?.providers?.openai?.apiKey;)
+    const apiKey = result.config.models?.providers?.openai?.apiKey;
     if (typeof apiKey !== "string") {
       return {
         ...result,
@@ -528,7 +528,7 @@ describe("runSetupWizard", () => {
         port: args.localPort ?? 18789,
         bind: "loopback",
         authMode: "token",
-        gatewayToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+        gatewayToken: "test-token",
         tailscaleMode: "off",
         tailscaleResetOnExit: false,
       },
@@ -766,7 +766,7 @@ describe("runSetupWizard", () => {
       config: {
         gateway: {
           remote: {
-            url: `ltfx.n.b05852666c9a77eb8a11.v1`,
+            url: "wss://stored.example.com:18789",
             token: { source: "env", provider: "default", id: "STORED_GATEWAY_TOKEN" },
             password: { source: "env", provider: "default", id: "STORED_GATEWAY_PASSWORD" },
           },
@@ -792,14 +792,14 @@ describe("runSetupWizard", () => {
     );
 
     expect(probeGatewayReachable).toHaveBeenCalledWith({
-      url: `ltfx.n.40b0927f42a16b58df58.v1`,
+      url: "wss://flag.example.com:18789",
       token: remoteToken,
     });
     expect(promptRemoteGatewayConfig).toHaveBeenCalledWith(
       expect.objectContaining({
         gateway: expect.objectContaining({
           remote: {
-            url: `ltfx.n.40b0927f42a16b58df58.v1`,
+            url: "wss://flag.example.com:18789",
             token: remoteToken,
             password: undefined,
           },
@@ -822,7 +822,7 @@ describe("runSetupWizard", () => {
       config: {
         gateway: {
           remote: {
-            url: `ltfx.n.b05852666c9a77eb8a11.v1`,
+            url: "wss://stored.example.com:18789",
             token: { source: "env", provider: "default", id: "STORED_GATEWAY_TOKEN" },
             password: { source: "env", provider: "default", id: "STORED_GATEWAY_PASSWORD" },
           },
@@ -845,14 +845,14 @@ describe("runSetupWizard", () => {
     );
 
     expect(probeGatewayReachable).toHaveBeenCalledWith({
-      url: `ltfx.n.40b0927f42a16b58df58.v1`,
+      url: "wss://flag.example.com:18789",
       token: undefined,
     });
     expect(promptRemoteGatewayConfig).toHaveBeenCalledWith(
       expect.objectContaining({
         gateway: expect.objectContaining({
           remote: {
-            url: `ltfx.n.40b0927f42a16b58df58.v1`,
+            url: "wss://flag.example.com:18789",
             token: undefined,
             password: undefined,
           },
@@ -881,7 +881,7 @@ describe("runSetupWizard", () => {
 
     expect(validateGatewayWebSocketUrl).toHaveBeenCalledWith("ws://public.example");
     expect(probeGatewayReachable).not.toHaveBeenCalledWith({
-      url: `ltfx.n.09b3d75341ec952cdf53.v1`,
+      url: "ws://public.example",
       token: remoteToken,
     });
   });
@@ -1692,7 +1692,7 @@ describe("runSetupWizard", () => {
         acceptRisk: true,
         flow: "quickstart",
         authChoice: "openai-chatgpt-api-key",
-        openaiApiKey: `ltfx.n.60cfec16d13764865e74.v1`,
+        openaiApiKey: "sk-flag-value",
         installDaemon: false,
         skipChannels: true,
         skipSkills: true,
@@ -1708,7 +1708,7 @@ describe("runSetupWizard", () => {
     expect(applyAuthChoice).toHaveBeenCalledTimes(1);
     const call = getMockCallArg(applyAuthChoice, 0, 0, "openai auth choice");
     const opts = (call as { opts?: Record<string, unknown> }).opts ?? {};
-    expect(opts.openaiApiKey).toBe("ltfx.n.60cfec16d13764865e74.v1");
+    expect(opts.openaiApiKey).toBe("sk-flag-value");
   });
 
   it("passes preserveExistingDefaultModel to applyAuthChoice to protect existing default model", async () => {
@@ -1819,7 +1819,7 @@ describe("runSetupWizard", () => {
 
   it("resolves gateway.auth.password SecretRef for local setup probe", async () => {
     const previous = process.env.OPENCLAW_GATEWAY_PASSWORD;
-    process.env.OPENCLAW_GATEWAY_PASSWORD = `ltfx.n.8c27b909cc49a0fcbbd0.v1`; // pragma: allowlist secret
+    process.env.OPENCLAW_GATEWAY_PASSWORD = "gateway-ref-password"; // pragma: allowlist secret
     probeGatewayReachable.mockClear();
     readConfigFileSnapshot.mockResolvedValueOnce({
       path: "/tmp/.openclaw/openclaw.json",
@@ -1876,8 +1876,8 @@ describe("runSetupWizard", () => {
     expectRecordFields(
       getMockCallArg(probeGatewayReachable, 0, 0, "gateway probe"),
       {
-        url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
-        password: `ltfx.n.8c27b909cc49a0fcbbd0.v1`, // pragma: allowlist secret
+        url: "ws://127.0.0.1:18789",
+        password: "gateway-ref-password", // pragma: allowlist secret
       },
       "gateway probe params",
     );

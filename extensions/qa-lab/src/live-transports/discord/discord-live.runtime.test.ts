@@ -129,7 +129,7 @@ describe("discord live qa runtime", () => {
       channelId: "223456789012345678",
       driverBotId: "423456789012345678",
       sutAccountId: "sut",
-      sutBotToken: `ltfx.n.50f83cc49e938a081165.v1`,
+      sutBotToken: "sut-token",
     });
 
     expect(next.plugins?.allow).toContain("discord");
@@ -141,7 +141,7 @@ describe("discord live qa runtime", () => {
       accounts: {
         sut: {
           enabled: true,
-          token: `ltfx.n.50f83cc49e938a081165.v1`,
+          token: "sut-token",
           allowBots: "mentions",
           groupPolicy: "allowlist",
           guilds: {
@@ -170,7 +170,7 @@ describe("discord live qa runtime", () => {
         channelId: "223456789012345678",
         driverBotId: "423456789012345678",
         sutAccountId: "sut",
-        sutBotToken: `ltfx.n.50f83cc49e938a081165.v1`,
+        sutBotToken: "sut-token",
       },
       {
         voiceAutoJoin: {
@@ -200,7 +200,7 @@ describe("discord live qa runtime", () => {
         channelId: "223456789012345678",
         driverBotId: "423456789012345678",
         sutAccountId: "sut",
-        sutBotToken: `ltfx.n.50f83cc49e938a081165.v1`,
+        sutBotToken: "sut-token",
       },
       { statusReactionsToolOnly: true },
     );

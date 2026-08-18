@@ -15,7 +15,7 @@ extension GatewayConnectionController {
                 instanceId: instanceID,
                 gatewayStableID: migrationGatewayID,
                 token: relay.token,
-                password: (relay.password))
+                password: relay.password)
         } else {
             GatewaySettingsStore.discardUnscopedGatewayCredentials(instanceId: instanceID)
         }
@@ -124,7 +124,7 @@ extension GatewayConnectionController {
         static func normalized(
             token: String?,
             bootstrapToken: String?,
-            password: (String?) -> ManualAuthOverride?)
+            password: String?) -> ManualAuthOverride?
         {
             let override = ManualAuthOverride.explicit(
                 token: token,
@@ -161,7 +161,7 @@ extension GatewayConnectionController {
             targetStableID: String? = nil) -> ManualAuthOverride?
         {
             guard let pendingOverride else {
-                return ManualAuthOverride.normalized(token: token, bootstrapToken: nil, password: (password))
+                return ManualAuthOverride.normalized(token: token, bootstrapToken: nil, password: password)
             }
             if let pendingTarget = pendingOverride.targetStableID,
                !GatewayStableIdentifier.matches(pendingTarget, targetStableID)

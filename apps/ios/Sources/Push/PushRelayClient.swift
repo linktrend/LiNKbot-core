@@ -218,7 +218,7 @@ private final class PushRelayReceiptProvider {
 private final class PushRelaySimulatorProofProvider {
     func createProof(signedPayload: Data) throws -> PushRelaySimulatorProofPayload {
         #if targetEnvironment(simulator)
-        guard let secret = (ProcessInfo.processInfo.environment["OPENCLAW_SIMULATOR_PUSH_PROOF_SECRET"]?)
+        guard let secret = ProcessInfo.processInfo.environment["OPENCLAW_SIMULATOR_PUSH_PROOF_SECRET"]?
             .trimmingCharacters(in: .whitespacesAndNewlines),
             !secret.isEmpty
         else {
@@ -301,7 +301,7 @@ final class PushRelayClient: @unchecked Sendable {
             distribution: input.distribution.rawValue,
             gateway: input.gatewayIdentity,
             appVersion: input.appVersion,
-            apnsToken: (input.apnsTokenHex))
+            apnsToken: input.apnsTokenHex)
         let signedPayloadData = try self.jsonEncoder.encode(signedPayload)
         let appAttestScope = PushRelayRegistrationStore.AppAttestScope(
             relayOrigin: self.normalizedBaseURLString,
@@ -364,7 +364,7 @@ final class PushRelayClient: @unchecked Sendable {
             simulatorProof: simulatorProof)
 
         let endpoint = self.baseURL.appending(path: "v1/push/register")
-        var request = URLRequest(url: (endpoint))
+        var request = URLRequest(url: endpoint)
         request.httpMethod = "POST"
         request.timeoutInterval = 20
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -443,7 +443,7 @@ final class PushRelayClient: @unchecked Sendable {
 
     private func fetchChallenge() async throws -> PushRelayChallengeResponse {
         let endpoint = self.baseURL.appending(path: "v1/push/challenge")
-        var request = URLRequest(url: (endpoint))
+        var request = URLRequest(url: endpoint)
         request.httpMethod = "POST"
         request.timeoutInterval = 10
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")

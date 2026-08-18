@@ -154,7 +154,7 @@ describe("parallels npm update smoke", () => {
       }
     }
 
-    await withEnvAsync({ OPENAI_API_KEY: `ltfx.n.62af8704764faf8ea82f.v1` }, async () => {
+    await withEnvAsync({ OPENAI_API_KEY: "test-key" }, async () => {
       const smoke = new FailingNpmUpdateSmoke({
         ...TEST_AUTH,
         dependencyTarballs: [],
@@ -201,7 +201,7 @@ exit 1
 
     withEnv(
       {
-        OPENAI_API_KEY: `ltfx.n.62af8704764faf8ea82f.v1`,
+        OPENAI_API_KEY: "test-key",
         PATH: `${root}${path.delimiter}${process.env.PATH ?? ""}`,
       },
       () => {
@@ -560,7 +560,7 @@ exit 1
   it("clears update stream timers when spawning the guest command fails", async () => {
     vi.useFakeTimers();
     const smoke = withEnv(
-      { OPENAI_API_KEY: `ltfx.n.62af8704764faf8ea82f.v1` },
+      { OPENAI_API_KEY: "test-key" },
       () =>
         new NpmUpdateSmoke({
           ...TEST_AUTH,
@@ -601,7 +601,7 @@ exit 1
       const readyPath = path.join(root, "stream-ready");
       const donePath = path.join(root, "stream-done");
       const smoke = withEnv(
-        { OPENAI_API_KEY: `ltfx.n.62af8704764faf8ea82f.v1` },
+        { OPENAI_API_KEY: "test-key" },
         () =>
           new NpmUpdateSmoke({
             ...TEST_AUTH,
@@ -832,7 +832,7 @@ exit 7
 
     withEnv(
       {
-        OPENAI_API_KEY: `ltfx.n.62af8704764faf8ea82f.v1`,
+        OPENAI_API_KEY: "test-key",
         PATH: `${root}${path.delimiter}${process.env.PATH ?? ""}`,
       },
       () => {
@@ -874,7 +874,7 @@ exit 7
 
     withEnv(
       {
-        OPENAI_API_KEY: `ltfx.n.62af8704764faf8ea82f.v1`,
+        OPENAI_API_KEY: "test-key",
         PATH: `${root}${path.delimiter}${process.env.PATH ?? ""}`,
       },
       () => {

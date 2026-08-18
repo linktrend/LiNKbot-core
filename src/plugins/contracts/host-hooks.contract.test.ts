@@ -1157,7 +1157,7 @@ describe("host-hook fixture plugin contract", () => {
       cfg: config,
       storePath: "/tmp/sessions.json",
       store: {},
-      key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+      key: "agent:main:main",
       entry: {
         sessionId: "session-1",
         updatedAt: 1,
@@ -1224,7 +1224,7 @@ describe("host-hook fixture plugin contract", () => {
       cfg: config,
       storePath: "/tmp/sessions.json",
       store: {},
-      key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+      key: "agent:main:main",
       entry,
     });
     expect(row.pluginExtensions).toEqual([
@@ -1469,7 +1469,7 @@ describe("host-hook fixture plugin contract", () => {
       cfg: config,
       storePath: "/tmp/sessions.json",
       store: {},
-      key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+      key: "agent:main:main",
       entry,
     });
     expect(row.pluginExtensions).toEqual([
@@ -1555,7 +1555,7 @@ describe("host-hook fixture plugin contract", () => {
         }),
       ).resolves.toEqual({
         ok: true,
-        key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+        key: "agent:main:main",
         value: { state: "approved" },
       });
 
@@ -1569,7 +1569,7 @@ describe("host-hook fixture plugin contract", () => {
         }),
       ).resolves.toEqual({
         ok: true,
-        key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+        key: "agent:main:main",
         value: undefined,
       });
       expect(loadSessionStore(storePath)["agent:main:main"]?.pluginExtensions).toBeUndefined();
@@ -1893,7 +1893,7 @@ describe("host-hook fixture plugin contract", () => {
   it("validates gateway protocol envelopes for plugin patch and UI descriptors", () => {
     expect(
       validateSessionsPluginPatchParams({
-        key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+        key: "agent:main:main",
         pluginId: "approval-plugin",
         namespace: "workflow",
         value: { state: "waiting" },
@@ -1901,7 +1901,7 @@ describe("host-hook fixture plugin contract", () => {
     ).toBe(true);
     expect(
       validateSessionsPluginPatchParams({
-        key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+        key: "agent:main:main",
         pluginId: "approval-plugin",
         namespace: "workflow",
         value: { state: "waiting" },

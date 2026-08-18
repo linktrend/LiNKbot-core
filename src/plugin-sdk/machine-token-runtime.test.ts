@@ -47,7 +47,7 @@ describe("plugin-sdk machine-token-runtime", () => {
     const token: ResolvedMachineToken = {
       bindingId: "binding-a",
       bindingFingerprint: "fp-binding-a",
-      accessToken: `ltfx.n.c60df23acbd5a5d6614f.v1`,
+      accessToken: "mt-access-token",
       expiresAt: Date.now() + 60_000,
       tokenType: "Bearer",
     };

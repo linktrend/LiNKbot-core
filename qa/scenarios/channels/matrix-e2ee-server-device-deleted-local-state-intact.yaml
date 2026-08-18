@@ -19,7 +19,7 @@ scenario:
         defaultRoomKey: main
         rooms:
           - encrypted: true
-            key: "${ltfx.n.9f998d561a92565a52b8.v1}"
+            key: e2ee-server-device-deleted-local-state-intact
             kind: group
             members:
               - driver

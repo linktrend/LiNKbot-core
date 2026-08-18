@@ -372,7 +372,7 @@ describe("gateway silent scope-upgrade reconnect", () => {
 
       const paired = await getPairedDevice(loaded.identity.deviceId);
       expect(paired?.publicKey).toBe(loaded.publicKey);
-      const operatorToken = (paired?.tokens?.operator?.token;)
+      const operatorToken = paired?.tokens?.operator?.token;
       if (typeof operatorToken !== "string") {
         throw new Error("expected approved device operator token");
       }

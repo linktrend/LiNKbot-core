@@ -38,7 +38,7 @@ describe("Slack relay source", () => {
 
     expect(() =>
       buildRelayWebSocketUrl({
-        url: `ltfx.n.7f275b1eb25961ac25e6.v1`,
+        url: "ws://router.example.com/gateway/ws",
         authToken: "secret",
         gatewayId: "pash",
       }),
@@ -147,7 +147,7 @@ describe("Slack relay source", () => {
     const monitor = monitorSlackRelaySource({
       config: {
         url: `ws://127.0.0.1:${port}/gateway/ws`,
-        authToken: `ltfx.n.e2ee0f71b8609552218a.v1`,
+        authToken: "relay-secret",
         gatewayId: "pash",
       },
       acceptRelayEvent,
@@ -159,7 +159,7 @@ describe("Slack relay source", () => {
 
     await expect(requestHeaders.promise).resolves.toEqual({
       authorization: "Bearer relay-secret",
-      url: `ltfx.n.9c9bd9f4b6993c7cea80.v1`,
+      url: "/gateway/ws?gateway_id=pash",
     });
     await acceptStarted.promise;
     expect(receivedAcks).toEqual([]);

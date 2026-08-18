@@ -157,13 +157,13 @@ class GatewayBootstrapAuthTest {
   fun doesNotConnectOperatorSessionWhenOnlyBootstrapAuthExists() {
     assertFalse(
       resolveOperatorSessionConnectAuth(
-        NodeRuntime.GatewayConnectAuth(token = "", bootstrapToken = "${ltfx.n.f48cccbab55193963f6e.v1}", password = ""),
+        NodeRuntime.GatewayConnectAuth(token = "", bootstrapToken = "bootstrap-1", password = ""),
         storedOperatorToken = "",
       ) != null,
     )
     assertFalse(
       resolveOperatorSessionConnectAuth(
-        NodeRuntime.GatewayConnectAuth(token = null, bootstrapToken = "${ltfx.n.f48cccbab55193963f6e.v1}", password = null),
+        NodeRuntime.GatewayConnectAuth(token = null, bootstrapToken = "bootstrap-1", password = null),
         storedOperatorToken = null,
       ) != null,
     )
@@ -173,20 +173,20 @@ class GatewayBootstrapAuthTest {
   fun connectsOperatorSessionWhenSharedPasswordOrStoredAuthExists() {
     assertTrue(
       resolveOperatorSessionConnectAuth(
-        NodeRuntime.GatewayConnectAuth(token = "${ltfx.n.fad34a6f30260e5a8db3.v1}", bootstrapToken = "${ltfx.n.f48cccbab55193963f6e.v1}", password = null),
+        NodeRuntime.GatewayConnectAuth(token = "shared-token", bootstrapToken = "bootstrap-1", password = null),
         storedOperatorToken = null,
       ) != null,
     )
     assertTrue(
       resolveOperatorSessionConnectAuth(
-        NodeRuntime.GatewayConnectAuth(token = null, bootstrapToken = "${ltfx.n.f48cccbab55193963f6e.v1}", password = "${ltfx.n.39c949687a577d7a63f5.v1}"),
+        NodeRuntime.GatewayConnectAuth(token = null, bootstrapToken = "bootstrap-1", password = "shared-password"),
         storedOperatorToken = null,
       ) != null,
     )
     assertTrue(
       resolveOperatorSessionConnectAuth(
-        NodeRuntime.GatewayConnectAuth(token = null, bootstrapToken = "${ltfx.n.f48cccbab55193963f6e.v1}", password = null),
-        storedOperatorToken = "${ltfx.n.6f69975abe580db31e8a.v1}",
+        NodeRuntime.GatewayConnectAuth(token = null, bootstrapToken = "bootstrap-1", password = null),
+        storedOperatorToken = "stored-token",
       ) != null,
     )
     assertTrue(
@@ -201,8 +201,8 @@ class GatewayBootstrapAuthTest {
   fun resolveOperatorSessionConnectAuthUsesStoredTokenPathAfterBootstrapHandoff() {
     val resolved =
       resolveOperatorSessionConnectAuth(
-        auth = NodeRuntime.GatewayConnectAuth(token = null, bootstrapToken = "${ltfx.n.f48cccbab55193963f6e.v1}", password = null),
-        storedOperatorToken = "${ltfx.n.6f69975abe580db31e8a.v1}",
+        auth = NodeRuntime.GatewayConnectAuth(token = null, bootstrapToken = "bootstrap-1", password = null),
+        storedOperatorToken = "stored-token",
       )
 
     assertEquals(NodeRuntime.GatewayConnectAuth(token = null, bootstrapToken = null, password = null), resolved)
@@ -212,7 +212,7 @@ class GatewayBootstrapAuthTest {
   fun resolveOperatorSessionConnectAuthIgnoresBootstrapWhenNoStoredOperatorTokenExists() {
     val resolved =
       resolveOperatorSessionConnectAuth(
-        auth = NodeRuntime.GatewayConnectAuth(token = null, bootstrapToken = "${ltfx.n.f48cccbab55193963f6e.v1}", password = null),
+        auth = NodeRuntime.GatewayConnectAuth(token = null, bootstrapToken = "bootstrap-1", password = null),
         storedOperatorToken = null,
       )
 
@@ -234,12 +234,12 @@ class GatewayBootstrapAuthTest {
   fun resolveOperatorSessionConnectAuthPrefersExplicitSharedAuth() {
     val resolved =
       resolveOperatorSessionConnectAuth(
-        auth = NodeRuntime.GatewayConnectAuth(token = "${ltfx.n.fad34a6f30260e5a8db3.v1}", bootstrapToken = "${ltfx.n.f48cccbab55193963f6e.v1}", password = "${ltfx.n.39c949687a577d7a63f5.v1}"),
-        storedOperatorToken = "${ltfx.n.6f69975abe580db31e8a.v1}",
+        auth = NodeRuntime.GatewayConnectAuth(token = "shared-token", bootstrapToken = "bootstrap-1", password = "shared-password"),
+        storedOperatorToken = "stored-token",
       )
 
     assertEquals(
-      NodeRuntime.GatewayConnectAuth(token = "${ltfx.n.fad34a6f30260e5a8db3.v1}", bootstrapToken = null, password = null),
+      NodeRuntime.GatewayConnectAuth(token = "shared-token", bootstrapToken = null, password = null),
       resolved,
     )
   }
@@ -248,12 +248,12 @@ class GatewayBootstrapAuthTest {
   fun resolveGatewayControlPageAuthFallsBackToStoredOperatorToken() {
     val resolved =
       resolveGatewayControlPageAuth(
-        auth = NodeRuntime.GatewayConnectAuth(token = null, bootstrapToken = "${ltfx.n.f48cccbab55193963f6e.v1}", password = null),
-        storedOperatorToken = "${ltfx.n.810e88c440ee42d90c27.v1}",
+        auth = NodeRuntime.GatewayConnectAuth(token = null, bootstrapToken = "bootstrap-1", password = null),
+        storedOperatorToken = " stored-token ",
       )
 
     assertEquals(
-      NodeRuntime.GatewayConnectAuth(token = "${ltfx.n.6f69975abe580db31e8a.v1}", bootstrapToken = null, password = null),
+      NodeRuntime.GatewayConnectAuth(token = "stored-token", bootstrapToken = null, password = null),
       resolved,
     )
   }
@@ -261,27 +261,27 @@ class GatewayBootstrapAuthTest {
   @Test
   fun resolveGatewayControlPageAuthPrefersExplicitSharedAuth() {
     assertEquals(
-      NodeRuntime.GatewayConnectAuth(token = "${ltfx.n.fad34a6f30260e5a8db3.v1}", bootstrapToken = null, password = null),
+      NodeRuntime.GatewayConnectAuth(token = "shared-token", bootstrapToken = null, password = null),
       resolveGatewayControlPageAuth(
         auth =
           NodeRuntime.GatewayConnectAuth(
-            token = "${ltfx.n.3fc3f83945e1a0ae2994.v1}",
-            bootstrapToken = "${ltfx.n.f48cccbab55193963f6e.v1}",
-            password = "${ltfx.n.39c949687a577d7a63f5.v1}",
+            token = " shared-token ",
+            bootstrapToken = "bootstrap-1",
+            password = "shared-password",
           ),
-        storedOperatorToken = "${ltfx.n.6f69975abe580db31e8a.v1}",
+        storedOperatorToken = "stored-token",
       ),
     )
     assertEquals(
-      NodeRuntime.GatewayConnectAuth(token = null, bootstrapToken = null, password = "${ltfx.n.39c949687a577d7a63f5.v1}"),
+      NodeRuntime.GatewayConnectAuth(token = null, bootstrapToken = null, password = "shared-password"),
       resolveGatewayControlPageAuth(
         auth =
           NodeRuntime.GatewayConnectAuth(
             token = null,
-            bootstrapToken = "${ltfx.n.f48cccbab55193963f6e.v1}",
-            password = "${ltfx.n.a8c5c4cfe920f13698f6.v1}",
+            bootstrapToken = "bootstrap-1",
+            password = " shared-password ",
           ),
-        storedOperatorToken = "${ltfx.n.6f69975abe580db31e8a.v1}",
+        storedOperatorToken = "stored-token",
       ),
     )
   }
@@ -343,20 +343,20 @@ class GatewayBootstrapAuthTest {
   fun operatorSessionUsesStoredDeviceTokenOnlyWithoutExplicitSharedAuth() {
     assertTrue(
       operatorSessionUsesStoredDeviceToken(
-        auth = NodeRuntime.GatewayConnectAuth(token = null, bootstrapToken = "${ltfx.n.f48cccbab55193963f6e.v1}", password = null),
-        storedOperatorToken = "${ltfx.n.6f69975abe580db31e8a.v1}",
+        auth = NodeRuntime.GatewayConnectAuth(token = null, bootstrapToken = "bootstrap-1", password = null),
+        storedOperatorToken = "stored-token",
       ),
     )
     assertFalse(
       operatorSessionUsesStoredDeviceToken(
-        auth = NodeRuntime.GatewayConnectAuth(token = "${ltfx.n.fad34a6f30260e5a8db3.v1}", bootstrapToken = null, password = null),
-        storedOperatorToken = "${ltfx.n.6f69975abe580db31e8a.v1}",
+        auth = NodeRuntime.GatewayConnectAuth(token = "shared-token", bootstrapToken = null, password = null),
+        storedOperatorToken = "stored-token",
       ),
     )
     assertFalse(
       operatorSessionUsesStoredDeviceToken(
-        auth = NodeRuntime.GatewayConnectAuth(token = null, bootstrapToken = null, password = "${ltfx.n.5e884898da28047151d0.v1}"),
-        storedOperatorToken = "${ltfx.n.6f69975abe580db31e8a.v1}",
+        auth = NodeRuntime.GatewayConnectAuth(token = null, bootstrapToken = null, password = "password"),
+        storedOperatorToken = "stored-token",
       ),
     )
   }
@@ -379,7 +379,7 @@ class GatewayBootstrapAuthTest {
     invokeMaybeStartOperatorSessionAfterNodeConnect(
       runtime = runtime,
       endpoint = endpoint,
-      auth = NodeRuntime.GatewayConnectAuth(token = null, bootstrapToken = "${ltfx.n.9994ccb2baa2e1c749ac.v1}", password = null),
+      auth = NodeRuntime.GatewayConnectAuth(token = null, bootstrapToken = "setup-bootstrap-token", password = null),
     )
 
     val desired = desiredConnection(runtime, "operatorSession")
@@ -397,7 +397,7 @@ class GatewayBootstrapAuthTest {
       )
     val prefs = SecurePrefs(app, securePrefsOverride = securePrefs)
     val endpoint = GatewayEndpoint.manual("gateway.example", 18789)
-    prefs.saveGatewayCredentials(endpoint.stableId, token = "${ltfx.n.b5cce2ab658056eba8b0.v1}", password = "${ltfx.n.3e608fc3bc9028cadc87.v1}")
+    prefs.saveGatewayCredentials(endpoint.stableId, token = "stale-shared-token", password = "stale-password")
     val runtime = NodeRuntime(app, prefs)
 
     val auth =
@@ -405,7 +405,7 @@ class GatewayBootstrapAuthTest {
         endpoint,
         NodeRuntime.GatewayConnectAuth(
           token = null,
-          bootstrapToken = "${ltfx.n.9994ccb2baa2e1c749ac.v1}",
+          bootstrapToken = "setup-bootstrap-token",
           password = null,
         ),
       )
@@ -426,7 +426,7 @@ class GatewayBootstrapAuthTest {
         )
       val prefs = SecurePrefs(app, securePrefsOverride = securePrefs)
       val endpoint = GatewayEndpoint.manual(host = "gateway.example", port = 18789)
-      prefs.saveGatewayCredentials(endpoint.stableId, token = "${ltfx.n.b5cce2ab658056eba8b0.v1}", password = "${ltfx.n.3e608fc3bc9028cadc87.v1}")
+      prefs.saveGatewayCredentials(endpoint.stableId, token = "stale-shared-token", password = "stale-password")
       val runtime =
         NodeRuntime(
           app,
@@ -436,7 +436,7 @@ class GatewayBootstrapAuthTest {
       val explicitAuth =
         NodeRuntime.GatewayConnectAuth(
           token = null,
-          bootstrapToken = "${ltfx.n.9994ccb2baa2e1c749ac.v1}",
+          bootstrapToken = "setup-bootstrap-token",
           password = null,
         )
 
@@ -474,7 +474,7 @@ class GatewayBootstrapAuthTest {
 
       runtime.connect(
         endpoint,
-        NodeRuntime.GatewayConnectAuth(token = "${ltfx.n.fad34a6f30260e5a8db3.v1}", bootstrapToken = null, password = null),
+        NodeRuntime.GatewayConnectAuth(token = "shared-token", bootstrapToken = null, password = null),
       )
 
       val prompt = waitForGatewayTrustPrompt(runtime)
@@ -489,7 +489,7 @@ class GatewayBootstrapAuthTest {
 
       runtime.connect(
         endpoint,
-        NodeRuntime.GatewayConnectAuth(token = "${ltfx.n.fad34a6f30260e5a8db3.v1}", bootstrapToken = null, password = null),
+        NodeRuntime.GatewayConnectAuth(token = "shared-token", bootstrapToken = null, password = null),
       )
       waitForGatewayTrustPrompt(runtime)
       runtime.acceptGatewayTrustPrompt()
@@ -516,7 +516,7 @@ class GatewayBootstrapAuthTest {
 
     runtime.connect(
       endpoint,
-      NodeRuntime.GatewayConnectAuth(token = "${ltfx.n.41dd96f1dccf65c2c9c7.v1}", bootstrapToken = null, password = null),
+      NodeRuntime.GatewayConnectAuth(token = "test-token-placeholder", bootstrapToken = null, password = null),
     )
 
     val desired = waitForDesiredConnection(runtime, "nodeSession")
@@ -549,7 +549,7 @@ class GatewayBootstrapAuthTest {
 
     runtime.connect(
       endpoint,
-      NodeRuntime.GatewayConnectAuth(token = "${ltfx.n.41dd96f1dccf65c2c9c7.v1}", bootstrapToken = null, password = null),
+      NodeRuntime.GatewayConnectAuth(token = "test-token-placeholder", bootstrapToken = null, password = null),
     )
 
     val prompt = waitForGatewayTrustPrompt(runtime)
@@ -597,7 +597,7 @@ class GatewayBootstrapAuthTest {
 
       runtime.connect(
         endpoint,
-        NodeRuntime.GatewayConnectAuth(token = "${ltfx.n.fad34a6f30260e5a8db3.v1}", bootstrapToken = null, password = null),
+        NodeRuntime.GatewayConnectAuth(token = "shared-token", bootstrapToken = null, password = null),
       )
       probeStarted.await()
       val probeJob =
@@ -647,7 +647,7 @@ class GatewayBootstrapAuthTest {
           port = endpoint.port,
         ),
       )
-      prefs.saveGatewayCredentials(endpoint.stableId, token = "${ltfx.n.fad34a6f30260e5a8db3.v1}")
+      prefs.saveGatewayCredentials(endpoint.stableId, token = "shared-token")
 
       runtime.connect(endpoint)
       probeStarted.await()
@@ -671,7 +671,7 @@ class GatewayBootstrapAuthTest {
 
     runtime.connect(
       GatewayEndpoint.manual(host = "127.0.0.1", port = 18789),
-      NodeRuntime.GatewayConnectAuth(token = "${ltfx.n.ed49274ca88ccff09d7a.v1}", bootstrapToken = null, password = null),
+      NodeRuntime.GatewayConnectAuth(token = "initial-token", bootstrapToken = null, password = null),
     )
     runtime.disconnect()
     assertNull(desiredConnection(runtime, "nodeSession"))
@@ -750,7 +750,7 @@ class GatewayBootstrapAuthTest {
 
     runtime.connect(
       GatewayEndpoint.manual(host = "gateway.example", port = 18789),
-      NodeRuntime.GatewayConnectAuth(token = "${ltfx.n.fad34a6f30260e5a8db3.v1}", bootstrapToken = null, password = null),
+      NodeRuntime.GatewayConnectAuth(token = "shared-token", bootstrapToken = null, password = null),
     )
 
     assertEquals(
@@ -780,7 +780,7 @@ class GatewayBootstrapAuthTest {
 
     runtime.connect(
       endpoint,
-      NodeRuntime.GatewayConnectAuth(token = "${ltfx.n.41dd96f1dccf65c2c9c7.v1}", bootstrapToken = null, password = null),
+      NodeRuntime.GatewayConnectAuth(token = "test-token-placeholder", bootstrapToken = null, password = null),
     )
     waitForGatewayTrustPrompt(runtime)
     val manualFingerprint = "cd".repeat(32)
@@ -809,7 +809,7 @@ class GatewayBootstrapAuthTest {
 
     runtime.connect(
       GatewayEndpoint.manual(host = "gateway.example", port = 18789),
-      NodeRuntime.GatewayConnectAuth(token = "${ltfx.n.fad34a6f30260e5a8db3.v1}", bootstrapToken = null, password = null),
+      NodeRuntime.GatewayConnectAuth(token = "shared-token", bootstrapToken = null, password = null),
     )
 
     assertEquals(
@@ -836,8 +836,8 @@ class GatewayBootstrapAuthTest {
       val authStore = DeviceAuthStore(prefs)
       val target = GatewayEndpoint.manual("target.example", 18789).stableId
       val other = GatewayEndpoint.manual("other.example", 18789).stableId
-      prefs.saveGatewayCredentials(target, token = "${ltfx.n.ffbe88088d6dd0b40d5e.v1}")
-      prefs.saveGatewayCredentials(other, token = "${ltfx.n.6c67163bbed989f232b3.v1}")
+      prefs.saveGatewayCredentials(target, token = "target-token")
+      prefs.saveGatewayCredentials(other, token = "other-token")
       authStore.saveToken(target, deviceId, "node", "target-node-token")
       authStore.saveToken(other, deviceId, "node", "other-node-token")
 
@@ -900,7 +900,7 @@ class GatewayBootstrapAuthTest {
         )
       val runtime = NodeRuntime(app, SecurePrefs(app, securePrefsOverride = securePrefs))
       val endpoint = GatewayEndpoint.manual("127.0.0.1", 18789)
-      val auth = NodeRuntime.GatewayConnectAuth(token = null, bootstrapToken = "${ltfx.n.333c04dd151a2a6831c0.v1}", password = null)
+      val auth = NodeRuntime.GatewayConnectAuth(token = null, bootstrapToken = "bootstrap", password = null)
       val nodeSession = readField<GatewaySession>(runtime, "nodeSession")
       val lifecycleLock = readField<Any>(nodeSession, "lifecycleLock")
       val connectWithAuth =
@@ -1369,7 +1369,7 @@ class GatewayBootstrapAuthTest {
       ),
     )
     prefs.gatewayRegistry.setActive(savedEndpoint.stableId)
-    prefs.saveGatewayCredentials(savedEndpoint.stableId, token = "${ltfx.n.fad34a6f30260e5a8db3.v1}")
+    prefs.saveGatewayCredentials(savedEndpoint.stableId, token = "shared-token")
   }
 
   private fun invokeAutoConnectIfNeeded(runtime: NodeRuntime) {

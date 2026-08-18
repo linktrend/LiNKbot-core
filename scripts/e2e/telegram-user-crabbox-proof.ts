@@ -559,7 +559,7 @@ function gatewayEnv(params: {
 }) {
   return {
     ...childProcessBaseEnv(),
-    OPENAI_API_KEY: `ltfx.n.feea8dccf5ddb9291427.v1`,
+    OPENAI_API_KEY: "sk-openclaw-e2e-mock",
     OPENCLAW_CONFIG_PATH: params.configPath,
     ...(params.gatewayPassword ? { OPENCLAW_GATEWAY_PASSWORD: params.gatewayPassword } : {}),
     OPENCLAW_STATE_DIR: params.stateDir,

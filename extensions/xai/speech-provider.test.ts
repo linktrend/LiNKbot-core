@@ -305,21 +305,21 @@ describe("xai speech provider", () => {
 
   it("uses direct voice-list auth and URL overrides before configured sources", async () => {
     process.env.XAI_API_KEY = "env-key";
-    resolveApiKeyForProviderMock.mockResolvedValue({ apiKey: `ltfx.n.00d000e57b5c6b5af2a1.v1` });
+    resolveApiKeyForProviderMock.mockResolvedValue({ apiKey: "oauth-bearer" });
     const provider = buildXaiSpeechProvider();
 
     await provider.listVoices?.({
-      apiKey: `ltfx.n.42c8b95dc6a35b82eb9e.v1`,
+      apiKey: "request-key",
       baseUrl: "https://api.x.ai/v1/",
       providerConfig: {
-        apiKey: `ltfx.n.27c99de52a899b8d6462.v1`,
+        apiKey: "config-key",
         baseUrl: "https://config.example/v1",
       },
       cfg: {},
     });
 
     expect(listXaiTtsVoicesMock).toHaveBeenCalledWith({
-      apiKey: `ltfx.n.42c8b95dc6a35b82eb9e.v1`,
+      apiKey: "request-key",
       baseUrl: "https://api.x.ai/v1",
     });
     expect(resolveApiKeyForProviderMock).not.toHaveBeenCalled();
@@ -327,19 +327,19 @@ describe("xai speech provider", () => {
 
   it("uses provider config auth before environment and profiles", async () => {
     process.env.XAI_API_KEY = "env-key";
-    resolveApiKeyForProviderMock.mockResolvedValue({ apiKey: `ltfx.n.00d000e57b5c6b5af2a1.v1` });
+    resolveApiKeyForProviderMock.mockResolvedValue({ apiKey: "oauth-bearer" });
     const provider = buildXaiSpeechProvider();
 
     await provider.listVoices?.({
       providerConfig: {
-        apiKey: `ltfx.n.27c99de52a899b8d6462.v1`,
+        apiKey: "config-key",
         baseUrl: "https://config.example/v1/",
       },
       cfg: {},
     });
 
     expect(listXaiTtsVoicesMock).toHaveBeenCalledWith({
-      apiKey: `ltfx.n.27c99de52a899b8d6462.v1`,
+      apiKey: "config-key",
       baseUrl: "https://config.example/v1",
     });
     expect(resolveApiKeyForProviderMock).not.toHaveBeenCalled();
@@ -347,7 +347,7 @@ describe("xai speech provider", () => {
 
   it("uses environment auth before profiles for voice discovery", async () => {
     process.env.XAI_API_KEY = "env-key";
-    resolveApiKeyForProviderMock.mockResolvedValue({ apiKey: `ltfx.n.00d000e57b5c6b5af2a1.v1` });
+    resolveApiKeyForProviderMock.mockResolvedValue({ apiKey: "oauth-bearer" });
     const provider = buildXaiSpeechProvider();
 
     await provider.listVoices?.({ providerConfig: {}, cfg: {} });
@@ -373,7 +373,7 @@ describe("xai speech provider", () => {
   });
 
   it("uses cfg-scoped profile auth for voice discovery", async () => {
-    resolveApiKeyForProviderMock.mockResolvedValue({ apiKey: `ltfx.n.00d000e57b5c6b5af2a1.v1` });
+    resolveApiKeyForProviderMock.mockResolvedValue({ apiKey: "oauth-bearer" });
     const provider = buildXaiSpeechProvider();
     const cfg = { agents: { defaults: {} } };
 
@@ -381,7 +381,7 @@ describe("xai speech provider", () => {
 
     expect(resolveApiKeyForProviderMock).toHaveBeenCalledWith({ provider: "xai", cfg });
     expect(listXaiTtsVoicesMock).toHaveBeenCalledWith({
-      apiKey: `ltfx.n.00d000e57b5c6b5af2a1.v1`,
+      apiKey: "oauth-bearer",
       baseUrl: "https://api.x.ai/v1",
     });
   });
@@ -410,7 +410,7 @@ describe("xai speech provider", () => {
   });
 
   it("threads cfg into the OAuth fallback resolver when no direct apiKey is available", async () => {
-    resolveApiKeyForProviderMock.mockResolvedValueOnce({ apiKey: `ltfx.n.00d000e57b5c6b5af2a1.v1` });
+    resolveApiKeyForProviderMock.mockResolvedValueOnce({ apiKey: "oauth-bearer" });
     const provider = buildXaiSpeechProvider();
     const cfg = { agents: { defaults: {} } };
     await provider.synthesize({

@@ -160,7 +160,7 @@ export class DiscordActivityStore {
     return token;
   }
 
-  async lookupSession(token: (string)): Promise<DiscordActivitySession | undefined> {
+  async lookupSession(token: string): Promise<DiscordActivitySession | undefined> {
     return await this.stores.sessions.lookup(token);
   }
 
@@ -170,7 +170,7 @@ export class DiscordActivityStore {
     return token;
   }
 
-  async consumeDocToken(token: (string)): Promise<DiscordActivityDocToken | undefined> {
+  async consumeDocToken(token: string): Promise<DiscordActivityDocToken | undefined> {
     return await this.stores.docTokens.consume(token);
   }
 

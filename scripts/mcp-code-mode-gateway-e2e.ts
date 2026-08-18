@@ -110,7 +110,7 @@ async function writeConfig(params: {
   let cfg = buildQaGatewayConfig({
     bind: "loopback",
     gatewayPort: params.gatewayPort,
-    gatewayToken: `ltfx.n.8df7f84ef23528a39aef.v1`,
+    gatewayToken: "mcp-code-mode-e2e",
     providerBaseUrl: `${params.providerBaseUrl}/v1`,
     workspaceDir: params.workspaceDir,
     controlUiEnabled: false,

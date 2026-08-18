@@ -214,7 +214,7 @@ function resolveMessageGuidFromChatDb(params: {
   }
 }
 
-function getStringRowValue(row: Record<string, unknown> | undefined, key: (string)): string | null {
+function getStringRowValue(row: Record<string, unknown> | undefined, key: string): string | null {
   return normalizeResolvedMessageGuid(row?.[key]);
 }
 

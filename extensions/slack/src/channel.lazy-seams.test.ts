@@ -115,7 +115,7 @@ describe("slackPlugin.status.buildChannelSummary lazy SDK forwarding", () => {
     const result = await buildChannelSummary({
       account: { accountId: "default" } as never,
       snapshot,
-      cfg: makeMinimalSlackConfig({ botToken: `ltfx.n.87894fe048938b686cfb.v1` }),
+      cfg: makeMinimalSlackConfig({ botToken: "xoxb-test" }),
       runtime: undefined,
     } as never);
 
@@ -163,7 +163,7 @@ describe("slackPlugin.status.buildCapabilitiesDiagnostics lazy scopes loader", (
 
     fetchSlackScopesMock.mockResolvedValue({ ok: true, scopes: ["chat:write"] });
 
-    const cfg = makeMinimalSlackConfig({ botToken: `ltfx.n.c8b505c2b4aca8778b0a.v1` });
+    const cfg = makeMinimalSlackConfig({ botToken: "xoxb-bot" });
     const account = slackPlugin.config.resolveAccount(cfg, "default");
     const result = await buildDiagnostics({ account, timeoutMs: 1234, cfg } as never);
 
@@ -183,7 +183,7 @@ describe("slackPlugin.status.buildCapabilitiesDiagnostics lazy scopes loader", (
       .mockResolvedValueOnce({ ok: true, scopes: ["chat:write"] })
       .mockResolvedValueOnce({ ok: true, scopes: ["users:read"] });
 
-    const cfg = makeMinimalSlackConfig({ botToken: `ltfx.n.c8b505c2b4aca8778b0a.v1`, userToken: `ltfx.n.7c40c10cd6816e744256.v1` });
+    const cfg = makeMinimalSlackConfig({ botToken: "xoxb-bot", userToken: "xoxp-user" });
     const account = slackPlugin.config.resolveAccount(cfg, "default");
     const result = await buildDiagnostics({ account, timeoutMs: 5000, cfg } as never);
 
@@ -232,7 +232,7 @@ describe("slackPlugin.security.collectAuditFindings lazy module forwarding", () 
     ];
     collectAuditFindingsMock.mockResolvedValue(sentinel);
 
-    const cfg = makeMinimalSlackConfig({ botToken: `ltfx.n.c8b505c2b4aca8778b0a.v1` });
+    const cfg = makeMinimalSlackConfig({ botToken: "xoxb-bot" });
     const account = slackPlugin.config.resolveAccount(cfg, "default");
     const result = await collectAuditFindings({ cfg, accountId: "default", account } as never);
 
@@ -273,7 +273,7 @@ describe("slackPlugin.resolver.resolveTargets lazy SDK forwarding", () => {
     const sentinelOutput = [{ input: "U123", resolved: true, id: "U123", note: undefined }];
     resolveTargetsWithOptionalTokenMock.mockResolvedValue(sentinelOutput);
 
-    const cfg = makeMinimalSlackConfig({ botToken: `ltfx.n.c8b505c2b4aca8778b0a.v1` });
+    const cfg = makeMinimalSlackConfig({ botToken: "xoxb-bot" });
     const result = await resolveTargets({
       cfg,
       accountId: "default",
@@ -321,7 +321,7 @@ describe("slackPlugin.resolver.resolveTargets lazy SDK forwarding", () => {
     resolveTargetsWithOptionalTokenMock.mockResolvedValue([]);
 
     await resolveTargets({
-      cfg: makeMinimalSlackConfig({ botToken: `ltfx.n.c8b505c2b4aca8778b0a.v1`, userToken: `ltfx.n.7c40c10cd6816e744256.v1` }),
+      cfg: makeMinimalSlackConfig({ botToken: "xoxb-bot", userToken: "xoxp-user" }),
       accountId: "default",
       inputs: ["U1"],
       kind: "user",
@@ -340,7 +340,7 @@ describe("slackPlugin.resolver.resolveTargets lazy SDK forwarding", () => {
     resolveTargetsWithOptionalTokenMock.mockResolvedValue([]);
 
     await resolveTargets({
-      cfg: makeMinimalSlackConfig({ botToken: `ltfx.n.c8b505c2b4aca8778b0a.v1` }),
+      cfg: makeMinimalSlackConfig({ botToken: "xoxb-bot" }),
       accountId: "default",
       inputs: ["C1"],
       kind: "group",

@@ -551,7 +551,7 @@ private struct SkillRow: View {
         HStack(spacing: 8) {
             ForEach(self.missingEnv, id: \.self) { envKey in
                 let isPrimary = envKey == self.skill.primaryEnv
-                Button(isPrimary ? "Set API Key" : ("Set \(envKey)")) {
+                Button(isPrimary ? "Set API Key" : "Set \(envKey)") {
                     self.onSetEnv(envKey, isPrimary)
                 }
                 .buttonStyle(.bordered)
@@ -729,7 +729,7 @@ private struct EnvEditorView: View {
     }
 
     private var title: String {
-        self.editor.isPrimary ? "Set API Key" : "${ltfx.n.0102571e248346d4bd47.v1}"
+        self.editor.isPrimary ? "Set API Key" : "Set Environment Variable"
     }
 
     private var subtitle: String {

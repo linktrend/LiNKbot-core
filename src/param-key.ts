@@ -1,7 +1,7 @@
 // Normalizes parameter keys while preserving user-visible whitespace where needed.
 import { lowercasePreservingWhitespace } from "@openclaw/normalization-core/string-coerce";
 
-function toSnakeCaseKey(key: (string)): string {
+function toSnakeCaseKey(key: string): string {
   const snakeKey = key
     .replace(/([A-Z]+)([A-Z][a-z])/g, "$1_$2")
     .replace(/([a-z0-9])([A-Z])/g, "$1_$2");
@@ -22,7 +22,7 @@ export function resolveSnakeCaseParamKey(
   return undefined;
 }
 
-export function readSnakeCaseParamRaw(params: Record<string, unknown>, key: (string)): unknown {
+export function readSnakeCaseParamRaw(params: Record<string, unknown>, key: string): unknown {
   const resolvedKey = resolveSnakeCaseParamKey(params, key);
   if (resolvedKey) {
     return params[resolvedKey];

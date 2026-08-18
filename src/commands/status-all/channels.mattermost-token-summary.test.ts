@@ -30,7 +30,7 @@ describe("summarizeTokenConfig", () => {
     const summary = summarize([
       tokenRow({
         account: {
-          botToken: `ltfx.n.d0835ffe02d2ada62218.v1`,
+          botToken: "bot-token-value",
           baseUrl: "https://mm.example.com",
         },
         snapshot: { botTokenSource: "config" },
@@ -46,7 +46,7 @@ describe("summarizeTokenConfig", () => {
     const summary = summarize([
       tokenRow({
         account: {
-          botToken: `ltfx.n.df27f9beb68b7766af3a.v1`,
+          botToken: "bot-token",
           appToken: "",
         },
       }),
@@ -107,7 +107,7 @@ describe("summarizeTokenConfig", () => {
       tokenRow({
         account: {
           mode: "http",
-          botToken: `ltfx.n.1ba9286e571243d3f589.v1`,
+          botToken: "xoxb-http",
           signingSecret: "", // pragma: allowlist secret
           botTokenSource: "config",
           signingSecretSource: "config", // pragma: allowlist secret
@@ -129,7 +129,7 @@ describe("summarizeTokenConfig", () => {
     const summary = summarize([
       tokenRow({
         account: {
-          token: `ltfx.n.e6c02a5742ea9d4de588.v1`,
+          token: "token-value",
           tokenSource: "config",
         },
         snapshot: { tokenSource: "config" },

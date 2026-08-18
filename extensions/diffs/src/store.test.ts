@@ -363,7 +363,7 @@ describe("createDiffsHttpHandler", () => {
     const handled = await handler(
       localReq({
         method: "GET",
-        url: `ltfx.n.d17a520bd5ea33d76418.v1`,
+        url: "/plugins/diffs/view/not-a-real-id/not-a-real-token",
       }),
       res,
     );
@@ -378,7 +378,7 @@ describe("createDiffsHttpHandler", () => {
     const handled = await handler(
       localReq({
         method: "GET",
-        url: `ltfx.n.56b5efef074e86992253.v1`,
+        url: "/plugins/diffs/assets/viewer.js",
       }),
       res,
     );
@@ -395,7 +395,7 @@ describe("createDiffsHttpHandler", () => {
     const handled = await handler(
       localReq({
         method: "GET",
-        url: `ltfx.n.8a81dd0b3a1e924c7534.v1`,
+        url: "/plugins/diffs/assets/viewer-runtime.js",
       }),
       res,
     );
@@ -495,7 +495,7 @@ describe("createDiffsHttpHandler", () => {
       await handler(
         remoteReq({
           method: "GET",
-          url: `ltfx.n.102532c1cc56632e0b42.v1`,
+          url: "/plugins/diffs/view/aaaaaaaaaaaaaaaaaaaa/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
         }),
         miss,
       );
@@ -506,7 +506,7 @@ describe("createDiffsHttpHandler", () => {
     await handler(
       remoteReq({
         method: "GET",
-        url: `ltfx.n.102532c1cc56632e0b42.v1`,
+        url: "/plugins/diffs/view/aaaaaaaaaaaaaaaaaaaa/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
       }),
       limited,
     );

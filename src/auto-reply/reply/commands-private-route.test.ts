@@ -287,7 +287,7 @@ describe("resolvePrivateCommandRouteTargets", () => {
         },
         channels: {
           telegram: {
-            botToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+            botToken: "test-token",
           },
         },
       } as OpenClawConfig),

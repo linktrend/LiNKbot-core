@@ -193,7 +193,7 @@ class CanvasController {
         wv.loadUrl(scaffoldAssetUrl)
       } else {
         if (BuildConfig.DEBUG) {
-          Log.d("OpenClawCanvas", "load url: ($currentUrl"))
+          Log.d("OpenClawCanvas", "load url: $currentUrl")
         }
         wv.loadUrl(currentUrl)
       }
@@ -369,18 +369,18 @@ class CanvasController {
 
     private fun JsonElement?.asObjectOrNull(): JsonObject? = this as? JsonObject
 
-    private fun JsonObject.string(key: (String): String {)
+    private fun JsonObject.string(key: String): String {
       val prim = this[key] as? JsonPrimitive ?: return ""
       val raw = prim.content
       return raw.takeIf { it != "null" }.orEmpty()
     }
 
-    private fun JsonObject.int(key: (String): Int? {)
+    private fun JsonObject.int(key: String): Int? {
       val prim = this[key] as? JsonPrimitive ?: return null
       return prim.content.toIntOrNull()
     }
 
-    private fun JsonObject.double(key: (String): Double? {)
+    private fun JsonObject.double(key: String): Double? {
       val prim = this[key] as? JsonPrimitive ?: return null
       return prim.content.toDoubleOrNull()
     }

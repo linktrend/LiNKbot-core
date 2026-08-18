@@ -73,7 +73,7 @@ describe("wrapGuardedBodyStream", () => {
   it("errors and cleans up once when cumulative bytes exceed maxBytes", async () => {
     const cancel = vi.fn(async () => undefined);
     const cleanup = vi.fn();
-    const secret = `ltfx.n.0cc9909313e7ec101a5b.v1`;
+    const secret = "Bearer leaked-token-value-do-not-echo";
     let pulls = 0;
     const source = new ReadableStream<Uint8Array>({
       pull(controller) {

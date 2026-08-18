@@ -222,8 +222,8 @@ describe("ensurePluginRegistryLoaded", () => {
     const baseConfig = {
       channels: {
         "demo-chat": {
-          botToken: `ltfx.n.8558936ebfa95bf3eddd.v1`,
-          appToken: `ltfx.n.05c7cd5c50922870dcfe.v1`,
+          botToken: "demo-bot-token",
+          appToken: "demo-app-token",
         },
       },
     };
@@ -365,8 +365,8 @@ describe("ensurePluginRegistryLoaded", () => {
       plugins: { enabled: true },
       channels: {
         "demo-channel-a": {
-          botToken: `ltfx.n.8558936ebfa95bf3eddd.v1`,
-          appToken: `ltfx.n.05c7cd5c50922870dcfe.v1`,
+          botToken: "demo-bot-token",
+          appToken: "demo-app-token",
         },
       },
     };

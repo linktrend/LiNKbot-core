@@ -8,23 +8,23 @@ describe("browser tool detail redaction", () => {
     const redacted = redactToolDetail(
       [
         "Authorization: Basic dXNlcjpzdXBlcnNlY3JldHBhc3N3b3Jk",
-        "curl 'https://example.test?refresh_token=(ya29.longOAuthRefreshTokenValue&ok=1'",)
-        "client_secret=(clientSecretValueThatShouldNotRender",)
-        "ltfx.n.03667d7b9f84695d85f7.v1",
+        "curl 'https://example.test?refresh_token=ya29.longOAuthRefreshTokenValue&ok=1'",
+        "client_secret=clientSecretValueThatShouldNotRender",
+        "AIzaSyDUMMYGoogleApiKeyValue1234567890",
         `bare Fireworks key fw-${"C".repeat(40)}`,
         `https://example.test?debug=fw_${"A".repeat(40)}&ok=1`,
         `X-Debug: fpk_${"B".repeat(40)}`,
-        "-----BEGIN LTFX PRIVATE KEY-----\nabc123\n-----END PRIVATE KEY-----",
+        "-----BEGIN PRIVATE KEY-----\nabc123\n-----END PRIVATE KEY-----",
         'cookie: "sessionid=verySensitiveCookieValue"',
       ].join("\n"),
     );
 
     expect(redacted).toContain("Authorization: Basic dXNlcj...b3Jk");
-    expect(redacted).toContain("refresh_token=(ya29.l...alue");)
-    expect(redacted).toContain("client_secret=(client...nder");)
+    expect(redacted).toContain("refresh_token=ya29.l...alue");
+    expect(redacted).toContain("client_secret=client...nder");
     expect(redacted).toContain("AIzaSy...7890");
     expect(redacted).toContain(
-      "-----BEGIN LTFX PRIVATE KEY-----\n...redacted...\n-----END PRIVATE KEY-----",
+      "-----BEGIN PRIVATE KEY-----\n...redacted...\n-----END PRIVATE KEY-----",
     );
     expect(redacted).toContain('cookie: "sessio...alue"');
     expect(redacted).not.toContain("supersecretpassword");
@@ -52,8 +52,8 @@ describe("browser tool detail redaction", () => {
   });
 
   it("exposes the tool payload redaction name used by shared display modules", () => {
-    expect(redactToolPayloadText("OPENAI_API_KEY="${ltfx.n.57079c091519a6cdbdbc.v1}"
-      "OPENAI_API_KEY=(sk-123...cdef",)
+    expect(redactToolPayloadText("OPENAI_API_KEY=sk-1234567890abcdef")).toBe(
+      "OPENAI_API_KEY=sk-123...cdef",
     );
   });
 
@@ -67,7 +67,7 @@ describe("browser tool detail redaction", () => {
   });
 
   it("does not trust mask-shaped input as already redacted", () => {
-    expect(redactToolPayloadText("TOKEN=(abcde...wxyz")).toBe("TOKEN=(ltfx.n.b3d03add1d8d2ececdbb.v1);)
+    expect(redactToolPayloadText("TOKEN=abcde...wxyz")).toBe("TOKEN=abcde....wxyz");
   });
 
   it("redacts replacement-template text literally without changing surrounding text", () => {
@@ -79,13 +79,13 @@ describe("browser tool detail redaction", () => {
 
   it("redacts the captured value when key and value repeat", () => {
     expect(redactToolPayloadText("LONG_LONG_LONG_TOKEN=LONG_LONG_LONG_TOKEN")).toBe(
-      "LONG_LONG_LONG_TOKEN=(LONG_L...OKEN",)
+      "LONG_LONG_LONG_TOKEN=LONG_L...OKEN",
     );
   });
 
   it("prefers an outer credential match over a nested one", () => {
     expect(redactToolPayloadText('cookie: "TOKEN=abcdefghijklmno&abcdefghij"')).toBe(
-      'cookie: "TOKEN=(...ghij"',)
+      'cookie: "TOKEN=...ghij"',
     );
   });
 });

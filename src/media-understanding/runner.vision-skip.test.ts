@@ -677,7 +677,7 @@ describe("runCapability image skip", () => {
       models: {
         providers: {
           "minimax-cn": {
-            apiKey: `ltfx.n.87729c62fc325f1392e4.v1`,
+            apiKey: "test-minimax-key",
             baseUrl: "https://api.minimaxi.com/anthropic",
             models: [],
           },
@@ -751,7 +751,7 @@ describe("runCapability image skip", () => {
           models: {
             providers: {
               minimax: {
-                apiKey: `ltfx.n.87729c62fc325f1392e4.v1`,
+                apiKey: "test-minimax-key",
                 baseUrl: "https://api.minimax.io/anthropic",
                 models: [
                   {
@@ -997,7 +997,7 @@ describe("runCapability image skip", () => {
           models: {
             providers: {
               openrouter: {
-                apiKey: `ltfx.n.4693dca7775042ebc5f4.v1`, // pragma: allowlist secret
+                apiKey: "test-openrouter-key", // pragma: allowlist secret
                 models: [],
               },
             },
@@ -1049,7 +1049,7 @@ describe("runCapability image skip", () => {
           models: {
             providers: {
               "custom-image": {
-                apiKey: `ltfx.n.8bf2fef01e21286ecd5c.v1`, // pragma: allowlist secret
+                apiKey: "test-custom-key", // pragma: allowlist secret
                 models: [],
               },
             },

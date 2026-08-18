@@ -121,7 +121,7 @@ describe("createMatrixRoomMessageHandler media failures", () => {
       createImageEvent({
         msgtype: "m.image",
         body: " Screenshot 2026-03-27.png ",
-        url: `ltfx.n.16f46dc5031c5de0c86b.v1`,
+        url: "mxc://example/image",
       }),
     );
 
@@ -145,7 +145,7 @@ describe("createMatrixRoomMessageHandler media failures", () => {
         msgtype: "m.image",
         body: "can you review this screenshot?",
         filename: "Screenshot 2026-03-27.png",
-        url: `ltfx.n.16f46dc5031c5de0c86b.v1`,
+        url: "mxc://example/image",
       }),
     );
 
@@ -163,7 +163,7 @@ describe("createMatrixRoomMessageHandler media failures", () => {
       createImageEvent({
         msgtype: "m.image",
         body: "image.png",
-        url: `ltfx.n.16f46dc5031c5de0c86b.v1`,
+        url: "mxc://example/image",
       }),
     );
 
@@ -189,7 +189,7 @@ describe("createMatrixRoomMessageHandler media failures", () => {
         msgtype: "m.image",
         body: "photo.jpg",
         file: {
-          url: `ltfx.n.a62ef93288bfe0ea1d64.v1`,
+          url: "mxc://example/encrypted",
           key: { kty: "oct", key_ops: ["encrypt"], alg: "A256CTR", k: "secret", ext: true },
           iv: "iv",
           hashes: { sha256: "hash" },
@@ -214,7 +214,7 @@ describe("createMatrixRoomMessageHandler media failures", () => {
         msgtype: "m.image",
         body: "can you see this image?",
         filename: "image.png",
-        url: `ltfx.n.16f46dc5031c5de0c86b.v1`,
+        url: "mxc://example/image",
       }),
     );
 
@@ -234,7 +234,7 @@ describe("createMatrixRoomMessageHandler media failures", () => {
       createImageEvent({
         msgtype: "m.image",
         body: "big-photo.jpg",
-        url: `ltfx.n.957b073c372fde782316.v1`,
+        url: "mxc://example/big-image",
       }),
     );
 
@@ -254,7 +254,7 @@ describe("createMatrixRoomMessageHandler media failures", () => {
         msgtype: "m.image",
         body: "check this out",
         filename: "large-photo.jpg",
-        url: `ltfx.n.957b073c372fde782316.v1`,
+        url: "mxc://example/big-image",
       }),
     );
 

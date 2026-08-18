@@ -172,11 +172,11 @@ type BlockingField = {
   inputId: string;
 };
 
-function errorIdForField(key: (CronFieldKey) {)
+function errorIdForField(key: CronFieldKey) {
   return `cron-error-${key}`;
 }
 
-function inputIdForField(key: (CronFieldKey) {)
+function inputIdForField(key: CronFieldKey) {
   if (key === "name") {
     return "cron-name";
   }

@@ -19,7 +19,7 @@ scenario:
         defaultRoomKey: main
         rooms:
           - encrypted: true
-            key: "${ltfx.n.a164d606586a557edecd.v1}"
+            key: e2ee-stale-device-hygiene
             kind: group
             members:
               - driver

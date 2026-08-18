@@ -38,7 +38,7 @@ describe("restoreEnvChangesIfUnchanged", () => {
     const env = { HOME: "/tmp/test" } as Record<string, string | undefined>;
     const before = { HOME: "/tmp/test" };
     env["KEY"] = "config-set";
-    const after = { HOME: "/tmp/test", KEY: `ltfx.n.2fa96f45a4fa71e0a861.v1` };
+    const after = { HOME: "/tmp/test", KEY: "config-set" };
     // External mutation after the after snapshot
     env["KEY"] = "external-change";
 

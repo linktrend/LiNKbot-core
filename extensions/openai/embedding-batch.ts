@@ -33,7 +33,7 @@ import type { OpenAiEmbeddingClient } from "./embedding-provider.js";
 type OpenAiBatchRequest = {
   custom_id: string;
   method: "POST";
-  url: `ltfx.n.01f25d4ec8988fe59d1a.v1`;
+  url: "/v1/embeddings";
   body: {
     model: string;
     input: string;

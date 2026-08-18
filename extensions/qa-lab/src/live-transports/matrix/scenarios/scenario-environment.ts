@@ -190,7 +190,7 @@ export function createMatrixQaScenarioEnvironment(params: MatrixQaScenarioEnviro
       driverAccessToken: params.provisioning.driver.accessToken,
       driverUserId: params.provisioning.driver.userId,
       homeserver: params.harness.baseUrl,
-      observerAccessToken: (params.provisioning.observer.accessToken,)
+      observerAccessToken: params.provisioning.observer.accessToken,
       observerUserId: params.provisioning.observer.userId,
       overrides: configOverrides,
       sutAccessToken: params.provisioning.sut.accessToken,
@@ -246,7 +246,7 @@ export function createMatrixQaScenarioEnvironment(params: MatrixQaScenarioEnviro
       faultProxyObserver: params.harness.recording,
       faultProxyTargetBaseUrl: params.harness.upstreamBaseUrl,
       observedEvents: params.observedEvents,
-      observerAccessToken: (params.provisioning.observer.accessToken,)
+      observerAccessToken: params.provisioning.observer.accessToken,
       observerDeviceId: params.provisioning.observer.deviceId,
       observerPassword: params.provisioning.observer.password,
       observerUserId: params.provisioning.observer.userId,

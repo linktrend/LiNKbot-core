@@ -115,7 +115,7 @@ describe("Hermes migration model planning", () => {
   });
 
   it.each([
-    ["ltfx.n.4d777459fa23c36f2928.v1", "kimi/kimi-k2.5"],
+    ["sk-kimi-placeholder", "kimi/kimi-k2.5"],
     ["legacy-moonshot-placeholder", "moonshot/kimi-k2.5"],
   ])("routes kimi-coding from the effective key contract", async (apiKey, expectedModel) => {
     const root = await makeTempRoot();

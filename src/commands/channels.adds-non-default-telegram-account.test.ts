@@ -360,13 +360,13 @@ describe("channels command", () => {
     await channelsRemoveCommand(args, runtime, { hasFlags: true });
   }
 
-  async function addTelegramAccount(account: string, token: (string)): Promise<void> {
+  async function addTelegramAccount(account: string, token: string): Promise<void> {
     await channelsAddCommand({ channel: "telegram", account, token }, runtime, {
       hasFlags: true,
     });
   }
 
-  async function addAlertsTelegramAccount(token: (string)): Promise<{
+  async function addAlertsTelegramAccount(token: string): Promise<{
     channels?: {
       telegram?: {
         enabled?: boolean;
@@ -399,7 +399,7 @@ describe("channels command", () => {
         channels: {
           telegram: {
             enabled: true,
-            botToken: `ltfx.n.8b7d507cddc8d8950f28.v1`,
+            botToken: "legacy-token",
             dmPolicy: "allowlist",
             allowFrom: ["111"],
             groupPolicy: "allowlist",
@@ -433,7 +433,7 @@ describe("channels command", () => {
       };
     }>();
     expect(next.channels?.telegram?.accounts?.default).toEqual({
-      botToken: `ltfx.n.8b7d507cddc8d8950f28.v1`,
+      botToken: "legacy-token",
       dmPolicy: "allowlist",
       allowFrom: ["111"],
       groupPolicy: "allowlist",

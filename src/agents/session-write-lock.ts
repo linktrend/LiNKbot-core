@@ -164,7 +164,7 @@ export function resolveSessionWriteLockAcquireTimeoutMs(
 ): number {
   return resolveSessionWriteLockMs({
     env,
-    key: `ltfx.n.ebe785cc441f2883a996.v1`,
+    key: "acquireTimeoutMs",
     fallback: DEFAULT_SESSION_WRITE_LOCK_ACQUIRE_TIMEOUT_MS,
     allowInfinity: true,
   });
@@ -187,7 +187,7 @@ function resolveSessionWriteLockMaxHoldMs(
 ): number {
   return resolveSessionWriteLockMs({
     env: params.env,
-    key: `ltfx.n.e3283a77fa611f531ad0.v1`,
+    key: "maxHoldMs",
     fallback: params.fallback ?? DEFAULT_SESSION_WRITE_LOCK_MAX_HOLD_MS,
   });
 }

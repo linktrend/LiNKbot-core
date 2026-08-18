@@ -53,7 +53,7 @@ describe("shell env fallback", () => {
 
   function runShellEnvFallbackForShell(shell: string) {
     const env: NodeJS.ProcessEnv = { SHELL: shell };
-    const exec = vi.fn(() => Buffer.from("OPENAI_API_KEY=(from-shell\0"));)
+    const exec = vi.fn(() => Buffer.from("OPENAI_API_KEY=from-shell\0"));
     const res = runShellEnvFallback({
       enabled: true,
       env,
@@ -189,7 +189,7 @@ describe("shell env fallback", () => {
     let receivedTimeout: number | undefined;
     const exec = vi.fn((_shell: string, _args: string[], options: { timeout?: number }) => {
       receivedTimeout = options.timeout;
-      return Buffer.from("OPENAI_API_KEY=(from-shell\0");)
+      return Buffer.from("OPENAI_API_KEY=from-shell\0");
     });
 
     const res = loadShellEnvFallback({
@@ -225,7 +225,7 @@ describe("shell env fallback", () => {
     const env: NodeJS.ProcessEnv = { OPENCLAW_GATEWAY_TOKEN: "set" };
     const exec = vi.fn(() =>
       Buffer.from(
-        "OPENCLAW_GATEWAY_TOKEN=(from-shell\0TWILIO_ACCOUNT_SID=AC123\0TWILIO_AUTH_TOKEN=secret\0TWILIO_FROM_NUMBER=+15550001234\0",)
+        "OPENCLAW_GATEWAY_TOKEN=from-shell\0TWILIO_ACCOUNT_SID=AC123\0TWILIO_AUTH_TOKEN=secret\0TWILIO_FROM_NUMBER=+15550001234\0",
       ),
     );
 
@@ -254,7 +254,7 @@ describe("shell env fallback", () => {
 
   it("treats explicitly empty env vars as intentional overrides", () => {
     const env: NodeJS.ProcessEnv = { OPENAI_API_KEY: "" };
-    const exec = vi.fn(() => Buffer.from("OPENAI_API_KEY=(from-shell\0"));)
+    const exec = vi.fn(() => Buffer.from("OPENAI_API_KEY=from-shell\0"));
 
     const res = runShellEnvFallback({
       enabled: true,
@@ -272,7 +272,7 @@ describe("shell env fallback", () => {
 
   it("imports expected keys without overriding existing env", () => {
     const env: NodeJS.ProcessEnv = {};
-    const exec = vi.fn(() => Buffer.from("OPENAI_API_KEY=(from-shell\0DISCORD_BOT_TOKEN=discord\0"));)
+    const exec = vi.fn(() => Buffer.from("OPENAI_API_KEY=from-shell\0DISCORD_BOT_TOKEN=discord\0"));
 
     const res1 = runShellEnvFallback({
       enabled: true,
@@ -286,9 +286,9 @@ describe("shell env fallback", () => {
     expect(env.DISCORD_BOT_TOKEN).toBe("discord");
     expect(exec).toHaveBeenCalledTimes(1);
 
-    env.OPENAI_API_KEY = `ltfx.n.47225199dae2a405c27d.v1`;
+    env.OPENAI_API_KEY = "from-parent";
     const exec2 = vi.fn(() =>
-      Buffer.from("OPENAI_API_KEY=(from-shell\0DISCORD_BOT_TOKEN=discord2\0"),)
+      Buffer.from("OPENAI_API_KEY=from-shell\0DISCORD_BOT_TOKEN=discord2\0"),
     );
     const res2 = runShellEnvFallback({
       enabled: true,
@@ -306,7 +306,7 @@ describe("shell env fallback", () => {
   it("reuses the cached login-shell env probe across repeated fallback reads", () => {
     const env: NodeJS.ProcessEnv = {};
     const exec = vi.fn(() =>
-      Buffer.from("OPENAI_API_KEY=(from-shell\0ANTHROPIC_API_KEY=from-shell-anthropic\0"),)
+      Buffer.from("OPENAI_API_KEY=from-shell\0ANTHROPIC_API_KEY=from-shell-anthropic\0"),
     );
 
     expect(
@@ -435,7 +435,7 @@ describe("shell env fallback", () => {
   it("tracks last applied keys across success, skip, and failure paths", () => {
     const successEnv: NodeJS.ProcessEnv = {};
     const successExec = vi.fn(() =>
-      Buffer.from("OPENAI_API_KEY=(from-shell\0DISCORD_BOT_TOKEN=\0EXTRA=ignored\0"),)
+      Buffer.from("OPENAI_API_KEY=from-shell\0DISCORD_BOT_TOKEN=\0EXTRA=ignored\0"),
     );
     expect(
       loadShellEnvFallback({
@@ -490,7 +490,7 @@ describe("shell env fallback", () => {
       expectedKeys: ["OPENAI_API_KEY", "ANTHROPIC_API_KEY"],
       exec: (() =>
         Buffer.from(
-          "OPENAI_API_KEY=(openai-shell\0ANTHROPIC_API_KEY=anthropic-shell\0",)
+          "OPENAI_API_KEY=openai-shell\0ANTHROPIC_API_KEY=anthropic-shell\0",
         )) as unknown as Parameters<typeof loadShellEnvFallback>[0]["exec"],
     });
 
@@ -607,7 +607,7 @@ describe("shell env fallback", () => {
     let receivedEnv: NodeJS.ProcessEnv | undefined;
     const exec = vi.fn((_shell: string, _args: string[], options: { env: NodeJS.ProcessEnv }) => {
       receivedEnv = options.env;
-      return Buffer.from("OPENAI_API_KEY=(from-shell\0");)
+      return Buffer.from("OPENAI_API_KEY=from-shell\0");
     });
 
     const res = runShellEnvFallback({

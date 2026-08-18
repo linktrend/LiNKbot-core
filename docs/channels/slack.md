@@ -56,7 +56,7 @@ Relay mode separates Slack ingress from the OpenClaw gateway. A trusted router o
       mode: "relay",
       botToken: { source: "env", provider: "default", id: "SLACK_BOT_TOKEN" },
       relay: {
-        url: "${ltfx.n.82d39021b8342771f56c.v1}",
+        url: "wss://router.example.com/gateway/ws",
         authToken: { source: "env", provider: "default", id: "SLACK_RELAY_AUTH_TOKEN" },
         gatewayId: "team-gateway",
       },
@@ -473,8 +473,8 @@ Enterprise Grid organization installation, use the dedicated
         Recommended SecretRef setup:
 
 ```bash
-export SLACK_APP_TOKEN="${ltfx.n.ec24832bf02a1ff110fc.v1}"
-export SLACK_BOT_TOKEN="${ltfx.n.2d40d3dda5fdd2674d0a.v1}"
+export SLACK_APP_TOKEN=slack-app-token-example
+export SLACK_BOT_TOKEN=slack-bot-token-example
 cat > slack.socket.patch.json5 <<'JSON5'
 {
   channels: {
@@ -494,8 +494,8 @@ openclaw config patch --file ./slack.socket.patch.json5
         Env fallback (default account only):
 
 ```bash
-SLACK_APP_TOKEN="${ltfx.n.ec24832bf02a1ff110fc.v1}"
-SLACK_BOT_TOKEN="${ltfx.n.2d40d3dda5fdd2674d0a.v1}"
+SLACK_APP_TOKEN=slack-app-token-example
+SLACK_BOT_TOKEN=slack-bot-token-example
 ```
 
       </Step>
@@ -705,7 +705,7 @@ openclaw gateway
         Recommended SecretRef setup:
 
 ```bash
-export SLACK_BOT_TOKEN="${ltfx.n.2d40d3dda5fdd2674d0a.v1}"
+export SLACK_BOT_TOKEN=slack-bot-token-example
 export SLACK_SIGNING_SECRET=...
 cat > slack.http.patch.json5 <<'JSON5'
 {
@@ -795,7 +795,7 @@ HTTP Request URL configuration:
       identity: "user",
       mode: "http",
       userToken: "<xoxp>",
-      signingSecret: "${ltfx.n.602e1a3349db91b0f2e7.v1}",
+      signingSecret: "<signing-secret>",
       webhookPath: "/slack/events",
     },
   },

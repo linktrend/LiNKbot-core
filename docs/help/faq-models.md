@@ -290,7 +290,7 @@ troubleshooting, see the main [FAQ](/help/faq).
           models: { "openrouter/anthropic/claude-sonnet-4-6": {} },
         },
       },
-      env: { OPENROUTER_API_KEY: "${ltfx.n.51efae34cc35ebb820a0.v1}" },
+      env: { OPENROUTER_API_KEY: "sk-or-..." },
     }
     ```
 

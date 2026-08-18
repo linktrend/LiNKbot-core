@@ -6,10 +6,10 @@ import { resolveUserPath } from "../utils.js";
 import { createCacheTrace } from "./cache-trace.js";
 
 describe("createCacheTrace", () => {
-  const bareAnthropicKey = `ltfx.n.cbba12be3d95e2fe8351.v1`; // pragma: allowlist secret
-  const bareAwsKey = `ltfx.n.1a5d44a2dca19669d72e.v1`; // pragma: allowlist secret
-  const bareGithubKey = `ltfx.n.922665d61d52e957593f.v1`; // pragma: allowlist secret
-  const bareGoogleKey = `ltfx.n.0fbe035d631cdb666ddb.v1`; // pragma: allowlist secret
+  const bareAnthropicKey = "sk-ant-api03-AbCdEfGhIjKlMnOpQrStUvWx"; // pragma: allowlist secret
+  const bareAwsKey = "AKIAIOSFODNN7EXAMPLE"; // pragma: allowlist secret
+  const bareGithubKey = "ghp_AbCdEfGhIjKlMnOpQrStUvWxYz1234567890"; // pragma: allowlist secret
+  const bareGoogleKey = "AIzaSyA1bC2dE3fG4hI5jK6lM7nO8pQrStUvW"; // pragma: allowlist secret
   const barePerplexityKey = "pplx-AbCdEfGhIjKlMnOpQrStUvWx"; // pragma: allowlist secret
 
   function createMemoryTraceForTest() {
@@ -186,22 +186,22 @@ describe("createCacheTrace", () => {
     trace?.recordStage("stream:context", {
       system: {
         provider: {
-          apiKey: `ltfx.n.11789e89b20ac43ab018.v1`,
+          apiKey: "sk-system-secret",
           baseUrl: "https://api.example.com",
           diagnosticText: bareAwsKey,
         },
       },
       model: {
         id: "test-model",
-        apiKey: `ltfx.n.8d8d4464fa0b0d977cf3.v1`,
+        apiKey: "sk-model-secret",
         tokenCount: 8192,
         diagnosticText: bareGoogleKey,
       },
       options: {
-        apiKey: `ltfx.n.4614029ac5ed7c395a7a.v1`,
+        apiKey: "sk-options-secret",
         diagnosticText: bareGithubKey,
         nested: {
-          password: `ltfx.n.5c76fcf4400da3b4804d.v1`,
+          password: "super-secret-password",
           safe: "keep-me",
           tokenCount: 42,
         },
@@ -210,7 +210,7 @@ describe("createCacheTrace", () => {
       messages: [
         {
           role: "user",
-          token: `ltfx.n.8af3edd9b23d25ded0bf.v1`,
+          token: "message-secret-token",
           metadata: {
             secretKey: "message-secret-key",
             label: "preserve-me",

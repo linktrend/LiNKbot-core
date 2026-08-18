@@ -79,7 +79,7 @@ type SecretResolutionSource =
   | WebSearchCredentialResolutionSource
   | WebFetchCredentialResolutionSource;
 
-function ensureConfigObject(target: Record<string, unknown>, key: (string)): Record<string, unknown> {
+function ensureConfigObject(target: Record<string, unknown>, key: string): Record<string, unknown> {
   const current = target[key];
   if (isRecord(current)) {
     return current;
@@ -303,7 +303,7 @@ function needsRuntimeWebFetchProviderDiscovery(params: {
 
 function hasPluginScopedWebToolConfig(
   config: OpenClawConfig,
-  key: `ltfx.n.7cff7f4d18ab0c8820c5.v1` | "webFetch",
+  key: "webSearch" | "webFetch",
 ): boolean {
   const entries = config.plugins?.entries;
   if (!entries) {
@@ -320,7 +320,7 @@ function hasPluginScopedWebToolConfig(
 
 function inferSingleBundledPluginScopedWebToolConfigOwner(
   config: OpenClawConfig,
-  key: `ltfx.n.7cff7f4d18ab0c8820c5.v1` | "webFetch",
+  key: "webSearch" | "webFetch",
 ): string | undefined {
   const entries = config.plugins?.entries;
   if (!entries) {
@@ -345,7 +345,7 @@ function inferSingleBundledPluginScopedWebToolConfigOwner(
 
 function inferExactBundledPluginScopedWebToolConfigOwner(params: {
   config: OpenClawConfig;
-  key: `ltfx.n.7cff7f4d18ab0c8820c5.v1` | "webFetch";
+  key: "webSearch" | "webFetch";
   pluginId: string;
 }): string | undefined {
   const entry = params.config.plugins?.entries?.[params.pluginId];
@@ -814,7 +814,7 @@ export async function resolveRuntimeWebTools(params: {
     if (rawProvider) {
       configuredBundledWebSearchPluginIdHint = inferExactBundledPluginScopedWebToolConfigOwner({
         config: params.sourceConfig,
-        key: `ltfx.n.7cff7f4d18ab0c8820c5.v1`,
+        key: "webSearch",
         pluginId: rawProvider,
       });
     }

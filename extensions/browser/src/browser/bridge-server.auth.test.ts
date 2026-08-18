@@ -78,13 +78,13 @@ describe("startBrowserBridgeServer auth", () => {
   });
 
   it("rejects unauthenticated requests when authToken is set", async () => {
-    await expectAuthFlow({ authToken: `ltfx.n.930bbdc51b6aed5c2a56.v1` }, { Authorization: "Bearer secret-token" });
+    await expectAuthFlow({ authToken: "secret-token" }, { Authorization: "Bearer secret-token" });
   });
 
   it("accepts x-openclaw-password when authPassword is set", async () => {
     await expectAuthFlow(
-      { authPassword: `ltfx.n.d5adca02c9a46dae3310.v1` },
-      { "x-openclaw-password": `ltfx.n.d5adca02c9a46dae3310.v1` },
+      { authPassword: "secret-password" },
+      { "x-openclaw-password": "secret-password" },
     );
   });
 
@@ -99,7 +99,7 @@ describe("startBrowserBridgeServer auth", () => {
   it("closes ingress but retains exact bridge cleanup state for retry", async () => {
     const bridge = await startBrowserBridgeServer({
       resolved: buildResolvedConfig(),
-      authToken: `ltfx.n.930bbdc51b6aed5c2a56.v1`,
+      authToken: "secret-token",
       skipRouteRegistrationForTest: true,
     });
     servers.push({ stop: () => stopBrowserBridgeServer(bridge.server) });
@@ -112,13 +112,13 @@ describe("startBrowserBridgeServer auth", () => {
         "openclaw",
         {
           port: 18_799,
-          token: `ltfx.n.d3d2f8a707788ef0b563.v1`,
+          token: "relay-token",
           bridge: {},
           close,
         } as never,
       ],
     ]);
-    expect(getBridgeAuthForPort(bridge.port)).toEqual({ token: `ltfx.n.930bbdc51b6aed5c2a56.v1` });
+    expect(getBridgeAuthForPort(bridge.port)).toEqual({ token: "secret-token" });
 
     const firstStop = stopBrowserBridgeServer(bridge.server);
     const concurrentStop = stopBrowserBridgeServer(bridge.server);
@@ -138,7 +138,7 @@ describe("startBrowserBridgeServer auth", () => {
     const releaseAttach = deferred();
     const bridge = await startBrowserBridgeServer({
       resolved: buildResolvedConfig(),
-      authToken: `ltfx.n.930bbdc51b6aed5c2a56.v1`,
+      authToken: "secret-token",
       onEnsureAttachTarget: async () => {
         attachStarted.resolve();
         await releaseAttach.promise;
@@ -168,19 +168,19 @@ describe("startBrowserBridgeServer auth", () => {
     let resolveCalls = 0;
     const bridge = await startBrowserBridgeServer({
       resolved: buildResolvedConfig(),
-      authToken: `ltfx.n.930bbdc51b6aed5c2a56.v1`,
+      authToken: "secret-token",
       skipRouteRegistrationForTest: true,
       resolveSandboxNoVncToken: (token) => {
         resolveCalls += 1;
         if (token !== "valid-token") {
           return null;
         }
-        return { noVncPort: 45678, password: `ltfx.n.780c3ddc49ee33a3efed.v1` }; // pragma: allowlist secret
+        return { noVncPort: 45678, password: "Abc123xy" }; // pragma: allowlist secret
       },
     });
     servers.push({ stop: () => stopBrowserBridgeServer(bridge.server) });
 
-    const unauth = await fetch(`${bridge.baseUrl}/sandbox/novnc?token=(valid-token`);)
+    const unauth = await fetch(`${bridge.baseUrl}/sandbox/novnc?token=valid-token`);
     expect(unauth.status).toBe(401);
     expect(resolveCalls).toBe(0);
 
@@ -196,7 +196,7 @@ describe("startBrowserBridgeServer auth", () => {
     const body = await res.text();
     expect(body).toContain("window.location.replace");
     expect(body).toContain(
-      "http://127.0.0.1:45678/vnc.html#autoconnect=1&resize=remote&password=(Abc123xy",)
+      "http://127.0.0.1:45678/vnc.html#autoconnect=1&resize=remote&password=Abc123xy",
     );
     expect(body).not.toContain("?password=");
   });

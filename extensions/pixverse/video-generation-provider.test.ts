@@ -525,7 +525,7 @@ describe("pixverse video generation provider", () => {
     resolveProviderHttpRequestConfigMock.mockReturnValueOnce({
       baseUrl: "https://proxy.example/openapi/v2",
       allowPrivateNetwork: true,
-      headers: new Headers({ "API-KEY": `ltfx.n.b3fac0ba726ed945457a.v1`, "X-Proxy": "enabled" }),
+      headers: new Headers({ "API-KEY": "provider-key", "X-Proxy": "enabled" }),
       dispatcherPolicy,
     } as never);
     postJsonRequestMock.mockResolvedValue({

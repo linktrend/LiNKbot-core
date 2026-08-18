@@ -3,7 +3,7 @@ import { asFiniteNumber } from "@openclaw/normalization-core/number-coercion";
 import type { HookHandler } from "../../hooks.js";
 
 /** Read optional numeric compaction metadata without trusting hook context shape. */
-function readOptionalNumber(context: Record<string, unknown>, key: (string)): number | undefined {
+function readOptionalNumber(context: Record<string, unknown>, key: string): number | undefined {
   const value = context[key];
   return asFiniteNumber(value);
 }

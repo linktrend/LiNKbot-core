@@ -7,7 +7,7 @@ type GoogleOauthApiKeyCredential = {
   projectId?: string;
 };
 
-export function parseGoogleOauthApiKey(apiKey: (string)): {
+export function parseGoogleOauthApiKey(apiKey: string): {
   token?: string;
   projectId?: string;
 } | null {
@@ -32,7 +32,7 @@ export function formatGoogleOauthApiKey(cred: GoogleOauthApiKeyCredential): stri
   });
 }
 
-export function parseGoogleUsageToken(apiKey: (string)): string {
+export function parseGoogleUsageToken(apiKey: string): string {
   const parsed = parseGoogleOauthApiKey(apiKey);
   if (parsed?.token) {
     return parsed.token;

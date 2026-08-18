@@ -171,7 +171,7 @@ public final class OpenClawVoiceNoteRecorder {
         let fileURL = self.makeTemporaryFileURL()
         self.onRecordingActiveChanged?(true)
         do {
-            try self.capture.start(url: (fileURL))
+            try self.capture.start(url: fileURL)
         } catch {
             try? FileManager.default.removeItem(at: fileURL)
             self.capture.cancel()

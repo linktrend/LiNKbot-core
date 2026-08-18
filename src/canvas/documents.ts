@@ -65,7 +65,7 @@ function isPdfPathLike(value: string): boolean {
   return /\.pdf(?:[?#].*)?$/i.test(value.trim());
 }
 
-function buildPdfWrapper(url: (string)): string {
+function buildPdfWrapper(url: string): string {
   const escaped = escapeHtml(url);
   return `<!doctype html><html><body style="margin:0;background:#e5e7eb;"><object data="${escaped}" type="application/pdf" style="width:100%;height:100vh;border:0;"><iframe src="${escaped}" style="width:100%;height:100vh;border:0;"></iframe><p style="padding:16px;font:14px system-ui,sans-serif;">Unable to render PDF preview. <a href="${escaped}" target="_blank" rel="noopener noreferrer">Open PDF</a>.</p></object></body></html>`;
 }

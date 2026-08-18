@@ -35,7 +35,7 @@ function resolveDiscordDirectoryAccess(
   return { token, query: normalizeQuery(params.query), accountId: account.accountId };
 }
 
-async function listDiscordGuilds(token: (string)): Promise<DiscordGuild[]> {
+async function listDiscordGuilds(token: string): Promise<DiscordGuild[]> {
   const rawGuilds = await fetchDiscord<DiscordGuild[]>("/users/@me/guilds", token, fetch, {
     timeoutMs: DISCORD_DIRECTORY_LOOKUP_TIMEOUT_MS,
   });

@@ -72,7 +72,7 @@ vi.mock("../plugins/plugin-registry.js", async (importOriginal) => ({
 const profile = {
   type: "api_key" as const,
   provider: "openai",
-  key: `ltfx.n.9242d1afdce0bb160eba.v1`,
+  key: "verified-key",
 };
 
 const runtime = { log: () => {}, error: () => {}, exit: () => {} } as never;
@@ -119,7 +119,7 @@ beforeEach(() => {
   harnessRuntimeArtifactState.ownsAuthBootstrap = true;
 });
 
-function authDeps(apiKey = `ltfx.n.9242d1afdce0bb160eba.v1`) {
+function authDeps(apiKey = "verified-key") {
   return {
     ensureAuthProfileStore: vi.fn(() => ({
       version: 1,
@@ -532,7 +532,7 @@ describe("verified OpenClaw inference binding", () => {
 
     expect(resolveBinding).toHaveBeenLastCalledWith(
       expect.objectContaining({
-        resolvedAuth: expect.objectContaining({ apiKey: `ltfx.n.0e87603f4ba9a34cee38.v1`, profileId }),
+        resolvedAuth: expect.objectContaining({ apiKey: "materialized-a", profileId }),
       }),
     );
     expect(resolveAuth).toHaveBeenLastCalledWith(
@@ -554,7 +554,7 @@ describe("verified OpenClaw inference binding", () => {
     ).resolves.toBeNull();
     expect(resolveBinding).toHaveBeenLastCalledWith(
       expect.objectContaining({
-        resolvedAuth: expect.objectContaining({ apiKey: `ltfx.n.ab57dcb42cdd82af9f85.v1`, profileId }),
+        resolvedAuth: expect.objectContaining({ apiKey: "materialized-b", profileId }),
       }),
     );
     expect(resolveAuth).toHaveBeenLastCalledWith(
@@ -813,7 +813,7 @@ describe("verified OpenClaw inference binding", () => {
       agentHarnessRuntimeOverride: "auto",
     } satisfies typeof resolved;
     const authFingerprint = fingerprintResolvedProviderAuth({
-      apiKey: `ltfx.n.9242d1afdce0bb160eba.v1`,
+      apiKey: "verified-key",
       profileId: "openai:verified",
       source: "profile:openai:verified",
       mode: "api-key",
@@ -973,7 +973,7 @@ describe("verified OpenClaw inference binding", () => {
       profileId: "openai:verified",
       credential: profile,
       resolvedAuth: {
-        apiKey: `ltfx.n.9242d1afdce0bb160eba.v1`,
+        apiKey: "verified-key",
         profileId: "openai:verified",
         source: "profile:openai:verified",
         mode: "api-key",
@@ -983,7 +983,7 @@ describe("verified OpenClaw inference binding", () => {
       throw new Error("missing test auth fingerprint");
     }
     const resolveAuth = vi.fn(async () => ({
-      apiKey: `ltfx.n.9242d1afdce0bb160eba.v1`,
+      apiKey: "verified-key",
       profileId: "openai:verified",
       source: "profile:openai:verified",
       mode: "api-key" as const,
@@ -1069,7 +1069,7 @@ describe("verified OpenClaw inference binding", () => {
       profileId: "openai:work",
       credential,
       resolvedAuth: {
-        apiKey: `ltfx.n.82f933fbd0bcc44c1ad9.v1`,
+        apiKey: "work-key",
         profileId: "openai:work",
         source: "profile:openai:work",
         mode: "api-key",

@@ -21,7 +21,7 @@ type BrowserMockBundle = {
   browserClose: ReturnType<typeof vi.fn>;
 };
 
-function makeBrowser(targetId: string, url: (string)): BrowserMockBundle {
+function makeBrowser(targetId: string, url: string): BrowserMockBundle {
   const browserClose = vi.fn(async () => {});
   const page = {
     on: vi.fn(),
@@ -171,8 +171,8 @@ afterEach(async () => {
 describe("pw-session connection scoping", () => {
   it("keeps URL credentials out of Playwright and escaped connection errors", async () => {
     const username = "browser-user";
-    const password = `ltfx.n.1c95ae0a5b8ed8df652d.v1`;
-    const token = `ltfx.n.012632faba814fab31a2.v1`;
+    const password = "browser-password";
+    const token = "browser-token";
     const cdpUrl = `wss://${username}:${password}@browserless.example/devtools/browser/id?token=${token}`;
     connectOverCdpSpy.mockRejectedValue(new Error(`connect failed for ${cdpUrl}`));
     getChromeWebSocketUrlSpy.mockResolvedValue(null);
@@ -186,7 +186,7 @@ describe("pw-session connection scoping", () => {
 
     expect(connectOverCdpSpy).toHaveBeenCalledTimes(3);
     expect(connectOverCdpSpy).toHaveBeenCalledWith(
-      "wss://browserless.example/devtools/browser/id?token=(browser-token",)
+      "wss://browserless.example/devtools/browser/id?token=browser-token",
       {
         timeout: expect.any(Number),
         headers: {
@@ -624,7 +624,7 @@ describe("pw-session connection scoping", () => {
     await expect(
       createPageViaPlaywright({
         cdpUrl: "http://127.0.0.1:9222",
-        url: `ltfx.n.4fa72d735a519ee13d41.v1`,
+        url: "about:blank",
       }),
     ).rejects.toThrow(/browser has been closed/);
 

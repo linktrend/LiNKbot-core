@@ -145,8 +145,8 @@ describe("secrets runtime snapshot auth integration", () => {
       const prepared = await prepareSecretsRuntimeSnapshot({
         config: asConfig({}),
         env: {
-          OPENAI_API_KEY: `ltfx.n.2c6dd1b1fd10ae0bb06d.v1`,
-          ANTHROPIC_API_KEY: `ltfx.n.684c6b14f3e1c2afbf0b.v1`,
+          OPENAI_API_KEY: "sk-main-runtime",
+          ANTHROPIC_API_KEY: "sk-ops-runtime",
         },
         loadAuthStore: loadAuthStoreFromTestFile,
         loadablePluginOrigins: EMPTY_LOADABLE_PLUGIN_ORIGINS,
@@ -166,8 +166,8 @@ describe("secrets runtime snapshot auth integration", () => {
           },
         }),
         env: {
-          OPENAI_API_KEY: `ltfx.n.2c6dd1b1fd10ae0bb06d.v1`,
-          ANTHROPIC_API_KEY: `ltfx.n.684c6b14f3e1c2afbf0b.v1`,
+          OPENAI_API_KEY: "sk-main-runtime",
+          ANTHROPIC_API_KEY: "sk-ops-runtime",
         },
         loadAuthStore: loadAuthStoreFromTestFile,
         loadablePluginOrigins: EMPTY_LOADABLE_PLUGIN_ORIGINS,
@@ -181,7 +181,7 @@ describe("secrets runtime snapshot auth integration", () => {
       if (profile?.type !== "api_key") {
         throw new Error("Expected anthropic ops API key profile");
       }
-      expect(profile.key).toBe("ltfx.n.684c6b14f3e1c2afbf0b.v1");
+      expect(profile.key).toBe("sk-ops-runtime");
       expect(profile.keyRef).toEqual({
         source: "env",
         provider: "default",

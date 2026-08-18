@@ -1501,7 +1501,7 @@ describe("session.message websocket events", () => {
     try {
       await connectOk(ws, { scopes: ["operator.read"] });
       const subscribeRes = await rpcReq(ws, "sessions.messages.subscribe", {
-        key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+        key: "agent:main:main",
       });
       expect(subscribeRes.ok).toBe(true);
       expect(subscribeRes.payload?.subscribed).toBe(true);
@@ -1540,7 +1540,7 @@ describe("session.message websocket events", () => {
       });
 
       const unsubscribeRes = await rpcReq(ws, "sessions.messages.unsubscribe", {
-        key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+        key: "agent:main:main",
       });
       expect(unsubscribeRes.ok).toBe(true);
       expect(unsubscribeRes.payload?.subscribed).toBe(false);

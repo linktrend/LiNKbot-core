@@ -23,7 +23,7 @@ const {
   assertOkOrThrowHttpErrorMock: vi.fn(async () => {}),
   fetchWithTimeoutGuardedMock: vi.fn(),
   postJsonRequestMock: vi.fn(),
-  resolveApiKeyForProviderMock: vi.fn(async () => ({ apiKey: `ltfx.n.a0bac695e2ae38a45866.v1` })),
+  resolveApiKeyForProviderMock: vi.fn(async () => ({ apiKey: "openrouter-key" })),
   resolveProviderHttpRequestConfigMock: vi.fn((params: Record<string, unknown>) => {
     const request = params.request as
       | {
@@ -286,11 +286,11 @@ describe("openrouter video generation provider", () => {
       env: {},
       resolveProviderApiKey: () => ({
         apiKey: "OPENROUTER_API_KEY",
-        discoveryApiKey: `ltfx.n.56d078b503e1e80f6904.v1`,
+        discoveryApiKey: "resolved-openrouter-key",
       }),
       resolveProviderAuth: () => ({
         apiKey: "OPENROUTER_API_KEY",
-        discoveryApiKey: `ltfx.n.56d078b503e1e80f6904.v1`,
+        discoveryApiKey: "resolved-openrouter-key",
         mode: "api_key" as const,
         source: "env" as const,
       }),
@@ -374,10 +374,10 @@ describe("openrouter video generation provider", () => {
         },
       } as never,
       env: {},
-      resolveProviderApiKey: () => ({ apiKey: "key", discoveryApiKey: `ltfx.n.62af8704764faf8ea82f.v1` }),
+      resolveProviderApiKey: () => ({ apiKey: "key", discoveryApiKey: "test-key" }),
       resolveProviderAuth: () => ({
         apiKey: "key",
-        discoveryApiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+        discoveryApiKey: "test-key",
         mode: "api_key" as const,
         source: "env" as const,
       }),
@@ -423,11 +423,11 @@ describe("openrouter video generation provider", () => {
       env: {},
       resolveProviderApiKey: () => ({
         apiKey: "OPENROUTER_API_KEY",
-        discoveryApiKey: `ltfx.n.56d078b503e1e80f6904.v1`,
+        discoveryApiKey: "resolved-openrouter-key",
       }),
       resolveProviderAuth: () => ({
         apiKey: "OPENROUTER_API_KEY",
-        discoveryApiKey: `ltfx.n.56d078b503e1e80f6904.v1`,
+        discoveryApiKey: "resolved-openrouter-key",
         mode: "api_key" as const,
         source: "env" as const,
       }),
@@ -473,11 +473,11 @@ describe("openrouter video generation provider", () => {
         env: {},
         resolveProviderApiKey: () => ({
           apiKey: "OPENROUTER_API_KEY",
-          discoveryApiKey: `ltfx.n.56d078b503e1e80f6904.v1`,
+          discoveryApiKey: "resolved-openrouter-key",
         }),
         resolveProviderAuth: () => ({
           apiKey: "OPENROUTER_API_KEY",
-          discoveryApiKey: `ltfx.n.56d078b503e1e80f6904.v1`,
+          discoveryApiKey: "resolved-openrouter-key",
           mode: "api_key",
           source: "env" as const,
         }),

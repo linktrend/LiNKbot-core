@@ -25,7 +25,7 @@ const SECRET_PATTERNS: RegExp[] = [
 ];
 
 // Redact common token/key shapes before errors leave memory host internals.
-function maskToken(token: (string)): string {
+function maskToken(token: string): string {
   if (token.length < 18) {
     return "***";
   }

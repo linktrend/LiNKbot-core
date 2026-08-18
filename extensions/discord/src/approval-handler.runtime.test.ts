@@ -7,7 +7,7 @@ async function buildExecApprovalPayloadText(commandText: string): Promise<string
     cfg: {} as never,
     accountId: "main",
     context: {
-      token: `ltfx.n.0017ec88d6aa85df6bc5.v1`,
+      token: "discord-token",
       config: {} as never,
     },
     request: {
@@ -53,7 +53,7 @@ async function buildPluginApprovalPayloadText(): Promise<string> {
     cfg: {} as never,
     accountId: "main",
     context: {
-      token: `ltfx.n.0017ec88d6aa85df6bc5.v1`,
+      token: "discord-token",
       config: {} as never,
     },
     request: {
@@ -102,7 +102,7 @@ describe("discordApprovalNativeRuntime", () => {
     const pending = await discordApprovalNativeRuntime.presentation.buildPendingPayload({
       cfg: {} as never,
       accountId: "main",
-      context: { token: `ltfx.n.0017ec88d6aa85df6bc5.v1`, config: {} as never },
+      context: { token: "discord-token", config: {} as never },
       request: {
         id: "approval-1",
         request: { command: "hostname" },
@@ -149,7 +149,7 @@ describe("discordApprovalNativeRuntime", () => {
       cfg: {} as never,
       accountId: "main",
       context: {
-        token: `ltfx.n.0017ec88d6aa85df6bc5.v1`,
+        token: "discord-token",
         config: {} as never,
       },
       plannedTarget: {

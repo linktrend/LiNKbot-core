@@ -145,7 +145,7 @@ async function buildOpenCodeSecretCandidates(
   const candidates: SecretCandidate[] = [];
   if (readString(opencode.key)) {
     candidates.push({
-      id: "secret:(opencode:opencode-auth-json",)
+      id: "secret:opencode:opencode-auth-json",
       source: authPath,
       provider: "opencode",
       profileId: "opencode:hermes-import",
@@ -157,7 +157,7 @@ async function buildOpenCodeSecretCandidates(
   }
   if (readString(opencodeGo.key)) {
     candidates.push({
-      id: "secret:(opencode-go:opencode-auth-json",)
+      id: "secret:opencode-go:opencode-auth-json",
       source: authPath,
       provider: "opencode-go",
       profileId: "opencode-go:hermes-import",
@@ -170,7 +170,7 @@ async function buildOpenCodeSecretCandidates(
   // OpenClaw's Copilot token profile cannot preserve OpenCode enterprise routing yet.
   if (readString(githubCopilot.refresh) && !githubCopilotEnterpriseUrl) {
     candidates.push({
-      id: "secret:(github-copilot:opencode-auth-json",)
+      id: "secret:github-copilot:opencode-auth-json",
       source: authPath,
       provider: "github-copilot",
       profileId: "github-copilot:github",

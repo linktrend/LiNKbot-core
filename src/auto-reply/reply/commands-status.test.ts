@@ -104,7 +104,7 @@ const baseCfg = baseCommandTestConfig;
 const expectedCodexRuntimeUsageAuth = [
   {
     provider: "openai",
-    token: `ltfx.n.2bbc6ce9917113417ef2.v1`,
+    token: "codex-app-server",
     hookProvider: "codex",
   },
 ];
@@ -197,7 +197,7 @@ function saveStatusTestAuthProfiles(params: {
             : {
                 type: "api_key",
                 provider: "anthropic",
-                key: `ltfx.n.2454431d5b9908a4cc26.v1`,
+                key: "anthropic-api-key",
               },
         ]),
       ),
@@ -996,8 +996,8 @@ describe("buildStatusReply subagent summary", () => {
           JSON.stringify({
             auth_mode: "chatgpt",
             tokens: {
-              access_token: `ltfx.n.f701d51ab0cc76bf5472.v1`,
-              refresh_token: `ltfx.n.af74d8dd01346dd08045.v1`,
+              access_token: "codex-access-token",
+              refresh_token: "codex-refresh-token",
             },
           }),
           "utf-8",
@@ -1039,7 +1039,7 @@ describe("buildStatusReply subagent summary", () => {
       },
       {
         env: {
-          OPENAI_API_KEY: `ltfx.n.2f05c64d66de923e74cc.v1`,
+          OPENAI_API_KEY: "status-env-key-placeholder",
           OPENAI_OAUTH_TOKEN: undefined,
         },
       },
@@ -1950,8 +1950,8 @@ describe("buildStatusReply subagent summary", () => {
           authPath,
           JSON.stringify({
             claudeAiOauth: {
-              accessToken: `ltfx.n.3f16bed7089f4653e5ef.v1`,
-              refreshToken: `ltfx.n.0eb17643d4e926116378.v1`,
+              accessToken: "access-token",
+              refreshToken: "refresh-token",
               expiresAt: Date.now() + 60_000,
             },
           }),

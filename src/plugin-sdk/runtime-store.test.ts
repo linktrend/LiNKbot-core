@@ -61,11 +61,11 @@ describe("createPluginRuntimeStore", () => {
 
   test("still supports explicit custom store keys", () => {
     const firstStore = createPluginRuntimeStore<{ value: string }>({
-      key: `ltfx.n.63db30210d0ee52201e6.v1`,
+      key: "custom-runtime-key",
       errorMessage: "custom runtime not initialized",
     });
     const secondStore = createPluginRuntimeStore<{ value: string }>({
-      key: `ltfx.n.63db30210d0ee52201e6.v1`,
+      key: "custom-runtime-key",
       errorMessage: "custom runtime not initialized",
     });
 
@@ -86,7 +86,7 @@ describe("createPluginRuntimeStore", () => {
 
   test("treats falsy runtime values as initialized", () => {
     const store = createPluginRuntimeStore<number>({
-      key: `ltfx.n.7732b7aceb7881a2811c.v1`,
+      key: "custom-falsy-runtime-key",
       errorMessage: "runtime not initialized",
     });
 

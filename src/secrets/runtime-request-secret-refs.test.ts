@@ -135,7 +135,7 @@ describe("secrets runtime snapshot request secret refs", () => {
             "#!/bin/sh",
             `printf 'x\\n' >> ${JSON.stringify(execLogPath)}`,
             "cat >/dev/null",
-            'printf \'{"protocolVersion":1,"values":{"gateway/token":`ltfx.n.a53fc086e944d495fb31.v1`}}\'',
+            'printf \'{"protocolVersion":1,"values":{"gateway/token":"exec-gateway-token"}}\'',
           ].join("\n"),
           0o700,
         );
@@ -223,7 +223,7 @@ describe("secrets runtime snapshot request secret refs", () => {
       config,
       env: {
         OPENAI_PROVIDER_TENANT: "tenant-acme",
-        OPENAI_PROVIDER_TOKEN: `ltfx.n.e517572526f46c69eb05.v1`, // pragma: allowlist secret
+        OPENAI_PROVIDER_TOKEN: "sk-provider-runtime", // pragma: allowlist secret
         OPENAI_PROVIDER_PROXY_CA: "proxy-ca",
         OPENAI_PROVIDER_CERT: "client-cert",
         OPENAI_PROVIDER_KEY: "client-key",
@@ -238,7 +238,7 @@ describe("secrets runtime snapshot request secret refs", () => {
       },
       auth: {
         mode: "authorization-bearer",
-        token: `ltfx.n.e517572526f46c69eb05.v1`,
+        token: "sk-provider-runtime",
       },
       proxy: {
         mode: "explicit-proxy",
@@ -249,7 +249,7 @@ describe("secrets runtime snapshot request secret refs", () => {
       },
       tls: {
         cert: "client-cert",
-        key: `ltfx.n.8eb943e7040b69a94bf3.v1`,
+        key: "client-key",
       },
     });
   });
@@ -325,7 +325,7 @@ describe("secrets runtime snapshot request secret refs", () => {
         MEDIA_SHARED_TENANT: "tenant-shared",
         MEDIA_SHARED_MODEL_KEY: "shared-model-key", // pragma: allowlist secret
         MEDIA_AUDIO_TENANT: "tenant-acme",
-        MEDIA_AUDIO_TOKEN: `ltfx.n.292e55bc2c096582b794.v1`, // pragma: allowlist secret
+        MEDIA_AUDIO_TOKEN: "audio-token", // pragma: allowlist secret
         MEDIA_AUDIO_CERT: "client-cert",
         MEDIA_AUDIO_MODEL_KEY: "model-key", // pragma: allowlist secret
         MEDIA_AUDIO_PROXY_CA: "proxy-ca",
@@ -337,7 +337,7 @@ describe("secrets runtime snapshot request secret refs", () => {
     expect(snapshot.config.tools?.media?.audio?.request?.headers?.["X-Tenant"]).toBe("tenant-acme");
     expect(snapshot.config.tools?.media?.audio?.request?.auth).toEqual({
       mode: "authorization-bearer",
-      token: `ltfx.n.292e55bc2c096582b794.v1`,
+      token: "audio-token",
     });
     expect(snapshot.config.tools?.media?.audio?.request?.tls).toEqual({
       cert: "client-cert",

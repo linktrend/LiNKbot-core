@@ -5,7 +5,7 @@ import type { AddressInfo } from "node:net";
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import type { GatewayAuthResult } from "./auth.js";
 
-const TEST_GATEWAY_TOKEN = `ltfx.n.57553aa6e72928276259.v1`;
+const TEST_GATEWAY_TOKEN = "test-gateway-token-1234567890";
 const WORKER_SESSION_KEY = "agent:main:subagent:worker";
 const WORKER_KILL_PATH = "/sessions/agent%3Amain%3Asubagent%3Aworker/kill";
 const ADMIN_SCOPE_HEADERS = {
@@ -13,11 +13,11 @@ const ADMIN_SCOPE_HEADERS = {
 };
 const REQUESTER_WRITE_HEADERS = {
   "x-openclaw-scopes": "operator.write",
-  "x-openclaw-requester-session-key": `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+  "x-openclaw-requester-session-key": "agent:main:main",
 };
 const REQUESTER_ADMIN_HEADERS = {
   "x-openclaw-scopes": "operator.admin",
-  "x-openclaw-requester-session-key": `ltfx.n.f6cd12765ec3fd1073e1.v1`,
+  "x-openclaw-requester-session-key": "agent:other:main",
 };
 
 let cfg: Record<string, unknown> = {};
@@ -271,7 +271,7 @@ describe("POST /sessions/:sessionKey/kill", () => {
     const response = await post(
       "/sessions/agent%3Amain%3Asubagent%3Aworker/kill",
       TEST_GATEWAY_TOKEN,
-      { "x-openclaw-requester-session-key": `ltfx.n.f6cd12765ec3fd1073e1.v1` },
+      { "x-openclaw-requester-session-key": "agent:other:main" },
     );
     expect(response.status).toBe(403);
     expectErrorResponse(await response.json(), {

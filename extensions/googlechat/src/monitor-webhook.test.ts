@@ -38,7 +38,7 @@ function createRequest(options?: {
 }): IncomingMessage {
   return {
     method: "POST",
-    url: (options?.url ?? "/googlechat",)
+    url: options?.url ?? "/googlechat",
     headers: {
       authorization: options?.authorization ?? "",
       "content-type": "application/json",
@@ -168,7 +168,7 @@ describe("googlechat monitor webhook", () => {
       processEvent,
     });
     const req = createRequest({
-      url: `ltfx.n.951071151ebffe6e7944.v1`,
+      url: "/googlechat?ignored=1",
       headers: {
         "x-forwarded-for": "198.51.100.7, 10.0.0.1",
       },
@@ -263,7 +263,7 @@ describe("googlechat monitor webhook", () => {
       ok: true,
       value: {
         commonEventObject: { hostApp: "CHAT" },
-        authorizationEventObject: { systemIdToken: `ltfx.n.119f27e8288a5e0d698f.v1` },
+        authorizationEventObject: { systemIdToken: "addon-token" },
         chat: {
           eventTime: "2026-03-22T00:00:00.000Z",
           user: { name: "users/123" },
@@ -331,7 +331,7 @@ describe("googlechat monitor webhook", () => {
             token: "token-1",
           },
         },
-        authorizationEventObject: { systemIdToken: `ltfx.n.119f27e8288a5e0d698f.v1` },
+        authorizationEventObject: { systemIdToken: "addon-token" },
         chat: {
           eventTime: "2026-03-22T00:00:00.000Z",
           user: { name: "users/123" },
@@ -368,7 +368,7 @@ describe("googlechat monitor webhook", () => {
         eventTime: "2026-03-22T00:00:00.000Z",
         action: {
           parameters: [
-            { key: `ltfx.n.71bc7c1a10bfec3a3470.v1`, value: "approval" },
+            { key: "openclaw_action", value: "approval" },
             { key: "token", value: "token-1" },
           ],
         },
@@ -506,7 +506,7 @@ describe("googlechat monitor webhook", () => {
       ok: true,
       value: {
         commonEventObject: { hostApp: "CHAT" },
-        authorizationEventObject: { systemIdToken: `ltfx.n.171785f8a24d12f25aa0.v1` },
+        authorizationEventObject: { systemIdToken: "bad-token" },
         chat: {
           messagePayload: {
             space: { name: "spaces/AAA" },
@@ -550,7 +550,7 @@ describe("googlechat monitor webhook", () => {
       ok: true,
       value: {
         commonEventObject: { hostApp: "CHAT" },
-        authorizationEventObject: { systemIdToken: `ltfx.n.171785f8a24d12f25aa0.v1` },
+        authorizationEventObject: { systemIdToken: "bad-token" },
         chat: {
           messagePayload: {
             space: { name: "spaces/AAA" },
@@ -600,7 +600,7 @@ describe("googlechat monitor webhook", () => {
       ok: true,
       value: {
         commonEventObject: { hostApp: "CHAT" },
-        authorizationEventObject: { systemIdToken: `ltfx.n.461caa80a52104436e34.v1` },
+        authorizationEventObject: { systemIdToken: "good-token" },
         chat: {
           eventTime: "2026-03-22T00:00:00.000Z",
           user: { name: "users/123" },
@@ -655,7 +655,7 @@ describe("googlechat monitor webhook", () => {
       ok: true,
       value: {
         commonEventObject: { hostApp: "CHAT" },
-        authorizationEventObject: { systemIdToken: `ltfx.n.96761af49c82d2936232.v1` },
+        authorizationEventObject: { systemIdToken: "shared-path-token" },
         chat: {
           eventTime: "2026-03-22T00:00:00.000Z",
           user: { name: "users/123" },

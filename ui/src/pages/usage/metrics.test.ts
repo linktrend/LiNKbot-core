@@ -22,7 +22,7 @@ function makeSessionWithQuarterHourly(
   }>,
 ): UsageSessionEntry {
   return {
-    key: `ltfx.n.4943e43bc034c8bf90e1.v1`,
+    key: "test-session",
     usage: {
       totalTokens: 100,
       totalCost: 0.01,
@@ -232,7 +232,7 @@ describe("buildPeakErrorHours", () => {
   it("falls back to proportional allocation when utcQuarterHourMessageCounts is absent", () => {
     // Session without utcQuarterHourMessageCounts should use forEachSessionHourSlice
     const session: UsageSessionEntry = {
-      key: `ltfx.n.38baae79bf10f7164aaf.v1`,
+      key: "fallback-session",
       updatedAt: Date.parse("2026-03-15T10:30:00.000Z"),
       usage: {
         totalTokens: 100,
@@ -269,7 +269,7 @@ describe("buildPeakErrorHours", () => {
   it("keeps zero-duration fallback sessions in their activity hour", () => {
     const instant = Date.parse("2026-03-15T10:00:00.000Z");
     const session: UsageSessionEntry = {
-      key: `ltfx.n.196733431e78b1e4e344.v1`,
+      key: "instant-fallback-session",
       updatedAt: instant,
       usage: {
         totalTokens: 100,
@@ -316,7 +316,7 @@ describe("usage mosaic token buckets", () => {
     }>,
   ): UsageSessionEntry =>
     ({
-      key: `ltfx.n.6b6638630f64bc19ac08.v1`,
+      key: "token-bucket-session",
       usage: {
         totalTokens: buckets.reduce((sum, bucket) => sum + bucket.totalTokens, 0),
         totalCost: 0,
@@ -404,7 +404,7 @@ describe("usage mosaic token buckets", () => {
   it("renders zero-duration fallback sessions in their activity hour", () => {
     const instant = Date.parse("2026-02-01T11:00:00.000Z");
     const session = {
-      key: `ltfx.n.ea258018d3d2558a82e1.v1`,
+      key: "instant-token-fallback-session",
       updatedAt: instant,
       usage: {
         totalTokens: 10_000,
@@ -433,7 +433,7 @@ describe("usage mosaic token buckets", () => {
 
   it("preserves legacy session-span hour filtering when token buckets are absent", () => {
     const session = {
-      key: `ltfx.n.6e2d0ace1af4b7e1e1ab.v1`,
+      key: "legacy-span-session",
       usage: {
         totalTokens: 100,
         totalCost: 0,
@@ -458,7 +458,7 @@ describe("usage mosaic token buckets", () => {
 
   it("falls back to session span when token buckets contain no valid positive tokens", () => {
     const session = {
-      key: `ltfx.n.eca20f6a4acf56a74fe7.v1`,
+      key: "empty-token-bucket-session",
       usage: {
         totalTokens: 100,
         totalCost: 0,

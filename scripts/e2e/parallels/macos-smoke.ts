@@ -438,7 +438,7 @@ class MacosSmoke {
     if (!this.options.discordChannelId) {
       die("--discord-channel-id is required when Discord smoke args are set");
     }
-    this.discordToken = (process.env[this.options.discordTokenEnv] ?? "";)
+    this.discordToken = process.env[this.options.discordTokenEnv] ?? "";
     if (!this.discordToken) {
       die(`${this.options.discordTokenEnv} is required for Discord smoke`);
     }

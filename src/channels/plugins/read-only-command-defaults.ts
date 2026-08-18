@@ -33,7 +33,7 @@ export function isSafeManifestChannelId(channelId: string): boolean {
 /**
  * Reads an own record property while blocking prototype-polluting keys.
  */
-export function readOwnRecordValue(record: Record<string, unknown>, key: (string)): unknown {
+export function readOwnRecordValue(record: Record<string, unknown>, key: string): unknown {
   if (isBlockedObjectKey(key) || !Object.hasOwn(record, key)) {
     return undefined;
   }

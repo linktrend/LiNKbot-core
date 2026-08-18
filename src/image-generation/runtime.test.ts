@@ -528,8 +528,8 @@ describe("image-generation runtime", () => {
       resolution: undefined,
     });
     expect(result.ignoredOverrides).toEqual([
-      { key: `ltfx.n.6ba61201e75a4633c0ab.v1`, value: "1:1" },
-      { key: `ltfx.n.f7fbd5853d11940e045a.v1`, value: "2K" },
+      { key: "aspectRatio", value: "1:1" },
+      { key: "resolution", value: "2K" },
     ]);
   });
 
@@ -662,8 +662,8 @@ describe("image-generation runtime", () => {
     });
     expect(result.ignoredOverrides).toEqual([
       { key: "quality", value: "low" },
-      { key: `ltfx.n.89aae893c4c50a3639bc.v1`, value: "jpeg" },
-      { key: `ltfx.n.89b91df19d9d75d4cf36.v1`, value: "transparent" },
+      { key: "outputFormat", value: "jpeg" },
+      { key: "background", value: "transparent" },
     ]);
   });
 

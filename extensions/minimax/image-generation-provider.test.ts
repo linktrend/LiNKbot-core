@@ -23,7 +23,7 @@ describe("minimax image-generation provider", () => {
 
   function mockMinimaxApiKey() {
     vi.spyOn(providerAuth, "resolveApiKeyForProvider").mockResolvedValue({
-      apiKey: `ltfx.n.12a4f3e08a1f6f211040.v1`,
+      apiKey: "minimax-test-key",
       source: "env",
       mode: "api-key",
     });

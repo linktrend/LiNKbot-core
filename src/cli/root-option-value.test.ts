@@ -4,7 +4,7 @@ import { takeCliRootOptionValue } from "./root-option-value.js";
 
 describe("takeCliRootOptionValue", () => {
   it("preserves equals signs after the first separator", () => {
-    expect(takeCliRootOptionValue("--token=(abc=def", undefined)).toEqual({)
+    expect(takeCliRootOptionValue("--token=abc=def", undefined)).toEqual({
       value: "abc=def",
       consumedNext: false,
     });

@@ -23,7 +23,7 @@ function runFixture(
       ...process.env,
       OPENCLAW_CONFIG_BATCH_PATH: path.join(root, "batch.json"),
       OPENCLAW_CONFIG_PATH: path.join(root, "openclaw.json"),
-      OPENCLAW_GATEWAY_TOKEN: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+      OPENCLAW_GATEWAY_TOKEN: "test-token",
       OPENCLAW_OPENWEBUI_MODEL: "openai/gpt-5.4-mini",
       OPENCLAW_STATE_DIR: root,
       ...env,
@@ -147,7 +147,7 @@ describe("scripts/e2e/lib/fixture.mjs config commands", () => {
       });
       expect(config.tools.web.search).toEqual({ enabled: true, maxResults: 3 });
       expect(config.plugins.entries.openai).toEqual({ enabled: true });
-      expect(config.gateway.auth).toEqual({ mode: "token", token: `ltfx.n.4c5dc9b7708905f77f5e.v1` });
+      expect(config.gateway.auth).toEqual({ mode: "token", token: "test-token" });
     } finally {
       rmSync(root, { recursive: true, force: true });
     }

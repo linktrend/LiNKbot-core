@@ -36,7 +36,7 @@ export async function runCodexAuthDoctorMigrationProof(
     profiles[API_KEY_PROFILE_ID] = {
       type: "api_key",
       provider: "openai",
-      key: `ltfx.n.4c806362b613f7496abf.v1`,
+      key: "test-api-key",
     };
     order.openai = [API_KEY_PROFILE_ID];
   }

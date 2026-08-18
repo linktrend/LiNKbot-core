@@ -1118,7 +1118,7 @@ describe("config io write", () => {
       );
       const io = createConfigIO({
         env: {
-          OPENCLAW_GATEWAY_TOKEN: `ltfx.n.2739d1dbc8caa2e1c2cc.v1`,
+          OPENCLAW_GATEWAY_TOKEN: "gateway-token-at-read",
           OPENCLAW_TEST_FAST: "1",
         } as NodeJS.ProcessEnv,
         homedir: () => home,
@@ -1158,7 +1158,7 @@ describe("config io write", () => {
       });
       const io = createConfigIO({
         env: {
-          OPENCLAW_GATEWAY_TOKEN: `ltfx.n.2739d1dbc8caa2e1c2cc.v1`,
+          OPENCLAW_GATEWAY_TOKEN: "gateway-token-at-read",
           OPENCLAW_TEST_FAST: "1",
         } as NodeJS.ProcessEnv,
         homedir: () => home,
@@ -1688,7 +1688,7 @@ describe("config io write", () => {
       const originalRootRaw = await fs.readFile(configPath, "utf-8");
       const io = createConfigIO({
         env: {
-          OPENCLAW_GATEWAY_TOKEN: `ltfx.n.5482a41b11c82d1f2741.v1`,
+          OPENCLAW_GATEWAY_TOKEN: "gateway-token-runtime",
           OPENCLAW_TEST_FAST: "1",
         } as NodeJS.ProcessEnv,
         homedir: () => home,
@@ -1701,7 +1701,7 @@ describe("config io write", () => {
         io.writeConfigFile({
           gateway: {
             mode: "local",
-            auth: { mode: "token", token: `ltfx.n.5482a41b11c82d1f2741.v1` },
+            auth: { mode: "token", token: "gateway-token-runtime" },
           },
         }),
       ).rejects.toThrow("Config write would flatten $include-owned config at gateway");
@@ -1860,7 +1860,7 @@ describe("config io write", () => {
               entries: {
                 "literal-plugin": {
                   enabled: true,
-                  config: { token: `ltfx.n.bf2b918b0079049d8780.v1` },
+                  config: { token: "$${ROOT_LITERAL_TOKEN}" },
                 },
               },
             },
@@ -1887,7 +1887,7 @@ describe("config io write", () => {
       });
 
       await expect(fs.readFile(configPath, "utf-8")).resolves.toContain(
-        '"token": `ltfx.n.bf2b918b0079049d8780.v1`',
+        '"token": "$${ROOT_LITERAL_TOKEN}"',
       );
     });
   });
@@ -2032,7 +2032,7 @@ describe("config io write", () => {
               providers: {
                 openai: {
                   baseUrl: "https://api.openai.com/v1",
-                  apiKey: `ltfx.n.6ea73a34da270c875bba.v1`,
+                  apiKey: "sk-runtime-resolved",
                   models: [],
                 },
               },
@@ -2058,7 +2058,7 @@ describe("config io write", () => {
             providers: {
               openai: {
                 baseUrl: "https://api.openai.com/v1",
-                apiKey: `ltfx.n.6ea73a34da270c875bba.v1`,
+                apiKey: "sk-runtime-resolved",
                 models: [],
               },
             },
@@ -2119,21 +2119,21 @@ describe("config io write", () => {
         await withEnvAsync(
           {
             OPENCLAW_CONFIG_PATH: configPath,
-            OPENCLAW_GATEWAY_TOKEN: `ltfx.n.5482a41b11c82d1f2741.v1`,
+            OPENCLAW_GATEWAY_TOKEN: "gateway-token-runtime",
           },
           async () => {
             setRuntimeConfigSnapshot(
               {
                 gateway: {
                   mode: "local",
-                  auth: { mode: "token", token: `ltfx.n.5482a41b11c82d1f2741.v1` },
+                  auth: { mode: "token", token: "gateway-token-runtime" },
                 },
                 agents: { defaults: { model: { primary: "openai/gpt-5.4" } } },
               },
               {
                 gateway: {
                   mode: "local",
-                  auth: { mode: "token", token: `ltfx.n.5482a41b11c82d1f2741.v1` },
+                  auth: { mode: "token", token: "gateway-token-runtime" },
                 },
                 agents: { defaults: { model: { primary: "openai/gpt-5.4" } } },
               },
@@ -2142,7 +2142,7 @@ describe("config io write", () => {
             await writeConfigFile({
               gateway: {
                 mode: "local",
-                auth: { mode: "token", token: `ltfx.n.5482a41b11c82d1f2741.v1` },
+                auth: { mode: "token", token: "gateway-token-runtime" },
               },
               agents: {
                 defaults: { model: { primary: "openrouter/anthropic/claude-sonnet-4.6" } },
@@ -2157,7 +2157,7 @@ describe("config io write", () => {
             const observedSource = requireRecord(observedSources[0], "observed source config");
             expect(observedSource.gateway).toEqual({
               mode: "local",
-              auth: { mode: "token", token: `ltfx.n.5482a41b11c82d1f2741.v1` },
+              auth: { mode: "token", token: "gateway-token-runtime" },
             });
             expect(observedSource.agents).toEqual({
               defaults: {
@@ -2314,7 +2314,7 @@ describe("config io write", () => {
     await withSuiteHome(async (home) => {
       const configPath = path.join(home, ".openclaw", "openclaw.json");
       const envKey = "OPENCLAW_TEST_INTERLEAVED_WRITE_ENV";
-      const makeConfig = (value: string, token: (string)): OpenClawConfig => ({
+      const makeConfig = (value: string, token: string): OpenClawConfig => ({
         env: { vars: { [envKey]: value } },
         gateway: { mode: "local", auth: { mode: "token", token } },
       });

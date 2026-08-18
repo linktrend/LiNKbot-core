@@ -11,7 +11,7 @@ function applyOpsAccountConfig(cfg: CoreConfig): CoreConfig {
     input: {
       name: "Ops",
       homeserver: "https://matrix.example.org",
-      accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
+      accessToken: "ops-token",
     },
   }) as CoreConfig;
 }
@@ -32,7 +32,7 @@ function expectPromotedDefaultAccount(next: CoreConfig): void {
     deviceName: "Legacy raw key",
     homeserver: "https://matrix.example.org",
     userId: "@default:example.org",
-    accessToken: `ltfx.n.9c529707df4449bcf58c.v1`,
+    accessToken: "tok-default",
     avatarUrl: "mxc://example.org/default-avatar",
   });
   expect(next.channels?.matrix?.accounts?.default).toBeUndefined();
@@ -43,7 +43,7 @@ function expectOpsAccount(next: CoreConfig): void {
     name: "Ops",
     enabled: true,
     homeserver: "https://matrix.example.org",
-    accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
+    accessToken: "ops-token",
   });
 }
 
@@ -186,7 +186,7 @@ describe("matrixSetupAdapter", () => {
         matrix: {
           homeserver: "https://matrix.example.org",
           userId: "@default:example.org",
-          accessToken: `ltfx.n.9c529707df4449bcf58c.v1`,
+          accessToken: "tok-default",
           deviceName: "Default device",
           dangerouslyAllowNameMatching: true,
         },
@@ -200,7 +200,7 @@ describe("matrixSetupAdapter", () => {
         name: "Ops",
         homeserver: "https://matrix.example.org",
         userId: "@ops:example.org",
-        accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
+        accessToken: "ops-token",
       },
     }) as CoreConfig;
 
@@ -211,7 +211,7 @@ describe("matrixSetupAdapter", () => {
     expectFields(next.channels?.matrix?.accounts?.default, {
       homeserver: "https://matrix.example.org",
       userId: "@default:example.org",
-      accessToken: `ltfx.n.9c529707df4449bcf58c.v1`,
+      accessToken: "tok-default",
       deviceName: "Default device",
       dangerouslyAllowNameMatching: true,
     });
@@ -220,7 +220,7 @@ describe("matrixSetupAdapter", () => {
       enabled: true,
       homeserver: "https://matrix.example.org",
       userId: "@ops:example.org",
-      accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
+      accessToken: "ops-token",
     });
     expect(next.channels?.matrix?.accounts?.ops?.dangerouslyAllowNameMatching).toBeUndefined();
   });
@@ -232,7 +232,7 @@ describe("matrixSetupAdapter", () => {
           defaultAccount: "default",
           homeserver: "https://matrix.example.org",
           userId: "@default:example.org",
-          accessToken: `ltfx.n.9c529707df4449bcf58c.v1`,
+          accessToken: "tok-default",
           avatarUrl: "mxc://example.org/default-avatar",
           accounts: {
             Default: {
@@ -256,7 +256,7 @@ describe("matrixSetupAdapter", () => {
         matrix: {
           homeserver: "https://matrix.example.org",
           userId: "@default:example.org",
-          accessToken: `ltfx.n.9c529707df4449bcf58c.v1`,
+          accessToken: "tok-default",
           avatarUrl: "mxc://example.org/default-avatar",
           accounts: {
             Default: {
@@ -265,7 +265,7 @@ describe("matrixSetupAdapter", () => {
             },
             support: {
               homeserver: "https://matrix.example.org",
-              accessToken: `ltfx.n.7acb7be2ebdd3038e235.v1`,
+              accessToken: "tok-support",
             },
           },
         },
@@ -277,7 +277,7 @@ describe("matrixSetupAdapter", () => {
     expectPromotedDefaultAccount(next);
     expectFields(next.channels?.matrix?.accounts?.support, {
       homeserver: "https://matrix.example.org",
-      accessToken: `ltfx.n.7acb7be2ebdd3038e235.v1`,
+      accessToken: "tok-support",
     });
     expectOpsAccount(next);
   });
@@ -292,7 +292,7 @@ describe("matrixSetupAdapter", () => {
               homeserver: "https://matrix.example.org",
               proxy: "http://127.0.0.1:7890",
               userId: "@ops:example.org",
-              accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
+              accessToken: "ops-token",
               password: "secret",
               deviceId: "DEVICE",
               deviceName: "Ops device",
@@ -332,7 +332,7 @@ describe("matrixSetupAdapter", () => {
             ops: {
               name: "Ops",
               homeserver: "https://matrix.example.org",
-              accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
+              accessToken: "ops-token",
             },
           },
         },
@@ -364,7 +364,7 @@ describe("matrixSetupAdapter", () => {
       accountId: "ops",
       input: {
         homeserver: "https://matrix.example.org",
-        accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
+        accessToken: "ops-token",
         proxy: "http://127.0.0.1:7890",
       },
     }) as CoreConfig;
@@ -372,7 +372,7 @@ describe("matrixSetupAdapter", () => {
     expectFields(next.channels?.matrix?.accounts?.ops, {
       enabled: true,
       homeserver: "https://matrix.example.org",
-      accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
+      accessToken: "ops-token",
       proxy: "http://127.0.0.1:7890",
     });
   });
@@ -383,7 +383,7 @@ describe("matrixSetupAdapter", () => {
       accountId: "ops",
       input: {
         homeserver: "https://matrix.example.org",
-        accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
+        accessToken: "ops-token",
         avatarUrl: "  mxc://example.org/ops-avatar  ",
       },
     }) as CoreConfig;
@@ -391,7 +391,7 @@ describe("matrixSetupAdapter", () => {
     expectFields(next.channels?.matrix?.accounts?.ops, {
       enabled: true,
       homeserver: "https://matrix.example.org",
-      accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
+      accessToken: "ops-token",
       avatarUrl: "mxc://example.org/ops-avatar",
     });
   });
@@ -402,7 +402,7 @@ describe("matrixSetupAdapter", () => {
       accountId: "ops",
       input: {
         homeserver: "https://matrix.example.org",
-        accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
+        accessToken: "ops-token",
         avatarUrl: "file:///tmp/avatar.png",
       },
     });
@@ -416,7 +416,7 @@ describe("matrixSetupAdapter", () => {
       accountId: "ops",
       input: {
         homeserver: "http://matrix.internal:8008",
-        accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
+        accessToken: "ops-token",
         dangerouslyAllowPrivateNetwork: true,
       },
     }) as CoreConfig;
@@ -424,7 +424,7 @@ describe("matrixSetupAdapter", () => {
     expectFields(next.channels?.matrix?.accounts?.ops, {
       enabled: true,
       homeserver: "http://matrix.internal:8008",
-      accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
+      accessToken: "ops-token",
       network: {
         dangerouslyAllowPrivateNetwork: true,
       },
@@ -437,13 +437,13 @@ describe("matrixSetupAdapter", () => {
         matrix: {
           homeserver: "https://matrix.example.org",
           userId: "@default:example.org",
-          accessToken: `ltfx.n.9c529707df4449bcf58c.v1`,
+          accessToken: "tok-default",
           streaming: { block: { enabled: true } },
           accounts: {
             support: {
               homeserver: "https://matrix.example.org",
               userId: "@support:example.org",
-              accessToken: `ltfx.n.7acb7be2ebdd3038e235.v1`,
+              accessToken: "tok-support",
             },
           },
         },
@@ -457,7 +457,7 @@ describe("matrixSetupAdapter", () => {
         name: "Ops",
         homeserver: "https://matrix.example.org",
         userId: "@ops:example.org",
-        accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
+        accessToken: "ops-token",
       },
     }) as CoreConfig;
 
@@ -467,7 +467,7 @@ describe("matrixSetupAdapter", () => {
       enabled: true,
       homeserver: "https://matrix.example.org",
       userId: "@ops:example.org",
-      accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
+      accessToken: "ops-token",
     });
     expect(next.channels?.matrix?.accounts?.ops?.streaming).toBeUndefined();
   });

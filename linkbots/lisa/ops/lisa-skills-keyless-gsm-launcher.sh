@@ -55,7 +55,7 @@ mkfifo "$fifo_path"
 "$LINKSKILLS_GCLOUD_COMMAND" secrets versions access latest \
   --quiet \
   --project="$LINKSKILLS_GCP_PROJECT_ID" \
-  --secret="${ltfx.n.6b7dd309d48394ee911f.v1}" \
+  --secret="$LINKSKILLS_GCP_PACI_SECRET_NAME" \
   --impersonate-service-account="$LINKSKILLS_GCP_RUNTIME_SERVICE_ACCOUNT" \
   >"$fifo_path" &
 producer_pid="$!"

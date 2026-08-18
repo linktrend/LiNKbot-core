@@ -33,7 +33,7 @@ const originalStateDir = process.env.OPENCLAW_STATE_DIR;
 const { cfg: lifecycleConfig, account: lifecycleAccount } = createFeishuLifecycleFixture({
   accountId: "acct-acp",
   appId: "cli_test",
-  appSecret: `ltfx.n.e810d7b45867f6973b9e.v1`,
+  appSecret: "secret_test",
   channelConfig: {
     groupPolicy: "open",
     allowFrom: ["ou_sender_1"],

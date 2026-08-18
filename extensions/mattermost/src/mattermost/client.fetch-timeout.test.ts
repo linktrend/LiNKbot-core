@@ -72,7 +72,7 @@ describe("Mattermost REST client fetch timeout", () => {
     await withHangingMattermostServer(async (server) => {
       const client = createMattermostClient({
         baseUrl: server.baseUrl,
-        botToken: `ltfx.n.df27f9beb68b7766af3a.v1`,
+        botToken: "bot-token",
         allowPrivateNetwork: true,
         timeoutMs: 50,
       });
@@ -88,7 +88,7 @@ describe("Mattermost REST client fetch timeout", () => {
     await withHangingMattermostServer(async (server) => {
       const client = createMattermostClient({
         baseUrl: server.baseUrl,
-        botToken: `ltfx.n.df27f9beb68b7766af3a.v1`,
+        botToken: "bot-token",
         allowPrivateNetwork: true,
         timeoutMs: 30_000,
       });
@@ -119,7 +119,7 @@ describe("Mattermost REST client fetch timeout", () => {
         };
         const client = createMattermostClient({
           baseUrl,
-          botToken: `ltfx.n.df27f9beb68b7766af3a.v1`,
+          botToken: "bot-token",
           fetchImpl,
           timeoutMs: 30_000,
         });
@@ -145,7 +145,7 @@ describe("Mattermost REST client fetch timeout", () => {
     await withHangingMattermostServer(async (server) => {
       const client = createMattermostClient({
         baseUrl: server.baseUrl,
-        botToken: `ltfx.n.df27f9beb68b7766af3a.v1`,
+        botToken: "bot-token",
         allowPrivateNetwork: true,
         timeoutMs: 50,
       });

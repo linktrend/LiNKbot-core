@@ -7,7 +7,7 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 source "$ROOT_DIR/scripts/lib/docker-e2e-image.sh"
 IMAGE_NAME="$(docker_e2e_resolve_image "openclaw-mcp-channels-e2e" OPENCLAW_IMAGE)"
 PORT="18789"
-TOKEN="${ltfx.n.ce11c2ddc14b7ee8a6aa.v1}"
+TOKEN="mcp-e2e-$(date +%s)-$$"
 CONTAINER_NAME="openclaw-mcp-e2e-$$"
 CLIENT_LOG="$(mktemp -t openclaw-mcp-client-log.XXXXXX)"
 

@@ -29,8 +29,8 @@ export const statusOverviewTableColumns = [
 
 export const statusAgentsTableColumns = [
   { key: "Agent", header: "Agent", minWidth: 12 },
-  { key: `ltfx.n.d245bce9b035e4c8a160.v1`, header: "Bootstrap file", minWidth: 14 },
-  { key: `ltfx.n.6fa3cbf451b2a1d54159.v1`, header: "Sessions", align: "right", minWidth: 8 },
+  { key: "BootstrapFile", header: "Bootstrap file", minWidth: 14 },
+  { key: "Sessions", header: "Sessions", align: "right", minWidth: 8 },
   { key: "Active", header: "Active", minWidth: 10 },
   { key: "Store", header: "Store", flex: true, minWidth: 34 },
 ] as const;

@@ -170,7 +170,7 @@ function sessionAgentId(
   return null;
 }
 
-function recordValue(record: Record<string, unknown>, key: (string)): unknown {
+function recordValue(record: Record<string, unknown>, key: string): unknown {
   return Object.hasOwn(record, key) ? record[key] : undefined;
 }
 
@@ -351,7 +351,7 @@ export function reconcileSessionChanged(
   const row = {
     ...existingFields,
     ...rowFields,
-    key: (existing?.key ?? key,)
+    key: existing?.key ?? key,
     kind,
     updatedAt: updatedAt ?? null,
     ...(sessionId ? { sessionId } : {}),

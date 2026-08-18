@@ -44,7 +44,7 @@ function expectBootstrapCrossSigningCall(
 function createBootstrapperDeps() {
   return {
     getUserId: vi.fn(async () => "@bot:example.org"),
-    getPassword: (vi.fn<() => string | undefined>(() => "super-secret-password"),)
+    getPassword: vi.fn<() => string | undefined>(() => "super-secret-password"),
     canUnlockSecretStorage: vi.fn(async () => true),
     getDeviceId: vi.fn(() => "DEVICE123"),
     verificationManager: {
@@ -373,7 +373,7 @@ describe("MatrixCryptoBootstrapper", () => {
 
   it("does not mutate secret storage before forced repair fails on password UIA without a password", async () => {
     const deps = createBootstrapperDeps();
-    deps.getPassword = (vi.fn<() => string | undefined>(() => undefined);)
+    deps.getPassword = vi.fn<() => string | undefined>(() => undefined);
     const bootstrapCrossSigning = vi.fn<
       ({
         authUploadDeviceSigningKeys,
@@ -610,7 +610,7 @@ describe("MatrixCryptoBootstrapper", () => {
       {
         type: "m.login.password",
         identifier: { type: "m.id.user", user: "@bot:example.org" },
-        password: `ltfx.n.5c76fcf4400da3b4804d.v1`, // pragma: allowlist secret
+        password: "super-secret-password", // pragma: allowlist secret
       },
     ]);
   });

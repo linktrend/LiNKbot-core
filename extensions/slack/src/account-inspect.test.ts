@@ -10,8 +10,8 @@ describe("inspectSlackAccount", () => {
         channels: {
           slack: {
             identity: "user",
-            userToken: `ltfx.n.19bbb7d9c45e18a41bce.v1`,
-            appToken: `ltfx.n.229a79260e17de2a406e.v1`,
+            userToken: "test-user-token",
+            appToken: "test-app-token",
           },
         },
       } as OpenClawConfig,
@@ -38,7 +38,7 @@ describe("inspectSlackAccount", () => {
           slack: {
             identity: "user",
             mode: "http",
-            userToken: `ltfx.n.19bbb7d9c45e18a41bce.v1`,
+            userToken: "test-user-token",
           },
         },
       } as OpenClawConfig,
@@ -62,8 +62,8 @@ describe("inspectSlackAccount", () => {
       cfg: {
         channels: {
           slack: {
-            botToken: `ltfx.n.19434281d9f1460bdb2b.v1`,
-            appToken: `ltfx.n.229a79260e17de2a406e.v1`,
+            botToken: "test-bot-token",
+            appToken: "test-app-token",
           },
         },
       } as OpenClawConfig,

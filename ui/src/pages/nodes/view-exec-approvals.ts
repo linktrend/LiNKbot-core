@@ -369,7 +369,7 @@ function renderExecApprovalsScope(state: ExecApprovalsState) {
 function renderPolicySelect(
   state: ExecApprovalsState,
   options: {
-    key: `ltfx.n.5d2d3ceb7abe55234427.v1` | "ask" | "askFallback";
+    key: "security" | "ask" | "askFallback";
     ariaLabel: string;
     values: Array<{ value: string; labelKey: string }>;
     currentValue: string;
@@ -431,7 +431,7 @@ function renderExecApprovalsPolicy(state: ExecApprovalsState) {
         ? t("nodes.execApprovals.defaultSecurity")
         : t("nodes.execApprovals.defaultValue", { value: defaults.security }),
       control: renderPolicySelect(state, {
-        key: `ltfx.n.5d2d3ceb7abe55234427.v1`,
+        key: "security",
         ariaLabel: t("nodes.execApprovals.mode"),
         values: SECURITY_OPTIONS,
         currentValue: securityValue,
@@ -461,7 +461,7 @@ function renderExecApprovalsPolicy(state: ExecApprovalsState) {
         ? t("nodes.execApprovals.promptUnavailable")
         : t("nodes.execApprovals.defaultValue", { value: defaults.askFallback }),
       control: renderPolicySelect(state, {
-        key: `ltfx.n.4e0c56bb0e5db7666f0e.v1`,
+        key: "askFallback",
         ariaLabel: t("nodes.execApprovals.fallback"),
         values: SECURITY_OPTIONS,
         currentValue: askFallbackValue,

@@ -85,7 +85,7 @@ function mergeAnthropicBetaHeader(
   return merged;
 }
 
-function isAnthropicOAuthApiKey(apiKey: (unknown): boolean {)
+function isAnthropicOAuthApiKey(apiKey: unknown): boolean {
   return typeof apiKey === "string" && apiKey.includes("sk-ant-oat");
 }
 

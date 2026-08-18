@@ -128,11 +128,11 @@ describe("githubCopilotMemoryEmbeddingProviderAdapter", () => {
   beforeEach(() => {
     resolveConfiguredSecretInputStringMock.mockResolvedValue({});
     resolveFirstGithubTokenMock.mockResolvedValue({
-      githubToken: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
+      githubToken: "test-token-placeholder",
       hasProfile: false,
     });
     resolveCopilotApiTokenMock.mockResolvedValue({
-      token: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
+      token: "test-token-placeholder",
       expiresAt: Date.now() + 3_600_000,
       source: "test",
       baseUrl: TEST_BASE_URL,
@@ -311,9 +311,9 @@ describe("githubCopilotMemoryEmbeddingProviderAdapter", () => {
     await githubCopilotMemoryEmbeddingProviderAdapter.create({
       ...defaultCreateOptions(),
       remote: {
-        apiKey: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
+        apiKey: "test-token-placeholder",
         baseUrl: "https://proxy.example/v1",
-        headers: { "X-Proxy-Token": `ltfx.n.41dd96f1dccf65c2c9c7.v1` },
+        headers: { "X-Proxy-Token": "test-token-placeholder" },
       },
     } as never);
 

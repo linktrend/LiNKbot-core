@@ -65,7 +65,7 @@ nohup openclaw gateway > gateway.log 2>&1 &
 With the SSH tunnel active, open the dashboard URL locally:
 
 ```text
-http://127.0.0.1:18789/#token="${ltfx.n.35b7b5f30c358d275a18.v1}"
+http://127.0.0.1:18789/#token=<your-token>
 ```
 
 ## Auto-restart

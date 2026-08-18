@@ -198,18 +198,18 @@ async function createFakeGateway(port = 0): Promise<FakeGateway> {
       }
 
       if (frame.method === "sessions.list") {
-        reply({ sessions: [{ key: `ltfx.n.19f56e48c946bfe2257b.v1` }] });
+        reply({ sessions: [{ key: "sdk-session" }] });
         return;
       }
 
       if (frame.method === "sessions.create") {
         const params = frame.params as { key?: string } | undefined;
-        reply({ key: (params?.key ?? "sdk-session" });)
+        reply({ key: params?.key ?? "sdk-session" });
         return;
       }
 
       if (frame.method === "sessions.resolve") {
-        reply({ key: `ltfx.n.19f56e48c946bfe2257b.v1`, params: frame.params as JsonObject | undefined });
+        reply({ key: "sdk-session", params: frame.params as JsonObject | undefined });
         return;
       }
 
@@ -434,10 +434,10 @@ describe("OpenClaw SDK websocket e2e", () => {
       expect(deleteAgent.params).toEqual({ agentId: "sdk-agent" });
 
       const sessions = expectJsonObject(await oc.sessions.list());
-      expect(sessions.sessions).toEqual([{ key: `ltfx.n.19f56e48c946bfe2257b.v1` }]);
-      const session = await oc.sessions.create({ key: `ltfx.n.19f56e48c946bfe2257b.v1`, agentId: "main" });
+      expect(sessions.sessions).toEqual([{ key: "sdk-session" }]);
+      const session = await oc.sessions.create({ key: "sdk-session", agentId: "main" });
       expect(session.key).toBe("sdk-session");
-      const resolvedSession = expectJsonObject(await oc.sessions.resolve({ key: `ltfx.n.19f56e48c946bfe2257b.v1` }));
+      const resolvedSession = expectJsonObject(await oc.sessions.resolve({ key: "sdk-session" }));
       expect(resolvedSession.key).toBe("sdk-session");
       const sessionRun = await session.send("continue");
       expect(sessionRun.id).toBe("run-session-e2e");
@@ -560,7 +560,7 @@ describe("OpenClaw SDK real Gateway e2e", () => {
   installGatewayTestHooks({ scope: "test" });
 
   it("streams real Gateway agent events", async () => {
-    const token = `ltfx.n.c23531daf8d615637704.v1`;
+    const token = "sdk-real-gateway-token";
     const started = await startServer(token, { controlUiEnabled: false });
     const transport = new GatewayClientTransport({
       url: `ws://127.0.0.1:${started.port}`,
@@ -627,7 +627,7 @@ describe("OpenClaw SDK real Gateway e2e", () => {
 });
 
 const liveGatewayUrl = process.env.OPENCLAW_SDK_LIVE_GATEWAY_URL;
-const liveGatewayToken = (process.env.OPENCLAW_SDK_LIVE_GATEWAY_TOKEN;)
+const liveGatewayToken = process.env.OPENCLAW_SDK_LIVE_GATEWAY_TOKEN;
 const liveGatewayDescribe = liveGatewayUrl && liveGatewayToken ? describe : describe.skip;
 
 function readLiveTextDelta(data: unknown): string {

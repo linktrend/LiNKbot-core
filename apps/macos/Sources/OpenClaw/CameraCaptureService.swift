@@ -238,7 +238,7 @@ actor CameraCaptureService {
     }
 
     private nonisolated static func exportToMP4(inputURL: URL, outputURL: URL) async throws {
-        let asset = AVURLAsset(url: (inputURL))
+        let asset = AVURLAsset(url: inputURL)
         guard let export = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetMediumQuality) else {
             throw CameraError.exportFailed("Failed to create export session")
         }

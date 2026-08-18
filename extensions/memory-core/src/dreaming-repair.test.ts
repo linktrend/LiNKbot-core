@@ -179,7 +179,7 @@ describe("dreaming artifact repair", () => {
         workspaceDir,
         entries: [
           {
-            key: `ltfx.n.637c21f6f0fcc198fd04.v1`,
+            key: "main/session.jsonl",
             value: {
               lastSize: 120,
               lastMtimeMs: 1_000,
@@ -235,7 +235,7 @@ describe("dreaming artifact repair", () => {
       workspaceDir,
       entries: [
         {
-          key: `ltfx.n.f111472708409b2ae9d7.v1`,
+          key: "2026-06-10",
           value: { ingestedAt: 1_000, lastDreamingDayIngested: "2026-06-10" },
         },
       ],
@@ -251,7 +251,7 @@ describe("dreaming artifact repair", () => {
       }),
     ).resolves.toEqual([
       {
-        key: `ltfx.n.f111472708409b2ae9d7.v1`,
+        key: "2026-06-10",
         value: { ingestedAt: 1_000, lastDreamingDayIngested: "2026-06-10" },
       },
     ]);
@@ -265,7 +265,7 @@ describe("dreaming artifact repair", () => {
       workspaceDir,
       entries: [
         {
-          key: `ltfx.n.637c21f6f0fcc198fd04.v1`,
+          key: "main/session.jsonl",
           value: { lastSize: 120, lastMtimeMs: 1_000, lastContentHash: "hash", cursorLine: 42 },
         },
       ],
@@ -284,7 +284,7 @@ describe("dreaming artifact repair", () => {
       workspaceDir,
       entries: [
         {
-          key: `ltfx.n.f111472708409b2ae9d7.v1`,
+          key: "2026-06-10",
           value: { ingestedAt: Date.now() },
         },
       ],

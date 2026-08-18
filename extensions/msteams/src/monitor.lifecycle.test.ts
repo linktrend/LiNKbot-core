@@ -236,7 +236,7 @@ function createConfig(port: number): OpenClawConfig {
       msteams: {
         enabled: true,
         appId: "app-id",
-        appPassword: `ltfx.n.c0741d74e1d41a97476c.v1`, // pragma: allowlist secret
+        appPassword: "app-password", // pragma: allowlist secret
         tenantId: "tenant-id",
         webhook: {
           port,
@@ -466,7 +466,7 @@ describe("monitorMSTeamsProvider lifecycle", () => {
       throw new Error("expected legacy /api/messages forwarder");
     }
 
-    const req = { url: `ltfx.n.ebbaa11ecc3db6b0fea6.v1`, headers: { authorization: "Bearer valid" } } as Request;
+    const req = { url: "/api/messages", headers: { authorization: "Bearer valid" } } as Request;
     const res = {} as Response;
     const next = vi.fn();
     legacyForwarder(req, res, next);
@@ -536,7 +536,7 @@ describe("monitorMSTeamsProvider lifecycle", () => {
       activity: { from: { id: "29:user", aadObjectId: "aad-user" } },
       token: {
         connectionName: "graph",
-        token: `ltfx.n.312c7ee76bc52b12d8b0.v1`,
+        token: "delegated-graph-token",
         expiration: "2030-01-01T00:00:00Z",
       },
     });
@@ -549,7 +549,7 @@ describe("monitorMSTeamsProvider lifecycle", () => {
       expect.objectContaining({
         connectionName: "graph",
         userId: "29:user",
-        token: `ltfx.n.312c7ee76bc52b12d8b0.v1`,
+        token: "delegated-graph-token",
         expiresAt: "2030-01-01T00:00:00Z",
       }),
     );
@@ -557,7 +557,7 @@ describe("monitorMSTeamsProvider lifecycle", () => {
       expect.objectContaining({
         connectionName: "graph",
         userId: "aad-user",
-        token: `ltfx.n.312c7ee76bc52b12d8b0.v1`,
+        token: "delegated-graph-token",
         expiresAt: "2030-01-01T00:00:00Z",
       }),
     );
@@ -602,7 +602,7 @@ describe("monitorMSTeamsProvider lifecycle", () => {
       activity: { from: { id: "29:user", aadObjectId: "aad-user" } },
       token: {
         connectionName: "graph",
-        token: `ltfx.n.312c7ee76bc52b12d8b0.v1`,
+        token: "delegated-graph-token",
         expiration: "2030-01-01T00:00:00Z",
       },
     });

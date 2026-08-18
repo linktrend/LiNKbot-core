@@ -38,7 +38,7 @@ const originalStateDir = process.env.OPENCLAW_STATE_DIR;
 const lifecycleConfig = createFeishuLifecycleConfig({
   accountId: "acct-card",
   appId: "cli_test",
-  appSecret: `ltfx.n.e810d7b45867f6973b9e.v1`,
+  appSecret: "secret_test",
   channelConfig: {
     dmPolicy: "open",
     allowFrom: ["ou_user1"],
@@ -52,7 +52,7 @@ const lifecycleConfig = createFeishuLifecycleConfig({
 const lifecycleAccount = createResolvedFeishuLifecycleAccount({
   accountId: "acct-card",
   appId: "cli_test",
-  appSecret: `ltfx.n.e810d7b45867f6973b9e.v1`,
+  appSecret: "secret_test",
   config: {
     dmPolicy: "open",
     allowFrom: ["ou_user1"],
@@ -187,7 +187,7 @@ describe("Feishu card-action lifecycle", () => {
   it("routes one reply across duplicate callback delivery", async () => {
     const onCardAction = await setupLifecycleMonitor();
     const event = createCardActionEvent({
-      token: `ltfx.n.9ec498c1705793628856.v1`,
+      token: "tok-card-once",
       action: "feishu.quick_actions.help",
       command: "/help",
     });
@@ -225,7 +225,7 @@ describe("Feishu card-action lifecycle", () => {
       operator: {
         open_id: "ou_user1",
       },
-      token: `ltfx.n.aeb10500f4c7fd95f127.v1`,
+      token: "tok-card-v2-context",
       action: {
         tag: "button",
         value: createFeishuCardInteractionEnvelope({
@@ -258,7 +258,7 @@ describe("Feishu card-action lifecycle", () => {
   it("prefers the original context message id over a temporary callback id", async () => {
     const onCardAction = await setupLifecycleMonitor();
     const event = createCardActionEvent({
-      token: `ltfx.n.5716930b38f3717f15a7.v1`,
+      token: "tok-card-original-target",
       action: "feishu.quick_actions.help",
       command: "/help",
       openMessageId: "card-action-c-temporary",
@@ -284,7 +284,7 @@ describe("Feishu card-action lifecycle", () => {
           union_id: "union_1",
         },
       },
-      token: `ltfx.n.67b39c4d7488130cf609.v1`,
+      token: "tok-card-v2-nested-operator",
       action: {
         tag: "button",
         value: createFeishuCardInteractionEnvelope({
@@ -333,7 +333,7 @@ describe("Feishu card-action lifecycle", () => {
       user_id: "user_1",
       tenant_key: "tenant_1",
       open_message_id: "om_sdk_card",
-      token: `ltfx.n.08aa2a540ed2d19d981a.v1`,
+      token: "tok-card-sdk-flat",
       action: {
         tag: "button",
         value: {
@@ -356,7 +356,7 @@ describe("Feishu card-action lifecycle", () => {
 
     await onCardAction({
       open_id: "ou_user1",
-      token: `ltfx.n.727f14bb9316fcc2998b.v1`,
+      token: "tok-card-no-reply-target",
       action: {
         tag: "button",
         value: {
@@ -377,7 +377,7 @@ describe("Feishu card-action lifecycle", () => {
   it("plain-sends card action replies when only a temporary callback id is available", async () => {
     const onCardAction = await setupLifecycleMonitor();
     const event = createCardActionEvent({
-      token: `ltfx.n.e1a48b5ec9ed566d1652.v1`,
+      token: "tok-card-temporary-target",
       action: "feishu.quick_actions.help",
       command: "/help",
       openMessageId: "card-action-c-temporary",
@@ -393,7 +393,7 @@ describe("Feishu card-action lifecycle", () => {
   it("does not duplicate delivery when retrying after a post-send failure", async () => {
     const onCardAction = await setupLifecycleMonitor();
     const event = createCardActionEvent({
-      token: `ltfx.n.6eddb9350b5ee68ac94e.v1`,
+      token: "tok-card-retry",
       action: "feishu.quick_actions.help",
       command: "/help",
     });

@@ -13,7 +13,7 @@ import type { OpenClawConfig } from "../api.js";
 import { resolveTwitchToken } from "./token.js";
 
 describe("token", () => {
-  const originalAccessToken = (process.env.OPENCLAW_TWITCH_ACCESS_TOKEN;)
+  const originalAccessToken = process.env.OPENCLAW_TWITCH_ACCESS_TOKEN;
 
   // Multi-account config for testing non-default accounts
   const mockMultiAccountConfig = {
@@ -22,11 +22,11 @@ describe("token", () => {
         accounts: {
           default: {
             username: "testbot",
-            accessToken: `ltfx.n.056454bd3c1b551e6d73.v1`,
+            accessToken: "oauth:config-token",
           },
           other: {
             username: "otherbot",
-            accessToken: `ltfx.n.a8eef4932cf7bf1ce405.v1`,
+            accessToken: "oauth:other-token",
           },
         },
       },
@@ -38,7 +38,7 @@ describe("token", () => {
     channels: {
       twitch: {
         username: "testbot",
-        accessToken: `ltfx.n.056454bd3c1b551e6d73.v1`,
+        accessToken: "oauth:config-token",
       },
     },
   } as unknown as OpenClawConfig;
@@ -79,7 +79,7 @@ describe("token", () => {
               accounts: {
                 Secondary: {
                   username: "secondary",
-                  accessToken: `ltfx.n.43d55d735df023cc53be.v1`,
+                  accessToken: "oauth:secondary-token",
                 },
               },
             },
@@ -93,7 +93,7 @@ describe("token", () => {
     });
 
     it("should prioritize config token over env var (simplified config)", () => {
-      process.env.OPENCLAW_TWITCH_ACCESS_TOKEN = `ltfx.n.f16c9898656f704728e9.v1`;
+      process.env.OPENCLAW_TWITCH_ACCESS_TOKEN = "oauth:env-token";
 
       const result = resolveTwitchToken(mockSimplifiedConfig, { accountId: "default" });
 
@@ -103,7 +103,7 @@ describe("token", () => {
     });
 
     it("should use env var when config token is empty (simplified config)", () => {
-      process.env.OPENCLAW_TWITCH_ACCESS_TOKEN = `ltfx.n.f16c9898656f704728e9.v1`;
+      process.env.OPENCLAW_TWITCH_ACCESS_TOKEN = "oauth:env-token";
 
       const configWithEmptyToken = {
         channels: {
@@ -137,7 +137,7 @@ describe("token", () => {
     });
 
     it("should not use env var for non-default accounts (multi-account)", () => {
-      process.env.OPENCLAW_TWITCH_ACCESS_TOKEN = `ltfx.n.f16c9898656f704728e9.v1`;
+      process.env.OPENCLAW_TWITCH_ACCESS_TOKEN = "oauth:env-token";
 
       const configWithoutToken = {
         channels: {

@@ -241,7 +241,7 @@ function hashEntry(previous: string, event: AuditEvent): string {
   return hex(sha256(concatBytes(previousBytes, eventBytes)));
 }
 
-function validateAuditKey(key: (Uint8Array): Uint8Array {)
+function validateAuditKey(key: Uint8Array): Uint8Array {
   if (!(key instanceof Uint8Array) || key.length !== 32) {
     throw new Error("audit key must be 32 bytes");
   }

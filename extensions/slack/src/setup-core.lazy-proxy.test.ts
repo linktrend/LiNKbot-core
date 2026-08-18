@@ -48,7 +48,7 @@ describe("createSlackSetupWizardProxy", () => {
     const result = await proxy.allowFrom!.resolveEntries({
       cfg,
       accountId: "default",
-      credentialValues: { botToken: `ltfx.n.c8b505c2b4aca8778b0a.v1` },
+      credentialValues: { botToken: "xoxb-bot" },
       entries: ["U123"],
     });
 
@@ -57,7 +57,7 @@ describe("createSlackSetupWizardProxy", () => {
     expect(resolveEntries).toHaveBeenCalledWith({
       cfg,
       accountId: "default",
-      credentialValues: { botToken: `ltfx.n.c8b505c2b4aca8778b0a.v1` },
+      credentialValues: { botToken: "xoxb-bot" },
       entries: ["U123"],
     });
     expect(result).toBe(sentinel);

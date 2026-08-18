@@ -1,6 +1,6 @@
 {
   "tool": "brain_append_finding",
-  "authToken": "${ltfx.n.aee2fbd3bbda68f5b3dc.v1}",
+  "authToken": "fake-valid-token",
   "arguments": {
     "idempotencyKey": "find:test:001",
     "finding": {

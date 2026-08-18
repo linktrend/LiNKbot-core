@@ -106,7 +106,7 @@ afterEach(() => {
 describe("SkillWorkshopPage lifecycle", () => {
   it("renders revisions in the shared modal and handles modal cancellation", async () => {
     const proposal = {
-      key: `ltfx.n.d79e3c12728e95a67405.v1`,
+      key: "proposal-modal",
       slug: "proposal-modal",
       name: "Modal proposal",
       oneLine: "Shared modal coverage",
@@ -146,7 +146,7 @@ describe("SkillWorkshopPage lifecycle", () => {
   it("renders truncated Today previews without dangling surrogates", async () => {
     const previewText = `${"a".repeat(118)}😀trailing`;
     const proposal = {
-      key: `ltfx.n.3b061a81b16f3920ffd8.v1`,
+      key: "proposal-utf16-preview",
       slug: "proposal-utf16-preview",
       name: "UTF-16 preview",
       oneLine: "Preview boundary coverage",
@@ -314,7 +314,7 @@ describe("SkillWorkshopPage lifecycle", () => {
     loadedState.skillWorkshopAgentId = "research";
     loadedState.skillWorkshopLoaded = true;
     const proposal = {
-      key: `ltfx.n.22e971ef187286f3238c.v1`,
+      key: "proposal-1",
       slug: "proposal-1",
       name: "Proposal",
       oneLine: "",
@@ -355,7 +355,7 @@ describe("SkillWorkshopPage lifecycle", () => {
     sessionList.resolve({
       sessions: [
         {
-          key: `ltfx.n.3173c747e9a955e8d705.v1`,
+          key: "agent:research:revision",
           archived: false,
           hasActiveRun: false,
         },

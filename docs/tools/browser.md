@@ -436,7 +436,7 @@ Stopping behavior differs by profile mode:
 
 Remote CDP URLs can include auth:
 
-- Query tokens (e.g., `https://provider.example?token="${ltfx.n.768f014e6f8047fd5363.v1}"
+- Query tokens (e.g., `https://provider.example?token=<token>`)
 - HTTP Basic auth (e.g., `https://user:pass@provider.example`)
 
 OpenClaw preserves the auth when calling `/json/*` endpoints and when connecting
@@ -476,7 +476,7 @@ Example:
     defaultProfile: "browserless",
     profiles: {
       browserless: {
-        cdpUrl: "wss://production-sfo.browserless.io?token=(ltfx.n.66f7ea1cafde9edef96c.v1),
+        cdpUrl: "wss://production-sfo.browserless.io?token=<BROWSERLESS_API_KEY>",
         color: "#00AA00",
       },
     },
@@ -568,7 +568,7 @@ proxies.
     defaultProfile: "browserbase",
     profiles: {
       browserbase: {
-        cdpUrl: "wss://connect.browserbase.com?apiKey=(ltfx.n.10cb2dc4655c8515ba0b.v1),
+        cdpUrl: "wss://connect.browserbase.com?apiKey=<BROWSERBASE_API_KEY>",
         color: "#F97316",
       },
     },
@@ -600,7 +600,7 @@ WebSocket gateway.
     defaultProfile: "notte",
     profiles: {
       notte: {
-        cdpUrl: "wss://us-prod.notte.cc/sessions/connect?token=(ltfx.n.93034761487c519760b5.v1),
+        cdpUrl: "wss://us-prod.notte.cc/sessions/connect?token=<NOTTE_API_KEY>",
         color: "#7C3AED",
       },
     },

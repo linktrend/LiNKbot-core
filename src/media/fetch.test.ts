@@ -219,7 +219,7 @@ function createReadRemoteMediaBufferParams(
 }
 
 describe("readRemoteMediaBuffer", () => {
-  const botToken = `ltfx.n.a2290c006d1c2b776fae.v1`;
+  const botToken = "123456789:ABCDEFGHIJKLMNOPQRSTUVWXYZabcd";
   const redactedBotToken = `${botToken.slice(0, 6)}…${botToken.slice(-4)}`;
   const botFileUrl = `https://files.example.test/file/bot${botToken}/photos/1.jpg`;
 

@@ -73,7 +73,7 @@ Each finding has a structured `checkId` (for example `gateway.bind_no_auth`, `to
   gateway: {
     mode: "local",
     bind: "loopback",
-    auth: { mode: "token", token: "${ltfx.n.7010306a000bc0ee9163.v1}" },
+    auth: { mode: "token", token: "replace-with-long-random-token" },
   },
   session: {
     dmScope: "per-channel-peer",
@@ -578,7 +578,7 @@ In minimal mode the Gateway broadcasts `role`, `gatewayPort`, `transport` but om
 Gateway auth is required by default - with no valid auth path configured, the Gateway refuses WebSocket connections (fail-closed). Onboarding generates a token by default (even for loopback) so local clients must authenticate.
 
 ```json5
-{ gateway: { auth: { mode: "token", token: "${ltfx.n.08842b17a4146c87440b.v1}" } } }
+{ gateway: { auth: { mode: "token", token: "your-token" } } }
 ```
 
 `openclaw doctor --generate-gateway-token` can generate one for you.
@@ -740,8 +740,8 @@ Assume anything under `~/.openclaw/` (or `$OPENCLAW_STATE_DIR/`) may contain sec
 Also useful for backup decisions:
 
 - WhatsApp: `~/.openclaw/credentials/whatsapp/<accountId>/creds.json`
-- Telegram bot token: "${ltfx.n.9e62a7610367ab85ca87.v1}" or `channels.telegram.tokenFile` (regular file only; symlinks rejected)
-- Discord bot token: "${ltfx.n.9e62a7610367ab85ca87.v1}" or SecretRef (env/file/exec providers)
+- Telegram bot token: config/env or `channels.telegram.tokenFile` (regular file only; symlinks rejected)
+- Discord bot token: config/env or SecretRef (env/file/exec providers)
 - Slack tokens: config/env (`channels.slack.*`)
 - Pairing allowlists: `~/.openclaw/credentials/<channel>-allowFrom.json` (default account) / `<channel>-<accountId>-allowFrom.json` (non-default accounts)
 - Model auth profiles: `~/.openclaw/agents/<agentId>/agent/openclaw-agent.sqlite` (`auth_profile_store`)
@@ -789,7 +789,7 @@ Details: [Logging](/gateway/logging)
     mode: "local",
     bind: "loopback",
     port: 18789,
-    auth: { mode: "token", token: "${ltfx.n.7cd31e09358c92b69b1c.v1}" },
+    auth: { mode: "token", token: "your-long-random-token" },
   },
   channels: {
     whatsapp: {

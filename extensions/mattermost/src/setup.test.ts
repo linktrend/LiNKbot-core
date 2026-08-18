@@ -102,7 +102,7 @@ describe("mattermost setup", () => {
   it("reports configuration only when token and base url are both present", () => {
     expect(
       isMattermostConfigured({
-        botToken: `ltfx.n.df27f9beb68b7766af3a.v1`,
+        botToken: "bot-token",
         baseUrl: "https://chat.example.com",
         config: {},
       } as never),
@@ -112,7 +112,7 @@ describe("mattermost setup", () => {
       isMattermostConfigured({
         botToken: "",
         baseUrl: "https://chat.example.com",
-        config: { botToken: `ltfx.n.eaa03a95fbc97502ab95.v1` },
+        config: { botToken: "secret-ref" },
       } as never),
     ).toBe(true);
 

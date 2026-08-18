@@ -64,7 +64,7 @@ function makeAccount(): GatewayAccount {
   return {
     accountId: "test-account",
     appId: "test-app",
-    clientSecret: `ltfx.n.9caf06bb4436cdbfa20a.v1`,
+    clientSecret: "test-secret",
     markdownSupport: false,
     config: {},
   };

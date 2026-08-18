@@ -79,7 +79,7 @@ describe("zalo setup wizard", () => {
               dmPolicy: "disabled",
               accounts: {
                 work: {
-                  botToken: `ltfx.n.af5366076b6db53eb00c.v1`,
+                  botToken: "12345689:abc-xyz",
                   dmPolicy: "allowlist",
                 },
               },
@@ -107,7 +107,7 @@ describe("zalo setup wizard", () => {
           allowFrom: ["123456789"],
           accounts: {
             work: {
-              botToken: `ltfx.n.af5366076b6db53eb00c.v1`,
+              botToken: "12345689:abc-xyz",
               dmPolicy: "allowlist",
             },
           },
@@ -144,7 +144,7 @@ describe("zalo setup wizard", () => {
             allowFrom: ["123456789"],
             accounts: {
               work: {
-                botToken: `ltfx.n.af5366076b6db53eb00c.v1`,
+                botToken: "12345689:abc-xyz",
               },
             },
           },
@@ -175,10 +175,10 @@ describe("zalo setup wizard", () => {
         channels: {
           zalo: {
             defaultAccount: "work",
-            botToken: `ltfx.n.2cff60a244379d429c18.v1`,
+            botToken: "root-token",
             accounts: {
               alerts: {
-                botToken: `ltfx.n.f86de021b56c190634de.v1`,
+                botToken: "alerts-token",
               },
               work: {
                 botToken: "",

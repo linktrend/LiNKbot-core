@@ -100,7 +100,7 @@ describe("CodexAppServerEventProjector verbose output and hook projection", () =
         item: {
           type: "commandExecution",
           id: "cmd-1",
-          command: "OPENAI_API_KEY="${ltfx.n.6e917757bc28516045e7.v1}" pnpm test",
+          command: "OPENAI_API_KEY=sk-1234567890abcdefZZZZ pnpm test",
           cwd: "/workspace",
           processId: null,
           source: "agent",
@@ -115,7 +115,7 @@ describe("CodexAppServerEventProjector verbose output and hook projection", () =
 
     const text = (mockCallArg(onToolResult, 0, 0, "onToolResult") as { text?: string }).text;
     expect(text).toContain("OPENAI_API_KEY=*** pnpm test");
-    expect(text).not.toContain("ltfx.n.6e917757bc28516045e7.v1");
+    expect(text).not.toContain("sk-1234567890abcdefZZZZ");
   });
 
   it("uses argument details instead of lifecycle status in verbose tool summaries", async () => {

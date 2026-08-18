@@ -21,7 +21,7 @@ function createSymlinkedFile(targetPath: string, linkPath: string): boolean {
 describe("resolveZaloToken", () => {
   it("falls back to top-level token for non-default accounts without overrides", () => {
     const cfg = {
-      botToken: `ltfx.n.67b7e709756900b42e1b.v1`,
+      botToken: "top-level-token",
       accounts: {
         work: {},
       },
@@ -33,10 +33,10 @@ describe("resolveZaloToken", () => {
 
   it("uses accounts.default botToken for default account when configured", () => {
     const cfg = {
-      botToken: `ltfx.n.67b7e709756900b42e1b.v1`,
+      botToken: "top-level-token",
       accounts: {
         default: {
-          botToken: `ltfx.n.cdd827f4009a759c2031.v1`,
+          botToken: "default-account-token",
         },
       },
     } as ZaloConfig;
@@ -48,10 +48,10 @@ describe("resolveZaloToken", () => {
   it("uses configured defaultAccount token when accountId is omitted", () => {
     const cfg = {
       defaultAccount: "work",
-      botToken: `ltfx.n.67b7e709756900b42e1b.v1`,
+      botToken: "top-level-token",
       accounts: {
         work: {
-          botToken: `ltfx.n.488dc3c9ef1e2576bc04.v1`,
+          botToken: "work-token",
         },
       },
     } as ZaloConfig;
@@ -62,7 +62,7 @@ describe("resolveZaloToken", () => {
 
   it("does not inherit top-level token when account token is explicitly blank", () => {
     const cfg = {
-      botToken: `ltfx.n.67b7e709756900b42e1b.v1`,
+      botToken: "top-level-token",
       accounts: {
         work: {
           botToken: "",
@@ -78,7 +78,7 @@ describe("resolveZaloToken", () => {
     const cfg = {
       accounts: {
         Work: {
-          botToken: `ltfx.n.488dc3c9ef1e2576bc04.v1`,
+          botToken: "work-token",
         },
       },
     } as ZaloConfig;

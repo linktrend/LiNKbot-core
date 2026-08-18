@@ -99,7 +99,7 @@ export function registerNodesCameraCommands(nodes: Command) {
               width: tableWidth,
               columns: [
                 { key: "Name", header: "Name", minWidth: 14, flex: true },
-                { key: `ltfx.n.6d031af10da7a25e554b.v1`, header: "Position", minWidth: 10 },
+                { key: "Position", header: "Position", minWidth: 10 },
                 { key: "ID", header: "ID", minWidth: 10, flex: true },
               ],
               rows,

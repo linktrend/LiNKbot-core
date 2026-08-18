@@ -95,19 +95,19 @@ struct OpenClawDocsScreen: View {
                     title: "Docs Home",
                     detail: "Browse the current OpenClaw reference.",
                     icon: "book",
-                    url: (self.docsURL))
+                    url: self.docsURL)
                 Divider().padding(.leading, 58)
                 self.docsLinkRow(
                     title: "Gateway",
                     detail: "Connection, auth, and diagnostics.",
                     icon: "network",
-                    url: (self.gatewayURL))
+                    url: self.gatewayURL)
                 Divider().padding(.leading, 58)
                 self.docsLinkRow(
                     title: "Pairing",
                     detail: "Mobile setup codes, QR, and node approval.",
                     icon: "qrcode",
-                    url: (self.pairingURL))
+                    url: self.pairingURL)
             }
         }
         .padding(.horizontal, OpenClawProMetric.pagePadding)

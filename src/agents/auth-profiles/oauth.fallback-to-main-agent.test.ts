@@ -313,7 +313,7 @@ describe("resolveApiKeyForProfile fallback to main agent", () => {
         [profileId]: {
           type: "token",
           provider: "anthropic",
-          token: `ltfx.n.377829c6ad43c92f28f6.v1`,
+          token: "static-token",
           expires: Date.now() + 60_000,
         },
       },

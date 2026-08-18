@@ -60,11 +60,11 @@ describe("Google Meet OAuth", () => {
     const cachedExpiresAt = Date.now() + 120_000;
     await expect(
       resolveGoogleMeetAccessToken({
-        accessToken: `ltfx.n.f53eaf28d2a38d2c8020.v1`,
+        accessToken: "cached-token",
         expiresAt: cachedExpiresAt,
       }),
     ).resolves.toEqual({
-      accessToken: `ltfx.n.f53eaf28d2a38d2c8020.v1`,
+      accessToken: "cached-token",
       expiresAt: cachedExpiresAt,
       refreshed: false,
     });
@@ -74,7 +74,7 @@ describe("Google Meet OAuth", () => {
     const fetchMock = vi.fn(async (_input: RequestInfo | URL, _init?: RequestInit) => {
       return new Response(
         JSON.stringify({
-          access_token: `ltfx.n.25b416c373e247768cc1.v1`,
+          access_token: "new-access-token",
           expires_in: 3600,
           token_type: "Bearer",
         }),
@@ -85,8 +85,8 @@ describe("Google Meet OAuth", () => {
 
     const tokens = await resolveGoogleMeetAccessToken({
       clientId: "client-id",
-      clientSecret: `ltfx.n.fdce8e4a65b70d186bd7.v1`,
-      refreshToken: `ltfx.n.0eb17643d4e926116378.v1`,
+      clientSecret: "client-secret",
+      refreshToken: "refresh-token",
     });
     expect(tokens.accessToken).toBe("new-access-token");
     expect(tokens.refreshed).toBe(true);
@@ -114,7 +114,7 @@ describe("Google Meet OAuth", () => {
     await expect(
       resolveGoogleMeetAccessToken({
         clientId: "client-id",
-        refreshToken: `ltfx.n.0eb17643d4e926116378.v1`,
+        refreshToken: "refresh-token",
       }),
     ).rejects.toThrow("Google OAuth token: JSON response exceeds 262144 bytes");
   });
@@ -123,7 +123,7 @@ describe("Google Meet OAuth", () => {
     const fetchMock = vi.fn(async (_input: RequestInfo | URL, _init?: RequestInit) => {
       return new Response(
         JSON.stringify({
-          access_token: `ltfx.n.d34e33e7b3e0269fa932.v1`,
+          access_token: "refreshed-token",
           expires_in: 3600,
         }),
         { status: 200, headers: { "Content-Type": "application/json" } },
@@ -133,8 +133,8 @@ describe("Google Meet OAuth", () => {
 
     const tokens = await resolveGoogleMeetAccessToken({
       clientId: "client-id",
-      refreshToken: `ltfx.n.0eb17643d4e926116378.v1`,
-      accessToken: `ltfx.n.f53eaf28d2a38d2c8020.v1`,
+      refreshToken: "refresh-token",
+      accessToken: "cached-token",
       expiresAt: 8_700_000_000_000_000,
     });
 
@@ -148,7 +148,7 @@ describe("Google Meet OAuth", () => {
     const fetchMock = vi.fn(async (_input: RequestInfo | URL, _init?: RequestInit) => {
       return new Response(
         JSON.stringify({
-          access_token: `ltfx.n.25b416c373e247768cc1.v1`,
+          access_token: "new-access-token",
           expires_in: Number.MAX_SAFE_INTEGER,
         }),
         { status: 200, headers: { "Content-Type": "application/json" } },
@@ -158,7 +158,7 @@ describe("Google Meet OAuth", () => {
 
     const tokens = await resolveGoogleMeetAccessToken({
       clientId: "client-id",
-      refreshToken: `ltfx.n.0eb17643d4e926116378.v1`,
+      refreshToken: "refresh-token",
     });
 
     expect(tokens.expiresAt).toBe(Date.now() + 3600 * 1000);
@@ -169,7 +169,7 @@ describe("Google Meet OAuth", () => {
     const fetchMock = vi.fn(async (_input: RequestInfo | URL, _init?: RequestInit) => {
       return new Response(
         JSON.stringify({
-          access_token: `ltfx.n.25b416c373e247768cc1.v1`,
+          access_token: "new-access-token",
           expires_in: Number.MAX_SAFE_INTEGER,
         }),
         { status: 200, headers: { "Content-Type": "application/json" } },
@@ -179,7 +179,7 @@ describe("Google Meet OAuth", () => {
 
     const tokens = await resolveGoogleMeetAccessToken({
       clientId: "client-id",
-      refreshToken: `ltfx.n.0eb17643d4e926116378.v1`,
+      refreshToken: "refresh-token",
     });
 
     expect(tokens.expiresAt).toBe(3600 * 1000);
@@ -191,7 +191,7 @@ describe("Google Meet OAuth", () => {
     const fetchMock = vi.fn(async (_input: RequestInfo | URL, _init?: RequestInit) => {
       return new Response(
         JSON.stringify({
-          access_token: `ltfx.n.25b416c373e247768cc1.v1`,
+          access_token: "new-access-token",
           expires_in: 0,
         }),
         { status: 200, headers: { "Content-Type": "application/json" } },
@@ -201,7 +201,7 @@ describe("Google Meet OAuth", () => {
 
     const tokens = await resolveGoogleMeetAccessToken({
       clientId: "client-id",
-      refreshToken: `ltfx.n.0eb17643d4e926116378.v1`,
+      refreshToken: "refresh-token",
     });
 
     expect(tokens.expiresAt).toBe(Date.now());

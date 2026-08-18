@@ -114,7 +114,7 @@ describe("status.scan.config-shared", () => {
   });
 
   it("adds a status diagnostic for gateway token source conflicts", async () => {
-    const sourceConfig = { gateway: { auth: { token: `ltfx.n.a98cc81fe778386f6195.v1` } } };
+    const sourceConfig = { gateway: { auth: { token: "config-token" } } };
     const resolvedConfig = sourceConfig;
     const readConfigSnapshot = vi.fn(async () => ({
       config: sourceConfig,
@@ -129,7 +129,7 @@ describe("status.scan.config-shared", () => {
       commandName: "status --json",
       readConfigSnapshot,
       resolveConfig,
-      env: { VITEST: "true", OPENCLAW_GATEWAY_TOKEN: `ltfx.n.25d37ba7752ae1d95b57.v1` },
+      env: { VITEST: "true", OPENCLAW_GATEWAY_TOKEN: "env-token" },
       allowMissingConfigFastPath: true,
     });
 
@@ -139,7 +139,7 @@ describe("status.scan.config-shared", () => {
   });
 
   it("does not add a token conflict diagnostic inside the managed gateway service context", async () => {
-    const sourceConfig = { gateway: { auth: { token: `ltfx.n.a98cc81fe778386f6195.v1` } } };
+    const sourceConfig = { gateway: { auth: { token: "config-token" } } };
     const readConfigSnapshot = vi.fn(async () => ({
       config: sourceConfig,
       sourceConfig,
@@ -155,7 +155,7 @@ describe("status.scan.config-shared", () => {
       resolveConfig,
       env: {
         VITEST: "true",
-        OPENCLAW_GATEWAY_TOKEN: `ltfx.n.25d37ba7752ae1d95b57.v1`,
+        OPENCLAW_GATEWAY_TOKEN: "env-token",
         OPENCLAW_SERVICE_KIND: "gateway",
       },
       allowMissingConfigFastPath: true,
@@ -182,7 +182,7 @@ describe("status.scan.config-shared", () => {
       commandName: "status --json",
       readConfigSnapshot,
       resolveConfig,
-      env: { VITEST: "true", OPENCLAW_GATEWAY_TOKEN: `ltfx.n.25d37ba7752ae1d95b57.v1` },
+      env: { VITEST: "true", OPENCLAW_GATEWAY_TOKEN: "env-token" },
       allowMissingConfigFastPath: true,
     });
 
@@ -193,8 +193,8 @@ describe("status.scan.config-shared", () => {
     const sourceConfig = {
       gateway: {
         mode: "remote" as const,
-        remote: { token: `ltfx.n.b79f8018a1bfa2040be5.v1` },
-        auth: { token: `ltfx.n.c7ec7c548f5992a239dc.v1` },
+        remote: { token: "remote-token" },
+        auth: { token: "local-token" },
       },
     };
     const readConfigSnapshot = vi.fn(async () => ({
@@ -210,7 +210,7 @@ describe("status.scan.config-shared", () => {
       commandName: "status --json",
       readConfigSnapshot,
       resolveConfig,
-      env: { VITEST: "true", OPENCLAW_GATEWAY_TOKEN: `ltfx.n.25d37ba7752ae1d95b57.v1` },
+      env: { VITEST: "true", OPENCLAW_GATEWAY_TOKEN: "env-token" },
       allowMissingConfigFastPath: true,
     });
 

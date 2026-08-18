@@ -7,15 +7,15 @@ export { createDedupeCache, resolveGlobalDedupeCache } from "../infra/dedupe.js"
 
 type PersistentDedupeStore<TRecord> = {
   register(key: string, value: TRecord, opts?: { ttlMs?: number }): Promise<void>;
-  lookup(key: (string)): Promise<TRecord | undefined>;
+  lookup(key: string): Promise<TRecord | undefined>;
 };
 
 /** Dual-layer presence cache: process-memory dedupe plus best-effort persistent state. */
 export type PersistentDedupeCache<TRecord> = {
   /** Memory-only presence check without refreshing recency. */
-  peek(key: (string)): boolean;
+  peek(key: string): boolean;
   /** Memory-first presence check; falls back to persistence and re-primes memory on a hit. */
-  lookup(key: (string)): Promise<boolean>;
+  lookup(key: string): Promise<boolean>;
   /** Records presence in memory and best-effort persistence. Never rejects. */
   register(key: string, record: TRecord, opts?: { at?: number }): Promise<void>;
   /** Clears memory and re-enables a persistent layer disabled by an earlier failure. */

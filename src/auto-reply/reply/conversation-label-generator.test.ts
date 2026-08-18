@@ -35,7 +35,7 @@ describe("generateConversationLabel", () => {
         agentDir: "/tmp/openclaw-agent",
       },
       model: { provider: "openai", id: "gpt-test", maxTokens: 8192 },
-      auth: { apiKey: `ltfx.n.b695c853fc672113967a.v1`, mode: "api-key" },
+      auth: { apiKey: "resolved-key", mode: "api-key" },
     });
     completeWithPreparedSimpleCompletionModel.mockResolvedValue({
       content: [{ type: "text", text: "Topic label" }],
@@ -80,7 +80,7 @@ describe("generateConversationLabel", () => {
 
     expect(firstCompletionArgs()).toMatchObject({
       model: { provider: "openai", id: "gpt-test" },
-      auth: { apiKey: `ltfx.n.b695c853fc672113967a.v1`, mode: "api-key" },
+      auth: { apiKey: "resolved-key", mode: "api-key" },
       cfg,
       context: {
         systemPrompt: "Generate a label",
@@ -108,7 +108,7 @@ describe("generateConversationLabel", () => {
         agentDir: "/tmp/openclaw-agent",
       },
       model: { provider: "openai", id: "gpt-test", maxTokens: 1_024 },
-      auth: { apiKey: `ltfx.n.b695c853fc672113967a.v1`, mode: "api-key" },
+      auth: { apiKey: "resolved-key", mode: "api-key" },
     });
 
     await generateConversationLabel({
@@ -133,7 +133,7 @@ describe("generateConversationLabel", () => {
         api: "openai-chatgpt-responses",
         maxTokens: 8192,
       },
-      auth: { apiKey: `ltfx.n.b695c853fc672113967a.v1`, mode: "api-key" },
+      auth: { apiKey: "resolved-key", mode: "api-key" },
     });
 
     await generateConversationLabel({
@@ -181,7 +181,7 @@ describe("generateConversationLabel", () => {
           agentDir: "/tmp/openclaw-agent",
         },
         model: { provider: "openai", id: "gpt-5.6-sol", maxTokens: 8192 },
-        auth: { apiKey: `ltfx.n.4c806362b613f7496abf.v1`, mode: "api-key" },
+        auth: { apiKey: "test-api-key", mode: "api-key" },
       });
 
     await expect(
@@ -208,7 +208,7 @@ describe("generateConversationLabel", () => {
           agentDir: "/tmp/openclaw-agent",
         },
         model: { provider: "openai", id: "gpt-5.6-luna", maxTokens: 8192 },
-        auth: { apiKey: `ltfx.n.4c806362b613f7496abf.v1`, mode: "oauth" },
+        auth: { apiKey: "test-api-key", mode: "oauth" },
       })
       .mockResolvedValueOnce({
         selection: {
@@ -217,7 +217,7 @@ describe("generateConversationLabel", () => {
           agentDir: "/tmp/openclaw-agent",
         },
         model: { provider: "openai", id: "gpt-5.6-sol", maxTokens: 8192 },
-        auth: { apiKey: `ltfx.n.4c806362b613f7496abf.v1`, mode: "oauth" },
+        auth: { apiKey: "test-api-key", mode: "oauth" },
       });
     completeWithPreparedSimpleCompletionModel
       .mockResolvedValueOnce({

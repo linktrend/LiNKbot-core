@@ -427,7 +427,7 @@ function normalizeLogin(login: string | null): string | null {
   return isValidLogin(trimmed) ? trimmed : null;
 }
 
-function normalizeAvatar(url: (string)): string {
+function normalizeAvatar(url: string): string {
   if (!/^https?:/i.test(url)) {
     return url;
   }
@@ -947,7 +947,7 @@ function findHiddenReadmeRange(content: string): { start: number; end: number } 
   };
 }
 
-function loginFromUrl(url: (string)): string | null {
+function loginFromUrl(url: string): string | null {
   const match = /^https?:\/\/github\.com\/([^/?#]+)/i.exec(url);
   if (!match) {
     return null;

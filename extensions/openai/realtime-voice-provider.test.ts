@@ -456,7 +456,7 @@ describe("buildOpenAIRealtimeVoiceProvider", () => {
     const bridge = provider.createBridge({
       cfg: {} as never,
       providerConfig: {
-        apiKey: `ltfx.n.99b3eefdd2facb668ce0.v1`, // pragma: allowlist secret
+        apiKey: "sk-configured", // pragma: allowlist secret
         model: "gpt-realtime-2",
       },
       onAudio: vi.fn(),
@@ -469,7 +469,7 @@ describe("buildOpenAIRealtimeVoiceProvider", () => {
     expect(resolveProviderAuthProfileApiKeyMock).not.toHaveBeenCalled();
     const socket = FakeWebSocket.instances[0];
     const options = socket?.args[1] as { headers?: Record<string, string> } | undefined;
-    expect(options?.headers?.Authorization).toBe("Bearer ltfx.n.99b3eefdd2facb668ce0.v1");
+    expect(options?.headers?.Authorization).toBe("Bearer sk-configured");
   });
 
   it("requires an API key for custom realtime endpoints", async () => {
@@ -543,7 +543,7 @@ describe("buildOpenAIRealtimeVoiceProvider", () => {
     expectRecordFields(session, "browser session", {
       provider: "openai",
       transport: "webrtc",
-      clientSecret: `ltfx.n.972bc11acbeba057ff41.v1`,
+      clientSecret: "client-secret-123",
       offerUrl: "https://api.openai.com/v1/realtime/calls",
       model: "gpt-realtime-2.1",
       expiresAt: 1_765_000_000_000,
@@ -579,7 +579,7 @@ describe("buildOpenAIRealtimeVoiceProvider", () => {
         provider.createBrowserSession({
           providerConfig:
             source === "configured"
-              ? { apiKey: `ltfx.n.05d4bcd73d1f1b3d0030.v1` } // pragma: allowlist secret
+              ? { apiKey: "sk-stale" } // pragma: allowlist secret
               : {},
         }),
       ).rejects.toThrow(
@@ -615,7 +615,7 @@ describe("buildOpenAIRealtimeVoiceProvider", () => {
 
   it("resolves keychain OPENAI_API_KEY refs before creating browser sessions", async () => {
     vi.stubEnv("OPENAI_API_KEY", "keychain:openclaw:OPENAI_REALTIME_BROWSER_TEST");
-    execFileSyncMock.mockReturnValueOnce("ltfx.n.dc7d6ac593ce2ff28691.v1\n"); // pragma: allowlist secret
+    execFileSyncMock.mockReturnValueOnce("sk-browser-env\n"); // pragma: allowlist secret
     fetchWithSsrFGuardMock.mockResolvedValueOnce({
       response: createJsonResponse({
         client_secret: { value: "client-secret-123" },
@@ -650,13 +650,13 @@ describe("buildOpenAIRealtimeVoiceProvider", () => {
       timeout: 5000,
     });
     expectRecordFields(requireFetchHeaders(), "fetch headers", {
-      Authorization: "Bearer ltfx.n.dc7d6ac593ce2ff28691.v1", // pragma: allowlist secret
+      Authorization: "Bearer sk-browser-env", // pragma: allowlist secret
     });
   });
 
   it("resolves and caches keychain OPENAI_API_KEY refs before creating bridges", async () => {
     vi.stubEnv("OPENAI_API_KEY", "keychain:openclaw:OPENAI_REALTIME_BRIDGE_TEST");
-    execFileSyncMock.mockReturnValue("ltfx.n.171f4cf6258c102a44dc.v1\n"); // pragma: allowlist secret
+    execFileSyncMock.mockReturnValue("sk-bridge-env\n"); // pragma: allowlist secret
     const provider = buildOpenAIRealtimeVoiceProvider();
 
     const first = provider.createBridge({
@@ -679,7 +679,7 @@ describe("buildOpenAIRealtimeVoiceProvider", () => {
     for (const socket of FakeWebSocket.instances) {
       const options = socket.args[1] as { headers?: Record<string, string> } | undefined;
       expectRecordFields(options?.headers, "websocket headers", {
-        Authorization: "Bearer ltfx.n.171f4cf6258c102a44dc.v1", // pragma: allowlist secret
+        Authorization: "Bearer sk-bridge-env", // pragma: allowlist secret
       });
     }
   });

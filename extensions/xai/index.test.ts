@@ -187,7 +187,7 @@ describe("xai provider plugin", () => {
 
   it("uses the Grok OAuth proxy catalog for xAI OAuth discovery", async () => {
     providerAuthRuntimeMocks.resolveApiKeyForProvider.mockResolvedValue({
-      apiKey: `ltfx.n.65309e53543fd3b8b17d.v1`,
+      apiKey: "xai-oauth-token",
       mode: "oauth",
       source: "profile:xai-profile",
       profileId: "xai-profile",
@@ -228,14 +228,14 @@ describe("xai provider plugin", () => {
       env: {},
       resolveProviderAuth: () => ({
         apiKey: undefined,
-        discoveryApiKey: `ltfx.n.76bb75429100720f334b.v1`,
+        discoveryApiKey: "stale-oauth-token",
         mode: "oauth",
         source: "profile",
         profileId: "xai-profile",
       }),
       resolveProviderApiKey: () => ({
-        apiKey: `ltfx.n.9cd35484c455df01206a.v1`,
-        discoveryApiKey: `ltfx.n.9cd35484c455df01206a.v1`,
+        apiKey: "env-xai-key",
+        discoveryApiKey: "env-xai-key",
       }),
     });
 
@@ -293,7 +293,7 @@ describe("xai provider plugin", () => {
 
   it("uses runtime OAuth profiles when xAI catalog auth resolution is empty", async () => {
     providerAuthRuntimeMocks.resolveApiKeyForProvider.mockResolvedValue({
-      apiKey: `ltfx.n.65309e53543fd3b8b17d.v1`,
+      apiKey: "xai-oauth-token",
       mode: "oauth",
       source: "profile:xai-profile",
       profileId: "xai-profile",
@@ -339,7 +339,7 @@ describe("xai provider plugin", () => {
 
   it("keeps the Grok OAuth transport when xAI OAuth discovery is unavailable", async () => {
     providerAuthRuntimeMocks.resolveApiKeyForProvider.mockResolvedValue({
-      apiKey: `ltfx.n.65309e53543fd3b8b17d.v1`,
+      apiKey: "xai-oauth-token",
       mode: "oauth",
       source: "profile:xai-profile",
       profileId: "xai-profile",
@@ -359,14 +359,14 @@ describe("xai provider plugin", () => {
       env: {},
       resolveProviderAuth: () => ({
         apiKey: undefined,
-        discoveryApiKey: `ltfx.n.76bb75429100720f334b.v1`,
+        discoveryApiKey: "stale-oauth-token",
         mode: "oauth",
         source: "profile",
         profileId: "xai-profile",
       }),
       resolveProviderApiKey: () => ({
-        apiKey: `ltfx.n.9cd35484c455df01206a.v1`,
-        discoveryApiKey: `ltfx.n.9cd35484c455df01206a.v1`,
+        apiKey: "env-xai-key",
+        discoveryApiKey: "env-xai-key",
       }),
     });
 
@@ -398,14 +398,14 @@ describe("xai provider plugin", () => {
       env: {},
       resolveProviderAuth: () => ({
         apiKey: undefined,
-        discoveryApiKey: `ltfx.n.76bb75429100720f334b.v1`,
+        discoveryApiKey: "stale-oauth-token",
         mode: "oauth",
         source: "profile",
         profileId: "xai-profile",
       }),
       resolveProviderApiKey: () => ({
-        apiKey: `ltfx.n.9cd35484c455df01206a.v1`,
-        discoveryApiKey: `ltfx.n.9cd35484c455df01206a.v1`,
+        apiKey: "env-xai-key",
+        discoveryApiKey: "env-xai-key",
       }),
     });
 
@@ -437,8 +437,8 @@ describe("xai provider plugin", () => {
         source: "none",
       }),
       resolveProviderApiKey: () => ({
-        apiKey: `ltfx.n.9cd35484c455df01206a.v1`,
-        discoveryApiKey: `ltfx.n.9cd35484c455df01206a.v1`,
+        apiKey: "env-xai-key",
+        discoveryApiKey: "env-xai-key",
       }),
     } as never);
 

@@ -67,7 +67,7 @@ describe("tokenFingerprint", () => {
   });
 
   it("never contains the raw token", () => {
-    const token = `ltfx.n.7ddfcc931a03896c8461.v1`;
+    const token = "ghp_abcdefghijklmnop";
     expect(tokenFingerprint(token).includes(token)).toBe(false);
   });
 });
@@ -148,8 +148,8 @@ describe("resolveCopilotAuth - auth mode resolution", () => {
   it("returns useLoggedInUser when auth.useLoggedInUser=true (ignoring gitHubToken)", () => {
     const result = resolveCopilotAuth({
       agentId: "agent-1",
-      auth: { useLoggedInUser: true, gitHubToken: `ltfx.n.62f38a467d168e2af8f3.v1` },
-      env: { GITHUB_TOKEN: `ltfx.n.25d37ba7752ae1d95b57.v1` } as NodeJS.ProcessEnv,
+      auth: { useLoggedInUser: true, gitHubToken: "should-be-ignored" },
+      env: { GITHUB_TOKEN: "env-token" } as NodeJS.ProcessEnv,
       homeDir: fakeHomeDir,
     });
     expect(result.authMode).toBe("useLoggedInUser");
@@ -229,7 +229,7 @@ describe("resolveCopilotAuth - contract-resolved auth (resolvedApiKey + authProf
   it("consumes resolvedApiKey + authProfileId from the EmbeddedRunAttemptParams contract", () => {
     const result = resolveCopilotAuth({
       agentId: "agent-1",
-      resolvedApiKey: `ltfx.n.aa409b19d80c68388a64.v1`,
+      resolvedApiKey: "contract-token-xyz",
       authProfileId: "github-copilot:main",
       env: cleanEnv(),
       homeDir: fakeHomeDir,
@@ -243,7 +243,7 @@ describe("resolveCopilotAuth - contract-resolved auth (resolvedApiKey + authProf
   it("synthesises authProfileId when contract-resolved token has no profile id", () => {
     const result = resolveCopilotAuth({
       agentId: "agent-1",
-      resolvedApiKey: `ltfx.n.aa409b19d80c68388a64.v1`,
+      resolvedApiKey: "contract-token-xyz",
       env: cleanEnv(),
       homeDir: fakeHomeDir,
     });
@@ -257,7 +257,7 @@ describe("resolveCopilotAuth - contract-resolved auth (resolvedApiKey + authProf
     const result = resolveCopilotAuth({
       agentId: "agent-1",
       auth: { useLoggedInUser: true },
-      resolvedApiKey: `ltfx.n.62f38a467d168e2af8f3.v1`,
+      resolvedApiKey: "should-be-ignored",
       authProfileId: "p",
       env: cleanEnv(),
       homeDir: fakeHomeDir,
@@ -269,8 +269,8 @@ describe("resolveCopilotAuth - contract-resolved auth (resolvedApiKey + authProf
   it("explicit auth.gitHubToken takes precedence over contract resolvedApiKey", () => {
     const result = resolveCopilotAuth({
       agentId: "agent-1",
-      auth: { gitHubToken: `ltfx.n.3b283e93debf035e990d.v1`, profileId: "p", profileVersion: "v1" },
-      resolvedApiKey: `ltfx.n.0d6d73357e635e12af49.v1`,
+      auth: { gitHubToken: "explicit", profileId: "p", profileVersion: "v1" },
+      resolvedApiKey: "contract-should-be-ignored",
       authProfileId: "contract-profile",
       env: cleanEnv(),
       homeDir: fakeHomeDir,
@@ -284,13 +284,13 @@ describe("resolveCopilotAuth - contract-resolved auth (resolvedApiKey + authProf
   it("contract resolvedApiKey takes precedence over env fallback", () => {
     const result = resolveCopilotAuth({
       agentId: "agent-1",
-      resolvedApiKey: `ltfx.n.84f804387fb9d48283ac.v1`,
+      resolvedApiKey: "contract-token",
       authProfileId: "p",
       env: {
-        OPENCLAW_GITHUB_TOKEN: `ltfx.n.364b2705f61ee957bd84.v1`,
-        COPILOT_GITHUB_TOKEN: `ltfx.n.6348a79d8c612c08cfff.v1`,
-        GH_TOKEN: `ltfx.n.20a15d3a67a61f4e01ed.v1`,
-        GITHUB_TOKEN: `ltfx.n.68bc1b25b84db17ee9ac.v1`,
+        OPENCLAW_GITHUB_TOKEN: "env-should-be-ignored",
+        COPILOT_GITHUB_TOKEN: "copilot-env-should-be-ignored",
+        GH_TOKEN: "gh-env-should-be-ignored",
+        GITHUB_TOKEN: "github-env-should-be-ignored",
       } as NodeJS.ProcessEnv,
       homeDir: fakeHomeDir,
     });
@@ -302,7 +302,7 @@ describe("resolveCopilotAuth - contract-resolved auth (resolvedApiKey + authProf
     const result = resolveCopilotAuth({
       agentId: "agent-1",
       authProfileId: "p",
-      env: { GITHUB_TOKEN: `ltfx.n.1f002c55540fd46bfb3c.v1` } as NodeJS.ProcessEnv,
+      env: { GITHUB_TOKEN: "env-only" } as NodeJS.ProcessEnv,
       homeDir: fakeHomeDir,
     });
     expect(result.gitHubToken).toBe("env-only");
@@ -314,7 +314,7 @@ describe("resolveCopilotAuth - env var fallbacks", () => {
   it("falls back to GITHUB_TOKEN with synthesised profile id + fingerprint", () => {
     const result = resolveCopilotAuth({
       agentId: "agent-1",
-      env: { GITHUB_TOKEN: `ltfx.n.5cd5d1167f1b52f0935e.v1` } as NodeJS.ProcessEnv,
+      env: { GITHUB_TOKEN: "env-token-123" } as NodeJS.ProcessEnv,
       homeDir: fakeHomeDir,
     });
     expect(result.authMode).toBe("gitHubToken");
@@ -327,8 +327,8 @@ describe("resolveCopilotAuth - env var fallbacks", () => {
     const result = resolveCopilotAuth({
       agentId: "agent-1",
       env: {
-        OPENCLAW_GITHUB_TOKEN: `ltfx.n.79f005cbd0668d2cea18.v1`,
-        GITHUB_TOKEN: `ltfx.n.6158e765477cde02e0cc.v1`,
+        OPENCLAW_GITHUB_TOKEN: "openclaw-tok",
+        GITHUB_TOKEN: "github-tok",
       } as NodeJS.ProcessEnv,
       homeDir: fakeHomeDir,
     });
@@ -340,7 +340,7 @@ describe("resolveCopilotAuth - env var fallbacks", () => {
   it("falls back to COPILOT_GITHUB_TOKEN with synthesised profile id + fingerprint", () => {
     const result = resolveCopilotAuth({
       agentId: "agent-1",
-      env: { COPILOT_GITHUB_TOKEN: `ltfx.n.4800e5d6fcb7ed429e5b.v1` } as NodeJS.ProcessEnv,
+      env: { COPILOT_GITHUB_TOKEN: "copilot-tok-123" } as NodeJS.ProcessEnv,
       homeDir: fakeHomeDir,
     });
     expect(result.authMode).toBe("gitHubToken");
@@ -352,7 +352,7 @@ describe("resolveCopilotAuth - env var fallbacks", () => {
   it("falls back to GH_TOKEN with synthesised profile id + fingerprint", () => {
     const result = resolveCopilotAuth({
       agentId: "agent-1",
-      env: { GH_TOKEN: `ltfx.n.37ec0becd2cdddf73e6d.v1` } as NodeJS.ProcessEnv,
+      env: { GH_TOKEN: "gh-tok-456" } as NodeJS.ProcessEnv,
       homeDir: fakeHomeDir,
     });
     expect(result.authMode).toBe("gitHubToken");
@@ -365,10 +365,10 @@ describe("resolveCopilotAuth - env var fallbacks", () => {
     const result = resolveCopilotAuth({
       agentId: "agent-1",
       env: {
-        OPENCLAW_GITHUB_TOKEN: `ltfx.n.79f005cbd0668d2cea18.v1`,
-        COPILOT_GITHUB_TOKEN: `ltfx.n.8b712c3816e1588fb70e.v1`,
+        OPENCLAW_GITHUB_TOKEN: "openclaw-tok",
+        COPILOT_GITHUB_TOKEN: "copilot-tok",
         GH_TOKEN: "gh-tok",
-        GITHUB_TOKEN: `ltfx.n.6158e765477cde02e0cc.v1`,
+        GITHUB_TOKEN: "github-tok",
       } as NodeJS.ProcessEnv,
       homeDir: fakeHomeDir,
     });
@@ -380,9 +380,9 @@ describe("resolveCopilotAuth - env var fallbacks", () => {
     const result = resolveCopilotAuth({
       agentId: "agent-1",
       env: {
-        COPILOT_GITHUB_TOKEN: `ltfx.n.8b712c3816e1588fb70e.v1`,
+        COPILOT_GITHUB_TOKEN: "copilot-tok",
         GH_TOKEN: "gh-tok",
-        GITHUB_TOKEN: `ltfx.n.6158e765477cde02e0cc.v1`,
+        GITHUB_TOKEN: "github-tok",
       } as NodeJS.ProcessEnv,
       homeDir: fakeHomeDir,
     });
@@ -395,7 +395,7 @@ describe("resolveCopilotAuth - env var fallbacks", () => {
       agentId: "agent-1",
       env: {
         GH_TOKEN: "gh-tok",
-        GITHUB_TOKEN: `ltfx.n.6158e765477cde02e0cc.v1`,
+        GITHUB_TOKEN: "github-tok",
       } as NodeJS.ProcessEnv,
       homeDir: fakeHomeDir,
     });
@@ -430,7 +430,7 @@ describe("resolveCopilotAuth - env var fallbacks", () => {
   it("explicit auth.gitHubToken wins over env tokens", () => {
     const result = resolveCopilotAuth({
       agentId: "agent-1",
-      auth: { gitHubToken: `ltfx.n.3b283e93debf035e990d.v1`, profileId: "p", profileVersion: "v" },
+      auth: { gitHubToken: "explicit", profileId: "p", profileVersion: "v" },
       env: { OPENCLAW_GITHUB_TOKEN: "env-tok" } as NodeJS.ProcessEnv,
       homeDir: fakeHomeDir,
     });
@@ -473,7 +473,7 @@ describe("resolveCopilotAuth - defaults wiring", () => {
   });
 
   it("uses process.env when env is not injected", () => {
-    process.env.GITHUB_TOKEN = `ltfx.n.cac04c86ec2a892d71c7.v1`;
+    process.env.GITHUB_TOKEN = "from-process-env";
     const result = resolveCopilotAuth({
       agentId: "agent-1",
       homeDir: fakeHomeDir,

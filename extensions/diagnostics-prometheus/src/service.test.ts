@@ -244,7 +244,7 @@ describe("diagnostics-prometheus service", () => {
         type: "tool.execution.error",
         toolName: "shell\nbad",
         durationMs: 25,
-        errorCategory: "Bearer ltfx.n.8f43a3713af1737ebd84.v1",
+        errorCategory: "Bearer sk-secret-token-value",
       },
       trusted,
     );

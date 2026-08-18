@@ -165,7 +165,7 @@ export async function createLmstudioEmbeddingProvider(
   const providerBaseUrl = providerConfig?.baseUrl?.trim();
   const isFallbackActivation = options.fallback === "lmstudio" && options.provider !== "lmstudio";
   const remoteBaseUrl = options.remote?.baseUrl?.trim();
-  const remoteApiKey = (!isFallbackActivation)
+  const remoteApiKey = !isFallbackActivation
     ? resolveMemorySecretInputString({
         value: options.remote?.apiKey,
         path: "agents.*.memorySearch.remote.apiKey",

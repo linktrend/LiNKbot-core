@@ -6,7 +6,7 @@ import { installGatewayTestHooks, testState, withGatewayServer } from "./test-he
 
 installGatewayTestHooks({ scope: "suite" });
 
-const CONTROL_UI_E2E_TOKEN = `ltfx.n.57553aa6e72928276259.v1`;
+const CONTROL_UI_E2E_TOKEN = "test-gateway-token-1234567890";
 
 describe("Control UI assistant media e2e", () => {
   test("serves local assistant media through scoped tickets over the gateway HTTP route", async () => {

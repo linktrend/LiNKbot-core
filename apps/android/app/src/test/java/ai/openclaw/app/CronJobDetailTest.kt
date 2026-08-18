@@ -41,7 +41,7 @@ class CronJobDetailTest {
     val job =
       parseJob(
         payload =
-          """{"kind":"command","argv":["printf","done"],"env":{"API_TOKEN":"${ltfx.n.31160254d1297393d2ad.v1}"}}""",
+          """{"kind":"command","argv":["printf","done"],"env":{"API_TOKEN":"secret-value"}}""",
       )
 
     val detail = parseGatewayCronJobDetail(job)

@@ -37,14 +37,14 @@ describe("acp session lineage metadata", () => {
           },
           sessions: [
             {
-              key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+              key: "agent:main:main",
               kind: "direct",
               channel: "telegram",
               displayName: "Main",
               updatedAt: 1_710_000_000_000,
             },
             {
-              key: `ltfx.n.3c3dbd6de91d4e00f4c7.v1`,
+              key: "agent:main:subagent:child",
               kind: "direct",
               channel: "telegram",
               displayName: "Child",
@@ -104,7 +104,7 @@ describe("acp session lineage metadata", () => {
           },
           sessions: [
             {
-              key: `ltfx.n.3c3dbd6de91d4e00f4c7.v1`,
+              key: "agent:main:subagent:child",
               kind: "direct",
               channel: "discord",
               displayName: "Child",

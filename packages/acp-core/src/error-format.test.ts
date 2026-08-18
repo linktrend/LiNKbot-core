@@ -26,7 +26,7 @@ describe("redactSensitiveText", () => {
   it("applies fallback secret redaction after a configured redactor", () => {
     configureAcpErrorRedactor((value) => value.replace("prefix", "host-redacted"));
     try {
-      expect(redactSensitiveText("prefix ltfx.n.545b314bc15f0e88ea08.v1")).toBe(
+      expect(redactSensitiveText("prefix ghp_123456789012345678901234")).toBe(
         "host-redacted [REDACTED]",
       );
     } finally {

@@ -50,7 +50,7 @@ vi.mock("../plugins/provider-runtime.js", () => ({
   resolveExternalAuthProfilesWithPlugins: () => [],
 }));
 
-function apiKeyStore(key: (string)): AuthProfileStore {
+function apiKeyStore(key: string): AuthProfileStore {
   return {
     version: 1,
     profiles: {
@@ -279,13 +279,13 @@ describe("auth profile sqlite store", () => {
             "openai:default": {
               type: "api_key",
               provider: "openai",
-              key: `ltfx.n.6a0f4166180b4bdb1975.v1`,
+              key: "sk-plaintext",
               keyRef: { source: "env", provider: "default", id: "OPENAI_API_KEY" },
             },
             "anthropic:default": {
               type: "token",
               provider: "anthropic",
-              token: `ltfx.n.b8f971b75c89a79489b0.v1`,
+              token: "token-plaintext",
               tokenRef: { source: "env", provider: "default", id: "ANTHROPIC_AUTH_TOKEN" },
             },
           },

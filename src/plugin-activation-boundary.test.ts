@@ -128,7 +128,7 @@ describe("plugin activation boundary", () => {
       true,
     );
     expect(isStaticallyChannelConfigured({}, "discord", { DISCORD_BOT_TOKEN: "token" })).toBe(true);
-    expect(isStaticallyChannelConfigured({}, "slack", { SLACK_BOT_TOKEN: `ltfx.n.87894fe048938b686cfb.v1` })).toBe(true);
+    expect(isStaticallyChannelConfigured({}, "slack", { SLACK_BOT_TOKEN: "xoxb-test" })).toBe(true);
     expect(
       isStaticallyChannelConfigured({}, "irc", {
         IRC_HOST: "irc.example.com",

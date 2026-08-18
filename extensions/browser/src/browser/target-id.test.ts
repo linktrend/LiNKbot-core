@@ -27,7 +27,7 @@ describe("assignTabAlias", () => {
     expect(() =>
       assignTabAlias({
         profileState,
-        tab: { targetId: "TARGET", title: "", url: `ltfx.n.4fa72d735a519ee13d41.v1`, type: "page" },
+        tab: { targetId: "TARGET", title: "", url: "about:blank", type: "page" },
         label: "not allowed",
       }),
     ).toThrow(/tab label/i);

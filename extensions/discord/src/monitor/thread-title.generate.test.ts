@@ -125,7 +125,7 @@ describe("generateThreadTitle", () => {
         maxTokens: 64_000,
       },
       auth: {
-        apiKey: `ltfx.n.a9517e6bc71b199b3c3f.v1`,
+        apiKey: "sk-openrouter",
         source: "profile:work",
         mode: "api-key",
       },

@@ -45,14 +45,14 @@ describe("secrets runtime snapshot matrix access token", () => {
             accounts: {
               ops: {
                 homeserver: "https://matrix.example.org",
-                accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
+                accessToken: "ops-token",
               },
             },
           },
         },
       }),
       env: {
-        MATRIX_ACCESS_TOKEN: `ltfx.n.c45445ad19596d8fa7a8.v1`,
+        MATRIX_ACCESS_TOKEN: "default-matrix-token",
       },
       includeAuthStoreRefs: false,
       loadablePluginOrigins: new Map(),

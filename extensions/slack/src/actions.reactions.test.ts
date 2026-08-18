@@ -46,7 +46,7 @@ describe("reactSlackMessage", () => {
     await expect(
       reactSlackMessage("C1", "123.456", ":white_check_mark:", {
         client,
-        token: `ltfx.n.87894fe048938b686cfb.v1`,
+        token: "xoxb-test",
       }),
     ).resolves.toBeUndefined();
 
@@ -65,7 +65,7 @@ describe("reactSlackMessage", () => {
     try {
       await reactSlackMessage("C1", "123.456", "not-an-emoji", {
         client,
-        token: `ltfx.n.87894fe048938b686cfb.v1`,
+        token: "xoxb-test",
       });
     } catch (caught) {
       error = caught;
@@ -90,7 +90,7 @@ describe("reactSlackMessage emoji normalization", () => {
   ])("normalizes $input to $expected", async ({ input, expected }) => {
     const client = createClient();
 
-    await reactSlackMessage("C1", "123.456", input, { client, token: `ltfx.n.87894fe048938b686cfb.v1` });
+    await reactSlackMessage("C1", "123.456", input, { client, token: "xoxb-test" });
 
     expect(client.reactions.add).toHaveBeenCalledWith({
       channel: "C1",
@@ -108,7 +108,7 @@ describe("removeSlackReaction", () => {
     await expect(
       removeSlackReaction("C1", "123.456", ":white_check_mark:", {
         client,
-        token: `ltfx.n.87894fe048938b686cfb.v1`,
+        token: "xoxb-test",
       }),
     ).resolves.toBeUndefined();
 
@@ -127,7 +127,7 @@ describe("removeSlackReaction", () => {
     try {
       await removeSlackReaction("C1", "123.456", "not-an-emoji", {
         client,
-        token: `ltfx.n.87894fe048938b686cfb.v1`,
+        token: "xoxb-test",
       });
     } catch (caught) {
       error = caught;
@@ -160,7 +160,7 @@ describe("removeOwnSlackReactions", () => {
     await expect(
       removeOwnSlackReactions("C1", "123.456", {
         client,
-        token: `ltfx.n.87894fe048938b686cfb.v1`,
+        token: "xoxb-test",
       }),
     ).resolves.toEqual(["thumbsup", "eyes"]);
 

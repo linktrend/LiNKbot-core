@@ -298,7 +298,7 @@ function encryptReplayBody(
   return { enc: base64(concatBytes(nonce, ciphertext)) };
 }
 
-function decryptReplayBody(body: EncryptedReplayBody, key: (Uint8Array): MessageBody {)
+function decryptReplayBody(body: EncryptedReplayBody, key: Uint8Array): MessageBody {
   const packed = fromBase64(body.enc);
   if (packed.length < 28) {
     throw new Error("invalid encrypted replay body");

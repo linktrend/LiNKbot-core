@@ -51,7 +51,7 @@ describe("Anthropic Cloudflare guard-specific SSRF blocking proof", () => {
 
     const { streamAnthropic } = await import("@openclaw/ai/internal/anthropic");
     const stream = streamAnthropic(blockedModel, context, {
-      apiKey: `ltfx.n.cdba95a3170e3a312d5c.v1`,
+      apiKey: "sk-ant-test",
       // Retries only repeat the same deterministic guard rejection.
       maxRetries: 0,
     });

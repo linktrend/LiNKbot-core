@@ -7,11 +7,11 @@ import {
   type LegacyConfigRule,
 } from "../../../config/legacy.shared.js";
 
-function hasOwnKey(target: Record<string, unknown>, key: (string)): boolean {
+function hasOwnKey(target: Record<string, unknown>, key: string): boolean {
   return Object.hasOwn(target, key);
 }
 
-function cleanupEmptyRecord(parent: Record<string, unknown>, key: (string)): void {
+function cleanupEmptyRecord(parent: Record<string, unknown>, key: string): void {
   const value = getRecord(parent[key]);
   if (value && Object.keys(value).length === 0) {
     delete parent[key];

@@ -137,7 +137,7 @@ function requestSearch(req: IncomingMessage): string {
   }
 }
 
-function stripUrlFragment(url: (string)): string {
+function stripUrlFragment(url: string): string {
   const hashIndex = url.indexOf("#");
   return hashIndex === -1 ? url : url.slice(0, hashIndex);
 }

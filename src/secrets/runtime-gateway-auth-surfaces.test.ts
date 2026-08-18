@@ -53,7 +53,7 @@ describe("evaluateGatewayAuthSurfaceStates", () => {
           },
         },
       } as OpenClawConfig,
-      { OPENCLAW_GATEWAY_TOKEN: `ltfx.n.25d37ba7752ae1d95b57.v1` } as NodeJS.ProcessEnv,
+      { OPENCLAW_GATEWAY_TOKEN: "env-token" } as NodeJS.ProcessEnv,
     );
 
     expectGatewayState(states["gateway.auth.token"], {
@@ -123,7 +123,7 @@ describe("evaluateGatewayAuthSurfaceStates", () => {
           },
         },
       } as OpenClawConfig,
-      { OPENCLAW_GATEWAY_TOKEN: `ltfx.n.25d37ba7752ae1d95b57.v1` } as NodeJS.ProcessEnv,
+      { OPENCLAW_GATEWAY_TOKEN: "env-token" } as NodeJS.ProcessEnv,
     );
 
     expectGatewayState(states["gateway.auth.password"], {
@@ -194,7 +194,7 @@ describe("evaluateGatewayAuthSurfaceStates", () => {
     const states = evaluate({
       gateway: {
         remote: {
-          url: `ltfx.n.72e4dc7921c2128a3b3f.v1`,
+          url: "wss://gateway.example.com",
           password: envRef("GW_REMOTE_PASSWORD"),
         },
       },

@@ -249,7 +249,7 @@ if ! grep -q '"auth_mode":"apikey"' "$CODEX_HOME/auth.json"; then
   echo "auth.json missing apikey mode" >&2
   exit 1
 fi
-if ! grep -q '"OPENAI_API_KEY":"${ltfx.n.b10394de41d87ecb7c4a.v1}"' "$CODEX_HOME/auth.json"; then
+if ! grep -q '"OPENAI_API_KEY":"test-openai-key"' "$CODEX_HOME/auth.json"; then
   echo "auth.json missing API key" >&2
   exit 1
 fi

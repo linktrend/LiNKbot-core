@@ -333,7 +333,7 @@ struct MacNodeCodexThreadCatalogTests {
                                         "id": "remote",
                                         "label": "Remote",
                                         "transport": "websocket",
-                                        "url": "${ltfx.n.590dcbe54ae181b1e639.v1}",
+                                        "url": "wss://codex.example.test",
                                         "authTokenEnv": "CODEX_TOKEN",
                                     ],
                                 ],
@@ -420,7 +420,7 @@ struct MacNodeCodexThreadCatalogTests {
             [
                 "supervision": [
                     "enabled": true,
-                    "endpoints": [["transport": "websocket", "url": "${ltfx.n.444afaa483f4b2dddc53.v1}", "cwd": "/tmp"]],
+                    "endpoints": [["transport": "websocket", "url": "wss://example.test", "cwd": "/tmp"]],
                 ],
             ] as [String: Any],
         ]

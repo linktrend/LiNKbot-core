@@ -14,7 +14,7 @@ function resolvePluginVideoGenerationProviders(
   cfg?: OpenClawConfig,
 ): VideoGenerationProviderPlugin[] {
   return capabilityProviderRuntime.resolvePluginCapabilityProviders({
-    key: `ltfx.n.ef33178afa7883f23adc.v1`,
+    key: "videoGenerationProviders",
     cfg,
   });
 }

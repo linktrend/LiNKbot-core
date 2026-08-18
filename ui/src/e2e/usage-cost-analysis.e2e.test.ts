@@ -92,7 +92,7 @@ describeControlUiE2e("Control UI usage cost analysis mocked Gateway E2E", () => 
           endDate: dayOffset(0),
           sessions: [
             {
-              key: `ltfx.n.eb4db6a5091a0e38be9f.v1`,
+              key: "agent:main:cost-analysis",
               label: "Cost analysis",
               agentId: "main",
               modelProvider: "openai",

@@ -222,8 +222,8 @@ function resolveGatewayRpcOptions<T extends { token?: string; password?: string 
   opts: T,
   command?: Command,
 ): T {
-  const parentToken = (inheritOptionFromParent<string>(command, "token");)
-  const parentPassword = (inheritOptionFromParent<string>(command, "password");)
+  const parentToken = inheritOptionFromParent<string>(command, "token");
+  const parentPassword = inheritOptionFromParent<string>(command, "password");
   return {
     ...opts,
     token: opts.token ?? parentToken,
@@ -502,9 +502,9 @@ function resolveSupportExportRpcOptions(
   rpc?: Pick<GatewayRpcOpts, "url" | "token" | "password" | "timeout">,
 ): GatewayRpcOpts & { timeout: string } {
   return {
-    url: (rpc?.url,)
-    token: (rpc?.token,)
-    password: (rpc?.password,)
+    url: rpc?.url,
+    token: rpc?.token,
+    password: rpc?.password,
     timeout: rpc?.timeout ?? "3000",
     json: true,
   };

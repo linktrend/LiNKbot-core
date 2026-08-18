@@ -180,7 +180,7 @@ describe("discordOutbound", () => {
           cfg: {
             channels: {
               discord: {
-                token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+                token: "test-token",
               },
             },
           },
@@ -199,7 +199,7 @@ describe("discordOutbound", () => {
     const cfg = {
       channels: {
         discord: {
-          token: `ltfx.n.cad2ed06900405ac7d61.v1`,
+          token: "resolved-token",
         },
       },
     };

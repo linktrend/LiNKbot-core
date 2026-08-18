@@ -17,7 +17,7 @@ describe("session parent fork config keys", () => {
     const issue = result.issues.find(
       (candidate) =>
         candidate.path === "session" &&
-        candidate.message.includes('Unrecognized key: `ltfx.n.db540eb801163904c013.v1`'),
+        candidate.message.includes('Unrecognized key: "parentForkMaxTokens"'),
     );
     if (!issue) {
       throw new Error("Expected legacy session.parentForkMaxTokens validation issue");

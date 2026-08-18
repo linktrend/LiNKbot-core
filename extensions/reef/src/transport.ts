@@ -104,7 +104,7 @@ export class ReefTransportClient {
     return await this.unsigned("POST", "/v1/auth/start", { email });
   }
 
-  async authComplete(token: (string)): Promise<{ session: string; expires: number }> {
+  async authComplete(token: string): Promise<{ session: string; expires: number }> {
     return await this.unsigned("POST", "/v1/auth/complete", { token });
   }
 

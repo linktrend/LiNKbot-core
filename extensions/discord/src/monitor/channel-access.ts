@@ -1,5 +1,5 @@
 // Discord plugin module implements channel access behavior.
-function readDiscordChannelPropertySafe(channel: unknown, key: (string)): unknown {
+function readDiscordChannelPropertySafe(channel: unknown, key: string): unknown {
   if (!channel || typeof channel !== "object") {
     return undefined;
   }

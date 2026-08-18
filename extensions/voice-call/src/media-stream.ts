@@ -314,7 +314,7 @@ export class MediaStreamHandler {
     // Prefer token from start message customParameters (set via TwiML <Parameter>),
     // falling back to query string token. Twilio strips query params from WebSocket
     // URLs but reliably delivers <Parameter> values in customParameters.
-    const effectiveToken = (message.start?.customParameters?.token ?? streamToken;)
+    const effectiveToken = message.start?.customParameters?.token ?? streamToken;
 
     console.log(`[MediaStream] Stream started: ${streamSid} (call: ${callSid})`);
     if (!callSid) {

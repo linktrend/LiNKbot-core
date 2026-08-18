@@ -32,7 +32,7 @@ describe("QA Lab package bus protocol", () => {
         name: " exec ",
         arguments: {
           command: "cat README.md",
-          apiToken: `ltfx.n.930bbdc51b6aed5c2a56.v1`,
+          apiToken: "secret-token",
           headers: { Authorization: "Bearer secret" },
           values: ["ok", { password: "hunter2" }],
           nested: { one: { two: { three: { four: "truncated" } } } },

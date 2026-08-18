@@ -2732,7 +2732,7 @@ export const zh_TW: TranslationMap = {
       title: "Gateway 存取",
       subtitle: "儀表板連線的位置及其驗證方式。",
       wsUrl: "WebSocket URL",
-      token: `ltfx.n.97858003f2e384bb98c8.v1`,
+      token: "Gateway 權杖",
       password: "密碼（不儲存）",
       passwordPlaceholder: "系統或共用密碼",
       sessionKey: "預設工作階段金鑰",
@@ -3193,7 +3193,7 @@ export const zh_TW: TranslationMap = {
     },
     query: {
       placeholder:
-        "篩選工作階段（例如 key:(agent:main:cron* model:gpt-4o has:errors minTokens:2000）",)
+        "篩選工作階段（例如 key:agent:main:cron* model:gpt-4o has:errors minTokens:2000）",
       apply: "篩選（用戶端）",
       matching: "{shown} / {total} 個工作階段符合條件",
       inRange: "範圍內有 {total} 個工作階段",

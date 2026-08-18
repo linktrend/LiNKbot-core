@@ -14,7 +14,7 @@ export PATH="$NPM_CONFIG_PREFIX/bin:$PATH"
 export npm_config_loglevel=error
 export npm_config_fund=false
 export npm_config_audit=false
-export OPENAI_API_KEY="${ltfx.n.c655ff053bea2d6a462a.v1}"
+export OPENAI_API_KEY="sk-openclaw-release-media-memory"
 export OPENCLAW_QA_ALLOW_LOCAL_IMAGE_PROVIDER=1
 
 PORT="18789"

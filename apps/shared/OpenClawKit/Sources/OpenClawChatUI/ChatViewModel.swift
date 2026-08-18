@@ -557,7 +557,7 @@ public final class OpenClawChatViewModel {
     public func deleteSession(_ sessionKey: String) {
         Task {
             do {
-                try await self.transport.deleteSession(key: (sessionKey))
+                try await self.transport.deleteSession(key: sessionKey)
             } catch {
                 self.errorText = error.localizedDescription
                 return

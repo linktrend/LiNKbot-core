@@ -196,7 +196,7 @@ describe("MCP App standalone host", () => {
   });
 
   it("serves a hash-protected static shell without per-view data", async () => {
-    const result = await request({ url: `ltfx.n.fb9b66c6e672c8ad7d25.v1` });
+    const result = await request({ url: "/__openclaw__/mcp-app" });
     expect(result.handled).toBe(true);
     expect(result.res.statusCode).toBe(200);
     const body = String(result.end.mock.calls[0]?.[0]);
@@ -239,7 +239,7 @@ describe("MCP App standalone host", () => {
     const issued = issueTicket({ sessionKey: "agent:main:main", view, nowMs, secret });
     const invoke = (body: unknown) =>
       request({
-        url: `ltfx.n.43df3df8d374076219b1.v1`,
+        url: "/__openclaw__/mcp-app/view",
         method: "POST",
         authorization: `MCP-App ${issued.ticket}`,
         body,
@@ -270,7 +270,7 @@ describe("MCP App standalone host", () => {
     const issued = issueTicket({ sessionKey: "agent:main:main", view, nowMs, secret });
     const invoke = (body: unknown) =>
       request({
-        url: `ltfx.n.43df3df8d374076219b1.v1`,
+        url: "/__openclaw__/mcp-app/view",
         method: "POST",
         authorization: `MCP-App ${issued.ticket}`,
         body,
@@ -290,7 +290,7 @@ describe("MCP App standalone host", () => {
     const issued = issueTicket({ sessionKey: "agent:main:main", view, nowMs, secret });
     const invoke = (body: unknown) =>
       request({
-        url: `ltfx.n.43df3df8d374076219b1.v1`,
+        url: "/__openclaw__/mcp-app/view",
         method: "POST",
         authorization: `MCP-App ${issued.ticket}`,
         body,
@@ -312,7 +312,7 @@ describe("MCP App standalone host", () => {
     const issued = issueTicket({ sessionKey: "agent:main:main", view, nowMs, secret });
     const invoke = (now: number) =>
       request({
-        url: `ltfx.n.43df3df8d374076219b1.v1`,
+        url: "/__openclaw__/mcp-app/view",
         method: "POST",
         authorization: `MCP-App ${issued.ticket}`,
         now,
@@ -322,7 +322,7 @@ describe("MCP App standalone host", () => {
     expect(
       (
         await request({
-          url: `ltfx.n.43df3df8d374076219b1.v1`,
+          url: "/__openclaw__/mcp-app/view",
           authorization: `MCP-App ${issued.ticket}`,
           now: nowMs,
         })
@@ -339,7 +339,7 @@ describe("MCP App standalone host", () => {
     expect(
       (
         await request({
-          url: `ltfx.n.43df3df8d374076219b1.v1`,
+          url: "/__openclaw__/mcp-app/view",
           method: "POST",
           authorization: `MCP-App ${issued.ticket}`,
           clock,
@@ -352,14 +352,14 @@ describe("MCP App standalone host", () => {
 
   it("is path-scoped and rejects malformed operations", async () => {
     const issued = issueTicket({ sessionKey: "agent:main:main", view, nowMs, secret });
-    expect((await request({ url: `ltfx.n.fb9b66c6e672c8ad7d25.v1`, method: "POST" })).res.statusCode).toBe(
+    expect((await request({ url: "/__openclaw__/mcp-app", method: "POST" })).res.statusCode).toBe(
       404,
     );
-    expect((await request({ url: `ltfx.n.291220230c8508866a11.v1` })).handled).toBe(false);
+    expect((await request({ url: "/__openclaw__/mcp-app/other" })).handled).toBe(false);
     expect(
       (
         await request({
-          url: `ltfx.n.43df3df8d374076219b1.v1`,
+          url: "/__openclaw__/mcp-app/view",
           method: "POST",
           authorization: `MCP-App ${issued.ticket}`,
           body: { method: "gateway.call", params: {} },

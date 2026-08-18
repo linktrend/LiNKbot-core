@@ -67,14 +67,14 @@ describe("resolveSessionKeyFromResolveParams store canonicalization", () => {
           cfg,
           p: { sessionId: "sess-default-alias" },
         }),
-      ).resolves.toEqual({ ok: true, key: `ltfx.n.3cd054c375bd03a675ec.v1` });
+      ).resolves.toEqual({ ok: true, key: "agent:ops:main" });
 
       await expect(
         resolveSessionKeyFromResolveParams({
           cfg,
           p: { label: "default-alias" },
         }),
-      ).resolves.toEqual({ ok: true, key: `ltfx.n.3cd054c375bd03a675ec.v1` });
+      ).resolves.toEqual({ ok: true, key: "agent:ops:main" });
     });
   });
 
@@ -451,7 +451,7 @@ describe("resolveSessionKeyFromResolveParams store canonicalization", () => {
       await expect(
         resolveSessionKeyFromResolveParams({
           cfg,
-          p: { key: `ltfx.n.6d9217fe77c7f11d9cc9.v1` },
+          p: { key: "agent:main:main" },
         }),
       ).resolves.toEqual({
         ok: false,

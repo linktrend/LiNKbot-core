@@ -272,7 +272,7 @@ describe("brave web search provider", () => {
 
     const tool = createBraveTool({
       webSearch: {
-        apiKey: `ltfx.n.e9361ce0a3cb879bb621.v1`,
+        apiKey: "brave-test-key",
         baseUrl: "https://api.search.brave.com/proxy/",
         mode: "web",
       },
@@ -290,7 +290,7 @@ describe("brave web search provider", () => {
     const mockFetch = installBraveLlmContextFetch();
     const tool = createBraveTool({
       webSearch: {
-        apiKey: `ltfx.n.e9361ce0a3cb879bb621.v1`,
+        apiKey: "brave-test-key",
         baseUrl: "https://api.search.brave.com/proxy",
         mode: "llm-context",
       },
@@ -309,7 +309,7 @@ describe("brave web search provider", () => {
     });
     global.fetch = mockFetch as typeof global.fetch;
 
-    const tool = createBraveTool({ webSearch: { apiKey: `ltfx.n.e9361ce0a3cb879bb621.v1`, mode: "web" } });
+    const tool = createBraveTool({ webSearch: { apiKey: "brave-test-key", mode: "web" } });
 
     await expect(tool.execute({ query: "latest ai news" })).rejects.toThrow(
       "Brave Search API error: malformed JSON response",
@@ -324,7 +324,7 @@ describe("brave web search provider", () => {
     global.fetch = mockFetch as typeof global.fetch;
 
     const tool = createBraveTool({
-      webSearch: { apiKey: `ltfx.n.e9361ce0a3cb879bb621.v1`, mode: "llm-context" },
+      webSearch: { apiKey: "brave-test-key", mode: "llm-context" },
     });
 
     await expect(tool.execute({ query: "latest ai news" })).rejects.toThrow(
@@ -342,7 +342,7 @@ describe("brave web search provider", () => {
     );
     global.fetch = mockFetch as typeof global.fetch;
 
-    const tool = createBraveTool({ webSearch: { apiKey: `ltfx.n.e9361ce0a3cb879bb621.v1`, mode: "web" } });
+    const tool = createBraveTool({ webSearch: { apiKey: "brave-test-key", mode: "web" } });
 
     const error = await tool.execute({ query: "latest ai news" }).catch((value: unknown) => value);
     expect(error).toBeInstanceOf(Error);
@@ -363,7 +363,7 @@ describe("brave web search provider", () => {
     global.fetch = mockFetch as typeof global.fetch;
 
     const tool = createBraveTool({
-      webSearch: { apiKey: `ltfx.n.e9361ce0a3cb879bb621.v1`, mode: "llm-context" },
+      webSearch: { apiKey: "brave-test-key", mode: "llm-context" },
     });
 
     const error = await tool.execute({ query: "latest ai news" }).catch((value: unknown) => value);
@@ -383,14 +383,14 @@ describe("brave web search provider", () => {
 
     const firstTool = createBraveTool({
       webSearch: {
-        apiKey: `ltfx.n.e9361ce0a3cb879bb621.v1`,
+        apiKey: "brave-test-key",
         baseUrl: "https://api.search.brave.com/proxy-one",
         mode: "web",
       },
     });
     const secondTool = createBraveTool({
       webSearch: {
-        apiKey: `ltfx.n.e9361ce0a3cb879bb621.v1`,
+        apiKey: "brave-test-key",
         baseUrl: "https://api.search.brave.com/proxy-two",
         mode: "web",
       },
@@ -495,7 +495,7 @@ describe("brave web search provider", () => {
     });
     global.fetch = mockFetch as typeof global.fetch;
 
-    const tool = createBraveTool({ webSearch: { apiKey: `ltfx.n.e9361ce0a3cb879bb621.v1`, mode: "web" } });
+    const tool = createBraveTool({ webSearch: { apiKey: "brave-test-key", mode: "web" } });
 
     await tool.execute({ query: "latest ai news" });
 
@@ -509,7 +509,7 @@ describe("brave web search provider", () => {
     vi.stubEnv("BRAVE_API_KEY", "");
     const mockFetch = installBraveLlmContextFetch();
     const tool = createBraveTool({
-      webSearch: { apiKey: `ltfx.n.e9361ce0a3cb879bb621.v1`, mode: "llm-context" },
+      webSearch: { apiKey: "brave-test-key", mode: "llm-context" },
     });
 
     await tool.execute({ query: "latest ai news" });
@@ -631,7 +631,7 @@ describe("brave web search provider", () => {
 
     const tool = createBraveTool({
       config: { diagnostics: { flags: ["brave.http"] } },
-      webSearch: { apiKey: `ltfx.n.e9361ce0a3cb879bb621.v1`, mode: "web" },
+      webSearch: { apiKey: "brave-test-key", mode: "web" },
     });
 
     await tool.execute({ query: "unique brave diagnostics query", count: 1 });

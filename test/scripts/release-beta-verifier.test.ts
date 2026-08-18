@@ -505,7 +505,7 @@ describe("downloadClawHubBootstrapReadback", () => {
       runId: "34",
       run,
       readbackArtifact: fixture.readbackArtifact,
-      token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+      token: "test-token",
       fetchImpl: fixture.fetchImpl,
       retryAttempts: 1,
       retryDelayMs: 1,

@@ -11,7 +11,7 @@ TIMEOUT_SECONDS="$(docker_e2e_read_positive_int_env OPENCLAW_OPENAI_CHAT_TOOLS_T
 MAX_BODY_BYTES="$(
   docker_e2e_read_positive_int_env OPENCLAW_OPENAI_CHAT_TOOLS_MAX_BODY_BYTES 1048576
 )"
-TOKEN="${ltfx.n.e1b7aaef0609f51d4baf.v1}"
+TOKEN="openai-chat-tools-e2e-$$"
 PROFILE_FILE="${OPENCLAW_OPENAI_CHAT_TOOLS_PROFILE_FILE:-${OPENCLAW_TESTBOX_PROFILE_FILE:-$HOME/.openclaw-testbox-live.profile}}"
 if [ ! -f "$PROFILE_FILE" ] && [ -f "$HOME/.profile" ]; then
   PROFILE_FILE="$HOME/.profile"

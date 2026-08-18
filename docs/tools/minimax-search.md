@@ -44,7 +44,7 @@ the Token Plan search endpoint.
       minimax: {
         config: {
           webSearch: {
-            apiKey: "${ltfx.n.dbb62f319d298566de88.v1}", // optional if a MiniMax Token Plan env var is set
+            apiKey: "sk-cp-...", // optional if a MiniMax Token Plan env var is set
             region: "global", // or "cn"
           },
         },

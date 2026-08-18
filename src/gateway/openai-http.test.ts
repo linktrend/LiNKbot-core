@@ -270,7 +270,7 @@ describe("OpenAI-compatible HTTP API (e2e)", () => {
           port,
           { model: "openclaw", messages: [{ role: "user", content: "hi" }] },
           {
-            "x-openclaw-session-key": `ltfx.n.3a50c12f61b03278ef02.v1`,
+            "x-openclaw-session-key": "agent:main:harness:codex:supervision:spoofed-native-thread",
           },
         );
         expect(res.status).toBe(400);
@@ -289,7 +289,7 @@ describe("OpenAI-compatible HTTP API (e2e)", () => {
           { model: "openclaw", messages: [{ role: "user", content: "hi" }] },
           {
             "x-openclaw-agent-id": "beta",
-            "x-openclaw-session-key": `ltfx.n.c6ad5daf19fb908dad4c.v1`,
+            "x-openclaw-session-key": "agent:beta:openai:custom",
           },
         );
         expect(res.status).toBe(200);
@@ -303,7 +303,7 @@ describe("OpenAI-compatible HTTP API (e2e)", () => {
         const res = await postChatCompletions(
           port,
           { model: "openclaw", messages: [{ role: "user", content: "hi" }] },
-          { "x-openclaw-session-key": `ltfx.n.e2a17ee8594e76686d24.v1` },
+          { "x-openclaw-session-key": "agent:main:subagent:spoofed" },
         );
         expect(res.status).toBe(400);
         const json = (await res.json()) as { error?: { type?: string; message?: string } };
@@ -538,7 +538,7 @@ describe("OpenAI-compatible HTTP API (e2e)", () => {
               content: [
                 {
                   type: "image_url",
-                  image_url: { url: `ltfx.n.08c6e4d1e2b6dfb6f8d0.v1` },
+                  image_url: { url: "data:image/jpeg;base64,QUJDRA==" },
                 },
               ],
             },
@@ -562,7 +562,7 @@ describe("OpenAI-compatible HTTP API (e2e)", () => {
             {
               role: "user",
               content: [
-                { type: "image_url", image_url: { url: `ltfx.n.dfe71a6c9f66eeee783c.v1` } },
+                { type: "image_url", image_url: { url: "data:image/png;base64,QUJDRA==" } },
               ],
             },
             { role: "assistant", content: "I can see it." },
@@ -586,7 +586,7 @@ describe("OpenAI-compatible HTTP API (e2e)", () => {
               role: "user",
               content: [
                 { type: "text", text: "first" },
-                { type: "image_url", image_url: { url: `ltfx.n.e2fe610e79d8e04b8c46.v1` } },
+                { type: "image_url", image_url: { url: "data:image/png;base64,QUFBQQ==" } },
               ],
             },
             { role: "assistant", content: "noted" },
@@ -594,7 +594,7 @@ describe("OpenAI-compatible HTTP API (e2e)", () => {
               role: "user",
               content: [
                 { type: "text", text: "second" },
-                { type: "image_url", image_url: { url: `ltfx.n.6afaedefcf341ac540ce.v1` } },
+                { type: "image_url", image_url: { url: "data:image/png;base64,QkJCQg==" } },
               ],
             },
           ],
@@ -625,7 +625,7 @@ describe("OpenAI-compatible HTTP API (e2e)", () => {
           content: [
             {
               type: "image_url",
-              image_url: { url: `ltfx.n.db2fd92a1178b13c8dbc.v1` },
+              image_url: { url: "data:application/pdf;base64,QUJDRA==" },
             },
           ],
         },
@@ -634,7 +634,7 @@ describe("OpenAI-compatible HTTP API (e2e)", () => {
       {
         const manyImageParts = Array.from({ length: 9 }).map(() => ({
           type: "image_url",
-          image_url: { url: `ltfx.n.dfe71a6c9f66eeee783c.v1` },
+          image_url: { url: "data:image/png;base64,QUJDRA==" },
         }));
         await expectInvalidRequestNoDispatch([
           {

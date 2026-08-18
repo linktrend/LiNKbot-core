@@ -202,7 +202,7 @@ describe("my-channel plugin", () => {
     const cfg = {
       channels: {
         "my-channel": {
-          token: "${ltfx.n.4c5dc9b7708905f77f5e.v1}",
+          token: "test-token",
           allowFrom: ["user1"],
         },
       },
@@ -215,7 +215,7 @@ describe("my-channel plugin", () => {
   it("should inspect account without materializing secrets", () => {
     const cfg = {
       channels: {
-        "my-channel": { token: "${ltfx.n.4c5dc9b7708905f77f5e.v1}" },
+        "my-channel": { token: "test-token" },
       },
     };
 
@@ -247,7 +247,7 @@ describe("my-provider plugin", () => {
 
   it("should return catalog when API key is available", async () => {
     const result = await myProvider.catalog.run({
-      resolveProviderApiKey: () => ({ apiKey: "${ltfx.n.62af8704764faf8ea82f.v1}" }),
+      resolveProviderApiKey: () => ({ apiKey: "test-key" }),
       // ... context
     });
 

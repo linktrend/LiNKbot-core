@@ -81,7 +81,7 @@ This creates an Entra ID (Azure AD) application, generates a client secret, buil
     msteams: {
       enabled: true,
       appId: "<CLIENT_ID>",
-      appPassword: "${ltfx.n.4b647ac97db45b934247.v1}",
+      appPassword: "<CLIENT_SECRET>",
       tenantId: "<TENANT_ID>",
       webhook: { port: 3978, path: "/api/messages" },
     },
@@ -255,7 +255,7 @@ Creation of new multi-tenant bots was deprecated after 2025-07-31. Use **Single 
     msteams: {
       enabled: true,
       appId: "<APP_ID>",
-      appPassword: "${ltfx.n.7c7f839912bbdfa36d27.v1}",
+      appPassword: "<APP_PASSWORD>",
       tenantId: "<TENANT_ID>",
       webhook: { port: 3978, path: "/api/messages" },
     },

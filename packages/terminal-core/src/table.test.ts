@@ -114,7 +114,7 @@ describe("renderTable", () => {
       columns: [
         { key: "Status", header: "Status", minWidth: 10 },
         { key: "Skill", header: "Skill", minWidth: 18, flex: true },
-        { key: `ltfx.n.526e0087cc3f254d9f86.v1`, header: "Description", minWidth: 24, flex: true },
+        { key: "Description", header: "Description", minWidth: 24, flex: true },
         { key: "Source", header: "Source", minWidth: 10 },
       ],
       rows: [
@@ -480,7 +480,7 @@ describe("renderTable", () => {
       columns: [
         { key: "Status", header: "Status", minWidth: 10 },
         { key: "Skill", header: "Skill", minWidth: 18 },
-        { key: `ltfx.n.526e0087cc3f254d9f86.v1`, header: "Description", minWidth: 18, flex: true },
+        { key: "Description", header: "Description", minWidth: 18, flex: true },
         { key: "Source", header: "Source", minWidth: 10 },
       ],
       rows: [

@@ -456,7 +456,7 @@ describe("deliverAgentCommandResult payload normalization", () => {
     deliverOutboundPayloadsMock.mockResolvedValue([]);
 
     await deliverMediaReplyForTest({
-      key: `ltfx.n.e3be9c8b4e2b4f5ecbc8.v1`,
+      key: "agent:tester:slack:direct:alice",
       agentId: "tester",
     } as never);
 
@@ -479,7 +479,7 @@ describe("deliverAgentCommandResult payload normalization", () => {
     deliverOutboundPayloadsMock.mockResolvedValue([]);
 
     const delivered = await deliverMediaReplyForTest({
-      key: `ltfx.n.e3be9c8b4e2b4f5ecbc8.v1`,
+      key: "agent:tester:slack:direct:alice",
       agentId: "tester",
     } as never);
 
@@ -521,7 +521,7 @@ describe("deliverAgentCommandResult payload normalization", () => {
         sessionKey: "agent:tester:main",
       } as AgentCommandOpts,
       outboundSession: {
-        key: `ltfx.n.282aaf9f2977476adae3.v1`,
+        key: "agent:tester:main",
         agentId: "tester",
       } as never,
       sessionEntry: {
@@ -578,7 +578,7 @@ describe("deliverAgentCommandResult payload normalization", () => {
         sessionKey: "agent:tester:main",
       } as AgentCommandOpts,
       outboundSession: {
-        key: `ltfx.n.282aaf9f2977476adae3.v1`,
+        key: "agent:tester:main",
         agentId: "tester",
       } as never,
       sessionEntry: {
@@ -654,7 +654,7 @@ describe("deliverAgentCommandResult payload normalization", () => {
         replyTo: "#general",
       } as AgentCommandOpts,
       outboundSession: {
-        key: `ltfx.n.e3be9c8b4e2b4f5ecbc8.v1`,
+        key: "agent:tester:slack:direct:alice",
         agentId: "tester",
       } as never,
       sessionEntry: undefined,
@@ -1766,7 +1766,7 @@ describe("deliverAgentCommandResult payload normalization", () => {
         replyTo: "#general",
       } as AgentCommandOpts,
       outboundSession: {
-        key: `ltfx.n.e3be9c8b4e2b4f5ecbc8.v1`,
+        key: "agent:tester:slack:direct:alice",
         agentId: "tester",
       } as never,
       sessionEntry: undefined,
@@ -1808,7 +1808,7 @@ describe("deliverAgentCommandResult payload normalization", () => {
     });
 
     const delivered = await deliverMediaReplyForTest({
-      key: `ltfx.n.e3be9c8b4e2b4f5ecbc8.v1`,
+      key: "agent:tester:slack:direct:alice",
       agentId: "tester",
     } as never);
 
@@ -1854,7 +1854,7 @@ describe("deliverAgentCommandResult payload normalization", () => {
 
     const delivered = await deliverMediaReplyForTest(
       {
-        key: `ltfx.n.e3be9c8b4e2b4f5ecbc8.v1`,
+        key: "agent:tester:slack:direct:alice",
         agentId: "tester",
       } as never,
       { bestEffortDeliver: true },
@@ -1998,7 +1998,7 @@ describe("deliverAgentCommandResult payload normalization", () => {
           replyTo: "#general",
         } as AgentCommandOpts,
         outboundSession: {
-          key: `ltfx.n.e3be9c8b4e2b4f5ecbc8.v1`,
+          key: "agent:tester:slack:direct:alice",
           agentId: "tester",
         } as never,
         sessionEntry: undefined,
@@ -2050,7 +2050,7 @@ describe("deliverAgentCommandResult payload normalization", () => {
           replyTo: "#general",
         } as AgentCommandOpts,
         outboundSession: {
-          key: `ltfx.n.90eda16199288277c8a6.v1`,
+          key: "agent:tester:not-installed:direct:alice",
           agentId: "tester",
         } as never,
         sessionEntry: undefined,

@@ -110,7 +110,7 @@ describe("provider auth aliases", () => {
   it("shares manifest env vars across aliased providers", () => {
     const resolveAuth = createProviderAuthResolver(
       {
-        FIXTURE_PROVIDER_API_KEY: `ltfx.n.62af8704764faf8ea82f.v1`, // pragma: allowlist secret
+        FIXTURE_PROVIDER_API_KEY: "test-key", // pragma: allowlist secret
       } as NodeJS.ProcessEnv,
       { version: 1, profiles: {} },
     );
@@ -185,7 +185,7 @@ describe("provider auth aliases", () => {
 
     const resolveAuth = createProviderAuthResolver(
       {
-        OPENAI_API_KEY: `ltfx.n.97aba22fd3c830fb7840.v1`, // pragma: allowlist secret
+        OPENAI_API_KEY: "openai-key", // pragma: allowlist secret
       } as NodeJS.ProcessEnv,
       { version: 1, profiles: {} },
       {},
@@ -235,7 +235,7 @@ describe("provider auth aliases", () => {
 
     const resolveAuth = createProviderAuthResolver(
       {
-        OPENAI_API_KEY: `ltfx.n.97aba22fd3c830fb7840.v1`, // pragma: allowlist secret
+        OPENAI_API_KEY: "openai-key", // pragma: allowlist secret
       } as NodeJS.ProcessEnv,
       { version: 1, profiles: {} },
       {

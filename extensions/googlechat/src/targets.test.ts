@@ -28,7 +28,7 @@ const mocks = vi.hoisted(() => ({
   ),
   googleAuthCtor: vi.fn(),
   gaxiosCtor: vi.fn(),
-  getAccessToken: vi.fn().mockResolvedValue({ token: `ltfx.n.3f16bed7089f4653e5ef.v1` }),
+  getAccessToken: vi.fn().mockResolvedValue({ token: "access-token" }),
   oauthCtor: vi.fn(),
   verifySignedJwtWithCertsAsync: vi.fn(),
   verifyIdToken: vi.fn(),

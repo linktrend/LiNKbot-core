@@ -988,7 +988,7 @@ final class DashboardWindowController: NSWindowController, WKNavigationDelegate,
             title: "Dashboard unavailable",
             message: error.localizedDescription,
             detail: "The dashboard window is open, but the web UI could not load from this endpoint.",
-            url: (self.currentURL))
+            url: self.currentURL)
         self.webView.loadHTMLString(html, baseURL: nil)
     }
 }

@@ -84,14 +84,14 @@ describe("buildAgentSystemPrompt", () => {
       workspaceDir: "/tmp/openclaw",
       ownerNumbers: ["+123"],
       ownerDisplay: "hash",
-      ownerDisplaySecret: `ltfx.n.694182b9a0ccc0492d10.v1`, // pragma: allowlist secret
+      ownerDisplaySecret: "secret-key-A", // pragma: allowlist secret
     });
 
     const secretB = buildAgentSystemPrompt({
       workspaceDir: "/tmp/openclaw",
       ownerNumbers: ["+123"],
       ownerDisplay: "hash",
-      ownerDisplaySecret: `ltfx.n.7ec3b16a2a98b01fc70b.v1`, // pragma: allowlist secret
+      ownerDisplaySecret: "secret-key-B", // pragma: allowlist secret
     });
 
     const lineA = secretA.split("## Authorized Senders")[1]?.split("\n")[1];
@@ -346,7 +346,7 @@ describe("buildAgentSystemPrompt", () => {
     expect(prompt).toContain("`[embed ...]`: Control UI/webchat only");
     expect(prompt).toContain('[embed ref="cv_123" title="Status" height="320" /]');
     expect(prompt).toContain(
-      '[embed url=`ltfx.n.cd8d77aa9789fd62a7b3.v1` title="Status" height="320" /]',
+      '[embed url="/__openclaw__/canvas/documents/cv_123/index.html" title="Status" height="320" /]',
     );
     expect(prompt).toContain("Never local/file:// or arbitrary URL");
     expect(prompt).toContain("URL must start `/__openclaw__/canvas/`; else use `ref`");

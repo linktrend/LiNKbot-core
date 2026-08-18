@@ -16,7 +16,7 @@ describe("resolveDiscordToken", () => {
   it("prefers config token over env", () => {
     vi.stubEnv("DISCORD_BOT_TOKEN", "env-token");
     const cfg = {
-      channels: { discord: { token: `ltfx.n.50b0940ad7c26e58a17c.v1` } },
+      channels: { discord: { token: "cfg-token" } },
     } as OpenClawConfig;
     const res = resolveDiscordToken(cfg);
     expect(res.token).toBe("cfg-token");
@@ -40,9 +40,9 @@ describe("resolveDiscordToken", () => {
     const cfg = {
       channels: {
         discord: {
-          token: `ltfx.n.e1501ed8b13353b142a7.v1`,
+          token: "base-token",
           accounts: {
-            work: { token: `ltfx.n.1df9ffe386ed0953319e.v1` },
+            work: { token: "acct-token" },
           },
         },
       },
@@ -57,7 +57,7 @@ describe("resolveDiscordToken", () => {
     const cfg = {
       channels: {
         discord: {
-          token: `ltfx.n.e1501ed8b13353b142a7.v1`,
+          token: "base-token",
           accounts: {
             work: {},
           },
@@ -74,7 +74,7 @@ describe("resolveDiscordToken", () => {
     const cfg = {
       channels: {
         discord: {
-          token: `ltfx.n.e1501ed8b13353b142a7.v1`,
+          token: "base-token",
           accounts: {
             work: { token: "" },
           },
@@ -92,7 +92,7 @@ describe("resolveDiscordToken", () => {
       channels: {
         discord: {
           accounts: {
-            Work: { token: `ltfx.n.1df9ffe386ed0953319e.v1` },
+            Work: { token: "acct-token" },
           },
         },
       },
@@ -120,7 +120,7 @@ describe("resolveDiscordToken", () => {
         discord: {
           accounts: {
             work: {
-              token: `ltfx.n.bbe7343df7ec789b762c.v1`,
+              token: "Bot runtime-work-token",
             },
           },
         },
@@ -156,7 +156,7 @@ describe("resolveDiscordToken", () => {
     const cfg = {
       channels: {
         discord: {
-          token: `ltfx.n.e1501ed8b13353b142a7.v1`,
+          token: "base-token",
           accounts: {
             work: {
               token: { source: "env", provider: "default", id: "DISCORD_WORK_TOKEN" },

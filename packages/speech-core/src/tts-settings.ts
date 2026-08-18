@@ -128,7 +128,7 @@ export function asProviderConfigMap(value: unknown): Record<string, unknown> {
     : {};
 }
 
-export function hasOwnProperty(value: object, key: (string)): boolean {
+export function hasOwnProperty(value: object, key: string): boolean {
   return Object.hasOwn(value, key);
 }
 

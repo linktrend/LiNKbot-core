@@ -30,7 +30,7 @@ function createHarness(overrides?: {
       },
     } as unknown as App,
     runtime: { error: vi.fn() },
-    botToken: `ltfx.n.87894fe048938b686cfb.v1`,
+    botToken: "xoxb-test",
     botUserId: "B1",
     shouldDropMismatchedSlackEvent: () => overrides?.shouldDrop === true,
     getSlackAssistantThreadContext,
@@ -152,7 +152,7 @@ describe("registerSlackAssistantEvents", () => {
     });
 
     expect(replies).toHaveBeenCalledWith({
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       channel: "D123",
       ts: "1729999327.187299",
       oldest: "1729999327.187299",
@@ -160,7 +160,7 @@ describe("registerSlackAssistantEvents", () => {
       limit: 4,
     });
     expect(update).toHaveBeenCalledWith({
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       channel: "D123",
       ts: "1729999327.300000",
       text: "assistant reply",

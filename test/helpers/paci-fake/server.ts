@@ -393,7 +393,7 @@ function buildIntrospectionPolicy(input: {
  * Resource-server caller eligibility — independent of token subject.
  * Fail closed on any domain / audience / minting-client mismatch.
  */
-function callerMayIntrospectToken(caller: RegisteredClient, token: (IssuedToken): boolean {)
+function callerMayIntrospectToken(caller: RegisteredClient, token: IssuedToken): boolean {
   const policy = caller.introspectionPolicy;
   if (!policy.allowIntrospection) {
     return false;

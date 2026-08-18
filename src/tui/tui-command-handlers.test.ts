@@ -259,7 +259,7 @@ describe("tui command handlers", () => {
     const listSessions = vi.fn().mockResolvedValue({
       sessions: [
         {
-          key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+          key: "agent:main:main",
           displayName: "main",
           updatedAt: Date.now(),
         },
@@ -951,13 +951,13 @@ describe("tui command handlers", () => {
     const setSessionMock = vi.fn().mockResolvedValue(undefined) as SetSessionMock;
     const createSessionMock = vi.fn().mockResolvedValue({
       ok: true,
-      key: `ltfx.n.9a5167e5d9a3e4d89eb1.v1`,
+      key: "agent:main:tui-canonical",
     });
     const applySessionMutationResult = vi.fn().mockReturnValue(true);
     const refreshSessionInfo = vi.fn().mockResolvedValue(undefined);
     const resetResult = {
       ok: true as const,
-      key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+      key: "agent:main:main",
       entry: { sessionId: "reset-session" },
     };
     const { handleCommand, resetSession } = createHarness({
@@ -1013,7 +1013,7 @@ describe("tui command handlers", () => {
       expectedParent: "global",
     },
   ])("$name", async ({ currentSessionKey, currentAgentId, currentSessionId, expectedParent }) => {
-    const createSession = vi.fn().mockResolvedValue({ ok: true, key: `ltfx.n.b229cd11a38701c6151b.v1` });
+    const createSession = vi.fn().mockResolvedValue({ ok: true, key: "agent:work:tui-next" });
     const { handleCommand } = createHarness({
       createSession,
       currentSessionKey,
@@ -1092,7 +1092,7 @@ describe("tui command handlers", () => {
     if (!resolveCreate) {
       throw new Error("expected pending session creation");
     }
-    resolveCreate({ ok: true, key: `ltfx.n.d4ba972112f29611ea4a.v1` });
+    resolveCreate({ ok: true, key: "agent:main:tui-created" });
     await creating;
   });
 
@@ -1177,7 +1177,7 @@ describe("tui command handlers", () => {
     await handleCommand("/verbose off");
 
     expect(patchSession).toHaveBeenCalledWith({
-      key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+      key: "agent:main:main",
       verboseLevel: "off",
     });
     expect(applySessionInfoFromPatch).toHaveBeenCalledWith(patchResult);
@@ -1552,7 +1552,7 @@ describe("tui command handlers", () => {
     await handleCommand("/activation always");
 
     expect(patchSession).toHaveBeenCalledWith({
-      key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+      key: "agent:main:main",
       groupActivation: "always",
     });
     expect(addSystem).toHaveBeenCalledWith("activation set to always");
@@ -1578,7 +1578,7 @@ describe("tui command handlers", () => {
     await handleCommand("/fast auto");
 
     expect(patch).toHaveBeenCalledWith({
-      key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+      key: "agent:main:main",
       fastMode: "auto",
     });
     expect(addSystem).toHaveBeenCalledWith("fast mode set to auto");
@@ -1618,7 +1618,7 @@ describe("tui command handlers", () => {
     await flushAsyncSelect();
 
     expect(patchSession).toHaveBeenCalledWith({
-      key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+      key: "agent:main:main",
       model: "openrouter/auto",
     });
     expect(applySessionInfoFromPatch).toHaveBeenCalledWith({ model: "openrouter/auto" });
@@ -1652,7 +1652,7 @@ describe("tui command handlers", () => {
     const patchSession = vi.fn().mockResolvedValue({
       ok: true,
       path: "/sessions/patch",
-      key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+      key: "agent:main:main",
       entry: {},
       resolved: { modelProvider: "openai", model: "gpt-5.5" },
     });
@@ -1676,7 +1676,7 @@ describe("tui command handlers", () => {
     const patchSession = vi.fn().mockResolvedValue({
       ok: true,
       path: "/sessions/patch",
-      key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+      key: "agent:main:main",
       entry: {},
       // No `resolved` field
     });
@@ -1694,7 +1694,7 @@ describe("tui command handlers", () => {
     const patchSession = vi.fn().mockResolvedValue({
       ok: true,
       path: "/sessions/patch",
-      key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+      key: "agent:main:main",
       entry: {},
       resolved: { modelProvider: "nvidia", model: "moonshotai/kimi-k2.5" },
     });

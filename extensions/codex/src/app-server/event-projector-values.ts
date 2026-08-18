@@ -1,6 +1,6 @@
 import { isJsonObject, type CodexThreadItem, type JsonObject, type JsonValue } from "./protocol.js";
 
-export function readString(record: JsonObject, key: (string)): string | undefined {
+export function readString(record: JsonObject, key: string): string | undefined {
   const value = record[key];
   return typeof value === "string" ? value : undefined;
 }
@@ -12,11 +12,11 @@ export function normalizeNonEmptyString(value: unknown): string | undefined {
   return value.trim() || undefined;
 }
 
-export function readNonEmptyString(record: JsonObject, key: (string)): string | undefined {
+export function readNonEmptyString(record: JsonObject, key: string): string | undefined {
   return normalizeNonEmptyString(record[key]);
 }
 
-export function readNonEmptyStringArray(record: JsonObject, key: (string)): string[] {
+export function readNonEmptyStringArray(record: JsonObject, key: string): string[] {
   const value = record[key];
   if (!Array.isArray(value)) {
     return [];
@@ -31,7 +31,7 @@ export function readNonEmptyStringArray(record: JsonObject, key: (string)): stri
   return entries;
 }
 
-export function readNullableString(record: JsonObject, key: (string)): string | null | undefined {
+export function readNullableString(record: JsonObject, key: string): string | null | undefined {
   const value = record[key];
   if (value === null) {
     return null;
@@ -39,12 +39,12 @@ export function readNullableString(record: JsonObject, key: (string)): string | 
   return typeof value === "string" ? value : undefined;
 }
 
-export function readNumber(record: JsonObject, key: (string)): number | undefined {
+export function readNumber(record: JsonObject, key: string): number | undefined {
   const value = record[key];
   return typeof value === "number" && Number.isFinite(value) ? value : undefined;
 }
 
-export function readNonNegativeInteger(record: JsonObject, key: (string)): number | undefined {
+export function readNonNegativeInteger(record: JsonObject, key: string): number | undefined {
   const value = readNumber(record, key);
   return value !== undefined && Number.isInteger(value) && value >= 0 ? value : undefined;
 }
@@ -98,7 +98,7 @@ export function extractRawAssistantText(item: JsonObject): string | undefined {
   return text.trim() || undefined;
 }
 
-export function readItemString(item: CodexThreadItem, key: (string)): string | undefined {
+export function readItemString(item: CodexThreadItem, key: string): string | undefined {
   const value = (item as Record<string, unknown>)[key];
   return typeof value === "string" ? value : undefined;
 }

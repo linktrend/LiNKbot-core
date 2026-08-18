@@ -127,7 +127,7 @@ const CODEX_HARNESS_AGENT_TIMEOUT_SECONDS = Math.max(
   Math.ceil(CODEX_HARNESS_REQUEST_TIMEOUT_MS / 1000) - 10,
 );
 const CODEX_HARNESS_AUTH_MODE =
-  process.env.OPENCLAW_LIVE_CODEX_HARNESS_AUTH === "api-key" ? "api-key" : `ltfx.n.c7050b003384054cb175.v1`;
+  process.env.OPENCLAW_LIVE_CODEX_HARNESS_AUTH === "api-key" ? "api-key" : "codex-auth";
 const CODEX_HARNESS_THINKING = resolveCodexHarnessThinkingLevel(
   process.env.OPENCLAW_LIVE_CODEX_HARNESS_THINKING,
 );

@@ -52,8 +52,8 @@ describe("sendMessageSlack unfurl controls", () => {
     const client = createSlackSendTestClient();
 
     await sendMessageSlack("channel:C123", "https://example.com", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
-      cfg: slackConfig({ botToken: `ltfx.n.87894fe048938b686cfb.v1` }),
+      token: "xoxb-test",
+      cfg: slackConfig({ botToken: "xoxb-test" }),
       client,
     });
 
@@ -71,8 +71,8 @@ describe("sendMessageSlack unfurl controls", () => {
     };
 
     await sendMessageSlack("channel:C123", "assistant reply", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
-      cfg: slackConfig({ botToken: `ltfx.n.87894fe048938b686cfb.v1` }),
+      token: "xoxb-test",
+      cfg: slackConfig({ botToken: "xoxb-test" }),
       client,
       metadata,
     });
@@ -85,9 +85,9 @@ describe("sendMessageSlack unfurl controls", () => {
     const client = createSlackSendTestClient();
 
     await sendMessageSlack("channel:C123", "https://example.com", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: slackConfig({
-        botToken: `ltfx.n.87894fe048938b686cfb.v1`,
+        botToken: "xoxb-test",
         unfurlLinks: false,
         unfurlMedia: false,
       }),
@@ -103,10 +103,10 @@ describe("sendMessageSlack unfurl controls", () => {
     const client = createSlackSendTestClient();
 
     await sendMessageSlack("channel:C123", "https://example.com", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       accountId: "work",
       cfg: slackConfig({
-        botToken: `ltfx.n.a1fde847c8ff0e78f11b.v1`,
+        botToken: "xoxb-root",
         unfurlLinks: false,
         unfurlMedia: true,
         accounts: {
@@ -128,9 +128,9 @@ describe("sendMessageSlack unfurl controls", () => {
     const client = createSlackSendTestClient();
 
     await sendMessageSlack("channel:C123", "https://example.com", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: slackConfig({
-        botToken: `ltfx.n.87894fe048938b686cfb.v1`,
+        botToken: "xoxb-test",
         unfurlLinks: false,
         unfurlMedia: false,
       }),
@@ -151,9 +151,9 @@ describe("sendMessageSlack unfurl controls", () => {
       .mockResolvedValueOnce({ ts: "171234.567" });
 
     await sendMessageSlack("channel:C123", "https://example.com", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: slackConfig({
-        botToken: `ltfx.n.87894fe048938b686cfb.v1`,
+        botToken: "xoxb-test",
         unfurlLinks: false,
         unfurlMedia: false,
       }),
@@ -172,9 +172,9 @@ describe("sendMessageSlack unfurl controls", () => {
     const client = createSlackSendTestClient();
 
     await sendMessageSlack("channel:C123", "a".repeat(8500), {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: slackConfig({
-        botToken: `ltfx.n.87894fe048938b686cfb.v1`,
+        botToken: "xoxb-test",
         unfurlLinks: false,
         unfurlMedia: false,
       }),

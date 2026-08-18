@@ -164,7 +164,7 @@ describe("wrapStreamFnWithDiagnosticModelCallEvents", () => {
     };
     originalStream.result = async () => "kept";
     const requestPayload = {
-      input: [{ role: "user", content: "secret prompt ltfx.n.73aa7f6502a1d784e1b3.v1" }],
+      input: [{ role: "user", content: "secret prompt sk-test-secret-value" }],
       model: "gpt-5.4",
     };
     const wrapped = wrapStreamFnWithDiagnosticModelCallEvents(
@@ -228,7 +228,7 @@ describe("wrapStreamFnWithDiagnosticModelCallEvents", () => {
     );
     expectNumberField(completedEvent, "responseStreamBytes");
     expectNumberField(completedEvent, "timeToFirstByteMs");
-    expect(JSON.stringify(events)).not.toContain("ltfx.n.73aa7f6502a1d784e1b3.v1");
+    expect(JSON.stringify(events)).not.toContain("sk-test-secret-value");
   });
 
   it("emits one successful provider timeline event for result and iterator completion", async () => {
@@ -475,7 +475,7 @@ describe("wrapStreamFnWithDiagnosticModelCallEvents", () => {
     async function* stream() {
       yield { type: "text_delta", delta: "safe" };
     }
-    const originalPayload = { input: "secret ltfx.n.3de4acc33a3e5aed78eb.v1" };
+    const originalPayload = { input: "secret sk-original-secret" };
     const replacementPayload = { input: "redacted" };
     const wrapped = wrapStreamFnWithDiagnosticModelCallEvents(
       (async (
@@ -510,7 +510,7 @@ describe("wrapStreamFnWithDiagnosticModelCallEvents", () => {
     );
     expectNumberField(completedEvent, "responseStreamBytes");
     expectNumberField(completedEvent, "timeToFirstByteMs");
-    expect(JSON.stringify(events)).not.toContain("ltfx.n.3de4acc33a3e5aed78eb.v1");
+    expect(JSON.stringify(events)).not.toContain("sk-original-secret");
   });
 
   it("counts text deltas without serializing full partial snapshots", async () => {
@@ -1146,7 +1146,7 @@ describe("wrapStreamFnWithDiagnosticModelCallEvents", () => {
       { hookName: "model_call_ended", handler: ended },
     ]);
     initializeGlobalHookRunner(registry);
-    const secretChunk = "secret response with Bearer ltfx.n.73aa7f6502a1d784e1b3.v1";
+    const secretChunk = "secret response with Bearer sk-test-secret-value";
 
     async function* stream() {
       yield { type: "text", text: secretChunk };

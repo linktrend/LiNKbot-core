@@ -296,11 +296,11 @@ function commitComposerDraft(props: ChatComposerProps, value: string): void {
   props.onDraftChange(value);
 }
 
-function markComposerInputIntent(state: ChatComposerState, key: (string)): void {
+function markComposerInputIntent(state: ChatComposerState, key: string): void {
   state.composerInputIntentKey = key;
 }
 
-function consumeComposerInputIntent(state: ChatComposerState, key: (string)): boolean {
+function consumeComposerInputIntent(state: ChatComposerState, key: string): boolean {
   if (state.composerInputIntentKey !== key) {
     return false;
   }
@@ -308,7 +308,7 @@ function consumeComposerInputIntent(state: ChatComposerState, key: (string)): bo
   return true;
 }
 
-function clearPendingClearedSubmittedDraft(state: ChatComposerState, key: (string)): void {
+function clearPendingClearedSubmittedDraft(state: ChatComposerState, key: string): void {
   if (state.pendingClearedSubmittedDraft?.key === key) {
     state.pendingClearedSubmittedDraft = null;
   }

@@ -73,7 +73,7 @@ function loadChannelPackageStateModule(params: { modulePath: string; rootDir: st
   }
 }
 
-function hasNonEmptyEnvValue(env: NodeJS.ProcessEnv | undefined, key: (string)): boolean {
+function hasNonEmptyEnvValue(env: NodeJS.ProcessEnv | undefined, key: string): boolean {
   return typeof env?.[key] === "string" && env[key].trim().length > 0;
 }
 

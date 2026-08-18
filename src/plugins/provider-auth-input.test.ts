@@ -220,11 +220,11 @@ describe("normalizeTokenProviderInput", () => {
 
 describe("normalizeApiKeyInput", () => {
   it("strips shell syntax, pasted line breaks, and non-header-safe artifacts", () => {
-    expect(normalizeApiKeyInput("export OPENAI_API_KEY=`ltfx.n.bb642e1be405938fdccb.v1`;")).toBe("sk-abc");
+    expect(normalizeApiKeyInput("export OPENAI_API_KEY='sk-\r\nabc│';")).toBe("sk-abc");
   });
 
   it("preserves ordinary interior spaces in bearer-style values", () => {
-    expect(normalizeApiKeyInput('TOKEN=`ltfx.n.9f4d509fe1e295829ca1.v1`')).toBe("Bearer demo token");
+    expect(normalizeApiKeyInput('TOKEN="Bearer demo token"')).toBe("Bearer demo token");
   });
 });
 
@@ -311,8 +311,8 @@ describe("ensureApiKeyFromEnvOrPrompt", () => {
   });
 
   it("uses explicit env for ref fallback instead of host process env", async () => {
-    setMinimaxEnv({ apiKey: `ltfx.n.09f10e4bdc37a471382a.v1` });
-    const env = { MINIMAX_API_KEY: `ltfx.n.e595ce1d9c48c0bf02c7.v1` } as NodeJS.ProcessEnv;
+    setMinimaxEnv({ apiKey: "host-key" });
+    const env = { MINIMAX_API_KEY: "explicit-key" } as NodeJS.ProcessEnv;
 
     const { confirm, text, setCredential } = createPromptAndCredentialSpies({
       confirmResult: true,
@@ -386,7 +386,7 @@ describe("ensureApiKeyFromEnvOrPrompt", () => {
   });
 
   it("never includes resolved env secret values in reference validation notes", async () => {
-    setMinimaxEnv({ apiKey: `ltfx.n.4ca15dbf5e2c269541ee.v1` });
+    setMinimaxEnv({ apiKey: "sk-minimax-redacted-value" });
 
     const select = vi.fn(async () => "env") as WizardPrompter["select"];
     const text = vi.fn<WizardPrompter["text"]>().mockResolvedValue("MINIMAX_API_KEY");
@@ -401,10 +401,10 @@ describe("ensureApiKeyFromEnvOrPrompt", () => {
       setCredential,
     });
 
-    expect(result).toBe("ltfx.n.4ca15dbf5e2c269541ee.v1");
+    expect(result).toBe("sk-minimax-redacted-value");
     const noteMessages = note.mock.calls.map((call) => call.at(0) ?? "").join("\n");
     expect(noteMessages).toContain("Validated environment variable MINIMAX_API_KEY.");
-    expect(noteMessages).not.toContain("ltfx.n.4ca15dbf5e2c269541ee.v1");
+    expect(noteMessages).not.toContain("sk-minimax-redacted-value");
   });
 });
 
@@ -416,7 +416,7 @@ describe("ensureApiKeyFromOptionEnvOrPrompt", () => {
     });
 
     const result = await ensureWithOptionEnvOrPrompt({
-      token: `ltfx.n.63b756acc4da8b2dc774.v1`,
+      token: "  opts-key  ",
       tokenProvider: " DEMO-PROVIDER ",
       expectedProviders: ["demo-provider"],
       provider: "demo-provider",
@@ -445,7 +445,7 @@ describe("ensureApiKeyFromOptionEnvOrPrompt", () => {
     });
 
     const result = await ensureWithOptionEnvOrPrompt({
-      token: `ltfx.n.391d61dd71a84f3aed38.v1`,
+      token: "opts-key",
       tokenProvider: "other-provider",
       expectedProviders: ["minimax"],
       provider: "minimax",

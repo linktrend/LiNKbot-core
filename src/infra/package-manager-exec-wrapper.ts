@@ -130,7 +130,7 @@ const YARN_BUILTIN_NON_EXEC_SUBCOMMANDS = new Set([
   "workspace",
 ]);
 
-function normalizeOptionFlag(token: (string)): string {
+function normalizeOptionFlag(token: string): string {
   return normalizeLowercaseStringOrEmpty(parseInlineOptionToken(token).name);
 }
 
@@ -138,7 +138,7 @@ function containsSubcommandToken(argv: string[], subcommands: ReadonlySet<string
   return argv.some((token) => subcommands.has(normalizeLowercaseStringOrEmpty(token)));
 }
 
-export function normalizePackageManagerExecToken(token: (string)): string {
+export function normalizePackageManagerExecToken(token: string): string {
   return normalizeExecutableToken(token).replace(/\.(?:c|m)?js$/i, "");
 }
 

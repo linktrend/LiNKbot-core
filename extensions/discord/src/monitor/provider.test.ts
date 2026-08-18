@@ -103,7 +103,7 @@ function createConfigWithDiscordAccount(overrides: Record<string, unknown> = {})
       discord: {
         accounts: {
           default: {
-            token: `ltfx.n.d44048b33c31fc135950.v1`,
+            token: "MTIz.abc.def",
             ...overrides,
           },
         },
@@ -435,7 +435,7 @@ describe("monitorDiscordProvider", () => {
   it("does not load the Discord voice runtime for text-only default config", async () => {
     resolveDiscordAccountMock.mockReturnValue({
       accountId: "default",
-      token: `ltfx.n.d44048b33c31fc135950.v1`,
+      token: "MTIz.abc.def",
       config: {
         commands: { native: true, nativeSkills: false },
         agentComponents: { enabled: false },
@@ -454,7 +454,7 @@ describe("monitorDiscordProvider", () => {
   it("loads the Discord voice runtime only when voice is enabled", async () => {
     resolveDiscordAccountMock.mockReturnValue({
       accountId: "default",
-      token: `ltfx.n.d44048b33c31fc135950.v1`,
+      token: "MTIz.abc.def",
       config: {
         commands: { native: true, nativeSkills: false },
         voice: { enabled: true },
@@ -474,7 +474,7 @@ describe("monitorDiscordProvider", () => {
   it("loads the Discord voice runtime for existing voice config blocks", async () => {
     resolveDiscordAccountMock.mockReturnValue({
       accountId: "default",
-      token: `ltfx.n.d44048b33c31fc135950.v1`,
+      token: "MTIz.abc.def",
       config: {
         commands: { native: true, nativeSkills: false },
         voice: {},
@@ -497,7 +497,7 @@ describe("monitorDiscordProvider", () => {
     const execApprovalsConfig = { enabled: false, approvers: ["123"] };
     resolveDiscordAccountMock.mockReturnValue({
       accountId: "default",
-      token: `ltfx.n.50b0940ad7c26e58a17c.v1`,
+      token: "cfg-token",
       config: {
         commands: { native: true, nativeSkills: false },
         voice: { enabled: false },
@@ -531,7 +531,7 @@ describe("monitorDiscordProvider", () => {
     const execApprovalsConfig = { enabled: true, approvers: ["123"] };
     resolveDiscordAccountMock.mockReturnValue({
       accountId: "default",
-      token: `ltfx.n.50b0940ad7c26e58a17c.v1`,
+      token: "cfg-token",
       config: {
         commands: { native: true, nativeSkills: false },
         voice: { enabled: false },
@@ -553,7 +553,7 @@ describe("monitorDiscordProvider", () => {
         capability: "approval.native",
       }),
     ).toEqual({
-      token: `ltfx.n.50b0940ad7c26e58a17c.v1`,
+      token: "cfg-token",
       config: execApprovalsConfig,
     });
   });
@@ -809,7 +809,7 @@ describe("monitorDiscordProvider", () => {
   it("ignores removed custom eventQueue config", async () => {
     resolveDiscordAccountMock.mockReturnValue({
       accountId: "default",
-      token: `ltfx.n.d44048b33c31fc135950.v1`,
+      token: "MTIz.abc.def",
       config: {
         commands: { native: true, nativeSkills: false },
         voice: { enabled: false },
@@ -847,7 +847,7 @@ describe("monitorDiscordProvider", () => {
   it("ignores legacy inbound worker timeout config", async () => {
     resolveDiscordAccountMock.mockReturnValue({
       accountId: "default",
-      token: `ltfx.n.d44048b33c31fc135950.v1`,
+      token: "MTIz.abc.def",
       config: {
         commands: { native: true, nativeSkills: false },
         voice: { enabled: false },
@@ -1091,7 +1091,7 @@ describe("monitorDiscordProvider", () => {
     resolveNativeCommandsEnabledMock.mockReturnValue(false);
     resolveDiscordAccountMock.mockReturnValue({
       accountId: "default",
-      token: `ltfx.n.d44048b33c31fc135950.v1`,
+      token: "MTIz.abc.def",
       config: {
         applicationId: "987654321098765432",
         commands: { native: false, nativeSkills: false },
@@ -1117,7 +1117,7 @@ describe("monitorDiscordProvider", () => {
     providerTesting.setFetchDiscordApplicationId(fetchApplicationId);
     resolveDiscordAccountMock.mockReturnValue({
       accountId: "default",
-      token: `ltfx.n.d44048b33c31fc135950.v1`,
+      token: "MTIz.abc.def",
       config: {
         commands: { native: true, nativeSkills: false },
         voice: { enabled: false },
@@ -1141,7 +1141,7 @@ describe("monitorDiscordProvider", () => {
     providerTesting.setFetchDiscordApplicationId(fetchApplicationId);
     resolveDiscordAccountMock.mockReturnValue({
       accountId: "default",
-      token: `ltfx.n.d44048b33c31fc135950.v1`,
+      token: "MTIz.abc.def",
       config: {
         applicationId: "987654321098765432",
         commands: { native: true, nativeSkills: false },

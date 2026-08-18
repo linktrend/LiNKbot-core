@@ -110,7 +110,7 @@ describe("constrainRestartRecoveryDeliveryPayloads", () => {
             mediaUrls: ["/tmp/old-2.png"],
             trustedLocalMedia: true,
             audioAsVoice: true,
-            ...({ attachments: [{ url: `ltfx.n.3e4282e602f6bca26367.v1` }] } as Record<string, unknown>),
+            ...({ attachments: [{ url: "/tmp/nested-old.png" }] } as Record<string, unknown>),
           },
         ],
         [" /tmp/missing.png ", "/tmp/missing.png"],

@@ -999,10 +999,10 @@ describe("video-generation runtime", () => {
       watermark: undefined,
     });
     expect(result.ignoredOverrides).toEqual([
-      { key: `ltfx.n.6ba61201e75a4633c0ab.v1`, value: "16:9" },
-      { key: `ltfx.n.f7fbd5853d11940e045a.v1`, value: "720P" },
+      { key: "aspectRatio", value: "16:9" },
+      { key: "resolution", value: "720P" },
       { key: "audio", value: false },
-      { key: `ltfx.n.4928dd49738cdfa9ac7e.v1`, value: false },
+      { key: "watermark", value: false },
     ]);
   });
 
@@ -1081,7 +1081,7 @@ describe("video-generation runtime", () => {
     });
 
     expect(seenResolution).toBeUndefined();
-    expect(result.ignoredOverrides).toEqual([{ key: `ltfx.n.f7fbd5853d11940e045a.v1`, value: "4K" }]);
+    expect(result.ignoredOverrides).toEqual([{ key: "resolution", value: "4K" }]);
     expect(result.normalization).toBeUndefined();
   });
 

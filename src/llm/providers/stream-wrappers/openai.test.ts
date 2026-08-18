@@ -785,7 +785,7 @@ describe("createOpenAIAttributionHeadersWrapper", () => {
       } as Model<"openai-chatgpt-responses">,
       { messages: [] },
       {
-        apiKey: `ltfx.n.c81dc06a7c87a92aa64b.v1`,
+        apiKey: "oauth-bearer-token",
         headers: {
           originator: "openclaw",
           "User-Agent": "openclaw",

@@ -263,7 +263,7 @@ describe("createApplicationGateway reconnecting snapshot", () => {
     const settings = {
       ...loadSettings(),
       gatewayUrl: pageGateway,
-      token: `ltfx.n.8e6780cc7aa5b6a65a6b.v1`,
+      token: "page-token",
       theme: "dash" as const,
       sessionKey: "agent:page:document",
       lastActiveSessionKey: "agent:page:document",
@@ -278,7 +278,7 @@ describe("createApplicationGateway reconnecting snapshot", () => {
     gateway.start();
     expect(current().opts.token).toBe("page-token");
     current().opts.onHello?.(HELLO);
-    gateway.connect({ token: `ltfx.n.151d57570beda6d585b4.v1` });
+    gateway.connect({ token: "replacement-page-token" });
 
     expect(current().opts.token).toBe("replacement-page-token");
     expect(localStorage.getItem(pageSettingsKey)).toBe(storedPageSettings);
@@ -305,7 +305,7 @@ describe("createApplicationGateway reconnecting snapshot", () => {
     gateway.start();
     // The login gate always resubmits its prefilled (serving) gateway URL;
     // an unchanged URL must not count as an explicit gateway selection.
-    gateway.connect({ gatewayUrl: pageGateway, token: `ltfx.n.b20f97ddb9eb4056e37a.v1`, password: "pw" });
+    gateway.connect({ gatewayUrl: pageGateway, token: "approval-token", password: "pw" });
 
     expect(current().opts.url).toBe(pageGateway);
     expect(current().opts.token).toBe("approval-token");

@@ -88,7 +88,7 @@ struct GatewayChannelShutdownTests {
                     return .data(GatewayWebSocketTestSupport.connectOkData(
                         id: id,
                         tickIntervalMs: 1,
-                        deviceToken: "${ltfx.n.4b1a0c16274e753c58b8.v1}"))
+                        deviceToken: "stale-device-token"))
                 })
             })
             let channel = try GatewayChannelActor(

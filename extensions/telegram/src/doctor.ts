@@ -41,7 +41,7 @@ type DoctorAccountRecord = Record<string, unknown>;
 type TelegramAllowFromListRef = {
   pathLabel: string;
   holder: Record<string, unknown>;
-  key: `ltfx.n.439ba78727db7799ce48.v1` | "groupAllowFrom";
+  key: "allowFrom" | "groupAllowFrom";
 };
 
 function asObjectRecord(value: unknown): Record<string, unknown> | null {
@@ -97,8 +97,8 @@ function collectTelegramAllowFromLists(
   account: Record<string, unknown>,
 ): TelegramAllowFromListRef[] {
   const refs: TelegramAllowFromListRef[] = [
-    { pathLabel: `${prefix}.allowFrom`, holder: account, key: `ltfx.n.439ba78727db7799ce48.v1` },
-    { pathLabel: `${prefix}.groupAllowFrom`, holder: account, key: `ltfx.n.484faa27f55cd5627f74.v1` },
+    { pathLabel: `${prefix}.allowFrom`, holder: account, key: "allowFrom" },
+    { pathLabel: `${prefix}.groupAllowFrom`, holder: account, key: "groupAllowFrom" },
   ];
   const groups = asObjectRecord(account.groups);
   if (!groups) {
@@ -112,7 +112,7 @@ function collectTelegramAllowFromLists(
     refs.push({
       pathLabel: `${prefix}.groups.${groupId}.allowFrom`,
       holder: group,
-      key: `ltfx.n.439ba78727db7799ce48.v1`,
+      key: "allowFrom",
     });
     const topics = asObjectRecord(group.topics);
     if (!topics) {
@@ -126,7 +126,7 @@ function collectTelegramAllowFromLists(
       refs.push({
         pathLabel: `${prefix}.groups.${groupId}.topics.${topicId}.allowFrom`,
         holder: topic,
-        key: `ltfx.n.439ba78727db7799ce48.v1`,
+        key: "allowFrom",
       });
     }
   }
@@ -340,7 +340,7 @@ function collectTelegramMissingEnvTokenWarnings(params: {
   const account = inspectTelegramAccount({
     cfg: params.cfg,
     accountId: "default",
-    envToken: (params.env?.TELEGRAM_BOT_TOKEN ?? "",)
+    envToken: params.env?.TELEGRAM_BOT_TOKEN ?? "",
   });
   if (!account.enabled || account.tokenStatus !== "missing" || account.tokenSource !== "none") {
     return [];

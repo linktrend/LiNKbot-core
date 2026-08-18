@@ -1038,10 +1038,10 @@ extension RootTabsSourceGuardTests {
                 source,
                 from: "func persistGatewayPassword(_ value: String)",
                 to: "func clearManualCredentialFields()")
-            let tokenAssignment = try #require(tokenSetter.range(of: "self.gatewayToken = (value")))
+            let tokenAssignment = try #require(tokenSetter.range(of: "self.gatewayToken = value"))
             let tokenEndpointGuard = try #require(
                 tokenSetter.range(of: "let stableID = self.gatewayCredentialTargetStableID"))
-            let passwordAssignment = try #require(passwordSetter.range(of: "self.gatewayPassword = (value")))
+            let passwordAssignment = try #require(passwordSetter.range(of: "self.gatewayPassword = value"))
             let passwordEndpointGuard = try #require(
                 passwordSetter.range(of: "let stableID = self.gatewayCredentialTargetStableID"))
 

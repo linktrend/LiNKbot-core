@@ -165,7 +165,7 @@ function isSafeSvgAttribute(attribute: Attr): boolean {
   }
 }
 
-async function loadSvgImage(url: (string)): Promise<HTMLImageElement> {
+async function loadSvgImage(url: string): Promise<HTMLImageElement> {
   const image = new Image();
   image.decoding = "async";
   await new Promise<void>((resolve, reject) => {

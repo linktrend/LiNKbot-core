@@ -125,7 +125,7 @@ describe("delivery-queue storage", () => {
             },
           },
           session: {
-            key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+            key: "agent:main:main",
             agentId: "agent-main",
             requesterAccountId: "acct-1",
             requesterSenderId: "sender-1",
@@ -166,7 +166,7 @@ describe("delivery-queue storage", () => {
         },
       });
       expect(entry.session).toEqual({
-        key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+        key: "agent:main:main",
         agentId: "agent-main",
         requesterAccountId: "acct-1",
         requesterSenderId: "sender-1",
@@ -546,7 +546,7 @@ describe("delivery-queue storage", () => {
           to: "2",
           payloads: [{ text: "b" }],
           session: {
-            key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+            key: "agent:main:main",
             agentId: "agent-main",
             requesterAccountId: "acct-1",
             requesterSenderId: "sender-1",
@@ -560,7 +560,7 @@ describe("delivery-queue storage", () => {
 
       const entry = readQueuedEntry(tmpDir(), id);
       expect(entry.session).toEqual({
-        key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+        key: "agent:main:main",
         agentId: "agent-main",
         requesterAccountId: "acct-1",
         requesterSenderId: "sender-1",

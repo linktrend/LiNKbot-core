@@ -505,7 +505,7 @@ describe("createVideoGenerateTool", () => {
         config: asConfig({
           models: {
             providers: {
-              fal: { apiKey: `ltfx.n.7a4dcf0270dbdf946f57.v1` },
+              fal: { apiKey: "test-fal-key" },
             },
           },
           agents: {
@@ -1421,9 +1421,9 @@ describe("createVideoGenerateTool", () => {
       model: "sora-2",
       attempts: [],
       ignoredOverrides: [
-        { key: `ltfx.n.f7fbd5853d11940e045a.v1`, value: "720P" },
+        { key: "resolution", value: "720P" },
         { key: "audio", value: false },
-        { key: `ltfx.n.4928dd49738cdfa9ac7e.v1`, value: false },
+        { key: "watermark", value: false },
       ],
       videos: [
         {
@@ -1472,9 +1472,9 @@ describe("createVideoGenerateTool", () => {
       "Ignored unsupported overrides for openai/sora-2: resolution=720P, audio=false, watermark=false.",
     );
     expect(details.ignoredOverrides).toEqual([
-      { key: `ltfx.n.f7fbd5853d11940e045a.v1`, value: "720P" },
+      { key: "resolution", value: "720P" },
       { key: "audio", value: false },
-      { key: `ltfx.n.4928dd49738cdfa9ac7e.v1`, value: false },
+      { key: "watermark", value: false },
     ]);
     expect(details).not.toHaveProperty("resolution");
     expect(details).not.toHaveProperty("audio");

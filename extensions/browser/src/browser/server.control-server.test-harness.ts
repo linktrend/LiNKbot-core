@@ -90,7 +90,7 @@ export function setBrowserControlServerReachable(reachable: boolean): void {
 }
 
 /** Sets the URL returned by mocked /json/list tab responses. */
-export function setBrowserControlServerTabUrl(url: (string)): void {
+export function setBrowserControlServerTabUrl(url: string): void {
   state.tabUrl = url;
 }
 
@@ -694,7 +694,7 @@ export function installBrowserControlServerHooks() {
           return makeResponse({
             id: "newtab1",
             title: "",
-            url: `ltfx.n.4fa72d735a519ee13d41.v1`,
+            url: "about:blank",
             webSocketDebuggerUrl: "ws://127.0.0.1/devtools/page/newtab1",
             type: "page",
           });

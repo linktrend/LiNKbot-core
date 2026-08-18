@@ -522,8 +522,8 @@ describe("opencode provider plugin", () => {
                 discoveryApiKey: undefined,
               }
             : {
-                apiKey: `ltfx.n.ff41b2c6c7aaddab7184.v1`,
-                discoveryApiKey: `ltfx.n.ff41b2c6c7aaddab7184.v1`,
+                apiKey: "shared-opencode-key",
+                discoveryApiKey: "shared-opencode-key",
               },
         resolveProviderAuth: () => ({ apiKey: undefined, mode: "none", source: "none" }),
       } as never);
@@ -555,12 +555,12 @@ describe("opencode provider plugin", () => {
 
     const first = await buildOpencodeZenLiveProviderConfig({
       apiKey: "OPENCODE_API_KEY",
-      discoveryApiKey: `ltfx.n.d4c52155d4dd7c766f93.v1`,
+      discoveryApiKey: "resolved-opencode-key",
       fetchGuard,
     });
     const second = await buildOpencodeZenLiveProviderConfig({
       apiKey: "OPENCODE_API_KEY",
-      discoveryApiKey: `ltfx.n.d4c52155d4dd7c766f93.v1`,
+      discoveryApiKey: "resolved-opencode-key",
       fetchGuard,
     });
 
@@ -589,7 +589,7 @@ describe("opencode provider plugin", () => {
     });
     const unknownOnly = await buildOpencodeZenLiveProviderConfig({
       apiKey: "OPENCODE_API_KEY",
-      discoveryApiKey: `ltfx.n.d4c52155d4dd7c766f93.v1`,
+      discoveryApiKey: "resolved-opencode-key",
       fetchGuard,
     });
     expect(unknownOnly.models.map((model) => model.id)).toContain("claude-opus-4-8");
@@ -598,7 +598,7 @@ describe("opencode provider plugin", () => {
     fetchGuard.mockRejectedValueOnce(new Error("network unavailable"));
     const fallback = await buildOpencodeZenLiveProviderConfig({
       apiKey: "OPENCODE_API_KEY",
-      discoveryApiKey: `ltfx.n.d4c52155d4dd7c766f93.v1`,
+      discoveryApiKey: "resolved-opencode-key",
       fetchGuard,
     });
     expect(fallback.apiKey).toBe("OPENCODE_API_KEY");
@@ -623,18 +623,18 @@ describe("opencode provider plugin", () => {
       });
 
     const first = await buildOpencodeZenLiveProviderConfig({
-      apiKey: `ltfx.n.c23240e6876e4aac1f07.v1`,
-      discoveryApiKey: `ltfx.n.424ed1db3702f6987ca3.v1`,
+      apiKey: "runtime-a",
+      discoveryApiKey: "discovery-a",
       fetchGuard,
     });
     const second = await buildOpencodeZenLiveProviderConfig({
-      apiKey: `ltfx.n.147999919a3df05f7c6b.v1`,
-      discoveryApiKey: `ltfx.n.82a2fc6face70074bad7.v1`,
+      apiKey: "runtime-b",
+      discoveryApiKey: "discovery-b",
       fetchGuard,
     });
     const secondCached = await buildOpencodeZenLiveProviderConfig({
-      apiKey: `ltfx.n.0d2c046870b849ca4c7f.v1`,
-      discoveryApiKey: `ltfx.n.82a2fc6face70074bad7.v1`,
+      apiKey: "runtime-c",
+      discoveryApiKey: "discovery-b",
       fetchGuard,
     });
 

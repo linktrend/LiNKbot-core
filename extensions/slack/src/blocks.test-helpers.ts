@@ -20,7 +20,7 @@ type SlackSendTestClient = WebClient & {
 const slackBlockTestState = vi.hoisted(() => ({
   account: {
     accountId: "default",
-    botToken: `ltfx.n.87894fe048938b686cfb.v1`,
+    botToken: "xoxb-test",
     botTokenSource: "config",
     config: {},
   },

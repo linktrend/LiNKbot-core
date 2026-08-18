@@ -49,7 +49,7 @@ function createResumeFlowParams(
     expectedRevision: 4,
     runnerParams: {
       action: "resume",
-      token: `ltfx.n.1559e03800c25ddc6143.v1`,
+      token: "resume-1",
       approve: true,
       cwd: process.cwd(),
       timeoutMs: 1000,
@@ -93,7 +93,7 @@ describe("runManagedLobsterFlow", () => {
         type: "approval_request",
         prompt: "Approve this?",
         items: [{ id: "item-1", createdAt, count: 2n, skip: undefined }],
-        resumeToken: `ltfx.n.1559e03800c25ddc6143.v1`,
+        resumeToken: "resume-1",
       },
     });
 
@@ -108,7 +108,7 @@ describe("runManagedLobsterFlow", () => {
         kind: "lobster_approval",
         prompt: "Approve this?",
         items: [{ id: "item-1", createdAt: createdAt.toISOString(), count: "2" }],
-        resumeToken: `ltfx.n.1559e03800c25ddc6143.v1`,
+        resumeToken: "resume-1",
       },
     });
   });
@@ -206,7 +206,7 @@ describe("resumeManagedLobsterFlow", () => {
         type: "approval_request",
         prompt: "Approve this too?",
         items: [{ id: "item-2" }],
-        resumeToken: `ltfx.n.30ea67ade11a666246ef.v1`,
+        resumeToken: "resume-2",
       },
     });
 
@@ -221,7 +221,7 @@ describe("resumeManagedLobsterFlow", () => {
         kind: "lobster_approval",
         prompt: "Approve this too?",
         items: [{ id: "item-2" }],
-        resumeToken: `ltfx.n.30ea67ade11a666246ef.v1`,
+        resumeToken: "resume-2",
       },
     });
   });

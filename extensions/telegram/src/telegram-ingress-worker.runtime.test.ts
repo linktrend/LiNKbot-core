@@ -69,7 +69,7 @@ function createRuntime(
   };
   const done = runTelegramIngressWorkerRuntime({
     options: {
-      token: `ltfx.n.f35cd067d05752edf483.v1`,
+      token: "test-auth-token",
       accountId: "acct",
       initialUpdateId: null,
       spoolDir: "/tmp/openclaw-telegram-ingress-worker-test",
@@ -197,7 +197,7 @@ describe("telegram ingress worker durable-before-offset", () => {
     };
     const done = runTelegramIngressWorkerRuntime({
       options: {
-        token: `ltfx.n.f35cd067d05752edf483.v1`,
+        token: "test-auth-token",
         accountId: "acct",
         initialUpdateId: null,
         spoolDir: "/tmp/openclaw-telegram-ingress-worker-offset-test",

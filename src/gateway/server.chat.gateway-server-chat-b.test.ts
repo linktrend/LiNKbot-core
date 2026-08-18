@@ -586,7 +586,7 @@ describe("gateway server chat", () => {
       expect(payload?.defaults?.modelProvider).toBe("test-provider");
       expect(payload?.defaults?.thinkingLevels?.map((level) => level.id)).toContain("xhigh");
       expect(payload?.sessionInfo).toMatchObject({
-        key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+        key: "agent:main:main",
         sessionId: "sess-main",
         modelProvider: "test-provider",
         model: "catalog-model",
@@ -643,7 +643,7 @@ describe("gateway server chat", () => {
       expect(persisted.payload?.defaults?.modelProvider).toBeTruthy();
       expect(persisted.payload?.defaults?.model).toBeTruthy();
       expect(persisted.payload?.sessionInfo).toMatchObject({
-        key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+        key: "agent:main:main",
         sessionId: "sess-main",
         updatedAt,
         modelProvider: "openai",
@@ -741,7 +741,7 @@ describe("gateway server chat", () => {
       expect(startup.payload?.agentsList?.mainKey).toBe("main");
       expect(startup.payload?.agentsList?.agents?.map((agent) => agent.id)).toContain("main");
       expect(startup.payload?.sessionInfo).toMatchObject({
-        key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+        key: "agent:main:main",
         sessionId: "sess-main",
       });
       expect(startup.payload?.metadata?.models).toEqual(
@@ -927,7 +927,7 @@ describe("gateway server chat", () => {
                 "openai:api": {
                   type: "api_key",
                   provider: "openai",
-                  key: `ltfx.n.ef4e829d805ce8c80ecf.v1`,
+                  key: "platform-api-key",
                 },
                 "openai:chatgpt": {
                   type: "oauth",
@@ -963,7 +963,7 @@ describe("gateway server chat", () => {
             contextWindow: 400_000,
             reasoning: false,
             compat: { supportedReasoningEfforts: ["low"] },
-            params: { apiKey: `ltfx.n.0aaeb90fe868b4f00fe6.v1` },
+            params: { apiKey: "private-route-token" },
           };
           const catalogSnapshot = {
             entries: [subscriptionRoute],
@@ -1261,7 +1261,7 @@ describe("gateway server chat", () => {
           }
         | undefined;
       expect(payload?.sessionInfo).toMatchObject({
-        key: `ltfx.n.8410a9442e3fb5c8ccf3.v1`,
+        key: "agent:work:main",
         sessionId: "sess-work",
       });
       expect(payload?.metadata?.models).toEqual(

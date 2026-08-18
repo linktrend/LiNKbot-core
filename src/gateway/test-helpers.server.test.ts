@@ -9,8 +9,8 @@ describe("testOnlyResolveAuthTokenForSignature", () => {
     expect(
       testOnlyResolveAuthTokenForSignature({
         token: undefined,
-        bootstrapToken: `ltfx.n.c72773a4ddf81c3ad2b8.v1`,
-        deviceToken: `ltfx.n.73fff793651a92729a85.v1`,
+        bootstrapToken: "bootstrap-token",
+        deviceToken: "device-token",
       }),
     ).toBe("bootstrap-token");
   });
@@ -18,9 +18,9 @@ describe("testOnlyResolveAuthTokenForSignature", () => {
   it("still prefers the shared token when present", () => {
     expect(
       testOnlyResolveAuthTokenForSignature({
-        token: `ltfx.n.fad34a6f30260e5a8db3.v1`,
-        bootstrapToken: `ltfx.n.c72773a4ddf81c3ad2b8.v1`,
-        deviceToken: `ltfx.n.73fff793651a92729a85.v1`,
+        token: "shared-token",
+        bootstrapToken: "bootstrap-token",
+        deviceToken: "device-token",
       }),
     ).toBe("shared-token");
   });

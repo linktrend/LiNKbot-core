@@ -12,7 +12,7 @@ import type { CronCodexRuntimePolicyTarget } from "./store-migration.js";
 
 type MutableRecord = Record<string, unknown>;
 
-function ensureRecord(container: MutableRecord, key: (string)): MutableRecord {
+function ensureRecord(container: MutableRecord, key: string): MutableRecord {
   const existing = asOptionalRecord(container[key]);
   if (existing) {
     return existing;

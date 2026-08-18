@@ -154,9 +154,9 @@ export function registerDnsCli(program: Command) {
           ],
           rows: [
             { Key: "Domain", Value: wideAreaDomain },
-            { Key: `ltfx.n.e6062e38ea6479f95c4f.v1`, Value: zonePath },
+            { Key: "Zone file", Value: zonePath },
             {
-              Key: `ltfx.n.05cd8d52937b783a401a.v1`,
+              Key: "Tailnet IP",
               Value: `${tailnetIPv4 ?? "—"}${tailnetIPv6 ? ` (v6 ${tailnetIPv6})` : ""}`,
             },
           ],

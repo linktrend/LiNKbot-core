@@ -33,7 +33,7 @@ export function matrixEventToRaw(
   return raw;
 }
 
-export function parseMxc(url: (string)): { server: string; mediaId: string } | null {
+export function parseMxc(url: string): { server: string; mediaId: string } | null {
   const match = /^mxc:\/\/([^/]+)\/(.+)$/.exec(url.trim());
   if (!match) {
     return null;

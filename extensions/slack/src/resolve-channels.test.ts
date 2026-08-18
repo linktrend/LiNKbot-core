@@ -36,7 +36,7 @@ describe("resolveSlackChannelAllowlist", () => {
   it("returns stable channel ids without listing a workspace", async () => {
     const list = vi.fn();
     const res = await resolveSlackChannelAllowlist({
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       entries: ["C123", "channel:G456", "<#C789|general>"],
       client: { conversations: { list } } as never,
     });
@@ -58,7 +58,7 @@ describe("resolveSlackChannelAllowlist", () => {
     };
 
     const res = await resolveSlackChannelAllowlist({
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       entries: ["#general"],
       client: client as never,
     });
@@ -75,7 +75,7 @@ describe("resolveSlackChannelAllowlist", () => {
     };
 
     const res = await resolveSlackChannelAllowlist({
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       entries: ["#does-not-exist"],
       client: client as never,
     });

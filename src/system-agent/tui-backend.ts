@@ -114,7 +114,7 @@ function splitModelRef(ref: string | undefined): { provider?: string; model?: st
 }
 
 class SystemAgentTuiBackend implements TuiBackend {
-  readonly connection = { url: `ltfx.n.65c88a6ce3d627edee2e.v1` };
+  readonly connection = { url: "openclaw local" };
 
   onEvent?: (evt: TuiEvent) => void;
   onConnected?: () => void;

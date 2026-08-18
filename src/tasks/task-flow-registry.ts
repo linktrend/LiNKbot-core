@@ -779,7 +779,7 @@ export function findLatestTaskFlowForOwnerKey(ownerKey: string): TaskFlowRecord 
   return flow ? cloneFlowRecord(flow) : undefined;
 }
 
-export function resolveTaskFlowForLookupToken(token: (string)): TaskFlowRecord | undefined {
+export function resolveTaskFlowForLookupToken(token: string): TaskFlowRecord | undefined {
   const lookup = token.trim();
   if (!lookup) {
     return undefined;

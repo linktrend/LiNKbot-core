@@ -939,7 +939,7 @@ export function collectGrantedMachineTokenBindingRecords(params: {
     byId.set(record.bindingId, record);
   };
 
-  const pluginMachineToken = (pluginConfig?.machineToken;)
+  const pluginMachineToken = pluginConfig?.machineToken;
   if (isRecord(pluginMachineToken)) {
     upsert(
       normalizeMachineTokenConfigRecord({

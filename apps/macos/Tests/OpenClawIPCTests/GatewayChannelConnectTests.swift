@@ -397,7 +397,7 @@ struct GatewayChannelConnectTests {
         let channel = try GatewayChannelActor(
             url: #require(URL(string: "ws://example.invalid")),
             token: nil,
-            bootstrapToken: "${ltfx.n.9994ccb2baa2e1c749ac.v1}",
+            bootstrapToken: "setup-bootstrap-token",
             session: WebSocketSessionBox(session: session))
 
         try await channel.connect()
@@ -417,7 +417,7 @@ struct GatewayChannelConnectTests {
             let storedEntry: DeviceAuthEntry = DeviceAuthStore.storeToken(
                 deviceId: identity.deviceId,
                 role: "operator",
-                token: "${ltfx.n.06a3d515bd6938cba266.v1}",
+                token: "bootstrap-device-token",
                 scopes: ["operator.read", "operator.write", "operator.approvals"])
             let capture = ScopeCapture()
             let session = GatewayTestWebSocketSession(
@@ -445,7 +445,7 @@ struct GatewayChannelConnectTests {
             _ = DeviceAuthStore.storeToken(
                 deviceId: identity.deviceId,
                 role: "operator",
-                token: "${ltfx.n.06a3d515bd6938cba266.v1}",
+                token: "bootstrap-device-token",
                 scopes: ["operator.read", "operator.write", "operator.approvals"])
             let requestedScopes = ["operator.admin", "operator.pairing"]
             let capture = ScopeCapture()

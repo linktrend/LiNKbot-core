@@ -156,8 +156,8 @@ describe("command secret targets module import", () => {
     const mod = await import("./command-secret-targets.js");
     const targets = mod.getStatusCommandSecretTargetIds({
       channels: {
-        "external-chat": { token: `ltfx.n.20158224750041d653cd.v1` },
-        telegram: { botToken: `ltfx.n.378e4f187a7758464d8f.v1` },
+        "external-chat": { token: "configured" },
+        telegram: { botToken: "123456:ABCDEF" },
       },
     });
 
@@ -199,7 +199,7 @@ describe("command secret targets module import", () => {
     const targets = mod.getStatusCommandSecretTargetIds(
       {
         channels: {
-          telegram: { botToken: `ltfx.n.378e4f187a7758464d8f.v1` },
+          telegram: { botToken: "123456:ABCDEF" },
         },
       },
       process.env,

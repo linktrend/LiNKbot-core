@@ -288,7 +288,7 @@ describe("runSessionsSendA2AFlow announce delivery", () => {
       source: "deliveryContext.accountId",
       accountId: "thinker",
       session: {
-        key: `ltfx.n.f777ee4c0884842ec2a4.v1`,
+        key: "agent:main:discord:channel:target-room",
         kind: "group",
         channel: "discord",
         deliveryContext: {
@@ -302,7 +302,7 @@ describe("runSessionsSendA2AFlow announce delivery", () => {
       source: "lastAccountId",
       accountId: "scout",
       session: {
-        key: `ltfx.n.f777ee4c0884842ec2a4.v1`,
+        key: "agent:main:discord:channel:target-room",
         kind: "group",
         channel: "discord",
         lastChannel: "discord",

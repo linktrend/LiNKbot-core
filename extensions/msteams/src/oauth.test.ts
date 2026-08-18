@@ -191,7 +191,7 @@ describe("exchangeMSTeamsCodeForTokens", () => {
     const tokens = await exchangeMSTeamsCodeForTokens({
       tenantId: "tenant-1",
       clientId: "client-1",
-      clientSecret: `ltfx.n.f7e7c36e458e80e6b6a2.v1`, // pragma: allowlist secret
+      clientSecret: "secret-1", // pragma: allowlist secret
       code: "auth-code",
       verifier: "pkce-verifier",
     });
@@ -258,7 +258,7 @@ describe("exchangeMSTeamsCodeForTokens", () => {
 
   it("rejects unsafe token exchange expiry values", async () => {
     fetchSpy.mockResolvedValueOnce(
-      new Response('{"access_token":`ltfx.n.0bc9124978b7db574a58.v1`,"refresh_token":`ltfx.n.4bd2a313cb3a0b7c3644.v1`,"expires_in":1e309}', {
+      new Response('{"access_token":"at-unsafe","refresh_token":"rt-unsafe","expires_in":1e309}', {
         status: 200,
         headers: { "Content-Type": "application/json" },
       }),
@@ -302,8 +302,8 @@ describe("refreshMSTeamsDelegatedTokens", () => {
     const tokens = await refreshMSTeamsDelegatedTokens({
       tenantId: "tenant-1",
       clientId: "client-1",
-      clientSecret: `ltfx.n.f7e7c36e458e80e6b6a2.v1`, // pragma: allowlist secret
-      refreshToken: `ltfx.n.3e696558e71ff1adf81b.v1`,
+      clientSecret: "secret-1", // pragma: allowlist secret
+      refreshToken: "original-rt",
     });
 
     expect(tokens.accessToken).toBe("new-at");
@@ -352,7 +352,7 @@ describe("refreshMSTeamsDelegatedTokens", () => {
         tenantId: "t",
         clientId: "c",
         clientSecret: "s", // pragma: allowlist secret
-        refreshToken: `ltfx.n.e7252f437faf8873fdf0.v1`,
+        refreshToken: "expired-rt",
       }),
     ).rejects.toThrow(/MSTeams token refresh failed \(401\)/);
   });
@@ -370,7 +370,7 @@ describe("refreshMSTeamsDelegatedTokens", () => {
         tenantId: "t",
         clientId: "c",
         clientSecret: "s", // pragma: allowlist secret
-        refreshToken: `ltfx.n.f7e5487eda1342f35e65.v1`,
+        refreshToken: "bad-json",
       }),
     ).rejects.toThrow("MSTeams token refresh failed: malformed JSON response");
   });

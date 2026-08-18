@@ -227,7 +227,7 @@ export class ModelSetupPage extends OpenClawLightDomElement {
       auth: {
         hello: this.context.gateway.snapshot.hello,
         settings: { token: this.context.gateway.connection.token },
-        password: (this.context.gateway.connection.password,)
+        password: this.context.gateway.connection.password,
       },
       signal: controller.signal,
     })

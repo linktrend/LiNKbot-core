@@ -163,14 +163,14 @@ describe("buildSandboxCreateArgs", () => {
     const cfg = createSandboxConfig({
       env: {
         ANTHROPIC_ADMIN_KEY: "dummy-anthropic-admin-key",
-        GEMINI_API_KEY: `ltfx.n.acf0066e077bd2092865.v1`,
+        GEMINI_API_KEY: "dummy-gemini-api-key",
         GOOGLE_CLIENT_ID: "dummy-google-client-id",
-        GOOGLE_CLIENT_SECRET: `ltfx.n.d5e4145968bb3d4df46c.v1`,
+        GOOGLE_CLIENT_SECRET: "dummy-google-client-secret",
         HIMALAYA_CONFIG: "dummy-himalaya-config",
-        HIMALAYA_PASSWORD: `ltfx.n.c50948a8b07e646161a5.v1`,
+        HIMALAYA_PASSWORD: "dummy-himalaya-password",
         OURA_CLIENT_ID: "dummy-oura-client-id",
-        OURA_CLIENT_SECRET: `ltfx.n.0d2b047882a2dd0871f3.v1`,
-        RESEND_API_KEY: `ltfx.n.1c5e7c4345603e33e2e2.v1`,
+        OURA_CLIENT_SECRET: "dummy-oura-client-secret",
+        RESEND_API_KEY: "dummy-resend-api-key",
       },
     });
 
@@ -183,14 +183,14 @@ describe("buildSandboxCreateArgs", () => {
 
     expectFlagValues(args, "--env", [
       "ANTHROPIC_ADMIN_KEY=dummy-anthropic-admin-key",
-      "GEMINI_API_KEY=(dummy-gemini-api-key",)
+      "GEMINI_API_KEY=dummy-gemini-api-key",
       "GOOGLE_CLIENT_ID=dummy-google-client-id",
-      "GOOGLE_CLIENT_SECRET=(dummy-google-client-secret",)
+      "GOOGLE_CLIENT_SECRET=dummy-google-client-secret",
       "HIMALAYA_CONFIG=dummy-himalaya-config",
-      "HIMALAYA_PASSWORD=(dummy-himalaya-password",)
+      "HIMALAYA_PASSWORD=dummy-himalaya-password",
       "OURA_CLIENT_ID=dummy-oura-client-id",
-      "OURA_CLIENT_SECRET=(dummy-oura-client-secret",)
-      "RESEND_API_KEY=(dummy-resend-api-key",)
+      "OURA_CLIENT_SECRET=dummy-oura-client-secret",
+      "RESEND_API_KEY=dummy-resend-api-key",
       `OPENCLAW_CLI=${OPENCLAW_CLI_ENV_VALUE}`,
     ]);
   });

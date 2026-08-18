@@ -190,7 +190,7 @@ export async function handleNextcloudTalkInbound(params: {
       channelId: CHANNEL_ID,
       accountId: account.accountId,
       identity: {
-        key: `ltfx.n.b8fb4e625df207c3123d.v1`,
+        key: "nextcloud-talk-user-id",
         normalize: (value) => normalizeNextcloudTalkAllowEntry(value) || null,
         sensitivity: "pii",
         entryIdPrefix: "nextcloud-talk-entry",

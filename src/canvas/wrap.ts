@@ -183,7 +183,7 @@ export function buildWidgetDocument(title: string, widgetCode: string): string {
     'if(value!==null)setAttr.call(image,name,value);}setSrc.call(image,toDataURL.call(live,"image/png"));' +
     "const owner=getParent.call(cloned);if(owner)replace.call(owner,image,cloned);}" +
     'const svg=\'<svg xmlns="http://www.w3.org/2000/svg" width="\'+width+\'" height="\'+height+\'"><foreignObject width="100%" height="100%">\'+serialize(root)+"</foreignObject></svg>";' +
-    'const url=`ltfx.n.4c3a17c1da86dea4c906.v1`+encode(svg);' +
+    'const url="data:image/svg+xml;charset=utf-8,"+encode(svg);' +
     "const image=new ImageCtor();await new P((resolve,reject)=>{" +
     'add.call(image,"load",resolve,{once:true});add.call(image,"error",()=>reject(new ErrorCtor("widget snapshot image failed to load")),{once:true});' +
     'if(!setSrc)throw new ErrorCtor("widget snapshot image source unavailable");setSrc.call(image,url);});' +

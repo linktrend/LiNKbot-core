@@ -38,8 +38,8 @@ describe("Matrix auth/config live surfaces", () => {
         matrix: {
           homeserver: "https://cfg.example.org",
           userId: "@cfg:example.org",
-          accessToken: `ltfx.n.50b0940ad7c26e58a17c.v1`,
-          password: `ltfx.n.fe9e60e2c604ec3889b6.v1`,
+          accessToken: "cfg-token",
+          password: "cfg-pass",
           deviceName: "CfgDevice",
           initialSyncLimit: 5,
         },
@@ -48,16 +48,16 @@ describe("Matrix auth/config live surfaces", () => {
     const env = {
       MATRIX_HOMESERVER: "https://env.example.org",
       MATRIX_USER_ID: "@env:example.org",
-      MATRIX_ACCESS_TOKEN: `ltfx.n.25d37ba7752ae1d95b57.v1`,
-      MATRIX_PASSWORD: `ltfx.n.b208a30575f62d0d732c.v1`,
+      MATRIX_ACCESS_TOKEN: "env-token",
+      MATRIX_PASSWORD: "env-pass",
       MATRIX_DEVICE_NAME: "EnvDevice",
     } as NodeJS.ProcessEnv;
     const resolved = resolveDefaultMatrixAuthContext(cfg, env).resolved;
     expect(resolved).toEqual({
       homeserver: "https://cfg.example.org",
       userId: "@cfg:example.org",
-      accessToken: `ltfx.n.50b0940ad7c26e58a17c.v1`,
-      password: `ltfx.n.fe9e60e2c604ec3889b6.v1`,
+      accessToken: "cfg-token",
+      password: "cfg-pass",
       deviceId: undefined,
       deviceName: "CfgDevice",
       initialSyncLimit: 5,
@@ -70,8 +70,8 @@ describe("Matrix auth/config live surfaces", () => {
     const env = {
       MATRIX_HOMESERVER: "https://env.example.org",
       MATRIX_USER_ID: "@env:example.org",
-      MATRIX_ACCESS_TOKEN: `ltfx.n.25d37ba7752ae1d95b57.v1`,
-      MATRIX_PASSWORD: `ltfx.n.b208a30575f62d0d732c.v1`,
+      MATRIX_ACCESS_TOKEN: "env-token",
+      MATRIX_PASSWORD: "env-pass",
       MATRIX_DEVICE_ID: "ENVDEVICE",
       MATRIX_DEVICE_NAME: "EnvDevice",
     } as NodeJS.ProcessEnv;
@@ -119,7 +119,7 @@ describe("Matrix auth/config live surfaces", () => {
       },
     } as CoreConfig;
     const env = {
-      MATRIX_ACCESS_TOKEN: `ltfx.n.25d37ba7752ae1d95b57.v1`,
+      MATRIX_ACCESS_TOKEN: "env-token",
     } as NodeJS.ProcessEnv;
 
     const resolved = resolveDefaultMatrixAuthContext(cfg, env).resolved;
@@ -142,7 +142,7 @@ describe("Matrix auth/config live surfaces", () => {
       },
     } as CoreConfig;
     const env = {
-      MATRIX_PASSWORD: `ltfx.n.b208a30575f62d0d732c.v1`,
+      MATRIX_PASSWORD: "env-pass",
     } as NodeJS.ProcessEnv;
 
     const resolved = resolveDefaultMatrixAuthContext(cfg, env).resolved;
@@ -168,7 +168,7 @@ describe("Matrix auth/config live surfaces", () => {
       },
     } as CoreConfig;
     const env = {
-      MATRIX_OPS_ACCESS_TOKEN: `ltfx.n.d9310c002af91822beb0.v1`,
+      MATRIX_OPS_ACCESS_TOKEN: "ops-token",
     } as NodeJS.ProcessEnv;
 
     const resolved = resolveMatrixConfigForAccount(cfg, "ops", env);
@@ -194,7 +194,7 @@ describe("Matrix auth/config live surfaces", () => {
       },
     } as CoreConfig;
     const env = {
-      MATRIX_OPS_ACCESS_TOKEN: `ltfx.n.d9310c002af91822beb0.v1`,
+      MATRIX_OPS_ACCESS_TOKEN: "ops-token",
     } as NodeJS.ProcessEnv;
 
     const resolved = resolveMatrixConfigForAccount(cfg, "ops", env);
@@ -242,7 +242,7 @@ describe("Matrix auth/config live surfaces", () => {
 
     expect(() =>
       resolveDefaultMatrixAuthContext(cfg, {
-        MATRIX_ACCESS_TOKEN: `ltfx.n.25d37ba7752ae1d95b57.v1`,
+        MATRIX_ACCESS_TOKEN: "env-token",
       } as NodeJS.ProcessEnv),
     ).toThrow(/not allowlisted in secrets\.providers\.matrix-env\.allowlist/i);
   });
@@ -280,9 +280,9 @@ describe("Matrix auth/config live surfaces", () => {
     } as CoreConfig;
     const env = {
       MATRIX_HOMESERVER: "https://global.example.org",
-      MATRIX_ACCESS_TOKEN: `ltfx.n.2c68dfe987f80cf3828d.v1`,
+      MATRIX_ACCESS_TOKEN: "global-token",
       MATRIX_OPS_HOMESERVER: "https://ops.example.org",
-      MATRIX_OPS_ACCESS_TOKEN: `ltfx.n.d9310c002af91822beb0.v1`,
+      MATRIX_OPS_ACCESS_TOKEN: "ops-token",
       MATRIX_OPS_DEVICE_NAME: "Ops Device",
     } as NodeJS.ProcessEnv;
 
@@ -309,7 +309,7 @@ describe("Matrix auth/config live surfaces", () => {
             default: {
               homeserver: "https://matrix.gumadeiras.com",
               userId: "@pinguini:matrix.gumadeiras.com",
-              password: `ltfx.n.fe9e60e2c604ec3889b6.v1`, // pragma: allowlist secret
+              password: "cfg-pass", // pragma: allowlist secret
               deviceName: "OpenClaw Gateway Pinguini",
               encryption: true,
             },
@@ -320,7 +320,7 @@ describe("Matrix auth/config live surfaces", () => {
     const env = {
       MATRIX_HOMESERVER: "https://env.example.org",
       MATRIX_USER_ID: "@env:example.org",
-      MATRIX_PASSWORD: `ltfx.n.b208a30575f62d0d732c.v1`,
+      MATRIX_PASSWORD: "env-pass",
       MATRIX_DEVICE_NAME: "EnvDevice",
     } as NodeJS.ProcessEnv;
 
@@ -330,7 +330,7 @@ describe("Matrix auth/config live surfaces", () => {
       homeserver: "https://matrix.gumadeiras.com",
       userId: "@pinguini:matrix.gumadeiras.com",
       accessToken: undefined,
-      password: `ltfx.n.fe9e60e2c604ec3889b6.v1`,
+      password: "cfg-pass",
       deviceId: undefined,
       deviceName: "OpenClaw Gateway Pinguini",
       initialSyncLimit: undefined,
@@ -347,7 +347,7 @@ describe("Matrix auth/config live surfaces", () => {
         matrix: {
           defaultAccount: "ops",
           homeserver: "https://legacy.example.org",
-          accessToken: `ltfx.n.8b7d507cddc8d8950f28.v1`,
+          accessToken: "legacy-token",
         },
       },
     } as CoreConfig;
@@ -364,11 +364,11 @@ describe("Matrix auth/config live surfaces", () => {
           accounts: {
             assistant: {
               homeserver: "https://matrix.assistant.example.org",
-              accessToken: `ltfx.n.e60fa515dc0d2452c0e1.v1`,
+              accessToken: "assistant-token",
             },
             ops: {
               homeserver: "https://matrix.ops.example.org",
-              accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
+              accessToken: "ops-token",
             },
           },
         },
@@ -387,11 +387,11 @@ describe("Matrix auth/config live surfaces", () => {
           accounts: {
             default: {
               homeserver: "https://matrix.default.example.org",
-              accessToken: `ltfx.n.10851c1922ff849d81d7.v1`,
+              accessToken: "default-token",
             },
             ops: {
               homeserver: "https://matrix.ops.example.org",
-              accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
+              accessToken: "ops-token",
             },
           },
         },
@@ -411,7 +411,7 @@ describe("Matrix auth/config live surfaces", () => {
           accounts: {
             ops: {
               homeserver: "https://matrix.ops.example.org",
-              accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
+              accessToken: "ops-token",
             },
           },
         },
@@ -425,11 +425,11 @@ describe("Matrix auth/config live surfaces", () => {
     const cfg = {
       channels: {
         matrix: {
-          accessToken: `ltfx.n.fad34a6f30260e5a8db3.v1`,
+          accessToken: "shared-token",
           accounts: {
             ops: {
               homeserver: "https://matrix.ops.example.org",
-              accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
+              accessToken: "ops-token",
             },
           },
         },
@@ -447,9 +447,9 @@ describe("Matrix auth/config live surfaces", () => {
     } as CoreConfig;
     const env = {
       MATRIX_HOMESERVER: "https://matrix.example.org",
-      MATRIX_ACCESS_TOKEN: `ltfx.n.10851c1922ff849d81d7.v1`,
+      MATRIX_ACCESS_TOKEN: "default-token",
       MATRIX_OPS_HOMESERVER: "https://matrix.example.org",
-      MATRIX_OPS_ACCESS_TOKEN: `ltfx.n.d9310c002af91822beb0.v1`,
+      MATRIX_OPS_ACCESS_TOKEN: "ops-token",
     } as NodeJS.ProcessEnv;
 
     expect(resolveMatrixAuthContext({ cfg, env }).accountId).toBe("default");
@@ -462,9 +462,9 @@ describe("Matrix auth/config live surfaces", () => {
       },
     } as CoreConfig;
     const env = {
-      MATRIX_ACCESS_TOKEN: `ltfx.n.fad34a6f30260e5a8db3.v1`,
+      MATRIX_ACCESS_TOKEN: "shared-token",
       MATRIX_OPS_HOMESERVER: "https://matrix.example.org",
-      MATRIX_OPS_ACCESS_TOKEN: `ltfx.n.d9310c002af91822beb0.v1`,
+      MATRIX_OPS_ACCESS_TOKEN: "ops-token",
     } as NodeJS.ProcessEnv;
 
     expect(resolveMatrixAuthContext({ cfg, env }).accountId).toBe("ops");
@@ -479,7 +479,7 @@ describe("Matrix auth/config live surfaces", () => {
           accounts: {
             ops: {
               homeserver: "https://matrix.example.org",
-              accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
+              accessToken: "ops-token",
             },
           },
         },
@@ -499,7 +499,7 @@ describe("Matrix auth/config live surfaces", () => {
       MATRIX_HOMESERVER: "https://matrix.example.org",
       MATRIX_USER_ID: "@default:example.org",
       MATRIX_OPS_HOMESERVER: "https://matrix.example.org",
-      MATRIX_OPS_ACCESS_TOKEN: `ltfx.n.d9310c002af91822beb0.v1`,
+      MATRIX_OPS_ACCESS_TOKEN: "ops-token",
     } as NodeJS.ProcessEnv;
 
     expect(resolveMatrixAuthContext({ cfg, env }).accountId).toBe("ops");
@@ -525,11 +525,11 @@ describe("Matrix auth/config live surfaces", () => {
       channels: {
         matrix: {
           homeserver: "https://legacy.example.org",
-          accessToken: `ltfx.n.8b7d507cddc8d8950f28.v1`,
+          accessToken: "legacy-token",
           accounts: {
             ops: {
               homeserver: "https://ops.example.org",
-              accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
+              accessToken: "ops-token",
             },
           },
         },
@@ -546,7 +546,7 @@ describe("Matrix auth/config live surfaces", () => {
       channels: {
         matrix: {
           homeserver: "https://legacy.example.org",
-          accessToken: `ltfx.n.8b7d507cddc8d8950f28.v1`,
+          accessToken: "legacy-token",
         },
       },
     } as CoreConfig;
@@ -561,12 +561,12 @@ describe("Matrix auth/config live surfaces", () => {
       channels: {
         matrix: {
           homeserver: "https://legacy.example.org",
-          accessToken: `ltfx.n.8b7d507cddc8d8950f28.v1`,
+          accessToken: "legacy-token",
           accounts: {
             disabled: {
               enabled: false,
               homeserver: "https://disabled.example.org",
-              accessToken: `ltfx.n.4b94105efa2ae5228054.v1`,
+              accessToken: "disabled-token",
             },
           },
         },
@@ -587,13 +587,13 @@ describe("Matrix auth/config live surfaces", () => {
       channels: {
         matrix: {
           homeserver: "https://legacy.example.org",
-          accessToken: `ltfx.n.8b7d507cddc8d8950f28.v1`,
+          accessToken: "legacy-token",
         },
       },
     } as CoreConfig;
     const env = {
       MATRIX_OPS_HOMESERVER: "https://ops.example.org",
-      MATRIX_OPS_ACCESS_TOKEN: `ltfx.n.d9310c002af91822beb0.v1`,
+      MATRIX_OPS_ACCESS_TOKEN: "ops-token",
     } as NodeJS.ProcessEnv;
 
     expect(resolveMatrixAuthContext({ cfg, env, accountId: "ops" }).accountId).toBe("ops");
@@ -604,12 +604,12 @@ describe("Matrix auth/config live surfaces", () => {
       channels: {
         matrix: {
           homeserver: "https://base.example.org",
-          accessToken: `ltfx.n.e1501ed8b13353b142a7.v1`,
+          accessToken: "base-token",
           deviceId: "BASEDEVICE",
           accounts: {
             ops: {
               homeserver: "https://ops.example.org",
-              accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
+              accessToken: "ops-token",
             },
           },
         },
@@ -626,11 +626,11 @@ describe("Matrix auth/config live surfaces", () => {
         matrix: {
           homeserver: "https://base.example.org",
           userId: "@base:example.org",
-          accessToken: `ltfx.n.e1501ed8b13353b142a7.v1`,
+          accessToken: "base-token",
           accounts: {
             ops: {
               homeserver: "https://ops.example.org",
-              accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
+              accessToken: "ops-token",
             },
           },
         },
@@ -646,22 +646,22 @@ describe("Matrix auth/config live surfaces", () => {
       channels: {
         matrix: {
           homeserver: "https://base.example.org",
-          accessToken: `ltfx.n.e1501ed8b13353b142a7.v1`,
-          password: `ltfx.n.c505c5a41c1b458007e2.v1`, // pragma: allowlist secret
+          accessToken: "base-token",
+          password: "base-pass", // pragma: allowlist secret
           deviceId: "BASEDEVICE",
           accounts: {
             ops: {
               homeserver: "https://ops.example.org",
               userId: "@ops:example.org",
-              password: `ltfx.n.3468b90249f68cdd5fe1.v1`, // pragma: allowlist secret
+              password: "ops-pass", // pragma: allowlist secret
             },
           },
         },
       },
     } as CoreConfig;
     const env = {
-      MATRIX_ACCESS_TOKEN: `ltfx.n.2c68dfe987f80cf3828d.v1`,
-      MATRIX_PASSWORD: `ltfx.n.da634e6f50bbef44ea4b.v1`,
+      MATRIX_ACCESS_TOKEN: "global-token",
+      MATRIX_PASSWORD: "global-pass",
       MATRIX_DEVICE_ID: "GLOBALDEVICE",
     } as NodeJS.ProcessEnv;
 
@@ -676,7 +676,7 @@ describe("Matrix auth/config live surfaces", () => {
       channels: {
         matrix: {
           homeserver: "https://base.example.org",
-          password: `ltfx.n.c505c5a41c1b458007e2.v1`, // pragma: allowlist secret
+          password: "base-pass", // pragma: allowlist secret
           accounts: {
             ops: {
               homeserver: "https://ops.example.org",
@@ -687,7 +687,7 @@ describe("Matrix auth/config live surfaces", () => {
       },
     } as CoreConfig;
     const env = {
-      MATRIX_PASSWORD: `ltfx.n.da634e6f50bbef44ea4b.v1`,
+      MATRIX_PASSWORD: "global-pass",
     } as NodeJS.ProcessEnv;
 
     const resolved = resolveMatrixConfigForAccount(cfg, "ops", env);
@@ -739,12 +739,12 @@ describe("Matrix auth/config live surfaces", () => {
       channels: {
         matrix: {
           homeserver: "https://matrix.example.org",
-          accessToken: `ltfx.n.e1501ed8b13353b142a7.v1`,
+          accessToken: "base-token",
           proxy: "http://127.0.0.1:7890",
           accounts: {
             ops: {
               homeserver: "https://matrix.ops.example.org",
-              accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
+              accessToken: "ops-token",
               proxy: "http://127.0.0.1:7891",
             },
           },

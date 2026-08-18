@@ -86,7 +86,7 @@ describe("nextcloud-talk doctor", () => {
               baseUrl: "https://cloud.example.com",
               botSecret: "secret",
               apiUser: "admin",
-              apiPassword: `ltfx.n.c0741d74e1d41a97476c.v1`,
+              apiPassword: "app-password",
               webhookPublicUrl: "https://gateway.example.com/nextcloud-talk-webhook",
             },
           },

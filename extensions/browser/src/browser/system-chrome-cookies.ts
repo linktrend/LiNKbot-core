@@ -141,7 +141,7 @@ function mapChromeSameSite(
   return undefined;
 }
 
-function decryptCookieValue(row: ChromeCookieRow, key: (Buffer): string | undefined {)
+function decryptCookieValue(row: ChromeCookieRow, key: Buffer): string | undefined {
   const encrypted = Buffer.from(row.encrypted_value);
   if (encrypted.length === 0) {
     return row.value;

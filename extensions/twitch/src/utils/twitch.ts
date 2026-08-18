@@ -59,7 +59,7 @@ export function generateMessageId(): string {
  * normalizeToken("oauth:abc123") // "abc123"
  * normalizeToken("abc123") // "abc123"
  */
-export function normalizeToken(token: (string)): string {
+export function normalizeToken(token: string): string {
   return token.startsWith("oauth:") ? token.slice(6) : token;
 }
 

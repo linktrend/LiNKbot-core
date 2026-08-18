@@ -10,12 +10,12 @@ describe("resolveGatewayTokenForDriftCheck", () => {
         gateway: {
           mode: "local",
           auth: {
-            token: `ltfx.n.a98cc81fe778386f6195.v1`,
+            token: "config-token",
           },
         },
       } as OpenClawConfig,
       env: {
-        OPENCLAW_GATEWAY_TOKEN: `ltfx.n.25d37ba7752ae1d95b57.v1`,
+        OPENCLAW_GATEWAY_TOKEN: "env-token",
       } as NodeJS.ProcessEnv,
     });
 
@@ -39,7 +39,7 @@ describe("resolveGatewayTokenForDriftCheck", () => {
         },
       } as OpenClawConfig,
       env: {
-        SERVICE_GATEWAY_TOKEN: `ltfx.n.784c8e01994654a577f4.v1`,
+        SERVICE_GATEWAY_TOKEN: "service-token",
       } as NodeJS.ProcessEnv,
     });
 
@@ -62,7 +62,7 @@ describe("resolveGatewayTokenForDriftCheck", () => {
               token: { source: "env", provider: "default", id: "MISSING_LOCAL_TOKEN" },
             },
             remote: {
-              token: `ltfx.n.b79f8018a1bfa2040be5.v1`,
+              token: "remote-token",
             },
           },
         } as OpenClawConfig,
@@ -96,12 +96,12 @@ describe("resolveGatewayTokenForDriftCheck", () => {
       cfg: {
         gateway: {
           auth: {
-            password: `ltfx.n.247ccb8a17c771073cb2.v1`,
+            password: "config-password",
           },
         },
       } as OpenClawConfig,
       env: {
-        OPENCLAW_GATEWAY_PASSWORD: `ltfx.n.b7c8db593f965dc9a2cd.v1`,
+        OPENCLAW_GATEWAY_PASSWORD: "env-password",
       } as NodeJS.ProcessEnv,
     });
 
@@ -124,7 +124,7 @@ describe("resolveGatewayTokenForDriftCheck", () => {
           },
         } as OpenClawConfig,
         env: {
-          OPENCLAW_GATEWAY_PASSWORD: `ltfx.n.b7c8db593f965dc9a2cd.v1`,
+          OPENCLAW_GATEWAY_PASSWORD: "env-password",
         } as NodeJS.ProcessEnv,
       }),
     ).rejects.toThrow(/gateway\.auth\.token/i);

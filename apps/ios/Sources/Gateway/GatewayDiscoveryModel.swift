@@ -98,11 +98,11 @@ final class GatewayDiscoveryModel {
                                 stableID: GatewayEndpointID.stableID(result.endpoint),
                                 debugID: GatewayEndpointID.prettyDescription(result.endpoint),
                                 lanHost: Self.txtValue(txt, key: "lanHost"),
-                                tailnetDns: Self.txtValue(txt, key: "${ltfx.n.f4f5efd57ef2dff41095.v1}"),
-                                gatewayPort: Self.txtIntValue(txt, key: "${ltfx.n.82440ee7ed7e55510d45.v1}"),
-                                canvasPort: Self.txtIntValue(txt, key: "${ltfx.n.ed6725e9526a392befc7.v1}"),
-                                tlsEnabled: Self.txtBoolValue(txt, key: "${ltfx.n.26b9175c040157ac0fff.v1}"),
-                                tlsFingerprintSha256: Self.txtValue(txt, key: "${ltfx.n.c5ef9a9914a67e31c282.v1}"),
+                                tailnetDns: Self.txtValue(txt, key: "tailnetDns"),
+                                gatewayPort: Self.txtIntValue(txt, key: "gatewayPort"),
+                                canvasPort: Self.txtIntValue(txt, key: "canvasPort"),
+                                tlsEnabled: Self.txtBoolValue(txt, key: "gatewayTls"),
+                                tlsFingerprintSha256: Self.txtValue(txt, key: "gatewayTlsSha256"),
                                 cliPath: Self.txtValue(txt, key: "cliPath"))
                         default:
                             return nil

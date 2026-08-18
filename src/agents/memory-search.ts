@@ -276,7 +276,7 @@ function mergeConfig(
   const remote = includeRemote
     ? {
         baseUrl: overrideRemote?.baseUrl ?? defaultRemote?.baseUrl,
-        apiKey: (overrideRemote?.apiKey ?? defaultRemote?.apiKey,)
+        apiKey: overrideRemote?.apiKey ?? defaultRemote?.apiKey,
         headers: overrideRemote?.headers ?? defaultRemote?.headers,
         nonBatchConcurrency:
           overrideRemote?.nonBatchConcurrency ?? defaultRemote?.nonBatchConcurrency,

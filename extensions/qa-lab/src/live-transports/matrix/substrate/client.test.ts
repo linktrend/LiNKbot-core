@@ -107,7 +107,7 @@ describe("matrix driver client", () => {
 
   it("advances Matrix registration through token then dummy auth stages", () => {
     const firstStage = testing.resolveNextRegistrationAuth({
-      registrationToken: `ltfx.n.26d83b502fb5ca3a4e43.v1`,
+      registrationToken: "reg-token",
       response: {
         session: "uiaa-session",
         flows: [{ stages: ["m.login.registration_token", "m.login.dummy"] }],
@@ -117,12 +117,12 @@ describe("matrix driver client", () => {
     expect(firstStage).toEqual({
       session: "uiaa-session",
       type: "m.login.registration_token",
-      token: `ltfx.n.26d83b502fb5ca3a4e43.v1`,
+      token: "reg-token",
     });
 
     expect(
       testing.resolveNextRegistrationAuth({
-        registrationToken: `ltfx.n.26d83b502fb5ca3a4e43.v1`,
+        registrationToken: "reg-token",
         response: {
           session: "uiaa-session",
           completed: ["m.login.registration_token"],
@@ -138,7 +138,7 @@ describe("matrix driver client", () => {
   it("rejects Matrix UIAA flows that require unsupported stages", () => {
     expect(() =>
       testing.resolveNextRegistrationAuth({
-        registrationToken: `ltfx.n.26d83b502fb5ca3a4e43.v1`,
+        registrationToken: "reg-token",
         response: {
           session: "uiaa-session",
           flows: [{ stages: ["m.login.registration_token", "m.login.recaptcha", "m.login.dummy"] }],
@@ -156,7 +156,7 @@ describe("matrix driver client", () => {
       });
       return new Response(
         JSON.stringify({
-          access_token: `ltfx.n.91f0fb2d1adaffe73452.v1`,
+          access_token: "secondary-token",
           device_id: "SECONDARYDEVICE",
           user_id: "@qa-driver:matrix-qa.test",
         }),
@@ -171,7 +171,7 @@ describe("matrix driver client", () => {
 
     const login = await client.loginWithPassword({
       deviceName: "OpenClaw Matrix QA Stale Device",
-      password: `ltfx.n.1dcd481d830936745b14.v1`,
+      password: "driver-password",
       userId: "@qa-driver:matrix-qa.test",
     });
     expect(login.accessToken).toBe("secondary-token");
@@ -189,7 +189,7 @@ describe("matrix driver client", () => {
             user: "@qa-driver:matrix-qa.test",
           },
           initial_device_display_name: "OpenClaw Matrix QA Stale Device",
-          password: `ltfx.n.1dcd481d830936745b14.v1`,
+          password: "driver-password",
         },
       },
     ]);
@@ -580,7 +580,7 @@ describe("matrix driver client", () => {
       baseUrl: "http://127.0.0.1:28008/",
       driverLocalpart: "qa-driver",
       observerLocalpart: "qa-observer",
-      registrationToken: `ltfx.n.26d83b502fb5ca3a4e43.v1`,
+      registrationToken: "reg-token",
       roomName: "OpenClaw Matrix QA",
       sutLocalpart: "qa-sut",
       fetchImpl,
@@ -677,7 +677,7 @@ describe("matrix driver client", () => {
       baseUrl: "http://127.0.0.1:28008/",
       driverLocalpart: "qa-driver",
       observerLocalpart: "qa-observer",
-      registrationToken: `ltfx.n.26d83b502fb5ca3a4e43.v1`,
+      registrationToken: "reg-token",
       roomName: "unused",
       sutLocalpart: "qa-sut",
       fetchImpl,

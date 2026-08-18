@@ -61,7 +61,7 @@ describe("profile avatar HTTP endpoint", () => {
     const res = response();
     const req = {
       method: "OPTIONS",
-      url: `ltfx.n.339d4713577373af8d60.v1`,
+      url: "/ignored-by-handler",
       headers: { origin: "https://control.example" },
     } as unknown as IncomingMessage;
 
@@ -156,7 +156,7 @@ describe("profile avatar HTTP endpoint", () => {
     const res = response();
 
     await handleUserProfileAvatarHttpRequest(
-      { method: "HEAD", url: `ltfx.n.339d4713577373af8d60.v1`, headers: {} } as unknown as IncomingMessage,
+      { method: "HEAD", url: "/ignored-by-handler", headers: {} } as unknown as IncomingMessage,
       res.response,
       "/api/users/profile-1/avatar",
       { auth: {} as never },

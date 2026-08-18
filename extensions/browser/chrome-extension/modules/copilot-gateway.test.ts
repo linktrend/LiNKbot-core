@@ -115,10 +115,10 @@ describe("browser copilot Gateway custody", () => {
     };
     const tokenA = createCopilotTokenStore(storage, gatewayA);
     const tokenB = createCopilotTokenStore(storage, gatewayB);
-    await tokenA.store({ ...tokenParams, token: `ltfx.n.4c5dc9b7708905f77f5e.v1`, scopes: ["operator.read"] });
+    await tokenA.store({ ...tokenParams, token: "test-token", scopes: ["operator.read"] });
 
     await expect(tokenA.load(tokenParams)).resolves.toEqual({
-      token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+      token: "test-token",
       scopes: ["operator.read"],
     });
     await expect(tokenB.load(tokenParams)).resolves.toBeNull();
@@ -152,28 +152,28 @@ describe("browser copilot Gateway custody", () => {
     const storeGate = controlled.blockNextWrite();
     const firstStore = tokenA.store({
       ...tokenParams(identityA.deviceId),
-      token: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
+      token: "test-token-placeholder",
       scopes: ["operator.read"],
     });
     await storeGate.started;
     const secondStore = tokenB.store({
       ...tokenParams(identityB.deviceId),
-      token: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
+      token: "test-token-placeholder",
       scopes: ["operator.write"],
     });
     storeGate.release();
     await Promise.all([firstStore, secondStore]);
     await expect(tokenA.load(tokenParams(identityA.deviceId))).resolves.toMatchObject({
-      token: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
+      token: "test-token-placeholder",
     });
     await expect(tokenB.load(tokenParams(identityB.deviceId))).resolves.toMatchObject({
-      token: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
+      token: "test-token-placeholder",
     });
 
     const replacementWrite = controlled.blockNextWrite();
     const replacing = tokenA.store({
       ...tokenParams(identityA.deviceId),
-      token: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
+      token: "test-token-placeholder",
       scopes: ["operator.read", "operator.write"],
     });
     await replacementWrite.started;
@@ -245,7 +245,7 @@ describe("browser copilot Gateway custody", () => {
     };
     await tokenStore.store({
       ...tokenParams,
-      token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+      token: "test-token",
       scopes: ["operator.read", "operator.write"],
     });
     blockNextSet = true;

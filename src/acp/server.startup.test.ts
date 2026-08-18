@@ -50,7 +50,7 @@ const mockState = vi.hoisted(() => ({
     promise: Promise<void>;
   } | null,
   resolveGatewayClientBootstrap: vi.fn<ResolveGatewayClientBootstrap>(async (_params) => ({
-    url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+    url: "ws://127.0.0.1:18789",
     urlSource: "local loopback",
     auth: {
       token: undefined,
@@ -162,7 +162,7 @@ vi.mock("../gateway/call.js", () => ({
       };
     }
     return {
-      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      url: "ws://127.0.0.1:18789",
       urlSource: "local loopback",
     };
   },
@@ -378,7 +378,7 @@ describe("serveAcpGateway startup", () => {
     mockState.stopProxy.mockResolvedValue(undefined);
     mockState.resolveGatewayClientBootstrap.mockReset();
     mockState.resolveGatewayClientBootstrap.mockResolvedValue({
-      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      url: "ws://127.0.0.1:18789",
       urlSource: "local loopback",
       auth: {
         token: undefined,
@@ -525,11 +525,11 @@ describe("serveAcpGateway startup", () => {
 
   it("passes resolved SecretInput gateway credentials to the ACP gateway client", async () => {
     mockState.resolveGatewayClientBootstrap.mockResolvedValue({
-      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      url: "ws://127.0.0.1:18789",
       urlSource: "local loopback",
       auth: {
         token: undefined,
-        password: `ltfx.n.3bb373b6cda5f09d93e3.v1`, // pragma: allowlist secret
+        password: "resolved-secret-password", // pragma: allowlist secret
       },
     });
     const { signalHandlers, onceSpy } = captureProcessSignalHandlers();
@@ -542,7 +542,7 @@ describe("serveAcpGateway startup", () => {
       expect(bootstrapParams.env).toBe(process.env);
       expect(mockState.gatewayAuth[0]).toEqual({
         token: undefined,
-        password: `ltfx.n.3bb373b6cda5f09d93e3.v1`, // pragma: allowlist secret
+        password: "resolved-secret-password", // pragma: allowlist secret
       });
 
       await emitHelloAndWaitForAgentSideConnection();
@@ -574,7 +574,7 @@ describe("serveAcpGateway startup", () => {
 
   it("passes the configured Gateway URL into the ACP gateway client", async () => {
     mockState.resolveGatewayClientBootstrap.mockResolvedValue({
-      url: `ltfx.n.c5125bd6319742b7446b.v1`,
+      url: "ws://127.0.0.1:19999",
       urlSource: "cli --url",
       auth: {
         token: undefined,

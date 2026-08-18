@@ -43,7 +43,7 @@ describe("machine-token client assertion", () => {
   });
 
   it("rejects invalid PEM without echoing key material", async () => {
-    const bogusPem = "-----BEGIN LTFX PRIVATE KEY-----\nnot-a-key\n-----END PRIVATE KEY-----";
+    const bogusPem = "-----BEGIN PRIVATE KEY-----\nnot-a-key\n-----END PRIVATE KEY-----";
     await expect(
       createMachineTokenClientAssertion({
         clientId: "brain-client",

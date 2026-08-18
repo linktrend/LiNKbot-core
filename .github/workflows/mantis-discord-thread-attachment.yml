@@ -389,7 +389,7 @@ jobs:
               return 0
             fi
             CRABBOX_COORDINATOR="${CRABBOX_COORDINATOR:-${OPENCLAW_QA_MANTIS_CRABBOX_COORDINATOR:-}}"
-            CRABBOX_COORDINATOR_TOKEN="${CRABBOX_COORDINATOR_TOKEN:(ltfx.n.51351bd34802ce1b4ead.v1)}}"
+            CRABBOX_COORDINATOR_TOKEN="${CRABBOX_COORDINATOR_TOKEN:-${OPENCLAW_QA_MANTIS_CRABBOX_COORDINATOR_TOKEN:-}}"
             export CRABBOX_COORDINATOR CRABBOX_COORDINATOR_TOKEN
             if [[ -z "${CRABBOX_COORDINATOR_TOKEN:-}" ]]; then
               echo "::warning::Crabbox coordinator token missing; skipping logged-in Discord Web video."

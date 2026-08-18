@@ -727,7 +727,7 @@ unrelated inbound runtime helpers.
       accountId?: string | null,
     ): ResolvedAccount {
       const section = (cfg.channels as Record<string, any>)?.["acme-chat"];
-      const token = (ltfx.n.1fcb261cf66174243535.v1);
+      const token = section?.token;
       if (!token) throw new Error("acme-chat: token is required");
       return {
         accountId: accountId ?? null,
@@ -955,7 +955,7 @@ Write colocated tests in `src/channel.test.ts`:
       it("resolves account from config", () => {
         const cfg = {
           channels: {
-            "acme-chat": { token: "${ltfx.n.4c5dc9b7708905f77f5e.v1}", allowFrom: ["user1"] },
+            "acme-chat": { token: "test-token", allowFrom: ["user1"] },
           },
         } as any;
         const account = acmeChatPlugin.config.resolveAccount(cfg, undefined);
@@ -964,7 +964,7 @@ Write colocated tests in `src/channel.test.ts`:
 
       it("inspects account without materializing secrets", () => {
         const cfg = {
-          channels: { "acme-chat": { token: "${ltfx.n.4c5dc9b7708905f77f5e.v1}" } },
+          channels: { "acme-chat": { token: "test-token" } },
         } as any;
         const result = acmeChatPlugin.config.inspectAccount!(cfg, undefined);
         expect(result.configured).toBe(true);

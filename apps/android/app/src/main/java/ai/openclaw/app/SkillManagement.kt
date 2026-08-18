@@ -231,7 +231,7 @@ private fun GatewaySkillSummary.matchesClawHubReference(reference: ClawHubSkillR
 
 internal fun clawHubInstallOutcomeUnknownMessage(slug: String): String = "The result for $slug is unknown. Reconnect, refresh Skills, then retry; the Gateway safely joins a matching install that is still running."
 
-private fun JsonObject.string(key: (String): String? =)
+private fun JsonObject.string(key: String): String? =
   (get(key) as? JsonPrimitive)
     ?.contentOrNull
     ?.trim()

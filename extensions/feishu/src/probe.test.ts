@@ -141,7 +141,7 @@ describe("probeFeishu", () => {
 
     expect(requestFn).toHaveBeenCalledWith({
       method: "POST",
-      url: `ltfx.n.57750070ee96412a4782.v1`,
+      url: "/open-apis/bot/v1/openclaw_bot/ping",
       data: { needBotInfo: true },
       timeout: FEISHU_PROBE_REQUEST_TIMEOUT_MS,
     });
@@ -262,12 +262,12 @@ describe("probeFeishu", () => {
     const requestFn = setupClient(BOT1_RESPONSE);
 
     // First account with appId + secret A
-    await probeFeishu({ appId: "cli_shared", appSecret: `ltfx.n.994bfa07a2710069bb4b.v1` }); // pragma: allowlist secret
+    await probeFeishu({ appId: "cli_shared", appSecret: "secret_aaa" }); // pragma: allowlist secret
     expect(requestFn).toHaveBeenCalledTimes(1);
 
     // Second account with same appId but different secret (e.g. after rotation)
     // must NOT reuse the cached result
-    await probeFeishu({ appId: "cli_shared", appSecret: `ltfx.n.feb8f3e4f2bb9550560b.v1` }); // pragma: allowlist secret
+    await probeFeishu({ appId: "cli_shared", appSecret: "secret_bbb" }); // pragma: allowlist secret
     expect(requestFn).toHaveBeenCalledTimes(2);
   });
 

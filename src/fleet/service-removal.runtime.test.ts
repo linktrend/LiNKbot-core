@@ -41,7 +41,7 @@ function runningInspection(
     labels: fleetLabels(),
     environment: {
       HOME: "/home/node",
-      OPENCLAW_GATEWAY_TOKEN: `ltfx.n.9bdf10a691a1cfda89d9.v1`,
+      OPENCLAW_GATEWAY_TOKEN: "old-token",
       FEATURE: "enabled",
       NODE_VERSION: "old-image-default",
     },

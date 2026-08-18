@@ -413,7 +413,7 @@ describe("resolveCommandSecretRefsViaGateway", () => {
         id: "DISCORD_CHAT_TOKEN",
       });
       expect(result.targetStatesByPath).toEqual({
-        "channels.discord.accounts.ops.token": `ltfx.n.d73b5adcffa3ec5067c2.v1`,
+        "channels.discord.accounts.ops.token": "resolved_gateway",
       });
       expect(callGateway.mock.calls[0]?.[0].params).toEqual({
         commandName: "message",
@@ -525,7 +525,7 @@ describe("resolveCommandSecretRefsViaGateway", () => {
         id: "DISCORD_CHAT_TOKEN",
       });
       expect(result.targetStatesByPath).toEqual({
-        "channels.discord.accounts.ops.token": `ltfx.n.d73b5adcffa3ec5067c2.v1`,
+        "channels.discord.accounts.ops.token": "resolved_gateway",
       });
       expect(result.diagnostics).toEqual(["channels.discord.accounts.ops.token: gateway note"]);
       expect(result.hadUnresolvedTargets).toBe(false);
@@ -703,7 +703,7 @@ describe("resolveCommandSecretRefsViaGateway", () => {
       {
         OPENCLAW_GATEWAY_PASSWORD: undefined,
         OPENCLAW_GATEWAY_TOKEN: undefined,
-        TALK_API_KEY: `ltfx.n.140768c6903111fb6617.v1`,
+        TALK_API_KEY: "local-fallback-key",
       },
       async () => {
         const result = await resolveCommandSecretRefsViaGateway({
@@ -1439,8 +1439,8 @@ describe("resolveCommandSecretRefsViaGateway", () => {
       expect(result.resolvedConfig.talk?.providers?.gateway?.apiKey).toBe("gateway-owned-key");
       expect(result.resolvedConfig.talk?.providers?.local?.apiKey).toBe("local-fallback-key");
       expect(result.targetStatesByPath).toMatchObject({
-        "talk.providers.gateway.apiKey": `ltfx.n.d73b5adcffa3ec5067c2.v1`,
-        "talk.providers.local.apiKey": `ltfx.n.4521c036aad81cc4683f.v1`,
+        "talk.providers.gateway.apiKey": "resolved_gateway",
+        "talk.providers.local.apiKey": "resolved_local",
       });
       expect(
         result.diagnostics.some((entry) => entry.includes("gateway secrets.resolve unavailable")),

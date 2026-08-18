@@ -103,7 +103,7 @@ curl -sS -X POST "<site-url>/qa-credentials/v1/heartbeat" \
     "ownerId":"local-dev",
     "actorRole":"maintainer",
     "credentialId":"<credential-id>",
-    "leaseToken":"${ltfx.n.c949775ab6baa4482745.v1}",
+    "leaseToken":"<lease-token>",
     "leaseTtlMs":1200000
   }'
 ```
@@ -119,7 +119,7 @@ curl -sS -X POST "<site-url>/qa-credentials/v1/release" \
     "ownerId":"local-dev",
     "actorRole":"maintainer",
     "credentialId":"<credential-id>",
-    "leaseToken":"${ltfx.n.c949775ab6baa4482745.v1}"
+    "leaseToken":"<lease-token>"
   }'
 ```
 
@@ -134,8 +134,8 @@ curl -sS -X POST "<site-url>/qa-credentials/v1/admin/add" \
     "actorId":"local-maintainer",
     "payload":{
       "groupId":"-100123",
-      "driverToken":"${ltfx.n.d09452324ca1e7009307.v1}",
-      "sutToken":"${ltfx.n.50f83cc49e938a081165.v1}"
+      "driverToken":"driver-token",
+      "sutToken":"sut-token"
     }
   }'
 ```

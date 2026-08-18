@@ -238,7 +238,7 @@ describe("auth external oauth helpers", () => {
         "openai:default": {
           type: "api_key",
           provider: "openai",
-          key: `ltfx.n.7c9f8cb332edbdb1679a.v1`,
+          key: "sk-local",
         },
       }),
     );

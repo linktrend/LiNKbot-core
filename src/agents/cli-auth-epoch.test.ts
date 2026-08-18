@@ -293,7 +293,7 @@ describe("resolveCliAuthEpoch", () => {
       config: {},
       authProfileId: profileId,
       resolvedAuth: {
-        apiKey: `ltfx.n.0e87603f4ba9a34cee38.v1`,
+        apiKey: "materialized-a",
         profileId,
         source: `profile:${profileId}`,
         mode: "api-key",
@@ -305,7 +305,7 @@ describe("resolveCliAuthEpoch", () => {
       config: {},
       authProfileId: profileId,
       resolvedAuth: {
-        apiKey: `ltfx.n.ab57dcb42cdd82af9f85.v1`,
+        apiKey: "materialized-b",
         profileId,
         source: `profile:${profileId}`,
         mode: "api-key",

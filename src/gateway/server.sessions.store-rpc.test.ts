@@ -242,7 +242,7 @@ test("lists and patches session store via sessions.* RPC", async () => {
   expect(limited.payload?.sessions[0]?.key).toBe("global");
 
   const patched = await directSessionReq<{ ok: true; key: string }>("sessions.patch", {
-    key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+    key: "agent:main:main",
     thinkingLevel: "medium",
     verboseLevel: "off",
   });
@@ -253,7 +253,7 @@ test("lists and patches session store via sessions.* RPC", async () => {
   const sendPolicyPatched = await directSessionReq<{
     ok: true;
     entry: { sendPolicy?: string };
-  }>("sessions.patch", { key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`, sendPolicy: "deny" });
+  }>("sessions.patch", { key: "agent:main:main", sendPolicy: "deny" });
   expect(sendPolicyPatched.ok).toBe(true);
   expect(sendPolicyPatched.payload?.entry.sendPolicy).toBe("deny");
 
@@ -261,20 +261,20 @@ test("lists and patches session store via sessions.* RPC", async () => {
     ok: true;
     entry: { label?: string };
   }>("sessions.patch", {
-    key: `ltfx.n.7940e25f57f18b260285.v1`,
+    key: "agent:main:subagent:one",
     label: "Briefing",
   });
   expect(labelPatched.ok).toBe(true);
   expect(labelPatched.payload?.entry.label).toBe("Briefing");
 
   const labelPatchedDuplicate = await directSessionReq("sessions.patch", {
-    key: `ltfx.n.5e54554bc3403b5a7e4b.v1`,
+    key: "agent:main:discord:group:dev",
     label: "Briefing",
   });
   expect(labelPatchedDuplicate.ok).toBe(false);
 
   const mainArchive = await directSessionReq("sessions.patch", {
-    key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+    key: "agent:main:main",
     archived: true,
   });
   expect(mainArchive.ok).toBe(false);
@@ -282,7 +282,7 @@ test("lists and patches session store via sessions.* RPC", async () => {
   const pinned = await directSessionReq<{
     entry: { pinnedAt?: number };
   }>("sessions.patch", {
-    key: `ltfx.n.7940e25f57f18b260285.v1`,
+    key: "agent:main:subagent:one",
     pinned: true,
   });
   expect(pinned.ok).toBe(true);
@@ -291,7 +291,7 @@ test("lists and patches session store via sessions.* RPC", async () => {
   const iconPatched = await directSessionReq<{
     entry: { icon?: string };
   }>("sessions.patch", {
-    key: `ltfx.n.7940e25f57f18b260285.v1`,
+    key: "agent:main:subagent:one",
     icon: "name:spark",
   });
   expect(iconPatched.ok).toBe(true);
@@ -301,7 +301,7 @@ test("lists and patches session store via sessions.* RPC", async () => {
     sessions: Array<{ key: string; pinned?: boolean; icon?: string }>;
   }>("sessions.list", {});
   expect(pinnedList.payload?.sessions[0]).toMatchObject({
-    key: `ltfx.n.7940e25f57f18b260285.v1`,
+    key: "agent:main:subagent:one",
     pinned: true,
     icon: "name:spark",
   });
@@ -309,7 +309,7 @@ test("lists and patches session store via sessions.* RPC", async () => {
   const archived = await directSessionReq<{
     entry: { archivedAt?: number; pinnedAt?: number };
   }>("sessions.patch", {
-    key: `ltfx.n.7940e25f57f18b260285.v1`,
+    key: "agent:main:subagent:one",
     archived: true,
   });
   expect(archived.ok).toBe(true);
@@ -326,11 +326,11 @@ test("lists and patches session store via sessions.* RPC", async () => {
     sessions: Array<{ key: string; archived?: boolean }>;
   }>("sessions.list", { archived: true });
   expect(archivedList.payload?.sessions).toMatchObject([
-    { key: `ltfx.n.7940e25f57f18b260285.v1`, archived: true },
+    { key: "agent:main:subagent:one", archived: true },
   ]);
 
   const archivedSend = await directSessionReq("sessions.send", {
-    key: `ltfx.n.7940e25f57f18b260285.v1`,
+    key: "agent:main:subagent:one",
     message: "blocked while archived",
   });
   expect(archivedSend).toMatchObject({
@@ -348,7 +348,7 @@ test("lists and patches session store via sessions.* RPC", async () => {
     payload: { runId: cachedArchivedRunId, status: "ok" },
   });
   const cachedArchivedSend = await directSessionReq("sessions.send", {
-    key: `ltfx.n.7940e25f57f18b260285.v1`,
+    key: "agent:main:subagent:one",
     message: "already completed before archive",
     idempotencyKey: cachedArchivedRunId,
   });
@@ -358,7 +358,7 @@ test("lists and patches session store via sessions.* RPC", async () => {
   });
 
   const archivedReset = await directSessionReq("sessions.reset", {
-    key: `ltfx.n.7940e25f57f18b260285.v1`,
+    key: "agent:main:subagent:one",
   });
   expect(archivedReset).toMatchObject({
     ok: false,
@@ -371,7 +371,7 @@ test("lists and patches session store via sessions.* RPC", async () => {
   const restored = await directSessionReq<{
     entry: { archivedAt?: number };
   }>("sessions.patch", {
-    key: `ltfx.n.7940e25f57f18b260285.v1`,
+    key: "agent:main:subagent:one",
     archived: false,
   });
   expect(restored.ok).toBe(true);
@@ -397,7 +397,7 @@ test("lists and patches session store via sessions.* RPC", async () => {
   expect(subagent?.displayName).toBe("Briefing");
 
   const clearedVerbose = await directSessionReq<{ ok: true; key: string }>("sessions.patch", {
-    key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+    key: "agent:main:main",
     verboseLevel: null,
   });
   expect(clearedVerbose.ok).toBe(true);
@@ -443,7 +443,7 @@ test("lists and patches session store via sessions.* RPC", async () => {
     ok: true;
     entry: { spawnedBy?: string };
   }>("sessions.patch", {
-    key: `ltfx.n.7f61b4b5cdd367e8d144.v1`,
+    key: "agent:main:subagent:two",
     spawnedBy: "agent:main:main",
   });
   expect(spawnedPatched.ok).toBe(true);
@@ -453,7 +453,7 @@ test("lists and patches session store via sessions.* RPC", async () => {
     ok: true;
     entry: { spawnedBy?: string; spawnDepth?: number };
   }>("sessions.patch", {
-    key: `ltfx.n.ee2d1e2b87e74e973d35.v1`,
+    key: "agent:main:acp:child",
     spawnedBy: "agent:main:main",
     spawnDepth: 1,
   });
@@ -462,7 +462,7 @@ test("lists and patches session store via sessions.* RPC", async () => {
   expect(acpPatched.payload?.entry.spawnDepth).toBe(1);
 
   const spawnedPatchedInvalidKey = await directSessionReq("sessions.patch", {
-    key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+    key: "agent:main:main",
     spawnedBy: "agent:main:main",
   });
   expect(spawnedPatchedInvalidKey.ok).toBe(false);
@@ -500,7 +500,7 @@ test("lists and patches session store via sessions.* RPC", async () => {
       agentRuntime?: { id: string; source: string };
     };
   }>("sessions.patch", {
-    key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+    key: "agent:main:main",
     model: "openai/gpt-test-a",
   });
   expect(modelPatched.ok).toBe(true);
@@ -532,7 +532,7 @@ test("lists and patches session store via sessions.* RPC", async () => {
   expect(mainAfterModelPatch?.agentRuntime).toEqual({ id: "openclaw", source: "implicit" });
 
   const compacted = await directSessionReq<{ ok: true; compacted: boolean }>("sessions.compact", {
-    key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+    key: "agent:main:main",
     maxLines: 3,
   });
   expect(compacted.ok).toBe(true);
@@ -549,7 +549,7 @@ test("lists and patches session store via sessions.* RPC", async () => {
     archived: string[];
     ok: true;
     deleted: boolean;
-  }>("sessions.delete", { key: `ltfx.n.5e54554bc3403b5a7e4b.v1` });
+  }>("sessions.delete", { key: "agent:main:discord:group:dev" });
   expect(deleted.ok).toBe(true);
   expect(deleted.payload?.deleted).toBe(true);
   expect(deleted.payload?.archived).toHaveLength(1);
@@ -581,7 +581,7 @@ test("lists and patches session store via sessions.* RPC", async () => {
       lastAccountId?: string;
       lastThreadId?: string | number;
     };
-  }>("sessions.reset", { key: `ltfx.n.6d9217fe77c7f11d9cc9.v1` });
+  }>("sessions.reset", { key: "agent:main:main" });
   expect(reset.ok).toBe(true);
   expect(reset.payload?.key).toBe("agent:main:main");
   expect(reset.payload?.entry.sessionId).not.toBe("sess-main");
@@ -603,7 +603,7 @@ test("lists and patches session store via sessions.* RPC", async () => {
   ).resolves.toHaveLength(3);
 
   const badThinking = await directSessionReq("sessions.patch", {
-    key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+    key: "agent:main:main",
     thinkingLevel: "banana",
   });
   expect(badThinking.ok).toBe(false);
@@ -738,14 +738,14 @@ test("write-scoped operators manage chat organization but not admin session sett
   const { ws } = await openClient({ scopes: ["operator.read", "operator.write"] });
   try {
     const renamed = await rpcReq<{ ok: true; entry: { label?: string } }>(ws, "sessions.patch", {
-      key: `ltfx.n.f7afc572281032b9ff77.v1`,
+      key: "agent:main:topic-a",
       label: "Trip planning",
     });
     expect(renamed.ok).toBe(true);
     expect(renamed.payload?.entry.label).toBe("Trip planning");
 
     const pinned = await rpcReq<{ ok: true; entry: { pinnedAt?: number } }>(ws, "sessions.patch", {
-      key: `ltfx.n.f7afc572281032b9ff77.v1`,
+      key: "agent:main:topic-a",
       pinned: true,
     });
     expect(pinned.ok).toBe(true);
@@ -755,7 +755,7 @@ test("write-scoped operators manage chat organization but not admin session sett
       ok: true;
       entry: { category?: string; markedUnreadAt?: number };
     }>(ws, "sessions.patch", {
-      key: `ltfx.n.f7afc572281032b9ff77.v1`,
+      key: "agent:main:topic-a",
       category: "Travel",
       unread: true,
     });
@@ -789,7 +789,7 @@ test("write-scoped operators manage chat organization but not admin session sett
     const describedAfterRename = await rpcReq<{ session?: { category?: string } }>(
       ws,
       "sessions.describe",
-      { key: `ltfx.n.f7afc572281032b9ff77.v1` },
+      { key: "agent:main:topic-a" },
     );
     expect(describedAfterRename.ok).toBe(true);
     expect(describedAfterRename.payload?.session?.category).toBe("Trips");
@@ -805,7 +805,7 @@ test("write-scoped operators manage chat organization but not admin session sett
     const archived = await rpcReq<{ ok: true; entry: { archivedAt?: number } }>(
       ws,
       "sessions.patch",
-      { key: `ltfx.n.0fc84fc0aa0724f98d83.v1`, archived: true },
+      { key: "agent:main:topic-b", archived: true },
     );
     expect(archived.ok).toBe(true);
     expect(archived.payload?.entry.archivedAt).toEqual(expect.any(Number));
@@ -828,20 +828,20 @@ test("write-scoped operators manage chat organization but not admin session sett
     ]);
 
     const unflaggedDeleteDenied = await rpcReq(ws, "sessions.delete", {
-      key: `ltfx.n.0fc84fc0aa0724f98d83.v1`,
+      key: "agent:main:topic-b",
     });
     expect(unflaggedDeleteDenied.ok).toBe(false);
     expect(unflaggedDeleteDenied.error?.message).toContain("missing scope: operator.admin");
 
     const activeDeleteDenied = await rpcReq(ws, "sessions.delete", {
-      key: `ltfx.n.f7afc572281032b9ff77.v1`,
+      key: "agent:main:topic-a",
       archivedOnly: true,
     });
     expect(activeDeleteDenied.ok).toBe(false);
     expect(activeDeleteDenied.error?.message).toContain("Archive it first");
 
     const archivedDeleted = await rpcReq<{ ok: true }>(ws, "sessions.delete", {
-      key: `ltfx.n.0fc84fc0aa0724f98d83.v1`,
+      key: "agent:main:topic-b",
       archivedOnly: true,
     });
     expect(archivedDeleted.ok).toBe(true);
@@ -853,14 +853,14 @@ test("write-scoped operators manage chat organization but not admin session sett
     expect(archivedAfterDelete.payload?.sessions).toEqual([]);
 
     const adminFieldDenied = await rpcReq(ws, "sessions.patch", {
-      key: `ltfx.n.f7afc572281032b9ff77.v1`,
+      key: "agent:main:topic-a",
       sendPolicy: "deny",
     });
     expect(adminFieldDenied.ok).toBe(false);
     expect(adminFieldDenied.error?.message).toContain("missing scope: operator.admin");
 
     const mixedFieldsDenied = await rpcReq(ws, "sessions.patch", {
-      key: `ltfx.n.f7afc572281032b9ff77.v1`,
+      key: "agent:main:topic-a",
       label: "Sneaky",
       model: "anthropic/claude-sonnet-5",
     });
@@ -939,7 +939,7 @@ test("archiving a session disables cron jobs bound to it", async () => {
 
   const archived = await directSessionHandlerReq(
     "sessions.patch",
-    { key: `ltfx.n.98aa73cea2b2b5c06d48.v1`, archived: true },
+    { key: "agent:main:subagent:cronbound", archived: true },
     { context: { cron } },
   );
   expect(archived.ok).toBe(true);
@@ -951,7 +951,7 @@ test("archiving a session disables cron jobs bound to it", async () => {
   update.mockClear();
   const restored = await directSessionHandlerReq(
     "sessions.patch",
-    { key: `ltfx.n.98aa73cea2b2b5c06d48.v1`, archived: false },
+    { key: "agent:main:subagent:cronbound", archived: false },
     { context: { cron } },
   );
   expect(restored.ok).toBe(true);
@@ -964,7 +964,7 @@ test("archiving a session disables cron jobs bound to it", async () => {
   } as unknown as NonNullable<Parameters<typeof directSessionHandlerReq>[2]>["client"];
   const writeScopedArchive = await directSessionHandlerReq(
     "sessions.patch",
-    { key: `ltfx.n.98aa73cea2b2b5c06d48.v1`, archived: true },
+    { key: "agent:main:subagent:cronbound", archived: true },
     { context: { cron }, client: writeScopedClient },
   );
   expect(writeScopedArchive.ok).toBe(true);

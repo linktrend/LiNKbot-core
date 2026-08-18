@@ -13,7 +13,7 @@ vi.mock("../logging/subsystem.js", () => ({
 import { buildTimeoutAbortSignal, fetchWithTimeout } from "./fetch-timeout.js";
 import { MAX_SAFE_TIMEOUT_DELAY_MS } from "./timer-delay.js";
 
-function captureTimeoutLogUrl(url: (string)): Promise<Record<string, unknown>> {
+function captureTimeoutLogUrl(url: string): Promise<Record<string, unknown>> {
   const { cleanup } = buildTimeoutAbortSignal({ timeoutMs: 25, operation: "unit-test", url });
   return vi.advanceTimersByTimeAsync(25).then(() => {
     const record = requireWarnRecord(0);
@@ -22,7 +22,7 @@ function captureTimeoutLogUrl(url: (string)): Promise<Record<string, unknown>> {
   });
 }
 
-const SYNTHETIC_TELEGRAM_BOT_TOKEN = `ltfx.n.8a55944183ec8d5a701c.v1`;
+const SYNTHETIC_TELEGRAM_BOT_TOKEN = "123456:ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcd";
 
 function requireWarnCall(callIndex: number): [string, Record<string, unknown>] {
   const call = warn.mock.calls[callIndex];
@@ -144,7 +144,7 @@ describe("buildTimeoutAbortSignal", () => {
     const { cleanup } = buildTimeoutAbortSignal({
       timeoutMs: 25,
       operation: "unit-test",
-      url: `ltfx.n.0c767305770945b4f544.v1`,
+      url: "/api/responses?api-key=secret#fragment",
     });
 
     await vi.advanceTimersByTimeAsync(25);

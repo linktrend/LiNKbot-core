@@ -713,7 +713,7 @@ extension AgentProTab {
     @MainActor
     func saveSkillAPIKey(_ skill: SkillStatusEntryLite) async {
         await self.runSkillConfigMutation(skill) {
-            let apiKey = (self.skillAPIKeyDrafts[skill.effectiveSkillKey] ?? "")
+            let apiKey = self.skillAPIKeyDrafts[skill.effectiveSkillKey] ?? ""
             let params = SkillUpdateParams(skillKey: skill.effectiveSkillKey, apiKey: apiKey)
             _ = try await self.requestGateway(method: "skills.update", params: params, timeoutSeconds: 20)
             self.skillAPIKeyDrafts[skill.effectiveSkillKey] = ""

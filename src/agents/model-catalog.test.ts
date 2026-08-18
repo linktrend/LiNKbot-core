@@ -186,7 +186,7 @@ describe("prepared model catalog builder", () => {
     await buildPreparedModelCatalogSnapshot({
       agentDir: "/tmp/model-catalog-test",
       authCredentials: {
-        inherited: { type: "api_key", key: `ltfx.n.4c806362b613f7496abf.v1` },
+        inherited: { type: "api_key", key: "test-api-key" },
         subscription: {
           type: "oauth",
           access: "test-access",

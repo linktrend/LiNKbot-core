@@ -258,7 +258,7 @@ describe("codex media understanding provider", () => {
       threadId: "thread-1",
       input: [
         { type: "text", text: "Describe briefly.", text_elements: [] },
-        { type: "image", url: `ltfx.n.23414dfd7fea22b8e7e6.v1` },
+        { type: "image", url: "data:image/png;base64,aW1hZ2UtYnl0ZXM=" },
       ],
       cwd: "/tmp/openclaw-agent",
       approvalPolicy: "on-request",
@@ -302,7 +302,7 @@ describe("codex media understanding provider", () => {
       pluginConfig: {
         appServer: {
           transport: "websocket",
-          url: `ltfx.n.beb83a2d560238206a36.v1`,
+          url: "ws://127.0.0.1:4501",
         },
       },
       clientFactory,
@@ -322,7 +322,7 @@ describe("codex media understanding provider", () => {
     expect(clientFactory).toHaveBeenCalledWith({
       startOptions: expect.objectContaining({
         transport: "websocket",
-        url: `ltfx.n.beb83a2d560238206a36.v1`,
+        url: "ws://127.0.0.1:4501",
       }),
       authProfileId: undefined,
       agentDir: "/tmp/openclaw-agent",
@@ -576,7 +576,7 @@ describe("codex media understanding provider", () => {
     });
     expect(turnParams?.input?.[2]).toStrictEqual({
       type: "image",
-      url: `ltfx.n.23414dfd7fea22b8e7e6.v1`,
+      url: "data:image/png;base64,aW1hZ2UtYnl0ZXM=",
     });
   });
 

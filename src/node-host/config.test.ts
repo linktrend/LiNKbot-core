@@ -315,7 +315,7 @@ describe("node-host SQLite config", () => {
               config_key: "current",
               version: 1,
               node_id: "node-with-token",
-              token: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
+              token: "test-token-placeholder",
               display_name: null,
               gateway_host: null,
               gateway_port: null,

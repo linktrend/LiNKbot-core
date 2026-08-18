@@ -93,7 +93,7 @@ function createContext(params: {
     },
     runtime: createRuntime() as never,
     agentDir: "/tmp/openclaw-self-hosted-test-agent",
-    resolveApiKey: (vi.fn<ProviderAuthMethodNonInteractiveContext["resolveApiKey"]>()
+    resolveApiKey: vi.fn<ProviderAuthMethodNonInteractiveContext["resolveApiKey"]>(
       async () => resolved,
     ),
     toApiKeyCredential: vi.fn<ProviderAuthMethodNonInteractiveContext["toApiKeyCredential"]>(
@@ -187,7 +187,7 @@ describe("discoverOpenAICompatibleLocalModels", () => {
 
     const models = await discoverOpenAICompatibleLocalModels({
       baseUrl: "http://127.0.0.1:8000/v1/",
-      apiKey: `ltfx.n.a347a3fa16b3db4737b4.v1`,
+      apiKey: "self-hosted-test-key",
       label: "vLLM",
       env: {},
     });
@@ -237,7 +237,7 @@ describe("discoverOpenAICompatibleLocalModels", () => {
 
     const models = await discoverOpenAICompatibleLocalModels({
       baseUrl: "http://127.0.0.1:8000/v1/",
-      apiKey: `ltfx.n.a347a3fa16b3db4737b4.v1`,
+      apiKey: "self-hosted-test-key",
       label: "vLLM",
       env: {},
     });
@@ -577,7 +577,7 @@ describe("configureOpenAICompatibleSelfHostedProviderNonInteractive", () => {
       providerLabel: "vLLM",
       envVar: "VLLM_API_KEY",
       baseUrl: "http://127.0.0.1:8100/v1/",
-      apiKey: `ltfx.n.512c86ced7603ee32063.v1`,
+      apiKey: "vllm-test-key",
       modelId: "Qwen/Qwen3-8B",
     },
     {
@@ -585,7 +585,7 @@ describe("configureOpenAICompatibleSelfHostedProviderNonInteractive", () => {
       providerLabel: "SGLang",
       envVar: "SGLANG_API_KEY",
       baseUrl: "http://127.0.0.1:31000/v1",
-      apiKey: `ltfx.n.952e02aa23d33db17500.v1`,
+      apiKey: "sglang-test-key",
       modelId: "Qwen/Qwen3-32B",
     },
   ])("configures $providerLabel config and auth profile", async (params) => {
@@ -641,7 +641,7 @@ describe("configureOpenAICompatibleSelfHostedProviderNonInteractive", () => {
   it("exits without touching auth when custom model id is missing", async () => {
     const ctx = createContext({
       providerId: "vllm",
-      apiKey: `ltfx.n.512c86ced7603ee32063.v1`,
+      apiKey: "vllm-test-key",
     });
 
     const cfg = await configureSelfHostedTestProvider({

@@ -102,7 +102,7 @@ runs:
       uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
       with:
         path: ${{ steps.pnpm-store.outputs.path }}
-        key: "${ltfx.n.7185311c1640cce7d137.v1}" runner.os }}-${{ runner.arch }}-${{ inputs.node-version }}-${{ hashFiles(inputs.package-manager-file) }}-${{ hashFiles(inputs.lockfile-path) }}
+        key: pnpm-store-${{ runner.os }}-${{ runner.arch }}-${{ inputs.node-version }}-${{ hashFiles(inputs.package-manager-file) }}-${{ hashFiles(inputs.lockfile-path) }}
         restore-keys: |
           pnpm-store-${{ runner.os }}-${{ runner.arch }}-${{ inputs.node-version }}-${{ hashFiles(inputs.package-manager-file) }}-
           pnpm-store-${{ runner.os }}-${{ runner.arch }}-${{ inputs.node-version }}-

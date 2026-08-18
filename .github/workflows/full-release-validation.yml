@@ -527,7 +527,7 @@ jobs:
               fi
               if jq -e 'length > 0' <<< "$failed_jobs_json" >/dev/null; then
                 echo "::error::${workflow} has failed child jobs before the workflow completed; cancelling the remaining matrix."
-                jq '.[] | {name, conclusion, url: (ltfx.n.8efee8b84b3649c2a4a6.v1)}' <<< "$failed_jobs_json"
+                jq '.[] | {name, conclusion, url: .html_url}' <<< "$failed_jobs_json"
                 cancel_child
                 trap - EXIT INT TERM
                 exit 1
@@ -562,7 +562,7 @@ jobs:
               fi
               if (( poll_count % 10 == 0 )); then
                 echo "Still waiting on ${workflow}: https://github.com/${GITHUB_REPOSITORY}/actions/runs/${run_id}"
-                fetch_child_jobs | jq 'select(.status != "completed") | {name, status, url: (ltfx.n.8efee8b84b3649c2a4a6.v1)}' || true
+                fetch_child_jobs | jq 'select(.status != "completed") | {name, status, url: .html_url}' || true
               fi
               sleep 60
             done
@@ -574,7 +574,7 @@ jobs:
             echo "url=${url}" >> "$GITHUB_OUTPUT"
             echo "conclusion=${conclusion}" >> "$GITHUB_OUTPUT"
             if [[ "$conclusion" != "success" ]]; then
-              fetch_child_jobs | jq 'select(.conclusion != "success" and .conclusion != "skipped") | {name, conclusion, url: (ltfx.n.8efee8b84b3649c2a4a6.v1)}' || true
+              fetch_child_jobs | jq 'select(.conclusion != "success" and .conclusion != "skipped") | {name, conclusion, url: .html_url}' || true
               exit 1
             fi
           }
@@ -721,7 +721,7 @@ jobs:
               fi
               if jq -e 'length > 0' <<< "$failed_jobs_json" >/dev/null; then
                 echo "::error::${workflow} has failed child jobs before the workflow completed; cancelling the remaining matrix."
-                jq '.[] | {name, conclusion, url: (ltfx.n.8efee8b84b3649c2a4a6.v1)}' <<< "$failed_jobs_json"
+                jq '.[] | {name, conclusion, url: .html_url}' <<< "$failed_jobs_json"
                 cancel_child
                 trap - EXIT INT TERM
                 exit 1
@@ -756,7 +756,7 @@ jobs:
               fi
               if (( poll_count % 10 == 0 )); then
                 echo "Still waiting on ${workflow}: https://github.com/${GITHUB_REPOSITORY}/actions/runs/${run_id}"
-                fetch_child_jobs | jq 'select(.status != "completed") | {name, status, url: (ltfx.n.8efee8b84b3649c2a4a6.v1)}' || true
+                fetch_child_jobs | jq 'select(.status != "completed") | {name, status, url: .html_url}' || true
               fi
               sleep 60
             done
@@ -768,7 +768,7 @@ jobs:
             echo "url=${url}" >> "$GITHUB_OUTPUT"
             echo "conclusion=${conclusion}" >> "$GITHUB_OUTPUT"
             if [[ "$conclusion" != "success" ]]; then
-              fetch_child_jobs | jq 'select(.conclusion != "success" and .conclusion != "skipped") | {name, conclusion, url: (ltfx.n.8efee8b84b3649c2a4a6.v1)}' || true
+              fetch_child_jobs | jq 'select(.conclusion != "success" and .conclusion != "skipped") | {name, conclusion, url: .html_url}' || true
               exit 1
             fi
           }
@@ -1001,7 +1001,7 @@ jobs:
               fi
               if jq -e 'length > 0' <<< "$failed_jobs_json" >/dev/null; then
                 echo "::error::${workflow} has failed child jobs before the workflow completed; cancelling the remaining matrix."
-                jq '.[] | {name, conclusion, url: (ltfx.n.8efee8b84b3649c2a4a6.v1)}' <<< "$failed_jobs_json"
+                jq '.[] | {name, conclusion, url: .html_url}' <<< "$failed_jobs_json"
                 cancel_child
                 trap - EXIT INT TERM
                 exit 1
@@ -1036,16 +1036,16 @@ jobs:
               fi
               if (( poll_count % 10 == 0 )); then
                 echo "Still waiting on ${workflow}: https://github.com/${GITHUB_REPOSITORY}/actions/runs/${run_id}"
-                fetch_child_jobs | jq 'select(.status != "completed") | {name, status, url: (ltfx.n.8efee8b84b3649c2a4a6.v1)}' || true
+                fetch_child_jobs | jq 'select(.status != "completed") | {name, status, url: .html_url}' || true
               fi
               sleep 60
             done
             trap - EXIT INT TERM
 
-            jobs_json="$(fetch_child_jobs | jq -s '{jobs: [.[] | {name, conclusion, url: (ltfx.n.8efee8b84b3649c2a4a6.v1)}]}')"
+            jobs_json="$(fetch_child_jobs | jq -s '{jobs: [.[] | {name, conclusion, url: .html_url}]}')"
             run_json="$(
               jq -s '.[0] + .[1]' \
-                <(fetch_child_run_json | jq '{conclusion: (.conclusion // ""), url: (ltfx.n.8efee8b84b3649c2a4a6.v1)}') \
+                <(fetch_child_run_json | jq '{conclusion: (.conclusion // ""), url: .html_url}') \
                 <(printf '%s\n' "$jobs_json")
             )"
             conclusion="$(jq -r '.conclusion' <<< "$run_json")"

@@ -354,7 +354,7 @@ function rewriteNonAgentModelRefs(params: {
     cfg: params.cfg,
     hits: params.hits,
     container: asMutableRecord(params.cfg.messages?.tts),
-    key: `ltfx.n.69844fd5ac282b364c3e.v1`,
+    key: "summaryModel",
     path: "messages.tts.summaryModel",
     blockedModelIdentities: params.blockedModelIdentities,
     env: params.env,

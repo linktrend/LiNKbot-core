@@ -21,7 +21,7 @@ describe("formatAcpRuntimeErrorText", () => {
   });
 
   it("surfaces redacted numeric RequestError details in runtime failure text", () => {
-    const token = `ltfx.n.82be8a4d9cdebab78235.v1`;
+    const token = "sk-abcdefghijklmnopqrstuvwxyz123456";
     const requestError = Object.assign(new Error("Internal error"), {
       name: "RequestError",
       code: -32603,

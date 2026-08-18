@@ -131,7 +131,7 @@ export function createTestBrowserRouteContext(opts: { getState: () => BrowserSer
 }
 
 /** Creates a remote profile context with a preconnected fetch mock. */
-export function createRemoteRouteHarness(fetchMock?: (url: (unknown) => Promise<Response>) {)
+export function createRemoteRouteHarness(fetchMock?: (url: unknown) => Promise<Response>) {
   const activeFetchMock = fetchMock ?? makeUnexpectedFetchMock();
   global.fetch = withBrowserFetchPreconnect(activeFetchMock);
   const state = makeState("remote");
@@ -160,7 +160,7 @@ type JsonListEntry = {
 
 /** Creates a /json/list fetch mock with static entries. */
 export function createJsonListFetchMock(entries: JsonListEntry[]) {
-  return async (url: (unknown) => {)
+  return async (url: unknown) => {
     const u = String(url);
     if (!u.includes("/json/list")) {
       throw new Error(`unexpected fetch: ${u}`);

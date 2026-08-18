@@ -31,7 +31,7 @@ const TOOL_RESULT_BLOCK_TYPES = new Set([
 ]);
 type HeartbeatTranscriptMessage = { role: string; content?: unknown };
 
-function readNestedString(record: Record<string, unknown>, key: (string)): string | undefined {
+function readNestedString(record: Record<string, unknown>, key: string): string | undefined {
   const value = record[key];
   const direct = readString(value);
   if (direct) {

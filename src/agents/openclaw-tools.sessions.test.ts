@@ -439,7 +439,7 @@ describe("sessions tools", () => {
               lastMessagePreview: "Latest assistant update",
             },
             {
-              key: `ltfx.n.10a7e699690a095ea9cd.v1`,
+              key: "discord:group:dev",
               kind: "group",
               sessionId: "s-group",
               updatedAt: 11,
@@ -454,21 +454,21 @@ describe("sessions tools", () => {
               lastMessagePreview: "Need review on the patch",
             },
             {
-              key: `ltfx.n.cd3246c18cbc743c3b98.v1`,
+              key: "agent:main:dashboard:child",
               kind: "direct",
               sessionId: "s-dashboard-child",
               updatedAt: 12,
               parentSessionKey: "agent:main:main",
             },
             {
-              key: `ltfx.n.f3fd014fb107b4395e4c.v1`,
+              key: "agent:main:subagent:worker",
               kind: "direct",
               sessionId: "s-subagent-worker",
               updatedAt: 13,
               spawnedBy: "agent:main:main",
             },
             {
-              key: `ltfx.n.74a68aeb567beaed6c83.v1`,
+              key: "cron:job-1",
               kind: "direct",
               sessionId: "s-cron",
               updatedAt: 9,
@@ -601,13 +601,13 @@ describe("sessions tools", () => {
             path: storePath,
             sessions: [
               {
-                key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+                key: "agent:main:main",
                 kind: "direct",
                 sessionId: "visible",
                 updatedAt: 20,
               },
               {
-                key: `ltfx.n.f6cd12765ec3fd1073e1.v1`,
+                key: "agent:other:main",
                 kind: "direct",
                 sessionId: "hidden",
                 updatedAt: 21,
@@ -639,7 +639,7 @@ describe("sessions tools", () => {
       const details = result.details as { sessions?: Array<Record<string, unknown>> };
       expect(details.sessions).toStrictEqual([
         {
-          key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+          key: "agent:main:main",
           agentId: "main",
           kind: "other",
           channel: "unknown",
@@ -885,7 +885,7 @@ describe("sessions tools", () => {
             {
               role: "assistant",
               content: [
-                { type: "text", text: "Use ltfx.n.299202634e524df522ab.v1 to authenticate with the API." },
+                { type: "text", text: "Use sk-1234567890abcdef1234 to authenticate with the API." },
               ],
             },
           ],
@@ -912,13 +912,13 @@ describe("sessions tools", () => {
     const msg = details.messages?.[0] as { content?: Array<{ type?: string; text?: string }> };
     const textBlock = msg?.content?.find((b) => b.type === "text");
     expect(typeof textBlock?.text).toBe("string");
-    expect(textBlock?.text).not.toContain("ltfx.n.299202634e524df522ab.v1");
+    expect(textBlock?.text).not.toContain("sk-1234567890abcdef1234");
   });
 
   it("sessions_history sets both contentRedacted and contentTruncated independently", async () => {
     callGatewayMock.mockReset();
     const longPrefix = "safe text ".repeat(420);
-    const sensitiveText = `${longPrefix} ltfx.n.c851c24b20ce1daac60f.v1 end`;
+    const sensitiveText = `${longPrefix} sk-9876543210fedcba9876 end`;
     callGatewayMock.mockImplementation(async (opts: unknown) => {
       const request = opts as { method?: string };
       if (request.method === "chat.history") {

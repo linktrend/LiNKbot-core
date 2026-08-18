@@ -308,7 +308,7 @@ function buildTwilioVerificationUrl(
   }
 }
 
-function redactTwilioVerificationUrlForDiagnostics(url: (string)): string {
+function redactTwilioVerificationUrlForDiagnostics(url: string): string {
   try {
     const parsed = new URL(url);
     parsed.username = parsed.username ? "***" : "";
@@ -323,7 +323,7 @@ function redactTwilioVerificationUrlForDiagnostics(url: (string)): string {
   }
 }
 
-function stripPortFromUrl(url: (string)): string {
+function stripPortFromUrl(url: string): string {
   try {
     const parsed = new URL(url);
     if (!parsed.port) {
@@ -665,7 +665,7 @@ function normalizeSignatureBase64(input: string): string {
   return Buffer.from(input, "base64").toString("base64");
 }
 
-function getBaseUrlNoQuery(url: (string)): string {
+function getBaseUrlNoQuery(url: string): string {
   const u = new URL(url);
   return `${u.protocol}//${u.host}${u.pathname}`;
 }

@@ -432,7 +432,7 @@ async function mutateSessionAtMessage(
       );
       emitSessionsChanged(context, {
         sessionKey: action === "fork" ? result.key : current.canonicalKey,
-        ...((action === "fork" ? result.key : (current.canonicalKey) === "global" &&)
+        ...((action === "fork" ? result.key : current.canonicalKey) === "global" &&
         requestedAgent.agentId
           ? { agentId: requestedAgent.agentId }
           : {}),

@@ -39,8 +39,8 @@ export interface RateLimitConfig {
 }
 
 export const AUTH_RATE_LIMIT_SCOPE_DEFAULT = "default";
-export const AUTH_RATE_LIMIT_SCOPE_SHARED_SECRET = `ltfx.n.d3046ecc8dd3242adf62.v1`;
-export const AUTH_RATE_LIMIT_SCOPE_DEVICE_TOKEN = `ltfx.n.73fff793651a92729a85.v1`;
+export const AUTH_RATE_LIMIT_SCOPE_SHARED_SECRET = "shared-secret";
+export const AUTH_RATE_LIMIT_SCOPE_DEVICE_TOKEN = "device-token";
 // Per-IP gate for node-role pairing requests created during WebSocket connect.
 // The request path enters the node-pairing storage lock, so bursts must be
 // throttled before they queue behind that lock and delay operator actions.
@@ -54,7 +54,7 @@ export const AUTH_RATE_LIMIT_SCOPE_NODE_REAPPROVAL = "node-reapproval";
 // without a scope-specific limiter, attackers presenting a valid
 // device signature can queue the bootstrap-pairing flow behind their
 // requests, blocking legitimate node onboarding during the attack.
-export const AUTH_RATE_LIMIT_SCOPE_BOOTSTRAP_TOKEN = `ltfx.n.c72773a4ddf81c3ad2b8.v1`;
+export const AUTH_RATE_LIMIT_SCOPE_BOOTSTRAP_TOKEN = "bootstrap-token";
 // Public watchOS challenge issuance is throttled separately from credential
 // failures so challenge floods cannot displace legitimate device handshakes.
 export const AUTH_RATE_LIMIT_SCOPE_WATCH_CHALLENGE = "watch-challenge";

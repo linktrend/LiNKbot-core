@@ -51,7 +51,7 @@ This is the best current local stack. Load a large model in LM Studio (a full-si
     providers: {
       lmstudio: {
         baseUrl: "http://127.0.0.1:1234/v1",
-        apiKey: "${ltfx.n.c8c175e4fd9aacec1feb.v1}",
+        apiKey: "lmstudio",
         api: "openai-responses",
         models: [
           {
@@ -102,7 +102,7 @@ Setup checklist:
     providers: {
       lmstudio: {
         baseUrl: "http://127.0.0.1:1234/v1",
-        apiKey: "${ltfx.n.c8c175e4fd9aacec1feb.v1}",
+        apiKey: "lmstudio",
         api: "openai-responses",
         models: [
           {
@@ -143,7 +143,7 @@ MLX (`mlx_lm.server`), vLLM, SGLang, LiteLLM, OAI-proxy, or any custom gateway w
     providers: {
       local: {
         baseUrl: "http://127.0.0.1:8000/v1",
-        apiKey: "${ltfx.n.7c9f8cb332edbdb1679a.v1}",
+        apiKey: "sk-local",
         api: "openai-completions",
         timeoutSeconds: 300,
         models: [
@@ -175,7 +175,7 @@ Set `input: ["text", "image"]` on local or proxied vision models so image attach
 Use `models.providers.<id>.timeoutSeconds` for slow local/remote model servers before raising `agents.defaults.timeoutSeconds`. The provider timeout covers connect, headers, body streaming, and the total guarded-fetch abort for model HTTP requests only - if the agent/run timeout is lower, raise that too, since the provider timeout cannot extend the whole run.
 
 <Note>
-For custom OpenAI-compatible providers, a non-secret local marker such as `apiKey: "${ltfx.n.18ab0c9c00ad3478e4db.v1}"` is accepted when `baseUrl` resolves to loopback, a private LAN, `.local`, or a bare hostname - OpenClaw treats it as a valid local credential instead of reporting a missing key. Use a real value for any provider that accepts a public hostname.
+For custom OpenAI-compatible providers, a non-secret local marker such as `apiKey: "ollama-local"` is accepted when `baseUrl` resolves to loopback, a private LAN, `.local`, or a bare hostname - OpenClaw treats it as a valid local credential instead of reporting a missing key. Use a real value for any provider that accepts a public hostname.
 </Note>
 
 Behavior notes for local/proxied `/v1` backends:
@@ -224,7 +224,7 @@ Compat overrides for stricter OpenAI-compatible backends:
       providers: {
         local: {
           baseUrl: "http://127.0.0.1:8000/v1",
-          apiKey: "${ltfx.n.7c9f8cb332edbdb1679a.v1}",
+          apiKey: "sk-local",
           api: "openai-responses",
           models: [
             {

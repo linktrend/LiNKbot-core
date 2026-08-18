@@ -70,7 +70,7 @@ const CDP_SOURCE_RANGE_ENV_KEY = "OPENCLAW_BROWSER_CDP_SOURCE_RANGE";
 const CDP_AUTH_TOKEN_ENV_KEY = "OPENCLAW_BROWSER_CDP_AUTH_TOKEN";
 const SANDBOX_BROWSER_IMAGE_CONTRACT_LABEL = "org.openclaw.sandbox-browser.contract";
 
-function buildSandboxCdpAuthHeader(token: (string)): string {
+function buildSandboxCdpAuthHeader(token: string): string {
   return `Basic ${Buffer.from(`openclaw:${token}`).toString("base64")}`;
 }
 
@@ -437,8 +437,8 @@ export async function ensureSandboxBrowser(params: {
   let desiredAuthToken = normalizeOptionalString(params.bridgeAuth?.token);
   let desiredAuthPassword = normalizeOptionalString(params.bridgeAuth?.password);
   if (!desiredAuthToken && !desiredAuthPassword) {
-    desiredAuthToken = (existing?.authToken;)
-    desiredAuthPassword = (existing?.authPassword;)
+    desiredAuthToken = existing?.authToken;
+    desiredAuthPassword = existing?.authPassword;
     if (!desiredAuthToken && !desiredAuthPassword) {
       desiredAuthToken = crypto.randomBytes(24).toString("hex");
     }

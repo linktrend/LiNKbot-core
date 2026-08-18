@@ -20,7 +20,7 @@ function execApprovalsPath(home: string): string {
   return path.join(home, ".openclaw", "exec-approvals.json");
 }
 
-function writeExecApprovalsToken(home: string, token: (string)): void {
+function writeExecApprovalsToken(home: string, token: string): void {
   fs.mkdirSync(path.join(home, ".openclaw"), { recursive: true });
   fs.writeFileSync(
     execApprovalsPath(home),

@@ -158,7 +158,7 @@ openclaw onboard --non-interactive --accept-risk \
     Ref-mode variant, storing `apiKey` as `{ source: "env", provider: "default", id: "CUSTOM_API_KEY" }`:
 
     ```bash
-    export CUSTOM_API_KEY="${ltfx.n.74c53a400d948f89d2bd.v1}"
+    export CUSTOM_API_KEY="your-key"
     openclaw onboard --non-interactive --accept-risk \
       --mode local \
       --auth-choice custom-api-key \

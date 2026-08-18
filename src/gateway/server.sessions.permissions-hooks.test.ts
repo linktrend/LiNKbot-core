@@ -111,12 +111,12 @@ test("webchat session mutations follow operator scope policy", async () => {
   const deniedMutations = [
     {
       method: "sessions.patch",
-      params: { key: `ltfx.n.5e54554bc3403b5a7e4b.v1`, label: "should-fail" },
+      params: { key: "agent:main:discord:group:dev", label: "should-fail" },
       missingScope: "operator.write",
     },
     {
       method: "sessions.delete",
-      params: { key: `ltfx.n.5e54554bc3403b5a7e4b.v1` },
+      params: { key: "agent:main:discord:group:dev" },
       missingScope: "operator.admin",
     },
     {
@@ -151,18 +151,18 @@ test("webchat session mutations follow operator scope policy", async () => {
     },
     {
       method: "sessions.dispatch",
-      params: { key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`, profileId: "test" },
+      params: { key: "agent:main:main", profileId: "test" },
       missingScope: "operator.admin",
     },
     {
       method: "sessions.reclaim",
-      params: { key: `ltfx.n.6d9217fe77c7f11d9cc9.v1` },
+      params: { key: "agent:main:main" },
       missingScope: "operator.admin",
     },
     {
       method: "sessions.pluginPatch",
       params: {
-        key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+        key: "agent:main:main",
         pluginId: "test-plugin",
         namespace: "test",
         value: true,
@@ -212,7 +212,7 @@ test("session:patch hook fires with correct context", async () => {
   const { ws } = await openClient();
 
   const patched = await rpcReq(ws, "sessions.patch", {
-    key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+    key: "agent:main:main",
     label: "updated-label",
   });
 
@@ -254,7 +254,7 @@ test("session:patch hook does not fire after scope rejection", async () => {
   });
 
   const patched = await rpcReq(ws, "sessions.patch", {
-    key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+    key: "agent:main:main",
     label: "should-not-trigger-hook",
   });
 
@@ -290,7 +290,7 @@ test("session:patch hook only fires after successful patch", async () => {
 
   // Test 2: Valid patch - hook should fire
   const validPatch = await rpcReq(ws, "sessions.patch", {
-    key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+    key: "agent:main:main",
     label: "should-succeed",
   });
 
@@ -311,7 +311,7 @@ test("session:patch skips clone and dispatch when no hooks listen", async () => 
 
   const { ws } = await openClient();
   const patched = await rpcReq(ws, "sessions.patch", {
-    key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+    key: "agent:main:main",
     label: "no-hook-listener",
   });
 
@@ -361,7 +361,7 @@ test("session:patch hook mutations cannot change the response path", async () =>
       agentRuntime: { id: string; source: string };
     };
   }>(ws, "sessions.patch", {
-    key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+    key: "agent:main:main",
     label: "cfg-isolation",
   });
 
@@ -396,7 +396,7 @@ test("admin-scoped webchat client can mutate sessions", async () => {
   expect(branched.payload?.entry.parentSessionKey).toBe("agent:main:main");
 
   const deleted = await rpcReq<{ ok: true; deleted: boolean }>(ws, "sessions.delete", {
-    key: `ltfx.n.5e54554bc3403b5a7e4b.v1`,
+    key: "agent:main:discord:group:dev",
   });
   expect(deleted.ok).toBe(true);
   expect(deleted.payload?.deleted).toBe(true);

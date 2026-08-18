@@ -130,7 +130,7 @@ describe("openai tts", () => {
 
       await openaiTTS({
         text: "hello",
-        apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+        apiKey: "test-key",
         baseUrl: "https://api.openai.com/v1",
         model: "gpt-4o-mini-tts",
         voice: "alloy",
@@ -156,7 +156,7 @@ describe("openai tts", () => {
 
       await openaiTTS({
         text: "hello",
-        apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+        apiKey: "test-key",
         baseUrl: "https://tts.example.com/v1",
         model: "tts-1",
         voice: "custom-voice",
@@ -187,7 +187,7 @@ describe("openai tts", () => {
 
       await openaiTTS({
         text: "hello",
-        apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+        apiKey: "test-key",
         baseUrl: "https://tts.example.com/v1",
         model: "tts-1",
         voice: "custom-voice",
@@ -223,7 +223,7 @@ describe("openai tts", () => {
 
       await openaiTTS({
         text: "hello",
-        apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+        apiKey: "test-key",
         baseUrl: "https://api.openai.com/v1/",
         model: "tts-1",
         voice: "alloy",
@@ -286,7 +286,7 @@ describe("openai tts", () => {
       await expect(
         openaiTTS({
           text: "hello",
-          apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+          apiKey: "test-key",
           baseUrl: "https://api.openai.com/v1",
           model: "gpt-4o-mini-tts",
           voice: "alloy",
@@ -309,7 +309,7 @@ describe("openai tts", () => {
       await expect(
         openaiTTS({
           text: "hello",
-          apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+          apiKey: "test-key",
           baseUrl: "https://api.openai.com/v1",
           model: "gpt-4o-mini-tts",
           voice: "alloy",
@@ -335,7 +335,7 @@ describe("openai tts", () => {
       await expect(
         openaiTTS({
           text: "hello",
-          apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+          apiKey: "test-key",
           baseUrl: "https://api.openai.com/v1",
           model: "gpt-4o-mini-tts",
           voice: "alloy",
@@ -371,7 +371,7 @@ describe("openai tts", () => {
 
       await openaiTTS({
         text: "hello",
-        apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+        apiKey: "test-key",
         baseUrl: "https://api.openai.com/v1",
         model: "gpt-4o-mini-tts",
         voice: "alloy",
@@ -407,7 +407,7 @@ describe("openai tts", () => {
 
       await openaiTTS({
         text: "hello",
-        apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+        apiKey: "test-key",
         baseUrl: "https://api.openai.com/v1",
         model: "gpt-4o-mini-tts",
         voice: "alloy",

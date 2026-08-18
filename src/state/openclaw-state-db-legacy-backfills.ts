@@ -194,17 +194,17 @@ function parseJsonRecord(value: string): Record<string, unknown> | null {
   }
 }
 
-function textField(record: Record<string, unknown>, key: (string)): string | null {
+function textField(record: Record<string, unknown>, key: string): string | null {
   const value = record[key];
   return typeof value === "string" && value.trim() ? value : null;
 }
 
-function numberField(record: Record<string, unknown>, key: (string)): number | null {
+function numberField(record: Record<string, unknown>, key: string): number | null {
   const value = record[key];
   return typeof value === "number" && Number.isFinite(value) ? value : null;
 }
 
-function recordField(record: Record<string, unknown>, key: (string)): Record<string, unknown> | null {
+function recordField(record: Record<string, unknown>, key: string): Record<string, unknown> | null {
   const value = record[key];
   return value && typeof value === "object" && !Array.isArray(value)
     ? (value as Record<string, unknown>)
@@ -233,14 +233,14 @@ function cronWakeModeField(record: Record<string, unknown>): string | null {
   return value === "now" || value === "next-heartbeat" ? value : null;
 }
 
-function booleanField(record: Record<string, unknown>, key: (string)): number | null {
+function booleanField(record: Record<string, unknown>, key: string): number | null {
   const value = record[key];
   return typeof value === "boolean" ? (value ? 1 : 0) : null;
 }
 
 function failureDestinationField(
   record: Record<string, unknown> | null,
-  key: `ltfx.n.e05f5218c40212bceb94.v1` | "channel" | "mode" | "to",
+  key: "accountId" | "channel" | "mode" | "to",
 ): string | null {
   if (!record || !Object.hasOwn(record, key)) {
     return null;
@@ -465,7 +465,7 @@ export function backfillCronJobsFromJobJson(db: DatabaseSync): void {
   }
 }
 
-function metadataStringField(record: Record<string, unknown>, key: (string)): string | null {
+function metadataStringField(record: Record<string, unknown>, key: string): string | null {
   return textField(record, key);
 }
 

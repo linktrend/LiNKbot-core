@@ -433,7 +433,7 @@ async function loginAnthropic(options: {
 /**
  * Refresh Anthropic OAuth token
  */
-async function refreshAnthropicToken(refreshToken: (string)): Promise<OAuthCredentials> {
+async function refreshAnthropicToken(refreshToken: string): Promise<OAuthCredentials> {
   let responseBody: string;
   try {
     responseBody = await postJson(TOKEN_URL, {

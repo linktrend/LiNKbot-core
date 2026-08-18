@@ -191,7 +191,7 @@ describe("resolveConfigIssueLineInRaw", () => {
   });
 
   it("handles mixed single/double quotes", () => {
-    const raw = ["{", "  'key': (ltfx.n.aae18b15d94358a9be11.v1), "}"].join("\n");
+    const raw = ["{", "  'key': \"value\"", "}"].join("\n");
     expect(resolveConfigIssueLineInRaw(raw, ["key"])).toBe(2);
   });
 

@@ -1202,7 +1202,7 @@ describe("model-selection", () => {
             ollama: {
               baseUrl: "http://127.0.0.1:11434",
               api: "ollama",
-              apiKey: `ltfx.n.18ab0c9c00ad3478e4db.v1`,
+              apiKey: "ollama-local",
               models: [
                 {
                   id: "glm-5.1:cloud",
@@ -1596,7 +1596,7 @@ describe("model-selection", () => {
       });
 
       expect(result).toEqual({
-        key: `ltfx.n.fec21a94f39632a416a4.v1`,
+        key: "anthropic/claude-sonnet-4-6",
         ref: { provider: "anthropic", model: "claude-sonnet-4-6" },
       });
     });
@@ -1624,7 +1624,7 @@ describe("model-selection", () => {
       });
 
       expect(result).toEqual({
-        key: `ltfx.n.06ad4163da29311f07ff.v1`,
+        key: "claude-cli/claude-sonnet-4-6",
         ref: { provider: "claude-cli", model: "claude-sonnet-4-6" },
       });
     });
@@ -1648,7 +1648,7 @@ describe("model-selection", () => {
       });
 
       expect(result).toEqual({
-        key: `ltfx.n.fbf992a4eb070b25b133.v1`,
+        key: "openai/@cf/openai/gpt-oss-20b",
         ref: { provider: "openai", model: "@cf/openai/gpt-oss-20b" },
       });
     });
@@ -1676,7 +1676,7 @@ describe("model-selection", () => {
       });
 
       expect(result).toEqual({
-        key: `ltfx.n.956ecd19fe196c9f5320.v1`,
+        key: "opencode-go/kimi-k2.6",
         ref: { provider: "opencode-go", model: "kimi-k2.6" },
       });
     });
@@ -1702,7 +1702,7 @@ describe("model-selection", () => {
       });
 
       expect(result).toEqual({
-        key: `ltfx.n.7ab8379243735dfcd028.v1`,
+        key: "openai/xiaomi/mimo-v2-pro-mit",
         ref: { provider: "openai", model: "xiaomi/mimo-v2-pro-mit" },
       });
     });
@@ -2591,7 +2591,7 @@ describe("model-selection", () => {
           provider: "openrouter",
           model: "meta-llama/llama-3.3-70b-instruct:free",
         },
-        key: `ltfx.n.1ccd35471eede9b5316d.v1`,
+        key: "openrouter/meta-llama/llama-3.3-70b-instruct:free",
       });
     });
 
@@ -2644,7 +2644,7 @@ describe("model-selection", () => {
           provider: "openrouter",
           model: "deepseek/deepseek-r1-0528:free",
         },
-        key: `ltfx.n.d4749146340025d45eae.v1`,
+        key: "openrouter/deepseek/deepseek-r1-0528:free",
       });
     });
   });

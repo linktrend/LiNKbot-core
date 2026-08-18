@@ -51,7 +51,7 @@ describe("zalo send", () => {
     });
 
     const result = await sendMessageZalo("dm-chat-1", "hello there", {
-      token: `ltfx.n.4192c5bc3eb3c3e2e90f.v1`,
+      token: "zalo-token",
     });
 
     expect(sendMessageMock).toHaveBeenCalledWith(
@@ -83,7 +83,7 @@ describe("zalo send", () => {
     });
 
     const result = await sendMessageZalo("dm-chat-2", "caption text", {
-      token: `ltfx.n.4192c5bc3eb3c3e2e90f.v1`,
+      token: "zalo-token",
       mediaUrl: "https://example.com/photo.jpg",
       caption: "ignored fallback caption",
     });
@@ -111,7 +111,7 @@ describe("zalo send", () => {
     expectFailedSend(missingToken, "No Zalo bot token configured");
 
     const blankPhoto = await sendMessageZalo("dm-chat-4", "", {
-      token: `ltfx.n.4192c5bc3eb3c3e2e90f.v1`,
+      token: "zalo-token",
       mediaUrl: "   ",
     });
     expectFailedSend(blankPhoto, "No photo URL provided");
@@ -132,10 +132,10 @@ describe("zalo send", () => {
     const boundaryText = `${"a".repeat(1999)}🐱`;
 
     await sendMessageZalo("dm-chat-surrogate-text", boundaryText, {
-      token: `ltfx.n.4192c5bc3eb3c3e2e90f.v1`,
+      token: "zalo-token",
     });
     await sendMessageZalo("dm-chat-surrogate-caption", boundaryText, {
-      token: `ltfx.n.4192c5bc3eb3c3e2e90f.v1`,
+      token: "zalo-token",
       mediaUrl: "https://example.com/photo.jpg",
     });
 
@@ -153,7 +153,7 @@ describe("zalo send", () => {
       cfg: {
         channels: {
           zalo: {
-            botToken: `ltfx.n.4192c5bc3eb3c3e2e90f.v1`,
+            botToken: "zalo-token",
             webhookUrl: "https://gateway.example.com/zalo-webhook",
           },
         },

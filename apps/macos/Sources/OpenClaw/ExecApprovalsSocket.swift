@@ -489,7 +489,7 @@ final class ExecApprovalsPromptServer {
     {
         let sentinel = ExecApprovalsSocketServer(
             socketPath: socketPath,
-            token: "${ltfx.n.05ce2581744089be4fb6.v1}",
+            token: "sentinel-token",
             onPrompt: { _ in nil },
             onExec: { request in
                 await ExecHostExecutor.handle(request)
@@ -502,7 +502,7 @@ final class ExecApprovalsPromptServer {
 
         let socketServer = ExecApprovalsSocketServer(
             socketPath: socketPath,
-            token: "${ltfx.n.4c5dc9b7708905f77f5e.v1}",
+            token: "test-token",
             onPrompt: { _ in nil },
             onExec: { request in
                 await ExecHostExecutor.handle(request)
@@ -531,7 +531,7 @@ final class ExecApprovalsPromptServer {
     {
         let first = ExecApprovalsSocketServer(
             socketPath: socketPath,
-            token: "${ltfx.n.55b4b48f529c3d2daa02.v1}",
+            token: "first-token",
             onPrompt: { _ in nil },
             onExec: { request in
                 await ExecHostExecutor.handle(request)
@@ -545,7 +545,7 @@ final class ExecApprovalsPromptServer {
 
         let replacement = ExecApprovalsSocketServer(
             socketPath: socketPath,
-            token: "${ltfx.n.d4c83ca2e3ecd535cebf.v1}",
+            token: "replacement-token",
             onPrompt: { _ in nil },
             onExec: { request in
                 await ExecHostExecutor.handle(request)
@@ -570,7 +570,7 @@ final class ExecApprovalsPromptServer {
     static func _testExecHostTimestampFailureReason(_ timestamp: Int) async -> String? {
         let server = ExecApprovalsSocketServer(
             socketPath: "",
-            token: "${ltfx.n.4c5dc9b7708905f77f5e.v1}",
+            token: "test-token",
             onPrompt: { _ in nil },
             onExec: { _ in
                 ExecHostResponse(

@@ -268,8 +268,8 @@ With `--secret-input-mode ref`, onboarding writes env-backed refs instead of pla
 - `--allow-unconfigured` is a separate `openclaw gateway run` escape hatch; it does not let onboarding skip `gateway.mode`.
 
 ```bash
-export OPENAI_API_KEY="${ltfx.n.92b968ab6a8afee7b01b.v1}"
-export OPENCLAW_GATEWAY_TOKEN="${ltfx.n.08842b17a4146c87440b.v1}"
+export OPENAI_API_KEY="your-provider-key"
+export OPENCLAW_GATEWAY_TOKEN="your-token"
 openclaw onboard --non-interactive \
   --mode local \
   --auth-choice openai-api-key \

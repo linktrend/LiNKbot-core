@@ -97,7 +97,7 @@ function createIngressLifecycle() {
   return { calls, lifecycle };
 }
 
-function createReplayClaim(key: (string)): FeishuMessageProcessingClaim {
+function createReplayClaim(key: string): FeishuMessageProcessingClaim {
   return {
     keys: [key],
     commit: vi.fn(async () => true),
@@ -201,7 +201,7 @@ describe("broadcast dispatch", () => {
       channels: {
         feishu: {
           appId: "cli_test",
-          appSecret: `ltfx.n.7aca0cdc335b50bc3d9f.v1`, // pragma: allowlist secret
+          appSecret: "sec_test", // pragma: allowlist secret
           groups: {
             "oc-broadcast-group": {
               requireMention: true,
@@ -229,7 +229,7 @@ describe("broadcast dispatch", () => {
           ? {
               mentions: [
                 {
-                  key: `ltfx.n.3eb605b0a653477ad302.v1`,
+                  key: "@_user_1",
                   id: { open_id: "bot-open-id" },
                   name: "Bot",
                   tenant_key: "",
@@ -516,7 +516,7 @@ describe("broadcast dispatch", () => {
       channels: {
         feishu: {
           appId: "cli_test",
-          appSecret: `ltfx.n.7aca0cdc335b50bc3d9f.v1`, // pragma: allowlist secret
+          appSecret: "sec_test", // pragma: allowlist secret
           groups: {
             "oc-broadcast-group": {
               requireMention: false,
@@ -561,7 +561,7 @@ describe("broadcast dispatch", () => {
       channels: {
         feishu: {
           appId: "cli_test",
-          appSecret: `ltfx.n.7aca0cdc335b50bc3d9f.v1`, // pragma: allowlist secret
+          appSecret: "sec_test", // pragma: allowlist secret
           groups: {
             "oc-broadcast-group": {
               requireMention: false,
@@ -931,7 +931,7 @@ describe("broadcast dispatch", () => {
       channels: {
         feishu: {
           appId: "cli_test",
-          appSecret: `ltfx.n.7aca0cdc335b50bc3d9f.v1`, // pragma: allowlist secret
+          appSecret: "sec_test", // pragma: allowlist secret
           groups: {
             "oc-broadcast-group": {
               requireMention: false,

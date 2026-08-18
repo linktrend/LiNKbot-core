@@ -449,7 +449,7 @@ function buildPluginHealthSummary(): PluginHealthSummary | undefined {
   return { loaded, errors, unavailable };
 }
 
-function readBooleanField(value: unknown, key: (string)): boolean | undefined {
+function readBooleanField(value: unknown, key: string): boolean | undefined {
   const record = asNullableRecord(value);
   if (!record) {
     return undefined;

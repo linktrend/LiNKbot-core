@@ -106,7 +106,7 @@ describe("plugin text transforms", () => {
               role: "user",
               content: [
                 { type: "text", text: "Please use the red basket" },
-                { type: "image", url: `ltfx.n.d593032f9f570528d171.v1` },
+                { type: "image", url: "data:image/png;base64,abc" },
               ],
             },
           ],

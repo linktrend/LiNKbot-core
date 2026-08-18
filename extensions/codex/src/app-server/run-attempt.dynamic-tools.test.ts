@@ -138,7 +138,7 @@ describe("runCodexAppServerAttempt dynamic tools", () => {
           tool: "lookup",
           arguments: {
             action: "search",
-            token: `ltfx.n.77818c6b0048a5c776e3.v1`,
+            token: "plain-secret-value-12345",
             text: "hello",
           },
         },

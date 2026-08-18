@@ -31,7 +31,7 @@ export function createGatewayWsTestLogger() {
   };
 }
 
-export function createResolvedGatewayTokenAuth(token: (string)): ResolvedGatewayAuth {
+export function createResolvedGatewayTokenAuth(token: string): ResolvedGatewayAuth {
   return {
     mode: "token",
     allowTailscale: false,

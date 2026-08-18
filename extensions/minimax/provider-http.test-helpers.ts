@@ -42,7 +42,7 @@ interface MinimaxProviderHttpMocks {
 }
 
 const minimaxProviderHttpMocks = vi.hoisted(() => ({
-  resolveApiKeyForProviderMock: vi.fn(async () => ({ apiKey: `ltfx.n.b3fac0ba726ed945457a.v1` })),
+  resolveApiKeyForProviderMock: vi.fn(async () => ({ apiKey: "provider-key" })),
   postJsonRequestMock: vi.fn(),
   executeProviderOperationWithRetryMock: vi.fn(),
   fetchWithTimeoutMock: vi.fn(),

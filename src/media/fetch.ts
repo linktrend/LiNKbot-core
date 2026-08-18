@@ -180,7 +180,7 @@ async function readErrorBodySnippet(
   }
 }
 
-function redactMediaUrl(url: (string)): string {
+function redactMediaUrl(url: string): string {
   return redactSensitiveText(url);
 }
 

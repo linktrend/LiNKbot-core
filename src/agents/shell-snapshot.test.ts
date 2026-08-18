@@ -183,11 +183,11 @@ describe("exec shell snapshots", () => {
       path.join(home, ".bashrc"),
       [
         "alias oc_snap_alias='printf alias-ok'",
-        'alias oc_snap_secret=`ltfx.n.8ec4b141334175363e37.v1`',
+        'alias oc_snap_secret="printf $OPENAI_API_KEY"',
         '[ "$OPENCLAW_SHELL" = exec ] && alias oc_snap_exec_alias="printf marker-ok"',
         "oc_snap_fn() { printf fn-ok; }",
         'export PATH="/snapshot/bin:$PATH"',
-        'export OPENAI_API_KEY=`ltfx.n.d9049c078744d9c4aea5.v1`',
+        'export OPENAI_API_KEY="snapshot-secret"',
         "",
       ].join("\n"),
     );
@@ -197,7 +197,7 @@ describe("exec shell snapshots", () => {
       HOME: home,
       OPENCLAW_STATE_DIR: stateDir,
       OPENCLAW_SHELL: "exec",
-      OPENAI_API_KEY: `ltfx.n.1d96b3b2d70e25dd8bdf.v1`,
+      OPENAI_API_KEY: "inherited-secret",
     };
     const shellArgs = getPosixShellArgs(bash);
     const wrapped = await maybeWrapCommandWithShellSnapshot({

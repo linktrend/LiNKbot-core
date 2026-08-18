@@ -67,23 +67,23 @@ describe("Anthropic SDK host fetch wiring", () => {
     const cases = [
       {
         model: makeModel({ provider: "github-copilot", baseUrl }),
-        apiKey: `ltfx.n.be36160a0bfcf3f715db.v1`,
+        apiKey: "copilot-token",
       },
       {
         model: makeModel({ provider: "microsoft-foundry", baseUrl, authHeader: true }),
-        apiKey: `ltfx.n.23ec928bddb596b54572.v1`,
+        apiKey: "foundry-token",
       },
       {
         model: makeModel({ baseUrl }),
-        apiKey: `ltfx.n.2dedef9bb3531a54299f.v1`, // pragma: allowlist secret
+        apiKey: "sk-ant-oat01-oauth-token", // pragma: allowlist secret
       },
       {
         model: makeModel({ baseUrl }),
-        apiKey: `ltfx.n.921ffc1c049ec0da7fa1.v1`, // pragma: allowlist secret
+        apiKey: "sk-ant-api03-api-key", // pragma: allowlist secret
       },
       {
         model: makeModel({ provider: "kimi-coding", baseUrl }),
-        apiKey: `ltfx.n.a2fbf2512b659e463855.v1`,
+        apiKey: "kimi-api-key",
         thinkingEnabled: true,
       },
     ];
@@ -120,20 +120,20 @@ describe("Anthropic SDK host fetch wiring", () => {
       {
         method: "POST",
         path: "/v1/messages",
-        authorization: "Bearer ltfx.n.2dedef9bb3531a54299f.v1", // pragma: allowlist secret
+        authorization: "Bearer sk-ant-oat01-oauth-token", // pragma: allowlist secret
         apiKey: undefined,
       },
       {
         method: "POST",
         path: "/v1/messages",
         authorization: undefined,
-        apiKey: `ltfx.n.921ffc1c049ec0da7fa1.v1`, // pragma: allowlist secret
+        apiKey: "sk-ant-api03-api-key", // pragma: allowlist secret
       },
       {
         method: "POST",
         path: "/v1/messages",
         authorization: undefined,
-        apiKey: `ltfx.n.a2fbf2512b659e463855.v1`,
+        apiKey: "kimi-api-key",
       },
     ]);
     expect(buildModelFetch).toHaveBeenLastCalledWith(cases.at(-1)?.model, undefined, {

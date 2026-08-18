@@ -133,7 +133,7 @@ function requireConfigBaseHash(
   return true;
 }
 
-function formatConfigPatchPath(parentPath: string, key: (string)): string {
+function formatConfigPatchPath(parentPath: string, key: string): string {
   return parentPath ? `${parentPath}.${key}` : key;
 }
 
@@ -353,7 +353,7 @@ function parseRawConfigOrRespond(
   return rawValue;
 }
 
-function hasOwnRecordValue(value: unknown, key: (string)): boolean {
+function hasOwnRecordValue(value: unknown, key: string): boolean {
   return isRecord(value) && Object.hasOwn(value, key);
 }
 

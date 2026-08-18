@@ -37,7 +37,7 @@ const resolveSlackConversationInfo = vi.fn(
     const slackConfig = params.cfg.channels?.slack as
       | { userToken?: string; botToken?: string; channels?: Record<string, unknown> }
       | undefined;
-    const token = (slackConfig?.userToken ?? slackConfig?.botToken;)
+    const token = slackConfig?.userToken ?? slackConfig?.botToken;
     const tokenOverride = token && token !== slackConfig?.botToken ? { token } : {};
     const channelName = params.requireFreshName
       ? await resolveSlackConversationName(params.channelId, {
@@ -543,8 +543,8 @@ describe("handleSlackAction", () => {
       slackConfig({
         accounts: {
           default: {
-            botToken: `ltfx.n.c8b505c2b4aca8778b0a.v1`,
-            userToken: `ltfx.n.7c40c10cd6816e744256.v1`,
+            botToken: "xoxb-bot",
+            userToken: "xoxp-user",
           },
         },
       }),
@@ -1379,7 +1379,7 @@ describe("handleSlackAction", () => {
     readSlackMessages.mockResolvedValueOnce({ messages: [], hasMore: false });
 
     const cfg = slackConfig({
-      userToken: `ltfx.n.ee4414445cb626d6d1c5.v1`,
+      userToken: "xoxp-reader",
       groupPolicy: "allowlist",
       dangerouslyAllowNameMatching: true,
       channels: {
@@ -1390,7 +1390,7 @@ describe("handleSlackAction", () => {
 
     expect(resolveSlackConversationName).toHaveBeenCalledWith("C0123456789", {
       cfg,
-      token: `ltfx.n.ee4414445cb626d6d1c5.v1`,
+      token: "xoxp-reader",
     });
     expect(requireMockArg(readSlackMessages, "readSlackMessages", 0, 0)).toBe("C0123456789");
   });
@@ -1582,8 +1582,8 @@ describe("handleSlackAction", () => {
       slackConfig({
         accounts: {
           default: {
-            botToken: `ltfx.n.c8b505c2b4aca8778b0a.v1`,
-            userToken: `ltfx.n.7c40c10cd6816e744256.v1`,
+            botToken: "xoxb-bot",
+            userToken: "xoxp-user",
           },
         },
       }),
@@ -1596,7 +1596,7 @@ describe("handleSlackAction", () => {
       slackConfig({
         accounts: {
           default: {
-            botToken: `ltfx.n.c8b505c2b4aca8778b0a.v1`,
+            botToken: "xoxb-bot",
           },
         },
       }),
@@ -1609,8 +1609,8 @@ describe("handleSlackAction", () => {
       slackConfig({
         accounts: {
           default: {
-            botToken: `ltfx.n.c8b505c2b4aca8778b0a.v1`,
-            userToken: `ltfx.n.7c40c10cd6816e744256.v1`,
+            botToken: "xoxb-bot",
+            userToken: "xoxp-user",
             userTokenReadOnly: true,
           },
         },
@@ -1625,7 +1625,7 @@ describe("handleSlackAction", () => {
         slack: {
           accounts: {
             default: {
-              userToken: `ltfx.n.7c40c10cd6816e744256.v1`,
+              userToken: "xoxp-user",
               userTokenReadOnly: false,
             },
           },
@@ -1640,7 +1640,7 @@ describe("handleSlackAction", () => {
       channels: {
         slack: {
           identity: "user",
-          userToken: `ltfx.n.19bbb7d9c45e18a41bce.v1`,
+          userToken: "test-user-token",
         },
       },
     } as OpenClawConfig);
@@ -1654,7 +1654,7 @@ describe("handleSlackAction", () => {
         channels: {
           slack: {
             identity: "user",
-            botToken: `ltfx.n.19434281d9f1460bdb2b.v1`,
+            botToken: "test-bot-token",
           },
         },
       } as OpenClawConfig),

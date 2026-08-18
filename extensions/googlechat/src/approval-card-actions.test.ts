@@ -134,7 +134,7 @@ describe("Google Chat approval card action registry", () => {
   });
 
   it("evicts oldest approval card bindings once the cache exceeds its cap", () => {
-    const firstToken = `ltfx.n.dceff332fa301cc62529.v1`;
+    const firstToken = "token-first";
     registerGoogleChatApprovalCardBinding({
       token: firstToken,
       accountId: "default",

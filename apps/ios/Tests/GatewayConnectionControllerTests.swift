@@ -178,19 +178,19 @@ private func waitForActiveGateway(stableID: String, appModel: NodeAppModel) asyn
 
     @Test func `direct push registration dedupe includes gateway identity`() {
         #expect(!NodeAppModel.shouldPublishDirectAPNsRegistration(
-            token: ("ltfx.n.73fff793651a92729a85.v1"),
+            token: "device-token",
             gatewayStableID: "gateway-a",
-            lastToken: "${ltfx.n.73fff793651a92729a85.v1}",
+            lastToken: "device-token",
             lastGatewayStableID: "gateway-a"))
         #expect(NodeAppModel.shouldPublishDirectAPNsRegistration(
-            token: ("ltfx.n.73fff793651a92729a85.v1"),
+            token: "device-token",
             gatewayStableID: "gateway-b",
-            lastToken: "${ltfx.n.73fff793651a92729a85.v1}",
+            lastToken: "device-token",
             lastGatewayStableID: "gateway-a"))
         #expect(NodeAppModel.shouldPublishDirectAPNsRegistration(
-            token: ("ltfx.n.73fff793651a92729a85.v1"),
+            token: "device-token",
             gatewayStableID: "gateway-\u{00E9}",
-            lastToken: "${ltfx.n.73fff793651a92729a85.v1}",
+            lastToken: "device-token",
             lastGatewayStableID: "gateway-e\u{0301}"))
     }
 
@@ -387,17 +387,17 @@ private func waitForActiveGateway(stableID: String, appModel: NodeAppModel) asyn
                 storedOperatorScopes: ["operator.admin"]))
         #expect(
             NodeAppModel._test_shouldRequestOperatorAdminScope(
-                token: ("ltfx.n.fad34a6f30260e5a8db3.v1"),
+                token: "shared-token",
                 password: nil,
                 storedOperatorScopes: []))
         #expect(
             NodeAppModel._test_shouldRequestOperatorAdminScope(
                 token: nil,
-                password: "${ltfx.n.39c949687a577d7a63f5.v1}",
+                password: "shared-password",
                 storedOperatorScopes: []))
         #expect(
             !NodeAppModel._test_shouldRequestOperatorAdminScope(
-                token: ("ltfx.n.fad34a6f30260e5a8db3.v1"),
+                token: "shared-token",
                 password: nil,
                 storedOperatorScopes: [],
                 forceTalkPermissionUpgradeRequest: true))
@@ -407,17 +407,17 @@ private func waitForActiveGateway(stableID: String, appModel: NodeAppModel) asyn
         #expect(!GatewayChannelActor._test_requestedScopesExceedStoredToken(
             role: "operator",
             requestedScopes: ["operator.read", "operator.write", "operator.talk.secrets"],
-            storedToken: "${ltfx.n.c3f79732393a0ff6e042.v1}",
+            storedToken: "stored-device-token",
             storedScopes: ["operator.admin"]))
         #expect(!GatewayChannelActor._test_requestedScopesExceedStoredToken(
             role: "operator",
             requestedScopes: ["operator.read"],
-            storedToken: "${ltfx.n.c3f79732393a0ff6e042.v1}",
+            storedToken: "stored-device-token",
             storedScopes: []))
         #expect(GatewayChannelActor._test_requestedScopesExceedStoredToken(
             role: "operator",
             requestedScopes: ["operator.admin"],
-            storedToken: "${ltfx.n.c3f79732393a0ff6e042.v1}",
+            storedToken: "stored-device-token",
             storedScopes: ["operator.read"]))
     }
 
@@ -439,12 +439,12 @@ private func waitForActiveGateway(stableID: String, appModel: NodeAppModel) asyn
                 ]))
         #expect(
             NodeAppModel._test_shouldRequestOperatorApprovalScope(
-                token: ("ltfx.n.fad34a6f30260e5a8db3.v1"),
+                token: "shared-token",
                 password: nil,
                 storedOperatorScopes: []))
         #expect(
             !NodeAppModel._test_shouldRequestOperatorApprovalScope(
-                token: ("ltfx.n.fad34a6f30260e5a8db3.v1"),
+                token: "shared-token",
                 password: nil,
                 storedOperatorScopes: [],
                 forceTalkPermissionUpgradeRequest: true))
@@ -691,9 +691,9 @@ private func waitForActiveGateway(stableID: String, appModel: NodeAppModel) asyn
             host: "first.gateway.example.com",
             port: 443,
             tls: true,
-            bootstrapToken: "${ltfx.n.c72773a4ddf81c3ad2b8.v1}",
-            token: ("ltfx.n.29a47556ff0f216b8a51.v1"),
-            password: "${ltfx.n.e259c167b27280d2aabe.v1}")
+            bootstrapToken: "bootstrap-token",
+            token: "source-token",
+            password: "source-password")
         let pending = GatewayConnectionController.ManualAuthOverride.setupAuth(from: link).manualAuthOverride
         let firstStableID = GatewayConnectionController.ManualAuthOverride.manualStableID(
             host: link.host,
@@ -703,22 +703,22 @@ private func waitForActiveGateway(stableID: String, appModel: NodeAppModel) asyn
             port: 443)
 
         let first = GatewayConnectionController.ManualAuthOverride.currentManualInput(
-            token: ("ltfx.n.29a47556ff0f216b8a51.v1"),
+            token: "source-token",
             pendingOverride: pending,
-            password: "${ltfx.n.e259c167b27280d2aabe.v1}",
+            password: "source-password",
             targetStableID: firstStableID)
         let second = GatewayConnectionController.ManualAuthOverride.currentManualInput(
-            token: ("ltfx.n.29a47556ff0f216b8a51.v1"),
+            token: "source-token",
             pendingOverride: pending,
-            password: "${ltfx.n.e259c167b27280d2aabe.v1}",
+            password: "source-password",
             targetStableID: secondStableID)
         let edited = GatewayConnectionController.ManualAuthOverride.currentManualInput(
-            token: ("ltfx.n.d4c83ca2e3ecd535cebf.v1"),
+            token: "replacement-token",
             pendingOverride: pending,
-            password: "${ltfx.n.e259c167b27280d2aabe.v1}",
+            password: "source-password",
             targetStableID: secondStableID)
         let ordinary = GatewayConnectionController.ManualAuthOverride.currentManualInput(
-            token: ("ltfx.n.f60295d44a03ab6c9eea.v1"),
+            token: "manual-token",
             pendingOverride: nil,
             password: nil,
             targetStableID: secondStableID)
@@ -744,9 +744,9 @@ private func waitForActiveGateway(stableID: String, appModel: NodeAppModel) asyn
         let firstStableID = "manual|first.gateway.example.com|443"
         let secondStableID = "manual|second.gateway.example.com|443"
         GatewaySettingsStore.saveGatewayCredentials(
-            token: ("ltfx.n.29a47556ff0f216b8a51.v1"),
-            bootstrapToken: "${ltfx.n.c41ae1bdfee826670199.v1}",
-            password: "${ltfx.n.e259c167b27280d2aabe.v1}",
+            token: "source-token",
+            bootstrapToken: "source-bootstrap-token",
+            password: "source-password",
             gatewayStableID: firstStableID,
             suppressStoredDeviceAuth: true,
             instanceId: instanceID)
@@ -765,9 +765,9 @@ private func waitForActiveGateway(stableID: String, appModel: NodeAppModel) asyn
             targetStableID: secondStableID) == nil)
         let secondGatewayAuth = try #require(
             GatewayConnectionController.ManualAuthOverride.currentManualInput(
-                token: ("ltfx.n.29a47556ff0f216b8a51.v1"),
+                token: "source-token",
                 pendingOverride: relaunchedOverride,
-                password: "${ltfx.n.e259c167b27280d2aabe.v1}",
+                password: "source-password",
                 targetStableID: secondStableID))
         GatewaySettingsStore.saveGatewayCredentials(
             token: secondGatewayAuth.token,
@@ -809,9 +809,9 @@ private func waitForActiveGateway(stableID: String, appModel: NodeAppModel) asyn
         let instanceID = "ios-test-\(UUID().uuidString)"
         defaults.set(instanceID, forKey: "node.instanceId")
         GatewaySettingsStore.saveGatewayCredentials(
-            token: ("ltfx.n.6f69975abe580db31e8a.v1"),
+            token: "stored-token",
             bootstrapToken: nil,
-            password: "${ltfx.n.fe2c1a028ce93220bf89.v1}",
+            password: "stored-password",
             gatewayStableID: "manual|stored.example.com|443",
             suppressStoredDeviceAuth: false,
             instanceId: instanceID)
@@ -912,15 +912,15 @@ private func waitForActiveGateway(stableID: String, appModel: NodeAppModel) asyn
         _ = DeviceAuthStore.storeToken(
             deviceId: primaryIdentity.deviceId,
             role: "node",
-            token: ("ltfx.n.177af8f3510924a830a0.v1"))
+            token: "legacy-primary-token")
         _ = DeviceAuthStore.storeToken(
             deviceId: primaryIdentity.deviceId,
             role: "operator",
-            token: ("ltfx.n.0a7beca87ca7f9f661bb.v1"))
+            token: "legacy-operator-token")
         _ = DeviceAuthStore.storeToken(
             deviceId: shareIdentity.deviceId,
             role: "node",
-            token: ("ltfx.n.6686e853a012676d3658.v1"),
+            token: "legacy-share-token",
             profile: .shareExtension)
         GatewaySettingsStore.saveLegacyGatewayTokenForMigrationTest(
             "unproven-field-token",
@@ -932,8 +932,8 @@ private func waitForActiveGateway(stableID: String, appModel: NodeAppModel) asyn
             stableID: stableID)
         ShareGatewayRelaySettings.saveConfig(ShareGatewayRelayConfig(
             gatewayURLString: "wss://gateway.example.com",
-            token: ("ltfx.n.d77b3519a8bf3e9fdb0e.v1"),
-            password: "${ltfx.n.a8eeabfea9907970fe5f.v1}",
+            token: "proven-relay-token",
+            password: "proven-relay-password",
             sessionKey: "main"))
 
         let extensionConfig = try #require(ShareGatewayRelaySettings.loadConfigDiscardingUnscopedDeviceAuth())
@@ -946,7 +946,7 @@ private func waitForActiveGateway(stableID: String, appModel: NodeAppModel) asyn
         _ = DeviceAuthStore.storeToken(
             deviceId: shareIdentity.deviceId,
             role: "node",
-            token: ("ltfx.n.a92a42e8f65142c73827.v1"),
+            token: "ambiguous-share-token",
             profile: .shareExtension)
         _ = GatewayConnectionController(appModel: NodeAppModel(), startDiscovery: false)
 
@@ -984,11 +984,11 @@ private func waitForActiveGateway(stableID: String, appModel: NodeAppModel) asyn
         _ = DeviceAuthStore.storeToken(
             deviceId: primaryIdentity.deviceId,
             role: "node",
-            token: ("ltfx.n.a9c166a848623b308760.v1"))
+            token: "legacy-node-without-shared-auth")
         _ = DeviceAuthStore.storeToken(
             deviceId: primaryIdentity.deviceId,
             role: "operator",
-            token: ("ltfx.n.2d987d8fbcc7396dc7c1.v1"))
+            token: "legacy-operator-without-shared-auth")
         GatewaySettingsStore.saveLegacyGatewayTokenForMigrationTest(
             "unproven-field-token",
             instanceId: instanceID)
@@ -1049,12 +1049,12 @@ private func waitForActiveGateway(stableID: String, appModel: NodeAppModel) asyn
         _ = DeviceAuthStore.storeToken(
             deviceId: identity.deviceId,
             role: "node",
-            token: ("ltfx.n.88456ec34271a529d133.v1"),
+            token: "previous-node-token",
             gatewayID: previousStableID)
         _ = DeviceAuthStore.storeToken(
             deviceId: identity.deviceId,
             role: "operator",
-            token: ("ltfx.n.d7f903403de619f1ffe7.v1"),
+            token: "previous-operator-token",
             gatewayID: previousStableID)
         var nodeOptions = GatewayConnectOptions(
             role: "node",
@@ -1072,12 +1072,12 @@ private func waitForActiveGateway(stableID: String, appModel: NodeAppModel) asyn
             stableID: stableID,
             tls: nil,
             token: nil,
-            bootstrapToken: "${ltfx.n.d864395cf9664ccca704.v1}",
+            bootstrapToken: "one-time-bootstrap",
             password: nil,
             nodeOptions: nodeOptions)
         GatewaySettingsStore.saveGatewayCredentials(
             token: nil,
-            bootstrapToken: "${ltfx.n.d864395cf9664ccca704.v1}",
+            bootstrapToken: "one-time-bootstrap",
             password: nil,
             gatewayStableID: stableID,
             suppressStoredDeviceAuth: true,
@@ -1106,12 +1106,12 @@ private func waitForActiveGateway(stableID: String, appModel: NodeAppModel) asyn
         _ = DeviceAuthStore.storeToken(
             deviceId: identity.deviceId,
             role: "node",
-            token: ("ltfx.n.9af64ed6c25584d6e892.v1"),
+            token: "new-node-token",
             gatewayID: stableID)
         _ = DeviceAuthStore.storeToken(
             deviceId: identity.deviceId,
             role: "operator",
-            token: ("ltfx.n.8bb2b35f845175886d14.v1"),
+            token: "new-operator-token",
             gatewayID: stableID)
         let bootstrapOptions = nodeOptions
         appModel._test_setGatewayLoopTasks(node: nil, operator: Task {})
@@ -1173,12 +1173,12 @@ private func waitForActiveGateway(stableID: String, appModel: NodeAppModel) asyn
             _ = DeviceAuthStore.storeToken(
                 deviceId: primaryIdentity.deviceId,
                 role: "node",
-                token: ("primary-\(routeID)"),
+                token: "primary-\(routeID)",
                 gatewayID: ownerID)
             _ = DeviceAuthStore.storeToken(
                 deviceId: shareIdentity.deviceId,
                 role: "node",
-                token: ("share-\(routeID)"),
+                token: "share-\(routeID)",
                 gatewayID: ownerID,
                 profile: .shareExtension)
         }
@@ -1220,7 +1220,7 @@ private func waitForActiveGateway(stableID: String, appModel: NodeAppModel) asyn
             url: #require(URL(string: "wss://127.0.0.1:1")),
             stableID: stableID,
             tls: nil,
-            token: ("ltfx.n.fad34a6f30260e5a8db3.v1"),
+            token: "shared-token",
             bootstrapToken: nil,
             password: nil,
             nodeOptions: GatewayConnectOptions(
@@ -1400,7 +1400,7 @@ private func waitForActiveGateway(stableID: String, appModel: NodeAppModel) asyn
 
         ShareGatewayRelaySettings.saveConfig(ShareGatewayRelayConfig(
             gatewayURLString: "wss://previous.gateway.invalid",
-            token: ("ltfx.n.728a6eebdf2c29c8f6af.v1"),
+            token: "previous-token",
             password: nil,
             sessionKey: "main"))
         appModel.applyGatewayConnectConfig(Self.makeGatewayConnectConfig())
@@ -2066,7 +2066,7 @@ private func waitForActiveGateway(stableID: String, appModel: NodeAppModel) asyn
         ShareGatewayRelaySettings.saveConfig(.init(
             gatewayURLString: "wss://forgotten.example.com",
             gatewayStableID: stableID,
-            token: ("ltfx.n.d3d2f8a707788ef0b563.v1"),
+            token: "relay-token",
             password: nil,
             sessionKey: "main"))
         let appModel = NodeAppModel()
@@ -2156,7 +2156,7 @@ private func waitForActiveGateway(stableID: String, appModel: NodeAppModel) asyn
         _ = DeviceAuthStore.storeToken(
             deviceId: identity.deviceId,
             role: "node",
-            token: ("ltfx.n.ecedc7aabc955558324b.v1"),
+            token: "late-handshake-token",
             gatewayID: connectedID)
         let deadline = ContinuousClock().now.advanced(by: .seconds(3))
         while DeviceAuthStore.loadToken(
@@ -2712,7 +2712,7 @@ private func waitForActiveGateway(stableID: String, appModel: NodeAppModel) asyn
             lastConnectedAtMs: nil))
         let appModel = NodeAppModel()
         let session = OpenClawChatSessionEntry(
-            key: ("ltfx.n.8d58a705b979a4e362ea.v1"),
+            key: "agent:main:a",
             kind: nil,
             displayName: "Gateway A session",
             surface: nil,
@@ -2752,7 +2752,7 @@ private func waitForActiveGateway(stableID: String, appModel: NodeAppModel) asyn
                 expectedFingerprint: "abc",
                 allowTOFU: false,
                 storeKey: stableID),
-            token: ("token"),
+            token: "token",
             bootstrapToken: nil,
             password: nil,
             nodeOptions: GatewayConnectOptions(

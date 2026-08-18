@@ -315,7 +315,7 @@ Some networks block or throttle HTTPS to GitHub. If `git clone` or
 For token-based `gh` auth in the current session:
 
 ```powershell
-$env:GH_TOKEN="${ltfx.n.35b7b5f30c358d275a18.v1}"
+$env:GH_TOKEN="<your-token>"
 gh auth status
 gh auth setup-git
 ```

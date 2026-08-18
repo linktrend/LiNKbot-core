@@ -683,7 +683,7 @@ export function createSetupEntryChannelPluginFixture(params: {
   const setupMarker = path.join(pluginDir, "setup-loaded.txt");
   const listAccountIds = params.configured ? '["default"]' : "[]";
   const resolveAccount = params.configured
-    ? '({ accountId: "default", token: `ltfx.n.20158224750041d653cd.v1` })'
+    ? '({ accountId: "default", token: "configured" })'
     : '({ accountId: "default" })';
 
   fs.writeFileSync(

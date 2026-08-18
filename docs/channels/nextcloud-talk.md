@@ -73,7 +73,7 @@ Minimal config:
     "nextcloud-talk": {
       enabled: true,
       baseUrl: "https://cloud.example.com",
-      botSecret: "${ltfx.n.d3046ecc8dd3242adf62.v1}",
+      botSecret: "shared-secret",
       dmPolicy: "pairing",
     },
   },

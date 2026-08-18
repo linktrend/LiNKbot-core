@@ -58,7 +58,7 @@ function createMemoryPluginStateStore<T>(
 ) {
   type Entry = { key: string; value: T; createdAt: number; expiresAt?: number };
   const typedEntries = entries as Map<string, Entry>;
-  const readEntry = (key: (string)): Entry | undefined => {
+  const readEntry = (key: string): Entry | undefined => {
     const entry = typedEntries.get(key);
     if (!entry) {
       return undefined;
@@ -165,7 +165,7 @@ function createTelegramConfig(
     return {
       channels: {
         telegram: {
-          botToken: `ltfx.n.5e04b1b0ab85ad27d78b.v1`,
+          botToken: "123456:bad-token",
           ...telegramOverrides,
         },
       },
@@ -177,7 +177,7 @@ function createTelegramConfig(
       telegram: {
         accounts: {
           [accountId]: {
-            botToken: `ltfx.n.5e04b1b0ab85ad27d78b.v1`,
+            botToken: "123456:bad-token",
             ...telegramOverrides,
           },
         },
@@ -388,7 +388,7 @@ describe("telegramPlugin gateway startup", () => {
     await expect(
       readCachedTelegramBotInfo({
         accountId: "ops",
-        botToken: `ltfx.n.5e04b1b0ab85ad27d78b.v1`,
+        botToken: "123456:bad-token",
       }),
     ).resolves.toMatchObject({ botInfo: startupBotInfo });
   });
@@ -403,7 +403,7 @@ describe("telegramPlugin gateway startup", () => {
     };
     await writeCachedTelegramBotInfo({
       accountId: "ops",
-      botToken: `ltfx.n.5e04b1b0ab85ad27d78b.v1`,
+      botToken: "123456:bad-token",
       botInfo: startupBotInfo,
     });
     probeTelegram.mockResolvedValue({
@@ -427,7 +427,7 @@ describe("telegramPlugin gateway startup", () => {
     await expect(
       readCachedTelegramBotInfo({
         accountId: "ops",
-        botToken: `ltfx.n.5e04b1b0ab85ad27d78b.v1`,
+        botToken: "123456:bad-token",
       }),
     ).resolves.toMatchObject({ botInfo: refreshedBotInfo });
   });
@@ -437,7 +437,7 @@ describe("telegramPlugin gateway startup", () => {
     installTelegramRuntime();
     await writeCachedTelegramBotInfo({
       accountId: "ops",
-      botToken: `ltfx.n.5e04b1b0ab85ad27d78b.v1`,
+      botToken: "123456:bad-token",
       botInfo: startupBotInfo,
     });
     probeTelegram.mockResolvedValue({
@@ -460,21 +460,21 @@ describe("telegramPlugin gateway startup", () => {
     installTelegramRuntime();
     await writeCachedTelegramBotInfo({
       accountId: "ops",
-      botToken: `ltfx.n.5e04b1b0ab85ad27d78b.v1`,
+      botToken: "123456:bad-token",
       botInfo: startupBotInfo,
     });
 
     await telegramPlugin.lifecycle?.onAccountConfigChanged?.({
       accountId: "ops",
       prevCfg: createTelegramConfig("ops"),
-      nextCfg: createTelegramConfig("ops", { botToken: `ltfx.n.b77104060113d89a2a46.v1` }),
+      nextCfg: createTelegramConfig("ops", { botToken: "123456:new-token" }),
       runtime: createRuntimeEnvMock(),
     });
 
     await expect(
       readCachedTelegramBotInfo({
         accountId: "ops",
-        botToken: `ltfx.n.5e04b1b0ab85ad27d78b.v1`,
+        botToken: "123456:bad-token",
       }),
     ).resolves.toBeNull();
   });
@@ -484,7 +484,7 @@ describe("telegramPlugin gateway startup", () => {
     installTelegramRuntime();
     await writeCachedTelegramBotInfo({
       accountId: "ops",
-      botToken: `ltfx.n.5e04b1b0ab85ad27d78b.v1`,
+      botToken: "123456:bad-token",
       botInfo: startupBotInfo,
     });
 
@@ -498,7 +498,7 @@ describe("telegramPlugin gateway startup", () => {
     await expect(
       readCachedTelegramBotInfo({
         accountId: "ops",
-        botToken: `ltfx.n.5e04b1b0ab85ad27d78b.v1`,
+        botToken: "123456:bad-token",
       }),
     ).resolves.toMatchObject({ botInfo: startupBotInfo });
   });
@@ -508,7 +508,7 @@ describe("telegramPlugin gateway startup", () => {
     installTelegramRuntime();
     await writeCachedTelegramBotInfo({
       accountId: "ops",
-      botToken: `ltfx.n.5e04b1b0ab85ad27d78b.v1`,
+      botToken: "123456:bad-token",
       botInfo: startupBotInfo,
     });
 
@@ -521,7 +521,7 @@ describe("telegramPlugin gateway startup", () => {
     await expect(
       readCachedTelegramBotInfo({
         accountId: "ops",
-        botToken: `ltfx.n.5e04b1b0ab85ad27d78b.v1`,
+        botToken: "123456:bad-token",
       }),
     ).resolves.toBeNull();
   });
@@ -533,7 +533,7 @@ describe("telegramPlugin gateway startup", () => {
     const account = telegramPlugin.config.resolveAccount(cfg, "ops");
     await writeCachedTelegramBotInfo({
       accountId: "ops",
-      botToken: `ltfx.n.5e04b1b0ab85ad27d78b.v1`,
+      botToken: "123456:bad-token",
       botInfo: startupBotInfo,
     });
 
@@ -547,7 +547,7 @@ describe("telegramPlugin gateway startup", () => {
     await expect(
       readCachedTelegramBotInfo({
         accountId: "ops",
-        botToken: `ltfx.n.5e04b1b0ab85ad27d78b.v1`,
+        botToken: "123456:bad-token",
       }),
     ).resolves.toBeNull();
   });
@@ -661,7 +661,7 @@ describe("telegramPlugin gateway startup", () => {
 
       const abort = new AbortController();
       await acquireTelegramPollingLease({
-        token: `ltfx.n.5e04b1b0ab85ad27d78b.v1`,
+        token: "123456:bad-token",
         accountId: "default",
         abortSignal: abort.signal,
       });
@@ -678,7 +678,7 @@ describe("telegramPlugin gateway startup", () => {
       await stop;
 
       const next = await acquireTelegramPollingLease({
-        token: `ltfx.n.5e04b1b0ab85ad27d78b.v1`,
+        token: "123456:bad-token",
         accountId: "default",
       });
       next.release();

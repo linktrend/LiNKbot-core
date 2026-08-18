@@ -36,7 +36,7 @@ describe("sandbox/tool-policy", () => {
     expect(resolved.allow).toContain("tts");
     expect(resolved.sources.allow).toEqual({
       source: "agent",
-      key: `ltfx.n.bace047b8b23326d4d8f.v1`,
+      key: "agents.list[].tools.sandbox.tools.alsoAllow",
     });
   });
 

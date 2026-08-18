@@ -1360,7 +1360,7 @@ describe("google-meet CLI", () => {
   it("verifies OAuth refresh without printing secrets", async () => {
     const fetchMock = vi.fn(async (_input: RequestInfo | URL, _init?: RequestInit) =>
       jsonResponse({
-        access_token: `ltfx.n.25b416c373e247768cc1.v1`,
+        access_token: "new-access-token",
         expires_in: 3600,
         token_type: "Bearer",
       }),
@@ -1376,8 +1376,8 @@ describe("google-meet CLI", () => {
         config: {
           oauth: {
             clientId: "client-id",
-            clientSecret: `ltfx.n.fdce8e4a65b70d186bd7.v1`,
-            refreshToken: `ltfx.n.20444ddccb5caeca0e00.v1`,
+            clientSecret: "client-secret",
+            refreshToken: "rt-secret",
           },
         },
         ensureRuntime: ensureRuntime as unknown as () => Promise<GoogleMeetRuntime>,
@@ -1410,7 +1410,7 @@ describe("google-meet CLI", () => {
         const url = requestUrl(input).href;
         if (url === "https://oauth2.googleapis.com/token") {
           return jsonResponse({
-            access_token: `ltfx.n.25b416c373e247768cc1.v1`,
+            access_token: "new-access-token",
             expires_in: 3600,
             token_type: "Bearer",
           });
@@ -1431,7 +1431,7 @@ describe("google-meet CLI", () => {
         config: {
           oauth: {
             clientId: "client-id",
-            refreshToken: `ltfx.n.0eb17643d4e926116378.v1`,
+            refreshToken: "refresh-token",
           },
         },
       }).parseAsync(["googlemeet", "doctor", "--oauth", "--create-space", "--json"], {

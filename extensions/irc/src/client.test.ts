@@ -232,7 +232,7 @@ describe("irc client nickserv", () => {
     const result = await connectAndCollectRegistration({
       nickserv: {
         service: "NickServ\n",
-        password: `ltfx.n.d8242e99f984fd146f8b.v1`,
+        password: "secret\r\nJOIN #bad",
       },
       done: (lines) => lines.some((line) => line.startsWith("PRIVMSG NickServ :IDENTIFY")),
     });

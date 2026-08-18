@@ -33,7 +33,7 @@ describe("shared/gateway-bind-url", () => {
         pickLanHost,
       }),
     ).toEqual({
-      url: `ltfx.n.8f1af213126a609008e6.v1`,
+      url: "wss://gateway.local:443",
       source: "gateway.bind=custom",
     });
 
@@ -63,7 +63,7 @@ describe("shared/gateway-bind-url", () => {
         pickLanHost: vi.fn(),
       }),
     ).toEqual({
-      url: `ltfx.n.92ae58ace70e00849467.v1`,
+      url: "ws://100.64.0.1:18789",
       source: "gateway.bind=tailnet",
     });
     expect(
@@ -87,7 +87,7 @@ describe("shared/gateway-bind-url", () => {
         pickLanHost: () => "192.168.1.2",
       }),
     ).toEqual({
-      url: `ltfx.n.a5080a7571eaa2b4cfe5.v1`,
+      url: "wss://192.168.1.2:8443",
       source: "gateway.bind=lan",
     });
     expect(

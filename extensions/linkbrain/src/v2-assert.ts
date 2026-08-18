@@ -75,7 +75,7 @@ const FORBIDDEN_SECRET_KEYS = new Set([
   "secret",
   "token",
 ]);
-const canonicalKey = (key: (string)): string => key.replace(/[^A-Za-z0-9]/g, "").toLowerCase();
+const canonicalKey = (key: string): string => key.replace(/[^A-Za-z0-9]/g, "").toLowerCase();
 const FORBIDDEN_FIELDS_CANONICAL = new Set([...FORBIDDEN_FIELDS].map(canonicalKey));
 const FORBIDDEN_IDENTITY_FIELDS_CANONICAL = new Set(
   [...FORBIDDEN_IDENTITY_FIELDS].map(canonicalKey),
@@ -95,7 +95,7 @@ const MAX_SAFE_STRING_TOTAL = 32_768;
 
 export const objectRecord = (value: unknown): value is Record<string, unknown> =>
   Boolean(value) && typeof value === "object" && !Array.isArray(value);
-export const ownDataString = (value: unknown, key: (string)): string | undefined => {
+export const ownDataString = (value: unknown, key: string): string | undefined => {
   if (!objectRecord(value)) {
     return undefined;
   }
@@ -127,7 +127,7 @@ type SafeSnapshotState = {
   readonly seen: WeakSet<object>;
 };
 
-const assertSafeKey = (key: (string)): void => {
+const assertSafeKey = (key: string): void => {
   const policyKey = canonicalKey(key);
   if (key.length > MAX_SAFE_KEY_LENGTH || FORBIDDEN_FIELDS_CANONICAL.has(policyKey)) {
     throw new Error(`brain_v2_private_payload:${key}`);

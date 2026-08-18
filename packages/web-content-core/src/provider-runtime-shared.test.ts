@@ -28,14 +28,14 @@ describe("resolveWebProviderConfig", () => {
 
 describe("readWebProviderEnvValue", () => {
   it("normalizes env credentials before returning them", () => {
-    expect(readWebProviderEnvValue(["API_KEY"], { API_KEY: `ltfx.n.e4729ade5b6bebc9b9be.v1` })).toBe("keyvalue");
+    expect(readWebProviderEnvValue(["API_KEY"], { API_KEY: " key\r\nvalue🙂 " })).toBe("keyvalue");
   });
 
   it("strips embedded controls from env credentials while preserving ordinary spaces", () => {
-    expect(readWebProviderEnvValue(["API_KEY"], { API_KEY: `ltfx.web.env.v1` })).toBe(
+    expect(readWebProviderEnvValue(["API_KEY"], { API_KEY: " sk-\u0000ab\tc\u007f\u0085 " })).toBe(
       "sk-abc",
     );
-    expect(readWebProviderEnvValue(["API_KEY"], { API_KEY: `ltfx.n.2e75f36f3fcc9c9d7eca.v1` })).toBe(
+    expect(readWebProviderEnvValue(["API_KEY"], { API_KEY: " Bearer token value " })).toBe(
       "Bearer token value",
     );
   });

@@ -185,7 +185,7 @@ Add `--json` for a machine-readable summary.
 Gateway token SecretRef in non-interactive mode:
 
 ```bash
-export OPENCLAW_GATEWAY_TOKEN="${ltfx.n.08842b17a4146c87440b.v1}"
+export OPENCLAW_GATEWAY_TOKEN="your-token"
 openclaw onboard --non-interactive --accept-risk \
   --mode local \
   --auth-choice skip \

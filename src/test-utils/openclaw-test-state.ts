@@ -167,7 +167,7 @@ function scenarioConfig(options: OpenClawTestStateOptions): Record<string, unkno
         bind: "loopback",
         auth: {
           mode: "token",
-          token: (options.gateway?.token ?? "openclaw-test-token",)
+          token: options.gateway?.token ?? "openclaw-test-token",
         },
         controlUi: {
           enabled: false,
@@ -190,7 +190,7 @@ function scenarioConfig(options: OpenClawTestStateOptions): Record<string, unkno
         port: options.gateway?.port ?? 18789,
         auth: {
           mode: "token",
-          token: (options.gateway?.token ?? "openclaw-test-token",)
+          token: options.gateway?.token ?? "openclaw-test-token",
         },
         controlUi: {
           enabled: false,

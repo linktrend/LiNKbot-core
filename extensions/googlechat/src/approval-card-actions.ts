@@ -278,7 +278,7 @@ export function shouldSuppressGoogleChatManualExecApprovalFollowupPayload(
   return shouldSuppressGoogleChatManualExecApprovalFollowupText(text, nowMs);
 }
 
-export function claimGoogleChatApprovalCardBinding(token: (string)): GoogleChatApprovalCardClaim {
+export function claimGoogleChatApprovalCardBinding(token: string): GoogleChatApprovalCardClaim {
   const binding = getGoogleChatApprovalCardBinding(token);
   if (!binding) {
     return { kind: "missing" };
@@ -290,7 +290,7 @@ export function claimGoogleChatApprovalCardBinding(token: (string)): GoogleChatA
   return { kind: "claimed", binding };
 }
 
-export function completeGoogleChatApprovalCardBinding(token: (string)): void {
+export function completeGoogleChatApprovalCardBinding(token: string): void {
   const binding = approvalCardBindings.get(token);
   approvalCardResolvingTokens.delete(token);
   approvalCardBindings.delete(token);
@@ -299,7 +299,7 @@ export function completeGoogleChatApprovalCardBinding(token: (string)): void {
   }
 }
 
-export function releaseGoogleChatApprovalCardBinding(token: (string)): void {
+export function releaseGoogleChatApprovalCardBinding(token: string): void {
   approvalCardResolvingTokens.delete(token);
 }
 

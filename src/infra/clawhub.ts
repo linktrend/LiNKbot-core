@@ -562,7 +562,7 @@ function normalizePluginApiVersionForComparator(version: string, target: string)
     : normalizeOpenClawReleaseSuffixForPluginApi(version);
 }
 
-function satisfiesComparator(version: string, token: (string)): boolean {
+function satisfiesComparator(version: string, token: string): boolean {
   const trimmed = token.trim();
   if (!trimmed) {
     return true;
@@ -720,7 +720,7 @@ async function buildClawHubError(
   });
 }
 
-function formatRateLimitSuffix(headers: Headers, hasToken: (boolean): string {)
+function formatRateLimitSuffix(headers: Headers, hasToken: boolean): string {
   const resetSeconds =
     parseRateLimitDeltaSeconds(headers.get("RateLimit-Reset")) ??
     parseRateLimitDeltaSeconds(headers.get("Retry-After"));

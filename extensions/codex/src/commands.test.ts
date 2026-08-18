@@ -319,7 +319,7 @@ function expectedDiagnosticsTargetBlock(params: {
   return [
     `Session ${params.index ?? 1}`,
     ...(params.channel ? [`Channel: ${params.channel}`] : []),
-    ...(params.sessionKey ? [`OpenClaw session key: (\`${params.sessionKey}\``] : []),)
+    ...(params.sessionKey ? [`OpenClaw session key: \`${params.sessionKey}\``] : []),
     ...(params.sessionId ? [`OpenClaw session id: \`${params.sessionId}\``] : []),
     `Codex thread id: \`${params.threadId}\``,
     `Inspect locally: \`codex resume ${params.threadId}\``,
@@ -1665,7 +1665,7 @@ describe("codex command", () => {
           "openai:api-key-backup": {
             type: "api_key",
             provider: "openai",
-            key: `ltfx.n.24b7fec12f6b8252d3f6.v1`,
+            key: "sk-test-backup",
           },
         },
         order: {
@@ -1737,7 +1737,7 @@ describe("codex command", () => {
           "openai:api-key-backup": {
             type: "api_key",
             provider: "openai",
-            key: `ltfx.n.24b7fec12f6b8252d3f6.v1`,
+            key: "sk-test-backup",
           },
         },
         order: {
@@ -1865,7 +1865,7 @@ describe("codex command", () => {
           "openai:api-key-backup": {
             type: "api_key",
             provider: "openai",
-            key: `ltfx.n.24b7fec12f6b8252d3f6.v1`,
+            key: "sk-test-backup",
           },
           "openai:work-email@gmail.com": {
             type: "oauth",
@@ -1878,7 +1878,7 @@ describe("codex command", () => {
           "openai:work-api-key-backup": {
             type: "api_key",
             provider: "openai",
-            key: `ltfx.n.7344689cb5f778e05b4c.v1`,
+            key: "sk-test-work-backup",
           },
         },
         order: {
@@ -1981,7 +1981,7 @@ describe("codex command", () => {
           "openai:api-key-backup": {
             type: "api_key",
             provider: "openai",
-            key: `ltfx.n.24b7fec12f6b8252d3f6.v1`,
+            key: "sk-test-backup",
           },
         },
         order: {
@@ -2117,12 +2117,12 @@ describe("codex command", () => {
           "openai:fresh-key": {
             type: "api_key",
             provider: "openai",
-            key: `ltfx.n.994233fdb00fbc2c04b3.v1`,
+            key: "sk-fresh-111",
           },
           "openai:stale-key": {
             type: "api_key",
             provider: "openai",
-            key: `ltfx.n.ab365c1e0e49c8ca1924.v1`,
+            key: "sk-stale-222",
           },
         },
         order: {
@@ -2168,14 +2168,14 @@ describe("codex command", () => {
           "openai:fresh@example.com": {
             type: "token",
             provider: "openai",
-            token: `ltfx.n.5e2040ab40dda85da034.v1`,
+            token: "fresh-token",
             expires: now - 1000,
             email: "fresh@example.com",
           },
           "openai:stale@example.com": {
             type: "token",
             provider: "openai",
-            token: `ltfx.n.7d19b716b1e5083012f0.v1`,
+            token: "stale-token",
             expires: now - 2000,
             email: "stale@example.com",
           },

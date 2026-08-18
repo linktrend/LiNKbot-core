@@ -85,7 +85,7 @@ final class DashboardManager {
         guard let dashboardURL = try? GatewayEndpointStore.dashboardURL(
             for: config,
             mode: mode,
-            authToken: (authToken))
+            authToken: authToken)
         else {
             return
         }
@@ -157,7 +157,7 @@ final class DashboardManager {
               let url = try? GatewayEndpointStore.dashboardURL(
                   for: config,
                   mode: mode,
-                  authToken: (config.token))
+                  authToken: config.token)
         else {
             return false
         }
@@ -206,7 +206,7 @@ final class DashboardManager {
         let mode = AppStateStore.shared.connectionMode
         dashboardManagerLogger.info("dashboard show requested mode=\(String(describing: mode), privacy: .public)")
         let config = try await self.dashboardConfig(mode: mode)
-        dashboardManagerLogger.info("dashboard config url=(\(config.url.absoluteString, privacy: .public)"))
+        dashboardManagerLogger.info("dashboard config url=\(config.url.absoluteString, privacy: .public)")
         let token = await GatewayConnection.shared.controlUiAutoAuthToken(config: config)
         let url = try GatewayEndpointStore.dashboardURL(for: config, mode: mode, authToken: token)
         let auth = DashboardWindowAuth(
@@ -356,7 +356,7 @@ final class DashboardManager {
               let url = try? GatewayEndpointStore.dashboardURL(
                   for: config,
                   mode: mode,
-                  authToken: (config.token))
+                  authToken: config.token)
         else { return nil }
         let auth = DashboardWindowAuth(
             gatewayUrl: Self.websocketURLString(for: url),

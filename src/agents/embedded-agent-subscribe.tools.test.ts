@@ -218,12 +218,12 @@ describe("sanitizeToolResult", () => {
       content: [
         {
           type: "text",
-          text: '{"apiKey":`ltfx.n.dd65e03569cfa4fa17f4.v1`,"model":"gpt-4"}',
+          text: '{"apiKey":"sk-1234567890abcdef","model":"gpt-4"}',
         },
       ],
     };
     const text = getTextContent(sanitizeToolResult(result));
-    expect(text).not.toContain("ltfx.n.dd65e03569cfa4fa17f4.v1");
+    expect(text).not.toContain("sk-1234567890abcdef");
     expect(text).toContain("model");
   });
 
@@ -232,12 +232,12 @@ describe("sanitizeToolResult", () => {
       content: [
         {
           type: "text",
-          text: '{"shared_payment_token":`ltfx.n.a5ebd484a27aac72fe0a.v1`,"paymentCredential":"paycred_abcdefghijklmnopqrstuvwxyz","card_number":"4242424242424242","cvc":"123","amount":"4200"}',
+          text: '{"shared_payment_token":"spt_abcdefghijklmnopqrstuvwxyz","paymentCredential":"paycred_abcdefghijklmnopqrstuvwxyz","card_number":"4242424242424242","cvc":"123","amount":"4200"}',
         },
       ],
       details: {
         structuredContent: {
-          sharedPaymentToken: `ltfx.n.5dfd1d33d1865f035782.v1`,
+          sharedPaymentToken: "spt_zyxwvutsrqponmlkjihgfedcba",
           cardNumber: "4000056655665556",
           amount: "4200",
         },
@@ -265,12 +265,12 @@ describe("sanitizeToolResult", () => {
       content: [
         {
           type: "text",
-          text: "OPENROUTER_API_KEY=(ltfx.n.0e66c5e020b1dd664849.v1),
+          text: "OPENROUTER_API_KEY=sk-or-v1-abcdef0123456789\nMODEL=gpt-4",
         },
       ],
     };
     const text = getTextContent(sanitizeToolResult(result));
-    expect(text).not.toContain("ltfx.n.dcb9668e750b1e0e0c24.v1");
+    expect(text).not.toContain("sk-or-v1-abcdef0123456789");
     expect(text).toContain("MODEL=gpt-4");
   });
 
@@ -340,7 +340,7 @@ describe("sanitizeToolResult", () => {
       details: {
         status: "completed",
         aggregated:
-          'OPENROUTER_API_KEY="${ltfx.n.97c6f7854198a884b796.v1}" "ltfx.n.1fb0f1ec37ed95a902b9.v1"',
+          'OPENROUTER_API_KEY=sk-or-v1-abcdef0123456789\napiKey: "ghp_abcdefghij1234567890"',
         exitCode: 0,
         cwd: "/tmp/work",
       },
@@ -348,8 +348,8 @@ describe("sanitizeToolResult", () => {
     const sanitized = sanitizeToolResult(result) as {
       details: { status: string; aggregated: string; exitCode: number; cwd: string };
     };
-    expect(sanitized.details.aggregated).not.toContain("ltfx.n.dcb9668e750b1e0e0c24.v1");
-    expect(sanitized.details.aggregated).not.toContain("ltfx.n.1fb0f1ec37ed95a902b9.v1");
+    expect(sanitized.details.aggregated).not.toContain("sk-or-v1-abcdef0123456789");
+    expect(sanitized.details.aggregated).not.toContain("ghp_abcdefghij1234567890");
     expect(sanitized.details.status).toBe("completed");
     expect(sanitized.details.exitCode).toBe(0);
     expect(sanitized.details.cwd).toBe("/tmp/work");
@@ -357,9 +357,9 @@ describe("sanitizeToolResult", () => {
 
   it("redacts secrets at the top level outside content/details", () => {
     const result = {
-      output: "OPENROUTER_API_KEY=(ltfx.n.57c8ab6af4022631ffbf.v1),
+      output: "OPENROUTER_API_KEY=sk-or-v1-abcdef0123456789",
       metadata: {
-        token: `ltfx.n.51ecff2e15b673feb3fd.v1`,
+        token: "ghp_abcdefghij1234567890ABCDEF",
         nested: { auth: "Bearer abcdef0123456789QWERTY=" },
       },
       summary: "ok",
@@ -369,8 +369,8 @@ describe("sanitizeToolResult", () => {
       metadata: { token: string; nested: { auth: string } };
       summary: string;
     };
-    expect(sanitized.output).not.toContain("ltfx.n.dcb9668e750b1e0e0c24.v1");
-    expect(sanitized.metadata.token).not.toContain("ltfx.n.51ecff2e15b673feb3fd.v1");
+    expect(sanitized.output).not.toContain("sk-or-v1-abcdef0123456789");
+    expect(sanitized.metadata.token).not.toContain("ghp_abcdefghij1234567890ABCDEF");
     expect(sanitized.metadata.nested.auth).not.toContain("abcdef0123456789QWERTY=");
     expect(sanitized.summary).toBe("ok");
   });
@@ -378,32 +378,32 @@ describe("sanitizeToolResult", () => {
   it("redacts a details-only result with no content array", () => {
     const result = {
       details: {
-        config: { apiKey: `ltfx.n.637154183820f239416a.v1`, model: "gpt-4" },
+        config: { apiKey: "sk-1234567890abcdefXYZ", model: "gpt-4" },
       },
     };
     const sanitized = sanitizeToolResult(result) as {
       details: { config: { apiKey: string; model: string } };
     };
-    expect(sanitized.details.config.apiKey).not.toContain("ltfx.n.637154183820f239416a.v1");
+    expect(sanitized.details.config.apiKey).not.toContain("sk-1234567890abcdefXYZ");
     expect(sanitized.details.config.model).toBe("gpt-4");
   });
 
   it("redacts primitive string results", () => {
-    const sanitized = sanitizeToolResult("OPENROUTER_API_KEY="${ltfx.n.ef807a392d02dee038f9.v1}" as string;
+    const sanitized = sanitizeToolResult("OPENROUTER_API_KEY=sk-or-v1-abcdef0123456789") as string;
 
-    expect(sanitized).not.toContain("ltfx.n.dcb9668e750b1e0e0c24.v1");
+    expect(sanitized).not.toContain("sk-or-v1-abcdef0123456789");
     expect(sanitized).toContain("OPENROUTER_API_KEY=");
   });
 
   it("preserves top-level arrays while redacting nested strings", () => {
     const sanitized = sanitizeToolResult([
       { output: "Authorization: Bearer abcdef0123456789QWERTY=" },
-      "apiKey=(ltfx.n.b5d089a296f37d946787.v1),
+      "apiKey=sk-1234567890abcdefXYZ",
     ]) as Array<{ output: string } | string>;
 
     expect(Array.isArray(sanitized)).toBe(true);
     expect(JSON.stringify(sanitized)).not.toContain("abcdef0123456789QWERTY=");
-    expect(JSON.stringify(sanitized)).not.toContain("ltfx.n.637154183820f239416a.v1");
+    expect(JSON.stringify(sanitized)).not.toContain("sk-1234567890abcdefXYZ");
     expect((sanitized[0] as { output: string }).output).toContain("Authorization: Bearer");
   });
 
@@ -426,10 +426,10 @@ describe("sanitizeToolResult", () => {
 describe("sanitizeToolArgs", () => {
   it("redacts string-valued credentials nested anywhere in args", () => {
     const args = {
-      apiKey: `ltfx.n.637154183820f239416a.v1`,
+      apiKey: "sk-1234567890abcdefXYZ",
       headers: { Authorization: "Bearer abcdef0123456789QWERTY=" },
-      command: "OPENROUTER_API_KEY="${ltfx.n.dcb9668e750b1e0e0c24.v1}" ./run.sh",
-      flags: ["--api-key", "ltfx.n.637154183820f239416a.v1"],
+      command: "OPENROUTER_API_KEY=sk-or-v1-abcdef0123456789 ./run.sh",
+      flags: ["--api-key", "sk-1234567890abcdefXYZ"],
     };
     const sanitized = sanitizeToolArgs(args) as {
       apiKey: string;
@@ -437,10 +437,10 @@ describe("sanitizeToolArgs", () => {
       command: string;
       flags: string[];
     };
-    expect(sanitized.apiKey).not.toContain("ltfx.n.637154183820f239416a.v1");
+    expect(sanitized.apiKey).not.toContain("sk-1234567890abcdefXYZ");
     expect(sanitized.headers.Authorization).not.toContain("abcdef0123456789QWERTY=");
-    expect(sanitized.command).not.toContain("ltfx.n.dcb9668e750b1e0e0c24.v1");
-    expect(sanitized.flags.join(" ")).not.toContain("ltfx.n.637154183820f239416a.v1");
+    expect(sanitized.command).not.toContain("sk-or-v1-abcdef0123456789");
+    expect(sanitized.flags.join(" ")).not.toContain("sk-1234567890abcdefXYZ");
     expect(sanitized.flags[0]).toBe("--api-key");
   });
 
@@ -449,7 +449,7 @@ describe("sanitizeToolArgs", () => {
       DISCORD_BOT_TOKEN: "${DISCORD_BOT_TOKEN:-}",
       nested: {
         apiKey: "${OPENAI_API_KEY:-}",
-        GITHUB_TOKEN: "${GITHUB_TOKEN:(ltfx.n.254ad7b0e4dbecde442c.v1)}",
+        GITHUB_TOKEN: "${GITHUB_TOKEN:-literalgithub1234567890}",
       },
     };
     const sanitized = sanitizeToolArgs(args) as {
@@ -461,7 +461,7 @@ describe("sanitizeToolArgs", () => {
     };
     expect(sanitized.DISCORD_BOT_TOKEN).toBe("${DISCORD_BOT_TOKEN:-}");
     expect(sanitized.nested.apiKey).toBe("${OPEN…Y:-}");
-    expect(sanitized.nested.GITHUB_TOKEN).toBe("${GITHUB_TOKEN:(-liter…890}");)
+    expect(sanitized.nested.GITHUB_TOKEN).toBe("${GITHUB_TOKEN:-liter…890}");
   });
 
   it("passes through null/undefined and non-string primitives unchanged", () => {
@@ -584,7 +584,7 @@ describe("extractToolResultText", () => {
         },
         {
           type: "resource",
-          apiKey: `ltfx.n.8da019a9a091c9a2c77f.v1`,
+          apiKey: "sk-structured-secret-1234567890",
           resource: {
             uri: "blob://result",
             blob: "resource-base64-secret",
@@ -599,7 +599,7 @@ describe("extractToolResultText", () => {
     expect(text).not.toContain("audio-base64-secret");
     expect(text).not.toContain("document-base64-secret");
     expect(text).not.toContain("resource-base64-secret");
-    expect(text).not.toContain("ltfx.n.8da019a9a091c9a2c77f.v1");
+    expect(text).not.toContain("sk-structured-secret-1234567890");
   });
 
   it("redacts structured headers and omits opaque CLI payloads before the output cap", () => {

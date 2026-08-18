@@ -216,7 +216,7 @@ describe("lmstudio stream wrapper", () => {
     const stream = runWrappedLmstudioStream(
       wrapped,
       { contextWindow: 131072 },
-      { apiKey: `ltfx.n.e2ed0f66a2f980530c47.v1` },
+      { apiKey: "lmstudio-token" },
     );
     const events = await collectEvents(stream);
 
@@ -226,7 +226,7 @@ describe("lmstudio stream wrapper", () => {
       baseUrl: "http://lmstudio.internal:1234/v1",
       modelKey: "qwen3-8b-instruct",
       requestedContextLength: 131072,
-      apiKey: `ltfx.n.e2ed0f66a2f980530c47.v1`,
+      apiKey: "lmstudio-token",
       ssrfPolicy: { allowedHostnames: ["lmstudio.internal"] },
     });
   });
@@ -258,7 +258,7 @@ describe("lmstudio stream wrapper", () => {
     const stream = runWrappedLmstudioStream(
       wrapped,
       { contextWindow: 131072, contextTokens: 64000 },
-      { apiKey: `ltfx.n.e2ed0f66a2f980530c47.v1` },
+      { apiKey: "lmstudio-token" },
     );
     const events = await collectEvents(stream);
 
@@ -268,7 +268,7 @@ describe("lmstudio stream wrapper", () => {
       baseUrl: "http://lmstudio.internal:1234/v1",
       modelKey: "qwen3-8b-instruct",
       requestedContextLength: 64000,
-      apiKey: `ltfx.n.e2ed0f66a2f980530c47.v1`,
+      apiKey: "lmstudio-token",
       ssrfPolicy: { allowedHostnames: ["lmstudio.internal"] },
     });
   });
@@ -284,7 +284,7 @@ describe("lmstudio stream wrapper", () => {
         contextTokens: 64000.5,
         contextWindow: Number.POSITIVE_INFINITY,
       },
-      { apiKey: `ltfx.n.e2ed0f66a2f980530c47.v1` },
+      { apiKey: "lmstudio-token" },
     );
     const events = await collectEvents(stream);
 
@@ -294,7 +294,7 @@ describe("lmstudio stream wrapper", () => {
       baseUrl: "http://lmstudio.internal:1234/v1",
       modelKey: "qwen3-8b-instruct",
       requestedContextLength: undefined,
-      apiKey: `ltfx.n.e2ed0f66a2f980530c47.v1`,
+      apiKey: "lmstudio-token",
       ssrfPolicy: { allowedHostnames: ["lmstudio.internal"] },
     });
   });

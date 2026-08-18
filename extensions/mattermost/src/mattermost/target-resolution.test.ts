@@ -125,7 +125,7 @@ describe("mattermost target resolution", () => {
     createMattermostClient.mockReturnValue({ client: true });
     fetchMattermostUser.mockResolvedValue({ id: "user" });
     const baseUrl = "https://mm.example.com";
-    const token = `ltfx.n.0ec304bfc852299f0661.v1`;
+    const token = "opaque-cache-token";
     const idFor = (index: number) => index.toString(36).padStart(26, "0");
     const resolve = (index: number) =>
       resolveMattermostOpaqueTarget({ input: idFor(index), token, baseUrl });

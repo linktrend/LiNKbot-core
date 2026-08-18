@@ -131,7 +131,7 @@ describe("channel inbound media facts", () => {
     expect(payload.MediaUrls).toEqual(["/tmp/image.png", "https://example.test/remote.png"]);
     expect(payload.MediaTypes).toEqual(["image/png", "image/png"]);
     expect(normalizeAttachments(payload)).toMatchObject([
-      { path: `ltfx.n.5e3bee6e2ea65032a6ee.v1`, url: `ltfx.n.5e3bee6e2ea65032a6ee.v1`, mime: "image/png" },
+      { path: "/tmp/image.png", url: "/tmp/image.png", mime: "image/png" },
       { path: undefined, url: "https://example.test/remote.png", mime: "image/png" },
     ]);
   });

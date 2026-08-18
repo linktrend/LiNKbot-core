@@ -257,7 +257,7 @@ describe("sessions.usage", () => {
     });
     const withKey = await runSessionsUsage({
       ...BASE_USAGE_RANGE,
-      key: `ltfx.n.f02336c6a6e3764f6aa1.v1`,
+      key: "agent:opus:s-opus",
       agentScope: "all",
     });
 
@@ -651,8 +651,8 @@ describe("sessions.usage", () => {
         },
       });
 
-      // Query via discovered key: (agent:<id>:<sessionId>)
-      const respond = await runSessionsUsage({ ...BASE_USAGE_RANGE, key: `ltfx.n.f02336c6a6e3764f6aa1.v1` });
+      // Query via discovered key: agent:<id>:<sessionId>
+      const respond = await runSessionsUsage({ ...BASE_USAGE_RANGE, key: "agent:opus:s-opus" });
       const sessions = expectSuccessfulSessionsUsage(respond);
       expect(sessions).toHaveLength(1);
       expect(sessions[0]?.key).toBe(storeKey);
@@ -768,7 +768,7 @@ describe("sessions.usage", () => {
 
       const respond = await runSessionsUsage({
         ...BASE_USAGE_RANGE,
-        key: `ltfx.n.a439d55d0098b674a918.v1`,
+        key: "agent:opus:run-dup",
       });
       const sessions = expectSuccessfulSessionsUsage(respond);
       expect(sessions).toHaveLength(1);
@@ -779,7 +779,7 @@ describe("sessions.usage", () => {
   it("rejects traversal-style keys in specific session usage lookups", async () => {
     const respond = await runSessionsUsage({
       ...BASE_USAGE_RANGE,
-      key: `ltfx.n.1114444055af2624c63a.v1`,
+      key: "agent:opus:../../etc/passwd",
     });
 
     expect(respond).toHaveBeenCalledTimes(1);
@@ -790,7 +790,7 @@ describe("sessions.usage", () => {
 
   it("passes parsed agentId into sessions.usage.timeseries", async () => {
     await runSessionsUsageTimeseries({
-      key: `ltfx.n.f02336c6a6e3764f6aa1.v1`,
+      key: "agent:opus:s-opus",
     });
 
     expect(vi.mocked(loadSessionUsageTimeSeries)).toHaveBeenCalled();
@@ -801,7 +801,7 @@ describe("sessions.usage", () => {
 
   it("passes parsed agentId into sessions.usage.logs", async () => {
     await runSessionsUsageLogs({
-      key: `ltfx.n.f02336c6a6e3764f6aa1.v1`,
+      key: "agent:opus:s-opus",
     });
 
     expect(vi.mocked(loadSessionLogs)).toHaveBeenCalled();
@@ -812,7 +812,7 @@ describe("sessions.usage", () => {
 
   it("rejects traversal-style keys in timeseries/log lookups", async () => {
     const timeseriesRespond = await runSessionsUsageTimeseries({
-      key: `ltfx.n.1114444055af2624c63a.v1`,
+      key: "agent:opus:../../etc/passwd",
     });
     expect(timeseriesRespond.mock.calls).toEqual([
       [
@@ -820,13 +820,13 @@ describe("sessions.usage", () => {
         undefined,
         {
           code: "INVALID_REQUEST",
-          message: "Invalid session key: (agent:opus:../../etc/passwd",)
+          message: "Invalid session key: agent:opus:../../etc/passwd",
         },
       ],
     ]);
 
     const logsRespond = await runSessionsUsageLogs({
-      key: `ltfx.n.1114444055af2624c63a.v1`,
+      key: "agent:opus:../../etc/passwd",
     });
     expect(logsRespond.mock.calls).toEqual([
       [
@@ -834,7 +834,7 @@ describe("sessions.usage", () => {
         undefined,
         {
           code: "INVALID_REQUEST",
-          message: "Invalid session key: (agent:opus:../../etc/passwd",)
+          message: "Invalid session key: agent:opus:../../etc/passwd",
         },
       ],
     ]);

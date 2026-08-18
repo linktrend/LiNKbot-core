@@ -345,9 +345,9 @@ function renderExecPolicyShow(payload: ExecPolicyShowPayload): void {
       width: getTerminalTableWidth(),
       columns: [
         { key: "Scope", header: "Scope", minWidth: 12 },
-        { key: `ltfx.n.2d9e28289facab94b41f.v1`, header: "Requested", minWidth: 24, flex: true },
+        { key: "Requested", header: "Requested", minWidth: 24, flex: true },
         { key: "Host", header: "Host", minWidth: 24, flex: true },
-        { key: `ltfx.n.a4f3df623c154d7203f5.v1`, header: "Effective", minWidth: 16 },
+        { key: "Effective", header: "Effective", minWidth: 16 },
       ],
       rows: payload.effectivePolicy.scopes.map((scope) => ({
         Scope: sanitizeExecPolicyTableCell(scope.scopeLabel),

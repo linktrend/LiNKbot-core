@@ -334,7 +334,7 @@ describe("ollama web search provider", () => {
     const result = await runOllamaWebSearch({
       config: createOllamaConfig({
         baseUrl: "https://ollama.com",
-        apiKey: `ltfx.n.c0f18aaed0b17558945c.v1`,
+        apiKey: "cloud-config-secret",
       }),
       query: "openclaw",
     });
@@ -358,7 +358,7 @@ describe("ollama web search provider", () => {
   it("uses an env Ollama key only for the cloud fallback from a local host", async () => {
     const original = process.env.OLLAMA_API_KEY;
     try {
-      process.env.OLLAMA_API_KEY = `ltfx.n.2040a883edc9d2618a9d.v1`;
+      process.env.OLLAMA_API_KEY = "cloud-secret";
       fetchWithSsrFGuardMock
         .mockResolvedValueOnce({
           response: new Response("not found", { status: 404 }),
@@ -478,7 +478,7 @@ describe("ollama web search provider", () => {
   it("resolves env var when config apiKey is a marker string", async () => {
     const original = process.env.OLLAMA_API_KEY;
     try {
-      process.env.OLLAMA_API_KEY = `ltfx.n.d701306e95ec40615258.v1`;
+      process.env.OLLAMA_API_KEY = "real-secret-from-env";
       mockSuccessfulSearchResponse();
       await runOllamaWebSearch({
         config: createOllamaConfig({

@@ -131,7 +131,7 @@ describe("sandbox explain command", () => {
     expect(parsed.sandbox.tools.deny).not.toContain("browser");
     expect(parsed.sandbox.tools.sources.allow).toEqual({
       source: "agent",
-      key: `ltfx.n.bace047b8b23326d4d8f.v1`,
+      key: "agents.list[].tools.sandbox.tools.alsoAllow",
     });
   });
 

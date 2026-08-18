@@ -965,7 +965,7 @@ private final class TestChatTransport: @unchecked Sendable, OpenClawChatTranspor
                 sessionKey: sessionKey,
                 thinkingLevel: thinkingLevel)
             result = OpenClawChatModelPatchResult(
-                key: (thinkingResult?.key ?? result?.key ?? sessionKey,)
+                key: thinkingResult?.key ?? result?.key ?? sessionKey,
                 modelProvider: thinkingResult?.modelProvider ?? result?.modelProvider,
                 model: thinkingResult?.model ?? result?.model,
                 thinkingLevel: thinkingResult?.thinkingLevel ?? thinkingLevel,
@@ -5953,9 +5953,9 @@ struct ChatViewModelTests {
             count: 4,
             defaults: nil,
             sessions: [
-                sessionEntry(key: "${ltfx.n.085def0570c371430cf5.v1}", updatedAt: recent),
+                sessionEntry(key: "recent-1", updatedAt: recent),
                 sessionEntry(key: "main", updatedAt: stale),
-                sessionEntry(key: "${ltfx.n.3f0e82e451e85416c2e9.v1}", updatedAt: recentOlder),
+                sessionEntry(key: "recent-2", updatedAt: recentOlder),
                 sessionEntry(key: "old-1", updatedAt: stale),
             ])
 
@@ -6044,7 +6044,7 @@ struct ChatViewModelTests {
                 mainSessionKey: "Luke’s MacBook Pro"),
             sessions: [
                 OpenClawChatSessionEntry(
-                    key: "${ltfx.n.e27dd4c95786a376f5c7.v1}",
+                    key: "Luke’s MacBook Pro",
                     kind: nil,
                     displayName: "Luke’s MacBook Pro",
                     surface: nil,
@@ -6063,7 +6063,7 @@ struct ChatViewModelTests {
                     modelProvider: nil,
                     model: nil,
                     contextTokens: nil),
-                sessionEntry(key: "${ltfx.n.085def0570c371430cf5.v1}", updatedAt: recentOlder),
+                sessionEntry(key: "recent-1", updatedAt: recentOlder),
             ])
 
         let (_, vm) = await makeViewModel(
@@ -6092,7 +6092,7 @@ struct ChatViewModelTests {
                 mainSessionKey: "agent:main:main"),
             sessions: [
                 OpenClawChatSessionEntry(
-                    key: "${ltfx.n.4c5763339ef3bfce2cb5.v1}",
+                    key: "agent:main:onboarding",
                     kind: nil,
                     displayName: "Luke’s MacBook Pro",
                     surface: nil,
@@ -6112,7 +6112,7 @@ struct ChatViewModelTests {
                     model: nil,
                     contextTokens: nil),
                 OpenClawChatSessionEntry(
-                    key: "${ltfx.n.6d9217fe77c7f11d9cc9.v1}",
+                    key: "agent:main:main",
                     kind: nil,
                     displayName: "Luke’s MacBook Pro",
                     surface: nil,
@@ -6159,7 +6159,7 @@ struct ChatViewModelTests {
                 contextTokens: nil,
                 mainSessionKey: "agent:aiden:main"),
             sessions: [
-                sessionEntry(key: "${ltfx.n.897b7d6c26653e18587c.v1}", updatedAt: 1),
+                sessionEntry(key: "agent:aiden:main", updatedAt: 1),
             ])
 
         let (transport, vm) = await makeViewModel(
@@ -6747,7 +6747,7 @@ struct ChatViewModelTests {
             count: 1,
             defaults: nil,
             sessions: [
-                sessionEntry(key: "${ltfx.n.6d9217fe77c7f11d9cc9.v1}", updatedAt: now, model: nil),
+                sessionEntry(key: "agent:main:main", updatedAt: now, model: nil),
             ])
         let models = [
             modelChoice(
@@ -8257,7 +8257,7 @@ struct ChatViewModelTests {
             count: 1,
             defaults: nil,
             sessions: [
-                sessionEntry(key: "${ltfx.n.6061663aaea2ef525e43.v1}", updatedAt: now, model: nil),
+                sessionEntry(key: "agent:alpha:main", updatedAt: now, model: nil),
             ])
         let models = [
             modelChoice(id: "gpt-5.4", name: "GPT-5.4", provider: "openai"),
@@ -8308,13 +8308,13 @@ struct ChatViewModelTests {
         let now = Date().timeIntervalSince1970 * 1000
         let alphaSessions = sessionsResponse(
             sessionEntry(
-                key: "${ltfx.n.6061663aaea2ef525e43.v1}",
+                key: "agent:alpha:main",
                 updatedAt: now,
                 model: "gpt-alpha",
                 modelProvider: "openai"))
         let betaSessions = sessionsResponse(
             sessionEntry(
-                key: "${ltfx.n.e1e65c877f4650face24.v1}",
+                key: "agent:beta:main",
                 updatedAt: now + 1,
                 model: "gpt-beta",
                 modelProvider: "openai"))
@@ -8368,9 +8368,9 @@ struct ChatViewModelTests {
         let alphaGate = AsyncGate()
         let now = Date().timeIntervalSince1970 * 1000
         let alphaSessions = sessionsResponse(
-            sessionEntry(key: "${ltfx.n.6061663aaea2ef525e43.v1}", updatedAt: now, model: nil))
+            sessionEntry(key: "agent:alpha:main", updatedAt: now, model: nil))
         let betaSessions = sessionsResponse(
-            sessionEntry(key: "${ltfx.n.e1e65c877f4650face24.v1}", updatedAt: now + 1, model: nil))
+            sessionEntry(key: "agent:beta:main", updatedAt: now + 1, model: nil))
         let models = [
             modelChoice(id: "gpt-alpha", name: "Alpha", provider: "openai"),
             modelChoice(id: "gpt-beta", name: "Beta", provider: "openai"),
@@ -8676,7 +8676,7 @@ struct ChatViewModelTests {
 
     @Test func `model patch decoder falls back to entry when resolved is absent`() throws {
         let data = Data(
-            #"{"key":"${ltfx.n.6d9217fe77c7f11d9cc9.v1}","entry":{"providerOverride":"openai","modelOverride":"gpt-5.6-sol","thinkingLevel":"high"}}"#
+            #"{"key":"agent:main:main","entry":{"providerOverride":"openai","modelOverride":"gpt-5.6-sol","thinkingLevel":"high"}}"#
                 .utf8)
 
         let result = try JSONDecoder().decode(OpenClawChatModelPatchResult.self, from: data)
@@ -9868,13 +9868,13 @@ struct ChatViewModelTests {
         let patchStarted = AsyncGate()
         let patchGate = AsyncGate()
         let alphaSessions = sessionsResponse(sessionEntry(
-            key: "${ltfx.n.6061663aaea2ef525e43.v1}",
+            key: "agent:alpha:main",
             updatedAt: 1,
             model: nil,
             fastMode: .on,
             effectiveFastMode: .on))
         let betaSessions = sessionsResponse(sessionEntry(
-            key: "${ltfx.n.e1e65c877f4650face24.v1}",
+            key: "agent:beta:main",
             updatedAt: 2,
             model: nil,
             fastMode: .off,
@@ -10957,10 +10957,10 @@ struct ChatViewModelTests {
     @Test func `failed thinking patch cannot roll back a replacement agent target`() async throws {
         let firstPatchGate = AsyncGate()
         let alphaSessions = sessionsResponse(
-            sessionEntry(key: "${ltfx.n.6061663aaea2ef525e43.v1}", updatedAt: 1, model: nil, thinkingLevel: "off"))
+            sessionEntry(key: "agent:alpha:main", updatedAt: 1, model: nil, thinkingLevel: "off"))
         let betaSessions = sessionsListResponse([
-            sessionEntry(key: "${ltfx.n.e1e65c877f4650face24.v1}", updatedAt: 3, model: nil, thinkingLevel: "high"),
-            sessionEntry(key: "${ltfx.n.c8323ee1d81be5a2af18.v1}", updatedAt: 2, model: nil, thinkingLevel: "off"),
+            sessionEntry(key: "agent:beta:main", updatedAt: 3, model: nil, thinkingLevel: "high"),
+            sessionEntry(key: "agent:beta:other", updatedAt: 2, model: nil, thinkingLevel: "off"),
         ])
         let callbackState = await MainActor.run { CallbackBox() }
         let (transport, vm) = await makeViewModel(
@@ -11120,17 +11120,17 @@ struct ChatViewModelSessionManagementTests {
             sessionEntry(key: "c-tie", updatedAt: 100),
             sessionEntry(key: "a-tie", updatedAt: 100),
             sessionEntry(key: "recent", updatedAt: 500),
-            sessionEntry(key: "${ltfx.n.d2d79f24d498ad89d35d.v1}", updatedAt: 10, pinned: true, pinnedAt: 1),
-            sessionEntry(key: "${ltfx.n.45c40d47d14ae99fe6e0.v1}", updatedAt: 5, pinned: true, pinnedAt: 2),
+            sessionEntry(key: "pinned-old", updatedAt: 10, pinned: true, pinnedAt: 1),
+            sessionEntry(key: "pinned-new", updatedAt: 5, pinned: true, pinnedAt: 2),
         ])
         #expect(organized.map(\.key) == ["pinned-new", "pinned-old", "recent", "a-tie", "c-tie"])
     }
 
     @Test @MainActor func `session list organizer filters across display fields`() {
         let sessions = [
-            sessionEntry(key: "${ltfx.n.f7afc572281032b9ff77.v1}", updatedAt: 2, displayName: "Trip planning"),
-            sessionEntry(key: "${ltfx.n.0fc84fc0aa0724f98d83.v1}", updatedAt: 1, displayName: "Groceries"),
-            sessionEntry(key: "${ltfx.n.8a6051463b0e531b024b.v1}", updatedAt: 3, displayName: "Notes"),
+            sessionEntry(key: "agent:main:topic-a", updatedAt: 2, displayName: "Trip planning"),
+            sessionEntry(key: "agent:main:topic-b", updatedAt: 1, displayName: "Groceries"),
+            sessionEntry(key: "agent:main:trip-notes", updatedAt: 3, displayName: "Notes"),
         ]
         let matched = OpenClawChatSessionListOrganizer.filter(sessions, search: "TRIP")
         #expect(matched.map(\.key) == ["agent:main:topic-a", "agent:main:trip-notes"])
@@ -11139,12 +11139,12 @@ struct ChatViewModelSessionManagementTests {
 
     @Test func `pin patches transport and reorders optimistically`() async throws {
         let initial = sessionsListResponse([
-            sessionEntry(key: "${ltfx.n.f7afc572281032b9ff77.v1}", updatedAt: 200),
-            sessionEntry(key: "${ltfx.n.0fc84fc0aa0724f98d83.v1}", updatedAt: 100),
+            sessionEntry(key: "agent:main:topic-a", updatedAt: 200),
+            sessionEntry(key: "agent:main:topic-b", updatedAt: 100),
         ])
         let pinned = sessionsListResponse([
-            sessionEntry(key: "${ltfx.n.0fc84fc0aa0724f98d83.v1}", updatedAt: 100, pinned: true, pinnedAt: 300),
-            sessionEntry(key: "${ltfx.n.f7afc572281032b9ff77.v1}", updatedAt: 200),
+            sessionEntry(key: "agent:main:topic-b", updatedAt: 100, pinned: true, pinnedAt: 300),
+            sessionEntry(key: "agent:main:topic-a", updatedAt: 200),
         ])
         let (transport, vm) = await makeViewModel(
             historyResponses: [historyPayload()],
@@ -11155,7 +11155,7 @@ struct ChatViewModelSessionManagementTests {
             await MainActor.run { vm.sessions.map(\.key) == ["agent:main:topic-a", "agent:main:topic-b"] }
         }
 
-        await MainActor.run { vm.setSessionPinned(key: "${ltfx.n.0fc84fc0aa0724f98d83.v1}", pinned: true) }
+        await MainActor.run { vm.setSessionPinned(key: "agent:main:topic-b", pinned: true) }
         // Optimistic reorder happens before the transport call settles.
         #expect(await MainActor.run { vm.sessions.first?.key } == "agent:main:topic-b")
 
@@ -11170,13 +11170,13 @@ struct ChatViewModelSessionManagementTests {
 
     @Test func `rename patches label optimistically and reverts on failure`() async throws {
         let initial = sessionsListResponse([
-            sessionEntry(key: "${ltfx.n.f7afc572281032b9ff77.v1}", updatedAt: 200, displayName: "Old name"),
+            sessionEntry(key: "agent:main:topic-a", updatedAt: 200, displayName: "Old name"),
         ])
         // The post-rename refresh must return the renamed row; otherwise the
         // refetch legitimately repaints the old name and races the assertions.
         let renamed = sessionsListResponse([
             sessionEntry(
-                key: "${ltfx.n.f7afc572281032b9ff77.v1}",
+                key: "agent:main:topic-a",
                 updatedAt: 200,
                 displayName: "Trip planning",
                 label: "Trip planning"),
@@ -11195,7 +11195,7 @@ struct ChatViewModelSessionManagementTests {
             await MainActor.run { !vm.sessions.isEmpty }
         }
 
-        await MainActor.run { vm.renameSession(key: "${ltfx.n.f7afc572281032b9ff77.v1}", label: " Trip planning ") }
+        await MainActor.run { vm.renameSession(key: "agent:main:topic-a", label: " Trip planning ") }
         #expect(await MainActor.run { vm.sessions.first?.displayName } == "Trip planning")
         try await waitUntil("rename sent trimmed label") {
             let renames = await transport.renamedLabels()
@@ -11207,7 +11207,7 @@ struct ChatViewModelSessionManagementTests {
             await transport.listSessionsQueries().count >= 2
         }
 
-        await MainActor.run { vm.renameSession(key: "${ltfx.n.f7afc572281032b9ff77.v1}", label: "Bad name") }
+        await MainActor.run { vm.renameSession(key: "agent:main:topic-a", label: "Bad name") }
         try await waitUntil("failed rename reverts") {
             await MainActor.run {
                 vm.sessions.first?.displayName == "Trip planning" && vm.errorText == "rename failed"
@@ -11217,11 +11217,11 @@ struct ChatViewModelSessionManagementTests {
 
     @Test func `archive removes the session from the active list`() async throws {
         let initial = sessionsListResponse([
-            sessionEntry(key: "${ltfx.n.f7afc572281032b9ff77.v1}", updatedAt: 200),
-            sessionEntry(key: "${ltfx.n.0fc84fc0aa0724f98d83.v1}", updatedAt: 100),
+            sessionEntry(key: "agent:main:topic-a", updatedAt: 200),
+            sessionEntry(key: "agent:main:topic-b", updatedAt: 100),
         ])
         let afterArchive = sessionsListResponse([
-            sessionEntry(key: "${ltfx.n.f7afc572281032b9ff77.v1}", updatedAt: 200),
+            sessionEntry(key: "agent:main:topic-a", updatedAt: 200),
         ])
         let (transport, vm) = await makeViewModel(
             historyResponses: [historyPayload()],
@@ -11232,7 +11232,7 @@ struct ChatViewModelSessionManagementTests {
             await MainActor.run { vm.sessions.count == 2 }
         }
 
-        await MainActor.run { vm.setSessionArchived(key: "${ltfx.n.0fc84fc0aa0724f98d83.v1}", archived: true) }
+        await MainActor.run { vm.setSessionArchived(key: "agent:main:topic-b", archived: true) }
         #expect(await MainActor.run { vm.sessions.map(\.key) } == ["agent:main:topic-a"])
         try await waitUntil("archive patch sent") {
             let changes = await transport.archivedChanges()
@@ -11241,7 +11241,7 @@ struct ChatViewModelSessionManagementTests {
     }
 
     @Test func `fetchSessionList sends search and archived to the server`() async {
-        let archivedEntry = sessionEntry(key: "${ltfx.n.85d5db6eb87195d078a5.v1}", updatedAt: 10, archived: true)
+        let archivedEntry = sessionEntry(key: "agent:main:old", updatedAt: 10, archived: true)
         let (transport, vm) = await makeViewModel(
             historyResponses: [historyPayload()],
             listSessionsHook: { query in
@@ -11266,9 +11266,9 @@ struct ChatViewModelSessionManagementTests {
                 }
             })
 
-        let restored = await vm.restoreSession(key: "${ltfx.n.85d5db6eb87195d078a5.v1}")
+        let restored = await vm.restoreSession(key: "agent:main:old")
         #expect(restored)
-        let failed = await vm.restoreSession(key: "${ltfx.n.b06a3c4b9b31ac5f40bd.v1}")
+        let failed = await vm.restoreSession(key: "agent:main:broken")
         #expect(!failed)
         #expect(await MainActor.run { vm.errorText } == "restore failed")
         let changes = await transport.archivedChanges()
@@ -11278,8 +11278,8 @@ struct ChatViewModelSessionManagementTests {
 
     @Test func `fetchSessionList falls back to local filtering when the server is unreachable`() async throws {
         let cached = sessionsListResponse([
-            sessionEntry(key: "${ltfx.n.f7afc572281032b9ff77.v1}", updatedAt: 2, displayName: "Trip planning"),
-            sessionEntry(key: "${ltfx.n.0fc84fc0aa0724f98d83.v1}", updatedAt: 1, displayName: "Groceries"),
+            sessionEntry(key: "agent:main:topic-a", updatedAt: 2, displayName: "Trip planning"),
+            sessionEntry(key: "agent:main:topic-b", updatedAt: 1, displayName: "Groceries"),
         ])
         let (_, vm) = await makeViewModel(
             historyResponses: [historyPayload()],

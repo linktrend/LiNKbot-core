@@ -130,7 +130,7 @@ describe("authorizeSlackSystemEventSender", () => {
       accountId: "main",
       allowNameMatching: false,
       app: { client: { conversations: { members: conversationsMembers } } },
-      botToken: `ltfx.n.87894fe048938b686cfb.v1`,
+      botToken: "xoxb-test",
     } as unknown as SlackMonitorContext;
 
     await expect(
@@ -168,7 +168,7 @@ describe("authorizeSlackSystemEventSender", () => {
       accountId: "main",
       allowNameMatching: false,
       app: { client: { conversations: { members: conversationsMembers } } },
-      botToken: `ltfx.n.87894fe048938b686cfb.v1`,
+      botToken: "xoxb-test",
     } as unknown as SlackMonitorContext;
 
     await expect(
@@ -202,7 +202,7 @@ describe("authorizeSlackSystemEventSender", () => {
       accountId: "main",
       allowNameMatching: false,
       app: { client: { conversations: { members: conversationsMembers } } },
-      botToken: `ltfx.n.87894fe048938b686cfb.v1`,
+      botToken: "xoxb-test",
     } as unknown as SlackMonitorContext;
 
     await expect(
@@ -243,7 +243,7 @@ describe("authorizeSlackSystemEventSender", () => {
       accountId: "main",
       allowNameMatching: false,
       app: { client: { conversations: { members: conversationsMembers } } },
-      botToken: `ltfx.n.87894fe048938b686cfb.v1`,
+      botToken: "xoxb-test",
     } as unknown as SlackMonitorContext;
 
     const first = authorizeSlackBotRoomMessage({

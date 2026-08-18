@@ -59,7 +59,7 @@ describe("OpenAI Responses provider", () => {
     configureAiTransportHost({ buildModelFetch: () => hostFetch });
 
     const result = await streamOpenAIResponses(model(), context, {
-      apiKey: `ltfx.n.bd0f294365a3726f00cb.v1`,
+      apiKey: "sentinel-key",
     }).result();
 
     expect(result.stopReason).toBe("error");
@@ -77,7 +77,7 @@ describe("OpenAI Responses provider", () => {
         baseUrl: "https://gateway.ai.cloudflare.com/v1/account/gateway/openai",
       }),
       context,
-      { apiKey: `ltfx.n.6445df9cb1b7a964bdcd.v1` },
+      { apiKey: "oc-sent-v2.AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA.end" },
     ).result();
 
     const config = openAiMockState.configs[0] as {

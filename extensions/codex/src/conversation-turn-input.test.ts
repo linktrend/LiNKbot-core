@@ -83,7 +83,7 @@ describe("codex conversation turn input", () => {
       }),
     ).toEqual([
       { type: "text", text: "look", text_elements: [] },
-      { type: "image", url: `ltfx.n.f50aabd2686f168b852e.v1` },
+      { type: "image", url: "//cdn.example.test/photo.webp" },
     ]);
   });
 

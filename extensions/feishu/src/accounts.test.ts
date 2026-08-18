@@ -14,8 +14,8 @@ import type { FeishuConfig } from "./types.js";
 
 function makeDefaultAndRouterAccounts() {
   return {
-    default: { appId: "cli_default", appSecret: `ltfx.n.0ab2ca2cc807db6af9c0.v1` }, // pragma: allowlist secret
-    "router-d": { appId: "cli_router", appSecret: `ltfx.n.66287fd25848a33b6fb2.v1` }, // pragma: allowlist secret
+    default: { appId: "cli_default", appSecret: "secret_default" }, // pragma: allowlist secret
+    "router-d": { appId: "cli_router", appSecret: "secret_router" }, // pragma: allowlist secret
   };
 }
 
@@ -77,7 +77,7 @@ describe("resolveDefaultFeishuAccountId", () => {
       channels: {
         feishu: {
           appId: "cli_default",
-          appSecret: `ltfx.n.0ab2ca2cc807db6af9c0.v1`,
+          appSecret: "secret_default",
           accounts: {
             work: { enabled: false },
           },
@@ -108,7 +108,7 @@ describe("resolveDefaultFeishuAccountId", () => {
         feishu: {
           defaultAccount: "Router D",
           accounts: {
-            "router-d": { appId: "cli_router", appSecret: `ltfx.n.66287fd25848a33b6fb2.v1` }, // pragma: allowlist secret
+            "router-d": { appId: "cli_router", appSecret: "secret_router" }, // pragma: allowlist secret
           },
         },
       },
@@ -123,8 +123,8 @@ describe("resolveDefaultFeishuAccountId", () => {
         feishu: {
           defaultAccount: "router-d",
           accounts: {
-            default: { appId: "cli_default", appSecret: `ltfx.n.0ab2ca2cc807db6af9c0.v1` }, // pragma: allowlist secret
-            zeta: { appId: "cli_zeta", appSecret: `ltfx.n.6e17765c175d494c13be.v1` }, // pragma: allowlist secret
+            default: { appId: "cli_default", appSecret: "secret_default" }, // pragma: allowlist secret
+            zeta: { appId: "cli_zeta", appSecret: "secret_zeta" }, // pragma: allowlist secret
           },
         },
       },
@@ -138,8 +138,8 @@ describe("resolveDefaultFeishuAccountId", () => {
       channels: {
         feishu: {
           accounts: {
-            default: { appId: "cli_default", appSecret: `ltfx.n.0ab2ca2cc807db6af9c0.v1` }, // pragma: allowlist secret
-            zeta: { appId: "cli_zeta", appSecret: `ltfx.n.6e17765c175d494c13be.v1` }, // pragma: allowlist secret
+            default: { appId: "cli_default", appSecret: "secret_default" }, // pragma: allowlist secret
+            zeta: { appId: "cli_zeta", appSecret: "secret_zeta" }, // pragma: allowlist secret
           },
         },
       },
@@ -166,7 +166,7 @@ describe("resolveDefaultFeishuAccountId", () => {
       channels: {
         feishu: {
           accounts: {
-            default: { appId: "cli_default", appSecret: `ltfx.n.0ab2ca2cc807db6af9c0.v1` }, // pragma: allowlist secret
+            default: { appId: "cli_default", appSecret: "secret_default" }, // pragma: allowlist secret
           },
         },
       },
@@ -236,7 +236,7 @@ describe("resolveFeishuCredentials", () => {
 
       expect(creds).toEqual({
         appId: "cli_123",
-        appSecret: `ltfx.n.5a5a502bb75a8efe3a70.v1`, // pragma: allowlist secret
+        appSecret: "secret_from_env", // pragma: allowlist secret
         encryptKey: undefined,
         verificationToken: undefined,
         domain: "feishu",
@@ -276,7 +276,7 @@ describe("resolveFeishuCredentials", () => {
     const creds = resolveFeishuCredentials(
       asConfig({
         appId: " cli_123 ",
-        appSecret: `ltfx.n.5670803bf9c6b6d17e5c.v1`,
+        appSecret: " secret_456 ",
         encryptKey: " enc ",
         verificationToken: " vt ",
       }),
@@ -284,7 +284,7 @@ describe("resolveFeishuCredentials", () => {
 
     expect(creds).toEqual({
       appId: "cli_123",
-      appSecret: `ltfx.n.8f280fa87e6d5cb0730a.v1`, // pragma: allowlist secret
+      appSecret: "secret_456", // pragma: allowlist secret
       encryptKey: "enc",
       verificationToken: "vt",
       domain: "feishu",
@@ -296,14 +296,14 @@ describe("resolveFeishuCredentials", () => {
       asConfig({
         connectionMode: "websocket",
         appId: "cli_123",
-        appSecret: `ltfx.n.8f280fa87e6d5cb0730a.v1`,
+        appSecret: "secret_456",
         encryptKey: { source: "file", provider: "default", id: "path/to/secret" } as never,
       }),
     );
 
     expect(creds).toEqual({
       appId: "cli_123",
-      appSecret: `ltfx.n.8f280fa87e6d5cb0730a.v1`, // pragma: allowlist secret
+      appSecret: "secret_456", // pragma: allowlist secret
       encryptKey: undefined,
       verificationToken: undefined,
       domain: "feishu",
@@ -314,14 +314,14 @@ describe("resolveFeishuCredentials", () => {
     const creds = inspectFeishuCredentials(
       asConfig({
         appId: "cli_123",
-        appSecret: `ltfx.n.8f280fa87e6d5cb0730a.v1`,
+        appSecret: "secret_456",
         verificationToken: { source: "file", provider: "default", id: "path/to/token" } as never,
       }),
     );
 
     expect(creds).toEqual({
       appId: "cli_123",
-      appSecret: `ltfx.n.8f280fa87e6d5cb0730a.v1`, // pragma: allowlist secret
+      appSecret: "secret_456", // pragma: allowlist secret
       encryptKey: undefined,
       verificationToken: undefined,
       domain: "feishu",
@@ -336,9 +336,9 @@ describe("resolveFeishuAccount", () => {
         feishu: {
           defaultAccount: "router-d",
           appId: "top_level_app",
-          appSecret: `ltfx.n.d4eb13343383ea182142.v1`, // pragma: allowlist secret
+          appSecret: "top_level_secret", // pragma: allowlist secret
           accounts: {
-            default: { appId: "cli_default", appSecret: `ltfx.n.0ab2ca2cc807db6af9c0.v1` }, // pragma: allowlist secret
+            default: { appId: "cli_default", appSecret: "secret_default" }, // pragma: allowlist secret
           },
         },
       },
@@ -355,7 +355,7 @@ describe("resolveFeishuAccount", () => {
           defaultAccount: "router-d",
           accounts: {
             default: { enabled: true },
-            "router-d": { appId: "cli_router", appSecret: `ltfx.n.66287fd25848a33b6fb2.v1`, enabled: true }, // pragma: allowlist secret
+            "router-d": { appId: "cli_router", appSecret: "secret_router", enabled: true }, // pragma: allowlist secret
           },
         },
       },
@@ -430,7 +430,7 @@ describe("resolveFeishuAccount", () => {
             accounts: {
               main: {
                 appId: "cli_123",
-                appSecret: `ltfx.n.8f280fa87e6d5cb0730a.v1`,
+                appSecret: "secret_456",
                 verificationToken: {
                   source: "file",
                   provider: "default",
@@ -484,7 +484,7 @@ describe("resolveFeishuAccount", () => {
               main: {
                 name: { bad: true },
                 appId: "cli_123",
-                appSecret: `ltfx.n.8f280fa87e6d5cb0730a.v1`, // pragma: allowlist secret
+                appSecret: "secret_456", // pragma: allowlist secret
               } as never,
             },
           },

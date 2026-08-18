@@ -175,7 +175,7 @@ describe("message-normalizer", () => {
         {
           type: "attachment",
           attachment: {
-            url: `ltfx.n.7a1ce416f8bcba50ed50.v1`,
+            url: "data:audio/mpeg;base64,//uQAA==",
             kind: "audio",
             label: "tts.mp3",
             mimeType: "audio/mpeg",
@@ -194,7 +194,7 @@ describe("message-normalizer", () => {
             source: {
               type: "url",
               media_type: "audio/mpeg",
-              url: `ltfx.n.34fb785e259097d437b7.v1`,
+              url: "/tmp/openclaw/clip.mp3",
             },
           },
         ],
@@ -204,7 +204,7 @@ describe("message-normalizer", () => {
         {
           type: "attachment",
           attachment: {
-            url: `ltfx.n.34fb785e259097d437b7.v1`,
+            url: "/tmp/openclaw/clip.mp3",
             kind: "audio",
             label: "clip.mp3",
             mimeType: "audio/mpeg",
@@ -273,7 +273,7 @@ describe("message-normalizer", () => {
             surface: "assistant_message",
             render: "url",
             viewId: "cv_status",
-            url: `ltfx.n.01316a97e2f6c47d35a0.v1`,
+            url: "/__openclaw__/canvas/documents/cv_status/index.html",
             title: "Status",
             preferredHeight: 320,
           },
@@ -292,7 +292,7 @@ describe("message-normalizer", () => {
               kind: "canvas",
               surface: "assistant_message",
               render: "url",
-              url: `ltfx.n.b19dd794905652bcbdab.v1`,
+              url: "/__openclaw__/canvas/documents/cv_widget/index.html",
               sandbox: "scripts",
             },
           },
@@ -448,7 +448,7 @@ describe("message-normalizer", () => {
         {
           type: "attachment",
           attachment: {
-            url: `ltfx.n.b7a39fad8d7bb15962ba.v1`,
+            url: "/tmp/openclaw/test-image.png",
             kind: "image",
             label: "test-image.png",
             mimeType: "image/png",
@@ -487,7 +487,7 @@ describe("message-normalizer", () => {
         {
           type: "attachment",
           attachment: {
-            url: `ltfx.n.e03abc3da6502a8f37f6.v1`,
+            url: "~/Pictures/My File.png",
             kind: "image",
             label: "My File.png",
             mimeType: "image/png",
@@ -532,7 +532,7 @@ describe("message-normalizer", () => {
           {
             type: "attachment",
             attachment: {
-              url: `ltfx.n.d10442e490c0c01553ac.v1`,
+              url: "~/Pictures/test image.png",
               kind: "image",
               label: "test image.png",
               mimeType: "image/png",
@@ -545,7 +545,7 @@ describe("message-normalizer", () => {
         {
           type: "attachment",
           attachment: {
-            url: `ltfx.n.d10442e490c0c01553ac.v1`,
+            url: "~/Pictures/test image.png",
             kind: "image",
             label: "test image.png",
             mimeType: "image/png",

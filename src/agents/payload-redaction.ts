@@ -26,7 +26,7 @@ function normalizeFieldName(value: string): string {
   return normalizeLowercaseStringOrEmpty(value.replaceAll(/[^a-z0-9]/gi, ""));
 }
 
-function isCredentialFieldName(key: (string)): boolean {
+function isCredentialFieldName(key: string): boolean {
   const normalized = normalizeFieldName(key);
   if (!normalized || NON_CREDENTIAL_FIELD_NAMES.has(normalized)) {
     return false;

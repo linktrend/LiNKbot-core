@@ -15,7 +15,7 @@ import { parseAgentSessionKey } from "../routing/session-key.js";
  * agent that has no explicit `agentRuntime.id` policy:
  *
  *   {
- *     "key": `ltfx.n.f0f9d028ce4160744d6a.v1`,
+ *     "key": "agent:copilot:acp:86b7b5af-3773-4a56-b244-069d6c5d3db9",
  *     "agentId": "copilot",
  *     "agentRuntime": { "id": "openclaw", "source": "implicit" },
  *     "kind": "direct"

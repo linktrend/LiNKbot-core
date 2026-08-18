@@ -341,8 +341,8 @@ describe("hasCrossChannelItems", () => {
   it("lets unresolved items join an otherwise single keyed route", () => {
     const items = [
       { id: "unresolved" },
-      { id: "first", key: `ltfx.n.6aef85a3e9cc477ff0e0.v1` },
-      { id: "second", key: `ltfx.n.6aef85a3e9cc477ff0e0.v1` },
+      { id: "first", key: "slack:channel:A" },
+      { id: "second", key: "slack:channel:A" },
     ];
 
     expect(hasCrossChannelItems(items, (item) => ({ key: item.key }))).toBe(false);
@@ -350,12 +350,12 @@ describe("hasCrossChannelItems", () => {
 
   it("still treats distinct keyed routes and explicit cross items as cross-channel", () => {
     expect(
-      hasCrossChannelItems([{ key: `ltfx.n.6aef85a3e9cc477ff0e0.v1` }, { key: `ltfx.n.e8a838f2b8d1f6b308be.v1` }], (item) => ({
+      hasCrossChannelItems([{ key: "slack:channel:A" }, { key: "slack:channel:B" }], (item) => ({
         key: item.key,
       })),
     ).toBe(true);
     expect(
-      hasCrossChannelItems([{ key: `ltfx.n.6aef85a3e9cc477ff0e0.v1` }, { cross: true }], (item) => item),
+      hasCrossChannelItems([{ key: "slack:channel:A" }, { cross: true }], (item) => item),
     ).toBe(true);
   });
 });

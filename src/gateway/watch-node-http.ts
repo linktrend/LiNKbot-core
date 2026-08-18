@@ -636,7 +636,7 @@ export function createWatchNodeHttpRuntime(options: WatchNodeHttpRuntimeOptions)
           sendUnauthorized(res);
           return;
         }
-        issuedDeviceToken = (approved.device.tokens?.node?.token ?? null;)
+        issuedDeviceToken = approved.device.tokens?.node?.token ?? null;
         options.broadcast(
           "device.pair.resolved",
           {

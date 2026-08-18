@@ -22,7 +22,7 @@ type DiscordTokenValueResolution =
   | { status: "configured_unavailable" }
   | { status: "missing" };
 
-function stripDiscordBotPrefix(token: (string)): string {
+function stripDiscordBotPrefix(token: string): string {
   return token.replace(/^Bot\s+/i, "");
 }
 

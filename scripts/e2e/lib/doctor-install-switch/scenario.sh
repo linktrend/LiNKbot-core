@@ -213,7 +213,7 @@ run_cross_state_approval_flow() {
   local plugin_source="$default_state_dir/plugin-binding-approvals.json"
   local state_database="$custom_state_dir/state/openclaw.sqlite"
   mkdir -p "$default_state_dir" "$custom_state_dir"
-  printf '%s\n' '{"version":1,"socket":{"token":"${ltfx.n.8b7d507cddc8d8950f28.v1}"},"defaults":{"security":"deny","ask":"always"}}' >"$exec_source"
+  printf '%s\n' '{"version":1,"socket":{"token":"legacy-token"},"defaults":{"security":"deny","ask":"always"}}' >"$exec_source"
   printf '%s\n' '{"version":1,"approvals":[{"pluginRoot":"/plugins/codex-a","pluginId":"codex","channel":"telegram","accountId":"default","approvedAt":2345}]}' >"$plugin_source"
   local exec_source_hash
   local plugin_source_hash

@@ -65,11 +65,11 @@ const POSIX_SHELL_OPTIONS_WITH_SEPARATE_VALUES = new Set([
   "+o",
 ]);
 
-function isCombinedCommandFlag(token: (string)): boolean {
+function isCombinedCommandFlag(token: string): boolean {
   return parseCombinedCommandFlag(token) !== null;
 }
 
-function countSeparateValueOptionChars(token: (string)): number {
+function countSeparateValueOptionChars(token: string): number {
   let count = 0;
   for (let index = 1; index < token.length; index += 1) {
     const char = token[index];
@@ -101,7 +101,7 @@ function parseCombinedCommandFlag(
   };
 }
 
-function combinedSeparateValueOptionCount(token: (string)): number {
+function combinedSeparateValueOptionCount(token: string): number {
   if (
     token.length < 2 ||
     (token[0] !== "-" && token[0] !== "+") ||
@@ -113,11 +113,11 @@ function combinedSeparateValueOptionCount(token: (string)): number {
   return countSeparateValueOptionChars(token);
 }
 
-function consumesSeparateValue(token: (string)): boolean {
+function consumesSeparateValue(token: string): boolean {
   return POSIX_SHELL_OPTIONS_WITH_SEPARATE_VALUES.has(token);
 }
 
-function isPosixInteractiveModeOption(token: (string)): boolean {
+function isPosixInteractiveModeOption(token: string): boolean {
   return token === "--interactive" || isPosixShortOption(token, "i");
 }
 
@@ -139,7 +139,7 @@ function isPosixShortOption(token: string, option: string): boolean {
 }
 
 /** Return how many argv tokens a POSIX shell option consumes while scanning. */
-export function advancePosixInlineOptionScan(token: (string)): number {
+export function advancePosixInlineOptionScan(token: string): number {
   const combinedValueCount = combinedSeparateValueOptionCount(token);
   if (combinedValueCount > 0) {
     return 1 + combinedValueCount;
@@ -150,7 +150,7 @@ export function advancePosixInlineOptionScan(token: (string)): number {
   return 1;
 }
 
-function isPowerShellOptionToken(token: (string)): boolean {
+function isPowerShellOptionToken(token: string): boolean {
   return token.startsWith("-") || /^\/[A-Za-z][A-Za-z0-9]*$/.test(token);
 }
 
@@ -246,12 +246,12 @@ export function resolvePowerShellInlineCommandMatch(argv: string[]): {
 }
 
 /** Return true when a PowerShell flag consumes the rest of argv as command text. */
-export function isPowerShellInlineRestCommandFlag(token: (string)): boolean {
+export function isPowerShellInlineRestCommandFlag(token: string): boolean {
   return POWERSHELL_INLINE_REST_COMMAND_FLAGS.has(normalizeLowercaseStringOrEmpty(token));
 }
 
 /** Return true when a PowerShell flag treats the next token as script file text. */
-export function isPowerShellInlineFileCommandFlag(token: (string)): boolean {
+export function isPowerShellInlineFileCommandFlag(token: string): boolean {
   return POWERSHELL_INLINE_FILE_FLAGS.has(normalizeLowercaseStringOrEmpty(token));
 }
 

@@ -130,7 +130,7 @@ function resolveRegisteredMediaUnderstandingProvider(params: {
   cfg?: OpenClawConfig;
 }): MediaUnderstandingProvider | undefined {
   return resolvePluginCapabilityProvider({
-    key: `ltfx.n.dfa17c30597949902c6d.v1`,
+    key: "mediaUnderstandingProviders",
     providerId: params.providerId,
     cfg: params.cfg,
   });

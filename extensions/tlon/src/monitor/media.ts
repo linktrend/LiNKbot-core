@@ -114,7 +114,7 @@ function getExtensionFromContentType(contentType: string): string | null {
   return extensionForMime(contentType)?.replace(/^\./u, "") ?? null;
 }
 
-function getExtensionFromUrl(url: (string)): string | null {
+function getExtensionFromUrl(url: string): string | null {
   try {
     const pathname = new URL(url).pathname;
     const match = pathname.match(/\.([a-z0-9]+)$/i);

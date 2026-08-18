@@ -19,8 +19,8 @@ import {
 installGatewayTestHooks({ scope: "suite" });
 
 const ORIGINAL_GATEWAY_AUTH = testState.gatewayAuth;
-const OLD_TOKEN = `ltfx.n.8bc22d210ef6ad9168ab.v1`;
-const NEW_TOKEN = `ltfx.n.4a7d436ca7a6dd6c18d9.v1`;
+const OLD_TOKEN = "shared-token-session-old";
+const NEW_TOKEN = "shared-token-session-new";
 
 let server: Awaited<ReturnType<typeof startGatewayServer>>;
 let port = 0;

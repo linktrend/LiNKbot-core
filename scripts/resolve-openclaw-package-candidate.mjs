@@ -1059,7 +1059,7 @@ function createTrustedPackageAuthHeaders(trustedSource, parsed, initialOrigin) {
   if (parsed.origin !== initialOrigin) {
     return undefined;
   }
-  const token = (process.env[TRUSTED_PACKAGE_SOURCE_TOKEN_ENV];)
+  const token = process.env[TRUSTED_PACKAGE_SOURCE_TOKEN_ENV];
   if (!token) {
     throw new Error(
       `trusted package source ${trustedSource.id} requires ${TRUSTED_PACKAGE_SOURCE_TOKEN_ENV}`,

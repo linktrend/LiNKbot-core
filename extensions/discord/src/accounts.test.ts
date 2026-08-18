@@ -31,7 +31,7 @@ const defaultAccountOmissionCases = [
             discord: {
               defaultAccount: "work",
               accounts: {
-                work: { token: `ltfx.n.6ddbd0793f1a3e7d5b48.v1`, name: "Work" },
+                work: { token: "token-work", name: "Work" },
               },
             },
           },
@@ -54,7 +54,7 @@ const defaultAccountOmissionCases = [
               defaultAccount: "work",
               accounts: {
                 work: {
-                  token: `ltfx.n.6ddbd0793f1a3e7d5b48.v1`,
+                  token: "token-work",
                   actions: { reactions: true },
                 },
               },
@@ -80,11 +80,11 @@ describe("Discord defaultAccount omission contract", () => {
     const cfg = {
       channels: {
         discord: {
-          token: `ltfx.n.bf7930a1c2a77baa6281.v1`,
+          token: "token-default",
           accounts: {
             work: {
               enabled: false,
-              token: `ltfx.n.6ddbd0793f1a3e7d5b48.v1`,
+              token: "token-work",
             },
           },
         },
@@ -107,7 +107,7 @@ describe("resolveDiscordAccount allowFrom precedence", () => {
           discord: {
             allowFrom: ["top"],
             accounts: {
-              default: { allowFrom: ["default"], token: `ltfx.n.bf7930a1c2a77baa6281.v1` },
+              default: { allowFrom: ["default"], token: "token-default" },
             },
           },
         },
@@ -125,7 +125,7 @@ describe("resolveDiscordAccount allowFrom precedence", () => {
           discord: {
             allowFrom: ["top"],
             accounts: {
-              work: { token: `ltfx.n.6ddbd0793f1a3e7d5b48.v1` },
+              work: { token: "token-work" },
             },
           },
         },
@@ -142,8 +142,8 @@ describe("resolveDiscordAccount allowFrom precedence", () => {
         channels: {
           discord: {
             accounts: {
-              default: { allowFrom: ["default"], token: `ltfx.n.bf7930a1c2a77baa6281.v1` },
-              work: { token: `ltfx.n.6ddbd0793f1a3e7d5b48.v1` },
+              default: { allowFrom: ["default"], token: "token-default" },
+              work: { token: "token-work" },
             },
           },
         },
@@ -168,7 +168,7 @@ describe("resolveDiscordAccount botLoopProtection precedence", () => {
             },
             accounts: {
               work: {
-                token: `ltfx.n.6ddbd0793f1a3e7d5b48.v1`,
+                token: "token-work",
                 botLoopProtection: {
                   windowSeconds: 10,
                 },
@@ -199,7 +199,7 @@ describe("resolveDiscordAccount agentComponents precedence", () => {
             },
             accounts: {
               work: {
-                token: `ltfx.n.6ddbd0793f1a3e7d5b48.v1`,
+                token: "token-work",
                 agentComponents: {
                   ttlMs: 120_000,
                 },
@@ -228,7 +228,7 @@ describe("resolveDiscordAccount agentComponents precedence", () => {
             },
             accounts: {
               work: {
-                token: `ltfx.n.6ddbd0793f1a3e7d5b48.v1`,
+                token: "token-work",
                 agentComponents: {
                   enabled: true,
                 },
@@ -255,7 +255,7 @@ describe("resolveDiscordMaxLinesPerMessage", () => {
           discord: {
             maxLinesPerMessage: 120,
             accounts: {
-              default: { token: `ltfx.n.bf7930a1c2a77baa6281.v1` },
+              default: { token: "token-default" },
             },
           },
         },
@@ -274,7 +274,7 @@ describe("resolveDiscordMaxLinesPerMessage", () => {
           discord: {
             maxLinesPerMessage: 120,
             accounts: {
-              default: { token: `ltfx.n.bf7930a1c2a77baa6281.v1`, maxLinesPerMessage: 80 },
+              default: { token: "token-default", maxLinesPerMessage: 80 },
             },
           },
         },
@@ -293,7 +293,7 @@ describe("resolveDiscordMaxLinesPerMessage", () => {
           discord: {
             maxLinesPerMessage: 120,
             accounts: {
-              work: { token: `ltfx.n.6ddbd0793f1a3e7d5b48.v1`, maxLinesPerMessage: 80 },
+              work: { token: "token-work", maxLinesPerMessage: 80 },
             },
           },
         },
@@ -314,7 +314,7 @@ describe("Discord duplicate-token account filtering", () => {
         discord: {
           accounts: {
             work: {
-              token: `ltfx.n.71b9fdb4cc45819404fb.v1`,
+              token: "same-token",
             },
           },
         },
@@ -338,10 +338,10 @@ describe("Discord duplicate-token account filtering", () => {
         discord: {
           accounts: {
             first: {
-              token: `ltfx.n.71b9fdb4cc45819404fb.v1`,
+              token: "same-token",
             },
             second: {
-              token: `ltfx.n.71b9fdb4cc45819404fb.v1`,
+              token: "same-token",
             },
           },
         },
@@ -366,10 +366,10 @@ describe("Discord duplicate-token account filtering", () => {
           accounts: {
             disabled: {
               enabled: false,
-              token: `ltfx.n.71b9fdb4cc45819404fb.v1`,
+              token: "same-token",
             },
             active: {
-              token: `ltfx.n.71b9fdb4cc45819404fb.v1`,
+              token: "same-token",
             },
           },
         },
@@ -405,7 +405,7 @@ describe("resolveDiscordAccount runtime config selection", () => {
           accounts: {
             work: {
               name: "Work",
-              token: `ltfx.n.bbe7343df7ec789b762c.v1`,
+              token: "Bot runtime-work-token",
             },
           },
         },

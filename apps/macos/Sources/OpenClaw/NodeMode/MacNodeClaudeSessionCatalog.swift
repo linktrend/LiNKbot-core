@@ -188,7 +188,7 @@ enum MacNodeClaudeSessionCatalog {
 
     static func shouldAdvertise(
         root: [String: Any]? = nil,
-        homeURL: URL = (FileManager.default.homeDirectoryForCurrentUser) -> Bool)
+        homeURL: URL = FileManager.default.homeDirectoryForCurrentUser) -> Bool
     {
         let root = root ?? OpenClawConfigFile.loadDict()
         guard OpenClawConfigFile.defaultEnabledBundledPluginAllowed(

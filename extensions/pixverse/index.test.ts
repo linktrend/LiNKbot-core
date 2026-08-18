@@ -130,7 +130,7 @@ describe("pixverse plugin", () => {
         credential: {
           type: "api_key",
           provider: PIXVERSE_PROVIDER_ID,
-          key: `ltfx.n.0c3b549796994031ab4d.v1`,
+          key: "pixverse-test-key",
         },
       },
     ]);
@@ -186,7 +186,7 @@ describe("pixverse plugin", () => {
       opts: {},
       env: {},
       runtime: { error: vi.fn(), exit: vi.fn(), log: vi.fn() },
-      resolveApiKey: vi.fn(async () => ({ key: `ltfx.n.0248f56577e62962fd6a.v1`, source: "profile" })),
+      resolveApiKey: vi.fn(async () => ({ key: "fixture-value", source: "profile" })),
       toApiKeyCredential: vi.fn(() => null),
     } as never);
 
@@ -219,7 +219,7 @@ describe("pixverse plugin", () => {
       opts: { pixverseRegion: "cn" },
       env: {},
       runtime: { error: vi.fn(), exit: vi.fn(), log: vi.fn() },
-      resolveApiKey: vi.fn(async () => ({ key: `ltfx.n.0248f56577e62962fd6a.v1`, source: "profile" })),
+      resolveApiKey: vi.fn(async () => ({ key: "fixture-value", source: "profile" })),
       toApiKeyCredential: vi.fn(() => null),
     } as never);
 

@@ -63,7 +63,7 @@ function parseJsonNumberToken(
   };
 }
 
-function isUnsafeIntegerLiteral(token: (string)): boolean {
+function isUnsafeIntegerLiteral(token: string): boolean {
   const digits = token[0] === "-" ? token.slice(1) : token;
   if (digits.length < MAX_SAFE_INTEGER_ABS_STR.length) {
     return false;

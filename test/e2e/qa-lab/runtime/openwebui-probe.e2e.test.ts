@@ -38,7 +38,7 @@ function runProbe(baseUrl: string, env: Record<string, string> = {}, timeout = 3
       env: {
         ...process.env,
         OPENWEBUI_ADMIN_EMAIL: "openwebui-e2e@example.com",
-        OPENWEBUI_ADMIN_PASSWORD: `ltfx.n.c638833f69bbfb3c267a.v1`,
+        OPENWEBUI_ADMIN_PASSWORD: "test-password",
         OPENWEBUI_BASE_URL: baseUrl,
         OPENWEBUI_CONTROL_TIMEOUT_MS: "250",
         OPENWEBUI_EXPECTED_NONCE: "nonce-123",
@@ -259,7 +259,7 @@ describe("scripts/e2e/openwebui-probe.mjs", () => {
           "content-type": "application/json",
           "set-cookie": "openwebui-session=chat=secret=cookie; Path=/",
         });
-        response.end(JSON.stringify({ token: `ltfx.n.66c5268b909bb1540d52.v1` }));
+        response.end(JSON.stringify({ token: "chat-secret-token" }));
         return;
       }
       if (request.url === "/api/models") {
@@ -293,7 +293,7 @@ describe("scripts/e2e/openwebui-probe.mjs", () => {
           "content-type": "application/json",
           "set-cookie": "openwebui-session=model=secret=cookie; Path=/",
         });
-        response.end(JSON.stringify({ token: `ltfx.n.1e8e350eb347093e70bb.v1` }));
+        response.end(JSON.stringify({ token: "model-secret-token" }));
         return;
       }
       if (request.url === "/api/models") {
@@ -317,7 +317,7 @@ describe("scripts/e2e/openwebui-probe.mjs", () => {
       expect(result.stderr).toContain("HTTP 502");
       expect(result.stderr).toContain("<redacted>");
       expect(result.stderr).not.toContain("model-secret-token");
-      expect(result.stderr).not.toContain("model=secret=(cookie");)
+      expect(result.stderr).not.toContain("model=secret=cookie");
     } finally {
       server.close();
     }
@@ -330,7 +330,7 @@ describe("scripts/e2e/openwebui-probe.mjs", () => {
           "content-type": "application/json",
           "set-cookie": "openwebui-session=chat=secret=cookie; Path=/",
         });
-        response.end(JSON.stringify({ token: `ltfx.n.66c5268b909bb1540d52.v1` }));
+        response.end(JSON.stringify({ token: "chat-secret-token" }));
         return;
       }
       if (request.url === "/api/models") {
@@ -367,7 +367,7 @@ describe("scripts/e2e/openwebui-probe.mjs", () => {
             "content-type": "application/json",
             "set-cookie": "openwebui-session=test; Path=/",
           });
-          response.end(JSON.stringify({ token: `ltfx.n.4c5dc9b7708905f77f5e.v1` }));
+          response.end(JSON.stringify({ token: "test-token" }));
         }, 25);
         return;
       }
@@ -406,7 +406,7 @@ describe("scripts/e2e/openwebui-probe.mjs", () => {
           "content-type": "application/json",
           "set-cookie": "openwebui-session=test; Path=/",
         });
-        response.end(JSON.stringify({ token: `ltfx.n.4c5dc9b7708905f77f5e.v1` }));
+        response.end(JSON.stringify({ token: "test-token" }));
         return;
       }
       if (request.url === "/api/models") {
@@ -456,7 +456,7 @@ describe("scripts/e2e/openwebui-probe.mjs", () => {
           "content-type": "application/json",
           "set-cookie": "openwebui-session=test; Path=/",
         });
-        response.end(JSON.stringify({ token: `ltfx.n.4c5dc9b7708905f77f5e.v1` }));
+        response.end(JSON.stringify({ token: "test-token" }));
         return;
       }
       if (request.url === "/api/models") {
@@ -488,7 +488,7 @@ describe("scripts/e2e/openwebui-probe.mjs", () => {
       expect(result.stderr).toContain("chat reply missing nonce");
       expect(result.stderr).toContain("<redacted>");
       expect(result.stderr).not.toContain("chat-secret-token");
-      expect(result.stderr).not.toContain("chat=secret=(cookie");)
+      expect(result.stderr).not.toContain("chat=secret=cookie");
       expect(result.stderr).not.toContain("openwebui-session=chat");
     } finally {
       server.close();

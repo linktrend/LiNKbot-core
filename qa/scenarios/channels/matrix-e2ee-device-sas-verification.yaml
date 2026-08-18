@@ -19,7 +19,7 @@ scenario:
         defaultRoomKey: main
         rooms:
           - encrypted: true
-            key: "${ltfx.n.b3b1ae733ab1dc810970.v1}"
+            key: e2ee-device-sas-verification
             kind: group
             members:
               - driver

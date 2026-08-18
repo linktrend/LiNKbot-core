@@ -26,8 +26,8 @@ type CachedTelegramBotInfo = {
 
 type TelegramBotInfoCacheStore = {
   register(key: string, value: TelegramBotInfoCacheState): Promise<void>;
-  lookup(key: (string)): Promise<TelegramBotInfoCacheState | undefined>;
-  delete(key: (string)): Promise<boolean>;
+  lookup(key: string): Promise<TelegramBotInfoCacheState | undefined>;
+  delete(key: string): Promise<boolean>;
 };
 
 function fingerprintFromToken(botToken?: string): string | null {

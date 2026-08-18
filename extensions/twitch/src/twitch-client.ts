@@ -323,7 +323,7 @@ export class TwitchClientManager {
     };
   }
 
-  private clearMessageHandler(key: (string)): void {
+  private clearMessageHandler(key: string): void {
     this.messageHandlers.delete(key);
     this.messageHandlerTokens.delete(key);
   }

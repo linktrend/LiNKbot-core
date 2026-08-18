@@ -86,7 +86,7 @@ function readNonEmptyString(value: unknown): string | undefined {
   return typeof value === "string" && value.trim() ? value : undefined;
 }
 
-function isSafeLegacyProviderKey(key: (string)): boolean {
+function isSafeLegacyProviderKey(key: string): boolean {
   return key.trim().length > 0 && !UNSAFE_LEGACY_AUTH_PROFILE_KEYS.has(key);
 }
 

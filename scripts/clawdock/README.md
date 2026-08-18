@@ -217,8 +217,8 @@ The project `.env` feeds Docker Compose directly (gateway token, image name, por
 
 ```bash
 OPENAI_API_KEY=sk-...
-ANTHROPIC_API_KEY="${ltfx.n.dda59792fb6824cc0ee1.v1}"
-TELEGRAM_BOT_TOKEN="${ltfx.n.174b6997b0eecdfe631d.v1}"
+ANTHROPIC_API_KEY=sk-ant-...
+TELEGRAM_BOT_TOKEN=123456:ABCDEF...
 ```
 
 ### Example `<project>/.env`
@@ -229,7 +229,7 @@ OPENCLAW_WORKSPACE_DIR=/Users/you/.openclaw/workspace
 OPENCLAW_GATEWAY_PORT=18789
 OPENCLAW_BRIDGE_PORT=18790
 OPENCLAW_GATEWAY_BIND=lan
-OPENCLAW_GATEWAY_TOKEN="${ltfx.n.e53c58b9b37c8d2f2c84.v1}"
+OPENCLAW_GATEWAY_TOKEN=<generated-by-docker-setup>
 OPENCLAW_AUTH_PROFILE_SECRET_DIR=/Users/you/.openclaw-auth-profile-secrets
 OPENCLAW_IMAGE=openclaw:local
 ```

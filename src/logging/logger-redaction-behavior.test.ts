@@ -13,7 +13,7 @@ import { createSuiteLogPathTracker } from "./log-test-helpers.js";
 import { testApi as loggerTest } from "./logger.js";
 import { createDiagnosticLogRecordCapture } from "./test-helpers/diagnostic-log-capture.js";
 
-const secret = `ltfx.n.398db6d1a7d6cc253b73.v1`;
+const secret = "sk-testsecret1234567890abcd";
 const TRACE_ID = "4bf92f3577b34da6a3ce929d0e0e4736";
 const SPAN_ID = "00f067aa0ba902b7";
 const logPathTracker = createSuiteLogPathTracker("openclaw-log-redaction-");
@@ -92,7 +92,7 @@ describe("file log redaction", () => {
       getLogger().info(
         {
           password: "hunter2",
-          token: `ltfx.n.1251557ad211cc488987.v1`,
+          token: "token-value-1234567890",
         },
         "credential diagnostic",
       );
@@ -123,9 +123,9 @@ describe("file log redaction", () => {
       setLoggerOverride({ level: "info", file: logPath });
 
       getLogger().info({
-        token: `ltfx.n.1251557ad211cc488987.v1`,
+        token: "token-value-1234567890",
         access: "ya29.fake-access-token-with-enough-length",
-        password: `ltfx.n.259b329f721c652e14cd.v1`,
+        password: "abcd-efgh-ijkl-mnop",
         message: `Authorization: Bearer ${secret}`,
       });
     });

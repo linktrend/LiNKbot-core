@@ -72,7 +72,7 @@ describe("resolveGatewayRequestContext", () => {
 
   it("preserves normal explicit session-key overrides", () => {
     const result = resolveGatewayRequestContext({
-      req: createReq({ "x-openclaw-session-key": `ltfx.n.28f44046c0f0e294c6ae.v1` }),
+      req: createReq({ "x-openclaw-session-key": "customer-case-42" }),
       model: "openclaw",
       sessionPrefix: "openai",
       defaultMessageChannel: "webchat",

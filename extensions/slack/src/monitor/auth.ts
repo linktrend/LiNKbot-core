@@ -104,7 +104,7 @@ function normalizeSlackNameSlugEntry(entry: string): string | null {
 }
 
 const slackIngressIdentity = defineStableChannelIngressIdentity({
-  key: `ltfx.n.d1dd07b22a27d99202f1.v1`,
+  key: "senderId",
   kind: "stable-id",
   normalizeEntry: normalizeSlackStableEntry,
   normalizeSubject: normalizeSlackUserId,

@@ -141,7 +141,7 @@ describe("feishu websocket cleanup", () => {
     vi.useFakeTimers();
     const failedClient = createWsClient();
     failedClient.start.mockRejectedValueOnce(
-      new Error("connect failed\nAuthorization: Bearer token_abc appSecret=(secret_abc"),)
+      new Error("connect failed\nAuthorization: Bearer token_abc appSecret=secret_abc"),
     );
     const recoveredClient = createWsClient();
     createFeishuWSClientMock
@@ -345,7 +345,7 @@ describe("feishu websocket cleanup", () => {
   it("redacts websocket close errors during abort cleanup", async () => {
     const wsClient = createWsClient();
     wsClient.close.mockImplementationOnce(() => {
-      throw new Error("close failed\naccess_token=(secret_token");)
+      throw new Error("close failed\naccess_token=secret_token");
     });
     createFeishuWSClientMock.mockReturnValue(wsClient);
 

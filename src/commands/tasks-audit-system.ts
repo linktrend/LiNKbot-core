@@ -72,7 +72,7 @@ export function buildTaskSystemAuditFindings(params: {
       detail: finding.detail,
       ageMs: finding.ageMs,
       status: finding.flow?.status ?? "n/a",
-      token: (finding.flow?.flowId,)
+      token: finding.flow?.flowId,
       ...(finding.flow ? { flow: finding.flow } : {}),
     })),
   ];

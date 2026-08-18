@@ -49,7 +49,7 @@ type MemoryImportViewProps = {
   onCancelImport: () => void;
 };
 
-function detailString(item: MemoryMigrationItem, key: (string)): string | undefined {
+function detailString(item: MemoryMigrationItem, key: string): string | undefined {
   const value = item.details?.[key];
   return typeof value === "string" && value.trim() ? value : undefined;
 }

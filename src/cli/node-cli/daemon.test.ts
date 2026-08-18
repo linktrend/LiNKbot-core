@@ -204,8 +204,8 @@ describe("runNodeDaemonStatus", () => {
       programArguments: ["node", "node-host"],
       environment: {
         OPENCLAW_PROFILE: "work",
-        OPENCLAW_GATEWAY_TOKEN: `ltfx.n.f15ae5b5899f8327f527.v1`,
-        OPENCLAW_GATEWAY_PASSWORD: `ltfx.n.8f068f0be3b8cc910712.v1`,
+        OPENCLAW_GATEWAY_TOKEN: "gateway-token",
+        OPENCLAW_GATEWAY_PASSWORD: "gateway-password",
       },
     });
 

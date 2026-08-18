@@ -18,7 +18,7 @@ function keepValue(value: unknown): SanitizeResult {
   return { omitted: false, value };
 }
 
-function hasOwnRecordValue(record: Record<string, unknown> | null, key: (string)): boolean {
+function hasOwnRecordValue(record: Record<string, unknown> | null, key: string): boolean {
   return record != null && Object.hasOwn(record, key);
 }
 

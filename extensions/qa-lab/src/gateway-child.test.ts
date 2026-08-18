@@ -49,7 +49,7 @@ afterEach(async () => {
 function createParams(baseEnv?: NodeJS.ProcessEnv) {
   return {
     configPath: "/tmp/openclaw-qa/openclaw.json",
-    gatewayToken: `ltfx.n.6271b674f5c645dbe0cc.v1`,
+    gatewayToken: "qa-token",
     homeDir: "/tmp/openclaw-qa/home",
     stateDir: "/tmp/openclaw-qa/state",
     tempRoot: "/tmp/openclaw-qa",
@@ -350,7 +350,7 @@ describe("buildQaRuntimeEnv", () => {
   it("keeps explicit provider env vars over live aliases", () => {
     const env = buildQaRuntimeEnv({
       ...createParams({
-        OPENAI_API_KEY: `ltfx.n.3fc161652d24b1f04b11.v1`,
+        OPENAI_API_KEY: "openai-explicit",
         OPENCLAW_LIVE_OPENAI_KEY: "openai-live",
       }),
       providerMode: "live-frontier",
@@ -448,7 +448,7 @@ describe("buildQaRuntimeEnv", () => {
     const env = buildQaRuntimeEnv({
       ...createParams({
         HOME: hostHome,
-        ANTHROPIC_API_KEY: `ltfx.n.f30d1530e2f5026bf740.v1`,
+        ANTHROPIC_API_KEY: "anthropic-live",
         OPENCLAW_LIVE_CLI_BACKEND_PRESERVE_ENV: '["SAFE_KEEP","ANTHROPIC_API_KEY"]',
       }),
       providerMode: "live-frontier",
@@ -481,8 +481,8 @@ describe("buildQaRuntimeEnv", () => {
         OPENCLAW_QA_CONVEX_SECRET_MAINTAINER: "convex-maintainer-secret",
         OPENCLAW_QA_SUT_FORBIDDEN_SENTINEL: "trusted-parent-only",
         OPENCLAW_QA_TELEGRAM_GROUP_ID: "-1001234567890",
-        OPENCLAW_QA_TELEGRAM_DRIVER_BOT_TOKEN: `ltfx.n.d09452324ca1e7009307.v1`,
-        OPENCLAW_QA_TELEGRAM_SUT_BOT_TOKEN: `ltfx.n.50f83cc49e938a081165.v1`,
+        OPENCLAW_QA_TELEGRAM_DRIVER_BOT_TOKEN: "driver-token",
+        OPENCLAW_QA_TELEGRAM_SUT_BOT_TOKEN: "sut-token",
       }),
       providerMode: "live-frontier",
     });
@@ -501,12 +501,12 @@ describe("buildQaRuntimeEnv", () => {
       runtimeEnvPatch: {
         SAFE_VALUE: "patched",
         OPENCLAW_LIVE_SETUP_TOKEN_VALUE: "setup-token",
-        OPENCLAW_QA_LIVE_ANTHROPIC_SETUP_TOKEN: `ltfx.n.037bd0ce127cba8d485c.v1`,
+        OPENCLAW_QA_LIVE_ANTHROPIC_SETUP_TOKEN: "anthropic-setup-token",
         OPENCLAW_QA_CONVEX_SECRET_CI: "convex-ci-secret",
         OPENCLAW_QA_SUT_FORBIDDEN_SENTINEL: "trusted-parent-only",
         OPENCLAW_QA_TELEGRAM_GROUP_ID: "-1001234567890",
-        OPENCLAW_QA_TELEGRAM_DRIVER_BOT_TOKEN: `ltfx.n.d09452324ca1e7009307.v1`,
-        OPENCLAW_QA_TELEGRAM_SUT_BOT_TOKEN: `ltfx.n.50f83cc49e938a081165.v1`,
+        OPENCLAW_QA_TELEGRAM_DRIVER_BOT_TOKEN: "driver-token",
+        OPENCLAW_QA_TELEGRAM_SUT_BOT_TOKEN: "sut-token",
       },
     });
 
@@ -532,12 +532,12 @@ describe("buildQaRuntimeEnv", () => {
       "const env = {",
       "SAFE_VALUE: process.env.SAFE_VALUE,",
       "OPENCLAW_LIVE_SETUP_TOKEN_VALUE: process.env.OPENCLAW_LIVE_SETUP_TOKEN_VALUE,",
-      "OPENCLAW_QA_LIVE_ANTHROPIC_SETUP_TOKEN: (process.env.OPENCLAW_QA_LIVE_ANTHROPIC_SETUP_TOKEN,",)
+      "OPENCLAW_QA_LIVE_ANTHROPIC_SETUP_TOKEN: process.env.OPENCLAW_QA_LIVE_ANTHROPIC_SETUP_TOKEN,",
       "OPENCLAW_QA_CONVEX_SECRET_CI: process.env.OPENCLAW_QA_CONVEX_SECRET_CI,",
       "OPENCLAW_QA_SUT_FORBIDDEN_SENTINEL: process.env.OPENCLAW_QA_SUT_FORBIDDEN_SENTINEL,",
       "OPENCLAW_QA_TELEGRAM_GROUP_ID: process.env.OPENCLAW_QA_TELEGRAM_GROUP_ID,",
-      "OPENCLAW_QA_TELEGRAM_DRIVER_BOT_TOKEN: (process.env.OPENCLAW_QA_TELEGRAM_DRIVER_BOT_TOKEN,",)
-      "OPENCLAW_QA_TELEGRAM_SUT_BOT_TOKEN: (process.env.OPENCLAW_QA_TELEGRAM_SUT_BOT_TOKEN,",)
+      "OPENCLAW_QA_TELEGRAM_DRIVER_BOT_TOKEN: process.env.OPENCLAW_QA_TELEGRAM_DRIVER_BOT_TOKEN,",
+      "OPENCLAW_QA_TELEGRAM_SUT_BOT_TOKEN: process.env.OPENCLAW_QA_TELEGRAM_SUT_BOT_TOKEN,",
       "};",
       `fs.writeFileSync(${JSON.stringify(observedEnvPath)}, JSON.stringify(env));`,
     ].join("\n");
@@ -553,12 +553,12 @@ describe("buildQaRuntimeEnv", () => {
         runtimeEnvPatch: {
           SAFE_VALUE: "patched",
           OPENCLAW_LIVE_SETUP_TOKEN_VALUE: "setup-token",
-          OPENCLAW_QA_LIVE_ANTHROPIC_SETUP_TOKEN: `ltfx.n.037bd0ce127cba8d485c.v1`,
+          OPENCLAW_QA_LIVE_ANTHROPIC_SETUP_TOKEN: "anthropic-setup-token",
           OPENCLAW_QA_CONVEX_SECRET_CI: "convex-ci-secret",
           OPENCLAW_QA_SUT_FORBIDDEN_SENTINEL: "trusted-parent-only",
           OPENCLAW_QA_TELEGRAM_GROUP_ID: "-1001234567890",
-          OPENCLAW_QA_TELEGRAM_DRIVER_BOT_TOKEN: `ltfx.n.d09452324ca1e7009307.v1`,
-          OPENCLAW_QA_TELEGRAM_SUT_BOT_TOKEN: `ltfx.n.50f83cc49e938a081165.v1`,
+          OPENCLAW_QA_TELEGRAM_DRIVER_BOT_TOKEN: "driver-token",
+          OPENCLAW_QA_TELEGRAM_SUT_BOT_TOKEN: "sut-token",
         },
         transport: {
           requiredPluginIds: [],
@@ -608,18 +608,18 @@ describe("buildQaRuntimeEnv", () => {
     (providerMode) => {
       const env = buildQaRuntimeEnv({
         ...createParams({
-          ANTHROPIC_API_KEY: `ltfx.n.f30d1530e2f5026bf740.v1`,
-          ANTHROPIC_OAUTH_TOKEN: `ltfx.n.6c0183f1577719baa7aa.v1`,
-          CODEX_API_KEY: `ltfx.n.a7dc03a9616cec4d5917.v1`,
-          GEMINI_API_KEY: `ltfx.n.d7d270a47de3e77f2542.v1`,
+          ANTHROPIC_API_KEY: "anthropic-live",
+          ANTHROPIC_OAUTH_TOKEN: "anthropic-oauth",
+          CODEX_API_KEY: "codex-live",
+          GEMINI_API_KEY: "gemini-live",
           GEMINI_API_KEYS: "gemini-a gemini-b",
-          GOOGLE_API_KEY: `ltfx.n.b003b897b33106862837.v1`,
-          OPENAI_API_KEY: `ltfx.n.193e62ee11c26231df44.v1`,
+          GOOGLE_API_KEY: "google-live",
+          OPENAI_API_KEY: "openai-live",
           OPENAI_API_KEYS: "openai-a,openai-b",
           CODEX_HOME: "/host/.codex",
           OPENCLAW_LIVE_ANTHROPIC_KEY: "anthropic-live",
           OPENCLAW_LIVE_ANTHROPIC_KEYS: "anthropic-a,anthropic-b",
-          OPENCLAW_LIVE_CODEX_API_KEY: `ltfx.n.a7dc03a9616cec4d5917.v1`,
+          OPENCLAW_LIVE_CODEX_API_KEY: "codex-live",
           OPENCLAW_LIVE_GEMINI_KEY: "gemini-live",
           OPENCLAW_LIVE_OPENAI_KEY: "openai-live",
         }),
@@ -748,7 +748,7 @@ describe("buildQaRuntimeEnv", () => {
       stateDir,
       providerIds: ["openai"],
       env: {
-        OPENAI_API_KEY: `ltfx.n.32fafcbb70eb7b5a48db.v1`,
+        OPENAI_API_KEY: "qa-live-not-a-real-key",
       },
     });
 
@@ -825,7 +825,7 @@ describe("buildQaRuntimeEnv", () => {
       stateDir,
       providerIds: ["openai"],
       env: {
-        OPENCLAW_LIVE_CODEX_API_KEY: `ltfx.n.d771536c97989afa6a29.v1`,
+        OPENCLAW_LIVE_CODEX_API_KEY: "qa-live-direct-codex-key",
       },
     });
 
@@ -846,7 +846,7 @@ describe("buildQaRuntimeEnv", () => {
         cfg,
         providerIds: ["openai"],
         env: {
-          OPENCLAW_LIVE_CODEX_API_KEY: `ltfx.n.d771536c97989afa6a29.v1`,
+          OPENCLAW_LIVE_CODEX_API_KEY: "qa-live-direct-codex-key",
         },
         readCodexCredentials: () => null,
       }),
@@ -941,7 +941,7 @@ describe("buildQaRuntimeEnv", () => {
             openai: {
               baseUrl: "",
               models: [],
-              apiKey: `ltfx.n.0b62532cbe347dfc3714.v1`,
+              apiKey: "qa-configured-not-a-real-key",
             },
           },
         },
@@ -984,7 +984,7 @@ describe("buildQaRuntimeEnv", () => {
       await rm(stateDir, { recursive: true, force: true });
     });
     const env = {
-      OPENCLAW_LIVE_CODEX_API_KEY: `ltfx.n.6c2fd81366c1039d5235.v1`,
+      OPENCLAW_LIVE_CODEX_API_KEY: "qa-configured-env-ref-not-a-real-key",
     };
     const cfg = await testing.stageQaLiveApiKeyProfiles({
       cfg: {
@@ -1049,7 +1049,7 @@ describe("buildQaRuntimeEnv", () => {
       stateDir,
       providerIds: ["openai"],
       env: {
-        OPENCLAW_LIVE_CODEX_API_KEY: `ltfx.n.469332d58e04c5838479.v1`,
+        OPENCLAW_LIVE_CODEX_API_KEY: "qa-configured-marker-not-a-real-key",
       },
     });
 
@@ -1451,20 +1451,20 @@ describe("buildQaRuntimeEnv", () => {
     await writeFile(
       stdoutLogPath,
       [
-        "OPENCLAW_GATEWAY_TOKEN=(qa-suite-token",)
-        'OPENAI_API_KEY=`ltfx.n.193e62ee11c26231df44.v1`',
+        "OPENCLAW_GATEWAY_TOKEN=qa-suite-token",
+        'OPENAI_API_KEY="openai-live"',
         "OPENCLAW_QA_CONVEX_SECRET_CI=convex-ci-secret",
         "OPENCLAW_QA_CONVEX_SECRET_MAINTAINER=convex-maintainer-secret",
-        "OPENCLAW_LIVE_CODEX_API_KEY=(codex-live-secret",)
-        "botToken=(12345:AbCdEfGhIjKl",)
-        "--botToken=(12345:flag-secret",)
-        '"driverToken":`ltfx.n.85a8c58ce73f42183941.v1`',
-        "sutToken=`ltfx.n.ccb45c9c28b2f926a2ab.v1`",
-        "leaseToken=(lease-12345",)
-        '"apiKey":`ltfx.n.1fdfa874d340dc2b0d4f.v1`',
-        "clientSecret=(secret-client-secret&secret-tail",)
+        "OPENCLAW_LIVE_CODEX_API_KEY=codex-live-secret",
+        "botToken=12345:AbCdEfGhIjKl",
+        "--botToken=12345:flag-secret",
+        '"driverToken":"12345:driver-secr3t"',
+        "sutToken='12345:sut-secr3t'",
+        "leaseToken=lease-12345",
+        '"apiKey":"secret-json-api-key"',
+        "clientSecret=secret-client-secret&secret-tail",
         "url=http://127.0.0.1:18789/#token=abc123",
-        "callback=https://gateway.example.test/callback?access_token=(secret-access-token&ok=1",)
+        "callback=https://gateway.example.test/callback?access_token=secret-access-token&ok=1",
       ].join("\n"),
       "utf8",
     );
@@ -1474,7 +1474,7 @@ describe("buildQaRuntimeEnv", () => {
         "Authorization: Bearer secret+/token=123456",
         "Cookie: qa_session=secret-cookie; theme=dark",
         "Set-Cookie: qa_session=secret-cookie; HttpOnly",
-        "x-api-key: (secret-header-api-key",)
+        "x-api-key: secret-header-api-key",
       ].join("\n"),
       "utf8",
     );
@@ -1496,20 +1496,20 @@ describe("buildQaRuntimeEnv", () => {
     ]);
     await expect(readFile(path.join(artifactDir, "gateway.stdout.log"), "utf8")).resolves.toBe(
       [
-        "OPENCLAW_GATEWAY_TOKEN=(<redacted>",)
-        "OPENAI_API_KEY=(<redacted>",)
+        "OPENCLAW_GATEWAY_TOKEN=<redacted>",
+        "OPENAI_API_KEY=<redacted>",
         "OPENCLAW_QA_CONVEX_SECRET_CI=<redacted>",
         "OPENCLAW_QA_CONVEX_SECRET_MAINTAINER=<redacted>",
-        "OPENCLAW_LIVE_CODEX_API_KEY=(<redacted>",)
-        "botToken=(<redacted>",)
-        "--botToken=(<redacted>",)
-        '"driverToken":`ltfx.n.3a2d1afa44d101200100.v1`',
-        "sutToken=(<redacted>",)
-        "leaseToken=(<redacted>",)
-        '"apiKey":`ltfx.n.3a2d1afa44d101200100.v1`',
-        "clientSecret=(<redacted>",)
-        "url=http://127.0.0.1:18789/#token=(<redacted>",)
-        "callback=https://gateway.example.test/callback?access_token=(<redacted>&ok=1",)
+        "OPENCLAW_LIVE_CODEX_API_KEY=<redacted>",
+        "botToken=<redacted>",
+        "--botToken=<redacted>",
+        '"driverToken":"<redacted>"',
+        "sutToken=<redacted>",
+        "leaseToken=<redacted>",
+        '"apiKey":"<redacted>"',
+        "clientSecret=<redacted>",
+        "url=http://127.0.0.1:18789/#token=<redacted>",
+        "callback=https://gateway.example.test/callback?access_token=<redacted>&ok=1",
       ].join("\n"),
     );
     await expect(readFile(path.join(artifactDir, "gateway.stderr.log"), "utf8")).resolves.toBe(
@@ -1517,7 +1517,7 @@ describe("buildQaRuntimeEnv", () => {
         "Authorization: Bearer <redacted>",
         "Cookie: <redacted>",
         "Set-Cookie: <redacted>",
-        "x-api-key: (<redacted>",)
+        "x-api-key: <redacted>",
       ].join("\n"),
     );
     await expect(readFile(path.join(artifactDir, "README.txt"), "utf8")).resolves.toContain(

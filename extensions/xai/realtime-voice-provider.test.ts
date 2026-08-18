@@ -166,7 +166,7 @@ describe("buildXaiRealtimeVoiceProvider", () => {
   it("does not advertise continuing realtime tool results", () => {
     const provider = buildXaiRealtimeVoiceProvider();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.f16755b98e07df483e6c.v1` }, // pragma: allowlist secret
+      providerConfig: { apiKey: "xai-test" }, // pragma: allowlist secret
       onAudio: vi.fn(),
       onClearAudio: vi.fn(),
     });
@@ -232,7 +232,7 @@ describe("buildXaiRealtimeVoiceProvider", () => {
     vi.stubEnv("XAI_API_KEY", "xai-env"); // pragma: allowlist secret
     const provider = buildXaiRealtimeVoiceProvider();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.f16755b98e07df483e6c.v1` }, // pragma: allowlist secret
+      providerConfig: { apiKey: "xai-test" }, // pragma: allowlist secret
       onAudio: vi.fn(),
       onClearAudio: vi.fn(),
     });
@@ -254,14 +254,14 @@ describe("buildXaiRealtimeVoiceProvider", () => {
 
     expect(() =>
       provider.createBridge({
-        providerConfig: { apiKey: `ltfx.n.f16755b98e07df483e6c.v1` }, // pragma: allowlist secret
+        providerConfig: { apiKey: "xai-test" }, // pragma: allowlist secret
         autoRespondToAudio: false,
         ...callbacks,
       }),
     ).toThrow('use consultRouting: "provider-direct"');
     expect(() =>
       provider.createBridge({
-        providerConfig: { apiKey: `ltfx.n.f16755b98e07df483e6c.v1` }, // pragma: allowlist secret
+        providerConfig: { apiKey: "xai-test" }, // pragma: allowlist secret
         interruptResponseOnInputAudio: false,
         ...callbacks,
       }),
@@ -269,7 +269,7 @@ describe("buildXaiRealtimeVoiceProvider", () => {
     expect(() =>
       provider.createBridge({
         providerConfig: {
-          apiKey: `ltfx.n.f16755b98e07df483e6c.v1`, // pragma: allowlist secret
+          apiKey: "xai-test", // pragma: allowlist secret
           interruptResponseOnInputAudio: false,
         },
         ...callbacks,
@@ -281,7 +281,7 @@ describe("buildXaiRealtimeVoiceProvider", () => {
     vi.stubEnv("XAI_API_KEY", "xai-env"); // pragma: allowlist secret
     const provider = buildXaiRealtimeVoiceProvider();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.f16755b98e07df483e6c.v1` }, // pragma: allowlist secret
+      providerConfig: { apiKey: "xai-test" }, // pragma: allowlist secret
       audioFormat: { encoding: "g711_ulaw", sampleRateHz: 8000, channels: 1 },
       onAudio: vi.fn(),
       onClearAudio: vi.fn(),
@@ -309,7 +309,7 @@ describe("buildXaiRealtimeVoiceProvider", () => {
     const provider = buildXaiRealtimeVoiceProvider();
     const invalidThresholdBridge = provider.createBridge({
       providerConfig: {
-        apiKey: `ltfx.n.f16755b98e07df483e6c.v1`, // pragma: allowlist secret
+        apiKey: "xai-test", // pragma: allowlist secret
         vadThreshold: 1,
         silenceDurationMs: 10_001,
         prefixPaddingMs: -1,
@@ -339,7 +339,7 @@ describe("buildXaiRealtimeVoiceProvider", () => {
 
     const validThresholdBridge = provider.createBridge({
       providerConfig: {
-        apiKey: `ltfx.n.f16755b98e07df483e6c.v1`, // pragma: allowlist secret
+        apiKey: "xai-test", // pragma: allowlist secret
         vadThreshold: 0.9,
         silenceDurationMs: 10_000,
         prefixPaddingMs: 0,
@@ -402,7 +402,7 @@ describe("buildXaiRealtimeVoiceProvider", () => {
     const provider = buildXaiRealtimeVoiceProvider();
     const onTranscript = vi.fn();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.f16755b98e07df483e6c.v1` }, // pragma: allowlist secret
+      providerConfig: { apiKey: "xai-test" }, // pragma: allowlist secret
       onAudio: vi.fn(),
       onClearAudio: vi.fn(),
       onTranscript,
@@ -456,7 +456,7 @@ describe("buildXaiRealtimeVoiceProvider", () => {
     const provider = buildXaiRealtimeVoiceProvider();
     const onTranscript = vi.fn();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.f16755b98e07df483e6c.v1` }, // pragma: allowlist secret
+      providerConfig: { apiKey: "xai-test" }, // pragma: allowlist secret
       onAudio: vi.fn(),
       onClearAudio: vi.fn(),
       onTranscript,
@@ -507,7 +507,7 @@ describe("buildXaiRealtimeVoiceProvider", () => {
     const provider = buildXaiRealtimeVoiceProvider();
     const onClearAudio = vi.fn();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.f16755b98e07df483e6c.v1` }, // pragma: allowlist secret
+      providerConfig: { apiKey: "xai-test" }, // pragma: allowlist secret
       audioFormat: REALTIME_VOICE_AUDIO_FORMAT_PCM16_24KHZ,
       onAudio: vi.fn(),
       onClearAudio,
@@ -546,7 +546,7 @@ describe("buildXaiRealtimeVoiceProvider", () => {
     const onAudio = vi.fn();
     const onClearAudio = vi.fn();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.f16755b98e07df483e6c.v1` }, // pragma: allowlist secret
+      providerConfig: { apiKey: "xai-test" }, // pragma: allowlist secret
       audioFormat: REALTIME_VOICE_AUDIO_FORMAT_PCM16_24KHZ,
       onAudio,
       onClearAudio,
@@ -600,7 +600,7 @@ describe("buildXaiRealtimeVoiceProvider", () => {
     const provider = buildXaiRealtimeVoiceProvider();
     const onClearAudio = vi.fn();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.f16755b98e07df483e6c.v1` }, // pragma: allowlist secret
+      providerConfig: { apiKey: "xai-test" }, // pragma: allowlist secret
       audioFormat: REALTIME_VOICE_AUDIO_FORMAT_PCM16_24KHZ,
       onAudio: vi.fn(),
       onClearAudio,
@@ -657,7 +657,7 @@ describe("buildXaiRealtimeVoiceProvider", () => {
     const provider = buildXaiRealtimeVoiceProvider();
     const onClearAudio = vi.fn();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.f16755b98e07df483e6c.v1` }, // pragma: allowlist secret
+      providerConfig: { apiKey: "xai-test" }, // pragma: allowlist secret
       audioFormat: REALTIME_VOICE_AUDIO_FORMAT_PCM16_24KHZ,
       onAudio: vi.fn(),
       onClearAudio,
@@ -708,7 +708,7 @@ describe("buildXaiRealtimeVoiceProvider", () => {
     const provider = buildXaiRealtimeVoiceProvider();
     const onClearAudio = vi.fn();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.f16755b98e07df483e6c.v1` }, // pragma: allowlist secret
+      providerConfig: { apiKey: "xai-test" }, // pragma: allowlist secret
       audioFormat: REALTIME_VOICE_AUDIO_FORMAT_PCM16_24KHZ,
       onAudio: vi.fn(),
       onClearAudio,
@@ -760,7 +760,7 @@ describe("buildXaiRealtimeVoiceProvider", () => {
     const provider = buildXaiRealtimeVoiceProvider();
     const onClearAudio = vi.fn();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.f16755b98e07df483e6c.v1` }, // pragma: allowlist secret
+      providerConfig: { apiKey: "xai-test" }, // pragma: allowlist secret
       audioFormat: REALTIME_VOICE_AUDIO_FORMAT_PCM16_24KHZ,
       onAudio: vi.fn(),
       onClearAudio,
@@ -814,7 +814,7 @@ describe("buildXaiRealtimeVoiceProvider", () => {
     const provider = buildXaiRealtimeVoiceProvider();
     const onClearAudio = vi.fn();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.f16755b98e07df483e6c.v1` }, // pragma: allowlist secret
+      providerConfig: { apiKey: "xai-test" }, // pragma: allowlist secret
       audioFormat: REALTIME_VOICE_AUDIO_FORMAT_PCM16_24KHZ,
       onAudio: vi.fn(),
       onClearAudio,
@@ -875,7 +875,7 @@ describe("buildXaiRealtimeVoiceProvider", () => {
     const provider = buildXaiRealtimeVoiceProvider();
     const onToolCall = vi.fn();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.f16755b98e07df483e6c.v1` }, // pragma: allowlist secret
+      providerConfig: { apiKey: "xai-test" }, // pragma: allowlist secret
       onAudio: vi.fn(),
       onClearAudio: vi.fn(),
       onToolCall,
@@ -938,7 +938,7 @@ describe("buildXaiRealtimeVoiceProvider", () => {
     vi.stubEnv("XAI_API_KEY", "xai-env"); // pragma: allowlist secret
     const provider = buildXaiRealtimeVoiceProvider();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.f16755b98e07df483e6c.v1` }, // pragma: allowlist secret
+      providerConfig: { apiKey: "xai-test" }, // pragma: allowlist secret
       onAudio: vi.fn(),
       onClearAudio: vi.fn(),
       onToolCall: vi.fn(),
@@ -988,7 +988,7 @@ describe("buildXaiRealtimeVoiceProvider", () => {
     vi.stubEnv("XAI_API_KEY", "xai-env"); // pragma: allowlist secret
     const provider = buildXaiRealtimeVoiceProvider();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.f16755b98e07df483e6c.v1` }, // pragma: allowlist secret
+      providerConfig: { apiKey: "xai-test" }, // pragma: allowlist secret
       onAudio: vi.fn(),
       onClearAudio: vi.fn(),
       onToolCall: vi.fn(),
@@ -1039,7 +1039,7 @@ describe("buildXaiRealtimeVoiceProvider", () => {
     const provider = buildXaiRealtimeVoiceProvider();
     const onMark = vi.fn();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.f16755b98e07df483e6c.v1` }, // pragma: allowlist secret
+      providerConfig: { apiKey: "xai-test" }, // pragma: allowlist secret
       onAudio: vi.fn(),
       onClearAudio: vi.fn(),
       onToolCall: vi.fn(),
@@ -1096,7 +1096,7 @@ describe("buildXaiRealtimeVoiceProvider", () => {
     vi.stubEnv("XAI_API_KEY", "xai-env"); // pragma: allowlist secret
     const provider = buildXaiRealtimeVoiceProvider();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.f16755b98e07df483e6c.v1`, sessionResumption: true }, // pragma: allowlist secret
+      providerConfig: { apiKey: "xai-test", sessionResumption: true }, // pragma: allowlist secret
       onAudio: vi.fn(),
       onClearAudio: vi.fn(),
       onToolCall: vi.fn(),
@@ -1164,7 +1164,7 @@ describe("buildXaiRealtimeVoiceProvider", () => {
     const provider = buildXaiRealtimeVoiceProvider();
     const onToolCall = vi.fn();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.f16755b98e07df483e6c.v1`, sessionResumption: true }, // pragma: allowlist secret
+      providerConfig: { apiKey: "xai-test", sessionResumption: true }, // pragma: allowlist secret
       onAudio: vi.fn(),
       onClearAudio: vi.fn(),
       onToolCall,
@@ -1223,7 +1223,7 @@ describe("buildXaiRealtimeVoiceProvider", () => {
     const onEvent = vi.fn();
     const onClose = vi.fn();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.f16755b98e07df483e6c.v1`, sessionResumption: true }, // pragma: allowlist secret
+      providerConfig: { apiKey: "xai-test", sessionResumption: true }, // pragma: allowlist secret
       onAudio: vi.fn(),
       onClearAudio: vi.fn(),
       onToolCall,
@@ -1278,7 +1278,7 @@ describe("buildXaiRealtimeVoiceProvider", () => {
     const provider = buildXaiRealtimeVoiceProvider();
     const onToolCall = vi.fn();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.f16755b98e07df483e6c.v1`, sessionResumption: true }, // pragma: allowlist secret
+      providerConfig: { apiKey: "xai-test", sessionResumption: true }, // pragma: allowlist secret
       onAudio: vi.fn(),
       onClearAudio: vi.fn(),
       onToolCall,
@@ -1366,7 +1366,7 @@ describe("buildXaiRealtimeVoiceProvider", () => {
     vi.stubEnv("XAI_API_KEY", "xai-env"); // pragma: allowlist secret
     const provider = buildXaiRealtimeVoiceProvider();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.f16755b98e07df483e6c.v1`, sessionResumption: true }, // pragma: allowlist secret
+      providerConfig: { apiKey: "xai-test", sessionResumption: true }, // pragma: allowlist secret
       onAudio: vi.fn(),
       onClearAudio: vi.fn(),
       onToolCall: vi.fn(),
@@ -1447,7 +1447,7 @@ describe("buildXaiRealtimeVoiceProvider", () => {
     vi.stubEnv("XAI_API_KEY", "xai-env"); // pragma: allowlist secret
     const provider = buildXaiRealtimeVoiceProvider();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.f16755b98e07df483e6c.v1`, sessionResumption: true }, // pragma: allowlist secret
+      providerConfig: { apiKey: "xai-test", sessionResumption: true }, // pragma: allowlist secret
       onAudio: vi.fn(),
       onClearAudio: vi.fn(),
     });
@@ -1501,7 +1501,7 @@ describe("buildXaiRealtimeVoiceProvider", () => {
     const onEvent = vi.fn();
     const onClose = vi.fn();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.f16755b98e07df483e6c.v1`, sessionResumption: true }, // pragma: allowlist secret
+      providerConfig: { apiKey: "xai-test", sessionResumption: true }, // pragma: allowlist secret
       onAudio: vi.fn(),
       onClearAudio: vi.fn(),
       onEvent,
@@ -1551,7 +1551,7 @@ describe("buildXaiRealtimeVoiceProvider", () => {
     const provider = buildXaiRealtimeVoiceProvider();
     const onReady = vi.fn();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.f16755b98e07df483e6c.v1`, sessionResumption: true }, // pragma: allowlist secret
+      providerConfig: { apiKey: "xai-test", sessionResumption: true }, // pragma: allowlist secret
       onAudio: vi.fn(),
       onClearAudio: vi.fn(),
       onReady,
@@ -1640,7 +1640,7 @@ describe("buildXaiRealtimeVoiceProvider", () => {
     vi.stubEnv("XAI_API_KEY", "xai-env"); // pragma: allowlist secret
     const provider = buildXaiRealtimeVoiceProvider();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.f16755b98e07df483e6c.v1`, sessionResumption: true }, // pragma: allowlist secret
+      providerConfig: { apiKey: "xai-test", sessionResumption: true }, // pragma: allowlist secret
       onAudio: vi.fn(),
       onClearAudio: vi.fn(),
     });
@@ -1678,7 +1678,7 @@ describe("buildXaiRealtimeVoiceProvider", () => {
     const onEvent = vi.fn();
     const onClose = vi.fn();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.f16755b98e07df483e6c.v1`, sessionResumption: true }, // pragma: allowlist secret
+      providerConfig: { apiKey: "xai-test", sessionResumption: true }, // pragma: allowlist secret
       onAudio: vi.fn(),
       onClearAudio: vi.fn(),
       onEvent,
@@ -1713,7 +1713,7 @@ describe("buildXaiRealtimeVoiceProvider", () => {
     const onEvent = vi.fn();
     const onClose = vi.fn();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.f16755b98e07df483e6c.v1` }, // pragma: allowlist secret
+      providerConfig: { apiKey: "xai-test" }, // pragma: allowlist secret
       onAudio: vi.fn(),
       onClearAudio: vi.fn(),
       onEvent,
@@ -1753,7 +1753,7 @@ describe("buildXaiRealtimeVoiceProvider", () => {
     const provider = buildXaiRealtimeVoiceProvider();
     const onClose = vi.fn();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.f16755b98e07df483e6c.v1` }, // pragma: allowlist secret
+      providerConfig: { apiKey: "xai-test" }, // pragma: allowlist secret
       onAudio: vi.fn(),
       onClearAudio: vi.fn(),
       onClose,
@@ -1777,7 +1777,7 @@ describe("buildXaiRealtimeVoiceProvider", () => {
     vi.stubEnv("XAI_API_KEY", "xai-env"); // pragma: allowlist secret
     const provider = buildXaiRealtimeVoiceProvider();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.f16755b98e07df483e6c.v1` }, // pragma: allowlist secret
+      providerConfig: { apiKey: "xai-test" }, // pragma: allowlist secret
       tools: [
         {
           type: "function",

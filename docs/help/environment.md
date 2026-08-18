@@ -44,7 +44,7 @@ Two equivalent ways to set inline env vars (both are non-overriding):
 ```json5
 {
   env: {
-    OPENROUTER_API_KEY: "${ltfx.n.51efae34cc35ebb820a0.v1}",
+    OPENROUTER_API_KEY: "sk-or-...",
     vars: {
       GROQ_API_KEY: "gsk-...",
     },
@@ -53,7 +53,7 @@ Two equivalent ways to set inline env vars (both are non-overriding):
 ```
 
 The config `env` block accepts literal string values only. It does not expand
-`file:...` values; for example, `XAI_API_KEY: "${ltfx.n.d4c3831b303c1acb5df1.v1}"`
+`file:...` values; for example, `XAI_API_KEY: "file:secrets/xai-api-key.txt"`
 is passed to providers as that exact string.
 
 For file-backed provider keys, use a SecretRef on the credential field that

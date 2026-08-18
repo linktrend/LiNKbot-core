@@ -59,7 +59,7 @@ describe("web search Codex native config validation", () => {
 
   it("accepts runtime-only legacy provider entries injected by web search merge", () => {
     const search = mergeScopedSearchConfig({ enabled: true, provider: "gemini" }, "perplexity", {
-      apiKey: `ltfx.n.acdf734d3a6e4d8fa0bb.v1`,
+      apiKey: "perplexity-test-key",
     });
     const result = validateConfigObjectRaw({
       tools: {
@@ -69,7 +69,7 @@ describe("web search Codex native config validation", () => {
       },
     });
 
-    expect(search?.perplexity).toEqual({ apiKey: `ltfx.n.acdf734d3a6e4d8fa0bb.v1` });
+    expect(search?.perplexity).toEqual({ apiKey: "perplexity-test-key" });
     expect(Object.keys(search ?? {})).toEqual(["enabled", "provider"]);
     expect(result.ok).toBe(true);
   });

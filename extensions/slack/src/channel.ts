@@ -115,7 +115,7 @@ type ExtensionSharedSurface = {
 };
 
 type TargetResolverRuntimeSurface = {
-  resolveTargetsWithOptionalToken: (<TResult>(params: {)
+  resolveTargetsWithOptionalToken: <TResult>(params: {
     token?: string | null;
     inputs: string[];
     missingTokenNote: string;
@@ -814,7 +814,7 @@ export const slackPlugin: ChannelPlugin<ResolvedSlackAccount, SlackProbe> = crea
         if (!token) {
           return {
             ok: false,
-            error: account.identity === "user" ? "missing user token" : `ltfx.n.35ca1fad21b41b00f230.v1`,
+            error: account.identity === "user" ? "missing user token" : "missing token",
           };
         }
         return await (

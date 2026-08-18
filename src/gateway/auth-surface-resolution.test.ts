@@ -10,7 +10,7 @@ function remoteGatewayConfig(remote?: GatewayRemoteConfig): OpenClawConfig {
     gateway: {
       mode: "remote",
       remote: {
-        url: `ltfx.n.73677eb3529d0c2b115f.v1`,
+        url: "wss://remote.example/ws",
         ...remote,
       },
     },
@@ -23,12 +23,12 @@ describe("resolveGatewayInteractiveSurfaceAuth", () => {
       resolveGatewayInteractiveSurfaceAuth({
         config: remoteGatewayConfig(),
         env: {
-          OPENCLAW_GATEWAY_TOKEN: `ltfx.n.25d37ba7752ae1d95b57.v1`,
+          OPENCLAW_GATEWAY_TOKEN: "env-token",
         },
         surface: "remote",
       }),
     ).resolves.toEqual({
-      token: `ltfx.n.25d37ba7752ae1d95b57.v1`,
+      token: "env-token",
       password: undefined,
     });
   });
@@ -36,14 +36,14 @@ describe("resolveGatewayInteractiveSurfaceAuth", () => {
   it("keeps configured remote token ahead of OPENCLAW_GATEWAY_TOKEN", async () => {
     await expect(
       resolveGatewayInteractiveSurfaceAuth({
-        config: remoteGatewayConfig({ token: `ltfx.n.b79f8018a1bfa2040be5.v1` }),
+        config: remoteGatewayConfig({ token: "remote-token" }),
         env: {
-          OPENCLAW_GATEWAY_TOKEN: `ltfx.n.25d37ba7752ae1d95b57.v1`,
+          OPENCLAW_GATEWAY_TOKEN: "env-token",
         },
         surface: "remote",
       }),
     ).resolves.toEqual({
-      token: `ltfx.n.b79f8018a1bfa2040be5.v1`,
+      token: "remote-token",
       password: undefined,
     });
   });
@@ -57,12 +57,12 @@ describe("resolveGatewayInteractiveSurfaceAuth", () => {
           }),
         },
         env: {
-          OPENCLAW_GATEWAY_TOKEN: `ltfx.n.25d37ba7752ae1d95b57.v1`,
+          OPENCLAW_GATEWAY_TOKEN: "env-token",
         },
         surface: "remote",
       }),
     ).resolves.toEqual({
-      token: `ltfx.n.25d37ba7752ae1d95b57.v1`,
+      token: "env-token",
       password: undefined,
     });
   });

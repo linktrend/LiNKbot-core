@@ -83,12 +83,12 @@ export function resolveMusicGenerationOverrides(params: {
       caps.supportsInstrumentalByModel,
     )
   ) {
-    ignoredOverrides.push({ key: `ltfx.n.32528ed2244f2862f451.v1`, value: instrumental });
+    ignoredOverrides.push({ key: "instrumental", value: instrumental });
     instrumental = undefined;
   }
 
   if (typeof durationSeconds === "number" && !caps.supportsDuration) {
-    ignoredOverrides.push({ key: `ltfx.n.f245909b3492d6ec59e0.v1`, value: durationSeconds });
+    ignoredOverrides.push({ key: "durationSeconds", value: durationSeconds });
     durationSeconds = undefined;
   } else if (typeof durationSeconds === "number") {
     const normalizedDurationSeconds = normalizeDurationToClosestMax(

@@ -23,7 +23,7 @@ export function resolveMatrixHomeserverKey(homeserver: string): string {
   return sanitizeMatrixPathSegment(homeserver);
 }
 
-export function hashMatrixAccessToken(accessToken: (string)): string {
+export function hashMatrixAccessToken(accessToken: string): string {
   return crypto.createHash("sha256").update(accessToken).digest("hex").slice(0, 16);
 }
 

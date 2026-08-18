@@ -3,7 +3,7 @@ import type { CodexAppServerClient } from "./client.js";
 import { createClientHarness } from "./test-support.js";
 
 const mocks = vi.hoisted(() => ({
-  refreshAuth: vi.fn(async () => ({ accessToken: `ltfx.n.58cec2c9e31bea6205f2.v1`, chatgptAccountId: "account" })),
+  refreshAuth: vi.fn(async () => ({ accessToken: "refreshed", chatgptAccountId: "account" })),
   mergeRateLimitUpdate: vi.fn(),
 }));
 
@@ -71,7 +71,7 @@ describe("Codex app-server client runtime", () => {
     await vi.waitFor(() =>
       expect(harness.writes.map((line) => JSON.parse(line) as unknown)).toContainEqual({
         id: "refresh-1",
-        result: { accessToken: `ltfx.n.58cec2c9e31bea6205f2.v1`, chatgptAccountId: "account" },
+        result: { accessToken: "refreshed", chatgptAccountId: "account" },
       }),
     );
   });

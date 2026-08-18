@@ -22,7 +22,7 @@ function apnsRegistration(nodeId = "ios-device-1") {
   return {
     nodeId,
     transport: "direct",
-    token: `ltfx.n.94a23675de9649d977a4.v1`,
+    token: "apns-token",
     topic: "ai.openclaw.ios.test",
     environment: "sandbox",
     updatedAtMs: 1,
@@ -251,7 +251,7 @@ describe("createExecApprovalIosPushDelivery", () => {
         deviceId: "ios-device-1",
         publicKey: "pub-1",
         scopes: ["operator.approvals", "operator.read"],
-        token: `ltfx.n.8444a60820a42635bfe1.v1`,
+        token: "operator-token-1",
       }),
       pairedIosOperator({
         deviceId: "ios-device-2",
@@ -259,7 +259,7 @@ describe("createExecApprovalIosPushDelivery", () => {
         platform: "iPadOS 18",
         approvedAtMs: 2,
         scopes: ["operator.approvals", "operator.write"],
-        token: `ltfx.n.8d7d193bb11ff049b4a7.v1`,
+        token: "operator-token-2",
       }),
     );
 

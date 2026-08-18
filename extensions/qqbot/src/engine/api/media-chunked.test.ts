@@ -33,7 +33,7 @@ function mockApiClient(): ApiClient & { request: ReturnType<typeof vi.fn<ApiClie
 }
 
 /** Minimal TokenManager stub returning a static token. */
-function mockTokenManager(token = `ltfx.n.4c5dc9b7708905f77f5e.v1`): TokenManager {
+function mockTokenManager(token = "test-token"): TokenManager {
   return {
     getAccessToken: vi.fn().mockResolvedValue(token),
   } as unknown as TokenManager;

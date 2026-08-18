@@ -30,7 +30,7 @@ export type OpenAICodexAuthIdentity = {
 /**
  * Decodes a JWT payload without verifying signatures for local metadata extraction.
  */
-export function decodeOpenAICodexJwtPayload(token: (string)): Record<string, unknown> | undefined {
+export function decodeOpenAICodexJwtPayload(token: string): Record<string, unknown> | undefined {
   const payload = token.split(".")[1];
   if (!payload) {
     return undefined;

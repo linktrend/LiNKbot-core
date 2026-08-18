@@ -13,7 +13,7 @@ describe("Venice usage", () => {
     );
 
     const snapshot = await fetchVeniceUsage({
-      token: `ltfx.n.c1e96168b72808743658.v1`,
+      token: "venice-key",
       timeoutMs: 5000,
       fetchFn: fetchFn as unknown as typeof fetch,
     });
@@ -46,7 +46,7 @@ describe("Venice usage", () => {
 
   it("preserves unavailable status with balances", async () => {
     const snapshot = await fetchVeniceUsage({
-      token: `ltfx.n.c1e96168b72808743658.v1`,
+      token: "venice-key",
       timeoutMs: 5000,
       fetchFn: vi.fn(async () =>
         Response.json({ canConsume: false, balances: { usd: 0 } }),
@@ -61,7 +61,7 @@ describe("Venice usage", () => {
 
   it("returns HTTP status without exposing provider error bodies", async () => {
     const snapshot = await fetchVeniceUsage({
-      token: `ltfx.n.c1e96168b72808743658.v1`,
+      token: "venice-key",
       timeoutMs: 5000,
       fetchFn: vi.fn(
         async () => new Response("private", { status: 403 }),
@@ -73,7 +73,7 @@ describe("Venice usage", () => {
 
   it("rejects a malformed JSON root without throwing", async () => {
     const snapshot = await fetchVeniceUsage({
-      token: `ltfx.n.c1e96168b72808743658.v1`,
+      token: "venice-key",
       timeoutMs: 5000,
       fetchFn: vi.fn(async () => Response.json(null)) as unknown as typeof fetch,
     });
@@ -84,7 +84,7 @@ describe("Venice usage", () => {
 
   it("returns a stable error for transport failures", async () => {
     const snapshot = await fetchVeniceUsage({
-      token: `ltfx.n.c1e96168b72808743658.v1`,
+      token: "venice-key",
       timeoutMs: 5000,
       fetchFn: vi.fn(async () => {
         throw new Error("network down");

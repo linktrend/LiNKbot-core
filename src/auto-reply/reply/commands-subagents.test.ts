@@ -478,7 +478,7 @@ describe("resolveFocusTargetSession", () => {
 
   it("restricts gateway fallback resolution to a subagent requester's children", async () => {
     callGatewayMock.mockResolvedValue({
-      key: `ltfx.n.3c3dbd6de91d4e00f4c7.v1`,
+      key: "agent:main:subagent:child",
     });
 
     const result = await resolveFocusTargetSession({

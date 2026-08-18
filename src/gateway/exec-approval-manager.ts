@@ -163,7 +163,7 @@ export type ExecApprovalIdLookupResult =
   | { kind: "ambiguous"; ids: string[] }
   | { kind: "none" };
 
-function readRequestString(request: unknown, key: (string)): string | null {
+function readRequestString(request: unknown, key: string): string | null {
   if (typeof request !== "object" || request === null) {
     return null;
   }

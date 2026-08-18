@@ -78,7 +78,7 @@ describe("Lisa job contracts", () => {
       assertProviderFailure({ code: "timeout", operatorDetail: "\u0000private" }),
     ).toThrow(/not safe/iu);
     expect(() =>
-      assertProviderFailure({ code: "timeout", operatorDetail: "token: (secret-value" }),)
+      assertProviderFailure({ code: "timeout", operatorDetail: "token: secret-value" }),
     ).toThrow(/not safe/iu);
     expect(() => assertLisaErrorCode("provider_timeout")).not.toThrow();
     expect(() => assertLisaErrorCode("Provider timed out")).toThrow(/payload-free/iu);

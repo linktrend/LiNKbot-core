@@ -291,7 +291,7 @@ class NotificationsHandlerTest {
 
   private fun appContext(): Context = RuntimeEnvironment.getApplication()
 
-  private fun sampleEntry(key: (String): DeviceNotificationEntry =)
+  private fun sampleEntry(key: String): DeviceNotificationEntry =
     DeviceNotificationEntry(
       key = key,
       packageName = "com.example.app",

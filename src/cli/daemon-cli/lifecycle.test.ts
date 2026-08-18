@@ -951,7 +951,7 @@ describe("runDaemonRestart health checks", () => {
 
     expect(findVerifiedGatewayListenerPidsOnPortSync).toHaveBeenCalledWith(18_789);
     expect(probeGateway).toHaveBeenCalledWith(
-      expect.objectContaining({ url: `ltfx.n.0edbee82f0824a1ed09b.v1` }),
+      expect.objectContaining({ url: "ws://127.0.0.1:18789" }),
     );
     expect(signalVerifiedGatewayPidSync).toHaveBeenCalledWith(4200, "SIGUSR1");
     expect(waitForGatewayHealthyListener).toHaveBeenCalledWith(

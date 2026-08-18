@@ -348,11 +348,11 @@ describe("registerPolicyDoctorChecks", () => {
     ["clickclack", { baseUrl: "https://app.clickclack.chat", workspace: "wsp_1", token: "ccb" }],
     ["feishu", { appId: "cli_a", appSecret: "secret" }],
     ["irc", { host: "irc.example.com", nick: "claw" }],
-    ["line", { channelAccessToken: `ltfx.n.71688488445b848b8da5.v1` }],
-    ["mattermost", { baseUrl: "https://mattermost.example.com", botToken: `ltfx.n.71e1d2699121cb6f4a12.v1` }],
-    ["nextcloud-talk", { baseUrl: "https://nextcloud.example.com", botSecret: `ltfx.n.921954327af24b6a42c3.v1` }],
-    ["qqbot", { appId: "qqbot-app", clientSecret: `ltfx.n.ae41beaa297b7f390f5e.v1` }],
-    ["synology-chat", { token: `ltfx.n.118050718c1b462c7714.v1` }],
+    ["line", { channelAccessToken: "line-token" }],
+    ["mattermost", { baseUrl: "https://mattermost.example.com", botToken: "mm-token" }],
+    ["nextcloud-talk", { baseUrl: "https://nextcloud.example.com", botSecret: "nc-secret" }],
+    ["qqbot", { appId: "qqbot-app", clientSecret: "qqbot-secret" }],
+    ["synology-chat", { token: "synology-token" }],
     ["tlon", { ship: "zod" }],
     ["twitch", { username: "openclaw" }],
   ])("evaluates %s implicit default account posture with named accounts", async (channel, root) => {
@@ -507,7 +507,7 @@ describe("registerPolicyDoctorChecks", () => {
       session: { dmScope: "per-channel-peer" },
       channels: {
         discord: {
-          token: `ltfx.n.2cff60a244379d429c18.v1`,
+          token: "root-token",
           dmPolicy: "open",
           groupPolicy: "allowlist",
           requireMention: true,
@@ -566,13 +566,13 @@ describe("registerPolicyDoctorChecks", () => {
           },
           accounts: {
             work: {
-              botToken: `ltfx.n.488dc3c9ef1e2576bc04.v1`,
+              botToken: "work-token",
               dmPolicy: "allowlist",
               groupPolicy: "allowlist",
               requireMention: true,
             },
             personal: {
-              botToken: `ltfx.n.f5e79647e5f68d52ce5c.v1`,
+              botToken: "personal-token",
               dmPolicy: "allowlist",
               groupPolicy: "allowlist",
               requireMention: true,
@@ -651,7 +651,7 @@ describe("registerPolicyDoctorChecks", () => {
       session: { dmScope: "per-channel-peer" },
       channels: {
         slack: {
-          botToken: `ltfx.n.2cff60a244379d429c18.v1`,
+          botToken: "root-token",
           dmPolicy: "pairing",
           groupPolicy: "disabled",
           groups: {
@@ -718,7 +718,7 @@ describe("registerPolicyDoctorChecks", () => {
       session: { dmScope: "per-channel-peer" },
       channels: {
         telegram: {
-          botToken: `ltfx.n.2cff60a244379d429c18.v1`,
+          botToken: "root-token",
           dmPolicy: "open",
           groupPolicy: "allowlist",
           requireMention: true,
@@ -1134,7 +1134,7 @@ describe("registerPolicyDoctorChecks", () => {
       },
       models: {
         providers: {
-          openai: { apiKey: `ltfx.n.623f9a5f592407312d8f.v1` },
+          openai: { apiKey: "$OPENAI_API_KEY" },
         },
       },
     } as unknown as OpenClawConfig;
@@ -1217,7 +1217,7 @@ describe("registerPolicyDoctorChecks", () => {
           "corp.github": {
             env: {
               APP_ID: "$GITHUB_APP_ID",
-              GITHUB_TOKEN: `ltfx.n.db1b2a29581c034c77c0.v1`,
+              GITHUB_TOKEN: "$GITHUB_TOKEN",
             },
           },
         },

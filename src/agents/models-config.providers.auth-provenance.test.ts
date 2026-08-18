@@ -95,13 +95,13 @@ describe("models-config provider auth provenance", () => {
     const byteplusApiKey = resolveApiKeyFromCredential({
       type: "api_key",
       provider: "byteplus",
-      key: `ltfx.n.bd3dd050fb641d8ae4ff.v1`,
+      key: "sk-runtime-resolved-byteplus",
       keyRef: { source: "file", provider: "vault", id: "/byteplus/apiKey" },
     })?.apiKey;
     const togetherApiKey = resolveApiKeyFromCredential({
       type: "token",
       provider: "together",
-      token: `ltfx.n.056545e6020aef264170.v1`,
+      token: "tok-runtime-resolved-together",
       tokenRef: { source: "exec", provider: "vault", id: "providers/together/token" },
     })?.apiKey;
     const byteplusProviders = buildPairedApiKeyProviders(byteplusApiKey ?? "");
@@ -123,7 +123,7 @@ describe("models-config provider auth provenance", () => {
   it("prefers profile auth over env auth in provider summaries to match runtime resolution", () => {
     const auth = createProviderAuthResolver(
       {
-        OPENAI_API_KEY: `ltfx.n.aaf1fe7c1e5d78f6d873.v1`,
+        OPENAI_API_KEY: "env-openai-key",
       } as NodeJS.ProcessEnv,
       {
         version: 1,
@@ -150,7 +150,7 @@ describe("models-config provider auth provenance", () => {
     // Plugin-owned synthetic auth can provide discovery keys while persisted
     // config still records a non-secret marker.
     mockedResolveProviderSyntheticAuthWithPlugin.mockReturnValue({
-      apiKey: `ltfx.n.6a80e187fa3942c591d0.v1`,
+      apiKey: "xai-plugin-key",
       mode: "api-key",
       source: "test plugin",
     });
@@ -166,7 +166,7 @@ describe("models-config provider auth provenance", () => {
             xai: {
               config: {
                 webSearch: {
-                  apiKey: `ltfx.n.6a80e187fa3942c591d0.v1`,
+                  apiKey: "xai-plugin-key",
                 },
               },
             },
@@ -177,7 +177,7 @@ describe("models-config provider auth provenance", () => {
 
     expect(auth("xai")).toEqual({
       apiKey: NON_ENV_SECRETREF_MARKER,
-      discoveryApiKey: `ltfx.n.6a80e187fa3942c591d0.v1`,
+      discoveryApiKey: "xai-plugin-key",
       mode: "api_key",
       source: "none",
     });
@@ -195,7 +195,7 @@ describe("models-config provider auth provenance", () => {
           providers: {
             vllm: {
               baseUrl: "http://127.0.0.1:8000/v1",
-              apiKey: `ltfx.n.86b8b6347df078610840.v1`,
+              apiKey: "proof-key",
               api: "openai-completions",
               models: [],
             },
@@ -205,8 +205,8 @@ describe("models-config provider auth provenance", () => {
     );
 
     expect(auth("vllm")).toEqual({
-      apiKey: `ltfx.n.86b8b6347df078610840.v1`,
-      discoveryApiKey: `ltfx.n.86b8b6347df078610840.v1`,
+      apiKey: "proof-key",
+      discoveryApiKey: "proof-key",
     });
   });
 
@@ -235,7 +235,7 @@ describe("models-config provider auth provenance", () => {
 
     expect(auth("vllm")).toEqual({
       apiKey: "MY_VLLM_KEY",
-      discoveryApiKey: `ltfx.n.eedc6b39bb2553f85d96.v1`,
+      discoveryApiKey: "resolved-vllm-key",
     });
   });
 

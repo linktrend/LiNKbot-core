@@ -101,7 +101,7 @@ describe("openai transport stream", () => {
         model: "gpt-5.4-pro",
         metadata: {
           litellm_request_id: "litellm_req_plaintext_123",
-          api_key: `ltfx.n.bd2a39c93c1928d844c5.v1`,
+          api_key: "sk-observation-secret",
         },
         provider_request_id: "provider_req_plaintext_456",
         status_details: {
@@ -134,7 +134,7 @@ describe("openai transport stream", () => {
     expect(JSON.stringify(observation)).not.toContain("provider_error_req_nested_012");
     expect(JSON.stringify(observation)).not.toContain("header_req_plaintext_345");
     expect(JSON.stringify(observation)).not.toContain("header_req_plaintext_678");
-    expect(JSON.stringify(observation)).not.toContain("ltfx.n.bd2a39c93c1928d844c5.v1");
+    expect(JSON.stringify(observation)).not.toContain("sk-observation-secret");
   });
 
   it("normalizes Responses failed events before transport errors are thrown", () => {
@@ -933,7 +933,7 @@ describe("openai transport stream", () => {
     const previous = process.env.OPENCLAW_DEBUG_MODEL_PAYLOAD;
     process.env.OPENCLAW_DEBUG_MODEL_PAYLOAD = "full-redacted";
     try {
-      const apiKey = `ltfx.n.4c806362b613f7496abf.v1`;
+      const apiKey = "test-api-key";
       const summary = testing.summarizeResponsesPayload({
         model: "gpt-5.5",
         stream: true,
@@ -1212,7 +1212,7 @@ describe("openai transport stream", () => {
         provider: "azure-custom",
         baseUrl: "https://example.openai.azure.com/openai/deployments/gpt-4o-mini?existing=1",
         headers: {
-          "api-key": `ltfx.n.d832c76cffcd05970d49.v1`,
+          "api-key": "azure-key",
           "api-version": "2024-10-21",
           "X-Tenant": "acme",
         },
@@ -1228,7 +1228,7 @@ describe("openai transport stream", () => {
     expect(config).toEqual({
       baseURL: "https://example.openai.azure.com/openai/deployments/gpt-4o-mini",
       defaultHeaders: {
-        "api-key": `ltfx.n.d832c76cffcd05970d49.v1`,
+        "api-key": "azure-key",
         "X-Tenant": "acme",
       },
       defaultQuery: {

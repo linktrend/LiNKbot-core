@@ -270,7 +270,7 @@ export async function probeTelegram(
           };
           if (webhookRes.ok && webhookJson?.ok) {
             result.webhook = {
-              url: (webhookJson.result?.url ?? null,)
+              url: webhookJson.result?.url ?? null,
               hasCustomCert: webhookJson.result?.has_custom_certificate ?? null,
             };
           }

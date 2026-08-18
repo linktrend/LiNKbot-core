@@ -67,7 +67,7 @@ type MockResolvedModel = {
 
 type MockAgentDiscoveryStores = {
   authStorage: {
-    setRuntimeApiKey: (ReturnType<typeof vi.fn>;)
+    setRuntimeApiKey: ReturnType<typeof vi.fn>;
   };
   modelRegistry: Record<string, never>;
 };
@@ -321,7 +321,7 @@ type MockGetApiKeyForModelParams = {
 export const mockedGetApiKeyForModel = vi.fn<
   (params?: MockGetApiKeyForModelParams) => Promise<ResolvedProviderAuth>
 >(async ({ profileId }: MockGetApiKeyForModelParams = {}) => ({
-  apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+  apiKey: "test-key",
   profileId: profileId ?? "test-profile",
   source: "test",
   mode: "api-key",
@@ -349,7 +349,7 @@ export function useOpenAIPlatformAuthFixture(): void {
       [profileId]: {
         type: "api_key",
         provider: "openai",
-        key: `ltfx.n.62af8704764faf8ea82f.v1`,
+        key: "test-key",
       },
     },
     order: { openai: [profileId] },
@@ -553,7 +553,7 @@ export function resetRunOverflowCompactionHarnessMocks(): void {
   mockedGetApiKeyForModel.mockReset();
   mockedGetApiKeyForModel.mockImplementation(
     async ({ profileId }: MockGetApiKeyForModelParams = {}) => ({
-      apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+      apiKey: "test-key",
       profileId: profileId ?? "test-profile",
       source: "test",
       mode: "api-key",

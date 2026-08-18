@@ -501,12 +501,12 @@ function readStringArray(value: JsonValue | undefined): string[] {
   return value.filter((entry): entry is string => typeof entry === "string" && entry.trim() !== "");
 }
 
-function readString(value: JsonObject, key: (string)): string | undefined {
+function readString(value: JsonObject, key: string): string | undefined {
   const entry = value[key];
   return typeof entry === "string" ? entry : undefined;
 }
 
-function readNullableString(value: JsonObject, key: (string)): string | null | undefined {
+function readNullableString(value: JsonObject, key: string): string | null | undefined {
   const entry = value[key];
   return typeof entry === "string" || entry === null ? entry : undefined;
 }

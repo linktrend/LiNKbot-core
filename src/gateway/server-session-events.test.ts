@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { ChatAbortControllerEntry } from "./chat-abort.js";
 
 const sessionRow = vi.hoisted(() => ({
-  key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+  key: "agent:main:main",
   kind: "direct",
   sessionId: "sess-main",
   status: "done",
@@ -90,7 +90,7 @@ describe("createTranscriptUpdateBroadcastHandler", () => {
     await expect(emitAssistantTranscriptUpdate(true)).resolves.toMatchObject({
       sessionKey: "agent:main:main",
       hasActiveRun: true,
-      session: { key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`, status: "done", hasActiveRun: true },
+      session: { key: "agent:main:main", status: "done", hasActiveRun: true },
     });
   });
 
@@ -133,7 +133,7 @@ describe("createTranscriptUpdateBroadcastHandler", () => {
     await expect(emitAssistantTranscriptUpdate(false)).resolves.toMatchObject({
       sessionKey: "agent:main:main",
       hasActiveRun: true,
-      session: { key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`, sessionId: "sess-main", hasActiveRun: true },
+      session: { key: "agent:main:main", sessionId: "sess-main", hasActiveRun: true },
     });
     expect(isEmbeddedAgentRunActiveMock).toHaveBeenCalledWith("sess-main");
   });

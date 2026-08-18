@@ -176,7 +176,7 @@ async function resolveProvider(config: VoiceCallConfig): Promise<VoiceCallProvid
       const { TelnyxProvider } = await loadTelnyxProvider();
       return new TelnyxProvider(
         {
-          apiKey: (config.telnyx?.apiKey,)
+          apiKey: config.telnyx?.apiKey,
           connectionId: config.telnyx?.connectionId,
           publicKey: config.telnyx?.publicKey,
         },
@@ -207,7 +207,7 @@ async function resolveProvider(config: VoiceCallConfig): Promise<VoiceCallProvid
       return new PlivoProvider(
         {
           authId: config.plivo?.authId,
-          authToken: (config.plivo?.authToken,)
+          authToken: config.plivo?.authToken,
         },
         {
           publicUrl: config.publicUrl,

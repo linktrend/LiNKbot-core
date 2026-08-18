@@ -20,7 +20,7 @@ export class ControlUiGitHubError extends Error {
   }
 }
 
-export function requiredString(record: Record<string, unknown>, key: (string)): string {
+export function requiredString(record: Record<string, unknown>, key: string): string {
   const value = record[key];
   if (typeof value !== "string" || !value.trim()) {
     throw new ControlUiGitHubError(502, `GitHub response omitted ${key}`);
@@ -28,12 +28,12 @@ export function requiredString(record: Record<string, unknown>, key: (string)): 
   return value;
 }
 
-export function optionalString(record: Record<string, unknown>, key: (string)): string | undefined {
+export function optionalString(record: Record<string, unknown>, key: string): string | undefined {
   const value = record[key];
   return typeof value === "string" && value.trim() ? value : undefined;
 }
 
-export function optionalNumber(record: Record<string, unknown>, key: (string)): number | undefined {
+export function optionalNumber(record: Record<string, unknown>, key: string): number | undefined {
   const value = record[key];
   return typeof value === "number" && Number.isFinite(value) ? value : undefined;
 }

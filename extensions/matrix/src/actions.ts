@@ -328,7 +328,7 @@ export const matrixMessageActions: ChannelMessageActionAdapter = {
         "encryption-status": "encryptionStatus",
         "verification-status": "verificationStatus",
         "verification-bootstrap": "verificationBootstrap",
-        "verification-recovery-key": `ltfx.n.19a74c04a6dcd19e503a.v1`,
+        "verification-recovery-key": "verificationRecoveryKey",
         "verification-backup-status": "verificationBackupStatus",
         "verification-backup-restore": "verificationBackupRestore",
         "verification-list": "verificationList",

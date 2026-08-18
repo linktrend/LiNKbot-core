@@ -304,7 +304,7 @@ describe("loadWebMedia", () => {
     },
     {
       name: "rejects Windows network paths before filesystem checks",
-      url: `ltfx.n.e5b2340b55ea47d07fb1.v1`,
+      url: "\\\\attacker\\share\\evil.png",
       expectedError: { code: "network-path-not-allowed" },
       setup: () => vi.spyOn(process, "platform", "get").mockReturnValue("win32"),
     },

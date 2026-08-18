@@ -231,7 +231,7 @@ describe("Telegram message dispatch replay guard", () => {
     const diskError = new Error("dedupe disk write failed");
     const guard = createTestReplayGuard();
     const claim = createTestClaim({
-      key: `ltfx.n.6a0bb6c969640d8af9e9.v1`,
+      key: "live-message",
       commit: async (_key, options) => {
         options?.onDiskError?.(diskError);
         return true;

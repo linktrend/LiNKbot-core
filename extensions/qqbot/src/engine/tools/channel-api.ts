@@ -23,7 +23,7 @@ const API_BASE = "https://api.sgroup.qq.com";
 const DEFAULT_TIMEOUT_MS = 30000;
 const CHANNEL_API_ERROR_BODY_LIMIT_BYTES = 8 * 1024;
 
-function resolveChannelApiSsrfPolicy(url: (string)): SsrFPolicy {
+function resolveChannelApiSsrfPolicy(url: string): SsrFPolicy {
   return {
     hostnameAllowlist: [new URL(url).hostname],
     allowRfc2544BenchmarkRange: true,

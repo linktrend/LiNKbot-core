@@ -1947,7 +1947,7 @@ private fun ChatModelPickerSheet(
         "Models" to sections.remaining,
       ).forEach { (title, models) ->
         if (models.isNotEmpty()) {
-          item(key = "${ltfx.n.b67c7df8f836b182e699.v1}") {
+          item(key = "section-$title") {
             Text(
               text = title,
               modifier = Modifier.padding(start = 20.dp, top = 16.dp, end = 20.dp, bottom = 6.dp),

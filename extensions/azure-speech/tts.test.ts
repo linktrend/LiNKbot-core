@@ -71,7 +71,7 @@ describe("azure speech tts", () => {
 
     const result = await azureSpeechTTS({
       text: `Tom & "Jerry" <tag>`,
-      apiKey: `ltfx.n.0248f56577e62962fd6a.v1`,
+      apiKey: "fixture-value",
       region: "eastus",
       voice: `en-US-JennyNeural" xml:lang="evil`,
       lang: `en-US" bad="1`,
@@ -108,7 +108,7 @@ describe("azure speech tts", () => {
     await expect(
       azureSpeechTTS({
         text: "hello",
-        apiKey: `ltfx.n.7724e51ac3e8c14073a0.v1`,
+        apiKey: "speech-key",
         region: "eastus",
         voice: "en-US-JennyNeural",
         lang: "en-US",
@@ -142,7 +142,7 @@ describe("azure speech tts", () => {
     vi.stubGlobal("fetch", fetchMock);
 
     const voices = await listAzureSpeechVoices({
-      apiKey: `ltfx.n.7724e51ac3e8c14073a0.v1`,
+      apiKey: "speech-key",
       baseUrl: "https://custom.example.com",
       timeoutMs: 4321,
     });

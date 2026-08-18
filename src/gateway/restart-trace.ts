@@ -42,7 +42,7 @@ function normalizeMetricEntries(
   return Array.isArray(metrics) ? [...metrics] : Object.entries(metrics);
 }
 
-function formatMetricKey(key: (string)): string {
+function formatMetricKey(key: string): string {
   // Metric keys are log tokens, not structured JSON. Keep them compact and
   // shell-friendly so trace lines remain grepable.
   const normalized = key.replace(/[^A-Za-z0-9]/gu, "");

@@ -58,7 +58,7 @@ describe("channel plugin blockers", () => {
       channels: {
         discord: {
           enabled: true,
-          token: `ltfx.n.20158224750041d653cd.v1`,
+          token: "configured",
         },
       },
     });
@@ -97,7 +97,7 @@ describe("channel plugin blockers", () => {
       {
         channels: {
           discord: {
-            token: `ltfx.n.20158224750041d653cd.v1`,
+            token: "configured",
           },
         },
       },
@@ -215,7 +215,7 @@ describe("channel plugin blockers", () => {
       channels: {
         discord: {
           enabled: true,
-          token: `ltfx.n.20158224750041d653cd.v1`,
+          token: "configured",
         },
       },
     });
@@ -239,7 +239,7 @@ describe("channel plugin blockers", () => {
     const channels = {
       discord: {
         enabled: true,
-        token: `ltfx.n.20158224750041d653cd.v1`,
+        token: "configured",
       },
     };
     const hits = scanConfiguredChannelPluginBlockers(
@@ -291,7 +291,7 @@ describe("channel plugin blockers", () => {
 
     const channels = {
       "legacy-chat": {
-        token: `ltfx.n.20158224750041d653cd.v1`,
+        token: "configured",
       },
     };
     const hits = scanConfiguredChannelPluginBlockers(
@@ -352,7 +352,7 @@ describe("channel plugin blockers", () => {
         },
       },
       {
-        TELEGRAM_BOT_TOKEN: `ltfx.n.20158224750041d653cd.v1`,
+        TELEGRAM_BOT_TOKEN: "configured",
       } as NodeJS.ProcessEnv,
       {},
     );
@@ -389,7 +389,7 @@ describe("channel plugin blockers", () => {
         },
       },
       {
-        DISCORD_BOT_TOKEN: `ltfx.n.20158224750041d653cd.v1`,
+        DISCORD_BOT_TOKEN: "configured",
       } as NodeJS.ProcessEnv,
       {},
     );
@@ -466,7 +466,7 @@ describe("channel plugin blockers", () => {
         },
       },
       {
-        EXTERNAL_CHAT_TOKEN: `ltfx.n.20158224750041d653cd.v1`,
+        EXTERNAL_CHAT_TOKEN: "configured",
       } as NodeJS.ProcessEnv,
       {},
     );
@@ -525,7 +525,7 @@ describe("channel plugin blockers", () => {
     } as unknown as ReturnType<typeof manifestRegistry.loadPluginManifestRegistry>);
 
     const hits = scanConfiguredChannelPluginBlockers({}, {
-      SHARED_CHAT_TOKEN: `ltfx.n.20158224750041d653cd.v1`,
+      SHARED_CHAT_TOKEN: "configured",
     } as NodeJS.ProcessEnv);
 
     expect(hits).toStrictEqual([]);
@@ -559,8 +559,8 @@ describe("channel plugin blockers", () => {
         },
       },
       {
-        FIRST_CHAT_TOKEN: `ltfx.n.20158224750041d653cd.v1`,
-        SECOND_CHAT_TOKEN: `ltfx.n.20158224750041d653cd.v1`,
+        FIRST_CHAT_TOKEN: "configured",
+        SECOND_CHAT_TOKEN: "configured",
       } as NodeJS.ProcessEnv,
     );
 
@@ -594,7 +594,7 @@ describe("channel plugin blockers", () => {
     } as unknown as ReturnType<typeof manifestRegistry.loadPluginManifestRegistry>);
 
     const hits = scanConfiguredChannelPluginBlockers({}, {
-      TRIGGERED_CHAT_TOKEN: `ltfx.n.20158224750041d653cd.v1`,
+      TRIGGERED_CHAT_TOKEN: "configured",
     } as NodeJS.ProcessEnv);
 
     expect(hits).toEqual([
@@ -621,7 +621,7 @@ describe("channel plugin blockers", () => {
     } as unknown as ReturnType<typeof manifestRegistry.loadPluginManifestRegistry>);
 
     const hits = scanConfiguredChannelPluginBlockers({}, {
-      EXTERNAL_CHAT_TOKEN: `ltfx.n.20158224750041d653cd.v1`,
+      EXTERNAL_CHAT_TOKEN: "configured",
     } as NodeJS.ProcessEnv);
 
     expect(hits).toStrictEqual([]);
@@ -642,7 +642,7 @@ describe("channel plugin blockers", () => {
     } as unknown as ReturnType<typeof manifestRegistry.loadPluginManifestRegistry>);
 
     const hits = scanConfiguredChannelPluginBlockers({}, {
-      OPENCLAW_TWITCH_ACCESS_TOKEN: `ltfx.n.20158224750041d653cd.v1`,
+      OPENCLAW_TWITCH_ACCESS_TOKEN: "configured",
     } as NodeJS.ProcessEnv);
 
     expect(hits).toEqual([
@@ -678,7 +678,7 @@ describe("channel plugin blockers", () => {
         },
       },
       {
-        OPENCLAW_TWITCH_ACCESS_TOKEN: `ltfx.n.20158224750041d653cd.v1`,
+        OPENCLAW_TWITCH_ACCESS_TOKEN: "configured",
       } as NodeJS.ProcessEnv,
     );
 
@@ -722,7 +722,7 @@ describe("channel plugin blockers", () => {
         },
       },
       {
-        DISCORD_BOT_TOKEN: `ltfx.n.20158224750041d653cd.v1`,
+        DISCORD_BOT_TOKEN: "configured",
       } as NodeJS.ProcessEnv,
       {
         channels: {
@@ -770,7 +770,7 @@ describe("channel plugin blockers", () => {
         },
       },
       {
-        DISCORD_BOT_TOKEN: `ltfx.n.20158224750041d653cd.v1`,
+        DISCORD_BOT_TOKEN: "configured",
       } as NodeJS.ProcessEnv,
       {
         channels: {
@@ -805,7 +805,7 @@ describe("channel plugin blockers", () => {
 
     const channels = {
       telegram: {
-        botToken: `ltfx.n.20158224750041d653cd.v1`,
+        botToken: "configured",
       },
     };
     const hits = scanConfiguredChannelPluginBlockers(
@@ -967,7 +967,7 @@ describe("channel plugin blockers", () => {
       channels: {
         discord: {
           enabled: true,
-          token: `ltfx.n.20158224750041d653cd.v1`,
+          token: "configured",
         },
       },
     });
@@ -1009,7 +1009,7 @@ describe("channel plugin blockers", () => {
       },
       channels: {
         "shared-chat": {
-          token: `ltfx.n.20158224750041d653cd.v1`,
+          token: "configured",
         },
       },
     });
@@ -1086,7 +1086,7 @@ describe("channel plugin blockers", () => {
       },
       channels: {
         "workspace-chat": {
-          token: `ltfx.n.20158224750041d653cd.v1`,
+          token: "configured",
         },
       },
     });
@@ -1157,7 +1157,7 @@ describe("channel plugin blockers", () => {
         },
         channels: {
           telegram: {
-            botToken: `ltfx.n.20158224750041d653cd.v1`,
+            botToken: "configured",
           },
         },
       },

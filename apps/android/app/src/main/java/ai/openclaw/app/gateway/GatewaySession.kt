@@ -1051,7 +1051,7 @@ class GatewaySession(
           explicitGatewayToken = token?.trim()?.takeIf { it.isNotEmpty() },
           explicitBootstrapToken = bootstrapToken?.trim()?.takeIf { it.isNotEmpty() },
           explicitPassword = password?.trim()?.takeIf { it.isNotEmpty() },
-          storedToken = (storedToken?.takeIf { it.isNotEmpty() },)
+          storedToken = storedToken?.takeIf { it.isNotEmpty() },
           storedScopes = storedEntry?.scopes.orEmpty(),
         )
       if (selectedAuth.attemptedDeviceTokenRetry) {
@@ -1070,7 +1070,7 @@ class GatewaySession(
           shouldRetryWithStoredDeviceToken(
             error = error,
             explicitGatewayToken = token?.trim()?.takeIf { it.isNotEmpty() },
-            storedToken = (storedToken?.takeIf { it.isNotEmpty() },)
+            storedToken = storedToken?.takeIf { it.isNotEmpty() },
             attemptedDeviceTokenRetry = selectedAuth.attemptedDeviceTokenRetry,
             endpoint = endpoint,
             tls = tls,

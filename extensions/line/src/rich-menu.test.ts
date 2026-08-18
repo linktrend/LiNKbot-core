@@ -249,8 +249,8 @@ describe("createDefaultMenuConfig", () => {
 const richMenuUploadCfg: OpenClawConfig = {
   channels: {
     line: {
-      channelAccessToken: `ltfx.n.71688488445b848b8da5.v1`,
-      channelSecret: `ltfx.n.1302cdb468ddf98dde49.v1`,
+      channelAccessToken: "line-token",
+      channelSecret: "line-secret",
     },
   },
 };
@@ -276,7 +276,7 @@ describe("createRichMenu", () => {
       { cfg: richMenuUploadCfg },
     );
 
-    expect(MessagingApiClientMock).toHaveBeenCalledWith({ channelAccessToken: `ltfx.n.71688488445b848b8da5.v1` });
+    expect(MessagingApiClientMock).toHaveBeenCalledWith({ channelAccessToken: "line-token" });
     expect(createRichMenuMock).toHaveBeenCalledWith(
       expect.objectContaining({
         name: emoji.repeat(300),
@@ -313,7 +313,7 @@ describe("uploadRichMenuImage", () => {
       mediaLocalRoots: [workspaceDir],
     });
 
-    expect(MessagingApiBlobClientMock).toHaveBeenCalledWith({ channelAccessToken: `ltfx.n.71688488445b848b8da5.v1` });
+    expect(MessagingApiBlobClientMock).toHaveBeenCalledWith({ channelAccessToken: "line-token" });
     expect(setRichMenuImageMock).toHaveBeenCalledOnce();
     const [richMenuId, blob] = setRichMenuImageMock.mock.calls[0] ?? [];
     expect(richMenuId).toBe("rich-menu-1");

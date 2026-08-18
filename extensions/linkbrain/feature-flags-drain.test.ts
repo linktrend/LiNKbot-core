@@ -68,7 +68,7 @@ describe("linkbrain feature flags (MCP-gated, no plugin tool stubs)", () => {
           return { ok: false, errorCode: "aborted", safeMessage: "aborted" };
         }
         const outcome = fake.callTool(params.toolName, params.arguments, {
-          authToken: `ltfx.n.aee2fbd3bbda68f5b3dc.v1`,
+          authToken: "fake-valid-token",
           requestId: params.idempotencyKey,
         });
         return {

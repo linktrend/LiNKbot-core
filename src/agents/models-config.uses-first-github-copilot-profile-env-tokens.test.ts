@@ -51,19 +51,19 @@ describe("models-config", () => {
         "github-copilot:alpha": {
           type: "token",
           provider: "github-copilot",
-          token: `ltfx.n.a336d9b1d8b864787523.v1`,
+          token: "alpha-token",
         },
         "github-copilot:beta": {
           type: "token",
           provider: "github-copilot",
-          token: `ltfx.n.863d63c0bd3a94bfca84.v1`,
+          token: "beta-token",
         },
       },
     });
 
     expect(auth("github-copilot")).toEqual({
-      apiKey: `ltfx.n.a336d9b1d8b864787523.v1`,
-      discoveryApiKey: `ltfx.n.a336d9b1d8b864787523.v1`,
+      apiKey: "alpha-token",
+      discoveryApiKey: "alpha-token",
       mode: "token",
       source: "profile",
       profileId: "github-copilot:alpha",
@@ -123,7 +123,7 @@ describe("models-config", () => {
           },
         },
         agentDir: "/tmp/openclaw-agent",
-        env: { VLLM_API_KEY: `ltfx.n.11b1607b3ab2134d6603.v1` } as NodeJS.ProcessEnv,
+        env: { VLLM_API_KEY: "test-vllm-key" } as NodeJS.ProcessEnv,
         existingRaw: "",
         existingParsed: null,
       },
@@ -202,7 +202,7 @@ describe("models-config", () => {
   it("uses tokenRef env var when github-copilot profile omits plaintext token", () => {
     const auth = createProviderAuthResolver(
       {
-        COPILOT_REF_TOKEN: `ltfx.n.8b73e8ba2d6bb55aafd8.v1`,
+        COPILOT_REF_TOKEN: "token-from-ref-env",
       } as NodeJS.ProcessEnv,
       {
         version: 1,
@@ -218,7 +218,7 @@ describe("models-config", () => {
 
     expect(auth("github-copilot")).toEqual({
       apiKey: "COPILOT_REF_TOKEN",
-      discoveryApiKey: `ltfx.n.8b73e8ba2d6bb55aafd8.v1`,
+      discoveryApiKey: "token-from-ref-env",
       mode: "token",
       source: "profile",
       profileId: "github-copilot:default",

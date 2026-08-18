@@ -58,7 +58,7 @@ describe("Gemini memory embedding adapter", () => {
   it("keeps durable identity stable across generated client-version changes", async () => {
     const sharedHeaders = {
       "Content-Type": "application/json",
-      "x-goog-api-key": `ltfx.n.85dbe15d75ef9308c7ae.v1`,
+      "x-goog-api-key": "secret-key",
       Authorization: "Bearer token",
       "X-Custom-Region": "us-central1",
     };

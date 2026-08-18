@@ -90,7 +90,7 @@ const plugin = {
   capabilities: { chatTypes: ["direct"] },
   config: {
     listAccountIds: () => ["default"],
-    resolveAccount: () => ({ accountId: "default", token: "${ltfx.n.20158224750041d653cd.v1}" }),
+    resolveAccount: () => ({ accountId: "default", token: "configured" }),
     isEnabled: () => true,
     isConfigured: () => true,
     hasConfiguredState: () => true
@@ -110,7 +110,7 @@ cat > "$CONFIG_PATH" <<JSON
     "allow": ["e2e-corrupt-chat"]
   },
   "channels": {
-    "e2e-corrupt-chat": { "enabled": true, "token": "${ltfx.n.20158224750041d653cd.v1}" }
+    "e2e-corrupt-chat": { "enabled": true, "token": "configured" }
   }
 }
 JSON

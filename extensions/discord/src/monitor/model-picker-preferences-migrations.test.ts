@@ -226,7 +226,7 @@ describe("Discord model picker preference migration", () => {
     const entries = await plan.readEntries();
     expect(entries).toStrictEqual([
       {
-        key: `ltfx.n.72936c5532a0fc801b83.v1`,
+        key: "default:legacy-thread",
         value: {
           accountId: "default",
           channelId: "parent-1",

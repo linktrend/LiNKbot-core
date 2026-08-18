@@ -37,7 +37,7 @@ describe("executeStatusScanFromOverview", () => {
       tailscaleHttpsUrl: "https://box.tail.ts.net",
       update: { available: false, installKind: "package" },
       gatewaySnapshot: {
-        gatewayConnection: { url: `ltfx.n.0edbee82f0824a1ed09b.v1`, urlSource: "local" },
+        gatewayConnection: { url: "ws://127.0.0.1:18789", urlSource: "local" },
         remoteUrlMissing: false,
         gatewayMode: "local",
         gatewayProbeAuth: {},
@@ -84,7 +84,7 @@ describe("executeStatusScanFromOverview", () => {
     expect(result.secretDiagnostics).toEqual(["diag"]);
     expect(result.tailscaleDns).toBe("box.tail.ts.net");
     expect(result.tailscaleHttpsUrl).toBe("https://box.tail.ts.net");
-    expect(result.gatewayConnection).toEqual({ url: `ltfx.n.0edbee82f0824a1ed09b.v1`, urlSource: "local" });
+    expect(result.gatewayConnection).toEqual({ url: "ws://127.0.0.1:18789", urlSource: "local" });
     expect(result.gatewayMode).toBe("local");
     expect(result.gatewayReachable).toBe(true);
     expect(result.channels).toEqual({ rows: [], details: [] });

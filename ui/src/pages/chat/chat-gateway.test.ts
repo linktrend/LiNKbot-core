@@ -1474,7 +1474,7 @@ describe("handleChatGatewayEvent", () => {
       role: "assistant",
       content: [
         { type: "text", text: "OK" },
-        { type: "canvas", url: `ltfx.n.ab1dea57ae6f063f5236.v1` },
+        { type: "canvas", url: "/__openclaw__/canvas/documents/repeat/index.html" },
       ],
       timestamp: 3,
     };

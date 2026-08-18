@@ -14,11 +14,11 @@ describe("telegram bot token runtime evidence", () => {
   it("resolves only dedicated leased credentials", () => {
     expect(
       testing.resolveLeasedToken({
-        OPENCLAW_QA_TELEGRAM_SUT_BOT_TOKEN: `ltfx.n.c25b4222489f56474a74.v1`,
-        TELEGRAM_E2E_SUT_BOT_TOKEN: `ltfx.n.24db091a467ee921a2ac.v1`,
-        TELEGRAM_BOT_TOKEN: `ltfx.n.fdd956c57df8d78830b4.v1`,
+        OPENCLAW_QA_TELEGRAM_SUT_BOT_TOKEN: "leased-token",
+        TELEGRAM_E2E_SUT_BOT_TOKEN: "secondary-leased-token",
+        TELEGRAM_BOT_TOKEN: "generic-token",
       }),
-    ).toEqual({ key: "OPENCLAW_QA_TELEGRAM_SUT_BOT_TOKEN", token: `ltfx.n.c25b4222489f56474a74.v1` });
+    ).toEqual({ key: "OPENCLAW_QA_TELEGRAM_SUT_BOT_TOKEN", token: "leased-token" });
   });
 
   it("writes blocked evidence without a dedicated credential", async () => {
@@ -26,7 +26,7 @@ describe("telegram bot token runtime evidence", () => {
     tempDirs.push(artifactBase);
     const evidence = await runTelegramBotTokenRuntime(
       { artifactBase, repoRoot: process.cwd(), startupTimeoutMs: 100 },
-      { TELEGRAM_BOT_TOKEN: `ltfx.n.fdd956c57df8d78830b4.v1` },
+      { TELEGRAM_BOT_TOKEN: "generic-token" },
     );
 
     expect(evidence.entries[0]?.result.status).toBe("blocked");

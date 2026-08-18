@@ -22,31 +22,31 @@ export class DiscordPresenceBaselineCache {
     }
   }
 
-  isOffline(scope: string, key: (string)): boolean {
+  isOffline(scope: string, key: string): boolean {
     return this.offlineByKey.get(key) === scope;
   }
 
-  isOnline(scope: string, key: (string)): boolean {
+  isOnline(scope: string, key: string): boolean {
     return this.onlineByKey.get(key) === scope;
   }
 
-  observeOffline(scope: string, key: (string)): string | undefined {
+  observeOffline(scope: string, key: string): string | undefined {
     this.deleteMarker(this.onlineByKey, scope, key);
     return this.observe(this.offlineByKey, scope, key);
   }
 
-  observeOnline(scope: string, key: (string)): string | undefined {
+  observeOnline(scope: string, key: string): string | undefined {
     this.deleteMarker(this.offlineByKey, scope, key);
     return this.observe(this.onlineByKey, scope, key);
   }
 
-  private deleteMarker(markers: Map<string, string>, scope: string, key: (string)): void {
+  private deleteMarker(markers: Map<string, string>, scope: string, key: string): void {
     if (markers.get(key) === scope) {
       markers.delete(key);
     }
   }
 
-  private observe(markers: Map<string, string>, scope: string, key: (string)): string | undefined {
+  private observe(markers: Map<string, string>, scope: string, key: string): string | undefined {
     markers.delete(key);
     markers.set(key, scope);
     let evictedScope: string | undefined;

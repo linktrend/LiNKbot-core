@@ -41,7 +41,7 @@ export { parseBrowserHttpUrl, redactCdpUrl };
  * Used to distinguish direct-WebSocket CDP endpoints
  * from HTTP(S) endpoints that require /json/version discovery.
  */
-export function isWebSocketUrl(url: (string)): boolean {
+export function isWebSocketUrl(url: string): boolean {
   try {
     const parsed = new URL(url);
     return parsed.protocol === "ws:" || parsed.protocol === "wss:";
@@ -62,7 +62,7 @@ export function isWebSocketUrl(url: (string)): boolean {
  * it to http for discovery instead of attempting a root handshake that
  * Chrome will reject with HTTP 400.
  */
-export function isDirectCdpWebSocketEndpoint(url: (string)): boolean {
+export function isDirectCdpWebSocketEndpoint(url: string): boolean {
   if (!isWebSocketUrl(url)) {
     return false;
   }
@@ -96,7 +96,7 @@ type CdpEndpointSource =
   | { source?: "configured" }
   | { source: "discovered"; configuredUrl: string };
 
-function cdpEndpointAuthority(url: (string)): string {
+function cdpEndpointAuthority(url: string): string {
   const parsed = new URL(url);
   const usesTls = parsed.protocol === "https:" || parsed.protocol === "wss:";
   const port = parsed.port || (usesTls ? "443" : "80");
@@ -201,7 +201,7 @@ export function getHeadersWithAuth(url: string, headers: Record<string, string> 
 }
 
 /** Remove URL userinfo after callers have converted it to an Authorization header. */
-export function stripCdpUrlCredentials(url: (string)): string {
+export function stripCdpUrlCredentials(url: string): string {
   try {
     const parsed = new URL(url);
     if (!parsed.username && !parsed.password) {
@@ -263,7 +263,7 @@ function canonicalCdpAuthority(url: URL, protocol: "http:" | "https:" | "ws:" | 
   return `${protocol}//${hostname}:${port}`;
 }
 
-function canonicalCdpProfileIdentity(url: (string)): string {
+function canonicalCdpProfileIdentity(url: string): string {
   const parsed = new URL(url);
   const protocol =
     parsed.protocol === "ws:" ? "http:" : parsed.protocol === "wss:" ? "https:" : parsed.protocol;
@@ -279,7 +279,7 @@ function canonicalCdpProfileIdentity(url: (string)): string {
   return canonicalCdpAuthority(parsed, protocol);
 }
 
-function canonicalBrowserWebSocketIdentity(url: (string)): string {
+function canonicalBrowserWebSocketIdentity(url: string): string {
   const parsed = new URL(url);
   if (parsed.protocol !== "ws:" && parsed.protocol !== "wss:") {
     throw new Error("Browser websocket identity requires a WebSocket endpoint");

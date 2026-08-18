@@ -966,7 +966,7 @@ describe("optional media tool factory planning", () => {
             comfy: {
               config: {
                 mode: "cloud",
-                apiKey: `ltfx.n.6c91623c4fe9db7c8167.v1`,
+                apiKey: "cloud-key",
                 workflow: { "1": { inputs: {} } },
                 promptNodeId: "1",
               },
@@ -980,7 +980,7 @@ describe("optional media tool factory planning", () => {
       name: "legacy cloud API key config",
       config: legacyModelProviderConfig({
         mode: "cloud",
-        apiKey: `ltfx.n.6c91623c4fe9db7c8167.v1`,
+        apiKey: "cloud-key",
         workflow: { "1": { inputs: {} } },
         promptNodeId: "1",
       }),

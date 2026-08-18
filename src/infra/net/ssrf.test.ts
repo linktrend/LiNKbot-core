@@ -156,7 +156,7 @@ describe("ssrfPolicyFromHttpBaseUrlAllowedOrigin", () => {
       allowedOrigins: ["http://10.0.0.5:1234"],
     });
     expect(
-      ssrfPolicyFromHttpBaseUrlAllowedOrigin("https://api.example.com/v1?token=(redacted"),)
+      ssrfPolicyFromHttpBaseUrlAllowedOrigin("https://api.example.com/v1?token=redacted"),
     ).toEqual({
       allowedOrigins: ["https://api.example.com"],
     });

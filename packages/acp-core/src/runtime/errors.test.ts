@@ -81,7 +81,7 @@ describe("withAcpRuntimeErrorBoundary", () => {
   });
 
   it("preserves redacted RequestError details from numeric ACP errors", () => {
-    const token = `ltfx.n.82be8a4d9cdebab78235.v1`;
+    const token = "sk-abcdefghijklmnopqrstuvwxyz123456";
     const requestError = Object.assign(new Error("Internal error"), {
       name: "RequestError",
       code: -32603,
@@ -142,7 +142,7 @@ describe("withAcpRuntimeErrorBoundary", () => {
 
 describe("formatAcpErrorChain redaction", () => {
   it("redacts secret-shaped tokens that arrive as top-level non-Error values", () => {
-    const token = `ltfx.n.82be8a4d9cdebab78235.v1`;
+    const token = "sk-abcdefghijklmnopqrstuvwxyz123456";
 
     const out = formatAcpErrorChain(`upstream rejected token=${token}`);
 
@@ -151,7 +151,7 @@ describe("formatAcpErrorChain redaction", () => {
   });
 
   it("redacts secret-shaped tokens that arrive in nested cause messages", () => {
-    const token = `ltfx.n.82be8a4d9cdebab78235.v1`;
+    const token = "sk-abcdefghijklmnopqrstuvwxyz123456";
     const inner = new Error(`upstream rejected token=${token}`);
     const acp = new AcpRuntimeError("ACP_TURN_FAILED", "ACP turn failed", { cause: inner });
 
@@ -166,10 +166,10 @@ describe("formatAcpErrorChain redaction", () => {
     const secrets = [
       "Authorization: Basic dXNlcjpwYXNzd29yZGFiY2RlZg==",
       "Bearer eyJabcdefghijklmnopqrstuvwxyz.abcdefghijklmnopqrstuvwxyz.abcdefghijklmnopqrstuvwxyz",
-      "ltfx.n.a1416b917d5f2ab49aca.v1",
+      "github_pat_abcdefghijklmnopqrstuvwxyz123456",
       ["xoxb", "1234567890", "abcdefghijklmnop"].join("-"),
       "bot123456789:abcdefghijklmnopqrstuvwxyz123456",
-      "-----BEGIN LTFX PRIVATE KEY-----\nabcdefghijklmnopqrstuvwxyz\n-----END PRIVATE KEY-----",
+      "-----BEGIN PRIVATE KEY-----\nabcdefghijklmnopqrstuvwxyz\n-----END PRIVATE KEY-----",
     ];
     const out = formatAcpErrorChain(
       new AcpRuntimeError("ACP_TURN_FAILED", `backend failed: ${secrets.join(" ")}`),

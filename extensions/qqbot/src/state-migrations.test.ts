@@ -127,7 +127,7 @@ describe("qqbot doctor state migration", () => {
     const backup: CredentialBackup = {
       accountId: "default",
       appId: "app-1",
-      clientSecret: `ltfx.n.f7e7c36e458e80e6b6a2.v1`,
+      clientSecret: "secret-1",
       savedAt: "2026-06-02T00:00:00.000Z",
     };
     await writeJson(sourcePath, backup);
@@ -166,13 +166,13 @@ describe("qqbot doctor state migration", () => {
     await writeJson(singlePath, {
       accountId: "default",
       appId: "stale-app",
-      clientSecret: `ltfx.n.3bb18017e9043e40e6ec.v1`,
+      clientSecret: "stale-secret",
       savedAt: "2026-06-01T00:00:00.000Z",
     });
     await writeJson(accountPath, {
       accountId: "default",
       appId: "current-app",
-      clientSecret: `ltfx.n.775f21c0f9244452b0d4.v1`,
+      clientSecret: "current-secret",
       savedAt: "2026-06-02T00:00:00.000Z",
     });
 
@@ -186,7 +186,7 @@ describe("qqbot doctor state migration", () => {
           maxEntries: 1000,
         })
         .lookup(buildQQBotStateKey("credential-backup", "default")),
-    ).resolves.toMatchObject({ appId: "current-app", clientSecret: `ltfx.n.775f21c0f9244452b0d4.v1` });
+    ).resolves.toMatchObject({ appId: "current-app", clientSecret: "current-secret" });
     await expect(fs.access(`${singlePath}.migrated`)).resolves.toBeUndefined();
     await expect(fs.access(`${accountPath}.migrated`)).resolves.toBeUndefined();
   });
@@ -195,7 +195,7 @@ describe("qqbot doctor state migration", () => {
     await writeJson(path.join(stateDir, "qqbot", "data", "credential-backup-other.json"), {
       accountId: "default",
       appId: "wrong-app",
-      clientSecret: `ltfx.n.539e915a40033497f3a9.v1`,
+      clientSecret: "wrong-secret",
       savedAt: "2026-06-02T00:00:00.000Z",
     });
 
@@ -210,7 +210,7 @@ describe("qqbot doctor state migration", () => {
       {
         accountId: "default",
         appId: "other-state-app",
-        clientSecret: `ltfx.n.230a45541bb055ba2f78.v1`,
+        clientSecret: "other-state-secret",
         savedAt: "2026-06-02T00:00:00.000Z",
       },
     );
@@ -223,7 +223,7 @@ describe("qqbot doctor state migration", () => {
     await writeJson(sourcePath, {
       accountId: "new",
       appId: "new-app",
-      clientSecret: `ltfx.n.fc97bb52861fcf328d0a.v1`,
+      clientSecret: "new-secret",
       savedAt: "2026-06-02T00:00:00.000Z",
     });
     const existingKey = buildQQBotStateKey("credential-backup", "existing");
@@ -231,7 +231,7 @@ describe("qqbot doctor state migration", () => {
     const existingBackup: CredentialBackup = {
       accountId: "existing",
       appId: "existing-app",
-      clientSecret: `ltfx.n.06d11b54b82961522733.v1`,
+      clientSecret: "existing-secret",
       savedAt: "2026-06-01T00:00:00.000Z",
     };
     const values = new Map([[existingKey, existingBackup]]);

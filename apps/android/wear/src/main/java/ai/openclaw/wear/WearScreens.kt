@@ -766,17 +766,17 @@ private fun ThreadVoiceMode(
         }
       } else {
         visibleConversation.forEach { entry ->
-          item(key = (entry.id) {)
+          item(key = entry.id) {
             RealtimeTalkBubble(entry)
           }
         }
         if (thinking) {
-          item(key = "${ltfx.n.9ff9feef596fecd1d547.v1}") {
+          item(key = "realtime-thinking") {
             WearThreadThinking()
           }
         }
         // Follow a trailing anchor: centering a growing bubble can hide its newly streamed tail.
-        item(key = "${ltfx.n.f59e191622eced2fea09.v1}") {
+        item(key = "realtime-thread-end") {
           Spacer(modifier = Modifier.height(1.dp))
         }
       }

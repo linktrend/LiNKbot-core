@@ -98,7 +98,7 @@ describe("task owner access", () => {
       ).toBeUndefined();
       expect(
         resolveTaskForLookupTokenForOwner({
-          token: `ltfx.n.18c51e9178cc61b56421.v1`,
+          token: "agent:main:acp:child-1",
           callerOwnerKey: "agent:main:subagent:other-parent",
         }),
       ).toBeUndefined();
@@ -147,7 +147,7 @@ describe("task owner access", () => {
       ).toBeUndefined();
       expect(
         resolveTaskForLookupTokenForOwner({
-          token: `ltfx.n.7468412dec3557bec081.v1`,
+          token: "system-task-run",
           callerOwnerKey: "agent:main:main",
         }),
       ).toBeUndefined();

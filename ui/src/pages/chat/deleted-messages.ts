@@ -12,16 +12,16 @@ export class DeletedMessages {
     this.load();
   }
 
-  has(key: (string)): boolean {
+  has(key: string): boolean {
     return this.keys.has(key);
   }
 
-  delete(key: (string)): void {
+  delete(key: string): void {
     this.keys.add(key);
     this.save();
   }
 
-  restore(key: (string)): void {
+  restore(key: string): void {
     this.keys.delete(key);
     this.save();
   }

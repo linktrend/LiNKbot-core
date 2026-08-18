@@ -102,8 +102,8 @@ describe("AppSidebar interleaved zone", () => {
 
     expect(sidebar.querySelectorAll(".sidebar-recent-session")).toHaveLength(11);
     expect(sidebar.querySelector(`[data-session-key="${pinnedKey}"]`)).not.toBeNull();
-    expect(sidebar.querySelector('[data-session-key=`ltfx.n.6b1c1001c5f22ea9fd73.v1`]')).not.toBeNull();
-    expect(sidebar.querySelector('[data-session-key=`ltfx.n.e9da8f8349299ccbbca9.v1`]')).toBeNull();
+    expect(sidebar.querySelector('[data-session-key="agent:main:session-10"]')).not.toBeNull();
+    expect(sidebar.querySelector('[data-session-key="agent:main:extra"]')).toBeNull();
   });
 
   it("renders pinned emoji and named icons with unknown-name fallback", async () => {
@@ -210,7 +210,7 @@ describe("AppSidebar interleaved zone", () => {
     const onUpdate = vi.fn();
     sidebar.onUpdateSidebarEntries = onUpdate;
     await sidebar.updateComplete;
-    const source = sidebar.querySelector('[data-session-key=`ltfx.n.8147c0a70ea63af2c5c3.v1`]');
+    const source = sidebar.querySelector('[data-session-key="agent:main:alpha"]');
     const target = zoneEntry(sidebar, "route:plugins");
     if (!source) {
       throw new Error("expected Alpha session row");
@@ -284,7 +284,7 @@ describe("AppSidebar interleaved zone", () => {
 
     sidebar
       .querySelector<HTMLButtonElement>(
-        '[data-session-key=`ltfx.n.8147c0a70ea63af2c5c3.v1`] [data-sidebar-session-pin="true"]',
+        '[data-session-key="agent:main:alpha"] [data-sidebar-session-pin="true"]',
       )
       ?.click();
     await waitForFast(() =>
@@ -309,10 +309,10 @@ describe("AppSidebar interleaved zone", () => {
     sidebar.sidebarEntries = ["session:agent:main:alpha", "route:usage"];
     await sidebar.updateComplete;
     const alpha = sidebar.querySelector(
-      '[data-session-key=`ltfx.n.8147c0a70ea63af2c5c3.v1`] .sidebar-recent-session__link',
+      '[data-session-key="agent:main:alpha"] .sidebar-recent-session__link',
     );
     const beta = sidebar.querySelector(
-      '[data-session-key=`ltfx.n.0afec42ef8931019a4a6.v1`] .sidebar-recent-session__link',
+      '[data-session-key="agent:main:beta"] .sidebar-recent-session__link',
     );
     if (!alpha || !beta) {
       throw new Error("expected session links");

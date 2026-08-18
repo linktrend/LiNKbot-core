@@ -1962,7 +1962,7 @@ jobs:
                   label: "Full Release Validation",
                   runAttempt: $validation_run_attempt,
                   targetSha: $validation_target_sha,
-                  url: (ltfx.n.940e4eef72d2186fc960.v1),
+                  url: $validation_url,
                   workflowRef: $validation_workflow_ref
                 }]
               ' \

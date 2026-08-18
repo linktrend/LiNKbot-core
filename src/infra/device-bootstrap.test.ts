@@ -499,7 +499,7 @@ describe("device bootstrap tokens", () => {
 
     await expect(
       verifyDeviceBootstrapToken({
-        token: `ltfx.n.7d7dc52e25752fdda261.v1`,
+        token: "missing-token",
         deviceId: "device-123",
         publicKey: "public-key-123",
         role: "node",
@@ -567,12 +567,12 @@ describe("device bootstrap tokens", () => {
     persistDeviceBootstrapTokenRecords(
       {
         "profileless-token": {
-          token: `ltfx.n.1009b92d3869cc6e86ba.v1`,
+          token: "profileless-token",
           ts: Date.now(),
           issuedAtMs: Date.now(),
         },
         "expired-token": {
-          token: `ltfx.n.b52b3ef2233858ce1156.v1`,
+          token: "expired-token",
           ts: Date.now() - tokenTtlMs - 1,
           issuedAtMs: Date.now() - tokenTtlMs - 1,
         },

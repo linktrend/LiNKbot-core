@@ -1283,7 +1283,7 @@ function createGoogleTransportStreamFn(kind: CanonicalGoogleTransportApi): Strea
         timestamp: Date.now(),
       };
       try {
-        const apiKey = (options?.apiKey ?? getEnvApiKey(model.provider) ?? undefined;)
+        const apiKey = options?.apiKey ?? getEnvApiKey(model.provider) ?? undefined;
         const guardedFetch = buildGuardedModelFetch(model);
         let params = buildGoogleGenerativeAiParams(model, context, options);
         const nextParams = await options?.onPayload?.(params, model);

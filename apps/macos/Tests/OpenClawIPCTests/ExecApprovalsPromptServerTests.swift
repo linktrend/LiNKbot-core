@@ -97,7 +97,7 @@ struct ExecApprovalsPromptServerTests {
         server.start()
         #expect(!FileManager().fileExists(atPath: socketPath))
 
-        let decision = await self.waitForDecision(socketPath: socketPath, token: "${ltfx.n.ef6036bfacfc26e4d8f0.v1}")
+        let decision = await self.waitForDecision(socketPath: socketPath, token: "current-token")
         let snapshot = probe.snapshot()
         #expect(snapshot.count >= 2)
         #expect(!snapshot.resolvedOnMain)
@@ -130,7 +130,7 @@ struct ExecApprovalsPromptServerTests {
         #expect(!FileManager().fileExists(atPath: socketPath))
         let decision = await ExecApprovalsSocketClient.requestDecision(
             socketPath: socketPath,
-            token: "${ltfx.n.ef6036bfacfc26e4d8f0.v1}",
+            token: "current-token",
             request: ExecApprovalPromptRequest(command: "echo stopped"),
             timeoutMs: 100)
         #expect(decision == nil)
@@ -173,7 +173,7 @@ struct ExecApprovalsPromptServerTests {
 
         let decision = await self.waitForDecision(
             socketPath: socketURL.path,
-            token: "${ltfx.n.ef6036bfacfc26e4d8f0.v1}")
+            token: "current-token")
         #expect(probe.snapshot().count >= 2)
         #expect(decision == .allowOnce)
     }
@@ -196,7 +196,7 @@ struct ExecApprovalsPromptServerTests {
         server.start()
         let initialDecision = await self.waitForDecision(
             socketPath: socketPath,
-            token: "${ltfx.n.ef6036bfacfc26e4d8f0.v1}")
+            token: "current-token")
         let initialResolveCount = probe.snapshot().count
         #expect(initialDecision == .allowOnce)
 
@@ -204,7 +204,7 @@ struct ExecApprovalsPromptServerTests {
 
         let recoveredDecision = await self.waitForDecision(
             socketPath: socketPath,
-            token: "${ltfx.n.ef6036bfacfc26e4d8f0.v1}")
+            token: "current-token")
         #expect(probe.snapshot().count > initialResolveCount)
         #expect(recoveredDecision == .allowOnce)
     }

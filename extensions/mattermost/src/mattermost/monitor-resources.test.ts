@@ -101,7 +101,7 @@ describe("mattermost monitor resources", () => {
       client: {
         apiBaseUrl: "https://chat.example.com/api/v4",
         baseUrl: "https://chat.example.com",
-        token: `ltfx.n.df27f9beb68b7766af3a.v1`,
+        token: "bot-token",
       } as never,
       logger: {},
       mediaMaxBytes: 1024,
@@ -144,7 +144,7 @@ describe("mattermost monitor resources", () => {
       client: {
         apiBaseUrl: "https://chat.example.com/api/v4",
         baseUrl: "https://chat.example.com",
-        token: `ltfx.n.df27f9beb68b7766af3a.v1`,
+        token: "bot-token",
       } as never,
       logger: {},
       mediaMaxBytes: 1024,
@@ -228,7 +228,7 @@ describe("mattermost monitor resources", () => {
       client: {
         apiBaseUrl: "https://chat.example.com/api/v4",
         baseUrl: "https://chat.example.com",
-        token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+        token: "test-token",
       } as never,
       logger: {},
       mediaMaxBytes: 1024,
@@ -291,7 +291,7 @@ describe("mattermost monitor resources", () => {
         client: {
           apiBaseUrl: `http://127.0.0.1:${address.port}/api/v4`,
           baseUrl: `http://127.0.0.1:${address.port}`,
-          token: `ltfx.n.df27f9beb68b7766af3a.v1`,
+          token: "bot-token",
         } as never,
         logger: {},
         mediaMaxBytes: 1024,

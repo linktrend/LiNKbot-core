@@ -74,13 +74,13 @@ const OPENAI_REASONING_REPLAY_METADATA = {
 
 describe("redactTranscriptMessage", () => {
   it("redacts text block matching default patterns (sk- token)", () => {
-    const msg = textMessage("key is ltfx.n.5a006a7a6d178872112c.v1 end");
+    const msg = textMessage("key is sk-abcdef1234567890xyz end");
     const result = redactTranscriptMessage(msg, cfg("tools"));
     const text = expectDefined(
       (msgContent(result) as Array<{ text: string }>)[0],
       "(msgContent(result) as Array<{ text: string }>)[0] test invariant",
     ).text;
-    expect(text).not.toContain("ltfx.n.5a006a7a6d178872112c.v1");
+    expect(text).not.toContain("sk-abcdef1234567890xyz");
     expect(text).toContain("end");
   });
 
@@ -88,7 +88,7 @@ describe("redactTranscriptMessage", () => {
     const msg = {
       role: "assistant",
       content: [
-        { type: "thinking", thinking: "secret ltfx.n.5a006a7a6d178872112c.v1", thinkingSignature: "sig" },
+        { type: "thinking", thinking: "secret sk-abcdef1234567890xyz", thinkingSignature: "sig" },
       ],
     } as unknown as AgentMessage;
     const result = redactTranscriptMessage(msg, cfg("tools"));
@@ -96,7 +96,7 @@ describe("redactTranscriptMessage", () => {
       (msgContent(result) as Array<{ thinking: string }>)[0],
       "(msgContent(result) as Array<{ thinking: string }>)[0] test invariant",
     );
-    expect(block.thinking).not.toContain("ltfx.n.5a006a7a6d178872112c.v1");
+    expect(block.thinking).not.toContain("sk-abcdef1234567890xyz");
   });
 
   it("preserves OpenAI encrypted reasoning inside thinkingSignature", () => {
@@ -104,11 +104,11 @@ describe("redactTranscriptMessage", () => {
       id: "reasoning-1",
       type: "reasoning",
       encrypted_content: CIPHERTEXT_WITH_TOKEN_SHAPED_BYTES,
-      summary: [{ type: "summary_text", text: "secret ltfx.n.5a006a7a6d178872112c.v1" }],
-      content: [{ type: "reasoning_text", text: "secret ltfx.n.5a006a7a6d178872112c.v1" }],
+      summary: [{ type: "summary_text", text: "secret sk-abcdef1234567890xyz" }],
+      content: [{ type: "reasoning_text", text: "secret sk-abcdef1234567890xyz" }],
       __openclaw_replay: {
         ...OPENAI_REASONING_REPLAY_METADATA,
-        secret: `ltfx.n.5a006a7a6d178872112c.v1`,
+        secret: "sk-abcdef1234567890xyz",
       },
     });
     const msg = {
@@ -119,11 +119,11 @@ describe("redactTranscriptMessage", () => {
       content: [
         {
           type: "thinking",
-          thinking: "secret ltfx.n.5a006a7a6d178872112c.v1",
+          thinking: "secret sk-abcdef1234567890xyz",
           thinkingSignature,
           openclawReasoningReplay: {
             ...OPENAI_REASONING_REPLAY_METADATA,
-            secret: `ltfx.n.5a006a7a6d178872112c.v1`,
+            secret: "sk-abcdef1234567890xyz",
           },
         },
         {
@@ -133,11 +133,11 @@ describe("redactTranscriptMessage", () => {
             type: "reasoning",
             status: "future",
             encrypted_content: CIPHERTEXT_WITH_TOKEN_SHAPED_BYTES,
-            summary: [{ type: "summary_text", text: "secret ltfx.n.5a006a7a6d178872112c.v1" }],
+            summary: [{ type: "summary_text", text: "secret sk-abcdef1234567890xyz" }],
           }),
           openclawReasoningReplay: {
             ...OPENAI_REASONING_REPLAY_METADATA,
-            model: `ltfx.n.5a006a7a6d178872112c.v1`,
+            model: "sk-abcdef1234567890xyz",
           },
         },
       ],
@@ -165,7 +165,7 @@ describe("redactTranscriptMessage", () => {
       (msgContent(result) as Array<{ thinkingSignature: string }>)[1],
       "(msgContent(result) as Array<{ thinkingSignature: string }>)[1] test invariant",
     ).thinkingSignature;
-    expect(block.thinking).not.toContain("ltfx.n.5a006a7a6d178872112c.v1");
+    expect(block.thinking).not.toContain("sk-abcdef1234567890xyz");
     expect(replayItem.id).toBe("reasoning-1");
     expect(replayItem.type).toBe("reasoning");
     expect(replayItem.encrypted_content).toBe(CIPHERTEXT_WITH_TOKEN_SHAPED_BYTES);
@@ -173,10 +173,10 @@ describe("redactTranscriptMessage", () => {
     expect(replayItem.content).toBeUndefined();
     expect(replayItem["__openclaw_replay"]).toEqual(OPENAI_REASONING_REPLAY_METADATA);
     expect(blockMetadata).toEqual(OPENAI_REASONING_REPLAY_METADATA);
-    expect(block.thinkingSignature).not.toContain("ltfx.n.5a006a7a6d178872112c.v1");
-    expect(JSON.stringify(blockMetadata)).not.toContain("ltfx.n.5a006a7a6d178872112c.v1");
-    expect(rejectedSignature).not.toContain("ltfx.n.5a006a7a6d178872112c.v1");
-    expect(JSON.stringify(msgContent(result))).not.toContain("ltfx.n.5a006a7a6d178872112c.v1");
+    expect(block.thinkingSignature).not.toContain("sk-abcdef1234567890xyz");
+    expect(JSON.stringify(blockMetadata)).not.toContain("sk-abcdef1234567890xyz");
+    expect(rejectedSignature).not.toContain("sk-abcdef1234567890xyz");
+    expect(JSON.stringify(msgContent(result))).not.toContain("sk-abcdef1234567890xyz");
   });
 
   it("handles configured providers without explicit models", () => {
@@ -189,7 +189,7 @@ describe("redactTranscriptMessage", () => {
     } as unknown as AgentMessage;
     const inputCfg = {
       logging: { redactSensitive: "tools" },
-      models: { providers: { openai: { apiKey: `ltfx.n.62af8704764faf8ea82f.v1` } } },
+      models: { providers: { openai: { apiKey: "test-key" } } },
     } as unknown as OpenClawConfig;
 
     const result = redactTranscriptMessage(msg, inputCfg) as unknown as {
@@ -315,7 +315,7 @@ describe("redactTranscriptMessage", () => {
       id: "reasoning-encrypted-1",
       format: "anthropic-claude-v1",
       index: 1,
-      secret: `ltfx.n.5a006a7a6d178872112c.v1`,
+      secret: "sk-abcdef1234567890xyz",
     });
     const msg = {
       role: "assistant",
@@ -392,17 +392,17 @@ describe("redactTranscriptMessage", () => {
           name: "send_request",
           thoughtSignature: GOOGLE_THOUGHT_SIGNATURE,
           arguments: {
-            apiKey: `ltfx.n.066a431c0ceefb0deeff.v1`,
-            thinkingSignature: `ltfx.n.5a006a7a6d178872112c.v1`,
-            thoughtSignature: `ltfx.n.5a006a7a6d178872112c.v1`,
-            thought_signature: `ltfx.n.5a006a7a6d178872112c.v1`,
-            encrypted_content: `ltfx.n.5a006a7a6d178872112c.v1`,
+            apiKey: "plainsecretvalue123",
+            thinkingSignature: "sk-abcdef1234567890xyz",
+            thoughtSignature: "sk-abcdef1234567890xyz",
+            thought_signature: "sk-abcdef1234567890xyz",
+            encrypted_content: "sk-abcdef1234567890xyz",
             nestedAssistant: {
               role: "assistant",
               content: [
                 {
                   type: "thinking",
-                  thinkingSignature: `ltfx.n.5a006a7a6d178872112c.v1`,
+                  thinkingSignature: "sk-abcdef1234567890xyz",
                 },
               ],
             },
@@ -422,7 +422,7 @@ describe("redactTranscriptMessage", () => {
       "( msgContent(result) as Array<{ thoughtSignature: string; arguments: ... test invariant",
     );
     expect(block.thoughtSignature).toBe(GOOGLE_THOUGHT_SIGNATURE);
-    expect(JSON.stringify(block.arguments)).not.toContain("ltfx.n.5a006a7a6d178872112c.v1");
+    expect(JSON.stringify(block.arguments)).not.toContain("sk-abcdef1234567890xyz");
     expect(block.arguments.apiKey).toBe("plains…e123");
   });
 
@@ -434,17 +434,17 @@ describe("redactTranscriptMessage", () => {
       content: [
         {
           type: "text",
-          text: "secret ltfx.n.5a006a7a6d178872112c.v1",
+          text: "secret sk-abcdef1234567890xyz",
           textSignature: GOOGLE_THOUGHT_SIGNATURE,
         },
         {
           type: "text",
           text: "visible",
-          textSignature: `ltfx.n.5a006a7a6d178872112c.v1`,
+          textSignature: "sk-abcdef1234567890xyz",
         },
         {
           type: "thinking",
-          thinking: "secret ltfx.n.5a006a7a6d178872112c.v1",
+          thinking: "secret sk-abcdef1234567890xyz",
           thought_signature: SHORT_GOOGLE_THOUGHT_SIGNATURE,
         },
       ],
@@ -453,16 +453,16 @@ describe("redactTranscriptMessage", () => {
     const result = redactTranscriptMessage(msg, cfg("tools", [GOOGLE_THOUGHT_SIGNATURE]));
     const blocks = msgContent(result) as Array<Record<string, string>>;
     expect(expectDefined(blocks[0], "blocks[0] test invariant").text).not.toContain(
-      "ltfx.n.5a006a7a6d178872112c.v1",
+      "sk-abcdef1234567890xyz",
     );
     expect(expectDefined(blocks[0], "blocks[0] test invariant").textSignature).toBe(
       GOOGLE_THOUGHT_SIGNATURE,
     );
     expect(expectDefined(blocks[1], "blocks[1] test invariant").textSignature).not.toContain(
-      "ltfx.n.5a006a7a6d178872112c.v1",
+      "sk-abcdef1234567890xyz",
     );
     expect(expectDefined(blocks[2], "blocks[2] test invariant").thinking).not.toContain(
-      "ltfx.n.5a006a7a6d178872112c.v1",
+      "sk-abcdef1234567890xyz",
     );
     expect(expectDefined(blocks[2], "blocks[2] test invariant").thought_signature).toBe(
       SHORT_GOOGLE_THOUGHT_SIGNATURE,
@@ -497,7 +497,7 @@ describe("redactTranscriptMessage", () => {
       content: [
         {
           type: "thinking",
-          thinking: "secret ltfx.n.5a006a7a6d178872112c.v1",
+          thinking: "secret sk-abcdef1234567890xyz",
           thinkingSignature: CIPHERTEXT_WITH_TOKEN_SHAPED_BYTES,
           redacted: true,
         },
@@ -507,7 +507,7 @@ describe("redactTranscriptMessage", () => {
           signature: CIPHERTEXT_WITH_TOKEN_SHAPED_BYTES,
           thinkingSignature: CIPHERTEXT_WITH_TOKEN_SHAPED_BYTES,
           metadata: {
-            accessToken: `ltfx.n.e44594ec8fcce5022e81.v1`,
+            accessToken: "nestedplainsecret123",
           },
         },
       ],
@@ -529,7 +529,7 @@ describe("redactTranscriptMessage", () => {
       )[1],
       "( msgContent(result) as Array<{ data: string; signature: string; thin... test invariant",
     );
-    expect(thinkingBlock.thinking).not.toContain("ltfx.n.5a006a7a6d178872112c.v1");
+    expect(thinkingBlock.thinking).not.toContain("sk-abcdef1234567890xyz");
     expect(thinkingBlock.thinkingSignature).toBe(CIPHERTEXT_WITH_TOKEN_SHAPED_BYTES);
     expect(redactedBlock.data).toBe(CIPHERTEXT_WITH_TOKEN_SHAPED_BYTES);
     expect(redactedBlock.signature).toBe(CIPHERTEXT_WITH_TOKEN_SHAPED_BYTES);
@@ -543,7 +543,7 @@ describe("redactTranscriptMessage", () => {
       type: "reasoning.encrypted",
       data: githubToken,
       id: "reasoning-encrypted-1",
-      secret: `ltfx.n.5a006a7a6d178872112c.v1`,
+      secret: "sk-abcdef1234567890xyz",
     });
     const googleMsg = {
       role: "assistant",
@@ -626,8 +626,8 @@ describe("redactTranscriptMessage", () => {
             id: "reasoning-1",
             type: "reasoning",
             encrypted_content: GOOGLE_CREDENTIAL_COLLISION,
-            summary: [{ type: "summary_text", text: "secret ltfx.n.5a006a7a6d178872112c.v1" }],
-            secret: `ltfx.n.5a006a7a6d178872112c.v1`,
+            summary: [{ type: "summary_text", text: "secret sk-abcdef1234567890xyz" }],
+            secret: "sk-abcdef1234567890xyz",
           }),
         },
       ],
@@ -747,7 +747,7 @@ describe("redactTranscriptMessage", () => {
           {
             type: "thinking",
             thinking: "visible",
-            thinkingSignature: "secret ltfx.n.5a006a7a6d178872112c.v1",
+            thinkingSignature: "secret sk-abcdef1234567890xyz",
           },
         ],
       },
@@ -762,7 +762,7 @@ describe("redactTranscriptMessage", () => {
             id: "call_1",
             name: "send_request",
             arguments: {},
-            thoughtSignature: "secret ltfx.n.5a006a7a6d178872112c.v1",
+            thoughtSignature: "secret sk-abcdef1234567890xyz",
           },
         ],
       },
@@ -780,7 +780,7 @@ describe("redactTranscriptMessage", () => {
     for (const message of malformedKnownOpaqueMessages) {
       expect(
         JSON.stringify(msgContent(redactTranscriptMessage(message, cfg("tools")))),
-      ).not.toContain("ltfx.n.5a006a7a6d178872112c.v1");
+      ).not.toContain("sk-abcdef1234567890xyz");
     }
   });
 
@@ -863,35 +863,35 @@ describe("redactTranscriptMessage", () => {
       content: [
         {
           type: "gatewayCustom",
-          data: "secret ltfx.n.5a006a7a6d178872112c.v1",
-          signature: "secret ltfx.n.5a006a7a6d178872112c.v1",
-          thinkingSignature: "secret ltfx.n.5a006a7a6d178872112c.v1",
-          thoughtSignature: "secret ltfx.n.5a006a7a6d178872112c.v1",
-          thought_signature: "secret ltfx.n.5a006a7a6d178872112c.v1",
-          encrypted_content: "secret ltfx.n.5a006a7a6d178872112c.v1",
+          data: "secret sk-abcdef1234567890xyz",
+          signature: "secret sk-abcdef1234567890xyz",
+          thinkingSignature: "secret sk-abcdef1234567890xyz",
+          thoughtSignature: "secret sk-abcdef1234567890xyz",
+          thought_signature: "secret sk-abcdef1234567890xyz",
+          encrypted_content: "secret sk-abcdef1234567890xyz",
           nested: {
             type: "redacted_thinking",
-            data: "secret ltfx.n.5a006a7a6d178872112c.v1",
+            data: "secret sk-abcdef1234567890xyz",
           },
         },
       ],
     } as unknown as AgentMessage;
 
     const result = redactTranscriptMessage(msg, cfg("tools"));
-    expect(JSON.stringify(msgContent(result))).not.toContain("ltfx.n.5a006a7a6d178872112c.v1");
+    expect(JSON.stringify(msgContent(result))).not.toContain("sk-abcdef1234567890xyz");
   });
 
   it("redacts partialJson block", () => {
     const msg = {
       role: "assistant",
-      content: [{ type: "toolCallDelta", partialJson: '{"key":`ltfx.n.5a006a7a6d178872112c.v1`}' }],
+      content: [{ type: "toolCallDelta", partialJson: '{"key":"sk-abcdef1234567890xyz"}' }],
     } as unknown as AgentMessage;
     const result = redactTranscriptMessage(msg, cfg("tools"));
     const block = expectDefined(
       (msgContent(result) as Array<{ partialJson: string }>)[0],
       "(msgContent(result) as Array<{ partialJson: string }>)[0] test invariant",
     );
-    expect(block.partialJson).not.toContain("ltfx.n.5a006a7a6d178872112c.v1");
+    expect(block.partialJson).not.toContain("sk-abcdef1234567890xyz");
   });
 
   it("redacts nested strings in assistant tool-call arguments", () => {
@@ -903,8 +903,8 @@ describe("redactTranscriptMessage", () => {
           id: "call_1",
           name: "shell",
           arguments: {
-            command: "OPENAI_API_KEY="${ltfx.n.5a006a7a6d178872112c.v1}" openclaw health",
-            env: { nested: ["token ltfx.n.5a006a7a6d178872112c.v1"] },
+            command: "OPENAI_API_KEY=sk-abcdef1234567890xyz openclaw health",
+            env: { nested: ["token sk-abcdef1234567890xyz"] },
             count: 1,
           },
         },
@@ -922,8 +922,8 @@ describe("redactTranscriptMessage", () => {
       count: number;
     };
     const serializedArguments = JSON.stringify(block.arguments);
-    expect(serializedArguments).not.toContain("ltfx.n.5a006a7a6d178872112c.v1");
-    expect(argumentsValue.command).toBe("OPENAI_API_KEY=(sk-abc…0xyz openclaw health");)
+    expect(serializedArguments).not.toContain("sk-abcdef1234567890xyz");
+    expect(argumentsValue.command).toBe("OPENAI_API_KEY=sk-abc…0xyz openclaw health");
     expect(argumentsValue.env.nested[0]).toBe("token sk-abc…0xyz");
     expect(argumentsValue.count).toBe(1);
     expect(serializedArguments).toContain("openclaw health");
@@ -944,7 +944,7 @@ describe("redactTranscriptMessage", () => {
           id: "call_1",
           name: "send_request",
           arguments: {
-            apiKey: `ltfx.n.066a431c0ceefb0deeff.v1`,
+            apiKey: "plainsecretvalue123",
             password: "hunter2",
             nested: { accessToken: ["nestedplainsecret123"] },
             safe: "visible",
@@ -983,9 +983,9 @@ describe("redactTranscriptMessage", () => {
           id: "call_1",
           name: "send_request",
           input: {
-            apiKey: `ltfx.n.066a431c0ceefb0deeff.v1`,
+            apiKey: "plainsecretvalue123",
             nested: { accessToken: ["nestedplainsecret123"] },
-            command: "OPENAI_API_KEY="${ltfx.n.5a006a7a6d178872112c.v1}" openclaw health",
+            command: "OPENAI_API_KEY=sk-abcdef1234567890xyz openclaw health",
             safe: "visible",
           },
         },
@@ -1006,10 +1006,10 @@ describe("redactTranscriptMessage", () => {
     const serializedInput = JSON.stringify(block.input);
     expect(serializedInput).not.toContain("plainsecretvalue123");
     expect(serializedInput).not.toContain("nestedplainsecret123");
-    expect(serializedInput).not.toContain("ltfx.n.5a006a7a6d178872112c.v1");
+    expect(serializedInput).not.toContain("sk-abcdef1234567890xyz");
     expect(inputValue.apiKey).toBe("plains…e123");
     expect(inputValue.nested.accessToken[0]).toBe("nested…t123");
-    expect(inputValue.command).toBe("OPENAI_API_KEY=(sk-abc…0xyz openclaw health");)
+    expect(inputValue.command).toBe("OPENAI_API_KEY=sk-abc…0xyz openclaw health");
     expect(serializedInput).toContain("visible");
   });
 
@@ -1052,12 +1052,12 @@ describe("redactTranscriptMessage", () => {
         {
           type: "gatewayCustom",
           source: {
-            url: `ltfx.n.ee5221a3c94202f86c45.v1`,
+            url: "https://example.com/callback?token=sk-abcdef1234567890xyz",
           },
           data: {
-            apiKey: `ltfx.n.066a431c0ceefb0deeff.v1`,
+            apiKey: "plainsecretvalue123",
             nested: {
-              accessToken: `ltfx.n.e44594ec8fcce5022e81.v1`,
+              accessToken: "nestedplainsecret123",
             },
           },
           safe: "visible",
@@ -1068,7 +1068,7 @@ describe("redactTranscriptMessage", () => {
     const result = redactTranscriptMessage(msg, cfg("tools"));
     const block = (msgContent(result) as Array<Record<string, unknown>>)[0];
     const serializedBlock = JSON.stringify(block);
-    expect(serializedBlock).not.toContain("ltfx.n.5a006a7a6d178872112c.v1");
+    expect(serializedBlock).not.toContain("sk-abcdef1234567890xyz");
     expect(serializedBlock).not.toContain("plainsecretvalue123");
     expect(serializedBlock).not.toContain("nestedplainsecret123");
     expect(serializedBlock).toContain("visible");
@@ -1078,7 +1078,7 @@ describe("redactTranscriptMessage", () => {
     // Redaction walks arbitrary tool payloads, so circular structures must be
     // replaced instead of recursing forever or throwing.
     const details: Record<string, unknown> = {
-      apiKey: `ltfx.n.066a431c0ceefb0deeff.v1`,
+      apiKey: "plainsecretvalue123",
     };
     details.self = details;
     const msg = {
@@ -1103,9 +1103,9 @@ describe("redactTranscriptMessage", () => {
       role: "toolResult",
       toolCallId: "call_1",
       toolName: "send_request",
-      content: [{ type: "text", text: "result ltfx.n.5a006a7a6d178872112c.v1" }],
+      content: [{ type: "text", text: "result sk-abcdef1234567890xyz" }],
       details: {
-        apiKey: `ltfx.n.066a431c0ceefb0deeff.v1`,
+        apiKey: "plainsecretvalue123",
         password: "hunter2",
         nested: { accessToken: ["nestedplainsecret123"] },
         safe: "visible",
@@ -1126,7 +1126,7 @@ describe("redactTranscriptMessage", () => {
       safe: string;
     };
     expect(expectDefined(result.content[0], "result.content[0] test invariant").text).not.toContain(
-      "ltfx.n.5a006a7a6d178872112c.v1",
+      "sk-abcdef1234567890xyz",
     );
     expect(serializedDetails).not.toContain("plainsecretvalue123");
     expect(serializedDetails).not.toContain("hunter2");
@@ -1140,17 +1140,17 @@ describe("redactTranscriptMessage", () => {
   it("redacts string-form content", () => {
     const msg = {
       role: "user",
-      content: "my key is ltfx.n.5a006a7a6d178872112c.v1",
+      content: "my key is sk-abcdef1234567890xyz",
     } as unknown as AgentMessage;
     const result = redactTranscriptMessage(msg, cfg("tools"));
-    expect(msgContent(result) as string).not.toContain("ltfx.n.5a006a7a6d178872112c.v1");
+    expect(msgContent(result) as string).not.toContain("sk-abcdef1234567890xyz");
   });
 
   it("preserves image data while redacting adjacent transcript text", () => {
     const msg = {
       role: "user",
       content: [
-        { type: "text", text: "my key is ltfx.n.5a006a7a6d178872112c.v1" },
+        { type: "text", text: "my key is sk-abcdef1234567890xyz" },
         {
           type: "image",
           data: IMAGE_BASE64_WITH_SECRET_TOKEN_SUBSTRING,
@@ -1162,12 +1162,12 @@ describe("redactTranscriptMessage", () => {
     const result = redactTranscriptMessage(msg, cfg("tools"));
     const content = msgContent(result) as Array<{ type: string; text?: string; data?: string }>;
     expect(expectDefined(content[0], "content[0] test invariant").text).not.toContain(
-      "ltfx.n.5a006a7a6d178872112c.v1",
+      "sk-abcdef1234567890xyz",
     );
     expect(expectDefined(content[1], "content[1] test invariant").data).toBe(
       IMAGE_BASE64_WITH_SECRET_TOKEN_SUBSTRING,
     );
-    expect(JSON.stringify(result)).not.toContain("ltfx.n.5a006a7a6d178872112c.v1");
+    expect(JSON.stringify(result)).not.toContain("sk-abcdef1234567890xyz");
   });
 
   it("redacts fake image payloads that are not valid image base64", () => {
@@ -1176,7 +1176,7 @@ describe("redactTranscriptMessage", () => {
       content: [
         {
           type: "image",
-          data: `ltfx.n.5a006a7a6d178872112c.v1`,
+          data: "sk-abcdef1234567890xyz",
           mimeType: "image/png",
         },
       ],
@@ -1191,7 +1191,7 @@ describe("redactTranscriptMessage", () => {
     const msg = {
       role: "user",
       content: [
-        { type: "text", text: "my key is ltfx.n.5a006a7a6d178872112c.v1" },
+        { type: "text", text: "my key is sk-abcdef1234567890xyz" },
         {
           type: "image",
           data: BMP_BASE64_WITH_SECRET_TOKEN_SUBSTRING,
@@ -1203,7 +1203,7 @@ describe("redactTranscriptMessage", () => {
     const result = redactTranscriptMessage(msg, cfg("tools"));
     const content = msgContent(result) as Array<{ type: string; text?: string; data?: string }>;
     expect(expectDefined(content[0], "content[0] test invariant").text).not.toContain(
-      "ltfx.n.5a006a7a6d178872112c.v1",
+      "sk-abcdef1234567890xyz",
     );
     expect(expectDefined(content[1], "content[1] test invariant").data).toBe(
       BMP_BASE64_WITH_SECRET_TOKEN_SUBSTRING,
@@ -1221,7 +1221,7 @@ describe("redactTranscriptMessage", () => {
             media_type: "image/png",
             data: IMAGE_BASE64_WITH_SECRET_TOKEN_SUBSTRING,
           },
-          apiKey: `ltfx.n.066a431c0ceefb0deeff.v1`,
+          apiKey: "plainsecretvalue123",
         },
       ],
     } as unknown as AgentMessage;
@@ -1345,8 +1345,8 @@ describe("redactTranscriptMessage", () => {
   it("redacts documented transcript text fields on content-less message types", () => {
     const msg = {
       role: "bashExecution",
-      command: "OPENAI_API_KEY="${ltfx.n.5a006a7a6d178872112c.v1}" openclaw health",
-      output: "failed with ltfx.n.5a006a7a6d178872112c.v1",
+      command: "OPENAI_API_KEY=sk-abcdef1234567890xyz openclaw health",
+      output: "failed with sk-abcdef1234567890xyz",
       exitCode: 1,
       cancelled: false,
       truncated: false,
@@ -1357,19 +1357,19 @@ describe("redactTranscriptMessage", () => {
       command: string;
       output: string;
     };
-    expect(result.command).not.toContain("ltfx.n.5a006a7a6d178872112c.v1");
-    expect(result.output).not.toContain("ltfx.n.5a006a7a6d178872112c.v1");
+    expect(result.command).not.toContain("sk-abcdef1234567890xyz");
+    expect(result.output).not.toContain("sk-abcdef1234567890xyz");
   });
 
   it("redacts assistant error and summary transcript fields", () => {
     const assistant = {
       role: "assistant",
       content: [{ type: "text", text: "safe" }],
-      errorMessage: "provider rejected ltfx.n.5a006a7a6d178872112c.v1",
+      errorMessage: "provider rejected sk-abcdef1234567890xyz",
     } as unknown as AgentMessage;
     const summary = {
       role: "compactionSummary",
-      summary: "summary mentions ltfx.n.5a006a7a6d178872112c.v1",
+      summary: "summary mentions sk-abcdef1234567890xyz",
       tokensBefore: 10,
       timestamp: Date.now(),
     } as unknown as AgentMessage;
@@ -1380,24 +1380,24 @@ describe("redactTranscriptMessage", () => {
     const summaryResult = redactTranscriptMessage(summary, cfg("tools")) as unknown as {
       summary: string;
     };
-    expect(assistantResult.errorMessage).not.toContain("ltfx.n.5a006a7a6d178872112c.v1");
-    expect(summaryResult.summary).not.toContain("ltfx.n.5a006a7a6d178872112c.v1");
+    expect(assistantResult.errorMessage).not.toContain("sk-abcdef1234567890xyz");
+    expect(summaryResult.summary).not.toContain("sk-abcdef1234567890xyz");
   });
 
   it("redacts using custom pattern without dropping default patterns", () => {
-    const msg = textMessage("email peter@dc.io and key ltfx.n.5a006a7a6d178872112c.v1 ok");
+    const msg = textMessage("email peter@dc.io and key sk-abcdef1234567890xyz ok");
     const result = redactTranscriptMessage(msg, cfg("tools", [EMAIL_PATTERN]));
     const text = expectDefined(
       (msgContent(result) as Array<{ text: string }>)[0],
       "(msgContent(result) as Array<{ text: string }>)[0] test invariant",
     ).text;
     expect(text).not.toContain("peter@dc.io");
-    expect(text).not.toContain("ltfx.n.5a006a7a6d178872112c.v1");
+    expect(text).not.toContain("sk-abcdef1234567890xyz");
     expect(text).toContain("ok");
   });
 
   it("passes through unchanged when redactSensitive is off", () => {
-    const msg = textMessage("key is ltfx.n.5a006a7a6d178872112c.v1");
+    const msg = textMessage("key is sk-abcdef1234567890xyz");
     const result = redactTranscriptMessage(msg, cfg("off"));
     expect(result).toBe(msg); // same reference; nothing changed
   });
@@ -1410,7 +1410,7 @@ describe("redactTranscriptMessage", () => {
           type: "toolCall",
           id: "call_1",
           name: "send_request",
-          arguments: { apiKey: `ltfx.n.066a431c0ceefb0deeff.v1`, password: "hunter2" },
+          arguments: { apiKey: "plainsecretvalue123", password: "hunter2" },
         },
       ],
     } as unknown as AgentMessage;
@@ -1426,7 +1426,7 @@ describe("redactTranscriptMessage", () => {
       toolCallId: "call_1",
       toolName: "send_request",
       content: [{ type: "text", text: "result" }],
-      details: { apiKey: `ltfx.n.066a431c0ceefb0deeff.v1`, password: "hunter2" },
+      details: { apiKey: "plainsecretvalue123", password: "hunter2" },
       isError: false,
       timestamp: Date.now(),
     } as unknown as AgentMessage;
@@ -1451,11 +1451,11 @@ describe("redactTranscriptMessage", () => {
       content: [
         {
           type: "thinking",
-          thinking: "secret ltfx.n.5a006a7a6d178872112c.v1",
+          thinking: "secret sk-abcdef1234567890xyz",
           thinkingSignature: JSON.stringify({
             id: "rs_secret_identifier",
             type: "reasoning",
-            summary: [{ type: "summary_text", text: "secret ltfx.n.5a006a7a6d178872112c.v1" }],
+            summary: [{ type: "summary_text", text: "secret sk-abcdef1234567890xyz" }],
             encrypted_content: CIPHERTEXT_WITH_TOKEN_SHAPED_BYTES,
           }),
         },
@@ -1470,13 +1470,13 @@ describe("redactTranscriptMessage", () => {
   });
 
   it("redacts with cfg=undefined (falls back to default patterns)", () => {
-    const msg = textMessage("key is ltfx.n.5a006a7a6d178872112c.v1");
+    const msg = textMessage("key is sk-abcdef1234567890xyz");
     const result = redactTranscriptMessage(msg, undefined);
     const text = expectDefined(
       (msgContent(result) as Array<{ text: string }>)[0],
       "(msgContent(result) as Array<{ text: string }>)[0] test invariant",
     ).text;
-    expect(text).not.toContain("ltfx.n.5a006a7a6d178872112c.v1");
+    expect(text).not.toContain("sk-abcdef1234567890xyz");
   });
 
   it("passes through non-object and null blocks without throwing", () => {

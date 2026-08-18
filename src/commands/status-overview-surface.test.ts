@@ -64,7 +64,7 @@ describe("status-overview-surface", () => {
           tailscaleMode: "off",
           tailscaleHttpsUrl: null,
           gatewayConnection: {
-            url: `ltfx.n.72e4dc7921c2128a3b3f.v1`,
+            url: "wss://gateway.example.com",
             urlSource: "config",
           },
         },
@@ -108,7 +108,7 @@ describe("status-overview-surface", () => {
           gatewayMode: "remote",
           remoteUrlMissing: false,
           gatewayConnection: {
-            url: `ltfx.n.72e4dc7921c2128a3b3f.v1`,
+            url: "wss://gateway.example.com",
             urlSource: "config",
             message: "Gateway target: wss://gateway.example.com",
           },
@@ -120,7 +120,7 @@ describe("status-overview-surface", () => {
       }),
     ).toEqual({
       mode: "remote",
-      url: `ltfx.n.72e4dc7921c2128a3b3f.v1`,
+      url: "wss://gateway.example.com",
       urlSource: "config",
       misconfigured: false,
       reachable: true,

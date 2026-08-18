@@ -67,7 +67,7 @@ describe("Synology channel wiring integration", () => {
           accounts: {
             alerts: {
               enabled: true,
-              token: `ltfx.n.397a2a9c5bf5e2ccec38.v1`,
+              token: "valid-token",
               incomingUrl: "https://nas.example.com/incoming",
               webhookPath: "/webhook/synology-alerts",
               dmPolicy: "allowlist",
@@ -94,7 +94,7 @@ describe("Synology channel wiring integration", () => {
     const req = makeReq(
       "POST",
       makeFormBody({
-        token: `ltfx.n.397a2a9c5bf5e2ccec38.v1`,
+        token: "valid-token",
         user_id: "123",
         username: "unauthorized-user",
         text: "Hello",
@@ -121,7 +121,7 @@ describe("Synology channel wiring integration", () => {
       channels: {
         "synology-chat": {
           enabled: true,
-          token: `ltfx.n.397a2a9c5bf5e2ccec38.v1`,
+          token: "valid-token",
           incomingUrl: "https://nas.example.com/incoming",
           webhookPath: "/webhook/synology",
           dmPolicy: "open",
@@ -140,7 +140,7 @@ describe("Synology channel wiring integration", () => {
       const req = makeReq(
         "POST",
         makeFormBody({
-          token: `ltfx.n.5645a758e6a8f12b6a27.v1`,
+          token: "wrong-token",
           user_id: "123",
           username: "attacker",
           text: "Hello",
@@ -156,7 +156,7 @@ describe("Synology channel wiring integration", () => {
     const validReq = makeReq(
       "POST",
       makeFormBody({
-        token: `ltfx.n.397a2a9c5bf5e2ccec38.v1`,
+        token: "valid-token",
         user_id: "123",
         username: "legitimate-user",
         text: "Hello",
@@ -190,7 +190,7 @@ describe("Synology channel wiring integration", () => {
           accounts: {
             alpha: {
               enabled: true,
-              token: `ltfx.n.e16a717c1e4269239bda.v1`,
+              token: "token-alpha",
               incomingUrl: "https://nas.example.com/incoming-alpha",
               webhookPath: "/webhook/synology-alpha",
               dmPolicy: "open",
@@ -198,7 +198,7 @@ describe("Synology channel wiring integration", () => {
             },
             beta: {
               enabled: true,
-              token: `ltfx.n.38461323b18af64e0fae.v1`,
+              token: "token-beta",
               incomingUrl: "https://nas.example.com/incoming-beta",
               webhookPath: "/webhook/synology-beta",
               dmPolicy: "open",
@@ -226,7 +226,7 @@ describe("Synology channel wiring integration", () => {
     const alphaReq = makeReq(
       "POST",
       makeFormBody({
-        token: `ltfx.n.e16a717c1e4269239bda.v1`,
+        token: "token-alpha",
         user_id: "123",
         username: "alice",
         text: "alpha secret",
@@ -239,7 +239,7 @@ describe("Synology channel wiring integration", () => {
     const betaReq = makeReq(
       "POST",
       makeFormBody({
-        token: `ltfx.n.38461323b18af64e0fae.v1`,
+        token: "token-beta",
         user_id: "123",
         username: "bob",
         text: "beta secret",

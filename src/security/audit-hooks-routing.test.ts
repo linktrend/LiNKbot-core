@@ -20,7 +20,7 @@ describe("security audit hooks ingress findings", () => {
   it("evaluates hooks ingress auth and routing findings", () => {
     const unrestrictedBaseHooks = {
       enabled: true,
-      token: `ltfx.n.1c36b35cf138f5ec56a0.v1`,
+      token: "shared-gateway-token-1234567890",
       defaultSessionKey: "hook:ingress",
     } satisfies NonNullable<OpenClawConfig["hooks"]>;
     const requestSessionKeyHooks = {
@@ -39,10 +39,10 @@ describe("security audit hooks ingress findings", () => {
       {
         name: "flags hooks token reuse of the gateway env token as critical",
         cfg: {
-          hooks: { enabled: true, token: `ltfx.n.1c36b35cf138f5ec56a0.v1` },
+          hooks: { enabled: true, token: "shared-gateway-token-1234567890" },
         } satisfies OpenClawConfig,
         env: {
-          OPENCLAW_GATEWAY_TOKEN: `ltfx.n.1c36b35cf138f5ec56a0.v1`,
+          OPENCLAW_GATEWAY_TOKEN: "shared-gateway-token-1234567890",
         } as NodeJS.ProcessEnv,
         expectedFinding: "hooks.token_reuse_gateway_token",
         expectedSeverity: "critical" as const,
@@ -50,7 +50,7 @@ describe("security audit hooks ingress findings", () => {
       {
         name: "warns when hooks.defaultSessionKey is unset",
         cfg: {
-          hooks: { enabled: true, token: `ltfx.n.1c36b35cf138f5ec56a0.v1` },
+          hooks: { enabled: true, token: "shared-gateway-token-1234567890" },
         } satisfies OpenClawConfig,
         expectedFinding: "hooks.default_session_key_unset",
         expectedSeverity: "warn" as const,
@@ -60,7 +60,7 @@ describe("security audit hooks ingress findings", () => {
         cfg: {
           hooks: {
             enabled: true,
-            token: `ltfx.n.1c36b35cf138f5ec56a0.v1`,
+            token: "shared-gateway-token-1234567890",
             defaultSessionKey: "hook:ingress",
             allowedAgentIds: ["*"],
           },
@@ -126,12 +126,12 @@ describe("security audit hooks ingress findings", () => {
       gateway: {
         auth: {
           mode: "password",
-          password: `ltfx.n.1db5107c2c4372d8159b.v1`, // pragma: allowlist secret
+          password: "shared-gateway-password-1234567890", // pragma: allowlist secret
         },
       },
       hooks: {
         enabled: true,
-        token: `ltfx.n.1db5107c2c4372d8159b.v1`,
+        token: "shared-gateway-password-1234567890",
       },
     });
 
@@ -149,12 +149,12 @@ describe("security audit hooks ingress findings", () => {
         auth: {
           mode: "trusted-proxy",
           trustedProxy: { userHeader: "x-forwarded-user" },
-          password: `ltfx.n.25a84007d5c86f51cdb4.v1`, // pragma: allowlist secret
+          password: "trusted-proxy-local-password-1234567890", // pragma: allowlist secret
         },
       },
       hooks: {
         enabled: true,
-        token: `ltfx.n.25a84007d5c86f51cdb4.v1`,
+        token: "trusted-proxy-local-password-1234567890",
       },
     });
 
@@ -170,13 +170,13 @@ describe("security audit hooks ingress findings", () => {
       {
         hooks: {
           enabled: true,
-          token: `ltfx.n.32c208652c2b9d8acfc5.v1`,
+          token: "runtime-only-gateway-password-1234567890",
         },
       },
       {} as NodeJS.ProcessEnv,
       {
         gatewayAuthOverride: {
-          password: `ltfx.n.32c208652c2b9d8acfc5.v1`, // pragma: allowlist secret
+          password: "runtime-only-gateway-password-1234567890", // pragma: allowlist secret
         },
       },
     );
@@ -195,18 +195,18 @@ describe("security audit hooks ingress findings", () => {
         gateway: {
           auth: {
             mode: "token",
-            token: `ltfx.n.2b458c2133a008a66604.v1`, // pragma: allowlist secret
+            token: "config-gateway-token-1234567890", // pragma: allowlist secret
           },
         },
         hooks: {
           enabled: true,
-          token: `ltfx.n.32c208652c2b9d8acfc5.v1`,
+          token: "runtime-only-gateway-password-1234567890",
         },
       },
       {} as NodeJS.ProcessEnv,
       {
         gatewayAuthOverride: {
-          password: `ltfx.n.32c208652c2b9d8acfc5.v1`, // pragma: allowlist secret
+          password: "runtime-only-gateway-password-1234567890", // pragma: allowlist secret
         },
       },
     );
@@ -220,19 +220,19 @@ describe("security audit hooks ingress findings", () => {
         gateway: {
           auth: {
             mode: "token",
-            token: `ltfx.n.2b458c2133a008a66604.v1`, // pragma: allowlist secret
+            token: "config-gateway-token-1234567890", // pragma: allowlist secret
           },
         },
         hooks: {
           enabled: true,
-          token: `ltfx.n.32c208652c2b9d8acfc5.v1`,
+          token: "runtime-only-gateway-password-1234567890",
         },
       },
       {} as NodeJS.ProcessEnv,
       {
         gatewayAuthOverride: {
           mode: "password",
-          password: `ltfx.n.32c208652c2b9d8acfc5.v1`, // pragma: allowlist secret
+          password: "runtime-only-gateway-password-1234567890", // pragma: allowlist secret
         },
       },
     );
@@ -250,18 +250,18 @@ describe("security audit hooks ingress findings", () => {
         gateway: {
           auth: {
             mode: "password",
-            password: `ltfx.n.67b6b442a03a19266884.v1`, // pragma: allowlist secret
+            password: "config-gateway-password-1234567890", // pragma: allowlist secret
           },
         },
         hooks: {
           enabled: true,
-          token: `ltfx.n.67b6b442a03a19266884.v1`,
+          token: "config-gateway-password-1234567890",
         },
       },
       {} as NodeJS.ProcessEnv,
       {
         gatewayAuthOverride: {
-          password: `ltfx.n.04d17966728eb1ea9b52.v1`, // pragma: allowlist secret
+          password: "different-runtime-password-1234567890", // pragma: allowlist secret
         },
       },
     );
@@ -289,11 +289,11 @@ describe("security audit hooks ingress findings", () => {
         },
         hooks: {
           enabled: true,
-          token: `ltfx.n.1db5107c2c4372d8159b.v1`,
+          token: "shared-gateway-password-1234567890",
         },
       },
       env: {
-        GW_PASSWORD: `ltfx.n.1db5107c2c4372d8159b.v1`, // pragma: allowlist secret
+        GW_PASSWORD: "shared-gateway-password-1234567890", // pragma: allowlist secret
       } as NodeJS.ProcessEnv,
       includeFilesystem: false,
       includeChannelSecurity: false,
@@ -318,15 +318,15 @@ describe("security audit hooks ingress findings", () => {
         },
         hooks: {
           enabled: true,
-          token: `ltfx.n.67b6b442a03a19266884.v1`,
+          token: "config-gateway-password-1234567890",
         },
       },
       env: {
-        GW_PASSWORD: `ltfx.n.67b6b442a03a19266884.v1`, // pragma: allowlist secret
+        GW_PASSWORD: "config-gateway-password-1234567890", // pragma: allowlist secret
       } as NodeJS.ProcessEnv,
       auditGatewayAuthOverride: {
         mode: "password",
-        password: `ltfx.n.04d17966728eb1ea9b52.v1`, // pragma: allowlist secret
+        password: "different-runtime-password-1234567890", // pragma: allowlist secret
       },
       includeFilesystem: false,
       includeChannelSecurity: false,
@@ -354,11 +354,11 @@ describe("security audit hooks ingress findings", () => {
         },
         hooks: {
           enabled: true,
-          token: `ltfx.n.25a84007d5c86f51cdb4.v1`,
+          token: "trusted-proxy-local-password-1234567890",
         },
       },
       env: {
-        GW_PASSWORD: `ltfx.n.25a84007d5c86f51cdb4.v1`, // pragma: allowlist secret
+        GW_PASSWORD: "trusted-proxy-local-password-1234567890", // pragma: allowlist secret
       } as NodeJS.ProcessEnv,
       includeFilesystem: false,
       includeChannelSecurity: false,
@@ -383,7 +383,7 @@ describe("security audit hooks ingress findings", () => {
         },
         hooks: {
           enabled: false,
-          token: `ltfx.n.1db5107c2c4372d8159b.v1`,
+          token: "shared-gateway-password-1234567890",
         },
       },
       env: {} as NodeJS.ProcessEnv,
@@ -410,7 +410,7 @@ describe("security audit hooks ingress findings", () => {
         },
         hooks: {
           enabled: true,
-          token: `ltfx.n.1db5107c2c4372d8159b.v1`,
+          token: "shared-gateway-password-1234567890",
         },
       },
       env: {} as NodeJS.ProcessEnv,
@@ -441,7 +441,7 @@ describe("security audit hooks ingress findings", () => {
         },
         hooks: {
           enabled: true,
-          token: `ltfx.n.1db5107c2c4372d8159b.v1`,
+          token: "shared-gateway-password-1234567890",
         },
       },
       env: {} as NodeJS.ProcessEnv,

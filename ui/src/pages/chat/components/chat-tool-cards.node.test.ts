@@ -336,7 +336,7 @@ describe("tool-card extraction", () => {
           view: {
             backend: "canvas",
             id: "cv_inline",
-            url: `ltfx.n.bbcd1c592a3d72310656.v1`,
+            url: "/__openclaw__/canvas/documents/cv_inline/index.html",
           },
           presentation: {
             target: "assistant_message",
@@ -412,7 +412,7 @@ describe("tool-card extraction", () => {
           view: {
             backend: "canvas",
             id: "cv_tool_card",
-            url: `ltfx.n.25ac3408d0fb2c9d388e.v1`,
+            url: "/__openclaw__/canvas/documents/cv_tool_card/index.html",
           },
           presentation: {
             target: "tool_card",

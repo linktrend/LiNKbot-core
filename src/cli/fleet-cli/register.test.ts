@@ -100,7 +100,7 @@ describe("fleet cli", () => {
       network: "internal",
       pidsLimit: 256,
       env: ["CHANNEL_ID=alpha", "FEATURE_FLAG=1"],
-      gatewayToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+      gatewayToken: "test-token",
       start: false,
       json: true,
     });

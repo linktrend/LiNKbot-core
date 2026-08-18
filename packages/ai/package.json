@@ -18,7 +18,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/openclaw/openclaw.git",
+    "url": "git+https://github.com/openclaw/openclaw.git",
     "directory": "packages/ai"
   },
   "files": [

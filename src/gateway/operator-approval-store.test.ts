@@ -432,7 +432,7 @@ describe("operator approval store", () => {
     const base = approval("unsafe-presentation");
     const unsafePresentation = {
       ...base.presentation,
-      env: { SECRET_TOKEN: `ltfx.n.e09701a507adb0c20a64.v1` },
+      env: { SECRET_TOKEN: "must-not-persist" },
     } as unknown as NewOperatorApproval["presentation"];
 
     expect(() =>

@@ -206,7 +206,7 @@ describe("google generative ai helpers", () => {
 
   it("parses project-aware oauth auth payloads into bearer headers", () => {
     expect(
-      parseGeminiAuth(JSON.stringify({ token: `ltfx.n.3bbc3a9700a71c6a53a3.v1`, projectId: "project-1" })),
+      parseGeminiAuth(JSON.stringify({ token: "oauth-token", projectId: "project-1" })),
     ).toEqual({
       headers: {
         Authorization: "Bearer oauth-token",
@@ -218,7 +218,7 @@ describe("google generative ai helpers", () => {
   it("falls back to API key headers for raw tokens", () => {
     expect(parseGeminiAuth("api-key-123")).toEqual({
       headers: {
-        "x-goog-api-key": `ltfx.n.074c1fd1ac9d1c67ec22.v1`,
+        "x-goog-api-key": "api-key-123",
         "Content-Type": "application/json",
       },
     });
@@ -226,7 +226,7 @@ describe("google generative ai helpers", () => {
 
   it("builds shared Google Generative AI HTTP request config", () => {
     const oauthConfig = resolveGoogleGenerativeAiHttpRequestConfig({
-      apiKey: JSON.stringify({ token: `ltfx.n.3bbc3a9700a71c6a53a3.v1` }),
+      apiKey: JSON.stringify({ token: "oauth-token" }),
       baseUrl: "https://generativelanguage.googleapis.com",
       capability: "audio",
       transport: "media-understanding",
@@ -241,7 +241,7 @@ describe("google generative ai helpers", () => {
     expect(oauthHeaders["x-goog-api-client"]).toMatch(/^openclaw\//u);
 
     const apiKeyConfig = resolveGoogleGenerativeAiHttpRequestConfig({
-      apiKey: `ltfx.n.074c1fd1ac9d1c67ec22.v1`,
+      apiKey: "api-key-123",
       capability: "image",
       transport: "http",
     });
@@ -250,7 +250,7 @@ describe("google generative ai helpers", () => {
     const apiKeyHeaders = Object.fromEntries(new Headers(apiKeyConfig.headers).entries());
     expect(apiKeyHeaders).toMatchObject({
       "content-type": "application/json",
-      "x-goog-api-key": `ltfx.n.074c1fd1ac9d1c67ec22.v1`,
+      "x-goog-api-key": "api-key-123",
     });
     expect(apiKeyHeaders["x-goog-api-client"]).toMatch(/^openclaw\//u);
   });
@@ -277,7 +277,7 @@ describe("google generative ai helpers", () => {
   it("rejects non-Google Gemini base URLs and honors explicit private-network opt-in", () => {
     expect(() =>
       resolveGoogleGenerativeAiHttpRequestConfig({
-        apiKey: `ltfx.n.074c1fd1ac9d1c67ec22.v1`,
+        apiKey: "api-key-123",
         baseUrl: "https://proxy.example.com/v1beta",
         capability: "image",
         transport: "http",
@@ -286,7 +286,7 @@ describe("google generative ai helpers", () => {
 
     expect(() =>
       resolveGoogleGenerativeAiHttpRequestConfig({
-        apiKey: `ltfx.n.074c1fd1ac9d1c67ec22.v1`,
+        apiKey: "api-key-123",
         baseUrl: "http://generativelanguage.googleapis.com/v1beta",
         capability: "image",
         transport: "http",
@@ -294,7 +294,7 @@ describe("google generative ai helpers", () => {
     ).toThrow("Google Generative AI baseUrl must use https://generativelanguage.googleapis.com");
 
     const config = resolveGoogleGenerativeAiHttpRequestConfig({
-      apiKey: `ltfx.n.074c1fd1ac9d1c67ec22.v1`,
+      apiKey: "api-key-123",
       baseUrl: "https://generativelanguage.googleapis.com/v1beta",
       capability: "image",
       transport: "http",

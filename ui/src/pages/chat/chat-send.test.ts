@@ -891,9 +891,9 @@ describe("refreshChatAvatar", () => {
     const host = makeHost({
       basePath: "/openclaw/",
       sessionKey: "agent:main",
-      settings: { token: `ltfx.n.c101e911469c96917104.v1` },
-      password: `ltfx.n.39c949687a577d7a63f5.v1`,
-      hello: { auth: { deviceToken: `ltfx.n.73fff793651a92729a85.v1` } } as ChatHost["hello"],
+      settings: { token: "session-token" },
+      password: "shared-password",
+      hello: { auth: { deviceToken: "device-token" } } as ChatHost["hello"],
     });
     await refreshChatAvatar(host);
 
@@ -945,7 +945,7 @@ describe("refreshChatAvatar", () => {
     const host = makeHost({
       basePath: "/openclaw/",
       sessionKey: "agent:main",
-      settings: { token: `ltfx.n.c101e911469c96917104.v1` },
+      settings: { token: "session-token" },
     });
     await refreshChatAvatar(host);
 
@@ -1445,7 +1445,7 @@ describe("handleSendChat", () => {
     await send;
 
     expect(request).toHaveBeenCalledWith("sessions.steer", {
-      key: `ltfx.n.f331f052e4ed92dd414c.v1`,
+      key: "agent:main",
       message: "start over",
     });
     expect(request).toHaveBeenCalledTimes(1);
@@ -7323,7 +7323,7 @@ describe("handleSendChat", () => {
 
     const clearing = handleSendChat(host);
     await waitForFast(() =>
-      expect(request).toHaveBeenCalledWith("sessions.reset", { key: `ltfx.n.f331f052e4ed92dd414c.v1` }),
+      expect(request).toHaveBeenCalledWith("sessions.reset", { key: "agent:main" }),
     );
     const queuedId = host.chatQueue[0]?.id ?? "missing-clear";
     const replacementRequest = vi.fn(async (method: string) => {
@@ -7385,7 +7385,7 @@ describe("handleSendChat", () => {
     const clearing = handleSendChat(host);
     await waitForFast(() =>
       expect(request).toHaveBeenCalledWith("sessions.reset", {
-        key: `ltfx.n.8410a9442e3fb5c8ccf3.v1`,
+        key: "agent:work:main",
         agentId: "work",
       }),
     );
@@ -8468,7 +8468,7 @@ describe("handleSendChat", () => {
           {
             type: "attachment",
             attachment: {
-              url: `ltfx.n.1b85ae3ca32d43d48c7c.v1`,
+              url: "blob:brief",
               kind: "document",
               label: "brief.pdf",
               mimeType: "application/pdf",

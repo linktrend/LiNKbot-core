@@ -52,7 +52,7 @@ enum LaunchAgentPlist {
             port: port,
             bind: bind,
             token: token,
-            password: (password))
+            password: password)
     }
 
     private static func readGeneratedEnvironment(

@@ -421,7 +421,7 @@ function isConfiguredProviderAuthSecretKey(key: string | undefined): boolean {
   return key === "token" || key === "value";
 }
 
-function isSecretInputKey(key: (string)): boolean {
+function isSecretInputKey(key: string): boolean {
   const normalized = key.toLowerCase();
   return (
     normalized === "apikey" ||

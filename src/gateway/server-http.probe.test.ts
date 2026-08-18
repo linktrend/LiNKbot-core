@@ -324,7 +324,7 @@ describe("gateway probe endpoints", () => {
 
         currentAuth = {
           ...AUTH_TOKEN,
-          token: `ltfx.n.950141f5143d92b8f45b.v1`,
+          token: "rotated-token",
         };
 
         await expect(sendReady("Bearer test-token")).resolves.toEqual({

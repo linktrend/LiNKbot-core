@@ -43,7 +43,7 @@ struct OpenClawConfigFileTests {
             OpenClawConfigFile.saveDict([
                 "gateway": [
                     "remote": [
-                        "url": "${ltfx.n.f349c02956acd32254d5.v1}",
+                        "url": "ws://gateway.ts.net:19999",
                     ],
                 ],
             ])
@@ -65,7 +65,7 @@ struct OpenClawConfigFileTests {
             OpenClawConfigFile.saveDict([
                 "gateway": [
                     "remote": [
-                        "url": "${ltfx.n.fb3a7be0af3a4e066b3d.v1}",
+                        "url": "wss://old-host:111",
                     ],
                 ],
             ])
@@ -85,7 +85,7 @@ struct OpenClawConfigFileTests {
             OpenClawConfigFile.saveDict([
                 "gateway": [
                     "remote": [
-                        "url": "${ltfx.n.fb3a7be0af3a4e066b3d.v1}",
+                        "url": "wss://old-host:111",
                     ],
                 ],
             ])
@@ -105,7 +105,7 @@ struct OpenClawConfigFileTests {
             OpenClawConfigFile.saveDict([
                 "gateway": [
                     "remote": [
-                        "url": "${ltfx.n.fb3a7be0af3a4e066b3d.v1}",
+                        "url": "wss://old-host:111",
                         "token": "tok",
                     ],
                 ],
@@ -194,7 +194,7 @@ struct OpenClawConfigFileTests {
                     "mode": "remote",
                     "auth": [
                         "mode": "token",
-                        "token": "${ltfx.n.70dd5803fa4e35799166.v1}", // pragma: allowlist secret
+                        "token": "existing-token", // pragma: allowlist secret
                     ],
                 ],
             ])
@@ -243,7 +243,7 @@ struct OpenClawConfigFileTests {
                     "mode": "remote",
                     "auth": [
                         "mode": "password",
-                        "password": "${ltfx.n.b72c2c6458af238adcbf.v1}", // pragma: allowlist secret
+                        "password": "existing-password", // pragma: allowlist secret
                     ],
                 ],
                 "browser": [
@@ -425,7 +425,7 @@ struct OpenClawConfigFileTests {
                     "mode": "local",
                     "auth": [
                         "mode": "token",
-                        "token": "${ltfx.n.4c5dc9b7708905f77f5e.v1}", // pragma: allowlist secret
+                        "token": "test-token", // pragma: allowlist secret
                     ],
                 ],
             ])
@@ -478,7 +478,7 @@ struct OpenClawConfigFileTests {
                     "mode": "local",
                     "auth": [
                         "mode": "token",
-                        "token": "${ltfx.n.4c5dc9b7708905f77f5e.v1}", // pragma: allowlist secret
+                        "token": "test-token", // pragma: allowlist secret
                     ],
                 ],
                 "browser": [

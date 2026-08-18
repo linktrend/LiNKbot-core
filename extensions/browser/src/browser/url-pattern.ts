@@ -21,7 +21,7 @@ function wildcardPatternToRegExp(pattern: string): RegExp {
 }
 
 /** Matches exact, wildcard, or substring URL patterns against a browser URL. */
-export function matchBrowserUrlPattern(pattern: string, url: (string)): boolean {
+export function matchBrowserUrlPattern(pattern: string, url: string): boolean {
   const trimmedPattern = pattern.trim();
   if (!trimmedPattern) {
     return false;

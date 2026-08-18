@@ -103,7 +103,7 @@ describe("chat pane header state", () => {
     const sessions = { patch } as unknown as SessionCapability;
     const { pane } = createTestChatPane({ client: {} as GatewayBrowserClient, sessions });
     const session = {
-      key: `ltfx.n.6d1687d70ce721396561.v1`,
+      key: "agent:main:current",
       kind: "direct",
       updatedAt: 0,
     } satisfies GatewaySessionRow;
@@ -129,7 +129,7 @@ describe("chat pane header state", () => {
     const { pane } = createTestChatPane({ client: {} as GatewayBrowserClient, sessions });
     pane.paneTitle = "Derived title";
     const session = {
-      key: `ltfx.n.6d1687d70ce721396561.v1`,
+      key: "agent:main:current",
       kind: "direct",
       updatedAt: 0,
     } satisfies GatewaySessionRow;
@@ -146,7 +146,7 @@ describe("chat pane header state", () => {
       sessions: {} as SessionCapability,
     });
     const session = {
-      key: `ltfx.n.6d1687d70ce721396561.v1`,
+      key: "agent:main:current",
       kind: "direct",
       updatedAt: 0,
     } satisfies GatewaySessionRow;
@@ -166,7 +166,7 @@ describe("chat pane header state", () => {
     });
     await pane.loadHeaderMenuData(
       {
-        key: `ltfx.n.b168780fbb536d41ff3e.v1`,
+        key: "agent:main:remote",
         kind: "direct",
         updatedAt: 0,
         execNode: "build-mac",
@@ -190,7 +190,7 @@ describe("chat pane header state", () => {
       sessions: {} as SessionCapability,
     });
     const session = {
-      key: `ltfx.n.e66d742c04ef17a41535.v1`,
+      key: "agent:main:worktree",
       kind: "direct",
       updatedAt: 0,
       worktree: { id: "wt-1", branch: "feature", repoRoot: "/src/openclaw" },
@@ -210,7 +210,7 @@ describe("chat pane header state", () => {
       sessions: {} as SessionCapability,
     });
     const session = {
-      key: `ltfx.n.e89c620f813cd3fb9e6c.v1`,
+      key: "agent:main:plain",
       kind: "direct",
       updatedAt: 0,
     } satisfies GatewaySessionRow;
@@ -226,7 +226,7 @@ describe("chat pane header state", () => {
       sessions: {} as SessionCapability,
     });
     const session = {
-      key: `ltfx.n.460d1b07a5358089f4b4.v1`,
+      key: "agent:main:spawned",
       kind: "direct",
       updatedAt: 0,
       spawnedWorkspaceDir: "/src/spawned-repo",
@@ -237,7 +237,7 @@ describe("chat pane header state", () => {
     // The agent-workspace root keeps honoring the agent's workspaceGit flag.
     request.mockClear();
     const plain = {
-      key: `ltfx.n.4d556ef8e6f38fe9b1b3.v1`,
+      key: "agent:main:plain2",
       kind: "direct",
       updatedAt: 0,
     } satisfies GatewaySessionRow;
@@ -257,7 +257,7 @@ describe("chat pane header state", () => {
       sessions: {} as SessionCapability,
     });
     const worktreeRow = {
-      key: `ltfx.n.9365a7541875a20aab46.v1`,
+      key: "agent:main:reused",
       kind: "direct",
       updatedAt: 0,
       worktree: { id: "wt-1", branch: "feature", repoRoot: "/src/openclaw" },
@@ -267,7 +267,7 @@ describe("chat pane header state", () => {
     // New Chat resets the same key in place and detaches the worktree; the
     // branch probe must target the agent workspace, not the stale checkout.
     const resetRow = {
-      key: `ltfx.n.9365a7541875a20aab46.v1`,
+      key: "agent:main:reused",
       kind: "direct",
       updatedAt: 0,
     } satisfies GatewaySessionRow;
@@ -284,7 +284,7 @@ describe("chat pane header state", () => {
       sessions: {} as SessionCapability,
     });
     const dispatched = {
-      key: `ltfx.n.9698cdbb88785a4bde37.v1`,
+      key: "agent:main:moves",
       kind: "direct",
       updatedAt: 0,
       placement: { state: "active" } as GatewaySessionRow["placement"],
@@ -303,7 +303,7 @@ describe("chat pane header state", () => {
       sessions: {} as SessionCapability,
     });
     const session = {
-      key: `ltfx.n.e89c620f813cd3fb9e6c.v1`,
+      key: "agent:main:plain",
       kind: "direct",
       updatedAt: 0,
     } satisfies GatewaySessionRow;
@@ -319,7 +319,7 @@ describe("chat pane header state", () => {
       sessions: {} as SessionCapability,
     });
     const session = {
-      key: `ltfx.n.6d1687d70ce721396561.v1`,
+      key: "agent:main:current",
       kind: "direct",
       updatedAt: 0,
     } satisfies GatewaySessionRow;
@@ -748,7 +748,7 @@ describe("chat pane catalog session lifecycle", () => {
       request: vi.fn(async () => readPage),
     } as unknown as GatewayBrowserClient;
     const { pane, state } = createTestChatPane({ client, sessions: {} as SessionCapability });
-    const key = `ltfx.n.2e69f625906f294dad3b.v1`;
+    const key = "catalog:claude:gateway%3Alocal:thread-1";
     state.sessionKey = key;
     pane.sessionKey = key;
     pane.catalogCursor = "cursor-1";
@@ -776,7 +776,7 @@ describe("chat pane catalog session lifecycle", () => {
       request: vi.fn(async () => readPage),
     } as unknown as GatewayBrowserClient;
     const { pane, state } = createTestChatPane({ client, sessions: {} as SessionCapability });
-    const key = `ltfx.n.2e69f625906f294dad3b.v1`;
+    const key = "catalog:claude:gateway%3Alocal:thread-1";
     state.sessionKey = key;
     pane.sessionKey = key;
     pane.catalogCursor = "cursor-1";
@@ -803,7 +803,7 @@ describe("chat pane catalog session lifecycle", () => {
       request: vi.fn(async () => readPage),
     } as unknown as GatewayBrowserClient;
     const { pane, state } = createTestChatPane({ client, sessions: {} as SessionCapability });
-    const key = `ltfx.n.2e69f625906f294dad3b.v1`;
+    const key = "catalog:claude:gateway%3Alocal:thread-1";
     state.sessionKey = key;
     pane.sessionKey = key;
     pane.catalogCursor = "cursor-2";
@@ -931,7 +931,7 @@ describe("chat pane task suggestion lifecycle", () => {
       taskId: suggestion.id,
       resolution: "accepted",
     });
-    accepted.resolve({ taskId: suggestion.id, key: `ltfx.n.3f9731237ee0ef2d5ed6.v1` });
+    accepted.resolve({ taskId: suggestion.id, key: "agent:main:task" });
 
     await pending;
     expect(navigate).toHaveBeenCalledWith("single", "agent:main:task");
@@ -949,7 +949,7 @@ describe("chat pane task suggestion lifecycle", () => {
 
     const pending = pane.acceptTaskSuggestion(suggestion);
     pane.connectionGeneration += 1;
-    accepted.resolve({ taskId: suggestion.id, key: `ltfx.n.93ac2a693bdf688f29a3.v1` });
+    accepted.resolve({ taskId: suggestion.id, key: "agent:main:stale" });
 
     await pending;
     expect(navigate).not.toHaveBeenCalled();

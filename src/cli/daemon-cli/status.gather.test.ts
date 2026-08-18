@@ -26,7 +26,7 @@ const callGatewayStatusProbe = vi.fn<
   }>
 >(async (_opts?: unknown) => ({
   ok: true,
-  url: `ltfx.n.766a0ec1af7dba7196c2.v1`,
+  url: "ws://127.0.0.1:19001",
   error: null,
   server: { version: "2026.5.6", connId: "conn-1" },
 }));
@@ -133,7 +133,7 @@ let daemonLoadedConfig: Record<string, unknown> = {
   gateway: {
     bind: "lan",
     tls: { enabled: true },
-    auth: { token: `ltfx.n.9a38dde25bf893d25186.v1` },
+    auth: { token: "daemon-token" },
   },
 };
 let cliLoadedConfig: Record<string, unknown> = {
@@ -334,7 +334,7 @@ describe("gatherDaemonStatus", () => {
       gateway: {
         bind: "lan",
         tls: { enabled: true },
-        auth: { token: `ltfx.n.9a38dde25bf893d25186.v1` },
+        auth: { token: "daemon-token" },
       },
     };
     cliLoadedConfig = {
@@ -429,7 +429,7 @@ describe("gatherDaemonStatus", () => {
   it("falls back to probe version when server metadata is unavailable", async () => {
     callGatewayStatusProbe.mockResolvedValueOnce({
       ok: true,
-      url: `ltfx.n.766a0ec1af7dba7196c2.v1`,
+      url: "ws://127.0.0.1:19001",
       error: null,
       version: "2026.5.7",
     });
@@ -481,7 +481,7 @@ describe("gatherDaemonStatus", () => {
     daemonLoadedConfig = {
       gateway: {
         tls: { enabled: true },
-        auth: { token: `ltfx.n.9a38dde25bf893d25186.v1` },
+        auth: { token: "daemon-token" },
       },
     };
 
@@ -497,7 +497,7 @@ describe("gatherDaemonStatus", () => {
 
   it("does not force local TLS fingerprint when probe URL is explicitly overridden", async () => {
     const status = await gatherDaemonStatus({
-      rpc: { url: `ltfx.n.946b2b9f6e81b4e96a4d.v1` },
+      rpc: { url: "wss://override.example:18790" },
       probe: true,
       deep: false,
     });
@@ -520,7 +520,7 @@ describe("gatherDaemonStatus", () => {
       gateway: {
         bind: "tailnet",
         tls: { enabled: true },
-        auth: { token: `ltfx.n.9a38dde25bf893d25186.v1` },
+        auth: { token: "daemon-token" },
       },
     };
     resolveGatewayBindHost.mockImplementationOnce(async () => {
@@ -717,7 +717,7 @@ describe("gatherDaemonStatus", () => {
       gateway: {
         mode: "remote",
         bind: "lan",
-        remote: { url: `ltfx.n.2ec8b0b0f4c7fc92b531.v1` },
+        remote: { url: "wss://gateway.example" },
       },
     };
 
@@ -924,9 +924,9 @@ describe("gatherDaemonStatus", () => {
         mode: "local",
         bind: "lan",
         tls: { enabled: true },
-        auth: { token: `ltfx.n.9a38dde25bf893d25186.v1` },
+        auth: { token: "daemon-token" },
         remote: {
-          url: `ltfx.n.2ec8b0b0f4c7fc92b531.v1`,
+          url: "wss://gateway.example",
           token: { source: "exec", provider: "vault", id: "gateway/remote-token" },
         },
       },
@@ -955,7 +955,7 @@ describe("gatherDaemonStatus", () => {
       gateway: {
         mode: "remote",
         remote: {
-          url: `ltfx.n.2ec8b0b0f4c7fc92b531.v1`,
+          url: "wss://gateway.example",
         },
         auth: {
           mode: "token",
@@ -990,7 +990,7 @@ describe("gatherDaemonStatus", () => {
         tls: { enabled: true },
         auth: {
           mode: "token",
-          token: `ltfx.n.9a38dde25bf893d25186.v1`,
+          token: "daemon-token",
           password: { source: "env", provider: "default", id: "MISSING_DAEMON_GATEWAY_PASSWORD" },
         },
       },
@@ -1060,7 +1060,7 @@ describe("gatherDaemonStatus", () => {
     callGatewayStatusProbe.mockResolvedValueOnce({
       ok: false,
       error: "gateway closed",
-      url: `ltfx.n.483987fad0e9b53dd5da.v1`,
+      url: "wss://127.0.0.1:19001",
     });
 
     const status = await gatherDaemonStatus({
@@ -1081,13 +1081,13 @@ describe("gatherDaemonStatus", () => {
       gateway: {
         mode: "remote",
         remote: {
-          url: `ltfx.n.2ec8b0b0f4c7fc92b531.v1`,
-          password: `ltfx.n.de3ebec174fd3a1387de.v1`, // pragma: allowlist secret
+          url: "wss://gateway.example",
+          password: "remote-password", // pragma: allowlist secret
         },
         auth: {
           mode: "token",
-          token: `ltfx.n.c7ec7c548f5992a239dc.v1`,
-          password: `ltfx.n.03eecb1e5d33a976de28.v1`, // pragma: allowlist secret
+          token: "local-token",
+          password: "local-password", // pragma: allowlist secret
         },
       },
     };
@@ -1120,7 +1120,7 @@ describe("gatherDaemonStatus", () => {
   it("surfaces stale gateway listener pids from restart health inspection when probe fails", async () => {
     callGatewayStatusProbe.mockResolvedValueOnce({
       ok: false,
-      url: `ltfx.n.766a0ec1af7dba7196c2.v1`,
+      url: "ws://127.0.0.1:19001",
       error: "timeout",
     });
     inspectGatewayRestart.mockResolvedValueOnce({
@@ -1157,7 +1157,7 @@ describe("gatherDaemonStatus", () => {
     });
     callGatewayStatusProbe.mockResolvedValueOnce({
       ok: false,
-      url: `ltfx.n.483987fad0e9b53dd5da.v1`,
+      url: "wss://127.0.0.1:19001",
       error: "gateway closed (1000): ",
     });
     readLastGatewayErrorLine.mockResolvedValueOnce(
@@ -1193,12 +1193,12 @@ describe("gatherDaemonStatus", () => {
     });
     callGatewayStatusProbe.mockResolvedValueOnce({
       ok: false,
-      url: `ltfx.n.4a6e98bb21d4b82ecb6d.v1`,
+      url: "wss://remote.example:18790",
       error: "gateway closed (1000): ",
     });
 
     const status = await gatherDaemonStatus({
-      rpc: { url: `ltfx.n.4a6e98bb21d4b82ecb6d.v1` },
+      rpc: { url: "wss://remote.example:18790" },
       probe: true,
       deep: false,
     });
@@ -1211,8 +1211,8 @@ describe("gatherDaemonStatus", () => {
     daemonLoadedConfig = {
       gateway: {
         mode: "remote",
-        remote: { url: `ltfx.n.4a6e98bb21d4b82ecb6d.v1` },
-        auth: { token: `ltfx.n.9a38dde25bf893d25186.v1` },
+        remote: { url: "wss://remote.example:18790" },
+        auth: { token: "daemon-token" },
       },
     };
     inspectPortUsage.mockResolvedValueOnce({
@@ -1223,7 +1223,7 @@ describe("gatherDaemonStatus", () => {
     });
     callGatewayStatusProbe.mockResolvedValueOnce({
       ok: false,
-      url: `ltfx.n.4a6e98bb21d4b82ecb6d.v1`,
+      url: "wss://remote.example:18790",
       error: "gateway closed (1000): ",
     });
 
@@ -1243,7 +1243,7 @@ describe("gatherDaemonStatus", () => {
     // reported as drifted just because the CLI package is newer.
     callGatewayStatusProbe.mockResolvedValueOnce({
       ok: true,
-      url: `ltfx.n.766a0ec1af7dba7196c2.v1`,
+      url: "ws://127.0.0.1:19001",
       error: null,
       server: { version: "2026.5.4", connId: "c1" },
     } as never);
@@ -1268,7 +1268,7 @@ describe("gatherDaemonStatus", () => {
   it("flags drift against the running gateway version when an npm plugin lags behind it", async () => {
     callGatewayStatusProbe.mockResolvedValueOnce({
       ok: true,
-      url: `ltfx.n.766a0ec1af7dba7196c2.v1`,
+      url: "ws://127.0.0.1:19001",
       error: null,
       server: { version: "2026.5.4", connId: "c1" },
     } as never);

@@ -76,9 +76,9 @@ describe("launchTuiCli", () => {
     });
 
     await launchTuiCli({
-      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
-      token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
-      password: `ltfx.n.c638833f69bbfb3c267a.v1`,
+      url: "ws://127.0.0.1:18789",
+      token: "test-token",
+      password: "test-password",
       deliver: false,
     });
 

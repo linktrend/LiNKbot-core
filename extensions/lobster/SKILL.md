@@ -60,7 +60,7 @@ Present the prompt to the user. If they approve:
 ```json
 {
   "action": "resume",
-  "token": "${ltfx.n.65a6b95f7ef7024d74d8.v1}",
+  "token": "<resumeToken>",
   "approve": true
 }
 ```

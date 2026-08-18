@@ -1190,7 +1190,7 @@ describe("buildGatewayCronService", () => {
           argv: [
             process.execPath,
             "-e",
-            "process.stdout.write('Visit www.example.com/device and enter code 123456; Log in with token=(opaque-secret-value\\n')",)
+            "process.stdout.write('Visit www.example.com/device and enter code 123456; Log in with token=opaque-secret-value\\n')",
           ],
         },
       });
@@ -1240,7 +1240,7 @@ describe("buildGatewayCronService", () => {
           argv: [
             process.execPath,
             "-e",
-            "process.stdout.write('Log in with token=(opaque-secret-value\\n')",)
+            "process.stdout.write('Log in with token=opaque-secret-value\\n')",
           ],
         },
         delivery: {

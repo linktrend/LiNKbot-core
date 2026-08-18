@@ -166,11 +166,11 @@ describe("acp translator stable lifecycle handlers", () => {
 
   it("lists Gateway sessions through the stable handler with opaque cursors and cwd filtering", async () => {
     const allRows = [
-      createSessionRow({ key: `ltfx.n.e0e132cbe7ddfcf23dba.v1`, cwd: "/work/a", title: "A1" }),
-      createSessionRow({ key: `ltfx.n.fd07a4b2b233ad5bacf9.v1`, cwd: "/work/a", title: "A2" }),
-      createSessionRow({ key: `ltfx.n.a4b4cdc360b6d2076f32.v1`, cwd: "/work/a", title: "A3" }),
-      createSessionRow({ key: `ltfx.n.a398ab83f57f10488b9f.v1`, cwd: "/work/b", title: "B1" }),
-      createSessionRow({ key: `ltfx.n.cb3d18640f14b18a891c.v1`, cwd: "/work/a", title: "A4" }),
+      createSessionRow({ key: "agent:main:a1", cwd: "/work/a", title: "A1" }),
+      createSessionRow({ key: "agent:main:a2", cwd: "/work/a", title: "A2" }),
+      createSessionRow({ key: "agent:main:a3", cwd: "/work/a", title: "A3" }),
+      createSessionRow({ key: "agent:main:b1", cwd: "/work/b", title: "B1" }),
+      createSessionRow({ key: "agent:main:a4", cwd: "/work/a", title: "A4" }),
     ];
     const request = vi.fn(async (method: string, params?: { limit?: number }) => {
       if (method === "sessions.list") {
@@ -225,9 +225,9 @@ describe("acp translator stable lifecycle handlers", () => {
 
   it("does not include sessions without workspace metadata in cwd-filtered lists", async () => {
     const allRows = [
-      createSessionRow({ key: `ltfx.n.217fa0233203c06c32bb.v1`, title: "Unknown workspace" }),
-      createSessionRow({ key: `ltfx.n.e0e132cbe7ddfcf23dba.v1`, cwd: "/work/a", title: "A1" }),
-      createSessionRow({ key: `ltfx.n.a398ab83f57f10488b9f.v1`, cwd: "/work/b", title: "B1" }),
+      createSessionRow({ key: "agent:main:unknown", title: "Unknown workspace" }),
+      createSessionRow({ key: "agent:main:a1", cwd: "/work/a", title: "A1" }),
+      createSessionRow({ key: "agent:main:b1", cwd: "/work/b", title: "B1" }),
     ];
     const request = vi.fn(async (method: string) => {
       if (method === "sessions.list") {
@@ -253,7 +253,7 @@ describe("acp translator stable lifecycle handlers", () => {
       if (method === "sessions.list") {
         return createGatewaySessions([
           createSessionRow({
-            key: `ltfx.n.a0bd29bf0efe5fca6ae0.v1`,
+            key: "agent:main:work",
             cwd: "/tmp/openclaw",
             title: "Work session",
             updatedAt: Number.POSITIVE_INFINITY,
@@ -277,9 +277,9 @@ describe("acp translator stable lifecycle handlers", () => {
 
   it("rejects session/list cursors when the cwd filter changes", async () => {
     const allRows = [
-      createSessionRow({ key: `ltfx.n.e0e132cbe7ddfcf23dba.v1`, cwd: "/work/a", title: "A1" }),
-      createSessionRow({ key: `ltfx.n.fd07a4b2b233ad5bacf9.v1`, cwd: "/work/a", title: "A2" }),
-      createSessionRow({ key: `ltfx.n.a398ab83f57f10488b9f.v1`, cwd: "/work/b", title: "B1" }),
+      createSessionRow({ key: "agent:main:a1", cwd: "/work/a", title: "A1" }),
+      createSessionRow({ key: "agent:main:a2", cwd: "/work/a", title: "A2" }),
+      createSessionRow({ key: "agent:main:b1", cwd: "/work/b", title: "B1" }),
     ];
     const request = vi.fn(async (method: string, params?: { limit?: number }) => {
       if (method === "sessions.list") {
@@ -338,7 +338,7 @@ describe("acp translator stable lifecycle handlers", () => {
       if (method === "sessions.list") {
         return createGatewaySessions([
           createSessionRow({
-            key: `ltfx.n.a0bd29bf0efe5fca6ae0.v1`,
+            key: "agent:main:work",
             cwd: "/tmp/openclaw",
             title: "Work session",
           }),
@@ -408,7 +408,7 @@ describe("acp translator stable lifecycle handlers", () => {
         return { runId: params?.idempotencyKey, status: "timeout" };
       }
       if (method === "sessions.list") {
-        return createGatewaySessions([createSessionRow({ key: `ltfx.n.a0bd29bf0efe5fca6ae0.v1` })]);
+        return createGatewaySessions([createSessionRow({ key: "agent:main:work" })]);
       }
       return { ok: true };
     }) as GatewayClient["request"];

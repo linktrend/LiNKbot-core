@@ -402,7 +402,7 @@ internal fun audioInputDeviceKey(
   return listOf(type.toString(), address, productName).joinToString("|") { URLEncoder.encode(it, "UTF-8") }
 }
 
-internal fun audioInputDeviceOptionFromKey(key: (String): AudioInputDeviceOption? {)
+internal fun audioInputDeviceOptionFromKey(key: String): AudioInputDeviceOption? {
   val parts = key.split("|", limit = 3).map { runCatching { URLDecoder.decode(it, "UTF-8") }.getOrNull() ?: return null }
   if (parts.size != 3) return null
   return AudioInputDeviceOption(

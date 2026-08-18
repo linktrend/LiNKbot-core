@@ -73,7 +73,7 @@ describe("perplexity web search provider", () => {
 
     expect(
       testing.resolvePerplexityTransport({
-        apiKey: `ltfx.n.d8b0445316f64c3b39d5.v1`,
+        apiKey: "pplx-secret",
       }).transport,
     ).toBe("search_api");
   });

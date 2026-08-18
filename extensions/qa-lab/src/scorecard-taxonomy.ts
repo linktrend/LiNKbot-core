@@ -581,11 +581,11 @@ export function qaMaturityFamilyOrder(surfaces: readonly QaMaturityTaxonomySurfa
   return seen;
 }
 
-function averageSurfaceScore(rows: readonly QaMaturityScoreSurface[], key: (QaMaturityScoreKey) {)
+function averageSurfaceScore(rows: readonly QaMaturityScoreSurface[], key: QaMaturityScoreKey) {
   return Math.round(rows.reduce((sum, row) => sum + row.scores[key].score, 0) / rows.length);
 }
 
-function averageCategoryScore(rows: readonly QaMaturityScoreCategory[], key: (QaMaturityScoreKey) {)
+function averageCategoryScore(rows: readonly QaMaturityScoreCategory[], key: QaMaturityScoreKey) {
   return Math.round(rows.reduce((sum, row) => sum + row[key].score, 0) / rows.length);
 }
 

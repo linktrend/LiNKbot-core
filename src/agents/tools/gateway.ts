@@ -202,7 +202,7 @@ export function resolveGatewayOptions(opts?: GatewayCallOptions) {
       cfg,
       envGatewayUrl,
     });
-  return { url: (validatedOverride?.url, token, timeoutMs, target };)
+  return { url: validatedOverride?.url, token, timeoutMs, target };
 }
 
 const APPROVAL_RUNTIME_METHODS = new Set<string>([

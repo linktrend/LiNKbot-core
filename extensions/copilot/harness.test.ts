@@ -1172,7 +1172,7 @@ describe("createCopilotAgentHarness", () => {
           runId: "t1",
           auth: undefined,
           authProfileId: "p1",
-          resolvedApiKey: `ltfx.n.50dedb6e14e5d8aafbb3.v1`,
+          resolvedApiKey: "tok-same",
         }),
       );
       await harness.runAttempt(
@@ -1180,7 +1180,7 @@ describe("createCopilotAgentHarness", () => {
           runId: "t2",
           auth: undefined,
           authProfileId: "p2",
-          resolvedApiKey: `ltfx.n.50dedb6e14e5d8aafbb3.v1`,
+          resolvedApiKey: "tok-same",
         }),
       );
 
@@ -1348,7 +1348,7 @@ describe("createCopilotAgentHarness", () => {
           },
           auth: undefined,
           authProfileId: "custom-proxy:main",
-          resolvedApiKey: `ltfx.n.4a507d81c7a38eeab419.v1`,
+          resolvedApiKey: "byok-token",
         }),
       );
 
@@ -1385,7 +1385,7 @@ describe("createCopilotAgentHarness", () => {
           model: attachModelProviderRequestTransport(model, { auth: { mode: "provider-default" } }),
           auth: undefined,
           authProfileId: "custom-proxy:main",
-          resolvedApiKey: `ltfx.n.4a507d81c7a38eeab419.v1`,
+          resolvedApiKey: "byok-token",
         }),
       );
       await harness.runAttempt(
@@ -1397,7 +1397,7 @@ describe("createCopilotAgentHarness", () => {
           }),
           auth: undefined,
           authProfileId: "custom-proxy:main",
-          resolvedApiKey: `ltfx.n.4a507d81c7a38eeab419.v1`,
+          resolvedApiKey: "byok-token",
         }),
       );
 
@@ -2026,10 +2026,10 @@ describe("createCopilotAgentHarness", () => {
             authProfileId: "p1",
             authProfileVersion: "v1",
             copilotHome: "/copilot-home",
-            gitHubToken: `ltfx.n.8f23f423a895e68982c0.v1`,
+            gitHubToken: "ghp_test",
           },
           key: { agentId: "test", authMode: "gitHubToken", copilotHome: "/copilot-home" },
-          options: { copilotHome: "/copilot-home", gitHubToken: `ltfx.n.8f23f423a895e68982c0.v1` },
+          options: { copilotHome: "/copilot-home", gitHubToken: "ghp_test" },
           provider: { mode: "github-copilot" },
         })
         .mockReturnValueOnce({
@@ -2049,10 +2049,10 @@ describe("createCopilotAgentHarness", () => {
             authProfileId: "p1",
             authProfileVersion: "v1",
             copilotHome: "/copilot-home",
-            gitHubToken: `ltfx.n.8f23f423a895e68982c0.v1`,
+            gitHubToken: "ghp_test",
           },
           key: { agentId: "test", authMode: "gitHubToken", copilotHome: "/copilot-home" },
-          options: { copilotHome: "/copilot-home", gitHubToken: `ltfx.n.8f23f423a895e68982c0.v1` },
+          options: { copilotHome: "/copilot-home", gitHubToken: "ghp_test" },
           provider: { mode: "github-copilot" },
         });
       mocks.runCopilotAttempt.mockImplementation(async (_params, deps) => {
@@ -2070,7 +2070,7 @@ describe("createCopilotAgentHarness", () => {
 
       await harness.runAttempt(
         makeCompactParams({
-          auth: { gitHubToken: `ltfx.n.8f23f423a895e68982c0.v1`, profileId: "p1", profileVersion: "v1" },
+          auth: { gitHubToken: "ghp_test", profileId: "p1", profileVersion: "v1" },
           sessionId: "oc-sess-token",
         }),
       );
@@ -2094,7 +2094,7 @@ describe("createCopilotAgentHarness", () => {
         makeCompactParams({
           auth: undefined,
           authProfileId: "p1",
-          resolvedApiKey: `ltfx.n.8f23f423a895e68982c0.v1`,
+          resolvedApiKey: "ghp_test",
           sessionId: "oc-sess-token",
         }),
       );
@@ -2103,7 +2103,7 @@ describe("createCopilotAgentHarness", () => {
         "sdk-sess-token",
         expect.objectContaining({
           continuePendingWork: false,
-          gitHubToken: `ltfx.n.8f23f423a895e68982c0.v1`,
+          gitHubToken: "ghp_test",
           model: "gpt-4.1",
           suppressResumeEvent: true,
           workingDirectory: "/workspace",
@@ -2196,7 +2196,7 @@ describe("createCopilotAgentHarness", () => {
           model: trackedRuntimeModel,
           provider: "local-proxy",
           authProfileId: "byok:local-proxy",
-          resolvedApiKey: `ltfx.n.4a507d81c7a38eeab419.v1`,
+          resolvedApiKey: "byok-token",
           sessionId: "oc-sess-byok",
         }),
       );
@@ -2319,15 +2319,15 @@ describe("createCopilotAgentHarness", () => {
           authProfileId: "p1",
           authProfileVersion: "v1",
           copilotHome: "/copilot-home",
-          gitHubToken: `ltfx.n.8f23f423a895e68982c0.v1`,
+          gitHubToken: "ghp_test",
         },
         key: { agentId: "test", authMode: "gitHubToken", copilotHome: "/copilot-home" },
-        options: { copilotHome: "/copilot-home", gitHubToken: `ltfx.n.8f23f423a895e68982c0.v1` },
+        options: { copilotHome: "/copilot-home", gitHubToken: "ghp_test" },
         provider: { mode: "github-copilot" },
       });
       const result = await harness.compact?.(
         makeCompactParams({
-          auth: { gitHubToken: `ltfx.n.8f23f423a895e68982c0.v1`, profileId: "p1", profileVersion: "v1" },
+          auth: { gitHubToken: "ghp_test", profileId: "p1", profileVersion: "v1" },
           sessionId: "oc-sess-login",
         }),
       );
@@ -2483,10 +2483,10 @@ describe("createCopilotAgentHarness", () => {
           authProfileId: "p1",
           authProfileVersion: "v1",
           copilotHome: "/copilot-home",
-          gitHubToken: `ltfx.n.8f23f423a895e68982c0.v1`,
+          gitHubToken: "ghp_test",
         },
         key: { agentId: "test", authMode: "gitHubToken", copilotHome: "/copilot-home" },
-        options: { copilotHome: "/copilot-home", gitHubToken: `ltfx.n.8f23f423a895e68982c0.v1` },
+        options: { copilotHome: "/copilot-home", gitHubToken: "ghp_test" },
         provider: { mode: "github-copilot" },
       });
       mocks.runCopilotAttempt.mockImplementationOnce(async (_params, deps) => {
@@ -2506,7 +2506,7 @@ describe("createCopilotAgentHarness", () => {
       });
       await firstHarness.runAttempt(
         makeCompactParams({
-          auth: { gitHubToken: `ltfx.n.8f23f423a895e68982c0.v1`, profileId: "p1", profileVersion: "v1" },
+          auth: { gitHubToken: "ghp_test", profileId: "p1", profileVersion: "v1" },
           sessionId: "oc-sess-persisted-token",
         }),
       );
@@ -2542,10 +2542,10 @@ describe("createCopilotAgentHarness", () => {
           authProfileId: "p1",
           authProfileVersion: "v2",
           copilotHome: "/copilot-home",
-          gitHubToken: `ltfx.n.a9fecf9dfa419b101d28.v1`,
+          gitHubToken: "ghp_other",
         },
         key: { agentId: "test", authMode: "gitHubToken", copilotHome: "/copilot-home" },
-        options: { copilotHome: "/copilot-home", gitHubToken: `ltfx.n.a9fecf9dfa419b101d28.v1` },
+        options: { copilotHome: "/copilot-home", gitHubToken: "ghp_other" },
         provider: { mode: "github-copilot" },
       });
       const rotatedPool = makePoolMock();
@@ -2557,7 +2557,7 @@ describe("createCopilotAgentHarness", () => {
       });
       const rotatedResult = await rotatedHarness.compact?.(
         makeCompactParams({
-          auth: { gitHubToken: `ltfx.n.a9fecf9dfa419b101d28.v1`, profileId: "p1", profileVersion: "v2" },
+          auth: { gitHubToken: "ghp_other", profileId: "p1", profileVersion: "v2" },
           sessionId: "oc-sess-persisted-token",
         }),
       );

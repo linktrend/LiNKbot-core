@@ -677,7 +677,7 @@ describe("OpenAI-compatible completions params", () => {
       role: "user",
       content: [
         { type: "text", text: "Attached image(s) from tool result:" },
-        { type: "image_url", image_url: { url: `ltfx.n.2786379b1770c8859df9.v1` } },
+        { type: "image_url", image_url: { url: "data:image/png;base64,aW1n" } },
       ],
     });
   });

@@ -297,7 +297,7 @@ vi.mock("../gateway/call.js", () => ({
 
 vi.mock("../gateway/connection-details.js", () => ({
   buildGatewayConnectionDetailsWithResolvers: vi.fn(() => ({
-    url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+    url: "ws://127.0.0.1:18789",
     urlSource: "local loopback",
     message: "Gateway target: ws://127.0.0.1:18789",
   })),
@@ -832,7 +832,7 @@ describe("capability cli", () => {
         maxTokens: 128,
       },
       auth: {
-        apiKey: `ltfx.n.2bbc6ce9917113417ef2.v1`,
+        apiKey: "codex-app-server",
         source: "codex-app-server",
         mode: "token",
       },
@@ -1010,7 +1010,7 @@ describe("capability cli", () => {
         api: "openai-chatgpt-responses",
       },
       auth: {
-        apiKey: `ltfx.n.2bbc6ce9917113417ef2.v1`,
+        apiKey: "codex-app-server",
         source: "codex-app-server",
         mode: "token",
       },
@@ -2604,7 +2604,7 @@ describe("capability cli", () => {
 
   it("resolves command SecretRefs before local audio transcription", async () => {
     const rawConfig = { models: { providers: { openai: { apiKey: "raw-ref" } } } };
-    const resolvedConfig = { models: { providers: { openai: { apiKey: `ltfx.n.b695c853fc672113967a.v1` } } } };
+    const resolvedConfig = { models: { providers: { openai: { apiKey: "resolved-key" } } } };
     mocks.loadConfig.mockReturnValue(rawConfig);
     mocks.resolveCommandConfigWithSecrets.mockResolvedValueOnce({
       resolvedConfig,
@@ -2739,7 +2739,7 @@ describe("capability cli", () => {
     const rawConfig = { messages: { tts: { providers: { openai: { voice: "coral" } } } } };
     mocks.loadConfig.mockReturnValue(rawConfig);
     mocks.resolveApiKeyForProvider.mockResolvedValueOnce({
-      apiKey: `ltfx.n.646e8b8ff42421cfba18.v1`,
+      apiKey: "profile-openai-key",
       source: "profile:openai:qa",
       mode: "api-key",
     });
@@ -2769,7 +2769,7 @@ describe("capability cli", () => {
       messages?: { tts?: { providers?: { openai?: { apiKey?: string; voice?: string } } } };
     };
     expect(cfg.messages?.tts?.providers?.openai).toMatchObject({
-      apiKey: `ltfx.n.646e8b8ff42421cfba18.v1`,
+      apiKey: "profile-openai-key",
       voice: "coral",
     });
     expect(mocks.setRuntimeConfigSnapshot).toHaveBeenLastCalledWith(cfg);
@@ -2779,7 +2779,7 @@ describe("capability cli", () => {
     const rawConfig = { messages: { tts: { provider: "openai" } } };
     mocks.loadConfig.mockReturnValue(rawConfig);
     mocks.resolveApiKeyForProvider.mockResolvedValueOnce({
-      apiKey: `ltfx.n.646e8b8ff42421cfba18.v1`,
+      apiKey: "profile-openai-key",
       source: "profile:openai:qa",
       mode: "api-key",
     });
@@ -2800,7 +2800,7 @@ describe("capability cli", () => {
       messages?: { tts?: { providers?: { openai?: { apiKey?: string } } } };
     };
     expect(cfg.messages?.tts?.providers?.openai).toMatchObject({
-      apiKey: `ltfx.n.646e8b8ff42421cfba18.v1`,
+      apiKey: "profile-openai-key",
     });
   });
 
@@ -2808,7 +2808,7 @@ describe("capability cli", () => {
     const rawConfig = { channels: { discord: { tts: { provider: "openai" } } } };
     mocks.loadConfig.mockReturnValue(rawConfig);
     mocks.resolveApiKeyForProvider.mockResolvedValueOnce({
-      apiKey: `ltfx.n.646e8b8ff42421cfba18.v1`,
+      apiKey: "profile-openai-key",
       source: "profile:openai:qa",
       mode: "api-key",
     });
@@ -2826,7 +2826,7 @@ describe("capability cli", () => {
       messages?: { tts?: { providers?: { openai?: { apiKey?: string } } } };
     };
     expect(cfg.messages?.tts?.providers?.openai).toMatchObject({
-      apiKey: `ltfx.n.646e8b8ff42421cfba18.v1`,
+      apiKey: "profile-openai-key",
     });
   });
 
@@ -2842,7 +2842,7 @@ describe("capability cli", () => {
     };
     mocks.loadConfig.mockReturnValue(rawConfig);
     mocks.resolveApiKeyForProvider.mockResolvedValueOnce({
-      apiKey: `ltfx.n.646e8b8ff42421cfba18.v1`,
+      apiKey: "profile-openai-key",
       source: "profile:openai:qa",
       mode: "api-key",
     });
@@ -2859,7 +2859,7 @@ describe("capability cli", () => {
       messages?: { tts?: { providers?: { openai?: { apiKey?: string } } } };
     };
     expect(cfg.channels?.discord?.tts?.openai).toMatchObject({
-      apiKey: `ltfx.n.646e8b8ff42421cfba18.v1`,
+      apiKey: "profile-openai-key",
       speakerVoice: "nova",
     });
     expect(cfg.messages?.tts?.providers?.openai).toBeUndefined();
@@ -2868,7 +2868,7 @@ describe("capability cli", () => {
 
   it("does not override inherited local TTS channel provider API keys", async () => {
     const rawConfig = {
-      messages: { tts: { providers: { openai: { apiKey: `ltfx.n.27c99de52a899b8d6462.v1` } } } },
+      messages: { tts: { providers: { openai: { apiKey: "config-key" } } } },
       channels: {
         discord: {
           tts: {
@@ -2879,10 +2879,10 @@ describe("capability cli", () => {
     };
     mocks.loadConfig.mockReturnValue(rawConfig);
     mocks.resolveTtsConfig.mockReturnValue({
-      providerConfigs: { openai: { apiKey: `ltfx.n.27c99de52a899b8d6462.v1`, speakerVoice: "nova" } },
+      providerConfigs: { openai: { apiKey: "config-key", speakerVoice: "nova" } },
     });
     mocks.resolveApiKeyForProvider.mockResolvedValueOnce({
-      apiKey: `ltfx.n.646e8b8ff42421cfba18.v1`,
+      apiKey: "profile-openai-key",
       source: "profile:openai:qa",
       mode: "api-key",
     });
@@ -2907,7 +2907,7 @@ describe("capability cli", () => {
     const rawConfig = { messages: { tts: { provider: "openai" } } };
     mocks.loadConfig.mockReturnValue(rawConfig);
     mocks.resolveApiKeyForProvider.mockResolvedValueOnce({
-      apiKey: `ltfx.n.fef7fb009841a6c4676e.v1`,
+      apiKey: "profile-openai-token",
       source: "profile:openai:token",
       mode: "token",
     });
@@ -2924,10 +2924,10 @@ describe("capability cli", () => {
   });
 
   it("does not override existing TTS provider API keys with different casing", async () => {
-    const rawConfig = { messages: { tts: { providers: { OpenAI: { apiKey: `ltfx.n.27c99de52a899b8d6462.v1` } } } } };
+    const rawConfig = { messages: { tts: { providers: { OpenAI: { apiKey: "config-key" } } } } };
     mocks.loadConfig.mockReturnValue(rawConfig);
     mocks.resolveApiKeyForProvider.mockResolvedValueOnce({
-      apiKey: `ltfx.n.646e8b8ff42421cfba18.v1`,
+      apiKey: "profile-openai-key",
       source: "profile:openai:qa",
       mode: "api-key",
     });
@@ -2956,10 +2956,10 @@ describe("capability cli", () => {
   });
 
   it("does not override existing direct TTS provider API keys", async () => {
-    const rawConfig = { messages: { tts: { openai: { apiKey: `ltfx.n.27c99de52a899b8d6462.v1` } } } };
+    const rawConfig = { messages: { tts: { openai: { apiKey: "config-key" } } } };
     mocks.loadConfig.mockReturnValue(rawConfig);
     mocks.resolveApiKeyForProvider.mockResolvedValueOnce({
-      apiKey: `ltfx.n.646e8b8ff42421cfba18.v1`,
+      apiKey: "profile-openai-key",
       source: "profile:openai:qa",
       mode: "api-key",
     });
@@ -3034,7 +3034,7 @@ describe("capability cli", () => {
   it("fails clearly when gateway TTS output is requested against a remote gateway", async () => {
     const gatewayConnection = await import("../gateway/connection-details.js");
     vi.mocked(gatewayConnection.buildGatewayConnectionDetailsWithResolvers).mockReturnValueOnce({
-      url: `ltfx.n.72e4dc7921c2128a3b3f.v1`,
+      url: "wss://gateway.example.com",
       urlSource: "config gateway.remote.url",
       message: "Gateway target: wss://gateway.example.com",
     });
@@ -3456,7 +3456,7 @@ describe("capability cli", () => {
           tavily: {
             config: {
               webSearch: {
-                apiKey: `ltfx.n.73f03a8754ab827d4671.v1`,
+                apiKey: "resolved-tavily-key",
               },
             },
           },
@@ -3539,7 +3539,7 @@ describe("capability cli", () => {
           firecrawl: {
             config: {
               webSearch: {
-                apiKey: `ltfx.n.4311284017b360b746d8.v1`,
+                apiKey: "resolved-firecrawl-key",
               },
             },
           },
@@ -3615,7 +3615,7 @@ describe("capability cli", () => {
           firecrawl: {
             config: {
               webFetch: {
-                apiKey: `ltfx.n.4311284017b360b746d8.v1`,
+                apiKey: "resolved-firecrawl-key",
               },
             },
           },
@@ -3677,7 +3677,7 @@ describe("capability cli", () => {
           firecrawl: {
             config: {
               webSearch: {
-                apiKey: `ltfx.n.4311284017b360b746d8.v1`,
+                apiKey: "resolved-firecrawl-key",
               },
             },
           },

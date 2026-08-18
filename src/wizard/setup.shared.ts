@@ -212,8 +212,8 @@ export function resolveQuickstartGatewayDefaults(
     bind,
     authMode,
     tailscaleMode,
-    token: (baseConfig.gateway?.auth?.token,)
-    password: (baseConfig.gateway?.auth?.password,)
+    token: baseConfig.gateway?.auth?.token,
+    password: baseConfig.gateway?.auth?.password,
     customBindHost: baseConfig.gateway?.customBindHost,
     tailscaleResetOnExit: baseConfig.gateway?.tailscale?.resetOnExit ?? false,
   };

@@ -1110,7 +1110,7 @@ describe("migrateApplyCommand", () => {
           details: {
             value: {
               time: {
-                env: { OPENAI_API_KEY: `ltfx.n.9c8d39c2a3b4ae401491.v1`, SAFE_FLAG: "visible" },
+                env: { OPENAI_API_KEY: "short-dev-key", SAFE_FLAG: "visible" },
                 headers: { Authorization: "Bearer short-dev-key" },
               },
             },
@@ -1304,8 +1304,8 @@ describe("migrateApplyCommand", () => {
           details: {
             value: {
               time: {
-                env: { OPENAI_API_KEY: `ltfx.n.9c8d39c2a3b4ae401491.v1` },
-                headers: { "x-api-key": `ltfx.n.0a9f13ccd37b99e4e671.v1` },
+                env: { OPENAI_API_KEY: "short-dev-key" },
+                headers: { "x-api-key": "another-short-dev-key" },
               },
             },
           },

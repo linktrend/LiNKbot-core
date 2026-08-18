@@ -10,7 +10,7 @@ import {
 
 function makeConfigWithProvider(): Record<string, unknown> {
   return {
-    gateway: { auth: { token: `ltfx.n.4c5dc9b7708905f77f5e.v1` } },
+    gateway: { auth: { token: "test-token" } },
     models: {
       providers: {
         xai: {
@@ -75,7 +75,7 @@ describe("sanitizeRedactedFormForSubmit", () => {
       gateway: {
         mode: "remote",
         remote: {
-          token: `ltfx.n.2fb22ad0d0179be2a874.v1`,
+          token: "__OPENCLAW_REDACTED__",
         },
       },
     };
@@ -83,7 +83,7 @@ describe("sanitizeRedactedFormForSubmit", () => {
       gateway: {
         mode: "remote",
         remote: {
-          token: `ltfx.n.2fb22ad0d0179be2a874.v1`,
+          token: "__OPENCLAW_REDACTED__",
         },
       },
     };
@@ -102,7 +102,7 @@ describe("sanitizeRedactedFormForSubmit", () => {
       gateway: {
         mode: "remote",
         remote: {
-          token: `ltfx.n.2fb22ad0d0179be2a874.v1`,
+          token: "__OPENCLAW_REDACTED__",
         },
       },
     };
@@ -110,7 +110,7 @@ describe("sanitizeRedactedFormForSubmit", () => {
 
     expect(
       sanitizeRedactedFormForSubmit(form, originalForm, {
-        gateway: { mode: "remote", remote: { token: `ltfx.n.2fb22ad0d0179be2a874.v1` } },
+        gateway: { mode: "remote", remote: { token: "__OPENCLAW_REDACTED__" } },
       }),
     ).toEqual(form);
   });
@@ -119,7 +119,7 @@ describe("sanitizeRedactedFormForSubmit", () => {
     const form = {
       gateway: {
         remote: {
-          token: `ltfx.n.2fb22ad0d0179be2a874.v1`,
+          token: "__OPENCLAW_REDACTED__",
         },
       },
     };
@@ -139,7 +139,7 @@ describe("sanitizeRedactedFormForSubmit", () => {
       gateway: {
         remote: {
           nested: {
-            token: `ltfx.n.2fb22ad0d0179be2a874.v1`,
+            token: "__OPENCLAW_REDACTED__",
           },
         },
       },
@@ -173,7 +173,7 @@ describe("sanitizeRedactedFormForSubmit", () => {
     const form = {
       gateway: {
         remote: {
-          token: `ltfx.n.2fb22ad0d0179be2a874.v1`,
+          token: "__OPENCLAW_REDACTED__",
         },
       },
     };

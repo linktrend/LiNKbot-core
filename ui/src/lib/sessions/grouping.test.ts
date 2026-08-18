@@ -42,9 +42,9 @@ describe("groupSidebarSessionRows", () => {
     const sections = groupSidebarSessionRows([
       { ...row({ key: "tg-dm" }), channel: "telegram", channelSession: true },
       { ...row({ key: "dash-1" }) },
-      { ...row({ key: `ltfx.n.323418c315880da16b82.v1`, kind: "group" }), channel: "whatsapp", channelSession: true },
+      { ...row({ key: "wa-group", kind: "group" }), channel: "whatsapp", channelSession: true },
       // Explicit user category beats smart group/coding classification.
-      { ...row({ key: `ltfx.n.813788fc5f4ed5b3c5fd.v1`, kind: "group" }), category: "Project X" },
+      { ...row({ key: "grouped-tg", kind: "group" }), category: "Project X" },
       { ...row({ key: "acp-1" }), acpSession: true },
     ]);
 
@@ -183,8 +183,8 @@ describe("groupSessionRows", () => {
 
   it("groups channel sessions alphabetically with unparseable keys last", () => {
     const rows = [
-      row({ key: `ltfx.n.ae4e1eca31aa46f7d47b.v1` }),
-      row({ key: `ltfx.n.d803dff35d194a84ac66.v1` }),
+      row({ key: "agent:main:telegram:direct:1" }),
+      row({ key: "agent:main:discord:channel:2" }),
       row({ key: "global", kind: "global" }),
     ];
     const groups = groupSessionRows({ rows, mode: "channel" });
@@ -193,8 +193,8 @@ describe("groupSessionRows", () => {
 
   it("preserves row order within a group", () => {
     const rows = [
-      row({ key: `ltfx.n.fa84dde052446ccd4036.v1` }),
-      row({ key: `ltfx.n.d803dff35d194a84ac66.v1` }),
+      row({ key: "agent:main:discord:channel:1" }),
+      row({ key: "agent:main:discord:channel:2" }),
     ];
     const groups = groupSessionRows({ rows, mode: "channel" });
     expect(groups[0]?.rows.map((r) => r.key)).toEqual([

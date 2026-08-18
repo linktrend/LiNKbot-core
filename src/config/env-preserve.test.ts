@@ -4,31 +4,31 @@ import { restoreEnvVarRefs } from "./env-preserve.js";
 
 describe("restoreEnvVarRefs", () => {
   const env = {
-    ANTHROPIC_API_KEY: `ltfx.n.105ab7aa5aa555a5d6ef.v1`,
-    OPENAI_API_KEY: `ltfx.n.f845a97b183644310620.v1`,
-    MY_TOKEN: `ltfx.n.984fd489908c255f16ce.v1`,
+    ANTHROPIC_API_KEY: "sk-ant-api03-real-key",
+    OPENAI_API_KEY: "sk-openai-real-key",
+    MY_TOKEN: "tok-12345",
   } as unknown as NodeJS.ProcessEnv;
 
   it("restores a simple ${VAR} reference when value matches", () => {
-    const incoming = { apiKey: `ltfx.n.105ab7aa5aa555a5d6ef.v1` };
+    const incoming = { apiKey: "sk-ant-api03-real-key" };
     const parsed = { apiKey: "${ANTHROPIC_API_KEY}" };
     const result = restoreEnvVarRefs(incoming, parsed, env);
     expect(result).toEqual({ apiKey: "${ANTHROPIC_API_KEY}" });
   });
 
   it("keeps new value when caller intentionally changed it", () => {
-    const incoming = { apiKey: `ltfx.n.4191619cb097794efcb8.v1` };
+    const incoming = { apiKey: "sk-ant-new-different-key" };
     const parsed = { apiKey: "${ANTHROPIC_API_KEY}" };
     const result = restoreEnvVarRefs(incoming, parsed, env);
-    expect(result).toEqual({ apiKey: `ltfx.n.4191619cb097794efcb8.v1` });
+    expect(result).toEqual({ apiKey: "sk-ant-new-different-key" });
   });
 
   it("handles nested objects", () => {
     const incoming = {
       models: {
         providers: {
-          anthropic: { apiKey: `ltfx.n.105ab7aa5aa555a5d6ef.v1` },
-          openai: { apiKey: `ltfx.n.f845a97b183644310620.v1` },
+          anthropic: { apiKey: "sk-ant-api03-real-key" },
+          openai: { apiKey: "sk-openai-real-key" },
         },
       },
     };
@@ -52,7 +52,7 @@ describe("restoreEnvVarRefs", () => {
   });
 
   it("preserves new keys not in parsed", () => {
-    const incoming = { apiKey: `ltfx.n.105ab7aa5aa555a5d6ef.v1`, newField: "hello" };
+    const incoming = { apiKey: "sk-ant-api03-real-key", newField: "hello" };
     const parsed = { apiKey: "${ANTHROPIC_API_KEY}" };
     const result = restoreEnvVarRefs(incoming, parsed, env);
     expect(result).toEqual({ apiKey: "${ANTHROPIC_API_KEY}", newField: "hello" });
@@ -66,25 +66,25 @@ describe("restoreEnvVarRefs", () => {
   });
 
   it("handles arrays", () => {
-    const incoming = ["ltfx.n.105ab7aa5aa555a5d6ef.v1", "literal"];
+    const incoming = ["sk-ant-api03-real-key", "literal"];
     const parsed = ["${ANTHROPIC_API_KEY}", "literal"];
     const result = restoreEnvVarRefs(incoming, parsed, env);
     expect(result).toEqual(["${ANTHROPIC_API_KEY}", "literal"]);
   });
 
   it("handles null/undefined parsed gracefully", () => {
-    const incoming = { apiKey: `ltfx.n.105ab7aa5aa555a5d6ef.v1` };
+    const incoming = { apiKey: "sk-ant-api03-real-key" };
     expect(restoreEnvVarRefs(incoming, null, env)).toEqual(incoming);
     expect(restoreEnvVarRefs(incoming, undefined, env)).toEqual(incoming);
   });
 
   it("handles missing env var (cannot verify match)", () => {
     const envMissing = {} as unknown as NodeJS.ProcessEnv;
-    const incoming = { apiKey: `ltfx.n.700f3c597d9a0db5fc2d.v1` };
+    const incoming = { apiKey: "some-value" };
     const parsed = { apiKey: "${MISSING_VAR}" };
     // Can't resolve the template, so keep incoming as-is
     const result = restoreEnvVarRefs(incoming, parsed, envMissing);
-    expect(result).toEqual({ apiKey: `ltfx.n.700f3c597d9a0db5fc2d.v1` });
+    expect(result).toEqual({ apiKey: "some-value" });
   });
 
   it("handles composite template strings like prefix-${VAR}-suffix", () => {
@@ -235,8 +235,8 @@ describe("restoreEnvVarRefs", () => {
     expect(() =>
       restoreEnvVarRefs(
         [
-          { name: "second-next", token: `ltfx.n.ff492ef788c89b555e6f.v1` },
-          { name: "first-next", token: `ltfx.n.8766b9cb08e6040b704f.v1` },
+          { name: "second-next", token: "secret-b" },
+          { name: "first-next", token: "secret-a" },
         ],
         [
           { name: "first", token: "${TOKEN_A}" },
@@ -254,8 +254,8 @@ describe("restoreEnvVarRefs", () => {
     expect(() =>
       restoreEnvVarRefs(
         [
-          { account: "second", token: `ltfx.n.8766b9cb08e6040b704f.v1` },
-          { account: "first", token: `ltfx.n.ff492ef788c89b555e6f.v1` },
+          { account: "second", token: "secret-a" },
+          { account: "first", token: "secret-b" },
         ],
         [
           { account: "first", token: "${TOKEN_A}" },
@@ -336,8 +336,8 @@ describe("restoreEnvVarRefs", () => {
   it("allows same-index non-string edits when every authored literal string stays unchanged", () => {
     const result = restoreEnvVarRefs(
       [
-        { account: "first", enabled: true, token: `ltfx.n.8766b9cb08e6040b704f.v1` },
-        { account: "second", enabled: false, token: `ltfx.n.ff492ef788c89b555e6f.v1` },
+        { account: "first", enabled: true, token: "secret-a" },
+        { account: "second", enabled: false, token: "secret-b" },
       ],
       [
         { account: "first", enabled: false, token: "${TOKEN_A}" },
@@ -546,7 +546,7 @@ describe("restoreEnvVarRefs", () => {
         { id: "escaped", token: "${TOKEN}", enabled: true },
       ],
       [
-        { id: "escaped", token: `ltfx.n.665607ca2c3c45aa3caf.v1`, enabled: false },
+        { id: "escaped", token: "$${TOKEN}", enabled: false },
         { id: "literal", token: "plain" },
       ],
       {} as NodeJS.ProcessEnv,
@@ -554,12 +554,12 @@ describe("restoreEnvVarRefs", () => {
 
     expect(result).toEqual([
       { id: "literal", token: "plain" },
-      { id: "escaped", token: `ltfx.n.665607ca2c3c45aa3caf.v1`, enabled: true },
+      { id: "escaped", token: "$${TOKEN}", enabled: true },
     ]);
   });
 
   it("allows deleting an escaped literal entry with a stable id", () => {
-    const result = restoreEnvVarRefs([], [{ id: "old", token: `ltfx.n.665607ca2c3c45aa3caf.v1` }], {});
+    const result = restoreEnvVarRefs([], [{ id: "old", token: "$${TOKEN}" }], {});
 
     expect(result).toEqual([]);
   });
@@ -568,7 +568,7 @@ describe("restoreEnvVarRefs", () => {
     const result = restoreEnvVarRefs(
       [{ id: "main", name: "new" }],
       [
-        { id: "escaped", token: `ltfx.n.665607ca2c3c45aa3caf.v1` },
+        { id: "escaped", token: "$${TOKEN}" },
         { id: "main", name: "old" },
       ],
       {},
@@ -580,18 +580,18 @@ describe("restoreEnvVarRefs", () => {
   it("restores escaped literals during a same-index object edit with stable neighbors", () => {
     const result = restoreEnvVarRefs(
       [{ token: "${TOKEN}", enabled: true }, "tail"],
-      [{ token: `ltfx.n.665607ca2c3c45aa3caf.v1`, enabled: false }, "tail"],
+      [{ token: "$${TOKEN}", enabled: false }, "tail"],
       {},
     );
 
-    expect(result).toEqual([{ token: `ltfx.n.665607ca2c3c45aa3caf.v1`, enabled: true }, "tail"]);
+    expect(result).toEqual([{ token: "$${TOKEN}", enabled: true }, "tail"]);
   });
 
   it("rejects restoring escaped literals onto a replacement stable-id entry", () => {
     expect(() =>
       restoreEnvVarRefs(
         [{ id: "new", token: "${TOKEN}" }],
-        [{ id: "old", token: `ltfx.n.665607ca2c3c45aa3caf.v1` }],
+        [{ id: "old", token: "$${TOKEN}" }],
         {},
       ),
     ).toThrow("Config write would reorder or modify an array containing environment references");
@@ -600,7 +600,7 @@ describe("restoreEnvVarRefs", () => {
   it("allows replacing a stable-id escaped entry when no active reference remains", () => {
     const result = restoreEnvVarRefs(
       [{ id: "new", token: "plain" }],
-      [{ id: "old", token: `ltfx.n.665607ca2c3c45aa3caf.v1` }],
+      [{ id: "old", token: "$${TOKEN}" }],
       {},
     );
 
@@ -645,7 +645,7 @@ describe("restoreEnvVarRefs", () => {
           { id: "a", token: "changed" },
         ],
         [
-          { id: "a", token: `ltfx.n.665607ca2c3c45aa3caf.v1` },
+          { id: "a", token: "$${TOKEN}" },
           { id: "b", token: "literal" },
         ],
         {},
@@ -705,12 +705,12 @@ describe("restoreEnvVarRefs", () => {
         { id: "literal", token: "${TOKEN}" },
         { id: "new", token: "${TOKEN}" },
       ],
-      [{ id: "literal", token: `ltfx.n.665607ca2c3c45aa3caf.v1` }],
+      [{ id: "literal", token: "$${TOKEN}" }],
       {},
     );
 
     expect(result).toEqual([
-      { id: "literal", token: `ltfx.n.665607ca2c3c45aa3caf.v1` },
+      { id: "literal", token: "$${TOKEN}" },
       { id: "new", token: "${TOKEN}" },
     ]);
   });
@@ -723,7 +723,7 @@ describe("restoreEnvVarRefs", () => {
           { id: "active", token: "${TOKEN}" },
         ],
         [
-          { id: "literal", token: `ltfx.n.665607ca2c3c45aa3caf.v1` },
+          { id: "literal", token: "$${TOKEN}" },
           { id: "active", token: "${TOKEN}" },
         ],
         { TOKEN: "secret" } as unknown as NodeJS.ProcessEnv,
@@ -756,10 +756,10 @@ describe("restoreEnvVarRefs", () => {
   });
 
   it("does not restore when parsed value has no env var pattern", () => {
-    const incoming = { apiKey: `ltfx.n.105ab7aa5aa555a5d6ef.v1` };
-    const parsed = { apiKey: `ltfx.n.105ab7aa5aa555a5d6ef.v1` };
+    const incoming = { apiKey: "sk-ant-api03-real-key" };
+    const parsed = { apiKey: "sk-ant-api03-real-key" };
     const result = restoreEnvVarRefs(incoming, parsed, env);
-    expect(result).toEqual({ apiKey: `ltfx.n.105ab7aa5aa555a5d6ef.v1` });
+    expect(result).toEqual({ apiKey: "sk-ant-api03-real-key" });
   });
 
   // Edge case: env mutation between read and write (Greptile comment #1)
@@ -770,18 +770,18 @@ describe("restoreEnvVarRefs", () => {
     // Then config.env or external mutation changed MY_VAR to "mutated-value"
     // Caller is writing back "original-value" (the value they got from the read)
     const mutatedEnv = { MY_VAR: "mutated-value" } as unknown as NodeJS.ProcessEnv;
-    const incoming = { key: `ltfx.n.d19c9c2f9dfbb2e6dda0.v1` };
+    const incoming = { key: "original-value" };
     const parsed = { key: "${MY_VAR}" };
 
     const result = restoreEnvVarRefs(incoming, parsed, mutatedEnv);
     // Should NOT restore ${MY_VAR} because resolving it now gives "mutated-value",
     // which doesn't match "original-value" — the caller's value should be kept
-    expect(result).toEqual({ key: `ltfx.n.d19c9c2f9dfbb2e6dda0.v1` });
+    expect(result).toEqual({ key: "original-value" });
   });
 
   it("correctly restores when env var value hasn't changed", () => {
     const stableEnv = { MY_VAR: "stable-value" } as unknown as NodeJS.ProcessEnv;
-    const incoming = { key: `ltfx.n.3e3dfde79c6233f05458.v1` };
+    const incoming = { key: "stable-value" };
     const parsed = { key: "${MY_VAR}" };
 
     const result = restoreEnvVarRefs(incoming, parsed, stableEnv);
@@ -794,13 +794,13 @@ describe("restoreEnvVarRefs", () => {
     // Caller changed it to "new-value". Live env also changed to "new-value".
     // But using the READ-TIME snapshot ("old-value"), we correctly see mismatch and keep incoming.
     const readTimeEnv = { MY_VAR: "old-value" } as unknown as NodeJS.ProcessEnv;
-    const incoming = { key: `ltfx.n.288167617f1895a847df.v1` }; // caller intentionally changed this
+    const incoming = { key: "new-value" }; // caller intentionally changed this
     const parsed = { key: "${MY_VAR}" };
 
     const result = restoreEnvVarRefs(incoming, parsed, readTimeEnv);
     // Using read-time snapshot: ${MY_VAR} resolves to "old-value", doesn't match "new-value"
     // → correctly keeps caller's new value
-    expect(result).toEqual({ key: `ltfx.n.288167617f1895a847df.v1` });
+    expect(result).toEqual({ key: "new-value" });
   });
 
   // Edge case: $${VAR} escape sequence (Greptile comment #2)

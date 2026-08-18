@@ -22,7 +22,7 @@ function getTestApi(): TestApi {
   ] as TestApi;
 }
 
-export const resolveGatewayHealthProbeToken: (TestApi["resolveGatewayHealthProbeToken"] = ()
+export const resolveGatewayHealthProbeToken: TestApi["resolveGatewayHealthProbeToken"] = (
   nextConfig,
 ) => getTestApi().resolveGatewayHealthProbeToken(nextConfig);
 

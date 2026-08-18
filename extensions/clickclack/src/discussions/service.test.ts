@@ -374,7 +374,7 @@ describe("ClickClack discussion service", () => {
 
     await expect(harness.service.open(sessionKey)).rejects.toThrow("connection lost");
     const pendingBeforeRotation = harness.generationStore.lookup(sessionKey);
-    harness.config.channels!.clickclack!.token = `ltfx.n.41dd96f1dccf65c2c9c7.v1`;
+    harness.config.channels!.clickclack!.token = "test-token-placeholder";
 
     await expect(harness.service.open(sessionKey)).rejects.toThrow(
       "restore its credential and retry",
@@ -663,7 +663,7 @@ describe("ClickClack discussion service", () => {
     harness.config.channels!.clickclack!.accounts = {
       replacement: {
         baseUrl: "https://replacement-clickclack.example",
-        token: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
+        token: "test-token-placeholder",
         workspace: "team",
         discussions: { enabled: true, workspace: "team" },
       },

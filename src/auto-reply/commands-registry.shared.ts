@@ -187,7 +187,7 @@ export function buildBuiltinChatCommands(
       tier: "essential",
     }),
     defineChatCommand({
-      key: `ltfx.n.10f5f77eef9a6b43dc5b.v1`,
+      key: "commands",
       nativeName: "commands",
       description: "List all slash commands.",
       textAlias: "/commands",
@@ -283,7 +283,7 @@ export function buildBuiltinChatCommands(
       ],
     }),
     defineChatCommand({
-      key: `ltfx.n.8fa78148b702fb449224.v1`,
+      key: "diagnostics",
       nativeName: "diagnostics",
       description: "Explain Gateway diagnostics and Codex feedback upload options.",
       textAlias: "/diagnostics",
@@ -317,7 +317,7 @@ export function buildBuiltinChatCommands(
       ],
     }),
     defineChatCommand({
-      key: `ltfx.n.96a4bc2602655473120f.v1`,
+      key: "openclaw",
       description: "Run the OpenClaw setup and repair helper.",
       textAlias: "/openclaw",
       acceptsArgs: true,
@@ -334,7 +334,7 @@ export function buildBuiltinChatCommands(
       tier: "standard",
     }),
     defineChatCommand({
-      key: `ltfx.n.bcd475104a873a42ffaa.v1`,
+      key: "allowlist",
       description: "List/add/remove allowlist entries.",
       textAlias: "/allowlist",
       acceptsArgs: true,
@@ -371,7 +371,7 @@ export function buildBuiltinChatCommands(
       tier: "standard",
     }),
     defineChatCommand({
-      key: `ltfx.n.7fe9121134a47f573b19.v1`,
+      key: "export-session",
       nativeName: "export-session",
       description: "Export current session to an owner-only HTML file in the workspace.",
       textAliases: ["/export-session", "/export"],
@@ -388,7 +388,7 @@ export function buildBuiltinChatCommands(
       ],
     }),
     defineChatCommand({
-      key: `ltfx.n.1e8c065b7208eb40f3fd.v1`,
+      key: "export-trajectory",
       nativeName: "export-trajectory",
       description: "Export a JSONL trajectory bundle for the active session.",
       textAliases: ["/export-trajectory", "/trajectory"],
@@ -480,7 +480,7 @@ export function buildBuiltinChatCommands(
       argsMenu: "auto",
     }),
     defineChatCommand({
-      key: `ltfx.n.d298391b07433318a02b.v1`,
+      key: "subagents",
       nativeName: "subagents",
       description: "Inspect subagent runs for this session.",
       textAlias: "/subagents",
@@ -741,7 +741,7 @@ export function buildBuiltinChatCommands(
       tier: "power",
     }),
     defineChatCommand({
-      key: `ltfx.n.b15526c9c0e75acea3d1.v1`,
+      key: "activation",
       nativeName: "activation",
       description: "Set group activation mode.",
       textAlias: "/activation",
@@ -905,7 +905,7 @@ export function buildBuiltinChatCommands(
       argsMenu: "auto",
     }),
     defineChatCommand({
-      key: `ltfx.n.0c4d01e81bb3d1fd0dc4.v1`,
+      key: "reasoning",
       nativeName: "reasoning",
       description: "Toggle reasoning visibility.",
       textAlias: "/reasoning",
@@ -922,7 +922,7 @@ export function buildBuiltinChatCommands(
       argsMenu: "auto",
     }),
     defineChatCommand({
-      key: `ltfx.n.dcd510dc95eae58bd169.v1`,
+      key: "elevated",
       nativeName: "elevated",
       description: "Toggle elevated mode.",
       textAlias: "/elevated",

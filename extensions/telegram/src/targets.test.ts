@@ -184,7 +184,7 @@ describe("telegram group policy", () => {
     const telegramCfg = {
       channels: {
         telegram: {
-          botToken: `ltfx.n.669740ff15a2f3056773.v1`,
+          botToken: "telegram-test",
           groups: {
             "-1001": {
               requireMention: true,
@@ -216,7 +216,7 @@ describe("telegram group policy", () => {
     const telegramCfg = {
       channels: {
         telegram: {
-          botToken: `ltfx.n.669740ff15a2f3056773.v1`,
+          botToken: "telegram-test",
           groups: {
             "-1001": {
               requireMention: true,
@@ -229,7 +229,7 @@ describe("telegram group policy", () => {
           },
           accounts: {
             work: {
-              botToken: `ltfx.n.2ef230b1b26f636de465.v1`,
+              botToken: "telegram-work",
               groups: {
                 "-1001": {
                   topics: {

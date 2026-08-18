@@ -960,7 +960,7 @@ struct TalkModeManagerTests {
             "talk": [
                 "providers": [
                     "elevenlabs": [
-                        "apiKey": "${ltfx.n.2fb22ad0d0179be2a874.v1}",
+                        "apiKey": "__OPENCLAW_REDACTED__",
                         "voiceId": "bIHbv24MWmeRgasZH58o",
                     ],
                 ],
@@ -981,7 +981,7 @@ struct TalkModeManagerTests {
                 "resolved": [
                     "provider": "elevenlabs",
                     "config": [
-                        "apiKey": "${ltfx.n.2fb22ad0d0179be2a874.v1}",
+                        "apiKey": "__OPENCLAW_REDACTED__",
                         "voiceId": "bIHbv24MWmeRgasZH58o",
                     ],
                 ],

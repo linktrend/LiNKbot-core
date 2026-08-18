@@ -44,7 +44,7 @@ describe("openai realtime voice provider with gpt-live models", () => {
     const provider = buildOpenAIRealtimeVoiceProvider();
     await expect(
       provider.createBrowserSession?.({
-        providerConfig: { apiKey: `ltfx.n.62af8704764faf8ea82f.v1` },
+        providerConfig: { apiKey: "test-key" },
         model: "gpt-live-1",
       }),
     ).rejects.toThrow(OPENAI_GPT_LIVE_BROWSER_SESSION_UNSUPPORTED_MESSAGE);
@@ -54,7 +54,7 @@ describe("openai realtime voice provider with gpt-live models", () => {
   it("keeps GA realtime browser sessions working", async () => {
     const provider = buildOpenAIRealtimeVoiceProvider();
     const session = await provider.createBrowserSession?.({
-      providerConfig: { apiKey: `ltfx.n.62af8704764faf8ea82f.v1` },
+      providerConfig: { apiKey: "test-key" },
       model: "gpt-realtime-2.1",
     });
     expect(session).toMatchObject({
@@ -76,13 +76,13 @@ describe("openai realtime voice provider with gpt-live models", () => {
     expect(() =>
       provider.createBridge({
         ...callbacks,
-        providerConfig: { apiKey: `ltfx.n.62af8704764faf8ea82f.v1`, model: "gpt-live-1" },
+        providerConfig: { apiKey: "test-key", model: "gpt-live-1" },
       }),
     ).toThrow(OPENAI_GPT_LIVE_BRIDGE_UNSUPPORTED_MESSAGE);
     expect(() =>
       provider.createBridge({
         ...callbacks,
-        providerConfig: { apiKey: `ltfx.n.62af8704764faf8ea82f.v1`, model: "gpt-realtime-2.1" },
+        providerConfig: { apiKey: "test-key", model: "gpt-realtime-2.1" },
       }),
     ).not.toThrow();
   });

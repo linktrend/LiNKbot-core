@@ -192,7 +192,7 @@ function createFictionService() {
   };
 }
 
-function stringParam(params: Record<string, unknown>, key: (string)): string {
+function stringParam(params: Record<string, unknown>, key: string): string {
   const value = params[key];
   return typeof value === "string" ? value : "";
 }
@@ -529,7 +529,7 @@ const tasks: Task[] = [
   },
 ];
 
-async function runOne(mode: Mode, task: Task, model: string, apiKey: (string)): Promise<RunMetrics> {
+async function runOne(mode: Mode, task: Task, model: string, apiKey: string): Promise<RunMetrics> {
   const service = createFictionService();
   const counts = {
     modelTurns: 0,
@@ -545,7 +545,7 @@ async function runOne(mode: Mode, task: Task, model: string, apiKey: (string)): 
       tools: toolsForMode(mode, service),
       thinkingLevel: "off",
     },
-    getApiKey: (provider) => (provider === "openai" ? apiKey : (undefined),)
+    getApiKey: (provider) => (provider === "openai" ? apiKey : undefined),
     toolExecution: "parallel",
     maxRetryDelayMs: 10_000,
   });

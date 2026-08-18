@@ -110,7 +110,7 @@ vi.mock("./runtime-api.js", async () => {
 });
 
 const { sendMessageSlack } = await import("./send.js");
-const SLACK_TEST_CFG = { channels: { slack: { botToken: `ltfx.n.87894fe048938b686cfb.v1` } } };
+const SLACK_TEST_CFG = { channels: { slack: { botToken: "xoxb-test" } } };
 
 type UploadTestClient = WebClient & {
   conversations: { open: ReturnType<typeof vi.fn<(...args: unknown[]) => Promise<unknown>>> };
@@ -238,7 +238,7 @@ describe("sendMessageSlack file upload with user IDs", () => {
 
     // Bare user ID — parseSlackTarget classifies this as kind="channel"
     await sendMessageSlack("U2ZH3MFSR", "screenshot", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       mediaUrl: "/tmp/screenshot.png",
@@ -260,7 +260,7 @@ describe("sendMessageSlack file upload with user IDs", () => {
     const client = createUploadTestClient();
 
     await sendMessageSlack("user:UABC123", "image", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       mediaUrl: "/tmp/photo.png",
@@ -277,12 +277,12 @@ describe("sendMessageSlack file upload with user IDs", () => {
     client.conversations.open.mockRejectedValueOnce(new Error("missing_scope"));
 
     await sendMessageSlack("user:UABC123", "first", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
     });
     await sendMessageSlack("user:UABC123", "second", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
     });
@@ -313,14 +313,14 @@ describe("sendMessageSlack file upload with user IDs", () => {
     });
 
     const first = sendMessageSlack("channel:C123CHAN", "first", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
     });
     await vi.waitFor(() => expect(client.chat.postMessage).toHaveBeenCalledTimes(1));
 
     const second = sendMessageSlack("channel:C123CHAN", "second", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
     });
@@ -357,13 +357,13 @@ describe("sendMessageSlack file upload with user IDs", () => {
     const client = createUploadTestClient();
 
     await sendMessageSlack("user:UABC123", "first", {
-      token: `ltfx.n.1b7179b6be15c2de8357.v1`,
+      token: "xoxb-test-a",
       cfg: SLACK_TEST_CFG,
       client,
       mediaUrl: "/tmp/first.png",
     });
     await sendMessageSlack("user:UABC123", "second", {
-      token: `ltfx.n.0ff93d2b4b7464042416.v1`,
+      token: "xoxb-test-b",
       cfg: SLACK_TEST_CFG,
       client,
       mediaUrl: "/tmp/second.png",
@@ -376,7 +376,7 @@ describe("sendMessageSlack file upload with user IDs", () => {
     const client = createUploadTestClient();
 
     const result = await sendMessageSlack("channel:C123CHAN", "chart", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       mediaUrl: "/tmp/chart.png",
@@ -404,7 +404,7 @@ describe("sendMessageSlack file upload with user IDs", () => {
     const client = createUploadTestClient();
 
     await sendMessageSlack("<@U777TEST>", "report", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       mediaUrl: "/tmp/report.png",
@@ -438,7 +438,7 @@ describe("sendMessageSlack file upload with user IDs", () => {
     });
 
     const sendPromise = sendMessageSlack("channel:C123CHAN", "caption", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       mediaUrl: "/tmp/threaded.png",
@@ -502,7 +502,7 @@ describe("sendMessageSlack file upload with user IDs", () => {
     });
 
     await sendMessageSlack("channel:C123CHAN", "caption", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       mediaUrl: "/tmp/secret.png",
@@ -549,7 +549,7 @@ describe("sendMessageSlack file upload with user IDs", () => {
         });
 
         await sendMessageSlack("channel:C123CHAN", "caption", {
-          token: `ltfx.n.87894fe048938b686cfb.v1`,
+          token: "xoxb-test",
           cfg: SLACK_TEST_CFG,
           client,
           mediaUrl: "/tmp/alternate-root.png",
@@ -582,7 +582,7 @@ describe("sendMessageSlack file upload with user IDs", () => {
     );
 
     await sendMessageSlack("channel:C123CHAN", "caption", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       mediaUrl: "/tmp/relayed-upload.png",
@@ -608,7 +608,7 @@ describe("sendMessageSlack file upload with user IDs", () => {
     );
 
     await sendMessageSlack("channel:C123CHAN", "caption", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       mediaUrl: "/tmp/gov-slack.png",
@@ -633,7 +633,7 @@ describe("sendMessageSlack file upload with user IDs", () => {
     );
 
     await sendMessageSlack("channel:C123CHAN", "caption", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       mediaUrl: "/tmp/fake-ip.png",
@@ -661,7 +661,7 @@ describe("sendMessageSlack file upload with user IDs", () => {
 
       await expect(
         sendMessageSlack("channel:C123CHAN", "caption", {
-          token: `ltfx.n.87894fe048938b686cfb.v1`,
+          token: "xoxb-test",
           cfg: SLACK_TEST_CFG,
           client,
           mediaUrl: "/tmp/private-address.png",
@@ -740,7 +740,7 @@ describe("sendMessageSlack file upload with user IDs", () => {
       );
 
       const rejection = await sendMessageSlack("channel:C123CHAN", "caption", {
-        token: `ltfx.n.87894fe048938b686cfb.v1`,
+        token: "xoxb-test",
         cfg: SLACK_TEST_CFG,
         client,
         mediaUrl: "/tmp/rejected-upload.png",
@@ -766,7 +766,7 @@ describe("sendMessageSlack file upload with user IDs", () => {
 
     await expect(
       sendMessageSlack("channel:C123CHAN", "caption", {
-        token: `ltfx.n.87894fe048938b686cfb.v1`,
+        token: "xoxb-test",
         cfg: SLACK_TEST_CFG,
         client,
         mediaUrl: "/tmp/wrong-origin.png",
@@ -811,7 +811,7 @@ describe("sendMessageSlack file upload with user IDs", () => {
 
         const onPlatformSendDispatch = vi.fn();
         const error = await sendMessageSlack("channel:C123CHAN", "caption", {
-          token: `ltfx.n.87894fe048938b686cfb.v1`,
+          token: "xoxb-test",
           cfg: SLACK_TEST_CFG,
           client,
           mediaUrl: "/tmp/hanging.png",
@@ -849,7 +849,7 @@ describe("sendMessageSlack file upload with user IDs", () => {
     globalThis.fetch = vi.fn(async () => new Response(null, { status })) as unknown as typeof fetch;
 
     const error = await sendMessageSlack("channel:C123CHAN", "caption", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       mediaUrl: "/tmp/non-200.png",
@@ -873,7 +873,7 @@ describe("sendMessageSlack file upload with user IDs", () => {
     const onPlatformSendDispatch = vi.fn();
     const transportError = Object.assign(
       new Error(
-        "socket closed at https://files.slack.com/upload/v1/CAPABILITY_SENTINEL?token=(QUERY_SENTINEL",)
+        "socket closed at https://files.slack.com/upload/v1/CAPABILITY_SENTINEL?token=QUERY_SENTINEL",
       ),
       { code: "ECONNRESET" },
     );
@@ -882,7 +882,7 @@ describe("sendMessageSlack file upload with user IDs", () => {
     }) as unknown as typeof fetch;
 
     const error = await sendMessageSlack("channel:C123CHAN", "caption", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       mediaUrl: "/tmp/transport-failure.png",
@@ -924,7 +924,7 @@ describe("sendMessageSlack file upload with user IDs", () => {
     });
 
     const sendPromise = sendMessageSlack("channel:C123CHAN", "caption", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       mediaUrl: "/tmp/completion-pending.png",
@@ -954,7 +954,7 @@ describe("sendMessageSlack file upload with user IDs", () => {
     client.files.completeUploadExternal.mockRejectedValueOnce(new Error("completion unavailable"));
 
     const error = await sendMessageSlack("channel:C123CHAN", "caption", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       mediaUrl: "/tmp/completion-failure.png",
@@ -975,7 +975,7 @@ describe("sendMessageSlack file upload with user IDs", () => {
     });
 
     const error = await sendMessageSlack("channel:C123CHAN", "caption", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       mediaUrl: "/tmp/completion-error-response.png",
@@ -991,7 +991,7 @@ describe("sendMessageSlack file upload with user IDs", () => {
     const client = createUploadTestClient();
 
     await sendMessageSlack("channel:C123CHAN", "caption", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       mediaUrl: "/tmp/threaded.png",
@@ -1014,7 +1014,7 @@ describe("sendMessageSlack file upload with user IDs", () => {
     const client = createUploadTestClient();
 
     await sendMessageSlack("channel:C123CHAN", "caption", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       mediaUrl: "/tmp/threaded.png",

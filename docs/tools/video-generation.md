@@ -36,7 +36,7 @@ active mode before submission and reports supported modes in `action=list`.
     Set an API key for any supported provider:
 
     ```bash
-    export GEMINI_API_KEY="${ltfx.n.74c53a400d948f89d2bd.v1}"
+    export GEMINI_API_KEY="your-key"
     ```
 
   </Step>

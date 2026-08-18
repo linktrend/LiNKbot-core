@@ -65,7 +65,7 @@ vi.mock("ws", () => ({
 
 vi.mock("openclaw/plugin-sdk/provider-auth", () => ({
   isProviderAuthProfileConfigured: providerAuthMocks.isProviderAuthProfileConfigured,
-  resolveProviderAuthProfileApiKey: (providerAuthMocks.resolveProviderAuthProfileApiKey,)
+  resolveProviderAuthProfileApiKey: providerAuthMocks.resolveProviderAuthProfileApiKey,
 }));
 
 vi.mock("openclaw/plugin-sdk/ssrf-runtime", () => ({

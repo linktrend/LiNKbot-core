@@ -416,8 +416,8 @@ describe("buildOpenAIProvider", () => {
       const result = await provider.catalog?.run({
         resolveProviderAuth: () => ({
           mode: "api_key",
-          apiKey: `ltfx.n.45ca28bb99fbb3964300.v1`,
-          discoveryApiKey: `ltfx.n.4f1c669da6b673ca0421.v1`,
+          apiKey: "sk-openai",
+          discoveryApiKey: "sk-discovery",
           source: "profile",
         }),
       } as never);
@@ -453,13 +453,13 @@ describe("buildOpenAIProvider", () => {
       const result = await provider.catalog?.run({
         resolveProviderAuth: () => ({
           mode: "oauth",
-          apiKey: `ltfx.n.76bb75429100720f334b.v1`,
+          apiKey: "stale-oauth-token",
           profileId: "openai:chatgpt",
           source: "profile",
         }),
         resolveProviderApiKey: () => ({
-          apiKey: `ltfx.n.45ca28bb99fbb3964300.v1`,
-          discoveryApiKey: `ltfx.n.4f1c669da6b673ca0421.v1`,
+          apiKey: "sk-openai",
+          discoveryApiKey: "sk-discovery",
         }),
         config: { auth: { profiles: {} } },
         agentDir: "/tmp/openai-agent",
@@ -498,7 +498,7 @@ describe("buildOpenAIProvider", () => {
     }));
 
     const provider = await buildOpenAILiveProviderConfig({
-      apiKey: `ltfx.n.45ca28bb99fbb3964300.v1`,
+      apiKey: "sk-openai",
       fetchGuard,
     });
 
@@ -525,7 +525,7 @@ describe("buildOpenAIProvider", () => {
     });
 
     const provider = await buildOpenAILiveProviderConfig({
-      apiKey: `ltfx.n.99775a42c45979eb10b5.v1`,
+      apiKey: "sk-custom-openai-compatible",
       baseUrl: customBaseUrl,
       fetchGuard,
     });
@@ -533,7 +533,7 @@ describe("buildOpenAIProvider", () => {
     expect(fetchGuard).not.toHaveBeenCalled();
     expect(provider.baseUrl).toBe(customBaseUrl);
     expect(provider.api).toBe("openai-responses");
-    expect(provider.apiKey).toBe("ltfx.n.99775a42c45979eb10b5.v1");
+    expect(provider.apiKey).toBe("sk-custom-openai-compatible");
     const apiModel = provider.models.find((model) => model.api !== "openai-chatgpt-responses");
     expect(apiModel?.baseUrl).toBe(customBaseUrl);
     expect(
@@ -552,7 +552,7 @@ describe("buildOpenAIProvider", () => {
   it("uses the Codex backend catalog for OpenAI OAuth discovery", async () => {
     mocks.resolveApiKeyForProvider.mockResolvedValue({
       mode: "oauth",
-      apiKey: `ltfx.n.a8e91d725336a257f65c.v1`,
+      apiKey: "fresh-oauth-token",
       source: "profile:openai:chatgpt",
       profileId: "openai:chatgpt",
     });
@@ -625,7 +625,7 @@ describe("buildOpenAIProvider", () => {
       const result = await provider.catalog?.run({
         resolveProviderAuth: () => ({
           mode: "oauth",
-          apiKey: `ltfx.n.76bb75429100720f334b.v1`,
+          apiKey: "stale-oauth-token",
           profileId: "openai:chatgpt",
           source: "profile",
         }),
@@ -712,7 +712,7 @@ describe("buildOpenAIProvider", () => {
     }));
 
     await buildOpenAICodexLiveProviderConfig({
-      discoveryApiKey: `ltfx.n.4097889236a2af26c293.v1`,
+      discoveryApiKey: "placeholder",
       fetchGuard,
     });
 
@@ -725,7 +725,7 @@ describe("buildOpenAIProvider", () => {
   it("uses runtime OAuth profiles when catalog auth resolution is empty", async () => {
     mocks.resolveApiKeyForProvider.mockResolvedValue({
       mode: "oauth",
-      apiKey: `ltfx.n.a8e91d725336a257f65c.v1`,
+      apiKey: "fresh-oauth-token",
       source: "profile:openai:chatgpt",
       profileId: "openai:chatgpt",
     });
@@ -811,7 +811,7 @@ describe("buildOpenAIProvider", () => {
     }));
 
     const provider = await buildOpenAICodexLiveProviderConfig({
-      discoveryApiKey: `ltfx.n.3bbc3a9700a71c6a53a3.v1`,
+      discoveryApiKey: "oauth-token",
       accountId: "acct-openai-workspace",
       fetchGuard,
     });
@@ -857,7 +857,7 @@ describe("buildOpenAIProvider", () => {
     }));
 
     const provider = await buildOpenAICodexLiveProviderConfig({
-      discoveryApiKey: `ltfx.n.3e4d883dbd3b78b75688.v1`,
+      discoveryApiKey: "empty-reasoning-oauth-token",
       fetchGuard,
     });
     const sol = provider.models.find((model) => model.id === "gpt-5.6-sol");
@@ -887,7 +887,7 @@ describe("buildOpenAIProvider", () => {
     }));
 
     const provider = await buildOpenAICodexLiveProviderConfig({
-      discoveryApiKey: `ltfx.n.3bbc3a9700a71c6a53a3.v1`,
+      discoveryApiKey: "oauth-token",
       accountId: "acct-openai-workspace",
       fetchGuard,
     });

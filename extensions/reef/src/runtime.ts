@@ -20,7 +20,7 @@ const {
 // Keep the live channel handle in a second named slot: duplicate bundled-plugin
 // module instances must observe the same running Reef instance for outbound sends.
 const activeReefStore = createPluginRuntimeStore<Exclude<ActiveReef, undefined>>({
-  key: `ltfx.n.19397ab3cc4b35ec9087.v1`,
+  key: "plugin-runtime:reef:active",
   errorMessage: "Reef channel is not running",
 });
 

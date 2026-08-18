@@ -49,7 +49,7 @@ describe("matrix account path propagation", () => {
       accountId: "poe",
       homeserver: "https://matrix.example.org",
       userId: "@poe:example.org",
-      accessToken: `ltfx.n.99adbcc62a9b9cda642c.v1`,
+      accessToken: "poe-token",
       deviceId: "POEDEVICE",
     });
   });
@@ -95,7 +95,7 @@ describe("matrix account path propagation", () => {
     });
     expect(probeMatrixMock).toHaveBeenCalledWith({
       homeserver: "https://matrix.example.org",
-      accessToken: `ltfx.n.99adbcc62a9b9cda642c.v1`,
+      accessToken: "poe-token",
       userId: "@poe:example.org",
       deviceId: "POEDEVICE",
       timeoutMs: 500,

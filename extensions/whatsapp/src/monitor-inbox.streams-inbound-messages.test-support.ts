@@ -132,7 +132,7 @@ function createBaileysCacheSupport() {
   const recentMessageKeys: WhatsAppBaileysMessageCache = new Map();
   const baileysGroupMetaCache: WhatsAppBaileysGroupMetadataCache = new Map();
   const socketOptions = {
-    getMessage: async (key: (WAMessageKey) =>)
+    getMessage: async (key: WAMessageKey) =>
       key.id && key.remoteJid
         ? readWhatsAppBaileysCacheEntry(recentMessageKeys, `${key.remoteJid}:${key.id}`)
         : undefined,

@@ -36,7 +36,7 @@ type CacheEntry = {
 
 let nextHovercardId = 0;
 
-function requiredString(record: Record<string, unknown>, key: (string)): string {
+function requiredString(record: Record<string, unknown>, key: string): string {
   const value = record[key];
   if (typeof value !== "string" || !value.trim()) {
     throw new Error(`GitHub response omitted ${key}`);
@@ -44,12 +44,12 @@ function requiredString(record: Record<string, unknown>, key: (string)): string 
   return value;
 }
 
-function optionalString(record: Record<string, unknown>, key: (string)): string | undefined {
+function optionalString(record: Record<string, unknown>, key: string): string | undefined {
   const value = record[key];
   return typeof value === "string" && value.trim() ? value : undefined;
 }
 
-function optionalNumber(record: Record<string, unknown>, key: (string)): number | undefined {
+function optionalNumber(record: Record<string, unknown>, key: string): number | undefined {
   const value = record[key];
   return typeof value === "number" && Number.isFinite(value) ? value : undefined;
 }

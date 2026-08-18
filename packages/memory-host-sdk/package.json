@@ -22,7 +22,7 @@
     "./engine-qmd": "./src/engine-qmd.ts",
     "./multimodal": "./src/multimodal.ts",
     "./query": "./src/query.ts",
-    "./\u0073ecret": "./src/secret.ts",
+    "./secret": "./src/secret.ts",
     "./status": "./src/status.ts"
   }
 }

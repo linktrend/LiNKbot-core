@@ -241,7 +241,7 @@ describe("createSubsystemLogger().isEnabled", () => {
     setLoggerOverride({ level: "silent", consoleLevel: "warn" });
     const warn = installConsoleMethodSpy("warn");
     const log = createSubsystemLogger("gateway");
-    const secret = `ltfx.n.9eae2a71dbe1492bcbf0.v1`;
+    const secret = "sk-supersecretvaluefortest12345";
 
     log.warn(`token=${secret}`);
 
@@ -270,7 +270,7 @@ describe("createSubsystemLogger().isEnabled", () => {
     setLoggerOverride({ level: "silent", consoleLevel: "info" });
     const logSpy = installConsoleMethodSpy("log");
     const log = createSubsystemLogger("gateway/auth");
-    const secret = `ltfx.n.82be8a4d9cdebab78235.v1`;
+    const secret = "sk-abcdefghijklmnopqrstuvwxyz123456";
 
     log.info(`provider API_KEY=${secret}`);
 
@@ -285,7 +285,7 @@ describe("createSubsystemLogger().isEnabled", () => {
     setLoggerOverride({ level: "silent", consoleLevel: "info" });
     const logSpy = installConsoleMethodSpy("log");
     const log = createSubsystemLogger("gateway/auth");
-    const secret = `ltfx.n.d8659dd59f6d79a12953.v1`;
+    const secret = "sk-rawtokenabcdefghijklmnopqrstuvwxyz123456";
 
     log.raw(`raw token ${secret}`);
 

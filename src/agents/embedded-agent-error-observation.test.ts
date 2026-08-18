@@ -8,7 +8,7 @@ import {
   shouldSuppressRawErrorConsoleSuffix,
 } from "./embedded-agent-error-observation.js";
 
-const OBSERVATION_BEARER_TOKEN = `ltfx.n.4da46f962472d870227b.v1`;
+const OBSERVATION_BEARER_TOKEN = "sk-redact-test-token";
 const OBSERVATION_COOKIE_VALUE = "session-cookie-token";
 
 afterEach(() => {

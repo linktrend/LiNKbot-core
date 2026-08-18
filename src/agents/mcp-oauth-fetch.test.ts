@@ -81,7 +81,7 @@ describe("MCP OAuth bearer fetch", () => {
     expect(bearer(callHeaders(fetchFn, 0))).toBe("decoy-token");
     expect(bearer(callHeaders(fetchFn, 1))).toBe("test-auth-token");
     expect(oauthMocks.resolve.mock.calls[1]?.[0]).toMatchObject({
-      rejectedAccessToken: `ltfx.n.5095a09224a5ba7211d6.v1`,
+      rejectedAccessToken: "decoy-token",
       resourceMetadataUrl: new URL("https://mcp.example.com/.well-known/oauth-protected-resource"),
       scope: "docs.read",
     });
@@ -208,7 +208,7 @@ describe("MCP OAuth bearer fetch", () => {
     expect(oauthMocks.resolve).toHaveBeenCalledTimes(2);
     expect(oauthMocks.recordAuthorizationRequired).toHaveBeenCalledWith(
       expect.objectContaining({
-        rejectedAccessToken: `ltfx.n.f35cd067d05752edf483.v1`,
+        rejectedAccessToken: "test-auth-token",
         serverName: "docs",
         serverUrl: "https://mcp.example.com/mcp",
       }),

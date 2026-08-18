@@ -328,7 +328,7 @@ describe("subagent announce seam flow", () => {
     expect(sessionsDeleteSpy).toHaveBeenCalledWith({
       method: "sessions.delete",
       params: {
-        key: `ltfx.n.9b78a1f1f2836cd0dc18.v1`,
+        key: "agent:main:subagent:test",
         deleteTranscript: true,
         emitLifecycleHooks: false,
       },
@@ -428,7 +428,7 @@ describe("subagent announce seam flow", () => {
     expect(sessionsDeleteSpy).toHaveBeenCalledWith({
       method: "sessions.delete",
       params: {
-        key: `ltfx.n.9b78a1f1f2836cd0dc18.v1`,
+        key: "agent:main:subagent:test",
         deleteTranscript: true,
         emitLifecycleHooks: true,
       },

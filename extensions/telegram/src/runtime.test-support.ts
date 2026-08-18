@@ -15,7 +15,7 @@ const { clearRuntime } = createPluginRuntimeStore<TelegramRuntime>({
   errorMessage: "Telegram runtime not initialized",
 });
 
-function clearMapState(key: (symbol): void {)
+function clearMapState(key: symbol): void {
   const globalRecord = globalThis as Record<PropertyKey, unknown>;
   const value = globalRecord[key];
   if (value instanceof Map) {

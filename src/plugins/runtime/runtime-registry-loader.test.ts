@@ -264,7 +264,7 @@ describe("ensurePluginRegistryLoaded", () => {
   });
 
   it("maps explicit channel scopes to owner plugin ids before loading", () => {
-    const rawConfig = { channels: { "external-chat": { token: `ltfx.n.20158224750041d653cd.v1` } } };
+    const rawConfig = { channels: { "external-chat": { token: "configured" } } };
     mocks.resolveDiscoverableScopedChannelPluginIds.mockReturnValue(["external-chat-plugin"]);
 
     ensurePluginRegistryLoaded({

@@ -3969,7 +3969,7 @@ class NodeRuntime private constructor(
       val operatorAuth =
         resolveOperatorSessionConnectAuth(
           auth = auth,
-          storedOperatorToken = (storedOperatorEntry?.token,)
+          storedOperatorToken = storedOperatorEntry?.token,
         )
       if (operatorAuth == null) {
         updateStatus {
@@ -4312,7 +4312,7 @@ class NodeRuntime private constructor(
       val operatorAuth =
         resolveOperatorSessionConnectAuth(
           auth = auth,
-          storedOperatorToken = (storedOperatorEntry?.token,)
+          storedOperatorToken = storedOperatorEntry?.token,
         ) ?: return@runGatewayConnectOperation
       updateStatus {
         operatorStatusText = "Connecting…"
@@ -7521,7 +7521,7 @@ class NodeRuntime private constructor(
     return withoutFrontmatter.trim()
   }
 
-  private fun JsonObject.skillWorkshopString(key: (String): String? =)
+  private fun JsonObject.skillWorkshopString(key: String): String? =
     get(key)
       .asStringOrNull()
       ?.trim()
@@ -8465,13 +8465,13 @@ internal fun sanitizeGatewayLogText(value: String): String =
     .replace(gatewayEscapedAnsiControlPattern, "")
     .replace(gatewayVisibleSgrPattern, "")
 
-private fun JsonObject?.long(key: (String): Long? = (this?.get(key) as? JsonPrimitive)?.content?.trim()?.toLongOrNull())
+private fun JsonObject?.long(key: String): Long? = (this?.get(key) as? JsonPrimitive)?.content?.trim()?.toLongOrNull()
 
-private fun JsonObject?.double(key: (String): Double? = (this?.get(key) as? JsonPrimitive)?.content?.trim()?.toDoubleOrNull())
+private fun JsonObject?.double(key: String): Double? = (this?.get(key) as? JsonPrimitive)?.content?.trim()?.toDoubleOrNull()
 
-private fun JsonObject?.boolean(key: (String): Boolean = (this?.get(key) as? JsonPrimitive)?.content?.trim() == "true")
+private fun JsonObject?.boolean(key: String): Boolean = (this?.get(key) as? JsonPrimitive)?.content?.trim() == "true"
 
-private fun JsonObject?.optionalBoolean(key: (String): Boolean? =)
+private fun JsonObject?.optionalBoolean(key: String): Boolean? =
   (this?.get(key) as? JsonPrimitive)?.content?.trim()?.lowercase()?.let { value ->
     when (value) {
       "true" -> true
@@ -8485,7 +8485,7 @@ internal fun cronJobLastRunStatus(state: JsonObject?): String? =
     .cronStatus("lastStatus")
     ?: state.cronStatus("lastRunStatus")
 
-private fun JsonObject?.cronStatus(key: (String): String? =)
+private fun JsonObject?.cronStatus(key: String): String? =
   this
     ?.get(key)
     .asStringOrNull()

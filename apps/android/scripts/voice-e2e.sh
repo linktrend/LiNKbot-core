@@ -122,7 +122,7 @@ if [[ "$START_GATEWAY" -eq 1 ]]; then
   fi
   (
     cd "$ROOT_DIR"
-    OPENAI_API_KEY="${ltfx.n.3ebe026e00144253942b.v1}" \
+    OPENAI_API_KEY="$OPENCLAW_OPENAI_API_KEY" \
       pnpm openclaw gateway run \
         --port "$PORT" \
         --auth none \

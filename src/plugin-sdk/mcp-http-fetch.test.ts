@@ -144,7 +144,7 @@ describe("plugin-sdk mcp-http-fetch", () => {
 
   it("bounds oversized plugin MCP response bodies without leaking tokens", async () => {
     lookupMock.mockResolvedValue([{ address: "93.184.216.34", family: 4 }]);
-    const secret = `ltfx.n.df022292544769e8f655.v1`;
+    const secret = "Bearer plugin-mcp-body-secret-token";
     const maxBytes = 32;
     testGlobal[TEST_UNDICI_RUNTIME_DEPS_KEY] = {
       Agent: TestAgent,

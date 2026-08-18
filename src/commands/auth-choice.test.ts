@@ -449,7 +449,7 @@ function createFixedChoiceProvider(params: {
 
 async function createDefaultProviderPlugins(): Promise<ProviderPlugin[]> {
   const createZaiMethod = (choiceId: "zai-api-key" | "zai-coding-global"): ProviderAuthMethod => ({
-    id: choiceId === "zai-api-key" ? "api-key" : `ltfx.n.d8703b263179b14c9126.v1`,
+    id: choiceId === "zai-api-key" ? "api-key" : "coding-global",
     label: "Z.AI API key",
     kind: "api_key",
     wizard: {
@@ -838,7 +838,7 @@ describe("applyAuthChoice", () => {
         promptContains: "Hugging Face",
         profileId: "huggingface:default",
         provider: "huggingface",
-        token: `ltfx.n.ca22befbbeaba5451556.v1`,
+        token: "hf-test-token",
       },
     ];
     await setupTempState();
@@ -879,13 +879,13 @@ describe("applyAuthChoice", () => {
     }> = [
       {
         authChoice: "zai-api-key",
-        token: `ltfx.n.e1066c610271b4384c3b.v1`,
+        token: "zai-test-key",
         endpointSelection: "coding-cn",
         shouldPromptForEndpoint: true,
       },
       {
         authChoice: "zai-coding-global",
-        token: `ltfx.n.e1066c610271b4384c3b.v1`,
+        token: "zai-test-key",
         detectResult: {
           endpoint: "coding-global",
           modelId: "glm-4.7",
@@ -893,7 +893,7 @@ describe("applyAuthChoice", () => {
           note: "Detected coding-global endpoint with GLM-4.7 fallback",
         },
         shouldPromptForEndpoint: false,
-        expectedDetectCall: { apiKey: `ltfx.n.e1066c610271b4384c3b.v1`, endpoint: "coding-global" },
+        expectedDetectCall: { apiKey: "zai-test-key", endpoint: "coding-global" },
       },
     ];
     await setupTempState();
@@ -961,7 +961,7 @@ describe("applyAuthChoice", () => {
         authChoice: "apiKey",
         setDefaultModel: true,
         tokenProvider: " GOOGLE  ",
-        token: `ltfx.n.c216d3e8073e5260ea91.v1`,
+        token: "sk-gemini-token-provider-test",
         profileId: "google:default",
         provider: "google",
         expectedModel: GOOGLE_GEMINI_DEFAULT_MODEL,
@@ -971,7 +971,7 @@ describe("applyAuthChoice", () => {
         config: { agents: { defaults: { model: { primary: "openai/gpt-4o-mini" } } } },
         setDefaultModel: false,
         tokenProvider: "google",
-        token: `ltfx.n.1f48fa1c72bfc8d60fd9.v1`,
+        token: "sk-gemini-test",
         profileId: "google:default",
         provider: "google",
         expectedModel: "openai/gpt-4o-mini",
@@ -1037,12 +1037,12 @@ describe("applyAuthChoice", () => {
       {
         authChoice: "openrouter-api-key",
         envKey: "OPENROUTER_API_KEY",
-        envValue: `ltfx.n.f5276a1563fe0c8f9311.v1`,
+        envValue: "sk-openrouter-test",
         profileId: "openrouter:default",
         provider: "openrouter",
         expectEnvPrompt: true,
         expectedTextCalls: 0,
-        expectedKey: `ltfx.n.f5276a1563fe0c8f9311.v1`,
+        expectedKey: "sk-openrouter-test",
         expectedModel: "openrouter/auto",
       },
     ];
@@ -1087,7 +1087,7 @@ describe("applyAuthChoice", () => {
 
   it("keeps an existing default model when configure re-applies provider auth", async () => {
     await setupTempState();
-    vi.stubEnv("OPENROUTER_API_KEY", "ltfx.n.f5276a1563fe0c8f9311.v1");
+    vi.stubEnv("OPENROUTER_API_KEY", "sk-openrouter-test");
     const note = vi.fn();
     const confirm = vi.fn(async () => true);
     const text = vi.fn();
@@ -1116,8 +1116,8 @@ describe("applyAuthChoice", () => {
 
   it("uses explicit env for plugin auth resolution instead of host env", async () => {
     await setupTempState();
-    process.env.OPENAI_API_KEY = `ltfx.n.b2903936ebaf7c96b0c7.v1`; // pragma: allowlist secret
-    const env = { OPENAI_API_KEY: `ltfx.n.9b01f7276e6721733db4.v1` } as NodeJS.ProcessEnv; // pragma: allowlist secret
+    process.env.OPENAI_API_KEY = "sk-openai-host"; // pragma: allowlist secret
+    const env = { OPENAI_API_KEY: "sk-openai-explicit" } as NodeJS.ProcessEnv; // pragma: allowlist secret
     const text = vi.fn().mockResolvedValue("should-not-be-used");
     const confirm = vi.fn(async () => true);
     const { prompter, runtime } = createApiKeyPromptHarness({ text, confirm });
@@ -1143,7 +1143,7 @@ describe("applyAuthChoice", () => {
       provider: "openai",
       mode: "api_key",
     });
-    expect((await readAuthProfile("openai:api-key"))?.key).toBe("ltfx.n.9b01f7276e6721733db4.v1");
+    expect((await readAuthProfile("openai:api-key"))?.key).toBe("sk-openai-explicit");
   });
 
   it("keeps existing default model for explicit provider keys when setDefaultModel=false", async () => {
@@ -1173,7 +1173,7 @@ describe("applyAuthChoice", () => {
       },
       {
         authChoice: "opencode-zen",
-        token: `ltfx.n.a30b06cae533654731a7.v1`,
+        token: "sk-opencode-zen-test",
         promptMessage: "Enter OpenCode API key",
         existingPrimary: "anthropic/claude-opus-4-5",
         expectedOverride: "opencode/claude-opus-4-6",

@@ -516,9 +516,9 @@ describe("installSessionToolResultGuard", () => {
         role: "toolResult",
         toolCallId: "call_1",
         toolName: "read",
-        content: [{ type: "text", text: "result ltfx.n.5a006a7a6d178872112c.v1" }],
+        content: [{ type: "text", text: "result sk-abcdef1234567890xyz" }],
         details: {
-          apiKey: `ltfx.n.066a431c0ceefb0deeff.v1`,
+          apiKey: "plainsecretvalue123",
           password: "hunter2",
           nested: { accessToken: ["nestedplainsecret123"] },
           safe: "visible",
@@ -541,7 +541,7 @@ describe("installSessionToolResultGuard", () => {
     const serializedToolResult = JSON.stringify(toolResult);
     expect(
       expectDefined(toolResult.content[0], "toolResult.content[0] test invariant").text,
-    ).not.toContain("ltfx.n.5a006a7a6d178872112c.v1");
+    ).not.toContain("sk-abcdef1234567890xyz");
     expect(serializedToolResult).not.toContain("plainsecretvalue123");
     expect(serializedToolResult).not.toContain("hunter2");
     expect(serializedToolResult).not.toContain("nestedplainsecret123");

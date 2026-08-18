@@ -5,7 +5,7 @@ const DATA_URL_PREFIX = "data:";
 const ALLOWED_EXTERNAL_PROTOCOLS = new Set(["http:", "https:", "blob:"]);
 const BLOCKED_DATA_IMAGE_MIME_TYPES = new Set(["image/svg+xml"]);
 
-function isAllowedDataImageUrl(url: (string)): boolean {
+function isAllowedDataImageUrl(url: string): boolean {
   if (!normalizeLowercaseStringOrEmpty(url).startsWith(DATA_URL_PREFIX)) {
     return false;
   }

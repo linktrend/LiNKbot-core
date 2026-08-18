@@ -20,7 +20,7 @@ beforeAll(async () => {
 
 describe("collectProviderApiKeys", () => {
   it("honors provider auth env vars with nonstandard names", () => {
-    const env = { MODELSTUDIO_API_KEY: `ltfx.n.46bbe0ff2f00cfca3aac.v1` };
+    const env = { MODELSTUDIO_API_KEY: "modelstudio-live-key" };
 
     expect(
       collectProviderApiKeys("alibaba", {
@@ -31,7 +31,7 @@ describe("collectProviderApiKeys", () => {
   });
 
   it("dedupes manifest env vars against direct provider env naming", () => {
-    const env = { XAI_API_KEY: `ltfx.n.1f7b247a6e5157311700.v1` };
+    const env = { XAI_API_KEY: "xai-live-key" };
 
     expect(
       collectProviderApiKeys("xai", {

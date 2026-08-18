@@ -1,6 +1,6 @@
 {
   "tool": "brain_private_search",
-  "authToken": "${ltfx.n.aee2fbd3bbda68f5b3dc.v1}",
+  "authToken": "fake-valid-token",
   "arguments": {
     "query": "preference",
     "limit": 2

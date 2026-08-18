@@ -69,7 +69,7 @@ function createHelixUserResolver(clientId: string, accessToken: string) {
         let tokenInfo: TwitchTokenInfo;
         try {
           tokenInfo = await callTwitchApi<TwitchTokenInfo>(
-            { type: "auth", url: `ltfx.n.133c8eb86cf813474ade.v1` },
+            { type: "auth", url: "validate" },
             clientId,
             accessToken,
             undefined,

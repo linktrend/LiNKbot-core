@@ -79,7 +79,7 @@ describe("openrouter media understanding provider", () => {
       buffer: Buffer.from("audio-bytes"),
       fileName: "voice.oga",
       mime: "audio/ogg",
-      apiKey: `ltfx.n.a9517e6bc71b199b3c3f.v1`,
+      apiKey: "sk-openrouter",
       timeoutMs: 12_000,
       language: " en ",
       fetchFn: fetch,
@@ -95,7 +95,7 @@ describe("openrouter media understanding provider", () => {
       headers: undefined,
       request: undefined,
       defaultHeaders: {
-        Authorization: "Bearer ltfx.n.a9517e6bc71b199b3c3f.v1",
+        Authorization: "Bearer sk-openrouter",
         "Content-Type": "application/json",
         "HTTP-Referer": "https://openclaw.ai",
         "X-OpenRouter-Title": "OpenClaw",
@@ -126,7 +126,7 @@ describe("openrouter media understanding provider", () => {
     if (!headers) {
       throw new Error("expected OpenRouter request headers");
     }
-    expect(headers.get("authorization")).toBe("Bearer ltfx.n.a9517e6bc71b199b3c3f.v1");
+    expect(headers.get("authorization")).toBe("Bearer sk-openrouter");
     expect(headers.get("http-referer")).toBe("https://openclaw.ai");
     expect(headers.get("x-openrouter-title")).toBe("OpenClaw");
     expect(release).toHaveBeenCalledOnce();
@@ -142,7 +142,7 @@ describe("openrouter media understanding provider", () => {
     await transcribeOpenRouterAudio({
       buffer: Buffer.from("audio"),
       fileName: "voice.webm",
-      apiKey: `ltfx.n.a9517e6bc71b199b3c3f.v1`,
+      apiKey: "sk-openrouter",
       timeoutMs: 5_000,
       query: { temperature: 0.2 },
       fetchFn: fetch,
@@ -169,7 +169,7 @@ describe("openrouter media understanding provider", () => {
       await transcribeOpenRouterAudio({
         buffer: Buffer.from("audio"),
         fileName: "voice.webm",
-        apiKey: `ltfx.n.a9517e6bc71b199b3c3f.v1`,
+        apiKey: "sk-openrouter",
         timeoutMs: 5_000,
         query: { temperature },
         fetchFn: fetch,
@@ -196,7 +196,7 @@ describe("openrouter media understanding provider", () => {
     await transcribeOpenRouterAudio({
       buffer: Buffer.from("audio"),
       fileName: "voice.opus",
-      apiKey: `ltfx.n.a9517e6bc71b199b3c3f.v1`,
+      apiKey: "sk-openrouter",
       timeoutMs: 5_000,
       fetchFn: fetch,
     });
@@ -220,7 +220,7 @@ describe("openrouter media understanding provider", () => {
     await transcribeOpenRouterAudio({
       buffer: Buffer.from("audio"),
       fileName: "voice.mp4",
-      apiKey: `ltfx.n.a9517e6bc71b199b3c3f.v1`,
+      apiKey: "sk-openrouter",
       timeoutMs: 5_000,
       fetchFn: fetch,
     });
@@ -245,7 +245,7 @@ describe("openrouter media understanding provider", () => {
       buffer: Buffer.from("audio"),
       fileName: "media-1",
       mime: " Audio/Ogg; codecs=opus ",
-      apiKey: `ltfx.n.a9517e6bc71b199b3c3f.v1`,
+      apiKey: "sk-openrouter",
       timeoutMs: 5_000,
       fetchFn: fetch,
     });
@@ -265,7 +265,7 @@ describe("openrouter media understanding provider", () => {
         buffer: Buffer.from("audio"),
         fileName: "voice.bin",
         mime: "application/octet-stream",
-        apiKey: `ltfx.n.a9517e6bc71b199b3c3f.v1`,
+        apiKey: "sk-openrouter",
         timeoutMs: 5_000,
         fetchFn: fetch,
       }),
@@ -284,7 +284,7 @@ describe("openrouter media understanding provider", () => {
       transcribeOpenRouterAudio({
         buffer: Buffer.from("audio"),
         fileName: "voice.mp3",
-        apiKey: `ltfx.n.a9517e6bc71b199b3c3f.v1`,
+        apiKey: "sk-openrouter",
         timeoutMs: 5_000,
         fetchFn: fetch,
       }),

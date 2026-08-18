@@ -55,7 +55,7 @@ const guardedSuccessReleaseCases = [
         new Response(JSON.stringify({ voices: [] }), { status: 200 }),
       );
 
-      await listInworldVoices({ apiKey: `ltfx.n.62af8704764faf8ea82f.v1` });
+      await listInworldVoices({ apiKey: "test-key" });
       return release;
     },
   },
@@ -67,7 +67,7 @@ const guardedSuccessReleaseCases = [
         new Response(JSON.stringify({ result: { audioContent: chunk } }), { status: 200 }),
       );
 
-      await inworldTTS({ text: "test", apiKey: `ltfx.n.62af8704764faf8ea82f.v1` });
+      await inworldTTS({ text: "test", apiKey: "test-key" });
       return release;
     },
   },
@@ -127,7 +127,7 @@ describe("listInworldVoices", () => {
       ),
     );
 
-    const voices = await listInworldVoices({ apiKey: `ltfx.n.62af8704764faf8ea82f.v1` });
+    const voices = await listInworldVoices({ apiKey: "test-key" });
 
     expect(voices).toEqual([
       {
@@ -156,7 +156,7 @@ describe("listInworldVoices", () => {
   it("throws on API errors with response body", async () => {
     queueGuardedResponse(new Response("service unavailable", { status: 503 }));
 
-    await expect(listInworldVoices({ apiKey: `ltfx.n.62af8704764faf8ea82f.v1` })).rejects.toThrow(
+    await expect(listInworldVoices({ apiKey: "test-key" })).rejects.toThrow(
       "Inworld voices API error (503): service unavailable",
     );
   });
@@ -174,7 +174,7 @@ describe("listInworldVoices", () => {
       ),
     );
 
-    const voices = await listInworldVoices({ apiKey: `ltfx.n.62af8704764faf8ea82f.v1` });
+    const voices = await listInworldVoices({ apiKey: "test-key" });
     expect(voices).toHaveLength(1);
     expect(expectDefined(voices[0], "Inworld voice").id).toBe("Dennis");
   });
@@ -182,14 +182,14 @@ describe("listInworldVoices", () => {
   it("returns empty array when no voices present", async () => {
     queueGuardedResponse(new Response(JSON.stringify({}), { status: 200 }));
 
-    const voices = await listInworldVoices({ apiKey: `ltfx.n.62af8704764faf8ea82f.v1` });
+    const voices = await listInworldVoices({ apiKey: "test-key" });
     expect(voices).toStrictEqual([]);
   });
 
   it("passes language filter as query parameter", async () => {
     queueGuardedResponse(new Response(JSON.stringify({ voices: [] }), { status: 200 }));
 
-    await listInworldVoices({ apiKey: `ltfx.n.62af8704764faf8ea82f.v1`, language: "EN_US" });
+    await listInworldVoices({ apiKey: "test-key", language: "EN_US" });
 
     expect(lastGuardRequest().url).toBe("https://api.inworld.ai/voices/v1/voices?languages=EN_US");
   });
@@ -197,7 +197,7 @@ describe("listInworldVoices", () => {
   it("defaults to a bounded timeout for voice list requests", async () => {
     queueGuardedResponse(new Response(JSON.stringify({ voices: [] }), { status: 200 }));
 
-    await listInworldVoices({ apiKey: `ltfx.n.62af8704764faf8ea82f.v1` });
+    await listInworldVoices({ apiKey: "test-key" });
 
     expect(lastGuardRequest().timeoutMs).toBe(30_000);
   });
@@ -205,7 +205,7 @@ describe("listInworldVoices", () => {
   it("preserves an explicit timeout for voice list requests", async () => {
     queueGuardedResponse(new Response(JSON.stringify({ voices: [] }), { status: 200 }));
 
-    await listInworldVoices({ apiKey: `ltfx.n.62af8704764faf8ea82f.v1`, timeoutMs: 5_000 });
+    await listInworldVoices({ apiKey: "test-key", timeoutMs: 5_000 });
 
     expect(lastGuardRequest().timeoutMs).toBe(5_000);
   });
@@ -229,7 +229,7 @@ describe("inworldTTS", () => {
 
     const buffer = await inworldTTS({
       text: "Hello world",
-      apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+      apiKey: "test-key",
     });
 
     expect(buffer).toEqual(
@@ -241,7 +241,7 @@ describe("inworldTTS", () => {
     const body = JSON.stringify({ result: { audioContent: "not-base64!" } });
     queueGuardedResponse(new Response(body, { status: 200 }));
 
-    await expect(inworldTTS({ text: "test", apiKey: `ltfx.n.fdab98033749d02f02a5.v1` })).rejects.toThrow(
+    await expect(inworldTTS({ text: "test", apiKey: "fixture-api-key" })).rejects.toThrow(
       "Inworld TTS returned malformed base64 audio data",
     );
   });
@@ -249,7 +249,7 @@ describe("inworldTTS", () => {
   it("throws on HTTP errors with response body", async () => {
     queueGuardedResponse(new Response("bad request body", { status: 400 }));
 
-    await expect(inworldTTS({ text: "test", apiKey: `ltfx.n.62af8704764faf8ea82f.v1` })).rejects.toThrow(
+    await expect(inworldTTS({ text: "test", apiKey: "test-key" })).rejects.toThrow(
       "Inworld TTS API error (400): bad request body",
     );
   });
@@ -257,7 +257,7 @@ describe("inworldTTS", () => {
   it("keeps truncated HTTP error bodies UTF-16 safe", async () => {
     queueGuardedResponse(new Response(`${"e".repeat(399)}😀tail`, { status: 400 }));
 
-    await expect(inworldTTS({ text: "test", apiKey: `ltfx.n.62af8704764faf8ea82f.v1` })).rejects.toMatchObject({
+    await expect(inworldTTS({ text: "test", apiKey: "test-key" })).rejects.toMatchObject({
       message: `Inworld TTS API error (400): ${"e".repeat(399)}…`,
     });
   });
@@ -268,7 +268,7 @@ describe("inworldTTS", () => {
     });
     queueGuardedResponse(new Response(body, { status: 200 }));
 
-    await expect(inworldTTS({ text: "test", apiKey: `ltfx.n.62af8704764faf8ea82f.v1` })).rejects.toThrow(
+    await expect(inworldTTS({ text: "test", apiKey: "test-key" })).rejects.toThrow(
       "Inworld TTS stream error (3): Invalid voice ID",
     );
   });
@@ -277,7 +277,7 @@ describe("inworldTTS", () => {
     const body = JSON.stringify({ result: { audioContent: "" } });
     queueGuardedResponse(new Response(body, { status: 200 }));
 
-    await expect(inworldTTS({ text: "test", apiKey: `ltfx.n.62af8704764faf8ea82f.v1` })).rejects.toThrow(
+    await expect(inworldTTS({ text: "test", apiKey: "test-key" })).rejects.toThrow(
       "Inworld TTS returned no audio data",
     );
   });
@@ -285,7 +285,7 @@ describe("inworldTTS", () => {
   it("throws descriptive error on non-JSON line in stream", async () => {
     queueGuardedResponse(new Response(`${"p".repeat(79)}😀tail`, { status: 200 }));
 
-    await expect(inworldTTS({ text: "test", apiKey: `ltfx.n.62af8704764faf8ea82f.v1` })).rejects.toMatchObject({
+    await expect(inworldTTS({ text: "test", apiKey: "test-key" })).rejects.toMatchObject({
       message: `Inworld TTS stream parse error: unexpected non-JSON line: ${"p".repeat(79)}`,
     });
   });
@@ -296,7 +296,7 @@ describe("inworldTTS", () => {
       new Response(JSON.stringify({ result: { audioContent: chunk } }), { status: 200 }),
     );
 
-    await inworldTTS({ text: "Hello", apiKey: `ltfx.n.62af8704764faf8ea82f.v1` });
+    await inworldTTS({ text: "Hello", apiKey: "test-key" });
 
     const request = lastGuardRequest();
     expect(request.url).toBe("https://api.inworld.ai/tts/v1/voice:stream");
@@ -325,7 +325,7 @@ describe("inworldTTS", () => {
 
     await inworldTTS({
       text: "Hello",
-      apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+      apiKey: "test-key",
       voiceId: "Ashley",
       modelId: "inworld-tts-1.5-mini",
       audioEncoding: "PCM",
@@ -349,7 +349,7 @@ describe("inworldTTS", () => {
 
     await inworldTTS({
       text: "Hello",
-      apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+      apiKey: "test-key",
       baseUrl: "https://custom.inworld.example.com/",
     });
 
@@ -364,14 +364,14 @@ describe("inworldTTS", () => {
     const body = `\n${JSON.stringify({ result: { audioContent: chunk } })}\n\n`;
     queueGuardedResponse(new Response(body, { status: 200 }));
 
-    const buffer = await inworldTTS({ text: "test", apiKey: `ltfx.n.62af8704764faf8ea82f.v1` });
+    const buffer = await inworldTTS({ text: "test", apiKey: "test-key" });
     expect(buffer).toEqual(Buffer.from("audio"));
   });
 
   it("releases the guarded dispatcher after failure", async () => {
     const { release } = queueGuardedResponse(new Response("fail", { status: 500 }));
 
-    await expect(inworldTTS({ text: "test", apiKey: `ltfx.n.62af8704764faf8ea82f.v1` })).rejects.toThrow(
+    await expect(inworldTTS({ text: "test", apiKey: "test-key" })).rejects.toThrow(
       "Inworld TTS API error (500): fail",
     );
     expect(release).toHaveBeenCalledTimes(1);
@@ -407,7 +407,7 @@ describe("Inworld response read bounding", () => {
     const { stream, state } = infiniteByteStream(8 * MiB);
     queueGuardedResponse(new Response(stream, { status: 200 }));
 
-    await expect(inworldTTS({ text: "test", apiKey: `ltfx.n.62af8704764faf8ea82f.v1` })).rejects.toThrow(
+    await expect(inworldTTS({ text: "test", apiKey: "test-key" })).rejects.toThrow(
       /Inworld TTS audio stream too large: \d+ bytes \(limit: 33554432 bytes\)/,
     );
     // Enforced after a bounded number of 8 MiB chunks, never the full unbounded
@@ -425,7 +425,7 @@ describe("Inworld response read bounding", () => {
     ].join("\n");
     queueGuardedResponse(new Response(body, { status: 200 }));
 
-    const audio = await inworldTTS({ text: "test", apiKey: `ltfx.n.62af8704764faf8ea82f.v1` });
+    const audio = await inworldTTS({ text: "test", apiKey: "test-key" });
     expect(audio.toString("utf8")).toBe("hello-world");
   });
 
@@ -435,7 +435,7 @@ describe("Inworld response read bounding", () => {
     const body = JSON.stringify({ result: { audioContent: encoded } });
     queueGuardedResponse(new Response(body, { status: 200 }));
 
-    const audio = await inworldTTS({ text: "test", apiKey: `ltfx.n.62af8704764faf8ea82f.v1` });
+    const audio = await inworldTTS({ text: "test", apiKey: "test-key" });
     expect(audio.length).toBe(payload.length);
     expect(audio.toString("utf8")).toBe(payload);
   });
@@ -447,14 +447,14 @@ describe("Inworld response read bounding", () => {
     });
     queueGuardedResponse(new Response(body, { status: 200 }));
 
-    await expect(inworldTTS({ text: "test", apiKey: `ltfx.n.62af8704764faf8ea82f.v1` })).rejects.toThrow(
+    await expect(inworldTTS({ text: "test", apiKey: "test-key" })).rejects.toThrow(
       /Inworld TTS decoded audio too large: 16777217 bytes \(limit: 16777216 bytes\)/,
     );
   });
 
   it("regression: a malformed NDJSON line under the cap still throws a bounded parse error", async () => {
     queueGuardedResponse(new Response("this-is-not-json", { status: 200 }));
-    await expect(inworldTTS({ text: "test", apiKey: `ltfx.n.62af8704764faf8ea82f.v1` })).rejects.toThrow(
+    await expect(inworldTTS({ text: "test", apiKey: "test-key" })).rejects.toThrow(
       /Inworld TTS stream parse error/,
     );
   });
@@ -463,7 +463,7 @@ describe("Inworld response read bounding", () => {
     queueGuardedResponse(new Response("E".repeat(64 * 1024), { status: 500 }));
 
     let captured: unknown;
-    await inworldTTS({ text: "test", apiKey: `ltfx.n.62af8704764faf8ea82f.v1` }).catch((error: unknown) => {
+    await inworldTTS({ text: "test", apiKey: "test-key" }).catch((error: unknown) => {
       captured = error;
     });
 
@@ -477,7 +477,7 @@ describe("Inworld response read bounding", () => {
 
   it("edge: a small error body is preserved verbatim in the thrown message", async () => {
     queueGuardedResponse(new Response("invalid api key", { status: 401 }));
-    await expect(inworldTTS({ text: "test", apiKey: `ltfx.n.62af8704764faf8ea82f.v1` })).rejects.toThrow(
+    await expect(inworldTTS({ text: "test", apiKey: "test-key" })).rejects.toThrow(
       "Inworld TTS API error (401): invalid api key",
     );
   });
@@ -486,7 +486,7 @@ describe("Inworld response read bounding", () => {
     const { stream, state } = infiniteByteStream(8 * MiB);
     queueGuardedResponse(new Response(stream, { status: 200 }));
 
-    await expect(listInworldVoices({ apiKey: `ltfx.n.62af8704764faf8ea82f.v1` })).rejects.toThrow(
+    await expect(listInworldVoices({ apiKey: "test-key" })).rejects.toThrow(
       /Inworld voices response too large: \d+ bytes \(limit: 16777216 bytes\)/,
     );
     expect(state.enqueued).toBeLessThanOrEqual(4);
@@ -503,7 +503,7 @@ describe("Inworld response read bounding", () => {
       ),
     );
 
-    const voices = await listInworldVoices({ apiKey: `ltfx.n.62af8704764faf8ea82f.v1` });
+    const voices = await listInworldVoices({ apiKey: "test-key" });
     expect(voices).toEqual([
       { id: "Sarah", name: "Sarah", description: undefined, locale: "en-US", gender: "female" },
     ]);
@@ -511,7 +511,7 @@ describe("Inworld response read bounding", () => {
 
   it("regression: malformed voices JSON under the cap throws descriptive error", async () => {
     queueGuardedResponse(new Response("{not-json", { status: 200 }));
-    await expect(listInworldVoices({ apiKey: `ltfx.n.62af8704764faf8ea82f.v1` })).rejects.toThrow(
+    await expect(listInworldVoices({ apiKey: "test-key" })).rejects.toThrow(
       "Inworld voices API returned malformed JSON",
     );
   });

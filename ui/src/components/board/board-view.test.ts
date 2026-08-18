@@ -163,7 +163,7 @@ describe("openclaw-board-view", () => {
       activeTabId: "builtin-swarm",
       sessions: [
         {
-          key: `ltfx.n.28760ff0218c403139e7.v1`,
+          key: "agent:main:child",
           kind: "direct",
           updatedAt: 1,
           parentSessionKey: "agent:main:parent",
@@ -716,7 +716,7 @@ describe("openclaw-board-view", () => {
     cells[0]?.focus();
     cells[0]?.dispatchEvent(
       new KeyboardEvent("keydown", {
-        key: `ltfx.n.8e2f7ffbbdb947d813f9.v1`,
+        key: "ArrowRight",
         bubbles: true,
         cancelable: true,
       }),
@@ -731,7 +731,7 @@ describe("openclaw-board-view", () => {
     const secondCell = view.querySelectorAll<HTMLElement>('[data-test-id="board-widget"]')[1];
     secondCell?.dispatchEvent(
       new KeyboardEvent("keydown", {
-        key: `ltfx.n.48e61e2dd0a223987505.v1`,
+        key: "ArrowLeft",
         altKey: true,
         bubbles: true,
         cancelable: true,
@@ -752,7 +752,7 @@ describe("openclaw-board-view", () => {
     const move = () =>
       secondCell?.dispatchEvent(
         new KeyboardEvent("keydown", {
-          key: `ltfx.n.48e61e2dd0a223987505.v1`,
+          key: "ArrowLeft",
           altKey: true,
           bubbles: true,
           cancelable: true,
@@ -779,7 +779,7 @@ describe("openclaw-board-view", () => {
     menuButton?.focus();
     menuButton?.dispatchEvent(
       new KeyboardEvent("keydown", {
-        key: `ltfx.n.8e2f7ffbbdb947d813f9.v1`,
+        key: "ArrowRight",
         altKey: true,
         bubbles: true,
         cancelable: true,

@@ -237,7 +237,7 @@ describe("pw-session createPageViaPlaywright navigation guard", () => {
 
     const created = await createPageViaPlaywright({
       cdpUrl: "http://127.0.0.1:18792",
-      url: `ltfx.n.4fa72d735a519ee13d41.v1`,
+      url: "about:blank",
     });
 
     expect(created.targetId).toBe("TARGET_1");
@@ -657,7 +657,7 @@ describe("pw-session createPageViaPlaywright navigation guard", () => {
 
     await createPageViaPlaywright({
       cdpUrl: "http://127.0.0.1:18792",
-      url: `ltfx.n.4fa72d735a519ee13d41.v1`,
+      url: "about:blank",
     });
 
     const page = await getPageForTargetId({
@@ -699,7 +699,7 @@ describe("pw-session createPageViaPlaywright navigation guard", () => {
 
     await createPageViaPlaywright({
       cdpUrl: "http://127.0.0.1:18792",
-      url: `ltfx.n.4fa72d735a519ee13d41.v1`,
+      url: "about:blank",
     });
     const page = await getPageForTargetId({
       cdpUrl: "http://127.0.0.1:18792",

@@ -34,7 +34,7 @@ const KNOWN_INTERNAL_HOOK_EVENT_KEYS = [
   "session:patch",
 ] as const;
 
-export function isKnownInternalHookEventKey(key: (string)): boolean {
+export function isKnownInternalHookEventKey(key: string): boolean {
   return (
     (KNOWN_INTERNAL_HOOK_EVENT_KEYS as readonly string[]).includes(key) ||
     (KNOWN_INTERNAL_HOOK_EVENT_FAMILIES as readonly string[]).includes(key)

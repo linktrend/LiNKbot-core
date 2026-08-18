@@ -449,7 +449,7 @@ describe("renderSessionsCard", () => {
     const container = document.createElement("div");
     const sessions: UsageSessionEntry[] = [
       {
-        key: `ltfx.n.62f84cfbfd9b3f72ecef.v1`,
+        key: "all-time-winner",
         label: "All time winner",
         updatedAt: 2,
         usage: {
@@ -460,7 +460,7 @@ describe("renderSessionsCard", () => {
         },
       } as UsageSessionEntry,
       {
-        key: `ltfx.n.c439148253e183ba30a8.v1`,
+        key: "day-winner",
         label: "Day winner",
         updatedAt: 1,
         usage: {

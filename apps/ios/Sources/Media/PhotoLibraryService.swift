@@ -38,7 +38,7 @@ final class PhotoLibraryService: PhotosServicing {
         let limit = max(1, min(params.limit ?? 1, 20))
         let fetchOptions = PHFetchOptions()
         fetchOptions.fetchLimit = limit
-        fetchOptions.sortDescriptors = [NSSortDescriptor(key: "${ltfx.n.ac04280504f7865e36d3.v1}", ascending: false)]
+        fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
         let assets = PHAsset.fetchAssets(with: .image, options: fetchOptions)
 
         var results: [OpenClawPhotoPayload] = []

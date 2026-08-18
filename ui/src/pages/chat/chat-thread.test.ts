@@ -223,8 +223,8 @@ describe("collapseCompletedTurnWork", () => {
           content: [
             {
               type: "image",
-              url: `ltfx.n.724929e12ded32d61b95.v1`,
-              source: { type: "url", url: `ltfx.n.724929e12ded32d61b95.v1` },
+              url: "/media/screenshot.png",
+              source: { type: "url", url: "/media/screenshot.png" },
             },
           ],
           timestamp: 3_000,
@@ -1619,7 +1619,7 @@ describe("buildCachedChatItems", () => {
     expect(items).toEqual([
       {
         kind: "stream",
-        key: `ltfx.n.57a2997cae502741e6f5.v1`,
+        key: "stream:main:1",
         text: "Visible reply",
         startedAt: 1,
         isStreaming: true,
@@ -2121,8 +2121,8 @@ describe("buildCachedChatItems", () => {
       { type: "text", text: "see attached" },
       {
         type: "image",
-        url: `ltfx.n.724929e12ded32d61b95.v1`,
-        source: { type: "url", url: `ltfx.n.724929e12ded32d61b95.v1` },
+        url: "/media/screenshot.png",
+        source: { type: "url", url: "/media/screenshot.png" },
       },
     ]);
   });
@@ -2218,7 +2218,7 @@ describe("buildCachedChatItems", () => {
             view: {
               backend: "canvas",
               id: "cv_nearest_turn",
-              url: `ltfx.n.8a7eecb3b1e98404b42d.v1`,
+              url: "/__openclaw__/canvas/documents/cv_nearest_turn/index.html",
               title: "Nearest turn demo",
               preferred_height: 320,
             },
@@ -2288,7 +2288,7 @@ describe("buildCachedChatItems", () => {
             view: {
               backend: "canvas",
               id: "cv_empty_anchor",
-              url: `ltfx.n.73794b9ddbf806b08ef5.v1`,
+              url: "/__openclaw__/canvas/documents/cv_empty_anchor/index.html",
               title: "Empty anchor demo",
               preferred_height: 320,
             },
@@ -2472,7 +2472,7 @@ describe("buildCachedChatItems", () => {
               view: {
                 backend: "canvas",
                 id: "cv_generic_inline",
-                url: `ltfx.n.e8bd1c614f88db47675d.v1`,
+                url: "/__openclaw__/canvas/documents/cv_generic_inline/index.html",
                 title: "Inline generic preview",
                 preferred_height: 420,
               },
@@ -2516,7 +2516,7 @@ describe("buildCachedChatItems", () => {
                 view: {
                   backend: "canvas",
                   id: "cv_streamed_artifact",
-                  url: `ltfx.n.a5f7067eb5724a452a06.v1`,
+                  url: "/__openclaw__/canvas/documents/cv_streamed_artifact/index.html",
                   title: "Streamed demo",
                   preferred_height: 320,
                 },
@@ -2600,11 +2600,11 @@ describe("tool expansion state", () => {
     resetChatThreadState();
     const group: MessageGroup = {
       kind: "group",
-      key: `ltfx.n.bb7e48e6136cd9680f92.v1`,
+      key: "assistant-1",
       role: "assistant",
       messages: [
         {
-          key: `ltfx.n.bb7e48e6136cd9680f92.v1`,
+          key: "assistant-1",
           message: {
             role: "assistant",
             content: [
@@ -2633,11 +2633,11 @@ describe("tool expansion state", () => {
     resetChatThreadState();
     const group: MessageGroup = {
       kind: "group",
-      key: `ltfx.n.d7b668a3edd9b9480075.v1`,
+      key: "tool-name-result",
       role: "tool",
       messages: [
         {
-          key: `ltfx.n.d7b668a3edd9b9480075.v1`,
+          key: "tool-name-result",
           message: {
             role: "assistant",
             toolName: "bash",

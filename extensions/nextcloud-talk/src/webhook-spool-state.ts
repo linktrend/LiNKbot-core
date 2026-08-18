@@ -73,7 +73,7 @@ export function inspectNextcloudTalkWebhookEnvelope(
   };
 }
 
-function parseLegacyReplayKey(key: (string)): { messageId: string; roomId: string } | null {
+function parseLegacyReplayKey(key: string): { messageId: string; roomId: string } | null {
   const separator = key.lastIndexOf(":");
   const roomId = key.slice(0, separator).trim();
   const messageId = key.slice(separator + 1).trim();

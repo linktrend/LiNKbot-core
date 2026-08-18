@@ -169,7 +169,7 @@ export class DiscordCommandDeployer {
     }
   }
 
-  private async loadPersistedHash(key: (string)): Promise<void> {
+  private async loadPersistedHash(key: string): Promise<void> {
     if (this.loadedKeys.has(key)) {
       return;
     }

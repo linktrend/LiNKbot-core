@@ -6,13 +6,13 @@ describe("reconcileSidebarZone", () => {
   it("preserves route and pinned-session interleaving", () => {
     const result = reconcileSidebarZone(
       ["route:usage", "session:agent:main:alpha", "route:plugins"],
-      [{ key: `ltfx.n.8147c0a70ea63af2c5c3.v1` }],
+      [{ key: "agent:main:alpha" }],
       SIDEBAR_NAV_ROUTES,
     );
 
     expect(result.entries).toEqual([
       { type: "route", route: "usage" },
-      { type: "session", key: `ltfx.n.8147c0a70ea63af2c5c3.v1` },
+      { type: "session", key: "agent:main:alpha" },
       { type: "route", route: "plugins" },
     ]);
     expect(result.sidebarEntries).toEqual([
@@ -25,7 +25,7 @@ describe("reconcileSidebarZone", () => {
   it("prunes known-unpinned sessions and appends server-pinned sessions", () => {
     const result = reconcileSidebarZone(
       ["session:agent:main:stale", "route:usage", "session:agent:main:alpha"],
-      [{ key: `ltfx.n.8147c0a70ea63af2c5c3.v1` }, { key: `ltfx.n.0afec42ef8931019a4a6.v1` }],
+      [{ key: "agent:main:alpha" }, { key: "agent:main:beta" }],
       SIDEBAR_NAV_ROUTES,
       new Set(["agent:main:stale"]),
     );
@@ -42,14 +42,14 @@ describe("reconcileSidebarZone", () => {
     // survive a canonical write or synced prefs lose cross-agent order.
     const result = reconcileSidebarZone(
       ["session:agent:b:remote", "route:usage", "session:agent:main:alpha"],
-      [{ key: `ltfx.n.8147c0a70ea63af2c5c3.v1` }],
+      [{ key: "agent:main:alpha" }],
       SIDEBAR_NAV_ROUTES,
       new Set(["agent:main:other"]),
     );
 
     expect(result.entries).toEqual([
       { type: "route", route: "usage" },
-      { type: "session", key: `ltfx.n.8147c0a70ea63af2c5c3.v1` },
+      { type: "session", key: "agent:main:alpha" },
     ]);
     expect(result.sidebarEntries).toEqual([
       "session:agent:b:remote",

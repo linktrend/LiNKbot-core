@@ -37,7 +37,7 @@ function isCircuitBreakerOpen(key: string, maxTimeouts: number, cooldownMs: numb
   return true;
 }
 
-function recordCircuitBreakerTimeout(key: (string)): void {
+function recordCircuitBreakerTimeout(key: string): void {
   const entry = timeoutCircuitBreaker.get(key);
   if (entry) {
     entry.consecutiveTimeouts++;
@@ -47,7 +47,7 @@ function recordCircuitBreakerTimeout(key: (string)): void {
   }
 }
 
-function resetCircuitBreaker(key: (string)): void {
+function resetCircuitBreaker(key: string): void {
   timeoutCircuitBreaker.delete(key);
 }
 
@@ -176,7 +176,7 @@ function resetActiveRecallStateForTests(): void {
   lastActiveRecallCacheSweepAt = 0;
 }
 
-function getCircuitBreakerEntry(key: (string)): CircuitBreakerEntry | undefined {
+function getCircuitBreakerEntry(key: string): CircuitBreakerEntry | undefined {
   return timeoutCircuitBreaker.get(key);
 }
 

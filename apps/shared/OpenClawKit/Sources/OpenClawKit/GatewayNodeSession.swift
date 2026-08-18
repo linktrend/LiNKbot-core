@@ -393,7 +393,7 @@ public actor GatewayNodeSession {
             credentials: GatewayNodeSessionCredentials(
                 token: token,
                 bootstrapToken: bootstrapToken,
-                password: (password),)
+                password: password),
             connectOptions: connectOptions,
             sessionBox: sessionBox,
             extraHeadersProvider: extraHeadersProvider,
@@ -1473,7 +1473,7 @@ extension GatewayNodeSession {
         {
             return "gateway:\(gatewayID)"
         }
-        return "url:(\(self.activeURL?.absoluteString ?? "unknown")")
+        return "url:\(self.activeURL?.absoluteString ?? "unknown")"
     }
 
     private static func computerInvokeFingerprint(_ request: NodeInvokeRequestPayload) -> String {

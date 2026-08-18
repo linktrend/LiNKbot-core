@@ -431,7 +431,7 @@ describe("telegram token schema", () => {
 
   it("accepts botToken and tokenFile together", () => {
     const res = TelegramConfigSchema.safeParse({
-      botToken: `ltfx.n.526ca3a50e5f89ab2a97.v1`,
+      botToken: "fallback:token",
       tokenFile: "/run/agenix/telegram-token",
     });
 

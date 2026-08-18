@@ -32,7 +32,7 @@ async function setTalkConfig(talk: Record<string, unknown>) {
   const { setRuntimeConfigSnapshot } = await import("../config/config.js");
   const config = {
     commands: {
-      ownerDisplaySecret: `ltfx.n.8efe71e07cb06798f949.v1`,
+      ownerDisplaySecret: "openclaw-test-owner-display-secret",
     },
     talk,
   };

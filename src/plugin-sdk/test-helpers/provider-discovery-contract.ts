@@ -72,7 +72,7 @@ function setGithubCopilotProfileSnapshot() {
       "github-copilot:github": {
         type: "token",
         provider: "github-copilot",
-        token: `ltfx.n.f6ccb990acf9bce993b1.v1`,
+        token: "profile-token",
       },
     },
   });
@@ -105,7 +105,7 @@ function runCatalog(
     resolveProviderAuth:
       params.resolveProviderAuth ??
       ((_, options) => ({
-        apiKey: (options?.oauthMarker,)
+        apiKey: options?.oauthMarker,
         discoveryApiKey: undefined,
         mode: options?.oauthMarker ? "oauth" : "none",
         source: options?.oauthMarker ? "profile" : "none",
@@ -307,7 +307,7 @@ export function describeGithubCopilotProviderDiscoveryContract(params: {
 
     it("keeps env-token base URL resolution provider-owned", async () => {
       resolveCopilotApiTokenMock.mockResolvedValueOnce({
-        token: `ltfx.n.537b76569dd305ae8766.v1`,
+        token: "copilot-api-token",
         baseUrl: "https://copilot-proxy.example.com",
         expiresAt: Date.now() + 60_000,
       });
@@ -316,7 +316,7 @@ export function describeGithubCopilotProviderDiscoveryContract(params: {
         runCatalog(state, {
           provider: state.githubCopilotProvider!,
           env: {
-            GITHUB_TOKEN: `ltfx.n.8908525528590c99f2fe.v1`,
+            GITHUB_TOKEN: "github-env-token",
           } as NodeJS.ProcessEnv,
           resolveProviderApiKey: () => ({ apiKey: undefined }),
         }),
@@ -362,15 +362,15 @@ export function describeVllmProviderDiscoveryContract(params: {
           provider: state.vllmProvider!,
           config: {},
           env: {
-            VLLM_API_KEY: `ltfx.n.0a51470e17e02a34c613.v1`,
+            VLLM_API_KEY: "env-vllm-key",
           } as NodeJS.ProcessEnv,
           resolveProviderApiKey: () => ({
             apiKey: "VLLM_API_KEY",
-            discoveryApiKey: `ltfx.n.0a51470e17e02a34c613.v1`,
+            discoveryApiKey: "env-vllm-key",
           }),
           resolveProviderAuth: () => ({
             apiKey: "VLLM_API_KEY",
-            discoveryApiKey: `ltfx.n.0a51470e17e02a34c613.v1`,
+            discoveryApiKey: "env-vllm-key",
             mode: "api_key",
             source: "env",
           }),
@@ -384,7 +384,7 @@ export function describeVllmProviderDiscoveryContract(params: {
         },
       });
       expect(buildVllmProviderMock).toHaveBeenCalledWith({
-        apiKey: `ltfx.n.0a51470e17e02a34c613.v1`,
+        apiKey: "env-vllm-key",
       });
     });
 
@@ -418,15 +418,15 @@ export function describeVllmProviderDiscoveryContract(params: {
             },
           } as unknown as OpenClawConfig,
           env: {
-            VLLM_API_KEY: `ltfx.n.0a51470e17e02a34c613.v1`,
+            VLLM_API_KEY: "env-vllm-key",
           } as NodeJS.ProcessEnv,
           resolveProviderApiKey: () => ({
             apiKey: "VLLM_API_KEY",
-            discoveryApiKey: `ltfx.n.0a51470e17e02a34c613.v1`,
+            discoveryApiKey: "env-vllm-key",
           }),
           resolveProviderAuth: () => ({
             apiKey: "VLLM_API_KEY",
-            discoveryApiKey: `ltfx.n.0a51470e17e02a34c613.v1`,
+            discoveryApiKey: "env-vllm-key",
             mode: "api_key",
             source: "env",
           }),
@@ -440,7 +440,7 @@ export function describeVllmProviderDiscoveryContract(params: {
         },
       });
       expect(buildVllmProviderMock).toHaveBeenCalledWith({
-        apiKey: `ltfx.n.0a51470e17e02a34c613.v1`,
+        apiKey: "env-vllm-key",
         baseUrl: "http://vllm-router.example/v1",
       });
     });
@@ -474,15 +474,15 @@ export function describeVllmProviderDiscoveryContract(params: {
             },
           } as unknown as OpenClawConfig,
           env: {
-            VLLM_API_KEY: `ltfx.n.0a51470e17e02a34c613.v1`,
+            VLLM_API_KEY: "env-vllm-key",
           } as NodeJS.ProcessEnv,
           resolveProviderApiKey: () => ({
             apiKey: "VLLM_API_KEY",
-            discoveryApiKey: `ltfx.n.0a51470e17e02a34c613.v1`,
+            discoveryApiKey: "env-vllm-key",
           }),
           resolveProviderAuth: () => ({
             apiKey: "VLLM_API_KEY",
-            discoveryApiKey: `ltfx.n.0a51470e17e02a34c613.v1`,
+            discoveryApiKey: "env-vllm-key",
             mode: "api_key",
             source: "env",
           }),
@@ -496,7 +496,7 @@ export function describeVllmProviderDiscoveryContract(params: {
         },
       });
       expect(buildVllmProviderMock).toHaveBeenCalledWith({
-        apiKey: `ltfx.n.0a51470e17e02a34c613.v1`,
+        apiKey: "env-vllm-key",
       });
     });
 
@@ -524,15 +524,15 @@ export function describeVllmProviderDiscoveryContract(params: {
             },
           } as OpenClawConfig,
           env: {
-            VLLM_API_KEY: `ltfx.n.0a51470e17e02a34c613.v1`,
+            VLLM_API_KEY: "env-vllm-key",
           } as NodeJS.ProcessEnv,
           resolveProviderApiKey: () => ({
             apiKey: "VLLM_API_KEY",
-            discoveryApiKey: `ltfx.n.0a51470e17e02a34c613.v1`,
+            discoveryApiKey: "env-vllm-key",
           }),
           resolveProviderAuth: () => ({
             apiKey: "VLLM_API_KEY",
-            discoveryApiKey: `ltfx.n.0a51470e17e02a34c613.v1`,
+            discoveryApiKey: "env-vllm-key",
             mode: "api_key",
             source: "env",
           }),
@@ -568,15 +568,15 @@ export function describeSglangProviderDiscoveryContract(params: {
           provider: state.sglangProvider!,
           config: {},
           env: {
-            SGLANG_API_KEY: `ltfx.n.9f5f59cd1794acbc45d4.v1`,
+            SGLANG_API_KEY: "env-sglang-key",
           } as NodeJS.ProcessEnv,
           resolveProviderApiKey: () => ({
             apiKey: "SGLANG_API_KEY",
-            discoveryApiKey: `ltfx.n.9f5f59cd1794acbc45d4.v1`,
+            discoveryApiKey: "env-sglang-key",
           }),
           resolveProviderAuth: () => ({
             apiKey: "SGLANG_API_KEY",
-            discoveryApiKey: `ltfx.n.9f5f59cd1794acbc45d4.v1`,
+            discoveryApiKey: "env-sglang-key",
             mode: "api_key",
             source: "env",
           }),
@@ -590,7 +590,7 @@ export function describeSglangProviderDiscoveryContract(params: {
         },
       });
       expect(buildSglangProviderMock).toHaveBeenCalledWith({
-        apiKey: `ltfx.n.9f5f59cd1794acbc45d4.v1`,
+        apiKey: "env-sglang-key",
       });
     });
 
@@ -624,15 +624,15 @@ export function describeSglangProviderDiscoveryContract(params: {
             },
           } as OpenClawConfig,
           env: {
-            SGLANG_API_KEY: `ltfx.n.9f5f59cd1794acbc45d4.v1`,
+            SGLANG_API_KEY: "env-sglang-key",
           } as NodeJS.ProcessEnv,
           resolveProviderApiKey: () => ({
             apiKey: "SGLANG_API_KEY",
-            discoveryApiKey: `ltfx.n.9f5f59cd1794acbc45d4.v1`,
+            discoveryApiKey: "env-sglang-key",
           }),
           resolveProviderAuth: () => ({
             apiKey: "SGLANG_API_KEY",
-            discoveryApiKey: `ltfx.n.9f5f59cd1794acbc45d4.v1`,
+            discoveryApiKey: "env-sglang-key",
             mode: "api_key",
             source: "env",
           }),
@@ -646,7 +646,7 @@ export function describeSglangProviderDiscoveryContract(params: {
         },
       });
       expect(buildSglangProviderMock).toHaveBeenCalledWith({
-        apiKey: `ltfx.n.9f5f59cd1794acbc45d4.v1`,
+        apiKey: "env-sglang-key",
         baseUrl: "http://sglang-router.example/v1",
       });
     });
@@ -675,15 +675,15 @@ export function describeSglangProviderDiscoveryContract(params: {
             },
           } as OpenClawConfig,
           env: {
-            SGLANG_API_KEY: `ltfx.n.9f5f59cd1794acbc45d4.v1`,
+            SGLANG_API_KEY: "env-sglang-key",
           } as NodeJS.ProcessEnv,
           resolveProviderApiKey: () => ({
             apiKey: "SGLANG_API_KEY",
-            discoveryApiKey: `ltfx.n.9f5f59cd1794acbc45d4.v1`,
+            discoveryApiKey: "env-sglang-key",
           }),
           resolveProviderAuth: () => ({
             apiKey: "SGLANG_API_KEY",
-            discoveryApiKey: `ltfx.n.9f5f59cd1794acbc45d4.v1`,
+            discoveryApiKey: "env-sglang-key",
             mode: "api_key",
             source: "env",
           }),
@@ -707,11 +707,11 @@ export function describeMinimaxProviderDiscoveryContract(
         provider: state.minimaxProvider!,
         config: {},
         env: {
-          MINIMAX_API_KEY: `ltfx.n.953e8db5b854a6119ba9.v1`,
+          MINIMAX_API_KEY: "minimax-key",
         } as NodeJS.ProcessEnv,
-        resolveProviderApiKey: () => ({ apiKey: `ltfx.n.953e8db5b854a6119ba9.v1` }),
+        resolveProviderApiKey: () => ({ apiKey: "minimax-key" }),
         resolveProviderAuth: () => ({
-          apiKey: `ltfx.n.953e8db5b854a6119ba9.v1`,
+          apiKey: "minimax-key",
           discoveryApiKey: undefined,
           mode: "api_key",
           source: "env",
@@ -721,7 +721,7 @@ export function describeMinimaxProviderDiscoveryContract(
         baseUrl: "https://api.minimax.io/anthropic",
         api: "anthropic-messages",
         authHeader: true,
-        apiKey: `ltfx.n.953e8db5b854a6119ba9.v1`,
+        apiKey: "minimax-key",
       });
       const ids = providerModelIds(provider);
       expect(ids).toContain("MiniMax-M3");
@@ -749,8 +749,8 @@ export function describeMinimaxProviderDiscoveryContract(
         env: {} as NodeJS.ProcessEnv,
         resolveProviderApiKey: () => ({ apiKey: undefined }),
         resolveProviderAuth: () => ({
-          apiKey: `ltfx.n.1b86d8c0a0ba29ced139.v1`,
-          discoveryApiKey: `ltfx.n.3f16bed7089f4653e5ef.v1`,
+          apiKey: "minimax-oauth",
+          discoveryApiKey: "access-token",
           mode: "oauth",
           source: "profile",
           profileId: "minimax-portal:default",
@@ -760,7 +760,7 @@ export function describeMinimaxProviderDiscoveryContract(
         baseUrl: "https://api.minimax.io/anthropic",
         api: "anthropic-messages",
         authHeader: true,
-        apiKey: `ltfx.n.1b86d8c0a0ba29ced139.v1`,
+        apiKey: "minimax-oauth",
       });
       expect(providerModelIds(provider)).toContain("MiniMax-M2.7");
     });
@@ -773,7 +773,7 @@ export function describeMinimaxProviderDiscoveryContract(
             providers: {
               "minimax-portal": {
                 baseUrl: "https://portal-proxy.example.com/anthropic",
-                apiKey: `ltfx.n.e595ce1d9c48c0bf02c7.v1`,
+                apiKey: "explicit-key",
                 models: [],
               },
             },
@@ -790,7 +790,7 @@ export function describeMinimaxProviderDiscoveryContract(
       });
       expectProviderFields(result, {
         baseUrl: "https://portal-proxy.example.com/anthropic",
-        apiKey: `ltfx.n.e595ce1d9c48c0bf02c7.v1`,
+        apiKey: "explicit-key",
       });
     });
   });
@@ -818,11 +818,11 @@ export function describeModelStudioProviderDiscoveryContract(
           },
         },
         env: {
-          MODELSTUDIO_API_KEY: `ltfx.n.301cfc70f18c3254bddb.v1`,
+          MODELSTUDIO_API_KEY: "modelstudio-key",
         } as NodeJS.ProcessEnv,
-        resolveProviderApiKey: () => ({ apiKey: `ltfx.n.301cfc70f18c3254bddb.v1` }),
+        resolveProviderApiKey: () => ({ apiKey: "modelstudio-key" }),
         resolveProviderAuth: () => ({
-          apiKey: `ltfx.n.301cfc70f18c3254bddb.v1`,
+          apiKey: "modelstudio-key",
           discoveryApiKey: undefined,
           mode: "api_key",
           source: "env",
@@ -831,7 +831,7 @@ export function describeModelStudioProviderDiscoveryContract(
       const provider = expectProviderFields(result, {
         baseUrl: "https://coding.dashscope.aliyuncs.com/v1",
         api: "openai-completions",
-        apiKey: `ltfx.n.301cfc70f18c3254bddb.v1`,
+        apiKey: "modelstudio-key",
       });
       const ids = providerModelIds(provider);
       expect(ids).toContain("qwen3.5-plus");
@@ -893,7 +893,7 @@ export function describeCloudflareAiGatewayProviderDiscoveryContract(
         provider: state.cloudflareAiGatewayProvider!,
         config: {},
         env: {
-          CLOUDFLARE_AI_GATEWAY_API_KEY: `ltfx.n.31160254d1297393d2ad.v1`,
+          CLOUDFLARE_AI_GATEWAY_API_KEY: "secret-value",
         } as NodeJS.ProcessEnv,
         resolveProviderApiKey: () => ({ apiKey: undefined }),
         resolveProviderAuth: () => ({

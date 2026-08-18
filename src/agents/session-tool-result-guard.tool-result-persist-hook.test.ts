@@ -271,7 +271,7 @@ describe("tool_result_persist hook", () => {
   });
 
   it("applies in-memory redaction config to persisted details", () => {
-    const customSecret = `ltfx.n.71167b723ee2d09e2e33.v1`;
+    const customSecret = "customsecret=abcdef1234567890ghij";
     const sm = guardSessionManager(SessionManager.inMemory(), {
       agentId: "main",
       sessionKey: "main",
@@ -298,7 +298,7 @@ describe("tool_result_persist hook", () => {
 
     const toolResult = requirePersistedToolResult(sm);
     const serialized = JSON.stringify(toolResult);
-    expect(serialized).toContain("customsecret=(abcdef…ghij");)
+    expect(serialized).toContain("customsecret=abcdef…ghij");
     expect(serialized).not.toContain(customSecret);
   });
 

@@ -92,7 +92,7 @@ function formatProbeCloseError(close: GatewayProbeClose): string {
   return `gateway closed (${close.code}): ${close.reason}`;
 }
 
-function resolveDeviceRequiredProbeCacheKey(url: (string)): string {
+function resolveDeviceRequiredProbeCacheKey(url: string): string {
   try {
     return new URL(url).href;
   } catch {
@@ -153,7 +153,7 @@ function emptyProbeServer(): GatewayProbeServerSummary {
   };
 }
 
-function makeDeviceRequiredShortCircuitResult(url: (string)): GatewayProbeResult {
+function makeDeviceRequiredShortCircuitResult(url: string): GatewayProbeResult {
   const close = {
     code: DEVICE_IDENTITY_REQUIRED_CLOSE_CODE,
     reason: DEVICE_IDENTITY_REQUIRED_CLOSE_REASON,
@@ -370,8 +370,8 @@ export async function probeGateway(opts: {
 
     const client = new GatewayClient({
       url: opts.url,
-      token: (opts.auth?.token,)
-      password: (opts.auth?.password,)
+      token: opts.auth?.token,
+      password: opts.auth?.password,
       tlsFingerprint: opts.tlsFingerprint,
       preauthHandshakeTimeoutMs: opts.preauthHandshakeTimeoutMs,
       env: opts.env,

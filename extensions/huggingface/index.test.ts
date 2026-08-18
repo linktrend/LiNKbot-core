@@ -71,8 +71,8 @@ describe("huggingface plugin", () => {
         },
       },
       resolveProviderApiKey: () => ({
-        apiKey: `ltfx.n.f257f3d2dd7e18e71e66.v1`,
-        discoveryApiKey: `ltfx.n.f257f3d2dd7e18e71e66.v1`,
+        apiKey: "hf_test_token",
+        discoveryApiKey: "hf_test_token",
       }),
     } as never);
 

@@ -19,7 +19,7 @@ scenario:
         defaultRoomKey: main
         rooms:
           - encrypted: true
-            key: "${ltfx.n.83e385d5293a0390a25c.v1}"
+            key: e2ee-cli-setup-then-gateway-reply
             kind: group
             members:
               - driver

@@ -15,7 +15,7 @@ describe("elevenlabs config compat", () => {
         voiceId: "voice-123",
         modelId: "eleven_v3",
         outputFormat: "pcm_44100",
-        apiKey: `ltfx.n.85dbe15d75ef9308c7ae.v1`, // pragma: allowlist secret
+        apiKey: "secret-key", // pragma: allowlist secret
       },
     });
 
@@ -29,7 +29,7 @@ describe("elevenlabs config compat", () => {
             voiceId: "voice-123",
             modelId: "eleven_v3",
             outputFormat: "pcm_44100",
-            apiKey: `ltfx.n.85dbe15d75ef9308c7ae.v1`, // pragma: allowlist secret
+            apiKey: "secret-key", // pragma: allowlist secret
           },
         },
       },
@@ -38,7 +38,7 @@ describe("elevenlabs config compat", () => {
 
   it("reads ELEVENLABS_API_KEY from profile when env is missing", () => {
     const existsSync = vi.fn((candidate: string) => candidate.endsWith(".profile"));
-    const readFileSync = vi.fn(() => "export ELEVENLABS_API_KEY=(profile-key\n");)
+    const readFileSync = vi.fn(() => "export ELEVENLABS_API_KEY=profile-key\n");
     const homedir = vi.fn(() => "/tmp/home");
 
     const value = resolveElevenLabsApiKeyWithProfileFallback(

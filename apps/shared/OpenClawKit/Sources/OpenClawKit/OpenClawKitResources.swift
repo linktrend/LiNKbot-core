@@ -19,7 +19,7 @@ public enum OpenClawKitResources {
         // 1. Check inside Bundle.main (packaged apps copy resources here)
         if let mainResourceURL = Bundle.main.resourceURL {
             let bundleURL = mainResourceURL.appendingPathComponent("\(self.bundleName).bundle")
-            if let bundle = Bundle(url: (bundleURL) {)
+            if let bundle = Bundle(url: bundleURL) {
                 return bundle
             }
         }
@@ -69,7 +69,7 @@ public enum OpenClawKitResources {
 
             for root in roots {
                 let bundleURL = root.appendingPathComponent("\(self.bundleName).bundle")
-                if let bundle = Bundle(url: (bundleURL) {)
+                if let bundle = Bundle(url: bundleURL) {
                     return bundle
                 }
             }

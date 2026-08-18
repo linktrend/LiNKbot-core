@@ -206,7 +206,7 @@ describe("createMattermostClient", () => {
     fetchWithSsrFGuardMock.mockResolvedValueOnce({ response, release });
     const client = createMattermostClient({
       baseUrl: "https://chat.example.com",
-      botToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+      botToken: "test-token",
     });
 
     await expect(client.request("/users/me")).resolves.toEqual({ id: "u1" });
@@ -227,7 +227,7 @@ describe("createMattermostClient", () => {
     fetchWithSsrFGuardMock.mockResolvedValueOnce({ response, release });
     const client = createMattermostClient({
       baseUrl: "https://chat.example.com",
-      botToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+      botToken: "test-token",
     });
 
     await expect(client.request("/users/me")).rejects.toThrow(
@@ -248,7 +248,7 @@ describe("createMattermostClient", () => {
     fetchWithSsrFGuardMock.mockResolvedValueOnce({ response: tracked.response, release });
     const client = createMattermostClient({
       baseUrl: "https://chat.example.com",
-      botToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+      botToken: "test-token",
     });
 
     let caught: Error | undefined;
@@ -291,7 +291,7 @@ describe("createMattermostClient", () => {
     });
     const client = createMattermostClient({
       baseUrl: "https://chat.example.com",
-      botToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+      botToken: "test-token",
     });
 
     let caught: Error | undefined;
@@ -318,7 +318,7 @@ describe("createMattermostClient", () => {
     fetchWithSsrFGuardMock.mockResolvedValueOnce({ response: tracked.response, release });
     const client = createMattermostClient({
       baseUrl: "https://chat.example.com",
-      botToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+      botToken: "test-token",
     });
 
     await expect(client.request("/users/me")).rejects.toThrow(
@@ -344,7 +344,7 @@ describe("createMattermostClient", () => {
     });
     const client = createMattermostClient({
       baseUrl: "https://chat.example.com",
-      botToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+      botToken: "test-token",
     });
 
     await expect(client.request("/users/me")).rejects.toThrow("upstream body failed");
@@ -411,7 +411,7 @@ describe("createMattermostClient", () => {
     const { mockFetch, calls } = createMockFetch({ body: { id: "u1" } });
     const client = createMattermostClient({
       baseUrl: "http://localhost:8065",
-      botToken: `ltfx.n.ea5add57437cbf20af59.v1`,
+      botToken: "my-secret-token",
       fetchImpl: mockFetch,
     });
     await client.request("/users/me");
@@ -450,7 +450,7 @@ describe("createMattermostClient", () => {
     });
     const client = createMattermostClient({
       baseUrl: "https://chat.example.com",
-      botToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+      botToken: "test-token",
       fetchImpl,
     });
     const result = await client.request<unknown>("/anything", { method: "DELETE" });
@@ -621,7 +621,7 @@ describe("createMattermostDirectChannelWithRetry delay cap", () => {
         .mockResolvedValueOnce(Response.json({ id: "dm-channel-cap" }, { status: 201 }));
       const client = createMattermostClient({
         baseUrl: "https://mattermost.example.com",
-        botToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+        botToken: "test-token",
         fetchImpl: mockFetch,
       });
       const delays: number[] = [];

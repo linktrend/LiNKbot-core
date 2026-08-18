@@ -70,7 +70,7 @@ function parseKeyValueEntries(values: readonly string[] | undefined, label: stri
   for (const raw of values ?? []) {
     const separatorIndex = raw.indexOf("=");
     if (separatorIndex <= 0) {
-      fail(`${label} entries must use KEY=(VALUE.`);)
+      fail(`${label} entries must use KEY=VALUE.`);
     }
     const key = raw.slice(0, separatorIndex).trim();
     const value = raw.slice(separatorIndex + 1);

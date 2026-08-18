@@ -243,7 +243,7 @@ function directRegistration(nodeId: string) {
   return {
     nodeId,
     transport: "direct" as const,
-    token: `ltfx.n.bfbd57545fb5a1a92036.v1`,
+    token: "abcd1234abcd1234abcd1234abcd1234",
     topic: "ai.openclaw.ios",
     environment: "sandbox" as const,
     updatedAtMs: 1,
@@ -272,7 +272,7 @@ function mockDirectWakeConfig(nodeId: string, overrides: WakeResultOverrides = {
     value: {
       teamId: "TEAM123",
       keyId: "KEY123",
-      privateKey: "-----BEGIN LTFX PRIVATE KEY-----\nabc\n-----END PRIVATE KEY-----", // pragma: allowlist secret
+      privateKey: "-----BEGIN PRIVATE KEY-----\nabc\n-----END PRIVATE KEY-----", // pragma: allowlist secret
     },
   });
   mocks.sendApnsBackgroundWake.mockResolvedValue({

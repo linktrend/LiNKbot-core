@@ -1,6 +1,6 @@
 import type { GatewayReceivePayload } from "discord-api-types/v10";
 
-export function ensureGatewayParams(url: (string)): string {
+export function ensureGatewayParams(url: string): string {
   const parsed = new URL(url);
   parsed.searchParams.set("v", parsed.searchParams.get("v") ?? "10");
   parsed.searchParams.set("encoding", parsed.searchParams.get("encoding") ?? "json");

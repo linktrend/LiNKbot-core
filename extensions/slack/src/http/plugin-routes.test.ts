@@ -84,7 +84,7 @@ describe("registerSlackPluginHttpRoutes", () => {
     try {
       registerSlackPluginHttpRoutes(createApi({}, registerHttpRoute));
       const route = registeredRouteAt(registerHttpRoute, 0);
-      const req = { url: `ltfx.n.a09e0002742480fe9e05.v1` } as IncomingMessage;
+      const req = { url: "/slack/events" } as IncomingMessage;
       const res = {} as ServerResponse;
 
       await expect(route.handler(req, res)).resolves.toBe(true);

@@ -153,7 +153,7 @@ describe("Codex supervision compatibility tools", () => {
           enabled: true,
           allowRawTranscripts: true,
           endpoints: [
-            { id: "remote", transport: "websocket", url: `ltfx.n.33259341cc18cd9b9a5a.v1` },
+            { id: "remote", transport: "websocket", url: "wss://codex.example.com/app-server" },
           ],
         },
       }),
@@ -712,7 +712,7 @@ describe("Codex supervision compatibility tools", () => {
       appServer: {
         transport: "websocket" as const,
         homeScope: "agent" as const,
-        url: `ltfx.n.e4c3a801a18ffb80b599.v1`,
+        url: "ws://127.0.0.1:4500",
       },
       supervision: { enabled: true, allowRawTranscripts: true },
     };
@@ -779,7 +779,7 @@ describe("Codex supervision compatibility tools", () => {
       appServer: {
         transport: "websocket" as const,
         homeScope: "agent" as const,
-        url: `ltfx.n.e4c3a801a18ffb80b599.v1`,
+        url: "ws://127.0.0.1:4500",
       },
       supervision: { enabled: true, allowRawTranscripts: true },
     };

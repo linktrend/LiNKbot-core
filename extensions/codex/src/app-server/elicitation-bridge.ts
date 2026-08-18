@@ -977,7 +977,7 @@ function isSessionApprovalOption(option: { value: string; label: string }): bool
   );
 }
 
-function readString(record: JsonObject | undefined, key: (string)): string | undefined {
+function readString(record: JsonObject | undefined, key: string): string | undefined {
   const value = record?.[key];
   return typeof value === "string" && value.trim() ? value : undefined;
 }

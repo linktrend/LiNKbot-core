@@ -15,7 +15,7 @@ const mocks = vi.hoisted(() => {
     readBestEffortConfig: vi.fn(async () => ({
       gateway: {
         mode: "remote",
-        remote: { url: `ltfx.n.e7a188aaecb9f270b021.v1`, token: "rtok" },
+        remote: { url: "wss://remote.example:18789", token: "rtok" },
         auth: { token: "ltok" },
       },
     })),
@@ -265,7 +265,7 @@ function readProbeCalls(): ProbeGatewayCall[] {
   return probeGateway.mock.calls.map(([call]) => call as ProbeGatewayCall);
 }
 
-function requireProbeCall(url: (string)): ProbeGatewayCall {
+function requireProbeCall(url: string): ProbeGatewayCall {
   const call = readProbeCalls().find((candidate) => candidate.url === url);
   if (!call) {
     throw new Error(`Expected gateway probe call for ${url}`);
@@ -416,7 +416,7 @@ describe("gateway-status command", () => {
       gateway: {
         mode: "remote",
         bind: "lan",
-        remote: { url: `ltfx.n.e7a188aaecb9f270b021.v1`, token: "rtok" },
+        remote: { url: "wss://remote.example:18789", token: "rtok" },
         auth: { token: "ltok" },
       },
     } as never);
@@ -446,7 +446,7 @@ describe("gateway-status command", () => {
     await runGatewayStatus(runtime, {
       timeout: "1000",
       json: true,
-      url: `ltfx.n.e7a188aaecb9f270b021.v1`,
+      url: "wss://remote.example:18789",
     });
 
     expect(inspectWindowsGatewayFirewall).not.toHaveBeenCalled();
@@ -599,7 +599,7 @@ describe("gateway-status command", () => {
     } as never);
     probeGateway.mockResolvedValueOnce({
       ok: false,
-      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      url: "ws://127.0.0.1:18789",
       connectLatencyMs: 51,
       error: "missing scope: operator.read",
       close: null,
@@ -719,7 +719,7 @@ describe("gateway-status command", () => {
     const { runtime, runtimeLogs, runtimeErrors } = createRuntimeCapture();
     await withEnvAsync(
       {
-        OPENCLAW_GATEWAY_TOKEN: `ltfx.n.25d37ba7752ae1d95b57.v1`,
+        OPENCLAW_GATEWAY_TOKEN: "env-token",
         MISSING_GATEWAY_TOKEN: undefined,
       },
       async () => {
@@ -747,7 +747,7 @@ describe("gateway-status command", () => {
     const { runtime, runtimeLogs, runtimeErrors } = createRuntimeCapture();
     await withEnvAsync(
       {
-        OPENCLAW_GATEWAY_TOKEN: `ltfx.n.25d37ba7752ae1d95b57.v1`,
+        OPENCLAW_GATEWAY_TOKEN: "env-token",
         MISSING_GATEWAY_PASSWORD: undefined,
       },
       async () => {
@@ -761,7 +761,7 @@ describe("gateway-status command", () => {
             mode: "local",
             auth: {
               mode: "token",
-              token: `ltfx.n.a98cc81fe778386f6195.v1`,
+              token: "config-token",
               password: { source: "env", provider: "default", id: "MISSING_GATEWAY_PASSWORD" },
             },
           },
@@ -787,7 +787,7 @@ describe("gateway-status command", () => {
     const { runtime, runtimeLogs, runtimeErrors } = createRuntimeCapture();
     await withEnvAsync(
       {
-        CUSTOM_GATEWAY_TOKEN: `ltfx.n.d0220646691542e8f553.v1`,
+        CUSTOM_GATEWAY_TOKEN: "resolved-gateway-token",
         OPENCLAW_GATEWAY_TOKEN: undefined,
       },
       async () => {
@@ -1031,7 +1031,7 @@ describe("gateway-status command", () => {
       gateway: {
         mode: "remote",
         port: 18789,
-        remote: { url: `ltfx.n.e7a188aaecb9f270b021.v1`, token: "rtok" },
+        remote: { url: "wss://remote.example:18789", token: "rtok" },
         auth: { mode: "token", token: "ltok" },
       },
     } as never);
@@ -1060,7 +1060,7 @@ describe("gateway-status command", () => {
       expect.objectContaining({
         id: "localLoopback",
         kind: "localLoopback",
-        url: `ltfx.n.b31b89043462a51e5f7a.v1`,
+        url: "ws://127.0.0.1:19080",
       }),
     ]);
   });

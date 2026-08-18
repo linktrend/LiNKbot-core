@@ -680,7 +680,7 @@ describe("config mutate helpers", () => {
     await fs.writeFile(previousBackupPath, "previous backup", { mode: 0o644 });
     const oldEntry = {
       enabled: true,
-      config: { token: `ltfx.n.b466883aa03eefe820ec.v1` },
+      config: { token: "plugin-token-runtime" },
     };
     const snapshot: ConfigFileSnapshot = {
       ...createSnapshot({
@@ -714,7 +714,7 @@ describe("config mutate helpers", () => {
         snapshot,
         writeOptions: {
           expectedConfigPath: configPath,
-          envSnapshotForRestore: { OPENCLAW_TEST_PLUGIN_TOKEN: `ltfx.n.b466883aa03eefe820ec.v1` },
+          envSnapshotForRestore: { OPENCLAW_TEST_PLUGIN_TOKEN: "plugin-token-runtime" },
           assertConfigPathForWrite: allowConfigPathWrite,
           includeFileTargetsForWrite: { [pluginsPath]: await resolveIncludeTarget(pluginsPath) },
         },
@@ -752,7 +752,7 @@ describe("config mutate helpers", () => {
           },
         },
         io: {
-          env: { OPENCLAW_TEST_PLUGIN_TOKEN: `ltfx.n.6ec64a4c2c9041bce3a5.v1` },
+          env: { OPENCLAW_TEST_PLUGIN_TOKEN: "plugin-token-after-read" },
           readConfigFileSnapshotForWrite: ioMocks.readConfigFileSnapshotForWrite,
           writeConfigFile: ioMocks.writeConfigFile,
         },
@@ -2123,7 +2123,7 @@ describe("config mutate helpers", () => {
       2,
     )}\n`;
     await fs.writeFile(pluginsPath, initialPluginsRaw, "utf-8");
-    const oldEntry = { enabled: true, config: { token: `ltfx.n.9bdf10a691a1cfda89d9.v1` } };
+    const oldEntry = { enabled: true, config: { token: "old-token" } };
     const snapshot = createSnapshot({
       hash: "hash-include-restored-preflight",
       path: configPath,
@@ -2147,7 +2147,7 @@ describe("config mutate helpers", () => {
           snapshot,
           writeOptions: {
             expectedConfigPath: snapshot.path,
-            envSnapshotForRestore: { OPENCLAW_TEST_INCLUDE_TOKEN: `ltfx.n.9bdf10a691a1cfda89d9.v1` },
+            envSnapshotForRestore: { OPENCLAW_TEST_INCLUDE_TOKEN: "old-token" },
             assertConfigPathForWrite: allowConfigPathWrite,
             includeFileTargetsForWrite: { [pluginsPath]: await resolveIncludeTarget(pluginsPath) },
           },
@@ -2160,14 +2160,14 @@ describe("config mutate helpers", () => {
             },
           },
           io: {
-            env: { OPENCLAW_TEST_INCLUDE_TOKEN: `ltfx.n.348e9df2a42bd6e3c635.v1` },
+            env: { OPENCLAW_TEST_INCLUDE_TOKEN: "new-token" },
             readConfigFileSnapshotForWrite: ioMocks.readConfigFileSnapshotForWrite,
             writeConfigFile: ioMocks.writeConfigFile,
           },
         }),
       ).rejects.toThrow(/active SecretRef resolution failed: stop before write/);
 
-      expect(observedSources[0]?.plugins?.entries?.old?.config).toEqual({ token: `ltfx.n.348e9df2a42bd6e3c635.v1` });
+      expect(observedSources[0]?.plugins?.entries?.old?.config).toEqual({ token: "new-token" });
       await expect(fs.readFile(pluginsPath, "utf-8")).resolves.toBe(initialPluginsRaw);
     } finally {
       setRuntimeConfigSnapshotRefreshHandler(null);
@@ -2183,7 +2183,7 @@ describe("config mutate helpers", () => {
       configPath,
       `${JSON.stringify(
         {
-          gateway: { auth: { mode: "token", token: `ltfx.n.bf2b918b0079049d8780.v1` } },
+          gateway: { auth: { mode: "token", token: "$${ROOT_LITERAL_TOKEN}" } },
           plugins: { $include: "./config/plugins.json5" },
         },
         null,
@@ -2196,7 +2196,7 @@ describe("config mutate helpers", () => {
       hash: "hash-include-root-escaped-env",
       path: configPath,
       parsed: {
-        gateway: { auth: { mode: "token", token: `ltfx.n.bf2b918b0079049d8780.v1` } },
+        gateway: { auth: { mode: "token", token: "$${ROOT_LITERAL_TOKEN}" } },
         plugins: { $include: "./config/plugins.json5" },
       },
       sourceConfig: {

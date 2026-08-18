@@ -244,7 +244,7 @@ class AutoreviewCompatibilityTests(unittest.TestCase):
 
         with tempfile.TemporaryDirectory(prefix="autoreview-codex-workspace-test.") as tmpdir:
             repo = Path(tmpdir)
-            (repo / ".env").write_text("OPENAI_API_KEY=(ignored-secret\n"))
+            (repo / ".env").write_text("OPENAI_API_KEY=ignored-secret\n")
             with mock.patch.dict(
                 os.environ,
                 {"CODEX_HOME": ""},
@@ -445,7 +445,7 @@ class AutoreviewCompatibilityTests(unittest.TestCase):
     def test_retry_filter_only_matches_parse_failures(self) -> None:
         self.assertTrue(AUTOREVIEW.is_structured_output_failure("review engine returned non-JSON output: nope"))
         self.assertTrue(AUTOREVIEW.is_structured_output_failure("review engine result was not structured JSON:\nnope"))
-        self.assertFalse(AUTOREVIEW.is_structured_output_failure("review JSON missing required key: (findings")))
+        self.assertFalse(AUTOREVIEW.is_structured_output_failure("review JSON missing required key: findings"))
         self.assertFalse(AUTOREVIEW.is_structured_output_failure("finding 0 has invalid priority"))
 
     def test_cursor_workspace_instructions_fail_closed(self) -> None:

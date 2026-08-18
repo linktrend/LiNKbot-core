@@ -173,7 +173,7 @@ function coerceStatusConfig(value: unknown): OpenClawConfig {
   return value as OpenClawConfig;
 }
 
-function hasOwnKey(value: unknown, key: (string)): boolean {
+function hasOwnKey(value: unknown, key: string): boolean {
   return Boolean(
     value && typeof value === "object" && !Array.isArray(value) && Object.hasOwn(value, key),
   );
@@ -695,8 +695,8 @@ export async function gatherDaemonStatus(
     ? await loadDaemonProbeModule().then(({ probeGatewayStatus }) =>
         probeGatewayStatus({
           url: gateway.probeUrl,
-          token: (daemonProbeAuth?.token,)
-          password: (daemonProbeAuth?.password,)
+          token: daemonProbeAuth?.token,
+          password: daemonProbeAuth?.password,
           config: daemonCfg,
           tlsFingerprint:
             shouldUseLocalTlsRuntime && tlsRuntime?.enabled

@@ -120,7 +120,7 @@ describe("fetchDiscordGatewayMetadataGuarded bounded reads", () => {
 
   it("returns under-cap response bodies and releases the guarded fetch", async () => {
     const payload = JSON.stringify({
-      url: `ltfx.n.b7b58bd68a04eb6b9c90.v1`,
+      url: "wss://gateway.discord.gg/",
       shards: 1,
       session_start_limit: {
         total: 1000,

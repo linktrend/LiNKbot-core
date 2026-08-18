@@ -89,7 +89,7 @@ describe("session key display/internal mapping", () => {
       "main",
     );
     expect(
-      resolveDisplaySessionKey({ key: `ltfx.n.3cd054c375bd03a675ec.v1`, alias: "global", mainKey: "main" }),
+      resolveDisplaySessionKey({ key: "agent:ops:main", alias: "global", mainKey: "main" }),
     ).toBe("agent:ops:main");
   });
 
@@ -98,7 +98,7 @@ describe("session key display/internal mapping", () => {
       "global",
     );
     expect(
-      resolveInternalSessionKey({ key: `ltfx.n.3cd054c375bd03a675ec.v1`, alias: "global", mainKey: "main" }),
+      resolveInternalSessionKey({ key: "agent:ops:main", alias: "global", mainKey: "main" }),
     ).toBe("agent:ops:main");
   });
 
@@ -122,14 +122,14 @@ describe("session key display/internal mapping", () => {
   it("maps interactive client ids to the requester session", () => {
     expect(
       resolveCurrentSessionClientAlias({
-        key: `ltfx.n.dd01e2e5399ec43c88b6.v1`,
+        key: "openclaw-tui",
         requesterInternalKey: "agent:main:main",
       }),
     ).toBe("agent:main:main");
-    expect(resolveCurrentSessionClientAlias({ key: `ltfx.n.dd01e2e5399ec43c88b6.v1` })).toBeUndefined();
+    expect(resolveCurrentSessionClientAlias({ key: "openclaw-tui" })).toBeUndefined();
     expect(
       resolveCurrentSessionClientAlias({
-        key: `ltfx.n.6362cb9b87dd55dc6d0b.v1`,
+        key: "node-host",
         requesterInternalKey: "agent:main:main",
       }),
     ).toBeUndefined();
@@ -218,7 +218,7 @@ describe("resolved session visibility checks", () => {
     callGatewayMock.mockImplementation(
       async (request: { method?: string; params?: { key?: string } }) => {
         if (request.method === "sessions.resolve") {
-          return { key: (request.params?.key };)
+          return { key: request.params?.key };
         }
         if (request.method === "sessions.list") {
           return {
@@ -236,7 +236,7 @@ describe("resolved session visibility checks", () => {
         action: "history",
         resolvedSession: {
           ok: true,
-          key: `ltfx.n.1d270fe6db5f674b45c4.v1`,
+          key: "agent:main:subagent:worker-999",
           displayKey: "agent:main:subagent:worker-999",
           resolvedViaSessionId: false,
         },
@@ -246,7 +246,7 @@ describe("resolved session visibility checks", () => {
       }),
     ).resolves.toEqual({
       ok: true,
-      key: `ltfx.n.1d270fe6db5f674b45c4.v1`,
+      key: "agent:main:subagent:worker-999",
       displayKey: "agent:main:subagent:worker-999",
     });
   });
@@ -280,7 +280,7 @@ describe("resolveSessionReference", () => {
 
   it("prefers a literal current sessionId before alias fallback", async () => {
     callGatewayMock.mockResolvedValueOnce({});
-    callGatewayMock.mockResolvedValueOnce({ key: `ltfx.n.3cd054c375bd03a675ec.v1` });
+    callGatewayMock.mockResolvedValueOnce({ key: "agent:ops:main" });
 
     const result = await resolveSessionReference({
       sessionKey: "current",
@@ -290,7 +290,7 @@ describe("resolveSessionReference", () => {
       restrictToSpawned: false,
     });
     expectResolvedSessionReference(result, {
-      key: `ltfx.n.3cd054c375bd03a675ec.v1`,
+      key: "agent:ops:main",
       displayKey: "agent:ops:main",
       resolvedViaSessionId: true,
     });
@@ -329,7 +329,7 @@ describe("resolveSessionReference", () => {
         }),
       )
       .mockRejectedValueOnce(unsupportedAllowMissing())
-      .mockResolvedValueOnce({ key: `ltfx.n.3cd054c375bd03a675ec.v1` });
+      .mockResolvedValueOnce({ key: "agent:ops:main" });
 
     const result = await resolveSessionReference({
       sessionKey: "current",
@@ -339,7 +339,7 @@ describe("resolveSessionReference", () => {
       restrictToSpawned: false,
     });
     expectResolvedSessionReference(result, {
-      key: `ltfx.n.3cd054c375bd03a675ec.v1`,
+      key: "agent:ops:main",
       displayKey: "agent:ops:main",
       resolvedViaSessionId: true,
     });
@@ -390,7 +390,7 @@ describe("resolveSessionReference", () => {
       restrictToSpawned: false,
     });
     expectResolvedSessionReference(result, {
-      key: `ltfx.n.3c3dbd6de91d4e00f4c7.v1`,
+      key: "agent:main:subagent:child",
       displayKey: "agent:main:subagent:child",
       resolvedViaSessionId: false,
     });
@@ -406,7 +406,7 @@ describe("resolveSessionReference", () => {
       restrictToSpawned: true,
     });
     expectResolvedSessionReference(result, {
-      key: `ltfx.n.3c3dbd6de91d4e00f4c7.v1`,
+      key: "agent:main:subagent:child",
       displayKey: "agent:main:subagent:child",
       resolvedViaSessionId: false,
     });
@@ -432,7 +432,7 @@ describe("resolveSessionReference", () => {
       restrictToSpawned: false,
     });
     expectResolvedSessionReference(result, {
-      key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+      key: "agent:main:main",
       displayKey: "agent:main:main",
       resolvedViaSessionId: false,
     });

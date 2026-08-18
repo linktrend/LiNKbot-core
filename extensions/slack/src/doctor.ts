@@ -175,9 +175,9 @@ async function collectSlackUserIdentityWarnings(params: {
     const account = inspectSlackAccount({
       cfg: params.cfg,
       accountId,
-      envBotToken: (params.env?.SLACK_BOT_TOKEN,)
-      envAppToken: (params.env?.SLACK_APP_TOKEN,)
-      envUserToken: (params.env?.SLACK_USER_TOKEN,)
+      envBotToken: params.env?.SLACK_BOT_TOKEN,
+      envAppToken: params.env?.SLACK_APP_TOKEN,
+      envUserToken: params.env?.SLACK_USER_TOKEN,
     });
     if (!account.enabled || account.identity !== "user") {
       continue;

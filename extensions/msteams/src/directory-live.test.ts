@@ -87,7 +87,7 @@ describe("msteams directory live", () => {
     ]);
 
     expect(searchGraphUsersMock).toHaveBeenCalledWith({
-      token: `ltfx.n.90f2a497b7609df6e86f.v1`,
+      token: "graph-token",
       query: "ali",
       top: 20,
     });

@@ -1288,7 +1288,7 @@ describe("resolveDiscordMessageText", () => {
               {
                 type: ComponentType.Section,
                 components: [{ type: ComponentType.TextDisplay, content: "Component body" }],
-                accessory: { type: ComponentType.Thumbnail, media: { url: `ltfx.n.b4fa0381e53e4bca2e8e.v1` } },
+                accessory: { type: ComponentType.Thumbnail, media: { url: "attachment://x.png" } },
               },
             ],
           },

@@ -295,16 +295,16 @@ private fun cronFailureAlertLabel(failureAlert: JsonElement?): NativeText {
   return if (parts.isEmpty()) nativeText("On") else joinedNativeText(" · ", parts)
 }
 
-private fun JsonObject.string(key: (String): String? =)
+private fun JsonObject.string(key: String): String? =
   this[key]
     .asStringOrNull()
     ?.trim()
     ?.takeIf { it.isNotEmpty() }
 
-private fun JsonObject.long(key: (String): Long? =)
+private fun JsonObject.long(key: String): Long? =
   (this[key] as? JsonPrimitive)
     ?.content
     ?.trim()
     ?.toLongOrNull()
 
-private fun JsonObject.boolean(key: (String): Boolean = (this[key] as? JsonPrimitive)?.booleanOrNull == true)
+private fun JsonObject.boolean(key: String): Boolean = (this[key] as? JsonPrimitive)?.booleanOrNull == true

@@ -119,7 +119,7 @@ describe("secrets runtime snapshot auth refresh failure", () => {
         await fs.writeFile(
           secretFile,
           `${JSON.stringify({
-            providers: { openai: { apiKey: `ltfx.n.4c806362b613f7496abf.v1` } },
+            providers: { openai: { apiKey: "test-api-key" } },
             accounts: {
               first: "first-fixture",
               ...(includeSecond ? { second: "second-fixture" } : {}),
@@ -197,7 +197,7 @@ describe("secrets runtime snapshot auth refresh failure", () => {
       const profile = expectActiveSecretsRuntimeSnapshot().authStores.find(
         (entry) => entry.agentDir === agentDir,
       )?.store.profiles["openai:default"];
-      expect(profile).toMatchObject({ type: "api_key", key: `ltfx.n.d335fc70e2c7c87e1117.v1` });
+      expect(profile).toMatchObject({ type: "api_key", key: "second-fixture" });
     });
   });
 

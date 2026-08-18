@@ -380,19 +380,19 @@ describe("loadDotEnv", () => {
         await writeEnvFile(
           path.join(cwdDir, ".env"),
           [
-            "ANTHROPIC_API_KEY=(ltfx.n.9f5cdfa3fef37281643e.v1),
-            "ANTHROPIC_API_KEY_SECONDARY=(ltfx.n.a8e78659bb17fbd313fa.v1"),
-            "ANTHROPIC_OAUTH_TOKEN=(attacker-oauth",)
-            "OPENAI_API_KEY=(ltfx.n.ce066540de5629959181.v1),
+            "ANTHROPIC_API_KEY=sk-ant-attacker-key",
+            "ANTHROPIC_API_KEY_SECONDARY=sk-ant-secondary",
+            "ANTHROPIC_OAUTH_TOKEN=attacker-oauth",
+            "OPENAI_API_KEY=sk-openai-attacker-key",
             "OPENAI_API_KEYS=sk-openai-a,sk-openai-b",
-            "OPENAI_API_KEY_SECONDARY=(ltfx.n.c8b066316c7051ad5354.v1"),
+            "OPENAI_API_KEY_SECONDARY=sk-openai-secondary",
             "OPENCLAW_LIVE_ANTHROPIC_KEY=sk-ant-live",
-            "OPENCLAW_LIVE_ANTHROPIC_KEYS=(ltfx.n.626d17712b0d42f4c256.v1),ltfx.n.bdfc252f14f77d3f42ed.v1",
-            "OPENCLAW_LIVE_GEMINI_KEY=(ltfx.n.df13b7d95ad0ebbceb48.v1"),
-            "OPENCLAW_LIVE_OPENAI_KEY=(ltfx.n.e6c71ea19bd835d00110.v1"),
-            "OPENCLAW_GATEWAY_TOKEN=(attacker-token",)
-            "OPENCLAW_GATEWAY_PASSWORD=(attacker-password",)
-            "OPENCLAW_GATEWAY_SECRET=(attacker-secret",)
+            "OPENCLAW_LIVE_ANTHROPIC_KEYS=sk-ant-live-a,sk-ant-live-b",
+            "OPENCLAW_LIVE_GEMINI_KEY=sk-gemini-live",
+            "OPENCLAW_LIVE_OPENAI_KEY=sk-openai-live",
+            "OPENCLAW_GATEWAY_TOKEN=attacker-token",
+            "OPENCLAW_GATEWAY_PASSWORD=attacker-password",
+            "OPENCLAW_GATEWAY_SECRET=attacker-secret",
           ].join("\n"),
         );
 
@@ -622,19 +622,19 @@ describe("loadDotEnv", () => {
         await writeEnvFile(
           path.join(stateDir, ".env"),
           [
-            "ANTHROPIC_API_KEY=(ltfx.n.7a5c9ee61efd6adbccb5.v1),
-            "ANTHROPIC_API_KEY_SECONDARY=(ltfx.n.a8e78659bb17fbd313fa.v1"),
-            "ANTHROPIC_OAUTH_TOKEN=(trusted-oauth",)
-            "OPENAI_API_KEY=(ltfx.n.137fe6098c75fefc641e.v1),
+            "ANTHROPIC_API_KEY=sk-ant-trusted-key",
+            "ANTHROPIC_API_KEY_SECONDARY=sk-ant-secondary",
+            "ANTHROPIC_OAUTH_TOKEN=trusted-oauth",
+            "OPENAI_API_KEY=sk-openai-trusted-key",
             "OPENAI_API_KEYS=sk-openai-a,sk-openai-b",
-            "OPENAI_API_KEY_SECONDARY=(ltfx.n.c8b066316c7051ad5354.v1"),
+            "OPENAI_API_KEY_SECONDARY=sk-openai-secondary",
             "OPENCLAW_LIVE_ANTHROPIC_KEY=sk-ant-live",
-            "OPENCLAW_LIVE_ANTHROPIC_KEYS=(ltfx.n.626d17712b0d42f4c256.v1),ltfx.n.bdfc252f14f77d3f42ed.v1",
-            "OPENCLAW_LIVE_GEMINI_KEY=(ltfx.n.df13b7d95ad0ebbceb48.v1"),
-            "OPENCLAW_LIVE_OPENAI_KEY=(ltfx.n.e6c71ea19bd835d00110.v1"),
-            "OPENCLAW_GATEWAY_TOKEN=(trusted-token",)
-            "OPENCLAW_GATEWAY_PASSWORD=(trusted-password",)
-            "OPENCLAW_GATEWAY_SECRET=(trusted-secret",)
+            "OPENCLAW_LIVE_ANTHROPIC_KEYS=sk-ant-live-a,sk-ant-live-b",
+            "OPENCLAW_LIVE_GEMINI_KEY=sk-gemini-live",
+            "OPENCLAW_LIVE_OPENAI_KEY=sk-openai-live",
+            "OPENCLAW_GATEWAY_TOKEN=trusted-token",
+            "OPENCLAW_GATEWAY_PASSWORD=trusted-password",
+            "OPENCLAW_GATEWAY_SECRET=trusted-secret",
           ].join("\n"),
         );
         vi.spyOn(process, "cwd").mockReturnValue(cwdDir);
@@ -642,16 +642,16 @@ describe("loadDotEnv", () => {
 
         loadDotEnv({ quiet: true });
 
-        expect(process.env.ANTHROPIC_API_KEY).toBe("ltfx.n.bbeb42db8aacdc9a872b.v1");
-        expect(process.env.ANTHROPIC_API_KEY_SECONDARY).toBe("ltfx.n.a8e78659bb17fbd313fa.v1");
+        expect(process.env.ANTHROPIC_API_KEY).toBe("sk-ant-trusted-key");
+        expect(process.env.ANTHROPIC_API_KEY_SECONDARY).toBe("sk-ant-secondary");
         expect(process.env.ANTHROPIC_OAUTH_TOKEN).toBe("trusted-oauth");
-        expect(process.env.OPENAI_API_KEY).toBe("ltfx.n.521e34fc623950cc992c.v1");
+        expect(process.env.OPENAI_API_KEY).toBe("sk-openai-trusted-key");
         expect(process.env.OPENAI_API_KEYS).toBe("sk-openai-a,sk-openai-b");
-        expect(process.env.OPENAI_API_KEY_SECONDARY).toBe("ltfx.n.c8b066316c7051ad5354.v1");
+        expect(process.env.OPENAI_API_KEY_SECONDARY).toBe("sk-openai-secondary");
         expect(process.env.OPENCLAW_LIVE_ANTHROPIC_KEY).toBe("sk-ant-live");
-        expect(process.env.OPENCLAW_LIVE_ANTHROPIC_KEYS).toBe("ltfx.n.626d17712b0d42f4c256.v1,ltfx.n.bdfc252f14f77d3f42ed.v1");
-        expect(process.env.OPENCLAW_LIVE_GEMINI_KEY).toBe("ltfx.n.df13b7d95ad0ebbceb48.v1");
-        expect(process.env.OPENCLAW_LIVE_OPENAI_KEY).toBe("ltfx.n.e6c71ea19bd835d00110.v1");
+        expect(process.env.OPENCLAW_LIVE_ANTHROPIC_KEYS).toBe("sk-ant-live-a,sk-ant-live-b");
+        expect(process.env.OPENCLAW_LIVE_GEMINI_KEY).toBe("sk-gemini-live");
+        expect(process.env.OPENCLAW_LIVE_OPENAI_KEY).toBe("sk-openai-live");
         expect(process.env.OPENCLAW_GATEWAY_TOKEN).toBe("trusted-token");
         expect(process.env.OPENCLAW_GATEWAY_PASSWORD).toBe("trusted-password");
         expect(process.env.OPENCLAW_GATEWAY_SECRET).toBe("trusted-secret");
@@ -900,11 +900,11 @@ describe("workspace .env blocklist completeness", () => {
         };
         await writeEnvFile(
           path.join(cwdDir, ".env"),
-          "RUNTIME_CLOUD_API_KEY=(workspace-plugin-key\n",)
+          "RUNTIME_CLOUD_API_KEY=workspace-plugin-key\n",
         );
         await writeEnvFile(
           path.join(stateDir, ".env"),
-          "RUNTIME_CLOUD_API_KEY=(global-plugin-key\n",)
+          "RUNTIME_CLOUD_API_KEY=global-plugin-key\n",
         );
 
         delete process.env.RUNTIME_CLOUD_API_KEY;

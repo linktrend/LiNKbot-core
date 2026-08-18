@@ -62,7 +62,7 @@ export type MattermostInteractiveButtonInput = {
 
 const callbackUrls = new Map<string, string>();
 
-export function setInteractionCallbackUrl(accountId: string, url: (string)): void {
+export function setInteractionCallbackUrl(accountId: string, url: string): void {
   callbackUrls.set(accountId, url);
 }
 
@@ -170,7 +170,7 @@ export function resolveInteractionCallbackUrl(
 const interactionSecrets = new Map<string, string>();
 let defaultInteractionSecret: string | undefined;
 
-function deriveInteractionSecret(botToken: (string)): string {
+function deriveInteractionSecret(botToken: string): string {
   return createHmac("sha256", "openclaw-mattermost-interactions").update(botToken).digest("hex");
 }
 

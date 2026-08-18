@@ -38,7 +38,7 @@ describe("noteMacLaunchctlGatewayEnvOverrides", () => {
     const cfg = {
       gateway: {
         auth: {
-          token: `ltfx.n.a98cc81fe778386f6195.v1`,
+          token: "config-token",
         },
       },
     } as OpenClawConfig;
@@ -60,7 +60,7 @@ describe("noteMacLaunchctlGatewayEnvOverrides", () => {
     const cfg = {
       gateway: {
         auth: {
-          token: `ltfx.n.a98cc81fe778386f6195.v1`,
+          token: "config-token",
         },
       },
     } as OpenClawConfig;
@@ -121,7 +121,7 @@ describe("noteMacLaunchctlGatewayEnvOverrides", () => {
     const cfg = {
       gateway: {
         auth: {
-          token: `ltfx.n.a98cc81fe778386f6195.v1`,
+          token: "config-token",
         },
       },
     } as OpenClawConfig;
@@ -138,7 +138,7 @@ describe("noteMacLaunchctlGatewayEnvOverrides", () => {
     const cfg = {
       gateway: {
         auth: {
-          token: `ltfx.n.a98cc81fe778386f6195.v1`,
+          token: "config-token",
         },
       },
     } as OpenClawConfig;

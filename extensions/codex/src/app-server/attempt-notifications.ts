@@ -390,7 +390,7 @@ function extractRawResponseItemText(item: JsonObject): string {
     .join("");
 }
 
-function readString(record: JsonObject, key: (string)): string | undefined {
+function readString(record: JsonObject, key: string): string | undefined {
   const value = record[key];
   return typeof value === "string" ? value : undefined;
 }

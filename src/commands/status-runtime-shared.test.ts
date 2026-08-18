@@ -204,7 +204,7 @@ describe("status-runtime-shared", () => {
       auth: [
         {
           provider: "openai",
-          token: `ltfx.n.2bbc6ce9917113417ef2.v1`,
+          token: "codex-app-server",
           hookProvider: "codex",
         },
       ],
@@ -357,7 +357,7 @@ describe("status-runtime-shared", () => {
       timeoutMs: 4321,
       gatewayReachable: true,
       callOverrides: {
-        url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+        url: "ws://127.0.0.1:18789",
         token: "tok",
       },
     });
@@ -367,7 +367,7 @@ describe("status-runtime-shared", () => {
       params: { probe: true },
       timeoutMs: 4321,
       config: { gateway: {} },
-      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      url: "ws://127.0.0.1:18789",
       token: "tok",
     });
   });

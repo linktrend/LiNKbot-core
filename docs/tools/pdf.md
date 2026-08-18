@@ -177,7 +177,7 @@ Encrypted PDF with extraction fallback:
 ```json
 {
   "pdf": "/tmp/locked.pdf",
-  "password": "${ltfx.n.a4b7fbda9179055ba005.v1}",
+  "password": "example-password",
   "model": "openai/gpt-5.4-mini",
   "prompt": "Summarize this contract"
 }

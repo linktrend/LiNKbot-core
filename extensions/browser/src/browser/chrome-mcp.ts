@@ -579,7 +579,7 @@ function hasFlag(args: string[], flags: Set<string>): boolean {
   });
 }
 
-function isChromeMcpWebSocketEndpoint(url: (string)): boolean {
+function isChromeMcpWebSocketEndpoint(url: string): boolean {
   return /^wss?:\/\//i.test(url);
 }
 

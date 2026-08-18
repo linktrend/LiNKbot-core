@@ -152,7 +152,7 @@ describe("slash-state global singleton", () => {
     const reloaded = await import("./slash-state.js");
     const result = await routeSlashRequest({
       register: reloaded.registerSlashCommandRoute,
-      body: "token=(tok-reload",)
+      body: "token=tok-reload",
     });
 
     expect(result.statusCode).toBe(200);
@@ -179,7 +179,7 @@ describe("slash-state request routing", () => {
     activate({ accountId: "a1", tokens: ["tok-shared"] });
     activate({ accountId: "a2", tokens: ["tok-shared"] });
 
-    const result = await routeSlashRequest({ body: "token=(tok-shared" });)
+    const result = await routeSlashRequest({ body: "token=tok-shared" });
 
     expect(result.statusCode).toBe(409);
     expect(result.body).toContain("command token is not unique");
@@ -201,7 +201,7 @@ describe("slash-state request routing", () => {
     });
 
     const result = await routeSlashRequest({
-      body: "token=(rotated&team_id=team-1&channel_id=c1&user_id=u1&command=%2Foc_status&text=",)
+      body: "token=rotated&team_id=team-1&channel_id=c1&user_id=u1&command=%2Foc_status&text=",
     });
 
     expect(result.statusCode).toBe(200);
@@ -221,7 +221,7 @@ describe("slash-state request routing", () => {
     });
 
     const result = await routeSlashRequest({
-      body: "token=(rotated&team_id=team-1&channel_id=c1&user_id=u1&command=%2Foc_status&text=",)
+      body: "token=rotated&team_id=team-1&channel_id=c1&user_id=u1&command=%2Foc_status&text=",
     });
 
     expect(result.statusCode).toBe(409);

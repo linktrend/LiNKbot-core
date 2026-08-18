@@ -281,7 +281,7 @@ describe("handleDiscordMessagingAction", () => {
         discord: {
           defaultAccount: "work",
           accounts: {
-            work: { token: `ltfx.n.6ddbd0793f1a3e7d5b48.v1` },
+            work: { token: "token-work" },
           },
         },
       },
@@ -2472,7 +2472,7 @@ describe("handleDiscordGuildAction", () => {
         discord: {
           defaultAccount: "work",
           accounts: {
-            work: { token: `ltfx.n.6ddbd0793f1a3e7d5b48.v1` },
+            work: { token: "token-work" },
           },
         },
       },
@@ -3406,7 +3406,7 @@ describe("handleDiscordAction per-account gating", () => {
       channels: {
         discord: {
           accounts: {
-            chat: { token: `ltfx.n.df59b6bd8d5ab89b2825.v1` },
+            chat: { token: "tok-chat" },
           },
         },
       },
@@ -3425,7 +3425,7 @@ describe("handleDiscordAction per-account gating", () => {
     const cfg = {
       channels: {
         discord: {
-          token: `ltfx.n.2cd110b5aa36745434e9.v1`,
+          token: "tok-base",
           accounts: {
             ops: { token: "tok-ops", actions: { moderation: true } },
           },

@@ -97,7 +97,7 @@ describe("Feishu webhook signed-request e2e", () => {
         accountId,
         path,
         port,
-        verificationToken: `ltfx.n.20b40fbfc56685798390.v1`,
+        verificationToken: "verify_token",
         encryptKey: "encrypt_key",
       }),
       runtime: { log: vi.fn(), error: vi.fn(), exit: vi.fn() },
@@ -159,7 +159,7 @@ describe("Feishu webhook signed-request e2e", () => {
         accountId,
         path,
         port,
-        verificationToken: `ltfx.n.20b40fbfc56685798390.v1`,
+        verificationToken: "verify_token",
         encryptKey: "encrypt_key",
       }),
       runtime: { log: vi.fn(), error: vi.fn(), exit: vi.fn() },
@@ -194,7 +194,7 @@ describe("Feishu webhook signed-request e2e", () => {
       {
         accountId: "invalid-signature",
         path: "/hook-e2e-invalid-signature",
-        verificationToken: `ltfx.n.20b40fbfc56685798390.v1`,
+        verificationToken: "verify_token",
         encryptKey: "encrypt_key",
       },
       monitorFeishuProvider,
@@ -222,7 +222,7 @@ describe("Feishu webhook signed-request e2e", () => {
       {
         accountId: "missing-signature",
         path: "/hook-e2e-missing-signature",
-        verificationToken: `ltfx.n.20b40fbfc56685798390.v1`,
+        verificationToken: "verify_token",
         encryptKey: "encrypt_key",
       },
       monitorFeishuProvider,
@@ -246,7 +246,7 @@ describe("Feishu webhook signed-request e2e", () => {
       {
         accountId: "short-signature",
         path: "/hook-e2e-short-signature",
-        verificationToken: `ltfx.n.20b40fbfc56685798390.v1`,
+        verificationToken: "verify_token",
         encryptKey: "encrypt_key",
       },
       monitorFeishuProvider,
@@ -280,7 +280,7 @@ describe("Feishu webhook signed-request e2e", () => {
       {
         accountId: "invalid-json",
         path: "/hook-e2e-invalid-json",
-        verificationToken: `ltfx.n.20b40fbfc56685798390.v1`,
+        verificationToken: "verify_token",
         encryptKey: "encrypt_key",
       },
       monitorFeishuProvider,
@@ -304,7 +304,7 @@ describe("Feishu webhook signed-request e2e", () => {
       {
         accountId: "signed-invalid-json",
         path: "/hook-e2e-signed-invalid-json",
-        verificationToken: `ltfx.n.20b40fbfc56685798390.v1`,
+        verificationToken: "verify_token",
         encryptKey: "encrypt_key",
       },
       monitorFeishuProvider,
@@ -329,7 +329,7 @@ describe("Feishu webhook signed-request e2e", () => {
       {
         accountId: "signed-challenge",
         path: "/hook-e2e-signed-challenge",
-        verificationToken: `ltfx.n.20b40fbfc56685798390.v1`,
+        verificationToken: "verify_token",
         encryptKey: "encrypt_key",
       },
       monitorFeishuProvider,
@@ -350,7 +350,7 @@ describe("Feishu webhook signed-request e2e", () => {
       {
         accountId: "signed-dispatch",
         path: "/hook-e2e-signed-dispatch",
-        verificationToken: `ltfx.n.20b40fbfc56685798390.v1`,
+        verificationToken: "verify_token",
         encryptKey: "encrypt_key",
       },
       monitorFeishuProvider,
@@ -375,7 +375,7 @@ describe("Feishu webhook signed-request e2e", () => {
       {
         accountId: "p2p-chat-entered",
         path: "/hook-e2e-p2p-chat-entered",
-        verificationToken: `ltfx.n.20b40fbfc56685798390.v1`,
+        verificationToken: "verify_token",
         encryptKey: "encrypt_key",
       },
       monitorFeishuProvider,
@@ -401,7 +401,7 @@ describe("Feishu webhook signed-request e2e", () => {
       {
         accountId: "encrypted-challenge",
         path: "/hook-e2e-encrypted-challenge",
-        verificationToken: `ltfx.n.20b40fbfc56685798390.v1`,
+        verificationToken: "verify_token",
         encryptKey: "encrypt_key",
       },
       monitorFeishuProvider,

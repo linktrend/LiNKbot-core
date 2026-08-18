@@ -73,7 +73,7 @@ describe("defineTokenCredential", () => {
       value: "raw",
       resolvedValue: "redacted",
     });
-    expect(setConfig?.channels?.demo).toEqual({ token: `ltfx.n.b68919aff001d8366249.v1`, baseUrl: "https://demo" });
+    expect(setConfig?.channels?.demo).toEqual({ token: "redacted", baseUrl: "https://demo" });
   });
 });
 

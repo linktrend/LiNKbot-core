@@ -126,7 +126,7 @@ function redactProxyUrl(value: string | undefined): string | undefined {
     const url = new URL(value);
     if (url.username || url.password) {
       url.username = "redacted";
-      url.password = `ltfx.n.b68919aff001d8366249.v1`;
+      url.password = "redacted";
     }
     url.search = "";
     url.hash = "";

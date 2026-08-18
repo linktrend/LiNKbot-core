@@ -27,9 +27,9 @@ function createCatalogContext(
   return {
     config,
     env: {},
-    resolveProviderApiKey: () => ({ apiKey: `ltfx.n.62af8704764faf8ea82f.v1` }),
+    resolveProviderApiKey: () => ({ apiKey: "test-key" }),
     resolveProviderAuth: () => ({
-      apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+      apiKey: "test-key",
       mode: "api_key",
       source: "env",
     }),
@@ -112,7 +112,7 @@ describe("defineSingleProviderPluginEntry", () => {
     expect(catalog).toEqual({
       provider: {
         api: "openai-completions",
-        apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+        apiKey: "test-key",
         baseUrl: "https://api.demo.test/v1",
         models: [createModel("default", "Default")],
       },
@@ -230,7 +230,7 @@ describe("defineSingleProviderPluginEntry", () => {
     expect(catalog).toEqual({
       provider: {
         api: "openai-completions",
-        apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+        apiKey: "test-key",
         baseUrl: "https://override.test/v1",
         models: [createModel("router", "Router")],
       },

@@ -322,7 +322,7 @@ struct TailscaleIntegrationSection: View {
         let settings = GatewayTailscaleSettingsSnapshot(
             mode: tailscaleMode,
             requireCredentialsForServe: requireCredentialsForServe,
-            password: (password))
+            password: password)
         let root = await self.buildTailscaleConfigRoot(root: ConfigStore.load(), settings: settings)
 
         do {
@@ -416,8 +416,8 @@ struct TailscaleIntegrationSection: View {
             snapshot: GatewayTailscaleSettingsSnapshot(
                 mode: mode,
                 requireCredentialsForServe: requireCredentialsForServe,
-                password: (password),)
-            displayPassword: (password))
+                password: password),
+            displayPassword: password)
     }
 
     private static func applySettingsIfChanged(
@@ -503,7 +503,7 @@ struct TailscaleIntegrationSection: View {
         await self.buildAndSaveTailscaleConfig(
             tailscaleMode: settings.mode,
             requireCredentialsForServe: settings.requireCredentialsForServe,
-            password: (settings.password))
+            password: settings.password)
     }
 
     private func startStatusTimer() {

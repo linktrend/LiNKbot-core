@@ -302,7 +302,7 @@ describe("exec approvals store helpers", () => {
         version: 1,
         socket: {
           path: path.join(dir, ".openclaw", "exec-approvals.sock"),
-          token: `ltfx.n.8b7d507cddc8d8950f28.v1`,
+          token: "legacy-token",
         },
         defaults: {
           security: "deny",
@@ -350,7 +350,7 @@ describe("exec approvals store helpers", () => {
       defaultPath,
       `${JSON.stringify({
         version: 1,
-        socket: { token: `ltfx.n.2e65b517099f67029b89.v1` },
+        socket: { token: "default-profile-token" },
         defaults: { security: "full", ask: "off" },
         agents: {},
       })}\n`,
@@ -765,7 +765,7 @@ describe("exec approvals store helpers", () => {
         approvalsPath,
         JSON.stringify({
           version: 1,
-          socket: { path: resolveExecApprovalsSocketPath(), token: `ltfx.n.70dd5803fa4e35799166.v1` },
+          socket: { path: resolveExecApprovalsSocketPath(), token: "existing-token" },
           defaults: { security: "full", ask: "off" },
           agents: {},
         }),

@@ -53,7 +53,7 @@ describe("createDiscordPluginBase", () => {
         discord: {
           accounts: {
             work: {
-              token: `ltfx.n.71b9fdb4cc45819404fb.v1`,
+              token: "same-token",
             },
           },
         },

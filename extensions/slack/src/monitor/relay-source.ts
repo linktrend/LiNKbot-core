@@ -227,7 +227,7 @@ async function handleRelayFrame(params: {
   sendRelayAck(params.ws, event.deliveryId);
 }
 
-export function buildRelayWebSocketOptions(authToken: (string)): ClientOptions {
+export function buildRelayWebSocketOptions(authToken: string): ClientOptions {
   return {
     headers: {
       Authorization: `Bearer ${authToken}`,

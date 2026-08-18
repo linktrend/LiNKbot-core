@@ -45,15 +45,15 @@ describe("session dispatch protocol schemas", () => {
   it("accepts only the dedicated dispatch selector and configured profile", () => {
     expect(
       validateSessionsDispatchParams({
-        key: `ltfx.n.d5e3044ed97341ee4404.v1`,
+        key: "agent:main:dispatch",
         agentId: "main",
         profileId: "development",
       }),
     ).toBe(true);
-    expect(validateSessionsDispatchParams({ key: `ltfx.n.d5e3044ed97341ee4404.v1` })).toBe(false);
+    expect(validateSessionsDispatchParams({ key: "agent:main:dispatch" })).toBe(false);
     expect(
       validateSessionsDispatchParams({
-        key: `ltfx.n.d5e3044ed97341ee4404.v1`,
+        key: "agent:main:dispatch",
         profileId: "development",
         task: "run remotely",
       }),
@@ -61,10 +61,10 @@ describe("session dispatch protocol schemas", () => {
   });
 
   it("accepts only a session selector for worker reclaim", () => {
-    expect(validateSessionsReclaimParams({ key: `ltfx.n.d5e3044ed97341ee4404.v1`, agentId: "main" })).toBe(
+    expect(validateSessionsReclaimParams({ key: "agent:main:dispatch", agentId: "main" })).toBe(
       true,
     );
-    expect(validateSessionsReclaimParams({ key: `ltfx.n.d5e3044ed97341ee4404.v1`, profileId: "dev" })).toBe(
+    expect(validateSessionsReclaimParams({ key: "agent:main:dispatch", profileId: "dev" })).toBe(
       false,
     );
   });
@@ -251,7 +251,7 @@ describe("session dispatch protocol schemas", () => {
   it("rejects extra fields in dispatch params", () => {
     expect(
       validateSessionsDispatchParams({
-        key: `ltfx.n.d5e3044ed97341ee4404.v1`,
+        key: "agent:main:dispatch",
         profileId: "development",
         extra: true,
       }),

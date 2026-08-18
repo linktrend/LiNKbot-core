@@ -504,8 +504,8 @@ describe("buildCodexMigrationProvider", () => {
         auth_mode: "chatgpt",
         tokens: {
           access_token: accessToken,
-          refresh_token: `ltfx.n.6bd36f903f05d4f9b925.v1`,
-          id_token: `ltfx.n.26868be07b81deca87c2.v1`,
+          refresh_token: "refresh-test-token",
+          id_token: "id-test-token",
           account_id: "acct_test",
         },
       }),
@@ -589,7 +589,7 @@ describe("buildCodexMigrationProvider", () => {
         auth_mode: "chatgpt",
         tokens: {
           access_token: accessToken,
-          refresh_token: `ltfx.n.bc03bade9585997dc545.v1`,
+          refresh_token: "refresh-conflict-token",
           account_id: "acct_conflict",
         },
       }),
@@ -637,7 +637,7 @@ describe("buildCodexMigrationProvider", () => {
     const reportDir = path.join(fixture.root, "report");
     await writeFile(
       path.join(fixture.codexHome, "auth.json"),
-      JSON.stringify({ OPENAI_API_KEY: `ltfx.n.b9cee79a84c0fdebf954.v1` }),
+      JSON.stringify({ OPENAI_API_KEY: "sk-codex" }),
     );
     const configState: MigrationProviderContext["config"] = {
       agents: {
@@ -702,7 +702,7 @@ describe("buildCodexMigrationProvider", () => {
         auth_mode: "chatgpt",
         tokens: {
           access_token: plannedAccessToken,
-          refresh_token: `ltfx.n.61fd3db5ec0b8d2e1e31.v1`,
+          refresh_token: "refresh-planned-token",
           account_id: "acct_planned",
         },
       }),
@@ -737,7 +737,7 @@ describe("buildCodexMigrationProvider", () => {
         auth_mode: "chatgpt",
         tokens: {
           access_token: changedAccessToken,
-          refresh_token: `ltfx.n.e1094424bbfcb43b9223.v1`,
+          refresh_token: "refresh-changed-token",
           account_id: "acct_changed",
         },
       }),
@@ -776,7 +776,7 @@ describe("buildCodexMigrationProvider", () => {
         auth_mode: "chatgpt",
         tokens: {
           access_token: accessToken,
-          refresh_token: `ltfx.n.c25dd770d4fc22b837fd.v1`,
+          refresh_token: "refresh-new-token",
           account_id: "acct_new",
         },
       }),
@@ -859,7 +859,7 @@ describe("buildCodexMigrationProvider", () => {
         auth_mode: "chatgpt",
         tokens: {
           access_token: accessToken,
-          refresh_token: `ltfx.n.6bd36f903f05d4f9b925.v1`,
+          refresh_token: "refresh-test-token",
           account_id: "acct_test",
         },
       }),
@@ -918,7 +918,7 @@ describe("buildCodexMigrationProvider", () => {
         auth_mode: "chatgpt",
         tokens: {
           access_token: accessToken,
-          refresh_token: `ltfx.n.6bd36f903f05d4f9b925.v1`,
+          refresh_token: "refresh-test-token",
           account_id: "acct_test",
         },
       }),

@@ -18,7 +18,7 @@ function createTestContext(params?: {
       session: { dmScope: params?.dmScope ?? "main" },
     } as OpenClawConfig,
     accountId: "default",
-    botToken: `ltfx.n.87894fe048938b686cfb.v1`,
+    botToken: "xoxb-test",
     app: { client: params?.appClient ?? {} } as App,
     runtime: {} as RuntimeEnv,
     botUserId: "U_BOT",

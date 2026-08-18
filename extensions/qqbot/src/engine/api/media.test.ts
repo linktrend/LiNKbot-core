@@ -61,7 +61,7 @@ function mockTokenManager(): TokenManager {
   return tokenManager;
 }
 
-function expectGuardedDownload(url: (string)): void {
+function expectGuardedDownload(url: string): void {
   expect(fetchWithSsrFGuardMock).toHaveBeenCalledWith({
     url,
     maxRedirects: 0,
@@ -97,7 +97,7 @@ describe("MediaApi.uploadMedia direct URL uploads", () => {
         "c2c",
         "user-openid",
         fileType,
-        { appId: "app-id", clientSecret: `ltfx.n.fdce8e4a65b70d186bd7.v1` },
+        { appId: "app-id", clientSecret: "client-secret" },
         { url },
       );
 
@@ -137,7 +137,7 @@ describe("MediaApi.uploadMedia direct URL uploads", () => {
       "c2c",
       "user-openid",
       MediaFileType.IMAGE,
-      { appId: "app-id", clientSecret: `ltfx.n.fdce8e4a65b70d186bd7.v1` },
+      { appId: "app-id", clientSecret: "client-secret" },
       { url: "https://cdn.example.com/assets/photo.png" },
     );
 
@@ -157,7 +157,7 @@ describe("MediaApi.uploadMedia direct URL uploads", () => {
         "c2c",
         "user-openid",
         MediaFileType.IMAGE,
-        { appId: "app-id", clientSecret: `ltfx.n.fdce8e4a65b70d186bd7.v1` },
+        { appId: "app-id", clientSecret: "client-secret" },
         { url: "https://slow-dns.example.com/assets/photo.png" },
       );
       const rejection = expect(uploadPromise).rejects.toThrow(
@@ -189,7 +189,7 @@ describe("MediaApi.uploadMedia direct URL uploads", () => {
         "c2c",
         "user-openid",
         MediaFileType.IMAGE,
-        { appId: "app-id", clientSecret: `ltfx.n.fdce8e4a65b70d186bd7.v1` },
+        { appId: "app-id", clientSecret: "client-secret" },
         { url: "https://cdn.example.com/assets/slow.bin" },
       );
 
@@ -223,7 +223,7 @@ describe("MediaApi.uploadMedia direct URL uploads", () => {
       "c2c",
       "user-openid",
       MediaFileType.IMAGE,
-      { appId: "app-id", clientSecret: `ltfx.n.fdce8e4a65b70d186bd7.v1` },
+      { appId: "app-id", clientSecret: "client-secret" },
       { url: "https://cdn.example.com/assets/photo.png" },
     );
 
@@ -251,7 +251,7 @@ describe("MediaApi.uploadMedia direct URL uploads", () => {
       "c2c",
       "user-openid",
       MediaFileType.FILE,
-      { appId: "app-id", clientSecret: `ltfx.n.fdce8e4a65b70d186bd7.v1` },
+      { appId: "app-id", clientSecret: "client-secret" },
       { url: "https://cdn.example.com/report.pdf", fileName: "report.pdf" },
     );
 
@@ -280,8 +280,8 @@ describe("MediaApi.uploadMedia direct URL uploads", () => {
         "c2c",
         "user-openid",
         MediaFileType.IMAGE,
-        { appId: "app-id", clientSecret: `ltfx.n.fdce8e4a65b70d186bd7.v1` },
-        { url: `ltfx.n.d8b5bf9b9fd4760c6123.v1` },
+        { appId: "app-id", clientSecret: "client-secret" },
+        { url: "not a url" },
       ),
     ).rejects.toThrow("Direct-upload media URL must be a valid URL");
 
@@ -300,8 +300,8 @@ describe("MediaApi.uploadMedia direct URL uploads", () => {
         "c2c",
         "user-openid",
         MediaFileType.IMAGE,
-        { appId: "app-id", clientSecret: `ltfx.n.fdce8e4a65b70d186bd7.v1` },
-        { url: `ltfx.n.af5be434ad937d7a6318.v1` },
+        { appId: "app-id", clientSecret: "client-secret" },
+        { url: "ftp://media.qq.com/assets/photo.png" },
       ),
     ).rejects.toThrow("Direct-upload media URL must use HTTP or HTTPS");
 
@@ -323,7 +323,7 @@ describe("MediaApi.uploadMedia direct URL uploads", () => {
           "group",
           "group-openid",
           MediaFileType.IMAGE,
-          { appId: "app-id", clientSecret: `ltfx.n.fdce8e4a65b70d186bd7.v1` },
+          { appId: "app-id", clientSecret: "client-secret" },
           { url: `https://${host}/latest/meta-data/` },
         ),
       ).rejects.toThrow("Blocked hostname");
@@ -348,7 +348,7 @@ describe("MediaApi.uploadMedia direct URL uploads", () => {
         "group",
         "group-openid",
         MediaFileType.IMAGE,
-        { appId: "app-id", clientSecret: `ltfx.n.fdce8e4a65b70d186bd7.v1` },
+        { appId: "app-id", clientSecret: "client-secret" },
         { url: "https://attacker.example/latest/meta-data/" },
       ),
     ).rejects.toThrow("resolves to private");
@@ -368,7 +368,7 @@ describe("MediaApi.uploadMedia direct URL uploads", () => {
         "c2c",
         "user-openid",
         MediaFileType.IMAGE,
-        { appId: "app-id", clientSecret: `ltfx.n.fdce8e4a65b70d186bd7.v1` },
+        { appId: "app-id", clientSecret: "client-secret" },
         { url: "https://198.18.0.42/assets/photo.png" },
       ),
     ).rejects.toThrow("Blocked hostname");
@@ -387,7 +387,7 @@ describe("MediaApi.uploadMedia direct URL uploads", () => {
       "c2c",
       "user-openid",
       MediaFileType.IMAGE,
-      { appId: "app-id", clientSecret: `ltfx.n.fdce8e4a65b70d186bd7.v1` },
+      { appId: "app-id", clientSecret: "client-secret" },
       { url: "http://93.184.216.34/assets/photo.png" },
     );
 
@@ -403,7 +403,7 @@ describe("MediaApi.uploadMedia direct URL uploads", () => {
       "c2c",
       "user-openid",
       MediaFileType.IMAGE,
-      { appId: "app-id", clientSecret: `ltfx.n.fdce8e4a65b70d186bd7.v1` },
+      { appId: "app-id", clientSecret: "client-secret" },
       { url: "https://cdn.example.com/assets/photo.png" },
     );
 
@@ -438,7 +438,7 @@ describe("MediaApi.uploadMedia direct URL uploads", () => {
         "c2c",
         "user-openid",
         MediaFileType.IMAGE,
-        { appId: "app-id", clientSecret: `ltfx.n.fdce8e4a65b70d186bd7.v1` },
+        { appId: "app-id", clientSecret: "client-secret" },
         { url: "https://cdn.example.com/missing.png" },
       ),
     ).rejects.toThrow("Direct-upload media URL returned HTTP 404");

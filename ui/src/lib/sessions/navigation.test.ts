@@ -31,8 +31,8 @@ describe("resolveSessionNavigation", () => {
 
   it("hides cron sessions unless showCron opts in", () => {
     const rows: GatewaySessionRow[] = [
-      { key: `ltfx.n.d216654c043eeb5107fd.v1`, kind: "direct", updatedAt: 300 },
-      { key: `ltfx.n.a9962f073f1367711a46.v1`, kind: "cron", updatedAt: 200 },
+      { key: "agent:main:chat", kind: "direct", updatedAt: 300 },
+      { key: "agent:main:cron:job", kind: "cron", updatedAt: 200 },
     ];
 
     const hidden = resolveSessionNavigation({
@@ -57,9 +57,9 @@ describe("resolveSessionNavigation", () => {
   it("uses the caller's sort order before applying the recent-session projection", () => {
     const navigation = resolveSessionNavigation({
       result: sessionsResult([
-        { key: `ltfx.n.07e65dd09262c0180f2d.v1`, kind: "direct", updatedAt: 300 },
-        { key: `ltfx.n.2df0faec675ae257ce24.v1`, kind: "direct", updatedAt: 100 },
-        { key: `ltfx.n.e466aaa4413a7dfcad6c.v1`, kind: "direct", updatedAt: 200 },
+        { key: "agent:main:session-c", kind: "direct", updatedAt: 300 },
+        { key: "agent:main:session-a", kind: "direct", updatedAt: 100 },
+        { key: "agent:main:session-b", kind: "direct", updatedAt: 200 },
       ]),
       resultAgentId: "main",
       sessionKey: "agent:main:session-b",
@@ -76,8 +76,8 @@ describe("resolveSessionNavigation", () => {
 
   it("does not synthesize a session row for a catalog session key", () => {
     const rows = [
-      { key: `ltfx.n.203bfa62666eddfd5daa.v1`, kind: "direct" as const, updatedAt: 100 },
-      { key: `ltfx.n.b922d4b2b91d979ca0cb.v1`, kind: "direct" as const, updatedAt: 90 },
+      { key: "agent:main:recent-0", kind: "direct" as const, updatedAt: 100 },
+      { key: "agent:main:recent-1", kind: "direct" as const, updatedAt: 90 },
     ];
     const navigation = resolveSessionNavigation({
       result: sessionsResult(rows),
@@ -105,7 +105,7 @@ describe("resolveSessionNavigation", () => {
 
     expect(navigation.visibleSessions).toHaveLength(12);
     expect(navigation.visibleSessions[0]).toMatchObject({
-      key: `ltfx.n.f40e809055613deca0c2.v1`,
+      key: "agent:main:oldest",
       kind: "direct",
       updatedAt: null,
     });
@@ -141,7 +141,7 @@ describe("resolveSessionNavigation", () => {
     }));
     const navigation = resolveSessionNavigation({
       result: sessionsResult([
-        { key: `ltfx.n.d703be1624338242d72f.v1`, kind: "direct", updatedAt: 1_000 },
+        { key: "agent:main:recent", kind: "direct", updatedAt: 1_000 },
         ...pinnedSessions,
       ]),
       resultAgentId: "main",

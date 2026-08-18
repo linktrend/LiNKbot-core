@@ -178,7 +178,7 @@ extension UnreadTestTransportState {
 @MainActor
 struct ChatViewModelUnreadTests {
     @Test func `successful activation clears unread once`() async throws {
-        let transport = UnreadTestTransport(sessions: [self.entry(key: ("a"), unread: true)])
+        let transport = UnreadTestTransport(sessions: [self.entry(key: "a", unread: true)])
         let viewModel = self.viewModel(sessionKey: "a", transport: transport)
 
         viewModel.load()
@@ -193,7 +193,7 @@ struct ChatViewModelUnreadTests {
 
     @Test func `main alias refresh does not rearm unread clearing`() async throws {
         let transport = UnreadTestTransport(
-            sessions: [self.entry(key: ("ltfx.n.6061663aaea2ef525e43.v1"), unread: true)])
+            sessions: [self.entry(key: "agent:alpha:main", unread: true)])
         let viewModel = self.viewModel(
             sessionKey: "main",
             activeAgentID: "alpha",
@@ -209,14 +209,14 @@ struct ChatViewModelUnreadTests {
 
     @Test func `cold main alias mark unread shares canonical activation identity`() async throws {
         let transport = UnreadTestTransport(
-            sessions: [self.entry(key: ("ltfx.n.6061663aaea2ef525e43.v1"), unread: true)],
+            sessions: [self.entry(key: "agent:alpha:main", unread: true)],
             patchDelay: .milliseconds(50))
         let viewModel = self.viewModel(
             sessionKey: "main",
             activeAgentID: "alpha",
             transport: transport)
 
-        viewModel.setSessionUnread(key: ("main"), unread: true)
+        viewModel.setSessionUnread(key: "main", unread: true)
         viewModel.load()
         try await self.waitUntil { await transport.unreadPatchAttempts().count == 1 && !viewModel.isLoading }
 
@@ -227,7 +227,7 @@ struct ChatViewModelUnreadTests {
 
     @Test func `failed history does not clear unread`() async throws {
         let transport = UnreadTestTransport(
-            sessions: [self.entry(key: ("a"), unread: true)],
+            sessions: [self.entry(key: "a", unread: true)],
             historyFailures: 1)
         let viewModel = self.viewModel(sessionKey: "a", transport: transport)
 
@@ -241,8 +241,8 @@ struct ChatViewModelUnreadTests {
     @Test func `failed unread patch retries on next activation`() async throws {
         let transport = UnreadTestTransport(
             sessions: [
-                self.entry(key: ("a"), unread: true),
-                self.entry(key: ("b"), unread: false),
+                self.entry(key: "a", unread: true),
+                self.entry(key: "b", unread: false),
             ],
             patchFailures: 1)
         let viewModel = self.viewModel(sessionKey: "a", transport: transport)
@@ -262,19 +262,19 @@ struct ChatViewModelUnreadTests {
     @Test func `failed intermediate activation still rearms unread clearing`() async throws {
         let transport = UnreadTestTransport(
             sessions: [
-                self.entry(key: ("a"), unread: false),
-                self.entry(key: ("b"), unread: false),
+                self.entry(key: "a", unread: false),
+                self.entry(key: "b", unread: false),
             ],
             historyFailures: 1)
         let viewModel = self.viewModel(sessionKey: "a", transport: transport)
         viewModel.refreshSessions()
         try await self.waitUntil { viewModel.sessions.count == 2 }
 
-        viewModel.setSessionUnread(key: ("a"), unread: true)
+        viewModel.setSessionUnread(key: "a", unread: true)
         try await self.waitUntil { await transport.unreadPatchAttempts().count == 1 }
         await transport.setSessions([
-            self.entry(key: ("a"), unread: true),
-            self.entry(key: ("b"), unread: false),
+            self.entry(key: "a", unread: true),
+            self.entry(key: "b", unread: false),
         ])
         viewModel.switchSession(to: "b")
         try await self.waitUntil { viewModel.errorText != nil }
@@ -288,14 +288,14 @@ struct ChatViewModelUnreadTests {
 
     @Test func `explicit mark unread rearms automatic clearing`() async throws {
         let transport = UnreadTestTransport(sessions: [
-            self.entry(key: ("a"), unread: true),
-            self.entry(key: ("b"), unread: false),
+            self.entry(key: "a", unread: true),
+            self.entry(key: "b", unread: false),
         ])
         let viewModel = self.viewModel(sessionKey: "a", transport: transport)
 
         viewModel.load()
         try await self.waitUntil { await transport.unreadPatchAttempts().count == 1 }
-        viewModel.setSessionUnread(key: ("a"), unread: true)
+        viewModel.setSessionUnread(key: "a", unread: true)
         try await self.waitUntil { await transport.unreadPatchAttempts().count == 2 }
         viewModel.switchSession(to: "b")
         try await self.waitUntil { viewModel.sessionId == "session-b" }
@@ -308,18 +308,18 @@ struct ChatViewModelUnreadTests {
 
     @Test func `marking background session unread does not consume its activation`() async throws {
         let transport = UnreadTestTransport(sessions: [
-            self.entry(key: ("a"), unread: false),
-            self.entry(key: ("b"), unread: false),
+            self.entry(key: "a", unread: false),
+            self.entry(key: "b", unread: false),
         ])
         let viewModel = self.viewModel(sessionKey: "a", transport: transport)
         viewModel.refreshSessions()
         try await self.waitUntil { viewModel.sessions.count == 2 }
 
-        viewModel.setSessionUnread(key: ("b"), unread: true)
+        viewModel.setSessionUnread(key: "b", unread: true)
         try await self.waitUntil { await transport.unreadPatchAttempts().count == 1 }
         await transport.setSessions([
-            self.entry(key: ("a"), unread: false),
-            self.entry(key: ("b"), unread: true),
+            self.entry(key: "a", unread: false),
+            self.entry(key: "b", unread: true),
         ])
         viewModel.switchSession(to: "b")
         try await self.waitUntil { await transport.unreadPatchAttempts().count == 2 }
@@ -333,12 +333,12 @@ struct ChatViewModelUnreadTests {
         let transport = UnreadTestTransport(sessions: [])
         let viewModel = self.viewModel(sessionKey: "a", transport: transport)
 
-        viewModel.setSessionUnread(key: ("hidden"), unread: false)
+        viewModel.setSessionUnread(key: "hidden", unread: false)
         try await self.waitUntil {
-            viewModel.unreadPatchGuard.confirmedUnread(key: ("hidden")) == false
+            viewModel.unreadPatchGuard.confirmedUnread(key: "hidden") == false
         }
 
-        #expect(viewModel.unreadPatchGuard.confirmedUnread(key: ("hidden")) == false)
+        #expect(viewModel.unreadPatchGuard.confirmedUnread(key: "hidden") == false)
     }
 
     @Test func `failed route lease preserves mutation queue ordering`() async throws {
@@ -379,9 +379,9 @@ struct ChatViewModelUnreadTests {
 
     @Test func `activation clears selected session outside refresh page`() async throws {
         let recent = (0..<50).map { index in
-            self.entry(key: ("recent-\(index)"), unread: false, updatedAt: Double(100 - index))
+            self.entry(key: "recent-\(index)", unread: false, updatedAt: Double(100 - index))
         }
-        let selected = self.entry(key: ("old"), unread: true, updatedAt: 1)
+        let selected = self.entry(key: "old", unread: true, updatedAt: 1)
         let transport = UnreadTestTransport(
             sessions: recent + [selected],
             respectsListLimit: true)
@@ -400,8 +400,8 @@ struct ChatViewModelUnreadTests {
     @Test func `failed unread patch refreshes authoritative session state`() async throws {
         let transport = UnreadTestTransport(
             sessions: [
-                self.entry(key: ("a"), unread: true),
-                self.entry(key: ("b"), unread: false),
+                self.entry(key: "a", unread: true),
+                self.entry(key: "b", unread: false),
             ],
             patchFailures: 1,
             patchDelay: .milliseconds(50))
@@ -409,11 +409,11 @@ struct ChatViewModelUnreadTests {
         viewModel.refreshSessions()
         try await self.waitUntil { viewModel.sessions.count == 2 }
         await transport.setSessions([
-            self.entry(key: ("a"), unread: true),
-            self.entry(key: ("b"), unread: false, pinned: true),
+            self.entry(key: "a", unread: true),
+            self.entry(key: "b", unread: false, pinned: true),
         ])
 
-        viewModel.setSessionUnread(key: ("a"), unread: false)
+        viewModel.setSessionUnread(key: "a", unread: false)
         let otherIndex = try #require(viewModel.sessions.firstIndex(where: { $0.key == "b" }))
         viewModel.sessions[otherIndex].pinned = true
         try await self.waitUntil { viewModel.errorText != nil }
@@ -425,13 +425,13 @@ struct ChatViewModelUnreadTests {
 
     @Test func `mark unread wins over an older activation read`() async throws {
         let transport = UnreadTestTransport(
-            sessions: [self.entry(key: ("a"), unread: true)],
+            sessions: [self.entry(key: "a", unread: true)],
             patchDelay: .milliseconds(50))
         let viewModel = self.viewModel(sessionKey: "a", transport: transport)
 
         viewModel.load()
         try await self.waitUntil { await transport.unreadPatchStartCount() == 1 }
-        viewModel.setSessionUnread(key: ("a"), unread: true)
+        viewModel.setSessionUnread(key: "a", unread: true)
         try await self.waitUntil { await transport.unreadPatchAttempts().count == 2 }
 
         let attempts = await transport.unreadPatchAttempts()
@@ -441,16 +441,16 @@ struct ChatViewModelUnreadTests {
 
     @Test func `stale list does not undo pending explicit unread`() async throws {
         let transport = UnreadTestTransport(
-            sessions: [self.entry(key: ("a"), unread: false)],
+            sessions: [self.entry(key: "a", unread: false)],
             patchDelay: .milliseconds(50))
         let viewModel = self.viewModel(sessionKey: "a", transport: transport)
         viewModel.refreshSessions()
         try await self.waitUntil { viewModel.sessions.count == 1 }
 
-        viewModel.setSessionUnread(key: ("a"), unread: true)
+        viewModel.setSessionUnread(key: "a", unread: true)
         viewModel.refreshSessions()
         try await self.waitUntil { await transport.unreadPatchAttempts().count == 1 }
-        await transport.setSessions([self.entry(key: ("a"), unread: true)])
+        await transport.setSessions([self.entry(key: "a", unread: true)])
         viewModel.load()
         try await self.waitUntil { !viewModel.isLoading && viewModel.sessionId == "session-a" }
 
@@ -461,35 +461,35 @@ struct ChatViewModelUnreadTests {
     @Test func `pending explicit unread overlays stale list until fresh observation`() async throws {
         let transport = UnreadTestTransport(
             sessions: [
-                self.entry(key: ("a"), unread: false),
-                self.entry(key: ("b"), unread: false),
+                self.entry(key: "a", unread: false),
+                self.entry(key: "b", unread: false),
             ],
             patchDelay: .milliseconds(200))
         let viewModel = self.viewModel(sessionKey: "b", transport: transport)
         viewModel.refreshSessions()
         try await self.waitUntil { viewModel.sessions.count == 2 }
 
-        viewModel.setSessionUnread(key: ("a"), unread: true)
+        viewModel.setSessionUnread(key: "a", unread: true)
         try await self.waitUntil { await transport.unreadPatchStartCount() == 1 }
         viewModel.refreshSessions()
         try await self.waitUntil { await transport.listCallCount() >= 2 }
 
         #expect(viewModel.sessions.first(where: { $0.key == "a" })?.unread == true)
-        #expect(viewModel.unreadPatchGuard.localUnreadOverride(key: ("a")) == true)
+        #expect(viewModel.unreadPatchGuard.localUnreadOverride(key: "a") == true)
 
         await transport.setSessions([
-            self.entry(key: ("a"), unread: true),
-            self.entry(key: ("b"), unread: false),
+            self.entry(key: "a", unread: true),
+            self.entry(key: "b", unread: false),
         ])
         let listCallCount = await transport.listCallCount()
         try await self.waitUntil { await transport.unreadPatchAttempts().count == 1 }
         try await self.waitUntil {
             await transport.listCallCount() > listCallCount &&
-                viewModel.unreadPatchGuard.localUnreadOverride(key: ("a")) == nil
+                viewModel.unreadPatchGuard.localUnreadOverride(key: "a") == nil
         }
 
-        #expect(viewModel.unreadPatchGuard.localUnreadOverride(key: ("a")) == nil)
-        #expect(viewModel.unreadPatchGuard.confirmedUnread(key: ("a")) == true)
+        #expect(viewModel.unreadPatchGuard.localUnreadOverride(key: "a") == nil)
+        #expect(viewModel.unreadPatchGuard.confirmedUnread(key: "a") == true)
         #expect(viewModel.sessions.first(where: { $0.key == "a" })?.unread == true)
     }
 

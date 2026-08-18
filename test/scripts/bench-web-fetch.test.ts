@@ -10,7 +10,7 @@ function runBenchWebFetch(...args: string[]) {
     encoding: "utf8",
     env: {
       ...process.env,
-      FIRECRAWL_API_KEY: `ltfx.n.46c1071b25437452546d.v1`,
+      FIRECRAWL_API_KEY: "test-firecrawl-key-that-should-be-ignored",
       NODE_NO_WARNINGS: "1",
     },
   });

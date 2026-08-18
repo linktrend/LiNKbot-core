@@ -21,7 +21,7 @@ active reasoning model for long-context agentic work.
   </Step>
   <Step title="Export the key and run onboarding">
     ```bash
-    export NVIDIA_API_KEY="${ltfx.n.92f393e3299f5feb4c06.v1}"
+    export NVIDIA_API_KEY="nvapi-..."
     openclaw onboard --auth-choice nvidia-api-key
     ```
   </Step>
@@ -47,7 +47,7 @@ openclaw onboard --auth-choice nvidia-api-key --nvidia-api-key "nvapi-..."
 
 ```json5
 {
-  env: { NVIDIA_API_KEY: "${ltfx.n.92f393e3299f5feb4c06.v1}" },
+  env: { NVIDIA_API_KEY: "nvapi-..." },
   models: {
     providers: {
       nvidia: {

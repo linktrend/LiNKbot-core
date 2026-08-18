@@ -356,7 +356,7 @@ function buildDmPolicyDependencyWarning(params: {
 // Channel map keys that are not channels and must be skipped while scanning DM policy.
 const DM_POLICY_PSEUDO_CHANNEL_KEYS = new Set(["defaults", "modelByChannel", "tools"]);
 
-function hasDefinedConfigValue(record: Record<string, unknown>, key: (string)): boolean {
+function hasDefinedConfigValue(record: Record<string, unknown>, key: string): boolean {
   return Object.hasOwn(record, key) && record[key] !== undefined;
 }
 

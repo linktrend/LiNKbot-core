@@ -8,7 +8,7 @@ export function parsePairingString(raw: unknown): {
   gatewayUrl?: string;
 } | null;
 
-export function buildRelayWsProtocols(token: (string)): string[];
+export function buildRelayWsProtocols(token: string): string[];
 
 export function reconnectDelayMs(attempt: number): number;
 

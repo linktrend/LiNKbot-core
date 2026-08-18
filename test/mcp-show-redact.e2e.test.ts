@@ -14,11 +14,11 @@ import {
 const E2E_TIMEOUT_MS = 180_000;
 const CHAT_FINAL_TIMEOUT_MS = 45_000;
 
-const HEADER_SECRET = `ltfx.n.7482c5c61d8e28abe600.v1`;
-const ENV_SECRET = `ltfx.n.07eae6b772d2cf71be4c.v1`;
-const ARG_SECRET = `ltfx.n.7d3957f0ace7f400870e.v1`;
-const ARG_INLINE_SECRET = `ltfx.n.9cdbbed2fbe65b8787c0.v1`;
-const ARG_POSITIONAL_SECRET = `ltfx.n.0c813f4b6f592023ffeb.v1`;
+const HEADER_SECRET = "Bearer e2e-live-mcp-header-secret-value";
+const ENV_SECRET = "e2e-live-mcp-env-secret-value";
+const ARG_SECRET = "e2e-live-mcp-argv-secret-value";
+const ARG_INLINE_SECRET = "e2e-live-mcp-inline-argv-secret-value";
+const ARG_POSITIONAL_SECRET = "ghp_e2elivemcpargvtoken1234567890ABCD";
 const SERVER_NAME = "billing-server";
 
 type ChatEventPayload = {
@@ -118,7 +118,7 @@ describe("mcp show redaction e2e", () => {
                 command: "uvx",
                 args: ["local-mcp"],
                 env: {
-                  TOOL_API_KEY: `ltfx.n.d6b5e0d590213ace670b.v1`,
+                  TOOL_API_KEY: "second-env-secret-value",
                 },
               },
             },

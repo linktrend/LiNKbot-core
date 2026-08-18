@@ -45,8 +45,8 @@ describe("sendSlackMessage blocks", () => {
       "channel:C123",
       "Pipeline summary\n\nPipeline (table)\n- Account: Acme; ARR: 125000",
       {
-        cfg: { channels: { slack: { botToken: `ltfx.n.87894fe048938b686cfb.v1` } } },
-        token: `ltfx.n.87894fe048938b686cfb.v1`,
+        cfg: { channels: { slack: { botToken: "xoxb-test" } } },
+        token: "xoxb-test",
         client,
         blocks,
         nativeDataFallbackBaseText: "Pipeline summary",
@@ -72,7 +72,7 @@ describe("editSlackMessage blocks", () => {
     const text = "a".repeat(SLACK_TEXT_LIMIT + 500);
 
     await editSlackMessage("C123", "171234.567", text, {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       client,
     });
 
@@ -87,7 +87,7 @@ describe("editSlackMessage blocks", () => {
     const client = createSlackEditTestClient();
 
     await editSlackMessage("C123", "171234.567", "", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       client,
     });
 
@@ -102,7 +102,7 @@ describe("editSlackMessage blocks", () => {
     const client = createSlackEditTestClient();
 
     await editSlackMessage("C123", "171234.567", "", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       client,
       blocks: [{ type: "divider" }],
     });
@@ -119,7 +119,7 @@ describe("editSlackMessage blocks", () => {
     const client = createSlackEditTestClient();
 
     await editSlackMessage("C123", "171234.567", "", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       client,
       blocks: [{ type: "image", image_url: "https://example.com/a.png", alt_text: "Chart" }],
     });
@@ -136,7 +136,7 @@ describe("editSlackMessage blocks", () => {
     const client = createSlackEditTestClient();
 
     await editSlackMessage("C123", "171234.567", "", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       client,
       blocks: [
         {
@@ -169,7 +169,7 @@ describe("editSlackMessage blocks", () => {
     const client = createSlackEditTestClient();
 
     await editSlackMessage("C123", "171234.567", "", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       client,
       blocks: [{ type: "file", source: "remote", external_id: "F123" }],
     });
@@ -201,7 +201,7 @@ describe("editSlackMessage blocks", () => {
     ];
 
     await editSlackMessage("C123", "171234.567", "Overview", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       client,
       blocks,
     });
@@ -266,7 +266,7 @@ describe("editSlackMessage blocks", () => {
       "Overview\n\nPipeline report (table)\nAccount\tARR\nAcme\t$125k\nGlobex\t$82k";
 
     await editSlackMessage("C123", "171234.567", "Overview", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       client,
       blocks,
     });
@@ -313,7 +313,7 @@ describe("editSlackMessage blocks", () => {
 
     await expect(
       editSlackMessage("C123", "171234.567", "", {
-        token: `ltfx.n.87894fe048938b686cfb.v1`,
+        token: "xoxb-test",
         client,
         blocks,
       }),
@@ -343,7 +343,7 @@ describe("editSlackMessage blocks", () => {
 
     await expect(
       editSlackMessage("C123", "171234.567", "", {
-        token: `ltfx.n.87894fe048938b686cfb.v1`,
+        token: "xoxb-test",
         client,
         blocks,
       }),
@@ -366,7 +366,7 @@ describe("editSlackMessage blocks", () => {
     ];
 
     await editSlackMessage("C123", "171234.567", "", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       client,
       blocks,
     });
@@ -385,7 +385,7 @@ describe("editSlackMessage blocks", () => {
 
     await expect(
       editSlackMessage("C123", "171234.567", "updated", {
-        token: `ltfx.n.87894fe048938b686cfb.v1`,
+        token: "xoxb-test",
         client,
         blocks: [],
       }),
@@ -399,7 +399,7 @@ describe("editSlackMessage blocks", () => {
 
     await expect(
       editSlackMessage("C123", "171234.567", "updated", {
-        token: `ltfx.n.87894fe048938b686cfb.v1`,
+        token: "xoxb-test",
         client,
         blocks: [{} as { type: string }],
       }),
@@ -414,7 +414,7 @@ describe("editSlackMessage blocks", () => {
 
     await expect(
       editSlackMessage("C123", "171234.567", "updated", {
-        token: `ltfx.n.87894fe048938b686cfb.v1`,
+        token: "xoxb-test",
         client,
         blocks,
       }),
@@ -438,7 +438,7 @@ describe("editSlackMessage blocks", () => {
 
     await expect(
       editSlackMessage("C123", "171234.567", "Overview", {
-        token: `ltfx.n.87894fe048938b686cfb.v1`,
+        token: "xoxb-test",
         client,
         blocks,
       }),

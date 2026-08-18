@@ -413,7 +413,7 @@ candidate contains a redacted secret placeholder such as `***` or `[redacted]`.
     {
       hooks: {
         enabled: true,
-        token: "${ltfx.n.d3046ecc8dd3242adf62.v1}",
+        token: "shared-secret",
         path: "/hooks",
         defaultSessionKey: "hook:ingress",
         allowRequestSessionKey: false,
@@ -626,7 +626,7 @@ Neither file overrides existing env vars. You can also set inline env vars in co
 ```json5
 {
   env: {
-    OPENROUTER_API_KEY: "${ltfx.n.51efae34cc35ebb820a0.v1}",
+    OPENROUTER_API_KEY: "sk-or-...",
     vars: { GROQ_API_KEY: "gsk-..." },
   },
 }

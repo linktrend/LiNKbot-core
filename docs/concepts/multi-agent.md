@@ -325,11 +325,11 @@ Channels supporting multiple accounts: `discord`, `feishu`, `googlechat`, `imess
         telegram: {
           accounts: {
             default: {
-              botToken: "${ltfx.n.c8c8ce6708b3c01c43ba.v1}",
+              botToken: "123456:ABC...",
               dmPolicy: "pairing",
             },
             alerts: {
-              botToken: "${ltfx.n.60895fafdbe4749476ac.v1}",
+              botToken: "987654:XYZ...",
               dmPolicy: "allowlist",
               allowFrom: ["tg:123456789"],
             },

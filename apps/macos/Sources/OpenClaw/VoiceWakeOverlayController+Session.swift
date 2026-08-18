@@ -42,7 +42,7 @@ extension VoiceWakeOverlayController {
         guard self.guardToken(token, context: "partial") else { return }
         guard !self.model.isFinal else { return }
         let message = """
-        overlay partial token=(\(token.uuidString) \)
+        overlay partial token=\(token.uuidString) \
         len=\(transcript.count)
         """
         self.logger.log(level: .info, "\(message)")
@@ -68,7 +68,7 @@ extension VoiceWakeOverlayController {
     {
         guard self.guardToken(token, context: "final") else { return }
         let message = """
-        overlay presentFinal token=(\(token.uuidString) \)
+        overlay presentFinal token=\(token.uuidString) \
         len=\(transcript.count) \
         autoSendAfter=\(delay ?? -1) \
         forwardEnabled=\(!transcript.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
@@ -86,7 +86,7 @@ extension VoiceWakeOverlayController {
         self.present()
         if let delay {
             if delay <= 0 {
-                self.logger.log(level: .info, "overlay autoSend immediate token=(\(token.uuidString)"))
+                self.logger.log(level: .info, "overlay autoSend immediate token=\(token.uuidString)")
                 VoiceSessionCoordinator.shared.sendNow(token: token, reason: "autoSendImmediate")
             } else {
                 self.scheduleAutoSend(token: token, after: delay)
@@ -124,7 +124,7 @@ extension VoiceWakeOverlayController {
         self.autoSendTask?.cancel()
         self.autoSendToken = nil
         let message = """
-        overlay beginSendUI token=(\(token.uuidString) \)
+        overlay beginSendUI token=\(token.uuidString) \
         isSending=\(self.model.isSending) \
         forwardEnabled=\(self.model.forwardEnabled) \
         textLen=\(self.model.text.count)
@@ -143,7 +143,7 @@ extension VoiceWakeOverlayController {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.28) {
             self.logger.log(
                 level: .info,
-                "overlay beginSendUI dismiss ticking token=(\(self.activeToken?.uuidString ?? "nil")"))
+                "overlay beginSendUI dismiss ticking token=\(self.activeToken?.uuidString ?? "nil")")
             self.dismiss(token: token, reason: .explicit, outcome: .sent)
         }
     }
@@ -157,7 +157,7 @@ extension VoiceWakeOverlayController {
     func dismiss(token: UUID? = nil, reason: DismissReason = .explicit, outcome: SendOutcome = .empty) {
         guard self.guardToken(token, context: "dismiss") else { return }
         let message = """
-        overlay dismiss token=(\(self.activeToken?.uuidString ?? "nil") \)
+        overlay dismiss token=\(self.activeToken?.uuidString ?? "nil") \
         reason=\(String(describing: reason)) \
         outcome=\(String(describing: outcome)) \
         visible=\(self.model.isVisible) \
@@ -209,7 +209,7 @@ extension VoiceWakeOverlayController {
                     AppStateStore.shared.celebrateSend()
                 }
                 AppStateStore.shared.stopVoiceEars()
-                VoiceSessionCoordinator.shared.overlayDidDismiss(token: (dismissedToken))
+                VoiceSessionCoordinator.shared.overlayDidDismiss(token: dismissedToken)
             }
         }
     }
@@ -254,7 +254,7 @@ extension VoiceWakeOverlayController {
         self.logger.log(
             level: .info,
             """
-            overlay scheduleAutoSend token=(\(token.uuidString) \)
+            overlay scheduleAutoSend token=\(token.uuidString) \
             after=\(delay)
             """)
         self.autoSendTask?.cancel()
@@ -268,7 +268,7 @@ extension VoiceWakeOverlayController {
                 guard self.guardToken(token, context: "autoSend") else { return }
                 self.logger.log(
                     level: .info,
-                    "overlay autoSend firing token=(\(token.uuidString, privacy: .public)"))
+                    "overlay autoSend firing token=\(token.uuidString, privacy: .public)")
                 VoiceSessionCoordinator.shared.sendNow(token: token, reason: "autoSendDelay")
                 self.autoSendTask = nil
             }

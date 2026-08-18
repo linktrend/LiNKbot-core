@@ -87,7 +87,7 @@ read -r -d '' LIVE_TEST_CMD <<'EOF' || true
 set -euo pipefail
 [ -f "$HOME/.profile" ] && [ -r "$HOME/.profile" ] && source "$HOME/.profile" || true
 if [ -n "${OPENCLAW_DOCKER_LIVE_OPENAI_API_KEY:-}" ]; then
-  export OPENAI_API_KEY="${ltfx.n.048084d836a3145f1b5a.v1}"
+  export OPENAI_API_KEY="$OPENCLAW_DOCKER_LIVE_OPENAI_API_KEY"
   unset OPENCLAW_DOCKER_LIVE_OPENAI_API_KEY
 fi
 if [ -n "${OPENCLAW_DOCKER_LIVE_OPENAI_BASE_URL:-}" ]; then
@@ -95,11 +95,11 @@ if [ -n "${OPENCLAW_DOCKER_LIVE_OPENAI_BASE_URL:-}" ]; then
   unset OPENCLAW_DOCKER_LIVE_OPENAI_BASE_URL
 fi
 if [ -n "${OPENCLAW_DOCKER_LIVE_GEMINI_API_KEY:-}" ]; then
-  export GEMINI_API_KEY="${ltfx.n.151a7912c2fd03611ea9.v1}"
+  export GEMINI_API_KEY="$OPENCLAW_DOCKER_LIVE_GEMINI_API_KEY"
   unset OPENCLAW_DOCKER_LIVE_GEMINI_API_KEY
 fi
 if [ -n "${OPENCLAW_DOCKER_LIVE_GOOGLE_API_KEY:-}" ]; then
-  export GOOGLE_API_KEY="${ltfx.n.2ead6369620046d6367e.v1}"
+  export GOOGLE_API_KEY="$OPENCLAW_DOCKER_LIVE_GOOGLE_API_KEY"
   unset OPENCLAW_DOCKER_LIVE_GOOGLE_API_KEY
 fi
 export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"

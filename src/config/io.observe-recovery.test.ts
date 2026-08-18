@@ -319,7 +319,7 @@ describe("config observe recovery", () => {
         meta: { lastTouchedAt: "2026-04-22T00:00:00.000Z" },
         update: { channel: "beta" },
         browser: { enabled: true },
-        gateway: { mode: "local", auth: { mode: "token", token: `ltfx.n.930bbdc51b6aed5c2a56.v1` } },
+        gateway: { mode: "local", auth: { mode: "token", token: "secret-token" } },
         channels: { discord: { enabled: true, dmPolicy: "pairing" } },
       });
       await writeClobberedUpdateChannel(configPath);
@@ -1075,7 +1075,7 @@ describe("config observe recovery", () => {
     await withSuiteHome(async (home) => {
       const { deps, configPath, auditPath, warn } = makeDeps(home);
       const snapshot = await makeSnapshot(configPath, {
-        gateway: { mode: "local", auth: { mode: "token", token: `ltfx.n.930bbdc51b6aed5c2a56.v1` } },
+        gateway: { mode: "local", auth: { mode: "token", token: "secret-token" } },
         channels: { discord: { enabled: true, dmPolicy: "pairing" } },
       });
 
@@ -1135,7 +1135,7 @@ describe("config observe recovery", () => {
     await withSuiteHome(async (home) => {
       const { deps, configPath, warn } = makeDeps(home);
       const snapshot = await makeSnapshot(configPath, {
-        gateway: { mode: "local", auth: { mode: "token", token: `ltfx.n.930bbdc51b6aed5c2a56.v1` } },
+        gateway: { mode: "local", auth: { mode: "token", token: "secret-token" } },
         channels: { discord: { enabled: true, dmPolicy: "pairing" } },
       });
       await expect(

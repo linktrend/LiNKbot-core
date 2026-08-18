@@ -25,7 +25,7 @@ describe("gradium speech provider", () => {
   it("reports configured when GRADIUM_API_KEY is set", () => {
     const original = process.env.GRADIUM_API_KEY;
     try {
-      process.env.GRADIUM_API_KEY = `ltfx.n.8f1c6e511c4e21b9fbea.v1`;
+      process.env.GRADIUM_API_KEY = "gsk_test";
       expect(provider.isConfigured({ providerConfig: {}, timeoutMs: 5_000 })).toBe(true);
     } finally {
       if (original === undefined) {
@@ -79,7 +79,7 @@ describe("gradium speech provider", () => {
     const result = await provider.synthesize({
       text: "OpenClaw test",
       cfg: {} as never,
-      providerConfig: { apiKey: `ltfx.n.c57eb6dc9976662fc234.v1` },
+      providerConfig: { apiKey: "gsk_test123" },
       target: "audio-file",
       timeoutMs: 30_000,
     });
@@ -112,7 +112,7 @@ describe("gradium speech provider", () => {
       provider.synthesize({
         text: "OpenClaw test",
         cfg: {} as never,
-        providerConfig: { apiKey: `ltfx.n.c57eb6dc9976662fc234.v1`, baseUrl: "https://example.com" },
+        providerConfig: { apiKey: "gsk_test123", baseUrl: "https://example.com" },
         target: "audio-file",
         timeoutMs: 30_000,
       }),
@@ -129,7 +129,7 @@ describe("gradium speech provider", () => {
     const result = await provider.synthesize({
       text: "Voice note test",
       cfg: {} as never,
-      providerConfig: { apiKey: `ltfx.n.c57eb6dc9976662fc234.v1` },
+      providerConfig: { apiKey: "gsk_test123" },
       target: "voice-note",
       timeoutMs: 30_000,
     });
@@ -158,7 +158,7 @@ describe("gradium speech provider", () => {
             },
           },
         } as never,
-        providerConfig: { apiKey: `ltfx.n.c57eb6dc9976662fc234.v1` },
+        providerConfig: { apiKey: "gsk_test123" },
         target: "audio-file",
         timeoutMs: 30_000,
       }),
@@ -177,7 +177,7 @@ describe("gradium speech provider", () => {
     const result = await synthesizeTelephony({
       text: "Telephony test",
       cfg: {} as never,
-      providerConfig: { apiKey: `ltfx.n.c57eb6dc9976662fc234.v1`, voiceId: "default-voice" },
+      providerConfig: { apiKey: "gsk_test123", voiceId: "default-voice" },
       providerOverrides: { voiceId: "override-voice" },
       timeoutMs: 30_000,
     });

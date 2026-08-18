@@ -2080,7 +2080,7 @@ describe("resolveGatewayStartupPluginIds", () => {
         config: {
           channels: {
             "demo-channel": {
-              token: `ltfx.n.20158224750041d653cd.v1`,
+              token: "configured",
             },
           },
           plugins: {
@@ -2097,7 +2097,7 @@ describe("resolveGatewayStartupPluginIds", () => {
       config: {
         channels: {
           "demo-channel": {
-            token: `ltfx.n.20158224750041d653cd.v1`,
+            token: "configured",
           },
         },
         plugins: {
@@ -2118,7 +2118,7 @@ describe("resolveGatewayStartupPluginIds", () => {
         config: {
           channels: {
             "demo-channel": {
-              token: `ltfx.n.20158224750041d653cd.v1`,
+              token: "configured",
             },
           },
           plugins: {
@@ -2404,7 +2404,7 @@ describe("resolveGatewayStartupPluginIds", () => {
         config: {
           channels: {
             "demo-channel": {
-              token: `ltfx.n.20158224750041d653cd.v1`,
+              token: "configured",
             },
           },
           plugins: {
@@ -2585,7 +2585,7 @@ describe("resolveGatewayStartupPluginIds", () => {
         config: {
           channels: {
             "demo-channel": {
-              token: `ltfx.n.20158224750041d653cd.v1`,
+              token: "configured",
             },
           },
           plugins: {
@@ -2684,7 +2684,7 @@ describe("resolveGatewayStartupPluginIds", () => {
       config: {
         channels: {
           "demo-channel": {
-            token: `ltfx.n.20158224750041d653cd.v1`,
+            token: "configured",
           },
         },
       } as OpenClawConfig,
@@ -2706,7 +2706,7 @@ describe("resolveGatewayStartupPluginIds", () => {
       config: {
         channels: {
           "demo-channel": {
-            token: `ltfx.n.20158224750041d653cd.v1`,
+            token: "configured",
           },
         },
         plugins: {
@@ -3141,7 +3141,7 @@ describe("resolveConfiguredChannelPluginIds", () => {
         config: {
           channels: {
             "demo-channel": {
-              token: `ltfx.n.20158224750041d653cd.v1`,
+              token: "configured",
             },
           },
           plugins: {
@@ -3409,7 +3409,7 @@ describe("listConfiguredChannelIdsForReadOnlyScope", () => {
       channels: {
         "demo-channel": {
           enabled: false,
-          token: `ltfx.n.7d19b716b1e5083012f0.v1`,
+          token: "stale-token",
         },
       },
     } as OpenClawConfig;
@@ -3443,7 +3443,7 @@ describe("listConfiguredChannelIdsForReadOnlyScope", () => {
       channels: {
         "Demo-Channel": {
           enabled: false,
-          token: `ltfx.n.7d19b716b1e5083012f0.v1`,
+          token: "stale-token",
         },
       },
       plugins: {
@@ -3561,7 +3561,7 @@ describe("listConfiguredChannelIdsForReadOnlyScope", () => {
     const config = {
       channels: {
         "demo-channel": {
-          token: `ltfx.n.20158224750041d653cd.v1`,
+          token: "configured",
         },
       },
       plugins: {
@@ -3606,7 +3606,7 @@ describe("listConfiguredChannelIdsForReadOnlyScope", () => {
         config: {
           channels: {
             "demo-channel": {
-              token: `ltfx.n.20158224750041d653cd.v1`,
+              token: "configured",
             },
           },
         } as OpenClawConfig,
@@ -3628,7 +3628,7 @@ describe("listConfiguredChannelIdsForReadOnlyScope", () => {
         config: {
           channels: {
             "demo-channel": {
-              token: `ltfx.n.20158224750041d653cd.v1`,
+              token: "configured",
             },
           },
           plugins: {
@@ -3646,7 +3646,7 @@ describe("listConfiguredChannelIdsForReadOnlyScope", () => {
         config: {
           channels: {
             "demo-channel": {
-              token: `ltfx.n.20158224750041d653cd.v1`,
+              token: "configured",
             },
           },
           plugins: {
@@ -3668,7 +3668,7 @@ describe("listConfiguredChannelIdsForReadOnlyScope", () => {
             model: "sonnet-4.6",
           },
           "demo-channel": {
-            token: `ltfx.n.20158224750041d653cd.v1`,
+            token: "configured",
           },
           "demo-other-channel": {
             enabled: false,
@@ -3690,7 +3690,7 @@ describe("listConfiguredChannelIdsForReadOnlyScope", () => {
           channels: {
             "Demo-Channel": {
               enabled: false,
-              token: `ltfx.n.7d19b716b1e5083012f0.v1`,
+              token: "stale-token",
             },
           },
           plugins: {
@@ -3721,7 +3721,7 @@ describe("listConfiguredChannelIdsForReadOnlyScope", () => {
         config: {
           channels: {
             "demo-other-channel": {
-              token: `ltfx.n.20158224750041d653cd.v1`,
+              token: "configured",
             },
           },
           plugins: {
@@ -3742,7 +3742,7 @@ describe("listConfiguredChannelIdsForReadOnlyScope", () => {
         config: {
           channels: {
             clickclack: {
-              token: `ltfx.n.20158224750041d653cd.v1`,
+              token: "configured",
             },
           },
         } as OpenClawConfig,
@@ -3756,7 +3756,7 @@ describe("listConfiguredChannelIdsForReadOnlyScope", () => {
     const ownerlessChannelConfig = {
       channels: {
         clickclack: {
-          token: `ltfx.n.20158224750041d653cd.v1`,
+          token: "configured",
         },
       },
     } as OpenClawConfig;
@@ -3822,7 +3822,7 @@ describe("listConfiguredChannelIdsForReadOnlyScope", () => {
     const baseConfig = {
       channels: {
         "demo-channel": {
-          token: `ltfx.n.20158224750041d653cd.v1`,
+          token: "configured",
         },
       },
     } as OpenClawConfig;
@@ -3877,7 +3877,7 @@ describe("listConfiguredChannelIdsForReadOnlyScope", () => {
         config: {
           channels: {
             shared: {
-              token: `ltfx.n.20158224750041d653cd.v1`,
+              token: "configured",
             },
           },
           plugins: {

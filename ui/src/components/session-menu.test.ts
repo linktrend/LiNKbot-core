@@ -245,7 +245,7 @@ describe("session menu", () => {
       menu.querySelectorAll<HTMLButtonElement>(".session-menu__icon-choice"),
     );
     expect(document.activeElement).toBe(choices[0]);
-    choices[0]?.dispatchEvent(new KeyboardEvent("keydown", { key: `ltfx.n.8e2f7ffbbdb947d813f9.v1`, bubbles: true }));
+    choices[0]?.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true }));
     expect(document.activeElement).toBe(choices[1]);
   });
 

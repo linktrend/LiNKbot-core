@@ -14,7 +14,7 @@ vi.mock("node:crypto", async () => {
 
 type PairingTokenModule = typeof import("./pairing-token.js");
 
-let generatePairingToken: (PairingTokenModule["generatePairingToken"];)
+let generatePairingToken: PairingTokenModule["generatePairingToken"];
 let verifyPairingToken: PairingTokenModule["verifyPairingToken"];
 
 beforeAll(async () => {

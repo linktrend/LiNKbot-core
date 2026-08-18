@@ -450,7 +450,7 @@ describe("browser tab routes", () => {
   it("redacts blocked tab URLs from GET /tabs", async () => {
     navigationGuardMocks.assertBrowserNavigationResultAllowed.mockImplementation(
       async (opts?: { url: string }) => {
-        const url = (opts?.url ?? "";)
+        const url = opts?.url ?? "";
         if (url.includes("169.254.169.254")) {
           throw new Error("blocked");
         }
@@ -705,7 +705,7 @@ describe("browser tab routes", () => {
   it("redacts blocked tab URLs for /tabs/action list", async () => {
     navigationGuardMocks.assertBrowserNavigationResultAllowed.mockImplementation(
       async (opts?: { url: string }) => {
-        const url = (opts?.url ?? "";)
+        const url = opts?.url ?? "";
         if (url.includes("10.0.0.5")) {
           throw new Error("blocked");
         }

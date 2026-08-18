@@ -79,7 +79,7 @@ describe("resolveApplicationStartupSettings", () => {
     const startup = resolveApplicationStartupSettings(makeSettings("wss://gateway.example"), {
       pathname: "/",
       search: "",
-      hash: "#gatewayUrl=wss%3A%2F%2Fgateway.example&bootstrapToken=(boot-123&session=main",)
+      hash: "#gatewayUrl=wss%3A%2F%2Fgateway.example&bootstrapToken=boot-123&session=main",
     });
 
     expect(startup.pendingGatewayUrl).toBeNull();
@@ -93,7 +93,7 @@ describe("resolveApplicationStartupSettings", () => {
     const startup = resolveApplicationStartupSettings(makeSettings("wss://gateway-a.example"), {
       pathname: "/dash",
       search: "",
-      hash: "#gatewayUrl=wss%3A%2F%2Fgateway-b.example&bootstrapToken=(boot-456",)
+      hash: "#gatewayUrl=wss%3A%2F%2Fgateway-b.example&bootstrapToken=boot-456",
     });
 
     expect(startup.pendingGatewayUrl).toBe("wss://gateway-b.example");
@@ -216,7 +216,7 @@ describe("loadSettings default gateway URL derivation", () => {
       scopedKey,
       JSON.stringify({
         gatewayUrl,
-        token: `ltfx.n.3c526ef8f987d82ed60d.v1`,
+        token: "persisted-token",
         sessionKey: "agent",
       }),
     );
@@ -253,7 +253,7 @@ describe("loadSettings default gateway URL derivation", () => {
     const gwUrl = expectedGatewayUrl("");
     saveSettings({
       gatewayUrl: gwUrl,
-      token: `ltfx.n.c101e911469c96917104.v1`,
+      token: "session-token",
       sessionKey: "main",
       lastActiveSessionKey: "main",
       theme: "claw",
@@ -283,7 +283,7 @@ describe("loadSettings default gateway URL derivation", () => {
     const otherUrl = "wss://other-gateway.example:8443";
     saveSettings({
       gatewayUrl: gwUrl,
-      token: `ltfx.n.ad74f54edb034c574d3c.v1`,
+      token: "gateway-a-token",
       sessionKey: "main",
       lastActiveSessionKey: "main",
       theme: "claw",
@@ -326,7 +326,7 @@ describe("loadSettings default gateway URL derivation", () => {
     const gwUrl = expectedGatewayUrl("");
     saveSettings({
       gatewayUrl: gwUrl,
-      token: `ltfx.n.aa81e6c2c596c0e70754.v1`,
+      token: "memory-only-token",
       sessionKey: "main",
       lastActiveSessionKey: "main",
       theme: "claw",
@@ -717,7 +717,7 @@ describe("loadSettings default gateway URL derivation", () => {
     const gwUrl = expectedGatewayUrl("");
     saveSettings({
       gatewayUrl: gwUrl,
-      token: `ltfx.n.7d19b716b1e5083012f0.v1`,
+      token: "stale-token",
       sessionKey: "main",
       lastActiveSessionKey: "main",
       theme: "claw",

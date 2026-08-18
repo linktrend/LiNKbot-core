@@ -500,7 +500,7 @@ describe("MCP HTTP fetch helpers", () => {
   );
 
   it("rejects oversized ordinary JSON bodies at the cumulative byte cap", async () => {
-    const secret = `ltfx.n.f67d5016a1f8947cb396.v1`;
+    const secret = "Bearer mcp-oversized-body-token-should-not-leak";
     // Tiny override keeps the adversarial body small while proving the cap path.
     const maxBytes = 64;
     const oversized = `${"x".repeat(maxBytes + 1)}${secret}`;
@@ -528,7 +528,7 @@ describe("MCP HTTP fetch helpers", () => {
   });
 
   it("does not let an enormous requested limit exceed the host body ceiling", async () => {
-    const secret = `ltfx.n.328bb7478e69709881c5.v1`;
+    const secret = "Bearer enormous-limit-bypass-token";
     let cancelled = false;
     const chunkSize = 1024 * 1024;
     const source = new ReadableStream<Uint8Array>({
@@ -621,7 +621,7 @@ describe("MCP HTTP fetch helpers", () => {
 
   it("aborts never-ending SSE-style streams at the byte cap and runs cleanup", async () => {
     const maxBytes = 4 * 1024;
-    const secretFrame = `data: {"token":`ltfx.n.e3aa7e4a69035af6887b.v1`}\n\n`;
+    const secretFrame = `data: {"token":"sse-secret-token-do-not-leak"}\n\n`;
     let cancelled = false;
     const source = new ReadableStream<Uint8Array>({
       pull(controller) {
@@ -731,7 +731,7 @@ describe("MCP HTTP fetch helpers", () => {
 
   it("early-rejects declared Content-Length over the MCP response cap", async () => {
     const maxBytes = 128;
-    const secret = `ltfx.n.152fa7ea4e111374d7c4.v1`;
+    const secret = "Authorization: Bearer content-length-secret-token";
     let bodyCancelled = false;
     const source = new ReadableStream<Uint8Array>({
       start(controller) {

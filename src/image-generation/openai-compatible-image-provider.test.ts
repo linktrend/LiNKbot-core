@@ -24,7 +24,7 @@ const {
   isProviderApiKeyConfiguredMock: vi.fn(() => true),
   postJsonRequestMock: vi.fn(),
   postMultipartRequestMock: vi.fn(),
-  resolveApiKeyForProviderMock: vi.fn(async () => ({ apiKey: `ltfx.n.b3fac0ba726ed945457a.v1` })),
+  resolveApiKeyForProviderMock: vi.fn(async () => ({ apiKey: "provider-key" })),
   resolveProviderHttpRequestConfigMock: vi.fn((params: Record<string, unknown>) => {
     const request =
       typeof params.request === "object" && params.request !== null
@@ -164,7 +164,7 @@ describe("OpenAI-compatible image provider helper", () => {
     postJsonRequestMock.mockReset();
     postMultipartRequestMock.mockReset();
     resolveApiKeyForProviderMock.mockReset();
-    resolveApiKeyForProviderMock.mockResolvedValue({ apiKey: `ltfx.n.b3fac0ba726ed945457a.v1` });
+    resolveApiKeyForProviderMock.mockResolvedValue({ apiKey: "provider-key" });
     resolveProviderHttpRequestConfigMock.mockClear();
     resolveProviderOperationTimeoutMsMock.mockClear();
     sanitizeConfiguredModelProviderRequestMock.mockClear();

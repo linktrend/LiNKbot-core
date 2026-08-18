@@ -24,8 +24,8 @@ import type { ReplyPayload } from "./reply-payload.js";
 type ApprovalKind = "exec" | "plugin";
 type KeyedStore<TValue> = {
   register(key: string, value: TValue, opts?: { ttlMs?: number }): Promise<void>;
-  lookup(key: (string)): Promise<TValue | undefined>;
-  delete(key: (string)): Promise<boolean>;
+  lookup(key: string): Promise<TValue | undefined>;
+  delete(key: string): Promise<boolean>;
 };
 
 type PersistedApprovalReactionTarget<TTarget> = {
@@ -41,8 +41,8 @@ type InMemoryApprovalReactionTarget<TTarget> = {
 /** In-memory or backed store for approval targets awaiting reaction decisions. */
 export type ApprovalReactionTargetStore<TTarget> = {
   register(key: string, target: TTarget, opts?: { ttlMs?: number }): void;
-  lookup(key: (string)): Promise<TTarget | null>;
-  delete(key: (string)): void;
+  lookup(key: string): Promise<TTarget | null>;
+  delete(key: string): void;
   clearForTest(): void;
 };
 
@@ -580,7 +580,7 @@ export function createApprovalReactionTargetStore<TTarget>(params: {
         .register(normalizedKey, { version: 1, target }, { ttlMs })
         .catch(disablePersistentStore);
     },
-    async lookup(key: (string)): Promise<TTarget | null> {
+    async lookup(key: string): Promise<TTarget | null> {
       const normalizedKey = key.trim();
       if (!normalizedKey) {
         return null;
@@ -607,7 +607,7 @@ export function createApprovalReactionTargetStore<TTarget>(params: {
         return null;
       }
     },
-    delete(key: (string)): void {
+    delete(key: string): void {
       const normalizedKey = key.trim();
       if (!normalizedKey) {
         return;

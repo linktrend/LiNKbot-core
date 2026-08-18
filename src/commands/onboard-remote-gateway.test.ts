@@ -34,7 +34,7 @@ function makeLocalConfig(): OpenClawConfig {
     },
     gateway: {
       mode: "remote",
-      remote: { url: `ltfx.n.7248a0efc514704d4e1a.v1`, token: `ltfx.n.81e61c0285659b608bb9.v1` },
+      remote: { url: "wss://configured.example/ws", token: "configured-token" },
     },
   };
 }
@@ -122,11 +122,11 @@ function asGatewayCall(mock: ReturnType<typeof vi.fn>): GatewayCall {
 
 describe("runRemoteGatewayInferenceOnboarding", () => {
   it.each([
-    { label: "token", auth: { token: `ltfx.n.28601ccd8e3ef5bf1179.v1` }, secret: `ltfx.n.28601ccd8e3ef5bf1179.v1` },
+    { label: "token", auth: { token: "selected-token" }, secret: "selected-token" },
     {
       label: "password",
-      auth: { password: `ltfx.n.8517d257aad1dbf75f28.v1` },
-      secret: `ltfx.n.8517d257aad1dbf75f28.v1`,
+      auth: { password: "selected-password" },
+      secret: "selected-password",
     },
   ])(
     "pins $label across detect, activate, verify, OpenClaw, and in-process TUI",
@@ -189,13 +189,13 @@ describe("runRemoteGatewayInferenceOnboarding", () => {
         expect(options).toEqual({
           config: expect.objectContaining({
             gateway: expect.objectContaining({
-              remote: expect.objectContaining({ url: `ltfx.n.9a6a902a509bb50819fa.v1` }),
+              remote: expect.objectContaining({ url: "wss://selected.example/ws" }),
             }),
           }),
           deliver: false,
           message: "Wake up, my friend!",
           boundGateway: {
-            url: `ltfx.n.9a6a902a509bb50819fa.v1`,
+            url: "wss://selected.example/ws",
             ...auth,
             tlsFingerprint: "sha256:selected",
           },
@@ -267,12 +267,12 @@ describe("runRemoteGatewayInferenceOnboarding", () => {
     expect(runTui).toHaveBeenCalledWith({
       config: expect.objectContaining({
         gateway: expect.objectContaining({
-          remote: expect.objectContaining({ url: `ltfx.n.9a6a902a509bb50819fa.v1` }),
+          remote: expect.objectContaining({ url: "wss://selected.example/ws" }),
         }),
       }),
       deliver: false,
       boundGateway: {
-        url: `ltfx.n.9a6a902a509bb50819fa.v1`,
+        url: "wss://selected.example/ws",
         tlsFingerprint: "sha256:selected",
       },
     });
@@ -315,7 +315,7 @@ describe("runRemoteGatewayInferenceOnboarding", () => {
 
     await expect(
       runRemoteGatewayInferenceOnboarding(
-        makeTarget(localConfig, { token: `ltfx.n.28601ccd8e3ef5bf1179.v1` }),
+        makeTarget(localConfig, { token: "selected-token" }),
         makeRuntime(),
         {
           callGateway: asGatewayCall(callGatewayMock),
@@ -351,7 +351,7 @@ describe("runRemoteGatewayInferenceOnboarding", () => {
 
     await expect(
       runRemoteGatewayInferenceOnboarding(
-        makeTarget(makeLocalConfig(), { token: `ltfx.n.28601ccd8e3ef5bf1179.v1` }),
+        makeTarget(makeLocalConfig(), { token: "selected-token" }),
         makeRuntime(),
         {
           callGateway: asGatewayCall(callGatewayMock),
@@ -401,7 +401,7 @@ describe("runRemoteGatewayInferenceOnboarding", () => {
     const runTui = vi.fn();
 
     await runRemoteGatewayInferenceOnboarding(
-      makeTarget(makeLocalConfig(), { token: `ltfx.n.28601ccd8e3ef5bf1179.v1` }),
+      makeTarget(makeLocalConfig(), { token: "selected-token" }),
       makeRuntime(),
       {
         callGateway: asGatewayCall(callGatewayMock),

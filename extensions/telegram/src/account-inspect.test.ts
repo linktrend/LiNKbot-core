@@ -9,7 +9,7 @@ import { inspectTelegramAccount } from "./account-inspect.js";
 
 describe("inspectTelegramAccount SecretRef resolution", () => {
   it("resolves default env SecretRef templates in read-only status paths", () => {
-    withEnv({ TG_STATUS_TOKEN: `ltfx.n.f594f76eb54dcf26cea0.v1` }, () => {
+    withEnv({ TG_STATUS_TOKEN: "123:token" }, () => {
       const cfg: OpenClawConfig = {
         channels: {
           telegram: {
@@ -87,7 +87,7 @@ describe("inspectTelegramAccount SecretRef resolution", () => {
         telegram: {
           accounts: {
             "Carey Notifications": {
-              botToken: `ltfx.n.f594f76eb54dcf26cea0.v1`,
+              botToken: "123:token",
               reactionLevel: "ack",
             },
           },
@@ -112,7 +112,7 @@ describe("inspectTelegramAccount SecretRef resolution", () => {
       const cfg: OpenClawConfig = {
         channels: {
           telegram: {
-            botToken: `ltfx.n.0fa8ce97bf1f98b8965d.v1`,
+            botToken: "123:channel",
             defaultAccount: "ops",
             accounts: {
               ops: { botToken: "123:ops" },
@@ -132,9 +132,9 @@ describe("inspectTelegramAccount SecretRef resolution", () => {
     const cfg: OpenClawConfig = {
       channels: {
         telegram: {
-          botToken: `ltfx.n.0fa8ce97bf1f98b8965d.v1`,
+          botToken: "123:channel",
           accounts: {
-            work: { botToken: `ltfx.n.7acc6d84efa7e200f35e.v1` },
+            work: { botToken: "123:work" },
           },
         },
       },

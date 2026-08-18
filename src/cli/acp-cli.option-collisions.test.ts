@@ -114,7 +114,7 @@ describe("acp cli option collisions", () => {
   it("loads gateway token/password from files", async () => {
     await withTempSecretFiles(
       "openclaw-acp-cli-",
-      { token: `ltfx.n.57b392f31e75a11f4534.v1`, [passwordKey()]: "pw_file\n" },
+      { token: "tok_file\n", [passwordKey()]: "pw_file\n" },
       async (files) => {
         // pragma: allowlist secret
         await parseAcp([
@@ -138,13 +138,13 @@ describe("acp cli option collisions", () => {
   it.each([
     {
       name: "rejects mixed secret flags and file flags",
-      files: { token: `ltfx.n.57b392f31e75a11f4534.v1` },
+      files: { token: "tok_file\n" },
       args: (tokenFile: string) => ["--token", "tok_inline", "--token-file", tokenFile],
       expected: /Use either --token .*--token-file for Gateway token\./,
     },
     {
       name: "rejects mixed password flags and file flags",
-      files: { password: `ltfx.n.c7fcc40e4ff6714eaa13.v1` }, // pragma: allowlist secret
+      files: { password: "pw_file\n" }, // pragma: allowlist secret
       args: (_tokenFile: string, passwordFile: string) => [
         "--password",
         "pw_inline",
@@ -174,7 +174,7 @@ describe("acp cli option collisions", () => {
   });
 
   it("trims token file path before reading", async () => {
-    await withTempSecretFiles("openclaw-acp-cli-", { token: `ltfx.n.57b392f31e75a11f4534.v1` }, async (files) => {
+    await withTempSecretFiles("openclaw-acp-cli-", { token: "tok_file\n" }, async (files) => {
       await parseAcp(["--token-file", `  ${files.tokenFile ?? ""}  `]);
     });
 

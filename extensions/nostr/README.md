@@ -43,7 +43,7 @@ openclaw plugins install @openclaw/nostr
 3. Set the environment variable:
 
    ```bash
-   export NOSTR_PRIVATE_KEY="${ltfx.n.cf577a7027c4da13d0b7.v1}"  # or hex format
+   export NOSTR_PRIVATE_KEY="nsec1..."  # or hex format
    ```
 
 4. Restart the gateway

@@ -47,7 +47,7 @@ docker_e2e_run_with_harness \
   -e OPENCLAW_SKIP_PROVIDERS=1 \
   -e OPENCLAW_SKIP_CHANNELS=1 \
   -e OPENCLAW_DISABLE_BONJOUR=1 \
-  -e OPENAI_API_KEY="${ltfx.n.59e8b2c1ae5de62e2bb5.v1}" \
+  -e OPENAI_API_KEY=sk-multi-node-test \
   -v "$ARTIFACT_DIR:/tmp/artifacts" \
   "${DOCKER_E2E_PACKAGE_ARGS[@]}" \
   --user root \

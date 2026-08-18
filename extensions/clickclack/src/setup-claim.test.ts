@@ -32,7 +32,7 @@ describe("ClickClack setup-code claim", () => {
   it("claims over guarded HTTPS without bearer authentication", async () => {
     const fetchMock = vi.fn(async (_input: string | URL | Request, _init?: RequestInit) =>
       Response.json({
-        token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+        token: "test-token",
         bot: {
           id: "usr_bot",
           handle: "openclaw",
@@ -59,7 +59,7 @@ describe("ClickClack setup-code claim", () => {
         fetch: fetchMock as unknown as typeof fetch,
       }),
     ).resolves.toEqual({
-      token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+      token: "test-token",
       bot: {
         id: "usr_bot",
         handle: "openclaw",
@@ -95,7 +95,7 @@ describe("ClickClack setup-code claim", () => {
       response.setHeader("Content-Type", "application/json");
       response.end(
         JSON.stringify({
-          token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+          token: "test-token",
           bot: { id: "usr_bot", handle: "openclaw", display_name: "OpenClaw" },
           workspace: {
             id: "wsp_1",
@@ -121,7 +121,7 @@ describe("ClickClack setup-code claim", () => {
           lookupFn,
         }),
       ).resolves.toMatchObject({
-        token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+        token: "test-token",
         workspace: { id: "wsp_1" },
       });
       expect(lookupFn).toHaveBeenCalledTimes(2);
@@ -177,7 +177,7 @@ describe("ClickClack setup-code claim", () => {
   it("rejects malformed claim responses", async () => {
     const fetchMock = vi.fn(async () =>
       Response.json({
-        token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+        token: "test-token",
         bot: { id: "usr_bot", handle: "openclaw", display_name: "OpenClaw" },
         workspace: { id: "wsp_1", route_id: "clickclack", slug: "default" },
         defaults: {},

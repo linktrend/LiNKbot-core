@@ -138,7 +138,7 @@ describe("CronService declarative jobs", () => {
     await cron.start();
 
     try {
-      const key = `ltfx.n.e6600d79142aedd819d2.v1`;
+      const key = "shared-key";
       const agentA = declarativeResult(
         await cron.add(declaration({ declarationKey: key, owner: { agentId: "alpha" } }), {
           matchesExisting: (job) => job.owner?.agentId === "alpha",

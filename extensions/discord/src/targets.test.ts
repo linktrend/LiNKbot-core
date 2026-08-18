@@ -244,7 +244,7 @@ describe("resolveDiscordTarget", () => {
           defaultAccount: "work",
           accounts: {
             work: {
-              token: `ltfx.n.3bc4ea55437222d7a434.v1`,
+              token: "discord-work",
             },
           },
         },
@@ -276,7 +276,7 @@ describe("discord group policy", () => {
     const discordCfg = {
       channels: {
         discord: {
-          token: `ltfx.n.6c55ae0cbcb8c9b48944.v1`,
+          token: "discord-test",
           guilds: {
             guild1: {
               requireMention: false,
@@ -347,7 +347,7 @@ describe("discord group policy", () => {
     const discordCfg = {
       channels: {
         discord: {
-          token: `ltfx.n.6c55ae0cbcb8c9b48944.v1`,
+          token: "discord-test",
           guilds: {
             guild1: {
               requireMention: true,
@@ -356,7 +356,7 @@ describe("discord group policy", () => {
           },
           accounts: {
             work: {
-              token: `ltfx.n.3bc4ea55437222d7a434.v1`,
+              token: "discord-work",
               guilds: {
                 guild1: {
                   requireMention: false,

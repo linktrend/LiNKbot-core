@@ -40,7 +40,7 @@ Example shape:
   },
   "entries": [
     {
-      "key": "${ltfx.n.311930a12c60e676a628.v1}",
+      "key": "record:history-001",
       "path": "workspace/memory/record-001",
       "kind": "record",
       "sizeBytes": 120,
@@ -79,7 +79,7 @@ provenance:
   "reviewRef": "review:conflict-002",
   "facts": [
     {
-      "key": "${ltfx.n.311930a12c60e676a628.v1}",
+      "key": "record:history-001",
       "destination": { "kind": "vps_additive", "ref": "lbrain:additive-001" },
       "provenance": "local:history-001"
     }

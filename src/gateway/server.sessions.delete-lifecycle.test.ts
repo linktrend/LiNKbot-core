@@ -144,7 +144,7 @@ test("sessions.delete snapshots and removes session worktrees", async () => {
     expect(cleanKey).toBeTruthy();
     expect(cleanWorktree).toBeTruthy();
 
-    await expectSessionDeleteSucceeds({ key: (cleanKey! });)
+    await expectSessionDeleteSucceeds({ key: cleanKey! });
 
     await expect(fs.access(cleanWorktree!.path)).rejects.toThrow();
     expect(getRegistryWorktree(process.env, cleanWorktree!.id)).toMatchObject({
@@ -178,7 +178,7 @@ test("sessions.delete snapshots and removes session worktrees", async () => {
     dirtyWorktreeId = dirtyWorktree?.id;
     await fs.writeFile(path.join(dirtyWorktree!.path, "dirty.txt"), "keep me\n");
 
-    await expectSessionDeleteSucceeds({ key: (dirtyKey! });)
+    await expectSessionDeleteSucceeds({ key: dirtyKey! });
 
     await expect(fs.access(dirtyWorktree!.path)).rejects.toThrow();
     expect(getRegistryWorktree(process.env, dirtyWorktree!.id)).toMatchObject({
@@ -223,7 +223,7 @@ test("sessions.delete rejects main and aborts active runs", async () => {
   expect(mainDelete.ok).toBe(false);
 
   await expectSessionDeleteSucceeds({
-    key: `ltfx.n.10a7e699690a095ea9cd.v1`,
+    key: "discord:group:dev",
   });
   expectActiveRunCleanup(
     "agent:main:discord:group:dev",
@@ -374,7 +374,7 @@ test("sessions.delete interrupts work admitted before runtime registration", asy
   releaseAdmission = admissionLease.release;
 
   const deleted = await expectSessionDeleteSucceeds({
-    key: `ltfx.n.f3fd014fb107b4395e4c.v1`,
+    key: "agent:main:subagent:worker",
   });
 
   expect(deleted.payload?.deleted).toBe(true);
@@ -694,7 +694,7 @@ test("sessions.patch rejects archiving active runs", async () => {
   embeddedRunMock.activeIds.add("sess-active");
 
   const archived = await directSessionReq("sessions.patch", {
-    key: `ltfx.n.10a7e699690a095ea9cd.v1`,
+    key: "discord:group:dev",
     archived: true,
   });
 
@@ -742,7 +742,7 @@ test("sessions.delete limits plugin-runtime cleanup to sessions owned by that pl
     const denied = await directSessionReq(
       "sessions.delete",
       {
-        key: `ltfx.n.82335488f97cf3024109.v1`,
+        key: "agent:main:dreaming-narrative-foreign",
       },
       {
         client: pluginClient,
@@ -758,7 +758,7 @@ test("sessions.delete limits plugin-runtime cleanup to sessions owned by that pl
   const deleted = await directSessionReq<{ ok: true; deleted: boolean }>(
     "sessions.delete",
     {
-      key: `ltfx.n.33ad26a6a35082a61423.v1`,
+      key: "agent:main:dreaming-narrative-owned",
     },
     {
       client: pluginClient,
@@ -816,7 +816,7 @@ test("sessions.delete closes ACP runtime handles before removing ACP sessions", 
     },
   });
   await expectSessionDeleteSucceeds({
-    key: `ltfx.n.10a7e699690a095ea9cd.v1`,
+    key: "discord:group:dev",
   });
   expect(acpManagerMocks.closeSession).toHaveBeenCalledTimes(1);
   const closeSessionCall = (
@@ -886,7 +886,7 @@ test("sessions.delete closes child ACP runtimes spawned from the deleted parent"
   });
 
   await expectSessionDeleteSucceeds({
-    key: `ltfx.n.2fc622b015318c3336fb.v1`,
+    key: "acp-parent",
   });
 
   // Deleting the parent must also close its spawned ACP child, not just its own
@@ -912,7 +912,7 @@ test("sessions.delete emits session_end with deleted reason and no replacement",
   });
 
   await expectSessionDeleteSucceeds({
-    key: `ltfx.n.1d14fcc3dd9cec726ca5.v1`,
+    key: "discord:group:delete",
   });
   expect(sessionLifecycleHookMocks.runSessionEnd).toHaveBeenCalledTimes(1);
   expect(sessionLifecycleHookMocks.runSessionStart).not.toHaveBeenCalled();
@@ -945,7 +945,7 @@ test("sessions.delete sessions.changed event always carries the resolved owner",
 
   const deleted = await directSessionReq<{ deleted: boolean }>(
     "sessions.delete",
-    { key: `ltfx.n.305b9c1d194085127c08.v1`, deleteTranscript: true },
+    { key: "agent:main:side", deleteTranscript: true },
     {
       client: { connect: { scopes: ["operator.admin"] } } as never,
       context: {
@@ -974,7 +974,7 @@ test("sessions.delete does not emit lifecycle events when nothing was deleted", 
   });
 
   const deleted = await directSessionReq<{ ok: true; deleted: boolean }>("sessions.delete", {
-    key: `ltfx.n.139697843dcb9e58753c.v1`,
+    key: "agent:main:subagent:missing",
   });
 
   expect(deleted.ok).toBe(true);
@@ -987,7 +987,7 @@ test("sessions.delete emits subagent targetKind for subagent sessions", async ()
   await seedSubagentWorkerSession();
 
   await expectSessionDeleteSucceeds({
-    key: `ltfx.n.f3fd014fb107b4395e4c.v1`,
+    key: "agent:main:subagent:worker",
   });
   expect(subagentLifecycleHookMocks.runSubagentEnded).toHaveBeenCalledTimes(1);
   const event = (subagentLifecycleHookMocks.runSubagentEnded.mock.calls as unknown[][])[0]?.[0] as
@@ -1004,7 +1004,7 @@ test("sessions.delete can skip lifecycle hooks while still unbinding thread bind
   await seedSubagentWorkerSession();
 
   await expectSessionDeleteSucceeds({
-    key: `ltfx.n.f3fd014fb107b4395e4c.v1`,
+    key: "agent:main:subagent:worker",
     emitLifecycleHooks: false,
   });
   expect(subagentLifecycleHookMocks.runSubagentEnded).not.toHaveBeenCalled();
@@ -1016,7 +1016,7 @@ test("sessions.delete directly unbinds thread bindings when hooks are unavailabl
   subagentLifecycleHookState.hasSubagentEndedHook = false;
 
   const deleted = await directSessionReq<{ ok: true; deleted: boolean }>("sessions.delete", {
-    key: `ltfx.n.f3fd014fb107b4395e4c.v1`,
+    key: "agent:main:subagent:worker",
   });
   expect(deleted.ok).toBe(true);
   expect(subagentLifecycleHookMocks.runSubagentEnded).not.toHaveBeenCalled();
@@ -1044,7 +1044,7 @@ test("sessions.delete returns unavailable when active run does not stop", async 
   const { ws } = await openClient();
 
   const deleted = await rpcReq(ws, "sessions.delete", {
-    key: `ltfx.n.10a7e699690a095ea9cd.v1`,
+    key: "discord:group:dev",
   });
   expect(deleted.ok).toBe(false);
   expect(deleted.error?.code).toBe("UNAVAILABLE");

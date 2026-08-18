@@ -233,7 +233,7 @@ function resolveStaticSettingsBlock(block: StaticSettingsBlockDescriptor): Stati
   };
 }
 
-function routeForConfigSection(key: (string)): RouteId {
+function routeForConfigSection(key: string): RouteId {
   if (MCP_SECTIONS.has(key)) {
     return "mcp";
   }

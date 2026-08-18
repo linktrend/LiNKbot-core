@@ -165,7 +165,7 @@ describe("ModelRegistry models.json auth", () => {
 
     const registry = ModelRegistry.create(
       AuthStorage.inMemory({
-        custom: { type: "api_key", key: `ltfx.n.41dd96f1dccf65c2c9c7.v1` },
+        custom: { type: "api_key", key: "test-token-placeholder" },
       }),
       modelsPath,
     );
@@ -226,7 +226,7 @@ describe("ModelRegistry models.json auth", () => {
         custom: {
           baseUrl: "https://models.example/v1",
           api: "openai-responses",
-          apiKey: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
+          apiKey: "test-token-placeholder",
           models: [{ id: "example-model" }],
         },
       },
@@ -239,7 +239,7 @@ describe("ModelRegistry models.json auth", () => {
     await expect(fork.getApiKeyForProvider("custom")).resolves.toBe("test-token-placeholder");
     await expect(fork.getApiKeyAndHeaders(model!)).resolves.toEqual({
       ok: true,
-      apiKey: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
+      apiKey: "test-token-placeholder",
       headers: undefined,
     });
   });
@@ -291,7 +291,7 @@ describe("ModelRegistry models.json auth", () => {
 
   it("uses stored auth for dynamically registered provider models", () => {
     const authStorage = AuthStorage.inMemory({
-      custom: { type: "api_key", key: `ltfx.n.41dd96f1dccf65c2c9c7.v1` },
+      custom: { type: "api_key", key: "test-token-placeholder" },
     });
     const registry = ModelRegistry.inMemory(authStorage);
 
@@ -389,7 +389,7 @@ describe("ModelRegistry models.json auth", () => {
           openai: {
             baseUrl: "https://api.openai.com/v1",
             api: "openai-responses",
-            apiKey: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
+            apiKey: "test-token-placeholder",
             models: [
               {
                 id: "gpt-5.6-luna",
@@ -403,7 +403,7 @@ describe("ModelRegistry models.json auth", () => {
     });
 
     const registry = ModelRegistry.create(
-      AuthStorage.inMemory({ openai: { type: "api_key", key: `ltfx.n.41dd96f1dccf65c2c9c7.v1` } }),
+      AuthStorage.inMemory({ openai: { type: "api_key", key: "test-token-placeholder" } }),
       modelsPath,
       { pluginMetadataSnapshot: pluginOwnerSnapshot("openai", "openai") },
     );
@@ -460,8 +460,8 @@ describe("ModelRegistry models.json auth", () => {
 
     const registry = ModelRegistry.create(
       AuthStorage.inMemory({
-        minimax: { type: "api_key", key: `ltfx.n.038c419c9cae8f8e4283.v1` },
-        nvidia: { type: "api_key", key: `ltfx.n.52c32411e911531b01e8.v1` },
+        minimax: { type: "api_key", key: "sk-minimax" },
+        nvidia: { type: "api_key", key: "sk-nvidia" },
       }),
       modelsPath,
       {

@@ -99,7 +99,7 @@ describe("nextcloud-talk inbound authz", () => {
 
     const message: NextcloudTalkInboundMessage = {
       messageId: "m-2",
-      roomToken: `ltfx.n.1678fa3992c72046e9d0.v1`,
+      roomToken: "room-attacker",
       roomName: "Room Trusted",
       senderId: "trusted-user",
       senderName: "Trusted User",

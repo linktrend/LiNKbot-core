@@ -59,11 +59,11 @@ function createGmailConfig(account = "me@example.com", renewEveryMinutes?: numbe
   return {
     hooks: {
       enabled: true,
-      token: `ltfx.n.64eeb5ca0d40b2cc6c09.v1`,
+      token: "hook-token",
       gmail: {
         account,
         topic: "projects/demo/topics/gmail",
-        pushToken: `ltfx.n.13550d36c32499b89fb2.v1`,
+        pushToken: "push-token",
         tailscale: { mode: "off" as const },
         renewEveryMinutes,
       },

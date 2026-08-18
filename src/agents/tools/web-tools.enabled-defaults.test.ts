@@ -294,7 +294,7 @@ describe("web tools defaults", () => {
       diagnostics: [],
     });
     const runtimeConfig = {
-      tools: { web: { search: { provider: "fresh", fresh: { apiKey: `ltfx.n.cd0ec0671f5569a1679b.v1` } } } },
+      tools: { web: { search: { provider: "fresh", fresh: { apiKey: "runtime-key" } } } },
     };
     activeSecretsRuntimeSnapshot.current = { config: runtimeConfig };
 

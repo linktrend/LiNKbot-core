@@ -95,7 +95,7 @@ function withVoiceCallConfig(params: {
   };
 }
 
-function findStringByKey(value: unknown, key: (string)): string | undefined {
+function findStringByKey(value: unknown, key: string): string | undefined {
   if (Array.isArray(value)) {
     for (const entry of value) {
       const found = findStringByKey(entry, key);

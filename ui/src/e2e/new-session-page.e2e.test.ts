@@ -198,7 +198,7 @@ describeControlUiE2e("Control UI new-session page mocked Gateway E2E", () => {
     const page = await context.newPage();
     const gateway = await installMockGateway(page, {
       methodResponses: {
-        "sessions.create": { key: `ltfx.n.7514f729b26b27153bfc.v1`, runStarted: true },
+        "sessions.create": { key: "agent:main:image-draft", runStarted: true },
       },
     });
     try {
@@ -245,7 +245,7 @@ describeControlUiE2e("Control UI new-session page mocked Gateway E2E", () => {
     });
     const gateway = await installMockGateway(page, {
       methodResponses: {
-        "sessions.create": { key: `ltfx.n.527b214b0238ed415b30.v1`, runStarted: true },
+        "sessions.create": { key: "agent:main:delayed-image-draft", runStarted: true },
       },
     });
     try {
@@ -368,7 +368,7 @@ describeControlUiE2e("Control UI new-session page mocked Gateway E2E", () => {
     });
     await installMockGateway(page, {
       methodResponses: {
-        "sessions.create": { key: `ltfx.n.113bd85e7c04664e4ba4.v1`, runStarted: true },
+        "sessions.create": { key: "agent:main:preview-cleanup", runStarted: true },
       },
     });
     const proof = () =>
@@ -445,7 +445,7 @@ describeControlUiE2e("Control UI new-session page mocked Gateway E2E", () => {
         { id: "claude-sonnet-4-6", name: "Claude Sonnet 4.6", provider: "anthropic" },
       ],
       methodResponses: {
-        "sessions.create": { key: `ltfx.n.cb117920f825426c4b9b.v1`, runStarted: true },
+        "sessions.create": { key: "agent:main:model-draft", runStarted: true },
       },
     });
     try {
@@ -546,7 +546,7 @@ describeControlUiE2e("Control UI new-session page mocked Gateway E2E", () => {
             },
           ],
         },
-        "sessions.create": { key: `ltfx.n.a5845ecec304da8a713f.v1` },
+        "sessions.create": { key: "agent:main:draft-e2e" },
       },
     });
 
@@ -927,21 +927,21 @@ describeControlUiE2e("Control UI new-session page mocked Gateway E2E", () => {
             placement: { state: "active" },
           },
           {
-            key: `ltfx.n.a79be6c70daffbe2e323.v1`,
+            key: "agent:cloud:managed-e2e",
             kind: "direct",
             label: "Managed session",
             updatedAt: Date.now() - 1,
             placement: { state: "active" },
           },
           {
-            key: `ltfx.n.fc7a30476653849ec5fc.v1`,
+            key: "agent:cloud:local-e2e",
             kind: "direct",
             label: "Local session",
             updatedAt: Date.now() - 2,
             placement: { state: "local" },
           },
           {
-            key: `ltfx.n.a21987958f94b754ebd5.v1`,
+            key: "agent:cloud:neutral-e2e",
             kind: "direct",
             label: "Neutral session",
             updatedAt: Date.now() - 3,
@@ -956,7 +956,7 @@ describeControlUiE2e("Control UI new-session page mocked Gateway E2E", () => {
       );
       const managedSessionKey = "agent:cloud:managed-e2e";
       const sessionRow = page.locator(`[data-session-key="${managedSessionKey}"]`);
-      const localSessionRow = page.locator('[data-session-key=`ltfx.n.fc7a30476653849ec5fc.v1`]');
+      const localSessionRow = page.locator('[data-session-key="agent:cloud:local-e2e"]');
       await sessionRow.waitFor();
       await localSessionRow.waitFor();
       const cloudPlacementBadge = sessionRow.locator('[data-placement-state="active"]');
@@ -1659,7 +1659,7 @@ describeControlUiE2e("Control UI new-session page mocked Gateway E2E", () => {
             },
           ],
         },
-        "sessions.create": { key: `ltfx.n.e13fb677441faddea07f.v1` },
+        "sessions.create": { key: "agent:main:claude-draft" },
       },
     });
 
@@ -1744,7 +1744,7 @@ describeControlUiE2e("Control UI new-session page mocked Gateway E2E", () => {
 
       await gateway.deferNext("sessions.list");
       await gateway.emitGatewayEvent("sessions.changed", {
-        key: `ltfx.n.5919ffbd336cbc827cd3.v1`,
+        key: "agent:main:other-client",
         kind: "direct",
         reason: "update",
         sessionKey: "agent:main:other-client",
@@ -1820,7 +1820,7 @@ describeControlUiE2e("Control UI new-session page mocked Gateway E2E", () => {
             },
           ],
         },
-        "sessions.create": { key: `ltfx.n.f90c75541c89b370aab9.v1` },
+        "sessions.create": { key: "agent:research:claude-reconnect" },
       },
     });
 
@@ -1919,7 +1919,7 @@ describeControlUiE2e("Control UI new-session page mocked Gateway E2E", () => {
           branches: [{ kind: "local", name: "main" }],
           defaultBranch: "main",
         },
-        "sessions.create": { key: `ltfx.n.af2cd9177994123779d8.v1` },
+        "sessions.create": { key: "agent:research:manual-reconnect" },
       },
     });
 
@@ -2066,7 +2066,7 @@ describeControlUiE2e("Control UI new-session page mocked Gateway E2E", () => {
           branches: [{ kind: "local", name: "main" }],
           defaultBranch: "main",
         },
-        "sessions.create": { key: `ltfx.n.6ebe1bc0fadd3900c688.v1` },
+        "sessions.create": { key: "agent:main:validated-device" },
       },
     });
 
@@ -2378,7 +2378,7 @@ describeControlUiE2e("Control UI new-session page mocked Gateway E2E", () => {
             },
           ],
         },
-        "sessions.create": { key: `ltfx.n.117207df53161a5c57ff.v1` },
+        "sessions.create": { key: "agent:main:claude-retarget" },
       },
     });
 
@@ -2815,7 +2815,7 @@ describeControlUiE2e("Control UI new-session page mocked Gateway E2E", () => {
             },
           ],
         },
-        "sessions.create": { key: `ltfx.n.0adfd5efcd94c0e86383.v1` },
+        "sessions.create": { key: "agent:main:node-draft-e2e" },
       },
     });
 

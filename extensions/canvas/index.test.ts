@@ -130,7 +130,7 @@ describe("Canvas plugin entry", () => {
     await services[0]?.stop?.({} as never);
     expect(mocks.createCanvasHttpRouteHandler).not.toHaveBeenCalled();
 
-    await routes[0]?.handler({ url: `ltfx.n.2afdb97cb926f64f4aa9.v1` } as never, {} as never);
+    await routes[0]?.handler({ url: "/__openclaw__/canvas" } as never, {} as never);
     expect(mocks.createCanvasHttpRouteHandler).toHaveBeenCalledTimes(1);
     expect(mocks.httpHandler.handleHttpRequest).toHaveBeenCalledTimes(1);
 

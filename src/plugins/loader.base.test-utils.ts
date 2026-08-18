@@ -148,7 +148,7 @@ describe("loadOpenClawPlugins", () => {
 
     // Case 1: the referenced variable is present in process.env.
     delete probe.envConfigProbeResult;
-    withEnv({ ENV_CONFIG_PROBE_SECRET: `ltfx.n.f79670995a358e0e2212.v1` }, () => {
+    withEnv({ ENV_CONFIG_PROBE_SECRET: "process-env-secret" }, () => {
       loadRegistryFromSinglePlugin({
         plugin,
         pluginConfig: { allow: ["env-config-probe"], entries },
@@ -156,7 +156,7 @@ describe("loadOpenClawPlugins", () => {
       });
     });
     // Before the fix, the plugin received the literal "${ENV_CONFIG_PROBE_SECRET}".
-    expect(probe.envConfigProbeResult).toMatchObject({ apiKey: `ltfx.n.f79670995a358e0e2212.v1` });
+    expect(probe.envConfigProbeResult).toMatchObject({ apiKey: "process-env-secret" });
 
     // Case 2: the referenced variable lives only in the loader's explicit env,
     // not in process.env — proving the substitution honors the per-load env.
@@ -166,11 +166,11 @@ describe("loadOpenClawPlugins", () => {
       plugin,
       pluginConfig: { allow: ["env-config-probe"], entries },
       options: {
-        env: { ...process.env, ENV_CONFIG_PROBE_SECRET: `ltfx.n.ff640f81dca0b3a02c66.v1` },
+        env: { ...process.env, ENV_CONFIG_PROBE_SECRET: "explicit-env-secret" },
         resolveRawConfigEnvVars: true,
       },
     });
-    expect(probe.envConfigProbeResult).toMatchObject({ apiKey: `ltfx.n.ff640f81dca0b3a02c66.v1` });
+    expect(probe.envConfigProbeResult).toMatchObject({ apiKey: "explicit-env-secret" });
 
     // Case 3: config.env.vars participates in the same effective env as config IO.
     delete probe.envConfigProbeResult;
@@ -182,7 +182,7 @@ describe("loadOpenClawPlugins", () => {
           env: {
             vars: {
               ENV_CONFIG_PROBE_PLUGIN_FILE: plugin.file,
-              ENV_CONFIG_PROBE_SECRET: `ltfx.n.1f7b46b969756b32b3e9.v1`,
+              ENV_CONFIG_PROBE_SECRET: "config-env-secret",
             },
           },
           plugins: {
@@ -194,18 +194,18 @@ describe("loadOpenClawPlugins", () => {
         resolveRawConfigEnvVars: true,
       });
     });
-    expect(probe.envConfigProbeResult).toMatchObject({ apiKey: `ltfx.n.1f7b46b969756b32b3e9.v1` });
+    expect(probe.envConfigProbeResult).toMatchObject({ apiKey: "config-env-secret" });
 
     // Case 4: config that already went through read-time substitution must not
     // be processed again. Escaped placeholders intentionally become literals.
     delete probe.envConfigProbeResult;
     const resolvedEscapedEntries = resolveConfigEnvVars(
       {
-        "env-config-probe": { config: { apiKey: `ltfx.n.81d26c5d03199d6c21fc.v1` } },
+        "env-config-probe": { config: { apiKey: "$${ENV_CONFIG_PROBE_SECRET}" } },
       },
-      { ENV_CONFIG_PROBE_SECRET: `ltfx.n.b15be23ececc17f2b32f.v1` } as NodeJS.ProcessEnv,
+      { ENV_CONFIG_PROBE_SECRET: "should-not-leak" } as NodeJS.ProcessEnv,
     ) as typeof entries;
-    withEnv({ ENV_CONFIG_PROBE_SECRET: `ltfx.n.f79670995a358e0e2212.v1` }, () => {
+    withEnv({ ENV_CONFIG_PROBE_SECRET: "process-env-secret" }, () => {
       loadRegistryFromSinglePlugin({
         plugin,
         pluginConfig: {

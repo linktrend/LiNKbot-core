@@ -35,7 +35,7 @@ class WearSessionScopeTest {
   fun modelCatalogScopeTracksBothPhoneAndModel() {
     val requested =
       WearSession(
-        key = "${ltfx.n.f331f052e4ed92dd414c.v1}",
+        key = "agent:main",
         title = "Main",
         updatedAt = null,
         hasActiveRun = false,
@@ -52,7 +52,7 @@ class WearSessionScopeTest {
   fun modelCatalogResultRequiresTheFullRequestedScope() {
     val requested =
       WearSession(
-        key = "${ltfx.n.f331f052e4ed92dd414c.v1}",
+        key = "agent:main",
         title = "Main",
         updatedAt = null,
         hasActiveRun = false,
@@ -63,7 +63,7 @@ class WearSessionScopeTest {
     assertEquals(true, wearSessionRequestIsCurrent(requested, requested.copy(), "phone-a"))
     assertEquals(
       false,
-      wearSessionRequestIsCurrent(requested, requested.copy(key = "${ltfx.n.479c13a30723f45b553f.v1}"), "phone-a"),
+      wearSessionRequestIsCurrent(requested, requested.copy(key = "agent:other"), "phone-a"),
     )
     assertEquals(
       false,
@@ -80,7 +80,7 @@ class WearSessionScopeTest {
   fun transcriptResultPreservesNewerModelWithinTheSamePhoneSession() {
     val requested =
       WearSession(
-        key = "${ltfx.n.f331f052e4ed92dd414c.v1}",
+        key = "agent:main",
         title = "Main",
         updatedAt = null,
         hasActiveRun = false,
@@ -111,7 +111,7 @@ class WearSessionScopeTest {
   fun agentSwitchDropsThePreviousSessionModelAndStreamTogether() {
     val previousSession =
       WearSession(
-        key = "${ltfx.n.dca862ac3478e3622fe5.v1}",
+        key = "agent:old:thread-1",
         title = "Old",
         updatedAt = null,
         hasActiveRun = true,
@@ -146,7 +146,7 @@ class WearSessionScopeTest {
   fun sessionSwitchMovesModelAndClearsThePreviousCatalogAndTranscript() {
     val nextSession =
       WearSession(
-        key = "${ltfx.n.977bec74bd7698aabcc5.v1}",
+        key = "agent:main:thread-2",
         title = "Next",
         updatedAt = null,
         hasActiveRun = false,
@@ -178,7 +178,7 @@ class WearSessionScopeTest {
   fun modelSwitchClearsTheSelectedModelScopedCatalog() {
     val selectedSession =
       WearSession(
-        key = "${ltfx.n.977bec74bd7698aabcc5.v1}",
+        key = "agent:main:thread-2",
         title = "Selected",
         updatedAt = null,
         hasActiveRun = false,

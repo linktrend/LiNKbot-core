@@ -1074,7 +1074,7 @@ describe("monitorTelegramProvider (grammY)", () => {
         agents: { defaults: { maxConcurrent: 2 } },
         channels: {
           telegram: {
-            webhookSecret: `ltfx.n.26a5d53616c4d301eac8.v1`,
+            webhookSecret: "secret-from-config",
           },
         },
       },

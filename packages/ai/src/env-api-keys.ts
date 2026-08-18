@@ -72,7 +72,7 @@ function getProcessEnv(): NodeJS.ProcessEnv | undefined {
  * Bun compiled binaries have an empty `process.env` inside sandbox
  * environments on Linux. We can recover the env from `/proc/self/environ`.
  */
-function getProcEnv(key: (string)): string | undefined {
+function getProcEnv(key: string): string | undefined {
   if (typeof process === "undefined" || !process.versions?.bun) {
     return undefined;
   }
@@ -108,7 +108,7 @@ function getProcEnv(key: (string)): string | undefined {
   return procEnvCache.get(key);
 }
 
-function getEnvValue(key: (string)): string | undefined {
+function getEnvValue(key: string): string | undefined {
   return (getProcessEnv()?.[key] || getProcEnv(key))?.trim() || undefined;
 }
 

@@ -81,7 +81,7 @@ describe("WP-02 deterministic Local/VPS reconciliation", () => {
     assert.equal(result.receipt.unresolvedCount, 0);
     assert.doesNotMatch(
       JSON.stringify(result),
-      /synthetic private|message body|token=(|password=/iu,)
+      /synthetic private|message body|token=|password=/iu,
     );
   });
 
@@ -102,7 +102,7 @@ describe("WP-02 deterministic Local/VPS reconciliation", () => {
           reviewRef: "review:bad-destination",
           facts: [
             {
-              key: `ltfx.n.d87093db759bafbe7301.v1`,
+              key: "record:unique-1",
               destination: { kind: "evidence", ref: "evidence:not-destination" },
               provenance: "local:record-1",
             },
@@ -132,12 +132,12 @@ describe("WP-02 deterministic Local/VPS reconciliation", () => {
             reviewRef: "review:shared-file-facts",
             facts: [
               {
-                key: `ltfx.n.d87093db759bafbe7301.v1`,
+                key: "record:unique-1",
                 destination: { kind: "vps_additive", ref: "lbrain:additive-record-1" },
                 provenance: "local:record-unique-1",
               },
               {
-                key: `ltfx.n.b6a29f791f6d3e9ad1e8.v1`,
+                key: "record:unique-2",
                 destination: { kind: "archive", ref: "archive:record-unique-2" },
                 provenance: "local:record-unique-2",
               },

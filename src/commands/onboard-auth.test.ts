@@ -304,34 +304,34 @@ describe("upsertApiKeyProfile secret refs", () => {
   it("handles plaintext, ref mode, and inline env-ref provider keys", async () => {
     const env = await setupAuthTestEnv("openclaw-onboard-auth-credentials-");
     lifecycle.setStateDir(env.stateDir);
-    process.env.MOONSHOT_API_KEY = `ltfx.n.3a73ce93ae5b9e62efdf.v1`; // pragma: allowlist secret
-    process.env.OPENAI_API_KEY = `ltfx.n.50fdfb2ba0b6c509edb8.v1`; // pragma: allowlist secret
+    process.env.MOONSHOT_API_KEY = "sk-moonshot-env"; // pragma: allowlist secret
+    process.env.OPENAI_API_KEY = "sk-openai-env"; // pragma: allowlist secret
 
     upsertApiKeyProfile({
       provider: "moonshot",
-      input: `ltfx.n.3a73ce93ae5b9e62efdf.v1`,
+      input: "sk-moonshot-env",
       agentDir: env.agentDir,
     });
-    upsertApiKeyProfile({ provider: "openai", input: `ltfx.n.50fdfb2ba0b6c509edb8.v1`, agentDir: env.agentDir });
+    upsertApiKeyProfile({ provider: "openai", input: "sk-openai-env", agentDir: env.agentDir });
 
     expectFields(await readProfile(env.agentDir, "moonshot:default"), {
-      key: `ltfx.n.3a73ce93ae5b9e62efdf.v1`,
+      key: "sk-moonshot-env",
     });
     expect((await readProfile(env.agentDir, "moonshot:default"))?.keyRef).toBeUndefined();
     expectFields(await readProfile(env.agentDir, "openai:default"), {
-      key: `ltfx.n.50fdfb2ba0b6c509edb8.v1`,
+      key: "sk-openai-env",
     });
     expect((await readProfile(env.agentDir, "openai:default"))?.keyRef).toBeUndefined();
 
     upsertApiKeyProfile({
       provider: "moonshot",
-      input: `ltfx.n.3a73ce93ae5b9e62efdf.v1`,
+      input: "sk-moonshot-env",
       agentDir: env.agentDir,
       options: { secretInputMode: "ref" }, // pragma: allowlist secret
     });
     upsertApiKeyProfile({
       provider: "openai",
-      input: `ltfx.n.50fdfb2ba0b6c509edb8.v1`,
+      input: "sk-openai-env",
       agentDir: env.agentDir,
       options: { secretInputMode: "ref" }, // pragma: allowlist secret
     });
@@ -341,10 +341,10 @@ describe("upsertApiKeyProfile secret refs", () => {
       agentDir: env.agentDir,
       profileId: "moonshot:inline",
     });
-    process.env.MOONSHOT_API_KEY = `ltfx.n.b62c060c0870f64a3c5f.v1`; // pragma: allowlist secret
+    process.env.MOONSHOT_API_KEY = "sk-moonshot-other"; // pragma: allowlist secret
     upsertApiKeyProfile({
       provider: "moonshot",
-      input: `ltfx.n.99032a2fa00823954b99.v1`,
+      input: "sk-moonshot-plaintext",
       agentDir: env.agentDir,
       profileId: "moonshot:plain",
     });
@@ -361,7 +361,7 @@ describe("upsertApiKeyProfile secret refs", () => {
       keyRef: { source: "env", provider: "default", id: "MOONSHOT_API_KEY" },
     });
     expectFields(await readProfile(env.agentDir, "moonshot:plain"), {
-      key: `ltfx.n.99032a2fa00823954b99.v1`,
+      key: "sk-moonshot-plaintext",
     });
     expect((await readProfile(env.agentDir, "moonshot:plain"))?.keyRef).toBeUndefined();
   });
@@ -369,10 +369,10 @@ describe("upsertApiKeyProfile secret refs", () => {
   it("stores provider-specific env refs and metadata in ref mode", async () => {
     const env = await setupAuthTestEnv("openclaw-onboard-auth-credentials-provider-ref-");
     lifecycle.setStateDir(env.stateDir);
-    process.env.CLOUDFLARE_AI_GATEWAY_API_KEY = `ltfx.n.ccbffcb9f8d591bd9de9.v1`; // pragma: allowlist secret
-    process.env.VOLCANO_ENGINE_API_KEY = `ltfx.n.bb1a80b720e2ba30ec85.v1`; // pragma: allowlist secret
-    process.env.BYTEPLUS_API_KEY = `ltfx.n.f0b9f156cc399910d60e.v1`; // pragma: allowlist secret
-    process.env.OPENCODE_API_KEY = `ltfx.n.fbcc3441524b64e7f4aa.v1`; // pragma: allowlist secret
+    process.env.CLOUDFLARE_AI_GATEWAY_API_KEY = "cf-secret"; // pragma: allowlist secret
+    process.env.VOLCANO_ENGINE_API_KEY = "volcengine-secret"; // pragma: allowlist secret
+    process.env.BYTEPLUS_API_KEY = "byteplus-secret"; // pragma: allowlist secret
+    process.env.OPENCODE_API_KEY = "sk-opencode-env"; // pragma: allowlist secret
 
     upsertApiKeyProfile({
       provider: "cloudflare-ai-gateway",
@@ -387,8 +387,8 @@ describe("upsertApiKeyProfile secret refs", () => {
     for (const [provider, input] of [
       ["volcengine", "volcengine-secret"],
       ["byteplus", "byteplus-secret"],
-      ["opencode", "ltfx.n.fbcc3441524b64e7f4aa.v1"],
-      ["opencode-go", "ltfx.n.fbcc3441524b64e7f4aa.v1"],
+      ["opencode", "sk-opencode-env"],
+      ["opencode-go", "sk-opencode-env"],
     ] as const) {
       upsertApiKeyProfile({
         provider,
@@ -430,7 +430,7 @@ describe("upsertApiKeyProfile", () => {
     lifecycle.setStateDir(env.stateDir);
     const defaultAgentDir = path.join(env.stateDir, "agents", "main", "agent");
 
-    upsertApiKeyProfile({ provider: "minimax", input: `ltfx.n.d1cc8cd5e791091ae2c2.v1` });
+    upsertApiKeyProfile({ provider: "minimax", input: "sk-minimax-test" });
 
     const parsed = await readAuthProfilesForAgent<{
       profiles?: Record<string, { type?: string; provider?: string; key?: string }>;
@@ -438,7 +438,7 @@ describe("upsertApiKeyProfile", () => {
     expectFields(parsed.profiles?.["minimax:default"], {
       type: "api_key",
       provider: "minimax",
-      key: `ltfx.n.d1cc8cd5e791091ae2c2.v1`,
+      key: "sk-minimax-test",
     });
 
     await expectMissingFile(fs.readFile(path.join(env.agentDir, "auth-profiles.json"), "utf8"));

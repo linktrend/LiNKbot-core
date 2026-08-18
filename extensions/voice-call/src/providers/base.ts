@@ -32,7 +32,7 @@ export interface VoiceCallProvider {
   /** Provider identifier */
   readonly name: ProviderName;
 
-  setPublicUrl?(url: (string)): void;
+  setPublicUrl?(url: string): void;
 
   /**
    * Verify webhook signature/HMAC before processing.

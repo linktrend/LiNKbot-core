@@ -447,7 +447,7 @@ export class GatewayConnection {
 
   // ============ Protocol handlers ============
 
-  private handleHello(ws: WebSocket, d: unknown, accessToken: (string)): void {
+  private handleHello(ws: WebSocket, d: unknown, accessToken: string): void {
     if (this.sessionId && this.lastSeq !== null) {
       ws.send(
         JSON.stringify({

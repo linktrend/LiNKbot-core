@@ -241,7 +241,7 @@ struct ApplicationRelocatorTests {
     func `kernel team identifier skips csops token header`() {
         let teamBlob = [UInt8](repeating: 0, count: 8) + Array("example-team".utf8) + [0]
 
-        #expect(ApplicationRelocator.teamIdentifier(fromCSOpsToken: (teamBlob) == "example-team"))
+        #expect(ApplicationRelocator.teamIdentifier(fromCSOpsToken: teamBlob) == "example-team")
         #expect(ApplicationRelocator.teamIdentifier(fromCSOpsToken: [0, 0, 0]) == nil)
     }
 

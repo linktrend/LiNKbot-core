@@ -4,14 +4,14 @@ import type { RunnerModelOption, RunnerSelection, TabId, UiState } from "./ui-ty
 
 const MOCK_MODELS: RunnerModelOption[] = [
   {
-    key: `ltfx.n.c4d7f681e8ccdc981c8a.v1`,
+    key: "mock-openai/gpt-5.6-luna",
     name: "GPT-5.6 Luna (mock)",
     provider: "mock-openai",
     input: "text",
     preferred: true,
   },
   {
-    key: `ltfx.n.efa30cf967e536aa724d.v1`,
+    key: "mock-openai/gpt-5.6-luna-alt",
     name: "GPT-5.6 Luna Alt (mock)",
     provider: "mock-openai",
     input: "text",

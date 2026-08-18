@@ -33,7 +33,7 @@ describe("inferAuthChoiceFromFlags", () => {
     ]);
 
     const opts: OnboardOptions = {
-      pluginOwnedApiKey: `ltfx.n.c44dfd73a3438867e978.v1`,
+      pluginOwnedApiKey: "sk-plugin-test",
     };
 
     expect(inferAuthChoiceFromFlags(opts)).toEqual({
@@ -52,7 +52,7 @@ describe("inferAuthChoiceFromFlags", () => {
     const opts: OnboardOptions = {
       customBaseUrl: "https://models.custom.local/v1",
       customModelId: "local-large",
-      customApiKey: `ltfx.n.0b34af848dc9e9f504e9.v1`, // pragma: allowlist secret
+      customApiKey: "custom-test-key", // pragma: allowlist secret
     };
 
     expect(inferAuthChoiceFromFlags(opts)).toEqual({

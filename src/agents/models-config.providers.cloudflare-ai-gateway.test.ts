@@ -47,7 +47,7 @@ describe("cloudflare-ai-gateway profile provenance", () => {
         credential: {
           type: "api_key",
           provider: "cloudflare-ai-gateway",
-          key: `ltfx.n.1c2517886b1c56f4e3a9.v1`,
+          key: "sk-runtime-cloudflare",
           keyRef: { source: "env", provider: "default", id: "CLOUDFLARE_AI_GATEWAY_API_KEY" },
           metadata: {
             accountId: "acct_123",
@@ -66,7 +66,7 @@ describe("cloudflare-ai-gateway profile provenance", () => {
       credential: {
         type: "api_key",
         provider: "cloudflare-ai-gateway",
-        key: `ltfx.n.1c2517886b1c56f4e3a9.v1`,
+        key: "sk-runtime-cloudflare",
         keyRef: { source: "file", provider: "vault", id: "/cloudflare/apiKey" },
         metadata: {
           accountId: "acct_123",
@@ -82,7 +82,7 @@ describe("cloudflare-ai-gateway profile provenance", () => {
       credential: {
         type: "api_key",
         provider: "cloudflare-ai-gateway",
-        key: `ltfx.n.b464ce30b204dc60e335.v1`,
+        key: "sk-second",
         metadata: {
           accountId: "acct_456",
           gatewayId: "gateway_789",
@@ -95,14 +95,14 @@ describe("cloudflare-ai-gateway profile provenance", () => {
 
   it("prefers the runtime env marker over stored profile secrets", () => {
     const envSnapshot = captureEnv(["CLOUDFLARE_AI_GATEWAY_API_KEY"]);
-    process.env.CLOUDFLARE_AI_GATEWAY_API_KEY = `ltfx.n.a26fa50cba5c8fefa46a.v1`; // pragma: allowlist secret
+    process.env.CLOUDFLARE_AI_GATEWAY_API_KEY = "rotated-secret"; // pragma: allowlist secret
 
     try {
       const provider = buildCloudflareAiGatewayCatalogProvider({
         credential: {
           type: "api_key",
           provider: "cloudflare-ai-gateway",
-          key: `ltfx.n.2fbb790f0e697b69f2af.v1`,
+          key: "stale-stored-secret",
           metadata: {
             accountId: "acct_123",
             gatewayId: "gateway_456",

@@ -65,7 +65,7 @@ export function discussionExternalRef(
   )}`;
 }
 
-export function discussionCredentialFingerprint(token: (string)): string {
+export function discussionCredentialFingerprint(token: string): string {
   return createHash("sha256").update(token).digest("hex");
 }
 

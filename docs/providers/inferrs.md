@@ -64,7 +64,7 @@ Gemma 4 on a local `inferrs` server:
     providers: {
       inferrs: {
         baseUrl: "http://127.0.0.1:8080/v1",
-        apiKey: "${ltfx.n.e9f44ccb9727ff719fa5.v1}",
+        apiKey: "inferrs-local",
         api: "openai-completions",
         models: [
           {
@@ -96,7 +96,7 @@ OpenClaw can start `inferrs` itself only when an `inferrs/...` model is selected
     providers: {
       inferrs: {
         baseUrl: "http://127.0.0.1:8080/v1",
-        apiKey: "${ltfx.n.e9f44ccb9727ff719fa5.v1}",
+        apiKey: "inferrs-local",
         api: "openai-completions",
         timeoutSeconds: 300,
         localService: {

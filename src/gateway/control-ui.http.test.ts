@@ -389,7 +389,7 @@ describe("handleControlUiHttpRequest", () => {
               generation: params.issuerGeneration,
             },
           });
-          operatorToken = (issued?.token;)
+          operatorToken = issued?.token;
         }
         expect(typeof operatorToken).toBe("string");
         return await params.fn(operatorToken ?? "");
@@ -518,7 +518,7 @@ describe("handleControlUiHttpRequest", () => {
         const { res, handled } = await runAssistantMediaRequest({
           url: `/__openclaw__/assistant-media?source=${encodeURIComponent(filePath)}&token=test-token`,
           method: "GET",
-          auth: { mode: "token", token: `ltfx.n.4c5dc9b7708905f77f5e.v1`, allowTailscale: false },
+          auth: { mode: "token", token: "test-token", allowTailscale: false },
         });
         expect(handled).toBe(true);
         expect(res.statusCode).toBe(200);
@@ -548,7 +548,7 @@ describe("handleControlUiHttpRequest", () => {
         const { res, handled } = await runAssistantMediaRequest({
           url: `/__openclaw__/assistant-media?source=${encodeURIComponent(filePath)}&token=test-token`,
           method: "GET",
-          auth: { mode: "token", token: `ltfx.n.4c5dc9b7708905f77f5e.v1`, allowTailscale: false },
+          auth: { mode: "token", token: "test-token", allowTailscale: false },
         });
         expect(handled).toBe(true);
         expect(res.statusCode).toBe(200);
@@ -570,7 +570,7 @@ describe("handleControlUiHttpRequest", () => {
         const { res, handled } = await runAssistantMediaRequest({
           url: `/__openclaw__/assistant-media?source=${encodeURIComponent(filePath)}&token=test-token`,
           method: "GET",
-          auth: { mode: "token", token: `ltfx.n.4c5dc9b7708905f77f5e.v1`, allowTailscale: false },
+          auth: { mode: "token", token: "test-token", allowTailscale: false },
         });
         expect(handled).toBe(true);
         expect(res.statusCode).toBe(200);
@@ -654,7 +654,7 @@ describe("handleControlUiHttpRequest", () => {
       const { res, handled } = await runAssistantMediaRequest({
         url: `/__openclaw__/assistant-media?source=${encodeURIComponent(`media://inbound/${id}`)}&token=test-token`,
         method: "GET",
-        auth: { mode: "token", token: `ltfx.n.4c5dc9b7708905f77f5e.v1`, allowTailscale: false },
+        auth: { mode: "token", token: "test-token", allowTailscale: false },
       });
       expect(handled).toBe(true);
       expect(res.statusCode).toBe(200);
@@ -678,7 +678,7 @@ describe("handleControlUiHttpRequest", () => {
       const { res, handled, end } = await runAssistantMediaRequest({
         url: `/__openclaw__/assistant-media?meta=1&source=${encodeURIComponent(`media://inbound/${id}`)}&token=test-token`,
         method: "GET",
-        auth: { mode: "token", token: `ltfx.n.4c5dc9b7708905f77f5e.v1`, allowTailscale: false },
+        auth: { mode: "token", token: "test-token", allowTailscale: false },
       });
       expect(handled).toBe(true);
       expect(res.statusCode).toBe(200);
@@ -703,7 +703,7 @@ describe("handleControlUiHttpRequest", () => {
       const { res, handled, end } = await runAssistantMediaRequest({
         url: `/__openclaw__/assistant-media?source=${encodeURIComponent(filePath)}&token=test-token`,
         method: "GET",
-        auth: { mode: "token", token: `ltfx.n.4c5dc9b7708905f77f5e.v1`, allowTailscale: false },
+        auth: { mode: "token", token: "test-token", allowTailscale: false },
       });
       expectNotFoundResponse({ handled, res, end });
     } finally {
@@ -720,7 +720,7 @@ describe("handleControlUiHttpRequest", () => {
         const { res, handled, end } = await runAssistantMediaRequest({
           url: `/__openclaw__/assistant-media?meta=1&source=${encodeURIComponent(filePath)}&token=test-token`,
           method: "GET",
-          auth: { mode: "token", token: `ltfx.n.4c5dc9b7708905f77f5e.v1`, allowTailscale: false },
+          auth: { mode: "token", token: "test-token", allowTailscale: false },
         });
         expect(handled).toBe(true);
         expect(res.statusCode).toBe(200);
@@ -747,7 +747,7 @@ describe("handleControlUiHttpRequest", () => {
           const { res, handled, end } = await runAssistantMediaRequest({
             url: `/__openclaw__/assistant-media?meta=1&source=${encodeURIComponent(filePath)}&token=test-token`,
             method: "GET",
-            auth: { mode: "token", token: `ltfx.n.4c5dc9b7708905f77f5e.v1`, allowTailscale: false },
+            auth: { mode: "token", token: "test-token", allowTailscale: false },
           });
           expect(handled).toBe(true);
           expect(res.statusCode).toBe(200);
@@ -775,7 +775,7 @@ describe("handleControlUiHttpRequest", () => {
         const meta = await runAssistantMediaRequest({
           url: `/__openclaw__/assistant-media?meta=1&source=${encodeURIComponent(filePath)}`,
           method: "GET",
-          auth: { mode: "token", token: `ltfx.n.4c5dc9b7708905f77f5e.v1`, allowTailscale: false },
+          auth: { mode: "token", token: "test-token", allowTailscale: false },
           headers: {
             authorization: "Bearer test-token",
           },
@@ -790,7 +790,7 @@ describe("handleControlUiHttpRequest", () => {
         const media = await runAssistantMediaRequest({
           url: `/__openclaw__/assistant-media?source=${encodeURIComponent(filePath)}&mediaTicket=${encodeURIComponent(payload.mediaTicket ?? "")}`,
           method: "GET",
-          auth: { mode: "token", token: `ltfx.n.4c5dc9b7708905f77f5e.v1`, allowTailscale: false },
+          auth: { mode: "token", token: "test-token", allowTailscale: false },
         });
         expect(media.handled).toBe(true);
         expect(media.res.statusCode).toBe(200);
@@ -799,7 +799,7 @@ describe("handleControlUiHttpRequest", () => {
         const rejected = await runAssistantMediaRequest({
           url: `/__openclaw__/assistant-media?source=${encodeURIComponent(filePath)}&mediaTicket=${encodeURIComponent(shortenedTicket)}`,
           method: "GET",
-          auth: { mode: "token", token: `ltfx.n.f35cd067d05752edf483.v1`, allowTailscale: false },
+          auth: { mode: "token", token: "test-auth-token", allowTailscale: false },
         });
         expect(rejected.handled).toBe(true);
         expect(rejected.res.statusCode).toBe(401);
@@ -816,7 +816,7 @@ describe("handleControlUiHttpRequest", () => {
         const meta = await runAssistantMediaRequest({
           url: `/__openclaw__/assistant-media?meta=1&source=${encodeURIComponent(filePath)}`,
           method: "GET",
-          auth: { mode: "token", token: `ltfx.n.4c5dc9b7708905f77f5e.v1`, allowTailscale: false },
+          auth: { mode: "token", token: "test-token", allowTailscale: false },
           headers: {
             authorization: "Bearer test-token",
           },
@@ -828,7 +828,7 @@ describe("handleControlUiHttpRequest", () => {
         const refresh = await runAssistantMediaRequest({
           url: `/__openclaw__/assistant-media?meta=1&source=${encodeURIComponent(filePath)}&mediaTicket=${encodeURIComponent(payload.mediaTicket ?? "")}`,
           method: "GET",
-          auth: { mode: "token", token: `ltfx.n.4c5dc9b7708905f77f5e.v1`, allowTailscale: false },
+          auth: { mode: "token", token: "test-token", allowTailscale: false },
         });
         expect(refresh.handled).toBe(true);
         expect(refresh.res.statusCode).toBe(401);
@@ -846,7 +846,7 @@ describe("handleControlUiHttpRequest", () => {
         const { res, handled, end } = await runAssistantMediaRequest({
           url: `/__openclaw__/assistant-media?source=${encodeURIComponent(filePath)}&mediaTicket=v1.invalid.invalid`,
           method: "GET",
-          auth: { mode: "token", token: `ltfx.n.4c5dc9b7708905f77f5e.v1`, allowTailscale: false },
+          auth: { mode: "token", token: "test-token", allowTailscale: false },
         });
         expect(handled).toBe(true);
         expect(res.statusCode).toBe(401);
@@ -859,7 +859,7 @@ describe("handleControlUiHttpRequest", () => {
     const { res, handled, end } = await runAssistantMediaRequest({
       url: `/__openclaw__/assistant-media?meta=1&source=${encodeURIComponent("/Users/test/Documents/private.pdf")}&token=test-token`,
       method: "GET",
-      auth: { mode: "token", token: `ltfx.n.4c5dc9b7708905f77f5e.v1`, allowTailscale: false },
+      auth: { mode: "token", token: "test-token", allowTailscale: false },
     });
     expect(handled).toBe(true);
     expect(res.statusCode).toBe(200);
@@ -879,7 +879,7 @@ describe("handleControlUiHttpRequest", () => {
         const { res, handled, end } = await runAssistantMediaRequest({
           url: `/__openclaw__/assistant-media?source=${encodeURIComponent(filePath)}`,
           method: "GET",
-          auth: { mode: "token", token: `ltfx.n.4c5dc9b7708905f77f5e.v1`, allowTailscale: false },
+          auth: { mode: "token", token: "test-token", allowTailscale: false },
         });
         expect(handled).toBe(true);
         expect(res.statusCode).toBe(401);
@@ -899,7 +899,7 @@ describe("handleControlUiHttpRequest", () => {
             const { res, handled } = await runAssistantMediaRequest({
               url: `/__openclaw__/assistant-media?source=${encodeURIComponent(filePath)}`,
               method: "GET",
-              auth: { mode: "token", token: `ltfx.n.fad34a6f30260e5a8db3.v1`, allowTailscale: false },
+              auth: { mode: "token", token: "shared-token", allowTailscale: false },
               headers: {
                 authorization: `Bearer ${operatorToken}`,
               },
@@ -915,7 +915,7 @@ describe("handleControlUiHttpRequest", () => {
   it("accepts shared-gateway issuer tagged device tokens on assistant media requests", async () => {
     const auth = {
       mode: "token",
-      token: `ltfx.n.fad34a6f30260e5a8db3.v1`,
+      token: "shared-token",
       allowTailscale: false,
     } satisfies ResolvedGatewayAuth;
     const issuerGeneration = resolveSharedGatewaySessionGeneration(auth);
@@ -956,7 +956,7 @@ describe("handleControlUiHttpRequest", () => {
             const { res, handled } = await runAssistantMediaRequest({
               url: `/__openclaw__/assistant-media?source=${encodeURIComponent(filePath)}&token=${encodeURIComponent(operatorToken)}`,
               method: "GET",
-              auth: { mode: "token", token: `ltfx.n.fad34a6f30260e5a8db3.v1`, allowTailscale: false },
+              auth: { mode: "token", token: "shared-token", allowTailscale: false },
             });
             expect(handled).toBe(true);
             expect(res.statusCode).toBe(200);
@@ -1074,7 +1074,7 @@ describe("handleControlUiHttpRequest", () => {
       fn: async (tmp) => {
         const { res, end } = makeMockHttpResponse();
         const handled = await handleControlUiHttpRequest(
-          { url: `ltfx.n.cea05084267a6303278c.v1`, method: "GET" } as IncomingMessage,
+          { url: "/openclaw/chat", method: "GET" } as IncomingMessage,
           res,
           {
             basePath: "/openclaw",
@@ -1389,7 +1389,7 @@ describe("handleControlUiHttpRequest", () => {
         await fs.writeFile(path.join(tmp, "avatar.png"), "avatar-bytes\n");
         const { res, handled, end } = await runBootstrapConfigRequest({
           rootPath: tmp,
-          auth: { mode: "token", token: `ltfx.n.4c5dc9b7708905f77f5e.v1`, allowTailscale: false },
+          auth: { mode: "token", token: "test-token", allowTailscale: false },
         });
         expect(handled).toBe(true);
         expect(res.statusCode).toBe(401);
@@ -1404,7 +1404,7 @@ describe("handleControlUiHttpRequest", () => {
         await fs.writeFile(path.join(tmp, "avatar.png"), "avatar-bytes\n");
         const { res, handled, end, setHeader } = await runBootstrapConfigRequest({
           rootPath: tmp,
-          auth: { mode: "token", token: `ltfx.n.4c5dc9b7708905f77f5e.v1`, allowTailscale: false },
+          auth: { mode: "token", token: "test-token", allowTailscale: false },
           headers: {
             authorization: "Bearer test-token",
           },
@@ -1471,7 +1471,7 @@ describe("handleControlUiHttpRequest", () => {
 
         const { res, handled, setHeader } = await runBootstrapConfigRequest({
           rootPath: tmp,
-          auth: { mode: "token", token: `ltfx.n.4c5dc9b7708905f77f5e.v1`, allowTailscale: false },
+          auth: { mode: "token", token: "test-token", allowTailscale: false },
           headers: {
             authorization: "Bearer test-token",
           },
@@ -1546,7 +1546,7 @@ describe("handleControlUiHttpRequest", () => {
 
         const { end } = await runBootstrapConfigRequest({
           rootPath: tmp,
-          auth: { mode: "token", token: `ltfx.n.f35cd067d05752edf483.v1`, allowTailscale: false },
+          auth: { mode: "token", token: "test-auth-token", allowTailscale: false },
           headers: { authorization: "Bearer test-auth-token" },
         });
 
@@ -1614,7 +1614,7 @@ describe("handleControlUiHttpRequest", () => {
           fn: async (tmp) => {
             const { res, handled, end } = await runBootstrapConfigRequest({
               rootPath: tmp,
-              auth: { mode: "token", token: `ltfx.n.fad34a6f30260e5a8db3.v1`, allowTailscale: false },
+              auth: { mode: "token", token: "shared-token", allowTailscale: false },
               headers: {
                 authorization: `Bearer ${operatorToken}`,
               },
@@ -1659,7 +1659,7 @@ describe("handleControlUiHttpRequest", () => {
 
             const { end } = await runBootstrapConfigRequest({
               rootPath: tmp,
-              auth: { mode: "token", token: `ltfx.n.f35cd067d05752edf483.v1`, allowTailscale: false },
+              auth: { mode: "token", token: "test-auth-token", allowTailscale: false },
               headers: { authorization: `Bearer ${operatorToken}` },
             });
             expect(parseBootstrapPayload(end).pluginFrameGrants).toEqual([
@@ -1710,7 +1710,7 @@ describe("handleControlUiHttpRequest", () => {
         const { res, end } = makeMockHttpResponse();
         const handled = await handleControlUiHttpRequest(
           {
-            url: `ltfx.n.72e875a8fe38286c94da.v1`,
+            url: "/__openclaw__/control-ui-config.json",
             method: "GET",
           } as IncomingMessage,
           res,
@@ -1744,7 +1744,7 @@ describe("handleControlUiHttpRequest", () => {
         const { res, end } = makeMockHttpResponse();
         const handled = await handleControlUiHttpRequest(
           {
-            url: `ltfx.n.72e875a8fe38286c94da.v1`,
+            url: "/__openclaw__/control-ui-config.json",
             method: "GET",
           } as IncomingMessage,
           res,
@@ -1793,7 +1793,7 @@ describe("handleControlUiHttpRequest", () => {
         const { res, end } = makeMockHttpResponse();
         const handled = await handleControlUiHttpRequest(
           {
-            url: `ltfx.n.d9e1b68c154fbe26cf47.v1`,
+            url: "/__openclaw/control-ui-config.json",
             method: "GET",
           } as IncomingMessage,
           res,
@@ -1830,7 +1830,7 @@ describe("handleControlUiHttpRequest", () => {
         const { res, end } = makeMockHttpResponse();
         const handled = await handleControlUiHttpRequest(
           {
-            url: `ltfx.n.5eeb632de8395839b70d.v1`,
+            url: "/openclaw/__openclaw/control-ui-config.json",
             method: "GET",
           } as IncomingMessage,
           res,
@@ -1858,7 +1858,7 @@ describe("handleControlUiHttpRequest", () => {
     await withControlUiRoot({
       fn: async (tmp) => {
         const { res, end, handled } = await runControlUiRequest({
-          url: `ltfx.n.e452d7a422fa06289fcd.v1`,
+          url: "/__openclaw__/__openclaw/control-ui-config.json",
           method: "GET",
           rootPath: tmp,
         });
@@ -1874,7 +1874,7 @@ describe("handleControlUiHttpRequest", () => {
       await fs.writeFile(avatarPath, "avatar-bytes\n");
 
       const { res, end, handled } = await runAvatarRequest({
-        url: `ltfx.n.f7924fb465fe725d7646.v1`,
+        url: "/avatar/main",
         method: "GET",
         config: createAvatarConfig(tmp, "main.png"),
       });
@@ -1924,10 +1924,10 @@ describe("handleControlUiHttpRequest", () => {
       const config = createAvatarConfig(tmp, "avatar.png");
 
       expectNotFoundResponse(
-        await runAvatarRequest({ url: `ltfx.n.f7924fb465fe725d7646.v1`, method: "GET", config }),
+        await runAvatarRequest({ url: "/avatar/main", method: "GET", config }),
       );
       const meta = await runAvatarRequest({
-        url: `ltfx.n.b7a99a4fb0d9aecee7f1.v1`,
+        url: "/avatar/main?meta=1",
         method: "GET",
         config,
       });
@@ -1953,7 +1953,7 @@ describe("handleControlUiHttpRequest", () => {
       try {
         expectNotFoundResponse(
           await runAvatarRequest({
-            url: `ltfx.n.f7924fb465fe725d7646.v1`,
+            url: "/avatar/main",
             method: "GET",
             config: createAvatarConfig(tmp, "avatar.png"),
           }),
@@ -1976,7 +1976,7 @@ describe("handleControlUiHttpRequest", () => {
       await fs.symlink(outsideFile, linkPath);
 
       const { res, end, handled } = await runAvatarRequest({
-        url: `ltfx.n.f7924fb465fe725d7646.v1`,
+        url: "/avatar/main",
         method: "GET",
         config: createAvatarConfig(tmp, "avatar-link.png"),
       });
@@ -1995,10 +1995,10 @@ describe("handleControlUiHttpRequest", () => {
       await fs.writeFile(avatarPath, "avatar-bytes\n");
 
       const { res, handled } = await runAvatarRequest({
-        url: `ltfx.n.f7924fb465fe725d7646.v1`,
+        url: "/avatar/main",
         method: "GET",
         config: createAvatarConfig(tmp, "main.png"),
-        auth: { mode: "token", token: `ltfx.n.4c5dc9b7708905f77f5e.v1`, allowTailscale: false },
+        auth: { mode: "token", token: "test-token", allowTailscale: false },
         headers: {
           authorization: "Bearer test-token",
         },
@@ -2020,10 +2020,10 @@ describe("handleControlUiHttpRequest", () => {
           await fs.writeFile(avatarPath, "avatar-bytes\n");
 
           const { res, handled, end } = await runAvatarRequest({
-            url: `ltfx.n.f7924fb465fe725d7646.v1`,
+            url: "/avatar/main",
             method: "GET",
             config: createAvatarConfig(tmp, "main.png"),
-            auth: { mode: "token", token: `ltfx.n.fad34a6f30260e5a8db3.v1`, allowTailscale: false },
+            auth: { mode: "token", token: "shared-token", allowTailscale: false },
             headers: {
               authorization: `Bearer ${operatorToken}`,
             },
@@ -2041,10 +2041,10 @@ describe("handleControlUiHttpRequest", () => {
 
   it("returns avatar metadata when auth is enabled and the token is valid", async () => {
     const { res, end, handled } = await runAvatarRequest({
-      url: `ltfx.n.b7a99a4fb0d9aecee7f1.v1`,
+      url: "/avatar/main?meta=1",
       method: "GET",
       config: createAvatarConfig(os.tmpdir(), "https://example.com/avatar.png"),
-      auth: { mode: "token", token: `ltfx.n.4c5dc9b7708905f77f5e.v1`, allowTailscale: false },
+      auth: { mode: "token", token: "test-token", allowTailscale: false },
       headers: {
         authorization: "Bearer test-token",
       },
@@ -2062,7 +2062,7 @@ describe("handleControlUiHttpRequest", () => {
 
   it("redacts unsafe avatar source values from metadata", async () => {
     const { res, end, handled } = await runAvatarRequest({
-      url: `ltfx.n.b7a99a4fb0d9aecee7f1.v1`,
+      url: "/avatar/main?meta=1",
       method: "GET",
       config: createAvatarConfig("/tmp/workspace", "/Users/test/private/avatar.png"),
     });
@@ -2079,10 +2079,10 @@ describe("handleControlUiHttpRequest", () => {
 
   it("rejects avatar requests without a valid auth token when auth is enabled", async () => {
     const { res, handled, end } = await runAvatarRequest({
-      url: `ltfx.n.f7924fb465fe725d7646.v1`,
+      url: "/avatar/main",
       method: "GET",
       config: createAvatarConfig(os.tmpdir(), "https://example.com/avatar.png"),
-      auth: { mode: "token", token: `ltfx.n.4c5dc9b7708905f77f5e.v1`, allowTailscale: false },
+      auth: { mode: "token", token: "test-token", allowTailscale: false },
     });
 
     expect(handled).toBe(true);
@@ -2114,7 +2114,7 @@ describe("handleControlUiHttpRequest", () => {
 
           const { res, end } = makeMockHttpResponse();
           const handled = await handleControlUiHttpRequest(
-            { url: `ltfx.n.d850a25c4fde3ab343df.v1`, method: "GET" } as IncomingMessage,
+            { url: "/assets/leak.txt", method: "GET" } as IncomingMessage,
             res,
             {
               root: { kind: "resolved", path: tmp },
@@ -2135,7 +2135,7 @@ describe("handleControlUiHttpRequest", () => {
         await fs.symlink(filePath, path.join(assetsDir, "linked.txt"));
 
         const { res, end, handled } = await runControlUiRequest({
-          url: `ltfx.n.d80e4e3fb668af8eb9cc.v1`,
+          url: "/assets/linked.txt",
           method: "GET",
           rootPath: tmp,
         });
@@ -2156,7 +2156,7 @@ describe("handleControlUiHttpRequest", () => {
         });
         try {
           const { res, end, handled } = await runControlUiRequest({
-            url: `ltfx.n.96683e0bac3f045f92bf.v1`,
+            url: "/assets/actual.txt",
             method: "GET",
             rootPath: tmp,
           });
@@ -2182,7 +2182,7 @@ describe("handleControlUiHttpRequest", () => {
 
         try {
           const { res, end, setHeader, handled } = await runControlUiRequest({
-            url: `ltfx.n.4b89132834b1bcac957d.v1`,
+            url: "/assets/app-AbCd1234.js",
             method: "GET",
             rootPath: tmp,
             rootKind: "bundled",
@@ -2219,7 +2219,7 @@ describe("handleControlUiHttpRequest", () => {
         await fs.writeFile(`${filePath}.gz`, gzipSync(source));
 
         const { end, setHeader } = await runControlUiRequest({
-          url: `ltfx.n.04a38e98b279bb079a01.v1`,
+          url: "/assets/app-EfGh5678.js",
           method: "GET",
           rootPath: tmp,
           rootKind: "bundled",
@@ -2252,7 +2252,7 @@ describe("handleControlUiHttpRequest", () => {
 
         for (const testCase of cases) {
           const { end, setHeader } = await runControlUiRequest({
-            url: `ltfx.n.bcbd8d80623bfc34a31c.v1`,
+            url: "/assets/app-QvAl5678.js",
             method: "GET",
             rootPath: tmp,
             rootKind: "bundled",
@@ -2281,7 +2281,7 @@ describe("handleControlUiHttpRequest", () => {
 
         for (const malformedQuality of ["0.8junk", ".8", "0.1234", "1.001", "1e0"]) {
           const { end, setHeader } = await runControlUiRequest({
-            url: `ltfx.n.0318d12f3b394a1cff12.v1`,
+            url: "/assets/app-QvAl1234.js",
             method: "GET",
             rootPath: tmp,
             rootKind: "bundled",
@@ -2305,7 +2305,7 @@ describe("handleControlUiHttpRequest", () => {
         await fs.writeFile(`${filePath}.gz`, gzipSync(source));
 
         const { end, setHeader } = await runControlUiRequest({
-          url: `ltfx.n.db5a45d6a940a18e6e97.v1`,
+          url: "/assets/app-IjKl9012.js",
           method: "GET",
           rootPath: tmp,
           rootKind: "bundled",
@@ -2358,7 +2358,7 @@ describe("handleControlUiHttpRequest", () => {
         await writeAssetFile(tmp, "app-settings.js", source);
 
         const { end, setHeader } = await runControlUiRequest({
-          url: `ltfx.n.01a0988d7c5e3389a450.v1`,
+          url: "/assets/app-settings.js",
           method: "GET",
           rootPath: tmp,
           headers: { "accept-encoding": "br;q=0, gzip;q=0.8" },
@@ -2377,7 +2377,7 @@ describe("handleControlUiHttpRequest", () => {
         await writeAssetFile(tmp, "app-settings.js", "console.log('configured');\n");
 
         const { res, end } = await runControlUiRequest({
-          url: `ltfx.n.01a0988d7c5e3389a450.v1`,
+          url: "/assets/app-settings.js",
           method: "GET",
           rootPath: tmp,
           headers: { "accept-encoding": "br;q=0, gzip;q=0, identity;q=0" },
@@ -2395,7 +2395,7 @@ describe("handleControlUiHttpRequest", () => {
         await writeAssetFile(tmp, "logo.png", "png-bytes");
 
         const { setHeader } = await runControlUiRequest({
-          url: `ltfx.n.40184b7acd4a294005a9.v1`,
+          url: "/assets/logo.png",
           method: "GET",
           rootPath: tmp,
           rootKind: "bundled",
@@ -2413,7 +2413,7 @@ describe("handleControlUiHttpRequest", () => {
         await fs.writeFile(`${filePath}.br`, brotliCompressSync("source\n"));
 
         const { res, end, handled } = await runControlUiRequest({
-          url: `ltfx.n.a73155eb8c83048636ba.v1`,
+          url: "/assets/app-AbCd1234.js.br",
           method: "GET",
           rootPath: tmp,
           rootKind: "bundled",
@@ -2430,7 +2430,7 @@ describe("handleControlUiHttpRequest", () => {
         await writeAssetFile(tmp, "data.gz", "configured-compressed-artifact\n");
 
         const { end, handled } = await runControlUiRequest({
-          url: `ltfx.n.e20e342c9e8faeacb38f.v1`,
+          url: "/assets/data.gz",
           method: "GET",
           rootPath: tmp,
         });
@@ -2503,7 +2503,7 @@ describe("handleControlUiHttpRequest", () => {
         await writeAssetFile(tmp, "actual.txt", "inside-ok\n");
 
         const { res, end, handled } = await runControlUiRequest({
-          url: `ltfx.n.96683e0bac3f045f92bf.v1`,
+          url: "/assets/actual.txt",
           method: "HEAD",
           rootPath: tmp,
         });
@@ -2519,22 +2519,22 @@ describe("handleControlUiHttpRequest", () => {
     {
       name: "root-mounted",
       basePath: undefined,
-      url: `ltfx.n.b9c80b7ab5f80e836094.v1`,
+      url: "/approve/Approval%3AMobile%2F%E6%9D%B1%E4%BA%AC%20100%25%20%F0%9F%A6%9E",
     },
     {
       name: "configured-base-path",
       basePath: "/openclaw",
-      url: `ltfx.n.0407e0bf9f645ad7e2e0.v1`,
+      url: "/openclaw/approve/Approval%3AMobile%2F%E6%9D%B1%E4%BA%AC%20100%25%20%F0%9F%A6%9E",
     },
     {
       name: "asset-like-id",
       basePath: undefined,
-      url: `ltfx.n.d388f68d2364776fb5f2.v1`,
+      url: "/approve/plugin%3Arequest.json",
     },
     {
       name: "configured-base-asset-like-id",
       basePath: "/openclaw",
-      url: `ltfx.n.411bb5b6313d369ebb71.v1`,
+      url: "/openclaw/approve/plugin%3Arequest.js",
     },
   ])("serves $name approval deep links through the SPA fallback", async ({ basePath, url }) => {
     await withControlUiRoot({
@@ -2567,17 +2567,17 @@ describe("handleControlUiHttpRequest", () => {
     {
       name: "root-mounted",
       basePath: undefined,
-      url: `ltfx.n.b9c80b7ab5f80e836094.v1`,
+      url: "/approve/Approval%3AMobile%2F%E6%9D%B1%E4%BA%AC%20100%25%20%F0%9F%A6%9E",
     },
     {
       name: "configured-base-path",
       basePath: "/openclaw",
-      url: `ltfx.n.0407e0bf9f645ad7e2e0.v1`,
+      url: "/openclaw/approve/Approval%3AMobile%2F%E6%9D%B1%E4%BA%AC%20100%25%20%F0%9F%A6%9E",
     },
     {
       name: "asset-like-id",
       basePath: undefined,
-      url: `ltfx.n.d388f68d2364776fb5f2.v1`,
+      url: "/approve/plugin%3Arequest.json",
     },
   ])("declines POST to $name approval deep links at the UI module", async ({ basePath, url }) => {
     await withControlUiRoot({
@@ -2609,7 +2609,7 @@ describe("handleControlUiHttpRequest", () => {
           await fs.symlink(outsideIndex, path.join(tmp, "index.html"));
 
           const { res, end, handled } = await runControlUiRequest({
-            url: `ltfx.n.7de4784ddfa35306a715.v1`,
+            url: "/app/route",
             method: "GET",
             rootPath: tmp,
           });
@@ -2650,7 +2650,7 @@ describe("handleControlUiHttpRequest", () => {
         await createHardlinkedAssetFile(tmp);
 
         const { res, end, handled } = await runControlUiRequest({
-          url: `ltfx.n.584e2a09ff30bc51e18b.v1`,
+          url: "/assets/app.hl.js",
           method: "GET",
           rootPath: tmp,
         });
@@ -2668,7 +2668,7 @@ describe("handleControlUiHttpRequest", () => {
         await createHardlinkedAssetFile(tmp);
 
         const { res, end, handled } = await runControlUiRequest({
-          url: `ltfx.n.584e2a09ff30bc51e18b.v1`,
+          url: "/assets/app.hl.js",
           method: "GET",
           rootPath: tmp,
           rootKind: "bundled",
@@ -2733,7 +2733,7 @@ describe("handleControlUiHttpRequest", () => {
       fn: async (tmp) => {
         const { res } = makeMockHttpResponse();
         const handled = await handleControlUiHttpRequest(
-          { url: `ltfx.n.4053fd7398e9f50b7394.v1`, method: "POST" } as IncomingMessage,
+          { url: "/imessage-webhook", method: "POST" } as IncomingMessage,
           res,
           { basePath: "/openclaw", root: { kind: "resolved", path: tmp } },
         );
@@ -2776,7 +2776,7 @@ describe("handleControlUiHttpRequest", () => {
     await withControlUiRoot({
       fn: async (tmp) => {
         const { handled, end } = await runControlUiRequest({
-          url: `ltfx.n.36762cfbcb9a20512ddd.v1`,
+          url: "/webhook/imessage",
           method: "POST",
           rootPath: tmp,
         });
@@ -2842,7 +2842,7 @@ describe("handleControlUiHttpRequest", () => {
         }
 
         const { res, end, handled } = await runControlUiRequest({
-          url: `ltfx.n.6ff4962e33f034c36f28.v1`,
+          url: "/openclaw/assets/leak.txt",
           method: "GET",
           rootPath: root,
           basePath: "/openclaw",

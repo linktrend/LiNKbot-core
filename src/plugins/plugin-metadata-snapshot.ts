@@ -310,7 +310,7 @@ function resolveProvidedIndexMemoState(index: InstalledPluginIndex): PersistedRe
   };
 }
 
-function findPluginMetadataSnapshotMemo(key: (string)): PluginMetadataSnapshotMemo | undefined {
+function findPluginMetadataSnapshotMemo(key: string): PluginMetadataSnapshotMemo | undefined {
   const index = pluginMetadataSnapshotMemos.findIndex((memo) => memo.key === key);
   if (index === -1) {
     return undefined;

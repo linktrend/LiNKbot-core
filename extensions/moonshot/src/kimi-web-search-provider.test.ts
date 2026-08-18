@@ -150,7 +150,7 @@ describe("kimi web search provider", () => {
     );
     vi.stubGlobal("fetch", fetchMock);
 
-    await withEnvAsync({ KIMI_API_KEY: `ltfx.n.5e0492f3799aecb9e082.v1` }, async () => {
+    await withEnvAsync({ KIMI_API_KEY: "kimi-test-key" }, async () => {
       const result = await executeKimiSearch("kimi ungrounded chat fallback");
 
       expect(result.error).toBe("kimi_web_search_ungrounded");
@@ -163,7 +163,7 @@ describe("kimi web search provider", () => {
     const fetchMock = vi.fn().mockResolvedValue(new Response("{ nope"));
     vi.stubGlobal("fetch", fetchMock);
 
-    await withEnvAsync({ KIMI_API_KEY: `ltfx.n.5e0492f3799aecb9e082.v1` }, async () => {
+    await withEnvAsync({ KIMI_API_KEY: "kimi-test-key" }, async () => {
       await expect(executeKimiSearch("kimi malformed response")).rejects.toThrow(
         "Kimi API error: malformed JSON response",
       );
@@ -174,7 +174,7 @@ describe("kimi web search provider", () => {
     const fetchMock = vi.fn().mockResolvedValue(jsonResponse([]));
     vi.stubGlobal("fetch", fetchMock);
 
-    await withEnvAsync({ KIMI_API_KEY: `ltfx.n.5e0492f3799aecb9e082.v1` }, async () => {
+    await withEnvAsync({ KIMI_API_KEY: "kimi-test-key" }, async () => {
       await expect(executeKimiSearch("kimi wrong root response")).rejects.toThrow(
         "Kimi API error: malformed JSON response",
       );
@@ -185,7 +185,7 @@ describe("kimi web search provider", () => {
     const fetchMock = vi.fn().mockResolvedValue(jsonResponse({ choices: [] }));
     vi.stubGlobal("fetch", fetchMock);
 
-    await withEnvAsync({ KIMI_API_KEY: `ltfx.n.5e0492f3799aecb9e082.v1` }, async () => {
+    await withEnvAsync({ KIMI_API_KEY: "kimi-test-key" }, async () => {
       await expect(executeKimiSearch("kimi missing final message")).rejects.toThrow(
         "Kimi API error: malformed JSON response",
       );
@@ -232,7 +232,7 @@ describe("kimi web search provider", () => {
       );
     vi.stubGlobal("fetch", fetchMock);
 
-    await withEnvAsync({ KIMI_API_KEY: `ltfx.n.5e0492f3799aecb9e082.v1` }, async () => {
+    await withEnvAsync({ KIMI_API_KEY: "kimi-test-key" }, async () => {
       const result = await executeKimiSearch("kimi grounded tool replay");
 
       expect(result.provider).toBe("kimi");
@@ -256,7 +256,7 @@ describe("kimi web search provider", () => {
     );
     vi.stubGlobal("fetch", fetchMock);
 
-    await withEnvAsync({ KIMI_API_KEY: `ltfx.n.5e0492f3799aecb9e082.v1` }, async () => {
+    await withEnvAsync({ KIMI_API_KEY: "kimi-test-key" }, async () => {
       const result = await executeKimiSearch("kimi grounded citation");
 
       expect(result.provider).toBe("kimi");
@@ -287,7 +287,7 @@ describe("kimi web search provider", () => {
   });
 
   it("uses config apiKey when provided", () => {
-    expect(testing.resolveKimiApiKey({ apiKey: `ltfx.n.5e0492f3799aecb9e082.v1` })).toBe("kimi-test-key");
+    expect(testing.resolveKimiApiKey({ apiKey: "kimi-test-key" })).toBe("kimi-test-key");
   });
 
   it("falls back to env apiKey", () => {

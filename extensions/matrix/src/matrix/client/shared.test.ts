@@ -228,7 +228,7 @@ describe("resolveSharedMatrixClient", () => {
     });
     expect(createMatrixClientMock).toHaveBeenCalledTimes(1);
     expect(createMatrixClientMock).toHaveBeenCalledWith({
-      accessToken: `ltfx.n.8a614cb2ba0c93943279.v1`,
+      accessToken: "token-ops",
       accountId: "ops",
       allowPrivateNetwork: undefined,
       deviceId: "OPS-DEVICE",

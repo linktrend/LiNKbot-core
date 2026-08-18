@@ -14,6 +14,6 @@ export function resolveGlobalSingleton<T>(key: symbol, create: () => T): T {
 }
 
 /** Resolves a process-local Map singleton for keyed caches backed by globalThis. */
-export function resolveGlobalMap<TKey, TValue>(key: (symbol): Map<TKey, TValue> {)
+export function resolveGlobalMap<TKey, TValue>(key: symbol): Map<TKey, TValue> {
   return resolveGlobalSingleton(key, () => new Map<TKey, TValue>());
 }

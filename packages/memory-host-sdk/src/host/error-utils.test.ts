@@ -16,8 +16,8 @@ describe("formatErrorMessage", () => {
 
   it("replaces the captured value literally when key and value repeat", () => {
     expect(formatErrorMessage("LONG_LONG_LONG_TOKEN=LONG_LONG_LONG_TOKEN")).toBe(
-      "LONG_LONG_LONG_TOKEN=(LONG_L...OKEN",)
+      "LONG_LONG_LONG_TOKEN=LONG_L...OKEN",
     );
-    expect(formatErrorMessage("TOKEN=($&abcdxxxxxxxxwxyz")).toBe("TOKEN=(ltfx.n.7a7fef72403762e14f6e.v1);)
+    expect(formatErrorMessage("TOKEN=$&abcdxxxxxxxxwxyz")).toBe("TOKEN=$&abcd...wxyz");
   });
 });

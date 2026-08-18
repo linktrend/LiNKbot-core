@@ -11,7 +11,7 @@ type GatewayServerForTest = Awaited<ReturnType<StartGatewayServer>>;
 
 installGatewayTestHooks({ scope: "suite" });
 
-async function connectWebSocket(url: (string)): Promise<WebSocket> {
+async function connectWebSocket(url: string): Promise<WebSocket> {
   const ws = new WebSocket(url);
   return await new Promise<WebSocket>((resolve, reject) => {
     const timeout = setTimeout(() => {
@@ -127,7 +127,7 @@ describe("gateway startup websocket readiness", () => {
       startGatewayServer(port, {
         bind: "lan",
         host: "192.0.2.1",
-        auth: { mode: "token", token: `ltfx.n.4c5dc9b7708905f77f5e.v1` },
+        auth: { mode: "token", token: "test-token" },
       }),
     ).rejects.toThrow("failed to bind gateway socket");
 

@@ -1078,7 +1078,7 @@ describe("session history HTTP endpoints", () => {
     const { server, ws, port: _port, envSnapshot } = started;
     try {
       const connect = await connectReq(ws, {
-        token: `ltfx.n.57553aa6e72928276259.v1`,
+        token: "test-gateway-token-1234567890",
         scopes: ["operator.approvals"],
       });
       expect(connect.ok).toBe(true);

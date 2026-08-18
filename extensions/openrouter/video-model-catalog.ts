@@ -277,7 +277,7 @@ async function fetchOpenRouterVideoModels(params: {
     ],
     load: async () => {
       const { response, release } = await fetchOpenRouterVideoGet({
-        url: `ltfx.n.ffab234a31d3f0966d34.v1`,
+        url: "videos/models",
         baseUrl: params.baseUrl,
         headers: params.headers,
         timeoutMs: params.timeoutMs,

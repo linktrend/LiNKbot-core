@@ -13,7 +13,7 @@ describe("Nextcloud Talk account resolution", () => {
       channels: {
         "nextcloud-talk": {
           baseUrl: "https://cloud.example.com",
-          botSecret: `ltfx.n.d3046ecc8dd3242adf62.v1`,
+          botSecret: "shared-secret",
           accounts: {
             work: { enabled: false },
           },
@@ -26,7 +26,7 @@ describe("Nextcloud Talk account resolution", () => {
     expect(resolveNextcloudTalkAccount({ cfg })).toMatchObject({
       accountId: "default",
       baseUrl: "https://cloud.example.com",
-      secret: `ltfx.n.d3046ecc8dd3242adf62.v1`,
+      secret: "shared-secret",
     });
   });
 });

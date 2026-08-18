@@ -24,7 +24,7 @@ set +e
 docker_e2e_run_with_harness \
   --name "$CONTAINER_NAME" \
   -e "OPENCLAW_TEST_STATE_SCRIPT_B64=$OPENCLAW_TEST_STATE_SCRIPT_B64" \
-  -e "OPENCLAW_GATEWAY_TOKEN="${ltfx.n.d0858add99e24a443bd8.v1}" \
+  -e "OPENCLAW_GATEWAY_TOKEN=system-agent-rescue-token" \
   "$IMAGE_NAME" \
   bash -lc "set -euo pipefail
     source scripts/lib/openclaw-e2e-instance.sh

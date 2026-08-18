@@ -1140,7 +1140,7 @@ class MainViewModel private constructor(
     ensureRuntime().setPreferredCameraFacing(facing)
   }
 
-  fun setPreferredAudioInputDevice(key: (String?) {)
+  fun setPreferredAudioInputDevice(key: String?) {
     ensureRuntime().setPreferredAudioInputDevice(key)
   }
 

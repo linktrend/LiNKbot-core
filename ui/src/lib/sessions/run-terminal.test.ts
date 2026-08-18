@@ -16,7 +16,7 @@ describe("reconcileSessionRunTerminal yielded parent", () => {
   it("settles the owned model run while keeping parent work pending", () => {
     const result = sessionsResult([
       {
-        key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+        key: "agent:main:main",
         kind: "direct",
         updatedAt: 1,
         hasActiveRun: true,
@@ -52,7 +52,7 @@ describe("reconcileSessionRunTerminal yielded parent", () => {
   it("preserves overlapping active runs when one model turn yields", () => {
     const result = sessionsResult([
       {
-        key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+        key: "agent:main:main",
         kind: "direct",
         updatedAt: 1,
         hasActiveRun: true,

@@ -23,25 +23,25 @@ import type { OpenClawConfig } from "./types.js";
 describe("config env vars", () => {
   it("applies env vars from env block when missing", async () => {
     await withEnvOverride({ OPENROUTER_API_KEY: undefined }, async () => {
-      applyConfigEnvVars({ env: { vars: { OPENROUTER_API_KEY: `ltfx.n.27c99de52a899b8d6462.v1` } } } as OpenClawConfig);
+      applyConfigEnvVars({ env: { vars: { OPENROUTER_API_KEY: "config-key" } } } as OpenClawConfig);
       expect(process.env.OPENROUTER_API_KEY).toBe("config-key");
     });
   });
 
   it("does not override existing env vars", async () => {
-    await withEnvOverride({ OPENROUTER_API_KEY: `ltfx.n.711b566d4a1c301fd20c.v1` }, async () => {
-      applyConfigEnvVars({ env: { vars: { OPENROUTER_API_KEY: `ltfx.n.27c99de52a899b8d6462.v1` } } } as OpenClawConfig);
+    await withEnvOverride({ OPENROUTER_API_KEY: "existing-key" }, async () => {
+      applyConfigEnvVars({ env: { vars: { OPENROUTER_API_KEY: "config-key" } } } as OpenClawConfig);
       expect(process.env.OPENROUTER_API_KEY).toBe("existing-key");
     });
   });
 
   it("overrides only exact lower-precedence env values", () => {
     const config = {
-      env: { vars: { OPENROUTER_API_KEY: `ltfx.n.27c99de52a899b8d6462.v1` } },
+      env: { vars: { OPENROUTER_API_KEY: "config-key" } },
     } as OpenClawConfig;
-    const lowerPrecedenceEnv = { OPENROUTER_API_KEY: `ltfx.n.8664bb0d8332af6980b6.v1` };
-    const shellEnv = { OPENROUTER_API_KEY: `ltfx.n.8664bb0d8332af6980b6.v1` };
-    const changedEnv = { OPENROUTER_API_KEY: `ltfx.n.0946334c133222956ade.v1` };
+    const lowerPrecedenceEnv = { OPENROUTER_API_KEY: "shell-key" };
+    const shellEnv = { OPENROUTER_API_KEY: "shell-key" };
+    const changedEnv = { OPENROUTER_API_KEY: "changed-key" };
 
     applyConfigEnvVars(config, shellEnv, { lowerPrecedenceEnv });
     applyConfigEnvVars(config, changedEnv, { lowerPrecedenceEnv });
@@ -52,44 +52,44 @@ describe("config env vars", () => {
 
   it("applies config env above normalized lower-precedence aliases", () => {
     const onLowerPrecedenceKeysReplaced = vi.fn();
-    const env = { ZAI_API_KEY: `ltfx.n.8664bb0d8332af6980b6.v1` };
+    const env = { ZAI_API_KEY: "shell-key" };
 
-    applyConfigEnvVars({ env: { vars: { Z_AI_API_KEY: `ltfx.n.27c99de52a899b8d6462.v1` } } } as OpenClawConfig, env, {
-      lowerPrecedenceEnv: { ZAI_API_KEY: `ltfx.n.8664bb0d8332af6980b6.v1` },
+    applyConfigEnvVars({ env: { vars: { Z_AI_API_KEY: "config-key" } } } as OpenClawConfig, env, {
+      lowerPrecedenceEnv: { ZAI_API_KEY: "shell-key" },
       onLowerPrecedenceKeysReplaced,
     });
 
     expect(env).toEqual({
-      ZAI_API_KEY: `ltfx.n.27c99de52a899b8d6462.v1`,
-      Z_AI_API_KEY: `ltfx.n.27c99de52a899b8d6462.v1`,
+      ZAI_API_KEY: "config-key",
+      Z_AI_API_KEY: "config-key",
     });
     expect(onLowerPrecedenceKeysReplaced).toHaveBeenCalledWith(["ZAI_API_KEY"]);
   });
 
   it("preserves a higher-precedence normalized alias", () => {
     const env = {
-      ZAI_API_KEY: `ltfx.n.8664bb0d8332af6980b6.v1`,
-      Z_AI_API_KEY: `ltfx.n.56b8d7d46308949cbd7a.v1`,
+      ZAI_API_KEY: "shell-key",
+      Z_AI_API_KEY: "invocation-key",
     };
 
-    applyConfigEnvVars({ env: { vars: { ZAI_API_KEY: `ltfx.n.27c99de52a899b8d6462.v1` } } } as OpenClawConfig, env, {
-      lowerPrecedenceEnv: { ZAI_API_KEY: `ltfx.n.8664bb0d8332af6980b6.v1` },
+    applyConfigEnvVars({ env: { vars: { ZAI_API_KEY: "config-key" } } } as OpenClawConfig, env, {
+      lowerPrecedenceEnv: { ZAI_API_KEY: "shell-key" },
     });
 
     expect(env).toEqual({
-      ZAI_API_KEY: `ltfx.n.56b8d7d46308949cbd7a.v1`,
-      Z_AI_API_KEY: `ltfx.n.56b8d7d46308949cbd7a.v1`,
+      ZAI_API_KEY: "invocation-key",
+      Z_AI_API_KEY: "invocation-key",
     });
   });
 
   it("mirrors a higher-precedence canonical value into a config-declared alias", () => {
-    const env = { ZAI_API_KEY: `ltfx.n.56b8d7d46308949cbd7a.v1` };
+    const env = { ZAI_API_KEY: "invocation-key" };
 
-    applyConfigEnvVars({ env: { vars: { Z_AI_API_KEY: `ltfx.n.27c99de52a899b8d6462.v1` } } } as OpenClawConfig, env);
+    applyConfigEnvVars({ env: { vars: { Z_AI_API_KEY: "config-key" } } } as OpenClawConfig, env);
 
     expect(env).toEqual({
-      ZAI_API_KEY: `ltfx.n.56b8d7d46308949cbd7a.v1`,
-      Z_AI_API_KEY: `ltfx.n.56b8d7d46308949cbd7a.v1`,
+      ZAI_API_KEY: "invocation-key",
+      Z_AI_API_KEY: "invocation-key",
     });
   });
 
@@ -106,7 +106,7 @@ describe("config env vars", () => {
 
   it("applies env vars from env.vars when missing", async () => {
     await withEnvOverride({ GROQ_API_KEY: undefined }, async () => {
-      applyConfigEnvVars({ env: { vars: { GROQ_API_KEY: `ltfx.n.004021c98fbcc1f34e80.v1` } } } as OpenClawConfig);
+      applyConfigEnvVars({ env: { vars: { GROQ_API_KEY: "gsk-config" } } } as OpenClawConfig);
       expect(process.env.GROQ_API_KEY).toBe("gsk-config");
     });
   });
@@ -116,7 +116,7 @@ describe("config env vars", () => {
       const cfg = JSON.parse(`{
         "env": {
           "vars": {
-            "API_TOKEN": `ltfx.n.e0dbaa0c6455768bf812.v1`,
+            "API_TOKEN": "sk-test-123",
             "PORT": 8080,
             "DEBUG": true
           }
@@ -133,7 +133,7 @@ describe("config env vars", () => {
   it("can build a merged runtime env without mutating process.env", async () => {
     await withEnvOverride({ OPENROUTER_API_KEY: undefined }, async () => {
       const merged = createConfigRuntimeEnv({
-        env: { vars: { OPENROUTER_API_KEY: `ltfx.n.27c99de52a899b8d6462.v1` } },
+        env: { vars: { OPENROUTER_API_KEY: "config-key" } },
       } as OpenClawConfig);
       expect(merged.OPENROUTER_API_KEY).toBe("config-key");
       expect(process.env.OPENROUTER_API_KEY).toBeUndefined();
@@ -471,7 +471,7 @@ describe("config env vars", () => {
               OPENCLAW_ALLOW_OLDER_BINARY_DESTRUCTIVE_ACTIONS: "1",
               OPENCLAW_INCLUDE_ROOTS: "/tmp/evil-include-root",
               openclaw_allow_older_binary_destructive_actions: "1",
-              OPENROUTER_API_KEY: `ltfx.n.27c99de52a899b8d6462.v1`,
+              OPENROUTER_API_KEY: "config-key",
             },
           },
         };
@@ -504,7 +504,7 @@ describe("config env vars", () => {
         env: {
           vars: {
             " BAD KEY": "oops",
-            OPENROUTER_API_KEY: `ltfx.n.27c99de52a899b8d6462.v1`,
+            OPENROUTER_API_KEY: "config-key",
           },
           "NOT-PORTABLE": "bad",
         },
@@ -521,7 +521,7 @@ describe("config env vars", () => {
       env: {
         vars: {
           OPENROUTER_API_KEY: "${OPENROUTER_API_KEY}",
-          BRAVE_API_KEY: `ltfx.n.27c99de52a899b8d6462.v1`,
+          BRAVE_API_KEY: "config-key",
         },
       },
     } as OpenClawConfig);
@@ -534,7 +534,7 @@ describe("config env vars", () => {
     const entries = collectConfigRuntimeEnvVars({
       env: {
         OPENROUTER_API_KEY: "${OPENROUTER_API_KEY}",
-        BRAVE_API_KEY: `ltfx.n.27c99de52a899b8d6462.v1`,
+        BRAVE_API_KEY: "config-key",
       },
     } as OpenClawConfig);
 
@@ -548,11 +548,11 @@ describe("config env vars", () => {
         env: {
           vars: {
             OPENROUTER_API_KEY: "${OPENROUTER_API_KEY}",
-            BRAVE_API_KEY: `ltfx.n.27c99de52a899b8d6462.v1`,
+            BRAVE_API_KEY: "config-key",
           },
         },
       },
-      { OPENROUTER_API_KEY: `ltfx.n.b695c853fc672113967a.v1` },
+      { OPENROUTER_API_KEY: "resolved-key" },
     ) as OpenClawConfig;
 
     const entries = collectConfigRuntimeEnvVars(resolvedConfig);
@@ -569,7 +569,7 @@ describe("config env vars", () => {
           throw new Error("Expected OPENCLAW_STATE_DIR to be set by withTempHome");
         }
         await fs.mkdir(stateDir, { recursive: true });
-        await fs.writeFile(path.join(stateDir, ".env"), "BRAVE_API_KEY=(from-dotenv\n", "utf-8");)
+        await fs.writeFile(path.join(stateDir, ".env"), "BRAVE_API_KEY=from-dotenv\n", "utf-8");
 
         const config: OpenClawConfig = {
           plugins: {
@@ -611,7 +611,7 @@ describe("config env vars", () => {
 
   it("reads key-value pairs from the state-dir .env file", async () => {
     await withTempHome(async (_home) => {
-      await writeStateDirDotEnv("BRAVE_API_KEY=(BSA-test-key\nDISCORD_BOT_TOKEN=(discord-tok\n", {))
+      await writeStateDirDotEnv("BRAVE_API_KEY=BSA-test-key\nDISCORD_BOT_TOKEN=discord-tok\n", {
         env: process.env,
       });
       const vars = collectDurableServiceEnvVars({ env: process.env });

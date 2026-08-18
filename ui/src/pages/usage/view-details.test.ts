@@ -26,7 +26,7 @@ function point(overrides: Partial<TimeSeriesPoint> = {}): TimeSeriesPoint {
 
 function session(): UsageSessionEntry {
   return {
-    key: `ltfx.n.1c88497b4ffc1bbe8d0c.v1`,
+    key: "agent:main:detail",
     label: "Detail session",
     usage: {
       totalTokens: 1000,

@@ -63,7 +63,7 @@ describe("nextcloud-talk send cfg threading", () => {
   const defaultAccount = {
     accountId: "default",
     baseUrl: "https://nextcloud.example.com",
-    secret: `ltfx.n.31160254d1297393d2ad.v1`,
+    secret: "secret-value",
   };
 
   function mockNextcloudMessageResponse(messageId: number, timestamp: number): void {
@@ -184,7 +184,7 @@ describe("nextcloud-talk send cfg threading", () => {
 
     expect(hoisted.generateNextcloudTalkSignature).toHaveBeenCalledWith({
       body: text,
-      secret: `ltfx.n.31160254d1297393d2ad.v1`,
+      secret: "secret-value",
     });
     expect(fetchMock.mock.calls[0]?.[1]?.body).toBe(
       JSON.stringify({ message: text, replyTo: "parent-1" }),
@@ -390,7 +390,7 @@ describe("nextcloud-talk send cfg threading", () => {
     });
     expect(hoisted.generateNextcloudTalkSignature).toHaveBeenCalledWith({
       body: "👍",
-      secret: `ltfx.n.31160254d1297393d2ad.v1`,
+      secret: "secret-value",
     });
     expect(fetchMock).toHaveBeenCalledWith(
       "https://nextcloud.example.com/ocs/v2.php/apps/spreed/api/v1/bot/ops/reaction/m-1",
@@ -426,7 +426,7 @@ describe("nextcloud-talk send bounded response reads", () => {
   const account = {
     accountId: "default",
     baseUrl: "https://nextcloud.example.com",
-    secret: `ltfx.n.31160254d1297393d2ad.v1`,
+    secret: "secret-value",
   };
 
   // Builds a streaming body with NO content-length so only the streaming byte

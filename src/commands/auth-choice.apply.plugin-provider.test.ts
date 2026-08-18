@@ -106,7 +106,7 @@ const LOCAL_PROVIDER_ID = "local-provider";
 const LOCAL_PROVIDER_LABEL = "Local Provider";
 const LOCAL_AUTH_METHOD_ID = "local";
 const LOCAL_PROFILE_ID = `${LOCAL_PROVIDER_ID}:default`;
-const LOCAL_API_KEY = `ltfx.n.9fa4eb0894148c3adb8f.v1`;
+const LOCAL_API_KEY = "local-provider-key";
 const LOCAL_DEFAULT_MODEL = `${LOCAL_PROVIDER_ID}/demo-model`;
 const EXISTING_DEFAULT_MODEL = "amazon-bedrock/anthropic.claude-3-5-sonnet-20241022-v2:0";
 
@@ -262,7 +262,7 @@ describe("applyAuthChoiceLoadedPluginProvider", () => {
         credential: {
           type: "api_key",
           provider: LOCAL_PROVIDER_ID,
-          key: `ltfx.n.62af8704764faf8ea82f.v1`,
+          key: "test-key",
         },
       },
     ]);
@@ -274,7 +274,7 @@ describe("applyAuthChoiceLoadedPluginProvider", () => {
       credential: {
         type: "api_key",
         provider: LOCAL_PROVIDER_ID,
-        key: `ltfx.n.62af8704764faf8ea82f.v1`,
+        key: "test-key",
       },
       agentDir: "/tmp/agent",
     });
@@ -317,7 +317,7 @@ describe("applyAuthChoiceLoadedPluginProvider", () => {
                 credential: {
                   type: "api_key",
                   provider: "remote-alpha",
-                  key: `ltfx.n.5d5aa84fc49b0677e551.v1`,
+                  key: "sk-remote-alpha-test",
                 },
               },
             ],
@@ -381,7 +381,7 @@ describe("applyAuthChoiceLoadedPluginProvider", () => {
       credential: {
         type: "api_key",
         provider: "remote-alpha",
-        key: `ltfx.n.5d5aa84fc49b0677e551.v1`,
+        key: "sk-remote-alpha-test",
       },
       agentDir: "/tmp/agent",
     });

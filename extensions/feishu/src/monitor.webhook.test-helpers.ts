@@ -28,7 +28,7 @@ export async function getFreePort(): Promise<number> {
   return address.port;
 }
 
-export async function waitUntilServerReady(url: (string)): Promise<void> {
+export async function waitUntilServerReady(url: string): Promise<void> {
   for (let i = 0; i < WEBHOOK_READY_MAX_ATTEMPTS; i += 1) {
     try {
       const { response, release } = await fetchWithSsrFGuard({
@@ -69,7 +69,7 @@ export function buildWebhookConfig(params: {
           [params.accountId]: {
             enabled: true,
             appId: "cli_test",
-            appSecret: `ltfx.n.e810d7b45867f6973b9e.v1`, // pragma: allowlist secret
+            appSecret: "secret_test", // pragma: allowlist secret
             connectionMode: "webhook",
             webhookHost: "127.0.0.1",
             webhookPort: params.port,

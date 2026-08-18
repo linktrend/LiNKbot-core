@@ -30,7 +30,7 @@ describe("resolveGroupSessionKey", () => {
     } satisfies Partial<MsgContext>;
 
     expect(resolveGroupSessionKey(ctx as MsgContext)).toEqual({
-      key: `ltfx.n.fbe4698b96c7c2de2be0.v1`,
+      key: "telegram:group:mixedgroup",
       channel: "telegram",
       id: "mixedgroup",
       chatType: "group",
@@ -45,7 +45,7 @@ describe("resolveGroupSessionKey", () => {
     } satisfies Partial<MsgContext>;
 
     expect(resolveGroupSessionKey(ctx as MsgContext)).toEqual({
-      key: `ltfx.n.915e82404a5d6f862554.v1`,
+      key: "matrix:channel:!room:[2001:db8::1]",
       channel: "matrix",
       id: "!room:[2001:db8::1]",
       chatType: "channel",

@@ -329,15 +329,15 @@ describe("setupSearch", () => {
 
   it("sets provider keys and enables plugin entries", async () => {
     const cases = [
-      { provider: "perplexity", pluginId: "perplexity", key: `ltfx.n.ec663fc26d9bacdadafa.v1` },
-      { provider: "brave", pluginId: "brave", key: `ltfx.n.7ab937a461f40d08cf88.v1` },
-      { provider: "firecrawl", pluginId: "firecrawl", key: `ltfx.n.3b2bfc9a9b725f83e24c.v1` },
-      { provider: "grok", pluginId: "xai", key: `ltfx.n.f16755b98e07df483e6c.v1` },
-      { provider: "tavily", pluginId: "tavily", key: `ltfx.n.460fdedb858b0bf39a78.v1` },
+      { provider: "perplexity", pluginId: "perplexity", key: "pplx-test-key" },
+      { provider: "brave", pluginId: "brave", key: "BSA-test-key" },
+      { provider: "firecrawl", pluginId: "firecrawl", key: "fc-test-key" },
+      { provider: "grok", pluginId: "xai", key: "xai-test" },
+      { provider: "tavily", pluginId: "tavily", key: "tvly-test-key" },
       {
         provider: "gemini",
         pluginId: "google",
-        key: `ltfx.n.2c5e20f41bb080866fdc.v1`,
+        key: "AIza-test",
         textMessage: "Google Gemini API key",
       },
     ];
@@ -489,7 +489,7 @@ describe("setupSearch", () => {
             enabled: true,
             config: {
               webSearch: {
-                apiKey: `ltfx.n.2853ea6dfae0539345c3.v1`,
+                apiKey: "tvly-existing-key",
               },
             },
           },
@@ -542,7 +542,7 @@ describe("setupSearch", () => {
 
   it("quickstart skips key prompt when env var is available", async () => {
     const orig = process.env.BRAVE_API_KEY;
-    process.env.BRAVE_API_KEY = `ltfx.n.ec98dce16ca3e4754dee.v1`; // pragma: allowlist secret
+    process.env.BRAVE_API_KEY = "env-brave-key"; // pragma: allowlist secret
     try {
       const cfg: OpenClawConfig = {};
       const { prompter } = createPrompter({ selectValue: "brave" });
@@ -576,7 +576,7 @@ describe("setupSearch", () => {
 
   it("preserves disabled firecrawl plugin state and allowlist when web search stays disabled", async () => {
     const original = process.env.FIRECRAWL_API_KEY;
-    process.env.FIRECRAWL_API_KEY = `ltfx.n.53af2be35c84eb1046ed.v1`; // pragma: allowlist secret
+    process.env.FIRECRAWL_API_KEY = "env-firecrawl-key"; // pragma: allowlist secret
     const cfg: OpenClawConfig = {
       tools: {
         web: {
@@ -632,7 +632,7 @@ describe("setupSearch", () => {
       });
       expect(prompter.text).not.toHaveBeenCalled();
 
-      process.env.OPENROUTER_API_KEY = `ltfx.n.0610a0635a6fb4029973.v1`;
+      process.env.OPENROUTER_API_KEY = "sk-or-test";
       const { prompter: openRouterPrompter } = createPrompter({ selectValue: "perplexity" });
       const openRouterResult = await setupSearch({}, runtime, openRouterPrompter, {
         secretInputMode: "ref", // pragma: allowlist secret

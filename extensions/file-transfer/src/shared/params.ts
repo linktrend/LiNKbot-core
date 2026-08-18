@@ -22,7 +22,7 @@ export function readGatewayCallOptions(params: Record<string, unknown>): Gateway
   return opts;
 }
 
-export function readTrimmedString(params: Record<string, unknown>, key: (string)): string {
+export function readTrimmedString(params: Record<string, unknown>, key: string): string {
   const value = params[key];
   return typeof value === "string" ? value.trim() : "";
 }

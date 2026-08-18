@@ -937,7 +937,7 @@ describe("resolveMedia local Bot API container paths", () => {
   });
 
   it("accepts the colon-to-tilde token directory used on restricted filesystems", async () => {
-    const token = `ltfx.n.2c12cc3f273462db2b3a.v1`;
+    const token = "123:secret";
     const getFile = vi.fn().mockResolvedValue({
       file_path: "/var/lib/telegram-bot-api/123~secret/documents/file_9.pdf",
     });

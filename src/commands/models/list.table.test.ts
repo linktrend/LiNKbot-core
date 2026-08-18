@@ -9,7 +9,7 @@ describe("printModelTable", () => {
     const runtime = { log: vi.fn(), error: vi.fn() };
     const rows: ModelRow[] = [
       {
-        key: `ltfx.n.9a8f4a62b182ff6404e9.v1`,
+        key: "openai/gpt-5.5",
         name: "GPT-5.5",
         input: "text+image",
         contextWindow: 400_000,

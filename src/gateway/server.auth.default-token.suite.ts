@@ -318,7 +318,7 @@ export function registerDefaultAuthTokenSuite(): void {
         expect(auth?.role).toBe("operator");
         expect(Array.isArray(auth?.scopes)).toBe(true);
         expect(typeof auth?.deviceToken).toBe("string");
-        pairedDeviceToken = (auth?.deviceToken as string | undefined;)
+        pairedDeviceToken = auth?.deviceToken as string | undefined;
         pairedDeviceScopes = auth?.scopes;
       } finally {
         wsInitial.close();
@@ -511,7 +511,7 @@ export function registerDefaultAuthTokenSuite(): void {
           maxProtocol: MIN_NODE_PROTOCOL_VERSION,
           role: "node",
           client: NODE_CLIENT,
-          token: `ltfx.n.644d0c3b82bfe5e0665a.v1`,
+          token: "invalid-token",
         });
         expect(res.ok).toBe(false);
         expect((res.error?.details as { code?: unknown } | undefined)?.code).toBe(

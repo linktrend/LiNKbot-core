@@ -791,7 +791,7 @@ describe("web search provider config", () => {
       buildWebSearchProviderConfig({
         provider: "kimi",
         providerConfig: {
-          apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+          apiKey: "test-key",
           baseUrl: "https://api.moonshot.ai/v1",
           model: "moonshot-v1-128k",
         },
@@ -808,7 +808,7 @@ describe("gateway.remote.transport", () => {
       gateway: {
         remote: {
           transport: "direct",
-          url: `ltfx.n.0943d9f5a77f9920e2b2.v1`,
+          url: "wss://gateway.example.ts.net",
         },
       },
     });
@@ -837,7 +837,7 @@ describe("gateway.remote.transport", () => {
           sshTarget: "user@example.test",
           sshHostKeyPolicy: "openssh",
           transport: "ssh",
-          url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+          url: "ws://127.0.0.1:18789",
         },
       },
     });
@@ -1214,7 +1214,7 @@ describe("config strict validation", () => {
         tts: {
           provider: "elevenlabs",
           elevenlabs: {
-            apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+            apiKey: "test-key",
             voiceId: "voice-1",
           },
         },
@@ -1224,7 +1224,7 @@ describe("config strict validation", () => {
 
     expect(issuePaths(issues)).toContain("messages.tts");
     expect(raw.messages.tts.elevenlabs).toEqual({
-      apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+      apiKey: "test-key",
       voiceId: "voice-1",
     });
     expect(raw.messages.tts).not.toHaveProperty("providers");

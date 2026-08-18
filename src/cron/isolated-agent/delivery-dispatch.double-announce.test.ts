@@ -1436,7 +1436,7 @@ describe("dispatchCronDelivery — double-announce guard", () => {
     expect(callGateway).toHaveBeenCalledWith({
       method: "sessions.delete",
       params: {
-        key: `ltfx.n.39b59c7b686c3d2bc828.v1`,
+        key: "agent:main:cron:test-job",
         deleteTranscript: true,
         emitLifecycleHooks: false,
         expectedSessionId: "test-session-id",
@@ -1461,7 +1461,7 @@ describe("dispatchCronDelivery — double-announce guard", () => {
     expect(callGateway).toHaveBeenCalledWith({
       method: "sessions.delete",
       params: {
-        key: `ltfx.n.39b59c7b686c3d2bc828.v1`,
+        key: "agent:main:cron:test-job",
         deleteTranscript: true,
         emitLifecycleHooks: false,
         expectedSessionId: "test-session-id",
@@ -1487,7 +1487,7 @@ describe("dispatchCronDelivery — double-announce guard", () => {
     expect(callGateway).toHaveBeenCalledWith({
       method: "sessions.delete",
       params: {
-        key: `ltfx.n.39b59c7b686c3d2bc828.v1`,
+        key: "agent:main:cron:test-job",
         deleteTranscript: true,
         emitLifecycleHooks: false,
         expectedSessionId: "test-session-id",
@@ -1711,7 +1711,7 @@ describe("dispatchCronDelivery — double-announce guard", () => {
     expect(callGateway).toHaveBeenCalledWith({
       method: "sessions.delete",
       params: {
-        key: `ltfx.n.39b59c7b686c3d2bc828.v1`,
+        key: "agent:main:cron:test-job",
         deleteTranscript: true,
         emitLifecycleHooks: false,
         expectedSessionId: "test-session-id",
@@ -1753,7 +1753,7 @@ describe("dispatchCronDelivery — double-announce guard", () => {
     expect(callGateway).toHaveBeenCalledWith({
       method: "sessions.delete",
       params: {
-        key: `ltfx.n.39b59c7b686c3d2bc828.v1`,
+        key: "agent:main:cron:test-job",
         deleteTranscript: true,
         emitLifecycleHooks: false,
         expectedSessionId: "test-session-id",
@@ -2525,7 +2525,7 @@ describe("dispatchCronDelivery — double-announce guard", () => {
     expect(callGateway).toHaveBeenCalledWith({
       method: "sessions.delete",
       params: {
-        key: `ltfx.n.39b59c7b686c3d2bc828.v1`,
+        key: "agent:main:cron:test-job",
         deleteTranscript: true,
         emitLifecycleHooks: false,
         expectedSessionId: "test-session-id",
@@ -2585,7 +2585,7 @@ describe("dispatchCronDelivery — double-announce guard", () => {
     expect(callGateway).toHaveBeenCalledWith({
       method: "sessions.delete",
       params: {
-        key: `ltfx.n.39b59c7b686c3d2bc828.v1`,
+        key: "agent:main:cron:test-job",
         deleteTranscript: true,
         emitLifecycleHooks: false,
         expectedSessionId: "test-session-id",
@@ -2637,7 +2637,7 @@ describe("dispatchCronDelivery — double-announce guard", () => {
     expect(callGateway).toHaveBeenCalledWith({
       method: "sessions.delete",
       params: {
-        key: `ltfx.n.39b59c7b686c3d2bc828.v1`,
+        key: "agent:main:cron:test-job",
         deleteTranscript: true,
         emitLifecycleHooks: false,
         expectedSessionId: "test-session-id",

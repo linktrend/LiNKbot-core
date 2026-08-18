@@ -19,7 +19,7 @@ scenario:
         defaultRoomKey: main
         rooms:
           - encrypted: true
-            key: "${ltfx.n.8b3401074827354f41b7.v1}"
+            key: e2ee-qr-verification
             kind: group
             members:
               - driver

@@ -66,17 +66,17 @@ Show only `@handle` in the final list. Do not write the word Discord unless the 
 Always recheck live state before listing, closing, or saying "open".
 
 ```bash
-GITHUB_TOKEN= "${ltfx.n.320379e0348d6c950970.v1}" GH_TOKEN= \
+GITHUB_TOKEN= GITHUB_TOKEN_NODIFF= GH_TOKEN= \
 gh api repos/openclaw/openclaw/pulls/<number> \
-  --jq '. | {number,title,state,merged,mergeable,draft,author:.user.login,url:(ltfx.n.8efee8b84b3649c2a4a6.v1),updatedAt:.updated_at,additions,deletions,changedFiles:.changed_files}'
+  --jq '. | {number,title,state,merged,mergeable,draft,author:.user.login,url:.html_url,updatedAt:.updated_at,additions,deletions,changedFiles:.changed_files}'
 ```
 
 For issues:
 
 ```bash
-GITHUB_TOKEN= "${ltfx.n.320379e0348d6c950970.v1}" GH_TOKEN= \
+GITHUB_TOKEN= GITHUB_TOKEN_NODIFF= GH_TOKEN= \
 gh api repos/openclaw/openclaw/issues/<number> \
-  --jq '. | {number,title,state,author:.user.login,url:(ltfx.n.8efee8b84b3649c2a4a6.v1),updatedAt:.updated_at,pull_request}'
+  --jq '. | {number,title,state,author:.user.login,url:.html_url,updatedAt:.updated_at,pull_request}'
 ```
 
 If `gh` says bad credentials, clear env vars with empty assignments as above. Use `--jq '. | {...}'` for object projections.

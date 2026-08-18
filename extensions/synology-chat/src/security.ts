@@ -32,7 +32,7 @@ export async function authorizeUserForDmWithIngress(params: {
     channelId: "synology-chat",
     accountId: params.accountId,
     identity: {
-      key: `ltfx.n.9cfd0d7aebb137ed909a.v1`,
+      key: "sender-id",
       entryIdPrefix: "synology-chat-entry",
     },
     subject: { stableId: params.userId },

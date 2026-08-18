@@ -347,7 +347,7 @@ export async function resolveGatewayProbeSnapshot(params: {
           gatewayCallOverrides: {
             url: gatewayConnection.url,
             token: gatewayProbeAuthResolution.auth.token,
-            password: (gatewayProbeAuthResolution.auth.password,)
+            password: gatewayProbeAuthResolution.auth.password,
           },
         }
       : {}),

@@ -146,7 +146,7 @@ function resolveApiKey(options?: GoogleVertexOptions): string | undefined {
   return apiKey;
 }
 
-function isPlaceholderApiKey(apiKey: (string)): boolean {
+function isPlaceholderApiKey(apiKey: string): boolean {
   return /^<[^>]+>$/.test(apiKey);
 }
 

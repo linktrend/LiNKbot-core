@@ -109,7 +109,7 @@ describe("browser manage output", () => {
             pid: 4321,
             cdpPort: null,
             cdpUrl:
-              "https://alice:supersecretpasswordvalue1234@example.com/chrome?token=(supersecrettokenvalue1234567890",)
+              "https://alice:supersecretpasswordvalue1234@example.com/chrome?token=supersecrettokenvalue1234567890",
             chosenBrowser: null,
             userDataDir: "/Users/test/Library/Application Support/BraveSoftware/Brave-Browser",
             color: "#00AA00",
@@ -128,7 +128,7 @@ describe("browser manage output", () => {
 
     const output = lastRuntimeLog();
     expect(output).toContain("transport: chrome-mcp");
-    expect(output).toContain("cdpUrl: https://example.com/chrome?token=(supers…7890");)
+    expect(output).toContain("cdpUrl: https://example.com/chrome?token=supers…7890");
     expect(output).not.toContain("userDataDir:");
     expect(output).not.toContain("alice");
     expect(output).not.toContain("supersecretpasswordvalue1234");
@@ -181,7 +181,7 @@ describe("browser manage output", () => {
                 isRemote: true,
                 cdpPort: null,
                 cdpUrl:
-                  "https://alice:supersecretpasswordvalue1234@example.com/chrome?token=(supersecrettokenvalue1234567890",)
+                  "https://alice:supersecretpasswordvalue1234@example.com/chrome?token=supersecrettokenvalue1234567890",
                 color: "#00AA00",
               },
             ],
@@ -193,7 +193,7 @@ describe("browser manage output", () => {
     await program.parseAsync(["browser", "profiles"], { from: "user" });
 
     const output = lastRuntimeLog();
-    expect(output).toContain("cdpUrl: https://example.com/chrome?token=(supers…7890");)
+    expect(output).toContain("cdpUrl: https://example.com/chrome?token=supers…7890");
     expect(output).not.toContain("alice");
     expect(output).not.toContain("supersecretpasswordvalue1234");
     expect(output).not.toContain("supersecrettokenvalue1234567890");
@@ -236,7 +236,7 @@ describe("browser manage output", () => {
             transport: "chrome-mcp",
             cdpPort: null,
             cdpUrl:
-              "https://alice:supersecretpasswordvalue1234@example.com/chrome?token=(supersecrettokenvalue1234567890",)
+              "https://alice:supersecretpasswordvalue1234@example.com/chrome?token=supersecrettokenvalue1234567890",
             userDataDir: null,
             color: "#00AA00",
             isRemote: true,
@@ -254,7 +254,7 @@ describe("browser manage output", () => {
         "--driver",
         "existing-session",
         "--cdp-url",
-        "https://alice:supersecretpasswordvalue1234@example.com/chrome?token=(supersecrettokenvalue1234567890",)
+        "https://alice:supersecretpasswordvalue1234@example.com/chrome?token=supersecrettokenvalue1234567890",
       ],
       { from: "user" },
     );
@@ -262,7 +262,7 @@ describe("browser manage output", () => {
     const output = lastRuntimeLog();
     expect(output).toContain('Created profile "chrome-live"');
     expect(output).toContain("transport: chrome-mcp");
-    expect(output).toContain("cdpUrl: https://example.com/chrome?token=(supers…7890");)
+    expect(output).toContain("cdpUrl: https://example.com/chrome?token=supers…7890");
     expect(output).not.toContain("alice");
     expect(output).not.toContain("supersecretpasswordvalue1234");
     expect(output).not.toContain("supersecrettokenvalue1234567890");
@@ -277,7 +277,7 @@ describe("browser manage output", () => {
             transport: "cdp",
             cdpPort: null,
             cdpUrl:
-              "https://alice:supersecretpasswordvalue1234@example.com/chrome?token=(supersecrettokenvalue1234567890",)
+              "https://alice:supersecretpasswordvalue1234@example.com/chrome?token=supersecrettokenvalue1234567890",
             userDataDir: null,
             color: "#00AA00",
             isRemote: true,
@@ -293,13 +293,13 @@ describe("browser manage output", () => {
         "--name",
         "remote",
         "--cdp-url",
-        "https://alice:supersecretpasswordvalue1234@example.com/chrome?token=(supersecrettokenvalue1234567890",)
+        "https://alice:supersecretpasswordvalue1234@example.com/chrome?token=supersecrettokenvalue1234567890",
       ],
       { from: "user" },
     );
 
     const output = lastRuntimeLog();
-    expect(output).toContain("cdpUrl: https://example.com/chrome?token=(supers…7890");)
+    expect(output).toContain("cdpUrl: https://example.com/chrome?token=supers…7890");
     expect(output).not.toContain("alice");
     expect(output).not.toContain("supersecretpasswordvalue1234");
     expect(output).not.toContain("supersecrettokenvalue1234567890");
@@ -319,7 +319,7 @@ describe("browser manage output", () => {
             pid: null,
             cdpPort: 9222,
             cdpUrl:
-              "https://alice:supersecretpasswordvalue1234@example.com/chrome?token=(supersecrettokenvalue1234567890",)
+              "https://alice:supersecretpasswordvalue1234@example.com/chrome?token=supersecrettokenvalue1234567890",
             chosenBrowser: null,
             userDataDir: null,
             color: "#00AA00",
@@ -337,7 +337,7 @@ describe("browser manage output", () => {
     });
 
     const output = lastRuntimeLog();
-    expect(output).toContain("cdpUrl: https://example.com/chrome?token=(supers…7890");)
+    expect(output).toContain("cdpUrl: https://example.com/chrome?token=supers…7890");
     expect(output).not.toContain("alice");
     expect(output).not.toContain("supersecretpasswordvalue1234");
     expect(output).not.toContain("supersecrettokenvalue1234567890");

@@ -106,8 +106,8 @@ describe("msteams probe", () => {
   it("reports delegated tokens expired when the process clock is invalid", async () => {
     const nowSpy = vi.spyOn(Date, "now").mockReturnValue(Number.NaN);
     hostMockState.delegatedTokens = {
-      accessToken: `ltfx.n.6b9f3a9e664ff50111aa.v1`,
-      refreshToken: `ltfx.n.0eb17643d4e926116378.v1`,
+      accessToken: "delegated-token",
+      refreshToken: "refresh-token",
       expiresAt: Date.parse("2030-01-01T00:00:00.000Z"),
       scopes: ["ChatMessage.Send"],
       userPrincipalName: "user@example.com",

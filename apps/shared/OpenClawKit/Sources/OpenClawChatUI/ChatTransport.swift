@@ -831,7 +831,7 @@ extension OpenClawChatTransport {
                 sessionKey: sessionKey,
                 thinkingLevel: thinkingLevel)
             result = OpenClawChatModelPatchResult(
-                key: (result?.key ?? sessionKey,)
+                key: result?.key ?? sessionKey,
                 modelProvider: result?.modelProvider,
                 model: result?.model,
                 thinkingLevel: thinkingLevel,

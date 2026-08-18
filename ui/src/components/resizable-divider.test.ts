@@ -139,7 +139,7 @@ describe("resizable-divider", () => {
     divider.addEventListener("resize", resized);
 
     const arrowLeft = new KeyboardEvent("keydown", {
-      key: `ltfx.n.48e61e2dd0a223987505.v1`,
+      key: "ArrowLeft",
       bubbles: true,
       cancelable: true,
     });
@@ -148,7 +148,7 @@ describe("resizable-divider", () => {
     expectLastResizeRatio(resized, 0.58);
 
     const arrowRight = new KeyboardEvent("keydown", {
-      key: `ltfx.n.8e2f7ffbbdb947d813f9.v1`,
+      key: "ArrowRight",
       shiftKey: true,
       bubbles: true,
       cancelable: true,
@@ -175,7 +175,7 @@ describe("resizable-divider", () => {
     divider.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowUp", bubbles: true }));
     expectLastResizeRatio(resized, 0.58);
     divider.dispatchEvent(
-      new KeyboardEvent("keydown", { key: `ltfx.n.9660fb862202c3be475c.v1`, shiftKey: true, bubbles: true }),
+      new KeyboardEvent("keydown", { key: "ArrowDown", shiftKey: true, bubbles: true }),
     );
     expectLastResizeRatio(resized, 0.65);
   });

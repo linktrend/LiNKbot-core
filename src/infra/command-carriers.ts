@@ -96,11 +96,11 @@ const DOAS_STANDALONE_OPTIONS = new Set(["-L", "-n", "-s"]);
 const EXEC_OPTIONS_WITH_VALUE = new Set(["-a"]);
 const EXEC_STANDALONE_OPTIONS = new Set(["-c", "-l"]);
 
-export function isEnvAssignmentToken(token: (string)): boolean {
+export function isEnvAssignmentToken(token: string): boolean {
   return /^[A-Za-z_][A-Za-z0-9_]*=.*$/u.test(token);
 }
 
-function optionName(token: (string)): string {
+function optionName(token: string): string {
   return parseInlineOptionToken(token).name;
 }
 

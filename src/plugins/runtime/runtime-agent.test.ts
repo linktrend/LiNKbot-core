@@ -27,7 +27,7 @@ describe("plugin runtime session creation", () => {
     >[0];
     const invalidRecoveryInitializer = {
       cfg: {},
-      key: `ltfx.n.d1332bbce17dedbad987.v1`,
+      key: "type-contract-only",
       recoverMatchingInitialEntry: true as const,
       initialEntry: { agentHarnessId: "codex" },
       afterCreate: async () => {},
@@ -39,7 +39,7 @@ describe("plugin runtime session creation", () => {
   it("creates a canonical transcript with trusted initial session state", async () => {
     await withOpenClawTestState({ label: "plugin-runtime-session-create" }, async () => {
       const runtime = createRuntimeAgent();
-      const key = `ltfx.n.a9e4ca6c0ae082a21336.v1`;
+      const key = "agent:main:harness:codex:supervision:codex-native-thread";
       const initialPluginExtensions = {
         codex: {
           supervision: {
@@ -126,7 +126,7 @@ describe("plugin runtime session creation", () => {
   it("creates a plugin-owned locked CLI session with a seeded fork binding", async () => {
     await withOpenClawTestState({ label: "plugin-runtime-cli-session-create" }, async () => {
       const runtime = createRuntimeAgent();
-      const key = `ltfx.n.e1a28e57b3be109b8c30.v1`;
+      const key = "agent:main:catalog-adopt:claude:source";
       const created = await runtime.session.createSessionEntry({
         cfg: {},
         key,
@@ -166,7 +166,7 @@ describe("plugin runtime session creation", () => {
   it("rolls back the exact created entry and transcript when initialization fails", async () => {
     await withOpenClawTestState({ label: "plugin-runtime-session-create-rollback" }, async () => {
       const runtime = createRuntimeAgent();
-      const key = `ltfx.n.b918a37860a9e3ee1af2.v1`;
+      const key = "agent:main:dashboard:codex-binding-failure";
       let sessionFile: string | undefined;
 
       await expect(
@@ -195,7 +195,7 @@ describe("plugin runtime session creation", () => {
   it("rolls back a plugin-owned locked CLI session when initialization fails", async () => {
     await withOpenClawTestState({ label: "plugin-runtime-cli-session-rollback" }, async () => {
       const runtime = createRuntimeAgent();
-      const key = `ltfx.n.2b9b98aa47ed2f1967af.v1`;
+      const key = "agent:main:catalog-adopt:claude:rollback";
       const storePath = runtime.session.resolveStorePath(undefined, { agentId: "main" });
       let sessionId: string | undefined;
       let sessionFile: string | undefined;
@@ -244,7 +244,7 @@ describe("plugin runtime session creation", () => {
       { label: "plugin-runtime-unlocked-session-create-rollback" },
       async () => {
         const runtime = createRuntimeAgent();
-        const key = `ltfx.n.952803f1d587279adaa7.v1`;
+        const key = "agent:main:dashboard:unlocked-binding-failure";
         let sessionFile: string | undefined;
 
         await expect(
@@ -273,7 +273,7 @@ describe("plugin runtime session creation", () => {
       { label: "plugin-runtime-session-create-initial-write-failure" },
       async (state) => {
         const runtime = createRuntimeAgent();
-        const key = `ltfx.n.bf6267fec48553da0670.v1`;
+        const key = "agent:main:dashboard:codex-initial-write-failure";
         fs.mkdirSync(path.join(state.agentDir(), "openclaw-agent.sqlite"), { recursive: true });
         let initializerRan = false;
 
@@ -304,7 +304,7 @@ describe("plugin runtime session creation", () => {
       { label: "plugin-runtime-session-create-final-patch-rollback" },
       async () => {
         const runtime = createRuntimeAgent();
-        const key = `ltfx.n.dfe87bf29c991c57ad26.v1`;
+        const key = "agent:main:dashboard:codex-final-patch-failure";
         let sessionFile: string | undefined;
 
         await expect(
@@ -343,7 +343,7 @@ describe("plugin runtime session creation", () => {
       { label: "plugin-runtime-unlocked-final-patch-rollback" },
       async () => {
         const runtime = createRuntimeAgent();
-        const key = `ltfx.n.4bd9b352649443c67bc1.v1`;
+        const key = "agent:main:dashboard:unlocked-final-patch-failure";
         let sessionFile: string | undefined;
 
         await expect(
@@ -374,7 +374,7 @@ describe("plugin runtime session creation", () => {
   it("fences work admission until trusted initialization completes", async () => {
     await withOpenClawTestState({ label: "plugin-runtime-session-create-fence" }, async () => {
       const runtime = createRuntimeAgent();
-      const key = `ltfx.n.ea0ff9015e60fdbc6e29.v1`;
+      const key = "agent:main:dashboard:codex-binding-fence";
       const callbackStarted = createDeferred();
       const releaseCallback = createDeferred();
       const storePath = runtime.session.resolveStorePath(undefined, { agentId: "main" });
@@ -442,7 +442,7 @@ describe("plugin runtime session creation", () => {
       { label: "plugin-runtime-session-create-ordinary-race" },
       async () => {
         const runtime = createRuntimeAgent();
-        const key = `ltfx.n.9741c0cbd6c14cb2ec5b.v1`;
+        const key = "agent:main:dashboard:codex-initialization-race";
         const callbackStarted = createDeferred();
         const releaseCallback = createDeferred();
         const creation = runtime.session.createSessionEntry({
@@ -496,7 +496,7 @@ describe("plugin runtime session creation", () => {
   it("rejects creation while pre-existing session work is admitted", async () => {
     await withOpenClawTestState({ label: "plugin-runtime-session-create-active" }, async () => {
       const runtime = createRuntimeAgent();
-      const key = `ltfx.n.bf58d5ccbbcb7db53b60.v1`;
+      const key = "agent:main:dashboard:codex-binding-active";
       const workStarted = createDeferred();
       const releaseWork = createDeferred();
       const storePath = runtime.session.resolveStorePath(undefined, { agentId: "main" });
@@ -533,7 +533,7 @@ describe("plugin runtime session creation", () => {
       { label: "plugin-runtime-session-create-recovery" },
       async (state) => {
         const runtime = createRuntimeAgent();
-        const key = `ltfx.n.832694704ae976ffc5f9.v1`;
+        const key = "agent:main:dashboard:codex-recovery";
         const sessionId = "interrupted-initializer";
         const sessionFile = path.join(state.sessionsDir(), `${sessionId}.jsonl`);
         const storePath = runtime.session.resolveStorePath(undefined, { agentId: "main" });
@@ -601,7 +601,7 @@ describe("plugin runtime session creation", () => {
       { label: "plugin-runtime-session-create-recovery-cwd-mismatch" },
       async () => {
         const runtime = createRuntimeAgent();
-        const key = `ltfx.n.0782dce2966526d0c843.v1`;
+        const key = "agent:main:dashboard:codex-recovery-cwd-mismatch";
         const storePath = runtime.session.resolveStorePath(undefined, { agentId: "main" });
         const existing = {
           sessionId: "foreign-workspace-initializer",
@@ -648,7 +648,7 @@ describe("plugin runtime session creation", () => {
       { label: "plugin-runtime-session-create-recovery-mismatch" },
       async () => {
         const runtime = createRuntimeAgent();
-        const key = `ltfx.n.7ab6d67ff85397e5113e.v1`;
+        const key = "agent:main:dashboard:codex-recovery-mismatch";
         const storePath = runtime.session.resolveStorePath(undefined, { agentId: "main" });
         const existing = {
           sessionId: "foreign-initializer",
@@ -691,7 +691,7 @@ describe("plugin runtime session creation", () => {
   it("does not recover or roll back a locked CLI row owned by another plugin", async () => {
     await withOpenClawTestState({ label: "plugin-runtime-cli-recovery-owner" }, async () => {
       const runtime = createRuntimeAgent();
-      const key = `ltfx.n.f45808ae56d3af23eac4.v1`;
+      const key = "agent:main:catalog-adopt:claude:foreign";
       const storePath = runtime.session.resolveStorePath(undefined, { agentId: "main" });
       const cliSessionBinding = {
         sessionId: "claude-source",
@@ -738,7 +738,7 @@ describe("plugin runtime session creation", () => {
       { label: "plugin-runtime-session-create-restart-admission" },
       async () => {
         const runtime = createRuntimeAgent();
-        const key = `ltfx.n.6616add56d6c808d6275.v1`;
+        const key = "agent:main:dashboard:codex-restart-pending";
         const storePath = runtime.session.resolveStorePath(undefined, { agentId: "main" });
         await runtime.session.upsertSessionEntry({
           storePath,
@@ -767,7 +767,7 @@ describe("plugin runtime session creation", () => {
       { label: "plugin-runtime-session-create-rollback-race" },
       async () => {
         const runtime = createRuntimeAgent();
-        const key = `ltfx.n.d4d4ecea161c3e64f7ea.v1`;
+        const key = "agent:main:dashboard:codex-binding-race";
         let sessionId: string | undefined;
 
         await expect(
@@ -808,7 +808,7 @@ describe("plugin runtime session creation", () => {
   it("rejects an empty harness initializer without leaving a session entry", async () => {
     await withOpenClawTestState({ label: "plugin-runtime-session-create-invalid" }, async () => {
       const runtime = createRuntimeAgent();
-      const key = `ltfx.n.e3f41effe9d16e89ccd3.v1`;
+      const key = "agent:main:dashboard:invalid-harness";
 
       await expect(
         runtime.session.createSessionEntry({
@@ -828,7 +828,7 @@ describe("plugin runtime session creation", () => {
       { label: "plugin-runtime-session-create-placeholder" },
       async () => {
         const runtime = createRuntimeAgent();
-        const key = `ltfx.n.a3a9acb67b60bb9ba518.v1`;
+        const key = "agent:main:metadata";
         const updatedAt = Date.now();
         const storePath = runtime.session.resolveStorePath(undefined, { agentId: "main" });
         await runtime.session.upsertSessionEntry({

@@ -291,7 +291,7 @@ struct ChatViewModelSessionActionTests {
     @Test func `batch mutation includes selected server-search entry outside live roster`() async {
         let transport = SessionActionTransport()
         let viewModel = OpenClawChatViewModel(sessionKey: "main", transport: transport)
-        let searchResult = self.entry(key: "${ltfx.n.2f9b7ed65112e6b814b2.v1}")
+        let searchResult = self.entry(key: "older-search-result")
 
         let result = await viewModel.performSessionBatch(sessions: [searchResult], action: .pin)
 
@@ -381,7 +381,7 @@ struct ChatViewModelSessionActionTests {
         let viewModel = OpenClawChatViewModel(sessionKey: "main", transport: transport)
         // Roster entries must not decide the current agent: "main" is unscoped and
         // no active agent is set, so agent selection crosses an ownership boundary.
-        viewModel.sessions = [self.entry(key: "${ltfx.n.cee75c3b70861140588d.v1}")]
+        viewModel.sessions = [self.entry(key: "agent:worker:main")]
         let lease = try await viewModel.newSessionRouteLease()
 
         await viewModel.startNewSession(

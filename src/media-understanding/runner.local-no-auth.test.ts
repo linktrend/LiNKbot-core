@@ -237,7 +237,7 @@ describe("runCapability local no-auth audio providers", () => {
 
   it("prefers resolver env credentials over plugin-only media no-auth", async () => {
     await withIsolatedAgentDir(async (agentDir) => {
-      await withEnvAsync({ ...AUTH_ENV, OPENAI_API_KEY: `ltfx.n.89fee41aa1ffdd87e80d.v1` }, async () => {
+      await withEnvAsync({ ...AUTH_ENV, OPENAI_API_KEY: "env-openai-audio-key" }, async () => {
         await withAudioFixture("openclaw-openai-audio-env-key", async ({ ctx, media, cache }) => {
           const transcribeAudio = vi.fn(async (req: AudioTranscriptionRequest) => ({
             text: `env:${req.apiKey}`,
@@ -285,7 +285,7 @@ describe("runCapability local no-auth audio providers", () => {
       },
     };
     await withIsolatedAgentDir(async (agentDir) => {
-      await withEnvAsync({ ...AUTH_ENV, OPENAI_API_KEY: `ltfx.n.89fee41aa1ffdd87e80d.v1` }, async () => {
+      await withEnvAsync({ ...AUTH_ENV, OPENAI_API_KEY: "env-openai-audio-key" }, async () => {
         await withAudioFixture(
           "openclaw-openai-audio-oauth-env-key",
           async ({ ctx, media, cache }) => {
@@ -324,7 +324,7 @@ describe("runCapability local no-auth audio providers", () => {
         "local-audio:default": {
           type: "api_key",
           provider: "local-audio",
-          key: `ltfx.n.2354d0559a782402e3d4.v1`,
+          key: "stored-local-audio-key",
         },
       },
     };
@@ -421,7 +421,7 @@ describe("runCapability local no-auth audio providers", () => {
               provider: "local-audio",
               model: "whisper-local",
               providerConfig: {
-                apiKey: `ltfx.n.820b4debdcadc0f01b26.v1`,
+                apiKey: "real-key",
                 models: [],
               },
             });
@@ -474,7 +474,7 @@ describe("runCapability local no-auth audio providers", () => {
               "local-audio": createAudioProvider("local-audio", transcribeAudio, {
                 resolveAuth: () => ({
                   kind: "api-key",
-                  apiKey: `ltfx.n.7f03371ca904fc0593ad.v1`,
+                  apiKey: "hook-key",
                   source: "local-audio media auth hook",
                 }),
               }),
@@ -485,7 +485,7 @@ describe("runCapability local no-auth audio providers", () => {
           expect(result.outputs[0]?.text).toBe("hook:hook-key");
           expect(transcribeAudio.mock.calls[0]?.[0].auth).toEqual({
             kind: "api-key",
-            apiKey: `ltfx.n.7f03371ca904fc0593ad.v1`,
+            apiKey: "hook-key",
             source: "local-audio media auth hook",
           });
         });

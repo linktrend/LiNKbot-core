@@ -27,7 +27,7 @@ describe("Nextcloud Talk monitor abort", () => {
         channels: {
           "nextcloud-talk": {
             baseUrl: "https://cloud.example.com",
-            botSecret: `ltfx.n.ea56b28275f0a448f33f.v1`,
+            botSecret: "test-bot-secret",
           },
         },
       },

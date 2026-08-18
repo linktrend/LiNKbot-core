@@ -43,7 +43,7 @@ type SlackReconcileTestClient = WebClient & {
 const cfg = {
   channels: {
     slack: {
-      botToken: `ltfx.n.87894fe048938b686cfb.v1`,
+      botToken: "xoxb-test",
     },
   },
 } as OpenClawConfig;
@@ -308,7 +308,7 @@ describe("reconcileSlackUnknownSend", () => {
       channels: {
         slack: {
           identity: "user",
-          userToken: `ltfx.n.19bbb7d9c45e18a41bce.v1`,
+          userToken: "test-user-token",
         },
       },
     } as OpenClawConfig;
@@ -350,8 +350,8 @@ describe("reconcileSlackUnknownSend", () => {
     const tokenCfg = {
       channels: {
         slack: {
-          botToken: `ltfx.n.0aa88d0d7e3ad9e7d8e3.v1`,
-          userToken: `ltfx.n.eed12fa9867de48223f6.v1`,
+          botToken: "xoxb-write",
+          userToken: "xoxp-read",
         },
       },
     } as OpenClawConfig;
@@ -379,8 +379,8 @@ describe("reconcileSlackUnknownSend", () => {
     const tokenCfg = {
       channels: {
         slack: {
-          botToken: `ltfx.n.0aa88d0d7e3ad9e7d8e3.v1`,
-          userToken: `ltfx.n.eed12fa9867de48223f6.v1`,
+          botToken: "xoxb-write",
+          userToken: "xoxp-read",
         },
       },
     } as OpenClawConfig;
@@ -407,8 +407,8 @@ describe("reconcileSlackUnknownSend", () => {
     const tokenCfg = {
       channels: {
         slack: {
-          botToken: `ltfx.n.0aa88d0d7e3ad9e7d8e3.v1`,
-          userToken: `ltfx.n.eed12fa9867de48223f6.v1`,
+          botToken: "xoxb-write",
+          userToken: "xoxp-read",
         },
       },
     } as OpenClawConfig;
@@ -539,7 +539,7 @@ describe("reconcileSlackUnknownSend", () => {
   it("reconciles every indexed part of text that Slack splits", async () => {
     const client = createSlackReconcileTestClient();
     const chunkedCfg = {
-      channels: { slack: { botToken: `ltfx.n.87894fe048938b686cfb.v1`, textChunkLimit: 5 } },
+      channels: { slack: { botToken: "xoxb-test", textChunkLimit: 5 } },
     } as OpenClawConfig;
     let postedPart = 0;
     client.chat.postMessage.mockImplementation(async () => ({

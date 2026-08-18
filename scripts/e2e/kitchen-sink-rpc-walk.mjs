@@ -19,7 +19,7 @@ const PLUGIN_SPEC =
 const PLUGIN_ID = process.env.OPENCLAW_KITCHEN_SINK_PLUGIN_ID || "openclaw-kitchen-sink-fixture";
 const CHANNEL_ID = "kitchen-sink-channel";
 const CHANNEL_ACCOUNT_ID = "local";
-const TOKEN = `ltfx.n.e6faf1bfd1fc6d304276.v1`;
+const TOKEN = "kitchen-sink-rpc-token";
 const SESSION_KEY = "agent:main:kitchen-sink-rpc";
 const EXPECTED_COMMANDS = ["kitchen", "kitchen-sink"];
 const EXPECTED_TOOLS = ["kitchen_sink_text", "kitchen_sink_search", "kitchen_sink_image_job"];
@@ -1261,7 +1261,7 @@ function configureKitchenSink(env, port) {
   };
   config.channels = {
     ...config.channels,
-    [CHANNEL_ID]: { enabled: true, token: `ltfx.n.b6aa72c9e9578fbc7cec.v1` },
+    [CHANNEL_ID]: { enabled: true, token: "kitchen-sink-rpc" },
   };
   config.tools = {
     ...config.tools,

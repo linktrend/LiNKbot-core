@@ -46,7 +46,7 @@ describe("label-open-issues helpers", () => {
 
     await expect(
       testing.classifyItem(labelItem, "issue", {
-        apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+        apiKey: "test-key",
         model: "test-model",
         timeoutMs: 50,
         fetchImpl: (() => Promise.resolve(response)) as typeof fetch,
@@ -67,7 +67,7 @@ describe("label-open-issues helpers", () => {
 
     vi.useFakeTimers();
     const request = testing.classifyItem(labelItem, "issue", {
-      apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+      apiKey: "test-key",
       model: "test-model",
       timeoutMs: 5,
       fetchImpl: ((_url, init) => {
@@ -102,7 +102,7 @@ describe("label-open-issues helpers", () => {
     );
     vi.useFakeTimers();
     const request = testing.classifyItem(labelItem, "issue", {
-      apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+      apiKey: "test-key",
       model: "test-model",
       timeoutMs: 5,
       fetchImpl: (() => Promise.resolve(response)) as typeof fetch,
@@ -133,7 +133,7 @@ describe("label-open-issues helpers", () => {
     );
     vi.useFakeTimers();
     const request = testing.classifyItem(labelItem, "issue", {
-      apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+      apiKey: "test-key",
       model: "test-model",
       timeoutMs: 5,
       fetchImpl: (() => Promise.resolve(response)) as typeof fetch,
@@ -158,7 +158,7 @@ describe("label-open-issues helpers", () => {
 
     try {
       await testing.classifyItem(labelItem, "issue", {
-        apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+        apiKey: "test-key",
         model: "test-model",
         timeoutMs: 50,
         fetchImpl: (() => Promise.resolve(response)) as typeof fetch,
@@ -247,7 +247,7 @@ describe("label-open-issues helpers", () => {
       },
       "issue",
       {
-        apiKey: `ltfx.n.4097889236a2af26c293.v1`,
+        apiKey: "placeholder",
         model: "test-model",
         timeoutMs: 50,
         fetchImpl: ((_url, init) => {

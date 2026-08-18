@@ -4,7 +4,7 @@ import { parseGeminiAuth } from "./gemini-auth.js";
 
 describe("parseGeminiAuth", () => {
   it("returns bearer auth for OAuth JSON tokens", () => {
-    expect(parseGeminiAuth('{"token":`ltfx.n.3bbc3a9700a71c6a53a3.v1`,"projectId":"demo"}')).toEqual({
+    expect(parseGeminiAuth('{"token":"oauth-token","projectId":"demo"}')).toEqual({
       headers: {
         Authorization: "Bearer oauth-token",
         "Content-Type": "application/json",
@@ -12,7 +12,7 @@ describe("parseGeminiAuth", () => {
     });
   });
 
-  it.each(['{"token":"","projectId":"demo"}', "{not-json}", ' {"token":`ltfx.n.3bbc3a9700a71c6a53a3.v1`}'])(
+  it.each(['{"token":"","projectId":"demo"}', "{not-json}", ' {"token":"oauth-token"}'])(
     "falls back to API key auth for %j",
     (value) => {
       expect(parseGeminiAuth(value)).toEqual({

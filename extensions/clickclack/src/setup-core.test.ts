@@ -67,7 +67,7 @@ describe("ClickClack setup adapter", () => {
 
   it("claims a full setup URL and prepares the token, workspace, and defaults", async () => {
     claimClickClackSetupCode.mockResolvedValue({
-      token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+      token: "test-token",
       bot: { id: "usr_bot", handle: "openclaw", display_name: "OpenClaw" },
       workspace: {
         id: "wsp_1",
@@ -90,7 +90,7 @@ describe("ClickClack setup adapter", () => {
     ).resolves.toEqual({
       name: "Primary",
       baseUrl: "https://clickclack.example",
-      token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+      token: "test-token",
       workspace: "wsp_1",
       defaultTo: "channel:general",
       allowFrom: ["*"],
@@ -104,7 +104,7 @@ describe("ClickClack setup adapter", () => {
 
   it("claims a bare setup code with an explicit HTTPS base URL", async () => {
     claimClickClackSetupCode.mockResolvedValue({
-      token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+      token: "test-token",
       bot: { id: "usr_bot", handle: "openclaw", display_name: "OpenClaw" },
       workspace: {
         id: "wsp_1",
@@ -122,7 +122,7 @@ describe("ClickClack setup adapter", () => {
       }),
     ).resolves.toMatchObject({
       baseUrl: "https://clickclack.example",
-      token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+      token: "test-token",
       workspace: "wsp_1",
     });
     expect(claimClickClackSetupCode).toHaveBeenCalledWith({
@@ -133,7 +133,7 @@ describe("ClickClack setup adapter", () => {
 
   it("accepts setup-code URLs for local HTTP installations", async () => {
     claimClickClackSetupCode.mockResolvedValue({
-      token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+      token: "test-token",
       bot: { id: "usr_bot", handle: "openclaw", display_name: "OpenClaw" },
       workspace: {
         id: "wsp_1",
@@ -150,7 +150,7 @@ describe("ClickClack setup adapter", () => {
       }),
     ).resolves.toMatchObject({
       baseUrl: "http://localhost:3000",
-      token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+      token: "test-token",
       workspace: "wsp_1",
     });
     expect(claimClickClackSetupCode).toHaveBeenCalledWith({
@@ -161,7 +161,7 @@ describe("ClickClack setup adapter", () => {
 
   it("rejects conflicting credentials before claiming a setup code", async () => {
     for (const input of [
-      { code: "ABCD-EFGH-JKMN", baseUrl: "https://clickclack.example", token: `ltfx.n.4c5dc9b7708905f77f5e.v1` },
+      { code: "ABCD-EFGH-JKMN", baseUrl: "https://clickclack.example", token: "test-token" },
       {
         code: "ABCD-EFGH-JKMN",
         baseUrl: "https://clickclack.example",
@@ -210,7 +210,7 @@ describe("ClickClack setup adapter", () => {
         cfg: {},
         accountId: DEFAULT_ACCOUNT_ID,
         input: {
-          token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+          token: "test-token",
           baseUrl: "https://clickclack.example",
           workspace: "wsp_1",
           defaultTo: " channel:general ",
@@ -222,7 +222,7 @@ describe("ClickClack setup adapter", () => {
       channels: {
         clickclack: {
           enabled: true,
-          token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+          token: "test-token",
           baseUrl: "https://clickclack.example",
           workspace: "wsp_1",
           defaultTo: "channel:general",
@@ -238,14 +238,14 @@ describe("ClickClack setup adapter", () => {
     expect(
       validate({ input: { baseUrl: "https://clickclack.example", workspace: "default" } }),
     ).toBe(message);
-    expect(validate({ input: { token: `ltfx.n.c75157c79e8b5848cb82.v1`, workspace: "default" } })).toBe(message);
-    expect(validate({ input: { token: `ltfx.n.c75157c79e8b5848cb82.v1`, baseUrl: "https://clickclack.example" } })).toBe(
+    expect(validate({ input: { token: "ccb_test", workspace: "default" } })).toBe(message);
+    expect(validate({ input: { token: "ccb_test", baseUrl: "https://clickclack.example" } })).toBe(
       message,
     );
     expect(
       validate({
         input: {
-          token: `ltfx.n.c75157c79e8b5848cb82.v1`,
+          token: "ccb_test",
           baseUrl: "https://clickclack.example",
           workspace: "default",
         },
@@ -299,7 +299,7 @@ describe("ClickClack setup adapter", () => {
     expect(
       validate({
         input: {
-          token: `ltfx.n.c75157c79e8b5848cb82.v1`,
+          token: "ccb_test",
           baseUrl: "clickclack.example",
           workspace: "default",
         },
@@ -314,7 +314,7 @@ describe("ClickClack setup adapter", () => {
         accountId: DEFAULT_ACCOUNT_ID,
         input: {
           name: "Primary",
-          token: `ltfx.n.6b20f92bf05edaba76cd.v1`,
+          token: "ccb_default",
           baseUrl: "https://clickclack.example/",
           workspace: " default ",
         },
@@ -324,7 +324,7 @@ describe("ClickClack setup adapter", () => {
         clickclack: {
           enabled: true,
           name: "Primary",
-          token: `ltfx.n.6b20f92bf05edaba76cd.v1`,
+          token: "ccb_default",
           baseUrl: "https://clickclack.example",
           workspace: "default",
         },
@@ -466,7 +466,7 @@ describe("ClickClack setup adapter", () => {
       } as OpenClawConfig,
       accountId: "work",
       input: {
-        token: `ltfx.n.c0af85d15433edf41c9e.v1`,
+        token: "ccb_work",
         baseUrl: "https://clickclack.example",
         workspace: "work",
       },
@@ -474,7 +474,7 @@ describe("ClickClack setup adapter", () => {
     expect(namedWithToken.channels?.clickclack).not.toHaveProperty("tokenFile");
     expect(namedWithToken.channels?.clickclack?.accounts).toMatchObject({
       default: { tokenFile: "/run/secrets/default-token" },
-      work: { token: `ltfx.n.c0af85d15433edf41c9e.v1` },
+      work: { token: "ccb_work" },
     });
     expect(namedWithToken.channels?.clickclack?.accounts?.work).not.toHaveProperty("tokenFile");
   });
@@ -504,7 +504,7 @@ describe("ClickClack setup adapter", () => {
       channels: {
         clickclack: {
           baseUrl: "https://clickclack.example",
-          token: `ltfx.n.c75157c79e8b5848cb82.v1`,
+          token: "ccb_test",
           workspace: "default",
         },
       },

@@ -991,11 +991,11 @@ describe("web_search scoped config merge", () => {
       "grok",
       {
         model: "new-model",
-        apiKey: `ltfx.n.6ccc25dc7ade3810857a.v1`,
+        apiKey: "xai-test-key",
       },
     );
 
-    expect(merged?.grok).toEqual({ model: "new-model", apiKey: `ltfx.n.6ccc25dc7ade3810857a.v1` });
+    expect(merged?.grok).toEqual({ model: "new-model", apiKey: "xai-test-key" });
     expect(Object.keys(merged ?? {})).toEqual(["provider"]);
   });
 
@@ -1003,23 +1003,23 @@ describe("web_search scoped config merge", () => {
     const merged = mergeScopedSearchConfig(
       { provider: "brave", brave: { count: 5 } },
       "brave",
-      { apiKey: `ltfx.n.e9361ce0a3cb879bb621.v1` },
+      { apiKey: "brave-test-key" },
       { mirrorApiKeyToTopLevel: true },
     );
 
-    expect(merged).toEqual({ provider: "brave", apiKey: `ltfx.n.e9361ce0a3cb879bb621.v1` });
-    expect(merged?.brave).toEqual({ apiKey: `ltfx.n.e9361ce0a3cb879bb621.v1` });
+    expect(merged).toEqual({ provider: "brave", apiKey: "brave-test-key" });
+    expect(merged?.brave).toEqual({ apiKey: "brave-test-key" });
   });
 
   it("keeps mirrored Brave plugin config runtime-only when newly injected", () => {
     const merged = mergeScopedSearchConfig(
       { provider: "brave" },
       "brave",
-      { apiKey: `ltfx.n.e9361ce0a3cb879bb621.v1` },
+      { apiKey: "brave-test-key" },
       { mirrorApiKeyToTopLevel: true },
     );
 
-    expect(merged?.brave).toEqual({ apiKey: `ltfx.n.e9361ce0a3cb879bb621.v1` });
+    expect(merged?.brave).toEqual({ apiKey: "brave-test-key" });
     expect(merged?.apiKey).toBe("brave-test-key");
     // Injected provider detail is available to runtime validation but hidden
     // from ordinary config serialization.
@@ -1029,10 +1029,10 @@ describe("web_search scoped config merge", () => {
 
   it("keeps newly injected legacy provider config runtime-only for validation", () => {
     const merged = mergeScopedSearchConfig({ enabled: true, provider: "gemini" }, "perplexity", {
-      apiKey: `ltfx.n.acdf734d3a6e4d8fa0bb.v1`,
+      apiKey: "perplexity-test-key",
     });
 
-    expect(merged?.perplexity).toEqual({ apiKey: `ltfx.n.acdf734d3a6e4d8fa0bb.v1` });
+    expect(merged?.perplexity).toEqual({ apiKey: "perplexity-test-key" });
     expect(Object.keys(merged ?? {})).toEqual(["enabled", "provider"]);
 
     expect(Object.getOwnPropertyDescriptor(merged, "perplexity")?.enumerable).toBe(false);

@@ -93,7 +93,7 @@ extension GatewayConnectionController {
     }
 
     private func resolvedDisplayName(defaults: UserDefaults) -> String {
-        let key = "${ltfx.n.cb1ea069401a1755e5d8.v1}"
+        let key = "node.displayName"
         let existingRaw = defaults.string(forKey: key)
         let resolved = NodeDisplayName.resolve(
             existing: existingRaw,

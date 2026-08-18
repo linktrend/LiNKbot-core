@@ -19,7 +19,7 @@ scenario:
         defaultRoomKey: main
         rooms:
           - encrypted: true
-            key: "${ltfx.n.4bf1ade35be9e4f2e390.v1}"
+            key: e2ee-cli-encryption-setup-idempotent
             kind: group
             members:
               - driver

@@ -71,7 +71,7 @@ async function requestUpgradeRejection(port: number): Promise<{ status: number; 
       headers: {
         Connection: "Upgrade",
         Upgrade: "websocket",
-        "Sec-WebSocket-Key": `ltfx.n.1b03391d9a351a703cf8.v1`,
+        "Sec-WebSocket-Key": "dGVzdC1rZXktMDEyMzQ1Ng==",
         "Sec-WebSocket-Version": "13",
       },
     });

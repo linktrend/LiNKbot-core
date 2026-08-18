@@ -193,19 +193,19 @@ export function resolveElevatedPermissions(params: {
   const enabled = globalEnabled && agentEnabled;
   const failures: Array<{ gate: string; key: string }> = [];
   if (!globalEnabled) {
-    failures.push({ gate: "enabled", key: `ltfx.n.441cf207abf0a521ddc1.v1` });
+    failures.push({ gate: "enabled", key: "tools.elevated.enabled" });
   }
   if (!agentEnabled) {
     failures.push({
       gate: "enabled",
-      key: `ltfx.n.efbb771d10e3aa43f742.v1`,
+      key: "agents.list[].tools.elevated.enabled",
     });
   }
   if (!enabled) {
     return { enabled, allowed: false, failures };
   }
   if (!params.provider) {
-    failures.push({ gate: "provider", key: `ltfx.n.ba103e52fb41d085cd86.v1` });
+    failures.push({ gate: "provider", key: "ctx.Provider" });
     return { enabled, allowed: false, failures };
   }
 

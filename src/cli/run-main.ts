@@ -535,7 +535,7 @@ function isSafeGatewayProbeTarget(target: GatewayProbeTarget): boolean {
   });
 }
 
-function isSafeRemoteGatewayProbeUrl(url: (string)): boolean {
+function isSafeRemoteGatewayProbeUrl(url: string): boolean {
   let parsed: URL;
   try {
     parsed = new URL(url);
@@ -690,7 +690,7 @@ function isCommanderParseExit(error: unknown): error is { exitCode: number } {
   );
 }
 
-function findCommandOption(command: CommanderCommand, token: (string)): CommanderOption | undefined {
+function findCommandOption(command: CommanderCommand, token: string): CommanderOption | undefined {
   const equalsIndex = token.indexOf("=");
   const flag = equalsIndex === -1 ? token : token.slice(0, equalsIndex);
   return command.options.find((option) => option.long === flag || option.short === flag);

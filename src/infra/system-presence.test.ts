@@ -73,7 +73,7 @@ describe("system-presence", () => {
     expect(update.key).toBe("mixed-case-node");
     expect(update.changedKeys).toEqual(["host", "ip", "version", "mode", "reason"]);
     expect(update).toEqual({
-      key: `ltfx.n.8682bc9ae607cf23b192.v1`,
+      key: "mixed-case-node",
       previous: undefined,
       changedKeys: ["host", "ip", "version", "mode", "reason"],
       changes: {

@@ -105,11 +105,11 @@ _apply_secret() {
     OPENROUTER_VALUE="$(kubectl get secret openclaw-secrets -n "$NS" -o jsonpath='{.data.OPENROUTER_API_KEY}' 2>/dev/null | base64 -d)"
   fi
 
-  TOKEN="${EXISTING_TOKEN:"${ltfx.n.d238ba876a97578ab663.v1}" rand -hex 32)}"
-  ANTHROPIC_VALUE="${ANTHROPIC_API_KEY:(ltfx.n.f16d9240d90392e3252c.v1)}"
-  OPENAI_VALUE="${OPENAI_API_KEY:(ltfx.n.380e9ac0bdf66b66ddeb.v1)}"
-  GEMINI_VALUE="${GEMINI_API_KEY:(ltfx.n.e6f43b6479b7ee5b7263.v1)}"
-  OPENROUTER_VALUE="${OPENROUTER_API_KEY:(ltfx.n.8937ea8f3c57363f739d.v1)}"
+  TOKEN="${EXISTING_TOKEN:-$(openssl rand -hex 32)}"
+  ANTHROPIC_VALUE="${ANTHROPIC_API_KEY:-$ANTHROPIC_VALUE}"
+  OPENAI_VALUE="${OPENAI_API_KEY:-$OPENAI_VALUE}"
+  GEMINI_VALUE="${GEMINI_API_KEY:-$GEMINI_VALUE}"
+  OPENROUTER_VALUE="${OPENROUTER_API_KEY:-$OPENROUTER_VALUE}"
   SECRET_MANIFEST="$TMP_DIR/secrets.yaml"
 
   # Write secret material to temp files so kubectl handles encoding safely.
@@ -127,11 +127,11 @@ _apply_secret() {
 
   kubectl create secret generic openclaw-secrets \
     -n "$NS" \
-    --from-file=OPENCLAW_GATEWAY_TOKEN="${ltfx.n.677b356554486c4aea28.v1}" \
-    --from-file=ANTHROPIC_API_KEY="${ltfx.n.8829b67db9355523d075.v1}" \
-    --from-file=OPENAI_API_KEY="${ltfx.n.f7910f628353f55d265d.v1}" \
-    --from-file=GEMINI_API_KEY="${ltfx.n.b2cfa88a1d3508088ebb.v1}" \
-    --from-file=OPENROUTER_API_KEY="${ltfx.n.bdb21e5fb09d71320737.v1}" \
+    --from-file=OPENCLAW_GATEWAY_TOKEN="$TMP_DIR/OPENCLAW_GATEWAY_TOKEN" \
+    --from-file=ANTHROPIC_API_KEY="$TMP_DIR/ANTHROPIC_API_KEY" \
+    --from-file=OPENAI_API_KEY="$TMP_DIR/OPENAI_API_KEY" \
+    --from-file=GEMINI_API_KEY="$TMP_DIR/GEMINI_API_KEY" \
+    --from-file=OPENROUTER_API_KEY="$TMP_DIR/OPENROUTER_API_KEY" \
     --dry-run=client \
     -o yaml > "$SECRET_MANIFEST"
   chmod 600 "$SECRET_MANIFEST"

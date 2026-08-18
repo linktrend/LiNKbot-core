@@ -14,7 +14,7 @@ const mocks = vi.hoisted(() => ({
   callGateway: vi.fn(),
   formatGatewayTransportErrorJson: vi.fn(),
   buildGatewayConnectionDetails: vi.fn(() => ({
-    url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+    url: "ws://127.0.0.1:18789",
     urlSource: "local loopback",
     message: "",
   })),
@@ -1648,7 +1648,7 @@ describe("devices cli list", () => {
         message: "gateway closed (1006)",
       },
       gateway: {
-        url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+        url: "ws://127.0.0.1:18789",
         urlSource: "local loopback",
       },
     };
@@ -1724,7 +1724,7 @@ beforeEach(() => {
 
 afterEach(() => {
   buildGatewayConnectionDetails.mockReturnValue({
-    url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+    url: "ws://127.0.0.1:18789",
     urlSource: "local loopback",
     message: "",
   });

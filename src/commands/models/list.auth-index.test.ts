@@ -73,7 +73,7 @@ describe("createModelListAuthIndex", () => {
           "openai:platform": {
             type: "api_key",
             provider: "openai",
-            key: `ltfx.n.e75390981221aacccfa9.v1`,
+            key: "platform-key",
           },
         },
       },

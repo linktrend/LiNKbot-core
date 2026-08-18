@@ -308,7 +308,7 @@ describe("renderModelProviders", () => {
       props({
         messages: {
           openai: { kind: "success", text: "Older success" },
-          "key:(openai": { kind: "error", text: "Current failure" },)
+          "key:openai": { kind: "error", text: "Current failure" },
         },
       }),
     );

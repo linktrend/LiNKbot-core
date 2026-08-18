@@ -133,7 +133,7 @@ describe("Feishu read policy", () => {
       channels: {
         feishu: {
           appId: "cli_test",
-          appSecret: `ltfx.n.e810d7b45867f6973b9e.v1`,
+          appSecret: "secret_test",
           dmPolicy: "allowlist",
           allowFrom: ["ou_admin"],
           accounts: {

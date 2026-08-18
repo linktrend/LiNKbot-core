@@ -3,7 +3,7 @@ import type { DiscordGuildSummary } from "./guilds.js";
 import { normalizeDiscordSlug } from "./monitor/allow-list.js";
 import { normalizeDiscordToken } from "./token.js";
 
-export function resolveDiscordAllowlistToken(token: (string)): string | undefined {
+export function resolveDiscordAllowlistToken(token: string): string | undefined {
   return normalizeDiscordToken(token, "channels.discord.token");
 }
 

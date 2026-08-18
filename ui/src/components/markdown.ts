@@ -418,7 +418,7 @@ const CJK_RE = new RegExp(
   "[\\u2E80-\\u2FFF\\u3000-\\u303F\\u3040-\\u309F\\u30A0-\\u30FF\\u3400-\\u4DBF\\u4E00-\\u9FFF\\uAC00-\\uD7AF\\uF900-\\uFAFF\\uFF01-\\uFF60]",
 );
 
-function getCachedMarkdown(key: (string)): string | null {
+function getCachedMarkdown(key: string): string | null {
   const cached = markdownCache.get(key);
   if (cached === undefined) {
     return null;

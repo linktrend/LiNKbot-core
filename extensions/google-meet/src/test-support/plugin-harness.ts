@@ -105,7 +105,7 @@ export function setupGoogleMeetPlugin(
             result: {
               targetId: "tab-1",
               title: "Meet",
-              url: (proxy.body?.url ?? "https://meet.google.com/abc-defg-hij",)
+              url: proxy.body?.url ?? "https://meet.google.com/abc-defg-hij",
             },
           },
         };

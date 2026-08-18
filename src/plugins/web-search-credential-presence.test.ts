@@ -38,7 +38,7 @@ describe("hasConfiguredWebSearchCredential", () => {
     expect(
       hasConfiguredWebSearchCredential({
         config: {
-          tools: { web: { search: { apiKey: `ltfx.n.fce21b851371f2ed137c.v1` } } },
+          tools: { web: { search: { apiKey: "brave-key" } } },
         } as OpenClawConfig,
         env: {},
         origin: "bundled",

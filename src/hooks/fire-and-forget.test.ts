@@ -28,7 +28,7 @@ describe("fireAndForgetHook", () => {
   it("logs rejection errors as sanitized single-line messages", async () => {
     const logger = vi.fn();
     fireAndForgetHook(
-      Promise.reject(new Error("boom\nforged\tsecret ltfx.n.aee01e3fb1b4c6a59129.v1")),
+      Promise.reject(new Error("boom\nforged\tsecret sk-test1234567890")),
       "hook failed",
       logger,
     );
@@ -36,7 +36,7 @@ describe("fireAndForgetHook", () => {
     expect(logger).toHaveBeenCalledWith("hook failed: boom forged secret ***");
     const message = requireFirstLog(logger);
     expect(message).not.toContain("\n");
-    expect(message).not.toContain("ltfx.n.aee01e3fb1b4c6a59129.v1");
+    expect(message).not.toContain("sk-test1234567890");
   });
 
   it("does not log for resolved tasks", async () => {

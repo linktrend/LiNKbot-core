@@ -213,7 +213,7 @@ describe("gateway session utils", () => {
       cfg: createModelDefaultsConfig({ primary: "openai/gpt-5.4" }),
       storePath: "",
       store: {},
-      key: `ltfx.n.28760ff0218c403139e7.v1`,
+      key: "agent:main:child",
       entry: {
         swarmGroupId: "swarm:agent:main:parent:turn-42",
       } as SessionEntry,
@@ -311,7 +311,7 @@ describe("gateway session utils", () => {
       opts: { archived: true },
     });
     expect(archived.sessions).toMatchObject([
-      { key: `ltfx.n.dd9e881230ebf6e02363.v1`, archived: true, archivedAt: 50, pinned: false },
+      { key: "archived", archived: true, archivedAt: 50, pinned: false },
     ]);
   });
 
@@ -545,7 +545,7 @@ describe("gateway session utils", () => {
         cfg,
         storePath: "",
         store: {},
-        key: `ltfx.n.397dee418e889bb98260.v1`,
+        key: "agent:main:cron:job1",
         lightweightListRow: true,
         skipTranscriptUsageFallback: true,
       });
@@ -556,7 +556,7 @@ describe("gateway session utils", () => {
         cfg,
         storePath: "",
         store: {},
-        key: `ltfx.n.f252b45010d33ea09b31.v1`,
+        key: "agent:main:other",
         lightweightListRow: true,
         skipTranscriptUsageFallback: true,
       });
@@ -573,7 +573,7 @@ describe("gateway session utils", () => {
       cfg,
       storePath: "",
       store: {},
-      key: `ltfx.n.e8a7696bb5b05bf951ab.v1`,
+      key: "agent:main:failed",
       lightweightListRow: true,
       skipTranscriptUsageFallback: true,
       entry: {
@@ -598,7 +598,7 @@ describe("gateway session utils", () => {
       cfg: createModelDefaultsConfig({ primary: "openai/gpt-5.4" }),
       storePath: "",
       store: {},
-      key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+      key: "agent:main:main",
       lightweightListRow: true,
       skipTranscriptUsageFallback: true,
       entry: {
@@ -832,7 +832,7 @@ describe("gateway session utils", () => {
         cfg,
         storePath: "",
         store: {},
-        key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+        key: "agent:main:main",
         entry,
       });
 
@@ -884,7 +884,7 @@ describe("gateway session utils", () => {
       cfg,
       storePath: "",
       store: {},
-      key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+      key: "agent:main:main",
       entry: {
         sessionId: "observed-codex",
         agentHarnessId: "codex",
@@ -902,7 +902,7 @@ describe("gateway session utils", () => {
         cfg: createModelDefaultsConfig({ primary: "custom/reasoner" }),
         storePath: "",
         store: {},
-        key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+        key: "agent:main:main",
         entry: { sessionId: thinkingLevel, thinkingLevel } as SessionEntry,
       });
 
@@ -932,7 +932,7 @@ describe("gateway session utils", () => {
       cfg: createModelDefaultsConfig({ primary: "anthropic/claude-sonnet-4.6" }),
       storePath: "",
       store: {},
-      key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+      key: "agent:main:main",
       entry: {
         sessionId: "session-1",
         sessionFile: "/tmp/openclaw/agents/main/sessions/session-1.jsonl",
@@ -974,7 +974,7 @@ describe("gateway session utils", () => {
       cfg: {} as OpenClawConfig,
       storePath: "",
       store: {},
-      key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+      key: "agent:main:main",
       entry: {
         sessionId: "fresh-zero-token-session",
         updatedAt: 1,
@@ -1054,7 +1054,7 @@ describe("gateway session utils", () => {
       cfg,
       storePath: "",
       store: {},
-      key: `ltfx.n.6061663aaea2ef525e43.v1`,
+      key: "agent:alpha:main",
     });
 
     expectFields(row, {
@@ -1121,7 +1121,7 @@ describe("gateway session utils", () => {
       cfg,
       storePath: "",
       store: { "agent:main:telegram:direct:42": entry },
-      key: `ltfx.n.a86858a2e5044007971e.v1`,
+      key: "agent:main:telegram:direct:42",
       entry,
     });
     expect(row.displayName).toBe("openclaw-tui");
@@ -1138,7 +1138,7 @@ describe("gateway session utils", () => {
       cfg,
       storePath: "",
       store: { "agent:main:dashboard:chat-1": entry },
-      key: `ltfx.n.d706739ebe88aa1f51be.v1`,
+      key: "agent:main:dashboard:chat-1",
       entry,
     });
     expect(row.displayName).toBeUndefined();
@@ -1148,7 +1148,7 @@ describe("gateway session utils", () => {
       cfg,
       storePath: "",
       store: { "agent:main:dashboard:chat-1": titledEntry },
-      key: `ltfx.n.d706739ebe88aa1f51be.v1`,
+      key: "agent:main:dashboard:chat-1",
       entry: titledEntry,
     });
     expect(titledRow.displayName).toBe("Release Planning");
@@ -1166,7 +1166,7 @@ describe("gateway session utils", () => {
       cfg,
       storePath: "",
       store: { "agent:main:telegram:group:99": entry },
-      key: `ltfx.n.caa7164f72c42d34a7a4.v1`,
+      key: "agent:main:telegram:group:99",
       entry,
     });
     expect(row.displayName).toBe("Engineering");
@@ -1184,7 +1184,7 @@ describe("gateway session utils", () => {
       cfg,
       storePath: "",
       store: { "agent:main:slack:channel:C1": channelEntry },
-      key: `ltfx.n.f1cf2557ca6c698e5ed3.v1`,
+      key: "agent:main:slack:channel:C1",
       entry: channelEntry,
     });
     expect(channelRow.displayName).toBe("Acme #general");
@@ -1194,7 +1194,7 @@ describe("gateway session utils", () => {
       cfg,
       storePath: "",
       store: { "agent:main:slack:channel:C1": labeled },
-      key: `ltfx.n.f1cf2557ca6c698e5ed3.v1`,
+      key: "agent:main:slack:channel:C1",
       entry: labeled,
     });
     expect(labeledRow.displayName).toBe("Team room");
@@ -1204,7 +1204,7 @@ describe("gateway session utils", () => {
       cfg,
       storePath: "",
       store: { "agent:main:telegram:group:99": opaque },
-      key: `ltfx.n.caa7164f72c42d34a7a4.v1`,
+      key: "agent:main:telegram:group:99",
       entry: opaque,
     });
     expect(opaqueRow.displayName).toMatch(/^telegram:/);
@@ -1224,7 +1224,7 @@ describe("gateway session utils", () => {
       cfg,
       storePath: "",
       store: { "agent:main:dashboard:x": entry },
-      key: `ltfx.n.70e5e4ea772362ff2ed1.v1`,
+      key: "agent:main:dashboard:x",
       entry,
     });
     expect(row.worktree).toEqual({ id: "wt-id", branch: "openclaw/wt-1234", repoRoot: "/repo" });
@@ -1244,7 +1244,7 @@ describe("gateway session utils", () => {
       cfg,
       storePath: "",
       store: { "agent:main:telegram:direct:42": entry },
-      key: `ltfx.n.a86858a2e5044007971e.v1`,
+      key: "agent:main:telegram:direct:42",
       entry,
     });
     expect(row.displayName).toBe("Alice");
@@ -1260,7 +1260,7 @@ describe("gateway session utils", () => {
       cfg,
       storePath: "",
       store: { "agent:main:main": entry },
-      key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+      key: "agent:main:main",
       entry,
     });
     // Session has no explicit override → inherits the configured default.
@@ -1280,7 +1280,7 @@ describe("gateway session utils", () => {
       cfg,
       storePath: "",
       store: { "agent:main:discord:direct:1": discordEntry },
-      key: `ltfx.n.fb6528f25214b7e62ebb.v1`,
+      key: "agent:main:discord:direct:1",
       entry: discordEntry,
     });
     expect(discordRow.effectiveResponseUsage).toBe("full");
@@ -1290,7 +1290,7 @@ describe("gateway session utils", () => {
       cfg,
       storePath: "",
       store: { "agent:main:telegram:direct:1": telegramEntry },
-      key: `ltfx.n.ae4e1eca31aa46f7d47b.v1`,
+      key: "agent:main:telegram:direct:1",
       entry: telegramEntry,
     });
     expect(telegramRow.effectiveResponseUsage).toBe("tokens");
@@ -1301,7 +1301,7 @@ describe("gateway session utils", () => {
       cfg,
       storePath: "",
       store: { "agent:main:slack:direct:1": slackEntry },
-      key: `ltfx.n.df652ee35b7f1be11d57.v1`,
+      key: "agent:main:slack:direct:1",
       entry: slackEntry,
     });
     expect(slackRow.effectiveResponseUsage).toBe("off");
@@ -1322,7 +1322,7 @@ describe("gateway session utils", () => {
       cfg,
       storePath: "",
       store: { "agent:main:discord:direct:1": entry },
-      key: `ltfx.n.fb6528f25214b7e62ebb.v1`,
+      key: "agent:main:discord:direct:1",
       entry,
     });
     // Explicit off persists and wins over the per-channel default.
@@ -1340,7 +1340,7 @@ describe("gateway session utils", () => {
       cfg,
       storePath: "",
       store: { "agent:main:main": inheritedEntry },
-      key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+      key: "agent:main:main",
       entry: inheritedEntry,
     });
     expect(inheritedRow.queueMode).toBeUndefined();
@@ -1355,7 +1355,7 @@ describe("gateway session utils", () => {
       cfg,
       storePath: "",
       store: { "agent:main:other": overriddenEntry },
-      key: `ltfx.n.f252b45010d33ea09b31.v1`,
+      key: "agent:main:other",
       entry: overriddenEntry,
     });
     expect(overriddenRow.queueMode).toBe("followup");
@@ -1619,7 +1619,7 @@ describe("gateway session utils", () => {
       session: { mainKey: "work", store: storePath },
       agents: { list: [{ id: "ops", default: true }] },
     } as OpenClawConfig;
-    const target = resolveGatewaySessionStoreTarget({ cfg, key: `ltfx.n.3cd054c375bd03a675ec.v1` });
+    const target = resolveGatewaySessionStoreTarget({ cfg, key: "agent:ops:main" });
     expect(target.canonicalKey).toBe("agent:ops:work");
     expect(target.storeKeys).toContain("agent:ops:main");
   });
@@ -1641,7 +1641,7 @@ describe("gateway session utils", () => {
 
       const target = resolveGatewaySessionStoreTargetWithStore({
         cfg,
-        key: `ltfx.n.3cd054c375bd03a675ec.v1`,
+        key: "agent:ops:main",
       });
 
       expect(target.storePath).toBe(path.resolve(fixedStorePath));
@@ -1666,7 +1666,7 @@ describe("gateway session utils", () => {
         agents: { list: [{ id: "main", default: true }] },
       } as OpenClawConfig;
 
-      const target = resolveGatewaySessionStoreTarget({ cfg, key: `ltfx.n.a0779696772dcd7cad68.v1` });
+      const target = resolveGatewaySessionStoreTarget({ cfg, key: "agent:retired-agent:main" });
 
       expect(target.storePath).toBe(path.resolve(retiredStorePath));
     });
@@ -1693,7 +1693,7 @@ describe("gateway session utils", () => {
 
       const target = resolveGatewaySessionStoreTargetWithStore({
         cfg,
-        key: `ltfx.n.a0779696772dcd7cad68.v1`,
+        key: "agent:retired-agent:main",
         store: fallbackStore,
       });
 
@@ -1725,7 +1725,7 @@ describe("gateway session utils", () => {
 
       const target = resolveGatewaySessionStoreTargetWithStore({
         cfg,
-        key: `ltfx.n.55307722fd21fb1ac871.v1`,
+        key: "agent:retired:main",
       });
 
       expect(target.storePath).toBe(retiredStorePath);
@@ -1808,7 +1808,7 @@ describe("gateway session utils", () => {
 
         const target = resolveGatewaySessionStoreTargetWithStore({
           cfg,
-          key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+          key: "agent:main:main",
           store,
         });
 
@@ -1849,7 +1849,7 @@ describe("gateway session utils", () => {
         } as OpenClawConfig;
         setRuntimeConfigSnapshot(cfg, cfg);
 
-        const target = resolveGatewaySessionStoreTarget({ cfg, key: `ltfx.n.6d9217fe77c7f11d9cc9.v1` });
+        const target = resolveGatewaySessionStoreTarget({ cfg, key: "agent:main:main" });
         const loaded = loadSessionEntry("agent:main:main");
 
         expect(target.canonicalKey).toBe("agent:main:main");
@@ -1955,7 +1955,7 @@ describe("gateway session utils", () => {
 
     const result = migrateAndPruneGatewaySessionStoreKey({
       cfg,
-      key: `ltfx.n.3cd054c375bd03a675ec.v1`,
+      key: "agent:ops:main",
       store,
     });
 
@@ -2475,7 +2475,7 @@ describe("listSessionsFromStore selected model display", () => {
       expect(listed.defaults).toEqual(expected.defaults);
       expect(listed.sessions).toHaveLength(expected.sessions.length);
       expectFields(listed.sessions[0], {
-        key: `ltfx.n.873abdff28c11e231091.v1`,
+        key: "agent:main:sess-yield-0",
         derivedTitle: "title 0",
         lastMessagePreview: "last 0",
       });

@@ -74,7 +74,7 @@ describe("device token request lifecycle", () => {
 
     const operation = rotateDeviceToken(state, tokenParams);
     state.requestGeneration += 1;
-    response.resolve({ token: `ltfx.n.7d19b716b1e5083012f0.v1`, ...tokenParams });
+    response.resolve({ token: "stale-token", ...tokenParams });
     await operation;
 
     expect(prompt).not.toHaveBeenCalled();
@@ -84,7 +84,7 @@ describe("device token request lifecycle", () => {
   it("rechecks rotate ownership after loading the local identity", async () => {
     storeIdentity();
     const { digest, digestMock } = deferIdentityFingerprint();
-    const state = createState(async () => ({ token: `ltfx.n.7d19b716b1e5083012f0.v1`, ...tokenParams }));
+    const state = createState(async () => ({ token: "stale-token", ...tokenParams }));
     const prompt = vi.spyOn(window, "prompt").mockImplementation(() => null);
 
     const operation = rotateDeviceToken(state, tokenParams);
@@ -99,7 +99,7 @@ describe("device token request lifecycle", () => {
 
   it("does not clear a current token when a revoke request retires during identity loading", async () => {
     storeIdentity();
-    storeDeviceAuthToken({ ...tokenParams, token: `ltfx.n.ef6036bfacfc26e4d8f0.v1`, scopes: ["operator.read"] });
+    storeDeviceAuthToken({ ...tokenParams, token: "current-token", scopes: ["operator.read"] });
     const { digest, digestMock } = deferIdentityFingerprint();
     const state = createState(async () => ({}));
     vi.spyOn(window, "confirm").mockReturnValue(true);

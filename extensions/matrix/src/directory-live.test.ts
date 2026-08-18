@@ -41,7 +41,7 @@ describe("matrix directory live", () => {
       accountId: "assistant",
       homeserver: "https://matrix.example.org",
       userId: "@bot:example.org",
-      accessToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+      accessToken: "test-token",
     });
     matrixAuthedHttpClientCtorMock.mockReset();
     requestJsonMock.mockReset();
@@ -75,7 +75,7 @@ describe("matrix directory live", () => {
       accountId: "assistant",
       homeserver: "https://matrix.example.org",
       userId: "@bot:example.org",
-      accessToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+      accessToken: "test-token",
       dispatcherPolicy: {
         mode: "explicit-proxy",
         proxyUrl: "http://proxy.internal:8080",
@@ -90,7 +90,7 @@ describe("matrix directory live", () => {
 
     expect(matrixAuthedHttpClientCtorMock).toHaveBeenCalledWith({
       homeserver: "https://matrix.example.org",
-      accessToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+      accessToken: "test-token",
       ssrfPolicy: undefined,
       dispatcherPolicy: {
         mode: "explicit-proxy",

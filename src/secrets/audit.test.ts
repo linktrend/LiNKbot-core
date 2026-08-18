@@ -162,7 +162,7 @@ async function createAuditFixture(): Promise<AuditFixture> {
     env: {
       OPENCLAW_STATE_DIR: stateDir,
       OPENCLAW_CONFIG_PATH: configPath,
-      OPENAI_API_KEY: `ltfx.n.aaf1fe7c1e5d78f6d873.v1`, // pragma: allowlist secret
+      OPENAI_API_KEY: "env-openai-key", // pragma: allowlist secret
       PATH: resolveRuntimePathEnv(),
     },
   };
@@ -183,7 +183,7 @@ async function seedAuditFixture(fixture: AuditFixture): Promise<void> {
       {
         type: "api_key",
         provider: "openai",
-        key: `ltfx.n.7a4f82cb7e353fa56417.v1`,
+        key: "sk-openai-plaintext",
       },
     ],
   ]);
@@ -206,7 +206,7 @@ async function seedAuditFixture(fixture: AuditFixture): Promise<void> {
   });
   await fs.writeFile(
     fixture.envPath,
-    `${OPENAI_API_KEY_MARKER}=ltfx.n.7a4f82cb7e353fa56417.v1\n`, // pragma: allowlist secret
+    `${OPENAI_API_KEY_MARKER}=sk-openai-plaintext\n`, // pragma: allowlist secret
     "utf8",
   );
 }
@@ -283,7 +283,7 @@ describe("secrets audit", () => {
     await writeJsonFile(fixture.authJsonPath, {
       openai: {
         type: "api_key",
-        key: `ltfx.n.ba2ff75774860a514433.v1`,
+        key: "sk-legacy-auth-json",
       },
     });
 
@@ -312,7 +312,7 @@ describe("secrets audit", () => {
       scriptPath: execScriptPath,
       logPath: execLogPath,
       values: {
-        "providers/openai/apiKey": `ltfx.n.328aca10e06e3074faf5.v1`,
+        "providers/openai/apiKey": "value:providers/openai/apiKey",
       },
     });
     await writeExecSecretsAuditConfig({
@@ -345,8 +345,8 @@ describe("secrets audit", () => {
       scriptPath: execScriptPath,
       logPath: execLogPath,
       values: {
-        "providers/openai/apiKey": `ltfx.n.328aca10e06e3074faf5.v1`,
-        "providers/moonshot/apiKey": `ltfx.n.fb5e983985148c7dced2.v1`,
+        "providers/openai/apiKey": "value:providers/openai/apiKey",
+        "providers/moonshot/apiKey": "value:providers/moonshot/apiKey",
       },
     });
     await writeExecSecretsAuditConfig({
@@ -439,7 +439,7 @@ describe("secrets audit", () => {
   });
 
   it("scans agent models.json files for plaintext provider apiKey values", async () => {
-    await writeModelsProvider({ apiKey: `ltfx.n.8a95248d30a75b01d0e4.v1` }); // pragma: allowlist secret
+    await writeModelsProvider({ apiKey: "sk-models-plaintext" }); // pragma: allowlist secret
 
     const report = await runSecretsAudit({ env: fixture.env });
     expectModelsFinding(report, {
@@ -452,7 +452,7 @@ describe("secrets audit", () => {
   it("scans agent models.json files for plaintext provider header values", async () => {
     await writeModelsProvider({
       headers: {
-        Authorization: "Bearer ltfx.n.23f4285a45acb05fc68d.v1", // pragma: allowlist secret
+        Authorization: "Bearer sk-header-plaintext", // pragma: allowlist secret
       },
     });
 
@@ -503,7 +503,7 @@ describe("secrets audit", () => {
     await writeModelsProvider({
       headers: {
         Authorization: "secretref-env:OPENAI_HEADER_TOKEN", // pragma: allowlist secret
-        "x-managed-token": `ltfx.n.2d051e748fa1575537e2.v1`, // pragma: allowlist secret
+        "x-managed-token": "secretref-managed", // pragma: allowlist secret
       },
     });
 
@@ -569,7 +569,7 @@ describe("secrets audit", () => {
         openai: {
           baseUrl: "https://api.openai.com/v1",
           api: "openai-completions",
-          apiKey: `ltfx.n.25d1f8aca3752f127c9f.v1`, // pragma: allowlist secret
+          apiKey: "sk-external-plaintext", // pragma: allowlist secret
           models: [{ id: "gpt-5", name: "gpt-5" }],
         },
       },
@@ -600,7 +600,7 @@ describe("secrets audit", () => {
         "openai:default": {
           type: "api_key",
           provider: "openai",
-          key: `ltfx.n.623f9a5f592407312d8f.v1`, // pragma: allowlist secret
+          key: "$OPENAI_API_KEY", // pragma: allowlist secret
         },
       },
     });
@@ -642,7 +642,7 @@ describe("secrets audit", () => {
         "openai:default": {
           type: "api_key",
           provider: "openai",
-          key: `ltfx.n.9b2f338e0c93e6baadbd.v1`, // pragma: allowlist secret
+          key: "sk-leftover-plaintext", // pragma: allowlist secret
           keyRef: { source: "env", id: "OPENAI_API_KEY" },
         },
       },
@@ -755,19 +755,19 @@ describe("secrets audit", () => {
           lmstudio: {
             baseUrl: "http://127.0.0.1:1234/v1",
             api: "openai-completions",
-            apiKey: `ltfx.n.5a375aacad4f8ebf0751.v1`,
+            apiKey: "lmstudio-local",
             models: [{ id: "lmstudio-local", name: "lmstudio-local" }],
           },
           ollama: {
             baseUrl: "http://127.0.0.1:11434/v1",
             api: "openai-completions",
-            apiKey: `ltfx.n.18ab0c9c00ad3478e4db.v1`,
+            apiKey: "ollama-local",
             models: [{ id: "ollama-local", name: "ollama-local" }],
           },
           openai: {
             baseUrl: "https://api.openai.com/v1",
             api: "openai-completions",
-            apiKey: `ltfx.n.8e6f95d01cff49e25da4.v1`,
+            apiKey: "sk-real-plaintext",
             models: [{ id: "gpt-5", name: "gpt-5" }],
           },
         },
@@ -821,7 +821,7 @@ describe("secrets audit", () => {
 
     const env = {
       HOME: homeDir,
-      OPENAI_API_KEY: `ltfx.n.aaf1fe7c1e5d78f6d873.v1`, // pragma: allowlist secret
+      OPENAI_API_KEY: "env-openai-key", // pragma: allowlist secret
       PATH: resolveRuntimePathEnv(),
     };
 
@@ -840,7 +840,7 @@ describe("secrets audit", () => {
 
     await fs.writeFile(
       envPath,
-      "OPENAI_API_KEY=(ltfx.n.b256d4371e8709717521.v1), // pragma: allowlist secret
+      "OPENAI_API_KEY=sk-legacy-plaintext\n", // pragma: allowlist secret
       "utf8",
     );
 

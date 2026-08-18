@@ -25,7 +25,7 @@ struct ChatInlineWidgetTests {
                 "render": "url",
                 "title": "Status",
                 "preferredHeight": 240,
-                "url": "${ltfx.n.8ff1aa874be725f22793.v1}",
+                "url": "/__openclaw__/canvas/documents/widget-1/index.html",
                 "sandbox": "scripts"
               }
             }
@@ -92,7 +92,7 @@ struct ChatInlineWidgetTests {
         let failedURL = try #require(OpenClawChatWidgetURLResolver.resolve(
             surfaceURL: oldSurface,
             target: target))
-        let failedResource = OpenClawChatWidgetResource(url: (failedURL))
+        let failedResource = OpenClawChatWidgetResource(url: failedURL)
         let probe = ChatWidgetRouteReconnectProbe(
             route: GatewayCanvasHostRoute(url: oldSurface, tlsFingerprintSHA256: nil),
             replacement: GatewayCanvasHostRoute(url: newSurface, tlsFingerprintSHA256: nil))
@@ -182,7 +182,7 @@ struct ChatInlineWidgetTests {
         let failedURL = try #require(OpenClawChatWidgetURLResolver.resolve(
             surfaceURL: oldSurface,
             target: target))
-        let failedResource = OpenClawChatWidgetResource(url: (failedURL))
+        let failedResource = OpenClawChatWidgetResource(url: failedURL)
         let probe = ChatWidgetOperatorRouteRefreshProbe(
             route: GatewayCanvasHostRoute(url: oldSurface, tlsFingerprintSHA256: nil),
             replacement: GatewayCanvasHostRoute(url: newSurface, tlsFingerprintSHA256: nil))

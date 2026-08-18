@@ -47,7 +47,7 @@ describe("secrets runtime snapshot matrix shadowing", () => {
         },
       }),
       env: {
-        MATRIX_OPS_ACCESS_TOKEN: `ltfx.n.d9310c002af91822beb0.v1`,
+        MATRIX_OPS_ACCESS_TOKEN: "ops-token",
       },
       agentDirs: ["/tmp/openclaw-agent-main"],
       loadAuthStore: () => loadAuthStoreWithProfiles({}),
@@ -77,7 +77,7 @@ describe("secrets runtime snapshot matrix shadowing", () => {
             },
             accounts: {
               default: {
-                accessToken: `ltfx.n.10851c1922ff849d81d7.v1`,
+                accessToken: "default-token",
               },
             },
           },
@@ -145,7 +145,7 @@ describe("secrets runtime snapshot matrix shadowing", () => {
         },
       },
       env: {
-        MATRIX_DEFAULT_ACCESS_TOKEN: `ltfx.n.10851c1922ff849d81d7.v1`,
+        MATRIX_DEFAULT_ACCESS_TOKEN: "default-token",
       },
     },
   ])("ignores top-level Matrix password refs shadowed by $name", async ({ config, env }) => {
@@ -203,7 +203,7 @@ describe("secrets runtime snapshot matrix shadowing", () => {
       config: {
         channels: {
           matrix: {
-            accessToken: `ltfx.n.10851c1922ff849d81d7.v1`,
+            accessToken: "default-token",
             accounts: {
               default: {
                 password: {
@@ -262,7 +262,7 @@ describe("secrets runtime snapshot matrix shadowing", () => {
         },
       },
       env: {
-        MATRIX_ACCESS_TOKEN: `ltfx.n.10851c1922ff849d81d7.v1`,
+        MATRIX_ACCESS_TOKEN: "default-token",
       },
     },
   ])("ignores default-account Matrix password refs shadowed by $name", async ({ config, env }) => {

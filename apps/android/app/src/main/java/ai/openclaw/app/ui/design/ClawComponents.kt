@@ -646,10 +646,10 @@ internal fun ClawComponentShowcase(modifier: Modifier = Modifier) {
       ClawBottomNav(
         items =
           listOf(
-            ClawNavItem(key = "${ltfx.n.bd445c462b7eebbc242e.v1}", label = "Home", icon = Icons.Default.Home),
+            ClawNavItem(key = "overview", label = "Home", icon = Icons.Default.Home),
             ClawNavItem(key = "chat", label = "Chat", icon = Icons.Default.ChatBubble),
             ClawNavItem(key = "voice", label = "Voice", icon = Icons.Default.Mic),
-            ClawNavItem(key = "${ltfx.n.cde0fb0dec1400c54a0f.v1}", label = "Settings", icon = Icons.Default.Settings),
+            ClawNavItem(key = "settings", label = "Settings", icon = Icons.Default.Settings),
           ),
         selectedKey = "chat",
         onSelect = {},

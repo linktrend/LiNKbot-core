@@ -59,7 +59,7 @@ describe("sendWebhookMessageDiscord proxy support", () => {
     const cfg = {
       channels: {
         discord: {
-          token: `ltfx.n.dc83eb77fb263ff7d935.v1`,
+          token: "Bot test-token",
           proxy: "bad-proxy",
         },
       },
@@ -87,7 +87,7 @@ describe("sendWebhookMessageDiscord proxy support", () => {
     const cfg = {
       channels: {
         discord: {
-          token: `ltfx.n.dc83eb77fb263ff7d935.v1`,
+          token: "Bot test-token",
           proxy: "http://127.0.0.1:8080",
         },
       },
@@ -114,7 +114,7 @@ describe("sendWebhookMessageDiscord proxy support", () => {
     const cfg = {
       channels: {
         discord: {
-          token: `ltfx.n.dc83eb77fb263ff7d935.v1`,
+          token: "Bot test-token",
           proxy: "http://mitm-proxy:8080",
         },
       },
@@ -141,7 +141,7 @@ describe("sendWebhookMessageDiscord proxy support", () => {
     const cfg = {
       channels: {
         discord: {
-          token: `ltfx.n.dc83eb77fb263ff7d935.v1`,
+          token: "Bot test-token",
           proxy: "http://proxy.test:8080",
         },
       },
@@ -168,7 +168,7 @@ describe("sendWebhookMessageDiscord proxy support", () => {
     const cfg = {
       channels: {
         discord: {
-          token: `ltfx.n.dc83eb77fb263ff7d935.v1`,
+          token: "Bot test-token",
           proxy: "http://10.0.0.10:8080",
         },
       },
@@ -195,7 +195,7 @@ describe("sendWebhookMessageDiscord proxy support", () => {
     const cfg = {
       channels: {
         discord: {
-          token: `ltfx.n.dc83eb77fb263ff7d935.v1`,
+          token: "Bot test-token",
         },
       },
     } as OpenClawConfig;
@@ -218,7 +218,7 @@ describe("sendWebhookMessageDiscord proxy support", () => {
     const globalFetchMock = vi.spyOn(globalThis, "fetch").mockResolvedValue(response);
 
     const result = await sendWebhookMessageDiscord("hello", {
-      cfg: { channels: { discord: { token: `ltfx.n.dc83eb77fb263ff7d935.v1` } } } as OpenClawConfig,
+      cfg: { channels: { discord: { token: "Bot test-token" } } } as OpenClawConfig,
       accountId: "default",
       webhookId: "123",
       webhookToken: "abc",
@@ -238,7 +238,7 @@ describe("sendWebhookMessageDiscord proxy support", () => {
     const globalFetchMock = vi.spyOn(globalThis, "fetch").mockResolvedValue(tracked.response);
 
     const result = await sendWebhookMessageDiscord("hello", {
-      cfg: { channels: { discord: { token: `ltfx.n.dc83eb77fb263ff7d935.v1` } } } as OpenClawConfig,
+      cfg: { channels: { discord: { token: "Bot test-token" } } } as OpenClawConfig,
       accountId: "default",
       webhookId: "123",
       webhookToken: "abc",
@@ -256,7 +256,7 @@ describe("sendWebhookMessageDiscord proxy support", () => {
       .mockResolvedValue(new Response("not json", { status: 200 }));
 
     const result = await sendWebhookMessageDiscord("hello", {
-      cfg: { channels: { discord: { token: `ltfx.n.dc83eb77fb263ff7d935.v1` } } } as OpenClawConfig,
+      cfg: { channels: { discord: { token: "Bot test-token" } } } as OpenClawConfig,
       accountId: "default",
       webhookId: "123",
       webhookToken: "abc",
@@ -277,7 +277,7 @@ describe("sendWebhookMessageDiscord proxy support", () => {
     const cfg = {
       channels: {
         discord: {
-          token: `ltfx.n.dc83eb77fb263ff7d935.v1`,
+          token: "Bot test-token",
         },
       },
     } as OpenClawConfig;
@@ -318,7 +318,7 @@ describe("sendWebhookMessageDiscord proxy support", () => {
     const cfg = {
       channels: {
         discord: {
-          token: `ltfx.n.dc83eb77fb263ff7d935.v1`,
+          token: "Bot test-token",
         },
       },
     } as OpenClawConfig;
@@ -355,7 +355,7 @@ describe("sendWebhookMessageDiscord proxy support", () => {
     const cfg = {
       channels: {
         discord: {
-          token: `ltfx.n.dc83eb77fb263ff7d935.v1`,
+          token: "Bot test-token",
         },
       },
     } as OpenClawConfig;

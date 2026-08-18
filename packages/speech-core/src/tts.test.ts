@@ -462,7 +462,7 @@ describe("speech-core native voice-note routing", () => {
           provider: "mock",
           providers: {
             mock: {
-              apiKey: `ltfx.n.46e455b8c52de1dd8d14.v1`,
+              apiKey: "resolved-minimax-key",
             },
           },
         },
@@ -474,7 +474,7 @@ describe("speech-core native voice-note routing", () => {
         resolveConfig: ({ rawConfig }) => {
           const providers = rawConfig.providers as Record<string, { apiKey?: unknown }> | undefined;
           return {
-            apiKey: (providers?.mock?.apiKey,)
+            apiKey: providers?.mock?.apiKey,
           };
         },
       }),
@@ -984,7 +984,7 @@ describe("speech-core native voice-note routing", () => {
             enabled: true,
             provider: "xiaomi",
             providers: {
-              mimo: { apiKey: `ltfx.n.2bf4743fa44debde9bf5.v1` },
+              mimo: { apiKey: "mimo-key" },
             },
           },
         },
@@ -994,7 +994,7 @@ describe("speech-core native voice-note routing", () => {
 
     expect(result.success).toBe(true);
     const request = requireFirstSynthesisRequest("alias provider synthesis request");
-    expect(request.providerConfig).toMatchObject({ apiKey: `ltfx.n.2bf4743fa44debde9bf5.v1` });
+    expect(request.providerConfig).toMatchObject({ apiKey: "mimo-key" });
   });
 
   it("maps speakerVoice persona provider config to provider-compatible voice fields", async () => {

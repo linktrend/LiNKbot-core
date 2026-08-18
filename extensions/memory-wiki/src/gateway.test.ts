@@ -469,7 +469,7 @@ describe("memory-wiki gateway methods", () => {
       totalClusters: 1,
       clusters: [
         {
-          key: `ltfx.n.0efb5e5414bbe71c4c65.v1`,
+          key: "topic/travel",
           label: "Travel",
           itemCount: 2,
           highRiskCount: 1,
@@ -514,7 +514,7 @@ describe("memory-wiki gateway methods", () => {
       totalClusters: 1,
       clusters: [
         {
-          key: `ltfx.n.0efb5e5414bbe71c4c65.v1`,
+          key: "topic/travel",
           label: "Travel",
           itemCount: 2,
           highRiskCount: 1,
@@ -558,7 +558,7 @@ describe("memory-wiki gateway methods", () => {
       totalContradictions: 1,
       clusters: [
         {
-          key: `ltfx.n.a23f3e1e3ab47f3ad147.v1`,
+          key: "synthesis",
           label: "Syntheses",
           itemCount: 1,
           claimCount: 2,
@@ -610,7 +610,7 @@ describe("memory-wiki gateway methods", () => {
       totalContradictions: 1,
       clusters: [
         {
-          key: `ltfx.n.a23f3e1e3ab47f3ad147.v1`,
+          key: "synthesis",
           label: "Syntheses",
           itemCount: 1,
           claimCount: 2,

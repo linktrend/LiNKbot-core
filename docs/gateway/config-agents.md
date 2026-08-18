@@ -1399,7 +1399,7 @@ Batches rapid text-only messages from the same sender into a single agent turn. 
       prefsPath: "~/.openclaw/settings/tts.json",
       providers: {
         elevenlabs: {
-          apiKey: "${ltfx.n.b72eac9614efb1b10376.v1}",
+          apiKey: "elevenlabs_api_key",
           baseUrl: "https://api.elevenlabs.io",
           speakerVoiceId: "voice_id",
           modelId: "eleven_multilingual_v2",
@@ -1420,7 +1420,7 @@ Batches rapid text-only messages from the same sender into a single agent turn. 
           outputFormat: "audio-24khz-48kbitrate-mono-mp3",
         },
         openai: {
-          apiKey: "${ltfx.n.6ce439cbbd21adf9a686.v1}",
+          apiKey: "openai_api_key",
           baseUrl: "https://api.openai.com/v1",
           model: "gpt-4o-mini-tts",
           speakerVoice: "coral",
@@ -1458,7 +1458,7 @@ Defaults for Talk mode (macOS/iOS/Android and the browser Control UI).
         },
         modelId: "eleven_multilingual_v2",
         outputFormat: "mp3_44100_128",
-        apiKey: "${ltfx.n.b72eac9614efb1b10376.v1}",
+        apiKey: "elevenlabs_api_key",
       },
       mlx: {
         modelId: "mlx-community/Soprano-80M-bf16",

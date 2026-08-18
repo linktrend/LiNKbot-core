@@ -370,7 +370,7 @@ describe("resolvePluginCapabilityProviders", () => {
     } as never);
 
     expectResolvedCapabilityProviderIds(
-      resolvePluginCapabilityProviders({ key: `ltfx.n.bab92989c71d4485e478.v1` }),
+      resolvePluginCapabilityProviders({ key: "imageGenerationProviders" }),
       ["fal"],
     );
     expectActiveRegistryLookup(["fal"]);
@@ -442,7 +442,7 @@ describe("resolvePluginCapabilityProviders", () => {
     } as never);
 
     expectResolvedCapabilityProviderIds(
-      resolvePluginCapabilityProviders({ key: `ltfx.n.bab92989c71d4485e478.v1` }),
+      resolvePluginCapabilityProviders({ key: "imageGenerationProviders" }),
       ["external-image"],
     );
     expectActiveRegistryLookup(["external-image"]);
@@ -469,7 +469,7 @@ describe("resolvePluginCapabilityProviders", () => {
     } as never);
     mocks.resolveRuntimePluginRegistry.mockReturnValue(active);
 
-    const providers = resolvePluginCapabilityProviders({ key: `ltfx.n.35af274fbc678542937f.v1` });
+    const providers = resolvePluginCapabilityProviders({ key: "speechProviders" });
 
     expectResolvedCapabilityProviderIds(providers, ["openai"]);
     expect(mocks.loadPluginManifestRegistry).not.toHaveBeenCalled();
@@ -510,7 +510,7 @@ describe("resolvePluginCapabilityProviders", () => {
     );
 
     expectResolvedCapabilityProviderIds(
-      resolvePluginCapabilityProviders({ key: `ltfx.n.bab92989c71d4485e478.v1` }),
+      resolvePluginCapabilityProviders({ key: "imageGenerationProviders" }),
       ["external-image"],
     );
     expect(mocks.resolveRuntimePluginRegistry).toHaveBeenLastCalledWith({
@@ -566,7 +566,7 @@ describe("resolvePluginCapabilityProviders", () => {
     );
 
     const providers = resolvePluginCapabilityProviders({
-      key: `ltfx.n.bab92989c71d4485e478.v1`,
+      key: "imageGenerationProviders",
       cfg: { plugins: { allow: ["fal", "xai"] } } as OpenClawConfig,
     });
 
@@ -577,7 +577,7 @@ describe("resolvePluginCapabilityProviders", () => {
 
   it.each([
     {
-      key: `ltfx.n.35af274fbc678542937f.v1` as const,
+      key: "speechProviders" as const,
       contracts: { speechProviders: ["openai"] },
       seedLoadedProvider: (registry: ReturnType<typeof createEmptyPluginRegistry>) => {
         registry.speechProviders.push({
@@ -599,7 +599,7 @@ describe("resolvePluginCapabilityProviders", () => {
       },
     },
     {
-      key: `ltfx.n.6d2483504d73b17254f3.v1` as const,
+      key: "realtimeTranscriptionProviders" as const,
       contracts: { realtimeTranscriptionProviders: ["openai"] },
       seedLoadedProvider: (registry: ReturnType<typeof createEmptyPluginRegistry>) => {
         registry.realtimeTranscriptionProviders.push({
@@ -621,7 +621,7 @@ describe("resolvePluginCapabilityProviders", () => {
       },
     },
     {
-      key: `ltfx.n.89ed0e53374a9af73736.v1` as const,
+      key: "realtimeVoiceProviders" as const,
       contracts: { realtimeVoiceProviders: ["openai"] },
       seedLoadedProvider: (registry: ReturnType<typeof createEmptyPluginRegistry>) => {
         registry.realtimeVoiceProviders.push({
@@ -722,7 +722,7 @@ describe("resolvePluginCapabilityProviders", () => {
     );
 
     const providers = resolvePluginCapabilityProviders({
-      key: `ltfx.n.35af274fbc678542937f.v1`,
+      key: "speechProviders",
       cfg: {
         agents: {
           defaults: {
@@ -738,7 +738,7 @@ describe("resolvePluginCapabilityProviders", () => {
 
   it.each([
     {
-      key: `ltfx.n.6d2483504d73b17254f3.v1` as const,
+      key: "realtimeTranscriptionProviders" as const,
       seedLoadedProviders: (registry: ReturnType<typeof createEmptyPluginRegistry>) => {
         registry.realtimeTranscriptionProviders.push(
           {
@@ -757,7 +757,7 @@ describe("resolvePluginCapabilityProviders", () => {
       },
     },
     {
-      key: `ltfx.n.89ed0e53374a9af73736.v1` as const,
+      key: "realtimeVoiceProviders" as const,
       seedLoadedProviders: (registry: ReturnType<typeof createEmptyPluginRegistry>) => {
         registry.realtimeVoiceProviders.push(
           {
@@ -846,7 +846,7 @@ describe("resolvePluginCapabilityProviders", () => {
     });
 
     const provider = resolvePluginCapabilityProvider({
-      key: `ltfx.n.35af274fbc678542937f.v1`,
+      key: "speechProviders",
       providerId: "fish-audio",
     });
 
@@ -877,7 +877,7 @@ describe("resolvePluginCapabilityProviders", () => {
     mocks.resolveRuntimePluginRegistry.mockReturnValue(active);
 
     const providers = resolvePluginCapabilityProviders({
-      key: `ltfx.n.dfa17c30597949902c6d.v1`,
+      key: "mediaUnderstandingProviders",
       cfg: {
         plugins: { entries: { deepgram: { enabled: true } } },
         tools: {
@@ -945,7 +945,7 @@ describe("resolvePluginCapabilityProviders", () => {
     );
 
     const providers = resolvePluginCapabilityProviders({
-      key: `ltfx.n.dfa17c30597949902c6d.v1`,
+      key: "mediaUnderstandingProviders",
       cfg: {
         plugins: { allow: ["openai", "deepgram", "google"] },
         tools: {
@@ -983,7 +983,7 @@ describe("resolvePluginCapabilityProviders", () => {
     mocks.resolveRuntimePluginRegistry.mockReturnValue(active);
 
     const providers = resolvePluginCapabilityProviders({
-      key: `ltfx.n.35af274fbc678542937f.v1`,
+      key: "speechProviders",
       cfg: {
         plugins: { entries: { microsoft: { enabled: true } } },
         messages: { tts: { provider: "edge" } },
@@ -1026,7 +1026,7 @@ describe("resolvePluginCapabilityProviders", () => {
     mocks.resolveRuntimePluginRegistry.mockReturnValue(active);
 
     const providers = resolvePluginCapabilityProviders({
-      key: `ltfx.n.35af274fbc678542937f.v1`,
+      key: "speechProviders",
       cfg: { messages: { tts: { provider: "acme" } } } as OpenClawConfig,
     });
 
@@ -1093,7 +1093,7 @@ describe("resolvePluginCapabilityProviders", () => {
     );
 
     const providers = resolvePluginCapabilityProviders({
-      key: `ltfx.n.35af274fbc678542937f.v1`,
+      key: "speechProviders",
       cfg: {
         plugins: { allow: ["openai", "microsoft"] },
         messages: { tts: { provider: "edge" } },
@@ -1161,7 +1161,7 @@ describe("resolvePluginCapabilityProviders", () => {
     mocks.loadBundledCapabilityRuntimeRegistry.mockReturnValue(captured);
 
     const providers = resolvePluginCapabilityProviders({
-      key: `ltfx.n.35af274fbc678542937f.v1`,
+      key: "speechProviders",
       cfg: {
         messages: { tts: { provider: "google" } },
       } as OpenClawConfig,
@@ -1249,7 +1249,7 @@ describe("resolvePluginCapabilityProviders", () => {
     mocks.loadBundledCapabilityRuntimeRegistry.mockReturnValue(captured);
 
     const providers = resolvePluginCapabilityProviders({
-      key: `ltfx.n.35af274fbc678542937f.v1`,
+      key: "speechProviders",
       cfg: {
         messages: { tts: { provider: "google" } },
       } as OpenClawConfig,
@@ -1293,7 +1293,7 @@ describe("resolvePluginCapabilityProviders", () => {
     );
 
     const provider = resolvePluginCapabilityProvider({
-      key: `ltfx.n.89ed0e53374a9af73736.v1`,
+      key: "realtimeVoiceProviders",
       providerId: "google",
       cfg: { plugins: { allow: ["openai", "google"] } } as OpenClawConfig,
     });
@@ -1341,7 +1341,7 @@ describe("resolvePluginCapabilityProviders", () => {
     );
 
     const provider = resolvePluginCapabilityProvider({
-      key: `ltfx.n.6d2483504d73b17254f3.v1`,
+      key: "realtimeTranscriptionProviders",
       providerId: "openai-realtime",
     });
 
@@ -1368,7 +1368,7 @@ describe("resolvePluginCapabilityProviders", () => {
     mocks.resolveRuntimePluginRegistry.mockReturnValue(active);
 
     const provider = resolvePluginCapabilityProvider({
-      key: `ltfx.n.35af274fbc678542937f.v1`,
+      key: "speechProviders",
       providerId: "edge",
     });
 
@@ -1449,7 +1449,7 @@ describe("resolvePluginCapabilityProviders", () => {
     );
 
     const providers = resolvePluginCapabilityProviders({
-      key: `ltfx.n.35af274fbc678542937f.v1`,
+      key: "speechProviders",
       cfg: {
         plugins: { allow: ["openai", "microsoft", "elevenlabs"] },
         messages: { tts: { provider: "edge" } },
@@ -1485,10 +1485,10 @@ describe("resolvePluginCapabilityProviders", () => {
     mocks.withBundledPluginVitestCompat.mockReturnValue(enablementCompat);
 
     expectNoResolvedCapabilityProviders(
-      resolvePluginCapabilityProviders({ key: `ltfx.n.dfa17c30597949902c6d.v1`, cfg }),
+      resolvePluginCapabilityProviders({ key: "mediaUnderstandingProviders", cfg }),
     );
     expectNoResolvedCapabilityProviders(
-      resolvePluginCapabilityProviders({ key: `ltfx.n.dfa17c30597949902c6d.v1`, cfg }),
+      resolvePluginCapabilityProviders({ key: "mediaUnderstandingProviders", cfg }),
     );
 
     expect(mocks.loadPluginManifestRegistry).toHaveBeenCalledTimes(1);
@@ -1514,11 +1514,11 @@ describe("resolvePluginCapabilityProviders", () => {
     );
 
     expectResolvedCapabilityProviderIds(
-      resolvePluginCapabilityProviders({ key: `ltfx.n.dfa17c30597949902c6d.v1`, cfg }),
+      resolvePluginCapabilityProviders({ key: "mediaUnderstandingProviders", cfg }),
       ["openai"],
     );
     expectResolvedCapabilityProviderIds(
-      resolvePluginCapabilityProviders({ key: `ltfx.n.dfa17c30597949902c6d.v1`, cfg }),
+      resolvePluginCapabilityProviders({ key: "mediaUnderstandingProviders", cfg }),
       ["openai"],
     );
 
@@ -1537,13 +1537,13 @@ describe("resolvePluginCapabilityProviders", () => {
 
     expectNoResolvedCapabilityProviders(
       resolvePluginCapabilityProviders({
-        key: `ltfx.n.dfa17c30597949902c6d.v1`,
+        key: "mediaUnderstandingProviders",
         cfg: first.cfg,
       }),
     );
     expectNoResolvedCapabilityProviders(
       resolvePluginCapabilityProviders({
-        key: `ltfx.n.dfa17c30597949902c6d.v1`,
+        key: "mediaUnderstandingProviders",
         cfg: second.cfg,
       }),
     );
@@ -1556,7 +1556,7 @@ describe("resolvePluginCapabilityProviders", () => {
     mocks.resolveRuntimePluginRegistry.mockReturnValue(active);
 
     const providers = resolvePluginCapabilityProviders({
-      key: `ltfx.n.dfa17c30597949902c6d.v1`,
+      key: "mediaUnderstandingProviders",
       cfg: {} as OpenClawConfig,
     });
 
@@ -1594,7 +1594,7 @@ describe("resolvePluginCapabilityProviders", () => {
       params === undefined ? undefined : loaded,
     );
 
-    const providers = resolvePluginCapabilityProviders({ key: `ltfx.n.dfa17c30597949902c6d.v1` });
+    const providers = resolvePluginCapabilityProviders({ key: "mediaUnderstandingProviders" });
 
     expectResolvedCapabilityProviderIds(providers, ["google"]);
     expectManifestRegistryLoad(0, {});
@@ -1615,7 +1615,7 @@ describe("resolvePluginCapabilityProviders", () => {
 
     expectNoResolvedCapabilityProviders(
       resolvePluginCapabilityProviders({
-        key: `ltfx.n.dfa17c30597949902c6d.v1`,
+        key: "mediaUnderstandingProviders",
         cfg,
       }),
     );
@@ -1638,7 +1638,7 @@ describe("resolvePluginCapabilityProviders", () => {
     mocks.resolveRuntimePluginRegistry.mockReturnValue(active);
 
     const providers = resolvePluginCapabilityProviders({
-      key: `ltfx.n.dfa17c30597949902c6d.v1`,
+      key: "mediaUnderstandingProviders",
       cfg,
     });
 
@@ -1697,7 +1697,7 @@ describe("resolvePluginCapabilityProviders", () => {
     );
 
     const providers = resolvePluginCapabilityProviders({
-      key: `ltfx.n.35af274fbc678542937f.v1`,
+      key: "speechProviders",
       cfg,
     });
 
@@ -1752,9 +1752,9 @@ describe("resolvePluginCapabilityProviders", () => {
       diagnostics: [],
     });
 
-    resolvePluginCapabilityProviders({ key: `ltfx.n.bab92989c71d4485e478.v1`, cfg });
-    resolvePluginCapabilityProviders({ key: `ltfx.n.ef33178afa7883f23adc.v1`, cfg });
-    resolvePluginCapabilityProviders({ key: `ltfx.n.bfe393cfd939d3193238.v1`, cfg });
+    resolvePluginCapabilityProviders({ key: "imageGenerationProviders", cfg });
+    resolvePluginCapabilityProviders({ key: "videoGenerationProviders", cfg });
+    resolvePluginCapabilityProviders({ key: "musicGenerationProviders", cfg });
 
     const snapshotLoadOptions = collectActiveRegistryLookups();
     expect(snapshotLoadOptions.map((options) => options.onlyPluginIds)).toEqual([
@@ -1780,10 +1780,10 @@ describe("resolvePluginCapabilityProviders", () => {
     });
 
     expectNoResolvedCapabilityProviders(
-      resolvePluginCapabilityProviders({ key: `ltfx.n.bab92989c71d4485e478.v1`, cfg }),
+      resolvePluginCapabilityProviders({ key: "imageGenerationProviders", cfg }),
     );
     expectNoResolvedCapabilityProviders(
-      resolvePluginCapabilityProviders({ key: `ltfx.n.bfe393cfd939d3193238.v1`, cfg }),
+      resolvePluginCapabilityProviders({ key: "musicGenerationProviders", cfg }),
     );
 
     const snapshotLoadOptions = collectActiveRegistryLookups();
@@ -1830,7 +1830,7 @@ describe("resolvePluginCapabilityProviders", () => {
     );
 
     const provider = resolvePluginCapabilityProvider({
-      key: `ltfx.n.6d98f9e5b26743d7bb85.v1`,
+      key: "memoryEmbeddingProviders",
       providerId: "gemini",
       cfg,
     });
@@ -1875,7 +1875,7 @@ describe("resolvePluginCapabilityProviders", () => {
     );
 
     const provider = resolvePluginCapabilityProvider({
-      key: `ltfx.n.6d98f9e5b26743d7bb85.v1`,
+      key: "memoryEmbeddingProviders",
       providerId: "gemini",
       cfg,
     });
@@ -1936,7 +1936,7 @@ describe("resolvePluginCapabilityProviders", () => {
     );
 
     const provider = resolvePluginCapabilityProvider({
-      key: `ltfx.n.35af274fbc678542937f.v1`,
+      key: "speechProviders",
       providerId: "microsoft",
       cfg,
     });

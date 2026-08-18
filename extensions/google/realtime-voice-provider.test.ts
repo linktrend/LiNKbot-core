@@ -181,7 +181,7 @@ describe("buildGoogleRealtimeVoiceProvider", () => {
     const provider = buildGoogleRealtimeVoiceProvider();
     const bridge = provider.createBridge({
       providerConfig: {
-        apiKey: `ltfx.n.b647c36e02b856909e64.v1`,
+        apiKey: "gemini-key",
         enableAffectiveDialog: true,
         thinkingBudget: 8_193,
       },
@@ -260,7 +260,7 @@ describe("buildGoogleRealtimeVoiceProvider", () => {
     const provider = buildGoogleRealtimeVoiceProvider();
     const bridge = provider.createBridge({
       providerConfig: {
-        apiKey: `ltfx.n.b647c36e02b856909e64.v1`,
+        apiKey: "gemini-key",
         model: "gemini-live-2.5-flash-preview",
         voice: "Kore",
         temperature: 0.3,
@@ -370,7 +370,7 @@ describe("buildGoogleRealtimeVoiceProvider", () => {
   it("omits tool names that Google Live cannot accept", async () => {
     const provider = buildGoogleRealtimeVoiceProvider();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.b647c36e02b856909e64.v1` },
+      providerConfig: { apiKey: "gemini-key" },
       tools: [
         createRealtimeTool("_lookup"),
         createRealtimeTool("calendar.lookup:next"),
@@ -400,7 +400,7 @@ describe("buildGoogleRealtimeVoiceProvider", () => {
     const provider = buildGoogleRealtimeVoiceProvider();
     const bridge = provider.createBridge({
       providerConfig: {
-        apiKey: `ltfx.n.b647c36e02b856909e64.v1`,
+        apiKey: "gemini-key",
         temperature: 0,
       },
       onAudio: vi.fn(),
@@ -416,7 +416,7 @@ describe("buildGoogleRealtimeVoiceProvider", () => {
     const provider = buildGoogleRealtimeVoiceProvider();
     const bridge = provider.createBridge({
       providerConfig: {
-        apiKey: `ltfx.n.b647c36e02b856909e64.v1`,
+        apiKey: "gemini-key",
         prefixPaddingMs: -1,
         silenceDurationMs: 250.5,
       },
@@ -433,7 +433,7 @@ describe("buildGoogleRealtimeVoiceProvider", () => {
     const provider = buildGoogleRealtimeVoiceProvider();
     const bridge = provider.createBridge({
       providerConfig: {
-        apiKey: `ltfx.n.b647c36e02b856909e64.v1`,
+        apiKey: "gemini-key",
         thinkingBudget: 24_576.5,
       },
       onAudio: vi.fn(),
@@ -449,7 +449,7 @@ describe("buildGoogleRealtimeVoiceProvider", () => {
     const provider = buildGoogleRealtimeVoiceProvider();
     const bridge = provider.createBridge({
       providerConfig: {
-        apiKey: `ltfx.n.b647c36e02b856909e64.v1`,
+        apiKey: "gemini-key",
         model: "gemini-live-2.5-flash-preview",
         thinkingBudget: -1,
       },
@@ -466,7 +466,7 @@ describe("buildGoogleRealtimeVoiceProvider", () => {
     const provider = buildGoogleRealtimeVoiceProvider();
     const bridge = provider.createBridge({
       providerConfig: {
-        apiKey: `ltfx.n.b647c36e02b856909e64.v1`,
+        apiKey: "gemini-key",
         thinkingBudget: -1,
       },
       onAudio: vi.fn(),
@@ -483,7 +483,7 @@ describe("buildGoogleRealtimeVoiceProvider", () => {
 
     const sessionLocal = await provider.createBrowserSession?.({
       providerConfig: {
-        apiKey: `ltfx.n.b647c36e02b856909e64.v1`,
+        apiKey: "gemini-key",
         model: "gemini-live-2.5-flash-preview",
         prefixPaddingMs: 100,
         silenceDurationMs: 300,
@@ -602,7 +602,7 @@ describe("buildGoogleRealtimeVoiceProvider", () => {
 
     const sessionLocal = await provider.createBrowserSession?.({
       providerConfig: {
-        apiKey: `ltfx.n.b647c36e02b856909e64.v1`,
+        apiKey: "gemini-key",
         enableAffectiveDialog: true,
         thinkingLevel: "low",
         thinkingBudget: 8_193,
@@ -662,7 +662,7 @@ describe("buildGoogleRealtimeVoiceProvider", () => {
     await expect(
       provider.createBrowserSession?.({
         providerConfig: {
-          apiKey: `ltfx.n.b647c36e02b856909e64.v1`,
+          apiKey: "gemini-key",
         },
       }),
     ).rejects.toThrow("Google realtime browser session expiry is outside the supported Date range");
@@ -676,7 +676,7 @@ describe("buildGoogleRealtimeVoiceProvider", () => {
     await expect(
       provider.createBrowserSession?.({
         providerConfig: {
-          apiKey: `ltfx.n.b647c36e02b856909e64.v1`,
+          apiKey: "gemini-key",
         },
       }),
     ).rejects.toThrow("Google realtime browser session expiry is outside the supported Date range");
@@ -687,7 +687,7 @@ describe("buildGoogleRealtimeVoiceProvider", () => {
     const provider = buildGoogleRealtimeVoiceProvider();
     const bridge = provider.createBridge({
       providerConfig: {
-        apiKey: `ltfx.n.b647c36e02b856909e64.v1`,
+        apiKey: "gemini-key",
         contextWindowCompression: false,
         sessionResumption: false,
       },
@@ -705,7 +705,7 @@ describe("buildGoogleRealtimeVoiceProvider", () => {
     const provider = buildGoogleRealtimeVoiceProvider();
     const onTranscript = vi.fn();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.b647c36e02b856909e64.v1` },
+      providerConfig: { apiKey: "gemini-key" },
       onAudio: vi.fn(),
       onClearAudio: vi.fn(),
       onTranscript,
@@ -732,7 +732,7 @@ describe("buildGoogleRealtimeVoiceProvider", () => {
     const provider = buildGoogleRealtimeVoiceProvider();
     const onTranscript = vi.fn();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.b647c36e02b856909e64.v1`, sessionResumption: false },
+      providerConfig: { apiKey: "gemini-key", sessionResumption: false },
       onAudio: vi.fn(),
       onClearAudio: vi.fn(),
       onTranscript,
@@ -760,7 +760,7 @@ describe("buildGoogleRealtimeVoiceProvider", () => {
       const onClose = vi.fn();
       const onError = vi.fn();
       const bridge = provider.createBridge({
-        providerConfig: { apiKey: `ltfx.n.b647c36e02b856909e64.v1` },
+        providerConfig: { apiKey: "gemini-key" },
         onAudio: vi.fn(),
         onClearAudio: vi.fn(),
         onClose,
@@ -799,7 +799,7 @@ describe("buildGoogleRealtimeVoiceProvider", () => {
     const provider = buildGoogleRealtimeVoiceProvider();
     const onTranscript = vi.fn();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.b647c36e02b856909e64.v1` },
+      providerConfig: { apiKey: "gemini-key" },
       onAudio: vi.fn(),
       onClearAudio: vi.fn(),
       onTranscript,
@@ -830,7 +830,7 @@ describe("buildGoogleRealtimeVoiceProvider", () => {
     const provider = buildGoogleRealtimeVoiceProvider();
     const onTranscript = vi.fn();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.b647c36e02b856909e64.v1` },
+      providerConfig: { apiKey: "gemini-key" },
       onAudio: vi.fn(),
       onClearAudio: vi.fn(),
       onTranscript,
@@ -865,7 +865,7 @@ describe("buildGoogleRealtimeVoiceProvider", () => {
     const onClose = vi.fn();
     const onTranscript = vi.fn();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.b647c36e02b856909e64.v1` },
+      providerConfig: { apiKey: "gemini-key" },
       onAudio: vi.fn(),
       onClearAudio: vi.fn(),
       onClose,
@@ -898,7 +898,7 @@ describe("buildGoogleRealtimeVoiceProvider", () => {
     const provider = buildGoogleRealtimeVoiceProvider();
     const onReady = vi.fn();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.b647c36e02b856909e64.v1` },
+      providerConfig: { apiKey: "gemini-key" },
       onAudio: vi.fn(),
       onClearAudio: vi.fn(),
       onReady,
@@ -923,7 +923,7 @@ describe("buildGoogleRealtimeVoiceProvider", () => {
   it("marks the Google audio stream complete after sustained telephony silence", async () => {
     const provider = buildGoogleRealtimeVoiceProvider();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.b647c36e02b856909e64.v1`, silenceDurationMs: 60 },
+      providerConfig: { apiKey: "gemini-key", silenceDurationMs: 60 },
       onAudio: vi.fn(),
       onClearAudio: vi.fn(),
     });
@@ -955,7 +955,7 @@ describe("buildGoogleRealtimeVoiceProvider", () => {
   it("fuses telephony mu-law conversion into the Gemini 16 kHz PCM input frame", async () => {
     const provider = buildGoogleRealtimeVoiceProvider();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.b647c36e02b856909e64.v1` },
+      providerConfig: { apiKey: "gemini-key" },
       onAudio: vi.fn(),
       onClearAudio: vi.fn(),
     });
@@ -978,7 +978,7 @@ describe("buildGoogleRealtimeVoiceProvider", () => {
   it("accepts PCM16 24 kHz audio without the telephony mu-law hop", async () => {
     const provider = buildGoogleRealtimeVoiceProvider();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.b647c36e02b856909e64.v1` },
+      providerConfig: { apiKey: "gemini-key" },
       audioFormat: REALTIME_VOICE_AUDIO_FORMAT_PCM16_24KHZ,
       onAudio: vi.fn(),
       onClearAudio: vi.fn(),
@@ -1001,7 +1001,7 @@ describe("buildGoogleRealtimeVoiceProvider", () => {
     const provider = buildGoogleRealtimeVoiceProvider();
     const bridge = provider.createBridge({
       providerConfig: {
-        apiKey: `ltfx.n.b647c36e02b856909e64.v1`,
+        apiKey: "gemini-key",
         automaticActivityDetectionDisabled: true,
       },
       onAudio: vi.fn(),
@@ -1019,7 +1019,7 @@ describe("buildGoogleRealtimeVoiceProvider", () => {
   it("sends Gemini 3.1 text prompts as realtime input", async () => {
     const provider = buildGoogleRealtimeVoiceProvider();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.b647c36e02b856909e64.v1` },
+      providerConfig: { apiKey: "gemini-key" },
       onAudio: vi.fn(),
       onClearAudio: vi.fn(),
     });
@@ -1038,7 +1038,7 @@ describe("buildGoogleRealtimeVoiceProvider", () => {
     const provider = buildGoogleRealtimeVoiceProvider();
     const bridge = provider.createBridge({
       providerConfig: {
-        apiKey: `ltfx.n.b647c36e02b856909e64.v1`,
+        apiKey: "gemini-key",
         model: "gemini-live-2.5-flash-preview",
       },
       onAudio: vi.fn(),
@@ -1061,7 +1061,7 @@ describe("buildGoogleRealtimeVoiceProvider", () => {
     const provider = buildGoogleRealtimeVoiceProvider();
     const onAudio = vi.fn();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.b647c36e02b856909e64.v1` },
+      providerConfig: { apiKey: "gemini-key" },
       onAudio,
       onClearAudio: vi.fn(),
     });
@@ -1094,7 +1094,7 @@ describe("buildGoogleRealtimeVoiceProvider", () => {
     const provider = buildGoogleRealtimeVoiceProvider();
     const onAudio = vi.fn();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.b647c36e02b856909e64.v1` },
+      providerConfig: { apiKey: "gemini-key" },
       audioFormat: REALTIME_VOICE_AUDIO_FORMAT_PCM16_24KHZ,
       onAudio,
       onClearAudio: vi.fn(),
@@ -1126,7 +1126,7 @@ describe("buildGoogleRealtimeVoiceProvider", () => {
     const provider = buildGoogleRealtimeVoiceProvider();
     const onTranscript = vi.fn();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.b647c36e02b856909e64.v1` },
+      providerConfig: { apiKey: "gemini-key" },
       onAudio: vi.fn(),
       onClearAudio: vi.fn(),
       onTranscript,
@@ -1153,7 +1153,7 @@ describe("buildGoogleRealtimeVoiceProvider", () => {
     const provider = buildGoogleRealtimeVoiceProvider();
     const onTranscript = vi.fn();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.b647c36e02b856909e64.v1` },
+      providerConfig: { apiKey: "gemini-key" },
       onAudio: vi.fn(),
       onClearAudio: vi.fn(),
       onTranscript,
@@ -1179,7 +1179,7 @@ describe("buildGoogleRealtimeVoiceProvider", () => {
     const provider = buildGoogleRealtimeVoiceProvider();
     const onTranscript = vi.fn();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.b647c36e02b856909e64.v1` },
+      providerConfig: { apiKey: "gemini-key" },
       onAudio: vi.fn(),
       onClearAudio: vi.fn(),
       onTranscript,
@@ -1200,7 +1200,7 @@ describe("buildGoogleRealtimeVoiceProvider", () => {
     const provider = buildGoogleRealtimeVoiceProvider();
     const onTranscript = vi.fn();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.b647c36e02b856909e64.v1` },
+      providerConfig: { apiKey: "gemini-key" },
       onAudio: vi.fn(),
       onClearAudio: vi.fn(),
       onTranscript,
@@ -1233,7 +1233,7 @@ describe("buildGoogleRealtimeVoiceProvider", () => {
     const provider = buildGoogleRealtimeVoiceProvider();
     const onTranscript = vi.fn();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.b647c36e02b856909e64.v1` },
+      providerConfig: { apiKey: "gemini-key" },
       onAudio: vi.fn(),
       onClearAudio: vi.fn(),
       onTranscript,
@@ -1253,7 +1253,7 @@ describe("buildGoogleRealtimeVoiceProvider", () => {
     const callbackError = new Error("transcript persistence failed");
     const onError = vi.fn();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.b647c36e02b856909e64.v1` },
+      providerConfig: { apiKey: "gemini-key" },
       onAudio: vi.fn(),
       onClearAudio: vi.fn(),
       onError,
@@ -1278,7 +1278,7 @@ describe("buildGoogleRealtimeVoiceProvider", () => {
     const provider = buildGoogleRealtimeVoiceProvider();
     const onClearAudio = vi.fn();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.b647c36e02b856909e64.v1` },
+      providerConfig: { apiKey: "gemini-key" },
       onAudio: vi.fn(),
       onClearAudio,
     });
@@ -1296,7 +1296,7 @@ describe("buildGoogleRealtimeVoiceProvider", () => {
     const provider = buildGoogleRealtimeVoiceProvider();
     const onToolCall = vi.fn();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.b647c36e02b856909e64.v1` },
+      providerConfig: { apiKey: "gemini-key" },
       onAudio: vi.fn(),
       onClearAudio: vi.fn(),
       onToolCall,
@@ -1334,7 +1334,7 @@ describe("buildGoogleRealtimeVoiceProvider", () => {
     const provider = buildGoogleRealtimeVoiceProvider();
     const bridge = provider.createBridge({
       providerConfig: {
-        apiKey: `ltfx.n.b647c36e02b856909e64.v1`,
+        apiKey: "gemini-key",
         model: "gemini-live-2.5-flash-preview",
       },
       onAudio: vi.fn(),
@@ -1386,7 +1386,7 @@ describe("buildGoogleRealtimeVoiceProvider", () => {
     const provider = buildGoogleRealtimeVoiceProvider();
     const onError = vi.fn();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.b647c36e02b856909e64.v1` },
+      providerConfig: { apiKey: "gemini-key" },
       onAudio: vi.fn(),
       onClearAudio: vi.fn(),
       onToolCall: vi.fn(),
@@ -1426,7 +1426,7 @@ describe("buildGoogleRealtimeVoiceProvider", () => {
     const provider = buildGoogleRealtimeVoiceProvider();
     const onError = vi.fn();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.b647c36e02b856909e64.v1` },
+      providerConfig: { apiKey: "gemini-key" },
       onAudio: vi.fn(),
       onClearAudio: vi.fn(),
       onError,
@@ -1447,7 +1447,7 @@ describe("buildGoogleRealtimeVoiceProvider", () => {
     const provider = buildGoogleRealtimeVoiceProvider();
     const onError = vi.fn();
     const bridge = provider.createBridge({
-      providerConfig: { apiKey: `ltfx.n.b647c36e02b856909e64.v1` },
+      providerConfig: { apiKey: "gemini-key" },
       onAudio: vi.fn(),
       onClearAudio: vi.fn(),
       onError,

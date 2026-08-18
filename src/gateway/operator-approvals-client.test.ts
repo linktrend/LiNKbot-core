@@ -12,7 +12,7 @@ const clientState = vi.hoisted(() => ({
 }));
 
 const bootstrapState = vi.hoisted(() => ({
-  url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+  url: "ws://127.0.0.1:18789",
   urlSource: "local loopback",
   auth: { token: "secret" as string | undefined, password: undefined as string | undefined },
 }));
@@ -99,7 +99,7 @@ describe("withOperatorApprovalsGatewayClient", () => {
     clientState.requestSpy.mockReset().mockResolvedValue(undefined);
     clientState.stopSpy.mockReset();
     clientState.stopAndWaitSpy.mockReset().mockResolvedValue(undefined);
-    bootstrapState.url = `ltfx.n.0edbee82f0824a1ed09b.v1`;
+    bootstrapState.url = "ws://127.0.0.1:18789";
     bootstrapState.urlSource = "local loopback";
     bootstrapState.auth = { token: "secret", password: undefined };
   });
@@ -124,7 +124,7 @@ describe("withOperatorApprovalsGatewayClient", () => {
   });
 
   it("keeps device identity and omits approval runtime token for remote shared-auth approval clients", async () => {
-    bootstrapState.url = `ltfx.n.220960bbd8d741e2dfde.v1`;
+    bootstrapState.url = "wss://gateway.example/ws";
     bootstrapState.urlSource = "config gateway.remote.url";
 
     await runOperatorApprovalsGatewayClient();
@@ -135,7 +135,7 @@ describe("withOperatorApprovalsGatewayClient", () => {
   });
 
   it("keeps device identity for env loopback approval clients without runtime authority", async () => {
-    bootstrapState.url = `ltfx.n.0edbee82f0824a1ed09b.v1`;
+    bootstrapState.url = "ws://127.0.0.1:18789";
     bootstrapState.urlSource = "env OPENCLAW_GATEWAY_URL";
 
     await runOperatorApprovalsGatewayClient();
@@ -147,24 +147,24 @@ describe("withOperatorApprovalsGatewayClient", () => {
   it.each([
     {
       name: "explicit loopback gateway URL overrides",
-      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      url: "ws://127.0.0.1:18789",
       urlSource: "cli --url",
       gatewayUrl: "ws://127.0.0.1:18789",
     },
     {
       name: "remote explicit gateway URL overrides",
-      url: `ltfx.n.220960bbd8d741e2dfde.v1`,
+      url: "wss://gateway.example/ws",
       urlSource: "cli --url",
       gatewayUrl: "wss://gateway.example/ws",
     },
     {
       name: "configured remote loopback gateway URLs",
-      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      url: "ws://127.0.0.1:18789",
       urlSource: "config gateway.remote.url",
     },
     {
       name: "env loopback gateway URL overrides",
-      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      url: "ws://127.0.0.1:18789",
       urlSource: "env OPENCLAW_GATEWAY_URL",
     },
   ])("omits approval runtime token for $name", async ({ url, urlSource, gatewayUrl }) => {
@@ -176,7 +176,7 @@ describe("withOperatorApprovalsGatewayClient", () => {
   });
 
   it("keeps approval runtime token for local fallback gateway URLs", async () => {
-    bootstrapState.url = `ltfx.n.0edbee82f0824a1ed09b.v1`;
+    bootstrapState.url = "ws://127.0.0.1:18789";
     bootstrapState.urlSource = "missing gateway.remote.url (fallback local)";
 
     await runOperatorApprovalsGatewayClient();

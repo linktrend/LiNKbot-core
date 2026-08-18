@@ -85,17 +85,17 @@ private func gatewayLink(from raw: String) -> GatewayConnectDeepLink? {
     }
 
     @Test func setupCodeRejectsInsecureNonLoopbackWs() {
-        let payload = #"{"url":"${ltfx.n.c989f66cdfeeabad1961.v1}","bootstrapToken":"tok"}"#
+        let payload = #"{"url":"ws://attacker.example:18789","bootstrapToken":"tok"}"#
         #expect(GatewayConnectDeepLink.fromSetupCode(setupCode(from: payload)) == nil)
     }
 
     @Test func setupCodeRejectsInsecurePrefixBypassHost() {
-        let payload = #"{"url":"${ltfx.n.3bf765a79bd79bda2ad7.v1}","bootstrapToken":"tok"}"#
+        let payload = #"{"url":"ws://127.attacker.example:18789","bootstrapToken":"tok"}"#
         #expect(GatewayConnectDeepLink.fromSetupCode(setupCode(from: payload)) == nil)
     }
 
     @Test func setupCodeAllowsLoopbackWs() {
-        let payload = #"{"url":"${ltfx.n.0edbee82f0824a1ed09b.v1}","bootstrapToken":"tok"}"#
+        let payload = #"{"url":"ws://127.0.0.1:18789","bootstrapToken":"tok"}"#
         #expect(
             GatewayConnectDeepLink.fromSetupCode(setupCode(from: payload)) == .init(
                 host: "127.0.0.1",
@@ -107,7 +107,7 @@ private func gatewayLink(from raw: String) -> GatewayConnectDeepLink? {
     }
 
     @Test func setupCodeAllowsPrivateLanWs() {
-        let payload = #"{"url":"${ltfx.n.9203dcebf2c5ac32cf73.v1}","bootstrapToken":"tok"}"#
+        let payload = #"{"url":"ws://192.168.1.20:18789","bootstrapToken":"tok"}"#
         #expect(
             GatewayConnectDeepLink.fromSetupCode(setupCode(from: payload)) == .init(
                 host: "192.168.1.20",
@@ -119,7 +119,7 @@ private func gatewayLink(from raw: String) -> GatewayConnectDeepLink? {
     }
 
     @Test func setupCodeAllowsMDNSWs() {
-        let payload = #"{"url":"${ltfx.n.1f2267023544086b2a2d.v1}","bootstrapToken":"tok"}"#
+        let payload = #"{"url":"ws://openclaw.local:18789","bootstrapToken":"tok"}"#
         #expect(
             GatewayConnectDeepLink.fromSetupCode(setupCode(from: payload)) == .init(
                 host: "openclaw.local",
@@ -131,7 +131,7 @@ private func gatewayLink(from raw: String) -> GatewayConnectDeepLink? {
     }
 
     @Test func setupCodeParsesOrderedGatewayFallbacks() throws {
-        let payload = #"{"url":"${ltfx.n.9203dcebf2c5ac32cf73.v1}","urls":["ws://192.168.1.20:18789","wss://gateway.tailnet.ts.net:8443"],"bootstrapToken":"tok"}"#
+        let payload = #"{"url":"ws://192.168.1.20:18789","urls":["ws://192.168.1.20:18789","wss://gateway.tailnet.ts.net:8443"],"bootstrapToken":"tok"}"#
         let link = GatewayConnectDeepLink.fromSetupCode(setupCode(from: payload))
 
         #expect(link?.connectionEndpoints == [
@@ -158,7 +158,7 @@ private func gatewayLink(from raw: String) -> GatewayConnectDeepLink? {
     }
 
     @Test func setupCodeDropsInsecureGatewayFallbacks() {
-        let payload = #"{"url":"${ltfx.n.c989f66cdfeeabad1961.v1}","urls":["ws://attacker.example:18789","wss://gateway.tailnet.ts.net"],"bootstrapToken":"tok"}"#
+        let payload = #"{"url":"ws://attacker.example:18789","urls":["ws://attacker.example:18789","wss://gateway.tailnet.ts.net"],"bootstrapToken":"tok"}"#
 
         #expect(GatewayConnectDeepLink.fromSetupCode(setupCode(from: payload)) == .init(
             host: "gateway.tailnet.ts.net",
@@ -181,12 +181,12 @@ private func gatewayLink(from raw: String) -> GatewayConnectDeepLink? {
     }
 
     @Test func setupCodeRejectsTailnetPlaintextWs() {
-        let payload = #"{"url":"${ltfx.n.5f7c061017c63257ae28.v1}","bootstrapToken":"tok"}"#
+        let payload = #"{"url":"ws://gateway.tailnet.ts.net:18789","bootstrapToken":"tok"}"#
         #expect(GatewayConnectDeepLink.fromSetupCode(setupCode(from: payload)) == nil)
     }
 
     @Test func setupCodeRejectsCgnatPlaintextWs() {
-        let payload = #"{"url":"${ltfx.n.0d71ceff215f1cb974d5.v1}","bootstrapToken":"tok"}"#
+        let payload = #"{"url":"ws://100.64.0.9:18789","bootstrapToken":"tok"}"#
         #expect(GatewayConnectDeepLink.fromSetupCode(setupCode(from: payload)) == nil)
     }
 
@@ -232,7 +232,7 @@ private func gatewayLink(from raw: String) -> GatewayConnectDeepLink? {
     }
 
     @Test func setupInputParsesFullCopiedSetupMessage() {
-        let payload = #"{"url":"${ltfx.n.15367a623539e984c121.v1}","bootstrapToken":"tok"}"#
+        let payload = #"{"url":"wss://gateway.tailnet.ts.net","bootstrapToken":"tok"}"#
         let message = """
         Pairing setup code generated.
 

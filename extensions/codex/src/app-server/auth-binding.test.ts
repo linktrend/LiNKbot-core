@@ -60,7 +60,7 @@ describe("Codex app-server auth binding", () => {
     expect(prepared?.authProfileStore.profiles[profileId]).toEqual({
       type: "api_key",
       provider: "openai",
-      key: `ltfx.n.1f69c782b6e5969e701d.v1`,
+      key: "work-key-a",
     });
     expect(store.profiles[profileId]).toEqual({
       type: "api_key",

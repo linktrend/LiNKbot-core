@@ -144,7 +144,7 @@ provider/auth configuration, switch to a reachable provider, or set
       "ollama-5080": {
         api: "ollama",
         baseUrl: "http://gpu-box.local:11435",
-        apiKey: "${ltfx.n.18ab0c9c00ad3478e4db.v1}",
+        apiKey: "ollama-local",
         models: [{ id: "qwen3-embedding:0.6b", name: "Qwen3 Embedding 0.6B" }],
       },
     },

@@ -28,7 +28,7 @@ describe("readStateDirDotEnvFromStateDir", () => {
   }
 
   it("returns real credential values from the state-dir dotenv", async () => {
-    await withDotEnv("SUPERMEMORY_API_KEY=(sm_real_credential_value\n", async (dir) => {)
+    await withDotEnv("SUPERMEMORY_API_KEY=sm_real_credential_value\n", async (dir) => {
       const result = readStateDirDotEnvFromStateDir(dir).entries;
       expect(result["SUPERMEMORY_API_KEY"]).toBe("sm_real_credential_value");
     });
@@ -37,7 +37,7 @@ describe("readStateDirDotEnvFromStateDir", () => {
   it("skips values that are unresolved shell variable references", async () => {
     const content = [
       'SUPERMEMORY_OPENCLAW_API_KEY="${SUPERMEMORY_OPENCLAW_KEY}"',
-      "QUOTED_SUPERMEMORY_OPENCLAW_API_KEY=(ltfx.dotenv.quoted.v1"),
+      "QUOTED_SUPERMEMORY_OPENCLAW_API_KEY='\"$SUPERMEMORY_OPENCLAW_KEY\"'",
       "QUOTED_CURLY_KEY=\"'${ANOTHER_VAR}'\"",
       "BRACE_DEFAULT_KEY=${ANOTHER_VAR:-fallback}",
       "QUOTED_BRACE_DEFAULT_KEY='\"${ANOTHER_VAR:-fallback}\"'",
@@ -69,13 +69,13 @@ describe("readStateDirDotEnvFromStateDir", () => {
 
   it("preserves credential values that merely contain a dollar sign", async () => {
     const content = [
-      "PASSWORD=(abc$2!xyz",)
-      "TOKEN=(tok_$prod_v2",)
+      "PASSWORD=abc$2!xyz",
+      "TOKEN=tok_$prod_v2",
       "PRICE=\\$100",
-      "QUOTED_PASSWORD=(ltfx.dotenv.password.v1"),
+      "QUOTED_PASSWORD='\"abc$2!xyz\"'",
       "QUOTED_PRICE='\"$100\"'",
-      "LEADING_DOLLAR_PASSWORD=($ecret123",)
-      "LEADING_DOLLAR_TOKEN=($token_1",)
+      "LEADING_DOLLAR_PASSWORD=$ecret123",
+      "LEADING_DOLLAR_TOKEN=$token_1",
       "LOWERCASE_BRACE=${lowercase_literal}",
       "PURE_REF=$SOME_VAR",
     ].join("\n");
@@ -120,7 +120,7 @@ describe("readStateDirDotEnvFromStateDir", () => {
     const dir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-dotenv-oversized-"));
     try {
       const large = Buffer.alloc(2 * 1024 * 1024, "x");
-      large.write("KEY=(value\n", 0, "utf8");)
+      large.write("KEY=value\n", 0, "utf8");
       await fs.writeFile(path.join(dir, ".env"), large);
       const result = readStateDirDotEnvFromStateDir(dir).entries;
       expect(result).toEqual({});

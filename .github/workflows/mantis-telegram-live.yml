@@ -332,7 +332,7 @@ jobs:
           path: |
             ~/.local/share/pnpm/store
             ~/.cache/pnpm
-          key: "${ltfx.n.cd3077e0aa78e1bba01e.v1}" runner.os }}-${{ env.NODE_VERSION }}-${{ hashFiles('pnpm-lock.yaml') }}
+          key: mantis-telegram-pnpm-${{ runner.os }}-${{ env.NODE_VERSION }}-${{ hashFiles('pnpm-lock.yaml') }}
           restore-keys: |
             mantis-telegram-pnpm-${{ runner.os }}-${{ env.NODE_VERSION }}-
 
@@ -404,7 +404,7 @@ jobs:
           }
 
           CRABBOX_COORDINATOR="${CRABBOX_COORDINATOR:-${OPENCLAW_QA_MANTIS_CRABBOX_COORDINATOR:-}}"
-          CRABBOX_COORDINATOR_TOKEN="${CRABBOX_COORDINATOR_TOKEN:(ltfx.n.51351bd34802ce1b4ead.v1)}}"
+          CRABBOX_COORDINATOR_TOKEN="${CRABBOX_COORDINATOR_TOKEN:-${OPENCLAW_QA_MANTIS_CRABBOX_COORDINATOR_TOKEN:-}}"
           export CRABBOX_COORDINATOR CRABBOX_COORDINATOR_TOKEN
 
           require_var OPENAI_API_KEY

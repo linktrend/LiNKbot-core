@@ -12,7 +12,7 @@ import {
 const accountFixture: ResolvedMattermostAccount = {
   accountId: "default",
   enabled: true,
-  botToken: `ltfx.n.df27f9beb68b7766af3a.v1`,
+  botToken: "bot-token",
   baseUrl: "https://chat.example.com",
   botTokenSource: "config",
   baseUrlSource: "config",

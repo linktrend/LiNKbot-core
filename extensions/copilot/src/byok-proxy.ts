@@ -279,7 +279,7 @@ function hasHeader(headers: Record<string, string>, target: string): boolean {
   return Object.keys(headers).some((key) => key.toLowerCase() === target);
 }
 
-function isHopByHopHeader(key: (string)): boolean {
+function isHopByHopHeader(key: string): boolean {
   switch (key.toLowerCase()) {
     case "connection":
     case "host":
@@ -296,7 +296,7 @@ function isHopByHopHeader(key: (string)): boolean {
   }
 }
 
-function isContentEncodingHeader(key: (string)): boolean {
+function isContentEncodingHeader(key: string): boolean {
   switch (key.toLowerCase()) {
     case "content-encoding":
     case "content-length":

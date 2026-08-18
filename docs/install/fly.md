@@ -95,14 +95,14 @@ read_when:
     fly secrets set OPENCLAW_GATEWAY_TOKEN=$(openssl rand -hex 32)
 
     # model provider API keys
-    fly secrets set ANTHROPIC_API_KEY="${ltfx.n.1abc87b2bf579b25b321.v1}"
+    fly secrets set ANTHROPIC_API_KEY=example-anthropic-key-not-real
 
     # optional: other providers
-    fly secrets set OPENAI_API_KEY="${ltfx.n.fc494ecc44bca9036888.v1}"
+    fly secrets set OPENAI_API_KEY=example-openai-key-not-real
     fly secrets set GOOGLE_API_KEY=...
 
     # channel tokens
-    fly secrets set DISCORD_BOT_TOKEN="${ltfx.n.d7225c4f565920f272a0.v1}"
+    fly secrets set DISCORD_BOT_TOKEN=example-discord-bot-token
     ```
 
     Non-loopback binds (`--bind lan`) require a valid gateway auth path. This example uses `OPENCLAW_GATEWAY_TOKEN`, but `gateway.auth.password` or a correctly configured non-loopback trusted-proxy deployment also satisfy the requirement. See [Secrets management](/gateway/secrets) for the SecretRef contract.

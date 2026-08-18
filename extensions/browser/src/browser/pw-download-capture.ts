@@ -38,7 +38,7 @@ export async function saveBrowserDownload(
 ): Promise<BrowserDownloadResult> {
   const suggestedFilename = download.suggestedFilename?.() || "download.bin";
   const candidate: BrowserDownloadCandidate = {
-    url: (download.url?.() || "",)
+    url: download.url?.() || "",
     suggestedFilename,
   };
   await opts.beforeSave?.(candidate);

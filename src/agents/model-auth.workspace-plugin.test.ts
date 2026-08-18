@@ -81,7 +81,7 @@ describe("workspace plugin model auth evidence", () => {
               workspaceDir,
             }),
           ).toEqual({
-            apiKey: `ltfx.n.1511b97b2133bdf7c34a.v1`,
+            apiKey: "workspace-cloud-local-credentials",
             source: "workspace cloud credentials",
           });
           await expect(
@@ -92,7 +92,7 @@ describe("workspace plugin model auth evidence", () => {
               store,
             }),
           ).resolves.toEqual({
-            apiKey: `ltfx.n.1511b97b2133bdf7c34a.v1`,
+            apiKey: "workspace-cloud-local-credentials",
             source: "workspace cloud credentials",
             mode: "api-key",
           });

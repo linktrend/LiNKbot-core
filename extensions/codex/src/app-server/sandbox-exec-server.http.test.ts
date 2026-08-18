@@ -327,7 +327,7 @@ describe("OpenClaw Codex sandbox exec-server HTTP", () => {
           ].join(""),
         ],
         env: testExecEnv(),
-        finalizeToken: `ltfx.n.8929ba67483f30617051.v1`,
+        finalizeToken: "stream-token",
         stdinMode: "pipe-closed",
       }),
       finalizeExec,
@@ -355,7 +355,7 @@ describe("OpenClaw Codex sandbox exec-server HTTP", () => {
         expect(finalizeExec).toHaveBeenCalledWith(
           expect.objectContaining({
             status: "failed",
-            token: `ltfx.n.8929ba67483f30617051.v1`,
+            token: "stream-token",
           }),
         ),
       { timeout: 5_000 },
@@ -375,7 +375,7 @@ describe("OpenClaw Codex sandbox exec-server HTTP", () => {
           ].join(""),
         ],
         env: testExecEnv(),
-        finalizeToken: `ltfx.n.b0c0cd0a8a64d5ca5b87.v1`,
+        finalizeToken: "stream-line-token",
         stdinMode: "pipe-closed",
       }),
       finalizeExec,
@@ -398,7 +398,7 @@ describe("OpenClaw Codex sandbox exec-server HTTP", () => {
         expect(finalizeExec).toHaveBeenCalledWith(
           expect.objectContaining({
             status: "failed",
-            token: `ltfx.n.b0c0cd0a8a64d5ca5b87.v1`,
+            token: "stream-line-token",
           }),
         ),
       { timeout: 5_000 },

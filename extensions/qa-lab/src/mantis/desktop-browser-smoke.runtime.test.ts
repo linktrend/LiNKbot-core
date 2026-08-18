@@ -22,7 +22,7 @@ describe("mantis desktop browser smoke runtime", () => {
     const commands: { args: readonly string[]; command: string; env?: NodeJS.ProcessEnv }[] = [];
     const runtimeEnv = {
       PATH: process.env.PATH,
-      CRABBOX_COORDINATOR_TOKEN: `ltfx.n.f8e1f3c257c8d1a3d07a.v1`,
+      CRABBOX_COORDINATOR_TOKEN: "runtime-token",
       OPENCLAW_MANTIS_CRABBOX_PROVIDER: "hetzner",
     };
     const runner = vi.fn(

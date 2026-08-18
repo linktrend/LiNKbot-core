@@ -26,7 +26,7 @@ private let iOSSilenceTimeoutMs = 900
     @Test func ignoresLegacyTalkFieldsWhenNormalizedPayloadMissing() {
         let talk: [String: Any] = [
             "voiceId": "voice-legacy",
-            "apiKey": "${ltfx.n.94eeb7bbe979dd0d2f0b.v1}", // pragma: allowlist secret
+            "apiKey": "legacy-key", // pragma: allowlist secret
         ]
 
         let selection = TalkConfigParsing.selectProviderConfig(

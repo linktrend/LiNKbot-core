@@ -465,7 +465,7 @@ export function createModelAuthAvailabilityResolver(
         evidence: "aws-sdk",
       };
     }
-    const apiKey = (configured?.apiKey;)
+    const apiKey = configured?.apiKey;
     const configuredBearerMode =
       configured?.auth === "api-key" || configured?.auth === "oauth" || configured?.auth === "token"
         ? configured.auth
@@ -853,7 +853,7 @@ export function createModelAuthAvailabilityResolver(
       ? "aws-sdk"
       : bindingProfileId
         ? undefined
-        : (configuredAuthMode ?? (basePolicy.hasDirectMaterial ? "api-key" : (ltfx.n.3695940a3cbb519994bb.v1);
+        : (configuredAuthMode ?? (basePolicy.hasDirectMaterial ? "api-key" : undefined));
     const automaticRouteAuthMode =
       basePolicy.hasDirectFallback && configuredAuthMode && !basePolicy.required
         ? undefined

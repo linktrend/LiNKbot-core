@@ -70,7 +70,7 @@ async function resolveMSTeamsProactiveReplyStyle(params: {
       msteams: {
         enabled: true,
         appId: "app-id",
-        appPassword: `ltfx.n.4097889236a2af26c293.v1`,
+        appPassword: "placeholder",
         tenantId: "tenant-id",
         ...params.cfg,
       },
@@ -111,7 +111,7 @@ describe("resolveMSTeamsSendContext", () => {
         msteams: {
           enabled: true,
           appId: "app-id",
-          appPassword: `ltfx.n.c0741d74e1d41a97476c.v1`,
+          appPassword: "app-password",
           tenantId: "tenant-id",
         },
       },
@@ -141,7 +141,7 @@ describe("resolveMSTeamsSendContext", () => {
         msteams: {
           enabled: true,
           appId: "app-id",
-          appPassword: `ltfx.n.c0741d74e1d41a97476c.v1`,
+          appPassword: "app-password",
           tenantId: "tenant-id",
         },
       },
@@ -173,7 +173,7 @@ describe("resolveMSTeamsSendContext", () => {
           msteams: {
             enabled: true,
             appId: "app-id",
-            appPassword: `ltfx.n.c0741d74e1d41a97476c.v1`,
+            appPassword: "app-password",
             tenantId: "tenant-id",
             sharePointSiteId: "site-id",
           },

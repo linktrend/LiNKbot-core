@@ -131,7 +131,7 @@ struct Placement {
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
 struct PresentParams {
-    url: (Option<String>,)
+    url: Option<String>,
     placement: Option<Placement>,
 }
 
@@ -840,7 +840,7 @@ fn dispatch_action_status(app: &AppHandle, frame: &Value) {
     let Some(window) = app.get_webview_window(CANVAS_LABEL) else {
         return;
     };
-    if window.url().ok().as_ref().map(Url:(:scheme) != Some(CANVAS_SCHEME) {)
+    if window.url().ok().as_ref().map(Url::scheme) != Some(CANVAS_SCHEME) {
         return;
     }
     let detail = json!({

@@ -74,13 +74,13 @@ describe("resolveGatewayInstallToken", () => {
   it("uses plaintext gateway.auth.token when configured", async () => {
     const result = await resolveGatewayInstallToken({
       config: {
-        gateway: { auth: { token: `ltfx.n.a98cc81fe778386f6195.v1` } },
+        gateway: { auth: { token: "config-token" } },
       } as OpenClawConfig,
       env: {} as NodeJS.ProcessEnv,
     });
 
     expect(result).toEqual({
-      token: `ltfx.n.a98cc81fe778386f6195.v1`,
+      token: "config-token",
       tokenRefConfigured: false,
       unavailableReason: undefined,
       warnings: [],
@@ -97,7 +97,7 @@ describe("resolveGatewayInstallToken", () => {
       config: {
         gateway: { auth: { mode: "token", token: tokenRef } },
       } as OpenClawConfig,
-      env: { OPENCLAW_GATEWAY_TOKEN: `ltfx.n.cad2ed06900405ac7d61.v1` } as NodeJS.ProcessEnv,
+      env: { OPENCLAW_GATEWAY_TOKEN: "resolved-token" } as NodeJS.ProcessEnv,
     });
 
     expect(result.token).toBeUndefined();
@@ -127,8 +127,8 @@ describe("resolveGatewayInstallToken", () => {
       config: {
         gateway: {
           auth: {
-            token: `ltfx.n.e6c02a5742ea9d4de588.v1`,
-            password: `ltfx.n.965415e170a3c8b4ae84.v1`, // pragma: allowlist secret
+            token: "token-value",
+            password: "password-value", // pragma: allowlist secret
           },
         },
       } as OpenClawConfig,
@@ -180,7 +180,7 @@ describe("resolveGatewayInstallToken", () => {
         gateway: {
           auth: {
             mode: "token",
-            token: `ltfx.n.739ed077d8ebb99522b8.v1`,
+            token: "generated-token",
           },
         },
       },
@@ -250,7 +250,7 @@ describe("resolveGatewayInstallToken", () => {
 
   it("passes the install env through to gateway auth resolution", async () => {
     const env = {
-      OPENCLAW_GATEWAY_PASSWORD: `ltfx.n.939d96e1fb8b4f8b82c6.v1`, // pragma: allowlist secret
+      OPENCLAW_GATEWAY_PASSWORD: "dotenv-password", // pragma: allowlist secret
     } as NodeJS.ProcessEnv;
     shouldRequireGatewayTokenForInstallMock.mockReturnValue(false);
     resolveGatewayAuthMock.mockReturnValue({

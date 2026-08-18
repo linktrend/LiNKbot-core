@@ -75,7 +75,7 @@ function createMarkerSession(options: { existingPage?: boolean; navigateError?: 
   const pages: FakePage[] =
     options.existingPage === false
       ? []
-      : [{ id: 1, nativeTargetId: "NATIVE-EXISTING", url: `ltfx.n.4fa72d735a519ee13d41.v1` }];
+      : [{ id: 1, nativeTargetId: "NATIVE-EXISTING", url: "about:blank" }];
   const events: string[] = [];
   const readUrl = (value: unknown) => (typeof value === "string" ? value : "");
   const callTool = vi.fn(async (call: ToolCall) => {
@@ -297,7 +297,7 @@ describe("Chrome MCP durable tab ownership", () => {
       ),
     ).rejects.toThrow("marker lookup aborted");
     expect(abortedSession.pages).toEqual([
-      { id: 1, nativeTargetId: "NATIVE-EXISTING", url: `ltfx.n.4fa72d735a519ee13d41.v1` },
+      { id: 1, nativeTargetId: "NATIVE-EXISTING", url: "about:blank" },
     ]);
     expect(abortedSession.events.at(-1)).toMatch(/^close:about:blank#openclaw-/);
 
@@ -315,7 +315,7 @@ describe("Chrome MCP durable tab ownership", () => {
       }),
     ).rejects.toBe(blocked);
     expect(blockedSession.pages).toEqual([
-      { id: 1, nativeTargetId: "NATIVE-EXISTING", url: `ltfx.n.4fa72d735a519ee13d41.v1` },
+      { id: 1, nativeTargetId: "NATIVE-EXISTING", url: "about:blank" },
     ]);
   });
 
@@ -343,7 +343,7 @@ describe("Chrome MCP durable tab ownership", () => {
       status: "durable",
       nativeTargetId: "NATIVE-1",
     });
-    expect(pages).toEqual([{ id: 1, nativeTargetId: "NATIVE-1", url: `ltfx.n.4fa72d735a519ee13d41.v1` }]);
+    expect(pages).toEqual([{ id: 1, nativeTargetId: "NATIVE-1", url: "about:blank" }]);
   });
 
   it("rejects an empty auto-connected browser before creating a page", async () => {

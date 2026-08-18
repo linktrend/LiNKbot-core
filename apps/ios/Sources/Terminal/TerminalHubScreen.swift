@@ -31,12 +31,12 @@ struct TerminalHubScreen: View {
                     url: url,
                     authScript: Self.terminalAuthUserScript(
                         config: config,
-                        storedOperatorToken: (storedOperatorToken)))
+                        storedOperatorToken: storedOperatorToken))
                     // Recreate the web view only when the connection inputs
                     // change; SwiftUI update passes must not restart live shells.
                         .id(Self.webContentIdentity(
                             config: config,
-                            storedOperatorToken: (storedOperatorToken)))
+                            storedOperatorToken: storedOperatorToken))
                         .ignoresSafeArea(.container, edges: .bottom)
             } else {
                 self.unavailableCard
@@ -119,7 +119,7 @@ struct TerminalHubScreen: View {
 
     static func terminalAuthUserScript(
         config: GatewayConnectConfig?,
-        storedOperatorToken: (String?) -> String?)
+        storedOperatorToken: String?) -> String?
     {
         guard let config, let pageURL = terminalURL(config: config) else {
             return nil
@@ -160,7 +160,7 @@ struct TerminalHubScreen: View {
 
     /// Identity for the embedded web view: recreate it only when the gateway
     /// endpoint or credentials actually change.
-    static func webContentIdentity(config: GatewayConnectConfig?, storedOperatorToken: (String?) -> Int {)
+    static func webContentIdentity(config: GatewayConnectConfig?, storedOperatorToken: String?) -> Int {
         var hasher = Hasher()
         hasher.combine(config?.url)
         hasher.combine(config?.token)
@@ -237,7 +237,7 @@ private struct TerminalWebView: UIViewRepresentable {
         scrollView.horizontalScrollIndicatorInsets = .zero
         scrollView.automaticallyAdjustsScrollIndicatorInsets = false
 
-        webView.load(URLRequest(url: (self.url)))
+        webView.load(URLRequest(url: self.url))
         return webView
     }
 

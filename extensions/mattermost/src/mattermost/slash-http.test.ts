@@ -78,7 +78,7 @@ function createResponse(): {
 const accountFixture: ResolvedMattermostAccount = {
   accountId: "default",
   enabled: true,
-  botToken: `ltfx.n.df27f9beb68b7766af3a.v1`,
+  botToken: "bot-token",
   baseUrl: "https://chat.example.com",
   botTokenSource: "config",
   baseUrlSource: "config",
@@ -99,8 +99,8 @@ function createRegisteredCommand(params?: {
     id: "cmd-1",
     teamId: params?.teamId ?? "t1",
     trigger: params?.trigger ?? "oc_status",
-    token: (params?.token ?? "valid-token",)
-    url: (params?.url ?? "https://gateway.example.com/slash",)
+    token: params?.token ?? "valid-token",
+    url: params?.url ?? "https://gateway.example.com/slash",
     managed: false,
   };
 }
@@ -115,7 +115,7 @@ function createCommandLookupClient(params: {
   return {
     baseUrl: "https://chat.example.com",
     apiBaseUrl: "https://chat.example.com/api/v4",
-    token: `ltfx.n.df27f9beb68b7766af3a.v1`,
+    token: "bot-token",
     request: async <T>(path: string) => {
       requests.push(path);
       if (path === "/commands/cmd-1") {
@@ -228,7 +228,7 @@ describe("slash-http", () => {
       runtime: {} as RuntimeEnv,
       registeredCommands: [createRegisteredCommand()],
     });
-    const req = createRequest({ body: "token=(abc&command=%2Foc_status" });)
+    const req = createRequest({ body: "token=abc&command=%2Foc_status" });
     const response = createResponse();
 
     await handler(req, response.res);
@@ -240,7 +240,7 @@ describe("slash-http", () => {
   it("fails closed when no commands are registered", async () => {
     const response = await runSlashRequest({
       registeredCommands: [],
-      body: "token=(tok1&team_id=t1&channel_id=c1&user_id=u1&command=%2Foc_status&text=",)
+      body: "token=tok1&team_id=t1&channel_id=c1&user_id=u1&command=%2Foc_status&text=",
     });
 
     expect(response.res.statusCode).toBe(401);
@@ -249,8 +249,8 @@ describe("slash-http", () => {
 
   it("rejects unknown slash commands before upstream validation", async () => {
     const response = await runSlashRequest({
-      registeredCommands: [createRegisteredCommand({ token: `ltfx.n.49e2e40e591e61357758.v1` })],
-      body: "token=(unknown&team_id=t1&channel_id=c1&user_id=u1&command=%2Foc_unknown&text=",)
+      registeredCommands: [createRegisteredCommand({ token: "known-token" })],
+      body: "token=unknown&team_id=t1&channel_id=c1&user_id=u1&command=%2Foc_unknown&text=",
     });
 
     expect(response.res.statusCode).toBe(401);
@@ -263,17 +263,17 @@ describe("slash-http", () => {
     // upstream validation runs and could poison the failure cache for B.
     const response = await runSlashRequest({
       registeredCommands: [
-        createRegisteredCommand({ token: `ltfx.n.ecbc9ab81d148867ecfa.v1`, trigger: "oc_status" }),
+        createRegisteredCommand({ token: "token-status", trigger: "oc_status" }),
         {
           id: "cmd-2",
           teamId: "t1",
           trigger: "oc_help",
-          token: `ltfx.n.491ff9f44a8657dda42f.v1`,
+          token: "token-help",
           url: "https://gateway.example.com/slash",
           managed: false,
         },
       ],
-      body: "token=(token-status&team_id=t1&channel_id=c1&user_id=u1&command=%2Foc_help&text=",)
+      body: "token=token-status&team_id=t1&channel_id=c1&user_id=u1&command=%2Foc_help&text=",
     });
 
     expect(response.res.statusCode).toBe(401);
@@ -298,11 +298,11 @@ describe("slash-http", () => {
   });
 
   it("rejects the startup token when Mattermost has rotated the current command token", async () => {
-    const registeredCommand = createRegisteredCommand({ token: `ltfx.n.9bdf10a691a1cfda89d9.v1` });
+    const registeredCommand = createRegisteredCommand({ token: "old-token" });
     const client = createCommandLookupClient({
       command: {
         id: "cmd-1",
-        token: `ltfx.n.348e9df2a42bd6e3c635.v1`,
+        token: "new-token",
         team_id: "t1",
         trigger: "oc_status",
         method: MATTERMOST_SLASH_POST_METHOD,
@@ -318,7 +318,7 @@ describe("slash-http", () => {
         client,
         registeredCommand,
         payload: {
-          token: `ltfx.n.9bdf10a691a1cfda89d9.v1`,
+          token: "old-token",
           team_id: "t1",
           channel_id: "c1",
           user_id: "u1",
@@ -332,11 +332,11 @@ describe("slash-http", () => {
   });
 
   it("accepts the startup token while the current Mattermost command still matches", async () => {
-    const registeredCommand = createRegisteredCommand({ token: `ltfx.n.397a2a9c5bf5e2ccec38.v1` });
+    const registeredCommand = createRegisteredCommand({ token: "valid-token" });
     const client = createCommandLookupClient({
       command: {
         id: "cmd-1",
-        token: `ltfx.n.397a2a9c5bf5e2ccec38.v1`,
+        token: "valid-token",
         team_id: "t1",
         trigger: "oc_status",
         method: MATTERMOST_SLASH_POST_METHOD,
@@ -352,7 +352,7 @@ describe("slash-http", () => {
         client,
         registeredCommand,
         payload: {
-          token: `ltfx.n.397a2a9c5bf5e2ccec38.v1`,
+          token: "valid-token",
           team_id: "t1",
           channel_id: "c1",
           user_id: "u1",
@@ -367,10 +367,10 @@ describe("slash-http", () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-04-27T00:00:00Z"));
     try {
-      const registeredCommand = createRegisteredCommand({ token: `ltfx.n.397a2a9c5bf5e2ccec38.v1` });
+      const registeredCommand = createRegisteredCommand({ token: "valid-token" });
       const command = {
         id: "cmd-1",
-        token: `ltfx.n.397a2a9c5bf5e2ccec38.v1`,
+        token: "valid-token",
         team_id: "t1",
         trigger: "oc_status",
         method: MATTERMOST_SLASH_POST_METHOD,
@@ -380,7 +380,7 @@ describe("slash-http", () => {
       };
       const client = createCommandLookupClient({ command });
       const payload = {
-        token: `ltfx.n.397a2a9c5bf5e2ccec38.v1`,
+        token: "valid-token",
         team_id: "t1",
         channel_id: "c1",
         user_id: "u1",
@@ -420,10 +420,10 @@ describe("slash-http", () => {
   });
 
   it("rechecks matching current commands so startup tokens are not accepted after rotation", async () => {
-    const registeredCommand = createRegisteredCommand({ token: `ltfx.n.397a2a9c5bf5e2ccec38.v1` });
+    const registeredCommand = createRegisteredCommand({ token: "valid-token" });
     let command = {
       id: "cmd-1",
-      token: `ltfx.n.397a2a9c5bf5e2ccec38.v1`,
+      token: "valid-token",
       team_id: "t1",
       trigger: "oc_status",
       method: MATTERMOST_SLASH_POST_METHOD,
@@ -435,7 +435,7 @@ describe("slash-http", () => {
       command: () => command,
     });
     const payload = {
-      token: `ltfx.n.397a2a9c5bf5e2ccec38.v1`,
+      token: "valid-token",
       team_id: "t1",
       channel_id: "c1",
       user_id: "u1",
@@ -453,7 +453,7 @@ describe("slash-http", () => {
     ).resolves.toBe(true);
     command = {
       ...command,
-      token: `ltfx.n.348e9df2a42bd6e3c635.v1`,
+      token: "new-token",
     };
     await expect(
       validateMattermostSlashCommandToken({
@@ -468,11 +468,11 @@ describe("slash-http", () => {
   });
 
   it("briefly caches failed current command validation without accepting stale tokens", async () => {
-    const registeredCommand = createRegisteredCommand({ token: `ltfx.n.9bdf10a691a1cfda89d9.v1` });
+    const registeredCommand = createRegisteredCommand({ token: "old-token" });
     const client = createCommandLookupClient({
       command: {
         id: "cmd-1",
-        token: `ltfx.n.348e9df2a42bd6e3c635.v1`,
+        token: "new-token",
         team_id: "t1",
         trigger: "oc_status",
         method: MATTERMOST_SLASH_POST_METHOD,
@@ -482,7 +482,7 @@ describe("slash-http", () => {
       },
     });
     const payload = {
-      token: `ltfx.n.9bdf10a691a1cfda89d9.v1`,
+      token: "old-token",
       team_id: "t1",
       channel_id: "c1",
       user_id: "u1",
@@ -514,11 +514,11 @@ describe("slash-http", () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date(8_640_000_000_000_000));
     try {
-      const registeredCommand = createRegisteredCommand({ token: `ltfx.n.9bdf10a691a1cfda89d9.v1` });
+      const registeredCommand = createRegisteredCommand({ token: "old-token" });
       const client = createCommandLookupClient({
         command: {
           id: "cmd-1",
-          token: `ltfx.n.348e9df2a42bd6e3c635.v1`,
+          token: "new-token",
           team_id: "t1",
           trigger: "oc_status",
           method: MATTERMOST_SLASH_POST_METHOD,
@@ -528,7 +528,7 @@ describe("slash-http", () => {
         },
       });
       const payload = {
-        token: `ltfx.n.9bdf10a691a1cfda89d9.v1`,
+        token: "old-token",
         team_id: "t1",
         channel_id: "c1",
         user_id: "u1",
@@ -563,10 +563,10 @@ describe("slash-http", () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-04-27T00:00:00Z"));
     try {
-      const registeredCommand = createRegisteredCommand({ token: `ltfx.n.397a2a9c5bf5e2ccec38.v1` });
+      const registeredCommand = createRegisteredCommand({ token: "valid-token" });
       const command = {
         id: "cmd-1",
-        token: `ltfx.n.397a2a9c5bf5e2ccec38.v1`,
+        token: "valid-token",
         team_id: "t1",
         trigger: "oc_status",
         method: MATTERMOST_SLASH_POST_METHOD,
@@ -576,7 +576,7 @@ describe("slash-http", () => {
       };
       const client = createCommandLookupClient({ command });
       const payload = {
-        token: `ltfx.n.397a2a9c5bf5e2ccec38.v1`,
+        token: "valid-token",
         team_id: "t1",
         channel_id: "c1",
         user_id: "u1",
@@ -691,7 +691,7 @@ describe("slash-http", () => {
     const client = createCommandLookupClient({
       command: {
         id: "cmd-1",
-        token: `ltfx.n.397a2a9c5bf5e2ccec38.v1`,
+        token: "valid-token",
         team_id: "t1",
         trigger: "oc_status",
         method: MATTERMOST_SLASH_POST_METHOD,
@@ -707,7 +707,7 @@ describe("slash-http", () => {
         client,
         registeredCommand,
         payload: {
-          token: `ltfx.n.397a2a9c5bf5e2ccec38.v1`,
+          token: "valid-token",
           team_id: "t1",
           channel_id: "c1",
           user_id: "u1",
@@ -719,10 +719,10 @@ describe("slash-http", () => {
   });
 
   it("rejects a regenerated command when the current command id changed", async () => {
-    const registeredCommand = createRegisteredCommand({ token: `ltfx.n.9bdf10a691a1cfda89d9.v1` });
+    const registeredCommand = createRegisteredCommand({ token: "old-token" });
     const oldDeletedCommand = {
       id: "cmd-1",
-      token: `ltfx.n.9bdf10a691a1cfda89d9.v1`,
+      token: "old-token",
       team_id: "t1",
       trigger: "oc_status",
       method: MATTERMOST_SLASH_POST_METHOD,
@@ -732,7 +732,7 @@ describe("slash-http", () => {
     };
     const newCommand = {
       id: "cmd-2",
-      token: `ltfx.n.348e9df2a42bd6e3c635.v1`,
+      token: "new-token",
       team_id: "t1",
       trigger: "oc_status",
       method: MATTERMOST_SLASH_POST_METHOD,
@@ -751,7 +751,7 @@ describe("slash-http", () => {
         client,
         registeredCommand,
         payload: {
-          token: `ltfx.n.9bdf10a691a1cfda89d9.v1`,
+          token: "old-token",
           team_id: "t1",
           channel_id: "c1",
           user_id: "u1",
@@ -768,7 +768,7 @@ describe("slash-http", () => {
     const commandId = `${"i".repeat(199)}😀tail`;
     const command = {
       id: commandId,
-      token: `ltfx.n.397a2a9c5bf5e2ccec38.v1`,
+      token: "valid-token",
       team_id: "t1",
       trigger: "oc_status",
       method: MATTERMOST_SLASH_POST_METHOD,
@@ -788,7 +788,7 @@ describe("slash-http", () => {
         client,
         registeredCommand,
         payload: {
-          token: `ltfx.n.397a2a9c5bf5e2ccec38.v1`,
+          token: "valid-token",
           team_id: "t1",
           channel_id: "c1",
           user_id: "u1",
@@ -817,7 +817,7 @@ describe("slash-http", () => {
     for (const [index, command] of [
       {
         id: "cmd-1",
-        token: `ltfx.n.397a2a9c5bf5e2ccec38.v1`,
+        token: "valid-token",
         team_id: "t1",
         trigger: "oc_status",
         method: "G",
@@ -827,7 +827,7 @@ describe("slash-http", () => {
       },
       {
         id: "cmd-1",
-        token: `ltfx.n.397a2a9c5bf5e2ccec38.v1`,
+        token: "valid-token",
         team_id: "t1",
         trigger: "oc_status",
         method: MATTERMOST_SLASH_POST_METHOD,
@@ -844,7 +844,7 @@ describe("slash-http", () => {
           client,
           registeredCommand,
           payload: {
-            token: `ltfx.n.397a2a9c5bf5e2ccec38.v1`,
+            token: "valid-token",
             team_id: "t1",
             channel_id: "c1",
             user_id: "u1",
@@ -860,7 +860,7 @@ describe("slash-http", () => {
     const registeredCommand = createRegisteredCommand();
     const command = {
       id: "cmd-1",
-      token: `ltfx.n.397a2a9c5bf5e2ccec38.v1`,
+      token: "valid-token",
       team_id: "t1",
       trigger: "oc_status",
       method: MATTERMOST_SLASH_POST_METHOD,
@@ -879,7 +879,7 @@ describe("slash-http", () => {
         client,
         registeredCommand,
         payload: {
-          token: `ltfx.n.397a2a9c5bf5e2ccec38.v1`,
+          token: "valid-token",
           team_id: "t1",
           channel_id: "c1",
           user_id: "u1",
@@ -895,7 +895,7 @@ describe("slash-http", () => {
     const registeredCommand = createRegisteredCommand();
     const command = {
       id: "cmd-1",
-      token: `ltfx.n.397a2a9c5bf5e2ccec38.v1`,
+      token: "valid-token",
       team_id: "t1",
       trigger: "oc_status",
       method: MATTERMOST_SLASH_POST_METHOD,
@@ -905,7 +905,7 @@ describe("slash-http", () => {
     };
     const client = createCommandLookupClient({
       commandLookupError: new Error(
-        "primary\ntoken=(secret-token https://user:pass@chat.example.com/api?access_token=(secret-access&client_secret=(secret-client",)))
+        "primary\ntoken=secret-token https://user:pass@chat.example.com/api?access_token=secret-access&client_secret=secret-client",
       ),
       listCommands: [command],
     });
@@ -917,7 +917,7 @@ describe("slash-http", () => {
         client,
         registeredCommand,
         payload: {
-          token: `ltfx.n.397a2a9c5bf5e2ccec38.v1`,
+          token: "valid-token",
           team_id: "t1",
           channel_id: "c1",
           user_id: "u1",
@@ -948,9 +948,9 @@ describe("slash-http", () => {
   it("sanitizes upstream lookup errors before logging fallback failures", async () => {
     const registeredCommand = createRegisteredCommand();
     const client = createCommandLookupClient({
-      commandLookupError: new Error('primary\ntoken=(secret-token refresh_token=`ltfx.n.6c2b02ce86b168b5afe4.v1`'),)
+      commandLookupError: new Error('primary\ntoken=secret-token refresh_token="secret-refresh"'),
       listLookupError: new Error(
-        "fallback\r\nsecond-line botToken: (secret-bot https://user:pass@chat.example.com/hooks?token=(secret-query",))
+        "fallback\r\nsecond-line botToken: secret-bot https://user:pass@chat.example.com/hooks?token=secret-query",
       ),
     });
     const log = vi.fn();
@@ -961,7 +961,7 @@ describe("slash-http", () => {
         client,
         registeredCommand,
         payload: {
-          token: `ltfx.n.397a2a9c5bf5e2ccec38.v1`,
+          token: "valid-token",
           team_id: "t1",
           channel_id: "c1",
           user_id: "u1",
@@ -1000,7 +1000,7 @@ describe("slash-http", () => {
         client,
         registeredCommand,
         payload: {
-          token: `ltfx.n.397a2a9c5bf5e2ccec38.v1`,
+          token: "valid-token",
           team_id: "t1",
           channel_id: "c1",
           user_id: "u1",

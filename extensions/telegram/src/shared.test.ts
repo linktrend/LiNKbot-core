@@ -15,9 +15,9 @@ function createCfg(): OpenClawConfig {
       telegram: {
         enabled: true,
         accounts: {
-          alerts: { botToken: `ltfx.n.c3bc939b8b5809350371.v1` },
-          work: { botToken: `ltfx.n.c3bc939b8b5809350371.v1` },
-          ops: { botToken: `ltfx.n.8a614cb2ba0c93943279.v1` },
+          alerts: { botToken: "token-shared" },
+          work: { botToken: "token-shared" },
+          ops: { botToken: "token-ops" },
         },
       },
     },
@@ -91,7 +91,7 @@ describe("createTelegramPluginBase config duplicate token guard", () => {
     const cfg = {
       channels: {
         telegram: {
-          botToken: `ltfx.n.5e2f6492d71eaaf7e49f.v1`,
+          botToken: "single-bot-token",
           enabled: true,
         },
       },
@@ -105,7 +105,7 @@ describe("createTelegramPluginBase config duplicate token guard", () => {
     const cfg = {
       channels: {
         telegram: {
-          botToken: `ltfx.n.5e2f6492d71eaaf7e49f.v1`,
+          botToken: "single-bot-token",
           enabled: true,
         },
       },
@@ -120,10 +120,10 @@ describe("createTelegramPluginBase config duplicate token guard", () => {
     const cfg = {
       channels: {
         telegram: {
-          botToken: `ltfx.n.c52e0189cdd1fcf1625d.v1`,
+          botToken: "channel-level-token",
           enabled: true,
           accounts: {
-            knownBot: { botToken: `ltfx.n.969b387ec2c5e6dc4e9d.v1` },
+            knownBot: { botToken: "known-bot-token" },
           },
         },
       },
@@ -140,10 +140,10 @@ describe("createTelegramPluginBase config duplicate token guard", () => {
     const cfg = {
       channels: {
         telegram: {
-          botToken: `ltfx.n.c52e0189cdd1fcf1625d.v1`,
+          botToken: "channel-level-token",
           enabled: true,
           accounts: {
-            "Carey Notifications": { botToken: `ltfx.n.0cd588f27c55afb78efa.v1` },
+            "Carey Notifications": { botToken: "carey-token" },
           },
         },
       },

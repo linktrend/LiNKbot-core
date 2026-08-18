@@ -14,9 +14,9 @@ export PATH="$NPM_CONFIG_PREFIX/bin:$PATH"
 export npm_config_loglevel=error
 export npm_config_fund=false
 export npm_config_audit=false
-export OPENAI_API_KEY="${ltfx.n.6b131027980019806f6e.v1}"
-export OPENCLAW_GATEWAY_TOKEN="${ltfx.n.d696ad331c42d557bb8c.v1}"
-export CLICKCLACK_BOT_TOKEN="${ltfx.n.7997693166211264d285.v1}"
+export OPENAI_API_KEY="sk-openclaw-release-user-journey"
+export OPENCLAW_GATEWAY_TOKEN="release-user-journey-token"
+export CLICKCLACK_BOT_TOKEN="clickclack-release-token"
 
 PORT="18789"
 MOCK_PORT="44180"
@@ -149,7 +149,7 @@ mock_pid="$(openclaw_e2e_start_mock_openai "$MOCK_PORT" "$OPENAI_LOG")"
 openclaw_e2e_wait_mock_openai "$MOCK_PORT"
 
 CLICKCLACK_FIXTURE_PORT="$CLICKCLACK_PORT" \
-CLICKCLACK_FIXTURE_TOKEN="${ltfx.n.d5818797c654d0cc4d3f.v1}" \
+CLICKCLACK_FIXTURE_TOKEN="$CLICKCLACK_BOT_TOKEN" \
 CLICKCLACK_FIXTURE_STATE="$CLICKCLACK_STATE" \
   node scripts/e2e/lib/release-user-journey/clickclack-fixture.mjs >"$CLICKCLACK_SERVER_LOG" 2>&1 &
 clickclack_pid="$!"

@@ -4,7 +4,7 @@ type LoadStaticCatalog =
   typeof import("./embedded-agent-runner/model.static-catalog.js").loadBundledProviderStaticCatalogContextModels;
 
 const mocks = vi.hoisted(() => ({
-  authStorage: { getAll: vi.fn(() => ({ custom: { type: "api_key", key: `ltfx.n.62af8704764faf8ea82f.v1` } })) },
+  authStorage: { getAll: vi.fn(() => ({ custom: { type: "api_key", key: "test-key" } })) },
   modelRegistry: {
     fork: vi.fn((authStorage: unknown) => ({ authStorage })),
     getAll: vi.fn(() => []),
@@ -175,7 +175,7 @@ describe("prepared model runtime snapshots", () => {
   });
 
   it("uses an explicit lifecycle environment for catalog and auth discovery", async () => {
-    const env = { NVIDIA_API_KEY: `ltfx.n.ac9bb1cc1b3ebde46a89.v1` };
+    const env = { NVIDIA_API_KEY: "test-nvidia-api-key" };
     await publishPreparedModelRuntimeSnapshot({
       config: {},
       agentDir: "/tmp/prepared-model-runtime-explicit-env",

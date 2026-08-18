@@ -153,7 +153,7 @@ describe("GatewayClient", () => {
   }
 
   test("uses a large maxPayload for node snapshots", () => {
-    const last = startGatewayClient({ url: `ltfx.n.4d9ff4283940665bc26a.v1` }) as {
+    const last = startGatewayClient({ url: "ws://127.0.0.1:1" }) as {
       url: unknown;
       opts: unknown;
     } | null;
@@ -164,20 +164,20 @@ describe("GatewayClient", () => {
   });
 
   test("does not pass an explicit direct agent for loopback control-plane WebSocket connections", () => {
-    expectNoGatewayClientAgent({ url: `ltfx.n.4d9ff4283940665bc26a.v1` });
+    expectNoGatewayClientAgent({ url: "ws://127.0.0.1:1" });
   });
 
   test("does not pass an explicit direct agent for IPv6 loopback control-plane WebSocket connections", () => {
-    expectNoGatewayClientAgent({ url: `ltfx.n.979ee79f3c27dd1ab06e.v1` });
+    expectNoGatewayClientAgent({ url: "ws://[::1]:1" });
   });
 
   test("does not pass an explicit direct agent for localhost hostnames", () => {
-    expectNoGatewayClientAgent({ url: `ltfx.n.e9412317ae6d81755004.v1` });
+    expectNoGatewayClientAgent({ url: "ws://localhost:1" });
   });
 
   test("does not force a direct agent for remote Gateway WebSocket connections", () => {
     expectNoGatewayClientAgent({
-      url: `ltfx.n.72e4dc7921c2128a3b3f.v1`,
+      url: "wss://gateway.example.com",
       tlsFingerprint: "SHA256:AA:BB",
     });
   });
@@ -187,7 +187,7 @@ describe("GatewayClient", () => {
     const registration = registerGatewayOnlyProxy();
 
     try {
-      const last = startGatewayClient({ url: `ltfx.n.0edbee82f0824a1ed09b.v1` }) as {
+      const last = startGatewayClient({ url: "ws://127.0.0.1:18789" }) as {
         noProxyDuringConstruction: unknown;
       } | null;
 
@@ -205,7 +205,7 @@ describe("GatewayClient", () => {
     const registration = registerGatewayOnlyProxy();
 
     try {
-      const last = startGatewayClient({ url: `ltfx.n.875bc07d491dd390308b.v1` }) as {
+      const last = startGatewayClient({ url: "ws://[::1]:18789" }) as {
         noProxyDuringConstruction: unknown;
         httpProxyDuringConstruction: unknown;
         httpsProxyDuringConstruction: unknown;
@@ -225,26 +225,26 @@ describe("GatewayClient", () => {
 
   it("returns 404 for missing static asset paths instead of SPA fallback", async () => {
     await withControlUiRoot({ faviconSvg: "<svg/>" }, async (tmp) => {
-      await expectControlUiStatus(tmp, { url: `ltfx.n.0f3d306fb34abe093982.v1`, statusCode: 404 });
+      await expectControlUiStatus(tmp, { url: "/webchat/favicon.svg", statusCode: 404 });
     });
   });
 
   it("returns 404 for missing static assets with query strings", async () => {
     await withControlUiRoot({}, async (tmp) => {
-      await expectControlUiStatus(tmp, { url: `ltfx.n.957cf0b5cf6af3bde2d5.v1`, statusCode: 404 });
+      await expectControlUiStatus(tmp, { url: "/webchat/favicon.svg?v=1", statusCode: 404 });
     });
   });
 
   it("still serves SPA fallback for extensionless paths", async () => {
     await withControlUiRoot({}, async (tmp) => {
-      await expectControlUiStatus(tmp, { url: `ltfx.n.894630c79b0bede9ad5e.v1`, statusCode: 200 });
+      await expectControlUiStatus(tmp, { url: "/webchat/chat", statusCode: 200 });
     });
   });
 
   it("HEAD returns 404 for missing static assets consistent with GET", async () => {
     await withControlUiRoot({}, async (tmp) => {
       await expectControlUiStatus(tmp, {
-        url: `ltfx.n.0f3d306fb34abe093982.v1`,
+        url: "/webchat/favicon.svg",
         method: "HEAD",
         statusCode: 404,
       });
@@ -261,7 +261,7 @@ describe("GatewayClient", () => {
 
   it("serves SPA fallback for .html paths that do not exist on disk", async () => {
     await withControlUiRoot({}, async (tmp) => {
-      await expectControlUiStatus(tmp, { url: `ltfx.n.eaed151c2ac97854ff42.v1`, statusCode: 200 });
+      await expectControlUiStatus(tmp, { url: "/webchat/foo.html", statusCode: 200 });
     });
   });
 });

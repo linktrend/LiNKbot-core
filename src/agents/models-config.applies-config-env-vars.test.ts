@@ -138,7 +138,7 @@ function createConfigEnvVarsConfig(): OpenClawConfig {
     models: { providers: {} },
     env: {
       vars: {
-        OPENROUTER_API_KEY: `ltfx.n.e7eb488c3d4e07f6b343.v1`, // pragma: allowlist secret
+        OPENROUTER_API_KEY: "from-config", // pragma: allowlist secret
         [TEST_ENV_VAR]: "from-config",
       },
     },
@@ -600,7 +600,7 @@ describe("models-config", () => {
         resolveImplicitProviders: async () => ({
           "google-vertex": {
             ...createImplicitGoogleVertexProvider(),
-            apiKey: `ltfx.n.8e9d25977f930dcab7d3.v1`,
+            apiKey: "gcp-vertex-credentials",
           },
         }),
       },
@@ -642,7 +642,7 @@ describe("models-config", () => {
     await withTempEnv(["OPENROUTER_API_KEY", TEST_ENV_VAR], async () => {
       await withEnvAsync(
         {
-          OPENROUTER_API_KEY: `ltfx.n.30d2e08e9ec9924086c7.v1`, // pragma: allowlist secret
+          OPENROUTER_API_KEY: "from-host", // pragma: allowlist secret
           [TEST_ENV_VAR]: "from-host",
         },
         async () => {
